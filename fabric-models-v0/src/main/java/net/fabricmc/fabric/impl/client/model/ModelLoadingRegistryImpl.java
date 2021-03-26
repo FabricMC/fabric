@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
@@ -34,6 +35,7 @@ import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.model.ExtraModelProvider;
 import net.fabricmc.fabric.api.client.model.ModelAppender;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
@@ -56,7 +58,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 		private final ResourceManager manager;
 		private final List<ModelVariantProvider> modelVariantProviders;
 		private final List<ModelResourceProvider> modelResourceProviders;
-		private final List<ModelAppender> modelAppenders;
+		private final List<ExtraModelProvider> modelAppenders;
 		private ModelLoader loader;
 
 		private LoaderInstance(ModelLoadingRegistryImpl i, ModelLoader loader, ResourceManager manager) {
@@ -77,9 +79,9 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			return ((ModelLoaderHooks) loader).fabric_loadModel(id);
 		}
 
-		public void onModelPopulation(Consumer<ModelIdentifier> addModel) {
-			for (ModelAppender appender : modelAppenders) {
-				appender.appendAll(manager, addModel);
+		public void onModelPopulation(Consumer<Identifier> addModel) {
+			for (ExtraModelProvider appender : modelAppenders) {
+				appender.provideExtraModels(manager, addModel);
 			}
 		}
 
@@ -139,12 +141,12 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			}
 		}
 
-		/* @Nullable */
+		@Nullable
 		public UnbakedModel loadModelFromResource(Identifier resourceId) {
 			return loadCustomModel((r) -> r.loadModelResource(resourceId, this), modelResourceProviders, "resource provider");
 		}
 
-		/* @Nullable */
+		@Nullable
 		public UnbakedModel loadModelFromVariant(Identifier variantId) {
 			if (!(variantId instanceof ModelIdentifier)) {
 				return loadModelFromResource(variantId);
@@ -180,11 +182,16 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 
 	private final List<Function<ResourceManager, ModelVariantProvider>> variantProviderSuppliers = new ArrayList<>();
 	private final List<Function<ResourceManager, ModelResourceProvider>> resourceProviderSuppliers = new ArrayList<>();
-	private final List<ModelAppender> appenders = new ArrayList<>();
+	private final List<ExtraModelProvider> appenders = new ArrayList<>();
+
+	@Override
+	public void registerModelProvider(ExtraModelProvider appender) {
+		appenders.add(appender);
+	}
 
 	@Override
 	public void registerAppender(ModelAppender appender) {
-		appenders.add(appender);
+		registerModelProvider((manager, consumer) -> appender.appendAll(manager, consumer::accept));
 	}
 
 	@Override

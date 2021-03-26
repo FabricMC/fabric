@@ -17,11 +17,11 @@
 package net.fabricmc.fabric.api.dimension.v1;
 
 import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
+import net.minecraft.world.TeleportTarget;
 
 import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 
@@ -37,74 +37,29 @@ public final class FabricDimensions {
 	}
 
 	/**
-	 * Teleports an entity to a different dimension, using custom placement logic.
+	 * Teleports an entity to a different dimension, placing it at the specified destination.
 	 *
-	 * <p>This method behaves as if:
-	 * <pre>{@code teleported.changeDimension(destination)}</pre>
+	 * <p>Using this method will circumvent Vanilla's portal placement code.
 	 *
-	 * <p>If {@code destination} has a default placer, that placer will be used. If {@code destination} is
-	 * the nether or the overworld, the default logic is the vanilla path.
-	 * For any other dimension, the default placement behaviour is undefined.
-	 * When delegating to a placement logic that uses portals, the entity's {@code lastPortalPosition},
-	 * {@code lastPortalDirectionVector}, and {@code lastPortalDirection} fields should be updated
-	 * before calling this method.
-	 *
-	 * <p>After calling this method, {@code teleported} may be invalidated. Callers should use
-	 * the returned entity for any further manipulation.
+	 * <p>When teleporting to another dimension, the entity may be replaced with a new entity in the target
+	 * dimension. This is not the case for players, but needs to be accounted for by the caller.
 	 *
 	 * @param teleported  the entity to teleport
 	 * @param destination the dimension the entity will be teleported to
-	 * @return the teleported entity, or a clone of it
-	 * @see #teleport(Entity, ServerWorld)
-	 */
-	public static <E extends Entity> E teleport(E teleported, ServerWorld destination) {
-		return teleport(teleported, destination, null);
-	}
-
-	/**
-	 * Teleports an entity to a different dimension, using custom placement logic.
-	 *
-	 * <p>If {@code customPlacement} is {@code null}, this method behaves as if:
-	 * <pre>{@code teleported.changeDimension(destination)}</pre>
-	 * The {@code customPlacement} may itself return {@code null}, in which case
-	 * the default placement logic for that dimension will be run.
-	 *
-	 * <p>If {@code destination} has a default placer, that placer will be used. If {@code destination} is
-	 * the nether or the overworld, the default logic is the vanilla path.
-	 * For any other dimension, the default placement behaviour is undefined.
-	 * When delegating to a placement logic that uses portals, the entity's {@code lastPortalPosition},
-	 * {@code lastPortalDirectionVector}, and {@code lastPortalDirection} fields should be updated
-	 * before calling this method.
-	 *
-	 * <p>After calling this method, {@code teleported} may be invalidated. Callers should use
-	 * the returned entity for any further manipulation.
-	 *
-	 * @param teleported   the entity to teleport
-	 * @param destination  the dimension the entity will be teleported to
-	 * @param customPlacer custom placement logic that will run before the default one,
-	 *                     or {@code null} to use the dimension's default behavior.
-	 * @param <E>          the type of the teleported entity
-	 * @return the teleported entity, or a clone of it
+	 * @param target      where the entity will be placed in the target world.
+	 *                    As in Vanilla, the target's velocity is not applied to players.
+	 *                    If target is null, the entity will not be teleported.
+	 * @param <E>         the type of the teleported entity
+	 * @return Returns the teleported entity in the target dimension, which may be a new entity or <code>teleported</code>,
+	 * depending on the entity type.
 	 * @throws IllegalStateException if this method is called on a client entity
 	 * @apiNote this method must be called from the main server thread
 	 */
-	public static <E extends Entity> E teleport(E teleported, ServerWorld destination, /*Nullable*/ EntityPlacer customPlacer) {
+	@Nullable
+	public static <E extends Entity> E teleport(E teleported, ServerWorld destination, TeleportTarget target) {
+		Preconditions.checkNotNull(target, "A target must be provided");
 		Preconditions.checkState(!teleported.world.isClient, "Entities can only be teleported on the server side");
 
-		return FabricDimensionInternals.changeDimension(teleported, destination, customPlacer);
-	}
-
-	/**
-	 * Register a default placer for a dimension, this is used when an entity is teleported to a dimension without
-	 * a specified {@link EntityPlacer}.
-	 *
-	 * @param registryKey The dimension {@link RegistryKey}
-	 * @param entityPlacer The {@link EntityPlacer}
-	 */
-	public static void registerDefaultPlacer(RegistryKey<World> registryKey, EntityPlacer entityPlacer) {
-		Preconditions.checkState(!FabricDimensionInternals.DEFAULT_PLACERS.containsKey(registryKey), "Only 1 EntityPlacer can be registered per dimension");
-		Preconditions.checkState(!registryKey.getValue().getNamespace().equals("minecraft"), "Minecraft dimensions cannot have a default placer");
-
-		FabricDimensionInternals.DEFAULT_PLACERS.put(registryKey, entityPlacer);
+		return FabricDimensionInternals.changeDimension(teleported, destination, target);
 	}
 }

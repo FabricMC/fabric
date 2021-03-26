@@ -31,13 +31,13 @@ import net.minecraft.util.collection.IdList;
 import net.fabricmc.fabric.impl.registry.sync.RemovableIdList;
 
 @Mixin(IdList.class)
-public class MixinIdList implements RemovableIdList<Object> {
+public class MixinIdList<T> implements RemovableIdList<T> {
 	@Shadow
 	private int nextId;
 	@Shadow
-	private IdentityHashMap<Object, Integer> idMap;
+	private IdentityHashMap<T, Integer> idMap;
 	@Shadow
-	private List<Object> list;
+	private List<T> list;
 
 	@Override
 	public void fabric_clear() {
@@ -47,7 +47,7 @@ public class MixinIdList implements RemovableIdList<Object> {
 	}
 
 	@Unique
-	private void fabric_removeInner(Object o) {
+	private void fabric_removeInner(T o) {
 		int value = idMap.remove(o);
 		list.set(value, null);
 
@@ -57,7 +57,7 @@ public class MixinIdList implements RemovableIdList<Object> {
 	}
 
 	@Override
-	public void fabric_remove(Object o) {
+	public void fabric_remove(T o) {
 		if (idMap.containsKey(o)) {
 			fabric_removeInner(o);
 		}
@@ -65,9 +65,9 @@ public class MixinIdList implements RemovableIdList<Object> {
 
 	@Override
 	public void fabric_removeId(int i) {
-		List<Object> removals = new ArrayList<>();
+		List<T> removals = new ArrayList<>();
 
-		for (Object o : idMap.keySet()) {
+		for (T o : idMap.keySet()) {
 			int j = idMap.get(o);
 
 			if (i == j) {
@@ -86,15 +86,15 @@ public class MixinIdList implements RemovableIdList<Object> {
 	@Override
 	public void fabric_remapIds(Int2IntMap map) {
 		// remap idMap
-		idMap.replaceAll((a, b) -> map.get(b));
+		idMap.replaceAll((a, b) -> map.get((int) b));
 
 		// remap list
 		nextId = 0;
-		List<Object> oldList = new ArrayList<>(list);
+		List<T> oldList = new ArrayList<>(list);
 		list.clear();
 
 		for (int k = 0; k < oldList.size(); k++) {
-			Object o = oldList.get(k);
+			T o = oldList.get(k);
 
 			if (o != null) {
 				int i = map.getOrDefault(k, k);

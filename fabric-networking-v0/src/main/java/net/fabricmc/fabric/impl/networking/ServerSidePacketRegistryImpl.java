@@ -16,14 +16,7 @@
 
 package net.fabricmc.fabric.impl.networking;
 
-import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.function.Consumer;
+import java.util.Objects;
 
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -31,59 +24,36 @@ import io.netty.util.concurrent.GenericFutureListener;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.thread.ThreadExecutor;
 
-import net.fabricmc.fabric.api.event.network.C2SPacketTypeCallback;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.network.PacketConsumer;
 import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.network.PacketRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
-public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements ServerSidePacketRegistry {
-	private final WeakHashMap<PlayerEntity, Collection<Identifier>> playerPayloadIds = new WeakHashMap<>();
-	private final Set<WeakReference<ServerPlayNetworkHandler>> handlers = new HashSet<>();
-
-	public void onQueryResponse(LoginQueryResponseC2SPacket packet) {
-	}
-
-	public void addNetworkHandler(ServerPlayNetworkHandler handler) {
-		handlers.add(new WeakReference<>(handler));
-	}
-
-	protected void forEachHandler(Consumer<ServerPlayNetworkHandler> consumer) {
-		Iterator<WeakReference<ServerPlayNetworkHandler>> it = handlers.iterator();
-
-		while (it.hasNext()) {
-			ServerPlayNetworkHandler server = it.next().get();
-
-			if (server != null) {
-				consumer.accept(server);
-			} else {
-				it.remove();
-			}
-		}
-	}
-
+public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, PacketRegistry {
 	@Override
 	public boolean canPlayerReceive(PlayerEntity player, Identifier id) {
-		Collection<Identifier> ids = playerPayloadIds.get(player);
-
-		if (ids != null) {
-			return ids.contains(id);
-		} else {
-			return false;
+		if (player instanceof ServerPlayerEntity) {
+			return ServerPlayNetworking.canSend((ServerPlayerEntity) player, id);
 		}
+
+		return false;
 	}
 
 	@Override
 	public void sendToPlayer(PlayerEntity player, Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
-		if (!(player instanceof ServerPlayerEntity)) {
-			throw new RuntimeException("Can only send to ServerPlayerEntities!");
-		} else {
+		if (player instanceof ServerPlayerEntity) {
 			((ServerPlayerEntity) player).networkHandler.sendPacket(packet, completionListener);
+			return;
 		}
+
+		throw new RuntimeException("Can only send to ServerPlayerEntities!");
 	}
 
 	@Override
@@ -92,29 +62,31 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	}
 
 	@Override
-	protected void onRegister(Identifier id) {
-		createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id))
-				.ifPresent((packet) -> forEachHandler((n) -> n.sendPacket(packet)));
+	public void register(Identifier id, PacketConsumer consumer) {
+		Objects.requireNonNull(consumer, "PacketConsumer cannot be null");
+
+		ServerPlayNetworking.registerGlobalReceiver(id, (server, player, handler, buf, sender) -> {
+			consumer.accept(new PacketContext() {
+				@Override
+				public EnvType getPacketEnvironment() {
+					return EnvType.SERVER;
+				}
+
+				@Override
+				public PlayerEntity getPlayer() {
+					return player;
+				}
+
+				@Override
+				public ThreadExecutor<?> getTaskQueue() {
+					return server;
+				}
+			}, buf);
+		});
 	}
 
 	@Override
-	protected void onUnregister(Identifier id) {
-		createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id))
-				.ifPresent((packet) -> forEachHandler((n) -> n.sendPacket(packet)));
-	}
-
-	@Override
-	protected Collection<Identifier> getIdCollectionFor(PacketContext context) {
-		return playerPayloadIds.computeIfAbsent(context.getPlayer(), (p) -> new HashSet<>());
-	}
-
-	@Override
-	protected void onReceivedRegisterPacket(PacketContext context, Collection<Identifier> ids) {
-		C2SPacketTypeCallback.REGISTERED.invoker().accept(context.getPlayer(), ids);
-	}
-
-	@Override
-	protected void onReceivedUnregisterPacket(PacketContext context, Collection<Identifier> ids) {
-		C2SPacketTypeCallback.UNREGISTERED.invoker().accept(context.getPlayer(), ids);
+	public void unregister(Identifier id) {
+		ServerPlayNetworking.unregisterGlobalReceiver(id);
 	}
 }

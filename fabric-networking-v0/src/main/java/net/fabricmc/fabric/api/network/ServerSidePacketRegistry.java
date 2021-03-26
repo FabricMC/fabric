@@ -24,6 +24,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.network.PacketByteBuf;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.server.PlayerStream;
 import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
 
@@ -36,7 +37,10 @@ import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
  * <li>sending packets to clients (server -&gt; client packets).</ul>
  *
  * <p>For iterating over clients in a server, see {@link PlayerStream}.
+ *
+ * @deprecated Please migrate to {@link ServerPlayNetworking}.
  */
+@Deprecated
 public interface ServerSidePacketRegistry extends PacketRegistry {
 	ServerSidePacketRegistry INSTANCE = new ServerSidePacketRegistryImpl();
 

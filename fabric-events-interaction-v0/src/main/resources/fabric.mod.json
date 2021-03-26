@@ -31,5 +31,8 @@
   "description": "Events for player interaction with blocks and entities.",
   "mixins": [
     "fabric-events-interaction-v0.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.lookup",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "BlockEntityTypeAccessor",
+    "ServerWorldMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

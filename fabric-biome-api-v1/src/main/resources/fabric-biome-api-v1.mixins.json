@@ -1,0 +1,30 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.biome",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "modification.BiomeAccessor",
+    "modification.BiomeEffectsAccessor",
+    "modification.BiomeWeatherAccessor",
+    "modification.BiomeWeatherAccessor",
+    "modification.DynamicRegistryManagerImplMixin",
+    "modification.GenerationSettingsAccessor",
+    "modification.RegistryOpsMixin",
+    "modification.SpawnDensityAccessor",
+    "modification.SpawnSettingsAccessor",
+    "AddHillsLayerAccessor",
+    "BuiltinBiomesAccessor",
+    "BuiltinBiomesAccessor",
+    "MixinAddEdgeBiomesLayer",
+    "MixinAddHillsLayer",
+    "MixinAddRiversLayer",
+    "MixinMultiNoiseBiomeSource",
+    "MixinSetBaseBiomesLayer",
+    "MixinTheEndBiomeSource",
+    "MultiNoiseBiomeSourceAccessor",
+    "VanillaLayeredBiomeSourceAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -4,20 +4,22 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "FileResourcePackProviderAccessor",
-    "MixinDefaultResourcePack",
-    "MixinKeyedResourceReloadListener$Server",
-    "MixinMinecraftServer",
-    "MixinReloadableResourceManagerImpl",
-    "MixinResourcePackManager",
+    "DefaultResourcePackMixin",
+    "KeyedResourceReloadListenerMixin",
+    "MinecraftServerMixin",
+    "NamespaceResourceManagerAccessor",
+    "NamespaceResourceManagerMixin",
+    "ReloadableResourceManagerImplMixin",
+    "ResourcePackManagerMixin",
     "ResourcePackManagerAccessor",
     "ResourcePackProfileAccessor"
   ],
   "client": [
-    "MixinClientBuiltinResourcePackProvider",
-    "MixinCreateWorldScreen",
-    "MixinGameOptions",
-    "MixinKeyedResourceReloadListener$Client",
-    "MixinPackScreen"
+    "client.ClientBuiltinResourcePackProviderMixin",
+    "client.CreateWorldScreenMixin",
+    "client.FontManagerResourceReloadListenerMixin",
+    "client.GameOptionsMixin",
+    "client.KeyedResourceReloadListenerClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

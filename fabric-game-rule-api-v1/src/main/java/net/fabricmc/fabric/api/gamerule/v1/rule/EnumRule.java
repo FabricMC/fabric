@@ -26,6 +26,7 @@ import java.util.List;
 import com.mojang.brigadier.context.CommandContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -144,7 +145,7 @@ public final class EnumRule<E extends Enum<E>> extends GameRules.Rule<EnumRule<E
 		return this.supportedValues.contains(value);
 	}
 
-	public void set(E value, /* @Nullable */ MinecraftServer server) throws IllegalArgumentException {
+	public void set(E value, @Nullable MinecraftServer server) throws IllegalArgumentException {
 		checkNotNull(value);
 
 		if (!this.supports(value)) {
