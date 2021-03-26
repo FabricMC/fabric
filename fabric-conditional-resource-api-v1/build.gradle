@@ -1,2 +1,6 @@
 archivesBaseName = "fabric-conditional-resource-api-v1"
 version = getSubprojectVersion(project, "1.0.0")
+
+moduleDependencies(project, [
+  "fabric-registry-sync-v0"
+])

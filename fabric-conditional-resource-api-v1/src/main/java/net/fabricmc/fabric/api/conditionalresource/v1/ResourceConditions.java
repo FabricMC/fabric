@@ -16,51 +16,137 @@
 
 package net.fabricmc.fabric.api.conditionalresource.v1;
 
+import java.util.*;
+
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import org.jetbrains.annotations.Nullable;
+import com.google.gson.JsonObject;
 
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.impl.conditionalresource.ResourceConditionsImpl;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.Version;
+import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.fabricmc.loader.api.VersionParsingException;
+import net.fabricmc.loader.util.version.VersionPredicateParser;
 
 public final class ResourceConditions {
 	private ResourceConditions() {
 	}
 
 	/**
-	 * Registers a {@link ResourceCondition} with the specified {@code id}.
-	 *
-	 * @param id        the identifier of the condition
-	 * @param condition the resource condition
-	 * @param <T>       the {@link ResourceCondition} type
+	 * The registry for {@link ResourceCondition}s.
 	 */
-	public static <T extends ResourceCondition> void register(Identifier id, T condition) {
-		ResourceConditionsImpl.register(id, condition);
-	}
+	public static final Registry<ResourceCondition> RESOURCE_CONDITION_REGISTRY = FabricRegistryBuilder.createSimple(ResourceCondition.class, new Identifier("fabric-conditional-resource-api-v1", "conditions")).attribute(RegistryAttribute.SYNCED).buildAndRegister();
 
 	/**
-	 * Gets the {@link ResourceCondition} with the specified {@code id}.
-	 *
-	 * @param id  the identifier of the condition
-	 * @param <T> the {@link ResourceCondition} type
-	 * @return the resource condition
+	 * An impossible {@link ResourceCondition}.
 	 */
-	@Nullable
-	public static <T extends ResourceCondition> T get(Identifier id) {
-		return ResourceConditionsImpl.get(id);
-	}
+	public static final ResourceCondition IMPOSSIBLE = (fabricMetaId, element) -> false;
 
 	/**
-	 * Gets the {@link Identifier} with the specified {@link ResourceCondition}.
-	 *
-	 * @param condition the resource condition
-	 * @param <T>       the {@link ResourceCondition} type
-	 * @return the identifier of the condition
+	 * An always true {@link ResourceCondition}.
 	 */
-	@Nullable
-	public static <T extends ResourceCondition> Identifier getId(T condition) {
-		return ResourceConditionsImpl.getId(condition);
-	}
+	public static final ResourceCondition ALWAYS = (fabricMetaId, element) -> true;
+
+	/**
+	 * A {@link ResourceCondition} specified with a boolean.
+	 */
+	public static final ResourceCondition BOOLEAN = (fabricMetaId, element) -> element.getAsBoolean();
+
+	/**
+	 * A {@link ResourceCondition} that ands two or more resource conditions.
+	 */
+	public static final ResourceCondition AND = (fabricMetaId, element) -> {
+		JsonArray conditions = element.getAsJsonArray();
+
+		if (conditions.size() == 0) {
+			throw new IllegalArgumentException("Json array conditions for \"fabric:and\" is empty!");
+		}
+
+		for (JsonElement condition : conditions) {
+			if (!ResourceConditions.evaluate(fabricMetaId, condition.getAsJsonObject())) {
+				return false;
+			}
+		}
+
+		return true;
+	};
+
+	/**
+	 * A {@link ResourceCondition} that ors two or more resource conditions.
+	 */
+	public static final ResourceCondition OR = (fabricMetaId, element) -> {
+		JsonArray conditions = element.getAsJsonArray();
+
+		if (conditions.size() == 0) {
+			throw new IllegalArgumentException("Json array conditions for \"fabric:or\" is empty!");
+		}
+
+		for (JsonElement condition : conditions) {
+			if (ResourceConditions.evaluate(fabricMetaId, condition.getAsJsonObject())) {
+				return true;
+			}
+		}
+
+		return false;
+	};
+
+	/**
+	 * A {@link ResourceCondition} that evaluates to true when a mod is loaded with semver comparison.
+	 */
+	public static final ResourceCondition MOD_LOADED = (fabricMetaId, element) -> {
+		JsonObject object = element.getAsJsonObject();
+
+		for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
+			String modId = entry.getKey();
+			Optional<Version> version = FabricLoader.getInstance().getModContainer(modId).map(ModContainer::getMetadata).map(ModMetadata::getVersion);
+
+			if (!version.isPresent()) {
+				return false;
+			} else {
+				JsonElement versionMatcher = entry.getValue();
+				List<String> versionsToMatch;
+
+				if (versionMatcher.isJsonPrimitive()) {
+					versionsToMatch = Collections.singletonList(versionMatcher.getAsString());
+				} else if (versionMatcher.isJsonArray()) {
+					versionsToMatch = new ArrayList<>();
+
+					for (JsonElement jsonElement : versionMatcher.getAsJsonArray()) {
+						versionsToMatch.add(jsonElement.getAsString());
+					}
+				} else {
+					throw new RuntimeException("Dependency version range must be a string or string array!");
+				}
+
+				boolean matched = false;
+
+				for (String match : versionsToMatch) {
+					try {
+						if (VersionPredicateParser.matches(version.get(), match)) {
+							matched = true;
+							break;
+						}
+					} catch (VersionParsingException e) {
+						e.printStackTrace();
+						return false;
+					}
+				}
+
+				if (!matched) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	};
 
 	/**
 	 * Evaluates the resource condition.
@@ -70,7 +156,6 @@ public final class ResourceConditions {
 	 * @return whether the condition is true
 	 */
 	public static boolean evaluate(Identifier fabricMetaId, JsonElement element) {
-		if (!element.isJsonObject()) throw new IllegalArgumentException("Condition element is not an object!");
-		return ResourceConditionsImpl.evaluate(fabricMetaId, element.getAsJsonObject());
+		return ResourceConditionsImpl.evaluate(fabricMetaId, element);
 	}
 }

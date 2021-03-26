@@ -16,50 +16,27 @@
 
 package net.fabricmc.fabric.impl.conditionalresource;
 
-import java.util.Objects;
-
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 
 import net.fabricmc.fabric.api.conditionalresource.v1.ResourceCondition;
+import net.fabricmc.fabric.api.conditionalresource.v1.ResourceConditions;
 
 @ApiStatus.Internal
 public final class ResourceConditionsImpl {
 	private ResourceConditionsImpl() {
 	}
 
-	private static final BiMap<Identifier, ResourceCondition> CONDITIONS = HashBiMap.create();
+	public static boolean evaluate(Identifier fabricMetaId, JsonElement element) {
+		if (!element.isJsonObject()) throw new IllegalArgumentException("Condition element is not an object!");
+		JsonObject object = element.getAsJsonObject();
 
-	public static <T extends ResourceCondition> void register(Identifier id, T condition) {
-		Objects.requireNonNull(id);
-		Objects.requireNonNull(condition);
-
-		CONDITIONS.put(id, condition);
-	}
-
-	@Nullable
-	public static <T extends ResourceCondition> T get(Identifier id) {
-		Objects.requireNonNull(id);
-
-		return (T) CONDITIONS.get(id);
-	}
-
-	@Nullable
-	public static <T extends ResourceCondition> Identifier getId(T condition) {
-		Objects.requireNonNull(condition);
-
-		return CONDITIONS.inverse().get(condition);
-	}
-
-	public static boolean evaluate(Identifier fabricMetaId, JsonObject object) {
 		Identifier type = new Identifier(JsonHelper.getString(object, "type"));
-		ResourceCondition condition = get(type);
+		ResourceCondition condition = ResourceConditions.RESOURCE_CONDITION_REGISTRY.get(fabricMetaId);
 		if (condition == null) throw new NullPointerException("Condition '" + type + "' does not exist!");
 
 		return condition.process(fabricMetaId, object.has("condition") ? object.get("condition") : null);
