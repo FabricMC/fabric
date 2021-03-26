@@ -33,7 +33,7 @@ public class TooltipTests implements ClientModInitializer {
 		ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
 			lines.add(new LiteralText("Fancy Tooltips").formatted(Formatting.LIGHT_PURPLE));
 
-			String string = FabricItemSettingsTests.CUSTOM_DATA_TEST.getValue(stack.getItem());
+			String string = FabricItemSettingsTests.CUSTOM_DATA_TEST.get(stack.getItem());
 
 			if (string != null) {
 				lines.add(new LiteralText(string));

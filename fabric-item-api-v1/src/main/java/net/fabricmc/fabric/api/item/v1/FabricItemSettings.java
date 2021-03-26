@@ -39,7 +39,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * @return this builder
 	 */
 	public FabricItemSettings equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
-		return custom(CustomItemSettingImpl.EQUIPMENT_SLOT_PROVIDER, equipmentSlotProvider);
+		return this.custom(CustomItemSettingImpl.EQUIPMENT_SLOT_PROVIDER, equipmentSlotProvider);
 	}
 
 	/**
@@ -59,6 +59,10 @@ public class FabricItemSettings extends Item.Settings {
 	 * @return this builder
 	 */
 	public <T> FabricItemSettings custom(CustomItemSetting<T> setting, T value) {
+		if (!(setting instanceof CustomItemSettingImpl)) {
+			throw new UnsupportedOperationException("CustomItemSetting should not be ");
+		}
+
 		((CustomItemSettingImpl<T>) setting).set(this, value);
 		return this;
 	}

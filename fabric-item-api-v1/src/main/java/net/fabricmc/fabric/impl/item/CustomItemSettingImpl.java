@@ -48,13 +48,12 @@ public class CustomItemSettingImpl<T> implements CustomItemSetting<T> {
 	}
 
 	@Override
-	public T getValue(Item item) {
+	public T get(Item item) {
 		Objects.requireNonNull(item);
 
 		return this.customItemSettings.computeIfAbsent(item, i -> this.defaultValue.get());
 	}
 
-	@Override
 	public void set(Item.Settings settings, T value) {
 		Objects.requireNonNull(settings);
 
@@ -62,16 +61,17 @@ public class CustomItemSettingImpl<T> implements CustomItemSetting<T> {
 		CUSTOM_SETTINGS.computeIfAbsent(settings, s -> new HashSet<>()).add(this);
 	}
 
-	@Override
-	public void build(Item.Settings settings, Item item) {
+	public void apply(Item.Settings settings, Item item) {
 		Objects.requireNonNull(settings);
 
 		this.customItemSettings.put(item, this.customSettings.getOrDefault(settings, this.defaultValue.get()));
 	}
 
+	// Because item settings are reusable, it is possible that the same item settings object will be applied
+	// to multiple items.
 	public static void onBuild(Item.Settings settings, Item item) {
 		for (CustomItemSettingImpl<?> setting : CUSTOM_SETTINGS.getOrDefault(settings, Collections.emptyList())) {
-			setting.build(settings, item);
+			setting.apply(settings, item);
 		}
 	}
 }
