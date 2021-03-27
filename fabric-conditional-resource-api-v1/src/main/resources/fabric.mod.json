@@ -26,5 +26,8 @@
     "main": [
       "net.fabricmc.fabric.impl.conditionalresource.DefaultResourceConditions"
     ]
+  },
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
   }
 }
