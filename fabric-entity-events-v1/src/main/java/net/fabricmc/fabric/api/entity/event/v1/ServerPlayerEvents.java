@@ -62,9 +62,9 @@ public final class ServerPlayerEvents {
 	 *     apply</ul>
 	 * </li>
 	 */
-	public static final Event<CancelDeath> CANCEL_DEATH = EventFactory.createArrayBacked(CancelDeath.class, callbacks -> (oldPlayer, damageSource, damageAmount) -> {
+	public static final Event<CancelDeath> CANCEL_DEATH = EventFactory.createArrayBacked(CancelDeath.class, callbacks -> (player, damageSource, damageAmount) -> {
 		for (CancelDeath callback : callbacks) {
-			if (callback.cancelDeath(oldPlayer, damageSource, damageAmount)) {
+			if (callback.cancelDeath(player, damageSource, damageAmount)) {
 				return true;
 			}
 		}
