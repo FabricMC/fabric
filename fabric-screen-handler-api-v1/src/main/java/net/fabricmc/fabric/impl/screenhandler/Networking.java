@@ -28,7 +28,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 
 public final class Networking {
@@ -67,6 +67,6 @@ public final class Networking {
 		buf.writeText(factory.getDisplayName());
 		factory.writeScreenOpeningData(player, buf);
 
-		ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, OPEN_ID, buf);
+		ServerPlayNetworking.send(player, OPEN_ID, buf);
 	}
 }

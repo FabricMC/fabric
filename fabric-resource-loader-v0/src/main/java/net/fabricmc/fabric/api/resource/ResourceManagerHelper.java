@@ -24,7 +24,7 @@ import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
 import net.fabricmc.loader.api.ModContainer;
 
 /**
- * Helper for working with {@link ResourceManager} instances.
+ * Helper for working with {@link ResourceManager} instances, and other resource loader generalities.
  */
 public interface ResourceManagerHelper {
 	/**
@@ -63,18 +63,42 @@ public interface ResourceManagerHelper {
 	 * <p>Why and when to use it? A built-in resource pack should be used to provide extra assets/data that should be optional with your mod but still directly provided by it.
 	 * For example it could provide textures of your mod in another resolution, or could allow to provide different styles of your assets.
 	 *
+	 * <p>The path in which the resource pack is located is in the mod JAR file under the {@code "resourcepacks/<id path>"} directory. {@code id path} being the path specified
+	 * in the identifier of this built-in resource pack.
+	 *
+	 * @param id             the identifier of the resource pack
+	 * @param container      the mod container
+	 * @param activationType the activation type of the resource pack
+	 * @return {@code true} if successfully registered the resource pack, else {@code false}
+	 */
+	static boolean registerBuiltinResourcePack(Identifier id, ModContainer container, ResourcePackActivationType activationType) {
+		return ResourceManagerHelperImpl.registerBuiltinResourcePack(id, "resourcepacks/" + id.getPath(), container, activationType);
+	}
+
+	/**
+	 * Registers a built-in resource pack.
+	 *
+	 * <p>A built-in resource pack is an extra resource pack provided by your mod which is not always active, it's similar to the "Programmer Art" resource pack.
+	 *
+	 * <p>Why and when to use it? A built-in resource pack should be used to provide extra assets/data that should be optional with your mod but still directly provided by it.
+	 * For example it could provide textures of your mod in another resolution, or could allow to provide different styles of your assets.
+	 *
 	 * <p>The {@code subPath} corresponds to a path in the JAR file which points to the resource pack folder. For example the subPath can be {@code "resourcepacks/extra"}.
 	 *
 	 * <p>Note about the enabled by default parameter: a resource pack cannot be enabled by default, only data packs can.
 	 * Making this work for resource packs is near impossible without touching how Vanilla handles disabled resource packs.
 	 *
-	 * @param id The identifier of the resource pack.
-	 * @param subPath The sub path in the mod resources.
-	 * @param container The mod container.
-	 * @param enabledByDefault True if enabled by default, else false.
-	 * @return True if successfully registered the resource pack, else false.
+	 * @param id               the identifier of the resource pack
+	 * @param subPath          the sub path in the mod resources
+	 * @param container        the mod container
+	 * @param enabledByDefault {@code true} if enabled by default, else {@code false}
+	 * @return {@code true} if successfully registered the resource pack, else {@code false}
+	 * @deprecated Please use {@link #registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)} instead, the {@code sub path} should be removed in a future
+	 * release in favor of the identifier path.
 	 */
+	@Deprecated
 	static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, boolean enabledByDefault) {
-		return ResourceManagerHelperImpl.registerBuiltinResourcePack(id, subPath, container, enabledByDefault);
+		return ResourceManagerHelperImpl.registerBuiltinResourcePack(id, subPath, container,
+				enabledByDefault ? ResourcePackActivationType.DEFAULT_ENABLED : ResourcePackActivationType.NORMAL);
 	}
 }

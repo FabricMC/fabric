@@ -18,7 +18,7 @@
   "depends": {
     "fabricloader": ">=0.9.2",
     "fabric-api-base": "*",
-    "fabric-networking-v0": "*"
+    "fabric-networking-api-v1": "*"
   },
   "description": "Syncs registry mappings.",
   "mixins": [
@@ -31,5 +31,8 @@
     "client": [
       "net.fabricmc.fabric.impl.registry.sync.FabricRegistryClientInit"
     ]
+  },
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
   }
 }

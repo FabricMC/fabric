@@ -22,5 +22,8 @@
   "mixins": [
     "fabric-game-rule-api-v1.mixins.json"
   ],
-  "accessWidener" : "fabric-game-rule-api-v1.accesswidener"
+  "accessWidener" : "fabric-game-rule-api-v1.accesswidener",
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

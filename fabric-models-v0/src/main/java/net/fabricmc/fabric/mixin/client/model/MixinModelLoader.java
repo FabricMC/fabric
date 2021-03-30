@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.client.model;
 import java.util.Map;
 import java.util.Set;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -35,7 +36,7 @@ import net.fabricmc.fabric.impl.client.model.ModelLoaderHooks;
 import net.fabricmc.fabric.impl.client.model.ModelLoadingRegistryImpl;
 
 @Mixin(ModelLoader.class)
-public class MixinModelLoader implements ModelLoaderHooks {
+public abstract class MixinModelLoader implements ModelLoaderHooks {
 	// this is the first one
 	@Shadow
 	public static ModelIdentifier MISSING;
@@ -45,6 +46,9 @@ public class MixinModelLoader implements ModelLoaderHooks {
 	private Set<Identifier> modelsToLoad;
 	@Shadow
 	private Map<Identifier, UnbakedModel> unbakedModels;
+	@Shadow
+	@Final
+	private Map<Identifier, UnbakedModel> modelsToBake;
 
 	private ModelLoadingRegistryImpl.LoaderInstance fabric_mlrLoaderInstance;
 
@@ -56,6 +60,8 @@ public class MixinModelLoader implements ModelLoaderHooks {
 
 	@Shadow
 	private void loadModel(Identifier id) { }
+
+	@Shadow public abstract UnbakedModel getOrLoadModel(Identifier id);
 
 	@Inject(at = @At("HEAD"), method = "loadModel", cancellable = true)
 	private void loadModelHook(Identifier id, CallbackInfo ci) {
@@ -85,8 +91,17 @@ public class MixinModelLoader implements ModelLoaderHooks {
 	}
 
 	@Override
-	public void fabric_addModel(ModelIdentifier id) {
-		addModel(id);
+	public void fabric_addModel(Identifier id) {
+		if (id instanceof ModelIdentifier) {
+			addModel((ModelIdentifier) id);
+		} else {
+			// The vanilla addModel method is arbitrarily limited to ModelIdentifiers,
+			// but it's useful to tell the game to just load and bake a direct model path as well.
+			// Replicate the vanilla logic of addModel here.
+			UnbakedModel unbakedModel = getOrLoadModel(id);
+			this.unbakedModels.put(id, unbakedModel);
+			this.modelsToBake.put(id, unbakedModel);
+		}
 	}
 
 	@Override

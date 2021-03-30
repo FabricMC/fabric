@@ -28,10 +28,10 @@ import net.minecraft.world.gen.feature.StructureFeature;
 
 @Mixin(Biome.class)
 public interface BiomeAccessor {
-	@Accessor("field_26634")
+	@Accessor("structures")
 	Map<Integer, List<StructureFeature<?>>> getStructureLists();
 
 	@Mutable
-	@Accessor("field_26634")
+	@Accessor("structures")
 	void setStructureLists(Map<Integer, List<StructureFeature<?>>> field_26634);
 }

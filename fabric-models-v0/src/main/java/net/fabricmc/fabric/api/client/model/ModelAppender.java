@@ -20,8 +20,14 @@ import java.util.function.Consumer;
 
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
 
+/**
+ * @deprecated use {@link ExtraModelProvider}, which supports loading of plain {@link Identifier}s
+ */
+@Deprecated
 @FunctionalInterface
 public interface ModelAppender {
+	@Deprecated
 	void appendAll(ResourceManager manager, Consumer<ModelIdentifier> out);
 }
