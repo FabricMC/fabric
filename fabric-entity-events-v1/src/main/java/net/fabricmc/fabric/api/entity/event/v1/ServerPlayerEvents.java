@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.entity.event.v1;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -50,15 +51,24 @@ public final class ServerPlayerEvents {
 	 * An event that is called when a player takes fatal damage.
 	 *
 	 * <p>Mods can cancel this to keep the player alive.
+	 *
+	 * <p>Vanilla checks for player health <= 0 each frame (with {@link LivingEntity#isDead()}), and kills if true -
+	 * so the player will die next frame if this is cancelled. It's assumed that the listener will do something to
+	 * prevent this, for example:
+	 *
+	 * <li>
+	 *     <ul>a minigame mod teleporting the player into a 'respawn room' and setting their health to 20.0</ul>
+	 *     <ul>a mod that changes death mechanics switching the player over to the mod's play-mode, where death doesn't
+	 *     apply</ul>
+	 * </li>
 	 */
-	public static final Event<BeforeDeath> BEFORE_DEATH = EventFactory.createArrayBacked(BeforeDeath.class, callbacks -> (oldPlayer, damageSource, amount) -> {
-		boolean result = true;
-
-		for (BeforeDeath callback : callbacks) {
-			result &= callback.beforeDeath(oldPlayer, damageSource, amount);
+	public static final Event<CancelDeath> CANCEL_DEATH = EventFactory.createArrayBacked(CancelDeath.class, callbacks -> (oldPlayer, damageSource, damageAmount) -> {
+		for (CancelDeath callback : callbacks) {
+			if (callback.cancelDeath(oldPlayer, damageSource, damageAmount)) {
+				return true;
+			}
 		}
-
-		return result;
+		return false;
 	});
 
 	@FunctionalInterface
@@ -86,16 +96,16 @@ public final class ServerPlayerEvents {
 	}
 
 	@FunctionalInterface
-	public interface BeforeDeath {
+	public interface CancelDeath {
 		/**
-		 * Called when a player takes fatal damage.
+		 * Called when a player takes fatal damage (before totems of undying can take effect).
 		 *
 		 * @param player the player
-		 * @param source the fatal damage source
-		 * @param amount the amount of damage that has killed the player
-		 * @return whether or not the player should die
+		 * @param damageSource the fatal damage damageSource
+		 * @param damageAmount the damageAmount of damage that has killed the player
+		 * @return true if the death should be cancelled, false otherwise.
 		 */
-		boolean beforeDeath(ServerPlayerEntity player, DamageSource source, float amount);
+		boolean cancelDeath(ServerPlayerEntity player, DamageSource damageSource, float damageAmount);
 	}
 
 	private ServerPlayerEvents() {
