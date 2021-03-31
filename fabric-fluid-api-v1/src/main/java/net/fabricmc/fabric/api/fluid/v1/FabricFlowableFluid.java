@@ -30,7 +30,7 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	private IntProperty stateIndexProperty;
 
 	public FabricFlowableFluid() {
-		((FlowableFluidExtensions) this).setMaxLevel(getLevels());
+		((FlowableFluidExtensions) this).setMaxLevel(getMaxLevel());
 		setDefaultState(getDefaultState().with(stateIndexProperty, 0));
 	}
 
@@ -76,7 +76,7 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 
 	@Override
 	protected void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
-		stateIndexProperty = IntProperty.of("state_index", 0, getLevels());
+		stateIndexProperty = FluidProperties.getStateIndexProperty(getMaxLevel());
 		builder.add(stateIndexProperty);
 	}
 
@@ -86,9 +86,10 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	}
 
 	/**
-	 * If a fluid is still, its state index is zero.
-	 * If a fluid is flowing, its state index is non-zero and represents its level.
-	 * @return The state index property used in BlockStates and FluidStates which correspond to this fluid.
+	 * State index 0 represents a still fluid, and all other indexes represent a flowing fluid with the same level as the index.
+	 * The last index is the equivalent of a falling fluid.
+	 *
+	 * @return The state index property used in BlockStates and FluidStates which corresponds to this fluid's max level.
 	 */
 	public IntProperty getStateIndexProperty() {
 		return stateIndexProperty;
@@ -96,13 +97,15 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 
 	/**
 	 * The returned value of this method should not change.
+	 *
 	 * @return A FabricFlowableFluidBlock whose getFluid method returns this fluid.
 	 */
 	public abstract Block getFluidBlock();
 
 	/**
 	 * The returned value of this method should not change.
+	 *
 	 * @return The number of levels this fluid has.
 	 */
-	public abstract int getLevels();
+	public abstract int getMaxLevel();
 }

@@ -46,13 +46,13 @@ import net.minecraft.world.WorldAccess;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-public abstract class FabricFlowableFluidBlock extends Block implements FluidDrainable {
+public abstract class FabricFluidBlock extends Block implements FluidDrainable {
 	public static final VoxelShape COLLISION_SHAPE = Block.createCuboidShape(0, 0, 0, 16, 8, 16);
 
 	protected final FabricFlowableFluid fluid;
 	private final IntProperty stateIndexProperty;
 
-	public FabricFlowableFluidBlock(Settings settings) {
+	public FabricFluidBlock(Settings settings) {
 		super(settings);
 		this.fluid = getFluid();
 		Objects.requireNonNull(fluid);
@@ -147,9 +147,10 @@ public abstract class FabricFlowableFluidBlock extends Block implements FluidDra
 	}
 
 	/**
-	 * If a fluid is still, its state index is zero.
-	 * If a fluid is flowing, its state index is non-zero and represents its level.
-	 * @return The state index property used in BlockStates and FluidStates which correspond to this block.
+	 * State index 0 represents a still fluid, and all other indexes represent a flowing fluid with the same level as the index.
+	 * The last index is the equivalent of a falling fluid.
+	 *
+	 * @return The state index property used in BlockStates and FluidStates which corresponds to this block's fluid's max level.
 	 */
 	public IntProperty getStateIndexProperty() {
 		return stateIndexProperty;
@@ -157,6 +158,7 @@ public abstract class FabricFlowableFluidBlock extends Block implements FluidDra
 
 	/**
 	 * The returned value of this method should not change.
+	 *
 	 * @return A FabricFlowableFluid whose getFluidBlock method returns this block.
 	 */
 	public abstract FabricFlowableFluid getFluid();

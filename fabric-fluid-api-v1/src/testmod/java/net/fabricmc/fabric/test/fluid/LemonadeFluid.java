@@ -37,7 +37,7 @@ public class LemonadeFluid extends FabricFlowableFluid {
 	}
 
 	@Override
-	public int getLevels() {
+	public int getMaxLevel() {
 		return 20;
 	}
 

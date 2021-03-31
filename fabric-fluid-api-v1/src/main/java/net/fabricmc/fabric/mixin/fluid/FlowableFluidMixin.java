@@ -59,30 +59,27 @@ public abstract class FlowableFluidMixin extends Fluid implements FlowableFluidE
 
 	@ModifyConstant(
 			method = {
-			"getHeight(Lnet/minecraft/fluid/FluidState;)F",
-			"getShape(Lnet/minecraft/fluid/FluidState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/util/shape/VoxelShape;"
-			},
+				"getHeight(Lnet/minecraft/fluid/FluidState;)F",
+				"getShape(Lnet/minecraft/fluid/FluidState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/util/shape/VoxelShape;"},
 			constant = @Constant(floatValue = 9.0f))
 	public float onMaxLevelPlusOne(float value) {
-		return maxLevel+1;
+		return maxLevel + 1;
 	}
 
 	@ModifyConstant(
 			method = "getVelocity(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/fluid/FluidState;)Lnet/minecraft/util/math/Vec3d;",
 			constant = @Constant(floatValue = 0.8888889f))
 	public float onMaxHeight(float value) {
-		return (float) maxLevel/(maxLevel+1);
+		return (float) maxLevel / (maxLevel + 1);
 	}
 
 	@Redirect(
 			at = @At(
 			value = "INVOKE",
-			target = "net/minecraft/fluid/FluidState.get(Lnet/minecraft/state/property/Property;)Ljava/lang/Comparable;"
-			),
+			target = "net/minecraft/fluid/FluidState.get(Lnet/minecraft/state/property/Property;)Ljava/lang/Comparable;"),
 			method = {
-			"getVelocity(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/fluid/FluidState;)Lnet/minecraft/util/math/Vec3d;",
-			"method_15744(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/fluid/FluidState;Lnet/minecraft/block/BlockState;)V"
-			})
+				"getVelocity(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/fluid/FluidState;)Lnet/minecraft/util/math/Vec3d;",
+				"method_15744(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/fluid/FluidState;Lnet/minecraft/block/BlockState;)V"})
 	public Comparable<?> onGetPropertyValue(FluidState state, Property<?> property) {
 		if (property == FlowableFluid.FALLING) {
 			return isFalling(state);

@@ -20,6 +20,8 @@ import net.minecraft.fluid.FluidState;
 
 public interface FlowableFluidExtensions {
 	int getMaxLevel();
+
 	void setMaxLevel(int maxLevel);
+
 	boolean isFalling(FluidState state);
 }

@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.test.fluid;
 
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.AbstractBlock.Settings;
+import net.minecraft.block.Material;
+import net.minecraft.block.MaterialColor;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -24,19 +29,22 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluidBlock;
+import net.fabricmc.fabric.api.fluid.v1.FabricFluidBlock;
 
 public class FluidTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-fluid-v1-testmod";
 
+	public static final Material LEMONADE_MATERIAL = new Material(MaterialColor.YELLOW, true, false, false, false, false, true, PistonBehavior.DESTROY);
+
 	public static LemonadeFluid LEMONADE_FLUID;
 	public static BucketItem LEMONADE_BUCKET;
-	public static FabricFlowableFluidBlock LEMONADE_BLOCK;
+	public static FabricFluidBlock LEMONADE_BLOCK;
 
 	@Override
 	public void onInitialize() {
 		LEMONADE_FLUID = Registry.register(Registry.FLUID, new Identifier(MOD_ID, "lemonade"), new LemonadeFluid());
 		LEMONADE_BUCKET = Registry.register(Registry.ITEM, new Identifier(MOD_ID, "lemonade_bucket"), new BucketItem(LEMONADE_FLUID, new Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1).group(ItemGroup.MISC)));
-		LEMONADE_BLOCK = Registry.register(Registry.BLOCK, new Identifier(MOD_ID, "lemonade"), new LemonadeFluidBlock());
+		Settings settings = AbstractBlock.Settings.of(LEMONADE_MATERIAL).noCollision().ticksRandomly().strength(100.0F).luminance(state -> 15).dropsNothing();
+		LEMONADE_BLOCK = Registry.register(Registry.BLOCK, new Identifier(MOD_ID, "lemonade"), new LemonadeFluidBlock(settings));
 	}
 }
