@@ -32,6 +32,10 @@ class ArrayBackedEvent<T> extends Event<T> {
 
 	@SuppressWarnings("unchecked")
 	ArrayBackedEvent(Class<? super T> type, Function<T[], T> invokerFactory) {
+		if (type.isPrimitive()) {
+			throw new IllegalArgumentException("Cannot create an ArrayBackedEvent with a primitive type: " + type.getCanonicalName());
+		}
+
 		this.invokerFactory = invokerFactory;
 		this.handlers = (T[]) Array.newInstance(type, 0);
 		update();
