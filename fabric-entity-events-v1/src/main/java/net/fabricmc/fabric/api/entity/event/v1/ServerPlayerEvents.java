@@ -53,14 +53,14 @@ public final class ServerPlayerEvents {
 	 * <p>Mods can cancel this to keep the player alive.
 	 *
 	 * <p>Vanilla checks for player health <= 0 each frame (with {@link LivingEntity#isDead()}), and kills if true -
-	 * so the player will die next frame if this is cancelled. It's assumed that the listener will do something to
-	 * prevent this, for example:
+	 * so the player will still die next tick if this event is cancelled. It's assumed that the listener will do
+	 * something to prevent this, for example:
 	 *
-	 * <li>
-	 *     <ul>a minigame mod teleporting the player into a 'respawn room' and setting their health to 20.0</ul>
-	 *     <ul>a mod that changes death mechanics switching the player over to the mod's play-mode, where death doesn't
-	 *     apply</ul>
-	 * </li>
+	 * <ul>
+	 *     <li>a minigame mod teleporting the player into a 'respawn room' and setting their health to 20.0</li>
+	 *     <li>a mod that changes death mechanics switching the player over to the mod's play-mode, where death doesn't
+	 *     apply</li>
+	 * </ul>
 	 */
 	public static final Event<CancelDeath> CANCEL_DEATH = EventFactory.createArrayBacked(CancelDeath.class, callbacks -> (player, damageSource, damageAmount) -> {
 		for (CancelDeath callback : callbacks) {
