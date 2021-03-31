@@ -50,7 +50,7 @@ public final class Movement {
 				long accepted = to.insert(resource, maxExtracted, transferTransaction);
 
 				// extract it, or rollback if the amounts don't match
-				if (from.extract(resource, accepted, transferTransaction) == accepted) {
+				if (view.extract(resource, accepted, transferTransaction) == accepted) {
 					totalMoved[0] += accepted;
 					transferTransaction.commit();
 				}
