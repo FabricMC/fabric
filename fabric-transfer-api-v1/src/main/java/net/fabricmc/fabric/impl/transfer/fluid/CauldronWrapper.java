@@ -17,7 +17,8 @@
 package net.fabricmc.fabric.impl.transfer.fluid;
 
 import java.util.Map;
-import java.util.WeakHashMap;
+
+import com.google.common.collect.MapMaker;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -36,7 +37,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
 // Maintainer note: this will need updating for 1.17 to allow registering modded cauldrons.
 public class CauldronWrapper extends SnapshotParticipant<Integer> implements Storage<Fluid>, StorageView<Fluid> {
-	private static final Map<WorldLocation, CauldronWrapper> WRAPPERS = new WeakHashMap<>();
+	private static final Map<WorldLocation, CauldronWrapper> WRAPPERS = new MapMaker().concurrencyLevel(1).weakValues().makeMap();
 
 	public static CauldronWrapper get(World world, BlockPos pos) {
 		WorldLocation location = new WorldLocation(world, pos.toImmutable());
