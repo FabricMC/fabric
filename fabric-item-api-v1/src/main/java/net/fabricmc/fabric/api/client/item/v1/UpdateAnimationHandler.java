@@ -33,9 +33,9 @@ public interface UpdateAnimationHandler {
 	 * The {@code updated} is the most up-to-date version, while the {@code original} is a cached version from the previous tick.
 	 * Both {@link ItemStack} instances are guaranteed to have the same {@linkplain ItemStack#getItem() underlying item}.
 	 *
-	 * @param original  cached {@link ItemStack} from previous tick
-	 * @param updated  updated {@link ItemStack} to check for updates on
-	 * @return  whether or not the item update animation should play
+	 * @param original cached {@link ItemStack} from previous tick
+	 * @param updated updated {@link ItemStack} to check for updates on
+	 * @return whether or not the item update animation should play
 	 */
 	@Environment(EnvType.CLIENT)
 	boolean updateAnimation(ItemStack original, ItemStack updated);
