@@ -68,6 +68,7 @@ public final class ServerPlayerEvents {
 				return true;
 			}
 		}
+
 		return false;
 	});
 
