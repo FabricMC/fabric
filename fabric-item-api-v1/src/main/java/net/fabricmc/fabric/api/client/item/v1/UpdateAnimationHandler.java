@@ -29,7 +29,8 @@ public interface UpdateAnimationHandler {
 	/**
 	 * Called once per tick to check whether the given held {@link ItemStack} should run the update animation.
 	 *
-	 * <p>In vanilla, the update animation is run if an {@link ItemStack} has any changed NBT values.
+	 * <p>In vanilla, the update animation is run if an {@link ItemStack} is not {@linkplain ItemStack#areEqual
+	 * equal} to its previous version, such as any NBT value change.
 	 * The {@code updated} is the most up-to-date version, while the {@code original} is a cached version from the previous tick.
 	 * Both {@link ItemStack} instances are guaranteed to have the same {@linkplain ItemStack#getItem() underlying item}.
 	 *
