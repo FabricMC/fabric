@@ -32,9 +32,4 @@ public interface ExtractionOnlyStorage<T> extends Storage<T> {
 	default long insert(T resource, long maxAmount, Transaction transaction) {
 		return 0;
 	}
-
-	@Override
-	default boolean supportsExtraction() {
-		return true;
-	}
 }

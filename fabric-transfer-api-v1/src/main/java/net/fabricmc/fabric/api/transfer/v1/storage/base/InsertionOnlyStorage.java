@@ -24,11 +24,6 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
  */
 public interface InsertionOnlyStorage<T> extends Storage<T> {
 	@Override
-	default boolean supportsInsertion() {
-		return true;
-	}
-
-	@Override
 	default boolean supportsExtraction() {
 		return false;
 	}
