@@ -16,10 +16,14 @@
 
 package net.fabricmc.fabric.mixin.item.client;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.item.ItemStack;
 
@@ -31,16 +35,46 @@ import net.fabricmc.fabric.api.client.item.v1.UpdateAnimationHandler;
 @Environment(EnvType.CLIENT)
 @Mixin(HeldItemRenderer.class)
 public class HeldItemRendererMixin {
-	@Redirect(method = "updateHeldItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;areEqual(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z"))
-	private boolean areStacksEqual(ItemStack original, ItemStack updated) {
-		if (updated.getItem().equals(original.getItem())) {
-			UpdateAnimationHandler updateAnimationHandler = FabricItemUpdateAnimationHandlers.get(updated.getItem());
+	@Shadow
+	private ItemStack mainHand;
 
+	@Shadow
+	private ItemStack offHand;
+
+	@Shadow
+	@Final
+	private MinecraftClient client;
+
+	@Inject(method = "updateHeldItems", at = @At("HEAD"))
+	private void modifyProgressAnimation(CallbackInfo ci) {
+		// Modify main hand
+		ItemStack newMainStack = client.player.getMainHandStack();
+
+		if (newMainStack.getItem().equals(mainHand.getItem())) {
+			UpdateAnimationHandler updateAnimationHandler = FabricItemUpdateAnimationHandlers.get(newMainStack.getItem());
+
+			// If an update animation handler for the main hand exists, and it denies the update,
+			//    assign the new stack to the cached stack to prevent the update.
 			if (updateAnimationHandler != null) {
-				return !updateAnimationHandler.updateAnimation(original, updated);
+				if (!updateAnimationHandler.updateAnimation(mainHand, newMainStack)) {
+					mainHand = newMainStack;
+				}
 			}
 		}
 
-		return ItemStack.areEqual(original, updated);
+		// Modify off-hand
+		ItemStack newOffStack = client.player.getMainHandStack();
+
+		if (newOffStack.getItem().equals(offHand.getItem())) {
+			UpdateAnimationHandler updateAnimationHandler = FabricItemUpdateAnimationHandlers.get(newOffStack.getItem());
+
+			// If an update animation handler for the off hand exists, and it denies the update,
+			//    assign the new stack to the cached stack to prevent the update.
+			if (updateAnimationHandler != null) {
+				if (!updateAnimationHandler.updateAnimation(offHand, newOffStack)) {
+					offHand = newOffStack;
+				}
+			}
+		}
 	}
 }
