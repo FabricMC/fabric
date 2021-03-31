@@ -23,6 +23,14 @@ import com.google.common.base.Preconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
+/**
+ * A {@link Storage} wrapping multiple storages.
+ *
+ * <p>The storages passed to {@linkplain CombinedStorage#CombinedStorage the constructor} will be iterated in order.
+ *
+ * @param <T> The type of the stored resources.
+ * @param <S> The class of every part. {@code ? extends Storage<T>} can be used if the parts are of different types.
+ */
 public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 	public final List<S> parts;
 
@@ -40,8 +48,9 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 		Preconditions.checkArgument(maxAmount >= 0);
 		long amount = 0;
 
-		for (int i = 0; i < parts.size() && amount < maxAmount; ++i) {
-			amount += parts.get(i).insert(resource, maxAmount - amount, transaction);
+		for (S part : parts) {
+			amount += part.insert(resource, maxAmount - amount, transaction);
+			if (amount == maxAmount) break;
 		}
 
 		return amount;
@@ -57,8 +66,9 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 		Preconditions.checkArgument(maxAmount >= 0);
 		long amount = 0;
 
-		for (int i = 0; i < parts.size() && amount < maxAmount; ++i) {
-			amount += parts.get(i).extract(resource, maxAmount - amount, transaction);
+		for (S part : parts) {
+			amount += part.extract(resource, maxAmount - amount, transaction);
+			if (amount == maxAmount) break;
 		}
 
 		return amount;
