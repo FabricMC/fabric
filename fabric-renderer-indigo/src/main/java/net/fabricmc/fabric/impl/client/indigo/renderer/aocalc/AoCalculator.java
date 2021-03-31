@@ -379,7 +379,7 @@ public class AoCalculator {
 			final BlockPos.Mutable lightPos = this.lightPos;
 			final BlockPos.Mutable searchPos = this.searchPos;
 
-			lightPos.set(isOnBlockFace ? pos.offset(lightFace) : pos);
+			lightPos.set(isOnBlockFace ? pos.method_35851(lightFace) : pos);
 			AoFace aoFace = AoFace.get(lightFace);
 
 			searchPos.set(lightPos).move(aoFace.neighbors[0]);

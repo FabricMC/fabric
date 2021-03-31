@@ -30,7 +30,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
@@ -69,8 +69,8 @@ public class MixinClientPlayNetworkHandler {
 		}
 	}
 
-	@Redirect(method = "onChunkData", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;readNbt(Lnet/minecraft/nbt/CompoundTag;)V"))
-	public void deserializeBlockEntityChunkData(BlockEntity blockEntity, CompoundTag tag) {
+	@Redirect(method = "onChunkData", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;readNbt(Lnet/minecraft/nbt/NbtCompound;)V"))
+	public void deserializeBlockEntityChunkData(BlockEntity blockEntity, NbtCompound tag) {
 		if (blockEntity instanceof BlockEntityClientSerializable) {
 			((BlockEntityClientSerializable) blockEntity).fromClientTag(tag);
 		} else {

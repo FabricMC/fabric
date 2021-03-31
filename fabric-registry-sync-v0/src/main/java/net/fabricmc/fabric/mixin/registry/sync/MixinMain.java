@@ -29,7 +29,7 @@ import net.minecraft.server.Main;
 import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.level.storage.LevelStorage;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.resource.ResourceManager;
 
 import net.fabricmc.fabric.impl.registry.sync.PersistentDynamicRegistryHandler;
@@ -47,8 +47,8 @@ public class MixinMain {
 	}
 
 	@Redirect(method = "main", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/dynamic/RegistryOps;of(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;"))
-	private static RegistryOps<Tag> ofRegistryOps(DynamicOps<Tag> delegate, ResourceManager resourceManager, DynamicRegistryManager impl) {
-		RegistryOps<Tag> registryOps = RegistryOps.of(delegate, resourceManager, impl);
+	private static RegistryOps<NbtElement> ofRegistryOps(DynamicOps<NbtElement> delegate, ResourceManager resourceManager, DynamicRegistryManager impl) {
+		RegistryOps<NbtElement> registryOps = RegistryOps.of(delegate, resourceManager, impl);
 		PersistentDynamicRegistryHandler.remapDynamicRegistries((DynamicRegistryManager.Impl) impl, fabric_saveDir);
 		return registryOps;
 	}

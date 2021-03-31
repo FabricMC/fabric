@@ -31,6 +31,7 @@ import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.class_6012;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeAdditionsSound;
@@ -410,7 +411,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 			for (List<Supplier<ConfiguredFeature<?, ?>>> features : accessor.fabric_getFeatures()) {
 				for (Supplier<ConfiguredFeature<?, ?>> supplier : features) {
-					supplier.get().method_30648()
+					supplier.get().getDecoratedFeatures()
 							.filter(configuredFeature -> configuredFeature.feature == Feature.FLOWER)
 							.forEachOrdered(flowerFeatures::add);
 				}
@@ -420,6 +421,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 	private class SpawnSettingsContextImpl implements SpawnSettingsContext {
 		private final SpawnSettingsAccessor accessor = (SpawnSettingsAccessor) biome.getSpawnSettings();
+		private final EnumMap<SpawnGroup, List<SpawnSettings.SpawnEntry>> fabricSpawners = new EnumMap<>(SpawnGroup.class);
 
 		SpawnSettingsContextImpl() {
 			unfreezeSpawners();
@@ -427,20 +429,17 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		private void unfreezeSpawners() {
-			EnumMap<SpawnGroup, List<SpawnSettings.SpawnEntry>> spawners = new EnumMap<>(SpawnGroup.class);
-			spawners.putAll(accessor.fabric_getSpawners());
+			fabricSpawners.clear();
 
 			for (SpawnGroup spawnGroup : SpawnGroup.values()) {
-				List<SpawnSettings.SpawnEntry> entries = spawners.get(spawnGroup);
+				class_6012<SpawnSettings.SpawnEntry> entries = accessor.fabric_getSpawners().get(spawnGroup);
 
 				if (entries != null) {
-					spawners.put(spawnGroup, new ArrayList<>(entries));
+					fabricSpawners.put(spawnGroup, new ArrayList<>(entries.method_34994()));
 				} else {
-					spawners.put(spawnGroup, new ArrayList<>());
+					fabricSpawners.put(spawnGroup, new ArrayList<>());
 				}
 			}
-
-			accessor.fabric_setSpawners(spawners);
 		}
 
 		private void unfreezeSpawnCost() {
@@ -453,10 +452,14 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		private void freezeSpawners() {
-			Map<SpawnGroup, List<SpawnSettings.SpawnEntry>> spawners = accessor.fabric_getSpawners();
+			Map<SpawnGroup, class_6012<SpawnSettings.SpawnEntry>> spawners = new HashMap<>(accessor.fabric_getSpawners());
 
-			for (Map.Entry<SpawnGroup, List<SpawnSettings.SpawnEntry>> entry : spawners.entrySet()) {
-				entry.setValue(ImmutableList.copyOf(entry.getValue()));
+			for (Map.Entry<SpawnGroup, List<SpawnSettings.SpawnEntry>> entry : fabricSpawners.entrySet()) {
+				if (entry.getValue().isEmpty()) {
+					spawners.put(entry.getKey(), class_6012.method_34990());
+				} else {
+					spawners.put(entry.getKey(), class_6012.method_34988(entry.getValue()));
+				}
 			}
 
 			accessor.fabric_setSpawners(ImmutableMap.copyOf(spawners));
@@ -481,16 +484,15 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			Objects.requireNonNull(spawnGroup);
 			Objects.requireNonNull(spawnEntry);
 
-			accessor.fabric_getSpawners().get(spawnGroup).add(spawnEntry);
+			fabricSpawners.get(spawnGroup).add(spawnEntry);
 		}
 
 		@Override
 		public boolean removeSpawns(BiPredicate<SpawnGroup, SpawnSettings.SpawnEntry> predicate) {
-			Map<SpawnGroup, List<SpawnSettings.SpawnEntry>> spawners = accessor.fabric_getSpawners();
 			boolean anyRemoved = false;
 
 			for (SpawnGroup group : SpawnGroup.values()) {
-				if (spawners.get(group).removeIf(entry -> predicate.test(group, entry))) {
+				if (fabricSpawners.get(group).removeIf(entry -> predicate.test(group, entry))) {
 					anyRemoved = true;
 				}
 			}

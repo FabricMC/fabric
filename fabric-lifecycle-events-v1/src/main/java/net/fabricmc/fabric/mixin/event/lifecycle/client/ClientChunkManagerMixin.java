@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.client.world.ClientChunkManager;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.biome.source.BiomeArray;
 import net.minecraft.world.chunk.WorldChunk;
@@ -47,7 +47,7 @@ public abstract class ClientChunkManagerMixin {
 	private ClientWorld world;
 
 	@Inject(method = "loadChunkFromPacket", at = @At("TAIL"))
-	private void onChunkLoad(int x, int z, @Nullable BiomeArray biomes, PacketByteBuf buf, CompoundTag tag, BitSet verticalStripBitmask, CallbackInfoReturnable<WorldChunk> info) {
+	private void onChunkLoad(int x, int z, @Nullable BiomeArray biomes, PacketByteBuf buf, NbtCompound tag, BitSet verticalStripBitmask, CallbackInfoReturnable<WorldChunk> info) {
 		ClientChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(this.world, info.getReturnValue());
 	}
 

@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.ChunkSerializer;
 
@@ -30,7 +30,7 @@ abstract class ChunkSerializerMixin {
 	 * @reason Changes the logging message for the `unknown structure start` to describe which chunk the missing structure is located in for debugging purposes.
 	 */
 	@ModifyConstant(method = "readStructureStarts", constant = @Constant(stringValue = "Unknown structure start: {}"))
-	private static String modifyErrorMessage(String original, ServerWorld serverWorld, CompoundTag tag, long worldSeed) {
+	private static String modifyErrorMessage(String original, ServerWorld serverWorld, NbtCompound tag, long worldSeed) {
 		// Use coordinates in tag to determine the position of the chunk
 		final int xPos = tag.getInt("xPos");
 		final int zPos = tag.getInt("zPos");

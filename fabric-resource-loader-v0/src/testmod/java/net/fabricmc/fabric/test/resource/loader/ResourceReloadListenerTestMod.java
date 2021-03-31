@@ -60,7 +60,7 @@ public class ResourceReloadListenerTestMod implements ModInitializer {
 			}
 
 			@Override
-			public void apply(ResourceManager manager) {
+			public void reload(ResourceManager manager) {
 				if (!clientResources) {
 					throw new AssertionError("Second reload listener was called before the first!");
 				}
@@ -79,7 +79,7 @@ public class ResourceReloadListenerTestMod implements ModInitializer {
 			}
 
 			@Override
-			public void apply(ResourceManager manager) {
+			public void reload(ResourceManager manager) {
 				clientResources = true;
 			}
 		});
@@ -93,7 +93,7 @@ public class ResourceReloadListenerTestMod implements ModInitializer {
 			}
 
 			@Override
-			public void apply(ResourceManager manager) {
+			public void reload(ResourceManager manager) {
 				if (!serverResources) {
 					throw new AssertionError("Second reload listener was called before the first!");
 				}
@@ -112,7 +112,7 @@ public class ResourceReloadListenerTestMod implements ModInitializer {
 			}
 
 			@Override
-			public void apply(ResourceManager manager) {
+			public void reload(ResourceManager manager) {
 				serverResources = true;
 			}
 		});

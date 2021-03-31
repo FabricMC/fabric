@@ -1,5 +1,5 @@
 archivesBaseName = "fabric-screen-handler-api-v1"
-version = getSubprojectVersion(project, "1.1.7")
+version = getSubprojectVersion(project, "1.1.8")
 
 minecraft {
 	accessWidener = file('src/main/resources/fabric-screen-handler-api-v1.accesswidener')

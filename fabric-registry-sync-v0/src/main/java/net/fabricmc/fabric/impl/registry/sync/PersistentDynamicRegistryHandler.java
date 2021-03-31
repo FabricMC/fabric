@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -53,7 +53,7 @@ public class PersistentDynamicRegistryHandler {
 	public static void remapDynamicRegistries(DynamicRegistryManager.Impl dynamicRegistryManager, Path saveDir) {
 		LOGGER.debug("Starting registry remap");
 
-		CompoundTag registryData;
+		NbtCompound registryData;
 
 		try {
 			registryData = remapDynamicRegistries(dynamicRegistryManager, readCompoundTag(getDataPath(saveDir)));
@@ -65,18 +65,18 @@ public class PersistentDynamicRegistryHandler {
 	}
 
 	@NotNull
-	private static CompoundTag remapDynamicRegistries(DynamicRegistryManager.Impl dynamicRegistryManager, @Nullable CompoundTag existingTag) throws RemapException {
-		CompoundTag registries = new CompoundTag();
+	private static NbtCompound remapDynamicRegistries(DynamicRegistryManager.Impl dynamicRegistryManager, @Nullable NbtCompound existingTag) throws RemapException {
+		NbtCompound registries = new NbtCompound();
 
 		// For now we only care about biomes, but lets keep our options open
-		CompoundTag biomeRegistryData = null;
+		NbtCompound biomeRegistryData = null;
 
 		if (existingTag != null) {
 			biomeRegistryData = existingTag.getCompound(Registry.BIOME_KEY.getValue().toString());
 		}
 
 		MutableRegistry<?> registry = (MutableRegistry<?>) dynamicRegistryManager.get(Registry.BIOME_KEY);
-		CompoundTag biomeIdMap = remapRegistry(Registry.BIOME_KEY.getValue(), registry, biomeRegistryData);
+		NbtCompound biomeIdMap = remapRegistry(Registry.BIOME_KEY.getValue(), registry, biomeRegistryData);
 		registries.put(Registry.BIOME_KEY.getValue().toString(), biomeIdMap);
 
 		return registries;
@@ -87,7 +87,7 @@ public class PersistentDynamicRegistryHandler {
 	 * Then writes out the ids in the registry (remapped or a new world).
 	 * Keeps hold of the orphaned registry entries as to not overwrite them.
 	 */
-	private static <T> CompoundTag remapRegistry(Identifier registryId, MutableRegistry<T> registry, @Nullable CompoundTag existingTag) throws RemapException {
+	private static <T> NbtCompound remapRegistry(Identifier registryId, MutableRegistry<T> registry, @Nullable NbtCompound existingTag) throws RemapException {
 		if (!(registry instanceof RemappableRegistry)) {
 			throw new UnsupportedOperationException("Cannot remap un re-mappable registry: " + registryId.toString());
 		}
@@ -146,7 +146,7 @@ public class PersistentDynamicRegistryHandler {
 		}
 
 		// Now start to build up what we are going to save out
-		CompoundTag registryTag = new CompoundTag();
+		NbtCompound registryTag = new NbtCompound();
 
 		// Save all ids as they appear in the remapped, or new registry to disk even if not modded.
 		for (T entry : registry) {
@@ -182,13 +182,13 @@ public class PersistentDynamicRegistryHandler {
 	}
 
 	@Nullable
-	private static CompoundTag readCompoundTag(Path path) throws IOException {
+	private static NbtCompound readCompoundTag(Path path) throws IOException {
 		if (!Files.exists(path)) {
 			return null;
 		}
 
 		try (InputStream inputStream = Files.newInputStream(path)) {
-			CompoundTag compoundTag = NbtIo.readCompressed(inputStream);
+			NbtCompound compoundTag = NbtIo.readCompressed(inputStream);
 
 			if (!compoundTag.contains("version") || !compoundTag.contains("registries") || compoundTag.getInt("version") != 1) {
 				throw new UnsupportedOperationException("Unsupported dynamic registry data format. Try updating?");
@@ -198,12 +198,12 @@ public class PersistentDynamicRegistryHandler {
 		}
 	}
 
-	private static void writeCompoundTag(CompoundTag compoundTag, Path path) {
+	private static void writeCompoundTag(NbtCompound compoundTag, Path path) {
 		try {
 			Files.createDirectories(path.getParent());
 
 			try (OutputStream outputStream = Files.newOutputStream(path, StandardOpenOption.CREATE)) {
-				CompoundTag outputTag = new CompoundTag();
+				NbtCompound outputTag = new NbtCompound();
 				outputTag.putInt("version", 1);
 				outputTag.put("registries", compoundTag);
 

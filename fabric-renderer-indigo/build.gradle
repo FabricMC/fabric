@@ -1,5 +1,5 @@
 archivesBaseName = "fabric-renderer-indigo"
-version = getSubprojectVersion(project, "0.4.6")
+version = getSubprojectVersion(project, "0.4.7")
 
 moduleDependencies(project, [
 		'fabric-api-base',

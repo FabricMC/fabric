@@ -23,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.structure.StructurePieceWithDimensions;
@@ -77,8 +77,8 @@ public class StructureTest {
 		}
 
 		public static class Start extends StructureStart<DefaultFeatureConfig> {
-			public Start(StructureFeature<DefaultFeatureConfig> feature, ChunkPos chunkPos, BlockBox blockBox, int i, long l) {
-				super(feature, chunkPos, blockBox, i, l);
+			public Start(StructureFeature<DefaultFeatureConfig> feature, ChunkPos pos, int i, long l) {
+				super(feature, pos, i, l);
 			}
 
 			@Override
@@ -95,11 +95,11 @@ public class StructureTest {
 	}
 
 	public static class TestStructureGenerator extends StructurePieceWithDimensions {
-		protected TestStructureGenerator(Random random, int x, int y, int z) {
-			super(PIECE, random, x, y, z, 48, 16, 48);
+		public TestStructureGenerator(Random random, int x, int y, int z) {
+			super(PIECE, x, y, z, 0, 48, 16, method_35457(random));
 		}
 
-		protected TestStructureGenerator(ServerWorld serverWorld, CompoundTag compoundTag) {
+		protected TestStructureGenerator(ServerWorld serverWorld, NbtCompound compoundTag) {
 			super(PIECE, compoundTag);
 		}
 

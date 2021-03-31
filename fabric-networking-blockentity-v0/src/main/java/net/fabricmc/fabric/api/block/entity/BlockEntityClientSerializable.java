@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.block.entity;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 
@@ -28,15 +28,15 @@ import net.minecraft.world.World;
  * synchronized with the client side using the built-in engine methods.
  */
 public interface BlockEntityClientSerializable {
-	void fromClientTag(CompoundTag tag);
+	void fromClientTag(NbtCompound tag);
 
-	CompoundTag toClientTag(CompoundTag tag);
+	NbtCompound toClientTag(NbtCompound tag);
 
 	/**
 	 * When called on the server, schedules a BlockEntity sync to client.
-	 * This will cause {@link #toClientTag(CompoundTag)} to be called on the
+	 * This will cause {@link #toClientTag(NbtCompound)} to be called on the
 	 * server to generate the packet data, and then
-	 * {@link #fromClientTag(CompoundTag)} on the client to decode that data.
+	 * {@link #fromClientTag(NbtCompound)} on the client to decode that data.
 	 *
 	 * <p>This is preferable to
 	 * {@link World#updateListeners(net.minecraft.util.math.BlockPos, net.minecraft.block.BlockState, net.minecraft.block.BlockState, int)}

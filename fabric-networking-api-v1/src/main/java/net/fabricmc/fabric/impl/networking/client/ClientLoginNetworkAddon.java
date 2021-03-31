@@ -39,7 +39,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.FutureListeners;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
-import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryRequestS2CPacketAccessor;
 
 @Environment(EnvType.CLIENT)
 public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLoginNetworking.LoginQueryRequestHandler> {
@@ -57,8 +56,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 	}
 
 	public boolean handlePacket(LoginQueryRequestS2CPacket packet) {
-		LoginQueryRequestS2CPacketAccessor access = (LoginQueryRequestS2CPacketAccessor) packet;
-		return handlePacket(packet.getQueryId(), access.getChannel(), access.getPayload());
+		return handlePacket(packet.getQueryId(), packet.method_36176(), packet.method_36177());
 	}
 
 	private boolean handlePacket(int queryId, Identifier channelName, PacketByteBuf originalBuf) {

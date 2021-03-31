@@ -44,7 +44,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
-import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryRequestS2CPacketAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryResponseC2SPacketAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
@@ -163,18 +162,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	public Packet<?> createPacket(Identifier channelName, PacketByteBuf buf) {
 		int queryId = this.queryIdFactory.nextId();
 
-		// Create the packet with a dummy packet buffer and then overwrite the contents after, a bit of a hack but should be ok.
-		PacketByteBuf dummy = PacketByteBufs.create();
-		dummy.writeVarInt(-1);
-		dummy.writeIdentifier(new Identifier("fabric", "temp"));
-		dummy.writeByte(1);
-
-		LoginQueryRequestS2CPacket ret = new LoginQueryRequestS2CPacket(dummy);
-		// The constructor for creating a non-empty response was removed by proguard
-		LoginQueryRequestS2CPacketAccessor access = (LoginQueryRequestS2CPacketAccessor) ret;
-		access.setQueryId(queryId);
-		access.setChannel(channelName);
-		access.setPayload(buf);
+		LoginQueryRequestS2CPacket ret = new LoginQueryRequestS2CPacket(queryId, channelName, buf);
 		return ret;
 	}
 
@@ -193,8 +181,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	}
 
 	public void registerOutgoingPacket(LoginQueryRequestS2CPacket packet) {
-		LoginQueryRequestS2CPacketAccessor access = (LoginQueryRequestS2CPacketAccessor) packet;
-		this.channels.put(access.getServerQueryId(), access.getChannel());
+		this.channels.put(packet.getQueryId(), packet.method_36176());
 	}
 
 	@Override
