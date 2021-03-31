@@ -22,7 +22,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 /**
- * Provides information on whether a {@link net.minecraft.item.Item} should run its NBT update animation.
+ * Provides information on whether an {@link net.minecraft.item.Item} should run its update animation, such as for NBT updates.
  */
 @Environment(EnvType.CLIENT)
 public interface UpdateAnimationHandler {
