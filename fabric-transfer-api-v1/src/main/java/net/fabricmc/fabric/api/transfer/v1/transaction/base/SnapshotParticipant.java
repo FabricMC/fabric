@@ -22,6 +22,8 @@ import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public abstract class SnapshotParticipant<T> implements Transaction.CloseCallback {
+	private final List<T> snapshots = new ArrayList<>();
+
 	/**
 	 * Create a new snapshot.
 	 */
@@ -47,9 +49,9 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 	/**
 	 * Update the stored snapshots so that the changes happening as part of the passed transaction can be correctly
 	 * committed or rolled back.
-	 * Subclasses should call this function every time they are about to change their internal state.
+	 * This function should be called every time the participant is about to change its internal state as part of a transaction.
 	 */
-	protected final void updateSnapshots(Transaction transaction) {
+	public final void updateSnapshots(Transaction transaction) {
 		// Make sure we have enough storage for snapshots
 		while (snapshots.size() <= transaction.nestingDepth()) {
 			snapshots.add(null);
@@ -61,8 +63,6 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 			transaction.addCloseCallback(this);
 		}
 	}
-
-	private final List<T> snapshots = new ArrayList<>();
 
 	@Override
 	public final void onClose(Transaction transaction, Transaction.Result result) {
