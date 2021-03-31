@@ -28,6 +28,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.fluid.FluidFlowEvents;
 
 @Mixin(FluidBlock.class)
@@ -39,12 +40,10 @@ public class FluidBlockMixin extends Block {
 	@Inject(method = "receiveNeighborFluids", at = @At("HEAD"), cancellable = true)
 	private void receiveNeighborFluids(World world, BlockPos pos, BlockState state, CallbackInfoReturnable<Boolean> cir) {
 		for (Direction direction : Direction.values()) {
-			FluidFlowEvents.FluidFlowInteractionEvent event = FluidFlowEvents.getEvent(this, world.getBlockState(pos.offset(direction)).getBlock(), direction);
+			Event<FluidFlowEvents.FluidFlowInteractionEvent> event = FluidFlowEvents.getEvent(this, world.getBlockState(pos.offset(direction)).getBlock(), direction);
 
 			if (event != null) {
-				boolean returnValue = event.onFlow(state, world.getBlockState(pos.offset(direction)), pos, world);
-
-				if (!returnValue) {
+				if (!event.invoker().onFlow(state, world.getBlockState(pos.offset(direction)), pos, world)) {
 					cir.setReturnValue(false);
 					return;
 				}

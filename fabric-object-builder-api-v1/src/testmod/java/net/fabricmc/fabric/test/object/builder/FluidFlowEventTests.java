@@ -27,9 +27,9 @@ import net.fabricmc.fabric.api.event.fluid.FluidFlowEvents;
 public class FluidFlowEventTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		FluidFlowEvents.register(Blocks.WATER, Blocks.BLUE_ICE, new Direction[]{Direction.DOWN}, (blockState, blockState2, blockPos, world) -> {
-			world.setBlockState(blockPos, Blocks.ICE.getDefaultState());
-			world.playSound(null, blockPos, SoundEvents.BLOCK_GLASS_PLACE, SoundCategory.BLOCKS, 1, 1);
+		FluidFlowEvents.register(Blocks.WATER, Blocks.BLUE_ICE, new Direction[]{Direction.DOWN}, (flowingBlockState, interactingBlockState, flowPos, world) -> {
+			world.setBlockState(flowPos, Blocks.ICE.getDefaultState());
+			world.playSound(null, flowPos, SoundEvents.BLOCK_GLASS_PLACE, SoundCategory.BLOCKS, 1, 1);
 			return false;
 		});
 	}

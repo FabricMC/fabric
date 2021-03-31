@@ -30,11 +30,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+
 public final class FluidFlowEvents {
 	private FluidFlowEvents() {
 	}
 
-	private static final Map<Block, Map<Block, List<Pair<Direction[], FluidFlowInteractionEvent>>>> EVENT_MAP = new HashMap<>();
+	private static final Map<Block, Map<Block, List<Pair<Direction, Event<FluidFlowInteractionEvent>>>>> EVENT_MAP = new HashMap<>();
 
 	/**
 	 * Registers a new event on a fluid flow. The same two blocks can register a different event for different directions, but the same directions will run the event that was registered first.
@@ -45,9 +48,30 @@ public final class FluidFlowEvents {
 	 * @param interactionEvent      The event to run when the conditions are met.
 	 */
 	public static void register(Block flowingBlock, Block interactionBlock, Direction[] interactionDirections, FluidFlowInteractionEvent interactionEvent) {
-		Map<Block, List<Pair<Direction[], FluidFlowInteractionEvent>>> flowBlockEvents = EVENT_MAP.getOrDefault(flowingBlock, new HashMap<>());
-		List<Pair<Direction[], FluidFlowInteractionEvent>> interactionEvents = flowBlockEvents.getOrDefault(interactionBlock, new ArrayList<>());
-		interactionEvents.add(new Pair<>(interactionDirections, interactionEvent));
+		Map<Block, List<Pair<Direction, Event<FluidFlowInteractionEvent>>>> flowBlockEvents = EVENT_MAP.getOrDefault(flowingBlock, new HashMap<>());
+		List<Pair<Direction, Event<FluidFlowInteractionEvent>>> interactionEvents = flowBlockEvents.getOrDefault(interactionBlock, new ArrayList<>());
+
+		if (interactionEvents.isEmpty()) {
+			for (Direction direction : Direction.values()) {
+				interactionEvents.add(new Pair<>(direction, EventFactory.createArrayBacked(FluidFlowInteractionEvent.class, fluidFlowInteractionEvents -> (flowingBlockState, interactingBlockState, flowPos, world) -> {
+					for (FluidFlowInteractionEvent event : fluidFlowInteractionEvents) {
+						if (!event.onFlow(flowingBlockState, interactingBlockState, flowPos, world)) {
+							return false;
+						}
+					}
+
+					return true;
+				})));
+			}
+		}
+
+		for (Pair<Direction, Event<FluidFlowInteractionEvent>> pair : interactionEvents) {
+			for (Direction direction : interactionDirections) {
+				if (pair.getLeft() == direction) {
+					pair.getRight().register(interactionEvent);
+				}
+			}
+		}
 
 		if (!flowBlockEvents.containsKey(interactionBlock)) {
 			flowBlockEvents.put(interactionBlock, interactionEvents);
@@ -66,18 +90,16 @@ public final class FluidFlowEvents {
 	 * @param interactionDirection The interaction direction
 	 * @return An event if the conditions are met, otherwise {@code null}
 	 */
-	public static @Nullable FluidFlowInteractionEvent getEvent(Block flowingBlock, Block interactionBlock, Direction interactionDirection) {
+	public static @Nullable Event<FluidFlowInteractionEvent> getEvent(Block flowingBlock, Block interactionBlock, Direction interactionDirection) {
 		if (EVENT_MAP.containsKey(flowingBlock)) {
-			Map<Block, List<Pair<Direction[], FluidFlowInteractionEvent>>> flowBlockEvents = EVENT_MAP.get(flowingBlock);
+			Map<Block, List<Pair<Direction, Event<FluidFlowInteractionEvent>>>> flowBlockEvents = EVENT_MAP.get(flowingBlock);
 
 			if (flowBlockEvents.containsKey(interactionBlock)) {
-				List<Pair<Direction[], FluidFlowInteractionEvent>> interactionEvents = flowBlockEvents.get(interactionBlock);
+				List<Pair<Direction, Event<FluidFlowInteractionEvent>>> interactionEvents = flowBlockEvents.get(interactionBlock);
 
-				for (Pair<Direction[], FluidFlowInteractionEvent> pair : interactionEvents) {
-					for (Direction direction : pair.getLeft()) {
-						if (direction == interactionDirection) {
-							return pair.getRight();
-						}
+				for (Pair<Direction, Event<FluidFlowInteractionEvent>> pair : interactionEvents) {
+					if (pair.getLeft() == interactionDirection) {
+						return pair.getRight();
 					}
 				}
 			}
