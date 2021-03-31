@@ -29,14 +29,14 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.client.ItemUpdateAnimationHandlerExtensions;
 
 /**
- * Provides an API to register and retrieve {@link UpdateAnimationHandler}s for {@link ItemConvertible}s.
+ * Provides an API to register and retrieve {@link AnimationUpdateHandler}s for {@link ItemConvertible}s.
  *
  * <p>UpdateAnimationHandler defines behavior for whether or not the bobbing/reload animation should play after an ItemStack's NBT changes.
  */
 @Environment(EnvType.CLIENT)
 public final class FabricItemUpdateAnimationHandlers {
 	/**
-	 * Registers an {@link UpdateAnimationHandler} for the given {@link ItemConvertible}.
+	 * Registers an {@link AnimationUpdateHandler} for the given {@link ItemConvertible}.
 	 *
 	 * <p>Note that each Item can only have 1 update animation handler associated with it.
 	 * If more than 1 handler is registered, an {@link UnsupportedOperationException} is thrown.
@@ -46,7 +46,7 @@ public final class FabricItemUpdateAnimationHandlers {
 	 * @throws NullPointerException          if null is passed in, or {@link ItemConvertible#asItem()} is null.
 	 * @throws UnsupportedOperationException if the given {@link ItemConvertible} already has an update handler
 	 */
-	public static void register(ItemConvertible item, UpdateAnimationHandler handler) {
+	public static void register(ItemConvertible item, AnimationUpdateHandler handler) {
 		Objects.requireNonNull(item, "Attempted to retrieve an Update Animation Handler for an invalid item!");
 		Objects.requireNonNull(item.asItem(), "Attempted to retrieve an Update Animation Handler for an invalid item!");
 
@@ -59,16 +59,16 @@ public final class FabricItemUpdateAnimationHandlers {
 	}
 
 	/**
-	 * Returns the {@link UpdateAnimationHandler} associated with the given {@link ItemConvertible}.
+	 * Returns the {@link AnimationUpdateHandler} associated with the given {@link ItemConvertible}.
 	 *
 	 * <p>If no UpdateAnimationHandler has been assigned to the ItemConvertible, null is returned.
 	 *
-	 * @param item item to retrieve an {@link UpdateAnimationHandler} for
-	 * @return the {@link UpdateAnimationHandler} associated with the given {@link ItemConvertible}, or null if one has not been assigned
+	 * @param item item to retrieve an {@link AnimationUpdateHandler} for
+	 * @return the {@link AnimationUpdateHandler} associated with the given {@link ItemConvertible}, or null if one has not been assigned
 	 * @throws NullPointerException if null is passed in, or {@link ItemConvertible#asItem()} is null.
 	 */
 	@Nullable
-	public static UpdateAnimationHandler get(ItemConvertible item) {
+	public static AnimationUpdateHandler get(ItemConvertible item) {
 		Objects.requireNonNull(item, "Attempted to retrieve an Update Animation Handler for an invalid item!");
 		Objects.requireNonNull(item.asItem(), "Attempted to retrieve an Update Animation Handler for an invalid item!");
 		return ((ItemUpdateAnimationHandlerExtensions) item.asItem()).fabric_getUpdateAnimationHandler();

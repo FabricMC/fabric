@@ -21,21 +21,21 @@ import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.item.Item;
 
-import net.fabricmc.fabric.api.client.item.v1.UpdateAnimationHandler;
+import net.fabricmc.fabric.api.client.item.v1.AnimationUpdateHandler;
 import net.fabricmc.fabric.impl.client.ItemUpdateAnimationHandlerExtensions;
 
 @Mixin(Item.class)
 abstract class ItemMixin implements ItemUpdateAnimationHandlerExtensions {
 	@Unique
-	private UpdateAnimationHandler fabric_updateAnimationHandler = null;
+	private AnimationUpdateHandler fabric_updateAnimationHandler = null;
 
 	@Override
-	public UpdateAnimationHandler fabric_getUpdateAnimationHandler() {
+	public AnimationUpdateHandler fabric_getUpdateAnimationHandler() {
 		return fabric_updateAnimationHandler;
 	}
 
 	@Override
-	public void fabric_setUpdateAnimationHandler(UpdateAnimationHandler handler) {
+	public void fabric_setUpdateAnimationHandler(AnimationUpdateHandler handler) {
 		this.fabric_updateAnimationHandler = handler;
 	}
 }

@@ -25,7 +25,7 @@ import net.fabricmc.api.Environment;
  * Provides information on whether an {@link net.minecraft.item.Item} should run its update animation, such as for NBT updates.
  */
 @Environment(EnvType.CLIENT)
-public interface UpdateAnimationHandler {
+public interface AnimationUpdateHandler {
 	/**
 	 * Called once per tick to check whether the given held {@link ItemStack} should run the update animation.
 	 *
