@@ -52,7 +52,7 @@ public final class ServerPlayerEvents {
 	 *
 	 * <p>Mods can cancel this to keep the player alive.
 	 *
-	 * <p>Vanilla checks for player health <= 0 each frame (with {@link LivingEntity#isDead()}), and kills if true -
+	 * <p>Vanilla checks for player health {@code <= 0} each tick (with {@link LivingEntity#isDead()}), and kills if true -
 	 * so the player will die next frame if this is cancelled. It's assumed that the listener will do something to
 	 * prevent this, for example:
 	 *
