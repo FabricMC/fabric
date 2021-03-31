@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.impl.transfer.transaction;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -77,7 +76,7 @@ public class TransactionImpl implements Transaction {
 	}
 
 	private final int nestingDepth;
-	private final List<CloseCallback> closeCallbacks = new ArrayList<>();
+	private final ArrayList<CloseCallback> closeCallbacks = new ArrayList<>();
 	private boolean isOpen = false;
 
 	// Validate that this is the correct thread for transaction operations.
