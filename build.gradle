@@ -10,7 +10,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.7.local" apply false
+	id "fabric-loom" version "0.7-SNAPSHOT" apply false
 	id "org.cadixdev.licenser" version "0.5.0"
 	id "org.ajoberstar.grgit" version "4.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -253,7 +253,7 @@ javadoc {
 				"https://guava.dev/releases/21.0/api/docs/",
 				"https://asm.ow2.io/javadoc/",
 				"https://docs.oracle.com/javase/8/docs/api/",
-				"http://jenkins.liteloader.com/job/Mixin/javadoc/",
+				"https://jenkins.liteloader.com/job/Mixin/javadoc/",
 				"https://logging.apache.org/log4j/2.x/log4j-api/apidocs/"
 				// Need to add minecraft jd publication etc once there is one available
 		)
@@ -333,6 +333,7 @@ task remapMavenJar(type: RemapJarTask, dependsOn: jar) {
 remapTestmodJar {
 	addDefaultNestedDependencies = false
 }
+build.dependsOn remapTestmodJar
 
 publishing {
 	publications {
