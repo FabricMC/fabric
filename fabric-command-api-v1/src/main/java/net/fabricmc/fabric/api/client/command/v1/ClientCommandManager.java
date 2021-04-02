@@ -23,6 +23,8 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * Manages client-sided commands and provides some related helper methods.
@@ -30,7 +32,7 @@ import net.fabricmc.api.Environment;
  * <p>Client-sided commands are fully executed on the client,
  * so players can use them in both singleplayer and multiplayer.
  *
- * <p>Registrations can be done in the {@link #DISPATCHER} during a {@link net.fabricmc.api.ClientModInitializer}'s
+ * <p>Registrations can be done with a {@link ClientCommandRegistrationCallback} which is registered with {@link ClientCommandManager#EVENT} during a {@link net.fabricmc.api.ClientModInitializer}'s
  * initialization. (See example below.)
  *
  * <p>The commands are run on the client game thread by default.
@@ -49,21 +51,32 @@ import net.fabricmc.api.Environment;
  * <h2>Example command</h2>
  * <pre>
  * {@code
- * ClientCommandManager.DISPATCHER.register(
- * 	ClientCommandManager.literal("hello").executes(context -> {
+ * ClientCommandManager.EVENT.register((dispatcher, remote) ->
+ * 	dispatcher.register(ClientCommandManager.literal("hello").executes(context -> {
  * 		context.getSource().sendFeedback(new LiteralText("Hello, world!"));
  * 		return 0;
- * 	})
+ * 	}))
  * );
  * }
  * </pre>
  */
 @Environment(EnvType.CLIENT)
 public final class ClientCommandManager {
-	/**
-	 * The command dispatcher that handles client command registration and execution.
-	 */
-	public static final CommandDispatcher<FabricClientCommandSource> DISPATCHER = new CommandDispatcher<>();
+	public static final Event<ClientCommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(ClientCommandRegistrationCallback .class, (callbacks) -> (dispatcher, dedicated) -> {
+		for (ClientCommandRegistrationCallback callback : callbacks) {
+			callback.register(dispatcher, dedicated);
+		}
+	});
+
+	public interface ClientCommandRegistrationCallback {
+		/**
+		 * Called when the client is registering commands.
+		 *
+		 * @param dispatcher the command dispatcher to register commands to.
+		 * @param remote  whether the server this command is being registered on is a remote server.
+		 */
+		void register(CommandDispatcher<FabricClientCommandSource> dispatcher, boolean remote);
+	}
 
 	private ClientCommandManager() {
 	}

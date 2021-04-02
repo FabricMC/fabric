@@ -33,8 +33,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
 
 @Environment(EnvType.CLIENT)
 public final class ClientCommandTest implements ClientModInitializer {
@@ -46,7 +46,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("test_client_command").executes(context -> {
+		ClientCommandManager.EVENT.register((dispatcher, remote) -> dispatcher.register(ClientCommandManager.literal("test_client_command").executes(context -> {
 			context.getSource().sendFeedback(new LiteralText("This is a client command!"));
 
 			if (context.getSource().getClient() == null) {
@@ -62,27 +62,39 @@ public final class ClientCommandTest implements ClientModInitializer {
 			}
 
 			return 0;
-		}));
+		})));
 
 		// Command with argument
-		ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("test_client_command_with_arg").then(
-				ClientCommandManager.argument("number", DoubleArgumentType.doubleArg()).executes(context -> {
-					double number = DoubleArgumentType.getDouble(context, "number");
+		ClientCommandManager.EVENT.register((dispatcher, remote) -> dispatcher.register(ClientCommandManager.literal("test_client_command_with_arg").then(ClientCommandManager.argument("number", DoubleArgumentType.doubleArg()).executes(context -> {
+			double number = DoubleArgumentType.getDouble(context, "number");
 
-					// Test error formatting
-					context.getSource().sendError(new LiteralText("Your number is " + number));
+			// Test error formatting
+			context.getSource().sendError(new LiteralText("Your number is " + number));
 
+			return 0;
+		}))));
+
+		// Remote only command
+		ClientCommandManager.EVENT.register((dispatcher, remote) -> {
+			if (remote) {
+				dispatcher.register(ClientCommandManager.literal("test_client_remote_command").executes(context -> {
+					context.getSource().sendFeedback(new LiteralText("Executed client command on server"));
 					return 0;
-				})
-		));
+				}));
+			}
+		});
 
 		// Unexecutable command
-		ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("hidden_client_command").requires(source -> false).executes(context -> {
+		ClientCommandManager.EVENT.register((dispatcher, remote) -> dispatcher.register(ClientCommandManager.literal("hidden_client_command").requires(source -> false).executes(context -> {
 			throw UNEXECUTABLE_EXECUTED.create();
-		}));
+		})));
 
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-			RootCommandNode<FabricClientCommandSource> rootNode = ClientCommandManager.DISPATCHER.getRoot();
+		ClientTickEvents.START_WORLD_TICK.register(world -> {
+			if (wasTested) {
+				return;
+			}
+
+			RootCommandNode<FabricClientCommandSource> rootNode = ClientCommandInternals.DISPATCHER.getRoot();
 
 			// We climb the tree again
 			CommandNode<FabricClientCommandSource> testClientCommand = rootNode.getChild("test_client_command");
@@ -108,18 +120,9 @@ public final class ClientCommandTest implements ClientModInitializer {
 			}
 
 			LOGGER.info("The client command tests have passed! Please make sure you execute the two commands for extra safety.");
-		});
-
-		ClientTickEvents.START_WORLD_TICK.register(world -> {
-			if (wasTested) {
-				return;
-			}
 
 			MinecraftClient client = MinecraftClient.getInstance();
 			ClientCommandSource commandSource = client.getNetworkHandler().getCommandSource();
-
-			RootCommandNode<FabricClientCommandSource> rootNode = ClientCommandManager.DISPATCHER.getRoot();
-			CommandNode<FabricClientCommandSource> hiddenClientCommand = rootNode.getChild("hidden_client_command");
 
 			if (!(commandSource instanceof FabricClientCommandSource)) {
 				throw new AssertionError("Client command source not a FabricClientCommandSource!");
@@ -130,6 +133,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 			}
 
 			LOGGER.info("The in-world client command tests have passed!");
+
 			wasTested = true;
 		});
 	}

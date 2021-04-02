@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.command.client;
 
-import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.DISPATCHER;
 import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
 
@@ -50,7 +49,9 @@ import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.mixin.command.HelpCommandAccessor;
 
 @Environment(EnvType.CLIENT)
@@ -59,6 +60,8 @@ public final class ClientCommandInternals {
 	private static final char PREFIX = '/';
 	private static final String API_COMMAND_NAME = "fabric-command-api-v1:client";
 	private static final String SHORT_API_COMMAND_NAME = "fcc";
+
+	public static CommandDispatcher<FabricClientCommandSource> DISPATCHER;
 
 	/**
 	 * Executes a client-sided command from a message.
@@ -141,20 +144,26 @@ public final class ClientCommandInternals {
 	 * on the command dispatcher. Also registers a {@code /fcc help} command if there are other commands present.
 	 */
 	public static void finalizeInit() {
-		if (!DISPATCHER.getRoot().getChildren().isEmpty()) {
-			// Register an API command if there are other commands;
-			// these helpers are not needed if there are no client commands
-			LiteralArgumentBuilder<FabricClientCommandSource> help = literal("help");
-			help.executes(ClientCommandInternals::executeRootHelp);
-			help.then(argument("command", StringArgumentType.greedyString()).executes(ClientCommandInternals::executeArgumentHelp));
+		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+			DISPATCHER = new CommandDispatcher<>();
 
-			CommandNode<FabricClientCommandSource> mainNode = DISPATCHER.register(literal(API_COMMAND_NAME).then(help));
-			DISPATCHER.register(literal(SHORT_API_COMMAND_NAME).redirect(mainNode));
-		}
+			ClientCommandManager.EVENT.invoker().register(DISPATCHER, !client.isIntegratedServerRunning());
 
-		// noinspection CodeBlock2Expr
-		DISPATCHER.findAmbiguities((parent, child, sibling, inputs) -> {
-			LOGGER.warn("Ambiguity between arguments {} and {} with inputs: {}", DISPATCHER.getPath(child), DISPATCHER.getPath(sibling), inputs);
+			if (!DISPATCHER.getRoot().getChildren().isEmpty()) {
+				// Register an API command if there are other commands;
+				// these helpers are not needed if there are no client commands
+				LiteralArgumentBuilder<FabricClientCommandSource> help = literal("help");
+				help.executes(ClientCommandInternals::executeRootHelp);
+				help.then(argument("command", StringArgumentType.greedyString()).executes(ClientCommandInternals::executeArgumentHelp));
+
+				CommandNode<FabricClientCommandSource> mainNode = DISPATCHER.register(literal(API_COMMAND_NAME).then(help));
+				DISPATCHER.register(literal(SHORT_API_COMMAND_NAME).redirect(mainNode));
+			}
+
+			// noinspection CodeBlock2Expr
+			DISPATCHER.findAmbiguities((parent, child, sibling, inputs) -> {
+				LOGGER.warn("Ambiguity between arguments {} and {} with inputs: {}", DISPATCHER.getPath(child), DISPATCHER.getPath(sibling), inputs);
+			});
 		});
 	}
 
