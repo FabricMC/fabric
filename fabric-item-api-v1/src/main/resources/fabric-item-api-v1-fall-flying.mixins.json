@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.elytra",
+  "package": "net.fabricmc.fabric.mixin.fallflying",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "LivingEntityMixin",

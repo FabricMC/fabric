@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.elytra.client;
+package net.fabricmc.fabric.mixin.fallflying.client;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,12 +25,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-import net.fabricmc.fabric.api.item.v1.elytra.FabricElytraExtensions;
+import net.fabricmc.fabric.api.item.v1.fallflying.FabricFallFlyingItem;
 
 @Mixin(CapeFeatureRenderer.class)
 public class CapeFeatureRendererMixin {
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private Item redirectGetItem(ItemStack stack) {
-		return stack.getItem() instanceof FabricElytraExtensions ? Items.ELYTRA : stack.getItem();
+		return stack.getItem() instanceof FabricFallFlyingItem ? Items.ELYTRA : stack.getItem();
 	}
 }

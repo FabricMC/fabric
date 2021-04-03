@@ -27,17 +27,17 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.item.v1.elytra.FabricElytraExtensions;
+import net.fabricmc.fabric.api.item.v1.fallflying.FabricFallFlyingItem;
 
-public class FabricElytraTests implements ModInitializer {
+public class FabricFallFlyingTests implements ModInitializer {
 	// An elytra that only works on creative players
-	static class TestElytra extends Item implements FabricElytraExtensions {
+	static class TestElytra extends Item implements FabricFallFlyingItem {
 		TestElytra(Settings settings) {
 			super(settings);
 		}
 
 		@Override
-		public boolean isUsable(ItemStack stack, LivingEntity user) {
+		public boolean shouldAllowFallFlying(ItemStack stack, LivingEntity user) {
 			return user instanceof PlayerEntity && ((PlayerEntity) user).isCreative();
 		}
 	}

@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.item.v1.elytra;
+package net.fabricmc.fabric.api.item.v1.fallflying;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ElytraItem;
 import net.minecraft.item.ItemStack;
 
 /**
- * An interface to implement on all custom elytras.
+ * An interface to implement on all custom fall flying items (which allow flying like elytras).
  */
-public interface FabricElytraExtensions {
+public interface FabricFallFlyingItem {
 	/**
-	 * Returns if the elytra is usable based on its stack and user.
+	 * Returns if the fall flying item is usable based on its stack and user.
 	 *
-	 * @param stack the stack for the elytra item
-	 * @param user  the user of the elytra
-	 * @return {@code true} if the elytra is usable
+	 * @param stack the stack for the fall flying item
+	 * @param user  the user of the fall flying
+	 * @return {@code true} if the fall flying is usable
 	 */
-	default boolean isUsable(ItemStack stack, LivingEntity user) {
+	default boolean shouldAllowFallFlying(ItemStack stack, LivingEntity user) {
 		return ElytraItem.isUsable(stack);
 	}
 }
