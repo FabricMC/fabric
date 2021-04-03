@@ -21,11 +21,13 @@ import net.minecraft.item.ElytraItem;
 import net.minecraft.item.ItemStack;
 
 /**
- * An interface to implement on all custom fall flying items (which allow flying like elytras).
+ * An interface that allows implementing items to enable elytra flight for players, when equipped in the chest equipment slot.
+ While being used, the item will be damaged <b>every 20 ticks</b> through {@link ItemStack#damage(int,LivingEntity,Consumer)}.
  */
 public interface FabricFallFlyingItem {
 	/**
-	 * Returns if the fall flying item is usable based on its stack and user.
+	 * Returns {@code true} if this item allows flight based on its stack and user, and {@code false} otherwise.
+	 * This function will be called when a player attempts to start elytra flight, and will also be called every tick during elytra flight to make sure it is still allowed.
 	 *
 	 * @param stack the stack for the fall flying item
 	 * @param user  the user of the fall flying
