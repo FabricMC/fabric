@@ -16,27 +16,31 @@
 
 package net.fabricmc.fabric.api.transfer.v1.transaction;
 
-import net.fabricmc.fabric.impl.transfer.transaction.TransactionImpl;
+import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
 
 /**
  * A global operation where participants guarantee atomicity: either the whole operation succeeds,
  * or it is completely aborted and rolled back.
+ *
+ * <p>Every transaction is only valid on the thread it was opened on,
+ * and attempts to call transaction functions on any other thread will throw an exception.
+ * Consequently, concurrent can be concurrent across multiple threads, as long as they don't share any state.
  */
 public interface Transaction extends AutoCloseable {
 	/**
-	 * Open a new outer transaction, blocking while transaction operations are active on other threads.
+	 * Open a new outer transaction.
 	 *
 	 * @throws IllegalStateException If a transaction is already active on the current thread.
 	 */
 	static Transaction openOuter() {
-		return TransactionImpl.openOuter();
+		return TransactionManagerImpl.MANAGERS.get().openOuter();
 	}
 
 	/**
 	 * @return True if a transaction is open on the current thread, and false otherwise.
 	 */
 	static boolean isOpen() {
-		return TransactionImpl.isOpen();
+		return TransactionManagerImpl.MANAGERS.get().isOpen();
 	}
 
 	/**
@@ -96,6 +100,11 @@ public interface Transaction extends AutoCloseable {
 	/**
 	 * Register a callback that will be invoked when this transaction is closed.
 	 * Registered callbacks are invoked last-to-first: the last callback to be registered will be the first to be invoked, and so on...
+	 *
+	 * <p>Updates that may change the state of other participants should be deferred until after the outermost transaction is closed
+	 * using {@link #addOuterCloseCallback}.
+	 *
+	 * @throws IllegalStateException If this function is not called on the thread this transaction was opened in.
 	 */
 	void addCloseCallback(CloseCallback closeCallback);
 
@@ -107,12 +116,35 @@ public interface Transaction extends AutoCloseable {
 		/**
 		 * Perform an action when a transaction is closed.
 		 *
-		 * @param transaction The closed transaction. Only {@link #nestingDepth} and {@link #getOpenTransaction} may be
-		 *                    called on that transaction. {@link #addCloseCallback} may additionally be called on
-		 *                    parent transactions (accessed through {@link #getOpenTransaction} for lower nesting depths).
+		 * @param transaction The closed transaction. Only {@link #nestingDepth}, {@link #getOpenTransaction} and {@link #addOuterCloseCallback}
+		 *                    may be called on that transaction.
+		 *                    {@link #addCloseCallback} may additionally be called on parent transactions
+		 *                    (accessed through {@link #getOpenTransaction} for lower nesting depths).
 		 * @param result The result of this transaction: whether it was committed or aborted.
 		 */
 		void onClose(Transaction transaction, Result result);
+	}
+
+	/**
+	 * Register a callback that will be invoked after the outermost transaction is closed,
+	 * and after callbacks registered with {@link #addCloseCallback} are ran.
+	 * Registered callbacks are invoked last-to-first.
+	 *
+	 * @throws IllegalStateException If this function is not called on the thread this transaction was opened in.
+	 */
+	void addOuterCloseCallback(OuterCloseCallback outerCloseCallback);
+
+	/**
+	 * A callback that is invoked when the outer transaction is closed.
+	 */
+	@FunctionalInterface
+	interface OuterCloseCallback {
+		/**
+		 * Perform an action after the top-level transaction is closed.
+		 *
+		 * @param result The result of the top-level transaction.
+		 */
+		void afterOuterClose(Result result);
 	}
 
 	/**

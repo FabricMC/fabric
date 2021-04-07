@@ -21,7 +21,7 @@ import java.util.List;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
-public abstract class SnapshotParticipant<T> implements Transaction.CloseCallback {
+public abstract class SnapshotParticipant<T> implements Transaction.CloseCallback, Transaction.OuterCloseCallback {
 	private final List<T> snapshots = new ArrayList<>();
 
 	/**
@@ -82,8 +82,13 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 			}
 		} else {
 			releaseSnapshot(snapshot);
-			// TODO: should onFinalCommit be deferred until after all `onClose` actions are run?
-			onFinalCommit();
+			transaction.addOuterCloseCallback(this);
 		}
+	}
+
+	@Override
+	public final void afterOuterClose(Transaction.Result result) {
+		// Only called once when the transaction is committed, scheduled during onClose().
+		onFinalCommit();
 	}
 }

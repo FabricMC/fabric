@@ -137,7 +137,12 @@ public class CauldronWrapper extends SnapshotParticipant<Integer> implements Sto
 		if (state.isOf(Blocks.CAULDRON)) {
 			location.world.setBlockState(location.pos, state.with(CauldronBlock.LEVEL, savedLevel), 0);
 		} else {
-			// TODO: what should we do? crash? warn?
+			String errorMessage = String.format(
+					"Expected block state at position %s in world %s to be a cauldron, but it's %s instead.",
+					location.pos,
+					location.world.getRegistryKey(),
+					state);
+			throw new RuntimeException(errorMessage);
 		}
 	}
 

@@ -16,16 +16,6 @@
 
 package net.fabricmc.fabric.impl.transfer;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.impl.transfer.transaction.TransactionImpl;
-
-public class TransferApiImpl implements ModInitializer {
+public class TransferApiImpl {
 	public static int version = 0;
-
-	@Override
-	public void onInitialize() {
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> TransactionImpl.setServerThread(Thread.currentThread()));
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> TransactionImpl.setServerThread(null));
-	}
 }
