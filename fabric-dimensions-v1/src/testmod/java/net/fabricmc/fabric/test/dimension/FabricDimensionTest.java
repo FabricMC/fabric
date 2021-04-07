@@ -48,12 +48,12 @@ public class FabricDimensionTest implements ModInitializer {
 	// The dimension options refer to the JSON-file in the dimension subfolder of the datapack,
 	// which will always share it's ID with the world that is created from it
 	private static final RegistryKey<DimensionOptions> DIMENSION_KEY = RegistryKey.of(
-			Registry.DIMENSION_OPTIONS,
+			Registry.DIMENSION_KEY,
 			new Identifier("fabric_dimension", "void")
 	);
 
 	private static RegistryKey<World> WORLD_KEY = RegistryKey.of(
-			Registry.DIMENSION,
+			Registry.WORLD_KEY,
 			DIMENSION_KEY.getValue()
 	);
 
@@ -66,7 +66,7 @@ public class FabricDimensionTest implements ModInitializer {
 	public void onInitialize() {
 		Registry.register(Registry.CHUNK_GENERATOR, new Identifier("fabric_dimension", "void"), VoidChunkGenerator.CODEC);
 
-		WORLD_KEY = RegistryKey.of(Registry.DIMENSION, new Identifier("fabric_dimension", "void"));
+		WORLD_KEY = RegistryKey.of(Registry.WORLD_KEY, new Identifier("fabric_dimension", "void"));
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			ServerWorld overworld = server.getWorld(World.OVERWORLD);

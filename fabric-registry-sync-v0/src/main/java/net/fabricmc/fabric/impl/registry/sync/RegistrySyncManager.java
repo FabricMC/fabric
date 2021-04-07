@@ -69,13 +69,13 @@ public final class RegistrySyncManager {
 		}
 
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeCompound(tag);
+		buf.writeNbt(tag);
 
 		return ServerPlayNetworking.createS2CPacket(ID, buf);
 	}
 
 	public static void receivePacket(ThreadExecutor<?> executor, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
-		NbtCompound compound = buf.readCompound();
+		NbtCompound compound = buf.readNbt();
 
 		if (accept) {
 			try {

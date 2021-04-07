@@ -56,7 +56,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 	}
 
 	public boolean handlePacket(LoginQueryRequestS2CPacket packet) {
-		return handlePacket(packet.getQueryId(), packet.method_36176(), packet.method_36177());
+		return handlePacket(packet.getQueryId(), packet.getChannel(), packet.getPayload());
 	}
 
 	private boolean handlePacket(int queryId, Identifier channelName, PacketByteBuf originalBuf) {

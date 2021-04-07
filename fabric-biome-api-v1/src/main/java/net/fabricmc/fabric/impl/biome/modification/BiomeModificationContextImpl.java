@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.class_6012;
+import net.minecraft.util.collection.Pool;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeAdditionsSound;
@@ -225,10 +225,10 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	}
 
 	private class GenerationSettingsContextImpl implements GenerationSettingsContext {
-		private final Registry<ConfiguredCarver<?>> carvers = registries.get(Registry.CONFIGURED_CARVER_WORLDGEN);
-		private final Registry<ConfiguredFeature<?, ?>> features = registries.get(Registry.CONFIGURED_FEATURE_WORLDGEN);
-		private final Registry<ConfiguredStructureFeature<?, ?>> structures = registries.get(Registry.CONFIGURED_STRUCTURE_FEATURE_WORLDGEN);
-		private final Registry<ConfiguredSurfaceBuilder<?>> surfaceBuilders = registries.get(Registry.CONFIGURED_SURFACE_BUILDER_WORLDGEN);
+		private final Registry<ConfiguredCarver<?>> carvers = registries.get(Registry.CONFIGURED_CARVER_KEY);
+		private final Registry<ConfiguredFeature<?, ?>> features = registries.get(Registry.CONFIGURED_FEATURE_KEY);
+		private final Registry<ConfiguredStructureFeature<?, ?>> structures = registries.get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY);
+		private final Registry<ConfiguredSurfaceBuilder<?>> surfaceBuilders = registries.get(Registry.CONFIGURED_SURFACE_BUILDER_KEY);
 		private final GenerationSettings generationSettings = biome.getGenerationSettings();
 		private final GenerationSettingsAccessor accessor = (GenerationSettingsAccessor) generationSettings;
 
@@ -432,10 +432,10 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			fabricSpawners.clear();
 
 			for (SpawnGroup spawnGroup : SpawnGroup.values()) {
-				class_6012<SpawnSettings.SpawnEntry> entries = accessor.fabric_getSpawners().get(spawnGroup);
+				Pool<SpawnSettings.SpawnEntry> entries = accessor.fabric_getSpawners().get(spawnGroup);
 
 				if (entries != null) {
-					fabricSpawners.put(spawnGroup, new ArrayList<>(entries.method_34994()));
+					fabricSpawners.put(spawnGroup, new ArrayList<>(entries.getEntries()));
 				} else {
 					fabricSpawners.put(spawnGroup, new ArrayList<>());
 				}
@@ -452,13 +452,13 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		private void freezeSpawners() {
-			Map<SpawnGroup, class_6012<SpawnSettings.SpawnEntry>> spawners = new HashMap<>(accessor.fabric_getSpawners());
+			Map<SpawnGroup, Pool<SpawnSettings.SpawnEntry>> spawners = new HashMap<>(accessor.fabric_getSpawners());
 
 			for (Map.Entry<SpawnGroup, List<SpawnSettings.SpawnEntry>> entry : fabricSpawners.entrySet()) {
 				if (entry.getValue().isEmpty()) {
-					spawners.put(entry.getKey(), class_6012.method_34990());
+					spawners.put(entry.getKey(), Pool.empty());
 				} else {
-					spawners.put(entry.getKey(), class_6012.method_34988(entry.getValue()));
+					spawners.put(entry.getKey(), Pool.of(entry.getValue()));
 				}
 			}
 

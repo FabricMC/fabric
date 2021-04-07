@@ -113,7 +113,7 @@ public class RegistrySyncTest implements ModInitializer {
 	}
 
 	private void checkFeature(DynamicRegistryManager manager, Identifier id) {
-		Registry<ConfiguredFeature<?, ?>> registry = manager.get(Registry.CONFIGURED_FEATURE_WORLDGEN);
+		Registry<ConfiguredFeature<?, ?>> registry = manager.get(Registry.CONFIGURED_FEATURE_KEY);
 
 		ConfiguredFeature<?, ?> builtInEntry = BuiltinRegistries.CONFIGURED_FEATURE.get(id);
 

@@ -46,11 +46,11 @@ public class ChuteBlockEntity extends BlockEntity {
 		}
 
 		if (blockEntity.cachedInsertable == null) {
-			blockEntity.cachedInsertable = BlockApiCache.create(ItemApis.INSERTABLE, (ServerWorld) world, pos.method_35851(Direction.DOWN));
+			blockEntity.cachedInsertable = BlockApiCache.create(ItemApis.INSERTABLE, (ServerWorld) world, pos.offset(Direction.DOWN));
 		}
 
 		if (blockEntity.cachedExtractable == null) {
-			blockEntity.cachedExtractable = BlockApiCache.create(ItemApis.EXTRACTABLE, (ServerWorld) world, pos.method_35851(Direction.UP));
+			blockEntity.cachedExtractable = BlockApiCache.create(ItemApis.EXTRACTABLE, (ServerWorld) world, pos.offset(Direction.UP));
 		}
 
 		if (blockEntity.moveDelay == 0) {

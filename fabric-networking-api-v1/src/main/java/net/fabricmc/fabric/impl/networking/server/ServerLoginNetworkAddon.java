@@ -181,7 +181,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	}
 
 	public void registerOutgoingPacket(LoginQueryRequestS2CPacket packet) {
-		this.channels.put(packet.getQueryId(), packet.method_36176());
+		this.channels.put(packet.getQueryId(), packet.getChannel());
 	}
 
 	@Override

@@ -46,7 +46,7 @@ public class MixinClientPlayNetworkHandler {
 		if (entity instanceof BlockEntityClientSerializable) {
 			if (packet.getBlockEntityType() == 127) {
 				BlockEntityClientSerializable serializable = (BlockEntityClientSerializable) entity;
-				String id = packet.getCompoundTag().getString("id");
+				String id = packet.getNbt().getString("id");
 
 				if (id != null) {
 					Identifier otherIdObj = BlockEntityType.getId(entity.getType());
@@ -60,7 +60,7 @@ public class MixinClientPlayNetworkHandler {
 					String otherId = otherIdObj.toString();
 
 					if (otherId.equals(id)) {
-						serializable.fromClientTag(packet.getCompoundTag());
+						serializable.fromClientTag(packet.getNbt());
 					}
 				}
 			}

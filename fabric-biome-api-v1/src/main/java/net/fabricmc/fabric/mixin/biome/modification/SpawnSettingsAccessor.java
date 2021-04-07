@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.class_6012;
+import net.minecraft.util.collection.Pool;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.world.biome.SpawnSettings;
@@ -34,11 +34,11 @@ public interface SpawnSettingsAccessor {
 	void fabric_setCreatureSpawnProbability(float probability);
 
 	@Accessor("spawners")
-	Map<SpawnGroup, class_6012<SpawnSettings.SpawnEntry>> fabric_getSpawners();
+	Map<SpawnGroup, Pool<SpawnSettings.SpawnEntry>> fabric_getSpawners();
 
 	@Accessor("spawners")
 	@Mutable
-	void fabric_setSpawners(Map<SpawnGroup, class_6012<SpawnSettings.SpawnEntry>> spawners);
+	void fabric_setSpawners(Map<SpawnGroup, Pool<SpawnSettings.SpawnEntry>> spawners);
 
 	@Accessor("spawnCosts")
 	Map<EntityType<?>, SpawnSettings.SpawnDensity> fabric_getSpawnCosts();

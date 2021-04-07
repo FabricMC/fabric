@@ -159,7 +159,7 @@ public final class BiomeSelectors {
 			SpawnSettings spawnSettings = context.getBiome().getSpawnSettings();
 
 			for (SpawnGroup spawnGroup : SpawnGroup.values()) {
-				for (SpawnSettings.SpawnEntry spawnEntry : spawnSettings.getSpawnEntries(spawnGroup).method_34994()) {
+				for (SpawnSettings.SpawnEntry spawnEntry : spawnSettings.getSpawnEntries(spawnGroup).getEntries()) {
 					if (entityTypes.contains(spawnEntry.type)) {
 						return true;
 					}
