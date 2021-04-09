@@ -27,23 +27,23 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.item.v1.fallflying.FabricFallFlyingItem;
+import net.fabricmc.fabric.api.item.v1.FabricElytraFlyingItem;
 
-public class FabricFallFlyingTests implements ModInitializer {
+public class FabricElytraTests implements ModInitializer {
 	// An elytra that only works on creative players
-	static class TestElytra extends Item implements FabricFallFlyingItem {
-		TestElytra(Settings settings) {
+	static class TestElytraFlying extends Item implements FabricElytraFlyingItem {
+		TestElytraFlying(Settings settings) {
 			super(settings);
 		}
 
 		@Override
-		public boolean shouldAllowFallFlying(ItemStack stack, LivingEntity user) {
+		public boolean shouldAllowElytraFlight(ItemStack stack, LivingEntity user) {
 			return user instanceof PlayerEntity && ((PlayerEntity) user).isCreative();
 		}
 	}
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "test_elytra"), new TestElytra(new FabricItemSettings().group(ItemGroup.TRANSPORTATION).equipmentSlot((stack -> EquipmentSlot.CHEST))));
+		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "test_elytra"), new TestElytraFlying(new FabricItemSettings().group(ItemGroup.TRANSPORTATION).equipmentSlot((stack -> EquipmentSlot.CHEST))));
 	}
 }

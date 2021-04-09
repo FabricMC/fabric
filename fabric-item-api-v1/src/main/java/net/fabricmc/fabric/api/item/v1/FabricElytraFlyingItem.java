@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.item.v1.fallflying;
+package net.fabricmc.fabric.api.item.v1;
 
 import java.util.function.Consumer;
 
@@ -26,16 +26,16 @@ import net.minecraft.item.ItemStack;
  * An interface that allows implementing items to enable elytra flight for players, when equipped in the chest equipment slot.
  * While being used, the item will be damaged <b>every 20 ticks</b> through {@link ItemStack#damage(int, LivingEntity, Consumer)}.
  */
-public interface FabricFallFlyingItem {
+public interface FabricElytraFlyingItem {
 	/**
 	 * Returns {@code true} if this item allows flight based on its stack and user, and {@code false} otherwise.
 	 * This function will be called when a player attempts to start elytra flight, and will also be called every tick during elytra flight to make sure it is still allowed.
 	 *
-	 * @param stack the stack for the fall flying item
-	 * @param user  the user of the fall flying
-	 * @return {@code true} if the fall flying is usable
+	 * @param stack the stack for the elytra like item
+	 * @param user  the user of the elytra like
+	 * @return {@code true} if the elytra like is usable
 	 */
-	default boolean shouldAllowFallFlying(ItemStack stack, LivingEntity user) {
+	default boolean shouldAllowElytraFlight(ItemStack stack, LivingEntity user) {
 		return ElytraItem.isUsable(stack);
 	}
 }
