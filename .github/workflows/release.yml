@@ -4,7 +4,7 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     container:
-      image: openjdk:15-jdk
+      image: openjdk:16-jdk
       options: --user root
     steps:
       - uses: actions/checkout@v1
