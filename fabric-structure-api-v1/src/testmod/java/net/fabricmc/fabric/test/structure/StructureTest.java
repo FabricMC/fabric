@@ -67,7 +67,7 @@ public class StructureTest {
 
 		LOGGER.info("Testing StructurePoolAddCallback");
 		StructurePoolAddCallback.EVENT.register(structurePool -> {
-			if (structurePool.getUnderlying().getId().getPath().equals("village/common/butcher_animals")) {
+			if (structurePool.getUnderlying().getId().toString().equals("minecraft:village/common/butcher_animals")) {
 				structurePool.addStructurePoolElement(StructurePoolElement.method_30425("village/common/animals/pigs_1").apply(StructurePool.Projection.RIGID), 2);
 			}
 		});

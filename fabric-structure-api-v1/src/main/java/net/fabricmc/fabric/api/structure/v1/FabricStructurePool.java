@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a modifiable structure pool that would have several helper methods for modders.
+ * Represents a modifiable structure pool that has several helper methods for modders.
  */
 public class FabricStructurePool {
 	private final StructurePool underlying;
@@ -37,8 +37,8 @@ public class FabricStructurePool {
 	}
 
 	/**
-	 * Adds a new {@code StructurePoolElement} to the {@code StructurePool}.
-	 * See the alternative {@linkplain #addStructurePoolElement(StructurePoolElement, int)}  for details.
+	 * Adds a new {@link StructurePoolElement} to the {@link StructurePool}.
+	 * See the alternative {@link #addStructurePoolElement(StructurePoolElement, int)} for details.
 	 *
 	 * @param element    The element you want to add.
 	 */
@@ -47,7 +47,7 @@ public class FabricStructurePool {
 	}
 
 	/**
-	 * Adds a new {@code StructurePoolElement} to the {@code StructurePool}.
+	 * Adds a new {@link StructurePoolElement} to the {@link StructurePool}.
 	 * @param element    The element you want to add.
 	 * @param weight     Minecraft handles weight by adding it that amount of times into the StructurePool#elements.
 	 */
@@ -64,8 +64,8 @@ public class FabricStructurePool {
 	}
 
 	/**
-	 * Allows you to get the {@code StructurePool} itself.
-	 * @return The underlying {@code StructurePool}.
+	 * Allows you to get the {@link StructurePool} itself.
+	 * @return The underlying {@link StructurePool}.
 	 */
 	public StructurePool getUnderlying() {
 		return underlying;
