@@ -62,7 +62,6 @@ public class FabricStructurePool {
 			((StructurePoolAccessor) underlying).setElementCounts(list);
 		}
 
-
 		//adds to elements list
 		for (int i = 0; i < weight; i++) {
 			((StructurePoolAccessor) underlying).getElements().add(element);
