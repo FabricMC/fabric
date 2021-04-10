@@ -17,9 +17,10 @@
 package net.fabricmc.fabric.api.structure.v1;
 
 import com.mojang.datafixers.util.Pair;
-import net.fabricmc.fabric.mixin.structure.StructurePoolAccessor;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolElement;
+
+import net.fabricmc.fabric.mixin.structure.StructurePoolAccessor;
 
 import java.util.ArrayList;
 import java.util.List;
