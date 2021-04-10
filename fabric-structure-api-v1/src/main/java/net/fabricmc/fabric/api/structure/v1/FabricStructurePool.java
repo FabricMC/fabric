@@ -54,9 +54,14 @@ public class FabricStructurePool {
 	 */
 	public void addStructurePoolElement(StructurePoolElement element, int weight) {
 		//adds to elementCounts list; minecraft makes these immutable lists so we replace them with an array list
-		List<Pair<StructurePoolElement, Integer>> list = new ArrayList<>(((StructurePoolAccessor) underlying).getElementCounts());
-		list.add(Pair.of(element, weight));
-		((StructurePoolAccessor) underlying).setElementCounts(list);
+		if (((StructurePoolAccessor) underlying).getElementCounts() instanceof ArrayList) {
+			((StructurePoolAccessor) underlying).getElementCounts().add(Pair.of(element, weight));
+		} else {
+			List<Pair<StructurePoolElement, Integer>> list = new ArrayList<>(((StructurePoolAccessor) underlying).getElementCounts());
+			list.add(Pair.of(element, weight));
+			((StructurePoolAccessor) underlying).setElementCounts(list);
+		}
+
 
 		//adds to elements list
 		for (int i = 0; i < weight; i++) {
