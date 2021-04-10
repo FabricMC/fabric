@@ -23,6 +23,9 @@ import net.minecraft.structure.pool.StructurePoolElement;
 
 import net.fabricmc.fabric.mixin.structure.StructurePoolAccessor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents a modifiable structure pool that would have several helper methods for modders.
  */
@@ -49,8 +52,10 @@ public class FabricStructurePool {
 	 * @param weight     Minecraft handles weight by adding it that amount of times into the StructurePool#elements.
 	 */
 	public void addStructurePoolElement(StructurePoolElement element, int weight) {
-		//adds to elementCounts list
-		((StructurePoolAccessor) underlying).getElementCounts().add(Pair.of(element, weight));
+		//adds to elementCounts list; minecraft makes these immutable lists so we replace them with an array list
+		List<Pair<StructurePoolElement, Integer>> list = new ArrayList<>(((StructurePoolAccessor) underlying).getElementCounts());
+		list.add(Pair.of(element, weight));
+		((StructurePoolAccessor) underlying).setElementCounts(list);
 
 		//adds to elements list
 		for (int i = 0; i < weight; i++) {

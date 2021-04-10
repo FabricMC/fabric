@@ -16,29 +16,28 @@
 
 package net.fabricmc.fabric.mixin.structure;
 
+import net.fabricmc.fabric.api.structure.v1.FabricStructurePool;
+import net.fabricmc.fabric.api.structure.v1.StructurePoolAddCallback;
+import net.minecraft.structure.pool.StructurePool;
+import net.minecraft.util.dynamic.RegistryOps;
+import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.util.dynamic.RegistryOps;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-
-import net.fabricmc.fabric.api.structure.v1.FabricStructurePool;
-import net.fabricmc.fabric.api.structure.v1.StructurePoolAddCallback;
-
 @Mixin(DynamicRegistryManager.class)
 public abstract class MixinDynamicRegistryManager {
 	@Inject(method = "load(Lnet/minecraft/util/dynamic/RegistryOps;Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;Lnet/minecraft/util/registry/DynamicRegistryManager$Info;)V", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD)
 	private static <E> void load(RegistryOps<?> ops, DynamicRegistryManager.Impl manager, DynamicRegistryManager.Info<E> info, CallbackInfo ci, RegistryKey<? extends Registry<E>> registryKey) {
 		if (registryKey.equals(Registry.TEMPLATE_POOL_WORLDGEN)) {
-			for (StructurePool pool : BuiltinRegistries.STRUCTURE_POOL) {
-				StructurePoolAddCallback.EVENT.invoker().onAdd(new FabricStructurePool(pool));
+			for (E pool : manager.get(registryKey)) {
+				if (pool instanceof StructurePool) {
+					StructurePoolAddCallback.EVENT.invoker().onAdd(new FabricStructurePool((StructurePool) pool));
+				}
 			}
 		}
 	}
