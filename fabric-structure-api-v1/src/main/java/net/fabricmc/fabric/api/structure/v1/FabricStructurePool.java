@@ -17,11 +17,9 @@
 package net.fabricmc.fabric.api.structure.v1;
 
 import com.mojang.datafixers.util.Pair;
-
+import net.fabricmc.fabric.mixin.structure.StructurePoolAccessor;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolElement;
-
-import net.fabricmc.fabric.mixin.structure.StructurePoolAccessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +38,7 @@ public class FabricStructurePool {
 	 * Adds a new {@link StructurePoolElement} to the {@link StructurePool}.
 	 * See the alternative {@link #addStructurePoolElement(StructurePoolElement, int)} for details.
 	 *
-	 * @param element    The element you want to add.
+	 * @param element The element you want to add.
 	 */
 	public void addStructurePoolElement(StructurePoolElement element) {
 		addStructurePoolElement(element, 1);
@@ -48,8 +46,9 @@ public class FabricStructurePool {
 
 	/**
 	 * Adds a new {@link StructurePoolElement} to the {@link StructurePool}.
-	 * @param element    The element you want to add.
-	 * @param weight     Minecraft handles weight by adding it that amount of times into the StructurePool#elements.
+	 *
+	 * @param element The element you want to add.
+	 * @param weight  Minecraft handles weight by adding it that amount of times into the StructurePool#elements.
 	 */
 	public void addStructurePoolElement(StructurePoolElement element, int weight) {
 		//adds to elementCounts list; minecraft makes these immutable lists so we replace them with an array list
@@ -65,6 +64,7 @@ public class FabricStructurePool {
 
 	/**
 	 * Allows you to get the {@link StructurePool} itself.
+	 *
 	 * @return The underlying {@link StructurePool}.
 	 */
 	public StructurePool getUnderlying() {
