@@ -30,7 +30,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 
 public class FluidTransferTest implements ModInitializer {
-	public static final String MODID = "fabric-transfer-api-v1-testmod";
+	public static final String MOD_ID = "fabric-transfer-api-v1-testmod";
 
 	private static final Block INFINITE_WATER_SOURCE = new Block(AbstractBlock.Settings.of(Material.METAL));
 	private static final Block INFINITE_LAVA_SOURCE = new Block(AbstractBlock.Settings.of(Material.METAL));
@@ -44,14 +44,14 @@ public class FluidTransferTest implements ModInitializer {
 		registerBlock(FLUID_CHUTE, "fluid_chute");
 
 		FLUID_CHUTE_TYPE = BlockEntityType.Builder.create(FluidChuteBlockEntity::new, FLUID_CHUTE).build(null);
-		Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MODID, "fluid_chute"), FLUID_CHUTE_TYPE);
+		Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "fluid_chute"), FLUID_CHUTE_TYPE);
 
 		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeFluidStorage.WATER, INFINITE_WATER_SOURCE);
 		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeFluidStorage.LAVA, INFINITE_LAVA_SOURCE);
 	}
 
 	private static void registerBlock(Block block, String name) {
-		Identifier id = new Identifier(MODID, name);
+		Identifier id = new Identifier(MOD_ID, name);
 		Registry.register(Registry.BLOCK, id, block);
 		Registry.register(Registry.ITEM, id, new BlockItem(block, new Item.Settings().group(ItemGroup.MISC)));
 	}

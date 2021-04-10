@@ -26,6 +26,14 @@ public final class FluidConstants {
 	public static final long NUGGET = 1000;
 	public static final long DROPLET = 1;
 
+	/**
+	 * Convert a fraction of buckets into droplets.
+	 *
+	 * <p>For example, passing {@code (1, 3)} will return the 1/3 of a bucket as droplets, so 27000.
+	 *
+	 * @return The amount of droplets that the passed fraction is equivalent to.
+	 * @throws IllegalArgumentException If the fraction can't be converted to droplets exactly.
+	 */
 	public static long fromBuckets(long numerator, long denominator) {
 		long total = numerator * BUCKET;
 

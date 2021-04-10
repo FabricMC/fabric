@@ -21,27 +21,45 @@ import java.util.List;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
+/**
+ * A base participant implementation that modifies itself during transactions,
+ * saving snapshots of its state in objects of type {@code T} in case it needs to revert to a previous state.
+ *
+ * <p>{@link #updateSnapshots} should be called before any modification.
+ * This will save the state of this participant using {@link #createSnapshot} if no state was already saved for that transaction.
+ * When the transaction is aborted and changes need to be rolled back, {@link #readSnapshot} will be called
+ * to signal that the current state should revert to that of the snapshot.
+ * The snapshot object is then {@linkplain #releaseSnapshot released}, and can be cached for subsequent use, or discarded.
+ *
+ * <p>When an outer transaction is committed, {@link #readSnapshot} will not be called so that the current state of this participant
+ * is retained. {@link #releaseSnapshot} will be called because the snapshot is not necessary anymore,
+ * and {@link #onFinalCommit} will be called after the transaction is closed.
+ *
+ * @param <T> The objects that this participant uses to save its state snapshots.
+ */
 public abstract class SnapshotParticipant<T> implements Transaction.CloseCallback, Transaction.OuterCloseCallback {
 	private final List<T> snapshots = new ArrayList<>();
 
 	/**
-	 * Create a new snapshot.
+	 * Return a new object containing the current state of this participant.
 	 */
 	protected abstract T createSnapshot();
 
 	/**
-	 * Read the snapshot state.
+	 * Roll back to a state previously created by {@link #createSnapshot}.
 	 */
 	protected abstract void readSnapshot(T snapshot);
 
 	/**
-	 * Signals that the snapshot will not be used anymore, and is safe to cache for the next call to {@link #createSnapshot}.
+	 * Signals that the snapshot will not be used anymore, and is safe to cache for next calls to {@link #createSnapshot},
+	 * or discard entirely.
 	 */
 	protected void releaseSnapshot(T snapshot) {
 	}
 
 	/**
-	 * Use this to call markDirty() if you need to.
+	 * Called after an outer transaction succeeded,
+	 * to perform irreversible actions such as {@code markDirty()} or neighbor updates.
 	 */
 	protected void onFinalCommit() {
 	}
@@ -88,7 +106,8 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 
 	@Override
 	public final void afterOuterClose(Transaction.Result result) {
-		// Only called once when the transaction is committed, scheduled during onClose().
+		// The result is guaranteed to be COMMITTED,
+		// as this is only scheduled during onClose() when the outer transaction is successful.
 		onFinalCommit();
 	}
 }

@@ -24,6 +24,15 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
  * Helper functions to move resources between two {@link Storage}s.
  */
 public final class Movement {
+	/**
+	 * Move resources between two storages, matching the passed filter, and return the amount that was successfully transferred.
+	 *
+	 * <p>Similar to {@linkplain #move(Storage, Storage, Predicate, long, Transaction) the other overload},
+	 * but without an explicit transaction parameter.
+	 *
+	 * @return The total amount of resources that was successfully transferred.
+	 * @throws IllegalStateException If a transaction is already active on the current thread.
+	 */
 	public static <T> long move(Storage<T> from, Storage<T> to, Predicate<T> filter, long maxAmount) {
 		try (Transaction moveTransaction = Transaction.openOuter()) {
 			long result = move(from, to, filter, maxAmount, moveTransaction);
@@ -32,6 +41,20 @@ public final class Movement {
 		}
 	}
 
+	/**
+	 * Move resources between two storages, matching the passed filter, and return the amount that was successfully transferred.
+	 *
+	 * @param from The source storage.
+	 * @param to The target storage.
+	 * @param filter The filter for transferred resources.
+	 *               Only resources for which this filter returns {@code true} will be transferred.
+	 *               This filter will never be tested with an empty resource, and filters are encouraged to throw an
+	 *               exception if this guarantee is violated.
+	 * @param maxAmount The maximum amount that will be transferred.
+	 * @param transaction The transaction this transfer is part of.
+	 * @param <T> The type of resources to move.
+	 * @return The total amount of resources that was successfully transferred.
+	 */
 	public static <T> long move(Storage<T> from, Storage<T> to, Predicate<T> filter, long maxAmount, Transaction transaction) {
 		long[] totalMoved = new long[] { 0 };
 		from.forEach(view -> {

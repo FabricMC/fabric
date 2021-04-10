@@ -30,7 +30,9 @@ import net.fabricmc.fabric.impl.transfer.fluid.CauldronWrapper;
  */
 public final class FluidStorage {
 	/**
-	 * Sided block access to fluid storages. The Direction parameter may never be null.
+	 * Sided block access to fluid storages.
+	 * Fluid amounts are always expressed in {@linkplain FluidConstants droplets}.
+	 * The {@code Direction} parameter may never be null.
 	 * Refer to {@link BlockApiLookup} for documentation on how to use this field.
 	 */
 	public static final BlockApiLookup<Storage<Fluid>, Direction> SIDED =
