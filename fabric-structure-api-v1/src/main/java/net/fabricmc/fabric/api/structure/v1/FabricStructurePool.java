@@ -50,7 +50,7 @@ public class FabricStructurePool {
 	 * Adds a new {@link StructurePoolElement} to the {@link StructurePool}.
 	 *
 	 * @param element the element to add
-	 * @param weight  Minecraft handles weight by adding it that amount of times into the StructurePool#elements.
+	 * @param weight  Minecraft handles weight by adding it that amount of times into the {@link StructurePool#elements}
 	 */
 	public void addStructurePoolElement(StructurePoolElement element, int weight) {
 		//adds to elementCounts list; minecraft makes these immutable lists so we replace them with an array list
