@@ -49,7 +49,7 @@ public class FabricStructurePool {
 	/**
 	 * Adds a new {@link StructurePoolElement} to the {@link StructurePool}.
 	 *
-	 * @param element The element you want to add.
+	 * @param element the element to add
 	 * @param weight  Minecraft handles weight by adding it that amount of times into the StructurePool#elements.
 	 */
 	public void addStructurePoolElement(StructurePoolElement element, int weight) {
