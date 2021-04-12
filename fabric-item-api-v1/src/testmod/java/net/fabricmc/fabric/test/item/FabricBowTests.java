@@ -26,7 +26,6 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.ShotProjectileEvents;
-import net.fabricmc.fabric.api.item.v1.bow.FabricBowExtensions;
 import net.fabricmc.fabric.api.item.v1.bow.FabricBowItem;
 
 public class FabricBowTests implements ModInitializer {
@@ -41,6 +40,6 @@ public class FabricBowTests implements ModInitializer {
 	public void onInitialize() {
 		// Registers a custom bow.
 		Registry.register(Registry.ITEM, new Identifier("fabric-combat-api-v1-testmod", "test_bow"), TEST_BOW);
-		ShotProjectileEvents.BOW_MODIFY_SHOT_PROJECTILE.register((FabricBowExtensions) TEST_BOW);
+		ShotProjectileEvents.BOW_MODIFY_SHOT_PROJECTILE.register((ShotProjectileEvents.ModifyProjectileFromBow) TEST_BOW);
 	}
 }

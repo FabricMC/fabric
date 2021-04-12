@@ -55,6 +55,12 @@ public abstract class BowItemMixin {
 		return shotProjectile;
 	}
 
+	// Removes the pointer to the shot projectile for GC
+	@Inject(method = "onStoppedUsing(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z", shift = At.Shift.AFTER))
+	public void onStoppedUsing_resetInternalProjectile(ItemStack stack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo ci) {
+		shotProjectile = null;
+	}
+
 	// Modifies the pull progress if a custom bow is used
 	@Redirect(method = "onStoppedUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/BowItem;getPullProgress(I)F"))
 	private float redirectPullProgress(int useTicks, ItemStack bowStack, World world, LivingEntity user, int remainingUseTicks) {

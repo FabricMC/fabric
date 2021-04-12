@@ -16,25 +16,26 @@
 
 package net.fabricmc.fabric.api.item.v1.bow;
 
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 
+import net.fabricmc.fabric.api.item.v1.ShotProjectileEvents;
+
 /**
- * This is the default implementation for {@link FabricBowExtensions}, allowing for the easy creation of new bows with no new modded functionality.
+ * This is the default implementation for {@link FabricBowExtensions}, allowing for the easy creation of new bows with no new modded functionality. <br>
+ * In order to have this bow edit the properties of the shot projectiles, you must call {@code ShotProjectileEvents.BOW_MODIFY_SHOT_PROJECTILE.register(this);} for it to call {@link FabricBowItem#onProjectileShot(ItemStack, ItemStack, LivingEntity, float, PersistentProjectileEntity)}
  */
-public class FabricBowItem extends BowItem implements FabricBowExtensions {
+public class FabricBowItem extends BowItem implements FabricBowExtensions, ShotProjectileEvents.ModifyProjectileFromBow {
 	public FabricBowItem(Settings settings) {
 		super(settings);
 	}
 
 	@Override
-	public final void modifyProjectileShot(ItemStack bowStack, ItemStack arrowStack, LivingEntity user, float pullProgress, @NotNull PersistentProjectileEntity persistentProjectileEntity) {
+	public final void modifyProjectileShot(ItemStack bowStack, ItemStack arrowStack, LivingEntity user, float pullProgress, PersistentProjectileEntity projectile) {
 		if (bowStack.getItem() == this) {
-			onProjectileShot(bowStack, arrowStack, user, pullProgress, persistentProjectileEntity);
+			onProjectileShot(bowStack, arrowStack, user, pullProgress, projectile);
 		}
 	}
 

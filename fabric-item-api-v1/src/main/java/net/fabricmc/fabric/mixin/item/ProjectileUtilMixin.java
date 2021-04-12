@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.item.v1.bow.FabricBowExtensions;
 
 @Mixin(ProjectileUtil.class)
 public abstract class ProjectileUtilMixin {
-	private static final Hand[] HANDS = {Hand.MAIN_HAND, Hand.OFF_HAND}; // Cache the hands to not create the hands array each time the loop is run
+	private static final Hand[] HANDS = Hand.values(); // Cache the hands to not create the hands array each time the loop is run
 
 	// Because the uses of this method are hardcoded, checking each hand for the Fabric interfaces of the items is needed.
 	// Note: this does not cancel for the vanilla items unless they are holding a custom implementation of the items
