@@ -37,7 +37,7 @@ def getSubprojectVersion(project, version) {
 	if (grgit == null) {
 		return version + "+nogit"
 	}
-	MixinModelLoader
+
 	def latestCommits = grgit.log(paths: [project.name], maxCommits: 1)
 
 	if (latestCommits.isEmpty()) {
