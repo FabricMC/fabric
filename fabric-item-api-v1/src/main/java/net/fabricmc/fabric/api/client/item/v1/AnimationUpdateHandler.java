@@ -47,7 +47,7 @@ public interface AnimationUpdateHandler {
 	 * @return {@code true} if the item update animation should play, {@code false} otherwise
 	 */
 	@Environment(EnvType.CLIENT)
-	boolean updateAnimation(ItemStack original, ItemStack updated);
+	boolean shouldAnimateUpdate(ItemStack original, ItemStack updated);
 
 	/**
 	 * Registers an {@link AnimationUpdateHandler} for the given {@link ItemConvertible}.

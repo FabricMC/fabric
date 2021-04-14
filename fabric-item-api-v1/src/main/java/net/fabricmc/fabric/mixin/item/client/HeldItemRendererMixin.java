@@ -55,7 +55,7 @@ public class HeldItemRendererMixin {
 			// If an update animation handler for the main hand exists, and it denies the update,
 			//    assign the new stack to the cached stack to prevent the update.
 			if (updateAnimationHandler != null) {
-				if (!updateAnimationHandler.updateAnimation(mainHand, newMainStack)) {
+				if (!updateAnimationHandler.shouldAnimateUpdate(mainHand, newMainStack)) {
 					mainHand = newMainStack;
 				}
 			}
@@ -70,7 +70,7 @@ public class HeldItemRendererMixin {
 			// If an update animation handler for the off hand exists, and it denies the update,
 			//    assign the new stack to the cached stack to prevent the update.
 			if (updateAnimationHandler != null) {
-				if (!updateAnimationHandler.updateAnimation(offHand, newOffStack)) {
+				if (!updateAnimationHandler.shouldAnimateUpdate(offHand, newOffStack)) {
 					offHand = newOffStack;
 				}
 			}
