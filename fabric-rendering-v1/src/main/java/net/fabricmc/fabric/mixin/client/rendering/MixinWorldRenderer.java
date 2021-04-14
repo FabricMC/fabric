@@ -32,6 +32,7 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -97,6 +98,7 @@ public abstract class MixinWorldRenderer {
 		context.renderBlockOutline = WorldRenderEvents.BEFORE_BLOCK_OUTLINE.invoker().beforeBlockOutline(context, client.crosshairTarget);
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	@Inject(method = "drawBlockOutline", at = @At("HEAD"), cancellable = true)
 	private void onDrawBlockOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos blockPos, BlockState blockState, CallbackInfo ci) {
 		if (!context.renderBlockOutline) {
@@ -104,11 +106,15 @@ public abstract class MixinWorldRenderer {
 			// fire the BLOCK_OUTLINE event per contract of the API.
 			ci.cancel();
 		} else {
-			context.prepareBlockOutline(vertexConsumer, entity, cameraX, cameraY, cameraZ, blockPos, blockState);
+			context.prepareBlockOutline(entity, cameraX, cameraY, cameraZ, blockPos, blockState);
 
 			if (!WorldRenderEvents.BLOCK_OUTLINE.invoker().onBlockOutline(context, context)) {
 				ci.cancel();
 			}
+
+			// The immediate mode VertexConsumers use a shared buffer, so we have to make sure that the immediate mode VCP
+			// can accept block outline lines rendered to the existing vertexConsumer by the vanilla block overlay.
+			context.consumers().getBuffer(RenderLayer.getLines());
 		}
 	}
 
