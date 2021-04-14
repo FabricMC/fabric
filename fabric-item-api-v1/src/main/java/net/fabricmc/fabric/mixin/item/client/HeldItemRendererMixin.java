@@ -29,7 +29,6 @@ import net.minecraft.item.ItemStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.item.v1.FabricItemUpdateAnimationHandlers;
 import net.fabricmc.fabric.api.client.item.v1.AnimationUpdateHandler;
 
 @Environment(EnvType.CLIENT)
@@ -51,7 +50,7 @@ public class HeldItemRendererMixin {
 		ItemStack newMainStack = client.player.getMainHandStack();
 
 		if (newMainStack.getItem().equals(mainHand.getItem())) {
-			AnimationUpdateHandler updateAnimationHandler = FabricItemUpdateAnimationHandlers.get(newMainStack.getItem());
+			AnimationUpdateHandler updateAnimationHandler = AnimationUpdateHandler.get(newMainStack.getItem());
 
 			// If an update animation handler for the main hand exists, and it denies the update,
 			//    assign the new stack to the cached stack to prevent the update.
@@ -66,7 +65,7 @@ public class HeldItemRendererMixin {
 		ItemStack newOffStack = client.player.getMainHandStack();
 
 		if (newOffStack.getItem().equals(offHand.getItem())) {
-			AnimationUpdateHandler updateAnimationHandler = FabricItemUpdateAnimationHandlers.get(newOffStack.getItem());
+			AnimationUpdateHandler updateAnimationHandler = AnimationUpdateHandler.get(newOffStack.getItem());
 
 			// If an update animation handler for the off hand exists, and it denies the update,
 			//    assign the new stack to the cached stack to prevent the update.
