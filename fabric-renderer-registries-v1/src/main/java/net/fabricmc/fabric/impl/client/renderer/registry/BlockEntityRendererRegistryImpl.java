@@ -30,7 +30,7 @@ public class BlockEntityRendererRegistryImpl implements BlockEntityRendererRegis
 	private static BiConsumer<BlockEntityType<?>, BlockEntityRendererFactory<?>> handler = (type, function) -> map.put(type, function);
 
 	@Override
-	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<E> blockEntityRendererFactory) {
+	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
 		handler.accept(blockEntityType, blockEntityRendererFactory);
 	}
 
