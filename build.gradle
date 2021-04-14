@@ -19,8 +19,8 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.32.7"
-	static def mcVersion = "21w14a"
+	static def baseVersion = "0.32.8"
+	static def mcVersion = "21w15a"
 	static def yarnVersion = "+build.1"
 	static def loaderVersion = "0.10.5+build.213"
 	static def preRelease = true
@@ -37,7 +37,7 @@ def getSubprojectVersion(project, version) {
 	if (grgit == null) {
 		return version + "+nogit"
 	}
-
+	MixinModelLoader
 	def latestCommits = grgit.log(paths: [project.name], maxCommits: 1)
 
 	if (latestCommits.isEmpty()) {

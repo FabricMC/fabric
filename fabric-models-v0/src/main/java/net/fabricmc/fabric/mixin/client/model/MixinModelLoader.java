@@ -39,7 +39,7 @@ import net.fabricmc.fabric.impl.client.model.ModelLoadingRegistryImpl;
 public abstract class MixinModelLoader implements ModelLoaderHooks {
 	// this is the first one
 	@Shadow
-	public static ModelIdentifier MISSING;
+	public static ModelIdentifier MISSING_ID;
 	@Shadow
 	private ResourceManager resourceManager;
 	@Shadow
@@ -75,7 +75,7 @@ public abstract class MixinModelLoader implements ModelLoaderHooks {
 
 	@Inject(at = @At("HEAD"), method = "addModel")
 	private void addModelHook(ModelIdentifier id, CallbackInfo info) {
-		if (id == MISSING) {
+		if (id == MISSING_ID) {
 			//noinspection RedundantCast
 			ModelLoaderHooks hooks = this;
 
