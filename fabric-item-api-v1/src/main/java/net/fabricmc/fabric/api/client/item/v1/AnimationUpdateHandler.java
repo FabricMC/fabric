@@ -44,7 +44,7 @@ public interface AnimationUpdateHandler {
 	 *
 	 * @param original cached {@link ItemStack} from previous tick
 	 * @param updated  updated {@link ItemStack} to check for updates on
-	 * @return whether or not the item update animation should play
+	 * @return {@code true} if the item update animation should play, {@code false} otherwise
 	 */
 	@Environment(EnvType.CLIENT)
 	boolean updateAnimation(ItemStack original, ItemStack updated);
