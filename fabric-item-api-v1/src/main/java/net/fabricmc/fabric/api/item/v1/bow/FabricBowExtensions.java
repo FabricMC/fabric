@@ -22,7 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.fabricmc.fabric.api.item.v1.ShotProjectileEvents;
 
 /**
- * An interface to implement for all custom bows in fabric. <br>
+ * An interface to implement for all custom bows in Fabric. <br>
  * This is meant to be used on a {@link BowItem} class. Unless similar functionality is implemented on your custom item, most functionality will not work. <br>
  * In order to modify the projectile shot from your bow, implementing {@link ShotProjectileEvents.ModifyProjectileFromBow} and registering it is recommended.
  *
