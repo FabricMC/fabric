@@ -127,7 +127,9 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 		}
 
 		iterating = true;
-		return new CauldronIterator();
+		CauldronIterator iterator = new CauldronIterator();
+		transaction.addCloseCallback(iterator);
+		return iterator;
 	}
 
 	@Override
@@ -166,8 +168,8 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 	}
 
 	private class CauldronIterator implements Iterator<StorageView<Fluid>>, Transaction.CloseCallback {
-		private boolean open = true;
-		private boolean hasNext = true;
+		boolean open = true;
+		boolean hasNext = true;
 
 		@Override
 		public boolean hasNext() {

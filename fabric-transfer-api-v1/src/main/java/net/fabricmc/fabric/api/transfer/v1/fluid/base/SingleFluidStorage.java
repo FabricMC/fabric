@@ -134,7 +134,9 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<SingleFluid
 		}
 
 		iterating = true;
-		return new SingleFluidIterator();
+		SingleFluidIterator iterator = new SingleFluidIterator();
+		transaction.addCloseCallback(iterator);
+		return iterator;
 	}
 
 	@Override
@@ -170,8 +172,8 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<SingleFluid
 	}
 
 	private class SingleFluidIterator implements Iterator<StorageView<Fluid>>, Transaction.CloseCallback {
-		private boolean open = true;
-		private boolean hasNext = true;
+		boolean open = true;
+		boolean hasNext = true;
 
 		@Override
 		public boolean hasNext() {

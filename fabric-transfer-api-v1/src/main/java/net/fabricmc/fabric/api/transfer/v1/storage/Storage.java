@@ -98,7 +98,7 @@ public interface Storage<T> {
 	 *
 	 * @param transaction The transaction to which the scope of the returned iterator is tied.
 	 * @return An iterator over the contents of this storage.
-	 * @throws IllegalStateException If an iterator over this storage is already active.
+	 * @throws IllegalStateException If an iterator over this storage is already open.
 	 */
 	Iterator<StorageView<T>> iterator(Transaction transaction);
 

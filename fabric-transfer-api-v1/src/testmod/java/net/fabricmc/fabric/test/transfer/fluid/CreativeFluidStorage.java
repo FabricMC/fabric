@@ -67,7 +67,9 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<Fluid>, Stora
 		}
 
 		iterating = true;
-		return new CreativeFluidIterator();
+		CreativeFluidIterator iterator = new CreativeFluidIterator();
+		transaction.addCloseCallback(iterator);
+		return iterator;
 	}
 
 	@Override
@@ -76,8 +78,8 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<Fluid>, Stora
 	}
 
 	private class CreativeFluidIterator implements Iterator<StorageView<Fluid>>, Transaction.CloseCallback {
-		private boolean open = true;
-		private boolean hasNext = true;
+		boolean open = true;
+		boolean hasNext = true;
 
 		@Override
 		public boolean hasNext() {
