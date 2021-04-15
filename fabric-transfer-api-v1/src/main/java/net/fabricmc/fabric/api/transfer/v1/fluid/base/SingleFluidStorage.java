@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid.base;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 
@@ -37,7 +40,10 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 public abstract class SingleFluidStorage extends SnapshotParticipant<SingleFluidStorage.State> implements Storage<Fluid>, StorageView<Fluid> {
 	public Fluid fluid;
 	public long amount;
+	// Current version of the storage.
 	private int version = 0;
+	// True when an iterator is active.
+	private boolean iterating = false;
 
 	/**
 	 * Implement if you want.
@@ -122,12 +128,13 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<SingleFluid
 	}
 
 	@Override
-	public final boolean forEach(Visitor<Fluid> visitor, Transaction transaction) {
-		if (amount() > 0) {
-			return visitor.accept(this);
-		} else {
-			return false;
+	public Iterator<StorageView<Fluid>> iterator(Transaction transaction) {
+		if (iterating) {
+			throw new IllegalStateException("An iterator is already active for this storage.");
 		}
+
+		iterating = true;
+		return new SingleFluidIterator();
 	}
 
 	@Override
@@ -159,6 +166,36 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<SingleFluid
 		State(Fluid fluid, long amount) {
 			this.fluid = fluid;
 			this.amount = amount;
+		}
+	}
+
+	private class SingleFluidIterator implements Iterator<StorageView<Fluid>>, Transaction.CloseCallback {
+		private boolean open = true;
+		private boolean hasNext = true;
+
+		@Override
+		public boolean hasNext() {
+			return open && hasNext && amount() > 0;
+		}
+
+		@Override
+		public StorageView<Fluid> next() {
+			if (!open) {
+				throw new NoSuchElementException("The transaction for this iterator was closed.");
+			}
+
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+
+			hasNext = false;
+			return SingleFluidStorage.this;
+		}
+
+		@Override
+		public void onClose(Transaction transaction, Transaction.Result result) {
+			open = false;
+			iterating = false;
 		}
 	}
 }

@@ -41,7 +41,7 @@ public class FluidChuteBlockEntity extends BlockEntity implements Tickable {
 			Storage<Fluid> bottom = FluidStorage.SIDED.find(world, pos.offset(Direction.DOWN), Direction.UP);
 
 			if (top != null && bottom != null) {
-				Movement.move(top, bottom, fluid -> true, FluidConstants.BUCKET);
+				Movement.move(top, bottom, fluid -> true, FluidConstants.BUCKET, null);
 			}
 		}
 	}

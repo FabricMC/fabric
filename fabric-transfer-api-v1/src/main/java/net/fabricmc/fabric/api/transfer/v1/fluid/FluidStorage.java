@@ -23,7 +23,7 @@ import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.impl.transfer.fluid.CauldronWrapper;
+import net.fabricmc.fabric.impl.transfer.fluid.CauldronStorage;
 
 /**
  * Access to {@link Storage Storage&lt;Fluid&gt;} instances.
@@ -42,6 +42,6 @@ public final class FluidStorage {
 	}
 
 	static {
-		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, context) -> CauldronWrapper.get(world, pos), Blocks.CAULDRON);
+		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, context) -> CauldronStorage.get(world, pos), Blocks.CAULDRON);
 	}
 }

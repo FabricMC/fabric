@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.impl.transfer.fluid;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import com.google.common.collect.MapMaker;
 
@@ -36,20 +38,22 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
 // Maintainer note: this will need updating for 1.17 to allow registering modded cauldrons.
-public class CauldronWrapper extends SnapshotParticipant<Integer> implements Storage<Fluid>, StorageView<Fluid> {
-	private static final Map<WorldLocation, CauldronWrapper> WRAPPERS = new MapMaker().concurrencyLevel(1).weakValues().makeMap();
+public class CauldronStorage extends SnapshotParticipant<Integer> implements Storage<Fluid>, StorageView<Fluid> {
+	private static final Map<WorldLocation, CauldronStorage> CAULDRONS = new MapMaker().concurrencyLevel(1).weakValues().makeMap();
 
-	public static CauldronWrapper get(World world, BlockPos pos) {
+	public static CauldronStorage get(World world, BlockPos pos) {
 		WorldLocation location = new WorldLocation(world, pos.toImmutable());
-		WRAPPERS.computeIfAbsent(location, CauldronWrapper::new);
-		return WRAPPERS.get(location);
+		CAULDRONS.computeIfAbsent(location, CauldronStorage::new);
+		return CAULDRONS.get(location);
 	}
 
 	private final WorldLocation location;
 	// this is the last released snapshot, which means it's the first snapshot ever saved when onFinalCommit() is called.
 	private int lastReleasedSnapshot;
+	// True when an iterator is active.
+	private boolean iterating = false;
 
-	CauldronWrapper(WorldLocation location) {
+	CauldronStorage(WorldLocation location) {
 		this.location = location;
 	}
 
@@ -117,12 +121,13 @@ public class CauldronWrapper extends SnapshotParticipant<Integer> implements Sto
 	}
 
 	@Override
-	public boolean forEach(Visitor<Fluid> visitor, Transaction transaction) {
-		if (amount() > 0) {
-			return visitor.accept(this);
-		} else {
-			return false;
+	public Iterator<StorageView<Fluid>> iterator(Transaction transaction) {
+		if (iterating) {
+			throw new IllegalStateException("An iterator is already active for this storage.");
 		}
+
+		iterating = true;
+		return new CauldronIterator();
 	}
 
 	@Override
@@ -157,6 +162,36 @@ public class CauldronWrapper extends SnapshotParticipant<Integer> implements Sto
 			location.world.setBlockState(location.pos, originalState, 0);
 			// Then do the actual change with normal block updates
 			location.world.setBlockState(location.pos, state);
+		}
+	}
+
+	private class CauldronIterator implements Iterator<StorageView<Fluid>>, Transaction.CloseCallback {
+		private boolean open = true;
+		private boolean hasNext = true;
+
+		@Override
+		public boolean hasNext() {
+			return open && hasNext && amount() > 0;
+		}
+
+		@Override
+		public StorageView<Fluid> next() {
+			if (!open) {
+				throw new NoSuchElementException("The transaction for this iterator was closed.");
+			}
+
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+
+			hasNext = false;
+			return CauldronStorage.this;
+		}
+
+		@Override
+		public void onClose(Transaction transaction, Transaction.Result result) {
+			open = false;
+			iterating = false;
 		}
 	}
 }

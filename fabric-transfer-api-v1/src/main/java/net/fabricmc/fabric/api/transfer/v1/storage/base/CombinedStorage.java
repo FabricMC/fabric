@@ -16,11 +16,14 @@
 
 package net.fabricmc.fabric.api.transfer.v1.storage.base;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 /**
@@ -33,6 +36,8 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
  */
 public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 	public final List<S> parts;
+	// True when an iterator is active.
+	private boolean iterating = false;
 
 	public CombinedStorage(List<S> parts) {
 		this.parts = parts;
@@ -75,13 +80,71 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 	}
 
 	@Override
-	public boolean forEach(Visitor<T> visitor, Transaction transaction) {
-		for (S part : parts) {
-			if (part.forEach(visitor, transaction)) {
-				return true;
+	public Iterator<StorageView<T>> iterator(Transaction transaction) {
+		if (iterating) {
+			throw new IllegalStateException("An iterator is already active for this storage.");
+		}
+
+		iterating = true;
+		return new CombinedIterator(transaction);
+	}
+
+	/**
+	 * The combined iterator for multiple storages.
+	 */
+	private class CombinedIterator implements Iterator<StorageView<T>>, Transaction.CloseCallback {
+		boolean open = true;
+		final Transaction transaction;
+		final Iterator<S> partIterator = parts.iterator();
+		// Always holds the next StorageView<T>, except during next() while the iterator is being advanced.
+		Iterator<StorageView<T>> currentPartIterator = null;
+
+		CombinedIterator(Transaction transaction) {
+			this.transaction = transaction;
+			advanceCurrentPartIterator();
+			transaction.addCloseCallback(this);
+		}
+
+		@Override
+		public boolean hasNext() {
+			return open && currentPartIterator != null && currentPartIterator.hasNext();
+		}
+
+		@Override
+		public StorageView<T> next() {
+			if (!open) {
+				throw new NoSuchElementException("The transaction for this iterator was closed.");
+			}
+
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+
+			StorageView<T> returned = currentPartIterator.next();
+
+			// Advance the current part iterator
+			if (!currentPartIterator.hasNext()) {
+				advanceCurrentPartIterator();
+			}
+
+			return returned;
+		}
+
+		private void advanceCurrentPartIterator() {
+			while (partIterator.hasNext()) {
+				this.currentPartIterator = partIterator.next().iterator(transaction);
+
+				if (this.currentPartIterator.hasNext()) {
+					break;
+				}
 			}
 		}
 
-		return false;
+		@Override
+		public void onClose(Transaction transaction, Transaction.Result result) {
+			// As soon as the transaction is closed, this iterator is not valid anymore.
+			open = false;
+			iterating = false;
+		}
 	}
 }

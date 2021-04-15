@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.test.transfer.fluid;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 
@@ -29,6 +32,8 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<Fluid>, Stora
 	public static final CreativeFluidStorage LAVA = new CreativeFluidStorage(Fluids.LAVA);
 
 	private final Fluid infiniteFluid;
+	// True when an iterator is active.
+	private boolean iterating = false;
 
 	private CreativeFluidStorage(Fluid infiniteFluid) {
 		this.infiniteFluid = infiniteFluid;
@@ -56,12 +61,47 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<Fluid>, Stora
 	}
 
 	@Override
-	public boolean forEach(Visitor<Fluid> visitor, Transaction transaction) {
-		return visitor.accept(this);
+	public Iterator<StorageView<Fluid>> iterator(Transaction transaction) {
+		if (iterating) {
+			throw new IllegalStateException("An iterator is already active for this storage.");
+		}
+
+		iterating = true;
+		return new CreativeFluidIterator();
 	}
 
 	@Override
 	public int getVersion() {
 		return 0;
+	}
+
+	private class CreativeFluidIterator implements Iterator<StorageView<Fluid>>, Transaction.CloseCallback {
+		private boolean open = true;
+		private boolean hasNext = true;
+
+		@Override
+		public boolean hasNext() {
+			return open && hasNext && amount() > 0;
+		}
+
+		@Override
+		public StorageView<Fluid> next() {
+			if (!open) {
+				throw new NoSuchElementException("The transaction for this iterator was closed.");
+			}
+
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+
+			hasNext = false;
+			return CreativeFluidStorage.this;
+		}
+
+		@Override
+		public void onClose(Transaction transaction, Transaction.Result result) {
+			open = false;
+			iterating = false;
+		}
 	}
 }

@@ -19,9 +19,10 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 /**
- * A view of a single stored resource in a {@link Storage}, for use with {@link Storage.Visitor#accept}.
+ * A view of a single stored resource in a {@link Storage}, for use with {@link Storage#iterator}.
  *
- * <p>Note that views passed to {@link Storage.Visitor#accept} may never be empty.
+ * <p>Note that views returned by {@link Storage#iterator} may never be empty.
+ *
  * @param <T> The type of the stored resource.
  */
 public interface StorageView<T> {

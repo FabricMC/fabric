@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.api.transfer.v1.storage;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
@@ -74,18 +77,30 @@ public interface Storage<T> {
 	long extract(T resource, long maxAmount, Transaction transaction);
 
 	/**
-	 * Iterate through the contents of this storage.
+	 * Iterate through the contents of this storage, for the scope of the passed transaction.
+	 * Every visited {@link StorageView} represents a stored resource and an amount.
+	 * A {@code StorageView} <b>must not be empty</b> at the moment it is returned by the call to {@link Iterator#next next()},
+	 * but it may become empty as a result of other transfer operations.
 	 *
-	 * <p>Note: This function is not re-entrant: the implementation may throw an exception if
-	 * {@code forEach} is called from within the visitor.
+	 * <p>The iterator is <em>open</em> as long as the transaction passed to it is open.
+	 * As soon as the transaction is closed, {@link Iterator#hasNext hasNext()} must return {@code false},
+	 * and any call to {@link Iterator#next next()} must throw a {@link NoSuchElementException}.
 	 *
-	 * <p>Note: This function should not call {@link Transaction#openNested},
-	 * as the visitor might use the passed transaction directly for transfer operations.
+	 * <p>To ensure that at most one iterator is open for this storage at a given time,
+	 * this function must throw an {@link IllegalStateException} if an iterator is already open.
 	 *
-	 * @return True if the visit was stopped by the visitor, or false otherwise.
-	 * @see Visitor
+	 * <p>{@link #insert(Object, long, Transaction) insert()} and {@link #extract(Object, long, Transaction) extract()}
+	 * may however be called safely while the iterator is open.
+	 * Extractions should be visible to an open iterator, but insertions are not required to.
+	 * In particular, inventories with a fixed amount of slots may wish to make insertions visible to an open iterator,
+	 * but inventories with a dynamic or very large amount of slots should not do that to ensure timely termination of
+	 * the iteration.
+	 *
+	 * @param transaction The transaction to which the scope of the returned iterator is tied.
+	 * @return An iterator over the contents of this storage.
+	 * @throws IllegalStateException If an iterator over this storage is already active.
 	 */
-	boolean forEach(Visitor<T> visitor, Transaction transaction);
+	Iterator<StorageView<T>> iterator(Transaction transaction);
 
 	/**
 	 * Return an integer representing the current version of the storage.
@@ -101,20 +116,6 @@ public interface Storage<T> {
 		}
 
 		return TransferApiImpl.version++;
-	}
-
-	/**
-	 * A storage visitor, for use with {@link #forEach}.
-	 */
-	@FunctionalInterface
-	interface Visitor<T> {
-		/**
-		 * Read and modify the target view if necessary, and return whether to stop the visit.
-		 * References to {@code StorageView}s should never be retained.
-		 *
-		 * @return True to stop the visit, false to keep visiting.
-		 */
-		boolean accept(StorageView<T> storageView);
 	}
 
 	/**

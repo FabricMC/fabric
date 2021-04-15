@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.api.transfer.v1.storage;
 
+import java.util.Iterator;
 import java.util.function.Predicate;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
@@ -27,23 +30,6 @@ public final class Movement {
 	/**
 	 * Move resources between two storages, matching the passed filter, and return the amount that was successfully transferred.
 	 *
-	 * <p>Similar to {@linkplain #move(Storage, Storage, Predicate, long, Transaction) the other overload},
-	 * but without an explicit transaction parameter.
-	 *
-	 * @return The total amount of resources that was successfully transferred.
-	 * @throws IllegalStateException If a transaction is already active on the current thread.
-	 */
-	public static <T> long move(Storage<T> from, Storage<T> to, Predicate<T> filter, long maxAmount) {
-		try (Transaction moveTransaction = Transaction.openOuter()) {
-			long result = move(from, to, filter, maxAmount, moveTransaction);
-			moveTransaction.commit();
-			return result;
-		}
-	}
-
-	/**
-	 * Move resources between two storages, matching the passed filter, and return the amount that was successfully transferred.
-	 *
 	 * @param from The source storage.
 	 * @param to The target storage.
 	 * @param filter The filter for transferred resources.
@@ -51,36 +37,48 @@ public final class Movement {
 	 *               This filter will never be tested with an empty resource, and filters are encouraged to throw an
 	 *               exception if this guarantee is violated.
 	 * @param maxAmount The maximum amount that will be transferred.
-	 * @param transaction The transaction this transfer is part of.
+	 * @param transaction The transaction this transfer is part of, or {@code null} if a transaction should be opened just for this transfer.
 	 * @param <T> The type of resources to move.
 	 * @return The total amount of resources that was successfully transferred.
+	 * @throws IllegalStateException If no transaction is passed and a transaction is already active on the current thread.
 	 */
-	public static <T> long move(Storage<T> from, Storage<T> to, Predicate<T> filter, long maxAmount, Transaction transaction) {
-		long[] totalMoved = new long[] { 0 };
-		from.forEach(view -> {
-			T resource = view.resource();
-			if (!filter.test(resource)) return false; // keep iterating
-			long maxExtracted;
+	public static <T> long move(Storage<T> from, Storage<T> to, Predicate<T> filter, long maxAmount, @Nullable Transaction transaction) {
+		long totalMoved = 0;
 
-			// check how much can be extracted
-			try (Transaction extractionTestTransaction = transaction.openNested()) {
-				maxExtracted = view.extract(resource, maxAmount - totalMoved[0], extractionTestTransaction);
-				extractionTestTransaction.abort();
-			}
+		try (Transaction iterationTransaction = (transaction == null ? Transaction.openOuter() : transaction.openNested())) {
+			for (Iterator<StorageView<T>> it = from.iterator(iterationTransaction); it.hasNext(); ) {
+				StorageView<T> view = it.next();
+				T resource = view.resource();
+				if (!filter.test(resource)) continue;
+				long maxExtracted;
 
-			try (Transaction transferTransaction = transaction.openNested()) {
-				// check how much can be inserted
-				long accepted = to.insert(resource, maxExtracted, transferTransaction);
+				// check how much can be extracted
+				try (Transaction extractionTestTransaction = iterationTransaction.openNested()) {
+					maxExtracted = view.extract(resource, maxAmount - totalMoved, extractionTestTransaction);
+					extractionTestTransaction.abort();
+				}
 
-				// extract it, or rollback if the amounts don't match
-				if (view.extract(resource, accepted, transferTransaction) == accepted) {
-					totalMoved[0] += accepted;
-					transferTransaction.commit();
+				try (Transaction transferTransaction = iterationTransaction.openNested()) {
+					// check how much can be inserted
+					long accepted = to.insert(resource, maxExtracted, transferTransaction);
+
+					// extract it, or rollback if the amounts don't match
+					if (view.extract(resource, accepted, transferTransaction) == accepted) {
+						totalMoved += accepted;
+						transferTransaction.commit();
+					}
+				}
+
+				if (maxAmount == totalMoved) {
+					// Early return if nothing can be moved anymore
+					iterationTransaction.commit();
+					return totalMoved;
 				}
 			}
 
-			return maxAmount == totalMoved[0]; // stop iteration if nothing can be moved anymore
-		}, transaction);
-		return totalMoved[0];
+			iterationTransaction.commit();
+		}
+
+		return totalMoved;
 	}
 }
