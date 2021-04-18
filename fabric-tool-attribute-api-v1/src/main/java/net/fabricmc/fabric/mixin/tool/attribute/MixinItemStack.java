@@ -40,6 +40,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.impl.tool.attribute.ItemStackContext;
 import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
@@ -68,6 +70,7 @@ public abstract class MixinItemStack implements ItemStackContext {
 	}
 
 	// This inject stores context about the player viewing an ItemStack's tooltip before attributes are calculated.
+	@Environment(EnvType.CLIENT)
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getAttributeModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;"), method = "getTooltip")
 	private void storeTooltipAttributeEntityContext(PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> cir) {
 		contextEntity = player;
@@ -75,6 +78,7 @@ public abstract class MixinItemStack implements ItemStackContext {
 
 	// This inject removes context specified in the previous inject.
 	// This is done to prevent issues with other mods calling getAttributeModifiers.
+	@Environment(EnvType.CLIENT)
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getAttributeModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;", shift = At.Shift.AFTER), method = "getTooltip")
 	private void revokeTooltipAttributeEntityContext(PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> cir) {
 		contextEntity = null;
