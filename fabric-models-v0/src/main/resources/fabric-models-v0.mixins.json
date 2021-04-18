@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.client.model",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "MixinBakedModelManager",
     "MixinModelLoader"
   ],
   "injectors": {
