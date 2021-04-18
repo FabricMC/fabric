@@ -4,3 +4,8 @@ version = getSubprojectVersion(project, "0.2.1")
 moduleDependencies(project, [
 		'fabric-api-base'
 ])
+
+dependencies {
+	testmodCompile project(path: ':fabric-renderer-registries-v1', configuration: 'dev')
+	testmodCompile project(path: ':fabric-resource-loader-v0', configuration: 'dev')
+}
