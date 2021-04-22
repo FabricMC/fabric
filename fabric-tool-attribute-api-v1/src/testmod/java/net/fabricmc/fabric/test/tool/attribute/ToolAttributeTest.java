@@ -26,6 +26,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.ShearsItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterials;
 import net.minecraft.server.MinecraftServer;
@@ -54,6 +55,7 @@ public class ToolAttributeTest implements ModInitializer {
 	Block stoneBlock;
 	Item testShovel;
 	Item testPickaxe;
+	Item testShears;
 
 	Item testStoneLevelTater;
 	Item testStoneDynamicLevelTater;
@@ -67,6 +69,8 @@ public class ToolAttributeTest implements ModInitializer {
 		testShovel = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_shovel"), new TestTool(new Item.Settings(), FabricToolTags.SHOVELS, 2));
 		//Register a custom pickaxe that has a mining level of 2 (iron) dynamically.
 		testPickaxe = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_pickaxe"), new TestTool(new Item.Settings(), FabricToolTags.PICKAXES, 2));
+		// Register a custom shears.
+		testShears = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_shears"), new ShearsItem(new Item.Settings()));
 		// Register a block that requires a shovel that is as strong or stronger than an iron one.
 		gravelBlock = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_gravel_block"),
 				new Block(FabricBlockSettings.of(new FabricMaterialBuilder(MaterialColor.SAND).build(), MaterialColor.STONE)
