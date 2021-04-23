@@ -48,7 +48,6 @@ class ArrayBackedEvent<T> extends Event<T> {
 		lock.lock();
 
 		try {
-			// We use a copy-on-write strategy to allow lock-free concurrent reads.
 			handlers = Arrays.copyOf(handlers, handlers.length + 1);
 			handlers[handlers.length - 1] = listener;
 			update();
