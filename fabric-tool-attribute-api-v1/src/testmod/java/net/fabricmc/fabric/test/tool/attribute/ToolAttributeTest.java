@@ -44,6 +44,7 @@ import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.test.tool.attribute.item.TestDynamicCancelItem;
 import net.fabricmc.fabric.test.tool.attribute.item.TestDynamicSwordItem;
 import net.fabricmc.fabric.test.tool.attribute.item.TestDynamicToolItem;
+import net.fabricmc.fabric.test.tool.attribute.item.TestNullableItem;
 
 public class ToolAttributeTest implements ModInitializer {
 	private static final float DEFAULT_BREAK_SPEED = 1.0F;
@@ -111,6 +112,8 @@ public class ToolAttributeTest implements ModInitializer {
 		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "dynamic_tool"), new TestDynamicToolItem(new Item.Settings()));
 		// Test cancels-out attributes
 		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "cancel_item"), new TestDynamicCancelItem(new Item.Settings()));
+		// Test parameter nullability
+		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "null_test"), new TestNullableItem(new Item.Settings()));
 
 		ServerTickEvents.START_SERVER_TICK.register(this::validate);
 	}
