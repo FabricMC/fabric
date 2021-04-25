@@ -32,7 +32,7 @@ import net.minecraft.tag.Tag;
 /**
  * Interface for adding various tool attributes to items.
  *
- * <p> Functions in this interface will provide player context if it is available.
+ * <p> Functions in this interface will provide user context if it is available.
  * These context parameters are provided on a best-effort basis, and implementations should not fail hard if they are absent.</p>
  */
 public interface DynamicAttributeTool {
