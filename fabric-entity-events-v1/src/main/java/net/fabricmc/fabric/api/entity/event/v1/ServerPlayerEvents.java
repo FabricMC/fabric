@@ -62,14 +62,14 @@ public final class ServerPlayerEvents {
 	 *     apply</li>
 	 * </ul>
 	 */
-	public static final Event<CancelDeath> CANCEL_DEATH = EventFactory.createArrayBacked(CancelDeath.class, callbacks -> (player, damageSource, damageAmount) -> {
-		for (CancelDeath callback : callbacks) {
-			if (callback.cancelDeath(player, damageSource, damageAmount)) {
-				return true;
+	public static final Event<AllowDeath> ALLOW_DEATH = EventFactory.createArrayBacked(AllowDeath.class, callbacks -> (player, damageSource, damageAmount) -> {
+		for (AllowDeath callback : callbacks) {
+			if (!callback.allowDeath(player, damageSource, damageAmount)) {
+				return false;
 			}
 		}
 
-		return false;
+		return true;
 	});
 
 	@FunctionalInterface
@@ -97,16 +97,16 @@ public final class ServerPlayerEvents {
 	}
 
 	@FunctionalInterface
-	public interface CancelDeath {
+	public interface AllowDeath {
 		/**
 		 * Called when a player takes fatal damage (before totems of undying can take effect).
 		 *
 		 * @param player the player
 		 * @param damageSource the fatal damage damageSource
 		 * @param damageAmount the damageAmount of damage that has killed the player
-		 * @return true if the death should be cancelled, false otherwise.
+		 * @return true if the death should go ahead, false otherwise.
 		 */
-		boolean cancelDeath(ServerPlayerEntity player, DamageSource damageSource, float damageAmount);
+		boolean allowDeath(ServerPlayerEntity player, DamageSource damageSource, float damageAmount);
 	}
 
 	private ServerPlayerEvents() {

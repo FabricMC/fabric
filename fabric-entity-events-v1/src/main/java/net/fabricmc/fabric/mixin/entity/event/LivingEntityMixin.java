@@ -48,7 +48,7 @@ abstract class LivingEntityMixin extends EntityMixin {
 	@Redirect(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isDead()Z", ordinal = 1))
 	boolean beforePlayerKilled(LivingEntity livingEntity, DamageSource source, float amount) {
 		if (livingEntity instanceof ServerPlayerEntity) {
-			return isDead() && !ServerPlayerEvents.CANCEL_DEATH.invoker().cancelDeath((ServerPlayerEntity) livingEntity, source, amount);
+			return isDead() && ServerPlayerEvents.ALLOW_DEATH.invoker().allowDeath((ServerPlayerEntity) livingEntity, source, amount);
 		}
 
 		return isDead();

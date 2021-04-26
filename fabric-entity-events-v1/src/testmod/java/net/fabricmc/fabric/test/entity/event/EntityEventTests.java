@@ -52,15 +52,15 @@ public final class EntityEventTests implements ModInitializer {
 			LOGGER.info("Respawned {}, [{}, {}]", oldPlayer.getGameProfile().getName(), oldPlayer.getServerWorld().getRegistryKey().getValue(), newPlayer.getServerWorld().getRegistryKey().getValue());
 		});
 
-		ServerPlayerEvents.CANCEL_DEATH.register((player, source, amount) -> {
+		ServerPlayerEvents.ALLOW_DEATH.register((player, source, amount) -> {
 			LOGGER.info("{} is going to die to {} damage from {} damage source", player.getGameProfile().getName(), amount, source.getName());
 
 			if (player.getStackInHand(Hand.MAIN_HAND).getItem() == Items.APPLE) {
 				player.setHealth(3.0f);
-				return true;
+				return false;
 			}
 
-			return false;
+			return true;
 		});
 	}
 }
