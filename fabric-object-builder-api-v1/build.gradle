@@ -7,6 +7,8 @@ dependencies {
 
 moduleDependencies(project, [
 		'fabric-api-base',
+		'fabric-resource-loader-v0',
+		'fabric-tag-extensions-v0',
 		'fabric-tool-attribute-api-v1'
 ])
 
