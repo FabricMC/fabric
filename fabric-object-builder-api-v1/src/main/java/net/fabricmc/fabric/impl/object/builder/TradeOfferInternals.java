@@ -23,11 +23,15 @@ import java.util.function.Consumer;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
 
 public final class TradeOfferInternals {
+	private static final Logger LOGGER = LogManager.getLogger("fabric-object-builder-api-v1");
+
 	private TradeOfferInternals() {
 	}
 
@@ -51,5 +55,10 @@ public final class TradeOfferInternals {
 
 		final TradeOffers.Factory[] allEntries = ArrayUtils.addAll(originalEntries, addedEntries);
 		leveledTradeMap.put(level, allEntries);
+	}
+
+	public static void printRefreshOffersWarning() {
+		Throwable loggingThrowable = new Throwable();
+		LOGGER.warn("TradeOfferHelper#refreshOffers does not do anything, yet it was called! Stack trace:", loggingThrowable);
 	}
 }

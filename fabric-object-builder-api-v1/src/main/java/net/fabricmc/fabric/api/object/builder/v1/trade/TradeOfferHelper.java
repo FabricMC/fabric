@@ -61,5 +61,6 @@ public final class TradeOfferHelper {
 	 */
 	@Deprecated
 	public static void refreshOffers() {
+		TradeOfferInternals.printRefreshOffersWarning();
 	}
 }
