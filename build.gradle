@@ -124,6 +124,9 @@ allprojects {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
 		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
 		modCompile "net.fabricmc:fabric-loader:${Globals.loaderVersion}"
+
+		// TODO remove when updating to loom 0.7
+		annotationProcessor "net.fabricmc:fabric-mixin-compile-extensions:0.4.3"
 	}
 
 	configurations {
