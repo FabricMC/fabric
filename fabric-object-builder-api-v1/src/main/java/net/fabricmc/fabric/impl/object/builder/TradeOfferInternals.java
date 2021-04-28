@@ -35,18 +35,18 @@ public final class TradeOfferInternals {
 	private TradeOfferInternals() {
 	}
 
-	public static void registerVillagerOffers(VillagerProfession profession, int level, Consumer<List<TradeOffers.Factory>> factory) {
+	// synchronized guards against concurrent modifications - Vanilla does not mutate the underlying arrays (as of 1.16),
+	// so reads will be fine without locking.
+	public static synchronized void registerVillagerOffers(VillagerProfession profession, int level, Consumer<List<TradeOffers.Factory>> factory) {
 		registerOffers(TradeOffers.PROFESSION_TO_LEVELED_TRADE.computeIfAbsent(profession, key -> new Int2ObjectOpenHashMap<>()), level, factory);
 	}
 
-	public static void registerWanderingTraderOffers(int level, Consumer<List<TradeOffers.Factory>> factory) {
+	public static synchronized void registerWanderingTraderOffers(int level, Consumer<List<TradeOffers.Factory>> factory) {
 		registerOffers(TradeOffers.WANDERING_TRADER_TRADES, level, factory);
 	}
 
 	// Shared code to register offers for both villagers and wandering traders.
-	// synchronized guards against concurrent modifications - Vanilla does not mutate the underlying arrays (as of 1.16),
-	// so reads will be fine without locking.
-	private static synchronized void registerOffers(Int2ObjectMap<TradeOffers.Factory[]> leveledTradeMap, int level, Consumer<List<TradeOffers.Factory>> factory) {
+	private static void registerOffers(Int2ObjectMap<TradeOffers.Factory[]> leveledTradeMap, int level, Consumer<List<TradeOffers.Factory>> factory) {
 		final List<TradeOffers.Factory> list = new ArrayList<>();
 		factory.accept(list);
 
