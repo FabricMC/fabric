@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.object.builder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -38,6 +39,7 @@ public final class TradeOfferInternals {
 	// synchronized guards against concurrent modifications - Vanilla does not mutate the underlying arrays (as of 1.16),
 	// so reads will be fine without locking.
 	public static synchronized void registerVillagerOffers(VillagerProfession profession, int level, Consumer<List<TradeOffers.Factory>> factory) {
+		Objects.requireNonNull(profession, "VillagerProfession may not be null.");
 		registerOffers(TradeOffers.PROFESSION_TO_LEVELED_TRADE.computeIfAbsent(profession, key -> new Int2ObjectOpenHashMap<>()), level, factory);
 	}
 
