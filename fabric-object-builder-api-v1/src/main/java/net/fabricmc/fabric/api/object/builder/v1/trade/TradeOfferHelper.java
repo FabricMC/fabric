@@ -63,4 +63,7 @@ public final class TradeOfferHelper {
 	public static void refreshOffers() {
 		TradeOfferInternals.printRefreshOffersWarning();
 	}
+
+	private TradeOfferHelper() {
+	}
 }
