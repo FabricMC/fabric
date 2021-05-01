@@ -39,11 +39,7 @@ public final class EventFactoryImpl {
 	}
 
 	public static <T> Event<T> createArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {
-		return createArrayBacked(type, null /* buildEmptyInvoker(type, invokerFactory) */, invokerFactory);
-	}
-
-	public static <T> Event<T> createArrayBacked(Class<? super T> type, T emptyInvoker, Function<T[], T> invokerFactory) {
-		ArrayBackedEvent<T> event = new ArrayBackedEvent<>(type, emptyInvoker, invokerFactory);
+		ArrayBackedEvent<T> event = new ArrayBackedEvent<>(type, invokerFactory);
 		ARRAY_BACKED_EVENTS.add(event);
 		return event;
 	}
