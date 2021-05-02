@@ -154,6 +154,10 @@ allprojects {
 		archiveClassifier = "dev"
 	}
 
+	artifacts {
+		dev file: file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar"), type: "jar", builtBy: jar
+	}
+
 	task testmodJar(type: Jar) {
 		from sourceSets.testmod.output
 		archiveClassifier = "testmod-dev"
@@ -180,10 +184,6 @@ allprojects {
 			archiveFileName = "${archivesBaseName}-${archiveVersion.get()}.jar"
 		}
 
-		artifacts {
-			dev file: file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar"), type: "jar", builtBy: jar
-		}
-
 		processResources {
 			inputs.property "version", project.version
 
@@ -195,14 +195,6 @@ allprojects {
 		license {
 			header rootProject.file("HEADER")
 			include "**/*.java"
-		}
-
-		if (project.rootProject != project) {
-			project.rootProject.dependencies {
-				api project(path: ":${project.name}", configuration: "dev")
-				include project(":${project.name}")
-				testmodImplementation project(":${project.name}").sourceSets.testmod.output
-			}
 		}
 
 		// Setup batched remap for testmod jars. Not really a supported api in loom so copy this at your own risk.
@@ -392,6 +384,15 @@ subprojects.each { remapJar.dependsOn("${it.path}:remapJar") }
 
 sourceSets {
 	testmod
+}
+
+dependencies {
+	subprojects.each {
+		api project(path: ":${it.name}", configuration: "dev")
+		include project("${it.name}:")
+
+		testmodImplementation project("${it.name}:").sourceSets.testmod.output
+	}
 }
 
 curseforge {
