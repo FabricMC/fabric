@@ -31,15 +31,16 @@ import net.minecraft.network.packet.s2c.login.LoginDisconnectS2CPacket;
 import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
+import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
-import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkHandlerExtensions;
 
 @Mixin(ServerLoginNetworkHandler.class)
-abstract class ServerLoginNetworkHandlerMixin implements ServerLoginNetworkHandlerExtensions, DisconnectPacketSource, PacketCallbackListener {
+abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtensions, DisconnectPacketSource, PacketCallbackListener {
 	@Shadow
 	@Final
 	private MinecraftServer server;
@@ -78,7 +79,12 @@ abstract class ServerLoginNetworkHandlerMixin implements ServerLoginNetworkHandl
 
 	@Inject(method = "onDisconnected", at = @At("HEAD"))
 	private void handleDisconnection(Text reason, CallbackInfo ci) {
-		this.addon.invokeDisconnectEvent();
+		this.addon.handleDisconnect();
+	}
+
+	@Inject(method = "addToServer", at = @At("HEAD"))
+	private void handlePlayTransitionNormal(ServerPlayerEntity player, CallbackInfo ci) {
+		this.addon.handlePlayTransition();
 	}
 
 	@Override

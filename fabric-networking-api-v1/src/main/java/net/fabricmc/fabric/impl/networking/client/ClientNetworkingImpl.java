@@ -41,6 +41,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
+import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.ConnectScreenAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.MinecraftClientAccessor;
@@ -52,11 +53,11 @@ public final class ClientNetworkingImpl {
 	private static ClientPlayNetworkAddon currentPlayAddon;
 
 	public static ClientPlayNetworkAddon getAddon(ClientPlayNetworkHandler handler) {
-		return ((ClientPlayNetworkHandlerExtensions) handler).getAddon();
+		return (ClientPlayNetworkAddon) ((NetworkHandlerExtensions) handler).getAddon();
 	}
 
 	public static ClientLoginNetworkAddon getAddon(ClientLoginNetworkHandler handler) {
-		return ((ClientLoginNetworkHandlerExtensions) handler).getAddon();
+		return (ClientLoginNetworkAddon) ((NetworkHandlerExtensions) handler).getAddon();
 	}
 
 	public static Packet<?> createPlayC2SPacket(Identifier channelName, PacketByteBuf buf) {

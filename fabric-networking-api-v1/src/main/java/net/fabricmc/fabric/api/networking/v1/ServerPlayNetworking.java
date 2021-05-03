@@ -30,7 +30,6 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
-import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerExtensions;
 
 /**
  * Offers access to play stage server-side networking functionalities.
@@ -106,7 +105,7 @@ public final class ServerPlayNetworking {
 	public static boolean registerReceiver(ServerPlayNetworkHandler networkHandler, Identifier channelName, PlayChannelHandler channelHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
-		return ((ServerPlayNetworkHandlerExtensions) networkHandler).getAddon().registerChannel(channelName, channelHandler);
+		return ServerNetworkingImpl.getAddon(networkHandler).registerChannel(channelName, channelHandler);
 	}
 
 	/**

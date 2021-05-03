@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.spongepowered.asm.mixin.Mixin;
@@ -40,6 +41,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
+import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
 
 @Mixin(ClientConnection.class)
@@ -79,6 +81,11 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 		if (this.packetListener instanceof PacketCallbackListener) {
 			((PacketCallbackListener) this.packetListener).sent(packet);
 		}
+	}
+
+	@Inject(method = "channelInactive", at = @At("HEAD"))
+	private void handleDisconnect(ChannelHandlerContext channelHandlerContext, CallbackInfo ci) throws Exception {
+		((NetworkHandlerExtensions) packetListener).getAddon().handleDisconnect();
 	}
 
 	@Override
