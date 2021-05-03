@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.networking.client;
+package net.fabricmc.fabric.impl.networking;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
-@Environment(EnvType.CLIENT)
-public interface ClientLoginNetworkHandlerExtensions {
-	ClientLoginNetworkAddon getAddon();
+public interface NetworkHandlerExtensions {
+	AbstractNetworkAddon<?> getAddon();
 }
