@@ -57,14 +57,14 @@ public class MixinMinecraftClient {
 		}
 	}
 
-	@Inject(method = "createSaveProperties", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/dynamic/RegistryOps;of(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;"))
+	@Inject(method = "createSaveProperties", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/dynamic/RegistryOps;method_36574(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;"))
 	private static void createSaveProperties(LevelStorage.Session session, DynamicRegistryManager.Impl impl, ResourceManager resourceManager, DataPackSettings dataPackSettings, CallbackInfoReturnable<SaveProperties> cir) {
 		Path saveDir = ((AccessorLevelStorageSession) session).getDirectory();
 		PersistentDynamicRegistryHandler.remapDynamicRegistries(impl, saveDir);
 	}
 
 	// synthetic in method_29607 just after RegistryOps.of
-	@Inject(method = "method_31125", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/dynamic/RegistryOps;of(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;"))
+	@Inject(method = "method_31125", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/dynamic/RegistryOps;method_36574(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;"))
 	private static void method_31125(DynamicRegistryManager.Impl impl, GeneratorOptions generatorOptions, LevelInfo levelInfo, LevelStorage.Session session, DynamicRegistryManager.Impl impl2, ResourceManager resourceManager, DataPackSettings dataPackSettings, CallbackInfoReturnable<SaveProperties> cir) {
 		Path saveDir = ((AccessorLevelStorageSession) session).getDirectory();
 		PersistentDynamicRegistryHandler.remapDynamicRegistries(impl, saveDir);
