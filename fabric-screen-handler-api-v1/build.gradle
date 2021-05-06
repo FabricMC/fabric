@@ -7,6 +7,8 @@ minecraft {
 
 dependencies {
 	testmodCompile(project(path: ':fabric-object-builder-api-v1', configuration: 'dev'))
+	testmodCompile(project(path: ':fabric-tag-extensions-v0', configuration: 'dev'))
+	testmodCompile(project(path: ':fabric-tool-attribute-api-v1', configuration: 'dev'))
 	testmodRuntimeOnly(project(path: ':fabric-resource-loader-v0', configuration: 'dev'))
 }
 
