@@ -61,8 +61,9 @@ public interface AnimationUpdateHandler {
 	 * @throws UnsupportedOperationException if the given {@link ItemConvertible} already has an update handler
 	 */
 	static void register(ItemConvertible item, AnimationUpdateHandler handler) {
-		Objects.requireNonNull(item, "Attempted to retrieve an Update Animation Handler for an invalid item!");
-		Objects.requireNonNull(item.asItem(), "Attempted to retrieve an Update Animation Handler for an invalid item!");
+		Objects.requireNonNull(item, "Attempted to register an Update Animation Handler for an invalid item!");
+		Objects.requireNonNull(item.asItem(), "Attempted to register an Update Animation Handler for an invalid item!");
+		Objects.requireNonNull(handler, "Attempted to register a null Update Animation Handler!");
 
 		if (((ItemUpdateAnimationHandlerExtensions) item.asItem()).fabric_getUpdateAnimationHandler() != null) {
 			Identifier registryID = Registry.ITEM.getId(item.asItem());
