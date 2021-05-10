@@ -85,7 +85,9 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 
 	@Inject(method = "channelInactive", at = @At("HEAD"))
 	private void handleDisconnect(ChannelHandlerContext channelHandlerContext, CallbackInfo ci) throws Exception {
-		((NetworkHandlerExtensions) packetListener).getAddon().handleDisconnect();
+		if (packetListener instanceof NetworkHandlerExtensions) { // not the case for client/server query
+			((NetworkHandlerExtensions) packetListener).getAddon().handleDisconnect();
+		}
 	}
 
 	@Override
