@@ -2,6 +2,6 @@ archivesBaseName = "fabric-resource-loader-v0"
 version = getSubprojectVersion(project, "0.4.6")
 
 dependencies {
-	testmodCompile project(path: ':fabric-lifecycle-events-v1', configuration: 'dev')
-	testmodCompile project(path: ':fabric-api-base', configuration: 'dev')
+	testmodImplementation project(path: ':fabric-lifecycle-events-v1', configuration: 'dev')
+	testmodImplementation project(path: ':fabric-api-base', configuration: 'dev')
 }

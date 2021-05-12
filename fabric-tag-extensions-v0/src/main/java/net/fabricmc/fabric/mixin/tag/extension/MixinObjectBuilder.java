@@ -20,13 +20,12 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.data.server.AbstractTagProvider;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.tag.FabricDataGeneratorTagBuilder;
 
-@Mixin(AbstractTagProvider.ObjectBuilder.class)
+@Mixin(targets = "net.minecraft.data.server.AbstractTagProvider$ObjectBuilder")
 public class MixinObjectBuilder<T> implements FabricDataGeneratorTagBuilder<T> {
 	@Shadow
 	@Final private Tag.Builder field_23960;
