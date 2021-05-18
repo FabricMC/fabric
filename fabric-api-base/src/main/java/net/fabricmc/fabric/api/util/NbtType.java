@@ -26,7 +26,11 @@ import net.minecraft.nbt.NbtElement;
  *
  * @see NbtCompound#contains(String, int)
  * @see net.minecraft.nbt.NbtTypes#byId(int)
+ *
+ * @deprecated All NBT types are available in {@link NbtElement}. This
+ * class would be removed in the future as a result.
  */
+@Deprecated(forRemoval = true)
 public final class NbtType {
 	public static final int END = 0;
 	public static final int BYTE = 1;
