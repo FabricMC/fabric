@@ -22,7 +22,7 @@ import net.minecraft.screen.ScreenHandler;
 /**
  * @deprecated Use {@link net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry.Factory} instead.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 @FunctionalInterface
 public interface ContainerScreenFactory<C extends ScreenHandler> {
 	HandledScreen create(C container);

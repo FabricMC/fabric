@@ -29,7 +29,7 @@ import net.fabricmc.fabric.mixin.object.builder.AbstractBlockSettingsAccessor;
 /**
  * @deprecated Please migrate to v1. Please use methods in {@link net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings} instead.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public final class BlockSettingsExtensions {
 	private BlockSettingsExtensions() {
 	}

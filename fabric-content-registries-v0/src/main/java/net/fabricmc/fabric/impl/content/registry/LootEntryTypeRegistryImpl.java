@@ -23,7 +23,7 @@ import net.minecraft.loot.entry.LootPoolEntry;
 
 import net.fabricmc.fabric.api.registry.LootEntryTypeRegistry;
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public final class LootEntryTypeRegistryImpl implements LootEntryTypeRegistry {
 	public static final LootEntryTypeRegistryImpl INSTANCE = new LootEntryTypeRegistryImpl();
 	private static final Method REGISTER_METHOD;

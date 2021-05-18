@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.dimension.v1;
 
 import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.Entity;
@@ -30,6 +31,7 @@ import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
  *
  * @deprecated Experimental feature, may be removed or changed without further notice due to potential changes to Dimensions in subsequent versions.
  */
+@ApiStatus.Experimental
 @Deprecated
 public final class FabricDimensions {
 	private FabricDimensions() {

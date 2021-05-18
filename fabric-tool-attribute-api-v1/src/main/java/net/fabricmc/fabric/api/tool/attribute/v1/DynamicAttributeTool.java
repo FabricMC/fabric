@@ -46,7 +46,7 @@ public interface DynamicAttributeTool {
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
 	 * @deprecated Use {@link #getMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	default int getMiningLevel(ItemStack stack, @Nullable LivingEntity user) {
 		return 0;
 	}
@@ -72,7 +72,7 @@ public interface DynamicAttributeTool {
 	 * @return The mining speed multiplier of the item. 8.0 is equal to a diamond pick.
 	 * @deprecated Use {@link #getMiningSpeedMultiplier(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	default float getMiningSpeedMultiplier(ItemStack stack, @Nullable LivingEntity user) {
 		return 1.0F;
 	}

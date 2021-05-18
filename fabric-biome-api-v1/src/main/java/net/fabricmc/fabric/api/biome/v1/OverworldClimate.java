@@ -16,11 +16,14 @@
 
 package net.fabricmc.fabric.api.biome.v1;
 
+import org.jetbrains.annotations.ApiStatus;
+
 /**
  * Represents the climates of biomes on the overworld continents.
  *
  * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
+@ApiStatus.Experimental
 @Deprecated
 public enum OverworldClimate {
 	/**

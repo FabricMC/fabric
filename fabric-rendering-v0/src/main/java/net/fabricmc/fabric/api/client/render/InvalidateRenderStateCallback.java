@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * @deprecated Replaced by {@link net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback}
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public interface InvalidateRenderStateCallback {
 	Event<InvalidateRenderStateCallback> EVENT = EventFactory.createArrayBacked(InvalidateRenderStateCallback.class,
 			(listeners) -> () -> {

@@ -23,13 +23,13 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public interface WorldTickCallback {
 	/**
 	 * @deprecated The new WorldTickCallback has been split into a client and server callback.
 	 * Please use the {@link ServerTickEvents#END_WORLD_TICK server} or {@link ClientTickEvents#END_WORLD_TICK client} callbacks.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	Event<WorldTickCallback> EVENT = EventFactory.createArrayBacked(WorldTickCallback.class,
 			(listeners) -> {
 				if (EventFactory.isProfilingEnabled()) {

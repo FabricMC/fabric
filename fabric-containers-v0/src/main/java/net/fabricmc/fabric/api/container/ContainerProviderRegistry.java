@@ -30,7 +30,7 @@ import net.fabricmc.fabric.impl.container.ContainerProviderImpl;
 /**
  * @deprecated Use {@link net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry} instead.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public interface ContainerProviderRegistry {
 	ContainerProviderRegistry INSTANCE = ContainerProviderImpl.INSTANCE;
 

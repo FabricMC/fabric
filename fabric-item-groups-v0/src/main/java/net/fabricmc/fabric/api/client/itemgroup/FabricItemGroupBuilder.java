@@ -64,7 +64,7 @@ public final class FabricItemGroupBuilder {
 	 * @return a reference to the FabricItemGroupBuilder
 	 * @deprecated use {@link FabricItemGroupBuilder#appendItems(Consumer)}
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public FabricItemGroupBuilder stacksForDisplay(Consumer<List<ItemStack>> appender) {
 		return appendItems(appender);
 	}

@@ -25,9 +25,9 @@ import net.minecraft.util.Identifier;
 /**
  * @deprecated use {@link ExtraModelProvider}, which supports loading of plain {@link Identifier}s
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 @FunctionalInterface
 public interface ModelAppender {
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	void appendAll(ResourceManager manager, Consumer<ModelIdentifier> out);
 }

@@ -36,7 +36,7 @@ public interface ModelLoadingRegistry {
 	 * Register a model appender, which can request loading additional models.
 	 * @deprecated Use {@link #registerModelProvider(ExtraModelProvider)} instead, which supports loading of plain {@link Identifier}s
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	void registerAppender(ModelAppender appender);
 
 	/**

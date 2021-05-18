@@ -33,7 +33,7 @@ import net.fabricmc.api.Environment;
  *
  * @deprecated Please use {@link BuiltinItemRendererRegistry.DynamicItemRenderer} instead.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 @Environment(EnvType.CLIENT)
 @FunctionalInterface
 public interface BuiltinItemRenderer {

@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
  *
  * @deprecated See the corresponding play packet handler in {@link ClientPlayNetworking} or {@link ServerPlayNetworking}
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 @FunctionalInterface
 public interface PacketConsumer {
 	/**

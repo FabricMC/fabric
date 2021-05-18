@@ -102,7 +102,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	/**
 	 * @deprecated will be removed in 1.17 cycle - see docs in interface
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	@Override
 	public final MutableQuadViewImpl fromVanilla(int[] quadData, int startIndex, boolean isItem) {
 		System.arraycopy(quadData, startIndex, data, baseIndex + HEADER_STRIDE, QUAD_STRIDE);

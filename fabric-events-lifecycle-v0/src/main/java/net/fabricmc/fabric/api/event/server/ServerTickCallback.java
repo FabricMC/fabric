@@ -22,12 +22,12 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public interface ServerTickCallback {
 	/**
 	 * @deprecated Please use {@link ServerTickEvents#END_SERVER_TICK}
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	Event<ServerTickCallback> EVENT = EventFactory.createArrayBacked(ServerTickCallback.class,
 			(listeners) -> {
 				if (EventFactory.isProfilingEnabled()) {

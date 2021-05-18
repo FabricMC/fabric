@@ -27,7 +27,7 @@ import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
  * @see KeyBinding
  * @deprecated Please migrate to v1. Please use {@link KeyBindingHelper} instead.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public interface KeyBindingRegistry {
 	KeyBindingRegistry INSTANCE = new KeyBindingRegistry() {
 		@Override

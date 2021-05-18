@@ -27,7 +27,7 @@ import net.minecraft.block.AbstractBlock;
 import net.fabricmc.fabric.api.event.registry.BlockConstructedCallback;
 
 @Mixin(Block.class)
-@Deprecated
+@Deprecated(forRemoval = true)
 public class OldMixinBlock {
 	@Inject(method = "<init>(Lnet/minecraft/block/AbstractBlock$Settings;)V", at = @At("RETURN"))
 	public void init(AbstractBlock.Settings builder, CallbackInfo info) {

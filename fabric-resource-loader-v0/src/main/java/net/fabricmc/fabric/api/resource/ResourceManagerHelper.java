@@ -33,7 +33,7 @@ public interface ResourceManagerHelper {
 	 * @param listener The resource reload listener.
 	 * @deprecated Use {@link ResourceManagerHelper#registerReloadListener(IdentifiableResourceReloadListener)}
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	default void addReloadListener(IdentifiableResourceReloadListener listener) {
 		registerReloadListener(listener);
 	}

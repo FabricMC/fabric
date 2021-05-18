@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
  *
  * @deprecated Please migrate to v1. Please use {@link KeyBindingHelper#registerKeyBinding(KeyBinding)} instead.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class FabricKeyBinding extends KeyBinding {
 	protected FabricKeyBinding(Identifier id, InputUtil.Type type, int code, String category) {
 		super(String.format("key.%s.%s", id.getNamespace(), id.getPath()), type, code, category);
@@ -41,12 +41,12 @@ public class FabricKeyBinding extends KeyBinding {
 	 *
 	 * @return configured KeyCode
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public InputUtil.Key getBoundKey() {
 		return KeyBindingHelper.getBoundKeyOf(this);
 	}
 
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static class Builder {
 		protected final FabricKeyBinding binding;
 

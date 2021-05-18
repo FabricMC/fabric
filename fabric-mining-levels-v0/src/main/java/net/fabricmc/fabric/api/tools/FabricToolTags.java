@@ -24,7 +24,7 @@ import net.minecraft.tag.Tag;
  *
  * @deprecated Use the moved {@link net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags} class instead
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class FabricToolTags {
 	public static final Tag<Item> AXES = net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags.AXES;
 	public static final Tag<Item> HOES = net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags.HOES;

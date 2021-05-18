@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
  *
  * @deprecated Please use {@link PlayerLookup} instead.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public final class PlayerStream {
 	private PlayerStream() { }
 

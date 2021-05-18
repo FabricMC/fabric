@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
  *
  * @deprecated Use dedicated classes, such as {@link FabricToolTags}
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class FabricItemTags {
 	public static final Tag<Item> AXES = FabricToolTags.AXES;
 	public static final Tag<Item> HOES = FabricToolTags.HOES;

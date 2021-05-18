@@ -59,7 +59,7 @@ public final class TradeOfferHelper {
 	/**
 	 * @deprecated This never did anything useful.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static void refreshOffers() {
 		TradeOfferInternals.printRefreshOffersWarning();
 	}

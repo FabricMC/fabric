@@ -34,12 +34,12 @@ import net.fabricmc.fabric.api.networking.v1.S2CPlayChannelEvents;
  *
  * @deprecated Please migrate to {@link C2SPlayChannelEvents} since this was incorrectly named.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public interface S2CPacketTypeCallback {
 	/**
 	 * @deprecated Please migrate to {@link S2CPlayChannelEvents#REGISTER}.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	Event<S2CPacketTypeCallback> REGISTERED = EventFactory.createArrayBacked(
 			S2CPacketTypeCallback.class,
 			(callbacks) -> (types) -> {
@@ -52,7 +52,7 @@ public interface S2CPacketTypeCallback {
 	/**
 	 * @deprecated Please migrate to {@link S2CPlayChannelEvents#UNREGISTER}.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	Event<S2CPacketTypeCallback> UNREGISTERED = EventFactory.createArrayBacked(
 			S2CPacketTypeCallback.class,
 			(callbacks) -> (types) -> {

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.biome.v1;
 
+import org.jetbrains.annotations.ApiStatus;
+
 /**
  * To achieve a predictable order for biome modifiers, and to aid with mod compatibility, modifiers need to declare
  * the phase in which they will be applied.
@@ -30,6 +32,7 @@ package net.fabricmc.fabric.api.biome.v1;
  *
  * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
+@ApiStatus.Experimental
 @Deprecated
 public enum ModificationPhase {
 	/**

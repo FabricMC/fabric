@@ -30,7 +30,7 @@ import net.minecraft.util.Identifier;
 /**
  * @deprecated Please migrate to v1. Please use {@link net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings} instead
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class FabricBlockSettings {
 	protected final net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings delegate;
 
@@ -171,7 +171,10 @@ public class FabricBlockSettings {
 		return this;
 	}
 
-	@Deprecated
+	/**
+	 * @deprecated Use {@link #slipperiness(float)}
+	 */
+	@Deprecated(forRemoval = true)
 	public FabricBlockSettings friction(float friction) {
 		this.delegate.slipperiness(friction);
 		return this;

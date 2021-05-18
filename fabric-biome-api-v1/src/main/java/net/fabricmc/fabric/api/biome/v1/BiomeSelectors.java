@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableSet;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -39,6 +40,7 @@ import net.fabricmc.fabric.mixin.biome.VanillaLayeredBiomeSourceAccessor;
  *
  * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
+@ApiStatus.Experimental
 @Deprecated
 public final class BiomeSelectors {
 	private BiomeSelectors() {

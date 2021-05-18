@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
  *
  * @deprecated Please migrate to {@link ServerPlayNetworking}.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public interface ServerSidePacketRegistry extends PacketRegistry {
 	ServerSidePacketRegistry INSTANCE = new ServerSidePacketRegistryImpl();
 

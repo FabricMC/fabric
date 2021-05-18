@@ -26,7 +26,7 @@ import net.fabricmc.api.EnvType;
  * to additional information, such as the source/target of the player, or
  * the correct task queue to enqueue synchronization-requiring code on.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public interface PacketContext {
 	/**
 	 * Get the environment associated with the packet.

@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.8.3" apply false
+	id "fabric-loom" version "0.8.6" apply false
 	id "org.cadixdev.licenser" version "0.5.0"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"

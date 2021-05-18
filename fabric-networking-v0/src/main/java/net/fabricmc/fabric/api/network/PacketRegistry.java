@@ -20,7 +20,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.network.PacketByteBuf;
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public interface PacketRegistry {
 	/**
 	 * Turn a (identifier, byte buffer) pair into a "custom payload" packet

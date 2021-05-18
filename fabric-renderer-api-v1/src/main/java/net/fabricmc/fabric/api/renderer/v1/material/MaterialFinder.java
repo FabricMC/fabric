@@ -64,7 +64,7 @@ public interface MaterialFinder {
 	 *
 	 * @deprecated Use {@code BlendMode} version instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	default MaterialFinder blendMode(int spriteIndex, RenderLayer renderLayer) {
 		return blendMode(spriteIndex, BlendMode.fromRenderLayer(renderLayer));
 	}

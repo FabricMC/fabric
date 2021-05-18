@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.biome.v1;
 import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -39,6 +40,7 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
  *
  * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
+@ApiStatus.Experimental
 @Deprecated
 public final class BiomeModifications {
 	/**

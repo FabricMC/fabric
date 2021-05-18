@@ -31,11 +31,11 @@ import net.minecraft.util.registry.Registry;
  * @deprecated Use FabricEntityTypeBuilder methods
  */
 @SuppressWarnings("deprecation")
-@Deprecated
+@Deprecated(forRemoval = true)
 public class EntityTrackingRegistry {
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static class Entry {
 		private final int trackingDistance;
 		private final int updateIntervalTicks;
@@ -60,23 +60,23 @@ public class EntityTrackingRegistry {
 		}
 	}
 
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static final EntityTrackingRegistry INSTANCE = new EntityTrackingRegistry();
 	private final Map<EntityType, Entry> entries = new HashMap<>();
 
 	private EntityTrackingRegistry() { }
 
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public Entry get(EntityType type) {
 		return entries.get(type);
 	}
 
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public void register(EntityType type, int trackingDistance, int updateIntervalTicks) {
 		register(type, trackingDistance, updateIntervalTicks, true);
 	}
 
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public void register(EntityType type, int trackingDistance, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
 		LOGGER.warn("Deprecation warning: As of February 2019, registering tracking via EntityTrackingRegistry is no longer effective. Use FabricEntityTypeBuilder. (Entity: " + Registry.ENTITY_TYPE.getId(type) + ")");
 		entries.put(type, new Entry(trackingDistance, updateIntervalTicks, alwaysUpdateVelocity));

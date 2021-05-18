@@ -26,7 +26,7 @@ import net.minecraft.item.ItemConvertible;
 /**
  * @deprecated Replaced by {@link net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry}
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public interface ColorProviderRegistry<T, Provider> {
 	ColorProviderRegistry<ItemConvertible, ItemColorProvider> ITEM = new ColorProviderRegistry<ItemConvertible, ItemColorProvider>() {
 		@Override
