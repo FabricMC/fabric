@@ -23,8 +23,9 @@ import net.minecraft.util.DyeColor;
 
 /**
  * @deprecated Please migrate to v1. Please use {@link net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder} instead.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public class FabricMaterialBuilder extends Material.Builder {
 	private net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder delegate;
 

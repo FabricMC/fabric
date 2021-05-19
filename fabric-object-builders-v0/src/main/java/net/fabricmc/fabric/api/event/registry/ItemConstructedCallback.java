@@ -23,8 +23,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * @deprecated Please migrate to v1. Please use Please use registry events instead.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public interface ItemConstructedCallback {
 	Event<ItemConstructedCallback> EVENT = EventFactory.createArrayBacked(ItemConstructedCallback.class,
 			(listeners) -> (settings, builtItem) -> {

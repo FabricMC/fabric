@@ -234,6 +234,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 
 	/**
 	 * @deprecated Please use {@link FabricBlockSettings#luminance(int)}.
+	 * This method would be removed in a future major version update.
 	 */
 	@Deprecated(forRemoval = true)
 	public FabricBlockSettings lightLevel(int lightLevel) {
@@ -273,7 +274,8 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	/* FABRIC DELEGATE WRAPPERS */
 
 	/**
-	 * @deprecated Please migrate to {@link FabricBlockSettings#mapColor(MapColor)}
+	 * @deprecated Please migrate to {@link FabricBlockSettings#mapColor(MapColor)}.
+	 * This method would be removed in a future major version update.
 	 */
 	@Deprecated(forRemoval = true)
 	public FabricBlockSettings materialColor(MapColor color) {
@@ -281,7 +283,8 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	}
 
 	/**
-	 * @deprecated Please migrate to {@link FabricBlockSettings#mapColor(DyeColor)}
+	 * @deprecated Please migrate to {@link FabricBlockSettings#mapColor(DyeColor)}.
+	 * This method would be removed in a future major version update.
 	 */
 	@Deprecated(forRemoval = true)
 	public FabricBlockSettings materialColor(DyeColor color) {

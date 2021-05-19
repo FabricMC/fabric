@@ -50,6 +50,7 @@ public interface BuiltinItemRendererRegistry {
 	 * @throws IllegalArgumentException if the item already has a registered renderer
 	 * @throws NullPointerException if either the item or the renderer is null
 	 * @deprecated Please use {@link BuiltinItemRendererRegistry#register(ItemConvertible, DynamicItemRenderer)} instead.
+	 * This method would be removed in a future major version update.
 	 */
 	@Deprecated(forRemoval = true)
 	void register(Item item, BuiltinItemRenderer renderer);
@@ -64,6 +65,7 @@ public interface BuiltinItemRendererRegistry {
 	 * @throws IllegalArgumentException if the item already has a registered renderer
 	 * @throws NullPointerException if either the item or the renderer is null
 	 * @deprecated Please use {@link BuiltinItemRendererRegistry#register(ItemConvertible, DynamicItemRenderer)} instead.
+	 * This method would be removed in a future major version update.
 	 */
 	@Deprecated(forRemoval = true)
 	void register(ItemConvertible item, BuiltinItemRenderer renderer);

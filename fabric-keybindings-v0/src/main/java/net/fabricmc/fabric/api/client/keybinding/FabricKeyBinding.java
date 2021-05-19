@@ -29,8 +29,9 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
  * {@link KeyBindingRegistry#register(FabricKeyBinding)}!</p>
  *
  * @deprecated Please migrate to v1. Please use {@link KeyBindingHelper#registerKeyBinding(KeyBinding)} instead.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public class FabricKeyBinding extends KeyBinding {
 	protected FabricKeyBinding(Identifier id, InputUtil.Type type, int code, String category) {
 		super(String.format("key.%s.%s", id.getNamespace(), id.getPath()), type, code, category);
@@ -41,12 +42,12 @@ public class FabricKeyBinding extends KeyBinding {
 	 *
 	 * @return configured KeyCode
 	 */
-	@Deprecated(forRemoval = true)
+	@Deprecated
 	public InputUtil.Key getBoundKey() {
 		return KeyBindingHelper.getBoundKeyOf(this);
 	}
 
-	@Deprecated(forRemoval = true)
+	@Deprecated
 	public static class Builder {
 		protected final FabricKeyBinding binding;
 

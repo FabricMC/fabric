@@ -22,8 +22,9 @@ import net.minecraft.network.PacketByteBuf;
 
 /**
  * @deprecated Use {@link net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry.ExtendedClientHandlerFactory} instead.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 @FunctionalInterface
 public interface ContainerFactory<T> {
 	/**

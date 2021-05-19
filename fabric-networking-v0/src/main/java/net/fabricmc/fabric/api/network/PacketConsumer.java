@@ -24,9 +24,11 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 /**
  * Interface for receiving CustomPayload-based packets.
  *
- * @deprecated See the corresponding play packet handler in {@link ClientPlayNetworking} or {@link ServerPlayNetworking}
+ * @deprecated See the corresponding play packet handler in {@link ClientPlayNetworking} or {@link
+ * ServerPlayNetworking}.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 @FunctionalInterface
 public interface PacketConsumer {
 	/**

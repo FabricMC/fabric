@@ -191,7 +191,10 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * @deprecated use {@link FabricEntityTypeBuilder#trackRangeBlocks(int)}, {@link FabricEntityTypeBuilder#trackedUpdateRate(int)} and {@link FabricEntityTypeBuilder#forceTrackedVelocityUpdates(boolean)}
+	 * @deprecated use {@link FabricEntityTypeBuilder#trackRangeBlocks(int)}, {@link
+	 * FabricEntityTypeBuilder#trackedUpdateRate(int)} and {@link
+	 * FabricEntityTypeBuilder#forceTrackedVelocityUpdates(boolean)}.
+	 * This method would be removed in a future major version update.
 	 */
 	@Deprecated(forRemoval = true)
 	public FabricEntityTypeBuilder<T> trackable(int trackRangeBlocks, int trackedUpdateRate) {
@@ -199,7 +202,10 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * @deprecated use {@link FabricEntityTypeBuilder#trackRangeBlocks(int)}, {@link FabricEntityTypeBuilder#trackedUpdateRate(int)} and {@link FabricEntityTypeBuilder#forceTrackedVelocityUpdates(boolean)}
+	 * @deprecated use {@link FabricEntityTypeBuilder#trackRangeBlocks(int)}, {@link
+	 * FabricEntityTypeBuilder#trackedUpdateRate(int)}, and {@link
+	 * FabricEntityTypeBuilder#forceTrackedVelocityUpdates(boolean)}.
+	 * This method would be removed in a future major version update.
 	 */
 	@Deprecated(forRemoval = true)
 	public FabricEntityTypeBuilder<T> trackable(int trackRangeBlocks, int trackedUpdateRate, boolean forceTrackedVelocityUpdates) {
@@ -325,7 +331,10 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		/**
-		 * @deprecated use {@link FabricEntityTypeBuilder.Living#trackRangeBlocks(int)}, {@link FabricEntityTypeBuilder.Living#trackedUpdateRate(int)} and {@link FabricEntityTypeBuilder.Living#forceTrackedVelocityUpdates(boolean)}
+		 * @deprecated use {@link FabricEntityTypeBuilder.Living#trackRangeBlocks(int)}, {@link
+		 * FabricEntityTypeBuilder.Living#trackedUpdateRate(int)}, and {@link
+		 * FabricEntityTypeBuilder.Living#forceTrackedVelocityUpdates(boolean)}.
+		 * This method would be removed in a future major version update.
 		 */
 		@Override
 		@Deprecated(forRemoval = true)
@@ -335,7 +344,10 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		/**
-		 * @deprecated use {@link FabricEntityTypeBuilder.Living#trackRangeBlocks(int)}, {@link FabricEntityTypeBuilder.Living#trackedUpdateRate(int)} and {@link FabricEntityTypeBuilder.Living#forceTrackedVelocityUpdates(boolean)}
+		 * @deprecated use {@link FabricEntityTypeBuilder.Living#trackRangeBlocks(int)}, {@link
+		 * FabricEntityTypeBuilder.Living#trackedUpdateRate(int)}, and {@link
+		 * FabricEntityTypeBuilder.Living#forceTrackedVelocityUpdates(boolean)}.
+		 * This method would be removed in a future major version update.
 		 */
 		@Override
 		@Deprecated(forRemoval = true)
@@ -465,7 +477,10 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		/**
-		 * @deprecated use {@link FabricEntityTypeBuilder.Mob#trackRangeBlocks(int)}, {@link FabricEntityTypeBuilder.Mob#trackedUpdateRate(int)} and {@link FabricEntityTypeBuilder.Mob#forceTrackedVelocityUpdates(boolean)}
+		 * @deprecated use {@link FabricEntityTypeBuilder.Mob#trackRangeBlocks(int)}, {@link
+		 * FabricEntityTypeBuilder.Mob#trackedUpdateRate(int)}, and {@link
+		 * FabricEntityTypeBuilder.Mob#forceTrackedVelocityUpdates(boolean)}.
+		 * This method would be removed in a future major version update.
 		 */
 		@Override
 		@Deprecated(forRemoval = true)
@@ -475,7 +490,10 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		/**
-		 * @deprecated use {@link FabricEntityTypeBuilder.Mob#trackRangeBlocks(int)}, {@link FabricEntityTypeBuilder.Mob#trackedUpdateRate(int)} and {@link FabricEntityTypeBuilder.Mob#forceTrackedVelocityUpdates(boolean)}
+		 * @deprecated use {@link FabricEntityTypeBuilder.Mob#trackRangeBlocks(int)},
+		 * {@link FabricEntityTypeBuilder.Mob#trackedUpdateRate(int)}, and
+		 * {@link FabricEntityTypeBuilder.Mob#forceTrackedVelocityUpdates(boolean)}.
+		 * This method would be removed in a future major version update.
 		 */
 		@Override
 		@Deprecated(forRemoval = true)

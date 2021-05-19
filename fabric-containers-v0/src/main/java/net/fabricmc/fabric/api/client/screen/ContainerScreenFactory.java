@@ -21,8 +21,9 @@ import net.minecraft.screen.ScreenHandler;
 
 /**
  * @deprecated Use {@link net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry.Factory} instead.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 @FunctionalInterface
 public interface ContainerScreenFactory<C extends ScreenHandler> {
 	HandledScreen create(C container);

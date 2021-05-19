@@ -35,8 +35,9 @@ import net.fabricmc.fabric.impl.networking.ClientSidePacketRegistryImpl;
  * <li>sending packets to the server (client -&gt; server packets).</ul>
  *
  * @deprecated Please migrate to {@link ClientPlayNetworking}.
+ * This v0 module would no longer be included in the Fabric API in a future major version update..
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public interface ClientSidePacketRegistry extends PacketRegistry {
 	ClientSidePacketRegistry INSTANCE = new ClientSidePacketRegistryImpl();
 

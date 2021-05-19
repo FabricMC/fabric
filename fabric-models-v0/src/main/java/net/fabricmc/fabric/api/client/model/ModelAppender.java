@@ -23,7 +23,8 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 /**
- * @deprecated use {@link ExtraModelProvider}, which supports loading of plain {@link Identifier}s
+ * @deprecated use {@link ExtraModelProvider}, which supports loading of plain {@link Identifier}s.
+ * This class would be removed in a future major version update.
  */
 @Deprecated(forRemoval = true)
 @FunctionalInterface

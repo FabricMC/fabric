@@ -22,12 +22,16 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-@Deprecated(forRemoval = true)
+/**
+ * @deprecated Please migrate to fabric-lifecycle-events-v1.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
+ */
+@Deprecated
 public interface ClientTickCallback {
 	/**
 	 * @deprecated Please use {@link ClientTickEvents#END_CLIENT_TICK}.
 	 */
-	@Deprecated(forRemoval = true)
+	@Deprecated
 	Event<ClientTickCallback> EVENT = EventFactory.createArrayBacked(ClientTickCallback.class,
 			(listeners) -> {
 				if (EventFactory.isProfilingEnabled()) {

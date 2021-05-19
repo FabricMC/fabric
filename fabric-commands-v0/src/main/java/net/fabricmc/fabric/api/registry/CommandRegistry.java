@@ -26,8 +26,9 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 
 /**
  * @deprecated Please migrate to v1. Please use {@link CommandRegistrationCallback} instead.
+ * This module would no longer be included in the Fabric API in a future major version update.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public class CommandRegistry {
 	public static final CommandRegistry INSTANCE = new CommandRegistry();
 

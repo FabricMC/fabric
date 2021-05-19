@@ -36,9 +36,10 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
  *
  * <p>In general, most of these methods will only function with a {@link ServerWorld} instance.
  *
- * @deprecated Please use {@link PlayerLookup} instead.
+ * @deprecated Please migrate to fabric-networking-api-v1's {@link PlayerLookup} instead.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public final class PlayerStream {
 	private PlayerStream() { }
 

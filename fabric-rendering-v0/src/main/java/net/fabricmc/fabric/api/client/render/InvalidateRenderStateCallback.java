@@ -28,9 +28,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * or invalid after this event so do not use it to capture dependent state.
  * Instead, use it to invalidate state and reinitialize lazily.
  *
- * @deprecated Replaced by {@link net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback}
+ * @deprecated Replaced by {@link net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback}.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public interface InvalidateRenderStateCallback {
 	Event<InvalidateRenderStateCallback> EVENT = EventFactory.createArrayBacked(InvalidateRenderStateCallback.class,
 			(listeners) -> () -> {

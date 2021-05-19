@@ -62,7 +62,8 @@ public final class FabricItemGroupBuilder {
 	 *
 	 * @param appender Add ItemStack's to this list to show in the ItemGroup
 	 * @return a reference to the FabricItemGroupBuilder
-	 * @deprecated use {@link FabricItemGroupBuilder#appendItems(Consumer)}
+	 * @deprecated use {@link FabricItemGroupBuilder#appendItems(Consumer)}.
+	 * This method would be removed in a future major version update.
 	 */
 	@Deprecated(forRemoval = true)
 	public FabricItemGroupBuilder stacksForDisplay(Consumer<List<ItemStack>> appender) {

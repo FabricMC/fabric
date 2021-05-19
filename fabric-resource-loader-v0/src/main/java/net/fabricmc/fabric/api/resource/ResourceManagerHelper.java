@@ -31,7 +31,8 @@ public interface ResourceManagerHelper {
 	 * Add a resource reload listener for a given registry.
 	 *
 	 * @param listener The resource reload listener.
-	 * @deprecated Use {@link ResourceManagerHelper#registerReloadListener(IdentifiableResourceReloadListener)}
+	 * @deprecated Use {@link ResourceManagerHelper#registerReloadListener(IdentifiableResourceReloadListener)}.
+	 * This method would be removed in a future major version update.
 	 */
 	@Deprecated(forRemoval = true)
 	default void addReloadListener(IdentifiableResourceReloadListener listener) {

@@ -25,9 +25,10 @@ import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 /**
  * Item tags provided by Fabric.
  *
- * @deprecated Use dedicated classes, such as {@link FabricToolTags}
+ * @deprecated Use dedicated classes, such as {@link FabricToolTags}.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public class FabricItemTags {
 	public static final Tag<Item> AXES = FabricToolTags.AXES;
 	public static final Tag<Item> HOES = FabricToolTags.HOES;

@@ -50,6 +50,7 @@ public interface ClientSpriteRegistryCallback {
 
 	/**
 	 * @deprecated Use the {@link ClientSpriteRegistryCallback#event(Identifier)} registration method.
+	 * This method would be removed in a future major version update.
 	 */
 	@Deprecated(forRemoval = true)
 	static void registerBlockAtlas(ClientSpriteRegistryCallback callback) {

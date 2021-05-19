@@ -26,8 +26,9 @@ import net.minecraft.world.World;
 
 /**
  * @deprecated Please migrate to v1. Please use {@link net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder} instead.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public class FabricEntityTypeBuilder<T extends Entity> {
 	private final net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder<T> delegate;
 
@@ -42,7 +43,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	/**
 	 * @deprecated Use {@link FabricEntityTypeBuilder#create(SpawnGroup, EntityType.EntityFactory)}
 	 */
-	@Deprecated(forRemoval = true)
+	@Deprecated
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(SpawnGroup spawnGroup, Function<? super World, ? extends T> function) {
 		return create(spawnGroup, (t, w) -> function.apply(w));
 	}
@@ -69,7 +70,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	/**
 	 * @deprecated Use {@link FabricEntityTypeBuilder#size(EntityDimensions)}
 	 */
-	@Deprecated(forRemoval = true)
+	@Deprecated
 	public FabricEntityTypeBuilder<T> size(float width, float height) {
 		this.delegate.dimensions(EntityDimensions.changing(width, height));
 		return this;

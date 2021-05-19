@@ -21,12 +21,16 @@ import net.minecraft.server.MinecraftServer;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-@Deprecated(forRemoval = true)
+/**
+ * @deprecated Please migrate to fabric-lifecycle-events-v1.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
+ */
+@Deprecated
 public interface ServerStopCallback {
 	/**
 	 * @deprecated Please use {@link net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents#SERVER_STOPPING}
 	 */
-	@Deprecated(forRemoval = true)
+	@Deprecated
 	Event<ServerStopCallback> EVENT = EventFactory.createArrayBacked(ServerStopCallback.class,
 			(listeners) -> (server) -> {
 				for (ServerStopCallback event : listeners) {

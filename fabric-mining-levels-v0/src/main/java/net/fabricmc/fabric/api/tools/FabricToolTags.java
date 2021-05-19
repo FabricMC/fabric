@@ -22,9 +22,10 @@ import net.minecraft.tag.Tag;
 /**
  * Tool item tags provided by Fabric.
  *
- * @deprecated Use the moved {@link net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags} class instead
+ * @deprecated Use the moved {@link net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags} class instead.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public class FabricToolTags {
 	public static final Tag<Item> AXES = net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags.AXES;
 	public static final Tag<Item> HOES = net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags.HOES;
