@@ -49,30 +49,30 @@ public final class ButtonList extends AbstractList<ClickableWidget> {
 	public ClickableWidget set(int index, ClickableWidget element) {
 		index = translateIndex(index, false);
 		int prevIndex = listeners.indexOf(element);
-		
+
 		if (prevIndex >= 0 && prevIndex != index) {
 			if (prevIndex < index) index--;
 			listeners.remove(prevIndex);
 		}
-		
+
 		int childIndex = children.indexOf(element);
-		
+
 		if (childIndex >= 0) {
 			children.set(childIndex, element);
 		}
-		
+
 		return (ClickableWidget) listeners.set(index, element);
 	}
 
 	@Override
 	public void add(int index, ClickableWidget element) {
 		index = translateIndex(index, true);
-		
+
 		if (listeners.remove(element)) { // ensure no duplicates
 			children.remove(element);
 			index--;
 		}
-		
+
 		listeners.add(index, element);
 		this.children.add(element);
 	}
@@ -80,7 +80,7 @@ public final class ButtonList extends AbstractList<ClickableWidget> {
 	@Override
 	public ClickableWidget remove(int index) {
 		index = translateIndex(index, false);
-		
+
 		final ClickableWidget removedButton = (ClickableWidget) listeners.remove(index);
 		this.children.remove(removedButton);
 
@@ -90,30 +90,30 @@ public final class ButtonList extends AbstractList<ClickableWidget> {
 	@Override
 	public int size() {
 		int ret = 0;
-		
+
 		for (class_6379 listener : listeners) {
 			if (listener instanceof ClickableWidget) {
 				ret++;
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	private int translateIndex(int index, boolean allowAfter) {
 		int remaining = index;
-		
+
 		for (int i = 0, max = listeners.size(); i < max; i++) {
 			if (listeners.get(i) instanceof ClickableWidget) {
 				if (remaining == 0) return i;
 				remaining--;
 			}
 		}
-		
+
 		if (allowAfter && remaining == 0) {
 			return listeners.size();
 		}
-		
+
 		throw new IndexOutOfBoundsException(String.format("Index: %d, Size: %d", index, index - remaining));
 	}
 }

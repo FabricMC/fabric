@@ -69,7 +69,7 @@ abstract class MouseMixin {
 	private static void afterMouseClickedEvent(boolean[] resultHack, Screen screen, double mouseX, double mouseY, int button, CallbackInfo ci) {
 		@SuppressWarnings("resource")
 		MouseMixin thisRef = (MouseMixin) (Object) MinecraftClient.getInstance().mouse;
-		
+
 		if (thisRef.currentScreen == null) {
 			return;
 		}
@@ -83,7 +83,7 @@ abstract class MouseMixin {
 	private static void beforeMouseReleasedEvent(boolean[] resultHack, Screen screen, double mouseX, double mouseY, int button, CallbackInfo ci) {
 		@SuppressWarnings("resource")
 		MouseMixin thisRef = (MouseMixin) (Object) MinecraftClient.getInstance().mouse;
-		
+
 		// Store the screen in a variable in case someone tries to change the screen during this before event.
 		// If someone changes the screen, the after event will likely have class cast exceptions or throw a NPE.
 		thisRef.currentScreen = thisRef.client.currentScreen;
@@ -107,7 +107,7 @@ abstract class MouseMixin {
 	private static void afterMouseReleasedEvent(boolean[] resultHack, Screen screen, double mouseX, double mouseY, int button, CallbackInfo ci) {
 		@SuppressWarnings("resource")
 		MouseMixin thisRef = (MouseMixin) (Object) MinecraftClient.getInstance().mouse;
-		
+
 		if (thisRef.currentScreen == null) {
 			return;
 		}
