@@ -134,7 +134,7 @@ public class ToolAttributeTest implements ModInitializer {
 		testToolOnBlock(new ItemStack(Items.IRON_PICKAXE), Blocks.STONE, true, ((ToolItem) Items.IRON_PICKAXE).getMaterial().getMiningSpeedMultiplier());
 		testToolOnBlock(new ItemStack(Items.IRON_PICKAXE), Blocks.OBSIDIAN, false, ((ToolItem) Items.IRON_PICKAXE).getMaterial().getMiningSpeedMultiplier());
 		testToolOnBlock(new ItemStack(Items.STONE_SHOVEL), Blocks.STONE, false, 1.0F);
-		testToolOnBlock(new ItemStack(Items.STONE_SHOVEL), Blocks.GRAVEL, false, ((ToolItem) Items.STONE_SHOVEL).getMaterial().getMiningSpeedMultiplier());
+		testToolOnBlock(new ItemStack(Items.STONE_SHOVEL), Blocks.GRAVEL, true, ((ToolItem) Items.STONE_SHOVEL).getMaterial().getMiningSpeedMultiplier());
 
 		//Test vanilla tools don't bypass fabric mining levels
 		testToolOnBlock(new ItemStack(Items.STONE_PICKAXE), stoneBlock, false, ((ToolItem) Items.STONE_PICKAXE).getMaterial().getMiningSpeedMultiplier());
@@ -155,7 +155,7 @@ public class ToolAttributeTest implements ModInitializer {
 
 		//Test dynamic tools on vanilla blocks
 		testToolOnBlock(new ItemStack(testShovel), Blocks.STONE, false, DEFAULT_BREAK_SPEED);
-		testToolOnBlock(new ItemStack(testShovel), Blocks.GRAVEL, false, TOOL_BREAK_SPEED);
+		testToolOnBlock(new ItemStack(testShovel), Blocks.GRAVEL, true, TOOL_BREAK_SPEED);
 		testToolOnBlock(new ItemStack(testPickaxe), Blocks.GRAVEL, false, DEFAULT_BREAK_SPEED);
 		testToolOnBlock(new ItemStack(testPickaxe), Blocks.STONE, true, TOOL_BREAK_SPEED);
 

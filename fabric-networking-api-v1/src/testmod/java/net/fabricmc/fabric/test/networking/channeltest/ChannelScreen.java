@@ -40,13 +40,13 @@ final class ChannelScreen extends Screen {
 
 	@Override
 	protected void init() {
-		this.s2cButton = this.addButton(new ButtonWidget(this.width / 2 - 55, 5, 50, 20, new LiteralText("S2C"), this::toS2C, (button, matrices, mouseX, mouseY) -> {
+		this.s2cButton = this.method_37063(new ButtonWidget(this.width / 2 - 55, 5, 50, 20, new LiteralText("S2C"), this::toS2C, (button, matrices, mouseX, mouseY) -> {
 			this.renderTooltip(matrices, new LiteralText("Packets this client can receive"), mouseX, mouseY);
 		}));
-		this.c2sButton = this.addButton(new ButtonWidget(this.width / 2 + 5, 5, 50, 20, new LiteralText("C2S"), this::toC2S, (button, matrices, mouseX, mouseY) -> {
+		this.c2sButton = this.method_37063(new ButtonWidget(this.width / 2 + 5, 5, 50, 20, new LiteralText("C2S"), this::toC2S, (button, matrices, mouseX, mouseY) -> {
 			this.renderTooltip(matrices, new LiteralText("Packets the server can receive"), mouseX, mouseY);
 		}));
-		this.closeButton = this.addButton(new ButtonWidget(this.width / 2 - 60, this.height - 25, 120, 20, new LiteralText("Close"), button -> this.onClose()));
+		this.closeButton = this.method_37063(new ButtonWidget(this.width / 2 - 60, this.height - 25, 120, 20, new LiteralText("Close"), button -> this.onClose()));
 		this.channelList = this.addChild(new ChannelList(this.client, this.width, this.height - 60, 30, this.height - 30, this.textRenderer.fontHeight + 2));
 	}
 
