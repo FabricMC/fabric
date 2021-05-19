@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
@@ -43,13 +43,13 @@ import net.fabricmc.fabric.impl.client.screen.ScreenEventFactory;
 abstract class ScreenMixin implements ScreenExtensions {
 	@Shadow
 	@Final
-	protected List<AbstractButtonWidget> buttons;
+	protected List<ClickableWidget> buttons;
 	@Shadow
 	@Final
 	protected List<Element> children;
 
 	@Unique
-	private ButtonList<AbstractButtonWidget> fabricButtons;
+	private ButtonList<ClickableWidget> fabricButtons;
 	@Unique
 	private Event<ScreenEvents.Remove> removeEvent;
 	@Unique
@@ -133,7 +133,7 @@ abstract class ScreenMixin implements ScreenExtensions {
 	}
 
 	@Override
-	public List<AbstractButtonWidget> fabric_getButtons() {
+	public List<ClickableWidget> fabric_getButtons() {
 		// Lazy init to make the list access safe after Screen#init
 		if (this.fabricButtons == null) {
 			this.fabricButtons = new ButtonList<>((Screen) (Object) this, this.buttons, this.children);

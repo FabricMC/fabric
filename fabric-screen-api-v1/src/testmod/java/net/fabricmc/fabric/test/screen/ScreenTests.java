@@ -26,7 +26,7 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -53,10 +53,10 @@ public final class ScreenTests implements ClientModInitializer {
 		LOGGER.info("Initializing {}", screen.getClass().getName());
 
 		if (screen instanceof TitleScreen) {
-			final List<AbstractButtonWidget> buttons = Screens.getButtons(screen);
+			final List<ClickableWidget> buttons = Screens.getButtons(screen);
 
 			// Shrink the realms button, should be the third button on the list
-			final AbstractButtonWidget optionsButton = buttons.get(2);
+			final ClickableWidget optionsButton = buttons.get(2);
 			optionsButton.setWidth(98);
 
 			// Add a new button

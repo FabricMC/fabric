@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.networking.channeltest;
 
+import net.minecraft.class_6382;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -35,6 +36,11 @@ final class ChannelList extends EntryListWidget<ChannelList.Entry> {
 
 	void clear() {
 		this.clearEntries();
+	}
+
+	@Override
+	public void method_37020(class_6382 arg) {
+		// TODO seems to be possibly accessibility related
 	}
 
 	class Entry extends EntryListWidget.Entry<Entry> {

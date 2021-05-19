@@ -21,7 +21,7 @@ import java.util.List;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -37,7 +37,7 @@ public interface ScreenExtensions {
 		return (ScreenExtensions) screen;
 	}
 
-	List<AbstractButtonWidget> fabric_getButtons();
+	List<ClickableWidget> fabric_getButtons();
 
 	Event<ScreenEvents.Remove> fabric_getRemoveEvent();
 
