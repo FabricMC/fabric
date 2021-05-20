@@ -57,11 +57,13 @@ public final class TradeOfferHelper {
 	}
 
 	/**
-	 * Refreshes the trade list by resetting the trade lists to vanilla state, and then registering all trade offers again.
-	 *
-	 * <p>This method is geared for use by mods which for example provide data driven villager trades.
+	 * @deprecated This never did anything useful.
 	 */
+	@Deprecated
 	public static void refreshOffers() {
-		TradeOfferInternals.refreshOffers();
+		TradeOfferInternals.printRefreshOffersWarning();
+	}
+
+	private TradeOfferHelper() {
 	}
 }

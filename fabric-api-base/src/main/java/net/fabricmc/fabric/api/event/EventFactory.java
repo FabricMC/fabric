@@ -48,6 +48,10 @@ public final class EventFactory {
 	/**
 	 * Create an "array-backed" Event instance.
 	 *
+	 * <p>If your factory simply delegates to the listeners without adding custom behavior,
+	 * consider using {@linkplain #createArrayBacked(Class, Object, Function) the other overload}
+	 * if performance of this event is critical.
+	 *
 	 * @param type           The listener class type.
 	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
 	 * @param <T>            The listener type.
@@ -58,7 +62,14 @@ public final class EventFactory {
 	}
 
 	/**
-	 * Create an "array-backed" Event instance with a custom empty invoker.
+	 * Create an "array-backed" Event instance with a custom empty invoker,
+	 * for an event whose {@code invokerFactory} only delegates to the listeners.
+	 * <ul>
+	 *   <li>If there is no listener, the custom empty invoker will be used.</li>
+	 *   <li><b>If there is only one listener, that one will be used as the invoker
+	 *   and the factory will not be called.</b></li>
+	 *   <li>Only when there are at least two listeners will the factory be used.</li>
+	 * </ul>
 	 *
 	 * <p>Having a custom empty invoker (of type (...) -&gt; {}) increases performance
 	 * relative to iterating over an empty array; however, it only really matters
@@ -70,9 +81,16 @@ public final class EventFactory {
 	 * @param <T>            The listener type.
 	 * @return The Event instance.
 	 */
-	// TODO: Deprecate this once we have working codegen
 	public static <T> Event<T> createArrayBacked(Class<T> type, T emptyInvoker, Function<T[], T> invokerFactory) {
-		return EventFactoryImpl.createArrayBacked(type, emptyInvoker, invokerFactory);
+		return createArrayBacked(type, listeners -> {
+			if (listeners.length == 0) {
+				return emptyInvoker;
+			} else if (listeners.length == 1) {
+				return listeners[0];
+			} else {
+				return invokerFactory.apply(listeners);
+			}
+		});
 	}
 
 	/**
