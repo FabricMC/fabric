@@ -20,7 +20,6 @@ import java.util.Set;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 /**
