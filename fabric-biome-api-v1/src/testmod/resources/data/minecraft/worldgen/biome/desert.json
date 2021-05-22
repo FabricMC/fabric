@@ -1,0 +1,49 @@
+{
+  "effects": {
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "sky_color": 13378226,
+    "fog_color": 1159826,
+    "water_color": 6470708,
+    "water_fog_color": 6470708
+  },
+  "surface_builder": "minecraft:desert",
+  "carvers": {
+    "air": []
+  },
+  "features": [
+    [],
+    [
+      "minecraft:lake_lava"
+    ],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ],
+  "starts": [],
+  "spawners": {
+    "monster": [],
+    "creature": [],
+    "ambient": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "player_spawn_friendly": false,
+  "precipitation": "none",
+  "temperature": 2.0,
+  "downfall": 0.0,
+  "category": "desert",
+  "depth": 0.14,
+  "scale": -0.11
+}
