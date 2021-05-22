@@ -108,6 +108,12 @@ public class BiomeModificationImpl {
 	public void modifyBiomes(DynamicRegistryManager.Impl impl) {
 		Stopwatch sw = Stopwatch.createStarted();
 
+		// Vanilla will sometimes call RegistryOps.of twice for the same dynamic registry manager,
+		// which usually will not result in a reload of objects, since it reuses existing objects
+		// from the manager when they are being referenced.
+		BiomeModificationTracker modificationTracker = (BiomeModificationTracker) (Object) impl;
+		Set<Biome> modifiedBiomes = modificationTracker.fabric_getModifiedBiomes();
+
 		MutableRegistry<Biome> biomes = impl.get(Registry.BIOME_KEY);
 
 		// Build a list of all biome keys in ascending order of their raw-id to get a consistent result in case
@@ -125,6 +131,10 @@ public class BiomeModificationImpl {
 
 		for (RegistryKey<Biome> key : keys) {
 			Biome biome = biomes.getOrThrow(key);
+
+			if (!modifiedBiomes.add(biome)) {
+				continue; // Do not modify the same biome twice
+			}
 
 			biomesProcessed++;
 

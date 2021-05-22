@@ -7,6 +7,7 @@
     "modification.BiomeEffectsAccessor",
     "modification.BiomeWeatherAccessor",
     "modification.BiomeWeatherAccessor",
+    "modification.DynamicRegistryManagerImplMixin",
     "modification.GenerationSettingsAccessor",
     "modification.RegistryOpsMixin",
     "modification.SpawnDensityAccessor",
