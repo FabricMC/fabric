@@ -133,7 +133,7 @@ public interface ItemApiLookup<A, C> {
 	 * The mapping from the parameters of the query to the API is handled by the passed {@link ItemApiProvider}.
 	 *
 	 * @param provider The provider.
-	 * @param items The blocks.
+	 * @param items The items.
 	 */
 	void registerForItems(ItemApiProvider<A, C> provider, ItemConvertible... items);
 
@@ -143,6 +143,16 @@ public interface ItemApiLookup<A, C> {
 	 * @param fallbackProvider The fallback provider.
 	 */
 	void registerFallback(ItemApiProvider<A, C> fallbackProvider);
+
+	/**
+	 * Return the API class of this lookup.
+	 */
+	Class<A> apiClass();
+
+	/**
+	 * Return the context class of this lookup.
+	 */
+	Class<C> contextClass();
 
 	@FunctionalInterface
 	interface ItemApiProvider<A, C> {
