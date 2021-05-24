@@ -48,6 +48,7 @@ public final class Movement {
 		try (Transaction iterationTransaction = (transaction == null ? Transaction.openOuter() : transaction.openNested())) {
 			for (Iterator<StorageView<T>> it = from.iterator(iterationTransaction); it.hasNext(); ) {
 				StorageView<T> view = it.next();
+				if (view.isEmpty()) continue;
 				T resource = view.resource();
 				if (!filter.test(resource)) continue;
 				long maxExtracted;

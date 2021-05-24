@@ -105,6 +105,11 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 	}
 
 	@Override
+	public boolean isEmpty() {
+		return amount() > 0;
+	}
+
+	@Override
 	public Fluid resource() {
 		return Fluids.WATER;
 	}
@@ -118,6 +123,11 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 		} else {
 			return 0;
 		}
+	}
+
+	@Override
+	public long capacity() {
+		return FluidConstants.BUCKET;
 	}
 
 	@Override

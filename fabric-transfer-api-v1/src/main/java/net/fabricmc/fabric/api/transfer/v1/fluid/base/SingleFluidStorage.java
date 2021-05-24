@@ -23,6 +23,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -37,7 +38,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
  * If one of these two functions is overridden to always return false, implementors may also wish to override
  * {@link #supportsInsertion} and/or {@link #supportsExtraction}.
  */
-public abstract class SingleFluidStorage extends SnapshotParticipant<SingleFluidStorage.State> implements Storage<Fluid>, StorageView<Fluid> {
+public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmount<Fluid>> implements Storage<Fluid>, StorageView<Fluid> {
 	public Fluid fluid;
 	public long amount;
 	// Current version of the storage.
@@ -52,14 +53,14 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<SingleFluid
 	}
 
 	/**
-	 * @return True if the passed non-empty fluid can be inserted, false otherwise.
+	 * @return {@code true} if the passed non-empty fluid can be inserted, {@code false} otherwise.
 	 */
 	protected boolean canInsert(Fluid fluid) {
 		return true;
 	}
 
 	/**
-	 * @return True if the passed non-empty fluid can be extracted, false otherwise.
+	 * @return {@code true} if the passed non-empty fluid can be extracted, {@code false} otherwise.
 	 */
 	protected boolean canExtract(Fluid fluid) {
 		return true;
@@ -71,6 +72,11 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<SingleFluid
 	protected abstract long getCapacity(Fluid fluid);
 
 	@Override
+	public final boolean isEmpty() {
+		return fluid == Fluids.EMPTY;
+	}
+
+	@Override
 	public final Fluid resource() {
 		return fluid;
 	}
@@ -78,6 +84,15 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<SingleFluid
 	@Override
 	public final long amount() {
 		return fluid == Fluids.EMPTY ? 0 : amount;
+	}
+
+	@Override
+	public final long capacity() {
+		if (isEmpty()) {
+			return 0;
+		} else {
+			return getCapacity(fluid);
+		}
 	}
 
 	@Override
@@ -128,7 +143,7 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<SingleFluid
 	}
 
 	@Override
-	public Iterator<StorageView<Fluid>> iterator(Transaction transaction) {
+	public final Iterator<StorageView<Fluid>> iterator(Transaction transaction) {
 		if (iterating) {
 			throw new IllegalStateException("An iterator is already active for this storage.");
 		}
@@ -145,13 +160,13 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<SingleFluid
 	}
 
 	@Override
-	protected final State createSnapshot() {
-		return new State(fluid, amount);
+	protected final ResourceAmount<Fluid> createSnapshot() {
+		return new ResourceAmount<>(fluid, amount);
 	}
 
 	@Override
-	protected final void readSnapshot(State snapshot) {
-		this.fluid = snapshot.fluid;
+	protected final void readSnapshot(ResourceAmount<Fluid> snapshot) {
+		this.fluid = snapshot.resource;
 		this.amount = snapshot.amount;
 	}
 
@@ -159,16 +174,6 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<SingleFluid
 	protected final void onFinalCommit() {
 		version++;
 		markDirty();
-	}
-
-	protected static class State {
-		final Fluid fluid;
-		final long amount;
-
-		State(Fluid fluid, long amount) {
-			this.fluid = fluid;
-			this.amount = amount;
-		}
 	}
 
 	private class SingleFluidIterator implements Iterator<StorageView<Fluid>>, Transaction.CloseCallback {

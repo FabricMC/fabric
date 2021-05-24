@@ -19,9 +19,10 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 /**
- * A view of a single stored resource in a {@link Storage}, for use with {@link Storage#iterator}.
+ * A view of a single stored resource in a {@link Storage}, for use with {@link Storage#iterator},
+ * {@link Storage#anyView} or {@link Storage#exactView}.
  *
- * <p>Note that views returned by {@link Storage#iterator} may never be empty.
+ * <p>A view is always tied to a specific transaction, and should not be accessed outside of it.
  *
  * @param <T> The type of the stored resource.
  */
@@ -33,7 +34,12 @@ public interface StorageView<T> {
 	long extract(T resource, long maxAmount, Transaction transaction);
 
 	/**
-	 * @return The resource stored in this view.
+	 * @return {@code true} if this storage view is empty, or {@code false} otherwise.
+	 */
+	boolean isEmpty();
+
+	/**
+	 * @return The resource stored in this view. May not be empty if {@link #isEmpty} is {@code false}.
 	 */
 	T resource();
 
@@ -41,4 +47,9 @@ public interface StorageView<T> {
 	 * @return The amount of {@link #resource} stored in this view.
 	 */
 	long amount();
+
+	/**
+	 * @return The total amount of {@link #resource} that could be stored in this view.
+	 */
+	long capacity();
 }

@@ -40,6 +40,11 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<Fluid>, Stora
 	}
 
 	@Override
+	public boolean isEmpty() {
+		return infiniteFluid == Fluids.EMPTY;
+	}
+
+	@Override
 	public Fluid resource() {
 		return infiniteFluid;
 	}
@@ -47,6 +52,11 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<Fluid>, Stora
 	@Override
 	public long amount() {
 		return Long.MAX_VALUE;
+	}
+
+	@Override
+	public long capacity() {
+		return amount();
 	}
 
 	@Override

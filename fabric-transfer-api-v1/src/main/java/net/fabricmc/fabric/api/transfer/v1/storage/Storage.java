@@ -19,11 +19,23 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 /**
  * An object that can store resources.
+ *
+ * <p><ul>
+ *     <li>{@link #supportsInsertion} and {@link #supportsExtraction} can be used to tell if insertion and extraction
+ *     functionality are possibly supported by this storage.</li>
+ *     <li>{@link #insert} and {@link #extract} can be used to insert or extract resources from this storage.</li>
+ *     <li>{@link #iterator}, {@link #anyView} and {@link #exactView} can be used to inspect the contents of this storage.
+ *     Only one of these functions may be called for a given transaction parameter,
+ *     to ensure storages have flexibility in how they operate.</li>
+ *     <li>{@link #getVersion()} can be used to quickly check if a storage has changed, without having to rescan its contents.</li>
+ * </ul>
  *
  * <p><b>Important note:</b> Unless otherwise specified, all transfer functions take a non-empty resource
  * and a non-negative maximum amount as parameters.
@@ -79,15 +91,18 @@ public interface Storage<T> {
 	/**
 	 * Iterate through the contents of this storage, for the scope of the passed transaction.
 	 * Every visited {@link StorageView} represents a stored resource and an amount.
-	 * A {@code StorageView} <b>must not be empty</b> at the moment it is returned by the call to {@link Iterator#next next()},
-	 * but it may become empty as a result of other transfer operations.
 	 *
-	 * <p>The iterator is <em>open</em> as long as the transaction passed to it is open.
-	 * As soon as the transaction is closed, {@link Iterator#hasNext hasNext()} must return {@code false},
+	 * <p>The returned iterator and any view it returns are tied to the passed transaction.
+	 * They should not be used once that transaction is closed.
+	 *
+	 * <p>More precisely, as soon as the transaction is closed,
+	 * {@link Iterator#hasNext hasNext()} must return {@code false},
 	 * and any call to {@link Iterator#next next()} must throw a {@link NoSuchElementException}.
 	 *
 	 * <p>To ensure that at most one iterator is open for this storage at a given time,
 	 * this function must throw an {@link IllegalStateException} if an iterator is already open.
+	 * If {@link #anyView} or {@link #exactView} was already tied to this transaction,
+	 * an {@link IllegalStateException} should be thrown too.
 	 *
 	 * <p>{@link #insert(Object, long, Transaction) insert()} and {@link #extract(Object, long, Transaction) extract()}
 	 * may however be called safely while the iterator is open.
@@ -98,9 +113,54 @@ public interface Storage<T> {
 	 *
 	 * @param transaction The transaction to which the scope of the returned iterator is tied.
 	 * @return An iterator over the contents of this storage.
-	 * @throws IllegalStateException If an iterator over this storage is already open.
+	 * @throws IllegalStateException If this storage is already exposing storage views.
 	 */
 	Iterator<StorageView<T>> iterator(Transaction transaction);
+
+	/**
+	 * Return any view over this storage, or {@code null} if none is available.
+	 *
+	 * <p>This function has the same semantics as {@link #iterator}:
+	 * the returned view may never be used once the passed transaction has been closed,
+	 * and calling this function if a view was already tied to this transaction with {@link #iterator},
+	 * {@link #anyView} or {@link #exactView} should throw an {@link IllegalStateException}.
+	 *
+	 * @param transaction The transaction to which the scope of the returned storage view is tied.
+	 * @return A view over this storage, or {@code null} if none is available.
+	 * @throws IllegalStateException If this storage is already exposing storage views.
+	 */
+	@Nullable
+	default StorageView<T> anyView(Transaction transaction) {
+		Iterator<StorageView<T>> iterator = iterator(transaction);
+
+		if (iterator.hasNext()) {
+			return iterator.next();
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Return a view over this storage, for a specific resource, or {@code null} if none is quickly available.
+	 *
+	 * <p>This function should only return a non-null view if this storage can provide it quickly,
+	 * for example with a hashmap lookup.
+	 * If returning the requested view would require iteration through a potentially large number of views,
+	 * {@code null} should be returned instead.
+	 *
+	 * <p>This function has the same semantics as {@link #iterator}:
+	 * the returned view may never be used once the passed transaction has been closed,
+	 * and calling this function if a view was already tied to this transaction with {@link #iterator},
+	 * {@link #anyView} or {@link #exactView} should throw an {@link IllegalStateException}.
+	 *
+	 * @param transaction The transaction to which the scope of the returned storage view is tied.
+	 * @param resource The resource for which a storage view is requested.
+	 * @return A view over this storage for the passed resource, or {@code null} if none is quickly available.
+	 */
+	@Nullable
+	default StorageView<T> exactView(Transaction transaction, T resource) {
+		return null;
+	}
 
 	/**
 	 * Return an integer representing the current version of the storage.
