@@ -111,7 +111,7 @@ public class BiomeModificationImpl {
 		// which usually will not result in a reload of objects, since it reuses existing objects
 		// from the manager when they are being referenced.
 		BiomeModificationTracker modificationTracker = (BiomeModificationTracker) (Object) impl;
-		Set<RegistryKey<Biome>> modifiedBiomes = modificationTracker.fabric_getModifiedBiomes();
+		Set<Biome> modifiedBiomes = modificationTracker.fabric_getModifiedBiomes();
 
 		Registry<Biome> biomes = impl.get(Registry.BIOME_KEY);
 
@@ -131,7 +131,7 @@ public class BiomeModificationImpl {
 		for (RegistryKey<Biome> key : keys) {
 			Biome biome = biomes.getOrThrow(key);
 
-			if (!modifiedBiomes.add(key)) {
+			if (!modifiedBiomes.add(biome)) {
 				continue; // Do not modify the same biome twice
 			}
 

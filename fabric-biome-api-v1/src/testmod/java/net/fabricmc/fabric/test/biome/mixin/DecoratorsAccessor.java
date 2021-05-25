@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.biome.modification;
+package net.fabricmc.fabric.test.biome.mixin;
 
-import java.util.Set;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import org.jetbrains.annotations.ApiStatus;
+import net.minecraft.world.gen.decorator.ConfiguredDecorator;
 
-import net.minecraft.world.biome.Biome;
-
-/**
- * Prevents double-modification of biomes in the same dynamic registry manager from occuring and fails-fast
- * if it does occur.
- */
-@ApiStatus.Internal
-public interface BiomeModificationTracker {
-	Set<Biome> fabric_getModifiedBiomes();
+@Mixin(targets = "net.minecraft.world.gen.feature.ConfiguredFeatures$Decorators")
+public interface DecoratorsAccessor {
+	@Accessor
+	static ConfiguredDecorator<?> getSQUARE_HEIGHTMAP() {
+		throw new UnsupportedOperationException("");
+	}
 }
