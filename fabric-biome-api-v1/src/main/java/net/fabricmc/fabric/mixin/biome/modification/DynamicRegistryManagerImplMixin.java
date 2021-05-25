@@ -23,7 +23,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 import net.fabricmc.fabric.impl.biome.modification.BiomeModificationTracker;
@@ -35,10 +34,10 @@ import net.fabricmc.fabric.impl.biome.modification.BiomeModificationTracker;
 @Mixin(DynamicRegistryManager.Impl.class)
 public class DynamicRegistryManagerImplMixin implements BiomeModificationTracker {
 	@Unique
-	private final Set<RegistryKey<Biome>> modifiedBiomes = new HashSet<>();
+	private final Set<Biome> modifiedBiomes = new HashSet<>();
 
 	@Override
-	public Set<RegistryKey<Biome>> fabric_getModifiedBiomes() {
+	public Set<Biome> fabric_getModifiedBiomes() {
 		return this.modifiedBiomes;
 	}
 }

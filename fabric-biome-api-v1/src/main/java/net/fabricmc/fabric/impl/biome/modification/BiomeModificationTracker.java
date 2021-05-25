@@ -20,7 +20,6 @@ import java.util.Set;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 /**
@@ -29,5 +28,5 @@ import net.minecraft.world.biome.Biome;
  */
 @ApiStatus.Internal
 public interface BiomeModificationTracker {
-	Set<RegistryKey<Biome>> fabric_getModifiedBiomes();
+	Set<Biome> fabric_getModifiedBiomes();
 }
