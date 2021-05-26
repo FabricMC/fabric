@@ -46,8 +46,7 @@ public final class Movement {
 		long totalMoved = 0;
 
 		try (Transaction iterationTransaction = (transaction == null ? Transaction.openOuter() : transaction.openNested())) {
-			for (Iterator<StorageView<T>> it = from.iterator(iterationTransaction); it.hasNext(); ) {
-				StorageView<T> view = it.next();
+			for (StorageView<T> view : from.iterable(iterationTransaction)) {
 				if (view.isEmpty()) continue;
 				T resource = view.resource();
 				if (!filter.test(resource)) continue;

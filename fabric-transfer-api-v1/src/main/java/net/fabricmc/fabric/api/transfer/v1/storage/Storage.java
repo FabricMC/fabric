@@ -118,6 +118,20 @@ public interface Storage<T> {
 	Iterator<StorageView<T>> iterator(Transaction transaction);
 
 	/**
+	 * Iterate through the contents of this storage, for the scope of the passed transaction.
+	 * This function follows the semantics of {@link #iterator}, but returns an {@code Iterable} for use in {@code for} loops.
+	 *
+	 * @param transaction The transaction to which the scope of the returned iterator is tied.
+	 * @return An iterator over the contents of this storage.
+	 * @throws IllegalStateException If this storage is already exposing storage views.
+	 * @see #iterator
+	 */
+	default Iterable<StorageView<T>> iterable(Transaction transaction) {
+		Iterator<StorageView<T>> iterator = iterator(transaction);
+		return () -> iterator;
+	}
+
+	/**
 	 * Return any view over this storage, or {@code null} if none is available.
 	 *
 	 * <p>This function has the same semantics as {@link #iterator}:
