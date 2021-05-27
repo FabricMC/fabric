@@ -49,8 +49,8 @@ import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
  */
 @Mixin(RegistryOps.class)
 public class RegistryOpsMixin {
-	@Inject(method = "of(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;", at = @At("RETURN"))
-	private static <T> void afterCreation(DynamicOps<T> delegate, ResourceManager resourceManager, DynamicRegistryManager impl, CallbackInfoReturnable<RegistryOps<T>> ci) {
+	@Inject(method = "method_36575(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/util/dynamic/RegistryOps$EntryLoader;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;", at = @At("RETURN"))
+	private static <T> void afterCreation(DynamicOps<T> delegate, RegistryOps.EntryLoader entryLoader, DynamicRegistryManager impl, CallbackInfoReturnable<RegistryOps<T>> ci) {
 		BiomeModificationImpl.INSTANCE.modifyBiomes((DynamicRegistryManager.Impl) impl);
 	}
 }
