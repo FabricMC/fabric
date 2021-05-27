@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.8.7" apply false
+	id "fabric-loom" version "0.8.12" apply false
 	id "org.cadixdev.licenser" version "0.5.0"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -19,9 +19,9 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.34.7"
-	static def mcVersion = "21w20a"
-	static def yarnVersion = "+build.2"
+	static def baseVersion = "0.34.8"
+	static def mcVersion = "1.17-pre1"
+	static def yarnVersion = "+build.1"
 	static def loaderVersion = "0.11.3"
 	static def preRelease = true
 }

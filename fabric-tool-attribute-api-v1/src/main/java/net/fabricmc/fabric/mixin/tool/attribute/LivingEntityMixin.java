@@ -44,13 +44,13 @@ public class LivingEntityMixin {
 	@Nullable
 	@Unique private EquipmentSlot slotContext = null;
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/attribute/AttributeContainer;removeModifiers(Lcom/google/common/collect/Multimap;)V"), method = "method_30129", locals = LocalCapture.CAPTURE_FAILHARD)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/attribute/AttributeContainer;removeModifiers(Lcom/google/common/collect/Multimap;)V"), method = "getEquipment", locals = LocalCapture.CAPTURE_FAILHARD)
 	private void storeRemoveStackContext(CallbackInfoReturnable<Map> cir, Map map, EquipmentSlot[] var2, int var3, int var4, EquipmentSlot equipmentSlot, ItemStack oldStack, ItemStack newStack) {
 		stackContext = oldStack;
 		slotContext = equipmentSlot;
 	}
 
-	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/attribute/AttributeContainer;removeModifiers(Lcom/google/common/collect/Multimap;)V"), method = "method_30129")
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/attribute/AttributeContainer;removeModifiers(Lcom/google/common/collect/Multimap;)V"), method = "getEquipment")
 	private void setupRemoveModifierContext(AttributeContainer attributeContainer, Multimap<EntityAttribute, EntityAttributeModifier> oldModifiers) {
 		((ItemStackContext) (Object) stackContext).fabricToolAttributes_setContext((LivingEntity) (Object) this);
 		Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers = stackContext.getAttributeModifiers(slotContext);
@@ -58,13 +58,13 @@ public class LivingEntityMixin {
 		attributeContainer.removeModifiers(attributeModifiers);
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/attribute/AttributeContainer;addTemporaryModifiers(Lcom/google/common/collect/Multimap;)V"), method = "method_30129", locals = LocalCapture.CAPTURE_FAILHARD)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/attribute/AttributeContainer;addTemporaryModifiers(Lcom/google/common/collect/Multimap;)V"), method = "getEquipment", locals = LocalCapture.CAPTURE_FAILHARD)
 	private void storeAddStackContext(CallbackInfoReturnable<Map> cir, Map map, EquipmentSlot[] var2, int var3, int var4, EquipmentSlot equipmentSlot, ItemStack oldStack, ItemStack newStack) {
 		stackContext = newStack;
 		slotContext = equipmentSlot;
 	}
 
-	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/attribute/AttributeContainer;addTemporaryModifiers(Lcom/google/common/collect/Multimap;)V"), method = "method_30129")
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/attribute/AttributeContainer;addTemporaryModifiers(Lcom/google/common/collect/Multimap;)V"), method = "getEquipment")
 	private void setupAddModifierContext(AttributeContainer attributeContainer, Multimap<EntityAttribute, EntityAttributeModifier> oldModifiers) {
 		((ItemStackContext) (Object) stackContext).fabricToolAttributes_setContext((LivingEntity) (Object) this);
 		Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers = stackContext.getAttributeModifiers(slotContext);

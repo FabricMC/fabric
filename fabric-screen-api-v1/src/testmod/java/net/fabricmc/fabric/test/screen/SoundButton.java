@@ -21,7 +21,7 @@ import java.util.Random;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.class_6382;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.sound.SoundEvent;
@@ -47,6 +47,6 @@ class SoundButton extends PressableWidget {
 	}
 
 	@Override
-	public void method_37020(class_6382 arg) {
+	public void appendNarrations(NarrationMessageBuilder arg) {
 	}
 }

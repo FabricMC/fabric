@@ -19,14 +19,14 @@ package net.fabricmc.fabric.mixin.object.builder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.class_6395;
+import net.minecraft.client.item.UnclampedModelPredicateProvider;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.util.Identifier;
 
 @Mixin(ModelPredicateProviderRegistry.class)
 public interface ModelPredicateProviderRegistryAccessor {
 	@Invoker
-	static class_6395 callRegister(Identifier id, class_6395 provider) {
+	static UnclampedModelPredicateProvider callRegister(Identifier id, UnclampedModelPredicateProvider provider) {
 		throw new AssertionError("mixin dummy");
 	}
 }

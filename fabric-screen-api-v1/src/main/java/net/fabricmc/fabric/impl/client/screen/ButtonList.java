@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.class_6379;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ClickableWidget;
 
@@ -32,10 +32,10 @@ import net.fabricmc.api.Environment;
 @ApiStatus.Internal
 @Environment(EnvType.CLIENT)
 public final class ButtonList extends AbstractList<ClickableWidget> {
-	private final List<class_6379> listeners;
+	private final List<Selectable> listeners;
 	private final List<Element> children;
 
-	public ButtonList(List<class_6379> listeners, List<Element> children) {
+	public ButtonList(List<Selectable> listeners, List<Element> children) {
 		this.listeners = listeners;
 		this.children = children;
 	}
@@ -91,7 +91,7 @@ public final class ButtonList extends AbstractList<ClickableWidget> {
 	public int size() {
 		int ret = 0;
 
-		for (class_6379 listener : listeners) {
+		for (Selectable listener : listeners) {
 			if (listener instanceof ClickableWidget) {
 				ret++;
 			}
