@@ -22,11 +22,23 @@ public class EnergyStorage implements IEnergyStorage {
 	protected double storedEnergy = 0.0d;
 	protected final double maxStoredEnergy;
 
+	protected final boolean canInsert;
+	protected final boolean canExtract;
 	protected final double maxInsertion;
 	protected final double maxExtraction;
 
+	public EnergyStorage(double maxStoredEnergy, boolean canInsert, boolean canExtract, double maxInsertion, double maxExtraction) {
+		this.maxStoredEnergy = maxStoredEnergy;
+		this.canInsert = canInsert;
+		this.canExtract = canExtract;
+		this.maxInsertion = maxInsertion;
+		this.maxExtraction = maxExtraction;
+	}
+
 	public EnergyStorage(double maxStoredEnergy, double maxInsertion, double maxExtraction) {
 		this.maxStoredEnergy = maxStoredEnergy;
+		this.canInsert = true;
+		this.canExtract = true;
 		this.maxInsertion = maxInsertion;
 		this.maxExtraction = maxExtraction;
 	}
@@ -53,11 +65,11 @@ public class EnergyStorage implements IEnergyStorage {
 	public boolean canInsertEnergy(double energy) {
 		double insertedEnergy = storedEnergy + energy;
 
-		return ( (energy <= maxInsertion) & (insertedEnergy <= maxStoredEnergy) );
+		return ( (canInsert) & (energy <= maxInsertion) & (insertedEnergy <= maxStoredEnergy) );
 	}
 
 	@Override
 	public boolean canExtractEnergy(double energy) {
-		return ( (energy <= maxExtraction) & (energy <= maxStoredEnergy) );
+		return ( (canExtract) & (energy <= maxExtraction) & (energy <= maxStoredEnergy) );
 	}
 }
