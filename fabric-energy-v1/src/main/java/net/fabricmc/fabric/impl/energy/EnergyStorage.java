@@ -18,6 +18,9 @@ package net.fabricmc.fabric.impl.energy;
 
 import net.fabricmc.fabric.api.energy.v1.IEnergyStorage;
 
+/**
+ * <b>Experimental feature</b>, may be removed or changed without further notice.
+ */
 public class EnergyStorage implements IEnergyStorage {
 	protected double storedEnergy = 0.0d;
 	protected final double maxStoredEnergy;

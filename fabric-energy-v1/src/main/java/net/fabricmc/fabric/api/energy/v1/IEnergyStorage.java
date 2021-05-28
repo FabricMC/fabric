@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.api.energy.v1;
 
+/**
+ * <b>Experimental feature</b>, may be removed or changed without further notice.
+ */
 public interface IEnergyStorage {
 	void insertEnergy(double energy);
 	double extractEnergy(double energy);
