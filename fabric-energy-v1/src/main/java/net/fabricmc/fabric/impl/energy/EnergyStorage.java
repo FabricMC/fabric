@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.energy.v1;
+package net.fabricmc.fabric.impl.energy;
 
 import net.fabricmc.fabric.api.energy.v1.IEnergyStorage;
 
@@ -45,14 +45,14 @@ public class EnergyStorage implements IEnergyStorage {
 
 	@Override
 	public void insertEnergy(double energy) {
-		if(canInsertEnergy(energy)) {
+		if (canInsertEnergy(energy)) {
 			storedEnergy += energy;
 		}
 	}
 
 	@Override
 	public double extractEnergy(double energy) {
-		if(canExtractEnergy(energy)) {
+		if (canExtractEnergy(energy)) {
 			storedEnergy -= energy;
 
 			return energy;
@@ -64,12 +64,11 @@ public class EnergyStorage implements IEnergyStorage {
 	@Override
 	public boolean canInsertEnergy(double energy) {
 		double insertedEnergy = storedEnergy + energy;
-
-		return ( (canInsert) & (energy <= maxInsertion) & (insertedEnergy <= maxStoredEnergy) );
+		return ((canInsert) & (energy <= maxInsertion) & (insertedEnergy <= maxStoredEnergy));
 	}
 
 	@Override
 	public boolean canExtractEnergy(double energy) {
-		return ( (canExtract) & (energy <= maxExtraction) & (energy <= maxStoredEnergy) );
+		return ((canExtract) & (energy <= maxExtraction) & (energy <= maxStoredEnergy));
 	}
 }
