@@ -53,13 +53,11 @@ public class EnergyStorage implements IEnergyStorage {
 	public boolean canInsertEnergy(double energy) {
 		double insertedEnergy = storedEnergy + energy;
 
-		return ( (energy < maxInsertion) & (insertedEnergy < maxStoredEnergy) );
+		return ( (energy <= maxInsertion) & (insertedEnergy <= maxStoredEnergy) );
 	}
 
 	@Override
 	public boolean canExtractEnergy(double energy) {
-		double extractedEnergy = storedEnergy - energy;
-
-		return ( (extractedEnergy >= 0.0d) & (energy < maxExtraction) & (energy <= maxStoredEnergy) );
+		return ( (energy <= maxExtraction) & (energy <= maxStoredEnergy) );
 	}
 }
