@@ -34,6 +34,10 @@ public final class FluidStorage {
 	 * Fluid amounts are always expressed in {@linkplain FluidConstants droplets}.
 	 * The {@code Direction} parameter may never be null.
 	 * Refer to {@link BlockApiLookup} for documentation on how to use this field.
+	 *
+	 * <p>When the operations supported by a storage change,
+	 * that is if the return value of {@link Storage#supportsInsertion} or {@link Storage#supportsExtraction} changes,
+	 * the storage should notify its neighbors with a block update so that they can refresh their connections if necessary.
 	 */
 	public static final BlockApiLookup<Storage<Fluid>, Direction> SIDED =
 			BlockApiLookup.get(new Identifier("fabric:sided_fluid_storage"), Storage.asClass(), Direction.class);
