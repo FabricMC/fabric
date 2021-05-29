@@ -36,8 +36,6 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
  */
 public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 	public final List<S> parts;
-	// True when an iterator is active.
-	private boolean iterating = false;
 
 	public CombinedStorage(List<S> parts) {
 		this.parts = parts;
@@ -81,11 +79,6 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 
 	@Override
 	public Iterator<StorageView<T>> iterator(Transaction transaction) {
-		if (iterating) {
-			throw new IllegalStateException("An iterator is already active for this storage.");
-		}
-
-		iterating = true;
 		return new CombinedIterator(transaction);
 	}
 
@@ -144,7 +137,6 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 		public void onClose(Transaction transaction, Transaction.Result result) {
 			// As soon as the transaction is closed, this iterator is not valid anymore.
 			open = false;
-			iterating = false;
 		}
 	}
 }

@@ -32,8 +32,6 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<Fluid>, Stora
 	public static final CreativeFluidStorage LAVA = new CreativeFluidStorage(Fluids.LAVA);
 
 	private final Fluid infiniteFluid;
-	// True when an iterator is active.
-	private boolean iterating = false;
 
 	private CreativeFluidStorage(Fluid infiniteFluid) {
 		this.infiniteFluid = infiniteFluid;
@@ -72,11 +70,6 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<Fluid>, Stora
 
 	@Override
 	public Iterator<StorageView<Fluid>> iterator(Transaction transaction) {
-		if (iterating) {
-			throw new IllegalStateException("An iterator is already active for this storage.");
-		}
-
-		iterating = true;
 		CreativeFluidIterator iterator = new CreativeFluidIterator();
 		transaction.addCloseCallback(iterator);
 		return iterator;
@@ -113,7 +106,6 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<Fluid>, Stora
 		@Override
 		public void onClose(Transaction transaction, Transaction.Result result) {
 			open = false;
-			iterating = false;
 		}
 	}
 }

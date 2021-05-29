@@ -31,9 +31,7 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
  *     <li>{@link #supportsInsertion} and {@link #supportsExtraction} can be used to tell if insertion and extraction
  *     functionality are possibly supported by this storage.</li>
  *     <li>{@link #insert} and {@link #extract} can be used to insert or extract resources from this storage.</li>
- *     <li>{@link #iterator}, {@link #anyView} and {@link #exactView} can be used to inspect the contents of this storage.
- *     Only one of these functions may be called for a given transaction parameter,
- *     to ensure storages have flexibility in how they operate.</li>
+ *     <li>{@link #iterator}, {@link #anyView} and {@link #exactView} can be used to inspect the contents of this storage.</li>
  *     <li>{@link #getVersion()} can be used to quickly check if a storage has changed, without having to rescan its contents.</li>
  * </ul>
  *
@@ -92,28 +90,22 @@ public interface Storage<T> {
 	 * Iterate through the contents of this storage, for the scope of the passed transaction.
 	 * Every visited {@link StorageView} represents a stored resource and an amount.
 	 *
-	 * <p>The returned iterator and any view it returns are tied to the passed transaction.
+	 * <p>The returned iterator and any view it returns are only valid for the scope of to the passed transaction.
 	 * They should not be used once that transaction is closed.
 	 *
 	 * <p>More precisely, as soon as the transaction is closed,
 	 * {@link Iterator#hasNext hasNext()} must return {@code false},
 	 * and any call to {@link Iterator#next next()} must throw a {@link NoSuchElementException}.
 	 *
-	 * <p>To ensure that at most one iterator is open for this storage at a given time,
-	 * this function must throw an {@link IllegalStateException} if an iterator is already open.
-	 * If {@link #anyView} or {@link #exactView} was already tied to this transaction,
-	 * an {@link IllegalStateException} should be thrown too.
-	 *
 	 * <p>{@link #insert(Object, long, Transaction) insert()} and {@link #extract(Object, long, Transaction) extract()}
-	 * may however be called safely while the iterator is open.
+	 * may be called safely during iteration.
 	 * Extractions should be visible to an open iterator, but insertions are not required to.
-	 * In particular, inventories with a fixed amount of slots may wish to make insertions visible to an open iterator,
+	 * In particular, inventories with a fixed amount of slots may wish to make insertions visible to iterators,
 	 * but inventories with a dynamic or very large amount of slots should not do that to ensure timely termination of
 	 * the iteration.
 	 *
 	 * @param transaction The transaction to which the scope of the returned iterator is tied.
 	 * @return An iterator over the contents of this storage.
-	 * @throws IllegalStateException If this storage is already exposing storage views.
 	 */
 	Iterator<StorageView<T>> iterator(Transaction transaction);
 
@@ -122,26 +114,21 @@ public interface Storage<T> {
 	 * This function follows the semantics of {@link #iterator}, but returns an {@code Iterable} for use in {@code for} loops.
 	 *
 	 * @param transaction The transaction to which the scope of the returned iterator is tied.
-	 * @return An iterator over the contents of this storage.
-	 * @throws IllegalStateException If this storage is already exposing storage views.
+	 * @return An iterable over the contents of this storage.
 	 * @see #iterator
 	 */
 	default Iterable<StorageView<T>> iterable(Transaction transaction) {
-		Iterator<StorageView<T>> iterator = iterator(transaction);
-		return () -> iterator;
+		return () -> iterator(transaction);
 	}
 
 	/**
 	 * Return any view over this storage, or {@code null} if none is available.
 	 *
-	 * <p>This function has the same semantics as {@link #iterator}:
-	 * the returned view may never be used once the passed transaction has been closed,
-	 * and calling this function if a view was already tied to this transaction with {@link #iterator},
-	 * {@link #anyView} or {@link #exactView} should throw an {@link IllegalStateException}.
+	 * <p>The returned view is tied to the passed transaction,
+	 * and may never be used once the passed transaction has been closed.
 	 *
 	 * @param transaction The transaction to which the scope of the returned storage view is tied.
 	 * @return A view over this storage, or {@code null} if none is available.
-	 * @throws IllegalStateException If this storage is already exposing storage views.
 	 */
 	@Nullable
 	default StorageView<T> anyView(Transaction transaction) {
@@ -162,13 +149,11 @@ public interface Storage<T> {
 	 * If returning the requested view would require iteration through a potentially large number of views,
 	 * {@code null} should be returned instead.
 	 *
-	 * <p>This function has the same semantics as {@link #iterator}:
-	 * the returned view may never be used once the passed transaction has been closed,
-	 * and calling this function if a view was already tied to this transaction with {@link #iterator},
-	 * {@link #anyView} or {@link #exactView} should throw an {@link IllegalStateException}.
+	 * <p>The returned view is tied to the passed transaction,
+	 * and may never be used once the passed transaction has been closed.
 	 *
 	 * @param transaction The transaction to which the scope of the returned storage view is tied.
-	 * @param resource The resource for which a storage view is requested.
+	 * @param resource The resource for which a storage view is requested. May be empty.
 	 * @return A view over this storage for the passed resource, or {@code null} if none is quickly available.
 	 */
 	@Nullable

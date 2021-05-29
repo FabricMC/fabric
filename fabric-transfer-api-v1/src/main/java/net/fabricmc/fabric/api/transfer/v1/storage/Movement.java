@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.transfer.v1.storage;
 
-import java.util.Iterator;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;

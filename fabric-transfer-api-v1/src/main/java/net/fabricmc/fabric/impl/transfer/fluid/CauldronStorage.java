@@ -50,8 +50,6 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 	private final WorldLocation location;
 	// this is the last released snapshot, which means it's the first snapshot ever saved when onFinalCommit() is called.
 	private int lastReleasedSnapshot;
-	// True when an iterator is active.
-	private boolean iterating = false;
 
 	CauldronStorage(WorldLocation location) {
 		this.location = location;
@@ -132,11 +130,6 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 
 	@Override
 	public Iterator<StorageView<Fluid>> iterator(Transaction transaction) {
-		if (iterating) {
-			throw new IllegalStateException("An iterator is already active for this storage.");
-		}
-
-		iterating = true;
 		CauldronIterator iterator = new CauldronIterator();
 		transaction.addCloseCallback(iterator);
 		return iterator;
@@ -203,7 +196,6 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 		@Override
 		public void onClose(Transaction transaction, Transaction.Result result) {
 			open = false;
-			iterating = false;
 		}
 	}
 }

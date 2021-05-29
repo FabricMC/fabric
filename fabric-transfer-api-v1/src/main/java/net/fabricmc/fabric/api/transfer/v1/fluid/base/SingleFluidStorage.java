@@ -43,8 +43,6 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	public long amount;
 	// Current version of the storage.
 	private int version = 0;
-	// True when an iterator is active.
-	private boolean iterating = false;
 
 	/**
 	 * Implement if you want.
@@ -144,11 +142,6 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 
 	@Override
 	public final Iterator<StorageView<Fluid>> iterator(Transaction transaction) {
-		if (iterating) {
-			throw new IllegalStateException("An iterator is already active for this storage.");
-		}
-
-		iterating = true;
 		SingleFluidIterator iterator = new SingleFluidIterator();
 		transaction.addCloseCallback(iterator);
 		return iterator;
@@ -202,7 +195,6 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 		@Override
 		public void onClose(Transaction transaction, Transaction.Result result) {
 			open = false;
-			iterating = false;
 		}
 	}
 }
