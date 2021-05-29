@@ -43,7 +43,13 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 
 	@Override
 	public boolean supportsInsertion() {
-		return true;
+		for (S part : parts) {
+			if (part.supportsInsertion()) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override
@@ -61,7 +67,13 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 
 	@Override
 	public boolean supportsExtraction() {
-		return true;
+		for (S part : parts) {
+			if (part.supportsExtraction()) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override
