@@ -44,7 +44,7 @@ public class CreateWorldScreenMixin {
 	@Shadow
 	private ResourcePackManager packManager;
 
-	@Inject(method = "method_30296", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackManager;scanPacks()V", shift = At.Shift.BEFORE))
+	@Inject(method = "getScannedPack", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackManager;scanPacks()V", shift = At.Shift.BEFORE))
 	private void onScanPacks(CallbackInfoReturnable<Pair<File, ResourcePackManager>> cir) {
 		// Allow to display built-in data packs in the data pack selection screen at world creation.
 		((ResourcePackManagerAccessor) this.packManager).getProviders().add(new ModResourcePackCreator(ResourceType.SERVER_DATA));

@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.networking.channeltest;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -35,6 +36,11 @@ final class ChannelList extends EntryListWidget<ChannelList.Entry> {
 
 	void clear() {
 		this.clearEntries();
+	}
+
+	@Override
+	public void appendNarrations(NarrationMessageBuilder arg) {
+		// TODO seems to be possibly accessibility related
 	}
 
 	class Entry extends EntryListWidget.Entry<Entry> {
