@@ -35,35 +35,33 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidKeyImpl;
 @ApiStatus.NonExtendable
 public interface FluidKey {
 	/**
-	 * Retrieve an empty ItemKey.
+	 * Retrieve an empty FluidKey.
 	 */
 	static FluidKey empty() {
 		return of(Fluids.EMPTY);
 	}
 
 	/**
-	 * Retrieve an ItemKey with the item and tag of a stack.
+	 * Retrieve a FluidKey with a fluid, and a {@code null} tag.
 	 */
 	static FluidKey of(Fluid fluid) {
 		return of(fluid, null);
 	}
 
 	/**
-	 * Retrieve an ItemKey with an item and an optional tag.
+	 * Retrieve a FluidKey with a fluid, and an optional tag.
 	 */
 	static FluidKey of(Fluid fluid, @Nullable CompoundTag tag) {
 		return FluidKeyImpl.of(fluid, tag);
 	}
 
 	/**
-	 * Return true if this key is empty, i.e. its item is Items.AIR, and false
-	 * otherwise.
+	 * Return true if this key is empty, i.e. its fluid is Fluids.EMPTY, and false otherwise.
 	 */
 	boolean isEmpty();
 
 	/**
-	 * Return true if the tag of this key matches the passed tag, and false
-	 * otherwise.
+	 * Return true if the tag of this key matches the passed tag, and false otherwise.
 	 *
 	 * <p>Note: True is returned if both tags are {@code null}.
 	 */
@@ -75,48 +73,43 @@ public interface FluidKey {
 	boolean hasTag();
 
 	/**
-	 * Return the item of this key.
+	 * Return the fluid of this key.
 	 */
 	Fluid getFluid();
 
 	/**
-	 * Return a copy of the tag of this key, or {@code null} if this key doesn't
-	 * have a tag.
+	 * Return a copy of the tag of this key, or {@code null} if this key doesn't have a tag.
 	 *
-	 * <p>Note: use {@link #tagMatches} if you only need to check for tag equality.
+	 * <p>Note: Use {@link #tagMatches} if you only need to check for tag equality.
 	 */
 	@Nullable
 	CompoundTag copyTag();
 
 	/**
-	 * Save this key into an NBT compound tag. {@link #fromNbt} can be used to
-	 * retrieve the key later.
+	 * Save this key into an NBT compound tag. {@link #fromNbt} can be used to retrieve the key later.
 	 *
-	 * <p>Note: This key is safe to use for persisting data as items are saved using
-	 * their full Identifier.
+	 * <p>Note: This key is safe to use for persisting data as fluids are saved using their full Identifier.
 	 */
 	CompoundTag toNbt();
 
 	/**
-	 * Deserialize a key from an NBT compound tag, assuming it was serialized using
-	 * {@link #toNbt}. If an error occurs during deserialization, it will be logged
-	 * with the DEBUG level, and an empty key will be returned.
+	 * Deserialize a key from an NBT compound tag, assuming it was serialized using {@link #toNbt}.
+	 *
+	 * <p>If an error occurs during deserialization, it will be logged with the DEBUG level, and an empty key will be returned.
 	 */
 	static FluidKey fromNbt(CompoundTag nbt) {
 		return FluidKeyImpl.fromNbt(nbt);
 	}
 
 	/**
-	 * Save this key into a packet byte buffer. {@link #fromPacket} can be used to
-	 * retrieve the key later.
+	 * Write this key into a packet byte buffer. {@link #fromPacket} can be used to retrieve the key later.
 	 *
-	 * <p>Note: Items are saved using their raw registry integer id.
+	 * <p>Implementation note: Fluids are saved using their raw registry integer id.
 	 */
 	void toPacket(PacketByteBuf buf);
 
 	/**
-	 * Write a key from a packet byte buffer, assuming it was serialized using
-	 * {@link #toPacket}.
+	 * Read a key from a packet byte buffer, assuming it was serialized using {@link #toPacket}.
 	 */
 	static FluidKey fromPacket(PacketByteBuf buf) {
 		return FluidKeyImpl.fromPacket(buf);

@@ -43,7 +43,7 @@ public class FluidKeyImpl implements FluidKey {
 		return new FluidKeyImpl(fluid, tag);
 	}
 
-	private static final Logger LOGGER = LogManager.getLogger("fabric-api-lookup-api-v1/item");
+	private static final Logger LOGGER = LogManager.getLogger("fabric-transfer-api-v1/fluid");
 
 	private final Fluid fluid;
 	private final @Nullable CompoundTag tag;
@@ -98,7 +98,7 @@ public class FluidKeyImpl implements FluidKey {
 			CompoundTag aTag = tag.contains("tag") ? tag.getCompound("tag") : null;
 			return of(fluid, aTag);
 		} catch (RuntimeException runtimeException) {
-			LOGGER.debug("Tried to load an invalid ItemKey from NBT: {}", tag, runtimeException);
+			LOGGER.debug("Tried to load an invalid FluidKey from NBT: {}", tag, runtimeException);
 			return FluidKey.empty();
 		}
 	}

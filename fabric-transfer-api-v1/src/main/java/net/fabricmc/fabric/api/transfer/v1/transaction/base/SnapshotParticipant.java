@@ -84,18 +84,23 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 
 	@Override
 	public final void onClose(Transaction transaction, Transaction.Result result) {
-		T snapshot = snapshots.get(transaction.nestingDepth());
-		snapshots.set(transaction.nestingDepth(), null);
+		// Get and remove the relevant snapshot.
+		T snapshot = snapshots.set(transaction.nestingDepth(), null);
 
 		if (result.wasAborted()) {
+			// If the transaction was aborted, we just revert to the state of the snapshot.
 			readSnapshot(snapshot);
 			releaseSnapshot(snapshot);
 		} else if (transaction.nestingDepth() > 0) {
+			// If the transaction was committed, we move the snapshot one nesting level up.
 			T oldSnapshot = snapshots.set(transaction.nestingDepth()-1, snapshot);
 
 			if (oldSnapshot != null) {
+				// The newer snapshot takes precedence.
+				// A callback is already registered for the older snapshot, no need to call addCloseCallback.
 				releaseSnapshot(oldSnapshot);
 			} else {
+				// This is the first snapshot at this level: we need to call addCloseCallback.
 				transaction.getOpenTransaction(transaction.nestingDepth()-1).addCloseCallback(this);
 			}
 		} else {

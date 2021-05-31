@@ -41,7 +41,7 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
  *
  * <p>This is illustrated in the following example.
  * <pre>{@code
- *     try (Transaction outerTransaction = Transaction.openOuter()) {
+ * try (Transaction outerTransaction = Transaction.openOuter()) {
  *     // (A) some transaction operations
  *     try (Transaction nestedTransaction = outerTransaction.openNested()) {
  *         // (B) more operations
