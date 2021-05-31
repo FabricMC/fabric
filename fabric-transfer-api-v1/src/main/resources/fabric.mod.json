@@ -20,6 +20,9 @@
     "fabric-api-lookup-api-v1": "*"
   },
   "description": "A common API for the transfer of fluids and other game resources.",
+  "mixins": [
+    "fabric-transfer-api-v1.mixins.json"
+  ],
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   }

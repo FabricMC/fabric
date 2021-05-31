@@ -39,8 +39,13 @@ public class FluidKeyImpl implements FluidKey {
 			throw new IllegalArgumentException("Fluid may not be flowing.");
 		}
 
-		// TODO cache
-		return new FluidKeyImpl(fluid, tag);
+		if (tag == null) {
+			// Use the cached key inside the fluid
+			return ((FluidKeyCache) fluid).fabric_getCachedFluidKey();
+		} else {
+			// TODO explore caching fluid keys for non null tags.
+			return new FluidKeyImpl(fluid, tag);
+		}
 	}
 
 	private static final Logger LOGGER = LogManager.getLogger("fabric-transfer-api-v1/fluid");

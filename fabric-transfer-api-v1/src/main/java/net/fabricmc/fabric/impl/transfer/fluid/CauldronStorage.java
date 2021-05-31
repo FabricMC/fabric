@@ -114,7 +114,7 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 
 	@Override
 	public boolean isEmpty() {
-		return amount() > 0;
+		return false;
 	}
 
 	@Override
@@ -186,7 +186,7 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 
 		@Override
 		public boolean hasNext() {
-			return open && hasNext && amount() > 0;
+			return open && hasNext;
 		}
 
 		@Override

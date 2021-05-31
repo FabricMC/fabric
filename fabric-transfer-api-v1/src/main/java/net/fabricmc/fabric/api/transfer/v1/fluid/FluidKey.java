@@ -27,7 +27,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidKeyImpl;
 
 /**
- * An immutable association of a fluid and an optional NBT tag.
+ * An immutable association of a still fluid and an optional NBT tag.
  *
  * <p>Do not extend this class. Use {@link #of(Fluid)} and {@link #of(Fluid, CompoundTag)} to create instances.
  */

@@ -4,4 +4,5 @@ version = getSubprojectVersion(project, "0.1.0")
 moduleDependencies(project, [
 	'fabric-api-base',
 	'fabric-api-lookup-api-v1',
+	'fabric-lifecycle-events-v1', // transitive dependency of API Lookup
 ])
