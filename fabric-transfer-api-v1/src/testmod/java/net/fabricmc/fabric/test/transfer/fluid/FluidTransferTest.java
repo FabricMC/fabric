@@ -27,7 +27,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidTransfer;
 
 public class FluidTransferTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-transfer-api-v1-testmod";
@@ -46,8 +46,8 @@ public class FluidTransferTest implements ModInitializer {
 		FLUID_CHUTE_TYPE = BlockEntityType.Builder.create(FluidChuteBlockEntity::new, FLUID_CHUTE).build(null);
 		Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "fluid_chute"), FLUID_CHUTE_TYPE);
 
-		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeFluidStorage.WATER, INFINITE_WATER_SOURCE);
-		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeFluidStorage.LAVA, INFINITE_LAVA_SOURCE);
+		FluidTransfer.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeFluidStorage.WATER, INFINITE_WATER_SOURCE);
+		FluidTransfer.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeFluidStorage.LAVA, INFINITE_LAVA_SOURCE);
 	}
 
 	private static void registerBlock(Block block, String name) {

@@ -19,9 +19,7 @@ package net.fabricmc.fabric.api.transfer.v1.fluid.base;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -30,7 +28,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
 /**
- * A storage that can store a single fluid at any given time.
+ * A storage that can store a single fluid key at any given time.
  * Implementors should at least override {@link #getCapacity}, and probably {@link #markDirty} as well.
  *
  * <p>{@link #canInsert} and {@link #canExtract} can be used for more precise control over which fluids may be inserted or
@@ -38,8 +36,8 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
  * If one of these two functions is overridden to always return false, implementors may also wish to override
  * {@link #supportsInsertion} and/or {@link #supportsExtraction}.
  */
-public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmount<Fluid>> implements Storage<Fluid>, StorageView<Fluid> {
-	public Fluid fluid;
+public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmount<FluidKey>> implements Storage<FluidKey>, StorageView<FluidKey> {
+	public FluidKey fluidKey;
 	public long amount;
 	// Current version of the storage.
 	private int version = 0;
@@ -53,35 +51,35 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	/**
 	 * @return {@code true} if the passed non-empty fluid can be inserted, {@code false} otherwise.
 	 */
-	protected boolean canInsert(Fluid fluid) {
+	protected boolean canInsert(FluidKey fluidKey) {
 		return true;
 	}
 
 	/**
 	 * @return {@code true} if the passed non-empty fluid can be extracted, {@code false} otherwise.
 	 */
-	protected boolean canExtract(Fluid fluid) {
+	protected boolean canExtract(FluidKey fluidKey) {
 		return true;
 	}
 
 	/**
 	 * @return The maximum capacity of this storage for the passed non-empty fluid.
 	 */
-	protected abstract long getCapacity(Fluid fluid);
+	protected abstract long getCapacity(FluidKey fluidKey);
 
 	@Override
 	public final boolean isEmpty() {
-		return fluid == Fluids.EMPTY;
+		return fluidKey.isEmpty();
 	}
 
 	@Override
-	public final Fluid resource() {
-		return fluid;
+	public final FluidKey resource() {
+		return fluidKey;
 	}
 
 	@Override
 	public final long amount() {
-		return fluid == Fluids.EMPTY ? 0 : amount;
+		return fluidKey.isEmpty() ? 0 : amount;
 	}
 
 	@Override
@@ -89,27 +87,27 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 		if (isEmpty()) {
 			return 0;
 		} else {
-			return getCapacity(fluid);
+			return getCapacity(fluidKey);
 		}
 	}
 
 	@Override
-	public final long insert(Fluid insertedFluid, long maxAmount, Transaction transaction) {
+	public final long insert(FluidKey insertedFluid, long maxAmount, Transaction transaction) {
 		FluidPreconditions.notEmptyNotNegative(insertedFluid, maxAmount);
 
-		if ((insertedFluid == fluid || fluid == Fluids.EMPTY) && canInsert(insertedFluid)) {
+		if ((insertedFluid == fluidKey || fluidKey.isEmpty()) && canInsert(insertedFluid)) {
 			long insertedAmount = Math.min(maxAmount, getCapacity(insertedFluid) - amount);
 
 			if (insertedAmount > 0) {
 				updateSnapshots(transaction);
 
 				// Just in case.
-				if (fluid == Fluids.EMPTY) {
+				if (fluidKey.isEmpty()) {
 					amount = 0;
 				}
 
 				amount += insertedAmount;
-				fluid = insertedFluid;
+				fluidKey = insertedFluid;
 			}
 
 			return insertedAmount;
@@ -119,10 +117,10 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	}
 
 	@Override
-	public final long extract(Fluid extractedFluid, long maxAmount, Transaction transaction) {
+	public final long extract(FluidKey extractedFluid, long maxAmount, Transaction transaction) {
 		FluidPreconditions.notEmptyNotNegative(extractedFluid, maxAmount);
 
-		if (extractedFluid == fluid && canExtract(extractedFluid)) {
+		if (extractedFluid == fluidKey && canExtract(extractedFluid)) {
 			long extractedAmount = Math.min(maxAmount, amount);
 
 			if (extractedAmount > 0) {
@@ -130,7 +128,7 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 				amount -= extractedAmount;
 
 				if (amount == 0) {
-					fluid = Fluids.EMPTY;
+					fluidKey = FluidKey.empty();
 				}
 			}
 
@@ -141,7 +139,7 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	}
 
 	@Override
-	public final Iterator<StorageView<Fluid>> iterator(Transaction transaction) {
+	public final Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
 		SingleFluidIterator iterator = new SingleFluidIterator();
 		transaction.addCloseCallback(iterator);
 		return iterator;
@@ -153,13 +151,13 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	}
 
 	@Override
-	protected final ResourceAmount<Fluid> createSnapshot() {
-		return new ResourceAmount<>(fluid, amount);
+	protected final ResourceAmount<FluidKey> createSnapshot() {
+		return new ResourceAmount<>(fluidKey, amount);
 	}
 
 	@Override
-	protected final void readSnapshot(ResourceAmount<Fluid> snapshot) {
-		this.fluid = snapshot.resource;
+	protected final void readSnapshot(ResourceAmount<FluidKey> snapshot) {
+		this.fluidKey = snapshot.resource;
 		this.amount = snapshot.amount;
 	}
 
@@ -169,7 +167,7 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 		markDirty();
 	}
 
-	private class SingleFluidIterator implements Iterator<StorageView<Fluid>>, Transaction.CloseCallback {
+	private class SingleFluidIterator implements Iterator<StorageView<FluidKey>>, Transaction.CloseCallback {
 		boolean open = true;
 		boolean hasNext = true;
 
@@ -179,7 +177,7 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 		}
 
 		@Override
-		public StorageView<Fluid> next() {
+		public StorageView<FluidKey> next() {
 			if (!open) {
 				throw new NoSuchElementException("The transaction for this iterator was closed.");
 			}

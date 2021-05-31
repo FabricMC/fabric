@@ -19,31 +19,31 @@ package net.fabricmc.fabric.test.transfer.fluid;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
-public class CreativeFluidStorage implements ExtractionOnlyStorage<Fluid>, StorageView<Fluid> {
-	public static final CreativeFluidStorage WATER = new CreativeFluidStorage(Fluids.WATER);
-	public static final CreativeFluidStorage LAVA = new CreativeFluidStorage(Fluids.LAVA);
+public class CreativeFluidStorage implements ExtractionOnlyStorage<FluidKey>, StorageView<FluidKey> {
+	public static final CreativeFluidStorage WATER = new CreativeFluidStorage(FluidKey.of(Fluids.WATER));
+	public static final CreativeFluidStorage LAVA = new CreativeFluidStorage(FluidKey.of(Fluids.LAVA));
 
-	private final Fluid infiniteFluid;
+	private final FluidKey infiniteFluid;
 
-	private CreativeFluidStorage(Fluid infiniteFluid) {
+	private CreativeFluidStorage(FluidKey infiniteFluid) {
 		this.infiniteFluid = infiniteFluid;
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return infiniteFluid == Fluids.EMPTY;
+		return infiniteFluid.isEmpty();
 	}
 
 	@Override
-	public Fluid resource() {
+	public FluidKey resource() {
 		return infiniteFluid;
 	}
 
@@ -58,10 +58,10 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<Fluid>, Stora
 	}
 
 	@Override
-	public long extract(Fluid resource, long maxAmount, Transaction transaction) {
+	public long extract(FluidKey resource, long maxAmount, Transaction transaction) {
 		FluidPreconditions.notEmptyNotNegative(resource, maxAmount);
 
-		if (resource == infiniteFluid) {
+		if (resource.equals(infiniteFluid)) {
 			return maxAmount;
 		} else {
 			return 0;
@@ -69,7 +69,7 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<Fluid>, Stora
 	}
 
 	@Override
-	public Iterator<StorageView<Fluid>> iterator(Transaction transaction) {
+	public Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
 		CreativeFluidIterator iterator = new CreativeFluidIterator();
 		transaction.addCloseCallback(iterator);
 		return iterator;
@@ -80,7 +80,7 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<Fluid>, Stora
 		return 0;
 	}
 
-	private class CreativeFluidIterator implements Iterator<StorageView<Fluid>>, Transaction.CloseCallback {
+	private class CreativeFluidIterator implements Iterator<StorageView<FluidKey>>, Transaction.CloseCallback {
 		boolean open = true;
 		boolean hasNext = true;
 
@@ -90,7 +90,7 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<Fluid>, Stora
 		}
 
 		@Override
-		public StorageView<Fluid> next() {
+		public StorageView<FluidKey> next() {
 			if (!open) {
 				throw new NoSuchElementException("The transaction for this iterator was closed.");
 			}

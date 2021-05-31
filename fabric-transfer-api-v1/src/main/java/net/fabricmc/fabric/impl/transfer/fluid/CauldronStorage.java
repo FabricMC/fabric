@@ -25,12 +25,12 @@ import com.google.common.collect.MapMaker;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CauldronBlock;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
@@ -38,8 +38,10 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
 // Maintainer note: this will need updating for 1.17 to allow registering modded cauldrons.
-public class CauldronStorage extends SnapshotParticipant<Integer> implements Storage<Fluid>, StorageView<Fluid> {
+public class CauldronStorage extends SnapshotParticipant<Integer> implements Storage<FluidKey>, StorageView<FluidKey> {
 	private static final Map<WorldLocation, CauldronStorage> CAULDRONS = new MapMaker().concurrencyLevel(1).weakValues().makeMap();
+	// TODO: move to public API?
+	private static final FluidKey WATER_KEY = FluidKey.of(Fluids.WATER);
 
 	public static CauldronStorage get(World world, BlockPos pos) {
 		WorldLocation location = new WorldLocation(world, pos.toImmutable());
@@ -61,8 +63,12 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 	}
 
 	@Override
-	public long insert(Fluid fluid, long maxAmount, Transaction transaction) {
+	public long insert(FluidKey fluid, long maxAmount, Transaction transaction) {
 		FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+
+		if (!fluid.equals(WATER_KEY)) {
+			return 0;
+		}
 
 		BlockState state = location.world.getBlockState(location.pos);
 
@@ -82,8 +88,12 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 	}
 
 	@Override
-	public long extract(Fluid fluid, long maxAmount, Transaction transaction) {
+	public long extract(FluidKey fluid, long maxAmount, Transaction transaction) {
 		FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+
+		if (!fluid.equals(WATER_KEY)) {
+			return 0;
+		}
 
 		BlockState state = location.world.getBlockState(location.pos);
 
@@ -108,8 +118,8 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 	}
 
 	@Override
-	public Fluid resource() {
-		return Fluids.WATER;
+	public FluidKey resource() {
+		return WATER_KEY;
 	}
 
 	@Override
@@ -129,7 +139,7 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 	}
 
 	@Override
-	public Iterator<StorageView<Fluid>> iterator(Transaction transaction) {
+	public Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
 		CauldronIterator iterator = new CauldronIterator();
 		transaction.addCloseCallback(iterator);
 		return iterator;
@@ -170,7 +180,7 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 		}
 	}
 
-	private class CauldronIterator implements Iterator<StorageView<Fluid>>, Transaction.CloseCallback {
+	private class CauldronIterator implements Iterator<StorageView<FluidKey>>, Transaction.CloseCallback {
 		boolean open = true;
 		boolean hasNext = true;
 
@@ -180,7 +190,7 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 		}
 
 		@Override
-		public StorageView<Fluid> next() {
+		public StorageView<FluidKey> next() {
 			if (!open) {
 				throw new NoSuchElementException("The transaction for this iterator was closed.");
 			}

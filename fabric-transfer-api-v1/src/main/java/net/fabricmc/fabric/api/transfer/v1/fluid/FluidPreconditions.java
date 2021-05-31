@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-
 /**
  * Preconditions for fluid transfer.
  */
@@ -28,8 +25,8 @@ public class FluidPreconditions {
 	 *
 	 * @throws IllegalArgumentException If the fluid is empty.
 	 */
-	public static void notEmpty(Fluid fluid) {
-		if (fluid == Fluids.EMPTY) {
+	public static void notEmpty(FluidKey fluid) {
+		if (fluid.isEmpty()) {
 			throw new IllegalArgumentException("Fluid may not be empty.");
 		}
 	}
@@ -39,7 +36,7 @@ public class FluidPreconditions {
 	 *
 	 * @throws IllegalArgumentException If the fluid is empty or if the amount is negative.
 	 */
-	public static void notEmptyNotNegative(Fluid fluid, long amount) {
+	public static void notEmptyNotNegative(FluidKey fluid, long amount) {
 		FluidPreconditions.notEmpty(fluid);
 
 		if (amount < 0) {

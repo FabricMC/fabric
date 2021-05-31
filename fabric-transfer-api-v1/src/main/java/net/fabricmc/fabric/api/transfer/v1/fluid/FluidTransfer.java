@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
@@ -28,7 +27,7 @@ import net.fabricmc.fabric.impl.transfer.fluid.CauldronStorage;
 /**
  * Access to {@link Storage Storage&lt;Fluid&gt;} instances.
  */
-public final class FluidStorage {
+public final class FluidTransfer {
 	/**
 	 * Sided block access to fluid storages.
 	 * Fluid amounts are always expressed in {@linkplain FluidConstants droplets}.
@@ -39,13 +38,13 @@ public final class FluidStorage {
 	 * that is if the return value of {@link Storage#supportsInsertion} or {@link Storage#supportsExtraction} changes,
 	 * the storage should notify its neighbors with a block update so that they can refresh their connections if necessary.
 	 */
-	public static final BlockApiLookup<Storage<Fluid>, Direction> SIDED =
+	public static final BlockApiLookup<Storage<FluidKey>, Direction> SIDED =
 			BlockApiLookup.get(new Identifier("fabric:sided_fluid_storage"), Storage.asClass(), Direction.class);
 
-	private FluidStorage() {
+	private FluidTransfer() {
 	}
 
 	static {
-		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, context) -> CauldronStorage.get(world, pos), Blocks.CAULDRON);
+		FluidTransfer.SIDED.registerForBlocks((world, pos, state, be, context) -> CauldronStorage.get(world, pos), Blocks.CAULDRON);
 	}
 }

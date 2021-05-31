@@ -29,12 +29,13 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 public interface StorageView<T> {
 	/**
 	 * Try to extract a resource from this view.
+	 *
 	 * @return The amount that was extracted.
 	 */
 	long extract(T resource, long maxAmount, Transaction transaction);
 
 	/**
-	 * @return {@code true} if this storage view is empty, or {@code false} otherwise.
+	 * @return {@code true} if the {@link #resource} contained in this storage view is empty, or {@code false} otherwise.
 	 */
 	boolean isEmpty();
 
