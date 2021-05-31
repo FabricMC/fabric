@@ -18,6 +18,9 @@ package net.fabricmc.fabric.api.transfer.v1.fluid;
 
 /**
  * Constants for fluid transfer. In general, 1 bucket = 81000 droplets = 1 block.
+ *
+ * <p>If you don't know how much droplets you should pick for a specific resource that has a block form,
+ * the convention is to use 81000 droplets for what is worth one block of that resource.
  */
 public final class FluidConstants {
 	public static final long BUCKET = 81000;
