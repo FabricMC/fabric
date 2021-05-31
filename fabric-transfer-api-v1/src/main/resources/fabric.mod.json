@@ -17,7 +17,8 @@
   ],
   "depends": {
     "fabricloader": ">=0.9.2",
-    "fabric-api-lookup-api-v1": "*"
+    "fabric-api-lookup-api-v1": "*",
+    "fabric-rendering-fluids-v1": "*"
   },
   "description": "A common API for the transfer of fluids and other game resources.",
   "mixins": [

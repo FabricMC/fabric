@@ -5,4 +5,5 @@ moduleDependencies(project, [
 	'fabric-api-base',
 	'fabric-api-lookup-api-v1',
 	'fabric-lifecycle-events-v1', // transitive dependency of API Lookup
+	'fabric-rendering-fluids-v1',
 ])
