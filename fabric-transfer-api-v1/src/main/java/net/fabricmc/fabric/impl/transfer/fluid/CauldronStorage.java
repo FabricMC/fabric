@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.transfer.fluid;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import com.google.common.collect.MapMaker;
 
@@ -32,6 +31,7 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -140,9 +140,7 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 
 	@Override
 	public Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
-		CauldronIterator iterator = new CauldronIterator();
-		transaction.addCloseCallback(iterator);
-		return iterator;
+		return SingleViewIterator.create(this, transaction);
 	}
 
 	@Override
@@ -177,35 +175,6 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 			location.world.setBlockState(location.pos, originalState, 0);
 			// Then do the actual change with normal block updates
 			location.world.setBlockState(location.pos, state);
-		}
-	}
-
-	private class CauldronIterator implements Iterator<StorageView<FluidKey>>, Transaction.CloseCallback {
-		boolean open = true;
-		boolean hasNext = true;
-
-		@Override
-		public boolean hasNext() {
-			return open && hasNext;
-		}
-
-		@Override
-		public StorageView<FluidKey> next() {
-			if (!open) {
-				throw new NoSuchElementException("The transaction for this iterator was closed.");
-			}
-
-			if (!hasNext()) {
-				throw new NoSuchElementException();
-			}
-
-			hasNext = false;
-			return CauldronStorage.this;
-		}
-
-		@Override
-		public void onClose(Transaction transaction, Transaction.Result result) {
-			open = false;
 		}
 	}
 }

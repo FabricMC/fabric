@@ -17,11 +17,11 @@
 package net.fabricmc.fabric.api.transfer.v1.fluid.base;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -140,9 +140,7 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 
 	@Override
 	public final Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
-		SingleFluidIterator iterator = new SingleFluidIterator();
-		transaction.addCloseCallback(iterator);
-		return iterator;
+		return SingleViewIterator.create(this, transaction);
 	}
 
 	@Override
@@ -165,34 +163,5 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	protected final void onFinalCommit() {
 		version++;
 		markDirty();
-	}
-
-	private class SingleFluidIterator implements Iterator<StorageView<FluidKey>>, Transaction.CloseCallback {
-		boolean open = true;
-		boolean hasNext = true;
-
-		@Override
-		public boolean hasNext() {
-			return open && hasNext && amount() > 0;
-		}
-
-		@Override
-		public StorageView<FluidKey> next() {
-			if (!open) {
-				throw new NoSuchElementException("The transaction for this iterator was closed.");
-			}
-
-			if (!hasNext()) {
-				throw new NoSuchElementException();
-			}
-
-			hasNext = false;
-			return SingleFluidStorage.this;
-		}
-
-		@Override
-		public void onClose(Transaction transaction, Transaction.Result result) {
-			open = false;
-		}
 	}
 }
