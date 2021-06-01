@@ -26,7 +26,7 @@ import net.fabricmc.fabric.impl.client.renderer.registry.BlockEntityRendererRegi
 
 /**
  * Helper class for registering BlockEntityRenderers.
- * 
+ *
  * @deprecated This module has been moved into fabric-rendering-v1. Use {@link net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry} instead
  */
 @Deprecated(forRemoval = true)

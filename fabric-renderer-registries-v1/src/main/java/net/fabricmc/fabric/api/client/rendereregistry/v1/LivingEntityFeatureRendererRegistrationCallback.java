@@ -45,7 +45,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * 	}
  * });
  * </pre></blockquote>
- * 
+ *
  * @deprecated This module has been moved into fabric-rendering-v1. Use {@link net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback} instead
  */
 @FunctionalInterface
@@ -73,13 +73,13 @@ public interface LivingEntityFeatureRendererRegistrationCallback {
 		});
 		return event;
 	}
-	
+
 	/**
 	 * A delegate object used to help register feature renderers for an entity renderer.
 	 *
 	 * <p>This is not meant for implementation by users of the API.
-	 * 
-	 * @deprecated This module has been moved into fabric-rendering-v1. Use {@link net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper} instead 
+	 *
+	 * @deprecated This module has been moved into fabric-rendering-v1. Use {@link net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper} instead
 	 */
 	@Deprecated
 	interface RegistrationHelper {

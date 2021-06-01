@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.renderer.registry;
 
-import java.util.HashMap;
-import java.util.function.BiConsumer;
-
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
@@ -26,7 +23,6 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 
 public class BlockEntityRendererRegistryImpl implements BlockEntityRendererRegistry {
-
 	@Override
 	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
 		net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry.INSTANCE.register(blockEntityType, blockEntityRendererFactory);
