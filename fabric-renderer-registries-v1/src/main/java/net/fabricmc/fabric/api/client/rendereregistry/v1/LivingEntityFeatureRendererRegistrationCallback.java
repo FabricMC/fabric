@@ -28,7 +28,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.impl.client.renderer.registry.RegistrationHelperImpl;
 
 /**
  * Called when {@link FeatureRenderer feature renderers} for a {@link LivingEntityRenderer living entity renderer} are registered.
@@ -69,8 +68,8 @@ public interface LivingEntityFeatureRendererRegistrationCallback {
 				callback.registerRenderers(entityType, entityRenderer, registrationHelper, context);
 			}
 		});
-		net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context)-> {
-			LivingEntityFeatureRendererRegistrationCallback.EVENT.invoker().registerRenderers(entityType, entityRenderer, new RegistrationHelperImpl(registrationHelper), context);
+		net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
+			LivingEntityFeatureRendererRegistrationCallback.EVENT.invoker().registerRenderers(entityType, entityRenderer, registrationHelper::register, context);
 		});
 		return event;
 	}
