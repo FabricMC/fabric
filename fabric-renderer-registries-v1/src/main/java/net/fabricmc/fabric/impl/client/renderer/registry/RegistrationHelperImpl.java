@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.renderer.registry;
 
-import java.util.Objects;
-import java.util.function.Function;
-
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.LivingEntity;
@@ -26,16 +23,15 @@ import net.minecraft.entity.LivingEntity;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.LivingEntityFeatureRendererRegistrationCallback;
 
 public final class RegistrationHelperImpl implements LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper {
-	private final Function<FeatureRenderer<?, ?>, Boolean> delegate;
+	private final net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper modernHelper;
 
-	public RegistrationHelperImpl(Function<FeatureRenderer<?, ?>, Boolean> delegate) {
-		this.delegate = delegate;
+	public RegistrationHelperImpl(net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper modernHelper) {
+		this.modernHelper = modernHelper;
 	}
 
 	@Override
 	public <T extends LivingEntity> void register(FeatureRenderer<T, ? extends EntityModel<T>> featureRenderer) {
-		Objects.requireNonNull(featureRenderer, "Feature renderer cannot be null");
-		this.delegate.apply(featureRenderer);
+		modernHelper.register(featureRenderer);
 	}
 }
 

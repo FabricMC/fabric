@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.renderer.registry;
+package net.fabricmc.fabric.mixin.client.rendering;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.client.render.entity.model.EntityModelLayer;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
+import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.entity.LivingEntity;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry;
-
-@Environment(EnvType.CLIENT)
-public final class EntityModelLayerImpl {
-	public static final Map<EntityModelLayer, EntityModelLayerRegistry.TexturedModelDataProvider> PROVIDERS = new HashMap<>();
-
-	private EntityModelLayerImpl() {
-	}
+@Mixin(LivingEntityRenderer.class)
+public interface LivingEntityRendererAccessor<T extends LivingEntity, M extends EntityModel<T>> {
+	@Invoker("addFeature")
+	boolean callAddFeature(FeatureRenderer<T, M> featureRenderer);
 }

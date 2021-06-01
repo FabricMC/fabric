@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.renderer.registry;
+package net.fabricmc.fabric.mixin.client.rendering;
 
 import java.util.Set;
 

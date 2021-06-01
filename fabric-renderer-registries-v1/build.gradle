@@ -6,5 +6,6 @@ dependencies {
 }
 
 moduleDependencies(project, [
-		'fabric-api-base'
+		'fabric-api-base',
+		'fabric-rendering-v1'
 ])

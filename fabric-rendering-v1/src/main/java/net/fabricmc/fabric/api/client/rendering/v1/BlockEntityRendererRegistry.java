@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.rendereregistry.v1;
+package net.fabricmc.fabric.api.client.rendering.v1;
 
+import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
-import net.fabricmc.fabric.impl.client.renderer.registry.BlockEntityRendererRegistryImpl;
-
 /**
  * Helper class for registering BlockEntityRenderers.
- * 
- * @deprecated This module has been moved into fabric-rendering-v1. Use {@link net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry} instead
  */
-@Deprecated(forRemoval = true)
 public interface BlockEntityRendererRegistry {
 	BlockEntityRendererRegistry INSTANCE = new BlockEntityRendererRegistryImpl();
 
