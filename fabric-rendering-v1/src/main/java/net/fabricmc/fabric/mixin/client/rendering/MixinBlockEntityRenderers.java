@@ -27,8 +27,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl;
 import net.minecraft.block.entity.BlockEntityType;
+
+import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl;
 
 @Mixin(BlockEntityRendererFactories.class)
 public abstract class MixinBlockEntityRenderers {

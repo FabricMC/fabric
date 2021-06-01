@@ -19,10 +19,11 @@ package net.fabricmc.fabric.impl.client.rendering;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
 
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 
 public class BlockEntityRendererRegistryImpl implements BlockEntityRendererRegistry {
 	private static HashMap<BlockEntityType<?>, BlockEntityRendererFactory<?>> map = new HashMap<>();

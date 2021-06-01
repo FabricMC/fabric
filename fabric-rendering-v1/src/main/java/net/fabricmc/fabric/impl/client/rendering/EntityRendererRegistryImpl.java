@@ -19,10 +19,11 @@ package net.fabricmc.fabric.impl.client.rendering;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
 
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 
 /**
  * Helper class for registering EntityRenderers.
