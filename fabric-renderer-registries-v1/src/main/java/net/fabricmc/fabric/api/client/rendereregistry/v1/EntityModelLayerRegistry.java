@@ -44,7 +44,7 @@ public final class EntityModelLayerRegistry {
 	}
 
 	@FunctionalInterface
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	@Environment(EnvType.CLIENT)
 	public interface TexturedModelDataProvider {
 		/**
