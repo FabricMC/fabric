@@ -52,6 +52,7 @@ public final class EntityModelLayerRegistry {
 	}
 
 	@FunctionalInterface
+	@Environment(EnvType.CLIENT)
 	public interface TexturedModelDataProvider {
 		/**
 		 * Creates the textured model data for use in a {@link EntityModelLayer}.
