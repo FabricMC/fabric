@@ -34,7 +34,7 @@ public interface BlockEntityRendererRegistry {
 	 * Register a BlockEntityRenderer for a BlockEntityType. Can be called clientside before the world is rendered.
 	 *
 	 * @param blockEntityType the {@link BlockEntityType} to register a renderer for
-	 * @param blockEntityRendererFactory a {@link class_5614} that creates a {@link BlockEntityRenderer}, called
+	 * @param blockEntityRendererFactory a {@link BlockEntityRendererFactory} that creates a {@link BlockEntityRenderer}, called
 	 *                            when {@link BlockEntityRenderDispatcher} is initialized or immediately if the dispatcher
 	 *                            class is already loaded
 	 * @param <E> the {@link BlockEntity}

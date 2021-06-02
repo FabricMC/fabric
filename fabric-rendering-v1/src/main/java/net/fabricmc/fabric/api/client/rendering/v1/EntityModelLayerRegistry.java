@@ -18,8 +18,6 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 
@@ -30,11 +28,7 @@ import net.fabricmc.fabric.mixin.client.rendering.EntityModelLayersAccessor;
 
 /**
  * A helpers for registering entity model layers and providers for the layer's textured model data.
- *
- * @deprecated Experimental feature, may be removed or changed without further notice: Snapshot feature.
  */
-@Deprecated
-@ApiStatus.Experimental
 @Environment(EnvType.CLIENT)
 public final class EntityModelLayerRegistry {
 	/**
@@ -58,8 +52,6 @@ public final class EntityModelLayerRegistry {
 	}
 
 	@FunctionalInterface
-	@ApiStatus.Experimental
-	@Environment(EnvType.CLIENT)
 	public interface TexturedModelDataProvider {
 		/**
 		 * Creates the textured model data for use in a {@link EntityModelLayer}.
