@@ -25,6 +25,6 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegi
 public class BlockEntityRendererRegistryImpl implements BlockEntityRendererRegistry {
 	@Override
 	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
-		net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry.INSTANCE.register(blockEntityType, blockEntityRendererFactory);
+		net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry.register(blockEntityType, blockEntityRendererFactory);
 	}
 }

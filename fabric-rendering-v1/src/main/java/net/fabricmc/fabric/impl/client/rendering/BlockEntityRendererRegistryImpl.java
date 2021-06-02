@@ -23,14 +23,11 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
-
-public class BlockEntityRendererRegistryImpl implements BlockEntityRendererRegistry {
-	private static HashMap<BlockEntityType<?>, BlockEntityRendererFactory<?>> map = new HashMap<>();
+public class BlockEntityRendererRegistryImpl {
+	private static final HashMap<BlockEntityType<?>, BlockEntityRendererFactory<?>> map = new HashMap<>();
 	private static BiConsumer<BlockEntityType<?>, BlockEntityRendererFactory<?>> handler = (type, function) -> map.put(type, function);
 
-	@Override
-	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
+	public static <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
 		handler.accept(blockEntityType, blockEntityRendererFactory);
 	}
 

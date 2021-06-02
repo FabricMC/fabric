@@ -23,16 +23,14 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-
 /**
  * Helper class for registering EntityRenderers.
  */
-public final class EntityRendererRegistryImpl implements EntityRendererRegistry {
+public final class EntityRendererRegistryImpl {
 	private static HashMap<EntityType<?>, EntityRendererFactory<?>> map = new HashMap<>();
 	private static BiConsumer<EntityType<?>, EntityRendererFactory<?>> handler = (type, function) -> map.put(type, function);
 
-	public <T extends Entity> void register(EntityType<? extends T> entityType, EntityRendererFactory<T> factory) {
+	public static <T extends Entity> void register(EntityType<? extends T> entityType, EntityRendererFactory<T> factory) {
 		handler.accept(entityType, factory);
 	}
 

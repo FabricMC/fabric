@@ -27,6 +27,6 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
  */
 public final class EntityRendererRegistryImpl implements EntityRendererRegistry {
 	public <T extends Entity> void register(EntityType<? extends T> entityType, EntityRendererFactory<T> factory) {
-		net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry.INSTANCE.register(entityType, factory);
+		net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry.register(entityType, factory);
 	}
 }

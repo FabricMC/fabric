@@ -27,9 +27,7 @@ import net.fabricmc.fabric.impl.client.rendering.EntityRendererRegistryImpl;
 /**
  * Helper class for registering EntityRenderers.
  */
-public interface EntityRendererRegistry {
-	EntityRendererRegistry INSTANCE = new EntityRendererRegistryImpl();
-
+public final class EntityRendererRegistry {
 	/**
 	 * Register a BlockEntityRenderer for a BlockEntityType. Can be called clientside before the world is rendered.
 	 *
@@ -39,5 +37,7 @@ public interface EntityRendererRegistry {
 	 *                            class is already loaded
 	 * @param <E> the {@link Entity}
 	 */
-	<E extends Entity> void register(EntityType<? extends E> entityType, EntityRendererFactory<E> entityRendererFactory);
+	public static <E extends Entity> void register(EntityType<? extends E> entityType, EntityRendererFactory<E> entityRendererFactory) {
+		EntityRendererRegistryImpl.register(entityType, entityRendererFactory);
+	}
 }
