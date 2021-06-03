@@ -38,4 +38,7 @@ public final class EntityRendererRegistryImpl {
 		map.forEach(vanillaHandler);
 		handler = vanillaHandler;
 	}
+
+	private EntityRendererRegistryImpl() {
+	}
 }

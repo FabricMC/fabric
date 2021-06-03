@@ -40,4 +40,7 @@ public final class EntityRendererRegistry {
 	public static <E extends Entity> void register(EntityType<? extends E> entityType, EntityRendererFactory<E> entityRendererFactory) {
 		EntityRendererRegistryImpl.register(entityType, entityRendererFactory);
 	}
+
+	private EntityRendererRegistry() {
+	}
 }

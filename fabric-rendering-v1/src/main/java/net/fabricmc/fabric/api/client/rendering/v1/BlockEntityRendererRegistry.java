@@ -40,4 +40,7 @@ public final class BlockEntityRendererRegistry {
 	public static <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
 		BlockEntityRendererRegistryImpl.register(blockEntityType, blockEntityRendererFactory);
 	}
+
+	private BlockEntityRendererRegistry() {
+	}
 }

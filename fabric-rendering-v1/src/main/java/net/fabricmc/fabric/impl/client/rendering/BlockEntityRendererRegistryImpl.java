@@ -23,16 +23,19 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 
-public class BlockEntityRendererRegistryImpl {
-	private static final HashMap<BlockEntityType<?>, BlockEntityRendererFactory<?>> map = new HashMap<>();
-	private static BiConsumer<BlockEntityType<?>, BlockEntityRendererFactory<?>> handler = (type, function) -> map.put(type, function);
+public final class BlockEntityRendererRegistryImpl {
+	private static final HashMap<BlockEntityType<?>, BlockEntityRendererFactory<?>> MAP = new HashMap<>();
+	private static BiConsumer<BlockEntityType<?>, BlockEntityRendererFactory<?>> handler = (type, function) -> MAP.put(type, function);
 
 	public static <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
 		handler.accept(blockEntityType, blockEntityRendererFactory);
 	}
 
 	public static void setup(BiConsumer<BlockEntityType<?>, BlockEntityRendererFactory<?>> vanillaHandler) {
-		map.forEach(vanillaHandler);
+		MAP.forEach(vanillaHandler);
 		handler = vanillaHandler;
+	}
+
+	private BlockEntityRendererRegistryImpl() {
 	}
 }
