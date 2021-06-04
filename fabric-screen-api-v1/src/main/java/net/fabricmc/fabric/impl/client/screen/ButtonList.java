@@ -22,6 +22,7 @@ import java.util.List;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ClickableWidget;
 
@@ -32,56 +33,63 @@ import net.fabricmc.api.Environment;
 @ApiStatus.Internal
 @Environment(EnvType.CLIENT)
 public final class ButtonList extends AbstractList<ClickableWidget> {
-	private final List<Selectable> listeners;
+	private final List<Drawable> drawables;
+	private final List<Selectable> selectables;
 	private final List<Element> children;
 
-	public ButtonList(List<Selectable> listeners, List<Element> children) {
-		this.listeners = listeners;
+	public ButtonList(List<Drawable> drawables, List<Selectable> selectables, List<Element> children) {
+		this.drawables = drawables;
+		this.selectables = selectables;
 		this.children = children;
 	}
 
 	@Override
 	public ClickableWidget get(int index) {
-		return (ClickableWidget) listeners.get(translateIndex(index, false));
+		final int drawableIndex = translateIndex(drawables, index, false);
+		return (ClickableWidget) drawables.get(drawableIndex);
 	}
 
 	@Override
 	public ClickableWidget set(int index, ClickableWidget element) {
-		index = translateIndex(index, false);
-		int prevIndex = listeners.indexOf(element);
+		final int drawableIndex = translateIndex(drawables, index, false);
+		drawables.set(drawableIndex, element);
 
-		if (prevIndex >= 0 && prevIndex != index) {
-			if (prevIndex < index) index--;
-			listeners.remove(prevIndex);
-		}
+		final int selectableIndex = translateIndex(selectables, index, false);
+		selectables.set(selectableIndex, element);
 
-		int childIndex = children.indexOf(element);
-
-		if (childIndex >= 0) {
-			children.set(childIndex, element);
-		}
-
-		return (ClickableWidget) listeners.set(index, element);
+		final int childIndex = translateIndex(children, index, false);
+		return (ClickableWidget) children.set(childIndex, element);
 	}
 
 	@Override
 	public void add(int index, ClickableWidget element) {
-		index = translateIndex(index, true);
-
-		if (listeners.remove(element)) { // ensure no duplicates
+		// ensure no duplicates
+		final int duplicateIndex = drawables.indexOf(element);
+		if (duplicateIndex >= 0) {
+			drawables.remove(element);
+			selectables.remove(element);
 			children.remove(element);
-			index--;
+			if (duplicateIndex <= translateIndex(drawables, index, true)) { 
+				index--;
+			}
 		}
 
-		listeners.add(index, element);
-		this.children.add(element);
+		final int drawableIndex = translateIndex(drawables, index, true);
+		drawables.add(drawableIndex, element);
+
+		final int selectableIndex = translateIndex(selectables, index, true);
+		selectables.add(selectableIndex, element);
+
+		final int childIndex = translateIndex(children, index, true);
+		children.add(childIndex, element);
 	}
 
 	@Override
 	public ClickableWidget remove(int index) {
-		index = translateIndex(index, false);
+		index = translateIndex(drawables, index, false);
 
-		final ClickableWidget removedButton = (ClickableWidget) listeners.remove(index);
+		final ClickableWidget removedButton = (ClickableWidget) drawables.remove(index);
+		this.selectables.remove(removedButton);
 		this.children.remove(removedButton);
 
 		return removedButton;
@@ -91,8 +99,8 @@ public final class ButtonList extends AbstractList<ClickableWidget> {
 	public int size() {
 		int ret = 0;
 
-		for (Selectable listener : listeners) {
-			if (listener instanceof ClickableWidget) {
+		for (Drawable drawable : drawables) {
+			if (drawable instanceof ClickableWidget) {
 				ret++;
 			}
 		}
@@ -100,21 +108,20 @@ public final class ButtonList extends AbstractList<ClickableWidget> {
 		return ret;
 	}
 
-	private int translateIndex(int index, boolean allowAfter) {
+	private int translateIndex(List<?> list, int index, boolean allowAfter) {
 		int remaining = index;
 
-		for (int i = 0, max = listeners.size(); i < max; i++) {
-			if (listeners.get(i) instanceof ClickableWidget) {
+		for (int i = 0, max = list.size(); i < max; i++) {
+			if (list.get(i) instanceof ClickableWidget) {
 				if (remaining == 0) return i;
 				remaining--;
 			}
 		}
 
 		if (allowAfter && remaining == 0) {
-			return listeners.size();
+			return list.size();
 		}
 
 		throw new IndexOutOfBoundsException(String.format("Index: %d, Size: %d", index, index - remaining));
 	}
 }
-
