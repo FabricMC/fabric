@@ -18,10 +18,17 @@ package net.fabricmc.fabric.api.transfer.v1.storage.base;
 
 import java.util.Objects;
 
+import org.jetbrains.annotations.ApiStatus;
+
 /**
  * An immutable object storing both a resource and an amount, provided for convenience.
  * @param <T> The type of the stored resource.
+ *
+ * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
+@ApiStatus.Experimental
+@Deprecated
 public class ResourceAmount<T> {
 	public final T resource;
 	public final long amount;

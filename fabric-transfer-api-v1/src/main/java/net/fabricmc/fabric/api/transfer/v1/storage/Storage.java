@@ -19,8 +19,14 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
@@ -35,6 +41,15 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
  *     <li>{@link #getVersion()} can be used to quickly check if a storage has changed, without having to rescan its contents.</li>
  * </ul>
  *
+ * <p>Users that wish to implement this interface can use the helpers in the {@code base} package:
+ * <ul>
+ *     <li>{@link CombinedStorage} can be used to combine multiple instances, for example to combine multiple "slots" in one big storage.</li>
+ *     <li>{@link ExtractionOnlyStorage} and {@link InsertionOnlyStorage} can be used when only extraction or insertion is needed.</li>
+ *     <li>{@link SingleViewIterator} can be used to wrap a single view for use with {@link #iterator}.</li>
+ *     <li>Resource-specific base implementations may also be available.
+ *     For example, Fabric API providers {@link SingleFluidStorage} to accelerate implementations of {@code Storage<FluidKey>}.</li>
+ * </ul>
+ *
  * <p><b>Important note:</b> Unless otherwise specified, all transfer functions take a non-empty resource
  * and a non-negative maximum amount as parameters.
  * Implementations are encouraged to throw an exception if these preconditions are violated.
@@ -44,7 +59,12 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
  *
  * @param <T> The type of the stored resources.
  * @see Transaction
+ *
+ * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
+@ApiStatus.Experimental
+@Deprecated
 public interface Storage<T> {
 	/**
 	 * Return false if calling {@link #insert} will absolutely always return 0, or true otherwise or in doubt.

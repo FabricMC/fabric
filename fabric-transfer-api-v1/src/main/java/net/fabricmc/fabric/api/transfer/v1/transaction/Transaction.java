@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.transfer.v1.transaction;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
 
@@ -67,7 +69,12 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
  * <p>Every transaction is only valid on the thread it was opened on,
  * and attempts to call transaction functions on any other thread will throw an exception.
  * Consequently, transactions can be concurrent across multiple threads, as long as they don't share any state.
+ *
+ * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
+@ApiStatus.Experimental
+@Deprecated
 public interface Transaction extends AutoCloseable {
 	/**
 	 * Open a new outer transaction.

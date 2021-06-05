@@ -16,9 +16,16 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
+import org.jetbrains.annotations.ApiStatus;
+
 /**
  * Preconditions for fluid transfer.
+ *
+ * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
+@ApiStatus.Experimental
+@Deprecated
 public class FluidPreconditions {
 	/**
 	 * Ensure that the passed fluid is not empty.
@@ -27,7 +34,7 @@ public class FluidPreconditions {
 	 */
 	public static void notEmpty(FluidKey fluid) {
 		if (fluid.isEmpty()) {
-			throw new IllegalArgumentException("Fluid may not be empty.");
+			throw new IllegalArgumentException("Fluid key may not be empty.");
 		}
 	}
 

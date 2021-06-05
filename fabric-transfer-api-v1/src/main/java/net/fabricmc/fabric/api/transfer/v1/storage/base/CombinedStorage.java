@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.jetbrains.annotations.ApiStatus;
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -33,7 +34,12 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
  *
  * @param <T> The type of the stored resources.
  * @param <S> The class of every part. {@code ? extends Storage<T>} can be used if the parts are of different types.
+ *
+ * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
+@ApiStatus.Experimental
+@Deprecated
 public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 	public final List<S> parts;
 

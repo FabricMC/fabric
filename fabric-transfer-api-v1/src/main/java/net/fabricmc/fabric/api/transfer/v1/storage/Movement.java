@@ -18,13 +18,19 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 
 import java.util.function.Predicate;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 /**
  * Helper functions to move resources between two {@link Storage}s.
+ *
+ * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
+@ApiStatus.Experimental
+@Deprecated
 public final class Movement {
 	/**
 	 * Move resources between two storages, matching the passed filter, and return the amount that was successfully transferred.
@@ -69,7 +75,7 @@ public final class Movement {
 				}
 
 				if (maxAmount == totalMoved) {
-					// Early return if nothing can be moved anymore
+					// early return if nothing can be moved anymore
 					iterationTransaction.commit();
 					return totalMoved;
 				}

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.item.TooltipContext;
@@ -38,11 +39,21 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 
-// TODO: comment!
+/**
+ * Client-side display of fluid keys.
+ *
+ * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
+ */
+@ApiStatus.Experimental
+@Deprecated
 @Environment(EnvType.CLIENT)
 public class FluidKeyRendering {
 	private static final Map<Fluid, FluidKeyRenderHandler> handlers = new IdentityHashMap<>();
 
+	/**
+	 * Register a render handler for the passed fluid.
+	 */
 	public static void register(Fluid fluid, FluidKeyRenderHandler handler) {
 		Objects.requireNonNull(fluid, "Fluid may not be null.");
 		Objects.requireNonNull(handler, "FluidKeyRenderHandler may not be null.");
@@ -52,11 +63,17 @@ public class FluidKeyRendering {
 		}
 	}
 
+	/**
+	 * Return the render handler for the passed fluid, if available.
+	 */
 	@Nullable
 	public static FluidKeyRenderHandler getHandler(Fluid fluid) {
 		return handlers.get(fluid);
 	}
 
+	/**
+	 * Return the name of the passed fluid key.
+	 */
 	public static Text getName(FluidKey fluidKey) {
 		FluidKeyRenderHandler handler = getHandler(fluidKey.getFluid());
 
@@ -67,6 +84,10 @@ public class FluidKeyRendering {
 		}
 	}
 
+	/**
+	 * Return the tooltip for the passed fluid key, including the name and additional lines if available
+	 * and the id of the fluid if advanced tooltips are enabled.
+	 */
 	public static List<Text> getTooltip(FluidKey fluidKey, TooltipContext context) {
 		List<Text> tooltip = new ArrayList<>();
 
@@ -90,6 +111,10 @@ public class FluidKeyRendering {
 		return tooltip;
 	}
 
+	/**
+	 * Return the sprite that should be used to render the passed fluid key, or null if it's not available.
+	 * The sprite should be rendered using the color returned by {@link #getClass()}.
+	 */
 	@Nullable
 	public static Sprite getSprite(FluidKey fluidKey) {
 		// If the fluid has a custom key renderer, use that
@@ -109,6 +134,9 @@ public class FluidKeyRendering {
 		return null;
 	}
 
+	/**
+	 * Return the color that should be used to render {@linkplain #getSprite the sprite} of the passed fluid key.
+	 */
 	public static int getColor(FluidKey fluidKey) {
 		// If the fluid has a custom key renderer, use that
 		FluidKeyRenderHandler handler = getHandler(fluidKey.getFluid());

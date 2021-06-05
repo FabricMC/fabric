@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.transfer.v1.fluid.base;
 
 import java.util.Iterator;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
@@ -35,7 +37,12 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
  * extracted.
  * If one of these two functions is overridden to always return false, implementors may also wish to override
  * {@link #supportsInsertion} and/or {@link #supportsExtraction}.
+ *
+ * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
+@ApiStatus.Experimental
+@Deprecated
 public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmount<FluidKey>> implements Storage<FluidKey>, StorageView<FluidKey> {
 	public FluidKey fluidKey;
 	public long amount;

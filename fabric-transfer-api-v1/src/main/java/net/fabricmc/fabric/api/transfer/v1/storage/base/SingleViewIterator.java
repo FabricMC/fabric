@@ -19,6 +19,8 @@ package net.fabricmc.fabric.api.transfer.v1.storage.base;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -30,7 +32,12 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
  * In that case, usage of this class is recommended, as it will ensure that the storage view can't be accessed after the transaction is closed.
  *
  * @param <T> The type of the stored resource.
+ *
+ * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
+@ApiStatus.Experimental
+@Deprecated
 public final class SingleViewIterator<T> implements Iterator<StorageView<T>>, Transaction.CloseCallback {
 	/**
 	 * Create a new iterator for the passed storage view, tied to the passed transaction.

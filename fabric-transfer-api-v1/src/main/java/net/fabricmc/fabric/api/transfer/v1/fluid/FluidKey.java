@@ -24,14 +24,21 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidKeyImpl;
 
 /**
  * An immutable association of a still fluid and an optional NBT tag.
  *
  * <p>Do not extend this class. Use {@link #of(Fluid)} and {@link #of(Fluid, CompoundTag)} to create instances.
+ *
+ * <p>{@link FluidKeyRendering} can be used for client-side rendering of fluid keys.
+ *
+ * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-// TODO: "rendering" this. We need a client-side class that can provide a name (might be server-side as well?), a tooltip, a sprite and a color based on the FluidKey instance.
+@ApiStatus.Experimental
+@Deprecated
 @ApiStatus.NonExtendable
 public interface FluidKey {
 	/**
