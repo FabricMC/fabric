@@ -35,7 +35,8 @@ public class FluidKeyImpl implements FluidKey {
 	public static FluidKey of(Fluid fluid, @Nullable CompoundTag tag) {
 		Objects.requireNonNull(fluid, "Fluid may not be null.");
 
-		if (!fluid.isStill(fluid.getDefaultState())) {
+		if (!fluid.isStill(fluid.getDefaultState()) && fluid != Fluids.EMPTY) {
+			// Note: the empty fluid is not still, that's why we check for it specifically.
 			throw new IllegalArgumentException("Fluid may not be flowing.");
 		}
 
