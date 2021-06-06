@@ -67,7 +67,7 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
  * that will take care of properly maintaining their state.
  *
  * <p>Every transaction is only valid on the thread it was opened on,
- * and attempts to call transaction functions on any other thread will throw an exception.
+ * and attempts to use it on another thread will throw an exception.
  * Consequently, transactions can be concurrent across multiple threads, as long as they don't share any state.
  *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
@@ -184,7 +184,7 @@ public interface Transaction extends AutoCloseable {
 	void addOuterCloseCallback(OuterCloseCallback outerCloseCallback);
 
 	/**
-	 * A callback that is invoked when the outer transaction is closed.
+	 * A callback that is invoked after the outer transaction is closed.
 	 */
 	@FunctionalInterface
 	interface OuterCloseCallback {

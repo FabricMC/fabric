@@ -57,7 +57,7 @@ public interface StorageView<T> {
 	long amount();
 
 	/**
-	 * @return The total amount of {@link #resource} that could be stored in this view.
+	 * @return The total amount of {@link #resource} that could be stored in this view, or an estimate of the number of resources that could be stored if this view is empty.
 	 */
 	long capacity();
 }

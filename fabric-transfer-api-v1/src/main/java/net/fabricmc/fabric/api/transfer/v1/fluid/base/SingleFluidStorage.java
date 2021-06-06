@@ -46,8 +46,6 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmount<FluidKey>> implements Storage<FluidKey>, StorageView<FluidKey> {
 	public FluidKey fluidKey;
 	public long amount;
-	// Current version of the storage.
-	private int version = 0;
 
 	/**
 	 * Implement if you want.
@@ -56,21 +54,21 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	}
 
 	/**
-	 * @return {@code true} if the passed non-empty fluid can be inserted, {@code false} otherwise.
+	 * @return {@code true} if the passed non-empty fluid key can be inserted, {@code false} otherwise.
 	 */
 	protected boolean canInsert(FluidKey fluidKey) {
 		return true;
 	}
 
 	/**
-	 * @return {@code true} if the passed non-empty fluid can be extracted, {@code false} otherwise.
+	 * @return {@code true} if the passed non-empty fluid key can be extracted, {@code false} otherwise.
 	 */
 	protected boolean canExtract(FluidKey fluidKey) {
 		return true;
 	}
 
 	/**
-	 * @return The maximum capacity of this storage for the passed non-empty fluid.
+	 * @return The maximum capacity of this storage for the passed non-empty fluid key.
 	 */
 	protected abstract long getCapacity(FluidKey fluidKey);
 
@@ -151,11 +149,6 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	}
 
 	@Override
-	public final int getVersion() {
-		return version;
-	}
-
-	@Override
 	protected final ResourceAmount<FluidKey> createSnapshot() {
 		return new ResourceAmount<>(fluidKey, amount);
 	}
@@ -168,7 +161,6 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 
 	@Override
 	protected final void onFinalCommit() {
-		version++;
 		markDirty();
 	}
 }
