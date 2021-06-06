@@ -11,9 +11,9 @@ is the reference implementation of a "participant", that is an object participat
 
 ## Storages
 A [`Storage<T>`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/Storage.java) is any object that can store resources of type `T`.
-Its content can be read, and resources can be inserted into it or extracted from it.
+Its contents can be read, and resources can be inserted into it or extracted from it.
 [`Movement`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/Movement.java) can be used to move resources between two `Storage`s.
-The [`storage/base`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/base) package provides a few helpers accelerate
+The [`storage/base`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/base) package provides a few helpers to accelerate
 implementation of `Storage<T>`.
 
 ## Fluid transfer
