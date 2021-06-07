@@ -96,7 +96,7 @@ public class StructureTest {
 
 	public static class TestStructureGenerator extends StructurePieceWithDimensions {
 		public TestStructureGenerator(Random random, int x, int y, int z) {
-			super(PIECE, x, y, z, 0, 48, 16, method_35457(random));
+			super(PIECE, x, y, z, 0, 48, 16, getRandomHorizontalDirection(random));
 		}
 
 		protected TestStructureGenerator(ServerWorld serverWorld, NbtCompound compoundTag) {
