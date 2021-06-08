@@ -149,10 +149,11 @@ public interface MutableQuadView extends QuadView {
 	 *
 	 * <p>Calling this method does not emit the quad.
 	 *
-	 * @deprecated Use {@link #fromVanilla(BakedQuad, RenderMaterial, Direction, int[], int)}
-	 * which has better encapsulation and removed outdated item flag
+	 * @deprecated Use {@link #fromVanilla(BakedQuad, RenderMaterial, Direction)}
+	 * which has better encapsulation and removed outdated item flag.
+	 * This method would be removed in a future major version update.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	MutableQuadView fromVanilla(int[] quadData, int startIndex, boolean isItem);
 
 	/**

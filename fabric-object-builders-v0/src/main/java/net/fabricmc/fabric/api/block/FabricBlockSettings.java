@@ -28,7 +28,8 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 
 /**
- * @deprecated Please migrate to v1. Please use {@link net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings} instead
+ * @deprecated Please migrate to v1. Please use {@link net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings} instead.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
 @Deprecated
 public class FabricBlockSettings {
@@ -171,6 +172,9 @@ public class FabricBlockSettings {
 		return this;
 	}
 
+	/**
+	 * @deprecated Use {@link #slipperiness(float)}
+	 */
 	@Deprecated
 	public FabricBlockSettings friction(float friction) {
 		this.delegate.slipperiness(friction);

@@ -23,11 +23,12 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 /**
- * @deprecated use {@link ExtraModelProvider}, which supports loading of plain {@link Identifier}s
+ * @deprecated use {@link ExtraModelProvider}, which supports loading of plain {@link Identifier}s.
+ * This class would be removed in a future major version update.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 @FunctionalInterface
 public interface ModelAppender {
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	void appendAll(ResourceManager manager, Consumer<ModelIdentifier> out);
 }

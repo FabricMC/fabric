@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -35,6 +37,7 @@ import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
  *
  * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
+@ApiStatus.Experimental
 @Deprecated
 public interface BiomeSelectionContext {
 	RegistryKey<Biome> getBiomeKey();

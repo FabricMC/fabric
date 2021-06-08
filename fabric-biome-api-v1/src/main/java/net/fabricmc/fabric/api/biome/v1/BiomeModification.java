@@ -31,6 +31,7 @@ import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
  *
  * @see BiomeModifications
  */
+@ApiStatus.Experimental
 @Deprecated
 public class BiomeModification {
 	private final Identifier id;

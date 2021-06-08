@@ -22,6 +22,7 @@ import net.minecraft.entity.attribute.DefaultAttributeContainer;
 
 /**
  * @deprecated Please use {@link net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry} instead.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
 @Deprecated
 public final class FabricDefaultAttributeRegistry {

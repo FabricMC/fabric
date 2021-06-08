@@ -32,8 +32,9 @@ import net.fabricmc.api.Environment;
  * The renderers are registered with {@link BuiltinItemRendererRegistry#register(Item, BuiltinItemRenderer)}.
  *
  * @deprecated Please use {@link BuiltinItemRendererRegistry.DynamicItemRenderer} instead.
+ * This class would be removed in a future major version update.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 @Environment(EnvType.CLIENT)
 @FunctionalInterface
 public interface BuiltinItemRenderer {

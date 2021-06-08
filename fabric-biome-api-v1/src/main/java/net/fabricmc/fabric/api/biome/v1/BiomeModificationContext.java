@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.biome.v1;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.entity.EntityType;
@@ -48,6 +49,7 @@ import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
  *
  * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
+@ApiStatus.Experimental
 @Deprecated
 public interface BiomeModificationContext {
 	/**

@@ -57,9 +57,9 @@ public final class TradeOfferHelper {
 	}
 
 	/**
-	 * @deprecated This never did anything useful.
+	 * @deprecated This never did anything useful. This method would be removed in a future major version update.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static void refreshOffers() {
 		TradeOfferInternals.printRefreshOffersWarning();
 	}

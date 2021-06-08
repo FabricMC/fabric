@@ -26,7 +26,9 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * @deprecated Please use {@link net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback}
+ * @deprecated Please migrate to fabric-lifecycle-events-v1. Please use {@link
+ * net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback}.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
 @Deprecated
 public interface ItemTooltipCallback {

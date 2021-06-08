@@ -38,7 +38,8 @@ import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
  *
  * <p>For iterating over clients in a server, see {@link PlayerStream}.
  *
- * @deprecated Please migrate to {@link ServerPlayNetworking}.
+ * @deprecated Please migrate to fabric-networking-api-v1's {@link ServerPlayNetworking}.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
 @Deprecated
 public interface ServerSidePacketRegistry extends PacketRegistry {

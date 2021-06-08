@@ -34,6 +34,7 @@ import net.fabricmc.fabric.api.networking.v1.S2CPlayChannelEvents;
  * that the sending client can understand.
  *
  * @deprecated Please migrate to {@link S2CPlayChannelEvents} since this was incorrectly named.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
 @Deprecated
 public interface C2SPacketTypeCallback {

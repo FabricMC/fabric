@@ -26,6 +26,7 @@ import net.minecraft.world.World;
 
 /**
  * @deprecated Please migrate to v1. Please use {@link net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder} instead.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
 @Deprecated
 public class FabricEntityTypeBuilder<T extends Entity> {

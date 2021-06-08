@@ -160,12 +160,12 @@ public final class ToolManagerImpl {
 		return ENTRIES.get(block);
 	}
 
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static void registerBreakByHand(Block block, boolean value) {
 		entry(block).setBreakByHand(value);
 	}
 
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static void registerBreakByTool(Block block, Tag<Item> tag, int miningLevel) {
 		entry(block).putBreakByTool(tag, miningLevel);
 	}

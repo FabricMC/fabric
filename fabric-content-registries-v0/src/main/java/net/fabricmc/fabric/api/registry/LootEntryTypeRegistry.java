@@ -21,13 +21,14 @@ import net.minecraft.loot.entry.LootPoolEntry;
 import net.fabricmc.fabric.impl.content.registry.LootEntryTypeRegistryImpl;
 
 /**
- * @deprecated Use {@link net.fabricmc.fabric.api.loot.v1.LootEntryTypeRegistry}
+ * @deprecated Use {@link net.fabricmc.fabric.api.loot.v1.LootEntryTypeRegistry}.
+ * This class would be removed in a future major version update.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public interface LootEntryTypeRegistry {
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	LootEntryTypeRegistry INSTANCE = LootEntryTypeRegistryImpl.INSTANCE;
 
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	void register(LootPoolEntry.Serializer<?> serializer);
 }

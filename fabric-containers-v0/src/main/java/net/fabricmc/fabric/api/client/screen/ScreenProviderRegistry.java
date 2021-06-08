@@ -26,6 +26,7 @@ import net.fabricmc.fabric.impl.client.container.ScreenProviderRegistryImpl;
 
 /**
  * @deprecated Use {@link net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry} instead.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
 @Deprecated
 public interface ScreenProviderRegistry {

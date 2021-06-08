@@ -28,9 +28,10 @@ import net.minecraft.util.registry.Registry;
 /**
  * Registry for server-&gt;client entity tracking values.
  *
- * @deprecated Use FabricEntityTypeBuilder methods
+ * @deprecated Use FabricEntityTypeBuilder methods. This v0 module would no longer be included in the Fabric API in a
+ * future major version update.
  */
-@SuppressWarnings("deprecation")
+@SuppressWarnings("rawtypes")
 @Deprecated
 public class EntityTrackingRegistry {
 	private static final Logger LOGGER = LogManager.getLogger();

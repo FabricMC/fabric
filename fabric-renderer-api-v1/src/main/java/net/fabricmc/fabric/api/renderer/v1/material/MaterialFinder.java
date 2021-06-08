@@ -62,9 +62,10 @@ public interface MaterialFinder {
 	 * will use the value normally associated with the block being rendered, or
 	 * {@code TRANSLUCENT} for item renders. (Normal Minecraft rendering)
 	 *
-	 * @deprecated Use {@code BlendMode} version instead.
+	 * @deprecated Use {@link #blendMode(int, BlendMode)} instead.
+	 * This method would be removed in a future major version update.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	default MaterialFinder blendMode(int spriteIndex, RenderLayer renderLayer) {
 		return blendMode(spriteIndex, BlendMode.fromRenderLayer(renderLayer));
 	}

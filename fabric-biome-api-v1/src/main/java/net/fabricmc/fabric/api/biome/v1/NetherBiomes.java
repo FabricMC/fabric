@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.biome.v1;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
@@ -26,6 +28,7 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
  *
  * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
+@ApiStatus.Experimental
 @Deprecated
 public final class NetherBiomes {
 	private NetherBiomes() {

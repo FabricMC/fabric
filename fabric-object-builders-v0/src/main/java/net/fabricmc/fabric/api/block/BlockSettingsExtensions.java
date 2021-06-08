@@ -28,6 +28,7 @@ import net.fabricmc.fabric.mixin.object.builder.AbstractBlockSettingsAccessor;
 
 /**
  * @deprecated Please migrate to v1. Please use methods in {@link net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings} instead.
+ * This v0 module would no longer be included in the Fabric API in a future major version update.
  */
 @Deprecated
 public final class BlockSettingsExtensions {
