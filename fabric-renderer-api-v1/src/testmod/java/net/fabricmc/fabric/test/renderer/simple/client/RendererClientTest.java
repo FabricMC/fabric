@@ -21,12 +21,16 @@ import net.minecraft.client.render.RenderLayer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.fabricmc.fabric.test.renderer.simple.FrameBlock;
 import net.fabricmc.fabric.test.renderer.simple.RendererTest;
 
 public final class RendererClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ModelLoadingRegistry.INSTANCE.registerResourceProvider(manager -> new FrameModelResourceProvider());
-		BlockRenderLayerMap.INSTANCE.putBlock(RendererTest.FRAME, RenderLayer.getCutoutMipped());
+
+		for (FrameBlock frameBlock : RendererTest.FRAMES) {
+			BlockRenderLayerMap.INSTANCE.putBlock(frameBlock, RenderLayer.getCutoutMipped());
+		}
 	}
 }

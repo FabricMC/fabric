@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.test.renderer.simple;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 
 /**
  * A simple testmod that renders a simple block rendered using the fabric renderer api.
@@ -33,12 +33,24 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
  * <p>There are no fancy shaders or glow that is provided by this renderer test.
  */
 public final class RendererTest implements ModInitializer {
-	public static final Block FRAME = new FrameBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).nonOpaque());
-	public static final BlockEntityType<FrameBlockEntity> FRAME_BLOCK_ENTITY = BlockEntityType.Builder.create(FrameBlockEntity::new, FRAME).build(null);
+	public static final FrameBlock[] FRAMES = new FrameBlock[] {
+			new FrameBlock(id("frame")),
+			new FrameBlock(id("frame_multipart")),
+			new FrameBlock(id("frame_weighted")),
+	};
+	public static final BlockEntityType<FrameBlockEntity> FRAME_BLOCK_ENTITY = BlockEntityType.Builder.create(FrameBlockEntity::new, FRAMES).build(null);
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registry.BLOCK, new Identifier("fabric-renderer-api-v1-testmod", "frame"), FRAME);
-		Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier("fabric-renderer-api-v1-testmod", "frame"), FRAME_BLOCK_ENTITY);
+		for (FrameBlock frameBlock : FRAMES) {
+			Registry.register(Registry.BLOCK, frameBlock.id, frameBlock);
+			Registry.register(Registry.ITEM, frameBlock.id, new BlockItem(frameBlock, new Item.Settings().group(ItemGroup.MISC)));
+		}
+
+		Registry.register(Registry.BLOCK_ENTITY_TYPE, id("frame"), FRAME_BLOCK_ENTITY);
+	}
+
+	public static Identifier id(String path) {
+		return new Identifier("fabric-renderer-api-v1-testmod", path);
 	}
 }
