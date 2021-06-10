@@ -1,3 +1,6 @@
 accessWidener	v1	named
 extendable  method    net/minecraft/block/AbstractBlock$Settings    <init>  (Lnet/minecraft/block/Material;Ljava/util/function/Function;)V
 extendable  method    net/minecraft/block/AbstractBlock$Settings    <init>  (Lnet/minecraft/block/Material;Lnet/minecraft/block/MaterialColor;)V
+
+accessible  class   net/minecraft/entity/ai/brain/task/CompositeTask$Order
+accessible  class   net/minecraft/entity/ai/brain/task/CompositeTask$RunMode
