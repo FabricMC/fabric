@@ -22,7 +22,6 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
-import net.fabricmc.fabric.api.client.model.ModelProviderException;
 import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
 
 /**
@@ -33,7 +32,7 @@ final class FrameModelResourceProvider implements ModelResourceProvider {
 
 	@Nullable
 	@Override
-	public UnbakedModel loadModelResource(Identifier resourceId, ModelProviderContext context) throws ModelProviderException {
+	public UnbakedModel loadModelResource(Identifier resourceId, ModelProviderContext context) {
 		if (resourceId.equals(FRAME_MODEL_ID)) {
 			return new FrameUnbakedModel();
 		}

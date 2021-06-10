@@ -27,14 +27,20 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+
 public final class FrameBlock extends Block implements BlockEntityProvider {
-	public FrameBlock(Settings settings) {
-		super(settings);
+	public final Identifier id;
+
+	public FrameBlock(Identifier id) {
+		super(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).nonOpaque());
+		this.id = id;
 	}
 
 	@Override
