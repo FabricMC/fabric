@@ -65,11 +65,13 @@ public final class ButtonList extends AbstractList<ClickableWidget> {
 	public void add(int index, ClickableWidget element) {
 		// ensure no duplicates
 		final int duplicateIndex = drawables.indexOf(element);
+
 		if (duplicateIndex >= 0) {
 			drawables.remove(element);
 			selectables.remove(element);
 			children.remove(element);
-			if (duplicateIndex <= translateIndex(drawables, index, true)) { 
+
+			if (duplicateIndex <= translateIndex(drawables, index, true)) {
 				index--;
 			}
 		}
@@ -113,7 +115,10 @@ public final class ButtonList extends AbstractList<ClickableWidget> {
 
 		for (int i = 0, max = list.size(); i < max; i++) {
 			if (list.get(i) instanceof ClickableWidget) {
-				if (remaining == 0) return i;
+				if (remaining == 0) {
+					return i;
+				}
+
 				remaining--;
 			}
 		}
