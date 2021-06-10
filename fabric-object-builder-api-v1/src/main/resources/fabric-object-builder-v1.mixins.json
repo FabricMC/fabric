@@ -11,7 +11,8 @@
     "MaterialBuilderAccessor",
     "MixinBlock",
     "PointOfInterestTypeAccessor",
-    "VillagerProfessionAccessor"
+    "VillagerProfessionAccessor",
+    "VillagerTaskListProviderInjector"
   ],
   "client": [
     "ModelPredicateProviderRegistryAccessor",
