@@ -22,8 +22,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
@@ -84,7 +84,7 @@ public final class FrameBlockEntity extends BlockEntity implements RenderAttachm
 
 	@Override
 	public void fromClientTag(NbtCompound tag) {
-		System.out.println("Recieved sync packet");
+		System.out.println("Received sync packet");
 
 		if (tag.contains("block", NbtType.STRING)) {
 			this.block = Registry.BLOCK.get(new Identifier(tag.getString("block")));

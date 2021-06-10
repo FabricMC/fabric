@@ -20,10 +20,10 @@ def ENV = System.getenv()
 
 class Globals {
 	static def baseVersion = "0.34.9"
-	static def mcVersion = "1.17-rc1"
-	static def yarnVersion = "+build.5"
+	static def mcVersion = "1.17"
+	static def yarnVersion = "+build.6"
 	static def loaderVersion = "0.11.3"
-	static def preRelease = true
+	static def preRelease = false
 }
 
 version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()

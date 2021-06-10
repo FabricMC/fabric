@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.renderer.client;
+package net.fabricmc.fabric.mixin.renderer.client.debughud;
 
 import java.util.List;
 
