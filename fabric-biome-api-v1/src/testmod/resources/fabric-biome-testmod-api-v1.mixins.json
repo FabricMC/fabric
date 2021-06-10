@@ -2,7 +2,7 @@
   "required": true,
   "package": "net.fabricmc.fabric.test.biome.mixin",
   "compatibilityLevel": "JAVA_16",
-  "client": [
+  "mixins": [
     "DecoratorsAccessor"
   ],
   "injectors": {
