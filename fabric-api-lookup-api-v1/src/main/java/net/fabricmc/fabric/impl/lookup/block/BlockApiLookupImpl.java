@@ -48,12 +48,14 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 	}
 
 	private final Class<A> apiClass;
+	private final Class<C> contextClass;
 	private final ApiProviderMap<Block, BlockApiProvider<A, C>> providerMap = ApiProviderMap.create();
 	private final List<BlockApiProvider<A, C>> fallbackProviders = new CopyOnWriteArrayList<>();
 
 	@SuppressWarnings("unchecked")
 	private BlockApiLookupImpl(Class<?> apiClass, Class<?> contextClass) {
 		this.apiClass = (Class<A>) apiClass;
+		this.contextClass = (Class<C>) contextClass;
 	}
 
 	@Nullable
@@ -170,6 +172,16 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 		Objects.requireNonNull(fallbackProvider, "BlockApiProvider may not be null.");
 
 		fallbackProviders.add(fallbackProvider);
+	}
+
+	@Override
+	public Class<A> apiClass() {
+		return apiClass;
+	}
+
+	@Override
+	public Class<C> contextClass() {
+		return contextClass;
 	}
 
 	@Nullable
