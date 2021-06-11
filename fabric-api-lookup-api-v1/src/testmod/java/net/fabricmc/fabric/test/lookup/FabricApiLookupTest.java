@@ -82,6 +82,14 @@ public class FabricApiLookupTest implements ModInitializer {
 			BlockApiLookup<Void, Void> wrongInsertable = BlockApiLookup.get(new Identifier("testmod:item_insertable"), Void.class, Void.class);
 			wrongInsertable.registerFallback((world, pos, state, be, nocontext) -> null);
 		}, "The registry should have prevented creation of another instance with different classes, but same id.");
+
+		if (insertable2.apiClass() != ItemInsertable.class) {
+			throw new AssertionError("Incorrect API class was returned.");
+		}
+
+		if (insertable2.contextClass() != Direction.class) {
+			throw new AssertionError("Incorrect context class was returned.");
+		}
 	}
 
 	private static void testSelfRegistration() {
