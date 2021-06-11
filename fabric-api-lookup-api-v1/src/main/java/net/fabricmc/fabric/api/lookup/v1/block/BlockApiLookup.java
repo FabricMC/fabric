@@ -217,6 +217,16 @@ public interface BlockApiLookup<A, C> {
 	 */
 	void registerFallback(BlockApiProvider<A, C> fallbackProvider);
 
+	/**
+	 * Return the API class of this lookup.
+	 */
+	Class<A> apiClass();
+
+	/**
+	 * Return the context class of this lookup.
+	 */
+	Class<C> contextClass();
+
 	@FunctionalInterface
 	interface BlockApiProvider<A, C> {
 		/**
