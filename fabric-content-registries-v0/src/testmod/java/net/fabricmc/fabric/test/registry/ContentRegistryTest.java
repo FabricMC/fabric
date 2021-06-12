@@ -18,6 +18,8 @@ package net.fabricmc.fabric.test.registry;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.ItemTags;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
@@ -28,7 +30,11 @@ public final class ContentRegistryTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		CompostingChanceRegistry.INSTANCE.add(Items.OBSIDIAN, 0.5F);
+
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.OBSIDIAN, 2, 3);
+		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SNOW, 4, 6);
+
 		FuelRegistry.INSTANCE.add(Items.OBSIDIAN, 20 * 3);
+		FuelRegistry.INSTANCE.add(ItemTags.FOX_FOOD, 20 * 6);
 	}
 }
