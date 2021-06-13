@@ -6,8 +6,6 @@
     "BiomeAccessor",
     "ChunkSerializerMixin",
     "FlatChunkGeneratorConfigAccessor",
-    "MixinChunkGeneratorSettings",
-    "MixinStructuresConfig",
     "StructureFeatureAccessor",
     "StructuresConfigAccessor"
   ],

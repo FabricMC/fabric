@@ -15,6 +15,11 @@
   "authors": [
     "FabricMC"
   ],
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.structure.FabricStructureImpl"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.8.0",
     "fabric-api-base": "*"
