@@ -19,6 +19,8 @@ package net.fabricmc.fabric.impl.structure;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
+
 import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
@@ -38,7 +40,9 @@ public class FabricStructureImpl implements ModInitializer {
 
 			tempMap.putAll(STRUCTURE_TO_CONFIG_MAP);
 
-			((StructuresConfigAccessor) world.getChunkManager().getChunkGenerator().getStructuresConfig()).setStructures(tempMap);
+			//Make it immutable again
+			ImmutableMap<StructureFeature<?>, StructureConfig> immutableMap = ImmutableMap.copyOf(tempMap);
+			((StructuresConfigAccessor) world.getChunkManager().getChunkGenerator().getStructuresConfig()).setStructures(immutableMap);
 		});
 	}
 }
