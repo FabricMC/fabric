@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.screen;
 
 import java.util.List;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -79,7 +80,7 @@ public final class ScreenTests implements ClientModInitializer {
 			// Register render event to draw an icon on the screen
 			ScreenEvents.afterRender(screen).register((_screen, matrices, mouseX, mouseY, tickDelta) -> {
 				// Render an armor icon to test
-				client.getTextureManager().bindTexture(InGameHud.GUI_ICONS_TEXTURE);
+				RenderSystem.setShaderTexture(0, InGameHud.GUI_ICONS_TEXTURE);
 				DrawableHelper.drawTexture(matrices, (screen.width / 2) - 124, (screen.height / 4) + 96, 20, 20, 34, 9, 9, 9, 256, 256);
 			});
 
