@@ -16,15 +16,14 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
+import net.minecraft.fluid.Fluids;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.impl.transfer.fluid.CauldronStorage;
 
 /**
  * Access to {@link Storage Storage&lt;FluidKey&gt;} instances.
@@ -52,6 +51,7 @@ public final class FluidTransfer {
 	}
 
 	static {
-		FluidTransfer.SIDED.registerForBlocks((world, pos, state, be, context) -> CauldronStorage.get(world, pos), Blocks.CAULDRON);
+		// Initialize vanilla cauldron wrappers
+		CauldronFluidContent.getForFluid(Fluids.WATER);
 	}
 }

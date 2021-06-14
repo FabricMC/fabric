@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.transfer.fluid;
 
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
@@ -43,7 +44,7 @@ public class FluidTransferTest implements ModInitializer {
 		registerBlock(INFINITE_LAVA_SOURCE, "infinite_lava_source");
 		registerBlock(FLUID_CHUTE, "fluid_chute");
 
-		FLUID_CHUTE_TYPE = BlockEntityType.Builder.create(FluidChuteBlockEntity::new, FLUID_CHUTE).build(null);
+		FLUID_CHUTE_TYPE = FabricBlockEntityTypeBuilder.create(FluidChuteBlockEntity::new, FLUID_CHUTE).build();
 		Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "fluid_chute"), FLUID_CHUTE_TYPE);
 
 		FluidTransfer.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeFluidStorage.WATER, INFINITE_WATER_SOURCE);

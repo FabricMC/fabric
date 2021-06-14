@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.test.transfer.fluid;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -30,7 +35,12 @@ public class FluidChuteBlock extends Block implements BlockEntityProvider {
 	}
 
 	@Override
-	public @Nullable BlockEntity createBlockEntity(BlockView world) {
-		return new FluidChuteBlockEntity();
+	public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return new FluidChuteBlockEntity(pos, state);
+	}
+
+	@Override
+	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+		return (w, p, s, be) -> ((FluidChuteBlockEntity) be).tick();
 	}
 }

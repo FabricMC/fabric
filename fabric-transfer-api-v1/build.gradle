@@ -7,3 +7,7 @@ moduleDependencies(project, [
 	'fabric-lifecycle-events-v1', // transitive dependency of API Lookup
 	'fabric-rendering-fluids-v1',
 ])
+
+dependencies {
+	testmodImplementation project(path: ':fabric-object-builder-api-v1', configuration: 'dev')
+}

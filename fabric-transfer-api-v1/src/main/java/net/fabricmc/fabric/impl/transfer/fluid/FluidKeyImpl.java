@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -32,7 +32,7 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 
 public class FluidKeyImpl implements FluidKey {
-	public static FluidKey of(Fluid fluid, @Nullable CompoundTag tag) {
+	public static FluidKey of(Fluid fluid, @Nullable NbtCompound tag) {
 		Objects.requireNonNull(fluid, "Fluid may not be null.");
 
 		if (!fluid.isStill(fluid.getDefaultState()) && fluid != Fluids.EMPTY) {
@@ -52,10 +52,10 @@ public class FluidKeyImpl implements FluidKey {
 	private static final Logger LOGGER = LogManager.getLogger("fabric-transfer-api-v1/fluid");
 
 	private final Fluid fluid;
-	private final @Nullable CompoundTag tag;
+	private final @Nullable NbtCompound tag;
 	private final int hashCode;
 
-	public FluidKeyImpl(Fluid fluid, CompoundTag tag) {
+	public FluidKeyImpl(Fluid fluid, NbtCompound tag) {
 		this.fluid = fluid;
 		this.tag = tag == null ? null : tag.copy(); // defensive copy
 		this.hashCode = Objects.hash(fluid, tag);
@@ -67,28 +67,18 @@ public class FluidKeyImpl implements FluidKey {
 	}
 
 	@Override
-	public boolean tagMatches(@Nullable CompoundTag other) {
-		return Objects.equals(tag, other);
-	}
-
-	@Override
-	public boolean hasTag() {
-		return tag != null;
-	}
-
-	@Override
-	public Fluid getFluid() {
+	public Fluid getResource() {
 		return fluid;
 	}
 
 	@Override
-	public @Nullable CompoundTag copyTag() {
-		return tag == null ? null : tag.copy();
+	public @Nullable NbtCompound getTag() {
+		return tag;
 	}
 
 	@Override
-	public CompoundTag toNbt() {
-		CompoundTag result = new CompoundTag();
+	public NbtCompound toNbt() {
+		NbtCompound result = new NbtCompound();
 		result.putString("fluid", Registry.FLUID.getId(fluid).toString());
 
 		if (tag != null) {
@@ -98,10 +88,10 @@ public class FluidKeyImpl implements FluidKey {
 		return result;
 	}
 
-	public static FluidKey fromNbt(CompoundTag tag) {
+	public static FluidKey fromNbt(NbtCompound tag) {
 		try {
 			Fluid fluid = Registry.FLUID.get(new Identifier(tag.getString("fluid")));
-			CompoundTag aTag = tag.contains("tag") ? tag.getCompound("tag") : null;
+			NbtCompound aTag = tag.contains("tag") ? tag.getCompound("tag") : null;
 			return of(fluid, aTag);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.debug("Tried to load an invalid FluidKey from NBT: {}", tag, runtimeException);
@@ -116,7 +106,7 @@ public class FluidKeyImpl implements FluidKey {
 		} else {
 			buf.writeBoolean(true);
 			buf.writeVarInt(Registry.FLUID.getRawId(fluid));
-			buf.writeCompoundTag(tag);
+			buf.writeNbt(tag);
 		}
 	}
 
@@ -125,7 +115,7 @@ public class FluidKeyImpl implements FluidKey {
 			return FluidKey.empty();
 		} else {
 			Fluid fluid = Registry.FLUID.get(buf.readVarInt());
-			CompoundTag tag = buf.readCompoundTag();
+			NbtCompound tag = buf.readNbt();
 			return of(fluid, tag);
 		}
 	}

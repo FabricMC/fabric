@@ -21,14 +21,13 @@ import java.util.Map;
 
 import com.google.common.collect.MapMaker;
 
+import com.google.common.primitives.Ints;
+import net.fabricmc.fabric.api.transfer.v1.fluid.CauldronFluidContent;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.CauldronBlock;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
@@ -37,11 +36,8 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
-// Maintainer note: this will need updating for 1.17 to allow registering modded cauldrons.
-public class CauldronStorage extends SnapshotParticipant<Integer> implements Storage<FluidKey>, StorageView<FluidKey> {
+public class CauldronStorage extends SnapshotParticipant<BlockState> implements Storage<FluidKey>, StorageView<FluidKey> {
 	private static final Map<WorldLocation, CauldronStorage> CAULDRONS = new MapMaker().concurrencyLevel(1).weakValues().makeMap();
-	// TODO: move to public API?
-	private static final FluidKey WATER_KEY = FluidKey.of(Fluids.WATER);
 
 	public static CauldronStorage get(World world, BlockPos pos) {
 		WorldLocation location = new WorldLocation(world, pos.toImmutable());
@@ -51,62 +47,89 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 
 	private final WorldLocation location;
 	// this is the last released snapshot, which means it's the first snapshot ever saved when onFinalCommit() is called.
-	private int lastReleasedSnapshot;
+	private BlockState lastReleasedSnapshot;
 
 	CauldronStorage(WorldLocation location) {
 		this.location = location;
 	}
 
 	@Override
-	protected void releaseSnapshot(Integer snapshot) {
+	protected void releaseSnapshot(BlockState snapshot) {
 		lastReleasedSnapshot = snapshot;
 	}
 
-	@Override
-	public long insert(FluidKey fluid, long maxAmount, Transaction transaction) {
-		FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+	private void updateLevel(CauldronFluidContent data, int level, Transaction transaction) {
+		updateSnapshots(transaction);
+		BlockState newState = data.block().getDefaultState();
 
-		if (!fluid.equals(WATER_KEY)) {
-			return 0;
+		if (data.levelProperty() != null) {
+			newState = newState.with(data.levelProperty(), level);
 		}
 
-		BlockState state = location.world.getBlockState(location.pos);
+		location.world.setBlockState(location.pos, newState, 0);
+	}
 
-		if (state.isOf(Blocks.CAULDRON)) {
-			int level = state.get(CauldronBlock.LEVEL);
-			int levelsInserted = (int) Math.min(maxAmount / FluidConstants.BOTTLE, 3 - level);
+	@Override
+	public long insert(FluidKey fluidKey, long maxAmount, Transaction transaction) {
+		FluidPreconditions.notEmptyNotNegative(fluidKey, maxAmount);
 
-			if (levelsInserted > 0) {
-				updateSnapshots(transaction);
-				location.world.setBlockState(location.pos, state.with(CauldronBlock.LEVEL, level + levelsInserted), 0);
+		CauldronFluidContent insertData = CauldronFluidContent.getForFluid(fluidKey.getFluid());
+
+		if (insertData != null) {
+			int maxLevelsInserted = Ints.saturatedCast(maxAmount / insertData.amountPerLevel());
+
+			if (amount() == 0) {
+				// Currently empty, so we can accept any fluid.
+				int levelsInserted = Math.min(maxLevelsInserted, insertData.maxLevel());
+
+				if (levelsInserted > 0) {
+					updateLevel(insertData, levelsInserted, transaction);
+				}
+
+				return levelsInserted * insertData.amountPerLevel();
 			}
 
-			return levelsInserted * FluidConstants.BOTTLE;
+			CauldronFluidContent currentData = getData();
+
+			if (fluidKey.isOf(currentData.fluid())) {
+				// Otherwise we can only accept the same fluid as the current one.
+				int currentLevel = currentData.currentLevel(createSnapshot());
+				int levelsInserted = Math.min(maxLevelsInserted, currentData.maxLevel() - currentLevel);
+
+				if (levelsInserted > 0) {
+					updateLevel(currentData, currentLevel + levelsInserted, transaction);
+				}
+
+				return levelsInserted * currentData.amountPerLevel();
+			}
 		}
 
 		return 0;
 	}
 
 	@Override
-	public long extract(FluidKey fluid, long maxAmount, Transaction transaction) {
-		FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+	public long extract(FluidKey fluidKey, long maxAmount, Transaction transaction) {
+		FluidPreconditions.notEmptyNotNegative(fluidKey, maxAmount);
 
-		if (!fluid.equals(WATER_KEY)) {
-			return 0;
-		}
+		CauldronFluidContent currentData = getData();
 
-		BlockState state = location.world.getBlockState(location.pos);
-
-		if (state.isOf(Blocks.CAULDRON)) {
-			int level = state.get(CauldronBlock.LEVEL);
-			int levelsExtracted = (int) Math.min(maxAmount / FluidConstants.BOTTLE, level);
+		if (fluidKey.isOf(currentData.fluid())) {
+			int maxLevelsExtracted = Ints.saturatedCast(maxAmount / currentData.amountPerLevel());
+			int currentLevel = currentData.currentLevel(createSnapshot());
+			int levelsExtracted = Math.min(maxLevelsExtracted, currentLevel);
 
 			if (levelsExtracted > 0) {
-				updateSnapshots(transaction);
-				location.world.setBlockState(location.pos, state.with(CauldronBlock.LEVEL, level - levelsExtracted), 0);
+				if (levelsExtracted == currentLevel) {
+					// Fully extract -> back to empty cauldron
+					updateSnapshots(transaction);
+					location.world.setBlockState(location.pos, Blocks.CAULDRON.getDefaultState(), 0);
+				} else {
+					// Otherwise just decrease levels
+					updateLevel(currentData, currentLevel - levelsExtracted, transaction);
+				}
 			}
 
-			return levelsExtracted * FluidConstants.BOTTLE;
+			return levelsExtracted * currentData.amountPerLevel();
 		}
 
 		return 0;
@@ -114,28 +137,34 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 
 	@Override
 	public boolean isEmpty() {
-		return false;
+		return resource().isEmpty();
 	}
 
 	@Override
 	public FluidKey resource() {
-		return WATER_KEY;
+		return FluidKey.of(getData().fluid());
 	}
 
 	@Override
 	public long amount() {
-		BlockState state = location.world.getBlockState(location.pos);
-
-		if (state.isOf(Blocks.CAULDRON)) {
-			return state.get(CauldronBlock.LEVEL) * FluidConstants.BOTTLE;
-		} else {
-			return 0;
-		}
+		CauldronFluidContent data = getData();
+		return data.currentLevel(createSnapshot()) * data.amountPerLevel();
 	}
 
 	@Override
 	public long capacity() {
-		return FluidConstants.BUCKET;
+		CauldronFluidContent data = getData();
+		return data.maxLevel() * data.amountPerLevel();
+	}
+
+	private CauldronFluidContent getData() {
+		CauldronFluidContent data = CauldronFluidContent.getForBlock(createSnapshot().getBlock());
+
+		if (data == null) {
+			throw new IllegalStateException(); // not a cauldron!
+		}
+
+		return data;
 	}
 
 	@Override
@@ -144,33 +173,21 @@ public class CauldronStorage extends SnapshotParticipant<Integer> implements Sto
 	}
 
 	@Override
-	public Integer createSnapshot() {
-		return (int) (amount() / FluidConstants.BOTTLE);
+	public BlockState createSnapshot() {
+		return location.world.getBlockState(location.pos);
 	}
 
 	@Override
-	public void readSnapshot(Integer savedLevel) {
-		BlockState state = location.world.getBlockState(location.pos);
-
-		if (state.isOf(Blocks.CAULDRON)) {
-			location.world.setBlockState(location.pos, state.with(CauldronBlock.LEVEL, savedLevel), 0);
-		} else {
-			String errorMessage = String.format(
-					"Expected block state at position %s in world %s to be a cauldron, but it's %s instead.",
-					location.pos,
-					location.world.getRegistryKey(),
-					state);
-			throw new RuntimeException(errorMessage);
-		}
+	public void readSnapshot(BlockState savedState) {
+		location.world.setBlockState(location.pos, savedState, 0);
 	}
 
 	@Override
 	public void onFinalCommit() {
-		BlockState state = location.world.getBlockState(location.pos);
-		BlockState originalState = state.with(CauldronBlock.LEVEL, lastReleasedSnapshot);
+		BlockState state = createSnapshot();
+		BlockState originalState = lastReleasedSnapshot;
 
-		// Only send the update if the cauldron is still there
-		if (state.isOf(Blocks.CAULDRON) && originalState != state) {
+		if (originalState != state) {
 			// Revert change
 			location.world.setBlockState(location.pos, originalState, 0);
 			// Then do the actual change with normal block updates
