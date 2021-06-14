@@ -3,7 +3,6 @@
   "package": "net.fabricmc.fabric.mixin.structure",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "BiomeAccessor",
     "ChunkSerializerMixin",
     "FlatChunkGeneratorConfigAccessor",
     "StructureFeatureAccessor",

@@ -16,16 +16,10 @@
 
 package net.fabricmc.fabric.api.structure.v1;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.gen.chunk.StructureConfig;
@@ -34,7 +28,6 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.FeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-import net.fabricmc.fabric.mixin.structure.BiomeAccessor;
 import net.fabricmc.fabric.impl.structure.FabricStructureImpl;
 import net.fabricmc.fabric.mixin.structure.FlatChunkGeneratorConfigAccessor;
 import net.fabricmc.fabric.mixin.structure.StructureFeatureAccessor;
@@ -192,26 +185,6 @@ public final class FabricStructureBuilder<FC extends FeatureConfig, S extends St
 					.build());
 		}
 
-		// update builtin biomes, just to be safe
-		for (Biome biome : BuiltinRegistries.BIOME) {
-			BiomeAccessor biomeAccessor = (BiomeAccessor) (Object) biome;
-			Map<Integer, List<StructureFeature<?>>> structureLists = biomeAccessor.getStructureLists();
-
-			if (!(structureLists instanceof HashMap)) {
-				// not guaranteed by the standard to be a mutable map
-				((BiomeAccessor) (Object) biome).setStructureLists(structureLists = new HashMap<>(structureLists));
-			}
-
-			// not guaranteed by the standard to be mutable lists
-			structureLists.compute(step.ordinal(), (k, v) -> makeMutable(v)).add(structure);
-		}
-
 		return structure;
-	}
-
-	private static List<StructureFeature<?>> makeMutable(List<StructureFeature<?>> mapValue) {
-		if (mapValue == null) return new ArrayList<>();
-		if (!(mapValue instanceof ArrayList)) return new ArrayList<>(mapValue);
-		return mapValue;
 	}
 }
