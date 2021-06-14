@@ -16,9 +16,13 @@
 
 package net.fabricmc.fabric.mixin.event.interaction;
 
-import net.fabricmc.fabric.api.event.client.player.ClientPickBlockApplyCallback;
-import net.fabricmc.fabric.api.event.client.player.ClientPickBlockCallback;
-import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -27,16 +31,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockApplyCallback;
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockCallback;
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
 
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient {
-
 	@SuppressWarnings("deprecation")
 	private ItemStack fabric_emulateOldPick() {
 		MinecraftClient client = (MinecraftClient) (Object) this;
