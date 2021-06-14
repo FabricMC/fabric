@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.event.interaction;
 
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockApplyCallback;
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockCallback;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -36,12 +37,25 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient {
 
+	@SuppressWarnings("deprecation")
+	private ItemStack fabric_emulateOldPick() {
+		MinecraftClient client = (MinecraftClient) (Object) this;
+		ClientPickBlockCallback.Container ctr = new ClientPickBlockCallback.Container(ItemStack.EMPTY);
+		ClientPickBlockCallback.EVENT.invoker().pick(client.player, client.crosshairTarget, ctr);
+		return ctr.getStack();
+	}
+
 	@Inject(at = @At("HEAD"), method = "doItemPick", cancellable = true)
 	private void fabric_doItemPickWrapper(CallbackInfo info) {
 		MinecraftClient client = (MinecraftClient) (Object) this;
 
 		// Do a "best effort" emulation of the old events.
 		ItemStack stack = ClientPickBlockGatherCallback.EVENT.invoker().pick(client.player, client.crosshairTarget);
+
+		// TODO: Remove in 0.3.0
+		if (stack.isEmpty()) {
+			stack = fabric_emulateOldPick();
+		}
 
 		if (!stack.isEmpty()) {
 			info.cancel();
