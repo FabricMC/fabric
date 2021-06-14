@@ -16,13 +16,9 @@
 
 package net.fabricmc.fabric.mixin.event.interaction;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockApplyCallback;
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockCallback;
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -31,14 +27,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
-
-import net.fabricmc.fabric.api.event.client.player.ClientPickBlockApplyCallback;
-import net.fabricmc.fabric.api.event.client.player.ClientPickBlockCallback;
-import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient {
-	private boolean fabric_itemPickCancelled;
 
 	@SuppressWarnings("deprecation")
 	private ItemStack fabric_emulateOldPick() {
@@ -60,9 +57,7 @@ public abstract class MixinMinecraftClient {
 			stack = fabric_emulateOldPick();
 		}
 
-		if (stack.isEmpty()) {
-			// fall through
-		} else {
+		if (!stack.isEmpty()) {
 			info.cancel();
 
 			// I don't like that we clone vanilla logic here, but it's our best bet for now.
@@ -100,23 +95,12 @@ public abstract class MixinMinecraftClient {
 	}
 
 	@Shadow
-	public abstract void doItemPick();
-
-	@Shadow
 	public abstract ItemStack addBlockEntityNbt(ItemStack itemStack_1, BlockEntity blockEntity_1);
 
-	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"), method = "doItemPick", ordinal = 0)
-	public ItemStack modifyItemPick(ItemStack stack) {
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"), method = "doItemPick")
+	public int modifyItemPick(PlayerInventory playerInventory, ItemStack stack) {
 		MinecraftClient client = (MinecraftClient) (Object) this;
 		ItemStack result = ClientPickBlockApplyCallback.EVENT.invoker().pick(client.player, client.crosshairTarget, stack);
-		fabric_itemPickCancelled = result.isEmpty();
-		return result;
-	}
-
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"), method = "doItemPick", cancellable = true)
-	public void cancelItemPick(CallbackInfo info) {
-		if (fabric_itemPickCancelled) {
-			info.cancel();
-		}
+		return playerInventory.getSlotWithStack(result);
 	}
 }
