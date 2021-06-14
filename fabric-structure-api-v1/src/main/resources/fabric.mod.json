@@ -22,7 +22,8 @@
   },
   "depends": {
     "fabricloader": ">=0.8.0",
-    "fabric-api-base": "*"
+    "fabric-api-base": "*",
+    "fabric-lifecycle-events-v1": ">=1.4.4"
   },
   "description": "Hooks for registering custom structures.",
   "mixins": [
