@@ -22,11 +22,14 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.client.rendering.EntityRendererRegistryImpl;
 
 /**
  * Helper class for registering EntityRenderers.
  */
+@Environment(EnvType.CLIENT)
 public final class EntityRendererRegistry {
 	/**
 	 * Register a BlockEntityRenderer for a BlockEntityType. Can be called clientside before the world is rendered.

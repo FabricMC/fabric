@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.Deadmau5FeatureRenderer;
@@ -68,6 +70,7 @@ public interface LivingEntityFeatureRendererRegistrationCallback {
 	 *
 	 * <p>This is not meant for implementation by users of the API.
 	 */
+	@ApiStatus.NonExtendable
 	interface RegistrationHelper {
 		/**
 		 * Adds a feature renderer to the entity renderer.
