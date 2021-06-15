@@ -1,6 +1,10 @@
 archivesBaseName = "fabric-events-interaction-v0"
 version = getSubprojectVersion(project, "0.4.8")
 
+dependencies {
+	testmodImplementation project(path: ':fabric-item-api-v1', configuration: 'dev')
+}
+
 moduleDependencies(project, [
 		'fabric-api-base'
 ])

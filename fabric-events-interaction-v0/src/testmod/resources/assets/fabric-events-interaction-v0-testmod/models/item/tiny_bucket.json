@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "minecraft:item/apple",
+    "layer1": "minecraft:item/glass_bottle"
+  }
+}
