@@ -15,6 +15,7 @@
     "MixinBlockEntityRenderers",
     "MixinEntityRenderers",
     "ScreenMixin"
+    "SkyPropertiesAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
