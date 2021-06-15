@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.event.interaction;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.Hand;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockApplyCallback;
@@ -25,6 +26,16 @@ import net.fabricmc.fabric.api.event.client.player.ClientPickBlockApplyCallback;
 public class PlayerPickBlockTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		ClientPickBlockApplyCallback.EVENT.register((player, result, stack) -> new ItemStack(Items.OBSIDIAN));
+		ClientPickBlockApplyCallback.EVENT.register((player, result, stack) -> {
+			if (player.getStackInHand(Hand.MAIN_HAND).getItem() == Items.DIAMOND) {
+				return new ItemStack(Items.OBSIDIAN);
+			}
+
+			if (stack.getItem() == Items.GRASS_BLOCK) {
+				return ItemStack.EMPTY;
+			}
+
+			return stack;
+		});
 	}
 }

@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.entity.BlockEntity;
@@ -38,6 +38,8 @@ import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback
 
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient {
+	private boolean fabric_itemPickCancelled;
+
 	@SuppressWarnings("deprecation")
 	private ItemStack fabric_emulateOldPick() {
 		MinecraftClient client = (MinecraftClient) (Object) this;
@@ -58,7 +60,9 @@ public abstract class MixinMinecraftClient {
 			stack = fabric_emulateOldPick();
 		}
 
-		if (!stack.isEmpty()) {
+		if (stack.isEmpty()) {
+			// fall through
+		} else {
 			info.cancel();
 
 			// I don't like that we clone vanilla logic here, but it's our best bet for now.
@@ -96,12 +100,23 @@ public abstract class MixinMinecraftClient {
 	}
 
 	@Shadow
+	public abstract void doItemPick();
+
+	@Shadow
 	public abstract ItemStack addBlockEntityNbt(ItemStack itemStack_1, BlockEntity blockEntity_1);
 
-	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"), method = "doItemPick")
-	public int modifyItemPick(PlayerInventory playerInventory, ItemStack stack) {
+	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I", shift = At.Shift.BEFORE), method = "doItemPick", ordinal = 0)
+	public ItemStack modifyItemPick(ItemStack stack) {
 		MinecraftClient client = (MinecraftClient) (Object) this;
 		ItemStack result = ClientPickBlockApplyCallback.EVENT.invoker().pick(client.player, client.crosshairTarget, stack);
-		return playerInventory.getSlotWithStack(result);
+		fabric_itemPickCancelled = result.isEmpty();
+		return result;
+	}
+
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"), method = "doItemPick", cancellable = true)
+	public void cancelItemPick(CallbackInfo info) {
+		if (fabric_itemPickCancelled) {
+			info.cancel();
+		}
 	}
 }
