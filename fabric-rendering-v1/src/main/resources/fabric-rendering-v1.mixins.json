@@ -14,6 +14,7 @@
     "LivingEntityRendererAccessor",
     "MixinBlockEntityRenderers",
     "MixinEntityRenderers"
+    "SkyPropertiesAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
