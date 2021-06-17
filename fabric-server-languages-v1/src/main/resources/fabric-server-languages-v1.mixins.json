@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.server.languages.v1",
+  "compatibilityLevel": "JAVA_16",
+  "server": [
+    "MixinLanguage"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
