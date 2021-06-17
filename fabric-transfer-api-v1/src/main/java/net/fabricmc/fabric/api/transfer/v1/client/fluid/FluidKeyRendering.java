@@ -154,4 +154,17 @@ public class FluidKeyRendering {
 
 		return -1;
 	}
+
+	/**
+	 * Return {@code true} if this fluid key should be rendered as filling tanks from the top.
+	 */
+	public static boolean fillFromTop(FluidKey fluidKey) {
+		FluidKeyRenderHandler handler = getHandler(fluidKey.getFluid());
+
+		if (handler != null) {
+			return handler.fillFromTop(fluidKey);
+		} else {
+			return false;
+		}
+	}
 }

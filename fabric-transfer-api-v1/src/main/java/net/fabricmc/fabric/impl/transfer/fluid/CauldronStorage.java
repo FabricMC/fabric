@@ -20,14 +20,14 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.google.common.collect.MapMaker;
-
 import com.google.common.primitives.Ints;
-import net.fabricmc.fabric.api.transfer.v1.fluid.CauldronFluidContent;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.CauldronFluidContent;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;

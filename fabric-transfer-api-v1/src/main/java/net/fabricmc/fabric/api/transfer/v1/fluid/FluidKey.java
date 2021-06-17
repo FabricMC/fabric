@@ -16,16 +16,16 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
-import net.fabricmc.fabric.api.transfer.v1.storage.ResourceKey;
-import net.minecraft.nbt.NbtCompound;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering;
+import net.fabricmc.fabric.api.transfer.v1.storage.ResourceKey;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidKeyImpl;
 
 /**

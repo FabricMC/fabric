@@ -155,8 +155,8 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 
 	@Override
 	protected final void readSnapshot(ResourceAmount<FluidKey> snapshot) {
-		this.fluidKey = snapshot.resource;
-		this.amount = snapshot.amount;
+		this.fluidKey = snapshot.resource();
+		this.amount = snapshot.amount();
 	}
 
 	@Override

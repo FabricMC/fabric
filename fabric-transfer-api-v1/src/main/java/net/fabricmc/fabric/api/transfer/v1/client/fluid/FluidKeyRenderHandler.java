@@ -64,4 +64,9 @@ public interface FluidKeyRenderHandler {
 	 * Return the color to use when rendering {@linkplain #getSprite the sprite} of this fluid key.
 	 */
 	int getColor(FluidKey fluidKey);
+
+	/**
+	 * Return {@code true} if this fluid should fill tanks from top.
+	 */
+	boolean fillFromTop(FluidKey fluidKey);
 }

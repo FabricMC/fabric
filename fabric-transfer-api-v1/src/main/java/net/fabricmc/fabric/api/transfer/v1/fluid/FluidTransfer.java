@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
-import net.minecraft.fluid.Fluids;
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.fluid.Fluids;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
