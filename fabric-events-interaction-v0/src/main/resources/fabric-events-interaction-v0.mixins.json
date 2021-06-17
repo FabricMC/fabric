@@ -3,9 +3,11 @@
   "package": "net.fabricmc.fabric.mixin.event.interaction",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BlockMixin",
     "MixinServerPlayerEntity",
     "MixinServerPlayerInteractionManager",
-    "MixinServerPlayNetworkHandler"
+    "MixinServerPlayNetworkHandler",
+    "WorldMixin"
   ],
   "client": [
     "MixinClientPlayerInteractionManager",

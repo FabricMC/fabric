@@ -10,6 +10,7 @@
   },
   "entrypoints": {
     "main": [
+      "net.fabricmc.fabric.test.event.interaction.BlockBreakEffectsTest",
       "net.fabricmc.fabric.test.event.interaction.PlayerBreakBlockTests"
     ]
   }
