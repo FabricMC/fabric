@@ -1,0 +1,2 @@
+archivesBaseName = "fabric-server-language-v1"
+version = getSubprojectVersion(project, "0.1")
