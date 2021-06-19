@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
  */
 @ApiStatus.Experimental
 @Deprecated
-public final class FluidTransfer {
+public final class FluidStorage {
 	/**
 	 * Sided block access to fluid key storages.
 	 * Fluid amounts are always expressed in {@linkplain FluidConstants droplets}.
@@ -47,7 +47,7 @@ public final class FluidTransfer {
 	public static final BlockApiLookup<Storage<FluidKey>, Direction> SIDED =
 			BlockApiLookup.get(new Identifier("fabric:sided_fluid_storage"), Storage.asClass(), Direction.class);
 
-	private FluidTransfer() {
+	private FluidStorage() {
 	}
 
 	static {

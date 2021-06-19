@@ -24,14 +24,14 @@ import org.jetbrains.annotations.Nullable;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 /**
- * Helper functions to move resources between two {@link Storage}s.
+ * Helper functions to work with {@link Storage}s.
  *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
 @Deprecated
-public final class Movement {
+public final class StorageUtil {
 	/**
 	 * Move resources between two storages, matching the passed filter, and return the amount that was successfully transferred.
 	 *
@@ -85,5 +85,51 @@ public final class Movement {
 		}
 
 		return totalMoved;
+	}
+
+	/**
+	 * Attempt to find a resource stored in the passed storage.
+	 * @param storage The storage to inspect.
+	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
+	 * @param <T> The type of the stored resources.
+	 * @return A non-empty resource stored in the storage, or {@code null} if none could be found.
+	 */
+	@Nullable
+	public static <T> T findStoredResource(Storage<T> storage, @Nullable Transaction transaction) {
+		if (transaction == null) {
+			transaction = Transaction.openOuter();
+		}
+
+		for (StorageView<T> view : storage.iterable(transaction)) {
+			if (!view.isEmpty()) {
+				return view.resource();
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Attempt to find a resource stored in the passed storage that can be extracted.
+	 * @param storage The storage to inspect.
+	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
+	 * @param <T> The type of the stored resources.
+	 * @return A non-empty resource stored in the storage that can be extracted, or {@code null} if none could be found.
+	 */
+	@Nullable
+	public static <T> T findExtractableResource(Storage<T> storage, @Nullable Transaction transaction) {
+		try (Transaction nested = transaction == null ? Transaction.openOuter() : transaction.openNested()) {
+			for (StorageView<T> view : storage.iterable(transaction)) {
+				// Extract below could change the resource, so we have to query it before extracting.
+				T resource = view.resource();
+
+				if (!view.isEmpty() && view.extract(resource, Long.MAX_VALUE, nested) > 0) {
+					// Will abort the extraction.
+					return view.resource();
+				}
+			}
+		}
+
+		return null;
 	}
 }

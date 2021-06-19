@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.transfer.fluid;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import com.google.common.collect.MapMaker;
@@ -29,14 +28,12 @@ import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.CauldronFluidContent;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
-public class CauldronStorage extends SnapshotParticipant<BlockState> implements Storage<FluidKey>, StorageView<FluidKey> {
+public class CauldronStorage extends SnapshotParticipant<BlockState> implements SingleSlotStorage<FluidKey> {
 	private static final Map<WorldLocation, CauldronStorage> CAULDRONS = new MapMaker().concurrencyLevel(1).weakValues().makeMap();
 
 	public static CauldronStorage get(World world, BlockPos pos) {
@@ -71,7 +68,7 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 
 	@Override
 	public long insert(FluidKey fluidKey, long maxAmount, Transaction transaction) {
-		FluidPreconditions.notEmptyNotNegative(fluidKey, maxAmount);
+		StoragePreconditions.notEmptyNotNegative(fluidKey, maxAmount);
 
 		CauldronFluidContent insertData = CauldronFluidContent.getForFluid(fluidKey.getFluid());
 
@@ -109,7 +106,7 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 
 	@Override
 	public long extract(FluidKey fluidKey, long maxAmount, Transaction transaction) {
-		FluidPreconditions.notEmptyNotNegative(fluidKey, maxAmount);
+		StoragePreconditions.notEmptyNotNegative(fluidKey, maxAmount);
 
 		CauldronFluidContent currentData = getData();
 
@@ -165,11 +162,6 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 		}
 
 		return data;
-	}
-
-	@Override
-	public Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
-		return SingleViewIterator.create(this, transaction);
 	}
 
 	@Override

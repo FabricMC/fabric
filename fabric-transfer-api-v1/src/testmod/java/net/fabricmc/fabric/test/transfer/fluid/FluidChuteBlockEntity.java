@@ -23,8 +23,8 @@ import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidTransfer;
-import net.fabricmc.fabric.api.transfer.v1.storage.Movement;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 
 public class FluidChuteBlockEntity extends BlockEntity {
@@ -37,11 +37,11 @@ public class FluidChuteBlockEntity extends BlockEntity {
 	@SuppressWarnings("ConstantConditions")
 	public void tick() {
 		if (!world.isClient() && tickCounter++ % 20 == 0) {
-			Storage<FluidKey> top = FluidTransfer.SIDED.find(world, pos.offset(Direction.UP), Direction.DOWN);
-			Storage<FluidKey> bottom = FluidTransfer.SIDED.find(world, pos.offset(Direction.DOWN), Direction.UP);
+			Storage<FluidKey> top = FluidStorage.SIDED.find(world, pos.offset(Direction.UP), Direction.DOWN);
+			Storage<FluidKey> bottom = FluidStorage.SIDED.find(world, pos.offset(Direction.DOWN), Direction.UP);
 
 			if (top != null && bottom != null) {
-				Movement.move(top, bottom, fluid -> true, FluidConstants.BUCKET, null);
+				StorageUtil.move(top, bottom, fluid -> true, FluidConstants.BUCKET, null);
 			}
 		}
 	}

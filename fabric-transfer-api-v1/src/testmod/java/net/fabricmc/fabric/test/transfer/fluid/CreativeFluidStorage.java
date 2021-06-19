@@ -21,7 +21,7 @@ import java.util.Iterator;
 import net.minecraft.fluid.Fluids;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
@@ -59,7 +59,7 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<FluidKey>, St
 
 	@Override
 	public long extract(FluidKey resource, long maxAmount, Transaction transaction) {
-		FluidPreconditions.notEmptyNotNegative(resource, maxAmount);
+		StoragePreconditions.notEmptyNotNegative(resource, maxAmount);
 
 		if (resource.equals(infiniteFluid)) {
 			return maxAmount;

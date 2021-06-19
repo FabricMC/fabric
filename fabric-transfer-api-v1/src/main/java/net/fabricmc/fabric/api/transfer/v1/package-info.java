@@ -31,22 +31,23 @@
  * <p><h2>Storages</h2>
  * A {@link net.fabricmc.fabric.api.transfer.v1.storage.Storage Storage&lt;T&gt;} is any object that can store resources of type {@code T}.
  * Its contents can be read, and resources can be inserted into it or extracted from it.
- * {@link net.fabricmc.fabric.api.transfer.v1.storage.Movement Movement} can be used to move resources between two {@code Storage}s.
+ * {@link net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil StorageUtil} provides a few helpful function to work with {@code Storage}s,
+ * for example to move resources between two {@code Storage}s.
  * The {@link net.fabricmc.fabric.api.transfer.v1.storage.base storage/base package} provides a few helpers to accelerate
  * implementation of {@code Storage&lt;T&gt;}.
+ * Usage of {@link net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions StoragePreconditions} is recommended to detect
+ * wrong usage of {@code Storage} and {@code StorageView} methods.
  * </p>
  *
  * <p><h2>Fluid transfer</h2>
  * A {@code Storage<FluidKey>} is any object that can store fluids. It is just a {@code Storage&lt;T&gt;}, where {@code T} is
  * {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey FluidKey}, the immutable combination of a {@code Fluid} and additional NBT data.
- * Instances can be accessed through the API lookups defined in {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidTransfer FluidTransfer}.
+ * Instances can be accessed through the API lookup defined in {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage FluidStorage}.
  * </p>
  *
  * <p>Implementors of fluid inventories with a fixed number of "slots" or "tanks" can use
  * {@link net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage SingleFluidStorage},
  * and combine them with {@link net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage CombinedStorage}.
- * Usage of {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions FluidPreconditions} is recommended to detect
- * wrong usage of {@code Storage} and {@code StorageView} methods.
  *
  * <p>The amount for fluid transfer is droplets, that is 1/81000ths of a bucket.
  * {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants FluidConstants} contains a few helpful constants to work with droplets.

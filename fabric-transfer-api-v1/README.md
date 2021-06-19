@@ -12,20 +12,19 @@ is the reference implementation of a "participant", that is an object participat
 ## Storages
 A [`Storage<T>`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/Storage.java) is any object that can store resources of type `T`.
 Its contents can be read, and resources can be inserted into it or extracted from it.
-[`Movement`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/Movement.java) can be used to move resources between two `Storage`s.
+[`StorageUtil`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/StorageUtil.java) provides a few helpful function to work with `Storage`s,
+for example to move resources between two `Storage`s.
 The [`storage/base`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/base) package provides a few helpers to accelerate
 implementation of `Storage<T>`.
 
 ## Fluid transfer
 A `Storage<FluidKey>` is any object that can store fluids. It is just a `Storage<T>`, where `T` is
 [`FluidKey`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidKey.java), the immutable combination of a `Fluid` and additional NBT data.
-Instances can be accessed through the API lookups defined in [`FluidTransfer`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidTransfer.java).
+Instances can be accessed through the API lookups defined in [`FluidStorage`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidStorage.java).
 
 Implementors of fluid inventories with a fixed number of "slots" or "tanks" can use
 [`SingleFluidStorage`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/base/SingleFluidStorage.java),
 and combine them with `CombinedStorage`.
-Usage of [`FluidPreconditions`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidPreconditions.java) is recommended to detect
-wrong usage of `Storage` and `StorageView` methods.
 
 The amount for fluid transfer is droplets, that is 1/81000ths of a bucket.
 [`FluidConstants`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidConstants.java) contains a few helpful constants

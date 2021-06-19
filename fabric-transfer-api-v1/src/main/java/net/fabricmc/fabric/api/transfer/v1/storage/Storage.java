@@ -53,6 +53,7 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
  * <p><b>Important note:</b> Unless otherwise specified, all transfer functions take a non-empty resource
  * and a non-negative maximum amount as parameters.
  * Implementations are encouraged to throw an exception if these preconditions are violated.
+ * {@link StoragePreconditions} can be used for these checks.
  *
  * <p>For transfer functions, the returned amount must be non-negative, and smaller than the passed maximum amount.
  * Consumers of these functions are encourage to throw an exception if these postconditions are violated.
@@ -66,6 +67,14 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 @ApiStatus.Experimental
 @Deprecated
 public interface Storage<T> {
+	/**
+	 * Return an empty storage.
+	 */
+	@SuppressWarnings("unchecked")
+	static <T> Storage<T> empty() {
+		return (Storage<T>) TransferApiImpl.emptyStorage;
+	}
+
 	/**
 	 * Return false if calling {@link #insert} will absolutely always return 0, or true otherwise or in doubt.
 	 *

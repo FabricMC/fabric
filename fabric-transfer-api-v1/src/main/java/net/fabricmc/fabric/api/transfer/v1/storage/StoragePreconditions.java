@@ -14,43 +14,49 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.transfer.v1.fluid;
+package net.fabricmc.fabric.api.transfer.v1.storage;
 
 import org.jetbrains.annotations.ApiStatus;
 
 /**
- * Preconditions for fluid transfer.
+ * Preconditions that can be used when working with storages.
  *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
 @Deprecated
-public class FluidPreconditions {
+public class StoragePreconditions {
 	/**
-	 * Ensure that the passed fluid is not empty.
+	 * Ensure that the passed resource key is not empty.
 	 *
-	 * @throws IllegalArgumentException If the fluid is empty.
+	 * @throws IllegalArgumentException If the key is empty.
 	 */
-	public static void notEmpty(FluidKey fluid) {
-		if (fluid.isEmpty()) {
-			throw new IllegalArgumentException("Fluid key may not be empty.");
+	public static void notEmpty(ResourceKey<?> key) {
+		if (key.isEmpty()) {
+			throw new IllegalArgumentException("Resource key may not be empty.");
 		}
 	}
 
 	/**
-	 * Ensure that the passed fluid is not empty and that the passed amount is not negative.
+	 * Ensure that the passed amount is not negative. That is, it must be {@code >= 0}.
 	 *
-	 * @throws IllegalArgumentException If the fluid is empty or if the amount is negative.
+	 * @throws IllegalArgumentException If the amount is negative.
 	 */
-	public static void notEmptyNotNegative(FluidKey fluid, long amount) {
-		FluidPreconditions.notEmpty(fluid);
-
+	public static void notNegative(long amount) {
 		if (amount < 0) {
 			throw new IllegalArgumentException("Amount may not be negative, but it is: " + amount);
 		}
 	}
 
-	private FluidPreconditions() {
+	/**
+	 * Check both for a not empty resource key and a not negative amount.
+	 */
+	public static void notEmptyNotNegative(ResourceKey<?> key, long amount) {
+		notEmpty(key);
+		notNegative(amount);
+	}
+
+	private StoragePreconditions() {
 	}
 }

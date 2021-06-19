@@ -17,8 +17,6 @@
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
 import java.util.Collection;
-import java.util.IdentityHashMap;
-import java.util.Map;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +29,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.state.property.IntProperty;
 
+import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.impl.transfer.fluid.CauldronStorage;
 
 /**
@@ -55,8 +54,9 @@ import net.fabricmc.fabric.impl.transfer.fluid.CauldronStorage;
 @ApiStatus.Experimental
 @Deprecated
 public record CauldronFluidContent(Block block, Fluid fluid, long amountPerLevel, int minLevel, int maxLevel, @Nullable IntProperty levelProperty) {
-	private static final Map<Block, CauldronFluidContent> blockToCauldron = new IdentityHashMap<>();
-	private static final Map<Fluid, CauldronFluidContent> fluidToCauldron = new IdentityHashMap<>();
+	// Copy-on-write, identity semantics, null-checked.
+	private static final ApiProviderMap<Block, CauldronFluidContent> blockToCauldron = ApiProviderMap.create();
+	private static final ApiProviderMap<Fluid, CauldronFluidContent> fluidToCauldron = ApiProviderMap.create();
 
 	/**
 	 * Get the cauldron fluid content for a cauldron block, or {@code null} if none was registered (yet).
@@ -90,7 +90,7 @@ public record CauldronFluidContent(Block block, Fluid fluid, long amountPerLevel
 			return existingBlockData;
 		}
 
-		if (fluidToCauldron.containsKey(fluid)) {
+		if (fluidToCauldron.get(fluid) != null) {
 			throw new IllegalArgumentException("Fluid already has a mapping for a different block."); // TODO better message
 		}
 
@@ -120,10 +120,10 @@ public record CauldronFluidContent(Block block, Fluid fluid, long amountPerLevel
 			data = new CauldronFluidContent(block, fluid, amountPerLevel, minLevel, maxLevel, levelProperty);
 		}
 
-		blockToCauldron.put(block, data);
-		fluidToCauldron.put(fluid, data);
+		blockToCauldron.putIfAbsent(block, data);
+		fluidToCauldron.putIfAbsent(fluid, data);
 
-		FluidTransfer.SIDED.registerForBlocks((world, pos, state, be, context) -> CauldronStorage.get(world, pos), block);
+		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, context) -> CauldronStorage.get(world, pos), block);
 
 		return data;
 	}

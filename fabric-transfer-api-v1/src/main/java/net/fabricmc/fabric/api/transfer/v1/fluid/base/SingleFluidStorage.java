@@ -16,16 +16,12 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid.base;
 
-import java.util.Iterator;
-
 import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
@@ -43,7 +39,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
  */
 @ApiStatus.Experimental
 @Deprecated
-public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmount<FluidKey>> implements Storage<FluidKey>, StorageView<FluidKey> {
+public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmount<FluidKey>> implements SingleSlotStorage<FluidKey> {
 	public FluidKey fluidKey;
 	public long amount;
 
@@ -98,7 +94,7 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 
 	@Override
 	public final long insert(FluidKey insertedFluid, long maxAmount, Transaction transaction) {
-		FluidPreconditions.notEmptyNotNegative(insertedFluid, maxAmount);
+		StoragePreconditions.notEmptyNotNegative(insertedFluid, maxAmount);
 
 		if ((insertedFluid == fluidKey || fluidKey.isEmpty()) && canInsert(insertedFluid)) {
 			long insertedAmount = Math.min(maxAmount, getCapacity(insertedFluid) - amount);
@@ -123,7 +119,7 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 
 	@Override
 	public final long extract(FluidKey extractedFluid, long maxAmount, Transaction transaction) {
-		FluidPreconditions.notEmptyNotNegative(extractedFluid, maxAmount);
+		StoragePreconditions.notEmptyNotNegative(extractedFluid, maxAmount);
 
 		if (extractedFluid == fluidKey && canExtract(extractedFluid)) {
 			long extractedAmount = Math.min(maxAmount, amount);
@@ -141,11 +137,6 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 		}
 
 		return 0;
-	}
-
-	@Override
-	public final Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
-		return SingleViewIterator.create(this, transaction);
 	}
 
 	@Override

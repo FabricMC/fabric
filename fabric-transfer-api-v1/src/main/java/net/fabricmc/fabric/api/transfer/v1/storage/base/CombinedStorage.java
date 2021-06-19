@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.jetbrains.annotations.ApiStatus;
-import com.google.common.base.Preconditions;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
@@ -60,7 +60,7 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 
 	@Override
 	public long insert(T resource, long maxAmount, Transaction transaction) {
-		Preconditions.checkArgument(maxAmount >= 0);
+		StoragePreconditions.notNegative(maxAmount);
 		long amount = 0;
 
 		for (S part : parts) {
@@ -84,7 +84,7 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 
 	@Override
 	public long extract(T resource, long maxAmount, Transaction transaction) {
-		Preconditions.checkArgument(maxAmount >= 0);
+		StoragePreconditions.notNegative(maxAmount);
 		long amount = 0;
 
 		for (S part : parts) {
