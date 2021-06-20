@@ -108,7 +108,7 @@ public final class FabricTreeRegistry {
 	 * @return Created and registered {@link BlockStateProviderType}
 	 */
 	public static <T extends BlockStateProvider> BlockStateProviderType<T> registerBlockStateProviderType(Identifier id, Codec<T> codec) {
-		return BlockStateProviderTypeInvoker.invokeRegister(id.getNamespace() + "__" + id.getPath(), codec);
+		return BlockStateProviderTypeInvoker.invokeRegister(id.toString(), codec);
 	}
 
 	/**
