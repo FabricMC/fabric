@@ -120,6 +120,6 @@ public final class FabricTreeRegistry {
 	 * @return Created and registered {@link IntProviderType}
 	 */
 	public static <T extends IntProvider> IntProviderType<T> registerIntProviderType(Identifier id, Codec<T> codec) {
-		return IntProviderType.register(id.getNamespace() + "__" + id.getPath(), codec);
+		return IntProviderType.register(id.toString(), codec);
 	}
 }
