@@ -20,7 +20,7 @@ import net.minecraft.world.gen.trunk.TrunkPlacerType;
 /**
  * <p>
  * 	   A registry for {@link TrunkPlacerType}s, {@link FoliagePlacerType}s, {@link TreeDecoratorType}s,
- * 	   {@link BlockStateProviderType}s and {@link IntProviderType}s.
+ * 	   {@link BlockStateProviderType}s, and {@link IntProviderType}s.
  * </p>
  * <p>
  *     Example for {@link TrunkPlacerType}s:<br>
@@ -69,7 +69,7 @@ public final class FabricTreeRegistry {
 	 * @return Created and registered {@link TrunkPlacerType}
 	 */
 	public static <T extends TrunkPlacer> TrunkPlacerType<T> registerTrunkPlacerType(Identifier id, Codec<T> codec) {
-		return TrunkPlacerTypeInvoker.invokeRegister(id.getNamespace() + "__" + id.getPath(), codec);
+		return TrunkPlacerTypeInvoker.invokeRegister(id.toString(), codec);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public final class FabricTreeRegistry {
 	 * @return Created and registered {@link FoliagePlacerType}
 	 */
 	public static <T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacerType(Identifier id, Codec<T> codec) {
-		return FoliagePlacerTypeInvoker.invokeRegister(id.getNamespace() + "__" + id.getPath(), codec);
+		return FoliagePlacerTypeInvoker.invokeRegister(id.toString(), codec);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public final class FabricTreeRegistry {
 	 * @return Created and registered {@link TreeDecoratorType}
 	 */
 	public static <T extends TreeDecorator> TreeDecoratorType<T> registerTreeDecoratorType(Identifier id, Codec<T> codec) {
-		return TreeDecoratorTypeInvoker.invokeRegister(id.getNamespace() + "__" + id.getPath(), codec);
+		return TreeDecoratorTypeInvoker.invokeRegister(id.toString(), codec);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public final class FabricTreeRegistry {
 	 * @return Created and registered {@link BlockStateProviderType}
 	 */
 	public static <T extends BlockStateProvider> BlockStateProviderType<T> registerBlockStateProviderType(Identifier id, Codec<T> codec) {
-		return BlockStateProviderTypeInvoker.invokeRegister(id.getNamespace() + "__" + id.getPath(), codec);
+		return BlockStateProviderTypeInvoker.invokeRegister(id.toString(), codec);
 	}
 
 	/**
@@ -120,6 +120,6 @@ public final class FabricTreeRegistry {
 	 * @return Created and registered {@link IntProviderType}
 	 */
 	public static <T extends IntProvider> IntProviderType<T> registerIntProviderType(Identifier id, Codec<T> codec) {
-		return IntProviderType.register(id.getNamespace() + "__" + id.getPath(), codec);
+		return IntProviderType.register(id.toString(), codec);
 	}
 }
