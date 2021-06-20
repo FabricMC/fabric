@@ -1,5 +1,6 @@
 accessWidener	v1	named
 extendable  method    net/minecraft/block/AbstractBlock$Settings    <init>  (Lnet/minecraft/block/Material;Ljava/util/function/Function;)V
 extendable  method    net/minecraft/block/AbstractBlock$Settings    <init>  (Lnet/minecraft/block/Material;Lnet/minecraft/block/MapColor;)V
+extendable  method    net/minecraft/block/SaplingBlock              <init>  (Lnet/minecraft/block/sapling/SaplingGenerator;Lnet/minecraft/block/AbstractBlock$Settings;)V
 
 extendable class net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
