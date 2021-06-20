@@ -1,10 +1,10 @@
-package net.fabricmc.fabric.api.tree.v1;
+package net.fabricmc.fabric.api.object.builder.v1.tree;
 
 import com.mojang.serialization.Codec;
-import net.fabricmc.fabric.mixin.tree.BlockStateProviderTypeInvoker;
-import net.fabricmc.fabric.mixin.tree.FoliagePlacerTypeInvoker;
-import net.fabricmc.fabric.mixin.tree.TreeDecoratorTypeInvoker;
-import net.fabricmc.fabric.mixin.tree.TrunkPlacerTypeInvoker;
+import net.fabricmc.fabric.mixin.object.builder.BlockStateProviderTypeInvoker;
+import net.fabricmc.fabric.mixin.object.builder.FoliagePlacerTypeInvoker;
+import net.fabricmc.fabric.mixin.object.builder.TreeDecoratorTypeInvoker;
+import net.fabricmc.fabric.mixin.object.builder.TrunkPlacerTypeInvoker;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.util.math.intprovider.IntProviderType;

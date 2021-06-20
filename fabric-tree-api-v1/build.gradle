@@ -1,8 +1,0 @@
-archivesBaseName = "fabric-tree-api-v1"
-version = getSubprojectVersion(project, "1.0.0")
-
-moduleDependencies(project, [
-		'fabric-api-base',
-		'fabric-object-builder-api-v1',
-		'fabric-biome-api-v1'
-])

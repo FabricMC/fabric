@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.mixin.tree;
+package net.fabricmc.fabric.mixin.object.builder;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.world.gen.trunk.TrunkPlacer;
