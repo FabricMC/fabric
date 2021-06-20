@@ -100,17 +100,18 @@ public final class StorageUtil {
 
 		if (transaction == null) {
 			try (Transaction outer = Transaction.openOuter()) {
-				for (StorageView<T> view : storage.iterable(outer)) {
-					if (!view.isEmpty()) {
-						return view.resource();
-					}
-				}
+				return findStoredResourceInner(storage, outer);
 			}
 		} else {
-			for (StorageView<T> view : storage.iterable(transaction)) {
-				if (!view.isEmpty()) {
-					return view.resource();
-				}
+			return findStoredResourceInner(storage, transaction);
+		}
+	}
+
+	@Nullable
+	private static <T> T findStoredResourceInner(Storage<T> storage, Transaction transaction) {
+		for (StorageView<T> view : storage.iterable(transaction)) {
+			if (!view.isEmpty()) {
+				return view.resource();
 			}
 		}
 
