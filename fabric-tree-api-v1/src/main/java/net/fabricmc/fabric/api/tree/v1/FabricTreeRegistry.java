@@ -69,7 +69,7 @@ public final class FabricTreeRegistry {
 	 * @return Created and registered {@link TrunkPlacerType}
 	 */
 	public static <T extends TrunkPlacer> TrunkPlacerType<T> registerTrunkPlacerType(Identifier id, Codec<T> codec) {
-		return TrunkPlacerTypeInvoker.invokeRegister(id.getNamespace() + "__" + id.getPath(), codec);
+		return TrunkPlacerTypeInvoker.invokeRegister(id.toString(), codec);
 	}
 
 	/**
