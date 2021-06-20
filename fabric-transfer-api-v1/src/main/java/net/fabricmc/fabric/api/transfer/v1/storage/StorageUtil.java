@@ -89,20 +89,28 @@ public final class StorageUtil {
 
 	/**
 	 * Attempt to find a resource stored in the passed storage.
-	 * @param storage The storage to inspect.
+	 * @param storage The storage to inspect, may be null.
 	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
 	 * @param <T> The type of the stored resources.
 	 * @return A non-empty resource stored in the storage, or {@code null} if none could be found.
 	 */
 	@Nullable
-	public static <T> T findStoredResource(Storage<T> storage, @Nullable Transaction transaction) {
-		if (transaction == null) {
-			transaction = Transaction.openOuter();
-		}
+	public static <T> T findStoredResource(@Nullable Storage<T> storage, @Nullable Transaction transaction) {
+		if (storage == null) return null;
 
-		for (StorageView<T> view : storage.iterable(transaction)) {
-			if (!view.isEmpty()) {
-				return view.resource();
+		if (transaction == null) {
+			try (Transaction outer = Transaction.openOuter()) {
+				for (StorageView<T> view : storage.iterable(outer)) {
+					if (!view.isEmpty()) {
+						return view.resource();
+					}
+				}
+			}
+		} else {
+			for (StorageView<T> view : storage.iterable(transaction)) {
+				if (!view.isEmpty()) {
+					return view.resource();
+				}
 			}
 		}
 
@@ -111,13 +119,15 @@ public final class StorageUtil {
 
 	/**
 	 * Attempt to find a resource stored in the passed storage that can be extracted.
-	 * @param storage The storage to inspect.
+	 * @param storage The storage to inspect, may be null.
 	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
 	 * @param <T> The type of the stored resources.
 	 * @return A non-empty resource stored in the storage that can be extracted, or {@code null} if none could be found.
 	 */
 	@Nullable
-	public static <T> T findExtractableResource(Storage<T> storage, @Nullable Transaction transaction) {
+	public static <T> T findExtractableResource(@Nullable Storage<T> storage, @Nullable Transaction transaction) {
+		if (storage == null) return null;
+
 		try (Transaction nested = transaction == null ? Transaction.openOuter() : transaction.openNested()) {
 			for (StorageView<T> view : storage.iterable(transaction)) {
 				// Extract below could change the resource, so we have to query it before extracting.

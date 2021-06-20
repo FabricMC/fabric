@@ -151,26 +151,6 @@ public interface Storage<T> {
 	}
 
 	/**
-	 * Return any view over this storage, or {@code null} if none is available.
-	 *
-	 * <p>The returned view is tied to the passed transaction,
-	 * and may never be used once the passed transaction has been closed.
-	 *
-	 * @param transaction The transaction to which the scope of the returned storage view is tied.
-	 * @return A view over this storage, or {@code null} if none is available.
-	 */
-	@Nullable
-	default StorageView<T> anyView(Transaction transaction) {
-		Iterator<StorageView<T>> iterator = iterator(transaction);
-
-		if (iterator.hasNext()) {
-			return iterator.next();
-		} else {
-			return null;
-		}
-	}
-
-	/**
 	 * Return a view over this storage, for a specific resource, or {@code null} if none is quickly available.
 	 *
 	 * <p>This function should only return a non-null view if this storage can provide it quickly,
