@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-tree-api-v1-testmod",
+  "name": "Fabric Tree API (v1) Testmod",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-tree-api-v1-testmod/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*",
+    "fabric-tag-extensions-v0": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.tree.v1.TreeTest"
+    ]
+  },
+  "description": "A testmod for the Fabric Tree API v1 demonstrating its functionality",
+  "mixins": [
+  ]
+}
