@@ -95,7 +95,7 @@ public final class FabricTreeRegistry {
 	 * @return Created and registered {@link TreeDecoratorType}
 	 */
 	public static <T extends TreeDecorator> TreeDecoratorType<T> registerTreeDecoratorType(Identifier id, Codec<T> codec) {
-		return TreeDecoratorTypeInvoker.invokeRegister(id.getNamespace() + "__" + id.getPath(), codec);
+		return TreeDecoratorTypeInvoker.invokeRegister(id.toString(), codec);
 	}
 
 	/**
