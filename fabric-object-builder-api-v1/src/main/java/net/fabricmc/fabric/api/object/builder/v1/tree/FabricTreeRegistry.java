@@ -18,50 +18,21 @@ import net.minecraft.world.gen.trunk.TrunkPlacer;
 import net.minecraft.world.gen.trunk.TrunkPlacerType;
 
 /**
- * <p>
- * 	   A registry for {@link TrunkPlacerType}s, {@link FoliagePlacerType}s, {@link TreeDecoratorType}s,
- * 	   {@link BlockStateProviderType}s, and {@link IntProviderType}s.
- * </p>
- * <p>
- *     Example for {@link TrunkPlacerType}s:<br>
- *
- *     <code>
- *         public static final TrunkPlacerType<MyTrunkPlacer> MY_TRUNK_PLACER =	FabricTreeRegistry.registerTrunkPlacerType(new Identifier("example", "my_trunk_placer"), MyTrunkPlacer.CODEC);
- *     </code>
- * </p>
- * <p>
- *     Example for {@link FoliagePlacerType}s:<br>
- *
- *     <code>
- *         public static final FoliagePlacerType<MyFoliagePlacer> MY_FOLIAGE_PLACER = FabricTreeRegistry.registerFoliagePlacerType(new Identifier("tutorial", "my_foliage_placer"), MyFoliagePlacer.CODEC);
- *     </code>
- * </p>
- * <p>
- *     Example for {@link TreeDecoratorType}s:<br>
- *
- *     <code>
- *         public static final TreeDecoratorType<MyTreeDecorator> MY_TREE_DECORATOR = FabricTreeRegistry.registerTreeDecoratorType(new Identifier("tutorial", "my_tree_decorator"), MyTreeDecorator.CODEC);
- *     </code>
- * </p>
- * <p>
- *     Example for {@link BlockStateProviderType}s:<br>
- *
- *     <code>
- *         public static final BlockStateProviderType<MyBlockStateProvider> MY_BLOCK_STATE_PROVIDER = FabricTreeRegistry.registerBlockStateProviderType(new Identifier("tutorial", "my_block_state_provider"), MyBlockStateProvider.CODEC);
- *     </code>
- * </p>
- * <p>
- *     Example for {@link IntProviderType}s:<br>
- *
- *     <code>
- *         public static final IntProviderType<MyIntProvider> MY_INT_PROVIDER = FabricTreeRegistry.registerIntProviderType(new Identifier("tutorial", "my_int_provider"), MyIntProvider.CODEC);
- *     </code>
- * </p>
+ * A registry for {@link TrunkPlacerType}s, {@link FoliagePlacerType}s, {@link TreeDecoratorType}s,
+ * {@link BlockStateProviderType}s, and {@link IntProviderType}s.
  */
 public final class FabricTreeRegistry {
 	/**
 	 * Creates a new instance of a {@link TrunkPlacerType}, registers and returns it.<br>
 	 * Uses {@link TrunkPlacerTypeInvoker} under the hood.
+	 *
+	 * <p>
+	 *    Example:<br>
+	 *
+	 *    <code>
+	 *          public static final TrunkPlacerType<MyTrunkPlacer> MY_TRUNK_PLACER =	FabricTreeRegistry.registerTrunkPlacerType(new Identifier("example", "my_trunk_placer"), MyTrunkPlacer.CODEC);
+	 *    </code>
+	 * </p>
 	 *
 	 * @param id Registry {@link Identifier}
 	 * @param codec The {@link Codec} associated with the {@link TrunkPlacer}
@@ -76,6 +47,14 @@ public final class FabricTreeRegistry {
 	 * Creates a new instance of a {@link FoliagePlacerType}, registers and returns it.<br>
 	 * Uses {@link FoliagePlacerTypeInvoker} under the hood.
 	 *
+	 * <p>
+	 *     Example:<br>
+	 *
+	 *     <code>
+	 *         public static final FoliagePlacerType<MyFoliagePlacer> MY_FOLIAGE_PLACER = FabricTreeRegistry.registerFoliagePlacerType(new Identifier("tutorial", "my_foliage_placer"), MyFoliagePlacer.CODEC);
+	 *     </code>
+	 * </p>
+	 *
 	 * @param id Registry {@link Identifier}
 	 * @param codec The {@link Codec} associated with the {@link FoliagePlacer}
 	 * @param <T> The owner {@link FoliagePlacer}
@@ -88,6 +67,14 @@ public final class FabricTreeRegistry {
 	/**
 	 * Creates a new instance of a {@link TreeDecoratorType}, registers and returns it.<br>
 	 * Uses {@link TreeDecoratorTypeInvoker} under the hood.
+	 *
+	 * <p>
+	 *     Example for {@link TreeDecoratorType}s:<br>
+	 *
+	 *     <code>
+	 *         public static final TreeDecoratorType<MyTreeDecorator> MY_TREE_DECORATOR = FabricTreeRegistry.registerTreeDecoratorType(new Identifier("tutorial", "my_tree_decorator"), MyTreeDecorator.CODEC);
+	 *     </code>
+	 * </p>
 	 *
 	 * @param id Registry {@link Identifier}
 	 * @param codec The {@link Codec} associated with the {@link TreeDecorator}
@@ -102,6 +89,14 @@ public final class FabricTreeRegistry {
 	 * Creates a new instance of a {@link BlockStateProviderType}, registers and returns it.<br>
 	 * Uses {@link BlockStateProviderTypeInvoker} under the hood.
 	 *
+	 * <p>
+	 *     Example for {@link BlockStateProviderType}s:<br>
+	 *
+	 *     <code>
+	 *         public static final BlockStateProviderType<MyBlockStateProvider> MY_BLOCK_STATE_PROVIDER = FabricTreeRegistry.registerBlockStateProviderType(new Identifier("tutorial", "my_block_state_provider"), MyBlockStateProvider.CODEC);
+	 *     </code>
+	 * </p>
+	 *
 	 * @param id Registry {@link Identifier}
 	 * @param codec The {@link Codec} associated with the {@link BlockStateProvider}
 	 * @param <T> The owner {@link BlockStateProvider}
@@ -113,6 +108,14 @@ public final class FabricTreeRegistry {
 
 	/**
 	 * A convenience method to avoid conflicts when using {@link IntProviderType#register}.
+	 *
+	 * <p>
+	 *     Example for {@link IntProviderType}s:<br>
+	 *
+	 *     <code>
+	 *         public static final IntProviderType<MyIntProvider> MY_INT_PROVIDER = FabricTreeRegistry.registerIntProviderType(new Identifier("tutorial", "my_int_provider"), MyIntProvider.CODEC);
+	 *     </code>
+	 * </p>
 	 *
 	 * @param id Registry {@link Identifier}
 	 * @param codec The {@link Codec} associated with the {@link IntProvider}
