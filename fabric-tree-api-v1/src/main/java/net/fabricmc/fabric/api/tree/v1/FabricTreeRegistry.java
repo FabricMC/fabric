@@ -82,7 +82,7 @@ public final class FabricTreeRegistry {
 	 * @return Created and registered {@link FoliagePlacerType}
 	 */
 	public static <T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacerType(Identifier id, Codec<T> codec) {
-		return FoliagePlacerTypeInvoker.invokeRegister(id.getNamespace() + "__" + id.getPath(), codec);
+		return FoliagePlacerTypeInvoker.invokeRegister(id.toString(), codec);
 	}
 
 	/**
