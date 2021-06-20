@@ -20,7 +20,7 @@ import net.minecraft.world.gen.trunk.TrunkPlacerType;
 /**
  * <p>
  * 	   A registry for {@link TrunkPlacerType}s, {@link FoliagePlacerType}s, {@link TreeDecoratorType}s,
- * 	   {@link BlockStateProviderType}s and {@link IntProviderType}s.
+ * 	   {@link BlockStateProviderType}s, and {@link IntProviderType}s.
  * </p>
  * <p>
  *     Example for {@link TrunkPlacerType}s:<br>
