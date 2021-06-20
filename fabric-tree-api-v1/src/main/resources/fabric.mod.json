@@ -24,7 +24,7 @@
     "main": [
     ]
   },
-  "description": "Utilities for creating TrunkPlacerTypes, FoliagePlacerTypes, TreeDecoratorTypes, BlockStateProviderTypes and IntProviderTypes",
+  "description": "Tree creation utilities",
   "mixins": [
     "fabric-tree-api-v1.mixins.json"
   ],
