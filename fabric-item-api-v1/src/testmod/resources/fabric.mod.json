@@ -13,7 +13,8 @@
       "net.fabricmc.fabric.test.item.FabricItemSettingsTests"
     ],
     "client": [
-      "net.fabricmc.fabric.test.item.client.TooltipTests"
+      "net.fabricmc.fabric.test.item.client.TooltipTests",
+      "net.fabricmc.fabric.test.item.client.UpdateAnimationTests"
     ],
     "main": [
       "net.fabricmc.fabric.test.item.CustomDamageTest"
