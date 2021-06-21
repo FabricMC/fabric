@@ -24,17 +24,30 @@ import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
 
+import net.fabricmc.fabric.api.loot.v2.FabricLootPools;
+
 /**
  * An interface implemented by all {@code net.minecraft.loot.LootPool} instances when
  * Fabric API is present. Contains accessors for various fields.
+ *
+ * @deprecated Replaced with {@link FabricLootPools}.
  */
+@Deprecated
 public interface FabricLootPool {
 	default LootPool asVanilla() {
 		return (LootPool) this;
 	}
 
-	List<LootPoolEntry> getEntries();
-	List<LootCondition> getConditions();
-	List<LootFunction> getFunctions();
-	LootTableRange getRolls();
+	default List<LootPoolEntry> getEntries() {
+		return FabricLootPools.getEntries(asVanilla());
+	}
+	default List<LootCondition> getConditions() {
+		return FabricLootPools.getConditions(asVanilla());
+	}
+	default List<LootFunction> getFunctions() {
+		return FabricLootPools.getFunctions(asVanilla());
+	}
+	default LootTableRange getRolls() {
+		return FabricLootPools.getRolls(asVanilla());
+	}
 }

@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.loot",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "LootManagerMixin",
+    "LootPoolAccessor",
+    "LootPoolBuilderAccessor",
+    "LootTableAccessor",
+    "LootTableBuilderAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

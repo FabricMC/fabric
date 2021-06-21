@@ -23,11 +23,13 @@ import net.minecraft.util.JsonSerializer;
 import net.fabricmc.fabric.impl.loot.table.LootEntryTypeRegistryImpl;
 
 /**
- * Fabric's extensions to {@code net.minecraft.loot.entry.LootEntries} for registering
+ * Fabric's extensions to {@link net.minecraft.loot.entry.LootPoolEntryTypes} for registering
  * custom loot entry types.
  *
  * @see #register
+ * @deprecated Use {@link net.minecraft.util.registry.Registry#LOOT_POOL_ENTRY_TYPE} from vanilla instead.
  */
+@Deprecated
 public interface LootEntryTypeRegistry {
 	LootEntryTypeRegistry INSTANCE = LootEntryTypeRegistryImpl.INSTANCE;
 

@@ -14,24 +14,32 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.loot.table;
-
-import java.util.List;
+package net.fabricmc.fabric.mixin.loot;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTableRange;
+import net.minecraft.loot.UniformLootTableRange;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
 
-@Mixin(LootPool.Builder.class)
-public interface LootPoolBuilderHooks {
+@Mixin(LootPool.class)
+public interface LootPoolAccessor {
 	@Accessor
-	List<LootPoolEntry> getEntries();
+	LootTableRange getRolls();
+
 	@Accessor
-	List<LootCondition> getConditions();
+	UniformLootTableRange getBonusRolls();
+
 	@Accessor
-	List<LootFunction> getFunctions();
+	LootPoolEntry[] getEntries();
+
+	@Accessor
+	LootCondition[] getConditions();
+
+	@Accessor
+	LootFunction[] getFunctions();
 }
