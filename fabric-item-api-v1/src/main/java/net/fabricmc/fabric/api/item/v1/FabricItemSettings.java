@@ -53,6 +53,53 @@ public class FabricItemSettings extends Item.Settings {
 		return this;
 	}
 
+	/**
+	 * Sets the stack-aware recipe remainder provider of the item.
+	 */
+	public FabricItemSettings recipeRemainder(RecipeRemainderProvider provider) {
+		FabricItemInternals.computeExtraData(this).recipeRemainderProvider(provider);
+		return this;
+	}
+
+	/**
+	 * Sets the stack-aware recipe remainder to damage the item by 1 every time it is used in crafting.
+	 */
+	public FabricItemSettings damageIfUsedInCrafting() {
+		return this.damageIfUsedInCrafting(1);
+	}
+
+	/**
+	 * Sets the stack-aware recipe remainder to return the item itself.
+	 */
+	public FabricItemSettings returnSelfInCrafting() {
+		return this.damageIfUsedInCrafting(0);
+	}
+
+	/**
+	 * Sets the stack-aware recipe remainder to damage the item by a certain amount every time it is used in crafting.
+	 *
+	 * @param by the amount
+	 */
+	public FabricItemSettings damageIfUsedInCrafting(int by) {
+		if (by == 0) {
+			return this.recipeRemainder((original, inventory, type, world, pos) -> original);
+		}
+
+		return this.recipeRemainder((original, inventory, type, world, pos) -> {
+			if (!original.isDamageable()) {
+				return ItemStack.EMPTY;
+			}
+
+			ItemStack copy = original.copy();
+
+			if (copy.damage(by, world.random, null)) {
+				return ItemStack.EMPTY;
+			}
+
+			return copy;
+		});
+	}
+
 	// Overrides of vanilla methods
 
 	@Override

@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "fabric-item-api-v1-testmod:hammer",
+    "fabric-item-api-v1-testmod:end_hammer"
+  ]
+}

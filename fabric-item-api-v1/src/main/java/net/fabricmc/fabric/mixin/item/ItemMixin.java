@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,6 +27,7 @@ import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
+import net.fabricmc.fabric.api.item.v1.RecipeRemainderProvider;
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
 
@@ -36,6 +38,9 @@ abstract class ItemMixin implements ItemExtensions {
 
 	@Unique
 	private CustomDamageHandler customDamageHandler;
+
+	@Unique
+	private RecipeRemainderProvider recipeRemainderProvider;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onConstruct(Item.Settings settings, CallbackInfo info) {
@@ -60,5 +65,15 @@ abstract class ItemMixin implements ItemExtensions {
 	@Override
 	public void fabric_setCustomDamageHandler(CustomDamageHandler handler) {
 		this.customDamageHandler = handler;
+	}
+
+	@Override
+	public @Nullable RecipeRemainderProvider fabric_getRecipeRemainderProvider() {
+		return recipeRemainderProvider;
+	}
+
+	@Override
+	public void fabric_setRecipeRemainderProvider(RecipeRemainderProvider recipeRemainderProvider) {
+		this.recipeRemainderProvider = recipeRemainderProvider;
 	}
 }
