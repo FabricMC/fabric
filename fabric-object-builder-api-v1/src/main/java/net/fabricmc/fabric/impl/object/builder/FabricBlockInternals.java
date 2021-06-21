@@ -22,6 +22,7 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.tag.Tag;
 
@@ -53,6 +54,18 @@ public final class FabricBlockInternals {
 			for (MiningLevel tml : data.miningLevels) {
 				ToolManagerImpl.entry(block).putBreakByTool(tml.tag, tml.level);
 			}
+
+			if (data.pistonBehavior != null) {
+				((AbstractBlockInternals) block).setPistonBehavior(data.pistonBehavior);
+			}
+
+			if (data.replaceable != null) {
+				((AbstractBlockInternals) block).setReplaceable(data.replaceable);
+			}
+
+			if (data.solid != null) {
+				((AbstractBlockInternals) block).setSolid(data.solid);
+			}
 		}
 	}
 
@@ -60,6 +73,12 @@ public final class FabricBlockInternals {
 		private final List<MiningLevel> miningLevels = new ArrayList<>();
 		@Nullable
 		private Boolean breakByHand;
+		@Nullable
+		private PistonBehavior pistonBehavior;
+		@Nullable
+		private Boolean replaceable;
+		@Nullable
+		private Boolean solid;
 
 		public ExtraData(Block.Settings settings) {
 		}
@@ -70,6 +89,18 @@ public final class FabricBlockInternals {
 
 		public void addMiningLevel(Tag<Item> tag, int level) {
 			miningLevels.add(new MiningLevel(tag, level));
+		}
+
+		public void setPistonBehavior(PistonBehavior pistonBehavior) {
+			this.pistonBehavior = pistonBehavior;
+		}
+
+		public void setReplaceable(boolean replaceable) {
+			this.replaceable = replaceable;
+		}
+
+		public void setSolid(boolean solid) {
+			this.solid = solid;
 		}
 	}
 
