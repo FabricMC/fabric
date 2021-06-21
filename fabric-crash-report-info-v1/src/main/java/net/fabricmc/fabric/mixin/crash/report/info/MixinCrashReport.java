@@ -40,9 +40,12 @@ public abstract class MixinCrashReport {
 	private void fillSystemDetails(CallbackInfo info) {
 		getSystemDetailsSection().add("Fabric Mods", () -> {
 			Map<String, String> mods = new TreeMap<>();
+			boolean fullApiPresent = FabricLoader.getInstance().isModLoaded("fabric-api");
 
 			for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
-				mods.put(container.getMetadata().getId(), container.getMetadata().getName() + " " + container.getMetadata().getVersion().getFriendlyString());
+				if (!fullApiPresent || !container.getMetadata().containsCustomValue("fabric-api:module-lifecycle")) {
+					mods.put(container.getMetadata().getId(), container.getMetadata().getName() + " " + container.getMetadata().getVersion().getFriendlyString());
+				}
 			}
 
 			StringBuilder modString = new StringBuilder();
