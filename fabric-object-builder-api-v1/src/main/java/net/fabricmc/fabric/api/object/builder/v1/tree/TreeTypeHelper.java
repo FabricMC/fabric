@@ -45,9 +45,9 @@ public final class TreeTypeHelper {
 	 * <p>
 	 *    Example:<br>
 	 *
-	 *    <code>
+	 *    {@code
 	 *          public static final TrunkPlacerType<MyTrunkPlacer> MY_TRUNK_PLACER =	FabricTreeRegistry.registerTrunkPlacerType(new Identifier("example", "my_trunk_placer"), MyTrunkPlacer.CODEC);
-	 *    </code>
+	 *    }
 	 * </p>
 	 *
 	 * @param id Registry {@link Identifier}
@@ -66,9 +66,9 @@ public final class TreeTypeHelper {
 	 * <p>
 	 *     Example:<br>
 	 *
-	 *     <code>
+	 *    {@code
 	 *         public static final FoliagePlacerType<MyFoliagePlacer> MY_FOLIAGE_PLACER = FabricTreeRegistry.registerFoliagePlacerType(new Identifier("tutorial", "my_foliage_placer"), MyFoliagePlacer.CODEC);
-	 *     </code>
+	 *     }
 	 * </p>
 	 *
 	 * @param id Registry {@link Identifier}
@@ -87,9 +87,9 @@ public final class TreeTypeHelper {
 	 * <p>
 	 *     Example for {@link TreeDecoratorType}s:<br>
 	 *
-	 *     <code>
+	 *     {@code
 	 *         public static final TreeDecoratorType<MyTreeDecorator> MY_TREE_DECORATOR = FabricTreeRegistry.registerTreeDecoratorType(new Identifier("tutorial", "my_tree_decorator"), MyTreeDecorator.CODEC);
-	 *     </code>
+	 *     }
 	 * </p>
 	 *
 	 * @param id Registry {@link Identifier}
@@ -108,9 +108,9 @@ public final class TreeTypeHelper {
 	 * <p>
 	 *     Example for {@link BlockStateProviderType}s:<br>
 	 *
-	 *     <code>
+	 *     {@code
 	 *         public static final BlockStateProviderType<MyBlockStateProvider> MY_BLOCK_STATE_PROVIDER = FabricTreeRegistry.registerBlockStateProviderType(new Identifier("tutorial", "my_block_state_provider"), MyBlockStateProvider.CODEC);
-	 *     </code>
+	 *     }
 	 * </p>
 	 *
 	 * @param id Registry {@link Identifier}
@@ -128,9 +128,9 @@ public final class TreeTypeHelper {
 	 * <p>
 	 *     Example for {@link IntProviderType}s:<br>
 	 *
-	 *     <code>
+	 *     {@code
 	 *         public static final IntProviderType<MyIntProvider> MY_INT_PROVIDER = FabricTreeRegistry.registerIntProviderType(new Identifier("tutorial", "my_int_provider"), MyIntProvider.CODEC);
-	 *     </code>
+	 *     }
 	 * </p>
 	 *
 	 * @param id Registry {@link Identifier}
