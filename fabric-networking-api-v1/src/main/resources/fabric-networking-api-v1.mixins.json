@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.networking",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_16",
   "mixins": [
     "ClientConnectionMixin",
     "EntityTrackerEntryMixin",
@@ -10,7 +10,6 @@
     "ServerPlayNetworkHandlerMixin",
     "accessor.CustomPayloadC2SPacketAccessor",
     "accessor.EntityTrackerAccessor",
-    "accessor.LoginQueryRequestS2CPacketAccessor",
     "accessor.LoginQueryResponseC2SPacketAccessor",
     "accessor.ServerLoginNetworkHandlerAccessor",
     "accessor.ThreadedAnvilChunkStorageAccessor"

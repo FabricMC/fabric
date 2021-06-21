@@ -18,7 +18,7 @@ package net.fabricmc.fabric.test.screenhandler.item;
 
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.collection.DefaultedList;
 
 final class BagInventory implements ImplementedInventory {
@@ -27,10 +27,10 @@ final class BagInventory implements ImplementedInventory {
 
 	BagInventory(ItemStack stack) {
 		this.stack = stack;
-		CompoundTag tag = stack.getSubTag("Items");
+		NbtCompound tag = stack.getSubTag("Items");
 
 		if (tag != null) {
-			Inventories.fromTag(tag, items);
+			Inventories.readNbt(tag, items);
 		}
 	}
 
@@ -41,7 +41,7 @@ final class BagInventory implements ImplementedInventory {
 
 	@Override
 	public void markDirty() {
-		CompoundTag tag = stack.getOrCreateSubTag("Items");
-		Inventories.toTag(tag, items);
+		NbtCompound tag = stack.getOrCreateSubTag("Items");
+		Inventories.writeNbt(tag, items);
 	}
 }

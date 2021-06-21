@@ -21,6 +21,7 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
@@ -52,7 +53,6 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	private boolean advancedTranslucency;
 	private ClientWorld world;
 
-	private VertexConsumer vertexConsumer;
 	private Entity entity;
 	private double cameraX;
 	private double cameraY;
@@ -97,7 +97,6 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	}
 
 	public void prepareBlockOutline(
-			VertexConsumer vertexConsumer,
 			Entity entity,
 			double cameraX,
 			double cameraY,
@@ -105,7 +104,6 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 			BlockPos blockPos,
 			BlockState blockState
 	) {
-		this.vertexConsumer = vertexConsumer;
 		this.entity = entity;
 		this.cameraX = cameraX;
 		this.cameraY = cameraY;
@@ -186,7 +184,7 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 
 	@Override
 	public VertexConsumer vertexConsumer() {
-		return vertexConsumer;
+		return consumers.getBuffer(RenderLayer.getLines());
 	}
 
 	@Override

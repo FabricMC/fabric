@@ -31,7 +31,7 @@ public interface AddHillsLayerAccessor {
 	 * <p>For example, it contains a mapping for 1 -> 129 where 1 is the raw id of plains, while 129 is the raw id
 	 * of the sunflower plains, which is derived from plains.
 	 */
-	@Accessor("field_26727")
+	@Accessor("MUTATED_BIOMES")
 	static Int2IntMap getBaseToVariantMap() {
 		throw new AssertionError("mixin");
 	}

@@ -5,31 +5,31 @@ buildscript {
 }
 
 plugins {
-	id "java"
+	id "java-library"
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.5.43" apply false
-	id "net.minecrell.licenser" version "0.4.1"
-	id "org.ajoberstar.grgit" version "3.1.1"
+	id "fabric-loom" version "0.8.12" apply false
+	id "org.cadixdev.licenser" version "0.5.0"
+	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
+	id "com.modrinth.minotaur" version "1.1.0"
 }
 
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.29.3"
-	static def mcVersion = "20w51a"
-	static def yarnVersion = "+build.1"
-	static def loaderVersion = "0.11.0"
+	static def baseVersion = "0.36.0"
+	static def mcVersion = "1.17"
+	static def yarnVersion = "+build.6"
+	static def loaderVersion = "0.11.3"
+	static def preRelease = false
 }
 
 version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
 logger.lifecycle("Building Fabric: " + version)
 
 import org.apache.commons.codec.digest.DigestUtils
-import net.fabricmc.loom.task.RunClientTask
-import net.fabricmc.loom.task.RunServerTask
 
 def getSubprojectVersion(project, version) {
 	if (grgit == null) {
@@ -64,7 +64,7 @@ def moduleDependencies(project, List<String> depNames) {
 	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'dev') }
 	project.dependencies {
 		deps.each {
-			compile it
+			api it
 		}
 	}
 	project.publishing {
@@ -86,19 +86,14 @@ def moduleDependencies(project, List<String> depNames) {
 }
 
 allprojects {
+	apply plugin: "java-library"
 	apply plugin: "checkstyle"
 	apply plugin: "maven-publish"
 	apply plugin: "fabric-loom"
-	apply plugin: "net.minecrell.licenser"
+	apply plugin: "org.cadixdev.licenser"
 
 	tasks.withType(JavaCompile).configureEach {
-		def targetVersion = 8
-		if (JavaVersion.current().isJava9Compatible()) {
-			it.options.release = targetVersion
-		} else {
-			sourceCompatibility = JavaVersion.toVersion(targetVersion)
-			targetCompatibility = JavaVersion.toVersion(targetVersion)
-		}
+		it.options.release = 16
 	}
 
 	group = "net.fabricmc.fabric-api"
@@ -110,18 +105,27 @@ allprojects {
 		}
 	}
 
-	task runTestmodClient(type: RunClientTask) {
-		classpath sourceSets.testmod.runtimeClasspath
-	}
-
-	task runTestmodServer(type: RunServerTask) {
-		classpath sourceSets.testmod.runtimeClasspath
+	loom {
+		runs {
+			testmodClient {
+				client()
+				ideConfigGenerated project.rootProject == project
+				name = "Testmod Client"
+				source sourceSets.testmod
+			}
+			testmodServer {
+				server()
+				ideConfigGenerated project.rootProject == project
+				name = "Testmod Server"
+				source sourceSets.testmod
+			}
+		}
 	}
 
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
 		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
-		modCompile "net.fabricmc:fabric-loader:${Globals.loaderVersion}"
+		modApi "net.fabricmc:fabric-loader:${Globals.loaderVersion}"
 	}
 
 	configurations {
@@ -137,29 +141,24 @@ allprojects {
 	}
 
 	jar {
-		classifier = "dev"
+		archiveClassifier = "dev"
 	}
 
 	afterEvaluate {
 		remapJar {
-			input = file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar")
+			input = file("${project.buildDir}/libs/$archivesBaseName-$version-dev.jar")
 			archiveName = "${archivesBaseName}-${version}.jar"
 		}
 
 		artifacts {
-			dev file: file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar"), type: "jar", builtBy: jar
+			dev file: file("${project.buildDir}/libs/$archivesBaseName-$version-dev.jar"), type: "jar", builtBy: jar
 		}
 
 		processResources {
 			inputs.property "version", project.version
 
-			from(sourceSets.main.resources.srcDirs) {
-				include "fabric.mod.json"
+			filesMatching("fabric.mod.json") {
 				expand "version": project.version
-			}
-
-			from(sourceSets.main.resources.srcDirs) {
-				exclude "fabric.mod.json"
 			}
 		}
 
@@ -178,7 +177,16 @@ allprojects {
 		configFile = rootProject.file("checkstyle.xml")
 		toolVersion = "8.31"
 	}
+
+	tasks.withType(AbstractArchiveTask) {
+		preserveFileTimestamps = false
+		reproducibleFileOrder = true
+	}
 }
+
+// Apply auxiliary buildscripts to submodules
+// This must be done after all plugins are applied to subprojects
+apply from: "gradle/module-validation.gradle"
 
 javadoc {
 	options {
@@ -217,17 +225,18 @@ task javadocJar(type: Jar) {
 build.dependsOn javadocJar
 
 // Runs a dedicated headless server with all test mods that closes once complete.
-task runAutoTestServer(type: RunServerTask) {
-	project.subprojects {
-		classpath it.sourceSets.testmod.runtimeClasspath
+loom {
+	runs {
+		autoTestServer {
+			inherit testmodServer
+			vmArg "-Dfabric.autoTest"
+		}
 	}
-	jvmArgs "-Dfabric.autoTest"
-	args "--nogui"
 }
 
 subprojects {
 	dependencies {
-		testmodCompile sourceSets.main.output
+		testmodImplementation sourceSets.main.output
 	}
 
 	task remapMavenJar(type: Copy, dependsOn: remapJar) {
@@ -321,10 +330,10 @@ sourceSets {
 dependencies {
 	afterEvaluate {
 		subprojects.each {
-			compile project(path: ":${it.name}", configuration: "dev")
+			api project(path: ":${it.name}", configuration: "dev")
 			include project("${it.name}:")
 
-			testmodCompile project("${it.name}:").sourceSets.testmod.output
+			testmodImplementation project("${it.name}:").sourceSets.testmod.output
 		}
 	}
 }
@@ -337,7 +346,7 @@ curseforge {
 	project {
 		id = "306612"
 		changelog = "A changelog can be found at https://github.com/FabricMC/fabric/commits"
-		releaseType = "beta"
+		releaseType = Globals.preRelease ? "beta" : "release"
 		addGameVersion "1.17"
 		addGameVersion "Fabric"
 
@@ -371,10 +380,28 @@ task github(dependsOn: remapMavenJar) {
 		releaseBuilder.name("[$Globals.mcVersion] Fabric API $Globals.baseVersion")
 		releaseBuilder.body("A changelog can be found at https://github.com/FabricMC/fabric/commits")
 		releaseBuilder.commitish(getBranch())
+		releaseBuilder.prerelease(Globals.preRelease)
 
 		def ghRelease = releaseBuilder.create()
 		ghRelease.uploadAsset(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"), "application/java-archive");
 	}
+}
+
+task modrinth(type: com.modrinth.minotaur.TaskModrinthUpload, dependsOn: remapMavenJar) {
+	onlyIf {
+		ENV.MODRINTH_TOKEN
+	}
+
+	token = ENV.MODRINTH_TOKEN
+	projectId = "P7dR8mSH"
+	versionNumber = version
+	versionName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion"
+	releaseType = Globals.preRelease ? "beta" : "release"
+
+	uploadFile = file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")
+
+	addGameVersion(Globals.mcVersion)
+	addLoader('fabric')
 }
 
 // A task to ensure that the version being released has not already been released.
@@ -390,5 +417,6 @@ task checkVersion {
 }
 
 github.mustRunAfter checkVersion
+modrinth.mustRunAfter checkVersion
 publish.mustRunAfter checkVersion
 project.tasks.curseforge.mustRunAfter checkVersion

@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -64,10 +63,8 @@ public class FabricCreativeGuiComponents {
 				int u = active && this.isHovered() ? 22 : 0;
 				int v = active ? 0 : 10;
 
-				MinecraftClient minecraftClient = MinecraftClient.getInstance();
-				minecraftClient.getTextureManager().bindTexture(BUTTON_TEX);
-				RenderSystem.disableLighting();
-				RenderSystem.color4f(1F, 1F, 1F, 1F);
+				RenderSystem.setShaderTexture(0, BUTTON_TEX);
+				RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 				this.drawTexture(matrixStack, this.x, this.y, u + (type == Type.NEXT ? 11 : 0), v, 11, 10);
 
 				if (this.hovered) {

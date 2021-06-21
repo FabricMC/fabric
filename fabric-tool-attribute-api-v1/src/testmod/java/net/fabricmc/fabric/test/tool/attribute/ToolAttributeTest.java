@@ -41,6 +41,10 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.fabricmc.fabric.test.tool.attribute.item.TestDynamicCancelItem;
+import net.fabricmc.fabric.test.tool.attribute.item.TestDynamicSwordItem;
+import net.fabricmc.fabric.test.tool.attribute.item.TestDynamicToolItem;
+import net.fabricmc.fabric.test.tool.attribute.item.TestNullableItem;
 
 public class ToolAttributeTest implements ModInitializer {
 	private static final float DEFAULT_BREAK_SPEED = 1.0F;
@@ -69,7 +73,7 @@ public class ToolAttributeTest implements ModInitializer {
 		testPickaxe = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_pickaxe"), new TestTool(new Item.Settings(), FabricToolTags.PICKAXES, 2));
 		// Register a block that requires a shovel that is as strong or stronger than an iron one.
 		gravelBlock = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_gravel_block"),
-				new Block(FabricBlockSettings.of(new FabricMaterialBuilder(MapColor.SAND).build(), MapColor.STONE)
+				new Block(FabricBlockSettings.of(new FabricMaterialBuilder(MapColor.PALE_YELLOW).build(), MapColor.STONE_GRAY)
 						.breakByTool(FabricToolTags.SHOVELS, 2)
 						.requiresTool()
 						.strength(0.6F)
@@ -77,7 +81,7 @@ public class ToolAttributeTest implements ModInitializer {
 		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_gravel_block"), new BlockItem(gravelBlock, new Item.Settings()));
 		// Register a block that requires a pickaxe that is as strong or stronger than an iron one.
 		stoneBlock = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_stone_block"),
-				new Block(FabricBlockSettings.of(Material.STONE, MapColor.STONE)
+				new Block(FabricBlockSettings.of(Material.STONE, MapColor.STONE_GRAY)
 						.breakByTool(FabricToolTags.PICKAXES, 2)
 						.requiresTool()
 						.strength(0.6F)
@@ -101,6 +105,16 @@ public class ToolAttributeTest implements ModInitializer {
 						.sounds(BlockSoundGroup.CROP)));
 		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "tater_effective_block"), new BlockItem(taterEffectiveBlock, new Item.Settings()));
 
+		// DYNAMIC ATTRIBUTE MODIFIERS
+		// The Dynamic Sword tests to make sure standard vanilla attributes can co-exist with dynamic attributes.
+		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "dynamic_sword"), new TestDynamicSwordItem(new Item.Settings()));
+		// The Dynamic Tool ensures a tool can have dynamic attributes (with no vanilla atributes). It applies 2 layers of speed reduction to the player.
+		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "dynamic_tool"), new TestDynamicToolItem(new Item.Settings()));
+		// Test cancels-out attributes
+		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "cancel_item"), new TestDynamicCancelItem(new Item.Settings()));
+		// Test parameter nullability
+		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "null_test"), new TestNullableItem(new Item.Settings()));
+
 		ServerTickEvents.START_SERVER_TICK.register(this::validate);
 	}
 
@@ -120,7 +134,7 @@ public class ToolAttributeTest implements ModInitializer {
 		testToolOnBlock(new ItemStack(Items.IRON_PICKAXE), Blocks.STONE, true, ((ToolItem) Items.IRON_PICKAXE).getMaterial().getMiningSpeedMultiplier());
 		testToolOnBlock(new ItemStack(Items.IRON_PICKAXE), Blocks.OBSIDIAN, false, ((ToolItem) Items.IRON_PICKAXE).getMaterial().getMiningSpeedMultiplier());
 		testToolOnBlock(new ItemStack(Items.STONE_SHOVEL), Blocks.STONE, false, 1.0F);
-		testToolOnBlock(new ItemStack(Items.STONE_SHOVEL), Blocks.GRAVEL, false, ((ToolItem) Items.STONE_SHOVEL).getMaterial().getMiningSpeedMultiplier());
+		testToolOnBlock(new ItemStack(Items.STONE_SHOVEL), Blocks.GRAVEL, true, ((ToolItem) Items.STONE_SHOVEL).getMaterial().getMiningSpeedMultiplier());
 
 		//Test vanilla tools don't bypass fabric mining levels
 		testToolOnBlock(new ItemStack(Items.STONE_PICKAXE), stoneBlock, false, ((ToolItem) Items.STONE_PICKAXE).getMaterial().getMiningSpeedMultiplier());
@@ -141,7 +155,7 @@ public class ToolAttributeTest implements ModInitializer {
 
 		//Test dynamic tools on vanilla blocks
 		testToolOnBlock(new ItemStack(testShovel), Blocks.STONE, false, DEFAULT_BREAK_SPEED);
-		testToolOnBlock(new ItemStack(testShovel), Blocks.GRAVEL, false, TOOL_BREAK_SPEED);
+		testToolOnBlock(new ItemStack(testShovel), Blocks.GRAVEL, true, TOOL_BREAK_SPEED);
 		testToolOnBlock(new ItemStack(testPickaxe), Blocks.GRAVEL, false, DEFAULT_BREAK_SPEED);
 		testToolOnBlock(new ItemStack(testPickaxe), Blocks.STONE, true, TOOL_BREAK_SPEED);
 
@@ -159,7 +173,7 @@ public class ToolAttributeTest implements ModInitializer {
 	}
 
 	private void testToolOnBlock(ItemStack item, Block block, boolean inEffective, float inSpeed) {
-		boolean effective = item.isEffectiveOn(block.getDefaultState());
+		boolean effective = item.isSuitableFor(block.getDefaultState());
 		float speed = item.getMiningSpeedMultiplier(block.getDefaultState());
 
 		if (inEffective != effective) {

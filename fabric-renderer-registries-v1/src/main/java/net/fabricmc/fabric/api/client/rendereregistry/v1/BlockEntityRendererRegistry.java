@@ -39,5 +39,5 @@ public interface BlockEntityRendererRegistry {
 	 *                            class is already loaded
 	 * @param <E> the {@link BlockEntity}
 	 */
-	<E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<E> blockEntityRendererFactory);
+	<E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory);
 }

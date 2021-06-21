@@ -24,6 +24,6 @@ import net.minecraft.resource.ResourcePackSource;
 
 @Mixin(FileResourcePackProvider.class)
 public interface FileResourcePackProviderAccessor {
-	@Accessor("field_25345")
+	@Accessor("source")
 	ResourcePackSource getResourcePackSource();
 }

@@ -32,6 +32,6 @@ class SimpleTradeFactory implements TradeOffers.Factory {
 	@Override
 	public TradeOffer create(Entity entity, Random random) {
 		// ALWAYS supply a copy of the offer.
-		return new TradeOffer(this.offer.toTag());
+		return new TradeOffer(this.offer.toNbt());
 	}
 }

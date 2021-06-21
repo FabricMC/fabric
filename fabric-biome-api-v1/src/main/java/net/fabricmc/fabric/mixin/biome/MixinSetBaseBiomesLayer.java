@@ -28,16 +28,16 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.BuiltinBiomes;
-import net.minecraft.world.biome.layer.SetBaseBiomesLayer;
+import net.minecraft.world.biome.layer.AddBaseBiomesLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
 import net.fabricmc.fabric.api.biome.v1.OverworldClimate;
 import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
 
 /**
- * Injects biomes into the arrays of biomes in the {@link SetBaseBiomesLayer}.
+ * Injects biomes into the arrays of biomes in the {@link AddBaseBiomesLayer}.
  */
-@Mixin(SetBaseBiomesLayer.class)
+@Mixin(AddBaseBiomesLayer.class)
 public class MixinSetBaseBiomesLayer {
 	@Shadow
 	@Final
@@ -59,22 +59,22 @@ public class MixinSetBaseBiomesLayer {
 	@Mutable
 	private static int[] DRY_BIOMES;
 
-	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/biome/layer/SetBaseBiomesLayer;chosenGroup1:[I"), method = "sample", cancellable = true)
+	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/biome/layer/AddBaseBiomesLayer;chosenGroup1:[I"), method = "sample", cancellable = true)
 	private void injectDryBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
 		InternalBiomeUtils.injectBiomesIntoClimate(random, DRY_BIOMES, OverworldClimate.DRY, info::setReturnValue);
 	}
 
-	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/biome/layer/SetBaseBiomesLayer;TEMPERATE_BIOMES:[I"), method = "sample", cancellable = true)
+	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/biome/layer/AddBaseBiomesLayer;TEMPERATE_BIOMES:[I"), method = "sample", cancellable = true)
 	private void injectTemperateBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
 		InternalBiomeUtils.injectBiomesIntoClimate(random, TEMPERATE_BIOMES, OverworldClimate.TEMPERATE, info::setReturnValue);
 	}
 
-	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/biome/layer/SetBaseBiomesLayer;SNOWY_BIOMES:[I"), method = "sample", cancellable = true)
+	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/biome/layer/AddBaseBiomesLayer;SNOWY_BIOMES:[I"), method = "sample", cancellable = true)
 	private void injectSnowyBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
 		InternalBiomeUtils.injectBiomesIntoClimate(random, SNOWY_BIOMES, OverworldClimate.SNOWY, info::setReturnValue);
 	}
 
-	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/biome/layer/SetBaseBiomesLayer;COOL_BIOMES:[I"), method = "sample", cancellable = true)
+	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/biome/layer/AddBaseBiomesLayer;COOL_BIOMES:[I"), method = "sample", cancellable = true)
 	private void injectCoolBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
 		InternalBiomeUtils.injectBiomesIntoClimate(random, COOL_BIOMES, OverworldClimate.COOL, info::setReturnValue);
 	}

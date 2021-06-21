@@ -54,19 +54,19 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 
 	@Override
 	public Optional<RegistryKey<ConfiguredSurfaceBuilder<?>>> getSurfaceBuilderKey() {
-		Registry<ConfiguredSurfaceBuilder<?>> registry = dynamicRegistries.get(Registry.CONFIGURED_SURFACE_BUILDER_WORLDGEN);
+		Registry<ConfiguredSurfaceBuilder<?>> registry = dynamicRegistries.get(Registry.CONFIGURED_SURFACE_BUILDER_KEY);
 		return registry.getKey(biome.getGenerationSettings().getSurfaceBuilder().get());
 	}
 
 	@Override
 	public Optional<RegistryKey<ConfiguredFeature<?, ?>>> getFeatureKey(ConfiguredFeature<?, ?> configuredFeature) {
-		Registry<ConfiguredFeature<?, ?>> registry = dynamicRegistries.get(Registry.CONFIGURED_FEATURE_WORLDGEN);
+		Registry<ConfiguredFeature<?, ?>> registry = dynamicRegistries.get(Registry.CONFIGURED_FEATURE_KEY);
 		return registry.getKey(configuredFeature);
 	}
 
 	@Override
 	public Optional<RegistryKey<ConfiguredStructureFeature<?, ?>>> getStructureKey(ConfiguredStructureFeature<?, ?> configuredStructure) {
-		Registry<ConfiguredStructureFeature<?, ?>> registry = dynamicRegistries.get(Registry.CONFIGURED_STRUCTURE_FEATURE_WORLDGEN);
+		Registry<ConfiguredStructureFeature<?, ?>> registry = dynamicRegistries.get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY);
 		return registry.getKey(configuredStructure);
 	}
 }

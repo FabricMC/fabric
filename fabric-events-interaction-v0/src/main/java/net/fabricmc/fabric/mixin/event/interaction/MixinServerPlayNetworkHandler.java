@@ -23,34 +23,35 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.world.World;
-import net.minecraft.server.world.ServerWorld;
 
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 
-@Mixin(ServerPlayNetworkHandler.class)
-public class MixinServerPlayNetworkHandler {
+@Mixin(targets = "net/minecraft/server/network/ServerPlayNetworkHandler$1")
+public abstract class MixinServerPlayNetworkHandler implements PlayerInteractEntityC2SPacket.Handler {
 	@Shadow
-	public ServerPlayerEntity player;
+	public ServerPlayNetworkHandler field_28963;
 
-	@Inject(method = "onPlayerInteractEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;interactAt(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/ActionResult;"), cancellable = true)
-	public void onPlayerInteractEntity(PlayerInteractEntityC2SPacket packet, CallbackInfo info) {
+	@Shadow
+	public Entity field_28962;
+
+	@Inject(method = "interactAt(Lnet/minecraft/util/Hand;Lnet/minecraft/util/math/Vec3d;)V", at = @At(value = "HEAD"), cancellable = true)
+	public void onPlayerInteractEntity(Hand hand, Vec3d hitPosition, CallbackInfo info) {
+		PlayerEntity player = field_28963.player;
 		World world = player.getEntityWorld();
-		Entity entity = packet.getEntity((ServerWorld) world);
 
-		if (entity != null) {
-			EntityHitResult hitResult = new EntityHitResult(entity, packet.getHitPosition().add(entity.getX(), entity.getY(), entity.getZ()));
+		EntityHitResult hitResult = new EntityHitResult(field_28962, hitPosition.add(field_28962.getX(), field_28962.getY(), field_28962.getZ()));
+		ActionResult result = UseEntityCallback.EVENT.invoker().interact(player, world, hand, field_28962, hitResult);
 
-			ActionResult result = UseEntityCallback.EVENT.invoker().interact(player, world, packet.getHand(), entity, hitResult);
-
-			if (result != ActionResult.PASS) {
-				info.cancel();
-			}
+		if (result != ActionResult.PASS) {
+			info.cancel();
 		}
 	}
 }

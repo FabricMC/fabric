@@ -30,7 +30,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
@@ -46,7 +46,7 @@ public class MixinClientPlayNetworkHandler {
 		if (entity instanceof BlockEntityClientSerializable) {
 			if (packet.getBlockEntityType() == 127) {
 				BlockEntityClientSerializable serializable = (BlockEntityClientSerializable) entity;
-				String id = packet.getCompoundTag().getString("id");
+				String id = packet.getNbt().getString("id");
 
 				if (id != null) {
 					Identifier otherIdObj = BlockEntityType.getId(entity.getType());
@@ -60,7 +60,7 @@ public class MixinClientPlayNetworkHandler {
 					String otherId = otherIdObj.toString();
 
 					if (otherId.equals(id)) {
-						serializable.fromClientTag(packet.getCompoundTag());
+						serializable.fromClientTag(packet.getNbt());
 					}
 				}
 			}
@@ -69,12 +69,12 @@ public class MixinClientPlayNetworkHandler {
 		}
 	}
 
-	@Redirect(method = "onChunkData", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;fromTag(Lnet/minecraft/nbt/CompoundTag;)V"))
-	public void deserializeBlockEntityChunkData(BlockEntity blockEntity, CompoundTag tag) {
+	@Redirect(method = "onChunkData", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;readNbt(Lnet/minecraft/nbt/NbtCompound;)V"))
+	public void deserializeBlockEntityChunkData(BlockEntity blockEntity, NbtCompound tag) {
 		if (blockEntity instanceof BlockEntityClientSerializable) {
 			((BlockEntityClientSerializable) blockEntity).fromClientTag(tag);
 		} else {
-			blockEntity.fromTag(tag);
+			blockEntity.readNbt(tag);
 		}
 	}
 }

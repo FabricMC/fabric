@@ -30,9 +30,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.resource.ReloadableResourceManagerImpl;
 import net.minecraft.resource.ResourcePack;
-import net.minecraft.resource.ResourceReloadListener;
+import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
-import net.minecraft.resource.ResourceReloadMonitor;
+import net.minecraft.resource.ResourceReload;
 import net.minecraft.util.Unit;
 
 import net.fabricmc.fabric.impl.resource.loader.GroupResourcePack;
@@ -46,11 +46,11 @@ public class ReloadableResourceManagerImplMixin {
 
 	@Shadow
 	@Final
-	private List<ResourceReloadListener> listeners;
+	private List<ResourceReloader> reloaders;
 
-	@Inject(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;isDebugEnabled()Z", remap = false), method = "beginMonitoredReload")
-	private void reload(Executor prepareExecutor, Executor applyExecutor, CompletableFuture<Unit> initialStage, List<ResourcePack> packs, CallbackInfoReturnable<ResourceReloadMonitor> info) {
-		ResourceManagerHelperImpl.sort(type, this.listeners);
+	@Inject(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;isDebugEnabled()Z", remap = false), method = "reload")
+	private void reload(Executor prepareExecutor, Executor applyExecutor, CompletableFuture<Unit> initialStage, List<ResourcePack> packs, CallbackInfoReturnable<ResourceReload> info) {
+		ResourceManagerHelperImpl.sort(type, this.reloaders);
 	}
 
 	// private static synthetic method_29491(Ljava/util/List;)Ljava/lang/Object;

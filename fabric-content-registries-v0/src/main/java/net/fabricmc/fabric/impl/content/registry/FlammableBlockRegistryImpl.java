@@ -53,7 +53,7 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 
 	// TODO: Asynchronous?
 	@Override
-	public void apply(ResourceManager var1) {
+	public void reload(ResourceManager var1) {
 		reload();
 		tagsPresent = true;
 	}

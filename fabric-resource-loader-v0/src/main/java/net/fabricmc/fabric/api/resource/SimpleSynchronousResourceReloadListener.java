@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.api.resource;
 
-import net.minecraft.resource.SynchronousResourceReloadListener;
+import net.minecraft.resource.SynchronousResourceReloader;
 
 /**
  * A simplified version of the "resource reload listener" interface, hiding the
  * peculiarities of the API and ensuring all data is loaded on the main thread.
  */
-public interface SimpleSynchronousResourceReloadListener extends IdentifiableResourceReloadListener, SynchronousResourceReloadListener {
+public interface SimpleSynchronousResourceReloadListener extends IdentifiableResourceReloadListener, SynchronousResourceReloader {
 }

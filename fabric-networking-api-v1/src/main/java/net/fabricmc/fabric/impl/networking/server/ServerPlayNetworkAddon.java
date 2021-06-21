@@ -136,7 +136,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	public void invokeDisconnectEvent() {
+	protected void invokeDisconnectEvent() {
 		ServerPlayConnectionEvents.DISCONNECT.invoker().onPlayDisconnect(this.handler, this.server);
 		this.receiver.endSession(this);
 	}

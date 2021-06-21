@@ -1,9 +1,11 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.renderer",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_16",
   "client": [
     "client.MixinBakedModel",
+    "client.MixinMultipartBakedModel",
+    "client.MixinWeightedBakedModel",
     "client.MixinSpriteAtlasTexture"
   ],
   "injectors": {

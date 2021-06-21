@@ -97,14 +97,14 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		clonedBuf.readIdentifier();
 		clonedBuf.readUnsignedByte();
 
-		ScreenHandler container = createContainer(syncId, identifier, player, clonedBuf);
+		ScreenHandler screenHandler = createContainer(syncId, identifier, player, clonedBuf);
 
-		if (container == null) {
+		if (screenHandler == null) {
 			return;
 		}
 
-		player.currentScreenHandler = container;
-		player.currentScreenHandler.addListener(player);
+		player.currentScreenHandler = screenHandler;
+		((ServerPlayerEntityAccessor) player).callOnSpawn(screenHandler);
 	}
 
 	public <C extends ScreenHandler> C createContainer(int syncId, Identifier identifier, PlayerEntity player, PacketByteBuf buf) {

@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackSource;
-import net.minecraft.resource.ResourceReloadListener;
+import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
@@ -113,7 +113,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		}
 	}
 
-	public static void sort(ResourceType type, List<ResourceReloadListener> listeners) {
+	public static void sort(ResourceType type, List<ResourceReloader> listeners) {
 		ResourceManagerHelperImpl instance = get(type);
 
 		if (instance != null) {
@@ -121,7 +121,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		}
 	}
 
-	protected void sort(List<ResourceReloadListener> listeners) {
+	protected void sort(List<ResourceReloader> listeners) {
 		listeners.removeAll(addedListeners);
 
 		// General rules:
@@ -133,7 +133,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		List<IdentifiableResourceReloadListener> listenersToAdd = Lists.newArrayList(addedListeners);
 		Set<Identifier> resolvedIds = new HashSet<>();
 
-		for (ResourceReloadListener listener : listeners) {
+		for (ResourceReloader listener : listeners) {
 			if (listener instanceof IdentifiableResourceReloadListener) {
 				resolvedIds.add(((IdentifiableResourceReloadListener) listener).getFabricId());
 			}

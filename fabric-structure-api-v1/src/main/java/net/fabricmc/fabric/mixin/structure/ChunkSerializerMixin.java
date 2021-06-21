@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ChunkSerializer;
 import net.minecraft.world.chunk.Chunk;
@@ -50,7 +50,7 @@ abstract class ChunkSerializerMixin {
 	 * In order to affect this change, we must mark the chunk to be save in order force the game to save the chunk without the errors.
 	 */
 	@Inject(method = "readStructureReferences", at = @At("TAIL"))
-	private static void removeNullKeys(ChunkPos pos, CompoundTag tag, CallbackInfoReturnable<Map<StructureFeature<?>, LongSet>> cir) {
+	private static void removeNullKeys(ChunkPos pos, NbtCompound tag, CallbackInfoReturnable<Map<StructureFeature<?>, LongSet>> cir) {
 		if (cir.getReturnValue().remove(null) != null) {
 			ChunkSerializerMixin.CHUNK_NEEDS_SAVING.set(true);
 		}

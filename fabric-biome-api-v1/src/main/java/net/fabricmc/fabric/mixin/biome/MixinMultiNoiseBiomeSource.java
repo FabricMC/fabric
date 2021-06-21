@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 @Mixin(MultiNoiseBiomeSource.Preset.class)
 public class MixinMultiNoiseBiomeSource {
 	// NOTE: This is a lambda-function in the NETHER preset field initializer
-	@ModifyArgs(method = "method_31088", at = @At(value = "INVOKE", target = "net/minecraft/world/biome/source/MultiNoiseBiomeSource.<init> (JLjava/util/List;Ljava/util/Optional;Lnet/minecraft/world/biome/source/MultiNoiseBiomeSource$1;)V"))
+	@ModifyArgs(method = "method_31088", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/MultiNoiseBiomeSource;<init>(JLjava/util/List;Ljava/util/Optional;)V"))
 	private static void appendNetherBiomes(Args args, MultiNoiseBiomeSource.Preset preset, Registry<Biome> registry, Long seed) {
 		List<Pair<Biome.MixedNoisePoint, Supplier<Biome>>> biomes = new ArrayList<>(args.get(1));
 

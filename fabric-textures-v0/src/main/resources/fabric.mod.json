@@ -22,5 +22,8 @@
   "description": "Hooks for texture loading and registration.",
   "mixins": [
     "fabric-textures-v0.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

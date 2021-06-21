@@ -15,12 +15,21 @@
   "authors": [
     "FabricMC"
   ],
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.structure.FabricStructureImpl"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.8.0",
-    "fabric-api-base": "*"
+    "fabric-api-base": "*",
+    "fabric-lifecycle-events-v1": ">=1.4.4"
   },
   "description": "Hooks for registering custom structures.",
   "mixins": [
     "fabric-structure-api-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

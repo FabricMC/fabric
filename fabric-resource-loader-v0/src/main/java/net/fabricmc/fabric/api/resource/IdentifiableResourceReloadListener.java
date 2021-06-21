@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.resource;
 import java.util.Collection;
 import java.util.Collections;
 
-import net.minecraft.resource.ResourceReloadListener;
+import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;
 
 /**
@@ -31,7 +31,7 @@ import net.minecraft.util.Identifier;
  *
  * @see ResourceReloadListenerKeys
  */
-public interface IdentifiableResourceReloadListener extends ResourceReloadListener {
+public interface IdentifiableResourceReloadListener extends ResourceReloader {
 	/**
 	 * @return The unique identifier of this listener.
 	 */

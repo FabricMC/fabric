@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.resource.DataPackSettings;
 import net.minecraft.server.Main;
 import net.minecraft.util.dynamic.RegistryOps;
@@ -59,7 +59,7 @@ public class ServerBugfixMixin {
 	private static DynamicRegistryManager.Impl fabric_dynamicRegistry;
 
 	@Unique
-	private static RegistryOps<Tag> fabric_registryOps;
+	private static RegistryOps<NbtElement> fabric_registryOps;
 
 	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/registry/DynamicRegistryManager;create()Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;"), method = "main", allow = 1)
 	private static DynamicRegistryManager.Impl captureDynamicRegistry(DynamicRegistryManager.Impl value) {
@@ -73,8 +73,8 @@ public class ServerBugfixMixin {
 		return value;
 	}
 
-	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/dynamic/RegistryOps;of(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;)Lnet/minecraft/util/dynamic/RegistryOps;"), method = "main", allow = 1)
-	private static RegistryOps<Tag> captureRegistryOps(RegistryOps<Tag> value) {
+	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/dynamic/RegistryOps;method_36574(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;"), method = "main", allow = 1)
+	private static RegistryOps<NbtElement> captureRegistryOps(RegistryOps<NbtElement> value) {
 		fabric_registryOps = value;
 		return value;
 	}

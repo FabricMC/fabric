@@ -22,5 +22,8 @@
   },
   "description": "Deprecated. Please migrate to v1",
   "mixins": [
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "deprecated"
+  }
 }

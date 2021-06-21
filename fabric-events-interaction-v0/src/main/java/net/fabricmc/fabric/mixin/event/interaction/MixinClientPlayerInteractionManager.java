@@ -119,7 +119,7 @@ public class MixinClientPlayerInteractionManager {
 
 		if (result != ActionResult.PASS) {
 			if (result == ActionResult.SUCCESS) {
-				this.networkHandler.sendPacket(new PlayerInteractEntityC2SPacket(entity, player.isSneaking()));
+				this.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.attack(entity, player.isSneaking()));
 			}
 
 			info.cancel();
@@ -133,7 +133,7 @@ public class MixinClientPlayerInteractionManager {
 		if (result != ActionResult.PASS) {
 			if (result == ActionResult.SUCCESS) {
 				Vec3d hitVec = hitResult.getPos().subtract(entity.getX(), entity.getY(), entity.getZ());
-				this.networkHandler.sendPacket(new PlayerInteractEntityC2SPacket(entity, hand, hitVec, player.isSneaking()));
+				this.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.interactAt(entity, player.isSneaking(), hand, hitVec));
 			}
 
 			info.setReturnValue(result);

@@ -28,7 +28,6 @@ import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
-import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
@@ -98,7 +97,7 @@ public final class ServerLoginNetworking {
 	public static boolean registerReceiver(ServerLoginNetworkHandler networkHandler, Identifier channelName, LoginQueryResponseHandler responseHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
-		return ((ServerLoginNetworkHandlerExtensions) networkHandler).getAddon().registerChannel(channelName, responseHandler);
+		return ServerNetworkingImpl.getAddon(networkHandler).registerChannel(channelName, responseHandler);
 	}
 
 	/**
@@ -113,7 +112,7 @@ public final class ServerLoginNetworking {
 	public static ServerLoginNetworking.LoginQueryResponseHandler unregisterReceiver(ServerLoginNetworkHandler networkHandler, Identifier channelName) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
-		return ((ServerLoginNetworkHandlerExtensions) networkHandler).getAddon().unregisterChannel(channelName);
+		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(channelName);
 	}
 
 	// Helper methods

@@ -19,7 +19,7 @@ package net.fabricmc.fabric.test.item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ToolMaterials;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -39,7 +39,7 @@ public class CustomDamageTest implements ModInitializer {
 		if (entity.isSneaking()) {
 			return amount;
 		} else {
-			CompoundTag tag = stack.getOrCreateTag();
+			NbtCompound tag = stack.getOrCreateTag();
 			tag.putInt("weird", tag.getInt("weird") + 1);
 			return 0;
 		}

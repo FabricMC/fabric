@@ -20,8 +20,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceReloadListener;
-import net.minecraft.resource.SynchronousResourceReloadListener;
+import net.minecraft.resource.ResourceReloader;
+import net.minecraft.resource.SynchronousResourceReloader;
 import net.minecraft.util.profiler.Profiler;
 
 /**
@@ -38,14 +38,14 @@ import net.minecraft.util.profiler.Profiler;
  * the apply stage is guaranteed to run on the game thread.
  *
  * <p>For a fully synchronous alternative, consider using
- * {@link SynchronousResourceReloadListener} in conjunction with
+ * {@link SynchronousResourceReloader} in conjunction with
  * {@link IdentifiableResourceReloadListener}.
  *
  * @param <T> The data object.
  */
 public interface SimpleResourceReloadListener<T> extends IdentifiableResourceReloadListener {
 	@Override
-	default CompletableFuture<Void> reload(ResourceReloadListener.Synchronizer helper, ResourceManager manager, Profiler loadProfiler, Profiler applyProfiler, Executor loadExecutor, Executor applyExecutor) {
+	default CompletableFuture<Void> reload(ResourceReloader.Synchronizer helper, ResourceManager manager, Profiler loadProfiler, Profiler applyProfiler, Executor loadExecutor, Executor applyExecutor) {
 		return load(manager, loadProfiler, loadExecutor).thenCompose(helper::whenPrepared).thenCompose(
 			(o) -> apply(o, manager, applyProfiler, applyExecutor)
 		);

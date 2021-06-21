@@ -1,15 +1,11 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.structure",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "BiomeAccessor",
     "ChunkSerializerMixin",
     "FlatChunkGeneratorConfigAccessor",
-    "MixinChunkGeneratorSettings",
-    "MixinStructuresConfig",
     "StructureFeatureAccessor",
-    "StructureManagerMixin",
     "StructuresConfigAccessor"
   ],
   "client": [

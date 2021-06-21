@@ -37,7 +37,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.network.PacketByteBuf;
@@ -62,20 +62,20 @@ public final class RegistrySyncManager {
 	public static Packet<?> createPacket() {
 		LOGGER.debug("Creating registry sync packet");
 
-		CompoundTag tag = toTag(true, null);
+		NbtCompound tag = toTag(true, null);
 
 		if (tag == null) {
 			return null;
 		}
 
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeCompoundTag(tag);
+		buf.writeNbt(tag);
 
 		return ServerPlayNetworking.createS2CPacket(ID, buf);
 	}
 
 	public static void receivePacket(ThreadExecutor<?> executor, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
-		CompoundTag compound = buf.readCompoundTag();
+		NbtCompound compound = buf.readNbt();
 
 		if (accept) {
 			try {
@@ -100,15 +100,15 @@ public final class RegistrySyncManager {
 	}
 
 	/**
-	 * Creates a {@link CompoundTag} used to save or sync the registry ids.
+	 * Creates a {@link NbtCompound} used to save or sync the registry ids.
 	 *
 	 * @param isClientSync true when syncing to the client, false when saving
 	 * @param activeTag contains the registry ids that were previously read and applied, can be null.
-	 * @return a {@link CompoundTag} to save or sync, null when empty
+	 * @return a {@link NbtCompound} to save or sync, null when empty
 	 */
 	@Nullable
-	public static CompoundTag toTag(boolean isClientSync, @Nullable CompoundTag activeTag) {
-		CompoundTag mainTag = new CompoundTag();
+	public static NbtCompound toTag(boolean isClientSync, @Nullable NbtCompound activeTag) {
+		NbtCompound mainTag = new NbtCompound();
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
 			Registry registry = Registry.REGISTRIES.get(registryId);
@@ -153,7 +153,7 @@ public final class RegistrySyncManager {
 			 * This contains the previous state's registry data, this is used for a few things:
 			 * Such as ensuring that previously modded registries or registry entries are not lost or overwritten.
 			 */
-			CompoundTag previousRegistryData = null;
+			NbtCompound previousRegistryData = null;
 
 			if (activeTag != null && activeTag.contains(registryId.toString())) {
 				previousRegistryData = activeTag.getCompound(registryId.toString());
@@ -188,7 +188,7 @@ public final class RegistrySyncManager {
 			}
 
 			if (registry instanceof RemappableRegistry) {
-				CompoundTag registryTag = new CompoundTag();
+				NbtCompound registryTag = new NbtCompound();
 				IntSet rawIdsFound = DEBUG ? new IntOpenHashSet() : null;
 
 				for (Object o : registry) {
@@ -247,15 +247,15 @@ public final class RegistrySyncManager {
 			return null;
 		}
 
-		CompoundTag tag = new CompoundTag();
+		NbtCompound tag = new NbtCompound();
 		tag.putInt("version", 1);
 		tag.put("registries", mainTag);
 
 		return tag;
 	}
 
-	public static CompoundTag apply(CompoundTag tag, RemappableRegistry.RemapMode mode) throws RemapException {
-		CompoundTag mainTag = tag.getCompound("registries");
+	public static NbtCompound apply(NbtCompound tag, RemappableRegistry.RemapMode mode) throws RemapException {
+		NbtCompound mainTag = tag.getCompound("registries");
 		Set<String> containedRegistries = Sets.newHashSet(mainTag.getKeys());
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
@@ -263,7 +263,7 @@ public final class RegistrySyncManager {
 				continue;
 			}
 
-			CompoundTag registryTag = mainTag.getCompound(registryId.toString());
+			NbtCompound registryTag = mainTag.getCompound(registryId.toString());
 			Registry registry = Registry.REGISTRIES.get(registryId);
 
 			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry);

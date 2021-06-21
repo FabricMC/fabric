@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
@@ -50,7 +50,7 @@ public abstract class MixinBlockEntity {
 			// is capped at 8 bits of size with the values presumably reserved
 			// by Mojang.
 
-			CompoundTag tag = new CompoundTag();
+			NbtCompound tag = new NbtCompound();
 			Identifier entityId = BlockEntityType.getId(getType());
 
 			if (entityId == null) {
@@ -64,8 +64,8 @@ public abstract class MixinBlockEntity {
 		}
 	}
 
-	@Inject(at = @At("RETURN"), method = "toInitialChunkDataTag", cancellable = true)
-	public void toInitialChunkDataTag(CallbackInfoReturnable<CompoundTag> info) {
+	@Inject(at = @At("RETURN"), method = "toInitialChunkDataNbt", cancellable = true)
+	public void toInitialChunkDataTag(CallbackInfoReturnable<NbtCompound> info) {
 		Object self = this;
 
 		if (self instanceof BlockEntityClientSerializable && info.getReturnValue() != null) {

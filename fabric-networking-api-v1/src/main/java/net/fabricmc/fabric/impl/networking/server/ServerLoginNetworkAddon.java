@@ -39,12 +39,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
-import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryRequestS2CPacketAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryResponseC2SPacketAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
@@ -162,12 +161,8 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	@Override
 	public Packet<?> createPacket(Identifier channelName, PacketByteBuf buf) {
 		int queryId = this.queryIdFactory.nextId();
-		LoginQueryRequestS2CPacket ret = new LoginQueryRequestS2CPacket();
-		// The constructor for creating a non-empty response was removed by proguard
-		LoginQueryRequestS2CPacketAccessor access = (LoginQueryRequestS2CPacketAccessor) ret;
-		access.setQueryId(queryId);
-		access.setChannel(channelName);
-		access.setPayload(buf);
+
+		LoginQueryRequestS2CPacket ret = new LoginQueryRequestS2CPacket(queryId, channelName, buf);
 		return ret;
 	}
 
@@ -186,8 +181,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	}
 
 	public void registerOutgoingPacket(LoginQueryRequestS2CPacket packet) {
-		LoginQueryRequestS2CPacketAccessor access = (LoginQueryRequestS2CPacketAccessor) packet;
-		this.channels.put(access.getServerQueryId(), access.getChannel());
+		this.channels.put(packet.getQueryId(), packet.getChannel());
 	}
 
 	@Override
@@ -199,8 +193,12 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	}
 
 	@Override
-	public void invokeDisconnectEvent() {
+	protected void invokeDisconnectEvent() {
 		ServerLoginConnectionEvents.DISCONNECT.invoker().onLoginDisconnect(this.handler, this.server);
+		this.receiver.endSession(this);
+	}
+
+	public void handlePlayTransition() {
 		this.receiver.endSession(this);
 	}
 

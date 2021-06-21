@@ -1,11 +1,11 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.tool.attribute",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_16",
   "mixins": [
     "BambooBlockMixin",
-    "MixinItemStack",
-    "MixinLivingEntity"
+    "LivingEntityMixin",
+    "MixinItemStack"
   ],
   "injectors": {
     "defaultRequire": 1

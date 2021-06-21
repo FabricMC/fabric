@@ -33,7 +33,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.chunk.ChunkManager;
-import net.minecraft.class_5629;
+import net.minecraft.server.world.EntityTrackingListener;
 
 import net.fabricmc.fabric.mixin.networking.accessor.EntityTrackerAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ThreadedAnvilChunkStorageAccessor;
@@ -113,12 +113,12 @@ public final class PlayerLookup {
 
 		if (manager instanceof ServerChunkManager) {
 			ThreadedAnvilChunkStorage storage = ((ServerChunkManager) manager).threadedAnvilChunkStorage;
-			EntityTrackerAccessor tracker = ((ThreadedAnvilChunkStorageAccessor) storage).getEntityTrackers().get(entity.getEntityId());
+			EntityTrackerAccessor tracker = ((ThreadedAnvilChunkStorageAccessor) storage).getEntityTrackers().get(entity.getId());
 
 			// return an immutable collection to guard against accidental removals.
 			if (tracker != null) {
 				return Collections.unmodifiableCollection(tracker.getPlayersTracking()
-						.stream().map(class_5629::method_32311).collect(Collectors.toSet()));
+						.stream().map(EntityTrackingListener::getPlayer).collect(Collectors.toSet()));
 			}
 
 			return Collections.emptySet();
