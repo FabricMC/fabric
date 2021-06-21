@@ -9,6 +9,7 @@
     "CriteriaAccessor",
     "DefaultAttributeRegistryAccessor",
     "DefaultAttributeRegistryMixin",
+    "DetectorRailBlockMixin",
     "MaterialBuilderAccessor",
     "MixinBlock",
     "PointOfInterestTypeAccessor",

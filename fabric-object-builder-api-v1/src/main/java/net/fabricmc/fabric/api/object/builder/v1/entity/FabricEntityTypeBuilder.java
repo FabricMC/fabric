@@ -28,6 +28,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -124,6 +125,17 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 */
 	public static <T extends MobEntity> FabricEntityTypeBuilder.Mob<T> createMob() {
 		return new FabricEntityTypeBuilder.Mob<>(SpawnGroup.MISC, FabricEntityTypeBuilder::emptyFactory);
+	}
+
+	/**
+	 * Creates an entity type builder for a minecart entity.
+	 *
+	 * @param <T> the type of entity
+	 *
+	 * @return a new minecart entity type builder
+	 */
+	public static <T extends AbstractMinecartEntity> FabricEntityTypeBuilder.Minecart<T> createMinecart() {
+		return new FabricEntityTypeBuilder.Minecart<>(SpawnGroup.MISC, FabricEntityTypeBuilder::emptyFactory);
 	}
 
 	private static <T extends Entity> T emptyFactory(EntityType<T> type, World world) {
@@ -267,6 +279,30 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		EntityType<T> type = new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates);
 
 		return type;
+	}
+
+	public static class Minecart<T extends AbstractMinecartEntity> extends FabricEntityTypeBuilder<T> {
+		private MinecartComparatorLogic<T> customComparatorLogic = null;
+
+		protected Minecart(SpawnGroup spawnGroup, EntityType.EntityFactory<T> factory) {
+			super(spawnGroup, factory);
+		}
+
+		public Minecart<T> customComparatorLogic(MinecartComparatorLogic<T> logic) {
+			this.customComparatorLogic = logic;
+			return this;
+		}
+
+		@Override
+		public EntityType<T> build() {
+			EntityType<T> ret = super.build();
+
+			if (customComparatorLogic != null) {
+				FabricMinecartComparatorLogicRegistry.register(ret, customComparatorLogic);
+			}
+
+			return ret;
+		}
 	}
 
 	/**
