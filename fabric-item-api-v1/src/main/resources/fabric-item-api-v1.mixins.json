@@ -5,7 +5,8 @@
   "mixins": [
     "ItemStackMixin",
     "ItemMixin",
-    "MobEntityMixin"
+    "MobEntityMixin",
+    "PlayerEntityMixin"
   ],
   "client": [
     "client.ItemStackMixin"

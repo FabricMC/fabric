@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,6 +27,7 @@ import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
+import net.fabricmc.fabric.api.item.v1.SoundPlayer;
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
 
@@ -36,6 +38,19 @@ abstract class ItemMixin implements ItemExtensions {
 
 	@Unique
 	private CustomDamageHandler customDamageHandler;
+
+	@Unique
+	private SoundPlayer strongHitSound;
+	@Unique
+	private SoundPlayer weakHitSound;
+	@Unique
+	private SoundPlayer criticalHitSound;
+	@Unique
+	private SoundPlayer knockbackHitSound;
+	@Unique
+	private SoundPlayer noDamageHitSound;
+	@Unique
+	private SoundPlayer sweepingHitSound;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onConstruct(Item.Settings settings, CallbackInfo info) {
@@ -60,5 +75,65 @@ abstract class ItemMixin implements ItemExtensions {
 	@Override
 	public void fabric_setCustomDamageHandler(CustomDamageHandler handler) {
 		this.customDamageHandler = handler;
+	}
+
+	@Override
+	public @Nullable SoundPlayer fabric_getCriticalHitSound() {
+		return criticalHitSound;
+	}
+
+	@Override
+	public @Nullable SoundPlayer fabric_getKnockBackHitSound() {
+		return knockbackHitSound;
+	}
+
+	@Override
+	public @Nullable SoundPlayer fabric_getNoDamageHitSound() {
+		return noDamageHitSound;
+	}
+
+	@Override
+	public @Nullable SoundPlayer fabric_getStrongHitSound() {
+		return strongHitSound;
+	}
+
+	@Override
+	public @Nullable SoundPlayer fabric_getSweepingHitSound() {
+		return sweepingHitSound;
+	}
+
+	@Override
+	public @Nullable SoundPlayer fabric_getWeakHitSound() {
+		return weakHitSound;
+	}
+
+	@Override
+	public void fabric_setCriticalHitSound(SoundPlayer soundEvent) {
+		this.criticalHitSound = soundEvent;
+	}
+
+	@Override
+	public void fabric_setKnockBackHitSound(SoundPlayer soundEvent) {
+		this.knockbackHitSound = soundEvent;
+	}
+
+	@Override
+	public void fabric_setNoDamageHitSound(SoundPlayer soundEvent) {
+		this.noDamageHitSound = soundEvent;
+	}
+
+	@Override
+	public void fabric_setStrongHitSound(SoundPlayer soundEvent) {
+		this.strongHitSound = soundEvent;
+	}
+
+	@Override
+	public void fabric_setSweepingHitSound(SoundPlayer soundEvent) {
+		this.sweepingHitSound = soundEvent;
+	}
+
+	@Override
+	public void fabric_setWeakHitSound(SoundPlayer soundEvent) {
+		this.weakHitSound = soundEvent;
 	}
 }

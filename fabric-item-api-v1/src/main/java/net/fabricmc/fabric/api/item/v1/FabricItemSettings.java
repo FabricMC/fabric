@@ -32,6 +32,42 @@ import net.fabricmc.fabric.impl.item.FabricItemInternals;
  * {@code new FabricItemSettings()}.
  */
 public class FabricItemSettings extends Item.Settings {
+	public enum AttackSound {
+		STRONG,
+		WEAK,
+		CRITIAL,
+		KNOCKBACK,
+		NO_DAMAGE,
+		SWEEPING,
+	}
+
+	public FabricItemSettings soundEvent(AttackSound sound, SoundPlayer soundEvent) {
+		switch (sound) {
+		case CRITIAL:
+			FabricItemInternals.computeExtraData(this).criticalHitSound(soundEvent);
+			break;
+		case KNOCKBACK:
+			FabricItemInternals.computeExtraData(this).knockbackHitSound(soundEvent);
+			break;
+		case NO_DAMAGE:
+			FabricItemInternals.computeExtraData(this).noDamageHitSound(soundEvent);
+			break;
+		case STRONG:
+			FabricItemInternals.computeExtraData(this).strongHitSound(soundEvent);
+			break;
+		case SWEEPING:
+			FabricItemInternals.computeExtraData(this).sweepingHitSound(soundEvent);
+			break;
+		case WEAK:
+			FabricItemInternals.computeExtraData(this).weakHitSound(soundEvent);
+			break;
+		default:
+			break;
+		}
+
+		return this;
+	}
+
 	/**
 	 * Sets the equipment slot provider of the item.
 	 *
