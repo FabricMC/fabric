@@ -33,7 +33,7 @@ import net.minecraft.block.sapling.SaplingGenerator;
  * </p>
  */
 public class SimpleSaplingBlock extends SaplingBlock {
-	protected SimpleSaplingBlock(SaplingGenerator generator, Settings settings) {
+	public SimpleSaplingBlock(SaplingGenerator generator, Settings settings) {
 		super(generator, settings);
 	}
 }
