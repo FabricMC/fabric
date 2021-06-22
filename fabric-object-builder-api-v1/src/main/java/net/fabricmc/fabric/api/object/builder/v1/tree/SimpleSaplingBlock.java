@@ -28,7 +28,7 @@ import net.minecraft.block.sapling.SaplingGenerator;
  *    Example:<br>
  *
  *    {@code
- *    	public static final SaplingBlock MY_SAPLING = new SaplingBlock(new MySaplingGenerator(), FabricBlockSettings.copyOf(Blocks.OAK_SAPLING));
+ *    	public static final SaplingBlock MY_SAPLING = new SimpleSaplingBlock(new MySaplingGenerator(), FabricBlockSettings.copyOf(Blocks.OAK_SAPLING));
  *    }
  * </p>
  */
