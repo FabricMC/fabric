@@ -17,10 +17,12 @@
 package net.fabricmc.fabric.api.client.command.v1;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.command.CommandSource;
+import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -52,11 +54,25 @@ public interface FabricClientCommandSource extends CommandSource {
 	MinecraftClient getClient();
 
 	/**
-	 * Gets the player that used the command.
+	 * Gets the entity that used the command.
 	 *
-	 * @return the player
+	 * @return the entity
 	 */
-	ClientPlayerEntity getPlayer();
+	Entity getEntity();
+
+	/**
+	 * Gets the position from where the command has been executed.
+	 *
+	 * @return the position
+	 */
+	Vec3d getPosition();
+
+	/**
+	 * Gets the rotation of the entity that used the command.
+	 *
+	 * @return the rotation
+	 */
+	Vec2f getRotation();
 
 	/**
 	 * Gets the world where the player used the command.
@@ -64,4 +80,11 @@ public interface FabricClientCommandSource extends CommandSource {
 	 * @return the world
 	 */
 	ClientWorld getWorld();
+
+	/**
+	 * Gets the meta property that was assigned to this <code>FabricClientCommandSource</code>.
+	 *
+	 * @return the meta
+	 */
+	Object getMeta();
 }
