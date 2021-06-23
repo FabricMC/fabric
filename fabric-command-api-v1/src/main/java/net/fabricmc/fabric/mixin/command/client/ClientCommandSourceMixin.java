@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.command.client;
 
+import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -59,6 +60,14 @@ abstract class ClientCommandSourceMixin implements FabricClientCommandSource {
 	@Override
 	public MinecraftClient getClient() {
 		return client;
+	}
+
+	@Override
+	public ClientPlayerEntity getPlayer() {
+		if (entity instanceof ClientPlayerEntity player) {
+			return player;
+		}
+		return client.player;
 	}
 
 	@Override

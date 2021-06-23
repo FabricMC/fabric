@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.command.v1;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
@@ -52,6 +53,13 @@ public interface FabricClientCommandSource extends CommandSource {
 	 * @return the client
 	 */
 	MinecraftClient getClient();
+
+	/**
+	 * Gets the player that used the command.
+	 *
+	 * @return the player
+	 */
+	ClientPlayerEntity getPlayer();
 
 	/**
 	 * Gets the entity that used the command.

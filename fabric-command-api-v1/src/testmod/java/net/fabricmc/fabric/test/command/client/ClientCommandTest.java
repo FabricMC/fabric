@@ -57,8 +57,8 @@ public final class ClientCommandTest implements ClientModInitializer {
 				throw IS_NULL.create("world");
 			}
 
-			if (context.getSource().getEntity() == null) {
-				throw IS_NULL.create("entity");
+			if (context.getSource().getPlayer() == null) {
+				throw IS_NULL.create("player");
 			}
 
 			return 0;
