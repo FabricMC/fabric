@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.mixin.command.client;
 
-import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.MessageType;
@@ -64,9 +64,10 @@ abstract class ClientCommandSourceMixin implements FabricClientCommandSource {
 
 	@Override
 	public ClientPlayerEntity getPlayer() {
-		if (entity instanceof ClientPlayerEntity player) {
-			return player;
+		if (entity instanceof ClientPlayerEntity) {
+			return (ClientPlayerEntity) entity;
 		}
+
 		return client.player;
 	}
 
