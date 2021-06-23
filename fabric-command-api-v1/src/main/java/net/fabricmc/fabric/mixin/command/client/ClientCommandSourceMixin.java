@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.mixin.command.client;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -45,7 +48,7 @@ abstract class ClientCommandSourceMixin implements FabricClientCommandSource {
 	private Vec3d position = entity.getPos();
 	private Vec2f rotation = entity.getRotationClient();
 	private ClientWorld world = client.world;
-	private Object meta = null;
+	private Map<String, Object> meta = new HashMap<>();
 
 	@Override
 	public void sendFeedback(Text message) {
@@ -92,7 +95,7 @@ abstract class ClientCommandSourceMixin implements FabricClientCommandSource {
 	}
 
 	@Override
-	public Object getMeta() {
-		return meta;
+	public Object getMeta(String key) {
+		return meta.get(key);
 	}
 }

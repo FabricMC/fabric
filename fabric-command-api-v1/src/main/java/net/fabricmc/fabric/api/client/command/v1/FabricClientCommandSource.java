@@ -94,5 +94,5 @@ public interface FabricClientCommandSource extends CommandSource {
 	 *
 	 * @return the meta
 	 */
-	Object getMeta();
+	Object getMeta(String key);
 }
