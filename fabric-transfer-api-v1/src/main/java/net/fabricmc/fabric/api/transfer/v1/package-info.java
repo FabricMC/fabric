@@ -40,7 +40,7 @@
  * </p>
  *
  * <p><h2>Fluid transfer</h2>
- * A {@code Storage<FluidKey>} is any object that can store fluids. It is just a {@code Storage&lt;T&gt;}, where {@code T} is
+ * A {@code Storage<FluidKey>} is any object that can store fluids. It is just a {@code Storage<T>}, where {@code T} is
  * {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey FluidKey}, the immutable combination of a {@code Fluid} and additional NBT data.
  * Instances can be accessed through the API lookup defined in {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage FluidStorage}.
  * </p>

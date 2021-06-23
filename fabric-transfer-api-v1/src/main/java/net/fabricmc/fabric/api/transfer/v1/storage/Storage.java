@@ -72,7 +72,7 @@ public interface Storage<T> {
 	 */
 	@SuppressWarnings("unchecked")
 	static <T> Storage<T> empty() {
-		return (Storage<T>) TransferApiImpl.emptyStorage;
+		return (Storage<T>) TransferApiImpl.EMPTY_STORAGE;
 	}
 
 	/**

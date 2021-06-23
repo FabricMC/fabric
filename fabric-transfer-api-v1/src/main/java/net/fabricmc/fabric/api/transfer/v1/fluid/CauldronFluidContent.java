@@ -55,15 +55,15 @@ import net.fabricmc.fabric.impl.transfer.fluid.CauldronStorage;
 @Deprecated
 public record CauldronFluidContent(Block block, Fluid fluid, long amountPerLevel, int minLevel, int maxLevel, @Nullable IntProperty levelProperty) {
 	// Copy-on-write, identity semantics, null-checked.
-	private static final ApiProviderMap<Block, CauldronFluidContent> blockToCauldron = ApiProviderMap.create();
-	private static final ApiProviderMap<Fluid, CauldronFluidContent> fluidToCauldron = ApiProviderMap.create();
+	private static final ApiProviderMap<Block, CauldronFluidContent> BLOCK_TO_CAULDRON = ApiProviderMap.create();
+	private static final ApiProviderMap<Fluid, CauldronFluidContent> FLUID_TO_CAULDRON = ApiProviderMap.create();
 
 	/**
 	 * Get the cauldron fluid content for a cauldron block, or {@code null} if none was registered (yet).
 	 */
 	@Nullable
 	public static CauldronFluidContent getForBlock(Block block) {
-		return blockToCauldron.get(block);
+		return BLOCK_TO_CAULDRON.get(block);
 	}
 
 	/**
@@ -71,7 +71,7 @@ public record CauldronFluidContent(Block block, Fluid fluid, long amountPerLevel
 	 */
 	@Nullable
 	public static CauldronFluidContent getForFluid(Fluid fluid) {
-		return fluidToCauldron.get(fluid);
+		return FLUID_TO_CAULDRON.get(fluid);
 	}
 
 	/**
@@ -84,13 +84,13 @@ public record CauldronFluidContent(Block block, Fluid fluid, long amountPerLevel
 	 * @param levelProperty The property used by the cauldron to store its levels. {@code null} if the cauldron only has one level.
 	 */
 	public static synchronized CauldronFluidContent registerCauldron(Block block, Fluid fluid, long amountPerLevel, @Nullable IntProperty levelProperty) {
-		CauldronFluidContent existingBlockData = blockToCauldron.get(block);
+		CauldronFluidContent existingBlockData = BLOCK_TO_CAULDRON.get(block);
 
 		if (existingBlockData != null) {
 			return existingBlockData;
 		}
 
-		if (fluidToCauldron.get(fluid) != null) {
+		if (FLUID_TO_CAULDRON.get(fluid) != null) {
 			throw new IllegalArgumentException("Fluid already has a mapping for a different block."); // TODO better message
 		}
 
@@ -120,8 +120,8 @@ public record CauldronFluidContent(Block block, Fluid fluid, long amountPerLevel
 			data = new CauldronFluidContent(block, fluid, amountPerLevel, minLevel, maxLevel, levelProperty);
 		}
 
-		blockToCauldron.putIfAbsent(block, data);
-		fluidToCauldron.putIfAbsent(fluid, data);
+		BLOCK_TO_CAULDRON.putIfAbsent(block, data);
+		FLUID_TO_CAULDRON.putIfAbsent(fluid, data);
 
 		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, context) -> CauldronStorage.get(world, pos), block);
 

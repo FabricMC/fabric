@@ -17,10 +17,7 @@
 package net.fabricmc.fabric.api.transfer.v1.client.fluid;
 
 import java.util.ArrayList;
-import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -35,8 +32,7 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 
 /**
@@ -49,39 +45,39 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 @Deprecated
 @Environment(EnvType.CLIENT)
 public class FluidKeyRendering {
-	private static final Map<Fluid, FluidKeyRenderHandler> handlers = new IdentityHashMap<>();
+	private static final ApiProviderMap<Fluid, FluidKeyRenderHandler> HANDLERS = ApiProviderMap.create();
+	private static final FluidKeyRenderHandler DEFAULT_HANDLER = new FluidKeyRenderHandler() { };
 
 	/**
 	 * Register a render handler for the passed fluid.
 	 */
 	public static void register(Fluid fluid, FluidKeyRenderHandler handler) {
-		Objects.requireNonNull(fluid, "Fluid may not be null.");
-		Objects.requireNonNull(handler, "FluidKeyRenderHandler may not be null.");
-
-		if (handlers.put(fluid, handler) != null) {
+		if (HANDLERS.putIfAbsent(fluid, handler) != null) {
 			throw new IllegalArgumentException("Duplicate handler registration for fluid " + fluid);
 		}
 	}
 
 	/**
-	 * Return the render handler for the passed fluid, if available.
+	 * Return the render handler for the passed fluid, if available, and {@code null} otherwise.
 	 */
 	@Nullable
 	public static FluidKeyRenderHandler getHandler(Fluid fluid) {
-		return handlers.get(fluid);
+		return HANDLERS.get(fluid);
+	}
+
+	/**
+	 * Return the render handler for the passed fluid, if available, or the default instance otherwise.
+	 */
+	public static FluidKeyRenderHandler getHandlerOrDefault(Fluid fluid) {
+		FluidKeyRenderHandler handler = HANDLERS.get(fluid);
+		return handler == null ? DEFAULT_HANDLER : handler;
 	}
 
 	/**
 	 * Return the name of the passed fluid key.
 	 */
 	public static Text getName(FluidKey fluidKey) {
-		FluidKeyRenderHandler handler = getHandler(fluidKey.getFluid());
-
-		if (handler != null) {
-			return handler.getName(fluidKey);
-		} else {
-			return fluidKey.getFluid().getDefaultState().getBlockState().getBlock().getName();
-		}
+		return getHandlerOrDefault(fluidKey.getFluid()).getName(fluidKey);
 	}
 
 	/**
@@ -95,11 +91,7 @@ public class FluidKeyRendering {
 		tooltip.add(getName(fluidKey));
 
 		// Additional tooltip information
-		FluidKeyRenderHandler handler = getHandler(fluidKey.getFluid());
-
-		if (handler != null) {
-			handler.appendTooltip(fluidKey, tooltip, context);
-		}
+		getHandlerOrDefault(fluidKey.getFluid()).appendTooltip(fluidKey, tooltip, context);
 
 		// If advanced tooltips are enabled, render the fluid id
 		if (context.isAdvanced()) {
@@ -113,58 +105,24 @@ public class FluidKeyRendering {
 
 	/**
 	 * Return the sprite that should be used to render the passed fluid key, or null if it's not available.
-	 * The sprite should be rendered using the color returned by {@link #getClass()}.
+	 * The sprite should be rendered using the color returned by {@link #getColor}.
 	 */
 	@Nullable
 	public static Sprite getSprite(FluidKey fluidKey) {
-		// If the fluid has a custom key renderer, use that
-		FluidKeyRenderHandler handler = getHandler(fluidKey.getFluid());
-
-		if (handler != null) {
-			return handler.getSprite(fluidKey);
-		}
-
-		// Otherwise, fall back to the regular fluid renderer
-		FluidRenderHandler fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluidKey.getFluid());
-
-		if (fluidRenderHandler != null) {
-			return fluidRenderHandler.getFluidSprites(null, null, fluidKey.getFluid().getDefaultState())[0];
-		}
-
-		return null;
+		return getHandlerOrDefault(fluidKey.getFluid()).getSprite(fluidKey);
 	}
 
 	/**
 	 * Return the color that should be used to render {@linkplain #getSprite the sprite} of the passed fluid key.
 	 */
 	public static int getColor(FluidKey fluidKey) {
-		// If the fluid has a custom key renderer, use that
-		FluidKeyRenderHandler handler = getHandler(fluidKey.getFluid());
-
-		if (handler != null) {
-			return handler.getColor(fluidKey);
-		}
-
-		// Otherwise, fall back to the regular fluid renderer
-		FluidRenderHandler fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluidKey.getFluid());
-
-		if (fluidRenderHandler != null) {
-			return fluidRenderHandler.getFluidColor(null, null, fluidKey.getFluid().getDefaultState());
-		}
-
-		return -1;
+		return getHandlerOrDefault(fluidKey.getFluid()).getColor(fluidKey);
 	}
 
 	/**
 	 * Return {@code true} if this fluid key should be rendered as filling tanks from the top.
 	 */
 	public static boolean fillFromTop(FluidKey fluidKey) {
-		FluidKeyRenderHandler handler = getHandler(fluidKey.getFluid());
-
-		if (handler != null) {
-			return handler.fillFromTop(fluidKey);
-		} else {
-			return false;
-		}
+		return getHandlerOrDefault(fluidKey.getFluid()).fillFromTop(fluidKey);
 	}
 }

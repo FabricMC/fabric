@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.transfer;
 
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 public class TransferApiImpl {
 	public static int version = 0;
 	@SuppressWarnings("rawtypes")
-	public static final Storage emptyStorage = new Storage() {
+	public static final Storage EMPTY_STORAGE = new Storage() {
 		@Override
 		public boolean supportsInsertion() {
 			return false;
@@ -49,24 +49,12 @@ public class TransferApiImpl {
 
 		@Override
 		public Iterator<StorageView> iterator(Transaction transaction) {
-			return emptyIterator;
+			return Collections.emptyIterator();
 		}
 
 		@Override
 		public int getVersion() {
 			return 0;
-		}
-	};
-	@SuppressWarnings("rawtypes")
-	private static final Iterator<StorageView> emptyIterator = new Iterator<>() {
-		@Override
-		public boolean hasNext() {
-			return false;
-		}
-
-		@Override
-		public StorageView next() {
-			throw new NoSuchElementException("Empty iterator has no elements.");
 		}
 	};
 }

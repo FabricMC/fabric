@@ -27,6 +27,8 @@ import net.minecraft.text.Text;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 
 /**
@@ -42,7 +44,9 @@ public interface FluidKeyRenderHandler {
 	/**
 	 * Return the name that should be used for the passed fluid key.
 	 */
-	Text getName(FluidKey fluidKey);
+	default Text getName(FluidKey fluidKey) {
+		return fluidKey.getFluid().getDefaultState().getBlockState().getBlock().getName();
+	}
 
 	/**
 	 * Append additional tooltips to the passed list if additional information is contained in the fluid key.
@@ -50,7 +54,8 @@ public interface FluidKeyRenderHandler {
 	 * <p>The name of the fluid, and its identifier if the tooltip context is advanced, should not be appended.
 	 * They are already added by {@link FluidKeyRendering#getTooltip}.
 	 */
-	void appendTooltip(FluidKey fluidKey, List<Text> tooltip, TooltipContext tooltipContext);
+	default void appendTooltip(FluidKey fluidKey, List<Text> tooltip, TooltipContext tooltipContext) {
+	}
 
 	/**
 	 * Return the sprite that should be used to render the passed fluid key, for use in baked models, (block) entity renderers, or user interfaces.
@@ -58,15 +63,36 @@ public interface FluidKeyRenderHandler {
 	 * <p>Null may be returned if the fluid key should not be rendered.
 	 */
 	@Nullable
-	Sprite getSprite(FluidKey fluidKey);
+	default Sprite getSprite(FluidKey fluidKey) {
+		// Use the fluid render handler by default.
+		FluidRenderHandler fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluidKey.getFluid());
+
+		if (fluidRenderHandler != null) {
+			return fluidRenderHandler.getFluidSprites(null, null, fluidKey.getFluid().getDefaultState())[0];
+		} else {
+			return null;
+		}
+	}
 
 	/**
 	 * Return the color to use when rendering {@linkplain #getSprite the sprite} of this fluid key.
 	 */
-	int getColor(FluidKey fluidKey);
+	default int getColor(FluidKey fluidKey) {
+		// Use the fluid render handler by default.
+		FluidRenderHandler fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluidKey.getFluid());
+
+		if (fluidRenderHandler != null) {
+			return fluidRenderHandler.getFluidColor(null, null, fluidKey.getFluid().getDefaultState());
+		} else {
+			return -1;
+		}
+	}
 
 	/**
 	 * Return {@code true} if this fluid should fill tanks from top.
 	 */
-	boolean fillFromTop(FluidKey fluidKey);
+	default boolean fillFromTop(FluidKey fluidKey) {
+		// By default, fluids should be filled from the bottom.
+		return false;
+	}
 }
