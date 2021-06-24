@@ -130,7 +130,7 @@ public final class StorageUtil {
 		if (storage == null) return null;
 
 		try (Transaction nested = transaction == null ? Transaction.openOuter() : transaction.openNested()) {
-			for (StorageView<T> view : storage.iterable(transaction)) {
+			for (StorageView<T> view : storage.iterable(nested)) {
 				// Extract below could change the resource, so we have to query it before extracting.
 				T resource = view.resource();
 
