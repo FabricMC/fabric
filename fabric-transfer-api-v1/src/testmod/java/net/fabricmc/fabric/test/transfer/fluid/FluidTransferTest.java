@@ -43,6 +43,7 @@ public class FluidTransferTest implements ModInitializer {
 	private static final Block INFINITE_WATER_SOURCE = new Block(AbstractBlock.Settings.of(Material.METAL));
 	private static final Block INFINITE_LAVA_SOURCE = new Block(AbstractBlock.Settings.of(Material.METAL));
 	private static final Block FLUID_CHUTE = new FluidChuteBlock();
+	private static final Item EXTRACT_STICK = new ExtractStickItem();
 	public static BlockEntityType<FluidChuteBlockEntity> FLUID_CHUTE_TYPE;
 
 	@Override
@@ -50,6 +51,7 @@ public class FluidTransferTest implements ModInitializer {
 		registerBlock(INFINITE_WATER_SOURCE, "infinite_water_source");
 		registerBlock(INFINITE_LAVA_SOURCE, "infinite_lava_source");
 		registerBlock(FLUID_CHUTE, "fluid_chute");
+		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "extract_stick"), EXTRACT_STICK);
 
 		FLUID_CHUTE_TYPE = FabricBlockEntityTypeBuilder.create(FluidChuteBlockEntity::new, FLUID_CHUTE).build();
 		Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "fluid_chute"), FLUID_CHUTE_TYPE);

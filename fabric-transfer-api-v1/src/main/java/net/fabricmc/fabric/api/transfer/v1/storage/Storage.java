@@ -37,7 +37,7 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
  *     <li>{@link #supportsInsertion} and {@link #supportsExtraction} can be used to tell if insertion and extraction
  *     functionality are possibly supported by this storage.</li>
  *     <li>{@link #insert} and {@link #extract} can be used to insert or extract resources from this storage.</li>
- *     <li>{@link #iterator}, {@link #anyView} and {@link #exactView} can be used to inspect the contents of this storage.</li>
+ *     <li>{@link #iterator} and {@link #exactView} can be used to inspect the contents of this storage.</li>
  *     <li>{@link #getVersion()} can be used to quickly check if a storage has changed, without having to rescan its contents.</li>
  * </ul>
  *

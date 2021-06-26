@@ -75,6 +75,7 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
  */
 @ApiStatus.Experimental
 @Deprecated
+@ApiStatus.NonExtendable
 public interface Transaction extends AutoCloseable {
 	/**
 	 * Open a new outer transaction.

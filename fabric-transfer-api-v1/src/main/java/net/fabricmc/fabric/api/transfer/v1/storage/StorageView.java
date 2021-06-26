@@ -21,8 +21,7 @@ import org.jetbrains.annotations.ApiStatus;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 /**
- * A view of a single stored resource in a {@link Storage}, for use with {@link Storage#iterator},
- * {@link Storage#anyView} or {@link Storage#exactView}.
+ * A view of a single stored resource in a {@link Storage}, for use with {@link Storage#iterator} or {@link Storage#exactView}.
  *
  * <p>A view is always tied to a specific transaction, and should not be accessed outside of it.
  *
