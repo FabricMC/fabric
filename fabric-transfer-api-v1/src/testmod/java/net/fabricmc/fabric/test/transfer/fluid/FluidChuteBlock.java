@@ -22,16 +22,24 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class FluidChuteBlock extends Block implements BlockEntityProvider {
 	public FluidChuteBlock() {
 		super(Settings.of(Material.METAL));
 	}
+
+	private static final VoxelShape SHAPE = VoxelShapes.cuboid(
+			3 / 16f, 0, 3 / 16f, 13 / 16f, 1, 13 / 16f
+	);
 
 	@Override
 	public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
@@ -41,5 +49,10 @@ public class FluidChuteBlock extends Block implements BlockEntityProvider {
 	@Override
 	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
 		return (w, p, s, be) -> ((FluidChuteBlockEntity) be).tick();
+	}
+
+	@Override
+	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+		return SHAPE;
 	}
 }

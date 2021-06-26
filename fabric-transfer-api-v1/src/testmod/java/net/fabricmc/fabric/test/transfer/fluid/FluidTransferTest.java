@@ -16,19 +16,26 @@
 
 package net.fabricmc.fabric.test.transfer.fluid;
 
+import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BUCKET;
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class FluidTransferTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-transfer-api-v1-testmod";
@@ -49,11 +56,61 @@ public class FluidTransferTest implements ModInitializer {
 
 		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeFluidStorage.WATER, INFINITE_WATER_SOURCE);
 		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeFluidStorage.LAVA, INFINITE_LAVA_SOURCE);
+
+		testFluidStorage();
 	}
 
 	private static void registerBlock(Block block, String name) {
 		Identifier id = new Identifier(MOD_ID, name);
 		Registry.register(Registry.BLOCK, id, block);
 		Registry.register(Registry.ITEM, id, new BlockItem(block, new Item.Settings().group(ItemGroup.MISC)));
+	}
+
+	private static void testFluidStorage() {
+		SingleFluidStorage waterStorage = new SingleFluidStorage() {
+			@Override
+			protected long getCapacity(FluidKey fluidKey) {
+				return BUCKET * 2;
+			}
+
+			@Override
+			protected boolean canInsert(FluidKey fluidKey) {
+				return fluidKey.isOf(Fluids.WATER);
+			}
+		};
+
+		NbtCompound tag = new NbtCompound();
+		tag.putInt("test", 1);
+		FluidKey taggedWater = FluidKey.of(Fluids.WATER, tag);
+		FluidKey taggedWater2 = FluidKey.of(Fluids.WATER, tag);
+		FluidKey water = FluidKey.of(Fluids.WATER);
+		FluidKey lava = FluidKey.of(Fluids.LAVA);
+
+		// Test content
+		if (!waterStorage.isEmpty()) throw new AssertionError("Should have been empty");
+
+		// Test some insertions
+		try (Transaction tx = Transaction.openOuter()) {
+			// Should not allow lava (canInsert returns false)
+			if (waterStorage.insert(lava, BUCKET, tx) != 0) throw new AssertionError("Lava inserted");
+			// Should allow insert
+			if (waterStorage.insert(taggedWater, BUCKET, tx) != BUCKET) throw new AssertionError("Tagged water insert 1 failed");
+			// Keys are different, should not allow insert
+			if (waterStorage.insert(water, BUCKET, tx) != 0) throw new AssertionError("Water inserted");
+			// Should allow insert again even if the key is different cause they are equal
+			if (waterStorage.insert(taggedWater2, BUCKET, tx) != BUCKET) throw new AssertionError("Tagged water insert 2 failed");
+			// Should not allow further insertion because the storage is full
+			if (waterStorage.insert(taggedWater, BUCKET, tx) != 0) throw new AssertionError("Storage full, yet something was inserted");
+			// Should allow extraction
+			if (waterStorage.extract(taggedWater2, BUCKET, tx) != BUCKET) throw new AssertionError("Extraction failed");
+			// Re-insert
+			if (waterStorage.insert(taggedWater2, BUCKET, tx) != BUCKET) throw new AssertionError("Tagged water insert 3 failed");
+			// Test contents
+			if (waterStorage.amount() != BUCKET * 2 || !waterStorage.resource().equals(taggedWater2)) throw new AssertionError("Contents are wrong");
+			// No commit -> will abort
+		}
+
+		// Test content again to make sure the rollback worked as expected
+		if (!waterStorage.isEmpty()) throw new AssertionError("Should have been empty");
 	}
 }

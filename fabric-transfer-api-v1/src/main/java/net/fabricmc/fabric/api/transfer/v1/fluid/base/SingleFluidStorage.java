@@ -40,7 +40,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 @ApiStatus.Experimental
 @Deprecated
 public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmount<FluidKey>> implements SingleSlotStorage<FluidKey> {
-	public FluidKey fluidKey;
+	public FluidKey fluidKey = FluidKey.empty();
 	public long amount;
 
 	/**
@@ -96,7 +96,7 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	public final long insert(FluidKey insertedFluid, long maxAmount, Transaction transaction) {
 		StoragePreconditions.notEmptyNotNegative(insertedFluid, maxAmount);
 
-		if ((insertedFluid == fluidKey || fluidKey.isEmpty()) && canInsert(insertedFluid)) {
+		if ((insertedFluid.equals(fluidKey) || fluidKey.isEmpty()) && canInsert(insertedFluid)) {
 			long insertedAmount = Math.min(maxAmount, getCapacity(insertedFluid) - amount);
 
 			if (insertedAmount > 0) {
@@ -121,7 +121,7 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	public final long extract(FluidKey extractedFluid, long maxAmount, Transaction transaction) {
 		StoragePreconditions.notEmptyNotNegative(extractedFluid, maxAmount);
 
-		if (extractedFluid == fluidKey && canExtract(extractedFluid)) {
+		if (extractedFluid.equals(fluidKey) && canExtract(extractedFluid)) {
 			long extractedAmount = Math.min(maxAmount, amount);
 
 			if (extractedAmount > 0) {

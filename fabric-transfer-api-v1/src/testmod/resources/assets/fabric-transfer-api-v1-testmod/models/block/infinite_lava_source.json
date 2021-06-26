@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "fabric-transfer-api-v1-testmod:block/infinite_lava_source"
+  }
+}
