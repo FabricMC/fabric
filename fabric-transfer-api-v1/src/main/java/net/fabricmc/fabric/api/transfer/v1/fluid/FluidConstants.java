@@ -45,7 +45,7 @@ public final class FluidConstants {
 	 * @return The amount of droplets that the passed fraction is equivalent to.
 	 * @throws IllegalArgumentException If the fraction can't be converted to droplets exactly.
 	 */
-	public static long fromBuckets(long numerator, long denominator) {
+	public static long fromBucketFraction(long numerator, long denominator) {
 		long total = numerator * BUCKET;
 
 		if (total % denominator != 0) {

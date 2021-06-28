@@ -41,22 +41,22 @@ public interface StorageView<T> {
 	long extract(T resource, long maxAmount, Transaction transaction);
 
 	/**
-	 * @return {@code true} if the {@link #resource} contained in this storage view is empty, or {@code false} otherwise.
+	 * @return {@code true} if the {@link #getResource} contained in this storage view is empty, or {@code false} otherwise.
 	 */
 	boolean isEmpty();
 
 	/**
 	 * @return The resource stored in this view. May not be empty if {@link #isEmpty} is {@code false}.
 	 */
-	T resource();
+	T getResource();
 
 	/**
-	 * @return The amount of {@link #resource} stored in this view.
+	 * @return The amount of {@link #getResource} stored in this view.
 	 */
-	long amount();
+	long getAmount();
 
 	/**
-	 * @return The total amount of {@link #resource} that could be stored in this view, or an estimate of the number of resources that could be stored if this view is empty.
+	 * @return The total amount of {@link #getResource} that could be stored in this view, or an estimate of the number of resources that could be stored if this view is empty.
 	 */
-	long capacity();
+	long getCapacity();
 }

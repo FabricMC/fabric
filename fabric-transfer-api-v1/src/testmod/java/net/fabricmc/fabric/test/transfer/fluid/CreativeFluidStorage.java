@@ -43,18 +43,18 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<FluidKey>, St
 	}
 
 	@Override
-	public FluidKey resource() {
+	public FluidKey getResource() {
 		return infiniteFluid;
 	}
 
 	@Override
-	public long amount() {
+	public long getAmount() {
 		return Long.MAX_VALUE;
 	}
 
 	@Override
-	public long capacity() {
-		return amount();
+	public long getCapacity() {
+		return getAmount();
 	}
 
 	@Override

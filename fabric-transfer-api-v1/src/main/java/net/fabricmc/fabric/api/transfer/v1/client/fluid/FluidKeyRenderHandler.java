@@ -91,7 +91,7 @@ public interface FluidKeyRenderHandler {
 	/**
 	 * Return {@code true} if this fluid should fill tanks from top.
 	 */
-	default boolean fillFromTop(FluidKey fluidKey) {
+	default boolean fillsFromTop(FluidKey fluidKey) {
 		// By default, fluids should be filled from the bottom.
 		return false;
 	}

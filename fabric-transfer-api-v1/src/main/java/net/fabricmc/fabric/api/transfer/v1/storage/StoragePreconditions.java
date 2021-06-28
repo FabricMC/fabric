@@ -28,13 +28,13 @@ import org.jetbrains.annotations.ApiStatus;
 @Deprecated
 public class StoragePreconditions {
 	/**
-	 * Ensure that the passed resource key is not empty.
+	 * Ensure that the passed transfer key is not empty.
 	 *
 	 * @throws IllegalArgumentException If the key is empty.
 	 */
-	public static void notEmpty(ResourceKey<?> key) {
+	public static void notEmpty(TransferKey<?> key) {
 		if (key.isEmpty()) {
-			throw new IllegalArgumentException("Resource key may not be empty.");
+			throw new IllegalArgumentException("Transfer key may not be empty.");
 		}
 	}
 
@@ -50,9 +50,9 @@ public class StoragePreconditions {
 	}
 
 	/**
-	 * Check both for a not empty resource key and a not negative amount.
+	 * Check both for a not empty transfer key and a not negative amount.
 	 */
-	public static void notEmptyNotNegative(ResourceKey<?> key, long amount) {
+	public static void notEmptyNotNegative(TransferKey<?> key, long amount) {
 		notEmpty(key);
 		notNegative(amount);
 	}

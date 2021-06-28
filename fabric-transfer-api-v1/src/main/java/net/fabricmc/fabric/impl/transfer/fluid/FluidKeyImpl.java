@@ -32,7 +32,7 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 
 public class FluidKeyImpl implements FluidKey {
-	public static FluidKey of(Fluid fluid, @Nullable NbtCompound tag) {
+	public static FluidKey of(Fluid fluid, @Nullable NbtCompound nbt) {
 		Objects.requireNonNull(fluid, "Fluid may not be null.");
 
 		if (!fluid.isStill(fluid.getDefaultState()) && fluid != Fluids.EMPTY) {
@@ -40,25 +40,25 @@ public class FluidKeyImpl implements FluidKey {
 			throw new IllegalArgumentException("Fluid may not be flowing.");
 		}
 
-		if (tag == null) {
+		if (nbt == null) {
 			// Use the cached key inside the fluid
 			return ((FluidKeyCache) fluid).fabric_getCachedFluidKey();
 		} else {
 			// TODO explore caching fluid keys for non null tags.
-			return new FluidKeyImpl(fluid, tag);
+			return new FluidKeyImpl(fluid, nbt);
 		}
 	}
 
 	private static final Logger LOGGER = LogManager.getLogger("fabric-transfer-api-v1/fluid");
 
 	private final Fluid fluid;
-	private final @Nullable NbtCompound tag;
+	private final @Nullable NbtCompound nbt;
 	private final int hashCode;
 
-	public FluidKeyImpl(Fluid fluid, NbtCompound tag) {
+	public FluidKeyImpl(Fluid fluid, NbtCompound nbt) {
 		this.fluid = fluid;
-		this.tag = tag == null ? null : tag.copy(); // defensive copy
-		this.hashCode = Objects.hash(fluid, tag);
+		this.nbt = nbt == null ? null : nbt.copy(); // defensive copy
+		this.hashCode = Objects.hash(fluid, nbt);
 	}
 
 	@Override
@@ -67,13 +67,13 @@ public class FluidKeyImpl implements FluidKey {
 	}
 
 	@Override
-	public Fluid getResource() {
+	public Fluid getObject() {
 		return fluid;
 	}
 
 	@Override
-	public @Nullable NbtCompound getTag() {
-		return tag;
+	public @Nullable NbtCompound getNbt() {
+		return nbt;
 	}
 
 	@Override
@@ -81,8 +81,8 @@ public class FluidKeyImpl implements FluidKey {
 		NbtCompound result = new NbtCompound();
 		result.putString("fluid", Registry.FLUID.getId(fluid).toString());
 
-		if (tag != null) {
-			result.put("tag", tag.copy());
+		if (nbt != null) {
+			result.put("tag", nbt.copy());
 		}
 
 		return result;
@@ -106,7 +106,7 @@ public class FluidKeyImpl implements FluidKey {
 		} else {
 			buf.writeBoolean(true);
 			buf.writeVarInt(Registry.FLUID.getRawId(fluid));
-			buf.writeNbt(tag);
+			buf.writeNbt(nbt);
 		}
 	}
 
@@ -122,7 +122,7 @@ public class FluidKeyImpl implements FluidKey {
 
 	@Override
 	public String toString() {
-		return "FluidKeyImpl{fluid=" + fluid + ", tag=" + tag + '}';
+		return "FluidKeyImpl{fluid=" + fluid + ", tag=" + nbt + '}';
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public class FluidKeyImpl implements FluidKey {
 
 		FluidKeyImpl fluidKey = (FluidKeyImpl) o;
 		// fail fast with hash code
-		return hashCode == fluidKey.hashCode && fluid == fluidKey.fluid && tagMatches(fluidKey.tag);
+		return hashCode == fluidKey.hashCode && fluid == fluidKey.fluid && nbtMatches(fluidKey.nbt);
 	}
 
 	@Override

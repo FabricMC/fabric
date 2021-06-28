@@ -108,7 +108,7 @@ public class FluidTransferTest implements ModInitializer {
 			// Re-insert
 			if (waterStorage.insert(taggedWater2, BUCKET, tx) != BUCKET) throw new AssertionError("Tagged water insert 3 failed");
 			// Test contents
-			if (waterStorage.amount() != BUCKET * 2 || !waterStorage.resource().equals(taggedWater2)) throw new AssertionError("Contents are wrong");
+			if (waterStorage.getAmount() != BUCKET * 2 || !waterStorage.getResource().equals(taggedWater2)) throw new AssertionError("Contents are wrong");
 			// No commit -> will abort
 		}
 

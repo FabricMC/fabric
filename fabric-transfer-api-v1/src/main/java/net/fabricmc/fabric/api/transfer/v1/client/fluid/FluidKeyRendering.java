@@ -122,7 +122,7 @@ public class FluidKeyRendering {
 	/**
 	 * Return {@code true} if this fluid key should be rendered as filling tanks from the top.
 	 */
-	public static boolean fillFromTop(FluidKey fluidKey) {
-		return getHandlerOrDefault(fluidKey.getFluid()).fillFromTop(fluidKey);
+	public static boolean fillsFromTop(FluidKey fluidKey) {
+		return getHandlerOrDefault(fluidKey.getFluid()).fillsFromTop(fluidKey);
 	}
 }

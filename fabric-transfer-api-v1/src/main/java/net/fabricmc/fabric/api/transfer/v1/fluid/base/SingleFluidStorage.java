@@ -74,17 +74,17 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	}
 
 	@Override
-	public final FluidKey resource() {
+	public final FluidKey getResource() {
 		return fluidKey;
 	}
 
 	@Override
-	public final long amount() {
+	public final long getAmount() {
 		return fluidKey.isEmpty() ? 0 : amount;
 	}
 
 	@Override
-	public final long capacity() {
+	public final long getCapacity() {
 		if (isEmpty()) {
 			return 0;
 		} else {

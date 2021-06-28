@@ -102,7 +102,7 @@ public record CauldronFluidContent(Block block, Fluid fluid, long amountPerLevel
 			Collection<Integer> levels = levelProperty.getValues();
 
 			if (levels.size() == 0) {
-				// TODO: throw exception
+				throw new RuntimeException("Cauldron should have at least one possible level.");
 			}
 
 			int minLevel = Integer.MAX_VALUE;

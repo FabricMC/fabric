@@ -25,7 +25,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering;
-import net.fabricmc.fabric.api.transfer.v1.storage.ResourceKey;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferKey;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidKeyImpl;
 
 /**
@@ -41,7 +41,7 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidKeyImpl;
 @ApiStatus.Experimental
 @Deprecated
 @ApiStatus.NonExtendable
-public interface FluidKey extends ResourceKey<Fluid> {
+public interface FluidKey extends TransferKey<Fluid> {
 	/**
 	 * Retrieve an empty FluidKey.
 	 */
@@ -59,15 +59,15 @@ public interface FluidKey extends ResourceKey<Fluid> {
 	/**
 	 * Retrieve a FluidKey with a fluid, and an optional tag.
 	 */
-	static FluidKey of(Fluid fluid, @Nullable NbtCompound tag) {
-		return FluidKeyImpl.of(fluid, tag);
+	static FluidKey of(Fluid fluid, @Nullable NbtCompound nbt) {
+		return FluidKeyImpl.of(fluid, nbt);
 	}
 
 	/**
 	 * Return the fluid of this key.
 	 */
 	default Fluid getFluid() {
-		return getResource();
+		return getObject();
 	}
 
 	/**

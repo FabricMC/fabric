@@ -53,7 +53,7 @@ public final class StorageUtil {
 		try (Transaction iterationTransaction = (transaction == null ? Transaction.openOuter() : transaction.openNested())) {
 			for (StorageView<T> view : from.iterable(iterationTransaction)) {
 				if (view.isEmpty()) continue;
-				T resource = view.resource();
+				T resource = view.getResource();
 				if (!filter.test(resource)) continue;
 				long maxExtracted;
 
@@ -111,7 +111,7 @@ public final class StorageUtil {
 	private static <T> T findStoredResourceInner(Storage<T> storage, Transaction transaction) {
 		for (StorageView<T> view : storage.iterable(transaction)) {
 			if (!view.isEmpty()) {
-				return view.resource();
+				return view.getResource();
 			}
 		}
 
@@ -132,7 +132,7 @@ public final class StorageUtil {
 		try (Transaction nested = transaction == null ? Transaction.openOuter() : transaction.openNested()) {
 			for (StorageView<T> view : storage.iterable(nested)) {
 				// Extract below could change the resource, so we have to query it before extracting.
-				T resource = view.resource();
+				T resource = view.getResource();
 
 				if (!view.isEmpty() && view.extract(resource, Long.MAX_VALUE, nested) > 0) {
 					// Will abort the extraction.

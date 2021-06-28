@@ -75,7 +75,7 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 		if (insertData != null) {
 			int maxLevelsInserted = Ints.saturatedCast(maxAmount / insertData.amountPerLevel());
 
-			if (amount() == 0) {
+			if (getAmount() == 0) {
 				// Currently empty, so we can accept any fluid.
 				int levelsInserted = Math.min(maxLevelsInserted, insertData.maxLevel());
 
@@ -134,22 +134,22 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 
 	@Override
 	public boolean isEmpty() {
-		return resource().isEmpty();
+		return getResource().isEmpty();
 	}
 
 	@Override
-	public FluidKey resource() {
+	public FluidKey getResource() {
 		return FluidKey.of(getData().fluid());
 	}
 
 	@Override
-	public long amount() {
+	public long getAmount() {
 		CauldronFluidContent data = getData();
 		return data.currentLevel(createSnapshot()) * data.amountPerLevel();
 	}
 
 	@Override
-	public long capacity() {
+	public long getCapacity() {
 		CauldronFluidContent data = getData();
 		return data.maxLevel() * data.amountPerLevel();
 	}

@@ -25,40 +25,42 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
 /**
- * An immutable association of an immutable resource instance (for example {@code Item} or {@code Fluid}) and an optional NBT tag.
+ * An immutable association of an immutable object instance (for example {@code Item} or {@code Fluid}) and an optional NBT tag.
  *
- * <p>This is exposed for convenience for code that needs to be generic across multiple resource keys,
- * but note that a {@link Storage} is not necessarily bound to {@code ResourceKey}. Its generic can be any immutable object.
+ * <p>This is exposed for convenience for code that needs to be generic across multiple transfer keys,
+ * but note that a {@link Storage} is not necessarily bound to {@code TransferKey}. Its generic parameter can be any immutable object.
+ *
+ * @param <O> The type of the immutable object instance, for example {@code Item} or {@code Fluid}.
  *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
 @Deprecated
-public interface ResourceKey<T> {
+public interface TransferKey<O> {
 	/**
 	 * Return true if this key is empty, and false otherwise.
 	 */
 	boolean isEmpty();
 
 	/**
-	 * Return the resource of this key.
+	 * Return the immutable object instance of this key.
 	 */
-	T getResource();
+	O getObject();
 
 	/**
 	 * Return the underlying tag.
 	 *
-	 * <p><b>NEVER MUTATE THIS TAG</b>, if you need to mutate it you can use {@link #copyTag()} to retrieve a copy instead.
+	 * <p><b>NEVER MUTATE THIS NBT TAG</b>, if you need to mutate it you can use {@link #copyNbt()} to retrieve a copy instead.
 	 */
 	@Nullable
-	NbtCompound getTag();
+	NbtCompound getNbt();
 
 	/**
 	 * Return true if this key has a tag, false otherwise.
 	 */
-	default boolean hasTag() {
-		return getTag() != null;
+	default boolean hasNbt() {
+		return getNbt() != null;
 	}
 
 	/**
@@ -66,26 +68,26 @@ public interface ResourceKey<T> {
 	 *
 	 * <p>Note: True is returned if both tags are {@code null}.
 	 */
-	default boolean tagMatches(@Nullable NbtCompound other) {
-		return Objects.equals(getTag(), other);
+	default boolean nbtMatches(@Nullable NbtCompound other) {
+		return Objects.equals(getNbt(), other);
 	}
 
 	/**
-	 * Return {@code true} if the resource of this key matches the passed fluid.
+	 * Return {@code true} if the object of this key matches the passed fluid.
 	 */
-	default boolean isOf(T resource) {
-		return getResource() == resource;
+	default boolean isOf(O object) {
+		return getObject() == object;
 	}
 
 	/**
 	 * Return a copy of the tag of this key, or {@code null} if this key doesn't have a tag.
 	 *
-	 * <p>Note: Use {@link #tagMatches} if you only need to check for tag equality, or {@link #getTag()} if you don't need to mutate the tag.
+	 * <p>Note: Use {@link #nbtMatches} if you only need to check for custom tag equality, or {@link #getNbt()} if you don't need to mutate the tag.
 	 */
 	@Nullable
-	default NbtCompound copyTag() {
-		NbtCompound tag = getTag();
-		return tag == null ? null : tag.copy();
+	default NbtCompound copyNbt() {
+		NbtCompound nbt = getNbt();
+		return nbt == null ? null : nbt.copy();
 	}
 
 	/**
