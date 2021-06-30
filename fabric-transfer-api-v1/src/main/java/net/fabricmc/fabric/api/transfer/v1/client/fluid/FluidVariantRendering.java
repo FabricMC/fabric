@@ -33,10 +33,10 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
 /**
- * Client-side display of fluid keys.
+ * Client-side display of fluid variants.
  *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
@@ -44,14 +44,14 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 @ApiStatus.Experimental
 @Deprecated
 @Environment(EnvType.CLIENT)
-public class FluidKeyRendering {
-	private static final ApiProviderMap<Fluid, FluidKeyRenderHandler> HANDLERS = ApiProviderMap.create();
-	private static final FluidKeyRenderHandler DEFAULT_HANDLER = new FluidKeyRenderHandler() { };
+public class FluidVariantRendering {
+	private static final ApiProviderMap<Fluid, FluidVariantRenderHandler> HANDLERS = ApiProviderMap.create();
+	private static final FluidVariantRenderHandler DEFAULT_HANDLER = new FluidVariantRenderHandler() { };
 
 	/**
 	 * Register a render handler for the passed fluid.
 	 */
-	public static void register(Fluid fluid, FluidKeyRenderHandler handler) {
+	public static void register(Fluid fluid, FluidVariantRenderHandler handler) {
 		if (HANDLERS.putIfAbsent(fluid, handler) != null) {
 			throw new IllegalArgumentException("Duplicate handler registration for fluid " + fluid);
 		}
@@ -61,41 +61,41 @@ public class FluidKeyRendering {
 	 * Return the render handler for the passed fluid, if available, and {@code null} otherwise.
 	 */
 	@Nullable
-	public static FluidKeyRenderHandler getHandler(Fluid fluid) {
+	public static FluidVariantRenderHandler getHandler(Fluid fluid) {
 		return HANDLERS.get(fluid);
 	}
 
 	/**
 	 * Return the render handler for the passed fluid, if available, or the default instance otherwise.
 	 */
-	public static FluidKeyRenderHandler getHandlerOrDefault(Fluid fluid) {
-		FluidKeyRenderHandler handler = HANDLERS.get(fluid);
+	public static FluidVariantRenderHandler getHandlerOrDefault(Fluid fluid) {
+		FluidVariantRenderHandler handler = HANDLERS.get(fluid);
 		return handler == null ? DEFAULT_HANDLER : handler;
 	}
 
 	/**
-	 * Return the name of the passed fluid key.
+	 * Return the name of the passed fluid variant.
 	 */
-	public static Text getName(FluidKey fluidKey) {
-		return getHandlerOrDefault(fluidKey.getFluid()).getName(fluidKey);
+	public static Text getName(FluidVariant fluidVariant) {
+		return getHandlerOrDefault(fluidVariant.getFluid()).getName(fluidVariant);
 	}
 
 	/**
-	 * Return the tooltip for the passed fluid key, including the name and additional lines if available
+	 * Return the tooltip for the passed fluid variant, including the name and additional lines if available
 	 * and the id of the fluid if advanced tooltips are enabled.
 	 */
-	public static List<Text> getTooltip(FluidKey fluidKey, TooltipContext context) {
+	public static List<Text> getTooltip(FluidVariant fluidVariant, TooltipContext context) {
 		List<Text> tooltip = new ArrayList<>();
 
 		// Name first
-		tooltip.add(getName(fluidKey));
+		tooltip.add(getName(fluidVariant));
 
 		// Additional tooltip information
-		getHandlerOrDefault(fluidKey.getFluid()).appendTooltip(fluidKey, tooltip, context);
+		getHandlerOrDefault(fluidVariant.getFluid()).appendTooltip(fluidVariant, tooltip, context);
 
 		// If advanced tooltips are enabled, render the fluid id
 		if (context.isAdvanced()) {
-			tooltip.add(new LiteralText(Registry.FLUID.getId(fluidKey.getFluid()).toString()).formatted(Formatting.DARK_GRAY));
+			tooltip.add(new LiteralText(Registry.FLUID.getId(fluidVariant.getFluid()).toString()).formatted(Formatting.DARK_GRAY));
 		}
 
 		// TODO: consider adding an event to append to tooltips?
@@ -104,25 +104,25 @@ public class FluidKeyRendering {
 	}
 
 	/**
-	 * Return the sprite that should be used to render the passed fluid key, or null if it's not available.
+	 * Return the sprite that should be used to render the passed fluid variant, or null if it's not available.
 	 * The sprite should be rendered using the color returned by {@link #getColor}.
 	 */
 	@Nullable
-	public static Sprite getSprite(FluidKey fluidKey) {
-		return getHandlerOrDefault(fluidKey.getFluid()).getSprite(fluidKey);
+	public static Sprite getSprite(FluidVariant fluidVariant) {
+		return getHandlerOrDefault(fluidVariant.getFluid()).getSprite(fluidVariant);
 	}
 
 	/**
-	 * Return the color that should be used to render {@linkplain #getSprite the sprite} of the passed fluid key.
+	 * Return the color that should be used to render {@linkplain #getSprite the sprite} of the passed fluid variant.
 	 */
-	public static int getColor(FluidKey fluidKey) {
-		return getHandlerOrDefault(fluidKey.getFluid()).getColor(fluidKey);
+	public static int getColor(FluidVariant fluidVariant) {
+		return getHandlerOrDefault(fluidVariant.getFluid()).getColor(fluidVariant);
 	}
 
 	/**
-	 * Return {@code true} if this fluid key should be rendered as filling tanks from the top.
+	 * Return {@code true} if this fluid variant should be rendered as filling tanks from the top.
 	 */
-	public static boolean fillsFromTop(FluidKey fluidKey) {
-		return getHandlerOrDefault(fluidKey.getFluid()).fillsFromTop(fluidKey);
+	public static boolean fillsFromTop(FluidVariant fluidVariant) {
+		return getHandlerOrDefault(fluidVariant.getFluid()).fillsFromTop(fluidVariant);
 	}
 }

@@ -20,20 +20,20 @@ import java.util.Iterator;
 
 import net.minecraft.fluid.Fluids;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
-public class CreativeFluidStorage implements ExtractionOnlyStorage<FluidKey>, StorageView<FluidKey> {
-	public static final CreativeFluidStorage WATER = new CreativeFluidStorage(FluidKey.of(Fluids.WATER));
-	public static final CreativeFluidStorage LAVA = new CreativeFluidStorage(FluidKey.of(Fluids.LAVA));
+public class CreativeFluidStorage implements ExtractionOnlyStorage<FluidVariant>, StorageView<FluidVariant> {
+	public static final CreativeFluidStorage WATER = new CreativeFluidStorage(FluidVariant.of(Fluids.WATER));
+	public static final CreativeFluidStorage LAVA = new CreativeFluidStorage(FluidVariant.of(Fluids.LAVA));
 
-	private final FluidKey infiniteFluid;
+	private final FluidVariant infiniteFluid;
 
-	private CreativeFluidStorage(FluidKey infiniteFluid) {
+	private CreativeFluidStorage(FluidVariant infiniteFluid) {
 		this.infiniteFluid = infiniteFluid;
 	}
 
@@ -43,7 +43,7 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<FluidKey>, St
 	}
 
 	@Override
-	public FluidKey getResource() {
+	public FluidVariant getResource() {
 		return infiniteFluid;
 	}
 
@@ -58,7 +58,7 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<FluidKey>, St
 	}
 
 	@Override
-	public long extract(FluidKey resource, long maxAmount, Transaction transaction) {
+	public long extract(FluidVariant resource, long maxAmount, Transaction transaction) {
 		StoragePreconditions.notEmptyNotNegative(resource, maxAmount);
 
 		if (resource.equals(infiniteFluid)) {
@@ -69,7 +69,7 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<FluidKey>, St
 	}
 
 	@Override
-	public Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
+	public Iterator<StorageView<FluidVariant>> iterator(Transaction transaction) {
 		return SingleViewIterator.create(this, transaction);
 	}
 

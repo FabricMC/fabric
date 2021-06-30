@@ -18,8 +18,8 @@ The [`storage/base`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/b
 implementation of `Storage<T>`.
 
 ## Fluid transfer
-A `Storage<FluidKey>` is any object that can store fluids. It is just a `Storage<T>`, where `T` is
-[`FluidKey`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidKey.java), the immutable combination of a `Fluid` and additional NBT data.
+A `Storage<FluidVariant>` is any object that can store fluids. It is just a `Storage<T>`, where `T` is
+[`FluidVariant`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidVariant.java), the immutable combination of a `Fluid` and additional NBT data.
 Instances can be accessed through the API lookups defined in [`FluidStorage`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidStorage.java).
 
 Implementors of fluid inventories with a fixed number of "slots" or "tanks" can use
@@ -30,7 +30,7 @@ The amount for fluid transfer is droplets, that is 1/81000ths of a bucket.
 [`FluidConstants`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidConstants.java) contains a few helpful constants
 to work with droplets.
 
-Client-side [Fluid key rendering](src/main/java/net/fabricmc/fabric/api/transfer/v1/client/fluid/FluidKeyRendering.java) will use regular fluid rendering by default,
+Client-side [Fluid variant rendering](src/main/java/net/fabricmc/fabric/api/transfer/v1/client/fluid/FluidVariantRendering.java) will use regular fluid rendering by default,
 ignoring the additional NBT data.
 `Fluid`s that wish to render differently depending on the stored NBT data can register a
-[`FluidKeyRenderHandler`](src/main/java/net/fabricmc/fabric/api/transfer/v1/client/fluid/FluidKeyRenderHandler.java).
+[`FluidVariantRenderHandler`](src/main/java/net/fabricmc/fabric/api/transfer/v1/client/fluid/FluidVariantRenderHandler.java).

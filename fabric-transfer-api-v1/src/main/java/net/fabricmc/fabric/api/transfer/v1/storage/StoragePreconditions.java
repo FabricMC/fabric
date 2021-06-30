@@ -28,13 +28,13 @@ import org.jetbrains.annotations.ApiStatus;
 @Deprecated
 public class StoragePreconditions {
 	/**
-	 * Ensure that the passed transfer key is not empty.
+	 * Ensure that the passed transfer variant is not empty.
 	 *
-	 * @throws IllegalArgumentException If the key is empty.
+	 * @throws IllegalArgumentException If the variant is empty.
 	 */
-	public static void notEmpty(TransferKey<?> key) {
-		if (key.isEmpty()) {
-			throw new IllegalArgumentException("Transfer key may not be empty.");
+	public static void notEmpty(TransferVariant<?> variant) {
+		if (variant.isEmpty()) {
+			throw new IllegalArgumentException("Transfer variant may not be empty.");
 		}
 	}
 
@@ -50,10 +50,10 @@ public class StoragePreconditions {
 	}
 
 	/**
-	 * Check both for a not empty transfer key and a not negative amount.
+	 * Check both for a not empty transfer variant and a not negative amount.
 	 */
-	public static void notEmptyNotNegative(TransferKey<?> key, long amount) {
-		notEmpty(key);
+	public static void notEmptyNotNegative(TransferVariant<?> variant, long amount) {
+		notEmpty(variant);
 		notNegative(amount);
 	}
 

@@ -32,7 +32,7 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -71,22 +71,22 @@ public class FluidTransferTest implements ModInitializer {
 	private static void testFluidStorage() {
 		SingleFluidStorage waterStorage = new SingleFluidStorage() {
 			@Override
-			protected long getCapacity(FluidKey fluidKey) {
+			protected long getCapacity(FluidVariant fluidVariant) {
 				return BUCKET * 2;
 			}
 
 			@Override
-			protected boolean canInsert(FluidKey fluidKey) {
-				return fluidKey.isOf(Fluids.WATER);
+			protected boolean canInsert(FluidVariant fluidVariant) {
+				return fluidVariant.isOf(Fluids.WATER);
 			}
 		};
 
 		NbtCompound tag = new NbtCompound();
 		tag.putInt("test", 1);
-		FluidKey taggedWater = FluidKey.of(Fluids.WATER, tag);
-		FluidKey taggedWater2 = FluidKey.of(Fluids.WATER, tag);
-		FluidKey water = FluidKey.of(Fluids.WATER);
-		FluidKey lava = FluidKey.of(Fluids.LAVA);
+		FluidVariant taggedWater = FluidVariant.of(Fluids.WATER, tag);
+		FluidVariant taggedWater2 = FluidVariant.of(Fluids.WATER, tag);
+		FluidVariant water = FluidVariant.of(Fluids.WATER);
+		FluidVariant lava = FluidVariant.of(Fluids.LAVA);
 
 		// Test content
 		if (!waterStorage.isEmpty()) throw new AssertionError("Should have been empty");
@@ -97,9 +97,9 @@ public class FluidTransferTest implements ModInitializer {
 			if (waterStorage.insert(lava, BUCKET, tx) != 0) throw new AssertionError("Lava inserted");
 			// Should allow insert
 			if (waterStorage.insert(taggedWater, BUCKET, tx) != BUCKET) throw new AssertionError("Tagged water insert 1 failed");
-			// Keys are different, should not allow insert
+			// Variants are different, should not allow insert
 			if (waterStorage.insert(water, BUCKET, tx) != 0) throw new AssertionError("Water inserted");
-			// Should allow insert again even if the key is different cause they are equal
+			// Should allow insert again even if the variant is different cause they are equal
 			if (waterStorage.insert(taggedWater2, BUCKET, tx) != BUCKET) throw new AssertionError("Tagged water insert 2 failed");
 			// Should not allow further insertion because the storage is full
 			if (waterStorage.insert(taggedWater, BUCKET, tx) != 0) throw new AssertionError("Storage full, yet something was inserted");

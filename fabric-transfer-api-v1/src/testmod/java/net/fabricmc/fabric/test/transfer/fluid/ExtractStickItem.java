@@ -22,7 +22,7 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
@@ -35,11 +35,11 @@ public class ExtractStickItem extends Item {
 
 	@Override
 	public ActionResult useOnBlock(ItemUsageContext context) {
-		Storage<FluidKey> storage = FluidStorage.SIDED.find(context.getWorld(), context.getBlockPos(), context.getSide());
+		Storage<FluidVariant> storage = FluidStorage.SIDED.find(context.getWorld(), context.getBlockPos(), context.getSide());
 
 		try (Transaction transaction = Transaction.openOuter()) {
 			// Find something to extract
-			FluidKey stored = StorageUtil.findExtractableResource(storage, transaction);
+			FluidVariant stored = StorageUtil.findExtractableResource(storage, transaction);
 			if (stored == null) return ActionResult.PASS;
 
 			// By now, storage can't be null :P

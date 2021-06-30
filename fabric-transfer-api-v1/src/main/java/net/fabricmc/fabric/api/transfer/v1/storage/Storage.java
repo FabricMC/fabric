@@ -47,7 +47,7 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
  *     <li>{@link ExtractionOnlyStorage} and {@link InsertionOnlyStorage} can be used when only extraction or insertion is needed.</li>
  *     <li>{@link SingleViewIterator} can be used to wrap a single view for use with {@link #iterator}.</li>
  *     <li>Resource-specific base implementations may also be available.
- *     For example, Fabric API providers {@link SingleFluidStorage} to accelerate implementations of {@code Storage<FluidKey>}.</li>
+ *     For example, Fabric API provides {@link SingleFluidStorage} to accelerate implementations of {@code Storage<FluidVariant>}.</li>
  * </ul>
  *
  * <p><b>Important note:</b> Unless otherwise specified, all transfer functions take a non-empty resource

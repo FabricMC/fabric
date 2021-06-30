@@ -24,16 +24,16 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferKey;
-import net.fabricmc.fabric.impl.transfer.fluid.FluidKeyImpl;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
+import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 
 /**
  * An immutable association of a still fluid and an optional NBT tag.
  *
  * <p>Do not extend this class. Use {@link #of(Fluid)} and {@link #of(Fluid, NbtCompound)} to create instances.
  *
- * <p>{@link FluidKeyRendering} can be used for client-side rendering of fluid keys.
+ * <p>{@link FluidVariantRendering} can be used for client-side rendering of fluid variants.
  *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
@@ -41,48 +41,48 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidKeyImpl;
 @ApiStatus.Experimental
 @Deprecated
 @ApiStatus.NonExtendable
-public interface FluidKey extends TransferKey<Fluid> {
+public interface FluidVariant extends TransferVariant<Fluid> {
 	/**
-	 * Retrieve an empty FluidKey.
+	 * Retrieve an empty FluidVariant.
 	 */
-	static FluidKey empty() {
+	static FluidVariant empty() {
 		return of(Fluids.EMPTY);
 	}
 
 	/**
-	 * Retrieve a FluidKey with a fluid, and a {@code null} tag.
+	 * Retrieve a FluidVariant with a fluid, and a {@code null} tag.
 	 */
-	static FluidKey of(Fluid fluid) {
+	static FluidVariant of(Fluid fluid) {
 		return of(fluid, null);
 	}
 
 	/**
-	 * Retrieve a FluidKey with a fluid, and an optional tag.
+	 * Retrieve a FluidVariant with a fluid, and an optional tag.
 	 */
-	static FluidKey of(Fluid fluid, @Nullable NbtCompound nbt) {
-		return FluidKeyImpl.of(fluid, nbt);
+	static FluidVariant of(Fluid fluid, @Nullable NbtCompound nbt) {
+		return FluidVariantImpl.of(fluid, nbt);
 	}
 
 	/**
-	 * Return the fluid of this key.
+	 * Return the fluid of this variant.
 	 */
 	default Fluid getFluid() {
 		return getObject();
 	}
 
 	/**
-	 * Deserialize a key from an NBT compound tag, assuming it was serialized using {@link #toNbt}.
+	 * Deserialize a variant from an NBT compound tag, assuming it was serialized using {@link #toNbt}.
 	 *
-	 * <p>If an error occurs during deserialization, it will be logged with the DEBUG level, and an empty key will be returned.
+	 * <p>If an error occurs during deserialization, it will be logged with the DEBUG level, and an empty variant will be returned.
 	 */
-	static FluidKey fromNbt(NbtCompound nbt) {
-		return FluidKeyImpl.fromNbt(nbt);
+	static FluidVariant fromNbt(NbtCompound nbt) {
+		return FluidVariantImpl.fromNbt(nbt);
 	}
 
 	/**
-	 * Read a key from a packet byte buffer, assuming it was serialized using {@link #toPacket}.
+	 * Read a variant from a packet byte buffer, assuming it was serialized using {@link #toPacket}.
 	 */
-	static FluidKey fromPacket(PacketByteBuf buf) {
-		return FluidKeyImpl.fromPacket(buf);
+	static FluidVariant fromPacket(PacketByteBuf buf) {
+		return FluidVariantImpl.fromPacket(buf);
 	}
 }

@@ -40,8 +40,8 @@
  * </p>
  *
  * <p><h2>Fluid transfer</h2>
- * A {@code Storage<FluidKey>} is any object that can store fluids. It is just a {@code Storage<T>}, where {@code T} is
- * {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey FluidKey}, the immutable combination of a {@code Fluid} and additional NBT data.
+ * A {@code Storage<FluidVariant>} is any object that can store fluids. It is just a {@code Storage<T>}, where {@code T} is
+ * {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant FluidVariant}, the immutable combination of a {@code Fluid} and additional NBT data.
  * Instances can be accessed through the API lookup defined in {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage FluidStorage}.
  * </p>
  *
@@ -52,9 +52,9 @@
  * <p>The amount for fluid transfer is droplets, that is 1/81000ths of a bucket.
  * {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants FluidConstants} contains a few helpful constants to work with droplets.
  *
- * <p>Client-side {@linkplain net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering fluid key rendering} will use regular fluid rendering by default,
+ * <p>Client-side {@linkplain net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering fluid variant rendering} will use regular fluid rendering by default,
  * ignoring the additional NBT data.
  * {@code Fluid}s that wish to render differently depending on the stored NBT data can register a
- * {@link net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRenderHandler FluidKeyRenderHandler}.
+ * {@link net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRenderHandler FluidVariantRenderHandler}.
  */
 package net.fabricmc.fabric.api.transfer.v1;

@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.impl.transfer.fluid;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
 /**
- * Implemented by fluids to cache the FluidKey with a null tag inside the Fluid object directly.
+ * Implemented by fluids to cache the FluidVariant with a null tag inside the Fluid object directly.
  */
-public interface FluidKeyCache {
-	FluidKey fabric_getCachedFluidKey();
+public interface FluidVariantCache {
+	FluidVariant fabric_getCachedFluidVariant();
 }

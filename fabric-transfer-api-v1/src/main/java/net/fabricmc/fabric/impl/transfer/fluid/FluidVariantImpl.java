@@ -29,10 +29,10 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
-public class FluidKeyImpl implements FluidKey {
-	public static FluidKey of(Fluid fluid, @Nullable NbtCompound nbt) {
+public class FluidVariantImpl implements FluidVariant {
+	public static FluidVariant of(Fluid fluid, @Nullable NbtCompound nbt) {
 		Objects.requireNonNull(fluid, "Fluid may not be null.");
 
 		if (!fluid.isStill(fluid.getDefaultState()) && fluid != Fluids.EMPTY) {
@@ -41,11 +41,11 @@ public class FluidKeyImpl implements FluidKey {
 		}
 
 		if (nbt == null) {
-			// Use the cached key inside the fluid
-			return ((FluidKeyCache) fluid).fabric_getCachedFluidKey();
+			// Use the cached variant inside the fluid
+			return ((FluidVariantCache) fluid).fabric_getCachedFluidVariant();
 		} else {
-			// TODO explore caching fluid keys for non null tags.
-			return new FluidKeyImpl(fluid, nbt);
+			// TODO explore caching fluid variants for non null tags.
+			return new FluidVariantImpl(fluid, nbt);
 		}
 	}
 
@@ -55,7 +55,7 @@ public class FluidKeyImpl implements FluidKey {
 	private final @Nullable NbtCompound nbt;
 	private final int hashCode;
 
-	public FluidKeyImpl(Fluid fluid, NbtCompound nbt) {
+	public FluidVariantImpl(Fluid fluid, NbtCompound nbt) {
 		this.fluid = fluid;
 		this.nbt = nbt == null ? null : nbt.copy(); // defensive copy
 		this.hashCode = Objects.hash(fluid, nbt);
@@ -88,14 +88,14 @@ public class FluidKeyImpl implements FluidKey {
 		return result;
 	}
 
-	public static FluidKey fromNbt(NbtCompound tag) {
+	public static FluidVariant fromNbt(NbtCompound tag) {
 		try {
 			Fluid fluid = Registry.FLUID.get(new Identifier(tag.getString("fluid")));
 			NbtCompound aTag = tag.contains("tag") ? tag.getCompound("tag") : null;
 			return of(fluid, aTag);
 		} catch (RuntimeException runtimeException) {
-			LOGGER.debug("Tried to load an invalid FluidKey from NBT: {}", tag, runtimeException);
-			return FluidKey.empty();
+			LOGGER.debug("Tried to load an invalid FluidVariant from NBT: {}", tag, runtimeException);
+			return FluidVariant.empty();
 		}
 	}
 
@@ -110,9 +110,9 @@ public class FluidKeyImpl implements FluidKey {
 		}
 	}
 
-	public static FluidKey fromPacket(PacketByteBuf buf) {
+	public static FluidVariant fromPacket(PacketByteBuf buf) {
 		if (!buf.readBoolean()) {
-			return FluidKey.empty();
+			return FluidVariant.empty();
 		} else {
 			Fluid fluid = Registry.FLUID.get(buf.readVarInt());
 			NbtCompound tag = buf.readNbt();
@@ -122,7 +122,7 @@ public class FluidKeyImpl implements FluidKey {
 
 	@Override
 	public String toString() {
-		return "FluidKeyImpl{fluid=" + fluid + ", tag=" + nbt + '}';
+		return "FluidVariantImpl{fluid=" + fluid + ", tag=" + nbt + '}';
 	}
 
 	@Override
@@ -131,9 +131,9 @@ public class FluidKeyImpl implements FluidKey {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		FluidKeyImpl fluidKey = (FluidKeyImpl) o;
+		FluidVariantImpl fluidVariant = (FluidVariantImpl) o;
 		// fail fast with hash code
-		return hashCode == fluidKey.hashCode && fluid == fluidKey.fluid && nbtMatches(fluidKey.nbt);
+		return hashCode == fluidVariant.hashCode && fluid == fluidVariant.fluid && nbtMatches(fluidVariant.nbt);
 	}
 
 	@Override

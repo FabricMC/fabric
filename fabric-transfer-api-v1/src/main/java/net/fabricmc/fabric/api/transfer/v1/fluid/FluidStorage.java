@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 
 /**
- * Access to {@link Storage Storage&lt;FluidKey&gt;} instances.
+ * Access to {@link Storage Storage&lt;FluidVariant&gt;} instances.
  *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 @Deprecated
 public final class FluidStorage {
 	/**
-	 * Sided block access to fluid key storages.
+	 * Sided block access to fluid variant storages.
 	 * Fluid amounts are always expressed in {@linkplain FluidConstants droplets}.
 	 * The {@code Direction} parameter may never be null.
 	 * Refer to {@link BlockApiLookup} for documentation on how to use this field.
@@ -44,7 +44,7 @@ public final class FluidStorage {
 	 * that is if the return value of {@link Storage#supportsInsertion} or {@link Storage#supportsExtraction} changes,
 	 * the storage should notify its neighbors with a block update so that they can refresh their connections if necessary.
 	 */
-	public static final BlockApiLookup<Storage<FluidKey>, Direction> SIDED =
+	public static final BlockApiLookup<Storage<FluidVariant>, Direction> SIDED =
 			BlockApiLookup.get(new Identifier("fabric:sided_fluid_storage"), Storage.asClass(), Direction.class);
 
 	private FluidStorage() {

@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.transfer.v1.fluid.base;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
 /**
- * A storage that can store a single fluid key at any given time.
+ * A storage that can store a single fluid variant at any given time.
  * Implementors should at least override {@link #getCapacity}, and probably {@link #markDirty} as well.
  *
  * <p>{@link #canInsert} and {@link #canExtract} can be used for more precise control over which fluids may be inserted or
@@ -39,8 +39,8 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
  */
 @ApiStatus.Experimental
 @Deprecated
-public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmount<FluidKey>> implements SingleSlotStorage<FluidKey> {
-	public FluidKey fluidKey = FluidKey.empty();
+public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmount<FluidVariant>> implements SingleSlotStorage<FluidVariant> {
+	public FluidVariant fluidVariant = FluidVariant.empty();
 	public long amount;
 
 	/**
@@ -50,37 +50,37 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	}
 
 	/**
-	 * @return {@code true} if the passed non-empty fluid key can be inserted, {@code false} otherwise.
+	 * @return {@code true} if the passed non-empty fluid variant can be inserted, {@code false} otherwise.
 	 */
-	protected boolean canInsert(FluidKey fluidKey) {
+	protected boolean canInsert(FluidVariant fluidVariant) {
 		return true;
 	}
 
 	/**
-	 * @return {@code true} if the passed non-empty fluid key can be extracted, {@code false} otherwise.
+	 * @return {@code true} if the passed non-empty fluid variant can be extracted, {@code false} otherwise.
 	 */
-	protected boolean canExtract(FluidKey fluidKey) {
+	protected boolean canExtract(FluidVariant fluidVariant) {
 		return true;
 	}
 
 	/**
-	 * @return The maximum capacity of this storage for the passed non-empty fluid key.
+	 * @return The maximum capacity of this storage for the passed non-empty fluid variant.
 	 */
-	protected abstract long getCapacity(FluidKey fluidKey);
+	protected abstract long getCapacity(FluidVariant fluidVariant);
 
 	@Override
 	public final boolean isEmpty() {
-		return fluidKey.isEmpty();
+		return fluidVariant.isEmpty();
 	}
 
 	@Override
-	public final FluidKey getResource() {
-		return fluidKey;
+	public final FluidVariant getResource() {
+		return fluidVariant;
 	}
 
 	@Override
 	public final long getAmount() {
-		return fluidKey.isEmpty() ? 0 : amount;
+		return fluidVariant.isEmpty() ? 0 : amount;
 	}
 
 	@Override
@@ -88,27 +88,27 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 		if (isEmpty()) {
 			return 0;
 		} else {
-			return getCapacity(fluidKey);
+			return getCapacity(fluidVariant);
 		}
 	}
 
 	@Override
-	public final long insert(FluidKey insertedFluid, long maxAmount, Transaction transaction) {
+	public final long insert(FluidVariant insertedFluid, long maxAmount, Transaction transaction) {
 		StoragePreconditions.notEmptyNotNegative(insertedFluid, maxAmount);
 
-		if ((insertedFluid.equals(fluidKey) || fluidKey.isEmpty()) && canInsert(insertedFluid)) {
+		if ((insertedFluid.equals(fluidVariant) || fluidVariant.isEmpty()) && canInsert(insertedFluid)) {
 			long insertedAmount = Math.min(maxAmount, getCapacity(insertedFluid) - amount);
 
 			if (insertedAmount > 0) {
 				updateSnapshots(transaction);
 
 				// Just in case.
-				if (fluidKey.isEmpty()) {
+				if (fluidVariant.isEmpty()) {
 					amount = 0;
 				}
 
 				amount += insertedAmount;
-				fluidKey = insertedFluid;
+				fluidVariant = insertedFluid;
 			}
 
 			return insertedAmount;
@@ -118,10 +118,10 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	}
 
 	@Override
-	public final long extract(FluidKey extractedFluid, long maxAmount, Transaction transaction) {
+	public final long extract(FluidVariant extractedFluid, long maxAmount, Transaction transaction) {
 		StoragePreconditions.notEmptyNotNegative(extractedFluid, maxAmount);
 
-		if (extractedFluid.equals(fluidKey) && canExtract(extractedFluid)) {
+		if (extractedFluid.equals(fluidVariant) && canExtract(extractedFluid)) {
 			long extractedAmount = Math.min(maxAmount, amount);
 
 			if (extractedAmount > 0) {
@@ -129,7 +129,7 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 				amount -= extractedAmount;
 
 				if (amount == 0) {
-					fluidKey = FluidKey.empty();
+					fluidVariant = FluidVariant.empty();
 				}
 			}
 
@@ -140,13 +140,13 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	}
 
 	@Override
-	protected final ResourceAmount<FluidKey> createSnapshot() {
-		return new ResourceAmount<>(fluidKey, amount);
+	protected final ResourceAmount<FluidVariant> createSnapshot() {
+		return new ResourceAmount<>(fluidVariant, amount);
 	}
 
 	@Override
-	protected final void readSnapshot(ResourceAmount<FluidKey> snapshot) {
-		this.fluidKey = snapshot.resource();
+	protected final void readSnapshot(ResourceAmount<FluidVariant> snapshot) {
+		this.fluidVariant = snapshot.resource();
 		this.amount = snapshot.amount();
 	}
 

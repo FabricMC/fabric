@@ -27,13 +27,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.CauldronFluidContent;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
-public class CauldronStorage extends SnapshotParticipant<BlockState> implements SingleSlotStorage<FluidKey> {
+public class CauldronStorage extends SnapshotParticipant<BlockState> implements SingleSlotStorage<FluidVariant> {
 	private static final Map<WorldLocation, CauldronStorage> CAULDRONS = new MapMaker().concurrencyLevel(1).weakValues().makeMap();
 
 	public static CauldronStorage get(World world, BlockPos pos) {
@@ -67,10 +67,10 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 	}
 
 	@Override
-	public long insert(FluidKey fluidKey, long maxAmount, Transaction transaction) {
-		StoragePreconditions.notEmptyNotNegative(fluidKey, maxAmount);
+	public long insert(FluidVariant fluidVariant, long maxAmount, Transaction transaction) {
+		StoragePreconditions.notEmptyNotNegative(fluidVariant, maxAmount);
 
-		CauldronFluidContent insertData = CauldronFluidContent.getForFluid(fluidKey.getFluid());
+		CauldronFluidContent insertData = CauldronFluidContent.getForFluid(fluidVariant.getFluid());
 
 		if (insertData != null) {
 			int maxLevelsInserted = Ints.saturatedCast(maxAmount / insertData.amountPerLevel());
@@ -88,7 +88,7 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 
 			CauldronFluidContent currentData = getData();
 
-			if (fluidKey.isOf(currentData.fluid())) {
+			if (fluidVariant.isOf(currentData.fluid())) {
 				// Otherwise we can only accept the same fluid as the current one.
 				int currentLevel = currentData.currentLevel(createSnapshot());
 				int levelsInserted = Math.min(maxLevelsInserted, currentData.maxLevel() - currentLevel);
@@ -105,12 +105,12 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 	}
 
 	@Override
-	public long extract(FluidKey fluidKey, long maxAmount, Transaction transaction) {
-		StoragePreconditions.notEmptyNotNegative(fluidKey, maxAmount);
+	public long extract(FluidVariant fluidVariant, long maxAmount, Transaction transaction) {
+		StoragePreconditions.notEmptyNotNegative(fluidVariant, maxAmount);
 
 		CauldronFluidContent currentData = getData();
 
-		if (fluidKey.isOf(currentData.fluid())) {
+		if (fluidVariant.isOf(currentData.fluid())) {
 			int maxLevelsExtracted = Ints.saturatedCast(maxAmount / currentData.amountPerLevel());
 			int currentLevel = currentData.currentLevel(createSnapshot());
 			int levelsExtracted = Math.min(maxLevelsExtracted, currentLevel);
@@ -138,8 +138,8 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 	}
 
 	@Override
-	public FluidKey getResource() {
-		return FluidKey.of(getData().fluid());
+	public FluidVariant getResource() {
+		return FluidVariant.of(getData().fluid());
 	}
 
 	@Override

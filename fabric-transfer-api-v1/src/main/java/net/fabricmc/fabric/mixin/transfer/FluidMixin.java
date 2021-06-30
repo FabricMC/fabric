@@ -20,21 +20,21 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.fluid.Fluid;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.impl.transfer.fluid.FluidKeyCache;
-import net.fabricmc.fabric.impl.transfer.fluid.FluidKeyImpl;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
+import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantCache;
 
 /**
- * Cache the FluidKey with a null tag inside each Fluid directly.
+ * Cache the FluidVariant with a null tag inside each Fluid directly.
  */
 @Mixin(Fluid.class)
 @SuppressWarnings("unused")
-public class FluidMixin implements FluidKeyCache {
+public class FluidMixin implements FluidVariantCache {
 	@SuppressWarnings("ConstantConditions")
-	private final FluidKey cachedFluidKey = new FluidKeyImpl((Fluid) (Object) this, null);
+	private final FluidVariant cachedFluidVariant = new FluidVariantImpl((Fluid) (Object) this, null);
 
 	@Override
-	public FluidKey fabric_getCachedFluidKey() {
-		return cachedFluidKey;
+	public FluidVariant fabric_getCachedFluidVariant() {
+		return cachedFluidVariant;
 	}
 }
