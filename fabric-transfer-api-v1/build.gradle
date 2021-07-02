@@ -1,12 +1,12 @@
 archivesBaseName = "fabric-transfer-api-v1"
-version = getSubprojectVersion(project, "0.3.2")
+version = getSubprojectVersion(project, "0.3.3")
 
 moduleDependencies(project, [
 	'fabric-api-base',
 	'fabric-api-lookup-api-v1',
 	'fabric-lifecycle-events-v1', // transitive dependency of API Lookup
 	'fabric-rendering-fluids-v1',
-	'fabric-textures-v0'
+	'fabric-textures-v0' // transitive dependency of Rendering Fluids
 ])
 
 dependencies {
