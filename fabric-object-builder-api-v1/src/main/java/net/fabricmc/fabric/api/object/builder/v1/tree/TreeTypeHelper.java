@@ -59,8 +59,7 @@ public final class TreeTypeHelper {
 	}
 
 	/**
-	 * Creates a new instance of a {@link FoliagePlacerType}, registers and returns it.<br>
-	 * Uses {@link FoliagePlacerTypeInvoker} under the hood.
+	 * Creates a new instance of a {@link FoliagePlacerType}, registers and returns it.
 	 *
 	 * <p>
 	 *     Example:<br>
