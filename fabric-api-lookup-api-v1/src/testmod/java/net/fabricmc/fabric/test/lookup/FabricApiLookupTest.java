@@ -35,6 +35,7 @@ import net.fabricmc.fabric.test.lookup.api.ItemApis;
 import net.fabricmc.fabric.test.lookup.api.ItemInsertable;
 import net.fabricmc.fabric.test.lookup.compat.InventoryExtractableProvider;
 import net.fabricmc.fabric.test.lookup.compat.InventoryInsertableProvider;
+import net.fabricmc.fabric.test.lookup.item.FabricItemApiLookupTest;
 
 public class FabricApiLookupTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-lookup-api-v1-testmod";
@@ -48,6 +49,7 @@ public class FabricApiLookupTest implements ModInitializer {
 	public static final CobbleGenBlock COBBLE_GEN_BLOCK = new CobbleGenBlock(FabricBlockSettings.of(Material.METAL));
 	public static final BlockItem COBBLE_GEN_ITEM = new BlockItem(COBBLE_GEN_BLOCK, new Item.Settings().group(ItemGroup.MISC));
 	public static BlockEntityType<CobbleGenBlockEntity> COBBLE_GEN_BLOCK_ENTITY_TYPE;
+	// Testing for item api lookups is done in the `item` package.
 
 	@Override
 	public void onInitialize() {
@@ -70,6 +72,8 @@ public class FabricApiLookupTest implements ModInitializer {
 
 		testLookupRegistry();
 		testSelfRegistration();
+
+		FabricItemApiLookupTest.onInitialize();
 	}
 
 	private static void testLookupRegistry() {
@@ -99,7 +103,7 @@ public class FabricApiLookupTest implements ModInitializer {
 		}, "The BlockApiLookup should have prevented self-registration of incompatible block entity types.");
 	}
 
-	private static void ensureException(Runnable runnable, String message) {
+	public static void ensureException(Runnable runnable, String message) {
 		boolean failed = false;
 
 		try {

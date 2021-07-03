@@ -20,20 +20,16 @@ import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.sapling.SaplingGenerator;
 
 /**
- * <p>
- *    A temporary solution because access wideners cannot be applied to dependents (yet).<br>
- *    Allows you to create your own {@link SaplingBlock}s.
- * </p>
- * <p>
- *    Example:<br>
+ * Allows you to create your own {@link SaplingBlock}s.
  *
- *    {@code
- *    	public static final SaplingBlock MY_SAPLING = new SaplingBlock(new MySaplingGenerator(), FabricBlockSettings.copyOf(Blocks.OAK_SAPLING));
- *    }
+ * <p>Example:<br>
+ * {@code public static final SaplingBlock MY_SAPLING = new SimpleSaplingBlock(new MySaplingGenerator(), FabricBlockSettings.copyOf(Blocks.OAK_SAPLING));}
+ *
+ * @apiNote This is a temporary solution because access wideners cannot be applied to dependents yet.
  * </p>
  */
 public class SimpleSaplingBlock extends SaplingBlock {
-	protected SimpleSaplingBlock(SaplingGenerator generator, Settings settings) {
+	public SimpleSaplingBlock(SaplingGenerator generator, Settings settings) {
 		super(generator, settings);
 	}
 }

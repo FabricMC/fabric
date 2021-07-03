@@ -48,7 +48,6 @@ public final class TreeTypeHelper {
 	 *    {@code
 	 *          public static final TrunkPlacerType<MyTrunkPlacer> MY_TRUNK_PLACER =	FabricTreeRegistry.registerTrunkPlacerType(new Identifier("example", "my_trunk_placer"), MyTrunkPlacer.CODEC);
 	 *    }
-	 * </p>
 	 *
 	 * @param id Registry {@link Identifier}
 	 * @param codec The {@link Codec} associated with the {@link TrunkPlacer}
@@ -60,8 +59,7 @@ public final class TreeTypeHelper {
 	}
 
 	/**
-	 * Creates a new instance of a {@link FoliagePlacerType}, registers and returns it.<br>
-	 * Uses {@link FoliagePlacerTypeInvoker} under the hood.
+	 * Creates a new instance of a {@link FoliagePlacerType}, registers and returns it.
 	 *
 	 * <p>
 	 *     Example:<br>
@@ -81,8 +79,7 @@ public final class TreeTypeHelper {
 	}
 
 	/**
-	 * Creates a new instance of a {@link TreeDecoratorType}, registers and returns it.<br>
-	 * Uses {@link TreeDecoratorTypeInvoker} under the hood.
+	 * Creates a new instance of a {@link TreeDecoratorType}, registers and returns it.
 	 *
 	 * <p>
 	 *     Example for {@link TreeDecoratorType}s:<br>
@@ -90,7 +87,6 @@ public final class TreeTypeHelper {
 	 *     {@code
 	 *         public static final TreeDecoratorType<MyTreeDecorator> MY_TREE_DECORATOR = FabricTreeRegistry.registerTreeDecoratorType(new Identifier("tutorial", "my_tree_decorator"), MyTreeDecorator.CODEC);
 	 *     }
-	 * </p>
 	 *
 	 * @param id Registry {@link Identifier}
 	 * @param codec The {@link Codec} associated with the {@link TreeDecorator}
@@ -102,8 +98,7 @@ public final class TreeTypeHelper {
 	}
 
 	/**
-	 * Creates a new instance of a {@link BlockStateProviderType}, registers and returns it.<br>
-	 * Uses {@link BlockStateProviderTypeInvoker} under the hood.
+	 * Creates a new instance of a {@link BlockStateProviderType}, registers and returns it.
 	 *
 	 * <p>
 	 *     Example for {@link BlockStateProviderType}s:<br>
@@ -111,7 +106,6 @@ public final class TreeTypeHelper {
 	 *     {@code
 	 *         public static final BlockStateProviderType<MyBlockStateProvider> MY_BLOCK_STATE_PROVIDER = FabricTreeRegistry.registerBlockStateProviderType(new Identifier("tutorial", "my_block_state_provider"), MyBlockStateProvider.CODEC);
 	 *     }
-	 * </p>
 	 *
 	 * @param id Registry {@link Identifier}
 	 * @param codec The {@link Codec} associated with the {@link BlockStateProvider}
@@ -131,7 +125,6 @@ public final class TreeTypeHelper {
 	 *     {@code
 	 *         public static final IntProviderType<MyIntProvider> MY_INT_PROVIDER = FabricTreeRegistry.registerIntProviderType(new Identifier("tutorial", "my_int_provider"), MyIntProvider.CODEC);
 	 *     }
-	 * </p>
 	 *
 	 * @param id Registry {@link Identifier}
 	 * @param codec The {@link Codec} associated with the {@link IntProvider}
