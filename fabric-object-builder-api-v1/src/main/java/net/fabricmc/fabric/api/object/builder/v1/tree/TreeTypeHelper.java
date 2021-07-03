@@ -108,7 +108,6 @@ public final class TreeTypeHelper {
 	 *     {@code
 	 *         public static final BlockStateProviderType<MyBlockStateProvider> MY_BLOCK_STATE_PROVIDER = FabricTreeRegistry.registerBlockStateProviderType(new Identifier("tutorial", "my_block_state_provider"), MyBlockStateProvider.CODEC);
 	 *     }
-	 * </p>
 	 *
 	 * @param id Registry {@link Identifier}
 	 * @param codec The {@link Codec} associated with the {@link BlockStateProvider}
