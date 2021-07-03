@@ -46,7 +46,7 @@ public final class TreeTypeHelper {
 	 *    Example:<br>
 	 *
 	 *    {@code
-	 *          public static final TrunkPlacerType<MyTrunkPlacer> MY_TRUNK_PLACER =	FabricTreeRegistry.registerTrunkPlacerType(new Identifier("example", "my_trunk_placer"), MyTrunkPlacer.CODEC);
+	 *          public static final TrunkPlacerType<MyTrunkPlacer> MY_TRUNK_PLACER = TreeTypeHelper.registerTrunkPlacerType(new Identifier("example", "my_trunk_placer"), MyTrunkPlacer.CODEC);
 	 *    }
 	 *
 	 * @param id Registry {@link Identifier}
@@ -65,7 +65,7 @@ public final class TreeTypeHelper {
 	 *     Example:<br>
 	 *
 	 *    {@code
-	 *         public static final FoliagePlacerType<MyFoliagePlacer> MY_FOLIAGE_PLACER = FabricTreeRegistry.registerFoliagePlacerType(new Identifier("tutorial", "my_foliage_placer"), MyFoliagePlacer.CODEC);
+	 *         public static final FoliagePlacerType<MyFoliagePlacer> MY_FOLIAGE_PLACER = TreeTypeHelper.registerFoliagePlacerType(new Identifier("tutorial", "my_foliage_placer"), MyFoliagePlacer.CODEC);
 	 *     }
 	 * </p>
 	 *
@@ -85,7 +85,7 @@ public final class TreeTypeHelper {
 	 *     Example for {@link TreeDecoratorType}s:<br>
 	 *
 	 *     {@code
-	 *         public static final TreeDecoratorType<MyTreeDecorator> MY_TREE_DECORATOR = FabricTreeRegistry.registerTreeDecoratorType(new Identifier("tutorial", "my_tree_decorator"), MyTreeDecorator.CODEC);
+	 *         public static final TreeDecoratorType<MyTreeDecorator> MY_TREE_DECORATOR = TreeTypeHelper.registerTreeDecoratorType(new Identifier("tutorial", "my_tree_decorator"), MyTreeDecorator.CODEC);
 	 *     }
 	 *
 	 * @param id Registry {@link Identifier}
@@ -104,7 +104,7 @@ public final class TreeTypeHelper {
 	 *     Example for {@link BlockStateProviderType}s:<br>
 	 *
 	 *     {@code
-	 *         public static final BlockStateProviderType<MyBlockStateProvider> MY_BLOCK_STATE_PROVIDER = FabricTreeRegistry.registerBlockStateProviderType(new Identifier("tutorial", "my_block_state_provider"), MyBlockStateProvider.CODEC);
+	 *         public static final BlockStateProviderType<MyBlockStateProvider> MY_BLOCK_STATE_PROVIDER = TreeTypeHelper.registerBlockStateProviderType(new Identifier("tutorial", "my_block_state_provider"), MyBlockStateProvider.CODEC);
 	 *     }
 	 *
 	 * @param id Registry {@link Identifier}
