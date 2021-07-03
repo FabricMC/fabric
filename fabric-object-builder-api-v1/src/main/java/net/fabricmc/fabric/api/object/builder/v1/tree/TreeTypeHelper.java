@@ -88,7 +88,6 @@ public final class TreeTypeHelper {
 	 *     {@code
 	 *         public static final TreeDecoratorType<MyTreeDecorator> MY_TREE_DECORATOR = FabricTreeRegistry.registerTreeDecoratorType(new Identifier("tutorial", "my_tree_decorator"), MyTreeDecorator.CODEC);
 	 *     }
-	 * </p>
 	 *
 	 * @param id Registry {@link Identifier}
 	 * @param codec The {@link Codec} associated with the {@link TreeDecorator}
