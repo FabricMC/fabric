@@ -100,8 +100,7 @@ public final class TreeTypeHelper {
 	}
 
 	/**
-	 * Creates a new instance of a {@link BlockStateProviderType}, registers and returns it.<br>
-	 * Uses {@link BlockStateProviderTypeInvoker} under the hood.
+	 * Creates a new instance of a {@link BlockStateProviderType}, registers and returns it.
 	 *
 	 * <p>
 	 *     Example for {@link BlockStateProviderType}s:<br>
