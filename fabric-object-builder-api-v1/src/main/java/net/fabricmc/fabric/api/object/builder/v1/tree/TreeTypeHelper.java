@@ -48,7 +48,6 @@ public final class TreeTypeHelper {
 	 *    {@code
 	 *          public static final TrunkPlacerType<MyTrunkPlacer> MY_TRUNK_PLACER =	FabricTreeRegistry.registerTrunkPlacerType(new Identifier("example", "my_trunk_placer"), MyTrunkPlacer.CODEC);
 	 *    }
-	 * </p>
 	 *
 	 * @param id Registry {@link Identifier}
 	 * @param codec The {@link Codec} associated with the {@link TrunkPlacer}
