@@ -79,8 +79,7 @@ public final class TreeTypeHelper {
 	}
 
 	/**
-	 * Creates a new instance of a {@link TreeDecoratorType}, registers and returns it.<br>
-	 * Uses {@link TreeDecoratorTypeInvoker} under the hood.
+	 * Creates a new instance of a {@link TreeDecoratorType}, registers and returns it.
 	 *
 	 * <p>
 	 *     Example for {@link TreeDecoratorType}s:<br>
