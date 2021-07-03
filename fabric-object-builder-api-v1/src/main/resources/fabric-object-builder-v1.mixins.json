@@ -15,7 +15,11 @@
     "SpawnRestrictionAccessor",
     "TypeAwareTradeMixin",
     "VillagerProfessionAccessor",
-    "VillagerTypeAccessor"
+    "VillagerTypeAccessor",
+    "BlockStateProviderTypeInvoker",
+    "TreeDecoratorTypeInvoker",
+    "TrunkPlacerTypeInvoker",
+    "FoliagePlacerTypeInvoker"
   ],
   "client": [
     "ModelPredicateProviderRegistryAccessor",
