@@ -115,23 +115,4 @@ public final class TreeTypeHelper {
 	public static <T extends BlockStateProvider> BlockStateProviderType<T> registerBlockStateProviderType(Identifier id, Codec<T> codec) {
 		return BlockStateProviderTypeInvoker.invokeRegister(id.toString(), codec);
 	}
-
-	/**
-	 * A convenience method to avoid conflicts when using {@link IntProviderType#register}.
-	 *
-	 * <p>
-	 *     Example for {@link IntProviderType}s:<br>
-	 *
-	 *     {@code
-	 *         public static final IntProviderType<MyIntProvider> MY_INT_PROVIDER = FabricTreeRegistry.registerIntProviderType(new Identifier("tutorial", "my_int_provider"), MyIntProvider.CODEC);
-	 *     }
-	 *
-	 * @param id Registry {@link Identifier}
-	 * @param codec The {@link Codec} associated with the {@link IntProvider}
-	 * @param <T> The owner {@link IntProvider}
-	 * @return Created and registered {@link IntProviderType}
-	 */
-	public static <T extends IntProvider> IntProviderType<T> registerIntProviderType(Identifier id, Codec<T> codec) {
-		return IntProviderType.register(id.toString(), codec);
-	}
 }
