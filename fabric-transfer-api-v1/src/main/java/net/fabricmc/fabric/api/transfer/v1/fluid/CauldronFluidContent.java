@@ -53,7 +53,42 @@ import net.fabricmc.fabric.impl.transfer.fluid.CauldronStorage;
  */
 @ApiStatus.Experimental
 @Deprecated
-public record CauldronFluidContent(Block block, Fluid fluid, long amountPerLevel, int minLevel, int maxLevel, @Nullable IntProperty levelProperty) {
+public final class CauldronFluidContent {
+	/**
+	 * Block of the cauldron.
+	 */
+	public final Block block;
+	/**
+	 * Fluid stored inside the cauldron.
+	 */
+	public final Fluid fluid;
+	/**
+	 * Amount in droplets for each level of {@link #levelProperty}.
+	 */
+	public final long amountPerLevel;
+	/**
+	 * Minimum level for {@link #levelProperty}. Always {@code 1}.
+	 */
+	public final int minLevel;
+	/**
+	 * Maximum level for {@link #levelProperty}. {@code 1} if {@code levelProperty} is null, otherwise a number {@code >= 1}.
+	 */
+	public final int maxLevel;
+	/**
+	 * Property storing the level of the cauldron. If it's null, only one level is possible.
+	 */
+	@Nullable
+	public final IntProperty levelProperty;
+
+	private CauldronFluidContent(Block block, Fluid fluid, long amountPerLevel, int minLevel, int maxLevel, @Nullable IntProperty levelProperty) {
+		this.block = block;
+		this.fluid = fluid;
+		this.amountPerLevel = amountPerLevel;
+		this.minLevel = minLevel;
+		this.maxLevel = maxLevel;
+		this.levelProperty = levelProperty;
+	}
+
 	// Copy-on-write, identity semantics, null-checked.
 	private static final ApiProviderMap<Block, CauldronFluidContent> BLOCK_TO_CAULDRON = ApiProviderMap.create();
 	private static final ApiProviderMap<Fluid, CauldronFluidContent> FLUID_TO_CAULDRON = ApiProviderMap.create();
@@ -114,7 +149,7 @@ public record CauldronFluidContent(Block block, Fluid fluid, long amountPerLevel
 			}
 
 			if (minLevel != 1 || maxLevel < 1) {
-				throw new IllegalStateException();
+				throw new IllegalStateException("Minimum level should be 1, and maximum level should be >= 1.");
 			}
 
 			data = new CauldronFluidContent(block, fluid, amountPerLevel, minLevel, maxLevel, levelProperty);
