@@ -39,9 +39,9 @@ import net.minecraft.network.PacketByteBuf;
 @Deprecated
 public interface TransferVariant<O> {
 	/**
-	 * Return true if this variant is empty, and false otherwise.
+	 * Return true if this variant is blank, and false otherwise.
 	 */
-	boolean isEmpty();
+	boolean isBlank();
 
 	/**
 	 * Return the immutable object instance of this variant.

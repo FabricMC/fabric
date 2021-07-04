@@ -39,7 +39,7 @@ public final class StorageUtil {
 	 * @param to The target storage.
 	 * @param filter The filter for transferred resources.
 	 *               Only resources for which this filter returns {@code true} will be transferred.
-	 *               This filter will never be tested with an empty resource, and filters are encouraged to throw an
+	 *               This filter will never be tested with a blank resource, and filters are encouraged to throw an
 	 *               exception if this guarantee is violated.
 	 * @param maxAmount The maximum amount that will be transferred.
 	 * @param transaction The transaction this transfer is part of, or {@code null} if a transaction should be opened just for this transfer.
@@ -52,7 +52,7 @@ public final class StorageUtil {
 
 		try (Transaction iterationTransaction = (transaction == null ? Transaction.openOuter() : transaction.openNested())) {
 			for (StorageView<T> view : from.iterable(iterationTransaction)) {
-				if (view.isEmpty()) continue;
+				if (view.isResourceBlank()) continue;
 				T resource = view.getResource();
 				if (!filter.test(resource)) continue;
 				long maxExtracted;
@@ -92,7 +92,7 @@ public final class StorageUtil {
 	 * @param storage The storage to inspect, may be null.
 	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
 	 * @param <T> The type of the stored resources.
-	 * @return A non-empty resource stored in the storage, or {@code null} if none could be found.
+	 * @return A non-blank resource stored in the storage, or {@code null} if none could be found.
 	 */
 	@Nullable
 	public static <T> T findStoredResource(@Nullable Storage<T> storage, @Nullable Transaction transaction) {
@@ -110,7 +110,7 @@ public final class StorageUtil {
 	@Nullable
 	private static <T> T findStoredResourceInner(Storage<T> storage, Transaction transaction) {
 		for (StorageView<T> view : storage.iterable(transaction)) {
-			if (!view.isEmpty()) {
+			if (!view.isResourceBlank()) {
 				return view.getResource();
 			}
 		}
@@ -123,7 +123,7 @@ public final class StorageUtil {
 	 * @param storage The storage to inspect, may be null.
 	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
 	 * @param <T> The type of the stored resources.
-	 * @return A non-empty resource stored in the storage that can be extracted, or {@code null} if none could be found.
+	 * @return A non-blank resource stored in the storage that can be extracted, or {@code null} if none could be found.
 	 */
 	@Nullable
 	public static <T> T findExtractableResource(@Nullable Storage<T> storage, @Nullable Transaction transaction) {
@@ -134,7 +134,7 @@ public final class StorageUtil {
 				// Extract below could change the resource, so we have to query it before extracting.
 				T resource = view.getResource();
 
-				if (!view.isEmpty() && view.extract(resource, Long.MAX_VALUE, nested) > 0) {
+				if (!view.isResourceBlank() && view.extract(resource, Long.MAX_VALUE, nested) > 0) {
 					// Will abort the extraction.
 					return resource;
 				}

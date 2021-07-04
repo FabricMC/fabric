@@ -89,7 +89,7 @@ public class FluidTransferTest implements ModInitializer {
 		FluidVariant lava = FluidVariant.of(Fluids.LAVA);
 
 		// Test content
-		if (!waterStorage.isEmpty()) throw new AssertionError("Should have been empty");
+		if (!waterStorage.isResourceBlank()) throw new AssertionError("Should have been blank");
 
 		// Test some insertions
 		try (Transaction tx = Transaction.openOuter()) {
@@ -113,6 +113,6 @@ public class FluidTransferTest implements ModInitializer {
 		}
 
 		// Test content again to make sure the rollback worked as expected
-		if (!waterStorage.isEmpty()) throw new AssertionError("Should have been empty");
+		if (!waterStorage.isResourceBlank()) throw new AssertionError("Should have been blank");
 	}
 }

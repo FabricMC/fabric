@@ -38,8 +38,8 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<FluidVariant>
 	}
 
 	@Override
-	public boolean isEmpty() {
-		return infiniteFluid.isEmpty();
+	public boolean isResourceBlank() {
+		return infiniteFluid.isBlank();
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<FluidVariant>
 
 	@Override
 	public long extract(FluidVariant resource, long maxAmount, Transaction transaction) {
-		StoragePreconditions.notEmptyNotNegative(resource, maxAmount);
+		StoragePreconditions.notBlankNotNegative(resource, maxAmount);
 
 		if (resource.equals(infiniteFluid)) {
 			return maxAmount;

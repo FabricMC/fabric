@@ -27,10 +27,9 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
 /**
  * A storage that can store a single fluid variant at any given time.
- * Implementors should at least override {@link #getCapacity}, and probably {@link #markDirty} as well.
+ * Implementors should at least override {@link #getCapacity(FluidVariant)}, and probably {@link #markDirty} as well.
  *
- * <p>{@link #canInsert} and {@link #canExtract} can be used for more precise control over which fluids may be inserted or
- * extracted.
+ * <p>{@link #canInsert} and {@link #canExtract} can be used for more precise control over which fluids may be inserted or extracted.
  * If one of these two functions is overridden to always return false, implementors may also wish to override
  * {@link #supportsInsertion} and/or {@link #supportsExtraction}.
  *
@@ -40,7 +39,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 @ApiStatus.Experimental
 @Deprecated
 public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmount<FluidVariant>> implements SingleSlotStorage<FluidVariant> {
-	public FluidVariant fluidVariant = FluidVariant.empty();
+	public FluidVariant fluidVariant = FluidVariant.blank();
 	public long amount;
 
 	/**
@@ -50,27 +49,28 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	}
 
 	/**
-	 * @return {@code true} if the passed non-empty fluid variant can be inserted, {@code false} otherwise.
+	 * @return {@code true} if the passed non-blank fluid variant can be inserted, {@code false} otherwise.
 	 */
 	protected boolean canInsert(FluidVariant fluidVariant) {
 		return true;
 	}
 
 	/**
-	 * @return {@code true} if the passed non-empty fluid variant can be extracted, {@code false} otherwise.
+	 * @return {@code true} if the passed non-blank fluid variant can be extracted, {@code false} otherwise.
 	 */
 	protected boolean canExtract(FluidVariant fluidVariant) {
 		return true;
 	}
 
 	/**
-	 * @return The maximum capacity of this storage for the passed non-empty fluid variant.
+	 * @return The maximum capacity of this storage for the passed fluid variant.
+	 * If the passed fluid variant is blank, an estimate should be returned.
 	 */
 	protected abstract long getCapacity(FluidVariant fluidVariant);
 
 	@Override
-	public final boolean isEmpty() {
-		return fluidVariant.isEmpty();
+	public final boolean isResourceBlank() {
+		return fluidVariant.isBlank();
 	}
 
 	@Override
@@ -80,30 +80,26 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 
 	@Override
 	public final long getAmount() {
-		return fluidVariant.isEmpty() ? 0 : amount;
+		return fluidVariant.isBlank() ? 0 : amount;
 	}
 
 	@Override
 	public final long getCapacity() {
-		if (isEmpty()) {
-			return 0;
-		} else {
-			return getCapacity(fluidVariant);
-		}
+		return getCapacity(fluidVariant);
 	}
 
 	@Override
 	public final long insert(FluidVariant insertedFluid, long maxAmount, Transaction transaction) {
-		StoragePreconditions.notEmptyNotNegative(insertedFluid, maxAmount);
+		StoragePreconditions.notBlankNotNegative(insertedFluid, maxAmount);
 
-		if ((insertedFluid.equals(fluidVariant) || fluidVariant.isEmpty()) && canInsert(insertedFluid)) {
+		if ((insertedFluid.equals(fluidVariant) || fluidVariant.isBlank()) && canInsert(insertedFluid)) {
 			long insertedAmount = Math.min(maxAmount, getCapacity(insertedFluid) - amount);
 
 			if (insertedAmount > 0) {
 				updateSnapshots(transaction);
 
 				// Just in case.
-				if (fluidVariant.isEmpty()) {
+				if (fluidVariant.isBlank()) {
 					amount = 0;
 				}
 
@@ -119,7 +115,7 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 
 	@Override
 	public final long extract(FluidVariant extractedFluid, long maxAmount, Transaction transaction) {
-		StoragePreconditions.notEmptyNotNegative(extractedFluid, maxAmount);
+		StoragePreconditions.notBlankNotNegative(extractedFluid, maxAmount);
 
 		if (extractedFluid.equals(fluidVariant) && canExtract(extractedFluid)) {
 			long extractedAmount = Math.min(maxAmount, amount);
@@ -129,7 +125,7 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 				amount -= extractedAmount;
 
 				if (amount == 0) {
-					fluidVariant = FluidVariant.empty();
+					fluidVariant = FluidVariant.blank();
 				}
 			}
 

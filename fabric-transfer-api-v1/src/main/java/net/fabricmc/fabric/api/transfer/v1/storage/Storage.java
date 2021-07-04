@@ -50,7 +50,7 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
  *     For example, Fabric API provides {@link SingleFluidStorage} to accelerate implementations of {@code Storage<FluidVariant>}.</li>
  * </ul>
  *
- * <p><b>Important note:</b> Unless otherwise specified, all transfer functions take a non-empty resource
+ * <p><b>Important note:</b> Unless otherwise specified, all transfer functions take a non-blank resource
  * and a non-negative maximum amount as parameters.
  * Implementations are encouraged to throw an exception if these preconditions are violated.
  * {@link StoragePreconditions} can be used for these checks.
@@ -88,7 +88,7 @@ public interface Storage<T> {
 	/**
 	 * Try to insert up to some amount of a resource into this storage.
 	 *
-	 * @param resource The resource to insert. May not be empty.
+	 * @param resource The resource to insert. May not be blank.
 	 * @param maxAmount The maximum amount of resource to insert. May not be negative.
 	 * @param transaction The transaction this operation is part of.
 	 * @return A nonnegative integer not greater than maxAmount: the amount that was inserted.
@@ -108,7 +108,7 @@ public interface Storage<T> {
 	/**
 	 * Try to extract up to some amount of a resource from this storage.
 	 *
-	 * @param resource The resource to extract. May not be empty.
+	 * @param resource The resource to extract. May not be blank.
 	 * @param maxAmount The maximum amount of resource to extract. May not be negative.
 	 * @param transaction The transaction this operation is part of.
 	 * @return A nonnegative integer not greater than maxAmount: the amount that was extracted.
@@ -162,7 +162,7 @@ public interface Storage<T> {
 	 * and may never be used once the passed transaction has been closed.
 	 *
 	 * @param transaction The transaction to which the scope of the returned storage view is tied.
-	 * @param resource The resource for which a storage view is requested. May be empty.
+	 * @param resource The resource for which a storage view is requested. May be blank, for example to estimate capacity.
 	 * @return A view over this storage for the passed resource, or {@code null} if none is quickly available.
 	 */
 	@Nullable

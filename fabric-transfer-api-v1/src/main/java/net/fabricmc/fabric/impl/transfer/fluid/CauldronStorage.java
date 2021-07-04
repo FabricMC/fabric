@@ -68,7 +68,7 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 
 	@Override
 	public long insert(FluidVariant fluidVariant, long maxAmount, Transaction transaction) {
-		StoragePreconditions.notEmptyNotNegative(fluidVariant, maxAmount);
+		StoragePreconditions.notBlankNotNegative(fluidVariant, maxAmount);
 
 		CauldronFluidContent insertData = CauldronFluidContent.getForFluid(fluidVariant.getFluid());
 
@@ -106,7 +106,7 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 
 	@Override
 	public long extract(FluidVariant fluidVariant, long maxAmount, Transaction transaction) {
-		StoragePreconditions.notEmptyNotNegative(fluidVariant, maxAmount);
+		StoragePreconditions.notBlankNotNegative(fluidVariant, maxAmount);
 
 		CauldronFluidContent currentData = getData();
 
@@ -133,8 +133,8 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 	}
 
 	@Override
-	public boolean isEmpty() {
-		return getResource().isEmpty();
+	public boolean isResourceBlank() {
+		return getResource().isBlank();
 	}
 
 	@Override

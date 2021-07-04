@@ -43,9 +43,9 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 @ApiStatus.NonExtendable
 public interface FluidVariant extends TransferVariant<Fluid> {
 	/**
-	 * Retrieve an empty FluidVariant.
+	 * Retrieve a blank FluidVariant.
 	 */
-	static FluidVariant empty() {
+	static FluidVariant blank() {
 		return of(Fluids.EMPTY);
 	}
 
@@ -73,7 +73,7 @@ public interface FluidVariant extends TransferVariant<Fluid> {
 	/**
 	 * Deserialize a variant from an NBT compound tag, assuming it was serialized using {@link #toNbt}.
 	 *
-	 * <p>If an error occurs during deserialization, it will be logged with the DEBUG level, and an empty variant will be returned.
+	 * <p>If an error occurs during deserialization, it will be logged with the DEBUG level, and a blank variant will be returned.
 	 */
 	static FluidVariant fromNbt(NbtCompound nbt) {
 		return FluidVariantImpl.fromNbt(nbt);

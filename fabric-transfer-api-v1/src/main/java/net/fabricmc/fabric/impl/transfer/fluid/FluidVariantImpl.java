@@ -62,7 +62,7 @@ public class FluidVariantImpl implements FluidVariant {
 	}
 
 	@Override
-	public boolean isEmpty() {
+	public boolean isBlank() {
 		return fluid == Fluids.EMPTY;
 	}
 
@@ -95,13 +95,13 @@ public class FluidVariantImpl implements FluidVariant {
 			return of(fluid, aTag);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.debug("Tried to load an invalid FluidVariant from NBT: {}", tag, runtimeException);
-			return FluidVariant.empty();
+			return FluidVariant.blank();
 		}
 	}
 
 	@Override
 	public void toPacket(PacketByteBuf buf) {
-		if (isEmpty()) {
+		if (isBlank()) {
 			buf.writeBoolean(false);
 		} else {
 			buf.writeBoolean(true);
@@ -112,7 +112,7 @@ public class FluidVariantImpl implements FluidVariant {
 
 	public static FluidVariant fromPacket(PacketByteBuf buf) {
 		if (!buf.readBoolean()) {
-			return FluidVariant.empty();
+			return FluidVariant.blank();
 		} else {
 			Fluid fluid = Registry.FLUID.get(buf.readVarInt());
 			NbtCompound tag = buf.readNbt();
