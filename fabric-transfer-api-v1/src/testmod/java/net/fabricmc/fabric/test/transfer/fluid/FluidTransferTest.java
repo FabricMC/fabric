@@ -68,8 +68,11 @@ public class FluidTransferTest implements ModInitializer {
 		Registry.register(Registry.ITEM, id, new BlockItem(block, new Item.Settings().group(ItemGroup.MISC)));
 	}
 
-	private static void testFluidStorage() {
-		SingleFluidStorage waterStorage = new SingleFluidStorage() {
+	private static final FluidVariant TAGGED_WATER, TAGGED_WATER_2, WATER, LAVA;
+	private static int markDirtyCount = 0;
+
+	private static SingleFluidStorage createWaterStorage() {
+		return new SingleFluidStorage() {
 			@Override
 			protected long getCapacity(FluidVariant fluidVariant) {
 				return BUCKET * 2;
@@ -79,14 +82,25 @@ public class FluidTransferTest implements ModInitializer {
 			protected boolean canInsert(FluidVariant fluidVariant) {
 				return fluidVariant.isOf(Fluids.WATER);
 			}
-		};
 
+			@Override
+			protected void markDirty() {
+				markDirtyCount++;
+			}
+		};
+	}
+
+	static {
 		NbtCompound tag = new NbtCompound();
 		tag.putInt("test", 1);
-		FluidVariant taggedWater = FluidVariant.of(Fluids.WATER, tag);
-		FluidVariant taggedWater2 = FluidVariant.of(Fluids.WATER, tag);
-		FluidVariant water = FluidVariant.of(Fluids.WATER);
-		FluidVariant lava = FluidVariant.of(Fluids.LAVA);
+		TAGGED_WATER = FluidVariant.of(Fluids.WATER, tag);
+		TAGGED_WATER_2 = FluidVariant.of(Fluids.WATER, tag);
+		WATER = FluidVariant.of(Fluids.WATER);
+		LAVA = FluidVariant.of(Fluids.LAVA);
+	}
+
+	private static void testFluidStorage() {
+		SingleFluidStorage waterStorage = createWaterStorage();
 
 		// Test content
 		if (!waterStorage.isResourceBlank()) throw new AssertionError("Should have been blank");
@@ -94,25 +108,77 @@ public class FluidTransferTest implements ModInitializer {
 		// Test some insertions
 		try (Transaction tx = Transaction.openOuter()) {
 			// Should not allow lava (canInsert returns false)
-			if (waterStorage.insert(lava, BUCKET, tx) != 0) throw new AssertionError("Lava inserted");
+			if (waterStorage.insert(LAVA, BUCKET, tx) != 0) throw new AssertionError("Lava inserted");
 			// Should allow insert
-			if (waterStorage.insert(taggedWater, BUCKET, tx) != BUCKET) throw new AssertionError("Tagged water insert 1 failed");
+			if (waterStorage.insert(TAGGED_WATER, BUCKET, tx) != BUCKET) throw new AssertionError("Tagged water insert 1 failed");
 			// Variants are different, should not allow insert
-			if (waterStorage.insert(water, BUCKET, tx) != 0) throw new AssertionError("Water inserted");
+			if (waterStorage.insert(WATER, BUCKET, tx) != 0) throw new AssertionError("Water inserted");
 			// Should allow insert again even if the variant is different cause they are equal
-			if (waterStorage.insert(taggedWater2, BUCKET, tx) != BUCKET) throw new AssertionError("Tagged water insert 2 failed");
+			if (waterStorage.insert(TAGGED_WATER_2, BUCKET, tx) != BUCKET) throw new AssertionError("Tagged water insert 2 failed");
 			// Should not allow further insertion because the storage is full
-			if (waterStorage.insert(taggedWater, BUCKET, tx) != 0) throw new AssertionError("Storage full, yet something was inserted");
+			if (waterStorage.insert(TAGGED_WATER, BUCKET, tx) != 0) throw new AssertionError("Storage full, yet something was inserted");
 			// Should allow extraction
-			if (waterStorage.extract(taggedWater2, BUCKET, tx) != BUCKET) throw new AssertionError("Extraction failed");
+			if (waterStorage.extract(TAGGED_WATER_2, BUCKET, tx) != BUCKET) throw new AssertionError("Extraction failed");
 			// Re-insert
-			if (waterStorage.insert(taggedWater2, BUCKET, tx) != BUCKET) throw new AssertionError("Tagged water insert 3 failed");
+			if (waterStorage.insert(TAGGED_WATER_2, BUCKET, tx) != BUCKET) throw new AssertionError("Tagged water insert 3 failed");
 			// Test contents
-			if (waterStorage.getAmount() != BUCKET * 2 || !waterStorage.getResource().equals(taggedWater2)) throw new AssertionError("Contents are wrong");
+			if (waterStorage.getAmount() != BUCKET * 2 || !waterStorage.getResource().equals(TAGGED_WATER_2)) throw new AssertionError("Contents are wrong");
 			// No commit -> will abort
 		}
 
 		// Test content again to make sure the rollback worked as expected
 		if (!waterStorage.isResourceBlank()) throw new AssertionError("Should have been blank");
+
+		// Test highly nested commit
+		try (Transaction tx = Transaction.openOuter()) {
+			if (waterStorage.getAmount() != 0) throw new AssertionError("Initial amount is wrong");
+			if (waterStorage.insert(WATER, BUCKET, tx) != BUCKET) throw new AssertionError("Water insertion failed");
+
+			try (Transaction nested1 = tx.openNested()) {
+				try (Transaction nested2 = nested1.openNested()) {
+					if (waterStorage.insert(WATER, BUCKET, nested2) != BUCKET) throw new AssertionError("Nested insertion failed");
+					if (waterStorage.getAmount() != 2 * BUCKET) throw new AssertionError("Two buckets have been inserted");
+					nested2.commit();
+				}
+
+				if (waterStorage.getAmount() != 2 * BUCKET) throw new AssertionError("Nested no 1 was committed, so we should still have two buckets");
+				nested1.commit();
+			}
+
+			if (waterStorage.getAmount() != 2 * BUCKET) throw new AssertionError("Nested no 1 was committed, so we should still have two buckets");
+		}
+
+		if (waterStorage.getAmount() != 0) throw new AssertionError("Amount should have been reverted to zero");
+
+		// Test nested commit to make sure it behaves as expected
+
+		// Without outer commit
+		insertWaterWithNesting(waterStorage, false);
+		if (waterStorage.getAmount() != 0) throw new AssertionError("Amount should have been reverted to zero");
+		if (markDirtyCount != 0) throw new AssertionError("Nothing should have called markDirty() yet (no outer commit)");
+
+		// With outer commit
+		insertWaterWithNesting(waterStorage, true);
+		if (waterStorage.getAmount() != 2 * BUCKET) throw new AssertionError("Outer was committed, so we should still have two buckets");
+		if (markDirtyCount != 1) throw new AssertionError("markDirty() should have been called exactyl once.");
+	}
+
+	private static void insertWaterWithNesting(SingleFluidStorage waterStorage, boolean doOuterCommit) {
+		try (Transaction tx = Transaction.openOuter()) {
+			if (waterStorage.getAmount() != 0) throw new AssertionError("Initial amount is wrong");
+			if (waterStorage.insert(WATER, BUCKET, tx) != BUCKET) throw new AssertionError("Water insertion failed");
+
+			try (Transaction nested = tx.openNested()) {
+				if (waterStorage.insert(WATER, BUCKET, nested) != BUCKET) throw new AssertionError("Nested insertion failed");
+				if (waterStorage.getAmount() != 2 * BUCKET) throw new AssertionError("Two buckets have been inserted");
+				nested.commit();
+			}
+
+			if (waterStorage.getAmount() != 2 * BUCKET) throw new AssertionError("Nested was committed, so we should still have two buckets");
+
+			if (doOuterCommit) {
+				tx.commit();
+			}
+		}
 	}
 }

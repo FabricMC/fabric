@@ -104,16 +104,14 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 			readSnapshot(snapshot);
 			releaseSnapshot(snapshot);
 		} else if (transaction.nestingDepth() > 0) {
-			// If the transaction was committed, we move the snapshot one nesting level up.
-			T oldSnapshot = snapshots.set(transaction.nestingDepth()-1, snapshot);
-
-			if (oldSnapshot != null) {
-				// The newer snapshot takes precedence.
-				// A callback is already registered for the older snapshot, no need to call addCloseCallback.
-				releaseSnapshot(oldSnapshot);
-			} else {
+			if (snapshots.get(transaction.nestingDepth() - 1) == null) {
+				// No snapshot yet, so move the snapshot one nesting level up.
+				snapshots.set(transaction.nestingDepth() - 1, snapshot);
 				// This is the first snapshot at this level: we need to call addCloseCallback.
-				transaction.getOpenTransaction(transaction.nestingDepth()-1).addCloseCallback(this);
+				transaction.getOpenTransaction(transaction.nestingDepth() - 1).addCloseCallback(this);
+			} else {
+				// There is already an older snapshot at the nesting level above, just release the newer one.
+				releaseSnapshot(snapshot);
 			}
 		} else {
 			releaseSnapshot(snapshot);
