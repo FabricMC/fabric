@@ -171,19 +171,39 @@ public interface Storage<T> {
 	}
 
 	/**
-	 * Return an integer representing the current version of the storage.
-	 * It <b>must</b> change if the state of the storage has changed,
-	 * but it may also change even if the state of the storage hasn't changed.
+	 * Return an integer representing the current version of this storage instance to allow for fast change detection:
+	 * if the version hasn't changed since the last time, <b>and the storage instance is the same</b>, the storage has the same contents.
+	 * This can be used to avoid re-scanning the contents of the storage, which could be an expensive operation.
+	 * It may be used like that:
+	 * <pre>{@code
+	 * // Store storage and version:
+	 * Storage<?> firstStorage = // ...
+	 * long firstVersion = firstStorage.getVersion();
 	 *
-	 * <p>Note: It is not valid to call this during a transaction,
+	 * // Later, check if the secondStorage is the unchanged firstStorage:
+	 * Storage<?> secondStorage = // ...
+	 * long secondVersion = secondStorage.getVersion();
+	 * // We must check firstStorage == secondStorage first, otherwise versions may not be compared.
+	 * if (firstStorage == secondStorage && firstVersion == secondVersion) {
+	 *     // storage contents are the same.
+	 * } else {
+	 *     // storage contents might have changed.
+	 * }
+	 * }</pre>
+	 *
+	 * <p>The version <b>must</b> change if the state of the storage has changed,
+	 * generally after a direct modification, or at the end of a modifying transaction.
+	 * The version may also change even if the state of the storage hasn't changed.
+	 *
+	 * <p>It is not valid to call this during a transaction,
 	 * and implementations are encouraged to throw an exception if that happens.
 	 */
-	default int getVersion() {
+	default long getVersion() {
 		if (Transaction.isOpen()) {
 			throw new IllegalStateException("getVersion() may not be called during a transaction.");
 		}
 
-		return TransferApiImpl.version++;
+		return TransferApiImpl.version.getAndIncrement();
 	}
 
 	/**

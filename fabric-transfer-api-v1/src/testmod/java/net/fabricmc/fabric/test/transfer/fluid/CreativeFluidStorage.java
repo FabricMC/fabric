@@ -74,7 +74,7 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<FluidVariant>
 	}
 
 	@Override
-	public int getVersion() {
+	public long getVersion() {
 		return 0;
 	}
 }

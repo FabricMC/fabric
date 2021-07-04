@@ -18,13 +18,14 @@ package net.fabricmc.fabric.impl.transfer;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicLong;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class TransferApiImpl {
-	public static int version = 0;
+	public static final AtomicLong version = new AtomicLong();
 	@SuppressWarnings("rawtypes")
 	public static final Storage EMPTY_STORAGE = new Storage() {
 		@Override
@@ -53,7 +54,7 @@ public class TransferApiImpl {
 		}
 
 		@Override
-		public int getVersion() {
+		public long getVersion() {
 			return 0;
 		}
 	};
