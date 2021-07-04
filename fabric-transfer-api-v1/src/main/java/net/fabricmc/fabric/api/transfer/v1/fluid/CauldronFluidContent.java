@@ -42,8 +42,8 @@ import net.fabricmc.fabric.impl.transfer.fluid.CauldronStorage;
  *     <li>The block of the cauldron.</li>
  *     <li>The fluid that can be accepted by the cauldron. NBT is discarded when entering the cauldron.</li>
  *     <li>Which fluid amounts can be stored in the cauldron, and how they map to the level property of the cauldron.
- *     If {@code levelProperty} is {@code null}, then {@code minLevel = maxLevel = 1}, and there is only one level.
- *     Otherwise, the levels are all the integer values between {@code minLevel} and {@code maxLevel} (included).
+ *     If {@code levelProperty} is {@code null}, then {@code maxLevel = 1}, and there is only one level.
+ *     Otherwise, the levels are all the integer values between {@code 1} and {@code maxLevel} (included).
  *     </li>
  *     <li>{@code amountPerLevel} defines how much fluid (in droplets) there is in one level of the cauldron.</li>
  * </ul>
@@ -67,11 +67,8 @@ public final class CauldronFluidContent {
 	 */
 	public final long amountPerLevel;
 	/**
-	 * Minimum level for {@link #levelProperty}. Always {@code 1}.
-	 */
-	public final int minLevel;
-	/**
 	 * Maximum level for {@link #levelProperty}. {@code 1} if {@code levelProperty} is null, otherwise a number {@code >= 1}.
+	 * The minimum level is always 1.
 	 */
 	public final int maxLevel;
 	/**
@@ -80,11 +77,10 @@ public final class CauldronFluidContent {
 	@Nullable
 	public final IntProperty levelProperty;
 
-	private CauldronFluidContent(Block block, Fluid fluid, long amountPerLevel, int minLevel, int maxLevel, @Nullable IntProperty levelProperty) {
+	private CauldronFluidContent(Block block, Fluid fluid, long amountPerLevel, int maxLevel, @Nullable IntProperty levelProperty) {
 		this.block = block;
 		this.fluid = fluid;
 		this.amountPerLevel = amountPerLevel;
-		this.minLevel = minLevel;
 		this.maxLevel = maxLevel;
 		this.levelProperty = levelProperty;
 	}
@@ -132,7 +128,7 @@ public final class CauldronFluidContent {
 		CauldronFluidContent data;
 
 		if (levelProperty == null) {
-			data = new CauldronFluidContent(block, fluid, amountPerLevel, 1, 1, null);
+			data = new CauldronFluidContent(block, fluid, amountPerLevel, 1, null);
 		} else {
 			Collection<Integer> levels = levelProperty.getValues();
 
@@ -152,7 +148,7 @@ public final class CauldronFluidContent {
 				throw new IllegalStateException("Minimum level should be 1, and maximum level should be >= 1.");
 			}
 
-			data = new CauldronFluidContent(block, fluid, amountPerLevel, minLevel, maxLevel, levelProperty);
+			data = new CauldronFluidContent(block, fluid, amountPerLevel, maxLevel, levelProperty);
 		}
 
 		BLOCK_TO_CAULDRON.putIfAbsent(block, data);
