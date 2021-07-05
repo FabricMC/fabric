@@ -16,11 +16,14 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Rarity;
+import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
 
@@ -32,6 +35,32 @@ import net.fabricmc.fabric.impl.item.FabricItemInternals;
  * {@code new FabricItemSettings()}.
  */
 public class FabricItemSettings extends Item.Settings {
+	/**
+	 * Sets the bundle occupancy of the item.
+	 * THe actual bundle occupancy is {@code value} multiplied by the stack size.
+	 *
+	 * @param value The static bundle occupancy value.
+	 * @deprecated Experimental feature, may be removed or changed without further notice: Snapshot feature.
+	 */
+	@ApiStatus.Experimental
+	@Deprecated
+	public FabricItemSettings bundleOccupancy(int value) {
+		return this.bundleOccupancy((stack) -> MathHelper.clamp(value, 1, Integer.MAX_VALUE) * stack.getCount());
+	}
+
+	/**
+	 * Sets the bundle occupancy provider used to calculate the bundle occupancy of the item.
+	 *
+	 * @param bundleOccupancyProvider The bundle occupancy provider.
+	 * @deprecated Experimental feature, may be removed or changed without further notice: Snapshot feature.
+	 */
+	@ApiStatus.Experimental
+	@Deprecated
+	public FabricItemSettings bundleOccupancy(BundleOccupancyProvider bundleOccupancyProvider) {
+		FabricItemInternals.computeExtraData(this).bundleOccupancy(bundleOccupancyProvider);
+		return this;
+	}
+
 	/**
 	 * Sets the equipment slot provider of the item.
 	 *
