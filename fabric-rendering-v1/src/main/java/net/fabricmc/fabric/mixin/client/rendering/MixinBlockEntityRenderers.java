@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.renderer.registry;
+package net.fabricmc.fabric.mixin.client.rendering;
 
 import java.util.Map;
 
@@ -29,7 +29,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.block.entity.BlockEntityType;
 
-import net.fabricmc.fabric.impl.client.renderer.registry.BlockEntityRendererRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl;
 
 @Mixin(BlockEntityRendererFactories.class)
 public abstract class MixinBlockEntityRenderers {

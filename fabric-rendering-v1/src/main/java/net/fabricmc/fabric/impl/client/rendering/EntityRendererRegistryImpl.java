@@ -14,19 +14,31 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.renderer.registry;
+package net.fabricmc.fabric.impl.client.rendering;
+
+import java.util.HashMap;
+import java.util.function.BiConsumer;
 
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
-
 /**
  * Helper class for registering EntityRenderers.
  */
-public final class EntityRendererRegistryImpl implements EntityRendererRegistry {
-	public <T extends Entity> void register(EntityType<? extends T> entityType, EntityRendererFactory<T> factory) {
-		net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry.register(entityType, factory);
+public final class EntityRendererRegistryImpl {
+	private static HashMap<EntityType<?>, EntityRendererFactory<?>> map = new HashMap<>();
+	private static BiConsumer<EntityType<?>, EntityRendererFactory<?>> handler = (type, function) -> map.put(type, function);
+
+	public static <T extends Entity> void register(EntityType<? extends T> entityType, EntityRendererFactory<T> factory) {
+		handler.accept(entityType, factory);
+	}
+
+	public static void setup(BiConsumer<EntityType<?>, EntityRendererFactory<?>> vanillaHandler) {
+		map.forEach(vanillaHandler);
+		handler = vanillaHandler;
+	}
+
+	private EntityRendererRegistryImpl() {
 	}
 }
