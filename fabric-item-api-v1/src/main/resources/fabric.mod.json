@@ -16,7 +16,8 @@
     "FabricMC"
   ],
   "mixins": [
-    "fabric-item-api-v1.mixins.json"
+    "fabric-item-api-v1.mixins.json",
+    "fabric-item-api-v1-elytra.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.4.0",
