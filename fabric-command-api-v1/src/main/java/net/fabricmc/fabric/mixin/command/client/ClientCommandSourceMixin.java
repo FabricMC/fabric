@@ -16,16 +16,13 @@
 
 package net.fabricmc.fabric.mixin.command.client;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.MessageType;
@@ -33,8 +30,6 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 
@@ -45,10 +40,7 @@ abstract class ClientCommandSourceMixin implements FabricClientCommandSource {
 	private MinecraftClient client;
 
 	private Entity entity = client.player;
-	private Vec3d position = entity.getPos();
-	private Vec2f rotation = entity.getRotationClient();
 	private ClientWorld world = client.world;
-	private Map<String, Object> meta = new HashMap<>();
 
 	@Override
 	public void sendFeedback(Text message) {
@@ -66,36 +58,16 @@ abstract class ClientCommandSourceMixin implements FabricClientCommandSource {
 	}
 
 	@Override
-	public ClientPlayerEntity getPlayer() {
-		if (entity instanceof ClientPlayerEntity) {
-			return (ClientPlayerEntity) entity;
+	public AbstractClientPlayerEntity getPlayer() {
+		if (entity instanceof AbstractClientPlayerEntity) {
+			return (AbstractClientPlayerEntity) entity;
 		}
 
 		return client.player;
 	}
 
 	@Override
-	public Entity getEntity() {
-		return entity;
-	}
-
-	@Override
-	public Vec3d getPosition() {
-		return position;
-	}
-
-	@Override
-	public Vec2f getRotation() {
-		return rotation;
-	}
-
-	@Override
 	public ClientWorld getWorld() {
 		return world;
-	}
-
-	@Override
-	public Object getMeta(String key) {
-		return meta.get(key);
 	}
 }

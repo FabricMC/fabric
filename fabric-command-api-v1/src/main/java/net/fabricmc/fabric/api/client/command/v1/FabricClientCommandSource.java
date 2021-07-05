@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.command.v1;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.command.CommandSource;
@@ -59,28 +60,34 @@ public interface FabricClientCommandSource extends CommandSource {
 	 *
 	 * @return the player
 	 */
-	ClientPlayerEntity getPlayer();
+	AbstractClientPlayerEntity getPlayer();
 
 	/**
 	 * Gets the entity that used the command.
 	 *
 	 * @return the entity
 	 */
-	Entity getEntity();
+	default Entity getEntity() {
+		return getPlayer();
+	}
 
 	/**
 	 * Gets the position from where the command has been executed.
 	 *
 	 * @return the position
 	 */
-	Vec3d getPosition();
+	default Vec3d getPosition() {
+		return getPlayer().getPos();
+	}
 
 	/**
 	 * Gets the rotation of the entity that used the command.
 	 *
 	 * @return the rotation
 	 */
-	Vec2f getRotation();
+	default Vec2f getRotation() {
+		return getPlayer().getRotationClient();
+	}
 
 	/**
 	 * Gets the world where the player used the command.
@@ -95,5 +102,7 @@ public interface FabricClientCommandSource extends CommandSource {
 	 * @param key the meta key
 	 * @return the meta
 	 */
-	Object getMeta(String key);
+	default Object getMeta(String key) {
+		return null;
+	}
 }
