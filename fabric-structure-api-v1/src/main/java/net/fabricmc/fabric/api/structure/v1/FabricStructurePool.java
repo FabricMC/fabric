@@ -50,6 +50,7 @@ public record FabricStructurePool(StructurePool underlying) {
 	public void addStructurePoolElement(StructurePoolElement element, int weight) {
 		//adds to elementCounts list; minecraft makes these immutable lists so we replace them with an array list
 		StructurePoolAccessor pool = (StructurePoolAccessor) underlying();
+
 		if (pool.getElementCounts() instanceof ArrayList) {
 			pool.getElementCounts().add(Pair.of(element, weight));
 		} else {
