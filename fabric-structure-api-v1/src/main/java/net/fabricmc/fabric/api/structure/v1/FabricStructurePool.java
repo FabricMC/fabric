@@ -30,7 +30,6 @@ import net.fabricmc.fabric.mixin.structure.StructurePoolAccessor;
  * Represents a modifiable structure pool that has several helper methods for modders.
  */
 public record FabricStructurePool(StructurePool underlying) {
-
 	/**
 	 * Adds a new {@link StructurePoolElement} to the {@link StructurePool}.
 	 * See the alternative {@link #addStructurePoolElement(StructurePoolElement, int)} for details.
