@@ -24,6 +24,7 @@ import org.jetbrains.annotations.ApiStatus;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 /**
  * An iterator for a single {@link StorageView}, tied to a transaction. Instances can be created with {@link #create}.
@@ -44,7 +45,7 @@ public final class SingleViewIterator<T> implements Iterator<StorageView<T>>, Tr
 	 *
 	 * <p>The iterator will ensure that it can only be used as long as the transaction is open.
 	 */
-	public static <T> Iterator<StorageView<T>> create(StorageView<T> view, Transaction transaction) {
+	public static <T> Iterator<StorageView<T>> create(StorageView<T> view, TransactionContext transaction) {
 		SingleViewIterator<T> it = new SingleViewIterator<>(view);
 		transaction.addCloseCallback(it);
 		return it;
@@ -78,7 +79,7 @@ public final class SingleViewIterator<T> implements Iterator<StorageView<T>>, Tr
 	}
 
 	@Override
-	public void onClose(Transaction transaction, Transaction.Result result) {
+	public void onClose(TransactionContext transaction, Transaction.Result result) {
 		open = false;
 	}
 }

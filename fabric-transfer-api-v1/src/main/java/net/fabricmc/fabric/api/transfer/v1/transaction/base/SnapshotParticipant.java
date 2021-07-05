@@ -23,6 +23,7 @@ import java.util.Objects;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 /**
  * A base participant implementation that modifies itself during transactions,
@@ -78,7 +79,7 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 	 * committed or rolled back.
 	 * This function should be called every time the participant is about to change its internal state as part of a transaction.
 	 */
-	public final void updateSnapshots(Transaction transaction) {
+	public final void updateSnapshots(TransactionContext transaction) {
 		// Make sure we have enough storage for snapshots
 		while (snapshots.size() <= transaction.nestingDepth()) {
 			snapshots.add(null);
@@ -95,7 +96,7 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 	}
 
 	@Override
-	public final void onClose(Transaction transaction, Transaction.Result result) {
+	public final void onClose(TransactionContext transaction, Transaction.Result result) {
 		// Get and remove the relevant snapshot.
 		T snapshot = snapshots.set(transaction.nestingDepth(), null);
 

@@ -22,6 +22,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 /**
  * Helper functions to work with {@link Storage}s.
@@ -47,7 +48,7 @@ public final class StorageUtil {
 	 * @return The total amount of resources that was successfully transferred.
 	 * @throws IllegalStateException If no transaction is passed and a transaction is already active on the current thread.
 	 */
-	public static <T> long move(Storage<T> from, Storage<T> to, Predicate<T> filter, long maxAmount, @Nullable Transaction transaction) {
+	public static <T> long move(Storage<T> from, Storage<T> to, Predicate<T> filter, long maxAmount, @Nullable TransactionContext transaction) {
 		long totalMoved = 0;
 
 		try (Transaction iterationTransaction = (transaction == null ? Transaction.openOuter() : transaction.openNested())) {
@@ -95,7 +96,7 @@ public final class StorageUtil {
 	 * @return A non-blank resource stored in the storage, or {@code null} if none could be found.
 	 */
 	@Nullable
-	public static <T> T findStoredResource(@Nullable Storage<T> storage, @Nullable Transaction transaction) {
+	public static <T> T findStoredResource(@Nullable Storage<T> storage, @Nullable TransactionContext transaction) {
 		if (storage == null) return null;
 
 		if (transaction == null) {
@@ -108,7 +109,7 @@ public final class StorageUtil {
 	}
 
 	@Nullable
-	private static <T> T findStoredResourceInner(Storage<T> storage, Transaction transaction) {
+	private static <T> T findStoredResourceInner(Storage<T> storage, TransactionContext transaction) {
 		for (StorageView<T> view : storage.iterable(transaction)) {
 			if (!view.isResourceBlank()) {
 				return view.getResource();
@@ -126,7 +127,7 @@ public final class StorageUtil {
 	 * @return A non-blank resource stored in the storage that can be extracted, or {@code null} if none could be found.
 	 */
 	@Nullable
-	public static <T> T findExtractableResource(@Nullable Storage<T> storage, @Nullable Transaction transaction) {
+	public static <T> T findExtractableResource(@Nullable Storage<T> storage, @Nullable TransactionContext transaction) {
 		if (storage == null) return null;
 
 		try (Transaction nested = transaction == null ? Transaction.openOuter() : transaction.openNested()) {

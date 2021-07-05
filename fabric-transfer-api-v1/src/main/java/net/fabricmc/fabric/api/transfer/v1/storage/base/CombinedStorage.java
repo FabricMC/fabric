@@ -25,6 +25,7 @@ import org.jetbrains.annotations.ApiStatus;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 /**
@@ -59,7 +60,7 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 	}
 
 	@Override
-	public long insert(T resource, long maxAmount, Transaction transaction) {
+	public long insert(T resource, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notNegative(maxAmount);
 		long amount = 0;
 
@@ -83,7 +84,7 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 	}
 
 	@Override
-	public long extract(T resource, long maxAmount, Transaction transaction) {
+	public long extract(T resource, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notNegative(maxAmount);
 		long amount = 0;
 
@@ -96,7 +97,7 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 	}
 
 	@Override
-	public Iterator<StorageView<T>> iterator(Transaction transaction) {
+	public Iterator<StorageView<T>> iterator(TransactionContext transaction) {
 		return new CombinedIterator(transaction);
 	}
 
@@ -105,12 +106,12 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 	 */
 	private class CombinedIterator implements Iterator<StorageView<T>>, Transaction.CloseCallback {
 		boolean open = true;
-		final Transaction transaction;
+		final TransactionContext transaction;
 		final Iterator<S> partIterator = parts.iterator();
 		// Always holds the next StorageView<T>, except during next() while the iterator is being advanced.
 		Iterator<StorageView<T>> currentPartIterator = null;
 
-		CombinedIterator(Transaction transaction) {
+		CombinedIterator(TransactionContext transaction) {
 			this.transaction = transaction;
 			advanceCurrentPartIterator();
 			transaction.addCloseCallback(this);
@@ -152,7 +153,7 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 		}
 
 		@Override
-		public void onClose(Transaction transaction, Transaction.Result result) {
+		public void onClose(TransactionContext transaction, Transaction.Result result) {
 			// As soon as the transaction is closed, this iterator is not valid anymore.
 			open = false;
 		}

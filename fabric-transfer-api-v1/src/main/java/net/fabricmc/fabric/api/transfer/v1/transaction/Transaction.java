@@ -66,6 +66,9 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
  * <p>This is very low-level for most applications, and most participants should subclass {@link SnapshotParticipant}
  * that will take care of properly maintaining their state.
  *
+ * <p>Participants should generally be passed a {@link TransactionContext} parameter instead of the full {@code Transaction},
+ * to make sure they don't call {@link #abort}, {@link #commit} and {@link #close} mistakenly.
+ *
  * <p>Every transaction is only valid on the thread it was opened on,
  * and attempts to use it on another thread will throw an exception.
  * Consequently, transactions can be concurrent across multiple threads, as long as they don't share any state.
@@ -76,7 +79,7 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
 @ApiStatus.Experimental
 @Deprecated
 @ApiStatus.NonExtendable
-public interface Transaction extends AutoCloseable {
+public interface Transaction extends AutoCloseable, TransactionContext {
 	/**
 	 * Open a new outer transaction.
 	 *
@@ -92,15 +95,6 @@ public interface Transaction extends AutoCloseable {
 	static boolean isOpen() {
 		return TransactionManagerImpl.MANAGERS.get().isOpen();
 	}
-
-	/**
-	 * Open a new nested transaction.
-	 *
-	 * @throws IllegalStateException If this function is not called on the thread this transaction was opened in.
-	 * @throws IllegalStateException If this transaction is not the current transaction.
-	 * @throws IllegalStateException If this transaction was closed.
-	 */
-	Transaction openNested();
 
 	/**
 	 * Close the current transaction, rolling back all the changes that happened during this transaction and
@@ -130,92 +124,4 @@ public interface Transaction extends AutoCloseable {
 	 */
 	@Override
 	void close();
-
-	/**
-	 * @return The nesting depth of this transaction: 0 if it was opened with {@link #openOuter},
-	 * 1 if its parent was opened with {@link #openOuter}, and so on...
-	 * @throws IllegalStateException If this function is not called on the thread this transaction was opened in.
-	 */
-	int nestingDepth();
-
-	/**
-	 * Return the transaction with the specific nesting depth.
-	 *
-	 * @param nestingDepth Queried nesting depth.
-	 * @throws IndexOutOfBoundsException If there is no open transaction with the request nesting depth.
-	 * @throws IllegalStateException If this function is not called on the thread this transaction was opened in.
-	 */
-	Transaction getOpenTransaction(int nestingDepth);
-
-	/**
-	 * Register a callback that will be invoked when this transaction is closed.
-	 * Registered callbacks are invoked last-to-first: the last callback to be registered will be the first to be invoked, and so on...
-	 *
-	 * <p>Updates that may change the state of other participants should be deferred until after the outermost transaction is closed
-	 * using {@link #addOuterCloseCallback}.
-	 *
-	 * @throws IllegalStateException If this function is not called on the thread this transaction was opened in.
-	 */
-	void addCloseCallback(CloseCallback closeCallback);
-
-	/**
-	 * A callback that is invoked when a transaction is closed.
-	 */
-	@FunctionalInterface
-	interface CloseCallback {
-		/**
-		 * Perform an action when a transaction is closed.
-		 *
-		 * @param transaction The closed transaction. Only {@link #nestingDepth}, {@link #getOpenTransaction} and {@link #addOuterCloseCallback}
-		 *                    may be called on that transaction.
-		 *                    {@link #addCloseCallback} may additionally be called on parent transactions
-		 *                    (accessed through {@link #getOpenTransaction} for lower nesting depths).
-		 * @param result The result of this transaction: whether it was committed or aborted.
-		 */
-		void onClose(Transaction transaction, Result result);
-	}
-
-	/**
-	 * Register a callback that will be invoked after the outermost transaction is closed,
-	 * and after callbacks registered with {@link #addCloseCallback} are ran.
-	 * Registered callbacks are invoked last-to-first.
-	 *
-	 * @throws IllegalStateException If this function is not called on the thread this transaction was opened in.
-	 */
-	void addOuterCloseCallback(OuterCloseCallback outerCloseCallback);
-
-	/**
-	 * A callback that is invoked after the outer transaction is closed.
-	 */
-	@FunctionalInterface
-	interface OuterCloseCallback {
-		/**
-		 * Perform an action after the top-level transaction is closed.
-		 *
-		 * @param result The result of the top-level transaction.
-		 */
-		void afterOuterClose(Result result);
-	}
-
-	/**
-	 * The result of a transaction operation.
-	 */
-	enum Result {
-		ABORTED,
-		COMMITTED;
-
-		/**
-		 * @return true if the transaction was aborted, false if it was committed.
-		 */
-		public boolean wasAborted() {
-			return this == ABORTED;
-		}
-
-		/**
-		 * @return true if the transaction was committed, false if it was aborted.
-		 */
-		public boolean wasCommitted() {
-			return this == COMMITTED;
-		}
-	}
 }

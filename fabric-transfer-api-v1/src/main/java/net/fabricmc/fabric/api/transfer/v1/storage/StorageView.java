@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 /**
  * A view of a single stored resource in a {@link Storage}, for use with {@link Storage#iterator} or {@link Storage#exactView}.
@@ -38,7 +38,7 @@ public interface StorageView<T> {
 	 *
 	 * @return The amount that was extracted.
 	 */
-	long extract(T resource, long maxAmount, Transaction transaction);
+	long extract(T resource, long maxAmount, TransactionContext transaction);
 
 	/**
 	 * @return {@code true} if the {@link #getResource} contained in this storage view is blank, or {@code false} otherwise.

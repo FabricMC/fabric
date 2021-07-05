@@ -25,7 +25,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 public class CreativeFluidStorage implements ExtractionOnlyStorage<FluidVariant>, StorageView<FluidVariant> {
 	public static final CreativeFluidStorage WATER = new CreativeFluidStorage(FluidVariant.of(Fluids.WATER));
@@ -58,7 +58,7 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<FluidVariant>
 	}
 
 	@Override
-	public long extract(FluidVariant resource, long maxAmount, Transaction transaction) {
+	public long extract(FluidVariant resource, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notBlankNotNegative(resource, maxAmount);
 
 		if (resource.equals(infiniteFluid)) {
@@ -69,7 +69,7 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<FluidVariant>
 	}
 
 	@Override
-	public Iterator<StorageView<FluidVariant>> iterator(Transaction transaction) {
+	public Iterator<StorageView<FluidVariant>> iterator(TransactionContext transaction) {
 		return SingleViewIterator.create(this, transaction);
 	}
 

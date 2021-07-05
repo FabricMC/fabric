@@ -28,6 +28,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 /**
@@ -93,7 +94,7 @@ public interface Storage<T> {
 	 * @param transaction The transaction this operation is part of.
 	 * @return A nonnegative integer not greater than maxAmount: the amount that was inserted.
 	 */
-	long insert(T resource, long maxAmount, Transaction transaction);
+	long insert(T resource, long maxAmount, TransactionContext transaction);
 
 	/**
 	 * Return false if calling {@link #extract} will absolutely always return 0, or true otherwise or in doubt.
@@ -113,7 +114,7 @@ public interface Storage<T> {
 	 * @param transaction The transaction this operation is part of.
 	 * @return A nonnegative integer not greater than maxAmount: the amount that was extracted.
 	 */
-	long extract(T resource, long maxAmount, Transaction transaction);
+	long extract(T resource, long maxAmount, TransactionContext transaction);
 
 	/**
 	 * Iterate through the contents of this storage, for the scope of the passed transaction.
@@ -126,8 +127,7 @@ public interface Storage<T> {
 	 * {@link Iterator#hasNext hasNext()} must return {@code false},
 	 * and any call to {@link Iterator#next next()} must throw a {@link NoSuchElementException}.
 	 *
-	 * <p>{@link #insert(Object, long, Transaction) insert()} and {@link #extract(Object, long, Transaction) extract()}
-	 * may be called safely during iteration.
+	 * <p>{@link #insert} and {@link #extract} may be called safely during iteration.
 	 * Extractions should be visible to an open iterator, but insertions are not required to.
 	 * In particular, inventories with a fixed amount of slots may wish to make insertions visible to iterators,
 	 * but inventories with a dynamic or very large amount of slots should not do that to ensure timely termination of
@@ -136,7 +136,7 @@ public interface Storage<T> {
 	 * @param transaction The transaction to which the scope of the returned iterator is tied.
 	 * @return An iterator over the contents of this storage.
 	 */
-	Iterator<StorageView<T>> iterator(Transaction transaction);
+	Iterator<StorageView<T>> iterator(TransactionContext transaction);
 
 	/**
 	 * Iterate through the contents of this storage, for the scope of the passed transaction.
@@ -146,7 +146,7 @@ public interface Storage<T> {
 	 * @return An iterable over the contents of this storage.
 	 * @see #iterator
 	 */
-	default Iterable<StorageView<T>> iterable(Transaction transaction) {
+	default Iterable<StorageView<T>> iterable(TransactionContext transaction) {
 		return () -> iterator(transaction);
 	}
 
@@ -166,7 +166,7 @@ public interface Storage<T> {
 	 * @return A view over this storage for the passed resource, or {@code null} if none is quickly available.
 	 */
 	@Nullable
-	default StorageView<T> exactView(Transaction transaction, T resource) {
+	default StorageView<T> exactView(TransactionContext transaction, T resource) {
 		return null;
 	}
 

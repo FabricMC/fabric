@@ -22,7 +22,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
 /**
@@ -89,7 +89,7 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	}
 
 	@Override
-	public final long insert(FluidVariant insertedFluid, long maxAmount, Transaction transaction) {
+	public final long insert(FluidVariant insertedFluid, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notBlankNotNegative(insertedFluid, maxAmount);
 
 		if ((insertedFluid.equals(fluidVariant) || fluidVariant.isBlank()) && canInsert(insertedFluid)) {
@@ -114,7 +114,7 @@ public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmo
 	}
 
 	@Override
-	public final long extract(FluidVariant extractedFluid, long maxAmount, Transaction transaction) {
+	public final long extract(FluidVariant extractedFluid, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notBlankNotNegative(extractedFluid, maxAmount);
 
 		if (extractedFluid.equals(fluidVariant) && canExtract(extractedFluid)) {

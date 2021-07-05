@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 public class TransferApiImpl {
 	public static final AtomicLong version = new AtomicLong();
@@ -34,7 +34,7 @@ public class TransferApiImpl {
 		}
 
 		@Override
-		public long insert(Object resource, long maxAmount, Transaction transaction) {
+		public long insert(Object resource, long maxAmount, TransactionContext transaction) {
 			return 0;
 		}
 
@@ -44,12 +44,12 @@ public class TransferApiImpl {
 		}
 
 		@Override
-		public long extract(Object resource, long maxAmount, Transaction transaction) {
+		public long extract(Object resource, long maxAmount, TransactionContext transaction) {
 			return 0;
 		}
 
 		@Override
-		public Iterator<StorageView> iterator(Transaction transaction) {
+		public Iterator<StorageView> iterator(TransactionContext transaction) {
 			return Collections.emptyIterator();
 		}
 

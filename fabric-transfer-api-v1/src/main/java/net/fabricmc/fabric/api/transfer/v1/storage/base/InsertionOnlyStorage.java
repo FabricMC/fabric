@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.transfer.v1.storage.base;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 /**
  * A {@link Storage} that supports insertion, and not extraction.
@@ -36,7 +36,7 @@ public interface InsertionOnlyStorage<T> extends Storage<T> {
 	}
 
 	@Override
-	default long extract(T resource, long maxAmount, Transaction transaction) {
+	default long extract(T resource, long maxAmount, TransactionContext transaction) {
 		return 0;
 	}
 }

@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.CauldronFluidContent;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
 public class CauldronStorage extends SnapshotParticipant<BlockState> implements SingleSlotStorage<FluidVariant> {
@@ -55,7 +55,7 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 		lastReleasedSnapshot = snapshot;
 	}
 
-	private void updateLevel(CauldronFluidContent data, int level, Transaction transaction) {
+	private void updateLevel(CauldronFluidContent data, int level, TransactionContext transaction) {
 		updateSnapshots(transaction);
 		BlockState newState = data.block.getDefaultState();
 
@@ -67,7 +67,7 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 	}
 
 	@Override
-	public long insert(FluidVariant fluidVariant, long maxAmount, Transaction transaction) {
+	public long insert(FluidVariant fluidVariant, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notBlankNotNegative(fluidVariant, maxAmount);
 
 		CauldronFluidContent insertData = CauldronFluidContent.getForFluid(fluidVariant.getFluid());
@@ -105,7 +105,7 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 	}
 
 	@Override
-	public long extract(FluidVariant fluidVariant, long maxAmount, Transaction transaction) {
+	public long extract(FluidVariant fluidVariant, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notBlankNotNegative(fluidVariant, maxAmount);
 
 		CauldronFluidContent currentData = getData();
