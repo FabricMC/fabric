@@ -46,15 +46,39 @@ public final class TagRegistry {
 		return create(id, BlockTags::getTagGroup);
 	}
 
+	public static Tag<Block> block(String path) {
+		return block(globalId(path));
+	}
+
 	public static Tag<EntityType<?>> entityType(Identifier id) {
 		return create(id, EntityTypeTags::getTagGroup);
+	}
+
+	public static Tag<EntityType<?>> entityType(String path) {
+		return entityType(globalId(path));
 	}
 
 	public static Tag<Fluid> fluid(Identifier id) {
 		return create(id, () -> AccessorFluidTags.getRequiredTags().getGroup());
 	}
 
+	public static Tag<Fluid> fluid(String path) {
+		return fluid(globalId(path));
+	}
+
 	public static Tag<Item> item(Identifier id) {
 		return create(id, ItemTags::getTagGroup);
+	}
+
+	public static Tag<Item> item(String path) {
+		return item(globalId(path));
+	}
+
+	private static Identifier globalId(String path) {
+		return new Identifier(getCommonNamespace(), path);
+	}
+
+	public static String getCommonNamespace() {
+		throw new UnsupportedOperationException("A common namespace for tags has not been chosen yet.");
 	}
 }
