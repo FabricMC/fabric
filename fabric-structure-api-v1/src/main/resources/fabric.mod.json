@@ -26,6 +26,7 @@
     "fabric-lifecycle-events-v1": ">=1.4.4"
   },
   "description": "Hooks for registering custom structures.",
+  "accessWidener": "fabric-structure-api-v1.accesswidener",
   "mixins": [
     "fabric-structure-api-v1.mixins.json"
   ],
