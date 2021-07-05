@@ -67,7 +67,7 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
  * that will take care of properly maintaining their state.
  *
  * <p>Participants should generally be passed a {@link TransactionContext} parameter instead of the full {@code Transaction},
- * to make sure they don't call {@link #abort}, {@link #commit} and {@link #close} mistakenly.
+ * to make sure they don't call {@link #abort}, {@link #commit} or {@link #close} mistakenly.
  *
  * <p>Every transaction is only valid on the thread it was opened on,
  * and attempts to use it on another thread will throw an exception.
