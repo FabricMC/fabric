@@ -133,4 +133,10 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 	public Class<C> contextClass() {
 		return contextClass;
 	}
+
+	@Override
+	@Nullable
+	public ItemApiProvider<A, C> getProvider(Item item) {
+		return providerMap.get(item);
+	}
 }
