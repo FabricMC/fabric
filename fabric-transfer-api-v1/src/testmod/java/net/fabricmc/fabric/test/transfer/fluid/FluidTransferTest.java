@@ -60,6 +60,7 @@ public class FluidTransferTest implements ModInitializer {
 		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeFluidStorage.LAVA, INFINITE_LAVA_SOURCE);
 
 		testFluidStorage();
+		testTransactionExceptions();
 	}
 
 	private static void registerBlock(Block block, String name) {
@@ -179,6 +180,63 @@ public class FluidTransferTest implements ModInitializer {
 			if (doOuterCommit) {
 				tx.commit();
 			}
+		}
+	}
+
+	private static int callbacksInvoked = 0;
+
+	/**
+	 * Make sure that transaction global state stays valid in case of exceptions.
+	 */
+	private static void testTransactionExceptions() {
+		// Test exception inside the try.
+		ensureException(() -> {
+			try (Transaction tx = Transaction.openOuter()) {
+				tx.addCloseCallback((t, result) -> {
+					callbacksInvoked++; throw new RuntimeException("Close.");
+				});
+				throw new RuntimeException("Inside try.");
+			}
+		}, "Exception should have propagated through the transaction.");
+		if (callbacksInvoked != 1) throw new AssertionError("Callback should have been invoked.");
+
+		// Test exception inside the close.
+		callbacksInvoked = 0;
+		ensureException(() -> {
+			try (Transaction tx = Transaction.openOuter()) {
+				tx.addCloseCallback((t, result) -> {
+					callbacksInvoked++; throw new RuntimeException("Close 1.");
+				});
+				tx.addCloseCallback((t, result) -> {
+					callbacksInvoked++; throw new RuntimeException("Close 2.");
+				});
+				tx.addOuterCloseCallback(result -> {
+					callbacksInvoked++; throw new RuntimeException("Outer close 1.");
+				});
+				tx.addOuterCloseCallback(result -> {
+					callbacksInvoked++; throw new RuntimeException("Outer close 2.");
+				});
+			}
+		}, "Exceptions in close callbacks should be propagated through the transaction.");
+		if (callbacksInvoked != 4) throw new AssertionError("All 4 callbacks should have been invoked, only so many were: " + callbacksInvoked);
+
+		// Test that transaction state is still OK after these exceptions.
+		try (Transaction tx = Transaction.openOuter()) {
+			tx.commit();
+		}
+	}
+
+	private static void ensureException(Runnable runnable, String message) {
+		boolean failed = false;
+
+		try {
+			runnable.run();
+		} catch (Throwable t) {
+			failed = true;
+		}
+
+		if (!failed) {
+			throw new AssertionError(message);
 		}
 	}
 }

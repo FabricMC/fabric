@@ -105,20 +105,40 @@ public class TransactionManagerImpl {
 		private void close(Result result) {
 			validateCurrentTransaction();
 			validateOpen();
-			// block transaction operations
+			// Block transaction operations
 			isOpen = false;
 
-			// invoke callbacks in reverse order
+			// Note: it is important that we don't let exceptions corrupt the global state of the transaction manager.
+			// That is why any callback has to run inside a try block.
+			RuntimeException closeException = null;
+
+			// Invoke callbacks in reverse order
 			for (int i = closeCallbacks.size()-1; i >= 0; i--) {
-				closeCallbacks.get(i).onClose(this, result);
+				try {
+					closeCallbacks.get(i).onClose(this, result);
+				} catch (Exception exception) {
+					if (closeException == null) {
+						closeException = new RuntimeException("Encountered an exception while invoking a transaction close callback.", exception);
+					} else {
+						closeException.addSuppressed(exception);
+					}
+				}
 			}
 
 			closeCallbacks.clear();
 
 			if (currentDepth == 0) {
-				// invoke outer close callbacks in reverse order
+				// Invoke outer close callbacks in reverse order
 				for (int i = outerCloseCallbacks.size() - 1; i >= 0; i--) {
-					outerCloseCallbacks.get(i).afterOuterClose(result);
+					try {
+						outerCloseCallbacks.get(i).afterOuterClose(result);
+					} catch (Exception exception) {
+						if (closeException == null) {
+							closeException = new RuntimeException("Encountered an exception while invoking a transaction outer close callback.", exception);
+						} else {
+							closeException.addSuppressed(exception);
+						}
+					}
 				}
 
 				outerCloseCallbacks.clear();
@@ -126,6 +146,11 @@ public class TransactionManagerImpl {
 
 			// Only this check will allow openOuter operations.
 			currentDepth--;
+
+			// Throw exception if necessary
+			if (closeException != null) {
+				throw closeException;
+			}
 		}
 
 		@Override
@@ -178,8 +203,13 @@ public class TransactionManagerImpl {
 		@Override
 		public void addOuterCloseCallback(OuterCloseCallback outerCloseCallback) {
 			validateCurrentThread();
-			// note: we don't call validateOpen() because this transaction may not be open
-			// if this is called during a CloseCallback.
+			// Note: we don't call validateOpen() because this transaction may not be open if this is called during a CloseCallback.
+			// We rely on a currentDepth check instead, as the depth is only set to -1 at the very end of close(Result).
+
+			if (currentDepth == -1) {
+				throw new IllegalStateException("There is no open transaction on this thread.");
+			}
+
 			outerCloseCallbacks.add(outerCloseCallback);
 		}
 	}
