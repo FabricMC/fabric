@@ -40,7 +40,7 @@ public class FluidVariantImpl implements FluidVariant {
 			throw new IllegalArgumentException("Fluid may not be flowing.");
 		}
 
-		if (nbt == null) {
+		if (nbt == null || fluid == Fluids.EMPTY) {
 			// Use the cached variant inside the fluid
 			return ((FluidVariantCache) fluid).fabric_getCachedFluidVariant();
 		} else {
@@ -88,13 +88,13 @@ public class FluidVariantImpl implements FluidVariant {
 		return result;
 	}
 
-	public static FluidVariant fromNbt(NbtCompound tag) {
+	public static FluidVariant fromNbt(NbtCompound compound) {
 		try {
-			Fluid fluid = Registry.FLUID.get(new Identifier(tag.getString("fluid")));
-			NbtCompound aTag = tag.contains("tag") ? tag.getCompound("tag") : null;
-			return of(fluid, aTag);
+			Fluid fluid = Registry.FLUID.get(new Identifier(compound.getString("fluid")));
+			NbtCompound nbt = compound.contains("tag") ? compound.getCompound("tag") : null;
+			return of(fluid, nbt);
 		} catch (RuntimeException runtimeException) {
-			LOGGER.debug("Tried to load an invalid FluidVariant from NBT: {}", tag, runtimeException);
+			LOGGER.debug("Tried to load an invalid FluidVariant from NBT: {}", compound, runtimeException);
 			return FluidVariant.blank();
 		}
 	}
@@ -115,8 +115,8 @@ public class FluidVariantImpl implements FluidVariant {
 			return FluidVariant.blank();
 		} else {
 			Fluid fluid = Registry.FLUID.get(buf.readVarInt());
-			NbtCompound tag = buf.readNbt();
-			return of(fluid, tag);
+			NbtCompound nbt = buf.readNbt();
+			return of(fluid, nbt);
 		}
 	}
 
