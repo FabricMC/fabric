@@ -30,7 +30,6 @@ import net.fabricmc.fabric.mixin.structure.StructurePoolAccessor;
  * Represents a modifiable structure pool that has several helper methods for modders.
  */
 public record FabricStructurePool(StructurePool underlying) {
-
 	/**
 	 * Adds a new {@link StructurePoolElement} to the {@link StructurePool}.
 	 * See the alternative {@link #addStructurePoolElement(StructurePoolElement, int)} for details.
@@ -50,6 +49,7 @@ public record FabricStructurePool(StructurePool underlying) {
 	public void addStructurePoolElement(StructurePoolElement element, int weight) {
 		//adds to elementCounts list; minecraft makes these immutable lists so we replace them with an array list
 		StructurePoolAccessor pool = (StructurePoolAccessor) underlying();
+
 		if (pool.getElementCounts() instanceof ArrayList) {
 			pool.getElementCounts().add(Pair.of(element, weight));
 		} else {
