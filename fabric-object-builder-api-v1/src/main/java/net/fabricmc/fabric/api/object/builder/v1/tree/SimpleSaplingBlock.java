@@ -26,7 +26,6 @@ import net.minecraft.block.sapling.SaplingGenerator;
  * {@code public static final SaplingBlock MY_SAPLING = new SimpleSaplingBlock(new MySaplingGenerator(), FabricBlockSettings.copyOf(Blocks.OAK_SAPLING));}
  *
  * @apiNote This is a temporary solution because access wideners cannot be applied to dependents yet.
- * </p>
  */
 public class SimpleSaplingBlock extends SaplingBlock {
 	public SimpleSaplingBlock(SaplingGenerator generator, Settings settings) {
