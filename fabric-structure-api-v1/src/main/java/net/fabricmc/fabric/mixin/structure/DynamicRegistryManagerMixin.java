@@ -38,7 +38,7 @@ public abstract class DynamicRegistryManagerMixin {
 		if (registryKey.equals(Registry.STRUCTURE_POOL_KEY)) {
 			for (E registryEntry : manager.get(registryKey)) {
 				if (registryEntry instanceof StructurePool pool) {
-					StructurePoolAddCallback.EVENT.invoker().onAdd(new FabricStructurePool(pool));
+					StructurePoolAddCallback.EVENT.invoker().onAdd(new FabricStructurePool(pool, pool.getId()));
 				}
 			}
 		}

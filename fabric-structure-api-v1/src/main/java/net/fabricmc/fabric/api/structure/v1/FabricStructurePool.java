@@ -23,13 +23,14 @@ import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolElement;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.mixin.structure.StructurePoolAccessor;
 
 /**
  * Represents a modifiable structure pool that has several helper methods for modders.
  */
-public record FabricStructurePool(StructurePool underlying) {
+public record FabricStructurePool(StructurePool underlying, Identifier id) {
 	/**
 	 * Adds a new {@link StructurePoolElement} to the {@link StructurePool}.
 	 * See the alternative {@link #addStructurePoolElement(StructurePoolElement, int)} for details.

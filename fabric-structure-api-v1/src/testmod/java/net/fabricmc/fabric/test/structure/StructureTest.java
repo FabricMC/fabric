@@ -65,7 +65,7 @@ public class StructureTest {
 				.adjustsSurface()
 				.register();
 		Registry.register(Registry.STRUCTURE_PIECE, new Identifier("fabric", "test_structure_piece"), PIECE);
-		StructurePoolAddCallback.EVENT.register(structurePool -> LOGGER.info(structurePool.underlying().getId().toString()));
+		StructurePoolAddCallback.EVENT.register(structurePool -> LOGGER.info(structurePool.id().toString()));
 	}
 
 	public static class TestStructureFeature extends StructureFeature<DefaultFeatureConfig> {
