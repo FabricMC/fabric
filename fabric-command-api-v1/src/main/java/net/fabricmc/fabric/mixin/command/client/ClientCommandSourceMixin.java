@@ -24,7 +24,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
 import net.minecraft.network.MessageType;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
@@ -38,9 +37,6 @@ abstract class ClientCommandSourceMixin implements FabricClientCommandSource {
 	@Shadow
 	@Final
 	private MinecraftClient client;
-
-	private Entity entity = client.player;
-	private ClientWorld world = client.world;
 
 	@Override
 	public void sendFeedback(Text message) {
@@ -59,15 +55,11 @@ abstract class ClientCommandSourceMixin implements FabricClientCommandSource {
 
 	@Override
 	public AbstractClientPlayerEntity getPlayer() {
-		if (entity instanceof AbstractClientPlayerEntity) {
-			return (AbstractClientPlayerEntity) entity;
-		}
-
 		return client.player;
 	}
 
 	@Override
 	public ClientWorld getWorld() {
-		return world;
+		return client.world;
 	}
 }

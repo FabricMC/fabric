@@ -58,8 +58,14 @@ public interface FabricClientCommandSource extends CommandSource {
 	 * Gets the player that used the command.
 	 *
 	 * @return the player
+	 * @deprecated Please use {@link #getTargetPlayer()} instead.
 	 */
+	@Deprecated
 	AbstractClientPlayerEntity getPlayer();
+
+	default AbstractClientPlayerEntity getTargetPlayer() {
+		return getPlayer();
+	}
 
 	/**
 	 * Gets the entity that used the command.
