@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.mixin.command.client;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
