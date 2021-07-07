@@ -53,7 +53,7 @@ public record FabricStructurePool(StructurePool underlying) {
 		if (pool.getElementCounts() instanceof ArrayList) {
 			pool.getElementCounts().add(Pair.of(element, weight));
 		} else {
-			List<Pair<StructurePoolElement, Integer>> list = new ArrayList<>((pool).getElementCounts());
+			List<Pair<StructurePoolElement, Integer>> list = new ArrayList<>(pool.getElementCounts());
 			list.add(Pair.of(element, weight));
 			pool.setElementCounts(list);
 		}
