@@ -39,8 +39,7 @@ import net.minecraft.world.gen.trunk.TrunkPlacerType;
  */
 public final class TreeTypeHelper {
 	/**
-	 * Creates a new instance of a {@link TrunkPlacerType}, registers and returns it.<br>
-	 * Uses {@link TrunkPlacerTypeInvoker} under the hood.
+	 * Creates a new instance of a {@link TrunkPlacerType}, registers and returns it.
 	 *
 	 * <p>
 	 *    Example:<br>
