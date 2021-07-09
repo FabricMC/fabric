@@ -56,8 +56,8 @@ public final class StorageUtil {
 	 * }
 	 * }</pre>
 	 *
-	 * @param from The source storage.
-	 * @param to The target storage.
+	 * @param from The source storage. May be null.
+	 * @param to The target storage. May be null.
 	 * @param filter The filter for transferred resources.
 	 *               Only resources for which this filter returns {@code true} will be transferred.
 	 *               This filter will never be tested with a blank resource, and filters are encouraged to throw an
@@ -68,7 +68,9 @@ public final class StorageUtil {
 	 * @return The total amount of resources that was successfully transferred.
 	 * @throws IllegalStateException If no transaction is passed and a transaction is already active on the current thread.
 	 */
-	public static <T> long move(Storage<T> from, Storage<T> to, Predicate<T> filter, long maxAmount, @Nullable TransactionContext transaction) {
+	public static <T> long move(@Nullable Storage<T> from, @Nullable Storage<T> to, Predicate<T> filter, long maxAmount, @Nullable TransactionContext transaction) {
+		if (from == null || to == null) return 0;
+
 		long totalMoved = 0;
 
 		try (Transaction iterationTransaction = (transaction == null ? Transaction.openOuter() : transaction.openNested())) {

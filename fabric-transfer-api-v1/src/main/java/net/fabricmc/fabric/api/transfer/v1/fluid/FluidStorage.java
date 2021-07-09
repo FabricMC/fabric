@@ -43,6 +43,8 @@ public final class FluidStorage {
 	 * <p>When the operations supported by a storage change,
 	 * that is if the return value of {@link Storage#supportsInsertion} or {@link Storage#supportsExtraction} changes,
 	 * the storage should notify its neighbors with a block update so that they can refresh their connections if necessary.
+	 *
+	 * <p>May only be queried on the logical server thread, never client-side or from another thread!
 	 */
 	public static final BlockApiLookup<Storage<FluidVariant>, Direction> SIDED =
 			BlockApiLookup.get(new Identifier("fabric:sided_fluid_storage"), Storage.asClass(), Direction.class);
