@@ -21,6 +21,9 @@ import org.jetbrains.annotations.ApiStatus;
 /**
  * Preconditions that can be used when working with storages.
  *
+ * <p>In particular, {@link #notNegative} or {@link #notBlankNotNegative} can be used by implementations of
+ * {@link Storage#insert} and {@link Storage#extract} to fail-fast if the arguments are invalid.
+ *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */

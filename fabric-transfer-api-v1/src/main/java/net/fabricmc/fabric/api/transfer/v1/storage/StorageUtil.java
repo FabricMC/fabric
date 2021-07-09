@@ -36,6 +36,26 @@ public final class StorageUtil {
 	/**
 	 * Move resources between two storages, matching the passed filter, and return the amount that was successfully transferred.
 	 *
+	 * <p>Here is a usage example with fluid variant storages:
+	 * <pre>{@code
+	 * // Source
+	 * Storage<FluidVariant> source;
+	 * // Target
+	 * Storage<FluidVariant> target;
+	 *
+	 * // Move up to one bucket in total from source to target, outside of a transaction:
+	 * long amountMoved = StorageUtil.move(source, target, variant -> true, FluidConstants.BUCKET, null);
+	 * // Move exactly one bucket in total, only of water:
+	 * try (Transaction transaction = Transaction.openOuter()) {
+	 *     Predicate<FluidVariant> filter = variant -> variant.isOf(Fluids.WATER);
+	 *     long waterMoved = StorageUtil.move(source, target, filter, FluidConstants.BUCKET, transaction);
+	 *     if (waterMoved == FluidConstants.BUCKET) {
+	 *         // Only commit if exactly one bucket was moved (no less!).
+	 *         transaction.commit();
+	 *     }
+	 * }
+	 * }</pre>
+	 *
 	 * @param from The source storage.
 	 * @param to The target storage.
 	 * @param filter The filter for transferred resources.
@@ -90,6 +110,7 @@ public final class StorageUtil {
 
 	/**
 	 * Attempt to find a resource stored in the passed storage.
+	 *
 	 * @param storage The storage to inspect, may be null.
 	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
 	 * @param <T> The type of the stored resources.
@@ -121,6 +142,7 @@ public final class StorageUtil {
 
 	/**
 	 * Attempt to find a resource stored in the passed storage that can be extracted.
+	 *
 	 * @param storage The storage to inspect, may be null.
 	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
 	 * @param <T> The type of the stored resources.

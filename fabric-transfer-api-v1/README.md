@@ -12,7 +12,7 @@ is the reference implementation of a "participant", that is an object participat
 ## Storages
 A [`Storage<T>`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/Storage.java) is any object that can store resources of type `T`.
 Its contents can be read, and resources can be inserted into it or extracted from it.
-[`StorageUtil`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/StorageUtil.java) provides a few helpful function to work with `Storage`s,
+[`StorageUtil`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/StorageUtil.java) provides a few helpful functions to work with `Storage`s,
 for example to move resources between two `Storage`s.
 The [`storage/base`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/base) package provides a few helpers to accelerate
 implementation of `Storage<T>`.
@@ -26,7 +26,7 @@ Implementors of fluid inventories with a fixed number of "slots" or "tanks" can 
 [`SingleFluidStorage`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/base/SingleFluidStorage.java),
 and combine them with `CombinedStorage`.
 
-The amount for fluid transfer is droplets, that is 1/81000ths of a bucket.
+The unit for fluid transfer is 1/81000ths of a bucket, also known as _droplets_.
 [`FluidConstants`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidConstants.java) contains a few helpful constants
 to work with droplets.
 
