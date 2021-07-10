@@ -30,6 +30,8 @@ import net.minecraft.network.PacketByteBuf;
  * <p>This is exposed for convenience for code that needs to be generic across multiple transfer variants,
  * but note that a {@link Storage} is not necessarily bound to {@code TransferVariant}. Its generic parameter can be any immutable object.
  *
+ * <p><b>Transfer variants must always be compared with {@link #equals}, never by reference!
+ *
  * @param <O> The type of the immutable object instance, for example {@code Item} or {@code Fluid}.
  *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
@@ -103,4 +105,16 @@ public interface TransferVariant<O> {
 	 * <p>Implementation note: Objects are saved using their raw registry integer id.
 	 */
 	void toPacket(PacketByteBuf buf);
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	boolean equals(Object other);
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	int hashCode();
 }
