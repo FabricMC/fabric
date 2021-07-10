@@ -35,7 +35,8 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
  *
  * <p>{@link FluidVariantRendering} can be used for client-side rendering of fluid variants.
  *
- * <p><b>Fluid variants must always be compared with {@link #equals}, never by reference!
+ * <p><b>Fluid variants must always be compared with {@link #equals}, never by reference!</b>
+ * {@link #hashCode} is guaranteed to be correct and constant time independently of the size of the NBT.
  *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
