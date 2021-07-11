@@ -11,6 +11,9 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.command.CommandTest"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.command.client.ClientCommandTest"
     ]
   }
 }

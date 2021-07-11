@@ -18,7 +18,7 @@
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*",
-    "fabric-networking-v0": "*"
+    "fabric-networking-api-v1": "*"
   },
   "description": "Adds hooks for containers.",
   "mixins": [
@@ -29,5 +29,8 @@
     "client": [
       "net.fabricmc.fabric.impl.client.container.ScreenProviderRegistryImpl::init"
     ]
+  },
+  "custom": {
+    "fabric-api:module-lifecycle": "deprecated"
   }
 }

@@ -120,7 +120,11 @@ public interface WorldRenderContext {
 	 * {@code WorldRenderer.drawBlockOutline}.
 	 */
 	@Environment(EnvType.CLIENT)
-	public interface BlockOutlineContext {
+	interface BlockOutlineContext {
+		/**
+		 * @deprecated Use {@link #consumers()} directly.
+		 */
+		@Deprecated
 		VertexConsumer vertexConsumer();
 
 		Entity entity();

@@ -17,106 +17,50 @@
 package net.fabricmc.fabric.impl.object.builder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
 
-import net.fabricmc.fabric.mixin.object.builder.TradeOffersAccessor;
-
 public final class TradeOfferInternals {
-	/**
-	 * A copy of the original trade offers map.
-	 */
-	public static Map<VillagerProfession, Int2ObjectMap<TradeOffers.Factory[]>> DEFAULT_VILLAGER_OFFERS;
-	public static Int2ObjectMap<TradeOffers.Factory[]> DEFAULT_WANDERING_TRADER_OFFERS;
-	private static final Map<VillagerProfession, Int2ObjectMap<TradeOffers.Factory[]>> VILLAGER_TRADE_FACTORIES = new HashMap<>();
-	private static final Int2ObjectMap<TradeOffers.Factory[]> WANDERING_TRADER_FACTORIES = new Int2ObjectOpenHashMap<>();
+	private static final Logger LOGGER = LogManager.getLogger("fabric-object-builder-api-v1");
+
 	private TradeOfferInternals() {
 	}
 
-	public static void registerVillagerOffers(VillagerProfession profession, int level, Consumer<List<TradeOffers.Factory>> factory) {
+	// synchronized guards against concurrent modifications - Vanilla does not mutate the underlying arrays (as of 1.16),
+	// so reads will be fine without locking.
+	public static synchronized void registerVillagerOffers(VillagerProfession profession, int level, Consumer<List<TradeOffers.Factory>> factory) {
+		Objects.requireNonNull(profession, "VillagerProfession may not be null.");
+		registerOffers(TradeOffers.PROFESSION_TO_LEVELED_TRADE.computeIfAbsent(profession, key -> new Int2ObjectOpenHashMap<>()), level, factory);
+	}
+
+	public static synchronized void registerWanderingTraderOffers(int level, Consumer<List<TradeOffers.Factory>> factory) {
+		registerOffers(TradeOffers.WANDERING_TRADER_TRADES, level, factory);
+	}
+
+	// Shared code to register offers for both villagers and wandering traders.
+	private static void registerOffers(Int2ObjectMap<TradeOffers.Factory[]> leveledTradeMap, int level, Consumer<List<TradeOffers.Factory>> factory) {
 		final List<TradeOffers.Factory> list = new ArrayList<>();
 		factory.accept(list);
 
-		final TradeOffers.Factory[] additionalEntries = list.toArray(new TradeOffers.Factory[0]);
-		final Int2ObjectMap<TradeOffers.Factory[]> professionEntry = VILLAGER_TRADE_FACTORIES.computeIfAbsent(profession, p -> new Int2ObjectOpenHashMap<>());
+		final TradeOffers.Factory[] originalEntries = leveledTradeMap.computeIfAbsent(level, key -> new TradeOffers.Factory[0]);
+		final TradeOffers.Factory[] addedEntries = list.toArray(new TradeOffers.Factory[0]);
 
-		final TradeOffers.Factory[] currentEntries = professionEntry.computeIfAbsent(level, l -> new TradeOffers.Factory[0]);
-		final TradeOffers.Factory[] newEntries = ArrayUtils.addAll(additionalEntries, currentEntries);
-		professionEntry.put(level, newEntries);
-
-		// Refresh the trades map
-		TradeOfferInternals.refreshOffers();
+		final TradeOffers.Factory[] allEntries = ArrayUtils.addAll(originalEntries, addedEntries);
+		leveledTradeMap.put(level, allEntries);
 	}
 
-	public static void registerWanderingTraderOffers(int level, Consumer<List<TradeOffers.Factory>> factory) {
-		final List<TradeOffers.Factory> list = new ArrayList<>();
-		factory.accept(list);
-
-		final TradeOffers.Factory[] additionalEntries = list.toArray(new TradeOffers.Factory[0]);
-		final TradeOffers.Factory[] currentEntries = TradeOfferInternals.DEFAULT_WANDERING_TRADER_OFFERS.computeIfAbsent(level, key -> new TradeOffers.Factory[0]);
-
-		// Merge current and new entries
-		final TradeOffers.Factory[] newEntries = ArrayUtils.addAll(additionalEntries, currentEntries);
-		TradeOfferInternals.DEFAULT_WANDERING_TRADER_OFFERS.put(level, newEntries);
-
-		// Refresh the trades map
-		TradeOfferInternals.refreshOffers();
-	}
-
-	public static void refreshOffers() {
-		TradeOfferInternals.refreshVillagerOffers();
-		TradeOfferInternals.refreshWanderingTraderOffers();
-	}
-
-	private static void refreshVillagerOffers() {
-		final HashMap<VillagerProfession, Int2ObjectMap<TradeOffers.Factory[]>> trades = new HashMap<>(TradeOfferInternals.DEFAULT_VILLAGER_OFFERS);
-
-		for (Map.Entry<VillagerProfession, Int2ObjectMap<TradeOffers.Factory[]>> tradeFactoryEntry : TradeOfferInternals.VILLAGER_TRADE_FACTORIES.entrySet()) {
-			// Create an empty map or get all existing profession entries.
-			final Int2ObjectMap<TradeOffers.Factory[]> leveledFactoryMap = trades.computeIfAbsent(tradeFactoryEntry.getKey(), k -> new Int2ObjectOpenHashMap<>());
-			// Get the existing entries
-			final Int2ObjectMap<TradeOffers.Factory[]> value = tradeFactoryEntry.getValue();
-
-			// Iterate through the existing level entries
-			for (int level : value.keySet()) {
-				final TradeOffers.Factory[] factories = value.get(level);
-
-				if (factories != null) {
-					final Int2ObjectMap<TradeOffers.Factory[]> resultMap = trades.computeIfAbsent(tradeFactoryEntry.getKey(), key -> new Int2ObjectOpenHashMap<>());
-					resultMap.put(level, ArrayUtils.addAll(leveledFactoryMap.computeIfAbsent(level, key -> new TradeOffers.Factory[0]), factories));
-				}
-			}
-		}
-
-		// Set the new villager trade map
-		TradeOffersAccessor.setVillagerTradeMap(trades);
-	}
-
-	private static void refreshWanderingTraderOffers() {
-		// Create an empty map that is a clone of the default offers
-		final Int2ObjectMap<TradeOffers.Factory[]> trades = new Int2ObjectOpenHashMap<>(TradeOfferInternals.DEFAULT_WANDERING_TRADER_OFFERS);
-
-		for (int level : TradeOfferInternals.WANDERING_TRADER_FACTORIES.keySet()) {
-			// Get all registered offers and add them to current entries
-			final TradeOffers.Factory[] factories = TradeOfferInternals.WANDERING_TRADER_FACTORIES.get(level);
-			trades.put(level, ArrayUtils.addAll(factories, trades.computeIfAbsent(level, key -> new TradeOffers.Factory[0])));
-		}
-
-		// Set the new wandering trader trade map
-		TradeOffersAccessor.setWanderingTraderTradeMap(trades);
-	}
-
-	static {
-		// Load the trade offers class so the field is set.
-		TradeOffers.PROFESSION_TO_LEVELED_TRADE.getClass();
+	public static void printRefreshOffersWarning() {
+		Throwable loggingThrowable = new Throwable();
+		LOGGER.warn("TradeOfferHelper#refreshOffers does not do anything, yet it was called! Stack trace:", loggingThrowable);
 	}
 }

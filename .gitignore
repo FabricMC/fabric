@@ -2,6 +2,7 @@
 .gradle
 
 # VSCode
+.settings/
 .vscode/
 
 # Eclipse

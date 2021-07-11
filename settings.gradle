@@ -1,11 +1,10 @@
 pluginManagement {
 	repositories {
-		jcenter()
-		gradlePluginPortal()
 		maven {
 			name = 'Fabric'
 			url = 'https://maven.fabricmc.net/'
 		}
+		gradlePluginPortal()
 		mavenLocal()
 	}
 }
@@ -14,6 +13,7 @@ rootProject.name = "fabric-api"
 
 include 'fabric-api-base'
 
+include 'fabric-api-lookup-api-v1'
 include 'fabric-biome-api-v1'
 include 'fabric-blockrenderlayer-v1'
 include 'fabric-commands-v0'
@@ -50,6 +50,7 @@ include 'fabric-rendering-v1'
 include 'fabric-rendering-data-attachment-v1'
 include 'fabric-rendering-fluids-v1'
 include 'fabric-resource-loader-v0'
+include 'fabric-screen-api-v1'
 include 'fabric-screen-handler-api-v1'
 include 'fabric-structure-api-v1'
 include 'fabric-tag-extensions-v0'
