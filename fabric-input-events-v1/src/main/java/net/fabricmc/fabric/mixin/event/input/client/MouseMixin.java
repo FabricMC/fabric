@@ -48,7 +48,7 @@ public class MouseMixin {
 		InputCallbacksImpl.onMouseScrolled(window, dx, dy);
 	}
 
-	// Ths is the lambda in setup(long) that calls generetes an array of Path's
+	// Ths is the lambda in setup(long) that generates an array of {@code Path}s
 	// this lambda is the actual callback registered with GLFW.glfwSetDropCallback
 	@Inject(method = "method_29615(JIJ)V", at = @At("HEAD"))
 	void onFilesDropped(long window, int count, long names, CallbackInfo ci) {
