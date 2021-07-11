@@ -235,25 +235,39 @@ public final class ClientInputEvents {
 	 */
 	private static Event<KeybindState> createKeybindStateEvent() {
 		return EventFactory.createArrayBacked(KeybindState.class,
-				(code, scancode, modKeys, nullableKey, nullBinding) -> {
+				(code, scancode, modKeys, nullableKey, nullableBinding) -> {
 				},
-				listeners -> (code, scancode, modKeys, nullableKey, nullBinding) -> {
-					Key key = nullableKey == null
-							? scancode == SPECIAL_MOUSE_KEY_SCANCODE
-								? InputCallbacksImpl.buttonToKey(code)
-								: InputUtil.fromKeyCode(code, scancode)
-							: nullableKey;
-					KeyBinding binding = InputCallbacksImpl.keyToBinding(key);
+				listeners -> (code, scancode, modKeys, nullableKey, nullableBinding) -> {
+					Key key = nullableKey;
+					KeyBinding binding = nullableBinding;
 
-					if (binding == null) {
-						return;
-					}
+					boolean isMouseKey = false;
 
 					if (scancode == SPECIAL_MOUSE_KEY_SCANCODE) {
 						scancode = GLFW.GLFW_KEY_UNKNOWN;
+						isMouseKey = true;
 					}
 
 					for (KeybindState listener : listeners) {
+						if (key == null) {
+							// compute the key on demand
+							key = isMouseKey
+								? InputCallbacksImpl.buttonToKey(code)
+								: InputUtil.fromKeyCode(code, scancode);
+							if (key == null) {
+								// will probably never happen, just to be safe
+								break;
+							}
+						}
+
+						if (binding == null) {
+							// try to find a binding for the key, on demand
+							binding = InputCallbacksImpl.keyToBinding(key);
+							if (binding == null) {
+								// didn't find a binding; don't invoke the handlers
+								break;
+							}
+						}
 						listener.onKeybind(code, scancode, modKeys, key, binding);
 					}
 				});
@@ -272,14 +286,22 @@ public final class ClientInputEvents {
 		return EventFactory.createArrayBacked(MouseButtonState.class,
 				(button, modKeys, nullKey) -> keybindStateEvent.invoker().onKeybind(button, SPECIAL_MOUSE_KEY_SCANCODE, modKeys, null, null),
 				listeners -> (button, modKeys, nullKey) -> {
-					Key key = InputCallbacksImpl.buttonToKey(button);
+					Key key = null;
 
 					for (MouseButtonState listener : listeners) {
+						if (key == null) {
+							// compute they (mouse) key on demand
+							key = InputCallbacksImpl.buttonToKey(button);
+							if (key == null) {
+								// will probably never happen, just to be safe
+								break;
+							}
+						}
 						listener.onMouseButton(button, modKeys, key);
 					}
 
-					// remember to call the keybind event invoker with made key
-					keybindStateEvent.invoker().onKeybind(button, -1, modKeys, key, null);
+					// invoke the corresponding KeyBinding event with our possibly computed key
+					keybindStateEvent.invoker().onKeybind(button, GLFW.GLFW_KEY_UNKNOWN, modKeys, key, null);
 				});
 	}
 
@@ -296,13 +318,21 @@ public final class ClientInputEvents {
 		return EventFactory.createArrayBacked(KeyState.class,
 				(code, scancode, modKeys, nullKey) -> keybindStateEvent.invoker().onKeybind(code, scancode, modKeys, null, null),
 				listeners -> (code, scancode, modKeys, nullKey) -> {
-					Key key = InputUtil.fromKeyCode(code, scancode);
+					Key key = null;
 
 					for (KeyState listener : listeners) {
+						if (key == null) {
+							// compute the (keyboard) key on demand
+							key = InputUtil.fromKeyCode(code, scancode);
+							if (key == null) {
+								// will probably never happen, just to be safe
+								break;
+							}
+						}
 						listener.onKey(code, scancode, modKeys, key);
 					}
 
-					// remember to call the keybind event invoker with made key
+					// invoke the corresponding KeyBinding event with our possibly computed key
 					keybindStateEvent.invoker().onKeybind(code, scancode, modKeys, key, null);
 				});
 	}
