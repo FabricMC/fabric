@@ -16,19 +16,25 @@
 
 package net.fabricmc.fabric.api.event.client.input;
 
+import java.util.Objects;
+
 import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.impl.client.input.InputCallbacksImpl;
 
 /**
  * Events related to user input.
  */
 @Environment(EnvType.CLIENT)
 public final class ClientInputEvents {
+	// a special fake scancode to indicate a mouse key than a sysnum key needs to be computed
+	private static final int INVOKER_COMPUTE_MOUSE_KEY_SCANCODE = -2;
 	/**
 	 * Called when the player presses, releases, or holds a key.
 	 */
@@ -39,52 +45,66 @@ public final class ClientInputEvents {
 	});
 	/**
 	 * Called when the player presses a key.
+	 *
+	 * @implSpec The listeners to this event will never receive any {@code null} argument.
+	 * @implNote The invoker accepts a {@code null} key object and computes
+	 * it on demand; it always invokes the keybind version of the event,
+	 * {@link #KEYBIND_PRESSED}.
+	 * @see #KEYBIND_PRESSED
 	 */
-	public static final Event<KeyState> KEY_PRESSED = EventFactory.createArrayBacked(KeyState.class, listeners -> (code, scancode, modKeys, key) -> {
-		for (KeyState listener : listeners) {
-			listener.onKey(code, scancode, modKeys, key);
-		}
-	});
+	public static final Event<KeyState> KEY_PRESSED;
 	/**
 	 * Called when the player releases a key.
+	 *
+	 * @implSpec The listeners to this event will never receive any {@code null} argument.
+	 * @implNote The invoker accepts a {@code null} key object and computes
+	 * it on demand; it always invokes the keybind version of the event,
+	 * {@link #KEYBIND_RELEASED}.
+	 * @see #KEYBIND_RELEASED
 	 */
-	public static final Event<KeyState> KEY_RELEASED = EventFactory.createArrayBacked(KeyState.class, listeners -> (code, scancode, modKeys, key) -> {
-		for (KeyState listener : listeners) {
-			listener.onKey(code, scancode, modKeys, key);
-		}
-	});
+	public static final Event<KeyState> KEY_RELEASED;
 	/**
 	 * Called when the player holds a key for a while.
+	 *
+	 * @implSpec The listeners to this event will never receive any {@code null} argument.
+	 * @implNote The invoker accepts a {@code null} key object and computes
+	 * it on demand; it always invokes the keybind version of the event,
+	 * {@link #KEYBIND_REPEATED}.
+	 * @see #KEYBIND_REPEATED
 	 */
-	public static final Event<KeyState> KEY_REPEATED = EventFactory.createArrayBacked(KeyState.class, listeners -> (code, scancode, modKeys, key) -> {
-		for (KeyState listener : listeners) {
-			listener.onKey(code, scancode, modKeys, key);
-		}
-	});
+	public static final Event<KeyState> KEY_REPEATED;
 	/**
 	 * Called when the player presses a key that is bound to some keybind.
+	 *
+	 * @implSpec The listeners to this event will never receive any {@code null} argument.
+	 * @implNote The invoker can compute the key on demand if it's {@code null}
+	 * and always computes the keybind on demand. If the invoker cannot find
+	 * associated keybinds, the listeners are not invoked.
+	 * @see #KEY_PRESSED
+	 * @see #MOUSE_BUTTON_PRESSED
 	 */
-	public static final Event<KeybindState> KEYBIND_PRESSED = EventFactory.createArrayBacked(KeybindState.class, listeners -> (code, scancode, modKeys, key, binding) -> {
-		for (KeybindState listener : listeners) {
-			listener.onKeybind(code, scancode, modKeys, key, binding);
-		}
-	});
+	public static final Event<KeybindState> KEYBIND_PRESSED = createKeybindStateEvent();
 	/**
 	 * Called when the player releases a key that is bound to some keybind.
+	 *
+	 * @implSpec The listeners to this event will never receive any {@code null} argument.
+	 * @implNote The invoker can compute the key on demand if it's {@code null}
+	 * and always computes the keybind on demand. If the invoker cannot find
+	 * associated keybinds, the listeners are not invoked.
+	 * @see #KEY_RELEASED
+	 * @see #MOUSE_BUTTON_RELEASED
 	 */
-	public static final Event<KeybindState> KEYBIND_RELEASED = EventFactory.createArrayBacked(KeybindState.class, listeners -> (code, scancode, modKeys, key, binding) -> {
-		for (KeybindState listener : listeners) {
-			listener.onKeybind(code, scancode, modKeys, key, binding);
-		}
-	});
+	public static final Event<KeybindState> KEYBIND_RELEASED = createKeybindStateEvent();
 	/**
 	 * Called when the player holds a key that is bound to some keybind for a while.
+	 *
+	 * @implSpec The listeners to this event will never receive any {@code null} argument.
+	 * @implNote The invoker can compute the key on demand if it's {@code null}
+	 * and always computes the keybind on demand. If the invoker cannot find
+	 * associated keybinds, the listeners are not invoked.
+	 * @see #KEY_REPEATED
 	 */
-	public static final Event<KeybindState> KEYBIND_REPEATED = EventFactory.createArrayBacked(KeybindState.class, listeners -> (code, scancode, modKeys, key, binding) -> {
-		for (KeybindState listener : listeners) {
-			listener.onKeybind(code, scancode, modKeys, key, binding);
-		}
-	});
+	public static final Event<KeybindState> KEYBIND_REPEATED = createKeybindStateEvent();
 	/**
 	 * Called when the player types a character in some way.
 	 *
@@ -114,20 +134,24 @@ public final class ClientInputEvents {
 	});
 	/**
 	 * Called when the player presses a button on their mouse.
+	 *
+	 * @implSpec The listeners to this event will never receive any {@code null} argument.
+	 * @implNote The invoker accepts a {@code null} key object and computes
+	 * it on demand; it always invokes the keybind version of the event,
+	 * @link #KEYBIND_PRESSED}.
+	 * @see #KEYBIND_PRESSED
 	 */
-	public static final Event<MouseButtonState> MOUSE_BUTTON_PRESSED = EventFactory.createArrayBacked(MouseButtonState.class, listeners -> (button, modKeys, key) -> {
-		for (MouseButtonState listener : listeners) {
-			listener.onMouseButton(button, modKeys, key);
-		}
-	});
+	public static final Event<MouseButtonState> MOUSE_BUTTON_PRESSED;
 	/**
 	 * Called when the player releases a button on their mouse.
+	 *
+	 * @implSpec The listeners to this event will never receive any {@code null} argument.
+	 * @implNote The invoker accepts a {@code null} key object and computes
+	 * it on demand; it always invokes the keybind version of the event,
+	 * {@link #KEYBIND_RELEASED}.
+	 * @see #KEYBIND_RELEASED
 	 */
-	public static final Event<MouseButtonState> MOUSE_BUTTON_RELEASED = EventFactory.createArrayBacked(MouseButtonState.class, listeners -> (button, modKeys, key) -> {
-		for (MouseButtonState listener : listeners) {
-			listener.onMouseButton(button, modKeys, key);
-		}
-	});
+	public static final Event<MouseButtonState> MOUSE_BUTTON_RELEASED;
 	/**
 	 * Called when the player scrolls their mouse wheel.
 	 */
@@ -188,5 +212,95 @@ public final class ClientInputEvents {
 	@FunctionalInterface
 	public interface FileDrop {
 		void onFilesDropped(String[] paths);
+	}
+
+	/**
+	 * Utility method to save duplicate code for optimized keybind state event creation.
+	 *
+	 * @return the created keybind state event
+	 */
+	private static Event<KeybindState> createKeybindStateEvent() {
+		return EventFactory.createArrayBacked(KeybindState.class,
+				(code, scancode, modKeys, nullableKey, nullBinding) -> {
+				},
+				listeners -> (code, scancode, modKeys, nullableKey, nullBinding) -> {
+					Key key = nullableKey == null
+							? scancode == INVOKER_COMPUTE_MOUSE_KEY_SCANCODE
+							? InputCallbacksImpl.buttonToKey(code)
+							: InputUtil.fromKeyCode(code, scancode)
+							: nullableKey;
+					KeyBinding binding = InputCallbacksImpl.keyToBinding(key);
+
+					if (binding == null) {
+						return;
+					}
+
+					if (scancode == INVOKER_COMPUTE_MOUSE_KEY_SCANCODE) {
+						scancode = -1; // reset
+					}
+
+					for (KeybindState listener : listeners) {
+						listener.onKeybind(code, scancode, modKeys, key, binding);
+					}
+				});
+	}
+
+	/**
+	 * Utility method to create mouse button state events that create objects only on demand and
+	 * calls the keybind state events.
+	 *
+	 * @param keybindStateEvent the keybind state event to call
+	 * @return the created mouse button state event
+	 * @throws NullPointerException if the keybind state event is {@code null}
+	 */
+	private static Event<MouseButtonState> createMouseButtonStateEvent(Event<KeybindState> keybindStateEvent) {
+		Objects.requireNonNull(keybindStateEvent); // safeguard against bad initializer code
+		return EventFactory.createArrayBacked(MouseButtonState.class,
+				(button, modKeys, nullKey) -> keybindStateEvent.invoker().onKeybind(button, INVOKER_COMPUTE_MOUSE_KEY_SCANCODE, modKeys, null, null),
+				listeners -> (button, modKeys, nullKey) -> {
+					Key key = InputCallbacksImpl.buttonToKey(button);
+
+					for (MouseButtonState listener : listeners) {
+						listener.onMouseButton(button, modKeys, key);
+					}
+
+					// remember to call the keybind event invoker with made key
+					keybindStateEvent.invoker().onKeybind(button, -1, modKeys, key, null);
+				});
+	}
+
+	/**
+	 * Utility method to create key state events that create objects only on demand and
+	 * calls the keybind state events.
+	 *
+	 * @param keybindStateEvent the keybind state event to call
+	 * @return the created key state event
+	 * @throws NullPointerException if the keybind state event is {@code null}
+	 */
+	private static Event<KeyState> createKeyStateEvent(Event<KeybindState> keybindStateEvent) {
+		Objects.requireNonNull(keybindStateEvent); // safeguard against bad initializer code
+		return EventFactory.createArrayBacked(KeyState.class,
+				(code, scancode, modKeys, nullKey) -> keybindStateEvent.invoker().onKeybind(code, scancode, modKeys, null, null),
+				listeners -> (code, scancode, modKeys, nullKey) -> {
+					Key key = InputUtil.fromKeyCode(code, scancode);
+
+					for (KeyState listener : listeners) {
+						listener.onKey(code, scancode, modKeys, key);
+					}
+
+					// remember to call the keybind event invoker with made key
+					keybindStateEvent.invoker().onKeybind(code, scancode, modKeys, key, null);
+				});
+	}
+
+	static {
+		// these must be called only after the KEYBIND static fields are initialized!
+		// (code order is the order they appear in the java source file)
+		// otherwise nulls are passed into these factory methods!
+		KEY_PRESSED = createKeyStateEvent(KEYBIND_PRESSED);
+		KEY_RELEASED = createKeyStateEvent(KEYBIND_RELEASED);
+		KEY_REPEATED = createKeyStateEvent(KEYBIND_REPEATED);
+		MOUSE_BUTTON_PRESSED = createMouseButtonStateEvent(KEYBIND_PRESSED);
+		MOUSE_BUTTON_RELEASED = createMouseButtonStateEvent(KEYBIND_RELEASED);
 	}
 }

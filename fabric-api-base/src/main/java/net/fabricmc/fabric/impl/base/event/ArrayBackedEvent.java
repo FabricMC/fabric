@@ -43,16 +43,9 @@ class ArrayBackedEvent<T> extends Event<T> {
 				//noinspection unchecked
 				invoker = invokerFactory.apply((T[]) Array.newInstance(type, 0));
 			}
-		} else if (handlers.length == 1) {
-			invoker = handlers[0];
 		} else {
 			invoker = invokerFactory.apply(handlers);
 		}
-	}
-
-	@Override
-	public boolean hasListeners() {
-		return handlers.length != 0;
 	}
 
 	@Override
