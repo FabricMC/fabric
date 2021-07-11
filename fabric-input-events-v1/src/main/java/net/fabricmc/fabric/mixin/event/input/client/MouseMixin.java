@@ -27,21 +27,29 @@ import net.fabricmc.fabric.impl.client.input.InputCallbacksImpl;
 
 @Mixin(Mouse.class)
 public class MouseMixin {
+	// Ths is the lambda in setup(long) that calls this.onCursorPos(...)
+	// this lambda is the actual callback registered with GLFW.glfwSetCursorPosCallback
 	@Inject(method = "method_22689(JDD)V", at = @At("HEAD"))
 	void onMouseMove(long window, double dx, double dy, CallbackInfo ci) {
 		InputCallbacksImpl.onMouseMoved(window, dx, dy);
 	}
 
+	// Ths is the lambda in setup(long) that calls this.onMouseButton(...)
+	// this lambda is the actual callback registered with GLFW.glfwSetMouseButtonCallback
 	@Inject(method = "method_22686(JIII)V", at = @At("HEAD"))
 	void onMouseButton(long window, int button, int action, int modKeys, CallbackInfo ci) {
 		InputCallbacksImpl.onMouseButton(window, button, action, modKeys);
 	}
 
+	// Ths is the lambda in setup(long) that calls this.onMouseScroll(...)
+	// this lambda is the actual callback registered with GLFW.glfwSetScrollCallback
 	@Inject(method = "method_22687(JDD)V", at = @At("HEAD"))
 	void onMouseScrolled(long window, double dx, double dy, CallbackInfo ci) {
 		InputCallbacksImpl.onMouseScrolled(window, dx, dy);
 	}
 
+	// Ths is the lambda in setup(long) that calls generetes an array of Path's
+	// this lambda is the actual callback registered with GLFW.glfwSetDropCallback
 	@Inject(method = "method_29615(JIJ)V", at = @At("HEAD"))
 	void onFilesDropped(long window, int count, long names, CallbackInfo ci) {
 		InputCallbacksImpl.onFilesDropped(window, count, names);
