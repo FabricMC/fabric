@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.event.client.input;
 
+import org.lwjgl.glfw.GLFW;
+
 import java.util.Objects;
 
 import net.minecraft.client.options.KeyBinding;
@@ -33,8 +35,9 @@ import net.fabricmc.fabric.impl.client.input.InputCallbacksImpl;
  */
 @Environment(EnvType.CLIENT)
 public final class ClientInputEvents {
-	// a special fake scancode to indicate a mouse key than a sysnum key needs to be computed
-	private static final int INVOKER_COMPUTE_MOUSE_KEY_SCANCODE = -2;
+	// a special fake scancode we invented to indicate a mouse Key (rather than a keyboard Key) event.
+	private static final int SPECIAL_MOUSE_KEY_SCANCODE = -2;
+
 	/**
 	 * Called when the player presses, releases, or holds a key.
 	 */
@@ -46,40 +49,45 @@ public final class ClientInputEvents {
 	/**
 	 * Called when the player presses a key.
 	 *
-	 * @implSpec The listeners to this event will never receive any {@code null} argument.
-	 * @implNote The invoker accepts a {@code null} key object and computes
-	 * it on demand; it always invokes the keybind version of the event,
-	 * {@link #KEYBIND_PRESSED}.
+	 * @implSpec The listeners to this event will never receive any {@code null} arguments.
+	 * @implNote If the invoker receives a {@code null} Key object, it will
+	 * compute it from the given code and scancode, if necessairy.
+	 * The invoker always invokes the {@link #KEYBIND_PRESSED} event,
+	 * with a {@code null} keybind argument and the possibly computed key.
 	 * @see #KEYBIND_PRESSED
 	 */
 	public static final Event<KeyState> KEY_PRESSED;
 	/**
 	 * Called when the player releases a key.
 	 *
-	 * @implSpec The listeners to this event will never receive any {@code null} argument.
-	 * @implNote The invoker accepts a {@code null} key object and computes
-	 * it on demand; it always invokes the keybind version of the event,
-	 * {@link #KEYBIND_RELEASED}.
+	 * @implSpec The listeners to this event will never receive any {@code null} arguments.
+	 * @implNote If the invoker receives a {@code null} Key object, it will
+	 * compute it from the given code and scancode, if necessairy.
+	 * The invoker always invokes the {@link #KEYBIND_RELEASED} event,
+	 * with a {@code null} keybind argument and the possibly computed key.
 	 * @see #KEYBIND_RELEASED
 	 */
 	public static final Event<KeyState> KEY_RELEASED;
 	/**
 	 * Called when the player holds a key for a while.
 	 *
-	 * @implSpec The listeners to this event will never receive any {@code null} argument.
-	 * @implNote The invoker accepts a {@code null} key object and computes
-	 * it on demand; it always invokes the keybind version of the event,
-	 * {@link #KEYBIND_REPEATED}.
+	 * @implSpec The listeners to this event will never receive any {@code null} arguments.
+	 * @implNote If the invoker receives a {@code null} Key object, it will
+	 * compute it from the given code and scancode, if necessairy.
+	 * The invoker always invokes the {@link #KEYBIND_REPEATED} event,
+	 * with a {@code null} keybind argument and the possibly computed key.
 	 * @see #KEYBIND_REPEATED
 	 */
 	public static final Event<KeyState> KEY_REPEATED;
 	/**
 	 * Called when the player presses a key that is bound to some keybind.
 	 *
-	 * @implSpec The listeners to this event will never receive any {@code null} argument.
-	 * @implNote The invoker can compute the key on demand if it's {@code null}
-	 * and always computes the keybind on demand. If the invoker cannot find
-	 * associated keybinds, the listeners are not invoked.
+	 * @implSpec The listeners to this event will never receive any {@code null} arguments.
+	 * @implNote If the invoker receives a {@code null} Key object, it will
+	 * compute it from the given code and scancode, if necessairy.
+	 * If the invoker receives a {@code null} KeyBinding object, it will try
+	 * to find the KeyBinding corresponding to the given Key, if necessairy.
+	 * If the invoker cannot find the keybind, the listeners are not invoked.
 	 * @see #KEY_PRESSED
 	 * @see #MOUSE_BUTTON_PRESSED
 	 */
@@ -87,10 +95,12 @@ public final class ClientInputEvents {
 	/**
 	 * Called when the player releases a key that is bound to some keybind.
 	 *
-	 * @implSpec The listeners to this event will never receive any {@code null} argument.
-	 * @implNote The invoker can compute the key on demand if it's {@code null}
-	 * and always computes the keybind on demand. If the invoker cannot find
-	 * associated keybinds, the listeners are not invoked.
+	 * @implSpec The listeners to this event will never receive any {@code null} arguments.
+	 * @implNote If the invoker receives a {@code null} Key object, it will
+	 * compute it from the given code and scancode, if necessairy.
+	 * If the invoker receives a {@code null} KeyBinding object, it will try
+	 * to find the KeyBinding corresponding to the given Key, if necessairy.
+	 * If the invoker cannot find the keybind, the listeners are not invoked.
 	 * @see #KEY_RELEASED
 	 * @see #MOUSE_BUTTON_RELEASED
 	 */
@@ -98,10 +108,12 @@ public final class ClientInputEvents {
 	/**
 	 * Called when the player holds a key that is bound to some keybind for a while.
 	 *
-	 * @implSpec The listeners to this event will never receive any {@code null} argument.
-	 * @implNote The invoker can compute the key on demand if it's {@code null}
-	 * and always computes the keybind on demand. If the invoker cannot find
-	 * associated keybinds, the listeners are not invoked.
+	 * @implSpec The listeners to this event will never receive any {@code null} arguments.
+	 * @implNote If the invoker receives a {@code null} Key object, it will
+	 * compute it from the given code and scancode, if necessairy.
+	 * If the invoker receives a {@code null} KeyBinding object, it will try
+	 * to find the KeyBinding corresponding to the given Key, if necessairy.
+	 * If the invoker cannot find the keybind, the listeners are not invoked.
 	 * @see #KEY_REPEATED
 	 */
 	public static final Event<KeybindState> KEYBIND_REPEATED = createKeybindStateEvent();
@@ -135,20 +147,22 @@ public final class ClientInputEvents {
 	/**
 	 * Called when the player presses a button on their mouse.
 	 *
-	 * @implSpec The listeners to this event will never receive any {@code null} argument.
-	 * @implNote The invoker accepts a {@code null} key object and computes
-	 * it on demand; it always invokes the keybind version of the event,
-	 * @link #KEYBIND_PRESSED}.
+	 * @implSpec The listeners to this event will never receive any {@code null} arguments.
+	 * @implNote If the invoker receives a {@code null} Key object, it will
+	 * compute it from the given code and scancode, if necessairy.
+	 * The invoker always invokes the {@link #KEYBIND_PRESSED} event,
+	 * with a {@code null} keybind argument and the possibly computed key.
 	 * @see #KEYBIND_PRESSED
 	 */
 	public static final Event<MouseButtonState> MOUSE_BUTTON_PRESSED;
 	/**
 	 * Called when the player releases a button on their mouse.
 	 *
-	 * @implSpec The listeners to this event will never receive any {@code null} argument.
-	 * @implNote The invoker accepts a {@code null} key object and computes
-	 * it on demand; it always invokes the keybind version of the event,
-	 * {@link #KEYBIND_RELEASED}.
+	 * @implSpec The listeners to this event will never receive any {@code null} arguments.
+	 * @implNote If the invoker receives a {@code null} Key object, it will
+	 * compute it from the given code and scancode, if necessairy.
+	 * The invoker always invokes the {@link #KEYBIND_RELEASED} event,
+	 * with a {@code null} keybind argument and the possibly computed key.
 	 * @see #KEYBIND_RELEASED
 	 */
 	public static final Event<MouseButtonState> MOUSE_BUTTON_RELEASED;
@@ -225,9 +239,9 @@ public final class ClientInputEvents {
 				},
 				listeners -> (code, scancode, modKeys, nullableKey, nullBinding) -> {
 					Key key = nullableKey == null
-							? scancode == INVOKER_COMPUTE_MOUSE_KEY_SCANCODE
-							? InputCallbacksImpl.buttonToKey(code)
-							: InputUtil.fromKeyCode(code, scancode)
+							? scancode == SPECIAL_MOUSE_KEY_SCANCODE
+								? InputCallbacksImpl.buttonToKey(code)
+								: InputUtil.fromKeyCode(code, scancode)
 							: nullableKey;
 					KeyBinding binding = InputCallbacksImpl.keyToBinding(key);
 
@@ -235,8 +249,8 @@ public final class ClientInputEvents {
 						return;
 					}
 
-					if (scancode == INVOKER_COMPUTE_MOUSE_KEY_SCANCODE) {
-						scancode = -1; // reset
+					if (scancode == SPECIAL_MOUSE_KEY_SCANCODE) {
+						scancode = GLFW.GLFW_KEY_UNKNOWN;
 					}
 
 					for (KeybindState listener : listeners) {
@@ -256,7 +270,7 @@ public final class ClientInputEvents {
 	private static Event<MouseButtonState> createMouseButtonStateEvent(Event<KeybindState> keybindStateEvent) {
 		Objects.requireNonNull(keybindStateEvent); // safeguard against bad initializer code
 		return EventFactory.createArrayBacked(MouseButtonState.class,
-				(button, modKeys, nullKey) -> keybindStateEvent.invoker().onKeybind(button, INVOKER_COMPUTE_MOUSE_KEY_SCANCODE, modKeys, null, null),
+				(button, modKeys, nullKey) -> keybindStateEvent.invoker().onKeybind(button, SPECIAL_MOUSE_KEY_SCANCODE, modKeys, null, null),
 				listeners -> (button, modKeys, nullKey) -> {
 					Key key = InputCallbacksImpl.buttonToKey(button);
 
