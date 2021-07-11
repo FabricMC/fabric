@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.event.client.input;
 
-import org.lwjgl.glfw.GLFW;
-
 import java.util.Objects;
+
+import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -254,6 +254,7 @@ public final class ClientInputEvents {
 							key = isMouseKey
 								? InputCallbacksImpl.buttonToKey(code)
 								: InputUtil.fromKeyCode(code, scancode);
+
 							if (key == null) {
 								// will probably never happen, just to be safe
 								break;
@@ -263,11 +264,13 @@ public final class ClientInputEvents {
 						if (binding == null) {
 							// try to find a binding for the key, on demand
 							binding = InputCallbacksImpl.keyToBinding(key);
+
 							if (binding == null) {
 								// didn't find a binding; don't invoke the handlers
 								break;
 							}
 						}
+
 						listener.onKeybind(code, scancode, modKeys, key, binding);
 					}
 				});
@@ -292,11 +295,13 @@ public final class ClientInputEvents {
 						if (key == null) {
 							// compute they (mouse) key on demand
 							key = InputCallbacksImpl.buttonToKey(button);
+
 							if (key == null) {
 								// will probably never happen, just to be safe
 								break;
 							}
 						}
+
 						listener.onMouseButton(button, modKeys, key);
 					}
 
@@ -324,11 +329,13 @@ public final class ClientInputEvents {
 						if (key == null) {
 							// compute the (keyboard) key on demand
 							key = InputUtil.fromKeyCode(code, scancode);
+
 							if (key == null) {
 								// will probably never happen, just to be safe
 								break;
 							}
 						}
+
 						listener.onKey(code, scancode, modKeys, key);
 					}
 
