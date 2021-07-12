@@ -5,8 +5,9 @@
   "mixins": [
     "AccessorFluidTags",
     "MixinObjectBuilder",
-    "MixinTagImpl",
-    "MixinTagBuilder"
+    "MixinRequiredTagListRegistry",
+    "MixinTagBuilder",
+    "MixinTagImpl"
   ],
   "injectors": {
     "defaultRequire": 1
