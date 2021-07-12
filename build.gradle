@@ -19,11 +19,11 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.36.1"
-	static def mcVersion = "1.17.1-rc2"
+	static def baseVersion = "0.37.0"
+	static def mcVersion = "1.17.1"
 	static def yarnVersion = "+build.1"
 	static def loaderVersion = "0.11.3"
-	static def preRelease = true
+	static def preRelease = false
 }
 
 version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
@@ -190,7 +190,7 @@ apply from: "gradle/module-validation.gradle"
 
 javadoc {
 	options {
-		source = "8"
+		source = "16"
 		encoding = "UTF-8"
 		charSet = "UTF-8"
 		memberLevel = JavadocMemberLevel.PACKAGE
@@ -347,7 +347,7 @@ curseforge {
 		id = "306612"
 		changelog = "A changelog can be found at https://github.com/FabricMC/fabric/commits"
 		releaseType = Globals.preRelease ? "beta" : "release"
-		addGameVersion "1.17"
+		addGameVersion "1.17.1"
 		addGameVersion "Fabric"
 
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
