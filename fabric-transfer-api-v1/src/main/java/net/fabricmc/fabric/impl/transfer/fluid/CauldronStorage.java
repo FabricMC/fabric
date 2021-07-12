@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.transfer.fluid;
 
 import java.util.Map;
+import java.util.Objects;
 
 import com.google.common.collect.MapMaker;
 import com.google.common.primitives.Ints;
@@ -46,7 +47,35 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
  */
 public class CauldronStorage extends SnapshotParticipant<BlockState> implements SingleSlotStorage<FluidVariant> {
 	// Record is used for convenient constructor, hashcode and equals implementations.
-	private record WorldLocation(World world, BlockPos pos) {
+	private static final class WorldLocation {
+		private final World world;
+		private final BlockPos pos;
+
+		WorldLocation(World world, BlockPos pos) {
+			this.world = world;
+			this.pos = pos;
+		}
+
+		public World world() {
+			return world;
+		}
+
+		public BlockPos pos() {
+			return pos;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			WorldLocation that = (WorldLocation) o;
+			return Objects.equals(world, that.world) && Objects.equals(pos, that.pos);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(world, pos);
+		}
 	}
 
 	// Weak values to make sure wrappers are cleaned up after use, thread-safe.

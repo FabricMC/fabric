@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -32,7 +32,7 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
 public class FluidVariantImpl implements FluidVariant {
-	public static FluidVariant of(Fluid fluid, @Nullable NbtCompound nbt) {
+	public static FluidVariant of(Fluid fluid, @Nullable CompoundTag nbt) {
 		Objects.requireNonNull(fluid, "Fluid may not be null.");
 
 		if (!fluid.isStill(fluid.getDefaultState()) && fluid != Fluids.EMPTY) {
@@ -52,10 +52,10 @@ public class FluidVariantImpl implements FluidVariant {
 	private static final Logger LOGGER = LogManager.getLogger("fabric-transfer-api-v1/fluid");
 
 	private final Fluid fluid;
-	private final @Nullable NbtCompound nbt;
+	private final @Nullable CompoundTag nbt;
 	private final int hashCode;
 
-	public FluidVariantImpl(Fluid fluid, NbtCompound nbt) {
+	public FluidVariantImpl(Fluid fluid, CompoundTag nbt) {
 		this.fluid = fluid;
 		this.nbt = nbt == null ? null : nbt.copy(); // defensive copy
 		this.hashCode = Objects.hash(fluid, nbt);
@@ -72,13 +72,13 @@ public class FluidVariantImpl implements FluidVariant {
 	}
 
 	@Override
-	public @Nullable NbtCompound getNbt() {
+	public @Nullable CompoundTag getNbt() {
 		return nbt;
 	}
 
 	@Override
-	public NbtCompound toNbt() {
-		NbtCompound result = new NbtCompound();
+	public CompoundTag toNbt() {
+		CompoundTag result = new CompoundTag();
 		result.putString("fluid", Registry.FLUID.getId(fluid).toString());
 
 		if (nbt != null) {
@@ -88,10 +88,10 @@ public class FluidVariantImpl implements FluidVariant {
 		return result;
 	}
 
-	public static FluidVariant fromNbt(NbtCompound compound) {
+	public static FluidVariant fromNbt(CompoundTag compound) {
 		try {
 			Fluid fluid = Registry.FLUID.get(new Identifier(compound.getString("fluid")));
-			NbtCompound nbt = compound.contains("tag") ? compound.getCompound("tag") : null;
+			CompoundTag nbt = compound.contains("tag") ? compound.getCompound("tag") : null;
 			return of(fluid, nbt);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.debug("Tried to load an invalid FluidVariant from NBT: {}", compound, runtimeException);
@@ -106,7 +106,7 @@ public class FluidVariantImpl implements FluidVariant {
 		} else {
 			buf.writeBoolean(true);
 			buf.writeVarInt(Registry.FLUID.getRawId(fluid));
-			buf.writeNbt(nbt);
+			buf.writeCompoundTag(nbt);
 		}
 	}
 
@@ -115,7 +115,7 @@ public class FluidVariantImpl implements FluidVariant {
 			return FluidVariant.blank();
 		} else {
 			Fluid fluid = Registry.FLUID.get(buf.readVarInt());
-			NbtCompound nbt = buf.readNbt();
+			CompoundTag nbt = buf.readCompoundTag();
 			return of(fluid, nbt);
 		}
 	}

@@ -16,9 +16,8 @@
 
 package net.fabricmc.fabric.test.transfer.fluid;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
@@ -27,14 +26,15 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 
-public class FluidChuteBlockEntity extends BlockEntity {
+public class FluidChuteBlockEntity extends BlockEntity implements Tickable {
 	private int tickCounter = 0;
 
-	public FluidChuteBlockEntity(BlockPos pos, BlockState state) {
-		super(FluidTransferTest.FLUID_CHUTE_TYPE, pos, state);
+	public FluidChuteBlockEntity() {
+		super(FluidTransferTest.FLUID_CHUTE_TYPE);
 	}
 
 	@SuppressWarnings("ConstantConditions")
+	@Override
 	public void tick() {
 		if (!world.isClient() && tickCounter++ % 20 == 0) {
 			Storage<FluidVariant> top = FluidStorage.SIDED.find(world, pos.offset(Direction.UP), Direction.DOWN);

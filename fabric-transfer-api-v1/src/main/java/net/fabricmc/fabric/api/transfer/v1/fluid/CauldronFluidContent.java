@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.LeveledCauldronBlock;
+import net.minecraft.block.CauldronBlock;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.state.property.IntProperty;
@@ -175,7 +175,6 @@ public final class CauldronFluidContent {
 	static {
 		// Vanilla registrations
 		CauldronFluidContent.registerCauldron(Blocks.CAULDRON, Fluids.EMPTY, FluidConstants.BUCKET, null);
-		CauldronFluidContent.registerCauldron(Blocks.WATER_CAULDRON, Fluids.WATER, FluidConstants.BOTTLE, LeveledCauldronBlock.LEVEL);
-		CauldronFluidContent.registerCauldron(Blocks.LAVA_CAULDRON, Fluids.LAVA, FluidConstants.BUCKET, null);
+		CauldronFluidContent.registerCauldron(Blocks.CAULDRON, Fluids.WATER, FluidConstants.BOTTLE, CauldronBlock.LEVEL);
 	}
 }

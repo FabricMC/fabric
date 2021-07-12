@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 /**
  * An immutable association of a still fluid and an optional NBT tag.
  *
- * <p>Do not extend this class. Use {@link #of(Fluid)} and {@link #of(Fluid, NbtCompound)} to create instances.
+ * <p>Do not extend this class. Use {@link #of(Fluid)} and {@link #of(Fluid, CompoundTag)} to create instances.
  *
  * <p>{@link FluidVariantRendering} can be used for client-side rendering of fluid variants.
  *
@@ -62,7 +62,7 @@ public interface FluidVariant extends TransferVariant<Fluid> {
 	/**
 	 * Retrieve a FluidVariant with a fluid, and an optional tag.
 	 */
-	static FluidVariant of(Fluid fluid, @Nullable NbtCompound nbt) {
+	static FluidVariant of(Fluid fluid, @Nullable CompoundTag nbt) {
 		return FluidVariantImpl.of(fluid, nbt);
 	}
 
@@ -78,7 +78,7 @@ public interface FluidVariant extends TransferVariant<Fluid> {
 	 *
 	 * <p>If an error occurs during deserialization, it will be logged with the DEBUG level, and a blank variant will be returned.
 	 */
-	static FluidVariant fromNbt(NbtCompound nbt) {
+	static FluidVariant fromNbt(CompoundTag nbt) {
 		return FluidVariantImpl.fromNbt(nbt);
 	}
 

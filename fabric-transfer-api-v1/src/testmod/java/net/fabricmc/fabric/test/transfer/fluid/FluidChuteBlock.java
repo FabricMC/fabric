@@ -24,13 +24,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
 
 public class FluidChuteBlock extends Block implements BlockEntityProvider {
 	public FluidChuteBlock() {
@@ -42,13 +39,8 @@ public class FluidChuteBlock extends Block implements BlockEntityProvider {
 	);
 
 	@Override
-	public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-		return new FluidChuteBlockEntity(pos, state);
-	}
-
-	@Override
-	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-		return (w, p, s, be) -> ((FluidChuteBlockEntity) be).tick();
+	public @Nullable BlockEntity createBlockEntity(BlockView world) {
+		return new FluidChuteBlockEntity();
 	}
 
 	@Override

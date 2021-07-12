@@ -21,7 +21,7 @@ import java.util.Objects;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 
 /**
@@ -57,7 +57,7 @@ public interface TransferVariant<O> {
 	 * <p><b>NEVER MUTATE THIS NBT TAG</b>, if you need to mutate it you can use {@link #copyNbt()} to retrieve a copy instead.
 	 */
 	@Nullable
-	NbtCompound getNbt();
+	CompoundTag getNbt();
 
 	/**
 	 * Return true if this variant has a tag, false otherwise.
@@ -71,7 +71,7 @@ public interface TransferVariant<O> {
 	 *
 	 * <p>Note: True is returned if both tags are {@code null}.
 	 */
-	default boolean nbtMatches(@Nullable NbtCompound other) {
+	default boolean nbtMatches(@Nullable CompoundTag other) {
 		return Objects.equals(getNbt(), other);
 	}
 
@@ -88,8 +88,8 @@ public interface TransferVariant<O> {
 	 * <p>Note: Use {@link #nbtMatches} if you only need to check for custom tag equality, or {@link #getNbt()} if you don't need to mutate the tag.
 	 */
 	@Nullable
-	default NbtCompound copyNbt() {
-		NbtCompound nbt = getNbt();
+	default CompoundTag copyNbt() {
+		CompoundTag nbt = getNbt();
 		return nbt == null ? null : nbt.copy();
 	}
 
@@ -98,7 +98,7 @@ public interface TransferVariant<O> {
 	 *
 	 * <p>Note: This is safe to use for persisting data as objects are saved using their full Identifier.
 	 */
-	NbtCompound toNbt();
+	CompoundTag toNbt();
 
 	/**
 	 * Write this variant into a packet byte buffer. Subinterfaces should have a matching static {@code fromPacket}.

@@ -26,12 +26,11 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage;
@@ -53,7 +52,7 @@ public class FluidTransferTest implements ModInitializer {
 		registerBlock(FLUID_CHUTE, "fluid_chute");
 		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "extract_stick"), EXTRACT_STICK);
 
-		FLUID_CHUTE_TYPE = FabricBlockEntityTypeBuilder.create(FluidChuteBlockEntity::new, FLUID_CHUTE).build();
+		FLUID_CHUTE_TYPE = BlockEntityType.Builder.create(FluidChuteBlockEntity::new, FLUID_CHUTE).build(null);
 		Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "fluid_chute"), FLUID_CHUTE_TYPE);
 
 		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeFluidStorage.WATER, INFINITE_WATER_SOURCE);
@@ -92,7 +91,7 @@ public class FluidTransferTest implements ModInitializer {
 	}
 
 	static {
-		NbtCompound tag = new NbtCompound();
+		CompoundTag tag = new CompoundTag();
 		tag.putInt("test", 1);
 		TAGGED_WATER = FluidVariant.of(Fluids.WATER, tag);
 		TAGGED_WATER_2 = FluidVariant.of(Fluids.WATER, tag);
