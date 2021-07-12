@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "fabric-transfer-api-v1-testmod:block/infinite_water_source"
+    }
+  }
+}
