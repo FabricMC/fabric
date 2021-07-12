@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.test.tag.extension;
 
-import net.minecraft.server.command.CommandManager;
+import static net.minecraft.server.command.CommandManager.literal;
+
+import java.util.Map;
+
 import net.minecraft.tag.RequiredTagList;
 import net.minecraft.tag.RequiredTagListRegistry;
 import net.minecraft.tag.Tag;
@@ -27,22 +30,46 @@ import net.minecraft.world.biome.Biome;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.tag.TagRegistry;
 
 public class TagExtensionTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		RequiredTagList<Biome> biomeTagList = RequiredTagListRegistry.register(Registry.BIOME_KEY, "tags/biomes");
-		// crash test
+		// Multiple registration test
 		RequiredTagListRegistry.register(Registry.BIOME_KEY, "tags/biomes");
-		Tag<Biome> biomes = biomeTagList.add("fabric-tag-extensions-v0-testmod:example");
 
-		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) ->
-				dispatcher.register(CommandManager.literal("biome_tag_test").executes(context -> {
-					biomes.values().forEach(biome -> {
+		// Creating biome tag via RequiredTagList#add
+		Tag<Biome> biomesAdd = biomeTagList.add("fabric-tag-extensions-v0-testmod:example_add");
+		// Creating biome tag via TagRegistry#create
+		Tag<Biome> biomesTagRegistry = TagRegistry.create(new Identifier("fabric-tag-extensions-v0-testmod:example_tag_registry"), biomeTagList::getGroup);
+
+		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(literal("biome_tag_test")
+				.then(literal("RequiredTagList.add").executes(context -> {
+					biomesAdd.values().forEach(biome -> {
 						Identifier id = context.getSource().getRegistryManager().get(Registry.BIOME_KEY).getId(biome);
 						context.getSource().sendFeedback(new LiteralText(id.toString()), false);
 					});
 					return 1;
-				})));
+				}))
+				.then(literal("TagRegistry.create").executes(context -> {
+					biomesTagRegistry.values().forEach(biome -> {
+						Identifier id = context.getSource().getRegistryManager().get(Registry.BIOME_KEY).getId(biome);
+						context.getSource().sendFeedback(new LiteralText(id.toString()), false);
+					});
+					return 1;
+				}))
+				.then(literal("list_all").executes(context -> {
+					Map<Identifier, Tag<Biome>> tags = context.getSource().getServer().getTagManager().getOrCreateTagGroup(Registry.BIOME_KEY).getTags();
+					tags.forEach((tagId, tag) -> {
+						LiteralText text = new LiteralText(tagId.toString() + ":");
+						tag.values().forEach(biome -> {
+							Identifier biomeId = context.getSource().getRegistryManager().get(Registry.BIOME_KEY).getId(biome);
+							text.append(" " + biomeId.toString());
+						});
+						context.getSource().sendFeedback(text, false);
+					});
+					return 1;
+				}))));
 	}
 }
