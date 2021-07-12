@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.tag.extension;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -30,13 +31,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.tag.RequiredTagList;
 import net.minecraft.tag.RequiredTagListRegistry;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 
+import net.fabricmc.fabric.api.tag.TagRegistry;
+
 /**
- * This mixin adds support for custom {@link RequiredTagList} registration via {@link RequiredTagListRegistry#register(RegistryKey, String)}.
- * <p>
- * Call {@link RequiredTagList#add(String)} to create a new tag.
+ * This mixin adds support for custom {@link RequiredTagList} registration via {@link RequiredTagListRegistry#register(RegistryKey, String)}.<br>
+ * Call {@link RequiredTagList#add(String)} or {@link TagRegistry#create(Identifier, Supplier)} to create a new tag.
  */
 @Mixin(RequiredTagListRegistry.class)
 public class MixinRequiredTagListRegistry {
