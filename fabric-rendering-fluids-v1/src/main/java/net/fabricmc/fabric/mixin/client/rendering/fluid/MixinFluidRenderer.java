@@ -16,11 +16,13 @@
 
 package net.fabricmc.fabric.mixin.client.rendering.fluid;
 
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -42,6 +44,8 @@ public class MixinFluidRenderer {
 	private Sprite[] lavaSprites;
 	@Shadow
 	private Sprite[] waterSprites;
+	@Shadow
+	private Sprite waterOverlaySprite;
 
 	private final ThreadLocal<FluidRendererHookContainer> fabric_renderHandler = ThreadLocal.withInitial(FluidRendererHookContainer::new);
 
@@ -78,6 +82,26 @@ public class MixinFluidRenderer {
 	}
 
 	@ModifyVariable(at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/FluidRenderer.isSameFluid(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Lnet/minecraft/fluid/FluidState;)Z"), method = "render", ordinal = 0)
+	public Sprite[] modSpriteArray(Sprite[] chk) {
+		FluidRendererHookContainer ctr = fabric_renderHandler.get();
+
+		if (ctr.handler != null) {
+			Sprite[] sprites = ctr.handler.getFluidSprites(ctr.view, ctr.pos, ctr.state);
+
+			if (sprites.length >= 3) {
+				ctr.customOverlayBehavior = true;
+				// The custom sprite may still be null. If it is, no overlay should be used.
+				ctr.customOverlaySprite = sprites[2];
+			}
+
+			return sprites;
+		}
+
+		return chk;
+	}
+
+	// Must be after modSpriteArray so that the container has the overlay information.
+	@ModifyVariable(at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/FluidRenderer.isSameFluid(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Lnet/minecraft/fluid/FluidState;)Z"), method = "render", ordinal = 0)
 	public boolean modLavaCheck(boolean chk) {
 		// First boolean local is set by vanilla according to 'matches lava'
 		// but uses the negation consistent with 'matches water'
@@ -85,18 +109,19 @@ public class MixinFluidRenderer {
 
 		// Has other uses but those have already happened by the time the hook is called.
 		final FluidRendererHookContainer ctr = fabric_renderHandler.get();
-		return chk || !ctr.state.isIn(FluidTags.WATER);
-	}
-
-	@ModifyVariable(at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/FluidRenderer.isSameFluid(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Lnet/minecraft/fluid/FluidState;)Z"), method = "render", ordinal = 0)
-	public Sprite[] modSpriteArray(Sprite[] chk) {
-		FluidRendererHookContainer ctr = fabric_renderHandler.get();
-		return ctr.handler != null ? ctr.handler.getFluidSprites(ctr.view, ctr.pos, ctr.state) : chk;
+		return ctr.customOverlayBehavior ? ctr.customOverlaySprite == null : chk || !ctr.state.isIn(FluidTags.WATER);
 	}
 
 	@ModifyVariable(at = @At(value = "CONSTANT", args = "intValue=16", ordinal = 0, shift = At.Shift.BEFORE), method = "render", ordinal = 0)
 	public int modTintColor(int chk) {
 		FluidRendererHookContainer ctr = fabric_renderHandler.get();
 		return ctr.handler != null ? ctr.handler.getFluidColor(ctr.view, ctr.pos, ctr.state) : chk;
+	}
+
+	// Redirect all GETFIELD opcodes
+	@Redirect(at = @At(value = "FIELD", target = "net/minecraft/client/render/block/FluidRenderer.waterOverlaySprite:Lnet/minecraft/client/texture/Sprite;", opcode = Opcodes.GETFIELD), method = "render")
+	private Sprite redirectOverlaySprite(FluidRenderer renderer) {
+		FluidRendererHookContainer ctr = fabric_renderHandler.get();
+		return ctr.customOverlayBehavior ? ctr.customOverlaySprite : waterOverlaySprite;
 	}
 }
