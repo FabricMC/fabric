@@ -1,0 +1,4 @@
+accessWidener	v1	named
+
+accessible method net/minecraft/block/entity/AbstractFurnaceBlockEntity addFuel (Ljava/util/Map;Lnet/minecraft/tag/Tag;I)V
+accessible method net/minecraft/block/entity/AbstractFurnaceBlockEntity addFuel (Ljava/util/Map;Lnet/minecraft/item/ItemConvertible;I)V
