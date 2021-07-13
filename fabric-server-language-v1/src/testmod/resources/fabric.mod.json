@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-server-language-v1-testmod",
+  "name": "Fabric Server Language (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "server",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-server-language-v1": "*"
+  },
+  "entrypoints": {
+    "server": [
+      "net.fabricmc.fabric.test.server.language.ServerLanguageTestMod"
+    ]
+  }
+}
