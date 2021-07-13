@@ -348,7 +348,7 @@ curseforge {
 		id = "306612"
 		changelog = "A changelog can be found at https://github.com/FabricMC/fabric/commits"
 		releaseType = Globals.preRelease ? "alpha" : "release"
-		addGameVersion "1.17-snapshot"
+		addGameVersion "1.17-Snapshot"
 		addGameVersion "Fabric"
 
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
