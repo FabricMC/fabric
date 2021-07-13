@@ -28,7 +28,7 @@ import net.minecraft.world.gen.feature.StructureFeature;
 
 @Mixin(StructureFeature.class)
 public interface StructureFeatureAccessor {
-	@Accessor("JIGSAW_STRUCTURES")
+	@Accessor("LAND_MODIFYING_STRUCTURES")
 	@Mutable
 	static void setSurfaceAdjustingStructures(List<StructureFeature<?>> surfaceAdjustingStructures) {
 		throw new AssertionError("Untransformed accessor");

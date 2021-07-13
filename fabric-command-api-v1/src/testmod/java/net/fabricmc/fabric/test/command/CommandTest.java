@@ -98,7 +98,7 @@ public final class CommandTest implements ModInitializer {
 	private int executeCommonCommand(CommandContext<ServerCommandSource> context) {
 		final ServerCommandSource source = context.getSource();
 		source.sendFeedback(new LiteralText("Common test command is working."), false);
-		source.sendFeedback(new LiteralText("Server Is Dedicated: " + source.getMinecraftServer().isDedicated()), false);
+		source.sendFeedback(new LiteralText("Server Is Dedicated: " + source.getServer().isDedicated()), false);
 
 		return 1;
 	}
@@ -106,12 +106,12 @@ public final class CommandTest implements ModInitializer {
 	private int executeDedicatedCommand(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 		final ServerCommandSource source = context.getSource();
 
-		if (!source.getMinecraftServer().isDedicated()) {
+		if (!source.getServer().isDedicated()) {
 			throw WRONG_SIDE_SHOULD_BE_DEDICATED.create();
 		}
 
 		source.sendFeedback(new LiteralText("Dedicated test command is working."), false);
-		source.sendFeedback(new LiteralText("Server Is Dedicated: " + source.getMinecraftServer().isDedicated()), false);
+		source.sendFeedback(new LiteralText("Server Is Dedicated: " + source.getServer().isDedicated()), false);
 
 		return 1;
 	}
@@ -119,12 +119,12 @@ public final class CommandTest implements ModInitializer {
 	private int executeIntegratedCommand(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 		final ServerCommandSource source = context.getSource();
 
-		if (source.getMinecraftServer().isDedicated()) {
+		if (source.getServer().isDedicated()) {
 			throw WRONG_SIDE_SHOULD_BE_INTEGRATED.create();
 		}
 
 		source.sendFeedback(new LiteralText("Integrated test command is working."), false);
-		source.sendFeedback(new LiteralText("Server Is Integrated: " + !source.getMinecraftServer().isDedicated()), false);
+		source.sendFeedback(new LiteralText("Server Is Integrated: " + !source.getServer().isDedicated()), false);
 
 		return 1;
 	}
