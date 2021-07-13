@@ -17,6 +17,7 @@
   "client": [
     "client.ClientBuiltinResourcePackProviderMixin",
     "client.CreateWorldScreenMixin",
+    "client.DefaultClientResourcePackMixin",
     "client.FontManagerResourceReloadListenerMixin",
     "client.GameOptionsMixin",
     "client.KeyedResourceReloadListenerClientMixin"
