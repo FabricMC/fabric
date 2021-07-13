@@ -19,7 +19,9 @@ package net.fabricmc.fabric.mixin.resource.loader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.JarURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Collection;
 import java.util.function.Predicate;
 
@@ -60,11 +62,12 @@ public abstract class DefaultResourcePackMixin implements ResourcePack {
 
 		// Locate MC jar by finding the URL that contains the assets root.
 		try {
-			URL jarLoc = DefaultResourcePack.class.getResource("/" + type.getDirectory() + "/.mcassetsroot");
-			String file = jarLoc.getFile().split("!")[0].substring("file:/".length());
-			return new ZipResourcePack(new File(file));
+			URL assetsRootUrl = DefaultResourcePack.class.getResource("/" + type.getDirectory() + "/.mcassetsroot");
+			URLConnection connection = assetsRootUrl.openConnection();
+			JarURLConnection jarConnection = (JarURLConnection) connection;
+			return new ZipResourcePack(new File(jarConnection.getJarFileURL().toURI()));
 		} catch (Exception exception) {
-			throw new RuntimeException("Fabric: Failed to locate Minecraft assets root!");
+			throw new RuntimeException("Fabric: Failed to locate Minecraft assets root!", exception);
 		}
 	}
 
