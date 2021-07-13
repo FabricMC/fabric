@@ -27,7 +27,7 @@ final class BagInventory implements ImplementedInventory {
 
 	BagInventory(ItemStack stack) {
 		this.stack = stack;
-		NbtCompound tag = stack.getSubTag("Items");
+		NbtCompound tag = stack.getSubNbt("Items");
 
 		if (tag != null) {
 			Inventories.readNbt(tag, items);
@@ -41,7 +41,7 @@ final class BagInventory implements ImplementedInventory {
 
 	@Override
 	public void markDirty() {
-		NbtCompound tag = stack.getOrCreateSubTag("Items");
+		NbtCompound tag = stack.getSubNbt("Items");
 		Inventories.writeNbt(tag, items);
 	}
 }

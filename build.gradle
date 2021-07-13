@@ -19,11 +19,11 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.37.0"
-	static def mcVersion = "1.17.1"
-	static def yarnVersion = "+build.1"
-	static def loaderVersion = "0.11.3"
-	static def preRelease = false
+	static def baseVersion = "0.37.1"
+	static def mcVersion = "1.18_experimental-snapshot-1"
+	static def yarnVersion = "+build.2"
+	static def loaderVersion = "0.11.6"
+	static def preRelease = true
 }
 
 version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
@@ -120,6 +120,7 @@ allprojects {
 				source sourceSets.testmod
 			}
 		}
+		customManifest = "https://gist.githubusercontent.com/modmuss50/6e00baf80dcbaa42f3a2fc846b290128/raw/f035ef8f75164f56ec6352809a34841d326bae1c/1_18_experimental-snapshot-1.json"
 	}
 
 	dependencies {
@@ -346,8 +347,8 @@ curseforge {
 	project {
 		id = "306612"
 		changelog = "A changelog can be found at https://github.com/FabricMC/fabric/commits"
-		releaseType = Globals.preRelease ? "beta" : "release"
-		addGameVersion "1.17.1"
+		releaseType = Globals.preRelease ? "alpha" : "release"
+		addGameVersion "1.17-snapshot"
 		addGameVersion "Fabric"
 
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
@@ -400,7 +401,7 @@ task modrinth(type: com.modrinth.minotaur.TaskModrinthUpload, dependsOn: remapMa
 
 	uploadFile = file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")
 
-	addGameVersion(Globals.mcVersion)
+	addGameVersion("1.17-pre1")
 	addLoader('fabric')
 }
 

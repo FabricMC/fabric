@@ -87,7 +87,7 @@ public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
 					HandledScreen<?> gui = factory.create(syncId, identifier, player, buf);
 
 					player.currentScreenHandler = gui.getScreenHandler();
-					client.openScreen(gui);
+					client.setScreen(gui);
 				} finally {
 					buf.release();
 				}

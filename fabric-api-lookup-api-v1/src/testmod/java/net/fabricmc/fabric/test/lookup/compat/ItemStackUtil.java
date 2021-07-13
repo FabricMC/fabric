@@ -20,7 +20,7 @@ import net.minecraft.item.ItemStack;
 
 final class ItemStackUtil {
 	public static boolean areEqualIgnoreCount(ItemStack s1, ItemStack s2) {
-		return s1.getItem() == s2.getItem() && ItemStack.areTagsEqual(s1, s2);
+		return s1.getItem() == s2.getItem() && ItemStack.areEqual(s1, s2);
 	}
 
 	private ItemStackUtil() {
