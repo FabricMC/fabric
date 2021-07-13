@@ -45,10 +45,10 @@ public final class EnumRuleCommand {
 	public static <E extends Enum<E>> int executeAndSetEnum(CommandContext<ServerCommandSource> context, E value, GameRules.Key<EnumRule<E>> key) throws CommandSyntaxException {
 		// Mostly copied from vanilla, but tweaked so we can use literals
 		ServerCommandSource serverCommandSource = context.getSource();
-		EnumRule<E> rule = serverCommandSource.getMinecraftServer().getGameRules().get(key);
+		EnumRule<E> rule = serverCommandSource.getServer().getGameRules().get(key);
 
 		try {
-			rule.set(value, serverCommandSource.getMinecraftServer());
+			rule.set(value, serverCommandSource.getServer());
 		} catch (IllegalArgumentException e) {
 			throw new SimpleCommandExceptionType(new LiteralText(e.getMessage())).create();
 		}
