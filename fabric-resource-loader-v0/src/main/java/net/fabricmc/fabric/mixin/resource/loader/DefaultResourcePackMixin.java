@@ -22,14 +22,18 @@ import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.resource.DefaultResourcePack;
+import net.minecraft.resource.DirectoryResourcePack;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.ZipResourcePack;
@@ -47,16 +51,17 @@ public abstract class DefaultResourcePackMixin implements ResourcePack {
 	/**
 	 * Redirect all resource access to the MC jar zip pack.
 	 */
-	final ZipResourcePack fabric_mcJarPack = createJarZipPack();
+	final ResourcePack fabric_mcJarPack = createJarZipPack();
 
-	private ZipResourcePack createJarZipPack() {
+	@Unique
+	private ResourcePack createJarZipPack() {
 		ResourceType type;
 
 		if (getClass().equals(DefaultResourcePack.class)) {
-			// Server data pack
+			// Server pack
 			type = ResourceType.SERVER_DATA;
 		} else {
-			// Client data pack
+			// Client pack
 			type = ResourceType.CLIENT_RESOURCES;
 		}
 
@@ -64,15 +69,21 @@ public abstract class DefaultResourcePackMixin implements ResourcePack {
 		try {
 			URL assetsRootUrl = DefaultResourcePack.class.getResource("/" + type.getDirectory() + "/.mcassetsroot");
 			URLConnection connection = assetsRootUrl.openConnection();
-			JarURLConnection jarConnection = (JarURLConnection) connection;
-			return new ZipResourcePack(new File(jarConnection.getJarFileURL().toURI()));
+
+			if (connection instanceof JarURLConnection jarURLConnection) {
+				return new ZipResourcePack(new File(jarURLConnection.getJarFileURL().toURI()));
+			} else {
+				// Not a jar, assume it's a regular directory.
+				Path rootPath = Paths.get(assetsRootUrl.toURI()).resolve("../..").toAbsolutePath();
+				return new DirectoryResourcePack(rootPath.toFile());
+			}
 		} catch (Exception exception) {
 			throw new RuntimeException("Fabric: Failed to locate Minecraft assets root!", exception);
 		}
 	}
 
 	@Nullable
-	@Override
+	@Overwrite
 	public InputStream openRoot(String fileName) throws IOException {
 		return fabric_mcJarPack.openRoot(fileName);
 	}
@@ -82,7 +93,7 @@ public abstract class DefaultResourcePackMixin implements ResourcePack {
 		return fabric_mcJarPack.open(type, id);
 	}
 
-	@Override
+	@Overwrite
 	public Collection<Identifier> findResources(ResourceType type, String namespace, String prefix, int maxDepth, Predicate<String> pathFilter) {
 		return fabric_mcJarPack.findResources(type, namespace, prefix, maxDepth, pathFilter);
 	}
@@ -92,7 +103,7 @@ public abstract class DefaultResourcePackMixin implements ResourcePack {
 		return fabric_mcJarPack.contains(type, id);
 	}
 
-	@Override
+	@Overwrite
 	public void close() {
 		fabric_mcJarPack.close();
 	}
