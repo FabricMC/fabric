@@ -58,11 +58,17 @@ public interface FabricClientCommandSource extends CommandSource {
 	 * Gets the player that used the command.
 	 *
 	 * @return the player
-	 * @deprecated Please use {@link #getTargetPlayer()} instead.
+	 * @deprecated Please use {@link #getTargetPlayer()} for the user,
+	 * and {@link #getClient()}{@code .player} for the client's player.
 	 */
 	@Deprecated
 	AbstractClientPlayerEntity getPlayer();
 
+	/**
+	 * Gets the player that used the command.
+	 *
+	 * @return the player
+	 */
 	default AbstractClientPlayerEntity getTargetPlayer() {
 		return getPlayer();
 	}
@@ -102,7 +108,9 @@ public interface FabricClientCommandSource extends CommandSource {
 	ClientWorld getWorld();
 
 	/**
-	 * Gets the meta property that was assigned to this <code>FabricClientCommandSource</code>.
+	 * Gets the meta property under {@code key} that was assigned to this source.
+	 *
+	 * <p>This method should return the same result for every call with the same {@code key}.
 	 *
 	 * @param key the meta key
 	 * @return the meta
