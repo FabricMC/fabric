@@ -39,15 +39,12 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.ZipResourcePack;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.mixin.resource.loader.client.DefaultClientResourcePackMixin;
-
 /**
  * Make the default resource pack use the MC jar directly instead of the full classpath.
  * This is a major speed improvement, as well as a bugfix (it prevents other mod jars from overriding MC's resources).
- * Requires {@link DefaultClientResourcePackMixin} as well to correctly load client assets.
  */
 @Mixin(DefaultResourcePack.class)
-public abstract class DefaultResourcePackMixin implements ResourcePack {
+public abstract class DefaultResourcePackMixin {
 	/**
 	 * Redirect all resource access to the MC jar zip pack.
 	 */
@@ -82,29 +79,50 @@ public abstract class DefaultResourcePackMixin implements ResourcePack {
 		}
 	}
 
-	@Nullable
-	@Overwrite
-	public InputStream openRoot(String fileName) throws IOException {
-		return fabric_mcJarPack.openRoot(fileName);
-	}
-
-	@Overwrite
-	public InputStream open(ResourceType type, Identifier id) throws IOException {
-		return fabric_mcJarPack.open(type, id);
-	}
-
+	/**
+	 * @author FabricMC
+	 * @reason Gets rid of classpath scanning.
+	 */
 	@Overwrite
 	public Collection<Identifier> findResources(ResourceType type, String namespace, String prefix, int maxDepth, Predicate<String> pathFilter) {
 		return fabric_mcJarPack.findResources(type, namespace, prefix, maxDepth, pathFilter);
 	}
 
+	/**
+	 * @author FabricMC
+	 * @reason Gets rid of classpath scanning.
+	 */
 	@Overwrite
 	public boolean contains(ResourceType type, Identifier id) {
 		return fabric_mcJarPack.contains(type, id);
 	}
 
+	/**
+	 * @author FabricMC
+	 * @reason Close the resource pack we redirect resource access to.
+	 */
 	@Overwrite
 	public void close() {
 		fabric_mcJarPack.close();
+	}
+
+	/**
+	 * @author FabricMC
+	 * @reason Gets rid of classpath scanning.
+	 */
+	@Nullable
+	@Overwrite
+	public InputStream getInputStream(String path) throws IOException {
+		return fabric_mcJarPack.openRoot(path);
+	}
+
+	/**
+	 * @author FabricMC
+	 * @reason Gets rid of classpath scanning.
+	 */
+	@Nullable
+	@Overwrite
+	public InputStream findInputStream(ResourceType type, Identifier id) throws IOException {
+		return fabric_mcJarPack.open(type, id);
 	}
 }
