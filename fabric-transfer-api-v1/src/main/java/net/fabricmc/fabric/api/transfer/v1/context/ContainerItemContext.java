@@ -28,8 +28,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
@@ -98,7 +98,7 @@ public interface ContainerItemContext {
 	 * Return a context for the passed player's cursor slot. This is recommended for screen handler click interactions.
 	 */
 	static ContainerItemContext ofPlayerCursor(PlayerEntity player, ScreenHandler screenHandler) {
-		return ofPlayerSlot(player, InventoryStorage.ofCursor(screenHandler));
+		return ofPlayerSlot(player, PlayerInventoryStorage.ofCursor(screenHandler));
 	}
 
 	/**

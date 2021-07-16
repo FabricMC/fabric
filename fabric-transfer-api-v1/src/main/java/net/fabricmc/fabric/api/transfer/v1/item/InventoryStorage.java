@@ -22,23 +22,25 @@ import java.util.Objects;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
-import net.minecraft.screen.ScreenHandler;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.util.math.Direction;
 
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.fabricmc.fabric.impl.transfer.item.CursorSlotWrapper;
-import net.fabricmc.fabric.impl.transfer.item.InventoryWrappersImpl;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
+import net.fabricmc.fabric.impl.transfer.item.InventoryWrappersImpl;
 
 /**
- * A {@code Storage<ItemVariant>} wrapper around a vanilla {@link Inventory}.
+ * An implementation of {@code Storage<ItemVariant>} for vanilla's {@link Inventory}, {@link SidedInventory} and {@link PlayerInventory}.
  *
- * <p>Don't implement, query with one of the {@code of(...)} functions.
+ * <p>{@code Inventory} is often nicer to implement than {@code Storage<ItemVariant>}, but harder to use for item transfer.
+ * This wrapper allows one to have the best of both worlds, for example by storing a subclass of {@link SimpleInventory} in a block entity class,
+ * while exposing it as a {@code Storage<ItemVariant>} to {@linkplain ItemStorage#SIDED the item transfer API}.
+ *
+ * <p>In particular, note that {@link #getSlots} can be combined with {@link CombinedStorage} to retrieve a wrapper around a specific range of slots.
  *
  * <p><b>Important note:</b> These wrappers assume that each slot belongs to the inventory, and that the inventory has a fixed size.
  * These assumptions are reasonable when dealing with vanilla inventories,
@@ -52,28 +54,6 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 @ApiStatus.NonExtendable
 public interface InventoryStorage extends Storage<ItemVariant> {
 	/**
-	 * Retrieve an unmodifiable list of the wrappers for the slots in this inventory.
-	 * Each wrapper corresponds to a single slot in the inventory.
-	 */
-	List<SingleSlotStorage<ItemVariant>> getSlots();
-
-	/**
-	 * A wrapper around a player inventory.
-	 *
-	 * <p>Note that this is a wrapper around all the slots of the player inventory.
-	 * This may cause direct insertion to insert arbitrary items into equipment slots or other unexpected behavior.
-	 * To prevent this, {@link #offerOrDrop} is recommended for simple insertions.
-	 * {@link #getSlots} can also be used to retrieve a wrapper around a range of slots.
-	 */
-	@ApiStatus.NonExtendable
-	interface Player extends InventoryStorage {
-		/**
-		 * Add items to the inventory if possible, and drop any leftover items in the world.
-		 */
-		void offerOrDrop(ItemVariant key, long amount, TransactionContext transaction);
-	}
-
-	/**
 	 * Return a wrapper around an {@link Inventory}.
 	 * If the inventory is a {@link SidedInventory}, the wrapper wraps the sided inventory from the given direction.
 	 *
@@ -86,27 +66,8 @@ public interface InventoryStorage extends Storage<ItemVariant> {
 	}
 
 	/**
-	 * Return a wrapper around the inventory of a player.
-	 *
-	 * @see Player
+	 * Retrieve an unmodifiable list of the wrappers for the slots in this inventory.
+	 * Each wrapper corresponds to a single slot in the inventory.
 	 */
-	static Player ofPlayer(PlayerEntity player) {
-		return ofPlayer(player.getInventory());
-	}
-
-	/**
-	 * Return a wrapper around the inventory of a player.
-	 *
-	 * @see Player
-	 */
-	static Player ofPlayer(PlayerInventory playerInventory) {
-		return (Player) of(playerInventory, null);
-	}
-
-	/**
-	 * Return a wrapper around the cursor slot of a screen handler.
-	 */
-	static SingleSlotStorage<ItemVariant> ofCursor(ScreenHandler screenHandler) {
-		return CursorSlotWrapper.get(screenHandler);
-	}
+	List<SingleSlotStorage<ItemVariant>> getSlots();
 }
