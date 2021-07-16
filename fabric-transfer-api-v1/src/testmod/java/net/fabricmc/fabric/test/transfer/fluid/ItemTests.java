@@ -16,45 +16,29 @@
 
 package net.fabricmc.fabric.test.transfer.fluid;
 
-import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BOTTLE;
-import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BUCKET;
-
-import java.util.List;
 import java.util.stream.IntStream;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.potion.PotionUtil;
-import net.minecraft.potion.Potions;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 /**
- * Tests for the item and fluid-containing item APIs.
+ * Tests for the item transfer APIs.
  */
 public class ItemTests {
 	public static void run() {
 		testInventoryWrappers();
-		testFluidItemApi();
-		testWaterPotion();
+		testLimitedStackCount();
 	}
 
 	private static void testInventoryWrappers() {
@@ -96,6 +80,10 @@ public class ItemTests {
 		if (!testInventory.getStack(1).isOf(Items.BUCKET) || testInventory.getStack(1).getCount() != 1) throw new AssertionError("Slot 1 should have been a bucket.");
 	}
 
+	private static boolean stackEquals(ItemStack stack, Item item, int count) {
+		return stack.getItem() == item && stack.getCount() == count;
+	}
+
 	private static class TestSidedInventory extends SimpleInventory implements SidedInventory {
 		private static final int[] SLOTS = IntStream.range(0, 3).toArray();
 
@@ -124,125 +112,35 @@ public class ItemTests {
 		}
 	}
 
-	private static void testFluidItemApi() {
-		FluidVariant water = FluidVariant.of(Fluids.WATER);
-		ItemVariant waterBucket = ItemVariant.of(Items.WATER_BUCKET);
-		Inventory testInventory = new FluidItemTestInventory(ItemStack.EMPTY, new ItemStack(Items.BUCKET), new ItemStack(Items.WATER_BUCKET));
+	private static void testLimitedStackCount() {
+		LimitedStackCountInventory inventory = new LimitedStackCountInventory(5);
+		InventoryStorage wrapper = InventoryStorage.of(inventory, null);
+		ItemVariant diamond = ItemVariant.of(Items.DIAMOND);
+		ItemVariant diamondPickaxe = ItemVariant.of(Items.DIAMOND_PICKAXE);
 
-		Storage<FluidVariant> slot1Storage = new InventoryContainerItem(testInventory, 1).find(FluidStorage.ITEM);
-		Storage<FluidVariant> slot2Storage = new InventoryContainerItem(testInventory, 2).find(FluidStorage.ITEM);
-
-		if (slot1Storage == null || slot2Storage == null) throw new AssertionError("We should have provided a fluid storage for buckets.");
-
+		// Should only be able to insert 5 * 3 = 15 diamonds, as the inventory limits stack counts to 3.
 		try (Transaction transaction = Transaction.openOuter()) {
-			// Test extract.
-			if (slot2Storage.extract(water, BUCKET, transaction) != BUCKET) throw new AssertionError("Should have extracted from full bucket.");
-			// Test that an empty bucket was added.
-			if (!stackEquals(testInventory.getStack(1), Items.BUCKET, 2)) throw new AssertionError("Buckets should have stacked.");
-			// Test that we can't extract again
-			if (slot2Storage.extract(water, BUCKET, transaction) != 0) throw new AssertionError("Should not have extracted a second time.");
-			// Now insert water into slot 1.
-			if (slot1Storage.insert(water, BUCKET, transaction) != BUCKET) throw new AssertionError("Failed to insert.");
-			// Check that it filled slot 0.
-			if (!stackEquals(testInventory.getStack(0), Items.WATER_BUCKET, 1)) throw new AssertionError("Should have filled slot 0.");
-			// Now we yeet the bucket just because we can.
-			SingleSlotStorage<ItemVariant> slot0 = InventoryStorage.of(testInventory, null).getSlots().get(0);
-			if (slot0.extract(waterBucket, 1, transaction) != 1) throw new AssertionError("Failed to yeet bucket.");
-			// Now insert should fill slot 1 with a bucket.
-			if (slot1Storage.insert(water, BUCKET, transaction) != BUCKET) throw new AssertionError("Failed to insert.");
-			// Check inventory contents.
-			if (!testInventory.getStack(0).isEmpty()) throw new AssertionError("Slot 0 should have been empty.");
-			if (!stackEquals(testInventory.getStack(1), Items.WATER_BUCKET, 1)) throw new AssertionError("Should have filled slot 1 with a water bucket.");
-		}
-
-		// Check contents after abort
-		if (!testInventory.getStack(0).isEmpty()) throw new AssertionError("Failed to abort slot 0.");
-		if (!stackEquals(testInventory.getStack(1), Items.BUCKET, 1)) throw new AssertionError("Failed to abort slot 1.");
-		if (!stackEquals(testInventory.getStack(2), Items.WATER_BUCKET, 1)) throw new AssertionError("Failed to abort slot 2.");
-	}
-
-	private static boolean stackEquals(ItemStack stack, Item item, int count) {
-		return stack.getItem() == item && stack.getCount() == count;
-	}
-
-	private static class FluidItemTestInventory extends SimpleInventory {
-		FluidItemTestInventory(ItemStack... stacks) {
-			super(stacks);
-		}
-
-		@Override
-		public boolean isValid(int slot, ItemStack stack) {
-			return slot != 2; // Forbid insertion into slot 2.
-		}
-	}
-
-	private static class InventoryContainerItem implements ContainerItemContext {
-		private final InventoryStorage inventory;
-		private final SingleSlotStorage<ItemVariant> slot;
-
-		InventoryContainerItem(Inventory inv, int slotIndex) {
-			this.inventory = InventoryStorage.of(inv, null);
-			this.slot = inventory.getSlots().get(slotIndex);
-		}
-
-		@Override
-		public SingleSlotStorage<ItemVariant> getMainSlot() {
-			return slot;
-		}
-
-		@Override
-		public long insertOverflow(ItemVariant itemVariant, long maxAmount, TransactionContext transactionContext) {
-			long inserted = 0;
-
-			// Try to be smart and stack first!
-			for (SingleSlotStorage<ItemVariant> slot : inventory.getSlots()) {
-				if (slot.getResource().equals(itemVariant)) {
-					inserted += slot.insert(itemVariant, maxAmount - inserted, transactionContext);
-				}
+			if (wrapper.insert(diamond, 1000, transaction) != 15) {
+				throw new AssertionError("Only 15 diamonds should have been inserted.");
 			}
-
-			return inserted + inventory.insert(itemVariant, maxAmount - inserted, transactionContext);
 		}
 
-		@Override
-		public List<SingleSlotStorage<ItemVariant>> getAdditionalSlots() {
-			return inventory.getSlots();
-		}
-
-		@Override
-		public World getWorld() {
-			return null; // Bad implementation, but unused by the test!
+		// Should only be able to insert 5 pickaxes, as the item limits stack counts to 1.
+		try (Transaction transaction = Transaction.openOuter()) {
+			if (wrapper.insert(diamondPickaxe, 1000, transaction) != 5) {
+				throw new AssertionError("Only 5 pickaxes should have been inserted.");
+			}
 		}
 	}
 
-	private static void testWaterPotion() {
-		FluidVariant water = FluidVariant.of(Fluids.WATER);
-		Inventory testInventory = new SimpleInventory(new ItemStack(Items.GLASS_BOTTLE));
-
-		// Try to fill empty potion
-		Storage<FluidVariant> emptyBottleStorage = new InventoryContainerItem(testInventory, 0).find(FluidStorage.ITEM);
-
-		try (Transaction transaction = Transaction.openOuter()) {
-			if (emptyBottleStorage.insert(water, Long.MAX_VALUE, transaction) != BOTTLE) throw new AssertionError("Failed to insert.");
-			transaction.commit();
+	private static class LimitedStackCountInventory extends SimpleInventory {
+		LimitedStackCountInventory(int size) {
+			super(size);
 		}
 
-		if (PotionUtil.getPotion(testInventory.getStack(0)) != Potions.WATER) throw new AssertionError("Expected water potion.");
-
-		// Try to empty from water potion
-		Storage<FluidVariant> waterBottleStroage = new InventoryContainerItem(testInventory, 0).find(FluidStorage.ITEM);
-
-		try (Transaction transaction = Transaction.openOuter()) {
-			if (waterBottleStroage.extract(water, Long.MAX_VALUE, transaction) != BOTTLE) throw new AssertionError("Failed to extract.");
-			transaction.commit();
-		}
-
-		// Make sure extraction nothing is returned for other potions
-		PotionUtil.setPotion(testInventory.getStack(0), Potions.LUCK);
-		Storage<FluidVariant> luckyStorage = new InventoryContainerItem(testInventory, 0).find(FluidStorage.ITEM);
-
-		if (StorageUtil.findStoredResource(luckyStorage, null) != null) {
-			throw new AssertionError("Found a resource in an unhandled potion.");
+		@Override
+		public int getMaxCountPerStack() {
+			return 3;
 		}
 	}
 }

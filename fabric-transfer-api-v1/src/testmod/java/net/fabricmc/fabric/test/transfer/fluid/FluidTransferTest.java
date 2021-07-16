@@ -62,6 +62,7 @@ public class FluidTransferTest implements ModInitializer {
 		testFluidStorage();
 		testTransactionExceptions();
 		ItemTests.run();
+		FluidItemTests.run();
 	}
 
 	private static void registerBlock(Block block, String name) {

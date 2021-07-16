@@ -49,7 +49,7 @@ class InventorySlotWrapper extends SnapshotParticipant<ItemStack> implements Sin
 
 	@Override
 	public long insert(ItemVariant key, long maxAmount, TransactionContext transaction) {
-		StoragePreconditions.notBlank(key);
+		StoragePreconditions.notBlankNotNegative(key, maxAmount);
 		int count = (int) Math.min(maxAmount, inventory.getMaxCountPerStack());
 		ItemStack stack = inventory.getStack(slot);
 
@@ -58,15 +58,23 @@ class InventorySlotWrapper extends SnapshotParticipant<ItemStack> implements Sin
 
 			if (inventory.isValid(slot, keyStack)) {
 				int inserted = Math.min(keyStack.getMaxCount(), count);
-				this.updateSnapshots(transaction);
-				keyStack.setCount(inserted);
-				inventory.setStack(slot, keyStack);
+
+				if (inserted > 0) {
+					this.updateSnapshots(transaction);
+					keyStack.setCount(inserted);
+					inventory.setStack(slot, keyStack);
+				}
+
 				return inserted;
 			}
 		} else if (key.matches(stack)) {
 			int inserted = Math.min(stack.getMaxCount() - stack.getCount(), count);
-			this.updateSnapshots(transaction);
-			stack.increment(inserted);
+
+			if (inserted > 0) {
+				this.updateSnapshots(transaction);
+				stack.increment(inserted);
+			}
+
 			return inserted;
 		}
 
@@ -75,13 +83,17 @@ class InventorySlotWrapper extends SnapshotParticipant<ItemStack> implements Sin
 
 	@Override
 	public long extract(ItemVariant key, long maxAmount, TransactionContext transaction) {
-		StoragePreconditions.notBlank(key);
+		StoragePreconditions.notBlankNotNegative(key, maxAmount);
 		ItemStack stack = inventory.getStack(slot);
 
 		if (key.matches(stack)) {
 			int extracted = (int) Math.min(stack.getCount(), maxAmount);
-			this.updateSnapshots(transaction);
-			stack.decrement(extracted);
+
+			if (extracted > 0) {
+				this.updateSnapshots(transaction);
+				stack.decrement(extracted);
+			}
+
 			return extracted;
 		}
 
