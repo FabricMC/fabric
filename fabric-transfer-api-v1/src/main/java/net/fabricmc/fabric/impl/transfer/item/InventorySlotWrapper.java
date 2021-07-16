@@ -48,27 +48,23 @@ class InventorySlotWrapper extends SnapshotParticipant<ItemStack> implements Sin
 	}
 
 	@Override
-	public long insert(ItemVariant key, long maxAmount, TransactionContext transaction) {
-		StoragePreconditions.notBlankNotNegative(key, maxAmount);
-		int count = (int) Math.min(maxAmount, inventory.getMaxCountPerStack());
+	public long insert(ItemVariant variant, long maxAmount, TransactionContext transaction) {
+		StoragePreconditions.notBlankNotNegative(variant, maxAmount);
+		int maxCountPerStack = Math.min(variant.getItem().getMaxCount(), inventory.getMaxCountPerStack());
 		ItemStack stack = inventory.getStack(slot);
 
 		if (stack.isEmpty()) {
-			ItemStack keyStack = key.toStack(count);
+			ItemStack variantStack = variant.toStack();
 
-			if (inventory.isValid(slot, keyStack)) {
-				int inserted = Math.min(keyStack.getMaxCount(), count);
-
-				if (inserted > 0) {
-					this.updateSnapshots(transaction);
-					keyStack.setCount(inserted);
-					inventory.setStack(slot, keyStack);
-				}
-
+			if (inventory.isValid(slot, variantStack)) {
+				int inserted = (int) Math.min(maxCountPerStack, maxAmount);
+				this.updateSnapshots(transaction);
+				variantStack.setCount(inserted);
+				inventory.setStack(slot, variantStack);
 				return inserted;
 			}
-		} else if (key.matches(stack)) {
-			int inserted = Math.min(stack.getMaxCount() - stack.getCount(), count);
+		} else if (variant.matches(stack)) {
+			int inserted = (int) Math.min(maxCountPerStack - stack.getCount(), maxAmount);
 
 			if (inserted > 0) {
 				this.updateSnapshots(transaction);
@@ -82,11 +78,11 @@ class InventorySlotWrapper extends SnapshotParticipant<ItemStack> implements Sin
 	}
 
 	@Override
-	public long extract(ItemVariant key, long maxAmount, TransactionContext transaction) {
-		StoragePreconditions.notBlankNotNegative(key, maxAmount);
+	public long extract(ItemVariant variant, long maxAmount, TransactionContext transaction) {
+		StoragePreconditions.notBlankNotNegative(variant, maxAmount);
 		ItemStack stack = inventory.getStack(slot);
 
-		if (key.matches(stack)) {
+		if (variant.matches(stack)) {
 			int extracted = (int) Math.min(stack.getCount(), maxAmount);
 
 			if (extracted > 0) {

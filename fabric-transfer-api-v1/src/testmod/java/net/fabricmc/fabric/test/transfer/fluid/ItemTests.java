@@ -20,6 +20,7 @@ import java.util.stream.IntStream;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
@@ -38,7 +39,8 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 public class ItemTests {
 	public static void run() {
 		testInventoryWrappers();
-		testLimitedStackCount();
+		testLimitedStackCountInventory();
+		testLimitedStackCountItem();
 	}
 
 	private static void testInventoryWrappers() {
@@ -112,18 +114,29 @@ public class ItemTests {
 		}
 	}
 
-	private static void testLimitedStackCount() {
-		LimitedStackCountInventory inventory = new LimitedStackCountInventory(5);
-		InventoryStorage wrapper = InventoryStorage.of(inventory, null);
+	/**
+	 * Test insertion when {@link Inventory#getMaxCountPerStack()} is the bottleneck.
+	 */
+	private static void testLimitedStackCountInventory() {
 		ItemVariant diamond = ItemVariant.of(Items.DIAMOND);
-		ItemVariant diamondPickaxe = ItemVariant.of(Items.DIAMOND_PICKAXE);
+		LimitedStackCountInventory inventory = new LimitedStackCountInventory(diamond.toStack(), diamond.toStack(), diamond.toStack());
+		InventoryStorage wrapper = InventoryStorage.of(inventory, null);
 
-		// Should only be able to insert 5 * 3 = 15 diamonds, as the inventory limits stack counts to 3.
+		// Should only be able to insert 2 diamonds per stack * 3 stacks = 6 diamonds.
 		try (Transaction transaction = Transaction.openOuter()) {
-			if (wrapper.insert(diamond, 1000, transaction) != 15) {
-				throw new AssertionError("Only 15 diamonds should have been inserted.");
+			if (wrapper.insert(diamond, 1000, transaction) != 6) {
+				throw new AssertionError("Only 6 diamonds should have been inserted.");
 			}
 		}
+	}
+
+	/**
+	 * Test insertion when {@link Item#getMaxCount()} is the bottleneck.
+	 */
+	private static void testLimitedStackCountItem() {
+		ItemVariant diamondPickaxe = ItemVariant.of(Items.DIAMOND_PICKAXE);
+		LimitedStackCountInventory inventory = new LimitedStackCountInventory(5);
+		InventoryStorage wrapper = InventoryStorage.of(inventory, null);
 
 		// Should only be able to insert 5 pickaxes, as the item limits stack counts to 1.
 		try (Transaction transaction = Transaction.openOuter()) {
@@ -136,6 +149,10 @@ public class ItemTests {
 	private static class LimitedStackCountInventory extends SimpleInventory {
 		LimitedStackCountInventory(int size) {
 			super(size);
+		}
+
+		LimitedStackCountInventory(ItemStack... stacks) {
+			super(stacks);
 		}
 
 		@Override
