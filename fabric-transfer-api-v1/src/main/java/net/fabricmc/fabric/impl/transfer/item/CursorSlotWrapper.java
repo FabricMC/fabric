@@ -23,16 +23,12 @@ import com.google.common.collect.MapMaker;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
+import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 
 /**
  * Wrapper around the cursor slot of a screen handler.
  */
-public class CursorSlotWrapper extends SnapshotParticipant<ItemStack> implements SingleSlotStorage<ItemVariant> {
+public class CursorSlotWrapper extends SingleStackStorage {
 	private static final Map<ScreenHandler, CursorSlotWrapper> WRAPPERS = new MapMaker().weakValues().makeMap();
 
 	public static CursorSlotWrapper get(ScreenHandler screenHandler) {
@@ -46,67 +42,12 @@ public class CursorSlotWrapper extends SnapshotParticipant<ItemStack> implements
 	}
 
 	@Override
-	public long insert(ItemVariant ItemVariant, long maxAmount, TransactionContext transaction) {
-		StoragePreconditions.notBlankNotNegative(ItemVariant, maxAmount);
-		ItemStack stack = screenHandler.getCursorStack();
-		int inserted = (int) Math.min(maxAmount, Math.min(64, ItemVariant.getItem().getMaxCount()) - stack.getCount());
-
-		if (stack.isEmpty()) {
-			ItemStack keyStack = ItemVariant.toStack(inserted);
-			this.updateSnapshots(transaction);
-			screenHandler.setCursorStack(keyStack);
-			return inserted;
-		} else if (ItemVariant.matches(stack)) {
-			this.updateSnapshots(transaction);
-			stack.increment(inserted);
-			return inserted;
-		}
-
-		return 0;
+	protected ItemStack getStack() {
+		return screenHandler.getCursorStack();
 	}
 
 	@Override
-	public long extract(ItemVariant ItemVariant, long maxAmount, TransactionContext transaction) {
-		StoragePreconditions.notBlankNotNegative(ItemVariant, maxAmount);
-		ItemStack stack = screenHandler.getCursorStack();
-
-		if (ItemVariant.matches(stack)) {
-			int extracted = (int) Math.min(stack.getCount(), maxAmount);
-			this.updateSnapshots(transaction);
-			stack.decrement(extracted);
-			return extracted;
-		}
-
-		return 0;
-	}
-
-	@Override
-	public ItemVariant getResource() {
-		return ItemVariant.of(screenHandler.getCursorStack());
-	}
-
-	@Override
-	public long getCapacity() {
-		return screenHandler.getCursorStack().getMaxCount();
-	}
-
-	@Override
-	public boolean isResourceBlank() {
-		return screenHandler.getCursorStack().isEmpty();
-	}
-
-	@Override
-	public long getAmount() {
-		return screenHandler.getCursorStack().getCount();
-	}
-
-	@Override
-	protected ItemStack createSnapshot() {
-		return screenHandler.getCursorStack().copy();
-	}
-
-	@Override
-	protected void readSnapshot(ItemStack snapshot) {
-		screenHandler.setCursorStack(snapshot);
+	protected void setStack(ItemStack stack) {
+		screenHandler.setCursorStack(stack);
 	}
 }

@@ -19,40 +19,51 @@ package net.fabricmc.fabric.impl.transfer.item;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
-class PlayerInventoryStorageImpl extends CombinedStorage<ItemVariant, SingleSlotStorage<ItemVariant>> implements PlayerInventoryStorage {
-	private final PlayerInventory playerInventory;
+class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerInventoryStorage {
 	private final DroppedStacks droppedStacks;
+	private final PlayerEntity player;
 
-	PlayerInventoryStorageImpl(List<SingleSlotStorage<ItemVariant>> slots, PlayerInventory playerInventory) {
-		super(slots);
-		this.playerInventory = playerInventory;
+	PlayerInventoryStorageImpl(PlayerInventory playerInventory) {
+		super(playerInventory);
 		this.droppedStacks = new DroppedStacks();
-	}
-
-	@Override
-	public List<SingleSlotStorage<ItemVariant>> getSlots() {
-		return parts;
+		this.player = playerInventory.player;
 	}
 
 	@Override
 	public void offerOrDrop(ItemVariant resource, long amount, TransactionContext tx) {
 		StoragePreconditions.notBlankNotNegative(resource, amount);
 
-		// TODO: should probably be limited to inventory slots (currently it accesses armor slots as well!).
+		List<SingleSlotStorage<ItemVariant>> mainSlots = getSlots().subList(0, PlayerInventory.MAIN_SIZE);
+
+		// Stack into the main stack first
+		SingleSlotStorage<ItemVariant> selectedSlot = getSlots().get(player.getInventory().selectedSlot);
+
+		if (selectedSlot.getResource().equals(resource)) {
+			amount -= selectedSlot.insert(resource, amount, tx);
+		}
+
+		// Stack into the offhand stack otherwise
+		SingleSlotStorage<ItemVariant> offHandSlot = getSlots().get(PlayerInventory.OFF_HAND_SLOT);
+
+		if (offHandSlot.getResource().equals(resource)) {
+			amount -= offHandSlot.insert(resource, amount, tx);
+		}
+
+		// Otherwise insert into the main slots, first iteration tries to stack, second iteration inserts into empty slots.
 		for (int iteration = 0; iteration < 2; iteration++) {
 			boolean allowEmptySlots = iteration == 1;
 
-			for (SingleSlotStorage<ItemVariant> slot : parts) {
+			for (SingleSlotStorage<ItemVariant> slot : mainSlots) {
 				if (!slot.isResourceBlank() || allowEmptySlots) {
 					amount -= slot.insert(resource, amount, tx);
 				}
@@ -61,7 +72,7 @@ class PlayerInventoryStorageImpl extends CombinedStorage<ItemVariant, SingleSlot
 
 		// Drop leftover in the world on the server side (will be synced by the game with the client).
 		// Dropping items is server-side only because it involves randomness.
-		if (amount > 0 && playerInventory.player.world.isClient()) {
+		if (amount > 0 && player.world.isClient()) {
 			droppedStacks.addDrop(resource, amount, tx);
 		}
 	}
@@ -94,13 +105,13 @@ class PlayerInventoryStorageImpl extends CombinedStorage<ItemVariant, SingleSlot
 
 		@Override
 		protected void onFinalCommit() {
-			// drop the stacks and mark dirty
+			// actually drop the stacks
 			for (int i = 0; i < droppedKeys.size(); ++i) {
 				ItemVariant key = droppedKeys.get(i);
 
 				while (droppedCounts.get(i) > 0) {
 					int dropped = (int) Math.min(key.getItem().getMaxCount(), droppedCounts.get(i));
-					playerInventory.player.dropStack(key.toStack(dropped));
+					player.dropStack(key.toStack(dropped));
 					droppedCounts.set(i, droppedCounts.get(i) - dropped);
 				}
 			}

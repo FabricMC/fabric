@@ -16,9 +16,10 @@
 
 package net.fabricmc.fabric.api.transfer.v1.item;
 
+import java.util.List;
+
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.InventoryProvider;
 import net.minecraft.block.entity.ChestBlockEntity;
@@ -30,6 +31,8 @@ import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
+import net.fabricmc.fabric.mixin.transfer.DoubleInventoryAccessor;
 
 /**
  * Access to {@link Storage Storage&lt;ItemVariant&gt;} instances.
@@ -39,7 +42,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
  */
 @ApiStatus.Experimental
 @Deprecated
-public final class ItemStorage {
+public final class ItemStorage { // TODO: update javadoc...
 	/**
 	 * Sided block access to item variant storages.
 	 * The {@code Direction} parameter may never be null.
@@ -68,23 +71,29 @@ public final class ItemStorage {
 	}
 
 	static {
-		// Load generic vanilla api fallback.
-		// Mimics the HopperBlockEntity#getInventoryAt logic, without checking entities and using the already know block entity instance.
+		// TODO: composter impl
+
+		// Load Inventory fallback.
 		ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
-			Block block = state.getBlock();
-			Inventory foundInventory = null;
+			Inventory inventoryToWrap = null;
 
-			if (block instanceof InventoryProvider provider) {
-				foundInventory = provider.getInventory(state, world, pos);
-			} else if (blockEntity instanceof Inventory inventory) {
-				foundInventory = inventory;
+			if (blockEntity instanceof Inventory inventory) {
+				if (blockEntity instanceof ChestBlockEntity && state.getBlock() instanceof ChestBlock chestBlock) {
+					inventoryToWrap = ChestBlock.getInventory(chestBlock, state, world, pos, true);
 
-				if (blockEntity instanceof ChestBlockEntity && block instanceof ChestBlock chestBlock) {
-					foundInventory = ChestBlock.getInventory(chestBlock, state, world, pos, true);
+					// For double chests, we need to retrieve a wrapper for each part separately.
+					if (inventoryToWrap instanceof DoubleInventoryAccessor accessor) {
+						Storage<ItemVariant> first = InventoryStorage.of(accessor.fabric_getFirst(), direction);
+						Storage<ItemVariant> second = InventoryStorage.of(accessor.fabric_getSecond(), direction);
+
+						return new CombinedStorage<>(List.of(first, second));
+					}
+				} else {
+					inventoryToWrap = inventory;
 				}
 			}
 
-			return foundInventory == null ? null : InventoryStorage.of(foundInventory, direction);
+			return inventoryToWrap != null ? InventoryStorage.of(inventoryToWrap, direction) : null;
 		});
 	}
 }

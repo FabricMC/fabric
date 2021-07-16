@@ -31,7 +31,7 @@ import net.minecraft.util.math.Direction;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
-import net.fabricmc.fabric.impl.transfer.item.InventoryWrappersImpl;
+import net.fabricmc.fabric.impl.transfer.item.InventoryStorageImpl;
 
 /**
  * An implementation of {@code Storage<ItemVariant>} for vanilla's {@link Inventory}, {@link SidedInventory} and {@link PlayerInventory}.
@@ -55,14 +55,16 @@ import net.fabricmc.fabric.impl.transfer.item.InventoryWrappersImpl;
 public interface InventoryStorage extends Storage<ItemVariant> {
 	/**
 	 * Return a wrapper around an {@link Inventory}.
-	 * If the inventory is a {@link SidedInventory}, the wrapper wraps the sided inventory from the given direction.
+	 *
+	 * <p>If the inventory is a {@link SidedInventory} and the direction is nonnull, the wrapper wraps the sided inventory from the given direction.
+	 * The returned wrapper contains only the slots with the indices returned by {@link SidedInventory#getAvailableSlots} at query time.
 	 *
 	 * @param inventory The inventory to wrap.
 	 * @param direction The direction to use if the access is sided, or {@code null} if the access is not sided.
 	 */
 	static InventoryStorage of(Inventory inventory, @Nullable Direction direction) {
 		Objects.requireNonNull(inventory, "Null inventory is not supported.");
-		return InventoryWrappersImpl.of(inventory, direction);
+		return InventoryStorageImpl.of(inventory, direction);
 	}
 
 	/**

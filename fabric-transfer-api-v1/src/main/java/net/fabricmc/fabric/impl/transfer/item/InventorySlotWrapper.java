@@ -16,118 +16,46 @@
 
 package net.fabricmc.fabric.impl.transfer.item;
 
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
 /**
  * A wrapper around a single slot of an inventory
  * We must ensure that only one instance of this class exists for every inventory slot,
  * or the transaction logic will not work correctly.
- * This is handled by the Map in InventoryWrappersImpl.
+ * This is handled by the Map in InventoryStorageImpl.
  */
-class InventorySlotWrapper extends SnapshotParticipant<ItemStack> implements SingleSlotStorage<ItemVariant> {
+class InventorySlotWrapper extends SingleStackStorage {
 	/**
-	 * Strong reference to the InventoryStorage array to ensure that the weak values don't get GC'ed when InventoryStorages are still being accessed.
+	 * The strong reference to the InventoryStorageImpl ensures that the weak value doesn't get GC'ed when individual slots are still being accessed.
 	 */
-	@SuppressWarnings({"FieldCanBeLocal", "unused"})
-	private final InventoryStorage[] strongRef;
-	final Inventory inventory;
+	private final InventoryStorageImpl storage;
 	final int slot;
 
-	InventorySlotWrapper(Inventory inventory, int slot, InventoryStorage[] strongRef) {
-		this.inventory = inventory;
+	InventorySlotWrapper(InventoryStorageImpl storage, int slot) {
+		this.storage = storage;
 		this.slot = slot;
-		this.strongRef = strongRef;
 	}
 
 	@Override
-	public long insert(ItemVariant variant, long maxAmount, TransactionContext transaction) {
-		StoragePreconditions.notBlankNotNegative(variant, maxAmount);
-		int maxCountPerStack = Math.min(variant.getItem().getMaxCount(), inventory.getMaxCountPerStack());
-		ItemStack stack = inventory.getStack(slot);
-
-		if (stack.isEmpty()) {
-			ItemStack variantStack = variant.toStack();
-
-			if (inventory.isValid(slot, variantStack)) {
-				int inserted = (int) Math.min(maxCountPerStack, maxAmount);
-				this.updateSnapshots(transaction);
-				variantStack.setCount(inserted);
-				inventory.setStack(slot, variantStack);
-				return inserted;
-			}
-		} else if (variant.matches(stack)) {
-			int inserted = (int) Math.min(maxCountPerStack - stack.getCount(), maxAmount);
-
-			if (inserted > 0) {
-				this.updateSnapshots(transaction);
-				stack.increment(inserted);
-			}
-
-			return inserted;
-		}
-
-		return 0;
+	protected ItemStack getStack() {
+		return storage.inventory.getStack(slot);
 	}
 
 	@Override
-	public long extract(ItemVariant variant, long maxAmount, TransactionContext transaction) {
-		StoragePreconditions.notBlankNotNegative(variant, maxAmount);
-		ItemStack stack = inventory.getStack(slot);
-
-		if (variant.matches(stack)) {
-			int extracted = (int) Math.min(stack.getCount(), maxAmount);
-
-			if (extracted > 0) {
-				this.updateSnapshots(transaction);
-				stack.decrement(extracted);
-			}
-
-			return extracted;
-		}
-
-		return 0;
+	protected void setStack(ItemStack stack) {
+		storage.inventory.setStack(slot, stack);
 	}
 
 	@Override
-	public ItemVariant getResource() {
-		return ItemVariant.of(inventory.getStack(slot));
+	protected boolean canInsert(ItemVariant itemVariant) {
+		return storage.inventory.isValid(slot, itemVariant.toStack());
 	}
 
 	@Override
-	public boolean isResourceBlank() {
-		return inventory.getStack(slot).isEmpty();
-	}
-
-	@Override
-	public long getAmount() {
-		return inventory.getStack(slot).getCount();
-	}
-
-	@Override
-	public long getCapacity() {
-		return inventory.getStack(slot).getMaxCount();
-	}
-
-	@Override
-	protected ItemStack createSnapshot() {
-		return inventory.getStack(slot).copy();
-	}
-
-	@Override
-	protected void readSnapshot(ItemStack snapshot) {
-		inventory.setStack(slot, snapshot);
-	}
-
-	@Override
-	public void onFinalCommit() {
-		inventory.markDirty();
+	public int getCapacity(ItemVariant variant) {
+		return Math.min(storage.inventory.getMaxCountPerStack(), storage.inventory.getStack(slot).getMaxCount());
 	}
 }

@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BucketItemAccessor",
+    "DoubleInventoryAccessor",
     "DropperBlockMixin",
     "FluidMixin",
     "HopperBlockEntityAccessor",
