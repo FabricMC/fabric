@@ -21,8 +21,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientCommandSource;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.MessageType;
 import net.minecraft.text.LiteralText;
@@ -54,7 +54,7 @@ abstract class ClientCommandSourceMixin implements FabricClientCommandSource {
 	}
 
 	@Override
-	public AbstractClientPlayerEntity getPlayer() {
+	public ClientPlayerEntity getPlayer() {
 		return client.player;
 	}
 
