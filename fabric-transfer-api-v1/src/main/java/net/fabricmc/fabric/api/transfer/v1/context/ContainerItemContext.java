@@ -22,6 +22,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
@@ -37,26 +38,47 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.impl.transfer.context.PlayerContainerItemContext;
 
 /**
- * A context that determines how an {@link ItemVariant} interacts with an inventory, or at least the part of it that is visible to the context.
- * For example, it allows a water bucket to replace itself by an empty bucket when emptied.
+ * A context that allows an item-queried {@link Storage} implementation to interact with its containing inventory,
+ * such as a player inventory or an emptying or filling machine.
+ * For example, it is what allows the {@code Storage<FluidVariant>} of a water bucket to replace the full bucket by an empty bucket
+ * on extraction.
+ * Such items that contain resources are often referred to as "container items".
  *
  * <p>When an {@linkplain ItemApiLookup item API} requires a {@code ContainerItemContext} as context,
  * it will generally be suitable to obtain a context instance with {@link #ofPlayerHand} or {@link #ofPlayerCursor},
  * and then use {@link #find} to query an API instance.
  *
- * <p>A {@code ContainerItemContext} is made of the following parts:
+ * <p>When water is extracted from the {@code Storage} of a water bucket, this is how it interacts with the context:
  * <ul>
- *     <li>{@linkplain #getMainSlot A main slot}, containing the item variant the API was queried for initially.</li>
- *     <li>{@linkplain #insertOverflow An overflow insertion function}, that can be used to insert into the context when insertion into a slot fails.</li>
+ *     <li>The first step is to remove one water bucket item from the current slot,
+ *     that is the slot that contains the water bucket.</li>
+ *     <li>The second step is to try to add one empty bucket item to the current slot, at the same position.</li>
+ *     <li>If that fails, the third step is to add the empty bucket item somewhere else in the inventory.</li>
+ *     <li>The water extraction can only proceed if both step 1, and step 2 or 3, succeed.</li>
+ * </ul>
+ * Before attempting to change the current item, the {@code Storage} implementation must of course check that
+ * the item in the current slot is still a water bucket.
+ *
+ * <p>A {@code ContainerItemContext} allows these operations to be performed, thanks to the following parts:
+ * <ul>
+ *     <li>{@linkplain #getMainSlot The main slot} or current slot of the context, containing the item the API was queried for initially.
+ *     In the example above, this is the slot containing the water bucket, used for steps 1 and 2.</li>
+ *     <li>{@linkplain #insertOverflow An overflow insertion function}, that can be used to insert items into the context's inventory
+ *     when insertion into a specific slot fails. In our example above, this is the function used for step 3.</li>
  *     <li>{@linkplain #getWorld The current world}, that can be used to retrieve client-wide or server-side data.</li>
  *     <li>The context may also contain additional slots, accessible through {@link #getAdditionalSlots}.</li>
  * </ul>
  *
  * <p>Implementors of item APIs can freely use these methods, but most will generally want to use the following convenience methods instead:
  * <ul>
- *     <li>Query which variant is currently in the main slot through {@link #getItemVariant}.</li>
+ *     <li>Query which variant is currently in the main slot through {@link #getItemVariant}.
+ *     <b>It is important to check this before any operation, to make sure the item variant hasn't changed since the query.</b></li>
  *     <li>Query how much of the (non-blank) variant is in the inventory through {@link #getAmount}.</li>
- *     <li>Transform some of the current variant into another variant through {@link #transform}.</li>
+ *     <li>Extract some items from the main slot with {@link #extract}. In the water bucket example, this can be used for step 1.</li>
+ *     <li>Insert some items, either into the main slot if possible or the rest of the inventory otherwise, with {@link #insert}.
+ *     In the water bucket example, this can be used for steps 2 and 3.</li>
+ *     <li>Exchange some of the current variant with another variant through {@link #exchange}.
+ *     In the water bucket example, this function can be used to combine steps 1, 2 and 3.</li>
  * </ul>
  *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
@@ -112,7 +134,7 @@ public interface ContainerItemContext {
 	 */
 	default long getAmount() {
 		if (getItemVariant().isBlank()) {
-			throw new IllegalStateException("Amount may not be queried when the current resource is blank.");
+			throw new IllegalStateException("Amount may not be queried when the current item variant is blank.");
 		}
 
 		return getMainSlot().getAmount();
@@ -133,7 +155,7 @@ public interface ContainerItemContext {
 	}
 
 	/**
-	 * Try to extract some items from this context's slot.
+	 * Try to extract some items from this context's main slot.
 	 *
 	 * @see Storage#extract
 	 */
@@ -142,21 +164,21 @@ public interface ContainerItemContext {
 	}
 
 	/**
-	 * Try to transform as many as possibly of {@linkplain #getItemVariant() the current variant} into another variant.
+	 * Try to exchange as many items as possible of {@linkplain #getItemVariant() the current variant} with another variant.
 	 * That is, extract the old variant, and insert the same amount of the new variant instead.
 	 *
-	 * @param into The variant of the items after the conversion. May not be blank.
+	 * @param newVariant The variant of the items after the conversion. May not be blank.
 	 * @param maxAmount The maximum amount of items to convert. May not be negative.
 	 * @param transaction The transaction this operation is part of.
 	 * @return A nonnegative integer not greater than maxAmount: the amount that was transformed.
 	 */
-	default long transform(ItemVariant into, long maxAmount, TransactionContext transaction) {
-		StoragePreconditions.notBlankNotNegative(into, maxAmount);
+	default long exchange(ItemVariant newVariant, long maxAmount, TransactionContext transaction) {
+		StoragePreconditions.notBlankNotNegative(newVariant, maxAmount);
 
 		try (Transaction nested = transaction.openNested()) {
 			long extracted = extract(getItemVariant(), maxAmount, nested);
 
-			if (insert(into, maxAmount, nested) == extracted) {
+			if (insert(newVariant, extracted, nested) == extracted) {
 				nested.commit();
 				return extracted;
 			}
@@ -171,7 +193,9 @@ public interface ContainerItemContext {
 	SingleSlotStorage<ItemVariant> getMainSlot();
 
 	/**
-	 * Try to insert overflow items into this context.
+	 * Try to insert items into this context, without prioritizing a specific slot, similar to {@link PlayerInventory#offerOrDrop}.
+	 * This should be used for insertion after insertion into the main slot failed.
+	 * {@link #insert} can be used to insert into the main slot first, then send any overflow through this function.
 	 *
 	 * @see Storage#insert
 	 */
@@ -179,7 +203,7 @@ public interface ContainerItemContext {
 
 	/**
 	 * Get additional slots that may be available in this context.
-	 * These may or may not include the main slot of this context.
+	 * These may or may not include the main slot of this context, as it is not always practical to remove it from the list.
 	 *
 	 * @return An unmodifiable list containing additional slots of this context. If no additional slot is available, the list is empty.
 	 */

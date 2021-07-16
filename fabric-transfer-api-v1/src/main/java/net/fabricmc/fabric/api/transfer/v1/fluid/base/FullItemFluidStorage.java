@@ -95,7 +95,7 @@ public final class FullItemFluidStorage implements ExtractionOnlyStorage<FluidVa
 			// If that's ok, just convert one of the full item into the empty item, copying the nbt.
 			ItemVariant newVariant = fullToEmptyMapping.apply(context.getItemVariant());
 
-			if (context.transform(newVariant, 1, transaction) == 1) {
+			if (context.exchange(newVariant, 1, transaction) == 1) {
 				// Conversion ok!
 				return containedAmount;
 			}

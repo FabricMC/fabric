@@ -56,7 +56,7 @@ public class EmptyBucketStorage implements InsertionOnlyStorage<FluidVariant> {
 			if (maxAmount >= FluidConstants.BUCKET) {
 				ItemVariant newVariant = ItemVariant.of(fullBucket, context.getItemVariant().getNbt());
 
-				if (context.transform(newVariant, 1, transaction) == 1) {
+				if (context.exchange(newVariant, 1, transaction) == 1) {
 					return FluidConstants.BUCKET;
 				}
 			}

@@ -76,7 +76,7 @@ public class WaterPotionStorage implements ExtractionOnlyStorage<FluidVariant>, 
 
 		// Make sure that the fluid and the amount match.
 		if (resource.equals(CONTAINED_FLUID) && maxAmount >= CONTAINED_AMOUNT) {
-			if (context.transform(mapToGlassBottle(), 1, transaction) == 1) {
+			if (context.exchange(mapToGlassBottle(), 1, transaction) == 1) {
 				// Conversion ok!
 				return CONTAINED_AMOUNT;
 			}
