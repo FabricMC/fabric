@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
-import net.minecraft.block.InventoryProvider;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
@@ -30,8 +30,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
+import net.fabricmc.fabric.impl.transfer.item.ComposterStorage;
 import net.fabricmc.fabric.mixin.transfer.DoubleInventoryAccessor;
 
 /**
@@ -42,7 +44,7 @@ import net.fabricmc.fabric.mixin.transfer.DoubleInventoryAccessor;
  */
 @ApiStatus.Experimental
 @Deprecated
-public final class ItemStorage { // TODO: update javadoc...
+public final class ItemStorage {
 	/**
 	 * Sided block access to item variant storages.
 	 * The {@code Direction} parameter may never be null.
@@ -52,17 +54,21 @@ public final class ItemStorage { // TODO: update javadoc...
 	 * that is if the return value of {@link Storage#supportsInsertion} or {@link Storage#supportsExtraction} changes,
 	 * the storage should notify its neighbors with a block update so that they can refresh their connections if necessary.
 	 *
-	 * <p>A fallback provider that wraps {@link Inventory} and {@link SidedInventory} implementations is automatically registered by Fabric API.
-	 * Blocks implementing {@link InventoryProvider} are automatically supported as well.
-	 * In all of these cases, an {@link InventoryStorage} is returned from the query.
+	 * <p>Block entities directly implementing {@link Inventory} or {@link SidedInventory} are automatically handled by a fallback provider,
+	 * and don't need to do anything.
+	 * The fallback provider assumes that the {@link Inventory} "owns" its contents. If that's not the case,
+	 * for example because it redirects all function calls to another inventory, then implementing {@link Inventory} should be avoided.
 	 *
-	 * <p>Hoppers and droppers will interact with storages exposed through this lookup, thus implementing one of the vanilla APIs
-	 * is NOT NECESSARY anymore, although it can be convenient to implement, for example with {@link SimpleInventory}.
-	 * Do note that using the vanilla API may cause issues for complicated inventories:
+	 * <p>Hoppers and droppers will interact with storages exposed through this lookup, thus implementing one of the vanilla APIs is not necessary.
 	 *
-	 * <p>Per the remark in {@link InventoryStorage}:
-	 * <b>Inventories that don't own their slots or have a dynamic number of slots</b> must ensure they are <b>NOT exposed</b> directly through this lookup,
-	 * for example by using {@code Storage<ItemVariant>} directly or by making sure their {@code BlockEntity} does NOT implement {@code Inventory} directly.
+	 * <p>Depending on the use case, the following strategies can be used to offer a {@code Storage<ItemVariant>} implementation:
+	 * <ul>
+	 *     <li>Directly implementing {@code Inventory} or {@code SidedInventory} on a block entity - it will be wrapped automatically.</li>
+	 *     <li>Storing an inventory inside a block entity field, and converting it manually with {@link InventoryStorage#of}.
+	 *     {@link SimpleInventory} can be used for easy implementation.</li>
+	 *     <li>{@link SingleStackStorage} can also be used for more flexibility. Multiple of them can be combined with {@link CombinedStorage}.</li>
+	 *     <li>Directly providing a custom implementation of {@code Storage<ItemVariant>} is also possible.</li>
+	 * </ul>
 	 */
 	public static final BlockApiLookup<Storage<ItemVariant>, Direction> SIDED =
 			BlockApiLookup.get(new Identifier("fabric:sided_item_storage"), Storage.asClass(), Direction.class);
@@ -71,9 +77,10 @@ public final class ItemStorage { // TODO: update javadoc...
 	}
 
 	static {
-		// TODO: composter impl
+		// Register composter support.
+		ItemStorage.SIDED.registerForBlocks((world, pos, state, blockEntity, direction) -> ComposterStorage.find(world, pos, direction), Blocks.COMPOSTER);
 
-		// Load Inventory fallback.
+		// Register Inventory fallback.
 		ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
 			Inventory inventoryToWrap = null;
 

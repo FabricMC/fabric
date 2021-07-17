@@ -42,9 +42,8 @@ import net.fabricmc.fabric.impl.transfer.item.InventoryStorageImpl;
  *
  * <p>In particular, note that {@link #getSlots} can be combined with {@link CombinedStorage} to retrieve a wrapper around a specific range of slots.
  *
- * <p><b>Important note:</b> These wrappers assume that each slot belongs to the inventory, and that the inventory has a fixed size.
- * These assumptions are reasonable when dealing with vanilla inventories,
- * however modded inventories that don't own their slots or have a dynamic number of slots <b>must not</b> use these wrappers.
+ * <p><b>Important note:</b> This wrapper assumes that the inventory owns its slots.
+ * If the inventory does not own its slots, for example because it delegates to another inventory, this wrapper should not be used!
  *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
