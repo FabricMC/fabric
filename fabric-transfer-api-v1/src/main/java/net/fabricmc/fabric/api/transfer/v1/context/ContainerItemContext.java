@@ -98,7 +98,7 @@ public interface ContainerItemContext {
 	 * Return a context for the passed player's cursor slot. This is recommended for screen handler click interactions.
 	 */
 	static ContainerItemContext ofPlayerCursor(PlayerEntity player, ScreenHandler screenHandler) {
-		return ofPlayerSlot(player, PlayerInventoryStorage.ofCursor(screenHandler));
+		return ofPlayerSlot(player, PlayerInventoryStorage.getCursorStorage(screenHandler));
 	}
 
 	/**

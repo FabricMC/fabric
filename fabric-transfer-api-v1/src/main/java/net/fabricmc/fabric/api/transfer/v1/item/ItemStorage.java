@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.inventory.Inventory;
@@ -33,7 +32,6 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
-import net.fabricmc.fabric.impl.transfer.item.ComposterStorage;
 import net.fabricmc.fabric.mixin.transfer.DoubleInventoryAccessor;
 
 /**
@@ -77,8 +75,7 @@ public final class ItemStorage {
 	}
 
 	static {
-		// Register composter support.
-		ItemStorage.SIDED.registerForBlocks((world, pos, state, blockEntity, direction) -> ComposterStorage.find(world, pos, direction), Blocks.COMPOSTER);
+		// TODO: Register composter support.
 
 		// Register Inventory fallback.
 		ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {

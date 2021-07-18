@@ -38,14 +38,14 @@ public class PlayerContainerItemContext implements ContainerItemContext {
 	public PlayerContainerItemContext(PlayerEntity player, Hand hand) {
 		Objects.requireNonNull(hand, "Hand may not be null.");
 
-		this.playerWrapper = PlayerInventoryStorage.ofPlayer(player);
+		this.playerWrapper = PlayerInventoryStorage.of(player);
 		int slotIndex = hand == Hand.MAIN_HAND ? player.getInventory().selectedSlot : PlayerInventory.OFF_HAND_SLOT;
 		this.slot = playerWrapper.getSlots().get(slotIndex);
 		this.world = player.getEntityWorld();
 	}
 
 	public PlayerContainerItemContext(PlayerEntity player, SingleSlotStorage<ItemVariant> slot) {
-		this.playerWrapper = PlayerInventoryStorage.ofPlayer(player);
+		this.playerWrapper = PlayerInventoryStorage.of(player);
 		this.slot = slot;
 		this.world = player.getEntityWorld();
 	}
