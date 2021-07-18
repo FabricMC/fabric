@@ -51,7 +51,7 @@ class SidedInventorySlotWrapper implements SingleSlotStorage<ItemVariant> {
 		if (!sidedInventory.canExtract(slotWrapper.slot, resource.toStack(), direction)) {
 			return 0;
 		} else {
-			return slotWrapper.insert(resource, maxAmount, transaction);
+			return slotWrapper.extract(resource, maxAmount, transaction);
 		}
 	}
 
