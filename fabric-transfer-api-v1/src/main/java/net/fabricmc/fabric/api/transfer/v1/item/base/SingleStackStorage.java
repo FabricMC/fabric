@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
  * <p>{@link #canInsert} and {@link #canExtract} can be used for more precise control over which items may be inserted or extracted.
  * If one of these two functions is overridden to always return false, implementors may also wish to override
  * {@link #supportsInsertion} and/or {@link #supportsExtraction}.
- * {@link #getCapacity(ItemVariant)} can be overriden to change the maximum capacity depending on the item variant.
+ * {@link #getCapacity(ItemVariant)} can be overridden to change the maximum capacity depending on the item variant.
  *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
@@ -42,8 +42,11 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 @Deprecated
 public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> implements SingleSlotStorage<ItemVariant> {
 	/**
-	 * Return the stack of this storage. It is safe to directly return the backing stack.
-	 * Any mutation will directly be followed by a call to {@link #setStack}.
+	 * Return the stack of this storage. It will be modified directly sometimes to avoid needless copies.
+	 * However, any mutation of the stack will directly be followed by a call to {@link #setStack}.
+	 * This means that either returning the backing stack directly or a copy is safe.
+	 *
+	 * @return The current stack.
 	 */
 	protected abstract ItemStack getStack();
 
@@ -59,22 +62,28 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 	}
 
 	/**
-	 * @return {@code true} if the passed non-blank item variant can be inserted, {@code false} otherwise.
+	 * Return {@code true} if the passed non-blank item variant can be inserted, {@code false} otherwise.
 	 */
 	protected boolean canInsert(ItemVariant itemVariant) {
 		return true;
 	}
 
 	/**
-	 * @return {@code true} if the passed non-blank item variant can be extracted, {@code false} otherwise.
+	 * Return {@code true} if the passed non-blank item variant can be extracted, {@code false} otherwise.
 	 */
 	protected boolean canExtract(ItemVariant itemVariant) {
 		return true;
 	}
 
 	/**
-	 * @return The maximum capacity of this storage for the passed item variant.
+	 * Return the maximum capacity of this storage for the passed item variant.
 	 * If the passed item variant is blank, an estimate should be returned.
+	 *
+	 * <p>If the capacity should be limited by the max count of the item, this function must take it into account.
+	 * For example, a storage with a maximum count of 4, or less for items that have a smaller max count,
+	 * should override this to return {@code Math.min(itemVariant.getItem().getMaxCount(), 4);}.
+	 *
+	 * @return The maximum capacity of this storage for the passed item variant.
 	 */
 	protected int getCapacity(ItemVariant itemVariant) {
 		return itemVariant.getItem().getMaxCount();
@@ -113,10 +122,11 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 				updateSnapshots(transaction);
 
 				if (currentStack.isEmpty()) {
-					currentStack = insertedVariant.toStack();
+					currentStack = insertedVariant.toStack(insertedAmount);
+				} else {
+					currentStack.increment(insertedAmount);
 				}
 
-				currentStack.increment(insertedAmount);
 				setStack(currentStack);
 			}
 
@@ -138,6 +148,7 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 			if (extracted > 0) {
 				this.updateSnapshots(transaction);
 				currentStack.decrement(extracted);
+				setStack(currentStack);
 			}
 
 			return extracted;
