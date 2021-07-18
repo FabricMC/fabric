@@ -16,8 +16,9 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.World;
@@ -43,7 +45,7 @@ public abstract class WorldMixin implements LoadedChunksCache {
 	public abstract Profiler getProfiler();
 
 	@Unique
-	private final Set<WorldChunk> loadedChunks = new HashSet<>();
+	private final Map<ChunkPos, WorldChunk> loadedChunks = new HashMap<>();
 
 	@Inject(at = @At("RETURN"), method = "tickBlockEntities")
 	protected void tickWorldAfterBlockEntities(CallbackInfo ci) {
@@ -53,17 +55,17 @@ public abstract class WorldMixin implements LoadedChunksCache {
 	}
 
 	@Override
-	public Set<WorldChunk> fabric_getLoadedChunks() {
-		return this.loadedChunks;
+	public Collection<WorldChunk> fabric_getLoadedChunks() {
+		return this.loadedChunks.values();
 	}
 
 	@Override
 	public void fabric_markLoaded(WorldChunk chunk) {
-		this.loadedChunks.add(chunk);
+		this.loadedChunks.put(chunk.getPos(), chunk);
 	}
 
 	@Override
 	public void fabric_markUnloaded(WorldChunk chunk) {
-		this.loadedChunks.remove(chunk);
+		this.loadedChunks.remove(chunk.getPos());
 	}
 }

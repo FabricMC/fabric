@@ -14,25 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.event.lifecycle;
+package net.fabricmc.fabric.mixin.event.lifecycle;
 
-import java.util.Collection;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.world.chunk.WorldChunk;
 
-/**
- * A simple marker interface which holds references to chunks which block entities may be loaded or unloaded from.
- */
-public interface LoadedChunksCache {
-	Collection<WorldChunk> fabric_getLoadedChunks();
-
-	/**
-	 * Marks a chunk as loaded in a world.
-	 */
-	void fabric_markLoaded(WorldChunk chunk);
-
-	/**
-	 * Marks a chunk as unloaded in a world.
-	 */
-	void fabric_markUnloaded(WorldChunk chunk);
+@Mixin(WorldChunk.class)
+public interface IWorldChunk {
+	@Accessor
+	boolean isLoadedToWorld();
 }
