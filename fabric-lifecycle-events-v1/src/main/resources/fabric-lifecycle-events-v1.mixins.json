@@ -3,7 +3,6 @@
   "package": "net.fabricmc.fabric.mixin.event.lifecycle",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "IWorldChunk",
     "MinecraftServerMixin",
     "ServerWorldEntityLoaderMixin",
     "ServerWorldMixin",
