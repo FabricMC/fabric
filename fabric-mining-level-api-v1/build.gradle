@@ -6,3 +6,7 @@ moduleDependencies(project, [
 		'fabric-resource-loader-v0',
 		'fabric-tag-extensions-v0'
 ])
+
+dependencies {
+	testmodImplementation project(path: ':fabric-lifecycle-events-v1', configuration: 'dev')
+}
