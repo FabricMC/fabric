@@ -42,6 +42,9 @@ public final class MiningLevelManager {
 	/**
 	 * Gets the tool mining level required to effectively mine and drop a block state.
 	 *
+	 * <p>Note: this method does not take into account tool-specific mining levels declared
+	 * with the tool attribute API.
+	 *
 	 * @param state the block state
 	 * @return the mining level of the block state
 	 */

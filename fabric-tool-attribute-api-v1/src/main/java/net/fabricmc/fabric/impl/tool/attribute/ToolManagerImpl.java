@@ -36,6 +36,7 @@ import net.minecraft.util.TypedActionResult;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.util.TriState;
 
@@ -49,9 +50,14 @@ public final class ToolManagerImpl {
 	}
 
 	private static class EntryImpl implements Entry {
+		private final Block block;
 		private Tag<Item>[] tags = new Tag[0];
 		private int[] tagLevels = new int[0];
 		private TriState defaultValue = TriState.DEFAULT;
+
+		private EntryImpl(Block block) {
+			this.block = block;
+		}
 
 		@Override
 		public void setBreakByHand(boolean value) {
@@ -78,13 +84,18 @@ public final class ToolManagerImpl {
 
 		@Override
 		public int getMiningLevel(Tag<Item> tag) {
+			// Implementation detail: the actual logic does not check the state.
+			// TODO: This should be changed some day to respect the block state,
+			//   but the entry code is quite coupled in blocks instead of states.
+			int miningLevel = MiningLevelManager.getRequiredMiningLevel(block.getDefaultState());
+
 			for (int i = 0; i < tags.length; i++) {
 				if (tags[i] == tag) {
-					return tagLevels[i];
+					miningLevel = Math.max(miningLevel, tagLevels[i]);
 				}
 			}
 
-			return -1;
+			return miningLevel;
 		}
 	}
 
@@ -152,7 +163,7 @@ public final class ToolManagerImpl {
 	}
 
 	public static Entry entry(Block block) {
-		return ENTRIES.computeIfAbsent(block, (bb) -> new EntryImpl());
+		return ENTRIES.computeIfAbsent(block, (bb) -> new EntryImpl(block));
 	}
 
 	@Nullable
