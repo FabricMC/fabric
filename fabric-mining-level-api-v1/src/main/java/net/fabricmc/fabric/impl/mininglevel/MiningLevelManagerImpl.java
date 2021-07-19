@@ -58,7 +58,7 @@ public final class MiningLevelManagerImpl {
 						int tagMiningLevel = Integer.parseInt(matcher.group(1));
 
 						if (tagMiningLevel < 0) {
-							LOGGER.warn("#{} has negative mining level, which has no effects!", tagId);
+							LOGGER.warn("#{} has a negative mining level which has no effects!", tagId);
 						}
 
 						miningLevel = Math.max(miningLevel, tagMiningLevel);
