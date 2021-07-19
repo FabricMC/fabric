@@ -23,7 +23,7 @@ import net.fabricmc.fabric.impl.mininglevel.MiningLevelManagerImpl;
 /**
  * Provides access to block mining levels.
  *
- * <h2>Tags</h2>
+ * <h2>Mining level tags</h2>
  * {@code MiningLevelManager} supports the vanilla minimum mining level tags:
  * {@link net.minecraft.tag.BlockTags#NEEDS_STONE_TOOL #needs_stone_tool},
  * {@link net.minecraft.tag.BlockTags#NEEDS_IRON_TOOL #needs_iron_tool} and
@@ -32,8 +32,8 @@ import net.fabricmc.fabric.impl.mininglevel.MiningLevelManagerImpl;
  * or a custom one). The dynamic tags are checked automatically.
  *
  * <p>Dynamic mining level tags are in the format {@code #fabric:needs_tool_level_N}, where {@code N}
- * is the wanted tool level as an integer. For example, a mining level tag for netherite (mining level 3) would be
- * {@code #fabric:needs_tool_level_3}.
+ * is the wanted tool level as an integer. For example, a mining level tag for netherite (mining level 4) would be
+ * {@code #fabric:needs_tool_level_4}.
  */
 public final class MiningLevelManager {
 	private MiningLevelManager() {
