@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-mining-level-api-v1",
+  "name": "Fabric Mining Level API (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-mining-level-api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.mininglevel.FabricMiningLevelInit"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*",
+    "fabric-resource-loader-v0": "*",
+    "fabric-tag-extensions-v0": "*"
+  },
+  "description": "Adds support for custom mining levels.",
+  "mixins": [
+    "fabric-mining-level-api-v1.mixins.json"
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
+}

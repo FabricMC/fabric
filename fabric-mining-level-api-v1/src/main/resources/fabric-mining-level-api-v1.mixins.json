@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.mininglevel",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "MiningToolItemMixin",
+    "ShearsItemMixin",
+    "SwordItemMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
