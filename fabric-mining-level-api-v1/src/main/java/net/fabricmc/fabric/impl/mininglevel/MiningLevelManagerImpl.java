@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -33,6 +35,7 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.yarn.constants.MiningLevels;
 
 public final class MiningLevelManagerImpl {
+	private static final Logger LOGGER = LogManager.getLogger("fabric-mining-level-api-v1/MiningLevelManagerImpl");
 	private static final String TOOL_TAG_NAMESPACE = "fabric";
 	private static final Pattern TOOL_TAG_PATTERN = Pattern.compile("^needs_tool_level_([0-9]+)$");
 	private static final Object2IntMap<BlockState> CACHE = new Object2IntOpenHashMap<>();
@@ -51,7 +54,17 @@ public final class MiningLevelManagerImpl {
 				Matcher matcher = TOOL_TAG_PATTERN.matcher(tagId.getPath());
 
 				if (matcher.matches()) {
-					miningLevel = Math.max(miningLevel, Integer.parseInt(matcher.group(1)));
+					try {
+						int tagMiningLevel = Integer.parseInt(matcher.group(1));
+
+						if (tagMiningLevel < 0) {
+							LOGGER.warn("#{} has negative mining level, which has no effects!", tagId);
+						}
+
+						miningLevel = Math.max(miningLevel, tagMiningLevel);
+					} catch (NumberFormatException e) {
+						LOGGER.error("Could not read mining level from tag #{}", tagId, e);
+					}
 				}
 			}
 
