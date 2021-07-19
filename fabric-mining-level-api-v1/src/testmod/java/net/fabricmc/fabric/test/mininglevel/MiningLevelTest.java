@@ -16,11 +16,16 @@
 
 package net.fabricmc.fabric.test.mininglevel;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -32,8 +37,14 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 
 public final class MiningLevelTest implements ModInitializer {
+	private static final String ID = "fabric-mining-level-api-v1-testmod";
+	private static final Logger LOGGER = LogManager.getLogger();
+
+	/// Tagged blocks
 	// sword + dynamic mining level tag
 	public static final Block NEEDS_NETHERITE_SWORD = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
 	// sword + vanilla mining level tag
@@ -44,6 +55,35 @@ public final class MiningLevelTest implements ModInitializer {
 	public static final Block NEEDS_SHEARS = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
 	// vanilla mineable tag + dynamic mining level tag
 	public static final Block NEEDS_NETHERITE_PICKAXE = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
+	// vanilla mineable tag + dynamic mining level tag
+	public static final Block NEEDS_AXE = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
+	// vanilla mineable tag + dynamic mining level tag
+	public static final Block NEEDS_HOE = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
+	// vanilla mineable tag + dynamic mining level tag
+	public static final Block NEEDS_SHOVEL = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
+
+	/// Legacy blocks (block settings, NOT declared in tags!)
+	/// This test really belongs to tool-attribute-api-v1 instead, but it's easier to keep them centralised.
+	public static final Block NEEDS_SWORD_LEGACY = new Block(FabricBlockSettings.of(Material.STONE).strength(2, 3).requiresTool().breakByTool(FabricToolTags.SWORDS));
+	public static final Block NEEDS_SHEARS_LEGACY = new Block(FabricBlockSettings.of(Material.STONE).strength(2, 3).requiresTool().breakByTool(FabricToolTags.SHEARS));
+	public static final Block NEEDS_PICKAXE_LEGACY = new Block(FabricBlockSettings.of(Material.STONE).strength(2, 3).requiresTool().breakByTool(FabricToolTags.PICKAXES));
+	public static final Block NEEDS_AXE_LEGACY = new Block(FabricBlockSettings.of(Material.STONE).strength(2, 3).requiresTool().breakByTool(FabricToolTags.AXES));
+	public static final Block NEEDS_HOE_LEGACY = new Block(FabricBlockSettings.of(Material.STONE).strength(2, 3).requiresTool().breakByTool(FabricToolTags.HOES));
+	public static final Block NEEDS_SHOVEL_LEGACY = new Block(FabricBlockSettings.of(Material.STONE).strength(2, 3).requiresTool().breakByTool(FabricToolTags.SHOVELS));
+
+	/// Tagged tools (tool attribute API compat)
+	// shears tag
+	public static final Item FAKE_SHEARS = new Item(new Item.Settings().group(ItemGroup.TOOLS));
+	// sword tag
+	public static final Item FAKE_SWORD = new Item(new Item.Settings().group(ItemGroup.TOOLS));
+	// pickaxe tag
+	public static final Item FAKE_PICKAXE = new Item(new Item.Settings().group(ItemGroup.TOOLS));
+	// axe tag
+	public static final Item FAKE_AXE = new Item(new Item.Settings().group(ItemGroup.TOOLS));
+	// hoe tag
+	public static final Item FAKE_HOE = new Item(new Item.Settings().group(ItemGroup.TOOLS));
+	// shovel tag
+	public static final Item FAKE_SHOVEL = new Item(new Item.Settings().group(ItemGroup.TOOLS));
 
 	@Override
 	public void onInitialize() {
@@ -52,16 +92,70 @@ public final class MiningLevelTest implements ModInitializer {
 		register("needs_any_sword", NEEDS_ANY_SWORD);
 		register("needs_shears", NEEDS_SHEARS);
 		register("needs_netherite_pickaxe", NEEDS_NETHERITE_PICKAXE);
+		register("needs_axe", NEEDS_AXE);
+		register("needs_hoe", NEEDS_HOE);
+		register("needs_shovel", NEEDS_SHOVEL);
+		register("needs_sword_legacy", NEEDS_SWORD_LEGACY);
+		register("needs_shears_legacy", NEEDS_SHEARS_LEGACY);
+		register("needs_pickaxe_legacy", NEEDS_PICKAXE_LEGACY);
+		register("needs_axe_legacy", NEEDS_AXE_LEGACY);
+		register("needs_hoe_legacy", NEEDS_HOE_LEGACY);
+		register("needs_shovel_legacy", NEEDS_SHOVEL_LEGACY);
+		register("fake_shears", FAKE_SHEARS);
+		register("fake_sword", FAKE_SWORD);
+		register("fake_pickaxe", FAKE_PICKAXE);
+		register("fake_axe", FAKE_AXE);
+		register("fake_hoe", FAKE_HOE);
+		register("fake_shovel", FAKE_SHOVEL);
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> test());
 	}
 
+	private static void register(String id, Block block) {
+		Identifier identifier = new Identifier(ID, id);
+		Registry.register(Registry.BLOCK, identifier, block);
+		Registry.register(Registry.ITEM, identifier, new BlockItem(block, new Item.Settings().group(ItemGroup.MISC)));
+	}
+
+	private static void register(String id, Item item) {
+		Registry.register(Registry.ITEM, new Identifier(ID, id), item);
+	}
+
 	private static void test() {
-		checkMiningLevel(NEEDS_NETHERITE_SWORD, List.of(Items.NETHERITE_SWORD), List.of(Items.NETHERITE_PICKAXE, Items.STONE_SWORD));
-		checkMiningLevel(NEEDS_STONE_SWORD, List.of(Items.STONE_SWORD, Items.IRON_SWORD), List.of(Items.STONE_PICKAXE, Items.WOODEN_SWORD));
-		checkMiningLevel(NEEDS_ANY_SWORD, List.of(Items.WOODEN_SWORD), List.of());
-		checkMiningLevel(NEEDS_SHEARS, List.of(Items.SHEARS), List.of());
-		checkMiningLevel(NEEDS_NETHERITE_PICKAXE, List.of(Items.NETHERITE_PICKAXE), List.of(Items.DIAMOND_PICKAXE, Items.NETHERITE_AXE));
+		List<AssertionError> errors = new ArrayList<>();
+		test(errors, () -> checkMiningLevel(NEEDS_NETHERITE_SWORD, List.of(Items.NETHERITE_SWORD), List.of(Items.NETHERITE_PICKAXE, Items.STONE_SWORD)));
+		test(errors, () -> checkMiningLevel(NEEDS_STONE_SWORD, List.of(Items.STONE_SWORD, Items.IRON_SWORD), List.of(Items.STONE_PICKAXE, Items.WOODEN_SWORD)));
+		test(errors, () -> checkMiningLevel(NEEDS_ANY_SWORD, List.of(Items.WOODEN_SWORD, FAKE_SWORD), List.of()));
+		test(errors, () -> checkMiningLevel(NEEDS_SHEARS, List.of(Items.SHEARS, FAKE_SHEARS), List.of()));
+		test(errors, () -> checkMiningLevel(NEEDS_NETHERITE_PICKAXE, List.of(Items.NETHERITE_PICKAXE), List.of(Items.DIAMOND_PICKAXE, Items.NETHERITE_AXE)));
+		test(errors, () -> checkMiningLevel(Blocks.STONE, List.of(Items.WOODEN_PICKAXE, FAKE_PICKAXE), List.of(Items.STICK)));
+		test(errors, () -> checkMiningLevel(NEEDS_AXE, List.of(Items.WOODEN_AXE, FAKE_AXE), List.of(Items.STICK)));
+		test(errors, () -> checkMiningLevel(NEEDS_HOE, List.of(Items.WOODEN_HOE, FAKE_HOE), List.of(Items.STICK)));
+		test(errors, () -> checkMiningLevel(NEEDS_SHOVEL, List.of(Items.WOODEN_SHOVEL, FAKE_SHOVEL), List.of(Items.STICK)));
+
+		// Legacy blocks
+		test(errors, () -> checkMiningLevel(NEEDS_SWORD_LEGACY, List.of(Items.WOODEN_SWORD, FAKE_SWORD), List.of()));
+		test(errors, () -> checkMiningLevel(NEEDS_SHEARS_LEGACY, List.of(Items.SHEARS, FAKE_SHEARS), List.of()));
+		test(errors, () -> checkMiningLevel(NEEDS_AXE_LEGACY, List.of(Items.WOODEN_AXE, FAKE_AXE), List.of()));
+		test(errors, () -> checkMiningLevel(NEEDS_PICKAXE_LEGACY, List.of(Items.WOODEN_PICKAXE, FAKE_PICKAXE), List.of()));
+		test(errors, () -> checkMiningLevel(NEEDS_HOE_LEGACY, List.of(Items.WOODEN_HOE, FAKE_HOE), List.of()));
+		test(errors, () -> checkMiningLevel(NEEDS_SHOVEL_LEGACY, List.of(Items.WOODEN_SHOVEL, FAKE_SHOVEL), List.of()));
+
+		if (errors.isEmpty()) {
+			LOGGER.info("Mining level tests passed!");
+		} else {
+			AssertionError error = new AssertionError("Mining level tests failed!");
+			errors.forEach(error::addSuppressed);
+			throw error;
+		}
+	}
+
+	private static void test(List<AssertionError> errors, Runnable runnable) {
+		try {
+			runnable.run();
+		} catch (AssertionError e) {
+			errors.add(e);
+		}
 	}
 
 	private static void checkMiningLevel(Block block, List<Item> successfulItems, List<Item> failingItems) {
@@ -84,11 +178,5 @@ public final class MiningLevelTest implements ModInitializer {
 				throw new AssertionError(failing + " is suitable for " + block);
 			}
 		}
-	}
-
-	private static void register(String id, Block block) {
-		Identifier identifier = new Identifier("fabric-mining-level-api-v1-testmod", id);
-		Registry.register(Registry.BLOCK, identifier, block);
-		Registry.register(Registry.ITEM, identifier, new BlockItem(block, new Item.Settings().group(ItemGroup.MISC)));
 	}
 }

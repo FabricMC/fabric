@@ -19,12 +19,16 @@ package net.fabricmc.fabric.impl.tool.attribute;
 import java.util.Arrays;
 
 import net.minecraft.item.Items;
+import net.minecraft.tag.BlockTags;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.mininglevel.v1.FabricMineableTags;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.fabricmc.fabric.impl.tool.attribute.handlers.ModdedToolsVanillaBlocksToolHandler;
 import net.fabricmc.fabric.impl.tool.attribute.handlers.ModdedToolsModdedBlocksToolHandler;
+import net.fabricmc.fabric.impl.tool.attribute.handlers.ModdedToolsVanillaBlocksToolHandler;
 import net.fabricmc.fabric.impl.tool.attribute.handlers.ShearsVanillaBlocksToolHandler;
+import net.fabricmc.fabric.impl.tool.attribute.handlers.TaggedToolsModdedBlocksToolHandler;
+import net.fabricmc.fabric.impl.tool.attribute.handlers.TaggedToolsTaggedBlocksToolHandler;
 import net.fabricmc.fabric.impl.tool.attribute.handlers.VanillaToolsModdedBlocksToolHandler;
 
 /**
@@ -35,6 +39,7 @@ public class ToolHandlers implements ModInitializer {
 	public void onInitialize() {
 		ToolManagerImpl.general().register(new ModdedToolsModdedBlocksToolHandler());
 		ToolManagerImpl.general().register(new VanillaToolsModdedBlocksToolHandler());
+		ToolManagerImpl.general().register(new TaggedToolsModdedBlocksToolHandler());
 		ToolManagerImpl.tag(FabricToolTags.PICKAXES).register(new ModdedToolsVanillaBlocksToolHandler(
 				Arrays.asList(
 						Items.WOODEN_PICKAXE,
@@ -81,5 +86,11 @@ public class ToolHandlers implements ModInitializer {
 				)
 		));
 		ToolManagerImpl.tag(FabricToolTags.SHEARS).register(new ShearsVanillaBlocksToolHandler());
+		ToolManagerImpl.tag(FabricToolTags.AXES).register(new TaggedToolsTaggedBlocksToolHandler(BlockTags.AXE_MINEABLE));
+		ToolManagerImpl.tag(FabricToolTags.HOES).register(new TaggedToolsTaggedBlocksToolHandler(BlockTags.HOE_MINEABLE));
+		ToolManagerImpl.tag(FabricToolTags.PICKAXES).register(new TaggedToolsTaggedBlocksToolHandler(BlockTags.PICKAXE_MINEABLE));
+		ToolManagerImpl.tag(FabricToolTags.SHEARS).register(new TaggedToolsTaggedBlocksToolHandler(FabricMineableTags.SHEARS_MINEABLE));
+		ToolManagerImpl.tag(FabricToolTags.SHOVELS).register(new TaggedToolsTaggedBlocksToolHandler(BlockTags.SHOVEL_MINEABLE));
+		ToolManagerImpl.tag(FabricToolTags.SWORDS).register(new TaggedToolsTaggedBlocksToolHandler(FabricMineableTags.SWORD_MINEABLE));
 	}
 }

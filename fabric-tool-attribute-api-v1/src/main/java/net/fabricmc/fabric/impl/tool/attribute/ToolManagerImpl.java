@@ -22,6 +22,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,17 +31,31 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.TypedActionResult;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.mininglevel.v1.FabricMineableTags;
 import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.api.util.TriState;
 
 public final class ToolManagerImpl {
+	private static final Map<Tag<Item>, Tag<Block>> MINEABLE_TAG_BY_TOOL = ImmutableMap.<Tag<Item>, Tag<Block>>builder()
+			// Vanilla mineable tags
+			.put(FabricToolTags.AXES, BlockTags.AXE_MINEABLE)
+			.put(FabricToolTags.HOES, BlockTags.HOE_MINEABLE)
+			.put(FabricToolTags.PICKAXES, BlockTags.PICKAXE_MINEABLE)
+			.put(FabricToolTags.SHOVELS, BlockTags.SHOVEL_MINEABLE)
+			// Fabric mineable tags
+			.put(FabricToolTags.SHEARS, FabricMineableTags.SHEARS_MINEABLE)
+			.put(FabricToolTags.SWORDS, FabricMineableTags.SWORD_MINEABLE)
+			.build();
+
 	public interface Entry {
 		void setBreakByHand(boolean value);
 
@@ -92,6 +107,12 @@ public final class ToolManagerImpl {
 			for (int i = 0; i < tags.length; i++) {
 				if (tags[i] == tag) {
 					miningLevel = Math.max(miningLevel, tagLevels[i]);
+				}
+			}
+
+			for (Tag<Item> key : MINEABLE_TAG_BY_TOOL.keySet()) {
+				if (tag == key && MINEABLE_TAG_BY_TOOL.get(key).contains(block)) {
+					miningLevel = Math.max(miningLevel, 0);
 				}
 			}
 
