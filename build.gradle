@@ -345,7 +345,7 @@ curseforge {
 
 	project {
 		id = "306612"
-		changelog = changelog = ENV.CHANGELOG ?: "No changelog provided"
+		changelog = ENV.CHANGELOG ?: "No changelog provided"
 		releaseType = Globals.preRelease ? "beta" : "release"
 		addGameVersion "1.17.1"
 		addGameVersion "Fabric"
@@ -378,7 +378,7 @@ task github(dependsOn: remapMavenJar) {
 
 		def releaseBuilder = new GHReleaseBuilder(repository, version as String)
 		releaseBuilder.name("[$Globals.mcVersion] Fabric API $Globals.baseVersion")
-		releaseBuilder.body(changelog = ENV.CHANGELOG ?: "No changelog provided")
+		releaseBuilder.body(ENV.CHANGELOG ?: "No changelog provided")
 		releaseBuilder.commitish(getBranch())
 		releaseBuilder.prerelease(Globals.preRelease)
 
