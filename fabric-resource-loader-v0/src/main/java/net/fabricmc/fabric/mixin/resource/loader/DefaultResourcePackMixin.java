@@ -67,8 +67,8 @@ public abstract class DefaultResourcePackMixin {
 			URL assetsRootUrl = DefaultResourcePack.class.getResource("/" + type.getDirectory() + "/.mcassetsroot");
 			URLConnection connection = assetsRootUrl.openConnection();
 
-			if (connection instanceof JarURLConnection jarURLConnection) {
-				return new ZipResourcePack(new File(jarURLConnection.getJarFileURL().toURI()));
+			if (connection instanceof JarURLConnection) {
+				return new ZipResourcePack(new File(((JarURLConnection) connection).getJarFileURL().toURI()));
 			} else {
 				// Not a jar, assume it's a regular directory.
 				Path rootPath = Paths.get(assetsRootUrl.toURI()).resolve("../..").toAbsolutePath();
