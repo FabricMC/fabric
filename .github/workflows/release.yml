@@ -4,9 +4,10 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     container:
-      image: openjdk:16-jdk-buster
+      image: adoptopenjdk:16-jdk
       options: --user root
     steps:
+      - run: apt update && apt install git -y && git --version
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
