@@ -34,7 +34,7 @@ import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.resource.DefaultResourcePack;
 import net.minecraft.resource.DirectoryResourcePack;
-import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.ZipResourcePack;
 import net.minecraft.util.Identifier;
@@ -48,10 +48,10 @@ public abstract class DefaultResourcePackMixin {
 	/**
 	 * Redirect all resource access to the MC jar zip pack.
 	 */
-	final ResourcePack fabric_mcJarPack = createJarZipPack();
+	final AbstractFileResourcePack fabric_mcJarPack = createJarZipPack();
 
 	@Unique
-	private ResourcePack createJarZipPack() {
+	private AbstractFileResourcePack createJarZipPack() {
 		ResourceType type;
 
 		if (getClass().equals(DefaultResourcePack.class)) {
@@ -113,7 +113,7 @@ public abstract class DefaultResourcePackMixin {
 	@Nullable
 	@Overwrite
 	public InputStream getInputStream(String path) throws IOException {
-		return fabric_mcJarPack.openRoot(path);
+		return ((AbstractFileResourcePackAccessor) fabric_mcJarPack).openFile(path);
 	}
 
 	/**
