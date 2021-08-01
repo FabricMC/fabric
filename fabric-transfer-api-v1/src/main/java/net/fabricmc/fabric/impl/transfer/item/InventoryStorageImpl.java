@@ -48,7 +48,7 @@ public class InventoryStorageImpl extends CombinedStorage<ItemVariant, SingleSlo
 	 * one of the slot wrappers refers to it, hence the {@code strongRef} field in {@link InventorySlotWrapper}.
 	 */
 	// TODO: look into promoting the weak reference to a soft reference if building the wrappers becomes a performance bottleneck.
-	// TODO: must have identity semantics...
+	// TODO: should have identity semantics?
 	private static final Map<Inventory, InventoryStorageImpl> WRAPPERS = new MapMaker().weakValues().makeMap();
 
 	public static InventoryStorage of(Inventory inventory, @Nullable Direction direction) {
@@ -100,7 +100,7 @@ public class InventoryStorageImpl extends CombinedStorage<ItemVariant, SingleSlo
 	}
 
 	private InventoryStorage getSidedWrapper(@Nullable Direction direction) {
-		if (inventory instanceof SidedInventory) {
+		if (inventory instanceof SidedInventory && direction != null) {
 			return new SidedInventoryStorageImpl(this, direction);
 		} else {
 			return this;

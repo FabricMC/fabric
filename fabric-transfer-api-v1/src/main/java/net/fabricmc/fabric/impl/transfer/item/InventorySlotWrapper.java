@@ -56,6 +56,12 @@ class InventorySlotWrapper extends SingleStackStorage {
 
 	@Override
 	public int getCapacity(ItemVariant variant) {
-		return Math.min(storage.inventory.getMaxCountPerStack(), storage.inventory.getStack(slot).getMaxCount());
+		return Math.min(storage.inventory.getMaxCountPerStack(), variant.getItem().getMaxCount());
+	}
+
+	@Override
+	protected void markDirty() {
+		// TODO: aggregate markDirty calls if one call per modified slot becomes a performance bottleneck.
+		storage.inventory.markDirty();
 	}
 }

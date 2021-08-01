@@ -21,6 +21,10 @@ import java.util.function.Predicate;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.inventory.Inventory;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.util.math.MathHelper;
+
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
@@ -167,5 +171,42 @@ public final class StorageUtil {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Compute the comparator output for a storage, similar to {@link ScreenHandler#calculateComparatorOutput(Inventory)}.
+	 *
+	 * @param storage The storage for which the comparator level should be computed.
+	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this computation.
+	 * @param <T> The type of the stored resources.
+	 * @return An integer between 0 and 15 (inclusive): the comparator output for the passed storage.
+	 */
+	public static <T> int calculateComparatorOutput(@Nullable Storage<T> storage, @Nullable TransactionContext transaction) {
+		if (storage == null) return 0;
+
+		if (transaction == null) {
+			try (Transaction outer = Transaction.openOuter()) {
+				return calculateComparatorOutputInner(storage, outer);
+			}
+		} else {
+			return calculateComparatorOutputInner(storage, transaction);
+		}
+	}
+
+	private static <T> int calculateComparatorOutputInner(Storage<T> storage, TransactionContext transaction) {
+		double fillPercentage = 0;
+		int viewCount = 0;
+		boolean hasNonEmptyView = false;
+
+		for (StorageView<T> view : storage.iterable(transaction)) {
+			viewCount++;
+
+			if (view.getAmount() > 0) {
+				fillPercentage += (double) view.getAmount() / view.getCapacity();
+				hasNonEmptyView = true;
+			}
+		}
+
+		return MathHelper.floor(fillPercentage / viewCount * 14) + (hasNonEmptyView ? 1 : 0);
 	}
 }

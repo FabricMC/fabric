@@ -26,10 +26,12 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
@@ -46,6 +48,7 @@ public class ItemTests {
 	private static void testInventoryWrappers() {
 		ItemVariant emptyBucket = ItemVariant.of(Items.BUCKET);
 		TestSidedInventory testInventory = new TestSidedInventory();
+		checkComparatorOutput(testInventory, null);
 
 		// Create a few wrappers.
 		InventoryStorage unsidedWrapper = InventoryStorage.of(testInventory, null);
@@ -80,6 +83,8 @@ public class ItemTests {
 		// Check commit.
 		if (!testInventory.getStack(0).isEmpty()) throw new AssertionError("Slot 0 should have been empty.");
 		if (!testInventory.getStack(1).isOf(Items.BUCKET) || testInventory.getStack(1).getCount() != 1) throw new AssertionError("Slot 1 should have been a bucket.");
+
+		checkComparatorOutput(testInventory, null);
 	}
 
 	private static boolean stackEquals(ItemStack stack, Item item, int count) {
@@ -127,6 +132,8 @@ public class ItemTests {
 			if (wrapper.insert(diamond, 1000, transaction) != 6) {
 				throw new AssertionError("Only 6 diamonds should have been inserted.");
 			}
+
+			checkComparatorOutput(inventory, transaction);
 		}
 	}
 
@@ -143,6 +150,8 @@ public class ItemTests {
 			if (wrapper.insert(diamondPickaxe, 1000, transaction) != 5) {
 				throw new AssertionError("Only 5 pickaxes should have been inserted.");
 			}
+
+			checkComparatorOutput(inventory, transaction);
 		}
 	}
 
@@ -158,6 +167,22 @@ public class ItemTests {
 		@Override
 		public int getMaxCountPerStack() {
 			return 3;
+		}
+	}
+
+	private static void checkComparatorOutput(Inventory inventory, @Nullable Transaction transaction) {
+		Storage<ItemVariant> storage = InventoryStorage.of(inventory, null);
+
+		int vanillaOutput = ScreenHandler.calculateComparatorOutput(inventory);
+		int transferApiOutput = StorageUtil.calculateComparatorOutput(storage, transaction);
+
+		if (vanillaOutput != transferApiOutput) {
+			String error = String.format(
+					"Vanilla and Transfer API comparator outputs should have been identical. Vanilla: %d. Transfer API: %d.",
+					vanillaOutput,
+					transferApiOutput
+			);
+			throw new AssertionError(error);
 		}
 	}
 }
