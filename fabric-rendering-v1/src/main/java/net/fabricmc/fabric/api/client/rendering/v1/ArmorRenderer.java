@@ -44,7 +44,6 @@ import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 @Environment(EnvType.CLIENT)
 @FunctionalInterface
 public interface ArmorRenderer {
-
 	/**
 	 * Registers the armor renderer for the specified items.
 	 * @param renderer	the renderer

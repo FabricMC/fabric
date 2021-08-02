@@ -27,7 +27,6 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 
 public class ArmorRendererRegistryImpl {
-
 	private static final HashMap<Item, ArmorRenderer> RENDERERS = new HashMap<>();
 
 	public static void register(ArmorRenderer renderer, Item... items) {
