@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.ArmorRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
@@ -25,6 +23,9 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.ArmorRendererRegistry;
 
 public class ArmorRenderingTests implements ClientModInitializer {
 	private BipedEntityModel<LivingEntity> armorModel;
@@ -36,6 +37,7 @@ public class ArmorRenderingTests implements ClientModInitializer {
 			if (armorModel == null) {
 				armorModel = new BipedEntityModel<>(MinecraftClient.getInstance().getEntityModelLoader().getModelPart(EntityModelLayers.PLAYER_OUTER_ARMOR));
 			}
+
 			model.setAttributes(armorModel);
 			armorModel.setVisible(false);
 			armorModel.body.visible = slot == EquipmentSlot.CHEST;

@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
-import net.fabricmc.fabric.api.client.rendering.v1.ArmorRendererRegistry;
-import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
@@ -27,10 +30,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.fabricmc.fabric.api.client.rendering.v1.ArmorRendererRegistry;
+import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 
 @Mixin(ArmorFeatureRenderer.class)
 public abstract class MixinArmorFeatureRenderer extends FeatureRenderer<LivingEntity, BipedEntityModel<LivingEntity>> {
@@ -39,11 +41,11 @@ public abstract class MixinArmorFeatureRenderer extends FeatureRenderer<LivingEn
 	}
 
 	@Inject(method = "renderArmor", at = @At("HEAD"), cancellable = true)
-	private void renderArmor(MatrixStack matrices, VertexConsumerProvider vertexConsumers, LivingEntity entity, EquipmentSlot armorSlot, int light, BipedEntityModel<LivingEntity>model, CallbackInfo ci){
+	private void renderArmor(MatrixStack matrices, VertexConsumerProvider vertexConsumers, LivingEntity entity, EquipmentSlot armorSlot, int light, BipedEntityModel<LivingEntity> model, CallbackInfo ci) {
 		ItemStack stack = entity.getEquippedStack(armorSlot);
 		ArmorRendererRegistry.ArmorRenderer renderer = ArmorRendererRegistryImpl.getRenderer(stack.getItem());
 
-		if (renderer != null){
+		if (renderer != null) {
 			renderer.render(matrices, vertexConsumers, stack, entity, armorSlot, light, getContextModel());
 			ci.cancel();
 		}

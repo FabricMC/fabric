@@ -16,10 +16,6 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
-import net.fabricmc.fabric.impl.client.rendering.BuiltinItemRendererRegistryImpl;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -32,12 +28,12 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
-import java.util.Objects;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 
 /**
  * Armor renderers render worn armor items with custom code.
@@ -54,7 +50,7 @@ public interface ArmorRendererRegistry {
 	ArmorRendererRegistry INSTANCE = ArmorRendererRegistryImpl.INSTANCE;
 
 	/**
-	 * Registers the armor renderer for the specified items
+	 * Registers the armor renderer for the specified items.
 	 * @param renderer	the renderer
 	 * @param items		the items
 	 * @throws IllegalArgumentException if an item already has a registered armor renderer
@@ -64,6 +60,7 @@ public interface ArmorRendererRegistry {
 
 	/**
 	 * Helper method for rendering a specific armor model, comes after setting visibility.
+	 *
 	 * <p>This primarily handles applying glint and the correct {@link RenderLayer}
 	 * @param matrices			the matrix stack
 	 * @param vertexConsumers	the vertex consumer provider
@@ -85,7 +82,7 @@ public interface ArmorRendererRegistry {
 	 */
 	interface ArmorRenderer {
 		/**
-		 * Renders an armor part
+		 * Renders an armor part.
 		 *
 		 * @param matrices			the matrix stack
 		 * @param vertexConsumers	the vertex consumer provider
