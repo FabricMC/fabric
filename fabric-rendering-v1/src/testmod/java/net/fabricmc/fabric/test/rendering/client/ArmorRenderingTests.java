@@ -25,7 +25,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.ArmorRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 
 public class ArmorRenderingTests implements ClientModInitializer {
 	private BipedEntityModel<LivingEntity> armorModel;
@@ -33,7 +33,7 @@ public class ArmorRenderingTests implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ArmorRendererRegistry.INSTANCE.register((matrices, vertexConsumers, stack, entity, slot, light, model) -> {
+		ArmorRenderer.register((matrices, vertexConsumers, stack, entity, slot, light, model) -> {
 			if (armorModel == null) {
 				armorModel = new BipedEntityModel<>(MinecraftClient.getInstance().getEntityModelLoader().getModelPart(EntityModelLayers.PLAYER_OUTER_ARMOR));
 			}
@@ -44,7 +44,7 @@ public class ArmorRenderingTests implements ClientModInitializer {
 			armorModel.leftArm.visible = slot == EquipmentSlot.CHEST;
 			armorModel.rightArm.visible = slot == EquipmentSlot.CHEST;
 			armorModel.head.visible = slot == EquipmentSlot.HEAD;
-			ArmorRendererRegistry.renderPart(matrices, vertexConsumers, light, stack, armorModel, texture);
+			ArmorRenderer.renderPart(matrices, vertexConsumers, light, stack, armorModel, texture);
 		}, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE);
 	}
 }

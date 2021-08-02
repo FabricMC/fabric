@@ -24,27 +24,30 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.item.Item;
 import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.fabric.api.client.rendering.v1.ArmorRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 
-public class ArmorRendererRegistryImpl implements ArmorRendererRegistry {
-	public static final ArmorRendererRegistryImpl INSTANCE = new ArmorRendererRegistryImpl();
+public class ArmorRendererRegistryImpl {
 
 	private static final HashMap<Item, ArmorRenderer> RENDERERS = new HashMap<>();
 
-	@Nullable
-	public static ArmorRenderer getRenderer(Item item) {
-		return RENDERERS.get(item);
-	}
+	public static void register(ArmorRenderer renderer, Item... items) {
+		Objects.requireNonNull(renderer, "renderer is null");
 
-	@Override
-	public void register(ArmorRenderer renderer, Item... items) {
+		if (items.length == 0) {
+			throw new IllegalArgumentException("Armor renderer registered for no item");
+		}
+
 		for (Item item : items) {
 			Objects.requireNonNull(item, "armor item is null");
-			Objects.requireNonNull(renderer, "renderer is null");
 
 			if (RENDERERS.putIfAbsent(item, renderer) != null) {
 				throw new IllegalArgumentException("Custom armor renderer already exists for " + Registry.ITEM.getId(item));
 			}
 		}
+	}
+
+	@Nullable
+	public static ArmorRenderer get(Item item) {
+		return RENDERERS.get(item);
 	}
 }

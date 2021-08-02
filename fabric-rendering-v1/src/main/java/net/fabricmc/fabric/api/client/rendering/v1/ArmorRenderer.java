@@ -39,15 +39,11 @@ import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
  * Armor renderers render worn armor items with custom code.
  * They may be used to render armor with special models or effects.
  *
- * <p>The renderers are registered with {@link ArmorRendererRegistry#register(ArmorRenderer, Item...)}.
+ * <p>The renderers are registered with {@link net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer#register(ArmorRenderer, Item...)}.
  */
 @Environment(EnvType.CLIENT)
-public interface ArmorRendererRegistry {
-	/**
-	 * The singleton instance of the renderer registry.
-	 * Use this instance to call the methods in this interface.
-	 */
-	ArmorRendererRegistry INSTANCE = ArmorRendererRegistryImpl.INSTANCE;
+@FunctionalInterface
+public interface ArmorRenderer {
 
 	/**
 	 * Registers the armor renderer for the specified items.
@@ -56,7 +52,9 @@ public interface ArmorRendererRegistry {
 	 * @throws IllegalArgumentException if an item already has a registered armor renderer
 	 * @throws NullPointerException if either an item or the renderer is null
 	 */
-	void register(ArmorRenderer renderer, Item... items);
+	static void register(ArmorRenderer renderer, Item... items) {
+		ArmorRendererRegistryImpl.register(renderer, items);
+	}
 
 	/**
 	 * Helper method for rendering a specific armor model, comes after setting visibility.
@@ -75,23 +73,15 @@ public interface ArmorRendererRegistry {
 	}
 
 	/**
-	 * Renders worn armor items with custom code.
-	 * This may be used for e.g. rendering a custom armor model.
+	 * Renders an armor part.
 	 *
-	 * <p>The renderers are registered with {@link ArmorRendererRegistry#register(ArmorRenderer, Item...)}.
+	 * @param matrices			the matrix stack
+	 * @param vertexConsumers	the vertex consumer provider
+	 * @param stack				the item stack of the armor item
+	 * @param entity			the entity wearing the armor item
+	 * @param slot				the equipment slot in which the armor stack is worn
+	 * @param light				packed lightmap coordinates
+	 * @param contextModel		the model provided by {@link FeatureRenderer#getContextModel()}
 	 */
-	interface ArmorRenderer {
-		/**
-		 * Renders an armor part.
-		 *
-		 * @param matrices			the matrix stack
-		 * @param vertexConsumers	the vertex consumer provider
-		 * @param stack				the item stack of the armor item
-		 * @param entity			the entity wearing the armor item
-		 * @param slot				the equipment slot in which the armor stack is worn
-		 * @param light				packed lightmap coordinates
-		 * @param contextModel		the model provided by {@link FeatureRenderer#getContextModel()}
-		 */
-		void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, ItemStack stack, LivingEntity entity, EquipmentSlot slot, int light, BipedEntityModel<LivingEntity> contextModel);
-	}
+	void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, ItemStack stack, LivingEntity entity, EquipmentSlot slot, int light, BipedEntityModel<LivingEntity> contextModel);
 }

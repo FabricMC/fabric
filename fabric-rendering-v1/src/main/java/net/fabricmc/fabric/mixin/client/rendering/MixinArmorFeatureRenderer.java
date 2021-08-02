@@ -31,7 +31,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.client.rendering.v1.ArmorRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 
 @Mixin(ArmorFeatureRenderer.class)
@@ -43,7 +43,7 @@ public abstract class MixinArmorFeatureRenderer extends FeatureRenderer<LivingEn
 	@Inject(method = "renderArmor", at = @At("HEAD"), cancellable = true)
 	private void renderArmor(MatrixStack matrices, VertexConsumerProvider vertexConsumers, LivingEntity entity, EquipmentSlot armorSlot, int light, BipedEntityModel<LivingEntity> model, CallbackInfo ci) {
 		ItemStack stack = entity.getEquippedStack(armorSlot);
-		ArmorRendererRegistry.ArmorRenderer renderer = ArmorRendererRegistryImpl.getRenderer(stack.getItem());
+		ArmorRenderer renderer = ArmorRendererRegistryImpl.get(stack.getItem());
 
 		if (renderer != null) {
 			renderer.render(matrices, vertexConsumers, stack, entity, armorSlot, light, getContextModel());
