@@ -16,7 +16,8 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
-import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
+import net.fabricmc.fabric.api.client.rendering.v1.ArmorRendererRegistry;
+import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
@@ -40,7 +41,7 @@ public abstract class MixinArmorFeatureRenderer extends FeatureRenderer<LivingEn
 	@Inject(method = "renderArmor", at = @At("HEAD"), cancellable = true)
 	private void renderArmor(MatrixStack matrices, VertexConsumerProvider vertexConsumers, LivingEntity entity, EquipmentSlot armorSlot, int light, BipedEntityModel<LivingEntity>model, CallbackInfo ci){
 		ItemStack stack = entity.getEquippedStack(armorSlot);
-		ArmorRenderer renderer = ArmorRenderingRegistryImpl.getRenderer(stack.getItem());
+		ArmorRendererRegistry.ArmorRenderer renderer = ArmorRendererRegistryImpl.getRenderer(stack.getItem());
 
 		if (renderer != null){
 			renderer.render(matrices, vertexConsumers, stack, entity, armorSlot, light, getContextModel());
