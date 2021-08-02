@@ -29,6 +29,7 @@ import net.minecraft.util.Identifier;
 public class ArmorRenderingTests implements ClientModInitializer {
 	private BipedEntityModel<LivingEntity> armorModel;
 	private Identifier texture = new Identifier("textures/block/dirt.png");
+
 	@Override
 	public void onInitializeClient() {
 		ArmorRenderer.register((matrices, vertexConsumers, stack, entity, slot, light, model) -> {
@@ -42,6 +43,6 @@ public class ArmorRenderingTests implements ClientModInitializer {
 			armorModel.rightArm.visible = slot == EquipmentSlot.CHEST;
 			armorModel.head.visible = slot == EquipmentSlot.HEAD;
 			ArmorRenderer.renderPart(matrices, vertexConsumers, light, stack, armorModel, texture);
-			}, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE);
+		}, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE);
 	}
 }
