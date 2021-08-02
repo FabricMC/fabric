@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.mixin.client.rendering;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
-import net.fabricmc.fabric.impl.client.rendering.ArmorRenderingRegistryImpl;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;

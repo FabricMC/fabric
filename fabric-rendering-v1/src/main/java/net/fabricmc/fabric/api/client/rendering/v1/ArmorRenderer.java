@@ -32,6 +32,11 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Armor renderers render worn armor items with custom code.
@@ -42,6 +47,7 @@ import net.minecraft.util.Identifier;
 @FunctionalInterface
 @Environment(EnvType.CLIENT)
 public interface ArmorRenderer {
+	static final HashMap<Item, ArmorRenderer> RENDERERS = new HashMap<>();
 	/**
 	 * Renders an armor part
 	 *
@@ -68,5 +74,32 @@ public interface ArmorRenderer {
 	static void renderPart(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ItemStack stack, Model model, Identifier texture) {
 		VertexConsumer vertexConsumer = ItemRenderer.getArmorGlintConsumer(vertexConsumers, RenderLayer.getArmorCutoutNoCull(texture), false, stack.hasGlint());
 		model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
+	}
+
+	/**
+	 * Registers the armor renderer for the specified items
+	 * @param renderer	the renderer
+	 * @param items		the items
+	 * @throws IllegalArgumentException if an item already has a registered armor renderer
+	 * @throws NullPointerException if either an item or the renderer is null
+	 */
+	static void register(ArmorRenderer renderer, Item... items) {
+		for (Item item : items) {
+			Objects.requireNonNull(item, "armor item is null");
+			Objects.requireNonNull(renderer, "renderer is null");
+			if (RENDERERS.putIfAbsent(item, renderer) != null) {
+				throw new IllegalArgumentException("Custom armor renderer already exists for " + Registry.ITEM.getId(item));
+			}
+		}
+	}
+
+	/**
+	 * Standard getter method for armor renderers
+	 * @param item	the item, associated with the renderer
+	 * @return the renderer, returns null if no renderer is registered
+	 */
+	@Nullable
+	static ArmorRenderer getRenderer(Item item){
+		return RENDERERS.get(item);
 	}
 }
