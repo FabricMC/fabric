@@ -38,7 +38,7 @@ public class ArmorRendererRegistryImpl {
 		}
 
 		for (ItemConvertible item : items) {
-			Objects.requireNonNull(item, "armor item is null");
+			Objects.requireNonNull(item.asItem(), "armor item is null");
 
 			if (RENDERERS.putIfAbsent(item.asItem(), renderer) != null) {
 				throw new IllegalArgumentException("Custom armor renderer already exists for " + Registry.ITEM.getId(item.asItem()));
