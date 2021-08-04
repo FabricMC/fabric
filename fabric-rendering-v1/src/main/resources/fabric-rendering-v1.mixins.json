@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.client.rendering",
   "compatibilityLevel": "JAVA_16",
   "client": [
+    "MixinArmorFeatureRenderer",
     "MixinBlockColorMap",
     "MixinBuiltinModelItemRenderer",
     "MixinInGameHud",
@@ -11,8 +12,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "MixinArmorFeatureRenderer"
-  ]
+  }
 }
