@@ -31,6 +31,7 @@ public class ArmorRenderingTests implements ClientModInitializer {
 	private BipedEntityModel<LivingEntity> armorModel;
 	private Identifier texture = new Identifier("textures/block/dirt.png");
 
+	// Renders a biped model with dirt texture, replacing diamond helmet and diamond chest plate rendering
 	@Override
 	public void onInitializeClient() {
 		ArmorRenderer.register((matrices, vertexConsumers, stack, entity, slot, light, model) -> {
