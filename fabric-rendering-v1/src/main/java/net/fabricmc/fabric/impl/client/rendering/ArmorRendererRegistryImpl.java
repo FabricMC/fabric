@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.client.rendering;
 import java.util.HashMap;
 import java.util.Objects;
 
+import net.minecraft.item.ItemConvertible;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.Item;
@@ -29,18 +30,18 @@ import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 public class ArmorRendererRegistryImpl {
 	private static final HashMap<Item, ArmorRenderer> RENDERERS = new HashMap<>();
 
-	public static void register(ArmorRenderer renderer, Item... items) {
+	public static void register(ArmorRenderer renderer, ItemConvertible... items) {
 		Objects.requireNonNull(renderer, "renderer is null");
 
 		if (items.length == 0) {
 			throw new IllegalArgumentException("Armor renderer registered for no item");
 		}
 
-		for (Item item : items) {
+		for (ItemConvertible item : items) {
 			Objects.requireNonNull(item, "armor item is null");
 
-			if (RENDERERS.putIfAbsent(item, renderer) != null) {
-				throw new IllegalArgumentException("Custom armor renderer already exists for " + Registry.ITEM.getId(item));
+			if (RENDERERS.putIfAbsent(item.asItem(), renderer) != null) {
+				throw new IllegalArgumentException("Custom armor renderer already exists for " + Registry.ITEM.getId(item.asItem()));
 			}
 		}
 	}

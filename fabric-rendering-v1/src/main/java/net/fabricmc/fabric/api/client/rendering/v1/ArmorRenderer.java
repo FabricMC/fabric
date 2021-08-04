@@ -28,6 +28,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
@@ -39,7 +40,7 @@ import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
  * Armor renderers render worn armor items with custom code.
  * They may be used to render armor with special models or effects.
  *
- * <p>The renderers are registered with {@link net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer#register(ArmorRenderer, Item...)}.
+ * <p>The renderers are registered with {@link net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer#register(ArmorRenderer, ItemConvertible...)}.
  */
 @Environment(EnvType.CLIENT)
 @FunctionalInterface
@@ -51,7 +52,7 @@ public interface ArmorRenderer {
 	 * @throws IllegalArgumentException if an item already has a registered armor renderer
 	 * @throws NullPointerException if either an item or the renderer is null
 	 */
-	static void register(ArmorRenderer renderer, Item... items) {
+	static void register(ArmorRenderer renderer, ItemConvertible... items) {
 		ArmorRendererRegistryImpl.register(renderer, items);
 	}
 
