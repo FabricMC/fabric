@@ -63,6 +63,7 @@ public final class MiningLevelTest implements ModInitializer {
 	public static final Block NEEDS_SHOVEL = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
 
 	/// Legacy blocks (block settings, NOT declared in tags!)
+	// TODO: Move everything from below here into tool attribute test mod
 	/// This test really belongs to tool-attribute-api-v1 instead, but it's easier to keep them centralised.
 	public static final Block NEEDS_SWORD_LEGACY = new Block(FabricBlockSettings.of(Material.STONE).strength(2, 3).requiresTool().breakByTool(FabricToolTags.SWORDS));
 	public static final Block NEEDS_SHEARS_LEGACY = new Block(FabricBlockSettings.of(Material.STONE).strength(2, 3).requiresTool().breakByTool(FabricToolTags.SHEARS));
