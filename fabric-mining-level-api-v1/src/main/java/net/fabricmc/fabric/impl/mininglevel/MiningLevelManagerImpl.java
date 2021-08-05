@@ -38,6 +38,8 @@ public final class MiningLevelManagerImpl {
 	private static final Logger LOGGER = LogManager.getLogger("fabric-mining-level-api-v1/MiningLevelManagerImpl");
 	private static final String TOOL_TAG_NAMESPACE = "fabric";
 	private static final Pattern TOOL_TAG_PATTERN = Pattern.compile("^needs_tool_level_([0-9]+)$");
+
+	// A cache of block state mining levels. Cleared by MiningLevelCacheInvalidator when tags are reloaded.
 	private static final Object2IntMap<BlockState> CACHE = new Object2IntOpenHashMap<>();
 
 	public static int getRequiredMiningLevel(BlockState state) {

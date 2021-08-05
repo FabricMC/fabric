@@ -55,11 +55,11 @@ public final class MiningLevelTest implements ModInitializer {
 	public static final Block NEEDS_SHEARS = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
 	// vanilla mineable tag + dynamic mining level tag
 	public static final Block NEEDS_NETHERITE_PICKAXE = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
-	// vanilla mineable tag + dynamic mining level tag
+	// vanilla mineable tag, requires tool (this type of block doesn't exist in vanilla)
 	public static final Block NEEDS_AXE = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
-	// vanilla mineable tag + dynamic mining level tag
+	// vanilla mineable tag, requires tool (this type of block doesn't exist in vanilla)
 	public static final Block NEEDS_HOE = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
-	// vanilla mineable tag + dynamic mining level tag
+	// vanilla mineable tag, requires tool (this type of block doesn't exist in vanilla)
 	public static final Block NEEDS_SHOVEL = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
 
 	/// Legacy blocks (block settings, NOT declared in tags!)
