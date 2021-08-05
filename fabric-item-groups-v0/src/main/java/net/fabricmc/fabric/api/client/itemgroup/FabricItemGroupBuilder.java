@@ -108,7 +108,6 @@ public final class FabricItemGroupBuilder {
 			public void appendStacks(DefaultedList<ItemStack> stacks) {
 				if (stacksForDisplay != null) {
 					stacksForDisplay.accept(stacks);
-					return;
 				}
 
 				super.appendStacks(stacks);
