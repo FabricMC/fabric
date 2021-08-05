@@ -65,6 +65,14 @@ public class ToolAttributeTest implements ModInitializer {
 	Item testDiamondDynamicLevelTater;
 	Block taterEffectiveBlock;
 
+	// These items are only tagged, but are not actual ToolItems or DynamicAttributeTools.
+	Item fakeShears;
+	Item fakeSword;
+	Item fakePickaxe;
+	Item fakeAxe;
+	Item fakeHoe;
+	Item fakeShovel;
+
 	@Override
 	public void onInitialize() {
 		// Register a custom shovel that has a mining level of 2 (iron) dynamically.
@@ -114,6 +122,14 @@ public class ToolAttributeTest implements ModInitializer {
 		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "cancel_item"), new TestDynamicCancelItem(new Item.Settings()));
 		// Test parameter nullability
 		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "null_test"), new TestNullableItem(new Item.Settings()));
+
+		// "Fake" tools, see explanation above
+		fakeShears = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "fake_shears"), new Item(new Item.Settings()));
+		fakeSword = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "fake_sword"), new Item(new Item.Settings()));
+		fakePickaxe = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "fake_pickaxe"), new Item(new Item.Settings()));
+		fakeAxe = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "fake_axe"), new Item(new Item.Settings()));
+		fakeHoe = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "fake_hoe"), new Item(new Item.Settings()));
+		fakeShovel = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "fake_shovel"), new Item(new Item.Settings()));
 
 		ServerTickEvents.START_SERVER_TICK.register(this::validate);
 	}

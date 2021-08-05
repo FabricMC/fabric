@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "fabric-tool-attribute-api-v1-testmod:fake_shovel",
     "fabric-tool-attribute-api-v1-testmod:test_shovel"
   ]
 }

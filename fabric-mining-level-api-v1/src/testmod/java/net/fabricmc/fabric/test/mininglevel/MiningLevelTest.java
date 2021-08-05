@@ -38,8 +38,10 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 
+// This test must pass without the tool attribute API present.
+// It has its own handlers for mining levels, which might "hide" this module
+// not working on its own.
 public final class MiningLevelTest implements ModInitializer {
 	private static final String ID = "fabric-mining-level-api-v1-testmod";
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -72,20 +74,6 @@ public final class MiningLevelTest implements ModInitializer {
 	public static final Block NEEDS_HOE_LEGACY = new Block(FabricBlockSettings.of(Material.STONE).strength(2, 3).requiresTool().breakByTool(FabricToolTags.HOES));
 	public static final Block NEEDS_SHOVEL_LEGACY = new Block(FabricBlockSettings.of(Material.STONE).strength(2, 3).requiresTool().breakByTool(FabricToolTags.SHOVELS));
 
-	/// Tagged tools (tool attribute API compat)
-	// shears tag
-	public static final Item FAKE_SHEARS = new Item(new Item.Settings().group(ItemGroup.TOOLS));
-	// sword tag
-	public static final Item FAKE_SWORD = new Item(new Item.Settings().group(ItemGroup.TOOLS));
-	// pickaxe tag
-	public static final Item FAKE_PICKAXE = new Item(new Item.Settings().group(ItemGroup.TOOLS));
-	// axe tag
-	public static final Item FAKE_AXE = new Item(new Item.Settings().group(ItemGroup.TOOLS));
-	// hoe tag
-	public static final Item FAKE_HOE = new Item(new Item.Settings().group(ItemGroup.TOOLS));
-	// shovel tag
-	public static final Item FAKE_SHOVEL = new Item(new Item.Settings().group(ItemGroup.TOOLS));
-
 	@Override
 	public void onInitialize() {
 		register("needs_netherite_sword", NEEDS_NETHERITE_SWORD);
@@ -102,12 +90,6 @@ public final class MiningLevelTest implements ModInitializer {
 		register("needs_axe_legacy", NEEDS_AXE_LEGACY);
 		register("needs_hoe_legacy", NEEDS_HOE_LEGACY);
 		register("needs_shovel_legacy", NEEDS_SHOVEL_LEGACY);
-		register("fake_shears", FAKE_SHEARS);
-		register("fake_sword", FAKE_SWORD);
-		register("fake_pickaxe", FAKE_PICKAXE);
-		register("fake_axe", FAKE_AXE);
-		register("fake_hoe", FAKE_HOE);
-		register("fake_shovel", FAKE_SHOVEL);
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> test());
 	}
@@ -116,10 +98,6 @@ public final class MiningLevelTest implements ModInitializer {
 		Identifier identifier = new Identifier(ID, id);
 		Registry.register(Registry.BLOCK, identifier, block);
 		Registry.register(Registry.ITEM, identifier, new BlockItem(block, new Item.Settings().group(ItemGroup.MISC)));
-	}
-
-	private static void register(String id, Item item) {
-		Registry.register(Registry.ITEM, new Identifier(ID, id), item);
 	}
 
 	private static void test() {
