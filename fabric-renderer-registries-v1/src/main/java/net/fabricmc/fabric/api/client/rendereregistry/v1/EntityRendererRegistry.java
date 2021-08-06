@@ -29,7 +29,7 @@ import net.fabricmc.fabric.impl.client.renderer.registry.EntityRendererRegistryI
  *
  * @deprecated This module has been moved into fabric-rendering-v1. Use {@link net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry} instead
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public interface EntityRendererRegistry {
 	EntityRendererRegistry INSTANCE = new EntityRendererRegistryImpl();
 

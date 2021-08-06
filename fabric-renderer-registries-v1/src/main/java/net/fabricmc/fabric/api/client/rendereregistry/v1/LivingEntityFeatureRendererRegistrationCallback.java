@@ -49,7 +49,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * @deprecated This module has been moved into fabric-rendering-v1. Use {@link net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback} instead
  */
 @FunctionalInterface
-@Deprecated(forRemoval = true)
+@Deprecated
 @Environment(EnvType.CLIENT)
 public interface LivingEntityFeatureRendererRegistrationCallback {
 	Event<LivingEntityFeatureRendererRegistrationCallback> EVENT = createEvent();
@@ -81,7 +81,7 @@ public interface LivingEntityFeatureRendererRegistrationCallback {
 	 *
 	 * @deprecated This module has been moved into fabric-rendering-v1. Use {@link net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper} instead
 	 */
-	@Deprecated(forRemoval = true)
+	@Deprecated
 	interface RegistrationHelper {
 		/**
 		 * Adds a feature renderer to the entity renderer.

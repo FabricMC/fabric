@@ -27,7 +27,7 @@ import net.fabricmc.api.Environment;
  *
  * @deprecated This module has been moved into fabric-rendering-v1. Use {@link net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry} instead.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 @Environment(EnvType.CLIENT)
 public final class EntityModelLayerRegistry {
 	/**
@@ -44,7 +44,7 @@ public final class EntityModelLayerRegistry {
 	}
 
 	@FunctionalInterface
-	@Deprecated(forRemoval = true)
+	@Deprecated
 	@Environment(EnvType.CLIENT)
 	public interface TexturedModelDataProvider {
 		/**
