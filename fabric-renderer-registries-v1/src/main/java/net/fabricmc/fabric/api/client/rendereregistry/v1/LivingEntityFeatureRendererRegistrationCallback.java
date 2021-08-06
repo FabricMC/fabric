@@ -63,7 +63,7 @@ public interface LivingEntityFeatureRendererRegistrationCallback {
 	void registerRenderers(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer, RegistrationHelper registrationHelper, EntityRendererFactory.Context context);
 
 	private static Event<LivingEntityFeatureRendererRegistrationCallback> createEvent() {
-		var event = EventFactory.createArrayBacked(LivingEntityFeatureRendererRegistrationCallback.class, callbacks -> (entityType, entityRenderer, registrationHelper, context) -> {
+		Event<LivingEntityFeatureRendererRegistrationCallback> event = EventFactory.createArrayBacked(LivingEntityFeatureRendererRegistrationCallback.class, callbacks -> (entityType, entityRenderer, registrationHelper, context) -> {
 			for (LivingEntityFeatureRendererRegistrationCallback callback : callbacks) {
 				callback.registerRenderers(entityType, entityRenderer, registrationHelper, context);
 			}
