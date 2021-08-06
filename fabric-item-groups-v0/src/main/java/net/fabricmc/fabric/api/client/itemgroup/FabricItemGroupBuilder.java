@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.itemgroup;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -30,7 +31,7 @@ import net.fabricmc.fabric.impl.item.group.ItemGroupExtensions;
 public final class FabricItemGroupBuilder {
 	private Identifier identifier;
 	private Supplier<ItemStack> stackSupplier = () -> ItemStack.EMPTY;
-	private Consumer<List<ItemStack>> stacksForDisplay;
+	private BiConsumer<List<ItemStack>, ItemGroup> stacksForDisplay;
 
 	private FabricItemGroupBuilder(Identifier identifier) {
 		this.identifier = identifier;
@@ -76,6 +77,16 @@ public final class FabricItemGroupBuilder {
 	 * @return a reference to the FabricItemGroupBuilder
 	 */
 	public FabricItemGroupBuilder appendItems(Consumer<List<ItemStack>> stacksForDisplay) {
+		return appendItems(((itemStacks, itemGroup) -> stacksForDisplay.accept(itemStacks)));
+	}
+
+	/**
+	 * This allows for a custom list of items to be displayed in a tab, this enabled tabs to be created with a custom set of items.
+	 *
+	 * @param stacksForDisplay Add ItemStack's to this list to show in the ItemGroup
+	 * @return a reference to the FabricItemGroupBuilder
+	 */
+	public FabricItemGroupBuilder appendItems(BiConsumer<List<ItemStack>, ItemGroup> stacksForDisplay) {
 		this.stacksForDisplay = stacksForDisplay;
 		return this;
 	}
@@ -107,7 +118,8 @@ public final class FabricItemGroupBuilder {
 			@Override
 			public void appendStacks(DefaultedList<ItemStack> stacks) {
 				if (stacksForDisplay != null) {
-					stacksForDisplay.accept(stacks);
+					stacksForDisplay.accept(stacks, this);
+					return;
 				}
 
 				super.appendStacks(stacks);
