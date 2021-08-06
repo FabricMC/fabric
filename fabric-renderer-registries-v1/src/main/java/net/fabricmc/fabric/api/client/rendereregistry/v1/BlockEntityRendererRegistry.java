@@ -22,8 +22,6 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
-import net.fabricmc.fabric.impl.client.renderer.registry.BlockEntityRendererRegistryImpl;
-
 /**
  * Helper class for registering BlockEntityRenderers.
  *
@@ -31,7 +29,12 @@ import net.fabricmc.fabric.impl.client.renderer.registry.BlockEntityRendererRegi
  */
 @Deprecated
 public interface BlockEntityRendererRegistry {
-	BlockEntityRendererRegistry INSTANCE = new BlockEntityRendererRegistryImpl();
+	BlockEntityRendererRegistry INSTANCE = new BlockEntityRendererRegistry() {
+		@Override
+		public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
+			net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry.register(blockEntityType, blockEntityRendererFactory);
+		}
+	};
 
 	/**
 	 * Register a BlockEntityRenderer for a BlockEntityType. Can be called clientside before the world is rendered.
