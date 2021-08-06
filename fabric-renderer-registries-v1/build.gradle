@@ -1,10 +1,6 @@
 archivesBaseName = "fabric-renderer-registries-v1"
 version = getSubprojectVersion(project, "3.2.0")
 
-dependencies {
-	testmodImplementation project(path: ':fabric-lifecycle-events-v1', configuration: 'dev')
-}
-
 moduleDependencies(project, [
 		'fabric-api-base',
 		'fabric-rendering-v1'
