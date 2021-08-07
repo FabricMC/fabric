@@ -28,7 +28,8 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
 /**
  * An item variant storage backed by an {@link ItemStack}.
- * Implementors should at least override {@link #getStack} and {@link #setStack}, and probably {@link #markDirty} as well.
+ * Implementors should at least override {@link #getStack} and {@link #setStack},
+ * and probably {@link #onFinalCommit} as well for {@code markDirty()} and similar calls.
  *
  * <p>{@link #canInsert} and {@link #canExtract} can be used for more precise control over which items may be inserted or extracted.
  * If one of these two functions is overridden to always return false, implementors may also wish to override
@@ -54,12 +55,6 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 	 * Set the stack of this storage.
 	 */
 	protected abstract void setStack(ItemStack stack);
-
-	/**
-	 * Implement if you want.
-	 */
-	protected void markDirty() {
-	}
 
 	/**
 	 * Return {@code true} if the passed non-blank item variant can be inserted, {@code false} otherwise.
@@ -165,10 +160,5 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 	@Override
 	protected final void readSnapshot(ItemStack snapshot) {
 		setStack(snapshot);
-	}
-
-	@Override
-	protected final void onFinalCommit() {
-		markDirty();
 	}
 }

@@ -79,7 +79,7 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 	 * committed or rolled back.
 	 * This function should be called every time the participant is about to change its internal state as part of a transaction.
 	 */
-	public final void updateSnapshots(TransactionContext transaction) {
+	public void updateSnapshots(TransactionContext transaction) {
 		// Make sure we have enough storage for snapshots
 		while (snapshots.size() <= transaction.nestingDepth()) {
 			snapshots.add(null);
@@ -96,7 +96,7 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 	}
 
 	@Override
-	public final void onClose(TransactionContext transaction, Transaction.Result result) {
+	public void onClose(TransactionContext transaction, Transaction.Result result) {
 		// Get and remove the relevant snapshot.
 		T snapshot = snapshots.set(transaction.nestingDepth(), null);
 
@@ -121,7 +121,7 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 	}
 
 	@Override
-	public final void afterOuterClose(Transaction.Result result) {
+	public void afterOuterClose(Transaction.Result result) {
 		// The result is guaranteed to be COMMITTED,
 		// as this is only scheduled during onClose() when the outer transaction is successful.
 		onFinalCommit();

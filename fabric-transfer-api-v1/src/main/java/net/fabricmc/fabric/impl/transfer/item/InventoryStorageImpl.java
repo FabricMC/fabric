@@ -33,6 +33,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
 /**
  * Implementation of {@link InventoryStorage}.
@@ -69,6 +70,10 @@ public class InventoryStorageImpl extends CombinedStorage<ItemVariant, SingleSlo
 	 * The {@code parts} in the superclass is the public-facing unmodifiable sublist with exactly the right amount of slots.
 	 */
 	final List<InventorySlotWrapper> backingList;
+	/**
+	 * This participant ensures that markDirty is only called once for the entire inventory.
+	 */
+	final MarkDirtyParticipant markDirtyParticipant = new MarkDirtyParticipant();
 
 	InventoryStorageImpl(Inventory inventory) {
 		super(Collections.emptyList());
@@ -104,6 +109,23 @@ public class InventoryStorageImpl extends CombinedStorage<ItemVariant, SingleSlo
 			return new SidedInventoryStorageImpl(this, direction);
 		} else {
 			return this;
+		}
+	}
+
+	// Boolean is used to prevent allocation. Null values are not allowed by SnapshotParticipant.
+	class MarkDirtyParticipant extends SnapshotParticipant<Boolean> {
+		@Override
+		protected Boolean createSnapshot() {
+			return Boolean.TRUE;
+		}
+
+		@Override
+		protected void readSnapshot(Boolean snapshot) {
+		}
+
+		@Override
+		protected void onFinalCommit() {
+			inventory.markDirty();
 		}
 	}
 }

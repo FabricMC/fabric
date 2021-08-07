@@ -20,9 +20,10 @@ import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 /**
- * A wrapper around a single slot of an inventory
+ * A wrapper around a single slot of an inventory.
  * We must ensure that only one instance of this class exists for every inventory slot,
  * or the transaction logic will not work correctly.
  * This is handled by the Map in InventoryStorageImpl.
@@ -59,9 +60,10 @@ class InventorySlotWrapper extends SingleStackStorage {
 		return Math.min(storage.inventory.getMaxCountPerStack(), variant.getItem().getMaxCount());
 	}
 
+	// We override updateSnapshots to also schedule a markDirty call for the backing inventory.
 	@Override
-	protected void markDirty() {
-		// TODO: aggregate markDirty calls if one call per modified slot becomes a performance bottleneck.
-		storage.inventory.markDirty();
+	public void updateSnapshots(TransactionContext transaction) {
+		storage.markDirtyParticipant.updateSnapshots(transaction);
+		super.updateSnapshots(transaction);
 	}
 }
