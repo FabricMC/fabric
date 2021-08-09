@@ -20,12 +20,12 @@ import net.fabricmc.fabric.impl.client.gametest.FabricGameTestHelperImpl;
 
 public interface FabricGameTestRegistry {
 	/**
-	 * Use in {@link net.minecraft.test.GameTest::structureName} to use an empty 8x8 structure for the test.
+	 * Use in {@link net.minecraft.test.GameTest} structureName to use an empty 8x8 structure for the test.
 	 */
 	String EMPTY_STRUCTURE = "fabric-game-test-api-v1:empty";
 
 	/**
-	 * Register a class to be used as a test suite
+	 * Register a class to be used as a test suite.
 	 *
 	 * @param testClass The test suite class
 	 * @param modid The modid of the suite, used to determine the structure resource namespace

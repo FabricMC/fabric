@@ -43,7 +43,7 @@ public abstract class TestFunctionsMixin {
 		String structureName = "%s:%s".formatted(modId, testCaseName);
 
 		if (!gameTest.structureName().isEmpty()) {
- 			structureName = gameTest.structureName();
+			structureName = gameTest.structureName();
 		}
 
 		TestFunction testFunction = new TestFunction(gameTest.batchId(),

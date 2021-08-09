@@ -41,12 +41,6 @@ public abstract class StructureTestUtilMixin {
 	// Replace the default test structure loading with something that works a bit better for mods.
 	@Inject(at = @At("HEAD"), method = "createStructure(Ljava/lang/String;Lnet/minecraft/server/world/ServerWorld;)Lnet/minecraft/structure/Structure;", cancellable = true)
 	private static void createStructure(String id, ServerWorld world, CallbackInfoReturnable<Structure> cir) {
-		if (id == null) {
-			// No structure for this test
-			cir.setReturnValue(new Structure());
-			return;
-		}
-
 		Identifier baseId = new Identifier(id);
 		Identifier structureId = new Identifier(baseId.getNamespace(), GAMETEST_STRUCTURE_PATH + baseId.getPath() + ".snbt");
 
