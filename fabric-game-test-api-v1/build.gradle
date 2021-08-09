@@ -1,0 +1,23 @@
+archivesBaseName = "fabric-game-test-api-v1"
+version = getSubprojectVersion(project, "1.0.0")
+
+moduleDependencies(project, [
+		'fabric-api-base',
+		'fabric-resource-loader-v0'
+])
+
+
+loom {
+	runs {
+		gametest {
+			server()
+			name = "Game Test"
+			vmArg "-Dfabric-api.gametest.server=true"
+
+			// Specific to fabric api
+			source sourceSets.testmod
+			ideConfigGenerated true
+		}
+	}
+}
+test.dependsOn runGametest
