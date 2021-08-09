@@ -11,8 +11,9 @@ loom {
 	runs {
 		gametest {
 			server()
-			name = "Game Test"
+			name "Game Test"
 			vmArg "-Dfabric-api.gametest.server=true"
+			runDir "build/gametest"
 
 			// Specific to fabric api
 			source sourceSets.testmod
