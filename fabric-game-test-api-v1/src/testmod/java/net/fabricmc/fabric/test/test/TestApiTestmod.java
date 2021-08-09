@@ -1,12 +1,28 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.test.test;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.gametest.FabricGameTestRegistry;
 import net.minecraft.block.Blocks;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
-import net.minecraft.test.TestFunctions;
 import net.minecraft.util.math.BlockPos;
+
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.gametest.v1.FabricGameTestRegistry;
 
 public class TestApiTestmod implements ModInitializer {
 	public static final String MOD_ID = "fabric-game-test-api-v1-testmod";
@@ -17,13 +33,20 @@ public class TestApiTestmod implements ModInitializer {
 	}
 
 	public static class ExampleTestSuite {
+		@GameTest
+		public void diamond(TestContext context) {
+			context.addInstantFinalTask(() ->
+					context.checkBlock(new BlockPos(0, 2, 0), (block) -> block == Blocks.DIAMOND_BLOCK, "Expect block to be diamond")
+			);
+		}
 
-		// You can omit structureName and it will use the method name
-		@GameTest(structureName = "example")
-		public void example(TestContext context) {
-			System.out.println("Hello from an example test");
+		@GameTest(structureName = FabricGameTestRegistry.EMPTY_STRUCTURE)
+		public void noStructure(TestContext context) {
+			context.setBlockState(0, 2, 0, Blocks.DIAMOND_BLOCK);
 
-			context.checkBlock(new BlockPos(0, 0, 0), (block) -> block == Blocks.DIAMOND_BLOCK, "Expect block to be diamond");
+			context.addInstantFinalTask(() ->
+					context.checkBlock(new BlockPos(0, 2, 0), (block) -> block == Blocks.DIAMOND_BLOCK, "Expect block to be diamond")
+			);
 		}
 	}
 }
