@@ -45,19 +45,19 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.level.storage.LevelStorage;
 import net.minecraft.world.level.storage.LevelSummary;
 
-import net.fabricmc.fabric.impl.client.gametest.FabricGameTestHelperImpl;
+import net.fabricmc.fabric.impl.client.gametest.FabricGameTestHelper;
 
 @Mixin(Main.class)
 public class MainMixin {
 	@Redirect(method = "main", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/EulaReader;isEulaAgreedTo()Z"))
 	private static boolean isEulaAgreedTo(EulaReader reader) {
-		return FabricGameTestHelperImpl.ENABLED;
+		return FabricGameTestHelper.ENABLED || reader.isEulaAgreedTo();
 	}
 
 	@Inject(method = "main", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/LevelStorage$Session;readLevelProperties(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/DataPackSettings;)Lnet/minecraft/world/SaveProperties;"))
 	private static void main(String[] args, CallbackInfo info, OptionParser optionParser, OptionSpec optionSpec, OptionSpec optionSpec2, OptionSpec optionSpec3, OptionSpec optionSpec4, OptionSpec optionSpec5, OptionSpec optionSpec6, OptionSpec optionSpec7, OptionSpec optionSpec8, OptionSpec optionSpec9, OptionSpec optionSpec10, OptionSpec optionSpec11, OptionSpec optionSpec12, OptionSpec optionSpec13, OptionSpec optionSpec14, OptionSet optionSet, DynamicRegistryManager.Impl impl, Path path, ServerPropertiesLoader serverPropertiesLoader, Path path2, EulaReader eulaReader, File file, YggdrasilAuthenticationService yggdrasilAuthenticationService, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, String string, LevelStorage levelStorage, LevelStorage.Session session, LevelSummary levelSummary, DataPackSettings dataPackSettings, boolean bl, ResourcePackManager resourcePackManager, DataPackSettings dataPackSettings2, CompletableFuture completableFuture, ServerResourceManager serverResourceManager, RegistryOps registryOps) {
-		if (FabricGameTestHelperImpl.ENABLED) {
-			FabricGameTestHelperImpl.runHeadlessServer(session, resourcePackManager, serverResourceManager, impl);
+		if (FabricGameTestHelper.ENABLED) {
+			FabricGameTestHelper.runHeadlessServer(session, resourcePackManager, serverResourceManager, impl);
 			info.cancel();  // Do not progress in starting the normal dedicated server
 		}
 	}

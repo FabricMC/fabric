@@ -16,21 +16,31 @@
 
 package net.fabricmc.fabric.api.gametest.v1;
 
-import net.fabricmc.fabric.impl.client.gametest.FabricGameTestHelperImpl;
+import java.lang.reflect.Method;
 
-public interface FabricGameTestRegistry {
+import net.minecraft.test.TestContext;
+
+import net.fabricmc.fabric.impl.client.gametest.FabricGameTestHelper;
+
+/**
+ * This interface can be optionally implemented on your test class.
+ */
+public interface FabricGameTest {
 	/**
 	 * Use in {@link net.minecraft.test.GameTest} structureName to use an empty 8x8 structure for the test.
 	 */
 	String EMPTY_STRUCTURE = "fabric-game-test-api-v1:empty";
 
 	/**
-	 * Register a class to be used as a test suite.
+	 * Override this method to implement custom logic to invoke the test method.
+	 * This can be used to run code before or after each test.
+	 * You can also pass in custom objects into the test method if desired.
+	 * The structure will have been placed in the world before this method is invoked.
 	 *
-	 * @param testClass The test suite class
-	 * @param modid The modid of the suite, used to determine the structure resource namespace
+	 * @param context The vanilla test context
+	 * @param method The test method to invoke
 	 */
-	static void register(Class<?> testClass, String modid) {
-		FabricGameTestHelperImpl.register(testClass, modid);
+	default void invokeTestMethod(TestContext context, Method method) {
+		FabricGameTestHelper.invokeTestMethod(context, method, this);
 	}
 }

@@ -28,7 +28,8 @@ import net.minecraft.test.StructureTestUtil;
 import net.minecraft.test.TestFunction;
 import net.minecraft.test.TestFunctions;
 
-import net.fabricmc.fabric.impl.client.gametest.FabricGameTestHelperImpl;
+import net.fabricmc.fabric.impl.client.gametest.FabricGameTestHelper;
+import net.fabricmc.fabric.impl.client.gametest.FabricGameTestModInitializer;
 
 @Mixin(TestFunctions.class)
 public abstract class TestFunctionsMixin {
@@ -38,8 +39,7 @@ public abstract class TestFunctionsMixin {
 		String testSuiteName = method.getDeclaringClass().getSimpleName().toLowerCase();
 		String testCaseName = testSuiteName + "." + method.getName().toLowerCase();
 
-		String modId = FabricGameTestHelperImpl.getModIdForTestClass(method.getDeclaringClass());
-
+		String modId = FabricGameTestModInitializer.getModIdForTestClass(method.getDeclaringClass());
 		String structureName = "%s:%s".formatted(modId, testCaseName);
 
 		if (!gameTest.structureName().isEmpty()) {
@@ -55,7 +55,7 @@ public abstract class TestFunctionsMixin {
 				gameTest.required(),
 				gameTest.requiredSuccesses(),
 				gameTest.maxAttempts(),
-				FabricGameTestHelperImpl.invokeTestMethod(method)
+				FabricGameTestHelper.getTestMethodInvoker(method)
 		);
 
 		cir.setReturnValue(testFunction);

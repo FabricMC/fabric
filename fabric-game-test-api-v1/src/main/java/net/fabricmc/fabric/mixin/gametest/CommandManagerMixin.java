@@ -37,7 +37,7 @@ public abstract class CommandManagerMixin {
 
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/command/WorldBorderCommand;register(Lcom/mojang/brigadier/CommandDispatcher;)V", shift = At.Shift.AFTER))
 	private void construct(CommandManager.RegistrationEnvironment environment, CallbackInfo info) {
-		// Will be registered by vanilla if enabled.
+		// Registered by vanilla when isDevelopment is enabled.
 		if (!SharedConstants.isDevelopment) {
 			TestCommand.register(this.dispatcher);
 		}

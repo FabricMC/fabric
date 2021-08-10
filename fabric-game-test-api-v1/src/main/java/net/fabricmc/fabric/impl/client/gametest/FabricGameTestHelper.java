@@ -16,14 +16,15 @@
 
 package net.fabricmc.fabric.impl.client.gametest;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ServerResourceManager;
@@ -38,15 +39,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.level.storage.LevelStorage;
 
+import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.fabricmc.loader.FabricLoader;
 
-public class FabricGameTestHelperImpl {
+@ApiStatus.Internal
+public final class FabricGameTestHelper {
 	public static final boolean ENABLED = Boolean.getBoolean("fabric-api.gametest.server");
 
 	private static final Logger LOGGER = LogManager.getLogger();
-	private static final Map<Class<?>, String> GAME_TEST_IDS = new HashMap<>();
 
-	private FabricGameTestHelperImpl() {
+	private FabricGameTestHelper() {
 	}
 
 	public static void runHeadlessServer(LevelStorage.Session session, ResourcePackManager resourcePackManager, ServerResourceManager serverResourceManager, DynamicRegistryManager.Impl registryManager) {
@@ -58,31 +60,43 @@ public class FabricGameTestHelperImpl {
 		});
 	}
 
-	public static void register(Class<?> testClass, String modid) {
-		GAME_TEST_IDS.put(testClass, modid);
-		TestFunctions.register(testClass);
-	}
-
-	public static String getModIdForTestClass(Class<?> testClass) {
-		if (!GAME_TEST_IDS.containsKey(testClass)) {
-			throw new UnsupportedOperationException("Use FabricGameTestRegistry.register to register your test class");
-		}
-
-		return GAME_TEST_IDS.get(testClass);
-	}
-
 	// Moved out to here as I expect we will want a FabricTestContext, or a way for a mod to provide their own context
 	// We can also have better error handling.
-	public static Consumer<TestContext> invokeTestMethod(Method method) {
+	public static Consumer<TestContext> getTestMethodInvoker(Method method) {
 		return testContext -> {
+			Class<?> testClass = method.getDeclaringClass();
+
+			Constructor<?> constructor;
+
 			try {
-				Object object = method.getDeclaringClass().getConstructor().newInstance();
-				method.invoke(object, testContext);
-			} catch (Exception e) {
-				// TODO we can have much better error handling
-				throw new RuntimeException(e);
+				constructor = testClass.getConstructor();
+			} catch (NoSuchMethodException e) {
+				throw new RuntimeException("Test class (%s) provided by (%s) must have a public default or no args constructor".formatted(testClass.getSimpleName(), FabricGameTestModInitializer.getModIdForTestClass(testClass)));
+			}
+
+			Object testObject;
+
+			try {
+				testObject = constructor.newInstance();
+			} catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+				throw new RuntimeException("Failed to create instance of test class (%s)".formatted(testClass.getCanonicalName()), e);
+			}
+
+			if (testClass.isAssignableFrom(FabricGameTest.class)) {
+				FabricGameTest fabricGameTest = (FabricGameTest) testObject;
+				fabricGameTest.invokeTestMethod(testContext, method);
+			} else {
+				invokeTestMethod(testContext, method, testObject);
 			}
 		};
+	}
+
+	public static void invokeTestMethod(TestContext testContext, Method method, Object testObject) {
+		try {
+			method.invoke(testObject, testContext);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			throw new RuntimeException("Failed to invoke test method (%s) in (%s)".formatted(method.getName(), method.getDeclaringClass().getCanonicalName()), e);
+		}
 	}
 
 	private static Collection<GameTestBatch> getBatches() {

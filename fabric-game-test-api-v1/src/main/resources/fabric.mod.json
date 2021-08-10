@@ -15,6 +15,11 @@
   "authors": [
     "FabricMC"
   ],
+  "entrypoints": {
+    "main" : [
+      "net.fabricmc.fabric.impl.client.gametest.FabricGameTestModInitializer"
+    ]
+  },
   "depends": {
     "fabric-resource-loader-v0": "*"
   },
