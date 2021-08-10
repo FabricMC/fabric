@@ -1,5 +1,5 @@
 archivesBaseName = "fabric-transfer-api-v1"
-version = getSubprojectVersion(project, "1.1.0-pre.05")
+version = getSubprojectVersion(project, "1.1.0-pre.06")
 
 moduleDependencies(project, [
 	'fabric-api-base',
