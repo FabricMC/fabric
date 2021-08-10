@@ -329,7 +329,7 @@ sourceSets {
 
 // These modules are not included in the fat jar, maven will resolve them via the pom.
 def devOnlyModules = [
-		"fabric-game-test-api-v1"
+		"fabric-gametest-api-v1"
 ]
 
 dependencies {
