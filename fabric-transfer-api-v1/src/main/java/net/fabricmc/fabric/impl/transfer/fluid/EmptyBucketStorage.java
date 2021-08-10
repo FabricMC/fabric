@@ -24,10 +24,10 @@ import net.minecraft.item.Items;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.base.EmptyFluidView;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.BlankVariantView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
@@ -67,6 +67,6 @@ public class EmptyBucketStorage implements InsertionOnlyStorage<FluidVariant> {
 
 	@Override
 	public Iterator<StorageView<FluidVariant>> iterator(TransactionContext transaction) {
-		return SingleViewIterator.create(new EmptyFluidView(FluidConstants.BUCKET), transaction);
+		return SingleViewIterator.create(new BlankVariantView<>(FluidVariant.blank(), FluidConstants.BUCKET), transaction);
 	}
 }

@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.transfer.v1.fluid.base;
+package net.fabricmc.fabric.api.transfer.v1.storage.base;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 /**
- * A fluid variant storage view that is always empty, but may have a nonzero capacity.
+ * A transfer variant storage view that contains a blank variant all the time (it's always empty), but may have a nonzero capacity.
  * This can be used to give capacity hints even if the storage is empty.
  *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
@@ -32,37 +31,45 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  */
 @ApiStatus.Experimental
 @Deprecated
-public class EmptyFluidView implements StorageView<FluidVariant> {
+public class BlankVariantView<T extends TransferVariant<?>> implements StorageView<T> {
+	private final T blankVariant;
 	private final long capacity;
 
-	public EmptyFluidView(long capacity) {
-		StoragePreconditions.notNegative(capacity);
+	/**
+	 * Create a new instance.
+	 * @throws IllegalArgumentException If the passed {@code blankVariant} is not blank.
+	 */
+	public BlankVariantView(T blankVariant, long capacity) {
+		if (!blankVariant.isBlank()) {
+			throw new IllegalArgumentException("Expected a blank variant, received " + blankVariant);
+		}
 
+		this.blankVariant = blankVariant;
 		this.capacity = capacity;
 	}
 
 	@Override
-	public long extract(FluidVariant resource, long maxAmount, TransactionContext transaction) {
+	public long extract(T resource, long maxAmount, TransactionContext transaction) {
 		return 0; // can't extract
 	}
 
 	@Override
 	public boolean isResourceBlank() {
-		return true; // always blank
+		return true;
 	}
 
 	@Override
-	public FluidVariant getResource() {
-		return FluidVariant.blank(); // always blank
+	public T getResource() {
+		return blankVariant;
 	}
 
 	@Override
 	public long getAmount() {
-		return 0; // always 0
+		return 0;
 	}
 
 	@Override
 	public long getCapacity() {
-		return capacity; // always capacity
+		return capacity;
 	}
 }
