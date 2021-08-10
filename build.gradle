@@ -327,11 +327,19 @@ sourceSets {
 	testmod
 }
 
+// These modules are not included in the fat jar, maven will resolve them via the pom.
+def devOnlyModules = [
+		"fabric-game-test-api-v1"
+]
+
 dependencies {
 	afterEvaluate {
 		subprojects.each {
 			api project(path: ":${it.name}", configuration: "dev")
-			include project("${it.name}:")
+
+			if (!(it.name in devOnlyModules)) {
+				include project("${it.name}:")
+			}
 
 			testmodImplementation project("${it.name}:").sourceSets.testmod.output
 		}

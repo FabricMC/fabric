@@ -12,7 +12,7 @@ loom {
 		gametest {
 			server()
 			name "Game Test"
-			vmArg "-Dfabric-api.gametest.server=true"
+			vmArg "-Dfabric-api.gametest=true"
 			runDir "build/gametest"
 
 			// Specific to fabric api

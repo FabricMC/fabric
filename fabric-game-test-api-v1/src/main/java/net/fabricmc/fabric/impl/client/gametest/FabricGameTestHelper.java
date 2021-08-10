@@ -44,7 +44,7 @@ import net.fabricmc.loader.FabricLoader;
 
 @ApiStatus.Internal
 public final class FabricGameTestHelper {
-	public static final boolean ENABLED = Boolean.getBoolean("fabric-api.gametest.server");
+	public static final boolean ENABLED = System.getProperty("fabric-api.gametest") != null;
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
