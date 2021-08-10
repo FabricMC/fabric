@@ -77,7 +77,7 @@ public final class StorageUtil {
 
 		long totalMoved = 0;
 
-		try (Transaction iterationTransaction = (transaction == null ? Transaction.openOuter() : transaction.openNested())) {
+		try (Transaction iterationTransaction = Transaction.openNested(transaction)) {
 			for (StorageView<T> view : from.iterable(iterationTransaction)) {
 				if (view.isResourceBlank()) continue;
 				T resource = view.getResource();
@@ -158,7 +158,7 @@ public final class StorageUtil {
 	public static <T> T findExtractableResource(@Nullable Storage<T> storage, @Nullable TransactionContext transaction) {
 		if (storage == null) return null;
 
-		try (Transaction nested = transaction == null ? Transaction.openOuter() : transaction.openNested()) {
+		try (Transaction nested = Transaction.openNested(transaction)) {
 			for (StorageView<T> view : storage.iterable(nested)) {
 				// Extract below could change the resource, so we have to query it before extracting.
 				T resource = view.getResource();
