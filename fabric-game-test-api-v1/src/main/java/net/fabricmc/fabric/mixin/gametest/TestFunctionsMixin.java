@@ -28,8 +28,8 @@ import net.minecraft.test.StructureTestUtil;
 import net.minecraft.test.TestFunction;
 import net.minecraft.test.TestFunctions;
 
-import net.fabricmc.fabric.impl.client.gametest.FabricGameTestHelper;
-import net.fabricmc.fabric.impl.client.gametest.FabricGameTestModInitializer;
+import net.fabricmc.fabric.impl.gametest.FabricGameTestHelper;
+import net.fabricmc.fabric.impl.gametest.FabricGameTestModInitializer;
 
 @Mixin(TestFunctions.class)
 public abstract class TestFunctionsMixin {

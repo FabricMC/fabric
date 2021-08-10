@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 
 import net.minecraft.test.TestContext;
 
-import net.fabricmc.fabric.impl.client.gametest.FabricGameTestHelper;
+import net.fabricmc.fabric.impl.gametest.FabricGameTestHelper;
 
 /**
  * This interface can be optionally implemented on your test class.

@@ -45,7 +45,7 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.level.storage.LevelStorage;
 import net.minecraft.world.level.storage.LevelSummary;
 
-import net.fabricmc.fabric.impl.client.gametest.FabricGameTestHelper;
+import net.fabricmc.fabric.impl.gametest.FabricGameTestHelper;
 
 @Mixin(Main.class)
 public class MainMixin {

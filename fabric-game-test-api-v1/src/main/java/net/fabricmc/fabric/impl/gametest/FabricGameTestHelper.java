@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.gametest;
+package net.fabricmc.fabric.impl.gametest;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
