@@ -1,4 +1,4 @@
-archivesBaseName = "fabric-game-test-api-v1"
+archivesBaseName = "fabric-gametest-api-v1"
 version = getSubprojectVersion(project, "1.0.0")
 
 moduleDependencies(project, [
@@ -6,13 +6,12 @@ moduleDependencies(project, [
 		'fabric-resource-loader-v0'
 ])
 
-
 loom {
 	runs {
 		gametest {
 			server()
 			name "Game Test"
-			vmArg "-Dfabric-api.gametest=true"
+			vmArg "-Dfabric-api.gametest"
 			runDir "build/gametest"
 
 			// Specific to fabric api

@@ -29,7 +29,7 @@ public interface FabricGameTest {
 	/**
 	 * Use in {@link net.minecraft.test.GameTest} structureName to use an empty 8x8 structure for the test.
 	 */
-	String EMPTY_STRUCTURE = "fabric-game-test-api-v1:empty";
+	String EMPTY_STRUCTURE = "fabric-gametest-api-v1:empty";
 
 	/**
 	 * Override this method to implement custom logic to invoke the test method.

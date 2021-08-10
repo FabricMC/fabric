@@ -32,7 +32,7 @@ import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
 @ApiStatus.Internal
 public final class FabricGameTestModInitializer implements ModInitializer {
-	private static final String ENTRYPOINT_KEY = "fabric-game-test";
+	private static final String ENTRYPOINT_KEY = "fabric-gametest";
 	private static final Map<Class<?>, String> GAME_TEST_IDS = new HashMap<>();
 	private static final Logger LOGGER = LogManager.getLogger();
 

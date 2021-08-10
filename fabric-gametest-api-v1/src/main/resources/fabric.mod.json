@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-game-test-api-v1",
+  "id": "fabric-gametest-api-v1",
   "name": "Fabric Game Test API (v1)",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-game-test-api-v1/icon.png",
+  "icon": "assets/fabric-gametest-api-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -25,7 +25,7 @@
   },
   "description": "Allows registration of custom game tests.",
   "mixins": [
-    "fabric-game-test-api-v1.mixins.json"
+    "fabric-gametest-api-v1.mixins.json"
   ],
   "custom": {
     "fabric-api:module-lifecycle": "stable"
