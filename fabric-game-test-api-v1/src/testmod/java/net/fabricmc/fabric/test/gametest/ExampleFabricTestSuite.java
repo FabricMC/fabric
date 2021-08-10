@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.test;
+package net.fabricmc.fabric.test.gametest;
 
 import java.lang.reflect.Method;
 

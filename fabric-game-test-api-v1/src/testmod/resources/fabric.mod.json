@@ -7,8 +7,8 @@
   "license": "Apache-2.0",
   "entrypoints": {
     "fabric-game-test" : [
-      "net.fabricmc.fabric.test.test.ExampleFabricTestSuite",
-      "net.fabricmc.fabric.test.test.ExampleTestSuite"
+      "net.fabricmc.fabric.test.gametest.ExampleFabricTestSuite",
+      "net.fabricmc.fabric.test.gametest.ExampleTestSuite"
     ]
   }
 }
