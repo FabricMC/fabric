@@ -35,7 +35,7 @@ public class ItemVariantImpl implements ItemVariant {
 	public static ItemVariant of(Item item, @Nullable NbtCompound tag) {
 		Objects.requireNonNull(item, "Item may not be null.");
 
-		// Only tag-less or empty item keys are cached for now.
+		// Only tag-less or empty item variants are cached for now.
 		if (tag == null || item == Items.AIR) {
 			return ((ItemVariantCache) item).fabric_getCachedItemVariant();
 		} else {

@@ -70,32 +70,30 @@ public interface ItemVariant extends TransferVariant<Item> {
 	}
 
 	/**
-	 * Return true if the item and tag of this key match those of the passed stack,
-	 * and false otherwise.
+	 * Return true if the item and tag of this variant match those of the passed stack, and false otherwise.
 	 */
 	default boolean matches(ItemStack stack) {
 		return isOf(stack.getItem()) && nbtMatches(stack.getTag());
 	}
 
 	/**
-	 * Return the item of this key.
+	 * Return the item of this variant.
 	 */
 	default Item getItem() {
 		return getObject();
 	}
 
 	/**
-	 * Create a new item stack with count 1 from this key.
+	 * Create a new item stack with count 1 from this variant.
 	 */
 	default ItemStack toStack() {
 		return toStack(1);
 	}
 
 	/**
-	 * Create a new item stack from this key.
+	 * Create a new item stack from this variant.
 	 *
-	 * @param count The count of the returned stack. It may lead to counts higher
-	 *              than maximum stack size.
+	 * @param count The count of the returned stack. It may lead to counts higher than maximum stack size.
 	 */
 	default ItemStack toStack(int count) {
 		if (isBlank()) return ItemStack.EMPTY;
@@ -105,16 +103,16 @@ public interface ItemVariant extends TransferVariant<Item> {
 	}
 
 	/**
-	 * Deserialize a key from an NBT compound tag, assuming it was serialized using
+	 * Deserialize a variant from an NBT compound tag, assuming it was serialized using
 	 * {@link #toNbt}. If an error occurs during deserialization, it will be logged
-	 * with the DEBUG level, and a blank key will be returned.
+	 * with the DEBUG level, and a blank variant will be returned.
 	 */
 	static ItemVariant fromNbt(NbtCompound nbt) {
 		return ItemVariantImpl.fromNbt(nbt);
 	}
 
 	/**
-	 * Write a key from a packet byte buffer, assuming it was serialized using
+	 * Write a variant from a packet byte buffer, assuming it was serialized using
 	 * {@link #toPacket}.
 	 */
 	static ItemVariant fromPacket(PacketByteBuf buf) {
