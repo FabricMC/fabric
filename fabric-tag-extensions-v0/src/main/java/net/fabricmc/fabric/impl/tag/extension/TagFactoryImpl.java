@@ -43,7 +43,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.tag.TagFactory;
-import net.fabricmc.fabric.mixin.tag.extension.DynamicRegistryManagerAccess;
+import net.fabricmc.fabric.mixin.tag.extension.DynamicRegistryManagerAccessor;
 
 @SuppressWarnings("ClassCanBeRecord")
 public final class TagFactoryImpl<T> implements TagFactory<T> {
@@ -70,7 +70,7 @@ public final class TagFactoryImpl<T> implements TagFactory<T> {
 			TAG_LISTS.put(registryKey, tagList);
 
 			// Check whether the registry dynamic.
-			if (DynamicRegistryManagerAccess.getInfos().containsKey(registryKey)) {
+			if (DynamicRegistryManagerAccessor.getInfos().containsKey(registryKey)) {
 				DYNAMICS.add(tagList);
 			}
 		}
