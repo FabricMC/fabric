@@ -9,5 +9,4 @@ moduleDependencies(project, [
 
 dependencies {
 	testmodImplementation project(path: ':fabric-lifecycle-events-v1', configuration: 'dev')
-	testmodImplementation project(path: ':fabric-object-builder-api-v1', configuration: 'dev')
 }
