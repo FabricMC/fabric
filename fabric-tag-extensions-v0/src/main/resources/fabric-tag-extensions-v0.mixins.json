@@ -3,10 +3,14 @@
   "package": "net.fabricmc.fabric.mixin.tag.extension",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "AccessorFluidTags",
+    "AccessorDynamicRegistryManager",
+    "MixinMinecraftServer",
     "MixinObjectBuilder",
+    "MixinRequiredTagListRegistry",
+    "MixinTagBuilder",
     "MixinTagImpl",
-    "MixinTagBuilder"
+    "MixinTagManager",
+    "MixinTagManagerLoader"
   ],
   "injectors": {
     "defaultRequire": 1

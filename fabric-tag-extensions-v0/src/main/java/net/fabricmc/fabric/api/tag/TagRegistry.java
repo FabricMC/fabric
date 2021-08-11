@@ -19,22 +19,21 @@ package net.fabricmc.fabric.api.tag;
 import java.util.function.Supplier;
 
 import net.minecraft.block.Block;
-import net.minecraft.tag.TagGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.EntityTypeTags;
-import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagGroup;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.tag.extension.TagDelegate;
-import net.fabricmc.fabric.mixin.tag.extension.AccessorFluidTags;
 
 /**
  * Helper methods for registering Tags.
+ *
+ * @deprecated use {@link TagFactory} instead.
  */
+@Deprecated
 public final class TagRegistry {
 	private TagRegistry() { }
 
@@ -42,19 +41,35 @@ public final class TagRegistry {
 		return new TagDelegate<>(id, containerSupplier);
 	}
 
+	/**
+	 * @deprecated use {@link TagFactory#BLOCK}
+	 */
+	@Deprecated
 	public static Tag<Block> block(Identifier id) {
-		return create(id, BlockTags::getTagGroup);
+		return TagFactory.BLOCK.create(id);
 	}
 
+	/**
+	 * @deprecated use {@link TagFactory#ENTITY_TYPE}
+	 */
+	@Deprecated
 	public static Tag<EntityType<?>> entityType(Identifier id) {
-		return create(id, EntityTypeTags::getTagGroup);
+		return TagFactory.ENTITY_TYPE.create(id);
 	}
 
+	/**
+	 * @deprecated use {@link TagFactory#FLUID}
+	 */
+	@Deprecated
 	public static Tag<Fluid> fluid(Identifier id) {
-		return create(id, () -> AccessorFluidTags.getRequiredTags().getGroup());
+		return TagFactory.FLUID.create(id);
 	}
 
+	/**
+	 * @deprecated use {@link TagFactory#ITEM}
+	 */
+	@Deprecated
 	public static Tag<Item> item(Identifier id) {
-		return create(id, ItemTags::getTagGroup);
+		return TagFactory.ITEM.create(id);
 	}
 }

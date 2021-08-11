@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.tag.extension;
+package net.fabricmc.fabric.impl.tag.extension;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import net.minecraft.tag.TagGroup;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.tag.FluidTags;
-import net.minecraft.tag.RequiredTagList;
-
-@Mixin(FluidTags.class)
-public interface AccessorFluidTags {
-	@Accessor("REQUIRED_TAGS")
-	static RequiredTagList<Fluid> getRequiredTags() {
-		throw new UnsupportedOperationException();
-	}
+public interface FabricTagManagerHooks {
+	void fabric_addTagGroup(RegistryKey<? extends Registry<?>> registryKey, TagGroup<?> tagGroup);
 }

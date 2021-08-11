@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-tag-extensions-v0-testmod",
+  "name": "Fabric Tag Extensions (v0) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-tag-extensions-v0": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.tag.extension.TagExtensionTest"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.tag.extension.TagExtensionTestClient"
+    ]
+  }
+}
