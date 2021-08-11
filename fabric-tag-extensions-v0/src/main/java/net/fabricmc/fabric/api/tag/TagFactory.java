@@ -32,6 +32,7 @@ import net.minecraft.tag.TagGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.event.GameEvent;
 
 import net.fabricmc.fabric.impl.tag.extension.TagFactoryImpl;
@@ -45,6 +46,7 @@ public interface TagFactory<T> {
 	TagFactory<Fluid> FLUID = of(FluidTags::getTagGroup);
 	TagFactory<GameEvent> GAME_EVENT = of(GameEventTags::getTagGroup);
 	TagFactory<EntityType<?>> ENTITY_TYPE = of(EntityTypeTags::getTagGroup);
+	TagFactory<Biome> BIOME = of(Registry.BIOME_KEY, "tags/biomes");
 
 	/**
 	 * Create a new tag factory for specified registry.
