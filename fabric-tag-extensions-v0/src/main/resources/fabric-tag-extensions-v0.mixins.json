@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.tag.extension",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "AccessorDynamicRegistryManager",
+    "DynamicRegistryManagerAccess",
     "MixinMinecraftServer",
     "MixinObjectBuilder",
     "MixinRequiredTagListRegistry",

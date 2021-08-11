@@ -26,7 +26,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 
 @Mixin(DynamicRegistryManager.class)
-public interface AccessorDynamicRegistryManager {
+public interface DynamicRegistryManagerAccess {
 	@Accessor("INFOS")
 	static Map<RegistryKey<? extends Registry<?>>, ?> getInfos() {
 		throw new AssertionError();
