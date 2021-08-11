@@ -62,5 +62,5 @@ public interface TagFactory<T> {
 		return TagFactoryImpl.of(tagGroupSupplier);
 	}
 
-	Tag<T> create(Identifier id);
+	Tag.Identified<T> create(Identifier id);
 }

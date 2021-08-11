@@ -100,7 +100,7 @@ public final class TagFactoryImpl<T> implements TagFactory<T> {
 	}
 
 	@Override
-	public Tag<T> create(Identifier id) {
+	public Tag.Identified<T> create(Identifier id) {
 		return new TagDelegate<>(id, tagGroupSupplier);
 	}
 }
