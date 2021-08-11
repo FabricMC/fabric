@@ -33,8 +33,7 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.tag.TagFactory;
 
 public class TagExtensionTest implements ModInitializer {
-	static final TagFactory<Biome> BIOME_TAGS = TagFactory.of(Registry.BIOME_KEY, "tags/biomes");
-	static final Tag<Biome> FACTORY_TEST = BIOME_TAGS.create(new Identifier("fabric-tag-extensions-v0-testmod:factory_test"));
+	static final Tag<Biome> FACTORY_TEST = TagFactory.BIOME.create(new Identifier("fabric-tag-extensions-v0-testmod:factory_test"));
 
 	@Override
 	public void onInitialize() {
