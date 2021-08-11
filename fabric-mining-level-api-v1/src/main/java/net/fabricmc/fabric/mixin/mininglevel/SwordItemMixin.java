@@ -54,7 +54,6 @@ abstract class SwordItemMixin extends ToolItem {
 	private void onGetMiningSpeedMultiplier(ItemStack stack, BlockState state, CallbackInfoReturnable<Float> info) {
 		if (info.getReturnValueF() == 1.0f) { // if not caught by vanilla checks
 			if (state.isIn(FabricMineableTags.SWORD_MINEABLE)) { // mimics MiningToolItem.getMiningSpeedMultiplier
-				// TODO: Support for dynamic tools
 				info.setReturnValue(getMaterial().getMiningSpeedMultiplier());
 			}
 		}

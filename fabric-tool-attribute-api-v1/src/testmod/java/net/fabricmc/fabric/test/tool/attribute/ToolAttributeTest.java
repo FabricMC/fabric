@@ -49,7 +49,6 @@ import net.fabricmc.fabric.test.tool.attribute.item.TestNullableItem;
 public class ToolAttributeTest implements ModInitializer {
 	private static final float DEFAULT_BREAK_SPEED = 1.0F;
 	private static final float TOOL_BREAK_SPEED = 10.0F;
-	private static final float SHEARS_BREAK_SPEED = 5.0F;
 	// A custom tool type, taters
 	private static final Tag<Item> TATER = TagRegistry.item(new Identifier("fabric-tool-attribute-api-v1-testmod", "taters"));
 
@@ -59,6 +58,7 @@ public class ToolAttributeTest implements ModInitializer {
 	Block stoneBlock;
 	Item testShovel;
 	Item testPickaxe;
+	Item testSword;
 
 	Item testStoneLevelTater;
 	Item testStoneDynamicLevelTater;
@@ -88,6 +88,8 @@ public class ToolAttributeTest implements ModInitializer {
 		testShovel = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_shovel"), new TestTool(new Item.Settings(), FabricToolTags.SHOVELS, 2));
 		//Register a custom pickaxe that has a mining level of 2 (iron) dynamically.
 		testPickaxe = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_pickaxe"), new TestTool(new Item.Settings(), FabricToolTags.PICKAXES, 2));
+		//Register a custom sword that has a mining level of 2 (iron) dynamically.
+		testSword = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_sword"), new TestTool(new Item.Settings(), FabricToolTags.SWORDS, 2));
 		// Register a block that requires a shovel that is as strong or stronger than an iron one.
 		gravelBlock = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_gravel_block"),
 				new Block(FabricBlockSettings.of(new FabricMaterialBuilder(MapColor.PALE_YELLOW).build(), MapColor.STONE_GRAY)
@@ -204,12 +206,12 @@ public class ToolAttributeTest implements ModInitializer {
 		testToolOnBlock(new ItemStack(Items.IRON_SHOVEL), taterEffectiveBlock, false, DEFAULT_BREAK_SPEED);
 
 		//Test vanilla tools on blocks
-		testToolOnBlock(new ItemStack(Items.SHEARS), needsShears, true, SHEARS_BREAK_SPEED);
-		testToolOnBlock(new ItemStack(Items.IRON_SWORD), needsSword, true, TOOL_BREAK_SPEED);
-		testToolOnBlock(new ItemStack(Items.IRON_AXE), needsAxe, true, TOOL_BREAK_SPEED);
-		testToolOnBlock(new ItemStack(Items.IRON_PICKAXE), needsPickaxe, true, TOOL_BREAK_SPEED);
-		testToolOnBlock(new ItemStack(Items.IRON_HOE), needsHoe, true, TOOL_BREAK_SPEED);
-		testToolOnBlock(new ItemStack(Items.IRON_SHOVEL), needsShovel, true, TOOL_BREAK_SPEED);
+		testToolOnBlock(new ItemStack(Items.SHEARS), needsShears, true, DEFAULT_BREAK_SPEED);
+		testToolOnBlock(new ItemStack(Items.IRON_SWORD), needsSword, true, ToolMaterials.IRON.getMiningSpeedMultiplier());
+		testToolOnBlock(new ItemStack(Items.IRON_AXE), needsAxe, true, ToolMaterials.IRON.getMiningSpeedMultiplier());
+		testToolOnBlock(new ItemStack(Items.IRON_PICKAXE), needsPickaxe, true, ToolMaterials.IRON.getMiningSpeedMultiplier());
+		testToolOnBlock(new ItemStack(Items.IRON_HOE), needsHoe, true, ToolMaterials.IRON.getMiningSpeedMultiplier());
+		testToolOnBlock(new ItemStack(Items.IRON_SHOVEL), needsShovel, true, ToolMaterials.IRON.getMiningSpeedMultiplier());
 
 		//Test fake tools on corresponding blocks
 		testToolOnBlock(new ItemStack(fakeShears), needsShears, true, DEFAULT_BREAK_SPEED);
