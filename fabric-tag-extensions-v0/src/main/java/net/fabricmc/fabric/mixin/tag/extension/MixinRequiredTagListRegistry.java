@@ -34,8 +34,7 @@ public class MixinRequiredTagListRegistry {
 	@Inject(method = "getBuiltinTags", at = @At("TAIL"), cancellable = true)
 	private static void getBuiltinTags(CallbackInfoReturnable<Set<RequiredTagList<?>>> cir) {
 		// Add tag lists registered on fabric to the map.
-		Set<RequiredTagList<?>> set = new HashSet<>();
-		set.addAll(cir.getReturnValue());
+		Set<RequiredTagList<?>> set = new HashSet<>(cir.getReturnValue());
 		set.addAll(TagFactoryImpl.TAG_LISTS.values());
 		cir.setReturnValue(set);
 	}
