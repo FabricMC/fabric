@@ -49,6 +49,7 @@ import net.fabricmc.fabric.test.tool.attribute.item.TestNullableItem;
 public class ToolAttributeTest implements ModInitializer {
 	private static final float DEFAULT_BREAK_SPEED = 1.0F;
 	private static final float TOOL_BREAK_SPEED = 10.0F;
+	private static final float SHEARS_BREAK_SPEED = 5.0F;
 	// A custom tool type, taters
 	private static final Tag<Item> TATER = TagRegistry.item(new Identifier("fabric-tool-attribute-api-v1-testmod", "taters"));
 
@@ -64,6 +65,14 @@ public class ToolAttributeTest implements ModInitializer {
 	Item testDiamondLevelTater;
 	Item testDiamondDynamicLevelTater;
 	Block taterEffectiveBlock;
+
+	// Simple blocks that only need a tool without a specific mining level (legacy technique using block settings)
+	Block needsShears;
+	Block needsSword;
+	Block needsPickaxe;
+	Block needsAxe;
+	Block needsHoe;
+	Block needsShovel;
 
 	// These items are only tagged, but are not actual ToolItems or DynamicAttributeTools.
 	Item fakeShears;
@@ -122,6 +131,13 @@ public class ToolAttributeTest implements ModInitializer {
 		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "cancel_item"), new TestDynamicCancelItem(new Item.Settings()));
 		// Test parameter nullability
 		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "null_test"), new TestNullableItem(new Item.Settings()));
+
+		needsShears = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_shears"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1).breakByTool(FabricToolTags.SHEARS)));
+		needsSword = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_sword"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1).breakByTool(FabricToolTags.SWORDS)));
+		needsPickaxe = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_pickaxe"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1).breakByTool(FabricToolTags.PICKAXES)));
+		needsAxe = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_axe"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1).breakByTool(FabricToolTags.AXES)));
+		needsHoe = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_hoe"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1).breakByTool(FabricToolTags.HOES)));
+		needsShovel = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_shovel"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1).breakByTool(FabricToolTags.SHOVELS)));
 
 		// "Fake" tools, see explanation above
 		fakeShears = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "fake_shears"), new Item(new Item.Settings()));
@@ -186,6 +202,22 @@ public class ToolAttributeTest implements ModInitializer {
 		testToolOnBlock(new ItemStack(testShovel), taterEffectiveBlock, false, DEFAULT_BREAK_SPEED);
 		testToolOnBlock(new ItemStack(Items.IRON_PICKAXE), taterEffectiveBlock, false, DEFAULT_BREAK_SPEED);
 		testToolOnBlock(new ItemStack(Items.IRON_SHOVEL), taterEffectiveBlock, false, DEFAULT_BREAK_SPEED);
+
+		//Test vanilla tools on blocks
+		testToolOnBlock(new ItemStack(Items.SHEARS), needsShears, true, SHEARS_BREAK_SPEED);
+		testToolOnBlock(new ItemStack(Items.IRON_SWORD), needsSword, true, TOOL_BREAK_SPEED);
+		testToolOnBlock(new ItemStack(Items.IRON_AXE), needsAxe, true, TOOL_BREAK_SPEED);
+		testToolOnBlock(new ItemStack(Items.IRON_PICKAXE), needsPickaxe, true, TOOL_BREAK_SPEED);
+		testToolOnBlock(new ItemStack(Items.IRON_HOE), needsHoe, true, TOOL_BREAK_SPEED);
+		testToolOnBlock(new ItemStack(Items.IRON_SHOVEL), needsShovel, true, TOOL_BREAK_SPEED);
+
+		//Test fake tools on corresponding blocks
+		testToolOnBlock(new ItemStack(fakeShears), needsShears, true, DEFAULT_BREAK_SPEED);
+		testToolOnBlock(new ItemStack(fakeSword), needsSword, true, DEFAULT_BREAK_SPEED);
+		testToolOnBlock(new ItemStack(fakeAxe), needsAxe, true, DEFAULT_BREAK_SPEED);
+		testToolOnBlock(new ItemStack(fakePickaxe), needsPickaxe, true, DEFAULT_BREAK_SPEED);
+		testToolOnBlock(new ItemStack(fakeHoe), needsHoe, true, DEFAULT_BREAK_SPEED);
+		testToolOnBlock(new ItemStack(fakeShovel), needsShovel, true, DEFAULT_BREAK_SPEED);
 	}
 
 	private void testToolOnBlock(ItemStack item, Block block, boolean inEffective, float inSpeed) {

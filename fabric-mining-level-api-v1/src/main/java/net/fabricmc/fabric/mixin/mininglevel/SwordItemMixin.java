@@ -42,7 +42,7 @@ abstract class SwordItemMixin extends ToolItem {
 	@Inject(method = "isSuitableFor", at = @At("HEAD"), cancellable = true)
 	private void onIsSuitableFor(BlockState state, CallbackInfoReturnable<Boolean> info) {
 		if (state.isIn(FabricMineableTags.SWORD_MINEABLE)) {
-			int miningLevel = getMaterial().getMiningLevel(); // TODO: Support for dynamic tools
+			int miningLevel = getMaterial().getMiningLevel();
 
 			if (miningLevel >= MiningLevelManager.getRequiredMiningLevel(state)) {
 				info.setReturnValue(true);
