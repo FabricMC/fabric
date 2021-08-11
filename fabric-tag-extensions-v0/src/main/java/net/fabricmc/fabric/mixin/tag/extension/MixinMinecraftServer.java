@@ -30,12 +30,6 @@ import net.fabricmc.fabric.impl.tag.extension.TagFactoryImpl;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
-	@Inject(method = "runServer", at = @At("HEAD"))
-	private void runServer(CallbackInfo ci) {
-		// Load dynamic registry tags before server setup.
-		TagFactoryImpl.loadDynamicRegistryTags((MinecraftServer) (Object) (this));
-	}
-
 	@SuppressWarnings("UnresolvedMixinReference")
 	@Inject(method = "method_29440", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ServerResourceManager;loadRegistryTags()V", shift = At.Shift.AFTER))
 	private void method_29440(Collection<?> collection, ServerResourceManager serverResourceManager, CallbackInfo ci) {
