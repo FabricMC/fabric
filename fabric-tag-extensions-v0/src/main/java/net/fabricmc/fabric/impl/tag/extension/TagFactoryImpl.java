@@ -23,17 +23,22 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Stopwatch;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.Main;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tag.RequiredTagList;
 import net.minecraft.tag.RequiredTagListRegistry;
+import net.minecraft.tag.ServerTagManagerHolder;
 import net.minecraft.tag.Tag;
 import net.minecraft.tag.TagGroup;
 import net.minecraft.tag.TagGroupLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.RegistryOps;
+import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 
@@ -42,6 +47,8 @@ import net.fabricmc.fabric.mixin.tag.extension.DynamicRegistryManagerAccess;
 
 @SuppressWarnings("ClassCanBeRecord")
 public final class TagFactoryImpl<T> implements TagFactory<T> {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	public static final Map<RegistryKey<? extends Registry<?>>, RequiredTagList<?>> TAG_LISTS = new HashMap<>();
 	public static final Set<RequiredTagList<?>> DYNAMICS = new HashSet<>();
 
@@ -80,17 +87,23 @@ public final class TagFactoryImpl<T> implements TagFactory<T> {
 	 * <p>Look at server's {@link Main#main} function calls for {@link ServerResourceManager#reload} and
 	 * {@link RegistryOps#method_36574} for the relevant code.
 	 */
-	public static void loadDynamicRegistryTags(MinecraftServer server) {
-		server.getProfiler().push("fabricDynamicRegistryTagsReload");
-		DYNAMICS.forEach(tagList -> {
+	public static void loadDynamicRegistryTags(DynamicRegistryManager registryManager, ResourceManager resourceManager) {
+		Stopwatch stopwatch = Stopwatch.createStarted();
+		int loadedTags = 0;
+
+		for (RequiredTagList<?> tagList : DYNAMICS) {
 			RegistryKey<? extends Registry<?>> registryKey = tagList.getRegistryKey();
-			Registry<?> registry = server.getRegistryManager().get(registryKey);
+			Registry<?> registry = registryManager.get(registryKey);
 			TagGroupLoader<?> tagGroupLoader = new TagGroupLoader<>(registry::getOrEmpty, tagList.getDataType());
-			TagGroup<?> tagGroup = tagGroupLoader.load(server.getResourceManager());
-			((FabricTagManagerHooks) server.getTagManager()).fabric_addTagGroup(registryKey, tagGroup);
-			tagList.updateTagManager(server.getTagManager());
-		});
-		server.getProfiler().pop();
+			TagGroup<?> tagGroup = tagGroupLoader.load(resourceManager);
+			((FabricTagManagerHooks) ServerTagManagerHolder.getTagManager()).fabric_addTagGroup(registryKey, tagGroup);
+			tagList.updateTagManager(ServerTagManagerHolder.getTagManager());
+			loadedTags += tagGroup.getTags().size();
+		}
+
+		if (loadedTags > 0) {
+			LOGGER.info("Loaded {} dynamic registry tags in {}", loadedTags, stopwatch);
+		}
 	}
 
 	private final Supplier<TagGroup<T>> tagGroupSupplier;

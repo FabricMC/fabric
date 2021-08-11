@@ -15,16 +15,10 @@
   "authors": [
     "FabricMC"
   ],
-  "entrypoints": {
-    "main": [
-      "net.fabricmc.fabric.impl.tag.extension.TagExtensionsImpl"
-    ]
-  },
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*",
-    "fabric-resource-loader-v0": "*",
-    "fabric-lifecycle-events-v1": "*"
+    "fabric-resource-loader-v0": "*"
   },
   "description": "Hooks for tags.",
   "mixins": [

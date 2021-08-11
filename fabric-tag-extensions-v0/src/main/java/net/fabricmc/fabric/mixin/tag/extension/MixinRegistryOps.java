@@ -16,31 +16,26 @@
 
 package net.fabricmc.fabric.mixin.tag.extension;
 
-import java.util.Collection;
-
-import org.spongepowered.asm.mixin.Final;
+import com.mojang.serialization.DynamicOps;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.resource.ServerResourceManager;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 import net.fabricmc.fabric.impl.tag.extension.TagFactoryImpl;
 
-@Mixin(MinecraftServer.class)
-public abstract class MixinMinecraftServer {
-	@Shadow
-	@Final
-	protected DynamicRegistryManager.Impl registryManager;
-
-	@SuppressWarnings("UnresolvedMixinReference")
-	@Inject(method = "method_29440", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ServerResourceManager;loadRegistryTags()V", shift = At.Shift.AFTER))
-	private void method_29440(Collection<?> collection, ServerResourceManager serverResourceManager, CallbackInfo ci) {
-		// Load dynamic registry tags on datapack reload.
-		TagFactoryImpl.loadDynamicRegistryTags(registryManager, serverResourceManager.getResourceManager());
+/**
+ * This mixin loads dynamic registry tags right after datapack entries loaded.
+ * Needs a higher priority so it will be called before biome modifications.
+ */
+@Mixin(value = RegistryOps.class, priority = 900)
+public class MixinRegistryOps {
+	@Inject(method = "method_36574", at = @At("RETURN"))
+	private static <T> void afterDynamicRegistryLoaded(DynamicOps<T> dynamicOps, ResourceManager resourceManager, DynamicRegistryManager registryManager, CallbackInfoReturnable<RegistryOps<T>> cir) {
+		TagFactoryImpl.loadDynamicRegistryTags(registryManager, resourceManager);
 	}
 }

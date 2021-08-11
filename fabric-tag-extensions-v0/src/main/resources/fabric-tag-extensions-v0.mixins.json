@@ -6,6 +6,7 @@
     "DynamicRegistryManagerAccess",
     "MixinMinecraftServer",
     "MixinObjectBuilder",
+    "MixinRegistryOps",
     "MixinRequiredTagListRegistry",
     "MixinTagBuilder",
     "MixinTagImpl",
