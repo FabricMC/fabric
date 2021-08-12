@@ -81,7 +81,7 @@ public final class TagFactoryImpl<T> implements TagFactory<T> {
 	/**
 	 * Manually load tags for dynamic registries and add the resulting tag group to the tag list.
 	 *
-	 * <p>Minecraft loads the resource manager before dynamic registries, making tags for them failed to load
+	 * <p>Minecraft loads the resource manager before dynamic registries, making tags for them fail to load
 	 * if it mentions datapack entries. The solution is to manually load tags after the registry is loaded.
 	 *
 	 * <p>Look at server's {@link Main#main} function calls for {@link ServerResourceManager#reload} and
