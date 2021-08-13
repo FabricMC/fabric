@@ -89,6 +89,9 @@ public final class EntitySleepEvents {
 
 	/**
 	 * An event that checks whether the current time of day is valid for sleeping.
+	 *
+	 * <p>Note that if sleeping during day time is allowed, the game will still reset the time to 0 if the usual
+	 * conditions are met, unless forbidden with {@link #ALLOW_RESETTING_TIME}.
 	 */
 	public static final Event<AllowSleepTime> ALLOW_SLEEP_TIME = EventFactory.createArrayBacked(AllowSleepTime.class, callbacks -> (player, sleepingPos, vanillaResult) -> {
 		for (AllowSleepTime callback : callbacks) {
