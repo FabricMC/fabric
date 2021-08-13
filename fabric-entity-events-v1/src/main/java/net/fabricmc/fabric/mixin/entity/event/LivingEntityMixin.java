@@ -68,14 +68,14 @@ abstract class LivingEntityMixin extends EntityMixin {
 
 	@Inject(method = "sleep", at = @At("RETURN"))
 	private void onSleep(BlockPos pos, CallbackInfo info) {
-		EntitySleepEvents.START_SLEEPING.invoker().onSleep((LivingEntity) (Object) this, pos);
+		EntitySleepEvents.START_SLEEPING.invoker().onStartSleeping((LivingEntity) (Object) this, pos);
 	}
 
 	@Inject(method = "wakeUp", at = @At("HEAD"))
 	private void onWakeUp(CallbackInfo info) {
-		// If actually asleep - this method is often called "just to be sure"...
+		// If actually asleep - this method is often called with data loading, syncing etc. "just to be sure"
 		if (getSleepingPosition().isPresent()) {
-			EntitySleepEvents.WAKE_UP.invoker().onWakeUp((LivingEntity) (Object) this);
+			EntitySleepEvents.STOP_SLEEPING.invoker().onStopSleeping((LivingEntity) (Object) this, getSleepingPosition().get());
 		}
 	}
 

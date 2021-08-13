@@ -30,18 +30,36 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * Events about the sleep of {@linkplain LivingEntity living entities}.
+ *
+ * <p>These events can be categorized into three groups:
+ * <ol>
+ * <li>Simple listeners: {@link #START_SLEEPING} and {@link #STOP_SLEEPING}</li>
+ * <li>Predicates: {@link #ALLOW_BED}, {@link #ALLOW_SLEEP_TIME}, {@link #ALLOW_RESETTING_TIME},
+ * {@link #ALLOW_NEARBY_MONSTERS}, {@link #ALLOW_SETTING_SPAWN} and {@link #ALLOW_SLEEPING}
+ *
+ * <p><b>Note:</b> Only the {@link #ALLOW_BED} event applies to non-player entities.</li>
+ * <li>Modifiers: {@link #MODIFY_SLEEPING_DIRECTION}</li>
+ * </ol>
+ *
+ * <p>Sleep events are useful for making custom bed blocks that do not extend {@link net.minecraft.block.BedBlock}.
+ * Custom beds generally only need a custom {@link #ALLOW_BED} checker and a {@link #MODIFY_SLEEPING_DIRECTION} callback,
+ * but the other events might be useful as well.
  */
 public final class EntitySleepEvents {
 	/**
 	 * An event that checks whether a player can start to sleep in a bed-like block.
 	 * This event only applies to sleeping using {@link PlayerEntity#trySleep(BlockPos)}.
 	 *
+	 * <p><b>Note:</b> Please use the more detailed events {@link #ALLOW_SLEEP_TIME} and {@link #ALLOW_NEARBY_MONSTERS}
+	 * if they match your use case! This helps with mod compatibility.
+	 *
 	 * <p>If this event returns a {@link net.minecraft.entity.player.PlayerEntity.SleepFailureReason}, it is used
 	 * as the return value of {@link PlayerEntity#trySleep(BlockPos)} and sleeping fails. A null return value
 	 * means that the player will start sleeping.
 	 *
 	 * <p>When this event is called, all vanilla sleeping checks have already succeeded, i.e. this event
-	 * is used in addition to vanilla checks.
+	 * is used in addition to vanilla checks. The more detailed events {@link #ALLOW_SLEEP_TIME} and {@link #ALLOW_NEARBY_MONSTERS}
+	 * are also checked before this event.
 	 */
 	public static final Event<AllowSleeping> ALLOW_SLEEPING = EventFactory.createArrayBacked(AllowSleeping.class, callbacks -> (player, sleepingPos) -> {
 		for (AllowSleeping callback : callbacks) {
@@ -60,16 +78,16 @@ public final class EntitySleepEvents {
 	 */
 	public static final Event<StartSleeping> START_SLEEPING = EventFactory.createArrayBacked(StartSleeping.class, callbacks -> (entity, sleepingPos) -> {
 		for (StartSleeping callback : callbacks) {
-			callback.onSleep(entity, sleepingPos);
+			callback.onStartSleeping(entity, sleepingPos);
 		}
 	});
 
 	/**
-	 * An event that is called when an entity wakes up.
+	 * An event that is called when an entity stops sleeping and wakes up.
 	 */
-	public static final Event<WakeUp> WAKE_UP = EventFactory.createArrayBacked(WakeUp.class, callbacks -> (entity) -> {
-		for (WakeUp callback : callbacks) {
-			callback.onWakeUp(entity);
+	public static final Event<StopSleeping> STOP_SLEEPING = EventFactory.createArrayBacked(StopSleeping.class, callbacks -> (entity, sleepingPos) -> {
+		for (StopSleeping callback : callbacks) {
+			callback.onStopSleeping(entity, sleepingPos);
 		}
 	});
 
@@ -78,6 +96,10 @@ public final class EntitySleepEvents {
 	 *
 	 * <p>Used for checking whether the block at the current sleeping position is a valid bed block.
 	 * If false, the player wakes up.
+	 *
+	 * <p>This event is only checked <i>during</i> sleeping, so an entity can
+	 * {@linkplain LivingEntity#sleep(BlockPos) start sleeping} on any block, but will immediately
+	 * wake up if this check fails.
 	 *
 	 * @see LivingEntity#isSleepingInBed()
 	 */
@@ -148,6 +170,8 @@ public final class EntitySleepEvents {
 	 * An event that can be used to provide the entity's sleep direction if missing.
 	 *
 	 * <p>This is useful for custom bed blocks that need to determine the sleeping direction themselves.
+	 * If the block is not a {@link net.minecraft.block.BedBlock}, you need to provide the sleeping direction manually
+	 * with this event.
 	 */
 	public static final Event<ModifySleepingDirection> MODIFY_SLEEPING_DIRECTION = EventFactory.createArrayBacked(ModifySleepingDirection.class, callbacks -> (entity, sleepingPos, sleepingDirection) -> {
 		for (ModifySleepingDirection callback : callbacks) {
@@ -194,17 +218,18 @@ public final class EntitySleepEvents {
 		 * @param entity      the sleeping entity
 		 * @param sleepingPos the {@linkplain LivingEntity#getSleepingPosition() sleeping position} of the entity
 		 */
-		void onSleep(LivingEntity entity, BlockPos sleepingPos);
+		void onStartSleeping(LivingEntity entity, BlockPos sleepingPos);
 	}
 
 	@FunctionalInterface
-	public interface WakeUp {
+	public interface StopSleeping {
 		/**
-		 * Called when an entity wakes up.
+		 * Called when an entity stops sleeping and wakes up.
 		 *
-		 * @param entity the sleeping entity
+		 * @param entity      the sleeping entity
+		 * @param sleepingPos the {@linkplain LivingEntity#getSleepingPosition() sleeping position} of the entity
 		 */
-		void onWakeUp(LivingEntity entity);
+		void onStopSleeping(LivingEntity entity, BlockPos sleepingPos);
 	}
 
 	@FunctionalInterface

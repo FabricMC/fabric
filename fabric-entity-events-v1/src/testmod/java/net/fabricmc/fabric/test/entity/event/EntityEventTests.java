@@ -97,11 +97,11 @@ public final class EntityEventTests implements ModInitializer {
 			LOGGER.info("Entity {} sleeping at {}", entity, sleepingPos);
 		});
 
-		EntitySleepEvents.WAKE_UP.register(entity -> {
-			LOGGER.info("Entity {} woke up", entity);
+		EntitySleepEvents.STOP_SLEEPING.register((entity, sleepingPos) -> {
+			LOGGER.info("Entity {} woke up at {}", entity, sleepingPos);
 		});
 
-		EntitySleepEvents.ALLOW_BED.register((entity, sleepingPos, state) -> {
+		EntitySleepEvents.ALLOW_BED.register((entity, sleepingPos, state, vanillaResult) -> {
 			return state.isOf(TEST_BED) ? ActionResult.SUCCESS : ActionResult.PASS;
 		});
 
