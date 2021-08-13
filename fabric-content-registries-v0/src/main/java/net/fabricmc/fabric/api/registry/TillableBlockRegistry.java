@@ -44,7 +44,7 @@ public final class TillableBlockRegistry {
 	 * a block. If the predicate returns {@code true}, an action is executed. Default instances of these can be created
 	 * with these {@link HoeItem} methods:
 	 * <ul>
-	 * <li>usage predicate: {@link HoeItem#usagePredicate(ItemUsageContext)}</li>
+	 * <li>usage predicate for farmland-like behavior: {@link HoeItem#usagePredicate(ItemUsageContext)}</li>
 	 * <li>simple action: {@link HoeItem#getTillingConsumer(BlockState)}</li>
 	 * <li>simple action that also drops an item: {@link HoeItem#getTillingConsumer(BlockState, ItemConvertible)}</li>
 	 * </ul>
