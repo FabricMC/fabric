@@ -16,22 +16,39 @@
 
 package net.fabricmc.fabric.test.entity.event;
 
+import java.util.Optional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.Material;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Items;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 public final class EntityEventTests implements ModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger(EntityEventTests.class);
+	public static final Block TEST_BED = new TestBedBlock(AbstractBlock.Settings.of(Material.WOOL).strength(1, 1));
 
 	@Override
 	public void onInitialize() {
+		Registry.register(Registry.BLOCK, new Identifier("fabric-entity-events-v1-testmod", "test_bed"), TEST_BED);
+		Registry.register(Registry.ITEM, new Identifier("fabric-entity-events-v1-testmod", "test_bed"), new BlockItem(TEST_BED, new Item.Settings().group(ItemGroup.DECORATIONS)));
+
 		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed) -> {
 			LOGGER.info("Entity Killed: {}", killed);
 		});
@@ -61,6 +78,22 @@ public final class EntityEventTests implements ModInitializer {
 			}
 
 			return true;
+		});
+
+		EntitySleepEvents.START_SLEEPING.register((entity, sleepingPos) -> {
+			LOGGER.info("Entity {} sleeping at {}", entity, sleepingPos);
+		});
+
+		EntitySleepEvents.WAKE_UP.register(entity -> {
+			LOGGER.info("Entity {} woke up", entity);
+		});
+
+		EntitySleepEvents.IS_VALID_BED.register((entity, sleepingPos, state) -> {
+			return state.isOf(TEST_BED) ? ActionResult.SUCCESS : ActionResult.PASS;
+		});
+
+		EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.register((entity, sleepingPos, sleepingDirection) -> {
+			return entity.world.getBlockState(sleepingPos).isOf(TEST_BED) ? Optional.of(Direction.NORTH) : Optional.empty();
 		});
 	}
 }

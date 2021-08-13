@@ -7,7 +7,8 @@
   "license": "Apache-2.0",
   "depends": {
     "fabric-entity-events-v1": "*",
-    "fabric-command-api-v1":"*"
+    "fabric-command-api-v1": "*",
+    "fabric-registry-sync-v0": "*"
   },
   "entrypoints": {
     "main": [
