@@ -16,18 +16,21 @@
 
 package net.fabricmc.fabric.test.entity.event;
 
-import java.util.Optional;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -35,6 +38,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
@@ -80,6 +84,15 @@ public final class EntityEventTests implements ModInitializer {
 			return true;
 		});
 
+		EntitySleepEvents.ALLOW_SLEEPING.register((player, sleepingPos) -> {
+			// Can't sleep if holds blue wool
+			if (player.getStackInHand(Hand.MAIN_HAND).isOf(Items.BLUE_WOOL)) {
+				return PlayerEntity.SleepFailureReason.OTHER_PROBLEM;
+			}
+
+			return null;
+		});
+
 		EntitySleepEvents.START_SLEEPING.register((entity, sleepingPos) -> {
 			LOGGER.info("Entity {} sleeping at {}", entity, sleepingPos);
 		});
@@ -93,7 +106,62 @@ public final class EntityEventTests implements ModInitializer {
 		});
 
 		EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.register((entity, sleepingPos, sleepingDirection) -> {
-			return entity.world.getBlockState(sleepingPos).isOf(TEST_BED) ? Optional.of(Direction.NORTH) : Optional.empty();
+			return entity.world.getBlockState(sleepingPos).isOf(TEST_BED) ? Direction.NORTH : sleepingDirection;
 		});
+
+		EntitySleepEvents.ALLOW_SLEEP_TIME.register((player, sleepingPos, vanillaResult) -> {
+			// Yellow wool allows to sleep during the day
+			if (player.world.isDay() && player.getStackInHand(Hand.MAIN_HAND).isOf(Items.YELLOW_WOOL)) {
+				return ActionResult.SUCCESS;
+			}
+
+			return ActionResult.PASS;
+		});
+
+		EntitySleepEvents.ALLOW_NEARBY_MONSTERS.register((player, sleepingPos, vanillaResult) -> {
+			// Green wool allows monsters and red wool always "detects" monsters
+			ItemStack stack = player.getStackInHand(Hand.MAIN_HAND);
+
+			if (stack.isOf(Items.GREEN_WOOL)) {
+				return ActionResult.SUCCESS;
+			} else if (stack.isOf(Items.RED_WOOL)) {
+				return ActionResult.FAIL;
+			}
+
+			return ActionResult.PASS;
+		});
+
+		EntitySleepEvents.ALLOW_SETTING_SPAWN.register((player, sleepingPos) -> {
+			// Don't set spawn if holding white wool
+			return !player.getStackInHand(Hand.MAIN_HAND).isOf(Items.WHITE_WOOL);
+		});
+
+		EntitySleepEvents.ALLOW_RESETTING_TIME.register(player -> {
+			// Don't allow resetting time if holding black wool
+			return !player.getStackInHand(Hand.MAIN_HAND).isOf(Items.BLACK_WOOL);
+		});
+
+		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+			dispatcher.register(CommandManager.literal("addsleeptestwools").executes(context -> {
+				addSleepWools(context.getSource().getPlayer());
+				return 0;
+			}));
+		});
+	}
+
+	private static void addSleepWools(PlayerEntity player) {
+		PlayerInventory inventory = player.getInventory();
+		inventory.offerOrDrop(createNamedItem(Items.BLUE_WOOL, "Can't start sleeping"));
+		inventory.offerOrDrop(createNamedItem(Items.YELLOW_WOOL, "Sleep whenever"));
+		inventory.offerOrDrop(createNamedItem(Items.GREEN_WOOL, "Allow nearby monsters"));
+		inventory.offerOrDrop(createNamedItem(Items.RED_WOOL, "Detect nearby monsters"));
+		inventory.offerOrDrop(createNamedItem(Items.WHITE_WOOL, "Don't set spawn"));
+		inventory.offerOrDrop(createNamedItem(Items.BLACK_WOOL, "Don't reset time"));
+	}
+
+	private static ItemStack createNamedItem(Item item, String name) {
+		ItemStack stack = new ItemStack(item);
+		stack.setCustomName(new LiteralText(name));
+		return stack;
 	}
 }

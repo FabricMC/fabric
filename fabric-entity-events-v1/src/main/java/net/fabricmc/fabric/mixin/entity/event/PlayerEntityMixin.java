@@ -13,28 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package net.fabricmc.fabric.mixin.entity.event;
 
 import com.mojang.datafixers.util.Either;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 
 @Mixin(PlayerEntity.class)
-abstract class PlayerEntityMixin {
+abstract class PlayerEntityMixin extends LivingEntityMixin {
 	@Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
 	private void onTrySleep(BlockPos pos, CallbackInfoReturnable<Either<PlayerEntity.SleepFailureReason, Unit>> info) {
 		PlayerEntity.SleepFailureReason failureReason = EntitySleepEvents.ALLOW_SLEEPING.invoker().allowSleep((PlayerEntity) (Object) this, pos);
 
 		if (failureReason != null) {
 			info.setReturnValue(Either.left(failureReason));
+		}
+	}
+
+	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isDay()Z"))
+	private boolean redirectDaySleepCheck(World world) {
+		boolean day = world.isDay();
+
+		if (getSleepingPosition().isPresent()) {
+			BlockPos pos = getSleepingPosition().get();
+			ActionResult result = EntitySleepEvents.ALLOW_SLEEP_TIME.invoker().allowSleepTime((PlayerEntity) (Object) this, pos, !day);
+
+			if (result != ActionResult.PASS) {
+				return !result.isAccepted(); // true from the event = night-like conditions, so we have to invert
+			}
+		}
+
+		return day;
+	}
+
+	@Inject(method = "isSleepingLongEnough", at = @At("RETURN"), cancellable = true)
+	private void onIsSleepingLongEnough(CallbackInfoReturnable<Boolean> info) {
+		if (info.getReturnValueZ()) {
+			info.setReturnValue(EntitySleepEvents.ALLOW_RESETTING_TIME.invoker().allowResettingTime((PlayerEntity) (Object) this));
 		}
 	}
 }

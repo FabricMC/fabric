@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.entity.event;
 
+import java.util.List;
+
 import com.mojang.datafixers.util.Either;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,10 +34,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Property;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -89,7 +93,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	}
 
 	@Inject(method = "trySleep", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;get(Lnet/minecraft/state/property/Property;)Ljava/lang/Comparable;", shift = At.Shift.BY, by = 3), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-	private void onTrySleep(BlockPos pos, CallbackInfoReturnable<Either<PlayerEntity.SleepFailureReason, Unit>> info, @Nullable Direction sleepingDirection) {
+	private void onTrySleepDirectionCheck(BlockPos pos, CallbackInfoReturnable<Either<PlayerEntity.SleepFailureReason, Unit>> info, @Nullable Direction sleepingDirection) {
 		// This checks the result from the event call above.
 		if (sleepingDirection == null) {
 			info.setReturnValue(Either.left(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_HERE));
@@ -101,5 +105,24 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 		if (EntitySleepEvents.ALLOW_SETTING_SPAWN.invoker().allowSettingSpawn(player, pos)) {
 			player.setSpawnPoint(dimension, pos, angle, spawnPointSet, sendMessage);
 		}
+	}
+
+	@Redirect(method = "trySleep", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z", remap = false))
+	private boolean hasNoMonstersNearby(List<HostileEntity> monsters, BlockPos pos) {
+		boolean vanillaResult = monsters.isEmpty();
+		ActionResult result = EntitySleepEvents.ALLOW_NEARBY_MONSTERS.invoker().allowNearbyMonsters((PlayerEntity) (Object) this, pos, vanillaResult);
+		return result != ActionResult.PASS ? result.isAccepted() : vanillaResult;
+	}
+
+	@Redirect(method = "trySleep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isDay()Z"))
+	private boolean redirectDaySleepCheck(World world, BlockPos pos) {
+		boolean day = world.isDay();
+		ActionResult result = EntitySleepEvents.ALLOW_SLEEP_TIME.invoker().allowSleepTime((PlayerEntity) (Object) this, pos, !day);
+
+		if (result != ActionResult.PASS) {
+			return !result.isAccepted(); // true from the event = night-like conditions, so we have to invert
+		}
+
+		return day;
 	}
 }
