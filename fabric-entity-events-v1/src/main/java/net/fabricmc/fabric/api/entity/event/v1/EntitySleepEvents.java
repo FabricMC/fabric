@@ -75,8 +75,8 @@ public final class EntitySleepEvents {
 	 *
 	 * @see LivingEntity#isSleepingInBed()
 	 */
-	public static final Event<VerifyBed> VERIFY_BED = EventFactory.createArrayBacked(VerifyBed.class, callbacks -> (entity, sleepingPos, state) -> {
-		for (VerifyBed callback : callbacks) {
+	public static final Event<AllowBed> ALLOW_BED = EventFactory.createArrayBacked(AllowBed.class, callbacks -> (entity, sleepingPos, state) -> {
+		for (AllowBed callback : callbacks) {
 			ActionResult result = callback.isValidBed(entity, sleepingPos, state);
 
 			if (result != ActionResult.PASS) {
@@ -149,7 +149,7 @@ public final class EntitySleepEvents {
 	}
 
 	@FunctionalInterface
-	public interface VerifyBed {
+	public interface AllowBed {
 		/**
 		 * Checks whether a block is a valid bed for the entity.
 		 *

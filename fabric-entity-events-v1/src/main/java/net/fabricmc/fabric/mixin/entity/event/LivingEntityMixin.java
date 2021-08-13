@@ -84,7 +84,7 @@ abstract class LivingEntityMixin extends EntityMixin {
 		if (getSleepingPosition().isPresent()) {
 			BlockPos sleepingPos = getSleepingPosition().get();
 			BlockState bedState = world.getBlockState(sleepingPos);
-			ActionResult result = EntitySleepEvents.VERIFY_BED.invoker().isValidBed((LivingEntity) (Object) this, sleepingPos, bedState);
+			ActionResult result = EntitySleepEvents.ALLOW_BED.invoker().isValidBed((LivingEntity) (Object) this, sleepingPos, bedState);
 
 			if (result != ActionResult.PASS) {
 				info.setReturnValue(result.isAccepted());
