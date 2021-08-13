@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.registry;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
@@ -47,7 +49,14 @@ public final class StrippableBlockRegistry {
 	public static void register(Block input, Block stripped) {
 		requireNonNullAndAxisProperty(input, "input block");
 		requireNonNullAndAxisProperty(stripped, "stripped block");
-		Block old = AxeItemAccessor.getStrippedBlocks().put(input, stripped);
+		Map<Block, Block> strippedBlocks = AxeItemAccessor.getStrippedBlocks();
+
+		if (!(strippedBlocks instanceof HashMap<?, ?>)) {
+			strippedBlocks = new HashMap<>(strippedBlocks);
+			AxeItemAccessor.setStrippedBlocks(strippedBlocks);
+		}
+
+		Block old = strippedBlocks.put(input, stripped);
 
 		if (old != null) {
 			LOGGER.debug("Replaced old stripping mapping from {} to {} with {}", input, old, stripped);
