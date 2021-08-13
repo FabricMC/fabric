@@ -34,8 +34,14 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public final class EntitySleepEvents {
 	/**
 	 * An event that checks whether a player can start to sleep in a bed-like block.
+	 * This event only applies to sleeping using {@link PlayerEntity#trySleep(BlockPos)}.
 	 *
-	 * @see PlayerEntity#trySleep(BlockPos)
+	 * <p>If this event returns a {@link net.minecraft.entity.player.PlayerEntity.SleepFailureReason}, it is used
+	 * as the return value of {@link PlayerEntity#trySleep(BlockPos)} and sleeping fails. A null return value
+	 * means that the player will start sleeping.
+	 *
+	 * <p>When this event is called, all vanilla sleeping checks have already succeeded, i.e. this event
+	 * is used in addition to vanilla checks.
 	 */
 	public static final Event<AllowSleeping> ALLOW_SLEEPING = EventFactory.createArrayBacked(AllowSleeping.class, callbacks -> (player, sleepingPos) -> {
 		for (AllowSleeping callback : callbacks) {
@@ -75,9 +81,9 @@ public final class EntitySleepEvents {
 	 *
 	 * @see LivingEntity#isSleepingInBed()
 	 */
-	public static final Event<AllowBed> ALLOW_BED = EventFactory.createArrayBacked(AllowBed.class, callbacks -> (entity, sleepingPos, state) -> {
+	public static final Event<AllowBed> ALLOW_BED = EventFactory.createArrayBacked(AllowBed.class, callbacks -> (entity, sleepingPos, state, vanillaResult) -> {
 		for (AllowBed callback : callbacks) {
-			ActionResult result = callback.allowBed(entity, sleepingPos, state);
+			ActionResult result = callback.allowBed(entity, sleepingPos, state, vanillaResult);
 
 			if (result != ActionResult.PASS) {
 				return result;
@@ -124,6 +130,9 @@ public final class EntitySleepEvents {
 
 	/**
 	 * An event that checks whether a sleeping player counts into skipping the current day and resetting the time to 0.
+	 *
+	 * <p>When this event is called, all vanilla time resetting checks have already succeeded, i.e. this event
+	 * is used in addition to vanilla checks.
 	 */
 	public static final Event<AllowResettingTime> ALLOW_RESETTING_TIME = EventFactory.createArrayBacked(AllowResettingTime.class, callbacks -> player -> {
 		for (AllowResettingTime callback : callbacks) {
@@ -150,6 +159,8 @@ public final class EntitySleepEvents {
 
 	/**
 	 * An event that checks whether a player's spawn can be set when sleeping.
+	 *
+	 * <p>Vanilla always allows this operation.
 	 */
 	public static final Event<AllowSettingSpawn> ALLOW_SETTING_SPAWN = EventFactory.createArrayBacked(AllowSettingSpawn.class, callbacks -> (player, sleepingPos) -> {
 		for (AllowSettingSpawn callback : callbacks) {
@@ -203,13 +214,14 @@ public final class EntitySleepEvents {
 		 *
 		 * <p>Non-{@linkplain ActionResult#PASS passing} return values cancel further callbacks.
 		 *
-		 * @param entity      the sleeping entity
-		 * @param sleepingPos the position of the block
-		 * @param state       the block state to check
+		 * @param entity        the sleeping entity
+		 * @param sleepingPos   the position of the block
+		 * @param state         the block state to check
+		 * @param vanillaResult true if vanilla allows the block, false otherwise
 		 * @return {@link ActionResult#SUCCESS} if the bed is valid, {@link ActionResult#FAIL} if it's not,
 		 *         {@link ActionResult#PASS} to fall back to other callbacks
 		 */
-		ActionResult allowBed(LivingEntity entity, BlockPos sleepingPos, BlockState state);
+		ActionResult allowBed(LivingEntity entity, BlockPos sleepingPos, BlockState state, boolean vanillaResult);
 	}
 
 	@FunctionalInterface
