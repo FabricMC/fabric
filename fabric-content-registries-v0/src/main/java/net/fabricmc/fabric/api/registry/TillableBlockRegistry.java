@@ -50,7 +50,7 @@ public final class TillableBlockRegistry {
 	 * </ul>
 	 *
 	 * @param input          the input block that can be tilled
-	 * @param usagePredicate a predicate that filters if the action is executed
+	 * @param usagePredicate a predicate that filters if the block can be tilled
 	 * @param tillingAction  an action that is executed if the predicate returns {@code true}
 	 */
 	public static void register(Block input, Predicate<ItemUsageContext> usagePredicate, Consumer<ItemUsageContext> tillingAction) {
@@ -72,17 +72,28 @@ public final class TillableBlockRegistry {
 	}
 
 	/**
+	 * Registers a simple tilling interaction.
+	 *
+	 * @param input          the input block that can be tilled
+	 * @param usagePredicate a predicate that filters if the block can be tilled
+	 * @param tilled         the tilled result block state
+	 */
+	public static void register(Block input, Predicate<ItemUsageContext> usagePredicate, BlockState tilled) {
+		Objects.requireNonNull(tilled, "tilled block state cannot be null");
+		register(input, usagePredicate, HoeItem.getTillingConsumer(tilled));
+	}
+
+	/**
 	 * Registers a simple tilling interaction that also drops an item.
 	 *
-	 * <p>The action is filtered with the {@linkplain HoeItem#usagePredicate(ItemUsageContext) default usage predicate}.
-	 *
-	 * @param input       the input block that can be tilled
-	 * @param tilled      the tilled result block state
-	 * @param droppedItem an item that is dropped when the input block is tilled
+	 * @param input          the input block that can be tilled
+	 * @param usagePredicate a predicate that filters if the block can be tilled
+	 * @param tilled         the tilled result block state
+	 * @param droppedItem    an item that is dropped when the input block is tilled
 	 */
-	public static void register(Block input, BlockState tilled, ItemConvertible droppedItem) {
+	public static void register(Block input, Predicate<ItemUsageContext> usagePredicate, BlockState tilled, ItemConvertible droppedItem) {
 		Objects.requireNonNull(tilled, "tilled block state cannot be null");
 		Objects.requireNonNull(droppedItem, "dropped item cannot be null");
-		register(input, HoeItem::usagePredicate, HoeItem.getTillingConsumer(tilled, droppedItem));
+		register(input, usagePredicate, HoeItem.getTillingConsumer(tilled, droppedItem));
 	}
 }
