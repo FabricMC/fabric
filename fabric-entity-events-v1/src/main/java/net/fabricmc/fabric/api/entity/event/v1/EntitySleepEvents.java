@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.entity.event.v1;
 
-import java.util.Optional;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
@@ -72,17 +70,11 @@ public final class EntitySleepEvents {
 	 * <p>This is useful for custom bed blocks that need to determine the sleeping direction themselves.
 	 */
 	public static final Event<ModifySleepingDirection> MODIFY_SLEEPING_DIRECTION = EventFactory.createArrayBacked(ModifySleepingDirection.class, callbacks -> (entity, sleepingPos, sleepingDirection) -> {
-		@Nullable Direction direction = sleepingDirection;
-
 		for (ModifySleepingDirection callback : callbacks) {
-			Optional<Direction> result = callback.modifySleepDirection(entity, sleepingPos, direction);
-
-			if (result.isPresent()) {
-				direction = result.get();
-			}
+			sleepingDirection = callback.modifySleepDirection(entity, sleepingPos, sleepingDirection);
 		}
 
-		return Optional.ofNullable(direction);
+		return sleepingDirection;
 	});
 
 	@FunctionalInterface
@@ -130,9 +122,10 @@ public final class EntitySleepEvents {
 		 * @param entity            the sleeping entity
 		 * @param sleepingPos       the position of the block slept on
 		 * @param sleepingDirection the old sleeping direction, or null if not determined by vanilla logic
-		 * @return a new direction, or {@link Optional#empty()} to fall back to other callbacks
+		 * @return the new sleeping direction
 		 */
-		Optional<Direction> modifySleepDirection(LivingEntity entity, BlockPos sleepingPos, @Nullable Direction sleepingDirection);
+		@Nullable
+		Direction modifySleepDirection(LivingEntity entity, BlockPos sleepingPos, @Nullable Direction sleepingDirection);
 	}
 
 	private EntitySleepEvents() {

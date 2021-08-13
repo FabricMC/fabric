@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.entity.event;
 
-import java.util.Optional;
-
 import com.mojang.datafixers.util.Either;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -85,8 +83,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	@Redirect(method = "trySleep", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;get(Lnet/minecraft/state/property/Property;)Ljava/lang/Comparable;"))
 	private Comparable<?> redirectSleepDirection(BlockState state, Property<?> property, BlockPos pos) {
 		Direction initial = state.getBlock() instanceof BedBlock ? (Direction) state.get(property) : null;
-		Optional<Direction> result = EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.invoker().modifySleepDirection((LivingEntity) (Object) this, pos, initial);
-		return result.orElse(initial);
+		return EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.invoker().modifySleepDirection((LivingEntity) (Object) this, pos, initial);
 	}
 
 	@Inject(method = "trySleep", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;get(Lnet/minecraft/state/property/Property;)Ljava/lang/Comparable;", shift = At.Shift.BY, by = 3), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
