@@ -69,9 +69,14 @@ public final class EntitySleepEvents {
 
 	/**
 	 * An event that is called to check whether a block is valid for sleeping.
+	 *
+	 * <p>Used for checking whether the block at the current sleeping position is a valid bed block.
+	 * If false, the player wakes up.
+	 *
+	 * @see LivingEntity#isSleepingInBed()
 	 */
-	public static final Event<IsValidBed> IS_VALID_BED = EventFactory.createArrayBacked(IsValidBed.class, callbacks -> (entity, sleepingPos, state) -> {
-		for (IsValidBed callback : callbacks) {
+	public static final Event<VerifyBed> VERIFY_BED = EventFactory.createArrayBacked(VerifyBed.class, callbacks -> (entity, sleepingPos, state) -> {
+		for (VerifyBed callback : callbacks) {
 			ActionResult result = callback.isValidBed(entity, sleepingPos, state);
 
 			if (result != ActionResult.PASS) {
@@ -144,7 +149,7 @@ public final class EntitySleepEvents {
 	}
 
 	@FunctionalInterface
-	public interface IsValidBed {
+	public interface VerifyBed {
 		/**
 		 * Checks whether a block is a valid bed for the entity.
 		 *
