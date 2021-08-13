@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 @Mixin(MiningToolItem.class)
 abstract class MiningToolItemMixin {
 	@Inject(method = "isSuitableFor", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/item/ToolMaterial;getMiningLevel()I"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-	private void onIsSuitableFor(BlockState state, CallbackInfoReturnable<Boolean> info, int toolMiningLevel) {
+	private void fabric$onIsSuitableFor(BlockState state, CallbackInfoReturnable<Boolean> info, int toolMiningLevel) {
 		if (toolMiningLevel < MiningLevelManager.getRequiredMiningLevel(state)) {
 			info.setReturnValue(false);
 		}

@@ -33,14 +33,14 @@ import net.fabricmc.fabric.api.mininglevel.v1.FabricMineableTags;
 @Mixin(ShearsItem.class)
 abstract class ShearsItemMixin {
 	@Inject(method = "isSuitableFor", at = @At("HEAD"), cancellable = true)
-	private void onIsSuitableFor(BlockState state, CallbackInfoReturnable<Boolean> info) {
+	private void fabric$onIsSuitableFor(BlockState state, CallbackInfoReturnable<Boolean> info) {
 		if (state.isIn(FabricMineableTags.SHEARS_MINEABLE)) {
 			info.setReturnValue(true);
 		}
 	}
 
 	@Inject(method = "getMiningSpeedMultiplier", at = @At("RETURN"), cancellable = true)
-	private void onGetMiningSpeedMultiplier(ItemStack stack, BlockState state, CallbackInfoReturnable<Float> info) {
+	private void fabric$onGetMiningSpeedMultiplier(ItemStack stack, BlockState state, CallbackInfoReturnable<Float> info) {
 		if (info.getReturnValueF() == 1.0f) { // if not caught by vanilla checks
 			if (state.isIn(FabricMineableTags.SHEARS_MINEABLE)) { // mimics MiningToolItem.getMiningSpeedMultiplier
 				// In vanilla 1.17, shears have three special mining speed multiplier values:
