@@ -72,15 +72,17 @@ public final class EntitySleepEvents {
 	 * <p>This is useful for custom bed blocks that need to determine the sleeping direction themselves.
 	 */
 	public static final Event<ModifySleepingDirection> MODIFY_SLEEPING_DIRECTION = EventFactory.createArrayBacked(ModifySleepingDirection.class, callbacks -> (entity, sleepingPos, sleepingDirection) -> {
+		@Nullable Direction direction = sleepingDirection;
+
 		for (ModifySleepingDirection callback : callbacks) {
-			Optional<Direction> result = callback.modifySleepDirection(entity, sleepingPos, sleepingDirection);
+			Optional<Direction> result = callback.modifySleepDirection(entity, sleepingPos, direction);
 
 			if (result.isPresent()) {
-				return result;
+				direction = result.get();
 			}
 		}
 
-		return Optional.empty();
+		return Optional.ofNullable(direction);
 	});
 
 	@FunctionalInterface
@@ -124,8 +126,6 @@ public final class EntitySleepEvents {
 	public interface ModifySleepingDirection {
 		/**
 		 * Modifies or provides a sleeping direction for a block.
-		 *
-		 * <p>A present return value cancels further callbacks.
 		 *
 		 * @param entity            the sleeping entity
 		 * @param sleepingPos       the position of the block slept on
