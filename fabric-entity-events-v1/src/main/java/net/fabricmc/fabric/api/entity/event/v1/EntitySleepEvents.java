@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -31,6 +32,23 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * Events about the sleep of {@linkplain LivingEntity living entities}.
  */
 public final class EntitySleepEvents {
+	/**
+	 * An event that checks whether a player can sleep in a bed-like block.
+	 *
+	 * @see PlayerEntity#trySleep(BlockPos)
+	 */
+	public static final Event<AllowSleeping> ALLOW_SLEEPING = EventFactory.createArrayBacked(AllowSleeping.class, callbacks -> (player, sleepingPos) -> {
+		for (AllowSleeping callback : callbacks) {
+			PlayerEntity.SleepFailureReason reason = callback.allowSleep(player, sleepingPos);
+
+			if (reason != null) {
+				return reason;
+			}
+		}
+
+		return null;
+	});
+
 	/**
 	 * An event that is called when an entity starts to sleep.
 	 */
@@ -76,6 +94,33 @@ public final class EntitySleepEvents {
 
 		return sleepingDirection;
 	});
+
+	/**
+	 * An event that checks whether a player's spawn can be set when sleeping.
+	 */
+	public static final Event<AllowSettingSpawn> ALLOW_SETTING_SPAWN = EventFactory.createArrayBacked(AllowSettingSpawn.class, callbacks -> (player, sleepingPos) -> {
+		for (AllowSettingSpawn callback : callbacks) {
+			if (!callback.allowSettingSpawn(player, sleepingPos)) {
+				return false;
+			}
+		}
+
+		return true;
+	});
+
+	@FunctionalInterface
+	public interface AllowSleeping {
+		/**
+		 * Checks whether a player can start sleeping in a bed-like block.
+		 *
+		 * @param player      the sleeping player
+		 * @param sleepingPos the future {@linkplain LivingEntity#getSleepingPosition() sleeping position} of the entity
+		 * @return null if the player can sleep, or a failure reason if they cannot
+		 * @see PlayerEntity#trySleep(BlockPos)
+		 */
+		@Nullable
+		PlayerEntity.SleepFailureReason allowSleep(PlayerEntity player, BlockPos sleepingPos);
+	}
 
 	@FunctionalInterface
 	public interface StartSleeping {
@@ -126,6 +171,18 @@ public final class EntitySleepEvents {
 		 */
 		@Nullable
 		Direction modifySleepDirection(LivingEntity entity, BlockPos sleepingPos, @Nullable Direction sleepingDirection);
+	}
+
+	@FunctionalInterface
+	public interface AllowSettingSpawn {
+		/**
+		 * Checks whether a player's spawn can be set when sleeping.
+		 *
+		 * @param player      the sleeping player
+		 * @param sleepingPos the sleeping position
+		 * @return true if allowed, false otherwise
+		 */
+		boolean allowSettingSpawn(PlayerEntity player, BlockPos sleepingPos);
 	}
 
 	private EntitySleepEvents() {

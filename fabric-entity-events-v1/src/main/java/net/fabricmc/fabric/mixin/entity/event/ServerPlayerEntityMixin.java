@@ -39,6 +39,8 @@ import net.minecraft.state.property.Property;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
@@ -91,6 +93,13 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 		// This checks the result from the event call above.
 		if (sleepingDirection == null) {
 			info.setReturnValue(Either.left(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_HERE));
+		}
+	}
+
+	@Redirect(method = "trySleep", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;setSpawnPoint(Lnet/minecraft/util/registry/RegistryKey;Lnet/minecraft/util/math/BlockPos;FZZ)V"))
+	private void onSetSpawnPoint(ServerPlayerEntity player, RegistryKey<World> dimension, BlockPos pos, float angle, boolean spawnPointSet, boolean sendMessage) {
+		if (EntitySleepEvents.ALLOW_SETTING_SPAWN.invoker().allowSettingSpawn(player, pos)) {
+			player.setSpawnPoint(dimension, pos, angle, spawnPointSet, sendMessage);
 		}
 	}
 }

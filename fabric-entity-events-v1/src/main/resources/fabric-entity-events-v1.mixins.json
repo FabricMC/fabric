@@ -5,6 +5,7 @@
   "mixins": [
     "EntityMixin",
     "LivingEntityMixin",
+    "PlayerEntityMixin",
     "PlayerManagerMixin",
     "ServerPlayerEntityMixin",
     "TeleportCommandMixin"
