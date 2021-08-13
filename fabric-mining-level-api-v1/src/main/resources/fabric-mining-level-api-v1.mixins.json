@@ -7,6 +7,9 @@
     "ShearsItemMixin",
     "SwordItemMixin"
   ],
+  "client": [
+    "client.ClientPlayNetworkHandlerMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
