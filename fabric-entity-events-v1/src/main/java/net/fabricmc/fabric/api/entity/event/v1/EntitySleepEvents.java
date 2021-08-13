@@ -99,7 +99,7 @@ public final class EntitySleepEvents {
 		/**
 		 * Called when an entity wakes up.
 		 *
-		 * @param entity      the sleeping entity
+		 * @param entity the sleeping entity
 		 */
 		void onWakeUp(LivingEntity entity);
 	}
