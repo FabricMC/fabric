@@ -19,8 +19,8 @@ package net.fabricmc.fabric.impl.mininglevel;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,7 +40,7 @@ public final class MiningLevelManagerImpl {
 	// A cache of block state mining levels. Cleared by
 	// - MiningLevelCacheInvalidator when tags are reloaded
 	// - ClientPlayNetworkHandlerMixin when tags are synced
-	private static final ThreadLocal<Object2IntMap<BlockState>> CACHE = ThreadLocal.withInitial(Object2IntOpenHashMap::new);
+	private static final ThreadLocal<Reference2IntMap<BlockState>> CACHE = ThreadLocal.withInitial(Reference2IntOpenHashMap::new);
 
 	public static int getRequiredMiningLevel(BlockState state) {
 		return CACHE.get().computeIntIfAbsent(state, s -> {
