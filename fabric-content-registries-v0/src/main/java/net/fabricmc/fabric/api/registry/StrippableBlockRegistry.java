@@ -36,7 +36,7 @@ public final class StrippableBlockRegistry {
 	}
 
 	/**
-     * Registers a stripping interaction.
+	 * Registers a stripping interaction.
 	 *
 	 * <p>Both blocks must have the {@link Properties#AXIS axis} property.
 	 *

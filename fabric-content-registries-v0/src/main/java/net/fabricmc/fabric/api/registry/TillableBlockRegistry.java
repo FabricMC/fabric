@@ -38,7 +38,7 @@ public final class TillableBlockRegistry {
 	}
 
 	/**
-     * Registers a tilling interaction.
+	 * Registers a tilling interaction.
 	 *
 	 * <p>Tilling interactions are a two-step process. First, a usage predicate is run that decides whether to till
 	 * a block. If the predicate returns {@code true}, an action is executed. Default instances of these can be created
@@ -63,8 +63,8 @@ public final class TillableBlockRegistry {
 	 *
 	 * <p>The action is filtered with the {@linkplain HoeItem#usagePredicate(ItemUsageContext) default usage predicate}.
 	 *
-	 * @param input       the input block that can be tilled
-	 * @param tilled      the tilled result block state
+	 * @param input  the input block that can be tilled
+	 * @param tilled the tilled result block state
 	 */
 	public static void register(Block input, BlockState tilled) {
 		Objects.requireNonNull(tilled, "tilled block state cannot be null");
