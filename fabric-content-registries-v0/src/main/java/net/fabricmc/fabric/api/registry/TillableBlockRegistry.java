@@ -61,19 +61,6 @@ public final class TillableBlockRegistry {
 	/**
 	 * Registers a simple tilling interaction.
 	 *
-	 * <p>The action is filtered with the {@linkplain HoeItem#usagePredicate(ItemUsageContext) default usage predicate}.
-	 *
-	 * @param input  the input block that can be tilled
-	 * @param tilled the tilled result block state
-	 */
-	public static void register(Block input, BlockState tilled) {
-		Objects.requireNonNull(tilled, "tilled block state cannot be null");
-		register(input, HoeItem::usagePredicate, HoeItem.getTillingConsumer(tilled));
-	}
-
-	/**
-	 * Registers a simple tilling interaction.
-	 *
 	 * @param input          the input block that can be tilled
 	 * @param usagePredicate a predicate that filters if the block can be tilled
 	 * @param tilled         the tilled result block state
