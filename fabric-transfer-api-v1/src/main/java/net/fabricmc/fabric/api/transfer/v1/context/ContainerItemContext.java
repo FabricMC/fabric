@@ -36,6 +36,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.impl.transfer.context.PlayerContainerItemContext;
+import net.fabricmc.fabric.impl.transfer.context.SingleSlotContainerItemContext;
 
 /**
  * A context that allows an item-queried {@link Storage} implementation to interact with its containing inventory,
@@ -106,6 +107,16 @@ public interface ContainerItemContext {
 	 */
 	static ContainerItemContext ofPlayerSlot(PlayerEntity player, SingleSlotStorage<ItemVariant> slot) {
 		return new PlayerContainerItemContext(player, slot);
+	}
+
+	/**
+	 * Return a context for a single slot, with no fallback.
+	 *
+	 * @param world The current world.
+	 * @param slot The main slot of the context.
+	 */
+	static ContainerItemContext ofSingleSlot(World world, SingleSlotStorage<ItemVariant> slot) {
+		return new SingleSlotContainerItemContext(world, slot);
 	}
 
 	/**
