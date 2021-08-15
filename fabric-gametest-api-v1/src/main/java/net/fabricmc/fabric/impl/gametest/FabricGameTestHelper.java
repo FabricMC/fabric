@@ -58,8 +58,6 @@ public final class FabricGameTestHelper {
 		});
 	}
 
-	// Moved out to here as I expect we will want a FabricTestContext, or a way for a mod to provide their own context
-	// We can also have better error handling.
 	public static Consumer<TestContext> getTestMethodInvoker(Method method) {
 		return testContext -> {
 			Class<?> testClass = method.getDeclaringClass();
