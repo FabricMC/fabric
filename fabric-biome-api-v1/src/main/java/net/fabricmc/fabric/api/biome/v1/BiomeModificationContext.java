@@ -529,7 +529,7 @@ public interface BiomeModificationContext {
 		}
 
 		/**
-		 * Removes all spawns of the given entity type.
+		 * Removes all spawns of the given spawn group.
 		 *
 		 * <p>Associated JSON property: <code>spawners</code>.
 		 */
