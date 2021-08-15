@@ -129,9 +129,6 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 		increaseProbability = DO_NOTHING;
 	}
 
-	/**
-	 *
-	 */
 	private class TopStorage implements InsertionOnlyStorage<ItemVariant> {
 		@Override
 		public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
