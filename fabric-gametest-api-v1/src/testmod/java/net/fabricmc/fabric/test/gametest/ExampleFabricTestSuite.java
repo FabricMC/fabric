@@ -47,23 +47,17 @@ public class ExampleFabricTestSuite implements FabricGameTest {
 
 	private void afterEach(TestContext context) {
 		context.addInstantFinalTask(() ->
-				context.checkBlock(new BlockPos(0, 5, 0), (block) -> block == Blocks.GOLD_BLOCK, "Expect block to be gold")
+				context.checkBlock(new BlockPos(0, 2, 0), (block) -> block == Blocks.DIAMOND_BLOCK, "Expect block to be gold")
 		);
 	}
 
 	@GameTest(structureName = "fabric-gametest-api-v1-testmod:exampletestsuite.diamond")
 	public void diamond(TestContext context) {
-		context.addInstantFinalTask(() ->
-				context.checkBlock(new BlockPos(0, 2, 0), (block) -> block == Blocks.DIAMOND_BLOCK, "Expect block to be diamond")
-		);
+		// Nothing to do as the structure placed the block.
 	}
 
 	@GameTest(structureName = EMPTY_STRUCTURE)
 	public void noStructure(TestContext context) {
 		context.setBlockState(0, 2, 0, Blocks.DIAMOND_BLOCK);
-
-		context.addInstantFinalTask(() ->
-				context.checkBlock(new BlockPos(0, 2, 0), (block) -> block == Blocks.DIAMOND_BLOCK, "Expect block to be diamond")
-		);
 	}
 }

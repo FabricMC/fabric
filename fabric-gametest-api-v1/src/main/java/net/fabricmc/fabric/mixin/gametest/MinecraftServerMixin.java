@@ -31,7 +31,7 @@ import net.minecraft.test.TestManager;
 public abstract class MinecraftServerMixin {
 	@Inject(method = "tickWorlds", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;updatePlayerLatency()V", shift = At.Shift.AFTER))
 	private void tickWorlds(BooleanSupplier shouldKeepTicking, CallbackInfo callbackInfo) {
-		// Registered by vanilla when isDevelopment is enabled.
+		// Called by vanilla when isDevelopment is enabled.
 		if (!SharedConstants.isDevelopment) {
 			TestManager.INSTANCE.tick();
 		}

@@ -24,7 +24,6 @@ import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ServerResourceManager;
@@ -42,7 +41,6 @@ import net.minecraft.world.level.storage.LevelStorage;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.fabricmc.loader.FabricLoader;
 
-@ApiStatus.Internal
 public final class FabricGameTestHelper {
 	public static final boolean ENABLED = System.getProperty("fabric-api.gametest") != null;
 
@@ -82,8 +80,7 @@ public final class FabricGameTestHelper {
 				throw new RuntimeException("Failed to create instance of test class (%s)".formatted(testClass.getCanonicalName()), e);
 			}
 
-			if (testClass.isAssignableFrom(FabricGameTest.class)) {
-				FabricGameTest fabricGameTest = (FabricGameTest) testObject;
+			if (testObject instanceof FabricGameTest fabricGameTest) {
 				fabricGameTest.invokeTestMethod(testContext, method);
 			} else {
 				invokeTestMethod(testContext, method, testObject);

@@ -27,6 +27,8 @@ import net.minecraft.test.TestServer;
 public abstract class TestServerMixin {
 	@Inject(method = "isDedicated", at = @At("HEAD"), cancellable = true)
 	public void isDedicated(CallbackInfoReturnable<Boolean> cir) {
+		// Allow dedicated server commands to be registered.
+		// Should aid with mods that use this to detect if they are running on a dedicated server as well.
 		cir.setReturnValue(true);
 	}
 }
