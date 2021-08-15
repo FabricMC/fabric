@@ -14,21 +14,27 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.structure;
+package net.fabricmc.fabric.mixin.renderer.client.debughud;
+
+import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+import net.minecraft.client.gui.hud.DebugHud;
 
-import net.fabricmc.fabric.impl.structure.FabricStructureUtil;
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 
-@Mixin(ChunkGeneratorSettings.class)
-public class MixinChunkGeneratorSettings {
-	@Inject(method = "createUndergroundSettings", at = @At("RETURN"))
-	private static void onCreateCavesType(CallbackInfoReturnable<ChunkGeneratorSettings> cir) {
-		FabricStructureUtil.DEFAULT_STRUCTURES_CONFIGS.add(cir.getReturnValue().getStructuresConfig());
+@Mixin(DebugHud.class)
+public class MixinDebugHud {
+	@Inject(at = @At("RETURN"), method = "getLeftText")
+	protected void getLeftText(CallbackInfoReturnable<List<String>> info) {
+		if (RendererAccess.INSTANCE.hasRenderer()) {
+			info.getReturnValue().add("[Fabric] Active renderer: " + RendererAccess.INSTANCE.getRenderer().getClass().getSimpleName());
+		} else {
+			info.getReturnValue().add("[Fabric] Active renderer: none (vanilla)");
+		}
 	}
 }

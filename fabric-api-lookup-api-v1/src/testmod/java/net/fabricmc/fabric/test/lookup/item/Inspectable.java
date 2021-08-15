@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.structure;
+package net.fabricmc.fabric.test.lookup.item;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.WeakHashMap;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
-import net.minecraft.world.gen.chunk.StructuresConfig;
+import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 
-public final class FabricStructureUtil {
-	private FabricStructureUtil() { }
+/**
+ * An item that may provide an arbitrary text for display.
+ */
+public interface Inspectable {
+	/**
+	 * @return A text to print when a player right-clicks the Inspector block with this item.
+	 */
+	Text inspect();
 
-	// This tracks all StructuresConfig objects that have been created with the default set of structures
-	// in order to add mod-created structures that are registered later
-	public static final Set<StructuresConfig> DEFAULT_STRUCTURES_CONFIGS = Collections.newSetFromMap(new WeakHashMap<>());
+	ItemApiLookup<Inspectable, Void> LOOKUP =
+			ItemApiLookup.get(new Identifier("testmod:inspectable"), Inspectable.class, Void.class);
 }

@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -44,10 +45,13 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 abstract class ScreenMixin implements ScreenExtensions {
 	@Shadow
 	@Final
-	protected List<Selectable> field_33815;
+	protected List<Selectable> selectables;
 	@Shadow
 	@Final
 	protected List<Element> children;
+	@Shadow
+	@Final
+	protected List<Drawable> drawables;
 
 	@Unique
 	private ButtonList fabricButtons;
@@ -137,7 +141,7 @@ abstract class ScreenMixin implements ScreenExtensions {
 	public List<ClickableWidget> fabric_getButtons() {
 		// Lazy init to make the list access safe after Screen#init
 		if (this.fabricButtons == null) {
-			this.fabricButtons = new ButtonList(this.field_33815, this.children);
+			this.fabricButtons = new ButtonList(this.drawables, this.selectables, this.children);
 		}
 
 		return this.fabricButtons;

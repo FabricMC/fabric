@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.structure;
+package net.fabricmc.fabric.api.transfer.v1.storage.base;
 
-public interface StructuresConfigHooks {
-	void fabric_updateDefaultEntries();
+import org.jetbrains.annotations.ApiStatus;
+
+/**
+ * An immutable object storing both a resource and an amount, provided for convenience.
+ * @param <T> The type of the stored resource.
+ *
+ * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
+ */
+@ApiStatus.Experimental
+@Deprecated
+public record ResourceAmount<T> (T resource, long amount) {
 }

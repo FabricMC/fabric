@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.structure;
+package net.fabricmc.fabric.impl.transfer.fluid;
 
-import java.util.List;
-import java.util.Map;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.gen.Accessor;
-
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.feature.StructureFeature;
-
-@Mixin(Biome.class)
-public interface BiomeAccessor {
-	@Accessor("structures")
-	Map<Integer, List<StructureFeature<?>>> getStructureLists();
-
-	@Mutable
-	@Accessor("structures")
-	void setStructureLists(Map<Integer, List<StructureFeature<?>>> field_26634);
+/**
+ * Implemented by fluids to cache the FluidVariant with a null tag inside the Fluid object directly.
+ */
+public interface FluidVariantCache {
+	FluidVariant fabric_getCachedFluidVariant();
 }

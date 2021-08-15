@@ -26,19 +26,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.class_6396;
+import net.minecraft.util.SystemDetails;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
-@Mixin(class_6396.class)
+@Mixin(SystemDetails.class)
 public abstract class MixinCrashReport {
 	@Shadow
-	public abstract void method_37123(String string, Supplier<String> supplier);
+	public abstract void addSection(String string, Supplier<String> supplier);
 
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void fillSystemDetails(CallbackInfo info) {
-		method_37123("Fabric Mods", () -> {
+		addSection("Fabric Mods", () -> {
 			Map<String, String> mods = new TreeMap<>();
 
 			for (ModContainer container : FabricLoader.getInstance().getAllMods()) {

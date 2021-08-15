@@ -48,7 +48,7 @@ public class MixinMain {
 
 	@Redirect(method = "main", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/dynamic/RegistryOps;method_36574(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;"))
 	private static RegistryOps<NbtElement> ofRegistryOps(DynamicOps<NbtElement> delegate, ResourceManager resourceManager, DynamicRegistryManager impl) {
-		RegistryOps<NbtElement> registryOps = RegistryOps.of(delegate, resourceManager, impl);
+		RegistryOps<NbtElement> registryOps = RegistryOps.method_36574(delegate, resourceManager, impl);
 		PersistentDynamicRegistryHandler.remapDynamicRegistries((DynamicRegistryManager.Impl) impl, fabric_saveDir);
 		return registryOps;
 	}

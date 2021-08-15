@@ -197,7 +197,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		try {
 			ids.add(new Identifier(literal));
 		} catch (InvalidIdentifierException ex) {
-			this.logger.warn("Received invalid channel identifier \"{}\" from connection {}", literal, this.connection, ex);
+			this.logger.warn("Received invalid channel identifier \"{}\" from connection {}", literal, this.connection);
 		}
 	}
 
