@@ -12,6 +12,9 @@
     "main": [
       "net.fabricmc.fabric.test.transfer.ingame.TransferTestInitializer",
       "net.fabricmc.fabric.test.transfer.unittests.UnitTestsInitializer"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.transfer.ingame.client.FluidVariantRenderTest"
     ]
   }
 }
