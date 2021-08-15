@@ -210,7 +210,7 @@ public interface BlockApiLookup<A, C> {
 	 * @param <T> The block entity class for which an API is exposed.
 	 * @param provider The provider: returns an API if available in the passed block entity with the passed context,
 	 *                 or {@code null} if no API is available.
-	 * @param blockEntityType The block entity types.
+	 * @param blockEntityType The block entity type.
 	 */
 	@SuppressWarnings("unchecked")
 	default <T extends BlockEntity> void registerForBlockEntity(BiFunction<? super T, C, @Nullable A> provider, BlockEntityType<T> blockEntityType) {
