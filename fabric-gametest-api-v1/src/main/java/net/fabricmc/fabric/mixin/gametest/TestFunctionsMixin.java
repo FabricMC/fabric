@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.gametest;
 
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,8 +37,8 @@ public abstract class TestFunctionsMixin {
 	@Inject(at = @At("HEAD"), method = "getTestFunction(Ljava/lang/reflect/Method;)Lnet/minecraft/test/TestFunction;", cancellable = true)
 	private static void getTestFunction(Method method, CallbackInfoReturnable<TestFunction> cir) {
 		GameTest gameTest = method.getAnnotation(GameTest.class);
-		String testSuiteName = method.getDeclaringClass().getSimpleName().toLowerCase();
-		String testCaseName = testSuiteName + "." + method.getName().toLowerCase();
+		String testSuiteName = method.getDeclaringClass().getSimpleName().toLowerCase(Locale.ROOT);
+		String testCaseName = testSuiteName + "." + method.getName().toLowerCase(Locale.ROOT);
 
 		String modId = FabricGameTestModInitializer.getModIdForTestClass(method.getDeclaringClass());
 		String structureName = "%s:%s".formatted(modId, testCaseName);
