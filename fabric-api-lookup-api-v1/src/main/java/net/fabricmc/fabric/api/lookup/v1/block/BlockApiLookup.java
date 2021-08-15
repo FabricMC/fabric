@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.lookup.v1.block;
 
+import java.util.function.BiFunction;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -201,8 +203,25 @@ public interface BlockApiLookup<A, C> {
 	void registerForBlocks(BlockApiProvider<A, C> provider, Block... blocks);
 
 	/**
+	 * Expose the API for instances of the passed block entity type.
+	 * The mapping from the parameters of the query to the API is handled by the passed {@code provider}.
+	 * This overload allows using the correct block entity class directly.
+	 *
+	 * @param <T> The block entity class for which an API is exposed.
+	 * @param provider The provider: returns an API if available in the passed block entity with the passed context,
+	 *                 or {@code null} if no API is available.
+	 * @param blockEntityType The block entity types.
+	 */
+	@SuppressWarnings("unchecked")
+	default <T extends BlockEntity> void registerForBlockEntity(BiFunction<? super T, C, @Nullable A> provider, BlockEntityType<T> blockEntityType) {
+		registerForBlockEntities((blockEntity, context) -> provider.apply((T) blockEntity, context), blockEntityType);
+	}
+
+	/**
 	 * Expose the API for instances of the passed block entity types.
 	 * The mapping from the parameters of the query to the API is handled by the passed {@link BlockEntityApiProvider}.
+	 * This overload allows registering multiple block entity types at once,
+	 * but due to how generics work in java, the provider has to cast to the correct block entity class if necessary.
 	 *
 	 * @param provider The provider.
 	 * @param blockEntityTypes The block entity types.
