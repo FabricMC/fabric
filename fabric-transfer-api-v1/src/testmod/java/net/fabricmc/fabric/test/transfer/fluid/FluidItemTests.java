@@ -29,7 +29,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
-import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -131,11 +130,6 @@ public class FluidItemTests {
 		@Override
 		public List<SingleSlotStorage<ItemVariant>> getAdditionalSlots() {
 			return inventory.getSlots();
-		}
-
-		@Override
-		public World getWorld() {
-			return null; // Bad implementation, but unused by the test!
 		}
 	}
 

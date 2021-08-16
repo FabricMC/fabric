@@ -22,7 +22,6 @@ import java.util.Objects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.Hand;
-import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -33,7 +32,6 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 public class PlayerContainerItemContext implements ContainerItemContext {
 	private final PlayerInventoryStorage playerWrapper;
 	private final SingleSlotStorage<ItemVariant> slot;
-	private final World world;
 
 	public PlayerContainerItemContext(PlayerEntity player, Hand hand) {
 		Objects.requireNonNull(hand, "Hand may not be null.");
@@ -41,13 +39,11 @@ public class PlayerContainerItemContext implements ContainerItemContext {
 		this.playerWrapper = PlayerInventoryStorage.of(player);
 		int slotIndex = hand == Hand.MAIN_HAND ? player.getInventory().selectedSlot : PlayerInventory.OFF_HAND_SLOT;
 		this.slot = playerWrapper.getSlots().get(slotIndex);
-		this.world = player.getEntityWorld();
 	}
 
 	public PlayerContainerItemContext(PlayerEntity player, SingleSlotStorage<ItemVariant> slot) {
 		this.playerWrapper = PlayerInventoryStorage.of(player);
 		this.slot = slot;
-		this.world = player.getEntityWorld();
 	}
 
 	@Override
@@ -64,10 +60,5 @@ public class PlayerContainerItemContext implements ContainerItemContext {
 	@Override
 	public List<SingleSlotStorage<ItemVariant>> getAdditionalSlots() {
 		return playerWrapper.getSlots();
-	}
-
-	@Override
-	public World getWorld() {
-		return world;
 	}
 }

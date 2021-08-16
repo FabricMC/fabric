@@ -25,7 +25,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Hand;
-import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -66,7 +65,6 @@ import net.fabricmc.fabric.impl.transfer.context.SingleSlotContainerItemContext;
  *     In the example above, this is the slot containing the water bucket, used for steps 1 and 2.</li>
  *     <li>{@linkplain #insertOverflow An overflow insertion function}, that can be used to insert items into the context's inventory
  *     when insertion into a specific slot fails. In our example above, this is the function used for step 3.</li>
- *     <li>{@linkplain #getWorld The current world}, that can be used to retrieve client-wide or server-side data.</li>
  *     <li>The context may also contain additional slots, accessible through {@link #getAdditionalSlots}.</li>
  * </ul>
  *
@@ -112,11 +110,10 @@ public interface ContainerItemContext {
 	/**
 	 * Return a context for a single slot, with no fallback.
 	 *
-	 * @param world The current world.
 	 * @param slot The main slot of the context.
 	 */
-	static ContainerItemContext ofSingleSlot(World world, SingleSlotStorage<ItemVariant> slot) {
-		return new SingleSlotContainerItemContext(world, slot);
+	static ContainerItemContext ofSingleSlot(SingleSlotStorage<ItemVariant> slot) {
+		return new SingleSlotContainerItemContext(slot);
 	}
 
 	/**
@@ -219,9 +216,4 @@ public interface ContainerItemContext {
 	 * @return An unmodifiable list containing additional slots of this context. If no additional slot is available, the list is empty.
 	 */
 	List<SingleSlotStorage<ItemVariant>> getAdditionalSlots();
-
-	/**
-	 * Return the world of this context.
-	 */
-	World getWorld();
 }

@@ -20,19 +20,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import net.minecraft.world.World;
-
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 public class SingleSlotContainerItemContext implements ContainerItemContext {
-	private final World world;
 	private final SingleSlotStorage<ItemVariant> slot;
 
-	public SingleSlotContainerItemContext(World world, SingleSlotStorage<ItemVariant> slot) {
-		this.world = Objects.requireNonNull(world);
+	public SingleSlotContainerItemContext(SingleSlotStorage<ItemVariant> slot) {
 		this.slot = Objects.requireNonNull(slot);
 	}
 
@@ -49,10 +45,5 @@ public class SingleSlotContainerItemContext implements ContainerItemContext {
 	@Override
 	public List<SingleSlotStorage<ItemVariant>> getAdditionalSlots() {
 		return Collections.emptyList();
-	}
-
-	@Override
-	public World getWorld() {
-		return world;
 	}
 }
