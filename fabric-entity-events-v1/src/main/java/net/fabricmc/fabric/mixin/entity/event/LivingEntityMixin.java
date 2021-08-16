@@ -73,16 +73,19 @@ abstract class LivingEntityMixin extends EntityMixin {
 
 	@Inject(method = "wakeUp", at = @At("HEAD"))
 	private void onWakeUp(CallbackInfo info) {
+		BlockPos sleepingPos = getSleepingPosition().orElse(null);
+
 		// If actually asleep - this method is often called with data loading, syncing etc. "just to be sure"
-		if (getSleepingPosition().isPresent()) {
-			EntitySleepEvents.STOP_SLEEPING.invoker().onStopSleeping((LivingEntity) (Object) this, getSleepingPosition().get());
+		if (sleepingPos != null) {
+			EntitySleepEvents.STOP_SLEEPING.invoker().onStopSleeping((LivingEntity) (Object) this, sleepingPos);
 		}
 	}
 
 	@Inject(method = "isSleepingInBed", at = @At("RETURN"), cancellable = true)
 	private void onIsSleepingInBed(CallbackInfoReturnable<Boolean> info) {
-		if (getSleepingPosition().isPresent()) {
-			BlockPos sleepingPos = getSleepingPosition().get();
+		BlockPos sleepingPos = getSleepingPosition().orElse(null);
+
+		if (sleepingPos != null) {
 			BlockState bedState = world.getBlockState(sleepingPos);
 			ActionResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, bedState, info.getReturnValueZ());
 
