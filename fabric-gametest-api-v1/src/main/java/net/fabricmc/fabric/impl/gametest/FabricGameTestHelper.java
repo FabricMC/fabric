@@ -39,7 +39,6 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.level.storage.LevelStorage;
 
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
-import net.fabricmc.loader.FabricLoader;
 
 public final class FabricGameTestHelper {
 	public static final boolean ENABLED = System.getProperty("fabric-api.gametest") != null;
@@ -53,7 +52,6 @@ public final class FabricGameTestHelper {
 		LOGGER.info("Starting test server");
 		MinecraftServer server = TestServer.startServer(thread -> {
 			TestServer testServer = new TestServer(thread, session, resourcePackManager, serverResourceManager, getBatches(), BlockPos.ORIGIN, registryManager);
-			FabricLoader.INSTANCE.setGameInstance(testServer);
 			return testServer;
 		});
 	}
