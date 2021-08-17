@@ -40,7 +40,7 @@ import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
 /**
- * Renders the water sprite in the top right of the screen, to make sure that it correctly depends on the position.
+ * Renders the water sprite in the top left of the screen, to make sure that it correctly depends on the position.
  */
 public class FluidVariantRenderTest implements ClientModInitializer {
 	@Override
