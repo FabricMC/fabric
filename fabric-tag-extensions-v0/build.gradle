@@ -5,3 +5,9 @@ moduleDependencies(project, [
 		'fabric-api-base',
 		'fabric-resource-loader-v0'
 ])
+
+dependencies {
+	testmodImplementation project(path: ':fabric-command-api-v1', configuration: 'dev')
+	testmodImplementation project(path: ':fabric-key-binding-api-v1', configuration: 'dev')
+	testmodImplementation project(path: ':fabric-lifecycle-events-v1', configuration: 'dev')
+}
