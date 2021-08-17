@@ -25,6 +25,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.math.MathHelper;
 
+import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
@@ -166,6 +167,32 @@ public final class StorageUtil {
 				if (!view.isResourceBlank() && view.extract(resource, Long.MAX_VALUE, nested) > 0) {
 					// Will abort the extraction.
 					return resource;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Attempt to find a resource stored in the passed storage that can be extracted, and how much of it can be extracted.
+	 *
+	 * @param storage The storage to inspect, may be null.
+	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
+	 * @param <T> The type of the stored resources.
+	 * @return A non-blank resource stored in the storage that can be extracted and the strictly positive amount of it that can be extracted,
+	 * or {@code null} if none could be found.
+	 */
+	@Nullable
+	public static <T> ResourceAmount<T> findExtractableContent(@Nullable Storage<T> storage, @Nullable TransactionContext transaction) {
+		T extractableResource = findExtractableResource(storage, transaction);
+
+		if (extractableResource != null) {
+			try (Transaction nested = Transaction.openNested(transaction)) {
+				long extractableAmount = storage.extract(extractableResource, Long.MAX_VALUE, nested);
+
+				if (extractableAmount > 0) {
+					return new ResourceAmount<>(extractableResource, extractableAmount);
 				}
 			}
 		}

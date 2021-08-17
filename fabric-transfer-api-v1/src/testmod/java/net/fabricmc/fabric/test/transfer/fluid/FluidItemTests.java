@@ -20,6 +20,7 @@ import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BOTTLE;
 import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BUCKET;
 
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
@@ -37,6 +38,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
@@ -45,6 +47,7 @@ public class FluidItemTests {
 	public static void run() {
 		testFluidItemApi();
 		testWaterPotion();
+		testSimpleContentsQuery();
 	}
 
 	private static void testFluidItemApi() {
@@ -161,6 +164,22 @@ public class FluidItemTests {
 
 		if (StorageUtil.findStoredResource(luckyStorage, null) != null) {
 			throw new AssertionError("Found a resource in an unhandled potion.");
+		}
+	}
+
+	private static void testSimpleContentsQuery() {
+		assertEquals(
+				new ResourceAmount<>(FluidVariant.of(Fluids.WATER), BUCKET),
+				StorageUtil.findExtractableContent(
+						ContainerItemContext.withInitial(new ItemStack(Items.WATER_BUCKET)).find(FluidStorage.ITEM),
+						null
+				)
+		);
+	}
+
+	private static void assertEquals(Object expected, Object actual) {
+		if (!Objects.equals(expected, actual)) {
+			throw new AssertionError(String.format("assertEquals failed%nexpected: %s%n but was: %s", expected, actual));
 		}
 	}
 }

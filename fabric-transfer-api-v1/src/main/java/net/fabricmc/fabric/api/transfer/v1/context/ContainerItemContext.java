@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Hand;
 
@@ -34,6 +35,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.impl.transfer.context.InitialContentsContainerItemContext;
 import net.fabricmc.fabric.impl.transfer.context.PlayerContainerItemContext;
 import net.fabricmc.fabric.impl.transfer.context.SingleSlotContainerItemContext;
 
@@ -114,6 +116,27 @@ public interface ContainerItemContext {
 	 */
 	static ContainerItemContext ofSingleSlot(SingleSlotStorage<ItemVariant> slot) {
 		return new SingleSlotContainerItemContext(slot);
+	}
+
+	/**
+	 * Return a context that can accept anything, and will accept (and destroy) any overflow items, with some initial content.
+	 * This can typically be used to check if a stack provides an API, or simulate operations on the returned API,
+	 * for example to simulate how much fluid could be extracted from the stack.
+	 *
+	 * <p>Note that the stack can never be mutated by this function: its contents are copied directly.
+	 */
+	static ContainerItemContext withInitial(ItemStack initialContent) {
+		return withInitial(ItemVariant.of(initialContent), initialContent.getCount());
+	}
+
+	/**
+	 * Return a context that can accept anything, and will accept (and destroy) any overflow items, with some initial variant and amount.
+	 * This can typically be used to check if a variant provides an API, or simulate operations on the returned API,
+	 * for example to simulate how much fluid could be extracted from the variant and amount.
+	 */
+	static ContainerItemContext withInitial(ItemVariant initialVariant, long initialAmount) {
+		StoragePreconditions.notBlankNotNegative(initialVariant, initialAmount);
+		return new InitialContentsContainerItemContext(initialVariant, initialAmount);
 	}
 
 	/**
