@@ -59,9 +59,9 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 
 		if (sprite == null) return;
 
-		float r = ((color >> 16) & 255) / 256f;
-		float g = ((color >> 8) & 255) / 256f;
-		float b = (color & 255) / 256f;
+		float r = ((color >> 16) & 255) / 255f;
+		float g = ((color >> 8) & 255) / 255f;
+		float b = (color & 255) / 255f;
 		RenderSystem.disableDepthTest();
 
 		RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
