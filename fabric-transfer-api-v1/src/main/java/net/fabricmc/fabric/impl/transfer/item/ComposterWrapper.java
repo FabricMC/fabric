@@ -32,7 +32,6 @@ import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldEvents;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -49,13 +48,43 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
  */
 public class ComposterWrapper extends SnapshotParticipant<Float> {
 	// Record is used for convenient constructor, hashcode and equals implementations.
-	private record WorldLocation(World world, BlockPos pos) {
+	// Record is used for convenient constructor, hashcode and equals implementations.
+	private static final class WorldLocation {
+		private final World world;
+		private final BlockPos pos;
+
+		WorldLocation(World world, BlockPos pos) {
+			this.world = world;
+			this.pos = pos;
+		}
+
+		public World world() {
+			return world;
+		}
+
+		public BlockPos pos() {
+			return pos;
+		}
+
 		private BlockState getBlockState() {
 			return world.getBlockState(pos);
 		}
 
 		private void setBlockState(BlockState state) {
 			world.setBlockState(pos, state);
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			WorldLocation that = (WorldLocation) o;
+			return Objects.equals(world, that.world) && Objects.equals(pos, that.pos);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(world, pos);
 		}
 	}
 
@@ -122,7 +151,7 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 				}
 			}
 
-			location.world.syncWorldEvent(WorldEvents.COMPOSTER_USED, location.pos, increaseSuccessful ? 1 : 0);
+			location.world.syncWorldEvent(1500, location.pos, increaseSuccessful ? 1 : 0);
 		}
 
 		// Reset after successful commit.
@@ -156,8 +185,9 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 		}
 	}
 
+	private static final ItemVariant BONE_MEAL = ItemVariant.of(Items.BONE_MEAL);
+
 	private class BottomStorage implements ExtractionOnlyStorage<ItemVariant>, SingleSlotStorage<ItemVariant> {
-		private static final ItemVariant BONE_MEAL = ItemVariant.of(Items.BONE_MEAL);
 
 		private boolean hasBoneMeal() {
 			// We only have bone meal if the level is 8 and no action was scheduled.

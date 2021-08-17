@@ -30,7 +30,8 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
  * @deprecated Superseded by {@link SingleVariantStorage}. Will be removed in a future iteration of the API.
  */
 @ApiStatus.Experimental
-@Deprecated(forRemoval = true)
+@ApiStatus.ScheduledForRemoval
+@Deprecated
 public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmount<FluidVariant>> implements SingleSlotStorage<FluidVariant> {
 	public FluidVariant fluidVariant = FluidVariant.blank();
 	public long amount;

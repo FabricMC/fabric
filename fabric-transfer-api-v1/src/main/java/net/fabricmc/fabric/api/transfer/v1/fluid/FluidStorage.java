@@ -140,7 +140,8 @@ public final class FluidStorage {
 		combinedItemApiProvider(Items.BUCKET).register(EmptyBucketStorage::new);
 		// Register full bucket storage
 		GENERAL_COMBINED_PROVIDER.register(context -> {
-			if (context.getItemVariant().getItem() instanceof BucketItem bucketItem) {
+			if (context.getItemVariant().getItem() instanceof BucketItem) {
+				BucketItem bucketItem = (BucketItem) context.getItemVariant().getItem();
 				Fluid bucketFluid = ((BucketItemAccessor) bucketItem).fabric_getFluid();
 
 				// Make sure the mapping is bidirectional.

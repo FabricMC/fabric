@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.transfer.v1.item;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -84,16 +85,19 @@ public final class ItemStorage {
 		ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
 			Inventory inventoryToWrap = null;
 
-			if (blockEntity instanceof Inventory inventory) {
-				if (blockEntity instanceof ChestBlockEntity && state.getBlock() instanceof ChestBlock chestBlock) {
+			if (blockEntity instanceof Inventory) {
+				Inventory inventory = (Inventory) blockEntity;
+				if (blockEntity instanceof ChestBlockEntity && state.getBlock() instanceof ChestBlock) {
+					ChestBlock chestBlock = (ChestBlock) state.getBlock();
 					inventoryToWrap = ChestBlock.getInventory(chestBlock, state, world, pos, true);
 
 					// For double chests, we need to retrieve a wrapper for each part separately.
-					if (inventoryToWrap instanceof DoubleInventoryAccessor accessor) {
+					if (inventoryToWrap instanceof DoubleInventoryAccessor) {
+						DoubleInventoryAccessor accessor = (DoubleInventoryAccessor) inventoryToWrap;
 						Storage<ItemVariant> first = InventoryStorage.of(accessor.fabric_getFirst(), direction);
 						Storage<ItemVariant> second = InventoryStorage.of(accessor.fabric_getSecond(), direction);
 
-						return new CombinedStorage<>(List.of(first, second));
+						return new CombinedStorage<>(Arrays.asList(first, second));
 					}
 				} else {
 					inventoryToWrap = inventory;

@@ -82,7 +82,7 @@ public class ItemTests {
 
 		// Check commit.
 		if (!testInventory.getStack(0).isEmpty()) throw new AssertionError("Slot 0 should have been empty.");
-		if (!testInventory.getStack(1).isOf(Items.BUCKET) || testInventory.getStack(1).getCount() != 1) throw new AssertionError("Slot 1 should have been a bucket.");
+		if (testInventory.getStack(1).getItem() != Items.BUCKET || testInventory.getStack(1).getCount() != 1) throw new AssertionError("Slot 1 should have been a bucket.");
 
 		checkComparatorOutput(testInventory, null);
 	}
@@ -105,7 +105,7 @@ public class ItemTests {
 
 		@Override
 		public boolean isValid(int slot, ItemStack stack) {
-			return slot != 0 || !stack.isOf(Items.BUCKET); // can't have buckets in slot 0.
+			return slot != 0 || stack.getItem() != Items.BUCKET; // can't have buckets in slot 0.
 		}
 
 		@Override

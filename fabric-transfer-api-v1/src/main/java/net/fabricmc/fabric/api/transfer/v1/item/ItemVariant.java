@@ -23,7 +23,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 
 import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
@@ -65,7 +65,7 @@ public interface ItemVariant extends TransferVariant<Item> {
 	/**
 	 * Retrieve an ItemVariant with an item and an optional tag.
 	 */
-	static ItemVariant of(ItemConvertible item, @Nullable NbtCompound tag) {
+	static ItemVariant of(ItemConvertible item, @Nullable CompoundTag tag) {
 		return ItemVariantImpl.of(item.asItem(), tag);
 	}
 
@@ -107,7 +107,7 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 * {@link #toNbt}. If an error occurs during deserialization, it will be logged
 	 * with the DEBUG level, and a blank variant will be returned.
 	 */
-	static ItemVariant fromNbt(NbtCompound nbt) {
+	static ItemVariant fromNbt(CompoundTag nbt) {
 		return ItemVariantImpl.fromNbt(nbt);
 	}
 

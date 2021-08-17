@@ -48,7 +48,7 @@ public interface PlayerInventoryStorage extends InventoryStorage {
 	 * Return an instance for the passed player's inventory.
 	 */
 	static PlayerInventoryStorage of(PlayerEntity player) {
-		return of(player.getInventory());
+		return of(player.inventory);
 	}
 
 	/**
@@ -59,11 +59,19 @@ public interface PlayerInventoryStorage extends InventoryStorage {
 	}
 
 	/**
-	 * Return a wrapper around the cursor slot of a screen handler,
-	 * i.e. the stack that can be manipulated with {@link ScreenHandler#getCursorStack()} and {@link ScreenHandler#setCursorStack}.
+	 * Return a wrapper around the cursor slot of a player,
+	 * i.e. the stack that can be manipulated with {@link PlayerInventory#getCursorStack} and {@link PlayerInventory#setCursorStack}.
 	 */
-	static SingleSlotStorage<ItemVariant> getCursorStorage(ScreenHandler screenHandler) {
-		return CursorSlotWrapper.get(screenHandler);
+	static SingleSlotStorage<ItemVariant> getCursorStorage(PlayerEntity player) {
+		return getCursorStorage(player.inventory);
+	}
+
+	/**
+	 * Return a wrapper around the cursor slot of a player inventory,
+	 * i.e. the stack that can be manipulated with {@link PlayerInventory#getCursorStack} and {@link PlayerInventory#setCursorStack}.
+	 */
+	static SingleSlotStorage<ItemVariant> getCursorStorage(PlayerInventory playerInventory) {
+		return CursorSlotWrapper.get(playerInventory);
 	}
 
 	/**

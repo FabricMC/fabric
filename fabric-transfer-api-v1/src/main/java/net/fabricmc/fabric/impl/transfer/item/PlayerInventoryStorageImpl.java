@@ -43,17 +43,17 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 	public void offerOrDrop(ItemVariant resource, long amount, TransactionContext tx) {
 		StoragePreconditions.notBlankNotNegative(resource, amount);
 
-		List<SingleSlotStorage<ItemVariant>> mainSlots = getSlots().subList(0, PlayerInventory.MAIN_SIZE);
+		List<SingleSlotStorage<ItemVariant>> mainSlots = getSlots().subList(0, 36);
 
 		// Stack into the main stack first
-		SingleSlotStorage<ItemVariant> selectedSlot = getSlots().get(player.getInventory().selectedSlot);
+		SingleSlotStorage<ItemVariant> selectedSlot = getSlots().get(player.inventory.selectedSlot);
 
 		if (selectedSlot.getResource().equals(resource)) {
 			amount -= selectedSlot.insert(resource, amount, tx);
 		}
 
 		// Stack into the offhand stack otherwise
-		SingleSlotStorage<ItemVariant> offHandSlot = getSlots().get(PlayerInventory.OFF_HAND_SLOT);
+		SingleSlotStorage<ItemVariant> offHandSlot = getSlots().get(40);
 
 		if (offHandSlot.getResource().equals(resource)) {
 			amount -= offHandSlot.insert(resource, amount, tx);

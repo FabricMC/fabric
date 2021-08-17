@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.google.common.collect.MapMaker;
 
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 
@@ -29,25 +30,25 @@ import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
  * Wrapper around the cursor slot of a screen handler.
  */
 public class CursorSlotWrapper extends SingleStackStorage {
-	private static final Map<ScreenHandler, CursorSlotWrapper> WRAPPERS = new MapMaker().weakValues().makeMap();
+	private static final Map<PlayerInventory, CursorSlotWrapper> WRAPPERS = new MapMaker().weakValues().makeMap();
 
-	public static CursorSlotWrapper get(ScreenHandler screenHandler) {
-		return WRAPPERS.computeIfAbsent(screenHandler, CursorSlotWrapper::new);
+	public static CursorSlotWrapper get(PlayerInventory playerInventory) {
+		return WRAPPERS.computeIfAbsent(playerInventory, CursorSlotWrapper::new);
 	}
 
-	private final ScreenHandler screenHandler;
+	private final PlayerInventory playerInventory;
 
-	private CursorSlotWrapper(ScreenHandler screenHandler) {
-		this.screenHandler = screenHandler;
+	private CursorSlotWrapper(PlayerInventory playerInventory) {
+		this.playerInventory = playerInventory;
 	}
 
 	@Override
 	protected ItemStack getStack() {
-		return screenHandler.getCursorStack();
+		return playerInventory.getCursorStack();
 	}
 
 	@Override
 	protected void setStack(ItemStack stack) {
-		screenHandler.setCursorStack(stack);
+		playerInventory.setCursorStack(stack);
 	}
 }

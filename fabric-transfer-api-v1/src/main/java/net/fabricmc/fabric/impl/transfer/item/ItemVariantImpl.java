@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -32,7 +32,7 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 
 public class ItemVariantImpl implements ItemVariant {
-	public static ItemVariant of(Item item, @Nullable NbtCompound tag) {
+	public static ItemVariant of(Item item, @Nullable CompoundTag tag) {
 		Objects.requireNonNull(item, "Item may not be null.");
 
 		// Only tag-less or empty item variants are cached for now.
@@ -46,10 +46,10 @@ public class ItemVariantImpl implements ItemVariant {
 	private static final Logger LOGGER = LogManager.getLogger("fabric-transfer-api-v1/item");
 
 	private final Item item;
-	private final @Nullable NbtCompound nbt;
+	private final @Nullable CompoundTag nbt;
 	private final int hashCode;
 
-	public ItemVariantImpl(Item item, NbtCompound nbt) {
+	public ItemVariantImpl(Item item, CompoundTag nbt) {
 		this.item = item;
 		this.nbt = nbt == null ? null : nbt.copy(); // defensive copy
 		hashCode = Objects.hash(item, nbt);
@@ -62,7 +62,7 @@ public class ItemVariantImpl implements ItemVariant {
 
 	@Nullable
 	@Override
-	public NbtCompound getNbt() {
+	public CompoundTag getNbt() {
 		return nbt;
 	}
 
@@ -72,8 +72,8 @@ public class ItemVariantImpl implements ItemVariant {
 	}
 
 	@Override
-	public NbtCompound toNbt() {
-		NbtCompound result = new NbtCompound();
+	public CompoundTag toNbt() {
+		CompoundTag result = new CompoundTag();
 		result.putString("item", Registry.ITEM.getId(item).toString());
 
 		if (nbt != null) {
@@ -83,10 +83,10 @@ public class ItemVariantImpl implements ItemVariant {
 		return result;
 	}
 
-	public static ItemVariant fromNbt(NbtCompound tag) {
+	public static ItemVariant fromNbt(CompoundTag tag) {
 		try {
 			Item item = Registry.ITEM.get(new Identifier(tag.getString("item")));
-			NbtCompound aTag = tag.contains("tag") ? tag.getCompound("tag") : null;
+			CompoundTag aTag = tag.contains("tag") ? tag.getCompound("tag") : null;
 			return of(item, aTag);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.debug("Tried to load an invalid ItemVariant from NBT: {}", tag, runtimeException);
@@ -101,7 +101,7 @@ public class ItemVariantImpl implements ItemVariant {
 		} else {
 			buf.writeBoolean(true);
 			buf.writeVarInt(Item.getRawId(item));
-			buf.writeNbt(nbt);
+			buf.writeCompoundTag(nbt);
 		}
 	}
 
@@ -110,7 +110,7 @@ public class ItemVariantImpl implements ItemVariant {
 			return ItemVariant.blank();
 		} else {
 			Item item = Item.byRawId(buf.readVarInt());
-			NbtCompound nbt = buf.readNbt();
+			CompoundTag nbt = buf.readCompoundTag();
 			return of(item, nbt);
 		}
 	}

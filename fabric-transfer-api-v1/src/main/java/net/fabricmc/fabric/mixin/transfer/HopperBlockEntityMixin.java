@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HopperBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.Hopper;
 import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.inventory.Inventory;
@@ -42,12 +43,20 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
  * Allows hoppers to interact with ItemVariant storages.
  */
 @Mixin(HopperBlockEntity.class)
-public class HopperBlockEntityMixin {
+public abstract class HopperBlockEntityMixin extends BlockEntity implements Inventory {
+	public HopperBlockEntityMixin(BlockEntityType<?> type) {
+		super(type);
+	}
+
 	@Inject(
 			at = @At("HEAD"),
-			method = "insert(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/inventory/Inventory;)Z",
+			method = "insert()Z",
 			cancellable = true
 	)
+	private void actualHookInsert(CallbackInfoReturnable<Boolean> cir) {
+		hookInsert(this.world, this.pos, this.getCachedState(), this, cir);
+	}
+
 	private static void hookInsert(World world, BlockPos pos, BlockState state, Inventory inventory, CallbackInfoReturnable<Boolean> cir) {
 		Direction direction = state.get(HopperBlock.FACING);
 		BlockPos targetPos = pos.offset(direction);
@@ -61,10 +70,11 @@ public class HopperBlockEntityMixin {
 
 	@Inject(
 			at = @At("HEAD"),
-			method = "extract(Lnet/minecraft/world/World;Lnet/minecraft/block/entity/Hopper;)Z",
+			method = "extract(Lnet/minecraft/block/entity/Hopper;)Z",
 			cancellable = true
 	)
-	private static void hookExtract(World world, Hopper hopper, CallbackInfoReturnable<Boolean> cir) {
+	private static void hookExtract(Hopper hopper, CallbackInfoReturnable<Boolean> cir) {
+		World world = hopper.getWorld();
 		BlockPos sourcePos = new BlockPos(hopper.getHopperX(), hopper.getHopperY() + 1.0D, hopper.getHopperZ());
 		BlockEntity sourceBe = world.getBlockEntity(sourcePos);
 		Storage<ItemVariant> source = ItemStorage.SIDED.find(world, sourcePos, null, sourceBe, Direction.DOWN);
@@ -75,7 +85,9 @@ public class HopperBlockEntityMixin {
 	}
 
 	private static boolean doTransfer(Storage<ItemVariant> from, Storage<ItemVariant> to, @Nullable Object invFrom, @Nullable Object invTo) {
-		if (invFrom instanceof HopperBlockEntityAccessor hopperFrom && invTo instanceof HopperBlockEntityAccessor hopperTo) {
+		if (invFrom instanceof HopperBlockEntityAccessor && invTo instanceof HopperBlockEntityAccessor) {
+			HopperBlockEntityAccessor hopperFrom = (HopperBlockEntityAccessor) invFrom;
+			HopperBlockEntityAccessor hopperTo = (HopperBlockEntityAccessor) invTo;
 			// Hoppers have some special interactions (see HopperBlockEntity#transfer)
 			boolean wasEmpty = hopperTo.isEmpty();
 			boolean moved = StorageUtil.move(from, to, k -> true, 1, null) == 1;

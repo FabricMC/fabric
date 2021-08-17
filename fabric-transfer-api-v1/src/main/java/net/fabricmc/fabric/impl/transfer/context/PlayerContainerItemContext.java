@@ -37,7 +37,7 @@ public class PlayerContainerItemContext implements ContainerItemContext {
 		Objects.requireNonNull(hand, "Hand may not be null.");
 
 		this.playerWrapper = PlayerInventoryStorage.of(player);
-		int slotIndex = hand == Hand.MAIN_HAND ? player.getInventory().selectedSlot : PlayerInventory.OFF_HAND_SLOT;
+		int slotIndex = hand == Hand.MAIN_HAND ? player.inventory.selectedSlot : 40;
 		this.slot = playerWrapper.getSlots().get(slotIndex);
 	}
 

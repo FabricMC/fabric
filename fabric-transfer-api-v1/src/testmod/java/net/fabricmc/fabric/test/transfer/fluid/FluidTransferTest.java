@@ -75,7 +75,7 @@ public class FluidTransferTest implements ModInitializer {
 	private static int finalCommitCount = 0;
 
 	private static SingleSlotStorage<FluidVariant> createWaterStorage() {
-		return new SingleVariantStorage<>() {
+		return new SingleVariantStorage<FluidVariant>() {
 			@Override
 			protected FluidVariant getBlankVariant() {
 				return FluidVariant.blank();

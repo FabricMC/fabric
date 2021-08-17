@@ -86,7 +86,8 @@ public class CombinedProvidersImpl {
 		FluidStorage.ITEM.registerForItems(new Provider(), item);
 		ItemApiLookup.ItemApiProvider<Storage<FluidVariant>, ContainerItemContext> existingProvider = FluidStorage.ITEM.getProvider(item);
 
-		if (existingProvider instanceof Provider registeredProvider) {
+		if (existingProvider instanceof Provider) {
+			Provider registeredProvider = (Provider) existingProvider;
 			return registeredProvider.event;
 		} else {
 			String errorMessage = String.format(

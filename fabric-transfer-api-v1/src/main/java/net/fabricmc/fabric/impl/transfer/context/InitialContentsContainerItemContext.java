@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 public class InitialContentsContainerItemContext implements ContainerItemContext {
-	private final SingleVariantStorage<ItemVariant> backingSlot = new SingleVariantStorage<>() {
+	private final SingleVariantStorage<ItemVariant> backingSlot = new SingleVariantStorage<ItemVariant>() {
 		@Override
 		protected ItemVariant getBlankVariant() {
 			return ItemVariant.blank();
