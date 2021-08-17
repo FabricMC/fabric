@@ -119,6 +119,7 @@ public interface Storage<T> {
 	/**
 	 * Iterate through the contents of this storage, for the scope of the passed transaction.
 	 * Every visited {@link StorageView} represents a stored resource and an amount.
+	 * The iterator doesn't guarantee that a single resource only occurs once during an iteration.
 	 *
 	 * <p>The returned iterator and any view it returns are only valid for the scope of to the passed transaction.
 	 * They should not be used once that transaction is closed.

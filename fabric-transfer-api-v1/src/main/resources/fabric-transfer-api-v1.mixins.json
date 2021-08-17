@@ -3,6 +3,12 @@
   "package": "net.fabricmc.fabric.mixin.transfer",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "FluidMixin"
+    "BucketItemAccessor",
+    "DoubleInventoryAccessor",
+    "DropperBlockMixin",
+    "FluidMixin",
+    "HopperBlockEntityAccessor",
+    "HopperBlockEntityMixin",
+    "ItemMixin"
   ]
 }
