@@ -24,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Hand;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;

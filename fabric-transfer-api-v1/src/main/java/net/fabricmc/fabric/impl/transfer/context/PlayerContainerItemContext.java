@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Objects;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.Hand;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;

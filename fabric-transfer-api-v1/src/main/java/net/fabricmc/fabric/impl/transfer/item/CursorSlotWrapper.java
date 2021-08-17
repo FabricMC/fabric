@@ -22,7 +22,6 @@ import com.google.common.collect.MapMaker;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
 
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 

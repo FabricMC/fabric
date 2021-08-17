@@ -188,7 +188,6 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 	private static final ItemVariant BONE_MEAL = ItemVariant.of(Items.BONE_MEAL);
 
 	private class BottomStorage implements ExtractionOnlyStorage<ItemVariant>, SingleSlotStorage<ItemVariant> {
-
 		private boolean hasBoneMeal() {
 			// We only have bone meal if the level is 8 and no action was scheduled.
 			return increaseProbability == DO_NOTHING && location.getBlockState().get(ComposterBlock.LEVEL) == 8;
