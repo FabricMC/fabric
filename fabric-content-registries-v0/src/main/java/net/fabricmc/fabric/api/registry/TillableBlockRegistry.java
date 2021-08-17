@@ -54,7 +54,7 @@ public final class TillableBlockRegistry {
 	 * @param tillingAction  an action that is executed if the predicate returns {@code true}
 	 */
 	public static void register(Block input, Predicate<ItemUsageContext> usagePredicate, Consumer<ItemUsageContext> tillingAction) {
-		Objects.requireNonNull(input, "input bock cannot be null");
+		Objects.requireNonNull(input, "input block cannot be null");
 		HoeItemAccessor.getTilledBlocks().put(input, Pair.of(usagePredicate, tillingAction));
 	}
 
