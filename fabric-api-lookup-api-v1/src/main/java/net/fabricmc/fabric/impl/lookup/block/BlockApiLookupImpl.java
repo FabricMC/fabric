@@ -182,6 +182,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 		return contextClass;
 	}
 
+	@Override
 	@Nullable
 	public BlockApiProvider<A, C> getProvider(Block block) {
 		return providerMap.get(block);

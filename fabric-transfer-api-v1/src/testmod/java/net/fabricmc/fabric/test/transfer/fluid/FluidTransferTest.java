@@ -33,7 +33,8 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class FluidTransferTest implements ModInitializer {
@@ -60,6 +61,8 @@ public class FluidTransferTest implements ModInitializer {
 
 		testFluidStorage();
 		testTransactionExceptions();
+		ItemTests.run();
+		FluidItemTests.run();
 	}
 
 	private static void registerBlock(Block block, String name) {
@@ -69,10 +72,15 @@ public class FluidTransferTest implements ModInitializer {
 	}
 
 	private static final FluidVariant TAGGED_WATER, TAGGED_WATER_2, WATER, LAVA;
-	private static int markDirtyCount = 0;
+	private static int finalCommitCount = 0;
 
-	private static SingleFluidStorage createWaterStorage() {
-		return new SingleFluidStorage() {
+	private static SingleSlotStorage<FluidVariant> createWaterStorage() {
+		return new SingleVariantStorage<>() {
+			@Override
+			protected FluidVariant getBlankVariant() {
+				return FluidVariant.blank();
+			}
+
 			@Override
 			protected long getCapacity(FluidVariant fluidVariant) {
 				return BUCKET * 2;
@@ -84,8 +92,8 @@ public class FluidTransferTest implements ModInitializer {
 			}
 
 			@Override
-			protected void markDirty() {
-				markDirtyCount++;
+			protected void onFinalCommit() {
+				finalCommitCount++;
 			}
 		};
 	}
@@ -100,7 +108,7 @@ public class FluidTransferTest implements ModInitializer {
 	}
 
 	private static void testFluidStorage() {
-		SingleFluidStorage waterStorage = createWaterStorage();
+		SingleSlotStorage<FluidVariant> waterStorage = createWaterStorage();
 
 		// Test content
 		if (!waterStorage.isResourceBlank()) throw new AssertionError("Should have been blank");
@@ -155,15 +163,15 @@ public class FluidTransferTest implements ModInitializer {
 		// Without outer commit
 		insertWaterWithNesting(waterStorage, false);
 		if (waterStorage.getAmount() != 0) throw new AssertionError("Amount should have been reverted to zero");
-		if (markDirtyCount != 0) throw new AssertionError("Nothing should have called markDirty() yet (no outer commit)");
+		if (finalCommitCount != 0) throw new AssertionError("Nothing should have called onFinalCommit() yet (no outer commit)");
 
 		// With outer commit
 		insertWaterWithNesting(waterStorage, true);
 		if (waterStorage.getAmount() != 2 * BUCKET) throw new AssertionError("Outer was committed, so we should still have two buckets");
-		if (markDirtyCount != 1) throw new AssertionError("markDirty() should have been called exactyl once.");
+		if (finalCommitCount != 1) throw new AssertionError("onFinalCommit() should have been called exactly once.");
 	}
 
-	private static void insertWaterWithNesting(SingleFluidStorage waterStorage, boolean doOuterCommit) {
+	private static void insertWaterWithNesting(SingleSlotStorage<FluidVariant> waterStorage, boolean doOuterCommit) {
 		try (Transaction tx = Transaction.openOuter()) {
 			if (waterStorage.getAmount() != 0) throw new AssertionError("Initial amount is wrong");
 			if (waterStorage.insert(WATER, BUCKET, tx) != BUCKET) throw new AssertionError("Water insertion failed");
