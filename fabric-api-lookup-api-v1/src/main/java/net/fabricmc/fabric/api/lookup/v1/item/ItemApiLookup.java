@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.lookup.v1.item;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -153,6 +154,13 @@ public interface ItemApiLookup<A, C> {
 	 * Return the context class of this lookup.
 	 */
 	Class<C> contextClass();
+
+	/**
+	 * Return the provider for the passed item (registered with one of the {@code register} functions), or null if none was registered (yet).
+	 * Queries should go through {@link #find}, only use this to inspect registered providers!
+	 */
+	@Nullable
+	ItemApiProvider<A, C> getProvider(Item item);
 
 	@FunctionalInterface
 	interface ItemApiProvider<A, C> {

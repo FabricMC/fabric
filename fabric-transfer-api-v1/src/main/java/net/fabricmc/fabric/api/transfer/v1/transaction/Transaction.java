@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.transfer.v1.transaction;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
@@ -94,6 +95,13 @@ public interface Transaction extends AutoCloseable, TransactionContext {
 	 */
 	static boolean isOpen() {
 		return TransactionManagerImpl.MANAGERS.get().isOpen();
+	}
+
+	/**
+	 * Open a nested transaction if {@code maybeParent} is non null, or an outer transaction if {@code maybeParent} is null.
+	 */
+	static Transaction openNested(@Nullable TransactionContext maybeParent) {
+		return maybeParent == null ? openOuter() : maybeParent.openNested();
 	}
 
 	/**

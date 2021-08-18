@@ -22,21 +22,15 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
 /**
- * A storage that can store a single fluid variant at any given time.
- * Implementors should at least override {@link #getCapacity(FluidVariant)}, and probably {@link #markDirty} as well.
- *
- * <p>{@link #canInsert} and {@link #canExtract} can be used for more precise control over which fluids may be inserted or extracted.
- * If one of these two functions is overridden to always return false, implementors may also wish to override
- * {@link #supportsInsertion} and/or {@link #supportsExtraction}.
- *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
+ * @deprecated Superseded by {@link SingleVariantStorage}. Will be removed in a future iteration of the API.
  */
 @ApiStatus.Experimental
+@ApiStatus.ScheduledForRemoval
 @Deprecated
 public abstract class SingleFluidStorage extends SnapshotParticipant<ResourceAmount<FluidVariant>> implements SingleSlotStorage<FluidVariant> {
 	public FluidVariant fluidVariant = FluidVariant.blank();

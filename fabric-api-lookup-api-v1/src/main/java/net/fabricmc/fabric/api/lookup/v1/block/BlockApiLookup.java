@@ -246,6 +246,13 @@ public interface BlockApiLookup<A, C> {
 	 */
 	Class<C> contextClass();
 
+	/**
+	 * Return the provider for the passed block (registered with one of the {@code register} functions), or null if none was registered (yet).
+	 * Queries should go through {@link #find}, only use this to inspect registered providers!
+	 */
+	@Nullable
+	BlockApiProvider<A, C> getProvider(Block block);
+
 	@FunctionalInterface
 	interface BlockApiProvider<A, C> {
 		/**
