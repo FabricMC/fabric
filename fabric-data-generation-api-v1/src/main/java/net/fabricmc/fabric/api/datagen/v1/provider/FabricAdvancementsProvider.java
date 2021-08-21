@@ -21,9 +21,11 @@ import java.nio.file.Path;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 import net.minecraft.advancement.Advancement;
 import net.minecraft.data.DataCache;
@@ -31,6 +33,8 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 /**
  * Extend this class and implement {@link FabricAdvancementsProvider#generateAdvancement}.
@@ -53,6 +57,17 @@ public abstract class FabricAdvancementsProvider implements DataProvider {
 	 */
 	public abstract void generateAdvancement(Consumer<Advancement> consumer);
 
+	/**
+	 * Return a new exporter that applies the specified conditions to any advancement it receives.
+	 */
+	protected Consumer<Advancement> withConditions(Consumer<Advancement> exporter, ConditionJsonProvider... conditions) {
+		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
+		return advancement -> {
+			FabricDataGenHelper.addConditions(advancement, conditions);
+			exporter.accept(advancement);
+		};
+	}
+
 	@Override
 	public void run(DataCache cache) throws IOException {
 		final Set<Identifier> identifiers = Sets.newHashSet();
@@ -65,7 +80,10 @@ public abstract class FabricAdvancementsProvider implements DataProvider {
 				throw new IllegalStateException("Duplicate advancement " + advancement.getId());
 			}
 
-			DataProvider.writeToPath(GSON, cache, advancement.createTask().toJson(), getOutputPath(advancement));
+			JsonObject advancementJson = advancement.createTask().toJson();
+			ConditionJsonProvider.write(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
+
+			DataProvider.writeToPath(GSON, cache, advancementJson, getOutputPath(advancement));
 		}
 	}
 

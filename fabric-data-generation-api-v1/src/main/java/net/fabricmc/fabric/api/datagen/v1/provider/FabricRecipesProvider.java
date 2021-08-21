@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 
@@ -31,6 +32,8 @@ import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 /**
  * Extend this class and implement {@link FabricRecipesProvider#generateRecipes}.
@@ -50,6 +53,17 @@ public abstract class FabricRecipesProvider extends RecipesProvider {
 	 */
 	protected abstract void generateRecipes(Consumer<RecipeJsonProvider> exporter);
 
+	/**
+	 * Return a new exporter that applies the specified conditions to any recipe json provider it receives.
+	 */
+	protected Consumer<RecipeJsonProvider> withConditions(Consumer<RecipeJsonProvider> exporter, ConditionJsonProvider... conditions) {
+		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
+		return json -> {
+			FabricDataGenHelper.addConditions(json, conditions);
+			exporter.accept(json);
+		};
+	}
+
 	@Override
 	public void run(DataCache cache) {
 		Path path = this.root.getOutput();
@@ -61,11 +75,16 @@ public abstract class FabricRecipesProvider extends RecipesProvider {
 				throw new IllegalStateException("Duplicate recipe " + identifier);
 			}
 
-			saveRecipe(cache, provider.toJson(), path.resolve("data/" + identifier.getNamespace() + "/recipes/" + identifier.getPath() + ".json"));
-			JsonObject jsonObject = provider.toAdvancementJson();
+			JsonObject recipeJson = provider.toJson();
+			ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(provider);
+			ConditionJsonProvider.write(recipeJson, conditions);
 
-			if (jsonObject != null) {
-				saveRecipeAdvancement(cache, jsonObject, path.resolve("data/" + identifier.getNamespace() + "/advancements/" + provider.getAdvancementId().getPath() + ".json"));
+			saveRecipe(cache, recipeJson, path.resolve("data/" + identifier.getNamespace() + "/recipes/" + identifier.getPath() + ".json"));
+			JsonObject advancementJson = provider.toAdvancementJson();
+
+			if (advancementJson != null) {
+				ConditionJsonProvider.write(advancementJson, conditions);
+				saveRecipeAdvancement(cache, advancementJson, path.resolve("data/" + identifier.getNamespace() + "/advancements/" + provider.getAdvancementId().getPath() + ".json"));
 			}
 		});
 	}
