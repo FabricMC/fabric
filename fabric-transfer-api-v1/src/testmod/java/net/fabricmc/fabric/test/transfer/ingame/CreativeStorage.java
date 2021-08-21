@@ -14,37 +14,38 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.transfer.fluid;
-
-import java.util.Iterator;
+package net.fabricmc.fabric.test.transfer.ingame;
 
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.Items;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
-public class CreativeFluidStorage implements ExtractionOnlyStorage<FluidVariant>, StorageView<FluidVariant> {
-	public static final CreativeFluidStorage WATER = new CreativeFluidStorage(FluidVariant.of(Fluids.WATER));
-	public static final CreativeFluidStorage LAVA = new CreativeFluidStorage(FluidVariant.of(Fluids.LAVA));
+public class CreativeStorage<T extends TransferVariant<?>> implements ExtractionOnlyStorage<T>, SingleSlotStorage<T> {
+	public static final CreativeStorage<FluidVariant> WATER = new CreativeStorage<>(FluidVariant.of(Fluids.WATER));
+	public static final CreativeStorage<FluidVariant> LAVA = new CreativeStorage<>(FluidVariant.of(Fluids.LAVA));
+	public static final CreativeStorage<ItemVariant> DIAMONDS = new CreativeStorage<>(ItemVariant.of(Items.DIAMOND));
 
-	private final FluidVariant infiniteFluid;
+	private final T infiniteResource;
 
-	private CreativeFluidStorage(FluidVariant infiniteFluid) {
-		this.infiniteFluid = infiniteFluid;
+	private CreativeStorage(T infiniteResource) {
+		this.infiniteResource = infiniteResource;
 	}
 
 	@Override
 	public boolean isResourceBlank() {
-		return infiniteFluid.isBlank();
+		return infiniteResource.isBlank();
 	}
 
 	@Override
-	public FluidVariant getResource() {
-		return infiniteFluid;
+	public T getResource() {
+		return infiniteResource;
 	}
 
 	@Override
@@ -58,19 +59,14 @@ public class CreativeFluidStorage implements ExtractionOnlyStorage<FluidVariant>
 	}
 
 	@Override
-	public long extract(FluidVariant resource, long maxAmount, TransactionContext transaction) {
+	public long extract(T resource, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notBlankNotNegative(resource, maxAmount);
 
-		if (resource.equals(infiniteFluid)) {
+		if (resource.equals(infiniteResource)) {
 			return maxAmount;
 		} else {
 			return 0;
 		}
-	}
-
-	@Override
-	public Iterator<StorageView<FluidVariant>> iterator(TransactionContext transaction) {
-		return SingleViewIterator.create(this, transaction);
 	}
 
 	@Override

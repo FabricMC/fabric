@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.transfer.fluid;
+package net.fabricmc.fabric.test.transfer.ingame;
 
 import java.util.Collections;
 import java.util.Iterator;

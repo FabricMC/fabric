@@ -7,7 +7,6 @@
     "DoubleInventoryAccessor",
     "DropperBlockMixin",
     "FluidMixin",
-    "HopperBlockEntityAccessor",
     "HopperBlockEntityMixin",
     "ItemMixin"
   ]

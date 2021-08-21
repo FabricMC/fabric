@@ -10,7 +10,8 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.transfer.fluid.FluidTransferTest"
+      "net.fabricmc.fabric.test.transfer.ingame.TransferTestInitializer",
+      "net.fabricmc.fabric.test.transfer.unittests.UnitTestsInitializer"
     ]
   }
 }
