@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.transfer.fluid;
+package net.fabricmc.fabric.test.transfer.unittests;
 
 import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BOTTLE;
 import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BUCKET;
@@ -43,7 +43,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
-public class FluidItemTests {
+class FluidItemTests {
 	public static void run() {
 		testFluidItemApi();
 		testWaterPotion();
