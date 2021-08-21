@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.transfer.fluid;
+package net.fabricmc.fabric.test.transfer.ingame;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -31,7 +31,7 @@ public class FluidChuteBlockEntity extends BlockEntity {
 	private int tickCounter = 0;
 
 	public FluidChuteBlockEntity(BlockPos pos, BlockState state) {
-		super(FluidTransferTest.FLUID_CHUTE_TYPE, pos, state);
+		super(TransferTestInitializer.FLUID_CHUTE_TYPE, pos, state);
 	}
 
 	@SuppressWarnings("ConstantConditions")
