@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.transfer.fluid;
+package net.fabricmc.fabric.test.transfer.ingame;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Tickable;
@@ -30,7 +30,7 @@ public class FluidChuteBlockEntity extends BlockEntity implements Tickable {
 	private int tickCounter = 0;
 
 	public FluidChuteBlockEntity() {
-		super(FluidTransferTest.FLUID_CHUTE_TYPE);
+		super(TransferTestInitializer.FLUID_CHUTE_TYPE);
 	}
 
 	@SuppressWarnings("ConstantConditions")

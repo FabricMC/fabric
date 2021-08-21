@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.transfer.fluid;
+package net.fabricmc.fabric.test.transfer.unittests;
 
 import java.util.stream.IntStream;
 
@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 /**
  * Tests for the item transfer APIs.
  */
-public class ItemTests {
+class ItemTests {
 	public static void run() {
 		testInventoryWrappers();
 		testLimitedStackCountInventory();

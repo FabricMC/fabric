@@ -16,13 +16,12 @@
 
 package net.fabricmc.fabric.mixin.transfer;
 
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.block.HopperBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -31,7 +30,6 @@ import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
@@ -49,56 +47,63 @@ public abstract class HopperBlockEntityMixin extends BlockEntity implements Inve
 	}
 
 	@Inject(
-			at = @At("HEAD"),
+			at = @At(
+					value = "INVOKE_ASSIGN",
+					target = "Lnet/minecraft/block/entity/HopperBlockEntity;getOutputInventory()Lnet/minecraft/inventory/Inventory;"
+			),
 			method = "insert()Z",
-			cancellable = true
+			locals = LocalCapture.CAPTURE_FAILHARD,
+			cancellable = true,
+			allow = 1
 	)
-	private void actualHookInsert(CallbackInfoReturnable<Boolean> cir) {
-		hookInsert(this.world, this.pos, this.getCachedState(), this, cir);
-	}
+	private void hookInsert(CallbackInfoReturnable<Boolean> cir, Inventory targetInventory) {
+		// Let vanilla handle the transfer if it found an inventory.
+		if (targetInventory != null) return;
 
-	private static void hookInsert(World world, BlockPos pos, BlockState state, Inventory inventory, CallbackInfoReturnable<Boolean> cir) {
-		Direction direction = state.get(HopperBlock.FACING);
+		// Otherwise inject our transfer logic.
+		Direction direction = getCachedState().get(HopperBlock.FACING);
 		BlockPos targetPos = pos.offset(direction);
-		BlockEntity targetBe = world.getBlockEntity(targetPos);
-		Storage<ItemVariant> target = ItemStorage.SIDED.find(world, targetPos, null, targetBe, direction.getOpposite());
+		Storage<ItemVariant> target = ItemStorage.SIDED.find(world, targetPos, direction.getOpposite());
 
 		if (target != null) {
-			cir.setReturnValue(doTransfer(InventoryStorage.of(inventory, direction), target, inventory, targetBe));
+			long moved = StorageUtil.move(
+					InventoryStorage.of(this, direction),
+					target,
+					iv -> true,
+					1,
+					null
+			);
+			cir.setReturnValue(moved == 1);
 		}
 	}
 
 	@Inject(
-			at = @At("HEAD"),
+			at = @At(
+					value = "INVOKE_ASSIGN",
+					target = "Lnet/minecraft/block/entity/HopperBlockEntity;getInputInventory(Lnet/minecraft/block/entity/Hopper;)Lnet/minecraft/inventory/Inventory;"
+			),
 			method = "extract(Lnet/minecraft/block/entity/Hopper;)Z",
-			cancellable = true
+			locals = LocalCapture.CAPTURE_FAILHARD,
+			cancellable = true,
+			allow = 1
 	)
-	private static void hookExtract(Hopper hopper, CallbackInfoReturnable<Boolean> cir) {
-		World world = hopper.getWorld();
+	private static void hookExtract(Hopper hopper, CallbackInfoReturnable<Boolean> cir, Inventory inputInventory) {
+		// Let vanilla handle the transfer if it found an inventory.
+		if (inputInventory != null) return;
+
+		// Otherwise inject our transfer logic.
 		BlockPos sourcePos = new BlockPos(hopper.getHopperX(), hopper.getHopperY() + 1.0D, hopper.getHopperZ());
-		BlockEntity sourceBe = world.getBlockEntity(sourcePos);
-		Storage<ItemVariant> source = ItemStorage.SIDED.find(world, sourcePos, null, sourceBe, Direction.DOWN);
+		Storage<ItemVariant> source = ItemStorage.SIDED.find(hopper.getWorld(), sourcePos, Direction.DOWN);
 
 		if (source != null) {
-			cir.setReturnValue(doTransfer(source, InventoryStorage.of(hopper, Direction.UP), sourceBe, hopper));
-		}
-	}
-
-	private static boolean doTransfer(Storage<ItemVariant> from, Storage<ItemVariant> to, @Nullable Object invFrom, @Nullable Object invTo) {
-		if (invFrom instanceof HopperBlockEntityAccessor && invTo instanceof HopperBlockEntityAccessor) {
-			HopperBlockEntityAccessor hopperFrom = (HopperBlockEntityAccessor) invFrom;
-			HopperBlockEntityAccessor hopperTo = (HopperBlockEntityAccessor) invTo;
-			// Hoppers have some special interactions (see HopperBlockEntity#transfer)
-			boolean wasEmpty = hopperTo.isEmpty();
-			boolean moved = StorageUtil.move(from, to, k -> true, 1, null) == 1;
-
-			if (moved && wasEmpty && hopperTo.fabric_getLastTickTime() >= hopperFrom.fabric_getLastTickTime()) {
-				hopperTo.fabric_callSetCooldown(7);
-			}
-
-			return moved;
-		} else {
-			return StorageUtil.move(from, to, k -> true, 1, null) == 1;
+			long moved = StorageUtil.move(
+					source,
+					InventoryStorage.of(hopper, Direction.UP),
+					iv -> true,
+					1,
+					null
+			);
+			cir.setReturnValue(moved == 1);
 		}
 	}
 }

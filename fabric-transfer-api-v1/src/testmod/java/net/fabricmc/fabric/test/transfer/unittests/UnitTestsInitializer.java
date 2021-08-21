@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.transfer;
+package net.fabricmc.fabric.test.transfer.unittests;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import org.apache.logging.log4j.LogManager;
 
-import net.minecraft.block.entity.HopperBlockEntity;
-import net.minecraft.inventory.Inventory;
+import net.fabricmc.api.ModInitializer;
 
-/**
- * Hopper accessors, for use in {@link HopperBlockEntityMixin}.
- */
-@Mixin(HopperBlockEntity.class)
-public interface HopperBlockEntityAccessor extends Inventory {
-	@Invoker("setCooldown")
-	void fabric_callSetCooldown(int cooldown);
-
-	@Accessor("lastTickTime")
-	long fabric_getLastTickTime();
+public class UnitTestsInitializer implements ModInitializer {
+	@Override
+	public void onInitialize() {
+		TransactionExceptionsTests.run();
+		FluidTests.run();
+		ItemTests.run();
+		FluidItemTests.run();
+		LogManager.getLogger("fabric-transfer-api-v1 testmod").info("Transfer API unit tests successful.");
+	}
 }

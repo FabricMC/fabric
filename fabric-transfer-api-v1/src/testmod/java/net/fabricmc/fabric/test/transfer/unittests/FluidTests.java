@@ -14,66 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.transfer.fluid;
+package net.fabricmc.fabric.test.transfer.unittests;
 
 import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BUCKET;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.Material;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
-public class FluidTransferTest implements ModInitializer {
-	public static final String MOD_ID = "fabric-transfer-api-v1-testmod";
-
-	private static final Block INFINITE_WATER_SOURCE = new Block(AbstractBlock.Settings.of(Material.METAL));
-	private static final Block INFINITE_LAVA_SOURCE = new Block(AbstractBlock.Settings.of(Material.METAL));
-	private static final Block FLUID_CHUTE = new FluidChuteBlock();
-	private static final Item EXTRACT_STICK = new ExtractStickItem();
-	public static BlockEntityType<FluidChuteBlockEntity> FLUID_CHUTE_TYPE;
-
-	@Override
-	public void onInitialize() {
-		registerBlock(INFINITE_WATER_SOURCE, "infinite_water_source");
-		registerBlock(INFINITE_LAVA_SOURCE, "infinite_lava_source");
-		registerBlock(FLUID_CHUTE, "fluid_chute");
-		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "extract_stick"), EXTRACT_STICK);
-
-		FLUID_CHUTE_TYPE = BlockEntityType.Builder.create(FluidChuteBlockEntity::new, FLUID_CHUTE).build(null);
-		Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "fluid_chute"), FLUID_CHUTE_TYPE);
-
-		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeFluidStorage.WATER, INFINITE_WATER_SOURCE);
-		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeFluidStorage.LAVA, INFINITE_LAVA_SOURCE);
-
-		// Obsidian is now a trash can :-P
-		ItemStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashingStorage.ITEM, Blocks.OBSIDIAN);
-
+class FluidTests {
+	public static void run() {
 		testFluidStorage();
-		testTransactionExceptions();
-		ItemTests.run();
-		FluidItemTests.run();
-	}
-
-	private static void registerBlock(Block block, String name) {
-		Identifier id = new Identifier(MOD_ID, name);
-		Registry.register(Registry.BLOCK, id, block);
-		Registry.register(Registry.ITEM, id, new BlockItem(block, new Item.Settings().group(ItemGroup.MISC)));
 	}
 
 	private static final FluidVariant TAGGED_WATER, TAGGED_WATER_2, WATER, LAVA;
@@ -192,63 +147,6 @@ public class FluidTransferTest implements ModInitializer {
 			if (doOuterCommit) {
 				tx.commit();
 			}
-		}
-	}
-
-	private static int callbacksInvoked = 0;
-
-	/**
-	 * Make sure that transaction global state stays valid in case of exceptions.
-	 */
-	private static void testTransactionExceptions() {
-		// Test exception inside the try.
-		ensureException(() -> {
-			try (Transaction tx = Transaction.openOuter()) {
-				tx.addCloseCallback((t, result) -> {
-					callbacksInvoked++; throw new RuntimeException("Close.");
-				});
-				throw new RuntimeException("Inside try.");
-			}
-		}, "Exception should have propagated through the transaction.");
-		if (callbacksInvoked != 1) throw new AssertionError("Callback should have been invoked.");
-
-		// Test exception inside the close.
-		callbacksInvoked = 0;
-		ensureException(() -> {
-			try (Transaction tx = Transaction.openOuter()) {
-				tx.addCloseCallback((t, result) -> {
-					callbacksInvoked++; throw new RuntimeException("Close 1.");
-				});
-				tx.addCloseCallback((t, result) -> {
-					callbacksInvoked++; throw new RuntimeException("Close 2.");
-				});
-				tx.addOuterCloseCallback(result -> {
-					callbacksInvoked++; throw new RuntimeException("Outer close 1.");
-				});
-				tx.addOuterCloseCallback(result -> {
-					callbacksInvoked++; throw new RuntimeException("Outer close 2.");
-				});
-			}
-		}, "Exceptions in close callbacks should be propagated through the transaction.");
-		if (callbacksInvoked != 4) throw new AssertionError("All 4 callbacks should have been invoked, only so many were: " + callbacksInvoked);
-
-		// Test that transaction state is still OK after these exceptions.
-		try (Transaction tx = Transaction.openOuter()) {
-			tx.commit();
-		}
-	}
-
-	private static void ensureException(Runnable runnable, String message) {
-		boolean failed = false;
-
-		try {
-			runnable.run();
-		} catch (Throwable t) {
-			failed = true;
-		}
-
-		if (!failed) {
-			throw new AssertionError(message);
 		}
 	}
 }
