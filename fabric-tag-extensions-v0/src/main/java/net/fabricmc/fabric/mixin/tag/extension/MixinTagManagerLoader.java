@@ -37,7 +37,7 @@ public abstract class MixinTagManagerLoader {
 	@Inject(method = "method_33179", at = @At("HEAD"), cancellable = true)
 	private void method_33179(ResourceManager resourceManager, Executor executor, List<?> list, RequiredTagList<?> requiredTagList, CallbackInfo ci) {
 		// Don't load dynamic registry tags now, we need to load them after the dynamic registry.
-		if (TagFactoryImpl.DYNAMICS.contains(requiredTagList)) {
+		if (TagFactoryImpl.isDynamic(requiredTagList)) {
 			ci.cancel();
 		}
 	}

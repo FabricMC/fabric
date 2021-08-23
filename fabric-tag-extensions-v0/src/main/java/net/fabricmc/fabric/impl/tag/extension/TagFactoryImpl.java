@@ -17,9 +17,7 @@
 package net.fabricmc.fabric.impl.tag.extension;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
@@ -50,7 +48,6 @@ public final class TagFactoryImpl<T> implements TagFactory<T> {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static final Map<RegistryKey<? extends Registry<?>>, RequiredTagList<?>> TAG_LISTS = new HashMap<>();
-	public static final Set<RequiredTagList<?>> DYNAMICS = new HashSet<>();
 
 	public static <T> TagFactory<T> of(Supplier<TagGroup<T>> tagGroupSupplier) {
 		return new TagFactoryImpl<>(tagGroupSupplier);
@@ -68,11 +65,6 @@ public final class TagFactoryImpl<T> implements TagFactory<T> {
 		} else {
 			tagList = RequiredTagListRegistry.register(registryKey, dataType);
 			TAG_LISTS.put(registryKey, tagList);
-
-			// Check whether the registry dynamic.
-			if (DynamicRegistryManagerAccessor.getInfos().containsKey(registryKey)) {
-				DYNAMICS.add(tagList);
-			}
 		}
 
 		return of(tagList::getGroup);
@@ -91,19 +83,25 @@ public final class TagFactoryImpl<T> implements TagFactory<T> {
 		Stopwatch stopwatch = Stopwatch.createStarted();
 		int loadedTags = 0;
 
-		for (RequiredTagList<?> tagList : DYNAMICS) {
-			RegistryKey<? extends Registry<?>> registryKey = tagList.getRegistryKey();
-			Registry<?> registry = registryManager.get(registryKey);
-			TagGroupLoader<?> tagGroupLoader = new TagGroupLoader<>(registry::getOrEmpty, tagList.getDataType());
-			TagGroup<?> tagGroup = tagGroupLoader.load(resourceManager);
-			((FabricTagManagerHooks) ServerTagManagerHolder.getTagManager()).fabric_addTagGroup(registryKey, tagGroup);
-			tagList.updateTagManager(ServerTagManagerHolder.getTagManager());
-			loadedTags += tagGroup.getTags().size();
+		for (RequiredTagList<?> tagList : TAG_LISTS.values()) {
+			if (isDynamic(tagList)) {
+				RegistryKey<? extends Registry<?>> registryKey = tagList.getRegistryKey();
+				Registry<?> registry = registryManager.get(registryKey);
+				TagGroupLoader<?> tagGroupLoader = new TagGroupLoader<>(registry::getOrEmpty, tagList.getDataType());
+				TagGroup<?> tagGroup = tagGroupLoader.load(resourceManager);
+				((FabricTagManagerHooks) ServerTagManagerHolder.getTagManager()).fabric_addTagGroup(registryKey, tagGroup);
+				tagList.updateTagManager(ServerTagManagerHolder.getTagManager());
+				loadedTags += tagGroup.getTags().size();
+			}
 		}
 
 		if (loadedTags > 0) {
 			LOGGER.info("Loaded {} dynamic registry tags in {}", loadedTags, stopwatch);
 		}
+	}
+
+	public static boolean isDynamic(RequiredTagList<?> tagList) {
+		return DynamicRegistryManagerAccessor.getInfos().containsKey(tagList.getRegistryKey());
 	}
 
 	private final Supplier<TagGroup<T>> tagGroupSupplier;
