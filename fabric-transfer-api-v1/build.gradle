@@ -11,6 +11,7 @@ moduleDependencies(project, [
 
 dependencies {
 	testmodImplementation project(path: ':fabric-object-builder-api-v1', configuration: 'dev')
+	testmodImplementation project(path: ':fabric-rendering-v1', configuration: 'dev')
 	testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'dev')
 	testmodImplementation project(path: ':fabric-tag-extensions-v0', configuration: 'dev')
 	testmodImplementation project(path: ':fabric-tool-attribute-api-v1', configuration: 'dev')

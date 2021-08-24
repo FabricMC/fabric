@@ -24,6 +24,8 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -76,14 +78,29 @@ public interface FluidVariantRenderHandler {
 	}
 
 	/**
-	 * Return the color to use when rendering {@linkplain #getSprite the sprite} of this fluid variant.
+	 * @deprecated Use and implement {@linkplain #getColor(FluidVariant, BlockRenderView, BlockPos) the other more general overload}.
+	 * This one will be removed in a future iteration of the API.
 	 */
+	@Deprecated()
 	default int getColor(FluidVariant fluidVariant) {
+		return getColor(fluidVariant, null, null);
+	}
+
+	/**
+	 * Return the color to use when rendering {@linkplain #getSprite the sprite} of this fluid variant.
+	 * Transparency (alpha) will generally be taken into account and should be specified as well.
+	 *
+	 * <p>The world and position are optional context parameters and may be {@code null}.
+	 * If they are null, this method must return a location-independent color.
+	 * If they are provided, this method may return a color that depends on the location.
+	 * For example, water returns the biome-dependent color if the context parameters are specified, or its default color if one of them is null.
+	 */
+	default int getColor(FluidVariant fluidVariant, @Nullable BlockRenderView view, @Nullable BlockPos pos) {
 		// Use the fluid render handler by default.
 		FluidRenderHandler fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluidVariant.getFluid());
 
 		if (fluidRenderHandler != null) {
-			return fluidRenderHandler.getFluidColor(null, null, fluidVariant.getFluid().getDefaultState());
+			return fluidRenderHandler.getFluidColor(view, pos, fluidVariant.getFluid().getDefaultState()) | 255 << 24;
 		} else {
 			return -1;
 		}
