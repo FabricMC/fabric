@@ -16,20 +16,12 @@
 
 package net.fabricmc.fabric.test.transfer.unittests;
 
-import org.apache.logging.log4j.LogManager;
+import java.util.Objects;
 
-import net.fabricmc.api.ModInitializer;
-
-public class UnitTestsInitializer implements ModInitializer {
-	@Override
-	public void onInitialize() {
-		BaseStorageTests.run();
-		FluidItemTests.run();
-		FluidTests.run();
-		ItemTests.run();
-		SingleVariantItemStorageTests.run();
-		TransactionExceptionsTests.run();
-
-		LogManager.getLogger("fabric-transfer-api-v1 testmod").info("Transfer API unit tests successful.");
+public class TestUtil {
+	public static <T> void assertEquals(T expected, T actual) {
+		if (!Objects.equals(expected, actual)) {
+			throw new AssertionError(String.format("assertEquals failed%nexpected: %s%n but was: %s", expected, actual));
+		}
 	}
 }

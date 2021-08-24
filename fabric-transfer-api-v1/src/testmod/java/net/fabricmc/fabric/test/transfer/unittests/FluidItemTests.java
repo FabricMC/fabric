@@ -18,9 +18,9 @@ package net.fabricmc.fabric.test.transfer.unittests;
 
 import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BOTTLE;
 import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BUCKET;
+import static net.fabricmc.fabric.test.transfer.unittests.TestUtil.assertEquals;
 
 import java.util.List;
-import java.util.Objects;
 
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
@@ -175,11 +175,5 @@ class FluidItemTests {
 						null
 				)
 		);
-	}
-
-	private static void assertEquals(Object expected, Object actual) {
-		if (!Objects.equals(expected, actual)) {
-			throw new AssertionError(String.format("assertEquals failed%nexpected: %s%n but was: %s", expected, actual));
-		}
 	}
 }

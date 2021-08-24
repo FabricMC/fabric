@@ -40,20 +40,21 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 	}
 
 	@Override
-	public void offerOrDrop(ItemVariant resource, long amount, TransactionContext tx) {
+	public long offer(ItemVariant resource, long amount, TransactionContext tx) {
 		StoragePreconditions.notBlankNotNegative(resource, amount);
+		long initialAmount = amount;
 
 		List<SingleSlotStorage<ItemVariant>> mainSlots = getSlots().subList(0, PlayerInventory.MAIN_SIZE);
 
 		// Stack into the main stack first
-		SingleSlotStorage<ItemVariant> selectedSlot = getSlots().get(player.getInventory().selectedSlot);
+		SingleSlotStorage<ItemVariant> selectedSlot = getSlot(player.getInventory().selectedSlot);
 
 		if (selectedSlot.getResource().equals(resource)) {
 			amount -= selectedSlot.insert(resource, amount, tx);
 		}
 
 		// Stack into the offhand stack otherwise
-		SingleSlotStorage<ItemVariant> offHandSlot = getSlots().get(PlayerInventory.OFF_HAND_SLOT);
+		SingleSlotStorage<ItemVariant> offHandSlot = getSlot(PlayerInventory.OFF_HAND_SLOT);
 
 		if (offHandSlot.getResource().equals(resource)) {
 			amount -= offHandSlot.insert(resource, amount, tx);
@@ -70,6 +71,11 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 			}
 		}
 
+		return initialAmount - amount;
+	}
+
+	@Override
+	public void drop(ItemVariant resource, long amount, TransactionContext tx) {
 		// Drop leftover in the world on the server side (will be synced by the game with the client).
 		// Dropping items is server-side only because it involves randomness.
 		if (amount > 0 && player.world.isClient()) {
