@@ -5,11 +5,13 @@
   "mixins": [
     "EntityMixin",
     "LivingEntityMixin",
+    "PlayerEntityMixin",
     "PlayerManagerMixin",
     "ServerPlayerEntityMixin",
     "TeleportCommandMixin"
   ],
   "injectors": {
-    "defaultRequire": 1
+    "defaultRequire": 1,
+    "maxShiftBy": 3
   }
 }
