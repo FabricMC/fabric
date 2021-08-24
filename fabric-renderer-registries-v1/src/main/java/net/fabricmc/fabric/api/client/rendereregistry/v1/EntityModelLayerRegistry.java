@@ -16,25 +16,18 @@
 
 package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
-import java.util.Objects;
-
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.impl.client.renderer.registry.EntityModelLayerImpl;
-import net.fabricmc.fabric.mixin.client.renderer.registry.EntityModelLayersAccessor;
 
 /**
  * A helpers for registering entity model layers and providers for the layer's textured model data.
  *
- * @deprecated Experimental feature, may be removed or changed without further notice: Snapshot feature.
+ * @deprecated This module has been moved into fabric-rendering-v1. Use {@link net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry} instead.
  */
 @Deprecated
-@ApiStatus.Experimental
 @Environment(EnvType.CLIENT)
 public final class EntityModelLayerRegistry {
 	/**
@@ -44,21 +37,14 @@ public final class EntityModelLayerRegistry {
 	 * @param provider the provider for the textured model data
 	 */
 	public static void registerModelLayer(EntityModelLayer modelLayer, TexturedModelDataProvider provider) {
-		Objects.requireNonNull(modelLayer, "EntityModelLayer cannot be null");
-		Objects.requireNonNull(provider, "TexturedModelDataProvider cannot be null");
-
-		if (EntityModelLayerImpl.PROVIDERS.putIfAbsent(modelLayer, provider) != null) {
-			throw new IllegalArgumentException(String.format("Cannot replace registration for entity model layer \"%s\"", modelLayer));
-		}
-
-		EntityModelLayersAccessor.getLayers().add(modelLayer);
+		net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry.registerModelLayer(modelLayer, provider::createModelData);
 	}
 
 	private EntityModelLayerRegistry() {
 	}
 
 	@FunctionalInterface
-	@ApiStatus.Experimental
+	@Deprecated
 	@Environment(EnvType.CLIENT)
 	public interface TexturedModelDataProvider {
 		/**

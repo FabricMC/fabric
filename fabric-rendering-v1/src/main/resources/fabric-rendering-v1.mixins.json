@@ -8,7 +8,12 @@
     "MixinBuiltinModelItemRenderer",
     "MixinInGameHud",
     "MixinItemColorMap",
-    "MixinWorldRenderer"
+    "MixinWorldRenderer",
+    "EntityModelLayersAccessor",
+    "EntityModelsMixin",
+    "LivingEntityRendererAccessor",
+    "MixinBlockEntityRenderers",
+    "MixinEntityRenderers"
   ],
   "injectors": {
     "defaultRequire": 1
