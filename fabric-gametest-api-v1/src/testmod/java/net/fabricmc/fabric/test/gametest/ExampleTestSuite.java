@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.gametest;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
@@ -30,9 +29,6 @@ public class ExampleTestSuite {
 		context.addInstantFinalTask(() ->
 				context.checkBlock(new BlockPos(0, 2, 0), (block) -> block == Blocks.DIAMOND_BLOCK, "Expect block to be diamond")
 		);
-
-		// This should be null for the game tests
-		assert FabricLoader.getInstance().getGameInstance() == null;
 	}
 
 	@GameTest(structureName = FabricGameTest.EMPTY_STRUCTURE)
