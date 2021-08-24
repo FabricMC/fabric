@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 @Mixin(LivingEntity.class)
-abstract class LivingEntityMixin extends EntityMixin {
+abstract class LivingEntityMixin {
 	@Shadow
 	public abstract boolean isDead();
 
@@ -84,7 +84,7 @@ abstract class LivingEntityMixin extends EntityMixin {
 		BlockPos sleepingPos = getSleepingPosition().orElse(null);
 
 		if (sleepingPos != null) {
-			BlockState bedState = world.getBlockState(sleepingPos);
+			BlockState bedState = ((LivingEntity) (Object) this).world.getBlockState(sleepingPos);
 			ActionResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, bedState, info.getReturnValueZ());
 
 			if (result != ActionResult.PASS) {
