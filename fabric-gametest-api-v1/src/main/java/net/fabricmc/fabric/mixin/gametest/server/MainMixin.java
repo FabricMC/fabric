@@ -61,4 +61,13 @@ public class MainMixin {
 			info.cancel();  // Do not progress in starting the normal dedicated server
 		}
 	}
+
+	// Exit with a non-zero exit code when the server fails to start.
+	// Otherwise gradlew test will succeed without errors, although no tests have been run.
+	@Inject(method = "main", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;fatal(Ljava/lang/String;Ljava/lang/Throwable;)V", shift = At.Shift.AFTER))
+	private static void exitOnError(CallbackInfo info) {
+		if (FabricGameTestHelper.ENABLED) {
+			System.exit(-1);
+		}
+	}
 }
