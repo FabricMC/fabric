@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderer.registry;
+package net.fabricmc.fabric.test.rendering.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,7 +33,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.LivingEntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 
 public final class FeatureRendererTest implements ClientModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger(FeatureRendererTest.class);

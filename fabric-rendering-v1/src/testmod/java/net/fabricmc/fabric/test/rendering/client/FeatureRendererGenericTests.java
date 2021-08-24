@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderer.registry;
+package net.fabricmc.fabric.test.rendering.client;
 
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -35,7 +35,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.LivingEntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 
 /**
  * This test exists solely for testing generics.

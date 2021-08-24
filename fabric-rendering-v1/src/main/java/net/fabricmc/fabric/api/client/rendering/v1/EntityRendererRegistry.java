@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.rendereregistry.v1;
+package net.fabricmc.fabric.api.client.rendering.v1;
 
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -22,20 +22,15 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.impl.client.rendering.EntityRendererRegistryImpl;
+
 /**
  * Helper class for registering EntityRenderers.
- *
- * @deprecated This module has been moved into fabric-rendering-v1. Use {@link net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry} instead
  */
-@Deprecated
-public interface EntityRendererRegistry {
-	EntityRendererRegistry INSTANCE = new EntityRendererRegistry() {
-		@Override
-		public <T extends Entity> void register(EntityType<? extends T> entityType, EntityRendererFactory<T> factory) {
-			net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry.register(entityType, factory);
-		}
-	};
-
+@Environment(EnvType.CLIENT)
+public final class EntityRendererRegistry {
 	/**
 	 * Register a BlockEntityRenderer for a BlockEntityType. Can be called clientside before the world is rendered.
 	 *
@@ -45,5 +40,10 @@ public interface EntityRendererRegistry {
 	 *                            class is already loaded
 	 * @param <E> the {@link Entity}
 	 */
-	<E extends Entity> void register(EntityType<? extends E> entityType, EntityRendererFactory<E> entityRendererFactory);
+	public static <E extends Entity> void register(EntityType<? extends E> entityType, EntityRendererFactory<E> entityRendererFactory) {
+		EntityRendererRegistryImpl.register(entityType, entityRendererFactory);
+	}
+
+	private EntityRendererRegistry() {
+	}
 }

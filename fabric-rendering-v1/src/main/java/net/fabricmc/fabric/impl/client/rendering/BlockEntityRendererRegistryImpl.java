@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.renderer.registry;
+package net.fabricmc.fabric.impl.client.rendering;
 
 import java.util.HashMap;
 import java.util.function.BiConsumer;
@@ -23,19 +23,19 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+public final class BlockEntityRendererRegistryImpl {
+	private static final HashMap<BlockEntityType<?>, BlockEntityRendererFactory<?>> MAP = new HashMap<>();
+	private static BiConsumer<BlockEntityType<?>, BlockEntityRendererFactory<?>> handler = (type, function) -> MAP.put(type, function);
 
-public class BlockEntityRendererRegistryImpl implements BlockEntityRendererRegistry {
-	private static HashMap<BlockEntityType<?>, BlockEntityRendererFactory<?>> map = new HashMap<>();
-	private static BiConsumer<BlockEntityType<?>, BlockEntityRendererFactory<?>> handler = (type, function) -> map.put(type, function);
-
-	@Override
-	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
+	public static <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
 		handler.accept(blockEntityType, blockEntityRendererFactory);
 	}
 
 	public static void setup(BiConsumer<BlockEntityType<?>, BlockEntityRendererFactory<?>> vanillaHandler) {
-		map.forEach(vanillaHandler);
+		MAP.forEach(vanillaHandler);
 		handler = vanillaHandler;
+	}
+
+	private BlockEntityRendererRegistryImpl() {
 	}
 }

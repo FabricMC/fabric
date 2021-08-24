@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.renderer.registry;
+package net.fabricmc.fabric.mixin.client.rendering;
 
 import java.util.Map;
 
@@ -29,8 +29,8 @@ import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.render.entity.model.EntityModels;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry;
-import net.fabricmc.fabric.impl.client.renderer.registry.EntityModelLayerImpl;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.impl.client.rendering.EntityModelLayerImpl;
 
 @Mixin(EntityModels.class)
 abstract class EntityModelsMixin {

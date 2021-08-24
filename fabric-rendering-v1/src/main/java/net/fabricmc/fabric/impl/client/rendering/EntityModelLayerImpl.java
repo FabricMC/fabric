@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.renderer.registry;
+package net.fabricmc.fabric.impl.client.rendering;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ import net.minecraft.client.render.entity.model.EntityModelLayer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 
 @Environment(EnvType.CLIENT)
 public final class EntityModelLayerImpl {

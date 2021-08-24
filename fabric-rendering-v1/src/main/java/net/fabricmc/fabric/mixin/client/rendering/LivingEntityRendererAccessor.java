@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.renderer.registry;
-
-import java.util.Set;
+package net.fabricmc.fabric.mixin.client.rendering;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
+import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.entity.LivingEntity;
 
-@Mixin(EntityModelLayers.class)
-public interface EntityModelLayersAccessor {
-	@Accessor("LAYERS")
-	static Set<EntityModelLayer> getLayers() {
-		throw new AssertionError("This should not occur!");
-	}
+@Mixin(LivingEntityRenderer.class)
+public interface LivingEntityRendererAccessor<T extends LivingEntity, M extends EntityModel<T>> {
+	@Invoker("addFeature")
+	boolean callAddFeature(FeatureRenderer<T, M> featureRenderer);
 }

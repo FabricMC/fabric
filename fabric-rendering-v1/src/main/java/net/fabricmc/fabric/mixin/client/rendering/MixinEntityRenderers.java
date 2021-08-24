@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.renderer.registry;
+package net.fabricmc.fabric.mixin.client.rendering;
 
 import java.util.Map;
 
@@ -36,9 +36,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.LivingEntityFeatureRendererRegistrationCallback;
-import net.fabricmc.fabric.impl.client.renderer.registry.RegistrationHelperImpl;
-import net.fabricmc.fabric.impl.client.renderer.registry.EntityRendererRegistryImpl;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.impl.client.rendering.EntityRendererRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.RegistrationHelperImpl;
 
 @Mixin(EntityRenderers.class)
 public abstract class MixinEntityRenderers {

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.rendereregistry.v1;
+package net.fabricmc.fabric.api.client.rendering.v1;
+
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
@@ -45,14 +47,15 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * 	}
  * });
  * </pre></blockquote>
- *
- * @deprecated This module has been moved into fabric-rendering-v1. Use {@link net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback} instead
  */
 @FunctionalInterface
-@Deprecated
 @Environment(EnvType.CLIENT)
 public interface LivingEntityFeatureRendererRegistrationCallback {
-	Event<LivingEntityFeatureRendererRegistrationCallback> EVENT = createEvent();
+	Event<LivingEntityFeatureRendererRegistrationCallback> EVENT = EventFactory.createArrayBacked(LivingEntityFeatureRendererRegistrationCallback.class, callbacks -> (entityType, entityRenderer, registrationHelper, context) -> {
+		for (LivingEntityFeatureRendererRegistrationCallback callback : callbacks) {
+			callback.registerRenderers(entityType, entityRenderer, registrationHelper, context);
+		}
+	});
 
 	/**
 	 * Called when feature renderers may be registered.
@@ -62,26 +65,12 @@ public interface LivingEntityFeatureRendererRegistrationCallback {
 	 */
 	void registerRenderers(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer, RegistrationHelper registrationHelper, EntityRendererFactory.Context context);
 
-	private static Event<LivingEntityFeatureRendererRegistrationCallback> createEvent() {
-		Event<LivingEntityFeatureRendererRegistrationCallback> event = EventFactory.createArrayBacked(LivingEntityFeatureRendererRegistrationCallback.class, callbacks -> (entityType, entityRenderer, registrationHelper, context) -> {
-			for (LivingEntityFeatureRendererRegistrationCallback callback : callbacks) {
-				callback.registerRenderers(entityType, entityRenderer, registrationHelper, context);
-			}
-		});
-		net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
-			LivingEntityFeatureRendererRegistrationCallback.EVENT.invoker().registerRenderers(entityType, entityRenderer, registrationHelper::register, context);
-		});
-		return event;
-	}
-
 	/**
 	 * A delegate object used to help register feature renderers for an entity renderer.
 	 *
 	 * <p>This is not meant for implementation by users of the API.
-	 *
-	 * @deprecated This module has been moved into fabric-rendering-v1. Use {@link net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper} instead
 	 */
-	@Deprecated
+	@ApiStatus.NonExtendable
 	interface RegistrationHelper {
 		/**
 		 * Adds a feature renderer to the entity renderer.

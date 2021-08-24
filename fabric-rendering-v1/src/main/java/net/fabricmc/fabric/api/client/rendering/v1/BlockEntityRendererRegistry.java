@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.rendereregistry.v1;
+package net.fabricmc.fabric.api.client.rendering.v1;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -22,28 +22,28 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl;
+
 /**
  * Helper class for registering BlockEntityRenderers.
- *
- * @deprecated This module has been moved into fabric-rendering-v1. Use {@link net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry} instead
  */
-@Deprecated
-public interface BlockEntityRendererRegistry {
-	BlockEntityRendererRegistry INSTANCE = new BlockEntityRendererRegistry() {
-		@Override
-		public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
-			net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry.register(blockEntityType, blockEntityRendererFactory);
-		}
-	};
-
+@Environment(EnvType.CLIENT)
+public final class BlockEntityRendererRegistry {
 	/**
 	 * Register a BlockEntityRenderer for a BlockEntityType. Can be called clientside before the world is rendered.
 	 *
 	 * @param blockEntityType the {@link BlockEntityType} to register a renderer for
-	 * @param blockEntityRendererFactory a {@link class_5614} that creates a {@link BlockEntityRenderer}, called
+	 * @param blockEntityRendererFactory a {@link BlockEntityRendererFactory} that creates a {@link BlockEntityRenderer}, called
 	 *                            when {@link BlockEntityRenderDispatcher} is initialized or immediately if the dispatcher
 	 *                            class is already loaded
 	 * @param <E> the {@link BlockEntity}
 	 */
-	<E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory);
+	public static <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
+		BlockEntityRendererRegistryImpl.register(blockEntityType, blockEntityRendererFactory);
+	}
+
+	private BlockEntityRendererRegistry() {
+	}
 }
