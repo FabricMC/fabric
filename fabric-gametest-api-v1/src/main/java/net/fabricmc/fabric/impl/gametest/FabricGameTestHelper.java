@@ -16,11 +16,14 @@
 
 package net.fabricmc.fabric.impl.gametest;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.function.Consumer;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,10 +33,12 @@ import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.test.GameTestBatch;
 import net.minecraft.test.TestContext;
+import net.minecraft.test.TestFailureLogger;
 import net.minecraft.test.TestFunction;
 import net.minecraft.test.TestFunctions;
 import net.minecraft.test.TestServer;
 import net.minecraft.test.TestUtil;
+import net.minecraft.test.XmlReportingTestCompletionListener;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.level.storage.LevelStorage;
@@ -49,6 +54,16 @@ public final class FabricGameTestHelper {
 	}
 
 	public static void runHeadlessServer(LevelStorage.Session session, ResourcePackManager resourcePackManager, ServerResourceManager serverResourceManager, DynamicRegistryManager.Impl registryManager) {
+		String reportPath = System.getProperty("fabric-api.gametest.report-file");
+
+		if (reportPath != null) {
+			try {
+				TestFailureLogger.setCompletionListener(new XmlReportingTestCompletionListener(new File(reportPath)));
+			} catch (ParserConfigurationException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
 		LOGGER.info("Starting test server");
 		MinecraftServer server = TestServer.startServer(thread -> {
 			TestServer testServer = new TestServer(thread, session, resourcePackManager, serverResourceManager, getBatches(), BlockPos.ORIGIN, registryManager);
