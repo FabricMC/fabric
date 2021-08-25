@@ -43,7 +43,8 @@ import net.fabricmc.fabric.impl.transfer.item.CursorSlotWrapper;
 @ApiStatus.Experimental
 @Deprecated
 @ApiStatus.NonExtendable
-// TODO: should sync stacks by sending a packet, like PlayerInventory#offer.
+// TODO: Consider explicitly syncing stacks by sending a ScreenHandlerSlotUpdateS2CPacket if that proves to be necessary.
+// TODO: Vanilla doesn't seem to be doing it reliably, so we ignore it for now.
 public interface PlayerInventoryStorage extends InventoryStorage {
 	/**
 	 * Return an instance for the passed player's inventory.
