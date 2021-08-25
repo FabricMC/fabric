@@ -19,7 +19,6 @@ package net.fabricmc.fabric.impl.transfer.item;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -31,12 +30,12 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
 class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerInventoryStorage {
 	private final DroppedStacks droppedStacks;
-	private final PlayerEntity player;
+	private final PlayerInventory playerInventory;
 
 	PlayerInventoryStorageImpl(PlayerInventory playerInventory) {
 		super(playerInventory);
 		this.droppedStacks = new DroppedStacks();
-		this.player = playerInventory.player;
+		this.playerInventory = playerInventory;
 	}
 
 	@Override
@@ -47,10 +46,12 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 		List<SingleSlotStorage<ItemVariant>> mainSlots = getSlots().subList(0, PlayerInventory.MAIN_SIZE);
 
 		// Stack into the main stack first
-		SingleSlotStorage<ItemVariant> selectedSlot = getSlot(player.getInventory().selectedSlot);
+		if (PlayerInventory.isValidHotbarIndex(playerInventory.selectedSlot)) {
+			SingleSlotStorage<ItemVariant> selectedSlot = getSlot(playerInventory.selectedSlot);
 
-		if (selectedSlot.getResource().equals(resource)) {
-			amount -= selectedSlot.insert(resource, amount, tx);
+			if (selectedSlot.getResource().equals(resource)) {
+				amount -= selectedSlot.insert(resource, amount, tx);
+			}
 		}
 
 		// Stack into the offhand stack otherwise
@@ -76,9 +77,11 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 
 	@Override
 	public void drop(ItemVariant resource, long amount, TransactionContext tx) {
-		// Drop leftover in the world on the server side (will be synced by the game with the client).
+		StoragePreconditions.notBlankNotNegative(resource, amount);
+
+		// Drop in the world on the server side (will be synced by the game with the client).
 		// Dropping items is server-side only because it involves randomness.
-		if (amount > 0 && player.world.isClient()) {
+		if (amount > 0 && playerInventory.player.world.isClient()) {
 			droppedStacks.addDrop(resource, amount, tx);
 		}
 	}
@@ -117,7 +120,7 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 
 				while (droppedCounts.get(i) > 0) {
 					int dropped = (int) Math.min(key.getItem().getMaxCount(), droppedCounts.get(i));
-					player.dropStack(key.toStack(dropped));
+					playerInventory.player.dropStack(key.toStack(dropped));
 					droppedCounts.set(i, droppedCounts.get(i) - dropped);
 				}
 			}

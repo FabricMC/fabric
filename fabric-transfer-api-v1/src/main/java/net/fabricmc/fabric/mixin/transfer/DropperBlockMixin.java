@@ -68,7 +68,7 @@ public class DropperBlockMixin {
 			}
 
 			StorageUtil.move(
-					InventoryStorage.of(dispenser, null).getSlots().get(slot),
+					InventoryStorage.of(dispenser, null).getSlot(slot),
 					target,
 					k -> true,
 					1,
