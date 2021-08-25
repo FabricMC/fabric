@@ -16,12 +16,17 @@
 
 package net.fabricmc.fabric.api.event;
 
+import org.jetbrains.annotations.ApiStatus;
+
+import net.minecraft.util.Identifier;
+
 /**
  * Base class for Event implementations.
  *
  * @param <T> The listener type.
  * @see EventFactory
  */
+@ApiStatus.NonExtendable // Should only be extended by fabric API.
 public abstract class Event<T> {
 	/**
 	 * The invoker field. This should be updated by the implementation to
@@ -48,5 +53,36 @@ public abstract class Event<T> {
 	 *
 	 * @param listener The desired listener.
 	 */
-	public abstract void register(T listener);
+	public void register(T listener) {
+		register(DEFAULT_PHASE, listener);
+	}
+
+	public abstract void register(Identifier phase, T listener);
+
+	public static final Identifier DEFAULT_PHASE = new Identifier("fabric:default");
+
+	public abstract void registerPhase(Identifier phaseIdentifier, PhaseDependency... dependencies);
+
+	public static final class PhaseDependency {
+		public static PhaseDependency before(Identifier otherPhase) {
+			return new PhaseDependency(otherPhase, true);
+		}
+
+		public static PhaseDependency after(Identifier otherPhase) {
+			return new PhaseDependency(otherPhase, false);
+		}
+
+		public final Identifier otherPhase;
+		public final boolean before;
+
+		private PhaseDependency(Identifier otherPhase, boolean before) {
+			this.otherPhase = otherPhase;
+			this.before = before;
+		}
+
+		@Override
+		public String toString() {
+			return "PhaseDependency{" + "otherPhase=" + otherPhase + ", before=" + before + '}';
+		}
+	}
 }
