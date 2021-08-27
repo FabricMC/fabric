@@ -19,32 +19,31 @@ package net.fabricmc.fabric.impl.base.event;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.jetbrains.annotations.Nullable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 
 class ArrayBackedEvent<T> extends Event<T> {
+	private static final Logger LOGGER = LogManager.getLogger("fabric-api-base");
+
 	private final Function<T[], T> invokerFactory;
 	private final Object lock = new Object();
 	private T[] handlers;
 	/**
 	 * Registered event phases.
 	 */
-	private final Map<Identifier, EventPhaseData<T>> phases = new HashMap<>();
-	/**
-	 * Subsequent dependencies for phases that have not yet been registered.
-	 */
-	private final Map<Identifier, List<Identifier>> unresolvedDependencies = new HashMap<>();
+	private final Map<Identifier, EventPhaseData<T>> phases = new LinkedHashMap<>();
 	/**
 	 * Phases sorted in the correct dependency order.
 	 */
@@ -58,9 +57,6 @@ class ArrayBackedEvent<T> extends Event<T> {
 	ArrayBackedEvent(Class<? super T> type, Function<T[], T> invokerFactory) {
 		this.invokerFactory = invokerFactory;
 		this.handlers = (T[]) Array.newInstance(type, 0);
-
-		registerPhase(DEFAULT_PHASE);
-
 		update();
 	}
 
@@ -77,11 +73,16 @@ class ArrayBackedEvent<T> extends Event<T> {
 			EventPhaseData<T> phase = phases.get(phaseIdentifier);
 
 			if (phase == null) {
-				throw new IllegalArgumentException("Tried to register a listener for a non-existing phase: " + phaseIdentifier);
-			} else {
-				phase.listeners.add(listener);
+				// Create phase if it doesn't exist yet.
+				phase = new EventPhaseData<>(phaseIdentifier);
+				phases.put(phaseIdentifier, phase);
+				// This phase can't have dependencies yet, so we'll just put it at the end for now.
+				sortedPhases.add(phase);
 			}
 
+			phase.listeners.add(listener);
+
+			// Rebuild handlers.
 			@SuppressWarnings("unchecked")
 			T[] newHandlers = (T[]) Array.newInstance(handlers.getClass().getComponentType(), handlers.length+1);
 			int newHandlersIndex = 0;
@@ -93,101 +94,24 @@ class ArrayBackedEvent<T> extends Event<T> {
 			}
 
 			handlers = newHandlers;
+
+			// Rebuild invoker.
 			update();
 		}
 	}
 
 	@Override
-	public void registerPhase(Identifier phaseIdentifier, PhaseDependency... dependencies) {
-		Objects.requireNonNull(phaseIdentifier, "Tried to register a phase with a null id!");
+	public void addPhaseOrdering(Identifier firstPhase, Identifier secondPhase) {
+		Objects.requireNonNull(firstPhase, "Tried to add an ordering for a null phase.");
+		Objects.requireNonNull(secondPhase, "Tried to add an ordering for a null phase.");
+		if (firstPhase.equals(secondPhase)) throw new IllegalArgumentException("Tried to add a phase that depends on itself.");
 
 		synchronized (lock) {
-			EventPhaseData<T> existingPhase = phases.get(phaseIdentifier);
-
-			if (existingPhase != null) {
-				checkPhasesAreEqual(existingPhase, phaseIdentifier, dependencies);
-			} else {
-				addNewPhase(phaseIdentifier, dependencies);
-			}
+			EventPhaseData<T> first = phases.computeIfAbsent(firstPhase, EventPhaseData::new);
+			EventPhaseData<T> second = phases.computeIfAbsent(secondPhase, EventPhaseData::new);
+			first.subsequentPhases.add(second);
+			sortPhases();
 		}
-	}
-
-	private void checkPhasesAreEqual(EventPhaseData<T> existingPhase, Identifier newPhaseIdentifier, PhaseDependency... newDependencies) {
-		for (PhaseDependency existingDep : existingPhase.dependencies) {
-			if (!arrayContains(newDependencies, existingDep)) {
-				throw new IllegalArgumentException(
-						String.format(
-								"Tried to register duplicate event phase %s, but it is missing the following dependency: %s.",
-								newPhaseIdentifier,
-								existingDep
-						)
-				);
-			}
-		}
-
-		for (PhaseDependency newDep : newDependencies) {
-			if (!arrayContains(existingPhase.dependencies, newDep)) {
-				throw new IllegalArgumentException(
-						String.format(
-								"Tried to register duplicate event phase %s, but it has an additional dependency: %s.",
-								newPhaseIdentifier,
-								newDep
-						)
-				);
-			}
-		}
-	}
-
-	private static <T> boolean arrayContains(T[] array, T object) {
-		for (T t : array) {
-			if (t == object) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private void addNewPhase(Identifier phaseIdentifier, PhaseDependency... dependencies) {
-		for (PhaseDependency dependency : dependencies) {
-			if (dependency.otherPhase.equals(phaseIdentifier)) {
-				throw new IllegalArgumentException(
-						String.format(
-								"Event phase %s may not depend on itself.",
-								phaseIdentifier
-						)
-				);
-			}
-		}
-
-		EventPhaseData<T> newPhase = new EventPhaseData<>(dependencies);
-
-		for (PhaseDependency dependency : dependencies) {
-			if (dependency.before) {
-				// Add to this phase directly.
-				newPhase.subsequentPhases.add(dependency.otherPhase);
-			} else {
-				EventPhaseData<T> previousPhase = phases.get(dependency.otherPhase);
-
-				if (previousPhase != null) {
-					// Add to the other phase directly.
-					previousPhase.subsequentPhases.add(phaseIdentifier);
-				} else {
-					// Add to the unresolved dependencies so it can be resolved when the phase is added.
-					unresolvedDependencies.computeIfAbsent(dependency.otherPhase, id -> new ArrayList<>()).add(phaseIdentifier);
-				}
-			}
-		}
-
-		List<Identifier> unresolvedSubsequentPhases = unresolvedDependencies.remove(phaseIdentifier);
-
-		if (unresolvedSubsequentPhases != null) {
-			newPhase.subsequentPhases.addAll(unresolvedSubsequentPhases);
-		}
-
-		phases.put(phaseIdentifier, newPhase);
-
-		sortPhases();
 	}
 
 	private void sortPhases() {
@@ -195,19 +119,46 @@ class ArrayBackedEvent<T> extends Event<T> {
 		visitedPhases.clear();
 
 		for (EventPhaseData<T> phase : phases.values()) {
-			visitPhase(phase);
+			visitPhase(phase, null);
+		}
+
+		// Reset visit status for the next visit.
+		for (EventPhaseData<T> phase : sortedPhases) {
+			phase.visitStatus = 0;
 		}
 
 		Collections.reverse(sortedPhases);
 	}
 
-	private void visitPhase(@Nullable EventPhaseData<T> phase) {
-		if (phase != null && visitedPhases.add(phase)) {
-			for (Identifier subsequentId : phase.subsequentPhases) {
-				visitPhase(phases.get(subsequentId));
+	private void visitPhase(EventPhaseData<T> phase, EventPhaseData<T> parent) {
+		if (phase.visitStatus == 0) {
+			// Not yet visited.
+			phase.visitStatus = 1;
+
+			for (EventPhaseData<T> data : phase.subsequentPhases) {
+				visitPhase(data, phase);
 			}
 
 			sortedPhases.add(phase);
+			phase.visitStatus = 2;
+		} else if (phase.visitStatus == 1) {
+			// Already visiting, so we have found a cycle.
+			LOGGER.warn(String.format(
+					"Event phase ordering conflict detected.%nEvent phase %s is ordered both before and after event phase %s.",
+					phase.id,
+					parent.id
+			));
+		}
+	}
+
+	private static class EventPhaseData<T> {
+		final Identifier id;
+		final List<T> listeners = new ArrayList<>();
+		final List<EventPhaseData<T>> subsequentPhases = new ArrayList<>();
+		int visitStatus = 0; // 0: not visited, 1: visiting, 2: visited
+
+		private EventPhaseData(Identifier id) {
+			this.id = id;
 		}
 	}
 }

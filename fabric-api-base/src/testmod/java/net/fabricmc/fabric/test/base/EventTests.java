@@ -69,10 +69,10 @@ public class EventTests {
 		Identifier late = new Identifier("fabric:late");
 		Identifier veryLate = new Identifier("fabric:very_late");
 
-		event.registerPhase(early, Event.PhaseDependency.after(veryEarly), Event.PhaseDependency.before(Event.DEFAULT_PHASE));
-		event.registerPhase(veryLate, Event.PhaseDependency.after(late));
-		event.registerPhase(late, Event.PhaseDependency.after(Event.DEFAULT_PHASE));
-		event.registerPhase(veryEarly);
+		event.addPhaseOrdering(veryEarly, early);
+		event.addPhaseOrdering(early, Event.DEFAULT_PHASE);
+		event.addPhaseOrdering(Event.DEFAULT_PHASE, late);
+		event.addPhaseOrdering(late, veryLate);
 
 		event.register(ensureOrder(4));
 		event.register(ensureOrder(5));
@@ -85,9 +85,12 @@ public class EventTests {
 		event.register(late, ensureOrder(7));
 		event.register(early, ensureOrder(3));
 
-		event.invoker().onTest();
-		assertEquals(10, currentListener);
-		currentListener = 0;
+		// Test a few dispatches.
+		for (int i = 0; i < 5; ++i) {
+			event.invoker().onTest();
+			assertEquals(10, currentListener);
+			currentListener = 0;
+		}
 	}
 
 	@FunctionalInterface
