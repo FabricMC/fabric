@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.base;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 
@@ -28,18 +29,21 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public class EventTests {
 	public static void run() {
 		testDefaultPhaseOnly();
-		testMultiplePhases();
+		testMultipleDefaultPhases();
+		testAddedPhases();
 		LogManager.getLogger("fabric-api-base").info("Event unit tests succeeded!");
 	}
+
+	private static final Function<Test[], Test> INVOKER_FACTORY = listeners -> () -> {
+		for (Test test : listeners) {
+			test.onTest();
+		}
+	};
 
 	private static int currentListener = 0;
 
 	private static Event<Test> createEvent() {
-		return EventFactory.createArrayBacked(Test.class, listeners -> () -> {
-			for (Test test : listeners) {
-				test.onTest();
-			}
-		});
+		return EventFactory.createArrayBacked(Test.class, INVOKER_FACTORY);
 	}
 
 	private static Test ensureOrder(int order) {
@@ -61,13 +65,29 @@ public class EventTests {
 		currentListener = 0;
 	}
 
-	private static void testMultiplePhases() {
+	private static void testMultipleDefaultPhases() {
+		Identifier first = new Identifier("fabric", "first");
+		Identifier second = new Identifier("fabric", "second");
+		Event<Test> event = EventFactory.createWithPhases(Test.class, INVOKER_FACTORY, first, second, Event.DEFAULT_PHASE);
+
+		event.register(second, ensureOrder(1));
+		event.register(ensureOrder(2));
+		event.register(first, ensureOrder(0));
+
+		for (int i = 0; i < 5; ++i) {
+			event.invoker().onTest();
+			assertEquals(3, currentListener);
+			currentListener = 0;
+		}
+	}
+
+	private static void testAddedPhases() {
 		Event<Test> event = createEvent();
 
-		Identifier veryEarly = new Identifier("fabric:very_early");
-		Identifier early = new Identifier("fabric:early");
-		Identifier late = new Identifier("fabric:late");
-		Identifier veryLate = new Identifier("fabric:very_late");
+		Identifier veryEarly = new Identifier("fabric", "very_early");
+		Identifier early = new Identifier("fabric", "early");
+		Identifier late = new Identifier("fabric", "late");
+		Identifier veryLate = new Identifier("fabric", "very_late");
 
 		event.addPhaseOrdering(veryEarly, early);
 		event.addPhaseOrdering(early, Event.DEFAULT_PHASE);
@@ -85,7 +105,6 @@ public class EventTests {
 		event.register(late, ensureOrder(7));
 		event.register(early, ensureOrder(3));
 
-		// Test a few dispatches.
 		for (int i = 0; i < 5; ++i) {
 			event.invoker().onTest();
 			assertEquals(10, currentListener);

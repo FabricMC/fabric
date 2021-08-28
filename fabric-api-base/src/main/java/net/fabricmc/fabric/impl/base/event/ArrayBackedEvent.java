@@ -65,6 +65,11 @@ class ArrayBackedEvent<T> extends Event<T> {
 	}
 
 	@Override
+	public void register(T listener) {
+		register(DEFAULT_PHASE, listener);
+	}
+
+	@Override
 	public void register(Identifier phaseIdentifier, T listener) {
 		Objects.requireNonNull(phaseIdentifier, "Tried to register a listener for a null phase!");
 		Objects.requireNonNull(listener, "Tried to register a null listener!");
