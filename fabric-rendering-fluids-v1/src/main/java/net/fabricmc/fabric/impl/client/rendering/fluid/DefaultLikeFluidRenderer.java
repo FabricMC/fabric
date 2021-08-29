@@ -26,7 +26,7 @@ public class DefaultLikeFluidRenderer implements CustomFluidRenderer {
 	private static final float HALF_PI = MathHelper.field_29845;
 
 	@Override
-	public boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, FluidState state) {
+	public boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, FluidState state, DefaultBehavior defaultBehavior) {
 		return render(world, pos, vertexConsumer, state);
 	}
 

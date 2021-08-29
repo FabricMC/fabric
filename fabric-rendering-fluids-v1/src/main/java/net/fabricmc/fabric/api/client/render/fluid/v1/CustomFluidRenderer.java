@@ -12,6 +12,8 @@ import net.minecraft.world.BlockRenderView;
  * your fluids.
  */
 public interface CustomFluidRenderer {
+	CustomFluidRenderer DEFAULT = (pos, world, vertexConsumer, state, defaultBehavior) -> defaultBehavior.drawFluidAsDefault();
+
 	/**
 	 * Render your fluid. This method will be invoked instead of the default fluid renderer ({@link FluidRenderer}), and
 	 * hence overrides any {@link FluidRenderHandler}s registered for the fluid this renderer is registered for.
@@ -28,5 +30,9 @@ public interface CustomFluidRenderer {
 	 * @param state          The fluid state being rendered
 	 * @return Whether anything is tessellated
 	 */
-	boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, FluidState state);
+	boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, FluidState state, DefaultBehavior defaultBehavior);
+
+	interface DefaultBehavior {
+		boolean drawFluidAsDefault();
+	}
 }

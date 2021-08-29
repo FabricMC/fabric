@@ -17,6 +17,15 @@
 package net.fabricmc.fabric.mixin.client.rendering.fluid;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.CustomFluidRenderer;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
+import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRendererHookContainer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.block.FluidRenderer;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockRenderView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,17 +35,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.block.FluidRenderer;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
-
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderRegistryImpl;
-import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRendererHookContainer;
-
 @Mixin(FluidRenderer.class)
 public class MixinFluidRenderer {
 	@Shadow
@@ -45,6 +43,7 @@ public class MixinFluidRenderer {
 	private Sprite[] waterSprites;
 
 	private final ThreadLocal<FluidRendererHookContainer> fabric_renderHandler = ThreadLocal.withInitial(FluidRendererHookContainer::new);
+	private final ThreadLocal<Boolean> fabric_customRendering = ThreadLocal.withInitial(() -> false);
 
 	@Inject(at = @At("RETURN"), method = "onResourceReload")
 	public void onResourceReloadReturn(CallbackInfo info) {
@@ -53,10 +52,18 @@ public class MixinFluidRenderer {
 
 	@Inject(at = @At("HEAD"), method = "render", cancellable = true)
 	public void tesselate(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, FluidState state, CallbackInfoReturnable<Boolean> info) {
-		CustomFluidRenderer renderer = FluidRenderRegistryImpl.INSTANCE.getCustomRenderer(state.getFluid());
-		if (renderer != null) {
-			info.setReturnValue(renderer.renderFluid(pos, view, vertexConsumer, state));
-			return;
+		if (!fabric_customRendering.get()) {
+			// Prevent recursively looking up custom fluid renderers when default behaviour is being invoked
+			fabric_customRendering.set(true);
+
+			CustomFluidRenderer renderer = FluidRenderRegistryImpl.INSTANCE.getCustomRenderer(state.getFluid());
+			if (renderer != null) {
+				CustomFluidRenderer.DefaultBehavior def = () -> FluidRenderer.class.cast(this).render(view, pos, vertexConsumer, state);
+				info.setReturnValue(renderer.renderFluid(pos, view, vertexConsumer, state, def));
+				return;
+			}
+
+			fabric_customRendering.set(false);
 		}
 
 		FluidRendererHookContainer ctr = fabric_renderHandler.get();
