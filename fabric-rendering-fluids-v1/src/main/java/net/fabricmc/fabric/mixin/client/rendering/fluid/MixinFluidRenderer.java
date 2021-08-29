@@ -16,11 +16,13 @@
 
 package net.fabricmc.fabric.mixin.client.rendering.fluid;
 
+import net.fabricmc.fabric.api.client.render.fluid.v1.CustomFluidRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -28,7 +30,6 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
@@ -52,6 +53,12 @@ public class MixinFluidRenderer {
 
 	@Inject(at = @At("HEAD"), method = "render", cancellable = true)
 	public void tesselate(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, FluidState state, CallbackInfoReturnable<Boolean> info) {
+		CustomFluidRenderer renderer = FluidRenderRegistryImpl.INSTANCE.getCustomRenderer(state.getFluid());
+		if (renderer != null) {
+			info.setReturnValue(renderer.renderFluid(pos, view, vertexConsumer, state));
+			return;
+		}
+
 		FluidRendererHookContainer ctr = fabric_renderHandler.get();
 		FluidRenderHandler handler = FluidRenderRegistryImpl.INSTANCE.getOverride(state.getFluid());
 
@@ -59,6 +66,7 @@ public class MixinFluidRenderer {
 		ctr.pos = pos;
 		ctr.state = state;
 		ctr.handler = handler;
+		ctr.getSprites(view, pos, state);
 
 		/* if (handler == null) {
 			return;
@@ -85,13 +93,20 @@ public class MixinFluidRenderer {
 
 		// Has other uses but those have already happened by the time the hook is called.
 		final FluidRendererHookContainer ctr = fabric_renderHandler.get();
-		return chk || !ctr.state.isIn(FluidTags.WATER);
+		return !ctr.hasOverlay;
 	}
 
 	@ModifyVariable(at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/FluidRenderer.isSameFluid(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Lnet/minecraft/fluid/FluidState;)Z"), method = "render", ordinal = 0)
 	public Sprite[] modSpriteArray(Sprite[] chk) {
 		FluidRendererHookContainer ctr = fabric_renderHandler.get();
-		return ctr.handler != null ? ctr.handler.getFluidSprites(ctr.view, ctr.pos, ctr.state) : chk;
+		return ctr.handler != null ? ctr.sprites : chk;
+	}
+
+	// Redirect redirects all 'waterOverlaySprite' gets in 'render' to this method, this is correct
+	@Redirect(at = @At(value = "GETFIELD", target = "Lnet/minecraft/client/render/block/FluidRenderer;waterOverlaySprite:Lnet/minecraft/client/texture/Sprite;"), method = "render")
+	public Sprite modWaterOverlaySprite(FluidRenderer self, Sprite chk) {
+		FluidRendererHookContainer ctr = fabric_renderHandler.get();
+		return ctr.handler != null && ctr.hasOverlay ? ctr.overlay : chk;
 	}
 
 	@ModifyVariable(at = @At(value = "CONSTANT", args = "intValue=16", ordinal = 0, shift = At.Shift.BEFORE), method = "render", ordinal = 0)

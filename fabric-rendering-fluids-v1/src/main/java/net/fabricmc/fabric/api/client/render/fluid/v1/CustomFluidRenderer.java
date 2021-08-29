@@ -1,6 +1,5 @@
 package net.fabricmc.fabric.api.client.render.fluid.v1;
 
-import net.fabricmc.fabric.impl.client.rendering.fluid.DefaultFluidRenderer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.fluid.FluidState;
@@ -13,11 +12,6 @@ import net.minecraft.world.BlockRenderView;
  * your fluids.
  */
 public interface CustomFluidRenderer {
-	/**
-	 * The default fluid renderer, which delegates to vanilla's fluid renderer.
-	 */
-	CustomFluidRenderer DEFAULT = DefaultFluidRenderer.INSTANCE;
-
 	/**
 	 * Render your fluid. This method will be invoked instead of the default fluid renderer ({@link FluidRenderer}), and
 	 * hence overrides any {@link FluidRenderHandler}s registered for the fluid this renderer is registered for.

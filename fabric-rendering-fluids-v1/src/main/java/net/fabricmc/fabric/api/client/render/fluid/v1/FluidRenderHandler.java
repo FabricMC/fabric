@@ -37,8 +37,9 @@ public interface FluidRenderHandler {
 	 * @param view  The world view pertaining to the fluid. May be null!
 	 * @param pos   The position of the fluid in the world. May be null!
 	 * @param state The current state of the fluid.
-	 * @return An array of size two: the first entry contains the "still" sprite,
-	 * while the second entry contains the "flowing" sprite.
+	 * @return An array of size two or more: the first entry contains the "still" sprite,
+	 * while the second entry contains the "flowing" sprite. If it contains a third sprite, that sprite is used as
+	 * overlay behind glass and leaves.
 	 */
 	Sprite[] getFluidSprites(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state);
 

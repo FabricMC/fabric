@@ -47,10 +47,11 @@ public interface FluidRenderRegistry {
 
 	/**
 	 * Get a {@link CustomFluidRenderer} for a given Fluid.
-	 * Supports vanilla and Fabric fluids.
+	 * Supports vanilla and Fabric fluids, but returns null for unregistered
+	 * fluids (vanilla fluids are by default not registered).
 	 *
 	 * @param fluid The Fluid.
-	 * @return The FluidRenderHandler.
+	 * @return The CustomFluidRenderer, or null if none has been registered.
 	 */
 	CustomFluidRenderer getCustomRenderer(Fluid fluid);
 
@@ -58,7 +59,7 @@ public interface FluidRenderRegistry {
 	 * Register a {@link CustomFluidRenderer} for a given Fluid.
 	 *
 	 * @param fluid The Fluid.
-	 * @param renderer The FluidRenderHandler.
+	 * @param renderer The CustomFluidRenderer.
 	 */
 	void registerCustomRenderer(Fluid fluid, CustomFluidRenderer renderer);
 

@@ -60,10 +60,6 @@ public class FluidRenderRegistryImpl implements FluidRenderRegistry {
 
 	@Override
 	public CustomFluidRenderer getCustomRenderer(Fluid fluid) {
-		return renderers.getOrDefault(fluid, DefaultFluidRenderer.INSTANCE);
-	}
-
-	public CustomFluidRenderer getCustomRendererOrNull(Fluid fluid) {
 		return renderers.get(fluid);
 	}
 
