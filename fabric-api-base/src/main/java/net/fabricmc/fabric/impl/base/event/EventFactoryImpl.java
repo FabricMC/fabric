@@ -25,6 +25,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import net.minecraft.util.Identifier;
@@ -46,21 +47,23 @@ public final class EventFactoryImpl {
 		return event;
 	}
 
-	public static void ensureContainsDefault(Identifier[] defaultPhases) {
-		for (Identifier id : defaultPhases) {
-			if (id.equals(Event.DEFAULT_PHASE)) {
-				return;
+	public static boolean contains(Identifier[] phases, Identifier query) {
+		for (Identifier id : phases) {
+			if (id.equals(query)) {
+				return true;
 			}
 		}
 
-		throw new IllegalArgumentException("The event phases must contain Event.DEFAULT_PHASE.");
+		return false;
 	}
 
-	public static void ensureNoDuplicates(Identifier[] defaultPhases) {
-		for (int i = 0; i < defaultPhases.length; ++i) {
-			for (int j = i+1; j < defaultPhases.length; ++j) {
-				if (defaultPhases[i].equals(defaultPhases[j])) {
-					throw new IllegalArgumentException("Duplicate event phase: " + defaultPhases[i]);
+	public static void ensureNoDuplicatesNoNull(Identifier[] phases) {
+		for (int i = 0; i < phases.length; ++i) {
+			Objects.requireNonNull(phases[i], "Encountered null phase.");
+
+			for (int j = i+1; j < phases.length; ++j) {
+				if (phases[i].equals(phases[j])) {
+					throw new IllegalArgumentException("Duplicate event phase: " + phases[i]);
 				}
 			}
 		}

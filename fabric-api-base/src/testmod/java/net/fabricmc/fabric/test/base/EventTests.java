@@ -25,6 +25,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.event.EventPhase;
 
 public class EventTests {
 	public static void run() {
@@ -58,7 +59,7 @@ public class EventTests {
 		Event<Test> event = createEvent();
 
 		event.register(ensureOrder(0));
-		event.register(Event.DEFAULT_PHASE, ensureOrder(1));
+		event.phase(EventPhase.DEFAULT).register(ensureOrder(1));
 		event.register(ensureOrder(2));
 
 		event.invoker().onTest();
@@ -69,11 +70,11 @@ public class EventTests {
 	private static void testMultipleDefaultPhases() {
 		Identifier first = new Identifier("fabric", "first");
 		Identifier second = new Identifier("fabric", "second");
-		Event<Test> event = EventFactory.createWithPhases(Test.class, INVOKER_FACTORY, first, second, Event.DEFAULT_PHASE);
+		Event<Test> event = EventFactory.createWithPhases(Test.class, INVOKER_FACTORY, first, second, EventPhase.DEFAULT);
 
-		event.register(second, ensureOrder(1));
+		event.phase(second).register(ensureOrder(1));
 		event.register(ensureOrder(2));
-		event.register(first, ensureOrder(0));
+		event.phase(first).register(ensureOrder(0));
 
 		for (int i = 0; i < 5; ++i) {
 			event.invoker().onTest();
@@ -90,21 +91,21 @@ public class EventTests {
 		Identifier late = new Identifier("fabric", "late");
 		Identifier veryLate = new Identifier("fabric", "very_late");
 
-		event.addPhaseOrdering(veryEarly, early);
-		event.addPhaseOrdering(early, Event.DEFAULT_PHASE);
-		event.addPhaseOrdering(Event.DEFAULT_PHASE, late);
-		event.addPhaseOrdering(late, veryLate);
+		event.phase(veryEarly).runBefore(early);
+		event.phase(early).runBefore(EventPhase.DEFAULT);
+		event.phase(late).runAfter(EventPhase.DEFAULT);
+		event.phase(late).runBefore(veryLate);
 
 		event.register(ensureOrder(4));
 		event.register(ensureOrder(5));
-		event.register(veryEarly, ensureOrder(0));
-		event.register(early, ensureOrder(2));
-		event.register(late, ensureOrder(6));
-		event.register(veryLate, ensureOrder(8));
-		event.register(veryEarly, ensureOrder(1));
-		event.register(veryLate, ensureOrder(9));
-		event.register(late, ensureOrder(7));
-		event.register(early, ensureOrder(3));
+		event.phase(veryEarly).register(ensureOrder(0));
+		event.phase(early).register(ensureOrder(2));
+		event.phase(late).register(ensureOrder(6));
+		event.phase(veryLate).register(ensureOrder(8));
+		event.phase(veryEarly).register(ensureOrder(1));
+		event.phase(veryLate).register(ensureOrder(9));
+		event.phase(late).register(ensureOrder(7));
+		event.phase(early).register(ensureOrder(3));
 
 		for (int i = 0; i < 5; ++i) {
 			event.invoker().onTest();
@@ -120,23 +121,23 @@ public class EventTests {
 		Identifier b1 = new Identifier("fabric", "b1");
 		Identifier b2 = new Identifier("fabric", "b2");
 		Identifier b3 = new Identifier("fabric", "b3");
-		Identifier c = Event.DEFAULT_PHASE;
+		Identifier c = EventPhase.DEFAULT;
 
 		// A always first and C always last.
-		event.register(a, ensureOrder(0));
-		event.register(c, ensureOrder(4));
-		event.register(b1, ensureOrder(1));
-		event.register(b1, ensureOrder(2));
-		event.register(b1, ensureOrder(3));
+		event.phase(a).register(ensureOrder(0));
+		event.phase(c).register(ensureOrder(4));
+		event.phase(b1).register(ensureOrder(1));
+		event.phase(b1).register(ensureOrder(2));
+		event.phase(b1).register(ensureOrder(3));
 
 		// A -> B
-		event.addPhaseOrdering(a, b1);
+		event.phase(a).runBefore(b1);
 		// B -> C
-		event.addPhaseOrdering(b3, c);
+		event.phase(b3).runBefore(c);
 		// loop
-		event.addPhaseOrdering(b1, b2);
-		event.addPhaseOrdering(b2, b3);
-		event.addPhaseOrdering(b3, b1);
+		event.phase(b1).runBefore(b2);
+		event.phase(b2).runBefore(b3);
+		event.phase(b3).runBefore(b1);
 
 		for (int i = 0; i < 5; ++i) {
 			event.invoker().onTest();
