@@ -13,9 +13,11 @@
     "EntityModelsMixin",
     "LivingEntityRendererAccessor",
     "MixinBlockEntityRenderers",
-    "MixinEntityRenderers"
+    "MixinEntityRenderers",
+    "MixinTooltipComponent"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "plugin": "net.fabricmc.fabric.impl.client.rendering.TooltipComponentMixinPlugin"
 }
