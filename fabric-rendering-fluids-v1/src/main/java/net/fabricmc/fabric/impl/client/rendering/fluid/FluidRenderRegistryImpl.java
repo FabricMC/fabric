@@ -16,12 +16,11 @@
 
 package net.fabricmc.fabric.impl.client.rendering.fluid;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-
 import net.fabricmc.fabric.api.client.render.fluid.v1.CustomFluidRenderer;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderRegistry;
 import net.minecraft.client.color.world.BiomeColors;
+import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -31,7 +30,9 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.biome.BiomeKeys;
 
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class FluidRenderRegistryImpl implements FluidRenderRegistry {
 	public static final FluidRenderRegistryImpl INSTANCE = new FluidRenderRegistryImpl();
@@ -39,6 +40,12 @@ public class FluidRenderRegistryImpl implements FluidRenderRegistry {
 	private final Map<Fluid, FluidRenderHandler> handlers = new IdentityHashMap<>();
 	private final Map<Fluid, FluidRenderHandler> modHandlers = new IdentityHashMap<>();
 	private final Map<Fluid, CustomFluidRenderer> renderers = new IdentityHashMap<>();
+
+	private static final AtomicReference<FluidRenderer> FLUID_RENDERER = new AtomicReference<>();
+
+	public static void setFluidRenderer(FluidRenderer renderer) {
+		FLUID_RENDERER.compareAndSet(null, renderer);
+	}
 
 	private FluidRenderRegistryImpl() {
 	}
