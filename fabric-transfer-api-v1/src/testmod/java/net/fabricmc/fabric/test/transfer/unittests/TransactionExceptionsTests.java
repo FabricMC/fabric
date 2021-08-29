@@ -60,6 +60,21 @@ class TransactionExceptionsTests {
 		}, "Exceptions in close callbacks should be propagated through the transaction.");
 		if (callbacksInvoked != 4) throw new AssertionError("All 4 callbacks should have been invoked, only so many were: " + callbacksInvoked);
 
+		// Test getCurrentUnsafe.
+		if (Transaction.getCurrentUnsafe() != null) throw new AssertionError("Should have returned null.");
+
+		try (Transaction tx = Transaction.openOuter()) {
+			if (Transaction.getCurrentUnsafe() != tx) throw new AssertionError("Should have returned the current transaction.");
+
+			tx.addCloseCallback(((transaction, result) -> {
+				ensureException(Transaction::getCurrentUnsafe, "Should have thrown an exception in the close callback.");
+			}));
+
+			tx.addOuterCloseCallback((result) -> {
+				ensureException(Transaction::getCurrentUnsafe, "Should have thrown an exception in the outer close callback.");
+			});
+		}
+
 		// Test that transaction state is still OK after these exceptions.
 		try (Transaction tx = Transaction.openOuter()) {
 			tx.commit();

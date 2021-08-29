@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.mixin.transfer;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.item.Item;
 
@@ -30,11 +29,11 @@ import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
  */
 @Mixin(Item.class)
 public class ItemMixin implements ItemVariantCache {
-	@Unique
-	private final ItemVariant cachedItemVariant = new ItemVariantImpl((Item) (Object) this, null);
+	@SuppressWarnings("ConstantConditions")
+	private final ItemVariant fabric_cachedItemVariant = new ItemVariantImpl((Item) (Object) this, null);
 
 	@Override
 	public ItemVariant fabric_getCachedItemVariant() {
-		return cachedItemVariant;
+		return fabric_cachedItemVariant;
 	}
 }
