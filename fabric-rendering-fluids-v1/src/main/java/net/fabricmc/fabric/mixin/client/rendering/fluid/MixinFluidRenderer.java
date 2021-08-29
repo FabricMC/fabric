@@ -33,7 +33,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderHandlerRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderRegistryImpl;
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRendererHookContainer;
 
 @Mixin(FluidRenderer.class)
@@ -47,13 +47,13 @@ public class MixinFluidRenderer {
 
 	@Inject(at = @At("RETURN"), method = "onResourceReload")
 	public void onResourceReloadReturn(CallbackInfo info) {
-		FluidRenderHandlerRegistryImpl.INSTANCE.onFluidRendererReload(waterSprites, lavaSprites);
+		FluidRenderRegistryImpl.INSTANCE.onFluidRendererReload(waterSprites, lavaSprites);
 	}
 
 	@Inject(at = @At("HEAD"), method = "render", cancellable = true)
 	public void tesselate(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, FluidState state, CallbackInfoReturnable<Boolean> info) {
 		FluidRendererHookContainer ctr = fabric_renderHandler.get();
-		FluidRenderHandler handler = FluidRenderHandlerRegistryImpl.INSTANCE.getOverride(state.getFluid());
+		FluidRenderHandler handler = FluidRenderRegistryImpl.INSTANCE.getOverride(state.getFluid());
 
 		ctr.view = view;
 		ctr.pos = pos;

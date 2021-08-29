@@ -18,16 +18,31 @@ package net.fabricmc.fabric.api.client.render.fluid.v1;
 
 import net.minecraft.fluid.Fluid;
 
-import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderHandlerRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderRegistryImpl;
 
 /**
  * Registry for {@link FluidRenderHandler} instances.
  *
  * <p>Notably, this supports querying, overriding and wrapping vanilla fluid
  * rendering.
+ *
+ * @deprecated Use {@link FluidRenderRegistry}
  */
+@Deprecated
 public interface FluidRenderHandlerRegistry {
-	FluidRenderHandlerRegistry INSTANCE = FluidRenderHandlerRegistryImpl.INSTANCE;
+	@Deprecated
+	@SuppressWarnings("deprecation")
+	FluidRenderHandlerRegistry INSTANCE = new FluidRenderHandlerRegistry() {
+		@Override
+		public FluidRenderHandler get(Fluid fluid) {
+			return FluidRenderRegistryImpl.INSTANCE.getRenderHandler(fluid);
+		}
+
+		@Override
+		public void register(Fluid fluid, FluidRenderHandler renderer) {
+			FluidRenderRegistryImpl.INSTANCE.registerRenderHandler(fluid, renderer);
+		}
+	};
 
 	/**
 	 * Get a {@link FluidRenderHandler} for a given Fluid.
@@ -35,7 +50,10 @@ public interface FluidRenderHandlerRegistry {
 	 *
 	 * @param fluid The Fluid.
 	 * @return The FluidRenderHandler.
+	 *
+	 * @deprecated Use {@link FluidRenderRegistry#getRenderHandler(Fluid)}
 	 */
+	@Deprecated
 	FluidRenderHandler get(Fluid fluid);
 
 	/**
@@ -43,6 +61,9 @@ public interface FluidRenderHandlerRegistry {
 	 *
 	 * @param fluid The Fluid.
 	 * @param renderer The FluidRenderHandler.
+	 *
+	 * @deprecated Use {@link FluidRenderRegistry#registerRenderHandler(Fluid, FluidRenderHandler)}
 	 */
+	@Deprecated
 	void register(Fluid fluid, FluidRenderHandler renderer);
 }

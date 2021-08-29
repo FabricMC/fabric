@@ -19,6 +19,8 @@ package net.fabricmc.fabric.impl.client.rendering.fluid;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import net.fabricmc.fabric.api.client.render.fluid.v1.CustomFluidRenderer;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderRegistry;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.Fluid;
@@ -30,19 +32,19 @@ import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.biome.BiomeKeys;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 
-public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistry {
-	public static final FluidRenderHandlerRegistryImpl INSTANCE = new FluidRenderHandlerRegistryImpl();
+public class FluidRenderRegistryImpl implements FluidRenderRegistry {
+	public static final FluidRenderRegistryImpl INSTANCE = new FluidRenderRegistryImpl();
 	private static final int DEFAULT_WATER_COLOR = BuiltinRegistries.BIOME.get(BiomeKeys.OCEAN).getWaterColor();
 	private final Map<Fluid, FluidRenderHandler> handlers = new IdentityHashMap<>();
 	private final Map<Fluid, FluidRenderHandler> modHandlers = new IdentityHashMap<>();
+	private final Map<Fluid, CustomFluidRenderer> renderers = new IdentityHashMap<>();
 
-	private FluidRenderHandlerRegistryImpl() {
+	private FluidRenderRegistryImpl() {
 	}
 
 	@Override
-	public FluidRenderHandler get(Fluid fluid) {
+	public FluidRenderHandler getRenderHandler(Fluid fluid) {
 		return handlers.get(fluid);
 	}
 
@@ -51,9 +53,23 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 	}
 
 	@Override
-	public void register(Fluid fluid, FluidRenderHandler renderer) {
+	public void registerRenderHandler(Fluid fluid, FluidRenderHandler renderer) {
 		handlers.put(fluid, renderer);
 		modHandlers.put(fluid, renderer);
+	}
+
+	@Override
+	public CustomFluidRenderer getCustomRenderer(Fluid fluid) {
+		return renderers.getOrDefault(fluid, DefaultFluidRenderer.INSTANCE);
+	}
+
+	public CustomFluidRenderer getCustomRendererOrNull(Fluid fluid) {
+		return renderers.get(fluid);
+	}
+
+	@Override
+	public void registerCustomRenderer(Fluid fluid, CustomFluidRenderer renderer) {
+		renderers.put(fluid, renderer);
 	}
 
 	public void onFluidRendererReload(Sprite[] waterSprites, Sprite[] lavaSprites) {
@@ -81,10 +97,10 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 			}
 		};
 
-		register(Fluids.WATER, waterHandler);
-		register(Fluids.FLOWING_WATER, waterHandler);
-		register(Fluids.LAVA, lavaHandler);
-		register(Fluids.FLOWING_LAVA, lavaHandler);
+		registerRenderHandler(Fluids.WATER, waterHandler);
+		registerRenderHandler(Fluids.FLOWING_WATER, waterHandler);
+		registerRenderHandler(Fluids.LAVA, lavaHandler);
+		registerRenderHandler(Fluids.FLOWING_LAVA, lavaHandler);
 		handlers.putAll(modHandlers);
 	}
 }
