@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.event.interaction;
 
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -61,6 +62,12 @@ public class MixinServerPlayerInteractionManager {
 		if (result != ActionResult.PASS) {
 			// The client might have broken the block on its side, so make sure to let it know.
 			this.player.networkHandler.sendPacket(new BlockUpdateS2CPacket(world, pos));
+			if (world.getBlockState(pos).hasBlockEntity()) {
+				BlockEntityUpdateS2CPacket updatePacket = world.getBlockEntity(pos).toUpdatePacket();
+				if (updatePacket != null) {
+					this.player.networkHandler.sendPacket(updatePacket);
+				}
+			}
 			info.cancel();
 		}
 	}
