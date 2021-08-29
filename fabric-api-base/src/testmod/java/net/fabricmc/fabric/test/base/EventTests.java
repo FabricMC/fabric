@@ -31,6 +31,7 @@ public class EventTests {
 		testDefaultPhaseOnly();
 		testMultipleDefaultPhases();
 		testAddedPhases();
+		testCycle();
 		LogManager.getLogger("fabric-api-base").info("Event unit tests succeeded!");
 	}
 
@@ -108,6 +109,38 @@ public class EventTests {
 		for (int i = 0; i < 5; ++i) {
 			event.invoker().onTest();
 			assertEquals(10, currentListener);
+			currentListener = 0;
+		}
+	}
+
+	private static void testCycle() {
+		Event<Test> event = createEvent();
+
+		Identifier a = new Identifier("fabric", "a");
+		Identifier b1 = new Identifier("fabric", "b1");
+		Identifier b2 = new Identifier("fabric", "b2");
+		Identifier b3 = new Identifier("fabric", "b3");
+		Identifier c = Event.DEFAULT_PHASE;
+
+		// A always first and C always last.
+		event.register(a, ensureOrder(0));
+		event.register(c, ensureOrder(4));
+		event.register(b1, ensureOrder(1));
+		event.register(b1, ensureOrder(2));
+		event.register(b1, ensureOrder(3));
+
+		// A -> B
+		event.addPhaseOrdering(a, b1);
+		// B -> C
+		event.addPhaseOrdering(b3, c);
+		// loop
+		event.addPhaseOrdering(b1, b2);
+		event.addPhaseOrdering(b2, b3);
+		event.addPhaseOrdering(b3, b1);
+
+		for (int i = 0; i < 5; ++i) {
+			event.invoker().onTest();
+			assertEquals(5, currentListener);
 			currentListener = 0;
 		}
 	}

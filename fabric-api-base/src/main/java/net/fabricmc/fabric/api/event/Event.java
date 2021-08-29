@@ -70,7 +70,8 @@ public abstract class Event<T> {
 	 * @param listener The desired listener.
 	 */
 	public void register(Identifier phase, T listener) {
-		// This is not abstract to avoid breaking existing Event subclasses, but they should really not be subclassing Event.
+		// This is done to keep compatibility with existing Event subclasses, but they should really not be subclassing Event.
+		register(listener);
 	}
 
 	/**
