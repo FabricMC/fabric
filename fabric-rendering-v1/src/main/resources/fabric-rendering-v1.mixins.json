@@ -13,7 +13,8 @@
     "EntityModelsMixin",
     "LivingEntityRendererAccessor",
     "MixinBlockEntityRenderers",
-    "MixinEntityRenderers"
+    "MixinEntityRenderers",
+    "ScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
