@@ -32,7 +32,7 @@ abstract class BedBlockMixin {
 		// EntitySleepEvents.ALLOW_SLEEPING allows modders to return SleepFailureReason instances
 		// with a null message, which vanilla's code doesn't guard against. This prevents a (luckily caught) NPE
 		// when a failure reason like that is returned from the event.
-		// The NPE can also be reproduced in vanilla with custom data pack dimensions (MC-235035, which is also fixed).
+		// The NPE can also be reproduced in vanilla with custom data pack dimensions (MC-235035, which is also fixed here).
 		if (reason.toText() == null) {
 			info.cancel();
 		}
