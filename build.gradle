@@ -146,12 +146,12 @@ allprojects {
 
 	afterEvaluate {
 		remapJar {
-			input = file("${project.buildDir}/libs/$archivesBaseName-$version-dev.jar")
-			archiveName = "${archivesBaseName}-${version}.jar"
+			input = file("${project.buildDir}/libs/$archivesBaseName-${project.version}-dev.jar")
+			archiveFileName = "${archivesBaseName}-${project.version}.jar"
 		}
 
 		artifacts {
-			dev file: file("${project.buildDir}/libs/$archivesBaseName-$version-dev.jar"), type: "jar", builtBy: jar
+			dev file: file("${project.buildDir}/libs/$archivesBaseName-${project.version}-dev.jar"), type: "jar", builtBy: jar
 		}
 
 		processResources {
@@ -270,8 +270,8 @@ subprojects {
 
 task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
 	afterEvaluate {
-		input = file("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
-		archiveName = "${archivesBaseName}-${version}-maven.jar"
+		input = file("${project.buildDir}/libs/${archivesBaseName}-${project.version}-dev.jar")
+		archiveFileName = "${archivesBaseName}-${project.version}-maven.jar"
 		addNestedDependencies = false
 	}
 }
@@ -279,7 +279,7 @@ task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
+			artifact(file("${project.buildDir}/libs/$archivesBaseName-${project.version}-maven.jar")) {
 				builtBy remapMavenJar
 			}
 
