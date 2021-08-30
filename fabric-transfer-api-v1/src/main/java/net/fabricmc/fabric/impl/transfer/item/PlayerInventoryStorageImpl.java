@@ -18,8 +18,10 @@ package net.fabricmc.fabric.impl.transfer.item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.Hand;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
@@ -45,20 +47,13 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 
 		List<SingleSlotStorage<ItemVariant>> mainSlots = getSlots().subList(0, PlayerInventory.MAIN_SIZE);
 
-		// Stack into the main stack first
-		if (PlayerInventory.isValidHotbarIndex(playerInventory.selectedSlot)) {
-			SingleSlotStorage<ItemVariant> selectedSlot = getSlot(playerInventory.selectedSlot);
+		// Stack into the main stack first and the offhand stack second.
+		for (Hand hand : Hand.values()) {
+			SingleSlotStorage<ItemVariant> handSlot = getHandSlot(hand);
 
-			if (selectedSlot.getResource().equals(resource)) {
-				amount -= selectedSlot.insert(resource, amount, tx);
+			if (handSlot.getResource().equals(resource)) {
+				amount -= handSlot.insert(resource, amount, tx);
 			}
-		}
-
-		// Stack into the offhand stack otherwise
-		SingleSlotStorage<ItemVariant> offHandSlot = getSlot(PlayerInventory.OFF_HAND_SLOT);
-
-		if (offHandSlot.getResource().equals(resource)) {
-			amount -= offHandSlot.insert(resource, amount, tx);
 		}
 
 		// Otherwise insert into the main slots, first iteration tries to stack, second iteration inserts into empty slots.
@@ -81,8 +76,21 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 
 		// Drop in the world on the server side (will be synced by the game with the client).
 		// Dropping items is server-side only because it involves randomness.
-		if (amount > 0 && playerInventory.player.world.isClient()) {
+		if (amount > 0 && !playerInventory.player.world.isClient()) {
 			droppedStacks.addDrop(resource, amount, tx);
+		}
+	}
+
+	@Override
+	public SingleSlotStorage<ItemVariant> getHandSlot(Hand hand) {
+		if (Objects.requireNonNull(hand) == Hand.MAIN_HAND) {
+			if (PlayerInventory.isValidHotbarIndex(playerInventory.selectedSlot)) {
+				return getSlot(playerInventory.selectedSlot);
+			} else {
+				throw new RuntimeException("Unexpected player selected slot: " + playerInventory.selectedSlot);
+			}
+		} else {
+			return getSlot(PlayerInventory.OFF_HAND_SLOT);
 		}
 	}
 

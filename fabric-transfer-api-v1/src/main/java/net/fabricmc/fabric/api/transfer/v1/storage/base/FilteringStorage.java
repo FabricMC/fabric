@@ -108,7 +108,8 @@ public class FilteringStorage<T> implements Storage<T> {
 	}
 
 	@Override
-	public @Nullable StorageView<T> exactView(TransactionContext transaction, T resource) {
+	@Nullable
+	public StorageView<T> exactView(TransactionContext transaction, T resource) {
 		StorageView<T> exact = backingStorage.get().exactView(transaction, resource);
 
 		if (exact != null) {
@@ -120,7 +121,7 @@ public class FilteringStorage<T> implements Storage<T> {
 
 	@Override
 	public long getVersion() {
-		return Storage.super.getVersion();
+		return backingStorage.get().getVersion();
 	}
 
 	/**

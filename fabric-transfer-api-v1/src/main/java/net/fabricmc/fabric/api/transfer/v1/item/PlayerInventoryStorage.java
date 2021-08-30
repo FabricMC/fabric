@@ -21,6 +21,7 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.util.Hand;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
@@ -110,4 +111,9 @@ public interface PlayerInventoryStorage extends InventoryStorage {
 	 * @param transaction The transaction this operation is part of.
 	 */
 	void drop(ItemVariant variant, long amount, TransactionContext transaction);
+
+	/**
+	 * Return a wrapper around the current slot of the passed hand.
+	 */
+	SingleSlotStorage<ItemVariant> getHandSlot(Hand hand);
 }
