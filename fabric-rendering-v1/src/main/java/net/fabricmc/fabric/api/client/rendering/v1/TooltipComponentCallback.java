@@ -31,6 +31,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * Allows registering a mapping from {@link TooltipData} to {@link TooltipComponent}.
  * This allows custom tooltips for items: first, override {@link Item#getTooltipData} and return a custom {@code TooltipData}.
  * Second, register a listener to this event and convert the data to your component implementation if it's an instance of your data class.
+ *
+ * <p>Note that failure to map some data to a component will throw an exception,
+ * so make sure that any data you return in {@link Item#getTooltipData} will be handled by one of the callbacks.
  */
 @Environment(EnvType.CLIENT)
 public interface TooltipComponentCallback {
