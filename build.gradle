@@ -239,20 +239,12 @@ subprojects {
 		testmodImplementation sourceSets.main.output
 	}
 
-	task remapMavenJar(type: Copy, dependsOn: remapJar) {
-		afterEvaluate {
-			from("${project.buildDir}/libs/$archivesBaseName-${version}.jar")
-			into("${project.buildDir}/libs/")
-			rename { String fn -> "$archivesBaseName-${version}-maven.jar" }
-		}
-	}
-
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
 				afterEvaluate {
-					artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
-						builtBy remapMavenJar
+					artifact(remapJar) {
+						builtBy remapJar
 					}
 
 					artifact(sourcesJar) {
@@ -269,17 +261,16 @@ subprojects {
 }
 
 task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
-	afterEvaluate {
-		input = file("${project.buildDir}/libs/${archivesBaseName}-${project.version}-dev.jar")
-		archiveFileName = "${archivesBaseName}-${project.version}-maven.jar"
-		addNestedDependencies = false
-	}
+	input = jar.archiveFile
+	archiveFileName = "${archivesBaseName}-${project.version}-maven.jar"
+	addNestedDependencies = false
 }
+build.dependsOn remapMavenJar
 
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifact(file("${project.buildDir}/libs/$archivesBaseName-${project.version}-maven.jar")) {
+			artifact(remapMavenJar) {
 				builtBy remapMavenJar
 			}
 
