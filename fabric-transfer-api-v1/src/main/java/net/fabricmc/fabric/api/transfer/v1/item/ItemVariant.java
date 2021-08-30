@@ -52,7 +52,7 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 * Retrieve an ItemVariant with the item and tag of a stack.
 	 */
 	static ItemVariant of(ItemStack stack) {
-		return of(stack.getItem(), stack.getTag());
+		return of(stack.getItem(), stack.getNbt());
 	}
 
 	/**
@@ -73,7 +73,7 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 * Return true if the item and tag of this variant match those of the passed stack, and false otherwise.
 	 */
 	default boolean matches(ItemStack stack) {
-		return isOf(stack.getItem()) && nbtMatches(stack.getTag());
+		return isOf(stack.getItem()) && nbtMatches(stack.getNbt());
 	}
 
 	/**
@@ -98,7 +98,7 @@ public interface ItemVariant extends TransferVariant<Item> {
 	default ItemStack toStack(int count) {
 		if (isBlank()) return ItemStack.EMPTY;
 		ItemStack stack = new ItemStack(getItem(), count);
-		stack.setTag(copyNbt());
+		stack.setNbt(copyNbt());
 		return stack;
 	}
 

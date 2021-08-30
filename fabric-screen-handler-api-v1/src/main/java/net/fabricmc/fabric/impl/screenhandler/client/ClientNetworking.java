@@ -83,7 +83,7 @@ public final class ClientNetworking implements ClientModInitializer {
 				);
 
 				player.currentScreenHandler = ((ScreenHandlerProvider<?>) screen).getScreenHandler();
-				client.openScreen(screen);
+				client.setScreen(screen);
 			} else {
 				LOGGER.warn("Screen not registered for screen handler {}!", typeId);
 			}

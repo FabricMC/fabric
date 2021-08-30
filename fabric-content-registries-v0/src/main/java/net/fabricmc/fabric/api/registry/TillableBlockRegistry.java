@@ -67,7 +67,7 @@ public final class TillableBlockRegistry {
 	 */
 	public static void register(Block input, Predicate<ItemUsageContext> usagePredicate, BlockState tilled) {
 		Objects.requireNonNull(tilled, "tilled block state cannot be null");
-		register(input, usagePredicate, HoeItem.getTillingConsumer(tilled));
+		register(input, usagePredicate, HoeItem.createTillAction(tilled));
 	}
 
 	/**
@@ -81,6 +81,6 @@ public final class TillableBlockRegistry {
 	public static void register(Block input, Predicate<ItemUsageContext> usagePredicate, BlockState tilled, ItemConvertible droppedItem) {
 		Objects.requireNonNull(tilled, "tilled block state cannot be null");
 		Objects.requireNonNull(droppedItem, "dropped item cannot be null");
-		register(input, usagePredicate, HoeItem.getTillingConsumer(tilled, droppedItem));
+		register(input, usagePredicate, HoeItem.createTillAndDropAction(tilled, droppedItem));
 	}
 }

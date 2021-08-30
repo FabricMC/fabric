@@ -44,12 +44,12 @@ import net.fabricmc.fabric.impl.client.rendering.RegistrationHelperImpl;
 public abstract class MixinEntityRenderers {
 	@Shadow()
 	@Final
-	private static Map<EntityType<?>, EntityRendererFactory<?>> rendererFactories;
+	private static Map<EntityType<?>, EntityRendererFactory<?>> RENDERER_FACTORIES;
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Inject(method = "<clinit>*", at = @At(value = "RETURN"))
 	private static void onRegisterRenderers(CallbackInfo info) {
-		EntityRendererRegistryImpl.setup(((t, factory) -> rendererFactories.put(t, factory)));
+		EntityRendererRegistryImpl.setup(((t, factory) -> RENDERER_FACTORIES.put(t, factory)));
 	}
 
 	// synthetic lambda in reloadEntityRenderers

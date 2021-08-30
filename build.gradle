@@ -9,8 +9,8 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.8.12" apply false
-	id "org.cadixdev.licenser" version "0.5.0"
+	id "fabric-loom" version "0.9.50" apply false
+	id "org.cadixdev.licenser" version "0.6.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 	id "com.modrinth.minotaur" version "1.1.0"
@@ -21,8 +21,8 @@ def ENV = System.getenv()
 class Globals {
 	static def baseVersion = "0.39.2"
 	static def mcVersion = "1.17.1"
-	static def yarnVersion = "+build.1"
-	static def loaderVersion = "0.11.3"
+	static def yarnVersion = "+build.46"
+	static def loaderVersion = "0.11.6"
 	static def preRelease = false
 }
 
@@ -133,7 +133,7 @@ allprojects {
 	}
 
 	loom {
-		shareCaches = true
+		shareRemapCaches = true
 	}
 
 	repositories {
