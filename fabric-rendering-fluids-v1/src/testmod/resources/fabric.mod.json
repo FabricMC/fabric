@@ -8,7 +8,9 @@
   "depends": {
     "fabric-rendering-fluids-v1": "*"
   },
-  "mixins": [
-    "fabric-rendering-fluids-v1-testmod.mixins.json"
-  ]
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.test.client.rendering.fluid.FabricFluidRenderingTestModClient"
+    ]
+  }
 }

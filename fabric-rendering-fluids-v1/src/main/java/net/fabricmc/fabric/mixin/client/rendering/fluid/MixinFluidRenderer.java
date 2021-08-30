@@ -16,15 +16,11 @@
 
 package net.fabricmc.fabric.mixin.client.rendering.fluid;
 
-import net.fabricmc.fabric.api.client.render.fluid.v1.CustomFluidRenderer;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidOverlayBlock;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderHandlerRegistryImpl;
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRendererHookContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.LeavesBlock;
-import net.minecraft.block.TransparentBlock;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.client.texture.Sprite;
@@ -34,7 +30,11 @@ import net.minecraft.world.BlockRenderView;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -44,15 +44,17 @@ public class MixinFluidRenderer {
 	private Sprite[] lavaSprites;
 	@Shadow
 	private Sprite[] waterSprites;
+	@Shadow
+	private Sprite waterOverlaySprite;
 
-	@Shadow private Sprite waterOverlaySprite;
 	private final ThreadLocal<FluidRendererHookContainer> fabric_renderHandler = ThreadLocal.withInitial(FluidRendererHookContainer::new);
 	private final ThreadLocal<Boolean> fabric_customRendering = ThreadLocal.withInitial(() -> false);
 	private final ThreadLocal<Block> fabric_neighborBlock = new ThreadLocal<>();
 
 	@Inject(at = @At("RETURN"), method = "onResourceReload")
 	public void onResourceReloadReturn(CallbackInfo info) {
-		FluidRenderRegistryImpl.INSTANCE.onFluidRendererReload(waterSprites, lavaSprites, waterOverlaySprite);
+		FluidRenderer self = FluidRenderer.class.cast(this);
+		FluidRenderHandlerRegistryImpl.INSTANCE.onFluidRendererReload(self, waterSprites, lavaSprites, waterOverlaySprite);
 	}
 
 	@Inject(at = @At("HEAD"), method = "render", cancellable = true)
@@ -60,36 +62,31 @@ public class MixinFluidRenderer {
 		if (!fabric_customRendering.get()) {
 			// Prevent recursively looking up custom fluid renderers when default behaviour is being invoked
 			fabric_customRendering.set(true);
-
-			CustomFluidRenderer renderer = FluidRenderRegistryImpl.INSTANCE.getCustomRenderer(state.getFluid());
-			if (renderer != null) {
-				CustomFluidRenderer.DefaultBehavior def = () -> FluidRenderer.class.cast(this).render(view, pos, vertexConsumer, state);
-				info.setReturnValue(renderer.renderFluid(pos, view, vertexConsumer, state, def));
-				return;
-			}
-
+			tessellateViaHandler(view, pos, vertexConsumer, state, info);
 			fabric_customRendering.set(false);
 		}
 
+		if (info.isCancelled()) {
+			return;
+		}
+
 		FluidRendererHookContainer ctr = fabric_renderHandler.get();
-		FluidRenderHandler handler = FluidRenderRegistryImpl.INSTANCE.getOverride(state.getFluid());
+		ctr.getSprites(view, pos, state);
+	}
+
+	@Unique
+	private void tessellateViaHandler(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, FluidState state, CallbackInfoReturnable<Boolean> info) {
+		FluidRendererHookContainer ctr = fabric_renderHandler.get();
+		FluidRenderHandler handler = FluidRenderHandlerRegistryImpl.INSTANCE.getOverride(state.getFluid());
 
 		ctr.view = view;
 		ctr.pos = pos;
 		ctr.state = state;
 		ctr.handler = handler;
-		ctr.getSprites(view, pos, state);
 
-		/* if (handler == null) {
-			return;
+		if (handler != null) {
+			info.setReturnValue(handler.renderFluid(pos, view, vertexConsumer, state));
 		}
-
-		ActionResult hResult = handler.tesselate(view, pos, bufferBuilder, state);
-
-		if (hResult != ActionResult.PASS) {
-			info.setReturnValue(hResult == ActionResult.SUCCESS);
-			return;
-		} */
 	}
 
 	@Inject(at = @At("RETURN"), method = "render")
@@ -103,7 +100,10 @@ public class MixinFluidRenderer {
 		// but uses the negation consistent with 'matches water'
 		// for determining if special water sprite should be used behind glass.
 
-		// Has other uses but those have already happened by the time the hook is called.
+		// Has other uses but those are overridden by this mixin and have
+		// already happened by the time this hook is called
+
+		// If this fluid has an overlay texture, set this boolean too false
 		final FluidRendererHookContainer ctr = fabric_renderHandler.get();
 		return !ctr.hasOverlay;
 	}
@@ -131,13 +131,16 @@ public class MixinFluidRenderer {
 	public Block getOverlayBlock(BlockState state) {
 		Block block = state.getBlock();
 		fabric_neighborBlock.set(block);
-		return null; // An if statement follows, we don't need this anymore and 'null' makes its condition always false
+
+		// An if-statement follows, we don't want this anymore and 'null' makes
+		// its condition always false (due to instanceof)
+		return null;
 	}
 
 	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.BY, by = 2), method = "render", ordinal = 0)
 	public Sprite modSideSpriteForOverlay(Sprite chk) {
 		Block block = fabric_neighborBlock.get();
-		if (block instanceof FluidOverlayBlock || block instanceof TransparentBlock || block instanceof LeavesBlock) {
+		if (FluidRenderHandlerRegistryImpl.INSTANCE.isBlockTransparent(block)) {
 			FluidRendererHookContainer ctr = fabric_renderHandler.get();
 			return ctr.handler != null && ctr.hasOverlay ? ctr.overlay : waterOverlaySprite;
 		}

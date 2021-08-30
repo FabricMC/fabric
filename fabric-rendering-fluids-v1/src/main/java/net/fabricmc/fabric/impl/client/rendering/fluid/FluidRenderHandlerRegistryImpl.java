@@ -16,15 +16,21 @@
 
 package net.fabricmc.fabric.impl.client.rendering.fluid;
 
-import net.fabricmc.fabric.api.client.render.fluid.v1.CustomFluidRenderer;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderRegistry;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.block.LeavesBlock;
+import net.minecraft.block.TransparentBlock;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.BlockRenderView;
@@ -32,26 +38,21 @@ import net.minecraft.world.biome.BiomeKeys;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
-public class FluidRenderRegistryImpl implements FluidRenderRegistry {
-	public static final FluidRenderRegistryImpl INSTANCE = new FluidRenderRegistryImpl();
+public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistry {
+	public static final FluidRenderHandlerRegistryImpl INSTANCE = new FluidRenderHandlerRegistryImpl();
 	private static final int DEFAULT_WATER_COLOR = BuiltinRegistries.BIOME.get(BiomeKeys.OCEAN).getWaterColor();
 	private final Map<Fluid, FluidRenderHandler> handlers = new IdentityHashMap<>();
 	private final Map<Fluid, FluidRenderHandler> modHandlers = new IdentityHashMap<>();
-	private final Map<Fluid, CustomFluidRenderer> renderers = new IdentityHashMap<>();
+	private final Map<Block, Boolean> overlayBlocks = new IdentityHashMap<>();
 
-	private static final AtomicReference<FluidRenderer> FLUID_RENDERER = new AtomicReference<>();
+	private FluidRenderer fluidRenderer;
 
-	public static void setFluidRenderer(FluidRenderer renderer) {
-		FLUID_RENDERER.compareAndSet(null, renderer);
-	}
-
-	private FluidRenderRegistryImpl() {
+	private FluidRenderHandlerRegistryImpl() {
 	}
 
 	@Override
-	public FluidRenderHandler getRenderHandler(Fluid fluid) {
+	public FluidRenderHandler get(Fluid fluid) {
 		return handlers.get(fluid);
 	}
 
@@ -60,22 +61,24 @@ public class FluidRenderRegistryImpl implements FluidRenderRegistry {
 	}
 
 	@Override
-	public void registerRenderHandler(Fluid fluid, FluidRenderHandler renderer) {
+	public void register(Fluid fluid, FluidRenderHandler renderer) {
 		handlers.put(fluid, renderer);
 		modHandlers.put(fluid, renderer);
 	}
 
 	@Override
-	public CustomFluidRenderer getCustomRenderer(Fluid fluid) {
-		return renderers.get(fluid);
+	public void setBlockTransparency(Block block, boolean transparent) {
+		overlayBlocks.put(block, transparent);
 	}
 
 	@Override
-	public void registerCustomRenderer(Fluid fluid, CustomFluidRenderer renderer) {
-		renderers.put(fluid, renderer);
+	public boolean isBlockTransparent(Block block) {
+		return overlayBlocks.computeIfAbsent(block, k -> k instanceof TransparentBlock || k instanceof LeavesBlock);
 	}
 
-	public void onFluidRendererReload(Sprite[] waterSprites, Sprite[] lavaSprites, Sprite waterOverlay) {
+	public void onFluidRendererReload(FluidRenderer renderer, Sprite[] waterSprites, Sprite[] lavaSprites, Sprite waterOverlay) {
+		fluidRenderer = renderer;
+
 		Sprite[] waterSpritesFull = {waterSprites[0], waterSprites[1], waterOverlay};
 		FluidRenderHandler waterHandler = new FluidRenderHandler() {
 			@Override
@@ -101,10 +104,22 @@ public class FluidRenderRegistryImpl implements FluidRenderRegistry {
 			}
 		};
 
-		registerRenderHandler(Fluids.WATER, waterHandler);
-		registerRenderHandler(Fluids.FLOWING_WATER, waterHandler);
-		registerRenderHandler(Fluids.LAVA, lavaHandler);
-		registerRenderHandler(Fluids.FLOWING_LAVA, lavaHandler);
+		register(Fluids.WATER, waterHandler);
+		register(Fluids.FLOWING_WATER, waterHandler);
+		register(Fluids.LAVA, lavaHandler);
+		register(Fluids.FLOWING_LAVA, lavaHandler);
 		handlers.putAll(modHandlers);
+
+		SpriteAtlasTexture texture = MinecraftClient.getInstance()
+													.getBakedModelManager()
+													.getAtlas(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+
+		for (FluidRenderHandler handler : handlers.values()) {
+			handler.reloadTextures(texture);
+		}
+	}
+
+	public boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, FluidState state) {
+		return fluidRenderer.render(world, pos, vertexConsumer, state);
 	}
 }
