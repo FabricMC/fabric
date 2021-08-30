@@ -24,15 +24,21 @@ public interface CustomFluidRenderer {
 	 * <p>Note that this method must *only* return {@code true} if at least one face is tessellated. If no faces are
 	 * tessellated this method must return {@code false}.
 	 *
-	 * @param pos            The position in the world, of the fluid to render
-	 * @param world          The world the fluid is in
-	 * @param vertexConsumer The vertex consumer to tessellate the fluid in
-	 * @param state          The fluid state being rendered
+	 * @param pos             The position in the world, of the fluid to render
+	 * @param world           The world the fluid is in
+	 * @param vertexConsumer  The vertex consumer to tessellate the fluid in
+	 * @param state           The fluid state being rendered
+	 * @param defaultBehavior The wrapper for the default behavior, use this to render fluids as vanilla fluids
 	 * @return Whether anything is tessellated
 	 */
 	boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, FluidState state, DefaultBehavior defaultBehavior);
 
 	interface DefaultBehavior {
+		/**
+		 * Fallback to the vanilla fluid renderer implementation. Call this if you need the default fluid rendering.
+		 *
+		 * @return Whether anything is tessellated
+		 */
 		boolean drawFluidAsDefault();
 	}
 }
