@@ -30,7 +30,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * @param overlayTexture The texture behind glass, leaves and other {@linkplain
 	 *                       FluidRenderHandlerRegistry#setBlockTransparency registered transparent blocks}
 	 */
-	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, Identifier overlayTexture) {
+	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, @Nullable Identifier overlayTexture) {
 		this.stillTexture = stillTexture;
 		this.flowingTexture = flowingTexture;
 		this.overlayTexture = overlayTexture;
