@@ -50,7 +50,7 @@ public class TransactionManagerImpl {
 		} else if (stack.get(currentDepth).isOpen) {
 			return stack.get(currentDepth);
 		} else {
-			throw new IllegalStateException("May not call getCurrentTransaction() from a close callback.");
+			throw new IllegalStateException("May not call getCurrentUnsafe() from a close callback.");
 		}
 	}
 
