@@ -1,6 +1,7 @@
 package net.fabricmc.fabric.impl.client.rendering.fluid;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.CustomFluidRenderer;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidOverlayBlock;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -290,7 +291,7 @@ public class DefaultLikeFluidRenderer implements CustomFluidRenderer {
 
 					if (!noOverlay) {
 						Block block = world.getBlockState(near).getBlock();
-						if (block instanceof TransparentBlock || block instanceof LeavesBlock) {
+						if (block instanceof TransparentBlock || block instanceof LeavesBlock || block instanceof FluidOverlayBlock) {
 							sprite = overlay;
 						}
 					}

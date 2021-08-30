@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.test.mixin.client.rendering.fluid.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "client": [
+    "MixinDoorBlock"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

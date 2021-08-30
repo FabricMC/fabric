@@ -75,11 +75,12 @@ public class FluidRenderRegistryImpl implements FluidRenderRegistry {
 		renderers.put(fluid, renderer);
 	}
 
-	public void onFluidRendererReload(Sprite[] waterSprites, Sprite[] lavaSprites) {
+	public void onFluidRendererReload(Sprite[] waterSprites, Sprite[] lavaSprites, Sprite waterOverlay) {
+		Sprite[] waterSpritesFull = {waterSprites[0], waterSprites[1], waterOverlay};
 		FluidRenderHandler waterHandler = new FluidRenderHandler() {
 			@Override
 			public Sprite[] getFluidSprites(BlockRenderView view, BlockPos pos, FluidState state) {
-				return waterSprites;
+				return waterSpritesFull;
 			}
 
 			@Override

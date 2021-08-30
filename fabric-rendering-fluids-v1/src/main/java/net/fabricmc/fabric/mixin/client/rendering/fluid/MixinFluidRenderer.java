@@ -17,21 +17,24 @@
 package net.fabricmc.fabric.mixin.client.rendering.fluid;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.CustomFluidRenderer;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidOverlayBlock;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderRegistryImpl;
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRendererHookContainer;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.LeavesBlock;
+import net.minecraft.block.TransparentBlock;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -42,12 +45,14 @@ public class MixinFluidRenderer {
 	@Shadow
 	private Sprite[] waterSprites;
 
+	@Shadow private Sprite waterOverlaySprite;
 	private final ThreadLocal<FluidRendererHookContainer> fabric_renderHandler = ThreadLocal.withInitial(FluidRendererHookContainer::new);
 	private final ThreadLocal<Boolean> fabric_customRendering = ThreadLocal.withInitial(() -> false);
+	private final ThreadLocal<Block> fabric_neighborBlock = new ThreadLocal<>();
 
 	@Inject(at = @At("RETURN"), method = "onResourceReload")
 	public void onResourceReloadReturn(CallbackInfo info) {
-		FluidRenderRegistryImpl.INSTANCE.onFluidRendererReload(waterSprites, lavaSprites);
+		FluidRenderRegistryImpl.INSTANCE.onFluidRendererReload(waterSprites, lavaSprites, waterOverlaySprite);
 	}
 
 	@Inject(at = @At("HEAD"), method = "render", cancellable = true)
@@ -110,15 +115,32 @@ public class MixinFluidRenderer {
 	}
 
 	// Redirect redirects all 'waterOverlaySprite' gets in 'render' to this method, this is correct
-	@Redirect(at = @At(value = "GETFIELD", target = "Lnet/minecraft/client/render/block/FluidRenderer;waterOverlaySprite:Lnet/minecraft/client/texture/Sprite;"), method = "render")
-	public Sprite modWaterOverlaySprite(FluidRenderer self, Sprite chk) {
+	@Redirect(at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/client/render/block/FluidRenderer;waterOverlaySprite:Lnet/minecraft/client/texture/Sprite;"), method = "render")
+	public Sprite modWaterOverlaySprite(FluidRenderer self) {
 		FluidRendererHookContainer ctr = fabric_renderHandler.get();
-		return ctr.handler != null && ctr.hasOverlay ? ctr.overlay : chk;
+		return ctr.handler != null && ctr.hasOverlay ? ctr.overlay : waterOverlaySprite;
 	}
 
 	@ModifyVariable(at = @At(value = "CONSTANT", args = "intValue=16", ordinal = 0, shift = At.Shift.BEFORE), method = "render", ordinal = 0)
 	public int modTintColor(int chk) {
 		FluidRendererHookContainer ctr = fabric_renderHandler.get();
 		return ctr.handler != null ? ctr.handler.getFluidColor(ctr.view, ctr.pos, ctr.state) : chk;
+	}
+
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;"), method = "render")
+	public Block getOverlayBlock(BlockState state) {
+		Block block = state.getBlock();
+		fabric_neighborBlock.set(block);
+		return null; // An if statement follows, we don't need this anymore and 'null' makes its condition always false
+	}
+
+	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.BY, by = 2), method = "render", ordinal = 0)
+	public Sprite modSideSpriteForOverlay(Sprite chk) {
+		Block block = fabric_neighborBlock.get();
+		if (block instanceof FluidOverlayBlock || block instanceof TransparentBlock || block instanceof LeavesBlock) {
+			FluidRendererHookContainer ctr = fabric_renderHandler.get();
+			return ctr.handler != null && ctr.hasOverlay ? ctr.overlay : waterOverlaySprite;
+		}
+		return chk;
 	}
 }
