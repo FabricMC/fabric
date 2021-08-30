@@ -16,11 +16,12 @@
 
 package net.fabricmc.fabric.impl.client.rendering.fluid;
 
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
+
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 
 public class FluidRendererHookContainer {
 	public BlockRenderView view;
@@ -37,6 +38,7 @@ public class FluidRendererHookContainer {
 
 			this.sprites[0] = sprites[0];
 			this.sprites[1] = sprites[1];
+
 			if (sprites.length > 2) {
 				hasOverlay = true;
 				overlay = sprites[2];

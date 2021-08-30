@@ -1,4 +1,22 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.test.client.rendering.fluid;
+
+import java.util.Optional;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -18,111 +36,109 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 
-import java.util.Optional;
-
 public abstract class UnregisteredFluid extends FlowableFluid {
-    public UnregisteredFluid() {
-    }
+	public UnregisteredFluid() {
+	}
 
-    @Override
+	@Override
 	public Fluid getFlowing() {
-        return TestFluids.UNREGISTERED_FLOWING;
-    }
+		return TestFluids.UNREGISTERED_FLOWING;
+	}
 
-    @Override
+	@Override
 	public Fluid getStill() {
-        return TestFluids.UNREGISTERED;
-    }
+		return TestFluids.UNREGISTERED;
+	}
 
-    @Override
+	@Override
 	public Item getBucketItem() {
-        return Items.WATER_BUCKET;
-    }
+		return Items.WATER_BUCKET;
+	}
 
-    @Override
+	@Override
 	protected boolean isInfinite() {
-        return true;
-    }
+		return true;
+	}
 
-    @Override
+	@Override
 	protected void beforeBreakingBlock(WorldAccess world, BlockPos pos, BlockState state) {
-        BlockEntity blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
-        Block.dropStacks(state, world, pos, blockEntity);
-    }
+		BlockEntity blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
+		Block.dropStacks(state, world, pos, blockEntity);
+	}
 
-    @Override
+	@Override
 	public int getFlowSpeed(WorldView world) {
-        return 4;
-    }
+		return 4;
+	}
 
-    @Override
+	@Override
 	public BlockState toBlockState(FluidState state) {
-        return TestFluids.UNREGISTERED_BLOCK.getDefaultState().with(FluidBlock.LEVEL, getBlockStateLevel(state));
-    }
+		return TestFluids.UNREGISTERED_BLOCK.getDefaultState().with(FluidBlock.LEVEL, getBlockStateLevel(state));
+	}
 
-    @Override
+	@Override
 	public boolean matchesType(Fluid fluid) {
-        return fluid == TestFluids.UNREGISTERED || fluid == TestFluids.UNREGISTERED_FLOWING;
-    }
+		return fluid == TestFluids.UNREGISTERED || fluid == TestFluids.UNREGISTERED_FLOWING;
+	}
 
-    @Override
+	@Override
 	public int getLevelDecreasePerBlock(WorldView world) {
-        return 1;
-    }
+		return 1;
+	}
 
-    @Override
+	@Override
 	public int getTickRate(WorldView world) {
-        return 5;
-    }
+		return 5;
+	}
 
-    @Override
+	@Override
 	public boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos, Fluid fluid, Direction direction) {
-        return direction == Direction.DOWN && !fluid.matchesType(TestFluids.NO_OVERLAY);
-    }
+		return direction == Direction.DOWN && !fluid.matchesType(TestFluids.NO_OVERLAY);
+	}
 
-    @Override
+	@Override
 	protected float getBlastResistance() {
-        return 100.0F;
-    }
+		return 100.0F;
+	}
 
-    @Override
+	@Override
 	public Optional<SoundEvent> getBucketFillSound() {
-        return Optional.of(SoundEvents.ITEM_BUCKET_FILL);
-    }
+		return Optional.of(SoundEvents.ITEM_BUCKET_FILL);
+	}
 
-    public static class Flowing extends UnregisteredFluid {
-        public Flowing() {
-        }
+	public static class Flowing extends UnregisteredFluid {
+		public Flowing() {
+		}
 
-        @Override
+		@Override
 		protected void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
-            super.appendProperties(builder);
-            builder.add(LEVEL);
-        }
+			super.appendProperties(builder);
+			builder.add(LEVEL);
+		}
 
-        @Override
+		@Override
 		public int getLevel(FluidState state) {
-            return state.get(LEVEL);
-        }
+			return state.get(LEVEL);
+		}
 
-        @Override
+		@Override
 		public boolean isStill(FluidState state) {
-            return false;
-        }
-    }
+			return false;
+		}
+	}
 
-    public static class Still extends UnregisteredFluid {
-        public Still() {
-        }
+	public static class Still extends UnregisteredFluid {
+		public Still() {
+		}
 
-        @Override
+		@Override
 		public int getLevel(FluidState state) {
-            return 8;
-        }
+			return 8;
+		}
 
-        @Override
+		@Override
 		public boolean isStill(FluidState state) {
-            return true;
-        }
-    }
+			return true;
+		}
+	}
 }

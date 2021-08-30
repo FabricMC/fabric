@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.impl.client.rendering.fluid;
 
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.TransparentBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -37,8 +37,8 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.biome.BiomeKeys;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 
 public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistry {
 	public static final FluidRenderHandlerRegistryImpl INSTANCE = new FluidRenderHandlerRegistryImpl();
@@ -112,8 +112,8 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		handlers.putAll(modHandlers);
 
 		SpriteAtlasTexture texture = MinecraftClient.getInstance()
-													.getBakedModelManager()
-													.getAtlas(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+				.getBakedModelManager()
+				.getAtlas(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
 
 		for (FluidRenderHandler handler : handlers.values()) {
 			handler.reloadTextures(texture);

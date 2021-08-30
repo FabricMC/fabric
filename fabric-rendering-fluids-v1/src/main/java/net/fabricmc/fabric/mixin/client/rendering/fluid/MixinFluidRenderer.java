@@ -16,17 +16,6 @@
 
 package net.fabricmc.fabric.mixin.client.rendering.fluid;
 
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderHandlerRegistryImpl;
-import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRendererHookContainer;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.block.FluidRenderer;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -37,6 +26,19 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.block.FluidRenderer;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockRenderView;
+
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
+import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderHandlerRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRendererHookContainer;
 
 @Mixin(FluidRenderer.class)
 public class MixinFluidRenderer {
@@ -140,10 +142,12 @@ public class MixinFluidRenderer {
 	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.BY, by = 2), method = "render", ordinal = 0)
 	public Sprite modSideSpriteForOverlay(Sprite chk) {
 		Block block = fabric_neighborBlock.get();
+
 		if (FluidRenderHandlerRegistryImpl.INSTANCE.isBlockTransparent(block)) {
 			FluidRendererHookContainer ctr = fabric_renderHandler.get();
 			return ctr.handler != null && ctr.hasOverlay ? ctr.overlay : waterOverlaySprite;
 		}
+
 		return chk;
 	}
 }
