@@ -3,12 +3,15 @@
   "id": "fabric-rendering-fluids-v1-testmod",
   "name": "Fabric Rendering Fluids (v1) Test Mod",
   "version": "1.0.0",
-  "environment": "client",
+  "environment": "*",
   "license": "Apache-2.0",
   "depends": {
     "fabric-rendering-fluids-v1": "*"
   },
   "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.client.rendering.fluid.FabricFluidRenderingTestMod"
+    ],
     "client": [
       "net.fabricmc.fabric.test.client.rendering.fluid.FabricFluidRenderingTestModClient"
     ]

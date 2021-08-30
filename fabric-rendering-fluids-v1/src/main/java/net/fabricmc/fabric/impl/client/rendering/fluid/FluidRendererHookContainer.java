@@ -32,13 +32,17 @@ public class FluidRendererHookContainer {
 	public boolean hasOverlay;
 
 	public void getSprites(BlockRenderView world, BlockPos pos, FluidState fluid) {
-		Sprite[] sprites = handler.getFluidSprites(world, pos, state);
+		if (handler != null) {
+			Sprite[] sprites = handler.getFluidSprites(world, pos, state);
 
-		this.sprites[0] = sprites[0];
-		this.sprites[1] = sprites[1];
-		if (sprites.length > 2) {
-			hasOverlay = true;
-			overlay = sprites[2];
+			this.sprites[0] = sprites[0];
+			this.sprites[1] = sprites[1];
+			if (sprites.length > 2) {
+				hasOverlay = true;
+				overlay = sprites[2];
+			}
+		} else {
+			hasOverlay = false;
 		}
 	}
 
