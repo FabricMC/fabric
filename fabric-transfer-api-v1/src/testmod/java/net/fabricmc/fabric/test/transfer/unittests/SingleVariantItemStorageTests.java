@@ -58,7 +58,7 @@ public class SingleVariantItemStorageTests {
 			assertEquals(BUCKET, storage.insert(LAVA, BUCKET, tx));
 			// Insertion should create a new stack.
 			assertEquals(1, inv.getStack(0).getCount());
-			assertEquals(null, inv.getStack(0).getTag());
+			assertEquals(null, inv.getStack(0).getNbt());
 			assertEquals(1, inv.getStack(1).getCount());
 			assertEquals(LAVA, getFluid(inv.getStack(1)));
 			assertEquals(BUCKET, getAmount(inv.getStack(1)));
@@ -92,7 +92,7 @@ public class SingleVariantItemStorageTests {
 	}
 
 	private static FluidVariant getFluid(ItemStack stack) {
-		NbtCompound nbt = stack.getTag();
+		NbtCompound nbt = stack.getNbt();
 
 		if (nbt != null && nbt.contains("fluid")) {
 			return FluidVariant.fromNbt(nbt.getCompound("fluid"));
@@ -102,7 +102,7 @@ public class SingleVariantItemStorageTests {
 	}
 
 	private static long getAmount(ItemStack stack) {
-		NbtCompound nbt = stack.getTag();
+		NbtCompound nbt = stack.getNbt();
 
 		if (nbt != null) {
 			return nbt.getLong("amount");
@@ -113,12 +113,12 @@ public class SingleVariantItemStorageTests {
 
 	private static void setContents(ItemStack stack, FluidVariant newResource, long newAmount) {
 		if (newAmount > 0) {
-			stack.getOrCreateTag().put("fluid", newResource.toNbt());
-			stack.getOrCreateTag().putLong("amount", newAmount);
+			stack.getOrCreateNbt().put("fluid", newResource.toNbt());
+			stack.getOrCreateNbt().putLong("amount", newAmount);
 		} else {
 			// Make sure emptied tanks can stack with tanks without NBT.
-			stack.removeSubTag("fluid");
-			stack.removeSubTag("amount");
+			stack.removeSubNbt("fluid");
+			stack.removeSubNbt("amount");
 		}
 	}
 
