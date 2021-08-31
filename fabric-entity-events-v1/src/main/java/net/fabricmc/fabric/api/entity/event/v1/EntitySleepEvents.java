@@ -296,6 +296,7 @@ public final class EntitySleepEvents {
 	public interface ModifySleepingDirection {
 		/**
 		 * Modifies or provides a sleeping direction for a block.
+		 * The sleeping direction is where a player's head is pointing when they're sleeping.
 		 *
 		 * @param entity            the sleeping entity
 		 * @param sleepingPos       the position of the block slept on
