@@ -44,6 +44,6 @@ public final class ContentRegistryTest implements ModInitializer {
 			// expected behavior
 		}
 
-		TillableBlockRegistry.register(Blocks.GREEN_WOOL, context -> true, HoeItem.getTillingConsumer(Blocks.LIME_WOOL.getDefaultState()));
+		TillableBlockRegistry.register(Blocks.GREEN_WOOL, context -> true, HoeItem.createTillAction(Blocks.LIME_WOOL.getDefaultState()));
 	}
 }

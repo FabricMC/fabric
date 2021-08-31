@@ -9,8 +9,8 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.8.12" apply false
-	id "org.cadixdev.licenser" version "0.5.0"
+	id "fabric-loom" version "0.9.50" apply false
+	id "org.cadixdev.licenser" version "0.6.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 	id "com.modrinth.minotaur" version "1.1.0"
@@ -21,8 +21,8 @@ def ENV = System.getenv()
 class Globals {
 	static def baseVersion = "0.39.2"
 	static def mcVersion = "1.17.1"
-	static def yarnVersion = "+build.1"
-	static def loaderVersion = "0.11.3"
+	static def yarnVersion = "+build.46"
+	static def loaderVersion = "0.11.6"
 	static def preRelease = false
 }
 
@@ -133,7 +133,7 @@ allprojects {
 	}
 
 	loom {
-		shareCaches = true
+		shareRemapCaches = true
 	}
 
 	repositories {
@@ -146,12 +146,12 @@ allprojects {
 
 	afterEvaluate {
 		remapJar {
-			input = file("${project.buildDir}/libs/$archivesBaseName-$version-dev.jar")
-			archiveName = "${archivesBaseName}-${version}.jar"
+			input = file("${project.buildDir}/libs/$archivesBaseName-${project.version}-dev.jar")
+			archiveFileName = "${archivesBaseName}-${project.version}.jar"
 		}
 
 		artifacts {
-			dev file: file("${project.buildDir}/libs/$archivesBaseName-$version-dev.jar"), type: "jar", builtBy: jar
+			dev file: file("${project.buildDir}/libs/$archivesBaseName-${project.version}-dev.jar"), type: "jar", builtBy: jar
 		}
 
 		processResources {
@@ -239,20 +239,12 @@ subprojects {
 		testmodImplementation sourceSets.main.output
 	}
 
-	task remapMavenJar(type: Copy, dependsOn: remapJar) {
-		afterEvaluate {
-			from("${project.buildDir}/libs/$archivesBaseName-${version}.jar")
-			into("${project.buildDir}/libs/")
-			rename { String fn -> "$archivesBaseName-${version}-maven.jar" }
-		}
-	}
-
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
 				afterEvaluate {
-					artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
-						builtBy remapMavenJar
+					artifact(remapJar) {
+						builtBy remapJar
 					}
 
 					artifact(sourcesJar) {
@@ -269,17 +261,16 @@ subprojects {
 }
 
 task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
-	afterEvaluate {
-		input = file("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
-		archiveName = "${archivesBaseName}-${version}-maven.jar"
-		addNestedDependencies = false
-	}
+	input = jar.archiveFile
+	archiveFileName = "${archivesBaseName}-${project.version}-maven.jar"
+	addNestedDependencies = false
 }
+build.dependsOn remapMavenJar
 
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
+			artifact(remapMavenJar) {
 				builtBy remapMavenJar
 			}
 

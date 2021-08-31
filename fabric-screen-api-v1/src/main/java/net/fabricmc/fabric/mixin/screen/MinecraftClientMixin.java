@@ -37,7 +37,7 @@ abstract class MinecraftClientMixin {
 	@Unique
 	private Screen tickingScreen;
 
-	@Inject(method = "openScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;removed()V", shift = At.Shift.AFTER))
+	@Inject(method = "setScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;removed()V", shift = At.Shift.AFTER))
 	private void onScreenRemove(@Nullable Screen screen, CallbackInfo ci) {
 		ScreenEvents.remove(this.currentScreen).invoker().onRemove(this.currentScreen);
 	}

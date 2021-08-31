@@ -154,7 +154,7 @@ public final class FluidStorage {
 			return new EmptyItemFluidStorage(context, emptyBottle -> {
 				ItemStack newStack = emptyBottle.toStack();
 				PotionUtil.setPotion(newStack, Potions.WATER);
-				return ItemVariant.of(Items.POTION, newStack.getTag());
+				return ItemVariant.of(Items.POTION, newStack.getNbt());
 			}, Fluids.WATER, FluidConstants.BOTTLE);
 		});
 		// Register water potion storage
