@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  */
 @ApiStatus.Experimental
 @Deprecated
-public class FilteringStorage<T> implements Storage<T> {
+public abstract class FilteringStorage<T> implements Storage<T> {
 	protected final Supplier<Storage<T>> backingStorage;
 
 	/**

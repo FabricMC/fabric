@@ -53,6 +53,8 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 
 			if (handSlot.getResource().equals(resource)) {
 				amount -= handSlot.insert(resource, amount, tx);
+
+				if (amount == 0) return initialAmount;
 			}
 		}
 
@@ -64,6 +66,8 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 				if (!slot.isResourceBlank() || allowEmptySlots) {
 					amount -= slot.insert(resource, amount, tx);
 				}
+
+				if (amount == 0) return initialAmount;
 			}
 		}
 
@@ -89,8 +93,10 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 			} else {
 				throw new RuntimeException("Unexpected player selected slot: " + playerInventory.selectedSlot);
 			}
-		} else {
+		} else if (hand == Hand.OFF_HAND) {
 			return getSlot(PlayerInventory.OFF_HAND_SLOT);
+		} else {
+			throw new UnsupportedOperationException("Unknown hand: " + hand);
 		}
 	}
 
