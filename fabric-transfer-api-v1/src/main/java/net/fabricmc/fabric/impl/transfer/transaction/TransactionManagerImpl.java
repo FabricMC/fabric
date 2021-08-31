@@ -18,6 +18,9 @@ package net.fabricmc.fabric.impl.transfer.transaction;
 
 import java.util.ArrayList;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class TransactionManagerImpl {
@@ -38,6 +41,17 @@ public class TransactionManagerImpl {
 		}
 
 		return open();
+	}
+
+	@Nullable
+	public TransactionContext getCurrentUnsafe() {
+		if (currentDepth == -1) {
+			return null;
+		} else if (stack.get(currentDepth).isOpen) {
+			return stack.get(currentDepth);
+		} else {
+			throw new IllegalStateException("May not call getCurrentUnsafe() from a close callback.");
+		}
 	}
 
 	/**
