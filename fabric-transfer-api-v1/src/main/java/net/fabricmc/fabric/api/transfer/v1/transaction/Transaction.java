@@ -105,6 +105,23 @@ public interface Transaction extends AutoCloseable, TransactionContext {
 	}
 
 	/**
+	 * Retrieve the currently open transaction, or null if there is none.
+	 *
+	 * <p><b>Usage of this function is strongly discouraged</b>, this is why it is deprecated and contains {@code unsafe} in its name.
+	 * The transaction may be aborted unbeknownst to you and anything you think that you have committed might be undone.
+	 * Only use it if you have no way to pass the transaction down the stack, for example if you are implementing compat with a simulation-based API,
+	 * and you know what you are doing, for example because you opened the outer transaction.
+	 *
+	 * @throws IllegalStateException If called from a close or outer close callback.
+	 * @deprecated Only use if you absolutely need it, there is almost always a better way.
+	 */
+	@Deprecated
+	@Nullable
+	static TransactionContext getCurrentUnsafe() {
+		return TransactionManagerImpl.MANAGERS.get().getCurrentUnsafe();
+	}
+
+	/**
 	 * Close the current transaction, rolling back all the changes that happened during this transaction and
 	 * the transactions opened with {@link #openNested} from this transaction.
 	 *
