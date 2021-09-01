@@ -188,12 +188,10 @@ public final class StorageUtil {
 		T extractableResource = findExtractableResource(storage, transaction);
 
 		if (extractableResource != null) {
-			try (Transaction nested = Transaction.openNested(transaction)) {
-				long extractableAmount = storage.extract(extractableResource, Long.MAX_VALUE, nested);
+			long extractableAmount = storage.simulateExtract(extractableResource, Long.MAX_VALUE, transaction);
 
-				if (extractableAmount > 0) {
-					return new ResourceAmount<>(extractableResource, extractableAmount);
-				}
+			if (extractableAmount > 0) {
+				return new ResourceAmount<>(extractableResource, extractableAmount);
 			}
 		}
 

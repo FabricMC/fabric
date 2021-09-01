@@ -18,9 +18,10 @@ package net.fabricmc.fabric.impl.transfer.item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.Hand;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
@@ -31,32 +32,30 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
 class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerInventoryStorage {
 	private final DroppedStacks droppedStacks;
-	private final PlayerEntity player;
+	private final PlayerInventory playerInventory;
 
 	PlayerInventoryStorageImpl(PlayerInventory playerInventory) {
 		super(playerInventory);
 		this.droppedStacks = new DroppedStacks();
-		this.player = playerInventory.player;
+		this.playerInventory = playerInventory;
 	}
 
 	@Override
-	public void offerOrDrop(ItemVariant resource, long amount, TransactionContext tx) {
+	public long offer(ItemVariant resource, long amount, TransactionContext tx) {
 		StoragePreconditions.notBlankNotNegative(resource, amount);
+		long initialAmount = amount;
 
 		List<SingleSlotStorage<ItemVariant>> mainSlots = getSlots().subList(0, PlayerInventory.MAIN_SIZE);
 
-		// Stack into the main stack first
-		SingleSlotStorage<ItemVariant> selectedSlot = getSlots().get(player.getInventory().selectedSlot);
+		// Stack into the main stack first and the offhand stack second.
+		for (Hand hand : Hand.values()) {
+			SingleSlotStorage<ItemVariant> handSlot = getHandSlot(hand);
 
-		if (selectedSlot.getResource().equals(resource)) {
-			amount -= selectedSlot.insert(resource, amount, tx);
-		}
+			if (handSlot.getResource().equals(resource)) {
+				amount -= handSlot.insert(resource, amount, tx);
 
-		// Stack into the offhand stack otherwise
-		SingleSlotStorage<ItemVariant> offHandSlot = getSlots().get(PlayerInventory.OFF_HAND_SLOT);
-
-		if (offHandSlot.getResource().equals(resource)) {
-			amount -= offHandSlot.insert(resource, amount, tx);
+				if (amount == 0) return initialAmount;
+			}
 		}
 
 		// Otherwise insert into the main slots, first iteration tries to stack, second iteration inserts into empty slots.
@@ -67,13 +66,37 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 				if (!slot.isResourceBlank() || allowEmptySlots) {
 					amount -= slot.insert(resource, amount, tx);
 				}
+
+				if (amount == 0) return initialAmount;
 			}
 		}
 
-		// Drop leftover in the world on the server side (will be synced by the game with the client).
+		return initialAmount - amount;
+	}
+
+	@Override
+	public void drop(ItemVariant resource, long amount, TransactionContext tx) {
+		StoragePreconditions.notBlankNotNegative(resource, amount);
+
+		// Drop in the world on the server side (will be synced by the game with the client).
 		// Dropping items is server-side only because it involves randomness.
-		if (amount > 0 && player.world.isClient()) {
+		if (amount > 0 && !playerInventory.player.world.isClient()) {
 			droppedStacks.addDrop(resource, amount, tx);
+		}
+	}
+
+	@Override
+	public SingleSlotStorage<ItemVariant> getHandSlot(Hand hand) {
+		if (Objects.requireNonNull(hand) == Hand.MAIN_HAND) {
+			if (PlayerInventory.isValidHotbarIndex(playerInventory.selectedSlot)) {
+				return getSlot(playerInventory.selectedSlot);
+			} else {
+				throw new RuntimeException("Unexpected player selected slot: " + playerInventory.selectedSlot);
+			}
+		} else if (hand == Hand.OFF_HAND) {
+			return getSlot(PlayerInventory.OFF_HAND_SLOT);
+		} else {
+			throw new UnsupportedOperationException("Unknown hand: " + hand);
 		}
 	}
 
@@ -111,7 +134,7 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 
 				while (droppedCounts.get(i) > 0) {
 					int dropped = (int) Math.min(key.getItem().getMaxCount(), droppedCounts.get(i));
-					player.dropStack(key.toStack(dropped));
+					playerInventory.player.dropStack(key.toStack(dropped));
 					droppedCounts.set(i, droppedCounts.get(i) - dropped);
 				}
 			}
