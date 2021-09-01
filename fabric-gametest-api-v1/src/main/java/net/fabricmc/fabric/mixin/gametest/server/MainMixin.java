@@ -54,7 +54,7 @@ public class MainMixin {
 		return FabricGameTestHelper.ENABLED || reader.isEulaAgreedTo();
 	}
 
-	@Inject(method = "main", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/LevelStorage$Session;readLevelProperties(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/DataPackSettings;)Lnet/minecraft/world/SaveProperties;"))
+	@Inject(method = "main", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/LevelStorage$Session;readLevelProperties(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/DataPackSettings;)Lnet/minecraft/world/SaveProperties;"), remap = false)
 	private static void main(String[] args, CallbackInfo info, OptionParser optionParser, OptionSpec o1, OptionSpec o2, OptionSpec o3, OptionSpec o4, OptionSpec o5, OptionSpec o6, OptionSpec o7, OptionSpec o8, OptionSpec o9, OptionSpec o10, OptionSpec o11, OptionSpec o12, OptionSpec o13, OptionSpec o14, OptionSet optionSet, DynamicRegistryManager.Impl impl, Path path, ServerPropertiesLoader serverPropertiesLoader, Path path2, EulaReader eulaReader, File file, YggdrasilAuthenticationService yggdrasilAuthenticationService, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, String string, LevelStorage levelStorage, LevelStorage.Session session, LevelSummary levelSummary, DataPackSettings dataPackSettings, boolean bl, ResourcePackManager resourcePackManager, DataPackSettings dataPackSettings2, CompletableFuture completableFuture, ServerResourceManager serverResourceManager, RegistryOps registryOps) {
 		if (FabricGameTestHelper.ENABLED) {
 			FabricGameTestHelper.runHeadlessServer(session, resourcePackManager, serverResourceManager, impl);
@@ -64,7 +64,7 @@ public class MainMixin {
 
 	// Exit with a non-zero exit code when the server fails to start.
 	// Otherwise gradlew test will succeed without errors, although no tests have been run.
-	@Inject(method = "main", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;fatal(Ljava/lang/String;Ljava/lang/Throwable;)V", shift = At.Shift.AFTER))
+	@Inject(method = "main", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;fatal(Ljava/lang/String;Ljava/lang/Throwable;)V", shift = At.Shift.AFTER, remap = false), remap = false)
 	private static void exitOnError(CallbackInfo info) {
 		if (FabricGameTestHelper.ENABLED) {
 			System.exit(-1);
