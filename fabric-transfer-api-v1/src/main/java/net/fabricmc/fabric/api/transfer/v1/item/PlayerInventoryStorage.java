@@ -20,6 +20,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.Hand;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
@@ -42,6 +43,8 @@ import net.fabricmc.fabric.impl.transfer.item.CursorSlotWrapper;
 @ApiStatus.Experimental
 @Deprecated
 @ApiStatus.NonExtendable
+// TODO: Consider explicitly syncing stacks by sending a ScreenHandlerSlotUpdateS2CPacket if that proves to be necessary.
+// TODO: Vanilla doesn't seem to be doing it reliably, so we ignore it for now.
 public interface PlayerInventoryStorage extends InventoryStorage {
 	/**
 	 * Return an instance for the passed player's inventory.
@@ -74,7 +77,7 @@ public interface PlayerInventoryStorage extends InventoryStorage {
 	}
 
 	/**
-	 * Add items to the inventory if possible, and drop any leftover items in the world, similar to {@link PlayerInventory#offerOrDrop}
+	 * Add items to the inventory if possible, and drop any leftover items in the world, similar to {@link PlayerInventory#offerOrDrop}.
 	 *
 	 * <p>Note: This function has full transaction support, and will not actually drop the items until the outermost transaction is committed.
 	 *
@@ -82,5 +85,42 @@ public interface PlayerInventoryStorage extends InventoryStorage {
 	 * @param amount How many of the variant to insert.
 	 * @param transaction The transaction this operation is part of.
 	 */
-	void offerOrDrop(ItemVariant variant, long amount, TransactionContext transaction);
+	default void offerOrDrop(ItemVariant variant, long amount, TransactionContext transaction) {
+		long offered = offer(variant, amount, transaction);
+		drop(variant, amount - offered, transaction);
+	}
+
+	/**
+	 * Try to add items to the inventory if possible, stacking like {@link PlayerInventory#offer}.
+	 * Unlike {@link #offerOrDrop}, this function will not drop excess items.
+	 *
+	 * <p>The exact behavior is:
+	 * <ol>
+	 *     <li>Try to stack inserted items with existing items in the main hand, then the offhand.</li>
+	 *     <li>Try to stack remaining inserted items with existing items in the player main inventory.</li>
+	 *     <li>Try to insert the remainder into empty slots of the player main inventory.</li>
+	 * </ol>
+	 *
+	 * @param variant The variant to insert.
+	 * @param maxAmount How many of the variant to insert, at most.
+	 * @param transaction The transaction this operation is part of.
+	 * @return How many items could be inserted.
+	 */
+	long offer(ItemVariant variant, long maxAmount, TransactionContext transaction);
+
+	/**
+	 * Drop items in the world at the player's location.
+	 *
+	 * <p>Note: This function has full transaction support, and will not actually drop the items until the outermost transaction is committed.
+	 *
+	 * @param variant The variant to drop.
+	 * @param amount How many of the variant to drop.
+	 * @param transaction The transaction this operation is part of.
+	 */
+	void drop(ItemVariant variant, long amount, TransactionContext transaction);
+
+	/**
+	 * Return a wrapper around the current slot of the passed hand.
+	 */
+	SingleSlotStorage<ItemVariant> getHandSlot(Hand hand);
 }

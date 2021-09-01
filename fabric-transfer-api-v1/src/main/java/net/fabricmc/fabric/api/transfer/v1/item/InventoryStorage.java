@@ -71,4 +71,11 @@ public interface InventoryStorage extends Storage<ItemVariant> {
 	 * Each wrapper corresponds to a single slot in the inventory.
 	 */
 	List<SingleSlotStorage<ItemVariant>> getSlots();
+
+	/**
+	 * Retrieve a wrapper around a specific slot of the inventory.
+	 */
+	default SingleSlotStorage<ItemVariant> getSlot(int slot) {
+		return getSlots().get(slot);
+	}
 }

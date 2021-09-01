@@ -22,6 +22,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
+import net.minecraft.block.InventoryProvider;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
@@ -56,6 +57,8 @@ public final class ItemStorage {
 	 *
 	 * <p>Block entities directly implementing {@link Inventory} or {@link SidedInventory} are automatically handled by a fallback provider,
 	 * and don't need to do anything.
+	 * Blocks that implement {@link InventoryProvider} and whose returned inventory is constant (it's the same for two subsequent calls)
+	 * are also handled automatically and don't need to do anything.
 	 * The fallback provider assumes that the {@link Inventory} "owns" its contents. If that's not the case,
 	 * for example because it redirects all function calls to another inventory, then implementing {@link Inventory} should be avoided.
 	 *
@@ -84,11 +87,24 @@ public final class ItemStorage {
 		ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
 			Inventory inventoryToWrap = null;
 
+			if (state.getBlock() instanceof InventoryProvider) {
+				InventoryProvider provider = (InventoryProvider) state.getBlock();
+
+				SidedInventory first = provider.getInventory(state, world, pos);
+				SidedInventory second = provider.getInventory(state, world, pos);
+
+				// Hopefully we can trust the sided inventory not to change.
+				if (first == second && first != null) {
+					return InventoryStorage.of(first, direction);
+				}
+			}
+
 			if (blockEntity instanceof Inventory) {
 				Inventory inventory = (Inventory) blockEntity;
 
 				if (blockEntity instanceof ChestBlockEntity && state.getBlock() instanceof ChestBlock) {
 					ChestBlock chestBlock = (ChestBlock) state.getBlock();
+
 					inventoryToWrap = ChestBlock.getInventory(chestBlock, state, world, pos, true);
 
 					// For double chests, we need to retrieve a wrapper for each part separately.

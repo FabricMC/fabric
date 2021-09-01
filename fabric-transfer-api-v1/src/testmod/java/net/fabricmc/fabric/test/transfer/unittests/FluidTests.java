@@ -77,6 +77,8 @@ class FluidTests {
 		try (Transaction tx = Transaction.openOuter()) {
 			// Should not allow lava (canInsert returns false)
 			if (waterStorage.insert(LAVA, BUCKET, tx) != 0) throw new AssertionError("Lava inserted");
+			// Should allow insert, but without mutating the storage.
+			if (waterStorage.simulateInsert(WATER, BUCKET, tx) != BUCKET) throw new AssertionError("Simulated insert failed");
 			// Should allow insert
 			if (waterStorage.insert(TAGGED_WATER, BUCKET, tx) != BUCKET) throw new AssertionError("Tagged water insert 1 failed");
 			// Variants are different, should not allow insert
@@ -87,6 +89,8 @@ class FluidTests {
 			if (waterStorage.insert(TAGGED_WATER, BUCKET, tx) != 0) throw new AssertionError("Storage full, yet something was inserted");
 			// Should allow extraction
 			if (waterStorage.extract(TAGGED_WATER_2, BUCKET, tx) != BUCKET) throw new AssertionError("Extraction failed");
+			// Simulated extraction should succeed but do nothing
+			if (waterStorage.simulateExtract(TAGGED_WATER, Long.MAX_VALUE, tx) != BUCKET) throw new AssertionError("Simulated extraction failed");
 			// Re-insert
 			if (waterStorage.insert(TAGGED_WATER_2, BUCKET, tx) != BUCKET) throw new AssertionError("Tagged water insert 3 failed");
 			// Test contents
