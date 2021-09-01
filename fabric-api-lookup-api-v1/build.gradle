@@ -7,5 +7,5 @@ moduleDependencies(project, [
 ])
 
 dependencies {
-	testmodCompile project(path: ':fabric-object-builder-api-v1', configuration: 'dev')
+	testmodImplementation project(path: ':fabric-object-builder-api-v1', configuration: 'dev')
 }

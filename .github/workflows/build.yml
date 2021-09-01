@@ -4,7 +4,7 @@ jobs:
   build:
     strategy:
       matrix:
-        java: [8-jdk, 11-jdk, 15-jdk]
+        java: [16-jdk]
     runs-on: ubuntu-20.04
     container:
       image: openjdk:${{ matrix.java }}
@@ -12,9 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: gradle/wrapper-validation-action@v1
-      - run: ./gradlew check build publishToMavenLocal --stacktrace --parallel
+      - run: ./gradlew check build publishToMavenLocal --stacktrace --parallel --warning-mode=fail
       - run: mkdir run && echo "eula=true" >> run/eula.txt
-      - run: ./gradlew runAutoTestServer --stacktrace
+      - run: ./gradlew runAutoTestServer --stacktrace --warning-mode=fail
       - uses: actions/upload-artifact@v2
         with:
           name: Artifacts

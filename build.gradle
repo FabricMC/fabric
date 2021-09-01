@@ -5,12 +5,12 @@ buildscript {
 }
 
 plugins {
-	id "java"
+	id "java-library"
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.5.43" apply false
-	id "net.minecrell.licenser" version "0.4.1"
+	id "fabric-loom" version "0.9.50" apply false
+	id "org.cadixdev.licenser" version "0.6.1"
 	id "org.ajoberstar.grgit" version "3.1.1"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 	id "com.modrinth.minotaur" version "1.1.0"
@@ -30,8 +30,6 @@ version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + 
 logger.lifecycle("Building Fabric: " + version)
 
 import org.apache.commons.codec.digest.DigestUtils
-import net.fabricmc.loom.task.RunClientTask
-import net.fabricmc.loom.task.RunServerTask
 
 def getSubprojectVersion(project, version) {
 	if (grgit == null) {
@@ -66,7 +64,7 @@ def moduleDependencies(project, List<String> depNames) {
 	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'dev') }
 	project.dependencies {
 		deps.each {
-			compile it
+			api it
 		}
 	}
 	project.publishing {
@@ -88,19 +86,14 @@ def moduleDependencies(project, List<String> depNames) {
 }
 
 allprojects {
+	apply plugin: "java-library"
 	apply plugin: "checkstyle"
 	apply plugin: "maven-publish"
 	apply plugin: "fabric-loom"
-	apply plugin: "net.minecrell.licenser"
+	apply plugin: "org.cadixdev.licenser"
 
 	tasks.withType(JavaCompile).configureEach {
-		def targetVersion = 8
-		if (JavaVersion.current().isJava9Compatible()) {
-			it.options.release = targetVersion
-		} else {
-			sourceCompatibility = JavaVersion.toVersion(targetVersion)
-			targetCompatibility = JavaVersion.toVersion(targetVersion)
-		}
+		it.options.release = 8
 	}
 
 	group = "net.fabricmc.fabric-api"
@@ -112,18 +105,27 @@ allprojects {
 		}
 	}
 
-	task runTestmodClient(type: RunClientTask) {
-		classpath sourceSets.testmod.runtimeClasspath
-	}
-
-	task runTestmodServer(type: RunServerTask) {
-		classpath sourceSets.testmod.runtimeClasspath
+	loom {
+		runs {
+			testmodClient {
+				client()
+				ideConfigGenerated project.rootProject == project
+				name = "Testmod Client"
+				source sourceSets.testmod
+			}
+			testmodServer {
+				server()
+				ideConfigGenerated project.rootProject == project
+				name = "Testmod Server"
+				source sourceSets.testmod
+			}
+		}
 	}
 
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
 		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
-		modCompile "net.fabricmc:fabric-loader:${Globals.loaderVersion}"
+		modApi "net.fabricmc:fabric-loader:${Globals.loaderVersion}"
 	}
 
 	configurations {
@@ -131,7 +133,7 @@ allprojects {
 	}
 
 	loom {
-		shareCaches = true
+		shareRemapCaches = true
 	}
 
 	repositories {
@@ -139,29 +141,24 @@ allprojects {
 	}
 
 	jar {
-		classifier = "dev"
+		archiveClassifier = "dev"
 	}
 
 	afterEvaluate {
 		remapJar {
-			input = file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar")
-			archiveName = "${archivesBaseName}-${version}.jar"
+			input = file("${project.buildDir}/libs/$archivesBaseName-${project.version}-dev.jar")
+			archiveFileName = "${archivesBaseName}-${project.version}.jar"
 		}
 
 		artifacts {
-			dev file: file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar"), type: "jar", builtBy: jar
+			dev file: file("${project.buildDir}/libs/$archivesBaseName-${project.version}-dev.jar"), type: "jar", builtBy: jar
 		}
 
 		processResources {
 			inputs.property "version", project.version
 
-			from(sourceSets.main.resources.srcDirs) {
-				include "fabric.mod.json"
+			filesMatching("fabric.mod.json") {
 				expand "version": project.version
-			}
-
-			from(sourceSets.main.resources.srcDirs) {
-				exclude "fabric.mod.json"
 			}
 		}
 
@@ -179,6 +176,11 @@ allprojects {
 	checkstyle {
 		configFile = rootProject.file("checkstyle.xml")
 		toolVersion = "8.43"
+	}
+
+	tasks.withType(AbstractArchiveTask) {
+		preserveFileTimestamps = false
+		reproducibleFileOrder = true
 	}
 }
 
@@ -223,33 +225,26 @@ task javadocJar(type: Jar) {
 build.dependsOn javadocJar
 
 // Runs a dedicated headless server with all test mods that closes once complete.
-task runAutoTestServer(type: RunServerTask) {
-	project.subprojects {
-		classpath it.sourceSets.testmod.runtimeClasspath
+loom {
+	runs {
+		autoTestServer {
+			inherit testmodServer
+			vmArg "-Dfabric.autoTest"
+		}
 	}
-	jvmArgs "-Dfabric.autoTest"
-	args "--nogui"
 }
 
 subprojects {
 	dependencies {
-		testmodCompile sourceSets.main.output
-	}
-
-	task remapMavenJar(type: Copy, dependsOn: remapJar) {
-		afterEvaluate {
-			from("${project.buildDir}/libs/$archivesBaseName-${version}.jar")
-			into("${project.buildDir}/libs/")
-			rename { String fn -> "$archivesBaseName-${version}-maven.jar" }
-		}
+		testmodImplementation sourceSets.main.output
 	}
 
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
 				afterEvaluate {
-					artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
-						builtBy remapMavenJar
+					artifact(remapJar) {
+						builtBy remapJar
 					}
 
 					artifact(sourcesJar) {
@@ -266,17 +261,16 @@ subprojects {
 }
 
 task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
-	afterEvaluate {
-		input = file("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
-		archiveName = "${archivesBaseName}-${version}-maven.jar"
-		addNestedDependencies = false
-	}
+	input = jar.archiveFile
+	archiveFileName = "${archivesBaseName}-${project.version}-maven.jar"
+	addNestedDependencies = false
 }
+build.dependsOn remapMavenJar
 
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
+			artifact(remapMavenJar) {
 				builtBy remapMavenJar
 			}
 
@@ -329,10 +323,10 @@ sourceSets {
 dependencies {
 	afterEvaluate {
 		subprojects.each {
-			compile project(path: ":${it.name}", configuration: "dev")
+			api project(path: ":${it.name}", configuration: "dev")
 			include project("${it.name}:")
 
-			testmodCompile project("${it.name}:").sourceSets.testmod.output
+			testmodImplementation project("${it.name}:").sourceSets.testmod.output
 		}
 	}
 }

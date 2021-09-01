@@ -4,7 +4,7 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     container:
-      image: adoptopenjdk:15-jdk
+      image: adoptopenjdk:16-jdk
       options: --user root
     steps:
       - run: apt update && apt install git -y && git --version
@@ -17,7 +17,7 @@ jobs:
           context: changelog
           workflow_id: release.yml
       - uses: gradle/wrapper-validation-action@v1
-      - run: ./gradlew checkVersion build publish curseforge github modrinth --stacktrace
+      - run: ./gradlew checkVersion build publish curseforge github modrinth --stacktrace --warning-mode=fail
         env:
           MAVEN_URL: ${{ secrets.MAVEN_URL }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
