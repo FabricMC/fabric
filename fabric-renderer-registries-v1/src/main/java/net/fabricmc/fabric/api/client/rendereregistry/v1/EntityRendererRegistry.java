@@ -22,13 +22,19 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 
-import net.fabricmc.fabric.impl.client.renderer.registry.EntityRendererRegistryImpl;
-
 /**
  * Helper class for registering EntityRenderers.
+ *
+ * @deprecated This module has been moved into fabric-rendering-v1. Use {@link net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry} instead
  */
+@Deprecated
 public interface EntityRendererRegistry {
-	EntityRendererRegistry INSTANCE = new EntityRendererRegistryImpl();
+	EntityRendererRegistry INSTANCE = new EntityRendererRegistry() {
+		@Override
+		public <T extends Entity> void register(EntityType<? extends T> entityType, EntityRendererFactory<T> factory) {
+			net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry.register(entityType, factory);
+		}
+	};
 
 	/**
 	 * Register a BlockEntityRenderer for a BlockEntityType. Can be called clientside before the world is rendered.

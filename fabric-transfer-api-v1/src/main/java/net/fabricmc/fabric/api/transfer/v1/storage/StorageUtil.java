@@ -21,6 +21,11 @@ import java.util.function.Predicate;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.inventory.Inventory;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.util.math.MathHelper;
+
+import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
@@ -73,7 +78,7 @@ public final class StorageUtil {
 
 		long totalMoved = 0;
 
-		try (Transaction iterationTransaction = (transaction == null ? Transaction.openOuter() : transaction.openNested())) {
+		try (Transaction iterationTransaction = Transaction.openNested(transaction)) {
 			for (StorageView<T> view : from.iterable(iterationTransaction)) {
 				if (view.isResourceBlank()) continue;
 				T resource = view.getResource();
@@ -154,7 +159,7 @@ public final class StorageUtil {
 	public static <T> T findExtractableResource(@Nullable Storage<T> storage, @Nullable TransactionContext transaction) {
 		if (storage == null) return null;
 
-		try (Transaction nested = transaction == null ? Transaction.openOuter() : transaction.openNested()) {
+		try (Transaction nested = Transaction.openNested(transaction)) {
 			for (StorageView<T> view : storage.iterable(nested)) {
 				// Extract below could change the resource, so we have to query it before extracting.
 				T resource = view.getResource();
@@ -167,5 +172,66 @@ public final class StorageUtil {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Attempt to find a resource stored in the passed storage that can be extracted, and how much of it can be extracted.
+	 *
+	 * @param storage The storage to inspect, may be null.
+	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
+	 * @param <T> The type of the stored resources.
+	 * @return A non-blank resource stored in the storage that can be extracted and the strictly positive amount of it that can be extracted,
+	 * or {@code null} if none could be found.
+	 */
+	@Nullable
+	public static <T> ResourceAmount<T> findExtractableContent(@Nullable Storage<T> storage, @Nullable TransactionContext transaction) {
+		T extractableResource = findExtractableResource(storage, transaction);
+
+		if (extractableResource != null) {
+			long extractableAmount = storage.simulateExtract(extractableResource, Long.MAX_VALUE, transaction);
+
+			if (extractableAmount > 0) {
+				return new ResourceAmount<>(extractableResource, extractableAmount);
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Compute the comparator output for a storage, similar to {@link ScreenHandler#calculateComparatorOutput(Inventory)}.
+	 *
+	 * @param storage The storage for which the comparator level should be computed.
+	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this computation.
+	 * @param <T> The type of the stored resources.
+	 * @return An integer between 0 and 15 (inclusive): the comparator output for the passed storage.
+	 */
+	public static <T> int calculateComparatorOutput(@Nullable Storage<T> storage, @Nullable TransactionContext transaction) {
+		if (storage == null) return 0;
+
+		if (transaction == null) {
+			try (Transaction outer = Transaction.openOuter()) {
+				return calculateComparatorOutputInner(storage, outer);
+			}
+		} else {
+			return calculateComparatorOutputInner(storage, transaction);
+		}
+	}
+
+	private static <T> int calculateComparatorOutputInner(Storage<T> storage, TransactionContext transaction) {
+		double fillPercentage = 0;
+		int viewCount = 0;
+		boolean hasNonEmptyView = false;
+
+		for (StorageView<T> view : storage.iterable(transaction)) {
+			viewCount++;
+
+			if (view.getAmount() > 0) {
+				fillPercentage += (double) view.getAmount() / view.getCapacity();
+				hasNonEmptyView = true;
+			}
+		}
+
+		return MathHelper.floor(fillPercentage / viewCount * 14) + (hasNonEmptyView ? 1 : 0);
 	}
 }

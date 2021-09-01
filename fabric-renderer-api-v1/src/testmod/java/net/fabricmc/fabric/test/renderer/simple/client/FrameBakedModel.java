@@ -78,7 +78,7 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 	}
 
 	@Override
-	public Sprite getSprite() {
+	public Sprite getParticleSprite() {
 		return this.frameSprite;
 	}
 
@@ -112,7 +112,7 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 			return; // No inner block to render
 		}
 
-		Sprite sprite = MinecraftClient.getInstance().getBlockRenderManager().getModels().getModelManager().getBlockModels().getSprite(data.getDefaultState());
+		Sprite sprite = MinecraftClient.getInstance().getBlockRenderManager().getModels().getModelManager().getBlockModels().getModelParticleSprite(data.getDefaultState());
 		QuadEmitter emitter = context.getEmitter();
 
 		// We can emit our quads outside of the mesh as the block being put in the frame is very much dynamic.

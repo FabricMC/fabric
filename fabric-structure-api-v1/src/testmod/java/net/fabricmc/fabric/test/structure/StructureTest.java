@@ -26,7 +26,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePieceType;
-import net.minecraft.structure.StructurePieceWithDimensions;
+import net.minecraft.structure.ShiftableStructurePiece;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -94,7 +94,7 @@ public class StructureTest {
 		}
 	}
 
-	public static class TestStructureGenerator extends StructurePieceWithDimensions {
+	public static class TestStructureGenerator extends ShiftableStructurePiece {
 		public TestStructureGenerator(Random random, int x, int y, int z) {
 			super(PIECE, x, y, z, 0, 48, 16, getRandomHorizontalDirection(random));
 		}

@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:plains",
+    "minecraft:desert",
+    "fabric-tag-extensions-v0-testmod:test"
+  ]
+}

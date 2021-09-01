@@ -97,6 +97,17 @@ public interface Storage<T> {
 	long insert(T resource, long maxAmount, TransactionContext transaction);
 
 	/**
+	 * Convenient helper to simulate an insertion, i.e. get the result of insert without modifying any state.
+	 * The passed transaction may be null if a new transaction should be opened for the simulation.
+	 * @see #insert
+	 */
+	default long simulateInsert(T resource, long maxAmount, @Nullable TransactionContext transaction) {
+		try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
+			return insert(resource, maxAmount, simulateTransaction);
+		}
+	}
+
+	/**
 	 * Return false if calling {@link #extract} will absolutely always return 0, or true otherwise or in doubt.
 	 *
 	 * <p>Note: This function is meant to be used by pipes or other devices that can transfer resources to know if
@@ -117,8 +128,20 @@ public interface Storage<T> {
 	long extract(T resource, long maxAmount, TransactionContext transaction);
 
 	/**
+	 * Convenient helper to simulate an extraction, i.e. get the result of extract without modifying any state.
+	 * The passed transaction may be null if a new transaction should be opened for the simulation.
+	 * @see #extract
+	 */
+	default long simulateExtract(T resource, long maxAmount, @Nullable TransactionContext transaction) {
+		try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
+			return extract(resource, maxAmount, simulateTransaction);
+		}
+	}
+
+	/**
 	 * Iterate through the contents of this storage, for the scope of the passed transaction.
 	 * Every visited {@link StorageView} represents a stored resource and an amount.
+	 * The iterator doesn't guarantee that a single resource only occurs once during an iteration.
 	 *
 	 * <p>The returned iterator and any view it returns are only valid for the scope of to the passed transaction.
 	 * They should not be used once that transaction is closed.

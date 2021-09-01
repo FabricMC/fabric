@@ -1,8 +1,8 @@
 archivesBaseName = "fabric-screen-handler-api-v1"
 version = getSubprojectVersion(project, "1.1.9")
 
-minecraft {
-	accessWidener = file('src/main/resources/fabric-screen-handler-api-v1.accesswidener')
+loom {
+	accessWidenerPath = file('src/main/resources/fabric-screen-handler-api-v1.accesswidener')
 }
 
 dependencies {

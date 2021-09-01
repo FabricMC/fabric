@@ -9,8 +9,8 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.8.12" apply false
-	id "org.cadixdev.licenser" version "0.5.0"
+	id "fabric-loom" version "0.9.50" apply false
+	id "org.cadixdev.licenser" version "0.6.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 	id "com.modrinth.minotaur" version "1.1.0"
@@ -19,9 +19,9 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.37.2"
-	static def mcVersion = "1.18_experimental-snapshot-1"
-	static def yarnVersion = "+build.2"
+	static def baseVersion = "0.39.2"
+	static def mcVersion = "1.18_experimental-snapshot-6"
+	static def yarnVersion = "+build.1"
 	static def loaderVersion = "0.11.6"
 	static def preRelease = true
 }
@@ -120,7 +120,6 @@ allprojects {
 				source sourceSets.testmod
 			}
 		}
-		customManifest = "https://gist.githubusercontent.com/modmuss50/6e00baf80dcbaa42f3a2fc846b290128/raw/f035ef8f75164f56ec6352809a34841d326bae1c/1_18_experimental-snapshot-1.json"
 	}
 
 	dependencies {
@@ -134,7 +133,7 @@ allprojects {
 	}
 
 	loom {
-		shareCaches = true
+		shareRemapCaches = true
 	}
 
 	repositories {
@@ -147,12 +146,12 @@ allprojects {
 
 	afterEvaluate {
 		remapJar {
-			input = file("${project.buildDir}/libs/$archivesBaseName-$version-dev.jar")
-			archiveName = "${archivesBaseName}-${version}.jar"
+			input = file("${project.buildDir}/libs/$archivesBaseName-${project.version}-dev.jar")
+			archiveFileName = "${archivesBaseName}-${project.version}.jar"
 		}
 
 		artifacts {
-			dev file: file("${project.buildDir}/libs/$archivesBaseName-$version-dev.jar"), type: "jar", builtBy: jar
+			dev file: file("${project.buildDir}/libs/$archivesBaseName-${project.version}-dev.jar"), type: "jar", builtBy: jar
 		}
 
 		processResources {
@@ -240,20 +239,12 @@ subprojects {
 		testmodImplementation sourceSets.main.output
 	}
 
-	task remapMavenJar(type: Copy, dependsOn: remapJar) {
-		afterEvaluate {
-			from("${project.buildDir}/libs/$archivesBaseName-${version}.jar")
-			into("${project.buildDir}/libs/")
-			rename { String fn -> "$archivesBaseName-${version}-maven.jar" }
-		}
-	}
-
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
 				afterEvaluate {
-					artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
-						builtBy remapMavenJar
+					artifact(remapJar) {
+						builtBy remapJar
 					}
 
 					artifact(sourcesJar) {
@@ -270,17 +261,16 @@ subprojects {
 }
 
 task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
-	afterEvaluate {
-		input = file("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
-		archiveName = "${archivesBaseName}-${version}-maven.jar"
-		addNestedDependencies = false
-	}
+	input = jar.archiveFile
+	archiveFileName = "${archivesBaseName}-${project.version}-maven.jar"
+	addNestedDependencies = false
 }
+build.dependsOn remapMavenJar
 
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
+			artifact(remapMavenJar) {
 				builtBy remapMavenJar
 			}
 
@@ -312,9 +302,11 @@ void setupRepositories(RepositoryHandler repositories) {
 	if (ENV.MAVEN_URL) {
 		repositories.maven {
 			url ENV.MAVEN_URL
-			credentials {
-				username ENV.MAVEN_USERNAME
-				password ENV.MAVEN_PASSWORD
+			if (ENV.MAVEN_USERNAME) {
+				credentials {
+					username ENV.MAVEN_USERNAME
+					password ENV.MAVEN_PASSWORD
+				}
 			}
 		}
 	}
@@ -328,11 +320,19 @@ sourceSets {
 	testmod
 }
 
+// These modules are not included in the fat jar, maven will resolve them via the pom.
+def devOnlyModules = [
+		"fabric-gametest-api-v1"
+]
+
 dependencies {
 	afterEvaluate {
 		subprojects.each {
 			api project(path: ":${it.name}", configuration: "dev")
-			include project("${it.name}:")
+
+			if (!(it.name in devOnlyModules)) {
+				include project("${it.name}:")
+			}
 
 			testmodImplementation project("${it.name}:").sourceSets.testmod.output
 		}
@@ -346,9 +346,9 @@ curseforge {
 
 	project {
 		id = "306612"
-		changelog = "A changelog can be found at https://github.com/FabricMC/fabric/commits"
-		releaseType = Globals.preRelease ? "alpha" : "release"
-		addGameVersion "1.17-Snapshot"
+		changelog = ENV.CHANGELOG ?: "No changelog provided"
+		releaseType = Globals.preRelease ? "beta" : "release"
+		addGameVersion "1.18-Snapshot"
 		addGameVersion "Fabric"
 
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
@@ -379,7 +379,7 @@ task github(dependsOn: remapMavenJar) {
 
 		def releaseBuilder = new GHReleaseBuilder(repository, version as String)
 		releaseBuilder.name("[$Globals.mcVersion] Fabric API $Globals.baseVersion")
-		releaseBuilder.body("A changelog can be found at https://github.com/FabricMC/fabric/commits")
+		releaseBuilder.body(ENV.CHANGELOG ?: "No changelog provided")
 		releaseBuilder.commitish(getBranch())
 		releaseBuilder.prerelease(Globals.preRelease)
 
@@ -398,10 +398,11 @@ task modrinth(type: com.modrinth.minotaur.TaskModrinthUpload, dependsOn: remapMa
 	versionNumber = version
 	versionName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion"
 	releaseType = Globals.preRelease ? "beta" : "release"
+	changelog = ENV.CHANGELOG ?: "No changelog provided"
 
 	uploadFile = file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")
 
-	addGameVersion("1.17-pre1")
+	addGameVersion("1.17-pre1") // TODO change me once modrith supports 1.18
 	addLoader('fabric')
 }
 

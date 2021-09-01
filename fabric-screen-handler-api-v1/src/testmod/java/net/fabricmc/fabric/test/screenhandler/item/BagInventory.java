@@ -41,7 +41,7 @@ final class BagInventory implements ImplementedInventory {
 
 	@Override
 	public void markDirty() {
-		NbtCompound tag = stack.getSubNbt("Items");
+		NbtCompound tag = stack.getOrCreateSubNbt("Items");
 		Inventories.writeNbt(tag, items);
 	}
 }

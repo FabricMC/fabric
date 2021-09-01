@@ -12,6 +12,6 @@ moduleDependencies(project, [
 		'fabric-tool-attribute-api-v1'
 ])
 
-minecraft {
-	accessWidener = file("src/main/resources/fabric-object-builder-api-v1.accesswidener")
+loom {
+	accessWidenerPath = file("src/main/resources/fabric-object-builder-api-v1.accesswidener")
 }

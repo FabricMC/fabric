@@ -54,8 +54,7 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 
 	public static CauldronStorage get(World world, BlockPos pos) {
 		WorldLocation location = new WorldLocation(world, pos.toImmutable());
-		CAULDRONS.computeIfAbsent(location, CauldronStorage::new);
-		return CAULDRONS.get(location);
+		return CAULDRONS.computeIfAbsent(location, CauldronStorage::new);
 	}
 
 	private final WorldLocation location;

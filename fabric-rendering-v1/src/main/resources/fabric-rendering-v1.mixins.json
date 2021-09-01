@@ -3,11 +3,17 @@
   "package": "net.fabricmc.fabric.mixin.client.rendering",
   "compatibilityLevel": "JAVA_16",
   "client": [
+    "MixinArmorFeatureRenderer",
     "MixinBlockColorMap",
     "MixinBuiltinModelItemRenderer",
     "MixinInGameHud",
     "MixinItemColorMap",
-    "MixinWorldRenderer"
+    "MixinWorldRenderer",
+    "EntityModelLayersAccessor",
+    "EntityModelsMixin",
+    "LivingEntityRendererAccessor",
+    "MixinBlockEntityRenderers",
+    "MixinEntityRenderers"
   ],
   "injectors": {
     "defaultRequire": 1

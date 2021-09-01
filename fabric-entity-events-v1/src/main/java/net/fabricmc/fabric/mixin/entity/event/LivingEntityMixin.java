@@ -16,27 +16,39 @@
 
 package net.fabricmc.fabric.mixin.entity.event;
 
+import java.util.Optional;
+
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
+import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 @Mixin(LivingEntity.class)
-abstract class LivingEntityMixin extends EntityMixin {
+abstract class LivingEntityMixin {
 	@Shadow
 	public abstract boolean isDead();
+
+	@Shadow
+	public abstract Optional<BlockPos> getSleepingPosition();
 
 	@Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;onKilledOther(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void onEntityKilledOther(DamageSource source, CallbackInfo ci, Entity attacker) {
@@ -52,5 +64,38 @@ abstract class LivingEntityMixin extends EntityMixin {
 		}
 
 		return isDead();
+	}
+
+	@Inject(method = "sleep", at = @At("RETURN"))
+	private void onSleep(BlockPos pos, CallbackInfo info) {
+		EntitySleepEvents.START_SLEEPING.invoker().onStartSleeping((LivingEntity) (Object) this, pos);
+	}
+
+	@Inject(method = "wakeUp", at = @At("HEAD"))
+	private void onWakeUp(CallbackInfo info) {
+		BlockPos sleepingPos = getSleepingPosition().orElse(null);
+
+		// If actually asleep - this method is often called with data loading, syncing etc. "just to be sure"
+		if (sleepingPos != null) {
+			EntitySleepEvents.STOP_SLEEPING.invoker().onStopSleeping((LivingEntity) (Object) this, sleepingPos);
+		}
+	}
+
+	// Synthetic lambda body for Optional.map in isSleepingInBed
+	@Inject(method = "method_18405", at = @At("RETURN"), cancellable = true)
+	private void onIsSleepingInBed(BlockPos sleepingPos, CallbackInfoReturnable<Boolean> info) {
+		BlockState bedState = ((LivingEntity) (Object) this).world.getBlockState(sleepingPos);
+		ActionResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, bedState, info.getReturnValueZ());
+
+		if (result != ActionResult.PASS) {
+			info.setReturnValue(result.isAccepted());
+		}
+	}
+
+	@Inject(method = "getSleepingDirection", at = @At("RETURN"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+	private void onGetSleepingDirection(CallbackInfoReturnable<Direction> info, @Nullable BlockPos sleepingPos) {
+		if (sleepingPos != null) {
+			info.setReturnValue(EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.invoker().modifySleepDirection((LivingEntity) (Object) this, sleepingPos, info.getReturnValue()));
+		}
 	}
 }
