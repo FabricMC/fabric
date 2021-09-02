@@ -1,5 +1,9 @@
 archivesBaseName = "fabric-item-groups-v0"
-version = getSubprojectVersion(project, "0.2.10")
+version = getSubprojectVersion(project, "0.2.11")
+
+loom {
+	accessWidener = file("src/testmod/resources/test.aw")
+}
 
 moduleDependencies(project, [
 		'fabric-api-base',
