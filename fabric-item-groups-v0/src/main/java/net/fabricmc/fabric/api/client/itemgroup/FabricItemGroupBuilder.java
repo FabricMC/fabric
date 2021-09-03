@@ -79,7 +79,7 @@ public final class FabricItemGroupBuilder {
 	 * @return a reference to the FabricItemGroupBuilder
 	 */
 	public FabricItemGroupBuilder appendItems(Consumer<List<ItemStack>> stacksForDisplay) {
-		return appendItems(((itemStacks, itemGroup) -> stacksForDisplay.accept(itemStacks)));
+		return appendItems((itemStacks, itemGroup) -> stacksForDisplay.accept(itemStacks));
 	}
 
 	/**
