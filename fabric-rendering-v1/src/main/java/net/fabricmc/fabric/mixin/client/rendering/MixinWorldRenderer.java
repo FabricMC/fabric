@@ -166,7 +166,7 @@ public abstract class MixinWorldRenderer {
 		WorldRenderEvents.END.invoker().onEnd(context);
 	}
 
-	@Inject(method = "reload", at = @At("HEAD"))
+	@Inject(method = "Lnet/minecraft/client/render/WorldRenderer;reload()V", at = @At("HEAD"))
 	private void onReload(CallbackInfo ci) {
 		InvalidateRenderStateCallback.EVENT.invoker().onInvalidate();
 	}
