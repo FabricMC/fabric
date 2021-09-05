@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.block.entity;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,7 +43,10 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 	}
 
 	public static <T extends BlockEntity> FabricBlockEntityTypeBuilder<T> create(Factory<? extends T> factory, Block... blocks) {
-		return new FabricBlockEntityTypeBuilder<>(factory, Arrays.asList(blocks));
+		List<Block> blocksList = new ArrayList<>(blocks.length);
+		Collections.addAll(blocksList, blocks);
+
+		return new FabricBlockEntityTypeBuilder<>(factory, blocksList);
 	}
 
 	public FabricBlockEntityTypeBuilder<T> addBlock(Block block) {
