@@ -43,10 +43,9 @@ public class ItemGroupTest implements ModInitializer {
 			.icon(() -> new ItemStack(Items.REDSTONE))
 			.appendItems((stacks, itemGroup) -> {
 					for(Item item : Registry.ITEM) {
-						if(item.isIn(ItemGroup.FOOD))
+						if (item.getGroup() == ItemGroup.FOOD || item.getGroup() == itemGroup) {
 							stacks.add(new ItemStack(item));
-						if(item.isIn(itemGroup))
-							stacks.add(new ItemStack(item));
+						}
 					}
 			}
 			).build();
