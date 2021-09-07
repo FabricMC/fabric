@@ -40,8 +40,8 @@ public class ItemGroupTest implements ModInitializer {
 
 	private static final ItemGroup ITEM_GROUP_2 = FabricItemGroupBuilder.create(new Identifier("fabric-item-groups-v0-testmod", "test_group_two"))
 			.icon(() -> new ItemStack(Items.REDSTONE))
-			.appendItems((stacks, itemGroup) -> {
-					for(Item item : Registry.ITEM) {
+			.appendItems((stacks, itemGroup) ->	{
+					for (Item item : Registry.ITEM)	{
 						if (item.getGroup() == ItemGroup.FOOD || item.getGroup() == itemGroup) {
 							stacks.add(new ItemStack(item));
 						}
