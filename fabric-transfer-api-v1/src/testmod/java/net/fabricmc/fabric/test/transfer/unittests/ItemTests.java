@@ -40,9 +40,34 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
  */
 class ItemTests {
 	public static void run() {
+		testStackReference();
 		testInventoryWrappers();
 		testLimitedStackCountInventory();
 		testLimitedStackCountItem();
+	}
+
+	private static void testStackReference() {
+		// Ensure that Inventory wrappers will try to mutate the backing stack as much as possible.
+		// In many cases, MC code captures a reference to the ItemStack so we want to edit that stack directly
+		// and not a copy whenever we can. Obviously this can't be perfect, but we try to cover as many cases as possible.
+		SimpleInventory inv = new SimpleInventory(new ItemStack(Items.DIAMOND, 2));
+		InventoryStorage invWrapper = InventoryStorage.of(inv, null);
+		ItemStack stack = inv.getStack(0);
+
+		// Simulate should correctly reset the stack.
+		try (Transaction tx = Transaction.openOuter()) {
+			invWrapper.extract(ItemVariant.of(Items.DIAMOND), 2, tx);
+		}
+
+		if (stack != inv.getStack(0)) throw new AssertionError("Stack should have stayed the same.");
+
+		// Commit should try to edit the original stack when it is feasible to do so.
+		try (Transaction tx = Transaction.openOuter()) {
+			invWrapper.extract(ItemVariant.of(Items.DIAMOND), 1, tx);
+			tx.commit();
+		}
+
+		if (stack != inv.getStack(0)) throw new AssertionError("Stack should have stayed the same.");
 	}
 
 	private static void testInventoryWrappers() {

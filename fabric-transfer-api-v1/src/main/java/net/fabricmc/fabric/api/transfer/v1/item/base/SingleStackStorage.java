@@ -115,6 +115,7 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 
 			if (insertedAmount > 0) {
 				updateSnapshots(transaction);
+				currentStack = getStack();
 
 				if (currentStack.isEmpty()) {
 					currentStack = insertedVariant.toStack(insertedAmount);
@@ -142,6 +143,7 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 
 			if (extracted > 0) {
 				this.updateSnapshots(transaction);
+				currentStack = getStack();
 				currentStack.decrement(extracted);
 				setStack(currentStack);
 			}
@@ -154,7 +156,9 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 
 	@Override
 	protected final ItemStack createSnapshot() {
-		return getStack().copy();
+		ItemStack original = getStack();
+		setStack(original.copy());
+		return original;
 	}
 
 	@Override
