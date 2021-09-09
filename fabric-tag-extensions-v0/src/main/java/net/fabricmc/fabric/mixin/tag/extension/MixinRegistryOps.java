@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.tag.extension.TagFactoryImpl;
  */
 @Mixin(value = RegistryOps.class, priority = 900)
 public class MixinRegistryOps {
-	@Inject(method = "method_36574", at = @At("RETURN"))
+	@Inject(method = "ofLoaded(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;", at = @At("RETURN"))
 	private static <T> void afterDynamicRegistryLoaded(DynamicOps<T> dynamicOps, ResourceManager resourceManager, DynamicRegistryManager registryManager, CallbackInfoReturnable<RegistryOps<T>> cir) {
 		TagFactoryImpl.loadDynamicRegistryTags(registryManager, resourceManager);
 	}
