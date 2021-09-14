@@ -63,9 +63,12 @@ public class MixinFluidRenderer {
 	public void tesselate(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, FluidState state, CallbackInfoReturnable<Boolean> info) {
 		if (!fabric_customRendering.get()) {
 			// Prevent recursively looking up custom fluid renderers when default behaviour is being invoked
-			fabric_customRendering.set(true);
-			tessellateViaHandler(view, pos, vertexConsumer, state, info);
-			fabric_customRendering.set(false);
+			try {
+				fabric_customRendering.set(true);
+				tessellateViaHandler(view, pos, vertexConsumer, state, info);
+			} finally {
+				fabric_customRendering.set(false);
+			}
 		}
 
 		if (info.isCancelled()) {
