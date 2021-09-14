@@ -42,37 +42,20 @@ public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 		// Red stained glass will have falling fluid textures to the side
 		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.RED_STAINED_GLASS, false);
 
-		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.NO_OVERLAY, new SimpleFluidRenderHandler(
+		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.NO_OVERLAY, TestFluids.NO_OVERLAY_FLOWING, new SimpleFluidRenderHandler(
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"),
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"),
 				0xFF5555
 		));
 
-		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.NO_OVERLAY_FLOWING, new SimpleFluidRenderHandler(
-				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"),
-				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"),
-				0xFF5555
-		));
-
-		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.OVERLAY, new SimpleFluidRenderHandler(
+		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.OVERLAY, TestFluids.OVERLAY_FLOWING, new SimpleFluidRenderHandler(
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"),
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"),
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay"),
 				0x5555FF
 		));
 
-		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.OVERLAY_FLOWING, new SimpleFluidRenderHandler(
-				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"),
-				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"),
-				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay"),
-				0x5555FF
-		));
-
-		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.CUSTOM, new CustomizedFluidRenderer(
-				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay")
-		));
-
-		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.CUSTOM_FLOWING, new CustomizedFluidRenderer(
+		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.CUSTOM, TestFluids.CUSTOM_FLOWING, new CustomizedFluidRenderer(
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay")
 		));
 

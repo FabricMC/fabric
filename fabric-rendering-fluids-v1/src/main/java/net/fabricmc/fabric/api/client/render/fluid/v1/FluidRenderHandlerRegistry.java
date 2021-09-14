@@ -44,10 +44,29 @@ public interface FluidRenderHandlerRegistry {
 	/**
 	 * Register a {@link FluidRenderHandler} for a given Fluid.
 	 *
+	 * <p>Note that most fluids have a still and a flowing type, and a
+	 * FluidRenderHandler must be registered for each type separately. To easily
+	 * register a render handler for a pair of still and flowing fluids, use
+	 * {@link #register(Fluid, Fluid, FluidRenderHandler)}.
+	 *
 	 * @param fluid The Fluid.
 	 * @param renderer The FluidRenderHandler.
 	 */
 	void register(Fluid fluid, FluidRenderHandler renderer);
+
+	/**
+	 * Register a {@link FluidRenderHandler} for two given Fluids, usually a
+	 * pair of a still and a flowing fluid type that use the same fluid
+	 * renderer.
+	 *
+	 * @param still The still Fluid.
+	 * @param flow The flowing Fluid.
+	 * @param renderer The FluidRenderHandler.
+	 */
+	default void register(Fluid still, Fluid flow, FluidRenderHandler renderer) {
+		register(still, renderer);
+		register(flow, renderer);
+	}
 
 	/**
 	 * Registers whether a block is transparent or not. When a block is
