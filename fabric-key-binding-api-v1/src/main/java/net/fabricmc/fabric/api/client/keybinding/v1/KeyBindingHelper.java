@@ -47,6 +47,16 @@ public final class KeyBindingHelper {
 	}
 
 	/**
+	 * Returns if the given keybind has been registered
+	 *
+	 * @param keyBinding the keybinding
+	 * @return if the keybind has been registered
+	 */
+	public static boolean keybindingExists(KeyBinding keyBinding) {
+		return KeyBindingRegistryImpl.doesKeybindingExist(keyBinding);
+	}
+
+	/**
 	 * Returns the configured KeyCode bound to the KeyBinding from the player's settings.
 	 *
 	 * @param keyBinding the keybinding

@@ -60,9 +60,9 @@ public final class KeyBindingRegistryImpl {
 	public static KeyBinding registerKeyBinding(KeyBinding binding) {
 		for (KeyBinding existingKeyBindings : moddedKeyBindings) {
 			if (existingKeyBindings == binding) {
-				throw null;
+				throw new IllegalArgumentException("Key binding already registered!");
 			} else if (existingKeyBindings.getTranslationKey().equals(binding.getTranslationKey())) {
-				throw new RuntimeException("Attempted to register two key bindings with equal ID: " + binding.getTranslationKey() + "!");
+				throw new IllegalArgumentException("Attempted to register two key bindings with equal ID: " + binding.getTranslationKey() + "!");
 			}
 		}
 
@@ -70,7 +70,12 @@ public final class KeyBindingRegistryImpl {
 			addCategory(binding.getCategory());
 		}
 
-		return moddedKeyBindings.add(binding) ? binding : null;
+		moddedKeyBindings.add(binding);
+		return binding;
+	}
+
+	public static boolean doesKeybindingExist(KeyBinding binding) {
+		return moddedKeyBindings.stream().anyMatch(key -> key.getTranslationKey().equals(binding.getTranslationKey()));
 	}
 
 	/**
