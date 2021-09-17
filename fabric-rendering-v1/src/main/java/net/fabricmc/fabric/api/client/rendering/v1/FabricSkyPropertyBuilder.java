@@ -36,8 +36,6 @@ public final class FabricSkyPropertyBuilder {
 	private SkyProperties.SkyType skyType = SkyProperties.SkyType.NORMAL;
 
 	private boolean brightenLighting = false;
-	private boolean hideClouds = false;
-	private boolean hideWeather = false;
 	private boolean darkened = false;
 
 	public static FabricSkyPropertyBuilder create() {
@@ -87,19 +85,8 @@ public final class FabricSkyPropertyBuilder {
 		return this;
 	}
 
-	public FabricSkyPropertyBuilder hideWeather() {
-		this.hideWeather = true;
-		return this;
-	}
-
-
-	public FabricSkyPropertyBuilder hideClouds() {
-		this.hideClouds = true;
-		return this;
-	}
-
 	public SkyProperties build() {
-		return new FabricSkyproperties(cloudsHeight, alternateSkyColor, skyType, brightenLighting, darkened, fogColorOverride, adjustFogColor, useThickFog, hideClouds, hideWeather);
+		return new FabricSkyproperties(cloudsHeight, alternateSkyColor, skyType, brightenLighting, darkened, fogColorOverride, adjustFogColor, useThickFog);
 	}
 
 	public static class FabricSkyproperties extends SkyProperties {
@@ -107,16 +94,12 @@ public final class FabricSkyPropertyBuilder {
 		private final Function3<float[], Float, Float, float[]> fogColorOverride;
 		private final BiFunction<Vec3d, Float, Vec3d> adjustFogColor;
 		private final BiPredicate<Integer, Integer> useThickFog;
-		private final boolean hideClouds;
-		private final boolean hideWeather;
 
-		public FabricSkyproperties(float cloudsHeight, boolean alternateSkyColor, SkyType skyType, boolean brightenLighting, boolean darkened, Function3<float[], Float, Float, float[]> fogColorOverride, BiFunction<Vec3d, Float, Vec3d> adjustFogColor, BiPredicate<Integer, Integer> useThickFog, boolean hideClouds, boolean hideWeather) {
+		public FabricSkyproperties(float cloudsHeight, boolean alternateSkyColor, SkyType skyType, boolean brightenLighting, boolean darkened, Function3<float[], Float, Float, float[]> fogColorOverride, BiFunction<Vec3d, Float, Vec3d> adjustFogColor, BiPredicate<Integer, Integer> useThickFog) {
 			super(cloudsHeight, alternateSkyColor, skyType, brightenLighting, darkened);
 			this.fogColorOverride = fogColorOverride;
 			this.adjustFogColor = adjustFogColor;
 			this.useThickFog = useThickFog;
-			this.hideClouds = hideClouds;
-			this.hideWeather = hideWeather;
 		}
 		@Override
 		public Vec3d adjustFogColor(Vec3d color, float sunHeight) {
@@ -131,14 +114,6 @@ public final class FabricSkyPropertyBuilder {
 		@Override
 		public float[] getFogColorOverride(float skyAngle, float tickDelta) {
 			return fogColorOverride.apply(color, skyAngle, tickDelta);
-		}
-
-		public boolean canHideClouds() {
-			return hideClouds;
-		}
-
-		public boolean canHideWeather() {
-			return hideWeather;
 		}
 	}
 }
