@@ -64,10 +64,14 @@ public class MixinServerPlayerInteractionManager {
 			this.player.networkHandler.sendPacket(new BlockUpdateS2CPacket(world, pos));
 
 			if (world.getBlockState(pos).hasBlockEntity()) {
-				BlockEntityUpdateS2CPacket updatePacket = world.getBlockEntity(pos).toUpdatePacket();
+				BlockEntity blockEntity = world.getBlockEntity(pos);
 
-				if (updatePacket != null) {
-					this.player.networkHandler.sendPacket(updatePacket);
+				if (blockEntity != null) {
+					BlockEntityUpdateS2CPacket updatePacket = BlockEntityUpdateS2CPacket.method_38586(blockEntity);
+
+					if (updatePacket != null) {
+						this.player.networkHandler.sendPacket(updatePacket);
+					}
 				}
 			}
 

@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.9.50" apply false
+	id "fabric-loom" version "0.10.11" apply false
 	id "org.cadixdev.licenser" version "0.6.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -20,10 +20,10 @@ def ENV = System.getenv()
 
 class Globals {
 	static def baseVersion = "0.40.1"
-	static def mcVersion = "1.17.1"
-	static def yarnVersion = "+build.46"
-	static def loaderVersion = "0.11.6"
-	static def preRelease = false
+	static def mcVersion = "21w37a"
+	static def yarnVersion = "+build.8"
+	static def loaderVersion = "0.11.7"
+	static def preRelease = true
 }
 
 version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
@@ -257,6 +257,9 @@ subprojects {
 		setupRepositories(repositories)
 	}
 
+	// Required as moduleDependencies modifies the pom
+	loom.disableDeprecatedPomGeneration(publishing.publications.mavenJava)
+
 	javadoc.enabled = false
 }
 
@@ -295,6 +298,8 @@ publishing {
 
 	setupRepositories(repositories)
 }
+
+loom.disableDeprecatedPomGeneration(publishing.publications.mavenJava)
 
 void setupRepositories(RepositoryHandler repositories) {
 	//repositories.mavenLocal() // uncomment for testing

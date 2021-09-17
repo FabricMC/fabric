@@ -70,7 +70,7 @@ public final class EntityEventTests implements ModInitializer {
 		});
 
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-			LOGGER.info("Respawned {}, [{}, {}]", oldPlayer.getGameProfile().getName(), oldPlayer.getServerWorld().getRegistryKey().getValue(), newPlayer.getServerWorld().getRegistryKey().getValue());
+			LOGGER.info("Respawned {}, [{}, {}]", oldPlayer.getGameProfile().getName(), oldPlayer.getWorld().getRegistryKey().getValue(), newPlayer.getWorld().getRegistryKey().getValue());
 		});
 
 		ServerPlayerEvents.ALLOW_DEATH.register((player, source, amount) -> {

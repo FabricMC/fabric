@@ -16,23 +16,25 @@
 
 package net.fabricmc.fabric.test.structure.mixin;
 
+import java.util.function.BiConsumer;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.world.biome.DefaultBiomeCreator;
-import net.minecraft.world.biome.GenerationSettings;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 
 import net.fabricmc.fabric.test.structure.StructureTest;
 
-@Mixin(DefaultBiomeCreator.class)
-public class MixinDefaultBiomeCreator {
-	@ModifyVariable(method = "createPlains", ordinal = 0, at = @At(value = "STORE", ordinal = 0))
-	private static GenerationSettings.Builder addCustomStructure(GenerationSettings.Builder builder, boolean sunflower) {
-		if (!sunflower) {
-			builder.structureFeature(StructureTest.CONFIGURED_STRUCTURE);
-		}
-
-		return builder;
+@Mixin(ConfiguredStructureFeatures.class)
+public class MixinConfiguredStructureFeatures {
+	@Inject(method = "method_38571", at = @At("TAIL"))
+	private static void addStructuresToBiomes(BiConsumer<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> consumer, CallbackInfo ci) {
+		consumer.accept(StructureTest.CONFIGURED_STRUCTURE, BiomeKeys.PLAINS);
 	}
 }

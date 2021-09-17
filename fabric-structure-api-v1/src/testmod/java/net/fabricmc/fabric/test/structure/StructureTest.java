@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.structure;
 
 import java.util.Random;
+import java.util.function.Predicate;
 
 import com.mojang.serialization.Codec;
 import org.apache.logging.log4j.LogManager;
@@ -26,7 +27,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePieceType;
-import net.minecraft.structure.StructurePieceWithDimensions;
+import net.minecraft.structure.ShiftableStructurePiece;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -82,7 +83,7 @@ public class StructureTest {
 			}
 
 			@Override
-			public void init(DynamicRegistryManager registryManager, ChunkGenerator chunkGenerator, StructureManager manager, ChunkPos chunkPos, Biome biome, DefaultFeatureConfig featureConfig, HeightLimitView heightLimitView) {
+			public void init(DynamicRegistryManager registryManager, ChunkGenerator chunkGenerator, StructureManager manager, ChunkPos chunkPos, DefaultFeatureConfig featureConfig, HeightLimitView heightLimitView, Predicate<Biome> predicate) {
 				int blockX = chunkPos.getStartX();
 				int blockZ = chunkPos.getStartZ();
 				int blockY = chunkGenerator.getHeight(blockX, blockZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
@@ -94,7 +95,7 @@ public class StructureTest {
 		}
 	}
 
-	public static class TestStructureGenerator extends StructurePieceWithDimensions {
+	public static class TestStructureGenerator extends ShiftableStructurePiece {
 		public TestStructureGenerator(Random random, int x, int y, int z) {
 			super(PIECE, x, y, z, 0, 48, 16, getRandomHorizontalDirection(random));
 		}

@@ -25,13 +25,13 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.server.world.ServerWorld;
 
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.fabricmc.fabric.test.renderer.WorldRenderExtensions;
 
-public final class FrameBlockEntity extends BlockEntity implements RenderAttachmentBlockEntity, BlockEntityClientSerializable {
+public final class FrameBlockEntity extends BlockEntity implements RenderAttachmentBlockEntity {
 	@Nullable
 	private Block block = null;
 
@@ -45,16 +45,20 @@ public final class FrameBlockEntity extends BlockEntity implements RenderAttachm
 
 		if (tag.contains("block", NbtType.STRING)) {
 			this.block = Registry.BLOCK.get(new Identifier(tag.getString("block")));
+		} else {
+			this.block = null;
+		}
+
+		if (this.getWorld() != null && this.getWorld().isClient()) {
+			WorldRenderExtensions.scheduleBlockRerender(this.getWorld(), this.getPos());
 		}
 	}
 
 	@Override
-	public NbtCompound writeNbt(NbtCompound tag) {
+	public void writeNbt(NbtCompound tag) {
 		if (this.block != null) {
 			tag.putString("block", Registry.BLOCK.getId(this.block).toString());
 		}
-
-		return super.writeNbt(tag);
 	}
 
 	@Override
@@ -62,7 +66,7 @@ public final class FrameBlockEntity extends BlockEntity implements RenderAttachm
 		super.markDirty();
 
 		if (this.hasWorld() && !this.getWorld().isClient()) {
-			this.sync();
+			((ServerWorld) world).getChunkManager().markForUpdate(getPos());
 		}
 	}
 
@@ -80,29 +84,5 @@ public final class FrameBlockEntity extends BlockEntity implements RenderAttachm
 	@Override
 	public Block getRenderAttachmentData() {
 		return this.block;
-	}
-
-	@Override
-	public void fromClientTag(NbtCompound tag) {
-		System.out.println("Received sync packet");
-
-		if (tag.contains("block", NbtType.STRING)) {
-			this.block = Registry.BLOCK.get(new Identifier(tag.getString("block")));
-		} else {
-			this.block = null;
-		}
-
-		if (this.getWorld() != null) {
-			WorldRenderExtensions.scheduleBlockRerender(this.getWorld(), this.getPos());
-		}
-	}
-
-	@Override
-	public NbtCompound toClientTag(NbtCompound tag) {
-		if (this.block != null) {
-			tag.putString("block", Registry.BLOCK.getId(this.block).toString());
-		}
-
-		return tag;
 	}
 }

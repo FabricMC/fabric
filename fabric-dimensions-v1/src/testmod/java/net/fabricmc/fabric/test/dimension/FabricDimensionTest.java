@@ -96,7 +96,7 @@ public class FabricDimensionTest implements ModInitializer {
 
 	private int swapTargeted(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 		ServerPlayerEntity player = context.getSource().getPlayer();
-		ServerWorld serverWorld = player.getServerWorld();
+		ServerWorld serverWorld = player.getWorld();
 		ServerWorld modWorld = getModWorld(context);
 
 		if (serverWorld != modWorld) {
