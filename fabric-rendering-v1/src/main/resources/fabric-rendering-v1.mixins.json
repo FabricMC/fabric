@@ -13,7 +13,7 @@
     "EntityModelsMixin",
     "LivingEntityRendererAccessor",
     "MixinBlockEntityRenderers",
-    "MixinEntityRenderers"
+    "MixinEntityRenderers",
     "SkyPropertiesAccessor"
   ],
   "injectors": {
