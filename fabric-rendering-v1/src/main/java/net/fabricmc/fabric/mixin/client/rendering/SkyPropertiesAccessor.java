@@ -30,7 +30,5 @@ import net.fabricmc.api.Environment;
 @Mixin(SkyProperties.class)
 public interface SkyPropertiesAccessor {
 	@Accessor("BY_IDENTIFIER")
-	default Object2ObjectMap<Identifier, SkyProperties> getIdentifierMap() {
-		return null;
-	}
+	Object2ObjectMap<Identifier, SkyProperties> getIdentifierMap();
 }
