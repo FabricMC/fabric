@@ -62,7 +62,7 @@ public final class KeyBindingRegistryImpl {
 			if (existingKeyBindings == binding) {
 				throw new IllegalArgumentException("Key binding already registered!");
 			} else if (existingKeyBindings.getTranslationKey().equals(binding.getTranslationKey())) {
-				throw new IllegalArgumentException("Attempted to register two key bindings with equal ID: " + binding.getTranslationKey() + "!");
+				throw new IllegalStateException("Attempted to register two key bindings with equal ID: " + binding.getTranslationKey() + "!");
 			}
 		}
 
