@@ -27,7 +27,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -67,7 +68,7 @@ public class MixinServerPlayerInteractionManager {
 				BlockEntity blockEntity = world.getBlockEntity(pos);
 
 				if (blockEntity != null) {
-					BlockEntityUpdateS2CPacket updatePacket = BlockEntityUpdateS2CPacket.method_38586(blockEntity);
+					Packet<ClientPlayPacketListener> updatePacket = blockEntity.method_38235();
 
 					if (updatePacket != null) {
 						this.player.networkHandler.sendPacket(updatePacket);
