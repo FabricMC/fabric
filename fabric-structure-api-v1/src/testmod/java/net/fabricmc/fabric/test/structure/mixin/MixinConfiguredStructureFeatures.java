@@ -33,7 +33,7 @@ import net.fabricmc.fabric.test.structure.StructureTest;
 
 @Mixin(ConfiguredStructureFeatures.class)
 public class MixinConfiguredStructureFeatures {
-	@Inject(method = "method_38571", at = @At("TAIL"))
+	@Inject(method = "method_38570", at = @At("TAIL"))
 	private static void addStructuresToBiomes(BiConsumer<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> consumer, CallbackInfo ci) {
 		consumer.accept(StructureTest.CONFIGURED_STRUCTURE, BiomeKeys.PLAINS);
 	}

@@ -61,7 +61,7 @@ public class StructureTest {
 		FabricStructureBuilder.create(new Identifier("fabric", "test_structure"), STRUCTURE)
 				.step(GenerationStep.Feature.SURFACE_STRUCTURES)
 				.defaultConfig(32, 8, 12345)
-				.superflatFeature(CONFIGURED_STRUCTURE)
+				.enableSuperflat()
 				.adjustsSurface()
 				.register();
 		Registry.register(Registry.STRUCTURE_PIECE, new Identifier("fabric", "test_structure_piece"), PIECE);
