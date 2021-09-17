@@ -20,15 +20,16 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
+import com.mojang.datafixers.util.Function3;
+
 import net.minecraft.client.render.SkyProperties;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-import com.mojang.datafixers.util.Function3;
-
 public final class FabricSkyPropertyBuilder {
 	private Function3<float[], Float, Float, float[]> fogColorOverride = (color, skyAngle, tickDelta) -> {
 		float g = MathHelper.cos(skyAngle * 6.2831855F) - 0.0F;
+
 		if (g >= -0.4F && g <= 0.4F) {
 			float i = (g - -0.0F) / 0.4F * 0.5F + 0.5F;
 			float j = 1.0F - (1.0F - MathHelper.sin(i * 3.1415927F)) * 0.99F;
@@ -117,6 +118,7 @@ public final class FabricSkyPropertyBuilder {
 			this.adjustFogColor = adjustFogColor;
 			this.useThickFog = useThickFog;
 		}
+
 		@Override
 		public Vec3d adjustFogColor(Vec3d color, float sunHeight) {
 			return adjustFogColor.apply(color, sunHeight);

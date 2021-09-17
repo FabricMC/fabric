@@ -35,7 +35,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.mixin.client.rendering.SkyPropertiesAccessor;
 
 public final class EnvironmentRenderers {
-	private EnvironmentRenderers() {}
+	private EnvironmentRenderers() { }
 
 	@Environment(EnvType.CLIENT)
 	private static final Map<RegistryKey<World>, SkyRenderer> SKY_RENDERERS = new IdentityHashMap<>();
@@ -45,7 +45,7 @@ public final class EnvironmentRenderers {
 	private static final Map<RegistryKey<World>, WeatherRenderer> WEATHER_RENDERERS = new HashMap<>();
 
 	/**
-	 * Registers a custom sky renderer for a DimensionType
+	 * Registers a custom sky renderer for a DimensionType.
 	 *
 	 * @param key A RegistryKey for your Dimension Type
 	 * @param renderer A {@link SkyRenderer} implementation
@@ -58,7 +58,7 @@ public final class EnvironmentRenderers {
 	}
 
 	/**
-	 * Registers a custom rain and snow renderer for a DimensionType
+	 * Registers a custom rain and snow renderer for a DimensionType.
 	 *
 	 * @param key A RegistryKey for your Dimension Type
 	 * @param renderer A {@link WeatherRenderer} implementation
@@ -71,7 +71,7 @@ public final class EnvironmentRenderers {
 	}
 
 	/**
-	 * Registers a custom sky property for a DimensionType
+	 * Registers a custom sky property for a DimensionType.
 	 *
 	 * @param key A RegistryKey for your Dimension Type
 	 * @param properties The Dimension Type's sky properties
@@ -84,7 +84,7 @@ public final class EnvironmentRenderers {
 	}
 
 	/**
-	 * Registers a custom cloud renderer for a Dimension Type
+	 * Registers a custom cloud renderer for a Dimension Type.
 	 *
 	 * @param key A RegistryKey for your Dimension Type
 	 * @param renderer A {@link CloudRenderer} implementation
