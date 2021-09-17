@@ -46,7 +46,7 @@ import net.minecraft.world.level.storage.LevelStorage;
  *
  * <p>See https://bugs.mojang.com/browse/MC-195468 for a related bug report.
  *
- * <p>In 1.17: Retest if this bug still occurs without this Mixin by launching a dedicated server with the
+ * <p>In 1.18: Retest if this bug still occurs without this Mixin by launching a dedicated server with the
  * dimension testmod, and no world directory. If the dimension is available (i.e. in /execute in, or via
  * the testmod's commands), then the bug is fixed and this Mixin can be removed.
  */
@@ -73,7 +73,7 @@ public class ServerBugfixMixin {
 		return value;
 	}
 
-	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/dynamic/RegistryOps;method_36574(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;"), method = "main", allow = 1)
+	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/dynamic/RegistryOps;ofLoaded(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;"), method = "main", allow = 1)
 	private static RegistryOps<NbtElement> captureRegistryOps(RegistryOps<NbtElement> value) {
 		fabric_registryOps = value;
 		return value;
