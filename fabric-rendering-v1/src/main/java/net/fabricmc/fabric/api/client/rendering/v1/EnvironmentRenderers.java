@@ -35,7 +35,6 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.mixin.client.rendering.SkyPropertiesAccessor;
 
 public final class EnvironmentRenderers {
-	private EnvironmentRenderers() { }
 
 	@Environment(EnvType.CLIENT)
 	private static final Map<RegistryKey<World>, SkyRenderer> SKY_RENDERERS = new IdentityHashMap<>();
