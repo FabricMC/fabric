@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
-import net.fabricmc.fabric.api.client.rendering.v1.EnvironmentRenderers;
-import net.fabricmc.fabric.api.client.rendering.v1.FabricSkyPropertyBuilder;
-import net.minecraft.client.render.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -30,24 +27,32 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderEffect;
+import net.minecraft.client.render.BufferBuilderStorage;
+import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.Frustum;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.registry.Registry;
 
+import net.fabricmc.fabric.api.client.rendering.v1.EnvironmentRenderers;
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.impl.client.rendering.WorldRenderContextImpl;
 
 @Mixin(WorldRenderer.class)
 public abstract class MixinWorldRenderer {
+	@Unique private final WorldRenderContextImpl context = new WorldRenderContextImpl();
 	@Shadow private BufferBuilderStorage bufferBuilders;
 	@Shadow private ClientWorld world;
 	@Shadow private ShaderEffect transparencyShader;
 	@Shadow private MinecraftClient client;
-	@Unique private final WorldRenderContextImpl context = new WorldRenderContextImpl();
 	@Unique private boolean didRenderParticles;
 
 	@Inject(method = "render", at = @At("HEAD"))
@@ -162,31 +167,31 @@ public abstract class MixinWorldRenderer {
 		WorldRenderEvents.END.invoker().onEnd(context);
 	}
 
-	@Inject(method = "Lnet/minecraft/client/render/WorldRenderer;reload()V", at = @At("HEAD"))
+	@Inject(method = "reload()V", at = @At("HEAD"))
 	private void onReload(CallbackInfo ci) {
 		InvalidateRenderStateCallback.EVENT.invoker().onInvalidate();
 	}
 
 	@Inject(at = @At("HEAD"), method = "renderWeather", cancellable = true)
-	private void renderWeather(LightmapTextureManager manager, float tickDelta, double x, double y, double z, CallbackInfo info) {EnvironmentRenderers.WeatherRenderer renderer = null;
-		if (this.client.world != null) {
-			renderer = EnvironmentRenderers.getWeatherRenderer(world.getRegistryKey());
-		}
+	private void renderWeather(LightmapTextureManager manager, float tickDelta, double x, double y, double z, CallbackInfo info) {
+		EnvironmentRenderers.WeatherRenderer renderer = null;
 
-		if(renderer != null) {
-			renderer.render(this.client, manager, tickDelta, x,y,z);
+		if (this.client.world != null) renderer = EnvironmentRenderers.getWeatherRenderer(world.getRegistryKey());
+
+		if (renderer != null) {
+			renderer.render(this.client, manager, tickDelta, x, y, z);
 			info.cancel();
 		}
 	}
 
 	@Inject(at = @At("HEAD"), method = "renderClouds(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/math/Matrix4f;FDDD)V", cancellable = true)
-	private void renderCloud(MatrixStack matrices, Matrix4f matrix4f, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo info) {EnvironmentRenderers.CloudRenderer renderer = null;
-		if (this.client.world != null) {
-			renderer = EnvironmentRenderers.getCloudRenderer(world.getRegistryKey());
-		}
+	private void renderCloud(MatrixStack matrices, Matrix4f matrix4f, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo info) {
+		EnvironmentRenderers.CloudRenderer renderer = null;
 
-		if(renderer != null) {
-			renderer.render(this.client, matrices, matrix4f ,tickDelta, cameraX, cameraY, cameraZ);
+		if (this.client.world != null) renderer = EnvironmentRenderers.getCloudRenderer(world.getRegistryKey());
+
+		if (renderer != null) {
+			renderer.render(this.client, matrices, matrix4f, tickDelta, cameraX, cameraY, cameraZ);
 			info.cancel();
 		}
 	}
@@ -194,11 +199,10 @@ public abstract class MixinWorldRenderer {
 	@Inject(at = @At("HEAD"), method = "renderSky", cancellable = true)
 	private void renderSky(MatrixStack matrices, Matrix4f matrix4f, float tickDelta, Runnable runnable, CallbackInfo info) {
 		EnvironmentRenderers.SkyRenderer renderer = null;
-		if (this.client.world != null) {
-			renderer = EnvironmentRenderers.getSkyRenderer(world.getRegistryKey());
-		}
 
-		if(renderer != null) {
+		if (this.client.world != null) renderer = EnvironmentRenderers.getSkyRenderer(world.getRegistryKey());
+
+		if (renderer != null) {
 			renderer.render(this.client, matrices, tickDelta);
 			info.cancel();
 		}

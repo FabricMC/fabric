@@ -17,9 +17,13 @@
 package net.fabricmc.fabric.test.rendering.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
+
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.SkyProperties;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3f;
@@ -46,8 +50,9 @@ public class EnvironementalRenderingTest implements ClientModInitializer {
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder bufferBuilder = tessellator.getBuffer();
 
-			for(int i = 0; i < 6; ++i) {
+			for (int i = 0; i < 6; ++i) {
 				matrices.push();
+
 				if (i == 1) {
 					matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90.0F));
 				}
