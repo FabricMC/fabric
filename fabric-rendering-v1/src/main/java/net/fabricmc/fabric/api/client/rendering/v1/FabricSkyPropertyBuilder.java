@@ -55,53 +55,111 @@ public final class FabricSkyPropertyBuilder {
 	private boolean brightenLighting = false;
 	private boolean darkened = false;
 
+	/**
+	 * Create a new Sky Property Builder.
+	 *
+	 * @return a FabricSkyPropertyBuilder
+	 */
 	public static FabricSkyPropertyBuilder create() {
 		return new FabricSkyPropertyBuilder();
 	}
 
+	/**
+	 * This is used say where clouds will be rendered.
+	 *
+	 * @param cloudsHeight the height clouds will render at
+	 * @return a reference to the FabricItemGroupBuilder
+	 */
 	public FabricSkyPropertyBuilder cloudsHeight(float cloudsHeight) {
 		this.cloudsHeight = cloudsHeight;
 		return this;
 	}
 
+	/**
+	 * Should the sky be slightly brighter.
+	 *
+	 * @param alternateSkyColor should sky be brighter
+	 * @return a reference to the FabricItemGroupBuilder
+	 */
 	public FabricSkyPropertyBuilder alternateSkyColor(boolean alternateSkyColor) {
 		this.alternateSkyColor = alternateSkyColor;
 		return this;
 	}
 
+	/**
+	 * Transforms the given fog color based on the current height of the sun. This is used in vanilla to darken fog during night.
+	 *
+	 * @param adjustFogColor Function the spits out an RBGA value based on previous color and the sun height.
+	 * @return a reference to the FabricItemGroupBuilder
+	 */
 	public FabricSkyPropertyBuilder adjustFogColor(BiFunction<Vec3d, Float, Vec3d> adjustFogColor) {
 		this.adjustFogColor = adjustFogColor;
 		return this;
 	}
 
+	/**
+	 * Tells the client if thick fog should be render at xy coordinates.
+	 *
+	 * @param useThickFog Predicate that deterines if fog should be thick at xy coordinate
+	 * @return a reference to the FabricItemGroupBuilder
+	 */
 	public FabricSkyPropertyBuilder useThickFog(BiPredicate<Integer, Integer> useThickFog) {
 		Objects.requireNonNull(useThickFog);
 		this.useThickFog = useThickFog;
 		return this;
 	}
 
+	/**
+	 * This is used to tell Vanilla what kind of sky to render.
+	 *
+	 * @param skyType Type of vanilla sky to render
+	 * @return a reference to the FabricItemGroupBuilder
+	 */
 	public FabricSkyPropertyBuilder skyType(SkyProperties.SkyType skyType) {
 		Objects.requireNonNull(skyType);
 		this.skyType = skyType;
 		return this;
 	}
 
+	/**
+	 * Will cause lighting to be higher.
+	 *
+	 * @param brightenLighting should lighting be higher.
+	 * @return a reference to the FabricItemGroupBuilder
+	 */
 	public FabricSkyPropertyBuilder brightenLighting(boolean brightenLighting) {
 		this.brightenLighting = brightenLighting;
 		return this;
 	}
 
+	/**
+	 * This is used in vanilla to render sunset and sunrise fog.
+	 * Function input is an array for storing color, current sky angle, and tick delta
+	 * @param fogColorOverride function used to calculate fog color
+	 * @return a reference to the FabricItemGroupBuilder
+	 */
 	public FabricSkyPropertyBuilder fogColorOverride(Function3<float[], Float, Float, float[]> fogColorOverride) {
 		Objects.requireNonNull(fogColorOverride);
 		this.fogColorOverride = fogColorOverride;
 		return this;
 	}
 
+	/**
+	 * Says if lighting should be darker.
+	 *
+	 * @param darkened should lighting be darker
+	 * @return a reference to the FabricItemGroupBuilder
+	 */
 	public FabricSkyPropertyBuilder darkened(boolean darkened) {
 		this.darkened = darkened;
 		return this;
 	}
 
+	/**
+	 * Create an instance of the SkyProperties.
+	 *
+	 * @return An instance of the built SkyProperties
+	 */
 	public SkyProperties build() {
 		return new FabricSkyproperties(cloudsHeight, alternateSkyColor, skyType, brightenLighting, darkened, fogColorOverride, adjustFogColor, useThickFog);
 	}
