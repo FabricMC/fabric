@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.impl.biome;
 
 import java.util.HashSet;
@@ -14,7 +30,6 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
-import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 
 /**
  * Internal data for modding Vanilla's {@link TheEndBiomeSource}.
@@ -113,6 +128,7 @@ public final class TheEndBiomeData {
 			WeightedBiomePicker picker = TheEndBiomeData.getEndBiomesMap().get(vanillaKey);
 			replacementKey = picker.pickFromNoise(sampler, biomeX / 64.0, 0, biomeZ / 64.0);
 		}
+
 		return replacementKey;
 	}
 }

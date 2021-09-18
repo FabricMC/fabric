@@ -55,5 +55,4 @@ public class MixinTheEndBiomeSource {
 
 		cir.setReturnValue(biomeRegistry.get(replacementKey));
 	}
-
 }

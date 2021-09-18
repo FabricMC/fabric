@@ -44,15 +44,18 @@ public final class BiomeStructureStartsImpl {
 	private BiomeStructureStartsImpl() {
 	}
 
-	public static void addStart(DynamicRegistryManager registries,
-								ConfiguredStructureFeature<?, ?> configuredStructure,
-								RegistryKey<Biome> biome) {
+	public static void addStart(
+			DynamicRegistryManager registries,
+			ConfiguredStructureFeature<?, ?> configuredStructure,
+			RegistryKey<Biome> biome
+	) {
 		changeStructureStarts(registries, structureMap -> {
 			Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> configuredMap = structureMap.computeIfAbsent(configuredStructure.feature, k -> HashMultimap.create());
 
 			// This is tricky, the keys might be either from builtin (Vanilla) or dynamic registries (modded)
 			RegistryKey<ConfiguredStructureFeature<?, ?>> configuredStructureKey = registries.get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY).getKey(configuredStructure).orElseThrow();
 			ConfiguredStructureFeature<?, ?> mapKey = BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.get(configuredStructureKey);
+
 			if (mapKey == null) {
 				// This means the configured structure passed in is not a (potentially modified) Vanilla entry,
 				// but rather a modded one. In this case, this will create a new entry in the map.
@@ -63,13 +66,16 @@ public final class BiomeStructureStartsImpl {
 		});
 	}
 
-	public static boolean removeStart(DynamicRegistryManager registries,
-									  ConfiguredStructureFeature<?, ?> configuredStructure,
-									  RegistryKey<Biome> biome) {
+	public static boolean removeStart(
+			DynamicRegistryManager registries,
+			ConfiguredStructureFeature<?, ?> configuredStructure,
+			RegistryKey<Biome> biome
+	) {
 		AtomicBoolean result = new AtomicBoolean(false);
 
 		changeStructureStarts(registries, structureMap -> {
 			Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> configuredMap = structureMap.get(configuredStructure.feature);
+
 			if (configuredMap == null) {
 				return;
 			}
@@ -77,6 +83,7 @@ public final class BiomeStructureStartsImpl {
 			// This is tricky, the keys might be either from builtin (Vanilla) or dynamic registries (modded)
 			RegistryKey<ConfiguredStructureFeature<?, ?>> configuredStructureKey = registries.get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY).getKey(configuredStructure).orElseThrow();
 			ConfiguredStructureFeature<?, ?> mapKey = BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.get(configuredStructureKey);
+
 			if (mapKey == null) {
 				// This means the configured structure passed in is not a (potentially modified) Vanilla entry,
 				// but rather a modded one. In this case, this will create a new entry in the map.
@@ -91,13 +98,16 @@ public final class BiomeStructureStartsImpl {
 		return result.get();
 	}
 
-	public static boolean removeStructureStarts(DynamicRegistryManager registries,
-												StructureFeature<?> structure,
-												RegistryKey<Biome> biome) {
+	public static boolean removeStructureStarts(
+			DynamicRegistryManager registries,
+			StructureFeature<?> structure,
+			RegistryKey<Biome> biome
+	) {
 		AtomicBoolean result = new AtomicBoolean(false);
 
 		changeStructureStarts(registries, structureMap -> {
 			Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> configuredMap = structureMap.get(structure);
+
 			if (configuredMap == null) {
 				return;
 			}
@@ -140,5 +150,4 @@ public final class BiomeStructureStartsImpl {
 						e -> ImmutableMultimap.copyOf(e.getValue())
 				));
 	}
-
 }
