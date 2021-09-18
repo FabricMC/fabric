@@ -51,18 +51,6 @@ import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 @Deprecated
 public interface BiomeModificationContext {
 	/**
-	 * @see Biome#getDepth()
-	 * @see Biome.Builder#depth(float)
-	 */
-	void setDepth(float depth);
-
-	/**
-	 * @see Biome#getScale()
-	 * @see Biome.Builder#scale(float)
-	 */
-	void setScale(float scale);
-
-	/**
 	 * @see Biome#getCategory()
 	 * @see Biome.Builder#category(Biome.Category)
 	 */

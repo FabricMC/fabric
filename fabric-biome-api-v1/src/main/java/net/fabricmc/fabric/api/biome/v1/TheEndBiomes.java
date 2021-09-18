@@ -20,7 +20,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
-import net.fabricmc.fabric.impl.biome.InternalBiomeData;
+import net.fabricmc.fabric.impl.biome.TheEndBiomeData;
 
 /**
  * API that exposes some internals of the minecraft default biome source for The End.
@@ -31,7 +31,8 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
  */
 @Deprecated
 public final class TheEndBiomes {
-	private TheEndBiomes() { }
+	private TheEndBiomes() {
+	}
 
 	/**
 	 * <p>Adds the biome as a main end island biome with the specified weight; note that this includes the main island
@@ -39,39 +40,39 @@ public final class TheEndBiomes {
 	 * with the generation of the center island and cause it to generate incorrectly; this method only exists for
 	 * consistency.</p>
 	 *
-	 * @param biome the biome to be added
+	 * @param biome  the biome to be added
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
-	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
-	 * Vanilla biomes have a weight of 1.0
+	 *               heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 *               Vanilla biomes have a weight of 1.0
 	 */
 	public static void addMainIslandBiome(RegistryKey<Biome> biome, double weight) {
-		InternalBiomeData.addEndBiomeReplacement(BiomeKeys.THE_END, biome, weight);
+		TheEndBiomeData.addEndBiomeReplacement(BiomeKeys.THE_END, biome, weight);
 	}
 
 	/**
 	 * <p>Adds the biome as an end highlands biome with the specified weight. End Highlands biomes make up the
 	 * center region of the large outer islands in The End.</p>
 	 *
-	 * @param biome the biome to be added
+	 * @param biome  the biome to be added
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
-	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
-	 * The vanilla biome has a weight of 1.0.
+	 *               heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 *               The vanilla biome has a weight of 1.0.
 	 */
 	public static void addHighlandsBiome(RegistryKey<Biome> biome, double weight) {
-		InternalBiomeData.addEndBiomeReplacement(BiomeKeys.END_HIGHLANDS, biome, weight);
+		TheEndBiomeData.addEndBiomeReplacement(BiomeKeys.END_HIGHLANDS, biome, weight);
 	}
 
 	/**
 	 * <p>Adds a custom biome as a small end islands biome with the specified weight; small end island biomes
 	 * make up the smaller islands in between the larger islands of the end.</p>
 	 *
-	 * @param biome the biome to be added
+	 * @param biome  the biome to be added
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
-	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
-	 * The vanilla biome has a weight of 1.0.
+	 *               heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 *               The vanilla biome has a weight of 1.0.
 	 */
 	public static void addSmallIslandsBiome(RegistryKey<Biome> biome, double weight) {
-		InternalBiomeData.addEndBiomeReplacement(BiomeKeys.SMALL_END_ISLANDS, biome, weight);
+		TheEndBiomeData.addEndBiomeReplacement(BiomeKeys.SMALL_END_ISLANDS, biome, weight);
 	}
 
 	/**
@@ -80,13 +81,13 @@ public final class TheEndBiomes {
 	 * overworld. If you don't call this method, the vanilla biome will be used by default.</p>
 	 *
 	 * @param highlands The highlands biome to where the midlands biome is added
-	 * @param midlands the biome to be added as a midlands biome
-	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
-	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
-	 * The vanilla biome has a weight of 1.0.
+	 * @param midlands  the biome to be added as a midlands biome
+	 * @param weight    the weight of the entry. The weight in this method corresponds to its selection likelihood, with
+	 *                  heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 *                  The vanilla biome has a weight of 1.0.
 	 */
 	public static void addMidlandsBiome(RegistryKey<Biome> highlands, RegistryKey<Biome> midlands, double weight) {
-		InternalBiomeData.addEndMidlandsReplacement(highlands, midlands, weight);
+		TheEndBiomeData.addEndMidlandsReplacement(highlands, midlands, weight);
 	}
 
 	/**
@@ -95,12 +96,20 @@ public final class TheEndBiomes {
 	 * this method, the vanilla biome will be used by default.</p>
 	 *
 	 * @param highlands The highlands biome to where the barrends biome is added
-	 * @param barrens the biome to be added as a barrens biome
-	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
-	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
-	 * The vanilla biome has a weight of 1.0.
+	 * @param barrens   the biome to be added as a barrens biome
+	 * @param weight    the weight of the entry. The weight in this method corresponds to its selection likelihood, with
+	 *                  heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 *                  The vanilla biome has a weight of 1.0.
 	 */
 	public static void addBarrensBiome(RegistryKey<Biome> highlands, RegistryKey<Biome> barrens, double weight) {
-		InternalBiomeData.addEndBarrensReplacement(highlands, barrens, weight);
+		TheEndBiomeData.addEndBarrensReplacement(highlands, barrens, weight);
+	}
+
+	/**
+	 * Returns true if the given biome can generate in the end, considering the Vanilla end biomes,
+	 * and any biomes added to The End by mods.
+	 */
+	public static boolean canGenerateInTheEnd(RegistryKey<Biome> biome) {
+		return TheEndBiomeData.canGenerateInTheEnd(biome);
 	}
 }

@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.biome.v1;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -115,23 +114,14 @@ public interface BiomeSelectionContext {
 	}
 
 	/**
-	 * Returns true if the configured structure with the given key can start in this biome.
+	 * Returns true if the configured structure with the given key can start in this biome in any configured
+	 * chunk generator.
 	 */
-	default boolean hasStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> key) {
-		Collection<Supplier<ConfiguredStructureFeature<?, ?>>> structureFeatures = getBiome().getGenerationSettings().getStructureFeatures();
-
-		for (Supplier<ConfiguredStructureFeature<?, ?>> supplier : structureFeatures) {
-			if (getStructureKey(supplier.get()).orElse(null) == key) {
-				return true;
-			}
-		}
-
-		return false;
-	}
+	boolean hasStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> key);
 
 	/**
 	 * Tries to retrieve the registry key for the given configured feature, which should be from this biomes
-	 * current feature list. May be empty if the configured feature is not registered, or does not come
+	 * current structure list. May be empty if the configured feature is not registered, or does not come
 	 * from this biomes feature list.
 	 */
 	Optional<RegistryKey<ConfiguredStructureFeature<?, ?>>> getStructureKey(ConfiguredStructureFeature<?, ?> configuredStructure);
