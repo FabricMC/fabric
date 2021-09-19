@@ -16,19 +16,21 @@
 
 package net.fabricmc.fabric.mixin.structure;
 
-import java.util.Map;
-
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.world.gen.chunk.FlatChunkGeneratorConfig;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.world.gen.chunk.StructuresConfig;
+
+import net.fabricmc.fabric.impl.structure.FabricStructureImpl;
 
 @Mixin(FlatChunkGeneratorConfig.class)
-public interface FlatChunkGeneratorConfigAccessor {
-	@Accessor("STRUCTURE_TO_FEATURES")
-	static Map<StructureFeature<?>, ConfiguredStructureFeature<?, ?>> getStructureToFeatures() {
-		throw new AssertionError("Untransformed accessor");
+public class FlatChunkGeneratorConfigMixin {
+	@Inject(method = "getDefaultConfig", at = @At(value = "RETURN"))
+	private static void createDefaultConfig(CallbackInfoReturnable<FlatChunkGeneratorConfig> cir) {
+		StructuresConfig structuresConfig = cir.getReturnValue().getStructuresConfig();
+		structuresConfig.getStructures().putAll(FabricStructureImpl.FLAT_STRUCTURE_TO_CONFIG_MAP);
 	}
 }
