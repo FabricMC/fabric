@@ -24,16 +24,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.world.biome.BiomeKeys;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
+import net.minecraft.world.biome.source.util.MultiNoiseUtil;
+import net.minecraft.world.gen.ChunkRandom;
 
-import net.fabricmc.fabric.impl.biome.InternalBiomeData;
-import net.fabricmc.fabric.impl.biome.SimpleLayerRandomnessSource;
-import net.fabricmc.fabric.impl.biome.WeightedBiomePicker;
+import net.fabricmc.fabric.impl.biome.TheEndBiomeData;
 
 @Mixin(TheEndBiomeSource.class)
 public class MixinTheEndBiomeSource {
@@ -44,35 +43,15 @@ public class MixinTheEndBiomeSource {
 	@Final
 	private long seed;
 	@Unique
-	private LayerRandomnessSource randomnessSource = new SimpleLayerRandomnessSource(seed);
+	private PerlinNoiseSampler sampler = new PerlinNoiseSampler(new ChunkRandom(seed));
 
-	@Inject(method = "getBiomeForNoiseGen", at = @At("RETURN"), cancellable = true)
-	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, CallbackInfoReturnable<Biome> cir) {
+	@Inject(method = "method_38109", at = @At("RETURN"), cancellable = true)
+	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler multiNoiseSampler, CallbackInfoReturnable<Biome> cir) {
 		Biome vanillaBiome = cir.getReturnValue();
 
 		// Since all vanilla biomes are added to the registry, this will never fail.
 		RegistryKey<Biome> vanillaKey = biomeRegistry.getKey(vanillaBiome).get();
-		RegistryKey<Biome> replacementKey;
-
-		// The x and z of the biome are divided by 64 to ensure custom biomes are large enough; going larger than this]
-		// seems to make custom biomes too hard to find.
-		if (vanillaKey == BiomeKeys.END_MIDLANDS || vanillaKey == BiomeKeys.END_BARRENS) {
-			// Since the highlands picker is statically populated by InternalBiomeData, picker will never be null.
-			WeightedBiomePicker highlandsPicker = InternalBiomeData.getEndBiomesMap().get(BiomeKeys.END_HIGHLANDS);
-			RegistryKey<Biome> highlandsKey = highlandsPicker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
-
-			if (vanillaKey == BiomeKeys.END_MIDLANDS) {
-				WeightedBiomePicker midlandsPicker = InternalBiomeData.getEndMidlandsMap().get(highlandsKey);
-				replacementKey = (midlandsPicker == null) ? vanillaKey : midlandsPicker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
-			} else {
-				WeightedBiomePicker barrensPicker = InternalBiomeData.getEndBarrensMap().get(highlandsKey);
-				replacementKey = (barrensPicker == null) ? vanillaKey : barrensPicker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
-			}
-		} else {
-			// Since the main island and small islands pickers are statically populated by InternalBiomeData, picker will never be null.
-			WeightedBiomePicker picker = InternalBiomeData.getEndBiomesMap().get(vanillaKey);
-			replacementKey = picker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
-		}
+		RegistryKey<Biome> replacementKey = TheEndBiomeData.pickEndBiome(biomeX, biomeY, biomeZ, sampler, vanillaKey);
 
 		cir.setReturnValue(biomeRegistry.get(replacementKey));
 	}

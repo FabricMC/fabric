@@ -31,13 +31,13 @@ import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.util.collection.Pool;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeAdditionsSound;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.MusicSound;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.collection.Pool;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -65,6 +65,7 @@ import net.fabricmc.fabric.mixin.biome.modification.SpawnSettingsAccessor;
 @ApiStatus.Internal
 public class BiomeModificationContextImpl implements BiomeModificationContext {
 	private final DynamicRegistryManager registries;
+	private final RegistryKey<Biome> biomeKey;
 	private final Biome biome;
 	private final BiomeAccessor biomeAccessor;
 	private final WeatherContext weather;
@@ -73,24 +74,15 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	private final SpawnSettingsContextImpl spawnSettings;
 
 	@SuppressWarnings("ConstantConditions")
-	public BiomeModificationContextImpl(DynamicRegistryManager registries, Biome biome) {
+	public BiomeModificationContextImpl(DynamicRegistryManager registries, RegistryKey<Biome> biomeKey, Biome biome) {
 		this.registries = registries;
+		this.biomeKey = biomeKey;
 		this.biome = biome;
 		this.biomeAccessor = (BiomeAccessor) (Object) biome;
 		this.weather = new WeatherContextImpl();
 		this.effects = new EffectsContextImpl();
 		this.generationSettings = new GenerationSettingsContextImpl();
 		this.spawnSettings = new SpawnSettingsContextImpl();
-	}
-
-	@Override
-	public void setDepth(float depth) {
-		biomeAccessor.fabric_setDepth(depth);
-	}
-
-	@Override
-	public void setScale(float scale) {
-		biomeAccessor.fabric_setScale(scale);
 	}
 
 	@Override
@@ -240,7 +232,6 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			unfreezeCarvers();
 			unfreezeFeatures();
 			unfreezeFlowerFeatures();
-			unfreezeStructures();
 		}
 
 		private void unfreezeCarvers() {
@@ -277,10 +268,6 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			accessor.fabric_setFlowerFeatures(new ArrayList<>(accessor.fabric_getFlowerFeatures()));
 		}
 
-		private void unfreezeStructures() {
-			accessor.fabric_setStructureFeatures(new ArrayList<>(accessor.fabric_getStructureFeatures()));
-		}
-
 		/**
 		 * Re-freeze the lists in the generation settings to immutable variants, also fixes the flower features.
 		 */
@@ -288,7 +275,6 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			freezeCarvers();
 			freezeFeatures();
 			freezeFlowerFeatures();
-			freezeStructures();
 		}
 
 		private void freezeCarvers() {
@@ -313,10 +299,6 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		private void freezeFlowerFeatures() {
 			accessor.fabric_setFlowerFeatures(ImmutableList.copyOf(accessor.fabric_getFlowerFeatures()));
-		}
-
-		private void freezeStructures() {
-			accessor.fabric_setStructureFeatures(ImmutableList.copyOf(accessor.fabric_getStructureFeatures()));
 		}
 
 		@Override
@@ -383,23 +365,19 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		public void addStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> configuredStructureKey) {
 			ConfiguredStructureFeature<?, ?> configuredStructure = structures.getOrThrow(configuredStructureKey);
 
-			// Remove the same feature-type before adding it back again, i.e. a jungle and normal village
-			// are mutually exclusive.
-			removeStructure(configuredStructure.feature);
-
-			accessor.fabric_getStructureFeatures().add(() -> configuredStructure);
+			BiomeStructureStartsImpl.addStart(registries, configuredStructure, biomeKey);
 		}
 
 		@Override
 		public boolean removeStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> configuredStructureKey) {
-			ConfiguredStructureFeature<?, ?> structure = structures.getOrThrow(configuredStructureKey);
+			ConfiguredStructureFeature<?, ?> configuredStructure = structures.getOrThrow(configuredStructureKey);
 
-			return accessor.fabric_getStructureFeatures().removeIf(s -> s.get() == structure);
+			return BiomeStructureStartsImpl.removeStart(registries, configuredStructure, biomeKey);
 		}
 
 		@Override
 		public boolean removeStructure(StructureFeature<?> structure) {
-			return accessor.fabric_getStructureFeatures().removeIf(s -> s.get().feature == structure);
+			return BiomeStructureStartsImpl.removeStructureStarts(registries, structure, biomeKey);
 		}
 
 		/**

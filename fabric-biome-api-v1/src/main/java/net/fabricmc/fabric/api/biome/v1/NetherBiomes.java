@@ -18,8 +18,9 @@ package net.fabricmc.fabric.api.biome.v1;
 
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 
-import net.fabricmc.fabric.impl.biome.InternalBiomeData;
+import net.fabricmc.fabric.impl.biome.NetherBiomeData;
 
 /**
  * API that exposes the internals of Minecraft's nether biome code.
@@ -36,10 +37,29 @@ public final class NetherBiomes {
 	 *
 	 * @param biome           The biome to add. Must not be null.
 	 * @param mixedNoisePoint data about the given {@link Biome}'s spawning information in the nether.
-	 * @see Biome.MixedNoisePoint
+	 * @see MultiNoiseUtil.NoiseValuePoint
 	 */
-	public static void addNetherBiome(RegistryKey<Biome> biome, Biome.MixedNoisePoint mixedNoisePoint) {
-		InternalBiomeData.addNetherBiome(biome, mixedNoisePoint);
+	public static void addNetherBiome(RegistryKey<Biome> biome, MultiNoiseUtil.NoiseValuePoint mixedNoisePoint) {
+		NetherBiomeData.addNetherBiome(biome, MultiNoiseUtil.createNoiseHypercube(
+				mixedNoisePoint.getTemperatureNoise(),
+				mixedNoisePoint.getHumidityNoise(),
+				mixedNoisePoint.getContinentalnessNoise(),
+				mixedNoisePoint.getErosionNoise(),
+				mixedNoisePoint.getDepth(),
+				mixedNoisePoint.getWeirdnessNoise(),
+				0
+		));
+	}
+
+	/**
+	 * Adds a biome to the Nether generator.
+	 *
+	 * @param biome           The biome to add. Must not be null.
+	 * @param mixedNoisePoint data about the given {@link Biome}'s spawning information in the nether.
+	 * @see MultiNoiseUtil.NoiseValuePoint
+	 */
+	public static void addNetherBiome(RegistryKey<Biome> biome, MultiNoiseUtil.NoiseHypercube mixedNoisePoint) {
+		NetherBiomeData.addNetherBiome(biome, mixedNoisePoint);
 	}
 
 	/**
@@ -47,6 +67,6 @@ public final class NetherBiomes {
 	 * and any biomes added to the Nether by mods.
 	 */
 	public static boolean canGenerateInNether(RegistryKey<Biome> biome) {
-		return InternalBiomeData.canGenerateInNether(biome);
+		return NetherBiomeData.canGenerateInNether(biome);
 	}
 }

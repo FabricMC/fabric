@@ -36,14 +36,6 @@ public interface BiomeAccessor {
 	@Mutable
 	SpawnSettings fabric_getSpawnSettings();
 
-	@Accessor("depth")
-	@Mutable
-	void fabric_setDepth(float depth);
-
-	@Accessor("scale")
-	@Mutable
-	void fabric_setScale(float scale);
-
 	@Accessor("category")
 	@Mutable
 	void fabric_setCategory(Biome.Category category);

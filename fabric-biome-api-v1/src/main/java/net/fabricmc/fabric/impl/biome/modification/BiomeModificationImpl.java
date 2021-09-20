@@ -149,7 +149,7 @@ public class BiomeModificationImpl {
 					// Create the copy only if at least one modifier applies, since it's pretty costly
 					if (modificationContext == null) {
 						biomesChanged++;
-						modificationContext = new BiomeModificationContextImpl(impl, biome);
+						modificationContext = new BiomeModificationContextImpl(impl, key, biome);
 					}
 
 					modifier.apply(context, modificationContext);

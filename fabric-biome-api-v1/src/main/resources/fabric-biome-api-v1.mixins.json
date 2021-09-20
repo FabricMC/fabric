@@ -12,17 +12,8 @@
     "modification.RegistryOpsMixin",
     "modification.SpawnDensityAccessor",
     "modification.SpawnSettingsAccessor",
-    "AddHillsLayerAccessor",
-    "BuiltinBiomesAccessor",
-    "BuiltinBiomesAccessor",
-    "MixinAddEdgeBiomesLayer",
-    "MixinAddHillsLayer",
-    "MixinAddRiversLayer",
     "MixinMultiNoiseBiomeSource",
-    "MixinSetBaseBiomesLayer",
-    "MixinTheEndBiomeSource",
-    "MultiNoiseBiomeSourceAccessor",
-    "VanillaLayeredBiomeSourceAccessor"
+    "MixinTheEndBiomeSource"
   ],
   "injectors": {
     "defaultRequire": 1
