@@ -17,17 +17,21 @@
 package net.fabricmc.fabric.api.client.rendering.v1;
 
 import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-
-import com.mojang.datafixers.util.Function3;
 
 import net.minecraft.client.render.SkyProperties;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+/**
+ * Builder used to create {@link net.minecraft.client.render.SkyProperties} instances which
+ * govern various things about how a dimension renders including where thick fog should be used, what type of should be rendered, et ect.
+ */
+@Environment(EnvType.CLIENT)
 public final class FabricSkyPropertyBuilder {
-	private Function3<float[], Float, Float, float[]> fogColorOverride = (color, skyAngle, tickDelta) -> {
+	private FogColorOverride fogColorOverride = (color, skyAngle, tickDelta) -> {
 		float g = MathHelper.cos(skyAngle * 6.2831855F) - 0.0F;
 
 		if (g >= -0.4F && g <= 0.4F) {
@@ -38,17 +42,17 @@ public final class FabricSkyPropertyBuilder {
 			color[1] = i * i * 0.7F + 0.2F;
 			color[2] = i * i * 0.0F + 0.2F;
 			color[3] = j;
-			return color;
+			return true;
 		} else {
-			return null;
+			return false;
 		}
 	};
 
 	private float cloudsHeight = 128.0F;
 	private boolean alternateSkyColor = true;
 
-	private BiFunction<Vec3d, Float, Vec3d> adjustFogColor = (color, sunHeight) -> color.multiply((sunHeight * 0.94F + 0.06F), sunHeight * 0.94F + 0.06F, (sunHeight * 0.91F + 0.09F));
-	private BiPredicate<Integer, Integer> useThickFog = (camX, camY) -> false;
+	private AdjustFogColor adjustFogColor = (color, sunHeight) -> color.multiply((sunHeight * 0.94F + 0.06F), sunHeight * 0.94F + 0.06F, (sunHeight * 0.91F + 0.09F));
+	private UseThickFog useThickFog = (camX, camY) -> false;
 
 	private SkyProperties.SkyType skyType = SkyProperties.SkyType.NORMAL;
 
@@ -89,10 +93,10 @@ public final class FabricSkyPropertyBuilder {
 	/**
 	 * Transforms the given fog color based on the current height of the sun. This is used in vanilla to darken fog during night.
 	 *
-	 * @param adjustFogColor Function the spits out an RBGA value based on previous color and the sun height.
+	 * @param adjustFogColor Spits out an adjusted RBGA value based on previous color and the sun height.
 	 * @return a reference to the FabricItemGroupBuilder
 	 */
-	public FabricSkyPropertyBuilder adjustFogColor(BiFunction<Vec3d, Float, Vec3d> adjustFogColor) {
+	public FabricSkyPropertyBuilder adjustFogColor(AdjustFogColor adjustFogColor) {
 		this.adjustFogColor = adjustFogColor;
 		return this;
 	}
@@ -100,10 +104,10 @@ public final class FabricSkyPropertyBuilder {
 	/**
 	 * Tells the client if thick fog should be render at xy coordinates.
 	 *
-	 * @param useThickFog Predicate that deterines if fog should be thick at xy coordinate
+	 * @param useThickFog Used to etermines if fog should be thick at xy camera coordinate
 	 * @return a reference to the FabricItemGroupBuilder
 	 */
-	public FabricSkyPropertyBuilder useThickFog(BiPredicate<Integer, Integer> useThickFog) {
+	public FabricSkyPropertyBuilder useThickFog(UseThickFog useThickFog) {
 		Objects.requireNonNull(useThickFog);
 		this.useThickFog = useThickFog;
 		return this;
@@ -138,7 +142,7 @@ public final class FabricSkyPropertyBuilder {
 	 * @param fogColorOverride function used to calculate fog color
 	 * @return a reference to the FabricItemGroupBuilder
 	 */
-	public FabricSkyPropertyBuilder fogColorOverride(Function3<float[], Float, Float, float[]> fogColorOverride) {
+	public FabricSkyPropertyBuilder fogColorOverride(FogColorOverride fogColorOverride) {
 		Objects.requireNonNull(fogColorOverride);
 		this.fogColorOverride = fogColorOverride;
 		return this;
@@ -166,11 +170,11 @@ public final class FabricSkyPropertyBuilder {
 
 	public static class FabricSkyproperties extends SkyProperties {
 		private final float[] color = new float[4];
-		private final Function3<float[], Float, Float, float[]> fogColorOverride;
-		private final BiFunction<Vec3d, Float, Vec3d> adjustFogColor;
-		private final BiPredicate<Integer, Integer> useThickFog;
+		private final FogColorOverride fogColorOverride;
+		private final AdjustFogColor adjustFogColor;
+		private final UseThickFog useThickFog;
 
-		public FabricSkyproperties(float cloudsHeight, boolean alternateSkyColor, SkyType skyType, boolean brightenLighting, boolean darkened, Function3<float[], Float, Float, float[]> fogColorOverride, BiFunction<Vec3d, Float, Vec3d> adjustFogColor, BiPredicate<Integer, Integer> useThickFog) {
+		public FabricSkyproperties(float cloudsHeight, boolean alternateSkyColor, SkyType skyType, boolean brightenLighting, boolean darkened, FogColorOverride fogColorOverride, AdjustFogColor adjustFogColor, UseThickFog useThickFog) {
 			super(cloudsHeight, alternateSkyColor, skyType, brightenLighting, darkened);
 			this.fogColorOverride = fogColorOverride;
 			this.adjustFogColor = adjustFogColor;
@@ -179,17 +183,58 @@ public final class FabricSkyPropertyBuilder {
 
 		@Override
 		public Vec3d adjustFogColor(Vec3d color, float sunHeight) {
-			return adjustFogColor.apply(color, sunHeight);
+			return adjustFogColor.adjust(color, sunHeight);
 		}
 
 		@Override
 		public boolean useThickFog(int camX, int camY) {
-			return useThickFog.test(camX, camY);
+			return useThickFog.use(camX, camY);
 		}
 
 		@Override
 		public float[] getFogColorOverride(float skyAngle, float tickDelta) {
-			return fogColorOverride.apply(color, skyAngle, tickDelta);
+			return fogColorOverride.override(color, skyAngle, tickDelta) ? color : null;
 		}
+	}
+
+	@Environment(EnvType.CLIENT)
+	@FunctionalInterface
+	public interface FogColorOverride {
+		/**
+		 * Used to determine if the fog color should be overriden based on the current sky angle and tick delta.
+		 * The array storing the color value used in the override is provided.
+		 *
+		 * @param color provided array containing overriding color.
+		 * @param skyAngle current angle of the sky.
+		 * @param tickDelta current tick delta.
+		 * @return should fog.
+		 */
+		boolean override(float[] color, float skyAngle, float tickDelta);
+	}
+
+	@Environment(EnvType.CLIENT)
+	@FunctionalInterface
+	public interface UseThickFog {
+		/**
+		 * Used to determine if thick fog should be used current xy coordinates of teh camera.
+		 *
+		 * @param camX current camera x coordinate.
+		 * @param camY current camera y coordinate.
+		 * @return should thick fog be used.
+		 */
+		boolean use(int camX, int camY);
+	}
+
+	@Environment(EnvType.CLIENT)
+	@FunctionalInterface
+	public interface AdjustFogColor {
+		/**
+		 * Used to adjust fog color based on height of the sun.
+		 *
+		 * @param color current fog color.
+		 * @param sunHeight current height of the sun.
+		 * @return adjusted fog color.
+		 */
+		Vec3d adjust(Vec3d color, float sunHeight);
 	}
 }
