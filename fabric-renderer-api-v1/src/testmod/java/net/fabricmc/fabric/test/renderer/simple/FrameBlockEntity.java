@@ -26,6 +26,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.util.NbtType;
@@ -84,5 +85,15 @@ public final class FrameBlockEntity extends BlockEntity implements RenderAttachm
 	@Override
 	public Block getRenderAttachmentData() {
 		return this.block;
+	}
+
+	@Override
+	public BlockEntityUpdateS2CPacket method_38235() {
+		return BlockEntityUpdateS2CPacket.method_38585(this);
+	}
+
+	@Override
+	public NbtCompound toInitialChunkDataNbt() {
+		return this.createNbt();
 	}
 }

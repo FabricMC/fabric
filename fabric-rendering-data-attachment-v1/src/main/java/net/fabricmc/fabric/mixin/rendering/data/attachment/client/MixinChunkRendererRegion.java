@@ -20,14 +20,14 @@ import java.util.ConcurrentModificationException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
@@ -40,21 +40,15 @@ import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 
 @Mixin(ChunkRendererRegion.class)
 public abstract class MixinChunkRendererRegion implements RenderAttachedBlockView {
-	private Int2ObjectOpenHashMap<Object> fabric_renderDataObjects;
-
-	@Shadow
-	protected abstract int getIndex(BlockPos pos);
-
-	@Shadow
-	protected abstract int getIndex(int x, int y, int z);
+	private Long2ObjectOpenHashMap<Object> fabric_renderDataObjects;
 
 	private static final AtomicInteger ERROR_COUNTER = new AtomicInteger();
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	@Inject(at = @At("RETURN"), method = "<init>")
-	public void init(World world, int cxOff, int czOff, WorldChunk[][] chunks, BlockPos posFrom, BlockPos posTo, CallbackInfo info) {
+	@Inject(at = @At("RETURN"), method = "create", locals = LocalCapture.CAPTURE_FAILHARD)
+	private static void init(World world, BlockPos startPos, BlockPos endPos, int chunkRadius, CallbackInfoReturnable<ChunkRendererRegion> info, int i, int j, int k, int l, WorldChunk[][] chunks) {
 		// instantiated lazily - avoids allocation for chunks without any data objects - which is most of them!
-		Int2ObjectOpenHashMap<Object> map = null;
+		Long2ObjectOpenHashMap<Object> map = null;
 
 		for (WorldChunk[] chunkOuter : chunks) {
 			for (WorldChunk chunk : chunkOuter) {
@@ -66,7 +60,7 @@ public abstract class MixinChunkRendererRegion implements RenderAttachedBlockVie
 				// We handle this simply by retrying until it works.  Ugly but effective.
 				for (;;) {
 					try {
-						map = mapChunk(chunk, posFrom, posTo, map);
+						map = mapChunk(chunk, startPos, endPos, map);
 						break;
 					} catch (ConcurrentModificationException e) {
 						final int count = ERROR_COUNTER.incrementAndGet();
@@ -83,10 +77,14 @@ public abstract class MixinChunkRendererRegion implements RenderAttachedBlockVie
 			}
 		}
 
-		this.fabric_renderDataObjects = map;
+		ChunkRendererRegion rendererRegion = info.getReturnValue();
+
+		if (map != null && rendererRegion != null) {
+			((MixinChunkRendererRegion) (Object) rendererRegion).fabric_renderDataObjects = map;
+		}
 	}
 
-	private Int2ObjectOpenHashMap<Object> mapChunk(WorldChunk chunk, BlockPos posFrom, BlockPos posTo, Int2ObjectOpenHashMap<Object> map) {
+	private static Long2ObjectOpenHashMap<Object> mapChunk(WorldChunk chunk, BlockPos posFrom, BlockPos posTo, Long2ObjectOpenHashMap<Object> map) {
 		final int xMin = posFrom.getX();
 		final int xMax = posTo.getX();
 		final int zMin = posFrom.getZ();
@@ -104,10 +102,10 @@ public abstract class MixinChunkRendererRegion implements RenderAttachedBlockVie
 
 				if (o != null) {
 					if (map == null) {
-						map = new Int2ObjectOpenHashMap<>();
+						map = new Long2ObjectOpenHashMap<>();
 					}
 
-					map.put(getIndex(entPos), o);
+					map.put(entPos.asLong(), o);
 				}
 			}
 		}
@@ -117,6 +115,6 @@ public abstract class MixinChunkRendererRegion implements RenderAttachedBlockVie
 
 	@Override
 	public Object getBlockEntityRenderAttachment(BlockPos pos) {
-		return fabric_renderDataObjects == null ? null : fabric_renderDataObjects.get(getIndex(pos));
+		return fabric_renderDataObjects == null ? null : fabric_renderDataObjects.get(pos.asLong());
 	}
 }

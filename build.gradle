@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.10.13" apply false
+	id "fabric-loom" version "0.10.14" apply false
 	id "org.cadixdev.licenser" version "0.6.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -21,7 +21,7 @@ def ENV = System.getenv()
 class Globals {
 	static def baseVersion = "0.40.1"
 	static def mcVersion = "21w37a"
-	static def yarnVersion = "+build.8"
+	static def yarnVersion = "+build.10"
 	static def loaderVersion = "0.11.7"
 	static def preRelease = true
 }
@@ -261,6 +261,11 @@ subprojects {
 	loom.disableDeprecatedPomGeneration(publishing.publications.mavenJava)
 
 	javadoc.enabled = false
+
+	afterEvaluate {
+		genSources.enabled = false
+		unpickJar.enabled = false
+	}
 }
 
 task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {

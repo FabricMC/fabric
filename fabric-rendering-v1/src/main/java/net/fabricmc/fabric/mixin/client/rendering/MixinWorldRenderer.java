@@ -62,7 +62,7 @@ public abstract class MixinWorldRenderer {
 	}
 
 	@Inject(method = "setupTerrain", at = @At("RETURN"))
-	private void afterTerrainSetup(Camera camera, Frustum frustum, boolean hasForcedFrustum, int frame, boolean spectator, CallbackInfo ci) {
+	private void afterTerrainSetup(Camera camera, Frustum frustum, boolean hasForcedFrustum, boolean spectator, CallbackInfo ci) {
 		context.setFrustum(frustum);
 		WorldRenderEvents.AFTER_SETUP.invoker().afterSetup(context);
 	}
