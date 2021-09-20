@@ -34,12 +34,10 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.mixin.client.rendering.SkyPropertiesAccessor;
 
+@Environment(EnvType.CLIENT)
 public final class EnvironmentRenderers {
-	@Environment(EnvType.CLIENT)
 	private static final Map<RegistryKey<World>, SkyRenderer> SKY_RENDERERS = new IdentityHashMap<>();
-	@Environment(EnvType.CLIENT)
 	private static final Map<RegistryKey<World>, CloudRenderer> CLOUD_RENDERERS = new HashMap<>();
-	@Environment(EnvType.CLIENT)
 	private static final Map<RegistryKey<World>, WeatherRenderer> WEATHER_RENDERERS = new HashMap<>();
 
 	/**
