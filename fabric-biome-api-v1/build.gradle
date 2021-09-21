@@ -1,5 +1,5 @@
 archivesBaseName = "fabric-biome-api-v1"
-version = getSubprojectVersion(project, "3.2.0")
+version = getSubprojectVersion(project, "4.0.0")
 
 loom {
     accessWidenerPath = file("src/main/resources/fabric-biome-api-v1.accesswidener")

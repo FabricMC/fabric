@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.10.14" apply false
+	id "fabric-loom" version "0.10.15" apply false
 	id "org.cadixdev.licenser" version "0.6.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -19,7 +19,7 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.40.1"
+	static def baseVersion = "0.40.2"
 	static def mcVersion = "21w37a"
 	static def yarnVersion = "+build.10"
 	static def loaderVersion = "0.11.7"
@@ -358,7 +358,7 @@ curseforge {
 		id = "306612"
 		changelog = ENV.CHANGELOG ?: "No changelog provided"
 		releaseType = Globals.preRelease ? "beta" : "release"
-		addGameVersion "1.17.1"
+		addGameVersion "1.18-Snapshot"
 		addGameVersion "Fabric"
 
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
