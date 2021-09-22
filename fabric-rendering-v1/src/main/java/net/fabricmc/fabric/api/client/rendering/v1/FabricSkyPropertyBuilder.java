@@ -168,13 +168,13 @@ public final class FabricSkyPropertyBuilder {
 		return new FabricSkyproperties(cloudsHeight, alternateSkyColor, skyType, brightenLighting, darkened, fogColorOverride, adjustFogColor, useThickFog);
 	}
 
-	public static class FabricSkyproperties extends SkyProperties {
+	private static class FabricSkyproperties extends SkyProperties {
 		private final float[] color = new float[4];
 		private final FogColorOverride fogColorOverride;
 		private final AdjustFogColor adjustFogColor;
 		private final UseThickFog useThickFog;
 
-		public FabricSkyproperties(float cloudsHeight, boolean alternateSkyColor, SkyType skyType, boolean brightenLighting, boolean darkened, FogColorOverride fogColorOverride, AdjustFogColor adjustFogColor, UseThickFog useThickFog) {
+		private FabricSkyproperties(float cloudsHeight, boolean alternateSkyColor, SkyType skyType, boolean brightenLighting, boolean darkened, FogColorOverride fogColorOverride, AdjustFogColor adjustFogColor, UseThickFog useThickFog) {
 			super(cloudsHeight, alternateSkyColor, skyType, brightenLighting, darkened);
 			this.fogColorOverride = fogColorOverride;
 			this.adjustFogColor = adjustFogColor;
