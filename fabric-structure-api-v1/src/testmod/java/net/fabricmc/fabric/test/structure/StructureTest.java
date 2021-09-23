@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.test.structure;
 
 import java.util.Random;
-import java.util.function.Predicate;
 
 import com.mojang.serialization.Codec;
 import org.apache.logging.log4j.LogManager;
@@ -25,27 +24,23 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.structure.ShiftableStructurePiece;
-import net.minecraft.structure.StructureStart;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.class_6622;
+import net.minecraft.class_6626;
 
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
 
@@ -54,7 +49,7 @@ public class StructureTest {
 
 	public static final StructureFeature<DefaultFeatureConfig> STRUCTURE = new TestStructureFeature(DefaultFeatureConfig.CODEC);
 	public static final ConfiguredStructureFeature<DefaultFeatureConfig, ? extends StructureFeature<DefaultFeatureConfig>> CONFIGURED_STRUCTURE = STRUCTURE.configure(new DefaultFeatureConfig());
-	public static final StructurePieceType PIECE = TestStructureGenerator::new;
+	public static final StructurePieceType.class_6615 PIECE = TestStructureGenerator::new;
 
 	static {
 		LOGGER.info("Registering test structure");
@@ -69,29 +64,16 @@ public class StructureTest {
 
 	public static class TestStructureFeature extends StructureFeature<DefaultFeatureConfig> {
 		public TestStructureFeature(Codec<DefaultFeatureConfig> codec) {
-			super(codec);
+			super(codec, TestStructureFeature::generate);
 		}
 
-		@Override
-		public StructureStartFactory<DefaultFeatureConfig> getStructureStartFactory() {
-			return Start::new;
-		}
+		private static void generate(class_6626 arg, DefaultFeatureConfig defaultFeatureConfig, class_6622.class_6623 arg2) {
+			int blockX = arg2.comp_127().getStartX();
+			int blockZ = arg2.comp_127().getStartZ();
+			int blockY = arg2.comp_125().getHeight(blockX, blockZ, Heightmap.Type.WORLD_SURFACE_WG, arg2.comp_129());
 
-		public static class Start extends StructureStart<DefaultFeatureConfig> {
-			public Start(StructureFeature<DefaultFeatureConfig> feature, ChunkPos pos, int i, long l) {
-				super(feature, pos, i, l);
-			}
-
-			@Override
-			public void init(DynamicRegistryManager registryManager, ChunkGenerator chunkGenerator, StructureManager manager, ChunkPos chunkPos, DefaultFeatureConfig featureConfig, HeightLimitView heightLimitView, Predicate<Biome> predicate) {
-				int blockX = chunkPos.getStartX();
-				int blockZ = chunkPos.getStartZ();
-				int blockY = chunkGenerator.getHeight(blockX, blockZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-
-				TestStructureGenerator generator = new TestStructureGenerator(random, blockX, blockY, blockZ);
-				this.children.add(generator);
-				setBoundingBoxFromChildren();
-			}
+			TestStructureGenerator generator = new TestStructureGenerator(arg2.comp_130(), blockX, blockY, blockZ);
+			arg.addPiece(generator);
 		}
 	}
 
@@ -100,12 +82,12 @@ public class StructureTest {
 			super(PIECE, x, y, z, 0, 48, 16, getRandomHorizontalDirection(random));
 		}
 
-		protected TestStructureGenerator(ServerWorld serverWorld, NbtCompound compoundTag) {
-			super(PIECE, compoundTag);
+		public TestStructureGenerator(NbtCompound nbtCompound) {
+			super(PIECE, nbtCompound);
 		}
 
 		@Override
-		public boolean generate(StructureWorldAccess structureWorldAccess, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, Random random, BlockBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
+		public void generate(StructureWorldAccess structureWorldAccess, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, Random random, BlockBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
 			for (int x = 0; x < 48; x++) {
 				for (int z = 0; z < 48; z++) {
 					for (int y = 0; y < 16; y++) {
@@ -113,8 +95,6 @@ public class StructureTest {
 					}
 				}
 			}
-
-			return true;
 		}
 	}
 }

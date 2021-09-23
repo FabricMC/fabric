@@ -68,7 +68,7 @@ public class MixinServerPlayerInteractionManager {
 				BlockEntity blockEntity = world.getBlockEntity(pos);
 
 				if (blockEntity != null) {
-					Packet<ClientPlayPacketListener> updatePacket = blockEntity.method_38235();
+					Packet<ClientPlayPacketListener> updatePacket = blockEntity.toUpdatePacket();
 
 					if (updatePacket != null) {
 						this.player.networkHandler.sendPacket(updatePacket);

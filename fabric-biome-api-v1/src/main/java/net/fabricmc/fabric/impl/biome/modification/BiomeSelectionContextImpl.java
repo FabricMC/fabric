@@ -83,7 +83,7 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 		for (Map.Entry<RegistryKey<ChunkGeneratorSettings>, ChunkGeneratorSettings> entry : chunkGeneratorSettings.getEntries()) {
 			StructuresConfig structuresConfig = entry.getValue().getStructuresConfig();
 
-			if (structuresConfig.method_38424(instance.feature).get(instance).contains(getBiomeKey())) {
+			if (structuresConfig.getConfiguredStructureFeature(instance.feature).get(instance).contains(getBiomeKey())) {
 				return true;
 			}
 		}

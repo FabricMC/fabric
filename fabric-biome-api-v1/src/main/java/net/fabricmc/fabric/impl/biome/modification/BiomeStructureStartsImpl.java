@@ -133,7 +133,7 @@ public final class BiomeStructureStartsImpl {
 	}
 
 	private static Map<StructureFeature<?>, Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>>> unfreeze(ChunkGeneratorSettings settings) {
-		ImmutableMap<StructureFeature<?>, ImmutableMultimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>>> frozenMap = settings.getStructuresConfig().field_34696;
+		ImmutableMap<StructureFeature<?>, ImmutableMultimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>>> frozenMap = settings.getStructuresConfig().configuredStructures;
 		Map<StructureFeature<?>, Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>>> result = new HashMap<>(frozenMap.size());
 
 		for (Map.Entry<StructureFeature<?>, ImmutableMultimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>>> entry : frozenMap.entrySet()) {
@@ -144,7 +144,7 @@ public final class BiomeStructureStartsImpl {
 	}
 
 	private static void freeze(ChunkGeneratorSettings settings, Map<StructureFeature<?>, Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>>> structureStarts) {
-		settings.getStructuresConfig().field_34696 = structureStarts.entrySet().stream()
+		settings.getStructuresConfig().configuredStructures = structureStarts.entrySet().stream()
 				.collect(ImmutableMap.toImmutableMap(
 						Map.Entry::getKey,
 						e -> ImmutableMultimap.copyOf(e.getValue())

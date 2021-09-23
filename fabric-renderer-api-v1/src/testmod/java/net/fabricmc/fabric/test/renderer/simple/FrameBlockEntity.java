@@ -88,8 +88,8 @@ public final class FrameBlockEntity extends BlockEntity implements RenderAttachm
 	}
 
 	@Override
-	public BlockEntityUpdateS2CPacket method_38235() {
-		return BlockEntityUpdateS2CPacket.method_38585(this);
+	public BlockEntityUpdateS2CPacket toUpdatePacket() {
+		return BlockEntityUpdateS2CPacket.create(this);
 	}
 
 	@Override

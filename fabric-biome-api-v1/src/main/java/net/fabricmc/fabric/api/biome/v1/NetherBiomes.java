@@ -41,12 +41,12 @@ public final class NetherBiomes {
 	 */
 	public static void addNetherBiome(RegistryKey<Biome> biome, MultiNoiseUtil.NoiseValuePoint mixedNoisePoint) {
 		NetherBiomeData.addNetherBiome(biome, MultiNoiseUtil.createNoiseHypercube(
-				mixedNoisePoint.getTemperatureNoise(),
-				mixedNoisePoint.getHumidityNoise(),
-				mixedNoisePoint.getContinentalnessNoise(),
-				mixedNoisePoint.getErosionNoise(),
-				mixedNoisePoint.getDepth(),
-				mixedNoisePoint.getWeirdnessNoise(),
+				mixedNoisePoint.temperatureNoise(),
+				mixedNoisePoint.humidityNoise(),
+				mixedNoisePoint.continentalnessNoise(),
+				mixedNoisePoint.erosionNoise(),
+				mixedNoisePoint.depth(),
+				mixedNoisePoint.weirdnessNoise(),
 				0
 		));
 	}
