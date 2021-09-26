@@ -50,6 +50,7 @@ public final class EnvironmentRenderers {
 	/**
 	 * Registers a custom sky renderer for a DimensionType.
 	 *
+	 * <p>This overrides Vanilla's sky rendering.
 	 * @param key A RegistryKey for your DimensionType
 	 * @param renderer A {@link SkyRenderer} implementation
 	 * @param override Should try to override current SkyRenderer if it exists
@@ -68,8 +69,9 @@ public final class EnvironmentRenderers {
 	}
 
 	/**
-	 * Registers a custom rain and snow renderer for a DimensionType.
+	 * Registers a custom weather renderer for a DimensionType.
 	 *
+	 * <p>This overrides Vanilla's weather rendering.
 	 * @param key A RegistryKey for your Dimension Type
 	 * @param renderer A {@link WeatherRenderer} implementation
 	 * @param override Should try to override current SkyRenderer if it exists
@@ -90,6 +92,7 @@ public final class EnvironmentRenderers {
 	/**
 	 * Registers a custom sky property for a DimensionType.
 	 *
+	 *  <p>This overrides Vanilla's default sky properties.
 	 * @param key A RegistryKey for your Dimension Type
 	 * @param properties The Dimension Type's sky properties
 	 * @param override Should try to override current SkyRenderer if it exists
@@ -109,6 +112,8 @@ public final class EnvironmentRenderers {
 
 	/**
 	 * Registers a custom cloud renderer for a Dimension Type.
+	 *
+	 * <p>This overrides Vanilla's cloud rendering.
 	 *  @param key A RegistryKey for your Dimension Type
 	 * @param renderer A {@link CloudRenderer} implementation
 	 * @param override Should try to override current SkyRenderer if it exists
