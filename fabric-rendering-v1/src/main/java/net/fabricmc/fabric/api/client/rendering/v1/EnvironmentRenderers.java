@@ -79,7 +79,7 @@ public final class EnvironmentRenderers {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
-		if (WEATHER_RENDERERS.containsKey(key)) {
+		if (!override && WEATHER_RENDERERS.containsKey(key)) {
 			return false;
 		} else {
 			WEATHER_RENDERERS.putIfAbsent(key, renderer);
@@ -99,7 +99,7 @@ public final class EnvironmentRenderers {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(properties);
 
-		if (((SkyPropertiesAccessor) properties).getIdentifierMap().containsKey(key.getValue())) {
+		if (!override && ((SkyPropertiesAccessor) properties).getIdentifierMap().containsKey(key.getValue())) {
 			return false;
 		} else {
 			((SkyPropertiesAccessor) properties).getIdentifierMap().put(key.getValue(), properties);
@@ -118,7 +118,7 @@ public final class EnvironmentRenderers {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
-		if (CLOUD_RENDERERS.containsKey(key)) {
+		if (!override && CLOUD_RENDERERS.containsKey(key)) {
 			return false;
 		} else {
 			CLOUD_RENDERERS.putIfAbsent(key, renderer);
