@@ -21,6 +21,8 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.SkyProperties;
@@ -34,6 +36,11 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.mixin.client.rendering.SkyPropertiesAccessor;
 
+/**
+ * Environmental renderers render world specific visuals of a world.
+ * They may be used to render the sky, weather, or clouds.
+ * The {@link SkyProperties} is the vanilla environmental renderer.
+ */
 @Environment(EnvType.CLIENT)
 public final class EnvironmentRenderers {
 	private static final Map<RegistryKey<World>, SkyRenderer> SKY_RENDERERS = new IdentityHashMap<>();
@@ -43,14 +50,21 @@ public final class EnvironmentRenderers {
 	/**
 	 * Registers a custom sky renderer for a DimensionType.
 	 *
-	 * @param key A RegistryKey for your Dimension Type
+	 * @param key A RegistryKey for your DimensionType
 	 * @param renderer A {@link SkyRenderer} implementation
+	 * @param override Should try to override current SkyRenderer if it exists
+	 * @return if the new renderer was accepted
 	 */
-	@Environment(EnvType.CLIENT)
-	public static void registerSkyRenderer(RegistryKey<World> key, SkyRenderer renderer) {
+	public static boolean registerSkyRenderer(RegistryKey<World> key, SkyRenderer renderer, boolean override) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
-		SKY_RENDERERS.putIfAbsent(key, renderer);
+
+		if (!override && SKY_RENDERERS.containsKey(key)) {
+			return false;
+		} else {
+			SKY_RENDERERS.put(key, renderer);
+			return true;
+		}
 	}
 
 	/**
@@ -58,12 +72,19 @@ public final class EnvironmentRenderers {
 	 *
 	 * @param key A RegistryKey for your Dimension Type
 	 * @param renderer A {@link WeatherRenderer} implementation
+	 * @param override Should try to override current SkyRenderer if it exists
+	 * @return if the new renderer was accepted
 	 */
-	@Environment(EnvType.CLIENT)
-	public static void registerWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer) {
+	public static boolean registerWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer, boolean override) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
-		WEATHER_RENDERERS.putIfAbsent(key, renderer);
+
+		if (WEATHER_RENDERERS.containsKey(key)) {
+			return false;
+		} else {
+			WEATHER_RENDERERS.putIfAbsent(key, renderer);
+			return true;
+		}
 	}
 
 	/**
@@ -71,45 +92,58 @@ public final class EnvironmentRenderers {
 	 *
 	 * @param key A RegistryKey for your Dimension Type
 	 * @param properties The Dimension Type's sky properties
+	 * @param override Should try to override current SkyRenderer if it exists
+	 * @return if the new properties was accepted
 	 */
-	@Environment(EnvType.CLIENT)
-	public static void registerSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties) {
+	public static boolean registerSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties, boolean override) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(properties);
-		((SkyPropertiesAccessor) properties).getIdentifierMap().put(key.getValue(), properties);
+
+		if (((SkyPropertiesAccessor) properties).getIdentifierMap().containsKey(key.getValue())) {
+			return false;
+		} else {
+			((SkyPropertiesAccessor) properties).getIdentifierMap().put(key.getValue(), properties);
+			return true;
+		}
 	}
 
 	/**
 	 * Registers a custom cloud renderer for a Dimension Type.
-	 *
-	 * @param key A RegistryKey for your Dimension Type
+	 *  @param key A RegistryKey for your Dimension Type
 	 * @param renderer A {@link CloudRenderer} implementation
+	 * @param override Should try to override current SkyRenderer if it exists
+	 * @return if the new renderer was accepted
 	 */
-	@Environment(EnvType.CLIENT)
-	public static void registerCloudRenderer(RegistryKey<World> key, CloudRenderer renderer) {
+	public static boolean registerCloudRenderer(RegistryKey<World> key, CloudRenderer renderer, boolean override) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
-		CLOUD_RENDERERS.putIfAbsent(key, renderer);
+
+		if (CLOUD_RENDERERS.containsKey(key)) {
+			return false;
+		} else {
+			CLOUD_RENDERERS.putIfAbsent(key, renderer);
+			return true;
+		}
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Nullable
 	public static SkyRenderer getSkyRenderer(RegistryKey<World> key) {
 		return SKY_RENDERERS.get(key);
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Nullable
 	public static CloudRenderer getCloudRenderer(RegistryKey<World> key) {
 		return CLOUD_RENDERERS.get(key);
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Nullable
 	public static WeatherRenderer getWeatherRenderer(RegistryKey<World> key) {
 		return WEATHER_RENDERERS.get(key);
 	}
 
 	@FunctionalInterface
 	public interface SkyRenderer {
-		void render(MinecraftClient world, MatrixStack matrices, float tickDelta);
+		void render(MinecraftClient client, MatrixStack matrices, float tickDelta);
 	}
 
 	@FunctionalInterface
