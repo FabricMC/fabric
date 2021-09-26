@@ -48,11 +48,11 @@ import net.fabricmc.fabric.impl.client.rendering.WorldRenderContextImpl;
 
 @Mixin(WorldRenderer.class)
 public abstract class MixinWorldRenderer {
-	@Unique private final WorldRenderContextImpl context = new WorldRenderContextImpl();
 	@Shadow private BufferBuilderStorage bufferBuilders;
 	@Shadow private ClientWorld world;
 	@Shadow private ShaderEffect transparencyShader;
 	@Shadow private MinecraftClient client;
+	@Unique private final WorldRenderContextImpl context = new WorldRenderContextImpl();
 	@Unique private boolean didRenderParticles;
 
 	@Inject(method = "render", at = @At("HEAD"))
@@ -167,7 +167,7 @@ public abstract class MixinWorldRenderer {
 		WorldRenderEvents.END.invoker().onEnd(context);
 	}
 
-	@Inject(method = "reload()V", at = @At("HEAD"))
+	@Inject(method = "Lnet/minecraft/client/render/WorldRenderer;reload()V", at = @At("HEAD"))
 	private void onReload(CallbackInfo ci) {
 		InvalidateRenderStateCallback.EVENT.invoker().onInvalidate();
 	}
