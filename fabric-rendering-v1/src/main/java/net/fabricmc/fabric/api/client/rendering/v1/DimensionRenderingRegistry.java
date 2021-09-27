@@ -16,11 +16,6 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Objects;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
@@ -34,7 +29,7 @@ import net.minecraft.world.dimension.DimensionType;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.mixin.client.rendering.SkyPropertiesAccessor;
+import net.fabricmc.fabric.impl.client.rendering.DimensionRenderingRegistryImpl;
 
 /**
  * Dimensional renderers render world specific visuals of a world.
@@ -42,10 +37,12 @@ import net.fabricmc.fabric.mixin.client.rendering.SkyPropertiesAccessor;
  * The {@link SkyProperties} is the vanilla dimensional renderer.
  */
 @Environment(EnvType.CLIENT)
-public final class DimensionRendering {
-	private static final Map<RegistryKey<World>, SkyRenderer> SKY_RENDERERS = new IdentityHashMap<>();
-	private static final Map<RegistryKey<World>, CloudRenderer> CLOUD_RENDERERS = new HashMap<>();
-	private static final Map<RegistryKey<World>, WeatherRenderer> WEATHER_RENDERERS = new HashMap<>();
+public interface DimensionRenderingRegistry {
+	/**
+	 * The singleton instance of the renderer registry.
+	 * Use this instance to call the methods in this interface.
+	 */
+	DimensionRenderingRegistry INSTANCE = DimensionRenderingRegistryImpl.INSTANCE;
 
 	/**
 	 * sets the custom sky renderer for a {@link World}.
@@ -55,16 +52,16 @@ public final class DimensionRendering {
 	 * @param renderer A {@link SkyRenderer} implementation
 	 * @param override Should override current {@link SkyRenderer} if it exists
 	 */
-	public static void setSkyRenderer(RegistryKey<World> key, SkyRenderer renderer, boolean override) {
-		Objects.requireNonNull(key);
-		Objects.requireNonNull(renderer);
+	void setSkyRenderer(RegistryKey<World> key, SkyRenderer renderer, boolean override);
 
-		if (!override && SKY_RENDERERS.containsKey(key)) {
-			throw new IllegalStateException("This world already has a registered SkyRenderer.");
-		} else {
-			SKY_RENDERERS.put(key, renderer);
-		}
-	}
+	/**
+	 * sets the custom sky renderer for a {@link World}.
+	 *
+	 * <p>This overrides Vanilla's sky rendering.
+	 * @param key A {@link RegistryKey} for your {@link World}
+	 * @param renderer A {@link SkyRenderer} implementation
+	 */
+	void setSkyRenderer(RegistryKey<World> key, SkyRenderer renderer);
 
 	/**
 	 * Registers a custom weather renderer for a DimensionType.
@@ -74,16 +71,16 @@ public final class DimensionRendering {
 	 * @param renderer A {@link WeatherRenderer} implementation
 	 * @param override Should override current SkyRenderer if it exists
 	 */
-	public static void setWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer, boolean override) {
-		Objects.requireNonNull(key);
-		Objects.requireNonNull(renderer);
+	void setWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer, boolean override);
 
-		if (!override && WEATHER_RENDERERS.containsKey(key)) {
-			throw new IllegalStateException("This world already has a registered WeatherRenderer.");
-		} else {
-			WEATHER_RENDERERS.putIfAbsent(key, renderer);
-		}
-	}
+	/**
+	 * Registers a custom weather renderer for a DimensionType.
+	 *
+	 * <p>This overrides Vanilla's weather rendering.
+	 * @param key A RegistryKey for your Dimension Type
+	 * @param renderer A {@link WeatherRenderer} implementation
+	 */
+	void setWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer);
 
 	/**
 	 * Registers a custom sky property for a {@link DimensionType}.
@@ -93,17 +90,16 @@ public final class DimensionRendering {
 	 * @param properties The {@link DimensionType}'s {@link SkyProperties}
 	 * @param override Whether current {@link SkyProperties} should be overridden if it exists
 	 */
-	public static boolean registerSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties, boolean override) {
-		Objects.requireNonNull(key);
-		Objects.requireNonNull(properties);
+	void registerSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties, boolean override);
 
-		if (!override && ((SkyPropertiesAccessor) properties).getIdentifierMap().containsKey(key.getValue())) {
-			throw new IllegalStateException("This world already has a registered sky properties.");
-		} else {
-			((SkyPropertiesAccessor) properties).getIdentifierMap().put(key.getValue(), properties);
-			return true;
-		}
-	}
+	/**
+	 * Registers a custom sky property for a {@link DimensionType}.
+	 *
+	 *  <p>This overrides Vanilla's default {@link SkyProperties}.
+	 * @param key A {@link RegistryKey} for your {@link DimensionType}
+	 * @param properties The {@link DimensionType}'s {@link SkyProperties}
+	 */
+	void registerSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties);
 
 	/**
 	 * Registers a custom cloud renderer for a {@link World}.
@@ -113,44 +109,38 @@ public final class DimensionRendering {
 	 * @param renderer A {@link CloudRenderer} implementation
 	 * @param override Should override current {@link SkyRenderer} if it exists
 	 */
-	public static void setCloudRenderer(RegistryKey<World> key, CloudRenderer renderer, boolean override) {
-		Objects.requireNonNull(key);
-		Objects.requireNonNull(renderer);
+	void setCloudRenderer(RegistryKey<World> key, CloudRenderer renderer, boolean override);
 
-		if (!override && CLOUD_RENDERERS.containsKey(key)) {
-			throw new IllegalStateException("This world already has a registered CloudRenderer.");
-		} else {
-			CLOUD_RENDERERS.putIfAbsent(key, renderer);
-		}
-	}
-
-	@Nullable
-	public static SkyRenderer getSkyRenderer(RegistryKey<World> key) {
-		return SKY_RENDERERS.get(key);
-	}
+	/**
+	 * Registers a custom cloud renderer for a {@link World}.
+	 *
+	 * <p>This overrides Vanilla's cloud rendering.
+	 *  @param key A {@link RegistryKey} for your {@link World}
+	 * @param renderer A {@link CloudRenderer} implementation
+	 */
+	void setCloudRenderer(RegistryKey<World> key, CloudRenderer renderer);
 
 	@Nullable
-	public static CloudRenderer getCloudRenderer(RegistryKey<World> key) {
-		return CLOUD_RENDERERS.get(key);
-	}
+	SkyRenderer getSkyRenderer(RegistryKey<World> key);
 
 	@Nullable
-	public static WeatherRenderer getWeatherRenderer(RegistryKey<World> key) {
-		return WEATHER_RENDERERS.get(key);
-	}
+	CloudRenderer getCloudRenderer(RegistryKey<World> key);
+
+	@Nullable
+	WeatherRenderer getWeatherRenderer(RegistryKey<World> key);
 
 	@FunctionalInterface
-	public interface SkyRenderer {
+	interface SkyRenderer {
 		void render(MinecraftClient client, MatrixStack matrices, float tickDelta);
 	}
 
 	@FunctionalInterface
-	public interface WeatherRenderer {
+	interface WeatherRenderer {
 		void render(MinecraftClient client, LightmapTextureManager manager, float tickDelta, double x, double y, double z);
 	}
 
 	@FunctionalInterface
-	public interface CloudRenderer {
+	interface CloudRenderer {
 		void render(MinecraftClient client, MatrixStack matrices, Matrix4f matrix4f, float tickDelta, double cameraX, double cameraY, double cameraZ);
 	}
 }
