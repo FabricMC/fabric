@@ -30,7 +30,7 @@ import net.minecraft.util.math.Matrix4f;
 import net.minecraft.world.World;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.DimensionRendering;
+import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 
 public class DimensionalRenderingTest implements ClientModInitializer {
 	private static final Identifier END_SKY = new Identifier("textures/block/dirt.png");
@@ -84,6 +84,6 @@ public class DimensionalRenderingTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		DimensionRendering.setSkyRenderer(World.OVERWORLD, DimensionalRenderingTest::render, false);
+		DimensionRenderingRegistry.INSTANCE.setSkyRenderer(World.OVERWORLD, DimensionalRenderingTest::render, false);
 	}
 }

@@ -41,7 +41,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Matrix4f;
 
-import net.fabricmc.fabric.api.client.rendering.v1.DimensionRendering;
+import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.impl.client.rendering.WorldRenderContextImpl;
@@ -174,9 +174,9 @@ public abstract class MixinWorldRenderer {
 
 	@Inject(at = @At("HEAD"), method = "renderWeather", cancellable = true)
 	private void renderWeather(LightmapTextureManager manager, float tickDelta, double x, double y, double z, CallbackInfo info) {
-		DimensionRendering.WeatherRenderer renderer = null;
+		DimensionRenderingRegistry.WeatherRenderer renderer = null;
 
-		if (this.client.world != null) renderer = DimensionRendering.getWeatherRenderer(world.getRegistryKey());
+		if (this.client.world != null) renderer = DimensionRenderingRegistry.INSTANCE.getWeatherRenderer(world.getRegistryKey());
 
 		if (renderer != null) {
 			renderer.render(this.client, manager, tickDelta, x, y, z);
@@ -186,9 +186,9 @@ public abstract class MixinWorldRenderer {
 
 	@Inject(at = @At("HEAD"), method = "renderClouds(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/math/Matrix4f;FDDD)V", cancellable = true)
 	private void renderCloud(MatrixStack matrices, Matrix4f matrix4f, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo info) {
-		DimensionRendering.CloudRenderer renderer = null;
+		DimensionRenderingRegistry.CloudRenderer renderer = null;
 
-		if (this.client.world != null) renderer = DimensionRendering.getCloudRenderer(world.getRegistryKey());
+		if (this.client.world != null) renderer = DimensionRenderingRegistry.INSTANCE.getCloudRenderer(world.getRegistryKey());
 
 		if (renderer != null) {
 			renderer.render(this.client, matrices, matrix4f, tickDelta, cameraX, cameraY, cameraZ);
@@ -198,9 +198,9 @@ public abstract class MixinWorldRenderer {
 
 	@Inject(at = @At("HEAD"), method = "renderSky", cancellable = true)
 	private void renderSky(MatrixStack matrices, Matrix4f matrix4f, float tickDelta, Runnable runnable, CallbackInfo info) {
-		DimensionRendering.SkyRenderer renderer = null;
+		DimensionRenderingRegistry.SkyRenderer renderer = null;
 
-		if (this.client.world != null) renderer = DimensionRendering.getSkyRenderer(world.getRegistryKey());
+		if (this.client.world != null) renderer = DimensionRenderingRegistry.INSTANCE.getSkyRenderer(world.getRegistryKey());
 
 		if (renderer != null) {
 			renderer.render(this.client, matrices, tickDelta);
