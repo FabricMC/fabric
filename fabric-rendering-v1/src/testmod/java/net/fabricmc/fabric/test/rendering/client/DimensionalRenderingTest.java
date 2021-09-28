@@ -18,24 +18,23 @@ package net.fabricmc.fabric.test.rendering.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.world.World;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 
 public class DimensionalRenderingTest implements ClientModInitializer {
 	private static final Identifier END_SKY = new Identifier("textures/block/dirt.png");
 
-	private static void render(MinecraftClient world, MatrixStack matrices, float tickDelta) {
+	private static void render(WorldRenderContext context) {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.depthMask(false);
@@ -44,7 +43,7 @@ public class DimensionalRenderingTest implements ClientModInitializer {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
 
-		Matrix4f matrix4f = matrices.peek().getModel();
+		Matrix4f matrix4f = context.matrixStack().peek().getModel();
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 		bufferBuilder.vertex(matrix4f, -100.0f, -100.0f, -100.0f).texture(0.0F, 0.0F).color(255, 255, 255, 255).next();
 		bufferBuilder.vertex(matrix4f, -100.0f, -100.0f, 100.0f).texture(0.0F, 1.0F).color(255, 255, 255, 255).next();

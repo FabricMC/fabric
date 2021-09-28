@@ -71,10 +71,10 @@ public final class DimensionRenderingRegistryImpl implements DimensionRenderingR
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(properties);
 
-		if (!override && ((SkyPropertiesAccessor) properties).getIdentifierMap().containsKey(key.getValue())) {
+		if (!override && SkyPropertiesAccessor.getIdentifierMap().containsKey(key.getValue())) {
 			throw new IllegalStateException("This world already has a registered sky properties.");
 		} else {
-			((SkyPropertiesAccessor) properties).getIdentifierMap().put(key.getValue(), properties);
+			SkyPropertiesAccessor.getIdentifierMap().put(key.getValue(), properties);
 		}
 	}
 
@@ -110,5 +110,10 @@ public final class DimensionRenderingRegistryImpl implements DimensionRenderingR
 	@Nullable
 	public WeatherRenderer getWeatherRenderer(RegistryKey<World> key) {
 		return WEATHER_RENDERERS.get(key);
+	}
+
+	@Override
+	public @Nullable SkyProperties getSkyProperty(RegistryKey<DimensionType> key) {
+		return SkyPropertiesAccessor.getIdentifierMap().get(key);
 	}
 }
