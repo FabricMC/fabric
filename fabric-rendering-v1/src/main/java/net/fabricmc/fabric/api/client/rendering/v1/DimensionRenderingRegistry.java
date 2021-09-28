@@ -86,7 +86,7 @@ public interface DimensionRenderingRegistry {
 	 * @param properties The {@link DimensionType}'s {@link SkyProperties}
 	 * @param override Whether current {@link SkyProperties} should be overridden if it exists
 	 */
-	void registerSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties, boolean override);
+	void setSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties, boolean override);
 
 	/**
 	 * Registers a custom sky property for a {@link DimensionType}.
@@ -95,7 +95,7 @@ public interface DimensionRenderingRegistry {
 	 * @param key A {@link RegistryKey} for your {@link DimensionType}
 	 * @param properties The {@link DimensionType}'s {@link SkyProperties}
 	 */
-	void registerSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties);
+	void setSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties);
 
 	/**
 	 * Registers a custom cloud renderer for a {@link World}.

@@ -21,6 +21,8 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.SkyProperties;
@@ -32,6 +34,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.fabricmc.fabric.mixin.client.rendering.SkyPropertiesAccessor;
 
 public final class DimensionRenderingRegistryImpl implements DimensionRenderingRegistry {
+	Logger logger = LogManager.getLogger("FabricDimensionRenderingRegistry");
 	public static final DimensionRenderingRegistryImpl INSTANCE = new DimensionRenderingRegistryImpl();
 	private final Map<RegistryKey<World>, SkyRenderer> SKY_RENDERERS = new IdentityHashMap<>();
 	private final Map<RegistryKey<World>, CloudRenderer> CLOUD_RENDERERS = new HashMap<>();
@@ -41,9 +44,13 @@ public final class DimensionRenderingRegistryImpl implements DimensionRenderingR
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
-		if (!override && SKY_RENDERERS.containsKey(key)) {
+		SkyRenderer prior = SKY_RENDERERS.get(key);
+
+		if (!override && prior != null) {
 			throw new IllegalStateException("This world already has a registered SkyRenderer.");
 		} else {
+			if (prior != null) logger.info("sky renderer {} replaced by {}", prior, renderer);
+
 			SKY_RENDERERS.put(key, renderer);
 		}
 	}
@@ -56,10 +63,14 @@ public final class DimensionRenderingRegistryImpl implements DimensionRenderingR
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
-		if (!override && WEATHER_RENDERERS.containsKey(key)) {
+		WeatherRenderer prior = WEATHER_RENDERERS.get(key);
+
+		if (!override && prior != null) {
 			throw new IllegalStateException("This world already has a registered WeatherRenderer.");
 		} else {
-			WEATHER_RENDERERS.putIfAbsent(key, renderer);
+			if (prior != null) logger.info("weather renderer {} replaced by {}", prior, renderer);
+
+			WEATHER_RENDERERS.put(key, renderer);
 		}
 	}
 
@@ -67,29 +78,37 @@ public final class DimensionRenderingRegistryImpl implements DimensionRenderingR
 		setWeatherRenderer(key, renderer, false);
 	}
 
-	public void registerSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties, boolean override) {
+	public void setSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties, boolean override) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(properties);
 
-		if (!override && SkyPropertiesAccessor.getIdentifierMap().containsKey(key.getValue())) {
-			throw new IllegalStateException("This world already has a registered sky properties.");
+		SkyProperties prior = SkyPropertiesAccessor.getIdentifierMap().get(key.getValue());
+
+		if (!override && prior != null) {
+			throw new IllegalStateException("This world already has a registered SkyProperties.");
 		} else {
+			if (prior != null) logger.info("sky property {} replaced by {}", prior, properties);
+
 			SkyPropertiesAccessor.getIdentifierMap().put(key.getValue(), properties);
 		}
 	}
 
-	public void registerSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties) {
-		registerSkyProperty(key, properties, false);
+	public void setSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties) {
+		setSkyProperty(key, properties, false);
 	}
 
 	public void setCloudRenderer(RegistryKey<World> key, CloudRenderer renderer, boolean override) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
-		if (!override && CLOUD_RENDERERS.containsKey(key)) {
+		CloudRenderer prior = CLOUD_RENDERERS.get(key);
+
+		if (!override && prior != null) {
 			throw new IllegalStateException("This world already has a registered CloudRenderer.");
 		} else {
-			CLOUD_RENDERERS.putIfAbsent(key, renderer);
+			if (prior != null) logger.info("cloud renderer {} replaced by {}", prior, renderer);
+
+			CLOUD_RENDERERS.put(key, renderer);
 		}
 	}
 
