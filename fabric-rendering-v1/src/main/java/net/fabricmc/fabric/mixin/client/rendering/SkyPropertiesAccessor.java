@@ -30,5 +30,7 @@ import net.fabricmc.api.Environment;
 @Mixin(SkyProperties.class)
 public interface SkyPropertiesAccessor {
 	@Accessor("BY_IDENTIFIER")
-	Object2ObjectMap<Identifier, SkyProperties> getIdentifierMap();
+	static Object2ObjectMap<Identifier, SkyProperties> getIdentifierMap() {
+		throw new AssertionError("This should not occur!");
+	}
 }

@@ -18,11 +18,7 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.SkyProperties;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -64,20 +60,20 @@ public interface DimensionRenderingRegistry {
 	void setSkyRenderer(RegistryKey<World> key, SkyRenderer renderer);
 
 	/**
-	 * Registers a custom weather renderer for a DimensionType.
+	 * Registers a custom weather renderer for a {@link World}.
 	 *
 	 * <p>This overrides Vanilla's weather rendering.
-	 * @param key A RegistryKey for your Dimension Type
+	 * @param key A RegistryKey for your {@link World}
 	 * @param renderer A {@link WeatherRenderer} implementation
 	 * @param override Should override current SkyRenderer if it exists
 	 */
 	void setWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer, boolean override);
 
 	/**
-	 * Registers a custom weather renderer for a DimensionType.
+	 * Registers a custom weather renderer for a {@link World}.
 	 *
 	 * <p>This overrides Vanilla's weather rendering.
-	 * @param key A RegistryKey for your Dimension Type
+	 * @param key A RegistryKey for your {@link World}
 	 * @param renderer A {@link WeatherRenderer} implementation
 	 */
 	void setWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer);
@@ -129,18 +125,21 @@ public interface DimensionRenderingRegistry {
 	@Nullable
 	WeatherRenderer getWeatherRenderer(RegistryKey<World> key);
 
+	@Nullable
+	SkyProperties getSkyProperty(RegistryKey<DimensionType> key);
+
 	@FunctionalInterface
 	interface SkyRenderer {
-		void render(MinecraftClient client, MatrixStack matrices, float tickDelta);
+		void render(WorldRenderContext context);
 	}
 
 	@FunctionalInterface
 	interface WeatherRenderer {
-		void render(MinecraftClient client, LightmapTextureManager manager, float tickDelta, double x, double y, double z);
+		void render(WorldRenderContext context);
 	}
 
 	@FunctionalInterface
 	interface CloudRenderer {
-		void render(MinecraftClient client, MatrixStack matrices, Matrix4f matrix4f, float tickDelta, double cameraX, double cameraY, double cameraZ);
+		void render(WorldRenderContext context);
 	}
 }

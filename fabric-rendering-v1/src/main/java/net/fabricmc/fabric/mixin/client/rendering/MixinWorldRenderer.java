@@ -179,7 +179,7 @@ public abstract class MixinWorldRenderer {
 		if (this.client.world != null) renderer = DimensionRenderingRegistry.INSTANCE.getWeatherRenderer(world.getRegistryKey());
 
 		if (renderer != null) {
-			renderer.render(this.client, manager, tickDelta, x, y, z);
+			renderer.render(context);
 			info.cancel();
 		}
 	}
@@ -191,7 +191,7 @@ public abstract class MixinWorldRenderer {
 		if (this.client.world != null) renderer = DimensionRenderingRegistry.INSTANCE.getCloudRenderer(world.getRegistryKey());
 
 		if (renderer != null) {
-			renderer.render(this.client, matrices, matrix4f, tickDelta, cameraX, cameraY, cameraZ);
+			renderer.render(context);
 			info.cancel();
 		}
 	}
@@ -203,7 +203,7 @@ public abstract class MixinWorldRenderer {
 		if (this.client.world != null) renderer = DimensionRenderingRegistry.INSTANCE.getSkyRenderer(world.getRegistryKey());
 
 		if (renderer != null) {
-			renderer.render(this.client, matrices, tickDelta);
+			renderer.render(context);
 			info.cancel();
 		}
 	}
