@@ -45,7 +45,7 @@ public class MixinTheEndBiomeSource {
 	@Unique
 	private PerlinNoiseSampler sampler = new PerlinNoiseSampler(new ChunkRandom(seed));
 
-	@Inject(method = "method_38109", at = @At("RETURN"), cancellable = true)
+	@Inject(method = "getBiome", at = @At("RETURN"), cancellable = true)
 	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler multiNoiseSampler, CallbackInfoReturnable<Biome> cir) {
 		Biome vanillaBiome = cir.getReturnValue();
 

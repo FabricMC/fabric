@@ -68,11 +68,11 @@ public class StructureTest {
 		}
 
 		private static void generate(class_6626 arg, DefaultFeatureConfig defaultFeatureConfig, class_6622.class_6623 arg2) {
-			int blockX = arg2.comp_127().getStartX();
-			int blockZ = arg2.comp_127().getStartZ();
-			int blockY = arg2.comp_125().getHeight(blockX, blockZ, Heightmap.Type.WORLD_SURFACE_WG, arg2.comp_129());
+			int blockX = arg2.chunkPos().getStartX();
+			int blockZ = arg2.chunkPos().getStartZ();
+			int blockY = arg2.chunkGenerator().getHeight(blockX, blockZ, Heightmap.Type.WORLD_SURFACE_WG, arg2.heightAccessor());
 
-			TestStructureGenerator generator = new TestStructureGenerator(arg2.comp_130(), blockX, blockY, blockZ);
+			TestStructureGenerator generator = new TestStructureGenerator(arg2.random(), blockX, blockY, blockZ);
 			arg.addPiece(generator);
 		}
 	}
