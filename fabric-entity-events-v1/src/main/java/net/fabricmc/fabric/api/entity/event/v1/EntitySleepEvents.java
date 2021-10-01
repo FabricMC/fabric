@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.entity.event.v1;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.block.BedBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -196,6 +197,22 @@ public final class EntitySleepEvents {
 		return true;
 	});
 
+	/**
+	 * An event that sets the occupation state of a bed.
+	 *
+	 * <p>Note that this is <b>not</b> needed for blocks using {@link net.minecraft.block.BedBlock},
+	 * which are handled automatically.
+	 */
+	public static final Event<SetBedOccupationState> SET_BED_OCCUPATION_STATE = EventFactory.createArrayBacked(SetBedOccupationState.class, callbacks -> (entity, sleepingPos, bedState, occupied) -> {
+		for (SetBedOccupationState callback : callbacks) {
+			if (callback.setBedOccupationState(entity, sleepingPos, bedState, occupied)) {
+				return true;
+			}
+		}
+
+		return false;
+	});
+
 	@FunctionalInterface
 	public interface AllowSleeping {
 		/**
@@ -317,6 +334,20 @@ public final class EntitySleepEvents {
 		 * @return true if allowed, false otherwise
 		 */
 		boolean allowSettingSpawn(PlayerEntity player, BlockPos sleepingPos);
+	}
+
+	@FunctionalInterface
+	public interface SetBedOccupationState {
+		/**
+		 * Sets the occupation state of a bed block.
+		 *
+		 * @param entity      the sleeping entity
+		 * @param sleepingPos the sleeping position
+		 * @param bedState    the block state of the bed
+		 * @param occupied    true if occupied, false if free
+		 * @return true if the occupation state was modified, false to fall back to other callbacks
+		 */
+		boolean setBedOccupationState(LivingEntity entity, BlockPos sleepingPos, BlockState bedState, boolean occupied);
 	}
 
 	private EntitySleepEvents() {

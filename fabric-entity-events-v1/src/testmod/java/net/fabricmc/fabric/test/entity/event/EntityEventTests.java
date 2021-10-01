@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -95,6 +96,11 @@ public final class EntityEventTests implements ModInitializer {
 
 		EntitySleepEvents.START_SLEEPING.register((entity, sleepingPos) -> {
 			LOGGER.info("Entity {} sleeping at {}", entity, sleepingPos);
+			BlockState bedState = entity.world.getBlockState(sleepingPos);
+
+			if (bedState.isOf(TEST_BED) && !bedState.get(TestBedBlock.OCCUPIED)) {
+				throw new AssertionError("An entity is sleeping in test bed but the bed is not occupied");
+			}
 		});
 
 		EntitySleepEvents.STOP_SLEEPING.register((entity, sleepingPos) -> {
