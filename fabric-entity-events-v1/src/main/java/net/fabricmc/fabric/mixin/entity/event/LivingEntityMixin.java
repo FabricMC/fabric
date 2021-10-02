@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.entity.event;
 import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -88,7 +89,7 @@ abstract class LivingEntityMixin {
 		}
 	}
 
-	// Synthetic lambda body for Optional.map in isSleepingInBed
+	@Dynamic("method_18405: Synthetic lambda body for Optional.map in isSleepingInBed")
 	@Inject(method = "method_18405", at = @At("RETURN"), cancellable = true)
 	private void onIsSleepingInBed(BlockPos sleepingPos, CallbackInfoReturnable<Boolean> info) {
 		BlockState bedState = ((LivingEntity) (Object) this).world.getBlockState(sleepingPos);
@@ -106,9 +107,9 @@ abstract class LivingEntityMixin {
 		}
 	}
 
-	// method_18404: Synthetic lambda body for Optional.ifPresent in wakeUp
 	// This is needed 1) so that the vanilla logic in wakeUp runs for modded beds and 2) for the injector below.
 	// The injector is shared because method_18404 and sleep share much of the structure here.
+	@Dynamic("method_18404: Synthetic lambda body for Optional.ifPresent in wakeUp")
 	@ModifyVariable(method = {"method_18404", "sleep"}, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
 	private BlockState modifyBedForOccupiedState(BlockState state, BlockPos sleepingPos) {
 		ActionResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, state, state.getBlock() instanceof BedBlock);
@@ -117,8 +118,8 @@ abstract class LivingEntityMixin {
 		return result.isAccepted() ? Blocks.RED_BED.getDefaultState() : state;
 	}
 
-	// method_18404: Synthetic lambda body for Optional.ifPresent in wakeUp
 	// The injector is shared because method_18404 and sleep share much of the structure here.
+	@Dynamic("method_18404: Synthetic lambda body for Optional.ifPresent in wakeUp")
 	@Redirect(method = {"method_18404", "sleep"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
 	private boolean setOccupiedState(World world, BlockPos pos, BlockState state, int flags) {
 		// This might have been replaced by a red bed above, so we get it again.
@@ -138,7 +139,7 @@ abstract class LivingEntityMixin {
 		}
 	}
 
-	// Synthetic lambda body for Optional.ifPresent in wakeUp
+	@Dynamic("method_18404: Synthetic lambda body for Optional.ifPresent in wakeUp")
 	@Redirect(method = "method_18404", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BedBlock;findWakeUpPosition(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/CollisionView;Lnet/minecraft/util/math/BlockPos;F)Ljava/util/Optional;"))
 	private Optional<Vec3d> modifyWakeUpPosition(EntityType<?> type, CollisionView world, BlockPos pos, float yaw) {
 		Optional<Vec3d> original = Optional.empty();
