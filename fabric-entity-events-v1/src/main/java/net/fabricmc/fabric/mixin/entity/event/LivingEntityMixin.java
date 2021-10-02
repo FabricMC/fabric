@@ -33,6 +33,7 @@ import net.minecraft.block.BedBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -40,6 +41,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.CollisionView;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
@@ -133,5 +136,19 @@ abstract class LivingEntityMixin {
 		} else {
 			return false;
 		}
+	}
+
+	// Synthetic lambda body for Optional.ifPresent in wakeUp
+	@Redirect(method = "method_18404", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BedBlock;findWakeUpPosition(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/CollisionView;Lnet/minecraft/util/math/BlockPos;F)Ljava/util/Optional;"))
+	private Optional<Vec3d> modifyWakeUpPosition(EntityType<?> type, CollisionView world, BlockPos pos, float yaw) {
+		Optional<Vec3d> original = Optional.empty();
+		BlockState bedState = world.getBlockState(pos);
+
+		if (bedState.getBlock() instanceof BedBlock) {
+			original = BedBlock.findWakeUpPosition(type, world, pos, yaw);
+		}
+
+		Vec3d newPos = EntitySleepEvents.MODIFY_WAKE_UP_POSITION.invoker().modifyWakeUpPosition((LivingEntity) (Object) this, pos, bedState, original.orElse(null));
+		return Optional.ofNullable(newPos);
 	}
 }

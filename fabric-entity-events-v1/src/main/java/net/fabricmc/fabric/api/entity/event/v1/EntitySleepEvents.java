@@ -18,13 +18,13 @@ package net.fabricmc.fabric.api.entity.event.v1;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.block.BedBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -213,6 +213,21 @@ public final class EntitySleepEvents {
 		return false;
 	});
 
+	/**
+	 * An event that can be used to provide the entity's wake-up position if missing.
+	 *
+	 * <p>This is useful for custom bed blocks that need to determine the wake-up position themselves.
+	 * If the block is not a {@link net.minecraft.block.BedBlock}, you need to provide the wake-up position manually
+	 * with this event.
+	 */
+	public static final Event<ModifyWakeUpPosition> MODIFY_WAKE_UP_POSITION = EventFactory.createArrayBacked(ModifyWakeUpPosition.class, callbacks -> (entity, sleepingPos, bedState, wakeUpPos) -> {
+		for (ModifyWakeUpPosition callback : callbacks) {
+			wakeUpPos = callback.modifyWakeUpPosition(entity, sleepingPos, bedState, wakeUpPos);
+		}
+
+		return wakeUpPos;
+	});
+
 	@FunctionalInterface
 	public interface AllowSleeping {
 		/**
@@ -317,7 +332,7 @@ public final class EntitySleepEvents {
 		 *
 		 * @param entity            the sleeping entity
 		 * @param sleepingPos       the position of the block slept on
-		 * @param sleepingDirection the old sleeping direction, or null if not determined by vanilla logic
+		 * @param sleepingDirection the old sleeping direction, or null if not determined by vanilla or previous callbacks
 		 * @return the new sleeping direction
 		 */
 		@Nullable
@@ -348,6 +363,21 @@ public final class EntitySleepEvents {
 		 * @return true if the occupation state was modified, false to fall back to other callbacks
 		 */
 		boolean setBedOccupationState(LivingEntity entity, BlockPos sleepingPos, BlockState bedState, boolean occupied);
+	}
+
+	@FunctionalInterface
+	public interface ModifyWakeUpPosition {
+		/**
+		 * Modifies or provides a wake-up position for an entity waking up.
+		 *
+		 * @param entity      the sleeping entity
+		 * @param sleepingPos the position of the block slept on
+		 * @param bedState    the block slept on
+		 * @param wakeUpPos   the old wake up position, or null if not determined by vanilla or previous callbacks
+		 * @return the new wake-up position
+		 */
+		@Nullable
+		Vec3d modifyWakeUpPosition(LivingEntity entity, BlockPos sleepingPos, BlockState bedState, @Nullable Vec3d wakeUpPos);
 	}
 
 	private EntitySleepEvents() {
