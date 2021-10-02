@@ -55,7 +55,7 @@ public final class EntitySleepEvents {
 	 * if they match your use case! This helps with mod compatibility.
 	 *
 	 * <p>If this event returns a {@link net.minecraft.entity.player.PlayerEntity.SleepFailureReason}, it is used
-	 * as the return value of {@link PlayerEntity#trySleep(BlockPos)} and sleeping fails. A null return value
+	 * as the return value of {@link PlayerEntity#trySleep(BlockPos)} and sleeping fails. A {@code null} return value
 	 * means that the player will start sleeping.
 	 *
 	 * <p>When this event is called, all vanilla sleeping checks have already succeeded, i.e. this event
@@ -96,7 +96,7 @@ public final class EntitySleepEvents {
 	 * An event that is called to check whether a block is valid for sleeping.
 	 *
 	 * <p>Used for checking whether the block at the current sleeping position is a valid bed block.
-	 * If false, the player wakes up.
+	 * If {@code false}, the player wakes up.
 	 *
 	 * <p>This event is only checked <i>during</i> sleeping, so an entity can
 	 * {@linkplain LivingEntity#sleep(BlockPos) start sleeping} on any block, but will immediately
@@ -235,7 +235,7 @@ public final class EntitySleepEvents {
 		 *
 		 * @param player      the sleeping player
 		 * @param sleepingPos the future {@linkplain LivingEntity#getSleepingPosition() sleeping position} of the entity
-		 * @return null if the player can sleep, or a failure reason if they cannot
+		 * @return {@code null} if the player can sleep, or a failure reason if they cannot
 		 * @see PlayerEntity#trySleep(BlockPos)
 		 */
 		@Nullable
@@ -274,7 +274,7 @@ public final class EntitySleepEvents {
 		 * @param entity        the sleeping entity
 		 * @param sleepingPos   the position of the block
 		 * @param state         the block state to check
-		 * @param vanillaResult true if vanilla allows the block, false otherwise
+		 * @param vanillaResult {@code true} if vanilla allows the block, {@code false} otherwise
 		 * @return {@link ActionResult#SUCCESS} if the bed is valid, {@link ActionResult#FAIL} if it's not,
 		 *         {@link ActionResult#PASS} to fall back to other callbacks
 		 */
@@ -290,7 +290,7 @@ public final class EntitySleepEvents {
 		 *
 		 * @param player        the sleeping player
 		 * @param sleepingPos   the (possibly still unset) {@linkplain LivingEntity#getSleepingPosition() sleeping position} of the player
-		 * @param vanillaResult true if vanilla allows the time, false otherwise
+		 * @param vanillaResult {@code true} if vanilla allows the time, {@code false} otherwise
 		 * @return {@link ActionResult#SUCCESS} if the time is valid, {@link ActionResult#FAIL} if it's not,
 		 *         {@link ActionResult#PASS} to fall back to other callbacks
 		 */
@@ -306,7 +306,7 @@ public final class EntitySleepEvents {
 		 *
 		 * @param player        the sleeping player
 		 * @param sleepingPos   the (possibly still unset) {@linkplain LivingEntity#getSleepingPosition() sleeping position} of the player
-		 * @param vanillaResult true if vanilla's monster check succeeded, false otherwise
+		 * @param vanillaResult {@code true} if vanilla's monster check succeeded (there were no monsters), {@code false} otherwise
 		 * @return {@link ActionResult#SUCCESS} to allow sleeping, {@link ActionResult#FAIL} to prevent sleeping,
 		 *         {@link ActionResult#PASS} to fall back to other callbacks
 		 */
@@ -319,7 +319,7 @@ public final class EntitySleepEvents {
 		 * Checks whether a sleeping player counts into skipping the current day and resetting the time to 0.
 		 *
 		 * @param player        the sleeping player
-		 * @return true if allowed, false otherwise
+		 * @return {@code true} if allowed, {@code false} otherwise
 		 */
 		boolean allowResettingTime(PlayerEntity player);
 	}
@@ -332,7 +332,7 @@ public final class EntitySleepEvents {
 		 *
 		 * @param entity            the sleeping entity
 		 * @param sleepingPos       the position of the block slept on
-		 * @param sleepingDirection the old sleeping direction, or null if not determined by vanilla or previous callbacks
+		 * @param sleepingDirection the old sleeping direction, or {@code null} if not determined by vanilla or previous callbacks
 		 * @return the new sleeping direction
 		 */
 		@Nullable
@@ -346,7 +346,7 @@ public final class EntitySleepEvents {
 		 *
 		 * @param player      the sleeping player
 		 * @param sleepingPos the sleeping position
-		 * @return true if allowed, false otherwise
+		 * @return {@code true} if allowed, {@code false} otherwise
 		 */
 		boolean allowSettingSpawn(PlayerEntity player, BlockPos sleepingPos);
 	}
@@ -359,8 +359,8 @@ public final class EntitySleepEvents {
 		 * @param entity      the sleeping entity
 		 * @param sleepingPos the sleeping position
 		 * @param bedState    the block state of the bed
-		 * @param occupied    true if occupied, false if free
-		 * @return true if the occupation state was modified, false to fall back to other callbacks
+		 * @param occupied    {@code true} if occupied, {@code false} if free
+		 * @return {@code true} if the occupation state was successfully modified, {@code false} to fall back to other callbacks
 		 */
 		boolean setBedOccupationState(LivingEntity entity, BlockPos sleepingPos, BlockState bedState, boolean occupied);
 	}
@@ -373,7 +373,7 @@ public final class EntitySleepEvents {
 		 * @param entity      the sleeping entity
 		 * @param sleepingPos the position of the block slept on
 		 * @param bedState    the block slept on
-		 * @param wakeUpPos   the old wake up position, or null if not determined by vanilla or previous callbacks
+		 * @param wakeUpPos   the old wake-up position, or {@code null} if not determined by vanilla or previous callbacks
 		 * @return the new wake-up position
 		 */
 		@Nullable
