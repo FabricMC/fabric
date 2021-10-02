@@ -39,7 +39,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * {@link #ALLOW_NEARBY_MONSTERS}, {@link #ALLOW_SETTING_SPAWN} and {@link #ALLOW_SLEEPING}
  *
  * <p><b>Note:</b> Only the {@link #ALLOW_BED} event applies to non-player entities.</li>
- * <li>Modifiers: {@link #MODIFY_SLEEPING_DIRECTION}</li>
+ * <li>Modifiers: {@link #MODIFY_SLEEPING_DIRECTION}, {@link #SET_BED_OCCUPATION_STATE}
+ * and {@link #MODIFY_WAKE_UP_POSITION}</li>
  * </ol>
  *
  * <p>Sleep events are useful for making custom bed blocks that do not extend {@link net.minecraft.block.BedBlock}.
