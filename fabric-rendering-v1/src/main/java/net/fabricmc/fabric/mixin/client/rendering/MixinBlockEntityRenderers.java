@@ -33,7 +33,7 @@ import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl
 
 @Mixin(BlockEntityRendererFactories.class)
 public abstract class MixinBlockEntityRenderers {
-	@Shadow()
+	@Shadow
 	@Final
 	private static Map<BlockEntityType<?>, BlockEntityRendererFactory<?>> FACTORIES;
 
