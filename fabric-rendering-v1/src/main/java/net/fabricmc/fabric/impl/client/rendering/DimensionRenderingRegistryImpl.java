@@ -40,80 +40,56 @@ public final class DimensionRenderingRegistryImpl implements DimensionRenderingR
 	private final Map<RegistryKey<World>, CloudRenderer> CLOUD_RENDERERS = new HashMap<>();
 	private final Map<RegistryKey<World>, WeatherRenderer> WEATHER_RENDERERS = new HashMap<>();
 
-	public void setSkyRenderer(RegistryKey<World> key, SkyRenderer renderer, boolean override) {
+	public void setSkyRenderer(RegistryKey<World> key, SkyRenderer renderer) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
 		SkyRenderer prior = SKY_RENDERERS.get(key);
 
-		if (!override && prior != null) {
+		if (prior != null) {
 			throw new IllegalStateException("This world already has a registered SkyRenderer.");
 		} else {
-			if (prior != null) logger.info("sky renderer {} replaced by {}", prior, renderer);
-
 			SKY_RENDERERS.put(key, renderer);
 		}
 	}
 
-	public void setSkyRenderer(RegistryKey<World> key, SkyRenderer renderer) {
-		setSkyRenderer(key, renderer, false);
-	}
-
-	public void setWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer, boolean override) {
+	public void setWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
 		WeatherRenderer prior = WEATHER_RENDERERS.get(key);
 
-		if (!override && prior != null) {
+		if (prior != null) {
 			throw new IllegalStateException("This world already has a registered WeatherRenderer.");
 		} else {
-			if (prior != null) logger.info("weather renderer {} replaced by {}", prior, renderer);
-
 			WEATHER_RENDERERS.put(key, renderer);
 		}
 	}
 
-	public void setWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer) {
-		setWeatherRenderer(key, renderer, false);
-	}
-
-	public void setSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties, boolean override) {
+	public void setSkyProperties(RegistryKey<DimensionType> key, SkyProperties properties) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(properties);
 
 		SkyProperties prior = SkyPropertiesAccessor.getIdentifierMap().get(key.getValue());
 
-		if (!override && prior != null) {
-			throw new IllegalStateException("This world already has a registered SkyProperties.");
+		if (prior != null) {
+			throw new IllegalStateException("This dimension type already has a registered SkyProperties.");
 		} else {
-			if (prior != null) logger.info("sky property {} replaced by {}", prior, properties);
-
 			SkyPropertiesAccessor.getIdentifierMap().put(key.getValue(), properties);
 		}
 	}
 
-	public void setSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties) {
-		setSkyProperty(key, properties, false);
-	}
-
-	public void setCloudRenderer(RegistryKey<World> key, CloudRenderer renderer, boolean override) {
+	public void setCloudRenderer(RegistryKey<World> key, CloudRenderer renderer) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
 		CloudRenderer prior = CLOUD_RENDERERS.get(key);
 
-		if (!override && prior != null) {
+		if (prior != null) {
 			throw new IllegalStateException("This world already has a registered CloudRenderer.");
 		} else {
-			if (prior != null) logger.info("cloud renderer {} replaced by {}", prior, renderer);
-
 			CLOUD_RENDERERS.put(key, renderer);
 		}
-	}
-
-	public void setCloudRenderer(RegistryKey<World> key, CloudRenderer renderer) {
-		setCloudRenderer(key, renderer, false);
 	}
 
 	@Nullable
@@ -132,7 +108,7 @@ public final class DimensionRenderingRegistryImpl implements DimensionRenderingR
 	}
 
 	@Override
-	public @Nullable SkyProperties getSkyProperty(RegistryKey<DimensionType> key) {
+	public @Nullable SkyProperties getSkyProperties(RegistryKey<DimensionType> key) {
 		return SkyPropertiesAccessor.getIdentifierMap().get(key);
 	}
 }

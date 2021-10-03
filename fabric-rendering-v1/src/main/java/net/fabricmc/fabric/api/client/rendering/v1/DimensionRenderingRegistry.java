@@ -46,28 +46,8 @@ public interface DimensionRenderingRegistry {
 	 * <p>This overrides Vanilla's sky rendering.
 	 * @param key A {@link RegistryKey} for your {@link World}
 	 * @param renderer A {@link SkyRenderer} implementation
-	 * @param override Should override current {@link SkyRenderer} if it exists
-	 */
-	void setSkyRenderer(RegistryKey<World> key, SkyRenderer renderer, boolean override);
-
-	/**
-	 * sets the custom sky renderer for a {@link World}.
-	 *
-	 * <p>This overrides Vanilla's sky rendering.
-	 * @param key A {@link RegistryKey} for your {@link World}
-	 * @param renderer A {@link SkyRenderer} implementation
 	 */
 	void setSkyRenderer(RegistryKey<World> key, SkyRenderer renderer);
-
-	/**
-	 * Registers a custom weather renderer for a {@link World}.
-	 *
-	 * <p>This overrides Vanilla's weather rendering.
-	 * @param key A RegistryKey for your {@link World}
-	 * @param renderer A {@link WeatherRenderer} implementation
-	 * @param override Should override current SkyRenderer if it exists
-	 */
-	void setWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer, boolean override);
 
 	/**
 	 * Registers a custom weather renderer for a {@link World}.
@@ -84,49 +64,47 @@ public interface DimensionRenderingRegistry {
 	 *  <p>This overrides Vanilla's default {@link SkyProperties}.
 	 * @param key A {@link RegistryKey} for your {@link DimensionType}
 	 * @param properties The {@link DimensionType}'s {@link SkyProperties}
-	 * @param override Whether current {@link SkyProperties} should be overridden if it exists
 	 */
-	void setSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties, boolean override);
-
-	/**
-	 * Registers a custom sky property for a {@link DimensionType}.
-	 *
-	 *  <p>This overrides Vanilla's default {@link SkyProperties}.
-	 * @param key A {@link RegistryKey} for your {@link DimensionType}
-	 * @param properties The {@link DimensionType}'s {@link SkyProperties}
-	 */
-	void setSkyProperty(RegistryKey<DimensionType> key, SkyProperties properties);
+	void setSkyProperties(RegistryKey<DimensionType> key, SkyProperties properties);
 
 	/**
 	 * Registers a custom cloud renderer for a {@link World}.
 	 *
 	 * <p>This overrides Vanilla's cloud rendering.
-	 *  @param key A {@link RegistryKey} for your {@link World}
-	 * @param renderer A {@link CloudRenderer} implementation
-	 * @param override Should override current {@link SkyRenderer} if it exists
-	 */
-	void setCloudRenderer(RegistryKey<World> key, CloudRenderer renderer, boolean override);
-
-	/**
-	 * Registers a custom cloud renderer for a {@link World}.
-	 *
-	 * <p>This overrides Vanilla's cloud rendering.
-	 *  @param key A {@link RegistryKey} for your {@link World}
+	 * @param key A {@link RegistryKey} for your {@link World}
 	 * @param renderer A {@link CloudRenderer} implementation
 	 */
 	void setCloudRenderer(RegistryKey<World> key, CloudRenderer renderer);
 
+	/**
+	 * Gets the custom sky renderer for the given {@link World}.
+	 * @param key A {@link RegistryKey} for your {@link World}
+	 * @return Null if no custom sky renderer is registered for the dimension.
+	 */
 	@Nullable
 	SkyRenderer getSkyRenderer(RegistryKey<World> key);
 
+	/**
+	 * Gets the custom cloud renderer for the given {@link World}.
+	 * @param key A {@link RegistryKey} for your {@link World}
+	 * @return Null if no custom cloud renderer is registered for the dimension.
+	 */
 	@Nullable
 	CloudRenderer getCloudRenderer(RegistryKey<World> key);
 
+	/**
+	 * Gets the custom weather effect renderer for the given {@link World}.
+	 * @return Null if no custom weather effect renderer is registered for the dimension.
+	 */
 	@Nullable
 	WeatherRenderer getWeatherRenderer(RegistryKey<World> key);
 
+	/**
+	 * Gets the custom sky properties for a dimension type. Returns null if
+	 * no custom sky properties are set.
+	 */
 	@Nullable
-	SkyProperties getSkyProperty(RegistryKey<DimensionType> key);
+	SkyProperties getSkyProperties(RegistryKey<DimensionType> key);
 
 	@FunctionalInterface
 	interface SkyRenderer {
