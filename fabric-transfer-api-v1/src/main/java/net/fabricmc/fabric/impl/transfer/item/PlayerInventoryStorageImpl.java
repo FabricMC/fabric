@@ -41,6 +41,11 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 	}
 
 	@Override
+	public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
+		return offer(resource, maxAmount, transaction);
+	}
+
+	@Override
 	public long offer(ItemVariant resource, long amount, TransactionContext tx) {
 		StoragePreconditions.notBlankNotNegative(resource, amount);
 		long initialAmount = amount;
