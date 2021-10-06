@@ -32,6 +32,9 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 /**
  * Helper functions to work with {@link Storage}s.
  *
+ * <p>Note that the functions that take a predicate iterate over the entire inventory in the worst case.
+ * If the resource is known, there will generally be a more performance efficient way.
+ *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
