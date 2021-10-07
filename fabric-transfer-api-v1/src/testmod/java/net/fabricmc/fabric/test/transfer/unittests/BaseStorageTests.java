@@ -71,6 +71,8 @@ public class BaseStorageTests {
 		assertEquals(0L, noWater.simulateExtract(water, BUCKET, null));
 		// The fluid should be visible.
 		assertEquals(water, StorageUtil.findStoredResource(noWater, null));
+		// Test the filter.
+		assertEquals(null, StorageUtil.findStoredResource(noWater, fv -> fv.isOf(Fluids.LAVA), null));
 		// But it can't be extracted, even through a storage view.
 		assertEquals(null, StorageUtil.findExtractableResource(noWater, null));
 		assertEquals(null, StorageUtil.findExtractableContent(noWater, null));

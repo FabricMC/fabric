@@ -80,7 +80,7 @@ public class SingleVariantItemStorageTests {
 
 		try (Transaction tx = Transaction.openOuter()) {
 			// Test extract along the way.
-			assertEquals(BUCKET, storage.extract(LAVA, BUCKET, tx));
+			assertEquals(BUCKET, storage.extract(LAVA, 10 * BUCKET, tx));
 
 			tx.commit();
 		}

@@ -79,9 +79,10 @@ class InventorySlotWrapper extends SingleStackStorage {
 		ItemStack original = lastReleasedSnapshot;
 		ItemStack currentStack = getStack();
 
-		if (!original.isEmpty() && !currentStack.isEmpty() && (original.getItem() == currentStack.getItem() && ItemStack.areTagsEqual(original, currentStack))) {
-			// None is empty and the contents match: just update the amount and reuse the original stack.
+		if (!original.isEmpty() && original.getItem() == currentStack.getItem()) {
+			// None is empty and the items match: just update the amount and NBT, and reuse the original stack.
 			original.setCount(currentStack.getCount());
+			original.setTag(currentStack.hasTag() ? currentStack.getTag().copy() : null);
 			setStack(original);
 		} else {
 			// Otherwise assume everything was taken from original so empty it.

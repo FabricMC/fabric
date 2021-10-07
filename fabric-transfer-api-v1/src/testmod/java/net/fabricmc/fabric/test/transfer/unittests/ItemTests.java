@@ -26,6 +26,7 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.math.Direction;
 
@@ -68,6 +69,21 @@ class ItemTests {
 		}
 
 		if (stack != inv.getStack(0)) throw new AssertionError("Stack should have stayed the same.");
+
+		// Also edit the stack when the item matches, even when the NBT and the count change.
+		ItemVariant oldVariant = ItemVariant.of(Items.DIAMOND);
+		CompoundTag testTag = new CompoundTag();
+		testTag.putInt("energy", 42);
+		ItemVariant newVariant = ItemVariant.of(Items.DIAMOND, testTag);
+
+		try (Transaction tx = Transaction.openOuter()) {
+			invWrapper.extract(oldVariant, 2, tx);
+			invWrapper.insert(newVariant, 5, tx);
+			tx.commit();
+		}
+
+		if (stack != inv.getStack(0)) throw new AssertionError("Stack should have stayed the same.");
+		if (!stackEquals(stack, newVariant, 5)) throw new AssertionError("Failed to update stack NBT or count.");
 	}
 
 	private static void testInventoryWrappers() {
@@ -113,7 +129,11 @@ class ItemTests {
 	}
 
 	private static boolean stackEquals(ItemStack stack, Item item, int count) {
-		return stack.getItem() == item && stack.getCount() == count;
+		return stackEquals(stack, ItemVariant.of(item), count);
+	}
+
+	private static boolean stackEquals(ItemStack stack, ItemVariant variant, int count) {
+		return variant.matches(stack) && stack.getCount() == count;
 	}
 
 	private static class TestSidedInventory extends SimpleInventory implements SidedInventory {

@@ -18,6 +18,8 @@ package net.fabricmc.fabric.test.transfer.unittests;
 
 import static net.fabricmc.fabric.test.transfer.unittests.TestUtil.assertEquals;
 
+import java.util.function.Function;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -25,16 +27,20 @@ import net.minecraft.item.Items;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 public class PlayerInventoryStorageTests {
 	public static void run() {
-		testStacking();
+		// Ensure that offer stacks as expected.
+		testStacking(playerInv -> playerInv::offer);
+		// Also test that the behavior of insert matches that of offer.
+		testStacking(playerInv -> playerInv::insert);
 	}
 
-	private static void testStacking() {
-		// A bit hacky... but nothing should try using the player inventory as long as we don't call drop.
+	private static void testStacking(Function<PlayerInventoryStorage, InsertionFunction> inserterBuilder) {
+		// A bit hacky... but nothing should try using the null player entity as long as we don't call drop.
 		PlayerInventory inv = new PlayerInventory(null);
-		PlayerInventoryStorage wrapper = PlayerInventoryStorage.of(inv);
+		InsertionFunction inserter = inserterBuilder.apply(PlayerInventoryStorage.of(inv));
 
 		// Fill everything with stone besides the first two inventory slots.
 		inv.selectedSlot = 3;
@@ -48,14 +54,14 @@ public class PlayerInventoryStorageTests {
 		ItemVariant stone = ItemVariant.of(Items.STONE);
 
 		try (Transaction tx = Transaction.openOuter()) {
-			assertEquals(1L, wrapper.offer(stone, 1, tx));
+			assertEquals(1L, inserter.insert(stone, 1, tx));
 
 			// Should have went into the main stack
 			assertEquals(64, inv.main.get(3).getCount());
 		}
 
 		try (Transaction tx = Transaction.openOuter()) {
-			assertEquals(2L, wrapper.offer(stone, 2, tx));
+			assertEquals(2L, inserter.insert(stone, 2, tx));
 
 			// Should have went into the main and offhand stacks.
 			assertEquals(64, inv.main.get(3).getCount());
@@ -66,7 +72,7 @@ public class PlayerInventoryStorageTests {
 
 		// Should be just enough to fill existing stacks, but not touch slots 0, 1 and 2.
 		try (Transaction tx = Transaction.openOuter()) {
-			assertEquals(toInsertStacking, wrapper.offer(stone, toInsertStacking, tx));
+			assertEquals(toInsertStacking, inserter.insert(stone, toInsertStacking, tx));
 
 			assertEquals(64, inv.main.get(3).getCount());
 			assertEquals(64, inv.offHand.get(0).getCount());
@@ -80,13 +86,17 @@ public class PlayerInventoryStorageTests {
 			}
 
 			// Now insertion should fill the remaining stacks
-			assertEquals(150L, wrapper.offer(stone, 150, tx));
+			assertEquals(150L, inserter.insert(stone, 150, tx));
 			assertEquals(64, inv.main.get(0).getCount());
 			assertEquals(64, inv.main.get(1).getCount());
 			assertEquals(22, inv.main.get(2).getCount());
 
 			// Only 64 - 22 = 42 room left!
-			assertEquals(42L, wrapper.offer(stone, Long.MAX_VALUE, tx));
+			assertEquals(42L, inserter.insert(stone, Long.MAX_VALUE, tx));
 		}
+	}
+
+	private interface InsertionFunction {
+		long insert(ItemVariant variant, long maxAmount, TransactionContext transaction);
 	}
 }

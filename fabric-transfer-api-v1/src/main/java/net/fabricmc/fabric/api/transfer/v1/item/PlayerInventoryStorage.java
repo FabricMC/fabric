@@ -33,8 +33,8 @@ import net.fabricmc.fabric.impl.transfer.item.CursorSlotWrapper;
  * with an additional transactional wrapper for {@link PlayerInventory#offerOrDrop}.
  *
  * <p>Note that this is a wrapper around all the slots of the player inventory.
- * This may cause direct insertion to insert arbitrary items into equipment slots or other unexpected behavior.
- * To prevent this, {@link #offerOrDrop} is recommended for simple insertions.
+ * However, {@link #insert} is overriden to behave like {@link #offer}.
+ * For simple insertions, {@link #offer} or {@link #offerOrDrop} is recommended.
  * {@link #getSlots} can also be used and combined with {@link CombinedStorage} to retrieve a wrapper around a specific range of slots.
  *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
@@ -75,6 +75,15 @@ public interface PlayerInventoryStorage extends InventoryStorage {
 	static SingleSlotStorage<ItemVariant> getCursorStorage(PlayerInventory playerInventory) {
 		return CursorSlotWrapper.get(playerInventory);
 	}
+
+	/**
+	 * Insert items into this player inventory. Behaves the same as {@link #offer}.
+	 * More fine-tuned insertion, for example over a specific range of slots, is possible with {@linkplain #getSlots() the slot list}.
+	 *
+	 * @see #offer
+	 */
+	@Override
+	long insert(ItemVariant resource, long maxAmount, TransactionContext transaction);
 
 	/**
 	 * Add items to the inventory if possible, and drop any leftover items in the world, similar to {@link PlayerInventory#offerOrDrop}.
