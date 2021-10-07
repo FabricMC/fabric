@@ -169,7 +169,7 @@ public class PersistentDynamicRegistryHandler {
 			for (String key : existingTag.getKeys()) {
 				if (!registryTag.contains(key)) {
 					LOGGER.debug("Saving orphaned registry entry: " + key);
-					registryTag.putInt(key, registryTag.getInt(key));
+					registryTag.putInt(key, existingTag.getInt(key));
 				}
 			}
 		}

@@ -224,7 +224,7 @@ public final class RegistrySyncManager {
 					for (String key : previousRegistryData.getKeys()) {
 						if (!registryTag.contains(key)) {
 							LOGGER.debug("Saving orphaned registry entry: " + key);
-							registryTag.putInt(key, registryTag.getInt(key));
+							registryTag.putInt(key, previousRegistryData.getInt(key));
 						}
 					}
 				}
