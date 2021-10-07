@@ -31,6 +31,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.gen.random.ChunkRandom;
+import net.minecraft.world.gen.random.AtomicSimpleRandom;
 
 import net.fabricmc.fabric.impl.biome.TheEndBiomeData;
 
@@ -43,7 +44,7 @@ public class MixinTheEndBiomeSource {
 	@Final
 	private long seed;
 	@Unique
-	private PerlinNoiseSampler sampler = new PerlinNoiseSampler(new ChunkRandom(seed));
+	private PerlinNoiseSampler sampler = new PerlinNoiseSampler(new ChunkRandom(new AtomicSimpleRandom(seed)));
 
 	@Inject(method = "getBiome", at = @At("RETURN"), cancellable = true)
 	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler multiNoiseSampler, CallbackInfoReturnable<Biome> cir) {

@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.class_6603;
+import net.minecraft.network.packet.s2c.play.ChunkData;
 import net.minecraft.client.world.ClientChunkManager;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.NbtCompound;
@@ -46,7 +46,7 @@ public abstract class ClientChunkManagerMixin {
 	private ClientWorld world;
 
 	@Inject(method = "loadChunkFromPacket", at = @At("TAIL"))
-	private void onChunkLoad(int x, int z, PacketByteBuf packetByteBuf, NbtCompound nbtCompound, Consumer<class_6603.class_6605> consumer, CallbackInfoReturnable<WorldChunk> info) {
+	private void onChunkLoad(int x, int z, PacketByteBuf packetByteBuf, NbtCompound nbtCompound, Consumer<ChunkData.BlockEntityVisitor> consumer, CallbackInfoReturnable<WorldChunk> info) {
 		ClientChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(this.world, info.getReturnValue());
 	}
 

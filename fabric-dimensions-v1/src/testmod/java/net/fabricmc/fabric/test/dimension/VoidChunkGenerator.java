@@ -66,7 +66,7 @@ public class VoidChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public MultiNoiseUtil.MultiNoiseSampler method_38276() {
+	public MultiNoiseUtil.MultiNoiseSampler getMultiNoiseSampler() {
 		// Mirror what Vanilla does in the debug chunk generator
 		return (x, y, z) -> MultiNoiseUtil.createNoiseValuePoint(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
 	}
