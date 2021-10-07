@@ -32,6 +32,9 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 /**
  * Helper functions to work with {@link Storage}s.
  *
+ * <p>Note that the functions that take a predicate iterate over the entire inventory in the worst case.
+ * If the resource is known, there will generally be a more performance efficient way.
+ *
  * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
@@ -118,28 +121,40 @@ public final class StorageUtil {
 	/**
 	 * Attempt to find a resource stored in the passed storage.
 	 *
-	 * @param storage The storage to inspect, may be null.
-	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
-	 * @param <T> The type of the stored resources.
+	 * @see #findStoredResource(Storage, Predicate, TransactionContext)
 	 * @return A non-blank resource stored in the storage, or {@code null} if none could be found.
 	 */
 	@Nullable
 	public static <T> T findStoredResource(@Nullable Storage<T> storage, @Nullable TransactionContext transaction) {
+		return findStoredResource(storage, r -> true, transaction);
+	}
+
+	/**
+	 * Attempt to find a resource stored in the passed storage that matches the passed filter.
+	 *
+	 * @param storage The storage to inspect, may be null.
+	 * @param filter The filter. Only a resource for which this filter returns {@code true} will be returned.
+	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
+	 * @param <T> The type of the stored resources.
+	 * @return A non-blank resource stored in the storage that matches the filter, or {@code null} if none could be found.
+	 */
+	@Nullable
+	public static <T> T findStoredResource(@Nullable Storage<T> storage, Predicate<T> filter, @Nullable TransactionContext transaction) {
 		if (storage == null) return null;
 
 		if (transaction == null) {
 			try (Transaction outer = Transaction.openOuter()) {
-				return findStoredResourceInner(storage, outer);
+				return findStoredResourceInner(storage, filter, outer);
 			}
 		} else {
-			return findStoredResourceInner(storage, transaction);
+			return findStoredResourceInner(storage, filter, transaction);
 		}
 	}
 
 	@Nullable
-	private static <T> T findStoredResourceInner(Storage<T> storage, TransactionContext transaction) {
+	private static <T> T findStoredResourceInner(Storage<T> storage, Predicate<T> filter, TransactionContext transaction) {
 		for (StorageView<T> view : storage.iterable(transaction)) {
-			if (!view.isResourceBlank()) {
+			if (!view.isResourceBlank() && filter.test(view.getResource())) {
 				return view.getResource();
 			}
 		}
@@ -150,13 +165,25 @@ public final class StorageUtil {
 	/**
 	 * Attempt to find a resource stored in the passed storage that can be extracted.
 	 *
-	 * @param storage The storage to inspect, may be null.
-	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
-	 * @param <T> The type of the stored resources.
+	 * @see #findExtractableResource(Storage, Predicate, TransactionContext)
 	 * @return A non-blank resource stored in the storage that can be extracted, or {@code null} if none could be found.
 	 */
 	@Nullable
 	public static <T> T findExtractableResource(@Nullable Storage<T> storage, @Nullable TransactionContext transaction) {
+		return findExtractableResource(storage, r -> true, transaction);
+	}
+
+	/**
+	 * Attempt to find a resource stored in the passed storage that matches the passed filter and can be extracted.
+	 *
+	 * @param storage The storage to inspect, may be null.
+	 * @param filter The filter. Only a resource for which this filter returns {@code true} will be returned.
+	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
+	 * @param <T> The type of the stored resources.
+	 * @return A non-blank resource stored in the storage that matches the filter and can be extracted, or {@code null} if none could be found.
+	 */
+	@Nullable
+	public static <T> T findExtractableResource(@Nullable Storage<T> storage, Predicate<T> filter, @Nullable TransactionContext transaction) {
 		if (storage == null) return null;
 
 		try (Transaction nested = Transaction.openNested(transaction)) {
@@ -164,7 +191,7 @@ public final class StorageUtil {
 				// Extract below could change the resource, so we have to query it before extracting.
 				T resource = view.getResource();
 
-				if (!view.isResourceBlank() && view.extract(resource, Long.MAX_VALUE, nested) > 0) {
+				if (!view.isResourceBlank() && filter.test(resource) && view.extract(resource, Long.MAX_VALUE, nested) > 0) {
 					// Will abort the extraction.
 					return resource;
 				}
@@ -177,15 +204,28 @@ public final class StorageUtil {
 	/**
 	 * Attempt to find a resource stored in the passed storage that can be extracted, and how much of it can be extracted.
 	 *
-	 * @param storage The storage to inspect, may be null.
-	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
-	 * @param <T> The type of the stored resources.
-	 * @return A non-blank resource stored in the storage that can be extracted and the strictly positive amount of it that can be extracted,
+	 * @see #findExtractableContent(Storage, Predicate, TransactionContext)
+	 * @return A non-blank resource stored in the storage that can be extracted, and the strictly positive amount of it that can be extracted,
 	 * or {@code null} if none could be found.
 	 */
 	@Nullable
 	public static <T> ResourceAmount<T> findExtractableContent(@Nullable Storage<T> storage, @Nullable TransactionContext transaction) {
-		T extractableResource = findExtractableResource(storage, transaction);
+		return findExtractableContent(storage, r -> true, transaction);
+	}
+
+	/**
+	 * Attempt to find a resource stored in the passed storage that can be extracted and matches the filter, and how much of it can be extracted.
+	 *
+	 * @param storage The storage to inspect, may be null.
+	 * @param filter The filter. Only a resource for which this filter returns {@code true} will be returned.
+	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
+	 * @param <T> The type of the stored resources.
+	 * @return A non-blank resource stored in the storage that can be extracted and matches the filter, and the strictly positive amount of it that can be extracted,
+	 * or {@code null} if none could be found.
+	 */
+	@Nullable
+	public static <T> ResourceAmount<T> findExtractableContent(@Nullable Storage<T> storage, Predicate<T> filter, @Nullable TransactionContext transaction) {
+		T extractableResource = findExtractableResource(storage, filter, transaction);
 
 		if (extractableResource != null) {
 			long extractableAmount = storage.simulateExtract(extractableResource, Long.MAX_VALUE, transaction);

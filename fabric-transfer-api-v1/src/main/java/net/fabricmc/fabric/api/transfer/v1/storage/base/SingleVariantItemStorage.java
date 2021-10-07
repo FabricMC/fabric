@@ -94,7 +94,7 @@ public abstract class SingleVariantItemStorage<T extends TransferVariant<?>> imp
 	 * then edit the NBT of the stack so it contains the correct resource and amount.
 	 *
 	 * <p>When the new amount is 0, it is recommended that the subtags corresponding to the resource and amount
-	 * be removed, for example using {@link ItemStack#removeSubTag}, so that newly-crafted containers can stack with
+	 * be removed, for example using {@link ItemStack#removeSubNbt}, so that newly-crafted containers can stack with
 	 * emptied containers.
 	 *
 	 * @param currentVariant Variant to which the modification should be applied.
@@ -184,7 +184,7 @@ public abstract class SingleVariantItemStorage<T extends TransferVariant<?>> imp
 		}
 
 		if (extracted > 0) {
-			if (tryUpdateStorage(resource, maxAmount - extracted, transaction)) {
+			if (tryUpdateStorage(resource, amount - extracted, transaction)) {
 				return extracted;
 			}
 		}
