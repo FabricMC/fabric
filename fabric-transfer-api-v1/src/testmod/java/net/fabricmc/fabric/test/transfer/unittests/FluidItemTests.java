@@ -175,5 +175,14 @@ class FluidItemTests {
 						null
 				)
 		);
+		// Test the filtering.
+		assertEquals(
+				null,
+				StorageUtil.findExtractableContent(
+						ContainerItemContext.withInitial(new ItemStack(Items.WATER_BUCKET)).find(FluidStorage.ITEM),
+						FluidVariant::hasNbt, // Only allow NBT -> won't match anything.
+						null
+				)
+		);
 	}
 }
