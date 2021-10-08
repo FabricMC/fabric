@@ -14,7 +14,7 @@
     "LivingEntityRendererAccessor",
     "MixinBlockEntityRenderers",
     "MixinEntityRenderers",
-    "ScreenMixin"
+    "ScreenMixin",
     "SkyPropertiesAccessor"
   ],
   "injectors": {
