@@ -83,6 +83,6 @@ public class DimensionalRenderingTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		DimensionRenderingRegistry.INSTANCE.setSkyRenderer(World.OVERWORLD, DimensionalRenderingTest::render);
+		DimensionRenderingRegistry.setSkyRenderer(World.OVERWORLD, DimensionalRenderingTest::render);
 	}
 }
