@@ -176,7 +176,7 @@ public abstract class MixinWorldRenderer {
 	private void renderWeather(LightmapTextureManager manager, float tickDelta, double x, double y, double z, CallbackInfo info) {
 		DimensionRenderingRegistry.WeatherRenderer renderer = null;
 
-		if (this.client.world != null) renderer = DimensionRenderingRegistry.INSTANCE.getWeatherRenderer(world.getRegistryKey());
+		if (this.client.world != null) renderer = DimensionRenderingRegistry.getWeatherRenderer(world.getRegistryKey());
 
 		if (renderer != null) {
 			renderer.render(context);
@@ -188,7 +188,7 @@ public abstract class MixinWorldRenderer {
 	private void renderCloud(MatrixStack matrices, Matrix4f matrix4f, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo info) {
 		DimensionRenderingRegistry.CloudRenderer renderer = null;
 
-		if (this.client.world != null) renderer = DimensionRenderingRegistry.INSTANCE.getCloudRenderer(world.getRegistryKey());
+		if (this.client.world != null) renderer = DimensionRenderingRegistry.getCloudRenderer(world.getRegistryKey());
 
 		if (renderer != null) {
 			renderer.render(context);
@@ -200,7 +200,7 @@ public abstract class MixinWorldRenderer {
 	private void renderSky(MatrixStack matrices, Matrix4f matrix4f, float tickDelta, Runnable runnable, CallbackInfo info) {
 		DimensionRenderingRegistry.SkyRenderer renderer = null;
 
-		if (this.client.world != null) renderer = DimensionRenderingRegistry.INSTANCE.getSkyRenderer(world.getRegistryKey());
+		if (this.client.world != null) renderer = DimensionRenderingRegistry.getSkyRenderer(world.getRegistryKey());
 
 		if (renderer != null) {
 			renderer.render(context);

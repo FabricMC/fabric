@@ -34,11 +34,6 @@ import net.fabricmc.fabric.impl.client.rendering.DimensionRenderingRegistryImpl;
  */
 @Environment(EnvType.CLIENT)
 public interface DimensionRenderingRegistry {
-	/**
-	 * The singleton instance of the renderer registry.
-	 * Use this instance to call the methods in this interface.
-	 */
-	DimensionRenderingRegistry INSTANCE = DimensionRenderingRegistryImpl.INSTANCE;
 
 	/**
 	 * sets the custom sky renderer for a {@link World}.
@@ -47,7 +42,9 @@ public interface DimensionRenderingRegistry {
 	 * @param key A {@link RegistryKey} for your {@link World}
 	 * @param renderer A {@link SkyRenderer} implementation
 	 */
-	void setSkyRenderer(RegistryKey<World> key, SkyRenderer renderer);
+	static void setSkyRenderer(RegistryKey<World> key, SkyRenderer renderer) {
+		DimensionRenderingRegistryImpl.setSkyRenderer(key, renderer);
+	}
 
 	/**
 	 * Registers a custom weather renderer for a {@link World}.
@@ -56,55 +53,74 @@ public interface DimensionRenderingRegistry {
 	 * @param key A RegistryKey for your {@link World}
 	 * @param renderer A {@link WeatherRenderer} implementation
 	 */
-	void setWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer);
+	static void setWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer) {
+		DimensionRenderingRegistryImpl.setWeatherRenderer(key, renderer);
+	}
 
 	/**
 	 * Registers a custom sky property for a {@link DimensionType}.
 	 *
-	 *  <p>This overrides Vanilla's default {@link SkyProperties}.
-	 * @param key A {@link RegistryKey} for your {@link DimensionType}
+	 * <p>This overrides Vanilla's default {@link SkyProperties}.
+	 *
+	 * @param key        A {@link RegistryKey} for your {@link DimensionType}
 	 * @param properties The {@link DimensionType}'s {@link SkyProperties}
 	 */
-	void setSkyProperties(RegistryKey<DimensionType> key, SkyProperties properties);
+	static void setSkyProperties(RegistryKey<DimensionType> key, SkyProperties properties) {
+		DimensionRenderingRegistryImpl.setSkyProperties(key, properties);
+	}
 
 	/**
 	 * Registers a custom cloud renderer for a {@link World}.
 	 *
 	 * <p>This overrides Vanilla's cloud rendering.
-	 * @param key A {@link RegistryKey} for your {@link World}
+	 *
+	 * @param key      A {@link RegistryKey} for your {@link World}
 	 * @param renderer A {@link CloudRenderer} implementation
 	 */
-	void setCloudRenderer(RegistryKey<World> key, CloudRenderer renderer);
+	static void setCloudRenderer(RegistryKey<World> key, CloudRenderer renderer) {
+		DimensionRenderingRegistryImpl.setCloudRenderer(key, renderer);
+	}
 
 	/**
 	 * Gets the custom sky renderer for the given {@link World}.
+	 *
 	 * @param key A {@link RegistryKey} for your {@link World}
 	 * @return Null if no custom sky renderer is registered for the dimension.
 	 */
 	@Nullable
-	SkyRenderer getSkyRenderer(RegistryKey<World> key);
+	static SkyRenderer getSkyRenderer(RegistryKey<World> key) {
+		return DimensionRenderingRegistryImpl.getSkyRenderer(key);
+	}
 
 	/**
 	 * Gets the custom cloud renderer for the given {@link World}.
+	 *
 	 * @param key A {@link RegistryKey} for your {@link World}
 	 * @return Null if no custom cloud renderer is registered for the dimension.
 	 */
 	@Nullable
-	CloudRenderer getCloudRenderer(RegistryKey<World> key);
+	static CloudRenderer getCloudRenderer(RegistryKey<World> key) {
+		return DimensionRenderingRegistryImpl.getCloudRenderer(key);
+	}
 
 	/**
 	 * Gets the custom weather effect renderer for the given {@link World}.
+	 *
 	 * @return Null if no custom weather effect renderer is registered for the dimension.
 	 */
 	@Nullable
-	WeatherRenderer getWeatherRenderer(RegistryKey<World> key);
+	static WeatherRenderer getWeatherRenderer(RegistryKey<World> key) {
+		return DimensionRenderingRegistryImpl.getWeatherRenderer(key);
+	}
 
 	/**
 	 * Gets the custom sky properties for a dimension type. Returns null if
 	 * no custom sky properties are set.
 	 */
 	@Nullable
-	SkyProperties getSkyProperties(RegistryKey<DimensionType> key);
+	static SkyProperties getSkyProperties(RegistryKey<DimensionType> key) {
+		return DimensionRenderingRegistryImpl.getSkyProperties(key);
+	}
 
 	@FunctionalInterface
 	interface SkyRenderer {

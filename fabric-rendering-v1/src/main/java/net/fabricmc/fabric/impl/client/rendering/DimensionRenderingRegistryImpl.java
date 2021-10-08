@@ -31,20 +31,22 @@ import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry.CloudRenderer;
+import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry.SkyRenderer;
+import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry.WeatherRenderer;
 import net.fabricmc.fabric.mixin.client.rendering.SkyPropertiesAccessor;
 
-public final class DimensionRenderingRegistryImpl implements DimensionRenderingRegistry {
+public final class DimensionRenderingRegistryImpl {
 	Logger logger = LogManager.getLogger("FabricDimensionRenderingRegistry");
-	public static final DimensionRenderingRegistryImpl INSTANCE = new DimensionRenderingRegistryImpl();
-	private final Map<RegistryKey<World>, SkyRenderer> SKY_RENDERERS = new IdentityHashMap<>();
-	private final Map<RegistryKey<World>, CloudRenderer> CLOUD_RENDERERS = new HashMap<>();
-	private final Map<RegistryKey<World>, WeatherRenderer> WEATHER_RENDERERS = new HashMap<>();
+	private static final Map<RegistryKey<World>, SkyRenderer> SKY_RENDERERS = new IdentityHashMap<>();
+	private static final Map<RegistryKey<World>, CloudRenderer> CLOUD_RENDERERS = new HashMap<>();
+	private static final Map<RegistryKey<World>, WeatherRenderer> WEATHER_RENDERERS = new HashMap<>();
 
-	public void setSkyRenderer(RegistryKey<World> key, SkyRenderer renderer) {
+	public static void setSkyRenderer(RegistryKey<World> key, DimensionRenderingRegistry.SkyRenderer renderer) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
-		SkyRenderer prior = SKY_RENDERERS.get(key);
+		DimensionRenderingRegistry.SkyRenderer prior = SKY_RENDERERS.get(key);
 
 		if (prior != null) {
 			throw new IllegalStateException("This world already has a registered SkyRenderer.");
@@ -53,7 +55,7 @@ public final class DimensionRenderingRegistryImpl implements DimensionRenderingR
 		}
 	}
 
-	public void setWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer) {
+	public static void setWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
@@ -66,7 +68,7 @@ public final class DimensionRenderingRegistryImpl implements DimensionRenderingR
 		}
 	}
 
-	public void setSkyProperties(RegistryKey<DimensionType> key, SkyProperties properties) {
+	public static void setSkyProperties(RegistryKey<DimensionType> key, SkyProperties properties) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(properties);
 
@@ -79,7 +81,7 @@ public final class DimensionRenderingRegistryImpl implements DimensionRenderingR
 		}
 	}
 
-	public void setCloudRenderer(RegistryKey<World> key, CloudRenderer renderer) {
+	public static void setCloudRenderer(RegistryKey<World> key, CloudRenderer renderer) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
@@ -93,22 +95,22 @@ public final class DimensionRenderingRegistryImpl implements DimensionRenderingR
 	}
 
 	@Nullable
-	public SkyRenderer getSkyRenderer(RegistryKey<World> key) {
+	public static SkyRenderer getSkyRenderer(RegistryKey<World> key) {
 		return SKY_RENDERERS.get(key);
 	}
 
 	@Nullable
-	public CloudRenderer getCloudRenderer(RegistryKey<World> key) {
+	public static CloudRenderer getCloudRenderer(RegistryKey<World> key) {
 		return CLOUD_RENDERERS.get(key);
 	}
 
 	@Nullable
-	public WeatherRenderer getWeatherRenderer(RegistryKey<World> key) {
+	public static WeatherRenderer getWeatherRenderer(RegistryKey<World> key) {
 		return WEATHER_RENDERERS.get(key);
 	}
 
-	@Override
-	public @Nullable SkyProperties getSkyProperties(RegistryKey<DimensionType> key) {
+	@Nullable
+	public static SkyProperties getSkyProperties(RegistryKey<DimensionType> key) {
 		return SkyPropertiesAccessor.getIdentifierMap().get(key);
 	}
 }
