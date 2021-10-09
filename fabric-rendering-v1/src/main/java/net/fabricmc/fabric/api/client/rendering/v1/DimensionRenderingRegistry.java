@@ -34,7 +34,6 @@ import net.fabricmc.fabric.impl.client.rendering.DimensionRenderingRegistryImpl;
  */
 @Environment(EnvType.CLIENT)
 public interface DimensionRenderingRegistry {
-
 	/**
 	 * sets the custom sky renderer for a {@link World}.
 	 *
