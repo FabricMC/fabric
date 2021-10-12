@@ -72,7 +72,6 @@ public class StackBorder extends DrawableHelper implements ItemOverlayRenderer.P
 		bufferBuilder.vertex(matrix4f, x + 18, y, 0).color(r, g, b, 255).texture(1, 0).next();
 		bufferBuilder.vertex(matrix4f, x, y, 0).color(r, g, b, 255).texture(0, 0).next();
 		bufferBuilder.end();
-		RenderSystem.enableDepthTest();
 		BufferRenderer.draw(bufferBuilder);
 		return false;
 	}

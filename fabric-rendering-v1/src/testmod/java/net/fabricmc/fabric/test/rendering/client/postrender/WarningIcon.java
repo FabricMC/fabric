@@ -35,12 +35,10 @@ public class WarningIcon extends DrawableHelper implements ItemOverlayRenderer.P
 	public void renderOverlay(MatrixStack matrixStack, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
 		RenderSystem.disableDepthTest();
 		RenderSystem.enableTexture();
-		RenderSystem.disableDepthTest();
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		MinecraftClient.getInstance().getTextureManager().bindTexture(WARNING_TEX);
 		drawTexture(matrixStack, x - 1, y - 1, 18, 18, 18, 18, 18, 18);
-		RenderSystem.enableDepthTest();
 		RenderSystem.enableDepthTest();
 	}
 }
