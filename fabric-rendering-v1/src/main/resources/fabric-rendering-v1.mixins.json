@@ -8,6 +8,7 @@
     "MixinBuiltinModelItemRenderer",
     "MixinInGameHud",
     "MixinItemColorMap",
+    "MixinItemRenderer",
     "MixinWorldRenderer",
     "EntityModelLayersAccessor",
     "EntityModelsMixin",

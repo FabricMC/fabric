@@ -1,0 +1,11 @@
+{
+  "item.fabric-rendering-v1-testmod.energy_storage": "Energy Storage",
+  "item.fabric-rendering-v1-testmod.mana_storage": "Mana Storage",
+  "item.fabric-rendering-v1-testmod.water_lava_bucket": "Water & Lava Bucket",
+  "item.fabric-rendering-v1-testmod.disco_ball": "Disco Ball",
+  "item.fabric-rendering-v1-testmod.long_cooldown": "Long Cooldown",
+  "item.fabric-rendering-v1-testmod.hidden_cooldown": "Hidden Cooldown",
+  "item.fabric-rendering-v1-testmod.obfuscated_count": "Obfuscated Count Label",
+  "item.fabric-rendering-v1-testmod.mysterious_book": "Mysterious Book",
+  "item.fabric-rendering-v1-testmod.tunisian_diamond": "Tunisian Diamond"
+}
