@@ -28,13 +28,9 @@ import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
 
 @Mixin(GenerationSettings.class)
 public interface GenerationSettingsAccessor {
-	@Accessor("surfaceBuilder")
-	Supplier<ConfiguredSurfaceBuilder<?>> fabric_getSurfaceBuilder();
-
 	@Accessor("carvers")
 	Map<GenerationStep.Carver, List<Supplier<ConfiguredCarver<?>>>> fabric_getCarvers();
 
@@ -43,10 +39,6 @@ public interface GenerationSettingsAccessor {
 
 	@Accessor("flowerFeatures")
 	List<ConfiguredFeature<?, ?>> fabric_getFlowerFeatures();
-
-	@Accessor("surfaceBuilder")
-	@Mutable
-	void fabric_setSurfaceBuilder(Supplier<ConfiguredSurfaceBuilder<?>> value);
 
 	@Accessor("carvers")
 	@Mutable

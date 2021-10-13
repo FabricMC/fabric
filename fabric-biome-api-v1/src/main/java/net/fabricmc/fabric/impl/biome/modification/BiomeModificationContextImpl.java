@@ -52,7 +52,6 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.mixin.biome.modification.BiomeAccessor;
@@ -220,7 +219,6 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		private final Registry<ConfiguredCarver<?>> carvers = registries.get(Registry.CONFIGURED_CARVER_KEY);
 		private final Registry<ConfiguredFeature<?, ?>> features = registries.get(Registry.CONFIGURED_FEATURE_KEY);
 		private final Registry<ConfiguredStructureFeature<?, ?>> structures = registries.get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY);
-		private final Registry<ConfiguredSurfaceBuilder<?>> surfaceBuilders = registries.get(Registry.CONFIGURED_SURFACE_BUILDER_KEY);
 		private final GenerationSettings generationSettings = biome.getGenerationSettings();
 		private final GenerationSettingsAccessor accessor = (GenerationSettingsAccessor) generationSettings;
 
@@ -299,13 +297,6 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		private void freezeFlowerFeatures() {
 			accessor.fabric_setFlowerFeatures(ImmutableList.copyOf(accessor.fabric_getFlowerFeatures()));
-		}
-
-		@Override
-		public void setSurfaceBuilder(RegistryKey<ConfiguredSurfaceBuilder<?>> surfaceBuilderKey) {
-			// We do not need to delay evaluation of this since the registries are already fully built
-			ConfiguredSurfaceBuilder<?> surfaceBuilder = surfaceBuilders.getOrThrow(surfaceBuilderKey);
-			accessor.fabric_setSurfaceBuilder(() -> surfaceBuilder);
 		}
 
 		@Override

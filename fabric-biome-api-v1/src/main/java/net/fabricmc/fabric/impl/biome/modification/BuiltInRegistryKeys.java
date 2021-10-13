@@ -23,7 +23,6 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
 
 /**
  * Utility class for getting the registry keys of built-in worldgen objects and throwing proper exceptions if they
@@ -32,11 +31,6 @@ import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
 @ApiStatus.Internal
 public final class BuiltInRegistryKeys {
 	private BuiltInRegistryKeys() {
-	}
-
-	public static RegistryKey<ConfiguredSurfaceBuilder<?>> get(ConfiguredSurfaceBuilder<?> configuredSurfaceBuilder) {
-		return BuiltinRegistries.CONFIGURED_SURFACE_BUILDER.getKey(configuredSurfaceBuilder)
-				.orElseThrow(() -> new IllegalArgumentException("Given surface builder is not built-in: " + configuredSurfaceBuilder));
 	}
 
 	public static RegistryKey<ConfiguredStructureFeature<?, ?>> get(ConfiguredStructureFeature<?, ?> configuredStructure) {

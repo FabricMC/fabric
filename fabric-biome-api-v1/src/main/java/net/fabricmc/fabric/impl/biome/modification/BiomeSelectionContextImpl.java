@@ -29,7 +29,6 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 
@@ -53,12 +52,6 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	@Override
 	public Biome getBiome() {
 		return biome;
-	}
-
-	@Override
-	public Optional<RegistryKey<ConfiguredSurfaceBuilder<?>>> getSurfaceBuilderKey() {
-		Registry<ConfiguredSurfaceBuilder<?>> registry = dynamicRegistries.get(Registry.CONFIGURED_SURFACE_BUILDER_KEY);
-		return registry.getKey(biome.getGenerationSettings().getSurfaceBuilder().get());
 	}
 
 	@Override

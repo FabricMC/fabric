@@ -38,8 +38,6 @@ import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
 import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 
@@ -288,23 +286,6 @@ public interface BiomeModificationContext {
 	}
 
 	interface GenerationSettingsContext {
-		/**
-		 * Sets the biomes surface builder to a surface builder registered in {@link BuiltinRegistries#CONFIGURED_SURFACE_BUILDER}.
-		 *
-		 * <p>This method is intended for use with the surface builders found in {@link ConfiguredSurfaceBuilders}.
-		 *
-		 * <p><b>NOTE:</b> In case the configured surface builder is overridden in a datapack, the datapacks version
-		 * will be used.
-		 */
-		default void setBuiltInSurfaceBuilder(ConfiguredSurfaceBuilder<?> configuredSurfaceBuilder) {
-			setSurfaceBuilder(BuiltInRegistryKeys.get(configuredSurfaceBuilder));
-		}
-
-		/**
-		 * Sets the biomes surface builder to the surface builder identified by the given key.
-		 */
-		void setSurfaceBuilder(RegistryKey<ConfiguredSurfaceBuilder<?>> surfaceBuilderKey);
-
 		/**
 		 * Removes a feature from one of this biomes generation steps, and returns if any features were removed.
 		 */

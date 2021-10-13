@@ -24,8 +24,6 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
 import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 
@@ -42,30 +40,6 @@ public interface BiomeSelectionContext {
 	 * Returns the biome with modifications by biome modifiers of higher priority already applied.
 	 */
 	Biome getBiome();
-
-	/**
-	 * Returns true if this biome uses the given built-in surface builder, which must be registered
-	 * in the {@link net.minecraft.util.registry.BuiltinRegistries}.
-	 *
-	 * <p>This method is intended for use with the Vanilla surface builders found in {@link ConfiguredSurfaceBuilders}.
-	 */
-	default boolean hasBuiltInSurfaceBuilder(ConfiguredSurfaceBuilder<?> surfaceBuilder) {
-		RegistryKey<ConfiguredSurfaceBuilder<?>> key = BuiltInRegistryKeys.get(surfaceBuilder);
-		return hasSurfaceBuilder(key);
-	}
-
-	/**
-	 * Returns true if this biome uses a surface builder that has the given key.
-	 */
-	default boolean hasSurfaceBuilder(RegistryKey<ConfiguredSurfaceBuilder<?>> key) {
-		return getSurfaceBuilderKey().orElse(null) == key;
-	}
-
-	/**
-	 * Tries to retrieve the registry key for this biomes current surface builder, which may be empty, if the
-	 * surface builder is not registered.
-	 */
-	Optional<RegistryKey<ConfiguredSurfaceBuilder<?>>> getSurfaceBuilderKey();
 
 	/**
 	 * Returns true if this biome has the given configured feature, which must be registered
