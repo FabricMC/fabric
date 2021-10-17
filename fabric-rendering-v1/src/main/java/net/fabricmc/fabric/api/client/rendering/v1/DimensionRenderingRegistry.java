@@ -19,9 +19,9 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.SkyProperties;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -35,7 +35,7 @@ import net.fabricmc.fabric.impl.client.rendering.DimensionRenderingRegistryImpl;
 @Environment(EnvType.CLIENT)
 public interface DimensionRenderingRegistry {
 	/**
-	 * sets the custom sky renderer for a {@link World}.
+	 * Sets the custom sky renderer for a {@link World}.
 	 *
 	 * <p>This overrides Vanilla's sky rendering.
 	 * @param key A {@link RegistryKey} for your {@link World}
@@ -57,14 +57,14 @@ public interface DimensionRenderingRegistry {
 	}
 
 	/**
-	 * Registers a custom sky property for a {@link DimensionType}.
+	 * Registers a sky property for a {@link net.minecraft.util.Identifier}.
 	 *
-	 * <p>This overrides Vanilla's default {@link SkyProperties}.
+	 * <p>This registers a new option for the "effects" entry of the dimension type json.
 	 *
-	 * @param key        A {@link RegistryKey} for your {@link DimensionType}
-	 * @param properties The {@link DimensionType}'s {@link SkyProperties}
+	 * @param key        The {@link net.minecraft.util.Identifier} for the new option entry.ide
+	 * @param properties The {@link SkyProperties} option.
 	 */
-	static void setSkyProperties(RegistryKey<DimensionType> key, SkyProperties properties) {
+	static void setSkyProperties(Identifier key, SkyProperties properties) {
 		DimensionRenderingRegistryImpl.setSkyProperties(key, properties);
 	}
 
@@ -113,11 +113,11 @@ public interface DimensionRenderingRegistry {
 	}
 
 	/**
-	 * Gets the custom sky properties for a dimension type. Returns null if
-	 * no custom sky properties are set.
+	 * Gets the sky property registered for an id. Returns the overworld sky property if
+	 * no custom sky properties for the id are present.
 	 */
 	@Nullable
-	static SkyProperties getSkyProperties(RegistryKey<DimensionType> key) {
+	static SkyProperties getSkyProperties(Identifier key) {
 		return DimensionRenderingRegistryImpl.getSkyProperties(key);
 	}
 
