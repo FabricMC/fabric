@@ -24,6 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -38,7 +39,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * {@link #ALLOW_NEARBY_MONSTERS}, {@link #ALLOW_SETTING_SPAWN} and {@link #ALLOW_SLEEPING}
  *
  * <p><b>Note:</b> Only the {@link #ALLOW_BED} event applies to non-player entities.</li>
- * <li>Modifiers: {@link #MODIFY_SLEEPING_DIRECTION}</li>
+ * <li>Modifiers: {@link #MODIFY_SLEEPING_DIRECTION}, {@link #SET_BED_OCCUPATION_STATE}
+ * and {@link #MODIFY_WAKE_UP_POSITION}</li>
  * </ol>
  *
  * <p>Sleep events are useful for making custom bed blocks that do not extend {@link net.minecraft.block.BedBlock}.
@@ -54,7 +56,7 @@ public final class EntitySleepEvents {
 	 * if they match your use case! This helps with mod compatibility.
 	 *
 	 * <p>If this event returns a {@link net.minecraft.entity.player.PlayerEntity.SleepFailureReason}, it is used
-	 * as the return value of {@link PlayerEntity#trySleep(BlockPos)} and sleeping fails. A null return value
+	 * as the return value of {@link PlayerEntity#trySleep(BlockPos)} and sleeping fails. A {@code null} return value
 	 * means that the player will start sleeping.
 	 *
 	 * <p>When this event is called, all vanilla sleeping checks have already succeeded, i.e. this event
@@ -95,7 +97,7 @@ public final class EntitySleepEvents {
 	 * An event that is called to check whether a block is valid for sleeping.
 	 *
 	 * <p>Used for checking whether the block at the current sleeping position is a valid bed block.
-	 * If false, the player wakes up.
+	 * If {@code false}, the player wakes up.
 	 *
 	 * <p>This event is only checked <i>during</i> sleeping, so an entity can
 	 * {@linkplain LivingEntity#sleep(BlockPos) start sleeping} on any block, but will immediately
@@ -196,6 +198,37 @@ public final class EntitySleepEvents {
 		return true;
 	});
 
+	/**
+	 * An event that sets the occupation state of a bed.
+	 *
+	 * <p>Note that this is <b>not</b> needed for blocks using {@link net.minecraft.block.BedBlock},
+	 * which are handled automatically.
+	 */
+	public static final Event<SetBedOccupationState> SET_BED_OCCUPATION_STATE = EventFactory.createArrayBacked(SetBedOccupationState.class, callbacks -> (entity, sleepingPos, bedState, occupied) -> {
+		for (SetBedOccupationState callback : callbacks) {
+			if (callback.setBedOccupationState(entity, sleepingPos, bedState, occupied)) {
+				return true;
+			}
+		}
+
+		return false;
+	});
+
+	/**
+	 * An event that can be used to provide the entity's wake-up position if missing.
+	 *
+	 * <p>This is useful for custom bed blocks that need to determine the wake-up position themselves.
+	 * If the block is not a {@link net.minecraft.block.BedBlock}, you need to provide the wake-up position manually
+	 * with this event.
+	 */
+	public static final Event<ModifyWakeUpPosition> MODIFY_WAKE_UP_POSITION = EventFactory.createArrayBacked(ModifyWakeUpPosition.class, callbacks -> (entity, sleepingPos, bedState, wakeUpPos) -> {
+		for (ModifyWakeUpPosition callback : callbacks) {
+			wakeUpPos = callback.modifyWakeUpPosition(entity, sleepingPos, bedState, wakeUpPos);
+		}
+
+		return wakeUpPos;
+	});
+
 	@FunctionalInterface
 	public interface AllowSleeping {
 		/**
@@ -203,7 +236,7 @@ public final class EntitySleepEvents {
 		 *
 		 * @param player      the sleeping player
 		 * @param sleepingPos the future {@linkplain LivingEntity#getSleepingPosition() sleeping position} of the entity
-		 * @return null if the player can sleep, or a failure reason if they cannot
+		 * @return {@code null} if the player can sleep, or a failure reason if they cannot
 		 * @see PlayerEntity#trySleep(BlockPos)
 		 */
 		@Nullable
@@ -242,7 +275,7 @@ public final class EntitySleepEvents {
 		 * @param entity        the sleeping entity
 		 * @param sleepingPos   the position of the block
 		 * @param state         the block state to check
-		 * @param vanillaResult true if vanilla allows the block, false otherwise
+		 * @param vanillaResult {@code true} if vanilla allows the block, {@code false} otherwise
 		 * @return {@link ActionResult#SUCCESS} if the bed is valid, {@link ActionResult#FAIL} if it's not,
 		 *         {@link ActionResult#PASS} to fall back to other callbacks
 		 */
@@ -258,7 +291,7 @@ public final class EntitySleepEvents {
 		 *
 		 * @param player        the sleeping player
 		 * @param sleepingPos   the (possibly still unset) {@linkplain LivingEntity#getSleepingPosition() sleeping position} of the player
-		 * @param vanillaResult true if vanilla allows the time, false otherwise
+		 * @param vanillaResult {@code true} if vanilla allows the time, {@code false} otherwise
 		 * @return {@link ActionResult#SUCCESS} if the time is valid, {@link ActionResult#FAIL} if it's not,
 		 *         {@link ActionResult#PASS} to fall back to other callbacks
 		 */
@@ -274,7 +307,7 @@ public final class EntitySleepEvents {
 		 *
 		 * @param player        the sleeping player
 		 * @param sleepingPos   the (possibly still unset) {@linkplain LivingEntity#getSleepingPosition() sleeping position} of the player
-		 * @param vanillaResult true if vanilla's monster check succeeded, false otherwise
+		 * @param vanillaResult {@code true} if vanilla's monster check succeeded (there were no monsters), {@code false} otherwise
 		 * @return {@link ActionResult#SUCCESS} to allow sleeping, {@link ActionResult#FAIL} to prevent sleeping,
 		 *         {@link ActionResult#PASS} to fall back to other callbacks
 		 */
@@ -287,7 +320,7 @@ public final class EntitySleepEvents {
 		 * Checks whether a sleeping player counts into skipping the current day and resetting the time to 0.
 		 *
 		 * @param player        the sleeping player
-		 * @return true if allowed, false otherwise
+		 * @return {@code true} if allowed, {@code false} otherwise
 		 */
 		boolean allowResettingTime(PlayerEntity player);
 	}
@@ -300,7 +333,7 @@ public final class EntitySleepEvents {
 		 *
 		 * @param entity            the sleeping entity
 		 * @param sleepingPos       the position of the block slept on
-		 * @param sleepingDirection the old sleeping direction, or null if not determined by vanilla logic
+		 * @param sleepingDirection the old sleeping direction, or {@code null} if not determined by vanilla or previous callbacks
 		 * @return the new sleeping direction
 		 */
 		@Nullable
@@ -314,9 +347,38 @@ public final class EntitySleepEvents {
 		 *
 		 * @param player      the sleeping player
 		 * @param sleepingPos the sleeping position
-		 * @return true if allowed, false otherwise
+		 * @return {@code true} if allowed, {@code false} otherwise
 		 */
 		boolean allowSettingSpawn(PlayerEntity player, BlockPos sleepingPos);
+	}
+
+	@FunctionalInterface
+	public interface SetBedOccupationState {
+		/**
+		 * Sets the occupation state of a bed block.
+		 *
+		 * @param entity      the sleeping entity
+		 * @param sleepingPos the sleeping position
+		 * @param bedState    the block state of the bed
+		 * @param occupied    {@code true} if occupied, {@code false} if free
+		 * @return {@code true} if the occupation state was successfully modified, {@code false} to fall back to other callbacks
+		 */
+		boolean setBedOccupationState(LivingEntity entity, BlockPos sleepingPos, BlockState bedState, boolean occupied);
+	}
+
+	@FunctionalInterface
+	public interface ModifyWakeUpPosition {
+		/**
+		 * Modifies or provides a wake-up position for an entity waking up.
+		 *
+		 * @param entity      the sleeping entity
+		 * @param sleepingPos the position of the block slept on
+		 * @param bedState    the block slept on
+		 * @param wakeUpPos   the old wake-up position, or {@code null} if not determined by vanilla or previous callbacks
+		 * @return the new wake-up position
+		 */
+		@Nullable
+		Vec3d modifyWakeUpPosition(LivingEntity entity, BlockPos sleepingPos, BlockState bedState, @Nullable Vec3d wakeUpPos);
 	}
 
 	private EntitySleepEvents() {
