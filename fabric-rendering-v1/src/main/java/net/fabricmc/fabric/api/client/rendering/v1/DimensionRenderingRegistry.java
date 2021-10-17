@@ -41,8 +41,8 @@ public interface DimensionRenderingRegistry {
 	 * @param key A {@link RegistryKey} for your {@link World}
 	 * @param renderer A {@link SkyRenderer} implementation
 	 */
-	static void setSkyRenderer(RegistryKey<World> key, SkyRenderer renderer) {
-		DimensionRenderingRegistryImpl.setSkyRenderer(key, renderer);
+	static void registerSkyRenderer(RegistryKey<World> key, SkyRenderer renderer) {
+		DimensionRenderingRegistryImpl.registerSkyRenderer(key, renderer);
 	}
 
 	/**
@@ -52,8 +52,8 @@ public interface DimensionRenderingRegistry {
 	 * @param key A RegistryKey for your {@link World}
 	 * @param renderer A {@link WeatherRenderer} implementation
 	 */
-	static void setWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer) {
-		DimensionRenderingRegistryImpl.setWeatherRenderer(key, renderer);
+	static void registerWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer) {
+		DimensionRenderingRegistryImpl.registerWeatherRenderer(key, renderer);
 	}
 
 	/**
@@ -64,8 +64,8 @@ public interface DimensionRenderingRegistry {
 	 * @param key        The {@link net.minecraft.util.Identifier} for the new option entry.ide
 	 * @param properties The {@link SkyProperties} option.
 	 */
-	static void setSkyProperties(Identifier key, SkyProperties properties) {
-		DimensionRenderingRegistryImpl.setSkyProperties(key, properties);
+	static void registerSkyProperties(Identifier key, SkyProperties properties) {
+		DimensionRenderingRegistryImpl.registerSkyProperties(key, properties);
 	}
 
 	/**
@@ -76,8 +76,8 @@ public interface DimensionRenderingRegistry {
 	 * @param key      A {@link RegistryKey} for your {@link World}
 	 * @param renderer A {@link CloudRenderer} implementation
 	 */
-	static void setCloudRenderer(RegistryKey<World> key, CloudRenderer renderer) {
-		DimensionRenderingRegistryImpl.setCloudRenderer(key, renderer);
+	static void registerCloudRenderer(RegistryKey<World> key, CloudRenderer renderer) {
+		DimensionRenderingRegistryImpl.registerCloudRenderer(key, renderer);
 	}
 
 	/**

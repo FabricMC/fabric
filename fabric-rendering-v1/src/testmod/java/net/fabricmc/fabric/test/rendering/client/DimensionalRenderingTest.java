@@ -84,7 +84,7 @@ public class DimensionalRenderingTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		DimensionRenderingRegistry.setSkyRenderer(World.OVERWORLD, DimensionalRenderingTest::render);
-		DimensionRenderingRegistry.setSkyProperties(new Identifier("fabric_dimension:void"), new SkyProperties.End());
+		DimensionRenderingRegistry.registerSkyRenderer(World.OVERWORLD, DimensionalRenderingTest::render);
+		DimensionRenderingRegistry.registerSkyProperties(new Identifier("fabric_dimension:void"), new SkyProperties.End());
 	}
 }

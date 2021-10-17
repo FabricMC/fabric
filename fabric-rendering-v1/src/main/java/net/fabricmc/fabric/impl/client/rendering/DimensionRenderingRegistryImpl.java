@@ -39,48 +39,46 @@ public final class DimensionRenderingRegistryImpl {
 	private static final Map<RegistryKey<World>, CloudRenderer> CLOUD_RENDERERS = new HashMap<>();
 	private static final Map<RegistryKey<World>, WeatherRenderer> WEATHER_RENDERERS = new HashMap<>();
 
-	public static void setSkyRenderer(RegistryKey<World> key, DimensionRenderingRegistry.SkyRenderer renderer) {
+	public static void registerSkyRenderer(RegistryKey<World> key, DimensionRenderingRegistry.SkyRenderer renderer) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
-		DimensionRenderingRegistry.SkyRenderer prior = SKY_RENDERERS.get(key);
-
-		if (prior != null) {
+		if (SKY_RENDERERS.containsKey(key)) {
 			throw new IllegalStateException("This world already has a registered SkyRenderer.");
 		} else {
 			SKY_RENDERERS.put(key, renderer);
 		}
 	}
 
-	public static void setWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer) {
+	public static void registerWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
-		if (WEATHER_RENDERERS.get(key) != null) {
+		if (WEATHER_RENDERERS.containsKey(key)) {
 			throw new IllegalStateException("This world already has a registered WeatherRenderer.");
 		} else {
 			WEATHER_RENDERERS.put(key, renderer);
 		}
 	}
 
-	public static void setSkyProperties(Identifier key, SkyProperties properties) {
+	public static void registerSkyProperties(Identifier key, SkyProperties properties) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(properties);
 		//The map containing all skyproperties returns a default if null so a null checkdoesn't work.
 
 		if (SkyPropertiesAccessor.getIdentifierMap().containsKey(key)) {
-			throw new IllegalStateException("This dimension type already has a registered skyproperties.");
+			throw new IllegalStateException("This id already has a registered skyproperties.");
 		} else {
 			SkyPropertiesAccessor.getIdentifierMap().put(key, properties);
 			System.out.println(SkyPropertiesAccessor.getIdentifierMap().get(key));
 		}
 	}
 
-	public static void setCloudRenderer(RegistryKey<World> key, CloudRenderer renderer) {
+	public static void registerCloudRenderer(RegistryKey<World> key, CloudRenderer renderer) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
-		if (CLOUD_RENDERERS.get(key) != null) {
+		if (CLOUD_RENDERERS.containsKey(key)) {
 			throw new IllegalStateException("This world already has a registered CloudRenderer.");
 		} else {
 			CLOUD_RENDERERS.put(key, renderer);
