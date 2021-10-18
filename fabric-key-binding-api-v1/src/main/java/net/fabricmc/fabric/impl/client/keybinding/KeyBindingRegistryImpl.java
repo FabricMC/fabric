@@ -16,22 +16,21 @@
 
 package net.fabricmc.fabric.impl.client.keybinding;
 
+import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
+import net.minecraft.client.option.KeyBinding;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.google.common.collect.Lists;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import net.minecraft.client.option.KeyBinding;
-
-import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
-
 public final class KeyBindingRegistryImpl {
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private static final List<KeyBinding> moddedKeyBindings = Lists.newArrayList();
+	private static final List<KeyBinding> moddedKeyBindings = new ReferenceArrayList<>();
 
 	private KeyBindingRegistryImpl() {
 	}
