@@ -31,10 +31,10 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantCache;
 @SuppressWarnings("unused")
 public class FluidMixin implements FluidVariantCache {
 	@SuppressWarnings("ConstantConditions")
-	private final FluidVariant cachedFluidVariant = new FluidVariantImpl((Fluid) (Object) this, null);
+	private final FluidVariant fabric_cachedFluidVariant = new FluidVariantImpl((Fluid) (Object) this, null);
 
 	@Override
 	public FluidVariant fabric_getCachedFluidVariant() {
-		return cachedFluidVariant;
+		return fabric_cachedFluidVariant;
 	}
 }

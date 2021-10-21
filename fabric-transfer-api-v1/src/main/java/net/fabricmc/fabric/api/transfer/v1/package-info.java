@@ -39,15 +39,15 @@
  * wrong usage of {@code Storage} and {@code StorageView} methods.
  * </p>
  *
+ * <p>Implementors of transfer variant storages with a fixed number of "slots" or "tanks" can use
+ * {@link net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage SingleVariantStorage},
+ * and combine them with {@link net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage CombinedStorage}.
+ *
  * <p><h2>Fluid transfer</h2>
  * A {@code Storage<FluidVariant>} is any object that can store fluids. It is just a {@code Storage<T>}, where {@code T} is
  * {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant FluidVariant}, the immutable combination of a {@code Fluid} and additional NBT data.
- * Instances can be accessed through the API lookup defined in {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage FluidStorage}.
+ * Instances can be accessed through the API lookups defined in {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage FluidStorage}.
  * </p>
- *
- * <p>Implementors of fluid inventories with a fixed number of "slots" or "tanks" can use
- * {@link net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage SingleFluidStorage},
- * and combine them with {@link net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage CombinedStorage}.
  *
  * <p>The amount for fluid transfer is droplets, that is 1/81000ths of a bucket.
  * {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants FluidConstants} contains a few helpful constants to work with droplets.
@@ -56,5 +56,21 @@
  * ignoring the additional NBT data.
  * {@code Fluid}s that wish to render differently depending on the stored NBT data can register a
  * {@link net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRenderHandler FluidVariantRenderHandler}.
+ *
+ * <p><h2>Item transfer</h2>
+ * A {@code Storage<ItemVariant>} is any object that can store items.
+ * Instances can be accessed through the API lookup defined in {@link net.fabricmc.fabric.api.transfer.v1.item.ItemStorage ItemStorage}.
+ * </p>
+ *
+ * <p>The lookup already provides compatibility with vanilla inventories, however it may sometimes be interesting to use
+ * {@link net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage InventoryStorage} or
+ * {@link net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage PlayerInventoryStorage} when interaction with
+ * {@code Inventory}-based APIs is required.
+ *
+ * <p><h2>{@code ContainerItemContext}</h2>
+ * {@link net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext ContainerItemContext} is a context designed for {@code ItemApiLookup} queries
+ * that allows the returned APIs to interact with the containing inventory.
+ * Notably, it is used by the {@code FluidStorage.ITEM} lookup for fluid-containing items.
+ * </p>
  */
 package net.fabricmc.fabric.api.transfer.v1;

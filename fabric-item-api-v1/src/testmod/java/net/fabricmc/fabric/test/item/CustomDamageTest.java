@@ -39,7 +39,7 @@ public class CustomDamageTest implements ModInitializer {
 		if (entity.isSneaking()) {
 			return amount;
 		} else {
-			NbtCompound tag = stack.getOrCreateTag();
+			NbtCompound tag = stack.getOrCreateNbt();
 			tag.putInt("weird", tag.getInt("weird") + 1);
 			return 0;
 		}
@@ -52,7 +52,7 @@ public class CustomDamageTest implements ModInitializer {
 
 		@Override
 		public Text getName(ItemStack stack) {
-			int v = stack.getOrCreateTag().getInt("weird");
+			int v = stack.getOrCreateNbt().getInt("weird");
 			return super.getName(stack).shallowCopy().append(" (Weird Value: " + v + ")");
 		}
 	}
