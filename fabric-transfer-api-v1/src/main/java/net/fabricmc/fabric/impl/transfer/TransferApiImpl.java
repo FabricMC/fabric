@@ -20,11 +20,15 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 public class TransferApiImpl {
+	public static final Logger LOGGER = LogManager.getLogger("fabric-transfer-api-v1");
 	public static final AtomicLong version = new AtomicLong();
 	@SuppressWarnings("rawtypes")
 	public static final Storage EMPTY_STORAGE = new Storage() {

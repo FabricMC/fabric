@@ -25,7 +25,7 @@ import net.minecraft.client.option.KeyBinding;
 
 @Mixin(KeyBinding.class)
 public interface KeyBindingAccessor {
-	@Accessor("categoryOrderMap")
+	@Accessor("CATEGORY_ORDER_MAP")
 	static Map<String, Integer> fabric_getCategoryMap() {
 		throw new AssertionError();
 	}

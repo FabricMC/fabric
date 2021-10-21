@@ -4,10 +4,18 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     container:
-      image: openjdk:16-jdk
+      image: adoptopenjdk:16-jdk
       options: --user root
     steps:
-      - uses: actions/checkout@v1
+      - run: apt update && apt install git -y && git --version
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: FabricMC/fabric-action-scripts@v1
+        id: changelog
+        with:
+          context: changelog
+          workflow_id: release.yml
       - uses: gradle/wrapper-validation-action@v1
       - run: ./gradlew checkVersion build publish curseforge github modrinth --stacktrace
         env:
@@ -17,3 +25,4 @@ jobs:
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GH_API_KEY }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CHANGELOG: ${{ steps.changelog.outputs.changelog }}

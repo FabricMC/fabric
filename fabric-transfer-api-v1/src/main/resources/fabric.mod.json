@@ -5,7 +5,7 @@
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-api-lookup-api-v1/icon.png",
+  "icon": "assets/fabric-transfer-api-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -20,7 +20,7 @@
     "fabric-api-lookup-api-v1": "*",
     "fabric-rendering-fluids-v1": "*"
   },
-  "description": "A common API for the transfer of fluids and other game resources.",
+  "description": "A common API for the transfer of fluids, items and other game resources.",
   "mixins": [
     "fabric-transfer-api-v1.mixins.json"
   ],

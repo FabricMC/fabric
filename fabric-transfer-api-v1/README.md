@@ -17,14 +17,14 @@ for example to move resources between two `Storage`s.
 The [`storage/base`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/base) package provides a few helpers to accelerate
 implementation of `Storage<T>`.
 
+Implementors of inventories with a fixed number of "slots" or "tanks" can use
+[`SingleVariantStorage`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/base/SingleStorage.java),
+and combine them with `CombinedStorage`.
+
 ## Fluid transfer
 A `Storage<FluidVariant>` is any object that can store fluids. It is just a `Storage<T>`, where `T` is
 [`FluidVariant`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidVariant.java), the immutable combination of a `Fluid` and additional NBT data.
 Instances can be accessed through the API lookups defined in [`FluidStorage`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidStorage.java).
-
-Implementors of fluid inventories with a fixed number of "slots" or "tanks" can use
-[`SingleFluidStorage`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/base/SingleFluidStorage.java),
-and combine them with `CombinedStorage`.
 
 The unit for fluid transfer is 1/81000ths of a bucket, also known as _droplets_.
 [`FluidConstants`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidConstants.java) contains a few helpful constants
@@ -34,3 +34,17 @@ Client-side [Fluid variant rendering](src/main/java/net/fabricmc/fabric/api/tran
 ignoring the additional NBT data.
 `Fluid`s that wish to render differently depending on the stored NBT data can register a
 [`FluidVariantRenderHandler`](src/main/java/net/fabricmc/fabric/api/transfer/v1/client/fluid/FluidVariantRenderHandler.java).
+
+## Item transfer
+A `Storage<ItemVariant>` is any object that can store items.
+Instances can be accessed through the API lookup defined in [`ItemStorage`](src/main/java/net/fabricmc/fabric/api/transfer/v1/item/ItemStorage.java).
+
+The lookup already provides compatibility with vanilla inventories, however it may sometimes be interesting to use
+[`InventoryStorage`](src/main/java/net/fabricmc/fabric/api/transfer/v1/item/InventoryStorage.java) or
+[`PlayerInventoryStorage`](src/main/java/net/fabricmc/fabric/api/transfer/v1/item/PlayerInventoryStorage.java) when interaction with
+`Inventory`-based APIs is required.
+
+## `ContainerItemContext`
+[`ContainerItemContext`](src/main/java/net/fabricmc/fabric/api/transfer/v1/context/ContainerItemContext.java) is a context designed for `ItemApiLookup` queries
+that allows the returned APIs to interact with the containing inventory.
+Notably, it is used by the `FluidStorage.ITEM` lookup for fluid-containing items.
