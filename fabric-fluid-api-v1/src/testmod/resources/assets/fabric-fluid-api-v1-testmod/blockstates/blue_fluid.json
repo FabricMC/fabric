@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "fabric-fluid-api-v1-testmod:block/blue_fluid" }
+  }
+}
