@@ -34,11 +34,10 @@ import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
  *
  * <p>Do not implement, use the static {@code of(...)} functions instead.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 @ApiStatus.NonExtendable
 public interface ItemVariant extends TransferVariant<Item> {
 	/**
