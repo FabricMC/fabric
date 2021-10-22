@@ -16,18 +16,27 @@
 
 package net.fabricmc.fabric.test.fluid.fluid;
 
+import net.fabricmc.fabric.api.fluid.v1.ExtendedFlowableFluid;
 import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 import net.fabricmc.fabric.test.fluid.block.MBlocks;
 import net.fabricmc.fabric.test.fluid.item.MItems;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 
-public abstract class GreenFluid extends FabricFlowableFluid {
+import java.util.Optional;
+
+public abstract class GreenFluid extends FabricFlowableFluid implements ExtendedFlowableFluid {
 	@Override
 	public Fluid getFlowing() {
 		return MFluids.GREEN_FLUID_FlOWING;
@@ -50,7 +59,7 @@ public abstract class GreenFluid extends FabricFlowableFluid {
 
 	@Override
 	protected int getFlowSpeed(WorldView world) {
-		return 1;
+		return 3;
 	}
 
 	@Override
@@ -60,7 +69,7 @@ public abstract class GreenFluid extends FabricFlowableFluid {
 
 	@Override
 	public int getTickRate(WorldView world) {
-		return 40;
+		return 20;
 	}
 
 	@Override
@@ -71,6 +80,38 @@ public abstract class GreenFluid extends FabricFlowableFluid {
 	@Override
 	protected BlockState toBlockState(FluidState state) {
 		return MBlocks.GREEN_FLUID.getDefaultState().with(Properties.LEVEL_15, getBlockStateLevel(state));
+	}
+
+	@Override
+	public int getFogColor(Entity focusedEntity) {
+		return 0x00ff00;
+	}
+
+	@Override
+	public float getFogEnd(Entity focusedEntity) {
+		return 2.0f;
+	}
+
+	@Override
+	public float getFogStart(Entity focusedEntity) {
+		return 0.25f;
+	}
+
+	@Override
+	public Optional<SoundEvent> getSplashSound() {
+		return Optional.of(SoundEvents.ENTITY_STRIDER_STEP_LAVA);
+	}
+
+	@Override
+	public double getStrength() {
+		return 0.004d;
+	}
+
+	@Override
+	public void onSplash(World world, Vec3d pos, Entity entity) {
+		world.addParticle(ParticleTypes.SPLASH, pos.getX(), pos.getY(), pos.getZ(), 0.02d, 0.02d, 0.02d);
+		world.addParticle(ParticleTypes.SPLASH, pos.getX(), pos.getY(), pos.getZ(), 0.02d, 0.02d, 0.02d);
+		world.addParticle(ParticleTypes.SPLASH, pos.getX(), pos.getY(), pos.getZ(), 0.02d, 0.02d, 0.02d);
 	}
 
 	public static class Flowing extends GreenFluid {

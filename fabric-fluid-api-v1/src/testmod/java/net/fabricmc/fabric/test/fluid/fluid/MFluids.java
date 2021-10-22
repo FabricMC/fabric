@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.test.fluid.fluid;
 
-import net.fabricmc.fabric.api.fluid.v1.rendering.FluidRendering;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.fluid.v1.render.FluidRenderer;
 import net.fabricmc.fabric.test.fluid.core.ModCore;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -44,8 +46,10 @@ public class MFluids {
 	public static void load() {}
 
 	public static void renderFluids() {
-		FluidRendering.render(BLUE_FLUID, BLUE_FLUID_FlOWING, new Identifier("minecraft", "water"), 0x0000ff);
-		FluidRendering.render(RED_FLUID, RED_FLUID_FlOWING, RED_FLUID_ID, 0xff0000);
-		FluidRendering.render(GREEN_FLUID, GREEN_FLUID_FlOWING, new Identifier("minecraft", "water"), 0x00ff00);
+		FluidRenderer.render(BLUE_FLUID, BLUE_FLUID_FlOWING, new Identifier("minecraft", "water"), 0x0000ff);
+		FluidRenderer.render(RED_FLUID, RED_FLUID_FlOWING, RED_FLUID_ID, 0xff0000);
+		FluidRenderer.render(GREEN_FLUID, GREEN_FLUID_FlOWING, new Identifier("minecraft", "water"), 0x00ff00);
+
+		BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), RED_FLUID, RED_FLUID_FlOWING);
 	}
 }

@@ -2,8 +2,13 @@
   "required": true,
   "package": "net.fabricmc.fabric.mixin.fluid",
   "compatibilityLevel": "JAVA_16",
-  "mixins": [],
-  "client": [],
+  "mixins": [
+    "EntityMixin"
+  ],
+  "client": [
+    "client.BackgroundRendererMixin",
+    "client.CameraMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

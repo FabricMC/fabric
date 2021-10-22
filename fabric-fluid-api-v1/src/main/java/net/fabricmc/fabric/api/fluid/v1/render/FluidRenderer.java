@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.fluid.v1.rendering;
+package net.fabricmc.fabric.api.fluid.v1.render;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
@@ -38,7 +38,7 @@ import java.util.function.Function;
 /**
  * Provides basic fluid rendering.
  */
-public class FluidRendering {
+public class FluidRenderer {
 	/**
 	 * Block atlas texture identifier.
 	 */
