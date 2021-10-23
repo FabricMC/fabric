@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,6 +32,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
+import net.fabricmc.fabric.api.entity.event.v1.PlayerEvents;
 
 @Mixin(PlayerEntity.class)
 abstract class PlayerEntityMixin {
@@ -64,5 +66,15 @@ abstract class PlayerEntityMixin {
 		if (info.getReturnValueZ()) {
 			info.setReturnValue(EntitySleepEvents.ALLOW_RESETTING_TIME.invoker().allowResettingTime((PlayerEntity) (Object) this));
 		}
+	}
+
+	@Inject(method = "tick", at = @At("HEAD"))
+	public void prePlayerTick(CallbackInfo ci) {
+		PlayerEvents.BEFORE_PLAYER_TICK.invoker().prePlayerTick((PlayerEntity) (Object) this);
+	}
+
+	@Inject(method = "tick", at = @At("TAIL"))
+	public void postPlayerTick(CallbackInfo ci) {
+		PlayerEvents.AFTER_PLAYER_TICK.invoker().postPlayerTick((PlayerEntity) (Object) this);
 	}
 }
