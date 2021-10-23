@@ -40,6 +40,7 @@ public interface DimensionRenderingRegistry {
 	 * <p>This overrides Vanilla's sky rendering.
 	 * @param key A {@link RegistryKey} for your {@link World}
 	 * @param renderer A {@link SkyRenderer} implementation
+	 * @throws IllegalArgumentException if key is already registered.
 	 */
 	static void registerSkyRenderer(RegistryKey<World> key, SkyRenderer renderer) {
 		DimensionRenderingRegistryImpl.registerSkyRenderer(key, renderer);
@@ -51,20 +52,22 @@ public interface DimensionRenderingRegistry {
 	 * <p>This overrides Vanilla's weather rendering.
 	 * @param key A RegistryKey for your {@link World}
 	 * @param renderer A {@link WeatherRenderer} implementation
+	 * @throws IllegalArgumentException if key is already registered.
 	 */
 	static void registerWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer) {
 		DimensionRenderingRegistryImpl.registerWeatherRenderer(key, renderer);
 	}
 
 	/**
-	 * Registers a sky property for a {@link net.minecraft.util.Identifier}.
+	 * Registers a dimension effect for a {@link net.minecraft.util.Identifier}.
 	 *
 	 * <p>This registers a new option for the "effects" entry of the dimension type json.
 	 *
 	 * @param key        The {@link net.minecraft.util.Identifier} for the new option entry.ide
 	 * @param properties The {@link DimensionEffects} option.
+	 * @throws IllegalArgumentException if key is already registered.
 	 */
-	static void registerSkyProperties(Identifier key, DimensionEffects properties) {
+	static void registerDimensionEffectss(Identifier key, DimensionEffects properties) {
 		DimensionRenderingRegistryImpl.registerSkyProperties(key, properties);
 	}
 
@@ -75,6 +78,7 @@ public interface DimensionRenderingRegistry {
 	 *
 	 * @param key      A {@link RegistryKey} for your {@link World}
 	 * @param renderer A {@link CloudRenderer} implementation
+	 * @throws IllegalArgumentException if key is already registered.
 	 */
 	static void registerCloudRenderer(RegistryKey<World> key, CloudRenderer renderer) {
 		DimensionRenderingRegistryImpl.registerCloudRenderer(key, renderer);
@@ -84,7 +88,7 @@ public interface DimensionRenderingRegistry {
 	 * Gets the custom sky renderer for the given {@link World}.
 	 *
 	 * @param key A {@link RegistryKey} for your {@link World}
-	 * @return Null if no custom sky renderer is registered for the dimension.
+	 * @return {@code null} if no custom sky renderer is registered for the dimension.
 	 */
 	@Nullable
 	static SkyRenderer getSkyRenderer(RegistryKey<World> key) {
@@ -95,7 +99,7 @@ public interface DimensionRenderingRegistry {
 	 * Gets the custom cloud renderer for the given {@link World}.
 	 *
 	 * @param key A {@link RegistryKey} for your {@link World}
-	 * @return Null if no custom cloud renderer is registered for the dimension.
+	 * @return {@code null} if no custom cloud renderer is registered for the dimension.
 	 */
 	@Nullable
 	static CloudRenderer getCloudRenderer(RegistryKey<World> key) {
@@ -105,7 +109,7 @@ public interface DimensionRenderingRegistry {
 	/**
 	 * Gets the custom weather effect renderer for the given {@link World}.
 	 *
-	 * @return Null if no custom weather effect renderer is registered for the dimension.
+	 * @return {@code null} if no custom weather effect renderer is registered for the dimension.
 	 */
 	@Nullable
 	static WeatherRenderer getWeatherRenderer(RegistryKey<World> key) {
@@ -113,11 +117,11 @@ public interface DimensionRenderingRegistry {
 	}
 
 	/**
-	 * Gets the sky property registered for an id. Returns the overworld sky property if
-	 * no custom sky properties for the id are present.
+	 * Gets the dimension effect registered for an id. Returns the overworld dimension effect if
+	 * no custom dimension effects for the id are present.
 	 */
 	@Nullable
-	static DimensionEffects getSkyProperties(Identifier key) {
+	static DimensionEffects getDimensionEffects(Identifier key) {
 		return DimensionRenderingRegistryImpl.getSkyProperties(key);
 	}
 

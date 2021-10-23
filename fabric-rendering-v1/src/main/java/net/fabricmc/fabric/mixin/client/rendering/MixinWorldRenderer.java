@@ -174,37 +174,37 @@ public abstract class MixinWorldRenderer {
 
 	@Inject(at = @At("HEAD"), method = "renderWeather", cancellable = true)
 	private void renderWeather(LightmapTextureManager manager, float tickDelta, double x, double y, double z, CallbackInfo info) {
-		DimensionRenderingRegistry.WeatherRenderer renderer = null;
+		if (this.client.world != null) {
+			DimensionRenderingRegistry.WeatherRenderer renderer = DimensionRenderingRegistry.getWeatherRenderer(world.getRegistryKey());
 
-		if (this.client.world != null) renderer = DimensionRenderingRegistry.getWeatherRenderer(world.getRegistryKey());
-
-		if (renderer != null) {
-			renderer.render(context);
-			info.cancel();
+			if (renderer != null) {
+				renderer.render(context);
+				info.cancel();
+			}
 		}
 	}
 
 	@Inject(at = @At("HEAD"), method = "renderClouds(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/math/Matrix4f;FDDD)V", cancellable = true)
 	private void renderCloud(MatrixStack matrices, Matrix4f matrix4f, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo info) {
-		DimensionRenderingRegistry.CloudRenderer renderer = null;
+		if (this.client.world != null) {
+			DimensionRenderingRegistry.CloudRenderer renderer = DimensionRenderingRegistry.getCloudRenderer(world.getRegistryKey());
 
-		if (this.client.world != null) renderer = DimensionRenderingRegistry.getCloudRenderer(world.getRegistryKey());
-
-		if (renderer != null) {
-			renderer.render(context);
-			info.cancel();
+			if (renderer != null) {
+				renderer.render(context);
+				info.cancel();
+			}
 		}
 	}
 
 	@Inject(at = @At("HEAD"), method = "renderSky", cancellable = true)
 	private void renderSky(MatrixStack matrices, Matrix4f matrix4f, float tickDelta, Runnable runnable, CallbackInfo info) {
-		DimensionRenderingRegistry.SkyRenderer renderer = null;
+		if (this.client.world != null) {
+			DimensionRenderingRegistry.SkyRenderer renderer = DimensionRenderingRegistry.getSkyRenderer(world.getRegistryKey());
 
-		if (this.client.world != null) renderer = DimensionRenderingRegistry.getSkyRenderer(world.getRegistryKey());
-
-		if (renderer != null) {
-			renderer.render(context);
-			info.cancel();
+			if (renderer != null) {
+				renderer.render(context);
+				info.cancel();
+			}
 		}
 	}
 }

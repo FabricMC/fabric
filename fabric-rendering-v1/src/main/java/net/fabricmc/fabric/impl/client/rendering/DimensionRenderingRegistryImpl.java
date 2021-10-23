@@ -70,7 +70,6 @@ public final class DimensionRenderingRegistryImpl {
 			throw new IllegalStateException("This id already has a registered skyproperties.");
 		} else {
 			DimensionEffectsAccessor.getIdentifierMap().put(key, properties);
-			System.out.println(DimensionEffectsAccessor.getIdentifierMap().get(key));
 		}
 	}
 
