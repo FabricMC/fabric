@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -35,6 +36,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
@@ -95,6 +97,15 @@ public final class EntityEventTests implements ModInitializer {
 
 		EntitySleepEvents.START_SLEEPING.register((entity, sleepingPos) -> {
 			LOGGER.info("Entity {} sleeping at {}", entity, sleepingPos);
+			BlockState bedState = entity.world.getBlockState(sleepingPos);
+
+			if (bedState.isOf(TEST_BED)) {
+				boolean shouldBeOccupied = !entity.getStackInHand(Hand.MAIN_HAND).isOf(Items.ORANGE_WOOL);
+
+				if (bedState.get(TestBedBlock.OCCUPIED) != shouldBeOccupied) {
+					throw new AssertionError("Test bed should " + (!shouldBeOccupied ? "not " : "") + "be occupied");
+				}
+			}
 		});
 
 		EntitySleepEvents.STOP_SLEEPING.register((entity, sleepingPos) -> {
@@ -141,6 +152,20 @@ public final class EntityEventTests implements ModInitializer {
 			return !player.getStackInHand(Hand.MAIN_HAND).isOf(Items.BLACK_WOOL);
 		});
 
+		EntitySleepEvents.SET_BED_OCCUPATION_STATE.register((entity, sleepingPos, bedState, occupied) -> {
+			// Don't set occupied state if holding orange wool
+			return entity.getStackInHand(Hand.MAIN_HAND).isOf(Items.ORANGE_WOOL);
+		});
+
+		EntitySleepEvents.MODIFY_WAKE_UP_POSITION.register((entity, sleepingPos, bedState, wakeUpPos) -> {
+			// If holding cyan wool, wake up 10 blocks above the bed
+			if (entity.getStackInHand(Hand.MAIN_HAND).isOf(Items.CYAN_WOOL)) {
+				return Vec3d.ofCenter(sleepingPos).add(0, 10, 0);
+			}
+
+			return wakeUpPos;
+		});
+
 		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
 			dispatcher.register(CommandManager.literal("addsleeptestwools").executes(context -> {
 				addSleepWools(context.getSource().getPlayer());
@@ -157,6 +182,8 @@ public final class EntityEventTests implements ModInitializer {
 		inventory.offerOrDrop(createNamedItem(Items.RED_WOOL, "Detect nearby monsters"));
 		inventory.offerOrDrop(createNamedItem(Items.WHITE_WOOL, "Don't set spawn"));
 		inventory.offerOrDrop(createNamedItem(Items.BLACK_WOOL, "Don't reset time"));
+		inventory.offerOrDrop(createNamedItem(Items.ORANGE_WOOL, "Don't set occupied state"));
+		inventory.offerOrDrop(createNamedItem(Items.CYAN_WOOL, "Wake up high above"));
 	}
 
 	private static ItemStack createNamedItem(Item item, String name) {

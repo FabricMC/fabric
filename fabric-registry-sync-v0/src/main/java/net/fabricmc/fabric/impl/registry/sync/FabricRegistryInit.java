@@ -172,5 +172,9 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Doesnt seem to be serialised or synced.
 		RegistryAttributeHolder.get(Registry.LOOT_CONDITION_TYPE);
+
+		// Synced in TagManager::toPacket/fromPacket -> TagGroup::serialize/deserialize
+		RegistryAttributeHolder.get(Registry.GAME_EVENT)
+				.addAttribute(RegistryAttribute.SYNCED);
 	}
 }
