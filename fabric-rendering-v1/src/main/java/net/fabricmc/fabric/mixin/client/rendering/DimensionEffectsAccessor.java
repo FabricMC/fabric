@@ -20,17 +20,17 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.render.SkyProperties;
+import net.minecraft.client.render.DimensionEffects;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
-@Mixin(SkyProperties.class)
-public interface SkyPropertiesAccessor {
+@Mixin(DimensionEffects.class)
+public interface DimensionEffectsAccessor {
 	@Accessor("BY_IDENTIFIER")
-	static Object2ObjectMap<Identifier, SkyProperties> getIdentifierMap() {
+	static Object2ObjectMap<Identifier, DimensionEffects> getIdentifierMap() {
 		throw new AssertionError("This should not occur!");
 	}
 }

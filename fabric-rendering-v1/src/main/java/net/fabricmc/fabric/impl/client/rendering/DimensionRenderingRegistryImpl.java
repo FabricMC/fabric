@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.render.SkyProperties;
+import net.minecraft.client.render.DimensionEffects;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry.CloudRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry.SkyRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry.WeatherRenderer;
-import net.fabricmc.fabric.mixin.client.rendering.SkyPropertiesAccessor;
+import net.fabricmc.fabric.mixin.client.rendering.DimensionEffectsAccessor;
 
 public final class DimensionRenderingRegistryImpl {
 	private static final Map<RegistryKey<World>, SkyRenderer> SKY_RENDERERS = new IdentityHashMap<>();
@@ -61,16 +61,16 @@ public final class DimensionRenderingRegistryImpl {
 		}
 	}
 
-	public static void registerSkyProperties(Identifier key, SkyProperties properties) {
+	public static void registerSkyProperties(Identifier key, DimensionEffects properties) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(properties);
 		//The map containing all skyproperties returns a default if null so a null checkdoesn't work.
 
-		if (SkyPropertiesAccessor.getIdentifierMap().containsKey(key)) {
+		if (DimensionEffectsAccessor.getIdentifierMap().containsKey(key)) {
 			throw new IllegalStateException("This id already has a registered skyproperties.");
 		} else {
-			SkyPropertiesAccessor.getIdentifierMap().put(key, properties);
-			System.out.println(SkyPropertiesAccessor.getIdentifierMap().get(key));
+			DimensionEffectsAccessor.getIdentifierMap().put(key, properties);
+			System.out.println(DimensionEffectsAccessor.getIdentifierMap().get(key));
 		}
 	}
 
@@ -101,7 +101,7 @@ public final class DimensionRenderingRegistryImpl {
 	}
 
 	@Nullable
-	public static SkyProperties getSkyProperties(Identifier key) {
-		return SkyPropertiesAccessor.getIdentifierMap().get(key);
+	public static DimensionEffects getSkyProperties(Identifier key) {
+		return DimensionEffectsAccessor.getIdentifierMap().get(key);
 	}
 }

@@ -20,7 +20,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.SkyProperties;
+import net.minecraft.client.render.DimensionEffects;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -85,6 +85,6 @@ public class DimensionalRenderingTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		DimensionRenderingRegistry.registerSkyRenderer(World.OVERWORLD, DimensionalRenderingTest::render);
-		DimensionRenderingRegistry.registerSkyProperties(new Identifier("fabric_dimension:void"), new SkyProperties.End());
+		DimensionRenderingRegistry.registerSkyProperties(new Identifier("fabric_dimension:void"), new DimensionEffects.End());
 	}
 }

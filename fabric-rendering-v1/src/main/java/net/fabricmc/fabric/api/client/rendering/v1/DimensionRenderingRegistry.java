@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.render.SkyProperties;
+import net.minecraft.client.render.DimensionEffects;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
@@ -30,7 +30,7 @@ import net.fabricmc.fabric.impl.client.rendering.DimensionRenderingRegistryImpl;
 /**
  * Dimensional renderers render world specific visuals of a world.
  * They may be used to render the sky, weather, or clouds.
- * The {@link SkyProperties} is the vanilla dimensional renderer.
+ * The {@link DimensionEffects} is the vanilla dimensional renderer.
  */
 @Environment(EnvType.CLIENT)
 public interface DimensionRenderingRegistry {
@@ -62,9 +62,9 @@ public interface DimensionRenderingRegistry {
 	 * <p>This registers a new option for the "effects" entry of the dimension type json.
 	 *
 	 * @param key        The {@link net.minecraft.util.Identifier} for the new option entry.ide
-	 * @param properties The {@link SkyProperties} option.
+	 * @param properties The {@link DimensionEffects} option.
 	 */
-	static void registerSkyProperties(Identifier key, SkyProperties properties) {
+	static void registerSkyProperties(Identifier key, DimensionEffects properties) {
 		DimensionRenderingRegistryImpl.registerSkyProperties(key, properties);
 	}
 
@@ -117,7 +117,7 @@ public interface DimensionRenderingRegistry {
 	 * no custom sky properties for the id are present.
 	 */
 	@Nullable
-	static SkyProperties getSkyProperties(Identifier key) {
+	static DimensionEffects getSkyProperties(Identifier key) {
 		return DimensionRenderingRegistryImpl.getSkyProperties(key);
 	}
 
