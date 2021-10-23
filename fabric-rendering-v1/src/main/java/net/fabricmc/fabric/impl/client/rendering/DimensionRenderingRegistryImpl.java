@@ -61,15 +61,15 @@ public final class DimensionRenderingRegistryImpl {
 		}
 	}
 
-	public static void registerSkyProperties(Identifier key, DimensionEffects properties) {
+	public static void registerDimensionEffects(Identifier key, DimensionEffects effects) {
 		Objects.requireNonNull(key);
-		Objects.requireNonNull(properties);
-		//The map containing all skyproperties returns a default if null so a null checkdoesn't work.
+		Objects.requireNonNull(effects);
+		//The map containing all dimension effects returns a default if null so a null check doesn't work.
 
 		if (DimensionEffectsAccessor.getIdentifierMap().containsKey(key)) {
-			throw new IllegalStateException("This id already has a registered skyproperties.");
+			throw new IllegalStateException("This id already has a registered dimension effect.");
 		} else {
-			DimensionEffectsAccessor.getIdentifierMap().put(key, properties);
+			DimensionEffectsAccessor.getIdentifierMap().put(key, effects);
 		}
 	}
 
@@ -100,7 +100,7 @@ public final class DimensionRenderingRegistryImpl {
 	}
 
 	@Nullable
-	public static DimensionEffects getSkyProperties(Identifier key) {
+	public static DimensionEffects getDimensionEffects(Identifier key) {
 		return DimensionEffectsAccessor.getIdentifierMap().get(key);
 	}
 }

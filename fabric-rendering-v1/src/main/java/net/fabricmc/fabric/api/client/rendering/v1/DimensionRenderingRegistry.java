@@ -63,12 +63,12 @@ public interface DimensionRenderingRegistry {
 	 *
 	 * <p>This registers a new option for the "effects" entry of the dimension type json.
 	 *
-	 * @param key        The {@link net.minecraft.util.Identifier} for the new option entry.ide
-	 * @param properties The {@link DimensionEffects} option.
+	 * @param key     The {@link net.minecraft.util.Identifier} for the new option entry.
+	 * @param effects The {@link DimensionEffects} option.
 	 * @throws IllegalArgumentException if key is already registered.
 	 */
-	static void registerDimensionEffectss(Identifier key, DimensionEffects properties) {
-		DimensionRenderingRegistryImpl.registerSkyProperties(key, properties);
+	static void registerDimensionEffects(Identifier key, DimensionEffects effects) {
+		DimensionRenderingRegistryImpl.registerDimensionEffects(key, effects);
 	}
 
 	/**
@@ -117,12 +117,13 @@ public interface DimensionRenderingRegistry {
 	}
 
 	/**
-	 * Gets the dimension effect registered for an id. Returns the overworld dimension effect if
-	 * no custom dimension effects for the id are present.
+	 * Gets the dimension effect registered for an id.
+	 * @param key A {@link RegistryKey} for your {@link World}.
+	 * @return overworld effect if no dimension effect is registered for the key.
 	 */
 	@Nullable
 	static DimensionEffects getDimensionEffects(Identifier key) {
-		return DimensionRenderingRegistryImpl.getSkyProperties(key);
+		return DimensionRenderingRegistryImpl.getDimensionEffects(key);
 	}
 
 	@FunctionalInterface
