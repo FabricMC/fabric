@@ -18,8 +18,6 @@ package net.fabricmc.fabric.impl.base.event;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +32,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.event.Event;
 
 class ArrayBackedEvent<T> extends Event<T> {
-	private static final Logger LOGGER = LogManager.getLogger("fabric-api-base");
+	static final Logger LOGGER = LogManager.getLogger("fabric-api-base");
 
 	private final Function<T[], T> invokerFactory;
 	private final Object lock = new Object();
@@ -82,6 +80,7 @@ class ArrayBackedEvent<T> extends Event<T> {
 			phase = new EventPhaseData<>(id, handlers.getClass().getComponentType());
 			phases.put(id, phase);
 			sortedPhases.add(phase);
+			PhaseSorting.sortPhases(sortedPhases);
 		}
 
 		return phase;
@@ -98,9 +97,9 @@ class ArrayBackedEvent<T> extends Event<T> {
 			int newHandlersIndex = 0;
 
 			for (EventPhaseData<T> existingPhase : sortedPhases) {
-				for (T handler : existingPhase.listeners) {
-					newHandlers[newHandlersIndex++] = handler;
-				}
+				int length = existingPhase.listeners.length;
+				System.arraycopy(existingPhase.listeners, 0, newHandlers, newHandlersIndex, length);
+				newHandlersIndex += length;
 			}
 
 			handlers = newHandlers;
@@ -121,90 +120,8 @@ class ArrayBackedEvent<T> extends Event<T> {
 			EventPhaseData<T> second = getOrCreatePhase(secondPhase);
 			first.subsequentPhases.add(second);
 			second.previousPhases.add(first);
-			sortPhases();
+			PhaseSorting.sortPhases(this.sortedPhases);
 			rebuildInvoker(handlers.length);
-		}
-	}
-
-	/**
-	 * Uses a modified Kosaraju SCC to sort the phases.
-	 */
-	private void sortPhases() {
-		sortedPhases.clear();
-
-		// FIRST VISIT
-		List<EventPhaseData<T>> toposort = new ArrayList<>(phases.size());
-
-		for (EventPhaseData<T> phase : phases.values()) {
-			forwardVisit(phase, null, toposort);
-		}
-
-		clearStatus(toposort);
-		Collections.reverse(toposort);
-
-		// SECOND VISIT
-		for (EventPhaseData<T> phase : toposort) {
-			backwardVisit(phase);
-		}
-
-		clearStatus(toposort);
-	}
-
-	private void forwardVisit(EventPhaseData<T> phase, EventPhaseData<T> parent, List<EventPhaseData<T>> toposort) {
-		if (phase.visitStatus == 0) {
-			// Not yet visited.
-			phase.visitStatus = 1;
-
-			for (EventPhaseData<T> data : phase.subsequentPhases) {
-				forwardVisit(data, phase, toposort);
-			}
-
-			toposort.add(phase);
-			phase.visitStatus = 2;
-		} else if (phase.visitStatus == 1) {
-			// Already visiting, so we have found a cycle.
-			LOGGER.warn(String.format(
-					"Event phase ordering conflict detected.%nEvent phase %s is ordered both before and after event phase %s.",
-					phase.id,
-					parent.id
-			));
-		}
-	}
-
-	private void clearStatus(List<EventPhaseData<T>> phases) {
-		for (EventPhaseData<T> phase : phases) {
-			phase.visitStatus = 0;
-		}
-	}
-
-	private void backwardVisit(EventPhaseData<T> phase) {
-		if (phase.visitStatus == 0) {
-			phase.visitStatus = 1;
-			sortedPhases.add(phase);
-
-			for (EventPhaseData<T> data : phase.previousPhases) {
-				backwardVisit(data);
-			}
-		}
-	}
-
-	private static class EventPhaseData<T> {
-		final Identifier id;
-		T[] listeners;
-		final List<EventPhaseData<T>> subsequentPhases = new ArrayList<>();
-		final List<EventPhaseData<T>> previousPhases = new ArrayList<>();
-		int visitStatus = 0; // 0: not visited, 1: visiting, 2: visited
-
-		@SuppressWarnings("unchecked")
-		private EventPhaseData(Identifier id, Class<?> listenerClass) {
-			this.id = id;
-			this.listeners = (T[]) Array.newInstance(listenerClass, 0);
-		}
-
-		private void addListener(T listener) {
-			int oldLength = listeners.length;
-			listeners = Arrays.copyOf(listeners, oldLength + 1);
-			listeners[oldLength] = listener;
 		}
 	}
 }

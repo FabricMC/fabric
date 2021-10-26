@@ -16,23 +16,37 @@
 
 package net.fabricmc.fabric.test.base;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.impl.base.event.PhaseSorting;
 
 public class EventTests {
+	private static final Logger LOGGER = LogManager.getLogger("fabric-api-base");
+
 	public static void run() {
+		long time1 = System.currentTimeMillis();
+
 		testDefaultPhaseOnly();
 		testMultipleDefaultPhases();
 		testAddedPhases();
 		testCycle();
-		LogManager.getLogger("fabric-api-base").info("Event unit tests succeeded!");
+		PhaseSorting.ENABLE_CYCLE_WARNING = false;
+		testDeterministicOrdering();
+		PhaseSorting.ENABLE_CYCLE_WARNING = true;
+
+		long time2 = System.currentTimeMillis();
+		LOGGER.info("Event unit tests succeeded in {} milliseconds.", time2 - time1);
 	}
 
 	private static final Function<Test[], Test> INVOKER_FACTORY = listeners -> () -> {
@@ -142,6 +156,63 @@ public class EventTests {
 			event.invoker().onTest();
 			assertEquals(5, currentListener);
 			currentListener = 0;
+		}
+	}
+
+	/**
+	 * Ensure that phases get sorted deterministically regardless of the order in which constraints are registered.
+	 */
+	private static void testDeterministicOrdering() {
+		Identifier a = new Identifier("fabric", "a");
+		Identifier b = new Identifier("fabric", "b");
+		Identifier d = new Identifier("fabric", "d");
+		Identifier e = new Identifier("fabric", "e");
+		Identifier f = new Identifier("fabric", "f");
+		Identifier y = new Identifier("fabric", "y");
+		Identifier z = new Identifier("fabric", "z");
+
+		List<Consumer<Event<Test>>> dependencies = List.of(
+				ev -> ev.addPhaseOrdering(a, z),
+				ev -> ev.addPhaseOrdering(d, e),
+				ev -> ev.addPhaseOrdering(e, z),
+				ev -> ev.addPhaseOrdering(z, b),
+				ev -> ev.addPhaseOrdering(b, y),
+				ev -> ev.addPhaseOrdering(y, z)
+		);
+
+		testAllPermutations(new ArrayList<>(), dependencies, selectedDependencies -> {
+			Event<Test> event = createEvent();
+
+			for (Consumer<Event<Test>> dependency : selectedDependencies) {
+				dependency.accept(event);
+			}
+
+			event.register(a, ensureOrder(0));
+			event.register(d, ensureOrder(1));
+			event.register(e, ensureOrder(2));
+			event.register(b, ensureOrder(3));
+			event.register(y, ensureOrder(4));
+			event.register(z, ensureOrder(5));
+			event.register(f, ensureOrder(6));
+
+			event.invoker().onTest();
+			assertEquals(7, currentListener);
+			currentListener = 0;
+		});
+	}
+
+	@SuppressWarnings("SuspiciousListRemoveInLoop")
+	private static <T> void testAllPermutations(List<T> selected, List<T> toSelect, Consumer<List<T>> action) {
+		if (toSelect.size() == 0) {
+			action.accept(selected);
+		} else {
+			for (int i = 0; i < toSelect.size(); ++i) {
+				selected.add(toSelect.get(i));
+				List<T> remaining = new ArrayList<>(toSelect);
+				remaining.remove(i);
+				testAllPermutations(selected, remaining, action);
+				selected.remove(selected.size()-1);
+			}
 		}
 	}
 
