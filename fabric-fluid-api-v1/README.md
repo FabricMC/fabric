@@ -9,13 +9,14 @@ compared with vanilla one.
 - [x] Ready-to-use basic abstract FlowableFluid class.
 - [x] Ready-to-use basic FluidBlock class.
 - [x] Custom fog.
-- [x] Splash sounds and particles.
-- [x] Splash events.
-- [x] Player pushing.
-- [ ] Player swimming.
-- [ ] Player drowning.
+- [x] Pushing strength.
+- [x] Splash event.
+- [x] Splash event: splash sounds and particles.
+- [x] Submerged event.
+- [x] Submerged event: entity drowning.
+- [x] Handling fire and fall.
+- [ ] Entity swimming.
 - [ ] Boats over the fluid.
-- [ ] Supporting previous releases, such as 1.16.
 
 ## Ready-to-use basic fluid rendering
 
@@ -80,6 +81,23 @@ The already implemented methods are:
   It returns `true` if the given fluid is an instance of the current flowable
   or still fluid.
 
+There is also the [`ExtendedFabricFlowableFluid`][extendedfabricflowablefluid_java]
+that implements some methods from [`ExtendedFlowableFluid`][extendedflowablefluid_java].
+
+It implements:
+
+* `boolean canExtinguishFire()`  
+  Returns `true` (the fluid can extinguish fire).
+
+* `boolean canPreventFallDamage()`  
+  Returns `true` (the fluid can prevent fall damage).
+
+* `void onSplash(World, Vec3d, Entity)`  
+  Does nothing.
+
+* `void onSubmerged(World, Entity)`  
+  Implements drowning for every living entity.
+
 ## Ready-to-use basic FluidBlock class
 
 The [`FabricFluidBlock`][fabricfluidblock_java] class extends the `FluidBlock`
@@ -92,7 +110,7 @@ and `FluidBlock`.
 ## Custom fog
 
 By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, you will obtain some methods where to
+interface on your fluid class, you can implement three methods allowing to
 specify the fog parameters.
 
 * `int getFogColor(Entity)`  
@@ -104,36 +122,49 @@ specify the fog parameters.
 * `float getFogStart(Entity)`  
   Allows to specify the fog starting distance.
 
-## Custom sounds
-
-By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, you will obtain a method that allows to
-specify the splash sound.
-
-`Optional<SoundEvent> getSplashSound()`
-
 ## Pushing strength
 
 By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, you will obtain a method that allows to
+interface on your fluid class, you can implement a method allowing to
 specify the pushing strength of the fluid.
 
-`double getStrength()`
+`double getViscosity(World, Vec3d, Entity)`
 
 ## Splash event
 
 By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, you will obtain a method that is executed
+interface on your fluid class, you can implement a method that is executed
 when the player splashes on the fluid (like jumping).
-This method is useful to spawn particles.
+This method is useful to spawn particles and play splash sounds.
 
 `void onSplash(World, Vec3d, Entity)`
 
-## fabric_fluid tag
+## Submerged event
 
-To implement custom sounds, pushing strength, and splash events, your fluid
-must be in the [`fabric:fabric_fluid`][fabric_fluid_tag] tag, so add a file
-named `fabric_fluid.json` inside `/resources/data/fabric/tags/fluids`
+By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
+interface on your fluid class, you can implement a method that is executed
+every tick, when the player is submerged by the fluid.
+This method is useful to handle drowning.
+
+`void onSubmerged(World, Entity)`
+
+## Handling fire and fall
+
+By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
+interface on your fluid class, you can implement two methods allowing to
+specify if the fluid can extinguish fire and prevent fall damage.
+
+* `boolean canExtinguishFire()`  
+  Allows to specify if the fluid can extinguish fire.
+
+* `boolean canPreventFallDamage()`  
+  Allows to specify if the fluid can prevent fall damage.
+
+## The `fabric:fabric_fluid` tag
+
+To implement all the features of this api, your fluid
+must be added in the [`fabric:fabric_fluid`][fabric_fluid_tag] tag, so add
+a file named `fabric_fluid.json` inside `/resources/data/fabric/tags/fluids`
 and add your fluid here, in both still and flowing variant.
 
 ```json
@@ -151,6 +182,7 @@ and add your fluid here, in both still and flowing variant.
 
 [fluidrenderer_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/render/FluidRenderer.java
 [fabricflowablefluid_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/FabricFlowableFluid.java
+[extendedfabricflowablefluid_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/ExtendedFabricFlowableFluid.java
 [fabricfluidblock_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/FabricFluidBlock.java
 [extendedflowablefluid_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/ExtendedFlowableFluid.java
 [fabric_fluid_tag]: src/main/java/net/fabricmc/fabric/api/fluid/v1/tag/FabricFluidTags.java

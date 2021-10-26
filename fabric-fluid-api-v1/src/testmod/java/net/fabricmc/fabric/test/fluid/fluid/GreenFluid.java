@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.fluid.fluid;
 
+import net.fabricmc.fabric.api.fluid.v1.ExtendedFabricFlowableFluid;
 import net.fabricmc.fabric.api.fluid.v1.ExtendedFlowableFluid;
 import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 import net.fabricmc.fabric.test.fluid.block.MBlocks;
@@ -36,7 +37,7 @@ import net.minecraft.world.WorldView;
 
 import java.util.Optional;
 
-public abstract class GreenFluid extends FabricFlowableFluid implements ExtendedFlowableFluid {
+public abstract class GreenFluid extends ExtendedFabricFlowableFluid {
 	@Override
 	public Fluid getFlowing() {
 		return MFluids.GREEN_FLUID_FlOWING;
@@ -83,36 +84,27 @@ public abstract class GreenFluid extends FabricFlowableFluid implements Extended
 	}
 
 	@Override
-	public int getFogColor(Entity focusedEntity) {
+	public int getFogColor(Entity entity) {
 		return 0x00ff00;
 	}
 
 	@Override
-	public float getFogEnd(Entity focusedEntity) {
+	public float getFogEnd(Entity entity) {
 		return 2.0f;
 	}
 
 	@Override
-	public float getFogStart(Entity focusedEntity) {
+	public float getFogStart(Entity entity) {
 		return 0.25f;
 	}
 
 	@Override
-	public Optional<SoundEvent> getSplashSound() {
-		return Optional.of(SoundEvents.ENTITY_STRIDER_STEP_LAVA);
-	}
-
-	@Override
-	public double getStrength() {
+	public double getViscosity(World world, Vec3d pos, Entity entity) {
 		return 0.004d;
 	}
 
 	@Override
-	public void onSplash(World world, Vec3d pos, Entity entity) {
-		world.addParticle(ParticleTypes.SPLASH, pos.getX(), pos.getY(), pos.getZ(), 0.02d, 0.02d, 0.02d);
-		world.addParticle(ParticleTypes.SPLASH, pos.getX(), pos.getY(), pos.getZ(), 0.02d, 0.02d, 0.02d);
-		world.addParticle(ParticleTypes.SPLASH, pos.getX(), pos.getY(), pos.getZ(), 0.02d, 0.02d, 0.02d);
-	}
+	public void onSubmerged(World world, Entity entity) {}
 
 	public static class Flowing extends GreenFluid {
 		@Override

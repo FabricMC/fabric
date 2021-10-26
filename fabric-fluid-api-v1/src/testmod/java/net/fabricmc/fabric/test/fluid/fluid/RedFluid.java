@@ -16,12 +16,15 @@
 
 package net.fabricmc.fabric.test.fluid.fluid;
 
+import net.fabricmc.fabric.api.fluid.v1.ExtendedFabricFlowableFluid;
 import net.fabricmc.fabric.api.fluid.v1.ExtendedFlowableFluid;
 import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 import net.fabricmc.fabric.test.fluid.block.MBlocks;
 import net.fabricmc.fabric.test.fluid.item.MItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
@@ -36,7 +39,7 @@ import net.minecraft.world.WorldView;
 
 import java.util.Optional;
 
-public abstract class RedFluid extends FabricFlowableFluid implements ExtendedFlowableFluid {
+public abstract class RedFluid extends ExtendedFabricFlowableFluid {
 	@Override
 	public Fluid getFlowing() {
 		return MFluids.RED_FLUID_FlOWING;
@@ -83,32 +86,38 @@ public abstract class RedFluid extends FabricFlowableFluid implements ExtendedFl
 	}
 
 	@Override
-	public int getFogColor(Entity focusedEntity) {
+	public int getFogColor(Entity entity) {
 		return 0xff0000;
 	}
 
 	@Override
-	public float getFogEnd(Entity focusedEntity) {
+	public float getFogEnd(Entity entity) {
 		return 10.0f;
 	}
 
 	@Override
-	public float getFogStart(Entity focusedEntity) {
+	public float getFogStart(Entity entity) {
 		return -10.0f;
 	}
 
 	@Override
-	public Optional<SoundEvent> getSplashSound() {
-		return Optional.of(SoundEvents.ENTITY_GENERIC_SPLASH);
+	public double getViscosity(World world, Vec3d pos, Entity entity) {
+		return 0.020d;
 	}
 
 	@Override
-	public double getStrength() {
-		return 0.002d;
+	public boolean canExtinguishFire() {
+		return false;
+	}
+
+	@Override
+	public boolean canPreventFallDamage() {
+		return false;
 	}
 
 	@Override
 	public void onSplash(World world, Vec3d pos, Entity entity) {
+		entity.playSound(SoundEvents.ENTITY_STRIDER_STEP_LAVA, 1f, 1f);
 		world.addParticle(ParticleTypes.GLOW, pos.getX(), pos.getY(), pos.getZ(), 0.02d, 0.02d, 0.02d);
 		world.addParticle(ParticleTypes.GLOW, pos.getX(), pos.getY(), pos.getZ(), 0.02d, 0.02d, 0.02d);
 	}

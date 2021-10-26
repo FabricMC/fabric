@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.fluid.v1.render;
+package net.fabricmc.fabric.impl.fluid;
 
 import net.minecraft.fluid.FluidState;
 
 /**
- * Implements missing Camera features.
+ * Implements some camera features about fluids.
  */
 public interface FabricCamera {
     /**

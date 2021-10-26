@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.fluid.client;
 
-import net.fabricmc.fabric.api.fluid.v1.render.FabricCamera;
+import net.fabricmc.fabric.impl.fluid.FabricCamera;
 import net.minecraft.client.render.Camera;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;

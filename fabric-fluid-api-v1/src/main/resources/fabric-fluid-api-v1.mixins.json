@@ -3,11 +3,13 @@
   "package": "net.fabricmc.fabric.mixin.fluid",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "EntityMixin"
+    "EntityMixin",
+    "LivingEntityMixin"
   ],
   "client": [
     "client.BackgroundRendererMixin",
-    "client.CameraMixin"
+    "client.CameraMixin",
+    "client.ClientPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

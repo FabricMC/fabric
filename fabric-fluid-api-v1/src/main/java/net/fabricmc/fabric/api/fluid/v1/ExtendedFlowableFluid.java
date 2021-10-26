@@ -17,49 +17,61 @@
 package net.fabricmc.fabric.api.fluid.v1;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-
-import java.util.Optional;
 
 /**
  * Extends the FlowableFluid class with more customizations.
  */
 public interface ExtendedFlowableFluid {
 	/**
-	 * Get the fog color.
-	 * @param focusedEntity The current entity that displays the fog.
+	 * @return true if the fluid can extinguish fire.
 	 */
-	int getFogColor(Entity focusedEntity);
+	boolean canExtinguishFire();
+
+	/**
+	 * @return true if the fluid can prevent fall damage.
+	 */
+	boolean canPreventFallDamage();
+
+	/**
+	 * Get the fog color.
+	 * @param entity The current entity that displays the fog.
+	 */
+	int getFogColor(Entity entity);
 
 	/**
 	 * Get the fog ending value.
-	 * @param focusedEntity The current entity that displays the fog.
+	 * @param entity The current entity that displays the fog.
 	 */
-	float getFogEnd(Entity focusedEntity);
+	float getFogEnd(Entity entity);
 
 	/**
 	 * Get the fog starting value.
-	 * @param focusedEntity The current entity that displays the fog.
+	 * @param entity The current entity that displays the fog.
 	 */
-	float getFogStart(Entity focusedEntity);
+	float getFogStart(Entity entity);
 
 	/**
-	 * Get the fluid splash sound.
+	 * Get the fluid viscosity, that is equal to the pushing strength of the fluid.
+	 * @param world The current world.
+	 * @param pos The position of the current entity.
+	 * @param entity The current entity in the fluid.
 	 */
-	Optional<SoundEvent> getSplashSound();
-
-	/**
-	 * Get the fluid pushing strength.
-	 */
-	double getStrength();
+	double getViscosity(World world, Vec3d pos, Entity entity);
 
 	/**
 	 * Event executed when an entity falls, or enters, into the fluid.
 	 * @param world The current world.
-	 * @param pos The position where the current entity splashed.
-	 * @param entity The current entity that caused the event.
+	 * @param pos The position of the current entity.
+	 * @param entity The current entity in the fluid.
 	 */
 	void onSplash(World world, Vec3d pos, Entity entity);
+
+	/**
+	 * Event executed when the entity is into the fluid.
+	 * @param world The current world.
+	 * @param entity The current entity in the fluid.
+	 */
+	void onSubmerged(World world, Entity entity);
 }
