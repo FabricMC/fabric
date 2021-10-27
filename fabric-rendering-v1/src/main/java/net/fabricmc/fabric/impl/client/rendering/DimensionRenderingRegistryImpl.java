@@ -36,8 +36,8 @@ import net.fabricmc.fabric.mixin.client.rendering.DimensionEffectsAccessor;
 
 public final class DimensionRenderingRegistryImpl {
 	private static final Map<RegistryKey<World>, SkyRenderer> SKY_RENDERERS = new IdentityHashMap<>();
-	private static final Map<RegistryKey<World>, CloudRenderer> CLOUD_RENDERERS = new HashMap<>();
-	private static final Map<RegistryKey<World>, WeatherRenderer> WEATHER_RENDERERS = new HashMap<>();
+	private static final Map<RegistryKey<World>, CloudRenderer> CLOUD_RENDERERS = new IdentityHashMap<>();
+	private static final Map<RegistryKey<World>, WeatherRenderer> WEATHER_RENDERERS = new IdentityHashMap<>();
 
 	public static void registerSkyRenderer(RegistryKey<World> key, DimensionRenderingRegistry.SkyRenderer renderer) {
 		Objects.requireNonNull(key);
