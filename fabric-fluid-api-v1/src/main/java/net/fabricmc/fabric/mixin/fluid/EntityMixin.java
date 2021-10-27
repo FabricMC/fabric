@@ -92,17 +92,24 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 	@Redirect(method = "move(Lnet/minecraft/entity/MovementType;Lnet/minecraft/util/math/Vec3d;)V", at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/entity/Entity;playStepSound(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V"))
-	private void playStepSoundHandler(Entity entity, BlockPos pos, BlockState state) {
+	private void playStepSoundRedirect(Entity entity, BlockPos pos, BlockState state) {
 		//Don't play step sounds if the entity is touching a fabric_fluid
 		if (!this.isTouchingFabricFluid()) this.playStepSound(pos, state);
 	}
 
 	@Redirect(method = "move(Lnet/minecraft/entity/MovementType;Lnet/minecraft/util/math/Vec3d;)V", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/entity/Entity;emitGameEvent(Lnet/minecraft/world/event/GameEvent;)V"))
-	private void emitGameEventHandler(Entity entity, GameEvent event) {
+			target = "Lnet/minecraft/entity/Entity;emitGameEvent(Lnet/minecraft/world/event/GameEvent;)V", ordinal = 1))
+	private void emitGameEventRedirect(Entity entity, GameEvent event) {
 		//Emit the swim event if the entity is touching a fabric_fluid
 		if (!this.isTouchingFabricFluid()) this.emitGameEvent(event);
 		else this.emitGameEvent(GameEvent.SWIM);
+	}
+
+	@Redirect(method = "baseTick()V", at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/entity/Entity;isInLava()Z", ordinal = 0))
+	private boolean isInLavaRedirect(Entity entity) {
+		if (isTouchingFabricFluid()) return true;
+		else return entity.isInLava();
 	}
 
 	@Inject(method = "updateSubmergedInWaterState()V", at = @At("HEAD"), cancellable = true)
@@ -149,7 +156,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 			this.touchingFabricFluid = false;
 		} else if (this.world.getFluidState(this.blockPos).getFluid() instanceof ExtendedFlowableFluid fluid) {
 			//Get the fluid viscosity, that is equal to the pushing strength of the fluid
-			double viscosity = fluid.getViscosity(this.world, this.getPos(), this.getThis());
+			double viscosity = fluid.getViscosity(this.world, this.getThis());
 
 			//updateMovementInFluid returns true if the entity is currently touching the fluid
 			if (this.updateMovementInFluid(FabricFluidTags.FABRIC_FLUID, viscosity)) {
@@ -194,16 +201,21 @@ public abstract class EntityMixin implements FabricFluidEntity {
 		//This is not executed on spectator mode, and for exp orbs
 		if (!this.isSpectator() && !(this.getThis() instanceof ExperienceOrbEntity)) {
 			//Eecute the splash event
-			fluid.onSplash(this.world, this.getPos(), this.getThis());
+			fluid.onSplash(this.world, this.getThis());
 		}
 	}
 
 	@Unique
 	private void fabricFluidTick() {
-		if (this.world.getFluidState(this.blockPos).getFluid() instanceof ExtendedFlowableFluid fluid
-				&& this.isSubmergedIn(FabricFluidTags.FABRIC_FLUID)) {
-			//Executes an event if the entity is submerged in a fabric_fluid
-			fluid.onSubmerged(world, this.getThis());
+		if (this.world.getFluidState(this.blockPos).getFluid() instanceof ExtendedFlowableFluid fluid) {
+			if (isSubmergedInFabricFluid()) {
+				//Executes an event if the entity is submerged in a fabric_fluid
+				fluid.onSubmerged(world, this.getThis());
+			}
+			if (isTouchingFabricFluid()) {
+				//Executes an event if the entity is touching a fabric_fluid
+				fluid.onTouching(world, this.getThis());
+			}
 		}
 	}
 

@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.fluid.v1;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 /**
@@ -25,14 +24,25 @@ import net.minecraft.world.World;
  */
 public interface ExtendedFlowableFluid {
 	/**
+	 * @return true if the fluid can drown entities.
+	 */
+	default boolean canDrown() {
+		return true;
+	}
+
+	/**
 	 * @return true if the fluid can extinguish fire.
 	 */
-	boolean canExtinguishFire();
+	default boolean canExtinguishFire() {
+		return true;
+	}
 
 	/**
 	 * @return true if the fluid can prevent fall damage.
 	 */
-	boolean canPreventFallDamage();
+	default boolean canPreventFallDamage() {
+		return true;
+	}
 
 	/**
 	 * Get the fog color.
@@ -55,23 +65,28 @@ public interface ExtendedFlowableFluid {
 	/**
 	 * Get the fluid viscosity, that is equal to the pushing strength of the fluid.
 	 * @param world The current world.
-	 * @param pos The position of the current entity.
 	 * @param entity The current entity in the fluid.
 	 */
-	double getViscosity(World world, Vec3d pos, Entity entity);
+	double getViscosity(World world, Entity entity);
 
 	/**
 	 * Event executed when an entity falls, or enters, into the fluid.
 	 * @param world The current world.
-	 * @param pos The position of the current entity.
 	 * @param entity The current entity in the fluid.
 	 */
-	void onSplash(World world, Vec3d pos, Entity entity);
+	default void onSplash(World world, Entity entity) {}
 
 	/**
 	 * Event executed when the entity is into the fluid.
 	 * @param world The current world.
 	 * @param entity The current entity in the fluid.
 	 */
-	void onSubmerged(World world, Entity entity);
+	default void onSubmerged(World world, Entity entity) {}
+
+	/**
+	 * Event executed when the entity is touching the fluid.
+	 * @param world The current world.
+	 * @param entity The current entity in the fluid.
+	 */
+	default void onTouching(World world, Entity entity) {}
 }

@@ -14,7 +14,11 @@ compared with vanilla one.
 - [x] Splash event: splash sounds and particles.
 - [x] Submerged event.
 - [x] Submerged event: entity drowning.
+- [x] Touching event.
+- [x] Touching event: entity on fire.
+- [x] Specify if the fluid can light fire.
 - [x] Handling fire and fall.
+- [x] Handling drowning.
 - [ ] Entity swimming.
 - [ ] Boats over the fluid.
 
@@ -86,17 +90,11 @@ that implements some methods from [`ExtendedFlowableFluid`][extendedflowableflui
 
 It implements:
 
-* `boolean canExtinguishFire()`  
-  Returns `true` (the fluid can extinguish fire).
-
-* `boolean canPreventFallDamage()`  
-  Returns `true` (the fluid can prevent fall damage).
-
-* `void onSplash(World, Vec3d, Entity)`  
-  Does nothing.
-
 * `void onSubmerged(World, Entity)`  
   Implements drowning for every living entity.
+
+* `void onTouching(World, Entity)`  
+  Implements setting entities on fire.
 
 ## Ready-to-use basic FluidBlock class
 
@@ -128,7 +126,7 @@ By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
 interface on your fluid class, you can implement a method allowing to
 specify the pushing strength of the fluid.
 
-`double getViscosity(World, Vec3d, Entity)`
+`double getViscosity(World, Entity)`
 
 ## Splash event
 
@@ -137,7 +135,7 @@ interface on your fluid class, you can implement a method that is executed
 when the player splashes on the fluid (like jumping).
 This method is useful to spawn particles and play splash sounds.
 
-`void onSplash(World, Vec3d, Entity)`
+`void onSplash(World, Entity)`
 
 ## Submerged event
 
@@ -147,6 +145,22 @@ every tick, when the player is submerged by the fluid.
 This method is useful to handle drowning.
 
 `void onSubmerged(World, Entity)`
+
+## Touching event
+
+By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
+interface on your fluid class, you can implement a method that is executed
+every tick, when the player is touching the fluid.
+This method is useful to handle setting entities on fire.
+
+`void onTouching(World, Entity)`
+
+## Specify if the fluid can light fire
+
+The [`FabricFlowableFluid`][fabricflowablefluid_java] class
+implements a method allowing to specify if the fluid can light fire.
+
+`boolean canLightFire()`
 
 ## Handling fire and fall
 
@@ -159,6 +173,13 @@ specify if the fluid can extinguish fire and prevent fall damage.
 
 * `boolean canPreventFallDamage()`  
   Allows to specify if the fluid can prevent fall damage.
+
+## Handling drowning
+By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
+interface on your fluid class, you can implement a method allowing to
+specify if the fluid can drown entities.
+
+`boolean canDrown()`
 
 ## The `fabric:fabric_fluid` tag
 

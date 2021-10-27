@@ -52,7 +52,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 	}
 
 	@Redirect(method = "baseTick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getMaxAir()I"))
-	private int getMaxAir(@NotNull LivingEntity entity) {
+	private int getMaxAirRedirect(@NotNull LivingEntity entity) {
 		//If the entity is subberged in fabric_fluid returns -20, so basetick does not reset the air
 		return entity.isSubmergedIn(FabricFluidTags.FABRIC_FLUID) ? -20 : entity.getMaxAir();
 	}

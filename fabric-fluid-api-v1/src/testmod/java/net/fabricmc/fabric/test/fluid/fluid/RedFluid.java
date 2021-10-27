@@ -17,27 +17,19 @@
 package net.fabricmc.fabric.test.fluid.fluid;
 
 import net.fabricmc.fabric.api.fluid.v1.ExtendedFabricFlowableFluid;
-import net.fabricmc.fabric.api.fluid.v1.ExtendedFlowableFluid;
-import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 import net.fabricmc.fabric.test.fluid.block.MBlocks;
 import net.fabricmc.fabric.test.fluid.item.MItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
-
-import java.util.Optional;
 
 public abstract class RedFluid extends ExtendedFabricFlowableFluid {
 	@Override
@@ -101,7 +93,7 @@ public abstract class RedFluid extends ExtendedFabricFlowableFluid {
 	}
 
 	@Override
-	public double getViscosity(World world, Vec3d pos, Entity entity) {
+	public double getViscosity(World world, Entity entity) {
 		return 0.020d;
 	}
 
@@ -111,15 +103,20 @@ public abstract class RedFluid extends ExtendedFabricFlowableFluid {
 	}
 
 	@Override
+	public boolean canLightFire() {
+		return true;
+	}
+
+	@Override
 	public boolean canPreventFallDamage() {
 		return false;
 	}
 
 	@Override
-	public void onSplash(World world, Vec3d pos, Entity entity) {
+	public void onSplash(World world, Entity entity) {
 		entity.playSound(SoundEvents.ENTITY_STRIDER_STEP_LAVA, 1f, 1f);
-		world.addParticle(ParticleTypes.GLOW, pos.getX(), pos.getY(), pos.getZ(), 0.02d, 0.02d, 0.02d);
-		world.addParticle(ParticleTypes.GLOW, pos.getX(), pos.getY(), pos.getZ(), 0.02d, 0.02d, 0.02d);
+		world.addParticle(ParticleTypes.GLOW, entity.getX(), entity.getY(), entity.getZ(), 0.02d, 0.02d, 0.02d);
+		world.addParticle(ParticleTypes.GLOW, entity.getX(), entity.getY(), entity.getZ(), 0.02d, 0.02d, 0.02d);
 	}
 
 	public static class Flowing extends RedFluid {

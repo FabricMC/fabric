@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.fluid.v1;
 
+import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -26,10 +27,11 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.world.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * Implements the basic behaviour of every fluid.
@@ -49,6 +51,13 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	 */
 	@Override
 	protected boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos, Fluid fluid, Direction direction) {
+		return false;
+	}
+
+	/**
+	 * @return true if the fluid can light fire.
+	 */
+	public boolean canLightFire() {
 		return false;
 	}
 
@@ -81,5 +90,57 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	@Override
 	public boolean matchesType(Fluid fluid) {
 		return fluid == getStill() || fluid == getFlowing();
+	}
+
+	@Override
+	public void onRandomTick(World world, BlockPos pos, FluidState state, Random random) {
+		if (!canLightFire()) return;
+		if (world.getGameRules().getBoolean(GameRules.DO_FIRE_TICK)) {
+			int i = random.nextInt(3);
+			if (i > 0) {
+				BlockPos blockPos = pos;
+				for(int j = 0; j < i; ++j) {
+					blockPos = blockPos.add(random.nextInt(3) - 1, 1, random.nextInt(3) - 1);
+					if (!world.canSetBlock(blockPos)) return;
+
+					BlockState blockState = world.getBlockState(blockPos);
+					if (blockState.isAir()) {
+						Direction[] var3 = Direction.values();
+						boolean canBurnBlock = false;
+
+						for (Direction direction : var3) {
+							if (this.hasBurnableBlock(world, pos.offset(direction))) {
+								canBurnBlock = true;
+							}
+						}
+
+						if (canBurnBlock) {
+							world.setBlockState(blockPos, AbstractFireBlock.getState(world, blockPos));
+							return;
+						}
+					} else if (blockState.getMaterial().blocksMovement()) return;
+				}
+			} else {
+				for(int k = 0; k < 3; ++k) {
+					BlockPos blockPos2 = pos.add(random.nextInt(3) - 1, 0, random.nextInt(3) - 1);
+					if (!world.canSetBlock(blockPos2)) return;
+
+					if (world.isAir(blockPos2.up()) && this.hasBurnableBlock(world, blockPos2)) {
+						world.setBlockState(blockPos2.up(), AbstractFireBlock.getState(world, blockPos2));
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	protected boolean hasRandomTicks() {
+		return canLightFire();
+	}
+
+	@SuppressWarnings("deprecation")
+	private boolean hasBurnableBlock(@NotNull WorldView world, @NotNull BlockPos pos) {
+		return (pos.getY() < world.getBottomY() || pos.getY() >= world.getTopY() || world.isChunkLoaded(pos))
+				&& world.getBlockState(pos).getMaterial().isBurnable();
 	}
 }
