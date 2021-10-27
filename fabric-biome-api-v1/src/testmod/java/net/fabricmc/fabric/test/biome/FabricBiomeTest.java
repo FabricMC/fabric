@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.biome;
 
-import net.minecraft.class_6727;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
@@ -25,9 +24,10 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.BiomeKeys;
-import net.minecraft.world.biome.DefaultBiomeCreator;
+import net.minecraft.world.biome.OverworldBiomeCreator;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
+import net.minecraft.world.biome.TheNetherBiomeCreator;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -66,12 +66,12 @@ public class FabricBiomeTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Registry.register(BuiltinRegistries.BIOME, TEST_CRIMSON_FOREST.getValue(), class_6727.method_39149());
+		Registry.register(BuiltinRegistries.BIOME, TEST_CRIMSON_FOREST.getValue(), TheNetherBiomeCreator.createCrimsonForest());
 
 		NetherBiomes.addNetherBiome(BiomeKeys.THE_END, MultiNoiseUtil.createNoiseValuePoint(0.0F, 0.5F, 0.0F, 0.0F, 0.0f, 0.1F));
 		NetherBiomes.addNetherBiome(TEST_CRIMSON_FOREST, MultiNoiseUtil.createNoiseValuePoint(0.0F, 0.5F, 0.0F, 0.0F, 0.0f, 0.275F));
 
-		Registry.register(BuiltinRegistries.BIOME, CUSTOM_PLAINS.getValue(), DefaultBiomeCreator.createPlains(false, false, false));
+		Registry.register(BuiltinRegistries.BIOME, CUSTOM_PLAINS.getValue(), OverworldBiomeCreator.createPlains(false, false, false));
 
 		Registry.register(BuiltinRegistries.BIOME, TEST_END_HIGHLANDS.getValue(), createEndHighlands());
 		Registry.register(BuiltinRegistries.BIOME, TEST_END_MIDLANDS.getValue(), createEndMidlands());

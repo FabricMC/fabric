@@ -118,7 +118,7 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 				location.setBlockState(newState);
 
 				if (newLevel == 7) {
-					location.world.getBlockTickScheduler().schedule(location.pos, state.getBlock(), 20);
+					location.world.method_39279(location.pos, state.getBlock(), 20);
 				}
 			}
 

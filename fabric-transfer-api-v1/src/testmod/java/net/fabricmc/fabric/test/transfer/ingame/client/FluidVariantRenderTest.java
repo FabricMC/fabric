@@ -76,7 +76,7 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 		float v0 = sprite.getMinV();
 		float u1 = sprite.getMaxU();
 		float v1 = sprite.getMaxV();
-		Matrix4f model = ms.peek().getModel();
+		Matrix4f model = ms.peek().getPositionMatrix();
 		bufferBuilder.vertex(model, x0, y1, z).color(r, g, b, 1).texture(u0, v1).next();
 		bufferBuilder.vertex(model, x1, y1, z).color(r, g, b, 1).texture(u1, v1).next();
 		bufferBuilder.vertex(model, x1, y0, z).color(r, g, b, 1).texture(u1, v0).next();
