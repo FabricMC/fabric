@@ -18,7 +18,7 @@ package net.fabricmc.fabric.mixin.fluid.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.fluid.v1.ExtendedFlowableFluid;
-import net.fabricmc.fabric.impl.fluid.FabricCamera;
+import net.fabricmc.fabric.impl.fluid.FabricFluidCamera;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.world.ClientWorld;
@@ -41,7 +41,7 @@ public class BackgroundRendererMixin {
             at = @At("HEAD"),
             cancellable = true)
     private static void render(Camera camera, float tickDelta, ClientWorld world, int i, float f, CallbackInfo ci) {
-        FluidState fluidState = ((FabricCamera)camera).getSubmergedFluidState();
+        FluidState fluidState = ((FabricFluidCamera)camera).getSubmergedFluidState();
         if (fluidState.getFluid() instanceof ExtendedFlowableFluid fluid) {
             int fogColor = fluid.getFogColor(camera.getFocusedEntity());
             red = (fogColor >> 16 & 255) / 255f;
@@ -59,7 +59,7 @@ public class BackgroundRendererMixin {
             at = @At("HEAD"),
             cancellable = true)
     private static void applyFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci) {
-        FluidState fluidState = ((FabricCamera)camera).getSubmergedFluidState();
+        FluidState fluidState = ((FabricFluidCamera)camera).getSubmergedFluidState();
 		Entity entity = camera.getFocusedEntity();
         if (fluidState.getFluid() instanceof ExtendedFlowableFluid fluid) {
 			//Apply the fog start and fog end if the current entity is submerged by an extended fluid

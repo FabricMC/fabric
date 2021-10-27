@@ -46,8 +46,8 @@ public abstract class LivingEntityMixin extends EntityMixin {
 	@Inject(method = "fall(DZLnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;)V", at = @At("HEAD"))
 	private void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition, CallbackInfo ci) {
 		//Check the fluid state every tick when falling and not touching a fabric_fluid, similar to water
-		if (!this.fabric_IsTouchingFluid()) {
-			this.fabric_CheckFluidState();
+		if (!this.isTouchingFabricFluid()) {
+			this.checkFabricFluidState();
 		}
 	}
 
@@ -60,7 +60,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 	@Inject(method = "travel(Lnet/minecraft/util/math/Vec3d;)V", at = @At("HEAD"), cancellable = true)
 	private void travel(Vec3d movementInput, CallbackInfo ci) {
 		if ((this.canMoveVoluntarily() || this.isLogicalSideForUpdatingMovement())
-				&& this.fabric_IsTouchingFluid() && this.shouldSwimInFluids()
+				&& this.isTouchingFabricFluid() && this.shouldSwimInFluids()
 				&& !this.canWalkOnFluid(this.world.getFluidState(this.getBlockPos()).getFluid())) {
 
 			//Calculates the travel movement if the entity is on a fabric_fluid

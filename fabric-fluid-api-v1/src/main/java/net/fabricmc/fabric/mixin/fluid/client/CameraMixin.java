@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.fluid.client;
 
-import net.fabricmc.fabric.impl.fluid.FabricCamera;
+import net.fabricmc.fabric.impl.fluid.FabricFluidCamera;
 import net.minecraft.client.render.Camera;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(Camera.class)
-public class CameraMixin implements FabricCamera {
+public class CameraMixin implements FabricFluidCamera {
     @Shadow private BlockView area;
     @Shadow @Final private BlockPos.Mutable blockPos;
 
