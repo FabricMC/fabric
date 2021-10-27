@@ -95,6 +95,8 @@ public class PhaseSorting {
 		for (PhaseScc<T> scc : phaseToScc.values()) {
 			if (scc.inDegree == 0) {
 				pq.add(scc);
+				// Prevent adding the same SCC multiple times, as phaseToScc may contain the same value multiple times.
+				scc.inDegree = -1;
 			}
 		}
 

@@ -68,19 +68,22 @@ class ArrayBackedEvent<T> extends Event<T> {
 		Objects.requireNonNull(listener, "Tried to register a null listener!");
 
 		synchronized (lock) {
-			getOrCreatePhase(phaseIdentifier).addListener(listener);
+			getOrCreatePhase(phaseIdentifier, true).addListener(listener);
 			rebuildInvoker(handlers.length + 1);
 		}
 	}
 
-	private EventPhaseData<T> getOrCreatePhase(Identifier id) {
+	private EventPhaseData<T> getOrCreatePhase(Identifier id, boolean sortIfCreate) {
 		EventPhaseData<T> phase = phases.get(id);
 
 		if (phase == null) {
 			phase = new EventPhaseData<>(id, handlers.getClass().getComponentType());
 			phases.put(id, phase);
 			sortedPhases.add(phase);
-			PhaseSorting.sortPhases(sortedPhases);
+
+			if (sortIfCreate) {
+				PhaseSorting.sortPhases(sortedPhases);
+			}
 		}
 
 		return phase;
@@ -116,8 +119,8 @@ class ArrayBackedEvent<T> extends Event<T> {
 		if (firstPhase.equals(secondPhase)) throw new IllegalArgumentException("Tried to add a phase that depends on itself.");
 
 		synchronized (lock) {
-			EventPhaseData<T> first = getOrCreatePhase(firstPhase);
-			EventPhaseData<T> second = getOrCreatePhase(secondPhase);
+			EventPhaseData<T> first = getOrCreatePhase(firstPhase, false);
+			EventPhaseData<T> second = getOrCreatePhase(secondPhase, false);
 			first.subsequentPhases.add(second);
 			second.previousPhases.add(first);
 			PhaseSorting.sortPhases(this.sortedPhases);

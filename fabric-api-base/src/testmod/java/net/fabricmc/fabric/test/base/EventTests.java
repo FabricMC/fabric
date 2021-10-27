@@ -43,6 +43,7 @@ public class EventTests {
 		testCycle();
 		PhaseSorting.ENABLE_CYCLE_WARNING = false;
 		testDeterministicOrdering();
+		testTwoCycles();
 		PhaseSorting.ENABLE_CYCLE_WARNING = true;
 
 		long time2 = System.currentTimeMillis();
@@ -217,6 +218,47 @@ public class EventTests {
 
 			event.invoker().onTest();
 			assertEquals(7, currentListener);
+			currentListener = 0;
+		});
+	}
+
+	/**
+	 * Test deterministic phase sorting with two cycles.
+	 * <pre>
+	 * e --> a <--> b <-- d <--> c
+	 * </pre>
+	 */
+	private static void testTwoCycles() {
+		Identifier a = new Identifier("fabric", "a");
+		Identifier b = new Identifier("fabric", "b");
+		Identifier c = new Identifier("fabric", "c");
+		Identifier d = new Identifier("fabric", "d");
+		Identifier e = new Identifier("fabric", "e");
+
+		List<Consumer<Event<Test>>> dependencies = List.of(
+				ev -> ev.addPhaseOrdering(e, a),
+				ev -> ev.addPhaseOrdering(a, b),
+				ev -> ev.addPhaseOrdering(b, a),
+				ev -> ev.addPhaseOrdering(d, b),
+				ev -> ev.addPhaseOrdering(d, c),
+				ev -> ev.addPhaseOrdering(c, d)
+		);
+
+		testAllPermutations(new ArrayList<>(), dependencies, selectedDependencies -> {
+			Event<Test> event = createEvent();
+
+			for (Consumer<Event<Test>> dependency : selectedDependencies) {
+				dependency.accept(event);
+			}
+
+			event.register(c, ensureOrder(0));
+			event.register(d, ensureOrder(1));
+			event.register(e, ensureOrder(2));
+			event.register(a, ensureOrder(3));
+			event.register(b, ensureOrder(4));
+
+			event.invoker().onTest();
+			assertEquals(5, currentListener);
 			currentListener = 0;
 		});
 	}
