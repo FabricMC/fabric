@@ -55,7 +55,7 @@ public class MixinFluidRenderer {
 
 	@Inject(at = @At("RETURN"), method = "onResourceReload")
 	public void onResourceReloadReturn(CallbackInfo info) {
-		FluidRenderer self = FluidRenderer.class.cast(this);
+		FluidRenderer self = (FluidRenderer) (Object) this;
 		FluidRenderHandlerRegistryImpl.INSTANCE.onFluidRendererReload(self, waterSprites, lavaSprites, waterOverlaySprite);
 	}
 
