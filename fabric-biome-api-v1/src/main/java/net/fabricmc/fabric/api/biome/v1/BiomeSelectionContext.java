@@ -32,7 +32,6 @@ import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 
 /**
  * Context given to a biome selector for deciding whether it applies to a biome or not.
- *
  */
 public interface BiomeSelectionContext {
 	RegistryKey<Biome> getBiomeKey();

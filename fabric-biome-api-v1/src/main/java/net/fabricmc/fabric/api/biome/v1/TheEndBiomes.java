@@ -24,7 +24,6 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
 /**
  * API that exposes some internals of the minecraft default biome source for The End.
- *
  */
 public final class TheEndBiomes {
 	private TheEndBiomes() { }

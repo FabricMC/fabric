@@ -37,7 +37,6 @@ import net.fabricmc.fabric.mixin.biome.VanillaLayeredBiomeSourceAccessor;
 
 /**
  * Provides several convenient biome selectors that can be used with {@link BiomeModifications}.
- *
  */
 public final class BiomeSelectors {
 	private BiomeSelectors() {

@@ -27,7 +27,6 @@ package net.fabricmc.fabric.api.biome.v1;
  *     <li>Replacements (removal + add) in biomes</li>
  *     <li>Generic post-processing of biomes</li>
  * </ol>
- *
  */
 public enum ModificationPhase {
 	/**

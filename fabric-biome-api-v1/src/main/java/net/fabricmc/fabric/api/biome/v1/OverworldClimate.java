@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.biome.v1;
 
 /**
  * Represents the climates of biomes on the overworld continents.
- *
  */
 public enum OverworldClimate {
 	/**

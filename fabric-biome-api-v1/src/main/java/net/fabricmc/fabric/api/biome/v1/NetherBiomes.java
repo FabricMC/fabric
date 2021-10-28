@@ -23,7 +23,6 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
 /**
  * API that exposes the internals of Minecraft's nether biome code.
- *
  */
 public final class NetherBiomes {
 	private NetherBiomes() {
