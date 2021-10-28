@@ -70,7 +70,7 @@ public interface FluidRenderHandlerRegistry {
 
 	/**
 	 * Registers whether a block is transparent or not. When a block is
-	 * tranparent, the flowing fluid texture to the sides of that block is
+	 * transparent, the flowing fluid texture to the sides of that block is
 	 * replaced by a special overlay texture. This happens by default with glass
 	 * and leaves, and hence blocks inheriting {@link TransparentBlock} and
 	 * {@link LeavesBlock} are by default transparent. Use this method to
