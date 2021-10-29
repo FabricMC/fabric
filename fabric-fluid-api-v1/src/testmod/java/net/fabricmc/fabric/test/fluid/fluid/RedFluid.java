@@ -34,7 +34,7 @@ import net.minecraft.world.WorldView;
 public abstract class RedFluid extends ExtendedFabricFlowableFluid {
 	@Override
 	public Fluid getFlowing() {
-		return MFluids.RED_FLUID_FlOWING;
+		return MFluids.RED_FLUID_FLOWING;
 	}
 
 	@Override

@@ -36,7 +36,7 @@ import net.minecraft.world.WorldView;
 public abstract class GreenFluid extends ExtendedFabricFlowableFluid {
 	@Override
 	public Fluid getFlowing() {
-		return MFluids.GREEN_FLUID_FlOWING;
+		return MFluids.GREEN_FLUID_FLOWING;
 	}
 
 	@Override

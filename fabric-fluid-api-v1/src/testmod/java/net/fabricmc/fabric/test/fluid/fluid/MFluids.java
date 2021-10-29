@@ -27,29 +27,31 @@ public class MFluids {
 	public static final Identifier BLUE_FLUID_ID = new Identifier(ModCore.ID, "blue_fluid");
 	public static final BlueFluid BLUE_FLUID = Registry.register(Registry.FLUID, BLUE_FLUID_ID, new BlueFluid.Still());
 
-	public static final Identifier BLUE_FLUID_FlOWING_ID = new Identifier(ModCore.ID, "blue_fluid_flowing");
-	public static final BlueFluid BLUE_FLUID_FlOWING = Registry.register(Registry.FLUID, BLUE_FLUID_FlOWING_ID, new BlueFluid.Flowing());
+	public static final Identifier BLUE_FLUID_FLOWING_ID = new Identifier(ModCore.ID, "blue_fluid_flowing");
+	public static final BlueFluid BLUE_FLUID_FLOWING = Registry.register(Registry.FLUID, BLUE_FLUID_FLOWING_ID, new BlueFluid.Flowing());
 
 	public static final Identifier RED_FLUID_ID = new Identifier(ModCore.ID, "red_fluid");
 	public static final RedFluid RED_FLUID = Registry.register(Registry.FLUID, RED_FLUID_ID, new RedFluid.Still());
 
-	public static final Identifier RED_FLUID_FlOWING_ID = new Identifier(ModCore.ID, "red_fluid_flowing");
-	public static final RedFluid RED_FLUID_FlOWING = Registry.register(Registry.FLUID, RED_FLUID_FlOWING_ID, new RedFluid.Flowing());
+	public static final Identifier RED_FLUID_FLOWING_ID = new Identifier(ModCore.ID, "red_fluid_flowing");
+	public static final RedFluid RED_FLUID_FLOWING = Registry.register(Registry.FLUID, RED_FLUID_FLOWING_ID, new RedFluid.Flowing());
 
 	public static final Identifier GREEN_FLUID_ID = new Identifier(ModCore.ID, "green_fluid");
 	public static final GreenFluid GREEN_FLUID = Registry.register(Registry.FLUID, GREEN_FLUID_ID, new GreenFluid.Still());
 
-	public static final Identifier GREEN_FLUID_FlOWING_ID = new Identifier(ModCore.ID, "green_fluid_flowing");
-	public static final GreenFluid GREEN_FLUID_FlOWING = Registry.register(Registry.FLUID, GREEN_FLUID_FlOWING_ID, new GreenFluid.Flowing());
+	public static final Identifier GREEN_FLUID_FLOWING_ID = new Identifier(ModCore.ID, "green_fluid_flowing");
+	public static final GreenFluid GREEN_FLUID_FLOWING = Registry.register(Registry.FLUID, GREEN_FLUID_FLOWING_ID, new GreenFluid.Flowing());
 
 
 	public static void load() {}
 
 	public static void renderFluids() {
-		FluidRenderer.render(BLUE_FLUID, BLUE_FLUID_FlOWING, new Identifier("minecraft", "water"), 0x0000ff);
-		FluidRenderer.render(RED_FLUID, RED_FLUID_FlOWING, RED_FLUID_ID, 0xff0000);
-		FluidRenderer.render(GREEN_FLUID, GREEN_FLUID_FlOWING, new Identifier("minecraft", "water"), 0x00ff00);
+		FluidRenderer.render(BLUE_FLUID, BLUE_FLUID_FLOWING, BLUE_FLUID_ID, 0x0000ff);
+		FluidRenderer.render(RED_FLUID, RED_FLUID_FLOWING, RED_FLUID_ID, 0xff0000);
+		FluidRenderer.render(GREEN_FLUID, GREEN_FLUID_FLOWING, RED_FLUID_ID, 0x00ff00);
 
-		BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), RED_FLUID, RED_FLUID_FlOWING);
+		BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), BLUE_FLUID, BLUE_FLUID_FLOWING);
+		BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), RED_FLUID, RED_FLUID_FLOWING);
+		BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), GREEN_FLUID, GREEN_FLUID_FLOWING);
 	}
 }

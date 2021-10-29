@@ -38,7 +38,7 @@ import java.util.Random;
 public abstract class BlueFluid extends ExtendedFabricFlowableFluid {
 	@Override
 	public Fluid getFlowing() {
-		return MFluids.BLUE_FLUID_FlOWING;
+		return MFluids.BLUE_FLUID_FLOWING;
 	}
 
 	@Override
@@ -99,6 +99,11 @@ public abstract class BlueFluid extends ExtendedFabricFlowableFluid {
 	@Override
 	public double getViscosity(World world, Entity entity) {
 		return 0.014d;
+	}
+
+	@Override
+	public boolean isNavigable() {
+		return false;
 	}
 
 	@Override

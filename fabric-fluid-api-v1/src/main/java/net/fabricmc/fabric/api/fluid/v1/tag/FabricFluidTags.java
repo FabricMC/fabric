@@ -30,10 +30,17 @@ import java.util.List;
  */
 public class FabricFluidTags {
 	private static final List<Tag<Fluid>> TAGS;
+
+	/**
+	 * fabric:fabric_fluid tag used to make custom fluids.
+	 */
 	public static final Tag<Fluid> FABRIC_FLUID;
 
 	private FabricFluidTags() {}
 
+	/**
+	 * @return the list of FluidTags and FabricFluidTags.
+	 */
 	public static List<Tag<Fluid>> getFluidTags() {
 		return TAGS;
 	}

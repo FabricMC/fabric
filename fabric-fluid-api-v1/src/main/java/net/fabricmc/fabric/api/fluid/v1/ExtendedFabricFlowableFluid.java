@@ -27,6 +27,11 @@ import net.minecraft.world.World;
  */
 public abstract class ExtendedFabricFlowableFluid extends FabricFlowableFluid implements ExtendedFlowableFluid {
 	/**
+	 * Initializes a new ExtendedFabricFlowableFluid.
+	 */
+	public ExtendedFabricFlowableFluid() {}
+
+	/**
 	 * Event executed when the entity is into the fluid.
 	 *
 	 * @param world  The current world.

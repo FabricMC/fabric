@@ -3,6 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.fluid",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "BoatDispenserBehaviorMixin",
+    "BoatEntityMixin",
     "EntityMixin",
     "LivingEntityMixin"
   ],

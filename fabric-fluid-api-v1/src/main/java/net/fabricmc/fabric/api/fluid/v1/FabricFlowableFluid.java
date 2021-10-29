@@ -38,6 +38,11 @@ import java.util.Random;
  */
 public abstract class FabricFlowableFluid extends FlowableFluid {
 	/**
+	 * Initializes a new FabricFlowableFluid.
+	 */
+	public FabricFlowableFluid() {}
+
+	/**
 	 * Perform actions when fluid flows into a replaceable block.
 	 */
 	@Override

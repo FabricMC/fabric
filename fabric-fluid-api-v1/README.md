@@ -19,8 +19,8 @@ compared with vanilla one.
 - [x] Specify if the fluid can light fire.
 - [x] Handling fire and fall.
 - [x] Handling drowning.
+- [x] Boats over the fluid.
 - [ ] Entity swimming.
-- [ ] Boats over the fluid.
 
 ## Ready-to-use basic fluid rendering
 
@@ -175,11 +175,34 @@ specify if the fluid can extinguish fire and prevent fall damage.
   Allows to specify if the fluid can prevent fall damage.
 
 ## Handling drowning
+
 By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
 interface on your fluid class, you can implement a method allowing to
 specify if the fluid can drown entities.
 
 `boolean canDrown()`
+
+## Boats over the fluid
+
+By default, all fluids tagged with `fabric:fabric_fluid` are navigable.  
+If you want to customize this behaviour, implement the
+[`ExtendedFlowableFluid`][extendedflowablefluid_java]
+interface on your fluid class, then you can implement a method allowing to
+specify if the fluid is navigable.
+
+`boolean isNavigable()`
+
+In a non-navigable fluid the boat will sink.
+
+**IMPORTANT NOTE:** To render boats correctly, the fluids must be rendered
+as translucent with `RenderLayer.getTranslucent()`.
+
+Add in your client-side entrypoint:
+
+```java
+BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
+        FLUID, FLOWING_FLUID);
+```
 
 ## The `fabric:fabric_fluid` tag
 

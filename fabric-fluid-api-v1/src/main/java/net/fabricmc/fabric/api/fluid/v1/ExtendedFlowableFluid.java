@@ -70,6 +70,13 @@ public interface ExtendedFlowableFluid {
 	double getViscosity(World world, Entity entity);
 
 	/**
+	 * @return true if the fluid is navigable.
+	 */
+	default boolean isNavigable() {
+		return true;
+	}
+
+	/**
 	 * Event executed when an entity falls, or enters, into the fluid.
 	 * @param world The current world.
 	 * @param entity The current entity in the fluid.
