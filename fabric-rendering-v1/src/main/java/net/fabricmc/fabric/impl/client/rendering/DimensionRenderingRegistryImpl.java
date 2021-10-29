@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.rendering;
 
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
