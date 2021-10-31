@@ -35,11 +35,10 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  * <p>Note that the functions that take a predicate iterate over the entire inventory in the worst case.
  * If the resource is known, there will generally be a more performance efficient way.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public final class StorageUtil {
 	/**
 	 * Move resources between two storages, matching the passed filter, and return the amount that was successfully transferred.

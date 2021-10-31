@@ -25,11 +25,10 @@ import net.fabricmc.fabric.impl.biome.TheEndBiomeData;
 /**
  * API that exposes some internals of the minecraft default biome source for The End.
  *
- * @deprecated Experimental feature, may be removed or changed without further notice.
+ * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  * Because of the volatility of world generation in Minecraft 1.16, this API is marked experimental
  * since it is likely to change in future Minecraft versions.
  */
-@Deprecated
 public final class TheEndBiomes {
 	private TheEndBiomes() {
 	}

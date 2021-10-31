@@ -62,11 +62,10 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
  * @param <T> The type of the stored resources.
  * @see Transaction
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public interface Storage<T> {
 	/**
 	 * Return an empty storage.

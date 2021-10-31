@@ -30,7 +30,6 @@ package net.fabricmc.fabric.api.biome.v1;
  *
  * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
-@Deprecated
 public enum ModificationPhase {
 	/**
 	 * The appropriate phase for enriching biomes by adding to them without relying on

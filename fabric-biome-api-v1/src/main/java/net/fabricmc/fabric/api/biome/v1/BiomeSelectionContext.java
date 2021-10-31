@@ -32,7 +32,6 @@ import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
  *
  * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
-@Deprecated
 public interface BiomeSelectionContext {
 	RegistryKey<Biome> getBiomeKey();
 
