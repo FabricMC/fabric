@@ -19,10 +19,12 @@ package net.fabricmc.fabric.impl.biome.modification;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
@@ -260,6 +262,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			}
 
 			accessor.fabric_setFeatures(features);
+			accessor.fabric_setAllowedFeatures(new HashSet<>(accessor.fabric_getAllowedFeatures()));
 		}
 
 		private void unfreezeFlowerFeatures() {
@@ -293,6 +296,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			}
 
 			accessor.fabric_setFeatures(ImmutableList.copyOf(featureSteps));
+			accessor.fabric_setAllowedFeatures(Set.copyOf(accessor.fabric_getAllowedFeatures()));
 		}
 
 		private void freezeFlowerFeatures() {
@@ -334,6 +338,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			}
 
 			featureSteps.get(index).add(() -> configuredFeature);
+			accessor.fabric_getAllowedFeatures().add(configuredFeature);
 
 			// Ensure the list of flower features is up to date
 			rebuildFlowerFeatures();

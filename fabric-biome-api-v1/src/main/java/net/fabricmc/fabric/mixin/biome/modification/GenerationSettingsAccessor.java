@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.biome.modification;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,6 +38,9 @@ public interface GenerationSettingsAccessor {
 	@Accessor("features")
 	List<List<Supplier<ConfiguredFeature<?, ?>>>> fabric_getFeatures();
 
+	@Accessor("allowedFeatures")
+	Set<ConfiguredFeature<?, ?>> fabric_getAllowedFeatures();
+
 	@Accessor("flowerFeatures")
 	List<ConfiguredFeature<?, ?>> fabric_getFlowerFeatures();
 
@@ -47,6 +51,10 @@ public interface GenerationSettingsAccessor {
 	@Accessor("features")
 	@Mutable
 	void fabric_setFeatures(List<List<Supplier<ConfiguredFeature<?, ?>>>> value);
+
+	@Accessor("allowedFeatures")
+	@Mutable
+	void fabric_setAllowedFeatures(Set<ConfiguredFeature<?, ?>> allowedFeatures);
 
 	@Accessor("flowerFeatures")
 	@Mutable
