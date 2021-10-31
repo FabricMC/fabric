@@ -36,11 +36,10 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
  * @param <T> The type of the stored resources.
  * @param <S> The class of every part. {@code ? extends Storage<T>} can be used if the parts are of different types.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 	public List<S> parts;
 

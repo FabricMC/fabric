@@ -48,11 +48,10 @@ import net.fabricmc.fabric.mixin.transfer.BucketItemAccessor;
 /**
  * Access to {@link Storage Storage&lt;FluidVariant&gt;} instances.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public final class FluidStorage {
 	/**
 	 * Sided block access to fluid variant storages.

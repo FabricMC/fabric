@@ -24,11 +24,10 @@ import org.jetbrains.annotations.ApiStatus;
  * An immutable object storing both a resource and an amount, provided for convenience.
  * @param <T> The type of the stored resource.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public final class ResourceAmount<T> {
 	private final T resource;
 	private final long amount;
