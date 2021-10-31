@@ -36,10 +36,7 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
  *
  * <p>Any modifications made to biomes will not be available for use in server.properties (as of 1.16.1),
  * or the demo level.
- *
- * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
-@Deprecated
 public final class BiomeModifications {
 	/**
 	 * Convenience method to add a feature to one or more biomes.

@@ -37,11 +37,10 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
  * Defines how {@linkplain FluidVariant fluid variants} of a given Fluid should be displayed to clients.
  * Register with {@link FluidVariantRendering#register}.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 @Environment(EnvType.CLIENT)
 public interface FluidVariantRenderHandler {
 	/**
