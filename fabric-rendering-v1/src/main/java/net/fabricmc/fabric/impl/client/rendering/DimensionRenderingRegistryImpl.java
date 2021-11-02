@@ -42,22 +42,14 @@ public final class DimensionRenderingRegistryImpl {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
-		if (SKY_RENDERERS.containsKey(key)) {
-			throw new IllegalStateException("This world already has a registered SkyRenderer.");
-		} else {
-			SKY_RENDERERS.put(key, renderer);
-		}
+		SKY_RENDERERS.putIfAbsent(key, renderer);
 	}
 
 	public static void registerWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
-		if (WEATHER_RENDERERS.containsKey(key)) {
-			throw new IllegalStateException("This world already has a registered WeatherRenderer.");
-		} else {
-			WEATHER_RENDERERS.put(key, renderer);
-		}
+		WEATHER_RENDERERS.putIfAbsent(key, renderer);
 	}
 
 	public static void registerDimensionEffects(Identifier key, DimensionEffects effects) {
@@ -65,22 +57,14 @@ public final class DimensionRenderingRegistryImpl {
 		Objects.requireNonNull(effects);
 		//The map containing all dimension effects returns a default if null so a null check doesn't work.
 
-		if (DimensionEffectsAccessor.getIdentifierMap().containsKey(key)) {
-			throw new IllegalStateException("This id already has a registered dimension effect.");
-		} else {
-			DimensionEffectsAccessor.getIdentifierMap().put(key, effects);
-		}
+		DimensionEffectsAccessor.getIdentifierMap().putIfAbsent(key, effects);
 	}
 
 	public static void registerCloudRenderer(RegistryKey<World> key, CloudRenderer renderer) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(renderer);
 
-		if (CLOUD_RENDERERS.containsKey(key)) {
-			throw new IllegalStateException("This world already has a registered CloudRenderer.");
-		} else {
-			CLOUD_RENDERERS.put(key, renderer);
-		}
+		CLOUD_RENDERERS.putIfAbsent(key, renderer);
 	}
 
 	@Nullable
