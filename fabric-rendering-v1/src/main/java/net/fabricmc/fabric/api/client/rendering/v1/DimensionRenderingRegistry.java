@@ -35,7 +35,7 @@ import net.fabricmc.fabric.impl.client.rendering.DimensionRenderingRegistryImpl;
 @Environment(EnvType.CLIENT)
 public interface DimensionRenderingRegistry {
 	/**
-	 * Sets the custom sky renderer for a {@link World}.
+	 * Registers the custom sky renderer for a {@link World}.
 	 *
 	 * <p>This overrides Vanilla's sky rendering.
 	 * @param key A {@link RegistryKey} for your {@link World}
@@ -59,7 +59,7 @@ public interface DimensionRenderingRegistry {
 	}
 
 	/**
-	 * Registers a dimension effect for a {@link net.minecraft.util.Identifier}.
+	 * Registers dimension effects for an {@link net.minecraft.util.Identifier}.
 	 *
 	 * <p>This registers a new option for the "effects" entry of the dimension type json.
 	 *
@@ -117,9 +117,9 @@ public interface DimensionRenderingRegistry {
 	}
 
 	/**
-	 * Gets the dimension effect registered for an id.
+	 * Gets the dimension effects registered for an id.
 	 * @param key A {@link RegistryKey} for your {@link World}.
-	 * @return overworld effect if no dimension effect is registered for the key.
+	 * @return overworld effect if no dimension effects is registered for the key.
 	 */
 	@Nullable
 	static DimensionEffects getDimensionEffects(Identifier key) {
