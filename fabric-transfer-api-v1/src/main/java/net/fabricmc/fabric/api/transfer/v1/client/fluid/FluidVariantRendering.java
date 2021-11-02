@@ -41,11 +41,10 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 /**
  * Client-side display of fluid variants.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 @Environment(EnvType.CLIENT)
 public class FluidVariantRendering {
 	private static final ApiProviderMap<Fluid, FluidVariantRenderHandler> HANDLERS = ApiProviderMap.create();

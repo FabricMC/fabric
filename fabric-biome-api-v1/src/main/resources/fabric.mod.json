@@ -25,6 +25,6 @@
   ],
   "accessWidener" : "fabric-biome-api-v1.accesswidener",
   "custom": {
-    "fabric-api:module-lifecycle": "experimental"
+    "fabric-api:module-lifecycle": "stable"
   }
 }
