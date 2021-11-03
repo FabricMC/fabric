@@ -47,61 +47,21 @@ public abstract class FilteringStorage<T> implements Storage<T> {
 	 * Return a wrapper over the passed storage that prevents extraction.
 	 */
 	public static <T> Storage<T> insertOnlyOf(Storage<T> backingStorage) {
-		return new FilteringStorage<>(backingStorage) {
-			@Override
-			protected boolean canExtract(T resource) {
-				return false;
-			}
-
-			@Override
-			public boolean supportsExtraction() {
-				return false;
-			}
-		};
+		return of(backingStorage, true, false);
 	}
 
 	/**
 	 * Return a wrapper over the passed storage that prevents insertion.
 	 */
 	public static <T> Storage<T> extractOnlyOf(Storage<T> backingStorage) {
-		return new FilteringStorage<>(backingStorage) {
-			@Override
-			protected boolean canInsert(T resource) {
-				return false;
-			}
-
-			@Override
-			public boolean supportsInsertion() {
-				return false;
-			}
-		};
+		return of(backingStorage, false, true);
 	}
 
 	/**
 	 * Return a wrapper over the passed storage that prevents insertion and extraction.
 	 */
 	public static <T> Storage<T> readOnlyOf(Storage<T> backingStorage) {
-		return new FilteringStorage<>(backingStorage) {
-			@Override
-			protected boolean canInsert(T resource) {
-				return false;
-			}
-
-			@Override
-			protected boolean canExtract(T resource) {
-				return false;
-			}
-
-			@Override
-			public boolean supportsInsertion() {
-				return false;
-			}
-
-			@Override
-			public boolean supportsExtraction() {
-				return false;
-			}
-		};
+		return of(backingStorage, false, false);
 	}
 
 	/**
@@ -113,19 +73,31 @@ public abstract class FilteringStorage<T> implements Storage<T> {
 	 * @param allowExtract True to allow extraction, false to block extraction.
 	 */
 	public static <T> Storage<T> of(Storage<T> backingStorage, boolean allowInsert, boolean allowExtract) {
-		if (allowInsert) {
-			if (allowExtract) {
-				return backingStorage;
-			} else {
-				return insertOnlyOf(backingStorage);
-			}
-		} else {
-			if (allowExtract) {
-				return extractOnlyOf(backingStorage);
-			} else {
-				return readOnlyOf(backingStorage);
-			}
+		if (allowInsert && allowExtract) {
+			return backingStorage;
 		}
+
+		return new FilteringStorage<>(backingStorage) {
+			@Override
+			protected boolean canInsert(T resource) {
+				return allowInsert;
+			}
+
+			@Override
+			protected boolean canExtract(T resource) {
+				return allowExtract;
+			}
+
+			@Override
+			public boolean supportsInsertion() {
+				return allowInsert && super.supportsInsertion();
+			}
+
+			@Override
+			public boolean supportsExtraction() {
+				return allowExtract && super.supportsExtraction();
+			}
+		};
 	}
 
 	protected final Supplier<Storage<T>> backingStorage;
