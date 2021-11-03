@@ -41,7 +41,27 @@ public class FluidUtils {
 	 */
 	public static boolean isNavigable(@NotNull Fluid fluid) {
 		return fluid.isIn(FabricFluidTags.FABRIC_FLUID)
+				//By default, all fabric_fluid are navigable
 				? !(fluid instanceof ExtendedFlowableFluid eFluid) || eFluid.isNavigable()
 				: fluid.isIn(FluidTags.WATER);
+	}
+
+	/**
+	 * @param state FluidState to check if is swimmable.
+	 * @return true if the fluid is swimmable.
+	 */
+	public static boolean isSwimmable(@NotNull FluidState state) {
+		return isSwimmable(state.getFluid());
+	}
+
+	/**
+	 * @param fluid Fluid to check if is swimmable.
+	 * @return true if the fluid is swimmable.
+	 */
+	public static boolean isSwimmable(@NotNull Fluid fluid) {
+		return fluid.isIn(FabricFluidTags.FABRIC_FLUID)
+				//By default, is possible to swim in all fabric_fluid
+				? !(fluid instanceof ExtendedFlowableFluid eFluid) || eFluid.isSwimmable()
+				: fluid.isIn(FluidTags.WATER) || fluid.isIn(FluidTags.LAVA);
 	}
 }

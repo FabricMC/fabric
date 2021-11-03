@@ -22,6 +22,7 @@ import net.minecraft.entity.Flutterer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
@@ -55,6 +56,20 @@ public abstract class LivingEntityMixin extends EntityMixin {
 	private int getMaxAirRedirect(@NotNull LivingEntity entity) {
 		//If the entity is subberged in fabric_fluid returns -20, so basetick does not reset the air
 		return entity.isSubmergedIn(FabricFluidTags.FABRIC_FLUID) ? -20 : entity.getMaxAir();
+	}
+
+	@Redirect(method = "tickMovement()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isTouchingWater()Z"))
+	private boolean isTouchingWaterRedirect(LivingEntity entity) {
+		return this.isTouchingWater() || this.isTouchingSwimmableFluid();
+	}
+
+	@Redirect(method = "tickMovement()V", at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/entity/LivingEntity;getFluidHeight(Lnet/minecraft/tag/Tag;)D", ordinal = 1))
+	private double getFluidHeightRedirect(LivingEntity entity, Tag<Fluid> tag) {
+		if (this.isTouchingFabricFluid()) {
+			return this.getFluidHeight(FabricFluidTags.FABRIC_FLUID);
+		}
+		else return this.getFluidHeight(tag);
 	}
 
 	@Inject(method = "travel(Lnet/minecraft/util/math/Vec3d;)V", at = @At("HEAD"), cancellable = true)

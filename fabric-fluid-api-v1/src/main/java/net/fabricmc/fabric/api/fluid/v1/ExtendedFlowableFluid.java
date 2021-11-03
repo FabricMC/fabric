@@ -17,7 +17,10 @@
 package net.fabricmc.fabric.api.fluid.v1;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.world.World;
+
+import java.util.Optional;
 
 /**
  * Extends the FlowableFluid class with more customizations.
@@ -45,6 +48,13 @@ public interface ExtendedFlowableFluid {
 	}
 
 	/**
+	 * @return true if the fluid is swimmable.
+	 */
+	default boolean isSwimmable() {
+		return true;
+	}
+
+	/**
 	 * Get the fog color.
 	 * @param entity The current entity that displays the fog.
 	 */
@@ -61,6 +71,13 @@ public interface ExtendedFlowableFluid {
 	 * @param entity The current entity that displays the fog.
 	 */
 	float getFogStart(Entity entity);
+
+	/**
+	 * @return the swim sound of the fluid.
+	 */
+	default Optional<SoundEvent> getSwimSound() {
+		return Optional.empty();
+	}
 
 	/**
 	 * Get the fluid viscosity, that is equal to the pushing strength of the fluid.

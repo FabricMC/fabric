@@ -21,16 +21,24 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends LivingEntityMixin {
-	@Shadow public abstract void setSprinting(boolean sprinting);
+	@Shadow public abstract boolean isSubmergedInWater();
 
-	@Inject(method = "tickMovement()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;tickMovement()V", shift = At.Shift.BEFORE))
-	private void tickMovement(CallbackInfo ci) {
-		//Set sprinting to false if the entity is touching a fabric_fluid
-		if (this.isTouchingFabricFluid()) this.setSprinting(false);
+	@Redirect(method = "isWalking()Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
+	private boolean isSubmergedInWaterRedirect2(ClientPlayerEntity entity) {
+		return this.isSubmergedInWater() || this.isSubmergedInFabricFluid();
+	}
+
+	@Redirect(method = "tickMovement()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
+	private boolean isSubmergedInWaterRedirect(ClientPlayerEntity entity) {
+		return this.isSubmergedInWater() || this.isSubmergedInSwimmableFluid();
+	}
+
+	@Redirect(method = "tickMovement()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isTouchingWater()Z"))
+	private boolean isTouchingWaterRedirect(ClientPlayerEntity entity) {
+		return this.isTouchingWater() || this.isTouchingSwimmableFluid();
 	}
 }

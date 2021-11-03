@@ -20,7 +20,8 @@ compared with vanilla one.
 - [x] Handling fire and fall.
 - [x] Handling drowning.
 - [x] Boats over the fluid.
-- [ ] Entity swimming.
+- [x] Entity swimming.
+- [x] Custom entity swimming sounds.
 
 ## Ready-to-use basic fluid rendering
 
@@ -203,6 +204,27 @@ Add in your client-side entrypoint:
 BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
         FLUID, FLOWING_FLUID);
 ```
+
+## Entity swimming
+
+By default, all fluids tagged with `fabric:fabric_fluid` are swimmable.  
+If you want to customize this behaviour, implement the
+[`ExtendedFlowableFluid`][extendedflowablefluid_java]
+interface on your fluid class, then you can implement a method allowing to
+specify if the fluid is swimmable.
+
+`boolean isSwimmable()`
+
+In a non-swimmable fluid is only possible to jump, but not to swim,
+like in quicksands.
+
+## Custom entity swimming sounds
+
+By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
+interface on your fluid class, you can implement a method allowing to
+specify the swimming sound.
+
+`Optional<SoundEvent> getSwimSound()`
 
 ## The `fabric:fabric_fluid` tag
 
