@@ -27,10 +27,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
@@ -53,22 +50,6 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 public class FluidVariantRendering {
 	private static final ApiProviderMap<Fluid, FluidVariantRenderHandler> HANDLERS = ApiProviderMap.create();
 	private static final FluidVariantRenderHandler DEFAULT_HANDLER = new FluidVariantRenderHandler() { };
-
-	static {
-		// Add colored names for vanilla fluids!
-		register(Fluids.WATER, new FluidVariantRenderHandler() {
-			@Override
-			public Text getName(FluidVariant fluidVariant) {
-				return ((MutableText) FluidVariantRenderHandler.super.getName(fluidVariant)).setStyle(Style.EMPTY.withColor(Formatting.BLUE));
-			}
-		});
-		register(Fluids.LAVA, new FluidVariantRenderHandler() {
-			@Override
-			public Text getName(FluidVariant fluidVariant) {
-				return ((MutableText) FluidVariantRenderHandler.super.getName(fluidVariant)).setStyle(Style.EMPTY.withColor(Formatting.RED));
-			}
-		});
-	}
 
 	/**
 	 * Register a render handler for the passed fluid.
