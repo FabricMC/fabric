@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.transfer.v1.client.fluid;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +27,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
@@ -49,6 +53,22 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 public class FluidVariantRendering {
 	private static final ApiProviderMap<Fluid, FluidVariantRenderHandler> HANDLERS = ApiProviderMap.create();
 	private static final FluidVariantRenderHandler DEFAULT_HANDLER = new FluidVariantRenderHandler() { };
+
+	static {
+		// Add colored names for vanilla fluids!
+		register(Fluids.WATER, new FluidVariantRenderHandler() {
+			@Override
+			public Text getName(FluidVariant fluidVariant) {
+				return ((MutableText) FluidVariantRenderHandler.super.getName(fluidVariant)).setStyle(Style.EMPTY.withColor(Formatting.BLUE));
+			}
+		});
+		register(Fluids.LAVA, new FluidVariantRenderHandler() {
+			@Override
+			public Text getName(FluidVariant fluidVariant) {
+				return ((MutableText) FluidVariantRenderHandler.super.getName(fluidVariant)).setStyle(Style.EMPTY.withColor(Formatting.RED));
+			}
+		});
+	}
 
 	/**
 	 * Register a render handler for the passed fluid.
@@ -116,12 +136,24 @@ public class FluidVariantRendering {
 	}
 
 	/**
-	 * Return the sprite that should be used to render the passed fluid variant, or null if it's not available.
+	 * Return the still and the flowing sprite that should be used to render the passed fluid variant, or null if they are not available.
+	 * The sprites should be rendered using the color returned by {@link #getColor}.
+	 *
+	 * @see FluidVariantRenderHandler#getSprites
+	 */
+	@Nullable
+	public static Sprite[] getSprites(FluidVariant fluidVariant) {
+		return getHandlerOrDefault(fluidVariant.getFluid()).getSprites(fluidVariant);
+	}
+
+	/**
+	 * Return the still sprite that should be used to render the passed fluid variant, or null if it's not available.
 	 * The sprite should be rendered using the color returned by {@link #getColor}.
 	 */
 	@Nullable
 	public static Sprite getSprite(FluidVariant fluidVariant) {
-		return getHandlerOrDefault(fluidVariant.getFluid()).getSprite(fluidVariant);
+		Sprite[] sprites = getSprites(fluidVariant);
+		return sprites != null ? Objects.requireNonNull(sprites[0]) : null;
 	}
 
 	/**
