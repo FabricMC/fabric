@@ -1,6 +1,6 @@
 buildscript {
 	dependencies {
-		classpath 'org.kohsuke:github-api:1.114'
+		classpath 'org.kohsuke:github-api:1.135'
 	}
 }
 
@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.9.50" apply false
+	id "fabric-loom" version "0.10.50" apply false
 	id "org.cadixdev.licenser" version "0.6.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -22,7 +22,7 @@ class Globals {
 	static def baseVersion = "0.41.3"
 	static def mcVersion = "1.17.1"
 	static def yarnVersion = "+build.63"
-	static def loaderVersion = "0.11.6"
+	static def loaderVersion = "0.12.4"
 	static def preRelease = false
 }
 
@@ -61,26 +61,10 @@ def getBranch() {
 }
 
 def moduleDependencies(project, List<String> depNames) {
-	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'dev') }
+	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'namedElements') }
 	project.dependencies {
 		deps.each {
 			api it
-		}
-	}
-	project.publishing {
-		publications {
-			mavenJava(MavenPublication) {
-				pom.withXml {
-					def depsNode = asNode().appendNode("dependencies")
-					deps.each {
-						def depNode = depsNode.appendNode("dependency")
-						depNode.appendNode("groupId", it.group)
-						depNode.appendNode("artifactId", it.name)
-						depNode.appendNode("version", it.version)
-						depNode.appendNode("scope", "compile")
-					}
-				}
-			}
 		}
 	}
 }
@@ -128,10 +112,6 @@ allprojects {
 		modApi "net.fabricmc:fabric-loader:${Globals.loaderVersion}"
 	}
 
-	configurations {
-		dev
-	}
-
 	loom {
 		shareRemapCaches = true
 	}
@@ -140,32 +120,17 @@ allprojects {
 		mavenLocal()
 	}
 
-	jar {
-		archiveClassifier = "dev"
+	processResources {
+		inputs.property "version", project.version
+
+		filesMatching("fabric.mod.json") {
+			expand "version": project.version
+		}
 	}
 
-	afterEvaluate {
-		remapJar {
-			input = file("${project.buildDir}/libs/$archivesBaseName-${project.version}-dev.jar")
-			archiveFileName = "${archivesBaseName}-${project.version}.jar"
-		}
-
-		artifacts {
-			dev file: file("${project.buildDir}/libs/$archivesBaseName-${project.version}-dev.jar"), type: "jar", builtBy: jar
-		}
-
-		processResources {
-			inputs.property "version", project.version
-
-			filesMatching("fabric.mod.json") {
-				expand "version": project.version
-			}
-		}
-
-		license {
-			header rootProject.file("HEADER")
-			include "**/*.java"
-		}
+	license {
+		header rootProject.file("HEADER")
+		include "**/*.java"
 	}
 
 	task sourcesJar(type: Jar, dependsOn: classes) {
@@ -175,7 +140,7 @@ allprojects {
 
 	checkstyle {
 		configFile = rootProject.file("checkstyle.xml")
-		toolVersion = "8.43"
+		toolVersion = "9.1"
 	}
 
 	tasks.withType(AbstractArchiveTask) {
@@ -224,33 +189,35 @@ task javadocJar(type: Jar) {
 
 build.dependsOn javadocJar
 
-// Runs a dedicated headless server with all test mods that closes once complete.
 loom {
 	runs {
-		autoTestServer {
+		gametest {
 			inherit testmodServer
-			vmArg "-Dfabric.autoTest"
+
+			name "Game Test"
+
+			// Enable the gametest runner
+			vmArg "-Dfabric-api.gametest"
+			vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
+			runDir "build/gametest"
 		}
 	}
 }
+test.dependsOn runGametest
 
 subprojects {
 	dependencies {
 		testmodImplementation sourceSets.main.output
+
+		// Make all modules depend on the gametest api to try and promote its usage.
+		if (project.name != "fabric-gametest-api-v1")
+			testmodImplementation project(path: ':fabric-gametest-api-v1', configuration: 'namedElements')
 	}
 
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
-				afterEvaluate {
-					artifact(remapJar) {
-						builtBy remapJar
-					}
-
-					artifact(sourcesJar) {
-						builtBy remapSourcesJar
-					}
-				}
+				from components.java
 			}
 		}
 
@@ -296,6 +263,9 @@ publishing {
 	setupRepositories(repositories)
 }
 
+// Required until the deprecation is removed. Fabric API's main jar that is published to maven does not contain sub modules.
+loom.disableDeprecatedPomGeneration(publishing.publications.mavenJava)
+
 void setupRepositories(RepositoryHandler repositories) {
 	//repositories.mavenLocal() // uncomment for testing
 	def ENV = System.getenv()
@@ -328,7 +298,7 @@ def devOnlyModules = [
 dependencies {
 	afterEvaluate {
 		subprojects.each {
-			api project(path: ":${it.name}", configuration: "dev")
+			api project(path: ":${it.name}", configuration: "namedElements")
 
 			if (!(it.name in devOnlyModules)) {
 				include project("${it.name}:")
@@ -351,7 +321,7 @@ curseforge {
 		addGameVersion "1.17.1"
 		addGameVersion "Fabric"
 
-		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
+		mainArtifact(remapJar) {
 			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion"
 		}
 
@@ -400,7 +370,7 @@ task modrinth(type: com.modrinth.minotaur.TaskModrinthUpload, dependsOn: remapMa
 	releaseType = Globals.preRelease ? "beta" : "release"
 	changelog = ENV.CHANGELOG ?: "No changelog provided"
 
-	uploadFile = file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")
+	uploadFile = remapJar
 
 	addGameVersion(Globals.mcVersion)
 	addLoader('fabric')
