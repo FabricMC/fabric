@@ -15,11 +15,6 @@ jobs:
           fetch-depth: 0
       - uses: gradle/wrapper-validation-action@v1
       - run: ./gradlew check build publishToMavenLocal --stacktrace --parallel --warning-mode=fail
-      - name: Publish GameTest Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
-        with:
-          files: build/junit.xml
       - uses: actions/upload-artifact@v2
         with:
           name: Artifacts
