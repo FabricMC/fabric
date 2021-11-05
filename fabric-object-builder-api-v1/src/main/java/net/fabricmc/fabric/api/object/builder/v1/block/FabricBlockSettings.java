@@ -315,7 +315,10 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	/**
 	 * Please make the block require a tool if you plan to disable drops and slow the breaking down using the
 	 * incorrect tool by using {@link FabricBlockSettings#requiresTool()}.
+	 *
+	 * @deprecated Replaced by {@code mineable} tags. See fabric-mining-level-api-v1 for further details.
 	 */
+	@Deprecated(forRemoval = true)
 	public FabricBlockSettings breakByTool(Tag<Item> tag, int miningLevel) {
 		FabricBlockInternals.computeExtraData(this).addMiningLevel(tag, miningLevel);
 		return this;
@@ -324,7 +327,10 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	/**
 	 * Please make the block require a tool if you plan to disable drops and slow the breaking down using the
 	 * incorrect tool by using {@link FabricBlockSettings#requiresTool()}.
+	 *
+	 * @deprecated Replaced by {@code mineable} tags. See fabric-mining-level-api-v1 for further details.S
 	 */
+	@Deprecated(forRemoval = true)
 	public FabricBlockSettings breakByTool(Tag<Item> tag) {
 		return this.breakByTool(tag, 0);
 	}
