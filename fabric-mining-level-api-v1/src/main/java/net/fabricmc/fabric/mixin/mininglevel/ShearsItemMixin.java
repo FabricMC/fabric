@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.mininglevel;
 
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -55,11 +56,15 @@ abstract class ShearsItemMixin implements FabricTool {
 			if (state.isIn(getEffectiveBlocks())) { // mimics MiningToolItem.getMiningSpeedMultiplier
 				// In vanilla 1.17, shears have three special mining speed multiplier values:
 				if (state.isIn(FabricMineableTags.SHEARS_MINEABLE_FAST)) {
-					info.setReturnValue(15.0f); // - cobweb and leaves return 15.0
+					// Cobweb and leaves return 15.0 with vanilla iron shears, which has a speed of 6.0, so we divide material multiplier by 0.4
+					info.setReturnValue(getToolMaterial().getMiningSpeedMultiplier() / 0.4f);
 				} else if (state.isIn(FabricMineableTags.SHEARS_MINEABLE_SLOW)) {
-					info.setReturnValue(2.0f); // - vines and glow lichen return 2.0
+					// Vines and glow lichen return 2.0 with vanilla iron shears, which has a speed of 6.0, so we divide material multiplier by 3.0
+					info.setReturnValue(getToolMaterial().getMiningSpeedMultiplier() / 3.0f);
 				} else {
-					info.setReturnValue(5.0f); // - wool returns 5.0. As the most "neutral" option out of these three, we'll use it by default.
+					// Wool returns 5.0 with vanilla iron shears, which has a speed of 6.0, so we divide material multiplier by 3.0.
+					// As the most "neutral" option out of these three, we'll use it by default.
+					info.setReturnValue(getToolMaterial().getMiningSpeedMultiplier() / 1.2f);
 				}
 			}
 		}

@@ -45,7 +45,7 @@ abstract class SwordItemMixin extends ToolItem implements FabricTool {
 	@Inject(method = "isSuitableFor", at = @At("HEAD"), cancellable = true)
 	private void fabric$onIsSuitableFor(BlockState state, CallbackInfoReturnable<Boolean> info) {
 		if (state.isIn(getEffectiveBlocks())) {
-			int miningLevel = getMaterial().getMiningLevel();
+			int miningLevel = getMiningLevel();
 
 			if (miningLevel >= MiningLevelManager.getRequiredMiningLevel(state)) {
 				info.setReturnValue(true);

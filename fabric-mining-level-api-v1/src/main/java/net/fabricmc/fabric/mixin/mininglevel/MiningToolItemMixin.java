@@ -38,9 +38,9 @@ abstract class MiningToolItemMixin implements FabricTool {
 	@Final
 	private Tag<Block> effectiveBlocks;
 
-	@Inject(method = "isSuitableFor", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/item/ToolMaterial;getMiningLevel()I"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-	private void fabric$onIsSuitableFor(BlockState state, CallbackInfoReturnable<Boolean> info, int toolMiningLevel) {
-		if (toolMiningLevel < MiningLevelManager.getRequiredMiningLevel(state)) {
+	@Inject(method = "isSuitableFor", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/item/ToolMaterial;getMiningLevel()I"), cancellable = true)
+	private void fabric$onIsSuitableFor(BlockState state, CallbackInfoReturnable<Boolean> info) {
+		if (getMiningLevel() < MiningLevelManager.getRequiredMiningLevel(state)) {
 			info.setReturnValue(false);
 		}
 	}
