@@ -43,6 +43,16 @@ public final class FabricMineableTags {
 	 */
 	public static final Tag.Identified<Block> SHEARS_MINEABLE = register("mineable/shears");
 
+	/**
+	 * Blocks in this tag ({@code #fabric:mineable/shears}) can be effectively mined with shears at a faster than normal rate.
+	 */
+	public static final Tag.Identified<Block> SHEARS_MINEABLE_FAST = register("mineable/shears_fast");
+
+	/**
+	 * Blocks in this tag ({@code #fabric:mineable/shears}) can be effectively mined with shears at a slower than normal rate.
+	 */
+	public static final Tag.Identified<Block> SHEARS_MINEABLE_SLOW = register("mineable/shears_slow");
+
 	private FabricMineableTags() {
 	}
 

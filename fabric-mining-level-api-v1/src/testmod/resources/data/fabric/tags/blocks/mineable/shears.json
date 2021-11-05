@@ -1,6 +1,9 @@
 {
   "replace": false,
   "values": [
-    "fabric-mining-level-api-v1-testmod:needs_shears"
+    "fabric-mining-level-api-v1-testmod:needs_shears",
+    "fabric-mining-level-api-v1-testmod:needs_stone_shears",
+    "fabric-mining-level-api-v1-testmod:needs_diamond_shears",
+    "fabric-mining-level-api-v1-testmod:needs_netherite_shears"
   ]
 }

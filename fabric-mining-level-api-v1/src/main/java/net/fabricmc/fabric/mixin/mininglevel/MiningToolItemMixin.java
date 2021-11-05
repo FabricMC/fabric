@@ -16,23 +16,37 @@
 
 package net.fabricmc.fabric.mixin.mininglevel;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.MiningToolItem;
+import net.minecraft.tag.Tag;
 
+import net.fabricmc.fabric.api.mininglevel.v1.FabricTool;
 import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 
 @Mixin(MiningToolItem.class)
-abstract class MiningToolItemMixin {
+abstract class MiningToolItemMixin implements FabricTool {
+	@Shadow
+	@Final
+	private Tag<Block> effectiveBlocks;
+
 	@Inject(method = "isSuitableFor", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/item/ToolMaterial;getMiningLevel()I"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
 	private void fabric$onIsSuitableFor(BlockState state, CallbackInfoReturnable<Boolean> info, int toolMiningLevel) {
 		if (toolMiningLevel < MiningLevelManager.getRequiredMiningLevel(state)) {
 			info.setReturnValue(false);
 		}
+	}
+
+	@Override
+	public Tag<Block> getEffectiveBlocks() {
+		return effectiveBlocks;
 	}
 }

@@ -5,7 +5,8 @@
   "mixins": [
     "MiningToolItemMixin",
     "ShearsItemMixin",
-    "SwordItemMixin"
+    "SwordItemMixin",
+    "ToolItemMixin"
   ],
   "client": [
     "client.ClientPlayNetworkHandlerMixin"

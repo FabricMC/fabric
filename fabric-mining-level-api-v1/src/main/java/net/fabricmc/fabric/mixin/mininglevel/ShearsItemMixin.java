@@ -21,36 +21,57 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
+import net.minecraft.item.ToolMaterial;
+import net.minecraft.item.ToolMaterials;
+import net.minecraft.tag.Tag;
 
+import net.fabricmc.fabric.api.mininglevel.v1.FabricTool;
 import net.fabricmc.fabric.api.mininglevel.v1.FabricMineableTags;
+import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 
 /**
  * Adds support for {@link FabricMineableTags#SHEARS_MINEABLE}.
  */
 @Mixin(ShearsItem.class)
-abstract class ShearsItemMixin {
+abstract class ShearsItemMixin implements FabricTool {
 	@Inject(method = "isSuitableFor", at = @At("HEAD"), cancellable = true)
 	private void fabric$onIsSuitableFor(BlockState state, CallbackInfoReturnable<Boolean> info) {
-		if (state.isIn(FabricMineableTags.SHEARS_MINEABLE)) {
-			info.setReturnValue(true);
+		if (state.isIn(getEffectiveBlocks())) {
+			int miningLevel = getMiningLevel();
+
+			if (miningLevel >= MiningLevelManager.getRequiredMiningLevel(state)) {
+				info.setReturnValue(true);
+			}
 		}
 	}
 
 	@Inject(method = "getMiningSpeedMultiplier", at = @At("RETURN"), cancellable = true)
 	private void fabric$onGetMiningSpeedMultiplier(ItemStack stack, BlockState state, CallbackInfoReturnable<Float> info) {
 		if (info.getReturnValueF() == 1.0f) { // if not caught by vanilla checks
-			if (state.isIn(FabricMineableTags.SHEARS_MINEABLE)) { // mimics MiningToolItem.getMiningSpeedMultiplier
+			if (state.isIn(getEffectiveBlocks())) { // mimics MiningToolItem.getMiningSpeedMultiplier
 				// In vanilla 1.17, shears have three special mining speed multiplier values:
-				//   - cobweb and leaves return 15.0
-				//   - wool returns 5.0
-				//   - vines and glow lichen return 2.0
-				// As the most "neutral" option out of these three,
-				// we'll use 5.0 as it's not extremely fast nor extremely slow.
-				info.setReturnValue(5.0f);
+				if (state.isIn(FabricMineableTags.SHEARS_MINEABLE_FAST)) {
+					info.setReturnValue(15.0f); // - cobweb and leaves return 15.0
+				} else if (state.isIn(FabricMineableTags.SHEARS_MINEABLE_SLOW)) {
+					info.setReturnValue(2.0f); // - vines and glow lichen return 2.0
+				} else {
+					info.setReturnValue(5.0f); // - wool returns 5.0. As the most "neutral" option out of these three, we'll use it by default.
+				}
 			}
 		}
+	}
+
+	@Override
+	public ToolMaterial getToolMaterial() {
+		return ToolMaterials.IRON; // Vanilla shears are made of iron
+	}
+
+	@Override
+	public Tag<Block> getEffectiveBlocks() {
+		return FabricMineableTags.SHEARS_MINEABLE;
 	}
 }

@@ -21,27 +21,30 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterial;
+import net.minecraft.tag.Tag;
 
 import net.fabricmc.fabric.api.mininglevel.v1.FabricMineableTags;
+import net.fabricmc.fabric.api.mininglevel.v1.FabricTool;
 import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 
 /**
  * Adds support for {@link FabricMineableTags#SWORD_MINEABLE}.
  */
 @Mixin(SwordItem.class)
-abstract class SwordItemMixin extends ToolItem {
+abstract class SwordItemMixin extends ToolItem implements FabricTool {
 	private SwordItemMixin(ToolMaterial material, Settings settings) {
 		super(material, settings);
 	}
 
 	@Inject(method = "isSuitableFor", at = @At("HEAD"), cancellable = true)
 	private void fabric$onIsSuitableFor(BlockState state, CallbackInfoReturnable<Boolean> info) {
-		if (state.isIn(FabricMineableTags.SWORD_MINEABLE)) {
+		if (state.isIn(getEffectiveBlocks())) {
 			int miningLevel = getMaterial().getMiningLevel();
 
 			if (miningLevel >= MiningLevelManager.getRequiredMiningLevel(state)) {
@@ -53,9 +56,14 @@ abstract class SwordItemMixin extends ToolItem {
 	@Inject(method = "getMiningSpeedMultiplier", at = @At("RETURN"), cancellable = true)
 	private void fabric$onGetMiningSpeedMultiplier(ItemStack stack, BlockState state, CallbackInfoReturnable<Float> info) {
 		if (info.getReturnValueF() == 1.0f) { // if not caught by vanilla checks
-			if (state.isIn(FabricMineableTags.SWORD_MINEABLE)) { // mimics MiningToolItem.getMiningSpeedMultiplier
+			if (state.isIn(getEffectiveBlocks())) { // mimics MiningToolItem.getMiningSpeedMultiplier
 				info.setReturnValue(getMaterial().getMiningSpeedMultiplier());
 			}
 		}
+	}
+
+	@Override
+	public Tag<Block> getEffectiveBlocks() {
+		return FabricMineableTags.SWORD_MINEABLE;
 	}
 }

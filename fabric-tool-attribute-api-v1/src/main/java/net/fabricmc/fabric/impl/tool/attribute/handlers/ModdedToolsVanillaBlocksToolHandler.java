@@ -29,6 +29,7 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.TypedActionResult;
 
+import net.fabricmc.fabric.api.mininglevel.v1.FabricTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 
@@ -65,8 +66,8 @@ public class ModdedToolsVanillaBlocksToolHandler implements ToolManagerImpl.Tool
 			int miningLevel = ((DynamicAttributeTool) stack.getItem()).getMiningLevel(tag, state, stack, user);
 			if (miningLevel < 0) return ActionResult.PASS;
 
-			ToolItem vanillaItem = getVanillaItem(miningLevel);
-			return vanillaItem.isSuitableFor(state) ? ActionResult.SUCCESS : ActionResult.PASS;
+			FabricTool vanillaItem = (FabricTool) getVanillaItem(miningLevel);
+			return vanillaItem.isSuitableFor(miningLevel, state) ? ActionResult.SUCCESS : ActionResult.PASS;
 		}
 
 		return ActionResult.PASS;

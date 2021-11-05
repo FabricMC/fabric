@@ -29,13 +29,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.Tag;
 
+import net.fabricmc.fabric.api.mininglevel.v1.FabricTool;
+
 /**
  * Interface for adding various tool attributes to items.
  *
  * <p> Functions in this interface will provide user context if it is available.
  * These context parameters are provided on a best-effort basis, and implementations should not fail hard if they are absent.</p>
  */
-public interface DynamicAttributeTool {
+public interface DynamicAttributeTool extends FabricTool {
 	Multimap<EntityAttribute, EntityAttributeModifier> EMPTY = ImmutableSetMultimap.of();
 
 	/**
@@ -48,7 +50,7 @@ public interface DynamicAttributeTool {
 	 */
 	@Deprecated
 	default int getMiningLevel(ItemStack stack, @Nullable LivingEntity user) {
-		return 0;
+		return getMiningLevel();
 	}
 
 	/**

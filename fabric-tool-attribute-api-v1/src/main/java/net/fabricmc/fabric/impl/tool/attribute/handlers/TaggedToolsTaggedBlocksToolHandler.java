@@ -28,6 +28,7 @@ import net.minecraft.item.ToolItem;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.ActionResult;
 
+import net.fabricmc.fabric.api.mininglevel.v1.FabricTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 
@@ -48,7 +49,7 @@ public class TaggedToolsTaggedBlocksToolHandler implements ToolManagerImpl.ToolH
 	@NotNull
 	@Override
 	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-		if (!(stack.getItem() instanceof DynamicAttributeTool) && !(stack.getItem() instanceof ToolItem)) {
+		if (!(stack.getItem() instanceof DynamicAttributeTool) && !(stack.getItem() instanceof FabricTool)) {
 			if (state.isIn(mineableTag)) {
 				return ActionResult.SUCCESS;
 			}

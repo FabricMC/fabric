@@ -21,13 +21,14 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.TypedActionResult;
 
+import net.fabricmc.fabric.api.mininglevel.v1.FabricTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
@@ -41,22 +42,23 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
  * <p>Only applicable to blocks that are vanilla or share the material that is handled by their vanilla tool.</p>
  */
 public class ShearsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandler {
-	private final Item vanillaItem = Items.SHEARS;
+	private static final Item VANILLA_ITEM = Items.SHEARS;
 
 	@NotNull
 	@Override
 	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
-		if (ToolManagerImpl.entryNullable(state.getBlock()) != null) {
-			// Block is a modded block, and we should ignore it
-			return ActionResult.PASS;
-		}
-
-		if (!(stack.getItem() instanceof DynamicAttributeTool)) {
-			if (!(stack.getItem() instanceof ShearsItem)) {
-				return vanillaItem.isSuitableFor(state) ? ActionResult.SUCCESS : ActionResult.PASS;
-			} else {
-				return stack.getItem().isSuitableFor(state) ? ActionResult.SUCCESS : ActionResult.PASS;
+		if (stack.getItem() instanceof DynamicAttributeTool) {
+			if (ToolManagerImpl.entryNullable(state.getBlock()) != null) {
+				// Block is a modded block, and we should ignore it
+				return ActionResult.PASS;
 			}
+
+			// Gets the mining level from our modded tool
+			int miningLevel = ((DynamicAttributeTool) stack.getItem()).getMiningLevel(tag, state, stack, user);
+			if (miningLevel < 0) return ActionResult.PASS;
+
+			FabricTool vanillaItem = (FabricTool) VANILLA_ITEM;
+			return vanillaItem.isSuitableFor(miningLevel, state) ? ActionResult.SUCCESS : ActionResult.PASS;
 		}
 
 		return ActionResult.PASS;
@@ -69,7 +71,7 @@ public class ShearsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandl
 
 		if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 			if (!(stack.getItem() instanceof ShearsItem)) {
-				speed = vanillaItem.getMiningSpeedMultiplier(new ItemStack(vanillaItem), state);
+				speed = VANILLA_ITEM.getMiningSpeedMultiplier(new ItemStack(VANILLA_ITEM), state);
 			} else {
 				speed = stack.getItem().getMiningSpeedMultiplier(stack, state);
 			}

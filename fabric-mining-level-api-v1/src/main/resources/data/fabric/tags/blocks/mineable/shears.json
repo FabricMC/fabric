@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#fabric:mineable/shears_fast",
+    "#fabric:mineable/shears_slow"
+  ]
+}
