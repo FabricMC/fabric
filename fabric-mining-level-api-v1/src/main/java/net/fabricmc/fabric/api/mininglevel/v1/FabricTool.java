@@ -69,7 +69,7 @@ public interface FabricTool {
 	 * Returns whether a tool of this type, if it had the mining level provided, would be suitable for mining the provided {@code BlockState}.
 	 * Can be useful in circumstances where {@link net.minecraft.item.Item#isSuitableFor(BlockState)} is not.
 	 * @param miningLevel the mining level of the tool
-	 * @param state the blockstate being mined
+	 * @param state the block state being mined
 	 * @return Whether the tool is suitable
 	 */
 	default boolean isSuitableFor(int miningLevel, BlockState state) {
