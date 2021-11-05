@@ -1,5 +1,5 @@
 archivesBaseName = "fabric-registry-sync-v0"
-version = getSubprojectVersion(project, "0.7.5")
+version = getSubprojectVersion(project, "0.7.6")
 
 moduleDependencies(project, [
 		'fabric-api-base',
