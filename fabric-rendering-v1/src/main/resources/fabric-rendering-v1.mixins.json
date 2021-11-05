@@ -14,7 +14,8 @@
     "LivingEntityRendererAccessor",
     "MixinBlockEntityRenderers",
     "MixinEntityRenderers",
-    "ScreenMixin"
+    "ScreenMixin",
+    "DimensionEffectsAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
