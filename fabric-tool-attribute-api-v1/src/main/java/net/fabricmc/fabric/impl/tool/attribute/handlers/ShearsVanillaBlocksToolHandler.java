@@ -47,14 +47,14 @@ public class ShearsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandl
 	@NotNull
 	@Override
 	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
-		if (stack.getItem() instanceof DynamicAttributeTool) {
+		if (stack.getItem() instanceof DynamicAttributeTool tool) {
 			if (ToolManagerImpl.entryNullable(state.getBlock()) != null) {
 				// Block is a modded block, and we should ignore it
 				return ActionResult.PASS;
 			}
 
 			// Gets the mining level from our modded tool
-			int miningLevel = ((DynamicAttributeTool) stack.getItem()).getMiningLevel(tag, state, stack, user);
+			int miningLevel = tool.getMiningLevel(tag, state, stack, user);
 			if (miningLevel < 0) return ActionResult.PASS;
 
 			FabricTool vanillaItem = (FabricTool) VANILLA_ITEM;

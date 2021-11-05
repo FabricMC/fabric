@@ -56,14 +56,14 @@ public class ModdedToolsVanillaBlocksToolHandler implements ToolManagerImpl.Tool
 	@NotNull
 	@Override
 	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
-		if (stack.getItem() instanceof DynamicAttributeTool) {
+		if (stack.getItem() instanceof DynamicAttributeTool tool) {
 			if (ToolManagerImpl.entryNullable(state.getBlock()) != null) {
 				// Block is a modded block, and we should ignore it
 				return ActionResult.PASS;
 			}
 
 			// Gets the mining level from our modded tool
-			int miningLevel = ((DynamicAttributeTool) stack.getItem()).getMiningLevel(tag, state, stack, user);
+			int miningLevel = tool.getMiningLevel(tag, state, stack, user);
 			if (miningLevel < 0) return ActionResult.PASS;
 
 			FabricTool vanillaItem = (FabricTool) getVanillaItem(miningLevel);
@@ -76,12 +76,12 @@ public class ModdedToolsVanillaBlocksToolHandler implements ToolManagerImpl.Tool
 	@NotNull
 	@Override
 	public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
-		if (stack.getItem() instanceof DynamicAttributeTool) {
+		if (stack.getItem() instanceof DynamicAttributeTool tool) {
 			// Gets the mining level from our modded tool
-			int miningLevel = ((DynamicAttributeTool) stack.getItem()).getMiningLevel(tag, state, stack, user);
+			int miningLevel = tool.getMiningLevel(tag, state, stack, user);
 			if (miningLevel < 0) return null;
 
-			float moddedToolSpeed = ((DynamicAttributeTool) stack.getItem()).getMiningSpeedMultiplier(tag, state, stack, user);
+			float moddedToolSpeed = tool.getMiningSpeedMultiplier(tag, state, stack, user);
 			ToolItem firstVanillaItem = getVanillaItem(miningLevel);
 			ToolItem secondVanillaItem = getVanillaItem(miningLevel + 1 >= vanillaItems.size() ? vanillaItems.size() - 2 : miningLevel + 1);
 

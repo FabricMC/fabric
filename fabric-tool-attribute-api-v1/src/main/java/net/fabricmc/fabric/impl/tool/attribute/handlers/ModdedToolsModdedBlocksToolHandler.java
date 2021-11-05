@@ -39,11 +39,11 @@ public class ModdedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolH
 	@NotNull
 	@Override
 	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
-		if (stack.getItem() instanceof DynamicAttributeTool) {
+		if (stack.getItem() instanceof DynamicAttributeTool tool) {
 			ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
 			if (entry != null) {
-				int miningLevel = ((DynamicAttributeTool) stack.getItem()).getMiningLevel(tag, state, stack, user);
+				int miningLevel = tool.getMiningLevel(tag, state, stack, user);
 				int requiredMiningLevel = entry.getMiningLevel(tag);
 
 				return requiredMiningLevel >= 0 && miningLevel >= 0 && miningLevel >= requiredMiningLevel ? ActionResult.SUCCESS : ActionResult.PASS;
@@ -56,11 +56,11 @@ public class ModdedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolH
 	@NotNull
 	@Override
 	public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
-		if (stack.getItem() instanceof DynamicAttributeTool) {
+		if (stack.getItem() instanceof DynamicAttributeTool tool) {
 			ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
 			if (entry != null && entry.getMiningLevel(tag) >= 0) {
-				float multiplier = ((DynamicAttributeTool) stack.getItem()).getMiningSpeedMultiplier(tag, state, stack, user);
+				float multiplier = tool.getMiningSpeedMultiplier(tag, state, stack, user);
 				if (multiplier != 1.0F) return TypedActionResult.success(multiplier);
 			}
 		}
