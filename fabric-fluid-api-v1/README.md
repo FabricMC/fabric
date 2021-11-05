@@ -17,7 +17,9 @@ compared with vanilla one.
 - [x] Touching event.
 - [x] Touching event: entity on fire.
 - [x] Specify if the fluid can light fire.
-- [x] Handling fire and fall.
+- [x] Handling hot and fire damage.
+- [x] Handling fall damage.
+- [x] Specify if the fluid can wet entities.
 - [x] Handling drowning.
 - [x] Boats over the fluid.
 - [x] Entity swimming.
@@ -112,13 +114,13 @@ By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
 interface on your fluid class, you can implement three methods allowing to
 specify the fog parameters.
 
-* `int getFogColor(Entity)`  
+* `int getFogColor(Entity, float, ClientWorld)`  
   Allows to specify the fog color.
 
-* `float getFogEnd(Entity)`  
+* `float getFogEnd(Entity, BackgroundRenderer.FogType, float, boolean)`  
   Allows to specify the fog ending distance.
 
-* `float getFogStart(Entity)`  
+* `float getFogStart(Entity, BackgroundRenderer.FogType, float, boolean)`  
   Allows to specify the fog starting distance.
 
 ## Pushing strength
@@ -163,25 +165,48 @@ implements a method allowing to specify if the fluid can light fire.
 
 `boolean canLightFire()`
 
-## Handling fire and fall
+## Handling hot and fire damage
 
 By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
 interface on your fluid class, you can implement two methods allowing to
-specify if the fluid can extinguish fire and prevent fall damage.
+specify if the fluid can damage player because is too hot, or
+can extinguish fire.
 
 * `boolean canExtinguishFire()`  
   Allows to specify if the fluid can extinguish fire.
 
-* `boolean canPreventFallDamage()`  
-  Allows to specify if the fluid can prevent fall damage.
+* `int getEntityOnFireDuration()`  
+  Allows to specify the duration of fire on entities,
+  if the fluid can light fire.
+
+* `float getHotDamage()`  
+  Allows to specify the damage that the fluid can do to entities touching it.
+
+## Handling fall damage
+
+By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
+interface on your fluid class, you can implement a method allowing to
+specify if the fluid can prevent fall damage.
+
+`boolean canPreventFallDamage()`
+
+## Specify if the fluid can wet entities
+
+By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
+interface on your fluid class, you can implement a method allowing to
+specify whether the fluid can wet entities.
+
+Some entities, as endermans, will be damaged if they are wet.
+
+`boolean canWet()`
 
 ## Handling drowning
 
 By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
 interface on your fluid class, you can implement a method allowing to
-specify if the fluid can drown entities.
+specify the drowning damage that the fluid can do to submerged entities.
 
-`boolean canDrown()`
+`float getDrowningDamage()`
 
 ## Boats over the fluid
 

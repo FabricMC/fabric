@@ -19,6 +19,8 @@ package net.fabricmc.fabric.api.fluid.v1;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.effect.StatusEffectUtil;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
 
@@ -39,12 +41,17 @@ public abstract class ExtendedFabricFlowableFluid extends FabricFlowableFluid im
 	 */
 	@Override
 	public void onSubmerged(World world, Entity entity) {
-		//Implements the drowning for every living entity, you can customize by overriding
-		if (canDrown() && !world.isClient && entity instanceof LivingEntity life) {
-			life.setAir(life.getAir() - 1);
-			if (life.getAir() == -20) {
-				life.setAir(0);
-				life.damage(DamageSource.DROWN, 2f);
+		//Implements drowning living entities
+		if (!world.isClient && entity instanceof LivingEntity life) {
+			float drowningDamage = getDrowningDamage();
+			if (drowningDamage > 0 && !life.canBreatheInWater() && !StatusEffectUtil.hasWaterBreathing(life)) {
+				if (!(life instanceof PlayerEntity player && player.getAbilities().invulnerable)) {
+					life.setAir(life.getAir() - 1);
+					if (life.getAir() <= -20) {
+						life.setAir(0);
+						life.damage(DamageSource.DROWN, drowningDamage);
+					}
+				}
 			}
 		}
 	}
@@ -57,13 +64,15 @@ public abstract class ExtendedFabricFlowableFluid extends FabricFlowableFluid im
 	 */
 	@Override
 	public void onTouching(World world, Entity entity) {
-		//Implements setting entities on fire
-		if (canLightFire()) {
-			if (!entity.isFireImmune() && !world.isClient) {
-				entity.setOnFireFor(5);
-				if (entity.damage(DamageSource.IN_FIRE, 4.0F)) {
-					entity.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + world.getRandom().nextFloat() * 0.4F);
-				}
+		//Implements fire and hot damage on entities
+		if (!world.isClient && !entity.isFireImmune()) {
+			int entityOnFireDuration = getEntityOnFireDuration();
+			float hotDamage = getHotDamage();
+			if (canLightFire() && entityOnFireDuration > 0) {
+				entity.setOnFireFor(entityOnFireDuration);
+			}
+			if (hotDamage > 0 && entity.damage(DamageSource.IN_FIRE, hotDamage)) {
+				entity.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + world.getRandom().nextFloat() * 0.4F);
 			}
 		}
 	}

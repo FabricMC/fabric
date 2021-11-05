@@ -43,7 +43,7 @@ public class BackgroundRendererMixin {
     private static void render(Camera camera, float tickDelta, ClientWorld world, int i, float f, CallbackInfo ci) {
         FluidState fluidState = ((FabricFluidCamera)camera).getSubmergedFluidState();
         if (fluidState.getFluid() instanceof ExtendedFlowableFluid fluid) {
-            int fogColor = fluid.getFogColor(camera.getFocusedEntity());
+            int fogColor = fluid.getFogColor(camera.getFocusedEntity(), tickDelta, world);
             red = (fogColor >> 16 & 255) / 255f;
             green = (fogColor >> 8 & 255) / 255f;
             blue = (fogColor & 255) / 255f;
@@ -60,11 +60,11 @@ public class BackgroundRendererMixin {
             cancellable = true)
     private static void applyFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci) {
         FluidState fluidState = ((FabricFluidCamera)camera).getSubmergedFluidState();
-		Entity entity = camera.getFocusedEntity();
         if (fluidState.getFluid() instanceof ExtendedFlowableFluid fluid) {
+			Entity entity = camera.getFocusedEntity();
 			//Apply the fog start and fog end if the current entity is submerged by an extended fluid
-            RenderSystem.setShaderFogStart(fluid.getFogStart(entity));
-            RenderSystem.setShaderFogEnd(fluid.getFogEnd(entity));
+            RenderSystem.setShaderFogStart(fluid.getFogStart(entity, fogType, viewDistance, thickFog));
+            RenderSystem.setShaderFogEnd(fluid.getFogEnd(entity, fogType, viewDistance, thickFog));
             ci.cancel();
         }
     }

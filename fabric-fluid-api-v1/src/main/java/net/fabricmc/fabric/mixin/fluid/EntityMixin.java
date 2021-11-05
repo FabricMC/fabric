@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.fluid;
 
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import net.fabricmc.fabric.api.fluid.v1.ExtendedFlowableFluid;
 import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
 import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
@@ -48,14 +49,16 @@ import java.util.Random;
 @Mixin(Entity.class)
 public abstract class EntityMixin implements FabricFluidEntity {
     @Shadow public World world;
-    @Shadow private BlockPos blockPos;
     @Shadow public float fallDistance;
 	@Shadow protected boolean firstUpdate;
 	@Shadow protected boolean submergedInWater;
 	@Shadow @Nullable protected Tag<Fluid> submergedFluidTag;
 	@Shadow public boolean horizontalCollision;
 	@Shadow	@Final protected Random random;
+	@Shadow protected Object2DoubleMap<Tag<Fluid>> fluidHeight;
 
+	@Unique private FluidState submergedFluid = null;
+	@Unique private FluidState firstTouchedFabricFluid = null;
 	@Unique protected boolean touchingFabricFluid = false;
 	@Unique protected boolean submergedInFabricFluid = false;
 	@Unique protected final double CENTER_EYE_OFFSET = 0.1111111119389534d;
@@ -87,10 +90,11 @@ public abstract class EntityMixin implements FabricFluidEntity {
 	@Shadow	public abstract boolean isInSwimmingPose();
 	@Shadow	public abstract void playSound(SoundEvent sound, float volume, float pitch);
 	@Shadow public abstract double getFluidHeight(Tag<Fluid> fluid);
+	@Shadow public abstract boolean isRegionUnloaded();
 
 	@Inject(method = "tick()V", at = @At("TAIL"))
 	private void tick(CallbackInfo ci) {
-		fabricFluidTick();
+		fabricFluidApiTick();
 	}
 
 	@Inject(method = "shouldSpawnSprintingParticles()Z", at = @At("HEAD"), cancellable = true)
@@ -112,21 +116,27 @@ public abstract class EntityMixin implements FabricFluidEntity {
 		else return entity.isInLava();
 	}
 
-	//TODO adapt isWet() for wolf, enderman... etc...
+	@Inject(method = "isWet()Z", at = @At("HEAD"), cancellable = true)
+	private void isWet(CallbackInfoReturnable<Boolean> cir) {
+		if (isTouchingFabricFluid()) {
+			if (firstTouchedFabricFluid.getFluid() instanceof ExtendedFlowableFluid fluid) cir.setReturnValue(fluid.canWet());
+			else cir.setReturnValue(true);
+		}
+	}
 
 	@Inject(method = "updateSubmergedInWaterState()V", at = @At("HEAD"), cancellable = true)
 	private void updateSubmergedInFluidState(CallbackInfo ci) {
 		this.submergedInWater = this.isSubmergedIn(FluidTags.WATER);
 		this.submergedInFabricFluid = this.isSubmergedIn(FabricFluidTags.FABRIC_FLUID);
 		this.submergedFluidTag = null;
+		this.submergedFluid = null;
 
 		//Get the y of the center of the eye
 		double eyeY = this.getEyeY() - CENTER_EYE_OFFSET;
 
 		//If the entity is on a boat, not set the tag regardless
 		if (this.getVehicle() instanceof BoatEntity boat) {
-			if (!boat.isSubmergedInWater() && !((FabricFluidEntity)boat).isSubmergedInFabricFluid()
-					&& boat.getBoundingBox().maxY >= eyeY && boat.getBoundingBox().minY <= eyeY) {
+			if (!boat.isSubmergedInWater() && boat.getBoundingBox().maxY >= eyeY && boat.getBoundingBox().minY <= eyeY) {
 				return;
 			}
 		}
@@ -139,12 +149,13 @@ public abstract class EntityMixin implements FabricFluidEntity {
 		if (tag != null) {
 			double eyeFluidY = (float)pos.getY() + fluidState.getHeight(this.world, pos);
 			if (eyeFluidY > eyeY) {
-				//If the entity is submerged by the fluid above the eye, set the current "submerged fluid" tag
+				//If the entity is submerged by the fluid above the eye, set the current "submerged fluid"
 				this.submergedFluidTag = tag;
+				this.submergedFluid = fluidState;
 			}
 		}
 
-		ci.cancel(); //TODO rework for compatibility?
+		ci.cancel();
 	}
 
 	@Inject(method = "baseTick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateWaterState()Z", shift = At.Shift.AFTER))
@@ -164,12 +175,12 @@ public abstract class EntityMixin implements FabricFluidEntity {
 						 && !this.hasVehicle()
 						 && (this.isInWater() || this.isInFabricFluid()));
 		}
-		ci.cancel(); //TODO rework for compatibility?
+		ci.cancel();
 	}
 
 	@Inject(method = "playSwimSound(F)V", at = @At(value = "HEAD"), cancellable = true)
 	private void playSwimSound(float volume, CallbackInfo ci) {
-		if (isTouchingFabricFluid() && this.world.getFluidState(this.blockPos).getFluid() instanceof ExtendedFlowableFluid fluid) {
+		if (isTouchingFabricFluid() && firstTouchedFabricFluid.getFluid() instanceof ExtendedFlowableFluid fluid) {
 			fluid.getSwimSound().ifPresent(sound -> this.playSound(sound, volume, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F));
 			ci.cancel();
 		}
@@ -185,58 +196,68 @@ public abstract class EntityMixin implements FabricFluidEntity {
 		if (this.getVehicle() instanceof BoatEntity) {
 			//If the entity is on a boat, not touches the fluid
 			this.touchingFabricFluid = false;
-		} else if (this.world.getFluidState(this.blockPos).getFluid() instanceof ExtendedFlowableFluid fluid) {
-			//Get the fluid viscosity, that is equal to the pushing strength of the fluid
-			double viscosity = fluid.getViscosity(this.world, this.getThis());
+		} else if (this.isRegionUnloaded()) {
+			this.touchingFabricFluid = false;
+		} else {
+			//Set the first touched fabric_fluid
+			firstTouchedFabricFluid = FluidUtils.getFirstTouchedFluid(this.getThis(), FabricFluidTags.FABRIC_FLUID);
+			if (firstTouchedFabricFluid != null) {
+				//Get the fluid viscosity, that is equal to the pushing strength of the fluid (by default, get the water viscosity).
+				Fluid fluid = firstTouchedFabricFluid.getFluid();
+				double viscosity = fluid instanceof ExtendedFlowableFluid eFluid
+						? eFluid.getViscosity(this.world, this.getThis()) : 0.014d;
 
-			//updateMovementInFluid returns true if the entity is currently touching the fluid
-			if (this.updateMovementInFluid(FabricFluidTags.FABRIC_FLUID, viscosity)) {
-				//If the entity, in the previous tick, not touches the fluid, and this is not the first update,
-				//execute the "fluid touched" event
-				if (!this.touchingFabricFluid && !this.firstUpdate) this.onFabricFluidTouched(fluid);
+				//updateMovementInFluid returns true if the entity is currently touching the fluid
+				if (this.updateMovementInFluid(FabricFluidTags.FABRIC_FLUID, viscosity)) {
+					//If the fluid is an ExtendedFlowableFluid, do custom behaviour
+					if (fluid instanceof ExtendedFlowableFluid eFluid) {
+						//If the entity, in the previous tick, not touches the fluid, and this is not the first update,
+						//execute the "fluid touched" event
+						if (!this.touchingFabricFluid && !this.firstUpdate) this.onFabricFluidTouched(eFluid);
 
-				//Prevent fall damage and extinguish fire
-				if (fluid.canPreventFallDamage()) this.fallDistance = 0.0F;
-				if (fluid.canExtinguishFire() && isOnFire()) {
-					this.extinguish();
-					this.playExtinguishSound();
+						//Prevent fall damage and extinguish fire
+						if (eFluid.canPreventFallDamage()) this.fallDistance = 0.0F;
+						if (eFluid.canExtinguishFire() && isOnFire()) {
+							this.extinguish();
+							this.playExtinguishSound();
+						}
+					} else {
+						//If the fluid is a standard fluid, do standard water behaviour
+						this.fallDistance = 0.0F;
+						this.extinguish();
+						this.playExtinguishSound();
+					}
+					this.touchingFabricFluid = true;
+				} else {
+					this.touchingFabricFluid = false;
 				}
 
-				this.touchingFabricFluid = true;
 			} else {
 				this.touchingFabricFluid = false;
 			}
-		} else {
-			this.touchingFabricFluid = false;
 		}
 	}
 
-	/**
-	 * @return true if the entity is touching a fabric_fluid.
-	 */
 	@Override
 	public boolean isTouchingFabricFluid() {
 		return touchingFabricFluid;
 	}
 
-	/**
-	 * @return true if the entity is submerged in a fabric_fluid.
-	 */
 	@Override
 	public boolean isSubmergedInFabricFluid() {
 		return submergedInFabricFluid;
 	}
 
-	@Unique
-	protected boolean isTouchingSwimmableFluid() {
-		return this.isTouchingFabricFluid() && FluidUtils.isSwimmable(this.world.getFluidState(this.blockPos));
-		//TODO canSwimOnIt must be cheked in the first touched fluid?
+	@Override
+	public boolean isTouchingSwimmableFluid() {
+		return this.isTouchingWater() || (this.isTouchingFabricFluid()
+				&& firstTouchedFabricFluid != null && FluidUtils.isSwimmable(firstTouchedFabricFluid));
 	}
 
-	@Unique
-	protected boolean isSubmergedInSwimmableFluid() {
-		return this.isSubmergedInFabricFluid() && FluidUtils.isSwimmable(this.world.getFluidState(this.blockPos));
-		//TODO canSwimOnIt must be cheked in the fluid on the eye.
+	@Override
+	public boolean isSubmergedInSwimmableFluid() {
+		return this.isSubmergedInWater() || (this.isSubmergedInFabricFluid()
+				&& submergedFluid != null && FluidUtils.isSwimmable(submergedFluid));
 	}
 
 	@Unique
@@ -249,31 +270,27 @@ public abstract class EntityMixin implements FabricFluidEntity {
 	}
 
 	@Unique
-	private void fabricFluidTick() {
-		if (this.world.getFluidState(this.blockPos).getFluid() instanceof ExtendedFlowableFluid fluid) {
-			if (isSubmergedInFabricFluid()) {
-				//Executes an event if the entity is submerged in a fabric_fluid
-				//TODO must be called on the fluid on the eye.
-				fluid.onSubmerged(world, this.getThis());
-			}
-			if (isTouchingFabricFluid()) {
-				//Executes an event if the entity is touching a fabric_fluid
-				//TODO must be called on the first touched fluid?
-				fluid.onTouching(world, this.getThis());
-			}
+	private void fabricFluidApiTick() {
+		if (isSubmergedInFabricFluid() && submergedFluid != null
+				&& submergedFluid.getFluid() instanceof ExtendedFlowableFluid fluid) {
+			//Executes an event if the entity is submerged in a fabric_fluid
+			fluid.onSubmerged(world, this.getThis());
+		}
+		if (isTouchingFabricFluid() && firstTouchedFabricFluid != null
+				&& firstTouchedFabricFluid.getFluid() instanceof ExtendedFlowableFluid fluid) {
+			//Executes an event if the entity is touching a fabric_fluid
+			fluid.onTouching(world, this.getThis());
 		}
 	}
 
 	@Unique
 	private boolean isInWater() {
-		return this.world.getFluidState(this.blockPos).isIn(FluidTags.WATER);
-		//TODO isInLava() use --> return !this.firstUpdate && this.fluidHeight.getDouble(FluidTags.LAVA) > 0.0D; <-- use that?
+		return !this.firstUpdate && this.fluidHeight.getDouble(FluidTags.WATER) > 0.0D;
 	}
 
 	@Unique
 	private boolean isInFabricFluid() {
-		return this.world.getFluidState(this.blockPos).isIn(FabricFluidTags.FABRIC_FLUID);
-		//TODO isInLava() use --> return !this.firstUpdate && this.fluidHeight.getDouble(FluidTags.LAVA) > 0.0D; <-- use that?
+		return !this.firstUpdate && this.fluidHeight.getDouble(FabricFluidTags.FABRIC_FLUID) > 0.0D;
 	}
 
 	@Unique

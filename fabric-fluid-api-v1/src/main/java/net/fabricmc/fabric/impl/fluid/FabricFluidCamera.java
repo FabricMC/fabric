@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.fluid;
 import net.minecraft.fluid.FluidState;
 
 /**
- * Implements some camera features about fluids.
+ * Implements some fluid-related camera features.
  */
 public interface FabricFluidCamera {
     /**

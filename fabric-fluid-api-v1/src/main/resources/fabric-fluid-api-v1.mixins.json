@@ -6,7 +6,10 @@
     "BoatDispenserBehaviorMixin",
     "BoatEntityMixin",
     "EntityMixin",
-    "LivingEntityMixin"
+    "EntityNavigationMixin",
+    "LivingEntityMixin",
+    "SwimGoalMixin",
+    "WaterPathNodeMakerMixin"
   ],
   "client": [
     "client.BackgroundRendererMixin",

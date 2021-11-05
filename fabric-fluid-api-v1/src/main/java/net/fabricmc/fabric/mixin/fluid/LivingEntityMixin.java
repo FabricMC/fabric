@@ -60,7 +60,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 
 	@Redirect(method = "tickMovement()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect(LivingEntity entity) {
-		return this.isTouchingWater() || this.isTouchingSwimmableFluid();
+		return this.isTouchingSwimmableFluid();
 	}
 
 	@Redirect(method = "tickMovement()V", at = @At(value = "INVOKE",
@@ -79,6 +79,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 				&& !this.canWalkOnFluid(this.world.getFluidState(this.getBlockPos()).getFluid())) {
 
 			//Calculates the travel movement if the entity is on a fabric_fluid
+			//This applies the same behaviour of an entity in water, but with fabric_fluid
 
 			double d = 0.08D;
 			boolean bl = this.getVelocity().y <= 0.0D;

@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.impl.fluid;
 
+/**
+ * Implements some fluid-related entity features.
+ */
 public interface FabricFluidEntity {
 	/**
 	 * @return true if the entity is touching a fabric_fluid.
@@ -26,4 +29,14 @@ public interface FabricFluidEntity {
 	 * @return true if the entity is submerged in a fabric_fluid.
 	 */
 	boolean isSubmergedInFabricFluid();
+
+	/**
+	 * @return true if the entity is touching a swimmable fluid.
+	 */
+	boolean isTouchingSwimmableFluid();
+
+	/**
+	 * @return true if the entity is submerged in a swimmable fluid.
+	 */
+	boolean isSubmergedInSwimmableFluid();
 }

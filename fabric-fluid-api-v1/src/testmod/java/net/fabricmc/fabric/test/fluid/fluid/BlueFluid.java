@@ -20,6 +20,8 @@ import net.fabricmc.fabric.api.fluid.v1.ExtendedFabricFlowableFluid;
 import net.fabricmc.fabric.test.fluid.block.MBlocks;
 import net.fabricmc.fabric.test.fluid.item.MItems;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.BackgroundRenderer;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -82,17 +84,17 @@ public abstract class BlueFluid extends ExtendedFabricFlowableFluid {
 	}
 
 	@Override
-	public int getFogColor(Entity entity) {
+	public int getFogColor(Entity entity, float tickDelta, ClientWorld world) {
 		return 0x0000ff;
 	}
 
 	@Override
-	public float getFogEnd(Entity entity) {
+	public float getFogEnd(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
 		return 1.0f;
 	}
 
 	@Override
-	public float getFogStart(Entity entity) {
+	public float getFogStart(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
 		return 0.25f;
 	}
 
@@ -103,6 +105,11 @@ public abstract class BlueFluid extends ExtendedFabricFlowableFluid {
 
 	@Override
 	public boolean isNavigable() {
+		return false;
+	}
+
+	@Override
+	public boolean isSwimmable() {
 		return false;
 	}
 

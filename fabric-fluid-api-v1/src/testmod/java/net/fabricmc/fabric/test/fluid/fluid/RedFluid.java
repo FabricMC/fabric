@@ -20,6 +20,8 @@ import net.fabricmc.fabric.api.fluid.v1.ExtendedFabricFlowableFluid;
 import net.fabricmc.fabric.test.fluid.block.MBlocks;
 import net.fabricmc.fabric.test.fluid.item.MItems;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.BackgroundRenderer;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -78,17 +80,17 @@ public abstract class RedFluid extends ExtendedFabricFlowableFluid {
 	}
 
 	@Override
-	public int getFogColor(Entity entity) {
+	public int getFogColor(Entity entity, float tickDelta, ClientWorld world) {
 		return 0xff0000;
 	}
 
 	@Override
-	public float getFogEnd(Entity entity) {
+	public float getFogEnd(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
 		return 10.0f;
 	}
 
 	@Override
-	public float getFogStart(Entity entity) {
+	public float getFogStart(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
 		return -10.0f;
 	}
 
@@ -105,6 +107,21 @@ public abstract class RedFluid extends ExtendedFabricFlowableFluid {
 	@Override
 	public boolean canLightFire() {
 		return true;
+	}
+
+	@Override
+	public int getEntityOnFireDuration() {
+		return 5;
+	}
+
+	@Override
+	public float getHotDamage() {
+		return 2f;
+	}
+
+	@Override
+	public boolean canWet() {
+		return false;
 	}
 
 	@Override

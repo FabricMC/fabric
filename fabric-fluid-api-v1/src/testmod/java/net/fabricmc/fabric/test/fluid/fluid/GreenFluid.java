@@ -20,6 +20,8 @@ import net.fabricmc.fabric.api.fluid.v1.ExtendedFabricFlowableFluid;
 import net.fabricmc.fabric.test.fluid.block.MBlocks;
 import net.fabricmc.fabric.test.fluid.item.MItems;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.BackgroundRenderer;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -80,17 +82,17 @@ public abstract class GreenFluid extends ExtendedFabricFlowableFluid {
 	}
 
 	@Override
-	public int getFogColor(Entity entity) {
+	public int getFogColor(Entity entity, float tickDelta, ClientWorld world) {
 		return 0x00ff00;
 	}
 
 	@Override
-	public float getFogEnd(Entity entity) {
+	public float getFogEnd(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
 		return 2.0f;
 	}
 
 	@Override
-	public float getFogStart(Entity entity) {
+	public float getFogStart(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
 		return 0.25f;
 	}
 
@@ -100,8 +102,8 @@ public abstract class GreenFluid extends ExtendedFabricFlowableFluid {
 	}
 
 	@Override
-	public boolean canDrown() {
-		return false;
+	public float getDrowningDamage() {
+		return 0;
 	}
 
 	@Override

@@ -34,11 +34,11 @@ public abstract class ClientPlayerEntityMixin extends LivingEntityMixin {
 
 	@Redirect(method = "tickMovement()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
 	private boolean isSubmergedInWaterRedirect(ClientPlayerEntity entity) {
-		return this.isSubmergedInWater() || this.isSubmergedInSwimmableFluid();
+		return this.isSubmergedInSwimmableFluid();
 	}
 
 	@Redirect(method = "tickMovement()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect(ClientPlayerEntity entity) {
-		return this.isTouchingWater() || this.isTouchingSwimmableFluid();
+		return this.isTouchingSwimmableFluid();
 	}
 }
