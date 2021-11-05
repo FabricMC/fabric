@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 
 /**
  * This handler handles items that are a subclass of {@link DynamicAttributeTool} by using the
- * vanilla {@link Item#isEffectiveOn(BlockState)} with a custom fake tool material to use the mining level
+ * vanilla {@link Item#isSuitableFor(BlockState)} with a custom fake tool material to use the mining level
  * from {@link DynamicAttributeTool#getMiningLevel(Tag, BlockState, ItemStack, LivingEntity)}.
  *
  * <p>Only applicable to blocks that are vanilla or share the material that is handled by their vanilla tool.</p>
