@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.transfer.v1.client.fluid;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -116,12 +117,24 @@ public class FluidVariantRendering {
 	}
 
 	/**
-	 * Return the sprite that should be used to render the passed fluid variant, or null if it's not available.
+	 * Return the still and the flowing sprite that should be used to render the passed fluid variant, or null if they are not available.
+	 * The sprites should be rendered using the color returned by {@link #getColor}.
+	 *
+	 * @see FluidVariantRenderHandler#getSprites
+	 */
+	@Nullable
+	public static Sprite[] getSprites(FluidVariant fluidVariant) {
+		return getHandlerOrDefault(fluidVariant.getFluid()).getSprites(fluidVariant);
+	}
+
+	/**
+	 * Return the still sprite that should be used to render the passed fluid variant, or null if it's not available.
 	 * The sprite should be rendered using the color returned by {@link #getColor}.
 	 */
 	@Nullable
 	public static Sprite getSprite(FluidVariant fluidVariant) {
-		return getHandlerOrDefault(fluidVariant.getFluid()).getSprite(fluidVariant);
+		Sprite[] sprites = getSprites(fluidVariant);
+		return sprites != null ? Objects.requireNonNull(sprites[0]) : null;
 	}
 
 	/**

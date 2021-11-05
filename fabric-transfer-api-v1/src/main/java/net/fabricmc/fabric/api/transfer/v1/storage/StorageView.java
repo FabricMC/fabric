@@ -40,7 +40,10 @@ public interface StorageView<T> {
 	long extract(T resource, long maxAmount, TransactionContext transaction);
 
 	/**
-	 * @return {@code true} if the {@link #getResource} contained in this storage view is blank, or {@code false} otherwise.
+	 * Return {@code true} if the {@link #getResource} contained in this storage view is blank, or {@code false} otherwise.
+	 *
+	 * <p>This function is mostly useful when dealing with storages of arbitrary types.
+	 * For transfer variant storages, this should always be equivalent to {@code getResource().isBlank()}.
 	 */
 	boolean isResourceBlank();
 

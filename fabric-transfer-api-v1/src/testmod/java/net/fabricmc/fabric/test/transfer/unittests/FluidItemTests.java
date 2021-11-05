@@ -48,6 +48,9 @@ class FluidItemTests {
 		testFluidItemApi();
 		testWaterPotion();
 		testSimpleContentsQuery();
+
+		// Ensure this doesn't throw an error due to the empty stack.
+		assertEquals(null, ContainerItemContext.withInitial(ItemStack.EMPTY).find(FluidStorage.ITEM));
 	}
 
 	private static void testFluidItemApi() {
