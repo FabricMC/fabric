@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 
 /**
  * This handler handles items that are registered in the {@link FabricToolTags#SHEARS} by using the
- * vanilla {@link Item#isEffectiveOn(BlockState)} using the vanilla shears or the item itself if the item
+ * vanilla {@link Item#isSuitableFor(BlockState)} using the vanilla shears or the item itself if the item
  * is a subclass of {@link ShearsItem}.
  *
  * <p>Only applicable to items that are not a subclass of {@link DynamicAttributeTool}</p>

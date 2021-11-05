@@ -19,11 +19,19 @@ package net.fabricmc.fabric.impl.client.rendering.fluid;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.LeavesBlock;
+import net.minecraft.block.TransparentBlock;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.BlockRenderView;
@@ -37,6 +45,9 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 	private static final int DEFAULT_WATER_COLOR = BuiltinRegistries.BIOME.get(BiomeKeys.OCEAN).getWaterColor();
 	private final Map<Fluid, FluidRenderHandler> handlers = new IdentityHashMap<>();
 	private final Map<Fluid, FluidRenderHandler> modHandlers = new IdentityHashMap<>();
+	private final Map<Block, Boolean> overlayBlocks = new IdentityHashMap<>();
+
+	private FluidRenderer fluidRenderer;
 
 	private FluidRenderHandlerRegistryImpl() {
 	}
@@ -56,11 +67,24 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		modHandlers.put(fluid, renderer);
 	}
 
-	public void onFluidRendererReload(Sprite[] waterSprites, Sprite[] lavaSprites) {
+	@Override
+	public void setBlockTransparency(Block block, boolean transparent) {
+		overlayBlocks.put(block, transparent);
+	}
+
+	@Override
+	public boolean isBlockTransparent(Block block) {
+		return overlayBlocks.computeIfAbsent(block, k -> k instanceof TransparentBlock || k instanceof LeavesBlock);
+	}
+
+	public void onFluidRendererReload(FluidRenderer renderer, Sprite[] waterSprites, Sprite[] lavaSprites, Sprite waterOverlay) {
+		fluidRenderer = renderer;
+
+		Sprite[] waterSpritesFull = {waterSprites[0], waterSprites[1], waterOverlay};
 		FluidRenderHandler waterHandler = new FluidRenderHandler() {
 			@Override
 			public Sprite[] getFluidSprites(BlockRenderView view, BlockPos pos, FluidState state) {
-				return waterSprites;
+				return waterSpritesFull;
 			}
 
 			@Override
@@ -86,5 +110,17 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		register(Fluids.LAVA, lavaHandler);
 		register(Fluids.FLOWING_LAVA, lavaHandler);
 		handlers.putAll(modHandlers);
+
+		SpriteAtlasTexture texture = MinecraftClient.getInstance()
+				.getBakedModelManager()
+				.getAtlas(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+
+		for (FluidRenderHandler handler : handlers.values()) {
+			handler.reloadTextures(texture);
+		}
+	}
+
+	public boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, FluidState state) {
+		return fluidRenderer.render(world, pos, vertexConsumer, state);
 	}
 }

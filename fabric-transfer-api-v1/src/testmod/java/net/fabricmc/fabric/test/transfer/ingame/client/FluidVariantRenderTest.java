@@ -16,9 +16,12 @@
 
 package net.fabricmc.fabric.test.transfer.ingame.client;
 
+import java.util.List;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
@@ -30,9 +33,8 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.Matrix4f;
-import net.minecraft.world.World;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -48,16 +50,38 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 		HudRenderCallback.EVENT.register((matrices, tickDelta) -> {
 			PlayerEntity player = MinecraftClient.getInstance().player;
 			if (player == null) return;
-			drawFluidInGui(matrices, FluidVariant.of(Fluids.WATER), player.world, player.getBlockPos(), 0, 0);
+
+			int renderY = 0;
+			List<FluidVariant> variants = List.of(FluidVariant.of(Fluids.WATER), FluidVariant.of(Fluids.LAVA));
+
+			for (FluidVariant variant : variants) {
+				Sprite[] sprites = FluidVariantRendering.getSprites(variant);
+				int color = FluidVariantRendering.getColor(variant, player.world, player.getBlockPos());
+
+				if (sprites != null) {
+					drawFluidInGui(matrices, sprites[0], color, 0, renderY);
+					renderY += 16;
+					drawFluidInGui(matrices, sprites[1], color, 0, renderY);
+					renderY += 16;
+				}
+
+				List<Text> tooltip = FluidVariantRendering.getTooltip(variant);
+				TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+
+				renderY += 2;
+
+				for (Text line : tooltip) {
+					textRenderer.draw(matrices, line, 4, renderY, -1);
+					renderY += 10;
+				}
+			}
 		});
 	}
 
-	private static void drawFluidInGui(MatrixStack ms, FluidVariant fluid, World world, BlockPos pos, int i, int j) {
-		RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
-		Sprite sprite = FluidVariantRendering.getSprite(fluid);
-		int color = FluidVariantRendering.getColor(fluid, world, pos);
-
+	private static void drawFluidInGui(MatrixStack ms, Sprite sprite, int color, int i, int j) {
 		if (sprite == null) return;
+
+		RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 
 		float r = ((color >> 16) & 255) / 255f;
 		float g = ((color >> 8) & 255) / 255f;

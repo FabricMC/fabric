@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.transfer.v1.item;
 
 import java.util.List;
 
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.block.Blocks;
@@ -79,6 +80,12 @@ public final class ItemStorage {
 	}
 
 	static {
+		// Ensure that the lookup is only queried on the server side.
+		ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
+			Preconditions.checkArgument(!world.isClient(), "Sided item storage may only be queried for a server world.");
+			return null;
+		});
+
 		// Composter support.
 		ItemStorage.SIDED.registerForBlocks((world, pos, state, blockEntity, direction) -> ComposterWrapper.get(world, pos, direction), Blocks.COMPOSTER);
 
