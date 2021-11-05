@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.transfer.v1.storage;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -26,6 +27,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
@@ -115,6 +117,32 @@ public final class StorageUtil {
 		}
 
 		return totalMoved;
+	}
+
+	/**
+	 * Try to insert up to some amount of a resource into a list of storage slots, trying to "stack" first,
+	 * i.e. prioritizing slots that already contain the resource.
+	 *
+	 * @return How much was inserted.
+	 * @see Storage#insert
+	 */
+	public static <T> long insertStacking(List<SingleSlotStorage<T>> slots, T resource, long maxAmount, TransactionContext transaction) {
+		StoragePreconditions.notNegative(maxAmount);
+		long amount = 0;
+
+		for (SingleSlotStorage<T> slot : slots) {
+			if (!slot.isResourceBlank()) {
+				amount += slot.insert(resource, maxAmount - amount, transaction);
+				if (amount == maxAmount) return amount;
+			}
+		}
+
+		for (SingleSlotStorage<T> slot : slots) {
+			amount += slot.insert(resource, maxAmount - amount, transaction);
+			if (amount == maxAmount) return amount;
+		}
+
+		return amount;
 	}
 
 	/**

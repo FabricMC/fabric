@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -128,6 +129,12 @@ public final class FluidStorage {
 	}
 
 	static {
+		// Ensure that the lookup is only queried on the server side.
+		FluidStorage.SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
+			Preconditions.checkArgument(!world.isClient(), "Sided fluid storage may only be queried for a server world.");
+			return null;
+		});
+
 		// Initialize vanilla cauldron wrappers
 		CauldronFluidContent.getForFluid(Fluids.WATER);
 

@@ -134,7 +134,7 @@ public interface ContainerItemContext {
 	 * for example to simulate how much fluid could be extracted from the variant and amount.
 	 */
 	static ContainerItemContext withInitial(ItemVariant initialVariant, long initialAmount) {
-		StoragePreconditions.notBlankNotNegative(initialVariant, initialAmount);
+		StoragePreconditions.notNegative(initialAmount);
 		return new InitialContentsContainerItemContext(initialVariant, initialAmount);
 	}
 

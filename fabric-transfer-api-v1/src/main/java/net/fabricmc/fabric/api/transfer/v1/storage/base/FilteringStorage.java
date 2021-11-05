@@ -34,6 +34,8 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  * If one of these two functions is overridden to always return false, implementors may also wish to override
  * {@link #supportsInsertion} and/or {@link #supportsExtraction}.
  *
+ * <p>The static functions can be used when insertion or/and extraction should be blocked entirely.
+ *
  * @param <T> The type of the stored resources.
  *
  * <b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
@@ -41,6 +43,63 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  */
 @ApiStatus.Experimental
 public abstract class FilteringStorage<T> implements Storage<T> {
+	/**
+	 * Return a wrapper over the passed storage that prevents extraction.
+	 */
+	public static <T> Storage<T> insertOnlyOf(Storage<T> backingStorage) {
+		return of(backingStorage, true, false);
+	}
+
+	/**
+	 * Return a wrapper over the passed storage that prevents insertion.
+	 */
+	public static <T> Storage<T> extractOnlyOf(Storage<T> backingStorage) {
+		return of(backingStorage, false, true);
+	}
+
+	/**
+	 * Return a wrapper over the passed storage that prevents insertion and extraction.
+	 */
+	public static <T> Storage<T> readOnlyOf(Storage<T> backingStorage) {
+		return of(backingStorage, false, false);
+	}
+
+	/**
+	 * Return a wrapper over the passed storage that may prevent insertion or extraction, depending on the boolean parameters.
+	 * For more fine-grained control, a custom subclass of {@link FilteringStorage} should be used.
+	 *
+	 * @param backingStorage Storage to wrap.
+	 * @param allowInsert True to allow insertion, false to block insertion.
+	 * @param allowExtract True to allow extraction, false to block extraction.
+	 */
+	public static <T> Storage<T> of(Storage<T> backingStorage, boolean allowInsert, boolean allowExtract) {
+		if (allowInsert && allowExtract) {
+			return backingStorage;
+		}
+
+		return new FilteringStorage<>(backingStorage) {
+			@Override
+			protected boolean canInsert(T resource) {
+				return allowInsert;
+			}
+
+			@Override
+			protected boolean canExtract(T resource) {
+				return allowExtract;
+			}
+
+			@Override
+			public boolean supportsInsertion() {
+				return allowInsert && super.supportsInsertion();
+			}
+
+			@Override
+			public boolean supportsExtraction() {
+				return allowExtract && super.supportsExtraction();
+			}
+		};
+	}
+
 	protected final Supplier<Storage<T>> backingStorage;
 
 	/**
