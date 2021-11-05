@@ -83,7 +83,7 @@ public interface FluidVariantRenderHandler {
 	 * @deprecated Use and implement {@linkplain #getSprites(FluidVariant) the other more general overload}.
 	 * This one will be removed in a future iteration of the API.
 	 */
-	@Deprecated(forRemoval = true)
+	@Deprecated()
 	@Nullable
 	default Sprite getSprite(FluidVariant fluidVariant) {
 		Sprite[] sprites = getSprites(fluidVariant);

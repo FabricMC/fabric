@@ -17,8 +17,6 @@
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
 import com.google.common.base.Preconditions;
-import net.fabricmc.fabric.impl.transfer.fluid.CauldronStorage;
-import net.minecraft.block.Blocks;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 

@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.base;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -192,7 +193,7 @@ public class EventTests {
 		Identifier y = new Identifier("fabric", "y");
 		Identifier z = new Identifier("fabric", "z");
 
-		List<Consumer<Event<Test>>> dependencies = List.of(
+		List<Consumer<Event<Test>>> dependencies = Arrays.asList(
 				ev -> ev.addPhaseOrdering(a, z),
 				ev -> ev.addPhaseOrdering(d, e),
 				ev -> ev.addPhaseOrdering(e, z),
@@ -235,7 +236,7 @@ public class EventTests {
 		Identifier d = new Identifier("fabric", "d");
 		Identifier e = new Identifier("fabric", "e");
 
-		List<Consumer<Event<Test>>> dependencies = List.of(
+		List<Consumer<Event<Test>>> dependencies = Arrays.asList(
 				ev -> ev.addPhaseOrdering(e, a),
 				ev -> ev.addPhaseOrdering(a, b),
 				ev -> ev.addPhaseOrdering(b, a),

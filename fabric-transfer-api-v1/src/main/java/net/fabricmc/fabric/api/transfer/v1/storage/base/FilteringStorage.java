@@ -77,7 +77,7 @@ public abstract class FilteringStorage<T> implements Storage<T> {
 			return backingStorage;
 		}
 
-		return new FilteringStorage<>(backingStorage) {
+		return new FilteringStorage<T>(backingStorage) {
 			@Override
 			protected boolean canInsert(T resource) {
 				return allowInsert;

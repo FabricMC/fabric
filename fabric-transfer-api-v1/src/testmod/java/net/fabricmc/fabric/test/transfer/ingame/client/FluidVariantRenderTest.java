@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.transfer.ingame.client;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -50,7 +51,7 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 			if (player == null) return;
 
 			int renderY = 0;
-			List<FluidVariant> variants = List.of(FluidVariant.of(Fluids.WATER), FluidVariant.of(Fluids.LAVA));
+			List<FluidVariant> variants = Arrays.asList(FluidVariant.of(Fluids.WATER), FluidVariant.of(Fluids.LAVA));
 
 			for (FluidVariant variant : variants) {
 				Sprite[] sprites = FluidVariantRendering.getSprites(variant);
