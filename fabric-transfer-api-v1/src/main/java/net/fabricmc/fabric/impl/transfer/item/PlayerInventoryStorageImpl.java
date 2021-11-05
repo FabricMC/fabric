@@ -26,6 +26,7 @@ import net.minecraft.util.Hand;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
@@ -63,18 +64,8 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 			}
 		}
 
-		// Otherwise insert into the main slots, first iteration tries to stack, second iteration inserts into empty slots.
-		for (int iteration = 0; iteration < 2; iteration++) {
-			boolean allowEmptySlots = iteration == 1;
-
-			for (SingleSlotStorage<ItemVariant> slot : mainSlots) {
-				if (!slot.isResourceBlank() || allowEmptySlots) {
-					amount -= slot.insert(resource, amount, tx);
-				}
-
-				if (amount == 0) return initialAmount;
-			}
-		}
+		// Otherwise insert into the main slots, stacking first.
+		amount -= StorageUtil.insertStacking(mainSlots, resource, amount, tx);
 
 		return initialAmount - amount;
 	}

@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
+import com.google.common.base.Preconditions;
+import net.fabricmc.fabric.impl.transfer.fluid.CauldronStorage;
+import net.minecraft.block.Blocks;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -130,7 +133,13 @@ public final class FluidStorage {
 	}
 
 	static {
-		// Initialize vanilla cauldron wrapper
+		// Ensure that the lookup is only queried on the server side.
+		FluidStorage.SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
+			Preconditions.checkArgument(!world.isClient(), "Sided fluid storage may only be queried for a server world.");
+			return null;
+		});
+
+		// Initialize vanilla cauldron wrappers
 		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, context) -> CauldronStorage.get(world, pos), Blocks.CAULDRON);
 
 		// Register combined fallback
