@@ -47,7 +47,7 @@ public class TaggedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolH
 			if (entry != null) {
 				int miningLevel = 0; // minimum mining level: the tool is tagged but nothing else is said about it
 				int requiredMiningLevel = entry.getMiningLevel(tag);
-				return miningLevel >= requiredMiningLevel ? ActionResult.SUCCESS : ActionResult.PASS;
+				return requiredMiningLevel >= 0 && miningLevel >= requiredMiningLevel ? ActionResult.SUCCESS : ActionResult.PASS;
 			}
 		}
 
