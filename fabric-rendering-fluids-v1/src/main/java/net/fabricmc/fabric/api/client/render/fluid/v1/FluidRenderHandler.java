@@ -82,7 +82,7 @@ public interface FluidRenderHandler {
 	 * @return Whether anything is tessellated.
 	 */
 	default boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, FluidState state) {
-		return FluidRenderHandlerRegistryImpl.INSTANCE.renderFluid(pos, world, vertexConsumer, state);
+		return ((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).renderFluid(pos, world, vertexConsumer, state);
 	}
 
 	/**

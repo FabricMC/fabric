@@ -38,7 +38,7 @@ public interface BuiltinItemRendererRegistry {
 	 * The singleton instance of the renderer registry.
 	 * Use this instance to call the methods in this interface.
 	 */
-	BuiltinItemRendererRegistry INSTANCE = BuiltinItemRendererRegistryImpl.INSTANCE;
+	BuiltinItemRendererRegistry INSTANCE = new BuiltinItemRendererRegistryImpl();
 
 	/**
 	 * Registers the renderer for the item.

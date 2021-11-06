@@ -25,7 +25,6 @@ import net.fabricmc.fabric.api.registry.LootEntryTypeRegistry;
 
 @Deprecated
 public final class LootEntryTypeRegistryImpl implements LootEntryTypeRegistry {
-	public static final LootEntryTypeRegistryImpl INSTANCE = new LootEntryTypeRegistryImpl();
 	private static final Method REGISTER_METHOD;
 
 	static {
@@ -49,7 +48,7 @@ public final class LootEntryTypeRegistryImpl implements LootEntryTypeRegistry {
 		}
 	}
 
-	private LootEntryTypeRegistryImpl() { }
+	public LootEntryTypeRegistryImpl() { }
 
 	@Override
 	public void register(LootPoolEntry.Serializer<?> serializer) {

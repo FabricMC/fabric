@@ -24,12 +24,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.SynchronizeTagsS2CPacket;
 
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class MixinClientPlayNetworkHandler {
 	@Inject(at = @At("TAIL"), method = "onSynchronizeTags")
 	private void onSynchronizeTagsHook(SynchronizeTagsS2CPacket packet, CallbackInfo info) {
-		FuelRegistryImpl.INSTANCE.resetCache();
+		((FuelRegistryImpl) FuelRegistry.INSTANCE).resetCache();
 	}
 }

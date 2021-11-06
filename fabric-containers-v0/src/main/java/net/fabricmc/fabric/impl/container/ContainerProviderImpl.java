@@ -37,10 +37,6 @@ import net.fabricmc.fabric.mixin.container.ServerPlayerEntityAccessor;
 
 public class ContainerProviderImpl implements ContainerProviderRegistry {
 	public static final Identifier OPEN_CONTAINER = new Identifier("fabric", "container/open");
-	/**
-	 * Use the instance provided by ContainerProviderRegistry.
-	 */
-	public static final ContainerProviderImpl INSTANCE = new ContainerProviderImpl();
 
 	private static final Logger LOGGER = LogManager.getLogger();
 

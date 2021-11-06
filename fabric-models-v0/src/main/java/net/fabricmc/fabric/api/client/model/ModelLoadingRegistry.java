@@ -24,7 +24,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.impl.client.model.ModelLoadingRegistryImpl;
 
 public interface ModelLoadingRegistry {
-	ModelLoadingRegistry INSTANCE = ModelLoadingRegistryImpl.INSTANCE;
+	ModelLoadingRegistry INSTANCE = new ModelLoadingRegistryImpl();
 
 	/**
 	 * Register a model provider, which can request loading additional models.

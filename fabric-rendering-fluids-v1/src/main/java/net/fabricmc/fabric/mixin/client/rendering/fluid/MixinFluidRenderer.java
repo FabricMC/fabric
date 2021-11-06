@@ -37,6 +37,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderHandlerRegistryImpl;
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRendererHookContainer;
 
@@ -56,7 +57,7 @@ public class MixinFluidRenderer {
 	@Inject(at = @At("RETURN"), method = "onResourceReload")
 	public void onResourceReloadReturn(CallbackInfo info) {
 		FluidRenderer self = (FluidRenderer) (Object) this;
-		FluidRenderHandlerRegistryImpl.INSTANCE.onFluidRendererReload(self, waterSprites, lavaSprites, waterOverlaySprite);
+		((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).onFluidRendererReload(self, waterSprites, lavaSprites, waterOverlaySprite);
 	}
 
 	@Inject(at = @At("HEAD"), method = "render", cancellable = true)
@@ -82,7 +83,7 @@ public class MixinFluidRenderer {
 	@Unique
 	private void tessellateViaHandler(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, FluidState state, CallbackInfoReturnable<Boolean> info) {
 		FluidRendererHookContainer ctr = fabric_renderHandler.get();
-		FluidRenderHandler handler = FluidRenderHandlerRegistryImpl.INSTANCE.getOverride(state.getFluid());
+		FluidRenderHandler handler = ((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).getOverride(state.getFluid());
 
 		ctr.view = view;
 		ctr.pos = pos;
@@ -146,7 +147,7 @@ public class MixinFluidRenderer {
 	public Sprite modSideSpriteForOverlay(Sprite chk) {
 		Block block = fabric_neighborBlock.get();
 
-		if (FluidRenderHandlerRegistryImpl.INSTANCE.isBlockTransparent(block)) {
+		if (FluidRenderHandlerRegistry.INSTANCE.isBlockTransparent(block)) {
 			FluidRendererHookContainer ctr = fabric_renderHandler.get();
 			return ctr.handler != null && ctr.hasOverlay ? ctr.overlay : waterOverlaySprite;
 		}
