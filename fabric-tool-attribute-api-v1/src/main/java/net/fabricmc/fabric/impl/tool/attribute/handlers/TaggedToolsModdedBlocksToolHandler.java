@@ -46,9 +46,12 @@ public class TaggedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolH
 			@Nullable ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
 			if (entry != null) {
-				int miningLevel = 0; // minimum mining level: the tool is tagged but nothing else is said about it
 				int requiredMiningLevel = entry.getMiningLevel(tag);
-				return miningLevel >= requiredMiningLevel ? ActionResult.SUCCESS : ActionResult.PASS;
+				// (requiredMiningLevel == 0) is equivalent to
+				// (requiredMiningLevel >= 0 && toolMiningLevel >= requiredMiningLevel), which is used in other handlers.
+				// Since the tool mining level of these is always 0 (in the absence of better info), the condition
+				// simplifies to (== 0). The compiler couldn't optimise the other one... :(
+				return requiredMiningLevel == 0 ? ActionResult.SUCCESS : ActionResult.PASS;
 			}
 		}
 
