@@ -87,11 +87,11 @@ public final class MiningLevelTest implements ModInitializer {
 	public static Block.Settings createBlockSettings() {
 		return AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool();
 	}
-	
+
 	public static Item.Settings createItemSettings() {
 		return new Item.Settings().group(ItemGroup.TOOLS);
 	}
-	
+
 	@Override
 	public void onInitialize() {
 		register("needs_netherite_sword", NEEDS_NETHERITE_SWORD);
