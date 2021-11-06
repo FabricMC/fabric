@@ -16,6 +16,14 @@
 
 package net.fabricmc.fabric.test.tool.attribute;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.function.BiFunction;
+
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -24,6 +32,7 @@ import net.minecraft.block.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.ToolItem;
@@ -73,6 +82,14 @@ public class ToolAttributeTest implements ModInitializer {
 	Block needsAxe;
 	Block needsHoe;
 	Block needsShovel;
+
+	// Simple blocks that only need a tool without a specific mining level (mineable tags)
+	Block needsShearsTagged;
+	Block needsSwordTagged;
+	Block needsPickaxeTagged;
+	Block needsAxeTagged;
+	Block needsHoeTagged;
+	Block needsShovelTagged;
 
 	// These items are only tagged, but are not actual ToolItems or DynamicAttributeTools.
 	Item fakeShears;
@@ -140,6 +157,13 @@ public class ToolAttributeTest implements ModInitializer {
 		needsAxe = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_axe"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1).breakByTool(FabricToolTags.AXES)));
 		needsHoe = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_hoe"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1).breakByTool(FabricToolTags.HOES)));
 		needsShovel = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_shovel"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1).breakByTool(FabricToolTags.SHOVELS)));
+
+		needsShearsTagged = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_shears_tagged"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1)));
+		needsSwordTagged = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_sword_tagged"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1)));
+		needsPickaxeTagged = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_pickaxe_tagged"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1)));
+		needsAxeTagged = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_axe_tagged"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1)));
+		needsHoeTagged = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_hoe_tagged"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1)));
+		needsShovelTagged = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_shovel_tagged"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1)));
 
 		// "Fake" tools, see explanation above
 		fakeShears = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "fake_shears"), new Item(new Item.Settings()));
@@ -213,13 +237,54 @@ public class ToolAttributeTest implements ModInitializer {
 		testToolOnBlock(new ItemStack(Items.IRON_HOE), needsHoe, true, ToolMaterials.IRON.getMiningSpeedMultiplier());
 		testToolOnBlock(new ItemStack(Items.IRON_SHOVEL), needsShovel, true, ToolMaterials.IRON.getMiningSpeedMultiplier());
 
-		//Test fake tools on corresponding blocks
-		testToolOnBlock(new ItemStack(fakeShears), needsShears, true, DEFAULT_BREAK_SPEED);
-		testToolOnBlock(new ItemStack(fakeSword), needsSword, true, DEFAULT_BREAK_SPEED);
-		testToolOnBlock(new ItemStack(fakeAxe), needsAxe, true, DEFAULT_BREAK_SPEED);
-		testToolOnBlock(new ItemStack(fakePickaxe), needsPickaxe, true, DEFAULT_BREAK_SPEED);
-		testToolOnBlock(new ItemStack(fakeHoe), needsHoe, true, DEFAULT_BREAK_SPEED);
-		testToolOnBlock(new ItemStack(fakeShovel), needsShovel, true, DEFAULT_BREAK_SPEED);
+		//Test fake tools on corresponding and invalid blocks
+		// Note: using LinkedHashMultimap to ensure the same order (this makes it more predictable when debugging)
+		Multimap<Item, Block> fakeToolsToEffectiveBlocks = LinkedHashMultimap.create(6, 2);
+		fakeToolsToEffectiveBlocks.put(fakeShears, needsShears);
+		fakeToolsToEffectiveBlocks.put(fakeShears, needsShearsTagged);
+		fakeToolsToEffectiveBlocks.put(fakeSword, needsSword);
+		fakeToolsToEffectiveBlocks.put(fakeSword, needsSwordTagged);
+		fakeToolsToEffectiveBlocks.put(fakeAxe, needsAxe);
+		fakeToolsToEffectiveBlocks.put(fakeAxe, needsAxeTagged);
+		fakeToolsToEffectiveBlocks.put(fakePickaxe, needsPickaxe);
+		fakeToolsToEffectiveBlocks.put(fakePickaxe, needsPickaxeTagged);
+		fakeToolsToEffectiveBlocks.put(fakeHoe, needsHoe);
+		fakeToolsToEffectiveBlocks.put(fakeHoe, needsHoeTagged);
+		fakeToolsToEffectiveBlocks.put(fakeShovel, needsShovel);
+		fakeToolsToEffectiveBlocks.put(fakeShovel, needsShovelTagged);
+		testExclusivelyEffective(fakeToolsToEffectiveBlocks, (tool, block) -> {
+			if (tool == fakeShears && block == needsShearsTagged) {
+				// The mining level API gives the tagged block the speed 5.0
+				// when mined with shears (see ShearsItemMixin in that module),
+				// and ShearsVanillaBlocksToolHandler gets the speeds from the vanilla shears item.
+				return 5.0f;
+			}
+
+			return DEFAULT_BREAK_SPEED;
+		});
+
+		//Test fake tools on corresponding and invalid blocks
+		Multimap<Item, Block> dynamicToolsToEffectiveBlocks = LinkedHashMultimap.create(3, 2);
+		dynamicToolsToEffectiveBlocks.put(testSword, needsSword);
+		dynamicToolsToEffectiveBlocks.put(testSword, needsSwordTagged);
+		dynamicToolsToEffectiveBlocks.put(testPickaxe, needsPickaxe);
+		dynamicToolsToEffectiveBlocks.put(testPickaxe, needsPickaxeTagged);
+		dynamicToolsToEffectiveBlocks.put(testShovel, needsShovel);
+		dynamicToolsToEffectiveBlocks.put(testShovel, needsShovelTagged);
+		testExclusivelyEffective(dynamicToolsToEffectiveBlocks, (tool, block) -> TOOL_BREAK_SPEED);
+	}
+
+	private void testExclusivelyEffective(Multimap<Item, Block> itemsToEffectiveBlocks, BiFunction<Item, Block, Float> effectiveSpeed) {
+		for (List<ItemConvertible> pair : Sets.cartesianProduct(itemsToEffectiveBlocks.keySet(), new HashSet<>(itemsToEffectiveBlocks.values()))) {
+			Item item = (Item) pair.get(0);
+			Block block = (Block) pair.get(1);
+
+			if (itemsToEffectiveBlocks.get(item).contains(block)) {
+				testToolOnBlock(new ItemStack(item), block, true, effectiveSpeed.apply(item, block));
+			} else {
+				testToolOnBlock(new ItemStack(item), block, false, DEFAULT_BREAK_SPEED);
+			}
+		}
 	}
 
 	private void testToolOnBlock(ItemStack item, Block block, boolean inEffective, float inSpeed) {
