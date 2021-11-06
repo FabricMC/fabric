@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.fluid.fluid;
 
-import net.fabricmc.fabric.api.fluid.v1.ExtendedFabricFlowableFluid;
+import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 import net.fabricmc.fabric.test.fluid.block.MBlocks;
 import net.fabricmc.fabric.test.fluid.item.MItems;
 import net.minecraft.block.BlockState;
@@ -34,8 +34,9 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class GreenFluid extends ExtendedFabricFlowableFluid {
+public abstract class GreenFluid extends FabricFlowableFluid {
 	@Override
 	public Fluid getFlowing() {
 		return MFluids.GREEN_FLUID_FLOWING;
@@ -107,7 +108,7 @@ public abstract class GreenFluid extends ExtendedFabricFlowableFluid {
 	}
 
 	@Override
-	public void onTouching(World world, Entity entity) {
+	public void onTouching(@NotNull World world, Entity entity) {
 		super.onTouching(world, entity);
 		if (!world.isClient) {
 			if (entity instanceof PlayerEntity player && player.isCreative()) return;

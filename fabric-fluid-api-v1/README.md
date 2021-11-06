@@ -61,6 +61,8 @@ and `block/red_fluid_flow.png`
 The [`FabricFlowableFluid`][fabricflowablefluid_java] class extends the
 `FlowableFluid` class and implements some common methods, to avoid
 reimplementing them.
+It implements also the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
+interface to provide other fluid customizations.
 It's still an abstract class, so you have to implement some specific methods.
 Remember that is still possible to override the implemented methods
 to change their behavior.
@@ -85,19 +87,20 @@ The already implemented methods are:
   the max level that the fluid can have (by default is 8).
 
 * `boolean matchesType(Fluid)`  
-  It returns `true` if the given fluid is an instance of the current flowable
+  Returns `true` if the given fluid is an instance of the current flowable
   or still fluid.
-
-There is also the [`ExtendedFabricFlowableFluid`][extendedfabricflowablefluid_java]
-that implements some methods from [`ExtendedFlowableFluid`][extendedflowablefluid_java].
-
-It implements:
 
 * `void onSubmerged(World, Entity)`  
   Implements drowning for every living entity.
 
 * `void onTouching(World, Entity)`  
   Implements setting entities on fire.
+
+* `void onRandomTick(World, BlockPos, FluidState, Random)`  
+  Implements setting burnable blocks on fire.
+
+* `boolean hasRandomTicks()`  
+  Returns `true` if the fluid can light fire.
 
 ## Ready-to-use basic FluidBlock class
 
@@ -160,8 +163,9 @@ This method is useful to handle setting entities on fire.
 
 ## Specify if the fluid can light fire
 
-The [`FabricFlowableFluid`][fabricflowablefluid_java] class
-implements a method allowing to specify if the fluid can light fire.
+By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
+interface on your fluid class, you can implement a method allowing to
+specify if the fluid can light fire.
 
 `boolean canLightFire()`
 
@@ -273,7 +277,6 @@ and add your fluid here, in both still and flowing variant.
 
 [fluidrenderer_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/render/FluidRenderer.java
 [fabricflowablefluid_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/FabricFlowableFluid.java
-[extendedfabricflowablefluid_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/ExtendedFabricFlowableFluid.java
 [fabricfluidblock_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/FabricFluidBlock.java
 [extendedflowablefluid_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/ExtendedFlowableFluid.java
 [fabric_fluid_tag]: src/main/java/net/fabricmc/fabric/api/fluid/v1/tag/FabricFluidTags.java

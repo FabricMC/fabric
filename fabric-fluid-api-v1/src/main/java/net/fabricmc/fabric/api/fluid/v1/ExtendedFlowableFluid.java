@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 import java.util.Optional;
 
 /**
- * Extends the FlowableFluid class with more customizations.
+ * Adds with more fluid customizations.
  */
 public interface ExtendedFlowableFluid {
 	/**
@@ -34,6 +34,13 @@ public interface ExtendedFlowableFluid {
 	 */
 	default boolean canExtinguishFire() {
 		return true;
+	}
+
+	/**
+	 * @return true if the fluid can light fire.
+	 */
+	default boolean canLightFire() {
+		return false;
 	}
 
 	/**
@@ -109,7 +116,9 @@ public interface ExtendedFlowableFluid {
 	 * @param world The current world.
 	 * @param entity The current entity in the fluid.
 	 */
-	double getViscosity(World world, Entity entity);
+	default double getViscosity(World world, Entity entity) {
+		return 0.014d;
+	}
 
 	/**
 	 * @return true if the fluid is navigable.

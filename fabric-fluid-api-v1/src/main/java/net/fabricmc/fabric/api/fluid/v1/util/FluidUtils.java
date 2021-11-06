@@ -26,7 +26,6 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -74,7 +73,7 @@ public class FluidUtils {
 	}
 
 	/**
-	 * Check if an entity is touching a fluid.
+	 * Check if an entity is touching a fluid with the specified tag.
 	 * @param entity The entity to check.
 	 * @param tag The fluid tag to search.
 	 * @return true if the specified entity is touching a fluid with the specified tag.
@@ -84,30 +83,31 @@ public class FluidUtils {
 	}
 
 	/**
-	 * Check if a box is touching a fluid.
+	 * Check if a box is touching a fluid with the specified tag.
 	 * @param box The box to check.
 	 * @param world The current world.
 	 * @param tag The fluid tag to search.
 	 * @return true if the specified box is touching a fluid with the specified tag.
 	 */
 	public static @Nullable FluidState getFirstTouchedFluid(@NotNull Box box, World world, Tag<Fluid> tag) {
-		int i = MathHelper.floor(box.minX);
-		int j = MathHelper.ceil(box.maxX);
-		int k = MathHelper.floor(box.minY);
-		int l = MathHelper.ceil(box.maxY);
-		int m = MathHelper.floor(box.minZ);
-		int n = MathHelper.ceil(box.maxZ);
+		int minX = MathHelper.floor(box.minX);
+		int maxX = MathHelper.ceil(box.maxX);
+		int minY = MathHelper.floor(box.minY);
+		int maxY = MathHelper.ceil(box.maxY);
+		int minZ = MathHelper.floor(box.minZ);
+		int maxZ = MathHelper.ceil(box.maxZ);
 
-		BlockPos.Mutable mutable = new BlockPos.Mutable();
+		BlockPos.Mutable pos = new BlockPos.Mutable();
 
-		for(int p = i; p < j; ++p) {
-			for(int q = k; q < l; ++q) {
-				for(int r = m; r < n; ++r) {
-					mutable.set(p, q, r);
-					FluidState fluidState = world.getFluidState(mutable);
+		//Search the first touched fluid with the specified tag
+		for(int x = minX; x < maxX; ++x) {
+			for(int y = minY; y < maxY; ++y) {
+				for(int z = minZ; z < maxZ; ++z) {
+					pos.set(x, y, z);
+					FluidState fluidState = world.getFluidState(pos);
 					if (fluidState.isIn(tag)) {
-						double f = ((float)q + fluidState.getHeight(world, mutable));
-						if (f >= box.minY) {
+						double height = y + fluidState.getHeight(world, pos);
+						if (height >= box.minY) {
 							return fluidState;
 						}
 					}

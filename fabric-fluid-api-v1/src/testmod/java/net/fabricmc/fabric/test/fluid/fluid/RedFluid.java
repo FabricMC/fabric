@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.fluid.fluid;
 
-import net.fabricmc.fabric.api.fluid.v1.ExtendedFabricFlowableFluid;
+import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 import net.fabricmc.fabric.test.fluid.block.MBlocks;
 import net.fabricmc.fabric.test.fluid.item.MItems;
 import net.minecraft.block.BlockState;
@@ -32,8 +32,9 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class RedFluid extends ExtendedFabricFlowableFluid {
+public abstract class RedFluid extends FabricFlowableFluid {
 	@Override
 	public Fluid getFlowing() {
 		return MFluids.RED_FLUID_FLOWING;
@@ -130,7 +131,7 @@ public abstract class RedFluid extends ExtendedFabricFlowableFluid {
 	}
 
 	@Override
-	public void onSplash(World world, Entity entity) {
+	public void onSplash(@NotNull World world, @NotNull Entity entity) {
 		entity.playSound(SoundEvents.ENTITY_STRIDER_STEP_LAVA, 1f, 1f);
 		world.addParticle(ParticleTypes.GLOW, entity.getX(), entity.getY(), entity.getZ(), 0.02d, 0.02d, 0.02d);
 		world.addParticle(ParticleTypes.GLOW, entity.getX(), entity.getY(), entity.getZ(), 0.02d, 0.02d, 0.02d);

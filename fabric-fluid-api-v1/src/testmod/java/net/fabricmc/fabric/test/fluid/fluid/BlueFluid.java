@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.fluid.fluid;
 
-import net.fabricmc.fabric.api.fluid.v1.ExtendedFabricFlowableFluid;
+import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 import net.fabricmc.fabric.test.fluid.block.MBlocks;
 import net.fabricmc.fabric.test.fluid.item.MItems;
 import net.minecraft.block.BlockState;
@@ -34,10 +34,11 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
-public abstract class BlueFluid extends ExtendedFabricFlowableFluid {
+public abstract class BlueFluid extends FabricFlowableFluid {
 	@Override
 	public Fluid getFlowing() {
 		return MFluids.BLUE_FLUID_FLOWING;
@@ -114,7 +115,7 @@ public abstract class BlueFluid extends ExtendedFabricFlowableFluid {
 	}
 
 	@Override
-	public void onSplash(World world, Entity entity) {
+	public void onSplash(@NotNull World world, @NotNull Entity entity) {
 		entity.playSound(SoundEvents.ENTITY_GENERIC_SPLASH, 1f, 1f);
 		world.addParticle(ParticleTypes.SPLASH, entity.getX(), entity.getY(), entity.getZ(), 0.02d, 0.02d, 0.02d);
 		world.addParticle(ParticleTypes.SPLASH, entity.getX(), entity.getY(), entity.getZ(), 0.02d, 0.02d, 0.02d);
@@ -122,7 +123,7 @@ public abstract class BlueFluid extends ExtendedFabricFlowableFluid {
 	}
 
 	@Override
-	public void randomDisplayTick(World world, BlockPos pos, FluidState state, Random random) {
+	public void randomDisplayTick(World world, BlockPos pos, @NotNull FluidState state, Random random) {
 		if (!state.isStill() && !(Boolean)state.get(FALLING)) {
 			if (random.nextInt(64) == 0) {
 				world.playSound((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.BLOCK_WATER_AMBIENT, SoundCategory.BLOCKS, random.nextFloat() * 0.25F + 0.75F, random.nextFloat() + 0.5F, false);

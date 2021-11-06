@@ -20,6 +20,11 @@ import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.effect.StatusEffectUtil;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -36,7 +41,7 @@ import java.util.Random;
 /**
  * Implements the basic behaviour of every fluid.
  */
-public abstract class FabricFlowableFluid extends FlowableFluid {
+public abstract class FabricFlowableFluid extends FlowableFluid implements ExtendedFlowableFluid {
 	/**
 	 * Initializes a new FabricFlowableFluid.
 	 */
@@ -46,7 +51,7 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	 * Perform actions when fluid flows into a replaceable block.
 	 */
 	@Override
-	protected void beforeBreakingBlock(WorldAccess world, BlockPos pos, BlockState state) {
+	protected void beforeBreakingBlock(WorldAccess world, BlockPos pos, @NotNull BlockState state) {
 		final BlockEntity blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
 		Block.dropStacks(state, world, pos, blockEntity);
 	}
@@ -60,14 +65,7 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	}
 
 	/**
-	 * @return true if the fluid can light fire.
-	 */
-	public boolean canLightFire() {
-		return false;
-	}
-
-	/**
-	 * @return the sound to play when a bucket item is filled with this fluid.
+	 * @return the sound played when filling a bucket with this fluid.
 	 */
 	@Override
 	public Optional<SoundEvent> getBucketFillSound() {
@@ -97,6 +95,55 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 		return fluid == getStill() || fluid == getFlowing();
 	}
 
+	/**
+	 * Event executed when the entity is into the fluid.
+	 * @param world The current world.
+	 * @param entity The current entity in the fluid.
+	 */
+	@Override
+	public void onSubmerged(@NotNull World world, Entity entity) {
+		//Implements drowning living entities
+		if (!world.isClient && entity instanceof LivingEntity life) {
+			float drowningDamage = getDrowningDamage();
+			if (drowningDamage > 0 && !life.canBreatheInWater() && !StatusEffectUtil.hasWaterBreathing(life)) {
+				if (!(life instanceof PlayerEntity player && player.getAbilities().invulnerable)) {
+					life.setAir(life.getAir() - 1);
+					if (life.getAir() <= -20) {
+						life.setAir(0);
+						life.damage(DamageSource.DROWN, drowningDamage);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Event executed when the entity is touching the fluid.
+	 * @param world The current world.
+	 * @param entity The current entity in the fluid.
+	 */
+	@Override
+	public void onTouching(@NotNull World world, Entity entity) {
+		//Implements fire and hot damage on entities
+		if (!world.isClient && !entity.isFireImmune()) {
+			int entityOnFireDuration = getEntityOnFireDuration();
+			float hotDamage = getHotDamage();
+			if (canLightFire() && entityOnFireDuration > 0) {
+				entity.setOnFireFor(entityOnFireDuration);
+			}
+			if (hotDamage > 0 && entity.damage(DamageSource.IN_FIRE, hotDamage)) {
+				entity.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + world.getRandom().nextFloat() * 0.4F);
+			}
+		}
+	}
+
+	/**
+	 * Executed randomly every tick.
+	 * @param world The current world.
+	 * @param pos The current position.
+	 * @param state The current FluidState.
+	 * @param random Random generator.
+	 */
 	@Override
 	public void onRandomTick(World world, BlockPos pos, FluidState state, Random random) {
 		if (!canLightFire()) return;
@@ -138,11 +185,20 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 		}
 	}
 
+	/**
+	 * @return true if the fluids can execute randomly onRandomTick.
+	 */
 	@Override
 	protected boolean hasRandomTicks() {
 		return canLightFire();
 	}
 
+	/**
+	 * Check if the block in the specified position is burnable.
+	 * @param world The current world.
+	 * @param pos The block position.
+	 * @return true if the block in the specified position is burnable.
+	 */
 	@SuppressWarnings("deprecation")
 	private boolean hasBurnableBlock(@NotNull WorldView world, @NotNull BlockPos pos) {
 		return (pos.getY() < world.getBottomY() || pos.getY() >= world.getTopY() || world.isChunkLoaded(pos))
