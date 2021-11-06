@@ -16,12 +16,11 @@
 
 package net.fabricmc.fabric.test.tool.attribute;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.function.BiFunction;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
@@ -239,7 +238,8 @@ public class ToolAttributeTest implements ModInitializer {
 		testToolOnBlock(new ItemStack(Items.IRON_SHOVEL), needsShovel, true, ToolMaterials.IRON.getMiningSpeedMultiplier());
 
 		//Test fake tools on corresponding and invalid blocks
-		Multimap<Item, Block> fakeToolsToEffectiveBlocks = HashMultimap.create(6, 2);
+		// Note: using LinkedHashMultimap to ensure the same order (this makes it more predictable when debugging)
+		Multimap<Item, Block> fakeToolsToEffectiveBlocks = LinkedHashMultimap.create(6, 2);
 		fakeToolsToEffectiveBlocks.put(fakeShears, needsShears);
 		fakeToolsToEffectiveBlocks.put(fakeShears, needsShearsTagged);
 		fakeToolsToEffectiveBlocks.put(fakeSword, needsSword);
@@ -252,28 +252,37 @@ public class ToolAttributeTest implements ModInitializer {
 		fakeToolsToEffectiveBlocks.put(fakeHoe, needsHoeTagged);
 		fakeToolsToEffectiveBlocks.put(fakeShovel, needsShovel);
 		fakeToolsToEffectiveBlocks.put(fakeShovel, needsShovelTagged);
-		testExclusivelyEffective(fakeToolsToEffectiveBlocks, DEFAULT_BREAK_SPEED, DEFAULT_BREAK_SPEED);
+		testExclusivelyEffective(fakeToolsToEffectiveBlocks, (tool, block) -> {
+			if (tool == fakeShears && block == needsShearsTagged) {
+				// The mining level API gives the tagged block the speed 5.0
+				// when mined with shears (see ShearsItemMixin in that module),
+				// and ShearsVanillaBlocksToolHandler gets the speeds from the vanilla shears item.
+				return 5.0f;
+			}
+
+			return DEFAULT_BREAK_SPEED;
+		});
 
 		//Test fake tools on corresponding and invalid blocks
-		Multimap<Item, Block> dynamicToolsToEffectiveBlocks = HashMultimap.create(3, 2);
+		Multimap<Item, Block> dynamicToolsToEffectiveBlocks = LinkedHashMultimap.create(3, 2);
 		dynamicToolsToEffectiveBlocks.put(testSword, needsSword);
 		dynamicToolsToEffectiveBlocks.put(testSword, needsSwordTagged);
 		dynamicToolsToEffectiveBlocks.put(testPickaxe, needsPickaxe);
 		dynamicToolsToEffectiveBlocks.put(testPickaxe, needsPickaxeTagged);
 		dynamicToolsToEffectiveBlocks.put(testShovel, needsShovel);
 		dynamicToolsToEffectiveBlocks.put(testShovel, needsShovelTagged);
-		testExclusivelyEffective(dynamicToolsToEffectiveBlocks, TOOL_BREAK_SPEED, DEFAULT_BREAK_SPEED);
+		testExclusivelyEffective(dynamicToolsToEffectiveBlocks, (tool, block) -> TOOL_BREAK_SPEED);
 	}
 
-	private void testExclusivelyEffective(Multimap<Item, Block> itemsToEffectiveBlocks, float effectiveSpeed, float ineffectiveSpeed) {
+	private void testExclusivelyEffective(Multimap<Item, Block> itemsToEffectiveBlocks, BiFunction<Item, Block, Float> effectiveSpeed) {
 		for (List<ItemConvertible> pair : Sets.cartesianProduct(itemsToEffectiveBlocks.keySet(), new HashSet<>(itemsToEffectiveBlocks.values()))) {
 			Item item = (Item) pair.get(0);
 			Block block = (Block) pair.get(1);
 
 			if (itemsToEffectiveBlocks.get(item).contains(block)) {
-				testToolOnBlock(new ItemStack(item), block, true, effectiveSpeed);
+				testToolOnBlock(new ItemStack(item), block, true, effectiveSpeed.apply(item, block));
 			} else {
-				testToolOnBlock(new ItemStack(item), block, false, ineffectiveSpeed);
+				testToolOnBlock(new ItemStack(item), block, false, DEFAULT_BREAK_SPEED);
 			}
 		}
 	}
