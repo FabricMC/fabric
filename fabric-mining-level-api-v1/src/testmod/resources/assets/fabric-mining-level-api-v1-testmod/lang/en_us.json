@@ -1,0 +1,8 @@
+{
+  "item.minecraft.shears": "Iron Shears",
+  "item.fabric-mining-level-api-v1-testmod.wooden_shears": "Wooden Shears",
+  "item.fabric-mining-level-api-v1-testmod.stone_shears": "Stone Shears",
+  "item.fabric-mining-level-api-v1-testmod.golden_shears": "Golden Shears",
+  "item.fabric-mining-level-api-v1-testmod.diamond_shears": "Diamond Shears",
+  "item.fabric-mining-level-api-v1-testmod.netherite_shears": "Netherite Shears"
+}

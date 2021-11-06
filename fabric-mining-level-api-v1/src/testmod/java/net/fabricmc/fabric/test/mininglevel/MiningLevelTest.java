@@ -50,44 +50,48 @@ public final class MiningLevelTest implements ModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	/// Tagged blocks
-	// generic block settings
-	private static final AbstractBlock.Settings BLOCK_SETTINGS = AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool();
 	// sword + dynamic mining level tag
-	public static final Block NEEDS_NETHERITE_SWORD = new Block(BLOCK_SETTINGS);
+	public static final Block NEEDS_NETHERITE_SWORD = new Block(createBlockSettings());
 	// sword + vanilla mining level tag
-	public static final Block NEEDS_STONE_SWORD = new Block(BLOCK_SETTINGS);
+	public static final Block NEEDS_STONE_SWORD = new Block(createBlockSettings());
 	// any sword
-	public static final Block NEEDS_ANY_SWORD = new Block(BLOCK_SETTINGS);
+	public static final Block NEEDS_ANY_SWORD = new Block(createBlockSettings());
 	// any shears
-	public static final Block NEEDS_SHEARS = new Block(BLOCK_SETTINGS);
+	public static final Block NEEDS_SHEARS = new Block(createBlockSettings());
 	// any shears, fast
-	public static final Block NEEDS_SHEARS_FAST = new Block(BLOCK_SETTINGS);
+	public static final Block NEEDS_SHEARS_FAST = new Block(createBlockSettings());
 	// any shears, slow
-	public static final Block NEEDS_SHEARS_SLOW = new Block(BLOCK_SETTINGS);
+	public static final Block NEEDS_SHEARS_SLOW = new Block(createBlockSettings());
 	// shears + dynamic mining level tag
-	public static final Block NEEDS_NETHERITE_SHEARS = new Block(BLOCK_SETTINGS);
+	public static final Block NEEDS_NETHERITE_SHEARS = new Block(createBlockSettings());
 	// shears + vanilla mining level tag
-	public static final Block NEEDS_DIAMOND_SHEARS = new Block(BLOCK_SETTINGS);
+	public static final Block NEEDS_DIAMOND_SHEARS = new Block(createBlockSettings());
 	// shears + vanilla mining level tag
-	public static final Block NEEDS_STONE_SHEARS = new Block(BLOCK_SETTINGS);
+	public static final Block NEEDS_STONE_SHEARS = new Block(createBlockSettings());
 	// vanilla mineable tag + dynamic mining level tag
-	public static final Block NEEDS_NETHERITE_PICKAXE = new Block(BLOCK_SETTINGS);
+	public static final Block NEEDS_NETHERITE_PICKAXE = new Block(createBlockSettings());
 	// vanilla mineable tag, requires tool (this type of block doesn't exist in vanilla)
-	public static final Block NEEDS_AXE = new Block(BLOCK_SETTINGS);
+	public static final Block NEEDS_AXE = new Block(createBlockSettings());
 	// vanilla mineable tag, requires tool (this type of block doesn't exist in vanilla)
-	public static final Block NEEDS_HOE = new Block(BLOCK_SETTINGS);
+	public static final Block NEEDS_HOE = new Block(createBlockSettings());
 	// vanilla mineable tag, requires tool (this type of block doesn't exist in vanilla)
-	public static final Block NEEDS_SHOVEL = new Block(BLOCK_SETTINGS);
+	public static final Block NEEDS_SHOVEL = new Block(createBlockSettings());
 
 	/// Custom tools
-	// generic tool settings
-	private static final Item.Settings ITEM_SETTINGS = new Item.Settings().group(ItemGroup.TOOLS);
-	public static final Item WOODEN_SHEARS = new FabricShearsItem(ToolMaterials.WOOD, ITEM_SETTINGS);
-	public static final Item STONE_SHEARS = new FabricShearsItem(ToolMaterials.STONE, ITEM_SETTINGS);
-	public static final Item GOLDEN_SHEARS = new FabricShearsItem(ToolMaterials.GOLD, ITEM_SETTINGS);
-	public static final Item DIAMOND_SHEARS = new FabricShearsItem(ToolMaterials.DIAMOND, ITEM_SETTINGS);
-	public static final Item NETHERITE_SHEARS = new FabricShearsItem(ToolMaterials.NETHERITE, new Item.Settings().group(ItemGroup.TOOLS).fireproof());
+	public static final Item WOODEN_SHEARS = new FabricShearsItem(ToolMaterials.WOOD, createItemSettings());
+	public static final Item STONE_SHEARS = new FabricShearsItem(ToolMaterials.STONE, createItemSettings());
+	public static final Item GOLDEN_SHEARS = new FabricShearsItem(ToolMaterials.GOLD, createItemSettings());
+	public static final Item DIAMOND_SHEARS = new FabricShearsItem(ToolMaterials.DIAMOND, createItemSettings());
+	public static final Item NETHERITE_SHEARS = new FabricShearsItem(ToolMaterials.NETHERITE, createItemSettings().fireproof());
 
+	public static Block.Settings createBlockSettings() {
+		return AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool();
+	}
+	
+	public static Item.Settings createItemSettings() {
+		return new Item.Settings().group(ItemGroup.TOOLS);
+	}
+	
 	@Override
 	public void onInitialize() {
 		register("needs_netherite_sword", NEEDS_NETHERITE_SWORD);
