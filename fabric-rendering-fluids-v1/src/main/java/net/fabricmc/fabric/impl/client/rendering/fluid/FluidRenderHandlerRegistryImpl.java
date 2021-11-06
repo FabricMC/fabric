@@ -41,7 +41,6 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 
 public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistry {
-	public static final FluidRenderHandlerRegistryImpl INSTANCE = new FluidRenderHandlerRegistryImpl();
 	private static final int DEFAULT_WATER_COLOR = BuiltinRegistries.BIOME.get(BiomeKeys.OCEAN).getWaterColor();
 	private final Map<Fluid, FluidRenderHandler> handlers = new IdentityHashMap<>();
 	private final Map<Fluid, FluidRenderHandler> modHandlers = new IdentityHashMap<>();
@@ -49,7 +48,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 
 	private FluidRenderer fluidRenderer;
 
-	private FluidRenderHandlerRegistryImpl() {
+	public FluidRenderHandlerRegistryImpl() {
 	}
 
 	@Override

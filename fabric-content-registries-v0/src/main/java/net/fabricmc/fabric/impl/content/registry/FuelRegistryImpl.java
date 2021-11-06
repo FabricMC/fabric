@@ -34,7 +34,6 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 
 // TODO: Clamp values to 32767 (+ add hook for mods which extend the limit to disable the check?)
 public final class FuelRegistryImpl implements FuelRegistry {
-	public static final FuelRegistryImpl INSTANCE = new FuelRegistryImpl();
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final Object2IntMap<ItemConvertible> itemCookTimes = new Object2IntLinkedOpenHashMap<>();
 	private final Object2IntMap<Tag<Item>> tagCookTimes = new Object2IntLinkedOpenHashMap<>();

@@ -56,7 +56,7 @@ public class MixinFluidRenderer {
 	@Inject(at = @At("RETURN"), method = "onResourceReload")
 	public void onResourceReloadReturn(CallbackInfo info) {
 		FluidRenderer self = (FluidRenderer) (Object) this;
-		FluidRenderHandlerRegistryImpl.INSTANCE.onFluidRendererReload(self, waterSprites, lavaSprites, waterOverlaySprite);
+		((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistryImpl.INSTANCE).onFluidRendererReload(self, waterSprites, lavaSprites, waterOverlaySprite);
 	}
 
 	@Inject(at = @At("HEAD"), method = "render", cancellable = true)
@@ -82,7 +82,7 @@ public class MixinFluidRenderer {
 	@Unique
 	private void tessellateViaHandler(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, FluidState state, CallbackInfoReturnable<Boolean> info) {
 		FluidRendererHookContainer ctr = fabric_renderHandler.get();
-		FluidRenderHandler handler = FluidRenderHandlerRegistryImpl.INSTANCE.getOverride(state.getFluid());
+		FluidRenderHandler handler = ((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistryImpl.INSTANCE).getOverride(state.getFluid());
 
 		ctr.view = view;
 		ctr.pos = pos;

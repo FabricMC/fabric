@@ -178,7 +178,6 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 	}
 
 	private static final Logger LOGGER = LogManager.getLogger();
-	public static final ModelLoadingRegistryImpl INSTANCE = new ModelLoadingRegistryImpl();
 
 	private final List<Function<ResourceManager, ModelVariantProvider>> variantProviderSuppliers = new ArrayList<>();
 	private final List<Function<ResourceManager, ModelResourceProvider>> resourceProviderSuppliers = new ArrayList<>();
@@ -205,6 +204,6 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 	}
 
 	public static LoaderInstance begin(ModelLoader loader, ResourceManager manager) {
-		return new LoaderInstance(INSTANCE, loader, manager);
+		return new LoaderInstance((ModelLoadingRegistryImpl) INSTANCE, loader, manager);
 	}
 }

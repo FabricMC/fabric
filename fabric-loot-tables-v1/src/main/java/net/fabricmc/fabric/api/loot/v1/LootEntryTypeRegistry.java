@@ -29,7 +29,7 @@ import net.fabricmc.fabric.impl.loot.table.LootEntryTypeRegistryImpl;
  * @see #register
  */
 public interface LootEntryTypeRegistry {
-	LootEntryTypeRegistry INSTANCE = LootEntryTypeRegistryImpl.INSTANCE;
+	LootEntryTypeRegistry INSTANCE = new LootEntryTypeRegistryImpl();
 
 	/**
 	 * Registers a loot entry type serializer by its ID.
