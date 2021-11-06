@@ -27,6 +27,7 @@ import net.minecraft.item.ToolItem;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.ActionResult;
 
+import net.fabricmc.fabric.api.mininglevel.v1.FabricTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 
@@ -41,13 +42,13 @@ public class TaggedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolH
 	@NotNull
 	@Override
 	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-		if (!(stack.getItem() instanceof DynamicAttributeTool) && !(stack.getItem() instanceof ToolItem)) {
+		if (!(stack.getItem() instanceof FabricTool)) {
 			@Nullable ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
 			if (entry != null) {
 				int miningLevel = 0; // minimum mining level: the tool is tagged but nothing else is said about it
 				int requiredMiningLevel = entry.getMiningLevel(tag);
-				return requiredMiningLevel >= miningLevel ? ActionResult.SUCCESS : ActionResult.PASS;
+				return miningLevel >= requiredMiningLevel ? ActionResult.SUCCESS : ActionResult.PASS;
 			}
 		}
 

@@ -49,7 +49,7 @@ public class TaggedToolsTaggedBlocksToolHandler implements ToolManagerImpl.ToolH
 	@NotNull
 	@Override
 	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-		if (!(stack.getItem() instanceof DynamicAttributeTool) && !(stack.getItem() instanceof FabricTool)) {
+		if (!(stack.getItem() instanceof FabricTool)) {
 			if (state.isIn(mineableTag)) {
 				return ActionResult.SUCCESS;
 			}
