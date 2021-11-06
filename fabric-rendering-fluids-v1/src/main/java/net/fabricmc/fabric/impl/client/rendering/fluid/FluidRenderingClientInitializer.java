@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.client.rendering.fluid;
 
+import java.util.Objects;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-
-import java.util.Objects;
 
 public class FluidRenderingClientInitializer implements ClientModInitializer {
 	@Override
