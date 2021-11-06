@@ -27,5 +27,10 @@
   ],
   "custom": {
     "fabric-api:module-lifecycle": "stable"
+  },
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderingClientInitializer"
+    ]
   }
 }
