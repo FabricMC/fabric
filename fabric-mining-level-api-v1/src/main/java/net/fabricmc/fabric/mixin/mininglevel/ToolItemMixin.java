@@ -19,18 +19,29 @@ package net.fabricmc.fabric.mixin.mininglevel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.item.Item;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterial;
 
 import net.fabricmc.fabric.api.mininglevel.v1.FabricTool;
 
 @Mixin(ToolItem.class)
-abstract class ToolItemMixin implements FabricTool {
+abstract class ToolItemMixin extends Item implements FabricTool {
+	private ToolItemMixin(Settings settings) {
+		super(settings);
+	}
+
 	@Shadow
 	public abstract ToolMaterial getMaterial();
 
 	@Override
 	public ToolMaterial getToolMaterial() {
 		return getMaterial(); // Redirect FabricToolItem method to vanilla method
+	}
+
+	@Override
+	public boolean isSuitableFor(BlockState state) {
+		return isSuitableFor(getMiningLevel(), state);
 	}
 }

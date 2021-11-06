@@ -31,7 +31,6 @@ import net.minecraft.tag.Tag;
 
 import net.fabricmc.fabric.api.mininglevel.v1.FabricTool;
 import net.fabricmc.fabric.api.mininglevel.v1.FabricMineableTags;
-import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 
 /**
  * Adds support for {@link FabricMineableTags#SHEARS_MINEABLE}.
@@ -40,12 +39,8 @@ import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 abstract class ShearsItemMixin implements FabricTool {
 	@Inject(method = "isSuitableFor", at = @At("HEAD"), cancellable = true)
 	private void fabric$onIsSuitableFor(BlockState state, CallbackInfoReturnable<Boolean> info) {
-		if (state.isIn(getEffectiveBlocks())) {
-			int miningLevel = getMiningLevel();
-
-			if (miningLevel >= MiningLevelManager.getRequiredMiningLevel(state)) {
-				info.setReturnValue(true);
-			}
+		if (isSuitableFor(getMiningLevel(), state)) {
+			info.setReturnValue(true);
 		}
 	}
 

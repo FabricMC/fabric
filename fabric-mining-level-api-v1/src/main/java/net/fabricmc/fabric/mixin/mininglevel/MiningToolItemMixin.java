@@ -29,7 +29,6 @@ import net.minecraft.item.MiningToolItem;
 import net.minecraft.tag.Tag;
 
 import net.fabricmc.fabric.api.mininglevel.v1.FabricTool;
-import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 
 @Mixin(MiningToolItem.class)
 abstract class MiningToolItemMixin implements FabricTool {
@@ -39,7 +38,7 @@ abstract class MiningToolItemMixin implements FabricTool {
 
 	@Inject(method = "isSuitableFor", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/item/ToolMaterial;getMiningLevel()I"), cancellable = true)
 	private void fabric$onIsSuitableFor(BlockState state, CallbackInfoReturnable<Boolean> info) {
-		if (getMiningLevel() < MiningLevelManager.getRequiredMiningLevel(state)) {
+		if (!isSuitableFor(getMiningLevel(), state)) {
 			info.setReturnValue(false);
 		}
 	}
