@@ -51,26 +51,28 @@ abstract class ShearsItemMixin implements FabricTool {
 
 	@Inject(method = "getMiningSpeedMultiplier", at = @At("RETURN"), cancellable = true)
 	private void fabric$onGetMiningSpeedMultiplier(ItemStack stack, BlockState state, CallbackInfoReturnable<Float> info) {
-		if (info.getReturnValueF() == 1.0f) { // if not caught by vanilla checks
+		float miningSpeedMultiplier = info.getReturnValueF();
+		if (miningSpeedMultiplier == 1.0f) { // if not caught by vanilla checks
 			if (state.isIn(getEffectiveBlocks())) { // mimics MiningToolItem.getMiningSpeedMultiplier
-				float miningSpeedMultiplier = getToolMaterial().getMiningSpeedMultiplier();
 
 				// In vanilla 1.17, shears have three special mining speed multiplier values:
 				if (state.isIn(FabricMineableTags.SHEARS_MINEABLE_FAST)) {
-					// Cobweb and leaves return 15.0 with vanilla iron shears, which has a speed of 6.0, so we divide material multiplier by 0.4
-					miningSpeedMultiplier /= 0.4f;
+					// Cobweb and leaves return 15.0 with vanilla iron shears
+					miningSpeedMultiplier = 15.0f;
 				} else if (state.isIn(FabricMineableTags.SHEARS_MINEABLE_SLOW)) {
-					// Vines and glow lichen return 2.0 with vanilla iron shears, which has a speed of 6.0, so we divide material multiplier by 3.0
-					miningSpeedMultiplier /= 3.0f;
+					// Vines and glow lichen return 2.0 with vanilla iron shears
+					miningSpeedMultiplier = 2.0f;
 				} else {
-					// Wool returns 5.0 with vanilla iron shears, which has a speed of 6.0, so we divide material multiplier by 3.0.
+					// Wool returns 5.0 with vanilla iron shears
 					// As the most "neutral" option out of these three, we'll use it by default.
-					miningSpeedMultiplier /= 1.2f;
+					miningSpeedMultiplier = 5.0f;
 				}
-
-				info.setReturnValue(miningSpeedMultiplier);
 			}
 		}
+
+		miningSpeedMultiplier *= getToolMaterial().getMiningSpeedMultiplier();  // multiply by material multiplier
+		miningSpeedMultiplier /= 6.0f; // divide by iron multiplier
+		info.setReturnValue(miningSpeedMultiplier);
 	}
 
 	@Override

@@ -154,6 +154,10 @@ public final class MiningLevelTest implements ModInitializer {
 		checkMiningSpeed(NEEDS_STONE_SHEARS, Items.SHEARS, NETHERITE_SHEARS, Items.STICK);
 		checkMiningSpeed(NEEDS_DIAMOND_SHEARS, Items.SHEARS, NETHERITE_SHEARS, Items.STICK);
 		checkMiningSpeed(NEEDS_NETHERITE_SHEARS, Items.SHEARS, NETHERITE_SHEARS, Items.STICK);
+
+		checkMiningSpeed(Blocks.VINE, WOODEN_SHEARS, STONE_SHEARS, Items.SHEARS, DIAMOND_SHEARS, NETHERITE_SHEARS, GOLDEN_SHEARS, Items.STICK);
+		checkMiningSpeed(Blocks.WHITE_WOOL, WOODEN_SHEARS, STONE_SHEARS, Items.SHEARS, DIAMOND_SHEARS, NETHERITE_SHEARS, GOLDEN_SHEARS, Items.STICK);
+		checkMiningSpeed(Blocks.OAK_LEAVES, WOODEN_SHEARS, STONE_SHEARS, Items.SHEARS, DIAMOND_SHEARS, NETHERITE_SHEARS, GOLDEN_SHEARS, Items.STICK);
 	}
 
 	private static void test(List<AssertionError> errors, Runnable runnable) {
