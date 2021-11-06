@@ -26,7 +26,8 @@ import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Matrix4f;
-import net.minecraft.world.World;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
@@ -84,7 +85,7 @@ public class DimensionalRenderingTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		DimensionRenderingRegistry.registerSkyRenderer(World.OVERWORLD, DimensionalRenderingTest::render);
-		DimensionRenderingRegistry.registerDimensionEffects(new Identifier("fabric_dimension:void"), new DimensionEffects.End());
+		DimensionRenderingRegistry.registerSkyRenderer(RegistryKey.of(Registry.WORLD_KEY, new Identifier("fabric_dimension", "void")), DimensionalRenderingTest::render);
+		DimensionRenderingRegistry.registerDimensionEffects(new Identifier("fabric_dimension", "void"), new DimensionEffects.End());
 	}
 }
