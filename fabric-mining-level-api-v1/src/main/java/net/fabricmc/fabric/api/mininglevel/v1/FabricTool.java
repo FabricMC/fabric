@@ -66,7 +66,8 @@ public interface FabricTool {
 	}
 
 	/**
-	 * Returns whether a tool of this type, if it had the mining level provided, would be suitable for mining the provided {@code BlockState}.
+	 * Returns whether a tool of this type, if it had the mining level provided, would be suitable for mining the provided {@link BlockState}.
+	 * Automatically called for subclasses of {@link net.minecraft.item.ToolItem}, {@link net.minecraft.item.SwordItem} and {@link net.minecraft.item.ShearsItem}.
 	 * @see net.minecraft.item.Item#isSuitableFor(BlockState)
 	 * @param miningLevel the mining level of the tool
 	 * @param state the block state being mined
