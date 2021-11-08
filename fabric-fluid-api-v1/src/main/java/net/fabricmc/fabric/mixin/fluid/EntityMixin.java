@@ -48,6 +48,8 @@ import java.util.Random;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements FabricFluidEntity {
+	//region INTERNAL METHODS AND VARIABLES PLACEHOLDERS
+
     @Shadow public World world;
     @Shadow public float fallDistance;
 	@Shadow protected boolean firstUpdate;
@@ -56,12 +58,6 @@ public abstract class EntityMixin implements FabricFluidEntity {
 	@Shadow public boolean horizontalCollision;
 	@Shadow	@Final protected Random random;
 	@Shadow protected Object2DoubleMap<Tag<Fluid>> fluidHeight;
-
-	@Unique private FluidState submergedFluid = null;
-	@Unique private FluidState firstTouchedFabricFluid = null;
-	@Unique protected boolean touchingFabricFluid = false;
-	@Unique protected boolean submergedInFabricFluid = false;
-	@Unique protected final double CENTER_EYE_OFFSET = 0.1111111119389534d;
 
 	@Shadow @Nullable public abstract Entity getVehicle();
     @Shadow public abstract boolean updateMovementInFluid(Tag<Fluid> tag, double d);
@@ -92,90 +88,41 @@ public abstract class EntityMixin implements FabricFluidEntity {
 	@Shadow public abstract double getFluidHeight(Tag<Fluid> fluid);
 	@Shadow public abstract boolean isRegionUnloaded();
 
-	@Inject(method = "tick()V", at = @At("TAIL"))
-	private void tick(CallbackInfo ci) {
-		fabricFluidApiTick();
-	}
+	//endregion
 
-	@Inject(method = "shouldSpawnSprintingParticles()Z", at = @At("HEAD"), cancellable = true)
-	private void shouldSpawnSprintingParticles(CallbackInfoReturnable<Boolean> cir) {
-		//Don't spawn sprinting particles if the entity is touching a fabric_fluid
-		if (this.isTouchingFabricFluid()) cir.setReturnValue(false);
-	}
+	@Unique protected boolean touchingFabricFluid = false;
+	@Unique protected boolean submergedInFabricFluid = false;
+	@Unique private FluidState submergedFluid = null;
+	@Unique private FluidState firstTouchedFabricFluid = null;
 
-	@Redirect(method = "move(Lnet/minecraft/entity/MovementType;Lnet/minecraft/util/math/Vec3d;)V", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/entity/Entity;isTouchingWater()Z"))
-	private boolean isTouchingWater(Entity entity) {
-		return this.isTouchingWater() || this.isTouchingFabricFluid();
-	}
-
-	@Redirect(method = "baseTick()V", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/entity/Entity;isInLava()Z", ordinal = 0))
-	private boolean isInLavaRedirect(Entity entity) {
-		if (isTouchingFabricFluid()) return true;
-		else return entity.isInLava();
-	}
-
-	@Inject(method = "isWet()Z", at = @At("HEAD"), cancellable = true)
-	private void isWet(CallbackInfoReturnable<Boolean> cir) {
-		if (isTouchingFabricFluid()) {
-			if (firstTouchedFabricFluid.getFluid() instanceof ExtendedFlowableFluid fluid) cir.setReturnValue(fluid.canWet());
-			else cir.setReturnValue(true);
-		}
-	}
-
-	@Inject(method = "updateSubmergedInWaterState()V", at = @At("HEAD"), cancellable = true)
-	private void updateSubmergedInFluidState(CallbackInfo ci) {
-		this.submergedInWater = this.isSubmergedIn(FluidTags.WATER);
-		this.submergedInFabricFluid = this.isSubmergedIn(FabricFluidTags.FABRIC_FLUID);
-		this.submergedFluidTag = null;
-		this.submergedFluid = null;
-
-		//Get the y of the center of the eye
-		double eyeY = this.getEyeY() - CENTER_EYE_OFFSET;
-
-		//If the entity is on a boat, not set the tag regardless
-		if (this.getVehicle() instanceof BoatEntity boat) {
-			if (!boat.isSubmergedInWater() && boat.getBoundingBox().maxY >= eyeY && boat.getBoundingBox().minY <= eyeY) {
-				return;
-			}
-		}
-
-		//Get the tag of the fluid in the eye block
-		BlockPos pos = new BlockPos(this.getX(), eyeY, this.getZ());
-		FluidState fluidState = this.world.getFluidState(pos);
-		Tag<Fluid> tag = FabricFluidTags.getFluidTags().stream().filter(fluidState::isIn).findFirst().orElse(null);
-
-		if (tag != null) {
-			double eyeFluidY = (float)pos.getY() + fluidState.getHeight(this.world, pos);
-			if (eyeFluidY > eyeY) {
-				//If the entity is submerged by the fluid above the eye, set the current "submerged fluid"
-				this.submergedFluidTag = tag;
-				this.submergedFluid = fluidState;
-			}
-		}
-
-		ci.cancel();
-	}
-
-	@Inject(method = "baseTick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateWaterState()Z", shift = At.Shift.AFTER))
-	private void updateFabricFluidState(CallbackInfo ci) {
-		this.checkFabricFluidState();
-	}
+	//region SWIM
 
 	@Inject(method = "updateSwimming()V", at = @At(value = "HEAD"), cancellable = true)
 	private void updateSwimming(CallbackInfo ci) {
 		if (this.isSwimming()) {
 			this.setSwimming(this.isSprinting()
-						 && (this.isTouchingWater() || this.isTouchingFabricFluid())
-						 && !this.hasVehicle());
+					&& (this.isTouchingWater() || this.isTouchingFabricFluid())
+					&& !this.hasVehicle());
 		} else {
 			this.setSwimming(this.isSprinting()
-						 && (this.isSubmergedInWater() || this.isSubmergedInFabricFluid())
-						 && !this.hasVehicle()
-						 && (this.isInWater() || this.isInFabricFluid()));
+					&& (this.isSubmergedInWater() || this.isSubmergedInFabricFluid())
+					&& !this.hasVehicle()
+					&& (this.isInWater() || this.isInFabricFluid()));
 		}
 		ci.cancel();
+	}
+
+	@Inject(method = "shouldLeaveSwimmingPose()Z", at = @At(value = "HEAD"), cancellable = true)
+	private void shouldLeaveSwimmingPose(CallbackInfoReturnable<Boolean> cir) {
+		cir.setReturnValue(this.isInSwimmingPose() && (!this.isTouchingWater() || !this.isTouchingFabricFluid()));
+	}
+
+	//swimming sounds
+
+	@Redirect(method = "move(Lnet/minecraft/entity/MovementType;Lnet/minecraft/util/math/Vec3d;)V", at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/entity/Entity;isTouchingWater()Z"))
+	private boolean isTouchingWater(Entity entity) {
+		return this.isTouchingWater() || this.isTouchingFabricFluid();
 	}
 
 	@Inject(method = "playSwimSound(F)V", at = @At(value = "HEAD"), cancellable = true)
@@ -186,9 +133,44 @@ public abstract class EntityMixin implements FabricFluidEntity {
 		}
 	}
 
-	@Inject(method = "shouldLeaveSwimmingPose()Z", at = @At(value = "HEAD"), cancellable = true)
-	private void shouldLeaveSwimmingPose(CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(this.isInSwimmingPose() && (!this.isTouchingWater() || !this.isTouchingFabricFluid()));
+	//sprinting particles
+
+	@Inject(method = "shouldSpawnSprintingParticles()Z", at = @At("HEAD"), cancellable = true)
+	private void shouldSpawnSprintingParticles(CallbackInfoReturnable<Boolean> cir) {
+		//Don't spawn sprinting particles if the entity is touching a fabric_fluid
+		if (this.isTouchingFabricFluid()) cir.setReturnValue(false);
+	}
+
+	//endregion
+
+	//region HOT DAMAGE
+
+	@Redirect(method = "baseTick()V", at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/entity/Entity;isInLava()Z", ordinal = 0))
+	private boolean isInLavaRedirect(Entity entity) {
+		if (isTouchingFabricFluid()) return true;
+		else return entity.isInLava();
+	}
+
+	//endregion
+
+	//region WET DAMAGE
+
+	@Inject(method = "isWet()Z", at = @At("HEAD"), cancellable = true)
+	private void isWet(CallbackInfoReturnable<Boolean> cir) {
+		if (isTouchingFabricFluid()) {
+			if (firstTouchedFabricFluid.getFluid() instanceof ExtendedFlowableFluid fluid) cir.setReturnValue(fluid.canWet());
+			else cir.setReturnValue(true);
+		}
+	}
+
+	//endregion
+
+	//region TOUCHING AND SUBMERGED STATE UPDATERS
+
+	@Inject(method = "baseTick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateWaterState()Z", shift = At.Shift.AFTER))
+	private void updateFabricFluidState(CallbackInfo ci) {
+		this.checkFabricFluidState();
 	}
 
 	@Unique
@@ -238,27 +220,43 @@ public abstract class EntityMixin implements FabricFluidEntity {
 		}
 	}
 
-	@Override
-	public boolean isTouchingFabricFluid() {
-		return touchingFabricFluid;
+	@Inject(method = "updateSubmergedInWaterState()V", at = @At("HEAD"), cancellable = true)
+	private void updateSubmergedInFluidState(CallbackInfo ci) {
+		this.submergedInWater = this.isSubmergedIn(FluidTags.WATER);
+		this.submergedInFabricFluid = this.isSubmergedIn(FabricFluidTags.FABRIC_FLUID);
+		this.submergedFluidTag = null;
+		this.submergedFluid = null;
+
+		//Get the y of the center of the eye
+		double eyeY = this.getEyeY() - 0.1111111119389534d;
+
+		//If the entity is on a boat, not set the tag regardless
+		if (this.getVehicle() instanceof BoatEntity boat) {
+			if (!boat.isSubmergedInWater() && boat.getBoundingBox().maxY >= eyeY && boat.getBoundingBox().minY <= eyeY) {
+				return;
+			}
+		}
+
+		//Get the tag of the fluid in the eye block
+		BlockPos pos = new BlockPos(this.getX(), eyeY, this.getZ());
+		FluidState fluidState = this.world.getFluidState(pos);
+		Tag<Fluid> tag = FabricFluidTags.getFluidTags().stream().filter(fluidState::isIn).findFirst().orElse(null);
+
+		if (tag != null) {
+			double eyeFluidY = (float)pos.getY() + fluidState.getHeight(this.world, pos);
+			if (eyeFluidY > eyeY) {
+				//If the entity is submerged by the fluid above the eye, set the current "submerged fluid"
+				this.submergedFluidTag = tag;
+				this.submergedFluid = fluidState;
+			}
+		}
+
+		ci.cancel();
 	}
 
-	@Override
-	public boolean isSubmergedInFabricFluid() {
-		return submergedInFabricFluid;
-	}
+	//endregion
 
-	@Override
-	public boolean isTouchingSwimmableFluid() {
-		return this.isTouchingWater() || (this.isTouchingFabricFluid()
-				&& firstTouchedFabricFluid != null && FluidUtils.isSwimmable(firstTouchedFabricFluid));
-	}
-
-	@Override
-	public boolean isSubmergedInSwimmableFluid() {
-		return this.isSubmergedInWater() || (this.isSubmergedInFabricFluid()
-				&& submergedFluid != null && FluidUtils.isSwimmable(submergedFluid));
-	}
+	//region TOUCHING AND SUBMERGED EVENTS
 
 	@Unique
 	private void onFabricFluidTouched(ExtendedFlowableFluid fluid) {
@@ -269,8 +267,8 @@ public abstract class EntityMixin implements FabricFluidEntity {
 		}
 	}
 
-	@Unique
-	private void fabricFluidApiTick() {
+	@Inject(method = "tick()V", at = @At("TAIL"))
+	private void tick(CallbackInfo ci) {
 		if (isSubmergedInFabricFluid() && submergedFluid != null
 				&& submergedFluid.getFluid() instanceof ExtendedFlowableFluid fluid) {
 			//Executes an event if the entity is submerged in a fabric_fluid
@@ -283,15 +281,46 @@ public abstract class EntityMixin implements FabricFluidEntity {
 		}
 	}
 
-	@Unique
-	private boolean isInWater() {
+	//endregion
+
+	//region STATE CHECKERS
+
+	@Override
+	public boolean isInFabricFluid() {
+		return !this.firstUpdate && this.fluidHeight.getDouble(FabricFluidTags.FABRIC_FLUID) > 0.0D;
+	}
+
+	@Override
+	public boolean isInWater() {
 		return !this.firstUpdate && this.fluidHeight.getDouble(FluidTags.WATER) > 0.0D;
 	}
 
-	@Unique
-	private boolean isInFabricFluid() {
-		return !this.firstUpdate && this.fluidHeight.getDouble(FabricFluidTags.FABRIC_FLUID) > 0.0D;
+	//exposed methods
+
+	@Override
+	public boolean isSubmergedInFabricFluid() {
+		return submergedInFabricFluid;
 	}
+
+	@Override
+	public boolean isTouchingFabricFluid() {
+		return touchingFabricFluid;
+	}
+
+	@Override
+	public boolean isSubmergedInSwimmableFluid() {
+		return this.isSubmergedInWater() || (this.isSubmergedInFabricFluid()
+				&& submergedFluid != null && FluidUtils.isSwimmable(submergedFluid));
+	}
+
+	@Override
+	public boolean isTouchingSwimmableFluid() {
+		return this.isTouchingWater() || (this.isTouchingFabricFluid()
+				&& firstTouchedFabricFluid != null && FluidUtils.isSwimmable(firstTouchedFabricFluid));
+	}
+
+	//endregion
+
 
 	@Unique
 	private Entity getThis() {

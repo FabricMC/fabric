@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class SwimGoalMixin {
 	@Shadow @Final private MobEntity mob;
 
-	@Inject(method = "canStart()Z", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "canStart", at = @At("HEAD"), cancellable = true)
 	private void canStart(CallbackInfoReturnable<Boolean> cir) {
 		//If the entity is touching a swimmable fluid, can start swimming
 		if (((FabricFluidEntity)this.mob).isTouchingSwimmableFluid() && this.mob.getFluidHeight(FabricFluidTags.FABRIC_FLUID) > this.mob.getSwimHeight()) {

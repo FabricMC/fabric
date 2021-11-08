@@ -27,9 +27,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(BoatDispenserBehavior.class)
 public class BoatDispenserBehaviorMixin {
-	@Redirect(method = "dispenseSilently(Lnet/minecraft/util/math/BlockPointer;Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/ItemStack;",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
-	private boolean isInHandler(FluidState state, Tag<Fluid> tag) {
+	@Redirect(method = "dispenseSilently", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
+	private boolean isInRedirect(FluidState state, Tag<Fluid> tag) {
 		return FluidUtils.isNavigable(state);
 	}
 }

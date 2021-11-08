@@ -27,17 +27,17 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class ClientPlayerEntityMixin extends LivingEntityMixin {
 	@Shadow public abstract boolean isSubmergedInWater();
 
-	@Redirect(method = "isWalking()Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
-	private boolean isSubmergedInWaterRedirect2(ClientPlayerEntity entity) {
+	@Redirect(method = "isWalking", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
+	private boolean isSubmergedInWaterRedirect1(ClientPlayerEntity entity) {
 		return this.isSubmergedInWater() || this.isSubmergedInFabricFluid();
 	}
 
-	@Redirect(method = "tickMovement()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
-	private boolean isSubmergedInWaterRedirect(ClientPlayerEntity entity) {
+	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
+	private boolean isSubmergedInWaterRedirect2(ClientPlayerEntity entity) {
 		return this.isSubmergedInSwimmableFluid();
 	}
 
-	@Redirect(method = "tickMovement()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isTouchingWater()Z"))
+	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect(ClientPlayerEntity entity) {
 		return this.isTouchingSwimmableFluid();
 	}

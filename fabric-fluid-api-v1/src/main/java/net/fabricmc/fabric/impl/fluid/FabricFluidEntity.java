@@ -21,9 +21,14 @@ package net.fabricmc.fabric.impl.fluid;
  */
 public interface FabricFluidEntity {
 	/**
-	 * @return true if the entity is touching a fabric_fluid.
+	 * @return true if the entity is in a fabric_fluid.
 	 */
-	boolean isTouchingFabricFluid();
+	boolean isInFabricFluid();
+
+	/**
+	 * @return true if the entity is in water.
+	 */
+	boolean isInWater();
 
 	/**
 	 * @return true if the entity is submerged in a fabric_fluid.
@@ -31,12 +36,17 @@ public interface FabricFluidEntity {
 	boolean isSubmergedInFabricFluid();
 
 	/**
-	 * @return true if the entity is touching a swimmable fluid.
-	 */
-	boolean isTouchingSwimmableFluid();
-
-	/**
 	 * @return true if the entity is submerged in a swimmable fluid.
 	 */
 	boolean isSubmergedInSwimmableFluid();
+
+	/**
+	 * @return true if the entity is touching a fabric_fluid.
+	 */
+	boolean isTouchingFabricFluid();
+
+	/**
+	 * @return true if the entity is touching a swimmable fluid.
+	 */
+	boolean isTouchingSwimmableFluid();
 }

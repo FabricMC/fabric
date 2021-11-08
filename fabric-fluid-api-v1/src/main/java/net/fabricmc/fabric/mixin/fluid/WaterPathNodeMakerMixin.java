@@ -12,16 +12,16 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(WaterPathNodeMaker.class)
 public class WaterPathNodeMakerMixin {
-	//This mixin adds fabric_fluid to the valid fluids for path nodes.
+	//This mixin adds fabric_fluid to the valid fluids for AI movement.
 
 	@Redirect(method = "getDefaultNodeType", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
-	private boolean isInHandler1(FluidState state, Tag<Fluid> tag) {
+	private boolean isInRedirect1(FluidState state, Tag<Fluid> tag) {
 		return state.isIn(FluidTags.WATER) || state.isIn(FabricFluidTags.FABRIC_FLUID);
 	}
 
 	@Redirect(method = "getNodeType(III)Lnet/minecraft/entity/ai/pathing/PathNodeType;",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
-	private boolean isInHandler2(FluidState state, Tag<Fluid> tag) {
+	private boolean isInRedirect2(FluidState state, Tag<Fluid> tag) {
 		return state.isIn(FluidTags.WATER) || state.isIn(FabricFluidTags.FABRIC_FLUID);
 	}
 }

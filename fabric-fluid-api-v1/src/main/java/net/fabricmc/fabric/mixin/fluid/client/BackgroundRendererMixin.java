@@ -37,9 +37,7 @@ public class BackgroundRendererMixin {
     @Shadow private static float blue;
     @Shadow private static long lastWaterFogColorUpdateTime = -1L;
 
-    @Inject(method = "render(Lnet/minecraft/client/render/Camera;FLnet/minecraft/client/world/ClientWorld;IF)V",
-            at = @At("HEAD"),
-            cancellable = true)
+    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     private static void render(Camera camera, float tickDelta, ClientWorld world, int i, float f, CallbackInfo ci) {
         FluidState fluidState = ((FabricFluidCamera)camera).getSubmergedFluidState();
         if (fluidState.getFluid() instanceof ExtendedFlowableFluid fluid) {
@@ -51,20 +49,21 @@ public class BackgroundRendererMixin {
 
 			//Apply the fog color if the current entity is submerged by an extended fluid
             RenderSystem.clearColor(red, green, blue, 0.0f);
+
             ci.cancel();
         }
     }
 
-    @Inject(method = "applyFog(Lnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/BackgroundRenderer$FogType;FZ)V",
-            at = @At("HEAD"),
-            cancellable = true)
+    @Inject(method = "applyFog", at = @At("HEAD"), cancellable = true)
     private static void applyFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci) {
         FluidState fluidState = ((FabricFluidCamera)camera).getSubmergedFluidState();
         if (fluidState.getFluid() instanceof ExtendedFlowableFluid fluid) {
 			Entity entity = camera.getFocusedEntity();
+
 			//Apply the fog start and fog end if the current entity is submerged by an extended fluid
             RenderSystem.setShaderFogStart(fluid.getFogStart(entity, fogType, viewDistance, thickFog));
             RenderSystem.setShaderFogEnd(fluid.getFogEnd(entity, fogType, viewDistance, thickFog));
+
             ci.cancel();
         }
     }

@@ -36,6 +36,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends EntityMixin {
+	//region INTERNAL METHODS AND VARIABLES PLACEHOLDERS
+
 	@Shadow protected abstract float getBaseMovementSpeedMultiplier();
 	@Shadow public abstract boolean isClimbing();
 	@Shadow public abstract Vec3d method_26317(double d, boolean bl, Vec3d vec3d);
@@ -44,61 +46,70 @@ public abstract class LivingEntityMixin extends EntityMixin {
 	@Shadow public abstract void updateLimbs(LivingEntity entity, boolean flutter);
 	@Shadow public abstract boolean canWalkOnFluid(Fluid fluid);
 
-	@Inject(method = "fall(DZLnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;)V", at = @At("HEAD"))
+	//endregion
+
+	//region FALL DAMAGE
+
+	@Inject(method = "fall", at = @At("HEAD"))
 	private void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition, CallbackInfo ci) {
-		//Check the fluid state every tick when falling and not touching a fabric_fluid, similar to water
-		if (!this.isTouchingFabricFluid()) {
-			this.checkFabricFluidState();
-		}
+		//Check every tick, when falling, if there is a fabric_fluid that can prevent fall damage
+		if (!this.isTouchingFabricFluid()) this.checkFabricFluidState();
 	}
 
-	@Redirect(method = "baseTick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getMaxAir()I"))
+	//endregion
+
+	//region DROWNING
+
+	@Redirect(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getMaxAir()I"))
 	private int getMaxAirRedirect(@NotNull LivingEntity entity) {
 		//If the entity is subberged in fabric_fluid returns -20, so basetick does not reset the air
 		return entity.isSubmergedIn(FabricFluidTags.FABRIC_FLUID) ? -20 : entity.getMaxAir();
 	}
 
-	@Redirect(method = "tickMovement()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isTouchingWater()Z"))
+	//endregion
+
+	//region SWIMMING
+
+	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getFluidHeight(Lnet/minecraft/tag/Tag;)D", ordinal = 1))
+	private double getFluidHeightRedirect(LivingEntity entity, Tag<Fluid> tag) {
+		return this.isTouchingFabricFluid() ? this.getFluidHeight(FabricFluidTags.FABRIC_FLUID) : this.getFluidHeight(tag);
+	}
+
+	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect(LivingEntity entity) {
 		return this.isTouchingSwimmableFluid();
 	}
 
-	@Redirect(method = "tickMovement()V", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/entity/LivingEntity;getFluidHeight(Lnet/minecraft/tag/Tag;)D", ordinal = 1))
-	private double getFluidHeightRedirect(LivingEntity entity, Tag<Fluid> tag) {
-		if (this.isTouchingFabricFluid()) {
-			return this.getFluidHeight(FabricFluidTags.FABRIC_FLUID);
-		}
-		else return this.getFluidHeight(tag);
-	}
+	//endregion
 
-	@Inject(method = "travel(Lnet/minecraft/util/math/Vec3d;)V", at = @At("HEAD"), cancellable = true)
+	//region MOVEMENT SPEED INTO THE FLUID
+
+	@Inject(method = "travel", at = @At("HEAD"), cancellable = true)
 	private void travel(Vec3d movementInput, CallbackInfo ci) {
 		if ((this.canMoveVoluntarily() || this.isLogicalSideForUpdatingMovement())
 				&& this.isTouchingFabricFluid() && this.shouldSwimInFluids()
 				&& !this.canWalkOnFluid(this.world.getFluidState(this.getBlockPos()).getFluid())) {
 
-			//Calculates the travel movement if the entity is on a fabric_fluid
-			//This applies the same behaviour of an entity in water, but with fabric_fluid
+			//Updates the travel movement velocity if the entity is on a fabric_fluid
+			//This applies the same behaviour of water
 
-			double d = 0.08D;
-			boolean bl = this.getVelocity().y <= 0.0D;
-			double e = this.getY();
-			float j = this.isSprinting() ? 0.9F : this.getBaseMovementSpeedMultiplier();
-			float g = 0.02F;
+			boolean falling = this.getVelocity().y <= 0.0D;
+			double currentY = this.getY();
+			float movement = this.isSprinting() ? 0.9F : this.getBaseMovementSpeedMultiplier();
 
-			this.updateVelocity(g, movementInput);
+			this.updateVelocity(0.02F, movementInput);
 			this.move(MovementType.SELF, this.getVelocity());
-			Vec3d vec3d = this.getVelocity();
-			if (this.horizontalCollision && this.isClimbing()) {
-				vec3d = new Vec3d(vec3d.x, 0.2D, vec3d.z);
-			}
 
-			this.setVelocity(vec3d.multiply(j, 0.800000011920929D, j));
-			Vec3d vec3d2 = this.method_26317(d, bl, this.getVelocity());
-			this.setVelocity(vec3d2);
-			if (this.horizontalCollision && this.doesNotCollide(vec3d2.x, vec3d2.y + 0.6000000238418579D - this.getY() + e, vec3d2.z)) {
-				this.setVelocity(new Vec3d(vec3d2.x, 0.30000001192092896D, vec3d2.z));
+			Vec3d velocity = this.getVelocity();
+			if (this.horizontalCollision && this.isClimbing()) velocity = new Vec3d(velocity.x, 0.2D, velocity.z);
+
+			this.setVelocity(velocity.multiply(movement, 0.800000011920929D, movement));
+
+			Vec3d newVelocity = this.method_26317(0.08D, falling, this.getVelocity());
+			this.setVelocity(newVelocity);
+			if (this.horizontalCollision && this.doesNotCollide(newVelocity.x,
+					newVelocity.y + 0.6000000238418579D - this.getY() + currentY, newVelocity.z)) {
+				this.setVelocity(new Vec3d(newVelocity.x, 0.30000001192092896D, newVelocity.z));
 			}
 
 			this.updateLimbs(this.getThis(), this.getThis() instanceof Flutterer);
@@ -106,6 +117,9 @@ public abstract class LivingEntityMixin extends EntityMixin {
 			ci.cancel();
 		}
 	}
+
+	//endregion
+
 
 	@Unique
 	private LivingEntity getThis() {

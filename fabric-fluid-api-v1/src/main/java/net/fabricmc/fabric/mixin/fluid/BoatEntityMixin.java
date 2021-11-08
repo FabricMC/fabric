@@ -30,39 +30,33 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(BoatEntity.class)
 public abstract class BoatEntityMixin extends EntityMixin {
-	@Redirect(method = "method_7544()F",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
-	private boolean isInHandler1(FluidState state, Tag<Fluid> tag) {
+	@Redirect(method = "method_7544", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
+	private boolean isInRedirect1(FluidState state, Tag<Fluid> tag) {
 		return FluidUtils.isNavigable(state);
 	}
 
-	@Redirect(method = "checkBoatInWater()Z",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
-	private boolean isInHandler2(FluidState state, Tag<Fluid> tag) {
+	@Redirect(method = "checkBoatInWater", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
+	private boolean isInRedirect2(FluidState state, Tag<Fluid> tag) {
 		return FluidUtils.isNavigable(state);
 	}
 
-	@Redirect(method = "getUnderWaterLocation()Lnet/minecraft/entity/vehicle/BoatEntity$Location;",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
-	private boolean isInHandler3(FluidState state, Tag<Fluid> tag) {
+	@Redirect(method = "getUnderWaterLocation", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
+	private boolean isInRedirect3(FluidState state, Tag<Fluid> tag) {
 		return FluidUtils.isNavigable(state);
 	}
 
-	@Redirect(method = "fall(DZLnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;)V",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
-	private boolean isInHandler4(FluidState state, Tag<Fluid> tag) {
+	@Redirect(method = "fall", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
+	private boolean isInRedirect4(FluidState state, Tag<Fluid> tag) {
 		return FluidUtils.isNavigable(state);
 	}
 
-	@Redirect(method = "updatePassengerForDismount(Lnet/minecraft/entity/LivingEntity;)Lnet/minecraft/util/math/Vec3d;",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isWater(Lnet/minecraft/util/math/BlockPos;)Z"))
-	private boolean isWaterHandler(World world, BlockPos pos) {
+	@Redirect(method = "updatePassengerForDismount", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isWater(Lnet/minecraft/util/math/BlockPos;)Z"))
+	private boolean isWaterRedirect(World world, BlockPos pos) {
 		return FluidUtils.isNavigable(world.getFluidState(pos));
 	}
 
-	@Redirect(method = "canAddPassenger(Lnet/minecraft/entity/Entity;)Z",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;isSubmergedIn(Lnet/minecraft/tag/Tag;)Z"))
-	private boolean isSubmergedInHandler(BoatEntity boat, Tag<Fluid> tag) {
+	@Redirect(method = "canAddPassenger", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;isSubmergedIn(Lnet/minecraft/tag/Tag;)Z"))
+	private boolean isSubmergedInRedirect(BoatEntity boat, Tag<Fluid> tag) {
 		return this.isSubmerged();
 	}
 
