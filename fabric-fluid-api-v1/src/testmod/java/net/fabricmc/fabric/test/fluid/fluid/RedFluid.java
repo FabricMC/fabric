@@ -101,33 +101,13 @@ public abstract class RedFluid extends FabricFlowableFluid {
 	}
 
 	@Override
-	public boolean canExtinguishFire() {
-		return false;
-	}
-
-	@Override
-	public boolean canLightFire() {
-		return true;
-	}
-
-	@Override
-	public int getEntityOnFireDuration() {
+	public int getEntityOnFireDuration(World world) {
 		return 5;
 	}
 
 	@Override
-	public float getHotDamage() {
+	public float getHotDamage(World world) {
 		return 2f;
-	}
-
-	@Override
-	public boolean canWet() {
-		return false;
-	}
-
-	@Override
-	public boolean canPreventFallDamage() {
-		return false;
 	}
 
 	@Override

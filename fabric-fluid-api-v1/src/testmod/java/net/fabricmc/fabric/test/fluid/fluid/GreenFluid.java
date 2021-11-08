@@ -103,11 +103,6 @@ public abstract class GreenFluid extends FabricFlowableFluid {
 	}
 
 	@Override
-	public float getDrowningDamage() {
-		return 0;
-	}
-
-	@Override
 	public void onTouching(@NotNull World world, Entity entity) {
 		super.onTouching(world, entity);
 		if (!world.isClient) {

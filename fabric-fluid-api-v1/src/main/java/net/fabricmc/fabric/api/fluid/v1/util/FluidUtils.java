@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.fluid.v1.util;
 
-import net.fabricmc.fabric.api.fluid.v1.ExtendedFlowableFluid;
 import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
@@ -47,10 +46,7 @@ public class FluidUtils {
 	 * @return true if the fluid is navigable.
 	 */
 	public static boolean isNavigable(@NotNull Fluid fluid) {
-		return fluid.isIn(FabricFluidTags.FABRIC_FLUID)
-				//By default, all fabric_fluid are navigable
-				? !(fluid instanceof ExtendedFlowableFluid eFluid) || eFluid.isNavigable()
-				: fluid.isIn(FluidTags.WATER);
+		return fluid.isIn(FluidTags.WATER) || (fluid.isIn(FabricFluidTags.FABRIC) && fluid.isIn(FabricFluidTags.NAVIGABLE));
 	}
 
 	/**
@@ -66,10 +62,8 @@ public class FluidUtils {
 	 * @return true if the fluid is swimmable.
 	 */
 	public static boolean isSwimmable(@NotNull Fluid fluid) {
-		return fluid.isIn(FabricFluidTags.FABRIC_FLUID)
-				//By default, all fabric_fluid are swimmable
-				? !(fluid instanceof ExtendedFlowableFluid eFluid) || eFluid.isSwimmable()
-				: fluid.isIn(FluidTags.WATER) || fluid.isIn(FluidTags.LAVA);
+		return fluid.isIn(FluidTags.WATER) || fluid.isIn(FluidTags.LAVA) ||
+				(fluid.isIn(FabricFluidTags.FABRIC) && fluid.isIn(FabricFluidTags.SWIMMABLE));
 	}
 
 	/**

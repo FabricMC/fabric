@@ -31,25 +31,76 @@ import java.util.List;
 public class FabricFluidTags {
 	private static final List<Tag<Fluid>> TAGS;
 
+	//region TAGS
+
 	/**
-	 * fabric:fabric_fluid tag used to make custom fluids.
+	 * fabric:fabric_fluid -> Used for custom fluid recognition.
 	 */
-	public static final Tag<Fluid> FABRIC_FLUID;
+	public static final Tag<Fluid> FABRIC;
+
+	/**
+	 * fabric:fabric_fluid/fire_extinguisher -> Identifies a fabric_fluid that can extinguish fire.
+	 */
+	public static final Tag<Fluid> FIRE_EXTINGUISHER;
+
+	/**
+	 * fabric:fabric_fluid/firelighter -> Identifies a fabric_fluid that can light fire.
+	 */
+	public static final Tag<Fluid> FIRELIGHTER;
+
+	/**
+	 * fabric:fabric_fluid/prevent_fall_damage -> Identifies a fabric_fluid that can prevent fall damage.
+	 */
+	public static final Tag<Fluid> PREVENT_FALL_DAMAGE;
+
+	/**
+	 * fabric:fabric_fluid/wet -> Identifies a fabric_fluid that can wet.
+	 */
+	public static final Tag<Fluid> WET;
+
+	/**
+	 * fabric:fabric_fluid/navigable -> Identifies a fabric_fluid that is navigable.
+	 */
+	public static final Tag<Fluid> NAVIGABLE;
+
+	/**
+	 * fabric:fabric_fluid/respirable -> Identifies a fabric_fluid that is respirable.
+	 */
+	public static final Tag<Fluid> RESPIRABLE;
+
+	/**
+	 * fabric:fabric_fluid/swimmable -> Identifies a fabric_fluid that is swimmable.
+	 */
+	public static final Tag<Fluid> SWIMMABLE;
+
+	//endregion
+
+	static {
+		//Recognition tag
+		FABRIC = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid"));
+
+		//Customization tags
+		FIRE_EXTINGUISHER = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/fire_extinguisher"));
+		FIRELIGHTER = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/firelighter"));
+		PREVENT_FALL_DAMAGE = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/prevent_fall_damage"));
+		WET = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/wet"));
+		NAVIGABLE = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/navigable"));
+		RESPIRABLE = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/respirable"));
+		SWIMMABLE = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/swimmable"));
+
+		//Creates the main tags list
+		TAGS = Lists.newArrayList();
+		TAGS.add(FluidTags.WATER);
+		TAGS.add(FluidTags.LAVA);
+		TAGS.add(FABRIC);
+	}
 
 	private FabricFluidTags() {}
 
 	/**
-	 * @return the list of FluidTags and FabricFluidTags.
+	 * @return a list of the main fluid tags.
 	 */
-	public static List<Tag<Fluid>> getFluidTags() {
+	public static List<Tag<Fluid>> getMainFluidTags() {
 		return TAGS;
-	}
-
-	static {
-		TAGS = Lists.newArrayList();
-		FABRIC_FLUID = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid"));
-		TAGS.add(FluidTags.WATER);
-		TAGS.add(FluidTags.LAVA);
-		TAGS.add(FABRIC_FLUID);
 	}
 }

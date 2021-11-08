@@ -16,12 +16,12 @@ public class WaterPathNodeMakerMixin {
 
 	@Redirect(method = "getDefaultNodeType", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isInRedirect1(FluidState state, Tag<Fluid> tag) {
-		return state.isIn(FluidTags.WATER) || state.isIn(FabricFluidTags.FABRIC_FLUID);
+		return state.isIn(FluidTags.WATER) || state.isIn(FabricFluidTags.FABRIC);
 	}
 
 	@Redirect(method = "getNodeType(III)Lnet/minecraft/entity/ai/pathing/PathNodeType;",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isInRedirect2(FluidState state, Tag<Fluid> tag) {
-		return state.isIn(FluidTags.WATER) || state.isIn(FabricFluidTags.FABRIC_FLUID);
+		return state.isIn(FluidTags.WATER) || state.isIn(FabricFluidTags.FABRIC);
 	}
 }

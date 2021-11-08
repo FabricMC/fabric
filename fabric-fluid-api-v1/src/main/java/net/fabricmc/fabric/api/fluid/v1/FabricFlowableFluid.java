@@ -16,10 +16,13 @@
 
 package net.fabricmc.fabric.api.fluid.v1;
 
+import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.render.BackgroundRenderer;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -41,11 +44,129 @@ import java.util.Random;
 /**
  * Implements the basic behaviour of every fluid.
  */
-public abstract class FabricFlowableFluid extends FlowableFluid implements ExtendedFlowableFluid {
+public abstract class FabricFlowableFluid extends FlowableFluid {
 	/**
 	 * Initializes a new FabricFlowableFluid.
 	 */
 	public FabricFlowableFluid() {}
+
+	//region FLUID PROPERTIES
+
+	/**
+	 * @return the sound played when filling a bucket with this fluid.
+	 */
+	@Override
+	public Optional<SoundEvent> getBucketFillSound() {
+		return Optional.of(SoundEvents.ITEM_BUCKET_FILL);
+	}
+
+	/**
+	 * @param world The current world.
+	 * @return the duration in seconds of fire when applied to entities.
+	 */
+	public int getEntityOnFireDuration(World world) {
+		return 15;
+	}
+
+	/**
+	 * Get the fog color.
+	 * @param entity The current entity that displays the fog.
+	 * @param tickDelta The time passed from the last tick.
+	 * @param world The current world.
+	 */
+	public abstract int getFogColor(Entity entity, float tickDelta, ClientWorld world);
+
+	/**
+	 * Get the fog ending value.
+	 * @param entity The current entity that displays the fog.
+	 * @param fogType Type of fog (can be SKY or TERRAIN).
+	 * @param viewDistance The view distance of the current entity.
+	 * @param thickFog Thick of fog.
+	 */
+	public abstract float getFogEnd(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
+
+	/**
+	 * Get the fog starting value.
+	 * @param entity The current entity that displays the fog.
+	 * @param fogType Type of fog (can be SKY or TERRAIN).
+	 * @param viewDistance The view distance of the current entity.
+	 * @param thickFog Thick of fog.
+	 */
+	public abstract float getFogStart(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
+
+	/**
+	 * @param world The current world.
+	 * @return the hot damage to apply to entities.
+	 */
+	public float getHotDamage(World world) {
+		return 0f;
+	}
+
+	/**
+	 * @param state The current FluidState
+	 * @return the maximum fluid level.
+	 */
+	public int getMaxLevel(FluidState state) {
+		return 8;
+	}
+
+	/**
+	 * @return the swim sound of the fluid.
+	 */
+	public Optional<SoundEvent> getSwimSound() {
+		return Optional.of(SoundEvents.ENTITY_GENERIC_SWIM);
+	}
+
+	/**
+	 * Get the fluid viscosity, that is equal to the pushing strength of the fluid.
+	 * @param world The current world.
+	 * @param entity The current entity in the fluid.
+	 */
+	public double getViscosity(World world, Entity entity) {
+		return 0.014d;
+	}
+
+	//endregion
+
+	//region BEHAVIOUR PROPERTIES
+
+	/**
+	 * @return whether the given fluid can flow into this FluidState.
+	 */
+	@Override
+	protected boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos, Fluid fluid, Direction direction) {
+		return false;
+	}
+
+	/**
+	 * @param state The current FluidState
+	 * @return the current fluid level.
+	 */
+	@Override
+	public int getLevel(FluidState state) {
+		return isStill(state) ? getMaxLevel(state) : state.get(LEVEL);
+	}
+
+	/**
+	 * @param fluid The current Fluid
+	 * @return whether the given fluid is an instance of this fluid.
+	 */
+	@Override
+	public boolean matchesType(Fluid fluid) {
+		return fluid == getStill() || fluid == getFlowing();
+	}
+
+	/**
+	 * @return true if the fluids can execute randomly onRandomTick.
+	 */
+	@Override
+	protected boolean hasRandomTicks() {
+		return this.isIn(FabricFluidTags.FIRELIGHTER);
+	}
+
+	//endregion
+
+	//region EVENTS
 
 	/**
 	 * Perform actions when fluid flows into a replaceable block.
@@ -57,87 +178,6 @@ public abstract class FabricFlowableFluid extends FlowableFluid implements Exten
 	}
 
 	/**
-	 * @return whether the given fluid can flow into this FluidState.
-	 */
-	@Override
-	protected boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos, Fluid fluid, Direction direction) {
-		return false;
-	}
-
-	/**
-	 * @return the sound played when filling a bucket with this fluid.
-	 */
-	@Override
-	public Optional<SoundEvent> getBucketFillSound() {
-		return Optional.of(SoundEvents.ITEM_BUCKET_FILL);
-	}
-
-	/**
-	 * @return the current fluid level.
-	 */
-	@Override
-	public int getLevel(FluidState state) {
-		return isStill(state) ? getMaxLevel(state) : state.get(LEVEL);
-	}
-
-	/**
-	 * @return the maximum fluid level.
-	 */
-	public int getMaxLevel(FluidState state) {
-		return 8;
-	}
-
-	/**
-	 * @return whether the given fluid is an instance of this fluid.
-	 */
-	@Override
-	public boolean matchesType(Fluid fluid) {
-		return fluid == getStill() || fluid == getFlowing();
-	}
-
-	/**
-	 * Event executed when the entity is into the fluid.
-	 * @param world The current world.
-	 * @param entity The current entity in the fluid.
-	 */
-	@Override
-	public void onSubmerged(@NotNull World world, Entity entity) {
-		//Implements drowning living entities
-		if (!world.isClient && entity instanceof LivingEntity life) {
-			float drowningDamage = getDrowningDamage();
-			if (drowningDamage > 0 && !life.canBreatheInWater() && !StatusEffectUtil.hasWaterBreathing(life)) {
-				if (!(life instanceof PlayerEntity player && player.getAbilities().invulnerable)) {
-					life.setAir(life.getAir() - 1);
-					if (life.getAir() <= -20) {
-						life.setAir(0);
-						life.damage(DamageSource.DROWN, drowningDamage);
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Event executed when the entity is touching the fluid.
-	 * @param world The current world.
-	 * @param entity The current entity in the fluid.
-	 */
-	@Override
-	public void onTouching(@NotNull World world, Entity entity) {
-		//Implements fire and hot damage on entities
-		if (!world.isClient && !entity.isFireImmune()) {
-			int entityOnFireDuration = getEntityOnFireDuration();
-			float hotDamage = getHotDamage();
-			if (canLightFire() && entityOnFireDuration > 0) {
-				entity.setOnFireFor(entityOnFireDuration);
-			}
-			if (hotDamage > 0 && entity.damage(DamageSource.IN_FIRE, hotDamage)) {
-				entity.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + world.getRandom().nextFloat() * 0.4F);
-			}
-		}
-	}
-
-	/**
 	 * Executed randomly every tick.
 	 * @param world The current world.
 	 * @param pos The current position.
@@ -146,7 +186,7 @@ public abstract class FabricFlowableFluid extends FlowableFluid implements Exten
 	 */
 	@Override
 	public void onRandomTick(World world, BlockPos pos, FluidState state, Random random) {
-		if (!canLightFire()) return;
+		if (!this.isIn(FabricFluidTags.FIRELIGHTER)) return;
 		if (world.getGameRules().getBoolean(GameRules.DO_FIRE_TICK)) {
 			int i = random.nextInt(3);
 			if (i > 0) {
@@ -186,12 +226,52 @@ public abstract class FabricFlowableFluid extends FlowableFluid implements Exten
 	}
 
 	/**
-	 * @return true if the fluids can execute randomly onRandomTick.
+	 * Event executed when an entity falls, or enters, into the fluid.
+	 * @param world The current world.
+	 * @param entity The current entity in the fluid.
 	 */
-	@Override
-	protected boolean hasRandomTicks() {
-		return canLightFire();
+	public void onSplash(World world, Entity entity) {}
+
+	/**
+	 * Event executed when the entity is into the fluid.
+	 * @param world The current world.
+	 * @param entity The current entity in the fluid.
+	 */
+	public void onSubmerged(@NotNull World world, Entity entity) {
+		//Implements drowning living entities
+		if (!world.isClient && entity instanceof LivingEntity life) {
+			if (!this.isIn(FabricFluidTags.RESPIRABLE) && !life.canBreatheInWater() && !StatusEffectUtil.hasWaterBreathing(life)) {
+				if (!(life instanceof PlayerEntity player && player.getAbilities().invulnerable)) {
+					life.setAir(life.getAir() - 1);
+					if (life.getAir() <= -20) {
+						life.setAir(0);
+						life.damage(DamageSource.DROWN, 2f);
+					}
+				}
+			}
+		}
 	}
+
+	/**
+	 * Event executed when the entity is touching the fluid.
+	 * @param world The current world.
+	 * @param entity The current entity in the fluid.
+	 */
+	public void onTouching(@NotNull World world, Entity entity) {
+		//Implements fire and hot damage on entities
+		if (!world.isClient && !entity.isFireImmune()) {
+			int entityOnFireDuration = getEntityOnFireDuration(world);
+			float hotDamage = getHotDamage(world);
+			if (this.isIn(FabricFluidTags.FIRELIGHTER) && !this.isIn(FabricFluidTags.WET) && entityOnFireDuration > 0) {
+				entity.setOnFireFor(entityOnFireDuration);
+			}
+			if (hotDamage > 0 && entity.damage(DamageSource.IN_FIRE, hotDamage)) {
+				entity.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + world.getRandom().nextFloat() * 0.4F);
+			}
+		}
+	}
+
+	//endregion
 
 	/**
 	 * Check if the block in the specified position is burnable.

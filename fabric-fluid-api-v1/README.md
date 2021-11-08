@@ -3,44 +3,25 @@
 This api is focused on improving everything about the fluid creation,
 compared with vanilla one.
 
-## Content
+Here you can see a complete "ready to go" documentation
+of all the contents of this api:
 
-- [x] Ready-to-use basic fluid rendering.
-- [x] Ready-to-use basic abstract FlowableFluid class.
-- [x] Ready-to-use basic FluidBlock class.
-- [x] Custom fog.
-- [x] Pushing strength.
-- [x] Splash event.
-- [x] Splash event: splash sounds and particles.
-- [x] Submerged event.
-- [x] Submerged event: entity drowning.
-- [x] Touching event.
-- [x] Touching event: entity on fire.
-- [x] Specify if the fluid can light fire.
-- [x] Handling hot and fire damage.
-- [x] Handling fall damage.
-- [x] Specify if the fluid can wet entities.
-- [x] Handling drowning.
-- [x] Boats over the fluid.
-- [x] Entity swimming.
-- [x] Custom entity swimming sounds.
+## Fluid rendering
 
-## Ready-to-use basic fluid rendering
-
-The [`FluidRenderer`][fluidrenderer_java]
-class implements a `render()` method that handles the fluid rendering
-with the given texture id.
+You can easyly render your fluid with his textures by using
+the static `render()` methods of the [`FluidRenderer`][fluidrenderer_java]
+class by specifying the texture id.
 
 There are two version of the render() method:
 
-* `render(Fluid, Fluid, Identifier)`  
-  Which requires 3 parameters:
+* `render(Fluid still, Fluid flowing, Identifier textureID)`  
+  Parameters:
   - `still (Fluid)`: The still variant of the fluid.
   - `flowing (Fluid)`: The flowing variant of the fluid.
   - `textureID (Identifier)`: The identifier of the texture to use.
 
-* `render(Fluid, Fluid, Identifier, int)`  
-  Which is the same as the method above, but requires also:
+* `render(Fluid still, Fluid flowing, Identifier textureID, int color)`  
+  This is the same as the method above, but requires also:
   - `color (int)`: The color used to recolorize the fluid texture.
 
 This method must be called on client side.
@@ -56,53 +37,7 @@ For example if your texture Identifier is:
 The two textures, in the textures' folder, are: `block/red_fluid_still.png`
 and `block/red_fluid_flow.png`
 
-## Ready-to-use basic abstract FlowableFluid class
-
-The [`FabricFlowableFluid`][fabricflowablefluid_java] class extends the
-`FlowableFluid` class and implements some common methods, to avoid
-reimplementing them.
-It implements also the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface to provide other fluid customizations.
-It's still an abstract class, so you have to implement some specific methods.
-Remember that is still possible to override the implemented methods
-to change their behavior.
-
-The already implemented methods are:
-
-* `void beforeBreakingBlock(WorldAccess, BlockPos, BlockState)`  
-  Drops the stacks of the broken blocks basing on their loot tables.
-
-* `boolean canBeReplacedWith(FluidState, BlockView, BlockPos, Fluid, Direction)`  
-  Returns `false` (the fluid will not be replaceable by other fluids).
-
-* `Optional<SoundEvent> getBucketFillSound()`  
-  Returns the basic bucket fill sound: `SoundEvents.ITEM_BUCKET_FILL`.
-
-* `int getLevel(FluidState)`  
-  Returns the current fluid level for the flowing fluid state,
-  and the max level for still fluid state.
-
-* `int getMaxLevel(FluidState)`  
-  This method is not present in `FlowableFluid`, however it returns
-  the max level that the fluid can have (by default is 8).
-
-* `boolean matchesType(Fluid)`  
-  Returns `true` if the given fluid is an instance of the current flowable
-  or still fluid.
-
-* `void onSubmerged(World, Entity)`  
-  Implements drowning for every living entity.
-
-* `void onTouching(World, Entity)`  
-  Implements setting entities on fire.
-
-* `void onRandomTick(World, BlockPos, FluidState, Random)`  
-  Implements setting burnable blocks on fire.
-
-* `boolean hasRandomTicks()`  
-  Returns `true` if the fluid can light fire.
-
-## Ready-to-use basic FluidBlock class
+## FabricFluidBlock
 
 The [`FabricFluidBlock`][fabricfluidblock_java] class extends the `FluidBlock`
 class, but with a public constructor, so is possible to create an instance
@@ -111,120 +46,105 @@ of `FabricFluidBlock` directly, instead of extending `FluidBlock` everytime.
 There is no changes between [`FabricFluidBlock`][fabricfluidblock_java]
 and `FluidBlock`.
 
-## Custom fog
+## Fluid properties
 
-By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, you can implement three methods allowing to
-specify the fog parameters.
+### Fog
 
-* `int getFogColor(Entity, float, ClientWorld)`  
+The [`FabricFlowableFluid`][fabricflowablefluid_java] class
+contains three methods allowing to specify some fluid fog parameters.
+
+* `int getFogColor(Entity entity, float tickDelta, ClientWorld world)`  
   Allows to specify the fog color.
 
-* `float getFogEnd(Entity, BackgroundRenderer.FogType, float, boolean)`  
+* `float getFogEnd(Entity entity, BackgroundRenderer.FogType fogType,
+   float viewDistance, boolean thickFog)`  
   Allows to specify the fog ending distance.
 
-* `float getFogStart(Entity, BackgroundRenderer.FogType, float, boolean)`  
+* `float getFogStart(Entity entity, BackgroundRenderer.FogType fogType,
+  float viewDistance, boolean thickFog)`  
   Allows to specify the fog starting distance.
 
-## Pushing strength
+### Viscosity (pushing strength)
 
-By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, you can implement a method allowing to
-specify the pushing strength of the fluid.
+The [`FabricFlowableFluid`][fabricflowablefluid_java] class
+contains a method allowing to specify the viscosity of the fluid.
 
-`double getViscosity(World, Entity)`
+`double getViscosity(World world, Entity entity)`
 
-## Splash event
+### Swim sound
 
-By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, you can implement a method that is executed
-when the player splashes on the fluid (like jumping).
-This method is useful to spawn particles and play splash sounds.
+The [`FabricFlowableFluid`][fabricflowablefluid_java] class
+contains a method allowing to specify the swim sound of the fluid.
 
-`void onSplash(World, Entity)`
+`Optional<SoundEvent> getSwimSound()`
 
-## Submerged event
+### Hot damage
 
-By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, you can implement a method that is executed
-every tick, when the player is submerged by the fluid.
-This method is useful to handle drowning.
+The [`FabricFlowableFluid`][fabricflowablefluid_java] class
+contains a method allowing to specify the damage that the fluid
+can do, every tick, when touched (like lava).
 
-`void onSubmerged(World, Entity)`
+`float getHotDamage(World world)`
 
-## Touching event
+### Fire duration
 
-By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, you can implement a method that is executed
-every tick, when the player is touching the fluid.
-This method is useful to handle setting entities on fire.
+The [`FabricFlowableFluid`][fabricflowablefluid_java] class
+contains a method allowing to specify the duration of the fire
+applied to entities, if the fluid can light fire and cannot to wet.
 
-`void onTouching(World, Entity)`
+**NOTE:** This property is ignored if the fluid cannot light fire
+or can to wet.
 
-## Specify if the fluid can light fire
+`int getEntityOnFireDuration(World world)`
 
-By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, you can implement a method allowing to
-specify if the fluid can light fire.
+## Fluid properties by tags
 
-`boolean canLightFire()`
+Costomizations appliable by setting tags on the fluid:
 
-## Handling hot and fire damage
+### Fire extinguisher
 
-By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, you can implement two methods allowing to
-specify if the fluid can damage player because is too hot, or
-can extinguish fire.
+Fluids with the tag `fabric:fabric_fluid/fire_extinguisher`
+can extinguish fire on entities on fire.
 
-* `boolean canExtinguishFire()`  
-  Allows to specify if the fluid can extinguish fire.
+### Firelighter
 
-* `int getEntityOnFireDuration()`  
-  Allows to specify the duration of fire on entities,
-  if the fluid can light fire.
+Fluids with the tag `fabric:fabric_fluid/firelighter`
+can light fire on entities and burnable blocks around it.
 
-* `float getHotDamage()`  
-  Allows to specify the damage that the fluid can do to entities touching it.
+### Prevent fall damage
 
-## Handling fall damage
+Fluids with the tag `fabric:fabric_fluid/prevent_fall_damage`
+can prevent fall damage.
 
-By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, you can implement a method allowing to
-specify if the fluid can prevent fall damage.
+### Wet
 
-`boolean canPreventFallDamage()`
+Fluids with the tag `fabric:fabric_fluid/wet`
+can to wet entities, and damage them, if are damageable by wet fluids,
+like endermans.
 
-## Specify if the fluid can wet entities
+**NOTE:** If a fluid can to wet, it cannot light fire on entities.
 
-By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, you can implement a method allowing to
-specify whether the fluid can wet entities.
+### Respirable
 
-Some entities, as endermans, will be damaged if they are wet.
+Fluids with the tag `fabric:fabric_fluid/respirable`
+are respirable by entities, and will not cause drowning.
 
-`boolean canWet()`
+### Swimmable
 
-## Handling drowning
+Fluids with the tag `fabric:fabric_fluid/swimmable`
+can be swimmable by entities.
 
-By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, you can implement a method allowing to
-specify the drowning damage that the fluid can do to submerged entities.
+**NOTE:** In a non-swimmable fluid is only possible to jump from the ground,
+but not to swim, like in quicksands.
 
-`float getDrowningDamage()`
+### Navigable
 
-## Boats over the fluid
+Fluids with the tag `fabric:fabric_fluid/navigable`
+can be navigable with boats.
 
-By default, all fluids tagged with `fabric:fabric_fluid` are navigable.  
-If you want to customize this behaviour, implement the
-[`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, then you can implement a method allowing to
-specify if the fluid is navigable.
+**NOTE 1:** In a non-navigable fluid the boat will sink.
 
-`boolean isNavigable()`
-
-In a non-navigable fluid the boat will sink.
-
-**IMPORTANT NOTE:** To render boats correctly, the fluids must be rendered
+**NOTE 2:** To render boats correctly, the fluids must be rendered
 as translucent with `RenderLayer.getTranslucent()`.
 
 Add in your client-side entrypoint:
@@ -234,33 +154,119 @@ BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
         FLUID, FLOWING_FLUID);
 ```
 
-## Entity swimming
+## Fluid events
 
-By default, all fluids tagged with `fabric:fabric_fluid` are swimmable.  
-If you want to customize this behaviour, implement the
-[`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, then you can implement a method allowing to
-specify if the fluid is swimmable.
+### Splash event
 
-`boolean isSwimmable()`
+The [`FabricFlowableFluid`][fabricflowablefluid_java] class
+contains method that is executed
+when the player splashes on the fluid (like jumping).
+This method is useful to spawn particles and play splash sounds.
 
-In a non-swimmable fluid is only possible to jump, but not to swim,
-like in quicksands.
+`void onSplash(World world, Entity entity)`
 
-## Custom entity swimming sounds
+### Submerged event
 
-By implementing the [`ExtendedFlowableFluid`][extendedflowablefluid_java]
-interface on your fluid class, you can implement a method allowing to
-specify the swimming sound.
+The [`FabricFlowableFluid`][fabricflowablefluid_java] class
+contains a method that is executed every tick,
+when the player is submerged by the fluid.
+This method is useful to handle drowning.
 
-`Optional<SoundEvent> getSwimSound()`
+`void onSubmerged(World world, Entity entity)`
+
+### Touching event
+
+The [`FabricFlowableFluid`][fabricflowablefluid_java] class
+contains a method that is executed every tick,
+when the player is touching the fluid.
+This method is useful to handle setting entities on fire.
+
+`void onTouching(World world, Entity entity)`
+
+## FabricFlowableFluid
+
+The [`FabricFlowableFluid`][fabricflowablefluid_java] class extends the
+`FlowableFluid` class and implements some common fluid behaviour, to simplofy
+the fluid creation process.
+It's still an abstract class, so you have to implement some specific methods.
+Remember that is still possible to override the implemented methods
+to change their behaviour.
+
+The implemented methods are:
+
+* `Optional<SoundEvent> getBucketFillSound()`  
+  Returns the `SoundEvents.ITEM_BUCKET_FILL` sound.
+
+* `int getEntityOnFireDuration(World world)`  
+  Returns 15 seconds (the default lava fire duration).
+
+* `float getHotDamage(World world)`  
+  Returns 0.
+
+* `int getMaxLevel(FluidState state)`  
+  Returns the max level that the fluid can have (by default is 8).
+
+* `Optional<SoundEvent> getSwimSound()`  
+  Returns the `SoundEvents.ENTITY_GENERIC_SWIM` sound;
+
+* `double getViscosity(World world, Entity entity)`  
+  Returns 0.014 (the default water viscosity).
+
+* `boolean canBeReplacedWith(FluidState state, BlockView world,
+  BlockPos pos, Fluid fluid, Direction direction)`  
+  Returns `false` (the fluid will not be replaceable by other fluids).
+
+* `int getLevel(FluidState state)`  
+  Returns the current fluid level for the flowing fluid state,
+  and the max level for still fluid state.
+
+* `boolean matchesType(Fluid fluid)`  
+  Returns `true` if the given fluid is an instance of the current flowable
+  or still fluid.
+
+* `boolean hasRandomTicks()`  
+  Returns `true` if the fluid can light fire.
+
+* `void beforeBreakingBlock(WorldAccess world, BlockPos pos, BlockState state)`  
+  Drops the stacks of the broken blocks basing on their loot tables.
+
+* `void onRandomTick(World world, BlockPos pos, FluidState state, Random random)`  
+  Implements setting burnable blocks on fire.
+
+* `void onSplash(World world, Entity entity)`  
+  Does nothing.
+
+* `void onSubmerged(World world, Entity entity)`  
+  Implements drowning for every living entity.
+
+* `void onTouching(World world, Entity entity)`  
+  Implements setting entities on fire.
 
 ## The `fabric:fabric_fluid` tag
 
-To implement all the features of this api, your fluid
-must be added in the [`fabric:fabric_fluid`][fabric_fluid_tag] tag, so add
-a file named `fabric_fluid.json` inside `/resources/data/fabric/tags/fluids`
-and add your fluid here, in both still and flowing variant.
+To use the [`FabricFlowableFluid`][fabricflowablefluid_java] class,
+and implement all the features of this api, your fluid
+must have the [`fabric:fabric_fluid`][fabric_fluid_tags] tag.
+
+## How to add the customization tags
+
+To add the `fabric:fabric_fluid` tag, add a file named `fabric_fluid.json`
+inside `/resources/data/fabric/tags/fluids`, then add your fluid ids here,
+in both still and flowing variant.
+
+To add all the other customizations tags, add a folder named `fabric_fluid`
+inside `/resources/data/fabric/tags/fluids`, then add a file for each
+tag you want to use inside the `fabric_fluid` folder:
+
+* **Fire extinguisher:** `fire_extinguisher.json`
+* **Firelighter:** `firelighter.json`
+* **Prevent fall damage:** `prevent_fall_damage.json`
+* **Wet:** `wet.json`
+* **Navigable:** `navigable.json`
+* **Respirable:** `respirable.json`
+* **Swimmable:** `swimmable.json`
+
+In all these files, add your fluid ids, in both still and flowing variant.
 
 ```json
 {
@@ -276,7 +282,6 @@ and add your fluid here, in both still and flowing variant.
 
 
 [fluidrenderer_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/render/FluidRenderer.java
-[fabricflowablefluid_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/FabricFlowableFluid.java
 [fabricfluidblock_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/FabricFluidBlock.java
-[extendedflowablefluid_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/ExtendedFlowableFluid.java
-[fabric_fluid_tag]: src/main/java/net/fabricmc/fabric/api/fluid/v1/tag/FabricFluidTags.java
+[fabricflowablefluid_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/FabricFlowableFluid.java
+[fabric_fluid_tags]: src/main/java/net/fabricmc/fabric/api/fluid/v1/tag/FabricFluidTags.java

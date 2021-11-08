@@ -63,7 +63,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 	@Redirect(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getMaxAir()I"))
 	private int getMaxAirRedirect(@NotNull LivingEntity entity) {
 		//If the entity is subberged in fabric_fluid returns -20, so basetick does not reset the air
-		return entity.isSubmergedIn(FabricFluidTags.FABRIC_FLUID) ? -20 : entity.getMaxAir();
+		return entity.isSubmergedIn(FabricFluidTags.FABRIC) ? -20 : entity.getMaxAir();
 	}
 
 	//endregion
@@ -72,7 +72,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getFluidHeight(Lnet/minecraft/tag/Tag;)D", ordinal = 1))
 	private double getFluidHeightRedirect(LivingEntity entity, Tag<Fluid> tag) {
-		return this.isTouchingFabricFluid() ? this.getFluidHeight(FabricFluidTags.FABRIC_FLUID) : this.getFluidHeight(tag);
+		return this.isTouchingFabricFluid() ? this.getFluidHeight(FabricFluidTags.FABRIC) : this.getFluidHeight(tag);
 	}
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isTouchingWater()Z"))

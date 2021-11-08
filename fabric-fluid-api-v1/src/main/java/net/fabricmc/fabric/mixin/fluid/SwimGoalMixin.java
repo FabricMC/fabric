@@ -18,7 +18,7 @@ public class SwimGoalMixin {
 	@Inject(method = "canStart", at = @At("HEAD"), cancellable = true)
 	private void canStart(CallbackInfoReturnable<Boolean> cir) {
 		//If the entity is touching a swimmable fluid, can start swimming
-		if (((FabricFluidEntity)this.mob).isTouchingSwimmableFluid() && this.mob.getFluidHeight(FabricFluidTags.FABRIC_FLUID) > this.mob.getSwimHeight()) {
+		if (((FabricFluidEntity)this.mob).isTouchingSwimmableFluid() && this.mob.getFluidHeight(FabricFluidTags.FABRIC) > this.mob.getSwimHeight()) {
 			cir.setReturnValue(true);
 		}
 	}
