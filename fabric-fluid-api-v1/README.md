@@ -99,7 +99,7 @@ or can to wet.
 
 ## Fluid properties by tags
 
-Costomizations appliable by setting tags on the fluid:
+Costomizations applicable by setting [tags][fabric_fluid_tags] on the fluid:
 
 ### Fire extinguisher
 
@@ -242,21 +242,11 @@ The implemented methods are:
 * `void onTouching(World world, Entity entity)`  
   Implements setting entities on fire.
 
-## The `fabric:fabric_fluid` tag
-
-To use the [`FabricFlowableFluid`][fabricflowablefluid_java] class,
-and implement all the features of this api, your fluid
-must have the [`fabric:fabric_fluid`][fabric_fluid_tags] tag.
-
 ## How to add the customization tags
 
-To add the `fabric:fabric_fluid` tag, add a file named `fabric_fluid.json`
-inside `/resources/data/fabric/tags/fluids`, then add your fluid ids here,
-in both still and flowing variant.
-
-To add all the other customizations tags, add a folder named `fabric_fluid`
-inside `/resources/data/fabric/tags/fluids`, then add a file for each
-tag you want to use inside the `fabric_fluid` folder:
+To add all the [customizations tags][fabric_fluid_tags],
+add a folder named `fabric_fluid` inside `/resources/data/fabric/tags/fluids`,
+then add a file for each tag you want to use inside this folder:
 
 * **Fire extinguisher:** `fire_extinguisher.json`
 * **Firelighter:** `firelighter.json`

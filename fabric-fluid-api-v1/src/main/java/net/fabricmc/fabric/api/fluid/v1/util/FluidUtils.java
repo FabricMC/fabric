@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.fluid.v1.util;
 
+import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
@@ -34,6 +35,22 @@ import org.jetbrains.annotations.Nullable;
  */
 public class FluidUtils {
 	/**
+	 * @param state FluidState to check if is a custom fabric fluid.
+	 * @return true if the fluid is a custom fabric fluid.
+	 */
+	public static boolean isFabricFluid(FluidState state) {
+		return state != null && isFabricFluid(state.getFluid());
+	}
+
+	/**
+	 * @param fluid Fluid to check if is a custom fabric fluid.
+	 * @return true if the fluid is a custom fabric fluid.
+	 */
+	public static boolean isFabricFluid(Fluid fluid) {
+		return fluid instanceof FabricFlowableFluid;
+	}
+
+	/**
 	 * @param state FluidState to check if is navigable.
 	 * @return true if the fluid is navigable.
 	 */
@@ -46,7 +63,7 @@ public class FluidUtils {
 	 * @return true if the fluid is navigable.
 	 */
 	public static boolean isNavigable(@NotNull Fluid fluid) {
-		return fluid.isIn(FluidTags.WATER) || (fluid.isIn(FabricFluidTags.FABRIC) && fluid.isIn(FabricFluidTags.NAVIGABLE));
+		return fluid.isIn(FluidTags.WATER) || (isFabricFluid(fluid) && fluid.isIn(FabricFluidTags.NAVIGABLE));
 	}
 
 	/**
@@ -63,25 +80,25 @@ public class FluidUtils {
 	 */
 	public static boolean isSwimmable(@NotNull Fluid fluid) {
 		return fluid.isIn(FluidTags.WATER) || fluid.isIn(FluidTags.LAVA) ||
-				(fluid.isIn(FabricFluidTags.FABRIC) && fluid.isIn(FabricFluidTags.SWIMMABLE));
+				(isFabricFluid(fluid) && fluid.isIn(FabricFluidTags.SWIMMABLE));
 	}
 
 	/**
-	 * Check if an entity is touching a fluid with the specified tag.
+	 * Get the first touched fluid, by the specified entity, with the specified tag.
 	 * @param entity The entity to check.
 	 * @param tag The fluid tag to search.
-	 * @return true if the specified entity is touching a fluid with the specified tag.
+	 * @return the first touched fluid, by the specified entity, with the specified tag.
 	 */
 	public static @Nullable FluidState getFirstTouchedFluid(@NotNull Entity entity, Tag<Fluid> tag) {
 		return getFirstTouchedFluid(entity.getBoundingBox().contract(0.001D), entity.world, tag);
 	}
 
 	/**
-	 * Check if a box is touching a fluid with the specified tag.
+	 * Get the first touched fluid, by the specified box, with the specified tag.
 	 * @param box The box to check.
 	 * @param world The current world.
 	 * @param tag The fluid tag to search.
-	 * @return true if the specified box is touching a fluid with the specified tag.
+	 * @return the first touched fluid, by the specified box, with the specified tag.
 	 */
 	public static @Nullable FluidState getFirstTouchedFluid(@NotNull Box box, World world, Tag<Fluid> tag) {
 		int minX = MathHelper.floor(box.minX);

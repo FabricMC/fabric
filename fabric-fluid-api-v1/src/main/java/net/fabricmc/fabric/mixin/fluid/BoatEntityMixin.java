@@ -62,6 +62,6 @@ public abstract class BoatEntityMixin extends EntityMixin {
 
 	@Unique
 	private boolean isSubmerged() {
-		return this.submergedFluidTag != null;
+		return this.submergedFluid != null;
 	}
 }

@@ -16,27 +16,16 @@
 
 package net.fabricmc.fabric.api.fluid.v1.tag;
 
-import com.google.common.collect.Lists;
 import net.fabricmc.fabric.api.tag.TagFactory;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
-import java.util.List;
-
 /**
- * Provides default fabric fluid tags.
+ * Provides tags for all fluid customizations.
  */
 public class FabricFluidTags {
-	private static final List<Tag<Fluid>> TAGS;
-
 	//region TAGS
-
-	/**
-	 * fabric:fabric_fluid -> Used for custom fluid recognition.
-	 */
-	public static final Tag<Fluid> FABRIC;
 
 	/**
 	 * fabric:fabric_fluid/fire_extinguisher -> Identifies a fabric_fluid that can extinguish fire.
@@ -76,10 +65,6 @@ public class FabricFluidTags {
 	//endregion
 
 	static {
-		//Recognition tag
-		FABRIC = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid"));
-
-		//Customization tags
 		FIRE_EXTINGUISHER = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/fire_extinguisher"));
 		FIRELIGHTER = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/firelighter"));
 		PREVENT_FALL_DAMAGE = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/prevent_fall_damage"));
@@ -87,20 +72,7 @@ public class FabricFluidTags {
 		NAVIGABLE = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/navigable"));
 		RESPIRABLE = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/respirable"));
 		SWIMMABLE = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/swimmable"));
-
-		//Creates the main tags list
-		TAGS = Lists.newArrayList();
-		TAGS.add(FluidTags.WATER);
-		TAGS.add(FluidTags.LAVA);
-		TAGS.add(FABRIC);
 	}
 
 	private FabricFluidTags() {}
-
-	/**
-	 * @return a list of the main fluid tags.
-	 */
-	public static List<Tag<Fluid>> getMainFluidTags() {
-		return TAGS;
-	}
 }

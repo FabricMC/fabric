@@ -49,4 +49,9 @@ public interface FabricFluidEntity {
 	 * @return true if the entity is touching a swimmable fluid.
 	 */
 	boolean isTouchingSwimmableFluid();
+
+	/**
+	 * @return the height of the current fabric fluid.
+	 */
+	double getFabricFluidHeight();
 }
