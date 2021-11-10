@@ -103,35 +103,35 @@ Costomizations applicable by setting [tags][fabric_fluid_tags] on the fluid:
 
 ### Fire extinguisher
 
-Fluids with the tag `fabric:fabric_fluid/fire_extinguisher`
+Fluids with the tag `fabric:fire_extinguisher`
 can extinguish fire on entities on fire.
 
-### Firelighter
+### Fire lighter
 
-Fluids with the tag `fabric:fabric_fluid/firelighter`
+Fluids with the tag `fabric:fire_lighter`
 can light fire on entities and burnable blocks around it.
-
-### Prevent fall damage
-
-Fluids with the tag `fabric:fabric_fluid/prevent_fall_damage`
-can prevent fall damage.
 
 ### Wet
 
-Fluids with the tag `fabric:fabric_fluid/wet`
+Fluids with the tag `fabric:wet`
 can to wet entities, and damage them, if are damageable by wet fluids,
 like endermans.
 
 **NOTE:** If a fluid can to wet, it cannot light fire on entities.
 
+### Prevent fall damage
+
+Fluids with the tag `fabric:prevent_fall_damage`
+can prevent fall damage.
+
 ### Respirable
 
-Fluids with the tag `fabric:fabric_fluid/respirable`
+Fluids with the tag `fabric:respirable`
 are respirable by entities, and will not cause drowning.
 
 ### Swimmable
 
-Fluids with the tag `fabric:fabric_fluid/swimmable`
+Fluids with the tag `fabric:swimmable`
 can be swimmable by entities.
 
 **NOTE:** In a non-swimmable fluid is only possible to jump from the ground,
@@ -139,7 +139,7 @@ but not to swim, like in quicksands.
 
 ### Navigable
 
-Fluids with the tag `fabric:fabric_fluid/navigable`
+Fluids with the tag `fabric:navigable`
 can be navigable with boats.
 
 **NOTE 1:** In a non-navigable fluid the boat will sink.
@@ -244,19 +244,19 @@ The implemented methods are:
 
 ## How to add the customization tags
 
-To add all the [customizations tags][fabric_fluid_tags],
-add a folder named `fabric_fluid` inside `/resources/data/fabric/tags/fluids`,
-then add a file for each tag you want to use inside this folder:
+To add the [customizations tags][fabric_fluid_tags], create a **json** file
+for each tag you want to use inside `/resources/data/fabric/tags/fluids`.  
+The file names are respectively:
 
 * **Fire extinguisher:** `fire_extinguisher.json`
-* **Firelighter:** `firelighter.json`
-* **Prevent fall damage:** `prevent_fall_damage.json`
-* **Wet:** `wet.json`
+* **Fire lighter:** `fire_lighter.json`
 * **Navigable:** `navigable.json`
+* **Prevent fall damage:** `prevent_fall_damage.json`
 * **Respirable:** `respirable.json`
 * **Swimmable:** `swimmable.json`
+* **Wet:** `wet.json`
 
-In all these files, add your fluid ids, in both still and flowing variant.
+Then add your fluid ids, in both still and flowing variant.
 
 ```json
 {

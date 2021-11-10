@@ -161,7 +161,7 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	 */
 	@Override
 	protected boolean hasRandomTicks() {
-		return this.isIn(FabricFluidTags.FIRELIGHTER);
+		return this.isIn(FabricFluidTags.FIRE_LIGHTER);
 	}
 
 	//endregion
@@ -186,7 +186,7 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	 */
 	@Override
 	public void onRandomTick(World world, BlockPos pos, FluidState state, Random random) {
-		if (!this.isIn(FabricFluidTags.FIRELIGHTER)) return;
+		if (!this.isIn(FabricFluidTags.FIRE_LIGHTER)) return;
 		if (world.getGameRules().getBoolean(GameRules.DO_FIRE_TICK)) {
 			int i = random.nextInt(3);
 			if (i > 0) {
@@ -262,7 +262,7 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 		if (!world.isClient && !entity.isFireImmune()) {
 			int entityOnFireDuration = getEntityOnFireDuration(world);
 			float hotDamage = getHotDamage(world);
-			if (this.isIn(FabricFluidTags.FIRELIGHTER) && !this.isIn(FabricFluidTags.WET) && entityOnFireDuration > 0) {
+			if (this.isIn(FabricFluidTags.FIRE_LIGHTER) && !this.isIn(FabricFluidTags.WET) && entityOnFireDuration > 0) {
 				entity.setOnFireFor(entityOnFireDuration);
 			}
 			if (hotDamage > 0 && entity.damage(DamageSource.IN_FIRE, hotDamage)) {

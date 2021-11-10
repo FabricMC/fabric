@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.fluid.v1.util;
 import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.tag.FluidTags;
@@ -39,7 +40,8 @@ public class FluidUtils {
 	 * @return true if the fluid is a custom fabric fluid.
 	 */
 	public static boolean isFabricFluid(FluidState state) {
-		return state != null && isFabricFluid(state.getFluid());
+		if (state == null) return false;
+		return isFabricFluid(state.getFluid());
 	}
 
 	/**
@@ -54,7 +56,8 @@ public class FluidUtils {
 	 * @param state FluidState to check if is navigable.
 	 * @return true if the fluid is navigable.
 	 */
-	public static boolean isNavigable(@NotNull FluidState state) {
+	public static boolean isNavigable(FluidState state) {
+		if (state == null) return false;
 		return isNavigable(state.getFluid());
 	}
 
@@ -62,7 +65,8 @@ public class FluidUtils {
 	 * @param fluid Fluid to check if is navigable.
 	 * @return true if the fluid is navigable.
 	 */
-	public static boolean isNavigable(@NotNull Fluid fluid) {
+	public static boolean isNavigable(Fluid fluid) {
+		if (fluid == null) return false;
 		return fluid.isIn(FluidTags.WATER) || (isFabricFluid(fluid) && fluid.isIn(FabricFluidTags.NAVIGABLE));
 	}
 
@@ -70,7 +74,8 @@ public class FluidUtils {
 	 * @param state FluidState to check if is swimmable.
 	 * @return true if the fluid is swimmable.
 	 */
-	public static boolean isSwimmable(@NotNull FluidState state) {
+	public static boolean isSwimmable(FluidState state) {
+		if (state == null) return false;
 		return isSwimmable(state.getFluid());
 	}
 
@@ -78,9 +83,9 @@ public class FluidUtils {
 	 * @param fluid Fluid to check if is swimmable.
 	 * @return true if the fluid is swimmable.
 	 */
-	public static boolean isSwimmable(@NotNull Fluid fluid) {
-		return fluid.isIn(FluidTags.WATER) || fluid.isIn(FluidTags.LAVA) ||
-				(isFabricFluid(fluid) && fluid.isIn(FabricFluidTags.SWIMMABLE));
+	public static boolean isSwimmable(Fluid fluid) {
+		if (fluid == null) return false;
+		return fluid.isIn(FluidTags.WATER) || fluid.isIn(FluidTags.LAVA) || (isFabricFluid(fluid) && fluid.isIn(FabricFluidTags.SWIMMABLE));
 	}
 
 	/**
@@ -89,7 +94,7 @@ public class FluidUtils {
 	 * @param tag The fluid tag to search.
 	 * @return the first touched fluid, by the specified entity, with the specified tag.
 	 */
-	public static @Nullable FluidState getFirstTouchedFluid(@NotNull Entity entity, Tag<Fluid> tag) {
+	public static @Nullable FluidState getFirstTouchedFluid(@NotNull Entity entity, @NotNull Tag<Fluid> tag) {
 		return getFirstTouchedFluid(entity.getBoundingBox().contract(0.001D), entity.world, tag);
 	}
 
@@ -100,7 +105,7 @@ public class FluidUtils {
 	 * @param tag The fluid tag to search.
 	 * @return the first touched fluid, by the specified box, with the specified tag.
 	 */
-	public static @Nullable FluidState getFirstTouchedFluid(@NotNull Box box, World world, Tag<Fluid> tag) {
+	public static @Nullable FluidState getFirstTouchedFluid(@NotNull Box box, @NotNull World world, @NotNull Tag<Fluid> tag) {
 		int minX = MathHelper.floor(box.minX);
 		int maxX = MathHelper.ceil(box.maxX);
 		int minY = MathHelper.floor(box.minY);
@@ -124,6 +129,35 @@ public class FluidUtils {
 					}
 				}
 			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the fluid in which the entity is submerged
+	 * @param entity The entity that is supposed to be submerged
+	 * @return the fluid in which the entity is submerged
+	 */
+	public static @Nullable FluidState getSubmergedFluid(@NotNull Entity entity) {
+		//Get the y of the center of the entity eye
+		double eyeY = entity.getEyeY() - 0.1111111119389534d;
+
+		//If the entity is on a boat, is not submerged by nothing, so return null
+		if (entity.getVehicle() instanceof BoatEntity boat) {
+			if (!boat.isSubmergedInWater() && boat.getBoundingBox().maxY >= eyeY && boat.getBoundingBox().minY <= eyeY) {
+				return null;
+			}
+		}
+
+		//Get the fluid in the block at the entity eye position
+		BlockPos pos = new BlockPos(entity.getX(), eyeY, entity.getZ());
+		FluidState fluidState = entity.world.getFluidState(pos);
+
+		double eyeFluidY = (float)pos.getY() + fluidState.getHeight(entity.world, pos);
+		if (eyeFluidY > eyeY) {
+			//If the entity is submerged by the fluid above the eye, return the fluid
+			return fluidState;
 		}
 
 		return null;

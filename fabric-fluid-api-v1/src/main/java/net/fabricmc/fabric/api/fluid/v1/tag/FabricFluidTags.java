@@ -33,24 +33,19 @@ public class FabricFluidTags {
 	public static final Tag<Fluid> FIRE_EXTINGUISHER;
 
 	/**
-	 * fabric:fabric_fluid/firelighter -> Identifies a fabric_fluid that can light fire.
+	 * fabric:fabric_fluid/fire_lighter -> Identifies a fabric_fluid that can light fire.
 	 */
-	public static final Tag<Fluid> FIRELIGHTER;
-
-	/**
-	 * fabric:fabric_fluid/prevent_fall_damage -> Identifies a fabric_fluid that can prevent fall damage.
-	 */
-	public static final Tag<Fluid> PREVENT_FALL_DAMAGE;
-
-	/**
-	 * fabric:fabric_fluid/wet -> Identifies a fabric_fluid that can wet.
-	 */
-	public static final Tag<Fluid> WET;
+	public static final Tag<Fluid> FIRE_LIGHTER;
 
 	/**
 	 * fabric:fabric_fluid/navigable -> Identifies a fabric_fluid that is navigable.
 	 */
 	public static final Tag<Fluid> NAVIGABLE;
+
+	/**
+	 * fabric:fabric_fluid/prevent_fall_damage -> Identifies a fabric_fluid that can prevent fall damage.
+	 */
+	public static final Tag<Fluid> PREVENT_FALL_DAMAGE;
 
 	/**
 	 * fabric:fabric_fluid/respirable -> Identifies a fabric_fluid that is respirable.
@@ -62,16 +57,21 @@ public class FabricFluidTags {
 	 */
 	public static final Tag<Fluid> SWIMMABLE;
 
+	/**
+	 * fabric:fabric_fluid/wet -> Identifies a fabric_fluid that can wet.
+	 */
+	public static final Tag<Fluid> WET;
+
 	//endregion
 
 	static {
-		FIRE_EXTINGUISHER = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/fire_extinguisher"));
-		FIRELIGHTER = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/firelighter"));
-		PREVENT_FALL_DAMAGE = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/prevent_fall_damage"));
-		WET = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/wet"));
-		NAVIGABLE = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/navigable"));
-		RESPIRABLE = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/respirable"));
-		SWIMMABLE = TagFactory.FLUID.create(new Identifier("fabric", "fabric_fluid/swimmable"));
+		FIRE_EXTINGUISHER =   TagFactory.FLUID.create(new Identifier("fabric", "fire_extinguisher"));
+		FIRE_LIGHTER =        TagFactory.FLUID.create(new Identifier("fabric", "fire_lighter"));
+		NAVIGABLE =           TagFactory.FLUID.create(new Identifier("fabric", "navigable"));
+		PREVENT_FALL_DAMAGE = TagFactory.FLUID.create(new Identifier("fabric", "prevent_fall_damage"));
+		RESPIRABLE =          TagFactory.FLUID.create(new Identifier("fabric", "respirable"));
+		SWIMMABLE =           TagFactory.FLUID.create(new Identifier("fabric", "swimmable"));
+		WET =                 TagFactory.FLUID.create(new Identifier("fabric", "wet"));
 	}
 
 	private FabricFluidTags() {}
