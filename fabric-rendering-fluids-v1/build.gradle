@@ -7,5 +7,5 @@ moduleDependencies(project, [
 ])
 
 dependencies {
-	testmodImplementation project(path: ':fabric-textures-v0', configuration: 'dev')
+	testmodImplementation project(path: ':fabric-textures-v0', configuration: 'namedElements')
 }

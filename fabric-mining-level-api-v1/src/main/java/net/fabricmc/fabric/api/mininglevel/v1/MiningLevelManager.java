@@ -45,6 +45,9 @@ public final class MiningLevelManager {
 	 * <p>Note: this method does not take into account tool-specific mining levels declared
 	 * with the tool attribute API.
 	 *
+	 * <p>The default mining level of blocks not modified with mining level tags
+	 * is -1 (the hand mining level).
+	 *
 	 * @param state the block state
 	 * @return the mining level of the block state
 	 */
