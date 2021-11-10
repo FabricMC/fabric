@@ -146,6 +146,10 @@ allprojects {
 		preserveFileTimestamps = false
 		reproducibleFileOrder = true
 	}
+
+	tasks.withType(GenerateModuleMetadata) {
+		enabled = false
+	}
 }
 
 // Apply auxiliary buildscripts to submodules
