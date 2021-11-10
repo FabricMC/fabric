@@ -74,11 +74,17 @@ class BumpVersionTask extends DefaultTask {
 		}
 
 		def gpFile = project.file("gradle.properties")
+		def props = project.properties
 		def text = gpFile.text
 
 		toUpdate.forEach { p, i ->
-			def version = project.properties.get("${p.name}-version")
-			def split = version.split(".")
+			def version = props."${p.name}-version"
+
+			if (!version) {
+				throw new NullPointerException("Could not find version for " + p.name)
+			}
+
+			def split = version.split("\\.")
 			split[i] = (split[i] as Integer) + 1
 			def newVersion = split.join(".")
 
@@ -86,7 +92,7 @@ class BumpVersionTask extends DefaultTask {
 
 			text = text.replace(
 				"${p.name}-version=$version",
-				newVersion
+				"${p.name}-version=$newVersion"
 			)
 		}
 
