@@ -55,7 +55,7 @@ public abstract class ClientChunkManagerMixin {
 	@Inject(method = "loadChunkFromPacket", at = @At(value = "NEW", target = "net/minecraft/world/chunk/WorldChunk", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
 	private void onChunkUnload(int x, int z, @Nullable BiomeArray biomes, PacketByteBuf buf, NbtCompound tag, BitSet verticalStripBitmask, CallbackInfoReturnable<WorldChunk> info, int index, WorldChunk worldChunk, ChunkPos chunkPos) {
 		if (worldChunk != null) {
-			ClientChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(this.world, worldChunk);
+			ClientChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.world, worldChunk);
 		}
 	}
 
