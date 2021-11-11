@@ -17,11 +17,11 @@
 package net.fabricmc.fabric.mixin.registry.sync;
 
 import java.util.ArrayList;
-import java.util.IdentityHashMap;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -35,7 +35,7 @@ public class MixinIdList<T> implements RemovableIdList<T> {
 	@Shadow
 	private int nextId;
 	@Shadow
-	private IdentityHashMap<T, Integer> idMap;
+	private Object2IntMap<T> idMap;
 	@Shadow
 	private List<T> list;
 
@@ -48,7 +48,7 @@ public class MixinIdList<T> implements RemovableIdList<T> {
 
 	@Unique
 	private void fabric_removeInner(T o) {
-		int value = idMap.remove(o);
+		int value = idMap.removeInt(o);
 		list.set(value, null);
 
 		while (nextId > 1 && list.get(nextId - 1) == null) {
@@ -68,7 +68,7 @@ public class MixinIdList<T> implements RemovableIdList<T> {
 		List<T> removals = new ArrayList<>();
 
 		for (T o : idMap.keySet()) {
-			int j = idMap.get(o);
+			int j = idMap.getInt(o);
 
 			if (i == j) {
 				removals.add(o);
