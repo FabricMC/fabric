@@ -229,6 +229,13 @@ subprojects {
 	}
 
 	javadoc.enabled = false
+
+	afterEvaluate {
+		// Disable the gen sources task on sub projects
+		genSourcesWithFernFlower.enabled = false
+		genSourcesWithCfr.enabled = false
+		unpickJar.enabled = false
+	}
 }
 
 task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
