@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
@@ -68,7 +67,7 @@ public abstract class DefaultResourcePackMixin {
 			URLConnection connection = assetsRootUrl.openConnection();
 
 			if (connection instanceof JarURLConnection) {
-				return new ZipResourcePack(new File(((JarURLConnection) connection).getJarFileURL().toURI()));
+				return new ZipResourcePack(Paths.get(((JarURLConnection) connection).getJarFileURL().toURI()).toFile());
 			} else {
 				// Not a jar, assume it's a regular directory.
 				Path rootPath = Paths.get(assetsRootUrl.toURI()).resolve("../..").toAbsolutePath();
