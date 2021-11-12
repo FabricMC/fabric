@@ -48,15 +48,14 @@ import java.util.Random;
 @SuppressWarnings("unused")
 public abstract class FabricFlowableFluid extends FlowableFluid {
 	/**
-	 * Initializes a new FabricFlowableFluid.
+	 * Initializes a new FabricFlowableFluid instance.
 	 */
 	public FabricFlowableFluid() {}
 
-	//todo reorganization
-	//region FLUID PROPERTIES
+	//region SOUNDS
 
 	/**
-	 * @return the sound played when filling a bucket with this fluid.
+	 * @return Sound played when filling a bucket with this fluid.
 	 */
 	@Override
 	public Optional<SoundEvent> getBucketFillSound() {
@@ -64,118 +63,62 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	}
 
 	/**
-	 * @return the sound to play when the player enters the fluid.
+	 * @return Sound to play when the player enters the fluid.
 	 */
 	public SoundParameters getEnterSound(World world, Entity entity) {
 		return SoundParameters.of(SoundEvents.AMBIENT_UNDERWATER_ENTER);
 	}
 
 	/**
-	 * @param world The current world.
-	 * @return the duration in seconds of fire when applied to entities.
-	 */
-	public int getEntityOnFireDuration(World world) {
-		return 15;
-	}
-
-	/**
-	 * @return the sound to play when the player exit from the fluid.
+	 * @return Sound to play when the player exit from the fluid.
 	 */
 	public SoundParameters getExitSound(World world, Entity entity) {
 		return SoundParameters.of(SoundEvents.AMBIENT_UNDERWATER_EXIT);
 	}
 
 	/**
-	 * Get the fog color.
-	 * @param entity The current entity that displays the fog.
-	 * @param tickDelta The time passed from the last tick.
-	 * @param world The current world.
+	 * @return Generic splash sound of the fluid.
+	 * <p>NOTE 1: This is mainly used by boats when they are in bubble columns.</p>
+	 * <p>NOTE 2: If null, will be used the default pre-defined sound.</p>
 	 */
-	public int getFogColor(Entity entity, float tickDelta, ClientWorld world) {
-		return -1;
+	public Optional<SoundEvent> getGenericSplashSound() {
+		return Optional.of(SoundEvents.ENTITY_GENERIC_SPLASH);
 	}
 
 	/**
-	 * Get the fog ending value.
-	 * @param entity The current entity that displays the fog.
-	 * @param fogType Type of fog (can be SKY or TERRAIN).
-	 * @param viewDistance The view distance of the current entity.
-	 * @param thickFog Thick of fog.
-	 */
-	public float getFogEnd(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
-		return viewDistance;
-	}
-
-	/**
-	 * Get the fog starting value.
-	 * @param entity The current entity that displays the fog.
-	 * @param fogType Type of fog (can be SKY or TERRAIN).
-	 * @param viewDistance The view distance of the current entity.
-	 * @param thickFog Thick of fog.
-	 */
-	public float getFogStart(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
-		return 0f;
-	}
-
-	/**
-	 * @param world The current world.
-	 * @return the hot damage to apply to entities.
-	 */
-	public float getHotDamage(World world) {
-		return 0f;
-	}
-
-	/**
-	 * @param state The current FluidState
-	 * @return the maximum fluid level.
-	 */
-	public int getMaxLevel(FluidState state) {
-		return 8;
-	}
-
-	/**
-	 * @return the sound to play when a boat navigates on the fluid.
+	 * @return Sound to play when a boat navigates on the fluid.
 	 */
 	public Optional<SoundEvent> getPaddleSound() {
 		return Optional.of(SoundEvents.ENTITY_BOAT_PADDLE_WATER);
 	}
 
 	/**
-	 * @return the splash sound of the fluid.
+	 * @return Splash sound of the fluid.
 	 */
 	public SoundParameters getSplashSound(World world, Entity entity) {
 		return SoundParameters.of(SoundEvents.ENTITY_GENERIC_SPLASH, 0.1f, 1f);
 	}
 
 	/**
-	 * @return the swim sound of the fluid.
+	 * @return Swim sound of the fluid.
 	 */
 	public Optional<SoundEvent> getSwimSound() {
 		return Optional.of(SoundEvents.ENTITY_GENERIC_SWIM);
 	}
 
 	/**
-	 * @return the ambient sound to play when the player is submerged by the fluid.
+	 * @return Ambient sound to play when the player is submerged by the fluid.
 	 */
 	public SoundParameters getSubmergedAmbientSound(World world, Entity entity) {
 		return SoundParameters.of(SoundEvents.AMBIENT_UNDERWATER_LOOP);
 	}
 
-	/**
-	 * Get the fluid viscosity, that is equal to the pushing strength of the fluid.
-	 * @param world The current world.
-	 * @param entity The current entity in the fluid.
-	 */
-	public double getViscosity(World world, Entity entity) {
-		return 0.014d;
-	}
-
 	//endregion
 
-	//region BEHAVIOUR PROPERTIES
+	//region PROPERTIES
 
 	/**
-	 * @return whether the given fluid can flow into this FluidState.
+	 * @return True if the given fluid can flow into this FluidState.
 	 */
 	@Override
 	protected boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos, Fluid fluid, Direction direction) {
@@ -183,8 +126,56 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	}
 
 	/**
+	 * @param world The current world.
+	 * @return Duration, in seconds, of the fire applied to entities.
+	 */
+	public int getEntityOnFireDuration(World world) {
+		return 15;
+	}
+
+	/**
+	 * @param entity The current entity that displays the fog.
+	 * @param tickDelta The time passed from the last tick.
+	 * @param world The current world.
+	 * @return Fog color.
+	 */
+	public int getFogColor(Entity entity, float tickDelta, ClientWorld world) {
+		return -1;
+	}
+
+	/**
+	 * @param entity The current entity that displays the fog.
+	 * @param fogType Type of fog (can be SKY or TERRAIN).
+	 * @param viewDistance The view distance of the current entity.
+	 * @param thickFog Thick of fog.
+	 * @return Fog ending value.
+	 */
+	public float getFogEnd(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
+		return viewDistance;
+	}
+
+	/**
+	 * @param entity The current entity that displays the fog.
+	 * @param fogType Type of fog (can be SKY or TERRAIN).
+	 * @param viewDistance The view distance of the current entity.
+	 * @param thickFog Thick of fog.
+	 * @return Fog starting value.
+	 */
+	public float getFogStart(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
+		return 0f;
+	}
+
+	/**
+	 * @param world The current world.
+	 * @return Hot damage that the fluid can do to entities.
+	 */
+	public float getHotDamage(World world) {
+		return 0f;
+	}
+
+	/**
 	 * @param state The current FluidState
-	 * @return the current fluid level.
+	 * @return Current fluid level.
 	 */
 	@Override
 	public int getLevel(FluidState state) {
@@ -192,20 +183,37 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	}
 
 	/**
-	 * @param fluid The current Fluid
-	 * @return whether the given fluid is an instance of this fluid.
+	 * @param state The current FluidState
+	 * @return Maximum fluid level.
 	 */
-	@Override
-	public boolean matchesType(Fluid fluid) {
-		return fluid == getStill() || fluid == getFlowing();
+	public int getMaxLevel(FluidState state) {
+		return 8;
 	}
 
 	/**
-	 * @return true if the fluids can execute randomly onRandomTick.
+	 * @param world The current world.
+	 * @param entity The current entity in the fluid.
+	 * @return Fluid viscosity, that is equal to the pushing strength of the fluid.
+	 */
+	public double getViscosity(World world, Entity entity) {
+		return 0.014d;
+	}
+
+	/**
+	 * @return True if the fluids can execute randomly onRandomTick.
 	 */
 	@Override
 	protected boolean hasRandomTicks() {
 		return this.isIn(FabricFluidTags.FIRE_LIGHTER);
+	}
+
+	/**
+	 * @param fluid The current Fluid
+	 * @return True if the given fluid is an instance of this fluid.
+	 */
+	@Override
+	public boolean matchesType(Fluid fluid) {
+		return fluid == getStill() || fluid == getFlowing();
 	}
 
 	//endregion
@@ -214,6 +222,9 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 
 	/**
 	 * Perform actions when fluid flows into a replaceable block.
+	 * @param world The current world.
+	 * @param pos The position of the block broken.
+	 * @param state The BlockState broken.
 	 */
 	@Override
 	protected void beforeBreakingBlock(WorldAccess world, BlockPos pos, @NotNull BlockState state) {
@@ -318,15 +329,19 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 
 	//endregion
 
+	//region UTIL
+
 	/**
 	 * Check if the block in the specified position is burnable.
 	 * @param world The current world.
 	 * @param pos The block position.
-	 * @return true if the block in the specified position is burnable.
+	 * @return True if the block in the specified position is burnable.
 	 */
 	@SuppressWarnings("deprecation")
 	private boolean hasBurnableBlock(@NotNull WorldView world, @NotNull BlockPos pos) {
 		return (pos.getY() < world.getBottomY() || pos.getY() >= world.getTopY() || world.isChunkLoaded(pos))
 				&& world.getBlockState(pos).getMaterial().isBurnable();
 	}
+
+	//endregion
 }

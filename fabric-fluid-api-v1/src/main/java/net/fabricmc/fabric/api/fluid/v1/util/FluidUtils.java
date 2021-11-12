@@ -39,7 +39,7 @@ public class FluidUtils {
 	 * Checks if two FluidState are equal.
 	 * @param fluidState1 First FluidState.
 	 * @param fluidState2 Second FluidState.
-	 * @return true if the two FluidState are equal.
+	 * @return True if the two FluidState are equal.
 	 */
 	public static boolean areEqual(FluidState fluidState1, FluidState fluidState2) {
 		if (fluidState1 == null || fluidState2 == null) return false;
@@ -50,7 +50,7 @@ public class FluidUtils {
 	 * Checks if two Fluid are equal.
 	 * @param fluid1 First Fluid.
 	 * @param fluid2 Second Fluid.
-	 * @return true if the two Fluid are equal.
+	 * @return True if the two Fluid are equal.
 	 */
 	public static boolean areEqual(Fluid fluid1, Fluid fluid2) {
 		if (fluid1 == null || fluid2 == null) return false;
@@ -61,7 +61,7 @@ public class FluidUtils {
 	 * Get the first touched fluid, by the specified entity, with the specified tag.
 	 * @param entity The entity to check.
 	 * @param tag The fluid tag to search.
-	 * @return the first touched fluid, by the specified entity, with the specified tag.
+	 * @return First touched fluid, by the specified entity, with the specified tag.
 	 */
 	public static @Nullable FluidState getFirstTouchedFluid(@NotNull Entity entity, @NotNull Tag<Fluid> tag) {
 		return getFirstTouchedFluid(entity.getBoundingBox().contract(0.001D), entity.world, tag);
@@ -72,7 +72,7 @@ public class FluidUtils {
 	 * @param box The box to check.
 	 * @param world The current world.
 	 * @param tag The fluid tag to search.
-	 * @return the first touched fluid, by the specified box, with the specified tag.
+	 * @return First touched fluid, by the specified box, with the specified tag.
 	 */
 	public static @Nullable FluidState getFirstTouchedFluid(@NotNull Box box, @NotNull World world, @NotNull Tag<Fluid> tag) {
 		int minX = MathHelper.floor(box.minX);
@@ -106,7 +106,7 @@ public class FluidUtils {
 	/**
 	 * Get the fluid in which the entity is submerged
 	 * @param entity The entity that is supposed to be submerged
-	 * @return the fluid in which the entity is submerged
+	 * @return Fluid in which the entity is submerged
 	 */
 	public static @Nullable FluidState getSubmergedFluid(@NotNull Entity entity) {
 		//Get the y of the center of the entity eye
@@ -134,7 +134,7 @@ public class FluidUtils {
 
 	/**
 	 * @param state FluidState to check if is a custom fabric fluid.
-	 * @return true if the fluid is a custom fabric fluid.
+	 * @return True if the fluid is a custom fabric fluid.
 	 */
 	public static boolean isFabricFluid(FluidState state) {
 		if (state == null) return false;
@@ -143,7 +143,7 @@ public class FluidUtils {
 
 	/**
 	 * @param fluid Fluid to check if is a custom fabric fluid.
-	 * @return true if the fluid is a custom fabric fluid.
+	 * @return True if the fluid is a custom fabric fluid.
 	 */
 	public static boolean isFabricFluid(Fluid fluid) {
 		return fluid instanceof FabricFlowableFluid;
@@ -151,7 +151,7 @@ public class FluidUtils {
 
 	/**
 	 * @param state FluidState to check if is navigable.
-	 * @return true if the fluid is navigable.
+	 * @return True if the fluid is navigable.
 	 */
 	public static boolean isNavigable(FluidState state) {
 		if (state == null) return false;
@@ -160,7 +160,7 @@ public class FluidUtils {
 
 	/**
 	 * @param fluid Fluid to check if is navigable.
-	 * @return true if the fluid is navigable.
+	 * @return True if the fluid is navigable.
 	 */
 	public static boolean isNavigable(Fluid fluid) {
 		if (fluid == null) return false;
@@ -169,7 +169,7 @@ public class FluidUtils {
 
 	/**
 	 * @param state FluidState to check if is swimmable.
-	 * @return true if the fluid is swimmable.
+	 * @return True if the fluid is swimmable.
 	 */
 	public static boolean isSwimmable(FluidState state) {
 		if (state == null) return false;
@@ -178,7 +178,7 @@ public class FluidUtils {
 
 	/**
 	 * @param fluid Fluid to check if is swimmable.
-	 * @return true if the fluid is swimmable.
+	 * @return True if the fluid is swimmable.
 	 */
 	public static boolean isSwimmable(Fluid fluid) {
 		if (fluid == null) return false;

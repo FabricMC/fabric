@@ -145,9 +145,9 @@ public abstract class EntityMixin implements FabricFluidEntity {
 	private void getSplashSound(CallbackInfoReturnable<SoundEvent> cir) {
 		//If the entity is touching a fabric fluid gets the splash sound and returns it
 		if (this.isTouchingFabricFluid()) {
-			//Gets the splash sound
-			SoundParameters splashSound = ((FabricFlowableFluid)firstTouchedFabricFluid.getFluid()).getSplashSound(this.world, getThis());
-			if (splashSound.hasSound()) cir.setReturnValue(splashSound.getSoundEvent());
+			//Gets the generic splash sound (if not present, will be used the default pre-defined sound)
+			Optional<SoundEvent> splashSound = ((FabricFlowableFluid)firstTouchedFabricFluid.getFluid()).getGenericSplashSound();
+			splashSound.ifPresent(cir::setReturnValue);
 		}
 	}
 

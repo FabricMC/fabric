@@ -74,13 +74,18 @@ contains a method allowing to specify the viscosity of the fluid.
 ### Sounds
 
 The [`FabricFlowableFluid`][fabricflowablefluid_java] class
-contains six methods allowing to specify the fluid sounds.
+contains seven methods allowing to specify the fluid sounds.
 
 * `SoundParameters getEnterSound(World world, Entity entity)`  
   Allows to specify the sound to play when the player enters the fluid.
 
 * `SoundParameters getExitSound(World world, Entity entity)`  
   Allows to specify the sound to play when the player exit from the fluid.
+
+* `Optional<SoundEvent> getGenericSplashSound()`  
+  Allows to specify the generic splash sound of the fluid.  
+  **NOTE 1:** This is mainly used by boats when they are in bubble columns.  
+  **NOTE 2:** If null, will be used the default pre-defined sound.
 
 * `Optional<SoundEvent> getPaddleSound()`  
   Allows to specify the sound to play when a boat navigates on the fluid.
@@ -94,7 +99,7 @@ contains six methods allowing to specify the fluid sounds.
 * `SoundParameters getSubmergedAmbientSound(World world, Entity entity)`  
   Allows to specify the ambient sound to play when the player is submerged by the fluid.
 
-**NOTE:** `SoundParameters` is an object that takes a SoundEvent
+**NOTE 3:** `SoundParameters` is an object that takes a SoundEvent
 and two floats for volume and pitch.
 
 ### Hot damage
@@ -132,9 +137,8 @@ can light fire on entities and burnable blocks around it.
 
 ### Wet
 
-Fluids with the tag `fabric:wet`
-can to wet entities, and damage them, if are damageable by wet fluids,
-like endermans.
+Fluids with the tag `fabric:wet` can to wet entities,
+and damage them, if are damageable by wet fluids, like endermans.
 
 **NOTE:** If a fluid can to wet, it cannot light fire on entities.
 
@@ -179,7 +183,7 @@ BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
 
 The [`FabricFlowableFluid`][fabricflowablefluid_java] class
 contains method that is executed
-when the player splashes on the fluid (like jumping).
+when the player splashes on the fluid (like jumping).  
 This method is useful to spawn particles and play splash sounds.
 
 `void onSplash(World world, Entity entity)`
@@ -188,7 +192,7 @@ This method is useful to spawn particles and play splash sounds.
 
 The [`FabricFlowableFluid`][fabricflowablefluid_java] class
 contains a method that is executed every tick,
-when the player is submerged by the fluid.
+when the player is submerged by the fluid.  
 This method is useful to handle drowning.
 
 `void onSubmerged(World world, Entity entity)`
@@ -197,7 +201,7 @@ This method is useful to handle drowning.
 
 The [`FabricFlowableFluid`][fabricflowablefluid_java] class
 contains a method that is executed every tick,
-when the player is touching the fluid.
+when the player is touching the fluid.  
 This method is useful to handle setting entities on fire.
 
 `void onTouching(World world, Entity entity)`
@@ -206,8 +210,8 @@ This method is useful to handle setting entities on fire.
 
 The [`FabricFlowableFluid`][fabricflowablefluid_java] class extends the
 `FlowableFluid` class and implements some common fluid behaviour, to simplofy
-the fluid creation process.
-It's still an abstract class, so you have to implement some specific methods.
+the fluid creation process.  
+It's still an abstract class, so you have to implement some specific methods.  
 Remember that is still possible to override the implemented methods
 to change their behaviour.
 
@@ -215,6 +219,31 @@ The implemented methods are:
 
 * `Optional<SoundEvent> getBucketFillSound()`  
   Returns the `SoundEvents.ITEM_BUCKET_FILL` sound.
+
+* `SoundParameters getEnterSound(World world, Entity entity)`  
+  Returns the `SoundEvents.AMBIENT_UNDERWATER_ENTER` sound with volume 1 and pitch 1.
+
+* `SoundParameters getExitSound(World world, Entity entity)`  
+  Returns the `SoundEvents.AMBIENT_UNDERWATER_EXIT` sound with volume 1 and pitch 1.
+
+* `Optional<SoundEvent> getGenericSplashSound()`  
+  Returns no sound. (Will be used the default pre-defined sound)
+
+* `Optional<SoundEvent> getPaddleSound()`  
+  Returns the `SoundEvents.ENTITY_BOAT_PADDLE_WATER` sound.
+
+* `SoundParameters getSplashSound(World world, Entity entity)`  
+  Returns the `SoundEvents.ENTITY_GENERIC_SPLASH` sound with volume 0.1 and pitch 1.
+
+* `Optional<SoundEvent> getSwimSound()`  
+  Returns the `SoundEvents.ENTITY_GENERIC_SWIM` sound.
+
+* `SoundParameters getSubmergedAmbientSound(World world, Entity entity)`  
+  Returns the `SoundEvents.AMBIENT_UNDERWATER_LOOP` sound with volume 1 and pitch 1.
+
+* `boolean canBeReplacedWith(FluidState state, BlockView world,
+  BlockPos pos, Fluid fluid, Direction direction)`  
+  Returns `false` (the fluid will not be replaceable by other fluids).
 
 * `int getEntityOnFireDuration(World world)`  
   Returns 15 seconds (the default lava fire duration).
@@ -233,44 +262,22 @@ The implemented methods are:
 * `float getHotDamage(World world)`  
   Returns 0.
 
-* `int getMaxLevel(FluidState state)`  
-  Returns the max level that the fluid can have (by default is 8).
-
-* `SoundParameters getEnterSound(World world, Entity entity)`  
-  Returns the `SoundEvents.AMBIENT_UNDERWATER_ENTER` sound with volume 1 and pitch 1.
-
-* `SoundParameters getExitSound(World world, Entity entity)`  
-  Returns the `SoundEvents.AMBIENT_UNDERWATER_EXIT` sound with volume 1 and pitch 1.
-
-* `Optional<SoundEvent> getPaddleSound()`  
-  Returns the `SoundEvents.ENTITY_BOAT_PADDLE_WATER` sound.
-
-* `SoundParameters getSplashSound(World world, Entity entity)`  
-  Returns the `SoundEvents.ENTITY_GENERIC_SPLASH` sound with volume 0.1 and pitch 1.
-
-* `Optional<SoundEvent> getSwimSound()`  
-  Returns the `SoundEvents.ENTITY_GENERIC_SWIM` sound.
-
-* `SoundParameters getSubmergedAmbientSound(World world, Entity entity)`  
-  Returns the `SoundEvents.AMBIENT_UNDERWATER_LOOP` sound with volume 1 and pitch 1.
-
-* `double getViscosity(World world, Entity entity)`  
-  Returns 0.014 (the default water viscosity).
-
-* `boolean canBeReplacedWith(FluidState state, BlockView world,
-  BlockPos pos, Fluid fluid, Direction direction)`  
-  Returns `false` (the fluid will not be replaceable by other fluids).
-
 * `int getLevel(FluidState state)`  
   Returns the current fluid level for the flowing fluid state,
   and the max level for still fluid state.
 
-* `boolean matchesType(Fluid fluid)`  
-  Returns `true` if the given fluid is an instance of the current flowable
-  or still fluid.
+* `int getMaxLevel(FluidState state)`  
+  Returns the max level that the fluid can have (by default is 8).
+
+* `double getViscosity(World world, Entity entity)`  
+  Returns 0.014 (the default water viscosity).
 
 * `boolean hasRandomTicks()`  
   Returns `true` if the fluid can light fire.
+
+* `boolean matchesType(Fluid fluid)`  
+  Returns `true` if the given fluid is an instance of the current flowable
+  or still fluid.
 
 * `void beforeBreakingBlock(WorldAccess world, BlockPos pos, BlockState state)`  
   Drops the stacks of the broken blocks basing on their loot tables.

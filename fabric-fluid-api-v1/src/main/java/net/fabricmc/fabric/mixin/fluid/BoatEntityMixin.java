@@ -78,7 +78,7 @@ public abstract class BoatEntityMixin extends EntityMixin {
 		if (this.isTouchingFabricFluid()) {
 			//Gets the paddle sound
 			Optional<SoundEvent> paddleSound = ((FabricFlowableFluid)firstTouchedFabricFluid.getFluid()).getPaddleSound();
-			paddleSound.ifPresent(cir::setReturnValue);
+			paddleSound.ifPresentOrElse(cir::setReturnValue, () -> cir.setReturnValue(null));
 		}
 	}
 

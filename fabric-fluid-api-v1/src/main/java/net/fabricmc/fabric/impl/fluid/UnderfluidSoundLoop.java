@@ -22,12 +22,11 @@ import net.fabricmc.fabric.api.util.SoundParameters;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Implements a sound loop player, used if a player is submerged by a fluid.
+ * Implements a sound loop player used when the player is submerged by a fluid.
  */
 @Environment(EnvType.CLIENT)
 public class UnderfluidSoundLoop extends MovingSoundInstance {
@@ -36,9 +35,9 @@ public class UnderfluidSoundLoop extends MovingSoundInstance {
 	private int transitionTimer;
 
 	/**
-	 * @param player The player that will listen the sound.
+	 * @param player Player that will listen the sound.
 	 * @param sound Sound to play.
-	 * @return a new instance of UnderfluidSoundLoop.
+	 * @return New UnderfluidSoundLoop instance.
 	 */
 	@Contract("_, _ -> new")
 	public static @NotNull UnderfluidSoundLoop of(@NotNull ClientPlayerEntity player, @NotNull SoundParameters sound) {
@@ -47,8 +46,8 @@ public class UnderfluidSoundLoop extends MovingSoundInstance {
 	}
 
 	/**
-	 * Initializes a new instance of UnderfluidSoundLoop.
-	 * @param player The player that will listen the sound.
+	 * Initializes a new UnderfluidSoundLoop instance.
+	 * @param player Player that will listen the sound.
 	 * @param sound Sound to play.
 	 */
 	private UnderfluidSoundLoop(@NotNull ClientPlayerEntity player, @NotNull SoundParameters sound) {

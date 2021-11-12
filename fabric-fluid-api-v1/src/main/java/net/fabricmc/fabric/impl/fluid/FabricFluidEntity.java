@@ -21,37 +21,37 @@ package net.fabricmc.fabric.impl.fluid;
  */
 public interface FabricFluidEntity {
 	/**
-	 * @return the height of the current fabric fluid.
+	 * @return Height of the current fabric fluid.
 	 */
 	double getFabricFluidHeight();
 
 	/**
-	 * @return true if the entity is in a fabric fluid.
+	 * @return True if the entity is in a fabric fluid.
 	 */
 	boolean isInFabricFluid();
 
 	/**
-	 * @return true if the entity is in water.
+	 * @return True if the entity is in water.
 	 */
 	boolean isInWater();
 
 	/**
-	 * @return true if the entity is submerged in a fabric fluid.
+	 * @return True if the entity is submerged in a fabric fluid.
 	 */
 	boolean isSubmergedInFabricFluid();
 
 	/**
-	 * @return true if the entity is submerged in a swimmable fluid.
+	 * @return True if the entity is submerged in a swimmable fluid.
 	 */
 	boolean isSubmergedInSwimmableFluid();
 
 	/**
-	 * @return true if the entity is touching a fabric fluid.
+	 * @return True if the entity is touching a fabric fluid.
 	 */
 	boolean isTouchingFabricFluid();
 
 	/**
-	 * @return true if the entity is touching a swimmable fluid.
+	 * @return True if the entity is touching a swimmable fluid.
 	 */
 	boolean isTouchingSwimmableFluid();
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.api.util;
 
 import net.minecraft.sound.SoundEvent;
@@ -21,7 +37,7 @@ public class SoundParameters {
 	private static final SoundParameters EMPTY = of(null);
 
 	/**
-	 * @return a SoundParameters instance with no sound.
+	 * @return SoundParameters instance with no sound.
 	 */
 	public static @NotNull SoundParameters empty() {
 		return EMPTY;
@@ -29,7 +45,7 @@ public class SoundParameters {
 
 	/**
 	 * @param soundEvent Sound to play.
-	 * @return a new SoundParameters instance.
+	 * @return New SoundParameters instance with volume and pitch both equals to 1.
 	 */
 	@Contract(value = "_ -> new", pure = true)
 	public static @NotNull SoundParameters of(SoundEvent soundEvent) {
@@ -40,7 +56,7 @@ public class SoundParameters {
 	 * @param soundEvent Sound to play.
 	 * @param volume Sound volume.
 	 * @param pitch Sound pitch.
-	 * @return a new SoundParameters instance.
+	 * @return New SoundParameters instance.
 	 */
 	@Contract(value = "_, _, _ -> new", pure = true)
 	public static @NotNull SoundParameters of(SoundEvent soundEvent, float volume, float pitch) {
@@ -60,28 +76,28 @@ public class SoundParameters {
 	}
 
 	/**
-	 * @return the SoundEvent.
+	 * @return SoundEvent.
 	 */
 	public SoundEvent getSoundEvent() {
 		return soundEvent;
 	}
 
 	/**
-	 * @return the sound volume.
+	 * @return Sound volume.
 	 */
 	public float getVolume() {
 		return volume;
 	}
 
 	/**
-	 * @return the sound pitch.
+	 * @return Sound pitch.
 	 */
 	public float getPitch() {
 		return pitch;
 	}
 
 	/**
-	 * @return true if the SoundEvent is not null.
+	 * @return True if the SoundEvent is not null.
 	 */
 	public boolean hasSound() {
 		return soundEvent != null;
@@ -89,7 +105,7 @@ public class SoundParameters {
 
 	/**
 	 * If the SoundEvent is not null, performs the given action with the value, otherwise does nothing.
-	 * @param action the action to be performed, if the SoundEvent is not null.
+	 * @param action The action to be performed, if the SoundEvent is not null.
 	 * @throws NullPointerException if the SoundEvent is not null and the given action is {@code null}.
 	 */
 	public void ifHasSound(Consumer<SoundParameters> action) {
@@ -99,8 +115,8 @@ public class SoundParameters {
 	/**
 	 * If the SoundEvent is not null, performs the given action with the value,
 	 * otherwise performs the given empty-based action.
-	 * @param action the action to be performed, if the SoundEvent is not null.
-	 * @param emptyAction the empty-based action to be performed, if the SoundEvent is null.
+	 * @param action The action to be performed, if the SoundEvent is not null.
+	 * @param emptyAction The empty-based action to be performed, if the SoundEvent is null.
 	 * @throws NullPointerException if the SoundEvent is not null and the given action is {@code null},
 	 * or the SoundEvent is null and the given empty-based action is {@code null}.
 	 */

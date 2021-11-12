@@ -74,5 +74,8 @@ public class FabricFluidTags {
 		WET =                 TagFactory.FLUID.create(new Identifier("fabric", "wet"));
 	}
 
+	/**
+	 * Initializes a new FabricFluidTags instance.
+	 */
 	private FabricFluidTags() {}
 }

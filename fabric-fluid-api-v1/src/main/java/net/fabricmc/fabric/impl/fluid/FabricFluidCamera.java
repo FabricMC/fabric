@@ -23,7 +23,7 @@ import net.minecraft.fluid.FluidState;
  */
 public interface FabricFluidCamera {
     /**
-     * @return the fluid in which the camera is submerged.
+     * @return Fluid in which the camera is submerged.
      */
     FluidState getSubmergedFluidState();
 }
