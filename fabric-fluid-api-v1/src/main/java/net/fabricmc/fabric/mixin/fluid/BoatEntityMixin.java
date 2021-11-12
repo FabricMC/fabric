@@ -32,31 +32,37 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class BoatEntityMixin extends EntityMixin {
 	@Redirect(method = "method_7544", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isInRedirect1(FluidState state, Tag<Fluid> tag) {
+		//Enable boat floating on navigable fluids
 		return FluidUtils.isNavigable(state);
 	}
 
 	@Redirect(method = "checkBoatInWater", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isInRedirect2(FluidState state, Tag<Fluid> tag) {
+		//Adds the navigable fabric fluids to the valid fluids for checking if the boat is on it
 		return FluidUtils.isNavigable(state);
 	}
 
 	@Redirect(method = "getUnderWaterLocation", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isInRedirect3(FluidState state, Tag<Fluid> tag) {
+		//Adds the navigable fabric fluids to the valid fluids for checking if the boat is submerged by it
 		return FluidUtils.isNavigable(state);
 	}
 
 	@Redirect(method = "fall", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isInRedirect4(FluidState state, Tag<Fluid> tag) {
+		//If the boat falls on a navigable fluid it can prevent fall damage.
 		return FluidUtils.isNavigable(state);
 	}
 
 	@Redirect(method = "updatePassengerForDismount", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isWater(Lnet/minecraft/util/math/BlockPos;)Z"))
 	private boolean isWaterRedirect(World world, BlockPos pos) {
+		//Enable dismounting passengers on navigable fluids
 		return FluidUtils.isNavigable(world.getFluidState(pos));
 	}
 
 	@Redirect(method = "canAddPassenger", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;isSubmergedIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isSubmergedInRedirect(BoatEntity boat, Tag<Fluid> tag) {
+		//If the boat is submerged by any fluid it cannot get passengers
 		return this.isSubmerged();
 	}
 

@@ -106,7 +106,6 @@ public abstract class BlueFluid extends FabricFlowableFluid {
 
 	@Override
 	public void onSplash(@NotNull World world, @NotNull Entity entity) {
-		entity.playSound(SoundEvents.ENTITY_GENERIC_SPLASH, 1f, 1f);
 		world.addParticle(ParticleTypes.SPLASH, entity.getX(), entity.getY(), entity.getZ(), 0.02d, 0.02d, 0.02d);
 		world.addParticle(ParticleTypes.SPLASH, entity.getX(), entity.getY(), entity.getZ(), 0.02d, 0.02d, 0.02d);
 		world.addParticle(ParticleTypes.SPLASH, entity.getX(), entity.getY(), entity.getZ(), 0.02d, 0.02d, 0.02d);

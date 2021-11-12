@@ -29,6 +29,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class BoatDispenserBehaviorMixin {
 	@Redirect(method = "dispenseSilently", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isInRedirect(FluidState state, Tag<Fluid> tag) {
+		//If the fluid is navigable, the dispenser will be able to spawn a boat on it.
 		return FluidUtils.isNavigable(state);
 	}
 }

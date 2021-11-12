@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.fluid.v1;
 
 import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
+import net.fabricmc.fabric.api.util.SoundParameters;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -44,12 +45,14 @@ import java.util.Random;
 /**
  * Implements the basic behaviour of every fluid.
  */
+@SuppressWarnings("unused")
 public abstract class FabricFlowableFluid extends FlowableFluid {
 	/**
 	 * Initializes a new FabricFlowableFluid.
 	 */
 	public FabricFlowableFluid() {}
 
+	//todo reorganization //todo boat entity paddle sound and bubble column splash sound
 	//region FLUID PROPERTIES
 
 	/**
@@ -61,6 +64,13 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	}
 
 	/**
+	 * @return the sound to play when the player enters the fluid.
+	 */
+	public SoundParameters getEnterSound(World world, Entity entity) {
+		return SoundParameters.of(SoundEvents.AMBIENT_UNDERWATER_ENTER);
+	}
+
+	/**
 	 * @param world The current world.
 	 * @return the duration in seconds of fire when applied to entities.
 	 */
@@ -69,12 +79,21 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	}
 
 	/**
+	 * @return the sound to play when the player exit from the fluid.
+	 */
+	public SoundParameters getExitSound(World world, Entity entity) {
+		return SoundParameters.of(SoundEvents.AMBIENT_UNDERWATER_EXIT);
+	}
+
+	/**
 	 * Get the fog color.
 	 * @param entity The current entity that displays the fog.
 	 * @param tickDelta The time passed from the last tick.
 	 * @param world The current world.
 	 */
-	public abstract int getFogColor(Entity entity, float tickDelta, ClientWorld world);
+	public int getFogColor(Entity entity, float tickDelta, ClientWorld world) {
+		return -1;
+	}
 
 	/**
 	 * Get the fog ending value.
@@ -83,7 +102,9 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	 * @param viewDistance The view distance of the current entity.
 	 * @param thickFog Thick of fog.
 	 */
-	public abstract float getFogEnd(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
+	public float getFogEnd(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
+		return viewDistance;
+	}
 
 	/**
 	 * Get the fog starting value.
@@ -92,7 +113,9 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	 * @param viewDistance The view distance of the current entity.
 	 * @param thickFog Thick of fog.
 	 */
-	public abstract float getFogStart(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
+	public float getFogStart(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
+		return 0f;
+	}
 
 	/**
 	 * @param world The current world.
@@ -111,10 +134,24 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	}
 
 	/**
+	 * @return the splash sound of the fluid.
+	 */
+	public SoundParameters getSplashSound(World world, Entity entity) {
+		return SoundParameters.of(SoundEvents.ENTITY_GENERIC_SPLASH, 0.2f, 1f);
+	}
+
+	/**
 	 * @return the swim sound of the fluid.
 	 */
 	public Optional<SoundEvent> getSwimSound() {
 		return Optional.of(SoundEvents.ENTITY_GENERIC_SWIM);
+	}
+
+	/**
+	 * @return the ambient sound to play when the player is submerged by the fluid.
+	 */
+	public SoundParameters getSubmergedAmbientSound(World world, Entity entity) {
+		return SoundParameters.of(SoundEvents.AMBIENT_UNDERWATER_LOOP);
 	}
 
 	/**
@@ -187,15 +224,16 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	@Override
 	public void onRandomTick(World world, BlockPos pos, FluidState state, Random random) {
 		if (!this.isIn(FabricFluidTags.FIRE_LIGHTER)) return;
+		//If the fluid can light fire, its behaviour will be identical to the lava behaviour
 		if (world.getGameRules().getBoolean(GameRules.DO_FIRE_TICK)) {
-			int i = random.nextInt(3);
-			if (i > 0) {
-				BlockPos blockPos = pos;
-				for(int j = 0; j < i; ++j) {
-					blockPos = blockPos.add(random.nextInt(3) - 1, 1, random.nextInt(3) - 1);
-					if (!world.canSetBlock(blockPos)) return;
+			int rnd = random.nextInt(3);
+			if (rnd > 0) {
+				BlockPos tPos = pos;
+				for(int i = 0; i < rnd; ++i) {
+					tPos = tPos.add(random.nextInt(3) - 1, 1, random.nextInt(3) - 1);
+					if (!world.canSetBlock(tPos)) return;
 
-					BlockState blockState = world.getBlockState(blockPos);
+					BlockState blockState = world.getBlockState(tPos);
 					if (blockState.isAir()) {
 						Direction[] var3 = Direction.values();
 						boolean canBurnBlock = false;
@@ -207,18 +245,18 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 						}
 
 						if (canBurnBlock) {
-							world.setBlockState(blockPos, AbstractFireBlock.getState(world, blockPos));
+							world.setBlockState(tPos, AbstractFireBlock.getState(world, tPos));
 							return;
 						}
 					} else if (blockState.getMaterial().blocksMovement()) return;
 				}
 			} else {
-				for(int k = 0; k < 3; ++k) {
-					BlockPos blockPos2 = pos.add(random.nextInt(3) - 1, 0, random.nextInt(3) - 1);
-					if (!world.canSetBlock(blockPos2)) return;
+				for(int i = 0; i < 3; ++i) {
+					BlockPos tPos = pos.add(random.nextInt(3) - 1, 0, random.nextInt(3) - 1);
+					if (!world.canSetBlock(tPos)) return;
 
-					if (world.isAir(blockPos2.up()) && this.hasBurnableBlock(world, blockPos2)) {
-						world.setBlockState(blockPos2.up(), AbstractFireBlock.getState(world, blockPos2));
+					if (world.isAir(tPos.up()) && this.hasBurnableBlock(world, tPos)) {
+						world.setBlockState(tPos.up(), AbstractFireBlock.getState(world, tPos));
 					}
 				}
 			}

@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.fluid;
 import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
 import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
+import net.fabricmc.fabric.api.util.SoundParameters;
 import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ExperienceOrbEntity;
@@ -35,6 +36,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -46,6 +48,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Optional;
 import java.util.Random;
 
 @Mixin(Entity.class)
@@ -61,7 +64,9 @@ public abstract class EntityMixin implements FabricFluidEntity {
 	@Shadow @Nullable public abstract Entity getVehicle();
     @Shadow public abstract void extinguish();
 	@Shadow public abstract boolean isSpectator();
+	@Shadow public abstract double getX();
 	@Shadow public abstract double getY();
+	@Shadow public abstract double getZ();
 	@Shadow public abstract BlockPos getBlockPos();
 	@Shadow public abstract boolean isSprinting();
 	@Shadow	public abstract void updateVelocity(float speed, Vec3d movementInput);
@@ -92,44 +97,53 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 	@Redirect(method = "updateSwimming", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect1(Entity entity) {
+		//Adds the swimmable fabric fluids to the valid fluids for swimming
 		return this.isTouchingSwimmableFluid();
 	}
 
 	@Redirect(method = "updateSwimming", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isSubmergedInWater()Z"))
 	private boolean isSubmergedInWaterRedirect(Entity entity) {
+		//Adds the swimmable fabric fluids to the valid fluids for swimming
 		return this.isSubmergedInSwimmableFluid();
 	}
 
 	@Redirect(method = "updateSwimming", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isInRedirect(FluidState state, Tag<Fluid> tag) {
+		//Adds the swimmable fabric fluids to the valid fluids for swimming
 		return FluidUtils.isSwimmable(state) && !state.isIn(FluidTags.LAVA);
 	}
 
 	@Redirect(method = "shouldLeaveSwimmingPose", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect2(Entity entity) {
+		//If the entity is not touching a swimmable fluid, sould leave swimming pose
 		return this.isTouchingSwimmableFluid();
 	}
 
 	//endregion
 
-	//region SOUNDS AND PARTICLES
+	//region SOUNDS AND SPRINTING PARTICLES
 
 	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect3(Entity entity) {
+		//Adds the fabric fluids to the valid fluids to play swim sounds
 		return this.isTouchingWater() || this.isTouchingFabricFluid();
 	}
 
 	@Inject(method = "playSwimSound", at = @At(value = "HEAD"), cancellable = true)
 	private void playSwimSound(float volume, CallbackInfo ci) {
-		if (isTouchingFabricFluid() && firstTouchedFabricFluid.getFluid() instanceof FabricFlowableFluid fluid) {
-			fluid.getSwimSound().ifPresent(sound -> this.playSound(sound, volume, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F));
+		//If the entity is touching a fabric fluid gets the swim sound from the fluid and plays it
+		if (isTouchingFabricFluid()) {
+			//Plays the swim sound
+			Optional<SoundEvent> swimSound = ((FabricFlowableFluid)firstTouchedFabricFluid.getFluid()).getSwimSound();
+			swimSound.ifPresent(sound -> this.playSound(sound, volume, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F));
+
 			ci.cancel();
 		}
 	}
 
 	@Inject(method = "shouldSpawnSprintingParticles", at = @At("HEAD"), cancellable = true)
 	private void shouldSpawnSprintingParticles(CallbackInfoReturnable<Boolean> cir) {
-		//Don't spawn sprinting particles if the entity is touching a fabric_fluid
+		//Don't spawn sprinting particles if the entity is touching a fabric fluid
 		if (this.isTouchingFabricFluid()) cir.setReturnValue(false);
 	}
 
@@ -149,6 +163,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 	@Inject(method = "isWet", at = @At("HEAD"), cancellable = true)
 	private void isWet(CallbackInfoReturnable<Boolean> cir) {
+		//Adds the fabric fluids to the valid fluids that could to wet entities
 		if (isTouchingFabricFluid() && firstTouchedFabricFluid.isIn(FabricFluidTags.WET)) {
 			cir.setReturnValue(true);
 		}
@@ -160,6 +175,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 	@Inject(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateSubmergedInWaterState()V", shift = At.Shift.AFTER))
 	private void baseTick(CallbackInfo ci) {
+		//Updates the current touching and submerged in fabric fluid state, and the current submerged fluid
 		this.checkFabricFluidState();
 		this.updateSubmergedInFabricFluidState();
 	}
@@ -193,6 +209,8 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 		if (this.isRegionUnloaded()) return false;
 		if (this.getVehicle() instanceof BoatEntity) return false;
+
+		//Calculates and applies the pushing strength of the fluid to the entity
 
 		Box box = this.getBoundingBox().contract(0.001D);
 		int minX = MathHelper.floor(box.minX);
@@ -270,8 +288,24 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 	@Unique
 	private void updateSubmergedInFabricFluidState() {
-		this.submergedInFabricFluid = FluidUtils.isFabricFluid(submergedFluid);
-		this.submergedFluid = FluidUtils.getSubmergedFluid(getThis());
+		this.submergedInFabricFluid = FluidUtils.isFabricFluid(this.submergedFluid);
+
+		//Get the actual fluid that submerges the entity, (if is not submerged, the result is null)
+		FluidState newSubmergedFluid = FluidUtils.getSubmergedFluid(getThis());
+
+		/* Checks "enter in", "exit from", and "changed" fluid
+		   and executes the respective protected event */
+		if (!FluidUtils.areEqual(this.submergedFluid, newSubmergedFluid)) {
+			if (this.submergedFluid == null && newSubmergedFluid != null) {
+				enterInFabricFluid(newSubmergedFluid);
+			} else if (this.submergedFluid != null && newSubmergedFluid == null) {
+				exitFromFabricFluid(this.submergedFluid);
+			} else if (this.submergedFluid != null) {
+				changedFabricFluid(this.submergedFluid, newSubmergedFluid);
+			}
+		}
+
+		this.submergedFluid = newSubmergedFluid;
 	}
 
 	//endregion
@@ -280,25 +314,41 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 	@Unique
 	private void onFabricFluidTouched(FabricFlowableFluid fluid) {
-		//This is not executed on spectator mode, and for exp orbs
-		if (!this.isSpectator() && !(this.getThis() instanceof ExperienceOrbEntity)) {
-			//Eecute the splash event
-			fluid.onSplash(this.world, this.getThis());
-		}
+		//Events are not executed on spectator mode, and for exp orbs
+		if (this.isSpectator() || this.getThis() instanceof ExperienceOrbEntity) return;
+
+		//Plays the splash sound
+		SoundParameters splashSound =  fluid.getSplashSound(this.world, getThis());
+		splashSound.ifHasSound(sound -> this.playSound(sound.getSoundEvent(), sound.getVolume(), sound.getPitch()));
+
+		//Executes an event if the entity is splashing in a fabric fluid
+		fluid.onSplash(this.world, this.getThis());
 	}
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void tick(CallbackInfo ci) {
-		if (isSubmergedInFabricFluid() && submergedFluid != null
-				&& submergedFluid.getFluid() instanceof FabricFlowableFluid fluid) {
-			//Executes an event if the entity is submerged in a fabric_fluid
-			fluid.onSubmerged(world, this.getThis());
+		//Events are not executed on spectator mode, and for exp orbs
+		if (this.isSpectator() || this.getThis() instanceof ExperienceOrbEntity) return;
+
+		//Executes an event if the entity is submerged in a fabric fluid
+		if (isActuallySubmergedInFabricFluid()) {
+			((FabricFlowableFluid)submergedFluid.getFluid()).onSubmerged(this.world, this.getThis());
 		}
-		if (isTouchingFabricFluid() && firstTouchedFabricFluid.getFluid() instanceof FabricFlowableFluid fluid) {
-			//Executes an event if the entity is touching a fabric_fluid
-			fluid.onTouching(world, this.getThis());
+
+		//Executes an event if the entity is touching a fabric fluid
+		if (isTouchingFabricFluid()) {
+			((FabricFlowableFluid)firstTouchedFabricFluid.getFluid()).onTouching(this.world, this.getThis());
 		}
 	}
+
+	@Unique
+	protected void enterInFabricFluid(@NotNull FluidState fluidState) {}
+
+	@Unique
+	protected void exitFromFabricFluid(@NotNull FluidState fluidState) {}
+
+	@Unique
+	protected void changedFabricFluid(@NotNull FluidState oldFluidState, @NotNull FluidState newFluidState) {}
 
 	//endregion
 
@@ -337,6 +387,11 @@ public abstract class EntityMixin implements FabricFluidEntity {
 	@Override
 	public double getFabricFluidHeight() {
 		return this.fabricFluidHeight;
+	}
+
+	@Unique
+	protected boolean isActuallySubmergedInFabricFluid() {
+		return isSubmergedInFabricFluid() && submergedFluid != null && submergedFluid.getFluid() instanceof FabricFlowableFluid;
 	}
 
 	//endregion

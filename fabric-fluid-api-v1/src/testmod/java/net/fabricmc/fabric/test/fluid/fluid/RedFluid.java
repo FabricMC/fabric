@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.fluid.fluid;
 
 import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
+import net.fabricmc.fabric.api.util.SoundParameters;
 import net.fabricmc.fabric.test.fluid.block.MBlocks;
 import net.fabricmc.fabric.test.fluid.item.MItems;
 import net.minecraft.block.BlockState;
@@ -111,8 +112,12 @@ public abstract class RedFluid extends FabricFlowableFluid {
 	}
 
 	@Override
+	public SoundParameters getSplashSound(World world, Entity entity) {
+		return SoundParameters.of(SoundEvents.ENTITY_STRIDER_STEP_LAVA);
+	}
+
+	@Override
 	public void onSplash(@NotNull World world, @NotNull Entity entity) {
-		entity.playSound(SoundEvents.ENTITY_STRIDER_STEP_LAVA, 1f, 1f);
 		world.addParticle(ParticleTypes.GLOW, entity.getX(), entity.getY(), entity.getZ(), 0.02d, 0.02d, 0.02d);
 		world.addParticle(ParticleTypes.GLOW, entity.getX(), entity.getY(), entity.getZ(), 0.02d, 0.02d, 0.02d);
 	}

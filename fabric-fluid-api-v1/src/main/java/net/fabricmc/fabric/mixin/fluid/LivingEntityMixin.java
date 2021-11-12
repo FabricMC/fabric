@@ -52,7 +52,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 
 	@Inject(method = "fall", at = @At("HEAD"))
 	private void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition, CallbackInfo ci) {
-		//Check every tick, when falling, if there is a fabric_fluid that can prevent fall damage
+		//Check every tick, when falling, if there is a fabric fluid that can prevent fall damage
 		if (!this.isTouchingFabricFluid()) this.checkFabricFluidState();
 	}
 
@@ -62,7 +62,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 
 	@Redirect(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getMaxAir()I"))
 	private int getMaxAirRedirect(@NotNull LivingEntity entity) {
-		//If the entity is subberged in fabric_fluid returns -20, so basetick does not reset the air
+		//If the entity is submerged in a fabric fluid, returns -20, so basetick does not reset the air
 		return FluidUtils.isFabricFluid(this.submergedFluid) ? -20 : entity.getMaxAir();
 	}
 
@@ -72,11 +72,13 @@ public abstract class LivingEntityMixin extends EntityMixin {
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getFluidHeight(Lnet/minecraft/tag/Tag;)D", ordinal = 1))
 	private double getFluidHeightRedirect(LivingEntity entity, Tag<Fluid> tag) {
+		//Adds the fabric fluids to the valid fluids for swimming
 		return this.isTouchingFabricFluid() ? this.getFabricFluidHeight() : this.getFluidHeight(tag);
 	}
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect(LivingEntity entity) {
+		//Adds the swimmable fabric fluids to the valid fluids for swimming
 		return this.isTouchingSwimmableFluid();
 	}
 
@@ -90,7 +92,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 				&& this.isTouchingFabricFluid() && this.shouldSwimInFluids()
 				&& !this.canWalkOnFluid(this.world.getFluidState(this.getBlockPos()).getFluid())) {
 
-			//Updates the travel movement velocity if the entity is on a fabric_fluid
+			//Updates the travel movement velocity if the entity is on a fabric fluid
 			//This applies the same behaviour of water
 
 			boolean falling = this.getVelocity().y <= 0.0D;

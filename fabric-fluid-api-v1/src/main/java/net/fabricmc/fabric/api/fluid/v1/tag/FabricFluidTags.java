@@ -28,37 +28,37 @@ public class FabricFluidTags {
 	//region TAGS
 
 	/**
-	 * fabric:fabric_fluid/fire_extinguisher -> Identifies a fabric_fluid that can extinguish fire.
+	 * fabric:fire_extinguisher -> Identifies a fabric fluid that can extinguish fire.
 	 */
 	public static final Tag<Fluid> FIRE_EXTINGUISHER;
 
 	/**
-	 * fabric:fabric_fluid/fire_lighter -> Identifies a fabric_fluid that can light fire.
+	 * fabric:fire_lighter -> Identifies a fabric fluid that can light fire.
 	 */
 	public static final Tag<Fluid> FIRE_LIGHTER;
 
 	/**
-	 * fabric:fabric_fluid/navigable -> Identifies a fabric_fluid that is navigable.
+	 * fabric:navigable -> Identifies a fabric fluid that is navigable.
 	 */
 	public static final Tag<Fluid> NAVIGABLE;
 
 	/**
-	 * fabric:fabric_fluid/prevent_fall_damage -> Identifies a fabric_fluid that can prevent fall damage.
+	 * fabric:prevent_fall_damage -> Identifies a fabric fluid that can prevent fall damage.
 	 */
 	public static final Tag<Fluid> PREVENT_FALL_DAMAGE;
 
 	/**
-	 * fabric:fabric_fluid/respirable -> Identifies a fabric_fluid that is respirable.
+	 * fabric:respirable -> Identifies a fabric fluid that is respirable.
 	 */
 	public static final Tag<Fluid> RESPIRABLE;
 
 	/**
-	 * fabric:fabric_fluid/swimmable -> Identifies a fabric_fluid that is swimmable.
+	 * fabric:swimmable -> Identifies a fabric fluid that is swimmable.
 	 */
 	public static final Tag<Fluid> SWIMMABLE;
 
 	/**
-	 * fabric:fabric_fluid/wet -> Identifies a fabric_fluid that can wet.
+	 * fabric:wet -> Identifies a fabric fluid that can wet.
 	 */
 	public static final Tag<Fluid> WET;
 

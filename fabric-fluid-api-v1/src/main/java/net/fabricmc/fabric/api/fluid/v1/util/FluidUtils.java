@@ -36,56 +36,25 @@ import org.jetbrains.annotations.Nullable;
  */
 public class FluidUtils {
 	/**
-	 * @param state FluidState to check if is a custom fabric fluid.
-	 * @return true if the fluid is a custom fabric fluid.
+	 * Checks if two FluidState are equal.
+	 * @param fluidState1 First FluidState.
+	 * @param fluidState2 Second FluidState.
+	 * @return true if the two FluidState are equal.
 	 */
-	public static boolean isFabricFluid(FluidState state) {
-		if (state == null) return false;
-		return isFabricFluid(state.getFluid());
+	public static boolean areEqual(FluidState fluidState1, FluidState fluidState2) {
+		if (fluidState1 == null || fluidState2 == null) return false;
+		return areEqual(fluidState1.getFluid(), fluidState2.getFluid());
 	}
 
 	/**
-	 * @param fluid Fluid to check if is a custom fabric fluid.
-	 * @return true if the fluid is a custom fabric fluid.
+	 * Checks if two Fluid are equal.
+	 * @param fluid1 First Fluid.
+	 * @param fluid2 Second Fluid.
+	 * @return true if the two Fluid are equal.
 	 */
-	public static boolean isFabricFluid(Fluid fluid) {
-		return fluid instanceof FabricFlowableFluid;
-	}
-
-	/**
-	 * @param state FluidState to check if is navigable.
-	 * @return true if the fluid is navigable.
-	 */
-	public static boolean isNavigable(FluidState state) {
-		if (state == null) return false;
-		return isNavigable(state.getFluid());
-	}
-
-	/**
-	 * @param fluid Fluid to check if is navigable.
-	 * @return true if the fluid is navigable.
-	 */
-	public static boolean isNavigable(Fluid fluid) {
-		if (fluid == null) return false;
-		return fluid.isIn(FluidTags.WATER) || (isFabricFluid(fluid) && fluid.isIn(FabricFluidTags.NAVIGABLE));
-	}
-
-	/**
-	 * @param state FluidState to check if is swimmable.
-	 * @return true if the fluid is swimmable.
-	 */
-	public static boolean isSwimmable(FluidState state) {
-		if (state == null) return false;
-		return isSwimmable(state.getFluid());
-	}
-
-	/**
-	 * @param fluid Fluid to check if is swimmable.
-	 * @return true if the fluid is swimmable.
-	 */
-	public static boolean isSwimmable(Fluid fluid) {
-		if (fluid == null) return false;
-		return fluid.isIn(FluidTags.WATER) || fluid.isIn(FluidTags.LAVA) || (isFabricFluid(fluid) && fluid.isIn(FabricFluidTags.SWIMMABLE));
+	public static boolean areEqual(Fluid fluid1, Fluid fluid2) {
+		if (fluid1 == null || fluid2 == null) return false;
+		return fluid1.matchesType(fluid2);
 	}
 
 	/**
@@ -161,5 +130,58 @@ public class FluidUtils {
 		}
 
 		return null;
+	}
+
+	/**
+	 * @param state FluidState to check if is a custom fabric fluid.
+	 * @return true if the fluid is a custom fabric fluid.
+	 */
+	public static boolean isFabricFluid(FluidState state) {
+		if (state == null) return false;
+		return isFabricFluid(state.getFluid());
+	}
+
+	/**
+	 * @param fluid Fluid to check if is a custom fabric fluid.
+	 * @return true if the fluid is a custom fabric fluid.
+	 */
+	public static boolean isFabricFluid(Fluid fluid) {
+		return fluid instanceof FabricFlowableFluid;
+	}
+
+	/**
+	 * @param state FluidState to check if is navigable.
+	 * @return true if the fluid is navigable.
+	 */
+	public static boolean isNavigable(FluidState state) {
+		if (state == null) return false;
+		return isNavigable(state.getFluid());
+	}
+
+	/**
+	 * @param fluid Fluid to check if is navigable.
+	 * @return true if the fluid is navigable.
+	 */
+	public static boolean isNavigable(Fluid fluid) {
+		if (fluid == null) return false;
+		return fluid.isIn(FluidTags.WATER) || (isFabricFluid(fluid) && fluid.isIn(FabricFluidTags.NAVIGABLE));
+	}
+
+	/**
+	 * @param state FluidState to check if is swimmable.
+	 * @return true if the fluid is swimmable.
+	 */
+	public static boolean isSwimmable(FluidState state) {
+		if (state == null) return false;
+		return isSwimmable(state.getFluid());
+	}
+
+	/**
+	 * @param fluid Fluid to check if is swimmable.
+	 * @return true if the fluid is swimmable.
+	 */
+	public static boolean isSwimmable(Fluid fluid) {
+		if (fluid == null) return false;
+		return fluid.isIn(FluidTags.WATER) || fluid.isIn(FluidTags.LAVA) || (isFabricFluid(fluid) && fluid.isIn(FabricFluidTags.SWIMMABLE));
 	}
 }

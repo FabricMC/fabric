@@ -71,12 +71,28 @@ contains a method allowing to specify the viscosity of the fluid.
 
 `double getViscosity(World world, Entity entity)`
 
-### Swim sound
+### Sounds
 
 The [`FabricFlowableFluid`][fabricflowablefluid_java] class
-contains a method allowing to specify the swim sound of the fluid.
+contains five methods allowing to specify the fluid sounds.
 
-`Optional<SoundEvent> getSwimSound()`
+* `SoundParameters getEnterSound(World world, Entity entity)`  
+  Allows to specify the sound to play when the player enters the fluid.
+
+* `SoundParameters getExitSound(World world, Entity entity)`  
+  Allows to specify the sound to play when the player exit from the fluid.
+
+* `SoundParameters getSplashSound(World world, Entity entity)`  
+  Allows to specify the splash sound of the fluid.
+
+* `Optional<SoundEvent> getSwimSound(World world, Entity entity)`  
+  Allows to specify the swim sound of the fluid.
+
+* `SoundParameters getSubmergedAmbientSound(World world, Entity entity)`  
+  Allows to specify the ambient sound to play when the player is submerged by the fluid.
+
+**NOTE:** `SoundParameters` is an object that takes a SoundEvent
+and two floats for volume and pitch.
 
 ### Hot damage
 
@@ -200,14 +216,37 @@ The implemented methods are:
 * `int getEntityOnFireDuration(World world)`  
   Returns 15 seconds (the default lava fire duration).
 
+* `int getFogColor(Entity entity, float tickDelta, ClientWorld world)`  
+  Returns -1 (no color).
+
+* `float getFogEnd(Entity entity, BackgroundRenderer.FogType fogType,
+  float viewDistance, boolean thickFog)`  
+  Returns the current view distance.
+
+* `float getFogStart(Entity entity, BackgroundRenderer.FogType fogType,
+  float viewDistance, boolean thickFog)`  
+  Returns 0.
+
 * `float getHotDamage(World world)`  
   Returns 0.
 
 * `int getMaxLevel(FluidState state)`  
   Returns the max level that the fluid can have (by default is 8).
 
-* `Optional<SoundEvent> getSwimSound()`  
-  Returns the `SoundEvents.ENTITY_GENERIC_SWIM` sound;
+* `SoundParameters getEnterSound(World world, Entity entity)`  
+  Returns the `SoundEvents.AMBIENT_UNDERWATER_ENTER` sound with volume 1 and pitch 1.
+
+* `SoundParameters getExitSound(World world, Entity entity)`  
+  Returns the `SoundEvents.AMBIENT_UNDERWATER_EXIT` sound with volume 1 and pitch 1.
+
+* `SoundParameters getSplashSound(World world, Entity entity)`  
+  Returns the `SoundEvents.ENTITY_GENERIC_SPLASH` sound with volume 0.2 and pitch 1.
+
+* `Optional<SoundEvent> getSwimSound(World world, Entity entity)`  
+  Returns the `SoundEvents.ENTITY_GENERIC_SWIM` sound.
+
+* `SoundParameters getSubmergedAmbientSound(World world, Entity entity)`  
+  Returns the `SoundEvents.AMBIENT_UNDERWATER_LOOP` sound with volume 1 and pitch 1.
 
 * `double getViscosity(World world, Entity entity)`  
   Returns 0.014 (the default water viscosity).
