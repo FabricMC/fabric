@@ -74,7 +74,7 @@ contains a method allowing to specify the viscosity of the fluid.
 ### Sounds
 
 The [`FabricFlowableFluid`][fabricflowablefluid_java] class
-contains five methods allowing to specify the fluid sounds.
+contains six methods allowing to specify the fluid sounds.
 
 * `SoundParameters getEnterSound(World world, Entity entity)`  
   Allows to specify the sound to play when the player enters the fluid.
@@ -82,10 +82,13 @@ contains five methods allowing to specify the fluid sounds.
 * `SoundParameters getExitSound(World world, Entity entity)`  
   Allows to specify the sound to play when the player exit from the fluid.
 
+* `Optional<SoundEvent> getPaddleSound()`  
+  Allows to specify the sound to play when a boat navigates on the fluid.
+
 * `SoundParameters getSplashSound(World world, Entity entity)`  
   Allows to specify the splash sound of the fluid.
 
-* `Optional<SoundEvent> getSwimSound(World world, Entity entity)`  
+* `Optional<SoundEvent> getSwimSound()`  
   Allows to specify the swim sound of the fluid.
 
 * `SoundParameters getSubmergedAmbientSound(World world, Entity entity)`  
@@ -239,10 +242,13 @@ The implemented methods are:
 * `SoundParameters getExitSound(World world, Entity entity)`  
   Returns the `SoundEvents.AMBIENT_UNDERWATER_EXIT` sound with volume 1 and pitch 1.
 
-* `SoundParameters getSplashSound(World world, Entity entity)`  
-  Returns the `SoundEvents.ENTITY_GENERIC_SPLASH` sound with volume 0.2 and pitch 1.
+* `Optional<SoundEvent> getPaddleSound()`  
+  Returns the `SoundEvents.ENTITY_BOAT_PADDLE_WATER` sound.
 
-* `Optional<SoundEvent> getSwimSound(World world, Entity entity)`  
+* `SoundParameters getSplashSound(World world, Entity entity)`  
+  Returns the `SoundEvents.ENTITY_GENERIC_SPLASH` sound with volume 0.1 and pitch 1.
+
+* `Optional<SoundEvent> getSwimSound()`  
   Returns the `SoundEvents.ENTITY_GENERIC_SWIM` sound.
 
 * `SoundParameters getSubmergedAmbientSound(World world, Entity entity)`  

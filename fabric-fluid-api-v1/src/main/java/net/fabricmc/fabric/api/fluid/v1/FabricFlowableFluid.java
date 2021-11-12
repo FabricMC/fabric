@@ -52,7 +52,7 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	 */
 	public FabricFlowableFluid() {}
 
-	//todo reorganization //todo boat entity paddle sound and bubble column splash sound
+	//todo reorganization
 	//region FLUID PROPERTIES
 
 	/**
@@ -134,10 +134,17 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	}
 
 	/**
+	 * @return the sound to play when a boat navigates on the fluid.
+	 */
+	public Optional<SoundEvent> getPaddleSound() {
+		return Optional.of(SoundEvents.ENTITY_BOAT_PADDLE_WATER);
+	}
+
+	/**
 	 * @return the splash sound of the fluid.
 	 */
 	public SoundParameters getSplashSound(World world, Entity entity) {
-		return SoundParameters.of(SoundEvents.ENTITY_GENERIC_SPLASH, 0.2f, 1f);
+		return SoundParameters.of(SoundEvents.ENTITY_GENERIC_SPLASH, 0.1f, 1f);
 	}
 
 	/**
