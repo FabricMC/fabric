@@ -1,12 +1,12 @@
 archivesBaseName = "fabric-screen-handler-api-v1"
-version = getSubprojectVersion(project, "1.1.6")
+version = getSubprojectVersion(project)
 
 loom {
 	accessWidenerPath = file('src/main/resources/fabric-screen-handler-api-v1.accesswidener')
 }
 
 dependencies {
-	testmodRuntimeOnly(project(path: ':fabric-resource-loader-v0', configuration: 'dev'))
+	testmodRuntimeOnly(project(path: ':fabric-resource-loader-v0', configuration: 'namedElements'))
 }
 
 moduleDependencies(project, [
