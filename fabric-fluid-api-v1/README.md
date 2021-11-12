@@ -184,7 +184,7 @@ BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
 The [`FabricFlowableFluid`][fabricflowablefluid_java] class
 contains method that is executed
 when the player splashes on the fluid (like jumping).  
-This method is useful to spawn particles and play splash sounds.
+This method is useful to spawn particles.
 
 `void onSplash(World world, Entity entity)`
 
