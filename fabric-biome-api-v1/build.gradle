@@ -1,12 +1,12 @@
 archivesBaseName = "fabric-biome-api-v1"
-version = getSubprojectVersion(project, "5.0.3")
+version = getSubprojectVersion(project)
 
 loom {
     accessWidenerPath = file("src/main/resources/fabric-biome-api-v1.accesswidener")
 }
 
 dependencies {
-	testmodImplementation project(path: ':fabric-api-base', configuration: 'dev')
-	testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'dev')
-	testmodImplementation project(path: ':fabric-tag-extensions-v0', configuration: 'dev')
+	testmodImplementation project(path: ':fabric-api-base', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-tag-extensions-v0', configuration: 'namedElements')
 }

@@ -1,0 +1,105 @@
+
+/**
+ * This task should be used to easily bump the major/minor/patch version of a fabric-api module.
+ * It will automatically bump the versions of dependent modules.
+ */
+task bumpVersions(type: BumpVersionTask)
+
+class BumpVersionTask extends DefaultTask {
+	BumpVersionTask() {
+		group = "publishing"
+
+		outputs.upToDateWhen { false }
+	}
+
+	@TaskAction
+	void runTask() {
+		def scanner = new Scanner(System.in)
+
+		def toUpdate = [:]
+
+		while (true) {
+			println "Enter module name to update, or done to continue"
+
+			def input = scanner.nextLine()
+
+			if (input == "done") {
+				break
+			}
+
+			def subProject = project.getChildProjects().get(input)
+
+			if (!subProject) {
+				println "Could not find project with name: $input"
+				continue
+			}
+
+			while (true) {
+				println "Bump version for ${subProject.name}:"
+				println "0) Bump Major"
+				println "1) Bump Minor"
+				println "2) Bump Patch"
+
+				input = scanner.nextLine()
+
+				if (!(input in ["0", "1", "2"])) {
+					println "Invalid input"
+					continue
+				}
+
+				toUpdate.put(subProject, input as Integer)
+				break
+			}
+		}
+
+		while (true) {
+			def temp = [:]
+
+			toUpdate.keySet().forEach { p ->
+				project.childProjects.values().forEach { cp ->
+					def config = cp.configurations.api
+					config.allDependencies.forEach { dep ->
+						if (dep.name == p.name) {
+							if (!toUpdate.containsKey(cp)) {
+								println "Bumping patch of ${cp.name} as it depends on ${p.name}"
+
+								temp.put(cp, 2) // Bump patch
+							}
+						}
+					}
+				}
+			}
+
+			if (temp.isEmpty()) {
+				break
+			}
+
+			toUpdate.putAll(temp)
+		}
+
+		def gpFile = project.file("gradle.properties")
+		def props = project.properties
+		def text = gpFile.text
+
+		toUpdate.forEach { p, i ->
+			def version = props."${p.name}-version"
+
+			if (!version) {
+				throw new NullPointerException("Could not find version for " + p.name)
+			}
+
+			def split = version.split("\\.")
+			split[i] = (split[i] as Integer) + 1
+			def newVersion = split.join(".")
+
+			println "${p.name}: $version -> $newVersion"
+
+			text = text.replace(
+				"${p.name}-version=$version",
+				"${p.name}-version=$newVersion"
+			)
+		}
+
+		gpFile.text = text
+	}
+}

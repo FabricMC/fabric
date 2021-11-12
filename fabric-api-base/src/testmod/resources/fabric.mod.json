@@ -8,6 +8,9 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.base.FabricApiBaseTestInit"
+    ],
+    "fabric-gametest" : [
+      "net.fabricmc.fabric.test.base.FabricApiBaseGameTest"
     ]
   }
 }

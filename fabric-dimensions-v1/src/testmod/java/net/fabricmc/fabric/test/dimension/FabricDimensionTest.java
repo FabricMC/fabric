@@ -68,6 +68,11 @@ public class FabricDimensionTest implements ModInitializer {
 
 		WORLD_KEY = RegistryKey.of(Registry.WORLD_KEY, new Identifier("fabric_dimension", "void"));
 
+		if (System.getProperty("fabric-api.gametest") != null) {
+			// The gametest server does not support custom worlds
+			return;
+		}
+
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			ServerWorld overworld = server.getWorld(World.OVERWORLD);
 			ServerWorld world = server.getWorld(WORLD_KEY);
