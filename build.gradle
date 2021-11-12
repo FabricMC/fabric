@@ -1,6 +1,6 @@
 buildscript {
 	dependencies {
-		classpath 'org.kohsuke:github-api:1.114'
+		classpath 'org.kohsuke:github-api:1.135'
 	}
 }
 
@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.9.50" apply false
+	id "fabric-loom" version "0.10.55" apply false
 	id "org.cadixdev.licenser" version "0.6.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -18,20 +18,19 @@ plugins {
 
 def ENV = System.getenv()
 
-class Globals {
-	static def baseVersion = "0.42.1"
-	static def mcVersion = "1.17.1"
-	static def yarnVersion = "+build.63"
-	static def loaderVersion = "0.11.6"
-	static def preRelease = false
-}
-
-version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
+version = project.version + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
 logger.lifecycle("Building Fabric: " + version)
 
 import org.apache.commons.codec.digest.DigestUtils
 
-def getSubprojectVersion(project, version) {
+def getSubprojectVersion(project) {
+	// Get the version from the gradle.properties file
+	def version = project.properties["${project.name}-version"]
+
+	if (!version) {
+		throw new NullPointerException("Could not find version for " + project.name)
+	}
+
 	if (grgit == null) {
 		return version + "+nogit"
 	}
@@ -42,7 +41,7 @@ def getSubprojectVersion(project, version) {
 		return version + "+uncommited"
 	}
 
-	return version + "+" + latestCommits.get(0).id.substring(0, 8) + DigestUtils.sha256Hex(Globals.mcVersion).substring(0, 2)
+	return version + "+" + latestCommits.get(0).id.substring(0, 8) + DigestUtils.sha256Hex(project.rootProject.minecraft_version).substring(0, 2)
 }
 
 def getBranch() {
@@ -61,26 +60,10 @@ def getBranch() {
 }
 
 def moduleDependencies(project, List<String> depNames) {
-	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'dev') }
+	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'namedElements') }
 	project.dependencies {
 		deps.each {
 			api it
-		}
-	}
-	project.publishing {
-		publications {
-			mavenJava(MavenPublication) {
-				pom.withXml {
-					def depsNode = asNode().appendNode("dependencies")
-					deps.each {
-						def depNode = depsNode.appendNode("dependency")
-						depNode.appendNode("groupId", it.group)
-						depNode.appendNode("artifactId", it.name)
-						depNode.appendNode("version", it.version)
-						depNode.appendNode("scope", "compile")
-					}
-				}
-			}
 		}
 	}
 }
@@ -123,13 +106,9 @@ allprojects {
 	}
 
 	dependencies {
-		minecraft "com.mojang:minecraft:$Globals.mcVersion"
-		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
-		modApi "net.fabricmc:fabric-loader:${Globals.loaderVersion}"
-	}
-
-	configurations {
-		dev
+		minecraft "com.mojang:minecraft:$rootProject.minecraft_version"
+		mappings "net.fabricmc:yarn:${rootProject.minecraft_version}${project.yarn_version}:v2"
+		modApi "net.fabricmc:fabric-loader:${project.loader_version}"
 	}
 
 	loom {
@@ -140,32 +119,17 @@ allprojects {
 		mavenLocal()
 	}
 
-	jar {
-		archiveClassifier = "dev"
+	processResources {
+		inputs.property "version", project.version
+
+		filesMatching("fabric.mod.json") {
+			expand "version": project.version
+		}
 	}
 
-	afterEvaluate {
-		remapJar {
-			input = file("${project.buildDir}/libs/$archivesBaseName-${project.version}-dev.jar")
-			archiveFileName = "${archivesBaseName}-${project.version}.jar"
-		}
-
-		artifacts {
-			dev file: file("${project.buildDir}/libs/$archivesBaseName-${project.version}-dev.jar"), type: "jar", builtBy: jar
-		}
-
-		processResources {
-			inputs.property "version", project.version
-
-			filesMatching("fabric.mod.json") {
-				expand "version": project.version
-			}
-		}
-
-		license {
-			header rootProject.file("HEADER")
-			include "**/*.java"
-		}
+	license {
+		header rootProject.file("HEADER")
+		include "**/*.java"
 	}
 
 	task sourcesJar(type: Jar, dependsOn: classes) {
@@ -175,18 +139,23 @@ allprojects {
 
 	checkstyle {
 		configFile = rootProject.file("checkstyle.xml")
-		toolVersion = "8.43"
+		toolVersion = "9.1"
 	}
 
 	tasks.withType(AbstractArchiveTask) {
 		preserveFileTimestamps = false
 		reproducibleFileOrder = true
 	}
+
+	tasks.withType(GenerateModuleMetadata) {
+		enabled = false
+	}
 }
 
 // Apply auxiliary buildscripts to submodules
 // This must be done after all plugins are applied to subprojects
 apply from: "gradle/module-validation.gradle"
+apply from: "gradle/module-versioning.gradle"
 
 javadoc {
 	options {
@@ -224,33 +193,42 @@ task javadocJar(type: Jar) {
 
 build.dependsOn javadocJar
 
-// Runs a dedicated headless server with all test mods that closes once complete.
 loom {
 	runs {
+		gametest {
+			inherit testmodServer
+
+			name "Game Test"
+
+			// Enable the gametest runner
+			vmArg "-Dfabric-api.gametest"
+			vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
+			runDir "build/gametest"
+		}
 		autoTestServer {
 			inherit testmodServer
+
+			name "Auto Test Server"
+
 			vmArg "-Dfabric.autoTest"
 		}
 	}
 }
+test.dependsOn runGametest
 
 subprojects {
 	dependencies {
 		testmodImplementation sourceSets.main.output
+
+		// Make all modules depend on the gametest api to try and promote its usage.
+		if (project.name != "fabric-gametest-api-v1")
+			testmodImplementation project(path: ':fabric-gametest-api-v1', configuration: 'namedElements')
 	}
 
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
-				afterEvaluate {
-					artifact(remapJar) {
-						builtBy remapJar
-					}
-
-					artifact(sourcesJar) {
-						builtBy remapSourcesJar
-					}
-				}
+				from components.java
 			}
 		}
 
@@ -258,6 +236,13 @@ subprojects {
 	}
 
 	javadoc.enabled = false
+
+	afterEvaluate {
+		// Disable the gen sources task on sub projects
+		genSourcesWithFernFlower.enabled = false
+		genSourcesWithCfr.enabled = false
+		unpickJar.enabled = false
+	}
 }
 
 task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
@@ -296,6 +281,9 @@ publishing {
 	setupRepositories(repositories)
 }
 
+// Required until the deprecation is removed. Fabric API's main jar that is published to maven does not contain sub modules.
+loom.disableDeprecatedPomGeneration(publishing.publications.mavenJava)
+
 void setupRepositories(RepositoryHandler repositories) {
 	//repositories.mavenLocal() // uncomment for testing
 	def ENV = System.getenv()
@@ -328,7 +316,7 @@ def devOnlyModules = [
 dependencies {
 	afterEvaluate {
 		subprojects.each {
-			api project(path: ":${it.name}", configuration: "dev")
+			api project(path: ":${it.name}", configuration: "namedElements")
 
 			if (!(it.name in devOnlyModules)) {
 				include project("${it.name}:")
@@ -347,12 +335,12 @@ curseforge {
 	project {
 		id = "306612"
 		changelog = ENV.CHANGELOG ?: "No changelog provided"
-		releaseType = Globals.preRelease ? "beta" : "release"
+		releaseType = project.prerelease ? "beta" : "release"
 		addGameVersion "1.17.1"
 		addGameVersion "Fabric"
 
-		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion"
+		mainArtifact(remapJar) {
+			displayName = "[$project.minecraft_version] Fabric API $project.version"
 		}
 
 		afterEvaluate {
@@ -378,10 +366,10 @@ task github(dependsOn: remapMavenJar) {
 		def repository = github.getRepository(ENV.GITHUB_REPOSITORY)
 
 		def releaseBuilder = new GHReleaseBuilder(repository, version as String)
-		releaseBuilder.name("[$Globals.mcVersion] Fabric API $Globals.baseVersion")
+		releaseBuilder.name("[$project.minecraft_version] Fabric API $project.version")
 		releaseBuilder.body(ENV.CHANGELOG ?: "No changelog provided")
 		releaseBuilder.commitish(getBranch())
-		releaseBuilder.prerelease(Globals.preRelease)
+		releaseBuilder.prerelease(project.prerelease)
 
 		def ghRelease = releaseBuilder.create()
 		ghRelease.uploadAsset(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"), "application/java-archive");
@@ -396,13 +384,13 @@ task modrinth(type: com.modrinth.minotaur.TaskModrinthUpload, dependsOn: remapMa
 	token = ENV.MODRINTH_TOKEN
 	projectId = "P7dR8mSH"
 	versionNumber = version
-	versionName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion"
-	releaseType = Globals.preRelease ? "beta" : "release"
+	versionName = "[$project.minecraft_version] Fabric API $project.version"
+	releaseType = project.prerelease ? "beta" : "release"
 	changelog = ENV.CHANGELOG ?: "No changelog provided"
 
-	uploadFile = file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")
+	uploadFile = remapJar
 
-	addGameVersion(Globals.mcVersion)
+	addGameVersion(project.minecraft_version)
 	addLoader('fabric')
 }
 
