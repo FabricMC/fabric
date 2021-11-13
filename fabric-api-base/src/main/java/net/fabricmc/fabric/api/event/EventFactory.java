@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.event;
 
 import java.util.function.Function;
 
+import net.minecraft.util.Identifier;
+
 import net.fabricmc.fabric.impl.base.event.EventFactoryImpl;
 
 /**
@@ -91,6 +93,39 @@ public final class EventFactory {
 				return invokerFactory.apply(listeners);
 			}
 		});
+	}
+
+	/**
+	 * Create an array-backed event with a list of default phases that get invoked in order.
+	 * Exposing the identifiers of the default phases as {@code public static final} constants is encouraged.
+	 *
+	 * <p>An event phase is a named group of listeners, which may be ordered before or after other groups of listeners.
+	 * This allows some listeners to take priority over other listeners.
+	 * Adding separate events should be considered before making use of multiple event phases.
+	 *
+	 * <p>Phases may be freely added to events created with any of the factory functions,
+	 * however using this function is preferred for widely used event phases.
+	 * If more phases are necessary, discussion with the author of the Event is encouraged.
+	 *
+	 * <p>Refer to {@link Event#addPhaseOrdering} for an explanation of event phases.
+	 *
+	 * @param type           The listener class type.
+	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
+	 * @param defaultPhases  The default phases of this event, in the correct order. Must contain {@link Event#DEFAULT_PHASE}.
+	 * @param <T>            The listener type.
+	 * @return The Event instance.
+	 */
+	public static <T> Event<T> createWithPhases(Class<? super T> type, Function<T[], T> invokerFactory, Identifier... defaultPhases) {
+		EventFactoryImpl.ensureContainsDefault(defaultPhases);
+		EventFactoryImpl.ensureNoDuplicates(defaultPhases);
+
+		Event<T> event = createArrayBacked(type, invokerFactory);
+
+		for (int i = 1; i < defaultPhases.length; ++i) {
+			event.addPhaseOrdering(defaultPhases[i-1], defaultPhases[i]);
+		}
+
+		return event;
 	}
 
 	/**

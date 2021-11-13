@@ -37,11 +37,10 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
  * Defines how {@linkplain FluidVariant fluid variants} of a given Fluid should be displayed to clients.
  * Register with {@link FluidVariantRendering#register}.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 @Environment(EnvType.CLIENT)
 public interface FluidVariantRenderHandler {
 	/**
@@ -61,20 +60,34 @@ public interface FluidVariantRenderHandler {
 	}
 
 	/**
-	 * Return the sprite that should be used to render the passed fluid variant, for use in baked models, (block) entity renderers, or user interfaces.
+	 * Return an array of size at least 2 containing the sprites that should be used to render the passed fluid variant,
+	 * for use in baked models, (block) entity renderers, or user interfaces.
+	 * The first sprite in the array is the still sprite, and the second is the flowing sprite.
 	 *
-	 * <p>Null may be returned if the fluid variant should not be rendered.
+	 * <p>Null may be returned if the fluid variant should not be rendered, but if an array is returned it must have at least two entries and
+	 * they may not be null.
 	 */
 	@Nullable
-	default Sprite getSprite(FluidVariant fluidVariant) {
+	default Sprite[] getSprites(FluidVariant fluidVariant) {
 		// Use the fluid render handler by default.
 		FluidRenderHandler fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluidVariant.getFluid());
 
 		if (fluidRenderHandler != null) {
-			return fluidRenderHandler.getFluidSprites(null, null, fluidVariant.getFluid().getDefaultState())[0];
+			return fluidRenderHandler.getFluidSprites(null, null, fluidVariant.getFluid().getDefaultState());
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * @deprecated Use and implement {@linkplain #getSprites(FluidVariant) the other more general overload}.
+	 * This one will be removed in a future iteration of the API.
+	 */
+	@Deprecated(forRemoval = true)
+	@Nullable
+	default Sprite getSprite(FluidVariant fluidVariant) {
+		Sprite[] sprites = getSprites(fluidVariant);
+		return sprites != null ? sprites[0] : null;
 	}
 
 	/**

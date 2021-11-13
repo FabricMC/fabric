@@ -1,5 +1,5 @@
 archivesBaseName = "fabric-content-registries-v0"
-version = getSubprojectVersion(project, "0.3.0")
+version = getSubprojectVersion(project)
 
 loom {
 	accessWidenerPath = file("src/main/resources/fabric-content-registries-v0.accesswidener")

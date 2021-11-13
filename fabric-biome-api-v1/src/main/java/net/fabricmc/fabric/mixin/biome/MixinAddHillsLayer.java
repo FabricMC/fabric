@@ -43,7 +43,7 @@ import net.fabricmc.fabric.impl.biome.WeightedBiomePicker;
 public class MixinAddHillsLayer {
 	// This maps between from a biome to it's "modified variant" biome, which was previously modeled via parent biomes
 	@Shadow
-	private static Int2IntMap field_26727;
+	private static Int2IntMap MUTATED_BIOMES;
 
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource rand, LayerSampler biomeSampler, LayerSampler noiseSampler, int chunkX, int chunkZ, CallbackInfoReturnable<Integer> info) {
@@ -73,7 +73,7 @@ public class MixinAddHillsLayer {
 			int biomeReturn = InternalBiomeUtils.getRawId(hillPicker.pickRandom(rand));
 
 			if (processedNoiseSample == 0 && biomeReturn != biomeId) {
-				biomeReturn = field_26727.getOrDefault(biomeReturn, biomeId);
+				biomeReturn = MUTATED_BIOMES.getOrDefault(biomeReturn, biomeId);
 			}
 
 			if (biomeReturn != biomeId) {

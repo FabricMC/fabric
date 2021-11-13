@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.transfer.v1.storage;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -26,6 +27,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
@@ -35,11 +37,10 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  * <p>Note that the functions that take a predicate iterate over the entire inventory in the worst case.
  * If the resource is known, there will generally be a more performance efficient way.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public final class StorageUtil {
 	/**
 	 * Move resources between two storages, matching the passed filter, and return the amount that was successfully transferred.
@@ -116,6 +117,32 @@ public final class StorageUtil {
 		}
 
 		return totalMoved;
+	}
+
+	/**
+	 * Try to insert up to some amount of a resource into a list of storage slots, trying to "stack" first,
+	 * i.e. prioritizing slots that already contain the resource.
+	 *
+	 * @return How much was inserted.
+	 * @see Storage#insert
+	 */
+	public static <T> long insertStacking(List<SingleSlotStorage<T>> slots, T resource, long maxAmount, TransactionContext transaction) {
+		StoragePreconditions.notNegative(maxAmount);
+		long amount = 0;
+
+		for (SingleSlotStorage<T> slot : slots) {
+			if (!slot.isResourceBlank()) {
+				amount += slot.insert(resource, maxAmount - amount, transaction);
+				if (amount == maxAmount) return amount;
+			}
+		}
+
+		for (SingleSlotStorage<T> slot : slots) {
+			amount += slot.insert(resource, maxAmount - amount, transaction);
+			if (amount == maxAmount) return amount;
+		}
+
+		return amount;
 	}
 
 	/**

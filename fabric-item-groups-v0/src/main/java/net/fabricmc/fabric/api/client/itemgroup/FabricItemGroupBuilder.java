@@ -17,9 +17,11 @@
 package net.fabricmc.fabric.api.client.itemgroup;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
@@ -30,7 +32,7 @@ import net.fabricmc.fabric.impl.item.group.ItemGroupExtensions;
 public final class FabricItemGroupBuilder {
 	private Identifier identifier;
 	private Supplier<ItemStack> stackSupplier = () -> ItemStack.EMPTY;
-	private Consumer<List<ItemStack>> stacksForDisplay;
+	private BiConsumer<List<ItemStack>, ItemGroup> stacksForDisplay;
 
 	private FabricItemGroupBuilder(Identifier identifier) {
 		this.identifier = identifier;
@@ -70,12 +72,25 @@ public final class FabricItemGroupBuilder {
 	}
 
 	/**
-	 * This allows for a custom list of items to be displayed in a tab, this enabled tabs to be created with a custom set of items.
+	 * Set the item stacks of this item group, by having the consumer add them to the passed list.
+	 * This bypasses {@link Item#appendStacks}. If you want to append stacks from your items, consider using {@linkplain #appendItems(BiConsumer) the other overload}.
 	 *
 	 * @param stacksForDisplay Add ItemStack's to this list to show in the ItemGroup
 	 * @return a reference to the FabricItemGroupBuilder
 	 */
 	public FabricItemGroupBuilder appendItems(Consumer<List<ItemStack>> stacksForDisplay) {
+		return appendItems((itemStacks, itemGroup) -> stacksForDisplay.accept(itemStacks));
+	}
+
+	/**
+	 * Set the item stacks of this item group, by having the consumer add them to the passed list.
+	 * Compared to the other overload, this one also passes the new ItemGroup.
+	 * This allows you to call {@link Item#appendStacks} yourself if you want.
+	 *
+	 * @param stacksForDisplay Add ItemStack's to this list to show in the ItemGroup, and check if the item is in the ItemGroup
+	 * @return a reference to the FabricItemGroupBuilder
+	 */
+	public FabricItemGroupBuilder appendItems(BiConsumer<List<ItemStack>, ItemGroup> stacksForDisplay) {
 		this.stacksForDisplay = stacksForDisplay;
 		return this;
 	}
@@ -107,7 +122,7 @@ public final class FabricItemGroupBuilder {
 			@Override
 			public void appendStacks(DefaultedList<ItemStack> stacks) {
 				if (stacksForDisplay != null) {
-					stacksForDisplay.accept(stacks);
+					stacksForDisplay.accept(stacks, this);
 					return;
 				}
 

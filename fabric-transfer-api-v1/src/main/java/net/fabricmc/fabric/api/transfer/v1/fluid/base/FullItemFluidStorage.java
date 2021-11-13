@@ -38,11 +38,10 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  *
  * <p>This is used similarly to {@link EmptyItemFluidStorage}.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public final class FullItemFluidStorage implements ExtractionOnlyStorage<FluidVariant>, SingleSlotStorage<FluidVariant> {
 	private final ContainerItemContext context;
 	private final Item fullItem;

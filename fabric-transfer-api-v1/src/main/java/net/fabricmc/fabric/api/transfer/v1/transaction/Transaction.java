@@ -74,11 +74,10 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
  * and attempts to use it on another thread will throw an exception.
  * Consequently, transactions can be concurrent across multiple threads, as long as they don't share any state.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 @ApiStatus.NonExtendable
 public interface Transaction extends AutoCloseable, TransactionContext {
 	/**

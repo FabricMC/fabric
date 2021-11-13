@@ -34,6 +34,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.biome.source.BiomeArray;
 import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.util.math.ChunkPos;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -49,6 +50,13 @@ public abstract class ClientChunkManagerMixin {
 	@Inject(method = "loadChunkFromPacket", at = @At("TAIL"))
 	private void onChunkLoad(int x, int z, @Nullable BiomeArray biomes, PacketByteBuf buf, NbtCompound tag, BitSet verticalStripBitmask, CallbackInfoReturnable<WorldChunk> info) {
 		ClientChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(this.world, info.getReturnValue());
+	}
+
+	@Inject(method = "loadChunkFromPacket", at = @At(value = "NEW", target = "net/minecraft/world/chunk/WorldChunk", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void onChunkUnload(int x, int z, @Nullable BiomeArray biomes, PacketByteBuf buf, NbtCompound tag, BitSet verticalStripBitmask, CallbackInfoReturnable<WorldChunk> info, int index, WorldChunk worldChunk, ChunkPos chunkPos) {
+		if (worldChunk != null) {
+			ClientChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.world, worldChunk);
+		}
 	}
 
 	@Inject(method = "unload", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientChunkManager$ClientChunkMap;compareAndSet(ILnet/minecraft/world/chunk/WorldChunk;Lnet/minecraft/world/chunk/WorldChunk;)Lnet/minecraft/world/chunk/WorldChunk;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)

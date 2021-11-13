@@ -1,6 +1,11 @@
 archivesBaseName = "fabric-rendering-fluids-v1"
-version = getSubprojectVersion(project, "0.1.14")
+version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
-		'fabric-api-base'
+		'fabric-api-base',
+		'fabric-textures-v0'
 ])
+
+dependencies {
+	testmodImplementation project(path: ':fabric-textures-v0', configuration: 'namedElements')
+}

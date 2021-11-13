@@ -27,10 +27,7 @@ import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 
 /**
  * This class consists exclusively of static methods that operate on world dimensions.
- *
- * @deprecated Experimental feature, may be removed or changed without further notice due to potential changes to Dimensions in subsequent versions.
  */
-@Deprecated
 public final class FabricDimensions {
 	private FabricDimensions() {
 		throw new AssertionError();

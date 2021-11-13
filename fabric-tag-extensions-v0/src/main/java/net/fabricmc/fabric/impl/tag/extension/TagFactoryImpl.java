@@ -77,7 +77,7 @@ public final class TagFactoryImpl<T> implements TagFactory<T> {
 	 * if it mentions datapack entries. The solution is to manually load tags after the registry is loaded.
 	 *
 	 * <p>Look at server's {@link Main#main} function calls for {@link ServerResourceManager#reload} and
-	 * {@link RegistryOps#method_36574} for the relevant code.
+	 * {@link RegistryOps#ofLoaded} for the relevant code.
 	 */
 	public static void loadDynamicRegistryTags(DynamicRegistryManager registryManager, ResourceManager resourceManager) {
 		Stopwatch stopwatch = Stopwatch.createStarted();

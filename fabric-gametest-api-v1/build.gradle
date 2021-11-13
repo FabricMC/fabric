@@ -1,24 +1,7 @@
 archivesBaseName = "fabric-gametest-api-v1"
-version = getSubprojectVersion(project, "1.0.1")
+version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
 		'fabric-api-base',
 		'fabric-resource-loader-v0'
 ])
-
-loom {
-	runs {
-		gametest {
-			server()
-			name "Game Test"
-			vmArg "-Dfabric-api.gametest"
-			vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
-			runDir "build/gametest"
-
-			// Specific to fabric api
-			source sourceSets.testmod
-			ideConfigGenerated true
-		}
-	}
-}
-test.dependsOn runGametest
