@@ -16,15 +16,16 @@
 
 package net.fabricmc.fabric.test.fluid.fluid;
 
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.screen.PlayerScreenHandler;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.test.fluid.core.ModCore;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class MFluids {
 	public static final Identifier BLUE_FLUID_ID = new Identifier(ModCore.ID, "blue_fluid");
@@ -49,8 +50,8 @@ public class MFluids {
 	public static final Identifier GREEN_FLUID_FLOWING_ID = new Identifier(ModCore.ID, "green_fluid_flowing");
 	public static final GreenFluid GREEN_FLUID_FLOWING = Registry.register(Registry.FLUID, GREEN_FLUID_FLOWING_ID, new GreenFluid.Flowing());
 
-
-	public static void load() {}
+	public static void load() {
+	}
 
 	public static void renderFluids() {
 		FluidRenderHandlerRegistry.INSTANCE.register(BLUE_FLUID, BLUE_FLUID_FLOWING,

@@ -22,8 +22,8 @@ import net.minecraft.fluid.FluidState;
  * Implements some fluid-related camera features.
  */
 public interface FabricFluidCamera {
-    /**
-     * @return Fluid in which the camera is submerged.
-     */
-    FluidState getSubmergedFluidState();
+	/**
+	 * @return Fluid in which the camera is submerged.
+	 */
+	FluidState getSubmergedFluidState();
 }

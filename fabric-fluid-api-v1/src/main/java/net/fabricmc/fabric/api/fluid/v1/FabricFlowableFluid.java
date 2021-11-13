@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.api.fluid.v1;
 
-import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
-import net.fabricmc.fabric.api.util.SoundParameters;
+import java.util.Optional;
+import java.util.Random;
+
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -36,11 +39,14 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.*;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.GameRules;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
+import net.minecraft.world.WorldView;
 
-import java.util.Optional;
-import java.util.Random;
+import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
+import net.fabricmc.fabric.api.util.SoundParameters;
 
 /**
  * Implements the basic behaviour of every fluid.
@@ -50,7 +56,8 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	/**
 	 * Initializes a new FabricFlowableFluid instance.
 	 */
-	public FabricFlowableFluid() {}
+	public FabricFlowableFluid() {
+	}
 
 	//region SOUNDS
 
@@ -134,9 +141,9 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	}
 
 	/**
-	 * @param entity The current entity that displays the fog.
+	 * @param entity    The current entity that displays the fog.
 	 * @param tickDelta The time passed from the last tick.
-	 * @param world The current world.
+	 * @param world     The current world.
 	 * @return Fog color.
 	 */
 	public int getFogColor(Entity entity, float tickDelta, ClientWorld world) {
@@ -144,10 +151,10 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	}
 
 	/**
-	 * @param entity The current entity that displays the fog.
-	 * @param fogType Type of fog (can be SKY or TERRAIN).
+	 * @param entity       The current entity that displays the fog.
+	 * @param fogType      Type of fog (can be SKY or TERRAIN).
 	 * @param viewDistance The view distance of the current entity.
-	 * @param thickFog Thick of fog.
+	 * @param thickFog     Thick of fog.
 	 * @return Fog ending value.
 	 */
 	public float getFogEnd(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
@@ -155,10 +162,10 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	}
 
 	/**
-	 * @param entity The current entity that displays the fog.
-	 * @param fogType Type of fog (can be SKY or TERRAIN).
+	 * @param entity       The current entity that displays the fog.
+	 * @param fogType      Type of fog (can be SKY or TERRAIN).
 	 * @param viewDistance The view distance of the current entity.
-	 * @param thickFog Thick of fog.
+	 * @param thickFog     Thick of fog.
 	 * @return Fog starting value.
 	 */
 	public float getFogStart(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
@@ -192,7 +199,7 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	}
 
 	/**
-	 * @param world The current world.
+	 * @param world  The current world.
 	 * @param entity The current entity in the fluid.
 	 * @return Fluid viscosity, that is equal to the pushing strength of the fluid.
 	 */
@@ -223,8 +230,9 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 
 	/**
 	 * Perform actions when fluid flows into a replaceable block.
+	 *
 	 * @param world The current world.
-	 * @param pos The position of the block broken.
+	 * @param pos   The position of the block broken.
 	 * @param state The BlockState broken.
 	 */
 	@Override
@@ -235,24 +243,34 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 
 	/**
 	 * Executed randomly every tick.
-	 * @param world The current world.
-	 * @param pos The current position.
-	 * @param state The current FluidState.
+	 *
+	 * @param world  The current world.
+	 * @param pos    The current position.
+	 * @param state  The current FluidState.
 	 * @param random Random generator.
 	 */
 	@Override
 	public void onRandomTick(World world, BlockPos pos, FluidState state, Random random) {
-		if (!this.isIn(FabricFluidTags.CAN_LIGHT_FIRE)) return;
+		if (!this.isIn(FabricFluidTags.CAN_LIGHT_FIRE)) {
+			return;
+		}
+
 		//If the fluid can light fire, its behaviour will be identical to the lava behaviour
 		if (world.getGameRules().getBoolean(GameRules.DO_FIRE_TICK)) {
 			int rnd = random.nextInt(3);
+
 			if (rnd > 0) {
 				BlockPos tPos = pos;
-				for(int i = 0; i < rnd; ++i) {
+
+				for (int i = 0; i < rnd; ++i) {
 					tPos = tPos.add(random.nextInt(3) - 1, 1, random.nextInt(3) - 1);
-					if (!world.canSetBlock(tPos)) return;
+
+					if (!world.canSetBlock(tPos)) {
+						return;
+					}
 
 					BlockState blockState = world.getBlockState(tPos);
+
 					if (blockState.isAir()) {
 						Direction[] var3 = Direction.values();
 						boolean canBurnBlock = false;
@@ -267,12 +285,17 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 							world.setBlockState(tPos, AbstractFireBlock.getState(world, tPos));
 							return;
 						}
-					} else if (blockState.getMaterial().blocksMovement()) return;
+					} else if (blockState.getMaterial().blocksMovement()) {
+						return;
+					}
 				}
 			} else {
-				for(int i = 0; i < 3; ++i) {
+				for (int i = 0; i < 3; ++i) {
 					BlockPos tPos = pos.add(random.nextInt(3) - 1, 0, random.nextInt(3) - 1);
-					if (!world.canSetBlock(tPos)) return;
+
+					if (!world.canSetBlock(tPos)) {
+						return;
+					}
 
 					if (world.isAir(tPos.up()) && this.hasBurnableBlock(world, tPos)) {
 						world.setBlockState(tPos.up(), AbstractFireBlock.getState(world, tPos));
@@ -284,14 +307,17 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 
 	/**
 	 * Event executed when an entity falls, or enters, into the fluid.
-	 * @param world The current world.
+	 *
+	 * @param world  The current world.
 	 * @param entity The current entity in the fluid.
 	 */
-	public void onSplash(World world, Entity entity) {}
+	public void onSplash(World world, Entity entity) {
+	}
 
 	/**
 	 * Event executed when the entity is into the fluid.
-	 * @param world The current world.
+	 *
+	 * @param world  The current world.
 	 * @param entity The current entity in the fluid.
 	 */
 	public void onSubmerged(@NotNull World world, Entity entity) {
@@ -300,6 +326,7 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 			if (!this.isIn(FabricFluidTags.RESPIRABLE) && !life.canBreatheInWater() && !StatusEffectUtil.hasWaterBreathing(life)) {
 				if (!(life instanceof PlayerEntity player && player.getAbilities().invulnerable)) {
 					life.setAir(life.getAir() - 1);
+
 					if (life.getAir() <= -20) {
 						life.setAir(0);
 						life.damage(DamageSource.DROWN, 2f);
@@ -311,7 +338,8 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 
 	/**
 	 * Event executed when the entity is touching the fluid.
-	 * @param world The current world.
+	 *
+	 * @param world  The current world.
 	 * @param entity The current entity in the fluid.
 	 */
 	public void onTouching(@NotNull World world, Entity entity) {
@@ -319,9 +347,11 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 		if (!world.isClient && !entity.isFireImmune()) {
 			int entityOnFireDuration = getEntityOnFireDuration(world);
 			float hotDamage = getHotDamage(world);
+
 			if (this.isIn(FabricFluidTags.CAN_LIGHT_FIRE) && !this.isIn(FabricFluidTags.WET) && entityOnFireDuration > 0) {
 				entity.setOnFireFor(entityOnFireDuration);
 			}
+
 			if (hotDamage > 0 && entity.damage(DamageSource.IN_FIRE, hotDamage)) {
 				entity.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + world.getRandom().nextFloat() * 0.4F);
 			}
@@ -334,8 +364,9 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 
 	/**
 	 * Check if the block in the specified position is burnable.
+	 *
 	 * @param world The current world.
-	 * @param pos The block position.
+	 * @param pos   The block position.
 	 * @return True if the block in the specified position is burnable.
 	 */
 	@SuppressWarnings("deprecation")

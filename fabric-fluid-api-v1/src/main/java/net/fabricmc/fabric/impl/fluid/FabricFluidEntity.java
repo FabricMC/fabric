@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.fluid;
 /**
  * Implements some fluid-related entity features.
  */
+@SuppressWarnings("unused")
 public interface FabricFluidEntity {
 	/**
 	 * @return Height of the current fabric fluid.

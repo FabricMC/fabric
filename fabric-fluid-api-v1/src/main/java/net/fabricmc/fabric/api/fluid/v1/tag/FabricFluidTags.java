@@ -16,10 +16,11 @@
 
 package net.fabricmc.fabric.api.fluid.v1.tag;
 
-import net.fabricmc.fabric.api.tag.TagFactory;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.tag.TagFactory;
 
 /**
  * Provides tags for all fluid customizations.
@@ -66,16 +67,17 @@ public class FabricFluidTags {
 
 	static {
 		CAN_EXTINGUISH_FIRE = TagFactory.FLUID.create(new Identifier("fabric", "can_extinguish_fire"));
-		CAN_LIGHT_FIRE =      TagFactory.FLUID.create(new Identifier("fabric", "can_light_fire"));
-		NAVIGABLE =           TagFactory.FLUID.create(new Identifier("fabric", "navigable"));
+		CAN_LIGHT_FIRE = TagFactory.FLUID.create(new Identifier("fabric", "can_light_fire"));
+		NAVIGABLE = TagFactory.FLUID.create(new Identifier("fabric", "navigable"));
 		PREVENT_FALL_DAMAGE = TagFactory.FLUID.create(new Identifier("fabric", "prevent_fall_damage"));
-		RESPIRABLE =          TagFactory.FLUID.create(new Identifier("fabric", "respirable"));
-		SWIMMABLE =           TagFactory.FLUID.create(new Identifier("fabric", "swimmable"));
-		WET =                 TagFactory.FLUID.create(new Identifier("fabric", "wet"));
+		RESPIRABLE = TagFactory.FLUID.create(new Identifier("fabric", "respirable"));
+		SWIMMABLE = TagFactory.FLUID.create(new Identifier("fabric", "swimmable"));
+		WET = TagFactory.FLUID.create(new Identifier("fabric", "wet"));
 	}
 
 	/**
 	 * Initializes a new FabricFluidTags instance.
 	 */
-	private FabricFluidTags() {}
+	private FabricFluidTags() {
+	}
 }

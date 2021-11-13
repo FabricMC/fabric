@@ -16,9 +16,10 @@
 
 package net.fabricmc.fabric.test.fluid.core;
 
-import net.fabricmc.fabric.test.fluid.FabricFluidTestMod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import net.fabricmc.fabric.test.fluid.FabricFluidTestMod;
 
 public class ModCore {
 	public static final String ID = "fabric-fluid-api-v1-testmod";

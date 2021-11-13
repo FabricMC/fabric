@@ -16,14 +16,16 @@
 
 package net.fabricmc.fabric.mixin.fluid;
 
-import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
+
 import net.minecraft.block.dispenser.BoatDispenserBehavior;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.tag.Tag;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+
+import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
 
 @Mixin(BoatDispenserBehavior.class)
 public class BoatDispenserBehaviorMixin {

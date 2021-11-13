@@ -25,7 +25,8 @@ import net.minecraft.fluid.FlowableFluid;
 public class FabricFluidBlock extends FluidBlock {
 	/**
 	 * Initializes a new FabricFluidBlock instance.
-	 * @param fluid Linked fluid.
+	 *
+	 * @param fluid    Linked fluid.
 	 * @param settings Fluid settings.
 	 */
 	public FabricFluidBlock(FlowableFluid fluid, Settings settings) {

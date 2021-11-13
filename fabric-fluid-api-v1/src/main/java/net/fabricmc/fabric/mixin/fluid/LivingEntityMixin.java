@@ -16,15 +16,6 @@
 
 package net.fabricmc.fabric.mixin.fluid;
 
-import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Flutterer;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,17 +25,41 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.Flutterer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MovementType;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.tag.Tag;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+
+import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
+
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends EntityMixin {
 	//region INTERNAL METHODS AND VARIABLES PLACEHOLDERS
 
-	@Shadow protected abstract float getBaseMovementSpeedMultiplier();
-	@Shadow public abstract boolean isClimbing();
-	@Shadow public abstract Vec3d method_26317(double d, boolean bl, Vec3d vec3d);
-	@Shadow protected abstract boolean shouldSwimInFluids();
-	@Shadow public abstract boolean canMoveVoluntarily();
-	@Shadow public abstract void updateLimbs(LivingEntity entity, boolean flutter);
-	@Shadow public abstract boolean canWalkOnFluid(Fluid fluid);
+	@Shadow
+	protected abstract float getBaseMovementSpeedMultiplier();
+
+	@Shadow
+	public abstract boolean isClimbing();
+
+	@Shadow
+	public abstract Vec3d method_26317(double d, boolean bl, Vec3d vec3d);
+
+	@Shadow
+	protected abstract boolean shouldSwimInFluids();
+
+	@Shadow
+	public abstract boolean canMoveVoluntarily();
+
+	@Shadow
+	public abstract void updateLimbs(LivingEntity entity, boolean flutter);
+
+	@Shadow
+	public abstract boolean canWalkOnFluid(Fluid fluid);
 
 	//endregion
 
@@ -91,10 +106,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 		if ((this.canMoveVoluntarily() || this.isLogicalSideForUpdatingMovement())
 				&& this.isTouchingFabricFluid() && this.shouldSwimInFluids()
 				&& !this.canWalkOnFluid(this.world.getFluidState(this.getBlockPos()).getFluid())) {
-
-			//Updates the travel movement velocity if the entity is on a fabric fluid
-			//This applies the same behaviour of water
-
+			//Updates the travel movement velocity if the entity is on a fabric fluid (uses the water behaviour)
 			boolean falling = this.getVelocity().y <= 0.0D;
 			double currentY = this.getY();
 			float movement = this.isSprinting() ? 0.9F : this.getBaseMovementSpeedMultiplier();
@@ -122,9 +134,8 @@ public abstract class LivingEntityMixin extends EntityMixin {
 
 	//endregion
 
-
 	@Unique
 	private LivingEntity getThis() {
-		return (LivingEntity)(Object)this;
+		return (LivingEntity) (Object) this;
 	}
 }

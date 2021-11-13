@@ -16,15 +16,8 @@
 
 package net.fabricmc.fabric.mixin.fluid;
 
-import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
-import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
-import net.minecraft.entity.vehicle.BoatEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import java.util.Optional;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,7 +25,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Optional;
+import net.minecraft.entity.vehicle.BoatEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.tag.Tag;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
+import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
 
 @Mixin(BoatEntity.class)
 public abstract class BoatEntityMixin extends EntityMixin {
@@ -77,7 +79,7 @@ public abstract class BoatEntityMixin extends EntityMixin {
 		//If the boat is touching a fabric fluid gets the paddle sound and returns it
 		if (this.isTouchingFabricFluid()) {
 			//Gets the paddle sound
-			Optional<SoundEvent> paddleSound = ((FabricFlowableFluid)firstTouchedFabricFluid.getFluid()).getPaddleSound();
+			Optional<SoundEvent> paddleSound = ((FabricFlowableFluid) firstTouchedFabricFluid.getFluid()).getPaddleSound();
 			paddleSound.ifPresentOrElse(cir::setReturnValue, () -> cir.setReturnValue(null));
 		}
 	}

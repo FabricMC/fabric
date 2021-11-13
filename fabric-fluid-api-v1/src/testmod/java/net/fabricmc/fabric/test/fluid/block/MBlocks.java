@@ -16,15 +16,16 @@
 
 package net.fabricmc.fabric.test.fluid.block;
 
-import net.fabricmc.fabric.api.fluid.v1.FabricFluidBlock;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.test.fluid.core.ModCore;
-import net.fabricmc.fabric.test.fluid.fluid.MFluids;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+
+import net.fabricmc.fabric.api.fluid.v1.FabricFluidBlock;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.test.fluid.core.ModCore;
+import net.fabricmc.fabric.test.fluid.fluid.MFluids;
 
 public class MBlocks {
 	public static final Identifier BLUE_FLUID_ID = new Identifier(ModCore.ID, "blue_fluid");
@@ -39,6 +40,6 @@ public class MBlocks {
 	public static final FluidBlock GREEN_FLUID = Registry.register(Registry.BLOCK, GREEN_FLUID_ID,
 			new FabricFluidBlock(MFluids.GREEN_FLUID, FabricBlockSettings.of(Material.WATER).mapColor(MapColor.GREEN)));
 
-
-	public static void load() {}
+	public static void load() {
+	}
 }

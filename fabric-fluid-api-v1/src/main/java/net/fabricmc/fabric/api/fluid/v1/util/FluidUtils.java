@@ -16,8 +16,9 @@
 
 package net.fabricmc.fabric.api.fluid.v1.util;
 
-import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
-import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.fluid.Fluid;
@@ -28,15 +29,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
+import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
 
 /**
  * Utilities for fluids.
  */
+@SuppressWarnings("unused")
 public class FluidUtils {
 	/**
 	 * Checks if two FluidState are equal.
+	 *
 	 * @param fluidState1 First FluidState.
 	 * @param fluidState2 Second FluidState.
 	 * @return True if the two FluidState are equal.
@@ -48,6 +52,7 @@ public class FluidUtils {
 
 	/**
 	 * Checks if two Fluid are equal.
+	 *
 	 * @param fluid1 First Fluid.
 	 * @param fluid2 Second Fluid.
 	 * @return True if the two Fluid are equal.
@@ -59,8 +64,9 @@ public class FluidUtils {
 
 	/**
 	 * Get the first touched fluid, by the specified entity, with the specified tag.
+	 *
 	 * @param entity The entity to check.
-	 * @param tag The fluid tag to search.
+	 * @param tag    The fluid tag to search.
 	 * @return First touched fluid, by the specified entity, with the specified tag.
 	 */
 	public static @Nullable FluidState getFirstTouchedFluid(@NotNull Entity entity, @NotNull Tag<Fluid> tag) {
@@ -69,9 +75,10 @@ public class FluidUtils {
 
 	/**
 	 * Get the first touched fluid, by the specified box, with the specified tag.
-	 * @param box The box to check.
+	 *
+	 * @param box   The box to check.
 	 * @param world The current world.
-	 * @param tag The fluid tag to search.
+	 * @param tag   The fluid tag to search.
 	 * @return First touched fluid, by the specified box, with the specified tag.
 	 */
 	public static @Nullable FluidState getFirstTouchedFluid(@NotNull Box box, @NotNull World world, @NotNull Tag<Fluid> tag) {
@@ -85,13 +92,15 @@ public class FluidUtils {
 		BlockPos.Mutable pos = new BlockPos.Mutable();
 
 		//Search the first touched fluid with the specified tag
-		for(int x = minX; x < maxX; ++x) {
-			for(int y = minY; y < maxY; ++y) {
-				for(int z = minZ; z < maxZ; ++z) {
+		for (int x = minX; x < maxX; ++x) {
+			for (int y = minY; y < maxY; ++y) {
+				for (int z = minZ; z < maxZ; ++z) {
 					pos.set(x, y, z);
 					FluidState fluidState = world.getFluidState(pos);
+
 					if (fluidState.isIn(tag)) {
 						double height = y + fluidState.getHeight(world, pos);
+
 						if (height >= box.minY) {
 							return fluidState;
 						}
@@ -104,9 +113,10 @@ public class FluidUtils {
 	}
 
 	/**
-	 * Get the fluid in which the entity is submerged
-	 * @param entity The entity that is supposed to be submerged
-	 * @return Fluid in which the entity is submerged
+	 * Get the fluid in which the entity is submerged.
+	 *
+	 * @param entity The entity that is supposed to be submerged.
+	 * @return Fluid in which the entity is submerged.
 	 */
 	public static @Nullable FluidState getSubmergedFluid(@NotNull Entity entity) {
 		//Get the y of the center of the entity eye
@@ -123,7 +133,8 @@ public class FluidUtils {
 		BlockPos pos = new BlockPos(entity.getX(), eyeY, entity.getZ());
 		FluidState fluidState = entity.world.getFluidState(pos);
 
-		double eyeFluidY = (float)pos.getY() + fluidState.getHeight(entity.world, pos);
+		double eyeFluidY = (float) pos.getY() + fluidState.getHeight(entity.world, pos);
+
 		if (eyeFluidY > eyeY) {
 			//If the entity is submerged by the fluid above the eye, return the fluid
 			return fluidState;

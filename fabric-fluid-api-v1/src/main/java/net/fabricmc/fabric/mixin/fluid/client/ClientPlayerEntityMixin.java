@@ -16,15 +16,6 @@
 
 package net.fabricmc.fabric.mixin.fluid.client;
 
-import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
-import net.fabricmc.fabric.api.util.SoundParameters;
-import net.fabricmc.fabric.impl.fluid.UnderfluidSoundLoop;
-import net.fabricmc.fabric.mixin.fluid.LivingEntityMixin;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.sound.SoundCategory;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,12 +24,31 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.sound.SoundCategory;
+
+import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
+import net.fabricmc.fabric.api.util.SoundParameters;
+import net.fabricmc.fabric.impl.fluid.UnderfluidSoundLoop;
+import net.fabricmc.fabric.mixin.fluid.LivingEntityMixin;
+
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends LivingEntityMixin {
-	@Shadow @Final protected MinecraftClient client;
-	@Shadow public abstract boolean isSubmergedInWater();
+	//region INTERNAL METHODS AND VARIABLES PLACEHOLDERS
 
-	@Unique private UnderfluidSoundLoop underfluidSound = null;
+	@Shadow
+	@Final
+	protected MinecraftClient client;
+	@Unique
+	private UnderfluidSoundLoop underfluidSound = null;
+
+	@Shadow
+	public abstract boolean isSubmergedInWater();
+
+	//endregion
 
 	//region FAST SWIMMING
 
@@ -64,14 +74,16 @@ public abstract class ClientPlayerEntityMixin extends LivingEntityMixin {
 
 	//region ENTER AND EXIT FLUID SOUNDS
 
-	@Override @Unique
+	@Override
+	@Unique
 	protected void enterInFabricFluid(@NotNull FluidState fluidState) {
 		//Plays the "enter in fluid" sound and submerged ambient sound
 		playEnterInFluidSound(fluidState.getFluid());
 		startUnderfluidSound(fluidState.getFluid());
 	}
 
-	@Override @Unique
+	@Override
+	@Unique
 	protected void exitFromFabricFluid(@NotNull FluidState fluidState) {
 		//Stops the current submerged ambient sound
 		//Water automatically stops its sound, so there's no need to manage it
@@ -81,7 +93,8 @@ public abstract class ClientPlayerEntityMixin extends LivingEntityMixin {
 		playExitFromFluidSound(fluidState.getFluid());
 	}
 
-	@Override @Unique
+	@Override
+	@Unique
 	protected void changedFabricFluid(@NotNull FluidState oldFluidState, @NotNull FluidState newFluidState) {
 		//Stops the current submerged ambient sound
 		//Water automatically stops its sound, so there's no need to manage it
@@ -136,9 +149,8 @@ public abstract class ClientPlayerEntityMixin extends LivingEntityMixin {
 
 	//endregion
 
-
 	@Unique
 	private ClientPlayerEntity getThis() {
-		return (ClientPlayerEntity)(Object)this;
+		return (ClientPlayerEntity) (Object) this;
 	}
 }

@@ -16,9 +16,8 @@
 
 package net.fabricmc.fabric.test.fluid.fluid;
 
-import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
-import net.fabricmc.fabric.test.fluid.block.MBlocks;
-import net.fabricmc.fabric.test.fluid.item.MItems;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.world.ClientWorld;
@@ -34,7 +33,10 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
-import org.jetbrains.annotations.NotNull;
+
+import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
+import net.fabricmc.fabric.test.fluid.block.MBlocks;
+import net.fabricmc.fabric.test.fluid.item.MItems;
 
 public abstract class GreenFluid extends FabricFlowableFluid {
 	@Override
@@ -105,14 +107,22 @@ public abstract class GreenFluid extends FabricFlowableFluid {
 	@Override
 	public void onTouching(@NotNull World world, Entity entity) {
 		super.onTouching(world, entity);
+
 		if (!world.isClient) {
-			if (entity instanceof PlayerEntity player && player.isCreative()) return;
+			if (entity instanceof PlayerEntity player && player.isCreative()) {
+				return;
+			}
+
 			if (entity instanceof LivingEntity life) {
 				StatusEffectInstance effect = life.getStatusEffect(StatusEffects.REGENERATION);
+
 				if (effect != null) {
-					if (effect.getDuration() < 80) life.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 100, 2));
+					if (effect.getDuration() < 80) {
+						life.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 100, 2));
+					}
+				} else {
+					life.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 100, 2));
 				}
-				else life.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 100, 2));
 			}
 		}
 	}

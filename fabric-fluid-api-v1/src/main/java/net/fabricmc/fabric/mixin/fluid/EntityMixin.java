@@ -16,11 +16,21 @@
 
 package net.fabricmc.fabric.mixin.fluid;
 
-import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
-import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
-import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
-import net.fabricmc.fabric.api.util.SoundParameters;
-import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
+import java.util.Optional;
+import java.util.Random;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.MovementType;
@@ -36,62 +46,110 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Optional;
-import java.util.Random;
+import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
+import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
+import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
+import net.fabricmc.fabric.api.util.SoundParameters;
+import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements FabricFluidEntity {
 	//region INTERNAL METHODS AND VARIABLES PLACEHOLDERS
 
-    @Shadow public World world;
-    @Shadow public float fallDistance;
-	@Shadow protected boolean firstUpdate;
-	@Shadow public boolean horizontalCollision;
-	@Shadow	@Final protected Random random;
+	@Shadow
+	public World world;
+	@Shadow
+	public float fallDistance;
+	@Shadow
+	public boolean horizontalCollision;
+	@Shadow
+	protected boolean firstUpdate;
+	@Shadow
+	@Final
+	protected Random random;
+	@Unique
+	protected boolean touchingFabricFluid = false;
+	@Unique
+	protected boolean submergedInFabricFluid = false;
+	@Unique
+	protected FluidState submergedFluid = null;
+	@Unique
+	protected FluidState firstTouchedFabricFluid = null;
+	@Unique
+	protected double fabricFluidHeight = 0;
 
-	@Shadow @Nullable public abstract Entity getVehicle();
-    @Shadow public abstract void extinguish();
-	@Shadow public abstract boolean isSpectator();
-	@Shadow public abstract double getX();
-	@Shadow public abstract double getY();
-	@Shadow public abstract double getZ();
-	@Shadow public abstract BlockPos getBlockPos();
-	@Shadow public abstract boolean isSprinting();
-	@Shadow	public abstract void updateVelocity(float speed, Vec3d movementInput);
-	@Shadow public abstract void move(MovementType movementType, Vec3d movement);
-	@Shadow public abstract Vec3d getVelocity();
-	@Shadow public abstract void setVelocity(Vec3d velocity);
-	@Shadow public abstract boolean doesNotCollide(double offsetX, double offsetY, double offsetZ);
-	@Shadow public abstract boolean isLogicalSideForUpdatingMovement();
-	@Shadow protected abstract void playExtinguishSound();
-	@Shadow public abstract boolean isOnFire();
-	@Shadow public abstract boolean isTouchingWater();
-	@Shadow public abstract boolean isSubmergedInWater();
-	@Shadow	public abstract void playSound(SoundEvent sound, float volume, float pitch);
-	@Shadow public abstract double getFluidHeight(Tag<Fluid> fluid);
-	@Shadow public abstract boolean isRegionUnloaded();
-	@Shadow public abstract Box getBoundingBox();
-	@Shadow public abstract boolean isPushedByFluids();
+	@Shadow
+	@Nullable
+	public abstract Entity getVehicle();
+
+	@Shadow
+	public abstract void extinguish();
+
+	@Shadow
+	public abstract boolean isSpectator();
+
+	@Shadow
+	public abstract double getX();
+
+	@Shadow
+	public abstract double getY();
+
+	@Shadow
+	public abstract double getZ();
+
+	@Shadow
+	public abstract BlockPos getBlockPos();
+
+	@Shadow
+	public abstract boolean isSprinting();
+
+	@Shadow
+	public abstract void updateVelocity(float speed, Vec3d movementInput);
+
+	@Shadow
+	public abstract void move(MovementType movementType, Vec3d movement);
+
+	@Shadow
+	public abstract Vec3d getVelocity();
+
+	@Shadow
+	public abstract void setVelocity(Vec3d velocity);
+
+	@Shadow
+	public abstract boolean doesNotCollide(double offsetX, double offsetY, double offsetZ);
+
+	@Shadow
+	public abstract boolean isLogicalSideForUpdatingMovement();
+
+	@Shadow
+	protected abstract void playExtinguishSound();
+
+	@Shadow
+	public abstract boolean isOnFire();
+
+	@Shadow
+	public abstract boolean isTouchingWater();
+
+	@Shadow
+	public abstract boolean isSubmergedInWater();
+
+	@Shadow
+	public abstract void playSound(SoundEvent sound, float volume, float pitch);
+
+	@Shadow
+	public abstract double getFluidHeight(Tag<Fluid> fluid);
+
+	@Shadow
+	public abstract boolean isRegionUnloaded();
+
+	@Shadow
+	public abstract Box getBoundingBox();
+
+	@Shadow
+	public abstract boolean isPushedByFluids();
 
 	//endregion
-
-	@Unique protected boolean touchingFabricFluid = false;
-	@Unique protected boolean submergedInFabricFluid = false;
-	@Unique protected FluidState submergedFluid = null;
-	@Unique protected FluidState firstTouchedFabricFluid = null;
-	@Unique protected double fabricFluidHeight = 0;
 
 	//region SWIM
 
@@ -134,7 +192,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 		//If the entity is touching a fabric fluid gets the swim sound from the fluid and plays it
 		if (isTouchingFabricFluid()) {
 			//Plays the swim sound
-			Optional<SoundEvent> swimSound = ((FabricFlowableFluid)firstTouchedFabricFluid.getFluid()).getSwimSound();
+			Optional<SoundEvent> swimSound = ((FabricFlowableFluid) firstTouchedFabricFluid.getFluid()).getSwimSound();
 			swimSound.ifPresent(sound -> this.playSound(sound, volume, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F));
 
 			ci.cancel();
@@ -146,7 +204,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 		//If the entity is touching a fabric fluid gets the splash sound and returns it
 		if (this.isTouchingFabricFluid()) {
 			//Gets the generic splash sound (if not present, will be used the default pre-defined sound)
-			Optional<SoundEvent> splashSound = ((FabricFlowableFluid)firstTouchedFabricFluid.getFluid()).getGenericSplashSound();
+			Optional<SoundEvent> splashSound = ((FabricFlowableFluid) firstTouchedFabricFluid.getFluid()).getGenericSplashSound();
 			splashSound.ifPresent(cir::setReturnValue);
 		}
 	}
@@ -163,8 +221,11 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 	@Redirect(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isInLava()Z", ordinal = 0))
 	private boolean isInLavaRedirect(Entity entity) {
-		if (isTouchingFabricFluid()) return true;
-		else return entity.isInLava();
+		if (isTouchingFabricFluid()) {
+			return true;
+		} else {
+			return entity.isInLava();
+		}
 	}
 
 	//endregion
@@ -194,13 +255,14 @@ public abstract class EntityMixin implements FabricFluidEntity {
 	protected void checkFabricFluidState() {
 		//The result is true if the entity is currently touching a fabric fluid
 		if (this.updateMovementInFabricFluid()) {
-			FabricFlowableFluid fluid = (FabricFlowableFluid)firstTouchedFabricFluid.getFluid();
+			FabricFlowableFluid fluid = (FabricFlowableFluid) firstTouchedFabricFluid.getFluid();
 
 			//If the entity, in the previous tick, not touches the fluid, executes the "fluid touched" event
 			if (!this.touchingFabricFluid && !this.firstUpdate) this.onFabricFluidTouched(fluid);
 
 			//Prevent fall damage and extinguish fire
 			if (fluid.isIn(FabricFluidTags.PREVENT_FALL_DAMAGE)) this.fallDistance = 0.0F;
+
 			if (fluid.isIn(FabricFluidTags.CAN_EXTINGUISH_FIRE) && this.isOnFire()) {
 				this.extinguish();
 				this.playExtinguishSound();
@@ -236,13 +298,15 @@ public abstract class EntityMixin implements FabricFluidEntity {
 		Vec3d pushingStrength = Vec3d.ZERO;
 		int nfluid = 0;
 
-		for(int x = minX; x < maxX; ++x) {
-			for(int y = minY; y < maxY; ++y) {
-				for(int z = minZ; z < maxZ; ++z) {
+		for (int x = minX; x < maxX; ++x) {
+			for (int y = minY; y < maxY; ++y) {
+				for (int z = minZ; z < maxZ; ++z) {
 					mutable.set(x, y, z);
 					FluidState fluidState = this.world.getFluidState(mutable);
+
 					if (FluidUtils.isFabricFluid(fluidState)) {
 						double height = y + fluidState.getHeight(this.world, mutable);
+
 						if (height >= box.minY) {
 							//Set the first touched fabric fluid
 							if (firstTouchedFabricFluid == null) firstTouchedFabricFluid = fluidState;
@@ -253,6 +317,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 							if (pushable) {
 								//Get the fluid velocity
 								Vec3d fluidVelocity = fluidState.getVelocity(this.world, mutable);
+
 								if (maxTouchedFluidHeight < 0.4D) {
 									fluidVelocity = fluidVelocity.multiply(maxTouchedFluidHeight);
 								}
@@ -279,11 +344,12 @@ public abstract class EntityMixin implements FabricFluidEntity {
 			if (!(getThis() instanceof PlayerEntity)) pushingStrength = pushingStrength.normalize();
 
 			//Apply the fluid viscosity to calc the pushing strength
-			double viscosity = ((FabricFlowableFluid)firstTouchedFabricFluid.getFluid()).getViscosity(this.world, this.getThis());
+			double viscosity = ((FabricFlowableFluid) firstTouchedFabricFluid.getFluid()).getViscosity(this.world, this.getThis());
 			pushingStrength = pushingStrength.multiply(viscosity);
 
 			//Normalize the pushing strength basing on the current entity velocity
 			Vec3d entityVelocity = this.getVelocity();
+
 			if (Math.abs(entityVelocity.x) < 0.003D && Math.abs(entityVelocity.z) < 0.003D && pushingStrength.length() < 0.0045000000000000005D) {
 				pushingStrength = pushingStrength.normalize().multiply(0.0045000000000000005D);
 			}
@@ -304,7 +370,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 		FluidState newSubmergedFluid = FluidUtils.getSubmergedFluid(getThis());
 
 		/* Checks "enter in", "exit from", and "changed" fluid
-		   and executes the respective protected event */
+			and executes the respective protected event */
 		if (!FluidUtils.areEqual(this.submergedFluid, newSubmergedFluid)) {
 			if (this.submergedFluid == null && newSubmergedFluid != null) {
 				enterInFabricFluid(newSubmergedFluid);
@@ -328,7 +394,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 		if (this.isSpectator() || this.getThis() instanceof ExperienceOrbEntity) return;
 
 		//Plays the splash sound
-		SoundParameters splashSound =  fluid.getSplashSound(this.world, getThis());
+		SoundParameters splashSound = fluid.getSplashSound(this.world, getThis());
 		splashSound.ifHasSound(sound -> this.playSound(sound.getSoundEvent(), sound.getVolume(), sound.getPitch()));
 
 		//Executes an event if the entity is splashing in a fabric fluid
@@ -342,23 +408,26 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 		//Executes an event if the entity is submerged in a fabric fluid
 		if (isActuallySubmergedInFabricFluid()) {
-			((FabricFlowableFluid)submergedFluid.getFluid()).onSubmerged(this.world, this.getThis());
+			((FabricFlowableFluid) submergedFluid.getFluid()).onSubmerged(this.world, this.getThis());
 		}
 
 		//Executes an event if the entity is touching a fabric fluid
 		if (isTouchingFabricFluid()) {
-			((FabricFlowableFluid)firstTouchedFabricFluid.getFluid()).onTouching(this.world, this.getThis());
+			((FabricFlowableFluid) firstTouchedFabricFluid.getFluid()).onTouching(this.world, this.getThis());
 		}
 	}
 
 	@Unique
-	protected void enterInFabricFluid(@NotNull FluidState fluidState) {}
+	protected void enterInFabricFluid(@NotNull FluidState fluidState) {
+	}
 
 	@Unique
-	protected void exitFromFabricFluid(@NotNull FluidState fluidState) {}
+	protected void exitFromFabricFluid(@NotNull FluidState fluidState) {
+	}
 
 	@Unique
-	protected void changedFabricFluid(@NotNull FluidState oldFluidState, @NotNull FluidState newFluidState) {}
+	protected void changedFabricFluid(@NotNull FluidState oldFluidState, @NotNull FluidState newFluidState) {
+	}
 
 	//endregion
 
@@ -406,9 +475,8 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 	//endregion
 
-
 	@Unique
 	private Entity getThis() {
-		return (Entity)(Object)this;
+		return (Entity) (Object) this;
 	}
 }

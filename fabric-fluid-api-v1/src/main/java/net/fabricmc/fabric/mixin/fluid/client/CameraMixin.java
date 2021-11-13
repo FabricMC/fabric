@@ -16,25 +16,35 @@
 
 package net.fabricmc.fabric.mixin.fluid.client;
 
-import net.fabricmc.fabric.impl.fluid.FabricFluidCamera;
-import net.minecraft.client.render.Camera;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import net.minecraft.client.render.Camera;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
+
+import net.fabricmc.fabric.impl.fluid.FabricFluidCamera;
+
 @Mixin(Camera.class)
 public class CameraMixin implements FabricFluidCamera {
-    @Shadow private BlockView area;
-    @Shadow @Final private BlockPos.Mutable blockPos;
+	//region INTERNAL METHODS AND VARIABLES PLACEHOLDERS
 
-    /**
-     * Returns the fluid in which the camera is submerged.
-     */
-    @Override
-    public FluidState getSubmergedFluidState() {
-        return this.area.getFluidState(this.blockPos);
-    }
+	@Shadow
+	private BlockView area;
+
+	@Shadow
+	@Final
+	private BlockPos.Mutable blockPos;
+
+	//endregion
+
+	/**
+	 * Returns the fluid in which the camera is submerged.
+	 */
+	@Override
+	public FluidState getSubmergedFluidState() {
+		return this.area.getFluidState(this.blockPos);
+	}
 }

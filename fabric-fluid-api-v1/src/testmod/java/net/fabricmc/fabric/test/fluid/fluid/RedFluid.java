@@ -16,10 +16,8 @@
 
 package net.fabricmc.fabric.test.fluid.fluid;
 
-import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
-import net.fabricmc.fabric.api.util.SoundParameters;
-import net.fabricmc.fabric.test.fluid.block.MBlocks;
-import net.fabricmc.fabric.test.fluid.item.MItems;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.world.ClientWorld;
@@ -33,7 +31,11 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
-import org.jetbrains.annotations.NotNull;
+
+import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
+import net.fabricmc.fabric.api.util.SoundParameters;
+import net.fabricmc.fabric.test.fluid.block.MBlocks;
+import net.fabricmc.fabric.test.fluid.item.MItems;
 
 public abstract class RedFluid extends FabricFlowableFluid {
 	@Override

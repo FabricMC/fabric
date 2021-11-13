@@ -16,14 +16,16 @@
 
 package net.fabricmc.fabric.impl.fluid;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.util.SoundParameters;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.sound.SoundCategory;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.util.SoundParameters;
 
 /**
  * Implements a sound loop player used when the player is submerged by a fluid.
@@ -35,20 +37,10 @@ public class UnderfluidSoundLoop extends MovingSoundInstance {
 	private int transitionTimer;
 
 	/**
-	 * @param player Player that will listen the sound.
-	 * @param sound Sound to play.
-	 * @return New UnderfluidSoundLoop instance.
-	 */
-	@Contract("_, _ -> new")
-	public static @NotNull UnderfluidSoundLoop of(@NotNull ClientPlayerEntity player, @NotNull SoundParameters sound) {
-		if (!sound.hasSound()) throw new IllegalArgumentException("There is no sound specified in the sound parameter.");
-		return new UnderfluidSoundLoop(player, sound);
-	}
-
-	/**
 	 * Initializes a new UnderfluidSoundLoop instance.
+	 *
 	 * @param player Player that will listen the sound.
-	 * @param sound Sound to play.
+	 * @param sound  Sound to play.
 	 */
 	private UnderfluidSoundLoop(@NotNull ClientPlayerEntity player, @NotNull SoundParameters sound) {
 		super(sound.getSoundEvent(), SoundCategory.AMBIENT);
@@ -59,6 +51,20 @@ public class UnderfluidSoundLoop extends MovingSoundInstance {
 		this.pitch = sound.getPitch();
 		this.transitionTimer = 0;
 		start();
+	}
+
+	/**
+	 * @param player Player that will listen the sound.
+	 * @param sound  Sound to play.
+	 * @return New UnderfluidSoundLoop instance.
+	 */
+	@Contract("_, _ -> new")
+	public static @NotNull UnderfluidSoundLoop of(@NotNull ClientPlayerEntity player, @NotNull SoundParameters sound) {
+		if (!sound.hasSound()) {
+			throw new IllegalArgumentException("There is no sound specified in the sound parameter.");
+		}
+
+		return new UnderfluidSoundLoop(player, sound);
 	}
 
 	/**
@@ -81,11 +87,14 @@ public class UnderfluidSoundLoop extends MovingSoundInstance {
 	@Override
 	public void tick() {
 		if (!this.player.isRemoved() && this.transitionTimer >= 0) {
-			if (playing) ++this.transitionTimer;
-			else this.transitionTimer -= 2;
+			if (playing) {
+				++this.transitionTimer;
+			} else {
+				this.transitionTimer -= 2;
+			}
 
 			this.transitionTimer = Math.min(this.transitionTimer, 40);
-			this.volume = Math.max(0.0F, Math.min((float)this.transitionTimer / 40.0F, 1.0F));
+			this.volume = Math.max(0.0F, Math.min((float) this.transitionTimer / 40.0F, 1.0F));
 		} else {
 			this.setDone();
 		}

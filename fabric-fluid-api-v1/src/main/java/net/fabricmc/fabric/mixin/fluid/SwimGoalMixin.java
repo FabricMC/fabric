@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.mixin.fluid;
 
-import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
-import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.mob.MobEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,14 +23,22 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.mob.MobEntity;
+
+import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
+
 @Mixin(SwimGoal.class)
 public class SwimGoalMixin {
-	@Shadow @Final private MobEntity mob;
+	@Shadow
+	@Final
+	private MobEntity mob;
 
 	@Inject(method = "canStart", at = @At("HEAD"), cancellable = true)
 	private void canStart(CallbackInfoReturnable<Boolean> cir) {
 		//If the entity is touching a swimmable fluid, can start swimming
-		FabricFluidEntity entity = (FabricFluidEntity)this.mob;
+		FabricFluidEntity entity = (FabricFluidEntity) this.mob;
+
 		if (entity.isTouchingSwimmableFluid() && entity.getFabricFluidHeight() > this.mob.getSwimHeight()) {
 			cir.setReturnValue(true);
 		}

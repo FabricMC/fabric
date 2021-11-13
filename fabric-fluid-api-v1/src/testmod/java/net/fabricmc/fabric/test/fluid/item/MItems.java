@@ -16,15 +16,16 @@
 
 package net.fabricmc.fabric.test.fluid.item;
 
-import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.test.fluid.core.ModCore;
-import net.fabricmc.fabric.test.fluid.fluid.MFluids;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.test.fluid.core.ModCore;
+import net.fabricmc.fabric.test.fluid.fluid.MFluids;
 
 public class MItems {
 	public static final Identifier BLUE_FLUID_BUCKET_ID = new Identifier(ModCore.ID, "blue_fluid_bucket");
@@ -39,8 +40,8 @@ public class MItems {
 	public static final BucketItem GREEN_FLUID_BUCKET = Registry.register(Registry.ITEM, GREEN_FLUID_BUCKET_ID,
 			new BucketItem(MFluids.GREEN_FLUID, new FabricItemSettings().maxCount(1).group(ItemGroup.MISC).recipeRemainder(Items.BUCKET)));
 
-
-	public static void load() {}
+	public static void load() {
+	}
 
 	public static void renderItems() {
 		ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 1 ? 0x0000ff : -1, BLUE_FLUID_BUCKET);
