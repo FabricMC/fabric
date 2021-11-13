@@ -57,7 +57,6 @@ public class UnderfluidSoundLoop extends MovingSoundInstance {
 		this.repeatDelay = 0;
 		this.volume = sound.getVolume();
 		this.pitch = sound.getPitch();
-		this.looping = true;
 		this.transitionTimer = 0;
 		start();
 	}
