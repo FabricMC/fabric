@@ -201,7 +201,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 			//Prevent fall damage and extinguish fire
 			if (fluid.isIn(FabricFluidTags.PREVENT_FALL_DAMAGE)) this.fallDistance = 0.0F;
-			if (fluid.isIn(FabricFluidTags.FIRE_EXTINGUISHER) && this.isOnFire()) {
+			if (fluid.isIn(FabricFluidTags.CAN_EXTINGUISH_FIRE) && this.isOnFire()) {
 				this.extinguish();
 				this.playExtinguishSound();
 			}

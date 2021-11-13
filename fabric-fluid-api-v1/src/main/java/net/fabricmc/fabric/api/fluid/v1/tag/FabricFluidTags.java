@@ -28,14 +28,14 @@ public class FabricFluidTags {
 	//region TAGS
 
 	/**
-	 * fabric:fire_extinguisher -> Identifies a fabric fluid that can extinguish fire.
+	 * fabric:can_extinguish_fire -> Identifies a fabric fluid that can extinguish fire.
 	 */
-	public static final Tag<Fluid> FIRE_EXTINGUISHER;
+	public static final Tag<Fluid> CAN_EXTINGUISH_FIRE;
 
 	/**
-	 * fabric:fire_lighter -> Identifies a fabric fluid that can light fire.
+	 * fabric:can_light_fire -> Identifies a fabric fluid that can light fire.
 	 */
-	public static final Tag<Fluid> FIRE_LIGHTER;
+	public static final Tag<Fluid> CAN_LIGHT_FIRE;
 
 	/**
 	 * fabric:navigable -> Identifies a fabric fluid that is navigable.
@@ -65,8 +65,8 @@ public class FabricFluidTags {
 	//endregion
 
 	static {
-		FIRE_EXTINGUISHER =   TagFactory.FLUID.create(new Identifier("fabric", "fire_extinguisher"));
-		FIRE_LIGHTER =        TagFactory.FLUID.create(new Identifier("fabric", "fire_lighter"));
+		CAN_EXTINGUISH_FIRE = TagFactory.FLUID.create(new Identifier("fabric", "can_extinguish_fire"));
+		CAN_LIGHT_FIRE =      TagFactory.FLUID.create(new Identifier("fabric", "can_light_fire"));
 		NAVIGABLE =           TagFactory.FLUID.create(new Identifier("fabric", "navigable"));
 		PREVENT_FALL_DAMAGE = TagFactory.FLUID.create(new Identifier("fabric", "prevent_fall_damage"));
 		RESPIRABLE =          TagFactory.FLUID.create(new Identifier("fabric", "respirable"));

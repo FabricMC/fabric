@@ -85,6 +85,11 @@ public abstract class BlueFluid extends FabricFlowableFluid {
 	}
 
 	@Override
+	public int getMaxLevel(FluidState state) {
+		return 7;
+	}
+
+	@Override
 	public int getFogColor(Entity entity, float tickDelta, ClientWorld world) {
 		return 0x0000ff;
 	}

@@ -1,41 +1,14 @@
 # Fabric Fluid Api (V1)
 
-This api is focused on improving everything about the fluid creation,
-compared with vanilla one.
+This api is focused on implementing an easy way to create custom fluids,
+and customize a lot of properties, such as sounds, fog, swim, hot damage...
+
+It also allows to simplify a lot of things and write less code
+avoiding unnecessarily repeating many common things,
+starting with the extension of the `FluidBlock` class to get a public constuctor.
 
 Here you can see a complete "ready to go" documentation
 of all the contents of this api:
-
-## Fluid rendering
-
-You can easyly render your fluid with his textures by using
-the static `render()` methods of the [`FluidRenderer`][fluidrenderer_java]
-class by specifying the texture id.
-
-There are two version of the render() method:
-
-* `render(Fluid still, Fluid flowing, Identifier textureID)`  
-  Parameters:
-  - `still (Fluid)`: The still variant of the fluid.
-  - `flowing (Fluid)`: The flowing variant of the fluid.
-  - `textureID (Identifier)`: The identifier of the texture to use.
-
-* `render(Fluid still, Fluid flowing, Identifier textureID, int color)`  
-  This is the same as the method above, but requires also:
-  - `color (int)`: The color used to recolorize the fluid texture.
-
-This method must be called on client side.
-
-Based on the given id the textures are searched into these paths:
-* `block/[TEXTURE_ID.PATH]_still` for the still variant.
-* `block/[TEXTURE_ID.PATH]_flow` for the flowing variant.
-
-For example if your texture Identifier is:
-
-`new Identifier("tutorial", "red_fluid")`
-
-The two textures, in the textures' folder, are: `block/red_fluid_still.png`
-and `block/red_fluid_flow.png`
 
 ## FabricFluidBlock
 
@@ -125,14 +98,14 @@ or can to wet.
 
 Costomizations applicable by setting [tags][fabric_fluid_tags] on the fluid:
 
-### Fire extinguisher
+### Can extinguish fire
 
-Fluids with the tag `fabric:fire_extinguisher`
+Fluids with the tag `fabric:can_extinguish_fire`
 can extinguish fire on entities on fire.
 
-### Fire lighter
+### Can light fire
 
-Fluids with the tag `fabric:fire_lighter`
+Fluids with the tag `fabric:can_light_fire`
 can light fire on entities and burnable blocks around it.
 
 ### Wet
@@ -210,9 +183,10 @@ This method is useful to handle setting entities on fire.
 
 The [`FabricFlowableFluid`][fabricflowablefluid_java] class extends the
 `FlowableFluid` class and implements some common fluid behaviour, to simplofy
-the fluid creation process.  
-It's still an abstract class, so you have to implement some specific methods.  
-Remember that is still possible to override the implemented methods
+the fluid creation process, write less code, and avoid bugs.  
+It's still an abstract class, because some methods are
+logically specific for every fluid.  
+Remember that is still possible to override the already implemented methods
 to change their behaviour.
 
 The implemented methods are:
@@ -267,7 +241,8 @@ The implemented methods are:
   and the max level for still fluid state.
 
 * `int getMaxLevel(FluidState state)`  
-  Returns the max level that the fluid can have (by default is 8).
+  Returns the max level that the fluid can have
+  (by default is 8, that is the maximum level possible).
 
 * `double getViscosity(World world, Entity entity)`  
   Returns 0.014 (the default water viscosity).
@@ -300,8 +275,8 @@ To add the [customizations tags][fabric_fluid_tags], create a **json** file
 for each tag you want to use inside `/resources/data/fabric/tags/fluids`.  
 The file names are respectively:
 
-* **Fire extinguisher:** `fire_extinguisher.json`
-* **Fire lighter:** `fire_lighter.json`
+* **Can extinguish fire:** `can_extinguish_fire.json`
+* **Can light fire:** `can_light_fire.json`
 * **Navigable:** `navigable.json`
 * **Prevent fall damage:** `prevent_fall_damage.json`
 * **Respirable:** `respirable.json`
@@ -323,7 +298,6 @@ Then add your fluid ids, in both still and flowing variant.
 
 
 
-[fluidrenderer_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/render/FluidRenderer.java
 [fabricfluidblock_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/FabricFluidBlock.java
 [fabricflowablefluid_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/FabricFlowableFluid.java
 [fabric_fluid_tags]: src/main/java/net/fabricmc/fabric/api/fluid/v1/tag/FabricFluidTags.java
