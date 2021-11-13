@@ -1,0 +1,30 @@
+archivesBaseName = "fabric-data-generation-api-v1"
+version = getSubprojectVersion(project)
+
+loom {
+	accessWidenerPath = file("src/main/resources/fabric-data-generation-api-v1.accesswidener")
+
+	runs {
+		datagen {
+			inherit testmodServer
+			name "Data Generation"
+			vmArg "-Dfabric-api.datagen"
+			vmArg "-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}"
+
+			// This is the working dir of the server, where the logs and what not go, not the output of the datagen
+			runDir "build/datagen"
+
+			ideConfigGenerated = true
+		}
+	}
+}
+
+assemble.dependsOn runDatagen
+
+task generateAccessWidener(type: JavaExec) {
+	mainClass = "net.fabricmc.fabric.test.datagen.AccessWidenerGenerator"
+	classpath = sourceSets.testmod.getRuntimeClasspath()
+
+	args file("template.accesswidener")
+	args file("src/main/resources/fabric-data-generation-api-v1.accesswidener")
+}
