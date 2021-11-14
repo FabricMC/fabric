@@ -74,7 +74,6 @@ public interface ResourceManagerHelper {
 	static boolean registerBuiltinResourcePack(Identifier id, ModContainer container, ResourcePackActivationType activationType) {
 		return ResourceManagerHelperImpl.registerBuiltinResourcePack(id, "resourcepacks/" + id.getPath(), container, activationType);
 	}
-	
 	/**
 	 * Registers a built-in resource pack.
 	 *

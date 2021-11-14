@@ -95,7 +95,6 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 
 		return true;
 	}
-	
 	/**
 	 * Registers a built-in resource pack. Internal implementation.
 	 *
