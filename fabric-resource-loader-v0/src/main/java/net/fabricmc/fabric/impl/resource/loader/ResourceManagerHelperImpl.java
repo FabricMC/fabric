@@ -61,6 +61,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	 * @param id             the identifier of the resource pack
 	 * @param subPath        the sub path in the mod resources
 	 * @param container      the mod container
+	 * @param displayName    the display name of the resource pack
 	 * @param activationType the activation type of the resource pack
 	 * @return {@code true} if successfully registered the resource pack, else {@code false}
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
