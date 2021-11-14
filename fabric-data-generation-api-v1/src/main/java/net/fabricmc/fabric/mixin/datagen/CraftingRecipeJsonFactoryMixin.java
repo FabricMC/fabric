@@ -47,6 +47,7 @@ public interface CraftingRecipeJsonFactoryMixin {
 
 	@Inject(method = "offerTo(Ljava/util/function/Consumer;)V", at = @At("HEAD"), cancellable = true)
 	default void offerTo(Consumer<RecipeJsonProvider> exporter, CallbackInfo info) {
+		// Change the logic that decides the recipe ID to use the currently processing modid as the namespace
 		if (FabricDataGenHelper.processingModId != null) {
 			this.offerTo(exporter, new Identifier(FabricDataGenHelper.processingModId, getItemId(this.getOutputItem()).getPath()));
 			info.cancel();

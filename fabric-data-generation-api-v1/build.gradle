@@ -1,3 +1,9 @@
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.tree.ClassNode
+
+import java.util.zip.ZipFile
+
 archivesBaseName = "fabric-data-generation-api-v1"
 version = getSubprojectVersion(project)
 
@@ -21,10 +27,48 @@ loom {
 
 assemble.dependsOn runDatagen
 
-task generateAccessWidener(type: JavaExec) {
-	mainClass = "net.fabricmc.fabric.test.datagen.AccessWidenerGenerator"
-	classpath = sourceSets.testmod.getRuntimeClasspath()
+task generateAccessWidener() {
+	doLast {
+		File inputJar = loom.mappingsProvider.mappedProvider.baseMappedJar
+		String accessWidener = file("template.accesswidener").text + "\n"
 
-	args file("template.accesswidener")
-	args file("src/main/resources/fabric-data-generation-api-v1.accesswidener")
+		def recipesProvider = getClassNode(inputJar, "net/minecraft/data/server/RecipesProvider.class")
+		recipesProvider.methods.forEach {
+			if ((it.access & Opcodes.ACC_SYNTHETIC) != 0 || (it.access & Opcodes.ACC_PUBLIC) != 0)
+				return
+
+			if (it.name.startsWith("<") || it.name == "generate")
+				return
+
+			accessWidener += "transitive-accessible\tmethod\t${recipesProvider.name}\t${it.name}\t${it.desc}\n"
+		}
+
+		def blockStateModelGenerator = getClassNode(inputJar, "net/minecraft/data/client/model/BlockStateModelGenerator.class")
+		blockStateModelGenerator.methods.forEach {
+			if ((it.access & Opcodes.ACC_SYNTHETIC) != 0 || (it.access & Opcodes.ACC_PUBLIC) != 0)
+				return
+
+			if (it.name.startsWith("<") || it.desc == "()V")
+				return
+
+			accessWidener += "transitive-accessible\tmethod\t${blockStateModelGenerator.name}\t${it.name}\t${it.desc}\n"
+		}
+
+
+		file("src/main/resources/fabric-data-generation-api-v1.accesswidener").text = accessWidener
+	}
+}
+
+ClassNode getClassNode(File input, String className) {
+	File inputJar = loom.mappingsProvider.mappedProvider.baseMappedJar
+
+	new ZipFile(inputJar).withCloseable { ZipFile zip  ->
+		zip.getInputStream(zip.getEntry(className)).withCloseable { is ->
+			ClassReader reader = new ClassReader(is)
+			ClassNode classNode = new ClassNode()
+			reader.accept(classNode, 0)
+
+			return classNode
+		}
+	}
 }

@@ -18,18 +18,42 @@ package net.fabricmc.fabric.test.datagen;
 
 import java.util.function.Consumer;
 
-import net.minecraft.block.Blocks;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.Material;
+import net.minecraft.data.client.ItemModelGenerator;
+import net.minecraft.data.client.model.BlockStateModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.tag.ItemTags;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorInitializer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockStateDefinitionProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 
-public class DataGeneratorTestInitializer implements DataGeneratorInitializer {
+public class DataGeneratorTestInitializer implements DataGeneratorInitializer, ModInitializer {
+	public static final String MOD_ID = "fabric-data-gen-api-v1-testmod";
+
+	public static Block block;
+	public static Item item;
+
+	@Override
+	public void onInitialize() {
+		Identifier identifier = new Identifier(MOD_ID, "data_gen_block");
+		block = Registry.register(Registry.BLOCK, identifier, new Block(AbstractBlock.Settings.of(Material.STONE)));
+		item = Registry.register(Registry.ITEM, identifier, new BlockItem(block, new Item.Settings().group(ItemGroup.MISC)));
+	}
+
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		dataGenerator.install(TestRecipeProvider::new);
+		dataGenerator.install(TestBlockStateDefinitionProvider::new);
 	}
 
 	private static class TestRecipeProvider extends FabricRecipeProvider {
@@ -38,8 +62,24 @@ public class DataGeneratorTestInitializer implements DataGeneratorInitializer {
 		}
 
 		@Override
-		public void generate(Consumer<RecipeJsonProvider> exporter) {
-			offerPlanksRecipe2(exporter, Blocks.ACACIA_PLANKS, ItemTags.ACACIA_LOGS);
+		public void generateRecipes(Consumer<RecipeJsonProvider> exporter) {
+			offerPlanksRecipe2(exporter, item, ItemTags.ACACIA_LOGS);
+		}
+	}
+
+	private static class TestBlockStateDefinitionProvider extends FabricBlockStateDefinitionProvider {
+		private TestBlockStateDefinitionProvider(FabricDataGenerator generator) {
+			super(generator);
+		}
+
+		@Override
+		public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
+			blockStateModelGenerator.registerSimpleCubeAll(block);
+		}
+
+		@Override
+		public void generateItemModels(ItemModelGenerator itemModelGenerator) {
+			//itemModelGenerator.register(item, Models.SLAB);
 		}
 	}
 }

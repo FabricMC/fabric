@@ -1,3 +1,7 @@
 accessWidener	v2	named
 
 accessible  field   net/minecraft/data/server/RecipesProvider   root    Lnet/minecraft/data/DataGenerator;
+
+transitive-accessible    method    net/minecraft/data/client/ItemModelGenerator    register    (Lnet/minecraft/item/Item;Lnet/minecraft/data/client/model/Model;)V
+transitive-accessible    method    net/minecraft/data/client/ItemModelGenerator    register    (Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;Lnet/minecraft/data/client/model/Model;)V
+transitive-accessible    method    net/minecraft/data/client/ItemModelGenerator    register    (Lnet/minecraft/item/Item;Ljava/lang/String;Lnet/minecraft/data/client/model/Model;)V

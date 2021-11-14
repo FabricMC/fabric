@@ -8,6 +8,9 @@
   "depends": {
   },
   "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.datagen.DataGeneratorTestInitializer"
+    ],
     "fabric-datagen": [
       "net.fabricmc.fabric.test.datagen.DataGeneratorTestInitializer"
     ]

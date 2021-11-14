@@ -3,7 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.datagen",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "CraftingRecipeJsonFactoryMixin"
+    "CraftingRecipeJsonFactoryMixin",
+    "BlockStateDefinitionProviderMixin"
   ],
   "server": [
     "server.MainMixin"

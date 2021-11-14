@@ -38,13 +38,13 @@ public abstract class FabricRecipeProvider extends RecipesProvider {
 		this.dataGenerator = dataGenerator;
 	}
 
-	public abstract void generate(Consumer<RecipeJsonProvider> exporter);
+	public abstract void generateRecipes(Consumer<RecipeJsonProvider> exporter);
 
 	@Override
 	public void run(DataCache cache) {
 		Path path = this.root.getOutput();
 		Set<Identifier> generatedRecipes = new HashSet<>();
-		generate(provider -> {
+		generateRecipes(provider -> {
 			Identifier identifier = provider.getRecipeId();
 
 			if (!generatedRecipes.add(identifier)) {
