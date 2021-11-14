@@ -64,6 +64,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	 * @param displayName    the display name of the resource pack
 	 * @param activationType the activation type of the resource pack
 	 * @return {@code true} if successfully registered the resource pack, else {@code false}
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, String, ResourcePackActivationType)
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
 	 */
@@ -105,6 +106,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	 * @param activationType the activation type of the resource pack
 	 * @return {@code true} if successfully registered the resource pack, else {@code false}
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, String, ResourcePackActivationType)
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
 	 */
 	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, ResourcePackActivationType activationType) {
