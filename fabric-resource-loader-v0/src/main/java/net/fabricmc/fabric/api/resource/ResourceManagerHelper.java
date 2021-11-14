@@ -74,6 +74,27 @@ public interface ResourceManagerHelper {
 	static boolean registerBuiltinResourcePack(Identifier id, ModContainer container, ResourcePackActivationType activationType) {
 		return ResourceManagerHelperImpl.registerBuiltinResourcePack(id, "resourcepacks/" + id.getPath(), container, activationType);
 	}
+	
+	/**
+	 * Registers a built-in resource pack.
+	 *
+	 * <p>A built-in resource pack is an extra resource pack provided by your mod which is not always active, it's similar to the "Programmer Art" resource pack.
+	 *
+	 * <p>Why and when to use it? A built-in resource pack should be used to provide extra assets/data that should be optional with your mod but still directly provided by it.
+	 * For example it could provide textures of your mod in another resolution, or could allow to provide different styles of your assets.
+	 *
+	 * <p>The path in which the resource pack is located is in the mod JAR file under the {@code "resourcepacks/<id path>"} directory. {@code id path} being the path specified
+	 * in the identifier of this built-in resource pack.
+	 *
+	 * @param id             the identifier of the resource pack
+	 * @param container      the mod container
+	 * @param displayName    the display name of the resource pack
+	 * @param activationType the activation type of the resource pack
+	 * @return {@code true} if successfully registered the resource pack, else {@code false}
+	 */
+	static boolean registerBuiltinResourcePack(Identifier id, ModContainer container, String displayName, ResourcePackActivationType activationType) {
+		return ResourceManagerHelperImpl.registerBuiltinResourcePack(id, "resourcepacks/" + id.getPath(), container, displayName, activationType);
+	}
 
 	/**
 	 * Registers a built-in resource pack.
