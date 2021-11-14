@@ -66,7 +66,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
 	 */
-	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, ResourcePackActivationType activationType) {
+	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, String displayName, ResourcePackActivationType activationType) {
 		String separator = container.getRootPath().getFileSystem().getSeparator();
 		subPath = subPath.replace("/", separator);
 
@@ -76,7 +76,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 			return false;
 		}
 
-		String name = id.getNamespace() + "/" + id.getPath();
+		String name = displayName;
 
 		builtinResourcePacks.add(new Pair<>(name, new ModNioResourcePack(container.getMetadata(), resourcePackPath, ResourceType.CLIENT_RESOURCES, null, activationType) {
 			@Override
@@ -93,6 +93,21 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		}));
 
 		return true;
+	}
+	
+	/**
+	 * Registers a built-in resource pack. Internal implementation.
+	 *
+	 * @param id             the identifier of the resource pack
+	 * @param subPath        the sub path in the mod resources
+	 * @param container      the mod container
+	 * @param activationType the activation type of the resource pack
+	 * @return {@code true} if successfully registered the resource pack, else {@code false}
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
+	 */
+	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, ResourcePackActivationType activationType) {
+		return registerBuiltinResourcePack(id, subPath, container, id.getNamespace() + "/" + id.getPath(), activationType);
 	}
 
 	public static void registerBuiltinResourcePacks(ResourceType resourceType, Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
