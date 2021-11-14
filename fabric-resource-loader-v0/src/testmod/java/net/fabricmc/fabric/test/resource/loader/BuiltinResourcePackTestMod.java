@@ -38,5 +38,9 @@ public class BuiltinResourcePackTestMod implements ModInitializer {
 				.map(container -> ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "test"),
 						container, "Fabric Resource Loader Test Pack", ResourcePackActivationType.NORMAL))
 				.filter(success -> !success).ifPresent(success -> LOGGER.warn("Could not register built-in resource pack."));
+		FabricLoader.getInstance().getModContainer(MODID)
+				.map(container -> ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "test2"),
+						container, ResourcePackActivationType.NORMAL))
+				.filter(success -> !success).ifPresent(success -> LOGGER.warn("Could not register built-in resource pack."));
 	}
 }
