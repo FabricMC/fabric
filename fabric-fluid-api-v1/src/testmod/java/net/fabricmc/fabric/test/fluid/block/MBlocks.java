@@ -32,13 +32,17 @@ public class MBlocks {
 	public static final FluidBlock BLUE_FLUID = Registry.register(Registry.BLOCK, BLUE_FLUID_ID,
 			new FabricFluidBlock(MFluids.BLUE_FLUID, FabricBlockSettings.of(Material.WATER).mapColor(MapColor.BLUE)));
 
-	public static final Identifier RED_FLUID_ID = new Identifier(ModCore.ID, "red_fluid");
-	public static final FluidBlock RED_FLUID = Registry.register(Registry.BLOCK, RED_FLUID_ID,
-			new FabricFluidBlock(MFluids.RED_FLUID, FabricBlockSettings.of(Material.WATER).mapColor(MapColor.RED)));
+	public static final Identifier CYAN_FLUID_ID = new Identifier(ModCore.ID, "cyan_fluid");
+	public static final FluidBlock CYAN_FLUID = Registry.register(Registry.BLOCK, CYAN_FLUID_ID,
+			new FabricFluidBlock(MFluids.CYAN_FLUID, FabricBlockSettings.of(Material.WATER).mapColor(MapColor.CYAN)));
 
 	public static final Identifier GREEN_FLUID_ID = new Identifier(ModCore.ID, "green_fluid");
 	public static final FluidBlock GREEN_FLUID = Registry.register(Registry.BLOCK, GREEN_FLUID_ID,
 			new FabricFluidBlock(MFluids.GREEN_FLUID, FabricBlockSettings.of(Material.WATER).mapColor(MapColor.GREEN)));
+
+	public static final Identifier RED_FLUID_ID = new Identifier(ModCore.ID, "red_fluid");
+	public static final FluidBlock RED_FLUID = Registry.register(Registry.BLOCK, RED_FLUID_ID,
+			new FabricFluidBlock(MFluids.RED_FLUID, FabricBlockSettings.of(Material.WATER).mapColor(MapColor.RED)));
 
 	public static void load() {
 	}

@@ -3,6 +3,8 @@
   "values":
   [
     "fabric-fluid-api-v1-testmod:blue_fluid",
-    "fabric-fluid-api-v1-testmod:blue_fluid_flowing"
+    "fabric-fluid-api-v1-testmod:blue_fluid_flowing",
+    "fabric-fluid-api-v1-testmod:cyan_fluid",
+    "fabric-fluid-api-v1-testmod:cyan_fluid_flowing"
   ]
 }

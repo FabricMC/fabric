@@ -120,10 +120,10 @@ and damage them, if are damageable by wet fluids, like endermans.
 Fluids with the tag `fabric:prevent_fall_damage`
 can prevent fall damage.
 
-### Respirable
+### Breathable
 
-Fluids with the tag `fabric:respirable`
-are respirable by entities, and will not cause drowning.
+Fluids with the tag `fabric:breathable`
+are breathable by entities, and will not cause drowning.
 
 ### Swimmable
 
@@ -279,7 +279,7 @@ The file names are respectively:
 * **Can light fire:** `can_light_fire.json`
 * **Navigable:** `navigable.json`
 * **Prevent fall damage:** `prevent_fall_damage.json`
-* **Respirable:** `respirable.json`
+* **Breathable:** `breathable.json`
 * **Swimmable:** `swimmable.json`
 * **Wet:** `wet.json`
 

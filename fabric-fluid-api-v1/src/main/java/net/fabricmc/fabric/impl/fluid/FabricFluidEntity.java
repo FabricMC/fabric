@@ -16,15 +16,39 @@
 
 package net.fabricmc.fabric.impl.fluid;
 
+import net.minecraft.fluid.FluidState;
+
 /**
  * Implements some fluid-related entity features.
  */
 @SuppressWarnings("unused")
 public interface FabricFluidEntity {
 	/**
+	 * <p>Updates the current touched fabric fluid state
+	 * and applies the fluid pushing strength to the entity.</p>
+	 * <br>
+	 * <p>NOTE: This is not intended to be public!
+	 * Is exposed only for compatibility with LivingEntity mixin!</p>
+	 * <p>Call this method with caution!</p>
+	 */
+	@SuppressWarnings("DeprecatedIsStillUsed")
+	@Deprecated
+	void checkFabricFluidState();
+
+	/**
 	 * @return Height of the current fabric fluid.
 	 */
 	double getFabricFluidHeight();
+
+	/**
+	 * @return The current fluid in which the entity is submerged.
+	 */
+	FluidState getSubmergedFluid();
+
+	/**
+	 * @return The first touched fabric fluid of the entity.
+	 */
+	FluidState getFirstTouchedFabricFluid();
 
 	/**
 	 * @return True if the entity is in a fabric fluid.

@@ -36,6 +36,18 @@ public class MFluids {
 	public static final Identifier BLUE_FLUID_FLOWING_TID = new Identifier(ModCore.ID + ":block/blue_fluid_flow");
 	public static final BlueFluid BLUE_FLUID_FLOWING = Registry.register(Registry.FLUID, BLUE_FLUID_FLOWING_ID, new BlueFluid.Flowing());
 
+	public static final Identifier CYAN_FLUID_ID = new Identifier(ModCore.ID, "cyan_fluid");
+	public static final CyanFluid CYAN_FLUID = Registry.register(Registry.FLUID, CYAN_FLUID_ID, new CyanFluid.Still());
+
+	public static final Identifier CYAN_FLUID_FLOWING_ID = new Identifier(ModCore.ID, "cyan_fluid_flowing");
+	public static final CyanFluid CYAN_FLUID_FLOWING = Registry.register(Registry.FLUID, CYAN_FLUID_FLOWING_ID, new CyanFluid.Flowing());
+
+	public static final Identifier GREEN_FLUID_ID = new Identifier(ModCore.ID, "green_fluid");
+	public static final GreenFluid GREEN_FLUID = Registry.register(Registry.FLUID, GREEN_FLUID_ID, new GreenFluid.Still());
+
+	public static final Identifier GREEN_FLUID_FLOWING_ID = new Identifier(ModCore.ID, "green_fluid_flowing");
+	public static final GreenFluid GREEN_FLUID_FLOWING = Registry.register(Registry.FLUID, GREEN_FLUID_FLOWING_ID, new GreenFluid.Flowing());
+
 	public static final Identifier RED_FLUID_ID = new Identifier(ModCore.ID, "red_fluid");
 	public static final Identifier RED_FLUID_TID = new Identifier(ModCore.ID + ":block/red_fluid_still");
 	public static final RedFluid RED_FLUID = Registry.register(Registry.FLUID, RED_FLUID_ID, new RedFluid.Still());
@@ -44,22 +56,18 @@ public class MFluids {
 	public static final Identifier RED_FLUID_FLOWING_TID = new Identifier(ModCore.ID + ":block/red_fluid_flow");
 	public static final RedFluid RED_FLUID_FLOWING = Registry.register(Registry.FLUID, RED_FLUID_FLOWING_ID, new RedFluid.Flowing());
 
-	public static final Identifier GREEN_FLUID_ID = new Identifier(ModCore.ID, "green_fluid");
-	public static final GreenFluid GREEN_FLUID = Registry.register(Registry.FLUID, GREEN_FLUID_ID, new GreenFluid.Still());
-
-	public static final Identifier GREEN_FLUID_FLOWING_ID = new Identifier(ModCore.ID, "green_fluid_flowing");
-	public static final GreenFluid GREEN_FLUID_FLOWING = Registry.register(Registry.FLUID, GREEN_FLUID_FLOWING_ID, new GreenFluid.Flowing());
-
 	public static void load() {
 	}
 
 	public static void renderFluids() {
 		FluidRenderHandlerRegistry.INSTANCE.register(BLUE_FLUID, BLUE_FLUID_FLOWING,
 				new SimpleFluidRenderHandler(BLUE_FLUID_TID, BLUE_FLUID_FLOWING_TID, 0x0000ff));
-		FluidRenderHandlerRegistry.INSTANCE.register(RED_FLUID, RED_FLUID_FLOWING,
-				new SimpleFluidRenderHandler(RED_FLUID_TID, RED_FLUID_FLOWING_TID, 0xff0000));
+		FluidRenderHandlerRegistry.INSTANCE.register(CYAN_FLUID, CYAN_FLUID_FLOWING,
+				new SimpleFluidRenderHandler(BLUE_FLUID_TID, BLUE_FLUID_FLOWING_TID, 0x00ffff));
 		FluidRenderHandlerRegistry.INSTANCE.register(GREEN_FLUID, GREEN_FLUID_FLOWING,
 				new SimpleFluidRenderHandler(RED_FLUID_TID, RED_FLUID_FLOWING_TID, 0x00ff00));
+		FluidRenderHandlerRegistry.INSTANCE.register(RED_FLUID, RED_FLUID_FLOWING,
+				new SimpleFluidRenderHandler(RED_FLUID_TID, RED_FLUID_FLOWING_TID, 0xff0000));
 
 		ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
 			registry.register(BLUE_FLUID_TID);
@@ -69,7 +77,8 @@ public class MFluids {
 		});
 
 		BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), BLUE_FLUID, BLUE_FLUID_FLOWING);
-		BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), RED_FLUID, RED_FLUID_FLOWING);
+		BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), CYAN_FLUID, CYAN_FLUID_FLOWING);
 		BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), GREEN_FLUID, GREEN_FLUID_FLOWING);
+		BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), RED_FLUID, RED_FLUID_FLOWING);
 	}
 }

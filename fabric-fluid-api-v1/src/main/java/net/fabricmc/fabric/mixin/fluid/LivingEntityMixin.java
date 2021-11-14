@@ -35,9 +35,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
+import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin extends EntityMixin {
+public abstract class LivingEntityMixin {
 	//region INTERNAL METHODS AND VARIABLES PLACEHOLDERS
 
 	@Shadow
@@ -65,10 +66,14 @@ public abstract class LivingEntityMixin extends EntityMixin {
 
 	//region FALL DAMAGE
 
+	@SuppressWarnings("deprecation")
 	@Inject(method = "fall", at = @At("HEAD"))
 	private void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition, CallbackInfo ci) {
 		//Check every tick, when falling, if there is a fabric fluid that can prevent fall damage
-		if (!this.isTouchingFabricFluid()) this.checkFabricFluidState();
+		if (!((FabricFluidEntity) getThis()).isTouchingFabricFluid()) {
+			//NOTE: This requires checkFabricFluidState to be public, but it should be private, so is deprecated
+			((FabricFluidEntity) getThis()).checkFabricFluidState();
+		}
 	}
 
 	//endregion
@@ -78,7 +83,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 	@Redirect(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getMaxAir()I"))
 	private int getMaxAirRedirect(@NotNull LivingEntity entity) {
 		//If the entity is submerged in a fabric fluid, returns -20, so basetick does not reset the air
-		return FluidUtils.isFabricFluid(this.submergedFluid) ? -20 : entity.getMaxAir();
+		return FluidUtils.isFabricFluid(((FabricFluidEntity) getThis()).getSubmergedFluid()) ? -20 : entity.getMaxAir();
 	}
 
 	//endregion
@@ -88,13 +93,13 @@ public abstract class LivingEntityMixin extends EntityMixin {
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getFluidHeight(Lnet/minecraft/tag/Tag;)D", ordinal = 1))
 	private double getFluidHeightRedirect(LivingEntity entity, Tag<Fluid> tag) {
 		//Adds the fabric fluids to the valid fluids for swimming
-		return this.isTouchingFabricFluid() ? this.getFabricFluidHeight() : this.getFluidHeight(tag);
+		return ((FabricFluidEntity) getThis()).isTouchingFabricFluid() ? ((FabricFluidEntity) getThis()).getFabricFluidHeight() : getThis().getFluidHeight(tag);
 	}
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect(LivingEntity entity) {
 		//Adds the swimmable fabric fluids to the valid fluids for swimming
-		return this.isTouchingSwimmableFluid();
+		return ((FabricFluidEntity) getThis()).isTouchingSwimmableFluid();
 	}
 
 	//endregion
@@ -103,27 +108,30 @@ public abstract class LivingEntityMixin extends EntityMixin {
 
 	@Inject(method = "travel", at = @At("HEAD"), cancellable = true)
 	private void travel(Vec3d movementInput, CallbackInfo ci) {
-		if ((this.canMoveVoluntarily() || this.isLogicalSideForUpdatingMovement())
-				&& this.isTouchingFabricFluid() && this.shouldSwimInFluids()
-				&& !this.canWalkOnFluid(this.world.getFluidState(this.getBlockPos()).getFluid())) {
+		if ((this.canMoveVoluntarily() || getThis().isLogicalSideForUpdatingMovement())
+				&& ((FabricFluidEntity) getThis()).isTouchingFabricFluid() && this.shouldSwimInFluids()
+				&& !this.canWalkOnFluid(getThis().world.getFluidState(getThis().getBlockPos()).getFluid())) {
 			//Updates the travel movement velocity if the entity is on a fabric fluid (uses the water behaviour)
-			boolean falling = this.getVelocity().y <= 0.0D;
-			double currentY = this.getY();
-			float movement = this.isSprinting() ? 0.9F : this.getBaseMovementSpeedMultiplier();
+			boolean falling = getThis().getVelocity().y <= 0.0D;
+			double currentY = getThis().getY();
+			float movement = getThis().isSprinting() ? 0.9F : this.getBaseMovementSpeedMultiplier();
 
-			this.updateVelocity(0.02F, movementInput);
-			this.move(MovementType.SELF, this.getVelocity());
+			getThis().updateVelocity(0.02F, movementInput);
+			getThis().move(MovementType.SELF, getThis().getVelocity());
 
-			Vec3d velocity = this.getVelocity();
-			if (this.horizontalCollision && this.isClimbing()) velocity = new Vec3d(velocity.x, 0.2D, velocity.z);
+			Vec3d velocity = getThis().getVelocity();
 
-			this.setVelocity(velocity.multiply(movement, 0.800000011920929D, movement));
+			if (getThis().horizontalCollision && this.isClimbing()) {
+				velocity = new Vec3d(velocity.x, 0.2D, velocity.z);
+			}
 
-			Vec3d newVelocity = this.method_26317(0.08D, falling, this.getVelocity());
-			this.setVelocity(newVelocity);
-			if (this.horizontalCollision && this.doesNotCollide(newVelocity.x,
-					newVelocity.y + 0.6000000238418579D - this.getY() + currentY, newVelocity.z)) {
-				this.setVelocity(new Vec3d(newVelocity.x, 0.30000001192092896D, newVelocity.z));
+			getThis().setVelocity(velocity.multiply(movement, 0.800000011920929D, movement));
+
+			Vec3d newVelocity = this.method_26317(0.08D, falling, getThis().getVelocity());
+			getThis().setVelocity(newVelocity);
+			if (getThis().horizontalCollision && getThis().doesNotCollide(newVelocity.x,
+					newVelocity.y + 0.6000000238418579D - getThis().getY() + currentY, newVelocity.z)) {
+				getThis().setVelocity(new Vec3d(newVelocity.x, 0.30000001192092896D, newVelocity.z));
 			}
 
 			this.updateLimbs(this.getThis(), this.getThis() instanceof Flutterer);

@@ -49,9 +49,9 @@ public class FabricFluidTags {
 	public static final Tag<Fluid> PREVENT_FALL_DAMAGE;
 
 	/**
-	 * fabric:respirable -> Identifies a fabric fluid that is respirable.
+	 * fabric:breathable -> Identifies a fabric fluid that is breathable.
 	 */
-	public static final Tag<Fluid> RESPIRABLE;
+	public static final Tag<Fluid> BREATHABLE;
 
 	/**
 	 * fabric:swimmable -> Identifies a fabric fluid that is swimmable.
@@ -70,7 +70,7 @@ public class FabricFluidTags {
 		CAN_LIGHT_FIRE = TagFactory.FLUID.create(new Identifier("fabric", "can_light_fire"));
 		NAVIGABLE = TagFactory.FLUID.create(new Identifier("fabric", "navigable"));
 		PREVENT_FALL_DAMAGE = TagFactory.FLUID.create(new Identifier("fabric", "prevent_fall_damage"));
-		RESPIRABLE = TagFactory.FLUID.create(new Identifier("fabric", "respirable"));
+		BREATHABLE = TagFactory.FLUID.create(new Identifier("fabric", "breathable"));
 		SWIMMABLE = TagFactory.FLUID.create(new Identifier("fabric", "swimmable"));
 		WET = TagFactory.FLUID.create(new Identifier("fabric", "wet"));
 	}

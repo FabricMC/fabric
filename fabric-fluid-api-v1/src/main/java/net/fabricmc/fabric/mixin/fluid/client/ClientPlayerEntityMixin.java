@@ -32,11 +32,12 @@ import net.minecraft.sound.SoundCategory;
 
 import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 import net.fabricmc.fabric.api.util.SoundParameters;
+import net.fabricmc.fabric.impl.fluid.FabricFluidClientPlayerEntity;
+import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
 import net.fabricmc.fabric.impl.fluid.UnderfluidSoundLoop;
-import net.fabricmc.fabric.mixin.fluid.LivingEntityMixin;
 
 @Mixin(ClientPlayerEntity.class)
-public abstract class ClientPlayerEntityMixin extends LivingEntityMixin {
+public abstract class ClientPlayerEntityMixin implements FabricFluidClientPlayerEntity {
 	//region INTERNAL METHODS AND VARIABLES PLACEHOLDERS
 
 	@Shadow
@@ -45,9 +46,6 @@ public abstract class ClientPlayerEntityMixin extends LivingEntityMixin {
 	@Unique
 	private UnderfluidSoundLoop underfluidSound = null;
 
-	@Shadow
-	public abstract boolean isSubmergedInWater();
-
 	//endregion
 
 	//region FAST SWIMMING
@@ -55,19 +53,19 @@ public abstract class ClientPlayerEntityMixin extends LivingEntityMixin {
 	@Redirect(method = "isWalking", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
 	private boolean isSubmergedInWaterRedirect1(ClientPlayerEntity entity) {
 		//Adds the fabric fluids to the valid walkable fluids
-		return this.isSubmergedInWater() || this.isSubmergedInFabricFluid();
+		return entity.isSubmergedInWater() || ((FabricFluidEntity) entity).isSubmergedInFabricFluid();
 	}
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
 	private boolean isSubmergedInWaterRedirect2(ClientPlayerEntity entity) {
 		//Adds the fabric fluids to the valid fluids for fast swimming
-		return this.isSubmergedInSwimmableFluid();
+		return ((FabricFluidEntity) entity).isSubmergedInSwimmableFluid();
 	}
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect(ClientPlayerEntity entity) {
 		//Adds the fabric fluids to the valid fluids for fast swimming
-		return this.isTouchingSwimmableFluid();
+		return ((FabricFluidEntity) entity).isTouchingSwimmableFluid();
 	}
 
 	//endregion
@@ -75,16 +73,14 @@ public abstract class ClientPlayerEntityMixin extends LivingEntityMixin {
 	//region ENTER AND EXIT FLUID SOUNDS
 
 	@Override
-	@Unique
-	protected void enterInFabricFluid(@NotNull FluidState fluidState) {
+	public void enterInFluid(@NotNull FluidState fluidState) {
 		//Plays the "enter in fluid" sound and submerged ambient sound
 		playEnterInFluidSound(fluidState.getFluid());
 		startUnderfluidSound(fluidState.getFluid());
 	}
 
 	@Override
-	@Unique
-	protected void exitFromFabricFluid(@NotNull FluidState fluidState) {
+	public void exitFromFluid(@NotNull FluidState fluidState) {
 		//Stops the current submerged ambient sound
 		//Water automatically stops its sound, so there's no need to manage it
 		stopUnderfluidSound();
@@ -94,8 +90,7 @@ public abstract class ClientPlayerEntityMixin extends LivingEntityMixin {
 	}
 
 	@Override
-	@Unique
-	protected void changedFabricFluid(@NotNull FluidState oldFluidState, @NotNull FluidState newFluidState) {
+	public void changedFluid(@NotNull FluidState oldFluidState, @NotNull FluidState newFluidState) {
 		//Stops the current submerged ambient sound
 		//Water automatically stops its sound, so there's no need to manage it
 		stopUnderfluidSound();
@@ -112,8 +107,8 @@ public abstract class ClientPlayerEntityMixin extends LivingEntityMixin {
 	private void playEnterInFluidSound(@NotNull Fluid fluid) {
 		if (fluid instanceof FabricFlowableFluid fabricFluid) {
 			//Gets the "enter in fluid" sound and plays it
-			SoundParameters enterSound = fabricFluid.getEnterSound(this.world, getThis());
-			enterSound.ifHasSound(sound -> this.world.playSound(this.getX(), this.getY(), this.getZ(),
+			SoundParameters enterSound = fabricFluid.getEnterSound(getThis().world, getThis());
+			enterSound.ifHasSound(sound -> getThis().world.playSound(getThis().getX(), getThis().getY(), getThis().getZ(),
 					sound.getSoundEvent(), SoundCategory.AMBIENT, sound.getVolume(), sound.getPitch(), false));
 		}
 	}
@@ -122,8 +117,8 @@ public abstract class ClientPlayerEntityMixin extends LivingEntityMixin {
 	private void playExitFromFluidSound(@NotNull Fluid fluid) {
 		if (fluid instanceof FabricFlowableFluid fabricFluid) {
 			//Gets the "exit from fluid" sound and plays it
-			SoundParameters exitSound = fabricFluid.getExitSound(this.world, getThis());
-			exitSound.ifHasSound(sound -> this.world.playSound(this.getX(), this.getY(), this.getZ(),
+			SoundParameters exitSound = fabricFluid.getExitSound(getThis().world, getThis());
+			exitSound.ifHasSound(sound -> getThis().world.playSound(getThis().getX(), getThis().getY(), getThis().getZ(),
 					sound.getSoundEvent(), SoundCategory.AMBIENT, sound.getVolume(), sound.getPitch(), false));
 		}
 	}
@@ -132,9 +127,12 @@ public abstract class ClientPlayerEntityMixin extends LivingEntityMixin {
 	private void startUnderfluidSound(@NotNull Fluid fluid) {
 		if (fluid instanceof FabricFlowableFluid fabricFluid) {
 			//Gets the submerged ambient sound and plays it
-			SoundParameters subSound = fabricFluid.getSubmergedAmbientSound(this.world, getThis());
+			SoundParameters subSound = fabricFluid.getSubmergedAmbientSound(getThis().world, getThis());
 			subSound.ifHasSound(sound -> underfluidSound = UnderfluidSoundLoop.of(getThis(), sound));
-			if (underfluidSound != null) this.client.getSoundManager().play(underfluidSound);
+
+			if (underfluidSound != null) {
+				this.client.getSoundManager().play(underfluidSound);
+			}
 		}
 	}
 

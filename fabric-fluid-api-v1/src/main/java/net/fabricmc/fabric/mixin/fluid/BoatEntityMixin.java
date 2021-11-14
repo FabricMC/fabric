@@ -35,9 +35,10 @@ import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
+import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
 
 @Mixin(BoatEntity.class)
-public abstract class BoatEntityMixin extends EntityMixin {
+public abstract class BoatEntityMixin {
 	@Redirect(method = "method_7544", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isInRedirect1(FluidState state, Tag<Fluid> tag) {
 		//Enable boat floating on navigable fluids
@@ -77,15 +78,21 @@ public abstract class BoatEntityMixin extends EntityMixin {
 	@Inject(method = "getPaddleSoundEvent", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
 	private void getPaddleSoundEvent(CallbackInfoReturnable<SoundEvent> cir) {
 		//If the boat is touching a fabric fluid gets the paddle sound and returns it
-		if (this.isTouchingFabricFluid()) {
+		if (((FabricFluidEntity) getThis()).isTouchingFabricFluid()) {
 			//Gets the paddle sound
-			Optional<SoundEvent> paddleSound = ((FabricFlowableFluid) firstTouchedFabricFluid.getFluid()).getPaddleSound();
+			FabricFlowableFluid fluid = (FabricFlowableFluid) ((FabricFluidEntity) getThis()).getFirstTouchedFabricFluid().getFluid();
+			Optional<SoundEvent> paddleSound = fluid.getPaddleSound();
 			paddleSound.ifPresentOrElse(cir::setReturnValue, () -> cir.setReturnValue(null));
 		}
 	}
 
 	@Unique
 	private boolean isSubmerged() {
-		return this.submergedFluid != null;
+		return ((FabricFluidEntity) getThis()).getSubmergedFluid() != null;
+	}
+
+	@Unique
+	private BoatEntity getThis() {
+		return (BoatEntity) (Object) this;
 	}
 }

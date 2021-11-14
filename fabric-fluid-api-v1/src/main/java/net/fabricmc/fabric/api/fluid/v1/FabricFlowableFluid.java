@@ -323,7 +323,7 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	public void onSubmerged(@NotNull World world, Entity entity) {
 		//Implements drowning living entities
 		if (!world.isClient && entity instanceof LivingEntity life) {
-			if (!this.isIn(FabricFluidTags.RESPIRABLE) && !life.canBreatheInWater() && !StatusEffectUtil.hasWaterBreathing(life)) {
+			if (!this.isIn(FabricFluidTags.BREATHABLE) && !life.canBreatheInWater() && !StatusEffectUtil.hasWaterBreathing(life)) {
 				if (!(life instanceof PlayerEntity player && player.getAbilities().invulnerable)) {
 					life.setAir(life.getAir() - 1);
 

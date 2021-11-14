@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.sound.SoundEvent;
 
 /**
- * Incapsulates some sound parameters.
+ * Encapsulates some sound parameters.
  */
 @SuppressWarnings("unused")
 public class SoundParameters {
@@ -111,7 +111,9 @@ public class SoundParameters {
 	 * @throws NullPointerException if the SoundEvent is not null and the given action is {@code null}.
 	 */
 	public void ifHasSound(Consumer<SoundParameters> action) {
-		if (hasSound()) action.accept(this);
+		if (hasSound()) {
+			action.accept(this);
+		}
 	}
 
 	/**

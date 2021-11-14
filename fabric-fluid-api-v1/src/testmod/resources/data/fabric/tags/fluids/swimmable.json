@@ -2,6 +2,8 @@
   "replace": false,
   "values":
   [
+    "fabric-fluid-api-v1-testmod:cyan_fluid",
+    "fabric-fluid-api-v1-testmod:cyan_fluid_flowing",
     "fabric-fluid-api-v1-testmod:green_fluid",
     "fabric-fluid-api-v1-testmod:green_fluid_flowing",
     "fabric-fluid-api-v1-testmod:red_fluid",
