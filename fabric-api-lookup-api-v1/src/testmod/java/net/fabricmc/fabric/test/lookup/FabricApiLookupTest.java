@@ -27,6 +27,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 
+import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -35,9 +36,10 @@ import net.fabricmc.fabric.test.lookup.api.ItemApis;
 import net.fabricmc.fabric.test.lookup.api.ItemInsertable;
 import net.fabricmc.fabric.test.lookup.compat.InventoryExtractableProvider;
 import net.fabricmc.fabric.test.lookup.compat.InventoryInsertableProvider;
+import net.fabricmc.fabric.test.lookup.entity.FabricEntityApiLookupTest;
 import net.fabricmc.fabric.test.lookup.item.FabricItemApiLookupTest;
 
-public class FabricApiLookupTest implements ModInitializer {
+public class FabricApiLookupTest implements ModInitializer, ClientModInitializer {
 	public static final String MOD_ID = "fabric-lookup-api-v1-testmod";
 	// Chute - Block without model that transfers item from the container above to the container below.
 	// It's meant to work with unsided containers: chests, dispensers, droppers and hoppers.
@@ -50,6 +52,9 @@ public class FabricApiLookupTest implements ModInitializer {
 	public static final BlockItem COBBLE_GEN_ITEM = new BlockItem(COBBLE_GEN_BLOCK, new Item.Settings().group(ItemGroup.MISC));
 	public static BlockEntityType<CobbleGenBlockEntity> COBBLE_GEN_BLOCK_ENTITY_TYPE;
 	// Testing for item api lookups is done in the `item` package.
+
+	public static final InspectorBlock INSPECTOR_BLOCK = new InspectorBlock(FabricBlockSettings.of(Material.METAL));
+	public static final BlockItem INSPECTOR_ITEM = new BlockItem(INSPECTOR_BLOCK, new Item.Settings().group(ItemGroup.MISC));
 
 	@Override
 	public void onInitialize() {
@@ -73,7 +78,17 @@ public class FabricApiLookupTest implements ModInitializer {
 		testLookupRegistry();
 		testSelfRegistration();
 
+		Identifier inspector = new Identifier(FabricApiLookupTest.MOD_ID, "inspector");
+		Registry.register(Registry.BLOCK, inspector, INSPECTOR_BLOCK);
+		Registry.register(Registry.ITEM, inspector, INSPECTOR_ITEM);
+
 		FabricItemApiLookupTest.onInitialize();
+		FabricEntityApiLookupTest.onInitialize();
+	}
+
+	@Override
+	public void onInitializeClient() {
+		FabricEntityApiLookupTest.onInitializeClient();
 	}
 
 	private static void testLookupRegistry() {

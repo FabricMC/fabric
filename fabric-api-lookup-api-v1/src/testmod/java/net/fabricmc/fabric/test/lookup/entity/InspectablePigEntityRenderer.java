@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.lookup.item;
+package net.fabricmc.fabric.test.lookup.entity;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
+import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.PigEntityRenderer;
+import net.minecraft.entity.passive.PigEntity;
+import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.test.lookup.api.Inspectable;
+public class InspectablePigEntityRenderer extends PigEntityRenderer {
+	private static final Identifier TEXTURE = new Identifier("missingno");
 
-public class InspectableItem extends Item implements Inspectable {
-	private final String inspectionResult;
-
-	public InspectableItem(String inspectionResult) {
-		super(new Settings().group(ItemGroup.MISC));
-		this.inspectionResult = inspectionResult;
+	public InspectablePigEntityRenderer(EntityRendererFactory.Context context) {
+		super(context);
 	}
 
 	@Override
-	public Text inspect() {
-		return new LiteralText(inspectionResult);
+	public Identifier getTexture(PigEntity pigEntity) {
+		return TEXTURE;
 	}
 }
