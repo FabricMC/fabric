@@ -4,9 +4,12 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "AxeItemAccessor",
+    "AxeItemMixin",
     "HoeItemAccessor",
+    "HoneycombItemMixin",
     "MixinAbstractFurnaceBlockEntity",
     "MixinFireBlock",
+    "OxidizableMixin",
     "ShovelItemAccessor"
   ],
   "client": [

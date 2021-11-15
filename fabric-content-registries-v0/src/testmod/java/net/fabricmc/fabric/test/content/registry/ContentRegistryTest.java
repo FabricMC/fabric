@@ -21,8 +21,10 @@ import net.minecraft.item.HoeItem;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
+import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
+import net.fabricmc.fabric.api.util.OxidizableFamily;
 
 public final class ContentRegistryTest implements ModInitializer {
 	@Override
@@ -31,6 +33,8 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - red wool is flattenable to yellow wool
 		//  - quartz pillars are strippable to hay blocks
 		//  - green wool is tillable to lime wool
+		//  - copper ore, iron ore, gold ore, and diamond ore can be waxed into their deepslate variants and scraped back again
+		//  - aforementioned ores can be scraped from diamond -> gold -> iron -> copper
 
 		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.getDefaultState());
 		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
@@ -39,11 +43,39 @@ public final class ContentRegistryTest implements ModInitializer {
 		try {
 			StrippableBlockRegistry.register(Blocks.BLUE_WOOL, Blocks.OAK_LOG);
 			StrippableBlockRegistry.register(Blocks.HAY_BLOCK, Blocks.BLUE_WOOL);
-			throw new AssertionError("StrippableBlockRegistry didn't throw when blocks where missing the 'axis' property!");
+			throw new AssertionError("StrippableBlockRegistry didn't throw when blocks were missing the 'axis' property!");
 		} catch (IllegalArgumentException e) {
 			// expected behavior
 		}
 
 		TillableBlockRegistry.register(Blocks.GREEN_WOOL, context -> true, HoeItem.createTillAction(Blocks.LIME_WOOL.getDefaultState()));
+
+		// mote that since ores do not implement Oxidizable that a warning will be shown in the log
+		OxidizableFamily testFamily = new OxidizableFamily.Builder()
+				.unaffected(Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE)
+				.exposed(Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE)
+				.weathered(Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE)
+				.oxidized(Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE)
+				.build();
+
+		OxidizableBlocksRegistry.registerFamily(testFamily);
+
+		// assert that OxidizableFamily.Builder throws when a family is missing blocks
+		try {
+			new OxidizableFamily.Builder() // Has a null entry
+					.unaffected(Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE)
+					.exposed(Blocks.REDSTONE_ORE, Blocks.DEEPSLATE_REDSTONE_ORE)
+					.weathered(Blocks.LAPIS_ORE, Blocks.DEEPSLATE_LAPIS_ORE)
+					.oxidized(Blocks.NETHER_GOLD_ORE, null)
+					.build();
+
+			new OxidizableFamily.Builder() // Is missing Oxidization levels
+					.unaffected(Blocks.EMERALD_ORE, Blocks.DEEPSLATE_EMERALD_ORE)
+					.build();
+
+			throw new AssertionError("OxidizableFamily.Builder didn't throw when blocks were missing in a family!");
+		} catch (IllegalStateException e) {
+			// expected behavior
+		}
 	}
 }
