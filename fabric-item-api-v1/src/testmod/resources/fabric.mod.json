@@ -9,14 +9,12 @@
     "fabric-item-api-v1": "*"
   },
   "entrypoints": {
-    "main": [
-      "net.fabricmc.fabric.test.item.FabricItemSettingsTests"
-    ],
     "client": [
       "net.fabricmc.fabric.test.item.client.TooltipTests"
     ],
     "main": [
-      "net.fabricmc.fabric.test.item.CustomDamageTest"
+      "net.fabricmc.fabric.test.item.CustomDamageTest",
+      "net.fabricmc.fabric.test.item.FabricItemSettingsTests"
     ]
   }
 }
