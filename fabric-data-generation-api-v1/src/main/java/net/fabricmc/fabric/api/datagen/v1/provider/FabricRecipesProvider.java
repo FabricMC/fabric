@@ -30,10 +30,10 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
-public abstract class FabricRecipeProvider extends RecipesProvider {
+public abstract class FabricRecipesProvider extends RecipesProvider {
 	private final FabricDataGenerator dataGenerator;
 
-	public FabricRecipeProvider(FabricDataGenerator dataGenerator) {
+	public FabricRecipesProvider(FabricDataGenerator dataGenerator) {
 		super(dataGenerator);
 		this.dataGenerator = dataGenerator;
 	}

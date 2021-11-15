@@ -16,54 +16,40 @@
 
 package net.fabricmc.fabric.test.datagen;
 
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
+
 import java.util.function.Consumer;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Material;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.model.BlockStateModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.ItemTags;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorInitializer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockStateDefinitionProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipesProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 
-public class DataGeneratorTestInitializer implements DataGeneratorInitializer, ModInitializer {
-	public static final String MOD_ID = "fabric-data-gen-api-v1-testmod";
-
-	public static Block block;
-	public static Item item;
-
-	@Override
-	public void onInitialize() {
-		Identifier identifier = new Identifier(MOD_ID, "data_gen_block");
-		block = Registry.register(Registry.BLOCK, identifier, new Block(AbstractBlock.Settings.of(Material.STONE)));
-		item = Registry.register(Registry.ITEM, identifier, new BlockItem(block, new Item.Settings().group(ItemGroup.MISC)));
-	}
-
+public class DataGeneratorTestInitializer implements DataGeneratorInitializer {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		dataGenerator.install(TestRecipeProvider::new);
 		dataGenerator.install(TestBlockStateDefinitionProvider::new);
+
+		TestBlockTagsProvider blockTagsProvider = dataGenerator.install(TestBlockTagsProvider::new);
+		dataGenerator.install(new TestItemTagsProvider(dataGenerator, blockTagsProvider));
 	}
 
-	private static class TestRecipeProvider extends FabricRecipeProvider {
+	private static class TestRecipeProvider extends FabricRecipesProvider {
 		private TestRecipeProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator);
 		}
 
 		@Override
 		public void generateRecipes(Consumer<RecipeJsonProvider> exporter) {
-			offerPlanksRecipe2(exporter, item, ItemTags.ACACIA_LOGS);
+			offerPlanksRecipe2(exporter, SIMPLE_BLOCK, ItemTags.ACACIA_LOGS);
 		}
 	}
 
@@ -74,12 +60,35 @@ public class DataGeneratorTestInitializer implements DataGeneratorInitializer, M
 
 		@Override
 		public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
-			blockStateModelGenerator.registerSimpleCubeAll(block);
+			blockStateModelGenerator.registerSimpleCubeAll(SIMPLE_BLOCK);
 		}
 
 		@Override
 		public void generateItemModels(ItemModelGenerator itemModelGenerator) {
 			//itemModelGenerator.register(item, Models.SLAB);
+		}
+	}
+
+	private static class TestBlockTagsProvider extends FabricTagProvider.Blocks {
+		private TestBlockTagsProvider(FabricDataGenerator root) {
+			super(root);
+		}
+
+		@Override
+		protected void configure() {
+			getOrCreateTagBuilder(BlockTags.FIRE).add(SIMPLE_BLOCK);
+			getOrCreateTagBuilder(BlockTags.ANVIL).setReplace(true).add(SIMPLE_BLOCK);
+		}
+	}
+
+	private static class TestItemTagsProvider extends FabricTagProvider.Items {
+		private TestItemTagsProvider(FabricDataGenerator root, Blocks blockTagProvider) {
+			super(root, blockTagProvider);
+		}
+
+		@Override
+		protected void configure() {
+			copy(BlockTags.ANVIL, ItemTags.ANVIL);
 		}
 	}
 }

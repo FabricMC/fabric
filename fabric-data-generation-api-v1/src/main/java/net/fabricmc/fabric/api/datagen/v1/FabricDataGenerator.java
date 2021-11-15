@@ -33,8 +33,10 @@ public class FabricDataGenerator extends DataGenerator {
 		this.modContainer = mod;
 	}
 
-	public void install(Function<FabricDataGenerator, DataProvider> function) {
-		install(function.apply(this));
+	public <T extends DataProvider> T install(Function<FabricDataGenerator, T> function) {
+		T provider = function.apply(this);
+		install(provider);
+		return provider;
 	}
 
 	public ModContainer getModContainer() {

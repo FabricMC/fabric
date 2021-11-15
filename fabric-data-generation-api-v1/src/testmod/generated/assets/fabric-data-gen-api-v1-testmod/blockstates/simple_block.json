@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "fabric-data-gen-api-v1-testmod:block/simple_block"
+    }
+  }
+}

@@ -1,11 +1,11 @@
-import org.objectweb.asm.ClassReader
-import org.objectweb.asm.Opcodes
-import org.objectweb.asm.tree.ClassNode
-
-import java.util.zip.ZipFile
-
 archivesBaseName = "fabric-data-generation-api-v1"
 version = getSubprojectVersion(project)
+
+moduleDependencies(project, [
+		'fabric-api-base',
+		'fabric-registry-sync-v0',
+		'fabric-networking-api-v1'
+])
 
 loom {
 	accessWidenerPath = file("src/main/resources/fabric-data-generation-api-v1.accesswidener")
@@ -26,6 +26,12 @@ loom {
 }
 
 assemble.dependsOn runDatagen
+
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.tree.ClassNode
+
+import java.util.zip.ZipFile
 
 task generateAccessWidener() {
 	doLast {
