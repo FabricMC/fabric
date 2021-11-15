@@ -64,6 +64,18 @@ public class OxidizableBlocksRegistry {
 	}
 
 	/**
+	 * Registers a waxable block.
+	 * Unnecessary if part of a registered {@link OxidizableFamily}.
+	 * @see #registerFamily(OxidizableFamily)
+	 * @param unwaxed the unwaxed variant
+	 * @param waxed the waxed variant
+	 */
+	public static void registerWaxable(Block unwaxed, Block waxed) {
+		UNWAXED_TO_WAXED_BLOCKS.put(unwaxed, waxed);
+		WAXED_TO_UNWAXED_BLOCKS.put(waxed, unwaxed);
+	}
+
+	/**
 	 * Gets the map of {@link Oxidizable.OxidizationLevel} increases.
 	 * @return the map
 	 */

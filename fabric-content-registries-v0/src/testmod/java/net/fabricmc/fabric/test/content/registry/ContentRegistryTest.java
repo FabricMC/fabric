@@ -35,6 +35,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - green wool is tillable to lime wool
 		//  - copper ore, iron ore, gold ore, and diamond ore can be waxed into their deepslate variants and scraped back again
 		//  - aforementioned ores can be scraped from diamond -> gold -> iron -> copper
+		//  - quartz blocks can be waxed into smooth quartz and scraped back again
 
 		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.getDefaultState());
 		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
@@ -77,5 +78,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		} catch (IllegalStateException e) {
 			// expected behavior
 		}
+
+		OxidizableBlocksRegistry.registerWaxable(Blocks.QUARTZ_BLOCK, Blocks.SMOOTH_QUARTZ);
 	}
 }
