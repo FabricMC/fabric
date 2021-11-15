@@ -23,6 +23,7 @@ import java.util.function.Function;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.data.DataProvider;
 import net.minecraft.data.server.AbstractTagProvider;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
@@ -35,18 +36,50 @@ import net.minecraft.world.event.GameEvent;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 
+/**
+ * Implement this class (or one of the inner classes) to generate a tag list.
+ *
+ * <p>Register your implementation using {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
+ *
+ * <p>Commonly used implementations of this class are provided:
+ *
+ * @see Blocks
+ * @see Items
+ * @see Fluids
+ * @see EntityTypes
+ * @see GameEvents
+ */
 public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	private final String path;
 	private final String name;
 
+	/**
+	 * Construct a new {@link FabricTagProvider}.
+	 *
+	 * <p>Common implementations of this class are provided. For example @see Blocks
+	 *
+	 * @param dataGenerator The data generator instance
+	 * @param registry The backing registry for the Tag type.
+	 * @param path The directory name to write the tag file names. Example: "blocks" or "items"
+	 * @param name The name used for {@link DataProvider#getName()}
+	 */
 	protected FabricTagProvider(FabricDataGenerator dataGenerator, Registry<T> registry, String path, String name) {
 		super(dataGenerator, registry);
 		this.path = path;
 		this.name = name;
 	}
 
+	/**
+	 * Implement this method and then use {@link FabricTagProvider#getOrCreateTagBuilder} to get and register new tag builders.
+	 */
 	protected abstract void generateTags();
 
+	/**
+	 * Creates a new instance of {@link FabricObjectBuilder} for the given {@link net.minecraft.tag.Tag.Identified} tag.
+	 *
+	 * @param tag The {@link net.minecraft.tag.Tag.Identified} tag to create the builder for
+	 * @return The {@link FabricObjectBuilder} instance
+	 */
 	@Override
 	protected FabricObjectBuilder<T> getOrCreateTagBuilder(Tag.Identified<T> tag) {
 		return new FabricObjectBuilder<>(super.getOrCreateTagBuilder(tag));
@@ -67,26 +100,50 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		return name;
 	}
 
+	/**
+	 * Extend this class to create {@link Block} tags in the "/blocks" tag directory.
+	 */
 	public abstract static class Blocks extends FabricTagProvider<Block> {
 		public Blocks(FabricDataGenerator dataGenerator) {
 			super(dataGenerator, Registry.BLOCK, "blocks", "Block Tags");
 		}
 	}
 
+	/**
+	 * Extend this class to create {@link Items} tags in the "/items" tag directory.
+	 */
 	public abstract static class Items extends FabricTagProvider<Item> {
 		@Nullable
 		private final Function<Tag.Identified<Block>, Tag.Builder> blockTagBuilderProvider;
 
+		/**
+		 * Construct an {@link Items} tag provider <b>with</b> an associated {@link Blocks} tag provider.
+		 *
+		 * @param dataGenerator a {@link Items} tag provider
+		 */
 		public Items(FabricDataGenerator dataGenerator, @Nullable Blocks blockTagProvider) {
 			super(dataGenerator, Registry.ITEM, "items", "Item Tags");
 
 			this.blockTagBuilderProvider = blockTagProvider == null ? null : blockTagProvider::getTagBuilder;
 		}
 
+		/**
+		 * Construct an {@link Items} tag provider <b>without</b> an associated {@link Blocks} tag provider.
+		 *
+		 * @param dataGenerator a {@link Items} tag provider
+		 */
 		public Items(FabricDataGenerator dataGenerator) {
 			this(dataGenerator, null);
 		}
 
+		/**
+		 * Copy the entries from a tag with the {@link Block} type into this item tag.
+		 *
+		 * <p>The {@link Items} tag provider must be constructed with an associated {@link Blocks} tag provider to use this method.
+		 *
+		 * @param blockTag The block tag to copy from.
+		 * @param itemTag The item tag to copy to.
+		 */
 		public void copy(Tag.Identified<Block> blockTag, Tag.Identified<Item> itemTag) {
 			Tag.Builder itemTagBuilder = this.getTagBuilder(itemTag);
 			Tag.Builder blockTagBuilder = Objects.requireNonNull(this.blockTagBuilderProvider, "Pass Block tag provider via constructor to use copy").apply(blockTag);
@@ -94,24 +151,36 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		}
 	}
 
+	/**
+	 * Extend this class to create {@link Fluids} tags in the "/fluids" tag directory.
+	 */
 	public abstract static class Fluids extends FabricTagProvider<Fluid> {
 		public Fluids(FabricDataGenerator dataGenerator) {
 			super(dataGenerator, Registry.FLUID, "fluids", "Fluid Tags");
 		}
 	}
 
+	/**
+	 * Extend this class to create {@link EntityType} tags in the "/entity_types" tag directory.
+	 */
 	public abstract static class EntityTypes extends FabricTagProvider<EntityType<?>> {
 		public EntityTypes(FabricDataGenerator dataGenerator) {
 			super(dataGenerator, Registry.ENTITY_TYPE, "entity_types", "Entity Type Tags");
 		}
 	}
 
+	/**
+	 * Extend this class to create {@link GameEvent} tags in the "/game_events" tag directory.
+	 */
 	public abstract static class GameEvents extends FabricTagProvider<GameEvent> {
 		public GameEvents(FabricDataGenerator dataGenerator) {
 			super(dataGenerator, Registry.GAME_EVENT, "game_events", "Game Event Tags");
 		}
 	}
 
+	/**
+	 * An extension to {@link net.minecraft.data.server.AbstractTagProvider.ObjectBuilder} that provides additional functionality.
+	 */
 	public static class FabricObjectBuilder<T> extends ObjectBuilder<T> {
 		private final AbstractTagProvider.ObjectBuilder<T> parent;
 
@@ -120,29 +189,58 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 			this.parent = parent;
 		}
 
+		/**
+		 * Set the value of the `replace` flag in a Tag.
+		 *
+		 * <p>When set to true the tag will replace any existing tag entries.
+		 *
+		 * @return the {@link FabricObjectBuilder} instance
+		 */
 		public FabricObjectBuilder<T> setReplace(boolean replace) {
 			((FabricTagBuilder) builder).fabric_setReplace(replace);
 			return this;
 		}
 
+		/**
+		 * Add a single element to the tag.
+		 *
+		 *
+		 * @return the {@link FabricObjectBuilder} instance
+		 */
 		@Override
 		public FabricObjectBuilder<T> add(T element) {
 			parent.add(element);
 			return this;
 		}
 
+		/**
+		 * Add an optional {@link Identifier} to the tag.
+		 *
+		 *
+		 * @return the {@link FabricObjectBuilder} instance
+		 */
 		@Override
 		public FabricObjectBuilder<T> addOptional(Identifier id) {
 			parent.addOptional(id);
 			return this;
 		}
 
+		/**
+		 * Add another tag to this tag.
+		 *
+		 * @return the {@link FabricObjectBuilder} instance
+		 */
 		@Override
 		public FabricObjectBuilder<T> addTag(Tag.Identified<T> identifiedTag) {
 			parent.addTag(identifiedTag);
 			return this;
 		}
 
+		/**
+		 * Add another optional tag to this tag.
+		 *
+		 * @return the {@link FabricObjectBuilder} instance
+		 */
 		@Override
 		public FabricObjectBuilder<T> addOptionalTag(Identifier id) {
 			parent.addOptionalTag(id);

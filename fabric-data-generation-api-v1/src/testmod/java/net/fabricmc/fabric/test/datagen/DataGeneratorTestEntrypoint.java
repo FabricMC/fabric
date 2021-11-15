@@ -51,13 +51,13 @@ import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider
 public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
-		dataGenerator.install(TestRecipeProvider::new);
-		dataGenerator.install(TestBlockStateDefinitionProvider::new);
-		dataGenerator.install(TestAdvancementsProvider::new);
-		dataGenerator.install(TestBlockLootTablesProvider::new);
-		dataGenerator.install(TestBarterLootTablesProvider::new);
+		dataGenerator.addProvider(TestRecipeProvider::new);
+		dataGenerator.addProvider(TestBlockStateDefinitionProvider::new);
+		dataGenerator.addProvider(TestAdvancementsProvider::new);
+		dataGenerator.addProvider(TestBlockLootTablesProvider::new);
+		dataGenerator.addProvider(TestBarterLootTablesProvider::new);
 
-		TestBlockTagsProvider blockTagsProvider = dataGenerator.install(TestBlockTagsProvider::new);
+		TestBlockTagsProvider blockTagsProvider = dataGenerator.addProvider(TestBlockTagsProvider::new);
 		dataGenerator.install(new TestItemTagsProvider(dataGenerator, blockTagsProvider));
 	}
 

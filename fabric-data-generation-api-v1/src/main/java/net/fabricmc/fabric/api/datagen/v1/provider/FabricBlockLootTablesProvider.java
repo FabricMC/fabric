@@ -17,7 +17,10 @@
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
+
+import com.google.common.collect.Sets;
 
 import net.minecraft.data.server.BlockLootTableGenerator;
 import net.minecraft.loot.LootTable;
@@ -25,8 +28,10 @@ import net.minecraft.loot.LootTables;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.impl.datagen.FabricLootTableProvider;
 
 public abstract class FabricBlockLootTablesProvider extends BlockLootTableGenerator implements FabricLootTableProvider {
 	private final FabricDataGenerator dataGenerator;
@@ -52,14 +57,34 @@ public abstract class FabricBlockLootTablesProvider extends BlockLootTableGenera
 		generateBlockLootTables();
 		// TODO add a strict mode that ensures that all blocks for a mod have a loot table?
 
+		Set<Identifier> generated = Sets.newHashSet();
+
 		for (Map.Entry<Identifier, LootTable.Builder> entry : lootTables.entrySet()) {
 			Identifier identifier = entry.getKey();
+
+			generated.add(identifier);
 
 			if (identifier.equals(LootTables.EMPTY)) {
 				continue;
 			}
 
 			biConsumer.accept(entry.getKey(), entry.getValue());
+		}
+
+		if (dataGenerator.isStrictValidationEnabled()) {
+			Set<Identifier> missing = Sets.newHashSet();
+
+			for (Identifier blockId : Registry.BLOCK.getIds()) {
+				if (blockId.getNamespace().equals(dataGenerator.getModId())) {
+					if (!generated.contains(blockId)) {
+						missing.add(blockId);
+					}
+				}
+			}
+
+			if (!missing.isEmpty()) {
+				throw new IllegalStateException("Missing loot table(s) for %s".formatted(missing));
+			}
 		}
 	}
 

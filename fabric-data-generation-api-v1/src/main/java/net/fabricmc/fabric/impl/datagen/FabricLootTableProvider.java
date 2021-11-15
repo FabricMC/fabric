@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.datagen.v1.provider;
+package net.fabricmc.fabric.impl.datagen;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -35,8 +35,18 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTablesProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
+/**
+ * A base interface for Loot table providers. You should not implement this class directly.
+ *
+ * <p>{@link FabricBlockLootTablesProvider} provides additional features specific to block drop loot tables.
+ *
+ * <p>Use {@link SimpleFabricLootTableProvider} for a simple abstract class that you can implement to handle standard loot table functions.
+ */
+@ApiStatus.Internal
 public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier, LootTable.Builder>>, DataProvider {
 	Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 

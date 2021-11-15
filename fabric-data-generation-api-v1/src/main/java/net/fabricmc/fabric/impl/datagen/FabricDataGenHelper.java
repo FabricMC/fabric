@@ -28,9 +28,24 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
 public class FabricDataGenHelper {
+	/**
+	 * When enabled the dedicated server startup will be hyjacked to run the data generators and then quit.
+	 */
 	public static final boolean ENABLED = System.getProperty("fabric-api.datagen") != null;
+
+	/**
+	 * Sets the output directory for the generated data.
+	 */
 	public static final String OUTPUT_DIR = System.getProperty("fabric-api.datagen.output-dir");
 
+	/**
+	 * When enabled providers can enable extra validation, such as ensuring all registry entires have data generated for them.
+	 */
+	public static final boolean STRICT_VALIDATION = System.getProperty("fabric-api.datagen.strict_validation") != null;
+
+	/**
+	 * Entrypoint key to register classes implementing {@link DataGeneratorEntrypoint}.
+	 */
 	private static final String ENTRYPOINT_KEY = "fabric-datagen";
 
 	public static void run() throws IOException {
@@ -40,7 +55,7 @@ public class FabricDataGenHelper {
 				.getEntrypointContainers(ENTRYPOINT_KEY, DataGeneratorEntrypoint.class);
 
 		for (EntrypointContainer<DataGeneratorEntrypoint> entrypointContainer : dataGeneratorInitializers) {
-			FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, entrypointContainer.getProvider());
+			FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, entrypointContainer.getProvider(), STRICT_VALIDATION);
 			entrypointContainer.getEntrypoint().onInitializeDataGenerator(dataGenerator);
 			dataGenerator.run();
 		}

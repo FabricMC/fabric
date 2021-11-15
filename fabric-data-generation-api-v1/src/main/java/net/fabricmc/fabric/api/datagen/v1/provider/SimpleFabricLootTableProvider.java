@@ -18,11 +18,17 @@ package net.fabricmc.fabric.api.datagen.v1.provider;
 
 import java.util.Objects;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.impl.datagen.FabricLootTableProvider;
 
+/**
+ * Extend this class and implement {@link java.util.function.Consumer#accept}.
+ */
 public abstract class SimpleFabricLootTableProvider implements FabricLootTableProvider {
 	private final FabricDataGenerator dataGenerator;
 	private final LootContextType lootContextType;
@@ -32,18 +38,20 @@ public abstract class SimpleFabricLootTableProvider implements FabricLootTablePr
 		this.lootContextType = lootContextType;
 	}
 
+	@ApiStatus.Internal
 	@Override
-	public LootContextType getLootContextType() {
+	public final LootContextType getLootContextType() {
 		return lootContextType;
 	}
 
+	@ApiStatus.Internal
 	@Override
-	public FabricDataGenerator getFabricDataGenerator() {
+	public final FabricDataGenerator getFabricDataGenerator() {
 		return dataGenerator;
 	}
 
 	@Override
 	public String getName() {
-		return Objects.requireNonNull(LootContextTypes.getId(lootContextType), "Could not get id for loot context type").toString() + " Loot Table";
+		return Objects.requireNonNull(LootContextTypes.getId(lootContextType), "Could not get id for loot context type") + " Loot Table";
 	}
 }

@@ -88,7 +88,12 @@ public class BlockStateDefinitionProviderMixin {
 	@Inject(method = "method_25738", at = @At("HEAD"), cancellable = true)
 	private static void filterBlocksForProcessingMod(Map<Block, BlockStateSupplier> map, Block block, CallbackInfoReturnable<Boolean> cir) {
 		if (dataGeneratorThreadLocal.get() instanceof FabricDataGenerator dataGenerator) {
-			if (!Registry.BLOCK.getId(block).getNamespace().equals(dataGenerator.getModContainer().getMetadata().getId())) {
+			if (dataGenerator.isStrictValidationEnabled()) {
+				cir.setReturnValue(false);
+				return;
+			}
+
+			if (!Registry.BLOCK.getId(block).getNamespace().equals(dataGenerator.getModId())) {
 				// Skip over blocks that are not from the mod we are processing.
 				cir.setReturnValue(false);
 			}
@@ -98,7 +103,12 @@ public class BlockStateDefinitionProviderMixin {
 	@Inject(method = "method_25741", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/client/model/ModelIds;getItemModelId(Lnet/minecraft/item/Item;)Lnet/minecraft/util/Identifier;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void filterItemsForProcessingMod(Set<Item> set, Map<Identifier, Supplier<JsonElement>> map, Block block, CallbackInfo ci, Item item) {
 		if (dataGeneratorThreadLocal.get() instanceof FabricDataGenerator dataGenerator) {
-			if (!Registry.ITEM.getId(item).getNamespace().equals(dataGenerator.getModContainer().getMetadata().getId())) {
+			if (!dataGenerator.isStrictValidationEnabled()) {
+				ci.cancel();
+				return;
+			}
+
+			if (!Registry.ITEM.getId(item).getNamespace().equals(dataGenerator.getModId())) {
 				// Skip over any items from other mods.
 				ci.cancel();
 			}

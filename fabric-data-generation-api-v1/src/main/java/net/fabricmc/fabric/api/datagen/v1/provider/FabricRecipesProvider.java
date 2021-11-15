@@ -61,6 +61,6 @@ public abstract class FabricRecipesProvider extends RecipesProvider {
 	}
 
 	protected Identifier getRecipeIdentifier(Identifier identifier) {
-		return new Identifier(dataGenerator.getModContainer().getMetadata().getId(), identifier.getPath());
+		return new Identifier(dataGenerator.getModId(), identifier.getPath());
 	}
 }

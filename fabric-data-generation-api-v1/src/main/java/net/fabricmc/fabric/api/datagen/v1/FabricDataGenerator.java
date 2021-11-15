@@ -20,26 +20,62 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.function.Function;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 
 import net.fabricmc.loader.api.ModContainer;
 
+/**
+ * An extension to vanilla's {@link DataGenerator} providing mod specific data, and helper functions.
+ */
 public class FabricDataGenerator extends DataGenerator {
 	private final ModContainer modContainer;
+	private final boolean strictValidation;
 
-	public FabricDataGenerator(Path output, ModContainer mod) {
+	@ApiStatus.Internal
+	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation) {
 		super(output, Collections.emptyList());
 		this.modContainer = mod;
+		this.strictValidation = strictValidation;
 	}
 
-	public <T extends DataProvider> T install(Function<FabricDataGenerator, T> function) {
+	/**
+	 * Helper overloaded method to aid with registering a {@link DataProvider} that has a single argument constructor for a {@link FabricDataGenerator}.
+	 *
+	 * @return The {@link DataProvider}
+	 */
+	public <T extends DataProvider> T addProvider(Function<FabricDataGenerator, T> function) {
 		T provider = function.apply(this);
 		install(provider);
 		return provider;
 	}
 
+	/**
+	 * Returns the {@link ModContainer} for the mod that this data generator has been created for.
+	 *
+	 * @return a {@link ModContainer} instance
+	 */
 	public ModContainer getModContainer() {
 		return modContainer;
+	}
+
+	/**
+	 * Returns the modid for the mod that this data generator has been created for.
+	 *
+	 * @return a modid
+	 */
+	public String getModId() {
+		return getModContainer().getMetadata().getId();
+	}
+
+	/**
+	 * When enabled data providers can do strict validation to ensure that all entries have data generated for them.
+	 *
+	 * @return if strict validation should be enabled
+	 */
+	public boolean isStrictValidationEnabled() {
+		return strictValidation;
 	}
 }

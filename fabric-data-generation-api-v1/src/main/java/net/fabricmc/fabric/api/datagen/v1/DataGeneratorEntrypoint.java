@@ -16,6 +16,18 @@
 
 package net.fabricmc.fabric.api.datagen.v1;
 
+/**
+ * An entry point for data generation.
+ *
+ * <p>In {@code fabric.mod.json}, the entrypoint is defined with {@code fabric-datagen} key.</p>
+ *
+ * @see FabricDataGenerator
+ */
 public interface DataGeneratorEntrypoint {
+	/**
+	 * Register {@link net.minecraft.data.DataProvider} with the {@link FabricDataGenerator} during this entrypoint.
+	 *
+	 * @param fabricDataGenerator The {@link FabricDataGenerator} instance
+	 */
 	void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator);
 }
