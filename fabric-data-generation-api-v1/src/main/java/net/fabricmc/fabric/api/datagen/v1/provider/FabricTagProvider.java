@@ -39,8 +39,8 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	private final String path;
 	private final String name;
 
-	protected FabricTagProvider(FabricDataGenerator root, Registry<T> registry, String path, String name) {
-		super(root, registry);
+	protected FabricTagProvider(FabricDataGenerator dataGenerator, Registry<T> registry, String path, String name) {
+		super(dataGenerator, registry);
 		this.path = path;
 		this.name = name;
 	}
@@ -68,8 +68,8 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	}
 
 	public abstract static class Blocks extends FabricTagProvider<Block> {
-		public Blocks(FabricDataGenerator root) {
-			super(root, Registry.BLOCK, "blocks", "Block Tags");
+		public Blocks(FabricDataGenerator dataGenerator) {
+			super(dataGenerator, Registry.BLOCK, "blocks", "Block Tags");
 		}
 	}
 
@@ -77,14 +77,14 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		@Nullable
 		private final Function<Tag.Identified<Block>, Tag.Builder> blockTagBuilderProvider;
 
-		public Items(FabricDataGenerator root, @Nullable Blocks blockTagProvider) {
-			super(root, Registry.ITEM, "items", "Item Tags");
+		public Items(FabricDataGenerator dataGenerator, @Nullable Blocks blockTagProvider) {
+			super(dataGenerator, Registry.ITEM, "items", "Item Tags");
 
 			this.blockTagBuilderProvider = blockTagProvider == null ? null : blockTagProvider::getTagBuilder;
 		}
 
-		public Items(FabricDataGenerator root) {
-			this(root, null);
+		public Items(FabricDataGenerator dataGenerator) {
+			this(dataGenerator, null);
 		}
 
 		public void copy(Tag.Identified<Block> blockTag, Tag.Identified<Item> itemTag) {
@@ -95,20 +95,20 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	}
 
 	public abstract static class Fluids extends FabricTagProvider<Fluid> {
-		public Fluids(FabricDataGenerator root) {
-			super(root, Registry.FLUID, "fluids", "Fluid Tags");
+		public Fluids(FabricDataGenerator dataGenerator) {
+			super(dataGenerator, Registry.FLUID, "fluids", "Fluid Tags");
 		}
 	}
 
 	public abstract static class EntityTypes extends FabricTagProvider<EntityType<?>> {
-		public EntityTypes(FabricDataGenerator root) {
-			super(root, Registry.ENTITY_TYPE, "entity_types", "Entity Type Tags");
+		public EntityTypes(FabricDataGenerator dataGenerator) {
+			super(dataGenerator, Registry.ENTITY_TYPE, "entity_types", "Entity Type Tags");
 		}
 	}
 
 	public abstract static class GameEvents extends FabricTagProvider<GameEvent> {
-		public GameEvents(FabricDataGenerator root) {
-			super(root, Registry.GAME_EVENT, "game_events", "Game Event Tags");
+		public GameEvents(FabricDataGenerator dataGenerator) {
+			super(dataGenerator, Registry.GAME_EVENT, "game_events", "Game Event Tags");
 		}
 	}
 

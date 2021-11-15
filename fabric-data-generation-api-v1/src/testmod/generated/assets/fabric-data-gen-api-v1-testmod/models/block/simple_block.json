@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "fabric-data-gen-api-v1-testmod:block/simple_block"
-  }
-}

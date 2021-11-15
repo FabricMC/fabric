@@ -45,7 +45,7 @@ public abstract class FabricRecipesProvider extends RecipesProvider {
 		Path path = this.root.getOutput();
 		Set<Identifier> generatedRecipes = new HashSet<>();
 		generateRecipes(provider -> {
-			Identifier identifier = provider.getRecipeId();
+			Identifier identifier = getRecipeIdentifier(provider.getRecipeId());
 
 			if (!generatedRecipes.add(identifier)) {
 				throw new IllegalStateException("Duplicate recipe " + identifier);
@@ -58,5 +58,9 @@ public abstract class FabricRecipesProvider extends RecipesProvider {
 				saveRecipeAdvancement(cache, jsonObject, path.resolve("data/" + identifier.getNamespace() + "/advancements/" + provider.getAdvancementId().getPath() + ".json"));
 			}
 		});
+	}
+
+	protected Identifier getRecipeIdentifier(Identifier identifier) {
+		return new Identifier(dataGenerator.getModContainer().getMetadata().getId(), identifier.getPath());
 	}
 }

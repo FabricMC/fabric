@@ -16,6 +16,6 @@
 
 package net.fabricmc.fabric.api.datagen.v1;
 
-public interface DataGeneratorInitializer {
+public interface DataGeneratorEntrypoint {
 	void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator);
 }

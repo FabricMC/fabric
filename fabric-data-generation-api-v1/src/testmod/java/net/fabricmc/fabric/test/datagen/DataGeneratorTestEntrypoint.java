@@ -39,7 +39,7 @@ import net.minecraft.tag.ItemTags;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.datagen.v1.DataGeneratorInitializer;
+import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementsProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTablesProvider;
@@ -48,7 +48,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipesProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 
-public class DataGeneratorTestInitializer implements DataGeneratorInitializer {
+public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		dataGenerator.install(TestRecipeProvider::new);
@@ -89,8 +89,8 @@ public class DataGeneratorTestInitializer implements DataGeneratorInitializer {
 	}
 
 	private static class TestBlockTagsProvider extends FabricTagProvider.Blocks {
-		private TestBlockTagsProvider(FabricDataGenerator root) {
-			super(root);
+		private TestBlockTagsProvider(FabricDataGenerator dataGenerator) {
+			super(dataGenerator);
 		}
 
 		@Override
@@ -101,8 +101,8 @@ public class DataGeneratorTestInitializer implements DataGeneratorInitializer {
 	}
 
 	private static class TestItemTagsProvider extends FabricTagProvider.Items {
-		private TestItemTagsProvider(FabricDataGenerator root, Blocks blockTagProvider) {
-			super(root, blockTagProvider);
+		private TestItemTagsProvider(FabricDataGenerator dataGenerator, Blocks blockTagProvider) {
+			super(dataGenerator, blockTagProvider);
 		}
 
 		@Override

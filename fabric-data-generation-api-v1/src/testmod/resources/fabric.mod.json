@@ -12,7 +12,7 @@
       "net.fabricmc.fabric.test.datagen.DataGeneratorTestContent"
     ],
     "fabric-datagen": [
-      "net.fabricmc.fabric.test.datagen.DataGeneratorTestInitializer"
+      "net.fabricmc.fabric.test.datagen.DataGeneratorTestEntrypoint"
     ]
   }
 }

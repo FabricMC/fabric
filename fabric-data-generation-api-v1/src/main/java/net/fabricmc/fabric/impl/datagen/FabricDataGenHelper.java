@@ -22,9 +22,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.fabricmc.fabric.api.datagen.v1.DataGeneratorInitializer;
+import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
@@ -35,23 +33,16 @@ public class FabricDataGenHelper {
 
 	private static final String ENTRYPOINT_KEY = "fabric-datagen";
 
-	@Nullable
-	public static String processingModId = null;
-
 	public static void run() throws IOException {
 		Path outputDir = Paths.get(Objects.requireNonNull(OUTPUT_DIR, "No output dir provided with the 'fabric-api.datagen.output-dir' property"));
 
-		List<EntrypointContainer<DataGeneratorInitializer>> dataGeneratorInitializers = FabricLoader.getInstance()
-				.getEntrypointContainers(ENTRYPOINT_KEY, DataGeneratorInitializer.class);
+		List<EntrypointContainer<DataGeneratorEntrypoint>> dataGeneratorInitializers = FabricLoader.getInstance()
+				.getEntrypointContainers(ENTRYPOINT_KEY, DataGeneratorEntrypoint.class);
 
-		for (EntrypointContainer<DataGeneratorInitializer> entrypointContainer : dataGeneratorInitializers) {
-			processingModId = entrypointContainer.getProvider().getMetadata().getId();
-
+		for (EntrypointContainer<DataGeneratorEntrypoint> entrypointContainer : dataGeneratorInitializers) {
 			FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, entrypointContainer.getProvider());
 			entrypointContainer.getEntrypoint().onInitializeDataGenerator(dataGenerator);
 			dataGenerator.run();
-
-			processingModId = null;
 		}
 	}
 }

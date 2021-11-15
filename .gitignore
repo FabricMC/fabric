@@ -26,6 +26,7 @@ build/
 jars/
 out/
 classes/
+fabric-data-generation-api-v1/src/testmod/generated
 
 # Debug artifacts
 run
