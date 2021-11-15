@@ -1,6 +1,7 @@
 a41e63fd60f534ce4ea563d72e87d393165af9b8 data\minecraft\tags\items\anvil.json
 2397e39e8509f1be3174ddb09a1f95396148e426 assets\fabric-data-gen-api-v1-testmod\models\item\simple_block.json
 d2be9a3d300f5a80bb3d2ee8113f0f171a10846e data\minecraft\tags\blocks\anvil.json
+0f4f631606ee1cf3691ac1b56957f391626e6de9 data\fabric-data-gen-api-v1-testmod\advancements\test\root.json
 2603b0d8d0754b6e2ace55e28aac3485a0c41567 data\fabric-data-gen-api-v1-testmod\advancements\recipes\misc\simple_block.json
 d7b22a23c7ea83324a8ea5d9d3c36c891c3bcb6b assets\fabric-data-gen-api-v1-testmod\models\block\simple_block.json
 18644009c5f73ffbd192b8eda4793ac519f8a74f data\fabric-data-gen-api-v1-testmod\recipes\simple_block.json

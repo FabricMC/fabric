@@ -16,21 +16,28 @@
 
 package net.fabricmc.fabric.test.datagen;
 
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
 
 import java.util.function.Consumer;
 
+import net.minecraft.advancement.Advancement;
+import net.minecraft.advancement.AdvancementFrame;
+import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.model.BlockStateModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.ItemTags;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorInitializer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockStateDefinitionProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipesProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementsProvider;
 
 public class DataGeneratorTestInitializer implements DataGeneratorInitializer {
 	@Override
@@ -40,6 +47,8 @@ public class DataGeneratorTestInitializer implements DataGeneratorInitializer {
 
 		TestBlockTagsProvider blockTagsProvider = dataGenerator.install(TestBlockTagsProvider::new);
 		dataGenerator.install(new TestItemTagsProvider(dataGenerator, blockTagsProvider));
+
+		dataGenerator.install(TestAdvancementsProvider::new);
 	}
 
 	private static class TestRecipeProvider extends FabricRecipesProvider {
@@ -89,6 +98,26 @@ public class DataGeneratorTestInitializer implements DataGeneratorInitializer {
 		@Override
 		protected void configure() {
 			copy(BlockTags.ANVIL, ItemTags.ANVIL);
+		}
+	}
+
+	private static class TestAdvancementsProvider extends FabricAdvancementsProvider {
+		private TestAdvancementsProvider(FabricDataGenerator dataGenerator) {
+			super(dataGenerator);
+		}
+
+		@Override
+		public void generateAdvancement(Consumer<Advancement> consumer) {
+			Advancement root = Advancement.Task.create()
+					.display(
+							SIMPLE_BLOCK,
+							new TranslatableText("advancements.test.root.title"),
+							new TranslatableText("advancements.test.root.description"),
+							new Identifier("textures/gui/advancements/backgrounds/end.png"),
+							AdvancementFrame.TASK,
+							false, false, false)
+					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
+					.build(consumer, MOD_ID + ":test/root");
 		}
 	}
 }

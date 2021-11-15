@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.10.55" apply false
+	id "fabric-loom" version "0.10.56" apply false
 	id "org.cadixdev.licenser" version "0.6.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -220,9 +220,11 @@ subprojects {
 	dependencies {
 		testmodImplementation sourceSets.main.output
 
-		// Make all modules depend on the gametest api to try and promote its usage.
-		if (project.name != "fabric-gametest-api-v1")
+		// Make all modules depend on the gametest api (and thus res loader) to try and promote its usage.
+		if (project.name != "fabric-gametest-api-v1") {
 			testmodImplementation project(path: ':fabric-gametest-api-v1', configuration: 'namedElements')
+			testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
+		}
 	}
 
 	publishing {

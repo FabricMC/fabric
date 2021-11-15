@@ -7,6 +7,16 @@ moduleDependencies(project, [
 		'fabric-networking-api-v1'
 ])
 
+sourceSets {
+	testmod {
+		java {
+			srcDirs += [
+				'src/testmod/generated'
+			]
+		}
+	}
+}
+
 loom {
 	accessWidenerPath = file("src/main/resources/fabric-data-generation-api-v1.accesswidener")
 
@@ -16,9 +26,6 @@ loom {
 			name "Data Generation"
 			vmArg "-Dfabric-api.datagen"
 			vmArg "-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}"
-
-			// This is the working dir of the server, where the logs and what not go, not the output of the datagen
-			runDir "build/datagen"
 
 			ideConfigGenerated = true
 		}
