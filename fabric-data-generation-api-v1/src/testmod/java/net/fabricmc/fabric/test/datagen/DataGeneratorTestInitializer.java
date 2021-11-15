@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.datagen;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import net.minecraft.advancement.Advancement;
@@ -27,6 +28,12 @@ import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.model.BlockStateModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.LootTables;
+import net.minecraft.loot.context.LootContextTypes;
+import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.text.TranslatableText;
@@ -34,21 +41,24 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorInitializer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementsProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTablesProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockStateDefinitionProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipesProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementsProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 
 public class DataGeneratorTestInitializer implements DataGeneratorInitializer {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		dataGenerator.install(TestRecipeProvider::new);
 		dataGenerator.install(TestBlockStateDefinitionProvider::new);
+		dataGenerator.install(TestAdvancementsProvider::new);
+		dataGenerator.install(TestBlockLootTablesProvider::new);
+		dataGenerator.install(TestBarterLootTablesProvider::new);
 
 		TestBlockTagsProvider blockTagsProvider = dataGenerator.install(TestBlockTagsProvider::new);
 		dataGenerator.install(new TestItemTagsProvider(dataGenerator, blockTagsProvider));
-
-		dataGenerator.install(TestAdvancementsProvider::new);
 	}
 
 	private static class TestRecipeProvider extends FabricRecipesProvider {
@@ -57,7 +67,7 @@ public class DataGeneratorTestInitializer implements DataGeneratorInitializer {
 		}
 
 		@Override
-		public void generateRecipes(Consumer<RecipeJsonProvider> exporter) {
+		protected void generateRecipes(Consumer<RecipeJsonProvider> exporter) {
 			offerPlanksRecipe2(exporter, SIMPLE_BLOCK, ItemTags.ACACIA_LOGS);
 		}
 	}
@@ -84,7 +94,7 @@ public class DataGeneratorTestInitializer implements DataGeneratorInitializer {
 		}
 
 		@Override
-		protected void configure() {
+		protected void generateTags() {
 			getOrCreateTagBuilder(BlockTags.FIRE).add(SIMPLE_BLOCK);
 			getOrCreateTagBuilder(BlockTags.ANVIL).setReplace(true).add(SIMPLE_BLOCK);
 		}
@@ -96,7 +106,7 @@ public class DataGeneratorTestInitializer implements DataGeneratorInitializer {
 		}
 
 		@Override
-		protected void configure() {
+		protected void generateTags() {
 			copy(BlockTags.ANVIL, ItemTags.ANVIL);
 		}
 	}
@@ -118,6 +128,33 @@ public class DataGeneratorTestInitializer implements DataGeneratorInitializer {
 							false, false, false)
 					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
 					.build(consumer, MOD_ID + ":test/root");
+		}
+	}
+
+	private static class TestBlockLootTablesProvider extends FabricBlockLootTablesProvider {
+		private TestBlockLootTablesProvider(FabricDataGenerator dataGenerator) {
+			super(dataGenerator);
+		}
+
+		@Override
+		protected void generateBlockLootTables() {
+			addDrop(SIMPLE_BLOCK);
+		}
+	}
+
+	private static class TestBarterLootTablesProvider extends SimpleFabricLootTableProvider {
+		private TestBarterLootTablesProvider(FabricDataGenerator dataGenerator) {
+			super(dataGenerator, LootContextTypes.BARTER);
+		}
+
+		@Override
+		public void accept(BiConsumer<Identifier, LootTable.Builder> consumer) {
+			consumer.accept(
+					LootTables.PIGLIN_BARTERING_GAMEPLAY,
+					LootTable.builder().pool(
+							LootPool.builder().rolls(ConstantLootNumberProvider.create(1.0F)).with(ItemEntry.builder(SIMPLE_BLOCK))
+					)
+			);
 		}
 	}
 }

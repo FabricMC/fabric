@@ -28,6 +28,7 @@ loom {
 			vmArg "-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}"
 
 			ideConfigGenerated = true
+			runDir "build/datagen"
 		}
 	}
 }
@@ -45,30 +46,39 @@ task generateAccessWidener() {
 		File inputJar = loom.mappingsProvider.mappedProvider.baseMappedJar
 		String accessWidener = file("template.accesswidener").text + "\n"
 
-		def recipesProvider = getClassNode(inputJar, "net/minecraft/data/server/RecipesProvider.class")
-		recipesProvider.methods.forEach {
-			if ((it.access & Opcodes.ACC_SYNTHETIC) != 0 || (it.access & Opcodes.ACC_PUBLIC) != 0)
+		visitMethods(inputJar, "net/minecraft/data/server/RecipesProvider.class") { name, desc, owner ->
+			if (it.name == "generate")
 				return
 
-			if (it.name.startsWith("<") || it.name == "generate")
-				return
-
-			accessWidener += "transitive-accessible\tmethod\t${recipesProvider.name}\t${it.name}\t${it.desc}\n"
+			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
-		def blockStateModelGenerator = getClassNode(inputJar, "net/minecraft/data/client/model/BlockStateModelGenerator.class")
-		blockStateModelGenerator.methods.forEach {
-			if ((it.access & Opcodes.ACC_SYNTHETIC) != 0 || (it.access & Opcodes.ACC_PUBLIC) != 0)
+		visitMethods(inputJar, "net/minecraft/data/client/model/BlockStateModelGenerator.class") { name, desc, owner ->
+			if (desc == "()V")
+				// Skip over methods that dont take any arguments, as they are specific to minecraft.
 				return
 
-			if (it.name.startsWith("<") || it.desc == "()V")
-				return
-
-			accessWidener += "transitive-accessible\tmethod\t${blockStateModelGenerator.name}\t${it.name}\t${it.desc}\n"
+			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
+		visitMethods(inputJar, "net/minecraft/data/server/BlockLootTableGenerator.class") { name, desc, owner ->
+			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
+		}
 
 		file("src/main/resources/fabric-data-generation-api-v1.accesswidener").text = accessWidener
+	}
+}
+
+def visitMethods(File input, String className, closure) {
+	def clazz = getClassNode(input, className)
+	clazz.methods.forEach {
+		if ((it.access & Opcodes.ACC_SYNTHETIC) != 0 || (it.access & Opcodes.ACC_PUBLIC) != 0)
+			return
+
+		if (name.startsWith("<"))
+			return
+
+		closure(it.name, it.desc, clazz.name)
 	}
 }
 

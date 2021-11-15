@@ -45,6 +45,8 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		this.name = name;
 	}
 
+	protected abstract void generateTags();
+
 	@Override
 	protected FabricObjectBuilder<T> getOrCreateTagBuilder(Tag.Identified<T> tag) {
 		return new FabricObjectBuilder<>(super.getOrCreateTagBuilder(tag));
@@ -53,6 +55,11 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	@Override
 	protected Path getOutput(Identifier id) {
 		return this.root.getOutput().resolve("data/%s/tags/%s/%s.json".formatted(id.getNamespace(), path, id.getPath()));
+	}
+
+	@Override
+	protected void configure() {
+		generateTags();
 	}
 
 	@Override

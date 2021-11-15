@@ -38,7 +38,7 @@ public abstract class FabricRecipesProvider extends RecipesProvider {
 		this.dataGenerator = dataGenerator;
 	}
 
-	public abstract void generateRecipes(Consumer<RecipeJsonProvider> exporter);
+	protected abstract void generateRecipes(Consumer<RecipeJsonProvider> exporter);
 
 	@Override
 	public void run(DataCache cache) {

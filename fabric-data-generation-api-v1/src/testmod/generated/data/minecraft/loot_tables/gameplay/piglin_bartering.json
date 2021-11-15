@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:barter",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "fabric-data-gen-api-v1-testmod:simple_block"
+        }
+      ]
+    }
+  ]
+}
