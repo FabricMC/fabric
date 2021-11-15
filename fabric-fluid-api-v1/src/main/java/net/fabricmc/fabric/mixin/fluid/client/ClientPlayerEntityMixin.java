@@ -37,7 +37,7 @@ import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
 import net.fabricmc.fabric.impl.fluid.UnderfluidSoundLoop;
 
 @Mixin(ClientPlayerEntity.class)
-public abstract class ClientPlayerEntityMixin implements FabricFluidClientPlayerEntity {
+public class ClientPlayerEntityMixin implements FabricFluidClientPlayerEntity {
 	//region INTERNAL METHODS AND VARIABLES PLACEHOLDERS
 
 	@Shadow

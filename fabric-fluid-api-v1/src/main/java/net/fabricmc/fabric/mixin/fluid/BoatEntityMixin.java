@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
 import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
 
 @Mixin(BoatEntity.class)
-public abstract class BoatEntityMixin {
+public class BoatEntityMixin {
 	@Redirect(method = "method_7544", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isInRedirect1(FluidState state, Tag<Fluid> tag) {
 		//Enable boat floating on navigable fluids
