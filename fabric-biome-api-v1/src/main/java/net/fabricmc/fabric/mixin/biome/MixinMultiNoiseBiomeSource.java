@@ -23,8 +23,8 @@ import java.util.function.Supplier;
 import com.mojang.datafixers.util.Pair;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
@@ -39,9 +39,9 @@ import net.fabricmc.fabric.impl.biome.NetherBiomeData;
 @Mixin(MultiNoiseBiomeSource.Preset.class)
 public class MixinMultiNoiseBiomeSource {
 	// NOTE: This is a lambda-function in the NETHER preset field initializer
-	@ModifyArgs(method = "method_31088", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/MultiNoiseBiomeSource;<init>(Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$Entries;Ljava/util/Optional;)V"))
-	private static void appendNetherBiomes(Args args, MultiNoiseBiomeSource.Preset preset, Registry<Biome> registry) {
-		MultiNoiseUtil.Entries<Biome> biomes = args.get(0);
+	@Inject(method = "method_31088", at = @At("RETURN"), cancellable = true)
+	private static void appendNetherBiomes(Registry<Biome> registry, CallbackInfoReturnable<MultiNoiseUtil.Entries<Supplier<Biome>>> cri) {
+		MultiNoiseUtil.Entries<Supplier<Biome>> biomes = cri.getReturnValue();
 		List<Pair<MultiNoiseUtil.NoiseHypercube, Supplier<Biome>>> entries = new ArrayList<>(biomes.getEntries());
 
 		// add fabric biome noise point data to list && BiomeSource biome list
@@ -51,6 +51,6 @@ public class MixinMultiNoiseBiomeSource {
 			entries.add(Pair.of(noisePoint, () -> biome));
 		});
 
-		args.set(0, new MultiNoiseUtil.Entries<>(entries));
+		cri.setReturnValue(new MultiNoiseUtil.Entries<>(entries));
 	}
 }

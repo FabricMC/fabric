@@ -24,17 +24,21 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.BiomeKeys;
-import net.minecraft.world.biome.OverworldBiomeCreator;
 import net.minecraft.world.biome.GenerationSettings;
+import net.minecraft.world.biome.OverworldBiomeCreator;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.TheNetherBiomeCreator;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.decorator.BiomePlacementModifier;
+import net.minecraft.world.gen.decorator.SquarePlacementModifier;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.ConfiguredFeatures;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
+import net.minecraft.world.gen.feature.EndPlacedFeatures;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.FeatureConfig;
+import net.minecraft.world.gen.feature.PlacedFeature;
+import net.minecraft.world.gen.feature.PlacedFeatures;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -43,7 +47,6 @@ import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.biome.v1.NetherBiomes;
 import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
 import net.fabricmc.fabric.api.tag.TagFactory;
-import net.fabricmc.fabric.test.biome.mixin.DecoratorsAccessor;
 
 /**
  * <b>NOTES FOR TESTING:</b>
@@ -68,8 +71,8 @@ public class FabricBiomeTest implements ModInitializer {
 	public void onInitialize() {
 		Registry.register(BuiltinRegistries.BIOME, TEST_CRIMSON_FOREST.getValue(), TheNetherBiomeCreator.createCrimsonForest());
 
-		NetherBiomes.addNetherBiome(BiomeKeys.THE_END, MultiNoiseUtil.createNoiseValuePoint(0.0F, 0.5F, 0.0F, 0.0F, 0.0f, 0.1F));
-		NetherBiomes.addNetherBiome(TEST_CRIMSON_FOREST, MultiNoiseUtil.createNoiseValuePoint(0.0F, 0.5F, 0.0F, 0.0F, 0.0f, 0.275F));
+		NetherBiomes.addNetherBiome(BiomeKeys.PLAINS, MultiNoiseUtil.createNoiseHypercube(0.0F, 0.5F, 0.0F, 0.0F, 0.0f, 0, 0.1F));
+		NetherBiomes.addNetherBiome(TEST_CRIMSON_FOREST, MultiNoiseUtil.createNoiseHypercube(0.0F, 0.0F, 0.0f, 0.35F, 0.0f, 0.35F, 0.2F));
 
 		Registry.register(BuiltinRegistries.BIOME, CUSTOM_PLAINS.getValue(), OverworldBiomeCreator.createPlains(false, false, false));
 
@@ -91,8 +94,12 @@ public class FabricBiomeTest implements ModInitializer {
 		TheEndBiomes.addMidlandsBiome(TEST_END_HIGHLANDS, TEST_END_MIDLANDS, 1.0);
 		TheEndBiomes.addBarrensBiome(TEST_END_HIGHLANDS, TEST_END_BARRRENS, 1.0);
 
-		ConfiguredFeature<?, ?> COMMON_DESERT_WELL = Feature.DESERT_WELL.configure(FeatureConfig.DEFAULT).decorate(DecoratorsAccessor.getSQUARE_HEIGHTMAP());
-		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier(MOD_ID, "common_desert_well"), COMMON_DESERT_WELL);
+		ConfiguredFeature<?, ?> COMMON_DESERT_WELL = Feature.DESERT_WELL.configure(FeatureConfig.DEFAULT);
+		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier(MOD_ID, "fab_desert_well"), COMMON_DESERT_WELL);
+
+		// The placement config is taken from the vanilla desert well, but no randomness
+		PlacedFeature PLACED_COMMON_DESERT_WELL = COMMON_DESERT_WELL.withPlacement(SquarePlacementModifier.of(), PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of());
+		Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(MOD_ID, "fab_desert_well"), PLACED_COMMON_DESERT_WELL);
 
 		BiomeModifications.create(new Identifier("fabric:test_mod"))
 				.add(ModificationPhase.ADDITIONS,
@@ -102,7 +109,7 @@ public class FabricBiomeTest implements ModInitializer {
 						BiomeSelectors.categories(Biome.Category.DESERT),
 						context -> {
 							context.getGenerationSettings().addFeature(GenerationStep.Feature.TOP_LAYER_MODIFICATION,
-									BuiltinRegistries.CONFIGURED_FEATURE.getKey(COMMON_DESERT_WELL).get()
+									BuiltinRegistries.PLACED_FEATURE.getKey(PLACED_COMMON_DESERT_WELL).get()
 							);
 						})
 				.add(ModificationPhase.ADDITIONS,
@@ -112,9 +119,9 @@ public class FabricBiomeTest implements ModInitializer {
 
 	// These are used for testing the spacing of custom end biomes.
 	private static Biome createEndHighlands() {
-		GenerationSettings.Builder builder = (new GenerationSettings.Builder())
-				.feature(GenerationStep.Feature.SURFACE_STRUCTURES, ConfiguredFeatures.END_GATEWAY)
-				.feature(GenerationStep.Feature.VEGETAL_DECORATION, ConfiguredFeatures.CHORUS_PLANT);
+		GenerationSettings.Builder builder = new GenerationSettings.Builder()
+				.feature(GenerationStep.Feature.SURFACE_STRUCTURES, EndPlacedFeatures.END_GATEWAY_RETURN)
+				.feature(GenerationStep.Feature.VEGETAL_DECORATION, EndPlacedFeatures.CHORUS_PLANT);
 		return composeEndSpawnSettings(builder);
 	}
 

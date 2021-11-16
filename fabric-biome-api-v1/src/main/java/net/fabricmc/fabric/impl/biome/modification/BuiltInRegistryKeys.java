@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.biome.modification;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
@@ -41,6 +42,11 @@ public final class BuiltInRegistryKeys {
 	public static RegistryKey<ConfiguredFeature<?, ?>> get(ConfiguredFeature<?, ?> configuredFeature) {
 		return BuiltinRegistries.CONFIGURED_FEATURE.getKey(configuredFeature)
 				.orElseThrow(() -> new IllegalArgumentException("Given configured feature is not built-in: " + configuredFeature));
+	}
+
+	public static RegistryKey<PlacedFeature> get(PlacedFeature placedFeature) {
+		return BuiltinRegistries.PLACED_FEATURE.getKey(placedFeature)
+				.orElseThrow(() -> new IllegalArgumentException("Given placed feature is not built-in: " + placedFeature));
 	}
 
 	public static RegistryKey<ConfiguredCarver<?>> get(ConfiguredCarver<?> configuredCarver) {
