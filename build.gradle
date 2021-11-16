@@ -242,6 +242,10 @@ subprojects {
 		genSourcesWithFernFlower.enabled = false
 		genSourcesWithCfr.enabled = false
 		unpickJar.enabled = false
+
+		// Work around a loom bug causing empty jars to be pushed to maven local.
+		publishMavenJavaPublicationToMavenLocal.dependsOn rootProject.tasks.getByName("remapAllJars")
+		publishMavenJavaPublicationToMavenLocal.dependsOn rootProject.tasks.getByName("remapAllSources")
 	}
 }
 
