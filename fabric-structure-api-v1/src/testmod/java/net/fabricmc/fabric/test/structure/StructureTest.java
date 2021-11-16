@@ -39,8 +39,8 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.class_6622;
-import net.minecraft.class_6626;
+import net.minecraft.structure.StructurePiecesGenerator;
+import net.minecraft.structure.StructurePiecesCollector;
 
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
 
@@ -49,7 +49,7 @@ public class StructureTest {
 
 	public static final StructureFeature<DefaultFeatureConfig> STRUCTURE = new TestStructureFeature(DefaultFeatureConfig.CODEC);
 	public static final ConfiguredStructureFeature<DefaultFeatureConfig, ? extends StructureFeature<DefaultFeatureConfig>> CONFIGURED_STRUCTURE = STRUCTURE.configure(new DefaultFeatureConfig());
-	public static final StructurePieceType.class_6615 PIECE = TestStructureGenerator::new;
+	public static final StructurePieceType.Simple PIECE = TestStructureGenerator::new;
 
 	static {
 		LOGGER.info("Registering test structure");
@@ -67,13 +67,13 @@ public class StructureTest {
 			super(codec, TestStructureFeature::generate);
 		}
 
-		private static void generate(class_6626 arg, DefaultFeatureConfig defaultFeatureConfig, class_6622.class_6623 arg2) {
-			int blockX = arg2.chunkPos().getStartX();
-			int blockZ = arg2.chunkPos().getStartZ();
-			int blockY = arg2.chunkGenerator().getHeight(blockX, blockZ, Heightmap.Type.WORLD_SURFACE_WG, arg2.heightAccessor());
+		private static void generate(StructurePiecesCollector structurePiecesCollector, DefaultFeatureConfig defaultFeatureConfig, StructurePiecesGenerator.Context context) {
+			int blockX = context.chunkPos().getStartX();
+			int blockZ = context.chunkPos().getStartZ();
+			int blockY = context.chunkGenerator().getHeight(blockX, blockZ, Heightmap.Type.WORLD_SURFACE_WG, context.world());
 
-			TestStructureGenerator generator = new TestStructureGenerator(arg2.random(), blockX, blockY, blockZ);
-			arg.addPiece(generator);
+			TestStructureGenerator generator = new TestStructureGenerator(context.random(), blockX, blockY, blockZ);
+			structurePiecesCollector.addPiece(generator);
 		}
 	}
 
