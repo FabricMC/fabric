@@ -28,7 +28,7 @@ import net.minecraft.block.Oxidizable;
 
 @Mixin(Oxidizable.class)
 public interface OxidizableMixin {
-	@Dynamic
+	@Dynamic("method_34740: Synthetic lambda body for Suppliers.memoize in initialization of OXIDATION_LEVEL_INCREASES")
 	@Inject(method = "method_34740", at = @At("RETURN"), cancellable = true)
 	private static void createOxidationLevelIncreasesMap(CallbackInfoReturnable<BiMap> cir) {
 		cir.setReturnValue(HashBiMap.create(cir.getReturnValue()));
