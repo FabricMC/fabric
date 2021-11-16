@@ -76,7 +76,7 @@ allprojects {
 	apply plugin: "org.cadixdev.licenser"
 
 	tasks.withType(JavaCompile).configureEach {
-		it.options.release = 16
+		it.options.release = 17
 	}
 
 	group = "net.fabricmc.fabric-api"
@@ -159,7 +159,7 @@ apply from: "gradle/module-versioning.gradle"
 
 javadoc {
 	options {
-		source = "16"
+		source = "17"
 		encoding = "UTF-8"
 		charSet = "UTF-8"
 		memberLevel = JavadocMemberLevel.PACKAGE
