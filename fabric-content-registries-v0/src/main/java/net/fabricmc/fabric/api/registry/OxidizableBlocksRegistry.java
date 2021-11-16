@@ -30,10 +30,10 @@ public final class OxidizableBlocksRegistry {
 	}
 
 	/**
-	 * Registers a block pair as being able to increase and decrease oxidization.
+	 * Registers a block pair as being able to increase and decrease oxidation.
 	 *
-	 * @param less the variant with less oxidization
-	 * @param more the variant with more oxidization
+	 * @param less the variant with less oxidation
+	 * @param more the variant with more oxidation
 	 */
 	public static void registerOxidizableBlockPair(Block less, Block more) {
 		Objects.requireNonNull(less, "Oxidizable block cannot be null!");
