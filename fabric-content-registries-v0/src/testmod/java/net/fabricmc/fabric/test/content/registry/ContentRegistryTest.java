@@ -52,7 +52,7 @@ public final class ContentRegistryTest implements ModInitializer {
 
 		TillableBlockRegistry.register(Blocks.GREEN_WOOL, context -> true, HoeItem.createTillAction(Blocks.LIME_WOOL.getDefaultState()));
 
-		// mote that since ores do not implement Oxidizable that a warning will be shown in the log
+		// note that since ores do not implement Oxidizable that a warning will be shown in the log
 		OxidizableFamily testFamily = new OxidizableFamily.Builder()
 				.unaffected(Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE)
 				.exposed(Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE)

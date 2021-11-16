@@ -60,7 +60,7 @@ public class OxidizableBlocksRegistry {
 	}
 
 	/**
-	 * Registers an {@link OxidizableFamily}s.
+	 * Registers an {@link OxidizableFamily}.
 	 *
 	 * @param family the {@link OxidizableFamily} to register
 	 */
