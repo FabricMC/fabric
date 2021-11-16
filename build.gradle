@@ -226,6 +226,10 @@ subprojects {
 		// Disable the gen sources task on sub projects
 		genSourcesWithFernFlower.enabled = false
 		genSourcesWithCfr.enabled = false
+
+		// Work around a loom bug causing empty jars to be pushed to maven local.
+		publishMavenJavaPublicationToMavenLocal.dependsOn rootProject.tasks.getByName("remapAllJars")
+		publishMavenJavaPublicationToMavenLocal.dependsOn rootProject.tasks.getByName("remapAllSources")
 	}
 }
 
