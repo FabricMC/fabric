@@ -28,7 +28,6 @@ import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
 import net.fabricmc.fabric.api.registry.WaxableBlocksRegistry;
-import net.fabricmc.fabric.api.util.OxidizableFamily;
 
 public final class ContentRegistryTest implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -58,42 +57,52 @@ public final class ContentRegistryTest implements ModInitializer {
 
 		TillableBlockRegistry.register(Blocks.GREEN_WOOL, context -> true, HoeItem.createTillAction(Blocks.LIME_WOOL.getDefaultState()));
 
-		// note that since ores do not implement Oxidizable that a warning will be shown in the log
-		OxidizableFamily testFamily = new OxidizableFamily.Builder()
-				.unaffected(Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE)
-				.exposed(Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE)
-				.weathered(Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE)
-				.oxidized(Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE)
-				.build();
+		OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.COPPER_ORE, Blocks.IRON_ORE);
+		OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.IRON_ORE, Blocks.GOLD_ORE);
+		OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.GOLD_ORE, Blocks.DIAMOND_ORE);
 
-		OxidizableBlocksRegistry.registerFamily(testFamily);
+		OxidizableBlocksRegistry.registerOxidizationLevelDecrease(Blocks.STONE_BRICKS, Blocks.CHISELED_STONE_BRICKS);
 
-		// assert that OxidizableFamily.Builder throws when a family is missing blocks
+		OxidizableBlocksRegistry.registerOxidizationLevelIncrease(Blocks.OAK_SLAB, Blocks.PETRIFIED_OAK_SLAB);
+
+		// assert that OxidizableBlocksRegistry throws when registered blocks are null
 		try {
-			new OxidizableFamily.Builder() // Has a null entry
-					.unaffected(Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE)
-					.exposed(Blocks.REDSTONE_ORE, Blocks.DEEPSLATE_REDSTONE_ORE)
-					.weathered(Blocks.LAPIS_ORE, Blocks.DEEPSLATE_LAPIS_ORE)
-					.oxidized(Blocks.NETHER_GOLD_ORE, null)
-					.build();
+			OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.EMERALD_ORE, null);
+			OxidizableBlocksRegistry.registerOxidizableBlockPair(null, Blocks.COAL_ORE);
 
-			new OxidizableFamily.Builder() // Is missing Oxidization levels
-					.unaffected(Blocks.EMERALD_ORE, Blocks.DEEPSLATE_EMERALD_ORE)
-					.build();
+			OxidizableBlocksRegistry.registerOxidizationLevelDecrease(Blocks.HAY_BLOCK, null);
+			OxidizableBlocksRegistry.registerOxidizationLevelDecrease(null, Blocks.ACACIA_LOG);
 
-			throw new AssertionError("OxidizableFamily.Builder didn't throw when blocks were missing in a family!");
+			OxidizableBlocksRegistry.registerOxidizationLevelIncrease(Blocks.BONE_BLOCK, null);
+			OxidizableBlocksRegistry.registerOxidizationLevelIncrease(null, Blocks.BUDDING_AMETHYST);
+
+			throw new AssertionError("OxidizableBlocksRegistry didn't throw when blocks were null!");
 		} catch (NullPointerException e) {
 			// expected behavior
-			LOGGER.info("OxidizableFamily test passed!");
+			LOGGER.info("OxidizableBlocksRegistry test passed!");
 		}
 
-		WaxableBlocksRegistry.registerWaxablePair(Blocks.QUARTZ_BLOCK, Blocks.SMOOTH_QUARTZ);
+		WaxableBlocksRegistry.registerWaxableBlockPair(Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE);
+		WaxableBlocksRegistry.registerWaxableBlockPair(Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE);
+		WaxableBlocksRegistry.registerWaxableBlockPair(Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE);
+		WaxableBlocksRegistry.registerWaxableBlockPair(Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE);
 
+		WaxableBlocksRegistry.registerWaxedToUnwaxed(Blocks.SMOOTH_QUARTZ, Blocks.QUARTZ_BLOCK);
+
+		WaxableBlocksRegistry.registerUnwaxedToWaxed(Blocks.STONE, Blocks.SMOOTH_STONE);
+
+		// assert that WaxableBlocksRegistry throws when registered blocks are null
 		try {
-			WaxableBlocksRegistry.registerWaxablePair(null, Blocks.DEAD_BRAIN_CORAL);
-			WaxableBlocksRegistry.registerWaxablePair(Blocks.BRAIN_CORAL, null);
+			WaxableBlocksRegistry.registerWaxableBlockPair(null, Blocks.DEAD_BRAIN_CORAL);
+			WaxableBlocksRegistry.registerWaxableBlockPair(Blocks.BRAIN_CORAL, null);
 
-			throw new AssertionError("WaxableBlocksRegistry didn't throw when blocks were missing in a pair!");
+			WaxableBlocksRegistry.registerWaxedToUnwaxed(Blocks.RED_SANDSTONE, null);
+			WaxableBlocksRegistry.registerWaxedToUnwaxed(null, Blocks.SHROOMLIGHT);
+
+			WaxableBlocksRegistry.registerUnwaxedToWaxed(Blocks.TINTED_GLASS, null);
+			WaxableBlocksRegistry.registerUnwaxedToWaxed(null, Blocks.MYCELIUM);
+
+			throw new AssertionError("WaxableBlocksRegistry didn't throw when blocks were null!");
 		} catch (NullPointerException e) {
 			// expected behavior
 			LOGGER.info("WaxableBlocksRegistry test passed!");

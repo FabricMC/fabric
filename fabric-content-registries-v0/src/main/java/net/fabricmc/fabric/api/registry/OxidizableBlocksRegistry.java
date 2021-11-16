@@ -16,41 +16,50 @@
 
 package net.fabricmc.fabric.api.registry;
 
-import net.minecraft.block.Oxidizable;
+import java.util.Objects;
 
-import net.fabricmc.fabric.api.util.OxidizableFamily;
+import net.minecraft.block.Block;
+import net.minecraft.block.Oxidizable;
 
 public class OxidizableBlocksRegistry {
 	/**
-	 * Registers multiple {@link OxidizableFamily}s.
+	 * Registers a block pair as being able to increase and decrease oxidization.
 	 *
-	 * @param families the families to register
+	 * @param less the variant with less oxidization
+	 * @param more the variant with more oxidization
+	 * @see #registerOxidizationLevelIncrease(Block, Block)
+	 * @see #registerOxidizationLevelDecrease(Block, Block)
 	 */
-	public static void registerFamilies(OxidizableFamily... families) {
-		for (OxidizableFamily family : families) {
-			registerFamily(family);
-		}
+	public static void registerOxidizableBlockPair(Block less, Block more) {
+		registerOxidizationLevelIncrease(less, more);
+		registerOxidizationLevelDecrease(more, less);
 	}
 
 	/**
-	 * Registers multiple {@link OxidizableFamily}s.
+	 * Registers a block pair as being able to increase oxidization.
 	 *
-	 * @param families the families to register
+	 * @param original the original variant
+	 * @param increased the increased oxidization variant
+	 * @see #registerOxidizationLevelDecrease(Block, Block)
+	 * @see #registerOxidizableBlockPair(Block, Block)
 	 */
-	public static void registerFamilies(Iterable<OxidizableFamily> families) {
-		for (OxidizableFamily family : families) {
-			registerFamily(family);
-		}
+	public static void registerOxidizationLevelIncrease(Block original, Block increased) {
+		Objects.requireNonNull(original, "Oxidizable block cannot be null!");
+		Objects.requireNonNull(increased, "Oxidizable block cannot be null!");
+		Oxidizable.OXIDATION_LEVEL_INCREASES.get().put(original, increased);
 	}
 
 	/**
-	 * Registers an {@link OxidizableFamily}.
+	 * Registers a block pair as being able to decrease oxidization.
 	 *
-	 * @param family the {@link OxidizableFamily} to register
+	 * @param original the original variant
+	 * @param decreased the decreased oxidization variant
+	 * @see #registerOxidizationLevelIncrease(Block, Block)
+	 * @see #registerOxidizableBlockPair(Block, Block)
 	 */
-	public static void registerFamily(OxidizableFamily family) {
-		Oxidizable.OXIDATION_LEVEL_INCREASES.get().putAll(family.oxidizationLevelIncreasesMap());
-		Oxidizable.OXIDATION_LEVEL_DECREASES.get().putAll(family.oxidizationLevelDecreasesMap());
-		WaxableBlocksRegistry.registerWaxablePairs(family.waxableBlockPairs());
+	public static void registerOxidizationLevelDecrease(Block original, Block decreased) {
+		Objects.requireNonNull(original, "Oxidizable block cannot be null!");
+		Objects.requireNonNull(decreased, "Oxidizable block cannot be null!");
+		Oxidizable.OXIDATION_LEVEL_DECREASES.get().put(original, decreased);
 	}
 }

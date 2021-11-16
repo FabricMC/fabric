@@ -16,62 +16,50 @@
 
 package net.fabricmc.fabric.api.registry;
 
+import java.util.Objects;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.HoneycombItem;
 
-import net.fabricmc.fabric.api.util.OxidizableFamily;
-import net.fabricmc.fabric.api.util.WaxableBlockPair;
-
 public class WaxableBlocksRegistry {
 	/**
-	 * Registers a waxable block pair.
-	 * Unnecessary if part of a registered {@link OxidizableFamily}.
-	 *
-	 * @param blocks the blocks to register
-	 * @see OxidizableBlocksRegistry#registerFamily(OxidizableFamily)
-	 * @see #registerWaxablePair(Block, Block)
-	 */
-	public static void registerWaxablePair(WaxableBlockPair blocks) {
-		HoneycombItem.UNWAXED_TO_WAXED_BLOCKS.get().put(blocks.unwaxed(), blocks.waxed());
-		HoneycombItem.WAXED_TO_UNWAXED_BLOCKS.get().put(blocks.waxed(), blocks.unwaxed());
-	}
-
-	/**
-	 * Registers a waxable block.
-	 * Unnecessary if part of a registered {@link OxidizableFamily}.
+	 * Registers a block pair as being able to add and remove wax.
 	 *
 	 * @param unwaxed the unwaxed variant
 	 * @param waxed   the waxed variant
-	 * @see OxidizableBlocksRegistry#registerFamily(OxidizableFamily)
-	 * @see #registerWaxablePair(WaxableBlockPair)
+	 * @see #registerUnwaxedToWaxed(Block, Block)
+	 * @see #registerWaxedToUnwaxed(Block, Block)
 	 */
-	public static void registerWaxablePair(Block unwaxed, Block waxed) {
-		registerWaxablePair(new WaxableBlockPair(unwaxed, waxed));
+	public static void registerWaxableBlockPair(Block unwaxed, Block waxed) {
+		registerUnwaxedToWaxed(unwaxed, waxed);
+		registerWaxedToUnwaxed(waxed, unwaxed);
 	}
 
 	/**
-	 * Registers multiple waxable blocks.
-	 * Unnecessary if part of a registered {@link OxidizableFamily}.
+	 * Registers a block pair as being able to add wax.
 	 *
-	 * @param blocks the blocks to register
-	 * @see OxidizableBlocksRegistry#registerFamily(OxidizableFamily)
+	 * @param unwaxed the unwaxed variant
+	 * @param waxed   the waxed variant
+	 * @see #registerWaxableBlockPair(Block, Block)
+	 * @see #registerWaxedToUnwaxed(Block, Block)
 	 */
-	public static void registerWaxablePairs(WaxableBlockPair... blocks) {
-		for (WaxableBlockPair pair : blocks) {
-			registerWaxablePair(pair);
-		}
+	public static void registerUnwaxedToWaxed(Block unwaxed, Block waxed) {
+		Objects.requireNonNull(unwaxed, "Unwaxed block cannot be null!");
+		Objects.requireNonNull(waxed, "Waxed block cannot be null!");
+		HoneycombItem.UNWAXED_TO_WAXED_BLOCKS.get().put(unwaxed, waxed);
 	}
 
 	/**
-	 * Registers multiple waxable blocks.
-	 * Unnecessary if part of a registered {@link OxidizableFamily}.
+	 * Registers a block pair as being able to remove wax.
 	 *
-	 * @param blocks the blocks to register
-	 * @see OxidizableBlocksRegistry#registerFamily(OxidizableFamily)
+	 * @param waxed   the waxed variant
+	 * @param unwaxed the unwaxed variant
+	 * @see #registerWaxableBlockPair(Block, Block)
+	 * @see #registerUnwaxedToWaxed(Block, Block)
 	 */
-	public static void registerWaxablePairs(Iterable<WaxableBlockPair> blocks) {
-		for (WaxableBlockPair pair : blocks) {
-			registerWaxablePair(pair);
-		}
+	public static void registerWaxedToUnwaxed(Block waxed, Block unwaxed) {
+		Objects.requireNonNull(unwaxed, "Unwaxed block cannot be null!");
+		Objects.requireNonNull(waxed, "Waxed block cannot be null!");
+		HoneycombItem.WAXED_TO_UNWAXED_BLOCKS.get().put(waxed, unwaxed);
 	}
 }
