@@ -22,7 +22,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Oxidizable;
 import net.minecraft.item.HoneycombItem;
 
-public class OxidizableBlocksRegistry {
+/**
+ * Provides methods for registering oxidizable and waxable blocks.
+ */
+public final class OxidizableBlocksRegistry {
+	private OxidizableBlocksRegistry() {
+	}
+
 	/**
 	 * Registers a block pair as being able to increase and decrease oxidization.
 	 *
