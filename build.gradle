@@ -373,7 +373,7 @@ task github(dependsOn: remapMavenJar) {
 		releaseBuilder.name("[$project.minecraft_version] Fabric API $project.version")
 		releaseBuilder.body(ENV.CHANGELOG ?: "No changelog provided")
 		releaseBuilder.commitish(getBranch())
-		releaseBuilder.prerelease(project.prerelease)
+		releaseBuilder.prerelease(project.prerelease as Boolean)
 
 		def ghRelease = releaseBuilder.create()
 		ghRelease.uploadAsset(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"), "application/java-archive");
