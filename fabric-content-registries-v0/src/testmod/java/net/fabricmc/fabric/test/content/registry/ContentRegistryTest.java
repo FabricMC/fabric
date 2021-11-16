@@ -27,7 +27,6 @@ import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
-import net.fabricmc.fabric.api.registry.WaxableBlocksRegistry;
 
 public final class ContentRegistryTest implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -61,29 +60,23 @@ public final class ContentRegistryTest implements ModInitializer {
 		OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.IRON_ORE, Blocks.GOLD_ORE);
 		OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.GOLD_ORE, Blocks.DIAMOND_ORE);
 
+		OxidizableBlocksRegistry.registerWaxableBlockPair(Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE);
+		OxidizableBlocksRegistry.registerWaxableBlockPair(Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE);
+		OxidizableBlocksRegistry.registerWaxableBlockPair(Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE);
+		OxidizableBlocksRegistry.registerWaxableBlockPair(Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE);
+
 		// assert that OxidizableBlocksRegistry throws when registered blocks are null
 		try {
 			OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.EMERALD_ORE, null);
 			OxidizableBlocksRegistry.registerOxidizableBlockPair(null, Blocks.COAL_ORE);
+
+			OxidizableBlocksRegistry.registerWaxableBlockPair(null, Blocks.DEAD_BRAIN_CORAL);
+			OxidizableBlocksRegistry.registerWaxableBlockPair(Blocks.BRAIN_CORAL, null);
+
 			throw new AssertionError("OxidizableBlocksRegistry didn't throw when blocks were null!");
 		} catch (NullPointerException e) {
 			// expected behavior
 			LOGGER.info("OxidizableBlocksRegistry test passed!");
-		}
-
-		WaxableBlocksRegistry.registerWaxableBlockPair(Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE);
-		WaxableBlocksRegistry.registerWaxableBlockPair(Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE);
-		WaxableBlocksRegistry.registerWaxableBlockPair(Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE);
-		WaxableBlocksRegistry.registerWaxableBlockPair(Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE);
-
-		// assert that WaxableBlocksRegistry throws when registered blocks are null
-		try {
-			WaxableBlocksRegistry.registerWaxableBlockPair(null, Blocks.DEAD_BRAIN_CORAL);
-			WaxableBlocksRegistry.registerWaxableBlockPair(Blocks.BRAIN_CORAL, null);
-			throw new AssertionError("WaxableBlocksRegistry didn't throw when blocks were null!");
-		} catch (NullPointerException e) {
-			// expected behavior
-			LOGGER.info("WaxableBlocksRegistry test passed!");
 		}
 	}
 }

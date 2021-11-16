@@ -20,6 +20,7 @@ import java.util.Objects;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Oxidizable;
+import net.minecraft.item.HoneycombItem;
 
 public class OxidizableBlocksRegistry {
 	/**
@@ -32,5 +33,17 @@ public class OxidizableBlocksRegistry {
 		Objects.requireNonNull(less, "Oxidizable block cannot be null!");
 		Objects.requireNonNull(more, "Oxidizable block cannot be null!");
 		Oxidizable.OXIDATION_LEVEL_INCREASES.get().put(less, more);
+	}
+
+	/**
+	 * Registers a block pair as being able to add and remove wax.
+	 *
+	 * @param unwaxed the unwaxed variant
+	 * @param waxed   the waxed variant
+	 */
+	public static void registerWaxableBlockPair(Block unwaxed, Block waxed) {
+		Objects.requireNonNull(unwaxed, "Unwaxed block cannot be null!");
+		Objects.requireNonNull(waxed, "Waxed block cannot be null!");
+		HoneycombItem.UNWAXED_TO_WAXED_BLOCKS.get().put(unwaxed, waxed);
 	}
 }
