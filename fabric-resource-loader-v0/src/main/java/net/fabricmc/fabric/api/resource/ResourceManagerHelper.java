@@ -88,7 +88,7 @@ public interface ResourceManagerHelper {
 	 *
 	 * @param id             the identifier of the resource pack
 	 * @param container      the mod container
-	 * @param displayName    the display name of the resource pack
+	 * @param displayName    the display name of the resource pack, should include mod name for clarity
 	 * @param activationType the activation type of the resource pack
 	 * @return {@code true} if successfully registered the resource pack, else {@code false}
 	 */
