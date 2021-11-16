@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,6 +38,7 @@ import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
+import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -123,7 +125,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 				// Make the resource pack profile for built-in pack, should never be always enabled.
 				ResourcePackProfile profile = ResourcePackProfile.of(entry.getLeft(),
 						pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED,
-						entry::getRight, factory, ResourcePackProfile.InsertionPosition.TOP, ResourcePackSource.PACK_SOURCE_BUILTIN);
+						entry::getRight, factory, ResourcePackProfile.InsertionPosition.TOP, getResourceSource(pack.getFabricModMetadata().getId()));
 				if (profile != null) {
 					consumer.accept(profile);
 				}
@@ -190,5 +192,10 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		if (!addedListeners.add(listener)) {
 			throw new RuntimeException("Listener with previously unknown ID " + listener.getFabricId() + " already in listener set!");
 		}
+	}
+
+	private static ResourcePackSource getResourceSource(String modid) {
+		String trimmedId = StringUtils.abbreviate(modid, 8);
+		return text -> new TranslatableText("pack.nameAndSource", text, new TranslatableText("pack.source.builtinMod", trimmedId));
 	}
 }
