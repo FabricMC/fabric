@@ -23,15 +23,28 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 
 @Environment(EnvType.CLIENT)
 public final class ClientLifecycleTests implements ClientModInitializer {
+	private boolean startCalled;
+	private boolean stopCalled;
+
 	@Override
 	public void onInitializeClient() {
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+			if (startCalled) {
+				throw new IllegalStateException("Start was already called!");
+			}
+
+			startCalled = true;
 			client.submitAndJoin(() -> { // This should fail if the client thread was not bound yet.
 				System.out.println("Started the client");
 			});
 		});
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
+			if (stopCalled) {
+				throw new IllegalStateException("Stop was already called!");
+			}
+
+			stopCalled = true;
 			System.out.println("Client has started stopping!");
 		});
 	}
