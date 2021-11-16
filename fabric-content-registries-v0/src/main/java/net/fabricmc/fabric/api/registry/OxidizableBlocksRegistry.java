@@ -24,26 +24,22 @@ import com.google.common.collect.HashBiMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Oxidizable;
-import net.minecraft.item.HoneycombItem;
 
 import net.fabricmc.fabric.api.util.OxidizableFamily;
 
 public class OxidizableBlocksRegistry {
 	private static final BiMap<Block, Block> OXIDIZATION_LEVEL_INCREASES = HashBiMap.create();
 	private static final BiMap<Block, Block> OXIDIZATION_LEVEL_DECREASES = HashBiMap.create();
-	private static final BiMap<Block, Block> UNWAXED_TO_WAXED_BLOCKS = HashBiMap.create();
-	private static final BiMap<Block, Block> WAXED_TO_UNWAXED_BLOCKS = HashBiMap.create();
 
 	static {
 		// Put all vanilla entries in here, just in case!
 		OXIDIZATION_LEVEL_INCREASES.putAll(Oxidizable.OXIDATION_LEVEL_INCREASES.get());
 		OXIDIZATION_LEVEL_DECREASES.putAll(Oxidizable.OXIDATION_LEVEL_DECREASES.get());
-		UNWAXED_TO_WAXED_BLOCKS.putAll(HoneycombItem.UNWAXED_TO_WAXED_BLOCKS.get());
-		WAXED_TO_UNWAXED_BLOCKS.putAll(HoneycombItem.WAXED_TO_UNWAXED_BLOCKS.get());
 	}
 
 	/**
 	 * Registers multiple {@link OxidizableFamily}s.
+	 *
 	 * @param families the families to register
 	 */
 	public static void registerFamilies(OxidizableFamily... families) {
@@ -53,30 +49,30 @@ public class OxidizableBlocksRegistry {
 	}
 
 	/**
+	 * Registers multiple {@link OxidizableFamily}s.
+	 *
+	 * @param families the families to register
+	 */
+	public static void registerFamilies(Iterable<OxidizableFamily> families) {
+		for (OxidizableFamily family : families) {
+			registerFamily(family);
+		}
+	}
+
+	/**
 	 * Registers an {@link OxidizableFamily}s.
+	 *
 	 * @param family the {@link OxidizableFamily} to register
 	 */
 	public static void registerFamily(OxidizableFamily family) {
 		OXIDIZATION_LEVEL_INCREASES.putAll(family.oxidizationLevelIncreasesMap());
 		OXIDIZATION_LEVEL_DECREASES.putAll(family.oxidizationLevelDecreasesMap());
-		UNWAXED_TO_WAXED_BLOCKS.putAll(family.unwaxedToWaxedMap());
-		WAXED_TO_UNWAXED_BLOCKS.putAll(family.waxedToUnwaxedMap());
-	}
-
-	/**
-	 * Registers a waxable block.
-	 * Unnecessary if part of a registered {@link OxidizableFamily}.
-	 * @see #registerFamily(OxidizableFamily)
-	 * @param unwaxed the unwaxed variant
-	 * @param waxed the waxed variant
-	 */
-	public static void registerWaxable(Block unwaxed, Block waxed) {
-		UNWAXED_TO_WAXED_BLOCKS.put(unwaxed, waxed);
-		WAXED_TO_UNWAXED_BLOCKS.put(waxed, unwaxed);
+		WaxableBlocksRegistry.registerWaxablePairs(family.waxableBlockPairs());
 	}
 
 	/**
 	 * Gets the map of {@link Oxidizable.OxidizationLevel} increases.
+	 *
 	 * @return the map
 	 */
 	public static BiMap<Block, Block> getOxidizationLevelIncreases() {
@@ -85,6 +81,7 @@ public class OxidizableBlocksRegistry {
 
 	/**
 	 * Gets the map of {@link Oxidizable.OxidizationLevel} decreases.
+	 *
 	 * @return the map
 	 */
 	public static BiMap<Block, Block> getOxidizationLevelDecreases() {
@@ -92,24 +89,9 @@ public class OxidizableBlocksRegistry {
 	}
 
 	/**
-	 * Gets the map of unwaxed blocks to waxed counterparts.
-	 * @return the map
-	 */
-	public static BiMap<Block, Block> getUnwaxedToWaxedBlocks() {
-		return UNWAXED_TO_WAXED_BLOCKS;
-	}
-
-	/**
-	 * Gets the map of waxed blocks to unwaxed counterparts.
-	 * @return the map
-	 */
-	public static BiMap<Block, Block> getWaxedToUnwaxedBlocks() {
-		return WAXED_TO_UNWAXED_BLOCKS;
-	}
-
-	/**
 	 * Gets an Optional of the {@link Block} that would result from a decrease in {@link Oxidizable.OxidizationLevel} from the given block.
 	 * If no such block exists, the Optional will be empty.
+	 *
 	 * @param block the block whose oxidization is to be decreased
 	 * @return the block with decreased oxidization, in an optional
 	 */
@@ -120,6 +102,7 @@ public class OxidizableBlocksRegistry {
 	/**
 	 * Gets an Optional of the {@link BlockState} that would result from a decrease in {@link Oxidizable.OxidizationLevel} from the given state.
 	 * If no such state exists, the Optional will be empty.
+	 *
 	 * @param state the state whose oxidization is to be decreased
 	 * @return the state with decreased oxidization, in an optional
 	 */
@@ -130,6 +113,7 @@ public class OxidizableBlocksRegistry {
 	/**
 	 * Gets an Optional of the {@link Block} that would result from an increase in {@link Oxidizable.OxidizationLevel} from the given block.
 	 * If no such block exists, the Optional will be empty.
+	 *
 	 * @param block the block whose oxidization is to be increased
 	 * @return the block with increased oxidization, in an optional
 	 */
@@ -140,6 +124,7 @@ public class OxidizableBlocksRegistry {
 	/**
 	 * Gets an Optional of the {@link BlockState} that would result from an increase in {@link Oxidizable.OxidizationLevel} from the given state.
 	 * If no such state exists, the Optional will be empty.
+	 *
 	 * @param state the state whose oxidization is to be increased
 	 * @return the state with increased oxidization, in an optional
 	 */
@@ -148,47 +133,8 @@ public class OxidizableBlocksRegistry {
 	}
 
 	/**
-	 * Gets an Optional of the {@link Block} that would result from the given block being waxed.
-	 * If no such block exists, the Optional will be empty.
-	 * @param block the block to be waxed
-	 * @return the waxed block
-	 */
-	public static Optional<Block> getWaxedBlock(Block block) {
-		return Optional.ofNullable(getUnwaxedToWaxedBlocks().get(block));
-	}
-
-	/**
-	 * Gets an Optional of the {@link BlockState} that would result from the given state being waxed.
-	 * If no such state exists, the Optional will be empty.
-	 * @param state the state to be waxed
-	 * @return the waxed state
-	 */
-	public static Optional<BlockState> getWaxedState(BlockState state) {
-		return getWaxedBlock(state.getBlock()).map((block) -> block.getStateWithProperties(state));
-	}
-
-	/**
-	 * Gets an Optional of the {@link Block} that would result from the given block having its wax removed.
-	 * If no such block exists, the Optional will be empty.
-	 * @param block the block whose wax is to be removed
-	 * @return the unwaxed block
-	 */
-	public static Optional<Block> getUnwaxedBlock(Block block) {
-		return Optional.ofNullable(getWaxedToUnwaxedBlocks().get(block));
-	}
-
-	/**
-	 * Gets an Optional of the {@link BlockState} that would result from the given state having its wax removed.
-	 * If no such state exists, the Optional will be empty.
-	 * @param state the state whose wax is to be removed
-	 * @return the unwaxed state
-	 */
-	public static Optional<BlockState> getUnwaxedState(BlockState state) {
-		return getUnwaxedBlock(state.getBlock()).map((block) -> block.getStateWithProperties(state));
-	}
-
-	/**
 	 * Gets a form of the given {@link Block} with no oxidization.
+	 *
 	 * @param block the block
 	 * @return the block without oxidization
 	 */
@@ -204,6 +150,7 @@ public class OxidizableBlocksRegistry {
 
 	/**
 	 * Gets a form of the given {@link BlockState} with no oxidization.
+	 *
 	 * @param state the state
 	 * @return the state without oxidization
 	 */

@@ -24,6 +24,7 @@ import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
+import net.fabricmc.fabric.api.registry.WaxableBlocksRegistry;
 import net.fabricmc.fabric.api.util.OxidizableFamily;
 
 public final class ContentRegistryTest implements ModInitializer {
@@ -79,6 +80,6 @@ public final class ContentRegistryTest implements ModInitializer {
 			// expected behavior
 		}
 
-		OxidizableBlocksRegistry.registerWaxable(Blocks.QUARTZ_BLOCK, Blocks.SMOOTH_QUARTZ);
+		WaxableBlocksRegistry.registerWaxablePair(Blocks.QUARTZ_BLOCK, Blocks.SMOOTH_QUARTZ);
 	}
 }

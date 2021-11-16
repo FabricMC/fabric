@@ -26,14 +26,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.HoneycombItem;
 
-import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
+import net.fabricmc.fabric.api.registry.WaxableBlocksRegistry;
 
 @Mixin(HoneycombItem.class)
 public class HoneycombItemMixin {
 	@Inject(method = "getWaxedState", at = @At("RETURN"), cancellable = true)
 	private static void getWaxedStateInject(BlockState state, CallbackInfoReturnable<Optional<BlockState>> cir) {
 		if (cir.getReturnValue().isEmpty()) {
-			cir.setReturnValue(OxidizableBlocksRegistry.getWaxedState(state));
+			cir.setReturnValue(WaxableBlocksRegistry.getWaxedState(state));
 		}
 	}
 }

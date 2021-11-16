@@ -31,7 +31,7 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
+import net.fabricmc.fabric.api.registry.WaxableBlocksRegistry;
 
 @Mixin(AxeItem.class)
 public class AxeItemMixin {
@@ -40,6 +40,6 @@ public class AxeItemMixin {
 		World world = context.getWorld();
 		BlockPos pos = context.getBlockPos();
 		BlockState state = world.getBlockState(pos);
-		return (Optional<T>) Optional.ofNullable((Block) ((BiMap) HoneycombItem.WAXED_TO_UNWAXED_BLOCKS.get()).get(state.getBlock())).or(() -> OxidizableBlocksRegistry.getUnwaxedBlock(state.getBlock()));
+		return (Optional<T>) Optional.ofNullable((Block) ((BiMap) HoneycombItem.WAXED_TO_UNWAXED_BLOCKS.get()).get(state.getBlock())).or(() -> WaxableBlocksRegistry.getUnwaxedBlock(state.getBlock()));
 	}
 }
