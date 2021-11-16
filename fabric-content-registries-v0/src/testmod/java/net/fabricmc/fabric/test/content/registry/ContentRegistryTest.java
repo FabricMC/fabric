@@ -76,7 +76,7 @@ public final class ContentRegistryTest implements ModInitializer {
 					.build();
 
 			throw new AssertionError("OxidizableFamily.Builder didn't throw when blocks were missing in a family!");
-		} catch (IllegalStateException e) {
+		} catch (NullPointerException e) {
 			// expected behavior
 		}
 
