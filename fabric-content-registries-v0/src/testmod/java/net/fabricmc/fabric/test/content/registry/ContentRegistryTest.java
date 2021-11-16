@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.test.content.registry;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.block.Blocks;
 import net.minecraft.item.HoeItem;
 
@@ -28,6 +31,8 @@ import net.fabricmc.fabric.api.registry.WaxableBlocksRegistry;
 import net.fabricmc.fabric.api.util.OxidizableFamily;
 
 public final class ContentRegistryTest implements ModInitializer {
+	public static final Logger LOGGER = LogManager.getLogger();
+
 	@Override
 	public void onInitialize() {
 		// Expected behavior:
@@ -48,6 +53,7 @@ public final class ContentRegistryTest implements ModInitializer {
 			throw new AssertionError("StrippableBlockRegistry didn't throw when blocks were missing the 'axis' property!");
 		} catch (IllegalArgumentException e) {
 			// expected behavior
+			LOGGER.info("StrippableBlockRegistry test passed!");
 		}
 
 		TillableBlockRegistry.register(Blocks.GREEN_WOOL, context -> true, HoeItem.createTillAction(Blocks.LIME_WOOL.getDefaultState()));
@@ -78,8 +84,19 @@ public final class ContentRegistryTest implements ModInitializer {
 			throw new AssertionError("OxidizableFamily.Builder didn't throw when blocks were missing in a family!");
 		} catch (NullPointerException e) {
 			// expected behavior
+			LOGGER.info("OxidizableFamily test passed!");
 		}
 
 		WaxableBlocksRegistry.registerWaxablePair(Blocks.QUARTZ_BLOCK, Blocks.SMOOTH_QUARTZ);
+
+		try {
+			WaxableBlocksRegistry.registerWaxablePair(null, Blocks.DEAD_BRAIN_CORAL);
+			WaxableBlocksRegistry.registerWaxablePair(Blocks.BRAIN_CORAL, null);
+
+			throw new AssertionError("WaxableBlocksRegistry didn't throw when blocks were missing in a pair!");
+		} catch (NullPointerException e) {
+			// expected behavior
+			LOGGER.info("WaxableBlocksRegistry test passed!");
+		}
 	}
 }
