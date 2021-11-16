@@ -458,14 +458,6 @@ public interface BiomeModificationContext {
 
 	interface SpawnSettingsContext {
 		/**
-		 * Associated JSON property: <code>player_spawn_friendly</code>.
-		 *
-		 * @see SpawnSettings#isPlayerSpawnFriendly()
-		 * @see SpawnSettings.Builder#playerSpawnFriendly()
-		 */
-		void setPlayerSpawnFriendly(boolean playerSpawnFriendly);
-
-		/**
 		 * Associated JSON property: <code>creature_spawn_probability</code>.
 		 *
 		 * @see SpawnSettings#getCreatureSpawnProbability()

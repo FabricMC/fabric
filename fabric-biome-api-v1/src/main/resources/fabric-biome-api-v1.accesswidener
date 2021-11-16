@@ -53,8 +53,6 @@ accessible field net/minecraft/world/biome/SpawnSettings spawners Ljava/util/Map
 mutable field net/minecraft/world/biome/SpawnSettings spawners Ljava/util/Map;
 accessible field net/minecraft/world/biome/SpawnSettings spawnCosts Ljava/util/Map;
 mutable field net/minecraft/world/biome/SpawnSettings spawnCosts Ljava/util/Map;
-accessible field net/minecraft/world/biome/SpawnSettings playerSpawnFriendly Z
-mutable field net/minecraft/world/biome/SpawnSettings playerSpawnFriendly Z
 
 accessible method net/minecraft/world/biome/SpawnSettings$SpawnDensity <init> (DD)V
 

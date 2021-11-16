@@ -425,11 +425,6 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public void setPlayerSpawnFriendly(boolean playerSpawnFriendly) {
-			spawnSettings.playerSpawnFriendly = playerSpawnFriendly;
-		}
-
-		@Override
 		public void setCreatureSpawnProbability(float probability) {
 			spawnSettings.creatureSpawnProbability = probability;
 		}
