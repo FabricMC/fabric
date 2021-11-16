@@ -27,39 +27,10 @@ public class WaxableBlocksRegistry {
 	 *
 	 * @param unwaxed the unwaxed variant
 	 * @param waxed   the waxed variant
-	 * @see #registerUnwaxedToWaxed(Block, Block)
-	 * @see #registerWaxedToUnwaxed(Block, Block)
 	 */
 	public static void registerWaxableBlockPair(Block unwaxed, Block waxed) {
-		registerUnwaxedToWaxed(unwaxed, waxed);
-		registerWaxedToUnwaxed(waxed, unwaxed);
-	}
-
-	/**
-	 * Registers a block pair as being able to add wax.
-	 *
-	 * @param unwaxed the unwaxed variant
-	 * @param waxed   the waxed variant
-	 * @see #registerWaxableBlockPair(Block, Block)
-	 * @see #registerWaxedToUnwaxed(Block, Block)
-	 */
-	public static void registerUnwaxedToWaxed(Block unwaxed, Block waxed) {
 		Objects.requireNonNull(unwaxed, "Unwaxed block cannot be null!");
 		Objects.requireNonNull(waxed, "Waxed block cannot be null!");
 		HoneycombItem.UNWAXED_TO_WAXED_BLOCKS.get().put(unwaxed, waxed);
-	}
-
-	/**
-	 * Registers a block pair as being able to remove wax.
-	 *
-	 * @param waxed   the waxed variant
-	 * @param unwaxed the unwaxed variant
-	 * @see #registerWaxableBlockPair(Block, Block)
-	 * @see #registerUnwaxedToWaxed(Block, Block)
-	 */
-	public static void registerWaxedToUnwaxed(Block waxed, Block unwaxed) {
-		Objects.requireNonNull(unwaxed, "Unwaxed block cannot be null!");
-		Objects.requireNonNull(waxed, "Waxed block cannot be null!");
-		HoneycombItem.WAXED_TO_UNWAXED_BLOCKS.get().put(waxed, unwaxed);
 	}
 }

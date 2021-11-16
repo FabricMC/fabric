@@ -61,21 +61,10 @@ public final class ContentRegistryTest implements ModInitializer {
 		OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.IRON_ORE, Blocks.GOLD_ORE);
 		OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.GOLD_ORE, Blocks.DIAMOND_ORE);
 
-		OxidizableBlocksRegistry.registerOxidizationLevelDecrease(Blocks.STONE_BRICKS, Blocks.CHISELED_STONE_BRICKS);
-
-		OxidizableBlocksRegistry.registerOxidizationLevelIncrease(Blocks.OAK_SLAB, Blocks.PETRIFIED_OAK_SLAB);
-
 		// assert that OxidizableBlocksRegistry throws when registered blocks are null
 		try {
 			OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.EMERALD_ORE, null);
 			OxidizableBlocksRegistry.registerOxidizableBlockPair(null, Blocks.COAL_ORE);
-
-			OxidizableBlocksRegistry.registerOxidizationLevelDecrease(Blocks.HAY_BLOCK, null);
-			OxidizableBlocksRegistry.registerOxidizationLevelDecrease(null, Blocks.ACACIA_LOG);
-
-			OxidizableBlocksRegistry.registerOxidizationLevelIncrease(Blocks.BONE_BLOCK, null);
-			OxidizableBlocksRegistry.registerOxidizationLevelIncrease(null, Blocks.BUDDING_AMETHYST);
-
 			throw new AssertionError("OxidizableBlocksRegistry didn't throw when blocks were null!");
 		} catch (NullPointerException e) {
 			// expected behavior
@@ -87,21 +76,10 @@ public final class ContentRegistryTest implements ModInitializer {
 		WaxableBlocksRegistry.registerWaxableBlockPair(Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE);
 		WaxableBlocksRegistry.registerWaxableBlockPair(Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE);
 
-		WaxableBlocksRegistry.registerWaxedToUnwaxed(Blocks.SMOOTH_QUARTZ, Blocks.QUARTZ_BLOCK);
-
-		WaxableBlocksRegistry.registerUnwaxedToWaxed(Blocks.STONE, Blocks.SMOOTH_STONE);
-
 		// assert that WaxableBlocksRegistry throws when registered blocks are null
 		try {
 			WaxableBlocksRegistry.registerWaxableBlockPair(null, Blocks.DEAD_BRAIN_CORAL);
 			WaxableBlocksRegistry.registerWaxableBlockPair(Blocks.BRAIN_CORAL, null);
-
-			WaxableBlocksRegistry.registerWaxedToUnwaxed(Blocks.RED_SANDSTONE, null);
-			WaxableBlocksRegistry.registerWaxedToUnwaxed(null, Blocks.SHROOMLIGHT);
-
-			WaxableBlocksRegistry.registerUnwaxedToWaxed(Blocks.TINTED_GLASS, null);
-			WaxableBlocksRegistry.registerUnwaxedToWaxed(null, Blocks.MYCELIUM);
-
 			throw new AssertionError("WaxableBlocksRegistry didn't throw when blocks were null!");
 		} catch (NullPointerException e) {
 			// expected behavior

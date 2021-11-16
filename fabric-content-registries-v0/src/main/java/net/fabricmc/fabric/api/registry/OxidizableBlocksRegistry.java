@@ -27,39 +27,10 @@ public class OxidizableBlocksRegistry {
 	 *
 	 * @param less the variant with less oxidization
 	 * @param more the variant with more oxidization
-	 * @see #registerOxidizationLevelIncrease(Block, Block)
-	 * @see #registerOxidizationLevelDecrease(Block, Block)
 	 */
 	public static void registerOxidizableBlockPair(Block less, Block more) {
-		registerOxidizationLevelIncrease(less, more);
-		registerOxidizationLevelDecrease(more, less);
-	}
-
-	/**
-	 * Registers a block pair as being able to increase oxidization.
-	 *
-	 * @param original the original variant
-	 * @param increased the increased oxidization variant
-	 * @see #registerOxidizationLevelDecrease(Block, Block)
-	 * @see #registerOxidizableBlockPair(Block, Block)
-	 */
-	public static void registerOxidizationLevelIncrease(Block original, Block increased) {
-		Objects.requireNonNull(original, "Oxidizable block cannot be null!");
-		Objects.requireNonNull(increased, "Oxidizable block cannot be null!");
-		Oxidizable.OXIDATION_LEVEL_INCREASES.get().put(original, increased);
-	}
-
-	/**
-	 * Registers a block pair as being able to decrease oxidization.
-	 *
-	 * @param original the original variant
-	 * @param decreased the decreased oxidization variant
-	 * @see #registerOxidizationLevelIncrease(Block, Block)
-	 * @see #registerOxidizableBlockPair(Block, Block)
-	 */
-	public static void registerOxidizationLevelDecrease(Block original, Block decreased) {
-		Objects.requireNonNull(original, "Oxidizable block cannot be null!");
-		Objects.requireNonNull(decreased, "Oxidizable block cannot be null!");
-		Oxidizable.OXIDATION_LEVEL_DECREASES.get().put(original, decreased);
+		Objects.requireNonNull(less, "Oxidizable block cannot be null!");
+		Objects.requireNonNull(more, "Oxidizable block cannot be null!");
+		Oxidizable.OXIDATION_LEVEL_INCREASES.get().put(less, more);
 	}
 }

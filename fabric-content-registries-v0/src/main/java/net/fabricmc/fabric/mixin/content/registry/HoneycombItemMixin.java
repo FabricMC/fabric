@@ -31,9 +31,4 @@ public class HoneycombItemMixin {
 	private static void createUnwaxedToWaxedMap(CallbackInfoReturnable<BiMap> cir) {
 		cir.setReturnValue(HashBiMap.create(cir.getReturnValue()));
 	}
-
-	@Inject(method = "method_34722", at = @At("RETURN"), cancellable = true)
-	private static void createWaxedToUnwaxedMap(CallbackInfoReturnable<BiMap> cir) {
-		cir.setReturnValue(HashBiMap.create(cir.getReturnValue()));
-	}
 }

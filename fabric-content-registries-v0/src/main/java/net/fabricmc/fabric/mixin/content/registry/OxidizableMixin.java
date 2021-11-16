@@ -28,11 +28,6 @@ import net.minecraft.block.Oxidizable;
 @Mixin(Oxidizable.class)
 public interface OxidizableMixin {
 	@Inject(method = "method_34740", at = @At("RETURN"), cancellable = true)
-	private static void createOxidizationLevelDecreasesMap(CallbackInfoReturnable<BiMap> cir) {
-		cir.setReturnValue(HashBiMap.create(cir.getReturnValue()));
-	}
-
-	@Inject(method = "method_34739", at = @At("RETURN"), cancellable = true)
 	private static void createOxidizationLevelIncreasesMap(CallbackInfoReturnable<BiMap> cir) {
 		cir.setReturnValue(HashBiMap.create(cir.getReturnValue()));
 	}
