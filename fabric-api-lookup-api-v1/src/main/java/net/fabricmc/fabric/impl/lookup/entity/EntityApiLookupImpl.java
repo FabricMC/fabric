@@ -64,29 +64,32 @@ public class EntityApiLookupImpl<A, C> implements EntityApiLookup<A, C> {
 	public static void checkSelfImplementingTypes(MinecraftServer server) {
 		if (checkEntityLookup) {
 			checkEntityLookup = false;
-			REGISTERED_SELVES.forEach((apiClass, entityTypes) -> {
-				for (EntityType<?> entityType : entityTypes) {
-					Entity entity = entityType.create(server.getOverworld());
 
-					if (entity == null) {
-						String errorMessage = String.format(
-								"Failed to register self-implementing entities for API class %s. Can not create entity of type %s.",
-								apiClass.getCanonicalName(),
-								Registry.ENTITY_TYPE.getId(entityType)
-						);
-						throw new NullPointerException(errorMessage);
-					}
+			synchronized (REGISTERED_SELVES) {
+				REGISTERED_SELVES.forEach((apiClass, entityTypes) -> {
+					for (EntityType<?> entityType : entityTypes) {
+						Entity entity = entityType.create(server.getOverworld());
 
-					if (!apiClass.isInstance(entity)) {
-						String errorMessage = String.format(
-								"Failed to register self-implementing entities. API class %s is not assignable from entity class %s.",
-								apiClass.getCanonicalName(),
-								entity.getClass().getCanonicalName()
-						);
-						throw new IllegalArgumentException(errorMessage);
+						if (entity == null) {
+							String errorMessage = String.format(
+									"Failed to register self-implementing entities for API class %s. Can not create entity of type %s.",
+									apiClass.getCanonicalName(),
+									Registry.ENTITY_TYPE.getId(entityType)
+							);
+							throw new NullPointerException(errorMessage);
+						}
+
+						if (!apiClass.isInstance(entity)) {
+							String errorMessage = String.format(
+									"Failed to register self-implementing entities. API class %s is not assignable from entity class %s.",
+									apiClass.getCanonicalName(),
+									entity.getClass().getCanonicalName()
+							);
+							throw new IllegalArgumentException(errorMessage);
+						}
 					}
-				}
-			});
+				});
+			}
 		}
 	}
 
@@ -121,7 +124,10 @@ public class EntityApiLookupImpl<A, C> implements EntityApiLookup<A, C> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void registerSelf(EntityType<?>... entityTypes) {
-		REGISTERED_SELVES.computeIfAbsent(apiClass, c -> new LinkedHashSet<>()).addAll(Arrays.asList(entityTypes));
+		synchronized (REGISTERED_SELVES) {
+			REGISTERED_SELVES.computeIfAbsent(apiClass, c -> new LinkedHashSet<>()).addAll(Arrays.asList(entityTypes));
+		}
+
 		registerForTypes((entity, context) -> (A) entity, entityTypes);
 	}
 
