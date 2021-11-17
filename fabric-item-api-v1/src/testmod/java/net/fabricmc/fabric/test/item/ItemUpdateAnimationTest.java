@@ -20,7 +20,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.test.item.client.UpdatingItem;
 
 public class ItemUpdateAnimationTest implements ModInitializer {
 	@Override

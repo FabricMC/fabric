@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.item.client;
+package net.fabricmc.fabric.test.item;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,9 +25,9 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.client.item.v1.AllowNbtUpdateAnimation;
+import net.fabricmc.fabric.api.item.v1.FabricItem;
 
-public class UpdatingItem extends Item implements AllowNbtUpdateAnimation {
+public class UpdatingItem extends Item implements FabricItem {
 	private final boolean allowUpdateAnimation;
 
 	public UpdatingItem(boolean allowUpdateAnimation) {

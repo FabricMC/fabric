@@ -25,11 +25,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.item.HeldItemRenderer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 
-import net.fabricmc.fabric.api.client.item.v1.AllowNbtUpdateAnimation;
+import net.fabricmc.fabric.api.item.v1.FabricItem;
 
+/**
+ * Allow canceling the held item update animation if {@link FabricItem#allowNbtUpdateAnimation} returns false.
+ */
 @Mixin(HeldItemRenderer.class)
 public class HeldItemRendererMixin {
 	@Shadow
@@ -48,7 +52,7 @@ public class HeldItemRendererMixin {
 		ItemStack newMainStack = client.player.getMainHandStack();
 
 		if (mainHand.getItem() == newMainStack.getItem()) {
-			if (!AllowNbtUpdateAnimation.EVENT.invoker().allowNbtUpdateAnimation(client.player, Hand.MAIN_HAND, mainHand, newMainStack)) {
+			if (!((FabricItem) mainHand.getItem()).allowNbtUpdateAnimation(client.player, Hand.MAIN_HAND, mainHand, newMainStack)) {
 				mainHand = newMainStack;
 			}
 		}
@@ -57,7 +61,7 @@ public class HeldItemRendererMixin {
 		ItemStack newOffStack = client.player.getOffHandStack();
 
 		if (offHand.getItem() == newOffStack.getItem()) {
-			if (!AllowNbtUpdateAnimation.EVENT.invoker().allowNbtUpdateAnimation(client.player, Hand.OFF_HAND, offHand, newOffStack)) {
+			if (!((FabricItem) offHand.getItem()).allowNbtUpdateAnimation(client.player, Hand.OFF_HAND, offHand, newOffStack)) {
 				offHand = newOffStack;
 			}
 		}
