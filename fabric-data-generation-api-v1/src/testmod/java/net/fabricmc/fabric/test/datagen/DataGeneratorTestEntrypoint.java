@@ -58,7 +58,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		dataGenerator.addProvider(TestBarterLootTablesProvider::new);
 
 		TestBlockTagsProvider blockTagsProvider = dataGenerator.addProvider(TestBlockTagsProvider::new);
-		dataGenerator.install(new TestItemTagsProvider(dataGenerator, blockTagsProvider));
+		dataGenerator.addProvider(new TestItemTagsProvider(dataGenerator, blockTagsProvider));
 	}
 
 	private static class TestRecipeProvider extends FabricRecipesProvider {
