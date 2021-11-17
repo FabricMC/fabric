@@ -65,7 +65,7 @@
  *     and uses that to find an object of type {@code A}, or  {@code null} if there's no such object.</li>
  *     <li>{@link net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup EntityApiLookup&lt;A, C&gt;} instances provide a
  *     {@link net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup#find find()} function that does the query, and registration happens
- *     primary trough {@link net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup#registerSelf registerSelf()} and
+ *     primarily through {@link net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup#registerSelf registerSelf()} and
  *     {@link net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup#registerForTypes registerForTypes()}.</li>
  *     <li>These instances can be accessed through {@link net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup#get EntityApiLookup#get()}
  *     and should be stored in a {@code public static final} field.</li>

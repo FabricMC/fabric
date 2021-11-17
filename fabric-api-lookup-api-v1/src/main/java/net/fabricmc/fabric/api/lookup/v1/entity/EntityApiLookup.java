@@ -66,11 +66,11 @@ import net.fabricmc.fabric.impl.lookup.entity.EntityApiLookupImpl;
  * }
  * MyApi.LEVELED_ENTITY.registerSelf(LEVELED_PIG_ENTITY_TYPE);
  *
- * // Otherwise, registerForTypes can be used.
- * MyApi.LEVELED_ENTITY.registerForTypes((entity, ignored) -> {
+ * // Otherwise, registerForType can be used.
+ * MyApi.LEVELED_ENTITY.registerForType((zombieEntity, ignored) -> {
  *     // Return a Leveled instance for your entity here, or null if there's none.
  *     // The context is Void in this case, so it can be ignored.
- * }, EntityType.PLAYER, EntityType.ZOMBIE);
+ * }, EntityType.ZOMBIE);
  *
  * // Generic fallback, to interface with anything, for example if we want to all other entity level defaults to 1.
  * MyApi.LEVELED_ENTITY.registerFallback((entity, ignored) -> {

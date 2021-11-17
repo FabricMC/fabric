@@ -14,26 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.lookup.entity;
+package net.fabricmc.fabric.test.lookup;
 
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.PigEntityRenderer;
-import net.minecraft.entity.passive.PigEntity;
-import net.minecraft.util.Identifier;
-
+import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.test.lookup.entity.FabricEntityApiLookupTestClient;
 
 @Environment(EnvType.CLIENT)
-public class InspectablePigEntityRenderer extends PigEntityRenderer {
-	private static final Identifier TEXTURE = new Identifier("missingno");
-
-	public InspectablePigEntityRenderer(EntityRendererFactory.Context context) {
-		super(context);
-	}
-
+public class FabricApiLookupTestClient implements ClientModInitializer {
 	@Override
-	public Identifier getTexture(PigEntity pigEntity) {
-		return TEXTURE;
+	public void onInitializeClient() {
+		FabricEntityApiLookupTestClient.onInitializeClient();
 	}
 }

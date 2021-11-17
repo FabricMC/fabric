@@ -16,24 +16,13 @@
 
 package net.fabricmc.fabric.test.lookup.entity;
 
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.PigEntityRenderer;
-import net.minecraft.entity.passive.PigEntity;
-import net.minecraft.util.Identifier;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 
 @Environment(EnvType.CLIENT)
-public class InspectablePigEntityRenderer extends PigEntityRenderer {
-	private static final Identifier TEXTURE = new Identifier("missingno");
-
-	public InspectablePigEntityRenderer(EntityRendererFactory.Context context) {
-		super(context);
-	}
-
-	@Override
-	public Identifier getTexture(PigEntity pigEntity) {
-		return TEXTURE;
+public class FabricEntityApiLookupTestClient {
+	public static void onInitializeClient() {
+		EntityRendererRegistry.register(FabricEntityApiLookupTest.INSPECTABLE_PIG, InspectablePigEntityRenderer::new);
 	}
 }

@@ -25,7 +25,6 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
@@ -59,9 +58,5 @@ public class FabricEntityApiLookupTest {
 				return null;
 			}
 		});
-	}
-
-	public static void onInitializeClient() {
-		EntityRendererRegistry.register(INSPECTABLE_PIG, InspectablePigEntityRenderer::new);
 	}
 }

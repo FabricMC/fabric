@@ -55,11 +55,13 @@ public class InspectorBlock extends Block {
 
 	@Override
 	public void onSteppedOn(World world, BlockPos pos, BlockState state, Entity entity) {
-		Inspectable inspectable = FabricEntityApiLookupTest.INSPECTABLE.find(entity, null);
+		if (!world.isClient()) {
+			Inspectable inspectable = FabricEntityApiLookupTest.INSPECTABLE.find(entity, null);
 
-		if (inspectable != null) {
-			for (ServerPlayerEntity player : world.getServer().getPlayerManager().getPlayerList()) {
-				player.sendMessage(inspectable.inspect(), true);
+			if (inspectable != null) {
+				for (ServerPlayerEntity player : world.getServer().getPlayerManager().getPlayerList()) {
+					player.sendMessage(inspectable.inspect(), true);
+				}
 			}
 		}
 	}
