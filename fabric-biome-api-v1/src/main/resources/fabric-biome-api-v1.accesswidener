@@ -1,4 +1,4 @@
-accessWidener	v1	named
+accessWidener	v2	named
 accessible  class   net/minecraft/world/biome/Biome$Weather
 accessible field net/minecraft/world/gen/chunk/StructuresConfig configuredStructures Lcom/google/common/collect/ImmutableMap;
 mutable field net/minecraft/world/gen/chunk/StructuresConfig configuredStructures Lcom/google/common/collect/ImmutableMap;
@@ -65,3 +65,18 @@ accessible field net/minecraft/world/biome/GenerationSettings flowerFeatures Lja
 mutable field net/minecraft/world/biome/GenerationSettings flowerFeatures Ljava/util/List;
 accessible field net/minecraft/world/biome/GenerationSettings allowedFeatures Ljava/util/Set;
 mutable field net/minecraft/world/biome/GenerationSettings allowedFeatures Ljava/util/Set;
+
+# Transitive Access Wideners
+
+transitive-accessible method net/minecraft/world/gen/feature/OrePlacedFeatures modifiers (Lnet/minecraft/world/gen/decorator/PlacementModifier;Lnet/minecraft/world/gen/decorator/PlacementModifier;)Ljava/util/List;
+transitive-accessible method net/minecraft/world/gen/feature/OrePlacedFeatures modifiersWithCount (ILnet/minecraft/world/gen/decorator/PlacementModifier;)Ljava/util/List;
+transitive-accessible method net/minecraft/world/gen/feature/OrePlacedFeatures modifiersWithRarity (ILnet/minecraft/world/gen/decorator/PlacementModifier;)Ljava/util/List;
+
+transitive-accessible method net/minecraft/world/gen/feature/TreeConfiguredFeatures builder (Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;IIII)Lnet/minecraft/world/gen/feature/TreeFeatureConfig$Builder;
+transitive-accessible method net/minecraft/world/gen/feature/TreeConfiguredFeatures oak ()Lnet/minecraft/world/gen/feature/TreeFeatureConfig$Builder;
+transitive-accessible method net/minecraft/world/gen/feature/TreeConfiguredFeatures birch ()Lnet/minecraft/world/gen/feature/TreeFeatureConfig$Builder;
+transitive-accessible method net/minecraft/world/gen/feature/TreeConfiguredFeatures superBirch ()Lnet/minecraft/world/gen/feature/TreeFeatureConfig$Builder;
+transitive-accessible method net/minecraft/world/gen/feature/TreeConfiguredFeatures jungle ()Lnet/minecraft/world/gen/feature/TreeFeatureConfig$Builder;
+transitive-accessible method net/minecraft/world/gen/feature/TreeConfiguredFeatures fancyOak ()Lnet/minecraft/world/gen/feature/TreeFeatureConfig$Builder;
+
+transitive-accessible method net/minecraft/world/gen/treedecorator/TreeDecoratorType <init> (Lcom/mojang/serialization/Codec;)V
