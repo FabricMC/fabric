@@ -48,7 +48,7 @@ public class FabricDataGenerator extends DataGenerator {
 	 */
 	public <T extends DataProvider> T addProvider(Function<FabricDataGenerator, T> function) {
 		T provider = function.apply(this);
-		install(provider);
+		addProvider(provider);
 		return provider;
 	}
 
