@@ -30,6 +30,16 @@ loom {
 			ideConfigGenerated = true
 			runDir "build/datagen"
 		}
+		datagenClient {
+			client()
+			name "Data Generation"
+			vmArg "-Dfabric-api.datagen"
+			vmArg "-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}"
+
+			ideConfigGenerated = true
+			runDir "build/datagen"
+			source sourceSets.testmod
+		}
 	}
 }
 
