@@ -3,15 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.biome",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "modification.BiomeAccessor",
-    "modification.BiomeEffectsAccessor",
-    "modification.BiomeWeatherAccessor",
-    "modification.BiomeWeatherAccessor",
     "modification.DynamicRegistryManagerImplMixin",
-    "modification.GenerationSettingsAccessor",
     "modification.RegistryOpsMixin",
-    "modification.SpawnDensityAccessor",
-    "modification.SpawnSettingsAccessor",
     "MixinMultiNoiseBiomeSource",
     "MixinTheEndBiomeSource"
   ],

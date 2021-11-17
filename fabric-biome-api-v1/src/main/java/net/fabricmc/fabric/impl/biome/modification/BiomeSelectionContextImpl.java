@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -58,6 +59,12 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	public Optional<RegistryKey<ConfiguredFeature<?, ?>>> getFeatureKey(ConfiguredFeature<?, ?> configuredFeature) {
 		Registry<ConfiguredFeature<?, ?>> registry = dynamicRegistries.get(Registry.CONFIGURED_FEATURE_KEY);
 		return registry.getKey(configuredFeature);
+	}
+
+	@Override
+	public Optional<RegistryKey<PlacedFeature>> getPlacedFeatureKey(PlacedFeature placedFeature) {
+		Registry<PlacedFeature> registry = dynamicRegistries.get(Registry.PLACED_FEATURE_KEY);
+		return registry.getKey(placedFeature);
 	}
 
 	@Override

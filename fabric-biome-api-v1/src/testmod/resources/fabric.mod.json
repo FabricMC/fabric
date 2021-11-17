@@ -12,8 +12,5 @@
     "main": [
       "net.fabricmc.fabric.test.biome.FabricBiomeTest"
     ]
-  },
-  "mixins": [
-    "fabric-biome-testmod-api-v1.mixins.json"
-  ]
+  }
 }
