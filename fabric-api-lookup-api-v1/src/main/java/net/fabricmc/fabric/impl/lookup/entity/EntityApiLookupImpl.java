@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -94,21 +95,23 @@ public class EntityApiLookupImpl<A, C> implements EntityApiLookup<A, C> {
 	public A find(Entity entity, C context) {
 		Objects.requireNonNull(entity, "Entity may not be null.");
 
-		EntityApiProvider<A, C> provider = providerMap.get(entity.getType());
+		if (EntityPredicates.VALID_ENTITY.test(entity)) {
+			EntityApiProvider<A, C> provider = providerMap.get(entity.getType());
 
-		if (provider != null) {
-			A instance = provider.find(entity, context);
+			if (provider != null) {
+				A instance = provider.find(entity, context);
 
-			if (instance != null) {
-				return instance;
+				if (instance != null) {
+					return instance;
+				}
 			}
-		}
 
-		for (EntityApiProvider<A, C> fallback : fallbackProviders) {
-			A instance = fallback.find(entity, context);
+			for (EntityApiProvider<A, C> fallback : fallbackProviders) {
+				A instance = fallback.find(entity, context);
 
-			if (instance != null) {
-				return instance;
+				if (instance != null) {
+					return instance;
+				}
 			}
 		}
 
