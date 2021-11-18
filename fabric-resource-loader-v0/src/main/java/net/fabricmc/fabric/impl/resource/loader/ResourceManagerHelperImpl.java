@@ -194,8 +194,8 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		}
 	}
 
-	private static ResourcePackSource getResourceSource(String modid) {
-		String trimmedId = StringUtils.abbreviate(modid, 8);
+	private static ResourcePackSource getResourceSource(String modId) {
+		String trimmedId = StringUtils.abbreviate(modId, 8);
 		return text -> new TranslatableText("pack.nameAndSource", text, new TranslatableText("pack.source.builtinMod", trimmedId));
 	}
 }
