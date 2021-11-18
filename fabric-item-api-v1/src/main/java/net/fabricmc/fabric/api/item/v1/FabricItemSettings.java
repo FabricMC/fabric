@@ -53,6 +53,15 @@ public class FabricItemSettings extends Item.Settings {
 		return this;
 	}
 
+	/**
+	 * Allow cancelling the client-side animation when the NBT or count of this stack changes.
+	 * @see UpdateAnimationHandler
+	 */
+	public FabricItemSettings nbtUpdateAnimation(UpdateAnimationHandler handler) {
+		FabricItemInternals.computeExtraData(this).nbtUpdateAnimation(handler);
+		return this;
+	}
+
 	// Overrides of vanilla methods
 
 	@Override

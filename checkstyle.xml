@@ -199,7 +199,10 @@
 
 		<!--<module name="InvalidJavadocPosition"/>-->
 		<module name="JavadocParagraph"/>
-		<module name="JavadocStyle"/>
+		<module name="JavadocStyle">
+			<!-- "First sentence should end with a period." conflicts with the new Java 16 {@return ...}. -->
+			<property name="checkFirstSentence" value="false"/>
+		</module>
 		<module name="AtclauseOrder">
 			<property name="tagOrder" value="@param,@return,@throws,@deprecated"/>
 		</module>

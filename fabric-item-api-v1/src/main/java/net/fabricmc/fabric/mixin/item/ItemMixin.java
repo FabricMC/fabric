@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,17 +27,20 @@ import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
-import net.fabricmc.fabric.api.item.v1.FabricItem;
+import net.fabricmc.fabric.api.item.v1.UpdateAnimationHandler;
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 @Mixin(Item.class)
-abstract class ItemMixin implements ItemExtensions, FabricItem {
+abstract class ItemMixin implements ItemExtensions {
 	@Unique
-	private EquipmentSlotProvider equipmentSlotProvider;
+	private EquipmentSlotProvider fabric_equipmentSlotProvider;
 
 	@Unique
-	private CustomDamageHandler customDamageHandler;
+	private CustomDamageHandler fabric_customDamageHandler;
+
+	@Unique
+	private UpdateAnimationHandler fabric_updateAnimationHandler;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onConstruct(Item.Settings settings, CallbackInfo info) {
@@ -45,21 +49,31 @@ abstract class ItemMixin implements ItemExtensions, FabricItem {
 
 	@Override
 	public EquipmentSlotProvider fabric_getEquipmentSlotProvider() {
-		return equipmentSlotProvider;
+		return fabric_equipmentSlotProvider;
 	}
 
 	@Override
 	public void fabric_setEquipmentSlotProvider(EquipmentSlotProvider equipmentSlotProvider) {
-		this.equipmentSlotProvider = equipmentSlotProvider;
+		this.fabric_equipmentSlotProvider = equipmentSlotProvider;
 	}
 
 	@Override
 	public CustomDamageHandler fabric_getCustomDamageHandler() {
-		return customDamageHandler;
+		return fabric_customDamageHandler;
 	}
 
 	@Override
 	public void fabric_setCustomDamageHandler(CustomDamageHandler handler) {
-		this.customDamageHandler = handler;
+		this.fabric_customDamageHandler = handler;
+	}
+
+	@Override
+	public @Nullable UpdateAnimationHandler fabric_getUpdateAnimationHandler() {
+		return fabric_updateAnimationHandler;
+	}
+
+	@Override
+	public void fabric_setUpdateAnimationHandler(UpdateAnimationHandler handler) {
+		this.fabric_updateAnimationHandler = handler;
 	}
 }
