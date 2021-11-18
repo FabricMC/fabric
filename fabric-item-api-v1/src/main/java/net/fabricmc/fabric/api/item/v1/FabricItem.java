@@ -18,25 +18,33 @@ package net.fabricmc.fabric.api.item.v1;
 
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 
 /**
- * When the NBT of an item stack in the main hand or off hand changes, vanilla runs an "update animation".
- * If registered, an instance is called on the client side when the NBT or count of the stack has changed, but not the item,
- * and returning true allows canceling this animation.
+ * General-purpose Fabric-provided extensions for {@link Item} subclasses.
  *
- * <p>Can be set with {@link FabricItemSettings#nbtUpdateAnimation}.
+ * <p>Note: This interface is automatically implemented on all items via Mixin,
+ * however it has to be implemented explicitly by modders to be able to override functions.
+ * In the future, it is planned that {@code public class Item implements FabricItem} will be visible in a development environment.
+ *
+ * <p>Note to maintainers: Functions should only be added to this interface if they are general-purpose enough,
+ * to be evaluated on a case-by-case basis. Otherwise they are better suited for more specialized APIs.
  */
-@FunctionalInterface
-public interface UpdateAnimationHandler {
+public interface FabricItem {
 	/**
-	 * {@return true to run the vanilla NBT update animation, false to cancel it}
+	 * When the NBT of an item stack in the main hand or off hand changes, vanilla runs an "update animation".
+	 * This function is called on the client side when the NBT or count of the stack has changed, but not the item,
+	 * and returning true allows canceling this animation.
 	 *
 	 * @param player   the current player; this may be safely cast to {@link ClientPlayerEntity} in client-only code
 	 * @param hand     the hand; this function applies both to the main hand and the off hand
 	 * @param oldStack the previous stack, of this item
 	 * @param newStack the new stack, also of this item
+	 * @return true to run the vanilla animation, false to cancel it.
 	 */
-	boolean allowNbtUpdateAnimation(PlayerEntity player, Hand hand, ItemStack oldStack, ItemStack newStack);
+	default boolean allowNbtUpdateAnimation(PlayerEntity player, Hand hand, ItemStack oldStack, ItemStack newStack) {
+		return true;
+	}
 }

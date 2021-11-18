@@ -17,17 +17,22 @@
 package net.fabricmc.fabric.test.item;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.item.v1.FabricItem;
 
-public class UpdatingItem extends Item {
+public class UpdatingItem extends Item implements FabricItem {
+	private final boolean allowUpdateAnimation;
+
 	public UpdatingItem(boolean allowUpdateAnimation) {
-		super(new FabricItemSettings().group(ItemGroup.MISC).nbtUpdateAnimation((p, h, o, n) -> allowUpdateAnimation));
+		super(new Settings().group(ItemGroup.MISC));
+		this.allowUpdateAnimation = allowUpdateAnimation;
 	}
 
 	@Override
@@ -36,5 +41,10 @@ public class UpdatingItem extends Item {
 			NbtCompound tag = stack.getOrCreateNbt();
 			tag.putLong("ticks", tag.getLong("ticks")+1);
 		}
+	}
+
+	@Override
+	public boolean allowNbtUpdateAnimation(PlayerEntity player, Hand hand, ItemStack originalStack, ItemStack updatedStack) {
+		return allowUpdateAnimation;
 	}
 }

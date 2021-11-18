@@ -19,21 +19,20 @@ package net.fabricmc.fabric.mixin.item.client;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.item.HeldItemRenderer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 
-import net.fabricmc.fabric.api.item.v1.UpdateAnimationHandler;
-import net.fabricmc.fabric.impl.item.ItemExtensions;
+import net.fabricmc.fabric.api.item.v1.FabricItem;
 
 /**
- * Allow canceling the held item update animation if {@link UpdateAnimationHandler#allowNbtUpdateAnimation} returns false.
+ * Allow canceling the held item update animation if {@link FabricItem#allowNbtUpdateAnimation} returns false.
  */
 @Mixin(HeldItemRenderer.class)
 public class HeldItemRendererMixin {
@@ -52,28 +51,19 @@ public class HeldItemRendererMixin {
 		// Modify main hand
 		ItemStack newMainStack = client.player.getMainHandStack();
 
-		if (suppressUpdate(Hand.MAIN_HAND, mainHand, newMainStack)) {
-			mainHand = newMainStack;
+		if (mainHand.getItem() == newMainStack.getItem()) {
+			if (!((FabricItem) mainHand.getItem()).allowNbtUpdateAnimation(client.player, Hand.MAIN_HAND, mainHand, newMainStack)) {
+				mainHand = newMainStack;
+			}
 		}
 
 		// Modify off hand
 		ItemStack newOffStack = client.player.getOffHandStack();
 
-		if (suppressUpdate(Hand.OFF_HAND, offHand, newOffStack)) {
-			offHand = newOffStack;
-		}
-	}
-
-	@Unique
-	private boolean suppressUpdate(Hand hand, ItemStack oldStack, ItemStack newStack) {
-		if (oldStack.getItem() == newStack.getItem()) {
-			UpdateAnimationHandler handler = ((ItemExtensions) oldStack.getItem()).fabric_getUpdateAnimationHandler();
-
-			if (handler != null) {
-				return !handler.allowNbtUpdateAnimation(client.player, hand, oldStack, newStack);
+		if (offHand.getItem() == newOffStack.getItem()) {
+			if (!((FabricItem) offHand.getItem()).allowNbtUpdateAnimation(client.player, Hand.OFF_HAND, offHand, newOffStack)) {
+				offHand = newOffStack;
 			}
 		}
-
-		return false;
 	}
 }
