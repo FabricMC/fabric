@@ -47,4 +47,9 @@ public class UpdatingItem extends Item implements FabricItem {
 	public boolean allowNbtUpdateAnimation(PlayerEntity player, Hand hand, ItemStack originalStack, ItemStack updatedStack) {
 		return allowUpdateAnimation;
 	}
+
+	@Override
+	public boolean allowContinuingBlockBreaking(PlayerEntity player, ItemStack oldStack, ItemStack newStack) {
+		return true; // set to false and you won't be able to break a block in survival with this item
+	}
 }
