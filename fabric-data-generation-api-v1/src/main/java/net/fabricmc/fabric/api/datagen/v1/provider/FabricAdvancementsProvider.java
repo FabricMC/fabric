@@ -32,6 +32,11 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
+/**
+ * Extend this class and implement {@link FabricAdvancementsProvider#generateAdvancement}.
+ *
+ * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
+ */
 public abstract class FabricAdvancementsProvider implements DataProvider {
 	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
 
@@ -41,6 +46,9 @@ public abstract class FabricAdvancementsProvider implements DataProvider {
 		this.dataGenerator = dataGenerator;
 	}
 
+	/**
+	 * Use {@link Advancement.Task#build(Consumer, String)} to register and advancement to build.
+	 */
 	public abstract void generateAdvancement(Consumer<Advancement> consumer);
 
 	@Override

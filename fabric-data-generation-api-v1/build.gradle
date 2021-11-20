@@ -85,7 +85,7 @@ def visitMethods(File input, String className, closure) {
 		if ((it.access & Opcodes.ACC_SYNTHETIC) != 0 || (it.access & Opcodes.ACC_PUBLIC) != 0)
 			return
 
-		if (name.startsWith("<"))
+		if (it.name.startsWith("<"))
 			return
 
 		closure(it.name, it.desc, clazz.name)

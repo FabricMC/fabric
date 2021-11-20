@@ -73,7 +73,6 @@ transitive-accessible	method	net/minecraft/data/server/RecipesProvider	getRecipe
 transitive-accessible	method	net/minecraft/data/server/RecipesProvider	convertBetween	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/item/ItemConvertible;)Ljava/lang/String;
 transitive-accessible	method	net/minecraft/data/server/RecipesProvider	getSmeltingItemPath	(Lnet/minecraft/item/ItemConvertible;)Ljava/lang/String;
 transitive-accessible	method	net/minecraft/data/server/RecipesProvider	getBlastingItemPath	(Lnet/minecraft/item/ItemConvertible;)Ljava/lang/String;
-transitive-accessible	method	net/minecraft/data/server/RecipesProvider	<clinit>	()V
 transitive-accessible	method	net/minecraft/data/client/model/BlockStateModelGenerator	createStoneState	(Lnet/minecraft/block/Block;Lnet/minecraft/util/Identifier;Lnet/minecraft/data/client/model/Texture;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/client/model/BlockStateSupplier;
 transitive-accessible	method	net/minecraft/data/client/model/BlockStateModelGenerator	createDeepslateState	(Lnet/minecraft/block/Block;Lnet/minecraft/util/Identifier;Lnet/minecraft/data/client/model/Texture;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/client/model/BlockStateSupplier;
 transitive-accessible	method	net/minecraft/data/client/model/BlockStateModelGenerator	excludeFromSimpleItemModelGeneration	(Lnet/minecraft/block/Block;)V
@@ -221,4 +220,3 @@ transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	c
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	addVinePlantDrop	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	addDrop	(Lnet/minecraft/block/Block;Ljava/util/function/Function;)V
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	addDrop	(Lnet/minecraft/block/Block;Lnet/minecraft/loot/LootTable$Builder;)V
-transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	<clinit>	()V

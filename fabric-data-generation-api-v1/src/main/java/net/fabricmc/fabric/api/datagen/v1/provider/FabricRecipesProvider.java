@@ -26,10 +26,17 @@ import com.google.gson.JsonObject;
 import net.minecraft.data.DataCache;
 import net.minecraft.data.server.RecipesProvider;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.server.recipe.ShapedRecipeJsonFactory;
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
+/**
+ * Extend this class and implement {@link FabricRecipesProvider#generateRecipes}.
+ *
+ * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
+ */
 public abstract class FabricRecipesProvider extends RecipesProvider {
 	private final FabricDataGenerator dataGenerator;
 
@@ -38,6 +45,9 @@ public abstract class FabricRecipesProvider extends RecipesProvider {
 		this.dataGenerator = dataGenerator;
 	}
 
+	/**
+	 * Implement this method and then use the range of methods in {@link RecipesProvider} or from one of the recipe json factories such as {@link ShapedRecipeJsonFactory} & {@link ShapelessRecipeJsonFactory}.
+	 */
 	protected abstract void generateRecipes(Consumer<RecipeJsonProvider> exporter);
 
 	@Override
@@ -60,6 +70,9 @@ public abstract class FabricRecipesProvider extends RecipesProvider {
 		});
 	}
 
+	/**
+	 * Override this method to change the recipe identifier. The default implementation normalises the namespace to the modid.
+	 */
 	protected Identifier getRecipeIdentifier(Identifier identifier) {
 		return new Identifier(dataGenerator.getModId(), identifier.getPath());
 	}

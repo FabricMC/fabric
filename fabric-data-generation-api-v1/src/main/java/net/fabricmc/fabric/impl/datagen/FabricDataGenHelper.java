@@ -24,12 +24,15 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
+@ApiStatus.Internal
 public class FabricDataGenHelper {
 	private static final Logger LOGGER = LogManager.getLogger();
 
@@ -41,12 +44,18 @@ public class FabricDataGenHelper {
 	/**
 	 * Sets the output directory for the generated data.
 	 */
-	public static final String OUTPUT_DIR = System.getProperty("fabric-api.datagen.output-dir");
+	private static final String OUTPUT_DIR = System.getProperty("fabric-api.datagen.output-dir");
 
 	/**
 	 * When enabled providers can enable extra validation, such as ensuring all registry entires have data generated for them.
 	 */
-	public static final boolean STRICT_VALIDATION = System.getProperty("fabric-api.datagen.strict_validation") != null;
+	private static final boolean STRICT_VALIDATION = System.getProperty("fabric-api.datagen.strict_validation") != null;
+
+	/**
+	 * Filter to a specific modid with this property, useful if dependencies also have data generators.
+	 */
+	@Nullable
+	private static final String MOD_ID_FILTER = System.getProperty("fabric-api.datagen.modid");
 
 	/**
 	 * Entrypoint key to register classes implementing {@link DataGeneratorEntrypoint}.
@@ -65,6 +74,12 @@ public class FabricDataGenHelper {
 		}
 
 		for (EntrypointContainer<DataGeneratorEntrypoint> entrypointContainer : dataGeneratorInitializers) {
+			if (MOD_ID_FILTER != null) {
+				if (!entrypointContainer.getProvider().getMetadata().getId().equals(MOD_ID_FILTER)) {
+					continue;
+				}
+			}
+
 			LOGGER.info("Running data generator for {}", entrypointContainer.getProvider().getMetadata().getName());
 			FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, entrypointContainer.getProvider(), STRICT_VALIDATION);
 			entrypointContainer.getEntrypoint().onInitializeDataGenerator(dataGenerator);

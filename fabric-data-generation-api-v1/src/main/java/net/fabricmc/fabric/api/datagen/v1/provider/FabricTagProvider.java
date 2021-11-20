@@ -91,7 +91,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	}
 
 	@Override
-	protected void configure() {
+	protected final void configure() {
 		generateTags();
 	}
 

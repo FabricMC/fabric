@@ -33,6 +33,11 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.impl.datagen.FabricLootTableProvider;
 
+/**
+ * Extend this class and implement {@link FabricBlockLootTablesProvider#generateBlockLootTables}.
+ *
+ * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
+ */
 public abstract class FabricBlockLootTablesProvider extends BlockLootTableGenerator implements FabricLootTableProvider {
 	private final FabricDataGenerator dataGenerator;
 
@@ -40,6 +45,9 @@ public abstract class FabricBlockLootTablesProvider extends BlockLootTableGenera
 		this.dataGenerator = dataGenerator;
 	}
 
+	/**
+	 * Use the range of {@link BlockLootTableGenerator#addDrop} methods to generate block drops.
+	 */
 	protected abstract void generateBlockLootTables();
 
 	@Override
@@ -55,7 +63,6 @@ public abstract class FabricBlockLootTablesProvider extends BlockLootTableGenera
 	@Override
 	public void accept(BiConsumer<Identifier, LootTable.Builder> biConsumer) {
 		generateBlockLootTables();
-		// TODO add a strict mode that ensures that all blocks for a mod have a loot table?
 
 		Set<Identifier> generated = Sets.newHashSet();
 
