@@ -22,12 +22,17 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
 public class FabricDataGenHelper {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	/**
 	 * When enabled the dedicated server startup will be hyjacked to run the data generators and then quit.
 	 */
@@ -54,7 +59,13 @@ public class FabricDataGenHelper {
 		List<EntrypointContainer<DataGeneratorEntrypoint>> dataGeneratorInitializers = FabricLoader.getInstance()
 				.getEntrypointContainers(ENTRYPOINT_KEY, DataGeneratorEntrypoint.class);
 
+		if (dataGeneratorInitializers.isEmpty()) {
+			LOGGER.warn("No data generator entrypoints are defined. Implement {} and add your class to the '{}' entrypoint key in your fabric.mod.json.",
+					DataGeneratorEntrypoint.class.getName(), ENTRYPOINT_KEY);
+		}
+
 		for (EntrypointContainer<DataGeneratorEntrypoint> entrypointContainer : dataGeneratorInitializers) {
+			LOGGER.info("Running data generator for {}", entrypointContainer.getProvider().getMetadata().getName());
 			FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, entrypointContainer.getProvider(), STRICT_VALIDATION);
 			entrypointContainer.getEntrypoint().onInitializeDataGenerator(dataGenerator);
 			dataGenerator.run();

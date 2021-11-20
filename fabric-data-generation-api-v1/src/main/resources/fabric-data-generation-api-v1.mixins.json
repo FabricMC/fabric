@@ -6,6 +6,9 @@
     "BlockStateDefinitionProviderMixin",
     "TagBuilderMixin"
   ],
+  "client": [
+    "client.MinecraftMixin"
+  ],
   "server": [
     "server.MainMixin"
   ],
