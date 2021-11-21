@@ -27,16 +27,34 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.util.registry.Registry;
 
-public class MinecartComparatorLogicRegistry {
+/**
+ * A registry for {@linkplain MinecartComparatorLogic custom minecart compator logic}.
+ */
+public final class MinecartComparatorLogicRegistry {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Map<EntityType<?>, MinecartComparatorLogic<?>> logics = new HashMap<>();
 
+	/**
+	 * Gets the registered custom comparator logic for the specified minecart entity type.
+	 *
+	 * @param type the entity type
+	 * @return the comparator logic, or {@code null} if not registered
+	 */
 	@Nullable
 	@SuppressWarnings("unchecked")
 	public static MinecartComparatorLogic<AbstractMinecartEntity> getCustomComparatorLogic(EntityType<?> type) {
 		return (MinecartComparatorLogic<AbstractMinecartEntity>) logics.get(type);
 	}
 
+	/**
+	 * Registers a comparator logic for a minecart entity type.
+	 *
+	 * <p>Registering a second value for an entity type will replace the old logic.
+	 *
+	 * @param <T>   the handled minecart type
+	 * @param type  the minecart entity type
+	 * @param logic the logic to register
+	 */
 	public static <T extends AbstractMinecartEntity> void register(EntityType<T> type, MinecartComparatorLogic<? super T> logic) {
 		if (logics.put(type, logic) != null) {
 			LOGGER.debug("Overriding existing minecart comparator logic for entity type {}", Registry.ENTITY_TYPE.getId(type));
