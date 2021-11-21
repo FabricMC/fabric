@@ -17,10 +17,10 @@
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
 import java.nio.file.Path;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 
 import net.minecraft.data.DataCache;
@@ -53,7 +53,7 @@ public abstract class FabricRecipesProvider extends RecipesProvider {
 	@Override
 	public void run(DataCache cache) {
 		Path path = this.root.getOutput();
-		Set<Identifier> generatedRecipes = new HashSet<>();
+		Set<Identifier> generatedRecipes = Sets.newHashSet();
 		generateRecipes(provider -> {
 			Identifier identifier = getRecipeIdentifier(provider.getRecipeId());
 

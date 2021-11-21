@@ -47,7 +47,7 @@ public abstract class FabricAdvancementsProvider implements DataProvider {
 	}
 
 	/**
-	 * Use {@link Advancement.Task#build(Consumer, String)} to register and advancement to build.
+	 * Use {@link Advancement.Task#build(Consumer, String)} to register an advancement to build.
 	 */
 	public abstract void generateAdvancement(Consumer<Advancement> consumer);
 

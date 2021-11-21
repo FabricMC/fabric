@@ -30,7 +30,7 @@ import net.fabricmc.loader.api.ModContainer;
 /**
  * An extension to vanilla's {@link DataGenerator} providing mod specific data, and helper functions.
  */
-public class FabricDataGenerator extends DataGenerator {
+public final class FabricDataGenerator extends DataGenerator {
 	private final ModContainer modContainer;
 	private final boolean strictValidation;
 
@@ -46,10 +46,10 @@ public class FabricDataGenerator extends DataGenerator {
 	 *
 	 * @return The {@link DataProvider}
 	 */
-	public <T extends DataProvider> T addProvider(Function<FabricDataGenerator, T> function) {
-		T provider = function.apply(this);
-		addProvider(provider);
-		return provider;
+	public <P extends DataProvider> P addProvider(Function<FabricDataGenerator, P> provider) {
+		P p = provider.apply(this);
+		addProvider(p);
+		return p;
 	}
 
 	/**

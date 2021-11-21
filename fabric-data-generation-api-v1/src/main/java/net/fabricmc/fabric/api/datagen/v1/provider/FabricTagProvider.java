@@ -145,8 +145,8 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @param itemTag The item tag to copy to.
 		 */
 		public void copy(Tag.Identified<Block> blockTag, Tag.Identified<Item> itemTag) {
-			Tag.Builder itemTagBuilder = this.getTagBuilder(itemTag);
 			Tag.Builder blockTagBuilder = Objects.requireNonNull(this.blockTagBuilderProvider, "Pass Block tag provider via constructor to use copy").apply(blockTag);
+			Tag.Builder itemTagBuilder = this.getTagBuilder(itemTag);
 			blockTagBuilder.streamEntries().forEach(itemTagBuilder::add);
 		}
 	}

@@ -7,7 +7,7 @@
     "TagBuilderMixin"
   ],
   "client": [
-    "client.MinecraftMixin"
+    "client.MinecraftClientMixin"
   ],
   "server": [
     "server.MainMixin"

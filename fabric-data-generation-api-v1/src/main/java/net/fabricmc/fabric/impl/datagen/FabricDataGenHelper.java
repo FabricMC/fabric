@@ -33,11 +33,11 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
 @ApiStatus.Internal
-public class FabricDataGenHelper {
+public final class FabricDataGenHelper {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	/**
-	 * When enabled the dedicated server startup will be hyjacked to run the data generators and then quit.
+	 * When enabled the dedicated server startup will be hijacked to run the data generators and then quit.
 	 */
 	public static final boolean ENABLED = System.getProperty("fabric-api.datagen") != null;
 
@@ -61,6 +61,9 @@ public class FabricDataGenHelper {
 	 * Entrypoint key to register classes implementing {@link DataGeneratorEntrypoint}.
 	 */
 	private static final String ENTRYPOINT_KEY = "fabric-datagen";
+
+	private FabricDataGenHelper() {
+	}
 
 	public static void run() throws IOException {
 		Path outputDir = Paths.get(Objects.requireNonNull(OUTPUT_DIR, "No output dir provided with the 'fabric-api.datagen.output-dir' property"));
