@@ -4,6 +4,7 @@ moduleDependencies(project, [
 		'fabric-lifecycle-events-v1',
 		'fabric-api-base'
 ])
+
 loom {
 	accessWidenerPath = file('src/main/resources/fabric-structure-api-v1.accesswidener')
 }
