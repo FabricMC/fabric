@@ -24,9 +24,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.class_6834;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.structure.ShiftableStructurePiece;
+import net.minecraft.structure.StructureGeneratorFactory;
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.structure.StructurePiecesGenerator;
 import net.minecraft.util.Identifier;
@@ -68,13 +68,13 @@ public class StructureTest {
 			super(codec, TestStructureFeature::createGenerator);
 		}
 
-		private static Optional<StructurePiecesGenerator<DefaultFeatureConfig>> createGenerator(class_6834.class_6835 arg) {
-			return Optional.of((structurePiecesCollector, context) -> {
-				int blockX = context.chunkPos().getStartX();
-				int blockZ = context.chunkPos().getStartZ();
-				int blockY = context.chunkGenerator().getHeight(blockX, blockZ, Heightmap.Type.WORLD_SURFACE_WG, context.world());
+		private static Optional<StructurePiecesGenerator<DefaultFeatureConfig>> createGenerator(StructureGeneratorFactory.Context<DefaultFeatureConfig> context) {
+			return Optional.of((structurePiecesCollector, ctx) -> {
+				int blockX = ctx.chunkPos().getStartX();
+				int blockZ = ctx.chunkPos().getStartZ();
+				int blockY = ctx.chunkGenerator().getHeight(blockX, blockZ, Heightmap.Type.WORLD_SURFACE_WG, ctx.world());
 
-				TestStructureGenerator generator = new TestStructureGenerator(context.random(), blockX, blockY, blockZ);
+				TestStructureGenerator generator = new TestStructureGenerator(ctx.random(), blockX, blockY, blockZ);
 				structurePiecesCollector.addPiece(generator);
 			});
 		}
