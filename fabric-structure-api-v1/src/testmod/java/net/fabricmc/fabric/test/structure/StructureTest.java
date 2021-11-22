@@ -70,11 +70,11 @@ public class StructureTest {
 		Registry.register(Registry.STRUCTURE_PIECE, new Identifier("fabric", "test_structure_piece"), PIECE);
 
 		//Basic Test of Callback
-		StructurePoolAddCallback.EVENT.register(structurePool -> LOGGER.info(structurePool.id().toString()));
+		StructurePoolAddCallback.EVENT.register(structurePool -> LOGGER.info(structurePool.getId().toString()));
 
 		//The ideal usage of this callback is to add structures to a Village. Here, I constructed a Cactus Farm, which will be added to the house pool for deserts. For testing purposes, we will make it very common, and use a plains-style log outline so it is clear that it doesn't belong.
 		StructurePoolAddCallback.EVENT.register(structurePool -> {
-			if (structurePool.id().toString().contains("minecraft:village/desert/houses")) {
+			if (structurePool.getId().toString().contains("minecraft:village/desert/houses")) {
 				structurePool.addStructurePoolElement(StructurePoolElement.ofProcessedLegacySingle("fabric:cactus_farm", StructureProcessorLists.FARM_PLAINS).apply(StructurePool.Projection.RIGID));
 			}
 		});

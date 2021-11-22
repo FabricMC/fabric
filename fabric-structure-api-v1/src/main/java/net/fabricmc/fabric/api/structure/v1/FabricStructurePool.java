@@ -16,30 +16,22 @@
 
 package net.fabricmc.fabric.api.structure.v1;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.mojang.datafixers.util.Pair;
-
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolElement;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.mixin.structure.StructurePoolAccessor;
-
 /**
  * Represents a modifiable structure pool that has several helper methods for modders.
  */
-public record FabricStructurePool(StructurePool underlying, Identifier id) {
+public interface FabricStructurePool {
+
 	/**
 	 * Adds a new {@link StructurePoolElement} to the {@link StructurePool}.
 	 * See the alternative {@link #addStructurePoolElement(StructurePoolElement, int)} for details.
 	 *
 	 * @param element the element to add
 	 */
-	public void addStructurePoolElement(StructurePoolElement element) {
-		addStructurePoolElement(element, 1);
-	}
+	void addStructurePoolElement(StructurePoolElement element);
 
 	/**
 	 * Adds a new {@link StructurePoolElement} to the {@link StructurePool}.
@@ -47,21 +39,20 @@ public record FabricStructurePool(StructurePool underlying, Identifier id) {
 	 * @param element the element to add
 	 * @param weight  Minecraft handles weight by adding it that amount of times into a list.}
 	 */
-	public void addStructurePoolElement(StructurePoolElement element, int weight) {
-		//adds to elementCounts list; minecraft makes these immutable lists so we replace them with an array list
-		StructurePoolAccessor pool = (StructurePoolAccessor) underlying();
+	void addStructurePoolElement(StructurePoolElement element, int weight);
 
-		if (pool.getElementCounts() instanceof ArrayList) {
-			pool.getElementCounts().add(Pair.of(element, weight));
-		} else {
-			List<Pair<StructurePoolElement, Integer>> list = new ArrayList<>(pool.getElementCounts());
-			list.add(Pair.of(element, weight));
-			pool.setElementCounts(list);
-		}
 
-		//adds to elements list
-		for (int i = 0; i < weight; i++) {
-			pool.getElements().add(element);
-		}
+	/**
+	 * Gets the underlying structure pool.
+	 */
+	StructurePool getUnderlyingPool();
+
+
+	/**
+	 * Gets the identifier for the pool
+	 */
+	default Identifier getId() {
+		return getUnderlyingPool().getId();
 	}
+
 }
