@@ -1,0 +1,99 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.fabricmc.fabric.api.transfer.v1.client.fluid;
+
+import java.util.List;
+
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.text.Text;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+
+/**
+ * Defines how {@linkplain FluidVariant fluid variants} of a given Fluid should be displayed to clients.
+ * Register with {@link FluidVariantRendering#register}.
+ *
+ * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
+ */
+@ApiStatus.Experimental
+@Deprecated
+@Environment(EnvType.CLIENT)
+public interface FluidVariantRenderHandler {
+	/**
+	 * Return the name that should be used for the passed fluid variant.
+	 */
+	default Text getName(FluidVariant fluidVariant) {
+		return fluidVariant.getFluid().getDefaultState().getBlockState().getBlock().getName();
+	}
+
+	/**
+	 * Append additional tooltips to the passed list if additional information is contained in the fluid variant.
+	 *
+	 * <p>The name of the fluid, and its identifier if the tooltip context is advanced, should not be appended.
+	 * They are already added by {@link FluidVariantRendering#getTooltip}.
+	 */
+	default void appendTooltip(FluidVariant fluidVariant, List<Text> tooltip, TooltipContext tooltipContext) {
+	}
+
+	/**
+	 * Return the sprite that should be used to render the passed fluid variant, for use in baked models, (block) entity renderers, or user interfaces.
+	 *
+	 * <p>Null may be returned if the fluid variant should not be rendered.
+	 */
+	@Nullable
+	default Sprite getSprite(FluidVariant fluidVariant) {
+		// Use the fluid render handler by default.
+		FluidRenderHandler fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluidVariant.getFluid());
+
+		if (fluidRenderHandler != null) {
+			return fluidRenderHandler.getFluidSprites(null, null, fluidVariant.getFluid().getDefaultState())[0];
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Return the color to use when rendering {@linkplain #getSprite the sprite} of this fluid variant.
+	 */
+	default int getColor(FluidVariant fluidVariant) {
+		// Use the fluid render handler by default.
+		FluidRenderHandler fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluidVariant.getFluid());
+
+		if (fluidRenderHandler != null) {
+			return fluidRenderHandler.getFluidColor(null, null, fluidVariant.getFluid().getDefaultState());
+		} else {
+			return -1;
+		}
+	}
+
+	/**
+	 * Return {@code true} if this fluid should fill tanks from top.
+	 */
+	default boolean fillsFromTop(FluidVariant fluidVariant) {
+		// By default, fluids should be filled from the bottom.
+		return false;
+	}
+}

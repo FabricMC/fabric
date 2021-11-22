@@ -180,7 +180,7 @@ public final class FabricStructureBuilder<FC extends FeatureConfig, S extends St
 
 		if (adjustsSurface) {
 			StructureFeatureAccessor.setSurfaceAdjustingStructures(ImmutableList.<StructureFeature<?>>builder()
-					.addAll(StructureFeature.JIGSAW_STRUCTURES)
+					.addAll(StructureFeature.LAND_MODIFYING_STRUCTURES)
 					.add(structure)
 					.build());
 		}

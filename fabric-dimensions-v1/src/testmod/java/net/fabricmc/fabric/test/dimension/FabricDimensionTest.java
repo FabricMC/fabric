@@ -123,6 +123,6 @@ public class FabricDimensionTest implements ModInitializer {
 	}
 
 	private ServerWorld getWorld(CommandContext<ServerCommandSource> context, RegistryKey<World> dimensionRegistryKey) {
-		return context.getSource().getMinecraftServer().getWorld(dimensionRegistryKey);
+		return context.getSource().getServer().getWorld(dimensionRegistryKey);
 	}
 }
