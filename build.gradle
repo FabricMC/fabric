@@ -175,7 +175,7 @@ allprojects {
 
 	checkstyle {
 		configFile = rootProject.file("checkstyle.xml")
-		toolVersion = "8.44"
+		toolVersion = "9.1"
 	}
 
 	tasks.withType(AbstractArchiveTask) {
