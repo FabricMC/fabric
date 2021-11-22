@@ -44,17 +44,18 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
+import net.fabricmc.fabric.impl.registry.sync.map.RegistryMap;
 
 @Mixin(LevelStorage.Session.class)
 public class MixinLevelStorageSession {
 	@Unique
 	private static final int FABRIC_ID_REGISTRY_BACKUPS = 3;
 	@Unique
-	private static Logger FABRIC_LOGGER = LogManager.getLogger("FabricRegistrySync");
+	private static final Logger FABRIC_LOGGER = LogManager.getLogger("FabricRegistrySync");
 	@Unique
-	private NbtCompound fabric_lastSavedIdMap = null;
+	private RegistryMap fabric_lastSavedRegistryMap = null;
 	@Unique
-	private NbtCompound fabric_activeTag = null;
+	private RegistryMap fabric_activeRegistryMap = null;
 
 	@Shadow
 	@Final
@@ -70,7 +71,8 @@ public class MixinLevelStorageSession {
 			fileInputStream.close();
 
 			if (tag != null) {
-				fabric_activeTag = RegistrySyncManager.apply(tag, RemappableRegistry.RemapMode.AUTHORITATIVE);
+				fabric_activeRegistryMap = RegistryMap.fromNbt(tag);
+				RegistrySyncManager.apply(fabric_activeRegistryMap, RemappableRegistry.RemapMode.AUTHORITATIVE);
 				return true;
 			}
 		}
@@ -86,14 +88,14 @@ public class MixinLevelStorageSession {
 	@Unique
 	private void fabric_saveRegistryData() {
 		FABRIC_LOGGER.debug("Starting registry save");
-		NbtCompound newIdMap = RegistrySyncManager.toTag(false, fabric_activeTag);
+		RegistryMap newMap = RegistrySyncManager.createAndPopulateRegistryMap(false, fabric_activeRegistryMap);
 
-		if (newIdMap == null) {
+		if (newMap == null) {
 			FABRIC_LOGGER.debug("Not saving empty registry data");
 			return;
 		}
 
-		if (!newIdMap.equals(fabric_lastSavedIdMap)) {
+		if (!newMap.equals(fabric_lastSavedRegistryMap)) {
 			for (int i = FABRIC_ID_REGISTRY_BACKUPS - 1; i >= 0; i--) {
 				File file = fabric_getWorldIdMapFile(i);
 
@@ -117,15 +119,15 @@ public class MixinLevelStorageSession {
 					}
 				}
 
-				FABRIC_LOGGER.debug("Saving registry data to " + file.toString());
+				FABRIC_LOGGER.debug("Saving registry data to " + file);
 				FileOutputStream fileOutputStream = new FileOutputStream(file);
-				NbtIo.writeCompressed(newIdMap, fileOutputStream);
+				NbtIo.writeCompressed(newMap.toNbt(), fileOutputStream);
 				fileOutputStream.close();
 			} catch (IOException e) {
 				FABRIC_LOGGER.warn("[fabric-registry-sync] Failed to save registry file!", e);
 			}
 
-			fabric_lastSavedIdMap = newIdMap;
+			fabric_lastSavedRegistryMap = newMap;
 		}
 	}
 

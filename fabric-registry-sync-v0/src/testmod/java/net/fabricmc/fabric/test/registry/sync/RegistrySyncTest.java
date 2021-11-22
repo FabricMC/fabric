@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.registry.sync;
 
+import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.Validate;
 
 import net.minecraft.block.AbstractBlock;
@@ -23,6 +24,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -38,6 +40,12 @@ import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
+import net.fabricmc.fabric.impl.registry.sync.map.RegistryMap;
+import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistrySyncPacket;
+import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistrySyncPacket;
 
 public class RegistrySyncTest implements ModInitializer {
 	/**
@@ -46,8 +54,18 @@ public class RegistrySyncTest implements ModInitializer {
 	public static final boolean REGISTER_BLOCKS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.blocks", "true"));
 	public static final boolean REGISTER_ITEMS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.items", "true"));
 
+	public static final Identifier PACKET_CHECK = new Identifier("fabric-registry-sync-v0-v1-testmod:packet_check");
+
 	@Override
 	public void onInitialize() {
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+			RegistryMap map = RegistrySyncManager.createAndPopulateRegistryMap(true, null);
+			NbtRegistrySyncPacket.getInstance().writeBuffer(buf, map);
+			DirectRegistrySyncPacket.getInstance().writeBuffer(buf, map);
+			ServerPlayNetworking.send(handler.player, PACKET_CHECK, buf);
+		});
+
 		testBuiltInRegistrySync();
 
 		if (REGISTER_BLOCKS) {

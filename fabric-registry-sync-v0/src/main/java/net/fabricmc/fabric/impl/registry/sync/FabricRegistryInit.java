@@ -21,10 +21,16 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 public class FabricRegistryInit implements ModInitializer {
 	@Override
 	public void onInitialize() {
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			// TODO: If integrated and local, don't send the packet (it's ignored)
+			RegistrySyncManager.sendPacket(handler.player);
+		});
+
 		// Synced in PlaySoundS2CPacket.
 		RegistryAttributeHolder.get(Registry.SOUND_EVENT)
 				.addAttribute(RegistryAttribute.SYNCED);
