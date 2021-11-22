@@ -24,7 +24,6 @@ import net.minecraft.util.Identifier;
  * Represents a modifiable structure pool that has several helper methods for modders.
  */
 public interface FabricStructurePool {
-
 	/**
 	 * Adds a new {@link StructurePoolElement} to the {@link StructurePool}.
 	 * See the alternative {@link #addStructurePoolElement(StructurePoolElement, int)} for details.
@@ -41,12 +40,10 @@ public interface FabricStructurePool {
 	 */
 	void addStructurePoolElement(StructurePoolElement element, int weight);
 
-
 	/**
 	 * Gets the underlying structure pool.
 	 */
 	StructurePool getUnderlyingPool();
-
 
 	/**
 	 * Gets the identifier for the pool
