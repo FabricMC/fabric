@@ -19,14 +19,14 @@ package net.fabricmc.fabric.test.structure;
 import java.util.Random;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.structure.pool.StructurePoolElement;
-import net.minecraft.structure.processor.StructureProcessorLists;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.structure.pool.StructurePool;
+import net.minecraft.structure.pool.StructurePoolElement;
+import net.minecraft.structure.processor.StructureProcessorLists;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.structure.StructurePieceWithDimensions;
@@ -78,8 +78,6 @@ public class StructureTest {
 				structurePool.addStructurePoolElement(StructurePoolElement.ofProcessedLegacySingle("fabric:cactus_farm", StructureProcessorLists.FARM_PLAINS).apply(StructurePool.Projection.RIGID));
 			}
 		});
-
-
 	}
 
 	public static class TestStructureFeature extends StructureFeature<DefaultFeatureConfig> {
