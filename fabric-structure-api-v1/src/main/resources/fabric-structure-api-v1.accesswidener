@@ -1,2 +1,3 @@
 accessWidener v1 named
 accessible class net/minecraft/util/registry/DynamicRegistryManager$Info
+mutable    field    net/minecraft/structure/pool/StructurePool    elementCounts    Ljava/util/List;
