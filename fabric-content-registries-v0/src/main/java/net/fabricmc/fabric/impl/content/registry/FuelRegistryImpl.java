@@ -117,9 +117,7 @@ public final class FuelRegistryImpl implements FuelRegistry {
 					map.remove(i);
 				}
 			} else {
-				for (Item i : tag.values()) {
-					map.put(i, time);
-				}
+				AbstractFurnaceBlockEntity.addFuel(map, tag, time);
 			}
 		}
 
@@ -129,7 +127,7 @@ public final class FuelRegistryImpl implements FuelRegistry {
 			if (time <= 0) {
 				map.remove(item.asItem());
 			} else {
-				map.put(item.asItem(), time);
+				AbstractFurnaceBlockEntity.addFuel(map, item, time);
 			}
 		}
 	}

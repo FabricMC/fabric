@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.transfer.v1.transaction;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
@@ -73,11 +74,10 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
  * and attempts to use it on another thread will throw an exception.
  * Consequently, transactions can be concurrent across multiple threads, as long as they don't share any state.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 @ApiStatus.NonExtendable
 public interface Transaction extends AutoCloseable, TransactionContext {
 	/**
@@ -94,6 +94,30 @@ public interface Transaction extends AutoCloseable, TransactionContext {
 	 */
 	static boolean isOpen() {
 		return TransactionManagerImpl.MANAGERS.get().isOpen();
+	}
+
+	/**
+	 * Open a nested transaction if {@code maybeParent} is non null, or an outer transaction if {@code maybeParent} is null.
+	 */
+	static Transaction openNested(@Nullable TransactionContext maybeParent) {
+		return maybeParent == null ? openOuter() : maybeParent.openNested();
+	}
+
+	/**
+	 * Retrieve the currently open transaction, or null if there is none.
+	 *
+	 * <p><b>Usage of this function is strongly discouraged</b>, this is why it is deprecated and contains {@code unsafe} in its name.
+	 * The transaction may be aborted unbeknownst to you and anything you think that you have committed might be undone.
+	 * Only use it if you have no way to pass the transaction down the stack, for example if you are implementing compat with a simulation-based API,
+	 * and you know what you are doing, for example because you opened the outer transaction.
+	 *
+	 * @throws IllegalStateException If called from a close or outer close callback.
+	 * @deprecated Only use if you absolutely need it, there is almost always a better way.
+	 */
+	@Deprecated
+	@Nullable
+	static TransactionContext getCurrentUnsafe() {
+		return TransactionManagerImpl.MANAGERS.get().getCurrentUnsafe();
 	}
 
 	/**

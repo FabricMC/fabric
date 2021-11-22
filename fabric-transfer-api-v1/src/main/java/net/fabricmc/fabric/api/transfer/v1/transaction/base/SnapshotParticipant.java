@@ -41,11 +41,10 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  *
  * @param <T> The objects that this participant uses to save its state snapshots.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public abstract class SnapshotParticipant<T> implements Transaction.CloseCallback, Transaction.OuterCloseCallback {
 	private final List<T> snapshots = new ArrayList<>();
 
@@ -79,7 +78,7 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 	 * committed or rolled back.
 	 * This function should be called every time the participant is about to change its internal state as part of a transaction.
 	 */
-	public final void updateSnapshots(TransactionContext transaction) {
+	public void updateSnapshots(TransactionContext transaction) {
 		// Make sure we have enough storage for snapshots
 		while (snapshots.size() <= transaction.nestingDepth()) {
 			snapshots.add(null);
@@ -96,7 +95,7 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 	}
 
 	@Override
-	public final void onClose(TransactionContext transaction, Transaction.Result result) {
+	public void onClose(TransactionContext transaction, Transaction.Result result) {
 		// Get and remove the relevant snapshot.
 		T snapshot = snapshots.set(transaction.nestingDepth(), null);
 
@@ -121,7 +120,7 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 	}
 
 	@Override
-	public final void afterOuterClose(Transaction.Result result) {
+	public void afterOuterClose(Transaction.Result result) {
 		// The result is guaranteed to be COMMITTED,
 		// as this is only scheduled during onClose() when the outer transaction is successful.
 		onFinalCommit();

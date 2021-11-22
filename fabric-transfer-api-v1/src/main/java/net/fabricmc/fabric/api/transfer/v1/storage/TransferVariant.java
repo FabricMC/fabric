@@ -35,11 +35,10 @@ import net.minecraft.network.PacketByteBuf;
  *
  * @param <O> The type of the immutable object instance, for example {@code Item} or {@code Fluid}.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public interface TransferVariant<O> {
 	/**
 	 * Return true if this variant is blank, and false otherwise.

@@ -59,5 +59,7 @@ public class FabricApiBaseTestInit implements ModInitializer {
 				return 1;
 			}));
 		});
+
+		EventTests.run();
 	}
 }

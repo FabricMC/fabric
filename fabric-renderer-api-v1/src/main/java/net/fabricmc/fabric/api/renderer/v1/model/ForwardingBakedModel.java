@@ -77,8 +77,8 @@ public abstract class ForwardingBakedModel implements BakedModel, FabricBakedMod
 	}
 
 	@Override
-	public Sprite getSprite() {
-		return wrapped.getSprite();
+	public Sprite getParticleSprite() {
+		return wrapped.getParticleSprite();
 	}
 
 	@Override
