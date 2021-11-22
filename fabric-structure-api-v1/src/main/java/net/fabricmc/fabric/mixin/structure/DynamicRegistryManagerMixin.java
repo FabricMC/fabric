@@ -16,13 +16,11 @@
 
 package net.fabricmc.fabric.mixin.structure;
 
-import net.fabricmc.fabric.impl.structure.FabricStructurePoolImpl;
-
-import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.util.dynamic.RegistryOps;
@@ -31,6 +29,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.structure.v1.StructurePoolAddCallback;
+import net.fabricmc.fabric.impl.structure.FabricStructurePoolImpl;
 
 @Mixin(DynamicRegistryManager.class)
 public abstract class DynamicRegistryManagerMixin {

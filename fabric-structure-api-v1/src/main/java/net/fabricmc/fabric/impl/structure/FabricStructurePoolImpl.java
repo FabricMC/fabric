@@ -16,17 +16,16 @@
 
 package net.fabricmc.fabric.impl.structure;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mojang.datafixers.util.Pair;
-
-import net.fabricmc.fabric.api.structure.v1.FabricStructurePool;
-
-import net.fabricmc.fabric.mixin.structure.StructurePoolAccessor;
 
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolElement;
 
-import java.util.ArrayList;
-import java.util.List;
+import net.fabricmc.fabric.api.structure.v1.FabricStructurePool;
+import net.fabricmc.fabric.mixin.structure.StructurePoolAccessor;
 
 public class FabricStructurePoolImpl implements FabricStructurePool {
 	private final StructurePool pool;
@@ -34,6 +33,7 @@ public class FabricStructurePoolImpl implements FabricStructurePool {
 	public FabricStructurePoolImpl(StructurePool pool) {
 		this.pool = pool;
 	}
+
 	@Override
 	public void addStructurePoolElement(StructurePoolElement element) {
 		addStructurePoolElement(element, 1);
