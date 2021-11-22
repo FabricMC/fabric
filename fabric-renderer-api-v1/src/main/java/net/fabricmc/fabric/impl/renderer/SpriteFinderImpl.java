@@ -19,7 +19,6 @@ package net.fabricmc.fabric.impl.renderer;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -39,9 +38,11 @@ import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
  */
 public class SpriteFinderImpl implements SpriteFinder {
 	private final Node root;
+	private final SpriteAtlasTexture spriteAtlasTexture;
 
-	public SpriteFinderImpl(Map<Identifier, Sprite> sprites) {
+	public SpriteFinderImpl(Map<Identifier, Sprite> sprites, SpriteAtlasTexture spriteAtlasTexture) {
 		root = new Node(0.5f, 0.5f, 0.25f);
+		this.spriteAtlasTexture = spriteAtlasTexture;
 		sprites.values().forEach(root::add);
 	}
 
@@ -63,7 +64,7 @@ public class SpriteFinderImpl implements SpriteFinder {
 		return root.find(u, v);
 	}
 
-	private static class Node {
+	private class Node {
 		final float midU;
 		final float midV;
 		final float cellRadius;
@@ -75,7 +76,7 @@ public class SpriteFinderImpl implements SpriteFinder {
 		Node(float midU, float midV, float radius) {
 			this.midU = midU;
 			this.midV = midV;
-			this.cellRadius = radius;
+			cellRadius = radius;
 		}
 
 		static final float EPS = 0.00001f;
@@ -134,7 +135,7 @@ public class SpriteFinderImpl implements SpriteFinder {
 			} else if (quadrant instanceof Node) {
 				return ((Node) quadrant).find(u, v);
 			} else {
-				return MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).apply(MissingSprite.getMissingSpriteId());
+				return spriteAtlasTexture.getSprite(MissingSprite.getMissingSpriteId());
 			}
 		}
 	}

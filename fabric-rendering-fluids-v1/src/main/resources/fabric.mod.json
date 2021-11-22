@@ -3,7 +3,6 @@
   "id": "fabric-rendering-fluids-v1",
   "name": "Fabric Rendering Fluids (v1)",
   "version": "${version}",
-  "environment": "client",
   "license": "Apache-2.0",
   "icon": "assets/fabric-rendering-fluids-v1/icon.png",
   "contact": {
@@ -28,5 +27,10 @@
   ],
   "custom": {
     "fabric-api:module-lifecycle": "stable"
+  },
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderingClientInitializer"
+    ]
   }
 }

@@ -18,10 +18,7 @@ package net.fabricmc.fabric.api.biome.v1;
 
 /**
  * Represents the climates of biomes on the overworld continents.
- *
- * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
-@Deprecated
 public enum OverworldClimate {
 	/**
 	 * Includes Snowy Tundra (with a weight of 3) and Snowy Taiga (with a weight of 1).

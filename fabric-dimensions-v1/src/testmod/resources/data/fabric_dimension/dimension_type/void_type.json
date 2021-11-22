@@ -12,5 +12,6 @@
   "bed_works" : false,
   "piglin_safe" : false,
   "height": 256,
-  "min_y": 0
+  "min_y": 0,
+  "effects": "fabric_dimension:void"
 }

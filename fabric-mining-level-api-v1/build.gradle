@@ -1,0 +1,12 @@
+archivesBaseName = "fabric-mining-level-api-v1"
+version = getSubprojectVersion(project)
+
+moduleDependencies(project, [
+		'fabric-api-base',
+		'fabric-resource-loader-v0',
+		'fabric-tag-extensions-v0'
+])
+
+dependencies {
+	testmodImplementation project(path: ':fabric-lifecycle-events-v1', configuration: 'namedElements')
+}
