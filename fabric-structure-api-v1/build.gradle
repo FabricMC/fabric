@@ -5,5 +5,5 @@ moduleDependencies(project, [
 		'fabric-api-base'
 ])
 loom {
-	accessWidener = file('src/main/resources/fabric-structure-api-v1.accesswidener')
+	accessWidenerPath = file('src/main/resources/fabric-structure-api-v1.accesswidener')
 }
