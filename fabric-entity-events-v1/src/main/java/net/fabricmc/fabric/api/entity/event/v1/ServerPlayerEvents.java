@@ -78,7 +78,7 @@ public final class ServerPlayerEvents {
 	 *
 	 * @see PlayerEntity#tick()
 	 */
-	public static final Event<BeforePlayerTick> BEFORE_PLAYER_TICK = EventFactory.createArrayBacked(BeforePlayerTick.class, callbacks -> player -> {
+	public static final Event<BeforePlayerTick> START_PLAYER_TICK = EventFactory.createArrayBacked(BeforePlayerTick.class, callbacks -> player -> {
 		for (BeforePlayerTick callback : callbacks) {
 			callback.prePlayerTick(player);
 		}
@@ -89,7 +89,7 @@ public final class ServerPlayerEvents {
 	 *
 	 * @see PlayerEntity#tick()
 	 */
-	public static final Event<AfterPlayerTick> AFTER_PLAYER_TICK = EventFactory.createArrayBacked(AfterPlayerTick.class, callbacks -> player -> {
+	public static final Event<AfterPlayerTick> END_PLAYER_TICK = EventFactory.createArrayBacked(AfterPlayerTick.class, callbacks -> player -> {
 		for (AfterPlayerTick callback : callbacks) {
 			callback.postPlayerTick(player);
 		}
