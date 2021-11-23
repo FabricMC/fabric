@@ -47,6 +47,7 @@ public class KeyBindingsTest implements ClientModInitializer {
 			if (stickyBinding.isPressed()) {
 				client.player.sendMessage(new LiteralText("Sticky Key was pressed!"), false);
 			}
+
 			while (duplicateBinding.wasPressed()) {
 				client.player.sendMessage(new LiteralText("Duplicate Key was pressed!"), false);
 			}
