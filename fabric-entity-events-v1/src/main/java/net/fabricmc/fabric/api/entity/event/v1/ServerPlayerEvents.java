@@ -78,9 +78,9 @@ public final class ServerPlayerEvents {
 	 *
 	 * @see PlayerEntity#tick()
 	 */
-	public static final Event<BeforePlayerTick> START_PLAYER_TICK = EventFactory.createArrayBacked(BeforePlayerTick.class, callbacks -> player -> {
-		for (BeforePlayerTick callback : callbacks) {
-			callback.prePlayerTick(player);
+	public static final Event<StartTick> START_TICK = EventFactory.createArrayBacked(StartTick.class, callbacks -> player -> {
+		for (StartTick callback : callbacks) {
+			callback.onStartTick(player);
 		}
 	});
 
@@ -89,9 +89,9 @@ public final class ServerPlayerEvents {
 	 *
 	 * @see PlayerEntity#tick()
 	 */
-	public static final Event<AfterPlayerTick> END_PLAYER_TICK = EventFactory.createArrayBacked(AfterPlayerTick.class, callbacks -> player -> {
-		for (AfterPlayerTick callback : callbacks) {
-			callback.postPlayerTick(player);
+	public static final Event<EndTick> END_TICK = EventFactory.createArrayBacked(EndTick.class, callbacks -> player -> {
+		for (EndTick callback : callbacks) {
+			callback.onEndTick(player);
 		}
 	});
 
@@ -133,23 +133,23 @@ public final class ServerPlayerEvents {
 	}
 
 	@FunctionalInterface
-	public interface BeforePlayerTick {
+	public interface StartTick {
 		/**
-		 * Called before the player tick.
+		 * Called before the server player tick.
 		 *
 		 * @param player
 		 */
-		void prePlayerTick(PlayerEntity player);
+		void onStartTick(ServerPlayerEntity player);
 	}
 
 	@FunctionalInterface
-	public interface AfterPlayerTick {
+	public interface EndTick {
 		/**
-		 * Called after the player tick.
+		 * Called after the server player tick.
 		 *
 		 * @param player
 		 */
-		void postPlayerTick(PlayerEntity player);
+		void onEndTick(ServerPlayerEntity player);
 	}
 
 	private ServerPlayerEvents() {
