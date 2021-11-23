@@ -41,7 +41,7 @@ import net.fabricmc.fabric.impl.registry.sync.map.RegistryMap;
  * <ul>
  *     <li>Directly write into the buffer instead of using an nbt;</li>
  *     <li>Group all {@link Identifier} with same namespace together and only send those unique namespaces once for each group;</li>
- *     <li>Group adjacent rawIds together and only send the last rawId and size of the group.
+ *     <li>Group adjacent rawIds together and only send the difference of the first rawId and the last rawId of the bulk before.
  *     This is based on the assumption that mods generally register all of their object at once,
  *     therefore making the rawIds somewhat densely packed.</li>
  * </ul>
@@ -83,7 +83,7 @@ public class DirectRegistrySyncPacket implements RegistrySyncPacket {
 				// Group object ids with name namespace
 				Map<String, Int2ObjectMap<List<String>>> idNamespaceGroups = new LinkedHashMap<>();
 
-				for (Object2IntMap.Entry<Identifier> idPair : idMap.object2IntEntrySet()) {
+				for (Object2IntMap.Entry<Identifier> idPair : idMap.sortedEntryList()) {
 					Identifier id = idPair.getKey();
 					int rawId = idPair.getIntValue();
 
@@ -104,21 +104,31 @@ public class DirectRegistrySyncPacket implements RegistrySyncPacket {
 
 				buf.writeVarInt(idNamespaceGroups.size());
 
-				idNamespaceGroups.forEach((idNamespace, adjacentRawIds) -> {
+				int lastBulkLastRawId = 0;
+
+				for (Map.Entry<String, Int2ObjectMap<List<String>>> idNamespaceEntry : idNamespaceGroups.entrySet()) {
+					String idNamespace = idNamespaceEntry.getKey();
+					Int2ObjectMap<List<String>> rawIdBulks = idNamespaceEntry.getValue();
+
 					buf.writeString(idNamespace);
-					buf.writeVarInt(adjacentRawIds.size());
+					buf.writeVarInt(rawIdBulks.size());
 
-					for (Int2ObjectMap.Entry<List<String>> entry : adjacentRawIds.int2ObjectEntrySet()) {
-						int lastRawId = entry.getIntKey();
-						List<String> adjacentPaths = entry.getValue();
-						buf.writeVarInt(lastRawId);
-						buf.writeVarInt(adjacentPaths.size());
+					for (Int2ObjectMap.Entry<List<String>> bulk : rawIdBulks.int2ObjectEntrySet()) {
+						List<String> bulkPaths = bulk.getValue();
+						int lastRawId = bulk.getIntKey();
+						int startingRawId = lastRawId - (bulkPaths.size() - 1);
+						int bulkRawIdStartDiff = startingRawId - lastBulkLastRawId;
 
-						for (String path : adjacentPaths) {
+						buf.writeVarInt(bulkRawIdStartDiff);
+						buf.writeVarInt(bulkPaths.size());
+
+						for (String path : bulkPaths) {
 							buf.writeString(path);
 						}
+
+						lastBulkLastRawId = lastRawId;
 					}
-				});
+				}
 			}
 		});
 	}
@@ -138,19 +148,25 @@ public class DirectRegistrySyncPacket implements RegistrySyncPacket {
 				IdMap idMap = new IdMap();
 				int idNamespaceGroupAmount = buf.readVarInt();
 
+				int lastBulkLastRawId = 0;
+
 				for (int k = 0; k < idNamespaceGroupAmount; k++) {
 					String idNamespace = buf.readString();
-					int idNamespaceGroupLength = buf.readVarInt();
+					int rawIdBulkAmount = buf.readVarInt();
 
-					for (int l = 0; l < idNamespaceGroupLength; l++) {
-						int lastRawId = buf.readVarInt();
-						int rawIdGroupLength = buf.readVarInt();
-						int firstRawId = lastRawId - (rawIdGroupLength - 1);
+					for (int l = 0; l < rawIdBulkAmount; l++) {
+						int bulkRawIdStartDiff = buf.readVarInt();
+						int bulkSize = buf.readVarInt();
 
-						for (int m = 0; m < rawIdGroupLength; m++) {
+						int currentRawId = (lastBulkLastRawId + bulkRawIdStartDiff) - 1;
+
+						for (int m = 0; m < bulkSize; m++) {
+							currentRawId++;
 							String idPath = buf.readString();
-							idMap.put(new Identifier(idNamespace, idPath), firstRawId + m);
+							idMap.put(new Identifier(idNamespace, idPath), currentRawId);
 						}
+
+						lastBulkLastRawId = currentRawId;
 					}
 				}
 

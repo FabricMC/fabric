@@ -16,9 +16,20 @@
 
 package net.fabricmc.fabric.impl.registry.sync.map;
 
+import java.util.Comparator;
+import java.util.List;
+
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 
 import net.minecraft.util.Identifier;
 
 public class IdMap extends Object2IntLinkedOpenHashMap<Identifier> {
+	/**
+	 * Returns an entry pair list sorted by the rawId.
+	 */
+	public List<Entry<Identifier>> sortedEntryList() {
+		return object2IntEntrySet().stream()
+				.sorted(Comparator.comparingInt(Entry::getIntValue))
+				.toList();
+	}
 }
