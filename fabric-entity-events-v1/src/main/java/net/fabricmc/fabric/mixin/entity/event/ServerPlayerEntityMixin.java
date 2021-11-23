@@ -124,4 +124,14 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 
 		return day;
 	}
+
+	@Inject(method = "tick", at = @At("HEAD"))
+	public void prePlayerTick(CallbackInfo ci) {
+		ServerPlayerEvents.BEFORE_PLAYER_TICK.invoker().prePlayerTick((PlayerEntity) (Object) this);
+	}
+
+	@Inject(method = "tick", at = @At("TAIL"))
+	public void postPlayerTick(CallbackInfo ci) {
+		ServerPlayerEvents.AFTER_PLAYER_TICK.invoker().postPlayerTick((PlayerEntity) (Object) this);
+	}
 }

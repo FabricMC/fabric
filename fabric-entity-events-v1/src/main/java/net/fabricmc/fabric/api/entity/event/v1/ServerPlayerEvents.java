@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.entity.event.v1;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -72,6 +73,28 @@ public final class ServerPlayerEvents {
 		return true;
 	});
 
+	/**
+	 * An event that is called right before the player is ticked.
+	 *
+	 * @see PlayerEntity#tick()
+	 */
+	public static final Event<BeforePlayerTick> BEFORE_PLAYER_TICK = EventFactory.createArrayBacked(BeforePlayerTick.class, callbacks -> player -> {
+		for (BeforePlayerTick callback : callbacks) {
+			callback.prePlayerTick(player);
+		}
+	});
+
+	/**
+	 * An event that is called at the end of the player tick.
+	 *
+	 * @see PlayerEntity#tick()
+	 */
+	public static final Event<AfterPlayerTick> AFTER_PLAYER_TICK = EventFactory.createArrayBacked(AfterPlayerTick.class, callbacks -> player -> {
+		for (AfterPlayerTick callback : callbacks) {
+			callback.postPlayerTick(player);
+		}
+	});
+
 	@FunctionalInterface
 	public interface CopyFrom {
 		/**
@@ -107,6 +130,26 @@ public final class ServerPlayerEvents {
 		 * @return true if the death should go ahead, false otherwise.
 		 */
 		boolean allowDeath(ServerPlayerEntity player, DamageSource damageSource, float damageAmount);
+	}
+
+	@FunctionalInterface
+	public interface BeforePlayerTick {
+		/**
+		 * Called before the player tick.
+		 *
+		 * @param player
+		 */
+		void prePlayerTick(PlayerEntity player);
+	}
+
+	@FunctionalInterface
+	public interface AfterPlayerTick {
+		/**
+		 * Called after the player tick.
+		 *
+		 * @param player
+		 */
+		void postPlayerTick(PlayerEntity player);
 	}
 
 	private ServerPlayerEvents() {
