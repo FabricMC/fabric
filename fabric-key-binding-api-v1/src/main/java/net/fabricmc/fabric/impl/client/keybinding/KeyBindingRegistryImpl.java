@@ -32,7 +32,7 @@ import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
 public final class KeyBindingRegistryImpl {
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private static final List<KeyBinding> moddedKeyBindings = new ReferenceArrayList<>();
+	private static final List<KeyBinding> moddedKeyBindings = new ReferenceArrayList<>(); // ArrayList with identity based comparisons for contains/remove/indexOf etc., required for correctly handling duplicate keybinds
 
 	private KeyBindingRegistryImpl() {
 	}
