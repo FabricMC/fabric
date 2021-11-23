@@ -40,8 +40,9 @@ public class ClientPlayerInteractionManagerMixin {
 	private ItemStack selectedStack;
 
 	/**
-	 * Rewrites the isCurrentlyBreaking logic, checking for the steam drill in the
-	 * process. This is done to avoid a more invasive mixin such as a @Redirect.
+	 * Allows a FabricItem to continue block breaking progress even if the count or nbt changed.
+	 * For this, we inject after vanilla decided that the stack was "not unchanged", and we set if back to "unchanged"
+	 * if the item wishes to continue mining.
 	 */
 	@ModifyVariable(
 			at = @At(
@@ -51,7 +52,7 @@ public class ClientPlayerInteractionManagerMixin {
 			method = "isCurrentlyBreaking",
 			index = 3
 	)
-	private boolean isCurrentlyBreakingSteamDrillInject(boolean stackUnchanged) {
+	private boolean fabricItemContinueBlockBreakingInject(boolean stackUnchanged) {
 		if (!stackUnchanged) {
 			// The stack changed and vanilla is about to cancel block breaking progress. Check if the item wants to continue block breaking instead.
 			ItemStack oldStack = this.selectedStack;
