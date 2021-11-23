@@ -74,7 +74,7 @@ public final class ServerPlayerEvents {
 	});
 
 	/**
-	 * An event that is called right before the player is ticked.
+	 * An event that is called right before a player is ticked by the server.
 	 *
 	 * @see PlayerEntity#tick()
 	 */
@@ -85,7 +85,7 @@ public final class ServerPlayerEvents {
 	});
 
 	/**
-	 * An event that is called at the end of the player tick.
+	 * An event that is called after a player is ticked by the server
 	 *
 	 * @see PlayerEntity#tick()
 	 */
