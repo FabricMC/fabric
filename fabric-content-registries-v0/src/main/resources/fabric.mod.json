@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.4.0",
+    "fabricloader": ">=0.12.0",
     "fabric-api-base": "*",
     "fabric-lifecycle-events-v1": "*",
     "fabric-resource-loader-v0": "*"
