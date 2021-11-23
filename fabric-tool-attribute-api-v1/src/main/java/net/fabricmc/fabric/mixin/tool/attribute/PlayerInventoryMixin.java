@@ -16,28 +16,32 @@
 
 package net.fabricmc.fabric.mixin.tool.attribute;
 
-import java.util.Map;
-
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 
 import net.fabricmc.fabric.impl.tool.attribute.DynamicToolContext;
 
-@Mixin(LivingEntity.class)
-public class LivingEntityMixin {
-	@Inject(at = @At("HEAD"), method = "getEquipmentChanges")
-	private void getEquipmentSetContext(CallbackInfoReturnable<Map<EquipmentSlot, ItemStack>> cir) {
-		DynamicToolContext.set(this);
+@Mixin(PlayerInventory.class)
+public class PlayerInventoryMixin {
+	@Shadow
+	@Final
+	public PlayerEntity player;
+
+	@Inject(at = @At("HEAD"), method = "getBlockBreakingSpeed")
+	public void getBlockBreakingSpeedSetContext(BlockState block, CallbackInfoReturnable<Float> cir) {
+		DynamicToolContext.set(player);
 	}
 
-	@Inject(at = @At("RETURN"), method = "getEquipmentChanges")
-	private void getEquipmentClearContext(CallbackInfoReturnable<Map<EquipmentSlot, ItemStack>> cir) {
+	@Inject(at = @At("RETURN"), method = "getBlockBreakingSpeed")
+	public void getBlockBreakingSpeedClearContext(BlockState block, CallbackInfoReturnable<Float> cir) {
 		DynamicToolContext.clear();
 	}
 }

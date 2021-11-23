@@ -16,28 +16,25 @@
 
 package net.fabricmc.fabric.mixin.tool.attribute;
 
-import java.util.Map;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 
 import net.fabricmc.fabric.impl.tool.attribute.DynamicToolContext;
 
-@Mixin(LivingEntity.class)
-public class LivingEntityMixin {
-	@Inject(at = @At("HEAD"), method = "getEquipmentChanges")
-	private void getEquipmentSetContext(CallbackInfoReturnable<Map<EquipmentSlot, ItemStack>> cir) {
+@Mixin(PlayerEntity.class)
+public abstract class PlayerEntityMixin {
+	@Inject(at = @At("HEAD"), method = "canHarvest")
+	public void canHarvestSetContext(BlockState state, CallbackInfoReturnable<Boolean> cir) {
 		DynamicToolContext.set(this);
 	}
 
-	@Inject(at = @At("RETURN"), method = "getEquipmentChanges")
-	private void getEquipmentClearContext(CallbackInfoReturnable<Map<EquipmentSlot, ItemStack>> cir) {
+	@Inject(at = @At("RETURN"), method = "canHarvest")
+	public void canHarvestClearContext(BlockState state, CallbackInfoReturnable<Boolean> cir) {
 		DynamicToolContext.clear();
 	}
 }

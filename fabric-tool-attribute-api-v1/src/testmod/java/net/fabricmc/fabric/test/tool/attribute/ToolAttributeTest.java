@@ -51,6 +51,7 @@ import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.test.tool.attribute.item.TestDynamicCancelItem;
+import net.fabricmc.fabric.test.tool.attribute.item.TestDynamicContextItem;
 import net.fabricmc.fabric.test.tool.attribute.item.TestDynamicSwordItem;
 import net.fabricmc.fabric.test.tool.attribute.item.TestDynamicToolItem;
 import net.fabricmc.fabric.test.tool.attribute.item.TestNullableItem;
@@ -101,6 +102,9 @@ public class ToolAttributeTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		// Register item that will warn when a @Nullable LivingEntity user context is missing.
+		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_dynamic_context"), new TestDynamicContextItem());
+
 		// Register a custom shovel that has a mining level of 2 (iron) dynamically.
 		testShovel = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_shovel"), new TestTool(new Item.Settings(), FabricToolTags.SHOVELS, 2));
 		//Register a custom pickaxe that has a mining level of 2 (iron) dynamically.

@@ -5,7 +5,9 @@
   "mixins": [
     "BambooBlockMixin",
     "LivingEntityMixin",
-    "MixinItemStack"
+    "MixinItemStack",
+    "PlayerEntityMixin",
+    "PlayerInventoryMixin"
   ],
   "injectors": {
     "defaultRequire": 1

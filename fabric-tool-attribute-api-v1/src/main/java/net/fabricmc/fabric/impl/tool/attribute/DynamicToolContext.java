@@ -20,6 +20,27 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.LivingEntity;
 
-public interface ItemStackContext {
-	void fabricToolAttributes_setContext(@Nullable LivingEntity contextEntity);
+/**
+ * Allows us to keep track of the current user of a dynamic tool when vanilla does not pass the player explicitly,
+ * by setting and unsetting the current player wherever it is possible in the call stack.
+ */
+public class DynamicToolContext {
+	private static final ThreadLocal<LivingEntity> CURRENT_USER = new ThreadLocal<>();
+
+	@Nullable
+	public static LivingEntity get() {
+		return CURRENT_USER.get();
+	}
+
+	public static void set(Object entity) { // Allows object to avoid a cast in each mixin.
+		if (entity instanceof LivingEntity livingEntity) {
+			CURRENT_USER.set(livingEntity);
+		} else {
+			throw new IllegalArgumentException("Expected living entity dynamic tool context.");
+		}
+	}
+
+	public static void clear() {
+		CURRENT_USER.remove();
+	}
 }
