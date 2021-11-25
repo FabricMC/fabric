@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +35,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.logging.log4j.LogManager;
@@ -50,8 +53,6 @@ import net.minecraft.util.thread.ThreadExecutor;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.impl.registry.sync.map.IdMap;
-import net.fabricmc.fabric.impl.registry.sync.map.RegistryMap;
 import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistrySyncPacket;
 import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistrySyncPacket;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistrySyncPacket;
@@ -87,7 +88,7 @@ public final class RegistrySyncManager {
 	}
 
 	private static void sendPacket(ServerPlayerEntity player, RegistrySyncPacket packet) {
-		RegistryMap map = RegistrySyncManager.createAndPopulateRegistryMap(true, null);
+		Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap(true, null);
 
 		if (map != null) {
 			PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
@@ -129,7 +130,7 @@ public final class RegistrySyncManager {
 			LOGGER.info("{} deflated size: {}", packet.getClass().getSimpleName(), packetByteBuf.readableBytes());
 		}
 
-		RegistryMap map = packet.readBuffer(buf);
+		Map<Identifier, Object2IntMap<Identifier>> map = packet.readBuffer(buf);
 
 		if (accept) {
 			try {
@@ -161,8 +162,8 @@ public final class RegistrySyncManager {
 	 * @return a {@link NbtCompound} to save or sync, null when empty
 	 */
 	@Nullable
-	public static RegistryMap createAndPopulateRegistryMap(boolean isClientSync, @Nullable RegistryMap activeMap) {
-		RegistryMap map = new RegistryMap();
+	public static Map<Identifier, Object2IntMap<Identifier>> createAndPopulateRegistryMap(boolean isClientSync, @Nullable Map<Identifier, Object2IntMap<Identifier>> activeMap) {
+		Map<Identifier, Object2IntMap<Identifier>> map = new LinkedHashMap<>();
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
 			Registry registry = Registry.REGISTRIES.get(registryId);
@@ -207,7 +208,7 @@ public final class RegistrySyncManager {
 			 * This contains the previous state's registry data, this is used for a few things:
 			 * Such as ensuring that previously modded registries or registry entries are not lost or overwritten.
 			 */
-			IdMap previousIdMap = null;
+			Object2IntMap<Identifier> previousIdMap = null;
 
 			if (activeMap != null && activeMap.containsKey(registryId)) {
 				previousIdMap = activeMap.get(registryId);
@@ -242,7 +243,7 @@ public final class RegistrySyncManager {
 			}
 
 			if (registry instanceof RemappableRegistry) {
-				IdMap idMap = new IdMap();
+				Object2IntMap<Identifier> idMap = new Object2IntLinkedOpenHashMap<>();
 				IntSet rawIdsFound = DEBUG ? new IntOpenHashSet() : null;
 
 				for (Object o : registry) {
@@ -304,7 +305,7 @@ public final class RegistrySyncManager {
 		return map;
 	}
 
-	public static void apply(RegistryMap map, RemappableRegistry.RemapMode mode) throws RemapException {
+	public static void apply(Map<Identifier, Object2IntMap<Identifier>> map, RemappableRegistry.RemapMode mode) throws RemapException {
 		Set<Identifier> containedRegistries = Sets.newHashSet(map.keySet());
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
@@ -312,7 +313,7 @@ public final class RegistrySyncManager {
 				continue;
 			}
 
-			IdMap registryMap = map.get(registryId);
+			Object2IntMap<Identifier> registryMap = map.get(registryId);
 			Registry registry = Registry.REGISTRIES.get(registryId);
 
 			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry);

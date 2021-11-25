@@ -16,15 +16,18 @@
 
 package net.fabricmc.fabric.test.registry.sync;
 
+import java.util.Map;
 import java.util.Objects;
 
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.impl.registry.sync.map.RegistryMap;
 import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistrySyncPacket;
 import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistrySyncPacket;
 
@@ -33,8 +36,8 @@ public class RegistrySyncTestClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientPlayNetworking.registerGlobalReceiver(RegistrySyncTest.PACKET_CHECK, (client, handler, buf, responseSender) -> {
-			RegistryMap nbtPacketMap = NbtRegistrySyncPacket.getInstance().readBuffer(buf);
-			RegistryMap directPacketMap = DirectRegistrySyncPacket.getInstance().readBuffer(buf);
+			Map<Identifier, Object2IntMap<Identifier>> nbtPacketMap = NbtRegistrySyncPacket.getInstance().readBuffer(buf);
+			Map<Identifier, Object2IntMap<Identifier>> directPacketMap = DirectRegistrySyncPacket.getInstance().readBuffer(buf);
 
 			Preconditions.checkArgument(Objects.requireNonNull(nbtPacketMap).equals(directPacketMap), "nbt packet and direct packet are not equal!");
 		});

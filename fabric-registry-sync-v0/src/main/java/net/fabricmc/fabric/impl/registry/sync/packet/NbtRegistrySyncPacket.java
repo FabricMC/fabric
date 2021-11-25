@@ -16,13 +16,16 @@
 
 package net.fabricmc.fabric.impl.registry.sync.packet;
 
+import java.util.Map;
+
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.registry.sync.map.RegistryMap;
+import net.fabricmc.fabric.impl.registry.sync.RegistryMapSerializer;
 
 /**
  * A method to sync registry ids using {@link NbtCompound} and {@link PacketByteBuf#writeNbt}.
@@ -48,14 +51,14 @@ public class NbtRegistrySyncPacket implements RegistrySyncPacket {
 	}
 
 	@Override
-	public void writeBuffer(PacketByteBuf buf, RegistryMap map) {
-		buf.writeNbt(map.toNbt());
+	public void writeBuffer(PacketByteBuf buf, Map<Identifier, Object2IntMap<Identifier>> map) {
+		buf.writeNbt(RegistryMapSerializer.toNbt(map));
 	}
 
 	@Override
 	@Nullable
-	public RegistryMap readBuffer(PacketByteBuf buf) {
+	public Map<Identifier, Object2IntMap<Identifier>> readBuffer(PacketByteBuf buf) {
 		NbtCompound nbt = buf.readNbt();
-		return nbt != null ? RegistryMap.fromNbt(nbt) : null;
+		return nbt != null ? RegistryMapSerializer.fromNbt(nbt) : null;
 	}
 }

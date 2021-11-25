@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.registry.sync.map;
+package net.fabricmc.fabric.impl.registry.sync;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
-public class RegistryMap extends LinkedHashMap<Identifier, IdMap> {
+public class RegistryMapSerializer {
 	public static final int VERSION = 1;
 
-	public static RegistryMap fromNbt(NbtCompound nbt) {
+	public static Map<Identifier, Object2IntMap<Identifier>> fromNbt(NbtCompound nbt) {
 		NbtCompound mainNbt = nbt.getCompound("registries");
-		RegistryMap map = new RegistryMap();
+		Map<Identifier, Object2IntMap<Identifier>> map = new LinkedHashMap<>();
 
 		for (String registryId : mainNbt.getKeys()) {
-			IdMap idMap = new IdMap();
+			Object2IntMap<Identifier> idMap = new Object2IntLinkedOpenHashMap<>();
 			NbtCompound idNbt = mainNbt.getCompound(registryId);
 
 			for (String id : idNbt.getKeys()) {
@@ -44,10 +46,10 @@ public class RegistryMap extends LinkedHashMap<Identifier, IdMap> {
 		return map;
 	}
 
-	public NbtCompound toNbt() {
+	public static NbtCompound toNbt(Map<Identifier, Object2IntMap<Identifier>> map) {
 		NbtCompound mainNbt = new NbtCompound();
 
-		forEach((registryId, idMap) -> {
+		map.forEach((registryId, idMap) -> {
 			NbtCompound registryNbt = new NbtCompound();
 
 			for (Object2IntMap.Entry<Identifier> idPair : idMap.object2IntEntrySet()) {

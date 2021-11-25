@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.registry.sync.packet;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,14 +25,12 @@ import java.util.stream.Collectors;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
-
-import net.fabricmc.fabric.impl.registry.sync.map.IdMap;
-import net.fabricmc.fabric.impl.registry.sync.map.RegistryMap;
 
 /**
  * A more optimized method to sync registry ids to client.
@@ -64,7 +63,7 @@ public class DirectRegistrySyncPacket implements RegistrySyncPacket {
 	}
 
 	@Override
-	public void writeBuffer(PacketByteBuf buf, RegistryMap map) {
+	public void writeBuffer(PacketByteBuf buf, Map<Identifier, Object2IntMap<Identifier>> map) {
 		// Group registry ids with same namespace
 		Map<String, List<Identifier>> regNamespaceGroups = map.keySet().stream()
 				.collect(Collectors.groupingBy(Identifier::getNamespace));
@@ -78,12 +77,15 @@ public class DirectRegistrySyncPacket implements RegistrySyncPacket {
 			for (Identifier regId : regIds) {
 				buf.writeString(regId.getPath());
 
-				IdMap idMap = map.get(regId);
+				Object2IntMap<Identifier> idMap = map.get(regId);
+				List<Object2IntMap.Entry<Identifier>> idMapSortedEntries = idMap.object2IntEntrySet().stream()
+						.sorted(Comparator.comparingInt(Object2IntMap.Entry::getIntValue))
+						.toList();
 
 				// Group object ids with name namespace
 				Map<String, Int2ObjectMap<List<String>>> idNamespaceGroups = new LinkedHashMap<>();
 
-				for (Object2IntMap.Entry<Identifier> idPair : idMap.sortedEntryList()) {
+				for (Object2IntMap.Entry<Identifier> idPair : idMapSortedEntries) {
 					Identifier id = idPair.getKey();
 					int rawId = idPair.getIntValue();
 
@@ -135,8 +137,8 @@ public class DirectRegistrySyncPacket implements RegistrySyncPacket {
 
 	@Override
 	@Nullable
-	public RegistryMap readBuffer(PacketByteBuf buf) {
-		RegistryMap map = new RegistryMap();
+	public Map<Identifier, Object2IntMap<Identifier>> readBuffer(PacketByteBuf buf) {
+		Map<Identifier, Object2IntMap<Identifier>> map = new LinkedHashMap<>();
 		int regNamespaceGroupAmount = buf.readVarInt();
 
 		for (int i = 0; i < regNamespaceGroupAmount; i++) {
@@ -145,7 +147,7 @@ public class DirectRegistrySyncPacket implements RegistrySyncPacket {
 
 			for (int j = 0; j < regNamespaceGroupLength; j++) {
 				String regPath = buf.readString();
-				IdMap idMap = new IdMap();
+				Object2IntMap<Identifier> idMap = new Object2IntLinkedOpenHashMap<>();
 				int idNamespaceGroupAmount = buf.readVarInt();
 
 				int lastBulkLastRawId = 0;

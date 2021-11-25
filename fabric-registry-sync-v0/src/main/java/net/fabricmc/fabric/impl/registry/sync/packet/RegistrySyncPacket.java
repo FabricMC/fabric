@@ -16,18 +16,19 @@
 
 package net.fabricmc.fabric.impl.registry.sync.packet;
 
+import java.util.Map;
+
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.registry.sync.map.RegistryMap;
-
 public interface RegistrySyncPacket {
 	Identifier getPacketId();
 
-	void writeBuffer(PacketByteBuf buf, RegistryMap t);
+	void writeBuffer(PacketByteBuf buf, Map<Identifier, Object2IntMap<Identifier>> t);
 
 	@Nullable
-	RegistryMap readBuffer(PacketByteBuf buf);
+	Map<Identifier, Object2IntMap<Identifier>> readBuffer(PacketByteBuf buf);
 }
