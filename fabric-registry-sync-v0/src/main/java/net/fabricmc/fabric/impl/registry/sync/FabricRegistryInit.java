@@ -26,10 +26,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 public class FabricRegistryInit implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			// TODO: If integrated and local, don't send the packet (it's ignored)
-			RegistrySyncManager.sendPacket(handler.player);
-		});
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
+				RegistrySyncManager.sendPacket(server, handler.player));
 
 		// Synced in PlaySoundS2CPacket.
 		RegistryAttributeHolder.get(Registry.SOUND_EVENT)

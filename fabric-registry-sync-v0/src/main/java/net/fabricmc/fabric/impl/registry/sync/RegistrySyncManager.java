@@ -41,6 +41,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -56,17 +57,21 @@ import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistrySyncPacket;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistrySyncPacket;
 
 public final class RegistrySyncManager {
-	static final boolean DEBUG = System.getProperty("fabric.registry.debug", "false").equalsIgnoreCase("true");
+	static final boolean DEBUG = Boolean.getBoolean("fabric.registry.debug");
 	private static final Logger LOGGER = LogManager.getLogger("FabricRegistrySync");
-	private static final boolean DEBUG_WRITE_REGISTRY_DATA = System.getProperty("fabric.registry.debug.writeContentsAsCsv", "false").equalsIgnoreCase("true");
-	private static final boolean FORCE_NBT_SYNC = System.getProperty("fabric.registry.forceNbtSync", "false").equalsIgnoreCase("true");
+	private static final boolean DEBUG_WRITE_REGISTRY_DATA = Boolean.getBoolean("fabric.registry.debug.writeContentsAsCsv");
+	private static final boolean FORCE_NBT_SYNC = Boolean.getBoolean("fabric.registry.forceNbtSync");
 
 	//Set to true after vanilla's bootstrap has completed
 	public static boolean postBootstrap = false;
 
 	private RegistrySyncManager() { }
 
-	public static void sendPacket(ServerPlayerEntity player) {
+	public static void sendPacket(MinecraftServer server, ServerPlayerEntity player) {
+		if (!DEBUG && server.isHost(player.getGameProfile())) {
+			return;
+		}
+
 		if (FORCE_NBT_SYNC) {
 			LOGGER.warn("Force NBT sync is enabled");
 			sendPacket(player, NbtRegistrySyncPacket.getInstance());
