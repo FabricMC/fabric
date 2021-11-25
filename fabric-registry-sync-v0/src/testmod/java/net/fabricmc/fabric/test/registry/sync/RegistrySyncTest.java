@@ -71,15 +71,10 @@ public class RegistrySyncTest implements ModInitializer {
 		testBuiltInRegistrySync();
 
 		if (REGISTER_BLOCKS) {
-			for (int i = 0; i < 5; i++) {
-				Block block = new Block(AbstractBlock.Settings.of(Material.STONE));
-				Registry.register(Registry.BLOCK, new Identifier("registry_sync", "block_" + i), block);
-
-				if (REGISTER_ITEMS) {
-					BlockItem blockItem = new BlockItem(block, new Item.Settings());
-					Registry.register(Registry.ITEM, new Identifier("registry_sync", "block_" + i), blockItem);
-				}
-			}
+			// For checking raw id bulk in direct registry packet, make registry_sync namespace have two bulks.
+			registerBlocks("registry_sync", 5, 0);
+			registerBlocks("registry_sync2", 2, 0);
+			registerBlocks("registry_sync", 2, 5);
 
 			Validate.isTrue(RegistryAttributeHolder.get(Registry.BLOCK).hasAttribute(RegistryAttribute.MODDED), "Modded block was registered but registry not marked as modded");
 
@@ -105,6 +100,18 @@ public class RegistrySyncTest implements ModInitializer {
 				System.out.println(id);
 			});
 		});
+	}
+
+	private static void registerBlocks(String namespace, int amount, int startingId) {
+		for (int i = 0; i < amount; i++) {
+			Block block = new Block(AbstractBlock.Settings.of(Material.STONE));
+			Registry.register(Registry.BLOCK, new Identifier(namespace, "block_" + (i + startingId)), block);
+
+			if (REGISTER_ITEMS) {
+				BlockItem blockItem = new BlockItem(block, new Item.Settings());
+				Registry.register(Registry.ITEM, new Identifier(namespace, "block_" + (i + startingId)), blockItem);
+			}
+		}
 	}
 
 	/**
