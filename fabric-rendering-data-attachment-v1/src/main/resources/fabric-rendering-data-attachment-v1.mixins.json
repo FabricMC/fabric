@@ -7,7 +7,8 @@
     "MixinViewableWorld"
   ],
   "client": [
-    "client.MixinChunkRendererRegion"
+    "client.MixinChunkRendererRegion",
+    "client.MixinChunkRendererRegionBuilder"
   ],
   "injectors": {
     "defaultRequire": 1
