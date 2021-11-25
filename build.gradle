@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.10.55" apply false
+	id "fabric-loom" version "0.10.60" apply false
 	id "org.cadixdev.licenser" version "0.6.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -132,9 +132,8 @@ allprojects {
 		include "**/*.java"
 	}
 
-	task sourcesJar(type: Jar, dependsOn: classes) {
-		archiveClassifier = "sources"
-		from sourceSets.main.allSource
+	java {
+		withSourcesJar()
 	}
 
 	checkstyle {
@@ -242,10 +241,6 @@ subprojects {
 		genSourcesWithFernFlower.enabled = false
 		genSourcesWithCfr.enabled = false
 		unpickJar.enabled = false
-
-		// Work around a loom bug causing empty jars to be pushed to maven local.
-		publishMavenJavaPublicationToMavenLocal.dependsOn rootProject.tasks.getByName("remapAllJars")
-		publishMavenJavaPublicationToMavenLocal.dependsOn rootProject.tasks.getByName("remapAllSources")
 	}
 }
 
@@ -339,7 +334,7 @@ curseforge {
 	project {
 		id = "306612"
 		changelog = ENV.CHANGELOG ?: "No changelog provided"
-		releaseType = project.prerelease ? "beta" : "release"
+		releaseType = project.prerelease as Boolean ? "beta" : "release"
 		addGameVersion "1.17.1"
 		addGameVersion "Fabric"
 
@@ -389,7 +384,7 @@ task modrinth(type: com.modrinth.minotaur.TaskModrinthUpload, dependsOn: remapMa
 	projectId = "P7dR8mSH"
 	versionNumber = version
 	versionName = "[$project.minecraft_version] Fabric API $project.version"
-	releaseType = project.prerelease ? "beta" : "release"
+	releaseType = project.prerelease as Boolean ? "beta" : "release"
 	changelog = ENV.CHANGELOG ?: "No changelog provided"
 
 	uploadFile = remapJar
