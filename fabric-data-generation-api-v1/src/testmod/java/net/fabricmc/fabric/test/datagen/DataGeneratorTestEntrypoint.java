@@ -88,7 +88,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestBlockTagsProvider extends FabricTagProvider.Blocks {
+	private static class TestBlockTagsProvider extends FabricTagProvider.BlockTagProvider {
 		private TestBlockTagsProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator);
 		}
@@ -100,8 +100,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestItemTagsProvider extends FabricTagProvider.Items {
-		private TestItemTagsProvider(FabricDataGenerator dataGenerator, Blocks blockTagProvider) {
+	private static class TestItemTagsProvider extends FabricTagProvider.ItemTagProvider {
+		private TestItemTagsProvider(FabricDataGenerator dataGenerator, BlockTagProvider blockTagProvider) {
 			super(dataGenerator, blockTagProvider);
 		}
 

@@ -40,7 +40,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 public abstract class FabricAdvancementsProvider implements DataProvider {
 	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
 
-	private final FabricDataGenerator dataGenerator;
+	protected final FabricDataGenerator dataGenerator;
 
 	protected FabricAdvancementsProvider(FabricDataGenerator dataGenerator) {
 		this.dataGenerator = dataGenerator;
