@@ -339,7 +339,7 @@ curseforge {
 	project {
 		id = "306612"
 		changelog = ENV.CHANGELOG ?: "No changelog provided"
-		releaseType = project.prerelease ? "beta" : "release"
+		releaseType = project.prerelease as Boolean ? "beta" : "release"
 		addGameVersion "1.18-Snapshot"
 		addGameVersion "Fabric"
 
@@ -389,7 +389,7 @@ task modrinth(type: com.modrinth.minotaur.TaskModrinthUpload, dependsOn: remapMa
 	projectId = "P7dR8mSH"
 	versionNumber = version
 	versionName = "[$project.minecraft_version] Fabric API $project.version"
-	releaseType = project.prerelease ? "beta" : "release"
+	releaseType = project.prerelease as Boolean ? "beta" : "release"
 	changelog = ENV.CHANGELOG ?: "No changelog provided"
 
 	uploadFile = remapJar

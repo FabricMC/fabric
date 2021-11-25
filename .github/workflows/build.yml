@@ -28,4 +28,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: Maven Local
-          path: ~/.m2/repository
+          path: /root/.m2/repository
