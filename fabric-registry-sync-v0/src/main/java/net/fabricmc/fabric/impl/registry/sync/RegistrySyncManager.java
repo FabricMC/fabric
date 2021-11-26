@@ -27,9 +27,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
+import java.util.zip.Deflater;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -95,6 +97,37 @@ public final class RegistrySyncManager {
 	}
 
 	public static void receivePacket(ThreadExecutor<?> executor, RegistryPacketSerializer serializer, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
+		if (DEBUG) {
+			LOGGER.info("{} raw size: {}", serializer.getClass().getSimpleName(), buf.readableBytes());
+
+			final byte[] deflateBuffer = new byte[8192];
+			ByteBuf byteBuf = buf.copy();
+			Deflater deflater = new Deflater();
+
+			int i = byteBuf.readableBytes();
+			PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
+
+			if (i < 256) {
+				packetByteBuf.writeVarInt(0);
+				packetByteBuf.writeBytes(byteBuf);
+			} else {
+				byte[] bs = new byte[i];
+				byteBuf.readBytes(bs);
+				packetByteBuf.writeVarInt(bs.length);
+				deflater.setInput(bs, 0, i);
+				deflater.finish();
+
+				while (!deflater.finished()) {
+					int j = deflater.deflate(deflateBuffer);
+					packetByteBuf.writeBytes(deflateBuffer, 0, j);
+				}
+
+				deflater.reset();
+			}
+
+			LOGGER.info("{} deflated size: {}", serializer.getClass().getSimpleName(), packetByteBuf.readableBytes());
+		}
+
 		Map<Identifier, Object2IntMap<Identifier>> map = serializer.readBuffer(buf);
 
 		if (accept) {
