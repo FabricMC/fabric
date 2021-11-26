@@ -19,35 +19,27 @@ package net.fabricmc.fabric.impl.registry.sync;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistrySyncPacket;
-import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistrySyncPacket;
-import net.fabricmc.fabric.impl.registry.sync.packet.RegistrySyncPacket;
+import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketSerializer;
 
 public class FabricRegistryClientInit implements ClientModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	@Override
 	public void onInitializeClient() {
-		ClientPlayNetworking.registerGlobalReceiver(DirectRegistrySyncPacket.ID, (client, handler, buf, responseSender) ->
-				receivePacket(client, handler, DirectRegistrySyncPacket.getInstance(), buf));
-
-		ClientPlayNetworking.registerGlobalReceiver(NbtRegistrySyncPacket.ID, (client, handler, buf, responseSender) ->
-				receivePacket(client, handler, NbtRegistrySyncPacket.getInstance(), buf));
+		registerSyncPacketReceiver(RegistryPacketSerializer.DIRECT);
+		registerSyncPacketReceiver(RegistryPacketSerializer.NBT);
 	}
 
-	private void receivePacket(MinecraftClient client, ClientPlayNetworkHandler handler, RegistrySyncPacket packet, PacketByteBuf buf) {
-		RegistrySyncManager.receivePacket(client, packet, buf, RegistrySyncManager.DEBUG || !client.isInSingleplayer(), (e) -> {
-			LOGGER.error("Registry remapping failed!", e);
+	private void registerSyncPacketReceiver(RegistryPacketSerializer serializer) {
+		ClientPlayNetworking.registerGlobalReceiver(serializer.getPacketId(), (client, handler, buf, responseSender) ->
+				RegistrySyncManager.receivePacket(client, serializer, buf, RegistrySyncManager.DEBUG || !client.isInSingleplayer(), (e) -> {
+					LOGGER.error("Registry remapping failed!", e);
 
-			client.execute(() ->
-					handler.getConnection().disconnect(new LiteralText("Registry remapping failed: " + e.getMessage())));
-		});
+					client.execute(() -> handler.getConnection().disconnect(new LiteralText("Registry remapping failed: " + e.getMessage())));
+				}));
 	}
 }

@@ -28,16 +28,15 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistrySyncPacket;
-import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistrySyncPacket;
+import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketSerializer;
 
 @Environment(EnvType.CLIENT)
 public class RegistrySyncTestClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientPlayNetworking.registerGlobalReceiver(RegistrySyncTest.PACKET_CHECK, (client, handler, buf, responseSender) -> {
-			Map<Identifier, Object2IntMap<Identifier>> nbtPacketMap = NbtRegistrySyncPacket.getInstance().readBuffer(buf);
-			Map<Identifier, Object2IntMap<Identifier>> directPacketMap = DirectRegistrySyncPacket.getInstance().readBuffer(buf);
+			Map<Identifier, Object2IntMap<Identifier>> nbtPacketMap = RegistryPacketSerializer.NBT.readBuffer(buf);
+			Map<Identifier, Object2IntMap<Identifier>> directPacketMap = RegistryPacketSerializer.DIRECT.readBuffer(buf);
 
 			Preconditions.checkArgument(Objects.requireNonNull(nbtPacketMap).equals(directPacketMap), "nbt packet and direct packet are not equal!");
 		});

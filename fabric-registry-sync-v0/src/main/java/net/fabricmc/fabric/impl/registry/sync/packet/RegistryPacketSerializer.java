@@ -24,7 +24,10 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
-public interface RegistrySyncPacket {
+public interface RegistryPacketSerializer {
+	RegistryPacketSerializer DIRECT = new DirectRegistryPacketSerializer();
+	RegistryPacketSerializer NBT = new NbtRegistryPacketSerializer();
+
 	Identifier getPacketId();
 
 	void writeBuffer(PacketByteBuf buf, Map<Identifier, Object2IntMap<Identifier>> t);

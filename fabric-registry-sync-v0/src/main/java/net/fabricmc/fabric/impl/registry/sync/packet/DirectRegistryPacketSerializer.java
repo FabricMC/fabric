@@ -33,7 +33,7 @@ import net.minecraft.util.Identifier;
 
 /**
  * A more optimized method to sync registry ids to client.
- * Produce smaller packet than old {@link NbtRegistrySyncPacket nbt-based} method.
+ * Produce smaller packet than old {@link NbtRegistryPacketSerializer nbt-based} method.
  *
  * <p>This method optimize the packet in multiple way:
  * <ul>
@@ -44,16 +44,10 @@ import net.minecraft.util.Identifier;
  *     therefore making the rawIds somewhat densely packed.</li>
  * </ul>
  */
-public class DirectRegistrySyncPacket implements RegistrySyncPacket {
+public class DirectRegistryPacketSerializer implements RegistryPacketSerializer {
 	public static final Identifier ID = new Identifier("fabric", "registry/sync/direct");
 
-	private static final DirectRegistrySyncPacket INSTANCE = new DirectRegistrySyncPacket();
-
-	private DirectRegistrySyncPacket() {
-	}
-
-	public static DirectRegistrySyncPacket getInstance() {
-		return INSTANCE;
+	DirectRegistryPacketSerializer() {
 	}
 
 	@Override

@@ -51,9 +51,8 @@ import net.minecraft.util.thread.ThreadExecutor;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistrySyncPacket;
-import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistrySyncPacket;
-import net.fabricmc.fabric.impl.registry.sync.packet.RegistrySyncPacket;
+import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketSerializer;
+import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketSerializer;
 
 public final class RegistrySyncManager {
 	static final boolean DEBUG = Boolean.getBoolean("fabric.registry.debug");
@@ -73,30 +72,30 @@ public final class RegistrySyncManager {
 
 		if (FORCE_NBT_SYNC) {
 			LOGGER.warn("Force NBT sync is enabled");
-			sendPacket(player, NbtRegistrySyncPacket.getInstance());
+			sendPacket(player, RegistryPacketSerializer.NBT);
 			return;
 		}
 
-		if (ServerPlayNetworking.canSend(player, DirectRegistrySyncPacket.ID)) {
-			sendPacket(player, DirectRegistrySyncPacket.getInstance());
+		if (ServerPlayNetworking.canSend(player, DirectRegistryPacketSerializer.ID)) {
+			sendPacket(player, RegistryPacketSerializer.DIRECT);
 		} else {
 			LOGGER.warn("Player {} can't receive direct packet, using nbt packet instead", player.getEntityName());
-			sendPacket(player, NbtRegistrySyncPacket.getInstance());
+			sendPacket(player, RegistryPacketSerializer.NBT);
 		}
 	}
 
-	private static void sendPacket(ServerPlayerEntity player, RegistrySyncPacket packet) {
+	private static void sendPacket(ServerPlayerEntity player, RegistryPacketSerializer serializer) {
 		Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap(true, null);
 
 		if (map != null) {
 			PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-			packet.writeBuffer(buf, map);
-			ServerPlayNetworking.send(player, packet.getPacketId(), buf);
+			serializer.writeBuffer(buf, map);
+			ServerPlayNetworking.send(player, serializer.getPacketId(), buf);
 		}
 	}
 
-	public static void receivePacket(ThreadExecutor<?> executor, RegistrySyncPacket packet, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
-		Map<Identifier, Object2IntMap<Identifier>> map = packet.readBuffer(buf);
+	public static void receivePacket(ThreadExecutor<?> executor, RegistryPacketSerializer serializer, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
+		Map<Identifier, Object2IntMap<Identifier>> map = serializer.readBuffer(buf);
 
 		if (accept) {
 			try {

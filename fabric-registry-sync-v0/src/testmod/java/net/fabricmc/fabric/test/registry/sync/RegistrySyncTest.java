@@ -46,8 +46,7 @@ import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
-import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistrySyncPacket;
-import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistrySyncPacket;
+import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketSerializer;
 
 public class RegistrySyncTest implements ModInitializer {
 	/**
@@ -63,8 +62,8 @@ public class RegistrySyncTest implements ModInitializer {
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 			Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap(true, null);
-			NbtRegistrySyncPacket.getInstance().writeBuffer(buf, map);
-			DirectRegistrySyncPacket.getInstance().writeBuffer(buf, map);
+			RegistryPacketSerializer.NBT.writeBuffer(buf, map);
+			RegistryPacketSerializer.DIRECT.writeBuffer(buf, map);
 			ServerPlayNetworking.send(handler.player, PACKET_CHECK, buf);
 		});
 
