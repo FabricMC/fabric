@@ -28,10 +28,10 @@ import net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap;
 
 public final class ApiLookupMapImpl<L> implements ApiLookupMap<L> {
 	private final Map<Identifier, StoredLookup<L>> lookups = new HashMap<>();
-	private final LookupFactory<L> lookupFactory;
+	private final LookupConstructor<L> lookupConstructor;
 
-	public ApiLookupMapImpl(LookupFactory<L> lookupFactory) {
-		this.lookupFactory = lookupFactory;
+	public ApiLookupMapImpl(LookupConstructor<L> lookupConstructor) {
+		this.lookupConstructor = lookupConstructor;
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public final class ApiLookupMapImpl<L> implements ApiLookupMap<L> {
 		Objects.requireNonNull(apiClass, "API class may not be null.");
 		Objects.requireNonNull(contextClass, "Context class may not be null.");
 
-		StoredLookup<L> storedLookup = lookups.computeIfAbsent(lookupId, id -> new StoredLookup<>(lookupFactory.get(apiClass, contextClass), apiClass, contextClass));
+		StoredLookup<L> storedLookup = lookups.computeIfAbsent(lookupId, id -> new StoredLookup<>(lookupConstructor.get(id, apiClass, contextClass), apiClass, contextClass));
 
 		if (storedLookup.apiClass == apiClass && storedLookup.contextClass == contextClass) {
 			return storedLookup.lookup;

@@ -61,11 +61,8 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 	@Nullable
 	@Override
 	public A find(@Nullable BlockState state, C context) {
-		// Get block entity
-		if (!blockEntityCacheValid) {
-			cachedBlockEntity = world.getBlockEntity(pos);
-			blockEntityCacheValid = true;
-		}
+		// Update block entity cache
+		getBlockEntity();
 
 		// Get block state
 		if (state == null) {
@@ -103,6 +100,17 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 		}
 
 		return null;
+	}
+
+	@Override
+	@Nullable
+	public BlockEntity getBlockEntity() {
+		if (!blockEntityCacheValid) {
+			cachedBlockEntity = world.getBlockEntity(pos);
+			blockEntityCacheValid = true;
+		}
+
+		return cachedBlockEntity;
 	}
 
 	static {
