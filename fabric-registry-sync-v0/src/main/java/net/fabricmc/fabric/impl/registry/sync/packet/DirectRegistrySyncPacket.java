@@ -18,13 +18,12 @@ package net.fabricmc.fabric.impl.registry.sync.packet;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
@@ -71,64 +70,61 @@ public class DirectRegistrySyncPacket implements RegistrySyncPacket {
 		buf.writeVarInt(regNamespaceGroups.size());
 
 		regNamespaceGroups.forEach((regNamespace, regIds) -> {
-			buf.writeString(regNamespace);
+			buf.writeString(optimizeNamespace(regNamespace));
 			buf.writeVarInt(regIds.size());
 
 			for (Identifier regId : regIds) {
 				buf.writeString(regId.getPath());
 
 				Object2IntMap<Identifier> idMap = map.get(regId);
-				List<Object2IntMap.Entry<Identifier>> idMapSortedEntries = idMap.object2IntEntrySet().stream()
+
+				// Sort object ids by raw id and group them by namespace
+				Map<String, List<Object2IntMap.Entry<Identifier>>> idNamespaceGroups = idMap.object2IntEntrySet().stream()
 						.sorted(Comparator.comparingInt(Object2IntMap.Entry::getIntValue))
-						.toList();
-
-				// Group object ids with name namespace
-				Map<String, Int2ObjectMap<List<String>>> idNamespaceGroups = new LinkedHashMap<>();
-
-				for (Object2IntMap.Entry<Identifier> idPair : idMapSortedEntries) {
-					Identifier id = idPair.getKey();
-					int rawId = idPair.getIntValue();
-
-					Int2ObjectMap<List<String>> adjacentRawIds = idNamespaceGroups.computeIfAbsent(getNamespace(id), s -> new Int2ObjectLinkedOpenHashMap<>());
-
-					// Group adjacent rawIds together
-					List<String> rawIdGroup;
-
-					if (adjacentRawIds.containsKey(rawId - 1)) {
-						rawIdGroup = adjacentRawIds.remove(rawId - 1);
-					} else {
-						rawIdGroup = new ArrayList<>();
-					}
-
-					rawIdGroup.add(id.getPath());
-					adjacentRawIds.put(rawId, rawIdGroup);
-				}
+						.collect(Collectors.groupingBy(e -> e.getKey().getNamespace(), LinkedHashMap::new, Collectors.toList()));
 
 				buf.writeVarInt(idNamespaceGroups.size());
 
 				int lastBulkLastRawId = 0;
 
-				for (Map.Entry<String, Int2ObjectMap<List<String>>> idNamespaceEntry : idNamespaceGroups.entrySet()) {
-					String idNamespace = idNamespaceEntry.getKey();
-					Int2ObjectMap<List<String>> rawIdBulks = idNamespaceEntry.getValue();
+				for (Map.Entry<String, List<Object2IntMap.Entry<Identifier>>> idNamespaceEntry : idNamespaceGroups.entrySet()) {
+					Iterator<Object2IntMap.Entry<Identifier>> idPairs = idNamespaceEntry.getValue().iterator();
 
-					buf.writeString(idNamespace);
-					buf.writeVarInt(rawIdBulks.size());
+					// Group consecutive raw ids together
+					List<List<Object2IntMap.Entry<Identifier>>> bulks = new ArrayList<>();
 
-					for (Int2ObjectMap.Entry<List<String>> bulk : rawIdBulks.int2ObjectEntrySet()) {
-						List<String> bulkPaths = bulk.getValue();
-						int lastRawId = bulk.getIntKey();
-						int startingRawId = lastRawId - (bulkPaths.size() - 1);
-						int bulkRawIdStartDiff = startingRawId - lastBulkLastRawId;
+					List<Object2IntMap.Entry<Identifier>> currentBulk = new ArrayList<>();
+					Object2IntMap.Entry<Identifier> currentPair = idPairs.next();
+					currentBulk.add(currentPair);
 
-						buf.writeVarInt(bulkRawIdStartDiff);
-						buf.writeVarInt(bulkPaths.size());
+					while (idPairs.hasNext()) {
+						currentPair = idPairs.next();
 
-						for (String path : bulkPaths) {
-							buf.writeString(path);
+						if (currentBulk.get(currentBulk.size() - 1).getIntValue() + 1 != currentPair.getIntValue()) {
+							bulks.add(currentBulk);
+							currentBulk = new ArrayList<>();
 						}
 
-						lastBulkLastRawId = lastRawId;
+						currentBulk.add(currentPair);
+					}
+
+					bulks.add(currentBulk);
+
+					buf.writeString(optimizeNamespace(idNamespaceEntry.getKey()));
+					buf.writeVarInt(bulks.size());
+
+					for (List<Object2IntMap.Entry<Identifier>> bulk : bulks) {
+						int firstRawId = bulk.get(0).getIntValue();
+						int bulkRawIdStartDiff = firstRawId - lastBulkLastRawId;
+
+						buf.writeVarInt(bulkRawIdStartDiff);
+						buf.writeVarInt(bulk.size());
+
+						for (Object2IntMap.Entry<Identifier> idPair : bulk) {
+							buf.writeString(idPair.getKey().getPath());
+
+							lastBulkLastRawId = idPair.getIntValue();
+						}
 					}
 				}
 			}
@@ -179,13 +175,7 @@ public class DirectRegistrySyncPacket implements RegistrySyncPacket {
 		return map;
 	}
 
-	private String getNamespace(Identifier id) {
-		String namespace = id.getNamespace();
-
-		if (namespace.equals("minecraft")) {
-			namespace = "";
-		}
-
-		return namespace;
+	private String optimizeNamespace(String namespace) {
+		return namespace.equals("minecraft") ? "" : namespace;
 	}
 }
