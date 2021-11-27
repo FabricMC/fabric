@@ -57,7 +57,7 @@ public class DirectRegistryPacketSerializer implements RegistryPacketSerializer 
 
 	@Override
 	public void writeBuffer(PacketByteBuf buf, Map<Identifier, Object2IntMap<Identifier>> map) {
-		// Group registry ids with same namespace
+		// Group registry ids with same namespace.
 		Map<String, List<Identifier>> regNamespaceGroups = map.keySet().stream()
 				.collect(Collectors.groupingBy(Identifier::getNamespace));
 
@@ -72,27 +72,29 @@ public class DirectRegistryPacketSerializer implements RegistryPacketSerializer 
 
 				Object2IntMap<Identifier> idMap = map.get(regId);
 
-				// Sort object ids by raw id and group them by namespace
+				// Sort object ids by its namespace. We use linked map here to keep the original namespace ordering.
 				Map<String, List<Object2IntMap.Entry<Identifier>>> idNamespaceGroups = idMap.object2IntEntrySet().stream()
-						.sorted(Comparator.comparingInt(Object2IntMap.Entry::getIntValue))
-						.collect(Collectors.groupingBy(e -> e.getKey().getNamespace(), LinkedHashMap::new, Collectors.toList()));
+						.collect(Collectors.groupingBy(e -> e.getKey().getNamespace(), LinkedHashMap::new, Collectors.toCollection(ArrayList::new)));
 
 				buf.writeVarInt(idNamespaceGroups.size());
 
 				int lastBulkLastRawId = 0;
 
 				for (Map.Entry<String, List<Object2IntMap.Entry<Identifier>>> idNamespaceEntry : idNamespaceGroups.entrySet()) {
-					Iterator<Object2IntMap.Entry<Identifier>> idPairs = idNamespaceEntry.getValue().iterator();
+					// Make sure the ids are sorted by its raw id.
+					List<Object2IntMap.Entry<Identifier>> idPairs = idNamespaceEntry.getValue();
+					idPairs.sort(Comparator.comparingInt(Object2IntMap.Entry::getIntValue));
 
-					// Group consecutive raw ids together
+					// Group consecutive raw ids together.
 					List<List<Object2IntMap.Entry<Identifier>>> bulks = new ArrayList<>();
 
+					Iterator<Object2IntMap.Entry<Identifier>> idPairIter = idPairs.iterator();
 					List<Object2IntMap.Entry<Identifier>> currentBulk = new ArrayList<>();
-					Object2IntMap.Entry<Identifier> currentPair = idPairs.next();
+					Object2IntMap.Entry<Identifier> currentPair = idPairIter.next();
 					currentBulk.add(currentPair);
 
-					while (idPairs.hasNext()) {
-						currentPair = idPairs.next();
+					while (idPairIter.hasNext()) {
+						currentPair = idPairIter.next();
 
 						if (currentBulk.get(currentBulk.size() - 1).getIntValue() + 1 != currentPair.getIntValue()) {
 							bulks.add(currentBulk);
