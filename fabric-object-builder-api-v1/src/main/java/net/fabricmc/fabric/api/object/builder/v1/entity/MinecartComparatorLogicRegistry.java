@@ -57,7 +57,7 @@ public final class MinecartComparatorLogicRegistry {
 	 */
 	public static <T extends AbstractMinecartEntity> void register(EntityType<T> type, MinecartComparatorLogic<? super T> logic) {
 		if (logics.put(type, logic) != null) {
-			LOGGER.debug("Overriding existing minecart comparator logic for entity type {}", Registry.ENTITY_TYPE.getId(type));
+			LOGGER.warn("Overriding existing minecart comparator logic for entity type {}", Registry.ENTITY_TYPE.getId(type));
 		}
 	}
 }
