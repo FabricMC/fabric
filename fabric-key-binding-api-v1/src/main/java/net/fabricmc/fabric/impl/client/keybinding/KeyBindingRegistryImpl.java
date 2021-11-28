@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,7 +32,7 @@ import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
 public final class KeyBindingRegistryImpl {
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private static final List<KeyBinding> moddedKeyBindings = Lists.newArrayList();
+	private static final List<KeyBinding> moddedKeyBindings = new ReferenceArrayList<>(); // ArrayList with identity based comparisons for contains/remove/indexOf etc., required for correctly handling duplicate keybinds
 
 	private KeyBindingRegistryImpl() {
 	}

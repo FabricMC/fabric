@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.container;
+package net.fabricmc.fabric.test.entity.event.client;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import net.minecraft.entity.EquipmentSlot;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.screen.ScreenHandler;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRenderEvents;
+import net.fabricmc.fabric.test.entity.event.EntityEventTests;
 
-@Mixin(ServerPlayerEntity.class)
-public interface ServerPlayerEntityAccessor {
-	@Accessor
-	int getScreenHandlerSyncId();
-	@Accessor
-	void setScreenHandlerSyncId(int syncId);
-
-	@Invoker()
-	void callOnScreenHandlerOpened(ScreenHandler screenHandler);
+public class EntityEventTestsClient implements ClientModInitializer {
+	@Override
+	public void onInitializeClient() {
+		LivingEntityFeatureRenderEvents.ALLOW_CAPE_RENDER.register(player -> {
+			return !player.getEquippedStack(EquipmentSlot.CHEST).isOf(EntityEventTests.DIAMOND_ELYTRA);
+		});
+	}
 }

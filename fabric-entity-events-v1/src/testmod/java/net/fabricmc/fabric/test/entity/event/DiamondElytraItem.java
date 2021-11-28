@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.container;
+package net.fabricmc.fabric.test.entity.event;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.ArmorMaterials;
+import net.minecraft.item.ItemGroup;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.screen.ScreenHandler;
+import net.fabricmc.fabric.api.entity.event.v1.FabricElytraItem;
 
-@Mixin(ServerPlayerEntity.class)
-public interface ServerPlayerEntityAccessor {
-	@Accessor
-	int getScreenHandlerSyncId();
-	@Accessor
-	void setScreenHandlerSyncId(int syncId);
-
-	@Invoker()
-	void callOnScreenHandlerOpened(ScreenHandler screenHandler);
+public class DiamondElytraItem extends ArmorItem implements FabricElytraItem {
+	public DiamondElytraItem() {
+		super(ArmorMaterials.DIAMOND, EquipmentSlot.CHEST, new Settings().maxCount(1).group(ItemGroup.COMBAT));
+	}
 }

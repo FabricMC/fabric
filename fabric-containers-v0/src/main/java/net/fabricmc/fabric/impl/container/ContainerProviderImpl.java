@@ -100,7 +100,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		}
 
 		player.currentScreenHandler = screenHandler;
-		((ServerPlayerEntityAccessor) player).callOnSpawn(screenHandler);
+		((ServerPlayerEntityAccessor) player).callOnScreenHandlerOpened(screenHandler);
 	}
 
 	public <C extends ScreenHandler> C createContainer(int syncId, Identifier identifier, PlayerEntity player, PacketByteBuf buf) {

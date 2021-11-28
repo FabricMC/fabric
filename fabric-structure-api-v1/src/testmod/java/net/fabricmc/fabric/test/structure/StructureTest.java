@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.structure;
 
+import java.util.Optional;
 import java.util.Random;
 
 import com.mojang.serialization.Codec;
@@ -24,8 +25,10 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.structure.StructurePieceType;
 import net.minecraft.structure.ShiftableStructurePiece;
+import net.minecraft.structure.StructureGeneratorFactory;
+import net.minecraft.structure.StructurePieceType;
+import net.minecraft.structure.StructurePiecesGenerator;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
@@ -39,8 +42,6 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.structure.StructurePiecesGenerator;
-import net.minecraft.structure.StructurePiecesCollector;
 
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
 
@@ -64,16 +65,18 @@ public class StructureTest {
 
 	public static class TestStructureFeature extends StructureFeature<DefaultFeatureConfig> {
 		public TestStructureFeature(Codec<DefaultFeatureConfig> codec) {
-			super(codec, TestStructureFeature::generate);
+			super(codec, TestStructureFeature::createGenerator);
 		}
 
-		private static void generate(StructurePiecesCollector structurePiecesCollector, DefaultFeatureConfig defaultFeatureConfig, StructurePiecesGenerator.Context context) {
-			int blockX = context.chunkPos().getStartX();
-			int blockZ = context.chunkPos().getStartZ();
-			int blockY = context.chunkGenerator().getHeight(blockX, blockZ, Heightmap.Type.WORLD_SURFACE_WG, context.world());
+		private static Optional<StructurePiecesGenerator<DefaultFeatureConfig>> createGenerator(StructureGeneratorFactory.Context<DefaultFeatureConfig> context) {
+			return Optional.of((structurePiecesCollector, ctx) -> {
+				int blockX = ctx.chunkPos().getStartX();
+				int blockZ = ctx.chunkPos().getStartZ();
+				int blockY = ctx.chunkGenerator().getHeight(blockX, blockZ, Heightmap.Type.WORLD_SURFACE_WG, ctx.world());
 
-			TestStructureGenerator generator = new TestStructureGenerator(context.random(), blockX, blockY, blockZ);
-			structurePiecesCollector.addPiece(generator);
+				TestStructureGenerator generator = new TestStructureGenerator(ctx.random(), blockX, blockY, blockZ);
+				structurePiecesCollector.addPiece(generator);
+			});
 		}
 	}
 

@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.container;
+package net.fabricmc.fabric.impl.rendering.data.attachment;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.screen.ScreenHandler;
-
-@Mixin(ServerPlayerEntity.class)
-public interface ServerPlayerEntityAccessor {
-	@Accessor
-	int getScreenHandlerSyncId();
-	@Accessor
-	void setScreenHandlerSyncId(int syncId);
-
-	@Invoker()
-	void callOnScreenHandlerOpened(ScreenHandler screenHandler);
+@ApiStatus.Internal
+public interface RenderDataObjectConsumer {
+	void fabric_acceptRenderDataObjects(Long2ObjectOpenHashMap<Object> renderDataObjects);
 }
