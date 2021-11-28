@@ -55,7 +55,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	/**
 	 * Construct a new {@link FabricTagProvider}.
 	 *
-	 * <p>Common implementations of this class are provided. For example @see Blocks
+	 * <p>Common implementations of this class are provided. For example @see BlockTagProvider
 	 *
 	 * @param dataGenerator The data generator instance
 	 * @param registry The backing registry for the Tag type.
@@ -109,7 +109,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	}
 
 	/**
-	 * Extend this class to create {@link ItemTagProvider} tags in the "/items" tag directory.
+	 * Extend this class to create {@link Item} tags in the "/items" tag directory.
 	 */
 	public abstract static class ItemTagProvider extends FabricTagProvider<Item> {
 		@Nullable
@@ -151,7 +151,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	}
 
 	/**
-	 * Extend this class to create {@link FluidTagProvider} tags in the "/fluids" tag directory.
+	 * Extend this class to create {@link Fluid} tags in the "/fluids" tag directory.
 	 */
 	public abstract static class FluidTagProvider extends FabricTagProvider<Fluid> {
 		public FluidTagProvider(FabricDataGenerator dataGenerator) {
