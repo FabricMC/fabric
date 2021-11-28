@@ -22,7 +22,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Rarity;
 
-import net.fabricmc.fabric.impl.item.FabricItemInternals;
+import net.fabricmc.fabric.impl.item.CustomItemSettingImpl;
 
 /**
  * Fabric's version of Item.Settings. Adds additional methods and hooks
@@ -39,8 +39,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * @return this builder
 	 */
 	public FabricItemSettings equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
-		FabricItemInternals.computeExtraData(this).equipmentSlot(equipmentSlotProvider);
-		return this;
+		return this.custom(CustomItemSettingImpl.EQUIPMENT_SLOT_PROVIDER, equipmentSlotProvider);
 	}
 
 	/**
@@ -49,7 +48,22 @@ public class FabricItemSettings extends Item.Settings {
 	 * @see CustomDamageHandler
 	 */
 	public FabricItemSettings customDamage(CustomDamageHandler handler) {
-		FabricItemInternals.computeExtraData(this).customDamage(handler);
+		return this.custom(CustomItemSettingImpl.CUSTOM_DAMAGE_HANDLER, handler);
+	}
+
+	/**
+	 * Sets a custom setting of the item.
+
+	 * @param setting the unique type for this setting
+	 * @param value the object containing the setting itself
+	 * @return this builder
+	 */
+	public <T> FabricItemSettings custom(CustomItemSetting<T> setting, T value) {
+		if (!(setting instanceof CustomItemSettingImpl)) {
+			throw new UnsupportedOperationException("CustomItemSetting should not be ");
+		}
+
+		((CustomItemSettingImpl<T>) setting).set(this, value);
 		return this;
 	}
 
