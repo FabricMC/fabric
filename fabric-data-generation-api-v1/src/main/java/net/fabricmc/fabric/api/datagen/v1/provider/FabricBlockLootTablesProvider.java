@@ -64,18 +64,14 @@ public abstract class FabricBlockLootTablesProvider extends BlockLootTableGenera
 	public void accept(BiConsumer<Identifier, LootTable.Builder> biConsumer) {
 		generateBlockLootTables();
 
-		Set<Identifier> generated = Sets.newHashSet();
-
 		for (Map.Entry<Identifier, LootTable.Builder> entry : lootTables.entrySet()) {
 			Identifier identifier = entry.getKey();
-
-			generated.add(identifier);
 
 			if (identifier.equals(LootTables.EMPTY)) {
 				continue;
 			}
 
-			biConsumer.accept(entry.getKey(), entry.getValue());
+			biConsumer.accept(identifier, entry.getValue());
 		}
 
 		if (dataGenerator.isStrictValidationEnabled()) {
@@ -83,7 +79,7 @@ public abstract class FabricBlockLootTablesProvider extends BlockLootTableGenera
 
 			for (Identifier blockId : Registry.BLOCK.getIds()) {
 				if (blockId.getNamespace().equals(dataGenerator.getModId())) {
-					if (!generated.contains(blockId)) {
+					if (!lootTables.containsKey(Registry.BLOCK.get(blockId).getLootTableId())) {
 						missing.add(blockId);
 					}
 				}

@@ -26,6 +26,7 @@ loom {
 			name "Data Generation"
 			vmArg "-Dfabric-api.datagen"
 			vmArg "-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}"
+			vmArg "-Dfabric-api.datagen.strict-validation"
 
 			ideConfigGenerated = true
 			runDir "build/datagen"
@@ -35,6 +36,7 @@ loom {
 			name "Data Generation"
 			vmArg "-Dfabric-api.datagen"
 			vmArg "-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}"
+			vmArg "-Dfabric-api.datagen.strict-validation"
 
 			ideConfigGenerated = true
 			runDir "build/datagen"

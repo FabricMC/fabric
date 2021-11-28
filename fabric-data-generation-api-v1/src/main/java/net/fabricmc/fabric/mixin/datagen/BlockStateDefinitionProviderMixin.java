@@ -88,7 +88,7 @@ public class BlockStateDefinitionProviderMixin {
 	@Inject(method = "method_25738", at = @At("HEAD"), cancellable = true)
 	private static void filterBlocksForProcessingMod(Map<Block, BlockStateSupplier> map, Block block, CallbackInfoReturnable<Boolean> cir) {
 		if (dataGeneratorThreadLocal.get() instanceof FabricDataGenerator dataGenerator) {
-			if (dataGenerator.isStrictValidationEnabled()) {
+			if (!dataGenerator.isStrictValidationEnabled()) {
 				cir.setReturnValue(false);
 				return;
 			}
