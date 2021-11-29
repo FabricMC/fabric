@@ -16,9 +16,11 @@
 
 package net.fabricmc.fabric.mixin.fluid;
 
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -26,6 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.mob.MobEntity;
 
+import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
 import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
 
 @Mixin(SwimGoal.class)
@@ -36,11 +39,16 @@ public class SwimGoalMixin {
 
 	@Inject(method = "canStart", at = @At("HEAD"), cancellable = true)
 	private void canStart(CallbackInfoReturnable<Boolean> cir) {
-		//If the entity is touching a swimmable fluid, can start swimming
+		//If the entity is touching a swimmable fabric fluid, and the fluid height is above the swim height, start swimming
 		FabricFluidEntity entity = (FabricFluidEntity) this.mob;
 
-		if (entity.isTouchingSwimmableFluid() && entity.getFabricFluidHeight() > this.mob.getSwimHeight()) {
+		if (isEntityTouchingSwimmableFabricFluid(entity) && entity.getFabricFluidHeight() > this.mob.getSwimHeight()) {
 			cir.setReturnValue(true);
 		}
+	}
+
+	@Unique
+	private boolean isEntityTouchingSwimmableFabricFluid(@NotNull FabricFluidEntity entity) {
+		return entity.isTouchingFabricFluid() && FluidUtils.isSwimmable(entity.getFirstTouchedFabricFluid());
 	}
 }

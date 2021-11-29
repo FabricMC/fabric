@@ -36,9 +36,9 @@ public class EntityNavigationMixin {
 
 	@Inject(method = "isInLiquid", at = @At("HEAD"), cancellable = true)
 	private void isInLiquid(CallbackInfoReturnable<Boolean> cir) {
-		/* Add the fabric fluids to the whitelist of valid liquids,
-			so the entity position in fabric fluids can be a valid position */
-		if (((FabricFluidEntity) this.entity).isTouchingFabricFluid()) {
+		/* Add the fabric swimmable fluids to the whitelist of valid liquids,
+			so the entity position in fabric swimmable fluids can be a valid position */
+		if (((FabricFluidEntity) this.entity).isTouchingSwimmableFluid()) {
 			cir.setReturnValue(true);
 		}
 	}

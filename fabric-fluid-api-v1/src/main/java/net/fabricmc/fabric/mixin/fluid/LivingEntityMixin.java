@@ -26,14 +26,18 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Flutterer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
+import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
 import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
 import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
 
@@ -82,7 +86,7 @@ public abstract class LivingEntityMixin {
 
 	@Redirect(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getMaxAir()I"))
 	private int getMaxAirRedirect(@NotNull LivingEntity entity) {
-		//If the entity is submerged in a fabric fluid, returns -20, so basetick does not reset the air
+		//If the entity is submerged in a fabric fluid, returns -20, so baseTick does not reset the air
 		return FluidUtils.isFabricFluid(((FabricFluidEntity) getThis()).getSubmergedFluid()) ? -20 : entity.getMaxAir();
 	}
 
@@ -92,31 +96,66 @@ public abstract class LivingEntityMixin {
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getFluidHeight(Lnet/minecraft/tag/Tag;)D", ordinal = 1))
 	private double getFluidHeightRedirect(LivingEntity entity, Tag<Fluid> tag) {
-		//Adds the fabric fluids to the valid fluids for swimming
+		/* If an entity is on a fabric fluid, instead of water returns the fabric fluid height,
+			that will be used like water to handle swim upward */
 		return ((FabricFluidEntity) getThis()).isTouchingFabricFluid() ? ((FabricFluidEntity) getThis()).getFabricFluidHeight() : getThis().getFluidHeight(tag);
 	}
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect(LivingEntity entity) {
-		//Adds the swimmable fabric fluids to the valid fluids for swimming
+		//If the entity is touching a swimmable fabric fluid, use the same behaviour of water for swim upward
 		return ((FabricFluidEntity) getThis()).isTouchingSwimmableFluid();
 	}
 
 	//endregion
 
-	//region MOVEMENT SPEED INTO THE FLUID
+	//region MOVEMENT INTO THE FLUID
 
 	@Inject(method = "travel", at = @At("HEAD"), cancellable = true)
 	private void travel(Vec3d movementInput, CallbackInfo ci) {
+		FluidState walkedFluid = getThis().world.getFluidState(getThis().getBlockPos());
+
 		if ((this.canMoveVoluntarily() || getThis().isLogicalSideForUpdatingMovement())
 				&& ((FabricFluidEntity) getThis()).isTouchingFabricFluid() && this.shouldSwimInFluids()
-				&& !this.canWalkOnFluid(getThis().world.getFluidState(getThis().getBlockPos()).getFluid())) {
-			//Updates the travel movement velocity if the entity is on a fabric fluid (uses the water behaviour)
+				&& !this.canWalkOnFluid(walkedFluid.getFluid())) {
+			//Applies the slow falling effect
+
+			double fallSpeed = 0.08D;
 			boolean falling = getThis().getVelocity().y <= 0.0D;
+
+			if (falling && getThis().hasStatusEffect(StatusEffects.SLOW_FALLING)) {
+				fallSpeed = 0.01D;
+				getThis().fallDistance = 0.0F;
+			}
+
+			//Updates the travel movement velocity if the entity is on a fabric fluid (uses the water behaviour)
+
 			double currentY = getThis().getY();
 			float movement = getThis().isSprinting() ? 0.9F : this.getBaseMovementSpeedMultiplier();
+			float speed = 0.02F;
 
-			getThis().updateVelocity(0.02F, movementInput);
+			//Applies the depth strider effect
+
+			if (!walkedFluid.isIn(FabricFluidTags.IGNORE_DEPTH_STRIDER)) {
+				float depthStriderLevel = (float) EnchantmentHelper.getDepthStrider(getThis());
+
+				if (depthStriderLevel > 3.0F) {
+					depthStriderLevel = 3.0F;
+				}
+
+				if (!getThis().isOnGround()) {
+					depthStriderLevel *= 0.5F;
+				}
+
+				if (depthStriderLevel > 0.0F) {
+					movement += (0.54600006F - movement) * depthStriderLevel / 3.0F;
+					speed += (getThis().getMovementSpeed() - speed) * depthStriderLevel / 3.0F;
+				}
+			}
+
+			//Updates the travel movement velocity
+
+			getThis().updateVelocity(speed, movementInput);
 			getThis().move(MovementType.SELF, getThis().getVelocity());
 
 			Vec3d velocity = getThis().getVelocity();
@@ -127,12 +166,15 @@ public abstract class LivingEntityMixin {
 
 			getThis().setVelocity(velocity.multiply(movement, 0.800000011920929D, movement));
 
-			Vec3d newVelocity = this.method_26317(0.08D, falling, getThis().getVelocity());
+			Vec3d newVelocity = this.method_26317(fallSpeed, falling, getThis().getVelocity());
 			getThis().setVelocity(newVelocity);
+
 			if (getThis().horizontalCollision && getThis().doesNotCollide(newVelocity.x,
 					newVelocity.y + 0.6000000238418579D - getThis().getY() + currentY, newVelocity.z)) {
-				getThis().setVelocity(new Vec3d(newVelocity.x, 0.30000001192092896D, newVelocity.z));
+				getThis().setVelocity(newVelocity.x, 0.30000001192092896D, newVelocity.z);
 			}
+
+			//Updates the limbs movement
 
 			this.updateLimbs(this.getThis(), this.getThis() instanceof Flutterer);
 

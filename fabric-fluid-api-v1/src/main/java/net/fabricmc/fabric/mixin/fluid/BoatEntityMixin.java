@@ -59,7 +59,7 @@ public class BoatEntityMixin {
 
 	@Redirect(method = "fall", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isInRedirect4(FluidState state, Tag<Fluid> tag) {
-		//If the boat falls on a navigable fluid it can prevent fall damage.
+		//If the boat falls on a navigable fluid, it can prevent fall damage
 		return FluidUtils.isNavigable(state);
 	}
 
@@ -71,13 +71,13 @@ public class BoatEntityMixin {
 
 	@Redirect(method = "canAddPassenger", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;isSubmergedIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isSubmergedInRedirect(BoatEntity boat, Tag<Fluid> tag) {
-		//If the boat is submerged by any fluid it cannot get passengers
+		//If the boat is submerged by any fluid, it cannot get passengers
 		return this.isSubmerged();
 	}
 
 	@Inject(method = "getPaddleSoundEvent", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
 	private void getPaddleSoundEvent(CallbackInfoReturnable<SoundEvent> cir) {
-		//If the boat is touching a fabric fluid gets the paddle sound and returns it
+		//If the boat is touching a fabric fluid, gets the paddle sound and returns it
 		if (((FabricFluidEntity) getThis()).isTouchingFabricFluid()) {
 			//Gets the paddle sound
 			FabricFlowableFluid fluid = (FabricFlowableFluid) ((FabricFluidEntity) getThis()).getFirstTouchedFabricFluid().getFluid();

@@ -52,19 +52,19 @@ public class ClientPlayerEntityMixin implements FabricFluidClientPlayerEntity {
 
 	@Redirect(method = "isWalking", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
 	private boolean isSubmergedInWaterRedirect1(ClientPlayerEntity entity) {
-		//Adds the fabric fluids to the valid walkable fluids
-		return entity.isSubmergedInWater() || ((FabricFluidEntity) entity).isSubmergedInFabricFluid();
+		//Adds the swimmable fabric fluids to the fluids in which to consider that the walking movement is slow
+		return ((FabricFluidEntity) entity).isSubmergedInSwimmableFluid();
 	}
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
 	private boolean isSubmergedInWaterRedirect2(ClientPlayerEntity entity) {
-		//Adds the fabric fluids to the valid fluids for fast swimming
+		//With this, if the player is submerged in a swimmable fabric fluid, can swim like in water
 		return ((FabricFluidEntity) entity).isSubmergedInSwimmableFluid();
 	}
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect(ClientPlayerEntity entity) {
-		//Adds the fabric fluids to the valid fluids for fast swimming
+		//With this, if the player touches a swimmable fabric fluid, can swim like in water
 		return ((FabricFluidEntity) entity).isTouchingSwimmableFluid();
 	}
 

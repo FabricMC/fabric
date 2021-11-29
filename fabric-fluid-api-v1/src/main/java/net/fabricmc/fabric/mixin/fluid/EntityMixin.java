@@ -138,7 +138,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 	@Redirect(method = "updateSwimming", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isInRedirect(FluidState state, Tag<Fluid> tag) {
 		//Adds the swimmable fabric fluids to the valid fluids for swimming
-		return FluidUtils.isSwimmable(state) && !state.isIn(FluidTags.LAVA);
+		return FluidUtils.isSwimmable(state);
 	}
 
 	@Redirect(method = "shouldLeaveSwimmingPose", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isTouchingWater()Z"))
@@ -159,7 +159,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 	@Inject(method = "playSwimSound", at = @At(value = "HEAD"), cancellable = true)
 	private void playSwimSound(float volume, CallbackInfo ci) {
-		//If the entity is touching a fabric fluid gets the swim sound from the fluid and plays it
+		//If the entity is touching a fabric fluid, gets the swim sound from the fluid and plays it
 		if (this.isTouchingFabricFluid()) {
 			//Plays the swim sound
 			Optional<SoundEvent> swimSound = ((FabricFlowableFluid) firstTouchedFabricFluid.getFluid()).getSwimSound();
@@ -171,7 +171,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 	@Inject(method = "getSplashSound", at = @At(value = "HEAD"), cancellable = true)
 	private void getSplashSound(CallbackInfoReturnable<SoundEvent> cir) {
-		//If the entity is touching a fabric fluid gets the splash sound and returns it
+		//If the entity is touching a fabric fluid, gets the splash sound and returns it
 		if (this.isTouchingFabricFluid()) {
 			//Gets the generic splash sound (if not present, will be used the default pre-defined sound)
 			Optional<SoundEvent> splashSound = ((FabricFlowableFluid) firstTouchedFabricFluid.getFluid()).getGenericSplashSound();
@@ -193,11 +193,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 	@Redirect(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isInLava()Z", ordinal = 0))
 	private boolean isInLavaRedirect(Entity entity) {
-		if (this.isTouchingFabricFluid()) {
-			return true;
-		} else {
-			return entity.isInLava();
-		}
+		return this.isTouchingFabricFluid() || entity.isInLava();
 	}
 
 	//endregion
@@ -297,7 +293,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 								firstTouchedFabricFluid = fluidState;
 							}
 
-							//Calc the max touched fluid height
+							//Calculate the max touched fluid height
 							maxTouchedFluidHeight = Math.max(height - box.minY, maxTouchedFluidHeight);
 
 							if (pushable) {
@@ -321,7 +317,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 		}
 
 		if (pushingStrength.length() > 0.0D) {
-			//Calc the average velocity of all fabric fluids touched
+			//Calculate the average velocity of all fabric fluids touched
 			if (nfluid > 0) {
 				pushingStrength = pushingStrength.multiply(1.0D / (double) nfluid);
 			}
@@ -452,12 +448,22 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 	@Override
 	public boolean isSubmergedInSwimmableFluid() {
-		return this.isSubmergedInWater() || (this.isSubmergedInFabricFluid() && FluidUtils.isSwimmable(submergedFluid));
+		return this.isSubmergedInSwimmableFluid(false);
+	}
+
+	@Override
+	public boolean isSubmergedInSwimmableFluid(boolean canSwimOnLava) {
+		return this.isSubmergedInWater() || (this.isSubmergedInFabricFluid() && FluidUtils.isSwimmable(submergedFluid, canSwimOnLava));
 	}
 
 	@Override
 	public boolean isTouchingSwimmableFluid() {
-		return this.isTouchingWater() || (this.isTouchingFabricFluid() && FluidUtils.isSwimmable(firstTouchedFabricFluid));
+		return this.isTouchingSwimmableFluid(false);
+	}
+
+	@Override
+	public boolean isTouchingSwimmableFluid(boolean canSwimOnLava) {
+		return this.isTouchingWater() || (this.isTouchingFabricFluid() && FluidUtils.isSwimmable(firstTouchedFabricFluid, canSwimOnLava));
 	}
 
 	@Override

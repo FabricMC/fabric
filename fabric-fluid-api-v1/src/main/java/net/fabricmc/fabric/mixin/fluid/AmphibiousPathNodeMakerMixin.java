@@ -20,18 +20,16 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.block.dispenser.BoatDispenserBehavior;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.tag.Tag;
+import net.minecraft.entity.ai.pathing.AmphibiousPathNodeMaker;
+import net.minecraft.entity.mob.MobEntity;
 
-import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
+import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
 
-@Mixin(BoatDispenserBehavior.class)
-public class BoatDispenserBehaviorMixin {
-	@Redirect(method = "dispenseSilently", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
-	private boolean isInRedirect(FluidState state, Tag<Fluid> tag) {
-		//If the fluid is navigable, the dispenser will be able to spawn a boat on it
-		return FluidUtils.isNavigable(state);
+@Mixin(AmphibiousPathNodeMaker.class)
+public class AmphibiousPathNodeMakerMixin {
+	@Redirect(method = "method_37003", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/MobEntity;isTouchingWater()Z"))
+	private boolean isTouchingWaterRedirect(MobEntity mob) {
+		//Adds the behaviour of water to the swimmable fabric fluids, so the function can return the correct Y pos
+		return ((FabricFluidEntity) mob).isTouchingSwimmableFluid();
 	}
 }

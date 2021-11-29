@@ -3,11 +3,14 @@
   "package": "net.fabricmc.fabric.mixin.fluid",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "AmphibiousPathNodeMakerMixin",
     "BoatDispenserBehaviorMixin",
     "BoatEntityMixin",
     "EntityMixin",
     "EntityNavigationMixin",
+    "LandPathNodeMakerMixin",
     "LivingEntityMixin",
+    "MobNavigationMixin",
     "SwimGoalMixin",
     "WaterPathNodeMakerMixin"
   ],

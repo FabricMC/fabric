@@ -39,6 +39,11 @@ public class FabricFluidTags {
 	public static final Tag<Fluid> CAN_LIGHT_FIRE;
 
 	/**
+	 * fabric:ignore_depth_strider -> Identifies a fabric fluid in which depth strider has no effect.
+	 */
+	public static final Tag<Fluid> IGNORE_DEPTH_STRIDER;
+
+	/**
 	 * fabric:navigable -> Identifies a fabric fluid that is navigable.
 	 */
 	public static final Tag<Fluid> NAVIGABLE;
@@ -68,6 +73,7 @@ public class FabricFluidTags {
 	static {
 		CAN_EXTINGUISH_FIRE = TagFactory.FLUID.create(new Identifier("fabric", "can_extinguish_fire"));
 		CAN_LIGHT_FIRE = TagFactory.FLUID.create(new Identifier("fabric", "can_light_fire"));
+		IGNORE_DEPTH_STRIDER = TagFactory.FLUID.create(new Identifier("fabric", "ignore_depth_strider"));
 		NAVIGABLE = TagFactory.FLUID.create(new Identifier("fabric", "navigable"));
 		PREVENT_FALL_DAMAGE = TagFactory.FLUID.create(new Identifier("fabric", "prevent_fall_damage"));
 		BREATHABLE = TagFactory.FLUID.create(new Identifier("fabric", "breathable"));

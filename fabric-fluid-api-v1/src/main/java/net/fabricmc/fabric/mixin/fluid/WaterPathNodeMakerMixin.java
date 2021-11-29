@@ -23,7 +23,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.entity.ai.pathing.WaterPathNodeMaker;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.tag.Tag;
 
 import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
@@ -32,14 +31,14 @@ import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
 public class WaterPathNodeMakerMixin {
 	@Redirect(method = "getDefaultNodeType", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isInRedirect1(FluidState state, Tag<Fluid> tag) {
-		//This adds the fabric fluids to the valid fluids that does not block entities AI movements
-		return state.isIn(FluidTags.WATER) || FluidUtils.isFabricFluid(state);
+		//This adds the fabric swimmable fluids to the valid fluids in which to calculate the swimming path
+		return FluidUtils.isSwimmable(state);
 	}
 
 	@Redirect(method = "getNodeType(III)Lnet/minecraft/entity/ai/pathing/PathNodeType;",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isInRedirect2(FluidState state, Tag<Fluid> tag) {
-		//This adds the fabric fluids to the valid fluids that does not block entities AI movements
-		return state.isIn(FluidTags.WATER) || FluidUtils.isFabricFluid(state);
+		//This adds the fabric swimmable fluids to the valid fluids in which to calculate the swimming path
+		return FluidUtils.isSwimmable(state);
 	}
 }

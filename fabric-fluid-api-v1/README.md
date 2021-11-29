@@ -108,6 +108,11 @@ can extinguish fire on entities on fire.
 Fluids with the tag `fabric:can_light_fire`
 can light fire on entities and burnable blocks around it.
 
+### Ignore depth strider
+
+Fluids with the tag `fabric:ignore_depth_strider`
+will ignore depth strider.
+
 ### Wet
 
 Fluids with the tag `fabric:wet` can to wet entities,
@@ -277,6 +282,7 @@ The file names are respectively:
 
 * **Can extinguish fire:** `can_extinguish_fire.json`
 * **Can light fire:** `can_light_fire.json`
+* **Ignore depth strider:** `ignore_depth_strider.json`
 * **Navigable:** `navigable.json`
 * **Prevent fall damage:** `prevent_fall_damage.json`
 * **Breathable:** `breathable.json`
