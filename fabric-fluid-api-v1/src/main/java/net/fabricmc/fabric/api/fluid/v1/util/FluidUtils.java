@@ -61,25 +61,25 @@ public class FluidUtils {
 	}
 
 	/**
-	 * Get the first touched fluid, by the specified entity, with the specified tag.
+	 * Checks if the specified entity is touching a fluid with the specified tag.
 	 *
 	 * @param entity The entity to check.
-	 * @param tag    The fluid tag to search.
-	 * @return First touched fluid, by the specified entity, with the specified tag.
+	 * @param tag    The fluid tag to check.
+	 * @return True if the entity is touching a fluid with the specified tag.
 	 */
-	public static @Nullable FluidState getFirstTouchedFluid(@NotNull Entity entity, @NotNull Tag<Fluid> tag) {
-		return getFirstTouchedFluid(entity.getBoundingBox().contract(0.001D), entity.world, tag);
+	public static boolean isTouching(@NotNull Entity entity, @NotNull Tag<Fluid> tag) {
+		return isTouching(entity.getBoundingBox().contract(0.001D), entity.world, tag);
 	}
 
 	/**
-	 * Get the first touched fluid, by the specified box, with the specified tag.
+	 * Checks if the specified box is touching a fluid with the specified tag.
 	 *
 	 * @param box   The box to check.
 	 * @param world The current world.
-	 * @param tag   The fluid tag to search.
-	 * @return First touched fluid, by the specified box, with the specified tag.
+	 * @param tag   The fluid tag to check.
+	 * @return True if the box is touching a fluid with the specified tag.
 	 */
-	public static @Nullable FluidState getFirstTouchedFluid(@NotNull Box box, @NotNull World world, @NotNull Tag<Fluid> tag) {
+	public static boolean isTouching(@NotNull Box box, @NotNull World world, @NotNull Tag<Fluid> tag) {
 		int minX = MathHelper.floor(box.minX);
 		int maxX = MathHelper.ceil(box.maxX);
 		int minY = MathHelper.floor(box.minY);
@@ -100,14 +100,14 @@ public class FluidUtils {
 						double height = y + fluidState.getHeight(world, pos);
 
 						if (height >= box.minY) {
-							return fluidState;
+							return true;
 						}
 					}
 				}
 			}
 		}
 
-		return null;
+		return false;
 	}
 
 	/**
