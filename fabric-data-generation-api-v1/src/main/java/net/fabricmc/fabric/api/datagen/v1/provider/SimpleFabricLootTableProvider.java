@@ -24,7 +24,6 @@ import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.impl.datagen.FabricLootTableProvider;
 
 /**
  * Extend this class and implement {@link java.util.function.Consumer#accept}. Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}

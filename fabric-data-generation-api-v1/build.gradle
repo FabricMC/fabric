@@ -55,6 +55,7 @@ import java.util.zip.ZipFile
 
 task generateAccessWidener() {
 	doLast {
+		// This is using loom internals, dont copy from this.
 		File inputJar = loom.mappingsProvider.mappedProvider.baseMappedJar
 		String accessWidener = file("template.accesswidener").text + "\n"
 

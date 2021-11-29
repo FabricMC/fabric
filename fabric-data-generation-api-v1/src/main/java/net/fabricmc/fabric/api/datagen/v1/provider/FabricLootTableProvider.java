@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.datagen;
+package net.fabricmc.fabric.api.datagen.v1.provider;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -35,8 +35,6 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTablesProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 /**
@@ -46,7 +44,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
  *
  * <p>Use {@link SimpleFabricLootTableProvider} for a simple abstract class that you can implement to handle standard loot table functions.
  */
-@ApiStatus.Internal
+@ApiStatus.NonExtendable
 public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier, LootTable.Builder>>, DataProvider {
 	Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
@@ -70,7 +68,7 @@ public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier,
 		}
 	}
 
-	default Path getOutputPath(Identifier lootTableId) {
+	private Path getOutputPath(Identifier lootTableId) {
 		return getFabricDataGenerator().getOutput().resolve("data/%s/loot_tables/%s.json".formatted(lootTableId.getNamespace(), lootTableId.getPath()));
 	}
 }

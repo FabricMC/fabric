@@ -23,6 +23,7 @@ package net.fabricmc.fabric.api.datagen.v1;
  *
  * @see FabricDataGenerator
  */
+@FunctionalInterface
 public interface DataGeneratorEntrypoint {
 	/**
 	 * Register {@link net.minecraft.data.DataProvider} with the {@link FabricDataGenerator} during this entrypoint.

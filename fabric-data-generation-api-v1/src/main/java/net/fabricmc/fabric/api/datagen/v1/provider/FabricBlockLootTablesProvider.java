@@ -31,7 +31,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.impl.datagen.FabricLootTableProvider;
 
 /**
  * Extend this class and implement {@link FabricBlockLootTablesProvider#generateBlockLootTables}.
@@ -46,7 +45,9 @@ public abstract class FabricBlockLootTablesProvider extends BlockLootTableGenera
 	}
 
 	/**
-	 * Use the range of {@link BlockLootTableGenerator#addDrop} methods to generate block drops.
+	 * Implement this method to add block drops.
+	 *
+	 * <p>Use the range of {@link BlockLootTableGenerator#addDrop} methods to generate block drops.
 	 */
 	protected abstract void generateBlockLootTables();
 

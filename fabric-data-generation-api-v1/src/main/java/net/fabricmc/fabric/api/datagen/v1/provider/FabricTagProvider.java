@@ -203,7 +203,6 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		/**
 		 * Add a single element to the tag.
 		 *
-		 *
 		 * @return the {@link FabricTagBuilder} instance
 		 */
 		@Override
@@ -214,7 +213,6 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 
 		/**
 		 * Add an optional {@link Identifier} to the tag.
-		 *
 		 *
 		 * @return the {@link FabricTagBuilder} instance
 		 */
@@ -230,8 +228,8 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @return the {@link FabricTagBuilder} instance
 		 */
 		@Override
-		public FabricTagBuilder<T> addTag(Tag.Identified<T> identifiedTag) {
-			parent.addTag(identifiedTag);
+		public FabricTagBuilder<T> addTag(Tag.Identified<T> tag) {
+			parent.addTag(tag);
 			return this;
 		}
 
