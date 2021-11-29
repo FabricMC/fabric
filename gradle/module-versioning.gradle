@@ -90,6 +90,9 @@ class BumpVersionTask extends DefaultTask {
 
 			def split = version.split("\\.")
 			split[i] = (split[i] as Integer) + 1
+			for (j in (i + 1) ..< split.length) {
+				split[j] = 0
+			}
 			def newVersion = split.join(".")
 
 			println "${p.name}: $version -> $newVersion"

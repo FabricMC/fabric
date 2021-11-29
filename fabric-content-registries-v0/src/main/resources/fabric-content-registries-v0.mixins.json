@@ -5,8 +5,10 @@
   "mixins": [
     "AxeItemAccessor",
     "HoeItemAccessor",
+    "HoneycombItemMixin",
     "MixinAbstractFurnaceBlockEntity",
     "MixinFireBlock",
+    "OxidizableMixin",
     "ShovelItemAccessor"
   ],
   "client": [

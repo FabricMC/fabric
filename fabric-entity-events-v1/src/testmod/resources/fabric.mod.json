@@ -13,6 +13,9 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.entity.event.EntityEventTests"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.entity.event.client.EntityEventTestsClient"
     ]
   }
 }
