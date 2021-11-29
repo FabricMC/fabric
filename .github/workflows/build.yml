@@ -25,3 +25,7 @@ jobs:
         with:
           name: Artifacts
           path: ./*/build/libs/
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Maven Local
+          path: /root/.m2/repository
