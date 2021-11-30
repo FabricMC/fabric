@@ -9,7 +9,7 @@ moduleDependencies(project, [
 
 sourceSets {
 	testmod {
-		java {
+		resources {
 			srcDirs += [
 				'src/testmod/generated'
 			]
