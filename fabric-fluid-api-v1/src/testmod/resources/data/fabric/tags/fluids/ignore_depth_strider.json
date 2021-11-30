@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values":
+  [
+    "fabric-fluid-api-v1-testmod:cyan_fluid",
+    "fabric-fluid-api-v1-testmod:cyan_fluid_flowing"
+  ]
+}
