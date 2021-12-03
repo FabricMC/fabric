@@ -172,6 +172,6 @@ public class DirectRegistryPacketSerializer implements RegistryPacketSerializer 
 	}
 
 	private String optimizeNamespace(String namespace) {
-		return namespace.equals("minecraft") ? "" : namespace;
+		return namespace.equals(Identifier.DEFAULT_NAMESPACE) ? "" : namespace;
 	}
 }
