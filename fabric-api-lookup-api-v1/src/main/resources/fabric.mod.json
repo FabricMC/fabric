@@ -20,6 +20,11 @@
     "fabric-api-base": "*",
     "fabric-lifecycle-events-v1": "*"
   },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.lookup.ApiLookupImpl"
+    ]
+  },
   "description": "A universal way to expose and query APIs",
   "mixins": [
     "fabric-api-lookup-api-v1.mixins.json"

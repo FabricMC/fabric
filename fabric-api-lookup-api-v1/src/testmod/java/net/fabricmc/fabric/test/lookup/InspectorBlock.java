@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.lookup.item;
+package net.fabricmc.fabric.test.lookup;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import net.fabricmc.fabric.test.lookup.api.Inspectable;
+import net.fabricmc.fabric.test.lookup.entity.FabricEntityApiLookupTest;
+import net.fabricmc.fabric.test.lookup.item.FabricItemApiLookupTest;
 
 public class InspectorBlock extends Block {
 	public InspectorBlock(Settings settings) {
@@ -34,7 +40,7 @@ public class InspectorBlock extends Block {
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		ItemStack stack = player.getStackInHand(hand);
-		Inspectable inspectable = Inspectable.LOOKUP.find(stack, null);
+		Inspectable inspectable = FabricItemApiLookupTest.INSPECTABLE.find(stack, null);
 
 		if (inspectable != null) {
 			if (!world.isClient()) {
@@ -45,5 +51,18 @@ public class InspectorBlock extends Block {
 		}
 
 		return ActionResult.PASS;
+	}
+
+	@Override
+	public void onSteppedOn(World world, BlockPos pos, BlockState state, Entity entity) {
+		if (!world.isClient()) {
+			Inspectable inspectable = FabricEntityApiLookupTest.INSPECTABLE.find(entity, null);
+
+			if (inspectable != null) {
+				for (ServerPlayerEntity player : world.getServer().getPlayerManager().getPlayerList()) {
+					player.sendMessage(inspectable.inspect(), true);
+				}
+			}
+		}
 	}
 }

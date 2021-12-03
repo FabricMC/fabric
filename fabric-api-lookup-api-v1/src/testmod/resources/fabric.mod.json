@@ -11,6 +11,9 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.lookup.FabricApiLookupTest"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.lookup.FabricApiLookupTestClient"
     ]
   }
 }

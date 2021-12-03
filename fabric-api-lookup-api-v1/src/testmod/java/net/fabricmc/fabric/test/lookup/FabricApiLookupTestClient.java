@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.lookup.item;
+package net.fabricmc.fabric.test.lookup;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.test.lookup.entity.FabricEntityApiLookupTestClient;
 
-import net.fabricmc.fabric.test.lookup.api.Inspectable;
-
-public class InspectableItem extends Item implements Inspectable {
-	private final String inspectionResult;
-
-	public InspectableItem(String inspectionResult) {
-		super(new Settings().group(ItemGroup.MISC));
-		this.inspectionResult = inspectionResult;
-	}
-
+@Environment(EnvType.CLIENT)
+public class FabricApiLookupTestClient implements ClientModInitializer {
 	@Override
-	public Text inspect() {
-		return new LiteralText(inspectionResult);
+	public void onInitializeClient() {
+		FabricEntityApiLookupTestClient.onInitializeClient();
 	}
 }

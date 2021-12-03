@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.lookup.item;
+package net.fabricmc.fabric.test.lookup.entity;
 
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.passive.PigEntity;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
+import net.fabricmc.fabric.test.lookup.api.Inspectable;
 
-/**
- * An item that may provide an arbitrary text for display.
- */
-public interface Inspectable {
-	/**
-	 * @return A text to print when a player right-clicks the Inspector block with this item.
-	 */
-	Text inspect();
+public class InspectablePigEntity extends PigEntity implements Inspectable {
+	public InspectablePigEntity(EntityType<? extends PigEntity> entityType, World world) {
+		super(entityType, world);
+	}
 
-	ItemApiLookup<Inspectable, Void> LOOKUP =
-			ItemApiLookup.get(new Identifier("testmod:inspectable"), Inspectable.class, Void.class);
+	@Override
+	public Text inspect() {
+		return new LiteralText("InspectablePigEntity");
+	}
 }

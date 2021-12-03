@@ -14,25 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.lookup.item;
+package net.fabricmc.fabric.test.lookup.api;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
-import net.fabricmc.fabric.test.lookup.api.Inspectable;
-
-public class InspectableItem extends Item implements Inspectable {
-	private final String inspectionResult;
-
-	public InspectableItem(String inspectionResult) {
-		super(new Settings().group(ItemGroup.MISC));
-		this.inspectionResult = inspectionResult;
-	}
-
-	@Override
-	public Text inspect() {
-		return new LiteralText(inspectionResult);
-	}
+/**
+ * An object that may provide an arbitrary text for display.
+ */
+public interface Inspectable {
+	Text inspect();
 }
