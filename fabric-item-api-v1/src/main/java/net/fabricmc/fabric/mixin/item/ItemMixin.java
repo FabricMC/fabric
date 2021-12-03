@@ -26,11 +26,12 @@ import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
+import net.fabricmc.fabric.api.item.v1.FabricItem;
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 @Mixin(Item.class)
-abstract class ItemMixin implements ItemExtensions {
+abstract class ItemMixin implements ItemExtensions, FabricItem {
 	@Unique
 	private EquipmentSlotProvider equipmentSlotProvider;
 
