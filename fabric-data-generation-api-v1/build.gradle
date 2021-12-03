@@ -1,0 +1,110 @@
+archivesBaseName = "fabric-data-generation-api-v1"
+version = getSubprojectVersion(project)
+
+moduleDependencies(project, [
+		'fabric-api-base',
+		'fabric-registry-sync-v0',
+		'fabric-networking-api-v1'
+])
+
+sourceSets {
+	testmod {
+		resources {
+			srcDirs += [
+				'src/testmod/generated'
+			]
+		}
+	}
+}
+
+loom {
+	accessWidenerPath = file("src/main/resources/fabric-data-generation-api-v1.accesswidener")
+
+	runs {
+		datagen {
+			inherit testmodServer
+			name "Data Generation"
+			vmArg "-Dfabric-api.datagen"
+			vmArg "-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}"
+			vmArg "-Dfabric-api.datagen.strict-validation"
+
+			ideConfigGenerated = true
+			runDir "build/datagen"
+		}
+		datagenClient {
+			client()
+			name "Data Generation"
+			vmArg "-Dfabric-api.datagen"
+			vmArg "-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}"
+			vmArg "-Dfabric-api.datagen.strict-validation"
+
+			ideConfigGenerated = true
+			runDir "build/datagen"
+			source sourceSets.testmod
+		}
+	}
+}
+
+assemble.dependsOn runDatagen
+
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.tree.ClassNode
+
+import java.util.zip.ZipFile
+
+task generateAccessWidener() {
+	doLast {
+		// This is using loom internals, dont copy from this.
+		File inputJar = loom.mappingsProvider.mappedProvider.baseMappedJar
+		String accessWidener = file("template.accesswidener").text + "\n"
+
+		visitMethods(inputJar, "net/minecraft/data/server/RecipesProvider.class") { name, desc, owner ->
+			if (it.name == "generate")
+				return
+
+			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
+		}
+
+		visitMethods(inputJar, "net/minecraft/data/client/model/BlockStateModelGenerator.class") { name, desc, owner ->
+			if (desc == "()V")
+				// Skip over methods that dont take any arguments, as they are specific to minecraft.
+				return
+
+			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
+		}
+
+		visitMethods(inputJar, "net/minecraft/data/server/BlockLootTableGenerator.class") { name, desc, owner ->
+			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
+		}
+
+		file("src/main/resources/fabric-data-generation-api-v1.accesswidener").text = accessWidener
+	}
+}
+
+def visitMethods(File input, String className, closure) {
+	def clazz = getClassNode(input, className)
+	clazz.methods.forEach {
+		if ((it.access & Opcodes.ACC_SYNTHETIC) != 0 || (it.access & Opcodes.ACC_PUBLIC) != 0)
+			return
+
+		if (it.name.startsWith("<"))
+			return
+
+		closure(it.name, it.desc, clazz.name)
+	}
+}
+
+ClassNode getClassNode(File input, String className) {
+	File inputJar = loom.mappingsProvider.mappedProvider.baseMappedJar
+
+	new ZipFile(inputJar).withCloseable { ZipFile zip  ->
+		zip.getInputStream(zip.getEntry(className)).withCloseable { is ->
+			ClassReader reader = new ClassReader(is)
+			ClassNode classNode = new ClassNode()
+			reader.accept(classNode, 0)
+
+			return classNode
+		}
+	}
+}
