@@ -59,6 +59,20 @@
  * </ul>
  * </p>
  *
+ * <p><h2>Retrieving APIs from entities</h2>
+ * <ul>
+ *     <li>A query for an entity API takes an entity and additional context of type {@code C},
+ *     and uses that to find an object of type {@code A}, or  {@code null} if there's no such object.</li>
+ *     <li>{@link net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup EntityApiLookup&lt;A, C&gt;} instances provide a
+ *     {@link net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup#find find()} function that does the query, and registration happens
+ *     primarily through {@link net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup#registerSelf registerSelf()} and
+ *     {@link net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup#registerForTypes registerForTypes()}.</li>
+ *     <li>These instances can be accessed through {@link net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup#get EntityApiLookup#get()}
+ *     and should be stored in a {@code public static final} field.</li>
+ *     <li>See {@link net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup EntityApiLookup} for example code.</li>
+ * </ul>
+ * </p>
+ *
  * <p><h2>Retrieving APIs from custom game objects</h2>
  * <ul>
  *     <li>The subpackage {@code custom} provides helper classes to accelerate implementations of {@code ApiLookup}s for custom objects,
