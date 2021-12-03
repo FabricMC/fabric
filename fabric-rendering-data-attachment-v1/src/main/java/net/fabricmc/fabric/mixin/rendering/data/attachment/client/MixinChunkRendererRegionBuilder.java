@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.class_6850;
+import net.minecraft.client.render.chunk.ChunkRendererRegionBuilder;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -39,18 +39,18 @@ import net.minecraft.world.chunk.WorldChunk;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.impl.rendering.data.attachment.RenderDataObjectConsumer;
 
-@Mixin(class_6850.class)
+@Mixin(ChunkRendererRegionBuilder.class)
 public abstract class MixinChunkRendererRegionBuilder {
 	private static final AtomicInteger ERROR_COUNTER = new AtomicInteger();
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	@Inject(at = @At("RETURN"), method = "method_39969", locals = LocalCapture.CAPTURE_FAILHARD)
-	private void create(World world, BlockPos startPos, BlockPos endPos, int chunkRadius, CallbackInfoReturnable<ChunkRendererRegion> info, int i, int j, int k, int l, class_6850.class_6851[][] chunkData) {
+	@Inject(at = @At("RETURN"), method = "build", locals = LocalCapture.CAPTURE_FAILHARD)
+	private void create(World world, BlockPos startPos, BlockPos endPos, int chunkRadius, CallbackInfoReturnable<ChunkRendererRegion> info, int i, int j, int k, int l, ChunkRendererRegionBuilder.ClientChunk[][] chunkData) {
 		// instantiated lazily - avoids allocation for chunks without any data objects - which is most of them!
 		Long2ObjectOpenHashMap<Object> map = null;
 
-		for (class_6850.class_6851[] chunkDataOuter : chunkData) {
-			for (class_6850.class_6851 data : chunkDataOuter) {
+		for (ChunkRendererRegionBuilder.ClientChunk[] chunkDataOuter : chunkData) {
+			for (ChunkRendererRegionBuilder.ClientChunk data : chunkDataOuter) {
 				// Hash maps in chunks should generally not be modified outside of client thread
 				// but does happen in practice, due to mods or inconsistent vanilla behaviors, causing
 				// CMEs when we iterate the map.  (Vanilla does not iterate these maps when it builds
@@ -59,7 +59,7 @@ public abstract class MixinChunkRendererRegionBuilder {
 				// We handle this simply by retrying until it works.  Ugly but effective.
 				for (;;) {
 					try {
-						map = mapChunk(data.method_39971(), startPos, endPos, map);
+						map = mapChunk(data.getChunk(), startPos, endPos, map);
 						break;
 					} catch (ConcurrentModificationException e) {
 						final int count = ERROR_COUNTER.incrementAndGet();
