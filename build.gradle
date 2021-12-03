@@ -337,7 +337,7 @@ curseforge {
 	project {
 		id = "306612"
 		changelog = ENV.CHANGELOG ?: "No changelog provided"
-		releaseType = project.prerelease as Boolean ? "beta" : "release"
+		releaseType = project.prerelease == "true" ? "beta" : "release"
 		addGameVersion "1.17.1"
 		addGameVersion "Fabric"
 
@@ -371,7 +371,7 @@ task github(dependsOn: remapMavenJar) {
 		releaseBuilder.name("[$project.minecraft_version] Fabric API $project.version")
 		releaseBuilder.body(ENV.CHANGELOG ?: "No changelog provided")
 		releaseBuilder.commitish(getBranch())
-		releaseBuilder.prerelease(project.prerelease as Boolean)
+		releaseBuilder.prerelease(project.prerelease == "true")
 
 		def ghRelease = releaseBuilder.create()
 		ghRelease.uploadAsset(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"), "application/java-archive");
@@ -387,7 +387,7 @@ task modrinth(type: com.modrinth.minotaur.TaskModrinthUpload, dependsOn: remapMa
 	projectId = "P7dR8mSH"
 	versionNumber = version
 	versionName = "[$project.minecraft_version] Fabric API $project.version"
-	releaseType = project.prerelease as Boolean ? "beta" : "release"
+	releaseType = project.prerelease == "true" ? "beta" : "release"
 	changelog = ENV.CHANGELOG ?: "No changelog provided"
 
 	uploadFile = remapJar
