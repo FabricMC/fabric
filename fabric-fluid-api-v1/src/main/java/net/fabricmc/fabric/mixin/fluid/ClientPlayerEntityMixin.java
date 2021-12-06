@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.fluid.client;
+package net.fabricmc.fabric.mixin.fluid;
 
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;

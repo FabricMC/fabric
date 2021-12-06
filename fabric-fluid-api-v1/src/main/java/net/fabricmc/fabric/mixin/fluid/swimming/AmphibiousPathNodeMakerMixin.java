@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.fluid.aquatic;
+package net.fabricmc.fabric.mixin.fluid.swimming;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.entity.passive.FishEntity;
+import net.minecraft.entity.ai.pathing.AmphibiousPathNodeMaker;
+import net.minecraft.entity.mob.MobEntity;
 
 import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
-import net.fabricmc.fabric.impl.fluid.FabricFluidLivingEntity;
 
-@Mixin(FishEntity.class)
-public class FishEntityMixin {
-	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/FishEntity;isTouchingWater()Z"))
-	private boolean isTouchingWaterRedirect(FishEntity entity) {
-		//If the fish is touching a fluid swimmable and breathable by aquatic entities, will stop jumping
-		return ((FabricFluidEntity) entity).isTouchingSwimmableFluid()
-				&& ((FabricFluidLivingEntity) entity).isTouchingBreathableByAquaticFluid(false);
+@Mixin(AmphibiousPathNodeMaker.class)
+public class AmphibiousPathNodeMakerMixin {
+	@Redirect(method = "method_37003", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/MobEntity;isTouchingWater()Z"))
+	private boolean isTouchingWaterRedirect(MobEntity mob) {
+		//Adds the behaviour of water to the swimmable fabric fluids, so the function can return the correct Y pos
+		return ((FabricFluidEntity) mob).isTouchingSwimmableFluid();
 	}
 }
