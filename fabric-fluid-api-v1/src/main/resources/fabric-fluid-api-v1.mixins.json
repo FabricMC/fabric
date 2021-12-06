@@ -15,6 +15,7 @@
     "WaterPathNodeMakerMixin",
     "aquatic.AxolotlEntityMixin",
     "aquatic.DolphinEntityMixin",
+    "aquatic.FishEntityMixin",
     "aquatic.WaterCreatureEntityMixin"
   ],
   "client": [
