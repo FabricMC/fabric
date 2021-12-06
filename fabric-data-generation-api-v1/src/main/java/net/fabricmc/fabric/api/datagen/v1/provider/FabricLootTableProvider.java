@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
 /**
- * Deprecated, use {@link FabricLootTablesProvider} instead.
+ * @deprecated use {@link FabricLootTablesProvider} instead.
  */
 @Deprecated
 public interface FabricLootTableProvider extends FabricLootTablesProvider {

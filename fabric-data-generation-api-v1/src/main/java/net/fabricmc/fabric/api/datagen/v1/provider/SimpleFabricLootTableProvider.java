@@ -21,7 +21,7 @@ import net.minecraft.loot.context.LootContextType;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 /**
- * Deprecated, use {@link SimpleFabricLootTablesProvider} instead.
+ * @deprecated use {@link SimpleFabricLootTablesProvider} instead.
  */
 @Deprecated
 public abstract class SimpleFabricLootTableProvider extends SimpleFabricLootTablesProvider {

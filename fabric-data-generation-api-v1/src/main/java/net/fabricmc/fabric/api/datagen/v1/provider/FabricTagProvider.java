@@ -21,7 +21,7 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 /**
- * Deprecated, use {@link FabricTagsProvider} instead.
+ * @deprecated use {@link FabricTagsProvider} instead.
  */
 @Deprecated
 public abstract class FabricTagProvider<T> extends FabricTagsProvider<T> {
