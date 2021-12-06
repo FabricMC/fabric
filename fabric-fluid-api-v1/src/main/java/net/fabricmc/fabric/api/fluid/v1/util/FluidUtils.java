@@ -56,8 +56,32 @@ public class FluidUtils {
 	 * @param fluid2 Second Fluid.
 	 * @return True if the two Fluid are equal.
 	 */
-	public static boolean areEqual(@NotNull Fluid fluid1, @NotNull Fluid fluid2) {
-		return fluid1.matchesType(fluid2);
+	public static boolean areEqual(Fluid fluid1, Fluid fluid2) {
+		return fluid1 != null && fluid2 != null && fluid1.matchesType(fluid2);
+	}
+
+	/**
+	 * <p>Checks if a FluidState is in a specified tag.</p>
+	 * <p>This is null-safe, as it returns false if the FluidState is null.</p>
+	 *
+	 * @param fluidState FluidState to check.
+	 * @param tag Tag to check.
+	 * @return True if the FluidState is non-null and is in the specified tag.
+	 */
+	public static boolean isIn(FluidState fluidState, @NotNull Tag<Fluid> tag) {
+		return fluidState != null && fluidState.isIn(tag);
+	}
+
+	/**
+	 * <p>Checks if a Fluid is in a specified tag.</p>
+	 * <p>This is null-safe, as it returns false if the Fluid is null.</p>
+	 *
+	 * @param fluid Fluid to check.
+	 * @param tag Tag to check.
+	 * @return True if the Fluid is non-null and is in the specified tag.
+	 */
+	public static boolean isIn(Fluid fluid, @NotNull Tag<Fluid> tag) {
+		return fluid != null && fluid.isIn(tag);
 	}
 
 	/**
@@ -142,6 +166,38 @@ public class FluidUtils {
 	}
 
 	/**
+	 * @param state FluidState to check if is breathable (null = air).
+	 * @return True if the fluid is breathable.
+	 */
+	public static boolean isBreathable(FluidState state) {
+		return state == null || isBreathable(state.getFluid());
+	}
+
+	/**
+	 * @param fluid Fluid to check if is breathable (null = air).
+	 * @return True if the fluid is breathable.
+	 */
+	public static boolean isBreathable(Fluid fluid) {
+		return fluid == null || (fluid.isIn(FabricFluidTags.BREATHABLE) || fluid.isIn(FluidTags.LAVA));
+	}
+
+	/**
+	 * @param state FluidState to check if is breathable by the aquatic mobs.
+	 * @return True if the fluid is breathable by the aquatic mobs.
+	 */
+	public static boolean isBreathableByAquatic(FluidState state) {
+		return state != null && isBreathableByAquatic(state.getFluid());
+	}
+
+	/**
+	 * @param fluid Fluid to check if is breathable by the aquatic mobs.
+	 * @return True if the fluid is breathable by the aquatic mobs.
+	 */
+	public static boolean isBreathableByAquatic(Fluid fluid) {
+		return fluid != null && (fluid.isIn(FabricFluidTags.BREATHABLE_BY_AQUATIC) || fluid.isIn(FluidTags.WATER));
+	}
+
+	/**
 	 * @param state FluidState to check if is a custom fabric fluid.
 	 * @return True if the fluid is a custom fabric fluid.
 	 */
@@ -169,8 +225,8 @@ public class FluidUtils {
 	 * @param fluid Fluid to check if is navigable.
 	 * @return True if the fluid is navigable.
 	 */
-	public static boolean isNavigable(@NotNull Fluid fluid) {
-		return fluid.isIn(FluidTags.WATER) || (isFabricFluid(fluid) && fluid.isIn(FabricFluidTags.NAVIGABLE));
+	public static boolean isNavigable(Fluid fluid) {
+		return fluid != null && (fluid.isIn(FluidTags.WATER) || (isFabricFluid(fluid) && fluid.isIn(FabricFluidTags.NAVIGABLE)));
 	}
 
 	/**
@@ -178,33 +234,14 @@ public class FluidUtils {
 	 * @return True if the fluid is swimmable.
 	 */
 	public static boolean isSwimmable(FluidState state) {
-		return isSwimmable(state, false);
-	}
-
-	/**
-	 * @param state FluidState to check if is swimmable.
-	 * @param swimOnLava A value indicating if is possible to swim in lava.
-	 * @return True if the fluid is swimmable.
-	 */
-	public static boolean isSwimmable(FluidState state, boolean swimOnLava) {
-		return state != null && isSwimmable(state.getFluid(), swimOnLava);
+		return state != null && isSwimmable(state.getFluid());
 	}
 
 	/**
 	 * @param fluid Fluid to check if is swimmable.
 	 * @return True if the fluid is swimmable.
 	 */
-	public static boolean isSwimmable(@NotNull Fluid fluid) {
-		return isSwimmable(fluid, false);
-	}
-
-	/**
-	 * @param fluid Fluid to check if is swimmable.
-	 * @param swimOnLava A value indicating if is possible to swim in lava.
-	 * @return True if the fluid is swimmable.
-	 */
-	public static boolean isSwimmable(@NotNull Fluid fluid, boolean swimOnLava) {
-		return fluid.isIn(FluidTags.WATER) || (isFabricFluid(fluid) && fluid.isIn(FabricFluidTags.SWIMMABLE))
-				|| (swimOnLava && fluid.isIn(FluidTags.LAVA));
+	public static boolean isSwimmable(Fluid fluid) {
+		return fluid != null && (fluid.isIn(FluidTags.WATER) || (isFabricFluid(fluid) && fluid.isIn(FabricFluidTags.SWIMMABLE)));
 	}
 }

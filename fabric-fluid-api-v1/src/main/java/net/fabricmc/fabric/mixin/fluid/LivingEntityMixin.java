@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.fluid;
 
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -31,6 +30,7 @@ import net.minecraft.entity.Flutterer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.passive.DolphinEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.tag.Tag;
@@ -40,9 +40,10 @@ import net.minecraft.util.math.Vec3d;
 import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
 import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
 import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
+import net.fabricmc.fabric.impl.fluid.FabricFluidLivingEntity;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin {
+public abstract class LivingEntityMixin implements FabricFluidLivingEntity {
 	//region INTERNAL METHODS AND VARIABLES PLACEHOLDERS
 
 	@Shadow
@@ -82,12 +83,25 @@ public abstract class LivingEntityMixin {
 
 	//endregion
 
-	//region DROWNING
+	//region BREATHING IN FLUIDS
 
-	@Redirect(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getMaxAir()I"))
-	private int getMaxAirRedirect(@NotNull LivingEntity entity) {
-		//If the entity is submerged in a fabric fluid, returns -20, so baseTick does not reset the air
-		return FluidUtils.isFabricFluid(((FabricFluidEntity) getThis()).getSubmergedFluid()) ? -20 : entity.getMaxAir();
+	@Redirect(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isSubmergedIn(Lnet/minecraft/tag/Tag;)Z"))
+	private boolean isSubmergedRedirect(LivingEntity entity, Tag<Fluid> tag) {
+		//Checks if the entity is submerged by a non-breathable fluid
+		//If the entity cannot breathe on that fluid will lose air
+		return !isSubmergedInBreathableFluid();
+	}
+
+	@Override
+	public boolean isTouchingBreathableByAquaticFluid(boolean breatheOnRain) {
+		return FluidUtils.isBreathableByAquatic(((FabricFluidEntity) getThis()).getFirstTouchedFabricFluid())
+				|| getThis().isInsideWaterOrBubbleColumn()
+				|| (breatheOnRain && getThis().isTouchingWaterOrRain());
+	}
+
+	@Override
+	public boolean isSubmergedInBreathableFluid() {
+		return FluidUtils.isBreathable(((FabricFluidEntity) getThis()).getSubmergedFluid());
 	}
 
 	//endregion

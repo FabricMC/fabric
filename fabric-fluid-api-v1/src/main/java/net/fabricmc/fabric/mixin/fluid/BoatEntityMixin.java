@@ -72,7 +72,7 @@ public class BoatEntityMixin {
 	@Redirect(method = "canAddPassenger", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;isSubmergedIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isSubmergedInRedirect(BoatEntity boat, Tag<Fluid> tag) {
 		//If the boat is submerged by any fluid, it cannot get passengers
-		return this.isSubmerged();
+		return ((FabricFluidEntity) getThis()).isSubmergedInFluid();
 	}
 
 	@Inject(method = "getPaddleSoundEvent", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
@@ -84,11 +84,6 @@ public class BoatEntityMixin {
 			Optional<SoundEvent> paddleSound = fluid.getPaddleSound();
 			paddleSound.ifPresentOrElse(cir::setReturnValue, () -> cir.setReturnValue(null));
 		}
-	}
-
-	@Unique
-	private boolean isSubmerged() {
-		return ((FabricFluidEntity) getThis()).getSubmergedFluid() != null;
 	}
 
 	@Unique

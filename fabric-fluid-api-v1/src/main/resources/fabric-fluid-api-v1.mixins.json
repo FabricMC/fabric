@@ -12,7 +12,10 @@
     "LivingEntityMixin",
     "MobNavigationMixin",
     "SwimGoalMixin",
-    "WaterPathNodeMakerMixin"
+    "WaterPathNodeMakerMixin",
+    "aquatic.AxolotlEntityMixin",
+    "aquatic.DolphinEntityMixin",
+    "aquatic.WaterCreatureEntityMixin"
   ],
   "client": [
     "client.BackgroundRendererMixin",

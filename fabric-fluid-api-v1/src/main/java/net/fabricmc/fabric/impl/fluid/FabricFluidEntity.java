@@ -66,15 +66,14 @@ public interface FabricFluidEntity {
 	boolean isSubmergedInFabricFluid();
 
 	/**
+	 * @return True if the entity is submerged in a fluid.
+	 */
+	boolean isSubmergedInFluid();
+
+	/**
 	 * @return True if the entity is submerged in a swimmable fluid.
 	 */
 	boolean isSubmergedInSwimmableFluid();
-
-	/**
-	 * @param canSwimOnLava A value indicating if is possible to swim in lava.
-	 * @return True if the entity is submerged in a swimmable fluid.
-	 */
-	boolean isSubmergedInSwimmableFluid(boolean canSwimOnLava);
 
 	/**
 	 * @return True if the entity is touching a fabric fluid.
@@ -85,10 +84,4 @@ public interface FabricFluidEntity {
 	 * @return True if the entity is touching a swimmable fluid.
 	 */
 	boolean isTouchingSwimmableFluid();
-
-	/**
-	 * @param canSwimOnLava A value indicating if is possible to swim in lava.
-	 * @return True if the entity is touching a swimmable fluid.
-	 */
-	boolean isTouchingSwimmableFluid(boolean canSwimOnLava);
 }
