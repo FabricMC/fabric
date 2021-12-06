@@ -220,3 +220,6 @@ transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	c
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	addVinePlantDrop	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	addDrop	(Lnet/minecraft/block/Block;Ljava/util/function/Function;)V
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	addDrop	(Lnet/minecraft/block/Block;Lnet/minecraft/loot/LootTable$Builder;)V
+
+transitive-accessible   field   net/minecraft/data/client/model/BlockStateModelGenerator    blockStateCollector Ljava/util/function/Consumer;
+transitive-accessible   field   net/minecraft/data/client/model/BlockStateModelGenerator    modelCollector  Ljava/util/function/BiConsumer;

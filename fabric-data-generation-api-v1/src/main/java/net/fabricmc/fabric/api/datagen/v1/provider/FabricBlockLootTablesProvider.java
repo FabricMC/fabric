@@ -37,7 +37,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
  */
-public abstract class FabricBlockLootTablesProvider extends BlockLootTableGenerator implements FabricLootTableProvider {
+public abstract class FabricBlockLootTablesProvider extends BlockLootTableGenerator implements FabricLootTablesProvider {
 	protected final FabricDataGenerator dataGenerator;
 
 	protected FabricBlockLootTablesProvider(FabricDataGenerator dataGenerator) {

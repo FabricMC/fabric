@@ -42,10 +42,10 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
  *
  * <p>{@link FabricBlockLootTablesProvider} provides additional features specific to block drop loot tables.
  *
- * <p>Use {@link SimpleFabricLootTableProvider} for a simple abstract class that you can implement to handle standard loot table functions.
+ * <p>Use {@link SimpleFabricLootTablesProvider} for a simple abstract class that you can implement to handle standard loot table functions.
  */
 @ApiStatus.NonExtendable
-public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier, LootTable.Builder>>, DataProvider {
+public interface FabricLootTablesProvider extends Consumer<BiConsumer<Identifier, LootTable.Builder>>, DataProvider {
 	Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
 	LootContextType getLootContextType();

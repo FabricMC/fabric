@@ -43,11 +43,11 @@ import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockStateDefinitionProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelsProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 @Mixin(BlockStateDefinitionProvider.class)
-public class BlockStateDefinitionProviderMixin {
+public class ModelsProviderMixin {
 	@Shadow
 	@Final
 	private DataGenerator generator;
@@ -57,8 +57,8 @@ public class BlockStateDefinitionProviderMixin {
 
 	@Redirect(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/client/model/BlockStateModelGenerator;register()V"))
 	private void registerBlockStateModels(BlockStateModelGenerator instance) {
-		if (((Object) this) instanceof FabricBlockStateDefinitionProvider fabricBlockStateDefinitionProvider) {
-			fabricBlockStateDefinitionProvider.generateBlockStateModels(instance);
+		if (((Object) this) instanceof FabricModelsProvider fabricModelsProvider) {
+			fabricModelsProvider.generateBlockStateModels(instance);
 		} else {
 			// Fallback to the vanilla registration when not a fabric provider
 			instance.register();
@@ -67,8 +67,8 @@ public class BlockStateDefinitionProviderMixin {
 
 	@Redirect(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/client/ItemModelGenerator;register()V"))
 	private void registerItemModels(ItemModelGenerator instance) {
-		if (((Object) this) instanceof FabricBlockStateDefinitionProvider fabricBlockStateDefinitionProvider) {
-			fabricBlockStateDefinitionProvider.generateItemModels(instance);
+		if (((Object) this) instanceof FabricModelsProvider fabricModelsProvider) {
+			fabricModelsProvider.generateItemModels(instance);
 		} else {
 			// Fallback to the vanilla registration when not a fabric provider
 			instance.register();

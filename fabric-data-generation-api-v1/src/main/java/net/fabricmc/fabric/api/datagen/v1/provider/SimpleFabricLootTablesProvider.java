@@ -28,11 +28,11 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 /**
  * Extend this class and implement {@link java.util.function.Consumer#accept}. Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
  */
-public abstract class SimpleFabricLootTableProvider implements FabricLootTableProvider {
+public abstract class SimpleFabricLootTablesProvider implements FabricLootTablesProvider {
 	protected final FabricDataGenerator dataGenerator;
 	protected final LootContextType lootContextType;
 
-	public SimpleFabricLootTableProvider(FabricDataGenerator dataGenerator, LootContextType lootContextType) {
+	public SimpleFabricLootTablesProvider(FabricDataGenerator dataGenerator, LootContextType lootContextType) {
 		this.dataGenerator = dataGenerator;
 		this.lootContextType = lootContextType;
 	}

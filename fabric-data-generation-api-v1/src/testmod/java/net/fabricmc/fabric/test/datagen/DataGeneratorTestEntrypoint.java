@@ -43,16 +43,16 @@ import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementsProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTablesProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockStateDefinitionProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelsProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipesProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTablesProvider;
 
 public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
-		dataGenerator.addProvider(TestRecipeProvider::new);
-		dataGenerator.addProvider(TestBlockStateDefinitionProvider::new);
+		dataGenerator.addProvider(TestRecipesProvider::new);
+		dataGenerator.addProvider(TestModelsProvider::new);
 		dataGenerator.addProvider(TestAdvancementsProvider::new);
 		dataGenerator.addProvider(TestBlockLootTablesProvider::new);
 		dataGenerator.addProvider(TestBarterLootTablesProvider::new);
@@ -61,8 +61,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		dataGenerator.addProvider(new TestItemTagsProvider(dataGenerator, blockTagsProvider));
 	}
 
-	private static class TestRecipeProvider extends FabricRecipesProvider {
-		private TestRecipeProvider(FabricDataGenerator dataGenerator) {
+	private static class TestRecipesProvider extends FabricRecipesProvider {
+		private TestRecipesProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator);
 		}
 
@@ -72,8 +72,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestBlockStateDefinitionProvider extends FabricBlockStateDefinitionProvider {
-		private TestBlockStateDefinitionProvider(FabricDataGenerator generator) {
+	private static class TestModelsProvider extends FabricModelsProvider {
+		private TestModelsProvider(FabricDataGenerator generator) {
 			super(generator);
 		}
 
@@ -88,7 +88,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestBlockTagsProvider extends FabricTagProvider.BlockTagProvider {
+	private static class TestBlockTagsProvider extends FabricTagsProvider.BlockTagsProvider {
 		private TestBlockTagsProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator);
 		}
@@ -100,8 +100,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestItemTagsProvider extends FabricTagProvider.ItemTagProvider {
-		private TestItemTagsProvider(FabricDataGenerator dataGenerator, BlockTagProvider blockTagProvider) {
+	private static class TestItemTagsProvider extends FabricTagsProvider.ItemTagsProvider {
+		private TestItemTagsProvider(FabricDataGenerator dataGenerator, BlockTagsProvider blockTagProvider) {
 			super(dataGenerator, blockTagProvider);
 		}
 
@@ -142,7 +142,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestBarterLootTablesProvider extends SimpleFabricLootTableProvider {
+	private static class TestBarterLootTablesProvider extends SimpleFabricLootTablesProvider {
 		private TestBarterLootTablesProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator, LootContextTypes.BARTER);
 		}

@@ -42,18 +42,18 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
  *
  * <p>Commonly used implementations of this class are provided:
  *
- * @see BlockTagProvider
- * @see ItemTagProvider
- * @see FluidTagProvider
- * @see EntityTypeTagProvider
- * @see GameEventTagProvider
+ * @see BlockTagsProvider
+ * @see ItemTagsProvider
+ * @see FluidTagsProvider
+ * @see EntityTypeTagsProvider
+ * @see GameEventTagsProvider
  */
-public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
+public abstract class FabricTagsProvider<T> extends AbstractTagProvider<T> {
 	private final String path;
 	private final String name;
 
 	/**
-	 * Construct a new {@link FabricTagProvider}.
+	 * Construct a new {@link FabricTagsProvider}.
 	 *
 	 * <p>Common implementations of this class are provided. For example @see BlockTagProvider
 	 *
@@ -62,14 +62,14 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 * @param path The directory name to write the tag file names. Example: "blocks" or "items"
 	 * @param name The name used for {@link DataProvider#getName()}
 	 */
-	protected FabricTagProvider(FabricDataGenerator dataGenerator, Registry<T> registry, String path, String name) {
+	protected FabricTagsProvider(FabricDataGenerator dataGenerator, Registry<T> registry, String path, String name) {
 		super(dataGenerator, registry);
 		this.path = path;
 		this.name = name;
 	}
 
 	/**
-	 * Implement this method and then use {@link FabricTagProvider#getOrCreateTagBuilder} to get and register new tag builders.
+	 * Implement this method and then use {@link FabricTagsProvider#getOrCreateTagBuilder} to get and register new tag builders.
 	 */
 	protected abstract void generateTags();
 
@@ -102,8 +102,8 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	/**
 	 * Extend this class to create {@link Block} tags in the "/blocks" tag directory.
 	 */
-	public abstract static class BlockTagProvider extends FabricTagProvider<Block> {
-		public BlockTagProvider(FabricDataGenerator dataGenerator) {
+	public abstract static class BlockTagsProvider extends FabricTagsProvider<Block> {
+		public BlockTagsProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator, Registry.BLOCK, "blocks", "Block Tags");
 		}
 	}
@@ -111,34 +111,34 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	/**
 	 * Extend this class to create {@link Item} tags in the "/items" tag directory.
 	 */
-	public abstract static class ItemTagProvider extends FabricTagProvider<Item> {
+	public abstract static class ItemTagsProvider extends FabricTagsProvider<Item> {
 		@Nullable
 		private final Function<Tag.Identified<Block>, Tag.Builder> blockTagBuilderProvider;
 
 		/**
-		 * Construct an {@link ItemTagProvider} tag provider <b>with</b> an associated {@link BlockTagProvider} tag provider.
+		 * Construct an {@link ItemTagsProvider} tag provider <b>with</b> an associated {@link BlockTagsProvider} tag provider.
 		 *
-		 * @param dataGenerator a {@link ItemTagProvider} tag provider
+		 * @param dataGenerator a {@link ItemTagsProvider} tag provider
 		 */
-		public ItemTagProvider(FabricDataGenerator dataGenerator, @Nullable FabricTagProvider.BlockTagProvider blockTagProvider) {
+		public ItemTagsProvider(FabricDataGenerator dataGenerator, @Nullable FabricTagsProvider.BlockTagsProvider blockTagProvider) {
 			super(dataGenerator, Registry.ITEM, "items", "Item Tags");
 
 			this.blockTagBuilderProvider = blockTagProvider == null ? null : blockTagProvider::getTagBuilder;
 		}
 
 		/**
-		 * Construct an {@link ItemTagProvider} tag provider <b>without</b> an associated {@link BlockTagProvider} tag provider.
+		 * Construct an {@link ItemTagsProvider} tag provider <b>without</b> an associated {@link BlockTagsProvider} tag provider.
 		 *
-		 * @param dataGenerator a {@link ItemTagProvider} tag provider
+		 * @param dataGenerator a {@link ItemTagsProvider} tag provider
 		 */
-		public ItemTagProvider(FabricDataGenerator dataGenerator) {
+		public ItemTagsProvider(FabricDataGenerator dataGenerator) {
 			this(dataGenerator, null);
 		}
 
 		/**
 		 * Copy the entries from a tag with the {@link Block} type into this item tag.
 		 *
-		 * <p>The {@link ItemTagProvider} tag provider must be constructed with an associated {@link BlockTagProvider} tag provider to use this method.
+		 * <p>The {@link ItemTagsProvider} tag provider must be constructed with an associated {@link BlockTagsProvider} tag provider to use this method.
 		 *
 		 * @param blockTag The block tag to copy from.
 		 * @param itemTag The item tag to copy to.
@@ -153,8 +153,8 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	/**
 	 * Extend this class to create {@link Fluid} tags in the "/fluids" tag directory.
 	 */
-	public abstract static class FluidTagProvider extends FabricTagProvider<Fluid> {
-		public FluidTagProvider(FabricDataGenerator dataGenerator) {
+	public abstract static class FluidTagsProvider extends FabricTagsProvider<Fluid> {
+		public FluidTagsProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator, Registry.FLUID, "fluids", "Fluid Tags");
 		}
 	}
@@ -162,8 +162,8 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	/**
 	 * Extend this class to create {@link EntityType} tags in the "/entity_types" tag directory.
 	 */
-	public abstract static class EntityTypeTagProvider extends FabricTagProvider<EntityType<?>> {
-		public EntityTypeTagProvider(FabricDataGenerator dataGenerator) {
+	public abstract static class EntityTypeTagsProvider extends FabricTagsProvider<EntityType<?>> {
+		public EntityTypeTagsProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator, Registry.ENTITY_TYPE, "entity_types", "Entity Type Tags");
 		}
 	}
@@ -171,8 +171,8 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	/**
 	 * Extend this class to create {@link GameEvent} tags in the "/game_events" tag directory.
 	 */
-	public abstract static class GameEventTagProvider extends FabricTagProvider<GameEvent> {
-		public GameEventTagProvider(FabricDataGenerator dataGenerator) {
+	public abstract static class GameEventTagsProvider extends FabricTagsProvider<GameEvent> {
+		public GameEventTagsProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator, Registry.GAME_EVENT, "game_events", "Game Event Tags");
 		}
 	}
