@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.fluid;
 /**
  * Implements some fluid-related living entity features.
  */
-public interface FabricFluidLivingEntity {
+public interface LivingEntityFluidExtensions {
 	/**
 	 * @param breatheOnRain Specifies if the entity can breathe on rain.
 	 * @return True if the entity is touching a breathable by aquatic fluid.

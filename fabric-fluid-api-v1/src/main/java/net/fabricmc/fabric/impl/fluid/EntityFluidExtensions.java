@@ -22,7 +22,7 @@ import net.minecraft.fluid.FluidState;
  * Implements some fluid-related entity features.
  */
 @SuppressWarnings("unused")
-public interface FabricFluidEntity {
+public interface EntityFluidExtensions {
 	/**
 	 * <p>Updates the current touched fabric fluid state
 	 * and applies the fluid pushing strength to the entity.</p>

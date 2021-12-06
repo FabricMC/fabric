@@ -29,7 +29,7 @@ import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.mob.MobEntity;
 
 import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
-import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
+import net.fabricmc.fabric.impl.fluid.EntityFluidExtensions;
 
 @Mixin(SwimGoal.class)
 public class SwimGoalMixin {
@@ -40,7 +40,7 @@ public class SwimGoalMixin {
 	@Inject(method = "canStart", at = @At("HEAD"), cancellable = true)
 	private void canStart(CallbackInfoReturnable<Boolean> cir) {
 		//If the entity is touching a swimmable fabric fluid, and the fluid height is above the swim height, start swimming
-		FabricFluidEntity entity = (FabricFluidEntity) this.mob;
+		EntityFluidExtensions entity = (EntityFluidExtensions) this.mob;
 
 		if (isEntityTouchingSwimmableFabricFluid(entity) && entity.getFabricFluidHeight() > this.mob.getSwimHeight()) {
 			cir.setReturnValue(true);
@@ -48,7 +48,7 @@ public class SwimGoalMixin {
 	}
 
 	@Unique
-	private boolean isEntityTouchingSwimmableFabricFluid(@NotNull FabricFluidEntity entity) {
+	private boolean isEntityTouchingSwimmableFabricFluid(@NotNull EntityFluidExtensions entity) {
 		return entity.isTouchingFabricFluid() && FluidUtils.isSwimmable(entity.getFirstTouchedFabricFluid());
 	}
 }

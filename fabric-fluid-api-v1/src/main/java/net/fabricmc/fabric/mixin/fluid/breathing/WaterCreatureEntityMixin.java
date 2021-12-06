@@ -22,13 +22,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.entity.mob.WaterCreatureEntity;
 
-import net.fabricmc.fabric.impl.fluid.FabricFluidLivingEntity;
+import net.fabricmc.fabric.impl.fluid.LivingEntityFluidExtensions;
 
 @Mixin(WaterCreatureEntity.class)
 public class WaterCreatureEntityMixin {
 	@Redirect(method = "tickWaterBreathingAir", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/WaterCreatureEntity;isInsideWaterOrBubbleColumn()Z"))
 	private boolean isInsideWaterOrBubbleColumnRedirect(WaterCreatureEntity entity) {
 		//Checks if the entity is touching a fluid breathable by aquatic entities, so it will not lose air
-		return ((FabricFluidLivingEntity) entity).isTouchingBreathableByAquaticFluid(false);
+		return ((LivingEntityFluidExtensions) entity).isTouchingBreathableByAquaticFluid(false);
 	}
 }

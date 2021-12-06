@@ -38,11 +38,11 @@ import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
 import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
-import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
-import net.fabricmc.fabric.impl.fluid.FabricFluidLivingEntity;
+import net.fabricmc.fabric.impl.fluid.EntityFluidExtensions;
+import net.fabricmc.fabric.impl.fluid.LivingEntityFluidExtensions;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin implements FabricFluidLivingEntity {
+public abstract class LivingEntityMixin implements LivingEntityFluidExtensions {
 	//region INTERNAL METHODS AND VARIABLES PLACEHOLDERS
 
 	@Shadow
@@ -74,9 +74,9 @@ public abstract class LivingEntityMixin implements FabricFluidLivingEntity {
 	@Inject(method = "fall", at = @At("HEAD"))
 	private void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition, CallbackInfo ci) {
 		//Check every tick, when falling, if there is a fabric fluid that can prevent fall damage
-		if (!((FabricFluidEntity) getThis()).isTouchingFabricFluid()) {
+		if (!((EntityFluidExtensions) getThis()).isTouchingFabricFluid()) {
 			//NOTE: This requires checkFabricFluidState to be public, but it should be private, so is deprecated
-			((FabricFluidEntity) getThis()).checkFabricFluidState();
+			((EntityFluidExtensions) getThis()).checkFabricFluidState();
 		}
 	}
 
@@ -93,14 +93,14 @@ public abstract class LivingEntityMixin implements FabricFluidLivingEntity {
 
 	@Override
 	public boolean isTouchingBreathableByAquaticFluid(boolean breatheOnRain) {
-		return FluidUtils.isBreathableByAquatic(((FabricFluidEntity) getThis()).getFirstTouchedFabricFluid())
+		return FluidUtils.isBreathableByAquatic(((EntityFluidExtensions) getThis()).getFirstTouchedFabricFluid())
 				|| getThis().isInsideWaterOrBubbleColumn()
 				|| (breatheOnRain && getThis().isTouchingWaterOrRain());
 	}
 
 	@Override
 	public boolean isSubmergedInBreathableFluid() {
-		return FluidUtils.isBreathable(((FabricFluidEntity) getThis()).getSubmergedFluid());
+		return FluidUtils.isBreathable(((EntityFluidExtensions) getThis()).getSubmergedFluid());
 	}
 
 	//endregion
@@ -111,13 +111,13 @@ public abstract class LivingEntityMixin implements FabricFluidLivingEntity {
 	private double getFluidHeightRedirect(LivingEntity entity, Tag<Fluid> tag) {
 		/* If an entity is on a fabric fluid, instead of water returns the fabric fluid height,
 			that will be used like water to handle swim upward */
-		return ((FabricFluidEntity) getThis()).isTouchingFabricFluid() ? ((FabricFluidEntity) getThis()).getFabricFluidHeight() : getThis().getFluidHeight(tag);
+		return ((EntityFluidExtensions) getThis()).isTouchingFabricFluid() ? ((EntityFluidExtensions) getThis()).getFabricFluidHeight() : getThis().getFluidHeight(tag);
 	}
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect(LivingEntity entity) {
 		//If the entity is touching a swimmable fabric fluid, use the same behaviour of water for swim upward
-		return ((FabricFluidEntity) getThis()).isTouchingSwimmableFluid();
+		return ((EntityFluidExtensions) getThis()).isTouchingSwimmableFluid();
 	}
 
 	//endregion
@@ -129,7 +129,7 @@ public abstract class LivingEntityMixin implements FabricFluidLivingEntity {
 		FluidState walkedFluid = getThis().world.getFluidState(getThis().getBlockPos());
 
 		if ((this.canMoveVoluntarily() || getThis().isLogicalSideForUpdatingMovement())
-				&& ((FabricFluidEntity) getThis()).isTouchingFabricFluid() && this.shouldSwimInFluids()
+				&& ((EntityFluidExtensions) getThis()).isTouchingFabricFluid() && this.shouldSwimInFluids()
 				&& !this.canWalkOnFluid(walkedFluid.getFluid())) {
 			//Applies the slow falling effect
 

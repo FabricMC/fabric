@@ -49,11 +49,11 @@ import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
 import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
 import net.fabricmc.fabric.api.util.SoundParameters;
-import net.fabricmc.fabric.impl.fluid.FabricFluidClientPlayerEntity;
-import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
+import net.fabricmc.fabric.impl.fluid.ClientPlayerEntityFluidExtensions;
+import net.fabricmc.fabric.impl.fluid.EntityFluidExtensions;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin implements FabricFluidEntity {
+public abstract class EntityMixin implements EntityFluidExtensions {
 	//region INTERNAL METHODS AND VARIABLES PLACEHOLDERS
 
 	@Shadow
@@ -399,7 +399,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 	@Unique
 	private void onSubmergedFluidUpdated(FluidState oldFluidState, FluidState newFluidState) {
-		if (getThis() instanceof FabricFluidClientPlayerEntity clientPlayer) {
+		if (getThis() instanceof ClientPlayerEntityFluidExtensions clientPlayer) {
 			if (!FluidUtils.areEqual(oldFluidState, newFluidState)) {
 				if (oldFluidState == null && newFluidState != null) {
 					clientPlayer.enterInFluid(newFluidState);

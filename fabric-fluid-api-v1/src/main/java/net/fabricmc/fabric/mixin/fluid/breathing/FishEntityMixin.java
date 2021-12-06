@@ -22,15 +22,15 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.entity.passive.FishEntity;
 
-import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
-import net.fabricmc.fabric.impl.fluid.FabricFluidLivingEntity;
+import net.fabricmc.fabric.impl.fluid.EntityFluidExtensions;
+import net.fabricmc.fabric.impl.fluid.LivingEntityFluidExtensions;
 
 @Mixin(FishEntity.class)
 public class FishEntityMixin {
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/FishEntity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect(FishEntity entity) {
 		//If the fish is touching a fluid swimmable and breathable by aquatic entities, will stop jumping
-		return ((FabricFluidEntity) entity).isTouchingSwimmableFluid()
-				&& ((FabricFluidLivingEntity) entity).isTouchingBreathableByAquaticFluid(false);
+		return ((EntityFluidExtensions) entity).isTouchingSwimmableFluid()
+				&& ((LivingEntityFluidExtensions) entity).isTouchingBreathableByAquaticFluid(false);
 	}
 }

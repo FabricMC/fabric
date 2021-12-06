@@ -23,7 +23,7 @@ import net.minecraft.fluid.FluidState;
 /**
  * Implements some fluid-related client-side player entity features.
  */
-public interface FabricFluidClientPlayerEntity {
+public interface ClientPlayerEntityFluidExtensions {
 	/**
 	 * Executed when a player enters a fluid.
 	 * @param fluidState Fluid in which the player is entered.

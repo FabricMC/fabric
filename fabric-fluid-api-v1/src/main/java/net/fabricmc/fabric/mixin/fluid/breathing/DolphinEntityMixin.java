@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.entity.passive.DolphinEntity;
 
-import net.fabricmc.fabric.impl.fluid.FabricFluidLivingEntity;
+import net.fabricmc.fabric.impl.fluid.LivingEntityFluidExtensions;
 
 @Mixin(DolphinEntity.class)
 public class DolphinEntityMixin {
@@ -30,6 +30,6 @@ public class DolphinEntityMixin {
 	private boolean isWetRedirect(DolphinEntity entity) {
 		//Checks if the entity is touching a fluid breathable by aquatic entities, so it will not lose air
 		//This entity can breathe on rain
-		return ((FabricFluidLivingEntity) entity).isTouchingBreathableByAquaticFluid(true);
+		return ((LivingEntityFluidExtensions) entity).isTouchingBreathableByAquaticFluid(true);
 	}
 }

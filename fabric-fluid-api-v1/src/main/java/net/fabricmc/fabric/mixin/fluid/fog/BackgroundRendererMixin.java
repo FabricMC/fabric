@@ -30,7 +30,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FluidState;
 
 import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
-import net.fabricmc.fabric.impl.fluid.FabricFluidCamera;
+import net.fabricmc.fabric.impl.fluid.CameraFluidExtensions;
 
 @Mixin(BackgroundRenderer.class)
 public class BackgroundRendererMixin {
@@ -52,7 +52,7 @@ public class BackgroundRendererMixin {
 
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	private static void render(Camera camera, float tickDelta, ClientWorld world, int i, float f, CallbackInfo ci) {
-		FluidState fluidState = ((FabricFluidCamera) camera).getSubmergedFluidState();
+		FluidState fluidState = ((CameraFluidExtensions) camera).getSubmergedFluidState();
 
 		if (fluidState.getFluid() instanceof FabricFlowableFluid fluid) {
 			//Gets the fog color from the fluid that submerges the camera
@@ -74,7 +74,7 @@ public class BackgroundRendererMixin {
 
 	@Inject(method = "applyFog", at = @At("HEAD"), cancellable = true)
 	private static void applyFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci) {
-		FluidState fluidState = ((FabricFluidCamera) camera).getSubmergedFluidState();
+		FluidState fluidState = ((CameraFluidExtensions) camera).getSubmergedFluidState();
 
 		if (fluidState.getFluid() instanceof FabricFlowableFluid fluid) {
 			Entity entity = camera.getFocusedEntity();

@@ -32,12 +32,12 @@ import net.minecraft.sound.SoundCategory;
 
 import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 import net.fabricmc.fabric.api.util.SoundParameters;
-import net.fabricmc.fabric.impl.fluid.FabricFluidClientPlayerEntity;
-import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
+import net.fabricmc.fabric.impl.fluid.ClientPlayerEntityFluidExtensions;
+import net.fabricmc.fabric.impl.fluid.EntityFluidExtensions;
 import net.fabricmc.fabric.impl.fluid.UnderfluidSoundLoop;
 
 @Mixin(ClientPlayerEntity.class)
-public class ClientPlayerEntityMixin implements FabricFluidClientPlayerEntity {
+public class ClientPlayerEntityMixin implements ClientPlayerEntityFluidExtensions {
 	//region INTERNAL METHODS AND VARIABLES PLACEHOLDERS
 
 	@Shadow
@@ -53,19 +53,19 @@ public class ClientPlayerEntityMixin implements FabricFluidClientPlayerEntity {
 	@Redirect(method = "isWalking", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
 	private boolean isSubmergedInWaterRedirect1(ClientPlayerEntity entity) {
 		//Adds the swimmable fabric fluids to the fluids in which to consider that the walking movement is slow
-		return ((FabricFluidEntity) entity).isSubmergedInSwimmableFluid();
+		return ((EntityFluidExtensions) entity).isSubmergedInSwimmableFluid();
 	}
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
 	private boolean isSubmergedInWaterRedirect2(ClientPlayerEntity entity) {
 		//With this, if the player is submerged in a swimmable fabric fluid, can swim like in water
-		return ((FabricFluidEntity) entity).isSubmergedInSwimmableFluid();
+		return ((EntityFluidExtensions) entity).isSubmergedInSwimmableFluid();
 	}
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect(ClientPlayerEntity entity) {
 		//With this, if the player touches a swimmable fabric fluid, can swim like in water
-		return ((FabricFluidEntity) entity).isTouchingSwimmableFluid();
+		return ((EntityFluidExtensions) entity).isTouchingSwimmableFluid();
 	}
 
 	//endregion
