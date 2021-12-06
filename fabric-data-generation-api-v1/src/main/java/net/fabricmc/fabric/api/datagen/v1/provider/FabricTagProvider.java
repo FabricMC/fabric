@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -27,5 +29,59 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 public abstract class FabricTagProvider<T> extends FabricTagsProvider<T> {
 	protected FabricTagProvider(FabricDataGenerator dataGenerator, Registry<T> registry, String path, String name) {
 		super(dataGenerator, registry, path, name);
+	}
+
+	/**
+	 * @deprecated use {@link BlockTagsProvider} instead.
+	 */
+	@Deprecated
+	public abstract static class BlockTagProvider extends BlockTagsProvider {
+		public BlockTagProvider(FabricDataGenerator dataGenerator) {
+			super(dataGenerator);
+		}
+	}
+
+	/**
+	 * @deprecated use {@link ItemTagsProvider} instead.
+	 */
+	@Deprecated
+	public abstract static class ItemTagProvider extends ItemTagsProvider {
+		public ItemTagProvider(FabricDataGenerator dataGenerator, @Nullable BlockTagsProvider blockTagProvider) {
+			super(dataGenerator, blockTagProvider);
+		}
+
+		public ItemTagProvider(FabricDataGenerator dataGenerator) {
+			super(dataGenerator);
+		}
+	}
+
+	/**
+	 * @deprecated use {@link FluidTagsProvider} instead.
+	 */
+	@Deprecated
+	public abstract static class FluidTagProvider extends FluidTagsProvider {
+		public FluidTagProvider(FabricDataGenerator dataGenerator) {
+			super(dataGenerator);
+		}
+	}
+
+	/**
+	 * @deprecated use {@link EntityTypeTagsProvider} instead.
+	 */
+	@Deprecated
+	public abstract static class EntityTypeTagProvider extends EntityTypeTagsProvider {
+		public EntityTypeTagProvider(FabricDataGenerator dataGenerator) {
+			super(dataGenerator);
+		}
+	}
+
+	/**
+	 * @deprecated use {@link GameEventTagsProvider} instead.
+	 */
+	@Deprecated
+	public abstract static class GameEventTagProvider extends GameEventTagsProvider {
+		public GameEventTagProvider(FabricDataGenerator dataGenerator) {
+			super(dataGenerator);
+		}
 	}
 }
