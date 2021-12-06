@@ -14,3 +14,6 @@ transitive-accessible   method  net/minecraft/data/family/BlockFamilies register
 transitive-accessible    method    net/minecraft/data/client/ItemModelGenerator    register    (Lnet/minecraft/item/Item;Lnet/minecraft/data/client/model/Model;)V
 transitive-accessible    method    net/minecraft/data/client/ItemModelGenerator    register    (Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;Lnet/minecraft/data/client/model/Model;)V
 transitive-accessible    method    net/minecraft/data/client/ItemModelGenerator    register    (Lnet/minecraft/item/Item;Ljava/lang/String;Lnet/minecraft/data/client/model/Model;)V
+
+transitive-accessible   field   net/minecraft/data/client/model/BlockStateModelGenerator    blockStateCollector Ljava/util/function/Consumer;
+transitive-accessible   field   net/minecraft/data/client/model/BlockStateModelGenerator    modelCollector  Ljava/util/function/BiConsumer;
