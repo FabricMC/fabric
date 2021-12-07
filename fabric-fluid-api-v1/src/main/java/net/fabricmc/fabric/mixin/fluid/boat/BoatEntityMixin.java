@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.fluid;
+package net.fabricmc.fabric.mixin.fluid.boat;
 
 import java.util.Optional;
 
@@ -35,7 +35,7 @@ import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
-import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
+import net.fabricmc.fabric.impl.fluid.EntityFluidExtensions;
 
 @Mixin(BoatEntity.class)
 public class BoatEntityMixin {
@@ -72,15 +72,15 @@ public class BoatEntityMixin {
 	@Redirect(method = "canAddPassenger", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;isSubmergedIn(Lnet/minecraft/tag/Tag;)Z"))
 	private boolean isSubmergedInRedirect(BoatEntity boat, Tag<Fluid> tag) {
 		//If the boat is submerged by any fluid, it cannot get passengers
-		return this.isSubmerged();
+		return ((EntityFluidExtensions) boat).isSubmergedInFluid();
 	}
 
 	@Inject(method = "getPaddleSoundEvent", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
 	private void getPaddleSoundEvent(CallbackInfoReturnable<SoundEvent> cir) {
 		//If the boat is touching a fabric fluid, gets the paddle sound and returns it
-		if (((FabricFluidEntity) getThis()).isTouchingFabricFluid()) {
+		if (((EntityFluidExtensions) getThis()).isTouchingFabricFluid()) {
 			//Gets the paddle sound
-			FabricFlowableFluid fluid = (FabricFlowableFluid) ((FabricFluidEntity) getThis()).getFirstTouchedFabricFluid().getFluid();
+			FabricFlowableFluid fluid = (FabricFlowableFluid) ((EntityFluidExtensions) getThis()).getFirstTouchedFabricFluid().getFluid();
 			Optional<SoundEvent> paddleSound = fluid.getPaddleSound();
 
 			if (paddleSound.isPresent()) {
@@ -91,12 +91,6 @@ public class BoatEntityMixin {
 		}
 	}
 
-	@Unique
-	private boolean isSubmerged() {
-		return ((FabricFluidEntity) getThis()).getSubmergedFluid() != null;
-	}
-
-	@SuppressWarnings("ConstantConditions")
 	@Unique
 	private BoatEntity getThis() {
 		return (BoatEntity) (Object) this;

@@ -5,7 +5,7 @@ and customize a lot of properties, such as sounds, fog, swim, hot damage...
 
 It also allows to simplify a lot of things and write less code
 avoiding unnecessarily repeating many common things,
-starting with the extension of the `FluidBlock` class to get a public constuctor.
+starting with the extension of the `FluidBlock` class to get a public constructor.
 
 Here you can see a complete "ready to go" documentation
 of all the contents of this api:
@@ -107,7 +107,17 @@ or can to wet.
 
 ## Fluid properties by tags
 
-Costomizations applicable by setting [tags][fabric_fluid_tags] on the fluid:
+Customizations applicable by setting [tags][fabric_fluid_tags] on the fluid:
+
+### Breathable
+
+Fluids with the tag `fabric:breathable`
+are breathable by entities, and will not cause them drowning.
+
+### Breathable by aquatic
+
+Fluids with the tag `fabric:breathable_by_aquatic`
+are breathable by aquatic entities, and will not cause them drowning.
 
 ### Can extinguish fire
 
@@ -123,31 +133,6 @@ can light fire on entities and burnable blocks around it.
 
 Fluids with the tag `fabric:ignore_depth_strider`
 will ignore depth strider.
-
-### Wet
-
-Fluids with the tag `fabric:wet` can to wet entities,
-and damage them, if are damageable by wet fluids, like endermans.
-
-**NOTE:** If a fluid can to wet, it cannot light fire on entities.
-
-### Prevent fall damage
-
-Fluids with the tag `fabric:prevent_fall_damage`
-can prevent fall damage.
-
-### Breathable
-
-Fluids with the tag `fabric:breathable`
-are breathable by entities, and will not cause drowning.
-
-### Swimmable
-
-Fluids with the tag `fabric:swimmable`
-can be swimmable by entities.
-
-**NOTE:** In a non-swimmable fluid is only possible to jump from the ground,
-but not to swim, like in quicksands.
 
 ### Navigable
 
@@ -166,14 +151,33 @@ BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
         FLUID, FLOWING_FLUID);
 ```
 
+### Prevent fall damage
+
+Fluids with the tag `fabric:prevent_fall_damage`
+can prevent fall damage.
+
+### Swimmable
+
+Fluids with the tag `fabric:swimmable`
+can be swimmable by entities.
+
+**NOTE:** In a non-swimmable fluid is only possible to jump from the ground,
+but not to swim, like in quicksands.
+
+### Wet
+
+Fluids with the tag `fabric:wet` can to wet entities,
+and damage them, if are damageable by wet fluids, like endermans.
+
+**NOTE:** If a fluid can to wet, it cannot light fire on entities.
+
 ## Fluid events
 
 ### Splash event
 
 The [`FabricFlowableFluid`][fabricflowablefluid_java] class
 contains method that is executed
-when the player splashes on the fluid (like jumping).  
-This method is useful to spawn particles.
+when the player splashes on the fluid (like jumping).
 
 `void onSplash(World world, Entity entity)`
 
@@ -181,8 +185,7 @@ This method is useful to spawn particles.
 
 The [`FabricFlowableFluid`][fabricflowablefluid_java] class
 contains a method that is executed every tick,
-when the player is submerged by the fluid.  
-This method is useful to handle drowning.
+when the player is submerged by the fluid.
 
 `void onSubmerged(World world, Entity entity)`
 
@@ -190,15 +193,14 @@ This method is useful to handle drowning.
 
 The [`FabricFlowableFluid`][fabricflowablefluid_java] class
 contains a method that is executed every tick,
-when the player is touching the fluid.  
-This method is useful to handle setting entities on fire.
+when the player is touching the fluid.
 
 `void onTouching(World world, Entity entity)`
 
 ## FabricFlowableFluid
 
 The [`FabricFlowableFluid`][fabricflowablefluid_java] class extends the
-`FlowableFluid` class and implements some common fluid behaviour, to simplofy
+`FlowableFluid` class and implements some common fluid behaviour, to simplify
 the fluid creation process, write less code, and avoid bugs.  
 It's still an abstract class, because some methods are
 logically specific for every fluid.  
@@ -288,10 +290,10 @@ The implemented methods are:
   Does nothing.
 
 * `void onSubmerged(World world, Entity entity)`  
-  Implements drowning for every living entity.
+  Does nothing.
 
 * `void onTouching(World world, Entity entity)`  
-  Implements setting entities on fire.
+  Implements damaging entities with fire.
 
 ## How to add the customization tags
 
@@ -299,12 +301,13 @@ To add the [customizations tags][fabric_fluid_tags], create a **json** file
 for each tag you want to use inside `/resources/data/fabric/tags/fluids`.  
 The file names are respectively:
 
+* **Breathable:** `breathable.json`
+* **Breathable by aquatic:** `breathable_by_aquatic.json`
 * **Can extinguish fire:** `can_extinguish_fire.json`
 * **Can light fire:** `can_light_fire.json`
 * **Ignore depth strider:** `ignore_depth_strider.json`
 * **Navigable:** `navigable.json`
 * **Prevent fall damage:** `prevent_fall_damage.json`
-* **Breathable:** `breathable.json`
 * **Swimmable:** `swimmable.json`
 * **Wet:** `wet.json`
 
@@ -315,14 +318,20 @@ Then add your fluid ids, in both still and flowing variant.
   "replace": false,
   "values":
   [
-    "modid:still_fluid_id",
-    "modid:flowing_fluid_id"
+    "mod_id:still_fluid_id",
+    "mod_id:flowing_fluid_id"
   ]
 }
 ```
+
+## FluidUtils
+
+The [`FluidUtils`][fluid_utils] class contains some utilities about handling fluids
+and interactions with fluids.
 
 
 
 [fabricfluidblock_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/FabricFluidBlock.java
 [fabricflowablefluid_java]: src/main/java/net/fabricmc/fabric/api/fluid/v1/FabricFlowableFluid.java
 [fabric_fluid_tags]: src/main/java/net/fabricmc/fabric/api/fluid/v1/tag/FabricFluidTags.java
+[fluid_utils]: src/main/java/net/fabricmc/fabric/api/fluid/v1/util/FluidUtils.java

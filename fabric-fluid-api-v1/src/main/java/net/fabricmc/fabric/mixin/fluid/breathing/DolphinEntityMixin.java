@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.fluid;
+package net.fabricmc.fabric.mixin.fluid.breathing;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.block.dispenser.BoatDispenserBehavior;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.tag.Tag;
+import net.minecraft.entity.passive.DolphinEntity;
 
-import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
+import net.fabricmc.fabric.impl.fluid.LivingEntityFluidExtensions;
 
-@Mixin(BoatDispenserBehavior.class)
-public class BoatDispenserBehaviorMixin {
-	@Redirect(method = "dispenseSilently", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
-	private boolean isInRedirect(FluidState state, Tag<Fluid> tag) {
-		//If the fluid is navigable, the dispenser will be able to spawn a boat on it
-		return FluidUtils.isNavigable(state);
+@Mixin(DolphinEntity.class)
+public class DolphinEntityMixin {
+	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/DolphinEntity;isWet()Z"))
+	private boolean isWetRedirect(DolphinEntity entity) {
+		//Checks if the entity is touching a fluid breathable by aquatic entities, so it will not lose air
+		//This entity can breathe on rain
+		return ((LivingEntityFluidExtensions) entity).isTouchingBreathableByAquaticFluid(true);
 	}
 }

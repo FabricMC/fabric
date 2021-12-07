@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.fluid;
+package net.fabricmc.fabric.mixin.fluid.swimming;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,13 +23,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.entity.ai.pathing.AmphibiousPathNodeMaker;
 import net.minecraft.entity.mob.MobEntity;
 
-import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
+import net.fabricmc.fabric.impl.fluid.EntityFluidExtensions;
 
 @Mixin(AmphibiousPathNodeMaker.class)
 public class AmphibiousPathNodeMakerMixin {
 	@Redirect(method = "getFeetY", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/MobEntity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect(MobEntity mob) {
 		//Adds the behaviour of water to the swimmable fabric fluids, so the function can return the correct Y pos
-		return ((FabricFluidEntity) mob).isTouchingSwimmableFluid();
+		return ((EntityFluidExtensions) mob).isTouchingSwimmableFluid();
 	}
 }

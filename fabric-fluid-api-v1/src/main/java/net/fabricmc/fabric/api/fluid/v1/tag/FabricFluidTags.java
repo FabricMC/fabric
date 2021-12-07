@@ -29,6 +29,17 @@ public class FabricFluidTags {
 	//region TAGS
 
 	/**
+	 * fabric:breathable -> Identifies a fabric fluid that is breathable by the land mobs and the player.
+	 */
+	public static final Tag<Fluid> BREATHABLE;
+
+	/**
+	 * fabric:breathable_by_aquatic -> Identifies a fabric fluid that is breathable by the aquatic mobs
+	 * (will be like water for them).
+	 */
+	public static final Tag<Fluid> BREATHABLE_BY_AQUATIC;
+
+	/**
 	 * fabric:can_extinguish_fire -> Identifies a fabric fluid that can extinguish fire.
 	 */
 	public static final Tag<Fluid> CAN_EXTINGUISH_FIRE;
@@ -54,11 +65,6 @@ public class FabricFluidTags {
 	public static final Tag<Fluid> PREVENT_FALL_DAMAGE;
 
 	/**
-	 * fabric:breathable -> Identifies a fabric fluid that is breathable.
-	 */
-	public static final Tag<Fluid> BREATHABLE;
-
-	/**
 	 * fabric:swimmable -> Identifies a fabric fluid that is swimmable.
 	 */
 	public static final Tag<Fluid> SWIMMABLE;
@@ -71,12 +77,13 @@ public class FabricFluidTags {
 	//endregion
 
 	static {
+		BREATHABLE = TagRegistry.fluid(new Identifier("fabric", "breathable"));
+		BREATHABLE_BY_AQUATIC = TagRegistry.fluid(new Identifier("fabric", "breathable_by_aquatic"));
 		CAN_EXTINGUISH_FIRE = TagRegistry.fluid(new Identifier("fabric", "can_extinguish_fire"));
 		CAN_LIGHT_FIRE = TagRegistry.fluid(new Identifier("fabric", "can_light_fire"));
 		IGNORE_DEPTH_STRIDER = TagRegistry.fluid(new Identifier("fabric", "ignore_depth_strider"));
 		NAVIGABLE = TagRegistry.fluid(new Identifier("fabric", "navigable"));
 		PREVENT_FALL_DAMAGE = TagRegistry.fluid(new Identifier("fabric", "prevent_fall_damage"));
-		BREATHABLE = TagRegistry.fluid(new Identifier("fabric", "breathable"));
 		SWIMMABLE = TagRegistry.fluid(new Identifier("fabric", "swimmable"));
 		WET = TagRegistry.fluid(new Identifier("fabric", "wet"));
 	}

@@ -18,11 +18,23 @@ package net.fabricmc.fabric.test.fluid.core;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
+import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.fabric.test.fluid.FabricFluidTestMod;
 
+@SuppressWarnings("unused")
 public class ModCore {
 	public static final String ID = "fabric-fluid-api-v1-testmod";
 
 	public static final Logger LOGGER = LogManager.getLogger(FabricFluidTestMod.class);
+
+	public static boolean isBetween(@NotNull Vec3d init, @NotNull Vec3d end, @NotNull Vec3d pos) {
+		return between(init.x, end.x, pos.x) && between(init.y, end.y, pos.y) && between(init.z, end.z, pos.z);
+	}
+
+	private static boolean between(double init, double end, double val) {
+		return (val >= init && val <= end) || (val >= end && val <= init);
+	}
 }

@@ -52,11 +52,11 @@ import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 import net.fabricmc.fabric.api.fluid.v1.tag.FabricFluidTags;
 import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
 import net.fabricmc.fabric.api.util.SoundParameters;
-import net.fabricmc.fabric.impl.fluid.FabricFluidClientPlayerEntity;
-import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
+import net.fabricmc.fabric.impl.fluid.ClientPlayerEntityFluidExtensions;
+import net.fabricmc.fabric.impl.fluid.EntityFluidExtensions;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin implements FabricFluidEntity {
+public abstract class EntityMixin implements EntityFluidExtensions {
 	//region INTERNAL METHODS AND VARIABLES PLACEHOLDERS
 
 	@Shadow
@@ -190,7 +190,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 	//endregion
 
-	//region WET DAMAGE
+	//region WET
 
 	@Inject(method = "isWet", at = @At("HEAD"), cancellable = true)
 	private void isWet(CallbackInfoReturnable<Boolean> cir) {
@@ -365,7 +365,7 @@ public abstract class EntityMixin implements FabricFluidEntity {
 		}
 
 		//Executes an event if the entity is submerged in a fabric fluid
-		if (isActuallySubmergedInFabricFluid()) {
+		if (isSubmergedInFabricFluid() && FluidUtils.isFabricFluid(submergedFluid)) {
 			((FabricFlowableFluid) submergedFluid.getFluid()).onSubmerged(this.world, this.getThis());
 		}
 
@@ -394,8 +394,8 @@ public abstract class EntityMixin implements FabricFluidEntity {
 	private void onSubmergedFluidUpdated(FluidState oldFluidState, FluidState newFluidState) {
 		Entity entity = getThis();
 
-		if (entity instanceof FabricFluidClientPlayerEntity) {
-			FabricFluidClientPlayerEntity clientPlayer = (FabricFluidClientPlayerEntity) entity;
+		if (entity instanceof ClientPlayerEntityFluidExtensions) {
+			ClientPlayerEntityFluidExtensions clientPlayer = (ClientPlayerEntityFluidExtensions) entity;
 
 			if (!FluidUtils.areEqual(oldFluidState, newFluidState)) {
 				if (oldFluidState == null && newFluidState != null) {
@@ -434,6 +434,11 @@ public abstract class EntityMixin implements FabricFluidEntity {
 	}
 
 	@Override
+	public boolean isSubmergedInFluid() {
+		return submergedFluid != null;
+	}
+
+	@Override
 	public boolean isSubmergedInFabricFluid() {
 		return submergedInFabricFluid;
 	}
@@ -445,22 +450,12 @@ public abstract class EntityMixin implements FabricFluidEntity {
 
 	@Override
 	public boolean isSubmergedInSwimmableFluid() {
-		return this.isSubmergedInSwimmableFluid(false);
-	}
-
-	@Override
-	public boolean isSubmergedInSwimmableFluid(boolean canSwimOnLava) {
-		return this.isSubmergedInWater() || (this.isSubmergedInFabricFluid() && FluidUtils.isSwimmable(submergedFluid, canSwimOnLava));
+		return this.isSubmergedInWater() || (this.isSubmergedInFabricFluid() && FluidUtils.isSwimmable(submergedFluid));
 	}
 
 	@Override
 	public boolean isTouchingSwimmableFluid() {
-		return this.isTouchingSwimmableFluid(false);
-	}
-
-	@Override
-	public boolean isTouchingSwimmableFluid(boolean canSwimOnLava) {
-		return this.isTouchingWater() || (this.isTouchingFabricFluid() && FluidUtils.isSwimmable(firstTouchedFabricFluid, canSwimOnLava));
+		return this.isTouchingWater() || (this.isTouchingFabricFluid() && FluidUtils.isSwimmable(firstTouchedFabricFluid));
 	}
 
 	@Override
@@ -468,14 +463,8 @@ public abstract class EntityMixin implements FabricFluidEntity {
 		return this.fabricFluidHeight;
 	}
 
-	@Unique
-	private boolean isActuallySubmergedInFabricFluid() {
-		return isSubmergedInFabricFluid() && submergedFluid != null && submergedFluid.getFluid() instanceof FabricFlowableFluid;
-	}
-
 	//endregion
 
-	@SuppressWarnings("ConstantConditions")
 	@Unique
 	private Entity getThis() {
 		return (Entity) (Object) this;
