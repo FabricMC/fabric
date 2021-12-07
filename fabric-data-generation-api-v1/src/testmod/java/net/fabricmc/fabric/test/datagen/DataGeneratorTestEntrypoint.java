@@ -38,6 +38,11 @@ import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.biome.BuiltinBiomes;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -47,6 +52,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockStateDefinitionPro
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipesProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
+import net.fabricmc.fabric.api.tag.TagFactory;
 
 public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	@Override
@@ -59,6 +65,27 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		TestBlockTagsProvider blockTagsProvider = dataGenerator.addProvider(TestBlockTagsProvider::new);
 		dataGenerator.addProvider(new TestItemTagsProvider(dataGenerator, blockTagsProvider));
+		dataGenerator.addProvider(TestBiomeTagsProvider::new);
+
+		try {
+			new FabricTagProvider<>(dataGenerator, BuiltinRegistries.BIOME, "biomes", "Biome Tags") {
+				@Override
+				protected void generateTags() {
+				}
+			};
+		} catch (IllegalArgumentException e) {
+			// no-op
+		}
+
+		try {
+			new FabricTagProvider.DynamicRegistryTagProvider<>(dataGenerator, Registry.ITEM_KEY, "items", "Item Tags") {
+				@Override
+				protected void generateTags() {
+				}
+			};
+		} catch (IllegalArgumentException e) {
+			// no-op
+		}
 	}
 
 	private static class TestRecipeProvider extends FabricRecipesProvider {
@@ -108,6 +135,25 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		protected void generateTags() {
 			copy(BlockTags.ANVIL, ItemTags.ANVIL);
+		}
+	}
+
+	private static class TestBiomeTagsProvider extends FabricTagProvider.DynamicRegistryTagProvider<Biome> {
+		private TestBiomeTagsProvider(FabricDataGenerator dataGenerator) {
+			super(dataGenerator, Registry.BIOME_KEY, "biomes", "Biome Tags");
+		}
+
+		@Override
+		protected void generateTags() {
+			FabricTagBuilder<Biome> builder = getOrCreateTagBuilder(TagFactory.BIOME.create(new Identifier(MOD_ID, "biome_tag_test")))
+					.add(BiomeKeys.BADLANDS.getValue())
+					.add(BiomeKeys.BASALT_DELTAS.getValue());
+
+			try {
+				builder.add(BuiltinBiomes.PLAINS);
+			} catch (UnsupportedOperationException e) {
+				// no-op
+			}
 		}
 	}
 
