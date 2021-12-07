@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.fluid;
+package net.fabricmc.fabric.mixin.fluid.breathing;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.entity.ai.pathing.WaterPathNodeMaker;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.tag.Tag;
+import net.minecraft.entity.passive.AxolotlEntity;
 
-import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
+import net.fabricmc.fabric.impl.fluid.LivingEntityFluidExtensions;
 
-@Mixin(WaterPathNodeMaker.class)
-public class WaterPathNodeMakerMixin {
-	@Redirect(method = "getNodeType", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/tag/Tag;)Z"))
-	private boolean isInRedirect(FluidState state, Tag<Fluid> tag) {
-		//This adds the fabric swimmable fluids to the valid fluids in which to calculate the swimming path
-		return FluidUtils.isSwimmable(state);
+@Mixin(AxolotlEntity.class)
+public class AxolotlEntityMixin {
+	@Redirect(method = "tickAir", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/AxolotlEntity;isWet()Z"))
+	private boolean isWetRedirect(AxolotlEntity entity) {
+		//Checks if the entity is touching a fluid breathable by aquatic entities, so it will not lose air
+		//This entity can breathe on rain
+		return ((LivingEntityFluidExtensions) entity).isTouchingBreathableByAquaticFluid(true);
 	}
 }

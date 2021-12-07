@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.fluid.client;
+package net.fabricmc.fabric.mixin.fluid.fog;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,10 +25,10 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
-import net.fabricmc.fabric.impl.fluid.FabricFluidCamera;
+import net.fabricmc.fabric.impl.fluid.CameraFluidExtensions;
 
 @Mixin(Camera.class)
-public class CameraMixin implements FabricFluidCamera {
+public class CameraMixin implements CameraFluidExtensions {
 	//region INTERNAL METHODS AND VARIABLES PLACEHOLDERS
 
 	@Shadow

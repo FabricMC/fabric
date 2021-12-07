@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.fluid;
+package net.fabricmc.fabric.mixin.fluid.swimming;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,14 +26,14 @@ import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.mob.MobEntity;
 
 import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
-import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
+import net.fabricmc.fabric.impl.fluid.EntityFluidExtensions;
 
 @Mixin(MobNavigation.class)
 public class MobNavigationMixin {
 	@Redirect(method = "getPathfindingY", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/MobEntity;isTouchingWater()Z"))
 	private boolean isTouchingWaterRedirect(MobEntity entity) {
 		//Adds the swimmable fabric fluids to the valid fluids for AI pathfinding
-		return ((FabricFluidEntity) entity).isTouchingSwimmableFluid();
+		return ((EntityFluidExtensions) entity).isTouchingSwimmableFluid();
 	}
 
 	@Redirect(method = "getPathfindingY", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z"))

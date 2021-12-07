@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.fluid;
+package net.fabricmc.fabric.mixin.fluid.swimming;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,7 +31,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.tag.Tag;
 
 import net.fabricmc.fabric.api.fluid.v1.util.FluidUtils;
-import net.fabricmc.fabric.impl.fluid.FabricFluidEntity;
+import net.fabricmc.fabric.impl.fluid.EntityFluidExtensions;
 
 @Mixin(LandPathNodeMaker.class)
 public class LandPathNodeMakerMixin {
@@ -39,7 +39,7 @@ public class LandPathNodeMakerMixin {
 	private boolean isTouchingWaterRedirect(MobEntity mob) {
 		/* If the entity is touching a swimmable fabric fluid, returns true,
 			this will make the entity behave as if it were in water */
-		return ((FabricFluidEntity) mob).isTouchingSwimmableFluid();
+		return ((EntityFluidExtensions) mob).isTouchingSwimmableFluid();
 	}
 
 	@Redirect(method = "getStart", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z"))

@@ -3,21 +3,25 @@
   "package": "net.fabricmc.fabric.mixin.fluid",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "AmphibiousPathNodeMakerMixin",
-    "BoatDispenserBehaviorMixin",
-    "BoatEntityMixin",
     "EntityMixin",
-    "EntityNavigationMixin",
-    "LandPathNodeMakerMixin",
     "LivingEntityMixin",
-    "MobNavigationMixin",
-    "SwimGoalMixin",
-    "WaterPathNodeMakerMixin"
+    "boat.BoatDispenserBehaviorMixin",
+    "boat.BoatEntityMixin",
+    "breathing.AxolotlEntityMixin",
+    "breathing.DolphinEntityMixin",
+    "breathing.FishEntityMixin",
+    "breathing.WaterCreatureEntityMixin",
+    "swimming.AmphibiousPathNodeMakerMixin",
+    "swimming.EntityNavigationMixin",
+    "swimming.LandPathNodeMakerMixin",
+    "swimming.MobNavigationMixin",
+    "swimming.SwimGoalMixin",
+    "swimming.WaterPathNodeMakerMixin"
   ],
   "client": [
-    "client.BackgroundRendererMixin",
-    "client.CameraMixin",
-    "client.ClientPlayerEntityMixin"
+    "ClientPlayerEntityMixin",
+    "fog.BackgroundRendererMixin",
+    "fog.CameraMixin"
   ],
   "injectors": {
     "defaultRequire": 1

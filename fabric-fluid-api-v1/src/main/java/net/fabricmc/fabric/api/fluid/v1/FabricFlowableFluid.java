@@ -28,10 +28,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffectUtil;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -321,19 +318,6 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	 * @param entity The current entity in the fluid.
 	 */
 	public void onSubmerged(@NotNull World world, Entity entity) {
-		//Implements drowning living entities
-		if (!world.isClient && entity instanceof LivingEntity life) {
-			if (!this.isIn(FabricFluidTags.BREATHABLE) && !life.canBreatheInWater() && !StatusEffectUtil.hasWaterBreathing(life)) {
-				if (!(life instanceof PlayerEntity player && player.getAbilities().invulnerable)) {
-					life.setAir(life.getAir() - 1);
-
-					if (life.getAir() <= -20) {
-						life.setAir(0);
-						life.damage(DamageSource.DROWN, 2f);
-					}
-				}
-			}
-		}
 	}
 
 	/**
