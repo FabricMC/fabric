@@ -307,7 +307,7 @@ Then add your fluid ids, in both still and flowing variant.
 
 ## FluidUtils
 
-The [FluidUtils][fluid_utils] class contains some utilities about handling fluids
+The [`FluidUtils`][fluid_utils] class contains some utilities about handling fluids
 and interactions with fluids.
 
 
