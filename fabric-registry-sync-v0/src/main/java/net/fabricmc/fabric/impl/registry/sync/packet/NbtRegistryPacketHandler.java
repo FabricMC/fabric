@@ -18,11 +18,13 @@ package net.fabricmc.fabric.impl.registry.sync.packet;
 
 import java.util.Map;
 
+import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistryMapSerializer;
@@ -33,10 +35,13 @@ import net.fabricmc.fabric.impl.registry.sync.RegistryMapSerializer;
  */
 // TODO: Remove
 @Deprecated
-public class NbtRegistryPacketSerializer implements RegistryPacketSerializer {
+public class NbtRegistryPacketHandler extends RegistryPacketHandler {
+	public static final RegistryPacketHandler INSTANCE = new NbtRegistryPacketHandler();
 	public static final Identifier ID = new Identifier("fabric", "registry/sync");
 
-	NbtRegistryPacketSerializer() {
+	private Map<Identifier, Object2IntMap<Identifier>> syncedRegistryMap;
+
+	protected NbtRegistryPacketHandler() {
 	}
 
 	@Override
@@ -45,14 +50,32 @@ public class NbtRegistryPacketSerializer implements RegistryPacketSerializer {
 	}
 
 	@Override
-	public void writeBuffer(PacketByteBuf buf, Map<Identifier, Object2IntMap<Identifier>> map) {
-		buf.writeNbt(RegistryMapSerializer.toNbt(map));
+	public void sendPacket(ServerPlayerEntity player, Map<Identifier, Object2IntMap<Identifier>> registryMap) {
+		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		buf.writeNbt(RegistryMapSerializer.toNbt(registryMap));
+		sendPacket(player, buf);
+	}
+
+	@Override
+	public void receivePacket(PacketByteBuf buf) {
+		computeBufSize(buf);
+		NbtCompound nbt = buf.readNbt();
+		syncedRegistryMap = nbt != null ? RegistryMapSerializer.fromNbt(nbt) : null;
+	}
+
+	@Override
+	public int getTotalPacketReceived() {
+		return 1;
+	}
+
+	@Override
+	public boolean isPacketFinished() {
+		return true;
 	}
 
 	@Override
 	@Nullable
-	public Map<Identifier, Object2IntMap<Identifier>> readBuffer(PacketByteBuf buf) {
-		NbtCompound nbt = buf.readNbt();
-		return nbt != null ? RegistryMapSerializer.fromNbt(nbt) : null;
+	public Map<Identifier, Object2IntMap<Identifier>> getSyncedRegistryMap() {
+		return syncedRegistryMap;
 	}
 }

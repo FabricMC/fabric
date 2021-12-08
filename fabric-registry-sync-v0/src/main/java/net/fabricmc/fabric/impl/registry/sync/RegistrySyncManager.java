@@ -27,12 +27,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
-import java.util.zip.Deflater;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
@@ -53,11 +50,12 @@ import net.minecraft.util.thread.ThreadExecutor;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketSerializer;
-import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketSerializer;
+import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
+import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistryPacketHandler;
+import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
 public final class RegistrySyncManager {
-	static final boolean DEBUG = Boolean.getBoolean("fabric.registry.debug");
+	public static final boolean DEBUG = Boolean.getBoolean("fabric.registry.debug");
 	private static final Logger LOGGER = LogManager.getLogger("FabricRegistrySync");
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = Boolean.getBoolean("fabric.registry.debug.writeContentsAsCsv");
 	private static final boolean FORCE_NBT_SYNC = Boolean.getBoolean("fabric.registry.forceNbtSync");
@@ -74,61 +72,41 @@ public final class RegistrySyncManager {
 
 		if (FORCE_NBT_SYNC) {
 			LOGGER.warn("Force NBT sync is enabled");
-			sendPacket(player, RegistryPacketSerializer.NBT);
+			sendPacket(player, NbtRegistryPacketHandler.INSTANCE);
 			return;
 		}
 
-		if (ServerPlayNetworking.canSend(player, DirectRegistryPacketSerializer.ID)) {
-			sendPacket(player, RegistryPacketSerializer.DIRECT);
+		if (ServerPlayNetworking.canSend(player, DirectRegistryPacketHandler.ID)) {
+			sendPacket(player, DirectRegistryPacketHandler.INSTANCE);
 		} else {
 			LOGGER.warn("Player {} can't receive direct packet, using nbt packet instead", player.getEntityName());
-			sendPacket(player, RegistryPacketSerializer.NBT);
+			sendPacket(player, NbtRegistryPacketHandler.INSTANCE);
 		}
 	}
 
-	private static void sendPacket(ServerPlayerEntity player, RegistryPacketSerializer serializer) {
+	private static void sendPacket(ServerPlayerEntity player, RegistryPacketHandler handler) {
 		Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap(true, null);
 
 		if (map != null) {
-			PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-			serializer.writeBuffer(buf, map);
-			ServerPlayNetworking.send(player, serializer.getPacketId(), buf);
+			handler.sendPacket(player, map);
 		}
 	}
 
-	public static void receivePacket(ThreadExecutor<?> executor, RegistryPacketSerializer serializer, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
-		if (DEBUG) {
-			LOGGER.info("{} raw size: {}", serializer.getClass().getSimpleName(), buf.readableBytes());
+	public static void receivePacket(ThreadExecutor<?> executor, RegistryPacketHandler handler, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
+		handler.receivePacket(buf);
 
-			final byte[] deflateBuffer = new byte[8192];
-			ByteBuf byteBuf = buf.copy();
-			Deflater deflater = new Deflater();
-
-			int i = byteBuf.readableBytes();
-			PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.buffer());
-
-			if (i < 256) {
-				packetByteBuf.writeVarInt(0);
-				packetByteBuf.writeBytes(byteBuf);
-			} else {
-				byte[] bs = new byte[i];
-				byteBuf.readBytes(bs);
-				packetByteBuf.writeVarInt(bs.length);
-				deflater.setInput(bs, 0, i);
-				deflater.finish();
-
-				while (!deflater.finished()) {
-					int j = deflater.deflate(deflateBuffer);
-					packetByteBuf.writeBytes(deflateBuffer, 0, j);
-				}
-
-				deflater.reset();
-			}
-
-			LOGGER.info("{} deflated size: {}", serializer.getClass().getSimpleName(), packetByteBuf.readableBytes());
+		if (!handler.isPacketFinished()) {
+			return;
 		}
 
-		Map<Identifier, Object2IntMap<Identifier>> map = serializer.readBuffer(buf);
+		if (DEBUG) {
+			String handlerName = handler.getClass().getSimpleName();
+			LOGGER.info("{} total packet: {}", handlerName, handler.getTotalPacketReceived());
+			LOGGER.info("{} raw size: {}", handlerName, handler.getRawBufSize());
+			LOGGER.info("{} deflated size: {}", handlerName, handler.getDeflatedBufSize());
+		}
+
+		Map<Identifier, Object2IntMap<Identifier>> map = handler.getSyncedRegistryMap();
 
 		if (accept) {
 			try {

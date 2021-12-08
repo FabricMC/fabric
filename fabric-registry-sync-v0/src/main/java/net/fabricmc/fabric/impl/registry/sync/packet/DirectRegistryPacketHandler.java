@@ -24,16 +24,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Preconditions;
+import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 /**
  * A more optimized method to sync registry ids to client.
- * Produce smaller packet than old {@link NbtRegistryPacketSerializer nbt-based} method.
+ * Produce smaller packet than old {@link NbtRegistryPacketHandler nbt-based} method.
  *
  * <p>This method optimize the packet in multiple way:
  * <ul>
@@ -44,10 +47,22 @@ import net.minecraft.util.Identifier;
  *     therefore making the rawIds somewhat densely packed.</li>
  * </ul>
  */
-public class DirectRegistryPacketSerializer implements RegistryPacketSerializer {
+public class DirectRegistryPacketHandler extends RegistryPacketHandler {
+	public static final RegistryPacketHandler INSTANCE = new DirectRegistryPacketHandler();
 	public static final Identifier ID = new Identifier("fabric", "registry/sync/direct");
 
-	DirectRegistryPacketSerializer() {
+	private static final int MAX_PAYLOAD_SIZE = 0x100000;
+
+	@Nullable
+	private PacketByteBuf combinedBuf;
+
+	@Nullable
+	private Map<Identifier, Object2IntMap<Identifier>> syncedRegistryMap;
+
+	private boolean isPacketFinished = false;
+	private int totalPacketReceived = 0;
+
+	protected DirectRegistryPacketHandler() {
 	}
 
 	@Override
@@ -56,9 +71,11 @@ public class DirectRegistryPacketSerializer implements RegistryPacketSerializer 
 	}
 
 	@Override
-	public void writeBuffer(PacketByteBuf buf, Map<Identifier, Object2IntMap<Identifier>> map) {
+	public void sendPacket(ServerPlayerEntity player, Map<Identifier, Object2IntMap<Identifier>> registryMap) {
+		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+
 		// Group registry ids with same namespace.
-		Map<String, List<Identifier>> regNamespaceGroups = map.keySet().stream()
+		Map<String, List<Identifier>> regNamespaceGroups = registryMap.keySet().stream()
 				.collect(Collectors.groupingBy(Identifier::getNamespace));
 
 		buf.writeVarInt(regNamespaceGroups.size());
@@ -70,7 +87,7 @@ public class DirectRegistryPacketSerializer implements RegistryPacketSerializer 
 			for (Identifier regId : regIds) {
 				buf.writeString(regId.getPath());
 
-				Object2IntMap<Identifier> idMap = map.get(regId);
+				Object2IntMap<Identifier> idMap = registryMap.get(regId);
 
 				// Sort object ids by its namespace. We use linked map here to keep the original namespace ordering.
 				Map<String, List<Object2IntMap.Entry<Identifier>>> idNamespaceGroups = idMap.object2IntEntrySet().stream()
@@ -125,38 +142,65 @@ public class DirectRegistryPacketSerializer implements RegistryPacketSerializer 
 				}
 			}
 		});
+
+		int readableBytes = buf.readableBytes();
+		int sliceIndex = 0;
+
+		while (sliceIndex < readableBytes) {
+			int sliceSize = Math.min(readableBytes - sliceIndex, MAX_PAYLOAD_SIZE);
+			PacketByteBuf slicedBuf = new PacketByteBuf(buf.slice(sliceIndex, sliceSize));
+			sendPacket(player, slicedBuf);
+			sliceIndex += sliceSize;
+		}
+
+		PacketByteBuf endBuf = new PacketByteBuf(Unpooled.buffer());
+		sendPacket(player, endBuf);
 	}
 
 	@Override
-	@Nullable
-	public Map<Identifier, Object2IntMap<Identifier>> readBuffer(PacketByteBuf buf) {
-		Map<Identifier, Object2IntMap<Identifier>> map = new LinkedHashMap<>();
-		int regNamespaceGroupAmount = buf.readVarInt();
+	public void receivePacket(PacketByteBuf slicedBuf) {
+		Preconditions.checkState(!isPacketFinished);
+		totalPacketReceived++;
+
+		if (combinedBuf == null) {
+			combinedBuf = new PacketByteBuf(Unpooled.buffer());
+		}
+
+		if (slicedBuf.readableBytes() != 0) {
+			combinedBuf.writeBytes(slicedBuf);
+			return;
+		}
+
+		isPacketFinished = true;
+
+		computeBufSize(combinedBuf);
+		syncedRegistryMap = new LinkedHashMap<>();
+		int regNamespaceGroupAmount = combinedBuf.readVarInt();
 
 		for (int i = 0; i < regNamespaceGroupAmount; i++) {
-			String regNamespace = buf.readString();
-			int regNamespaceGroupLength = buf.readVarInt();
+			String regNamespace = combinedBuf.readString();
+			int regNamespaceGroupLength = combinedBuf.readVarInt();
 
 			for (int j = 0; j < regNamespaceGroupLength; j++) {
-				String regPath = buf.readString();
+				String regPath = combinedBuf.readString();
 				Object2IntMap<Identifier> idMap = new Object2IntLinkedOpenHashMap<>();
-				int idNamespaceGroupAmount = buf.readVarInt();
+				int idNamespaceGroupAmount = combinedBuf.readVarInt();
 
 				int lastBulkLastRawId = 0;
 
 				for (int k = 0; k < idNamespaceGroupAmount; k++) {
-					String idNamespace = buf.readString();
-					int rawIdBulkAmount = buf.readVarInt();
+					String idNamespace = combinedBuf.readString();
+					int rawIdBulkAmount = combinedBuf.readVarInt();
 
 					for (int l = 0; l < rawIdBulkAmount; l++) {
-						int bulkRawIdStartDiff = buf.readVarInt();
-						int bulkSize = buf.readVarInt();
+						int bulkRawIdStartDiff = combinedBuf.readVarInt();
+						int bulkSize = combinedBuf.readVarInt();
 
 						int currentRawId = (lastBulkLastRawId + bulkRawIdStartDiff) - 1;
 
 						for (int m = 0; m < bulkSize; m++) {
 							currentRawId++;
-							String idPath = buf.readString();
+							String idPath = combinedBuf.readString();
 							idMap.put(new Identifier(idNamespace, idPath), currentRawId);
 						}
 
@@ -164,11 +208,31 @@ public class DirectRegistryPacketSerializer implements RegistryPacketSerializer 
 					}
 				}
 
-				map.put(new Identifier(regNamespace, regPath), idMap);
+				syncedRegistryMap.put(new Identifier(regNamespace, regPath), idMap);
 			}
 		}
 
-		return map;
+		combinedBuf = null;
+	}
+
+	@Override
+	public boolean isPacketFinished() {
+		return isPacketFinished;
+	}
+
+	@Override
+	public int getTotalPacketReceived() {
+		Preconditions.checkState(isPacketFinished);
+		return totalPacketReceived;
+	}
+
+	@Override
+	@Nullable
+	public Map<Identifier, Object2IntMap<Identifier>> getSyncedRegistryMap() {
+		Preconditions.checkState(isPacketFinished);
+		isPacketFinished = false;
+		totalPacketReceived = 0;
+		return syncedRegistryMap;
 	}
 
 	private String optimizeNamespace(String namespace) {

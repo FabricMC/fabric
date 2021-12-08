@@ -46,7 +46,9 @@ import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
-import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketSerializer;
+import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
+import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistryPacketHandler;
+import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
 public class RegistrySyncTest implements ModInitializer {
 	/**
@@ -55,16 +57,31 @@ public class RegistrySyncTest implements ModInitializer {
 	public static final boolean REGISTER_BLOCKS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.blocks", "true"));
 	public static final boolean REGISTER_ITEMS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.items", "true"));
 
-	public static final Identifier PACKET_CHECK = new Identifier("fabric-registry-sync-v0-v1-testmod:packet_check");
+	public static final Identifier PACKET_CHECK_DIRECT = new Identifier("fabric-registry-sync-v0-v1-testmod:packet_check/direct");
+	public static final RegistryPacketHandler DIRECT_PACKET_HANDLER = new DirectRegistryPacketHandler() {
+		@Override
+		public Identifier getPacketId() {
+			return PACKET_CHECK_DIRECT;
+		}
+	};
+
+	public static final Identifier PACKET_CHECK_NBT = new Identifier("fabric-registry-sync-v0-v1-testmod:packet_check/nbt");
+	public static final RegistryPacketHandler NBT_PACKET_HANDLER = new NbtRegistryPacketHandler() {
+		@Override
+		public Identifier getPacketId() {
+			return PACKET_CHECK_NBT;
+		}
+	};
+
+	public static final Identifier PACKET_CHECK_COMPARE = new Identifier("fabric-registry-sync-v0-v1-testmod:packet_check/finish");
 
 	@Override
 	public void onInitialize() {
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 			Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap(true, null);
-			RegistryPacketSerializer.NBT.writeBuffer(buf, map);
-			RegistryPacketSerializer.DIRECT.writeBuffer(buf, map);
-			ServerPlayNetworking.send(handler.player, PACKET_CHECK, buf);
+			NBT_PACKET_HANDLER.sendPacket(handler.player, map);
+			DIRECT_PACKET_HANDLER.sendPacket(handler.player, map);
+			ServerPlayNetworking.send(handler.player, PACKET_CHECK_COMPARE, new PacketByteBuf(Unpooled.buffer()));
 		});
 
 		testBuiltInRegistrySync();
