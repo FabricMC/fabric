@@ -16,9 +16,59 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.jetbrains.annotations.ApiStatus;
+
+import net.minecraft.data.DataCache;
+import net.minecraft.data.DataProvider;
+import net.minecraft.loot.LootManager;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.context.LootContextType;
+import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+
 /**
- * @deprecated use {@link FabricLootTablesProvider} instead.
+ * A base interface for Loot table providers. You should not implement this class directly.
+ *
+ * <p>{@link FabricBlockLootTableProvider} provides additional features specific to block drop loot tables.
+ *
+ * <p>Use {@link SimpleFabricLootTablesProvider} for a simple abstract class that you can implement to handle standard loot table functions.
  */
-@Deprecated
-public interface FabricLootTableProvider extends FabricLootTablesProvider {
+@ApiStatus.NonExtendable
+public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier, LootTable.Builder>>, DataProvider {
+	Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+
+	LootContextType getLootContextType();
+
+	FabricDataGenerator getFabricDataGenerator();
+
+	@ApiStatus.Internal
+	@Override
+	default void run(DataCache cache) throws IOException {
+		HashMap<Identifier, LootTable> builders = Maps.newHashMap();
+
+		accept((identifier, builder) -> {
+			if (builders.put(identifier, builder.type(getLootContextType()).build()) != null) {
+				throw new IllegalStateException("Duplicate loot table " + identifier);
+			}
+		});
+
+		for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
+			DataProvider.writeToPath(GSON, cache, LootManager.toJson(entry.getValue()), getOutputPath(entry.getKey()));
+		}
+	}
+
+	private Path getOutputPath(Identifier lootTableId) {
+		return getFabricDataGenerator().getOutput().resolve("data/%s/loot_tables/%s.json".formatted(lootTableId.getNamespace(), lootTableId.getPath()));
+	}
 }

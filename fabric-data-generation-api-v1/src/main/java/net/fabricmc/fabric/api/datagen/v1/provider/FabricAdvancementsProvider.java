@@ -16,65 +16,13 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Set;
-import java.util.function.Consumer;
-
-import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import net.minecraft.advancement.Advancement;
-import net.minecraft.data.DataCache;
-import net.minecraft.data.DataProvider;
-import net.minecraft.util.Identifier;
-
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 /**
- * Extend this class and implement {@link FabricAdvancementsProvider#generateAdvancement}.
- *
- * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
+ * @deprecated use {@link FabricAdvancementProvider} instead.
  */
-public abstract class FabricAdvancementsProvider implements DataProvider {
-	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
-
-	protected final FabricDataGenerator dataGenerator;
-
+public abstract class FabricAdvancementsProvider extends FabricAdvancementProvider {
 	protected FabricAdvancementsProvider(FabricDataGenerator dataGenerator) {
-		this.dataGenerator = dataGenerator;
-	}
-
-	/**
-	 * Implement this method to register advancements to generate use the consumer callback to register advancements.
-	 *
-	 * <p>Use {@link Advancement.Task#build(Consumer, String)} to help build advancements.
-	 */
-	public abstract void generateAdvancement(Consumer<Advancement> consumer);
-
-	@Override
-	public void run(DataCache cache) throws IOException {
-		final Set<Identifier> identifiers = Sets.newHashSet();
-		final Set<Advancement> advancements = Sets.newHashSet();
-
-		generateAdvancement(advancements::add);
-
-		for (Advancement advancement : advancements) {
-			if (!identifiers.add(advancement.getId())) {
-				throw new IllegalStateException("Duplicate advancement " + advancement.getId());
-			}
-
-			DataProvider.writeToPath(GSON, cache, advancement.createTask().toJson(), getOutputPath(advancement));
-		}
-	}
-
-	private Path getOutputPath(Advancement advancement) {
-		return dataGenerator.getOutput().resolve("data/%s/advancements/%s.json".formatted(advancement.getId().getNamespace(), advancement.getId().getPath()));
-	}
-
-	@Override
-	public String getName() {
-		return "Advancements";
+		super(dataGenerator);
 	}
 }

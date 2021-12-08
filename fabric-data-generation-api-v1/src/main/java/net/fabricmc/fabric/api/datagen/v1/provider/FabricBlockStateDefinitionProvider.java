@@ -19,10 +19,10 @@ package net.fabricmc.fabric.api.datagen.v1.provider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 /**
- * @deprecated use {@link FabricModelsProvider} instead.
+ * @deprecated use {@link FabricModelProvider} instead.
  */
 @Deprecated
-public abstract class FabricBlockStateDefinitionProvider extends FabricModelsProvider {
+public abstract class FabricBlockStateDefinitionProvider extends FabricModelProvider {
 	public FabricBlockStateDefinitionProvider(FabricDataGenerator dataGenerator) {
 		super(dataGenerator);
 	}

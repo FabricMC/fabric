@@ -33,14 +33,14 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 /**
- * Extend this class and implement {@link FabricBlockLootTablesProvider#generateBlockLootTables}.
+ * Extend this class and implement {@link FabricBlockLootTableProvider#generateBlockLootTables}.
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
  */
-public abstract class FabricBlockLootTablesProvider extends BlockLootTableGenerator implements FabricLootTablesProvider {
+public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerator implements FabricLootTableProvider {
 	protected final FabricDataGenerator dataGenerator;
 
-	protected FabricBlockLootTablesProvider(FabricDataGenerator dataGenerator) {
+	protected FabricBlockLootTableProvider(FabricDataGenerator dataGenerator) {
 		this.dataGenerator = dataGenerator;
 	}
 
