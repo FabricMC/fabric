@@ -51,7 +51,10 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 	public static final RegistryPacketHandler INSTANCE = new DirectRegistryPacketHandler();
 	public static final Identifier ID = new Identifier("fabric", "registry/sync/direct");
 
-	private static final int MAX_PAYLOAD_SIZE = 0x100000;
+	/**
+	 * @see net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket#MAX_PAYLOAD_SIZE
+	 */
+	private static final int MAX_PAYLOAD_SIZE = Integer.getInteger("fabric.registry.direct.maxPayloadSize", 0x100000);
 
 	@Nullable
 	private PacketByteBuf combinedBuf;

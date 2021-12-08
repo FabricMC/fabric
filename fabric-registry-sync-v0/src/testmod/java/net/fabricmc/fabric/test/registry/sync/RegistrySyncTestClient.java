@@ -21,6 +21,8 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.minecraft.util.Identifier;
 
@@ -28,9 +30,12 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
 @Environment(EnvType.CLIENT)
 public class RegistrySyncTestClient implements ClientModInitializer {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	@Override
 	public void onInitializeClient() {
 		ClientPlayNetworking.registerGlobalReceiver(RegistrySyncTest.PACKET_CHECK_DIRECT, (client, handler, buf, responseSender) ->
@@ -40,10 +45,20 @@ public class RegistrySyncTestClient implements ClientModInitializer {
 				RegistrySyncTest.NBT_PACKET_HANDLER.receivePacket(buf));
 
 		ClientPlayNetworking.registerGlobalReceiver(RegistrySyncTest.PACKET_CHECK_COMPARE, (client, handler, buf, responseSender) -> {
+			logBufferSize(RegistrySyncTest.NBT_PACKET_HANDLER);
+			logBufferSize(RegistrySyncTest.DIRECT_PACKET_HANDLER);
+
 			Map<Identifier, Object2IntMap<Identifier>> directPacketMap = RegistrySyncTest.DIRECT_PACKET_HANDLER.getSyncedRegistryMap();
 			Map<Identifier, Object2IntMap<Identifier>> nbtPacketMap = RegistrySyncTest.NBT_PACKET_HANDLER.getSyncedRegistryMap();
 
 			Preconditions.checkArgument(Objects.requireNonNull(nbtPacketMap).equals(directPacketMap), "nbt packet and direct packet are not equal!");
 		});
+	}
+
+	private void logBufferSize(RegistryPacketHandler handler) {
+		String handlerName = handler.getClass().getSuperclass().getSimpleName();
+		LOGGER.info("{} total packet: {}", handlerName, handler.getTotalPacketReceived());
+		LOGGER.info("{} raw size: {}", handlerName, handler.getRawBufSize());
+		LOGGER.info("{} deflated size: {}", handlerName, handler.getDeflatedBufSize());
 	}
 }

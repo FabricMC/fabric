@@ -89,7 +89,7 @@ public class RegistrySyncTest implements ModInitializer {
 		if (REGISTER_BLOCKS) {
 			// For checking raw id bulk in direct registry packet, make registry_sync namespace have two bulks.
 			registerBlocks("registry_sync", 5, 0);
-			registerBlocks("registry_sync2", 2, 0);
+			registerBlocks("registry_sync2", 50, 0);
 			registerBlocks("registry_sync", 2, 5);
 
 			Validate.isTrue(RegistryAttributeHolder.get(Registry.BLOCK).hasAttribute(RegistryAttribute.MODDED), "Modded block was registered but registry not marked as modded");
