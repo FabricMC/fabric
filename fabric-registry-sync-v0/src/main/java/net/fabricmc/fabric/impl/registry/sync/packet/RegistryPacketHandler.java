@@ -86,7 +86,7 @@ public abstract class RegistryPacketHandler {
 		deflatedBufSize = deflatedBuf.readableBytes();
 	}
 
-	public int getRawBufSize() {
+	public final int getRawBufSize() {
 		return rawBufSize;
 	}
 

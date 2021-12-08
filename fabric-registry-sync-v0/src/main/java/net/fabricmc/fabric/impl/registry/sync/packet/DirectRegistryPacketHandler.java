@@ -48,13 +48,12 @@ import net.minecraft.util.Identifier;
  * </ul>
  */
 public class DirectRegistryPacketHandler extends RegistryPacketHandler {
-	public static final RegistryPacketHandler INSTANCE = new DirectRegistryPacketHandler();
-	public static final Identifier ID = new Identifier("fabric", "registry/sync/direct");
-
 	/**
 	 * @see net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket#MAX_PAYLOAD_SIZE
 	 */
+	@SuppressWarnings("JavadocReference")
 	private static final int MAX_PAYLOAD_SIZE = Integer.getInteger("fabric.registry.direct.maxPayloadSize", 0x100000);
+	private static final Identifier ID = new Identifier("fabric", "registry/sync/direct");
 
 	@Nullable
 	private PacketByteBuf combinedBuf;
@@ -64,9 +63,6 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 
 	private boolean isPacketFinished = false;
 	private int totalPacketReceived = 0;
-
-	protected DirectRegistryPacketHandler() {
-	}
 
 	@Override
 	public Identifier getPacketId() {
@@ -215,6 +211,7 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 			}
 		}
 
+		combinedBuf.release();
 		combinedBuf = null;
 	}
 
@@ -233,9 +230,11 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 	@Nullable
 	public Map<Identifier, Object2IntMap<Identifier>> getSyncedRegistryMap() {
 		Preconditions.checkState(isPacketFinished);
+		Map<Identifier, Object2IntMap<Identifier>> map = syncedRegistryMap;
 		isPacketFinished = false;
 		totalPacketReceived = 0;
-		return syncedRegistryMap;
+		syncedRegistryMap = null;
+		return map;
 	}
 
 	private String optimizeNamespace(String namespace) {

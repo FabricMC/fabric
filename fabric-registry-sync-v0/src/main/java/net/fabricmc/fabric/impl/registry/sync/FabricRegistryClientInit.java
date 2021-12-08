@@ -23,8 +23,6 @@ import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
-import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistryPacketHandler;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
 public class FabricRegistryClientInit implements ClientModInitializer {
@@ -32,8 +30,8 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		registerSyncPacketReceiver(DirectRegistryPacketHandler.INSTANCE);
-		registerSyncPacketReceiver(NbtRegistryPacketHandler.INSTANCE);
+		registerSyncPacketReceiver(RegistrySyncManager.DIRECT_PACKET_HANDLER);
+		registerSyncPacketReceiver(RegistrySyncManager.NBT_PACKET_HANDLER);
 	}
 
 	private void registerSyncPacketReceiver(RegistryPacketHandler packetHandler) {

@@ -36,13 +36,9 @@ import net.fabricmc.fabric.impl.registry.sync.RegistryMapSerializer;
 // TODO: Remove
 @Deprecated
 public class NbtRegistryPacketHandler extends RegistryPacketHandler {
-	public static final RegistryPacketHandler INSTANCE = new NbtRegistryPacketHandler();
-	public static final Identifier ID = new Identifier("fabric", "registry/sync");
+	private static final Identifier ID = new Identifier("fabric", "registry/sync");
 
 	private Map<Identifier, Object2IntMap<Identifier>> syncedRegistryMap;
-
-	protected NbtRegistryPacketHandler() {
-	}
 
 	@Override
 	public Identifier getPacketId() {
