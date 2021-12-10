@@ -24,6 +24,6 @@
     "fabric-fluid-api-v1.mixins.json"
   ],
   "custom": {
-    "fabric-api:module-lifecycle": "experimental"
+    "fabric-api:module-lifecycle": "stable"
   }
 }
