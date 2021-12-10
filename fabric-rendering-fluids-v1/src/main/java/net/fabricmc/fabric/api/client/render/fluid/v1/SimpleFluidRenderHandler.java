@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.api.client.render.fluid.v1;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.texture.Sprite;
@@ -62,9 +65,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 */
 	public static final Identifier LAVA_FLOWING = new Identifier("block/lava_flow");
 
-	protected final Identifier stillTexture;
-	protected final Identifier flowingTexture;
-	protected final Identifier overlayTexture;
+	private final Identifier[] textures = new Identifier[3];
 
 	protected final Sprite[] sprites;
 
@@ -82,9 +83,9 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * @param tint The fluid color RGB. Alpha is ignored.
 	 */
 	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, @Nullable Identifier overlayTexture, int tint) {
-		this.stillTexture = stillTexture;
-		this.flowingTexture = flowingTexture;
-		this.overlayTexture = overlayTexture;
+		this.setStillTexture(stillTexture);
+		this.setFlowingTexture(flowingTexture);
+		this.setOverlayTexture(overlayTexture);
 		this.sprites = new Sprite[overlayTexture == null ? 2 : 3];
 		this.tint = tint;
 	}
@@ -138,6 +139,59 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	}
 
 	/**
+	 * @return The current texture for the fluid in still state.
+	 */
+	public Identifier getStillTexture() {
+		return textures[0];
+	}
+
+	/**
+	 * @return The current texture for the fluid in flowing state.
+	 */
+	public Identifier getFlowingTexture() {
+		return textures[1];
+	}
+
+	/**
+	 * @return The current texture for the fluid overlay.
+	 */
+	public Identifier getOverlayTexture() {
+		return textures[2];
+	}
+
+	/**
+	 * Set the current texture for the fluid in still state.
+	 * @param id Identifier of the texture.
+	 */
+	public void setStillTexture(Identifier id) {
+		textures[0] = id;
+	}
+
+	/**
+	 * Set the current texture for the fluid in flowing state.
+	 * @param id Identifier of the texture.
+	 */
+	public void setFlowingTexture(Identifier id) {
+		textures[1] = id;
+	}
+
+	/**
+	 * Set the current texture for the fluid overlay.
+	 * @param id Identifier of the texture.
+	 */
+	public void setOverlayTexture(Identifier id) {
+		textures[2] = id;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Identifier[] getTexturesIds() {
+		return Arrays.stream(textures).filter(Objects::nonNull).toArray(Identifier[]::new);
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -150,11 +204,11 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 */
 	@Override
 	public void reloadTextures(SpriteAtlasTexture textureAtlas) {
-		sprites[0] = textureAtlas.getSprite(stillTexture);
-		sprites[1] = textureAtlas.getSprite(flowingTexture);
+		sprites[0] = textureAtlas.getSprite(getStillTexture());
+		sprites[1] = textureAtlas.getSprite(getFlowingTexture());
 
-		if (overlayTexture != null) {
-			sprites[2] = textureAtlas.getSprite(overlayTexture);
+		if (getOverlayTexture() != null) {
+			sprites[2] = textureAtlas.getSprite(getOverlayTexture());
 		}
 	}
 

@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.impl.client.rendering.fluid;
 
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.block.Block;
@@ -32,6 +34,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.screen.PlayerScreenHandler;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.BlockRenderView;
@@ -39,12 +42,14 @@ import net.minecraft.world.biome.BiomeKeys;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 
 public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistry {
 	private static final int DEFAULT_WATER_COLOR = BuiltinRegistries.BIOME.get(BiomeKeys.OCEAN).getWaterColor();
 	private final Map<Fluid, FluidRenderHandler> handlers = new IdentityHashMap<>();
 	private final Map<Fluid, FluidRenderHandler> modHandlers = new IdentityHashMap<>();
 	private final Map<Block, Boolean> overlayBlocks = new IdentityHashMap<>();
+	private final List<Identifier> registeredTextures = new ArrayList<>();
 
 	private FluidRenderer fluidRenderer;
 
@@ -64,6 +69,19 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 	public void register(Fluid fluid, FluidRenderHandler renderer) {
 		handlers.put(fluid, renderer);
 		modHandlers.put(fluid, renderer);
+
+		Identifier[] textures = renderer.getTexturesIds();
+
+		if (textures.length > 0) {
+			ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
+				for (Identifier texture : textures) {
+					if (!registeredTextures.contains(texture)) {
+						registry.register(texture);
+						registeredTextures.add(texture);
+					}
+				}
+			});
+		}
 	}
 
 	@Override
