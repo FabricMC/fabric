@@ -210,7 +210,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	/**
 	 * An extension to {@link net.minecraft.data.server.AbstractTagProvider.ObjectBuilder} that provides additional functionality.
 	 */
-	public class FabricTagBuilder<T> extends ObjectBuilder<T> {
+	public final class FabricTagBuilder<T> extends ObjectBuilder<T> {
 		private final AbstractTagProvider.ObjectBuilder<T> parent;
 
 		private FabricTagBuilder(ObjectBuilder<T> parent) {
@@ -319,7 +319,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 *
 		 * @return the {@link FabricTagBuilder} instance
 		 */
-		public final FabricTagBuilder<T> add(Identifier... ids) {
+		public FabricTagBuilder<T> add(Identifier... ids) {
 			for (Identifier id : ids) {
 				add(id);
 			}
