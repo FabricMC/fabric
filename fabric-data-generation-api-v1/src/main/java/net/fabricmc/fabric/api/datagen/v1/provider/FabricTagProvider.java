@@ -189,7 +189,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	}
 
 	/**
-	 * Extend this class to create a dynamic registry tags.
+	 * Extend this class to create dynamic registry tags.
 	 */
 	public abstract static class DynamicRegistryTagProvider<T> extends FabricTagProvider<T> {
 		/**
@@ -210,10 +210,10 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	/**
 	 * An extension to {@link net.minecraft.data.server.AbstractTagProvider.ObjectBuilder} that provides additional functionality.
 	 */
-	public class FabricTagBuilder<O> extends ObjectBuilder<O> {
-		private final AbstractTagProvider.ObjectBuilder<O> parent;
+	public class FabricTagBuilder<T> extends ObjectBuilder<T> {
+		private final AbstractTagProvider.ObjectBuilder<T> parent;
 
-		private FabricTagBuilder(ObjectBuilder<O> parent) {
+		private FabricTagBuilder(ObjectBuilder<T> parent) {
 			super(parent.builder, parent.registry, parent.source);
 			this.parent = parent;
 		}
@@ -225,7 +225,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 *
 		 * @return the {@link FabricTagBuilder} instance
 		 */
-		public FabricTagBuilder<O> setReplace(boolean replace) {
+		public FabricTagBuilder<T> setReplace(boolean replace) {
 			((net.fabricmc.fabric.impl.datagen.FabricTagBuilder) builder).fabric_setReplace(replace);
 			return this;
 		}
@@ -238,7 +238,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @see #add(Identifier)
 		 */
 		@Override
-		public FabricTagBuilder<O> add(O element) {
+		public FabricTagBuilder<T> add(T element) {
 			assertStaticRegistry();
 			parent.add(element);
 			return this;
@@ -249,9 +249,18 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 *
 		 * @return the {@link FabricTagBuilder} instance
 		 */
-		public FabricTagBuilder<O> add(Identifier id) {
+		public FabricTagBuilder<T> add(Identifier id) {
 			builder.add(id, source);
 			return this;
+		}
+
+		/**
+		 * Add a single element to the tag.
+		 *
+		 * @return the {@link FabricTagBuilder} instance
+		 */
+		public FabricTagBuilder<T> add(RegistryKey<? extends T> registryKey) {
+			return add(registryKey.getValue());
 		}
 
 		/**
@@ -260,7 +269,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @return the {@link FabricTagBuilder} instance
 		 */
 		@Override
-		public FabricTagBuilder<O> addOptional(Identifier id) {
+		public FabricTagBuilder<T> addOptional(Identifier id) {
 			parent.addOptional(id);
 			return this;
 		}
@@ -271,7 +280,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @return the {@link FabricTagBuilder} instance
 		 */
 		@Override
-		public FabricTagBuilder<O> addTag(Tag.Identified<O> tag) {
+		public FabricTagBuilder<T> addTag(Tag.Identified<T> tag) {
 			parent.addTag(tag);
 			return this;
 		}
@@ -282,7 +291,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @return the {@link FabricTagBuilder} instance
 		 */
 		@Override
-		public FabricTagBuilder<O> addOptionalTag(Identifier id) {
+		public FabricTagBuilder<T> addOptionalTag(Identifier id) {
 			parent.addOptionalTag(id);
 			return this;
 		}
@@ -295,10 +304,10 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 */
 		@SafeVarargs
 		@Override
-		public final FabricTagBuilder<O> add(O... elements) {
+		public final FabricTagBuilder<T> add(T... elements) {
 			assertStaticRegistry();
 
-			for (O element : elements) {
+			for (T element : elements) {
 				add(element);
 			}
 
@@ -310,9 +319,23 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 *
 		 * @return the {@link FabricTagBuilder} instance
 		 */
-		public FabricTagBuilder<O> add(Identifier... ids) {
+		public final FabricTagBuilder<T> add(Identifier... ids) {
 			for (Identifier id : ids) {
 				add(id);
+			}
+
+			return this;
+		}
+
+		/**
+		 * Add multiple elements to this tag.
+		 *
+		 * @return the {@link FabricTagBuilder} instance
+		 */
+		@SafeVarargs
+		public final FabricTagBuilder<T> add(RegistryKey<? extends T>... registryKeys) {
+			for (RegistryKey<? extends T> registryKey : registryKeys) {
+				add(registryKey);
 			}
 
 			return this;
