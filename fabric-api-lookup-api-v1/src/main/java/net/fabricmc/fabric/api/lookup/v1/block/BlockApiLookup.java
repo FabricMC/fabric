@@ -239,7 +239,7 @@ public interface BlockApiLookup<A, C> {
 	/**
 	 * Return the identifier of this lookup.
 	 */
-	Identifier getIdentifier();
+	Identifier getId();
 
 	/**
 	 * Return the API class of this lookup.

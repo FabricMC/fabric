@@ -156,7 +156,7 @@ public class EntityApiLookupImpl<A, C> implements EntityApiLookup<A, C> {
 	}
 
 	@Override
-	public Identifier getIdentifier() {
+	public Identifier getId() {
 		return identifier;
 	}
 

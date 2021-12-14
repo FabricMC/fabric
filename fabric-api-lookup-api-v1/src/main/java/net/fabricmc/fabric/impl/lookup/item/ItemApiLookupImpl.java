@@ -127,7 +127,7 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 	}
 
 	@Override
-	public Identifier getIdentifier() {
+	public Identifier getId() {
 		return identifier;
 	}
 

@@ -149,7 +149,7 @@ public interface EntityApiLookup<A, C> {
 	/**
 	 * Return the identifier of this lookup.
 	 */
-	Identifier getIdentifier();
+	Identifier getId();
 
 	/**
 	 * Returns the API class of this lookup.
