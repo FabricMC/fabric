@@ -97,7 +97,7 @@ public class FabricApiLookupTest implements ModInitializer {
 			wrongInsertable.registerFallback((world, pos, state, be, nocontext) -> null);
 		}, "The registry should have prevented creation of another instance with different classes, but same id.");
 
-		if (!insertable2.identifier().equals(new Identifier("testmod:item_insertable"))) {
+		if (!insertable2.getIdentifier().equals(new Identifier("testmod:item_insertable"))) {
 			throw new AssertionError("Incorrect identifier was returned.");
 		}
 

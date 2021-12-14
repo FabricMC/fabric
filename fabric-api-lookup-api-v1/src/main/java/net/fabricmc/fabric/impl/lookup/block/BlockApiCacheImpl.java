@@ -113,6 +113,21 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 		return cachedBlockEntity;
 	}
 
+	@Override
+	public BlockApiLookupImpl<A, C> getLookup() {
+		return lookup;
+	}
+
+	@Override
+	public ServerWorld getWorld() {
+		return world;
+	}
+
+	@Override
+	public BlockPos getPos() {
+		return pos;
+	}
+
 	static {
 		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
 			((ServerWorldCache) world).fabric_invalidateCache(blockEntity.getPos());

@@ -75,6 +75,21 @@ public interface BlockApiCache<A, C> {
 	BlockEntity getBlockEntity();
 
 	/**
+	 * Return the lookup this cache is bound to.
+	 */
+	BlockApiLookup<A, C> getLookup();
+
+	/**
+	 * Return the world this cache is bound to.
+	 */
+	ServerWorld getWorld();
+
+	/**
+	 * Return the position this cache is bound to.
+	 */
+	BlockPos getPos();
+
+	/**
 	 * Create a new instance bound to the passed {@link ServerWorld} and position, and querying the same API as the passed lookup.
 	 */
 	static <A, C> BlockApiCache<A, C> create(BlockApiLookup<A, C> lookup, ServerWorld world, BlockPos pos) {

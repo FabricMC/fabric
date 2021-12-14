@@ -177,7 +177,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 	}
 
 	@Override
-	public Identifier identifier() {
+	public Identifier getIdentifier() {
 		return identifier;
 	}
 
