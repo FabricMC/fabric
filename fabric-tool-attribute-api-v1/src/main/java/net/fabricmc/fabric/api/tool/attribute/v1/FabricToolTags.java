@@ -20,22 +20,23 @@ import net.minecraft.item.Item;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.tag.TagFactory;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 
 /**
  * Tool item tags provided by Fabric.
  */
 public class FabricToolTags {
-	public static final Tag<Item> AXES = register("axes");
-	public static final Tag<Item> HOES = register("hoes");
-	public static final Tag<Item> PICKAXES = register("pickaxes");
-	public static final Tag<Item> SHOVELS = register("shovels");
-	public static final Tag<Item> SWORDS = register("swords");
-	public static final Tag<Item> SHEARS = register("shears");
+	public static final Tag.Identified<Item> AXES = register("axes");
+	public static final Tag.Identified<Item> HOES = register("hoes");
+	public static final Tag.Identified<Item> PICKAXES = register("pickaxes");
+	public static final Tag.Identified<Item> SHOVELS = register("shovels");
+	public static final Tag.Identified<Item> SWORDS = register("swords");
+	public static final Tag.Identified<Item> SHEARS = register("shears");
 
 	private FabricToolTags() { }
 
-	private static Tag<Item> register(String id) {
-		return TagRegistry.item(new Identifier("fabric", id));
+	private static Tag.Identified<Item> register(String id) {
+		return TagFactory.ITEM.create(new Identifier("fabric", id));
 	}
 }
