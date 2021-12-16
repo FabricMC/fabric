@@ -73,6 +73,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 				protected void generateTags() {
 				}
 			};
+			throw new AssertionError("Using FabricTagProvider with built-in registry didn't throw an exception!");
 		} catch (IllegalArgumentException e) {
 			// no-op
 		}
@@ -83,6 +84,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 				protected void generateTags() {
 				}
 			};
+			throw new AssertionError("Using DynamicRegistryTagProvider with static registry didn't throw an exception!");
 		} catch (IllegalArgumentException e) {
 			// no-op
 		}
@@ -151,6 +153,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 			try {
 				builder.add(BuiltinBiomes.PLAINS);
+				throw new AssertionError("Adding built-in entry to dynamic registry tag builder didn't throw an exception!");
 			} catch (UnsupportedOperationException e) {
 				// no-op
 			}
