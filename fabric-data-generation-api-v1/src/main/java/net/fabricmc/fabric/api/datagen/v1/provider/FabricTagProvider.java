@@ -28,12 +28,18 @@ import net.minecraft.data.server.AbstractTagProvider;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.EntityTypeTags;
+import net.minecraft.tag.FluidTags;
+import net.minecraft.tag.GameEventTags;
+import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.event.GameEvent;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.impl.datagen.FabricTagEntry;
 
 /**
  * Implement this class (or one of the inner classes) to generate a tag list.
@@ -225,11 +231,21 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		/**
 		 * Add another tag to this tag.
 		 *
+		 * <p><b>Note:</b> any vanilla tags can be added to the builder,
+		 * but other tags can only be added if it has a builder registered in the same provider.
+		 *
+		 * <p>Use {@link #forceAddTag(Tag.Identified)} to force add any tag.
+		 *
 		 * @return the {@link FabricTagBuilder} instance
+		 * @see BlockTags
+		 * @see EntityTypeTags
+		 * @see FluidTags
+		 * @see GameEventTags
+		 * @see ItemTags
 		 */
 		@Override
 		public FabricTagBuilder<T> addTag(Tag.Identified<T> tag) {
-			parent.addTag(tag);
+			builder.add(new FabricTagEntry<>(registry, tag.getId(), false), source);
 			return this;
 		}
 
@@ -241,6 +257,19 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		@Override
 		public FabricTagBuilder<T> addOptionalTag(Identifier id) {
 			parent.addOptionalTag(id);
+			return this;
+		}
+
+		/**
+		 * Add another tag to this tag, ignoring any warning.
+		 *
+		 * <p><b>Note:</b> only use this method if you sure that the tag will be always available at runtime.
+		 * If not, use {@link #addOptionalTag(Identifier)} instead.
+		 *
+		 * @return the {@link FabricTagBuilder} instance
+		 */
+		public FabricTagBuilder<T> forceAddTag(Tag.Identified<T> tag) {
+			builder.add(new FabricTagEntry<>(registry, tag.getId(), true), source);
 			return this;
 		}
 	}

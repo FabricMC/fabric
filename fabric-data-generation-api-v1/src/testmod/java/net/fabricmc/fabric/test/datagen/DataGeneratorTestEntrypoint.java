@@ -97,6 +97,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		protected void generateTags() {
 			getOrCreateTagBuilder(BlockTags.FIRE).add(SIMPLE_BLOCK);
 			getOrCreateTagBuilder(BlockTags.ANVIL).setReplace(true).add(SIMPLE_BLOCK);
+			getOrCreateTagBuilder(BlockTags.ACACIA_LOGS).addTag(BlockTags.ANIMALS_SPAWNABLE_ON);
 		}
 	}
 
