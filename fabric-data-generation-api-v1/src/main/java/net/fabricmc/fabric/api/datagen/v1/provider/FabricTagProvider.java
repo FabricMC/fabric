@@ -237,6 +237,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * Add another tag to this tag.
 		 *
 		 * @return the {@link FabricTagBuilder} instance
+		 * @throws ClassCastException if tag is not {@link Tag.Identified identified}
 		 */
 		public FabricTagBuilder<T> addTag(Tag<T> tag) {
 			parent.addTag((Tag.Identified<T>) tag);
