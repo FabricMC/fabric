@@ -27,12 +27,25 @@ import net.fabricmc.fabric.api.tag.TagRegistry;
  * Tool item tags provided by Fabric.
  */
 public class FabricToolTags {
-	public static final Tag.Identified<Item> AXES = register("axes");
-	public static final Tag.Identified<Item> HOES = register("hoes");
-	public static final Tag.Identified<Item> PICKAXES = register("pickaxes");
-	public static final Tag.Identified<Item> SHOVELS = register("shovels");
-	public static final Tag.Identified<Item> SWORDS = register("swords");
-	public static final Tag.Identified<Item> SHEARS = register("shears");
+	public static final Tag.Identified<Item> AXES_TAG = register("axes");
+	public static final Tag.Identified<Item> HOES_TAG = register("hoes");
+	public static final Tag.Identified<Item> PICKAXES_TAG = register("pickaxes");
+	public static final Tag.Identified<Item> SHOVELS_TAG = register("shovels");
+	public static final Tag.Identified<Item> SWORDS_TAG = register("swords");
+	public static final Tag.Identified<Item> SHEARS_TAG = register("shears");
+
+	@Deprecated
+	public static final Tag<Item> AXES = AXES_TAG;
+	@Deprecated
+	public static final Tag<Item> HOES = HOES_TAG;
+	@Deprecated
+	public static final Tag<Item> PICKAXES = PICKAXES_TAG;
+	@Deprecated
+	public static final Tag<Item> SHOVELS = SHOVELS_TAG;
+	@Deprecated
+	public static final Tag<Item> SWORDS = SWORDS_TAG;
+	@Deprecated
+	public static final Tag<Item> SHEARS = SHEARS_TAG;
 
 	private FabricToolTags() { }
 

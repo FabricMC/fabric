@@ -40,7 +40,7 @@ public class ToolHandlers implements ModInitializer {
 		ToolManagerImpl.general().register(new ModdedToolsModdedBlocksToolHandler());
 		ToolManagerImpl.general().register(new VanillaToolsModdedBlocksToolHandler());
 		ToolManagerImpl.general().register(new TaggedToolsModdedBlocksToolHandler());
-		ToolManagerImpl.tag(FabricToolTags.PICKAXES).register(new ModdedToolsVanillaBlocksToolHandler(
+		ToolManagerImpl.tag(FabricToolTags.PICKAXES_TAG).register(new ModdedToolsVanillaBlocksToolHandler(
 				Arrays.asList(
 						Items.WOODEN_PICKAXE,
 						Items.STONE_PICKAXE,
@@ -49,7 +49,7 @@ public class ToolHandlers implements ModInitializer {
 						Items.NETHERITE_PICKAXE
 				)
 		));
-		ToolManagerImpl.tag(FabricToolTags.AXES).register(new ModdedToolsVanillaBlocksToolHandler(
+		ToolManagerImpl.tag(FabricToolTags.AXES_TAG).register(new ModdedToolsVanillaBlocksToolHandler(
 				Arrays.asList(
 						Items.WOODEN_AXE,
 						Items.STONE_AXE,
@@ -58,7 +58,7 @@ public class ToolHandlers implements ModInitializer {
 						Items.NETHERITE_AXE
 				)
 		));
-		ToolManagerImpl.tag(FabricToolTags.SHOVELS).register(new ModdedToolsVanillaBlocksToolHandler(
+		ToolManagerImpl.tag(FabricToolTags.SHOVELS_TAG).register(new ModdedToolsVanillaBlocksToolHandler(
 				Arrays.asList(
 						Items.WOODEN_SHOVEL,
 						Items.STONE_SHOVEL,
@@ -67,7 +67,7 @@ public class ToolHandlers implements ModInitializer {
 						Items.NETHERITE_SHOVEL
 				)
 		));
-		ToolManagerImpl.tag(FabricToolTags.HOES).register(new ModdedToolsVanillaBlocksToolHandler(
+		ToolManagerImpl.tag(FabricToolTags.HOES_TAG).register(new ModdedToolsVanillaBlocksToolHandler(
 				Arrays.asList(
 						Items.WOODEN_HOE,
 						Items.STONE_HOE,
@@ -76,7 +76,7 @@ public class ToolHandlers implements ModInitializer {
 						Items.NETHERITE_HOE
 				)
 		));
-		ToolManagerImpl.tag(FabricToolTags.SWORDS).register(new ModdedToolsVanillaBlocksToolHandler(
+		ToolManagerImpl.tag(FabricToolTags.SWORDS_TAG).register(new ModdedToolsVanillaBlocksToolHandler(
 				Arrays.asList(
 						Items.WOODEN_SWORD,
 						Items.STONE_SWORD,
@@ -85,12 +85,12 @@ public class ToolHandlers implements ModInitializer {
 						Items.NETHERITE_SWORD
 				)
 		));
-		ToolManagerImpl.tag(FabricToolTags.SHEARS).register(new ShearsVanillaBlocksToolHandler());
-		ToolManagerImpl.tag(FabricToolTags.AXES).register(new TaggedToolsTaggedBlocksToolHandler(BlockTags.AXE_MINEABLE));
-		ToolManagerImpl.tag(FabricToolTags.HOES).register(new TaggedToolsTaggedBlocksToolHandler(BlockTags.HOE_MINEABLE));
-		ToolManagerImpl.tag(FabricToolTags.PICKAXES).register(new TaggedToolsTaggedBlocksToolHandler(BlockTags.PICKAXE_MINEABLE));
-		ToolManagerImpl.tag(FabricToolTags.SHEARS).register(new TaggedToolsTaggedBlocksToolHandler(FabricMineableTags.SHEARS_MINEABLE));
-		ToolManagerImpl.tag(FabricToolTags.SHOVELS).register(new TaggedToolsTaggedBlocksToolHandler(BlockTags.SHOVEL_MINEABLE));
-		ToolManagerImpl.tag(FabricToolTags.SWORDS).register(new TaggedToolsTaggedBlocksToolHandler(FabricMineableTags.SWORD_MINEABLE));
+		ToolManagerImpl.tag(FabricToolTags.SHEARS_TAG).register(new ShearsVanillaBlocksToolHandler());
+		ToolManagerImpl.tag(FabricToolTags.AXES_TAG).register(new TaggedToolsTaggedBlocksToolHandler(BlockTags.AXE_MINEABLE));
+		ToolManagerImpl.tag(FabricToolTags.HOES_TAG).register(new TaggedToolsTaggedBlocksToolHandler(BlockTags.HOE_MINEABLE));
+		ToolManagerImpl.tag(FabricToolTags.PICKAXES_TAG).register(new TaggedToolsTaggedBlocksToolHandler(BlockTags.PICKAXE_MINEABLE));
+		ToolManagerImpl.tag(FabricToolTags.SHEARS_TAG).register(new TaggedToolsTaggedBlocksToolHandler(FabricMineableTags.SHEARS_MINEABLE));
+		ToolManagerImpl.tag(FabricToolTags.SHOVELS_TAG).register(new TaggedToolsTaggedBlocksToolHandler(BlockTags.SHOVEL_MINEABLE));
+		ToolManagerImpl.tag(FabricToolTags.SWORDS_TAG).register(new TaggedToolsTaggedBlocksToolHandler(FabricMineableTags.SWORD_MINEABLE));
 	}
 }

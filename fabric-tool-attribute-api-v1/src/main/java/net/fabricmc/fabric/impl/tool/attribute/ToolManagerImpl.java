@@ -47,13 +47,13 @@ import net.fabricmc.fabric.api.util.TriState;
 public final class ToolManagerImpl {
 	private static final Map<Tag<Item>, Tag<Block>> MINEABLE_TAG_BY_TOOL = ImmutableMap.<Tag<Item>, Tag<Block>>builder()
 			// Vanilla mineable tags
-			.put(FabricToolTags.AXES, BlockTags.AXE_MINEABLE)
-			.put(FabricToolTags.HOES, BlockTags.HOE_MINEABLE)
-			.put(FabricToolTags.PICKAXES, BlockTags.PICKAXE_MINEABLE)
-			.put(FabricToolTags.SHOVELS, BlockTags.SHOVEL_MINEABLE)
+			.put(FabricToolTags.AXES_TAG, BlockTags.AXE_MINEABLE)
+			.put(FabricToolTags.HOES_TAG, BlockTags.HOE_MINEABLE)
+			.put(FabricToolTags.PICKAXES_TAG, BlockTags.PICKAXE_MINEABLE)
+			.put(FabricToolTags.SHOVELS_TAG, BlockTags.SHOVEL_MINEABLE)
 			// Fabric mineable tags
-			.put(FabricToolTags.SHEARS, FabricMineableTags.SHEARS_MINEABLE)
-			.put(FabricToolTags.SWORDS, FabricMineableTags.SWORD_MINEABLE)
+			.put(FabricToolTags.SHEARS_TAG, FabricMineableTags.SHEARS_MINEABLE)
+			.put(FabricToolTags.SWORDS_TAG, FabricMineableTags.SWORD_MINEABLE)
 			.build();
 
 	public interface Entry {
