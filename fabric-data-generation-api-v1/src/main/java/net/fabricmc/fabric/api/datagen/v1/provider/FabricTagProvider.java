@@ -146,7 +146,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		public void copy(Tag.Identified<Block> blockTag, Tag.Identified<Item> itemTag) {
 			Tag.Builder blockTagBuilder = Objects.requireNonNull(this.blockTagBuilderProvider, "Pass Block tag provider via constructor to use copy").apply(blockTag);
 			Tag.Builder itemTagBuilder = this.getTagBuilder(itemTag);
-			blockTagBuilder.streamEntries().forEach(itemTagBuilder::add);
+			blockTagBuilder.streamEntries().filter((entry) -> entry.getEntry().canAdd(this.registry::containsId, this.tagBuilders::containsKey)).forEach(itemTagBuilder::add);
 		}
 	}
 
@@ -230,6 +230,16 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		@Override
 		public FabricTagBuilder<T> addTag(Tag.Identified<T> tag) {
 			parent.addTag(tag);
+			return this;
+		}
+
+		/**
+		 * Add another tag to this tag.
+		 *
+		 * @return the {@link FabricTagBuilder} instance
+		 */
+		public FabricTagBuilder<T> addTag(Tag<T> tag) {
+			parent.addTag((Tag.Identified<T>) tag);
 			return this;
 		}
 
