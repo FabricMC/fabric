@@ -16,12 +16,28 @@
 
 package net.fabricmc.fabric.impl.item;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
+import net.fabricmc.fabric.api.item.v1.SoundPlayer;
 
 public interface ItemExtensions {
 	/* @Nullable */ EquipmentSlotProvider fabric_getEquipmentSlotProvider();
 	void fabric_setEquipmentSlotProvider(EquipmentSlotProvider equipmentSlotProvider);
 	/* @Nullable */ CustomDamageHandler fabric_getCustomDamageHandler();
 	void fabric_setCustomDamageHandler(CustomDamageHandler handler);
+
+	@Nullable SoundPlayer fabric_getStrongHitSound();
+	void fabric_setStrongHitSound(SoundPlayer soundEvent);
+	@Nullable SoundPlayer fabric_getWeakHitSound();
+	void fabric_setWeakHitSound(SoundPlayer soundEvent);
+	@Nullable SoundPlayer fabric_getCriticalHitSound();
+	void fabric_setCriticalHitSound(SoundPlayer soundEvent);
+	@Nullable SoundPlayer fabric_getKnockBackHitSound();
+	void fabric_setKnockBackHitSound(SoundPlayer soundEvent);
+	@Nullable SoundPlayer fabric_getNoDamageHitSound();
+	void fabric_setNoDamageHitSound(SoundPlayer soundEvent);
+	@Nullable SoundPlayer fabric_getSweepingHitSound();
+	void fabric_setSweepingHitSound(SoundPlayer soundEvent);
 }

@@ -18,10 +18,13 @@ package net.fabricmc.fabric.impl.item;
 
 import java.util.WeakHashMap;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
+import net.fabricmc.fabric.api.item.v1.SoundPlayer;
 
 public final class FabricItemInternals {
 	private static final WeakHashMap<Item.Settings, ExtraData> extraData = new WeakHashMap<>();
@@ -39,12 +42,24 @@ public final class FabricItemInternals {
 		if (data != null) {
 			((ItemExtensions) item).fabric_setEquipmentSlotProvider(data.equipmentSlotProvider);
 			((ItemExtensions) item).fabric_setCustomDamageHandler(data.customDamageHandler);
+			((ItemExtensions) item).fabric_setStrongHitSound(data.strongHitSound);
+			((ItemExtensions) item).fabric_setWeakHitSound(data.weakHitSound);
+			((ItemExtensions) item).fabric_setCriticalHitSound(data.criticalHitSound);
+			((ItemExtensions) item).fabric_setKnockBackHitSound(data.knockbackHitSound);
+			((ItemExtensions) item).fabric_setNoDamageHitSound(data.noDamageHitSound);
+			((ItemExtensions) item).fabric_setSweepingHitSound(data.sweepingHitSound);
 		}
 	}
 
 	public static final class ExtraData {
 		private /* @Nullable */ EquipmentSlotProvider equipmentSlotProvider;
 		private /* @Nullable */ CustomDamageHandler customDamageHandler;
+		private @Nullable SoundPlayer strongHitSound;
+		private @Nullable SoundPlayer weakHitSound;
+		private @Nullable SoundPlayer criticalHitSound;
+		private @Nullable SoundPlayer knockbackHitSound;
+		private @Nullable SoundPlayer noDamageHitSound;
+		private @Nullable SoundPlayer sweepingHitSound;
 
 		public void equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
 			this.equipmentSlotProvider = equipmentSlotProvider;
@@ -52,6 +67,30 @@ public final class FabricItemInternals {
 
 		public void customDamage(CustomDamageHandler handler) {
 			this.customDamageHandler = handler;
+		}
+
+		public void strongHitSound(SoundPlayer sound) {
+			this.strongHitSound = sound;
+		}
+
+		public void weakHitSound(SoundPlayer sound) {
+			this.weakHitSound = sound;
+		}
+
+		public void criticalHitSound(SoundPlayer sound) {
+			this.criticalHitSound = sound;
+		}
+
+		public void knockbackHitSound(SoundPlayer sound) {
+			this.knockbackHitSound = sound;
+		}
+
+		public void noDamageHitSound(SoundPlayer sound) {
+			this.noDamageHitSound = sound;
+		}
+
+		public void sweepingHitSound(SoundPlayer sound) {
+			this.sweepingHitSound = sound;
 		}
 	}
 }
