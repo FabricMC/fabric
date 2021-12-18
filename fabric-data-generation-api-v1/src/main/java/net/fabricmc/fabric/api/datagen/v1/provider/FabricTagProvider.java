@@ -140,6 +140,8 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 *
 		 * <p>The {@link ItemTagProvider} tag provider must be constructed with an associated {@link BlockTagProvider} tag provider to use this method.
 		 *
+		 * <p>Any block ids that do not exist in the item registry will be filtered out automatically.
+		 *
 		 * @param blockTag The block tag to copy from.
 		 * @param itemTag The item tag to copy to.
 		 */
