@@ -85,8 +85,9 @@ public class FabricRegistryInit implements ModInitializer {
 		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.BIOME_SOURCE);
 
-		// Not synced or saved
-		RegistryAttributeHolder.get(Registry.BLOCK_ENTITY_TYPE);
+		// Synced. Vanilla uses raw ids in BlockEntityUpdateS2CPacket, and mods use the Vanilla syncing since 1.18
+		RegistryAttributeHolder.get(Registry.BLOCK_ENTITY_TYPE)
+				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in PaintingSpawnS2CPacket
 		RegistryAttributeHolder.get(Registry.PAINTING_MOTIVE)
