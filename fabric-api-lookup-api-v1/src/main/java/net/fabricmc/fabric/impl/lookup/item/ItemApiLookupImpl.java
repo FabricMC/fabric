@@ -43,13 +43,15 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 		return (ItemApiLookup<A, C>) LOOKUPS.getLookup(lookupId, apiClass, contextClass);
 	}
 
+	private final Identifier identifier;
 	private final Class<A> apiClass;
 	private final Class<C> contextClass;
 	private final ApiProviderMap<Item, ItemApiProvider<A, C>> providerMap = ApiProviderMap.create();
 	private final List<ItemApiProvider<A, C>> fallbackProviders = new CopyOnWriteArrayList<>();
 
 	@SuppressWarnings("unchecked")
-	private ItemApiLookupImpl(Class<?> apiClass, Class<?> contextClass) {
+	private ItemApiLookupImpl(Identifier identifier, Class<?> apiClass, Class<?> contextClass) {
+		this.identifier = identifier;
 		this.apiClass = (Class<A>) apiClass;
 		this.contextClass = (Class<C>) contextClass;
 	}
@@ -122,6 +124,11 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 		Objects.requireNonNull(fallbackProvider, "ItemApiProvider may not be null.");
 
 		fallbackProviders.add(fallbackProvider);
+	}
+
+	@Override
+	public Identifier getId() {
+		return identifier;
 	}
 
 	@Override
