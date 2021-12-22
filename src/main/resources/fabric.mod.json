@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.12.0",
+    "fabricloader": ">=0.12.12",
     "java": ">=16",
     "minecraft": "~1.17.1-rc"
   },
