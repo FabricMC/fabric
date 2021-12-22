@@ -140,13 +140,15 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 *
 		 * <p>The {@link ItemTagProvider} tag provider must be constructed with an associated {@link BlockTagProvider} tag provider to use this method.
 		 *
+		 * <p>Any block ids that do not exist in the item registry will be filtered out automatically.
+		 *
 		 * @param blockTag The block tag to copy from.
 		 * @param itemTag The item tag to copy to.
 		 */
 		public void copy(Tag.Identified<Block> blockTag, Tag.Identified<Item> itemTag) {
 			Tag.Builder blockTagBuilder = Objects.requireNonNull(this.blockTagBuilderProvider, "Pass Block tag provider via constructor to use copy").apply(blockTag);
 			Tag.Builder itemTagBuilder = this.getTagBuilder(itemTag);
-			blockTagBuilder.streamEntries().forEach(itemTagBuilder::add);
+			blockTagBuilder.streamEntries().filter((entry) -> entry.getEntry().canAdd(this.registry::containsId, (id) -> true)).forEach(itemTagBuilder::add);
 		}
 	}
 
@@ -230,6 +232,17 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		@Override
 		public FabricTagBuilder<T> addTag(Tag.Identified<T> tag) {
 			parent.addTag(tag);
+			return this;
+		}
+
+		/**
+		 * Add another tag to this tag.
+		 *
+		 * @return the {@link FabricTagBuilder} instance
+		 * @throws ClassCastException if tag is not {@linkplain Tag.Identified identified}
+		 */
+		public FabricTagBuilder<T> addTag(Tag<T> tag) {
+			parent.addTag((Tag.Identified<T>) tag);
 			return this;
 		}
 

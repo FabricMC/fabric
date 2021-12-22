@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.datagen;
 
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_ITEM;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
 
@@ -80,6 +81,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
 			blockStateModelGenerator.registerSimpleCubeAll(SIMPLE_BLOCK);
+			blockStateModelGenerator.registerSimpleCubeAll(BLOCK_WITHOUT_ITEM);
 		}
 
 		@Override
@@ -96,7 +98,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		protected void generateTags() {
 			getOrCreateTagBuilder(BlockTags.FIRE).add(SIMPLE_BLOCK);
-			getOrCreateTagBuilder(BlockTags.ANVIL).setReplace(true).add(SIMPLE_BLOCK);
+			getOrCreateTagBuilder(BlockTags.ANVIL).setReplace(true).add(SIMPLE_BLOCK, BLOCK_WITHOUT_ITEM);
 		}
 	}
 
@@ -139,6 +141,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		protected void generateBlockLootTables() {
 			addDrop(SIMPLE_BLOCK);
+			addDrop(BLOCK_WITHOUT_ITEM, drops(SIMPLE_BLOCK));
 		}
 	}
 
