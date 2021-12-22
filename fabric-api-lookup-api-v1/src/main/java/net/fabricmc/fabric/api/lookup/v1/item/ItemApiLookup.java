@@ -146,6 +146,11 @@ public interface ItemApiLookup<A, C> {
 	void registerFallback(ItemApiProvider<A, C> fallbackProvider);
 
 	/**
+	 * Return the identifier of this lookup.
+	 */
+	Identifier getId();
+
+	/**
 	 * Return the API class of this lookup.
 	 */
 	Class<A> apiClass();

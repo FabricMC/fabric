@@ -62,8 +62,9 @@ import net.fabricmc.fabric.impl.lookup.custom.ApiLookupMapImpl;
  *         return (ItemStackApiLookup<A, C>) LOOKUPS.getLookup(lookupId, apiClass, contextClass);
  *     }
  *
- *     private ItemStackApiLookupImpl(Class<?> apiClass, Class<?> contextClass) {
- *         // We don't use these classes, so nothing to do here.
+ *     private ItemStackApiLookupImpl(Identifier id, Class<?> apiClass, Class<?> contextClass) {
+ *         // We don't use these parameters, so nothing to do here.
+ *         // In practice, these parameters should be stored and exposed with identifier(), apiClass() and contextClass() getter functions.
  *     }
  *     // We will use an ApiProviderMap to store the providers.
  *     private final ApiProviderMap<Item, ItemStackApiProvider<A, C>> providerMap = ApiProviderMap.create();
@@ -97,12 +98,12 @@ public interface ApiLookupMap<L> extends Iterable<L> {
 	/**
 	 * Create a new instance.
 	 *
-	 * @param lookupFactory The factory that is used to create API lookup instances.
+	 * @param lookupConstructor The constructor that is used to create API lookup instances.
 	 */
-	static <L> ApiLookupMap<L> create(LookupFactory<L> lookupFactory) {
-		Objects.requireNonNull(lookupFactory, "Lookup factory may not be null.");
+	static <L> ApiLookupMap<L> create(LookupConstructor<L> lookupConstructor) {
+		Objects.requireNonNull(lookupConstructor, "Lookup factory may not be null.");
 
-		return new ApiLookupMapImpl<>(lookupFactory);
+		return new ApiLookupMapImpl<>(lookupConstructor);
 	}
 
 	/**
@@ -117,6 +118,33 @@ public interface ApiLookupMap<L> extends Iterable<L> {
 	 */
 	L getLookup(Identifier lookupId, Class<?> apiClass, Class<?> contextClass);
 
+	@FunctionalInterface
+	interface LookupConstructor<L> {
+		/**
+		 * Create a new API lookup implementation.
+		 *
+		 * @param identifier The identifier of this lookup.
+		 * @param apiClass The API class passed to {@link #getLookup}.
+		 * @param contextClass The context class passed to {@link #getLookup}.
+		 */
+		L get(Identifier identifier, Class<?> apiClass, Class<?> contextClass);
+	}
+
+	/**
+	 * Create a new instance.
+	 *
+	 * @param lookupFactory The factory that is used to create API lookup instances.
+	 * @deprecated {@link LookupConstructor} should be used instead of lookup factory, to expose the identifier.
+	 */
+	@Deprecated(forRemoval = true)
+	static <L> ApiLookupMap<L> create(LookupFactory<L> lookupFactory) {
+		return create((id, apiClass, contextClass) -> lookupFactory.get(apiClass, contextClass));
+	}
+
+	/**
+	 * @deprecated {@link LookupConstructor} should be used instead as it also passes the identifier.
+	 */
+	@Deprecated(forRemoval = true)
 	interface LookupFactory<L> {
 		/**
 		 * Create a new API lookup implementation.
