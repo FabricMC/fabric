@@ -3,6 +3,7 @@ accessWidener	v2	named
 accessible  field   net/minecraft/data/server/RecipesProvider   root    Lnet/minecraft/data/DataGenerator;
 
 extendable  method  net/minecraft/data/server/AbstractTagProvider$ObjectBuilder <init>  (Lnet/minecraft/tag/Tag$Builder;Lnet/minecraft/util/registry/Registry;Ljava/lang/String;)V
+extendable  method  net/minecraft/data/server/AbstractTagProvider$ObjectBuilder add     ([Ljava/lang/Object;)Lnet/minecraft/data/server/AbstractTagProvider$ObjectBuilder;
 accessible  field   net/minecraft/data/server/AbstractTagProvider$ObjectBuilder builder Lnet/minecraft/tag/Tag$Builder;
 accessible  field   net/minecraft/data/server/AbstractTagProvider$ObjectBuilder registry    Lnet/minecraft/util/registry/Registry;
 accessible  field   net/minecraft/data/server/AbstractTagProvider$ObjectBuilder source  Ljava/lang/String;

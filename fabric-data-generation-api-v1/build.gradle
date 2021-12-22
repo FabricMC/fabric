@@ -7,6 +7,10 @@ moduleDependencies(project, [
 		'fabric-networking-api-v1'
 ])
 
+dependencies {
+	testmodImplementation project(path: ':fabric-tag-extensions-v0', configuration: 'namedElements')
+}
+
 sourceSets {
 	testmod {
 		resources {
