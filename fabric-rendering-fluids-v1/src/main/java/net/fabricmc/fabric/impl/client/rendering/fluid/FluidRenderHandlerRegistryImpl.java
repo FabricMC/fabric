@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.rendering.fluid;
 
-import java.util.ArrayList;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.minecraft.block.Block;
@@ -49,7 +47,6 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 	private final Map<Fluid, FluidRenderHandler> handlers = new IdentityHashMap<>();
 	private final Map<Fluid, FluidRenderHandler> modHandlers = new IdentityHashMap<>();
 	private final Map<Block, Boolean> overlayBlocks = new IdentityHashMap<>();
-	private final List<Identifier> registeredTextures = new ArrayList<>();
 
 	private FluidRenderer fluidRenderer;
 
@@ -75,10 +72,8 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		if (textures.length > 0) {
 			ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
 				for (Identifier texture : textures) {
-					if (!registeredTextures.contains(texture)) {
-						registry.register(texture);
-						registeredTextures.add(texture);
-					}
+					//The textures are added in a Set, so there will be no duplicates.
+					registry.register(texture);
 				}
 			});
 		}
