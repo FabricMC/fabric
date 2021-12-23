@@ -78,10 +78,11 @@ public abstract class MixinItemStack implements ItemStackContext {
 	private void revokeTooltipAttributeEntityContext(PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> cir) {
 		contextEntity = null;
 	}
-	
+
 	@ModifyVariable(method = "getAttributeModifiers", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
 	public Multimap<EntityAttribute, EntityAttributeModifier> modifyAttributeModifiersMap(Multimap<EntityAttribute, EntityAttributeModifier> multimap, EquipmentSlot slot) {
 		ItemStack stack = (ItemStack) (Object) this;
+
 		// Only perform our custom operations if the tool being operated on is dynamic.
 		if (stack.getItem() instanceof DynamicAttributeTool) {
 			// The Multimap passed in is not ordered, so we need to re-assemble the vanilla and modded attributes
@@ -95,6 +96,7 @@ public abstract class MixinItemStack implements ItemStackContext {
 			orderedAttributes.putAll(holder.getDynamicModifiers(slot, stack, contextEntity));
 			return orderedAttributes;
 		}
+
 		return multimap;
 	}
 
