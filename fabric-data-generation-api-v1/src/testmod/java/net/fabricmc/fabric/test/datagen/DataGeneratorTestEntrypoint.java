@@ -64,7 +64,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		dataGenerator.addProvider(TestBlockLootTableProvider::new);
 		dataGenerator.addProvider(TestBarterLootTableProvider::new);
 
-		TestBlockTagsProvider blockTagProvider = dataGenerator.addProvider(TestBlockTagProvider::new);
+		TestBlockTagProvider blockTagProvider = dataGenerator.addProvider(TestBlockTagProvider::new);
 		dataGenerator.addProvider(new TestItemTagProvider(dataGenerator, blockTagProvider));
 		dataGenerator.addProvider(TestBiomeTagProvider::new);
 
