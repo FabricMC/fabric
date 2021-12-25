@@ -46,12 +46,14 @@ public class EntityApiLookupImpl<A, C> implements EntityApiLookup<A, C> {
 	private static final Map<Class<?>, Set<EntityType<?>>> REGISTERED_SELVES = new HashMap<>();
 	private static boolean checkEntityLookup = true;
 
+	private final Identifier identifier;
 	private final Class<A> apiClass;
 	private final Class<C> contextClass;
 	private final ApiProviderMap<EntityType<?>, EntityApiProvider<A, C>> providerMap = ApiProviderMap.create();
 	private final List<EntityApiProvider<A, C>> fallbackProviders = new CopyOnWriteArrayList<>();
 
-	private EntityApiLookupImpl(Class<A> apiClass, Class<C> contextClass) {
+	private EntityApiLookupImpl(Identifier identifier, Class<A> apiClass, Class<C> contextClass) {
+		this.identifier = identifier;
 		this.apiClass = apiClass;
 		this.contextClass = contextClass;
 	}
@@ -151,6 +153,11 @@ public class EntityApiLookupImpl<A, C> implements EntityApiLookup<A, C> {
 		Objects.requireNonNull(fallbackProvider, "EntityApiProvider may not be null.");
 
 		fallbackProviders.add(fallbackProvider);
+	}
+
+	@Override
+	public Identifier getId() {
+		return identifier;
 	}
 
 	@Override

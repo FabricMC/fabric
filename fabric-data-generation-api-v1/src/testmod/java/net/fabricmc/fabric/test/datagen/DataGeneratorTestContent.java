@@ -33,18 +33,24 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static final String MOD_ID = "fabric-data-gen-api-v1-testmod";
 
 	public static Block SIMPLE_BLOCK;
+	public static Block BLOCK_WITHOUT_ITEM;
 
 	@Override
 	public void onInitialize() {
-		SIMPLE_BLOCK = createBlock("simple_block");
+		SIMPLE_BLOCK = createBlock("simple_block", true);
+		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false);
 	}
 
-	private static Block createBlock(String name) {
+	private static Block createBlock(String name, boolean hasItem) {
 		Identifier identifier = new Identifier(MOD_ID, name);
 		Block block = Registry.register(Registry.BLOCK, identifier, new Block(AbstractBlock.Settings.of(Material.STONE)));
-		Registry.register(Registry.ITEM, identifier, new BlockItem(block, new Item.Settings().group(ItemGroup.MISC)));
 
-		Objects.requireNonNull(block.asItem().getGroup());
+		if (hasItem) {
+			Registry.register(Registry.ITEM, identifier, new BlockItem(block, new Item.Settings().group(ItemGroup.MISC)));
+
+			Objects.requireNonNull(block.asItem().getGroup());
+		}
+
 		return block;
 	}
 }

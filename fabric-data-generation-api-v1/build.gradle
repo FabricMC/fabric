@@ -7,6 +7,10 @@ moduleDependencies(project, [
 		'fabric-networking-api-v1'
 ])
 
+dependencies {
+	testmodImplementation project(path: ':fabric-tag-extensions-v0', configuration: 'namedElements')
+}
+
 sourceSets {
 	testmod {
 		resources {
@@ -45,7 +49,7 @@ loom {
 	}
 }
 
-assemble.dependsOn runDatagen
+test.dependsOn runDatagen
 
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
