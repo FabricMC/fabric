@@ -31,10 +31,11 @@ public interface StructurePoolAccessor {
 	@Accessor(value = "elements")
 	List<StructurePoolElement> getElements();
 
-	@Accessor(value = "elementCounts")
 	@Mutable
+	@Accessor(value = "elementCounts")
 	List<Pair<StructurePoolElement, Integer>> getElementCounts();
 
+	@Mutable
 	@Accessor(value = "elementCounts")
 	void setElementCounts(List<Pair<StructurePoolElement, Integer>> list);
 }
