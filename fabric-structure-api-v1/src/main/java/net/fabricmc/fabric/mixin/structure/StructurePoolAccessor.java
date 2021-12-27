@@ -31,7 +31,6 @@ public interface StructurePoolAccessor {
 	@Accessor(value = "elements")
 	List<StructurePoolElement> getElements();
 
-	@Mutable
 	@Accessor(value = "elementCounts")
 	List<Pair<StructurePoolElement, Integer>> getElementCounts();
 
