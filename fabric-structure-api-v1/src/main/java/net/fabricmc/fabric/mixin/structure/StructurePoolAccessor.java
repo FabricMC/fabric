@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.mojang.datafixers.util.Pair;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.structure.pool.StructurePool;
@@ -31,6 +32,7 @@ public interface StructurePoolAccessor {
 	List<StructurePoolElement> getElements();
 
 	@Accessor(value = "elementCounts")
+	@Mutable
 	List<Pair<StructurePoolElement, Integer>> getElementCounts();
 
 	@Accessor(value = "elementCounts")

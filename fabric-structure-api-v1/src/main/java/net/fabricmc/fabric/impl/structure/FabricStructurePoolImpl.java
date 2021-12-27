@@ -41,6 +41,10 @@ public class FabricStructurePoolImpl implements FabricStructurePool {
 
 	@Override
 	public void addStructurePoolElement(StructurePoolElement element, int weight) {
+		if (weight <= 0) {
+			throw new IllegalArgumentException("weight must be positive");
+		}
+
 		//adds to elementCounts list; minecraft makes these immutable lists, so we replace them with an array list
 		StructurePoolAccessor pool = (StructurePoolAccessor) getUnderlyingPool();
 

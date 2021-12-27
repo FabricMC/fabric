@@ -34,9 +34,10 @@ public interface FabricStructurePool {
 
 	/**
 	 * Adds a new {@link StructurePoolElement} to the {@link StructurePool}.
+	 * Its weight determines the amount of times an element is added to a list used for sampling during structure generation.
 	 *
 	 * @param element the element to add
-	 * @param weight  Minecraft handles weight by adding it that amount of times into a list.}
+	 * @param weight  the weight of the element
 	 */
 	void addStructurePoolElement(StructurePoolElement element, int weight);
 
