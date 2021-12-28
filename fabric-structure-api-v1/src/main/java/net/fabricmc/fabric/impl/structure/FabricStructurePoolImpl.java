@@ -46,19 +46,19 @@ public class FabricStructurePoolImpl implements FabricStructurePool {
 		}
 
 		//adds to elementCounts list; minecraft makes these immutable lists, so we replace them with an array list
-		StructurePoolAccessor pool = (StructurePoolAccessor) getUnderlyingPool();
+		StructurePoolAccessor poolAccessor = (StructurePoolAccessor) getUnderlyingPool();
 
-		if (pool.getElementCounts() instanceof ArrayList) {
-			pool.getElementCounts().add(Pair.of(element, weight));
+		if (poolAccessor.getElementCounts() instanceof ArrayList) {
+			poolAccessor.getElementCounts().add(Pair.of(element, weight));
 		} else {
-			List<Pair<StructurePoolElement, Integer>> list = new ArrayList<>(pool.getElementCounts());
+			List<Pair<StructurePoolElement, Integer>> list = new ArrayList<>(poolAccessor.getElementCounts());
 			list.add(Pair.of(element, weight));
-			pool.setElementCounts(list);
+			poolAccessor.setElementCounts(list);
 		}
 
 		//adds to elements list
 		for (int i = 0; i < weight; i++) {
-			pool.getElements().add(element);
+			poolAccessor.getElements().add(element);
 		}
 	}
 
