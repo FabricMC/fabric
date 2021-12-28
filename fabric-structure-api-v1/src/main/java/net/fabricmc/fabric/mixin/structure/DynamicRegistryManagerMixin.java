@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.structure;
 
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -34,7 +35,7 @@ import net.fabricmc.fabric.impl.structure.FabricStructurePoolImpl;
 @Mixin(DynamicRegistryManager.class)
 public abstract class DynamicRegistryManagerMixin {
 	@Inject(method = "load(Lnet/minecraft/util/dynamic/RegistryOps;Lnet/minecraft/util/registry/DynamicRegistryManager;Lnet/minecraft/util/registry/DynamicRegistryManager$Info;)V", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD)
-	private static <E> void load(RegistryOps<?> ops, DynamicRegistryManager manager, DynamicRegistryManager.Info<E> info, CallbackInfo ci, RegistryKey<? extends Registry<E>> registryKey) {
+	private static <E> void load(RegistryOps<?> ops, DynamicRegistryManager manager, @Coerce Object info, CallbackInfo ci, RegistryKey<? extends Registry<E>> registryKey) {
 		if (registryKey.equals(Registry.STRUCTURE_POOL_KEY)) {
 			for (E registryEntry : manager.get(registryKey)) {
 				if (registryEntry instanceof StructurePool pool) {
