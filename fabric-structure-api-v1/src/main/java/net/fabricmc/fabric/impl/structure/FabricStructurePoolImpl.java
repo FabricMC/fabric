@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.structure;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.structure.pool.StructurePool;
@@ -45,16 +46,12 @@ public class FabricStructurePoolImpl implements FabricStructurePool {
 			throw new IllegalArgumentException("weight must be positive");
 		}
 
-		//adds to elementCounts list; minecraft makes these immutable lists, so we replace them with an array list
+		//adds to elementCounts list; minecraft makes these immutable lists, so we temporarily replace them with an array list
 		StructurePoolAccessor poolAccessor = (StructurePoolAccessor) getUnderlyingPool();
 
-		if (poolAccessor.getElementCounts() instanceof ArrayList) {
-			poolAccessor.getElementCounts().add(Pair.of(element, weight));
-		} else {
-			List<Pair<StructurePoolElement, Integer>> list = new ArrayList<>(poolAccessor.getElementCounts());
-			list.add(Pair.of(element, weight));
-			poolAccessor.setElementCounts(list);
-		}
+		List<Pair<StructurePoolElement, Integer>> list = new ArrayList<>(poolAccessor.getElementCounts());
+		list.add(Pair.of(element, weight));
+		poolAccessor.setElementCounts(ImmutableList.copyOf(list));
 
 		//adds to elements list
 		for (int i = 0; i < weight; i++) {
