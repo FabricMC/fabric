@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.mixin.dimension;
 
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
-
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,12 +27,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.TeleportTarget;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 
 /**
- * This mixin prevents END dimension specific events when using api:
+ * This mixin prevents END dimension specific events when using api. Specifically:
  * <ol>
  *   <li>{@link ServerPlayerEntity#createEndSpawnPlatform(ServerWorld, BlockPos)} execution when teleporting to END</li>
  *   <li>"Game won" screen and {@link ServerPlayerEntity#seenCredits} flag setting by
@@ -66,6 +64,7 @@ public class ServerPlayerEntityMixin {
 		if (FabricDimensionInternals.getCustomTarget() != null) {
 			return null;
 		}
+
 		return World.END;
 	}
 }
