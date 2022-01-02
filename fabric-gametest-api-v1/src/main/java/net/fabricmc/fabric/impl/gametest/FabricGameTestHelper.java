@@ -102,8 +102,14 @@ public final class FabricGameTestHelper {
 	public static void invokeTestMethod(TestContext testContext, Method method, Object testObject) {
 		try {
 			method.invoke(testObject, testContext);
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException("Failed to invoke test method (%s) in (%s)".formatted(method.getName(), method.getDeclaringClass().getCanonicalName()), e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("Failed to invoke test method (%s) in (%s) because %s".formatted(method.getName(), method.getDeclaringClass().getCanonicalName(), e.getMessage()), e);
+		} catch (InvocationTargetException e) {
+			if (e.getCause() instanceof RuntimeException runtimeException) {
+				throw runtimeException;
+			} else {
+				throw new RuntimeException(e.getCause());
+			}
 		}
 	}
 
