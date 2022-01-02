@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.TeleportTarget;
 
@@ -29,9 +30,10 @@ import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 
 /**
  * This mixin implements {@link Entity#getTeleportTarget(ServerWorld)} for modded dimensions, as Vanilla will
- * not return a teleport target for anything but Vanilla dimensions.
+ * not return a teleport target for anything but Vanilla dimensions and prevents changing teleport target in
+ * {@link ServerPlayerEntity#getTeleportTarget(ServerWorld)} when teleporting to END using api.
  */
-@Mixin(Entity.class)
+@Mixin(value = {ServerPlayerEntity.class, Entity.class})
 public class EntityMixin {
 	@SuppressWarnings("ConstantConditions")
 	@Inject(method = "getTeleportTarget", at = @At("HEAD"), cancellable = true, allow = 1)
