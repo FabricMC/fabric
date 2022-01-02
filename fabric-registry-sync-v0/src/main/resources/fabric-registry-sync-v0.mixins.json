@@ -9,7 +9,6 @@
     "MixinDynamicRegistryManager",
     "MixinIdList",
     "MixinIdRegistry",
-    "MixinPlayerManager",
     "MixinLevelStorageSession",
     "MixinRegistry",
     "MixinSimpleRegistry",
