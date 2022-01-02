@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -28,9 +30,9 @@ import java.util.function.Consumer;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
-import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.logging.log4j.LogManager;
@@ -38,55 +40,89 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.util.Identifier;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.thread.ThreadExecutor;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
+import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistryPacketHandler;
+import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
 public final class RegistrySyncManager {
-	static final boolean DEBUG = System.getProperty("fabric.registry.debug", "false").equalsIgnoreCase("true");
-	static final Identifier ID = new Identifier("fabric", "registry/sync");
+	public static final boolean DEBUG = Boolean.getBoolean("fabric.registry.debug");
+
+	@Deprecated
+	public static final RegistryPacketHandler NBT_PACKET_HANDLER = new NbtRegistryPacketHandler();
+	public static final RegistryPacketHandler DIRECT_PACKET_HANDLER = new DirectRegistryPacketHandler();
+
 	private static final Logger LOGGER = LogManager.getLogger("FabricRegistrySync");
-	private static final boolean DEBUG_WRITE_REGISTRY_DATA = System.getProperty("fabric.registry.debug.writeContentsAsCsv", "false").equalsIgnoreCase("true");
+	private static final boolean DEBUG_WRITE_REGISTRY_DATA = Boolean.getBoolean("fabric.registry.debug.writeContentsAsCsv");
+	private static final boolean FORCE_NBT_SYNC = Boolean.getBoolean("fabric.registry.forceNbtSync");
 
 	//Set to true after vanilla's bootstrap has completed
 	public static boolean postBootstrap = false;
 
 	private RegistrySyncManager() { }
 
-	public static Packet<?> createPacket() {
-		LOGGER.debug("Creating registry sync packet");
-
-		NbtCompound tag = toTag(true, null);
-
-		if (tag == null) {
-			return null;
+	public static void sendPacket(MinecraftServer server, ServerPlayerEntity player) {
+		if (!DEBUG && server.isHost(player.getGameProfile())) {
+			return;
 		}
 
-		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeNbt(tag);
+		if (FORCE_NBT_SYNC) {
+			LOGGER.warn("Force NBT sync is enabled");
+			sendPacket(player, NBT_PACKET_HANDLER);
+			return;
+		}
 
-		return ServerPlayNetworking.createS2CPacket(ID, buf);
+		if (ServerPlayNetworking.canSend(player, DIRECT_PACKET_HANDLER.getPacketId())) {
+			sendPacket(player, DIRECT_PACKET_HANDLER);
+		} else {
+			LOGGER.warn("Player {} can't receive direct packet, using nbt packet instead", player.getEntityName());
+			sendPacket(player, NBT_PACKET_HANDLER);
+		}
 	}
 
-	public static void receivePacket(ThreadExecutor<?> executor, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
-		NbtCompound compound = buf.readNbt();
+	private static void sendPacket(ServerPlayerEntity player, RegistryPacketHandler handler) {
+		Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap(true, null);
+
+		if (map != null) {
+			handler.sendPacket(player, map);
+		}
+	}
+
+	public static void receivePacket(ThreadExecutor<?> executor, RegistryPacketHandler handler, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
+		handler.receivePacket(buf);
+
+		if (!handler.isPacketFinished()) {
+			return;
+		}
+
+		if (DEBUG) {
+			String handlerName = handler.getClass().getSimpleName();
+			LOGGER.info("{} total packet: {}", handlerName, handler.getTotalPacketReceived());
+			LOGGER.info("{} raw size: {}", handlerName, handler.getRawBufSize());
+			LOGGER.info("{} deflated size: {}", handlerName, handler.getDeflatedBufSize());
+		}
+
+		Map<Identifier, Object2IntMap<Identifier>> map = handler.getSyncedRegistryMap();
 
 		if (accept) {
 			try {
 				executor.submit(() -> {
-					if (compound == null) {
-						errorHandler.accept(new RemapException("Received null compound tag in sync packet!"));
+					if (map == null) {
+						errorHandler.accept(new RemapException("Received null map in sync packet!"));
 						return null;
 					}
 
 					try {
-						apply(compound, RemappableRegistry.RemapMode.REMOTE);
+						apply(map, RemappableRegistry.RemapMode.REMOTE);
 					} catch (RemapException e) {
 						errorHandler.accept(e);
 					}
@@ -103,12 +139,12 @@ public final class RegistrySyncManager {
 	 * Creates a {@link NbtCompound} used to save or sync the registry ids.
 	 *
 	 * @param isClientSync true when syncing to the client, false when saving
-	 * @param activeTag contains the registry ids that were previously read and applied, can be null.
+	 * @param activeMap    contains the registry ids that were previously read and applied, can be null.
 	 * @return a {@link NbtCompound} to save or sync, null when empty
 	 */
 	@Nullable
-	public static NbtCompound toTag(boolean isClientSync, @Nullable NbtCompound activeTag) {
-		NbtCompound mainTag = new NbtCompound();
+	public static Map<Identifier, Object2IntMap<Identifier>> createAndPopulateRegistryMap(boolean isClientSync, @Nullable Map<Identifier, Object2IntMap<Identifier>> activeMap) {
+		Map<Identifier, Object2IntMap<Identifier>> map = new LinkedHashMap<>();
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
 			Registry registry = Registry.REGISTRIES.get(registryId);
@@ -153,10 +189,10 @@ public final class RegistrySyncManager {
 			 * This contains the previous state's registry data, this is used for a few things:
 			 * Such as ensuring that previously modded registries or registry entries are not lost or overwritten.
 			 */
-			NbtCompound previousRegistryData = null;
+			Object2IntMap<Identifier> previousIdMap = null;
 
-			if (activeTag != null && activeTag.contains(registryId.toString())) {
-				previousRegistryData = activeTag.getCompound(registryId.toString());
+			if (activeMap != null && activeMap.containsKey(registryId)) {
+				previousIdMap = activeMap.get(registryId);
 			}
 
 			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry);
@@ -174,10 +210,10 @@ public final class RegistrySyncManager {
 			 * or a previous version of fabric registry sync, but will save these ids to disk in case the mod or mods
 			 * are added back.
 			 */
-			if ((previousRegistryData == null || isClientSync) && !attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
+			if ((previousIdMap == null || isClientSync) && !attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
 				LOGGER.debug("Skipping un-modded registry: " + registryId);
 				continue;
-			} else if (previousRegistryData != null) {
+			} else if (previousIdMap != null) {
 				LOGGER.debug("Preserving previously modded registry: " + registryId);
 			}
 
@@ -188,7 +224,7 @@ public final class RegistrySyncManager {
 			}
 
 			if (registry instanceof RemappableRegistry) {
-				NbtCompound registryTag = new NbtCompound();
+				Object2IntMap<Identifier> idMap = new Object2IntLinkedOpenHashMap<>();
 				IntSet rawIdsFound = DEBUG ? new IntOpenHashSet() : null;
 
 				for (Object o : registry) {
@@ -213,57 +249,52 @@ public final class RegistrySyncManager {
 						}
 					}
 
-					registryTag.putInt(id.toString(), rawId);
+					idMap.put(id, rawId);
 				}
 
 				/*
 				 * Look for existing registry key/values that are not in the current registries.
 				 * This can happen when registry entries are removed, preventing that ID from being re-used by something else.
 				 */
-				if (!isClientSync && previousRegistryData != null) {
-					for (String key : previousRegistryData.getKeys()) {
-						if (!registryTag.contains(key)) {
+				if (!isClientSync && previousIdMap != null) {
+					for (Identifier key : previousIdMap.keySet()) {
+						if (!idMap.containsKey(key)) {
 							LOGGER.debug("Saving orphaned registry entry: " + key);
-							registryTag.putInt(key, previousRegistryData.getInt(key));
+							idMap.put(key, previousIdMap.getInt(key));
 						}
 					}
 				}
 
-				mainTag.put(registryId.toString(), registryTag);
+				map.put(registryId, idMap);
 			}
 		}
 
 		// Ensure any orphaned registry's are kept on disk
-		if (!isClientSync && activeTag != null) {
-			for (String registryKey : activeTag.getKeys()) {
-				if (!mainTag.contains(registryKey)) {
+		if (!isClientSync && activeMap != null) {
+			for (Identifier registryKey : activeMap.keySet()) {
+				if (!map.containsKey(registryKey)) {
 					LOGGER.debug("Saving orphaned registry: " + registryKey);
-					mainTag.put(registryKey, activeTag.getCompound(registryKey));
+					map.put(registryKey, activeMap.get(registryKey));
 				}
 			}
 		}
 
-		if (mainTag.getKeys().isEmpty()) {
+		if (map.isEmpty()) {
 			return null;
 		}
 
-		NbtCompound tag = new NbtCompound();
-		tag.putInt("version", 1);
-		tag.put("registries", mainTag);
-
-		return tag;
+		return map;
 	}
 
-	public static NbtCompound apply(NbtCompound tag, RemappableRegistry.RemapMode mode) throws RemapException {
-		NbtCompound mainTag = tag.getCompound("registries");
-		Set<String> containedRegistries = Sets.newHashSet(mainTag.getKeys());
+	public static void apply(Map<Identifier, Object2IntMap<Identifier>> map, RemappableRegistry.RemapMode mode) throws RemapException {
+		Set<Identifier> containedRegistries = Sets.newHashSet(map.keySet());
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
-			if (!containedRegistries.remove(registryId.toString())) {
+			if (!containedRegistries.remove(registryId)) {
 				continue;
 			}
 
-			NbtCompound registryTag = mainTag.getCompound(registryId.toString());
+			Object2IntMap<Identifier> registryMap = map.get(registryId);
 			Registry registry = Registry.REGISTRIES.get(registryId);
 
 			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry);
@@ -276,8 +307,8 @@ public final class RegistrySyncManager {
 			if (registry instanceof RemappableRegistry) {
 				Object2IntMap<Identifier> idMap = new Object2IntOpenHashMap<>();
 
-				for (String key : registryTag.getKeys()) {
-					idMap.put(new Identifier(key), registryTag.getInt(key));
+				for (Identifier key : registryMap.keySet()) {
+					idMap.put(key, registryMap.getInt(key));
 				}
 
 				((RemappableRegistry) registry).remap(registryId.toString(), idMap, mode);
@@ -287,8 +318,6 @@ public final class RegistrySyncManager {
 		if (!containedRegistries.isEmpty()) {
 			LOGGER.warn("[fabric-registry-sync] Could not find the following registries: " + Joiner.on(", ").join(containedRegistries));
 		}
-
-		return mainTag;
 	}
 
 	public static void unmap() throws RemapException {
