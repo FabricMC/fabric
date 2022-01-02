@@ -18,7 +18,6 @@ package net.fabricmc.fabric.test.registry.sync;
 
 import java.util.Map;
 
-import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.apache.commons.lang3.Validate;
 
@@ -27,7 +26,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -43,8 +41,8 @@ import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
 import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistryPacketHandler;
@@ -73,7 +71,7 @@ public class RegistrySyncTest implements ModInitializer {
 		}
 	};
 
-	public static final Identifier PACKET_CHECK_COMPARE = new Identifier("fabric-registry-sync-v0-v1-testmod:packet_check/finish");
+	public static final Identifier PACKET_CHECK_COMPARE = new Identifier("fabric-registry-sync-v0-v1-testmod:packet_check/compare");
 
 	@Override
 	public void onInitialize() {
@@ -81,7 +79,7 @@ public class RegistrySyncTest implements ModInitializer {
 			Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap(true, null);
 			NBT_PACKET_HANDLER.sendPacket(handler.player, map);
 			DIRECT_PACKET_HANDLER.sendPacket(handler.player, map);
-			ServerPlayNetworking.send(handler.player, PACKET_CHECK_COMPARE, new PacketByteBuf(Unpooled.buffer()));
+			sender.sendPacket(PACKET_CHECK_COMPARE, PacketByteBufs.empty());
 		});
 
 		testBuiltInRegistrySync();

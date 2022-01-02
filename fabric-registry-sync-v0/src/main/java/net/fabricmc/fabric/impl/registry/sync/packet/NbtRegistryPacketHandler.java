@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.registry.sync.packet;
 
 import java.util.Map;
 
-import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +26,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.registry.sync.RegistryMapSerializer;
 
 /**
@@ -47,7 +47,7 @@ public class NbtRegistryPacketHandler extends RegistryPacketHandler {
 
 	@Override
 	public void sendPacket(ServerPlayerEntity player, Map<Identifier, Object2IntMap<Identifier>> registryMap) {
-		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeNbt(RegistryMapSerializer.toNbt(registryMap));
 		sendPacket(player, buf);
 	}

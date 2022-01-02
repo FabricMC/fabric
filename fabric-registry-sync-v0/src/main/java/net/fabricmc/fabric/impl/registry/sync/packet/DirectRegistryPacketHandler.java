@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
-import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
@@ -33,6 +32,8 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 
 /**
  * A more optimized method to sync registry ids to client.
@@ -42,10 +43,12 @@ import net.minecraft.util.Identifier;
  * <ul>
  *     <li>Directly write into the buffer instead of using an nbt;</li>
  *     <li>Group all {@link Identifier} with same namespace together and only send those unique namespaces once for each group;</li>
- *     <li>Group adjacent rawIds together and only send the difference of the first rawId and the last rawId of the bulk before.
+ *     <li>Group consecutive rawIds together and only send the difference of the first rawId and the last rawId of the bulk before.
  *     This is based on the assumption that mods generally register all of their object at once,
  *     therefore making the rawIds somewhat densely packed.</li>
  * </ul>
+ *
+ * <p>This method also split into multiple packets if it exceeds the limit, defaults to 1 MB.
  */
 public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 	/**
@@ -71,7 +74,7 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 
 	@Override
 	public void sendPacket(ServerPlayerEntity player, Map<Identifier, Object2IntMap<Identifier>> registryMap) {
-		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		PacketByteBuf buf = PacketByteBufs.create();
 
 		// Group registry ids with same namespace.
 		Map<String, List<Identifier>> regNamespaceGroups = registryMap.keySet().stream()
@@ -142,18 +145,19 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 			}
 		});
 
+		// Split the packet to multiple MAX_PAYLOAD_SIZEd buffers.
 		int readableBytes = buf.readableBytes();
 		int sliceIndex = 0;
 
 		while (sliceIndex < readableBytes) {
 			int sliceSize = Math.min(readableBytes - sliceIndex, MAX_PAYLOAD_SIZE);
-			PacketByteBuf slicedBuf = new PacketByteBuf(buf.slice(sliceIndex, sliceSize));
+			PacketByteBuf slicedBuf = PacketByteBufs.slice(buf, sliceIndex, sliceSize);
 			sendPacket(player, slicedBuf);
 			sliceIndex += sliceSize;
 		}
 
-		PacketByteBuf endBuf = new PacketByteBuf(Unpooled.buffer());
-		sendPacket(player, endBuf);
+		// Send an empty buffer to mark the end of the split.
+		sendPacket(player, PacketByteBufs.empty());
 	}
 
 	@Override
@@ -162,7 +166,7 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 		totalPacketReceived++;
 
 		if (combinedBuf == null) {
-			combinedBuf = new PacketByteBuf(Unpooled.buffer());
+			combinedBuf = PacketByteBufs.create();
 		}
 
 		if (slicedBuf.readableBytes() != 0) {

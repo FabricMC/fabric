@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.zip.Deflater;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +27,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 
@@ -62,7 +62,7 @@ public abstract class RegistryPacketHandler {
 		Deflater deflater = new Deflater();
 
 		int i = byteBuf.readableBytes();
-		PacketByteBuf deflatedBuf = new PacketByteBuf(Unpooled.buffer());
+		PacketByteBuf deflatedBuf = PacketByteBufs.create();
 
 		if (i < 256) {
 			deflatedBuf.writeVarInt(0);
