@@ -65,6 +65,6 @@ public class ServerPlayerEntityMixin {
 			return null;
 		}
 
-		return World.END;
+		return World.OVERWORLD;
 	}
 }
