@@ -45,7 +45,7 @@ public interface MutableQuadView extends QuadView {
 	int BAKE_ROTATE_NONE = 0;
 
 	/**
-	 * Causes texture to appear rotated 90 deg. relative to nominal face.
+	 * Causes texture to appear rotated 90 deg. clockwise relative to nominal face.
 	 * Pass in bakeFlags parameter to {@link #spriteBake(int, Sprite, int)}.
 	 */
 	int BAKE_ROTATE_90 = 1;
@@ -57,7 +57,7 @@ public interface MutableQuadView extends QuadView {
 	int BAKE_ROTATE_180 = 2;
 
 	/**
-	 * Causes texture to appear rotated 270 deg. relative to nominal face.
+	 * Causes texture to appear rotated 270 deg. clockwise relative to nominal face.
 	 * Pass in bakeFlags parameter to {@link #spriteBake(int, Sprite, int)}.
 	 */
 	int BAKE_ROTATE_270 = 3;
