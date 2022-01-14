@@ -23,9 +23,11 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.data.DataCache;
@@ -36,6 +38,8 @@ import net.minecraft.loot.context.LootContextType;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 /**
  * A base interface for Loot table providers. You should not implement this class directly.
@@ -52,19 +56,37 @@ public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier,
 
 	FabricDataGenerator getFabricDataGenerator();
 
+	/**
+	 * Return a new exporter that applies the specified conditions to any loot table it receives.
+	 */
+	default BiConsumer<Identifier, LootTable.Builder> withConditions(BiConsumer<Identifier, LootTable.Builder> exporter, ConditionJsonProvider... conditions) {
+		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
+		return (id, table) -> {
+			FabricDataGenHelper.addConditions(table, conditions);
+			exporter.accept(id, table);
+		};
+	}
+
 	@ApiStatus.Internal
 	@Override
 	default void run(DataCache cache) throws IOException {
 		HashMap<Identifier, LootTable> builders = Maps.newHashMap();
+		HashMap<Identifier, ConditionJsonProvider[]> conditionMap = new HashMap<>();
 
 		accept((identifier, builder) -> {
+			ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(builder);
+			conditionMap.put(identifier, conditions);
+
 			if (builders.put(identifier, builder.type(getLootContextType()).build()) != null) {
 				throw new IllegalStateException("Duplicate loot table " + identifier);
 			}
 		});
 
 		for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
-			DataProvider.writeToPath(GSON, cache, LootManager.toJson(entry.getValue()), getOutputPath(entry.getKey()));
+			JsonObject tableJson = (JsonObject) LootManager.toJson(entry.getValue());
+			ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
+
+			DataProvider.writeToPath(GSON, cache, tableJson, getOutputPath(entry.getKey()));
 		}
 	}
 
