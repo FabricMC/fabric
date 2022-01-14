@@ -4,8 +4,10 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "ChunkSerializerMixin",
+    "DynamicRegistryManagerMixin",
     "FlatChunkGeneratorConfigAccessor",
     "StructureFeatureAccessor",
+    "StructurePoolAccessor",
     "StructuresConfigAccessor"
   ],
   "client": [

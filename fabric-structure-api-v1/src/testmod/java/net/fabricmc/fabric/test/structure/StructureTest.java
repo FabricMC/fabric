@@ -24,6 +24,9 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.structure.pool.StructurePool;
+import net.minecraft.structure.pool.StructurePoolElement;
+import net.minecraft.structure.processor.StructureProcessorLists;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.structure.StructurePieceWithDimensions;
@@ -47,6 +50,7 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
+import net.fabricmc.fabric.api.structure.v1.StructurePoolAddCallback;
 
 public class StructureTest {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -64,6 +68,16 @@ public class StructureTest {
 				.adjustsSurface()
 				.register();
 		Registry.register(Registry.STRUCTURE_PIECE, new Identifier("fabric", "test_structure_piece"), PIECE);
+
+		//Basic Test of Callback
+		StructurePoolAddCallback.EVENT.register(structurePool -> LOGGER.info("Structure pool {} added", structurePool.getId()));
+
+		//The ideal usage of this callback is to add structures to a Village. Here, I constructed a Cactus Farm, which will be added to the house pool for deserts. For testing purposes, we will make it very common, and use a plains-style log outline so it is clear that it doesn't belong.
+		StructurePoolAddCallback.EVENT.register(structurePool -> {
+			if (structurePool.getId().equals(new Identifier("minecraft:village/desert/houses"))) {
+				structurePool.addStructurePoolElement(StructurePoolElement.ofProcessedLegacySingle("fabric:cactus_farm", StructureProcessorLists.FARM_PLAINS).apply(StructurePool.Projection.RIGID));
+			}
+		});
 	}
 
 	public static class TestStructureFeature extends StructureFeature<DefaultFeatureConfig> {
