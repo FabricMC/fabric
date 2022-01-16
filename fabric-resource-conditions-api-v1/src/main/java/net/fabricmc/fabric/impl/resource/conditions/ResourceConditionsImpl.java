@@ -25,10 +25,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.tag.ServerTagManagerHolder;
 import net.minecraft.tag.Tag;
-import net.minecraft.tag.TagGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.loader.api.FabricLoader;
@@ -123,15 +125,15 @@ public class ResourceConditionsImpl {
 		return and;
 	}
 
-	public static <T> boolean tagsPopulatedMatch(JsonObject object, TagGroup<T> tagGroup) {
+	public static <T> boolean tagsPopulatedMatch(JsonObject object, RegistryKey<? extends Registry<T>> registryKey) {
 		JsonArray array = JsonHelper.getArray(object, "values");
 
 		for (JsonElement element : array) {
 			if (element.isJsonPrimitive()) {
 				Identifier id = new Identifier(element.getAsString());
-				Tag<T> tag = tagGroup.getTag(id);
+				Tag<T> tag = ServerTagManagerHolder.getTagManager().getOrCreateTagGroup(registryKey).getTagOrEmpty(id);
 
-				if (tag == null || tag.values().size() == 0) {
+				if (tag.values().isEmpty()) {
 					return false;
 				}
 			} else {
