@@ -24,9 +24,6 @@ import com.google.gson.JsonObject;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
@@ -37,16 +34,17 @@ import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 @Mixin(JsonDataLoader.class)
-public class JsonDataLoaderMixin {
+public class JsonDataLoaderMixin extends SinglePreparationResourceReloaderMixin {
 	@Shadow
 	@Final
 	private String dataType;
 
-	@Inject(at = @At("RETURN"), method = "prepare")
-	public void applyResourceConditions(ResourceManager resourceManager, Profiler profiler, CallbackInfoReturnable<Map<Identifier, JsonElement>> cir) {
+	@Override
+	@SuppressWarnings("unchecked")
+	protected void fabric_applyResourceConditions(ResourceManager resourceManager, Profiler profiler, Object object) {
 		profiler.push("Fabric resource conditions: %s".formatted(dataType));
 
-		Iterator<Map.Entry<Identifier, JsonElement>> it = cir.getReturnValue().entrySet().iterator();
+		Iterator<Map.Entry<Identifier, JsonElement>> it = ((Map<Identifier, JsonElement>) object).entrySet().iterator();
 		boolean debugLogEnabled = ResourceConditionsImpl.LOGGER.isDebugEnabled();
 
 		while (it.hasNext()) {
