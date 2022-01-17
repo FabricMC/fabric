@@ -17,13 +17,11 @@
 package net.fabricmc.fabric.test.client.rendering.fluid;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 
 public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 	@Override
@@ -39,7 +37,7 @@ public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.SPRUCE_DOOR, true);
 		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.WARPED_DOOR, true);
 
-		// Red stained glass will have falling fluid textures to the side
+		// Red stained-glass will have falling fluid textures to the side
 		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.RED_STAINED_GLASS, false);
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.NO_OVERLAY, TestFluids.NO_OVERLAY_FLOWING, new SimpleFluidRenderHandler(
@@ -58,11 +56,5 @@ public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.CUSTOM, TestFluids.CUSTOM_FLOWING, new CustomizedFluidRenderer(
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay")
 		));
-
-		ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
-			registry.register(new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"));
-			registry.register(new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"));
-			registry.register(new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay"));
-		});
 	}
 }

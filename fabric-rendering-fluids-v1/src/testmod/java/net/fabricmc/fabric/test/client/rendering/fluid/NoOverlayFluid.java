@@ -16,27 +16,23 @@
 
 package net.fabricmc.fabric.test.client.rendering.fluid;
 
-import java.util.Optional;
-
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.fluid.FlowableFluid;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 
-public abstract class NoOverlayFluid extends FlowableFluid {
+import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
+
+public abstract class NoOverlayFluid extends FabricFlowableFluid {
 	public NoOverlayFluid() {
 	}
 
@@ -61,24 +57,18 @@ public abstract class NoOverlayFluid extends FlowableFluid {
 	}
 
 	@Override
-	protected void beforeBreakingBlock(WorldAccess world, BlockPos pos, BlockState state) {
-		BlockEntity blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
-		Block.dropStacks(state, world, pos, blockEntity);
-	}
-
-	@Override
 	public int getFlowSpeed(WorldView world) {
 		return 4;
 	}
 
 	@Override
-	public BlockState toBlockState(FluidState state) {
-		return TestFluids.NO_OVERLAY_BLOCK.getDefaultState().with(FluidBlock.LEVEL, getBlockStateLevel(state));
+	public int getFogColor(Entity entity, float tickDelta, ClientWorld world) {
+		return 0xFF5555;
 	}
 
 	@Override
-	public boolean matchesType(Fluid fluid) {
-		return fluid == TestFluids.NO_OVERLAY || fluid == TestFluids.NO_OVERLAY_FLOWING;
+	public BlockState toBlockState(FluidState state) {
+		return TestFluids.NO_OVERLAY_BLOCK.getDefaultState().with(FluidBlock.LEVEL, getBlockStateLevel(state));
 	}
 
 	@Override
@@ -101,11 +91,6 @@ public abstract class NoOverlayFluid extends FlowableFluid {
 		return 100.0F;
 	}
 
-	@Override
-	public Optional<SoundEvent> getBucketFillSound() {
-		return Optional.of(SoundEvents.ITEM_BUCKET_FILL);
-	}
-
 	public static class Flowing extends NoOverlayFluid {
 		public Flowing() {
 		}
@@ -117,11 +102,6 @@ public abstract class NoOverlayFluid extends FlowableFluid {
 		}
 
 		@Override
-		public int getLevel(FluidState state) {
-			return state.get(LEVEL);
-		}
-
-		@Override
 		public boolean isStill(FluidState state) {
 			return false;
 		}
@@ -129,11 +109,6 @@ public abstract class NoOverlayFluid extends FlowableFluid {
 
 	public static class Still extends NoOverlayFluid {
 		public Still() {
-		}
-
-		@Override
-		public int getLevel(FluidState state) {
-			return 8;
 		}
 
 		@Override

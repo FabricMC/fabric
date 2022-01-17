@@ -22,6 +22,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
@@ -63,6 +64,16 @@ public interface FluidRenderHandler {
 	 */
 	default int getFluidColor(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state) {
 		return -1;
+	}
+
+	/**
+	 * Get the identifiers of the used textures.
+	 * The textures are returned in an array filtered to contain only valid values (no null values).
+	 *
+	 * @return An array containing all the used textures identifiers.
+	 */
+	default Identifier[] getTexturesIds() {
+		return new Identifier[0];
 	}
 
 	/**
