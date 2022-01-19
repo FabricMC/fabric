@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.Item;
@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 
 public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
-	private static final Logger LOGGER = LogManager.getLogger("fabric-api-lookup-api-v1/item");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-api-lookup-api-v1/item");
 	private static final ApiLookupMap<ItemApiLookup<?, ?>> LOOKUPS = ApiLookupMap.create(ItemApiLookupImpl::new);
 
 	@SuppressWarnings("unchecked")

@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -42,7 +42,7 @@ import net.fabricmc.fabric.impl.rendering.data.attachment.RenderDataObjectConsum
 @Mixin(ChunkRendererRegionBuilder.class)
 public abstract class MixinChunkRendererRegionBuilder {
 	private static final AtomicInteger ERROR_COUNTER = new AtomicInteger();
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(MixinChunkRendererRegionBuilder.class);
 
 	@Inject(at = @At("RETURN"), method = "build", locals = LocalCapture.CAPTURE_FAILHARD)
 	private void create(World world, BlockPos startPos, BlockPos endPos, int chunkRadius, CallbackInfoReturnable<ChunkRendererRegion> info, int i, int j, int k, int l, ChunkRendererRegionBuilder.ClientChunk[][] chunkData) {

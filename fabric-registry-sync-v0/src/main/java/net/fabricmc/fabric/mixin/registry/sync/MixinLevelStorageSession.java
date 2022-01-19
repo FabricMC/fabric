@@ -26,8 +26,8 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -54,7 +54,7 @@ public class MixinLevelStorageSession {
 	@Unique
 	private static final int FABRIC_ID_REGISTRY_BACKUPS = 3;
 	@Unique
-	private static final Logger FABRIC_LOGGER = LogManager.getLogger("FabricRegistrySync");
+	private static final Logger FABRIC_LOGGER = LoggerFactory.getLogger("FabricRegistrySync");
 	@Unique
 	private Map<Identifier, Object2IntMap<Identifier>> fabric_lastSavedRegistryMap = null;
 	@Unique

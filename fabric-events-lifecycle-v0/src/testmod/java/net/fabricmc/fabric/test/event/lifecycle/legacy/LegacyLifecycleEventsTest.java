@@ -19,8 +19,8 @@ package net.fabricmc.fabric.test.event.lifecycle.legacy;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.fabricmc.fabric.api.event.world.WorldTickCallback;
 
 public class LegacyLifecycleEventsTest implements ModInitializer {
-	public static final Logger LOGGER = LogManager.getLogger("LegacyLifecycleEventsTest");
+	public static final Logger LOGGER = LoggerFactory.getLogger("LegacyLifecycleEventsTest");
 	private Map<RegistryKey<World>, Integer> tickTracker = new HashMap<>();
 
 	@Override

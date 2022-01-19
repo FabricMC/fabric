@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.content.registry;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.item.HoeItem;
@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
 
 public final class ContentRegistryTest implements ModInitializer {
-	public static final Logger LOGGER = LogManager.getLogger();
+	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);
 
 	@Override
 	public void onInitialize() {

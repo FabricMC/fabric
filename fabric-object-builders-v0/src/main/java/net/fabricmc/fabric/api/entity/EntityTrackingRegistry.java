@@ -19,8 +19,8 @@ package net.fabricmc.fabric.api.entity;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.registry.Registry;
@@ -33,7 +33,7 @@ import net.minecraft.util.registry.Registry;
 @SuppressWarnings("deprecation")
 @Deprecated
 public class EntityTrackingRegistry {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(EntityTrackingRegistry.class);
 
 	@Deprecated
 	public static class Entry {

@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.gamerule.rule;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.world.GameRules;
 
@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.mixin.gamerule.IntRuleAccessor;
 
 public final class BoundedIntRule extends GameRules.IntRule {
-	private static final Logger LOGGER = LogManager.getLogger(GameRuleRegistry.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GameRuleRegistry.class);
 
 	private final int minimumValue;
 	private final int maximumValue;

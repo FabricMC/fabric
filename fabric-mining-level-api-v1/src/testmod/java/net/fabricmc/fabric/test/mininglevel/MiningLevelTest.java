@@ -19,8 +19,8 @@ package net.fabricmc.fabric.test.mininglevel;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -43,7 +43,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 // not working on its own.
 public final class MiningLevelTest implements ModInitializer {
 	private static final String ID = "fabric-mining-level-api-v1-testmod";
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(MiningLevelTest.class);
 
 	/// Tagged blocks
 	// sword + dynamic mining level tag

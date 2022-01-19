@@ -25,8 +25,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.Entity;
@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup;
 
 public class EntityApiLookupImpl<A, C> implements EntityApiLookup<A, C> {
-	private static final Logger LOGGER = LogManager.getLogger("fabric-api-lookup-api-v1/entity");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-api-lookup-api-v1/entity");
 	private static final ApiLookupMap<EntityApiLookup<?, ?>> LOOKUPS = ApiLookupMap.create(EntityApiLookupImpl::new);
 	private static final Map<Class<?>, Set<EntityType<?>>> REGISTERED_SELVES = new HashMap<>();
 	private static boolean checkEntityLookup = true;

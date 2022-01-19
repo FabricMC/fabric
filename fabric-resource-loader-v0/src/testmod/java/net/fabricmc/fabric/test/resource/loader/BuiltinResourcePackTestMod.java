@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.resource.loader;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.util.Identifier;
 
@@ -29,7 +29,7 @@ import net.fabricmc.loader.api.FabricLoader;
 public class BuiltinResourcePackTestMod implements ModInitializer {
 	public static final String MODID = "fabric-resource-loader-v0-testmod";
 
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(BuiltinResourcePackTestMod.class);
 
 	@Override
 	public void onInitialize() {

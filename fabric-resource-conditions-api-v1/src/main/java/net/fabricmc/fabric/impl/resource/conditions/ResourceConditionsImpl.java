@@ -21,8 +21,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.tag.ServerTagManagerHolder;
@@ -37,7 +37,7 @@ import net.fabricmc.loader.api.FabricLoader;
 
 @ApiStatus.Internal
 public class ResourceConditionsImpl {
-	public static final Logger LOGGER = LogManager.getLogger("Fabric Resource Conditions");
+	public static final Logger LOGGER = LoggerFactory.getLogger("Fabric Resource Conditions");
 
 	// Providers
 

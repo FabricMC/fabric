@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.transfer.unittests;
 
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ModInitializer;
 
@@ -31,6 +31,6 @@ public class UnitTestsInitializer implements ModInitializer {
 		SingleVariantItemStorageTests.run();
 		TransactionExceptionsTests.run();
 
-		LogManager.getLogger("fabric-transfer-api-v1 testmod").info("Transfer API unit tests successful.");
+		LoggerFactory.getLogger("fabric-transfer-api-v1 testmod").info("Transfer API unit tests successful.");
 	}
 }

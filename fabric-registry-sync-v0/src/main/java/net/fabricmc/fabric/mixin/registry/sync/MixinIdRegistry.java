@@ -31,8 +31,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -73,7 +73,7 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 	@Shadow
 	private int nextId;
 	@Unique
-	private static Logger FABRIC_LOGGER = LogManager.getLogger();
+	private static Logger FABRIC_LOGGER = LoggerFactory.getLogger(MixinIdRegistry.class);
 
 	public MixinIdRegistry(RegistryKey<? extends Registry<T>> key, Lifecycle lifecycle) {
 		super(key, lifecycle);

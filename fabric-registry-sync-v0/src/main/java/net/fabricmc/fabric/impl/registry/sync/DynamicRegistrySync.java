@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.impl.registry.sync;
 
 import com.mojang.serialization.Lifecycle;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -34,7 +34,7 @@ import net.fabricmc.fabric.mixin.registry.sync.AccessorRegistry;
  * in case it gets classloaded early.
  */
 public class DynamicRegistrySync {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRegistrySync.class);
 
 	/**
 	 * Sets up a synchronisation that will propagate added entries to the given dynamic registry manager, which

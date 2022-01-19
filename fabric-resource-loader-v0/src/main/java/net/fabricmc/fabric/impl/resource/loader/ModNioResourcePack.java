@@ -31,8 +31,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.ResourceType;
@@ -44,7 +44,7 @@ import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
 public class ModNioResourcePack extends AbstractFileResourcePack implements ModResourcePack {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModNioResourcePack.class);
 	private static final Pattern RESOURCE_PACK_PATH = Pattern.compile("[a-z0-9-_]+");
 	private final ModMetadata modInfo;
 	private final Path basePath;

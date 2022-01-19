@@ -20,8 +20,8 @@ import java.util.Optional;
 import java.util.Random;
 
 import com.mojang.serialization.Codec;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
@@ -50,7 +50,7 @@ import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
 import net.fabricmc.fabric.api.structure.v1.StructurePoolAddCallback;
 
 public class StructureTest {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(StructureTest.class);
 
 	public static final StructureFeature<DefaultFeatureConfig> STRUCTURE = new TestStructureFeature(DefaultFeatureConfig.CODEC);
 	public static final ConfiguredStructureFeature<DefaultFeatureConfig, ? extends StructureFeature<DefaultFeatureConfig>> CONFIGURED_STRUCTURE = STRUCTURE.configure(new DefaultFeatureConfig());

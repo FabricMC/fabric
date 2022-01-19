@@ -19,8 +19,8 @@ package net.fabricmc.fabric.impl.screenhandler;
 import java.util.Objects;
 
 import io.netty.buffer.Unpooled;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 
 public final class Networking {
-	private static final Logger LOGGER = LogManager.getLogger("fabric-screen-handler-api-v1/server");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-screen-handler-api-v1/server");
 
 	// [Packet format]
 	// typeId: identifier

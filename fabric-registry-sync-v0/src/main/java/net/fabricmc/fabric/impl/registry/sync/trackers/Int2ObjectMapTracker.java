@@ -25,8 +25,8 @@ import com.google.common.base.Joiner;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 
 public class Int2ObjectMapTracker<V, OV> implements RegistryEntryAddedCallback<V>, RegistryIdRemapCallback<V>, RegistryEntryRemovedCallback<V> {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(Int2ObjectMapTracker.class);
 	private final String name;
 	private final Int2ObjectMap<OV> mappers;
 	private Map<Identifier, OV> removedMapperCache = new HashMap<>();

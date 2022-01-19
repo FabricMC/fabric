@@ -21,8 +21,8 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.util.Identifier;
 
@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
 @Environment(EnvType.CLIENT)
 public class RegistrySyncTestClient implements ClientModInitializer {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(RegistrySyncTestClient.class);
 
 	@Override
 	public void onInitializeClient() {

@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.test.TestFunctions;
@@ -34,7 +34,7 @@ import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 public final class FabricGameTestModInitializer implements ModInitializer {
 	private static final String ENTRYPOINT_KEY = "fabric-gametest";
 	private static final Map<Class<?>, String> GAME_TEST_IDS = new HashMap<>();
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(FabricGameTestModInitializer.class);
 
 	@Override
 	public void onInitialize() {

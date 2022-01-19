@@ -30,8 +30,8 @@ import static net.minecraft.util.math.Direction.WEST;
 import java.util.BitSet;
 import java.util.function.ToIntFunction;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.block.Block;
 import net.minecraft.util.math.Vec3f;
@@ -75,7 +75,7 @@ public class AoCalculator {
 		VERTEX_MAP[EAST.getId()] = new int[] { 1, 2, 3, 0 };
 	}
 
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(AoCalculator.class);
 
 	private final AccessAmbientOcclusionCalculator vanillaCalc;
 	private final BlockPos.Mutable lightPos = new BlockPos.Mutable();

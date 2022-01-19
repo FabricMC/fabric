@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.object.builder.v1.entity;
 
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -43,7 +43,7 @@ public final class FabricDefaultAttributeRegistry {
 	/**
 	 * Private logger, not exposed.
 	 */
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDefaultAttributeRegistry.class);
 
 	/**
 	 * Registers a default attribute for a type of living entity.

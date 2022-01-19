@@ -19,8 +19,8 @@ package net.fabricmc.fabric.api.object.builder.v1.entity;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.EntityType;
@@ -31,7 +31,7 @@ import net.minecraft.util.registry.Registry;
  * A registry for {@linkplain MinecartComparatorLogic custom minecart compator logic}.
  */
 public final class MinecartComparatorLogicRegistry {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(MinecartComparatorLogicRegistry.class);
 	private static final Map<EntityType<?>, MinecartComparatorLogic<?>> logics = new HashMap<>();
 
 	/**

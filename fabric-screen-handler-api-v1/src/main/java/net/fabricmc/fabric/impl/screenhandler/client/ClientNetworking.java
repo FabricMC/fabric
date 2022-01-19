@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.screenhandler.client;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -39,7 +39,7 @@ import net.fabricmc.fabric.impl.screenhandler.Networking;
 
 @Environment(EnvType.CLIENT)
 public final class ClientNetworking implements ClientModInitializer {
-	private static final Logger LOGGER = LogManager.getLogger("fabric-screen-handler-api-v1/client");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-screen-handler-api-v1/client");
 
 	@Override
 	public void onInitializeClient() {

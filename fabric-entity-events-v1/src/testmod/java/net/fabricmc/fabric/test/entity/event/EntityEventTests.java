@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.entity.event;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -48,7 +48,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 public final class EntityEventTests implements ModInitializer {
-	private static final Logger LOGGER = LogManager.getLogger(EntityEventTests.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EntityEventTests.class);
 	public static final Block TEST_BED = new TestBedBlock(AbstractBlock.Settings.of(Material.WOOL).strength(1, 1));
 	public static final Item DIAMOND_ELYTRA = new DiamondElytraItem();
 

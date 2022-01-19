@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.event.interaction;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
@@ -27,7 +27,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 
 public class AttackBlockTests implements ModInitializer {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(AttackBlockTests.class);
 
 	@Override
 	public void onInitialize() {
