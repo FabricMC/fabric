@@ -37,6 +37,7 @@ public class DynamicRegistryManagerImplMixin implements BiomeModificationMarker 
 		if (modified) {
 			throw new IllegalStateException("This dynamic registries instance has already been modified");
 		}
+
 		modified = true;
 	}
 }

@@ -42,10 +42,7 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	private final RegistryKey<Biome> key;
 	private final Biome biome;
 
-	public BiomeSelectionContextImpl(DynamicRegistryManager dynamicRegistries,
-									 LevelProperties levelProperties,
-									 RegistryKey<Biome> key,
-									 Biome biome) {
+	public BiomeSelectionContextImpl(DynamicRegistryManager dynamicRegistries, LevelProperties levelProperties, RegistryKey<Biome> key, Biome biome) {
 		this.dynamicRegistries = dynamicRegistries;
 		this.levelProperties = levelProperties;
 		this.key = key;
@@ -107,6 +104,7 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	@Override
 	public boolean canGenerateIn(RegistryKey<DimensionOptions> dimensionKey) {
 		var dimension = levelProperties.getGeneratorOptions().getDimensions().get(dimensionKey);
+
 		if (dimension == null) {
 			return false;
 		}

@@ -215,5 +215,4 @@ public class BiomeModificationImpl {
 			this.order = order;
 		}
 	}
-
 }
