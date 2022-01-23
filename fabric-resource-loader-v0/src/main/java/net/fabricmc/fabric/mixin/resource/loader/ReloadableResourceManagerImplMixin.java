@@ -48,7 +48,7 @@ public class ReloadableResourceManagerImplMixin {
 	@Final
 	private List<ResourceReloader> reloaders;
 
-	@Inject(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;isDebugEnabled()Z", remap = false), method = "reload")
+	@Inject(at = @At(value = "INVOKE", target = "{1}()Z" /* isDebugEnabled()Z */, remap = false), method = "reload")
 	private void reload(Executor prepareExecutor, Executor applyExecutor, CompletableFuture<Unit> initialStage, List<ResourcePack> packs, CallbackInfoReturnable<ResourceReload> info) {
 		ResourceManagerHelperImpl.sort(type, this.reloaders);
 	}

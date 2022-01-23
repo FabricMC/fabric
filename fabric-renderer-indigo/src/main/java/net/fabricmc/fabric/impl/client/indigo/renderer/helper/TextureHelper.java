@@ -91,7 +91,9 @@ public class TextureHelper {
 		}
 	}
 
-	private static final VertexModifier[] ROTATIONS = new VertexModifier[] { null, (q, i, t) -> q.sprite(i, t, q.spriteV(i, t), q.spriteU(i, t)), //90
+	private static final VertexModifier[] ROTATIONS = new VertexModifier[] {
+			null,
+			(q, i, t) -> q.sprite(i, t, q.spriteV(i, t), 1 - q.spriteU(i, t)), //90
 			(q, i, t) -> q.sprite(i, t, 1 - q.spriteU(i, t), 1 - q.spriteV(i, t)), //180
 			(q, i, t) -> q.sprite(i, t, 1 - q.spriteV(i, t), q.spriteU(i, t)) // 270
 	};

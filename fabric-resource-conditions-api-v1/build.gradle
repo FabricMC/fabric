@@ -1,0 +1,6 @@
+archivesBaseName = "fabric-resource-conditions-api-v1"
+version = getSubprojectVersion(project)
+
+dependencies {
+	testmodImplementation project(path: ':fabric-gametest-api-v1', configuration: 'namedElements')
+}

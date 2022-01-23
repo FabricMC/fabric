@@ -29,6 +29,8 @@ import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.model.BlockStateModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory;
+import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
@@ -53,12 +55,18 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
+import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 import net.fabricmc.fabric.api.tag.TagFactory;
 
 public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
+	private static final ConditionJsonProvider NEVER_LOADED = DefaultResourceConditions.allModsLoaded("a");
+	private static final ConditionJsonProvider ALWAYS_LOADED = DefaultResourceConditions.not(NEVER_LOADED);
+
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		dataGenerator.addProvider(TestRecipeProvider::new);
+		dataGenerator.addProvider(TestConditionalRecipeProvider::new);
 		dataGenerator.addProvider(TestModelProvider::new);
 		dataGenerator.addProvider(TestAdvancementProvider::new);
 		dataGenerator.addProvider(TestBlockLootTableProvider::new);
@@ -99,6 +107,18 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		protected void generateRecipes(Consumer<RecipeJsonProvider> exporter) {
 			offerPlanksRecipe2(exporter, SIMPLE_BLOCK, ItemTags.ACACIA_LOGS);
+		}
+	}
+
+	private static class TestConditionalRecipeProvider extends FabricRecipeProvider {
+		private TestConditionalRecipeProvider(FabricDataGenerator dataGenerator) {
+			super(dataGenerator);
+		}
+
+		@Override
+		protected void generateRecipes(Consumer<RecipeJsonProvider> exporter) {
+			ShapelessRecipeJsonFactory.create(Items.GOLD_INGOT).input(Items.DIRT).criterion("has_dirt", conditionsFromItem(Items.DIRT)).offerTo(withConditions(exporter, NEVER_LOADED));
+			ShapelessRecipeJsonFactory.create(Items.DIAMOND).input(Items.STICK).criterion("has_stick", conditionsFromItem(Items.STICK)).offerTo(withConditions(exporter, ALWAYS_LOADED));
 		}
 	}
 
@@ -180,6 +200,16 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							false, false, false)
 					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
 					.build(consumer, MOD_ID + ":test/root");
+			Advancement rootNotLoaded = Advancement.Task.create()
+					.display(
+							SIMPLE_BLOCK,
+							new TranslatableText("advancements.test.root_not_loaded.title"),
+							new TranslatableText("advancements.test.root_not_loaded.description"),
+							new Identifier("textures/gui/advancements/backgrounds/end.png"),
+							AdvancementFrame.TASK,
+							false, false, false)
+					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
+					.build(withConditions(consumer, NEVER_LOADED), MOD_ID + ":test/root_not_loaded");
 		}
 	}
 
@@ -202,7 +232,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		public void accept(BiConsumer<Identifier, LootTable.Builder> consumer) {
-			consumer.accept(
+			withConditions(consumer, ALWAYS_LOADED).accept(
 					LootTables.PIGLIN_BARTERING_GAMEPLAY,
 					LootTable.builder().pool(
 							LootPool.builder().rolls(ConstantLootNumberProvider.create(1.0F)).with(ItemEntry.builder(SIMPLE_BLOCK))

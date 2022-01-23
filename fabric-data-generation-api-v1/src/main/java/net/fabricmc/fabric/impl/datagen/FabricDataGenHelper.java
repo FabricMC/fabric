@@ -19,10 +19,13 @@ package net.fabricmc.fabric.impl.datagen;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import com.mojang.serialization.Lifecycle;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
@@ -37,6 +40,7 @@ import net.minecraft.util.registry.SimpleRegistry;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider.DynamicRegistryTagProvider;
+import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
@@ -116,5 +120,19 @@ public final class FabricDataGenHelper {
 	@SuppressWarnings("unchecked")
 	public static <T> Registry<T> getFakeDynamicRegistry() {
 		return FAKE_DYNAMIC_REGISTRY;
+	}
+
+	/**
+	 * Used to keep track of conditions associated to generated objects.
+	 */
+	private static final Map<Object, ConditionJsonProvider[]> CONDITIONS_MAP = new IdentityHashMap<>();
+
+	public static void addConditions(Object object, ConditionJsonProvider[] conditions) {
+		CONDITIONS_MAP.merge(object, conditions, ArrayUtils::addAll);
+	}
+
+	@Nullable
+	public static ConditionJsonProvider[] consumeConditions(Object object) {
+		return CONDITIONS_MAP.remove(object);
 	}
 }

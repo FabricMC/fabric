@@ -64,8 +64,16 @@ public class MainMixin {
 
 	// Exit with a non-zero exit code when the server fails to start.
 	// Otherwise gradlew test will succeed without errors, although no tests have been run.
-	@Inject(method = "main", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;fatal(Ljava/lang/String;Ljava/lang/Throwable;)V", shift = At.Shift.AFTER, remap = false), remap = false)
+	@Inject(method = "main", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Lorg/slf4j/Marker;Ljava/lang/String;Ljava/lang/Throwable;)V", shift = At.Shift.AFTER, remap = false), remap = false, require = 0)
 	private static void exitOnError(CallbackInfo info) {
+		if (FabricGameTestHelper.ENABLED) {
+			System.exit(-1);
+		}
+	}
+
+	@Deprecated(forRemoval = true) // 1.18.1 support
+	@Inject(method = "main", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;fatal(Ljava/lang/String;Ljava/lang/Throwable;)V", shift = At.Shift.AFTER, remap = false), remap = false, require = 0)
+	private static void exitOnErrorLegacy(CallbackInfo info) {
 		if (FabricGameTestHelper.ENABLED) {
 			System.exit(-1);
 		}
