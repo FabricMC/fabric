@@ -21,8 +21,12 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 /**
  * @deprecated use {@link FabricBlockLootTableProvider} instead.
  */
+@Deprecated
 public abstract class FabricBlockLootTablesProvider extends FabricBlockLootTableProvider {
+	protected final FabricDataGenerator dataGenerator;
+
 	protected FabricBlockLootTablesProvider(FabricDataGenerator dataGenerator) {
 		super(dataGenerator);
+		this.dataGenerator = dataGenerator;
 	}
 }

@@ -21,8 +21,12 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 /**
  * @deprecated use {@link FabricRecipeProvider} instead.
  */
+@Deprecated
 public abstract class FabricRecipesProvider extends FabricRecipeProvider {
+	protected final FabricDataGenerator dataGenerator;
+
 	protected FabricRecipesProvider(FabricDataGenerator dataGenerator) {
 		super(dataGenerator);
+		this.dataGenerator = dataGenerator;
 	}
 }

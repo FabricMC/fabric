@@ -23,7 +23,10 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
  */
 @Deprecated
 public abstract class FabricBlockStateDefinitionProvider extends FabricModelProvider {
+	protected final FabricDataGenerator dataGenerator;
+
 	public FabricBlockStateDefinitionProvider(FabricDataGenerator dataGenerator) {
 		super(dataGenerator);
+		this.dataGenerator = dataGenerator;
 	}
 }
