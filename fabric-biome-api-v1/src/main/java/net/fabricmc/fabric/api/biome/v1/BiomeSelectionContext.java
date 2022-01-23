@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import net.minecraft.world.dimension.DimensionOptions;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -30,8 +32,6 @@ import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 
 /**
  * Context given to a biome selector for deciding whether it applies to a biome or not.
- *
- * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
 public interface BiomeSelectionContext {
 	RegistryKey<Biome> getBiomeKey();
@@ -135,4 +135,12 @@ public interface BiomeSelectionContext {
 	 * from this biomes feature list.
 	 */
 	Optional<RegistryKey<ConfiguredStructureFeature<?, ?>>> getStructureKey(ConfiguredStructureFeature<?, ?> configuredStructure);
+
+	/**
+	 * Tries to determine whether this biome generates in a specific dimension, based on the dimension options
+	 * present in the dynamic registries.
+	 * <p/>
+	 * If no dimension options exist for the given dimension key, <code>false</code> is returned.
+	 */
+	boolean canGenerateIn(RegistryKey<DimensionOptions> dimensionKey);
 }

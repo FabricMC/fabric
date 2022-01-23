@@ -16,17 +16,13 @@
 
 package net.fabricmc.fabric.impl.biome.modification;
 
-import java.util.Set;
-
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.world.biome.Biome;
-
 /**
- * Prevents double-modification of biomes in the same dynamic registry manager from occuring and fails-fast
+ * Prevents double-modification of biomes in the same dynamic registry manager from occurring and fails-fast
  * if it does occur.
  */
 @ApiStatus.Internal
-public interface BiomeModificationTracker {
-	Set<Biome> fabric_getModifiedBiomes();
+public interface BiomeModificationMarker {
+	void fabric_markModified();
 }
