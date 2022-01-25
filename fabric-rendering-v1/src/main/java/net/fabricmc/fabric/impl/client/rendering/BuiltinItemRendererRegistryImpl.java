@@ -33,11 +33,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 
 @Environment(EnvType.CLIENT)
 public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendererRegistry {
-	public static final BuiltinItemRendererRegistryImpl INSTANCE = new BuiltinItemRendererRegistryImpl();
-
 	private static final Map<Item, DynamicItemRenderer> RENDERERS = new HashMap<>();
 
-	private BuiltinItemRendererRegistryImpl() {
+	public BuiltinItemRendererRegistryImpl() {
 	}
 
 	@Override

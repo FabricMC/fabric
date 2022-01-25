@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.item.group;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -26,6 +27,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 
 public class ItemGroupTest implements ModInitializer {
+	private static Item TEST_ITEM;
+
 	//Adds an item group with all items in it
 	private static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.create(new Identifier("fabric-item-groups-v0-testmod", "test_group"))
 				.icon(() -> new ItemStack(Items.DIAMOND))
@@ -35,7 +38,18 @@ public class ItemGroupTest implements ModInitializer {
 						.forEach(stacks::add)
 				).build();
 
+	private static final ItemGroup ITEM_GROUP_2 = FabricItemGroupBuilder.create(new Identifier("fabric-item-groups-v0-testmod", "test_group_two"))
+				.icon(() -> new ItemStack(Items.REDSTONE))
+				.appendItems((stacks, itemGroup) -> {
+					for (Item item : Registry.ITEM) {
+						if (item.getGroup() == ItemGroup.FOOD || item.getGroup() == itemGroup) {
+							stacks.add(new ItemStack(item));
+						}
+					}
+				}).build();
+
 	@Override
 	public void onInitialize() {
+		TEST_ITEM = Registry.register(Registry.ITEM, new Identifier("fabric-item-groups-v0-testmod", "item_test_group"), new Item(new Item.Settings().group(ITEM_GROUP_2)));
 	}
 }

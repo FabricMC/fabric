@@ -22,6 +22,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 
@@ -63,6 +64,30 @@ public interface BlockApiCache<A, C> {
 	 */
 	@Nullable
 	A find(@Nullable BlockState state, C context);
+
+	/**
+	 * Return the block entity at the target position of this lookup.
+	 *
+	 * <p>This is the most efficient way to query the block entity at the target position repeatedly:
+	 * unless the block entity has been loaded or unloaded since the last query, the result will be cached.
+	 */
+	@Nullable
+	BlockEntity getBlockEntity();
+
+	/**
+	 * Return the lookup this cache is bound to.
+	 */
+	BlockApiLookup<A, C> getLookup();
+
+	/**
+	 * Return the world this cache is bound to.
+	 */
+	ServerWorld getWorld();
+
+	/**
+	 * Return the position this cache is bound to.
+	 */
+	BlockPos getPos();
 
 	/**
 	 * Create a new instance bound to the passed {@link ServerWorld} and position, and querying the same API as the passed lookup.

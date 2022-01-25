@@ -26,6 +26,13 @@ See the javadoc of `ItemApiLookup` for a full usage example.
 The way to query API instances from item stacks.
 It exposes a `find` function to retrieve an API instance, and multiple `register*` functions to register APIs for items.
 
+# Retrieving APIs from entities
+See the javadoc of `EntityApiLookup` for a full usage example.
+
+## [`EntityApiLookup`](src/main/java/net/fabricmc/fabric/api/lookup/v1/entity/EntityApiLookup.java)
+The way to query API instances from entities.
+Exposes a `find` function to retrieve an API instance, and multiple `register*` functions to register APIs for entity types.
+
 # Retrieving APIs from custom objects
 The subpackage `custom` provides helper classes to accelerate implementations of `ApiLookup`s for custom objects,
 similar to the existing `BlockApiLookup`, but with different query parameters.

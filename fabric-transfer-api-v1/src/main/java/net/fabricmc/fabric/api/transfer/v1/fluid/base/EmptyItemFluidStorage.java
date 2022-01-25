@@ -56,11 +56,10 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  * and it is inefficient to have one storage registered per fluid
  * so Fabric API has a storage that accepts any fluid with a corresponding full bucket).
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public final class EmptyItemFluidStorage implements InsertionOnlyStorage<FluidVariant> {
 	private final ContainerItemContext context;
 	private final Item emptyItem;

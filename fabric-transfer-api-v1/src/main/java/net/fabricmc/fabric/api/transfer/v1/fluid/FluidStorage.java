@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,11 +47,10 @@ import net.fabricmc.fabric.mixin.transfer.BucketItemAccessor;
 /**
  * Access to {@link Storage Storage&lt;FluidVariant&gt;} instances.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public final class FluidStorage {
 	/**
 	 * Sided block access to fluid variant storages.
@@ -129,6 +129,12 @@ public final class FluidStorage {
 	}
 
 	static {
+		// Ensure that the lookup is only queried on the server side.
+		FluidStorage.SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
+			Preconditions.checkArgument(!world.isClient(), "Sided fluid storage may only be queried for a server world.");
+			return null;
+		});
+
 		// Initialize vanilla cauldron wrappers
 		CauldronFluidContent.getForFluid(Fluids.WATER);
 

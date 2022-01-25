@@ -23,9 +23,7 @@ import net.minecraft.util.JsonSerializer;
 import net.fabricmc.fabric.mixin.loot.table.LootPoolEntryTypesAccessor;
 
 public final class LootEntryTypeRegistryImpl implements net.fabricmc.fabric.api.loot.v1.LootEntryTypeRegistry {
-	public static final LootEntryTypeRegistryImpl INSTANCE = new LootEntryTypeRegistryImpl();
-
-	private LootEntryTypeRegistryImpl() { }
+	public LootEntryTypeRegistryImpl() { }
 
 	@Override
 	public void register(Identifier id, JsonSerializer<? extends LootPoolEntry> serializer) {

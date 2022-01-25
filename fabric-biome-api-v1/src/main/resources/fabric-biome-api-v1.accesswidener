@@ -1,2 +1,67 @@
 accessWidener	v1	named
 accessible  class   net/minecraft/world/biome/Biome$Weather
+accessible field net/minecraft/world/gen/chunk/StructuresConfig configuredStructures Lcom/google/common/collect/ImmutableMap;
+mutable field net/minecraft/world/gen/chunk/StructuresConfig configuredStructures Lcom/google/common/collect/ImmutableMap;
+
+# Top-Level Biome Fields Access
+accessible field net/minecraft/world/biome/Biome weather Lnet/minecraft/world/biome/Biome$Weather;
+accessible field net/minecraft/world/biome/Biome generationSettings Lnet/minecraft/world/biome/GenerationSettings;
+accessible field net/minecraft/world/biome/Biome spawnSettings Lnet/minecraft/world/biome/SpawnSettings;
+accessible field net/minecraft/world/biome/Biome category Lnet/minecraft/world/biome/Biome$Category;
+mutable field net/minecraft/world/biome/Biome category Lnet/minecraft/world/biome/Biome$Category;
+
+# Biome Weather
+accessible field net/minecraft/world/biome/Biome$Weather precipitation Lnet/minecraft/world/biome/Biome$Precipitation;
+mutable field net/minecraft/world/biome/Biome$Weather precipitation Lnet/minecraft/world/biome/Biome$Precipitation;
+accessible field net/minecraft/world/biome/Biome$Weather temperature F
+mutable field net/minecraft/world/biome/Biome$Weather temperature F
+accessible field net/minecraft/world/biome/Biome$Weather temperatureModifier Lnet/minecraft/world/biome/Biome$TemperatureModifier;
+mutable field net/minecraft/world/biome/Biome$Weather temperatureModifier Lnet/minecraft/world/biome/Biome$TemperatureModifier;
+accessible field net/minecraft/world/biome/Biome$Weather downfall F
+mutable field net/minecraft/world/biome/Biome$Weather downfall F
+
+# Biome Effects
+accessible field net/minecraft/world/biome/BiomeEffects fogColor I
+mutable field net/minecraft/world/biome/BiomeEffects fogColor I
+accessible field net/minecraft/world/biome/BiomeEffects waterColor I
+mutable field net/minecraft/world/biome/BiomeEffects waterColor I
+accessible field net/minecraft/world/biome/BiomeEffects waterFogColor I
+mutable field net/minecraft/world/biome/BiomeEffects waterFogColor I
+accessible field net/minecraft/world/biome/BiomeEffects skyColor I
+mutable field net/minecraft/world/biome/BiomeEffects skyColor I
+accessible field net/minecraft/world/biome/BiomeEffects foliageColor Ljava/util/Optional;
+mutable field net/minecraft/world/biome/BiomeEffects foliageColor Ljava/util/Optional;
+accessible field net/minecraft/world/biome/BiomeEffects grassColor Ljava/util/Optional;
+mutable field net/minecraft/world/biome/BiomeEffects grassColor Ljava/util/Optional;
+accessible field net/minecraft/world/biome/BiomeEffects grassColorModifier Lnet/minecraft/world/biome/BiomeEffects$GrassColorModifier;
+mutable field net/minecraft/world/biome/BiomeEffects grassColorModifier Lnet/minecraft/world/biome/BiomeEffects$GrassColorModifier;
+accessible field net/minecraft/world/biome/BiomeEffects particleConfig Ljava/util/Optional;
+mutable field net/minecraft/world/biome/BiomeEffects particleConfig Ljava/util/Optional;
+accessible field net/minecraft/world/biome/BiomeEffects loopSound Ljava/util/Optional;
+mutable field net/minecraft/world/biome/BiomeEffects loopSound Ljava/util/Optional;
+accessible field net/minecraft/world/biome/BiomeEffects moodSound Ljava/util/Optional;
+mutable field net/minecraft/world/biome/BiomeEffects moodSound Ljava/util/Optional;
+accessible field net/minecraft/world/biome/BiomeEffects additionsSound Ljava/util/Optional;
+mutable field net/minecraft/world/biome/BiomeEffects additionsSound Ljava/util/Optional;
+accessible field net/minecraft/world/biome/BiomeEffects music Ljava/util/Optional;
+mutable field net/minecraft/world/biome/BiomeEffects music Ljava/util/Optional;
+
+# Spawn Settings / Density
+accessible field net/minecraft/world/biome/SpawnSettings creatureSpawnProbability F
+mutable field net/minecraft/world/biome/SpawnSettings creatureSpawnProbability F
+accessible field net/minecraft/world/biome/SpawnSettings spawners Ljava/util/Map;
+mutable field net/minecraft/world/biome/SpawnSettings spawners Ljava/util/Map;
+accessible field net/minecraft/world/biome/SpawnSettings spawnCosts Ljava/util/Map;
+mutable field net/minecraft/world/biome/SpawnSettings spawnCosts Ljava/util/Map;
+
+accessible method net/minecraft/world/biome/SpawnSettings$SpawnDensity <init> (DD)V
+
+# Generation Settings
+accessible field net/minecraft/world/biome/GenerationSettings carvers Ljava/util/Map;
+mutable field net/minecraft/world/biome/GenerationSettings carvers Ljava/util/Map;
+accessible field net/minecraft/world/biome/GenerationSettings features Ljava/util/List;
+mutable field net/minecraft/world/biome/GenerationSettings features Ljava/util/List;
+accessible field net/minecraft/world/biome/GenerationSettings flowerFeatures Ljava/util/List;
+mutable field net/minecraft/world/biome/GenerationSettings flowerFeatures Ljava/util/List;
+accessible field net/minecraft/world/biome/GenerationSettings allowedFeatures Ljava/util/Set;
+mutable field net/minecraft/world/biome/GenerationSettings allowedFeatures Ljava/util/Set;

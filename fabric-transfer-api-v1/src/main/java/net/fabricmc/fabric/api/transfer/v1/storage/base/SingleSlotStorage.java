@@ -30,11 +30,10 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  *
  * @param <T> The type of the stored resource.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public interface SingleSlotStorage<T> extends Storage<T>, StorageView<T> {
 	@Override
 	default Iterator<StorageView<T>> iterator(TransactionContext transaction) {

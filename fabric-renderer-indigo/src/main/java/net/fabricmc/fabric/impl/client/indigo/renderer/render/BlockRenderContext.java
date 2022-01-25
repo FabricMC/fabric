@@ -98,8 +98,8 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 
 	public boolean render(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, Random random, long seed, int overlay) {
 		this.bufferBuilder = buffer;
-		this.matrix = matrixStack.peek().getModel();
-		this.normalMatrix = matrixStack.peek().getNormal();
+		this.matrix = matrixStack.peek().getPositionMatrix();
+		this.normalMatrix = matrixStack.peek().getNormalMatrix();
 		this.random = random;
 		this.seed = seed;
 

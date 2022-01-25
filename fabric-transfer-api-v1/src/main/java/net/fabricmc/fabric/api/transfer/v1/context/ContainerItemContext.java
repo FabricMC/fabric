@@ -82,11 +82,10 @@ import net.fabricmc.fabric.impl.transfer.context.SingleSlotContainerItemContext;
  *     In the water bucket example, this function can be used to combine steps 1, 2 and 3.</li>
  * </ul>
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public interface ContainerItemContext {
 	/**
 	 * Return a context for the passed player's hand. This is recommended for item use interactions.
@@ -135,7 +134,7 @@ public interface ContainerItemContext {
 	 * for example to simulate how much fluid could be extracted from the variant and amount.
 	 */
 	static ContainerItemContext withInitial(ItemVariant initialVariant, long initialAmount) {
-		StoragePreconditions.notBlankNotNegative(initialVariant, initialAmount);
+		StoragePreconditions.notNegative(initialAmount);
 		return new InitialContentsContainerItemContext(initialVariant, initialAmount);
 	}
 

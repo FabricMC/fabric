@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.transfer.v1.item;
 
 import java.util.List;
 
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.block.Blocks;
@@ -40,11 +41,10 @@ import net.fabricmc.fabric.mixin.transfer.DoubleInventoryAccessor;
 /**
  * Access to {@link Storage Storage&lt;ItemVariant&gt;} instances.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public final class ItemStorage {
 	/**
 	 * Sided block access to item variant storages.
@@ -80,6 +80,12 @@ public final class ItemStorage {
 	}
 
 	static {
+		// Ensure that the lookup is only queried on the server side.
+		ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
+			Preconditions.checkArgument(!world.isClient(), "Sided item storage may only be queried for a server world.");
+			return null;
+		});
+
 		// Composter support.
 		ItemStorage.SIDED.registerForBlocks((world, pos, state, blockEntity, direction) -> ComposterWrapper.get(world, pos, direction), Blocks.COMPOSTER);
 

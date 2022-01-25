@@ -1,5 +1,5 @@
 archivesBaseName = "fabric-api-lookup-api-v1"
-version = getSubprojectVersion(project, "1.3.0")
+version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
 	'fabric-api-base',
@@ -7,5 +7,6 @@ moduleDependencies(project, [
 ])
 
 dependencies {
-	testmodImplementation project(path: ':fabric-object-builder-api-v1', configuration: 'dev')
+	testmodImplementation project(path: ':fabric-rendering-v1', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-object-builder-api-v1', configuration: 'namedElements')
 }

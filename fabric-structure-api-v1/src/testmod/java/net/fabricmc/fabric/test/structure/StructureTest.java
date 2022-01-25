@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.structure;
 
+import java.util.Optional;
 import java.util.Random;
 
 import com.mojang.serialization.Codec;
@@ -24,21 +25,20 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.structure.StructureManager;
+import net.minecraft.structure.ShiftableStructurePiece;
+import net.minecraft.structure.StructureGeneratorFactory;
 import net.minecraft.structure.StructurePieceType;
-import net.minecraft.structure.StructurePieceWithDimensions;
-import net.minecraft.structure.StructureStart;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.structure.StructurePiecesGenerator;
+import net.minecraft.structure.pool.StructurePool;
+import net.minecraft.structure.pool.StructurePoolElement;
+import net.minecraft.structure.processor.StructureProcessorLists;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
@@ -47,64 +47,64 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
+import net.fabricmc.fabric.api.structure.v1.StructurePoolAddCallback;
 
 public class StructureTest {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static final StructureFeature<DefaultFeatureConfig> STRUCTURE = new TestStructureFeature(DefaultFeatureConfig.CODEC);
 	public static final ConfiguredStructureFeature<DefaultFeatureConfig, ? extends StructureFeature<DefaultFeatureConfig>> CONFIGURED_STRUCTURE = STRUCTURE.configure(new DefaultFeatureConfig());
-	public static final StructurePieceType PIECE = TestStructureGenerator::new;
+	public static final StructurePieceType.Simple PIECE = TestStructureGenerator::new;
 
 	static {
 		LOGGER.info("Registering test structure");
 		FabricStructureBuilder.create(new Identifier("fabric", "test_structure"), STRUCTURE)
 				.step(GenerationStep.Feature.SURFACE_STRUCTURES)
 				.defaultConfig(32, 8, 12345)
-				.superflatFeature(CONFIGURED_STRUCTURE)
+				.enableSuperflat()
 				.adjustsSurface()
 				.register();
 		Registry.register(Registry.STRUCTURE_PIECE, new Identifier("fabric", "test_structure_piece"), PIECE);
+
+		//Basic Test of Callback
+		StructurePoolAddCallback.EVENT.register(structurePool -> LOGGER.info("Structure pool {} added", structurePool.getId()));
+
+		//The ideal usage of this callback is to add structures to a Village. Here, I constructed a Cactus Farm, which will be added to the house pool for deserts. For testing purposes, we will make it very common, and use a plains-style log outline so it is clear that it doesn't belong.
+		StructurePoolAddCallback.EVENT.register(structurePool -> {
+			if (structurePool.getId().equals(new Identifier("minecraft:village/desert/houses"))) {
+				structurePool.addStructurePoolElement(StructurePoolElement.ofProcessedLegacySingle("fabric:cactus_farm", StructureProcessorLists.FARM_PLAINS).apply(StructurePool.Projection.RIGID));
+			}
+		});
 	}
 
 	public static class TestStructureFeature extends StructureFeature<DefaultFeatureConfig> {
 		public TestStructureFeature(Codec<DefaultFeatureConfig> codec) {
-			super(codec);
+			super(codec, TestStructureFeature::createGenerator);
 		}
 
-		@Override
-		public StructureStartFactory<DefaultFeatureConfig> getStructureStartFactory() {
-			return Start::new;
-		}
+		private static Optional<StructurePiecesGenerator<DefaultFeatureConfig>> createGenerator(StructureGeneratorFactory.Context<DefaultFeatureConfig> context) {
+			return Optional.of((structurePiecesCollector, ctx) -> {
+				int blockX = ctx.chunkPos().getStartX();
+				int blockZ = ctx.chunkPos().getStartZ();
+				int blockY = ctx.chunkGenerator().getHeight(blockX, blockZ, Heightmap.Type.WORLD_SURFACE_WG, ctx.world());
 
-		public static class Start extends StructureStart<DefaultFeatureConfig> {
-			public Start(StructureFeature<DefaultFeatureConfig> feature, ChunkPos pos, int i, long l) {
-				super(feature, pos, i, l);
-			}
-
-			@Override
-			public void init(DynamicRegistryManager registryManager, ChunkGenerator chunkGenerator, StructureManager manager, ChunkPos chunkPos, Biome biome, DefaultFeatureConfig featureConfig, HeightLimitView heightLimitView) {
-				int blockX = chunkPos.getStartX();
-				int blockZ = chunkPos.getStartZ();
-				int blockY = chunkGenerator.getHeight(blockX, blockZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-
-				TestStructureGenerator generator = new TestStructureGenerator(random, blockX, blockY, blockZ);
-				this.children.add(generator);
-				setBoundingBoxFromChildren();
-			}
+				TestStructureGenerator generator = new TestStructureGenerator(ctx.random(), blockX, blockY, blockZ);
+				structurePiecesCollector.addPiece(generator);
+			});
 		}
 	}
 
-	public static class TestStructureGenerator extends StructurePieceWithDimensions {
+	public static class TestStructureGenerator extends ShiftableStructurePiece {
 		public TestStructureGenerator(Random random, int x, int y, int z) {
 			super(PIECE, x, y, z, 0, 48, 16, getRandomHorizontalDirection(random));
 		}
 
-		protected TestStructureGenerator(ServerWorld serverWorld, NbtCompound compoundTag) {
-			super(PIECE, compoundTag);
+		public TestStructureGenerator(NbtCompound nbtCompound) {
+			super(PIECE, nbtCompound);
 		}
 
 		@Override
-		public boolean generate(StructureWorldAccess structureWorldAccess, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, Random random, BlockBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
+		public void generate(StructureWorldAccess structureWorldAccess, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, Random random, BlockBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
 			for (int x = 0; x < 48; x++) {
 				for (int z = 0; z < 48; z++) {
 					for (int y = 0; y < 16; y++) {
@@ -112,8 +112,6 @@ public class StructureTest {
 					}
 				}
 			}
-
-			return true;
 		}
 	}
 }

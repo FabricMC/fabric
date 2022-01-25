@@ -26,6 +26,7 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.math.Direction;
 
@@ -40,9 +41,49 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
  */
 class ItemTests {
 	public static void run() {
+		testStackReference();
 		testInventoryWrappers();
 		testLimitedStackCountInventory();
 		testLimitedStackCountItem();
+	}
+
+	private static void testStackReference() {
+		// Ensure that Inventory wrappers will try to mutate the backing stack as much as possible.
+		// In many cases, MC code captures a reference to the ItemStack so we want to edit that stack directly
+		// and not a copy whenever we can. Obviously this can't be perfect, but we try to cover as many cases as possible.
+		SimpleInventory inv = new SimpleInventory(new ItemStack(Items.DIAMOND, 2));
+		InventoryStorage invWrapper = InventoryStorage.of(inv, null);
+		ItemStack stack = inv.getStack(0);
+
+		// Simulate should correctly reset the stack.
+		try (Transaction tx = Transaction.openOuter()) {
+			invWrapper.extract(ItemVariant.of(Items.DIAMOND), 2, tx);
+		}
+
+		if (stack != inv.getStack(0)) throw new AssertionError("Stack should have stayed the same.");
+
+		// Commit should try to edit the original stack when it is feasible to do so.
+		try (Transaction tx = Transaction.openOuter()) {
+			invWrapper.extract(ItemVariant.of(Items.DIAMOND), 1, tx);
+			tx.commit();
+		}
+
+		if (stack != inv.getStack(0)) throw new AssertionError("Stack should have stayed the same.");
+
+		// Also edit the stack when the item matches, even when the NBT and the count change.
+		ItemVariant oldVariant = ItemVariant.of(Items.DIAMOND);
+		NbtCompound testTag = new NbtCompound();
+		testTag.putInt("energy", 42);
+		ItemVariant newVariant = ItemVariant.of(Items.DIAMOND, testTag);
+
+		try (Transaction tx = Transaction.openOuter()) {
+			invWrapper.extract(oldVariant, 2, tx);
+			invWrapper.insert(newVariant, 5, tx);
+			tx.commit();
+		}
+
+		if (stack != inv.getStack(0)) throw new AssertionError("Stack should have stayed the same.");
+		if (!stackEquals(stack, newVariant, 5)) throw new AssertionError("Failed to update stack NBT or count.");
 	}
 
 	private static void testInventoryWrappers() {
@@ -88,7 +129,11 @@ class ItemTests {
 	}
 
 	private static boolean stackEquals(ItemStack stack, Item item, int count) {
-		return stack.getItem() == item && stack.getCount() == count;
+		return stackEquals(stack, ItemVariant.of(item), count);
+	}
+
+	private static boolean stackEquals(ItemStack stack, ItemVariant variant, int count) {
+		return variant.matches(stack) && stack.getCount() == count;
 	}
 
 	private static class TestSidedInventory extends SimpleInventory implements SidedInventory {

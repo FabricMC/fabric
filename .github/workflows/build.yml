@@ -4,13 +4,15 @@ jobs:
   build:
     strategy:
       matrix:
-        java: [16-jdk]
+        java: [17-jdk]
     runs-on: ubuntu-20.04
     container:
-      image: openjdk:${{ matrix.java }}
+      image: eclipse-temurin:${{ matrix.java }}
       options: --user root
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - uses: gradle/wrapper-validation-action@v1
       - run: ./gradlew check build publishToMavenLocal --stacktrace --parallel --warning-mode=fail
       - run: mkdir run && echo "eula=true" >> run/eula.txt
@@ -23,3 +25,7 @@ jobs:
         with:
           name: Artifacts
           path: ./*/build/libs/
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Maven Local
+          path: /root/.m2/repository

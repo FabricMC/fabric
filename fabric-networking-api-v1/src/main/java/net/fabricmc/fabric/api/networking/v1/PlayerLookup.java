@@ -91,7 +91,7 @@ public final class PlayerLookup {
 		Objects.requireNonNull(world, "The world cannot be null");
 		Objects.requireNonNull(pos, "The chunk pos cannot be null");
 
-		return world.getChunkManager().threadedAnvilChunkStorage.getPlayersWatchingChunk(pos, false).collect(Collectors.toList());
+		return world.getChunkManager().threadedAnvilChunkStorage.getPlayersWatchingChunk(pos, false);
 	}
 
 	/**

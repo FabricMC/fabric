@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.datagen",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "BlockStateDefinitionProviderMixin",
+    "DynamicRegistryManagerAccessor",
+    "TagBuilderMixin"
+  ],
+  "client": [
+    "client.MinecraftClientMixin"
+  ],
+  "server": [
+    "server.MainMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

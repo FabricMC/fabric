@@ -26,7 +26,7 @@ import net.fabricmc.fabric.impl.content.registry.LootEntryTypeRegistryImpl;
 @Deprecated
 public interface LootEntryTypeRegistry {
 	@Deprecated
-	LootEntryTypeRegistry INSTANCE = LootEntryTypeRegistryImpl.INSTANCE;
+	LootEntryTypeRegistry INSTANCE = new LootEntryTypeRegistryImpl();
 
 	@Deprecated
 	void register(LootPoolEntry.Serializer<?> serializer);

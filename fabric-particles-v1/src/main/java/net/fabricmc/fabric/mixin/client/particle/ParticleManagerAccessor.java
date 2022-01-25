@@ -43,7 +43,7 @@ public interface ParticleManagerAccessor {
 	@Accessor("spriteAwareFactories")
 	Map<Identifier, SpriteProvider> getSpriteAwareFactories();
 
-	@Mixin(targets = "net/minecraft/client/particle/ParticleManager$SimpleSpriteProvider")
+	@Mixin(ParticleManager.SimpleSpriteProvider.class)
 	interface SimpleSpriteProviderAccessor {
 		@Accessor("sprites")
 		List<Sprite> getSprites();

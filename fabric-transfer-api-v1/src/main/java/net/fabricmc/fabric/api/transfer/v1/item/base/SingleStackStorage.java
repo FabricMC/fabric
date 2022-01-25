@@ -36,11 +36,10 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
  * {@link #supportsInsertion} and/or {@link #supportsExtraction}.
  * {@link #getCapacity(ItemVariant)} can be overridden to change the maximum capacity depending on the item variant.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> implements SingleSlotStorage<ItemVariant> {
 	/**
 	 * Return the stack of this storage. It will be modified directly sometimes to avoid needless copies.
@@ -115,6 +114,7 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 
 			if (insertedAmount > 0) {
 				updateSnapshots(transaction);
+				currentStack = getStack();
 
 				if (currentStack.isEmpty()) {
 					currentStack = insertedVariant.toStack(insertedAmount);
@@ -142,6 +142,7 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 
 			if (extracted > 0) {
 				this.updateSnapshots(transaction);
+				currentStack = getStack();
 				currentStack.decrement(extracted);
 				setStack(currentStack);
 			}
@@ -154,7 +155,9 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 
 	@Override
 	protected final ItemStack createSnapshot() {
-		return getStack().copy();
+		ItemStack original = getStack();
+		setStack(original.copy());
+		return original;
 	}
 
 	@Override

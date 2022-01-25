@@ -27,11 +27,10 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  *
  * @param <T> The type of the stored resource.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public interface StorageView<T> {
 	/**
 	 * Try to extract a resource from this view.
@@ -41,7 +40,10 @@ public interface StorageView<T> {
 	long extract(T resource, long maxAmount, TransactionContext transaction);
 
 	/**
-	 * @return {@code true} if the {@link #getResource} contained in this storage view is blank, or {@code false} otherwise.
+	 * Return {@code true} if the {@link #getResource} contained in this storage view is blank, or {@code false} otherwise.
+	 *
+	 * <p>This function is mostly useful when dealing with storages of arbitrary types.
+	 * For transfer variant storages, this should always be equivalent to {@code getResource().isBlank()}.
 	 */
 	boolean isResourceBlank();
 

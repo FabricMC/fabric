@@ -20,16 +20,14 @@ import java.util.Objects;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.chunk.StructuresConfig;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.FeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 import net.fabricmc.fabric.impl.structure.FabricStructureImpl;
-import net.fabricmc.fabric.mixin.structure.FlatChunkGeneratorConfigAccessor;
 import net.fabricmc.fabric.mixin.structure.StructureFeatureAccessor;
 
 /**
@@ -55,7 +53,7 @@ public final class FabricStructureBuilder<FC extends FeatureConfig, S extends St
 	private final S structure;
 	private GenerationStep.Feature step;
 	private StructureConfig defaultConfig;
-	private ConfiguredStructureFeature<FC, ? extends StructureFeature<FC>> superflatFeature;
+	private boolean generateInSuperflat = false;
 	private boolean adjustsSurface = false;
 
 	private FabricStructureBuilder(Identifier id, S structure) {
@@ -66,7 +64,7 @@ public final class FabricStructureBuilder<FC extends FeatureConfig, S extends St
 	/**
 	 * Creates a new {@code FabricStructureBuilder} for registering a structure.
 	 *
-	 * @param id The structure ID.
+	 * @param id        The structure ID.
 	 * @param structure The {@linkplain StructureFeature} you want to register.
 	 */
 	public static <FC extends FeatureConfig, S extends StructureFeature<FC>> FabricStructureBuilder<FC, S> create(Identifier id, S structure) {
@@ -113,11 +111,10 @@ public final class FabricStructureBuilder<FC extends FeatureConfig, S extends St
 	 *
 	 * <p>This is a required option. Vanilla needs it to function.</p>
 	 *
-	 * @param spacing The average distance between 2 structures of this type along the X and Z axes.
+	 * @param spacing    The average distance between 2 structures of this type along the X and Z axes.
 	 * @param separation The minimum distance between 2 structures of this type.
-	 * @param salt The random salt of the structure. This does not affect how common the structure is, but every
-	 *                structure must have an unique {@code salt} in order to spawn in different places.
-	 *
+	 * @param salt       The random salt of the structure. This does not affect how common the structure is, but every
+	 *                   structure must have an unique {@code salt} in order to spawn in different places.
 	 * @see #defaultConfig(StructureConfig)
 	 */
 	public FabricStructureBuilder<FC, S> defaultConfig(int spacing, int separation, int salt) {
@@ -125,25 +122,12 @@ public final class FabricStructureBuilder<FC extends FeatureConfig, S extends St
 	}
 
 	/**
-	 * Sets the structure configuration which spawns in superflat worlds. If unset, this structure will not spawn in
-	 * superflat worlds.
-	 *
-	 * @see #superflatFeature(FeatureConfig)
+	 * Enables generation of this feature in superflat worlds. Structures will still only generate in biomes
+	 * for which they have been enabled. Superflat worlds will use the plains biome by default.
 	 */
-	public FabricStructureBuilder<FC, S> superflatFeature(ConfiguredStructureFeature<FC, ? extends StructureFeature<FC>> superflatFeature) {
-		Objects.requireNonNull(superflatFeature, "superflatFeature must not be null");
-		this.superflatFeature = superflatFeature;
+	public FabricStructureBuilder<FC, S> enableSuperflat() {
+		this.generateInSuperflat = true;
 		return this;
-	}
-
-	/**
-	 * Sets the structure configuration which spawns in superflat worlds. If unset, this structure will not spawn in
-	 * superflat worlds.
-	 *
-	 * @see #superflatFeature(ConfiguredStructureFeature)
-	 */
-	public FabricStructureBuilder<FC, S> superflatFeature(FC config) {
-		return superflatFeature(structure.configure(config));
 	}
 
 	/**
@@ -174,8 +158,8 @@ public final class FabricStructureBuilder<FC extends FeatureConfig, S extends St
 
 		FabricStructureImpl.STRUCTURE_TO_CONFIG_MAP.put(structure, defaultConfig);
 
-		if (superflatFeature != null) {
-			FlatChunkGeneratorConfigAccessor.getStructureToFeatures().put(structure, superflatFeature);
+		if (generateInSuperflat) {
+			FabricStructureImpl.FLAT_STRUCTURE_TO_CONFIG_MAP.put(structure, defaultConfig);
 		}
 
 		if (adjustsSurface) {

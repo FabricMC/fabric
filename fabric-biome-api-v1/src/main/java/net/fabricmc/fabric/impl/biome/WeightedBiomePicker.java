@@ -21,9 +21,9 @@ import java.util.List;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
 /**
  * Picks biomes with arbitrary double weights using a binary search.
@@ -47,16 +47,10 @@ public final class WeightedBiomePicker {
 		return currentTotal;
 	}
 
-	public RegistryKey<Biome> pickRandom(LayerRandomnessSource random) {
-		double target = random.nextInt(Integer.MAX_VALUE) * getCurrentWeightTotal() / Integer.MAX_VALUE;
+	public RegistryKey<Biome> pickFromNoise(PerlinNoiseSampler sampler, double x, double y, double z) {
+		double target = Math.abs(sampler.sample(x, y, z)) * getCurrentWeightTotal();
 
-		return search(target).getBiome();
-	}
-
-	public RegistryKey<Biome> pickFromNoise(LayerRandomnessSource source, double x, double y, double z) {
-		double target = Math.abs(source.getNoiseSampler().sample(x, y, z, 0.0, 0.0)) * getCurrentWeightTotal();
-
-		return search(target).getBiome();
+		return search(target).biome();
 	}
 
 	/**
@@ -76,7 +70,7 @@ public final class WeightedBiomePicker {
 		while (low < high) {
 			int mid = (high + low) >>> 1;
 
-			if (target < entries.get(mid).getUpperWeightBound()) {
+			if (target < entries.get(mid).upperWeightBound()) {
 				high = mid;
 			} else {
 				low = mid + 1;

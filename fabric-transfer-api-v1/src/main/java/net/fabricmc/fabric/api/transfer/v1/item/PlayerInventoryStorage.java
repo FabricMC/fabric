@@ -34,15 +34,14 @@ import net.fabricmc.fabric.impl.transfer.item.CursorSlotWrapper;
  * with an additional transactional wrapper for {@link PlayerInventory#offerOrDrop}.
  *
  * <p>Note that this is a wrapper around all the slots of the player inventory.
- * This may cause direct insertion to insert arbitrary items into equipment slots or other unexpected behavior.
- * To prevent this, {@link #offerOrDrop} is recommended for simple insertions.
+ * However, {@link #insert} is overriden to behave like {@link #offer}.
+ * For simple insertions, {@link #offer} or {@link #offerOrDrop} is recommended.
  * {@link #getSlots} can also be used and combined with {@link CombinedStorage} to retrieve a wrapper around a specific range of slots.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 @ApiStatus.NonExtendable
 // TODO: Consider explicitly syncing stacks by sending a ScreenHandlerSlotUpdateS2CPacket if that proves to be necessary.
 // TODO: Vanilla doesn't seem to be doing it reliably, so we ignore it for now.
@@ -68,6 +67,15 @@ public interface PlayerInventoryStorage extends InventoryStorage {
 	static SingleSlotStorage<ItemVariant> getCursorStorage(ScreenHandler screenHandler) {
 		return CursorSlotWrapper.get(screenHandler);
 	}
+
+	/**
+	 * Insert items into this player inventory. Behaves the same as {@link #offer}.
+	 * More fine-tuned insertion, for example over a specific range of slots, is possible with {@linkplain #getSlots() the slot list}.
+	 *
+	 * @see #offer
+	 */
+	@Override
+	long insert(ItemVariant resource, long maxAmount, TransactionContext transaction);
 
 	/**
 	 * Add items to the inventory if possible, and drop any leftover items in the world, similar to {@link PlayerInventory#offerOrDrop}.

@@ -47,11 +47,10 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  *
  * @param <T> The type of the stored transfer variant.
  *
- * @deprecated Experimental feature, we reserve the right to remove or change it without further notice.
+ * <b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Deprecated
 public abstract class SingleVariantItemStorage<T extends TransferVariant<?>> implements SingleSlotStorage<T> {
 	/**
 	 * Reference to the context.
@@ -94,7 +93,7 @@ public abstract class SingleVariantItemStorage<T extends TransferVariant<?>> imp
 	 * then edit the NBT of the stack so it contains the correct resource and amount.
 	 *
 	 * <p>When the new amount is 0, it is recommended that the subtags corresponding to the resource and amount
-	 * be removed, for example using {@link ItemStack#removeSubTag}, so that newly-crafted containers can stack with
+	 * be removed, for example using {@link ItemStack#removeSubNbt}, so that newly-crafted containers can stack with
 	 * emptied containers.
 	 *
 	 * @param currentVariant Variant to which the modification should be applied.
@@ -184,7 +183,7 @@ public abstract class SingleVariantItemStorage<T extends TransferVariant<?>> imp
 		}
 
 		if (extracted > 0) {
-			if (tryUpdateStorage(resource, maxAmount - extracted, transaction)) {
+			if (tryUpdateStorage(resource, amount - extracted, transaction)) {
 				return extracted;
 			}
 		}

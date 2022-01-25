@@ -34,6 +34,7 @@ class InventorySlotWrapper extends SingleStackStorage {
 	 */
 	private final InventoryStorageImpl storage;
 	final int slot;
+	private ItemStack lastReleasedSnapshot = null;
 
 	InventorySlotWrapper(InventoryStorageImpl storage, int slot) {
 		this.storage = storage;
@@ -65,5 +66,27 @@ class InventorySlotWrapper extends SingleStackStorage {
 	public void updateSnapshots(TransactionContext transaction) {
 		storage.markDirtyParticipant.updateSnapshots(transaction);
 		super.updateSnapshots(transaction);
+	}
+
+	@Override
+	protected void releaseSnapshot(ItemStack snapshot) {
+		lastReleasedSnapshot = snapshot;
+	}
+
+	@Override
+	protected void onFinalCommit() {
+		// Try to apply the change to the original stack
+		ItemStack original = lastReleasedSnapshot;
+		ItemStack currentStack = getStack();
+
+		if (!original.isEmpty() && original.getItem() == currentStack.getItem()) {
+			// None is empty and the items match: just update the amount and NBT, and reuse the original stack.
+			original.setCount(currentStack.getCount());
+			original.setNbt(currentStack.hasNbt() ? currentStack.getNbt().copy() : null);
+			setStack(original);
+		} else {
+			// Otherwise assume everything was taken from original so empty it.
+			original.setCount(0);
+		}
 	}
 }

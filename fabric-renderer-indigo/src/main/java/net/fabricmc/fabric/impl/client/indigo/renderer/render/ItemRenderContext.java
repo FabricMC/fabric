@@ -111,8 +111,8 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		matrixStack.push();
 		((BakedModel) model).getTransformation().getTransformation(transformMode).apply(invert, matrixStack);
 		matrixStack.translate(-0.5D, -0.5D, -0.5D);
-		matrix = matrixStack.peek().getModel();
-		normalMatrix = matrixStack.peek().getNormal();
+		matrix = matrixStack.peek().getPositionMatrix();
+		normalMatrix = matrixStack.peek().getNormalMatrix();
 
 		model.emitItemQuads(itemStack, randomSupplier, this);
 

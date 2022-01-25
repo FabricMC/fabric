@@ -32,7 +32,7 @@ import net.fabricmc.fabric.impl.container.ContainerProviderImpl;
  */
 @Deprecated
 public interface ContainerProviderRegistry {
-	ContainerProviderRegistry INSTANCE = ContainerProviderImpl.INSTANCE;
+	ContainerProviderRegistry INSTANCE = new ContainerProviderImpl();
 
 	/**
 	 * Register a "packet buffer -&gt; container" factory. This is used both on the client and server side.

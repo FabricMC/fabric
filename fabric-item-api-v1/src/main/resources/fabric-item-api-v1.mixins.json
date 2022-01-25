@@ -8,6 +8,8 @@
     "LivingEntityMixin"
   ],
   "client": [
+    "client.ClientPlayerInteractionManagerMixin",
+    "client.HeldItemRendererMixin",
     "client.ItemStackMixin"
   ],
   "injectors": {

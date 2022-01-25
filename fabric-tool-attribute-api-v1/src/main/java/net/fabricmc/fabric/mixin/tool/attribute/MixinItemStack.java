@@ -25,8 +25,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
@@ -79,8 +79,8 @@ public abstract class MixinItemStack implements ItemStackContext {
 		contextEntity = null;
 	}
 
-	@Inject(at = @At("RETURN"), method = "getAttributeModifiers", cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-	public void getAttributeModifiers(EquipmentSlot slot, CallbackInfoReturnable<Multimap<EntityAttribute, EntityAttributeModifier>> info, Multimap<EntityAttribute, EntityAttributeModifier> multimap) {
+	@ModifyVariable(method = "getAttributeModifiers", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
+	public Multimap<EntityAttribute, EntityAttributeModifier> modifyAttributeModifiersMap(Multimap<EntityAttribute, EntityAttributeModifier> multimap, EquipmentSlot slot) {
 		ItemStack stack = (ItemStack) (Object) this;
 
 		// Only perform our custom operations if the tool being operated on is dynamic.
@@ -89,15 +89,15 @@ public abstract class MixinItemStack implements ItemStackContext {
 			// into a custom, ordered Multimap. If this step is not done, and both vanilla + modded attributes
 			// exist at once, the item tooltip attribute lines will randomly switch positions.
 			LinkedListMultimap<EntityAttribute, EntityAttributeModifier> orderedAttributes = LinkedListMultimap.create();
-
 			// First, add all vanilla attributes to our ordered Multimap.
 			orderedAttributes.putAll(multimap);
-
 			// Second, calculate the dynamic attributes, and add them at the end of our Multimap.
 			DynamicAttributeTool holder = (DynamicAttributeTool) stack.getItem();
 			orderedAttributes.putAll(holder.getDynamicModifiers(slot, stack, contextEntity));
-			info.setReturnValue(orderedAttributes);
+			return orderedAttributes;
 		}
+
+		return multimap;
 	}
 
 	@Override

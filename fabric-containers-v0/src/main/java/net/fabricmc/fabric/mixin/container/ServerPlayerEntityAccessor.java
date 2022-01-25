@@ -31,5 +31,5 @@ public interface ServerPlayerEntityAccessor {
 	void setScreenHandlerSyncId(int syncId);
 
 	@Invoker()
-	void callOnSpawn(ScreenHandler screenHandler);
+	void callOnScreenHandlerOpened(ScreenHandler screenHandler);
 }

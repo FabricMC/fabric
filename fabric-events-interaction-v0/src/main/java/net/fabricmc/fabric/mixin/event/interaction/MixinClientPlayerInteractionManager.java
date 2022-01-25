@@ -31,6 +31,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
@@ -52,7 +53,7 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 
 @Mixin(ClientPlayerInteractionManager.class)
-public class MixinClientPlayerInteractionManager {
+public abstract class MixinClientPlayerInteractionManager {
 	@Shadow
 	private MinecraftClient client;
 	@Shadow
@@ -60,13 +61,21 @@ public class MixinClientPlayerInteractionManager {
 	@Shadow
 	private GameMode gameMode;
 
+	@Shadow
+	protected abstract void sendPlayerAction(PlayerActionC2SPacket.Action action, BlockPos pos, Direction direction);
+
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "attackBlock", cancellable = true)
 	public void attackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
 		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(client.player, client.world, Hand.MAIN_HAND, pos, direction);
 
 		if (result != ActionResult.PASS) {
+			// Returning true will spawn particles and trigger the animation of the hand -> only for SUCCESS.
 			info.setReturnValue(result == ActionResult.SUCCESS);
-			info.cancel();
+
+			// We also need to let the server process the action if it's accepted.
+			if (result.isAccepted()) {
+				this.sendPlayerAction(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction);
+			}
 		}
 	}
 
@@ -79,8 +88,8 @@ public class MixinClientPlayerInteractionManager {
 		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(client.player, client.world, Hand.MAIN_HAND, pos, direction);
 
 		if (result != ActionResult.PASS) {
+			// Returning true will spawn particles and trigger the animation of the hand -> only for SUCCESS.
 			info.setReturnValue(result == ActionResult.SUCCESS);
-			info.cancel();
 		}
 	}
 
@@ -94,7 +103,6 @@ public class MixinClientPlayerInteractionManager {
 			}
 
 			info.setReturnValue(result);
-			info.cancel();
 		}
 	}
 
@@ -108,8 +116,6 @@ public class MixinClientPlayerInteractionManager {
 			}
 
 			info.setReturnValue(result.getResult());
-			info.cancel();
-			return;
 		}
 	}
 
@@ -137,8 +143,6 @@ public class MixinClientPlayerInteractionManager {
 			}
 
 			info.setReturnValue(result);
-			info.cancel();
-			return;
 		}
 	}
 }

@@ -20,36 +20,11 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 /**
- * Represents a biome and its corresponding weight.
+ * Represents a modded biome in The End, and its corresponding weight.
+ *
+ * @param biome the biome
+ * @param weight how often a biome will be chosen
+ * @param upperWeightBound the upper weight bound within the context of the other entries, used for the binary search
  */
-final class WeightedBiomeEntry {
-	private final RegistryKey<Biome> biome;
-	private final double weight;
-	private final double upperWeightBound;
-
-	/**
-	 * @param biome the biome
-	 * @param weight how often a biome will be chosen
-	 * @param upperWeightBound the upper weight bound within the context of the other entries, used for the binary search
-	 */
-	WeightedBiomeEntry(final RegistryKey<Biome> biome, final double weight, final double upperWeightBound) {
-		this.biome = biome;
-		this.weight = weight;
-		this.upperWeightBound = upperWeightBound;
-	}
-
-	RegistryKey<Biome> getBiome() {
-		return biome;
-	}
-
-	double getWeight() {
-		return weight;
-	}
-
-	/**
-	 * @return the upper weight boundary for the search
-	 */
-	double getUpperWeightBound() {
-		return upperWeightBound;
-	}
+record WeightedBiomeEntry(RegistryKey<Biome> biome, double weight, double upperWeightBound) {
 }

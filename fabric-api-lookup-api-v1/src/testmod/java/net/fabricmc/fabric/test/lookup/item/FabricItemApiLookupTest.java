@@ -18,7 +18,6 @@ package net.fabricmc.fabric.test.lookup.item;
 
 import static net.fabricmc.fabric.test.lookup.FabricApiLookupTest.ensureException;
 
-import net.minecraft.block.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.ToolItem;
@@ -26,20 +25,21 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.test.lookup.FabricApiLookupTest;
+import net.fabricmc.fabric.test.lookup.api.Inspectable;
 
 public class FabricItemApiLookupTest {
-	// Use /setblock to place it in the world.
-	public static final InspectorBlock INSPECTOR = new InspectorBlock(FabricBlockSettings.of(Material.METAL));
+	public static final ItemApiLookup<Inspectable, Void> INSPECTABLE =
+			ItemApiLookup.get(new Identifier("testmod:inspectable"), Inspectable.class, Void.class);
+
 	public static final InspectableItem HELLO_ITEM = new InspectableItem("Hello Fabric API tester!");
 
 	public static void onInitialize() {
-		Registry.register(Registry.BLOCK, new Identifier(FabricApiLookupTest.MOD_ID, "inspector"), INSPECTOR);
 		Registry.register(Registry.ITEM, new Identifier(FabricApiLookupTest.MOD_ID, "hello"), HELLO_ITEM);
 
 		// Diamonds and diamond blocks can be inspected and will also print their name.
-		Inspectable.LOOKUP.registerForItems((stack, ignored) -> () -> {
+		INSPECTABLE.registerForItems((stack, ignored) -> () -> {
 			if (stack.hasCustomName()) {
 				return stack.getName();
 			} else {
@@ -47,9 +47,9 @@ public class FabricItemApiLookupTest {
 			}
 		}, Items.DIAMOND, Items.DIAMOND_BLOCK);
 		// Test registerSelf
-		Inspectable.LOOKUP.registerSelf(HELLO_ITEM);
+		INSPECTABLE.registerSelf(HELLO_ITEM);
 		// Tools report their mining level
-		Inspectable.LOOKUP.registerFallback((stack, ignored) -> {
+		INSPECTABLE.registerFallback((stack, ignored) -> {
 			Item item = stack.getItem();
 
 			if (item instanceof ToolItem) {
@@ -64,7 +64,7 @@ public class FabricItemApiLookupTest {
 
 	private static void testSelfRegistration() {
 		ensureException(() -> {
-			Inspectable.LOOKUP.registerSelf(Items.WATER_BUCKET);
+			INSPECTABLE.registerSelf(Items.WATER_BUCKET);
 		}, "The ItemApiLookup should have prevented self-registration of incompatible items.");
 	}
 }

@@ -35,6 +35,7 @@ import net.fabricmc.fabric.test.lookup.api.ItemApis;
 import net.fabricmc.fabric.test.lookup.api.ItemInsertable;
 import net.fabricmc.fabric.test.lookup.compat.InventoryExtractableProvider;
 import net.fabricmc.fabric.test.lookup.compat.InventoryInsertableProvider;
+import net.fabricmc.fabric.test.lookup.entity.FabricEntityApiLookupTest;
 import net.fabricmc.fabric.test.lookup.item.FabricItemApiLookupTest;
 
 public class FabricApiLookupTest implements ModInitializer {
@@ -50,6 +51,9 @@ public class FabricApiLookupTest implements ModInitializer {
 	public static final BlockItem COBBLE_GEN_ITEM = new BlockItem(COBBLE_GEN_BLOCK, new Item.Settings().group(ItemGroup.MISC));
 	public static BlockEntityType<CobbleGenBlockEntity> COBBLE_GEN_BLOCK_ENTITY_TYPE;
 	// Testing for item api lookups is done in the `item` package.
+
+	public static final InspectorBlock INSPECTOR_BLOCK = new InspectorBlock(FabricBlockSettings.of(Material.METAL));
+	public static final BlockItem INSPECTOR_ITEM = new BlockItem(INSPECTOR_BLOCK, new Item.Settings().group(ItemGroup.MISC));
 
 	@Override
 	public void onInitialize() {
@@ -73,7 +77,12 @@ public class FabricApiLookupTest implements ModInitializer {
 		testLookupRegistry();
 		testSelfRegistration();
 
+		Identifier inspector = new Identifier(FabricApiLookupTest.MOD_ID, "inspector");
+		Registry.register(Registry.BLOCK, inspector, INSPECTOR_BLOCK);
+		Registry.register(Registry.ITEM, inspector, INSPECTOR_ITEM);
+
 		FabricItemApiLookupTest.onInitialize();
+		FabricEntityApiLookupTest.onInitialize();
 	}
 
 	private static void testLookupRegistry() {
@@ -87,6 +96,10 @@ public class FabricApiLookupTest implements ModInitializer {
 			BlockApiLookup<Void, Void> wrongInsertable = BlockApiLookup.get(new Identifier("testmod:item_insertable"), Void.class, Void.class);
 			wrongInsertable.registerFallback((world, pos, state, be, nocontext) -> null);
 		}, "The registry should have prevented creation of another instance with different classes, but same id.");
+
+		if (!insertable2.getId().equals(new Identifier("testmod:item_insertable"))) {
+			throw new AssertionError("Incorrect identifier was returned.");
+		}
 
 		if (insertable2.apiClass() != ItemInsertable.class) {
 			throw new AssertionError("Incorrect API class was returned.");

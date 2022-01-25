@@ -29,6 +29,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.mixin.structure.StructuresConfigAccessor;
 
 public class FabricStructureImpl implements ModInitializer {
+	//Keeps a map of structures to structure configs for purposes of initializing the flat chunk generator
+	public static final Map<StructureFeature<?>, StructureConfig> FLAT_STRUCTURE_TO_CONFIG_MAP = new HashMap<>();
+
 	//Keeps a map of structures to structure configs.
 	public static final Map<StructureFeature<?>, StructureConfig> STRUCTURE_TO_CONFIG_MAP = new HashMap<>();
 

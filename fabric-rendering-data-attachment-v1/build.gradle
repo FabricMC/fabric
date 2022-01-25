@@ -1,6 +1,10 @@
 archivesBaseName = "fabric-rendering-data-attachment-v1"
-version = getSubprojectVersion(project, "0.1.5")
+version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
 		'fabric-api-base'
 ])
+
+loom {
+	accessWidenerPath = file("src/main/resources/fabric-rendering-data-attachment-v1.accesswidener")
+}

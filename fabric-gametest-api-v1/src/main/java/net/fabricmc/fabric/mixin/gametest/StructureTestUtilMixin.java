@@ -52,7 +52,7 @@ public abstract class StructureTestUtilMixin {
 				snbt = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 			}
 
-			NbtCompound nbtCompound = NbtHelper.method_32260(snbt);
+			NbtCompound nbtCompound = NbtHelper.fromNbtProviderString(snbt);
 			Structure structure = world.getStructureManager().createStructure(nbtCompound);
 
 			cir.setReturnValue(structure);
