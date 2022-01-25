@@ -36,6 +36,8 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.level.LevelProperties;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
@@ -106,7 +108,7 @@ public class BiomeModificationImpl {
 	public void finalizeWorldGen(DynamicRegistryManager.Impl impl, LevelProperties levelProperties) {
 		Stopwatch sw = Stopwatch.createStarted();
 
-		// Now that we apply biome modifications inside of the MinecraftServer constructor, we should only ever do
+		// Now that we apply biome modifications inside the MinecraftServer constructor, we should only ever do
 		// this once for a dynamic registry manager. Marking the dynamic registry manager as modified ensures a crash
 		// if the precondition is violated.
 		BiomeModificationMarker modificationTracker = (BiomeModificationMarker) (Object) impl;
@@ -159,6 +161,14 @@ public class BiomeModificationImpl {
 		}
 
 		if (biomesProcessed > 0) {
+			// Rebuild caches within biome sources after modifying feature lists
+			for (DimensionOptions dimension : levelProperties.getGeneratorOptions().getDimensions()) {
+				// The Biome source has a total ordering of feature generation that might have changed
+				// by us adding or removing features from biomes.
+				BiomeSource biomeSource = dimension.getChunkGenerator().getBiomeSource();
+				biomeSource.field_34469 = biomeSource.method_39525(new ArrayList<>(biomeSource.getBiomes()), true);
+			}
+
 			LOGGER.info("Applied {} biome modifications to {} of {} new biomes in {}", modifiersApplied, biomesChanged,
 					biomesProcessed, sw);
 		}
