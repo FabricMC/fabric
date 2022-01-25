@@ -49,6 +49,12 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 		return new FabricBlockEntityTypeBuilder<>(factory, blocksList);
 	}
 
+	/**
+	 * Adds a supported block for the block entity type.
+	 *
+	 * @param block the supported block
+	 * @return this builder
+	 */
 	public FabricBlockEntityTypeBuilder<T> addBlock(Block block) {
 		this.blocks.add(block);
 		return this;
