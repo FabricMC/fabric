@@ -4,7 +4,10 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "client.MixinBakedModel",
-    "client.MixinSpriteAtlasTexture"
+    "client.MixinMultipartBakedModel",
+    "client.MixinWeightedBakedModel",
+    "client.MixinSpriteAtlasTexture",
+    "client.WeightedBakedModelEntryAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

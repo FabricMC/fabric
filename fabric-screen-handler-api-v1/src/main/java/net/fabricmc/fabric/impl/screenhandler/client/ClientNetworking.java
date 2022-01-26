@@ -33,7 +33,7 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
 import net.fabricmc.fabric.impl.screenhandler.Networking;
 
@@ -43,45 +43,52 @@ public final class ClientNetworking implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientSidePacketRegistry.INSTANCE.register(Networking.OPEN_ID, (ctx, buf) -> {
+		ClientPlayNetworking.registerGlobalReceiver(Networking.OPEN_ID, (client, handler, buf, responseSender) -> {
 			Identifier typeId = buf.readIdentifier();
 			int syncId = buf.readVarInt();
 			Text title = buf.readText();
+			// Retain the buf since we must open the screen handler with it's extra modded data on the client thread
+			// The buf will be released after the screen is opened
 			buf.retain();
-			ctx.getTaskQueue().execute(() -> openScreen(typeId, syncId, title, buf));
+
+			client.execute(() -> this.openScreen(typeId, syncId, title, buf));
 		});
 	}
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private void openScreen(Identifier typeId, int syncId, Text title, PacketByteBuf buf) {
-		ScreenHandlerType<?> type = Registry.SCREEN_HANDLER.get(typeId);
+		try {
+			ScreenHandlerType<?> type = Registry.SCREEN_HANDLER.get(typeId);
 
-		if (type == null) {
-			LOGGER.warn("Unknown screen handler ID: {}", typeId);
-			return;
-		}
+			if (type == null) {
+				LOGGER.warn("Unknown screen handler ID: {}", typeId);
+				return;
+			}
 
-		if (!(type instanceof ExtendedScreenHandlerType<?>)) {
-			LOGGER.warn("Received extended opening packet for non-extended screen handler {}", typeId);
-			return;
-		}
+			if (!(type instanceof ExtendedScreenHandlerType<?>)) {
+				LOGGER.warn("Received extended opening packet for non-extended screen handler {}", typeId);
+				return;
+			}
 
-		HandledScreens.Provider screenFactory = HandledScreens.getProvider(type);
+			HandledScreens.Provider screenFactory = HandledScreens.getProvider(type);
 
-		if (screenFactory != null) {
-			MinecraftClient client = MinecraftClient.getInstance();
-			PlayerEntity player = client.player;
+			if (screenFactory != null) {
+				MinecraftClient client = MinecraftClient.getInstance();
+				PlayerEntity player = client.player;
 
-			Screen screen = screenFactory.create(
-					((ExtendedScreenHandlerType<?>) type).create(syncId, player.inventory, buf),
-					player.inventory,
-					title
-			);
+				Screen screen = screenFactory.create(
+						((ExtendedScreenHandlerType<?>) type).create(syncId, player.inventory, buf),
+						player.inventory,
+						title
+				);
 
-			player.currentScreenHandler = ((ScreenHandlerProvider<?>) screen).getScreenHandler();
-			client.openScreen(screen);
-		} else {
-			LOGGER.warn("Screen not registered for screen handler {}!", typeId);
+				player.currentScreenHandler = ((ScreenHandlerProvider<?>) screen).getScreenHandler();
+				client.openScreen(screen);
+			} else {
+				LOGGER.warn("Screen not registered for screen handler {}!", typeId);
+			}
+		} finally {
+			buf.release(); // Release the buf
 		}
 	}
 }

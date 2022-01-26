@@ -31,12 +31,12 @@ import net.minecraft.text.Text;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkAddon;
-import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkHandlerExtensions;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ClientLoginNetworkHandler.class)
-abstract class ClientLoginNetworkHandlerMixin implements ClientLoginNetworkHandlerExtensions {
+abstract class ClientLoginNetworkHandlerMixin implements NetworkHandlerExtensions {
 	@Shadow
 	@Final
 	private MinecraftClient client;
@@ -58,7 +58,12 @@ abstract class ClientLoginNetworkHandlerMixin implements ClientLoginNetworkHandl
 
 	@Inject(method = "onDisconnected", at = @At("HEAD"))
 	private void invokeLoginDisconnectEvent(Text reason, CallbackInfo ci) {
-		this.addon.invokeDisconnectEvent();
+		this.addon.handleDisconnect();
+	}
+
+	@Inject(method = "onLoginSuccess", at = @At("HEAD"))
+	private void handlePlayTransition(CallbackInfo ci) {
+		addon.handlePlayTransition();
 	}
 
 	@Override

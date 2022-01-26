@@ -1,15 +1,15 @@
 archivesBaseName = "fabric-screen-handler-api-v1"
-version = getSubprojectVersion(project, "1.1.1")
+version = getSubprojectVersion(project)
 
-minecraft {
-	accessWidener = file('src/main/resources/fabric-screen-handler-api-v1.accesswidener')
+loom {
+	accessWidenerPath = file('src/main/resources/fabric-screen-handler-api-v1.accesswidener')
 }
 
 dependencies {
-	testmodRuntimeOnly(project(path: ':fabric-resource-loader-v0', configuration: 'dev'))
+	testmodRuntimeOnly(project(path: ':fabric-resource-loader-v0', configuration: 'namedElements'))
 }
 
 moduleDependencies(project, [
 		'fabric-api-base',
-		'fabric-networking-v0'
+		'fabric-networking-api-v1'
 ])

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-api-lookup-api-v1",
+  "name": "Fabric API Lookup API (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-api-lookup-api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.9.2",
+    "fabric-api-base": "*",
+    "fabric-lifecycle-events-v1": "*"
+  },
+  "description": "A universal way to expose and query APIs",
+  "mixins": [
+    "fabric-api-lookup-api-v1.mixins.json"
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
+}

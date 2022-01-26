@@ -1,6 +1,18 @@
 archivesBaseName = "fabric-renderer-api-v1"
-version = getSubprojectVersion(project, "0.4.1")
+version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
 		'fabric-api-base'
 ])
+
+dependencies {
+	testmodImplementation project(path: ':fabric-blockrenderlayer-v1', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-models-v0', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-networking-blockentity-v0', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-object-builder-api-v1', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-renderer-indigo', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-rendering-data-attachment-v1', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-tag-extensions-v0', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-tool-attribute-api-v1', configuration: 'namedElements')
+}

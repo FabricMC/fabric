@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -44,6 +45,7 @@ public abstract class AbstractNetworkAddon<H> {
 	// Sync map should be fine as there is little read write competition
 	// All access to this map is guarded by the lock
 	private final Map<Identifier, H> handlers = new HashMap<>();
+	private final AtomicBoolean disconnected = new AtomicBoolean(); // blocks redundant disconnect notifications
 
 	protected AbstractNetworkAddon(GlobalReceiverRegistry<H> receiver, String description) {
 		this.receiver = receiver;
@@ -124,7 +126,13 @@ public abstract class AbstractNetworkAddon<H> {
 
 	protected abstract void handleUnregistration(Identifier channelName);
 
-	public abstract void invokeDisconnectEvent();
+	public final void handleDisconnect() {
+		if (disconnected.compareAndSet(false, true)) {
+			invokeDisconnectEvent();
+		}
+	}
+
+	protected abstract void invokeDisconnectEvent();
 
 	/**
 	 * Checks if a channel is considered a "reserved" channel.

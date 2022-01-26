@@ -7,7 +7,7 @@
   "license": "Apache-2.0",
   "depends": {
     "fabric-api-base": "*",
-    "fabric-events-lifecycle-v0": "*",
+    "fabric-lifecycle-events-v1": "*",
     "fabric-key-binding-api-v1": "*"
   },
   "entrypoints": {

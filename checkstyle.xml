@@ -62,6 +62,13 @@
 	</module>
 
 	<module name="TreeWalker">
+        <!-- Allow "//CHECKSTYLE.OFF: <InspectionName>" and "//CHECKSTYLE.ON: <InspectionName>" pairs to toggle some inspections -->
+        <module name="SuppressionCommentFilter">
+            <property name="offCommentFormat" value="CHECKSTYLE.OFF\: ([\w\|]+)"/>
+            <property name="onCommentFormat" value="CHECKSTYLE.ON\: ([\w\|]+)"/>
+            <property name="checkFormat" value="$1"/>
+        </module>
+
 		<!-- Ensure all imports are ship shape -->
 		<module name="AvoidStarImport"/>
 		<module name="IllegalImport"/>

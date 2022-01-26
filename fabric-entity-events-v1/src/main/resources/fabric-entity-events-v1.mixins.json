@@ -3,13 +3,19 @@
   "package": "net.fabricmc.fabric.mixin.entity.event",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BedBlockMixin",
     "EntityMixin",
     "LivingEntityMixin",
+    "PlayerEntityMixin",
     "PlayerManagerMixin",
     "ServerPlayerEntityMixin",
     "TeleportCommandMixin"
   ],
+  "client": [
+    "client.LivingEntityMixin"
+  ],
   "injectors": {
-    "defaultRequire": 1
+    "defaultRequire": 1,
+    "maxShiftBy": 3
   }
 }

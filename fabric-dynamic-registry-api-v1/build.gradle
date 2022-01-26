@@ -1,13 +1,15 @@
 archivesBaseName = "fabric-dynamic-registry-api-v1"
-version = getSubprojectVersion(project, "1.0.0")
+version = getSubprojectVersion(project)
 
-minecraft {
-	accessWidener = file("src/main/resources/fabric-dynamic-registry-api-v1.accesswidener")
+loom {
+	accessWidenerPath = file("src/main/resources/fabric-dynamic-registry-api-v1.accesswidener")
 }
 
 dependencies {
-	compile project(path: ':fabric-api-base', configuration: 'dev')
-
-	testmodCompile project(path: ':fabric-command-api-v1', configuration: 'dev')
-	testmodCompile project(path: ':fabric-resource-loader-v0', configuration: 'dev')
+	testmodImplementation project(path: ':fabric-command-api-v1', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
 }
+
+moduleDependencies(project, [
+		'fabric-api-base'
+])

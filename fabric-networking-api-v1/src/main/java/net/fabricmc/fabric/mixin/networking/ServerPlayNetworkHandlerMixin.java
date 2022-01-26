@@ -33,12 +33,12 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
+import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkAddon;
-import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerExtensions;
 
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
 @Mixin(value = ServerPlayNetworkHandler.class, priority = 999)
-abstract class ServerPlayNetworkHandlerMixin implements ServerPlayNetworkHandlerExtensions, DisconnectPacketSource {
+abstract class ServerPlayNetworkHandlerMixin implements NetworkHandlerExtensions, DisconnectPacketSource {
 	@Shadow
 	@Final
 	private MinecraftServer server;
@@ -65,7 +65,7 @@ abstract class ServerPlayNetworkHandlerMixin implements ServerPlayNetworkHandler
 
 	@Inject(method = "onDisconnected", at = @At("HEAD"))
 	private void handleDisconnection(Text reason, CallbackInfo ci) {
-		this.addon.invokeDisconnectEvent();
+		this.addon.handleDisconnect();
 	}
 
 	@Override

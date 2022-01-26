@@ -25,7 +25,7 @@ import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.event.client.ClientTickCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 public class KeyBindingsTest implements ClientModInitializer {
 	@Override
@@ -34,7 +34,7 @@ public class KeyBindingsTest implements ClientModInitializer {
 		KeyBinding binding2 = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-key-binding-api-v1-testmod.test_keybinding_2", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_U, "key.category.second.test"));
 		KeyBinding stickyBinding = KeyBindingHelper.registerKeyBinding(new StickyKeyBinding("key.fabric-key-binding-api-v1-testmod.test_keybinding_sticky", GLFW.GLFW_KEY_R, "key.category.first.test", () -> true));
 
-		ClientTickCallback.EVENT.register(client -> {
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (binding1.wasPressed()) {
 				client.player.sendMessage(new LiteralText("Key 1 was pressed!"), false);
 			}

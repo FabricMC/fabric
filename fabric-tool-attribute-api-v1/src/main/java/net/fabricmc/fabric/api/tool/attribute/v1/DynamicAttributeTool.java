@@ -31,6 +31,9 @@ import net.minecraft.tag.Tag;
 
 /**
  * Interface for adding various tool attributes to items.
+ *
+ * <p> Functions in this interface will provide user context if it is available.
+ * These context parameters are provided on a best-effort basis, and implementations should not fail hard if they are absent.</p>
  */
 public interface DynamicAttributeTool {
 	Multimap<EntityAttribute, EntityAttributeModifier> EMPTY = ImmutableSetMultimap.of();
@@ -107,11 +110,14 @@ public interface DynamicAttributeTool {
 	/**
 	 * Add modifiers for any {@link net.minecraft.entity.attribute.EntityAttributes} your item should give when equipped, based on the stack.
 	 *
-	 * <p>Appends to either attribute modifier NBT or the result from {@link net.minecraft.item.Item#getAttributeModifiers(EquipmentSlot)}.</p>
+	 * <p>Appends to either attribute modifier NBT or the result from {@link net.minecraft.item.Item#getAttributeModifiers(EquipmentSlot)}.
+	 * The attributes returned from this method will only be applied to an entity when the {@link ItemStack} providing the attributes is modified, or the player re-selects the stack in their hotbar.
+	 * If your attribute relies on data from outside the stack, such as the user's age, you will need to modify the stack in some way to re-assign attributes to the entity.
+	 * A fix for this may be provided in the future.</p>
 	 *
 	 * @param slot  The equipment slot this item is equipped in.
 	 * @param stack The stack that's equipped.
-	 * @param user  The current user of the tool, or none if there isn't any
+	 * @param user  The current user of the tool, if available.
 	 * @return The dynamic modifiers to add on top of other modifiers on this stack. If none, return {@link #EMPTY}.
 	 */
 	default Multimap<EntityAttribute, EntityAttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack, @Nullable LivingEntity user) {

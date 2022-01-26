@@ -45,10 +45,7 @@ import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 
 /**
  * Allows {@link Biome} properties to be modified.
- *
- * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
-@Deprecated
 public interface BiomeModificationContext {
 	/**
 	 * @see Biome#getDepth()
@@ -529,7 +526,7 @@ public interface BiomeModificationContext {
 		}
 
 		/**
-		 * Removes all spawns of the given entity type.
+		 * Removes all spawns of the given spawn group.
 		 *
 		 * <p>Associated JSON property: <code>spawners</code>.
 		 */

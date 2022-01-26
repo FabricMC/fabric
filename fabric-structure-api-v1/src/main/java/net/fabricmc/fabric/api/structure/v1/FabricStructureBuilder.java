@@ -16,31 +16,21 @@
 
 package net.fabricmc.fabric.api.structure.v1;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.FeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-import net.fabricmc.fabric.impl.structure.FabricStructureUtil;
-import net.fabricmc.fabric.impl.structure.StructuresConfigHooks;
-import net.fabricmc.fabric.mixin.structure.BiomeAccessor;
+import net.fabricmc.fabric.impl.structure.FabricStructureImpl;
 import net.fabricmc.fabric.mixin.structure.FlatChunkGeneratorConfigAccessor;
 import net.fabricmc.fabric.mixin.structure.StructureFeatureAccessor;
-import net.fabricmc.fabric.mixin.structure.StructuresConfigAccessor;
 
 /**
  * A builder for registering custom structures.
@@ -182,10 +172,7 @@ public final class FabricStructureBuilder<FC extends FeatureConfig, S extends St
 			throw new IllegalStateException(String.format("Structure \"%s\" has mismatching name \"%s\". Structures should not override \"getName\".", id, structure.getName()));
 		}
 
-		StructuresConfigAccessor.setDefaultStructures(ImmutableMap.<StructureFeature<?>, StructureConfig>builder()
-				.putAll(StructuresConfig.DEFAULT_STRUCTURES)
-				.put(structure, defaultConfig)
-				.build());
+		FabricStructureImpl.STRUCTURE_TO_CONFIG_MAP.put(structure, defaultConfig);
 
 		if (superflatFeature != null) {
 			FlatChunkGeneratorConfigAccessor.getStructureToFeatures().put(structure, superflatFeature);
@@ -198,31 +185,6 @@ public final class FabricStructureBuilder<FC extends FeatureConfig, S extends St
 					.build());
 		}
 
-		// update existing structures configs
-		for (StructuresConfig structuresConfig : FabricStructureUtil.DEFAULT_STRUCTURES_CONFIGS) {
-			((StructuresConfigHooks) structuresConfig).fabric_updateDefaultEntries();
-		}
-
-		// update builtin biomes, just to be safe
-		for (Biome biome : BuiltinRegistries.BIOME) {
-			BiomeAccessor biomeAccessor = (BiomeAccessor) (Object) biome;
-			Map<Integer, List<StructureFeature<?>>> structureLists = biomeAccessor.getStructureLists();
-
-			if (!(structureLists instanceof HashMap)) {
-				// not guaranteed by the standard to be a mutable map
-				((BiomeAccessor) (Object) biome).setStructureLists(structureLists = new HashMap<>(structureLists));
-			}
-
-			// not guaranteed by the standard to be mutable lists
-			structureLists.compute(step.ordinal(), (k, v) -> makeMutable(v)).add(structure);
-		}
-
 		return structure;
-	}
-
-	private static List<StructureFeature<?>> makeMutable(List<StructureFeature<?>> mapValue) {
-		if (mapValue == null) return new ArrayList<>();
-		if (!(mapValue instanceof ArrayList)) return new ArrayList<>(mapValue);
-		return mapValue;
 	}
 }

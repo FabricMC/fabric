@@ -13,7 +13,8 @@
       "net.fabricmc.fabric.test.rendering.CustomArmorTests"
     ],
     "client": [
-      "net.fabricmc.fabric.test.rendering.client.CustomArmorTestsClient"
+      "net.fabricmc.fabric.test.rendering.client.CustomArmorTestsClient",
+      "net.fabricmc.fabric.test.rendering.client.WorldRenderEventsTests"
     ]
   }
 }

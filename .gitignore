@@ -1,6 +1,10 @@
 # Gradle
 .gradle
 
+# VSCode
+.settings/
+.vscode/
+
 # Eclipse
 .checkstyle
 .classpath

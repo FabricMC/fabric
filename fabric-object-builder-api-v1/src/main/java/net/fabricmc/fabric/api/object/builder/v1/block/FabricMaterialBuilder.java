@@ -73,7 +73,7 @@ public class FabricMaterialBuilder extends Material.Builder {
 	}
 
 	@Override
-	public Material.Builder notSolid() {
+	public FabricMaterialBuilder notSolid() {
 		super.notSolid();
 		return this;
 	}

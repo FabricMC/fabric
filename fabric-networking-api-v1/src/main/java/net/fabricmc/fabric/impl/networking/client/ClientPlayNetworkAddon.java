@@ -144,7 +144,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	public void invokeDisconnectEvent() {
+	protected void invokeDisconnectEvent() {
 		ClientPlayConnectionEvents.DISCONNECT.invoker().onPlayDisconnect(this.handler, this.client);
 		this.receiver.endSession(this);
 	}

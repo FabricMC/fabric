@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.entity.event.v1;
 
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -45,6 +47,31 @@ public final class ServerPlayerEvents {
 		}
 	});
 
+	/**
+	 * An event that is called when a player takes fatal damage.
+	 *
+	 * <p>Mods can cancel this to keep the player alive.
+	 *
+	 * <p>Vanilla checks for player health {@code <= 0} each tick (with {@link LivingEntity#isDead()}), and kills if true -
+	 * so the player will still die next tick if this event is cancelled. It's assumed that the listener will do
+	 * something to prevent this, for example:
+	 *
+	 * <ul>
+	 *     <li>a minigame mod teleporting the player into a 'respawn room' and setting their health to 20.0</li>
+	 *     <li>a mod that changes death mechanics switching the player over to the mod's play-mode, where death doesn't
+	 *     apply</li>
+	 * </ul>
+	 */
+	public static final Event<AllowDeath> ALLOW_DEATH = EventFactory.createArrayBacked(AllowDeath.class, callbacks -> (player, damageSource, damageAmount) -> {
+		for (AllowDeath callback : callbacks) {
+			if (!callback.allowDeath(player, damageSource, damageAmount)) {
+				return false;
+			}
+		}
+
+		return true;
+	});
+
 	@FunctionalInterface
 	public interface CopyFrom {
 		/**
@@ -67,6 +94,19 @@ public final class ServerPlayerEvents {
 		 * @param alive whether the old player is still alive
 		 */
 		void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive);
+	}
+
+	@FunctionalInterface
+	public interface AllowDeath {
+		/**
+		 * Called when a player takes fatal damage (before totems of undying can take effect).
+		 *
+		 * @param player the player
+		 * @param damageSource the fatal damage damageSource
+		 * @param damageAmount the damageAmount of damage that has killed the player
+		 * @return true if the death should go ahead, false otherwise.
+		 */
+		boolean allowDeath(ServerPlayerEntity player, DamageSource damageSource, float damageAmount);
 	}
 
 	private ServerPlayerEvents() {

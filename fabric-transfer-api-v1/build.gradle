@@ -1,0 +1,18 @@
+archivesBaseName = "fabric-transfer-api-v1"
+version = getSubprojectVersion(project)
+
+moduleDependencies(project, [
+	'fabric-api-base',
+	'fabric-api-lookup-api-v1',
+	'fabric-lifecycle-events-v1', // transitive dependency of API Lookup
+	'fabric-rendering-fluids-v1',
+	'fabric-textures-v0' // transitive dependency of Rendering Fluids
+])
+
+dependencies {
+	testmodImplementation project(path: ':fabric-object-builder-api-v1', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-rendering-v1', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-tag-extensions-v0', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-tool-attribute-api-v1', configuration: 'namedElements')
+}

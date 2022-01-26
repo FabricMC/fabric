@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.test.renderer.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "WorldMixin"
+  ],
+  "client": [
+    "ClientWorldMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

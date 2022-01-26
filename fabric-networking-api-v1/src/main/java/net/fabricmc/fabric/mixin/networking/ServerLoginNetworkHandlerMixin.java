@@ -34,12 +34,12 @@ import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
+import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
-import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkHandlerExtensions;
 
 @Mixin(ServerLoginNetworkHandler.class)
-abstract class ServerLoginNetworkHandlerMixin implements ServerLoginNetworkHandlerExtensions, DisconnectPacketSource, PacketCallbackListener {
+abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtensions, DisconnectPacketSource, PacketCallbackListener {
 	@Shadow
 	@Final
 	private MinecraftServer server;
@@ -78,7 +78,17 @@ abstract class ServerLoginNetworkHandlerMixin implements ServerLoginNetworkHandl
 
 	@Inject(method = "onDisconnected", at = @At("HEAD"))
 	private void handleDisconnection(Text reason, CallbackInfo ci) {
-		this.addon.invokeDisconnectEvent();
+		this.addon.handleDisconnect();
+	}
+
+	@Inject(method = "acceptPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;onPlayerConnect(Lnet/minecraft/network/ClientConnection;Lnet/minecraft/server/network/ServerPlayerEntity;)V"))
+	private void handlePlayTransitionNormal(CallbackInfo ci) {
+		this.addon.handlePlayTransition();
+	}
+
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;onPlayerConnect(Lnet/minecraft/network/ClientConnection;Lnet/minecraft/server/network/ServerPlayerEntity;)V"))
+	private void handlePlayTransitionDelayed(CallbackInfo ci) {
+		this.addon.handlePlayTransition();
 	}
 
 	@Override

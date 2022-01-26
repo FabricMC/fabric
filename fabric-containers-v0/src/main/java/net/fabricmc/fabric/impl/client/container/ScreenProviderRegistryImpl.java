@@ -22,15 +22,15 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.ScreenHandler;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screen.ContainerScreenFactory;
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerFactory;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.impl.container.ContainerProviderImpl;
 
 public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
@@ -67,12 +67,14 @@ public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
 	}
 
 	public static void init() {
-		ClientSidePacketRegistry.INSTANCE.register(ContainerProviderImpl.OPEN_CONTAINER, (packetContext, packetByteBuf) -> {
-			Identifier identifier = packetByteBuf.readIdentifier();
-			int syncId = packetByteBuf.readUnsignedByte();
-			packetByteBuf.retain();
+		ClientPlayNetworking.registerGlobalReceiver(ContainerProviderImpl.OPEN_CONTAINER, (client, handler, buf, responseSender) -> {
+			Identifier identifier = buf.readIdentifier();
+			int syncId = buf.readUnsignedByte();
 
-			MinecraftClient.getInstance().execute(() -> {
+			// Retain the buf since we must open the screen handler with it's extra modded data on the client thread
+			buf.retain();
+
+			client.execute(() -> {
 				try {
 					ContainerFactory<HandledScreen> factory = FACTORIES.get(identifier);
 
@@ -81,11 +83,13 @@ public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
 						return;
 					}
 
-					HandledScreen gui = factory.create(syncId, identifier, packetContext.getPlayer(), packetByteBuf);
-					packetContext.getPlayer().currentScreenHandler = gui.getScreenHandler();
-					MinecraftClient.getInstance().openScreen(gui);
+					ClientPlayerEntity player = client.player;
+					HandledScreen<?> gui = factory.create(syncId, identifier, player, buf);
+
+					player.currentScreenHandler = gui.getScreenHandler();
+					client.openScreen(gui);
 				} finally {
-					packetByteBuf.release();
+					buf.release();
 				}
 			});
 		});

@@ -112,8 +112,12 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 	}
 
 	@Override
-	public void invokeDisconnectEvent() {
+	protected void invokeDisconnectEvent() {
 		ClientLoginConnectionEvents.DISCONNECT.invoker().onLoginDisconnect(this.handler, this.client);
+		this.receiver.endSession(this);
+	}
+
+	public void handlePlayTransition() {
 		this.receiver.endSession(this);
 	}
 

@@ -1,0 +1,6 @@
+archivesBaseName = "fabric-screen-api-v1"
+version = getSubprojectVersion(project)
+
+moduleDependencies(project, [
+		'fabric-api-base'
+])

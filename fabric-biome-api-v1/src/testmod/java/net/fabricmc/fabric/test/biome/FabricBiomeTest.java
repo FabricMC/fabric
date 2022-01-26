@@ -30,9 +30,12 @@ import net.minecraft.world.biome.DefaultBiomeCreator;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredFeatures;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.FeatureConfig;
 import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
@@ -97,6 +100,9 @@ public class FabricBiomeTest implements ModInitializer {
 
 		OverworldBiomes.addContinentalBiome(BiomeKeys.END_HIGHLANDS, OverworldClimate.DRY, 0.5);
 
+		ConfiguredFeature<?, ?> COMMON_DESERT_WELL = Feature.DESERT_WELL.configure(FeatureConfig.DEFAULT).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP);
+		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier(MOD_ID, "common_desert_well"), COMMON_DESERT_WELL);
+
 		BiomeModifications.create(new Identifier("fabric:test_mod"))
 				.add(ModificationPhase.ADDITIONS,
 						BiomeSelectors.foundInOverworld(),
@@ -107,6 +113,13 @@ public class FabricBiomeTest implements ModInitializer {
 						),
 						context -> {
 							context.getGenerationSettings().setBuiltInSurfaceBuilder(ConfiguredSurfaceBuilders.CRIMSON_FOREST);
+						})
+				.add(ModificationPhase.ADDITIONS,
+						BiomeSelectors.categories(Biome.Category.DESERT),
+						context -> {
+							context.getGenerationSettings().addFeature(GenerationStep.Feature.TOP_LAYER_MODIFICATION,
+									BuiltinRegistries.CONFIGURED_FEATURE.getKey(COMMON_DESERT_WELL).get()
+							);
 						});
 	}
 
