@@ -113,7 +113,7 @@ public interface BiomeSelectionContext {
 
 	/**
 	 * Returns true if the given built-in configured structure from {@link net.minecraft.util.registry.BuiltinRegistries}
-	 * can start in this biome.
+	 * can start in this biome in any of the chunk generators used by the current world-save.
 	 *
 	 * <p>This method is intended for use with the Vanilla configured structures found in {@link net.minecraft.world.gen.feature.ConfiguredStructureFeatures}.
 	 */
@@ -123,8 +123,8 @@ public interface BiomeSelectionContext {
 	}
 
 	/**
-	 * Returns true if the configured structure with the given key can start in this biome in any configured
-	 * chunk generator.
+	 * Returns true if the configured structure with the given key can start in this biome in any chunk generator
+	 * used by the current world-save.
 	 */
 	boolean hasStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> key);
 
@@ -136,10 +136,10 @@ public interface BiomeSelectionContext {
 	Optional<RegistryKey<ConfiguredStructureFeature<?, ?>>> getStructureKey(ConfiguredStructureFeature<?, ?> configuredStructure);
 
 	/**
-	 * Tries to determine whether this biome generates in a specific dimension, based on the dimension options
-	 * present in the dynamic registries.
-	 * <p/>
-	 * If no dimension options exist for the given dimension key, <code>false</code> is returned.
+	 * Tries to determine whether this biome generates in a specific dimension, based on the {@link net.minecraft.world.gen.GeneratorOptions}
+	 * used by the current world-save.
+	 *
+	 * <p>If no dimension options exist for the given dimension key, <code>false</code> is returned.
 	 */
 	boolean canGenerateIn(RegistryKey<DimensionOptions> dimensionKey);
 }

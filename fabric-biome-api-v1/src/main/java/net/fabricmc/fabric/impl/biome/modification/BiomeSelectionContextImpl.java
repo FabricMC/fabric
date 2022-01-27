@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.biome.modification;
 
-import java.util.Map;
 import java.util.Optional;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -26,7 +25,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionOptions;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
@@ -79,13 +77,10 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 			return false;
 		}
 
-		// Since the biome->structure mapping is now stored in the chunk generator configurations, it's no longer
-		// trivial to detect if a given biome _could_ spawn a structure. To still support the API, we now do this on a
-		// per-chunk-generator level.
-		Registry<ChunkGeneratorSettings> chunkGeneratorSettings = dynamicRegistries.get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
-
-		for (Map.Entry<RegistryKey<ChunkGeneratorSettings>, ChunkGeneratorSettings> entry : chunkGeneratorSettings.getEntries()) {
-			StructuresConfig structuresConfig = entry.getValue().getStructuresConfig();
+		// Since the biome->structure mapping is now stored in the chunk generator configuration, we check every
+		// chunk generator used by the current world-save.
+		for (DimensionOptions dimension : levelProperties.getGeneratorOptions().getDimensions()) {
+			StructuresConfig structuresConfig = dimension.getChunkGenerator().getStructuresConfig();
 
 			if (structuresConfig.getConfiguredStructureFeature(instance.feature).get(instance).contains(getBiomeKey())) {
 				return true;
