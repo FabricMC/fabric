@@ -103,7 +103,7 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 
 	@Override
 	public boolean canGenerateIn(RegistryKey<DimensionOptions> dimensionKey) {
-		var dimension = levelProperties.getGeneratorOptions().getDimensions().get(dimensionKey);
+		DimensionOptions dimension = levelProperties.getGeneratorOptions().getDimensions().get(dimensionKey);
 
 		if (dimension == null) {
 			return false;
