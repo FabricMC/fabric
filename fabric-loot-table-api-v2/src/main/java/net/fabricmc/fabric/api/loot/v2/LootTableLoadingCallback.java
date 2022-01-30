@@ -56,10 +56,10 @@ public interface LootTableLoadingCallback {
 	 * @param tableBuilder    a builder of the loot table being loaded
 	 * @param setter          a loot table setter for completely replacing the loaded loot table
 	 */
-	void onLootTableLoading(ResourceManager resourceManager, LootManager lootManager, Identifier id, FabricLootTableBuilder tableBuilder, LootTableSetter setter);
+	void onLootTableLoading(ResourceManager resourceManager, LootManager lootManager, Identifier id, LootTable.Builder tableBuilder, LootTableSetter setter);
 
 	/**
-	 * Used for replacing loot tables in {@link LootTableLoadingCallback#onLootTableLoading(ResourceManager, LootManager, Identifier, FabricLootTableBuilder, LootTableSetter)}.
+	 * Used for replacing loot tables in {@link LootTableLoadingCallback#onLootTableLoading(ResourceManager, LootManager, Identifier, LootTable.Builder, LootTableSetter)}.
 	 */
 	@FunctionalInterface
 	interface LootTableSetter {

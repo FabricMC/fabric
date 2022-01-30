@@ -32,10 +32,12 @@ import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
  * Used for hooking the two {@code LootTableLoadingCallback} interfaces together.
  */
 public class DelegatingLootTableBuilder extends FabricLootSupplierBuilder {
-	private final FabricLootTableBuilder parent;
+	private final LootTable.Builder parent;
+	private final FabricLootTableBuilder parentAsV2;
 
-	public DelegatingLootTableBuilder(FabricLootTableBuilder parent) {
+	public DelegatingLootTableBuilder(LootTable.Builder parent) {
 		this.parent = parent;
+		this.parentAsV2 = (FabricLootTableBuilder) parent;
 	}
 
 	@Override
@@ -58,33 +60,33 @@ public class DelegatingLootTableBuilder extends FabricLootSupplierBuilder {
 
 	@Override
 	public FabricLootSupplierBuilder withPool(LootPool pool) {
-		parent.pool(pool);
+		parentAsV2.pool(pool);
 		return this;
 	}
 
 	@Override
 	public FabricLootSupplierBuilder withFunction(LootFunction function) {
-		parent.apply(function);
+		parentAsV2.apply(function);
 		return this;
 	}
 
 	@Override
 	public FabricLootSupplierBuilder withPools(Collection<LootPool> pools) {
-		parent.pools(pools);
+		parentAsV2.pools(pools);
 		return this;
 	}
 
 	@Override
 	public FabricLootSupplierBuilder withFunctions(Collection<LootFunction> functions) {
-		parent.apply(functions);
+		parentAsV2.apply(functions);
 		return this;
 	}
 
 	@Override
 	public FabricLootSupplierBuilder copyFrom(LootTable supplier, boolean copyType) {
 		FabricLootSupplier extended = (FabricLootSupplier) supplier;
-		parent.pools(extended.getPools());
-		parent.apply(extended.getFunctions());
+		parentAsV2.pools(extended.getPools());
+		parentAsV2.apply(extended.getFunctions());
 
 		if (copyType) {
 			parent.type(supplier.getType());

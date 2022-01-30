@@ -4,8 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "LootManagerMixin",
-    "LootPoolBuilderAccessor",
-    "LootTableBuilderAccessor"
+    "LootPoolBuilderMixin",
+    "LootTableBuilderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

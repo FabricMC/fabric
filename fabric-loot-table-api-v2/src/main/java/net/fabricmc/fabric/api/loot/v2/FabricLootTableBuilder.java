@@ -19,51 +19,27 @@ package net.fabricmc.fabric.api.loot.v2;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.function.LootFunction;
 
-import net.fabricmc.fabric.mixin.loot.LootTableBuilderAccessor;
-
 /**
- * An extended version of {@link LootTable.Builder}.
+ * Convenience extensions to {@link LootTable.Builder}
+ * for adding pre-built objects or collections.
+ *
+ * <p>This interface is automatically injected to {@link LootTable.Builder}.
  */
-public class FabricLootTableBuilder extends LootTable.Builder {
-	// Any new LootPool.Builder methods have to be added to this class and copyOf().
-	private final LootTableBuilderAccessor access = (LootTableBuilderAccessor) this;
-
-	protected FabricLootTableBuilder() {
-	}
-
-	@Override
-	public FabricLootTableBuilder pool(LootPool.Builder pool) {
-		super.pool(pool);
-		return this;
-	}
-
-	@Override
-	public FabricLootTableBuilder type(LootContextType type) {
-		super.type(type);
-		return this;
-	}
-
-	@Override
-	public FabricLootTableBuilder apply(LootFunction.Builder function) {
-		super.apply(function);
-		return this;
-	}
-
+@ApiStatus.NonExtendable
+public interface FabricLootTableBuilder {
 	/**
 	 * Adds a loot pool to this builder.
 	 *
 	 * @param pool the added pool
 	 * @return this builder
 	 */
-	public FabricLootTableBuilder pool(LootPool pool) {
-		access.getPools().add(pool);
-		return this;
-	}
+	LootTable.Builder pool(LootPool pool);
 
 	/**
 	 * Applies a loot function to this builder.
@@ -71,10 +47,7 @@ public class FabricLootTableBuilder extends LootTable.Builder {
 	 * @param function the applied function
 	 * @return this builder
 	 */
-	public FabricLootTableBuilder apply(LootFunction function) {
-		access.getFunctions().add(function);
-		return this;
-	}
+	LootTable.Builder apply(LootFunction function);
 
 	/**
 	 * Adds loot pools to this builder.
@@ -82,10 +55,7 @@ public class FabricLootTableBuilder extends LootTable.Builder {
 	 * @param pools the added pools
 	 * @return this builder
 	 */
-	public FabricLootTableBuilder pools(Collection<? extends LootPool> pools) {
-		access.getPools().addAll(pools);
-		return this;
-	}
+	LootTable.Builder pools(Collection<? extends LootPool> pools);
 
 	/**
 	 * Applies loot functions to this builder.
@@ -93,19 +63,7 @@ public class FabricLootTableBuilder extends LootTable.Builder {
 	 * @param functions the applied functions
 	 * @return this builder
 	 */
-	public FabricLootTableBuilder apply(Collection<? extends LootFunction> functions) {
-		access.getFunctions().addAll(functions);
-		return this;
-	}
-
-	/**
-	 * Creates an empty builder.
-	 *
-	 * @return the created builder
-	 */
-	public static FabricLootTableBuilder create() {
-		return new FabricLootTableBuilder();
-	}
+	LootTable.Builder apply(Collection<? extends LootFunction> functions);
 
 	/**
 	 * Creates a builder copy of a loot table.
@@ -113,8 +71,8 @@ public class FabricLootTableBuilder extends LootTable.Builder {
 	 * @param table the loot table
 	 * @return the copied builder
 	 */
-	public static FabricLootTableBuilder copyOf(LootTable table) {
-		FabricLootTableBuilder builder = new FabricLootTableBuilder();
+	static LootTable.Builder copyOf(LootTable table) {
+		LootTable.Builder builder = LootTable.builder();
 
 		builder.type(table.getType());
 		builder.pools(Arrays.asList(table.pools));

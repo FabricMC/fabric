@@ -16,71 +16,30 @@
 
 package net.fabricmc.fabric.api.loot.v2;
 
-import java.util.Arrays;
 import java.util.Collection;
+
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
-import net.minecraft.loot.provider.number.LootNumberProvider;
-
-import net.fabricmc.fabric.mixin.loot.LootPoolBuilderAccessor;
 
 /**
- * An extended version of {@link LootPool.Builder}.
+ * Convenience extensions to {@link LootPool.Builder}
+ * for adding pre-built objects or collections.
+ *
+ * <p>This interface is automatically injected to {@link LootPool.Builder}.
  */
-public class FabricLootPoolBuilder extends LootPool.Builder {
-	// Any new LootPool.Builder methods have to be added to this class and copyOf().
-	private final LootPoolBuilderAccessor access = (LootPoolBuilderAccessor) this;
-
-	protected FabricLootPoolBuilder() {
-	}
-
-	// Vanilla overrides
-
-	@Override
-	public FabricLootPoolBuilder rolls(LootNumberProvider range) {
-		super.rolls(range);
-		return this;
-	}
-
-	@Override
-	public FabricLootPoolBuilder with(LootPoolEntry.Builder<?> entry) {
-		super.with(entry);
-		return this;
-	}
-
-	@Override
-	public FabricLootPoolBuilder conditionally(LootCondition.Builder condition) {
-		super.conditionally(condition);
-		return this;
-	}
-
-	@Override
-	public FabricLootPoolBuilder apply(LootFunction.Builder function) {
-		super.apply(function);
-		return this;
-	}
-
-	@Override
-	public FabricLootPoolBuilder bonusRolls(LootNumberProvider bonusRolls) {
-		super.bonusRolls(bonusRolls);
-		return this;
-	}
-
-	// Custom methods
-
+@ApiStatus.NonExtendable
+public interface FabricLootPoolBuilder {
 	/**
 	 * Adds an entry to this builder.
 	 *
 	 * @param entry the added loot entry
 	 * @return this builder
 	 */
-	public FabricLootPoolBuilder with(LootPoolEntry entry) {
-		access.getEntries().add(entry);
-		return this;
-	}
+	LootPool.Builder with(LootPoolEntry entry);
 
 	/**
 	 * Adds entries to this builder.
@@ -88,10 +47,7 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	 * @param entries the added loot entries
 	 * @return this builder
 	 */
-	public FabricLootPoolBuilder with(Collection<? extends LootPoolEntry> entries) {
-		access.getEntries().addAll(entries);
-		return this;
-	}
+	LootPool.Builder with(Collection<? extends LootPoolEntry> entries);
 
 	/**
 	 * Adds a condition to this builder.
@@ -99,10 +55,7 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	 * @param condition the added condition
 	 * @return this builder
 	 */
-	public FabricLootPoolBuilder conditionally(LootCondition condition) {
-		access.getConditions().add(condition);
-		return this;
-	}
+	LootPool.Builder conditionally(LootCondition condition);
 
 	/**
 	 * Adds conditions to this builder.
@@ -110,10 +63,7 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	 * @param conditions the added conditions
 	 * @return this builder
 	 */
-	public FabricLootPoolBuilder conditionally(Collection<? extends LootCondition> conditions) {
-		access.getConditions().addAll(conditions);
-		return this;
-	}
+	LootPool.Builder conditionally(Collection<? extends LootCondition> conditions);
 
 	/**
 	 * Applies a function to this builder.
@@ -121,10 +71,7 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	 * @param function the applied loot function
 	 * @return this builder
 	 */
-	public FabricLootPoolBuilder apply(LootFunction function) {
-		access.getFunctions().add(function);
-		return this;
-	}
+	LootPool.Builder apply(LootFunction function);
 
 	/**
 	 * Applies loot functions to this builder.
@@ -132,35 +79,5 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	 * @param functions the applied loot functions
 	 * @return this builder
 	 */
-	public FabricLootPoolBuilder apply(Collection<? extends LootFunction> functions) {
-		access.getFunctions().addAll(functions);
-		return this;
-	}
-
-	/**
-	 * Creates an empty loot pool builder.
-	 *
-	 * @return the created builder
-	 */
-	public static FabricLootPoolBuilder create() {
-		return new FabricLootPoolBuilder();
-	}
-
-	/**
-	 * Creates a builder copy of a loot pool.
-	 *
-	 * @param pool the loot pool
-	 * @return the copied builder
-	 */
-	public static FabricLootPoolBuilder copyOf(LootPool pool) {
-		FabricLootPoolBuilder builder = new FabricLootPoolBuilder();
-
-		builder.rolls(pool.rolls);
-		builder.bonusRolls(pool.bonusRolls);
-		builder.with(Arrays.asList(pool.entries));
-		builder.conditionally(Arrays.asList(pool.conditions));
-		builder.apply(Arrays.asList(pool.functions));
-
-		return builder;
-	}
+	LootPool.Builder apply(Collection<? extends LootFunction> functions);
 }

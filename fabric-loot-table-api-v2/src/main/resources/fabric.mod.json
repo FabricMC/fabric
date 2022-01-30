@@ -25,6 +25,10 @@
   ],
   "accessWidener": "fabric-loot-table-api-v2.accesswidener",
   "custom": {
-    "fabric-api:module-lifecycle": "stable"
+    "fabric-api:module-lifecycle": "stable",
+    "loom:injected_interfaces": {
+      "net/minecraft/class_52$class_53": ["net/fabricmc/fabric/api/loot/v2/FabricLootTableBuilder"],
+      "net/minecraft/class_55$class_56": ["net/fabricmc/fabric/api/loot/v2/FabricLootPoolBuilder"]
+    }
   }
 }

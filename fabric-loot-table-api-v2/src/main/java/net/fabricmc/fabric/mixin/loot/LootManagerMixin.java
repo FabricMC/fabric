@@ -46,7 +46,7 @@ abstract class LootManagerMixin {
 		Map<Identifier, LootTable> newTables = new HashMap<>();
 
 		tables.forEach((id, table) -> {
-			FabricLootTableBuilder builder = FabricLootTableBuilder.copyOf(table);
+			LootTable.Builder builder = FabricLootTableBuilder.copyOf(table);
 
 			//noinspection ConstantConditions
 			LootTableLoadingCallback.EVENT.invoker().onLootTableLoading(

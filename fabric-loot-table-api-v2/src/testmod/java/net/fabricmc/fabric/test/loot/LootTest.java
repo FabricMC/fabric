@@ -20,39 +20,44 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.SurvivesExplosionLootCondition;
 import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.function.SetNameLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
+import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.loot.v2.FabricLootPoolBuilder;
-import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
 import net.fabricmc.fabric.api.loot.v2.LootTableLoadingCallback;
 
 public class LootTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Test loot table load event
+		// The LootTable.Builder LootPool.Builder methods here should use
+		// prebuilt entries and pools to test the injected methods.
 		LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, tableBuilder, setter) -> {
 			if (Blocks.WHITE_WOOL.getLootTableId().equals(id)) {
-				// Add gold ingot to white wool drops
-				LootPool pool = FabricLootPoolBuilder.create()
+				// Add gold ingot with custom name to white wool drops
+				LootPool pool = LootPool.builder()
 						.with(ItemEntry.builder(Items.GOLD_INGOT).build())
 						.conditionally(SurvivesExplosionLootCondition.builder().build())
+						.apply(SetNameLootFunction.builder(new LiteralText("Gold from White Wool")).build())
 						.build();
 
 				tableBuilder.pool(pool);
 			} else if (Blocks.BLACK_WOOL.getLootTableId().equals(id)) {
 				// Replace black wool drops with an iron ingot
-				FabricLootPoolBuilder pool = FabricLootPoolBuilder.create()
-						.with(ItemEntry.builder(Items.IRON_INGOT));
+				LootPool pool = LootPool.builder()
+						.with(ItemEntry.builder(Items.IRON_INGOT).build())
+						.build();
 
-				setter.set(FabricLootTableBuilder.create().pool(pool).build());
+				setter.set(LootTable.builder().pool(pool).build());
 			} else if (EntityType.PIG.getLootTableId().equals(id)) {
 				// Add diamonds with bonus rolls to the pig loot table (bonus rolls don't work for blocks)
-				LootPool pool = FabricLootPoolBuilder.create()
+				LootPool pool = LootPool.builder()
 						.bonusRolls(ConstantLootNumberProvider.create(5f))
-						.with(ItemEntry.builder(Items.DIAMOND))
+						.with(ItemEntry.builder(Items.DIAMOND).build())
 						.build();
 
 				tableBuilder.pool(pool);

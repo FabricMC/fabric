@@ -26,11 +26,15 @@ import net.minecraft.loot.function.LootFunction;
  * @deprecated Replaced with {@link net.fabricmc.fabric.api.loot.v2.FabricLootPoolBuilder}.
  */
 @Deprecated
-public class FabricLootPoolBuilder extends net.fabricmc.fabric.api.loot.v2.FabricLootPoolBuilder {
+public class FabricLootPoolBuilder extends LootPool.Builder {
 	private FabricLootPoolBuilder() { }
 
 	private FabricLootPoolBuilder(LootPool pool) {
 		copyFrom(pool, true);
+	}
+
+	private net.fabricmc.fabric.api.loot.v2.FabricLootPoolBuilder asV2() {
+		return (net.fabricmc.fabric.api.loot.v2.FabricLootPoolBuilder) this;
 	}
 
 	@Override
@@ -58,17 +62,17 @@ public class FabricLootPoolBuilder extends net.fabricmc.fabric.api.loot.v2.Fabri
 	}
 
 	public FabricLootPoolBuilder withEntry(LootPoolEntry entry) {
-		super.with(entry);
+		asV2().with(entry);
 		return this;
 	}
 
 	public FabricLootPoolBuilder withCondition(LootCondition condition) {
-		super.conditionally(condition);
+		asV2().conditionally(condition);
 		return this;
 	}
 
 	public FabricLootPoolBuilder withFunction(LootFunction function) {
-		super.apply(function);
+		asV2().apply(function);
 		return this;
 	}
 
@@ -90,9 +94,9 @@ public class FabricLootPoolBuilder extends net.fabricmc.fabric.api.loot.v2.Fabri
 	 */
 	public FabricLootPoolBuilder copyFrom(LootPool pool, boolean copyRolls) {
 		FabricLootPool extended = (FabricLootPool) pool;
-		with(extended.getEntries());
-		conditionally(extended.getConditions());
-		apply(extended.getFunctions());
+		asV2().with(extended.getEntries());
+		asV2().conditionally(extended.getConditions());
+		asV2().apply(extended.getFunctions());
 
 		if (copyRolls) {
 			rolls(extended.getRolls());
