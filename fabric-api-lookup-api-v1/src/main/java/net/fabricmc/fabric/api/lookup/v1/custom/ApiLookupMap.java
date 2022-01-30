@@ -84,7 +84,7 @@ import net.fabricmc.fabric.impl.lookup.custom.ApiLookupMapImpl;
  *         // Register the provider, or warn if it is already registered
  *         if (providerMap.putIfAbsent(item, provider) != null) {
  *             // Emit a warning printing the item ID to help users debug more easily.
- *             LogManager.getLogger("The name of your mod").warn("Encountered duplicate API provider registration for item " + Registry.ITEM.getId(item) + ".");
+ *             LoggerFactory.getLogger("The name of your mod").warn("Encountered duplicate API provider registration for item " + Registry.ITEM.getId(item) + ".");
  *         }
  *     }
  * }

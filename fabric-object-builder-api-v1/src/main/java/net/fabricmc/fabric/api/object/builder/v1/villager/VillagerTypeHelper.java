@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.object.builder.v1.villager;
 
 import java.util.Objects;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryKey;
@@ -42,7 +42,7 @@ import net.fabricmc.fabric.mixin.object.builder.VillagerTypeAccessor;
  * <p>The texture used for the appearance of the villager is located at {@code assets/IDENTIFIER_NAMESPACE/textures/entity/villager/type/IDENTIFIER_PATH.png}.
  */
 public final class VillagerTypeHelper {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerTypeHelper.class);
 
 	/**
 	 * Creates and registers a new villager type.

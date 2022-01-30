@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.registry;
 
 import java.util.Objects;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -30,7 +30,7 @@ import net.fabricmc.fabric.mixin.content.registry.ShovelItemAccessor;
  * A registry for shovel flattening interactions. A vanilla example is turning dirt to dirt paths.
  */
 public final class FlattenableBlockRegistry {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(FlattenableBlockRegistry.class);
 
 	private FlattenableBlockRegistry() {
 	}

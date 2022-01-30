@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.mixin.lookup.BlockEntityTypeAccessor;
 
 public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
-	private static final Logger LOGGER = LogManager.getLogger("fabric-api-lookup-api-v1/block");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-api-lookup-api-v1/block");
 	private static final ApiLookupMap<BlockApiLookup<?, ?>> LOOKUPS = ApiLookupMap.create(BlockApiLookupImpl::new);
 
 	@SuppressWarnings("unchecked")

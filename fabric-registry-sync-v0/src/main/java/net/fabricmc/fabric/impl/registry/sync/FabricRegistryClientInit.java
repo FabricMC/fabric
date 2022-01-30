@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.registry.sync;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.text.LiteralText;
 
@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
 public class FabricRegistryClientInit implements ClientModInitializer {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(FabricRegistryClientInit.class);
 
 	@Override
 	public void onInitializeClient() {

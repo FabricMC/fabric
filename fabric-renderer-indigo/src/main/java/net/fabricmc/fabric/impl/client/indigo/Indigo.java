@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
@@ -43,7 +43,7 @@ public class Indigo implements ClientModInitializer {
 	public static final boolean FIX_EXTERIOR_VERTEX_LIGHTING;
 	public static final boolean FIX_LUMINOUS_AO_SHADE;
 
-	public static final Logger LOGGER = LogManager.getLogger();
+	public static final Logger LOGGER = LoggerFactory.getLogger(Indigo.class);
 
 	private static boolean asBoolean(String property, boolean defValue) {
 		switch (asTriState(property)) {

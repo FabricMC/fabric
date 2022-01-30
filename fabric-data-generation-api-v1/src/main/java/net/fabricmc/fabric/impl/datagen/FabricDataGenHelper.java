@@ -26,8 +26,8 @@ import java.util.Objects;
 
 import com.mojang.serialization.Lifecycle;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,7 +46,7 @@ import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
 @ApiStatus.Internal
 public final class FabricDataGenHelper {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDataGenHelper.class);
 
 	/**
 	 * When enabled the dedicated server startup will be hijacked to run the data generators and then quit.

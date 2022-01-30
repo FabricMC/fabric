@@ -21,8 +21,8 @@ import java.util.Map;
 
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.item.Item;
@@ -34,7 +34,7 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 
 // TODO: Clamp values to 32767 (+ add hook for mods which extend the limit to disable the check?)
 public final class FuelRegistryImpl implements FuelRegistry {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(FuelRegistryImpl.class);
 	private final Object2IntMap<ItemConvertible> itemCookTimes = new Object2IntLinkedOpenHashMap<>();
 	private final Object2IntMap<Tag<Item>> tagCookTimes = new Object2IntLinkedOpenHashMap<>();
 	private volatile Map<Item, Integer> fuelTimeCache = null; // thread safe via copy-on-write mechanism

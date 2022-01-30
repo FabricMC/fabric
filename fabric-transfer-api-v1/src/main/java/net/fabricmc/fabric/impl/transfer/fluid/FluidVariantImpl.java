@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.transfer.fluid;
 
 import java.util.Objects;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.fluid.Fluid;
@@ -49,7 +49,7 @@ public class FluidVariantImpl implements FluidVariant {
 		}
 	}
 
-	private static final Logger LOGGER = LogManager.getLogger("fabric-transfer-api-v1/fluid");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-transfer-api-v1/fluid");
 
 	private final Fluid fluid;
 	private final @Nullable NbtCompound nbt;

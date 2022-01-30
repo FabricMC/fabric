@@ -25,8 +25,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.model.ModelLoader;
@@ -95,7 +95,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 							return model;
 						}
 					} catch (ModelProviderException e) {
-						logger.error(e);
+						logger.error("Failed to load custom model", e);
 						return null;
 					}
 				}
@@ -122,7 +122,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 						}
 					}
 				} catch (ModelProviderException e) {
-					logger.error(e);
+					logger.error("Failed to load custom model", e);
 					return null;
 				}
 			}
@@ -177,7 +177,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 		}
 	}
 
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModelLoadingRegistryImpl.class);
 
 	private final List<Function<ResourceManager, ModelVariantProvider>> variantProviderSuppliers = new ArrayList<>();
 	private final List<Function<ResourceManager, ModelResourceProvider>> resourceProviderSuppliers = new ArrayList<>();

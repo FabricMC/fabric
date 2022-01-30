@@ -37,9 +37,8 @@ import com.mojang.brigadier.exceptions.BuiltInExceptionProvider;
 import com.mojang.brigadier.exceptions.CommandExceptionType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandException;
@@ -55,7 +54,7 @@ import net.fabricmc.fabric.mixin.command.HelpCommandAccessor;
 
 @Environment(EnvType.CLIENT)
 public final class ClientCommandInternals {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ClientCommandInternals.class);
 	private static final char PREFIX = '/';
 	private static final String API_COMMAND_NAME = "fabric-command-api-v1:client";
 	private static final String SHORT_API_COMMAND_NAME = "fcc";
@@ -91,12 +90,13 @@ public final class ClientCommandInternals {
 			return true;
 		} catch (CommandSyntaxException e) {
 			boolean ignored = isIgnoredException(e.getType());
-			LOGGER.log(ignored ? Level.DEBUG : Level.WARN, "Syntax exception for client-sided command '{}'", message, e);
 
 			if (ignored) {
+				LOGGER.debug("Syntax exception for client-sided command '{}'", message, e);
 				return false;
 			}
 
+			LOGGER.warn("Syntax exception for client-sided command '{}'", message, e);
 			commandSource.sendError(getErrorMessage(e));
 			return true;
 		} catch (CommandException e) {

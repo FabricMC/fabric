@@ -22,8 +22,8 @@ import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ServerResourceManager;
@@ -45,7 +45,7 @@ import net.fabricmc.fabric.mixin.tag.extension.DynamicRegistryManagerAccessor;
 
 @SuppressWarnings("ClassCanBeRecord")
 public final class TagFactoryImpl<T> implements TagFactory<T> {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(TagFactoryImpl.class);
 
 	public static final Map<RegistryKey<? extends Registry<?>>, RequiredTagList<?>> TAG_LISTS = new HashMap<>();
 

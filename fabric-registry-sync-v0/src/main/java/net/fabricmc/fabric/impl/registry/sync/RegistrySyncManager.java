@@ -35,8 +35,8 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NbtCompound;
@@ -61,7 +61,7 @@ public final class RegistrySyncManager {
 	public static final RegistryPacketHandler NBT_PACKET_HANDLER = new NbtRegistryPacketHandler();
 	public static final RegistryPacketHandler DIRECT_PACKET_HANDLER = new DirectRegistryPacketHandler();
 
-	private static final Logger LOGGER = LogManager.getLogger("FabricRegistrySync");
+	private static final Logger LOGGER = LoggerFactory.getLogger("FabricRegistrySync");
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = Boolean.getBoolean("fabric.registry.debug.writeContentsAsCsv");
 	private static final boolean FORCE_NBT_SYNC = Boolean.getBoolean("fabric.registry.forceNbtSync");
 

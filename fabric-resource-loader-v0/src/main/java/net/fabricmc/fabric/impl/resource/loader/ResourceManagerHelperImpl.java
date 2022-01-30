@@ -28,8 +28,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.google.common.collect.Lists;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackSource;
@@ -46,7 +46,7 @@ import net.fabricmc.loader.api.ModContainer;
 public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	private static final Map<ResourceType, ResourceManagerHelperImpl> registryMap = new HashMap<>();
 	private static final Set<Pair<String, ModNioResourcePack>> builtinResourcePacks = new HashSet<>();
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ResourceManagerHelperImpl.class);
 
 	private final Set<Identifier> addedListenerIds = new HashSet<>();
 	private final Set<IdentifiableResourceReloadListener> addedListeners = new LinkedHashSet<>();

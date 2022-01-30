@@ -25,8 +25,8 @@ import java.util.function.Consumer;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ServerResourceManager;
@@ -48,7 +48,7 @@ import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 public final class FabricGameTestHelper {
 	public static final boolean ENABLED = System.getProperty("fabric-api.gametest") != null;
 
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(FabricGameTestHelper.class);
 
 	private FabricGameTestHelper() {
 	}

@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.mixin.registry.sync.client;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,7 +33,7 @@ import net.fabricmc.fabric.impl.registry.sync.RemapException;
 @Mixin(MinecraftClient.class)
 public class MixinMinecraftClient {
 	@Unique
-	private static Logger FABRIC_LOGGER = LogManager.getLogger();
+	private static Logger FABRIC_LOGGER = LoggerFactory.getLogger(MixinMinecraftClient.class);
 
 	// Unmap the registry before loading a new SP/MP setup.
 	@Inject(at = @At("RETURN"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V")

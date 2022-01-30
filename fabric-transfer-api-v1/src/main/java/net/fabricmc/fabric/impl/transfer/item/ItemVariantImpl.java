@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.transfer.item;
 
 import java.util.Objects;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.Item;
@@ -43,7 +43,7 @@ public class ItemVariantImpl implements ItemVariant {
 		}
 	}
 
-	private static final Logger LOGGER = LogManager.getLogger("fabric-transfer-api-v1/item");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-transfer-api-v1/item");
 
 	private final Item item;
 	private final @Nullable NbtCompound nbt;

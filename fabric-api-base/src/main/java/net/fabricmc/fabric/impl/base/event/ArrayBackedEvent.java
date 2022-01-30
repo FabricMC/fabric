@@ -24,15 +24,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 
 class ArrayBackedEvent<T> extends Event<T> {
-	static final Logger LOGGER = LogManager.getLogger("fabric-api-base");
+	static final Logger LOGGER = LoggerFactory.getLogger("fabric-api-base");
 
 	private final Function<T[], T> invokerFactory;
 	private final Object lock = new Object();

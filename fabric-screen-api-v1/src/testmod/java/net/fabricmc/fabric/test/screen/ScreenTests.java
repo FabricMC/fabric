@@ -19,8 +19,8 @@ package net.fabricmc.fabric.test.screen;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.client.screen.v1.Screens;
 
 @Environment(EnvType.CLIENT)
 public final class ScreenTests implements ClientModInitializer {
-	private static final Logger LOGGER = LogManager.getLogger("FabricScreenApiTests");
+	private static final Logger LOGGER = LoggerFactory.getLogger("FabricScreenApiTests");
 
 	@Override
 	public void onInitializeClient() {

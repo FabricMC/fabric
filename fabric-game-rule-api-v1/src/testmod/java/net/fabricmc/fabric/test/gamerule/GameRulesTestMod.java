@@ -22,8 +22,8 @@ import java.util.Collection;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
@@ -42,7 +42,7 @@ import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 
 public class GameRulesTestMod implements ModInitializer {
-	private static final Logger LOGGER = LogManager.getLogger(GameRulesTestMod.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GameRulesTestMod.class);
 	private static final Direction[] CARDINAL_DIRECTIONS = Arrays.stream(Direction.values()).filter(direction -> direction != Direction.UP && direction != Direction.DOWN).toArray(Direction[]::new);
 	public static final CustomGameRuleCategory GREEN_CATEGORY = new CustomGameRuleCategory(new Identifier("fabric", "green"), new LiteralText("This One is Green").styled(style -> style.withBold(true).withColor(Formatting.DARK_GREEN)));
 	public static final CustomGameRuleCategory RED_CATEGORY = new CustomGameRuleCategory(new Identifier("fabric", "red"), new LiteralText("This One is Red").styled(style -> style.withBold(true).withColor(Formatting.DARK_RED)));
