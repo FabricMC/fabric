@@ -3,8 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.entity.event",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "elytra/LivingEntityMixin",
-    "elytra/PlayerEntityMixin",
+    "elytra.LivingEntityMixin",
+    "elytra.PlayerEntityMixin",
     "BedBlockMixin",
     "EntityMixin",
     "LivingEntityMixin",
@@ -14,7 +14,7 @@
     "TeleportCommandMixin"
   ],
   "client": [
-    "elytra/ClientPlayerEntityMixin"
+    "elytra.ClientPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1,
