@@ -31,9 +31,8 @@ import net.minecraft.loot.function.LootFunction;
 
 import net.fabricmc.fabric.api.loot.v2.FabricLootPoolBuilder;
 
-// Prefer non-abstract mixin in this case because the compiler can verify that we implement the interface completely
 @Mixin(LootPool.Builder.class)
-class LootPoolBuilderMixin implements FabricLootPoolBuilder {
+abstract class LootPoolBuilderMixin implements FabricLootPoolBuilder {
 	@Shadow
 	@Final
 	private List<LootPoolEntry> entries;

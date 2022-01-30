@@ -39,7 +39,9 @@ public interface FabricLootPoolBuilder {
 	 * @param entry the added loot entry
 	 * @return this builder
 	 */
-	LootPool.Builder with(LootPoolEntry entry);
+	default LootPool.Builder with(LootPoolEntry entry) {
+		throw new UnsupportedOperationException("Unimplemented");
+	}
 
 	/**
 	 * Adds entries to this builder.
@@ -47,7 +49,9 @@ public interface FabricLootPoolBuilder {
 	 * @param entries the added loot entries
 	 * @return this builder
 	 */
-	LootPool.Builder with(Collection<? extends LootPoolEntry> entries);
+	default LootPool.Builder with(Collection<? extends LootPoolEntry> entries) {
+		throw new UnsupportedOperationException("Unimplemented");
+	}
 
 	/**
 	 * Adds a condition to this builder.
@@ -55,7 +59,9 @@ public interface FabricLootPoolBuilder {
 	 * @param condition the added condition
 	 * @return this builder
 	 */
-	LootPool.Builder conditionally(LootCondition condition);
+	default LootPool.Builder conditionally(LootCondition condition) {
+		throw new UnsupportedOperationException("Unimplemented");
+	}
 
 	/**
 	 * Adds conditions to this builder.
@@ -63,7 +69,9 @@ public interface FabricLootPoolBuilder {
 	 * @param conditions the added conditions
 	 * @return this builder
 	 */
-	LootPool.Builder conditionally(Collection<? extends LootCondition> conditions);
+	default LootPool.Builder conditionally(Collection<? extends LootCondition> conditions) {
+		throw new UnsupportedOperationException("Unimplemented");
+	}
 
 	/**
 	 * Applies a function to this builder.
@@ -71,7 +79,9 @@ public interface FabricLootPoolBuilder {
 	 * @param function the applied loot function
 	 * @return this builder
 	 */
-	LootPool.Builder apply(LootFunction function);
+	default LootPool.Builder apply(LootFunction function) {
+		throw new UnsupportedOperationException("Unimplemented");
+	}
 
 	/**
 	 * Applies loot functions to this builder.
@@ -79,5 +89,7 @@ public interface FabricLootPoolBuilder {
 	 * @param functions the applied loot functions
 	 * @return this builder
 	 */
-	LootPool.Builder apply(Collection<? extends LootFunction> functions);
+	default LootPool.Builder apply(Collection<? extends LootFunction> functions) {
+		throw new UnsupportedOperationException("Unimplemented");
+	}
 }

@@ -39,7 +39,9 @@ public interface FabricLootTableBuilder {
 	 * @param pool the added pool
 	 * @return this builder
 	 */
-	LootTable.Builder pool(LootPool pool);
+	default LootTable.Builder pool(LootPool pool) {
+		throw new UnsupportedOperationException("Unimplemented");
+	}
 
 	/**
 	 * Applies a loot function to this builder.
@@ -47,7 +49,9 @@ public interface FabricLootTableBuilder {
 	 * @param function the applied function
 	 * @return this builder
 	 */
-	LootTable.Builder apply(LootFunction function);
+	default LootTable.Builder apply(LootFunction function) {
+		throw new UnsupportedOperationException("Unimplemented");
+	}
 
 	/**
 	 * Adds loot pools to this builder.
@@ -55,7 +59,9 @@ public interface FabricLootTableBuilder {
 	 * @param pools the added pools
 	 * @return this builder
 	 */
-	LootTable.Builder pools(Collection<? extends LootPool> pools);
+	default LootTable.Builder pools(Collection<? extends LootPool> pools) {
+		throw new UnsupportedOperationException("Unimplemented");
+	}
 
 	/**
 	 * Applies loot functions to this builder.
@@ -63,7 +69,9 @@ public interface FabricLootTableBuilder {
 	 * @param functions the applied functions
 	 * @return this builder
 	 */
-	LootTable.Builder apply(Collection<? extends LootFunction> functions);
+	default LootTable.Builder apply(Collection<? extends LootFunction> functions) {
+		throw new UnsupportedOperationException("Unimplemented");
+	}
 
 	/**
 	 * Creates a builder copy of a loot table.

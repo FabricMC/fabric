@@ -42,7 +42,7 @@ import net.fabricmc.fabric.api.loot.v1.LootEntryTypeRegistry;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 
 public class LootV1Test implements ModInitializer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(LootTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LootV1Test.class);
 
 	private static final Gson LOOT_GSON = LootGsons.getTableGsonBuilder().create();
 	private static final String LOOT_ENTRY_JSON = "{\"type\":\"minecraft:item\",\"name\":\"minecraft:apple\"}";
