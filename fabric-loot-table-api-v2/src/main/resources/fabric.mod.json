@@ -23,7 +23,6 @@
   "mixins": [
     "fabric-loot-table-api-v2.mixins.json"
   ],
-  "accessWidener": "fabric-loot-table-api-v2.accesswidener",
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {

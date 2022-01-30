@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.loot.v2;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus;
 
@@ -24,6 +25,8 @@ import net.minecraft.loot.LootPool;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
+
+import net.fabricmc.fabric.mixin.loot.LootPoolAccessor;
 
 /**
  * Convenience extensions to {@link LootPool.Builder}
@@ -91,5 +94,21 @@ public interface FabricLootPoolBuilder {
 	 */
 	default LootPool.Builder apply(Collection<? extends LootFunction> functions) {
 		throw new UnsupportedOperationException("Unimplemented");
+	}
+
+	/**
+	 * Creates a builder copy of a loot pool.
+	 *
+	 * @param pool the loot pool
+	 * @return the copied builder
+	 */
+	static LootPool.Builder copyOf(LootPool pool) {
+		LootPoolAccessor accessor = (LootPoolAccessor) pool;
+		return LootPool.builder()
+				.rolls(accessor.getRolls())
+				.bonusRolls(accessor.getBonusRolls())
+				.with(List.of(accessor.getEntries()))
+				.conditionally(List.of(accessor.getConditions()))
+				.apply(List.of(accessor.getFunctions()));
 	}
 }

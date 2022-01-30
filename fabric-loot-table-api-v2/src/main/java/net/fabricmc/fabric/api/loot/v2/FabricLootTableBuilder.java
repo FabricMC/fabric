@@ -16,14 +16,16 @@
 
 package net.fabricmc.fabric.api.loot.v2;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.function.LootFunction;
+
+import net.fabricmc.fabric.mixin.loot.LootTableAccessor;
 
 /**
  * Convenience extensions to {@link LootTable.Builder}
@@ -81,10 +83,11 @@ public interface FabricLootTableBuilder {
 	 */
 	static LootTable.Builder copyOf(LootTable table) {
 		LootTable.Builder builder = LootTable.builder();
+		LootTableAccessor accessor = (LootTableAccessor) table;
 
 		builder.type(table.getType());
-		builder.pools(Arrays.asList(table.pools));
-		builder.apply(Arrays.asList(table.functions));
+		builder.pools(List.of(accessor.getPools()));
+		builder.apply(List.of(accessor.getFunctions()));
 
 		return builder;
 	}

@@ -1,10 +1,6 @@
 archivesBaseName = "fabric-loot-table-api-v2"
 version = getSubprojectVersion(project)
 
-loom {
-	accessWidenerPath = file('src/main/resources/fabric-loot-table-api-v2.accesswidener')
-}
-
 moduleDependencies(project, [
 		'fabric-api-base'
 ])

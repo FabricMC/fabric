@@ -28,7 +28,7 @@ import net.minecraft.loot.provider.number.LootNumberProvider;
  * An interface implemented by all {@code net.minecraft.loot.LootPool} instances when
  * Fabric API is present. Contains accessors for various fields.
  *
- * @deprecated Replaced with transitive access wideners in Fabric Loot Table API (v2).
+ * @deprecated Replaced with transitive access wideners in Fabric Transitive Access Wideners (v1).
  */
 @Deprecated
 public interface FabricLootPool {

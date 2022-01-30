@@ -1,10 +1,10 @@
 accessWidener v2 named
 
+# Loot tables and pools
 transitive-accessible field net/minecraft/loot/LootPool entries [Lnet/minecraft/loot/entry/LootPoolEntry;
 transitive-accessible field net/minecraft/loot/LootPool conditions [Lnet/minecraft/loot/condition/LootCondition;
 transitive-accessible field net/minecraft/loot/LootPool functions [Lnet/minecraft/loot/function/LootFunction;
 transitive-accessible field net/minecraft/loot/LootPool rolls Lnet/minecraft/loot/provider/number/LootNumberProvider;
 transitive-accessible field net/minecraft/loot/LootPool bonusRolls Lnet/minecraft/loot/provider/number/LootNumberProvider;
-
 transitive-accessible field net/minecraft/loot/LootTable pools [Lnet/minecraft/loot/LootPool;
 transitive-accessible field net/minecraft/loot/LootTable functions [Lnet/minecraft/loot/function/LootFunction;
