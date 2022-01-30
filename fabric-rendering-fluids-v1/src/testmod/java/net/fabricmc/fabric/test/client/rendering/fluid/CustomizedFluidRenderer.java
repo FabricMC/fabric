@@ -19,15 +19,15 @@ package net.fabricmc.fabric.test.client.rendering.fluid;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
+import net.fabricmc.fabric.api.client.texture.RegistrableTexture;
 
 public class CustomizedFluidRenderer extends SimpleFluidRenderHandler {
-	public CustomizedFluidRenderer(Identifier overlayTexture) {
-		super(null, null, overlayTexture);
+	public CustomizedFluidRenderer(RegistrableTexture overlayTexture) {
+		super(RegistrableTexture.empty(), RegistrableTexture.empty(), overlayTexture);
 	}
 
 	@Override

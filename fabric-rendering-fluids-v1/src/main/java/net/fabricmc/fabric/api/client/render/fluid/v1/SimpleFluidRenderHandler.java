@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.api.client.render.fluid.v1;
 
-import java.util.Arrays;
-import java.util.Objects;
-
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.texture.Sprite;
@@ -28,16 +26,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
+import net.fabricmc.fabric.api.client.texture.RegistrableTexture;
+
 /**
  * A simple fluid render handler that uses and loads sprites given by their
  * identifiers. Most fluids don't need more than this. In fact, if a fluid just
  * needs the vanilla water texture with a custom color, {@link #coloredWater}
  * can be used to easily create a fluid render handler for that.
- *
- * <p>Note that it's assumed that the fluid textures are assumed to be
- * registered to the blocks sprite atlas. If they are not, you have to manually
- * register the fluid textures. The "fabric-textures" API may come in handy for
- * that.
  */
 public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	/**
@@ -65,10 +60,28 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 */
 	public static final Identifier LAVA_FLOWING = new Identifier("block/lava_flow");
 
-	private final Identifier[] textures = new Identifier[3];
+	/**
+	 * The array of textures used, in this case 3 textures can be used:
+	 * <p>[0] -> StillTexture: The texture for still fluid.</p>
+	 * <p>[1] -> FlowingTexture: The texture for flowing/falling fluid.</p>
+	 * <p>[2] -> [OPTIONAL] OverlayTexture: The texture behind glass, leaves and other.</p>
+	 * If the overlay texture is null, this array will have a count of 2.
+	 */
+	protected RegistrableTexture[] textures;
 
+	/**
+	 * The array of sprites used, in this case 3 textures will be used:
+	 * <p>[0] -> StillSprite: The sprite for still fluid.</p>
+	 * <p>[1] -> FlowingSprite: The sprite for flowing/falling fluid.</p>
+	 * <p>[2] -> [OPTIONAL] OverlaySprite: The sprite behind glass, leaves and other.</p>
+	 * If the overlay texture is null, this array will have a count of 2.
+	 */
 	protected final Sprite[] sprites;
 
+	/**
+	 * The color used to recolor the fluid textures.
+	 * <p>(Must be a hexadecimal value)</p>
+	 */
 	protected final int tint;
 
 	/**
@@ -82,11 +95,13 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * transparent blocks}.
 	 * @param tint The fluid color RGB. Alpha is ignored.
 	 */
-	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, @Nullable Identifier overlayTexture, int tint) {
-		this.setStillTexture(stillTexture);
-		this.setFlowingTexture(flowingTexture);
-		this.setOverlayTexture(overlayTexture);
-		this.sprites = new Sprite[overlayTexture == null ? 2 : 3];
+	public SimpleFluidRenderHandler(@NotNull RegistrableTexture stillTexture, @NotNull RegistrableTexture flowingTexture,
+									@Nullable RegistrableTexture overlayTexture, int tint) {
+		this.textures = new RegistrableTexture[overlayTexture == null ? 2 : 3];
+		this.textures[0] = stillTexture;
+		this.textures[1] = flowingTexture;
+		if (overlayTexture != null) this.textures[2] = overlayTexture;
+		this.sprites = new Sprite[textures.length];
 		this.tint = tint;
 	}
 
@@ -99,7 +114,8 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * {@linkplain FluidRenderHandlerRegistry#setBlockTransparency registered
 	 * transparent blocks}.
 	 */
-	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, Identifier overlayTexture) {
+	public SimpleFluidRenderHandler(@NotNull RegistrableTexture stillTexture, @NotNull RegistrableTexture flowingTexture,
+									@Nullable RegistrableTexture overlayTexture) {
 		this(stillTexture, flowingTexture, overlayTexture, -1);
 	}
 
@@ -111,7 +127,8 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * @param flowingTexture The texture for flowing/falling fluid.
 	 * @param tint The fluid color RGB. Alpha is ignored.
 	 */
-	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, int tint) {
+	public SimpleFluidRenderHandler(@NotNull RegistrableTexture stillTexture, @NotNull RegistrableTexture flowingTexture,
+									int tint) {
 		this(stillTexture, flowingTexture, null, tint);
 	}
 
@@ -121,13 +138,78 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * @param stillTexture The texture for still fluid.
 	 * @param flowingTexture The texture for flowing/falling fluid.
 	 */
-	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture) {
+	public SimpleFluidRenderHandler(@NotNull RegistrableTexture stillTexture, @NotNull RegistrableTexture flowingTexture) {
 		this(stillTexture, flowingTexture, null, -1);
 	}
 
 	/**
-	 * Creates a fluid render handler that uses the vanilla water texture with a
-	 * fixed, custom color.
+	 * Creates a fluid render handler with an overlay texture and a custom,
+	 * fixed tint.
+	 * <p></p>
+	 * <p>NOTE: The fluid textures are assumed to be registered to the block sprite atlas.</p>
+	 * <p>If they are not, you have to manually register the fluid textures.</p>
+	 *
+	 * @param stillTexture The texture for still fluid.
+	 * @param flowingTexture The texture for flowing/falling fluid.
+	 * @param overlayTexture The texture behind glass, leaves and other
+	 * {@linkplain FluidRenderHandlerRegistry#setBlockTransparency registered
+	 * transparent blocks}.
+	 * @param tint The fluid color RGB. Alpha is ignored.
+	 */
+	public SimpleFluidRenderHandler(@Nullable Identifier stillTexture, @Nullable Identifier flowingTexture,
+									@Nullable Identifier overlayTexture, int tint) {
+		this(RegistrableTexture.nonRegistrable(stillTexture), RegistrableTexture.nonRegistrable(flowingTexture),
+				RegistrableTexture.nonRegistrable(overlayTexture), tint);
+	}
+
+	/**
+	 * Creates a fluid render handler with an overlay texture and no tint.
+	 * <p></p>
+	 * <p>NOTE: The fluid textures are assumed to be registered to the block sprite atlas.</p>
+	 * <p>If they are not, you have to manually register the fluid textures.</p>
+	 *
+	 * @param stillTexture The texture for still fluid.
+	 * @param flowingTexture The texture for flowing/falling fluid.
+	 * @param overlayTexture The texture behind glass, leaves and other
+	 * {@linkplain FluidRenderHandlerRegistry#setBlockTransparency registered
+	 * transparent blocks}.
+	 */
+	public SimpleFluidRenderHandler(@Nullable Identifier stillTexture, @Nullable Identifier flowingTexture,
+									@Nullable Identifier overlayTexture) {
+		this(stillTexture, flowingTexture, overlayTexture, -1);
+	}
+
+	/**
+	 * Creates a fluid render handler without an overlay texture and a custom,
+	 * fixed tint.
+	 * <p></p>
+	 * <p>NOTE: The fluid textures are assumed to be registered to the block sprite atlas.</p>
+	 * <p>If they are not, you have to manually register the fluid textures.</p>
+	 *
+	 * @param stillTexture The texture for still fluid.
+	 * @param flowingTexture The texture for flowing/falling fluid.
+	 * @param tint The fluid color RGB. Alpha is ignored.
+	 */
+	public SimpleFluidRenderHandler(@Nullable Identifier stillTexture, @Nullable Identifier flowingTexture,
+									int tint) {
+		this(stillTexture, flowingTexture, null, tint);
+	}
+
+	/**
+	 * Creates a fluid render handler without an overlay texture and no tint.
+	 * <p></p>
+	 * <p>NOTE: The fluid textures are assumed to be registered to the block sprite atlas.</p>
+	 * <p>If they are not, you have to manually register the fluid textures.</p>
+	 *
+	 * @param stillTexture The texture for still fluid.
+	 * @param flowingTexture The texture for flowing/falling fluid.
+	 */
+	public SimpleFluidRenderHandler(@Nullable Identifier stillTexture, @Nullable Identifier flowingTexture) {
+		this(stillTexture, flowingTexture, null, -1);
+	}
+
+	/**
+	 * Creates a fluid render handler that uses the vanilla water texture with a fixed, custom color.
 	 *
 	 * @param tint The fluid color RGB. Alpha is ignored.
 	 * @see	#WATER_STILL
@@ -139,56 +221,22 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	}
 
 	/**
-	 * @return The current texture for the fluid in still state.
+	 * Creates a fluid render handler that uses the vanilla lava texture with a fixed, custom color.
+	 *
+	 * @param tint The fluid color RGB. Alpha is ignored.
+	 * @see	#LAVA_STILL
+	 * @see	#LAVA_FLOWING
 	 */
-	public Identifier getStillTexture() {
-		return textures[0];
-	}
-
-	/**
-	 * @return The current texture for the fluid in flowing state.
-	 */
-	public Identifier getFlowingTexture() {
-		return textures[1];
-	}
-
-	/**
-	 * @return The current texture for the fluid overlay.
-	 */
-	public Identifier getOverlayTexture() {
-		return textures[2];
-	}
-
-	/**
-	 * Set the current texture for the fluid in still state.
-	 * @param id Identifier of the texture.
-	 */
-	public void setStillTexture(Identifier id) {
-		textures[0] = id;
-	}
-
-	/**
-	 * Set the current texture for the fluid in flowing state.
-	 * @param id Identifier of the texture.
-	 */
-	public void setFlowingTexture(Identifier id) {
-		textures[1] = id;
-	}
-
-	/**
-	 * Set the current texture for the fluid overlay.
-	 * @param id Identifier of the texture.
-	 */
-	public void setOverlayTexture(Identifier id) {
-		textures[2] = id;
+	public static SimpleFluidRenderHandler coloredLava(int tint) {
+		return new SimpleFluidRenderHandler(LAVA_STILL, LAVA_FLOWING, tint);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identifier[] getTexturesIds() {
-		return Arrays.stream(textures).filter(Objects::nonNull).toArray(Identifier[]::new);
+	public @Nullable RegistrableTexture[] getFluidTextures() {
+		return textures;
 	}
 
 	/**
@@ -203,12 +251,12 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void reloadTextures(SpriteAtlasTexture textureAtlas) {
-		sprites[0] = textureAtlas.getSprite(getStillTexture());
-		sprites[1] = textureAtlas.getSprite(getFlowingTexture());
+	public void reloadTextures(@NotNull SpriteAtlasTexture textureAtlas) {
+		sprites[0] = textureAtlas.getSprite(textures[0].getIdentifier());
+		sprites[1] = textureAtlas.getSprite(textures[1].getIdentifier());
 
-		if (getOverlayTexture() != null) {
-			sprites[2] = textureAtlas.getSprite(getOverlayTexture());
+		if (sprites.length >= 3) {
+			sprites[2] = textureAtlas.getSprite(textures[2].getIdentifier());
 		}
 	}
 

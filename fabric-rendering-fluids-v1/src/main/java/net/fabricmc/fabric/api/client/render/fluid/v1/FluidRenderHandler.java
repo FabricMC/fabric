@@ -22,11 +22,11 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderHandlerRegistryImpl;
+import net.fabricmc.fabric.api.client.texture.RegistrableTexture;
 
 /**
  * Interface for handling the rendering of a FluidState.
@@ -52,6 +52,15 @@ public interface FluidRenderHandler {
 	Sprite[] getFluidSprites(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state);
 
 	/**
+	 * Get the textures used to render the fluid.
+	 *
+	 * @return An array containing all the textures used to render the fluid.
+	 */
+	default @Nullable RegistrableTexture[] getFluidTextures() {
+		return null;
+	}
+
+	/**
 	 * Get the tint color for a fluid being rendered at a given position.
 	 *
 	 * <p>Note: As of right now, our hook cannot handle setting a custom alpha
@@ -67,18 +76,8 @@ public interface FluidRenderHandler {
 	}
 
 	/**
-	 * Get the identifiers of the used textures.
-	 * The textures are returned in an array filtered to contain only valid values (no null values).
-	 *
-	 * @return An array containing all the used textures identifiers.
-	 */
-	default Identifier[] getTexturesIds() {
-		return new Identifier[0];
-	}
-
-	/**
 	 * Tessellate your fluid. This method will be invoked before the default
-	 * fluid renderer. By default it will call the default fluid renderer. Call
+	 * fluid renderer. By default, it will call the default fluid renderer. Call
 	 * {@code FluidRenderHandler.super.renderFluid} if you want to render over
 	 * the default fluid renderer.
 	 *

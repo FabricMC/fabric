@@ -32,7 +32,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.BlockRenderView;
@@ -41,8 +40,10 @@ import net.minecraft.world.biome.BiomeKeys;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
+import net.fabricmc.fabric.api.client.texture.RegistrableTexture;
 
 public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistry {
+	@SuppressWarnings("ConstantConditions")
 	private static final int DEFAULT_WATER_COLOR = BuiltinRegistries.BIOME.get(BiomeKeys.OCEAN).getWaterColor();
 	private final Map<Fluid, FluidRenderHandler> handlers = new IdentityHashMap<>();
 	private final Map<Fluid, FluidRenderHandler> modHandlers = new IdentityHashMap<>();
@@ -67,15 +68,17 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		handlers.put(fluid, renderer);
 		modHandlers.put(fluid, renderer);
 
-		Identifier[] textures = renderer.getTexturesIds();
+		RegistrableTexture[] textures = renderer.getFluidTextures();
 
-		if (textures.length > 0) {
-			ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
-				for (Identifier texture : textures) {
-					//The textures are added in a Set, so there will be no duplicates.
-					registry.register(texture);
+		if (textures != null) {
+			for (RegistrableTexture texture : textures) {
+				if (texture.isToBeRegistered()) {
+					ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
+						//The textures are added in a Set, so there will be no duplicates.
+						registry.register(texture.getIdentifier());
+					});
 				}
-			});
+			}
 		}
 	}
 

@@ -20,9 +20,6 @@
     "fabric-api-base": "*"
   },
   "description": "Hooks for handling custom fluid behaviours.",
-  "mixins": [
-    "fabric-fluid-api-v1.mixins.json"
-  ],
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   }
