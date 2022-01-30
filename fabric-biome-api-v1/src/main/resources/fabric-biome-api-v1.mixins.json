@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "modification.DynamicRegistryManagerImplMixin",
-    "modification.RegistryOpsMixin",
+    "modification.MinecraftServerMixin",
     "MixinMultiNoiseBiomeSource",
     "MixinTheEndBiomeSource"
   ],

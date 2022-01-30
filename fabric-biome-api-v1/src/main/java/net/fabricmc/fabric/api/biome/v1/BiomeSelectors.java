@@ -31,8 +31,7 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.SpawnSettings;
-
-import net.fabricmc.fabric.impl.biome.OverworldBiomeData;
+import net.minecraft.world.dimension.DimensionOptions;
 
 /**
  * Provides several convenient biome selectors that can be used with {@link BiomeModifications}.
@@ -73,7 +72,7 @@ public final class BiomeSelectors {
 	 * assuming Vanilla's default biome source is used.
 	 */
 	public static Predicate<BiomeSelectionContext> foundInOverworld() {
-		return context -> OverworldBiomeData.canGenerateInOverworld(context.getBiomeKey());
+		return context -> context.canGenerateIn(DimensionOptions.OVERWORLD);
 	}
 
 	/**
@@ -83,7 +82,7 @@ public final class BiomeSelectors {
 	 * <p>This selector will also match modded biomes that have been added to the nether using {@link NetherBiomes}.
 	 */
 	public static Predicate<BiomeSelectionContext> foundInTheNether() {
-		return context -> NetherBiomes.canGenerateInNether(context.getBiomeKey());
+		return context -> context.canGenerateIn(DimensionOptions.NETHER);
 	}
 
 	/**
@@ -91,7 +90,7 @@ public final class BiomeSelectors {
 	 * assuming Vanilla's default End biome source is used.
 	 */
 	public static Predicate<BiomeSelectionContext> foundInTheEnd() {
-		return context -> TheEndBiomes.canGenerateInTheEnd(context.getBiomeKey());
+		return context -> context.canGenerateIn(DimensionOptions.END);
 	}
 
 	/**

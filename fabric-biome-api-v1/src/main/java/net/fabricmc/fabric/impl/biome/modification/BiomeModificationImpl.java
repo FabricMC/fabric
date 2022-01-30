@@ -21,11 +21,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import com.google.common.base.Stopwatch;
 import org.apache.logging.log4j.LogManager;
@@ -38,6 +36,9 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.dimension.DimensionOptions;
+import net.minecraft.world.level.LevelProperties;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
@@ -104,14 +105,14 @@ public class BiomeModificationImpl {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	public void modifyBiomes(DynamicRegistryManager.Impl impl) {
+	public void finalizeWorldGen(DynamicRegistryManager.Impl impl, LevelProperties levelProperties) {
 		Stopwatch sw = Stopwatch.createStarted();
 
-		// Vanilla will sometimes call RegistryOps.of twice for the same dynamic registry manager,
-		// which usually will not result in a reload of objects, since it reuses existing objects
-		// from the manager when they are being referenced.
-		BiomeModificationTracker modificationTracker = (BiomeModificationTracker) (Object) impl;
-		Set<Biome> modifiedBiomes = modificationTracker.fabric_getModifiedBiomes();
+		// Now that we apply biome modifications inside the MinecraftServer constructor, we should only ever do
+		// this once for a dynamic registry manager. Marking the dynamic registry manager as modified ensures a crash
+		// if the precondition is violated.
+		BiomeModificationMarker modificationTracker = (BiomeModificationMarker) (Object) impl;
+		modificationTracker.fabric_markModified();
 
 		Registry<Biome> biomes = impl.get(Registry.BIOME_KEY);
 
@@ -120,7 +121,7 @@ public class BiomeModificationImpl {
 		List<RegistryKey<Biome>> keys = biomes.getEntries().stream()
 				.map(Map.Entry::getKey)
 				.sorted(Comparator.comparingInt(key -> biomes.getRawId(biomes.getOrThrow(key))))
-				.collect(Collectors.toList());
+				.toList();
 
 		List<ModifierRecord> sortedModifiers = getSortedModifiers();
 
@@ -131,15 +132,11 @@ public class BiomeModificationImpl {
 		for (RegistryKey<Biome> key : keys) {
 			Biome biome = biomes.getOrThrow(key);
 
-			if (!modifiedBiomes.add(biome)) {
-				continue; // Do not modify the same biome twice
-			}
-
 			biomesProcessed++;
 
 			// Make a copy of the biome to allow selection contexts to see it unmodified,
 			// But do so only once it's known anything wants to modify the biome at all
-			BiomeSelectionContext context = new BiomeSelectionContextImpl(impl, key, biome);
+			BiomeSelectionContext context = new BiomeSelectionContextImpl(impl, levelProperties, key, biome);
 			BiomeModificationContextImpl modificationContext = null;
 
 			for (ModifierRecord modifier : sortedModifiers) {
@@ -164,6 +161,14 @@ public class BiomeModificationImpl {
 		}
 
 		if (biomesProcessed > 0) {
+			// Rebuild caches within biome sources after modifying feature lists
+			for (DimensionOptions dimension : levelProperties.getGeneratorOptions().getDimensions()) {
+				// The Biome source has a total ordering of feature generation that might have changed
+				// by us adding or removing features from biomes.
+				BiomeSource biomeSource = dimension.getChunkGenerator().getBiomeSource();
+				biomeSource.field_34469 = biomeSource.method_39525(new ArrayList<>(biomeSource.getBiomes()), true);
+			}
+
 			LOGGER.info("Applied {} biome modifications to {} of {} new biomes in {}", modifiersApplied, biomesChanged,
 					biomesProcessed, sw);
 		}
