@@ -17,14 +17,12 @@
 package net.fabricmc.fabric.test.loot;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.SurvivesExplosionLootCondition;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.SetNameLootFunction;
-import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ModInitializer;
@@ -53,14 +51,6 @@ public class LootTest implements ModInitializer {
 						.build();
 
 				setter.set(LootTable.builder().pool(pool).build());
-			} else if (EntityType.PIG.getLootTableId().equals(id)) {
-				// Add diamonds with bonus rolls to the pig loot table (bonus rolls don't work for blocks)
-				LootPool pool = LootPool.builder()
-						.bonusRolls(ConstantLootNumberProvider.create(5f))
-						.with(ItemEntry.builder(Items.DIAMOND).build())
-						.build();
-
-				tableBuilder.pool(pool);
 			}
 		});
 
