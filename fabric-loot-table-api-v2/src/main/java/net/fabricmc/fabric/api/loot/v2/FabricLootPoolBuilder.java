@@ -43,7 +43,7 @@ public interface FabricLootPoolBuilder {
 	 * @return this builder
 	 */
 	default LootPool.Builder with(LootPoolEntry entry) {
-		throw new UnsupportedOperationException("Unimplemented");
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
@@ -53,7 +53,7 @@ public interface FabricLootPoolBuilder {
 	 * @return this builder
 	 */
 	default LootPool.Builder with(Collection<? extends LootPoolEntry> entries) {
-		throw new UnsupportedOperationException("Unimplemented");
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
@@ -63,7 +63,7 @@ public interface FabricLootPoolBuilder {
 	 * @return this builder
 	 */
 	default LootPool.Builder conditionally(LootCondition condition) {
-		throw new UnsupportedOperationException("Unimplemented");
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
@@ -73,7 +73,7 @@ public interface FabricLootPoolBuilder {
 	 * @return this builder
 	 */
 	default LootPool.Builder conditionally(Collection<? extends LootCondition> conditions) {
-		throw new UnsupportedOperationException("Unimplemented");
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
@@ -83,7 +83,7 @@ public interface FabricLootPoolBuilder {
 	 * @return this builder
 	 */
 	default LootPool.Builder apply(LootFunction function) {
-		throw new UnsupportedOperationException("Unimplemented");
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
@@ -93,7 +93,7 @@ public interface FabricLootPoolBuilder {
 	 * @return this builder
 	 */
 	default LootPool.Builder apply(Collection<? extends LootFunction> functions) {
-		throw new UnsupportedOperationException("Unimplemented");
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**

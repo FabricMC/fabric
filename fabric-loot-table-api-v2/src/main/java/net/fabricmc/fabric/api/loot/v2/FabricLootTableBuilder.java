@@ -42,7 +42,7 @@ public interface FabricLootTableBuilder {
 	 * @return this builder
 	 */
 	default LootTable.Builder pool(LootPool pool) {
-		throw new UnsupportedOperationException("Unimplemented");
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
@@ -52,7 +52,7 @@ public interface FabricLootTableBuilder {
 	 * @return this builder
 	 */
 	default LootTable.Builder apply(LootFunction function) {
-		throw new UnsupportedOperationException("Unimplemented");
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
@@ -62,7 +62,7 @@ public interface FabricLootTableBuilder {
 	 * @return this builder
 	 */
 	default LootTable.Builder pools(Collection<? extends LootPool> pools) {
-		throw new UnsupportedOperationException("Unimplemented");
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
@@ -72,7 +72,7 @@ public interface FabricLootTableBuilder {
 	 * @return this builder
 	 */
 	default LootTable.Builder apply(Collection<? extends LootFunction> functions) {
-		throw new UnsupportedOperationException("Unimplemented");
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
