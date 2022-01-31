@@ -16,21 +16,52 @@
 
 package net.fabricmc.fabric.impl.loot.table;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import net.minecraft.loot.LootTable;
+import net.minecraft.util.Identifier;
+
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 
 public final class LootTablesV1Init implements ModInitializer {
+	private static final ThreadLocal<Map<Identifier, BufferingLootTableBuilder>> BUFFERS = ThreadLocal.withInitial(HashMap::new);
+
 	@Override
 	public void onInitialize() {
-		// Hook up the v1 callbacks to the v2 event
-		net.fabricmc.fabric.api.loot.v2.LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, tableBuilder, setter) -> {
+		LootTableEvents.REPLACE.register((resourceManager, lootManager, id, original) -> {
+			BufferingLootTableBuilder builder = new BufferingLootTableBuilder();
+			builder.init(original);
+			BUFFERS.get().put(id, builder);
+
+			LootTable[] result = new LootTable[1];
 			LootTableLoadingCallback.EVENT.invoker().onLootTableLoading(
 					resourceManager,
 					lootManager,
 					id,
-					new DelegatingLootTableBuilder(tableBuilder),
-					setter::set
+					builder,
+					table -> result[0] = table
 			);
+
+			return result[0];
+		});
+
+		LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, replaced) -> {
+			Map<Identifier, BufferingLootTableBuilder> buffers = BUFFERS.get();
+
+			if (buffers.containsKey(id)) {
+				try {
+					buffers.get(id).applyTo(tableBuilder);
+				} finally {
+					buffers.remove(id);
+
+					if (buffers.isEmpty()) {
+						BUFFERS.remove();
+					}
+				}
+			}
 		});
 	}
 }

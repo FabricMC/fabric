@@ -26,7 +26,7 @@ import net.minecraft.loot.function.SetNameLootFunction;
 import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.loot.v2.LootTableLoadingCallback;
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 
 public class LootTest implements ModInitializer {
 	@Override
@@ -34,7 +34,29 @@ public class LootTest implements ModInitializer {
 		// Test loot table load event
 		// The LootTable.Builder LootPool.Builder methods here should use
 		// prebuilt entries and pools to test the injected methods.
-		LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, tableBuilder, setter) -> {
+		LootTableEvents.REPLACE.register((resourceManager, lootManager, id, original) -> {
+			if (Blocks.BLACK_WOOL.getLootTableId().equals(id)) {
+				// Replace black wool drops with an iron ingot
+				LootPool pool = LootPool.builder()
+						.with(ItemEntry.builder(Items.IRON_INGOT).build())
+						.build();
+
+				return LootTable.builder().pool(pool).build();
+			}
+
+			return null;
+		});
+
+		// Test that the event is stopped when the loot table is replaced
+		LootTableEvents.REPLACE.register((resourceManager, lootManager, id, original) -> {
+			if (Blocks.BLACK_WOOL.getLootTableId().equals(id)) {
+				throw new AssertionError("Event should have been stopped from replaced loot table");
+			}
+
+			return null;
+		});
+
+		LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, replaced) -> {
 			if (Blocks.WHITE_WOOL.getLootTableId().equals(id)) {
 				// Add gold ingot with custom name to white wool drops
 				LootPool pool = LootPool.builder()
@@ -44,20 +66,6 @@ public class LootTest implements ModInitializer {
 						.build();
 
 				tableBuilder.pool(pool);
-			} else if (Blocks.BLACK_WOOL.getLootTableId().equals(id)) {
-				// Replace black wool drops with an iron ingot
-				LootPool pool = LootPool.builder()
-						.with(ItemEntry.builder(Items.IRON_INGOT).build())
-						.build();
-
-				setter.set(LootTable.builder().pool(pool).build());
-			}
-		});
-
-		// Test that the event is stopped when the loot table is replaced
-		LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, tableBuilder, setter) -> {
-			if (Blocks.BLACK_WOOL.getLootTableId().equals(id)) {
-				throw new AssertionError("Event should have been stopped from replaced loot table");
 			}
 		});
 	}

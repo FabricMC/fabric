@@ -34,7 +34,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
-import net.fabricmc.fabric.api.loot.v2.LootTableLoadingCallback;
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 
 @Mixin(LootManager.class)
 abstract class LootManagerMixin {
@@ -46,14 +46,17 @@ abstract class LootManagerMixin {
 		Map<Identifier, LootTable> newTables = new HashMap<>();
 
 		tables.forEach((id, table) -> {
-			LootTable.Builder builder = FabricLootTableBuilder.copyOf(table);
+			// noinspection ConstantConditions
+			LootManager lootManager = (LootManager) (Object) this;
+			LootTable replacement = LootTableEvents.REPLACE.invoker().replaceLootTable(resourceManager, lootManager, id, table);
+			boolean replaced = replacement != null;
 
-			//noinspection ConstantConditions
-			LootTableLoadingCallback.EVENT.invoker().onLootTableLoading(
-					resourceManager, (LootManager) (Object) this, id, builder, replacement -> {
-						newTables.put(id, replacement);
-					}
-			);
+			if (replaced) {
+				table = replacement;
+			}
+
+			LootTable.Builder builder = FabricLootTableBuilder.copyOf(table);
+			LootTableEvents.MODIFY.invoker().modifyLootTable(resourceManager, lootManager, id, builder, replaced);
 
 			newTables.computeIfAbsent(id, (i) -> builder.build());
 		});
