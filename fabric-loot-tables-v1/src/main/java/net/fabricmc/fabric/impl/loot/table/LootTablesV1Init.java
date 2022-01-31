@@ -31,7 +31,7 @@ public final class LootTablesV1Init implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		LootTableEvents.REPLACE.register((resourceManager, lootManager, id, original) -> {
+		LootTableEvents.REPLACE.register((resourceManager, lootManager, id, original, source) -> {
 			BufferingLootTableBuilder builder = new BufferingLootTableBuilder();
 			builder.init(original);
 			BUFFERS.get().put(id, builder);
@@ -48,7 +48,7 @@ public final class LootTablesV1Init implements ModInitializer {
 			return result[0];
 		});
 
-		LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, replaced) -> {
+		LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
 			Map<Identifier, BufferingLootTableBuilder> buffers = BUFFERS.get();
 
 			if (buffers.containsKey(id)) {

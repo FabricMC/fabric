@@ -27,6 +27,7 @@ import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.fabricmc.fabric.api.loot.v2.LootTableSource;
 
 public class LootTest implements ModInitializer {
 	@Override
@@ -34,8 +35,12 @@ public class LootTest implements ModInitializer {
 		// Test loot table load event
 		// The LootTable.Builder LootPool.Builder methods here should use
 		// prebuilt entries and pools to test the injected methods.
-		LootTableEvents.REPLACE.register((resourceManager, lootManager, id, original) -> {
+		LootTableEvents.REPLACE.register((resourceManager, lootManager, id, original, source) -> {
 			if (Blocks.BLACK_WOOL.getLootTableId().equals(id)) {
+				if (source != LootTableSource.VANILLA) {
+					throw new AssertionError("black wool loot table should have LootTableSource.VANILLA");
+				}
+
 				// Replace black wool drops with an iron ingot
 				LootPool pool = LootPool.builder()
 						.with(ItemEntry.builder(Items.IRON_INGOT).build())
@@ -48,7 +53,7 @@ public class LootTest implements ModInitializer {
 		});
 
 		// Test that the event is stopped when the loot table is replaced
-		LootTableEvents.REPLACE.register((resourceManager, lootManager, id, original) -> {
+		LootTableEvents.REPLACE.register((resourceManager, lootManager, id, original, source) -> {
 			if (Blocks.BLACK_WOOL.getLootTableId().equals(id)) {
 				throw new AssertionError("Event should have been stopped from replaced loot table");
 			}
@@ -56,8 +61,16 @@ public class LootTest implements ModInitializer {
 			return null;
 		});
 
-		LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, replaced) -> {
+		LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
+			if (Blocks.BLACK_WOOL.getLootTableId().equals(id) && source != LootTableSource.REPLACED) {
+				throw new AssertionError("black wool loot table should have LootTableSource.REPLACED");
+			}
+
 			if (Blocks.WHITE_WOOL.getLootTableId().equals(id)) {
+				if (source != LootTableSource.VANILLA) {
+					throw new AssertionError("white wool loot table should have LootTableSource.VANILLA");
+				}
+
 				// Add gold ingot with custom name to white wool drops
 				LootPool pool = LootPool.builder()
 						.with(ItemEntry.builder(Items.GOLD_INGOT).build())
@@ -66,6 +79,11 @@ public class LootTest implements ModInitializer {
 						.build();
 
 				tableBuilder.pool(pool);
+			}
+
+			// We modify red wool to drop diamonds in the test mod resources.
+			if (Blocks.RED_WOOL.getLootTableId().equals(id) && source != LootTableSource.MOD) {
+				throw new AssertionError("red wool loot table should have LootTableSource.MOD");
 			}
 		});
 	}

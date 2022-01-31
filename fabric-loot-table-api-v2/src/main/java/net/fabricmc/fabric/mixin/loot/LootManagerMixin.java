@@ -29,12 +29,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;
+import net.minecraft.loot.LootTables;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.fabricmc.fabric.api.loot.v2.LootTableSource;
+import net.fabricmc.fabric.impl.loot.LootUtil;
 
 @Mixin(LootManager.class)
 abstract class LootManagerMixin {
@@ -46,17 +49,25 @@ abstract class LootManagerMixin {
 		Map<Identifier, LootTable> newTables = new HashMap<>();
 
 		tables.forEach((id, table) -> {
+			if (id.equals(LootTables.EMPTY)) {
+				// This is a special table and cannot be modified.
+				// Vanilla also warns about that.
+				return;
+			}
+
 			// noinspection ConstantConditions
 			LootManager lootManager = (LootManager) (Object) this;
-			LootTable replacement = LootTableEvents.REPLACE.invoker().replaceLootTable(resourceManager, lootManager, id, table);
+			LootTableSource source = LootUtil.determineSource(id, resourceManager);
+			LootTable replacement = LootTableEvents.REPLACE.invoker().replaceLootTable(resourceManager, lootManager, id, table, source);
 			boolean replaced = replacement != null;
 
 			if (replaced) {
 				table = replacement;
+				source = LootTableSource.REPLACED;
 			}
 
 			LootTable.Builder builder = FabricLootTableBuilder.copyOf(table);
-			LootTableEvents.MODIFY.invoker().modifyLootTable(resourceManager, lootManager, id, builder, replaced);
+			LootTableEvents.MODIFY.invoker().modifyLootTable(resourceManager, lootManager, id, builder, source);
 
 			newTables.computeIfAbsent(id, (i) -> builder.build());
 		});

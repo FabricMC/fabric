@@ -6,7 +6,7 @@
   "environment": "*",
   "license": "Apache-2.0",
   "depends": {
-    "fabric-loot-tables-v1": "*"
+    "fabric-loot-table-api-v2": "*"
   },
   "entrypoints": {
     "main": [

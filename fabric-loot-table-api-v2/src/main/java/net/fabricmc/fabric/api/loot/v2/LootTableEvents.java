@@ -34,9 +34,9 @@ public final class LootTableEvents {
 	 * This event can be used to replace loot tables.
 	 * If a loot table is replaced, the iteration will stop for that loot table.
 	 */
-	public static final Event<Replace> REPLACE = EventFactory.createArrayBacked(Replace.class, listeners -> (resourceManager, lootManager, id, original) -> {
+	public static final Event<Replace> REPLACE = EventFactory.createArrayBacked(Replace.class, listeners -> (resourceManager, lootManager, id, original, source) -> {
 		for (Replace listener : listeners) {
-			@Nullable LootTable replaced = listener.replaceLootTable(resourceManager, lootManager, id, original);
+			@Nullable LootTable replaced = listener.replaceLootTable(resourceManager, lootManager, id, original, source);
 
 			if (replaced != null) {
 				return replaced;
@@ -49,9 +49,9 @@ public final class LootTableEvents {
 	/**
 	 * This event can be used to modify loot tables.
 	 */
-	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (resourceManager, lootManager, id, tableBuilder, replaced) -> {
+	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (resourceManager, lootManager, id, tableBuilder, source) -> {
 		for (Modify listener : listeners) {
-			listener.modifyLootTable(resourceManager, lootManager, id, tableBuilder, replaced);
+			listener.modifyLootTable(resourceManager, lootManager, id, tableBuilder, source);
 		}
 	});
 
@@ -63,10 +63,11 @@ public final class LootTableEvents {
 		 * @param lootManager     the loot manager
 		 * @param id              the loot table ID
 		 * @param original        the original loot table
+		 * @param source          the source of the original loot table
 		 * @return the new loot table, or null if it wasn't replaced
 		 */
 		@Nullable
-		LootTable replaceLootTable(ResourceManager resourceManager, LootManager lootManager, Identifier id, LootTable original);
+		LootTable replaceLootTable(ResourceManager resourceManager, LootManager lootManager, Identifier id, LootTable original, LootTableSource source);
 	}
 
 	public interface Modify {
@@ -77,8 +78,8 @@ public final class LootTableEvents {
 		 * @param lootManager     the loot manager
 		 * @param id              the loot table ID
 		 * @param tableBuilder    a builder of the loot table being loaded
-		 * @param replaced        whether this loot table is a replacement done in {@link #REPLACE}
+		 * @param source          the source of the loot table
 		 */
-		void modifyLootTable(ResourceManager resourceManager, LootManager lootManager, Identifier id, LootTable.Builder tableBuilder, boolean replaced);
+		void modifyLootTable(ResourceManager resourceManager, LootManager lootManager, Identifier id, LootTable.Builder tableBuilder, LootTableSource source);
 	}
 }
