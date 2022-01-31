@@ -11,9 +11,12 @@
     "NamespaceResourceManagerAccessor",
     "NamespaceResourceManagerMixin",
     "ReloadableResourceManagerImplMixin",
+    "ResourceImplMixin",
+    "ResourceMixin",
     "ResourcePackManagerMixin",
     "ResourcePackManagerAccessor",
     "ResourcePackProfileAccessor",
+    "ResourcePackProfileMixin",
     "SimpleResourceReloadMixin"
   ],
   "client": [

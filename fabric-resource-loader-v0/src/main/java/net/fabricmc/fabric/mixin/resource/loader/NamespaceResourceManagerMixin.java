@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.resource.loader;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,7 +33,9 @@ import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.impl.resource.loader.FabricResourceImpl;
 import net.fabricmc.fabric.impl.resource.loader.GroupResourcePack;
+import net.fabricmc.fabric.impl.resource.loader.ResourcePackSourceTracker;
 
 @Mixin(NamespaceResourceManager.class)
 public class NamespaceResourceManagerMixin {
@@ -65,5 +68,17 @@ public class NamespaceResourceManagerMixin {
 		}
 
 		return pack.contains(type, id);
+	}
+
+	@Inject(method = "getAllResources", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", remap = false, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void trackSourceOnGetAllResources(Identifier id, CallbackInfoReturnable<List<Resource>> cir, List<Resource> resources, Identifier metadataPath, Iterator<ResourcePack> packs, ResourcePack resourcePack) {
+		FabricResourceImpl resource = (FabricResourceImpl) resources.get(resources.size() - 1);
+		resource.setFabricPackSource(ResourcePackSourceTracker.getSource(resourcePack));
+	}
+
+	@Inject(method = "getResource", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void onGetResource(Identifier id, CallbackInfoReturnable<Resource> cir, ResourcePack metaResourcePack, Identifier metadataPath, int i, ResourcePack resourcePack) {
+		FabricResourceImpl resource = (FabricResourceImpl) cir.getReturnValue();
+		resource.setFabricPackSource(ResourcePackSourceTracker.getSource(resourcePack));
 	}
 }
