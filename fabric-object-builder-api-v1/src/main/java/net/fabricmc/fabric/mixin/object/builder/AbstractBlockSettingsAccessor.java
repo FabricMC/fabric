@@ -19,6 +19,8 @@ package net.fabricmc.fabric.mixin.object.builder;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
+import net.minecraft.entity.EntityType;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
@@ -65,6 +67,9 @@ public interface AbstractBlockSettingsAccessor {
 	float getVelocityMultiplier();
 
 	@Accessor
+	float getJumpVelocityMultiplier();
+
+	@Accessor
 	boolean getDynamicBounds();
 
 	@Accessor
@@ -75,6 +80,24 @@ public interface AbstractBlockSettingsAccessor {
 
 	@Accessor
 	boolean isToolRequired();
+
+	@Accessor
+	AbstractBlock.TypedContextPredicate<EntityType<?>> getAllowsSpawningPredicate();
+
+	@Accessor
+	AbstractBlock.ContextPredicate getSolidBlockPredicate();
+
+	@Accessor
+	AbstractBlock.ContextPredicate getSuffocationPredicate();
+
+	@Accessor
+	AbstractBlock.ContextPredicate getBlockVisionPredicate();
+
+	@Accessor
+	AbstractBlock.ContextPredicate getPostProcessPredicate();
+
+	@Accessor
+	AbstractBlock.ContextPredicate getEmissiveLightingPredicate();
 
 	/* SETTERS */
 	@Accessor
