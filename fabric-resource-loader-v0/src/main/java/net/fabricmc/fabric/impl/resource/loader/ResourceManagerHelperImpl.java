@@ -28,17 +28,14 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
-import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -80,19 +77,17 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 			return false;
 		}
 
-		String name = displayName;
-
-		builtinResourcePacks.add(new Pair<>(name, new ModNioResourcePack(container.getMetadata(), resourcePackPath, ResourceType.CLIENT_RESOURCES, null, activationType) {
+		builtinResourcePacks.add(new Pair<>(displayName, new ModNioResourcePack(container.getMetadata(), resourcePackPath, ResourceType.CLIENT_RESOURCES, null, activationType) {
 			@Override
 			public String getName() {
-				return name; // Built-in resource pack provided by a mod, the name is overriden.
+				return displayName; // Built-in resource pack provided by a mod, the name is overriden.
 			}
 		}));
 
-		builtinResourcePacks.add(new Pair<>(name, new ModNioResourcePack(container.getMetadata(), resourcePackPath, ResourceType.SERVER_DATA, null, activationType) {
+		builtinResourcePacks.add(new Pair<>(displayName, new ModNioResourcePack(container.getMetadata(), resourcePackPath, ResourceType.SERVER_DATA, null, activationType) {
 			@Override
 			public String getName() {
-				return name; // Built-in resource pack provided by a mod, the name is overriden.
+				return displayName; // Built-in resource pack provided by a mod, the name is overriden.
 			}
 		}));
 
@@ -125,7 +120,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 				// Make the resource pack profile for built-in pack, should never be always enabled.
 				ResourcePackProfile profile = ResourcePackProfile.of(entry.getLeft(),
 						pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED,
-						entry::getRight, factory, ResourcePackProfile.InsertionPosition.TOP, getResourceSource(pack.getFabricModMetadata().getId()));
+						entry::getRight, factory, ResourcePackProfile.InsertionPosition.TOP, new BuiltinModResourcePackSource(pack.getFabricModMetadata().getId()));
 				if (profile != null) {
 					consumer.accept(profile);
 				}
@@ -192,10 +187,5 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		if (!addedListeners.add(listener)) {
 			throw new RuntimeException("Listener with previously unknown ID " + listener.getFabricId() + " already in listener set!");
 		}
-	}
-
-	private static ResourcePackSource getResourceSource(String modId) {
-		String trimmedId = StringUtils.abbreviate(modId, 8);
-		return text -> new TranslatableText("pack.nameAndSource", text, new TranslatableText("pack.source.builtinMod", trimmedId));
 	}
 }
