@@ -34,10 +34,10 @@ public class MixinGameOptions {
 	@Mutable
 	@Final
 	@Shadow
-	public KeyBinding[] keysAll;
+	public KeyBinding[] allKeys;
 
 	@Inject(at = @At("HEAD"), method = "load()V")
 	public void loadHook(CallbackInfo info) {
-		keysAll = KeyBindingRegistryImpl.process(keysAll);
+		allKeys = KeyBindingRegistryImpl.process(allKeys);
 	}
 }
