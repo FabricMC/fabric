@@ -233,9 +233,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 				renderFallbackWithTransform(model.getQuads((BlockState) null, cullFace, random), cullFace);
 			}
 		} else {
-			for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
-				vanillaHandler.accept(model, itemStack, lightmap, overlay, matrixStack, modelVertexConsumer);
-			}
+			vanillaHandler.accept(model, itemStack, lightmap, overlay, matrixStack, modelVertexConsumer);
 		}
 	}
 
