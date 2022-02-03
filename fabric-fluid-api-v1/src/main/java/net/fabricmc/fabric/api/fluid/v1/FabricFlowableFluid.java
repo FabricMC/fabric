@@ -59,6 +59,8 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	}
 
 	/**
+	 * Get the sound played when filling a bucket with this fluid.
+	 *
 	 * @return Sound played when filling a bucket with this fluid.
 	 */
 	@Override
@@ -67,36 +69,46 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	}
 
 	/**
+	 * Get the color of the fluid fog.
+	 *
 	 * @param entity    The current entity that displays the fog.
 	 * @param tickDelta The time passed from the last tick.
 	 * @param world     The current world.
 	 * @return Fog color (-1 = no fog).
 	 */
-	public abstract int getFogColor(Entity entity, float tickDelta, ClientWorld world);
+	public int getFabricFogColor(Entity entity, float tickDelta, ClientWorld world) {
+		return -1;
+	}
 
 	/**
+	 * Get the distance after which the fog is fully opaque.
+	 *
 	 * @param entity       The current entity that displays the fog.
 	 * @param fogType      Type of fog (can be SKY or TERRAIN).
 	 * @param viewDistance The view distance of the current entity.
 	 * @param thickFog     Thick of fog.
 	 * @return Fog ending value.
 	 */
-	public float getFogEnd(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
+	public float getFabricFogEnd(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
 		return 1f;
 	}
 
 	/**
+	 * Get the distance after which the fog starts.
+	 *
 	 * @param entity       The current entity that displays the fog.
 	 * @param fogType      Type of fog (can be SKY or TERRAIN).
 	 * @param viewDistance The view distance of the current entity.
 	 * @param thickFog     Thick of fog.
 	 * @return Fog starting value.
 	 */
-	public float getFogStart(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
+	public float getFabricFogStart(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
 		return 0f;
 	}
 
 	/**
+	 * Get the current fluid level.
+	 *
 	 * @param state The current FluidState.
 	 * @return Current fluid level.
 	 */
@@ -106,7 +118,9 @@ public abstract class FabricFlowableFluid extends FlowableFluid {
 	}
 
 	/**
-	 * @param fluid The current Fluid.
+	 * Checks if this fluid is an instance of the specified fluid.
+	 *
+	 * @param fluid The current fluid.
 	 * @return True if the given fluid is an instance of this fluid.
 	 */
 	@Override

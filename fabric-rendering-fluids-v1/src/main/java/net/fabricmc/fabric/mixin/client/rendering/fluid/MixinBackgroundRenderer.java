@@ -56,7 +56,7 @@ public abstract class MixinBackgroundRenderer {
 
 		if (fluidState.getFluid() instanceof FabricFlowableFluid fluid) {
 			//Gets the fog color from the fluid that submerges the camera
-			fogColor = fluid.getFogColor(camera.getFocusedEntity(), tickDelta, world);
+			fogColor = fluid.getFabricFogColor(camera.getFocusedEntity(), tickDelta, world);
 
 			if (fogColor != -1) {
 				red = (fogColor >> 16 & 255) / 255f;
@@ -80,8 +80,8 @@ public abstract class MixinBackgroundRenderer {
 			Entity entity = camera.getFocusedEntity();
 
 			//Apply the fog start and fog end, after getting them from the fluid that submerges the camera
-			RenderSystem.setShaderFogStart(fluid.getFogStart(entity, fogType, viewDistance, thickFog));
-			RenderSystem.setShaderFogEnd(fluid.getFogEnd(entity, fogType, viewDistance, thickFog));
+			RenderSystem.setShaderFogStart(fluid.getFabricFogStart(entity, fogType, viewDistance, thickFog));
+			RenderSystem.setShaderFogEnd(fluid.getFabricFogEnd(entity, fogType, viewDistance, thickFog));
 
 			ci.cancel();
 		}

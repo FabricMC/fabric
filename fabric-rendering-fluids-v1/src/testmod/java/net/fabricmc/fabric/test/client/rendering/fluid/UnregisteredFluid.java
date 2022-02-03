@@ -63,12 +63,12 @@ public abstract class UnregisteredFluid extends FabricFlowableFluid {
 	}
 
 	@Override
-	public int getFogColor(Entity entity, float tickDelta, ClientWorld world) {
+	public int getFabricFogColor(Entity entity, float tickDelta, ClientWorld world) {
 		return -1;
 	}
 
 	@Override
-	public float getFogEnd(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
+	public float getFabricFogEnd(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
 		return 1f;
 	}
 

@@ -62,7 +62,7 @@ public abstract class NoOverlayFluid extends FabricFlowableFluid {
 	}
 
 	@Override
-	public int getFogColor(Entity entity, float tickDelta, ClientWorld world) {
+	public int getFabricFogColor(Entity entity, float tickDelta, ClientWorld world) {
 		return 0xFF5555;
 	}
 

@@ -32,14 +32,14 @@ The implemented methods are:
 * `Optional<SoundEvent> getBucketFillSound()`  
   Returns the `SoundEvents.ITEM_BUCKET_FILL` sound.
 
-* `int getFogColor(Entity entity, float tickDelta, ClientWorld world)`  
-  Returns -1 (no color).
+* `int getFabricFogColor(Entity entity, float tickDelta, ClientWorld world)`  
+  Returns -1 (no fog).
 
-* `float getFogEnd(Entity entity, BackgroundRenderer.FogType fogType,
+* `float getFabricFogEnd(Entity entity, BackgroundRenderer.FogType fogType,
   float viewDistance, boolean thickFog)`  
   Returns the current view distance.
 
-* `float getFogStart(Entity entity, BackgroundRenderer.FogType fogType,
+* `float getFabricFogStart(Entity entity, BackgroundRenderer.FogType fogType,
   float viewDistance, boolean thickFog)`  
   Returns 0.
 
