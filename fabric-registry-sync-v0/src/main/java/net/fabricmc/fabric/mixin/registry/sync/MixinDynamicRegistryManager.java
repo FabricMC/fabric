@@ -16,30 +16,34 @@
 
 package net.fabricmc.fabric.mixin.registry.sync;
 
+import java.util.function.Supplier;
+
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistrySync;
 
 @Mixin(DynamicRegistryManager.class)
-public class MixinDynamicRegistryManager {
+public interface MixinDynamicRegistryManager {
 	// This is the "template" for all subsequent built-in dynamic registry managers,
 	// but it still contains the same objects as BuiltinRegistries, while the subsequent
 	// managers built from this template will contain copies.
+	@Final
 	@Shadow
-	private static DynamicRegistryManager.Impl BUILTIN;
+	Supplier<DynamicRegistryManager.class_6890> BUILTIN = null;
 
 	/**
 	 * Ensures that any registrations made into {@link net.minecraft.util.registry.BuiltinRegistries} after
 	 * {@link DynamicRegistryManager} has been class-loaded are still propagated.
 	 */
-	@Inject(method = "<clinit>", at = @At(value = "TAIL"))
-	private static void setupBuiltInSync(CallbackInfo ci) {
-		DynamicRegistrySync.setupSync(BUILTIN);
+	@Inject(method = "method_40327", at = @At(value = "RETURN"))
+	private static void setupBuiltInSync(CallbackInfoReturnable<DynamicRegistryManager.class_6890> cir) {
+		DynamicRegistrySync.setupSync(cir.getReturnValue());
 	}
 }

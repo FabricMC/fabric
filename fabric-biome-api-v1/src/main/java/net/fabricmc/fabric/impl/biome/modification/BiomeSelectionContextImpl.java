@@ -82,7 +82,7 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 		for (DimensionOptions dimension : levelProperties.getGeneratorOptions().getDimensions()) {
 			StructuresConfig structuresConfig = dimension.getChunkGenerator().getStructuresConfig();
 
-			if (structuresConfig.getConfiguredStructureFeature(instance.feature).get(instance).contains(getBiomeKey())) {
+			if (structuresConfig.getConfiguredStructureFeature(instance.feature).get(key).contains(getBiomeKey())) {
 				return true;
 			}
 		}
@@ -104,6 +104,6 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 			return false;
 		}
 
-		return dimension.getChunkGenerator().getBiomeSource().getBiomes().contains(biome);
+		return dimension.getChunkGenerator().getBiomeSource().getBiomes().anyMatch(holder -> holder.value() == biome);
 	}
 }

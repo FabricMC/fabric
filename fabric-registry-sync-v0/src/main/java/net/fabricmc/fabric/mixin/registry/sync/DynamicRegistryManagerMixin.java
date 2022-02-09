@@ -27,9 +27,9 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 
 @Mixin(DynamicRegistryManager.class)
-public class DynamicRegistryManagerMixin {
-	@Inject(method = "create", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/dynamic/EntryLoader$Impl;<init>()V"), locals = LocalCapture.CAPTURE_FAILHARD)
-	private static void onCreateImpl(CallbackInfoReturnable<DynamicRegistryManager.Impl> cir, DynamicRegistryManager.Impl registryManager) {
+public interface DynamicRegistryManagerMixin {
+	@Inject(method = "method_40314", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/dynamic/EntryLoader$Impl;<init>()V"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private static void onCreateImpl(CallbackInfoReturnable<DynamicRegistryManager.class_6893> cir, DynamicRegistryManager.class_6893 registryManager) {
 		DynamicRegistrySetupCallback.EVENT.invoker().onRegistrySetup(registryManager);
 	}
 }

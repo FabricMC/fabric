@@ -1,6 +1,10 @@
 archivesBaseName = "fabric-lifecycle-events-v1"
 version = getSubprojectVersion(project)
 
+loom {
+	accessWidenerPath = file("src/main/resources/fabric-lifecycle-events-v1.accesswidener")
+}
+
 moduleDependencies(project, [
 		'fabric-api-base'
 ])

@@ -39,7 +39,7 @@ public abstract class BambooBlockMixin {
 	 */
 	@Inject(at = @At("HEAD"), method = "calcBlockBreakingDelta", cancellable = true)
 	private void onCalcBlockBreakingDelta(BlockState state, PlayerEntity player, BlockView world, BlockPos pos, CallbackInfoReturnable<Float> info) {
-		if (FabricToolTags.SWORDS.contains(player.getMainHandStack().getItem())) {
+		if (player.getMainHandStack().isIn(FabricToolTags.SWORDS)) {
 			info.setReturnValue(1.0F);
 		}
 	}

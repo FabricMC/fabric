@@ -29,6 +29,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
+import net.minecraft.class_6862;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -39,7 +40,6 @@ import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterials;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -47,7 +47,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.test.tool.attribute.item.TestDynamicCancelItem;
@@ -59,7 +58,7 @@ public class ToolAttributeTest implements ModInitializer {
 	private static final float DEFAULT_BREAK_SPEED = 1.0F;
 	private static final float TOOL_BREAK_SPEED = 10.0F;
 	// A custom tool type, taters
-	private static final Tag<Item> TATER = TagRegistry.item(new Identifier("fabric-tool-attribute-api-v1-testmod", "taters"));
+	private static final class_6862<Item> TATER = class_6862.method_40092(Registry.ITEM_KEY, new Identifier("fabric-tool-attribute-api-v1-testmod", "taters"));
 
 	private boolean hasValidated = false;
 
@@ -110,7 +109,6 @@ public class ToolAttributeTest implements ModInitializer {
 		// Register a block that requires a shovel that is as strong or stronger than an iron one.
 		gravelBlock = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_gravel_block"),
 				new Block(FabricBlockSettings.of(new FabricMaterialBuilder(MapColor.PALE_YELLOW).build(), MapColor.STONE_GRAY)
-						.breakByTool(FabricToolTags.SHOVELS, 2)
 						.requiresTool()
 						.strength(0.6F)
 						.sounds(BlockSoundGroup.GRAVEL)));
@@ -118,7 +116,6 @@ public class ToolAttributeTest implements ModInitializer {
 		// Register a block that requires a pickaxe that is as strong or stronger than an iron one.
 		stoneBlock = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_stone_block"),
 				new Block(FabricBlockSettings.of(Material.STONE, MapColor.STONE_GRAY)
-						.breakByTool(FabricToolTags.PICKAXES, 2)
 						.requiresTool()
 						.strength(0.6F)
 						.sounds(BlockSoundGroup.STONE)));
@@ -135,7 +132,6 @@ public class ToolAttributeTest implements ModInitializer {
 
 		taterEffectiveBlock = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "tater_effective_block"),
 				new Block(FabricBlockSettings.of(Material.ORGANIC_PRODUCT, MapColor.ORANGE)
-						.breakByTool(TATER, 2) // requires iron tater
 						.requiresTool()
 						.strength(0.6F)
 						.sounds(BlockSoundGroup.CROP)));
@@ -151,12 +147,12 @@ public class ToolAttributeTest implements ModInitializer {
 		// Test parameter nullability
 		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "null_test"), new TestNullableItem(new Item.Settings()));
 
-		needsShears = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_shears"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1).breakByTool(FabricToolTags.SHEARS)));
-		needsSword = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_sword"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1).breakByTool(FabricToolTags.SWORDS)));
-		needsPickaxe = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_pickaxe"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1).breakByTool(FabricToolTags.PICKAXES)));
-		needsAxe = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_axe"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1).breakByTool(FabricToolTags.AXES)));
-		needsHoe = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_hoe"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1).breakByTool(FabricToolTags.HOES)));
-		needsShovel = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_shovel"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1).breakByTool(FabricToolTags.SHOVELS)));
+		needsShears = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_shears"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1)));
+		needsSword = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_sword"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1)));
+		needsPickaxe = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_pickaxe"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1)));
+		needsAxe = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_axe"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1)));
+		needsHoe = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_hoe"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1)));
+		needsShovel = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_shovel"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1)));
 
 		needsShearsTagged = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_shears_tagged"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1)));
 		needsSwordTagged = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "needs_sword_tagged"), new Block(FabricBlockSettings.of(Material.STONE).requiresTool().strength(1, 1)));
@@ -183,7 +179,7 @@ public class ToolAttributeTest implements ModInitializer {
 
 		hasValidated = true;
 
-		if (FabricToolTags.PICKAXES.values().isEmpty()) {
+		if (!Registry.ITEM.method_40286(FabricToolTags.PICKAXES).iterator().hasNext()) {
 			throw new AssertionError("Failed to load tool tags");
 		}
 
@@ -299,17 +295,17 @@ public class ToolAttributeTest implements ModInitializer {
 	}
 
 	private static class TestTool extends Item implements DynamicAttributeTool {
-		final Tag<Item> toolType;
+		final class_6862<Item> toolType;
 		final int miningLevel;
 
-		private TestTool(Settings settings, Tag<Item> toolType, int miningLevel) {
+		private TestTool(Settings settings, class_6862<Item> toolType, int miningLevel) {
 			super(settings);
 			this.toolType = toolType;
 			this.miningLevel = miningLevel;
 		}
 
 		@Override
-		public int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+		public int getMiningLevel(class_6862<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (tag.equals(toolType)) {
 				return this.miningLevel;
 			}
@@ -318,7 +314,7 @@ public class ToolAttributeTest implements ModInitializer {
 		}
 
 		@Override
-		public float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+		public float getMiningSpeedMultiplier(class_6862<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (tag.equals(toolType)) {
 				return TOOL_BREAK_SPEED;
 			}

@@ -9,6 +9,5 @@ dependencies {
 
 moduleDependencies(project, [
 		'fabric-api-base',
-		'fabric-mining-level-api-v1',
-		'fabric-tag-extensions-v0'
+		'fabric-mining-level-api-v1'
 ])

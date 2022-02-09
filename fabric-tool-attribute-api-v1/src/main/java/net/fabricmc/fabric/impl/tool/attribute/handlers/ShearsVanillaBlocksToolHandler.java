@@ -19,12 +19,12 @@ package net.fabricmc.fabric.impl.tool.attribute.handlers;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.class_6862;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.ShearsItem;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.TypedActionResult;
 
@@ -45,7 +45,7 @@ public class ShearsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandl
 
 	@NotNull
 	@Override
-	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public ActionResult isEffectiveOn(class_6862<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (ToolManagerImpl.entryNullable(state.getBlock()) != null) {
 			// Block is a modded block, and we should ignore it
 			return ActionResult.PASS;
@@ -64,7 +64,7 @@ public class ShearsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandl
 
 	@NotNull
 	@Override
-	public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public TypedActionResult<Float> getMiningSpeedMultiplier(class_6862<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		float speed = 1.0F;
 
 		if (!(stack.getItem() instanceof DynamicAttributeTool)) {

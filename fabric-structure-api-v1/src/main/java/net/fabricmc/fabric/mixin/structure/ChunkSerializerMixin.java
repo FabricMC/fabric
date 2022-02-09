@@ -62,7 +62,7 @@ abstract class ChunkSerializerMixin {
 		if (ChunkSerializerMixin.CHUNK_NEEDS_SAVING.get()) {
 			ChunkSerializerMixin.CHUNK_NEEDS_SAVING.set(false);
 			// Make the chunk save as soon as possible
-			chunk.setShouldSave(true);
+			chunk.setNeedsSaving(true);
 		}
 
 		// Replicate vanilla logic

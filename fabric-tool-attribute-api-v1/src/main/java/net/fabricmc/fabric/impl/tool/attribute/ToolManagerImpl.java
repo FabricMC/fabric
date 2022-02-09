@@ -28,13 +28,14 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.class_6862;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -45,7 +46,7 @@ import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.api.util.TriState;
 
 public final class ToolManagerImpl {
-	private static final Map<Tag<Item>, Tag<Block>> MINEABLE_TAG_BY_TOOL = ImmutableMap.<Tag<Item>, Tag<Block>>builder()
+	private static final Map<class_6862<Item>, class_6862<Block>> MINEABLE_TAG_BY_TOOL = ImmutableMap.<class_6862<Item>, class_6862<Block>>builder()
 			// Vanilla mineable tags
 			.put(FabricToolTags.AXES, BlockTags.AXE_MINEABLE)
 			.put(FabricToolTags.HOES, BlockTags.HOE_MINEABLE)
@@ -59,14 +60,14 @@ public final class ToolManagerImpl {
 	public interface Entry {
 		void setBreakByHand(boolean value);
 
-		void putBreakByTool(Tag<Item> tag, int miningLevel);
+		void putBreakByTool(class_6862<Item> tag, int miningLevel);
 
-		int getMiningLevel(Tag<Item> tag);
+		int getMiningLevel(class_6862<Item> tag);
 	}
 
 	private static class EntryImpl implements Entry {
 		private final Block block;
-		private Tag<Item>[] tags = new Tag[0];
+		private class_6862<Item>[] tags = new class_6862[0];
 		private int[] tagLevels = new int[0];
 		private TriState defaultValue = TriState.DEFAULT;
 
@@ -80,7 +81,7 @@ public final class ToolManagerImpl {
 		}
 
 		@Override
-		public void putBreakByTool(Tag<Item> tag, int miningLevel) {
+		public void putBreakByTool(class_6862<Item> tag, int miningLevel) {
 			tag(tag); // Generate tag entry
 
 			for (int i = 0; i < tags.length; i++) {
@@ -98,7 +99,7 @@ public final class ToolManagerImpl {
 		}
 
 		@Override
-		public int getMiningLevel(Tag<Item> tag) {
+		public int getMiningLevel(class_6862<Item> tag) {
 			// Implementation detail: the actual logic does not check the state.
 			// TODO: This should be changed some day to respect the block state,
 			//   but the entry code is quite coupled in blocks instead of states.
@@ -110,8 +111,8 @@ public final class ToolManagerImpl {
 				}
 			}
 
-			for (Tag<Item> key : MINEABLE_TAG_BY_TOOL.keySet()) {
-				if (tag == key && MINEABLE_TAG_BY_TOOL.get(key).contains(block)) {
+			for (class_6862<Item> key : MINEABLE_TAG_BY_TOOL.keySet()) {
+				if (tag == key && Registry.BLOCK.method_40273().toList().contains(MINEABLE_TAG_BY_TOOL.get(key))) {
 					miningLevel = Math.max(miningLevel, 0);
 				}
 			}
@@ -120,7 +121,7 @@ public final class ToolManagerImpl {
 		}
 	}
 
-	private static final Map<Tag<Item>, Event<ToolHandler>> HANDLER_MAP = new HashMap<>();
+	private static final Map<class_6862<Item>, Event<ToolHandler>> HANDLER_MAP = new HashMap<>();
 	private static final Event<ToolHandler> GENERAL_TOOLS_HANDLER = EventFactory.createArrayBacked(ToolHandler.class, ToolManagerImpl::toolHandlerInvoker);
 
 	private static final Map<Block, EntryImpl> ENTRIES = new IdentityHashMap<>();
@@ -131,9 +132,9 @@ public final class ToolManagerImpl {
 	 * @param tag the tag provided for the tool
 	 * @return the event callback.
 	 */
-	public static Event<ToolHandler> tag(Tag<Item> tag) {
-		for (Map.Entry<Tag<Item>, Event<ToolHandler>> entry : HANDLER_MAP.entrySet()) {
-			if ((tag instanceof Tag.Identified ? (((Tag.Identified<Item>) entry.getKey()).getId().equals(((Tag.Identified<Item>) tag).getId())) : entry.getKey().equals(tag))) {
+	public static Event<ToolHandler> tag(class_6862<Item> tag) {
+		for (Map.Entry<class_6862<Item>, Event<ToolHandler>> entry : HANDLER_MAP.entrySet()) {
+			if (tag.equals(entry.getKey())) {
 				return entry.getValue();
 			}
 		}
@@ -155,7 +156,7 @@ public final class ToolManagerImpl {
 		return new ToolHandler() {
 			@NotNull
 			@Override
-			public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+			public ActionResult isEffectiveOn(class_6862<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 				for (ToolHandler toolHandler : toolHandlers) {
 					ActionResult effectiveOn = Objects.requireNonNull(toolHandler.isEffectiveOn(tag, state, stack, user));
 
@@ -169,7 +170,7 @@ public final class ToolManagerImpl {
 
 			@NotNull
 			@Override
-			public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+			public TypedActionResult<Float> getMiningSpeedMultiplier(class_6862<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 				for (ToolHandler toolHandler : toolHandlers) {
 					TypedActionResult<Float> miningSpeedMultiplier = Objects.requireNonNull(toolHandler.getMiningSpeedMultiplier(tag, state, stack, user));
 
@@ -198,7 +199,7 @@ public final class ToolManagerImpl {
 	}
 
 	@Deprecated
-	public static void registerBreakByTool(Block block, Tag<Item> tag, int miningLevel) {
+	public static void registerBreakByTool(Block block, class_6862<Item> tag, int miningLevel) {
 		entry(block).putBreakByTool(tag, miningLevel);
 	}
 
@@ -206,7 +207,7 @@ public final class ToolManagerImpl {
 	 * Hook for ItemStack.isEffectiveOn and similar methods.
 	 */
 	public static boolean handleIsEffectiveOnIgnoresVanilla(BlockState state, ItemStack stack, @Nullable LivingEntity user, boolean vanillaResult) {
-		for (Map.Entry<Tag<Item>, Event<ToolHandler>> eventEntry : HANDLER_MAP.entrySet()) {
+		for (Map.Entry<class_6862<Item>, Event<ToolHandler>> eventEntry : HANDLER_MAP.entrySet()) {
 			if (stack.isIn(eventEntry.getKey())) {
 				ActionResult effective = eventEntry.getValue().invoker().isEffectiveOn(eventEntry.getKey(), state, stack, user);
 				if (effective.isAccepted()) return true;
@@ -222,10 +223,10 @@ public final class ToolManagerImpl {
 
 	public static float handleBreakingSpeedIgnoresVanilla(BlockState state, ItemStack stack, @Nullable LivingEntity user) {
 		float breakingSpeed = 0f;
-		Tag<Item> handledTag = null;
+		class_6862<Item> handledTag = null;
 		boolean handled = false;
 
-		for (Map.Entry<Tag<Item>, Event<ToolHandler>> eventEntry : HANDLER_MAP.entrySet()) {
+		for (Map.Entry<class_6862<Item>, Event<ToolHandler>> eventEntry : HANDLER_MAP.entrySet()) {
 			if (stack.isIn(eventEntry.getKey())) {
 				TypedActionResult<Float> speedMultiplier = Objects.requireNonNull(eventEntry.getValue().invoker().getMiningSpeedMultiplier(eventEntry.getKey(), state, stack, user));
 
@@ -277,7 +278,7 @@ public final class ToolManagerImpl {
 		 * @return the result of effectiveness
 		 */
 		@NotNull
-		default ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
+		default ActionResult isEffectiveOn(class_6862<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
 			return ActionResult.PASS;
 		}
 
@@ -291,7 +292,7 @@ public final class ToolManagerImpl {
 		 * @return the result of mining speed.
 		 */
 		@NotNull
-		default TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
+		default TypedActionResult<Float> getMiningSpeedMultiplier(class_6862<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
 			return TypedActionResult.pass(1.0F);
 		}
 	}

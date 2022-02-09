@@ -24,6 +24,7 @@ import java.util.Set;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.class_6880;
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
@@ -94,8 +95,8 @@ public final class TheEndBiomeData {
 
 	public static boolean canGenerateInTheEnd(RegistryKey<Biome> biome) {
 		if (THE_END_BIOMES.isEmpty()) {
-			for (Biome endBiome : new TheEndBiomeSource(BuiltinRegistries.BIOME, 0).getBiomes()) {
-				BuiltinRegistries.BIOME.getKey(endBiome).ifPresent(THE_END_BIOMES::add);
+			for (class_6880<Biome> holder : new TheEndBiomeSource(BuiltinRegistries.BIOME, 0).getBiomes().toList()) {
+				BuiltinRegistries.BIOME.getKey(holder.value()).ifPresent(THE_END_BIOMES::add);
 			}
 		}
 

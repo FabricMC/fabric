@@ -11,6 +11,7 @@
     "MixinIdRegistry",
     "MixinLevelStorageSession",
     "MixinRegistry",
+    "MixinMinecraftServer",
     "MixinSimpleRegistry",
     "DynamicRegistryManagerMixin"
   ],

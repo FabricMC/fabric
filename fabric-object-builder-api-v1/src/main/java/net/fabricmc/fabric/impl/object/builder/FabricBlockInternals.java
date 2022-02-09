@@ -22,8 +22,8 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.class_6862;
 import net.minecraft.item.Item;
-import net.minecraft.tag.Tag;
 
 import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 
@@ -68,16 +68,16 @@ public final class FabricBlockInternals {
 			this.breakByHand = breakByHand;
 		}
 
-		public void addMiningLevel(Tag<Item> tag, int level) {
+		public void addMiningLevel(class_6862<Item> tag, int level) {
 			miningLevels.add(new MiningLevel(tag, level));
 		}
 	}
 
 	public static final class MiningLevel {
-		private final Tag<Item> tag;
+		private final class_6862<Item> tag;
 		private final int level;
 
-		MiningLevel(Tag<Item> tag, int level) {
+		MiningLevel(class_6862<Item> tag, int level) {
 			this.tag = tag;
 			this.level = level;
 		}

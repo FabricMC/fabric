@@ -37,8 +37,8 @@ import net.fabricmc.fabric.impl.biome.TheEndBiomeData;
 
 @Mixin(TheEndBiomeSource.class)
 public class MixinTheEndBiomeSource {
-	@Shadow
-	@Final
+	// TODO 22w06a, this isnt really a thing now.
+	@Unique
 	private Registry<Biome> biomeRegistry;
 	@Shadow
 	@Final

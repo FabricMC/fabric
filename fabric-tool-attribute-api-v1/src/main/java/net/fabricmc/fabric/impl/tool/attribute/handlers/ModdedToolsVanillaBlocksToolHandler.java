@@ -21,11 +21,11 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.class_6862;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.TypedActionResult;
 
@@ -35,7 +35,7 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 /**
  * This handler handles items that are a subclass of {@link DynamicAttributeTool} by using the
  * vanilla {@link Item#isSuitableFor(BlockState)} with a custom fake tool material to use the mining level
- * from {@link DynamicAttributeTool#getMiningLevel(Tag, BlockState, ItemStack, LivingEntity)}.
+ * from {@link DynamicAttributeTool#getMiningLevel(class_6862, BlockState, ItemStack, LivingEntity)}.
  *
  * <p>Only applicable to blocks that are vanilla or share the material that is handled by their vanilla tool.</p>
  */
@@ -54,7 +54,7 @@ public class ModdedToolsVanillaBlocksToolHandler implements ToolManagerImpl.Tool
 
 	@NotNull
 	@Override
-	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public ActionResult isEffectiveOn(class_6862<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (stack.getItem() instanceof DynamicAttributeTool) {
 			if (ToolManagerImpl.entryNullable(state.getBlock()) != null) {
 				// Block is a modded block, and we should ignore it
@@ -74,7 +74,7 @@ public class ModdedToolsVanillaBlocksToolHandler implements ToolManagerImpl.Tool
 
 	@NotNull
 	@Override
-	public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public TypedActionResult<Float> getMiningSpeedMultiplier(class_6862<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (stack.getItem() instanceof DynamicAttributeTool) {
 			// Gets the mining level from our modded tool
 			int miningLevel = ((DynamicAttributeTool) stack.getItem()).getMiningLevel(tag, state, stack, user);

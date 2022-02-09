@@ -21,11 +21,11 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.class_6862;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.ActionResult;
 
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
@@ -39,15 +39,15 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
  * <p>Only applicable to items that are not a subclass of {@link DynamicAttributeTool} or {@link ToolItem}</p>
  */
 public class TaggedToolsTaggedBlocksToolHandler implements ToolManagerImpl.ToolHandler {
-	private final Tag<Block> mineableTag;
+	private final class_6862<Block> mineableTag;
 
-	public TaggedToolsTaggedBlocksToolHandler(Tag<Block> mineableTag) {
+	public TaggedToolsTaggedBlocksToolHandler(class_6862<Block> mineableTag) {
 		this.mineableTag = mineableTag;
 	}
 
 	@NotNull
 	@Override
-	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
+	public ActionResult isEffectiveOn(class_6862<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
 		if (!(stack.getItem() instanceof DynamicAttributeTool) && !(stack.getItem() instanceof ToolItem)) {
 			if (state.isIn(mineableTag)) {
 				return ActionResult.SUCCESS;

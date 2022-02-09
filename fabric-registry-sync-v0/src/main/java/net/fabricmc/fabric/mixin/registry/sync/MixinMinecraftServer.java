@@ -14,35 +14,33 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.biome.modification;
+package net.fabricmc.fabric.mixin.registry.sync;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.world.SaveProperties;
-import net.minecraft.world.level.LevelProperties;
+import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 
 @Mixin(MinecraftServer.class)
-public abstract class MinecraftServerMixin {
-	@Shadow
-	private SaveProperties saveProperties;
+public class MixinMinecraftServer {
+	@Unique
+	private static Logger FABRIC_LOGGER = LoggerFactory.getLogger(MixinMinecraftServer.class);
 
-	@Shadow
-	public abstract DynamicRegistryManager.class_6890 getRegistryManager();
-
-	@Inject(method = "<init>", at = @At(value = "RETURN"))
-	private void finalizeWorldGen(CallbackInfo ci) {
-		if (!(saveProperties instanceof LevelProperties levelProperties)) {
-			throw new RuntimeException("Incompatible SaveProperties passed to MinecraftServer: " + saveProperties);
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setupServer()Z"), method = "runServer")
+	private void beforeSetupServer(CallbackInfo info) {
+		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
+			// Freeze the registries on the server
+			FABRIC_LOGGER.debug("Freezing registries");
+			Registry.method_40292();
 		}
-
-		BiomeModificationImpl.INSTANCE.finalizeWorldGen(getRegistryManager(), levelProperties);
 	}
 }
