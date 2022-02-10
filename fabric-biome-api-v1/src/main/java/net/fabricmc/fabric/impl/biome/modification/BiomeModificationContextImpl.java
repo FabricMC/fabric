@@ -280,16 +280,15 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			if (features.removeIf(feature -> feature.value() == configuredFeature)) {
 				featureSteps.set(stepIndex, class_6885.method_40242(features));
 				rebuildFlowerFeatures = true;
+
+				return true;
 			}
 
 			return false;
 		}
 
 		@Override
-		public void addFeature(GenerationStep.Feature step, RegistryKey<PlacedFeature> placedFeatureKey) {
-			// We do not need to delay evaluation of this since the registries are already fully built
-			PlacedFeature placedFeature = features.getOrThrow(placedFeatureKey);
-
+		public void addFeature(GenerationStep.Feature step, class_6880<PlacedFeature> placedFeatureHolder) {
 			List<class_6885<PlacedFeature>> featureSteps = generationSettings.features;
 			int index = step.ordinal();
 
@@ -298,17 +297,16 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 				featureSteps.add(class_6885.method_40242(Collections.emptyList()));
 			}
 
-			featureSteps.set(index, plus(featureSteps.get(index), placedFeature, features));
+			featureSteps.set(index, plus(featureSteps.get(index), placedFeatureHolder, features));
 
 			// Ensure the list of flower features is up to date
 			rebuildFlowerFeatures = true;
 		}
 
 		@Override
-		public void addCarver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> carverKey) {
+		public void addCarver(GenerationStep.Carver step, class_6880<ConfiguredCarver<?>> carverHolder) {
 			// We do not need to delay evaluation of this since the registries are already fully built
-			ConfiguredCarver<?> carver = carvers.getOrThrow(carverKey);
-			generationSettings.carvers.put(step, plus(generationSettings.carvers.get(step), carver, carvers));
+			generationSettings.carvers.put(step, plus(generationSettings.carvers.get(step), carverHolder, carvers));
 		}
 
 		@Override
@@ -343,9 +341,9 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			return BiomeStructureStartsImpl.removeStructureStarts(registries, structure, biomeKey);
 		}
 
-		private <T> class_6885<T> plus(class_6885<T> values, T value, Registry<T> registry) {
+		private <T> class_6885<T> plus(class_6885<T> values, class_6880<T> holder, Registry<T> registry) {
 			List<class_6880<T>> list = new ArrayList<>(values.method_40239().toList());
-			list.add(registry.method_40269(value));
+			list.add(holder);
 			return class_6885.method_40242(list);
 		}
 	}

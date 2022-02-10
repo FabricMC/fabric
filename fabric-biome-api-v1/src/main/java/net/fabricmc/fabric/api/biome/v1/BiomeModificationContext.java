@@ -21,7 +21,7 @@ import java.util.function.BiPredicate;
 
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.world.gen.feature.PlacedFeature;
+import net.minecraft.class_6880;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeAdditionsSound;
@@ -37,6 +37,7 @@ import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
@@ -309,14 +310,14 @@ public interface BiomeModificationContext {
 		 * {@link #removeFeature(RegistryKey)} for built-in features (see {@link #addBuiltInFeature(GenerationStep.Feature, PlacedFeature)}).
 		 */
 		default boolean removeBuiltInFeature(PlacedFeature placedFeature) {
-			return removeFeature(BuiltInRegistryKeys.get(placedFeature));
+			return removeFeature(BuiltInRegistryKeys.getKey(placedFeature));
 		}
 
 		/**
 		 * {@link #removeFeature(GenerationStep.Feature, RegistryKey)} for built-in features (see {@link #addBuiltInFeature(GenerationStep.Feature, PlacedFeature)}).
 		 */
 		default boolean removeBuiltInFeature(GenerationStep.Feature step, PlacedFeature placedFeature) {
-			return removeFeature(step, BuiltInRegistryKeys.get(placedFeature));
+			return removeFeature(step, BuiltInRegistryKeys.getKey(placedFeature));
 		}
 
 		/**
@@ -324,7 +325,7 @@ public interface BiomeModificationContext {
 		 *
 		 * @see BuiltinRegistries#PLACED_FEATURE
 		 */
-		void addFeature(GenerationStep.Feature step, RegistryKey<PlacedFeature> placedFeatureKey);
+		void addFeature(GenerationStep.Feature step, class_6880<PlacedFeature> placedFeatureKey);
 
 		/**
 		 * Adds a placed feature from {@link BuiltinRegistries#PLACED_FEATURE} to this biome.
@@ -336,13 +337,13 @@ public interface BiomeModificationContext {
 		 * will be used.
 		 */
 		default void addBuiltInFeature(GenerationStep.Feature step, PlacedFeature placedFeature) {
-			addFeature(step, BuiltInRegistryKeys.get(placedFeature));
+			addFeature(step, BuiltInRegistryKeys.getHolder(placedFeature));
 		}
 
 		/**
 		 * Adds a configured carver to one of this biomes generation steps.
 		 */
-		void addCarver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> carverKey);
+		void addCarver(GenerationStep.Carver step, class_6880<ConfiguredCarver<?>> carverKey);
 
 		/**
 		 * Adds a configured carver from {@link BuiltinRegistries#CONFIGURED_CARVER} to this biome.
@@ -353,7 +354,7 @@ public interface BiomeModificationContext {
 		 * will be used.
 		 */
 		default void addBuiltInCarver(GenerationStep.Carver step, ConfiguredCarver<?> configuredCarver) {
-			addCarver(step, BuiltInRegistryKeys.get(configuredCarver));
+			addCarver(step, BuiltInRegistryKeys.getHolder(configuredCarver));
 		}
 
 		/**
@@ -384,14 +385,14 @@ public interface BiomeModificationContext {
 		 * {@link #removeCarver(RegistryKey)} for built-in carvers (see {@link #addBuiltInCarver(GenerationStep.Carver, ConfiguredCarver)}).
 		 */
 		default boolean removeBuiltInCarver(ConfiguredCarver<?> configuredCarver) {
-			return removeCarver(BuiltInRegistryKeys.get(configuredCarver));
+			return removeCarver(BuiltInRegistryKeys.getKey(configuredCarver));
 		}
 
 		/**
 		 * {@link #removeCarver(GenerationStep.Carver, RegistryKey)} for built-in carvers (see {@link #addBuiltInCarver(GenerationStep.Carver, ConfiguredCarver)}).
 		 */
 		default boolean removeBuiltInCarver(GenerationStep.Carver step, ConfiguredCarver<?> configuredCarver) {
-			return removeCarver(step, BuiltInRegistryKeys.get(configuredCarver));
+			return removeCarver(step, BuiltInRegistryKeys.getKey(configuredCarver));
 		}
 
 		/**
@@ -424,7 +425,7 @@ public interface BiomeModificationContext {
 		 * adding the new structure, since only one of them could actually generate.
 		 */
 		default void addBuiltInStructure(ConfiguredStructureFeature<?, ?> configuredStructure) {
-			addStructure(BuiltInRegistryKeys.get(configuredStructure));
+			addStructure(BuiltInRegistryKeys.getKey(configuredStructure));
 		}
 
 		/**
@@ -452,7 +453,7 @@ public interface BiomeModificationContext {
 		 * {@link #removeStructure(RegistryKey)} for built-in structures (see {@link #addBuiltInStructure(ConfiguredStructureFeature)}).
 		 */
 		default boolean removeBuiltInStructure(ConfiguredStructureFeature<?, ?> configuredStructure) {
-			return removeStructure(BuiltInRegistryKeys.get(configuredStructure));
+			return removeStructure(BuiltInRegistryKeys.getKey(configuredStructure));
 		}
 	}
 

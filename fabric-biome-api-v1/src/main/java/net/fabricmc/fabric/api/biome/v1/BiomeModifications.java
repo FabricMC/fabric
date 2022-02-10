@@ -20,6 +20,7 @@ import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -45,9 +46,9 @@ public final class BiomeModifications {
 	 *
 	 * @see BiomeSelectors
 	 */
-	public static void addFeature(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Feature step, RegistryKey<PlacedFeature> configuredFeatureKey) {
-		create(configuredFeatureKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
-			context.getGenerationSettings().addFeature(step, configuredFeatureKey);
+	public static void addFeature(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Feature step, RegistryKey<PlacedFeature> placedFeatureRegistryKey) {
+		create(placedFeatureRegistryKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
+			context.getGenerationSettings().addFeature(step, BuiltinRegistries.PLACED_FEATURE.method_40268(placedFeatureRegistryKey));
 		});
 	}
 
@@ -69,7 +70,7 @@ public final class BiomeModifications {
 	 */
 	public static void addCarver(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
 		create(configuredCarverKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
-			context.getGenerationSettings().addCarver(step, configuredCarverKey);
+			context.getGenerationSettings().addCarver(step, BuiltinRegistries.CONFIGURED_CARVER.method_40268(configuredCarverKey));
 		});
 	}
 

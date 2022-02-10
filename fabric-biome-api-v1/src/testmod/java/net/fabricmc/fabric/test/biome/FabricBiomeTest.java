@@ -91,11 +91,15 @@ public class FabricBiomeTest implements ModInitializer {
 					ctx.getGenerationSettings().addStructure(RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, new Identifier("end_city")));
 				});
 
+		class_6880<Biome> TEST_END_HIGHLANDS_HOLDER = BuiltinRegistries.BIOME.method_40268(TEST_END_HIGHLANDS);
+		class_6880<Biome> TEST_END_MIDLANDS_HOLDER = BuiltinRegistries.BIOME.method_40268(TEST_END_MIDLANDS);
+		class_6880<Biome> TEST_END_BARRRENS_HOLDER = BuiltinRegistries.BIOME.method_40268(TEST_END_BARRRENS);
+
 		// TESTING HINT: to get to the end:
 		// /execute in minecraft:the_end run tp @s 0 90 0
-		TheEndBiomes.addHighlandsBiome(TEST_END_HIGHLANDS, 5.0);
-		TheEndBiomes.addMidlandsBiome(TEST_END_HIGHLANDS, TEST_END_MIDLANDS, 1.0);
-		TheEndBiomes.addBarrensBiome(TEST_END_HIGHLANDS, TEST_END_BARRRENS, 1.0);
+		TheEndBiomes.addHighlandsBiome(TEST_END_HIGHLANDS_HOLDER, 5.0);
+		TheEndBiomes.addMidlandsBiome(TEST_END_HIGHLANDS_HOLDER, TEST_END_MIDLANDS_HOLDER, 1.0);
+		TheEndBiomes.addBarrensBiome(TEST_END_HIGHLANDS_HOLDER, TEST_END_BARRRENS_HOLDER, 1.0);
 
 		ConfiguredFeature<?, ?> COMMON_DESERT_WELL = new ConfiguredFeature<>(Feature.DESERT_WELL, DefaultFeatureConfig.INSTANCE);
 		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier(MOD_ID, "fab_desert_well"), COMMON_DESERT_WELL);
@@ -104,6 +108,7 @@ public class FabricBiomeTest implements ModInitializer {
 		// The placement config is taken from the vanilla desert well, but no randomness
 		PlacedFeature PLACED_COMMON_DESERT_WELL = new PlacedFeature(class_6880.method_40221(featureHolder), List.of(SquarePlacementModifier.of(), PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of()));
 		Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(MOD_ID, "fab_desert_well"), PLACED_COMMON_DESERT_WELL);
+		class_6880<PlacedFeature> PLACED_COMMON_DESERT_WELL_HOLDER = BuiltinRegistries.PLACED_FEATURE.method_40268(BuiltinRegistries.PLACED_FEATURE.getKey(PLACED_COMMON_DESERT_WELL).orElseThrow());
 
 		BiomeModifications.create(new Identifier("fabric:test_mod"))
 				.add(ModificationPhase.ADDITIONS,
@@ -113,7 +118,7 @@ public class FabricBiomeTest implements ModInitializer {
 						BiomeSelectors.categories(Biome.Category.DESERT),
 						context -> {
 							context.getGenerationSettings().addFeature(GenerationStep.Feature.TOP_LAYER_MODIFICATION,
-									BuiltinRegistries.PLACED_FEATURE.getKey(PLACED_COMMON_DESERT_WELL).get()
+									PLACED_COMMON_DESERT_WELL_HOLDER
 							);
 						})
 				.add(ModificationPhase.ADDITIONS,

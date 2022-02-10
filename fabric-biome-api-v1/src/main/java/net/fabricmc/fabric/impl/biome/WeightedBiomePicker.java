@@ -21,8 +21,8 @@ import java.util.List;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.class_6880;
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 /**
@@ -37,7 +37,7 @@ public final class WeightedBiomePicker {
 		entries = new ArrayList<>();
 	}
 
-	void addBiome(final RegistryKey<Biome> biome, final double weight) {
+	void addBiome(final class_6880<Biome> biome, final double weight) {
 		currentTotal += weight;
 
 		entries.add(new WeightedBiomeEntry(biome, weight, currentTotal));
@@ -47,7 +47,7 @@ public final class WeightedBiomePicker {
 		return currentTotal;
 	}
 
-	public RegistryKey<Biome> pickFromNoise(PerlinNoiseSampler sampler, double x, double y, double z) {
+	public class_6880<Biome> pickFromNoise(PerlinNoiseSampler sampler, double x, double y, double z) {
 		double target = Math.abs(sampler.sample(x, y, z)) * getCurrentWeightTotal();
 
 		return search(target).biome();

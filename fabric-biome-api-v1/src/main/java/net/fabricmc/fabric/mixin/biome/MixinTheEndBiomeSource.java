@@ -24,36 +24,31 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.class_6880;
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
-import net.minecraft.world.gen.random.ChunkRandom;
 import net.minecraft.world.gen.random.AtomicSimpleRandom;
+import net.minecraft.world.gen.random.ChunkRandom;
 
 import net.fabricmc.fabric.impl.biome.TheEndBiomeData;
 
 @Mixin(TheEndBiomeSource.class)
 public class MixinTheEndBiomeSource {
 	// TODO 22w06a, this isnt really a thing now.
-	@Unique
-	private Registry<Biome> biomeRegistry;
 	@Shadow
 	@Final
 	private long seed;
 	@Unique
-	private PerlinNoiseSampler sampler = new PerlinNoiseSampler(new ChunkRandom(new AtomicSimpleRandom(seed)));
+	private final PerlinNoiseSampler sampler = new PerlinNoiseSampler(new ChunkRandom(new AtomicSimpleRandom(seed)));
 
 	@Inject(method = "getBiome", at = @At("RETURN"), cancellable = true)
-	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler multiNoiseSampler, CallbackInfoReturnable<Biome> cir) {
-		Biome vanillaBiome = cir.getReturnValue();
+	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler multiNoiseSampler, CallbackInfoReturnable<class_6880<Biome>> cir) {
+		class_6880<Biome> vanillaBiome = cir.getReturnValue();
 
-		// Since all vanilla biomes are added to the registry, this will never fail.
-		RegistryKey<Biome> vanillaKey = biomeRegistry.getKey(vanillaBiome).get();
-		RegistryKey<Biome> replacementKey = TheEndBiomeData.pickEndBiome(biomeX, biomeY, biomeZ, sampler, vanillaKey);
+		class_6880<Biome> replacementBiome = TheEndBiomeData.pickEndBiome(biomeX, biomeY, biomeZ, sampler, vanillaBiome);
 
-		cir.setReturnValue(biomeRegistry.get(replacementKey));
+		cir.setReturnValue(replacementBiome);
 	}
 }

@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.biome;
 
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.class_6880;
 import net.minecraft.world.biome.Biome;
 
 /**
@@ -26,5 +26,5 @@ import net.minecraft.world.biome.Biome;
  * @param weight how often a biome will be chosen
  * @param upperWeightBound the upper weight bound within the context of the other entries, used for the binary search
  */
-record WeightedBiomeEntry(RegistryKey<Biome> biome, double weight, double upperWeightBound) {
+record WeightedBiomeEntry(class_6880<Biome> biome, double weight, double upperWeightBound) {
 }

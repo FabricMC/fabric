@@ -18,12 +18,13 @@ package net.fabricmc.fabric.impl.biome.modification;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.world.gen.feature.PlacedFeature;
+import net.minecraft.class_6880;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.gen.feature.PlacedFeature;
 
 /**
  * Utility class for getting the registry keys of built-in worldgen objects and throwing proper exceptions if they
@@ -34,23 +35,39 @@ public final class BuiltInRegistryKeys {
 	private BuiltInRegistryKeys() {
 	}
 
-	public static RegistryKey<ConfiguredStructureFeature<?, ?>> get(ConfiguredStructureFeature<?, ?> configuredStructure) {
+	public static RegistryKey<ConfiguredStructureFeature<?, ?>> getKey(ConfiguredStructureFeature<?, ?> configuredStructure) {
 		return BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getKey(configuredStructure)
 				.orElseThrow(() -> new IllegalArgumentException("Given configured structure is not built-in: " + configuredStructure));
 	}
 
-	public static RegistryKey<ConfiguredFeature<?, ?>> get(ConfiguredFeature<?, ?> configuredFeature) {
+	public static RegistryKey<ConfiguredFeature<?, ?>> getKey(ConfiguredFeature<?, ?> configuredFeature) {
 		return BuiltinRegistries.CONFIGURED_FEATURE.getKey(configuredFeature)
 				.orElseThrow(() -> new IllegalArgumentException("Given configured feature is not built-in: " + configuredFeature));
 	}
 
-	public static RegistryKey<PlacedFeature> get(PlacedFeature placedFeature) {
+	public static RegistryKey<PlacedFeature> getKey(PlacedFeature placedFeature) {
 		return BuiltinRegistries.PLACED_FEATURE.getKey(placedFeature)
 				.orElseThrow(() -> new IllegalArgumentException("Given placed feature is not built-in: " + placedFeature));
 	}
 
-	public static RegistryKey<ConfiguredCarver<?>> get(ConfiguredCarver<?> configuredCarver) {
+	public static RegistryKey<ConfiguredCarver<?>> getKey(ConfiguredCarver<?> configuredCarver) {
 		return BuiltinRegistries.CONFIGURED_CARVER.getKey(configuredCarver)
 				.orElseThrow(() -> new IllegalArgumentException("Given configured carver is not built-in: " + configuredCarver));
+	}
+
+	public static class_6880<ConfiguredStructureFeature<?, ?>> getHolder(ConfiguredStructureFeature<?, ?> configuredStructure) {
+		return BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.method_40268(getKey(configuredStructure));
+	}
+
+	public static class_6880<ConfiguredFeature<?, ?>> getHolder(ConfiguredFeature<?, ?> configuredFeature) {
+		return BuiltinRegistries.CONFIGURED_FEATURE.method_40268(getKey(configuredFeature));
+	}
+
+	public static class_6880<PlacedFeature> getHolder(PlacedFeature placedFeature) {
+		return BuiltinRegistries.PLACED_FEATURE.method_40268(getKey(placedFeature));
+	}
+
+	public static class_6880<ConfiguredCarver<?>> getHolder(ConfiguredCarver<?> configuredCarver) {
+		return BuiltinRegistries.CONFIGURED_CARVER.method_40268(getKey(configuredCarver));
 	}
 }
