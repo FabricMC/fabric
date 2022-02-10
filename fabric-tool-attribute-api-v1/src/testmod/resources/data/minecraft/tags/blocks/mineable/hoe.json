@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "fabric-tool-attribute-api-v1-testmod:needs_hoe",
     "fabric-tool-attribute-api-v1-testmod:needs_hoe_tagged"
   ]
 }

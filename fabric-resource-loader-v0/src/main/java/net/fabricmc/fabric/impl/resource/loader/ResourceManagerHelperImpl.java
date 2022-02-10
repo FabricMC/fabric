@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.resource.loader;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -113,12 +115,20 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		}
 	}
 
-	public static void sort(ResourceType type, List<ResourceReloader> listeners) {
+	public static List<ResourceReloader> sort(ResourceType type, List<ResourceReloader> listeners) {
+		if (type == null) {
+			return listeners;
+		}
+
 		ResourceManagerHelperImpl instance = get(type);
 
 		if (instance != null) {
-			instance.sort(listeners);
+			List<ResourceReloader> mutable = new ArrayList<>(listeners);
+			instance.sort(mutable);
+			return Collections.unmodifiableList(mutable);
 		}
+
+		return listeners;
 	}
 
 	protected void sort(List<ResourceReloader> listeners) {
