@@ -18,8 +18,8 @@ package net.fabricmc.fabric.test.biome;
 
 import java.util.List;
 
-import net.minecraft.class_6862;
-import net.minecraft.class_6880;
+import net.minecraft.tag.TagKey;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
@@ -91,24 +91,24 @@ public class FabricBiomeTest implements ModInitializer {
 					ctx.getGenerationSettings().addStructure(RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, new Identifier("end_city")));
 				});
 
-		class_6880<Biome> TEST_END_HIGHLANDS_HOLDER = BuiltinRegistries.BIOME.method_40268(TEST_END_HIGHLANDS);
-		class_6880<Biome> TEST_END_MIDLANDS_HOLDER = BuiltinRegistries.BIOME.method_40268(TEST_END_MIDLANDS);
-		class_6880<Biome> TEST_END_BARRRENS_HOLDER = BuiltinRegistries.BIOME.method_40268(TEST_END_BARRRENS);
+		RegistryEntry<Biome> TEST_END_HIGHLANDS_ENTRY = BuiltinRegistries.BIOME.getOrCreateEntry(TEST_END_HIGHLANDS);
+		RegistryEntry<Biome> TEST_END_MIDLANDS_ENTRY = BuiltinRegistries.BIOME.getOrCreateEntry(TEST_END_MIDLANDS);
+		RegistryEntry<Biome> TEST_END_BARRRENS_ENTRY = BuiltinRegistries.BIOME.getOrCreateEntry(TEST_END_BARRRENS);
 
 		// TESTING HINT: to get to the end:
 		// /execute in minecraft:the_end run tp @s 0 90 0
-		TheEndBiomes.addHighlandsBiome(TEST_END_HIGHLANDS_HOLDER, 5.0);
-		TheEndBiomes.addMidlandsBiome(TEST_END_HIGHLANDS_HOLDER, TEST_END_MIDLANDS_HOLDER, 1.0);
-		TheEndBiomes.addBarrensBiome(TEST_END_HIGHLANDS_HOLDER, TEST_END_BARRRENS_HOLDER, 1.0);
+		TheEndBiomes.addHighlandsBiome(TEST_END_HIGHLANDS_ENTRY, 5.0);
+		TheEndBiomes.addMidlandsBiome(TEST_END_HIGHLANDS_ENTRY, TEST_END_MIDLANDS_ENTRY, 1.0);
+		TheEndBiomes.addBarrensBiome(TEST_END_HIGHLANDS_ENTRY, TEST_END_BARRRENS_ENTRY, 1.0);
 
 		ConfiguredFeature<?, ?> COMMON_DESERT_WELL = new ConfiguredFeature<>(Feature.DESERT_WELL, DefaultFeatureConfig.INSTANCE);
 		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier(MOD_ID, "fab_desert_well"), COMMON_DESERT_WELL);
-		class_6880<ConfiguredFeature<?, ?>> featureHolder = BuiltinRegistries.CONFIGURED_FEATURE.method_40268(BuiltinRegistries.CONFIGURED_FEATURE.getKey(COMMON_DESERT_WELL).orElseThrow());
+		RegistryEntry<ConfiguredFeature<?, ?>> featureEntry = BuiltinRegistries.CONFIGURED_FEATURE.getOrCreateEntry(BuiltinRegistries.CONFIGURED_FEATURE.getKey(COMMON_DESERT_WELL).orElseThrow());
 
 		// The placement config is taken from the vanilla desert well, but no randomness
-		PlacedFeature PLACED_COMMON_DESERT_WELL = new PlacedFeature(class_6880.method_40221(featureHolder), List.of(SquarePlacementModifier.of(), PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of()));
+		PlacedFeature PLACED_COMMON_DESERT_WELL = new PlacedFeature(featureEntry, List.of(SquarePlacementModifier.of(), PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of()));
 		Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(MOD_ID, "fab_desert_well"), PLACED_COMMON_DESERT_WELL);
-		class_6880<PlacedFeature> PLACED_COMMON_DESERT_WELL_HOLDER = BuiltinRegistries.PLACED_FEATURE.method_40268(BuiltinRegistries.PLACED_FEATURE.getKey(PLACED_COMMON_DESERT_WELL).orElseThrow());
+		RegistryEntry<PlacedFeature> PLACED_COMMON_DESERT_WELL_ENTRY = BuiltinRegistries.PLACED_FEATURE.getOrCreateEntry(BuiltinRegistries.PLACED_FEATURE.getKey(PLACED_COMMON_DESERT_WELL).orElseThrow());
 
 		BiomeModifications.create(new Identifier("fabric:test_mod"))
 				.add(ModificationPhase.ADDITIONS,
@@ -118,11 +118,11 @@ public class FabricBiomeTest implements ModInitializer {
 						BiomeSelectors.categories(Biome.Category.DESERT),
 						context -> {
 							context.getGenerationSettings().addFeature(GenerationStep.Feature.TOP_LAYER_MODIFICATION,
-									PLACED_COMMON_DESERT_WELL_HOLDER
+									PLACED_COMMON_DESERT_WELL_ENTRY
 							);
 						})
 				.add(ModificationPhase.ADDITIONS,
-						BiomeSelectors.tag(class_6862.method_40092(Registry.BIOME_KEY, new Identifier(MOD_ID, "tag_selector_test"))),
+						BiomeSelectors.tag(TagKey.intern(Registry.BIOME_KEY, new Identifier(MOD_ID, "tag_selector_test"))),
 						context -> context.getEffects().setSkyColor(0x770000));
 	}
 

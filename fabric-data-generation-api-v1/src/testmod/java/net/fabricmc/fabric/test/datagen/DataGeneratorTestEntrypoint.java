@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
-import net.minecraft.class_6862;
+import net.minecraft.tag.TagKey;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.model.BlockStateModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
@@ -169,7 +169,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void generateTags() {
-			FabricTagBuilder<Biome> builder = getOrCreateTagBuilder(class_6862.method_40092(Registry.BIOME_KEY, new Identifier(MOD_ID, "biome_tag_test")))
+			FabricTagBuilder<Biome> builder = getOrCreateTagBuilder(TagKey.intern(Registry.BIOME_KEY, new Identifier(MOD_ID, "biome_tag_test")))
 					.add(BiomeKeys.BADLANDS, BiomeKeys.BAMBOO_JUNGLE)
 					.add(BiomeKeys.BASALT_DELTAS);
 

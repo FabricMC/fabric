@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.class_6862;
+import net.minecraft.tag.TagKey;
 import net.minecraft.tag.BlockTags;
 
 import net.fabricmc.yarn.constants.MiningLevels;
@@ -46,12 +46,12 @@ public final class MiningLevelManagerImpl {
 			int miningLevel = MiningLevels.HAND;
 
 			// Handle #fabric:needs_tool_level_N
-			for (class_6862<Block> tagId : state.method_40144().toList()) {
-				if (!tagId.location().getNamespace().equals(TOOL_TAG_NAMESPACE)) {
+			for (TagKey<Block> tagId : state.method_40144().toList()) {
+				if (!tagId.id().getNamespace().equals(TOOL_TAG_NAMESPACE)) {
 					continue;
 				}
 
-				Matcher matcher = TOOL_TAG_PATTERN.matcher(tagId.location().getPath());
+				Matcher matcher = TOOL_TAG_PATTERN.matcher(tagId.id().getPath());
 
 				if (matcher.matches()) {
 					try {

@@ -21,7 +21,7 @@ import java.util.function.BiPredicate;
 
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.class_6880;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeAdditionsSound;
@@ -325,7 +325,7 @@ public interface BiomeModificationContext {
 		 *
 		 * @see BuiltinRegistries#PLACED_FEATURE
 		 */
-		void addFeature(GenerationStep.Feature step, class_6880<PlacedFeature> placedFeatureKey);
+		void addFeature(GenerationStep.Feature step, RegistryEntry<PlacedFeature> placedFeatureKey);
 
 		/**
 		 * Adds a placed feature from {@link BuiltinRegistries#PLACED_FEATURE} to this biome.
@@ -337,13 +337,13 @@ public interface BiomeModificationContext {
 		 * will be used.
 		 */
 		default void addBuiltInFeature(GenerationStep.Feature step, PlacedFeature placedFeature) {
-			addFeature(step, BuiltInRegistryKeys.getHolder(placedFeature));
+			addFeature(step, BuiltInRegistryKeys.getEntry(placedFeature));
 		}
 
 		/**
 		 * Adds a configured carver to one of this biomes generation steps.
 		 */
-		void addCarver(GenerationStep.Carver step, class_6880<ConfiguredCarver<?>> carverKey);
+		void addCarver(GenerationStep.Carver step, RegistryEntry<ConfiguredCarver<?>> carverKey);
 
 		/**
 		 * Adds a configured carver from {@link BuiltinRegistries#CONFIGURED_CARVER} to this biome.
@@ -354,7 +354,7 @@ public interface BiomeModificationContext {
 		 * will be used.
 		 */
 		default void addBuiltInCarver(GenerationStep.Carver step, ConfiguredCarver<?> configuredCarver) {
-			addCarver(step, BuiltInRegistryKeys.getHolder(configuredCarver));
+			addCarver(step, BuiltInRegistryKeys.getEntry(configuredCarver));
 		}
 
 		/**

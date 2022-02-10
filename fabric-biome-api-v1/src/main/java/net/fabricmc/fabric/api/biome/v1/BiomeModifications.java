@@ -48,7 +48,7 @@ public final class BiomeModifications {
 	 */
 	public static void addFeature(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Feature step, RegistryKey<PlacedFeature> placedFeatureRegistryKey) {
 		create(placedFeatureRegistryKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
-			context.getGenerationSettings().addFeature(step, BuiltinRegistries.PLACED_FEATURE.method_40268(placedFeatureRegistryKey));
+			context.getGenerationSettings().addFeature(step, BuiltinRegistries.PLACED_FEATURE.getOrCreateEntry(placedFeatureRegistryKey));
 		});
 	}
 
@@ -70,7 +70,7 @@ public final class BiomeModifications {
 	 */
 	public static void addCarver(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
 		create(configuredCarverKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
-			context.getGenerationSettings().addCarver(step, BuiltinRegistries.CONFIGURED_CARVER.method_40268(configuredCarverKey));
+			context.getGenerationSettings().addCarver(step, BuiltinRegistries.CONFIGURED_CARVER.getOrCreateEntry(configuredCarverKey));
 		});
 	}
 

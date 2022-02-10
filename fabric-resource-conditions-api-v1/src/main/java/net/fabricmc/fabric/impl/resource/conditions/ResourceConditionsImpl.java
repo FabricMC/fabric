@@ -25,7 +25,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.class_6862;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
@@ -84,7 +84,7 @@ public class ResourceConditionsImpl {
 		};
 	}
 
-	public static <T> ConditionJsonProvider tagsPopulated(Identifier id, class_6862<T>... tags) {
+	public static <T> ConditionJsonProvider tagsPopulated(Identifier id, TagKey<T>... tags) {
 		Preconditions.checkArgument(tags.length > 0, "Must register at least one tag.");
 
 		return new ConditionJsonProvider() {
@@ -97,8 +97,8 @@ public class ResourceConditionsImpl {
 			public void writeParameters(JsonObject object) {
 				JsonArray array = new JsonArray();
 
-				for (class_6862<T> tag : tags) {
-					array.add(tag.location().toString());
+				for (TagKey<T> tag : tags) {
+					array.add(tag.id().toString());
 				}
 
 				object.add("values", array);
@@ -131,7 +131,7 @@ public class ResourceConditionsImpl {
 			if (element.isJsonPrimitive()) {
 				Identifier id = new Identifier(element.getAsString());
 				// TODO 22w06a check me later
-				class_6862<T> tag = class_6862.method_40092(registryKey, id);
+				TagKey<T> tag = TagKey.intern(registryKey, id);
 				Registry<T> registry = (Registry<T>) Registry.REGISTRIES.get(registryKey.getValue());
 
 				if (!registry.method_40286(tag).iterator().hasNext()) {

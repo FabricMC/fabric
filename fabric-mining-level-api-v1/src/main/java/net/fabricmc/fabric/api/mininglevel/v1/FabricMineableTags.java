@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.mininglevel.v1;
 
 import net.minecraft.block.Block;
-import net.minecraft.class_6862;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -35,17 +35,17 @@ public final class FabricMineableTags {
 	 * <p>As swords have materials and mining levels, the mining level tags described in
 	 * {@link MiningLevelManager} also apply.
 	 */
-	public static final class_6862<Block> SWORD_MINEABLE = register("mineable/sword");
+	public static final TagKey<Block> SWORD_MINEABLE = register("mineable/sword");
 
 	/**
 	 * Blocks in this tag ({@code #fabric:mineable/shears}) can be effectively mined with shears.
 	 */
-	public static final class_6862<Block> SHEARS_MINEABLE = register("mineable/shears");
+	public static final TagKey<Block> SHEARS_MINEABLE = register("mineable/shears");
 
 	private FabricMineableTags() {
 	}
 
-	private static class_6862<Block> register(String id) {
-		return class_6862.method_40092(Registry.BLOCK_KEY, new Identifier("fabric", id));
+	private static TagKey<Block> register(String id) {
+		return TagKey.intern(Registry.BLOCK_KEY, new Identifier("fabric", id));
 	}
 }

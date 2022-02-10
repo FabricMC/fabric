@@ -19,8 +19,8 @@ package net.fabricmc.fabric.api.biome.v1;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.class_6880;
-import net.minecraft.class_6885;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryEntryList;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionOptions;
@@ -68,10 +68,10 @@ public interface BiomeSelectionContext {
 	 * Returns true if this biome contains a placed feature referencing a configured feature with the given key.
 	 */
 	default boolean hasFeature(RegistryKey<ConfiguredFeature<?, ?>> key) {
-		List<class_6885<PlacedFeature>> featureSteps = getBiome().getGenerationSettings().getFeatures();
+		List<RegistryEntryList<PlacedFeature>> featureSteps = getBiome().getGenerationSettings().getFeatures();
 
-		for (class_6885<PlacedFeature> featureSuppliers : featureSteps) {
-			for (class_6880<PlacedFeature> featureSupplier : featureSuppliers) {
+		for (RegistryEntryList<PlacedFeature> featureSuppliers : featureSteps) {
+			for (RegistryEntry<PlacedFeature> featureSupplier : featureSuppliers) {
 				if (featureSupplier.value().getDecoratedFeatures().anyMatch(cf -> getFeatureKey(cf).orElse(null) == key)) {
 					return true;
 				}
@@ -85,10 +85,10 @@ public interface BiomeSelectionContext {
 	 * Returns true if this biome contains a placed feature with the given key.
 	 */
 	default boolean hasPlacedFeature(RegistryKey<PlacedFeature> key) {
-		List<class_6885<PlacedFeature>> featureSteps = getBiome().getGenerationSettings().getFeatures();
+		List<RegistryEntryList<PlacedFeature>> featureSteps = getBiome().getGenerationSettings().getFeatures();
 
-		for (class_6885<PlacedFeature> featureSuppliers : featureSteps) {
-			for (class_6880<PlacedFeature> featureSupplier : featureSuppliers) {
+		for (RegistryEntryList<PlacedFeature> featureSuppliers : featureSteps) {
+			for (RegistryEntry<PlacedFeature> featureSupplier : featureSuppliers) {
 				if (getPlacedFeatureKey(featureSupplier.value()).orElse(null) == key) {
 					return true;
 				}

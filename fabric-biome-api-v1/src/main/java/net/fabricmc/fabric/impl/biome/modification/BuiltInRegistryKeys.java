@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.biome.modification;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.class_6880;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
@@ -55,19 +55,19 @@ public final class BuiltInRegistryKeys {
 				.orElseThrow(() -> new IllegalArgumentException("Given configured carver is not built-in: " + configuredCarver));
 	}
 
-	public static class_6880<ConfiguredStructureFeature<?, ?>> getHolder(ConfiguredStructureFeature<?, ?> configuredStructure) {
-		return BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.method_40268(getKey(configuredStructure));
+	public static RegistryEntry<ConfiguredStructureFeature<?, ?>> getEntry(ConfiguredStructureFeature<?, ?> configuredStructure) {
+		return BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getOrCreateEntry(getKey(configuredStructure));
 	}
 
-	public static class_6880<ConfiguredFeature<?, ?>> getHolder(ConfiguredFeature<?, ?> configuredFeature) {
-		return BuiltinRegistries.CONFIGURED_FEATURE.method_40268(getKey(configuredFeature));
+	public static RegistryEntry<ConfiguredFeature<?, ?>> getEntry(ConfiguredFeature<?, ?> configuredFeature) {
+		return BuiltinRegistries.CONFIGURED_FEATURE.getOrCreateEntry(getKey(configuredFeature));
 	}
 
-	public static class_6880<PlacedFeature> getHolder(PlacedFeature placedFeature) {
-		return BuiltinRegistries.PLACED_FEATURE.method_40268(getKey(placedFeature));
+	public static RegistryEntry<PlacedFeature> getEntry(PlacedFeature placedFeature) {
+		return BuiltinRegistries.PLACED_FEATURE.getOrCreateEntry(getKey(placedFeature));
 	}
 
-	public static class_6880<ConfiguredCarver<?>> getHolder(ConfiguredCarver<?> configuredCarver) {
-		return BuiltinRegistries.CONFIGURED_CARVER.method_40268(getKey(configuredCarver));
+	public static RegistryEntry<ConfiguredCarver<?>> getEntry(ConfiguredCarver<?> configuredCarver) {
+		return BuiltinRegistries.CONFIGURED_CARVER.getOrCreateEntry(getKey(configuredCarver));
 	}
 }

@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_6880;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
@@ -44,10 +44,10 @@ public class MixinTheEndBiomeSource {
 	private final PerlinNoiseSampler sampler = new PerlinNoiseSampler(new ChunkRandom(new AtomicSimpleRandom(seed)));
 
 	@Inject(method = "getBiome", at = @At("RETURN"), cancellable = true)
-	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler multiNoiseSampler, CallbackInfoReturnable<class_6880<Biome>> cir) {
-		class_6880<Biome> vanillaBiome = cir.getReturnValue();
+	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler multiNoiseSampler, CallbackInfoReturnable<RegistryEntry<Biome>> cir) {
+		RegistryEntry<Biome> vanillaBiome = cir.getReturnValue();
 
-		class_6880<Biome> replacementBiome = TheEndBiomeData.pickEndBiome(biomeX, biomeY, biomeZ, sampler, vanillaBiome);
+		RegistryEntry<Biome> replacementBiome = TheEndBiomeData.pickEndBiome(biomeX, biomeY, biomeZ, sampler, vanillaBiome);
 
 		cir.setReturnValue(replacementBiome);
 	}

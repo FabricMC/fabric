@@ -33,8 +33,8 @@ import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.class_6880;
-import net.minecraft.class_6885;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryEntryList;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeAdditionsSound;
@@ -220,7 +220,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		private void unfreezeCarvers() {
-			Map<GenerationStep.Carver, class_6885<ConfiguredCarver<?>>> carversByStep = new EnumMap<>(GenerationStep.Carver.class);
+			Map<GenerationStep.Carver, RegistryEntryList<ConfiguredCarver<?>>> carversByStep = new EnumMap<>(GenerationStep.Carver.class);
 			carversByStep.putAll(generationSettings.carvers);
 
 			generationSettings.carvers = carversByStep;
@@ -250,14 +250,14 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			generationSettings.features = ImmutableList.copyOf(generationSettings.features);
 			// Replace the supplier to force a rebuild next time its called.
 			generationSettings.allowedFeatures = Suppliers.memoize(() -> {
-				return generationSettings.features.stream().flatMap(class_6885::method_40239).map(class_6880::value).collect(Collectors.toSet());
+				return generationSettings.features.stream().flatMap(RegistryEntryList::stream).map(RegistryEntry::value).collect(Collectors.toSet());
 			});
 		}
 
 		private void rebuildFlowerFeatures() {
 			// Replace the supplier to force a rebuild next time its called.
 			generationSettings.flowerFeatures = Suppliers.memoize(() -> {
-				return generationSettings.features.stream().flatMap(class_6885::method_40239).map(class_6880::value).flatMap(PlacedFeature::getDecoratedFeatures).filter((configuredFeature) -> {
+				return generationSettings.features.stream().flatMap(RegistryEntryList::stream).map(RegistryEntry::value).flatMap(PlacedFeature::getDecoratedFeatures).filter((configuredFeature) -> {
 					return configuredFeature.feature() == Feature.FLOWER;
 				}).collect(ImmutableList.toImmutableList());
 			});
@@ -268,17 +268,17 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			PlacedFeature configuredFeature = features.getOrThrow(placedFeatureKey);
 
 			int stepIndex = step.ordinal();
-			List<class_6885<PlacedFeature>> featureSteps = generationSettings.features;
+			List<RegistryEntryList<PlacedFeature>> featureSteps = generationSettings.features;
 
 			if (stepIndex >= featureSteps.size()) {
 				return false; // The step was not populated with any features yet
 			}
 
-			class_6885<PlacedFeature> featuresInStep = featureSteps.get(stepIndex);
-			List<class_6880<PlacedFeature>> features = new ArrayList<>(featuresInStep.method_40239().toList());
+			RegistryEntryList<PlacedFeature> featuresInStep = featureSteps.get(stepIndex);
+			List<RegistryEntry<PlacedFeature>> features = new ArrayList<>(featuresInStep.stream().toList());
 
 			if (features.removeIf(feature -> feature.value() == configuredFeature)) {
-				featureSteps.set(stepIndex, class_6885.method_40242(features));
+				featureSteps.set(stepIndex, RegistryEntryList.of(features));
 				rebuildFlowerFeatures = true;
 
 				return true;
@@ -288,34 +288,34 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public void addFeature(GenerationStep.Feature step, class_6880<PlacedFeature> placedFeatureHolder) {
-			List<class_6885<PlacedFeature>> featureSteps = generationSettings.features;
+		public void addFeature(GenerationStep.Feature step, RegistryEntry<PlacedFeature> entry) {
+			List<RegistryEntryList<PlacedFeature>> featureSteps = generationSettings.features;
 			int index = step.ordinal();
 
 			// Add new empty lists for the generation steps that have no features yet
 			while (index >= featureSteps.size()) {
-				featureSteps.add(class_6885.method_40242(Collections.emptyList()));
+				featureSteps.add(RegistryEntryList.of(Collections.emptyList()));
 			}
 
-			featureSteps.set(index, plus(featureSteps.get(index), placedFeatureHolder, features));
+			featureSteps.set(index, plus(featureSteps.get(index), entry));
 
 			// Ensure the list of flower features is up to date
 			rebuildFlowerFeatures = true;
 		}
 
 		@Override
-		public void addCarver(GenerationStep.Carver step, class_6880<ConfiguredCarver<?>> carverHolder) {
+		public void addCarver(GenerationStep.Carver step, RegistryEntry<ConfiguredCarver<?>> entry) {
 			// We do not need to delay evaluation of this since the registries are already fully built
-			generationSettings.carvers.put(step, plus(generationSettings.carvers.get(step), carverHolder, carvers));
+			generationSettings.carvers.put(step, plus(generationSettings.carvers.get(step), entry));
 		}
 
 		@Override
 		public boolean removeCarver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
 			ConfiguredCarver<?> carver = carvers.getOrThrow(configuredCarverKey);
-			List<class_6880<ConfiguredCarver<?>>> genCarvers = new ArrayList<>(generationSettings.carvers.get(step).method_40239().toList());
+			List<RegistryEntry<ConfiguredCarver<?>>> genCarvers = new ArrayList<>(generationSettings.carvers.get(step).stream().toList());
 
-			if (genCarvers.removeIf(holder -> holder.value() == carver)) {
-				generationSettings.carvers.put(step, class_6885.method_40242(genCarvers));
+			if (genCarvers.removeIf(entry -> entry.value() == carver)) {
+				generationSettings.carvers.put(step, RegistryEntryList.of(genCarvers));
 				return true;
 			}
 
@@ -341,10 +341,10 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			return BiomeStructureStartsImpl.removeStructureStarts(registries, structure, biomeKey);
 		}
 
-		private <T> class_6885<T> plus(class_6885<T> values, class_6880<T> holder, Registry<T> registry) {
-			List<class_6880<T>> list = new ArrayList<>(values.method_40239().toList());
-			list.add(holder);
-			return class_6885.method_40242(list);
+		private <T> RegistryEntryList<T> plus(RegistryEntryList<T> values, RegistryEntry<T> entry) {
+			List<RegistryEntry<T>> list = new ArrayList<>(values.stream().toList());
+			list.add(entry);
+			return RegistryEntryList.of(list);
 		}
 	}
 

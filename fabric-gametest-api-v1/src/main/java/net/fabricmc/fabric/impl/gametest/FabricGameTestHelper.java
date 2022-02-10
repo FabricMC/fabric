@@ -64,7 +64,7 @@ public final class FabricGameTestHelper {
 
 		LOGGER.info("Starting test server");
 		MinecraftServer server = TestServer.startServer(thread -> {
-			return TestServer.method_40378(thread, session, resourcePackManager, getBatches(), BlockPos.ORIGIN);
+			return TestServer.create(thread, session, resourcePackManager, getBatches(), BlockPos.ORIGIN);
 		});
 	}
 

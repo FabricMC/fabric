@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.tool.attribute.handlers;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.class_6862;
+import net.minecraft.tag.TagKey;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -31,14 +31,14 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 
 /**
  * This handler handles items that are an subclass of {@link DynamicAttributeTool} by comparing their mining level
- * using {@link DynamicAttributeTool#getMiningLevel(class_6862, BlockState, ItemStack, LivingEntity)} and the block mining level.
+ * using {@link DynamicAttributeTool#getMiningLevel(TagKey, BlockState, ItemStack, LivingEntity)} and the block mining level.
  *
  * <p>Only applicable to modded blocks that are registered, as only they have the registered required mining level.</p>
  */
 public class ModdedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 	@NotNull
 	@Override
-	public ActionResult isEffectiveOn(class_6862<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public ActionResult isEffectiveOn(TagKey<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (stack.getItem() instanceof DynamicAttributeTool) {
 			ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
@@ -55,7 +55,7 @@ public class ModdedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolH
 
 	@NotNull
 	@Override
-	public TypedActionResult<Float> getMiningSpeedMultiplier(class_6862<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public TypedActionResult<Float> getMiningSpeedMultiplier(TagKey<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (stack.getItem() instanceof DynamicAttributeTool) {
 			ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 

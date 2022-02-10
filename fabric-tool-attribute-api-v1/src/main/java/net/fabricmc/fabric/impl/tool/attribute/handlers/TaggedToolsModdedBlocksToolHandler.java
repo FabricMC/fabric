@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.class_6862;
+import net.minecraft.tag.TagKey;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 public class TaggedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 	@NotNull
 	@Override
-	public ActionResult isEffectiveOn(class_6862<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
+	public ActionResult isEffectiveOn(TagKey<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
 		if (!(stack.getItem() instanceof DynamicAttributeTool) && !(stack.getItem() instanceof ToolItem)) {
 			@Nullable ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 

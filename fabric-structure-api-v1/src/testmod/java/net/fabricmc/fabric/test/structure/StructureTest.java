@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.class_6880;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.structure.ShiftableStructurePiece;
 import net.minecraft.structure.StructureGeneratorFactory;
@@ -55,7 +55,7 @@ public class StructureTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StructureTest.class);
 
 	public static final StructureFeature<DefaultFeatureConfig> STRUCTURE = new TestStructureFeature(DefaultFeatureConfig.CODEC);
-	public static final class_6880<ConfiguredStructureFeature<?, ?>> CONFIGURED_STRUCTURE = BuiltinRegistries.add(
+	public static final RegistryEntry<ConfiguredStructureFeature<?, ?>> CONFIGURED_STRUCTURE = BuiltinRegistries.add(
 			BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE,
 			new Identifier("fabric", "test_structure"),
 			STRUCTURE.configure(new DefaultFeatureConfig())

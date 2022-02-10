@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.biome.v1;
 
-import net.minecraft.class_6880;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -45,8 +45,8 @@ public final class TheEndBiomes {
 	 *               heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 *               Vanilla biomes have a weight of 1.0
 	 */
-	public static void addMainIslandBiome(class_6880<Biome> biome, double weight) {
-		TheEndBiomeData.addEndBiomeReplacement(BuiltinRegistries.BIOME.method_40268(BiomeKeys.THE_END), biome, weight);
+	public static void addMainIslandBiome(RegistryEntry<Biome> biome, double weight) {
+		TheEndBiomeData.addEndBiomeReplacement(BuiltinRegistries.BIOME.getOrCreateEntry(BiomeKeys.THE_END), biome, weight);
 	}
 
 	/**
@@ -58,8 +58,8 @@ public final class TheEndBiomes {
 	 *               heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 *               The vanilla biome has a weight of 1.0.
 	 */
-	public static void addHighlandsBiome(class_6880<Biome> biome, double weight) {
-		TheEndBiomeData.addEndBiomeReplacement(BuiltinRegistries.BIOME.method_40268(BiomeKeys.END_HIGHLANDS), biome, weight);
+	public static void addHighlandsBiome(RegistryEntry<Biome> biome, double weight) {
+		TheEndBiomeData.addEndBiomeReplacement(BuiltinRegistries.BIOME.getOrCreateEntry(BiomeKeys.END_HIGHLANDS), biome, weight);
 	}
 
 	/**
@@ -71,8 +71,8 @@ public final class TheEndBiomes {
 	 *               heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 *               The vanilla biome has a weight of 1.0.
 	 */
-	public static void addSmallIslandsBiome(class_6880<Biome> biome, double weight) {
-		TheEndBiomeData.addEndBiomeReplacement(BuiltinRegistries.BIOME.method_40268(BiomeKeys.SMALL_END_ISLANDS), biome, weight);
+	public static void addSmallIslandsBiome(RegistryEntry<Biome> biome, double weight) {
+		TheEndBiomeData.addEndBiomeReplacement(BuiltinRegistries.BIOME.getOrCreateEntry(BiomeKeys.SMALL_END_ISLANDS), biome, weight);
 	}
 
 	/**
@@ -86,7 +86,7 @@ public final class TheEndBiomes {
 	 *                  heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 *                  The vanilla biome has a weight of 1.0.
 	 */
-	public static void addMidlandsBiome(class_6880<Biome> highlands, class_6880<Biome> midlands, double weight) {
+	public static void addMidlandsBiome(RegistryEntry<Biome> highlands, RegistryEntry<Biome> midlands, double weight) {
 		TheEndBiomeData.addEndMidlandsReplacement(highlands, midlands, weight);
 	}
 
@@ -101,7 +101,7 @@ public final class TheEndBiomes {
 	 *                  heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 *                  The vanilla biome has a weight of 1.0.
 	 */
-	public static void addBarrensBiome(class_6880<Biome> highlands, class_6880<Biome> barrens, double weight) {
+	public static void addBarrensBiome(RegistryEntry<Biome> highlands, RegistryEntry<Biome> barrens, double weight) {
 		TheEndBiomeData.addEndBarrensReplacement(highlands, barrens, weight);
 	}
 
@@ -109,7 +109,7 @@ public final class TheEndBiomes {
 	 * Returns true if the given biome can generate in the end, considering the Vanilla end biomes,
 	 * and any biomes added to The End by mods.
 	 */
-	public static boolean canGenerateInTheEnd(class_6880<Biome> biome) {
+	public static boolean canGenerateInTheEnd(RegistryEntry<Biome> biome) {
 		return TheEndBiomeData.canGenerateInTheEnd(biome);
 	}
 }

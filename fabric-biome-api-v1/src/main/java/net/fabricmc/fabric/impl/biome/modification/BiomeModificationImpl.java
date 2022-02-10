@@ -32,7 +32,7 @@ import org.jetbrains.annotations.TestOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.class_6880;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
@@ -171,7 +171,7 @@ public class BiomeModificationImpl {
 
 				// Replace the Supplier to force it to rebuild on next call
 				biomeSource.field_34469 = Suppliers.memoize(() -> {
-					return biomeSource.method_39525(biomeSource.biomes.stream().map(class_6880::value).toList(), true);
+					return biomeSource.method_39525(biomeSource.biomes.stream().map(RegistryEntry::value).toList(), true);
 				});
 			}
 

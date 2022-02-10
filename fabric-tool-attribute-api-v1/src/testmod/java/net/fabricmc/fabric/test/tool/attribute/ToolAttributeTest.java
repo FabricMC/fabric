@@ -29,7 +29,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
-import net.minecraft.class_6862;
+import net.minecraft.tag.TagKey;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -58,7 +58,7 @@ public class ToolAttributeTest implements ModInitializer {
 	private static final float DEFAULT_BREAK_SPEED = 1.0F;
 	private static final float TOOL_BREAK_SPEED = 10.0F;
 	// A custom tool type, taters
-	private static final class_6862<Item> TATER = class_6862.method_40092(Registry.ITEM_KEY, new Identifier("fabric-tool-attribute-api-v1-testmod", "taters"));
+	private static final TagKey<Item> TATER = TagKey.intern(Registry.ITEM_KEY, new Identifier("fabric-tool-attribute-api-v1-testmod", "taters"));
 
 	private boolean hasValidated = false;
 
@@ -295,17 +295,17 @@ public class ToolAttributeTest implements ModInitializer {
 	}
 
 	private static class TestTool extends Item implements DynamicAttributeTool {
-		final class_6862<Item> toolType;
+		final TagKey<Item> toolType;
 		final int miningLevel;
 
-		private TestTool(Settings settings, class_6862<Item> toolType, int miningLevel) {
+		private TestTool(Settings settings, TagKey<Item> toolType, int miningLevel) {
 			super(settings);
 			this.toolType = toolType;
 			this.miningLevel = miningLevel;
 		}
 
 		@Override
-		public int getMiningLevel(class_6862<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+		public int getMiningLevel(TagKey<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (tag.equals(toolType)) {
 				return this.miningLevel;
 			}
@@ -314,7 +314,7 @@ public class ToolAttributeTest implements ModInitializer {
 		}
 
 		@Override
-		public float getMiningSpeedMultiplier(class_6862<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+		public float getMiningSpeedMultiplier(TagKey<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (tag.equals(toolType)) {
 				return TOOL_BREAK_SPEED;
 			}

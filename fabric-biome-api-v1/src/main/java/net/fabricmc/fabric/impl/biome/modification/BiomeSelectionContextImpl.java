@@ -104,6 +104,6 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 			return false;
 		}
 
-		return dimension.getChunkGenerator().getBiomeSource().getBiomes().anyMatch(holder -> holder.value() == biome);
+		return dimension.getChunkGenerator().getBiomeSource().getBiomes().anyMatch(entry -> entry.value() == biome);
 	}
 }

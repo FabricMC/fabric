@@ -18,7 +18,7 @@ package net.fabricmc.fabric.test.screen;
 
 import java.util.Random;
 
-import net.minecraft.class_6880;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
@@ -37,7 +37,7 @@ class SoundButton extends PressableWidget {
 
 	@Override
 	public void onPress() {
-		final SoundEvent event = Registry.SOUND_EVENT.getRandom(RANDOM).map(class_6880::value).orElse(SoundEvents.ENTITY_GENERIC_EXPLODE);
+		final SoundEvent event = Registry.SOUND_EVENT.getRandom(RANDOM).map(RegistryEntry::value).orElse(SoundEvents.ENTITY_GENERIC_EXPLODE);
 		MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(event, 1.0F, 1.0F));
 	}
 

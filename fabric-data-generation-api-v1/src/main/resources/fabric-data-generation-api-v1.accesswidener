@@ -33,8 +33,8 @@ transitive-accessible	method	net/minecraft/data/server/RecipesProvider	offerSmel
 transitive-accessible	method	net/minecraft/data/server/RecipesProvider	offerBlasting	(Ljava/util/function/Consumer;Ljava/util/List;Lnet/minecraft/item/ItemConvertible;FILjava/lang/String;)V
 transitive-accessible	method	net/minecraft/data/server/RecipesProvider	offerMultipleOptions	(Ljava/util/function/Consumer;Lnet/minecraft/recipe/CookingRecipeSerializer;Ljava/util/List;Lnet/minecraft/item/ItemConvertible;FILjava/lang/String;Ljava/lang/String;)V
 transitive-accessible	method	net/minecraft/data/server/RecipesProvider	offerNetheriteUpgradeRecipe	(Ljava/util/function/Consumer;Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;)V
-transitive-accessible	method	net/minecraft/data/server/RecipesProvider	offerPlanksRecipe2	(Ljava/util/function/Consumer;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/class_6862;)V
-transitive-accessible	method	net/minecraft/data/server/RecipesProvider	offerPlanksRecipe	(Ljava/util/function/Consumer;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/class_6862;)V
+transitive-accessible	method	net/minecraft/data/server/RecipesProvider	offerPlanksRecipe2	(Ljava/util/function/Consumer;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/tag/TagKey;)V
+transitive-accessible	method	net/minecraft/data/server/RecipesProvider	offerPlanksRecipe	(Ljava/util/function/Consumer;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/tag/TagKey;)V
 transitive-accessible	method	net/minecraft/data/server/RecipesProvider	offerBarkBlockRecipe	(Ljava/util/function/Consumer;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/item/ItemConvertible;)V
 transitive-accessible	method	net/minecraft/data/server/RecipesProvider	offerBoatRecipe	(Ljava/util/function/Consumer;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/item/ItemConvertible;)V
 transitive-accessible	method	net/minecraft/data/server/RecipesProvider	createTransmutationRecipe	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/recipe/Ingredient;)Lnet/minecraft/data/server/recipe/CraftingRecipeJsonFactory;
@@ -74,7 +74,7 @@ transitive-accessible	method	net/minecraft/data/server/RecipesProvider	getVarian
 transitive-accessible	method	net/minecraft/data/server/RecipesProvider	requireEnteringFluid	(Lnet/minecraft/block/Block;)Lnet/minecraft/advancement/criterion/EnterBlockCriterion$Conditions;
 transitive-accessible	method	net/minecraft/data/server/RecipesProvider	conditionsFromItem	(Lnet/minecraft/predicate/NumberRange$IntRange;Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
 transitive-accessible	method	net/minecraft/data/server/RecipesProvider	conditionsFromItem	(Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
-transitive-accessible	method	net/minecraft/data/server/RecipesProvider	conditionsFromTag	(Lnet/minecraft/class_6862;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
+transitive-accessible	method	net/minecraft/data/server/RecipesProvider	conditionsFromTag	(Lnet/minecraft/tag/TagKey;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
 transitive-accessible	method	net/minecraft/data/server/RecipesProvider	conditionsFromItemPredicates	([Lnet/minecraft/predicate/item/ItemPredicate;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
 transitive-accessible	method	net/minecraft/data/server/RecipesProvider	hasItem	(Lnet/minecraft/item/ItemConvertible;)Ljava/lang/String;
 transitive-accessible	method	net/minecraft/data/server/RecipesProvider	getItemPath	(Lnet/minecraft/item/ItemConvertible;)Ljava/lang/String;

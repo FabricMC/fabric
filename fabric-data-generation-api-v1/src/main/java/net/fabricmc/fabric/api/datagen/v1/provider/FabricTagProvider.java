@@ -24,7 +24,7 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.class_6862;
+import net.minecraft.tag.TagKey;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.server.AbstractTagProvider;
 import net.minecraft.entity.EntityType;
@@ -97,7 +97,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 * @return The {@link FabricTagBuilder} instance
 	 */
 	@Override
-	protected FabricTagBuilder<T> getOrCreateTagBuilder(class_6862<T> tag) {
+	protected FabricTagBuilder<T> getOrCreateTagBuilder(TagKey<T> tag) {
 		return new FabricTagBuilder<>(super.getOrCreateTagBuilder(tag));
 	}
 
@@ -130,7 +130,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	public abstract static class ItemTagProvider extends FabricTagProvider<Item> {
 		@Nullable
-		private final Function<class_6862<Block>, Tag.Builder> blockTagBuilderProvider;
+		private final Function<TagKey<Block>, Tag.Builder> blockTagBuilderProvider;
 
 		/**
 		 * Construct an {@link ItemTagProvider} tag provider <b>with</b> an associated {@link BlockTagProvider} tag provider.
@@ -162,7 +162,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @param blockTag The block tag to copy from.
 		 * @param itemTag The item tag to copy to.
 		 */
-		public void copy(class_6862<Block> blockTag, class_6862<Item> itemTag) {
+		public void copy(TagKey<Block> blockTag, TagKey<Item> itemTag) {
 			Tag.Builder blockTagBuilder = Objects.requireNonNull(this.blockTagBuilderProvider, "Pass Block tag provider via constructor to use copy").apply(blockTag);
 			Tag.Builder itemTagBuilder = this.getTagBuilder(itemTag);
 			blockTagBuilder.streamEntries().filter((entry) -> entry.entry().canAdd(this.registry::containsId, (id) -> true)).forEach(itemTagBuilder::add);
@@ -288,7 +288,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * <p><b>Note:</b> any vanilla tags can be added to the builder,
 		 * but other tags can only be added if it has a builder registered in the same provider.
 		 *
-		 * <p>Use {@link #forceAddTag(class_6862)} to force add any tag.
+		 * <p>Use {@link #forceAddTag(TagKey)} to force add any tag.
 		 *
 		 * @return the {@link FabricTagBuilder} instance
 		 * @see BlockTags
@@ -298,8 +298,8 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @see ItemTags
 		 */
 		@Override
-		public FabricTagBuilder<T> addTag(class_6862<T> tag) {
-			builder.add(tag.location(), source);
+		public FabricTagBuilder<T> addTag(TagKey<T> tag) {
+			builder.add(tag.id(), source);
 			return this;
 		}
 
@@ -322,8 +322,8 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 *
 		 * @return the {@link FabricTagBuilder} instance
 		 */
-		public FabricTagBuilder<T> forceAddTag(class_6862<T> tag) {
-			builder.add(tag.location(), source);
+		public FabricTagBuilder<T> forceAddTag(TagKey<T> tag) {
+			builder.add(tag.id(), source);
 			return this;
 		}
 

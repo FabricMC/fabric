@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.tool.attribute.v1;
 
-import net.minecraft.class_6862;
+import net.minecraft.tag.TagKey;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -25,16 +25,16 @@ import net.minecraft.util.registry.Registry;
  * Tool item tags provided by Fabric.
  */
 public class FabricToolTags {
-	public static final class_6862<Item> AXES = register("axes");
-	public static final class_6862<Item> HOES = register("hoes");
-	public static final class_6862<Item> PICKAXES = register("pickaxes");
-	public static final class_6862<Item> SHOVELS = register("shovels");
-	public static final class_6862<Item> SWORDS = register("swords");
-	public static final class_6862<Item> SHEARS = register("shears");
+	public static final TagKey<Item> AXES = register("axes");
+	public static final TagKey<Item> HOES = register("hoes");
+	public static final TagKey<Item> PICKAXES = register("pickaxes");
+	public static final TagKey<Item> SHOVELS = register("shovels");
+	public static final TagKey<Item> SWORDS = register("swords");
+	public static final TagKey<Item> SHEARS = register("shears");
 
 	private FabricToolTags() { }
 
-	private static class_6862<Item> register(String id) {
-		return class_6862.method_40092(Registry.ITEM_KEY, new Identifier("fabric", id));
+	private static TagKey<Item> register(String id) {
+		return TagKey.intern(Registry.ITEM_KEY, new Identifier("fabric", id));
 	}
 }

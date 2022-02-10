@@ -25,8 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
-import net.minecraft.class_6862;
-import net.minecraft.class_6880;
+import net.minecraft.tag.TagKey;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.util.registry.Registry;
@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 public final class FuelRegistryImpl implements FuelRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FuelRegistryImpl.class);
 	private final Object2IntMap<ItemConvertible> itemCookTimes = new Object2IntLinkedOpenHashMap<>();
-	private final Object2IntMap<class_6862<Item>> tagCookTimes = new Object2IntLinkedOpenHashMap<>();
+	private final Object2IntMap<TagKey<Item>> tagCookTimes = new Object2IntLinkedOpenHashMap<>();
 	private volatile Map<Item, Integer> fuelTimeCache = null; // thread safe via copy-on-write mechanism
 
 	public FuelRegistryImpl() {
@@ -75,7 +75,7 @@ public final class FuelRegistryImpl implements FuelRegistry {
 	}
 
 	@Override
-	public void add(class_6862<Item> tag, Integer cookTime) {
+	public void add(TagKey<Item> tag, Integer cookTime) {
 		if (cookTime > 32767) {
 			LOGGER.warn("Tried to register an overly high cookTime: " + cookTime + " > 32767! (" + getTagName(tag) + ")");
 		}
@@ -91,7 +91,7 @@ public final class FuelRegistryImpl implements FuelRegistry {
 	}
 
 	@Override
-	public void remove(class_6862<Item> tag) {
+	public void remove(TagKey<Item> tag) {
 		add(tag, 0);
 		resetCache();
 	}
@@ -103,18 +103,18 @@ public final class FuelRegistryImpl implements FuelRegistry {
 	}
 
 	@Override
-	public void clear(class_6862<Item> tag) {
+	public void clear(TagKey<Item> tag) {
 		tagCookTimes.removeInt(tag);
 		resetCache();
 	}
 
 	public void apply(Map<Item, Integer> map) {
 		// tags take precedence before blocks
-		for (class_6862<Item> tag : tagCookTimes.keySet()) {
+		for (TagKey<Item> tag : tagCookTimes.keySet()) {
 			int time = tagCookTimes.getInt(tag);
 
 			if (time <= 0) {
-				for (class_6880<Item> key : Registry.ITEM.method_40286(tag)) {
+				for (RegistryEntry<Item> key : Registry.ITEM.method_40286(tag)) {
 					final Item item = key.value();
 					map.remove(item);
 				}
@@ -134,8 +134,8 @@ public final class FuelRegistryImpl implements FuelRegistry {
 		}
 	}
 
-	private static String getTagName(class_6862<?> tag) {
-		return tag.location().toString();
+	private static String getTagName(TagKey<?> tag) {
+		return tag.id().toString();
 	}
 
 	public void resetCache() {

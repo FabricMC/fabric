@@ -24,7 +24,7 @@ import java.util.Set;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.class_6880;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -60,8 +60,8 @@ public final class NetherBiomeData {
 		if (NETHER_BIOMES.isEmpty()) {
 			MultiNoiseBiomeSource source = MultiNoiseBiomeSource.Preset.NETHER.getBiomeSource(BuiltinRegistries.BIOME);
 
-			for (class_6880<Biome> holder : source.getBiomes().toList()) {
-				BuiltinRegistries.BIOME.getKey(holder.value()).ifPresent(NETHER_BIOMES::add);
+			for (RegistryEntry<Biome> entry : source.getBiomes().toList()) {
+				BuiltinRegistries.BIOME.getKey(entry.value()).ifPresent(NETHER_BIOMES::add);
 			}
 		}
 

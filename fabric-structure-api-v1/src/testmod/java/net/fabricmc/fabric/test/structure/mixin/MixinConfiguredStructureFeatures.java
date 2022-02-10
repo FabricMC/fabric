@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.class_6880;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -34,7 +34,7 @@ import net.fabricmc.fabric.test.structure.StructureTest;
 @Mixin(ConfiguredStructureFeatures.class)
 public abstract class MixinConfiguredStructureFeatures {
 	@Shadow
-	private static void register(ConfiguredStructureFeatures.class_6896 arg, class_6880<? extends ConfiguredStructureFeature<?, ?>> arg2, RegistryKey<Biome> biome) {
+	private static void register(ConfiguredStructureFeatures.class_6896 arg, RegistryEntry<? extends ConfiguredStructureFeature<?, ?>> arg2, RegistryKey<Biome> biome) {
 		throw new AssertionError();
 	}
 
