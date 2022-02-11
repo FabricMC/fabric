@@ -16,13 +16,19 @@
 
 package net.fabricmc.fabric.mixin.structure;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.world.gen.chunk.FlatChunkGeneratorConfig;
-import net.minecraft.world.gen.chunk.StructuresConfig;
+import net.minecraft.world.gen.chunk.placement.StructurePlacement;
+import net.minecraft.world.gen.chunk.placement.StructuresConfig;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 import net.fabricmc.fabric.impl.structure.FabricStructureImpl;
 
@@ -31,6 +37,10 @@ public class FlatChunkGeneratorConfigMixin {
 	@Inject(method = "getDefaultConfig", at = @At(value = "RETURN"))
 	private static void createDefaultConfig(CallbackInfoReturnable<FlatChunkGeneratorConfig> cir) {
 		StructuresConfig structuresConfig = cir.getReturnValue().getStructuresConfig();
-		structuresConfig.getStructures().putAll(FabricStructureImpl.FLAT_STRUCTURE_TO_CONFIG_MAP);
+		StructuresConfigAccessor structuresConfigAccessor = (StructuresConfigAccessor) structuresConfig;
+
+		Map<StructureFeature<?>, StructurePlacement> placements = new HashMap<>(structuresConfig.getStructures());
+		placements.putAll(FabricStructureImpl.FLAT_STRUCTURE_TO_CONFIG_MAP);
+		structuresConfigAccessor.setPlacements(Collections.unmodifiableMap(placements));
 	}
 }

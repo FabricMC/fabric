@@ -26,11 +26,11 @@ import java.util.function.Consumer;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
+import net.minecraft.data.client.BlockStateModelGenerator;
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.tag.TagKey;
 import net.minecraft.data.client.ItemModelGenerator;
-import net.minecraft.data.client.model.BlockStateModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
@@ -116,8 +116,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void generateRecipes(Consumer<RecipeJsonProvider> exporter) {
-			ShapelessRecipeJsonFactory.create(Items.GOLD_INGOT).input(Items.DIRT).criterion("has_dirt", conditionsFromItem(Items.DIRT)).offerTo(withConditions(exporter, NEVER_LOADED));
-			ShapelessRecipeJsonFactory.create(Items.DIAMOND).input(Items.STICK).criterion("has_stick", conditionsFromItem(Items.STICK)).offerTo(withConditions(exporter, ALWAYS_LOADED));
+			ShapelessRecipeJsonBuilder.create(Items.GOLD_INGOT).input(Items.DIRT).criterion("has_dirt", conditionsFromItem(Items.DIRT)).offerTo(withConditions(exporter, NEVER_LOADED));
+			ShapelessRecipeJsonBuilder.create(Items.DIAMOND).input(Items.STICK).criterion("has_stick", conditionsFromItem(Items.STICK)).offerTo(withConditions(exporter, ALWAYS_LOADED));
 		}
 	}
 
@@ -189,7 +189,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generateAdvancement(Consumer<Advancement> consumer) {
-			Advancement root = Advancement.Task.create()
+			Advancement root = Advancement.Builder.create()
 					.display(
 							SIMPLE_BLOCK,
 							new TranslatableText("advancements.test.root.title"),
@@ -199,7 +199,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							false, false, false)
 					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
 					.build(consumer, MOD_ID + ":test/root");
-			Advancement rootNotLoaded = Advancement.Task.create()
+			Advancement rootNotLoaded = Advancement.Builder.create()
 					.display(
 							SIMPLE_BLOCK,
 							new TranslatableText("advancements.test.root_not_loaded.title"),

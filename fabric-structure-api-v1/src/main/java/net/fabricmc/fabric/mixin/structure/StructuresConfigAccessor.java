@@ -22,13 +22,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.class_6874;
-import net.minecraft.world.gen.chunk.StructuresConfig;
+import net.minecraft.world.gen.chunk.placement.StructurePlacement;
+import net.minecraft.world.gen.chunk.placement.StructuresConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 @Mixin(StructuresConfig.class)
 public interface StructuresConfigAccessor {
 	@Mutable
-	@Accessor("structures")
-	void setStructures(Map<StructureFeature<?>, class_6874> structures);
+	@Accessor("placements")
+	void setPlacements(Map<StructureFeature<?>, StructurePlacement> structures);
 }

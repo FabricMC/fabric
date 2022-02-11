@@ -25,10 +25,10 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 
 import net.minecraft.data.DataCache;
-import net.minecraft.data.server.RecipesProvider;
+import net.minecraft.data.server.RecipeProvider;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.data.server.recipe.ShapedRecipeJsonFactory;
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory;
+import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
  */
-public abstract class FabricRecipeProvider extends RecipesProvider {
+public abstract class FabricRecipeProvider extends RecipeProvider {
 	protected final FabricDataGenerator dataGenerator;
 
 	public FabricRecipeProvider(FabricDataGenerator dataGenerator) {
@@ -49,7 +49,7 @@ public abstract class FabricRecipeProvider extends RecipesProvider {
 	}
 
 	/**
-	 * Implement this method and then use the range of methods in {@link RecipesProvider} or from one of the recipe json factories such as {@link ShapedRecipeJsonFactory} & {@link ShapelessRecipeJsonFactory}.
+	 * Implement this method and then use the range of methods in {@link RecipeProvider} or from one of the recipe json factories such as {@link ShapedRecipeJsonBuilder} & {@link ShapelessRecipeJsonBuilder}.
 	 */
 	protected abstract void generateRecipes(Consumer<RecipeJsonProvider> exporter);
 

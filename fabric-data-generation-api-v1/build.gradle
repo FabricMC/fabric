@@ -62,14 +62,14 @@ task generateAccessWidener() {
 		File inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.mergedJar.toFile()
 		String accessWidener = file("template.accesswidener").text + "\n"
 
-		visitMethods(inputJar, "net/minecraft/data/server/RecipesProvider.class") { name, desc, owner ->
+		visitMethods(inputJar, "net/minecraft/data/server/RecipeProvider.class") { name, desc, owner ->
 			if (it.name == "generate")
 				return
 
 			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
-		visitMethods(inputJar, "net/minecraft/data/client/model/BlockStateModelGenerator.class") { name, desc, owner ->
+		visitMethods(inputJar, "net/minecraft/data/client/BlockStateModelGenerator.class") { name, desc, owner ->
 			if (desc == "()V")
 				// Skip over methods that dont take any arguments, as they are specific to minecraft.
 				return
