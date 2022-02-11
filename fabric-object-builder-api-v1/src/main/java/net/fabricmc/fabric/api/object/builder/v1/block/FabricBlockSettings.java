@@ -28,8 +28,6 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.object.builder.BlockSettingsInternals;
-import net.fabricmc.fabric.impl.object.builder.FabricBlockInternals;
 import net.fabricmc.fabric.mixin.object.builder.AbstractBlockAccessor;
 import net.fabricmc.fabric.mixin.object.builder.AbstractBlockSettingsAccessor;
 
@@ -66,14 +64,6 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		thisAccessor.setOpaque(otherAccessor.getOpaque());
 		thisAccessor.setIsAir(otherAccessor.getIsAir());
 		thisAccessor.setToolRequired(otherAccessor.isToolRequired());
-
-		// Now attempt to copy fabric specific data
-		BlockSettingsInternals otherInternals = (BlockSettingsInternals) settings;
-		FabricBlockInternals.ExtraData extraData = otherInternals.getExtraData();
-
-		if (extraData != null) { // If present, populate the extra data on our new settings
-			((BlockSettingsInternals) this).setExtraData(extraData);
-		}
 	}
 
 	public static FabricBlockSettings of(Material material) {
@@ -297,16 +287,6 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 
 	public FabricBlockSettings collidable(boolean collidable) {
 		((AbstractBlockSettingsAccessor) this).setCollidable(collidable);
-		return this;
-	}
-
-	/* FABRIC HELPERS */
-
-	/**
-	 * Makes the block breakable by any tool if {@code breakByHand} is set to true.
-	 */
-	public FabricBlockSettings breakByHand(boolean breakByHand) {
-		FabricBlockInternals.computeExtraData(this).breakByHand(breakByHand);
 		return this;
 	}
 }

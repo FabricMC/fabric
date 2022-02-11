@@ -1,7 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "fabric-tool-attribute-api-v1-testmod:hardened_stone_block",
-    "fabric-tool-attribute-api-v1-testmod:needs_pickaxe_tagged"
-  ]
-}

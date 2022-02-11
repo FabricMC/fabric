@@ -134,7 +134,7 @@ public class ResourceConditionsImpl {
 				TagKey<T> tag = TagKey.intern(registryKey, id);
 				Registry<T> registry = (Registry<T>) Registry.REGISTRIES.get(registryKey.getValue());
 
-				if (!registry.method_40286(tag).iterator().hasNext()) {
+				if (!registry.containsTag(tag)) {
 					return false;
 				}
 			} else {
