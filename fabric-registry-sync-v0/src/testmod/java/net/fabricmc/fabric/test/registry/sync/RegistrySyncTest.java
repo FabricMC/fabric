@@ -114,6 +114,9 @@ public class RegistrySyncTest implements ModInitializer {
 				System.out.println(id);
 			});
 		});
+
+		// Vanilla status effects don't have an entry for the int id 0, test we can handle this.
+		RegistryAttributeHolder.get(Registry.STATUS_EFFECT).addAttribute(RegistryAttribute.MODDED);
 	}
 
 	private static void registerBlocks(String namespace, int amount, int startingId) {

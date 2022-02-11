@@ -310,13 +310,17 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 
 		Int2IntMap idMap = new Int2IntOpenHashMap();
 
-		for (RegistryEntry.Reference<T> o : rawIdToEntry) {
-			Identifier id = getId(o.value());
-			int rid = getRawId(o.value());
+		for (int i = 0; i < rawIdToEntry.size(); i++) {
+			RegistryEntry.Reference<T> reference = rawIdToEntry.get(i);
+
+			// Unused id, skip
+			if (reference == null) continue;
+
+			Identifier id = reference.registryKey().getValue();
 
 			// see above note
 			if (remoteIndexedEntries.containsKey(id)) {
-				idMap.put(rid, remoteIndexedEntries.getInt(id));
+				idMap.put(i, remoteIndexedEntries.getInt(id));
 			}
 		}
 
