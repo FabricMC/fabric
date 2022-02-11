@@ -49,10 +49,10 @@ import net.minecraft.world.biome.BuiltinBiomes;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementsProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTablesProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockStateDefinitionProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipesProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
@@ -67,14 +67,14 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		dataGenerator.addProvider(TestRecipeProvider::new);
 		dataGenerator.addProvider(TestConditionalRecipeProvider::new);
-		dataGenerator.addProvider(TestBlockStateDefinitionProvider::new);
-		dataGenerator.addProvider(TestAdvancementsProvider::new);
-		dataGenerator.addProvider(TestBlockLootTablesProvider::new);
-		dataGenerator.addProvider(TestBarterLootTablesProvider::new);
+		dataGenerator.addProvider(TestModelProvider::new);
+		dataGenerator.addProvider(TestAdvancementProvider::new);
+		dataGenerator.addProvider(TestBlockLootTableProvider::new);
+		dataGenerator.addProvider(TestBarterLootTableProvider::new);
 
-		TestBlockTagsProvider blockTagsProvider = dataGenerator.addProvider(TestBlockTagsProvider::new);
-		dataGenerator.addProvider(new TestItemTagsProvider(dataGenerator, blockTagsProvider));
-		dataGenerator.addProvider(TestBiomeTagsProvider::new);
+		TestBlockTagProvider blockTagProvider = dataGenerator.addProvider(TestBlockTagProvider::new);
+		dataGenerator.addProvider(new TestItemTagProvider(dataGenerator, blockTagProvider));
+		dataGenerator.addProvider(TestBiomeTagProvider::new);
 
 		try {
 			new FabricTagProvider<>(dataGenerator, BuiltinRegistries.BIOME, "biomes", "Biome Tags") {
@@ -99,7 +99,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestRecipeProvider extends FabricRecipesProvider {
+	private static class TestRecipeProvider extends FabricRecipeProvider {
 		private TestRecipeProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator);
 		}
@@ -110,7 +110,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestConditionalRecipeProvider extends FabricRecipesProvider {
+	private static class TestConditionalRecipeProvider extends FabricRecipeProvider {
 		private TestConditionalRecipeProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator);
 		}
@@ -122,8 +122,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestBlockStateDefinitionProvider extends FabricBlockStateDefinitionProvider {
-		private TestBlockStateDefinitionProvider(FabricDataGenerator generator) {
+	private static class TestModelProvider extends FabricModelProvider {
+		private TestModelProvider(FabricDataGenerator generator) {
 			super(generator);
 		}
 
@@ -139,8 +139,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestBlockTagsProvider extends FabricTagProvider.BlockTagProvider {
-		private TestBlockTagsProvider(FabricDataGenerator dataGenerator) {
+	private static class TestBlockTagProvider extends FabricTagProvider.BlockTagProvider {
+		private TestBlockTagProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator);
 		}
 
@@ -152,8 +152,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestItemTagsProvider extends FabricTagProvider.ItemTagProvider {
-		private TestItemTagsProvider(FabricDataGenerator dataGenerator, BlockTagProvider blockTagProvider) {
+	private static class TestItemTagProvider extends FabricTagProvider.ItemTagProvider {
+		private TestItemTagProvider(FabricDataGenerator dataGenerator, BlockTagProvider blockTagProvider) {
 			super(dataGenerator, blockTagProvider);
 		}
 
@@ -163,8 +163,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestBiomeTagsProvider extends FabricTagProvider.DynamicRegistryTagProvider<Biome> {
-		private TestBiomeTagsProvider(FabricDataGenerator dataGenerator) {
+	private static class TestBiomeTagProvider extends FabricTagProvider.DynamicRegistryTagProvider<Biome> {
+		private TestBiomeTagProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator, Registry.BIOME_KEY, "biomes", "Biome Tags");
 		}
 
@@ -183,8 +183,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestAdvancementsProvider extends FabricAdvancementsProvider {
-		private TestAdvancementsProvider(FabricDataGenerator dataGenerator) {
+	private static class TestAdvancementProvider extends FabricAdvancementProvider {
+		private TestAdvancementProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator);
 		}
 
@@ -213,8 +213,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestBlockLootTablesProvider extends FabricBlockLootTablesProvider {
-		private TestBlockLootTablesProvider(FabricDataGenerator dataGenerator) {
+	private static class TestBlockLootTableProvider extends FabricBlockLootTableProvider {
+		private TestBlockLootTableProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator);
 		}
 
@@ -225,8 +225,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestBarterLootTablesProvider extends SimpleFabricLootTableProvider {
-		private TestBarterLootTablesProvider(FabricDataGenerator dataGenerator) {
+	private static class TestBarterLootTableProvider extends SimpleFabricLootTableProvider {
+		private TestBarterLootTableProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator, LootContextTypes.BARTER);
 		}
 
