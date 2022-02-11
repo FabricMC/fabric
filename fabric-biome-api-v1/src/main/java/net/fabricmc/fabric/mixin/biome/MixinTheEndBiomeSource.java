@@ -16,39 +16,33 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
-import net.minecraft.world.gen.random.AtomicSimpleRandom;
-import net.minecraft.world.gen.random.ChunkRandom;
 
 import net.fabricmc.fabric.impl.biome.TheEndBiomeData;
 
 @Mixin(TheEndBiomeSource.class)
 public class MixinTheEndBiomeSource {
-	// TODO 22w06a, this isnt really a thing now.
-	@Shadow
-	@Final
-	private long seed;
 	@Unique
-	private final PerlinNoiseSampler sampler = new PerlinNoiseSampler(new ChunkRandom(new AtomicSimpleRandom(seed)));
+	private TheEndBiomeData.Overrides overrides;
+
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void init(Registry<Biome> biomeRegistry, long seed, CallbackInfo ci) {
+		overrides = TheEndBiomeData.createOverrides(biomeRegistry, seed);
+	}
 
 	@Inject(method = "getBiome", at = @At("RETURN"), cancellable = true)
 	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler multiNoiseSampler, CallbackInfoReturnable<RegistryEntry<Biome>> cir) {
-		RegistryEntry<Biome> vanillaBiome = cir.getReturnValue();
-
-		RegistryEntry<Biome> replacementBiome = TheEndBiomeData.pickEndBiome(biomeX, biomeY, biomeZ, sampler, vanillaBiome);
-
-		cir.setReturnValue(replacementBiome);
+		cir.setReturnValue(overrides.pick(biomeX, biomeY, biomeZ, cir.getReturnValue()));
 	}
 }

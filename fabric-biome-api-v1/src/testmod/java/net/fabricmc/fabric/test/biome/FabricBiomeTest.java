@@ -91,15 +91,11 @@ public class FabricBiomeTest implements ModInitializer {
 					ctx.getGenerationSettings().addStructure(RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, new Identifier("end_city")));
 				});
 
-		RegistryEntry<Biome> TEST_END_HIGHLANDS_ENTRY = BuiltinRegistries.BIOME.getOrCreateEntry(TEST_END_HIGHLANDS);
-		RegistryEntry<Biome> TEST_END_MIDLANDS_ENTRY = BuiltinRegistries.BIOME.getOrCreateEntry(TEST_END_MIDLANDS);
-		RegistryEntry<Biome> TEST_END_BARRRENS_ENTRY = BuiltinRegistries.BIOME.getOrCreateEntry(TEST_END_BARRRENS);
-
 		// TESTING HINT: to get to the end:
 		// /execute in minecraft:the_end run tp @s 0 90 0
-		TheEndBiomes.addHighlandsBiome(TEST_END_HIGHLANDS_ENTRY, 5.0);
-		TheEndBiomes.addMidlandsBiome(TEST_END_HIGHLANDS_ENTRY, TEST_END_MIDLANDS_ENTRY, 1.0);
-		TheEndBiomes.addBarrensBiome(TEST_END_HIGHLANDS_ENTRY, TEST_END_BARRRENS_ENTRY, 1.0);
+		TheEndBiomes.addHighlandsBiome(TEST_END_HIGHLANDS, 5.0);
+		TheEndBiomes.addMidlandsBiome(TEST_END_HIGHLANDS, TEST_END_MIDLANDS, 1.0);
+		TheEndBiomes.addBarrensBiome(TEST_END_HIGHLANDS, TEST_END_BARRRENS, 1.0);
 
 		ConfiguredFeature<?, ?> COMMON_DESERT_WELL = new ConfiguredFeature<>(Feature.DESERT_WELL, DefaultFeatureConfig.INSTANCE);
 		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier(MOD_ID, "fab_desert_well"), COMMON_DESERT_WELL);
