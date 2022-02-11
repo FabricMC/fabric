@@ -49,7 +49,7 @@ public interface BiomeSelectionContext {
 	 * classes such as {@link net.minecraft.world.gen.feature.OreConfiguredFeatures}.
 	 */
 	default boolean hasBuiltInFeature(ConfiguredFeature<?, ?> configuredFeature) {
-		RegistryKey<ConfiguredFeature<?, ?>> key = BuiltInRegistryKeys.getKey(configuredFeature);
+		RegistryKey<ConfiguredFeature<?, ?>> key = BuiltInRegistryKeys.get(configuredFeature);
 		return hasFeature(key);
 	}
 
@@ -61,7 +61,7 @@ public interface BiomeSelectionContext {
 	 * classes such as {@link net.minecraft.world.gen.feature.OrePlacedFeatures}.
 	 */
 	default boolean hasBuiltInPlacedFeature(PlacedFeature placedFeature) {
-		return hasPlacedFeature(BuiltInRegistryKeys.getKey(placedFeature));
+		return hasPlacedFeature(BuiltInRegistryKeys.get(placedFeature));
 	}
 
 	/**
@@ -119,7 +119,7 @@ public interface BiomeSelectionContext {
 	 * <p>This method is intended for use with the Vanilla configured structures found in {@link net.minecraft.world.gen.feature.ConfiguredStructureFeatures}.
 	 */
 	default boolean hasBuiltInStructure(ConfiguredStructureFeature<?, ?> configuredStructure) {
-		RegistryKey<ConfiguredStructureFeature<?, ?>> key = BuiltInRegistryKeys.getKey(configuredStructure);
+		RegistryKey<ConfiguredStructureFeature<?, ?>> key = BuiltInRegistryKeys.get(configuredStructure);
 		return hasStructure(key);
 	}
 

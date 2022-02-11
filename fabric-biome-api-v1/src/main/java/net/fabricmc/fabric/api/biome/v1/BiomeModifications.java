@@ -20,8 +20,6 @@ import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.Identifier;
@@ -31,6 +29,7 @@ import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.gen.feature.PlacedFeature;
 
 /**
  * Provides an API to modify Biomes after they have been loaded and before they are used in the World.
@@ -48,7 +47,7 @@ public final class BiomeModifications {
 	 */
 	public static void addFeature(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Feature step, RegistryKey<PlacedFeature> placedFeatureRegistryKey) {
 		create(placedFeatureRegistryKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
-			context.getGenerationSettings().addFeature(step, BuiltinRegistries.PLACED_FEATURE.getOrCreateEntry(placedFeatureRegistryKey));
+			context.getGenerationSettings().addFeature(step, placedFeatureRegistryKey);
 		});
 	}
 
@@ -70,7 +69,7 @@ public final class BiomeModifications {
 	 */
 	public static void addCarver(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
 		create(configuredCarverKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
-			context.getGenerationSettings().addCarver(step, BuiltinRegistries.CONFIGURED_CARVER.getOrCreateEntry(configuredCarverKey));
+			context.getGenerationSettings().addCarver(step, configuredCarverKey);
 		});
 	}
 

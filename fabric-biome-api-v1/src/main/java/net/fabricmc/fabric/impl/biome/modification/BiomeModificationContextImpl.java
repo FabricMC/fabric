@@ -288,7 +288,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public void addFeature(GenerationStep.Feature step, RegistryEntry<PlacedFeature> entry) {
+		public void addFeature(GenerationStep.Feature step, RegistryKey<PlacedFeature> entry) {
 			List<RegistryEntryList<PlacedFeature>> featureSteps = generationSettings.features;
 			int index = step.ordinal();
 
@@ -297,16 +297,16 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 				featureSteps.add(RegistryEntryList.of(Collections.emptyList()));
 			}
 
-			featureSteps.set(index, plus(featureSteps.get(index), entry));
+			featureSteps.set(index, plus(featureSteps.get(index), features.getEntry(entry).orElseThrow()));
 
 			// Ensure the list of flower features is up to date
 			rebuildFlowerFeatures = true;
 		}
 
 		@Override
-		public void addCarver(GenerationStep.Carver step, RegistryEntry<ConfiguredCarver<?>> entry) {
+		public void addCarver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> entry) {
 			// We do not need to delay evaluation of this since the registries are already fully built
-			generationSettings.carvers.put(step, plus(generationSettings.carvers.get(step), entry));
+			generationSettings.carvers.put(step, plus(generationSettings.carvers.get(step), carvers.getEntry(entry).orElseThrow()));
 		}
 
 		@Override
