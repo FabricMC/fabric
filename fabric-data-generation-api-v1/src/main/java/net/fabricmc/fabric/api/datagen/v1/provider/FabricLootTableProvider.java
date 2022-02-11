@@ -44,7 +44,7 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 /**
  * A base interface for Loot table providers. You should not implement this class directly.
  *
- * <p>{@link FabricBlockLootTablesProvider} provides additional features specific to block drop loot tables.
+ * <p>{@link FabricBlockLootTableProvider} provides additional features specific to block drop loot tables.
  *
  * <p>Use {@link SimpleFabricLootTableProvider} for a simple abstract class that you can implement to handle standard loot table functions.
  */
