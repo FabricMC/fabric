@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.registry.sync;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.Bootstrap;
@@ -59,5 +60,10 @@ public class MixinBootstrap {
 		BlockInitTracker.register(Registry.BLOCK);
 
 		RegistrySyncManager.bootstrapRegistries();
+	}
+
+	@Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/Registry;method_40292()V"))
+	private static void skipFreeze() {
+		// Don't freeze
 	}
 }

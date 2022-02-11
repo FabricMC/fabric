@@ -41,7 +41,7 @@ public class DynamicRegistrySync {
 	 * should be the <em>built-in</em> manager. It is never destroyed. We don't ever have to unregister
 	 * the registry events.
 	 */
-	public static void setupSync(DynamicRegistryManager.Impl template) {
+	public static void setupSync(DynamicRegistryManager template) {
 		LOGGER.debug("Setting up synchronisation of new BuiltinRegistries entries to the built-in DynamicRegistryManager");
 		BuiltinRegistries.REGISTRIES.stream().forEach(source -> setupSync(source, template));
 	}
@@ -50,7 +50,7 @@ public class DynamicRegistrySync {
 	 * Sets up an event registration for the source registy that will ensure all entries added from now on
 	 * are also added to the template for dynamic registry managers.
 	 */
-	private static <T> void setupSync(Registry<T> source, DynamicRegistryManager.Impl template) {
+	private static <T> void setupSync(Registry<T> source, DynamicRegistryManager template) {
 		@SuppressWarnings("unchecked") AccessorRegistry<T> sourceAccessor = (AccessorRegistry<T>) source;
 		RegistryKey<? extends Registry<T>> sourceKey = source.getKey();
 		MutableRegistry<T> target = (MutableRegistry<T>) template.get(sourceKey);

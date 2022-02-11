@@ -25,7 +25,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionOptions;
-import net.minecraft.world.gen.chunk.StructuresConfig;
+import net.minecraft.world.gen.chunk.placement.StructuresConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
@@ -82,7 +82,7 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 		for (DimensionOptions dimension : levelProperties.getGeneratorOptions().getDimensions()) {
 			StructuresConfig structuresConfig = dimension.getChunkGenerator().getStructuresConfig();
 
-			if (structuresConfig.getConfiguredStructureFeature(instance.feature).get(instance).contains(getBiomeKey())) {
+			if (structuresConfig.getConfiguredStructureFeature(instance.feature).get(key).contains(getBiomeKey())) {
 				return true;
 			}
 		}
@@ -104,6 +104,6 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 			return false;
 		}
 
-		return dimension.getChunkGenerator().getBiomeSource().getBiomes().contains(biome);
+		return dimension.getChunkGenerator().getBiomeSource().getBiomes().anyMatch(entry -> entry.value() == biome);
 	}
 }

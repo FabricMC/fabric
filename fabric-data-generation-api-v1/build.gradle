@@ -9,7 +9,6 @@ moduleDependencies(project, [
 ])
 
 dependencies {
-	testmodImplementation project(path: ':fabric-tag-extensions-v0', configuration: 'namedElements')
 }
 
 sourceSets {
@@ -60,18 +59,17 @@ import java.util.zip.ZipFile
 
 task generateAccessWidener() {
 	doLast {
-		// This is using loom internals, dont copy from this.
-		File inputJar = loom.mappingsProvider.mappedProvider.baseMappedJar
+		File inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.mergedJar.toFile()
 		String accessWidener = file("template.accesswidener").text + "\n"
 
-		visitMethods(inputJar, "net/minecraft/data/server/RecipesProvider.class") { name, desc, owner ->
+		visitMethods(inputJar, "net/minecraft/data/server/RecipeProvider.class") { name, desc, owner ->
 			if (it.name == "generate")
 				return
 
 			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
-		visitMethods(inputJar, "net/minecraft/data/client/model/BlockStateModelGenerator.class") { name, desc, owner ->
+		visitMethods(inputJar, "net/minecraft/data/client/BlockStateModelGenerator.class") { name, desc, owner ->
 			if (desc == "()V")
 				// Skip over methods that dont take any arguments, as they are specific to minecraft.
 				return
@@ -89,6 +87,7 @@ task generateAccessWidener() {
 
 def visitMethods(File input, String className, closure) {
 	def clazz = getClassNode(input, className)
+
 	clazz.methods.forEach {
 		if ((it.access & Opcodes.ACC_SYNTHETIC) != 0 || (it.access & Opcodes.ACC_PUBLIC) != 0)
 			return
@@ -101,9 +100,7 @@ def visitMethods(File input, String className, closure) {
 }
 
 ClassNode getClassNode(File input, String className) {
-	File inputJar = loom.mappingsProvider.mappedProvider.baseMappedJar
-
-	new ZipFile(inputJar).withCloseable { ZipFile zip  ->
+	new ZipFile(input).withCloseable { ZipFile zip  ->
 		zip.getInputStream(zip.getEntry(className)).withCloseable { is ->
 			ClassReader reader = new ClassReader(is)
 			ClassNode classNode = new ClassNode()

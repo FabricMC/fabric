@@ -20,10 +20,11 @@ import java.util.Optional;
 import java.util.Random;
 
 import com.mojang.serialization.Codec;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.structure.ShiftableStructurePiece;
 import net.minecraft.structure.StructureGeneratorFactory;
@@ -36,6 +37,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.StructureWorldAccess;
@@ -53,7 +55,11 @@ public class StructureTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StructureTest.class);
 
 	public static final StructureFeature<DefaultFeatureConfig> STRUCTURE = new TestStructureFeature(DefaultFeatureConfig.CODEC);
-	public static final ConfiguredStructureFeature<DefaultFeatureConfig, ? extends StructureFeature<DefaultFeatureConfig>> CONFIGURED_STRUCTURE = STRUCTURE.configure(new DefaultFeatureConfig());
+	public static final RegistryEntry<ConfiguredStructureFeature<?, ?>> CONFIGURED_STRUCTURE = BuiltinRegistries.add(
+			BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE,
+			new Identifier("fabric", "test_structure"),
+			STRUCTURE.configure(new DefaultFeatureConfig())
+	);
 	public static final StructurePieceType.Simple PIECE = TestStructureGenerator::new;
 
 	static {

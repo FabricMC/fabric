@@ -50,18 +50,15 @@ public final class BiomeStructureStartsImpl {
 			RegistryKey<Biome> biome
 	) {
 		changeStructureStarts(registries, structureMap -> {
-			Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> configuredMap = structureMap.computeIfAbsent(configuredStructure.feature, k -> HashMultimap.create());
+			Multimap<RegistryKey<ConfiguredStructureFeature<?, ?>>, RegistryKey<Biome>> configuredMap = structureMap.computeIfAbsent(configuredStructure.feature, k -> HashMultimap.create());
 
 			// This is tricky, the keys might be either from builtin (Vanilla) or dynamic registries (modded)
 			RegistryKey<ConfiguredStructureFeature<?, ?>> configuredStructureKey = registries.get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY).getKey(configuredStructure).orElseThrow();
-			ConfiguredStructureFeature<?, ?> mapKey = BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.get(configuredStructureKey);
+			RegistryKey<ConfiguredStructureFeature<?, ?>> mapKey = registries.get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY).getKey(configuredStructure)
+					.orElse(configuredStructureKey);
 
-			if (mapKey == null) {
-				// This means the configured structure passed in is not a (potentially modified) Vanilla entry,
-				// but rather a modded one. In this case, this will create a new entry in the map.
-				mapKey = configuredStructure;
-			}
-
+			// orElse means the configured structure passed in is not a (potentially modified) Vanilla entry,
+			// but rather a modded one. In this case, this will create a new entry in the map.
 			configuredMap.put(mapKey, biome);
 		});
 	}
@@ -74,7 +71,7 @@ public final class BiomeStructureStartsImpl {
 		AtomicBoolean result = new AtomicBoolean(false);
 
 		changeStructureStarts(registries, structureMap -> {
-			Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> configuredMap = structureMap.get(configuredStructure.feature);
+			Multimap<RegistryKey<ConfiguredStructureFeature<?, ?>>, RegistryKey<Biome>> configuredMap = structureMap.get(configuredStructure.feature);
 
 			if (configuredMap == null) {
 				return;
@@ -106,7 +103,7 @@ public final class BiomeStructureStartsImpl {
 		AtomicBoolean result = new AtomicBoolean(false);
 
 		changeStructureStarts(registries, structureMap -> {
-			Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> configuredMap = structureMap.get(structure);
+			Multimap<RegistryKey<ConfiguredStructureFeature<?, ?>>, RegistryKey<Biome>> configuredMap = structureMap.get(structure);
 
 			if (configuredMap == null) {
 				return;
@@ -120,11 +117,11 @@ public final class BiomeStructureStartsImpl {
 		return result.get();
 	}
 
-	private static void changeStructureStarts(DynamicRegistryManager registries, Consumer<Map<StructureFeature<?>, Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>>>> modifier) {
+	private static void changeStructureStarts(DynamicRegistryManager registries, Consumer<Map<StructureFeature<?>, Multimap<RegistryKey<ConfiguredStructureFeature<?, ?>>, RegistryKey<Biome>>>> modifier) {
 		Registry<ChunkGeneratorSettings> chunkGenSettingsRegistry = registries.get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
 
 		for (Map.Entry<RegistryKey<ChunkGeneratorSettings>, ChunkGeneratorSettings> entry : chunkGenSettingsRegistry.getEntries()) {
-			Map<StructureFeature<?>, Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>>> structureMap = unfreeze(entry.getValue());
+			Map<StructureFeature<?>, Multimap<RegistryKey<ConfiguredStructureFeature<?, ?>>, RegistryKey<Biome>>> structureMap = unfreeze(entry.getValue());
 
 			modifier.accept(structureMap);
 
@@ -132,18 +129,18 @@ public final class BiomeStructureStartsImpl {
 		}
 	}
 
-	private static Map<StructureFeature<?>, Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>>> unfreeze(ChunkGeneratorSettings settings) {
-		ImmutableMap<StructureFeature<?>, ImmutableMultimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>>> frozenMap = settings.getStructuresConfig().configuredStructures;
-		Map<StructureFeature<?>, Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>>> result = new HashMap<>(frozenMap.size());
+	private static Map<StructureFeature<?>, Multimap<RegistryKey<ConfiguredStructureFeature<?, ?>>, RegistryKey<Biome>>> unfreeze(ChunkGeneratorSettings settings) {
+		ImmutableMap<StructureFeature<?>, ImmutableMultimap<RegistryKey<ConfiguredStructureFeature<?, ?>>, RegistryKey<Biome>>> frozenMap = settings.getStructuresConfig().configuredStructures;
+		Map<StructureFeature<?>, Multimap<RegistryKey<ConfiguredStructureFeature<?, ?>>, RegistryKey<Biome>>> result = new HashMap<>(frozenMap.size());
 
-		for (Map.Entry<StructureFeature<?>, ImmutableMultimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>>> entry : frozenMap.entrySet()) {
+		for (Map.Entry<StructureFeature<?>, ImmutableMultimap<RegistryKey<ConfiguredStructureFeature<?, ?>>, RegistryKey<Biome>>> entry : frozenMap.entrySet()) {
 			result.put(entry.getKey(), HashMultimap.create(entry.getValue()));
 		}
 
 		return result;
 	}
 
-	private static void freeze(ChunkGeneratorSettings settings, Map<StructureFeature<?>, Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>>> structureStarts) {
+	private static void freeze(ChunkGeneratorSettings settings, Map<StructureFeature<?>, Multimap<RegistryKey<ConfiguredStructureFeature<?, ?>>, RegistryKey<Biome>>> structureStarts) {
 		settings.getStructuresConfig().configuredStructures = structureStarts.entrySet().stream()
 				.collect(ImmutableMap.toImmutableMap(
 						Map.Entry::getKey,

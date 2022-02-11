@@ -17,23 +17,24 @@
 package net.fabricmc.fabric.impl.biome.modification;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.BiPredicate;
-import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.world.gen.feature.PlacedFeature;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryEntryList;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeAdditionsSound;
@@ -51,9 +52,9 @@ import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
@@ -205,6 +206,8 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		private final Registry<ConfiguredStructureFeature<?, ?>> structures = registries.get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY);
 		private final GenerationSettings generationSettings = biome.getGenerationSettings();
 
+		private boolean rebuildFlowerFeatures;
+
 		/**
 		 * Unfreeze the immutable lists found in the generation settings, and make sure they're filled up to every
 		 * possible step if they're dense lists.
@@ -212,42 +215,19 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		GenerationSettingsContextImpl() {
 			unfreezeCarvers();
 			unfreezeFeatures();
-			unfreezeFlowerFeatures();
+
+			rebuildFlowerFeatures = false;
 		}
 
 		private void unfreezeCarvers() {
-			Map<GenerationStep.Carver, List<Supplier<ConfiguredCarver<?>>>> carversByStep = new EnumMap<>(GenerationStep.Carver.class);
+			Map<GenerationStep.Carver, RegistryEntryList<ConfiguredCarver<?>>> carversByStep = new EnumMap<>(GenerationStep.Carver.class);
 			carversByStep.putAll(generationSettings.carvers);
-
-			for (GenerationStep.Carver step : GenerationStep.Carver.values()) {
-				List<Supplier<ConfiguredCarver<?>>> carvers = carversByStep.get(step);
-
-				if (carvers == null) {
-					carvers = new ArrayList<>();
-				} else {
-					carvers = new ArrayList<>(carvers);
-				}
-
-				carversByStep.put(step, carvers);
-			}
 
 			generationSettings.carvers = carversByStep;
 		}
 
 		private void unfreezeFeatures() {
-			List<List<Supplier<PlacedFeature>>> features = generationSettings.features;
-			features = new ArrayList<>(features);
-
-			for (int i = 0; i < features.size(); i++) {
-				features.set(i, new ArrayList<>(features.get(i)));
-			}
-
-			generationSettings.features = features;
-			generationSettings.allowedFeatures = new HashSet<>(generationSettings.allowedFeatures);
-		}
-
-		private void unfreezeFlowerFeatures() {
-			generationSettings.flowerFeatures = new ArrayList<>(generationSettings.flowerFeatures);
+			generationSettings.features = new ArrayList<>(generationSettings.features);
 		}
 
 		/**
@@ -256,32 +236,31 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		public void freeze() {
 			freezeCarvers();
 			freezeFeatures();
-			freezeFlowerFeatures();
+
+			if (rebuildFlowerFeatures) {
+				rebuildFlowerFeatures();
+			}
 		}
 
 		private void freezeCarvers() {
-			Map<GenerationStep.Carver, List<Supplier<ConfiguredCarver<?>>>> carversByStep = generationSettings.carvers;
-
-			for (GenerationStep.Carver step : GenerationStep.Carver.values()) {
-				carversByStep.put(step, ImmutableList.copyOf(carversByStep.get(step)));
-			}
-
-			generationSettings.carvers = ImmutableMap.copyOf(carversByStep);
+			generationSettings.carvers = ImmutableMap.copyOf(generationSettings.carvers);
 		}
 
 		private void freezeFeatures() {
-			List<List<Supplier<PlacedFeature>>> featureSteps = generationSettings.features;
-
-			for (int i = 0; i < featureSteps.size(); i++) {
-				featureSteps.set(i, ImmutableList.copyOf(featureSteps.get(i)));
-			}
-
-			generationSettings.features = ImmutableList.copyOf(featureSteps);
-			generationSettings.allowedFeatures = (Set.copyOf(generationSettings.allowedFeatures));
+			generationSettings.features = ImmutableList.copyOf(generationSettings.features);
+			// Replace the supplier to force a rebuild next time its called.
+			generationSettings.allowedFeatures = Suppliers.memoize(() -> {
+				return generationSettings.features.stream().flatMap(RegistryEntryList::stream).map(RegistryEntry::value).collect(Collectors.toSet());
+			});
 		}
 
-		private void freezeFlowerFeatures() {
-			generationSettings.flowerFeatures = ImmutableList.copyOf(generationSettings.flowerFeatures);
+		private void rebuildFlowerFeatures() {
+			// Replace the supplier to force a rebuild next time its called.
+			generationSettings.flowerFeatures = Suppliers.memoize(() -> {
+				return generationSettings.features.stream().flatMap(RegistryEntryList::stream).map(RegistryEntry::value).flatMap(PlacedFeature::getDecoratedFeatures).filter((configuredFeature) -> {
+					return configuredFeature.feature() == Feature.FLOWER;
+				}).collect(ImmutableList.toImmutableList());
+			});
 		}
 
 		@Override
@@ -289,16 +268,19 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			PlacedFeature configuredFeature = features.getOrThrow(placedFeatureKey);
 
 			int stepIndex = step.ordinal();
-			List<List<Supplier<PlacedFeature>>> featureSteps = generationSettings.features;
+			List<RegistryEntryList<PlacedFeature>> featureSteps = generationSettings.features;
 
 			if (stepIndex >= featureSteps.size()) {
 				return false; // The step was not populated with any features yet
 			}
 
-			List<Supplier<PlacedFeature>> featuresInStep = featureSteps.get(stepIndex);
+			RegistryEntryList<PlacedFeature> featuresInStep = featureSteps.get(stepIndex);
+			List<RegistryEntry<PlacedFeature>> features = new ArrayList<>(featuresInStep.stream().toList());
 
-			if (featuresInStep.removeIf(supplier -> supplier.get() == configuredFeature)) {
-				rebuildFlowerFeatures();
+			if (features.removeIf(feature -> feature.value() == configuredFeature)) {
+				featureSteps.set(stepIndex, RegistryEntryList.of(features));
+				rebuildFlowerFeatures = true;
+
 				return true;
 			}
 
@@ -306,36 +288,38 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public void addFeature(GenerationStep.Feature step, RegistryKey<PlacedFeature> placedFeatureKey) {
-			// We do not need to delay evaluation of this since the registries are already fully built
-			PlacedFeature placedFeature = features.getOrThrow(placedFeatureKey);
-
-			List<List<Supplier<PlacedFeature>>> featureSteps = generationSettings.features;
+		public void addFeature(GenerationStep.Feature step, RegistryKey<PlacedFeature> entry) {
+			List<RegistryEntryList<PlacedFeature>> featureSteps = generationSettings.features;
 			int index = step.ordinal();
 
 			// Add new empty lists for the generation steps that have no features yet
 			while (index >= featureSteps.size()) {
-				featureSteps.add(new ArrayList<>());
+				featureSteps.add(RegistryEntryList.of(Collections.emptyList()));
 			}
 
-			featureSteps.get(index).add(() -> placedFeature);
-			generationSettings.allowedFeatures.add(placedFeature);
+			featureSteps.set(index, plus(featureSteps.get(index), features.getEntry(entry).orElseThrow()));
 
 			// Ensure the list of flower features is up to date
-			rebuildFlowerFeatures();
+			rebuildFlowerFeatures = true;
 		}
 
 		@Override
-		public void addCarver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> carverKey) {
+		public void addCarver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> entry) {
 			// We do not need to delay evaluation of this since the registries are already fully built
-			ConfiguredCarver<?> carver = carvers.getOrThrow(carverKey);
-			generationSettings.carvers.get(step).add(() -> carver);
+			generationSettings.carvers.put(step, plus(generationSettings.carvers.get(step), carvers.getEntry(entry).orElseThrow()));
 		}
 
 		@Override
 		public boolean removeCarver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
 			ConfiguredCarver<?> carver = carvers.getOrThrow(configuredCarverKey);
-			return generationSettings.carvers.get(step).removeIf(supplier -> supplier.get() == carver);
+			List<RegistryEntry<ConfiguredCarver<?>>> genCarvers = new ArrayList<>(generationSettings.carvers.get(step).stream().toList());
+
+			if (genCarvers.removeIf(entry -> entry.value() == carver)) {
+				generationSettings.carvers.put(step, RegistryEntryList.of(genCarvers));
+				return true;
+			}
+
+			return false;
 		}
 
 		@Override
@@ -357,20 +341,10 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			return BiomeStructureStartsImpl.removeStructureStarts(registries, structure, biomeKey);
 		}
 
-		/**
-		 * See the constructor of {@link GenerationSettings} for reference.
-		 */
-		private void rebuildFlowerFeatures() {
-			List<ConfiguredFeature<?, ?>> flowerFeatures = generationSettings.flowerFeatures;
-			flowerFeatures.clear();
-
-			for (List<Supplier<PlacedFeature>> features : generationSettings.features) {
-				for (Supplier<PlacedFeature> supplier : features) {
-					supplier.get().getDecoratedFeatures()
-							.filter(configuredFeature -> configuredFeature.feature == Feature.FLOWER)
-							.forEachOrdered(flowerFeatures::add);
-				}
-			}
+		private <T> RegistryEntryList<T> plus(RegistryEntryList<T> values, RegistryEntry<T> entry) {
+			List<RegistryEntry<T>> list = new ArrayList<>(values.stream().toList());
+			list.add(entry);
+			return RegistryEntryList.of(list);
 		}
 	}
 

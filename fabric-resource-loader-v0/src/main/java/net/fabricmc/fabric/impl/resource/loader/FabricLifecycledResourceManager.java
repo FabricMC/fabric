@@ -14,24 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.util;
+package net.fabricmc.fabric.impl.resource.loader;
 
-import net.minecraft.tag.TagKey;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
+import net.minecraft.resource.ResourceType;
 
-public interface Item2ObjectMap<V> {
-	V get(ItemConvertible item);
-
-	void add(ItemConvertible item, V value);
-
-	void add(TagKey<Item> tag, V value);
-
-	void remove(ItemConvertible item);
-
-	void remove(TagKey<Item> tag);
-
-	void clear(ItemConvertible item);
-
-	void clear(TagKey<Item> tag);
+public interface FabricLifecycledResourceManager {
+	ResourceType fabric_getResourceType();
 }

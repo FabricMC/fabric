@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.test.structure.mixin;
 
-import java.util.function.BiConsumer;
-
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -32,9 +32,14 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.fabricmc.fabric.test.structure.StructureTest;
 
 @Mixin(ConfiguredStructureFeatures.class)
-public class MixinConfiguredStructureFeatures {
+public abstract class MixinConfiguredStructureFeatures {
+	@Shadow
+	private static void register(ConfiguredStructureFeatures.class_6896 arg, RegistryEntry<? extends ConfiguredStructureFeature<?, ?>> arg2, RegistryKey<Biome> biome) {
+		throw new AssertionError();
+	}
+
 	@Inject(method = "registerAll", at = @At("TAIL"))
-	private static void addStructuresToBiomes(BiConsumer<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> consumer, CallbackInfo ci) {
-		consumer.accept(StructureTest.CONFIGURED_STRUCTURE, BiomeKeys.PLAINS);
+	private static void addStructuresToBiomes(ConfiguredStructureFeatures.class_6896 arg, CallbackInfo ci) {
+		register(arg, StructureTest.CONFIGURED_STRUCTURE, BiomeKeys.PLAINS);
 	}
 }

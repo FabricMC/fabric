@@ -25,11 +25,10 @@ import java.util.function.Consumer;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.resource.ResourcePackManager;
-import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.test.GameTestBatch;
 import net.minecraft.test.TestContext;
@@ -40,7 +39,6 @@ import net.minecraft.test.TestServer;
 import net.minecraft.test.TestUtil;
 import net.minecraft.test.XmlReportingTestCompletionListener;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.level.storage.LevelStorage;
 
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
@@ -53,7 +51,7 @@ public final class FabricGameTestHelper {
 	private FabricGameTestHelper() {
 	}
 
-	public static void runHeadlessServer(LevelStorage.Session session, ResourcePackManager resourcePackManager, ServerResourceManager serverResourceManager, DynamicRegistryManager.Impl registryManager) {
+	public static void runHeadlessServer(LevelStorage.Session session, ResourcePackManager resourcePackManager) {
 		String reportPath = System.getProperty("fabric-api.gametest.report-file");
 
 		if (reportPath != null) {
@@ -66,8 +64,7 @@ public final class FabricGameTestHelper {
 
 		LOGGER.info("Starting test server");
 		MinecraftServer server = TestServer.startServer(thread -> {
-			TestServer testServer = new TestServer(thread, session, resourcePackManager, serverResourceManager, getBatches(), BlockPos.ORIGIN, registryManager);
-			return testServer;
+			return TestServer.create(thread, session, resourcePackManager, getBatches(), BlockPos.ORIGIN);
 		});
 	}
 

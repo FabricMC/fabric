@@ -16,15 +16,16 @@
 
 package net.fabricmc.fabric.mixin.structure;
 
+import com.google.gson.JsonElement;
+import com.mojang.serialization.DynamicOps;
+import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import org.spongepowered.asm.mixin.Mixin;
 
+import net.minecraft.class_6900;
 import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -33,11 +34,13 @@ import net.fabricmc.fabric.api.structure.v1.StructurePoolAddCallback;
 import net.fabricmc.fabric.impl.structure.FabricStructurePoolImpl;
 
 @Mixin(DynamicRegistryManager.class)
-public abstract class DynamicRegistryManagerMixin {
-	@Inject(method = "load(Lnet/minecraft/util/dynamic/RegistryOps;Lnet/minecraft/util/registry/DynamicRegistryManager;Lnet/minecraft/util/registry/DynamicRegistryManager$Info;)V", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD)
-	private static <E> void load(RegistryOps<?> ops, DynamicRegistryManager manager, @Coerce Object info, CallbackInfo ci, RegistryKey<? extends Registry<E>> registryKey) {
+public interface DynamicRegistryManagerMixin {
+	@Inject(method = "load(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/class_6900$class_6901;Lnet/minecraft/util/registry/DynamicRegistryManager$Info;)V", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private static <E> void load(DynamicOps<JsonElement> dynamicOps, class_6900.class_6901 arg, DynamicRegistryManager.Info<E> info, CallbackInfo ci) {
+		RegistryKey<? extends Registry<E>> registryKey = info.registry();
+
 		if (registryKey.equals(Registry.STRUCTURE_POOL_KEY)) {
-			for (E registryEntry : manager.get(registryKey)) {
+			for (E registryEntry : arg.access().get(registryKey)) {
 				if (registryEntry instanceof StructurePool pool) {
 					StructurePoolAddCallback.EVENT.invoker().onAdd(new FabricStructurePoolImpl(pool));
 				}

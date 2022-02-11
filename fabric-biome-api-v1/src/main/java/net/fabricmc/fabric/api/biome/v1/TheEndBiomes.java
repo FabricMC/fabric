@@ -103,12 +103,4 @@ public final class TheEndBiomes {
 	public static void addBarrensBiome(RegistryKey<Biome> highlands, RegistryKey<Biome> barrens, double weight) {
 		TheEndBiomeData.addEndBarrensReplacement(highlands, barrens, weight);
 	}
-
-	/**
-	 * Returns true if the given biome can generate in the end, considering the Vanilla end biomes,
-	 * and any biomes added to The End by mods.
-	 */
-	public static boolean canGenerateInTheEnd(RegistryKey<Biome> biome) {
-		return TheEndBiomeData.canGenerateInTheEnd(biome);
-	}
 }

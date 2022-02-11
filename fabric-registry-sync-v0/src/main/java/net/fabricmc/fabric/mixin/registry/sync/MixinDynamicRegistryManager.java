@@ -17,29 +17,29 @@
 package net.fabricmc.fabric.mixin.registry.sync;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.util.registry.DynamicRegistryManager;
 
+import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistrySync;
 
 @Mixin(DynamicRegistryManager.class)
-public class MixinDynamicRegistryManager {
-	// This is the "template" for all subsequent built-in dynamic registry managers,
-	// but it still contains the same objects as BuiltinRegistries, while the subsequent
-	// managers built from this template will contain copies.
-	@Shadow
-	private static DynamicRegistryManager.Impl BUILTIN;
+public interface MixinDynamicRegistryManager {
+	@Inject(method = "method_40314", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/dynamic/EntryLoader$Impl;<init>()V"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private static void onCreateImpl(CallbackInfoReturnable<DynamicRegistryManager.class_6893> cir, DynamicRegistryManager.class_6893 registryManager) {
+		DynamicRegistrySetupCallback.EVENT.invoker().onRegistrySetup(registryManager);
+	}
 
 	/**
 	 * Ensures that any registrations made into {@link net.minecraft.util.registry.BuiltinRegistries} after
 	 * {@link DynamicRegistryManager} has been class-loaded are still propagated.
 	 */
-	@Inject(method = "<clinit>", at = @At(value = "TAIL"))
-	private static void setupBuiltInSync(CallbackInfo ci) {
-		DynamicRegistrySync.setupSync(BUILTIN);
+	@Inject(method = "method_40327()Lnet/minecraft/util/registry/DynamicRegistryManager$class_6890;", at = @At(value = "RETURN"))
+	private static void setupBuiltInSync(CallbackInfoReturnable<DynamicRegistryManager.class_6890> cir) {
+		DynamicRegistrySync.setupSync(cir.getReturnValue());
 	}
 }

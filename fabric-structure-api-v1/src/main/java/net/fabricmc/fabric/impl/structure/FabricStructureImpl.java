@@ -21,7 +21,7 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraft.world.gen.chunk.StructureConfig;
+import net.minecraft.world.gen.chunk.placement.StructurePlacement;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 import net.fabricmc.api.ModInitializer;
@@ -30,22 +30,22 @@ import net.fabricmc.fabric.mixin.structure.StructuresConfigAccessor;
 
 public class FabricStructureImpl implements ModInitializer {
 	//Keeps a map of structures to structure configs for purposes of initializing the flat chunk generator
-	public static final Map<StructureFeature<?>, StructureConfig> FLAT_STRUCTURE_TO_CONFIG_MAP = new HashMap<>();
+	public static final Map<StructureFeature<?>, StructurePlacement> FLAT_STRUCTURE_TO_CONFIG_MAP = new HashMap<>();
 
 	//Keeps a map of structures to structure configs.
-	public static final Map<StructureFeature<?>, StructureConfig> STRUCTURE_TO_CONFIG_MAP = new HashMap<>();
+	public static final Map<StructureFeature<?>, StructurePlacement> STRUCTURE_TO_CONFIG_MAP = new HashMap<>();
 
 	@Override
 	public void onInitialize() {
 		ServerWorldEvents.LOAD.register((server, world) -> {
 			// Need temp map as some mods use custom chunk generators with immutable maps in themselves.
-			Map<StructureFeature<?>, StructureConfig> tempMap = new HashMap<>(world.getChunkManager().getChunkGenerator().getStructuresConfig().getStructures());
+			Map<StructureFeature<?>, StructurePlacement> tempMap = new HashMap<>(world.getChunkManager().getChunkGenerator().getStructuresConfig().getStructures());
 
 			tempMap.putAll(STRUCTURE_TO_CONFIG_MAP);
 
 			//Make it immutable again
-			ImmutableMap<StructureFeature<?>, StructureConfig> immutableMap = ImmutableMap.copyOf(tempMap);
-			((StructuresConfigAccessor) world.getChunkManager().getChunkGenerator().getStructuresConfig()).setStructures(immutableMap);
+			ImmutableMap<StructureFeature<?>, StructurePlacement> immutableMap = ImmutableMap.copyOf(tempMap);
+			((StructuresConfigAccessor) world.getChunkManager().getChunkGenerator().getStructuresConfig()).setPlacements(immutableMap);
 		});
 	}
 }

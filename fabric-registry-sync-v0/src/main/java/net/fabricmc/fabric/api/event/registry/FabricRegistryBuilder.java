@@ -64,7 +64,7 @@ public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	 * @return An instance of FabricRegistryBuilder
 	 */
 	public static <T> FabricRegistryBuilder<T, SimpleRegistry<T>> createSimple(Class<T> type, Identifier registryId) {
-		return from(new SimpleRegistry<T>(RegistryKey.ofRegistry(registryId), Lifecycle.stable()));
+		return from(new SimpleRegistry<T>(RegistryKey.ofRegistry(registryId), Lifecycle.stable(), null));
 	}
 
 	/**
@@ -76,7 +76,7 @@ public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	 * @return An instance of FabricRegistryBuilder
 	 */
 	public static <T> FabricRegistryBuilder<T, DefaultedRegistry<T>> createDefaulted(Class<T> type, Identifier registryId, Identifier defaultId) {
-		return from(new DefaultedRegistry<T>(defaultId.toString(), RegistryKey.ofRegistry(registryId), Lifecycle.stable()));
+		return from(new DefaultedRegistry<T>(defaultId.toString(), RegistryKey.ofRegistry(registryId), Lifecycle.stable(), null));
 	}
 
 	private final R registry;

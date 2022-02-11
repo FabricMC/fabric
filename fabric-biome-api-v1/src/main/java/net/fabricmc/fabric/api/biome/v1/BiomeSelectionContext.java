@@ -18,14 +18,15 @@ package net.fabricmc.fabric.api.biome.v1;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
-import net.minecraft.world.dimension.DimensionOptions;
-import net.minecraft.world.gen.feature.PlacedFeature;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryEntryList;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.gen.feature.PlacedFeature;
 
 import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 
@@ -67,11 +68,11 @@ public interface BiomeSelectionContext {
 	 * Returns true if this biome contains a placed feature referencing a configured feature with the given key.
 	 */
 	default boolean hasFeature(RegistryKey<ConfiguredFeature<?, ?>> key) {
-		List<List<Supplier<PlacedFeature>>> featureSteps = getBiome().getGenerationSettings().getFeatures();
+		List<RegistryEntryList<PlacedFeature>> featureSteps = getBiome().getGenerationSettings().getFeatures();
 
-		for (List<Supplier<PlacedFeature>> featureSuppliers : featureSteps) {
-			for (Supplier<PlacedFeature> featureSupplier : featureSuppliers) {
-				if (featureSupplier.get().getDecoratedFeatures().anyMatch(cf -> getFeatureKey(cf).orElse(null) == key)) {
+		for (RegistryEntryList<PlacedFeature> featureSuppliers : featureSteps) {
+			for (RegistryEntry<PlacedFeature> featureSupplier : featureSuppliers) {
+				if (featureSupplier.value().getDecoratedFeatures().anyMatch(cf -> getFeatureKey(cf).orElse(null) == key)) {
 					return true;
 				}
 			}
@@ -84,11 +85,11 @@ public interface BiomeSelectionContext {
 	 * Returns true if this biome contains a placed feature with the given key.
 	 */
 	default boolean hasPlacedFeature(RegistryKey<PlacedFeature> key) {
-		List<List<Supplier<PlacedFeature>>> featureSteps = getBiome().getGenerationSettings().getFeatures();
+		List<RegistryEntryList<PlacedFeature>> featureSteps = getBiome().getGenerationSettings().getFeatures();
 
-		for (List<Supplier<PlacedFeature>> featureSuppliers : featureSteps) {
-			for (Supplier<PlacedFeature> featureSupplier : featureSuppliers) {
-				if (getPlacedFeatureKey(featureSupplier.get()).orElse(null) == key) {
+		for (RegistryEntryList<PlacedFeature> featureSuppliers : featureSteps) {
+			for (RegistryEntry<PlacedFeature> featureSupplier : featureSuppliers) {
+				if (getPlacedFeatureKey(featureSupplier.value()).orElse(null) == key) {
 					return true;
 				}
 			}

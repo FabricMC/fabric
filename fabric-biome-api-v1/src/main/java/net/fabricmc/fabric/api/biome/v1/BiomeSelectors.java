@@ -24,9 +24,9 @@ import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.tag.TagKey;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -98,8 +98,8 @@ public final class BiomeSelectors {
 	 *
 	 * @see net.fabricmc.fabric.api.tag.TagFactory#BIOME
 	 */
-	public static Predicate<BiomeSelectionContext> tag(Tag<Biome> tag) {
-		return context -> tag.contains(context.getBiome());
+	public static Predicate<BiomeSelectionContext> tag(TagKey<Biome> tag) {
+		return context -> BuiltinRegistries.BIOME.containsTag(tag);
 	}
 
 	/**
@@ -177,6 +177,6 @@ public final class BiomeSelectors {
 		Set<Biome.Category> categorySet = EnumSet.noneOf(Biome.Category.class);
 		Collections.addAll(categorySet, categories);
 
-		return context -> categorySet.contains(context.getBiome().getCategory());
+		return context -> categorySet.contains(context.getBiome().category);
 	}
 }

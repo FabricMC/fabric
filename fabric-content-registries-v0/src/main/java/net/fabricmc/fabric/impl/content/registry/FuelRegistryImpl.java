@@ -21,13 +21,15 @@ import java.util.Map;
 
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.tag.TagKey;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
-import net.minecraft.tag.Tag;
+import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
@@ -36,7 +38,7 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 public final class FuelRegistryImpl implements FuelRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FuelRegistryImpl.class);
 	private final Object2IntMap<ItemConvertible> itemCookTimes = new Object2IntLinkedOpenHashMap<>();
-	private final Object2IntMap<Tag<Item>> tagCookTimes = new Object2IntLinkedOpenHashMap<>();
+	private final Object2IntMap<TagKey<Item>> tagCookTimes = new Object2IntLinkedOpenHashMap<>();
 	private volatile Map<Item, Integer> fuelTimeCache = null; // thread safe via copy-on-write mechanism
 
 	public FuelRegistryImpl() {
@@ -73,7 +75,7 @@ public final class FuelRegistryImpl implements FuelRegistry {
 	}
 
 	@Override
-	public void add(Tag<Item> tag, Integer cookTime) {
+	public void add(TagKey<Item> tag, Integer cookTime) {
 		if (cookTime > 32767) {
 			LOGGER.warn("Tried to register an overly high cookTime: " + cookTime + " > 32767! (" + getTagName(tag) + ")");
 		}
@@ -89,7 +91,7 @@ public final class FuelRegistryImpl implements FuelRegistry {
 	}
 
 	@Override
-	public void remove(Tag<Item> tag) {
+	public void remove(TagKey<Item> tag) {
 		add(tag, 0);
 		resetCache();
 	}
@@ -101,19 +103,20 @@ public final class FuelRegistryImpl implements FuelRegistry {
 	}
 
 	@Override
-	public void clear(Tag<Item> tag) {
+	public void clear(TagKey<Item> tag) {
 		tagCookTimes.removeInt(tag);
 		resetCache();
 	}
 
 	public void apply(Map<Item, Integer> map) {
 		// tags take precedence before blocks
-		for (Tag<Item> tag : tagCookTimes.keySet()) {
+		for (TagKey<Item> tag : tagCookTimes.keySet()) {
 			int time = tagCookTimes.getInt(tag);
 
 			if (time <= 0) {
-				for (Item i : tag.values()) {
-					map.remove(i);
+				for (RegistryEntry<Item> key : Registry.ITEM.method_40286(tag)) {
+					final Item item = key.value();
+					map.remove(item);
 				}
 			} else {
 				AbstractFurnaceBlockEntity.addFuel(map, tag, time);
@@ -131,12 +134,8 @@ public final class FuelRegistryImpl implements FuelRegistry {
 		}
 	}
 
-	private static String getTagName(Tag<?> tag) {
-		if (tag instanceof Tag.Identified) {
-			return ((Tag.Identified<?>) tag).getId().toString();
-		}
-
-		return tag.toString();
+	private static String getTagName(TagKey<?> tag) {
+		return tag.id().toString();
 	}
 
 	public void resetCache() {

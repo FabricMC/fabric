@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.mixin.registry.sync.client;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
@@ -43,5 +44,12 @@ public class MixinMinecraftClient {
 		} catch (RemapException e) {
 			FABRIC_LOGGER.warn("Failed to unmap Fabric registries!", e);
 		}
+	}
+
+	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;thread:Ljava/lang/Thread;", shift = At.Shift.AFTER, ordinal = 0), method = "run")
+	private void onStart(CallbackInfo ci) {
+		// Freeze the registries on the client
+		FABRIC_LOGGER.debug("Freezing registries");
+		Registry.method_40292();
 	}
 }

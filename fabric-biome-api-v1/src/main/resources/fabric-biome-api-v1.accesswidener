@@ -1,12 +1,13 @@
 accessWidener	v1	named
 accessible  class   net/minecraft/world/biome/Biome$Weather
-accessible field net/minecraft/world/gen/chunk/StructuresConfig configuredStructures Lcom/google/common/collect/ImmutableMap;
-mutable field net/minecraft/world/gen/chunk/StructuresConfig configuredStructures Lcom/google/common/collect/ImmutableMap;
+accessible field net/minecraft/world/gen/chunk/placement/StructuresConfig configuredStructures Lcom/google/common/collect/ImmutableMap;
+mutable field net/minecraft/world/gen/chunk/placement/StructuresConfig configuredStructures Lcom/google/common/collect/ImmutableMap;
 
 # Rebuilding biome source feature lists
 accessible method net/minecraft/world/biome/source/BiomeSource method_39525 (Ljava/util/List;Z)Ljava/util/List;
-accessible field net/minecraft/world/biome/source/BiomeSource field_34469 Ljava/util/List;
-mutable field net/minecraft/world/biome/source/BiomeSource field_34469 Ljava/util/List;
+accessible field net/minecraft/world/biome/source/BiomeSource biomes Ljava/util/Set;
+accessible field net/minecraft/world/biome/source/BiomeSource field_34469 Ljava/util/function/Supplier;
+mutable field net/minecraft/world/biome/source/BiomeSource field_34469 Ljava/util/function/Supplier;
 
 # Top-Level Biome Fields Access
 accessible field net/minecraft/world/biome/Biome weather Lnet/minecraft/world/biome/Biome$Weather;
@@ -66,7 +67,7 @@ accessible field net/minecraft/world/biome/GenerationSettings carvers Ljava/util
 mutable field net/minecraft/world/biome/GenerationSettings carvers Ljava/util/Map;
 accessible field net/minecraft/world/biome/GenerationSettings features Ljava/util/List;
 mutable field net/minecraft/world/biome/GenerationSettings features Ljava/util/List;
-accessible field net/minecraft/world/biome/GenerationSettings flowerFeatures Ljava/util/List;
-mutable field net/minecraft/world/biome/GenerationSettings flowerFeatures Ljava/util/List;
-accessible field net/minecraft/world/biome/GenerationSettings allowedFeatures Ljava/util/Set;
-mutable field net/minecraft/world/biome/GenerationSettings allowedFeatures Ljava/util/Set;
+accessible field net/minecraft/world/biome/GenerationSettings flowerFeatures Ljava/util/function/Supplier;
+mutable field net/minecraft/world/biome/GenerationSettings flowerFeatures Ljava/util/function/Supplier;
+accessible field net/minecraft/world/biome/GenerationSettings allowedFeatures Ljava/util/function/Supplier;
+mutable field net/minecraft/world/biome/GenerationSettings allowedFeatures Ljava/util/function/Supplier;

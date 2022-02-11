@@ -33,5 +33,6 @@
   "description": "Events for the game's lifecycle.",
   "custom": {
     "fabric-api:module-lifecycle": "stable"
-  }
+  },
+  "accessWidener": "fabric-lifecycle-events-v1.accesswidener"
 }

@@ -42,7 +42,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
 	@Shadow
-	private ServerResourceManager serverResourceManager;
+	private MinecraftServer.class_6897 serverResourceManager;
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setupServer()Z"), method = "runServer")
 	private void beforeSetupServer(CallbackInfo info) {
@@ -91,14 +91,14 @@ public abstract class MinecraftServerMixin {
 
 	@Inject(method = "reloadResources", at = @At("HEAD"))
 	private void startResourceReload(Collection<String> collection, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
-		ServerLifecycleEvents.START_DATA_PACK_RELOAD.invoker().startDataPackReload((MinecraftServer) (Object) this, this.serverResourceManager);
+		ServerLifecycleEvents.START_DATA_PACK_RELOAD.invoker().startDataPackReload((MinecraftServer) (Object) this, (ServerResourceManager) this.serverResourceManager.resourceManager());
 	}
 
 	@Inject(method = "reloadResources", at = @At("TAIL"))
 	private void endResourceReload(Collection<String> collection, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
 		cir.getReturnValue().handleAsync((value, throwable) -> {
 			// Hook into fail
-			ServerLifecycleEvents.END_DATA_PACK_RELOAD.invoker().endDataPackReload((MinecraftServer) (Object) this, this.serverResourceManager, throwable == null);
+			ServerLifecycleEvents.END_DATA_PACK_RELOAD.invoker().endDataPackReload((MinecraftServer) (Object) this, (ServerResourceManager) this.serverResourceManager.resourceManager(), throwable == null);
 			return value;
 		}, (MinecraftServer) (Object) this);
 	}

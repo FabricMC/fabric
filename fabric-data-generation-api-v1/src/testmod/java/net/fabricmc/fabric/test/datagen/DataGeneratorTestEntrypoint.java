@@ -26,10 +26,11 @@ import java.util.function.Consumer;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
+import net.minecraft.data.client.BlockStateModelGenerator;
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
+import net.minecraft.tag.TagKey;
 import net.minecraft.data.client.ItemModelGenerator;
-import net.minecraft.data.client.model.BlockStateModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
@@ -45,7 +46,6 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
-import net.minecraft.world.biome.BuiltinBiomes;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -57,7 +57,6 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
-import net.fabricmc.fabric.api.tag.TagFactory;
 
 public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	private static final ConditionJsonProvider NEVER_LOADED = DefaultResourceConditions.allModsLoaded("a");
@@ -117,8 +116,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void generateRecipes(Consumer<RecipeJsonProvider> exporter) {
-			ShapelessRecipeJsonFactory.create(Items.GOLD_INGOT).input(Items.DIRT).criterion("has_dirt", conditionsFromItem(Items.DIRT)).offerTo(withConditions(exporter, NEVER_LOADED));
-			ShapelessRecipeJsonFactory.create(Items.DIAMOND).input(Items.STICK).criterion("has_stick", conditionsFromItem(Items.STICK)).offerTo(withConditions(exporter, ALWAYS_LOADED));
+			ShapelessRecipeJsonBuilder.create(Items.GOLD_INGOT).input(Items.DIRT).criterion("has_dirt", conditionsFromItem(Items.DIRT)).offerTo(withConditions(exporter, NEVER_LOADED));
+			ShapelessRecipeJsonBuilder.create(Items.DIAMOND).input(Items.STICK).criterion("has_stick", conditionsFromItem(Items.STICK)).offerTo(withConditions(exporter, ALWAYS_LOADED));
 		}
 	}
 
@@ -170,12 +169,12 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void generateTags() {
-			FabricTagBuilder<Biome> builder = getOrCreateTagBuilder(TagFactory.BIOME.create(new Identifier(MOD_ID, "biome_tag_test")))
+			FabricTagBuilder<Biome> builder = getOrCreateTagBuilder(TagKey.intern(Registry.BIOME_KEY, new Identifier(MOD_ID, "biome_tag_test")))
 					.add(BiomeKeys.BADLANDS, BiomeKeys.BAMBOO_JUNGLE)
 					.add(BiomeKeys.BASALT_DELTAS);
 
 			try {
-				builder.add(BuiltinBiomes.PLAINS);
+				builder.add(BuiltinRegistries.BIOME.get(BiomeKeys.PLAINS));
 				throw new AssertionError("Adding built-in entry to dynamic registry tag builder didn't throw an exception!");
 			} catch (UnsupportedOperationException e) {
 				// no-op
@@ -190,7 +189,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generateAdvancement(Consumer<Advancement> consumer) {
-			Advancement root = Advancement.Task.create()
+			Advancement root = Advancement.Builder.create()
 					.display(
 							SIMPLE_BLOCK,
 							new TranslatableText("advancements.test.root.title"),
@@ -200,7 +199,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							false, false, false)
 					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
 					.build(consumer, MOD_ID + ":test/root");
-			Advancement rootNotLoaded = Advancement.Task.create()
+			Advancement rootNotLoaded = Advancement.Builder.create()
 					.display(
 							SIMPLE_BLOCK,
 							new TranslatableText("advancements.test.root_not_loaded.title"),
