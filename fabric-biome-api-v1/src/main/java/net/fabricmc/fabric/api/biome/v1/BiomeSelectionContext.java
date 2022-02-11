@@ -146,7 +146,7 @@ public interface BiomeSelectionContext {
 	boolean canGenerateIn(RegistryKey<DimensionOptions> dimensionKey);
 
 	/**
-	 * Returns true if this biome is in the given {@link TagKey}.
+	 * {@return true if this biome is in the given {@link TagKey}}
 	 */
 	boolean hasTag(TagKey<Biome> tag);
 }
