@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -105,5 +106,11 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 		}
 
 		return dimension.getChunkGenerator().getBiomeSource().getBiomes().anyMatch(entry -> entry.value() == biome);
+	}
+
+	@Override
+	public boolean hasTag(TagKey<Biome> tag) {
+		Registry<Biome> biomeRegistry = dynamicRegistries.get(Registry.BIOME_KEY);
+		return biomeRegistry.entryOf(getBiomeKey()).isIn(tag);
 	}
 }

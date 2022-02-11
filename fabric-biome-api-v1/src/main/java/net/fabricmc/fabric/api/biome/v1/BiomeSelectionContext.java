@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.biome.v1;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryEntryList;
 import net.minecraft.util.registry.RegistryKey;
@@ -143,4 +144,9 @@ public interface BiomeSelectionContext {
 	 * <p>If no dimension options exist for the given dimension key, <code>false</code> is returned.
 	 */
 	boolean canGenerateIn(RegistryKey<DimensionOptions> dimensionKey);
+
+	/**
+	 * Returns true if this biome is in the given {@link TagKey}.
+	 */
+	boolean hasTag(TagKey<Biome> tag);
 }
