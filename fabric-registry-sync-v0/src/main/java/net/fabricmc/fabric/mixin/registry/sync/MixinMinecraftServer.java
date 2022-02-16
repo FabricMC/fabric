@@ -40,7 +40,7 @@ public class MixinMinecraftServer {
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
 			// Freeze the registries on the server
 			FABRIC_LOGGER.debug("Freezing registries");
-			Registry.method_40292();
+			Registry.freezeRegistries();
 		}
 	}
 }

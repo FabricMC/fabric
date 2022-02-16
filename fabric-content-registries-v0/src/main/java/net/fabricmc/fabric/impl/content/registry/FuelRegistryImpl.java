@@ -114,7 +114,7 @@ public final class FuelRegistryImpl implements FuelRegistry {
 			int time = tagCookTimes.getInt(tag);
 
 			if (time <= 0) {
-				for (RegistryEntry<Item> key : Registry.ITEM.method_40286(tag)) {
+				for (RegistryEntry<Item> key : Registry.ITEM.iterateEntries(tag)) {
 					final Item item = key.value();
 					map.remove(item);
 				}

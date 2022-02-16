@@ -44,21 +44,21 @@ public class SimpleResourceReloadMixin {
 	@Unique
 	private static final ThreadLocal<ResourceType> fabric_resourceType = new ThreadLocal<>();
 
-	@Inject(method = "method_40087", at = @At("HEAD"))
+	@Inject(method = "start", at = @At("HEAD"))
 	private static void method_40087(ResourceManager resourceManager, List<ResourceReloader> list, Executor executor, Executor executor2, CompletableFuture<Unit> completableFuture, boolean bl, CallbackInfoReturnable<ResourceReload> cir) {
 		if (resourceManager instanceof FabricLifecycledResourceManager flrm) {
 			fabric_resourceType.set(flrm.fabric_getResourceType());
 		}
 	}
 
-	@ModifyArg(method = "method_40087", index = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/SimpleResourceReload;create(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;)Lnet/minecraft/resource/SimpleResourceReload;"))
+	@ModifyArg(method = "start", index = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/SimpleResourceReload;create(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;)Lnet/minecraft/resource/SimpleResourceReload;"))
 	private static List<ResourceReloader> sortSimple(List<ResourceReloader> reloaders) {
 		List<ResourceReloader> sorted = ResourceManagerHelperImpl.sort(fabric_resourceType.get(), reloaders);
 		fabric_resourceType.set(null);
 		return sorted;
 	}
 
-	@Redirect(method = "method_40087", at = @At(value = "NEW", target = "Lnet/minecraft/resource/ProfiledResourceReload;<init>"))
+	@Redirect(method = "start", at = @At(value = "NEW", target = "Lnet/minecraft/resource/ProfiledResourceReload;<init>"))
 	private static ProfiledResourceReload sortProfiled(ResourceManager manager, List<ResourceReloader> reloaders, Executor prepareExecutor, Executor applyExecutor, CompletableFuture<Unit> initialStage) {
 		List<ResourceReloader> sorted = ResourceManagerHelperImpl.sort(fabric_resourceType.get(), reloaders);
 		fabric_resourceType.set(null);

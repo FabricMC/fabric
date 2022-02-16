@@ -35,7 +35,7 @@ public abstract class MinecraftServerMixin {
 	private SaveProperties saveProperties;
 
 	@Shadow
-	public abstract DynamicRegistryManager.class_6890 getRegistryManager();
+	public abstract DynamicRegistryManager.Immutable getRegistryManager();
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
 	private void finalizeWorldGen(CallbackInfo ci) {

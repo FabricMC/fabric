@@ -62,7 +62,7 @@ public class MixinBootstrap {
 		RegistrySyncManager.bootstrapRegistries();
 	}
 
-	@Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/Registry;method_40292()V"))
+	@Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/Registry;freezeRegistries()V"))
 	private static void skipFreeze() {
 		// Don't freeze
 	}

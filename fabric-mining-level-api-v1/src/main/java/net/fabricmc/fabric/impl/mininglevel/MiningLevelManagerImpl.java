@@ -46,7 +46,7 @@ public final class MiningLevelManagerImpl {
 			int miningLevel = MiningLevels.HAND;
 
 			// Handle #fabric:needs_tool_level_N
-			for (TagKey<Block> tagId : state.method_40144().toList()) {
+			for (TagKey<Block> tagId : state.streamTags().toList()) {
 				if (!tagId.id().getNamespace().equals(TOOL_TAG_NAMESPACE)) {
 					continue;
 				}

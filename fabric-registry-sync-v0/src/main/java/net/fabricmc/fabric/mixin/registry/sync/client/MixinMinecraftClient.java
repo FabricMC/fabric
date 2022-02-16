@@ -50,6 +50,6 @@ public class MixinMinecraftClient {
 	private void onStart(CallbackInfo ci) {
 		// Freeze the registries on the client
 		FABRIC_LOGGER.debug("Freezing registries");
-		Registry.method_40292();
+		Registry.freezeRegistries();
 	}
 }
