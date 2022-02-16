@@ -24,6 +24,8 @@ transitive-accessible   field   net/minecraft/data/client/BlockStateModelGenerat
 transitive-accessible   method  net/minecraft/data/client/TextureKey  of  (Ljava/lang/String;)Lnet/minecraft/data/client/TextureKey;
 transitive-accessible   method  net/minecraft/data/client/TextureKey	of  (Ljava/lang/String;Lnet/minecraft/data/client/TextureKey;)Lnet/minecraft/data/client/TextureKey;
 
+transitive-extendable method net/minecraft/data/server/AbstractTagProvider getOutput (Lnet/minecraft/util/Identifier;)Ljava/nio/file/Path;
+
 transitive-accessible	method	net/minecraft/data/server/RecipeProvider	saveRecipe	(Lnet/minecraft/data/DataCache;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V
 transitive-accessible	method	net/minecraft/data/server/RecipeProvider	saveRecipeAdvancement	(Lnet/minecraft/data/DataCache;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V
 transitive-accessible	method	net/minecraft/data/server/RecipeProvider	generate	(Ljava/util/function/Consumer;)V

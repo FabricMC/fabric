@@ -24,7 +24,6 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.tag.TagKey;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.server.AbstractTagProvider;
 import net.minecraft.entity.EntityType;
@@ -36,6 +35,8 @@ import net.minecraft.tag.FluidTags;
 import net.minecraft.tag.GameEventTags;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
+import net.minecraft.tag.TagManagerLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
@@ -65,6 +66,19 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	private final String name;
 
 	/**
+	 * Construct a new {@link FabricTagProvider} with the default computed path.
+	 *
+	 * <p>Common implementations of this class are provided. For example @see BlockTagProvider
+	 *
+	 * @param dataGenerator The data generator instance
+	 * @param registry The backing registry for the Tag type.
+	 * @param name The name used for {@link DataProvider#getName()}
+	 */
+	protected FabricTagProvider(FabricDataGenerator dataGenerator, Registry<T> registry, String name) {
+		this(dataGenerator, registry, TagManagerLoader.getPath(registry.getKey()), name);
+	}
+
+	/**
 	 * Construct a new {@link FabricTagProvider}.
 	 *
 	 * <p>Common implementations of this class are provided. For example @see BlockTagProvider
@@ -91,9 +105,9 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	protected abstract void generateTags();
 
 	/**
-	 * Creates a new instance of {@link FabricTagBuilder} for the given {@link net.minecraft.tag.Tag.Identified} tag.
+	 * Creates a new instance of {@link FabricTagBuilder} for the given {@link TagKey} tag.
 	 *
-	 * @param tag The {@link net.minecraft.tag.Tag.Identified} tag to create the builder for
+	 * @param tag The {@link TagKey} tag to create the builder for
 	 * @return The {@link FabricTagBuilder} instance
 	 */
 	@Override

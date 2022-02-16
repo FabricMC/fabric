@@ -1,7 +1,5 @@
 accessWidener	v1	named
 accessible  class   net/minecraft/world/biome/Biome$Weather
-accessible field net/minecraft/world/gen/chunk/placement/StructuresConfig configuredStructures Lcom/google/common/collect/ImmutableMap;
-mutable field net/minecraft/world/gen/chunk/placement/StructuresConfig configuredStructures Lcom/google/common/collect/ImmutableMap;
 
 # Rebuilding biome source feature lists
 accessible method net/minecraft/world/biome/source/BiomeSource method_39525 (Ljava/util/List;Z)Ljava/util/List;

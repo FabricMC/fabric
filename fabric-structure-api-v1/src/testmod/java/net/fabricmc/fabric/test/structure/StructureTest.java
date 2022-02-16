@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.class_6908;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.structure.ShiftableStructurePiece;
 import net.minecraft.structure.StructureGeneratorFactory;
@@ -39,6 +39,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.GenerationStep;
@@ -58,7 +59,7 @@ public class StructureTest {
 	public static final RegistryEntry<ConfiguredStructureFeature<?, ?>> CONFIGURED_STRUCTURE = BuiltinRegistries.add(
 			BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE,
 			new Identifier("fabric", "test_structure"),
-			STRUCTURE.configure(new DefaultFeatureConfig())
+			STRUCTURE.configure(new DefaultFeatureConfig(), class_6908.DESERT_PYRAMID_HAS_STRUCTURE)
 	);
 	public static final StructurePieceType.Simple PIECE = TestStructureGenerator::new;
 
