@@ -31,7 +31,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 
@@ -91,14 +90,14 @@ public abstract class MinecraftServerMixin {
 
 	@Inject(method = "reloadResources", at = @At("HEAD"))
 	private void startResourceReload(Collection<String> collection, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
-		ServerLifecycleEvents.START_DATA_PACK_RELOAD.invoker().startDataPackReload((MinecraftServer) (Object) this, (ServerResourceManager) this.serverResourceManager.resourceManager());
+		ServerLifecycleEvents.START_DATA_PACK_RELOAD.invoker().startDataPackReload((MinecraftServer) (Object) this, this.serverResourceManager.managers());
 	}
 
 	@Inject(method = "reloadResources", at = @At("TAIL"))
 	private void endResourceReload(Collection<String> collection, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
 		cir.getReturnValue().handleAsync((value, throwable) -> {
 			// Hook into fail
-			ServerLifecycleEvents.END_DATA_PACK_RELOAD.invoker().endDataPackReload((MinecraftServer) (Object) this, (ServerResourceManager) this.serverResourceManager.resourceManager(), throwable == null);
+			ServerLifecycleEvents.END_DATA_PACK_RELOAD.invoker().endDataPackReload((MinecraftServer) (Object) this, this.serverResourceManager.managers(), throwable == null);
 			return value;
 		}, (MinecraftServer) (Object) this);
 	}
