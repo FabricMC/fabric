@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.dimension;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -24,6 +25,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.class_7059;
 import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -41,20 +43,19 @@ import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
-import net.minecraft.world.gen.chunk.placement.StructuresConfig;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 
 public class VoidChunkGenerator extends ChunkGenerator {
-	public static final Codec<VoidChunkGenerator> CODEC = RecordCodecBuilder.create(instance ->
-			instance.group(
-					RegistryOps.createRegistryCodec(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY).forGetter(generator -> generator.field_36536),
-					RegistryOps.createRegistryCodec(Registry.BIOME_KEY).forGetter(generator -> generator.biomeRegistry)
-			).apply(instance, instance.stable(VoidChunkGenerator::new)));
+	public static final Codec<VoidChunkGenerator> CODEC = RecordCodecBuilder.create((instance) ->
+			method_41042(instance).and(
+				RegistryOps.createRegistryCodec(Registry.BIOME_KEY).forGetter((generator) -> generator.biomeRegistry)
+			)
+			.apply(instance, instance.stable(VoidChunkGenerator::new))
+	);
 
 	private final Registry<Biome> biomeRegistry;
 
-	public VoidChunkGenerator(Registry<ConfiguredStructureFeature<?, ?>> configuredStructureFeatureRegistry, Registry<Biome> biomeRegistry) {
-		super(configuredStructureFeatureRegistry, new FixedBiomeSource(biomeRegistry.getOrCreateEntry(BiomeKeys.PLAINS)), new StructuresConfig(false));
+	public VoidChunkGenerator(Registry<class_7059> registry, Registry<Biome> biomeRegistry) {
+		super(registry, Optional.empty(), new FixedBiomeSource(biomeRegistry.getOrCreateEntry(BiomeKeys.PLAINS)));
 		this.biomeRegistry = biomeRegistry;
 	}
 
