@@ -46,6 +46,6 @@ public final class FabricMineableTags {
 	}
 
 	private static TagKey<Block> register(String id) {
-		return TagKey.intern(Registry.BLOCK_KEY, new Identifier("fabric", id));
+		return TagKey.of(Registry.BLOCK_KEY, new Identifier("fabric", id));
 	}
 }

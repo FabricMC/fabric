@@ -130,8 +130,7 @@ public class ResourceConditionsImpl {
 		for (JsonElement element : array) {
 			if (element.isJsonPrimitive()) {
 				Identifier id = new Identifier(element.getAsString());
-				// TODO 22w06a check me later
-				TagKey<T> tag = TagKey.intern(registryKey, id);
+				TagKey<T> tag = TagKey.of(registryKey, id);
 				Registry<T> registry = (Registry<T>) Registry.REGISTRIES.get(registryKey.getValue());
 
 				if (!registry.containsTag(tag)) {

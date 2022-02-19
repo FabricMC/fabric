@@ -169,7 +169,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void generateTags() {
-			FabricTagBuilder<Biome> builder = getOrCreateTagBuilder(TagKey.intern(Registry.BIOME_KEY, new Identifier(MOD_ID, "biome_tag_test")))
+			FabricTagBuilder<Biome> builder = getOrCreateTagBuilder(TagKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "biome_tag_test")))
 					.add(BiomeKeys.BADLANDS, BiomeKeys.BAMBOO_JUNGLE)
 					.add(BiomeKeys.BASALT_DELTAS);
 

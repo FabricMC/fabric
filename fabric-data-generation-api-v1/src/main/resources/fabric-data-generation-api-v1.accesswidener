@@ -25,6 +25,7 @@ transitive-accessible   method  net/minecraft/data/client/TextureKey  of  (Ljava
 transitive-accessible   method  net/minecraft/data/client/TextureKey	of  (Ljava/lang/String;Lnet/minecraft/data/client/TextureKey;)Lnet/minecraft/data/client/TextureKey;
 
 transitive-extendable method net/minecraft/data/server/AbstractTagProvider getOutput (Lnet/minecraft/util/Identifier;)Ljava/nio/file/Path;
+transitive-extendable method net/minecraft/data/server/AbstractTagProvider$ObjectBuilder add ([Lnet/minecraft/util/registry/RegistryKey;)Lnet/minecraft/data/server/AbstractTagProvider$ObjectBuilder;
 
 transitive-accessible	method	net/minecraft/data/server/RecipeProvider	saveRecipe	(Lnet/minecraft/data/DataCache;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V
 transitive-accessible	method	net/minecraft/data/server/RecipeProvider	saveRecipeAdvancement	(Lnet/minecraft/data/DataCache;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V

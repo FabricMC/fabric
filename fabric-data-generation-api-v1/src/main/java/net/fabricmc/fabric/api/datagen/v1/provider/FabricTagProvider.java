@@ -378,7 +378,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @return the {@link FabricTagBuilder} instance
 		 */
 		@SafeVarargs
-		public final FabricTagBuilder<T> add(RegistryKey<? extends T>... registryKeys) {
+		public final FabricTagBuilder<T> add(RegistryKey<T>... registryKeys) {
 			for (RegistryKey<? extends T> registryKey : registryKeys) {
 				add(registryKey);
 			}

@@ -118,6 +118,6 @@ public class VoidChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public void method_40450(List<String> list, BlockPos blockPos) {
+	public void getDebugHudText(List<String> list, BlockPos blockPos) {
 	}
 }
