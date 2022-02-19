@@ -4,8 +4,8 @@ accessible  class   net/minecraft/world/biome/Biome$Weather
 # Rebuilding biome source feature lists
 accessible method net/minecraft/world/biome/source/BiomeSource method_39525 (Ljava/util/List;Z)Ljava/util/List;
 accessible field net/minecraft/world/biome/source/BiomeSource biomes Ljava/util/Set;
-accessible field net/minecraft/world/biome/source/BiomeSource field_34469 Ljava/util/function/Supplier;
-mutable field net/minecraft/world/biome/source/BiomeSource field_34469 Ljava/util/function/Supplier;
+accessible field net/minecraft/world/biome/source/BiomeSource indexedFeaturesSupplier Ljava/util/function/Supplier;
+mutable field net/minecraft/world/biome/source/BiomeSource indexedFeaturesSupplier Ljava/util/function/Supplier;
 
 # Top-Level Biome Fields Access
 accessible field net/minecraft/world/biome/Biome weather Lnet/minecraft/world/biome/Biome$Weather;

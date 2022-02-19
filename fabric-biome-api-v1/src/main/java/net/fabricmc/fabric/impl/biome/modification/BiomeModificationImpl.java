@@ -120,7 +120,7 @@ public class BiomeModificationImpl {
 
 		// Build a list of all biome keys in ascending order of their raw-id to get a consistent result in case
 		// someone does something stupid.
-		List<RegistryKey<Biome>> keys = biomes.getEntries().stream()
+		List<RegistryKey<Biome>> keys = biomes.getEntrySet().stream()
 				.map(Map.Entry::getKey)
 				.sorted(Comparator.comparingInt(key -> biomes.getRawId(biomes.getOrThrow(key))))
 				.toList();
@@ -170,7 +170,7 @@ public class BiomeModificationImpl {
 				BiomeSource biomeSource = dimension.getChunkGenerator().getBiomeSource();
 
 				// Replace the Supplier to force it to rebuild on next call
-				biomeSource.field_34469 = Suppliers.memoize(() -> {
+				biomeSource.indexedFeaturesSupplier = Suppliers.memoize(() -> {
 					return biomeSource.method_39525(biomeSource.biomes.stream().map(RegistryEntry::value).toList(), true);
 				});
 			}
