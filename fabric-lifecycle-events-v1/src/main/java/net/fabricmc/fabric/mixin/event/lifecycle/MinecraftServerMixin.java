@@ -90,14 +90,14 @@ public abstract class MinecraftServerMixin {
 
 	@Inject(method = "reloadResources", at = @At("HEAD"))
 	private void startResourceReload(Collection<String> collection, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
-		ServerLifecycleEvents.START_DATA_PACK_RELOAD.invoker().startDataPackReload((MinecraftServer) (Object) this, this.serverResourceManager.managers());
+		ServerLifecycleEvents.START_DATA_PACK_RELOAD.invoker().startDataPackReload((MinecraftServer) (Object) this, this.serverResourceManager.resourceManager());
 	}
 
 	@Inject(method = "reloadResources", at = @At("TAIL"))
 	private void endResourceReload(Collection<String> collection, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
 		cir.getReturnValue().handleAsync((value, throwable) -> {
 			// Hook into fail
-			ServerLifecycleEvents.END_DATA_PACK_RELOAD.invoker().endDataPackReload((MinecraftServer) (Object) this, this.serverResourceManager.managers(), throwable == null);
+			ServerLifecycleEvents.END_DATA_PACK_RELOAD.invoker().endDataPackReload((MinecraftServer) (Object) this, this.serverResourceManager.resourceManager(), throwable == null);
 			return value;
 		}, (MinecraftServer) (Object) this);
 	}
