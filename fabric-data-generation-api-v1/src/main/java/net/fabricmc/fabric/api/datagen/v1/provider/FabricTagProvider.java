@@ -94,7 +94,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	protected FabricTagProvider(FabricDataGenerator dataGenerator, Registry<T> registry, String path, String name) {
 		super(dataGenerator, registry);
 		this.fabricDataGenerator = dataGenerator;
-		this.path = path;
+		this.path = path.startsWith("tags/") ? path : "tags/" + path;
 		this.name = name;
 
 		if (!(this instanceof DynamicRegistryTagProvider) && BuiltinRegistries.REGISTRIES.contains((RegistryKey) registry.getKey())) {
