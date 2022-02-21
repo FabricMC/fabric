@@ -394,7 +394,8 @@ task modrinth(type: com.modrinth.minotaur.TaskModrinthUpload, dependsOn: remapMa
 
 	uploadFile = remapJar
 
-	addGameVersion(project.minecraft_version)
+//	addGameVersion(project.minecraft_version)
+	addGameVersion("1.18.2-pre1")
 	addLoader('fabric')
 }
 
