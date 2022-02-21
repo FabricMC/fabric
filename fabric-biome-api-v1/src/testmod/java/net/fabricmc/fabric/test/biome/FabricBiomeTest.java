@@ -83,14 +83,6 @@ public class FabricBiomeTest implements ModInitializer {
 		Registry.register(BuiltinRegistries.BIOME, TEST_END_MIDLANDS.getValue(), createEndMidlands());
 		Registry.register(BuiltinRegistries.BIOME, TEST_END_BARRRENS.getValue(), createEndBarrens());
 
-		BiomeModifications.create(new Identifier("fabric:end_test_structures"))
-				.add(ModificationPhase.ADDITIONS, BiomeSelectors.includeByKey(TEST_END_HIGHLANDS, TEST_END_MIDLANDS), ctx -> {
-					ctx.getGenerationSettings().addStructure(RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, new Identifier("end_city")));
-				})
-				.add(ModificationPhase.ADDITIONS, BiomeSelectors.includeByKey(BiomeKeys.PLAINS), ctx -> {
-					ctx.getGenerationSettings().addStructure(RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, new Identifier("end_city")));
-				});
-
 		// TESTING HINT: to get to the end:
 		// /execute in minecraft:the_end run tp @s 0 90 0
 		TheEndBiomes.addHighlandsBiome(TEST_END_HIGHLANDS, 5.0);
@@ -117,7 +109,7 @@ public class FabricBiomeTest implements ModInitializer {
 							);
 						})
 				.add(ModificationPhase.ADDITIONS,
-						BiomeSelectors.tag(TagKey.intern(Registry.BIOME_KEY, new Identifier(MOD_ID, "tag_selector_test"))),
+						BiomeSelectors.tag(TagKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "tag_selector_test"))),
 						context -> context.getEffects().setSkyColor(0x770000));
 	}
 

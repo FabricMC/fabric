@@ -99,7 +99,7 @@ public final class BiomeSelectors {
 	 * @see net.fabricmc.fabric.api.tag.TagFactory#BIOME
 	 */
 	public static Predicate<BiomeSelectionContext> tag(TagKey<Biome> tag) {
-		return context -> BuiltinRegistries.BIOME.containsTag(tag);
+		return context -> context.hasTag(tag);
 	}
 
 	/**

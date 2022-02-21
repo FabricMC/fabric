@@ -20,12 +20,13 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionOptions;
-import net.minecraft.world.gen.chunk.placement.StructuresConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
@@ -39,12 +40,14 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	private final LevelProperties levelProperties;
 	private final RegistryKey<Biome> key;
 	private final Biome biome;
+	private final RegistryEntry<Biome> entry;
 
 	public BiomeSelectionContextImpl(DynamicRegistryManager dynamicRegistries, LevelProperties levelProperties, RegistryKey<Biome> key, Biome biome) {
 		this.dynamicRegistries = dynamicRegistries;
 		this.levelProperties = levelProperties;
 		this.key = key;
 		this.biome = biome;
+		this.entry = dynamicRegistries.get(Registry.BIOME_KEY).getEntry(this.key).orElseThrow();
 	}
 
 	@Override
@@ -55,6 +58,11 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	@Override
 	public Biome getBiome() {
 		return biome;
+	}
+
+	@Override
+	public RegistryEntry<Biome> getBiomeRegistryEntry() {
+		return entry;
 	}
 
 	@Override
@@ -70,24 +78,14 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	}
 
 	@Override
-	public boolean hasStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> key) {
+	public boolean validForStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> key) {
 		ConfiguredStructureFeature<?, ?> instance = dynamicRegistries.get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY).get(key);
 
 		if (instance == null) {
 			return false;
 		}
 
-		// Since the biome->structure mapping is now stored in the chunk generator configuration, we check every
-		// chunk generator used by the current world-save.
-		for (DimensionOptions dimension : levelProperties.getGeneratorOptions().getDimensions()) {
-			StructuresConfig structuresConfig = dimension.getChunkGenerator().getStructuresConfig();
-
-			if (structuresConfig.getConfiguredStructureFeature(instance.feature).get(key).contains(getBiomeKey())) {
-				return true;
-			}
-		}
-
-		return false;
+		return instance.getBiomes().contains(getBiomeRegistryEntry());
 	}
 
 	@Override
@@ -104,6 +102,12 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 			return false;
 		}
 
-		return dimension.getChunkGenerator().getBiomeSource().getBiomes().anyMatch(entry -> entry.value() == biome);
+		return dimension.getChunkGenerator().getBiomeSource().getBiomes().stream().anyMatch(entry -> entry.value() == biome);
+	}
+
+	@Override
+	public boolean hasTag(TagKey<Biome> tag) {
+		Registry<Biome> biomeRegistry = dynamicRegistries.get(Registry.BIOME_KEY);
+		return biomeRegistry.entryOf(getBiomeKey()).isIn(tag);
 	}
 }

@@ -28,7 +28,6 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
 /**
@@ -48,17 +47,6 @@ public final class BiomeModifications {
 	public static void addFeature(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Feature step, RegistryKey<PlacedFeature> placedFeatureRegistryKey) {
 		create(placedFeatureRegistryKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
 			context.getGenerationSettings().addFeature(step, placedFeatureRegistryKey);
-		});
-	}
-
-	/**
-	 * Convenience method to add a structure to one or more biomes.
-	 *
-	 * @see BiomeSelectors
-	 */
-	public static void addStructure(Predicate<BiomeSelectionContext> biomeSelector, RegistryKey<ConfiguredStructureFeature<?, ?>> configuredStructureKey) {
-		create(configuredStructureKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
-			context.getGenerationSettings().addStructure(configuredStructureKey);
 		});
 	}
 

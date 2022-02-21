@@ -60,7 +60,7 @@ public final class NetherBiomeData {
 		if (NETHER_BIOMES.isEmpty()) {
 			MultiNoiseBiomeSource source = MultiNoiseBiomeSource.Preset.NETHER.getBiomeSource(BuiltinRegistries.BIOME);
 
-			for (RegistryEntry<Biome> entry : source.getBiomes().toList()) {
+			for (RegistryEntry<Biome> entry : source.getBiomes()) {
 				BuiltinRegistries.BIOME.getKey(entry.value()).ifPresent(NETHER_BIOMES::add);
 			}
 		}

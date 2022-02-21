@@ -55,7 +55,6 @@ import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.PlacedFeature;
-import net.minecraft.world.gen.feature.StructureFeature;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 
@@ -320,25 +319,6 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			}
 
 			return false;
-		}
-
-		@Override
-		public void addStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> configuredStructureKey) {
-			ConfiguredStructureFeature<?, ?> configuredStructure = structures.getOrThrow(configuredStructureKey);
-
-			BiomeStructureStartsImpl.addStart(registries, configuredStructure, biomeKey);
-		}
-
-		@Override
-		public boolean removeStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> configuredStructureKey) {
-			ConfiguredStructureFeature<?, ?> configuredStructure = structures.getOrThrow(configuredStructureKey);
-
-			return BiomeStructureStartsImpl.removeStart(registries, configuredStructure, biomeKey);
-		}
-
-		@Override
-		public boolean removeStructure(StructureFeature<?> structure) {
-			return BiomeStructureStartsImpl.removeStructureStarts(registries, structure, biomeKey);
 		}
 
 		private <T> RegistryEntryList<T> plus(RegistryEntryList<T> values, RegistryEntry<T> entry) {
