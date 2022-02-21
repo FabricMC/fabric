@@ -12,6 +12,8 @@ accessible  field   net/minecraft/data/server/AbstractTagProvider   tagBuilders 
 
 accessible  field   net/minecraft/data/server/BlockLootTableGenerator   lootTables  Ljava/util/Map;
 
+accessible    class    net/minecraft/tag/Tag$TagEntry
+
 transitive-accessible   method  net/minecraft/data/family/BlockFamilies register    (Lnet/minecraft/block/Block;)Lnet/minecraft/data/family/BlockFamily$Builder;
 
 transitive-accessible    method    net/minecraft/data/client/ItemModelGenerator    register    (Lnet/minecraft/item/Item;Lnet/minecraft/data/client/Model;)V
