@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.datagen",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "AbstractTagProviderMixin",
     "ModelProviderMixin",
     "DynamicRegistryManagerAccessor",
     "TagBuilderMixin"

@@ -27,10 +27,9 @@ import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.data.client.BlockStateModelGenerator;
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
-import net.minecraft.tag.TagKey;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
@@ -40,6 +39,7 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.ItemTags;
+import net.minecraft.tag.TagKey;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
@@ -76,7 +76,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		dataGenerator.addProvider(TestBiomeTagProvider::new);
 
 		try {
-			new FabricTagProvider<>(dataGenerator, BuiltinRegistries.BIOME, "biomes", "Biome Tags") {
+			new FabricTagProvider<>(dataGenerator, BuiltinRegistries.BIOME, "Biome Tags") {
 				@Override
 				protected void generateTags() {
 				}
@@ -147,7 +147,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		protected void generateTags() {
 			getOrCreateTagBuilder(BlockTags.FIRE).add(SIMPLE_BLOCK);
 			getOrCreateTagBuilder(BlockTags.ANVIL).setReplace(true).add(SIMPLE_BLOCK, BLOCK_WITHOUT_ITEM);
-			getOrCreateTagBuilder(BlockTags.ACACIA_LOGS).addTag(BlockTags.ANIMALS_SPAWNABLE_ON);
+			getOrCreateTagBuilder(BlockTags.ACACIA_LOGS).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
 		}
 	}
 
