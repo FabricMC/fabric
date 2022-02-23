@@ -32,9 +32,9 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.class_6904;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.Main;
+import net.minecraft.server.SaveLoader;
 import net.minecraft.server.dedicated.EulaReader;
 import net.minecraft.server.dedicated.ServerPropertiesLoader;
 import net.minecraft.util.UserCache;
@@ -53,7 +53,7 @@ public class MainMixin {
 	}
 
 	@Inject(method = "main", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;startServer(Ljava/util/function/Function;)Lnet/minecraft/server/MinecraftServer;"))
-	private static void main(String[] args, CallbackInfo info, OptionParser optionParser, OptionSpec optionSpec, OptionSpec optionSpec2, OptionSpec optionSpec3, OptionSpec optionSpec4, OptionSpec optionSpec5, OptionSpec optionSpec6, OptionSpec optionSpec7, OptionSpec optionSpec8, OptionSpec optionSpec9, OptionSpec optionSpec10, OptionSpec optionSpec11, OptionSpec optionSpec12, OptionSpec optionSpec13, OptionSpec optionSpec14, OptionSpec optionSpec15, OptionSet optionSet, Path path, ServerPropertiesLoader serverPropertiesLoader, Path path2, EulaReader eulaReader, File file, YggdrasilAuthenticationService yggdrasilAuthenticationService, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, String string, LevelStorage levelStorage, LevelStorage.Session session, LevelSummary levelSummary, boolean bl, ResourcePackManager resourcePackManager, class_6904 lv2, DynamicRegistryManager.Immutable lv3, SaveProperties saveProperties) {
+	private static void main(String[] args, CallbackInfo info, OptionParser optionParser, OptionSpec optionSpec, OptionSpec optionSpec2, OptionSpec optionSpec3, OptionSpec optionSpec4, OptionSpec optionSpec5, OptionSpec optionSpec6, OptionSpec optionSpec7, OptionSpec optionSpec8, OptionSpec optionSpec9, OptionSpec optionSpec10, OptionSpec optionSpec11, OptionSpec optionSpec12, OptionSpec optionSpec13, OptionSpec optionSpec14, OptionSpec optionSpec15, OptionSet optionSet, Path path, ServerPropertiesLoader serverPropertiesLoader, Path path2, EulaReader eulaReader, File file, YggdrasilAuthenticationService yggdrasilAuthenticationService, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, String string, LevelStorage levelStorage, LevelStorage.Session session, LevelSummary levelSummary, boolean bl, ResourcePackManager resourcePackManager, SaveLoader lv2, DynamicRegistryManager.Immutable lv3, SaveProperties saveProperties) {
 		if (FabricGameTestHelper.ENABLED) {
 			FabricGameTestHelper.runHeadlessServer(session, resourcePackManager);
 			info.cancel();  // Do not progress in starting the normal dedicated server

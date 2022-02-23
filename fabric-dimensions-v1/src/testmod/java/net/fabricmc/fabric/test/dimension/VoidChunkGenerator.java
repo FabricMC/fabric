@@ -25,7 +25,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.class_7059;
+import net.minecraft.structure.StructureSet;
 import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -54,7 +54,7 @@ public class VoidChunkGenerator extends ChunkGenerator {
 
 	private final Registry<Biome> biomeRegistry;
 
-	public VoidChunkGenerator(Registry<class_7059> registry, Registry<Biome> biomeRegistry) {
+	public VoidChunkGenerator(Registry<StructureSet> registry, Registry<Biome> biomeRegistry) {
 		super(registry, Optional.empty(), new FixedBiomeSource(biomeRegistry.getOrCreateEntry(BiomeKeys.PLAINS)));
 		this.biomeRegistry = biomeRegistry;
 	}
