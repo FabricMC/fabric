@@ -17,20 +17,20 @@
 package net.fabricmc.fabric.api.util;
 
 import net.minecraft.block.Block;
-import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
 
 public interface Block2ObjectMap<V> {
 	V get(Block block);
 
 	void add(Block block, V value);
 
-	void add(Tag<Block> tag, V value);
+	void add(TagKey<Block> tag, V value);
 
 	void remove(Block block);
 
-	void remove(Tag<Block> tag);
+	void remove(TagKey<Block> tag);
 
 	void clear(Block block);
 
-	void clear(Tag<Block> tag);
+	void clear(TagKey<Block> tag);
 }

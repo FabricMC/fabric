@@ -24,8 +24,10 @@ import java.util.Map;
 import net.minecraft.block.Block;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
-import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -39,7 +41,7 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 	private static int idCounter = 0;
 
 	private final Map<Block, FlammableBlockRegistry.Entry> registeredEntriesBlock = new HashMap<>();
-	private final Map<Tag<Block>, FlammableBlockRegistry.Entry> registeredEntriesTag = new HashMap<>();
+	private final Map<TagKey<Block>, FlammableBlockRegistry.Entry> registeredEntriesTag = new HashMap<>();
 	private final Map<Block, FlammableBlockRegistry.Entry> computedEntries = new HashMap<>();
 	private final Identifier id;
 	private final Block key;
@@ -62,11 +64,11 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 		computedEntries.clear();
 
 		// tags take precedence before blocks
-		for (Tag<Block> tag : registeredEntriesTag.keySet()) {
+		for (TagKey<Block> tag : registeredEntriesTag.keySet()) {
 			FlammableBlockRegistry.Entry entry = registeredEntriesTag.get(tag);
 
-			for (Block block : tag.values()) {
-				computedEntries.put(block, entry);
+			for (RegistryEntry<Block> block : Registry.BLOCK.iterateEntries(tag)) {
+				computedEntries.put(block.value(), entry);
 			}
 		}
 
@@ -108,7 +110,7 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 	}
 
 	@Override
-	public void add(Tag<Block> tag, Entry value) {
+	public void add(TagKey<Block> tag, Entry value) {
 		registeredEntriesTag.put(tag, value);
 
 		if (tagsPresent) {
@@ -122,7 +124,7 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 	}
 
 	@Override
-	public void remove(Tag<Block> tag) {
+	public void remove(TagKey<Block> tag) {
 		add(tag, REMOVED);
 	}
 
@@ -136,7 +138,7 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 	}
 
 	@Override
-	public void clear(Tag<Block> tag) {
+	public void clear(TagKey<Block> tag) {
 		registeredEntriesTag.remove(tag);
 
 		if (tagsPresent) {
