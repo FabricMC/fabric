@@ -1,0 +1,5 @@
+accessWidener	v1	named
+
+accessible    method    net/minecraft/entity/SpawnRestriction    register    (Lnet/minecraft/entity/EntityType;Lnet/minecraft/entity/SpawnRestriction$Location;Lnet/minecraft/world/Heightmap$Type;Lnet/minecraft/entity/SpawnRestriction$SpawnPredicate;)V
+accessible    method    net/minecraft/village/VillagerProfession    register    (Ljava/lang/String;Lnet/minecraft/world/poi/PointOfInterestType;Lnet/minecraft/sound/SoundEvent;)Lnet/minecraft/village/VillagerProfession;
+accessible    method    net/minecraft/village/VillagerProfession    register    (Ljava/lang/String;Lnet/minecraft/world/poi/PointOfInterestType;Lcom/google/common/collect/ImmutableSet;Lcom/google/common/collect/ImmutableSet;Lnet/minecraft/sound/SoundEvent;)Lnet/minecraft/village/VillagerProfession;
