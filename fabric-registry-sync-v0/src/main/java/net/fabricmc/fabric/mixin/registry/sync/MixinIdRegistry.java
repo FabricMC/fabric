@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -31,8 +32,9 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import org.slf4j.LoggerFactory;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -41,6 +43,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -60,18 +63,25 @@ import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
 public abstract class MixinIdRegistry<T> extends Registry<T> implements RemappableRegistry, ListenableRegistry<T> {
 	@Shadow
 	@Final
-	private ObjectList<T> rawIdToEntry;
+	private ObjectList<RegistryEntry.Reference<T>> rawIdToEntry;
 	@Shadow
 	@Final
 	private Object2IntMap<T> entryToRawId;
 	@Shadow
 	@Final
-	private BiMap<Identifier, T> idToEntry;
+	private Map<Identifier, RegistryEntry.Reference<T>> idToEntry;
 	@Shadow
 	@Final
-	private BiMap<RegistryKey<T>, T> keyToEntry;
+	private Map<RegistryKey<T>, RegistryEntry.Reference<T>> keyToEntry;
 	@Shadow
 	private int nextId;
+
+	@Shadow
+	public abstract Optional<RegistryKey<T>> getKey(T entry);
+
+	@Shadow
+	public abstract @Nullable T get(@Nullable Identifier id);
+
 	@Unique
 	private static Logger FABRIC_LOGGER = LoggerFactory.getLogger(MixinIdRegistry.class);
 
@@ -109,7 +119,7 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 	@Unique
 	private Object2IntMap<Identifier> fabric_prevIndexedEntries;
 	@Unique
-	private BiMap<Identifier, T> fabric_prevEntries;
+	private BiMap<Identifier, RegistryEntry.Reference<T>> fabric_prevEntries;
 
 	@Override
 	public Event<RegistryEntryAddedCallback<T>> fabric_getAddObjectEvent() {
@@ -130,7 +140,7 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 	@Unique
 	private boolean fabric_isObjectNew = false;
 
-	@Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Ljava/lang/Object;", at = @At("HEAD"))
+	@Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Lnet/minecraft/util/registry/RegistryEntry;", at = @At("HEAD"))
 	public void setPre(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable<T> info) {
 		int indexedEntriesId = entryToRawId.getInt(object);
 
@@ -141,7 +151,7 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 		if (!idToEntry.containsKey(registryId.getValue())) {
 			fabric_isObjectNew = true;
 		} else {
-			T oldObject = idToEntry.get(registryId.getValue());
+			RegistryEntry.Reference<T> oldObject = idToEntry.get(registryId.getValue());
 
 			if (oldObject != null && oldObject != object) {
 				int oldId = entryToRawId.getInt(oldObject);
@@ -150,7 +160,7 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 					throw new RuntimeException("Attempted to register ID " + registryId + " at different raw IDs (" + oldId + ", " + id + ")! If you're trying to override an item, use .set(), not .register()!");
 				}
 
-				fabric_removeObjectEvent.invoker().onEntryRemoved(oldId, registryId.getValue(), oldObject);
+				fabric_removeObjectEvent.invoker().onEntryRemoved(oldId, registryId.getValue(), oldObject.value());
 				fabric_isObjectNew = true;
 			} else {
 				fabric_isObjectNew = false;
@@ -158,7 +168,7 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 		}
 	}
 
-	@Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Ljava/lang/Object;", at = @At("RETURN"))
+	@Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Lnet/minecraft/util/registry/RegistryEntry;", at = @At("RETURN"))
 	public void setPost(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable<T> info) {
 		if (fabric_isObjectNew) {
 			fabric_addObjectEvent.invoker().onEntryAdded(id, registryId.getValue(), object);
@@ -300,13 +310,17 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 
 		Int2IntMap idMap = new Int2IntOpenHashMap();
 
-		for (T o : rawIdToEntry) {
-			Identifier id = getId(o);
-			int rid = getRawId(o);
+		for (int i = 0; i < rawIdToEntry.size(); i++) {
+			RegistryEntry.Reference<T> reference = rawIdToEntry.get(i);
+
+			// Unused id, skip
+			if (reference == null) continue;
+
+			Identifier id = reference.registryKey().getValue();
 
 			// see above note
 			if (remoteIndexedEntries.containsKey(id)) {
-				idMap.put(rid, remoteIndexedEntries.getInt(id));
+				idMap.put(i, remoteIndexedEntries.getInt(id));
 			}
 		}
 
@@ -320,7 +334,7 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 
 		for (Identifier identifier : orderedRemoteEntries) {
 			int id = remoteIndexedEntries.getInt(identifier);
-			T object = idToEntry.get(identifier);
+			RegistryEntry.Reference<T> object = idToEntry.get(identifier);
 
 			// Warn if an object is missing from the local registry.
 			// This should only happen in AUTHORITATIVE mode, and as such we
@@ -338,7 +352,7 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 			// Add the new object, increment nextId to match.
 			rawIdToEntry.size(Math.max(this.rawIdToEntry.size(), id + 1));
 			rawIdToEntry.set(id, object);
-			entryToRawId.put(object, id);
+			entryToRawId.put(object.value(), id);
 
 			if (nextId <= id) {
 				nextId = id + 1;
@@ -366,7 +380,7 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 
 			idToEntry.putAll(fabric_prevEntries);
 
-			for (Map.Entry<Identifier, T> entry : fabric_prevEntries.entrySet()) {
+			for (Map.Entry<Identifier, RegistryEntry.Reference<T>> entry : fabric_prevEntries.entrySet()) {
 				RegistryKey<T> entryKey = RegistryKey.of(getKey(), entry.getKey());
 				keyToEntry.put(entryKey, entry.getValue());
 			}
@@ -374,7 +388,7 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 			remap(name, fabric_prevIndexedEntries, RemapMode.AUTHORITATIVE);
 
 			for (Identifier id : addedIds) {
-				fabric_getAddObjectEvent().invoker().onEntryAdded(entryToRawId.getInt(idToEntry.get(id)), id, idToEntry.get(id));
+				fabric_getAddObjectEvent().invoker().onEntryAdded(entryToRawId.getInt(idToEntry.get(id)), id, get(id));
 			}
 
 			fabric_prevIndexedEntries = null;

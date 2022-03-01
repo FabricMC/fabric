@@ -18,7 +18,6 @@ package net.fabricmc.fabric.mixin.biome;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import com.mojang.datafixers.util.Pair;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
@@ -40,15 +40,13 @@ import net.fabricmc.fabric.impl.biome.NetherBiomeData;
 public class MixinMultiNoiseBiomeSource {
 	// NOTE: This is a lambda-function in the NETHER preset field initializer
 	@Inject(method = "method_31088", at = @At("RETURN"), cancellable = true)
-	private static void appendNetherBiomes(Registry<Biome> registry, CallbackInfoReturnable<MultiNoiseUtil.Entries<Supplier<Biome>>> cri) {
-		MultiNoiseUtil.Entries<Supplier<Biome>> biomes = cri.getReturnValue();
-		List<Pair<MultiNoiseUtil.NoiseHypercube, Supplier<Biome>>> entries = new ArrayList<>(biomes.getEntries());
+	private static void appendNetherBiomes(Registry<Biome> registry, CallbackInfoReturnable<MultiNoiseUtil.Entries<RegistryEntry<Biome>>> cri) {
+		MultiNoiseUtil.Entries<RegistryEntry<Biome>> biomes = cri.getReturnValue();
+		List<Pair<MultiNoiseUtil.NoiseHypercube, RegistryEntry<Biome>>> entries = new ArrayList<>(biomes.getEntries());
 
 		// add fabric biome noise point data to list && BiomeSource biome list
 		NetherBiomeData.getNetherBiomeNoisePoints().forEach((biomeKey, noisePoint) -> {
-			Biome biome = registry.getOrThrow(biomeKey);
-			// NOTE: Even though we have to pass in suppliers, BiomeSource's ctor will resolve them immediately
-			entries.add(Pair.of(noisePoint, () -> biome));
+			entries.add(Pair.of(noisePoint, registry.entryOf(biomeKey)));
 		});
 
 		cri.setReturnValue(new MultiNoiseUtil.Entries<>(entries));

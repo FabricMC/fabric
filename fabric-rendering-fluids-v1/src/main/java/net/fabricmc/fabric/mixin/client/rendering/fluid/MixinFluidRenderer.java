@@ -61,12 +61,12 @@ public class MixinFluidRenderer {
 	}
 
 	@Inject(at = @At("HEAD"), method = "render", cancellable = true)
-	public void tesselate(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, FluidState state, CallbackInfoReturnable<Boolean> info) {
+	public void tesselate(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, CallbackInfoReturnable<Boolean> info) {
 		if (!fabric_customRendering.get()) {
 			// Prevent recursively looking up custom fluid renderers when default behaviour is being invoked
 			try {
 				fabric_customRendering.set(true);
-				tessellateViaHandler(view, pos, vertexConsumer, state, info);
+				tessellateViaHandler(view, pos, vertexConsumer, blockState, fluidState, info);
 			} finally {
 				fabric_customRendering.set(false);
 			}
@@ -77,30 +77,31 @@ public class MixinFluidRenderer {
 		}
 
 		FluidRendererHookContainer ctr = fabric_renderHandler.get();
-		ctr.getSprites(view, pos, state);
+		ctr.getSprites(view, pos, fluidState);
 	}
 
 	@Unique
-	private void tessellateViaHandler(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, FluidState state, CallbackInfoReturnable<Boolean> info) {
+	private void tessellateViaHandler(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, CallbackInfoReturnable<Boolean> info) {
 		FluidRendererHookContainer ctr = fabric_renderHandler.get();
-		FluidRenderHandler handler = ((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).getOverride(state.getFluid());
+		FluidRenderHandler handler = ((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).getOverride(fluidState.getFluid());
 
 		ctr.view = view;
 		ctr.pos = pos;
-		ctr.state = state;
+		ctr.blockState = blockState;
+		ctr.fluidState = fluidState;
 		ctr.handler = handler;
 
 		if (handler != null) {
-			info.setReturnValue(handler.renderFluid(pos, view, vertexConsumer, state));
+			info.setReturnValue(handler.renderFluid(pos, view, vertexConsumer, blockState, fluidState));
 		}
 	}
 
 	@Inject(at = @At("RETURN"), method = "render")
-	public void tesselateReturn(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, FluidState state, CallbackInfoReturnable<Boolean> info) {
+	public void tesselateReturn(BlockRenderView world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, CallbackInfoReturnable<Boolean> cir) {
 		fabric_renderHandler.get().clear();
 	}
 
-	@ModifyVariable(at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/FluidRenderer.isSameFluid(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Lnet/minecraft/fluid/FluidState;)Z"), method = "render", ordinal = 0)
+	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/block/FluidRenderer;isSameFluid(Lnet/minecraft/fluid/FluidState;Lnet/minecraft/fluid/FluidState;)Z"), method = "render", ordinal = 0)
 	public boolean modLavaCheck(boolean chk) {
 		// First boolean local is set by vanilla according to 'matches lava'
 		// but uses the negation consistent with 'matches water'
@@ -114,7 +115,7 @@ public class MixinFluidRenderer {
 		return !ctr.hasOverlay;
 	}
 
-	@ModifyVariable(at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/FluidRenderer.isSameFluid(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Lnet/minecraft/fluid/FluidState;)Z"), method = "render", ordinal = 0)
+	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/block/FluidRenderer;isSameFluid(Lnet/minecraft/fluid/FluidState;Lnet/minecraft/fluid/FluidState;)Z"), method = "render", ordinal = 0)
 	public Sprite[] modSpriteArray(Sprite[] chk) {
 		FluidRendererHookContainer ctr = fabric_renderHandler.get();
 		return ctr.handler != null ? ctr.sprites : chk;
@@ -130,7 +131,7 @@ public class MixinFluidRenderer {
 	@ModifyVariable(at = @At(value = "CONSTANT", args = "intValue=16", ordinal = 0, shift = At.Shift.BEFORE), method = "render", ordinal = 0)
 	public int modTintColor(int chk) {
 		FluidRendererHookContainer ctr = fabric_renderHandler.get();
-		return ctr.handler != null ? ctr.handler.getFluidColor(ctr.view, ctr.pos, ctr.state) : chk;
+		return ctr.handler != null ? ctr.handler.getFluidColor(ctr.view, ctr.pos, ctr.fluidState) : chk;
 	}
 
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;"), method = "render")

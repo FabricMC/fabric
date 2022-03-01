@@ -21,7 +21,6 @@ import java.util.function.BiPredicate;
 
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeAdditionsSound;
@@ -36,8 +35,7 @@ import net.minecraft.world.biome.BiomeParticleConfig;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.world.gen.feature.PlacedFeature;
 
 import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 
@@ -392,67 +390,6 @@ public interface BiomeModificationContext {
 		 */
 		default boolean removeBuiltInCarver(GenerationStep.Carver step, ConfiguredCarver<?> configuredCarver) {
 			return removeCarver(step, BuiltInRegistryKeys.get(configuredCarver));
-		}
-
-		/**
-		 * Allows a configured structure to start in this biome.
-		 *
-		 * <p>Structures added this way may start in this biome, with respect to the {@link net.minecraft.world.gen.chunk.StructureConfig}
-		 * set in the {@link net.minecraft.world.gen.chunk.ChunkGenerator}, but structure pieces can always generate in chunks adjacent
-		 * to a started structure, regardless of biome.
-		 *
-		 * <p>Configured structures that have the same underlying {@link StructureFeature} as the given structure will be removed before
-		 * adding the new structure, since only one of them could actually generate.
-		 *
-		 * @see net.minecraft.world.biome.GenerationSettings.Builder#feature(GenerationStep.Feature, PlacedFeature)
-		 */
-		void addStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> configuredStructureKey);
-
-		/**
-		 * Allows a configured structure from {@link BuiltinRegistries#CONFIGURED_STRUCTURE_FEATURE} to start in this biome.
-		 *
-		 * <p>This method is intended for use with the configured structures found in {@link net.minecraft.world.gen.feature.ConfiguredStructureFeatures}.
-		 *
-		 * <p><b>NOTE:</b> In case the configured structure is overridden using a datapack, the definition from the datapack
-		 * will be added to the biome.
-		 *
-		 * <p>Structures added this way may start in this biome, with respect to the {@link net.minecraft.world.gen.chunk.StructureConfig}
-		 * set in the {@link net.minecraft.world.gen.chunk.ChunkGenerator}, but structure pieces can always generate in chunks adjacent
-		 * to a started structure, regardless of biome.
-		 *
-		 * <p>Configured structures that have the same underlying {@link StructureFeature} as the given structure will be removed before
-		 * adding the new structure, since only one of them could actually generate.
-		 */
-		default void addBuiltInStructure(ConfiguredStructureFeature<?, ?> configuredStructure) {
-			addStructure(BuiltInRegistryKeys.get(configuredStructure));
-		}
-
-		/**
-		 * Removes a configured structure from the structures that are allowed to start in this biome.
-		 *
-		 * <p>Please see the note on {@link #addStructure(RegistryKey)} about structures pieces still generating
-		 * if adjacent biomes allow the structure to start.
-		 *
-		 * @return True if any structures were removed.
-		 */
-		boolean removeStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> configuredStructureKey);
-
-		/**
-		 * Removes a structure from the structures that are allowed to start in this biome.
-		 *
-		 * <p>This will remove all configured variations of the given structure from this biome.
-		 *
-		 * <p>This can be used with modded structures or Vanilla structures from {@link net.minecraft.world.gen.feature.StructureFeature}.
-		 *
-		 * @return True if any structures were removed.
-		 */
-		boolean removeStructure(StructureFeature<?> structure);
-
-		/**
-		 * {@link #removeStructure(RegistryKey)} for built-in structures (see {@link #addBuiltInStructure(ConfiguredStructureFeature)}).
-		 */
-		default boolean removeBuiltInStructure(ConfiguredStructureFeature<?, ?> configuredStructure) {
-			return removeStructure(BuiltInRegistryKeys.get(configuredStructure));
 		}
 	}
 

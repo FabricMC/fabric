@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.render.fluid.v1;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -78,11 +79,12 @@ public interface FluidRenderHandler {
 	 * @param pos The position in the world, of the fluid to render.
 	 * @param world The world the fluid is in
 	 * @param vertexConsumer The vertex consumer to tessellate the fluid in.
-	 * @param state The fluid state being rendered.
+	 * @param blockState The block state being rendered.
+	 * @param fluidState The fluid state being rendered.
 	 * @return Whether anything is tessellated.
 	 */
-	default boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, FluidState state) {
-		return ((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).renderFluid(pos, world, vertexConsumer, state);
+	default boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+		return ((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).renderFluid(pos, world, vertexConsumer, blockState, fluidState);
 	}
 
 	/**

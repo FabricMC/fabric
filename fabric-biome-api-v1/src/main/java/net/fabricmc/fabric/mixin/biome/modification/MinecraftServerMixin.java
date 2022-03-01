@@ -30,12 +30,12 @@ import net.minecraft.world.level.LevelProperties;
 import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
 
 @Mixin(MinecraftServer.class)
-public class MinecraftServerMixin {
-	@Shadow
-	private DynamicRegistryManager.Impl registryManager;
-
+public abstract class MinecraftServerMixin {
 	@Shadow
 	private SaveProperties saveProperties;
+
+	@Shadow
+	public abstract DynamicRegistryManager.Immutable getRegistryManager();
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
 	private void finalizeWorldGen(CallbackInfo ci) {
@@ -43,6 +43,6 @@ public class MinecraftServerMixin {
 			throw new RuntimeException("Incompatible SaveProperties passed to MinecraftServer: " + saveProperties);
 		}
 
-		BiomeModificationImpl.INSTANCE.finalizeWorldGen(registryManager, levelProperties);
+		BiomeModificationImpl.INSTANCE.finalizeWorldGen(getRegistryManager(), levelProperties);
 	}
 }

@@ -196,19 +196,8 @@ public abstract class MixinWorldRenderer {
 		}
 	}
 
-	@Deprecated(forRemoval = true) // 1.18.1 support
-	@Inject(at = @At(value = "INVOKE", target = "Ljava/lang/Runnable;run()V", shift = At.Shift.AFTER, ordinal = 0), method = "method_3257(Lnet/minecraft/class_4587;Lnet/minecraft/class_1159;FLjava/lang/Runnable;)V", cancellable = true, require = 0, remap = false)
-	private void renderSky(MatrixStack matrices, Matrix4f matrix4f, float tickDelta, Runnable runnable, CallbackInfo info) {
-		fabricRenderSky(info);
-	}
-
-	@Inject(at = @At(value = "INVOKE", target = "Ljava/lang/Runnable;run()V", shift = At.Shift.AFTER, ordinal = 0), method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/math/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", cancellable = true, require = 0)
+	@Inject(at = @At(value = "INVOKE", target = "Ljava/lang/Runnable;run()V", shift = At.Shift.AFTER, ordinal = 0), method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/math/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", cancellable = true)
 	private void renderSky(MatrixStack matrices, Matrix4f matrix4f, float tickDelta, Camera camera, boolean bl, Runnable runnable, CallbackInfo info) {
-		fabricRenderSky(info);
-	}
-
-	@Unique
-	private void fabricRenderSky(CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.SkyRenderer renderer = DimensionRenderingRegistry.getSkyRenderer(world.getRegistryKey());
 

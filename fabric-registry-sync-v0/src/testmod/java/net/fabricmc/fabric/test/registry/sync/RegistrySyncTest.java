@@ -114,6 +114,9 @@ public class RegistrySyncTest implements ModInitializer {
 				System.out.println(id);
 			});
 		});
+
+		// Vanilla status effects don't have an entry for the int id 0, test we can handle this.
+		RegistryAttributeHolder.get(Registry.STATUS_EFFECT).addAttribute(RegistryAttribute.MODDED);
 	}
 
 	private static void registerBlocks(String namespace, int amount, int startingId) {
@@ -136,19 +139,19 @@ public class RegistrySyncTest implements ModInitializer {
 		System.out.println("Checking built-in registry sync...");
 
 		// Register a configured feature before force-loading the dynamic registry manager
-		ConfiguredFeature<DefaultFeatureConfig, ?> cf1 = Feature.BASALT_PILLAR.configure(DefaultFeatureConfig.INSTANCE);
+		ConfiguredFeature<DefaultFeatureConfig, ?> cf1 = new ConfiguredFeature<>(Feature.BASALT_PILLAR, DefaultFeatureConfig.INSTANCE);
 		Identifier f1Id = new Identifier("registry_sync", "f1");
 		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, f1Id, cf1);
 
 		// Force-Initialize the dynamic registry manager, doing this in a Mod initializer would cause
 		// further registrations into BuiltInRegistries to _NOT_ propagate into DynamicRegistryManager.BUILTIN
-		checkFeature(DynamicRegistryManager.create(), f1Id);
+		checkFeature(DynamicRegistryManager.createAndLoad(), f1Id);
 
-		ConfiguredFeature<DefaultFeatureConfig, ?> cf2 = Feature.DESERT_WELL.configure(DefaultFeatureConfig.INSTANCE);
+		ConfiguredFeature<DefaultFeatureConfig, ?> cf2 = new ConfiguredFeature<>(Feature.DESERT_WELL, DefaultFeatureConfig.INSTANCE);
 		Identifier f2Id = new Identifier("registry_sync", "f2");
 		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, f2Id, cf2);
 
-		DynamicRegistryManager.Impl impl2 = DynamicRegistryManager.create();
+		DynamicRegistryManager impl2 = DynamicRegistryManager.createAndLoad();
 		checkFeature(impl2, f1Id);
 		checkFeature(impl2, f2Id);
 	}
@@ -172,7 +175,7 @@ public class RegistrySyncTest implements ModInitializer {
 			throw new IllegalStateException("Expected that the built-in entry and dynamic entry don't have object identity because the dynamic entry is created by serializing the built-in entry to JSON and back.");
 		}
 
-		if (builtInEntry.feature != entry.feature) {
+		if (builtInEntry.feature() != entry.feature()) {
 			throw new IllegalStateException("Expected both entries to reference the same feature since it's only in Registry and is never copied");
 		}
 	}

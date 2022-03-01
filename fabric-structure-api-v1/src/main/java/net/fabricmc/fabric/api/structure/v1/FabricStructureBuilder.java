@@ -20,10 +20,12 @@ import java.util.Objects;
 
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.world.gen.chunk.placement.RandomSpreadStructurePlacement;
+import net.minecraft.world.gen.chunk.placement.SpreadType;
+import net.minecraft.world.gen.chunk.placement.StructurePlacement;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.chunk.StructureConfig;
-import net.minecraft.world.gen.chunk.StructuresConfig;
+import net.minecraft.world.gen.chunk.placement.StructuresConfig;
 import net.minecraft.world.gen.feature.FeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
@@ -52,7 +54,7 @@ public final class FabricStructureBuilder<FC extends FeatureConfig, S extends St
 	private final Identifier id;
 	private final S structure;
 	private GenerationStep.Feature step;
-	private StructureConfig defaultConfig;
+	private StructurePlacement defaultConfig;
 	private boolean generateInSuperflat = false;
 	private boolean adjustsSurface = false;
 
@@ -90,19 +92,19 @@ public final class FabricStructureBuilder<FC extends FeatureConfig, S extends St
 	}
 
 	/**
-	 * Sets the default {@linkplain StructureConfig} for this structure. See the alternative
+	 * Sets the default {@linkplain StructurePlacement} for this structure. See the alternative
 	 * {@linkplain #defaultConfig(int, int, int)} for details.
 	 *
 	 * <p>This is a required option.</p>
 	 */
-	public FabricStructureBuilder<FC, S> defaultConfig(StructureConfig config) {
+	public FabricStructureBuilder<FC, S> defaultConfig(StructurePlacement config) {
 		Objects.requireNonNull(config, "config must not be null");
 		this.defaultConfig = config;
 		return this;
 	}
 
 	/**
-	 * Sets the default {@linkplain StructureConfig} for this structure. This sets the default configuration of where in
+	 * Sets the default {@linkplain StructurePlacement} for this structure. This sets the default configuration of where in
 	 * the world to place structures.
 	 *
 	 * <p>Note: the {@code spacing} and {@code separation} options are subject to other checks for whether the structure
@@ -115,10 +117,10 @@ public final class FabricStructureBuilder<FC extends FeatureConfig, S extends St
 	 * @param separation The minimum distance between 2 structures of this type.
 	 * @param salt       The random salt of the structure. This does not affect how common the structure is, but every
 	 *                   structure must have an unique {@code salt} in order to spawn in different places.
-	 * @see #defaultConfig(StructureConfig)
+	 * @see #defaultConfig(StructurePlacement)
 	 */
 	public FabricStructureBuilder<FC, S> defaultConfig(int spacing, int separation, int salt) {
-		return defaultConfig(new StructureConfig(spacing, separation, salt));
+		return defaultConfig(new RandomSpreadStructurePlacement(spacing, separation, SpreadType.LINEAR, salt));
 	}
 
 	/**
@@ -147,7 +149,7 @@ public final class FabricStructureBuilder<FC extends FeatureConfig, S extends St
 		Objects.requireNonNull(defaultConfig, "Structure \"" + id + "\" is missing a default config");
 
 		// Ensure StructuresConfig class is initialized, so the assertion in its static {} block doesn't fail
-		StructuresConfig.DEFAULT_STRUCTURES.size();
+		StructuresConfig.DEFAULT_PLACEMENTS.size();
 
 		StructureFeatureAccessor.callRegister(id.toString(), structure, step);
 

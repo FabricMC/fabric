@@ -11,8 +11,8 @@
     "MixinIdRegistry",
     "MixinLevelStorageSession",
     "MixinRegistry",
-    "MixinSimpleRegistry",
-    "DynamicRegistryManagerMixin"
+    "MixinMinecraftServer",
+    "MixinSimpleRegistry"
   ],
   "client": [
     "client.MixinBlockColorMap",

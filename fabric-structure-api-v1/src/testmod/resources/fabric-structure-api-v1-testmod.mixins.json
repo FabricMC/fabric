@@ -3,8 +3,7 @@
   "package": "net.fabricmc.fabric.test.structure.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "ChunkSerializerMixin",
-    "MixinConfiguredStructureFeatures"
+    "ChunkSerializerMixin"
   ],
   "client": [
   ],

@@ -26,10 +26,11 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import com.google.common.base.Stopwatch;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import com.google.common.base.Suppliers;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.TestOnly;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -105,20 +106,20 @@ public class BiomeModificationImpl {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	public void finalizeWorldGen(DynamicRegistryManager.Impl impl, LevelProperties levelProperties) {
+	public void finalizeWorldGen(DynamicRegistryManager impl, LevelProperties levelProperties) {
 		Stopwatch sw = Stopwatch.createStarted();
 
 		// Now that we apply biome modifications inside the MinecraftServer constructor, we should only ever do
 		// this once for a dynamic registry manager. Marking the dynamic registry manager as modified ensures a crash
 		// if the precondition is violated.
-		BiomeModificationMarker modificationTracker = (BiomeModificationMarker) (Object) impl;
+		BiomeModificationMarker modificationTracker = (BiomeModificationMarker) impl;
 		modificationTracker.fabric_markModified();
 
 		Registry<Biome> biomes = impl.get(Registry.BIOME_KEY);
 
 		// Build a list of all biome keys in ascending order of their raw-id to get a consistent result in case
 		// someone does something stupid.
-		List<RegistryKey<Biome>> keys = biomes.getEntries().stream()
+		List<RegistryKey<Biome>> keys = biomes.getEntrySet().stream()
 				.map(Map.Entry::getKey)
 				.sorted(Comparator.comparingInt(key -> biomes.getRawId(biomes.getOrThrow(key))))
 				.toList();
@@ -166,7 +167,11 @@ public class BiomeModificationImpl {
 				// The Biome source has a total ordering of feature generation that might have changed
 				// by us adding or removing features from biomes.
 				BiomeSource biomeSource = dimension.getChunkGenerator().getBiomeSource();
-				biomeSource.field_34469 = biomeSource.method_39525(new ArrayList<>(biomeSource.getBiomes()), true);
+
+				// Replace the Supplier to force it to rebuild on next call
+				biomeSource.indexedFeaturesSupplier = Suppliers.memoize(() -> {
+					return biomeSource.method_39525(biomeSource.biomes.stream().distinct().toList(), true);
+				});
 			}
 
 			LOGGER.info("Applied {} biome modifications to {} of {} new biomes in {}", modifiersApplied, biomesChanged,

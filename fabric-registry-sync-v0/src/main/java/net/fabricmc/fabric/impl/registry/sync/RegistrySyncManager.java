@@ -84,7 +84,7 @@ public final class RegistrySyncManager {
 		if (ServerPlayNetworking.canSend(player, DIRECT_PACKET_HANDLER.getPacketId())) {
 			sendPacket(player, DIRECT_PACKET_HANDLER);
 		} else {
-			LOGGER.warn("Player {} can't receive direct packet, using nbt packet instead", player.getEntityName());
+			LOGGER.debug("Player {} can't receive direct packet, using nbt packet instead", player.getEntityName());
 			sendPacket(player, NBT_PACKET_HANDLER);
 		}
 	}

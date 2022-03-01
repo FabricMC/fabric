@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.registry;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
 
 import net.fabricmc.fabric.api.util.Block2ObjectMap;
 import net.fabricmc.fabric.impl.content.registry.FlammableBlockRegistryImpl;
@@ -36,7 +36,7 @@ public interface FlammableBlockRegistry extends Block2ObjectMap<FlammableBlockRe
 		this.add(block, new Entry(burn, spread));
 	}
 
-	default void add(Tag<Block> tag, int burn, int spread) {
+	default void add(TagKey<Block> tag, int burn, int spread) {
 		this.add(tag, new Entry(burn, spread));
 	}
 

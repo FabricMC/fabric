@@ -82,7 +82,7 @@ public final class FabricDataGenHelper {
 	 * Therefore, this simply return true for all {@link Registry#containsId} call.
 	 */
 	@SuppressWarnings("rawtypes")
-	private static final Registry FAKE_DYNAMIC_REGISTRY = new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("fabric:fake_dynamic_registry")), Lifecycle.experimental()) {
+	private static final Registry FAKE_DYNAMIC_REGISTRY = new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("fabric:fake_dynamic_registry")), Lifecycle.experimental(), null) {
 		@Override
 		public boolean containsId(Identifier id) {
 			return true;

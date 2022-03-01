@@ -20,6 +20,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.TransparentBlock;
 import net.minecraft.client.MinecraftClient;
@@ -119,7 +120,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		}
 	}
 
-	public boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, FluidState state) {
-		return fluidRenderer.render(world, pos, vertexConsumer, state);
+	public boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+		return fluidRenderer.render(world, pos, vertexConsumer, blockState, fluidState);
 	}
 }

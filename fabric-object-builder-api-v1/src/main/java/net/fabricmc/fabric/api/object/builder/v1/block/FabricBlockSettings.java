@@ -24,14 +24,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.object.builder.BlockSettingsInternals;
-import net.fabricmc.fabric.impl.object.builder.FabricBlockInternals;
 import net.fabricmc.fabric.mixin.object.builder.AbstractBlockAccessor;
 import net.fabricmc.fabric.mixin.object.builder.AbstractBlockSettingsAccessor;
 
@@ -83,6 +79,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		if (extraData != null) { // If present, populate the extra data on our new settings
 			((BlockSettingsInternals) this).setExtraData(extraData);
 		}
+
 	}
 
 	public static FabricBlockSettings of(Material material) {
@@ -307,38 +304,5 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	public FabricBlockSettings collidable(boolean collidable) {
 		((AbstractBlockSettingsAccessor) this).setCollidable(collidable);
 		return this;
-	}
-
-	/* FABRIC HELPERS */
-
-	/**
-	 * Makes the block breakable by any tool if {@code breakByHand} is set to true.
-	 */
-	public FabricBlockSettings breakByHand(boolean breakByHand) {
-		FabricBlockInternals.computeExtraData(this).breakByHand(breakByHand);
-		return this;
-	}
-
-	/**
-	 * Please make the block require a tool if you plan to disable drops and slow the breaking down using the
-	 * incorrect tool by using {@link FabricBlockSettings#requiresTool()}.
-	 *
-	 * @deprecated Replaced by {@code mineable} tags. See fabric-mining-level-api-v1 for further details.
-	 */
-	@Deprecated(forRemoval = true)
-	public FabricBlockSettings breakByTool(Tag<Item> tag, int miningLevel) {
-		FabricBlockInternals.computeExtraData(this).addMiningLevel(tag, miningLevel);
-		return this;
-	}
-
-	/**
-	 * Please make the block require a tool if you plan to disable drops and slow the breaking down using the
-	 * incorrect tool by using {@link FabricBlockSettings#requiresTool()}.
-	 *
-	 * @deprecated Replaced by {@code mineable} tags. See fabric-mining-level-api-v1 for further details.S
-	 */
-	@Deprecated(forRemoval = true)
-	public FabricBlockSettings breakByTool(Tag<Item> tag) {
-		return this.breakByTool(tag, 0);
 	}
 }
