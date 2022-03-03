@@ -18,7 +18,7 @@ plugins {
 
 def ENV = System.getenv()
 
-version = project.version + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
+version = project.version + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch().replaceAll("_", "-")
 logger.lifecycle("Building Fabric: " + version)
 
 import org.apache.commons.codec.digest.DigestUtils
@@ -340,7 +340,7 @@ curseforge {
 		id = "306612"
 		changelog = ENV.CHANGELOG ?: "No changelog provided"
 		releaseType = project.prerelease == "true" ? "beta" : "release"
-		addGameVersion "1.18.1"
+		addGameVersion "1.19-Snapshot"
 		addGameVersion "Fabric"
 
 		mainArtifact(remapJar) {
