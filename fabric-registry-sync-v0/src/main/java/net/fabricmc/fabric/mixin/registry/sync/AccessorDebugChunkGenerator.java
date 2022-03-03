@@ -28,11 +28,6 @@ import net.minecraft.world.gen.chunk.DebugChunkGenerator;
 @Mixin(DebugChunkGenerator.class)
 public interface AccessorDebugChunkGenerator {
 	@Accessor
-	static List<BlockState> getBLOCK_STATES() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Accessor
 	@Mutable
 	static void setBLOCK_STATES(List<BlockState> blockStates) {
 		throw new UnsupportedOperationException();
