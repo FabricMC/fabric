@@ -45,6 +45,7 @@ class ItemTests {
 		testInventoryWrappers();
 		testLimitedStackCountInventory();
 		testLimitedStackCountItem();
+		testSimpleInventoryUpdates();
 	}
 
 	private static void testStackReference() {
@@ -228,6 +229,44 @@ class ItemTests {
 					transferApiOutput
 			);
 			throw new AssertionError(error);
+		}
+	}
+
+	/**
+	 * Ensure that SimpleInventory only calls markDirty at the end of a successful transaction.
+	 */
+	private static void testSimpleInventoryUpdates() {
+		var simpleInventory = new SimpleInventory(2) {
+			boolean throwOnMarkDirty = true;
+			boolean markDirtyCalled = false;
+
+			@Override
+			public void markDirty() {
+				if (throwOnMarkDirty) {
+					throw new AssertionError("Unexpected markDirty call!");
+				}
+
+				markDirtyCalled = true;
+			}
+		};
+		InventoryStorage wrapper = InventoryStorage.of(simpleInventory, null);
+		ItemVariant diamond = ItemVariant.of(Items.DIAMOND);
+
+		// Simulation should not trigger notifications.
+		try (Transaction tx = Transaction.openOuter()) {
+			wrapper.insert(diamond, 1000, tx);
+		}
+
+		// But commit after modification should.
+		try (Transaction tx = Transaction.openOuter()) {
+			wrapper.insert(diamond, 1000, tx);
+
+			simpleInventory.throwOnMarkDirty = false;
+			tx.commit();
+		}
+
+		if (!simpleInventory.markDirtyCalled) {
+			throw new AssertionError("markDirty should have been called when committing.");
 		}
 	}
 }
