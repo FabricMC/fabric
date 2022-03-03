@@ -28,6 +28,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockInitTracker;
 import net.fabricmc.loader.api.FabricLoader;
 
 @Mixin(MinecraftServer.class)
@@ -41,6 +42,7 @@ public class MixinMinecraftServer {
 			// Freeze the registries on the server
 			FABRIC_LOGGER.debug("Freezing registries");
 			Registry.freezeRegistries();
+			BlockInitTracker.postFreeze();
 		}
 	}
 }
