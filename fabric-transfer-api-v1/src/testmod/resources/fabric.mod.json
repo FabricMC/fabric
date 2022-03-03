@@ -15,6 +15,12 @@
     ],
     "client": [
       "net.fabricmc.fabric.test.transfer.ingame.client.FluidVariantRenderTest"
+    ],
+    "fabric-gametest": [
+      "net.fabricmc.fabric.test.transfer.gametests.VanillaStorageTests"
     ]
-  }
+  },
+  "mixins": [
+    "fabric-transfer-api-v1-testmod.mixins.json"
+  ]
 }
