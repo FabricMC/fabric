@@ -78,7 +78,9 @@ public final class ScreenHandlerRegistry {
 	 * @param factory the client-sided screen handler factory
 	 * @param <T>     the screen handler type
 	 * @return the created type object
+	 * @deprecated Replaced by access widener for {@link ScreenHandlerType#ScreenHandlerType(ScreenHandlerType.Factory)} in Fabric Transitive Access Wideners (v1).
 	 */
+	@Deprecated
 	public static <T extends ScreenHandler> ScreenHandlerType<T> registerSimple(Identifier id, SimpleClientHandlerFactory<T> factory) {
 		// Wrap our factory in vanilla's factory; it will not be public for users.
 		// noinspection Convert2MethodRef - Must be a lambda or else dedicated server will crash
@@ -106,7 +108,9 @@ public final class ScreenHandlerRegistry {
 	 * A factory for client-sided screen handler instances.
 	 *
 	 * @param <T> the screen handler type
+	 * @deprecated Replaced by access widener for {@link ScreenHandlerType.Factory} in Fabric Transitive Access Wideners (v1).
 	 */
+	@Deprecated
 	public interface SimpleClientHandlerFactory<T extends ScreenHandler> {
 		/**
 		 * Creates a new client-sided screen handler.
