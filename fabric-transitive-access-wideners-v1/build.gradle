@@ -38,6 +38,12 @@ def generateBlockConstructors(List<String> lines, FileSystem fs) {
 		.filter { (it.access & Opcodes.ACC_ABSTRACT) == 0 }
 		.forEach { node ->
 			for (def method : node.methods) {
+				// Checklist for finding block constructors as of 1.18.2:
+				//  - class directly in net.minecraft.block (excluding subpackages)
+				//  - method name == <init> (by definition)
+				//  - contains an AbstractBlock$Settings parameter
+				//  - only taking into account non-abstract classes and non-public constructors
+
 				// Block constructor...
 				if (method.name == "<init>" && Type.getArgumentTypes(method.desc).any { it.internalName == 'net/minecraft/block/AbstractBlock$Settings' }) {
 					// ...and non-public
