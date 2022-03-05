@@ -45,19 +45,19 @@ public interface OpaqueFluid {
 	 * @param fogType      Type of the fog (SKY or TERRAIN).
 	 * @param viewDistance View distance of the player in blocks.
 	 * @param thickFog     Specifies if the fog is thick.
-	 * @return A float indicating the start range of the fluid fog from the player camera, in blocks.
+	 * @return A float indicating the start distance of the fluid fog from the player camera, in blocks.
 	 */
 	float getFabricFogStart(Entity player, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
 
 	/**
 	 * <p>Gets the distance in blocks, from the player camera position, in which the fog is totally opaque.</p>
-	 * <p>If the end range is less than the start range, it will be ignored.</p>
+	 * <p>If the end distance is less than the start distance, it will be ignored.</p>
 	 *
 	 * @param player       Player submerged by the fluid.
 	 * @param fogType      Type of the fog (SKY or TERRAIN).
 	 * @param viewDistance View distance of the player in blocks.
 	 * @param thickFog     Specifies if the fog is thick.
-	 * @return A float indicating the end range of the fluid fog from the player camera, in blocks.
+	 * @return A float indicating the end distance of the fluid fog from the player camera, in blocks.
 	 */
 	float getFabricFogEnd(Entity player, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
 
