@@ -7,13 +7,15 @@
     "AccessorLevelStorageSession",
     "AccessorRegistry",
     "MixinBootstrap",
+    "MixinChunkSerializer",
     "MixinDynamicRegistryManager",
     "MixinIdList",
     "MixinIdRegistry",
     "MixinLevelStorageSession",
     "MixinRegistry",
     "MixinMinecraftServer",
-    "MixinSimpleRegistry"
+    "MixinSimpleRegistry",
+    "MixinStructuresToConfiguredStructuresFix"
   ],
   "client": [
     "client.MixinBlockColorMap",
