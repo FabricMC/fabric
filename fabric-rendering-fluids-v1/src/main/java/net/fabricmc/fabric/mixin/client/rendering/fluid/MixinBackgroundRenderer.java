@@ -80,8 +80,10 @@ public abstract class MixinBackgroundRenderer {
 			Entity entity = camera.getFocusedEntity();
 
 			//Sets the fog start, end, and shape, after getting them from the fluid that submerges the camera
-			RenderSystem.setShaderFogStart(fluid.getFabricFogStart(entity, fogType, viewDistance, thickFog));
-			RenderSystem.setShaderFogEnd(fluid.getFabricFogEnd(entity, fogType, viewDistance, thickFog));
+			float start = fluid.getFabricFogStart(entity, fogType, viewDistance, thickFog);
+			float end = fluid.getFabricFogEnd(entity, fogType, viewDistance, thickFog);
+			RenderSystem.setShaderFogStart(start);
+			RenderSystem.setShaderFogEnd(Math.max(end, start));
 			RenderSystem.setShaderFogShape(fluid.getFabricFogShape(entity, fogType, viewDistance, thickFog));
 
 			ci.cancel();

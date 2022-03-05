@@ -24,13 +24,16 @@ import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 /**
  * Implements the registration for fluid textures.
  */
-public interface FluidTextureRegistry {
+public final class FluidTextureRegistry {
+	private FluidTextureRegistry() {
+	}
+
 	/**
 	 * Registers the fluid textures.
 	 *
 	 * @param textures Textures to register.
 	 */
-	static void register(Identifier... textures) {
+	public static void register(Identifier... textures) {
 		ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
 			for (Identifier texture : textures) {
 				registry.register(texture);

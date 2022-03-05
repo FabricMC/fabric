@@ -28,45 +28,47 @@ public interface OpaqueFluid {
 	/**
 	 * Gets the color of the fluid fog.
 	 *
-	 * @param entity    Entity submerged by the fluid.
+	 * @param player    Player submerged by the fluid.
 	 * @param tickDelta Time passed from the last tick.
 	 * @param world     The current client-side world.
 	 * @return <p>An int value indicating the color of the fluid fog.</p>
 	 * <p>If the color is -1 no fog will be rendered.</p>
 	 * <p>(It could be a hexadecimal value like 0xFFFFFF).</p>
 	 */
-	int getFabricFogColor(Entity entity, float tickDelta, ClientWorld world);
+	int getFabricFogColor(Entity player, float tickDelta, ClientWorld world);
 
 	/**
-	 * Gets the start point of the fluid fog.
+	 * <p>Gets the distance in blocks, from the player camera position, in which the fog starts rendering.</p>
+	 * <p>This could be negative, in this case the fog starts partially opaque.</p>
 	 *
-	 * @param entity       Entity submerged by the fluid.
+	 * @param player       Player submerged by the fluid.
 	 * @param fogType      Type of the fog (SKY or TERRAIN).
-	 * @param viewDistance View distance of the entity.
+	 * @param viewDistance View distance of the player in blocks.
 	 * @param thickFog     Specifies if the fog is thick.
-	 * @return A float indicating the start point of the fluid fog from the entity.
+	 * @return A float indicating the start range of the fluid fog from the player camera, in blocks.
 	 */
-	float getFabricFogStart(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
+	float getFabricFogStart(Entity player, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
 
 	/**
-	 * Gets the end point of the fluid fog.
+	 * <p>Gets the distance in blocks, from the player camera position, in which the fog is totally opaque.</p>
+	 * <p>If the end range is less than the start range, it will be ignored.</p>
 	 *
-	 * @param entity       Entity submerged by the fluid.
+	 * @param player       Player submerged by the fluid.
 	 * @param fogType      Type of the fog (SKY or TERRAIN).
-	 * @param viewDistance View distance of the entity.
+	 * @param viewDistance View distance of the player in blocks.
 	 * @param thickFog     Specifies if the fog is thick.
-	 * @return A float indicating the end point of the fluid fog from the entity.
+	 * @return A float indicating the end range of the fluid fog from the player camera, in blocks.
 	 */
-	float getFabricFogEnd(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
+	float getFabricFogEnd(Entity player, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
 
 	/**
 	 * Gets the shape of the fluid fog.
 	 *
-	 * @param entity       Entity submerged by the fluid.
+	 * @param player       Player submerged by the fluid.
 	 * @param fogType      Type of the fog (SKY or TERRAIN).
-	 * @param viewDistance View distance of the entity.
+	 * @param viewDistance View distance of the player in blocks.
 	 * @param thickFog     Specifies if the fog is thick.
 	 * @return An enum value indicating the shape of the fluid fog: CYLINDER or SPHERE.
 	 */
-	FogShape getFabricFogShape(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
+	FogShape getFabricFogShape(Entity player, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
 }
