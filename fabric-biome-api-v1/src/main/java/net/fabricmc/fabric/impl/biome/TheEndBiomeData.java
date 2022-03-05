@@ -114,7 +114,7 @@ public final class TheEndBiomeData {
 		private Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> resolveOverrides(Registry<Biome> biomeRegistry, Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> overrides) {
 			var result = new IdentityHashMap<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>>(overrides.size());
 
-			for (var entry : overrides.entrySet()) {
+			for (Map.Entry<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> entry : overrides.entrySet()) {
 				result.put(biomeRegistry.entryOf(entry.getKey()), entry.getValue().map(biomeRegistry::entryOf));
 			}
 
@@ -128,19 +128,19 @@ public final class TheEndBiomeData {
 			// seems to make custom biomes too hard to find.
 			if (vanillaBiome == endMidlands || vanillaBiome == endBarrens) {
 				// Since the highlands picker is statically populated by InternalBiomeData, picker will never be null.
-				var highlandsPicker = endBiomesMap.get(endHighlands);
+				WeightedPicker<RegistryEntry<Biome>> highlandsPicker = endBiomesMap.get(endHighlands);
 				RegistryEntry<Biome> highlandsKey = highlandsPicker.pickFromNoise(sampler, x / 64.0, 0, z / 64.0);
 
 				if (vanillaBiome == endMidlands) {
-					var midlandsPicker = endMidlandsMap.get(highlandsKey);
+					WeightedPicker<RegistryEntry<Biome>> midlandsPicker = endMidlandsMap.get(highlandsKey);
 					replacementKey = (midlandsPicker == null) ? vanillaBiome : midlandsPicker.pickFromNoise(sampler, x / 64.0, 0, z / 64.0);
 				} else {
-					var barrensPicker = endBarrensMap.get(highlandsKey);
+					WeightedPicker<RegistryEntry<Biome>> barrensPicker = endBarrensMap.get(highlandsKey);
 					replacementKey = (barrensPicker == null) ? vanillaBiome : barrensPicker.pickFromNoise(sampler, x / 64.0, 0, z / 64.0);
 				}
 			} else {
 				// Since the main island and small islands pickers are statically populated by InternalBiomeData, picker will never be null.
-				var picker = endBiomesMap.get(vanillaBiome);
+				WeightedPicker<RegistryEntry<Biome>> picker = endBiomesMap.get(vanillaBiome);
 				replacementKey = picker.pickFromNoise(sampler, x / 64.0, 0, z / 64.0);
 			}
 

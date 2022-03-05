@@ -226,7 +226,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @return this builder for chaining
 	 */
 	public FabricEntityTypeBuilder<T> trackRangeBlocks(int range) {
-		return trackRangeChunks(range + 15 / 16);
+		return trackRangeChunks((range + 15) / 16);
 	}
 
 	public FabricEntityTypeBuilder<T> trackedUpdateRate(int rate) {

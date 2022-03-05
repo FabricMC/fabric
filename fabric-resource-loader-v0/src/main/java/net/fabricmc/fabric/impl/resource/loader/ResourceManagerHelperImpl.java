@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.impl.resource.loader;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,8 +28,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.google.common.collect.Lists;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackSource;
@@ -69,30 +67,18 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
 	 */
 	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, ResourcePackActivationType activationType) {
-		String separator = container.getRootPath().getFileSystem().getSeparator();
-		subPath = subPath.replace("/", separator);
+		String name = id.getNamespace() + "/" + id.getPath();
+		ModNioResourcePack resourcePack = ModNioResourcePack.create(name, container, subPath, ResourceType.CLIENT_RESOURCES, activationType);
+		ModNioResourcePack dataPack = ModNioResourcePack.create(name, container, subPath, ResourceType.SERVER_DATA, activationType);
+		if (resourcePack == null && dataPack == null) return false;
 
-		Path resourcePackPath = container.getRootPath().resolve(subPath).toAbsolutePath().normalize();
-
-		if (!Files.exists(resourcePackPath)) {
-			return false;
+		if (resourcePack != null) {
+			builtinResourcePacks.add(new Pair<>(name, resourcePack));
 		}
 
-		String name = id.getNamespace() + "/" + id.getPath();
-
-		builtinResourcePacks.add(new Pair<>(name, new ModNioResourcePack(container.getMetadata(), resourcePackPath, ResourceType.CLIENT_RESOURCES, null, activationType) {
-			@Override
-			public String getName() {
-				return name; // Built-in resource pack provided by a mod, the name is overriden.
-			}
-		}));
-
-		builtinResourcePacks.add(new Pair<>(name, new ModNioResourcePack(container.getMetadata(), resourcePackPath, ResourceType.SERVER_DATA, null, activationType) {
-			@Override
-			public String getName() {
-				return name; // Built-in resource pack provided by a mod, the name is overriden.
-			}
-		}));
+		if (dataPack != null) {
+			builtinResourcePacks.add(new Pair<>(name, dataPack));
+		}
 
 		return true;
 	}
