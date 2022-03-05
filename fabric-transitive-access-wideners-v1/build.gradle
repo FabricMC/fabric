@@ -53,7 +53,7 @@ ClassNode loadClass(Path path) {
 	def node = new ClassNode()
 
 	try (def is = Files.newInputStream(path)) {
-		new ClassReader(is).accept(node, 0)
+		new ClassReader(is).accept(node, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES)
 	}
 
 	return node
