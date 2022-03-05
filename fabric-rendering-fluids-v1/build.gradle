@@ -7,5 +7,8 @@ moduleDependencies(project, [
 ])
 
 dependencies {
+	testmodImplementation project(path: ':fabric-item-api-v1', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-object-builder-api-v1', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-rendering-v1', configuration: 'namedElements')
 	testmodImplementation project(path: ':fabric-textures-v0', configuration: 'namedElements')
 }

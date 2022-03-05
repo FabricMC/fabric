@@ -26,7 +26,6 @@ import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
@@ -52,7 +51,7 @@ public abstract class UnregisteredFluid extends FlowableFluid {
 
 	@Override
 	public Item getBucketItem() {
-		return Items.WATER_BUCKET;
+		return TestFluids.UNREGISTERED_BUCKET;
 	}
 
 	@Override

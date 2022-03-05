@@ -17,13 +17,13 @@
 package net.fabricmc.fabric.test.client.rendering.fluid;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidTextureRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 
 public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 	@Override
@@ -39,9 +39,10 @@ public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.SPRUCE_DOOR, true);
 		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.WARPED_DOOR, true);
 
-		// Red stained glass will have falling fluid textures to the side
+		// Red stained-glass will have falling fluid textures to the side
 		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.RED_STAINED_GLASS, false);
 
+		// Registers the render handlers
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.NO_OVERLAY, TestFluids.NO_OVERLAY_FLOWING, new SimpleFluidRenderHandler(
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"),
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"),
@@ -59,10 +60,15 @@ public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay")
 		));
 
-		ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
-			registry.register(new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"));
-			registry.register(new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"));
-			registry.register(new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay"));
-		});
+		// Registers the textures
+		FluidTextureRegistry.register(
+				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"),
+				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"),
+				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay")
+		);
+
+		// Bucket items
+		ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 1 ? 0x5555FF : -1, TestFluids.OVERLAY_BUCKET);
+		ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 1 ? 0xFF5555 : -1, TestFluids.NO_OVERLAY_BUCKET);
 	}
 }
