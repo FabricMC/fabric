@@ -20,10 +20,16 @@ import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.FogShape;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.fluid.FlowableFluid;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 /**
- * Defines a non-transparent fluid with a fog.
+ * <p>Defines a non-transparent fluid with a fog.</p>
+ * <p>This interface must be implemented in each {@link FlowableFluid} class you want to specify fog parameters.</p>
  */
+@Environment(EnvType.CLIENT)
 public interface OpaqueFluid {
 	/**
 	 * Gets the color of the fluid fog.
@@ -35,6 +41,7 @@ public interface OpaqueFluid {
 	 * <p>If the color is -1 no fog will be rendered.</p>
 	 * <p>(It could be a hexadecimal value like 0xFFFFFF).</p>
 	 */
+	@Environment(EnvType.CLIENT)
 	int getFabricFogColor(Entity player, float tickDelta, ClientWorld world);
 
 	/**
@@ -47,6 +54,7 @@ public interface OpaqueFluid {
 	 * @param thickFog     Specifies if the fog is thick.
 	 * @return A float indicating the start distance of the fluid fog from the player camera, in blocks.
 	 */
+	@Environment(EnvType.CLIENT)
 	float getFabricFogStart(Entity player, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
 
 	/**
@@ -59,6 +67,7 @@ public interface OpaqueFluid {
 	 * @param thickFog     Specifies if the fog is thick.
 	 * @return A float indicating the end distance of the fluid fog from the player camera, in blocks.
 	 */
+	@Environment(EnvType.CLIENT)
 	float getFabricFogEnd(Entity player, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
 
 	/**
@@ -70,5 +79,6 @@ public interface OpaqueFluid {
 	 * @param thickFog     Specifies if the fog is thick.
 	 * @return An enum value indicating the shape of the fluid fog: CYLINDER or SPHERE.
 	 */
+	@Environment(EnvType.CLIENT)
 	FogShape getFabricFogShape(Entity player, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
 }
