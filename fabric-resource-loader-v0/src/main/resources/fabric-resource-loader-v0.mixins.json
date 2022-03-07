@@ -11,8 +11,7 @@
     "NamespaceResourceManagerMixin",
     "ReloadableResourceManagerImplMixin",
     "ResourcePackManagerMixin",
-    "ResourcePackManagerAccessor",
-    "ResourcePackProfileAccessor"
+    "ResourcePackManagerAccessor"
   ],
   "client": [
     "client.ClientBuiltinResourcePackProviderMixin",

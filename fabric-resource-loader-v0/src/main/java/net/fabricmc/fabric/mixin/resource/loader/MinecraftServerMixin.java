@@ -25,9 +25,9 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.server.MinecraftServer;
 
+import net.fabricmc.fabric.impl.resource.loader.BuiltinModResourcePackSource;
 import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 
 @Mixin(MinecraftServer.class)
@@ -43,10 +43,10 @@ public class MinecraftServerMixin {
 
 		ResourcePackProfile profile = resourcePackManager.getProfile(profileName);
 
-		if (((ResourcePackProfileAccessor) profile).getResourcePackSource() == ResourcePackSource.PACK_SOURCE_BUILTIN && !profileName.equals("vanilla")) {
+		if (profile.getSource() instanceof BuiltinModResourcePackSource) {
 			ResourcePack pack = profile.createResourcePack();
 			// Prevents automatic load for built-in data packs provided by mods.
-			return pack instanceof ModNioResourcePack && !((ModNioResourcePack) pack).getActivationType().isEnabledByDefault();
+			return pack instanceof ModNioResourcePack modPack && !modPack.getActivationType().isEnabledByDefault();
 		}
 
 		return false;
