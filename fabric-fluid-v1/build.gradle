@@ -1,0 +1,6 @@
+archivesBaseName = "fabric-fluid-v1"
+version = getSubprojectVersion(project)
+
+moduleDependencies(project, [
+		'fabric-api-base'
+])

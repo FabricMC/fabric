@@ -26,7 +26,6 @@ import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.FogShape;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
@@ -39,9 +38,9 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 
-import net.fabricmc.fabric.api.client.render.fluid.v1.OpaqueFluid;
+import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 
-public abstract class NoOverlayFluid extends FlowableFluid implements OpaqueFluid {
+public abstract class NoOverlayFluid extends FabricFlowableFluid {
 	public NoOverlayFluid() {
 	}
 
@@ -109,6 +108,11 @@ public abstract class NoOverlayFluid extends FlowableFluid implements OpaqueFlui
 	@Override
 	public Optional<SoundEvent> getBucketFillSound() {
 		return Optional.of(SoundEvents.ITEM_BUCKET_FILL);
+	}
+
+	@Override
+	public Optional<SoundEvent> getFabricBucketEmptySound() {
+		return Optional.of(SoundEvents.ITEM_BUCKET_EMPTY_LAVA);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
 		'fabric-api-base',
+		'fabric-fluid-v1',
 		'fabric-textures-v0'
 ])
 

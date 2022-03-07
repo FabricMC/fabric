@@ -31,7 +31,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FluidState;
 
-import net.fabricmc.fabric.api.client.render.fluid.v1.OpaqueFluid;
+import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 
 @Mixin(BackgroundRenderer.class)
 public abstract class MixinBackgroundRenderer {
@@ -54,7 +54,7 @@ public abstract class MixinBackgroundRenderer {
 	private static void render(@NotNull Camera camera, float tickDelta, ClientWorld world, int i, float f, CallbackInfo ci) {
 		FluidState fluidState = ((CameraAccessor) camera).getArea().getFluidState(camera.getBlockPos());
 
-		if (fluidState.getFluid() instanceof OpaqueFluid fluid) {
+		if (fluidState.getFluid() instanceof FabricFlowableFluid fluid) {
 			//Gets the fog color from the fluid that submerges the camera
 			fogColor = fluid.getFabricFogColor(camera.getFocusedEntity(), tickDelta, world);
 
@@ -76,7 +76,7 @@ public abstract class MixinBackgroundRenderer {
 	private static void applyFog(@NotNull Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci) {
 		FluidState fluidState = ((CameraAccessor) camera).getArea().getFluidState(camera.getBlockPos());
 
-		if (fluidState.getFluid() instanceof OpaqueFluid fluid && fogColor != -1) {
+		if (fluidState.getFluid() instanceof FabricFlowableFluid fluid && fogColor != -1) {
 			Entity entity = camera.getFocusedEntity();
 
 			//Sets the fog start, end, and shape, after getting them from the fluid that submerges the camera

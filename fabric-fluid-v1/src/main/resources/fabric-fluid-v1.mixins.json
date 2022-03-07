@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.fluid",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "MixinBucketItem"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

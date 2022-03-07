@@ -17,13 +17,14 @@
 package net.fabricmc.fabric.test.client.rendering.fluid;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidTextureRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 
 public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 	@Override
@@ -61,11 +62,11 @@ public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 		));
 
 		// Registers the textures
-		FluidTextureRegistry.register(
-				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"),
-				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"),
-				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay")
-		);
+		ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
+			registry.register(new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"));
+			registry.register(new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"));
+			registry.register(new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay"));
+		});
 
 		// Bucket items
 		ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 1 ? 0x5555FF : -1, TestFluids.OVERLAY_BUCKET);
