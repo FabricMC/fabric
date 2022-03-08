@@ -1,7 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "fabric-rendering-fluids-v1-testmod:item/bucket",
-    "layer1": "fabric-rendering-fluids-v1-testmod:item/bucket_overlay"
-  }
-}

@@ -19,11 +19,7 @@ package net.fabricmc.fabric.test.client.rendering.fluid;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidBlock;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.Items;
 import net.minecraft.util.registry.Registry;
-
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 
 public class TestFluids {
 	public static final NoOverlayFluid NO_OVERLAY = Registry.register(Registry.FLUID, "fabric-rendering-fluids-v1-testmod:no_overlay", new NoOverlayFluid.Still());
@@ -49,18 +45,4 @@ public class TestFluids {
 
 	public static final FluidBlock CUSTOM_BLOCK = Registry.register(Registry.BLOCK, "fabric-rendering-fluids-v1-testmod:custom", new FluidBlock(CUSTOM, AbstractBlock.Settings.copy(Blocks.WATER)) {
 	});
-
-	// Bucket items
-
-	public static final BucketItem UNREGISTERED_BUCKET = Registry.register(Registry.ITEM, "fabric-rendering-fluids-v1-testmod:unregistered_bucket",
-			new BucketItem(UNREGISTERED, new FabricItemSettings().recipeRemainder(Items.BUCKET)));
-
-	public static final BucketItem OVERLAY_BUCKET = Registry.register(Registry.ITEM, "fabric-rendering-fluids-v1-testmod:overlay_bucket",
-			new BucketItem(OVERLAY, new FabricItemSettings().recipeRemainder(Items.BUCKET)));
-
-	public static final BucketItem NO_OVERLAY_BUCKET = Registry.register(Registry.ITEM, "fabric-rendering-fluids-v1-testmod:no_overlay_bucket",
-			new BucketItem(NO_OVERLAY, new FabricItemSettings().recipeRemainder(Items.BUCKET)));
-
-	public static final BucketItem CUSTOM_BUCKET = Registry.register(Registry.ITEM, "fabric-rendering-fluids-v1-testmod:custom_bucket",
-			new BucketItem(CUSTOM, new FabricItemSettings().recipeRemainder(Items.BUCKET)));
 }

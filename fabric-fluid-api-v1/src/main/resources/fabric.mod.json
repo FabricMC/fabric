@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-fluid-v1",
-  "name": "Fabric Fluid (v1)",
+  "id": "fabric-fluid-api-v1",
+  "name": "Fabric Fluid API (v1)",
   "version": "${version}",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-fluid-v1/icon.png",
+  "icon": "assets/fabric-fluid-api-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -23,9 +23,12 @@
   },
   "description": "Extended fluid configuration.",
   "mixins": [
-    "fabric-fluid-v1.mixins.json"
+    "fabric-fluid-api-v1.mixins.json"
   ],
   "custom": {
+    "loom:injected_interfaces": {
+      "net/minecraft/class_3609": ["net/fabricmc/fabric/api/fluid/v1/FabricFlowableFluid"]
+    },
     "fabric-api:module-lifecycle": "stable"
   }
 }

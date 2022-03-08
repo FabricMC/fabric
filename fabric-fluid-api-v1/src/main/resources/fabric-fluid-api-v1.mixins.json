@@ -3,7 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.fluid",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "MixinBucketItem"
+    "MixinBucketItem",
+    "MixinFlowableFluid"
   ],
   "injectors": {
     "defaultRequire": 1

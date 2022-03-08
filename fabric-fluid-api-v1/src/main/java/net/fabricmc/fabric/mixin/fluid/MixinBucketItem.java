@@ -16,25 +16,16 @@
 
 package net.fabricmc.fabric.mixin.fluid;
 
-import java.util.Optional;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.event.GameEvent;
-
-import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
 
 @Mixin(BucketItem.class)
 public class MixinBucketItem {
@@ -42,17 +33,10 @@ public class MixinBucketItem {
 	@Final
 	private Fluid fluid;
 
-	@Inject(method = "playEmptyingSound", at = @At("HEAD"), cancellable = true)
-	private void playEmptyingSound(PlayerEntity player, WorldAccess world, BlockPos pos, CallbackInfo ci) {
-		if (fluid instanceof FabricFlowableFluid fabricFlowableFluid) {
-			Optional<SoundEvent> emptySound = fabricFlowableFluid.getFabricBucketEmptySound();
-
-			if (emptySound.isPresent()) {
-				world.playSound(player, pos, emptySound.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
-				world.emitGameEvent(player, GameEvent.FLUID_PLACE, pos);
-			}
-
-			ci.cancel();
-		}
+	@ModifyArg(method = "playEmptyingSound", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldAccess;playSound(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FF)V"), index = 2)
+	private SoundEvent modSoundEvent(SoundEvent value) {
+		//Returns the specified value if is present, otherwise does nothing.
+		//Lava and water, not overriding this function, maintain their default behaviour.
+		return ((FlowableFluid) fluid).getFabricBucketEmptySound().orElse(value);
 	}
 }

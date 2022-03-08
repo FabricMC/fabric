@@ -22,13 +22,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.render.BackgroundRenderer;
-import net.minecraft.client.render.FogShape;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
+import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
@@ -38,9 +36,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 
-import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
-
-public abstract class OverlayFluid extends FabricFlowableFluid {
+public abstract class OverlayFluid extends FlowableFluid {
 	public OverlayFluid() {
 	}
 
@@ -56,7 +52,7 @@ public abstract class OverlayFluid extends FabricFlowableFluid {
 
 	@Override
 	public Item getBucketItem() {
-		return TestFluids.OVERLAY_BUCKET;
+		return Items.WATER_BUCKET;
 	}
 
 	@Override
@@ -108,31 +104,6 @@ public abstract class OverlayFluid extends FabricFlowableFluid {
 	@Override
 	public Optional<SoundEvent> getBucketFillSound() {
 		return Optional.of(SoundEvents.ITEM_BUCKET_FILL);
-	}
-
-	@Override
-	public Optional<SoundEvent> getFabricBucketEmptySound() {
-		return Optional.of(SoundEvents.ITEM_BUCKET_EMPTY_LAVA);
-	}
-
-	@Override
-	public int getFabricFogColor(Entity entity, float tickDelta, ClientWorld world) {
-		return 0x5555FF;
-	}
-
-	@Override
-	public float getFabricFogStart(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
-		return 0f;
-	}
-
-	@Override
-	public float getFabricFogEnd(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
-		return 1f;
-	}
-
-	@Override
-	public FogShape getFabricFogShape(Entity entity, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
-		return FogShape.CYLINDER;
 	}
 
 	public static class Flowing extends OverlayFluid {

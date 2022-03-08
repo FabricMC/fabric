@@ -28,10 +28,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FluidState;
 
-import net.fabricmc.fabric.api.fluid.v1.FabricFlowableFluid;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidFogSettings;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 
 @Mixin(BackgroundRenderer.class)
 public abstract class MixinBackgroundRenderer {
@@ -53,21 +54,26 @@ public abstract class MixinBackgroundRenderer {
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	private static void render(@NotNull Camera camera, float tickDelta, ClientWorld world, int i, float f, CallbackInfo ci) {
 		FluidState fluidState = ((CameraAccessor) camera).getArea().getFluidState(camera.getBlockPos());
+		FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluidState.getFluid());
 
-		if (fluidState.getFluid() instanceof FabricFlowableFluid fluid) {
-			//Gets the fog color from the fluid that submerges the camera
-			fogColor = fluid.getFabricFogColor(camera.getFocusedEntity(), tickDelta, world);
+		if (handler != null) {
+			FluidFogSettings fogSettings = handler.getFogSettings(camera.getBlockPos(), fluidState);
 
-			if (fogColor != -1) {
-				red = (fogColor >> 16 & 255) / 255f;
-				green = (fogColor >> 8 & 255) / 255f;
-				blue = (fogColor & 255) / 255f;
-				lastWaterFogColorUpdateTime = -1L;
+			if (fogSettings != null) {
+				//Gets the fog color of the fluid that submerges the camera
+				fogColor = fogSettings.getFogColor(camera, tickDelta, world);
 
-				//Sets the fog color if the current entity is submerged by an opaque fluid
-				RenderSystem.clearColor(red, green, blue, 0.0f);
+				if (fogColor != -1) {
+					red = (fogColor >> 16 & 255) / 255f;
+					green = (fogColor >> 8 & 255) / 255f;
+					blue = (fogColor & 255) / 255f;
+					lastWaterFogColorUpdateTime = -1L;
 
-				ci.cancel();
+					//Sets the fog color
+					RenderSystem.clearColor(red, green, blue, 0.0f);
+
+					ci.cancel();
+				}
 			}
 		}
 	}
@@ -75,18 +81,21 @@ public abstract class MixinBackgroundRenderer {
 	@Inject(method = "applyFog", at = @At("HEAD"), cancellable = true)
 	private static void applyFog(@NotNull Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci) {
 		FluidState fluidState = ((CameraAccessor) camera).getArea().getFluidState(camera.getBlockPos());
+		FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluidState.getFluid());
 
-		if (fluidState.getFluid() instanceof FabricFlowableFluid fluid && fogColor != -1) {
-			Entity entity = camera.getFocusedEntity();
+		if (handler != null) {
+			FluidFogSettings fogSettings = handler.getFogSettings(camera.getBlockPos(), fluidState);
 
-			//Sets the fog start, end, and shape, after getting them from the fluid that submerges the camera
-			float start = fluid.getFabricFogStart(entity, fogType, viewDistance, thickFog);
-			float end = fluid.getFabricFogEnd(entity, fogType, viewDistance, thickFog);
-			RenderSystem.setShaderFogStart(start);
-			RenderSystem.setShaderFogEnd(Math.max(end, start));
-			RenderSystem.setShaderFogShape(fluid.getFabricFogShape(entity, fogType, viewDistance, thickFog));
+			if (fogSettings != null && fogColor != -1) {
+				//Sets the fog start, end, and shape of the fluid that submerges the camera
+				float start = fogSettings.getFogStartRadius(camera, fogType, viewDistance, thickFog);
+				float end = fogSettings.getFogEndRadius(camera, fogType, viewDistance, thickFog);
+				RenderSystem.setShaderFogStart(start);
+				RenderSystem.setShaderFogEnd(Math.max(end, start)); //This ensures that the end radius is greater than the start radius
+				RenderSystem.setShaderFogShape(fogSettings.getFogShape(camera, fogType, viewDistance, thickFog));
 
-			ci.cancel();
+				ci.cancel();
+			}
 		}
 	}
 }

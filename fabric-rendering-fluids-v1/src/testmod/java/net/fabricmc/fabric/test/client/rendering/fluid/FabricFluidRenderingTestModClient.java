@@ -22,8 +22,8 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidFogSettings;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
-import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 
 public class FabricFluidRenderingTestModClient implements ClientModInitializer {
@@ -40,36 +40,33 @@ public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.SPRUCE_DOOR, true);
 		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.WARPED_DOOR, true);
 
-		// Red stained-glass will have falling fluid textures to the side
+		// Red stained glass will have falling fluid textures to the side
 		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.RED_STAINED_GLASS, false);
 
-		// Registers the render handlers
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.NO_OVERLAY, TestFluids.NO_OVERLAY_FLOWING, new SimpleFluidRenderHandler(
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"),
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"),
-				0xFF5555
+				0xFF5555,
+				new SimpleFluidFogSettings(0xFF5555, 0f, 1f)
 		));
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.OVERLAY, TestFluids.OVERLAY_FLOWING, new SimpleFluidRenderHandler(
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"),
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"),
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay"),
-				0x5555FF
+				0x5555FF,
+				// Normally the fog is dark blue, in swamps is dark green, in warm oceans is a blue less dark
+				new BiomeBasedFogSettings(0f, 1f)
 		));
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.CUSTOM, TestFluids.CUSTOM_FLOWING, new CustomizedFluidRenderer(
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay")
 		));
 
-		// Registers the textures
 		ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
 			registry.register(new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"));
 			registry.register(new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"));
 			registry.register(new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay"));
 		});
-
-		// Bucket items
-		ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 1 ? 0x5555FF : -1, TestFluids.OVERLAY_BUCKET);
-		ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 1 ? 0xFF5555 : -1, TestFluids.NO_OVERLAY_BUCKET);
 	}
 }
