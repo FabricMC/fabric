@@ -4,3 +4,8 @@ version = getSubprojectVersion(project)
 moduleDependencies(project, [
 		'fabric-api-base'
 ])
+
+dependencies {
+	testmodImplementation project(path: ':fabric-item-api-v1', configuration: 'namedElements')
+	testmodImplementation project(path: ':fabric-rendering-fluids-v1', configuration: 'namedElements')
+}
