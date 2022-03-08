@@ -22,23 +22,23 @@ import net.minecraft.client.render.FogShape;
 import net.minecraft.client.world.ClientWorld;
 
 /**
- * A basic common implementation of {@link FluidFogSettings} with fixed fluid fog settings.
+ * A simple {@link FluidFogHandler} with fixed fluid fog settings.
  */
-public class SimpleFluidFogSettings implements FluidFogSettings {
+public class SimpleFluidFogHandler implements FluidFogHandler {
 	protected final int color;
 	protected final float startRadius;
 	protected final float endRadius;
 	protected final FogShape shape;
 
 	/**
-	 * Instances a new {@link SimpleFluidFogSettings} with the specified fog settings.
+	 * Instances a new {@link SimpleFluidFogHandler} with the specified fog settings.
 	 *
 	 * @param color       Fluid fog color RGB. Alpha is ignored.
 	 * @param startRadius Distance in blocks, from the camera position, in which the fog starts rendering.
 	 * @param endRadius   Distance in blocks, from the camera position, after which the fog is totally opaque.
 	 * @param shape       Shape of the fluid fog.
 	 */
-	public SimpleFluidFogSettings(int color, float startRadius, float endRadius, FogShape shape) {
+	public SimpleFluidFogHandler(int color, float startRadius, float endRadius, FogShape shape) {
 		this.color = color;
 		this.startRadius = startRadius;
 		this.endRadius = endRadius;
@@ -46,7 +46,7 @@ public class SimpleFluidFogSettings implements FluidFogSettings {
 	}
 
 	/**
-	 * <p>Instances a new {@link SimpleFluidFogSettings} with the specified fog settings,
+	 * <p>Instances a new {@link SimpleFluidFogHandler} with the specified fog settings,
 	 * without specifying the shape.</p>
 	 * <p>In this case is used the default shape for all fluids (SPHERE).</p>
 	 *
@@ -54,7 +54,7 @@ public class SimpleFluidFogSettings implements FluidFogSettings {
 	 * @param startRadius Distance in blocks, from the camera position, in which the fog starts rendering.
 	 * @param endRadius   Distance in blocks, from the camera position, after which the fog is totally opaque.
 	 */
-	public SimpleFluidFogSettings(int color, float startRadius, float endRadius) {
+	public SimpleFluidFogHandler(int color, float startRadius, float endRadius) {
 		this(color, startRadius, endRadius, FogShape.SPHERE);
 	}
 

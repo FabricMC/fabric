@@ -22,9 +22,9 @@ import net.minecraft.client.render.FogShape;
 import net.minecraft.client.world.ClientWorld;
 
 /**
- * Contains some settings for the fluid fog rendering.
+ * Interface for handling the fog rendering settings of a fluid.
  */
-public interface FluidFogSettings {
+public interface FluidFogHandler {
 	/**
 	 * Gets the fluid fog color RGB. Alpha is ignored.
 	 *

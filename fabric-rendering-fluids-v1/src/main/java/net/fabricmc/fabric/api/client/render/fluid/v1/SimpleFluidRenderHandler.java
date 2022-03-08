@@ -70,7 +70,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 
 	protected final int tint;
 
-	protected final FluidFogSettings fogSettings;
+	protected final FluidFogHandler fogHandler;
 
 	/**
 	 * Creates a fluid render handler with an overlay texture,
@@ -82,15 +82,15 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * {@linkplain FluidRenderHandlerRegistry#setBlockTransparency registered
 	 * transparent blocks}.
 	 * @param tint The fluid color RGB. Alpha is ignored.
-	 * @param fogSettings The fluid fog rendering settings.
+	 * @param fogHandler The fluid fog rendering handler.
 	 */
-	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, @Nullable Identifier overlayTexture, int tint, @Nullable FluidFogSettings fogSettings) {
+	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, @Nullable Identifier overlayTexture, int tint, @Nullable FluidFogHandler fogHandler) {
 		this.stillTexture = stillTexture;
 		this.flowingTexture = flowingTexture;
 		this.overlayTexture = overlayTexture;
 		this.sprites = new Sprite[overlayTexture == null ? 2 : 3];
 		this.tint = tint;
-		this.fogSettings = fogSettings;
+		this.fogHandler = fogHandler;
 	}
 
 	/**
@@ -117,10 +117,10 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * @param overlayTexture The texture behind glass, leaves and other
 	 * {@linkplain FluidRenderHandlerRegistry#setBlockTransparency registered
 	 * transparent blocks}.
-	 * @param fogSettings The fluid fog rendering settings.
+	 * @param fogHandler The fluid fog rendering handler.
 	 */
-	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, @Nullable Identifier overlayTexture, FluidFogSettings fogSettings) {
-		this(stillTexture, flowingTexture, overlayTexture, -1, fogSettings);
+	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, @Nullable Identifier overlayTexture, FluidFogHandler fogHandler) {
+		this(stillTexture, flowingTexture, overlayTexture, -1, fogHandler);
 	}
 
 	/**
@@ -144,10 +144,10 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * @param stillTexture The texture for still fluid.
 	 * @param flowingTexture The texture for flowing/falling fluid.
 	 * @param tint The fluid color RGB. Alpha is ignored.
-	 * @param fogSettings The fluid fog rendering settings.
+	 * @param fogHandler The fluid fog rendering handler.
 	 */
-	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, int tint, FluidFogSettings fogSettings) {
-		this(stillTexture, flowingTexture, null, tint, fogSettings);
+	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, int tint, FluidFogHandler fogHandler) {
+		this(stillTexture, flowingTexture, null, tint, fogHandler);
 	}
 
 	/**
@@ -168,10 +168,10 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 *
 	 * @param stillTexture The texture for still fluid.
 	 * @param flowingTexture The texture for flowing/falling fluid.
-	 * @param fogSettings The fluid fog rendering settings.
+	 * @param fogHandler The fluid fog rendering handler.
 	 */
-	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, FluidFogSettings fogSettings) {
-		this(stillTexture, flowingTexture, null, -1, fogSettings);
+	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, FluidFogHandler fogHandler) {
+		this(stillTexture, flowingTexture, null, -1, fogHandler);
 	}
 
 	/**
@@ -190,12 +190,12 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * fixed, custom color, with custom fog.
 	 *
 	 * @param tint The fluid color RGB. Alpha is ignored.
-	 * @param fogSettings The fluid fog rendering settings.
+	 * @param fogSettings The fluid fog rendering handler.
 	 * @see	#WATER_STILL
 	 * @see	#WATER_FLOWING
 	 * @see #WATER_OVERLAY
 	 */
-	public static SimpleFluidRenderHandler coloredWater(int tint, FluidFogSettings fogSettings) {
+	public static SimpleFluidRenderHandler coloredWater(int tint, FluidFogHandler fogSettings) {
 		return new SimpleFluidRenderHandler(WATER_STILL, WATER_FLOWING, WATER_OVERLAY, tint, fogSettings);
 	}
 
@@ -245,7 +245,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public @Nullable FluidFogSettings getFogSettings(@Nullable BlockPos pos, FluidState state) {
-		return fogSettings;
+	public @Nullable FluidFogHandler getFogHandler(@Nullable BlockPos pos, FluidState state) {
+		return fogHandler;
 	}
 }

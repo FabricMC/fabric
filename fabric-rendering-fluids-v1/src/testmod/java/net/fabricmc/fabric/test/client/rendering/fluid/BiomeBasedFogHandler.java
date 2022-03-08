@@ -22,13 +22,13 @@ import net.minecraft.client.render.FogShape;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidFogSettings;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidFogHandler;
 
-public class BiomeBasedFogSettings implements FluidFogSettings {
+public class BiomeBasedFogHandler implements FluidFogHandler {
 	private final float startRadius;
 	private final float endRadius;
 
-	public BiomeBasedFogSettings(float startRadius, float endRadius) {
+	public BiomeBasedFogHandler(float startRadius, float endRadius) {
 		this.startRadius = startRadius;
 		this.endRadius = endRadius;
 	}

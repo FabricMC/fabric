@@ -30,7 +30,7 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.fluid.FluidState;
 
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidFogSettings;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidFogHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 
@@ -57,11 +57,11 @@ public abstract class MixinBackgroundRenderer {
 		FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluidState.getFluid());
 
 		if (handler != null) {
-			FluidFogSettings fogSettings = handler.getFogSettings(camera.getBlockPos(), fluidState);
+			FluidFogHandler fogHandler = handler.getFogHandler(camera.getBlockPos(), fluidState);
 
-			if (fogSettings != null) {
+			if (fogHandler != null) {
 				//Gets the fog color of the fluid that submerges the camera
-				fogColor = fogSettings.getFogColor(camera, tickDelta, world);
+				fogColor = fogHandler.getFogColor(camera, tickDelta, world);
 
 				if (fogColor != -1) {
 					red = (fogColor >> 16 & 255) / 255f;
@@ -84,15 +84,15 @@ public abstract class MixinBackgroundRenderer {
 		FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluidState.getFluid());
 
 		if (handler != null) {
-			FluidFogSettings fogSettings = handler.getFogSettings(camera.getBlockPos(), fluidState);
+			FluidFogHandler fogHandler = handler.getFogHandler(camera.getBlockPos(), fluidState);
 
-			if (fogSettings != null && fogColor != -1) {
+			if (fogHandler != null && fogColor != -1) {
 				//Sets the fog start, end, and shape of the fluid that submerges the camera
-				float start = fogSettings.getFogStartRadius(camera, fogType, viewDistance, thickFog);
-				float end = fogSettings.getFogEndRadius(camera, fogType, viewDistance, thickFog);
+				float start = fogHandler.getFogStartRadius(camera, fogType, viewDistance, thickFog);
+				float end = fogHandler.getFogEndRadius(camera, fogType, viewDistance, thickFog);
 				RenderSystem.setShaderFogStart(start);
 				RenderSystem.setShaderFogEnd(Math.max(end, start)); //This ensures that the end radius is greater than the start radius
-				RenderSystem.setShaderFogShape(fogSettings.getFogShape(camera, fogType, viewDistance, thickFog));
+				RenderSystem.setShaderFogShape(fogHandler.getFogShape(camera, fogType, viewDistance, thickFog));
 
 				ci.cancel();
 			}

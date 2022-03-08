@@ -22,7 +22,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidFogSettings;
+import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidFogHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 
@@ -47,7 +47,7 @@ public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"),
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"),
 				0xFF5555,
-				new SimpleFluidFogSettings(0xFF5555, 0f, 1f)
+				new SimpleFluidFogHandler(0xFF5555, 0f, 1f)
 		));
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.OVERLAY, TestFluids.OVERLAY_FLOWING, new SimpleFluidRenderHandler(
@@ -56,7 +56,7 @@ public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay"),
 				0x5555FF,
 				// Normally the fog is dark blue, in swamps is dark green, in warm oceans is a blue less dark
-				new BiomeBasedFogSettings(0f, 1f)
+				new BiomeBasedFogHandler(0f, 1f)
 		));
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.CUSTOM, TestFluids.CUSTOM_FLOWING, new CustomizedFluidRenderer(
