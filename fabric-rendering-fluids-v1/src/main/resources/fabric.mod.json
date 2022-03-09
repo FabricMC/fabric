@@ -19,8 +19,7 @@
     "fabric-api-base": "*"
   },
   "recommends": {
-    "fabric-textures-v0": "*",
-    "fabric-fluid-v1": "*"
+    "fabric-textures-v0": "*"
   },
   "description": "Hooks for registering fluid renders.",
   "mixins": [

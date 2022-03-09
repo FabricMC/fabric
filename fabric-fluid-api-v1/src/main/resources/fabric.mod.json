@@ -18,7 +18,7 @@
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*"
   },
-  "recommends": {
+  "suggests": {
     "fabric-rendering-fluids-v1": "*"
   },
   "description": "Extended fluid configuration.",
@@ -27,7 +27,7 @@
   ],
   "custom": {
     "loom:injected_interfaces": {
-      "net/minecraft/class_3609": ["net/fabricmc/fabric/api/fluid/v1/FabricFlowableFluid"]
+      "net/minecraft/class_3611": ["net/fabricmc/fabric/api/fluid/v1/FabricFluid"]
     },
     "fabric-api:module-lifecycle": "stable"
   }

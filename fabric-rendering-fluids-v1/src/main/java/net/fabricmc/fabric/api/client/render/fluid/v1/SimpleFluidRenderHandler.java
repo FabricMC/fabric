@@ -119,7 +119,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * transparent blocks}.
 	 * @param fogHandler The fluid fog rendering handler.
 	 */
-	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, @Nullable Identifier overlayTexture, FluidFogHandler fogHandler) {
+	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, @Nullable Identifier overlayTexture, @Nullable FluidFogHandler fogHandler) {
 		this(stillTexture, flowingTexture, overlayTexture, -1, fogHandler);
 	}
 
@@ -146,7 +146,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * @param tint The fluid color RGB. Alpha is ignored.
 	 * @param fogHandler The fluid fog rendering handler.
 	 */
-	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, int tint, FluidFogHandler fogHandler) {
+	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, int tint, @Nullable FluidFogHandler fogHandler) {
 		this(stillTexture, flowingTexture, null, tint, fogHandler);
 	}
 
@@ -170,7 +170,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * @param flowingTexture The texture for flowing/falling fluid.
 	 * @param fogHandler The fluid fog rendering handler.
 	 */
-	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, FluidFogHandler fogHandler) {
+	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, @Nullable FluidFogHandler fogHandler) {
 		this(stillTexture, flowingTexture, null, -1, fogHandler);
 	}
 
@@ -195,7 +195,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * @see	#WATER_FLOWING
 	 * @see #WATER_OVERLAY
 	 */
-	public static SimpleFluidRenderHandler coloredWater(int tint, FluidFogHandler fogSettings) {
+	public static SimpleFluidRenderHandler coloredWater(int tint, @Nullable FluidFogHandler fogSettings) {
 		return new SimpleFluidRenderHandler(WATER_STILL, WATER_FLOWING, WATER_OVERLAY, tint, fogSettings);
 	}
 

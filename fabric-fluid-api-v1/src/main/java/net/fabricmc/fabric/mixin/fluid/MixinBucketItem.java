@@ -22,7 +22,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
 import net.minecraft.sound.SoundEvent;
@@ -35,8 +34,8 @@ public class MixinBucketItem {
 
 	@ModifyArg(method = "playEmptyingSound", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldAccess;playSound(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FF)V"), index = 2)
 	private SoundEvent modSoundEvent(SoundEvent value) {
-		//Returns the specified value if is present, otherwise does nothing.
+		//Sets the specified value if is present, otherwise does nothing.
 		//Lava and water, not overriding this function, maintain their default behaviour.
-		return ((FlowableFluid) fluid).getFabricBucketEmptySound().orElse(value);
+		return fluid.getFabricBucketEmptySound().orElse(value);
 	}
 }

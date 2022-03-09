@@ -31,20 +31,19 @@ public interface FluidFogHandler {
 	 * @param camera    Camera submerged by the fluid.
 	 * @param tickDelta Time passed from the last tick.
 	 * @param world     Current client world.
-	 * @return <p>An int value indicating the RGB color of the fog.</p>
-	 * <p>If the color is -1, the fog is not rendered.</p>
+	 * @return the color of the fog, or {@code -1} to make it hidden.
 	 */
 	int getFogColor(Camera camera, float tickDelta, ClientWorld world);
 
 	/**
-	 * <p>Gets the distance in blocks, from the camera position, in which the fog starts rendering.</p>
-	 * <p>This could be negative, in this case the fog starts partially opaque.</p>
+	 * Gets the distance in blocks, from the camera position, in which the fog starts rendering.
+	 *
+	 * <p>This could be negative, in this case the fog starts partially opaque.
 	 *
 	 * @param camera       Camera submerged by the fluid.
 	 * @param fogType      Type of fog (SKY or TERRAIN).
 	 * @param viewDistance Current view distance of the submerged player.
 	 * @param thickFog     Specifies if a thick fog must be rendered.
-	 * @return A float indicating the distance, from the camera position, in which the fog starts rendering.
 	 */
 	float getFogStartRadius(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
 
@@ -53,7 +52,7 @@ public interface FluidFogHandler {
 	 * <p>If this is less than the start distance, will be ignored.</p>
 	 *
 	 * @param camera       Camera submerged by the fluid.
-	 * @param fogType      Type of fog (SKY or TERRAIN).
+	 * @param fogType      Type of fog.
 	 * @param viewDistance Current view distance of the submerged player.
 	 * @param thickFog     Specifies if a thick fog must be rendered.
 	 * @return A float indicating the distance, from the camera position, after which the fog is totally opaque.
@@ -64,7 +63,7 @@ public interface FluidFogHandler {
 	 * Gets the shape of the fluid fog.
 	 *
 	 * @param camera       Camera submerged by the fluid.
-	 * @param fogType      Type of fog (SKY or TERRAIN).
+	 * @param fogType      Type of fog.
 	 * @param viewDistance Current view distance of the submerged player.
 	 * @param thickFog     Specifies if a thick fog must be rendered.
 	 * @return An enum value indicating the shape of the fluid fog: CYLINDER or SPHERE.

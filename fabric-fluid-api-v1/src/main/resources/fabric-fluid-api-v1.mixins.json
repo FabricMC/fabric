@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "MixinBucketItem",
-    "MixinFlowableFluid"
+    "MixinFluid"
   ],
   "injectors": {
     "defaultRequire": 1

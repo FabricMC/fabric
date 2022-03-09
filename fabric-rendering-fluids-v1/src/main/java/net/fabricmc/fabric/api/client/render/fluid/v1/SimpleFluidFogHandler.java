@@ -31,7 +31,7 @@ public class SimpleFluidFogHandler implements FluidFogHandler {
 	protected final FogShape shape;
 
 	/**
-	 * Instances a new {@link SimpleFluidFogHandler} with the specified fog settings.
+	 * Creates a new handler with the specified fog settings.
 	 *
 	 * @param color       Fluid fog color RGB. Alpha is ignored.
 	 * @param startRadius Distance in blocks, from the camera position, in which the fog starts rendering.
@@ -46,9 +46,7 @@ public class SimpleFluidFogHandler implements FluidFogHandler {
 	}
 
 	/**
-	 * <p>Instances a new {@link SimpleFluidFogHandler} with the specified fog settings,
-	 * without specifying the shape.</p>
-	 * <p>In this case is used the default shape for all fluids (SPHERE).</p>
+	 * Creates a new handler with the specified fog settings, with {@link FogShape#SPHERE} as its shape.
 	 *
 	 * @param color       Fluid fog color RGB. Alpha is ignored.
 	 * @param startRadius Distance in blocks, from the camera position, in which the fog starts rendering.

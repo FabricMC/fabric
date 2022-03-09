@@ -71,7 +71,6 @@ public interface FluidRenderHandler {
 	 *
 	 * @param pos The position of the fluid in the world. May be null!
 	 * @param state The current state of the fluid.
-	 * @return The fluid fog rendering handler. May be null!
 	 */
 	@Nullable default FluidFogHandler getFogHandler(@Nullable BlockPos pos, FluidState state) {
 		return null;

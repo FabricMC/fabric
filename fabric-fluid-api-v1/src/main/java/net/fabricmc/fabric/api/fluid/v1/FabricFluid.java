@@ -18,22 +18,23 @@ package net.fabricmc.fabric.api.fluid.v1;
 
 import java.util.Optional;
 
-import net.minecraft.fluid.FlowableFluid;
-import net.minecraft.fluid.LavaFluid;
-import net.minecraft.fluid.WaterFluid;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.tag.FluidTags;
 
 /**
- * Implements extra features and configs for {@link FlowableFluid}.
+ * Implements extra features and configs for {@link Fluid}.
  */
-public interface FabricFlowableFluid {
+public interface FabricFluid {
 	/**
-	 * <p>Gets the sound played when the bucket containing this fluid is emptied.</p>
-	 * <p>If the return value is <code>Optional.empty()</code>, the following sounds are played:</p>
-	 * <p>- If the fluid extends {@link FlowableFluid} or {@link WaterFluid} is played the <code>ITEM_BUCKET_EMPTY</code> sound.</p>
-	 * <p>- If the fluid extends {@link LavaFluid} is played the <code>ITEM_BUCKET_EMPTY_LAVA</code> sound.</p>
+	 * Gets the sound played when the bucket containing this fluid is emptied.
 	 *
-	 * @return SoundEvent played when the bucket containing this fluid is emptied.
+	 * <p>If the return value is {@link Optional#empty()}, the default sounds are played:
+	 * <ul>
+	 *     <li>If the fluid is in {@link FluidTags#LAVA} tag, {@link SoundEvents#ITEM_BUCKET_EMPTY_LAVA} is played.</li>
+	 *     <li>For other fluids, {@link SoundEvents#ITEM_BUCKET_EMPTY} is played.</li>
+	 * </ul>
 	 */
 	default Optional<SoundEvent> getFabricBucketEmptySound() {
 		return Optional.empty();
