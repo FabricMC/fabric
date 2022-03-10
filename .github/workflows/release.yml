@@ -30,3 +30,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CHANGELOG: ${{ steps.changelog.outputs.changelog }}
+          SIGNING_SERVER: ${{ secrets.SIGNING_SERVER }}
+          SIGNING_PGP_KEY: ${{ secrets.SIGNING_PGP_KEY }}
+          SIGNING_JAR_KEY: ${{ secrets.SIGNING_JAR_KEY }}
