@@ -179,6 +179,8 @@ allprojects {
 			pgpAuthKey = ENV.SIGNING_PGP_KEY
 			jarAuthKey = ENV.SIGNING_JAR_KEY
 
+			sign remapJar
+
 			afterEvaluate {
 				// PGP sign all maven publications.
 				sign publishing.publications.mavenJava
@@ -259,12 +261,6 @@ subprojects {
 		if (project.name != "fabric-gametest-api-v1") {
 			testmodImplementation project(path: ':fabric-gametest-api-v1', configuration: 'namedElements')
 			testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
-		}
-	}
-
-	if (signingEnabled) {
-		remoteSign {
-			sign remapJar
 		}
 	}
 
@@ -405,7 +401,7 @@ curseforge {
 		addGameVersion "1.18.2"
 		addGameVersion "Fabric"
 
-		mainArtifact(signingEnabled ? signRemapJar : remapJar) {
+		mainArtifact(signingEnabled ? signRemapJar.output : remapJar) {
 			displayName = "[$project.minecraft_version] Fabric API $project.version"
 		}
 
@@ -417,6 +413,10 @@ curseforge {
 	options {
 		forgeGradleIntegration = false
 	}
+}
+
+if (signingEnabled) {
+	project.tasks.curseforge.dependsOn signRemapJar
 }
 
 import org.kohsuke.github.GHReleaseBuilder
@@ -454,7 +454,7 @@ task modrinth(type: com.modrinth.minotaur.TaskModrinthUpload, dependsOn: (signin
 	releaseType = project.prerelease == "true" ? "beta" : "release"
 	changelog = ENV.CHANGELOG ?: "No changelog provided"
 
-	uploadFile = signingEnabled ? signRemapJar : remapJar
+	uploadFile = signingEnabled ? signRemapJar.output : remapJar
 
 	addGameVersion(project.minecraft_version)
 	addLoader('fabric')
