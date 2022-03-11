@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.api.impl.v1;
+package net.fabricmc.fabric.impl.v1;
 
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
