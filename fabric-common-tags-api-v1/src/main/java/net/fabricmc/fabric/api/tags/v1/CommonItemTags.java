@@ -1,0 +1,53 @@
+package net.fabricmc.fabric.api.tags.v1;
+
+import net.minecraft.item.Item;
+import net.minecraft.tag.TagKey;
+
+import net.fabricmc.fabric.api.impl.v1.TagRegistration;
+
+public class CommonItemTags {//todo include fabric tools in common tools, javadoc
+	public static final TagKey<Item> PICKAXES = register("pickaxes");
+	public static final TagKey<Item> SHOVELS = register("shovels");
+	public static final TagKey<Item> HOES = register("hoes");
+	public static final TagKey<Item> AXES = register("axes");
+	public static final TagKey<Item> SHEARS = register("shears");
+	/**
+	 * For throwable weapons, like Minecraft tridents
+	 */
+	public static final TagKey<Item> SPEARS = register("spears");
+	public static final TagKey<Item> SWORDS = register("swords");
+	public static final TagKey<Item> BOWS = register("bows");
+	@Deprecated
+	public static final TagKey<Item> FABRIC_PICKAXES = registerFabric("pickaxes");
+	@Deprecated
+	public static final TagKey<Item> FABRIC_SHOVELS = registerFabric("shovels");
+	@Deprecated
+	public static final TagKey<Item> FABRIC_HOES = registerFabric("hoes");
+	@Deprecated
+	public static final TagKey<Item> FABRIC_AXES = registerFabric("axes");
+	@Deprecated
+	public static final TagKey<Item> FABRIC_SHEARS = registerFabric("shears");
+	@Deprecated
+	public static final TagKey<Item> FABRIC_SWORDS = registerFabric("swords");
+	public static final TagKey<Item> IRON_INGOTS = register("iron_ingots");
+	public static final TagKey<Item> IRON_ORES = register("iron_ores");
+	public static final TagKey<Item> GOLD_ORES = register("gold_ores");
+	public static final TagKey<Item> GOLD_INGOTS = register("gold_ingots");
+	public static final TagKey<Item> REDSTONE_DUSTS = register("redstone_dusts");
+	public static final TagKey<Item> REDSTONE_ORES = register("redstone_ores");
+	public static final TagKey<Item> COPPER_INGOTS = register("copper_ingots");
+	public static final TagKey<Item> COPPER_ORES = register("copper_ores");
+	public static final TagKey<Item> ORES = register("ores");
+	public static final TagKey<Item> NETHERITE_ORES = register("netherite_ores");
+	public static final TagKey<Item> NETHERITE_INGOTS = register("netherite_ingots");
+	public static final TagKey<Item> FOODS = register("foods");
+	public static final TagKey<Item> POTIONS = register("potions");
+
+	private static TagKey<Item> register(String tagID) {
+		return TagRegistration.ITEM_TAG_REGISTRATION.registerCommon(tagID);
+	}
+
+	private static TagKey<Item> registerFabric(String tagID) {
+		return TagRegistration.ITEM_TAG_REGISTRATION.registerFabric(tagID);
+	}
+}
