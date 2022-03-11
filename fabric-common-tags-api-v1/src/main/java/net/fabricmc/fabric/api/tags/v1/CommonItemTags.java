@@ -5,7 +5,7 @@ import net.minecraft.tag.TagKey;
 
 import net.fabricmc.fabric.api.impl.v1.TagRegistration;
 
-public class CommonItemTags {//todo include fabric tools in common tools, javadoc
+public class CommonItemTags {//todo include fabric tools in common tools
 	public static final TagKey<Item> PICKAXES = register("pickaxes");
 	public static final TagKey<Item> SHOVELS = register("shovels");
 	public static final TagKey<Item> HOES = register("hoes");
@@ -17,16 +17,31 @@ public class CommonItemTags {//todo include fabric tools in common tools, javado
 	public static final TagKey<Item> SPEARS = register("spears");
 	public static final TagKey<Item> SWORDS = register("swords");
 	public static final TagKey<Item> BOWS = register("bows");
+	/**
+	 * @deprecated Use {@link CommonItemTags#PICKAXES}
+	 */
 	@Deprecated
 	public static final TagKey<Item> FABRIC_PICKAXES = registerFabric("pickaxes");
+	/**
+	 * @deprecated Use {@link CommonItemTags#SHOVELS}
+	 */
 	@Deprecated
 	public static final TagKey<Item> FABRIC_SHOVELS = registerFabric("shovels");
+	/**
+	 * @deprecated Use {@link CommonItemTags#HOES}
+	 */
 	@Deprecated
 	public static final TagKey<Item> FABRIC_HOES = registerFabric("hoes");
+	/**
+	 * @deprecated Use {@link CommonItemTags#AXES}
+	 */
 	@Deprecated
 	public static final TagKey<Item> FABRIC_AXES = registerFabric("axes");
 	@Deprecated
 	public static final TagKey<Item> FABRIC_SHEARS = registerFabric("shears");
+	/**
+	 * @deprecated Use {@link CommonItemTags#SWORDS}
+	 */
 	@Deprecated
 	public static final TagKey<Item> FABRIC_SWORDS = registerFabric("swords");
 	public static final TagKey<Item> IRON_INGOTS = register("iron_ingots");
