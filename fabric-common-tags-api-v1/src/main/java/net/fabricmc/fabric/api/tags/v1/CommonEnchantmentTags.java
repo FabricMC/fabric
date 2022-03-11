@@ -7,7 +7,7 @@ import net.fabricmc.fabric.impl.v1.TagRegistration;
 
 public class CommonEnchantmentTags {
 	/**
-	 * A tag containing enchantments that increase or other improve drops from blocks.
+	 * A tag containing enchantments that increase or otherwise improve drops from blocks.
 	 */
 	public static final TagKey<Enchantment> FORTUNE = register("fortune");
 	/**
