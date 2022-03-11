@@ -57,6 +57,7 @@ public class CommonItemTags {//todo include fabric tools in common tools
 	public static final TagKey<Item> NETHERITE_INGOTS = register("netherite_ingots");
 	public static final TagKey<Item> FOODS = register("foods");
 	public static final TagKey<Item> POTIONS = register("potions");
+	public static final TagKey<Item> BOOKSHELVES = register("bookshelves");
 
 	private static TagKey<Item> register(String tagID) {
 		return TagRegistration.ITEM_TAG_REGISTRATION.registerCommon(tagID);

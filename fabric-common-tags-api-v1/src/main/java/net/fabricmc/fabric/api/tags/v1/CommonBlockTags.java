@@ -12,6 +12,8 @@ public class CommonBlockTags {
 	public static final TagKey<Block> COPPER_ORES = register("copper_ores");
 	public static final TagKey<Block> ORES = register("ores");
 	public static final TagKey<Block> NETHERITE_ORES = register("netherite_ores");
+	public static final TagKey<Block> CROPS = register("crops");
+	public static final TagKey<Block> CHESTS = register("chests");
 
 	private static TagKey<Block> register(String tagID) {
 		return TagRegistration.BLOCK_TAG_REGISTRATION.registerCommon(tagID);

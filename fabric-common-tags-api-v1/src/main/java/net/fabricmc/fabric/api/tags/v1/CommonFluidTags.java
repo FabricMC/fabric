@@ -8,6 +8,8 @@ import net.fabricmc.fabric.impl.v1.TagRegistration;
 public class CommonFluidTags {
 	public static final TagKey<Fluid> LAVA = register("lava");
 	public static final TagKey<Fluid> WATER = register("water");
+	public static final TagKey<Fluid> MILK = register("milk");
+	public static final TagKey<Fluid> HONEY = register("honey");
 
 	private static TagKey<Fluid> register(String tagID) {
 		return TagRegistration.FLUID_TAG_REGISTRATION.registerCommon(tagID);
