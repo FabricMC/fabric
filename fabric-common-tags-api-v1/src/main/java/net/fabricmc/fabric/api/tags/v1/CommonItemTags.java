@@ -59,6 +59,12 @@ public class CommonItemTags {//todo include fabric tools in common tools
 	public static final TagKey<Item> POTIONS = register("potions");
 	public static final TagKey<Item> BOOKSHELVES = register("bookshelves");
 
+	/**
+	 * Items in this tag are marked as cannot be placed into 'sub' or 'item' inventories, such as shulker boxes.
+	 * It is up to the inventory implementer to respect this tag's entries.
+	 */
+	public static final TagKey<Item> ITEM_INVENTORY_EXCLUDED = register("item_inventory_excluded");
+
 	private static TagKey<Item> register(String tagID) {
 		return TagRegistration.ITEM_TAG_REGISTRATION.registerCommon(tagID);
 	}
