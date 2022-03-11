@@ -11,7 +11,7 @@ public class CommonEnchantmentTags {
 	 */
 	public static final TagKey<Enchantment> FORTUNE = register("fortune");
 	/**
-	 * A tag containing enchantments that increase or other improve drops from entities.
+	 * A tag containing enchantments that increase or otherwise improve drops from entities.
 	 */
 	public static final TagKey<Enchantment> LOOTING = register("looting");
 
