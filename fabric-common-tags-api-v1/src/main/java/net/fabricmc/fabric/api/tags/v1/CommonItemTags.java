@@ -17,33 +17,6 @@ public class CommonItemTags {//todo include fabric tools in common tools
 	public static final TagKey<Item> SPEARS = register("spears");
 	public static final TagKey<Item> SWORDS = register("swords");
 	public static final TagKey<Item> BOWS = register("bows");
-	/**
-	 * @deprecated Use {@link CommonItemTags#PICKAXES}
-	 */
-	@Deprecated
-	public static final TagKey<Item> FABRIC_PICKAXES = registerFabric("pickaxes");
-	/**
-	 * @deprecated Use {@link CommonItemTags#SHOVELS}
-	 */
-	@Deprecated
-	public static final TagKey<Item> FABRIC_SHOVELS = registerFabric("shovels");
-	/**
-	 * @deprecated Use {@link CommonItemTags#HOES}
-	 */
-	@Deprecated
-	public static final TagKey<Item> FABRIC_HOES = registerFabric("hoes");
-	/**
-	 * @deprecated Use {@link CommonItemTags#AXES}
-	 */
-	@Deprecated
-	public static final TagKey<Item> FABRIC_AXES = registerFabric("axes");
-	@Deprecated
-	public static final TagKey<Item> FABRIC_SHEARS = registerFabric("shears");
-	/**
-	 * @deprecated Use {@link CommonItemTags#SWORDS}
-	 */
-	@Deprecated
-	public static final TagKey<Item> FABRIC_SWORDS = registerFabric("swords");
 	public static final TagKey<Item> IRON_INGOTS = register("iron_ingots");
 	public static final TagKey<Item> IRON_ORES = register("iron_ores");
 	public static final TagKey<Item> GOLD_ORES = register("gold_ores");

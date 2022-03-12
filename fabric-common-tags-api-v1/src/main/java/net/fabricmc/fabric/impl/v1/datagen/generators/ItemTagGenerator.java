@@ -1,12 +1,44 @@
 package net.fabricmc.fabric.impl.v1.datagen.generators;
 
 import net.minecraft.item.Items;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tags.v1.CommonItemTags;
 
 public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
+	/**
+	 * @deprecated Use {@link CommonItemTags#PICKAXES}
+	 */
+	@Deprecated
+	private static final Identifier FABRIC_PICKAXES = registerFabric("pickaxes");
+	/**
+	 * @deprecated Use {@link CommonItemTags#SHOVELS}
+	 */
+	@Deprecated
+	private static final Identifier FABRIC_SHOVELS = registerFabric("shovels");
+	/**
+	 * @deprecated Use {@link CommonItemTags#HOES}
+	 */
+	@Deprecated
+	private static final Identifier FABRIC_HOES = registerFabric("hoes");
+	/**
+	 * @deprecated Use {@link CommonItemTags#AXES}
+	 */
+	@Deprecated
+	private static final Identifier FABRIC_AXES = registerFabric("axes");
+	/**
+	 * @deprecated Use {@link CommonItemTags#SHEARS}
+	 */
+	@Deprecated
+	private static final Identifier FABRIC_SHEARS = registerFabric("shears");
+	/**
+	 * @deprecated Use {@link CommonItemTags#SWORDS}
+	 */
+	@Deprecated
+	private static final Identifier FABRIC_SWORDS = registerFabric("swords");
+	
 	public ItemTagGenerator(FabricDataGenerator dataGenerator) {
 		super(dataGenerator);
 	}
@@ -40,7 +72,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 	private void generateToolTags() {
 		getOrCreateTagBuilder(CommonItemTags.AXES)
-				.addOptionalTag(CommonItemTags.FABRIC_AXES.id())
+				.addOptionalTag(FABRIC_AXES)
 				.add(Items.DIAMOND_AXE)
 				.add(Items.GOLDEN_AXE)
 				.add(Items.WOODEN_AXE)
@@ -48,7 +80,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.IRON_AXE)
 				.add(Items.NETHERITE_AXE);
 		getOrCreateTagBuilder(CommonItemTags.PICKAXES)
-				.addOptionalTag(CommonItemTags.FABRIC_PICKAXES.id())
+				.addOptionalTag(FABRIC_PICKAXES)
 				.add(Items.DIAMOND_PICKAXE)
 				.add(Items.GOLDEN_PICKAXE)
 				.add(Items.WOODEN_PICKAXE)
@@ -56,7 +88,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.IRON_PICKAXE)
 				.add(Items.NETHERITE_PICKAXE);
 		getOrCreateTagBuilder(CommonItemTags.HOES)
-				.addOptionalTag(CommonItemTags.FABRIC_HOES.id())
+				.addOptionalTag(FABRIC_HOES)
 				.add(Items.DIAMOND_HOE)
 				.add(Items.GOLDEN_HOE)
 				.add(Items.WOODEN_HOE)
@@ -64,7 +96,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.IRON_HOE)
 				.add(Items.NETHERITE_HOE);
 		getOrCreateTagBuilder(CommonItemTags.SWORDS)
-				.addOptionalTag(CommonItemTags.FABRIC_SWORDS.id())
+				.addOptionalTag(FABRIC_SWORDS)
 				.add(Items.DIAMOND_SWORD)
 				.add(Items.GOLDEN_SWORD)
 				.add(Items.WOODEN_SWORD)
@@ -72,7 +104,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.IRON_SWORD)
 				.add(Items.NETHERITE_SWORD);
 		getOrCreateTagBuilder(CommonItemTags.SHOVELS)
-				.addOptionalTag(CommonItemTags.FABRIC_SHOVELS.id())
+				.addOptionalTag(FABRIC_SHOVELS)
 				.add(Items.DIAMOND_SHOVEL)
 				.add(Items.GOLDEN_SHOVEL)
 				.add(Items.WOODEN_SHOVEL)
@@ -80,12 +112,16 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.IRON_SHOVEL)
 				.add(Items.NETHERITE_SHOVEL);
 		getOrCreateTagBuilder(CommonItemTags.SHEARS)
-				.addOptionalTag(CommonItemTags.FABRIC_SHEARS.id())
+				.addOptionalTag(FABRIC_SHEARS)
 				.add(Items.SHEARS);
 		getOrCreateTagBuilder(CommonItemTags.SPEARS)
 				.add(Items.TRIDENT);
 		getOrCreateTagBuilder(CommonItemTags.BOWS)
 				.add(Items.CROSSBOW)
 				.add(Items.BOW);
+	}
+	
+	private static Identifier registerFabric(String id) {
+		return new Identifier("fabric", id);
 	}
 }
