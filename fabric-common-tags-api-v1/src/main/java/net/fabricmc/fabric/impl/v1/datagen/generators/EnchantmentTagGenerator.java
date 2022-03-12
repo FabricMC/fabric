@@ -21,5 +21,11 @@ public class EnchantmentTagGenerator extends FabricTagProvider<Enchantment> {
 				.add(Enchantments.LOOTING);
 		getOrCreateTagBuilder(CommonEnchantmentTags.IDENTICAL_DROPS)
 				.add(Enchantments.SILK_TOUCH);
+		getOrCreateTagBuilder(CommonEnchantmentTags.WEAPON_DAMAGE_ENHANCEMENT)
+				.add(Enchantments.BANE_OF_ARTHROPODS)
+				.add(Enchantments.IMPALING)
+				.add(Enchantments.SMITE)
+				.add(Enchantments.POWER)
+				.add(Enchantments.SHARPNESS);
 	}
 }

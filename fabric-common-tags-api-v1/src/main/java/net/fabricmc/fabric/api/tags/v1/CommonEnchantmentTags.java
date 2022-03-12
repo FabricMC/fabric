@@ -19,6 +19,10 @@ public class CommonEnchantmentTags {
 	 * rather than some other item, such as {@link net.minecraft.enchantment.Enchantments#SILK_TOUCH}.
 	 */
 	public static final TagKey<Enchantment> IDENTICAL_DROPS = register("identical_drops");
+	/**
+	 * For enchantments that increase the damage dealt by an item.
+	 */
+	public static final TagKey<Enchantment> WEAPON_DAMAGE_ENHANCEMENT = register("weapon_damage_enhancement");
 
 	private static TagKey<Enchantment> register(String tagID) {
 		return TagRegistration.ENCHANTMENT_TAG_REGISTRATION.registerCommon(tagID);
