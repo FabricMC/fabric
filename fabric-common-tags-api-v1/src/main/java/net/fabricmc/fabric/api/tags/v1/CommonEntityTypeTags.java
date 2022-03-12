@@ -10,6 +10,7 @@ public class CommonEntityTypeTags {
 	 * Tag containing entity types that display a boss health bar.
 	 */
 	public static final TagKey<EntityType<?>> BOSSES = register("bosses");
+	public static final TagKey<EntityType<?>> MINECARTS = register("minecarts");
 
 	private static TagKey<EntityType<?>> register(String tagID) {
 		return TagRegistration.ENTITY_TYPE_TAG_REGISTRATION.registerCommon(tagID);
