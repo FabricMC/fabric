@@ -5,6 +5,10 @@ import net.minecraft.world.biome.Biome;
 
 import net.fabricmc.fabric.impl.common.tag.TagRegistration;
 
+/**
+ * See {@link net.minecraft.tag.BiomeTags} for vanilla tags.
+ * Note that addition to some vanilla tags implies having certain functionality.
+ */
 public class CommonBiomeTags {
 	public static final TagKey<Biome> IN_OVERWORLD = register("in_overworld");
 	// The following are based on Biome categories, see Biome$Category for details

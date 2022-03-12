@@ -5,6 +5,10 @@ import net.minecraft.tag.TagKey;
 
 import net.fabricmc.fabric.impl.common.tag.TagRegistration;
 
+/**
+ * See {@link net.minecraft.tag.FluidTags} for vanilla tags.
+ * Note that addition to some vanilla tags implies having certain functionality.
+ */
 public class CommonFluidTags {
 	public static final TagKey<Fluid> LAVA = register("lava");
 	public static final TagKey<Fluid> WATER = register("water");

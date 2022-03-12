@@ -5,6 +5,10 @@ import net.minecraft.tag.TagKey;
 
 import net.fabricmc.fabric.impl.common.tag.TagRegistration;
 
+/**
+ * See {@link net.minecraft.tag.ItemTags} for vanilla tags.
+ * Note that addition to some vanilla tags implies having certain functionality.
+ */
 public class CommonItemTags {
 	public static final TagKey<Item> PICKAXES = register("pickaxes");
 	public static final TagKey<Item> SHOVELS = register("shovels");

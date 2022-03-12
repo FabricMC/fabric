@@ -5,6 +5,10 @@ import net.minecraft.tag.TagKey;
 
 import net.fabricmc.fabric.impl.common.tag.TagRegistration;
 
+/**
+ * See {@link net.minecraft.tag.BlockTags} for vanilla tags.
+ * Note that addition to some vanilla tags implies having certain functionality.
+ */
 public class CommonBlockTags {
 	public static final TagKey<Block> IRON_ORES = register("iron_ores");
 	public static final TagKey<Block> GOLD_ORES = register("gold_ores");
