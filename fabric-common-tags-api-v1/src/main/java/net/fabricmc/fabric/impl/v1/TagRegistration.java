@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-
+//https://fabricmc.net/wiki/tutorial:tags#block_tags
 public class TagRegistration<T> {
 	public static final TagRegistration<Item> ITEM_TAG_REGISTRATION = new TagRegistration<>(Registry.ITEM_KEY);
 	public static final TagRegistration<Block> BLOCK_TAG_REGISTRATION = new TagRegistration<>(Registry.BLOCK_KEY);
