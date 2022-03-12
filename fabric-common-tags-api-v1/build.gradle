@@ -18,6 +18,12 @@ sourceSets {
 			]
 		}
 	}
+	datagen {
+		compileClasspath += main.compileClasspath
+		runtimeClasspath += main.runtimeClasspath
+		compileClasspath += main.output
+		runtimeClasspath += main.output
+	}
 }
 
 loom {
@@ -31,6 +37,7 @@ loom {
 
 			ideConfigGenerated = true
 			runDir "build/datagen"
+			source sourceSets.datagen
 		}
 	}
 }
