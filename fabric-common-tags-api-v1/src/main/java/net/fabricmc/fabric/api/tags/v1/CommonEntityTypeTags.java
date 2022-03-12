@@ -11,6 +11,7 @@ public class CommonEntityTypeTags {
 	 */
 	public static final TagKey<EntityType<?>> BOSSES = register("bosses");
 	public static final TagKey<EntityType<?>> MINECARTS = register("minecarts");
+	public static final TagKey<EntityType<?>> BOATS = register("boats");
 
 	private static TagKey<EntityType<?>> register(String tagID) {
 		return TagRegistration.ENTITY_TYPE_TAG_REGISTRATION.registerCommon(tagID);
