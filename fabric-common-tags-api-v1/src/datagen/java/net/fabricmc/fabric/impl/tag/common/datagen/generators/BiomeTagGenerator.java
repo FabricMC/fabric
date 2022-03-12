@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.impl.common.tag.datagen.generators;
+package net.fabricmc.fabric.impl.tag.common.datagen.generators;
 
 import net.minecraft.tag.BiomeTags;
 import net.minecraft.util.registry.Registry;
@@ -7,7 +7,7 @@ import net.minecraft.world.biome.BiomeKeys;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.tags.v1.CommonBiomeTags;
+import net.fabricmc.fabric.api.tag.v1.CommonBiomeTags;
 
 public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvider<Biome> {
 	public BiomeTagGenerator(FabricDataGenerator dataGenerator) {

@@ -1,11 +1,11 @@
-package net.fabricmc.fabric.impl.common.tag.datagen.generators;
+package net.fabricmc.fabric.impl.tag.common.datagen.generators;
 
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.tags.v1.CommonItemTags;
+import net.fabricmc.fabric.api.tag.v1.CommonItemTags;
 
 public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	/**

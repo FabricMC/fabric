@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.impl.common.tag;
+package net.fabricmc.fabric.impl.tag.common;
 
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;

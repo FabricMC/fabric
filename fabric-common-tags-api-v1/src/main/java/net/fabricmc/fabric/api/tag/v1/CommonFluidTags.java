@@ -1,9 +1,9 @@
-package net.fabricmc.fabric.api.tags.v1;
+package net.fabricmc.fabric.api.tag.v1;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.tag.TagKey;
 
-import net.fabricmc.fabric.impl.common.tag.TagRegistration;
+import net.fabricmc.fabric.impl.tag.common.TagRegistration;
 
 /**
  * See {@link net.minecraft.tag.FluidTags} for vanilla tags.
