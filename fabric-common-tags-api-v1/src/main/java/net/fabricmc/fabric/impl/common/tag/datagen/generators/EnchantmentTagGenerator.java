@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.impl.v1.datagen.generators;
+package net.fabricmc.fabric.impl.common.tag.datagen.generators;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;

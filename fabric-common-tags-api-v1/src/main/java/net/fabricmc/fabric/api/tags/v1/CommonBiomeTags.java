@@ -3,7 +3,7 @@ package net.fabricmc.fabric.api.tags.v1;
 import net.minecraft.tag.TagKey;
 import net.minecraft.world.biome.Biome;
 
-import net.fabricmc.fabric.impl.v1.TagRegistration;
+import net.fabricmc.fabric.impl.common.tag.TagRegistration;
 
 public class CommonBiomeTags {
 	public static final TagKey<Biome> IN_OVERWORLD = register("in_overworld");
