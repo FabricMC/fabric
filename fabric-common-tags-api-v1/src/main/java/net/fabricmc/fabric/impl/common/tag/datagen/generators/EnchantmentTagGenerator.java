@@ -15,9 +15,9 @@ public class EnchantmentTagGenerator extends FabricTagProvider<Enchantment> {
 
 	@Override
 	protected void generateTags() {
-		getOrCreateTagBuilder(CommonEnchantmentTags.FORTUNE)
+		getOrCreateTagBuilder(CommonEnchantmentTags.INCREASES_BLOCK_DROPS)
 				.add(Enchantments.FORTUNE);
-		getOrCreateTagBuilder(CommonEnchantmentTags.LOOTING)
+		getOrCreateTagBuilder(CommonEnchantmentTags.INCREASES_ENTITY_DROPS)
 				.add(Enchantments.LOOTING);
 		getOrCreateTagBuilder(CommonEnchantmentTags.IDENTICAL_DROPS)
 				.add(Enchantments.SILK_TOUCH);

@@ -7,13 +7,15 @@ import net.fabricmc.fabric.impl.common.tag.TagRegistration;
 
 public class CommonEnchantmentTags {
 	/**
-	 * A tag containing enchantments that increase the amount or quality of drops from blocks.
+	 * A tag containing enchantments that increase the amount or
+	 * quality of drops from blocks, such as {@link net.minecraft.enchantment.Enchantments#FORTUNE}.
 	 */
-	public static final TagKey<Enchantment> FORTUNE = register("fortune");
+	public static final TagKey<Enchantment> INCREASES_BLOCK_DROPS = register("fortune");
 	/**
-	 * A tag containing enchantments that increase the amount or quality of drops from entities.
+	 * A tag containing enchantments that increase the amount or
+	 * quality of drops from entities, such as {@link net.minecraft.enchantment.Enchantments#LOOTING}.
 	 */
-	public static final TagKey<Enchantment> LOOTING = register("looting");
+	public static final TagKey<Enchantment> INCREASES_ENTITY_DROPS = register("looting");
 	/**
 	 * A tag containing enchantments that cause a block to drop itself in item form
 	 * rather than some other item, such as {@link net.minecraft.enchantment.Enchantments#SILK_TOUCH}.
@@ -26,9 +28,5 @@ public class CommonEnchantmentTags {
 
 	private static TagKey<Enchantment> register(String tagID) {
 		return TagRegistration.ENCHANTMENT_TAG_REGISTRATION.registerCommon(tagID);
-	}
-
-	private static TagKey<Enchantment> registerFabric(String tagID) {
-		return TagRegistration.ENCHANTMENT_TAG_REGISTRATION.registerFabric(tagID);
 	}
 }
