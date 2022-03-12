@@ -5,7 +5,7 @@ import net.minecraft.tag.TagKey;
 
 import net.fabricmc.fabric.impl.common.tag.TagRegistration;
 
-public class CommonItemTags {//todo include fabric tools in common tools
+public class CommonItemTags {
 	public static final TagKey<Item> PICKAXES = register("pickaxes");
 	public static final TagKey<Item> SHOVELS = register("shovels");
 	public static final TagKey<Item> HOES = register("hoes");
@@ -39,6 +39,7 @@ public class CommonItemTags {//todo include fabric tools in common tools
 	public static final TagKey<Item> ITEM_INVENTORY_EXCLUDED = register("item_inventory_excluded");
 	public static final TagKey<Item> WATER_BUCKET = register("bucket/water");
 	public static final TagKey<Item> LAVA_BUCKET = register("bucket/lava");
+	public static final TagKey<Item> MILK_BUCKET = register("bucket/milk");
 	public static final TagKey<Item> EMPTY_BUCKET = register("bucket/empty");
 
 	private static TagKey<Item> register(String tagID) {

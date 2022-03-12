@@ -12,32 +12,32 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	 * @deprecated Use {@link CommonItemTags#PICKAXES}
 	 */
 	@Deprecated
-	private static final Identifier FABRIC_PICKAXES = registerFabric("pickaxes");
+	private static final Identifier FABRIC_PICKAXES = createFabricId("pickaxes");
 	/**
 	 * @deprecated Use {@link CommonItemTags#SHOVELS}
 	 */
 	@Deprecated
-	private static final Identifier FABRIC_SHOVELS = registerFabric("shovels");
+	private static final Identifier FABRIC_SHOVELS = createFabricId("shovels");
 	/**
 	 * @deprecated Use {@link CommonItemTags#HOES}
 	 */
 	@Deprecated
-	private static final Identifier FABRIC_HOES = registerFabric("hoes");
+	private static final Identifier FABRIC_HOES = createFabricId("hoes");
 	/**
 	 * @deprecated Use {@link CommonItemTags#AXES}
 	 */
 	@Deprecated
-	private static final Identifier FABRIC_AXES = registerFabric("axes");
+	private static final Identifier FABRIC_AXES = createFabricId("axes");
 	/**
 	 * @deprecated Use {@link CommonItemTags#SHEARS}
 	 */
 	@Deprecated
-	private static final Identifier FABRIC_SHEARS = registerFabric("shears");
+	private static final Identifier FABRIC_SHEARS = createFabricId("shears");
 	/**
 	 * @deprecated Use {@link CommonItemTags#SWORDS}
 	 */
 	@Deprecated
-	private static final Identifier FABRIC_SWORDS = registerFabric("swords");
+	private static final Identifier FABRIC_SWORDS = createFabricId("swords");
 	
 	public ItemTagGenerator(FabricDataGenerator dataGenerator) {
 		super(dataGenerator);
@@ -121,7 +121,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.BOW);
 	}
 	
-	private static Identifier registerFabric(String id) {
+	private static Identifier createFabricId(String id) {
 		return new Identifier("fabric", id);
 	}
 }
