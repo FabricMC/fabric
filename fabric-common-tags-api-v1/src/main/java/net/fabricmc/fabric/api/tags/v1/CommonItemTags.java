@@ -64,6 +64,9 @@ public class CommonItemTags {//todo include fabric tools in common tools
 	 * It is up to the inventory implementer to respect this tag's entries.
 	 */
 	public static final TagKey<Item> ITEM_INVENTORY_EXCLUDED = register("item_inventory_excluded");
+	public static final TagKey<Item> WATER_BUCKET = register("bucket/water");
+	public static final TagKey<Item> LAVA_BUCKET = register("bucket/lava");
+	public static final TagKey<Item> EMPTY_BUCKET = register("bucket/empty");
 
 	private static TagKey<Item> register(String tagID) {
 		return TagRegistration.ITEM_TAG_REGISTRATION.registerCommon(tagID);
