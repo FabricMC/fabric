@@ -80,6 +80,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.IRON_SHOVEL)
 				.add(Items.NETHERITE_SHOVEL);
 		getOrCreateTagBuilder(CommonItemTags.SHEARS)
+				.addOptionalTag(CommonItemTags.FABRIC_SHEARS.id())
 				.add(Items.SHEARS);
 		getOrCreateTagBuilder(CommonItemTags.SPEARS)
 				.add(Items.TRIDENT);
