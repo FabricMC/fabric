@@ -56,20 +56,27 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 				.add(BiomeKeys.THE_VOID);
 		// We avoid the vanilla group tags here as mods may add to them without actually spawning them in the overworld
 		getOrCreateTagBuilder(CommonBiomeTags.IN_OVERWORLD)
-				.addOptionalTag(BiomeTags.STRONGHOLD_HAS_STRUCTURE)// This has most overworld biomes already
-				.add(BiomeKeys.RIVER)
-				.add(BiomeKeys.FROZEN_RIVER)
-				.add(BiomeKeys.COLD_OCEAN)
-				.add(BiomeKeys.DEEP_COLD_OCEAN)
-				.add(BiomeKeys.DEEP_FROZEN_OCEAN)
-				.add(BiomeKeys.DEEP_OCEAN)
-				.add(BiomeKeys.DEEP_LUKEWARM_OCEAN)
-				.add(BiomeKeys.WARM_OCEAN)
-				.add(BiomeKeys.LUKEWARM_OCEAN)
-				.add(BiomeKeys.FROZEN_OCEAN)
-				.add(BiomeKeys.OCEAN)
-				.add(BiomeKeys.BEACH)
-				.add(BiomeKeys.SNOWY_BEACH);
+				.add(BiomeKeys.RIVER).add(BiomeKeys.FROZEN_RIVER)
+				.add(BiomeKeys.COLD_OCEAN).add(BiomeKeys.DEEP_COLD_OCEAN)
+				.add(BiomeKeys.DEEP_FROZEN_OCEAN).add(BiomeKeys.DEEP_OCEAN)
+				.add(BiomeKeys.DEEP_LUKEWARM_OCEAN).add(BiomeKeys.WARM_OCEAN).add(BiomeKeys.LUKEWARM_OCEAN)
+				.add(BiomeKeys.FROZEN_OCEAN).add(BiomeKeys.OCEAN)
+				.add(BiomeKeys.BEACH).add(BiomeKeys.PLAINS)
+				.add(BiomeKeys.SUNFLOWER_PLAINS).add(BiomeKeys.SNOWY_PLAINS)
+				.add(BiomeKeys.ICE_SPIKES).add(BiomeKeys.DESERT)
+				.add(BiomeKeys.FOREST).add(BiomeKeys.FLOWER_FOREST)
+				.add(BiomeKeys.BIRCH_FOREST).add(BiomeKeys.DARK_FOREST)
+				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST).add(BiomeKeys.OLD_GROWTH_PINE_TAIGA)
+				.add(BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA).add(BiomeKeys.TAIGA)
+				.add(BiomeKeys.SNOWY_TAIGA).add(BiomeKeys.SAVANNA)
+				.add(BiomeKeys.SAVANNA_PLATEAU).add(BiomeKeys.WINDSWEPT_HILLS)
+				.add(BiomeKeys.WINDSWEPT_GRAVELLY_HILLS).add(BiomeKeys.WINDSWEPT_FOREST)
+				.add(BiomeKeys.WINDSWEPT_SAVANNA).add(BiomeKeys.JUNGLE).add(BiomeKeys.SPARSE_JUNGLE)
+				.add(BiomeKeys.BAMBOO_JUNGLE).add(BiomeKeys.BADLANDS).add(BiomeKeys.ERODED_BADLANDS)
+				.add(BiomeKeys.WOODED_BADLANDS).add(BiomeKeys.MEADOW).add(BiomeKeys.GROVE)
+				.add(BiomeKeys.SNOWY_SLOPES).add(BiomeKeys.FROZEN_PEAKS).add(BiomeKeys.JAGGED_PEAKS)
+				.add(BiomeKeys.STONY_PEAKS).add(BiomeKeys.MUSHROOM_FIELDS).add(BiomeKeys.DRIPSTONE_CAVES)
+				.add(BiomeKeys.LUSH_CAVES).add(BiomeKeys.SNOWY_BEACH);
 	}
 
 	/**
