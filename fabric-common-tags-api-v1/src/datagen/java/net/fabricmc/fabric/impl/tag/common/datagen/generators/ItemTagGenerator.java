@@ -151,6 +151,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ItemTags.COAL_ORES)
 				.addOptionalTag(ItemTags.DIAMOND_ORES)
 				.addOptionalTag(ItemTags.LAPIS_ORES)
+				.add(Items.NETHER_QUARTZ_ORE)
 				.addOptionalTag(ItemTags.EMERALD_ORES);
 		getOrCreateTagBuilder(CommonItemTags.IRON_INGOTS)
 				.add(Items.IRON_INGOT);
