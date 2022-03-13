@@ -34,12 +34,6 @@ public class CommonItemTags {
 	public static final TagKey<Item> NETHERITE_INGOTS = register("netherite_ingots");
 	public static final TagKey<Item> FOODS = register("foods");
 	public static final TagKey<Item> POTIONS = register("potions");
-
-	/**
-	 * Items in this tag are marked as cannot be placed into 'sub' or 'item' inventories, such as shulker boxes.
-	 * It is up to the inventory implementer to respect this tag's entries.
-	 */
-	public static final TagKey<Item> ITEM_INVENTORY_EXCLUDED = register("item_inventory_excluded");
 	public static final TagKey<Item> WATER_BUCKET = register("bucket/water");
 	public static final TagKey<Item> LAVA_BUCKET = register("bucket/lava");
 	public static final TagKey<Item> MILK_BUCKET = register("bucket/milk");
