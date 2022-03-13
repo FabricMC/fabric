@@ -47,8 +47,11 @@ import net.fabricmc.api.Environment;
  * </pre>
  *
  * @see net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry registering screen handlers
+ * @deprecated Replaced by access wideners for {@link HandledScreens#register(ScreenHandlerType, HandledScreens.Provider)}
+ * and {@link HandledScreens.Provider} in Fabric Transitive Access Wideners (v1).
  */
 @Environment(EnvType.CLIENT)
+@Deprecated
 public final class ScreenRegistry {
 	private ScreenRegistry() {
 	}
