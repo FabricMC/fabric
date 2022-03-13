@@ -1,0 +1,66 @@
+archivesBaseName = "fabric-transitive-access-wideners-v1"
+version = getSubprojectVersion(project)
+
+loom {
+	accessWidenerPath = file('src/main/resources/fabric-transitive-access-wideners-v1.accesswidener')
+}
+
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.Type
+import org.objectweb.asm.tree.ClassNode
+
+import java.nio.file.FileSystem
+import java.nio.file.FileSystems
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.stream.Collectors
+
+task generateAccessWidener {
+	doLast {
+		List<String> lines = file("template.accesswidener").text.lines().collect(Collectors.toCollection { [] })
+		Path inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.mergedJar
+
+		try (def fs = FileSystems.newFileSystem(URI.create("jar:${inputJar.toUri()}"), [create: false])) {
+			generateBlockConstructors(lines, fs)
+		}
+
+		file('src/main/resources/fabric-transitive-access-wideners-v1.accesswidener').text = String.join('\n', lines) + '\n'
+	}
+}
+
+def generateBlockConstructors(List<String> lines, FileSystem fs) {
+	lines.add("# Constructors of non-abstract block classes")
+	Files.list(fs.getPath("net/minecraft/block"))
+		.filter { Files.isRegularFile(it) && it.toString().endsWith(".class") }
+		.map { loadClass(it) }
+		.sorted(Comparator.comparing { it.name })
+		.filter { (it.access & Opcodes.ACC_ABSTRACT) == 0 }
+		.forEach { node ->
+			for (def method : node.methods) {
+				// Checklist for finding block constructors as of 1.18.2:
+				//  - class directly in net.minecraft.block (excluding subpackages)
+				//  - method name == <init> (by definition)
+				//  - contains an AbstractBlock$Settings parameter
+				//  - only taking into account non-abstract classes and non-public constructors
+
+				// Block constructor...
+				if (method.name == "<init>" && Type.getArgumentTypes(method.desc).any { it.internalName == 'net/minecraft/block/AbstractBlock$Settings' }) {
+					// ...and non-public
+					if ((method.access & Opcodes.ACC_PUBLIC) == 0) {
+						lines.add("transitive-accessible method $node.name <init> $method.desc")
+					}
+				}
+			}
+		}
+}
+
+ClassNode loadClass(Path path) {
+	def node = new ClassNode()
+
+	try (def is = Files.newInputStream(path)) {
+		new ClassReader(is).accept(node, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES)
+	}
+
+	return node
+}

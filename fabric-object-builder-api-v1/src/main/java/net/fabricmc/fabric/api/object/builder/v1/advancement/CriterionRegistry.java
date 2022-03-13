@@ -28,7 +28,10 @@ import net.fabricmc.fabric.mixin.object.builder.CriteriaAccessor;
  * {@link net.minecraft.advancement.criterion.Criteria#getById(Identifier)}.</p>
  *
  * @see net.minecraft.advancement.criterion.Criteria
+ * @deprecated Replaced by access widener for {@link net.minecraft.advancement.criterion.Criteria#register(Criterion)}
+ * in Fabric Transitive Access Wideners (v1).
  */
+@Deprecated
 public final class CriterionRegistry {
 	/**
 	 * Registers a criterion for a trigger for advancements.
