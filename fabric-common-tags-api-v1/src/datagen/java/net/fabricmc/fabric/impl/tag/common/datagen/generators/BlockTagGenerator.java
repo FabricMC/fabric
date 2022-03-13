@@ -38,5 +38,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 				.add(Blocks.CHEST)
 				.add(Blocks.ENDER_CHEST)
 				.add(Blocks.TRAPPED_CHEST);
+		getOrCreateTagBuilder(CommonBlockTags.BOOKSHELVES)
+				.add(Blocks.BOOKSHELF);
 	}
 }

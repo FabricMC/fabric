@@ -34,7 +34,6 @@ public class CommonItemTags {
 	public static final TagKey<Item> NETHERITE_INGOTS = register("netherite_ingots");
 	public static final TagKey<Item> FOODS = register("foods");
 	public static final TagKey<Item> POTIONS = register("potions");
-	public static final TagKey<Item> BOOKSHELVES = register("bookshelves");
 
 	/**
 	 * Items in this tag are marked as cannot be placed into 'sub' or 'item' inventories, such as shulker boxes.

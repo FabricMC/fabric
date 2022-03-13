@@ -1,6 +1,7 @@
 package net.fabricmc.fabric.api.tag.v1;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.tag.TagKey;
 
 import net.fabricmc.fabric.impl.tag.common.TagRegistration;
@@ -17,6 +18,7 @@ public class CommonBlockTags {
 	public static final TagKey<Block> ORES = register("ores");
 	public static final TagKey<Block> NETHERITE_ORES = register("netherite_ores");
 	public static final TagKey<Block> CHESTS = register("chests");
+	public static final TagKey<Block> BOOKSHELVES = register("bookshelves");
 
 	private static TagKey<Block> register(String tagID) {
 		return TagRegistration.BLOCK_TAG_REGISTRATION.registerCommon(tagID);

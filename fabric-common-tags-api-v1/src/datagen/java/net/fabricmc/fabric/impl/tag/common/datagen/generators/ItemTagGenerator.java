@@ -1,6 +1,7 @@
 package net.fabricmc.fabric.impl.tag.common.datagen.generators;
 
 import net.minecraft.item.Items;
+import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -38,7 +39,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	 */
 	@Deprecated
 	private static final Identifier FABRIC_SWORDS = createFabricId("swords");
-	
+
 	public ItemTagGenerator(FabricDataGenerator dataGenerator) {
 		super(dataGenerator);
 	}
@@ -47,6 +48,105 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	protected void generateTags() {
 		generateToolTags();
 		generateExcludedItemTag();
+		generateBucketTags();
+		generateOreAndRelatedTags();
+		generateConsumableTags();
+	}
+
+	private void generateConsumableTags() {
+		getOrCreateTagBuilder(CommonItemTags.FOODS)
+				.add(Items.BEEF)
+				.add(Items.COOKED_BEEF)
+				.add(Items.APPLE)
+				.add(Items.BAKED_POTATO)
+				.add(Items.BEETROOT)
+				.add(Items.BEETROOT_SOUP)
+				.add(Items.BREAD)
+				.add(Items.CARROT)
+				.add(Items.CHORUS_FRUIT)
+				.add(Items.COOKED_CHICKEN)
+				.add(Items.COOKED_COD)
+				.add(Items.COOKED_MUTTON)
+				.add(Items.COOKED_PORKCHOP)
+				.add(Items.COOKED_RABBIT)
+				.add(Items.COOKED_SALMON)
+				.add(Items.COOKIE)
+				.add(Items.DRIED_KELP)
+				.add(Items.ENCHANTED_GOLDEN_APPLE)
+				.add(Items.GOLDEN_APPLE)
+				.add(Items.GLOW_BERRIES)
+				.add(Items.HONEY_BOTTLE)
+				.add(Items.MELON_SLICE)
+				.add(Items.MUSHROOM_STEW)
+				.add(Items.POISONOUS_POTATO)
+				.add(Items.POTATO)
+				.add(Items.PUFFERFISH)
+				.add(Items.PUMPKIN_PIE)
+				.add(Items.RABBIT_STEW)
+				.add(Items.CHICKEN)
+				.add(Items.COD)
+				.add(Items.MUTTON)
+				.add(Items.PORKCHOP)
+				.add(Items.RABBIT)
+				.add(Items.SALMON)
+				.add(Items.ROTTEN_FLESH)
+				.add(Items.SPIDER_EYE)
+				.add(Items.SUSPICIOUS_STEW)
+				.add(Items.SWEET_BERRIES)
+				.add(Items.TROPICAL_FISH);
+		getOrCreateTagBuilder(CommonItemTags.POTIONS)
+				.add(Items.LINGERING_POTION)
+				.add(Items.SPLASH_POTION)
+				.add(Items.POTION);
+	}
+
+	private void generateBucketTags() {
+		getOrCreateTagBuilder(CommonItemTags.EMPTY_BUCKET)
+				.add(Items.BUCKET);
+		getOrCreateTagBuilder(CommonItemTags.LAVA_BUCKET)
+				.add(Items.LAVA_BUCKET);
+		getOrCreateTagBuilder(CommonItemTags.WATER_BUCKET)
+				.add(Items.AXOLOTL_BUCKET)
+				.add(Items.COD_BUCKET)
+				.add(Items.PUFFERFISH_BUCKET)
+				.add(Items.TROPICAL_FISH_BUCKET)
+				.add(Items.SALMON_BUCKET)
+				.add(Items.WATER_BUCKET);
+		getOrCreateTagBuilder(CommonItemTags.MILK_BUCKET)
+				.add(Items.MILK_BUCKET);
+	}
+
+	private void generateOreAndRelatedTags() {
+		getOrCreateTagBuilder(CommonItemTags.IRON_ORES)
+				.addOptionalTag(ItemTags.IRON_ORES);
+		getOrCreateTagBuilder(CommonItemTags.GOLD_ORES)
+				.addOptionalTag(ItemTags.GOLD_ORES);
+		getOrCreateTagBuilder(CommonItemTags.REDSTONE_ORES)
+				.addOptionalTag(ItemTags.REDSTONE_ORES);
+		getOrCreateTagBuilder(CommonItemTags.COPPER_ORES)
+				.addOptionalTag(ItemTags.COPPER_ORES);
+		getOrCreateTagBuilder(CommonItemTags.NETHERITE_ORES)
+				.add(Items.ANCIENT_DEBRIS);
+		getOrCreateTagBuilder(CommonItemTags.ORES)
+				.addOptionalTag(CommonItemTags.NETHERITE_ORES)
+				.addOptionalTag(CommonItemTags.IRON_ORES)
+				.addOptionalTag(CommonItemTags.COPPER_ORES)
+				.addOptionalTag(CommonItemTags.REDSTONE_ORES)
+				.addOptionalTag(CommonItemTags.GOLD_ORES)
+				.addOptionalTag(ItemTags.COAL_ORES)
+				.addOptionalTag(ItemTags.DIAMOND_ORES)
+				.addOptionalTag(ItemTags.LAPIS_ORES)
+				.addOptionalTag(ItemTags.EMERALD_ORES);
+		getOrCreateTagBuilder(CommonItemTags.IRON_INGOTS)
+				.add(Items.IRON_INGOT);
+		getOrCreateTagBuilder(CommonItemTags.COPPER_INGOTS)
+				.add(Items.COPPER_INGOT);
+		getOrCreateTagBuilder(CommonItemTags.GOLD_INGOTS)
+				.add(Items.GOLD_INGOT);
+		getOrCreateTagBuilder(CommonItemTags.NETHERITE_INGOTS)
+				.add(Items.NETHERITE_INGOT);
+		getOrCreateTagBuilder(CommonItemTags.REDSTONE_DUSTS)
+				.add(Items.REDSTONE);
 	}
 
 	private void generateExcludedItemTag() {
@@ -120,7 +220,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.CROSSBOW)
 				.add(Items.BOW);
 	}
-	
+
 	private static Identifier createFabricId(String id) {
 		return new Identifier("fabric", id);
 	}
