@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.tag.v1.CommonBiomeTags;
 
 public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvider<Biome> {
 	public BiomeTagGenerator(FabricDataGenerator dataGenerator) {
-		super(dataGenerator, Registry.BIOME_KEY, "biomes", "Biome Tags");
+		super(dataGenerator, Registry.BIOME_KEY, "worldgen/biome", "Biome Tags");
 	}
 
 	@Override
