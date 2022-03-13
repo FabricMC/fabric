@@ -21,9 +21,9 @@ import java.util.Optional;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.LavaFluid;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.tag.FluidTags;
 
 import net.fabricmc.fabric.api.fluid.v1.FabricFluid;
 
@@ -32,7 +32,7 @@ public class MixinFluid implements FabricFluid {
 	@Override
 	public Optional<SoundEvent> getFabricBucketEmptySound() {
 		// Default behaviour (from playEmptyingSound method in BucketItem).
-		//noinspection ConstantConditions,deprecation
-		return Optional.of(((Fluid) (Object) this).isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY);
+		//noinspection ConstantConditions
+		return Optional.of(((Object) this) instanceof LavaFluid ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY);
 	}
 }

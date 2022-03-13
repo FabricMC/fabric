@@ -16,15 +16,19 @@
 
 package net.fabricmc.fabric.mixin.fluid;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldAccess;
+import net.minecraft.world.event.GameEvent;
 
 @Mixin(BucketItem.class)
 public class MixinBucketItem {
@@ -32,10 +36,13 @@ public class MixinBucketItem {
 	@Final
 	private Fluid fluid;
 
-	@ModifyArg(method = "playEmptyingSound", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldAccess;playSound(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FF)V"), index = 2)
-	private SoundEvent modSoundEvent(SoundEvent value) {
-		//Sets the specified value if is present, otherwise does nothing.
-		//Lava and water, not overriding this function, maintain their default behaviour.
-		return fluid.getFabricBucketEmptySound().orElse(value);
+	/**
+	 * @author FabricMC
+	 * @reason Makes the sound totally dependent from the fluid.
+	 */
+	@Overwrite
+	public void playEmptyingSound(@Nullable PlayerEntity player, WorldAccess world, BlockPos pos) {
+		fluid.getFabricBucketEmptySound().ifPresent(sound -> world.playSound(player, pos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F));
+		world.emitGameEvent(player, GameEvent.FLUID_PLACE, pos);
 	}
 }
