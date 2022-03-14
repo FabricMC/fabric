@@ -50,6 +50,16 @@ public class CommonItemTags {
 	public static final TagKey<Item> ORES = register("ores");
 	public static final TagKey<Item> NETHERITE_ORES = register("netherite_ores");
 	public static final TagKey<Item> NETHERITE_INGOTS = register("netherite_ingots");
+	public static final TagKey<Item> QUARTZ_ORES = register("quartz_ores");
+	public static final TagKey<Item> QUARTZ = register("quartz");
+	public static final TagKey<Item> LAPIS_ORES = register("lapis_ores");
+	public static final TagKey<Item> LAPIS = register("lapiss");
+	public static final TagKey<Item> DIAMOND_ORES = register("diamond_ores");
+	public static final TagKey<Item> DIAMONDS = register("diamonds");
+	public static final TagKey<Item> EMERALD_ORES = register("emerald_ores");
+	public static final TagKey<Item> EMERALDS = register("emeralds");
+	public static final TagKey<Item> COAL_ORES = register("coal_ores");
+	public static final TagKey<Item> COAL = register("coal");
 	// Consumables
 	public static final TagKey<Item> FOODS = register("foods");
 	public static final TagKey<Item> POTIONS = register("potions");

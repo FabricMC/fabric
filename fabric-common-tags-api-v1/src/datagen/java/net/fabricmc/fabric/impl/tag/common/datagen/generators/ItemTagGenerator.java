@@ -188,11 +188,11 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(CommonItemTags.COPPER_ORES)
 				.addOptionalTag(CommonItemTags.REDSTONE_ORES)
 				.addOptionalTag(CommonItemTags.GOLD_ORES)
-				.addOptionalTag(ItemTags.COAL_ORES)
-				.addOptionalTag(ItemTags.DIAMOND_ORES)
-				.addOptionalTag(ItemTags.LAPIS_ORES)
-				.add(Items.NETHER_QUARTZ_ORE)
-				.addOptionalTag(ItemTags.EMERALD_ORES);
+				.addOptionalTag(CommonItemTags.COAL_ORES)
+				.addOptionalTag(CommonItemTags.DIAMOND_ORES)
+				.addOptionalTag(CommonItemTags.LAPIS_ORES)
+				.addOptionalTag(CommonItemTags.QUARTZ_ORES)
+				.addOptionalTag(CommonItemTags.EMERALD_ORES);
 		getOrCreateTagBuilder(CommonItemTags.IRON_INGOTS)
 				.add(Items.IRON_INGOT);
 		getOrCreateTagBuilder(CommonItemTags.COPPER_INGOTS)
@@ -203,6 +203,26 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.NETHERITE_INGOT);
 		getOrCreateTagBuilder(CommonItemTags.REDSTONE_DUSTS)
 				.add(Items.REDSTONE);
+		getOrCreateTagBuilder(CommonItemTags.QUARTZ_ORES)
+				.addOptionalTag(CommonItemTags.NETHERITE_ORES);
+		getOrCreateTagBuilder(CommonItemTags.QUARTZ)
+				.add(Items.NETHER_QUARTZ_ORE);
+		getOrCreateTagBuilder(CommonItemTags.COAL_ORES)
+				.addOptionalTag(ItemTags.COAL_ORES);
+		getOrCreateTagBuilder(CommonItemTags.COAL)
+				.addOptionalTag(ItemTags.COALS);
+		getOrCreateTagBuilder(CommonItemTags.EMERALD_ORES)
+				.addOptionalTag(ItemTags.EMERALD_ORES);
+		getOrCreateTagBuilder(CommonItemTags.EMERALDS)
+				.add(Items.EMERALD);
+		getOrCreateTagBuilder(CommonItemTags.LAPIS_ORES)
+				.addOptionalTag(ItemTags.LAPIS_ORES);
+		getOrCreateTagBuilder(CommonItemTags.LAPIS)
+				.add(Items.LAPIS_LAZULI);
+		getOrCreateTagBuilder(CommonItemTags.DIAMOND_ORES)
+				.addOptionalTag(ItemTags.DIAMOND_ORES);
+		getOrCreateTagBuilder(CommonItemTags.DIAMONDS)
+				.add(Items.DIAMOND);
 	}
 
 	private void generateToolTags() {

@@ -39,17 +39,26 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 				.addOptionalTag(BlockTags.COPPER_ORES);
 		getOrCreateTagBuilder(CommonBlockTags.REDSTONE_ORES)
 				.addOptionalTag(BlockTags.REDSTONE_ORES);
+		getOrCreateTagBuilder(CommonBlockTags.QUARTZ_ORES)
+				.addOptionalTag(CommonBlockTags.NETHERITE_ORES);
+		getOrCreateTagBuilder(CommonBlockTags.COAL_ORES)
+				.addOptionalTag(BlockTags.COAL_ORES);
+		getOrCreateTagBuilder(CommonBlockTags.EMERALD_ORES)
+				.addOptionalTag(BlockTags.EMERALD_ORES);
+		getOrCreateTagBuilder(CommonBlockTags.LAPIS_ORES)
+				.addOptionalTag(BlockTags.LAPIS_ORES);
+		getOrCreateTagBuilder(CommonBlockTags.DIAMOND_ORES)
+				.addOptionalTag(BlockTags.DIAMOND_ORES);
 		getOrCreateTagBuilder(CommonBlockTags.ORES)
 				.addOptionalTag(CommonBlockTags.REDSTONE_ORES)
 				.addOptionalTag(CommonBlockTags.COPPER_ORES)
 				.addOptionalTag(CommonBlockTags.GOLD_ORES)
 				.addOptionalTag(CommonBlockTags.IRON_ORES)
-				.addOptionalTag(BlockTags.COAL_ORES)
-				.addOptionalTag(BlockTags.EMERALD_ORES)
-				.addOptionalTag(BlockTags.LAPIS_ORES)
-				.addOptionalTag(BlockTags.DIAMOND_ORES)
-				.add(Blocks.NETHER_QUARTZ_ORE)
-				.addOptionalTag(CommonBlockTags.NETHERITE_ORES);
+				.addOptionalTag(CommonBlockTags.COAL_ORES)
+				.addOptionalTag(CommonBlockTags.EMERALD_ORES)
+				.addOptionalTag(CommonBlockTags.LAPIS_ORES)
+				.addOptionalTag(CommonBlockTags.DIAMOND_ORES)
+				.addOptionalTag(CommonBlockTags.QUARTZ_ORES);
 		getOrCreateTagBuilder(CommonBlockTags.CHESTS)
 				.add(Blocks.CHEST)
 				.add(Blocks.ENDER_CHEST)

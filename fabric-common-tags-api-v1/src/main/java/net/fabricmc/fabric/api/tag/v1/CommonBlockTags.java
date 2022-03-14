@@ -30,6 +30,11 @@ public class CommonBlockTags {
 	public static final TagKey<Block> GOLD_ORES = register("gold_ores");
 	public static final TagKey<Block> REDSTONE_ORES = register("redstone_ores");
 	public static final TagKey<Block> COPPER_ORES = register("copper_ores");
+	public static final TagKey<Block> QUARTZ_ORES = register("quartz_ores");
+	public static final TagKey<Block> LAPIS_ORES = register("lapis_ores");
+	public static final TagKey<Block> DIAMOND_ORES = register("diamond_ores");
+	public static final TagKey<Block> EMERALD_ORES = register("emerald_ores");
+	public static final TagKey<Block> COAL_ORES = register("coal_ores");
 	public static final TagKey<Block> ORES = register("ores");
 	public static final TagKey<Block> NETHERITE_ORES = register("netherite_ores");
 	public static final TagKey<Block> CHESTS = register("chests");
