@@ -140,8 +140,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ItemTags.REDSTONE_ORES);
 		getOrCreateTagBuilder(CommonItemTags.COPPER_ORES)
 				.addOptionalTag(ItemTags.COPPER_ORES);
-		getOrCreateTagBuilder(CommonItemTags.NETHERITE_ORES)
-				.add(Items.ANCIENT_DEBRIS);
+		getOrCreateTagBuilder(CommonItemTags.NETHERITE_ORES);
 		getOrCreateTagBuilder(CommonItemTags.ORES)
 				.addOptionalTag(CommonItemTags.NETHERITE_ORES)
 				.addOptionalTag(CommonItemTags.IRON_ORES)
