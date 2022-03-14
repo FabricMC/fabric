@@ -26,6 +26,7 @@ import net.fabricmc.fabric.impl.tag.common.TagRegistration;
  * Note that addition to some vanilla tags implies having certain functionality.
  */
 public class CommonItemTags {
+	// Tool tags
 	public static final TagKey<Item> PICKAXES = register("pickaxes");
 	public static final TagKey<Item> SHOVELS = register("shovels");
 	public static final TagKey<Item> HOES = register("hoes");
@@ -37,6 +38,7 @@ public class CommonItemTags {
 	public static final TagKey<Item> SPEARS = register("spears");
 	public static final TagKey<Item> SWORDS = register("swords");
 	public static final TagKey<Item> BOWS = register("bows");
+	// Ores and ingots
 	public static final TagKey<Item> IRON_INGOTS = register("iron_ingots");
 	public static final TagKey<Item> IRON_ORES = register("iron_ores");
 	public static final TagKey<Item> GOLD_ORES = register("gold_ores");
@@ -48,12 +50,15 @@ public class CommonItemTags {
 	public static final TagKey<Item> ORES = register("ores");
 	public static final TagKey<Item> NETHERITE_ORES = register("netherite_ores");
 	public static final TagKey<Item> NETHERITE_INGOTS = register("netherite_ingots");
+	// Consumables
 	public static final TagKey<Item> FOODS = register("foods");
 	public static final TagKey<Item> POTIONS = register("potions");
+	// Buckets
 	public static final TagKey<Item> WATER_BUCKET = register("bucket/water");
 	public static final TagKey<Item> LAVA_BUCKET = register("bucket/lava");
 	public static final TagKey<Item> MILK_BUCKET = register("bucket/milk");
 	public static final TagKey<Item> EMPTY_BUCKET = register("bucket/empty");
+
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Item> GLASS_PANES = register("glass_panes");
 
