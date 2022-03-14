@@ -41,11 +41,14 @@ public class CommonEnchantmentTags {
 	 * For enchantments that increase the damage dealt by an item.
 	 */
 	public static final TagKey<Enchantment> WEAPON_DAMAGE_ENHANCEMENT = register("weapon_damage_enhancement");
-
 	/**
 	 * For enchantments that increase movement speed or otherwise benefit the entity wearing armor enchanted with it.
 	 */
 	public static final TagKey<Enchantment> ENTITY_MOVEMENT_ENHANCEMENT = register("entity_movement_enhancement");
+	/**
+	 * For enchantments that decrease damage taken or otherwise benefit, in regards to damage, the entity wearing armor enchanted with it.
+	 */
+	public static final TagKey<Enchantment> ENTITY_DEFENSE_ENHANCEMENT = register("entity_defense_enhancement");
 
 	private static TagKey<Enchantment> register(String tagID) {
 		return TagRegistration.ENCHANTMENT_TAG_REGISTRATION.registerCommon(tagID);

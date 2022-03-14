@@ -47,5 +47,12 @@ public class EnchantmentTagGenerator extends FabricTagProvider<Enchantment> {
 				.add(Enchantments.FEATHER_FALLING)
 				.add(Enchantments.DEPTH_STRIDER)
 				.add(Enchantments.SOUL_SPEED);
+		getOrCreateTagBuilder(CommonEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENT)
+				.add(Enchantments.FEATHER_FALLING)
+				.add(Enchantments.PROTECTION)
+				.add(Enchantments.BLAST_PROTECTION)
+				.add(Enchantments.PROJECTILE_PROTECTION)
+				.add(Enchantments.FIRE_PROTECTION)
+				.add(Enchantments.RESPIRATION);
 	}
 }
