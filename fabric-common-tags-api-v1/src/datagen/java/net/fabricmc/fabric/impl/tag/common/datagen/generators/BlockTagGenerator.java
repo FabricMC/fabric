@@ -56,5 +56,46 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 				.add(Blocks.TRAPPED_CHEST);
 		getOrCreateTagBuilder(CommonBlockTags.BOOKSHELVES)
 				.add(Blocks.BOOKSHELF);
+		generateGlassTags();
+	}
+
+	private void generateGlassTags() {
+		getOrCreateTagBuilder(CommonBlockTags.GLASS_BLOCKS)
+				.add(Blocks.GLASS)
+				.add(Blocks.GRAY_STAINED_GLASS)
+				.add(Blocks.BLACK_STAINED_GLASS)
+				.add(Blocks.ORANGE_STAINED_GLASS)
+				.add(Blocks.BLUE_STAINED_GLASS)
+				.add(Blocks.BROWN_STAINED_GLASS)
+				.add(Blocks.CYAN_STAINED_GLASS)
+				.add(Blocks.GREEN_STAINED_GLASS)
+				.add(Blocks.LIGHT_BLUE_STAINED_GLASS)
+				.add(Blocks.LIGHT_GRAY_STAINED_GLASS)
+				.add(Blocks.LIME_STAINED_GLASS)
+				.add(Blocks.MAGENTA_STAINED_GLASS)
+				.add(Blocks.PINK_STAINED_GLASS)
+				.add(Blocks.PURPLE_STAINED_GLASS)
+				.add(Blocks.RED_STAINED_GLASS)
+				.add(Blocks.TINTED_GLASS)
+				.add(Blocks.WHITE_STAINED_GLASS)
+				.add(Blocks.YELLOW_STAINED_GLASS);
+		getOrCreateTagBuilder(CommonBlockTags.GLASS_PANES)
+				.add(Blocks.GLASS_PANE)
+				.add(Blocks.GRAY_STAINED_GLASS_PANE)
+				.add(Blocks.BLACK_STAINED_GLASS_PANE)
+				.add(Blocks.ORANGE_STAINED_GLASS_PANE)
+				.add(Blocks.BLUE_STAINED_GLASS_PANE)
+				.add(Blocks.BROWN_STAINED_GLASS_PANE)
+				.add(Blocks.CYAN_STAINED_GLASS_PANE)
+				.add(Blocks.GREEN_STAINED_GLASS_PANE)
+				.add(Blocks.LIGHT_BLUE_STAINED_GLASS_PANE)
+				.add(Blocks.LIGHT_GRAY_STAINED_GLASS_PANE)
+				.add(Blocks.LIME_STAINED_GLASS_PANE)
+				.add(Blocks.MAGENTA_STAINED_GLASS_PANE)
+				.add(Blocks.PINK_STAINED_GLASS_PANE)
+				.add(Blocks.PURPLE_STAINED_GLASS_PANE)
+				.add(Blocks.RED_STAINED_GLASS_PANE)
+				.add(Blocks.WHITE_STAINED_GLASS_PANE)
+				.add(Blocks.YELLOW_STAINED_GLASS_PANE);
 	}
 }

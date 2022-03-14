@@ -54,6 +54,8 @@ public class CommonItemTags {
 	public static final TagKey<Item> LAVA_BUCKET = register("bucket/lava");
 	public static final TagKey<Item> MILK_BUCKET = register("bucket/milk");
 	public static final TagKey<Item> EMPTY_BUCKET = register("bucket/empty");
+	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
+	public static final TagKey<Item> GLASS_PANES = register("glass_panes");
 
 	private static TagKey<Item> register(String tagID) {
 		return TagRegistration.ITEM_TAG_REGISTRATION.registerCommon(tagID);

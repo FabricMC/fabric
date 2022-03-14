@@ -34,6 +34,8 @@ public class CommonBlockTags {
 	public static final TagKey<Block> NETHERITE_ORES = register("netherite_ores");
 	public static final TagKey<Block> CHESTS = register("chests");
 	public static final TagKey<Block> BOOKSHELVES = register("bookshelves");
+	public static final TagKey<Block> GLASS_BLOCKS = register("glass_blocks");
+	public static final TagKey<Block> GLASS_PANES = register("glass_panes");
 
 	private static TagKey<Block> register(String tagID) {
 		return TagRegistration.BLOCK_TAG_REGISTRATION.registerCommon(tagID);
