@@ -43,5 +43,9 @@ public class EnchantmentTagGenerator extends FabricTagProvider<Enchantment> {
 				.add(Enchantments.SMITE)
 				.add(Enchantments.POWER)
 				.add(Enchantments.SHARPNESS);
+		getOrCreateTagBuilder(CommonEnchantmentTags.ENTITY_MOVEMENT_ENHANCEMENT)
+				.add(Enchantments.FEATHER_FALLING)
+				.add(Enchantments.DEPTH_STRIDER)
+				.add(Enchantments.SOUL_SPEED);
 	}
 }
