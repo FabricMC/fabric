@@ -52,8 +52,7 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 				.add(BiomeKeys.END_MIDLANDS)
 				.add(BiomeKeys.END_HIGHLANDS)
 				.add(BiomeKeys.THE_END)
-				.add(BiomeKeys.SMALL_END_ISLANDS)
-				.add(BiomeKeys.THE_VOID);
+				.add(BiomeKeys.SMALL_END_ISLANDS);
 		// We avoid the vanilla group tags here as mods may add to them without actually spawning them in the overworld
 		getOrCreateTagBuilder(CommonBiomeTags.IN_OVERWORLD)
 				.add(BiomeKeys.RIVER).add(BiomeKeys.FROZEN_RIVER)
@@ -76,7 +75,7 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 				.add(BiomeKeys.WOODED_BADLANDS).add(BiomeKeys.MEADOW).add(BiomeKeys.GROVE)
 				.add(BiomeKeys.SNOWY_SLOPES).add(BiomeKeys.FROZEN_PEAKS).add(BiomeKeys.JAGGED_PEAKS)
 				.add(BiomeKeys.STONY_PEAKS).add(BiomeKeys.MUSHROOM_FIELDS).add(BiomeKeys.DRIPSTONE_CAVES)
-				.add(BiomeKeys.LUSH_CAVES).add(BiomeKeys.SNOWY_BEACH);
+				.add(BiomeKeys.LUSH_CAVES).add(BiomeKeys.SNOWY_BEACH).add(BiomeKeys.SWAMP).add(BiomeKeys.STONY_SHORE);
 	}
 
 	/**
@@ -110,6 +109,7 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 				.add(BiomeKeys.SNOWY_PLAINS)
 				.add(BiomeKeys.SNOWY_SLOPES)
 				.add(BiomeKeys.SNOWY_TAIGA)
+				.add(BiomeKeys.ICE_SPIKES)
 				.add(BiomeKeys.FROZEN_OCEAN);
 		getOrCreateTagBuilder(CommonBiomeTags.BEACH)
 				.addOptionalTag(BiomeTags.IS_BEACH)
