@@ -80,6 +80,25 @@ public class CommonItemTags {
 
 	public static final TagKey<Item> SHULKER_BOXES = register("shulker_boxes");
 
+	// Dyes
+	public static final TagKey<Item> DYES = register("dyes");
+	public static final TagKey<Item> BLACK_DYES = register("_dyes");
+	public static final TagKey<Item> BLUE_DYES = register("_dyes");
+	public static final TagKey<Item> BROWN_DYES = register("_dyes");
+	public static final TagKey<Item> CYAN_DYES = register("_dyes");
+	public static final TagKey<Item> GRAY_DYES = register("_dyes");
+	public static final TagKey<Item> GREEN_DYES = register("_dyes");
+	public static final TagKey<Item> LIGHT_BLUE_DYES = register("_dyes");
+	public static final TagKey<Item> LIGHT_GRAY_DYES = register("_dyes");
+	public static final TagKey<Item> LIME_DYES = register("_dyes");
+	public static final TagKey<Item> MAGENTA_DYES = register("_dyes");
+	public static final TagKey<Item> ORANGE_DYES = register("_dyes");
+	public static final TagKey<Item> PINK_DYES = register("_dyes");
+	public static final TagKey<Item> PURPLE_DYES = register("_dyes");
+	public static final TagKey<Item> RED_DYES = register("_dyes");
+	public static final TagKey<Item> WHITE_DYES = register("_dyes");
+	public static final TagKey<Item> YELLOW_DYES = register("_dyes");
+
 	private static TagKey<Item> register(String tagID) {
 		return TagRegistration.ITEM_TAG_REGISTRATION.registerCommon(tagID);
 	}

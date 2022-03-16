@@ -68,6 +68,59 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		generateConsumableTags();
 		generateGlassTags();
 		generateShulkerTag();
+		generateDyeTags();
+	}
+
+	private void generateDyeTags() {
+		getOrCreateTagBuilder(CommonItemTags.DYES)
+				.addOptionalTag(CommonItemTags.BLACK_DYES)
+				.addOptionalTag(CommonItemTags.BLUE_DYES)
+				.addOptionalTag(CommonItemTags.BROWN_DYES)
+				.addOptionalTag(CommonItemTags.GREEN_DYES)
+				.addOptionalTag(CommonItemTags.RED_DYES)
+				.addOptionalTag(CommonItemTags.WHITE_DYES)
+				.addOptionalTag(CommonItemTags.YELLOW_DYES)
+				.addOptionalTag(CommonItemTags.LIGHT_GRAY_DYES)
+				.addOptionalTag(CommonItemTags.LIGHT_BLUE_DYES)
+				.addOptionalTag(CommonItemTags.LIME_DYES)
+				.addOptionalTag(CommonItemTags.MAGENTA_DYES)
+				.addOptionalTag(CommonItemTags.ORANGE_DYES)
+				.addOptionalTag(CommonItemTags.PINK_DYES)
+				.addOptionalTag(CommonItemTags.CYAN_DYES)
+				.addOptionalTag(CommonItemTags.GRAY_DYES)
+				.addOptionalTag(CommonItemTags.PURPLE_DYES);
+		getOrCreateTagBuilder(CommonItemTags.BLACK_DYES)
+				.add(Items.BLACK_DYE);
+		getOrCreateTagBuilder(CommonItemTags.BLUE_DYES)
+				.add(Items.BLUE_DYE);
+		getOrCreateTagBuilder(CommonItemTags.BROWN_DYES)
+				.add(Items.PURPLE_DYE);
+		getOrCreateTagBuilder(CommonItemTags.GREEN_DYES)
+				.add(Items.GREEN_DYE);
+		getOrCreateTagBuilder(CommonItemTags.RED_DYES)
+				.add(Items.RED_DYE);
+		getOrCreateTagBuilder(CommonItemTags.WHITE_DYES)
+				.add(Items.WHITE_DYE);
+		getOrCreateTagBuilder(CommonItemTags.YELLOW_DYES)
+				.add(Items.YELLOW_DYE);
+		getOrCreateTagBuilder(CommonItemTags.LIGHT_BLUE_DYES)
+				.add(Items.LIGHT_BLUE_DYE);
+		getOrCreateTagBuilder(CommonItemTags.LIGHT_GRAY_DYES)
+				.add(Items.LIGHT_GRAY_DYE);
+		getOrCreateTagBuilder(CommonItemTags.LIME_DYES)
+				.add(Items.LIME_DYE);
+		getOrCreateTagBuilder(CommonItemTags.MAGENTA_DYES)
+				.add(Items.MAGENTA_DYE);
+		getOrCreateTagBuilder(CommonItemTags.ORANGE_DYES)
+				.add(Items.ORANGE_DYE);
+		getOrCreateTagBuilder(CommonItemTags.PINK_DYES)
+				.add(Items.PINK_DYE);
+		getOrCreateTagBuilder(CommonItemTags.CYAN_DYES)
+				.add(Items.CYAN_DYE);
+		getOrCreateTagBuilder(CommonItemTags.GRAY_DYES)
+				.add(Items.GRAY_DYE);
+		getOrCreateTagBuilder(CommonItemTags.PURPLE_DYES)
+				.add(Items.PURPLE_DYE);
 	}
 
 	private void generateShulkerTag() {
