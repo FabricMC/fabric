@@ -64,6 +64,7 @@ public class CommonBiomeTags {
 	public static final TagKey<Biome> AQUATIC = register("aquatic");
 	public static final TagKey<Biome> WASTELAND = register("wasteland");
 	public static final TagKey<Biome> DEAD = register("dead");
+	public static final TagKey<Biome> FLORAL = register("floral");
 
 	public static final TagKey<Biome> BADLANDS = register("badlands");
 	public static final TagKey<Biome> CAVES = register("caves");

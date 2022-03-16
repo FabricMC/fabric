@@ -183,6 +183,9 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 				.addOptionalTag(CommonBiomeTags.JUNGLE);
 		getOrCreateTagBuilder(CommonBiomeTags.TREE_SAVANNA)
 				.addOptionalTag(CommonBiomeTags.SAVANNA);
+		getOrCreateTagBuilder(CommonBiomeTags.FLORAL)
+				.add(BiomeKeys.SUNFLOWER_PLAINS)
+				.add(BiomeKeys.FLOWER_FOREST);
 	}
 
 	private void generateTerrainDescriptorTags() {
