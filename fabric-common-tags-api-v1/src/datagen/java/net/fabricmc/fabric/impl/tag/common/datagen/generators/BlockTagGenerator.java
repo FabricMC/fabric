@@ -40,7 +40,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 		getOrCreateTagBuilder(CommonBlockTags.REDSTONE_ORES)
 				.addOptionalTag(BlockTags.REDSTONE_ORES);
 		getOrCreateTagBuilder(CommonBlockTags.QUARTZ_ORES)
-				.addOptionalTag(CommonBlockTags.NETHERITE_ORES);
+				.add(Blocks.NETHER_QUARTZ_ORE);
 		getOrCreateTagBuilder(CommonBlockTags.COAL_ORES)
 				.addOptionalTag(BlockTags.COAL_ORES);
 		getOrCreateTagBuilder(CommonBlockTags.EMERALD_ORES)

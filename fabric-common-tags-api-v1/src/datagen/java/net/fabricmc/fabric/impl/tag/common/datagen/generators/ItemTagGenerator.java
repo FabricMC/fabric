@@ -204,9 +204,9 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(CommonItemTags.REDSTONE_DUSTS)
 				.add(Items.REDSTONE);
 		getOrCreateTagBuilder(CommonItemTags.QUARTZ_ORES)
-				.addOptionalTag(CommonItemTags.NETHERITE_ORES);
-		getOrCreateTagBuilder(CommonItemTags.QUARTZ)
 				.add(Items.NETHER_QUARTZ_ORE);
+		getOrCreateTagBuilder(CommonItemTags.QUARTZ)
+				.add(Items.QUARTZ);
 		getOrCreateTagBuilder(CommonItemTags.COAL_ORES)
 				.addOptionalTag(ItemTags.COAL_ORES);
 		getOrCreateTagBuilder(CommonItemTags.COAL)
