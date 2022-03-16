@@ -94,7 +94,6 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 				.add(BiomeKeys.ERODED_BADLANDS)
 				.add(BiomeKeys.BADLANDS);
 		getOrCreateTagBuilder(CommonBiomeTags.PLAINS)
-				.add(BiomeKeys.SNOWY_PLAINS)
 				.add(BiomeKeys.SUNFLOWER_PLAINS)
 				.add(BiomeKeys.PLAINS);
 		getOrCreateTagBuilder(CommonBiomeTags.SAVANNA)

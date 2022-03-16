@@ -34,6 +34,10 @@ public class CommonBiomeTags {
 	public static final TagKey<Biome> EXTREME_HILLS = register("extreme_hills");
 	public static final TagKey<Biome> JUNGLE = register("jungle");
 	public static final TagKey<Biome> MESA = register("mesa");
+	/**
+	 * For temperate or warmer plains-like biomes.
+	 * For snowy plains-like biomes, see {@link CommonBiomeTags#SNOWY_PLAINS}.
+	 */
 	public static final TagKey<Biome> PLAINS = register("plains");
 	public static final TagKey<Biome> SAVANNA = register("savanna");
 	public static final TagKey<Biome> ICY = register("icy");
@@ -70,6 +74,10 @@ public class CommonBiomeTags {
 	public static final TagKey<Biome> CAVES = register("caves");
 	public static final TagKey<Biome> END_ISLANDS = register("end_islands");
 	public static final TagKey<Biome> NETHER_FORESTS = register("nether_forests");
+	/**
+	 * For snowy plains-like biomes.
+	 * For warmer plains-like biomes, see {@link CommonBiomeTags#PLAINS}.
+	 */
 	public static final TagKey<Biome> SNOWY_PLAINS = register("snowy_plains");
 	public static final TagKey<Biome> STONY_SHORES = register("stony_shores");
 	public static final TagKey<Biome> FLOWER_FORESTS = register("flower_forests");
