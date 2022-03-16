@@ -35,8 +35,6 @@ public class EnchantmentTagGenerator extends FabricTagProvider<Enchantment> {
 				.add(Enchantments.FORTUNE);
 		getOrCreateTagBuilder(CommonEnchantmentTags.INCREASES_ENTITY_DROPS)
 				.add(Enchantments.LOOTING);
-		getOrCreateTagBuilder(CommonEnchantmentTags.IDENTICAL_DROPS)
-				.add(Enchantments.SILK_TOUCH);
 		getOrCreateTagBuilder(CommonEnchantmentTags.WEAPON_DAMAGE_ENHANCEMENT)
 				.add(Enchantments.BANE_OF_ARTHROPODS)
 				.add(Enchantments.IMPALING)
@@ -44,7 +42,6 @@ public class EnchantmentTagGenerator extends FabricTagProvider<Enchantment> {
 				.add(Enchantments.POWER)
 				.add(Enchantments.SHARPNESS);
 		getOrCreateTagBuilder(CommonEnchantmentTags.ENTITY_MOVEMENT_ENHANCEMENT)
-				.add(Enchantments.FEATHER_FALLING)
 				.add(Enchantments.DEPTH_STRIDER)
 				.add(Enchantments.SOUL_SPEED);
 		getOrCreateTagBuilder(CommonEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENT)

@@ -33,11 +33,6 @@ public class CommonEnchantmentTags {
 	 */
 	public static final TagKey<Enchantment> INCREASES_ENTITY_DROPS = register("looting");
 	/**
-	 * A tag containing enchantments that cause a block to drop itself in item form
-	 * rather than some other item, such as {@link net.minecraft.enchantment.Enchantments#SILK_TOUCH}.
-	 */
-	public static final TagKey<Enchantment> IDENTICAL_DROPS = register("identical_drops");
-	/**
 	 * For enchantments that increase the damage dealt by an item.
 	 */
 	public static final TagKey<Enchantment> WEAPON_DAMAGE_ENHANCEMENT = register("weapon_damage_enhancement");
