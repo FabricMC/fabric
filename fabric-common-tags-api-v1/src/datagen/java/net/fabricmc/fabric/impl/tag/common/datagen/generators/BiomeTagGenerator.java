@@ -117,6 +117,8 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 		getOrCreateTagBuilder(CommonBiomeTags.FOREST)
 				.addOptionalTag(BiomeTags.IS_FOREST);
 		getOrCreateTagBuilder(CommonBiomeTags.OCEAN)
+				.addOptionalTag(CommonBiomeTags.DEEP_OCEAN)
+				.addOptionalTag(CommonBiomeTags.DEEP_OCEAN)
 				.addOptionalTag(BiomeTags.IS_OCEAN);
 		getOrCreateTagBuilder(CommonBiomeTags.DESERT)
 				.add(BiomeKeys.DESERT);
@@ -141,6 +143,17 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 				.add(BiomeKeys.LUSH_CAVES);
 		getOrCreateTagBuilder(CommonBiomeTags.VOID)
 				.add(BiomeKeys.THE_VOID);
+		getOrCreateTagBuilder(CommonBiomeTags.DEEP_OCEAN)
+				.add(BiomeKeys.DEEP_FROZEN_OCEAN)
+				.add(BiomeKeys.DEEP_LUKEWARM_OCEAN)
+				.add(BiomeKeys.DEEP_COLD_OCEAN)
+				.add(BiomeKeys.DEEP_OCEAN);
+		getOrCreateTagBuilder(CommonBiomeTags.SHALLOW_OCEAN)
+				.add(BiomeKeys.OCEAN)
+				.add(BiomeKeys.LUKEWARM_OCEAN)
+				.add(BiomeKeys.FROZEN_OCEAN)
+				.add(BiomeKeys.COLD_OCEAN)
+				.add(BiomeKeys.WARM_OCEAN);
 	}
 
 	private void generateClimateAndVegetationTags() {

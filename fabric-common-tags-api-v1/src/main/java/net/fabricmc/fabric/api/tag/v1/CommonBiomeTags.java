@@ -90,6 +90,8 @@ public class CommonBiomeTags {
 	public static final TagKey<Biome> SNOWY_PLAINS = register("snowy_plains");
 	public static final TagKey<Biome> STONY_SHORES = register("stony_shores");
 	public static final TagKey<Biome> FLOWER_FORESTS = register("flower_forests");
+	public static final TagKey<Biome> DEEP_OCEAN = register("deep_ocean");
+	public static final TagKey<Biome> SHALLOW_OCEAN = register("shallow_ocean");
 
 	private static TagKey<Biome> register(String tagID) {
 		return TagRegistration.BIOME_TAG_REGISTRATION.registerCommon(tagID);
