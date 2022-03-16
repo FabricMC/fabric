@@ -145,16 +145,31 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 
 	private void generateClimateAndVegetationTags() {
 		getOrCreateTagBuilder(CommonBiomeTags.CLIMATE_COLD)
+				.add(BiomeKeys.GROVE)
+				.add(BiomeKeys.JAGGED_PEAKS)
 				.addOptionalTag(CommonBiomeTags.ICY);
-		getOrCreateTagBuilder(CommonBiomeTags.CLIMATE_TEMPERATE);
+		getOrCreateTagBuilder(CommonBiomeTags.CLIMATE_TEMPERATE)
+				.add(BiomeKeys.FOREST)
+				.add(BiomeKeys.SUNFLOWER_PLAINS)
+				.add(BiomeKeys.SWAMP)
+				.add(BiomeKeys.STONY_SHORE)
+				.add(BiomeKeys.DARK_FOREST)
+				.add(BiomeKeys.WINDSWEPT_FOREST)
+				.add(BiomeKeys.BIRCH_FOREST)
+				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST)
+				.add(BiomeKeys.MEADOW)
+				.add(BiomeKeys.PLAINS);
 		getOrCreateTagBuilder(CommonBiomeTags.CLIMATE_HOT)
 				.addOptionalTag(CommonBiomeTags.JUNGLE)
 				.addOptionalTag(CommonBiomeTags.SAVANNA)
 				.addOptionalTag(CommonBiomeTags.DESERT)
 				.addOptionalTag(CommonBiomeTags.BADLANDS)
+				.add(BiomeKeys.STONY_PEAKS)
+				.addOptionalTag(CommonBiomeTags.MUSHROOM)
 				.addOptionalTag(CommonBiomeTags.IN_NETHER);
 		getOrCreateTagBuilder(CommonBiomeTags.CLIMATE_WET)
 				.addOptionalTag(CommonBiomeTags.AQUATIC)
+				.addOptionalTag(CommonBiomeTags.SWAMP)
 				.add(BiomeKeys.LUSH_CAVES)
 				.addOptionalTag(CommonBiomeTags.JUNGLE);
 		getOrCreateTagBuilder(CommonBiomeTags.CLIMATE_DRY)
@@ -172,12 +187,14 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 				.add(BiomeKeys.LUSH_CAVES)
 				.addOptionalTag(CommonBiomeTags.WASTELAND);
 		getOrCreateTagBuilder(CommonBiomeTags.TREE_CONIFEROUS)
+				.add(BiomeKeys.GROVE)
 				.addOptionalTag(CommonBiomeTags.TAIGA);
 		getOrCreateTagBuilder(CommonBiomeTags.TREE_DECIDUOUS)
 				.add(BiomeKeys.FOREST)
 				.add(BiomeKeys.WINDSWEPT_FOREST)
+				.add(BiomeKeys.FLOWER_FOREST)
+				.add(BiomeKeys.BIRCH_FOREST)
 				.add(BiomeKeys.DARK_FOREST)
-				.add(BiomeKeys.LUSH_CAVES)
 				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST);
 		getOrCreateTagBuilder(CommonBiomeTags.TREE_JUNGLE)
 				.addOptionalTag(CommonBiomeTags.JUNGLE);
