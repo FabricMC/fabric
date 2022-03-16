@@ -230,6 +230,18 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.NETHER_QUARTZ_ORE);
 		getOrCreateTagBuilder(CommonItemTags.QUARTZ)
 				.add(Items.QUARTZ);
+		getOrCreateTagBuilder(CommonItemTags.RAW_IRON_ORES)
+				.add(Items.RAW_IRON);
+		getOrCreateTagBuilder(CommonItemTags.RAW_COPPER_ORES)
+				.add(Items.RAW_COPPER);
+		getOrCreateTagBuilder(CommonItemTags.RAW_GOLD_ORES)
+				.add(Items.RAW_GOLD);
+		getOrCreateTagBuilder(CommonItemTags.RAW_IRON_BLOCKS)
+				.add(Items.RAW_IRON_BLOCK);
+		getOrCreateTagBuilder(CommonItemTags.RAW_COPPER_BLOCKS)
+				.add(Items.RAW_COPPER_BLOCK);
+		getOrCreateTagBuilder(CommonItemTags.RAW_GOLD_BLOCKS)
+				.add(Items.RAW_GOLD_BLOCK);
 		getOrCreateTagBuilder(CommonItemTags.COAL_ORES)
 				.addOptionalTag(ItemTags.COAL_ORES);
 		getOrCreateTagBuilder(CommonItemTags.COAL)

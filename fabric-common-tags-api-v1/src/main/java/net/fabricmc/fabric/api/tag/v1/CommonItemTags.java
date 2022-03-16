@@ -40,12 +40,18 @@ public class CommonItemTags {
 	public static final TagKey<Item> BOWS = register("bows");
 	// Ores and ingots
 	public static final TagKey<Item> IRON_INGOTS = register("iron_ingots");
+	public static final TagKey<Item> RAW_IRON_ORES = register("raw_iron_ores");
+	public static final TagKey<Item> RAW_IRON_BLOCKS = register("raw_iron_blocks");
 	public static final TagKey<Item> IRON_ORES = register("iron_ores");
 	public static final TagKey<Item> GOLD_ORES = register("gold_ores");
+	public static final TagKey<Item> RAW_GOLD_ORES = register("raw_gold_ores");
+	public static final TagKey<Item> RAW_GOLD_BLOCKS = register("raw_gold_blocks");
 	public static final TagKey<Item> GOLD_INGOTS = register("gold_ingots");
 	public static final TagKey<Item> REDSTONE_DUSTS = register("redstone_dusts");
 	public static final TagKey<Item> REDSTONE_ORES = register("redstone_ores");
 	public static final TagKey<Item> COPPER_INGOTS = register("copper_ingots");
+	public static final TagKey<Item> RAW_COPPER_ORES = register("raw_copper_ores");
+	public static final TagKey<Item> RAW_COPPER_BLOCKS = register("raw_copper_blocks");
 	public static final TagKey<Item> COPPER_ORES = register("copper_ores");
 	public static final TagKey<Item> ORES = register("ores");
 	public static final TagKey<Item> NETHERITE_ORES = register("netherite_ores");
