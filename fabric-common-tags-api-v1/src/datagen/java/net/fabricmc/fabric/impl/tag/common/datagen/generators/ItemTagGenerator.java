@@ -130,6 +130,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.DRIED_KELP)
 				.add(Items.ENCHANTED_GOLDEN_APPLE)
 				.add(Items.GOLDEN_APPLE)
+				.add(Items.GOLDEN_CARROT)
 				.add(Items.GLOW_BERRIES)
 				.add(Items.HONEY_BOTTLE)
 				.add(Items.MELON_SLICE)
