@@ -36,8 +36,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.ResourceType;
@@ -209,7 +209,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	}
 
 	@Override
-	public Collection<Identifier> findResources(ResourceType type, String namespace, String path, int depth, Predicate<String> predicate) {
+	public Collection<Identifier> findResources(ResourceType type, String namespace, String path, Predicate<Identifier> predicate) {
 		if (!namespaces.getOrDefault(type, Collections.emptySet()).contains(namespace)) {
 			return Collections.emptyList();
 		}
@@ -227,14 +227,13 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 					@Override
 					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 						String fileName = file.getFileName().toString();
+						if (fileName.endsWith(".mcmeta")) return FileVisitResult.CONTINUE;
 
-						if (!fileName.endsWith(".mcmeta")
-								&& predicate.test(fileName)) {
-							try {
-								ids.add(new Identifier(namespace, nsPath.relativize(file).toString().replace(separator, "/")));
-							} catch (InvalidIdentifierException e) {
-								LOGGER.error(e.getMessage());
-							}
+						try {
+							Identifier id = new Identifier(namespace, nsPath.relativize(file).toString().replace(separator, "/"));
+							if (predicate.test(id)) ids.add(id);
+						} catch (InvalidIdentifierException e) {
+							LOGGER.error(e.getMessage());
 						}
 
 						return FileVisitResult.CONTINUE;

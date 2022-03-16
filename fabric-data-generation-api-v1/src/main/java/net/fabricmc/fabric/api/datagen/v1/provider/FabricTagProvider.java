@@ -65,7 +65,6 @@ import net.fabricmc.fabric.mixin.datagen.DynamicRegistryManagerAccessor;
 public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	private final FabricDataGenerator fabricDataGenerator;
 	private final String path;
-	private final String name;
 
 	/**
 	 * Construct a new {@link FabricTagProvider} with the default computed path.
@@ -76,8 +75,8 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 * @param registry The backing registry for the Tag type.
 	 * @param name The name used for {@link DataProvider#getName()}
 	 */
-	protected FabricTagProvider(FabricDataGenerator dataGenerator, Registry<T> registry, String name) {
-		this(dataGenerator, registry, TagManagerLoader.getPath(registry.getKey()), name);
+	protected FabricTagProvider(FabricDataGenerator dataGenerator, Registry<T> registry) {
+		this(dataGenerator, registry, TagManagerLoader.getPath(registry.getKey()));
 	}
 
 	/**
@@ -88,14 +87,12 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 * @param dataGenerator The data generator instance
 	 * @param registry The backing registry for the Tag type.
 	 * @param path The directory name to write the tag file names. Example: "blocks" or "items"
-	 * @param name The name used for {@link DataProvider#getName()}
 	 */
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	protected FabricTagProvider(FabricDataGenerator dataGenerator, Registry<T> registry, String path, String name) {
+	protected FabricTagProvider(FabricDataGenerator dataGenerator, Registry<T> registry, String path) {
 		super(dataGenerator, registry);
 		this.fabricDataGenerator = dataGenerator;
 		this.path = path.startsWith("tags/") ? path : "tags/" + path;
-		this.name = name;
 
 		if (!(this instanceof DynamicRegistryTagProvider) && BuiltinRegistries.REGISTRIES.contains((RegistryKey) registry.getKey())) {
 			throw new IllegalArgumentException("Using FabricTagProvider to generate dynamic registry tags is not supported, Use DynamicRegistryTagProvider instead.");
@@ -126,11 +123,6 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	@Override
 	protected final void configure() {
 		generateTags();
-	}
-
-	@Override
-	public String getName() {
-		return name;
 	}
 
 	/**
@@ -226,8 +218,8 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @param name The name used for {@link DataProvider#getName()}
 		 * @throws IllegalArgumentException if the registry is static registry
 		 */
-		protected DynamicRegistryTagProvider(FabricDataGenerator dataGenerator, RegistryKey<? extends Registry<T>> registryKey, String path, String name) {
-			super(dataGenerator, FabricDataGenHelper.getFakeDynamicRegistry(), path, name);
+		protected DynamicRegistryTagProvider(FabricDataGenerator dataGenerator, RegistryKey<? extends Registry<T>> registryKey, String path) {
+			super(dataGenerator, FabricDataGenHelper.getFakeDynamicRegistry(), path);
 			Preconditions.checkArgument(DynamicRegistryManagerAccessor.getInfos().containsKey(registryKey), "Only dynamic registries are supported in this tag provider.");
 		}
 	}

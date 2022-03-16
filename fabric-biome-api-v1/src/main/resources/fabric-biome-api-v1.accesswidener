@@ -11,8 +11,6 @@ mutable field net/minecraft/world/biome/source/BiomeSource indexedFeaturesSuppli
 accessible field net/minecraft/world/biome/Biome weather Lnet/minecraft/world/biome/Biome$Weather;
 accessible field net/minecraft/world/biome/Biome generationSettings Lnet/minecraft/world/biome/GenerationSettings;
 accessible field net/minecraft/world/biome/Biome spawnSettings Lnet/minecraft/world/biome/SpawnSettings;
-accessible field net/minecraft/world/biome/Biome category Lnet/minecraft/world/biome/Biome$Category;
-mutable field net/minecraft/world/biome/Biome category Lnet/minecraft/world/biome/Biome$Category;
 
 # Biome Weather
 accessible field net/minecraft/world/biome/Biome$Weather precipitation Lnet/minecraft/world/biome/Biome$Precipitation;

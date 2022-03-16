@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.class_7204;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -35,6 +36,7 @@ import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -44,7 +46,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
-import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
@@ -61,9 +62,6 @@ public abstract class MixinClientPlayerInteractionManager {
 	@Shadow
 	private GameMode gameMode;
 
-	@Shadow
-	protected abstract void sendPlayerAction(PlayerActionC2SPacket.Action action, BlockPos pos, Direction direction);
-
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "attackBlock", cancellable = true)
 	public void attackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
 		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(client.player, client.world, Hand.MAIN_HAND, pos, direction);
@@ -74,7 +72,7 @@ public abstract class MixinClientPlayerInteractionManager {
 
 			// We also need to let the server process the action if it's accepted.
 			if (result.isAccepted()) {
-				this.sendPlayerAction(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction);
+				method_41931(client.world, id -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction, id));
 			}
 		}
 	}
@@ -93,13 +91,19 @@ public abstract class MixinClientPlayerInteractionManager {
 		}
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;", ordinal = 0), method = "interactBlock", cancellable = true)
-	public void interactBlock(ClientPlayerEntity player, ClientWorld world, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<ActionResult> info) {
-		ActionResult result = UseBlockCallback.EVENT.invoker().interact(player, world, hand, blockHitResult);
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;method_41931(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/class_7204;)V"), method = "interactBlock", cancellable = true)
+	public void interactBlock(ClientPlayerEntity player, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<ActionResult> info) {
+		// hook interactBlock between the world border check and the actual block interaction to invoke the use block event first
+		// this needs to be in interactBlock to avoid sending a packet in line with the event javadoc
+
+		if (player.isSpectator()) return; // vanilla spectator check happens later, repeat it before the event to avoid false invocations
+
+		ActionResult result = UseBlockCallback.EVENT.invoker().interact(player, player.world, hand, blockHitResult);
 
 		if (result != ActionResult.PASS) {
 			if (result == ActionResult.SUCCESS) {
-				this.networkHandler.sendPacket(new PlayerInteractBlockC2SPacket(hand, blockHitResult));
+				// send interaction packet to the server with a new sequentially assigned id
+				method_41931(player.clientWorld, id -> new PlayerInteractBlockC2SPacket(hand, blockHitResult, id));
 			}
 
 			info.setReturnValue(result);
@@ -107,12 +111,17 @@ public abstract class MixinClientPlayerInteractionManager {
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 0), method = "interactItem", cancellable = true)
-	public void interactItem(PlayerEntity player, World world, Hand hand, CallbackInfoReturnable<ActionResult> info) {
-		TypedActionResult<ItemStack> result = UseItemCallback.EVENT.invoker().interact(player, world, hand);
+	public void interactItem(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
+		// hook interactBlock between the spectator check and sending the first packet to invoke the use item event first
+		// this needs to be in interactBlock to avoid sending a packet in line with the event javadoc
+		TypedActionResult<ItemStack> result = UseItemCallback.EVENT.invoker().interact(player, player.world, hand);
 
 		if (result.getResult() != ActionResult.PASS) {
 			if (result.getResult() == ActionResult.SUCCESS) {
-				this.networkHandler.sendPacket(new PlayerInteractItemC2SPacket(hand));
+				// send the move packet like vanilla to ensure the position+view vectors are accurate
+				networkHandler.sendPacket(new PlayerMoveC2SPacket.Full(player.getX(), player.getY(), player.getZ(), player.getYaw(), player.getPitch(), player.isOnGround()));
+				// send interaction packet to the server with a new sequentially assigned id
+				method_41931((ClientWorld) player.world, id -> new PlayerInteractItemC2SPacket(hand, id));
 			}
 
 			info.setReturnValue(result.getResult());
@@ -145,4 +154,7 @@ public abstract class MixinClientPlayerInteractionManager {
 			info.setReturnValue(result);
 		}
 	}
+
+	@Shadow
+	public abstract void method_41931(ClientWorld clientWorld, class_7204 supplier);
 }

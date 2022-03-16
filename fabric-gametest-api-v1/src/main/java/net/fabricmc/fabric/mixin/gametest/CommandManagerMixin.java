@@ -16,15 +16,16 @@
 
 package net.fabricmc.fabric.mixin.gametest;
 
+import com.mojang.brigadier.CommandDispatcher;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.SharedConstants;
+import net.minecraft.class_7157;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.command.TestCommand;
@@ -36,7 +37,7 @@ public abstract class CommandManagerMixin {
 	private CommandDispatcher<ServerCommandSource> dispatcher;
 
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/command/WorldBorderCommand;register(Lcom/mojang/brigadier/CommandDispatcher;)V", shift = At.Shift.AFTER))
-	private void construct(CommandManager.RegistrationEnvironment environment, CallbackInfo info) {
+	private void construct(CommandManager.RegistrationEnvironment environment, class_7157 arg, CallbackInfo info) {
 		// Registered by vanilla when isDevelopment is enabled.
 		if (!SharedConstants.isDevelopment) {
 			TestCommand.register(this.dispatcher);

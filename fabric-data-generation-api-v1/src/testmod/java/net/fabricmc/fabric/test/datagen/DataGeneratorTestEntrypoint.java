@@ -87,7 +87,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		try {
-			new FabricTagProvider.DynamicRegistryTagProvider<>(dataGenerator, Registry.ITEM_KEY, "items", "Item Tags") {
+			new FabricTagProvider.DynamicRegistryTagProvider<>(dataGenerator, Registry.ITEM_KEY, "items") {
 				@Override
 				protected void generateTags() {
 				}
@@ -164,7 +164,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 	private static class TestBiomeTagProvider extends FabricTagProvider.DynamicRegistryTagProvider<Biome> {
 		private TestBiomeTagProvider(FabricDataGenerator dataGenerator) {
-			super(dataGenerator, Registry.BIOME_KEY, "biomes", "Biome Tags");
+			super(dataGenerator, Registry.BIOME_KEY, "biomes");
 		}
 
 		@Override

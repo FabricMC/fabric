@@ -83,8 +83,8 @@ public abstract class DefaultResourcePackMixin {
 	 * @reason Gets rid of classpath scanning.
 	 */
 	@Overwrite
-	public Collection<Identifier> findResources(ResourceType type, String namespace, String prefix, int maxDepth, Predicate<String> pathFilter) {
-		return fabric_mcJarPack.findResources(type, namespace, prefix, maxDepth, pathFilter);
+	public Collection<Identifier> findResources(ResourceType type, String namespace, String prefix, Predicate<Identifier> predicate) {
+		return fabric_mcJarPack.findResources(type, namespace, prefix, predicate);
 	}
 
 	/**

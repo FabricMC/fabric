@@ -50,6 +50,10 @@ public final class WeightedPicker<T> {
 		return currentTotal;
 	}
 
+	int getEntryCount() {
+		return entries.size();
+	}
+
 	public T pickFromNoise(PerlinNoiseSampler sampler, double x, double y, double z) {
 		double target = Math.abs(sampler.sample(x, y, z)) * getCurrentWeightTotal();
 

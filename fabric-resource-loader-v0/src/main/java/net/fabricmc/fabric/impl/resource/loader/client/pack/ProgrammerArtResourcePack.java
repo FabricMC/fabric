@@ -71,10 +71,10 @@ public class ProgrammerArtResourcePack extends GroupResourcePack {
 	}
 
 	@Override
-	public Collection<Identifier> findResources(ResourceType type, String namespace, String prefix, int maxDepth, Predicate<String> pathFilter) {
-		Set<Identifier> resources = new HashSet<>(this.originalResourcePack.findResources(type, namespace, prefix, maxDepth, pathFilter));
+	public Collection<Identifier> findResources(ResourceType type, String namespace, String prefix, Predicate<Identifier> predicate) {
+		Set<Identifier> resources = new HashSet<>(this.originalResourcePack.findResources(type, namespace, prefix, predicate));
 
-		resources.addAll(super.findResources(type, namespace, prefix, maxDepth, pathFilter));
+		resources.addAll(super.findResources(type, namespace, prefix, predicate));
 
 		return resources;
 	}

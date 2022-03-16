@@ -28,8 +28,8 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
+import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.level.LevelProperties;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
@@ -78,20 +78,20 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	}
 
 	@Override
-	public boolean validForStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> key) {
-		ConfiguredStructureFeature<?, ?> instance = dynamicRegistries.get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY).get(key);
+	public boolean validForStructure(RegistryKey<StructureFeature> key) {
+		StructureFeature instance = dynamicRegistries.get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY).get(key);
 
 		if (instance == null) {
 			return false;
 		}
 
-		return instance.getBiomes().contains(getBiomeRegistryEntry());
+		return instance.method_41607().contains(getBiomeRegistryEntry());
 	}
 
 	@Override
-	public Optional<RegistryKey<ConfiguredStructureFeature<?, ?>>> getStructureKey(ConfiguredStructureFeature<?, ?> configuredStructure) {
-		Registry<ConfiguredStructureFeature<?, ?>> registry = dynamicRegistries.get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY);
-		return registry.getKey(configuredStructure);
+	public Optional<RegistryKey<StructureFeature>> getStructureKey(StructureFeature structureFeature) {
+		Registry<StructureFeature> registry = dynamicRegistries.get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY);
+		return registry.getKey(structureFeature);
 	}
 
 	@Override

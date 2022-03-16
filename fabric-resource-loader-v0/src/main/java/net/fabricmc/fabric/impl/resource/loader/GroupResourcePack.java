@@ -75,7 +75,7 @@ public abstract class GroupResourcePack implements ResourcePack {
 	}
 
 	@Override
-	public Collection<Identifier> findResources(ResourceType type, String namespace, String prefix, int maxDepth, Predicate<String> pathFilter) {
+	public Collection<Identifier> findResources(ResourceType type, String namespace, String prefix, Predicate<Identifier> predicate) {
 		List<ModResourcePack> packs = this.namespacedPacks.get(namespace);
 
 		if (packs == null) {
@@ -86,7 +86,7 @@ public abstract class GroupResourcePack implements ResourcePack {
 
 		for (int i = packs.size() - 1; i >= 0; i--) {
 			ResourcePack pack = packs.get(i);
-			Collection<Identifier> modResources = pack.findResources(type, namespace, prefix, maxDepth, pathFilter);
+			Collection<Identifier> modResources = pack.findResources(type, namespace, prefix, predicate);
 
 			resources.addAll(modResources);
 		}

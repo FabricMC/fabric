@@ -26,8 +26,8 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 
@@ -121,8 +121,8 @@ public interface BiomeSelectionContext {
 	 *
 	 * <p>This method is intended for use with the Vanilla configured structures found in {@link net.minecraft.world.gen.feature.ConfiguredStructureFeatures}.
 	 */
-	default boolean validForBuiltInStructure(ConfiguredStructureFeature<?, ?> configuredStructure) {
-		RegistryKey<ConfiguredStructureFeature<?, ?>> key = BuiltInRegistryKeys.get(configuredStructure);
+	default boolean validForBuiltInStructure(StructureFeature structureFeature) {
+		RegistryKey<StructureFeature> key = BuiltInRegistryKeys.get(structureFeature);
 		return validForStructure(key);
 	}
 
@@ -130,14 +130,14 @@ public interface BiomeSelectionContext {
 	 * Returns true if the configured structure with the given key can start in this biome in any chunk generator
 	 * used by the current world-save.
 	 */
-	boolean validForStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> key);
+	boolean validForStructure(RegistryKey<StructureFeature> key);
 
 	/**
 	 * Tries to retrieve the registry key for the given configured feature, which should be from this biomes
 	 * current structure list. May be empty if the configured feature is not registered, or does not come
 	 * from this biomes feature list.
 	 */
-	Optional<RegistryKey<ConfiguredStructureFeature<?, ?>>> getStructureKey(ConfiguredStructureFeature<?, ?> configuredStructure);
+	Optional<RegistryKey<StructureFeature>> getStructureKey(StructureFeature structureFeature);
 
 	/**
 	 * Tries to determine whether this biome generates in a specific dimension, based on the {@link net.minecraft.world.gen.GeneratorOptions}

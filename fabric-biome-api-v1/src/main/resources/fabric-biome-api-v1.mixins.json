@@ -5,6 +5,7 @@
   "mixins": [
     "modification.DynamicRegistryManagerImplMixin",
     "modification.MinecraftServerMixin",
+    "MixinChunkGenerator",
     "MixinMultiNoiseBiomeSource",
     "MixinTheEndBiomeSource"
   ],

@@ -18,6 +18,9 @@ package net.fabricmc.fabric.impl.biome;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
+
+import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
@@ -29,6 +32,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
+import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.gen.random.AtomicSimpleRandom;
 import net.minecraft.world.gen.random.ChunkRandom;
 
@@ -79,28 +83,30 @@ public final class TheEndBiomeData {
 		END_BARRENS_MAP.computeIfAbsent(highlands, key -> new WeightedPicker<>()).add(barrens, weight);
 	}
 
-	public static Overrides createOverrides(Registry<Biome> biomeRegistry, long seed) {
-		return new Overrides(biomeRegistry, seed);
+	public static Overrides createOverrides(Registry<Biome> biomeRegistry) {
+		return new Overrides(biomeRegistry);
 	}
 
 	/**
 	 * An instance of this class is attached to each {@link TheEndBiomeSource}.
 	 */
 	public static class Overrides {
-		private final PerlinNoiseSampler sampler;
-
 		// Vanilla entries to compare against
 		private final RegistryEntry<Biome> endMidlands;
 		private final RegistryEntry<Biome> endBarrens;
 		private final RegistryEntry<Biome> endHighlands;
 
 		// Maps where the keys have been resolved to actual entries
-		private final Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> endBiomesMap;
-		private final Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> endMidlandsMap;
-		private final Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> endBarrensMap;
+		private final @Nullable Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> endBiomesMap;
+		private final @Nullable Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> endMidlandsMap;
+		private final @Nullable Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> endBarrensMap;
 
-		public Overrides(Registry<Biome> biomeRegistry, long seed) {
-			this.sampler = new PerlinNoiseSampler(new ChunkRandom(new AtomicSimpleRandom(seed)));
+		// cache for our own sampler (used for random biome replacement selection)
+		private final Map<MultiNoiseUtil.MultiNoiseSampler, PerlinNoiseSampler> samplers = new WeakHashMap<>();
+		// current seed, set from ChunkGenerator hook since it is not normally available
+		private static ThreadLocal<Long> seed = new ThreadLocal<>();
+
+		public Overrides(Registry<Biome> biomeRegistry) {
 			this.endMidlands = biomeRegistry.entryOf(BiomeKeys.END_MIDLANDS);
 			this.endBarrens = biomeRegistry.entryOf(BiomeKeys.END_BARRENS);
 			this.endHighlands = biomeRegistry.entryOf(BiomeKeys.END_HIGHLANDS);
@@ -111,40 +117,60 @@ public final class TheEndBiomeData {
 		}
 
 		// Resolves all RegistryKey instances to RegistryEntries
-		private Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> resolveOverrides(Registry<Biome> biomeRegistry, Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> overrides) {
-			var result = new IdentityHashMap<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>>(overrides.size());
+		private @Nullable Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> resolveOverrides(Registry<Biome> biomeRegistry, Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> overrides) {
+			Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> result = new IdentityHashMap<>(overrides.size());
 
 			for (Map.Entry<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> entry : overrides.entrySet()) {
-				result.put(biomeRegistry.entryOf(entry.getKey()), entry.getValue().map(biomeRegistry::entryOf));
+				WeightedPicker<RegistryKey<Biome>> picker = entry.getValue();
+				if (picker.getEntryCount() <= 1) continue; // don't use no-op entries
+
+				result.put(biomeRegistry.entryOf(entry.getKey()), picker.map(biomeRegistry::entryOf));
 			}
 
-			return result;
+			return result.isEmpty() ? null : result;
 		}
 
-		public RegistryEntry<Biome> pick(int x, int y, int z, RegistryEntry<Biome> vanillaBiome) {
-			RegistryEntry<Biome> replacementKey;
-
-			// The x and z of the entry are divided by 64 to ensure custom biomes are large enough; going larger than this]
-			// seems to make custom biomes too hard to find.
+		public RegistryEntry<Biome> pick(int x, int y, int z, MultiNoiseUtil.MultiNoiseSampler noise, RegistryEntry<Biome> vanillaBiome) {
 			if (vanillaBiome == endMidlands || vanillaBiome == endBarrens) {
-				// Since the highlands picker is statically populated by InternalBiomeData, picker will never be null.
-				WeightedPicker<RegistryEntry<Biome>> highlandsPicker = endBiomesMap.get(endHighlands);
-				RegistryEntry<Biome> highlandsKey = highlandsPicker.pickFromNoise(sampler, x / 64.0, 0, z / 64.0);
+				// select a random highlands biome replacement, then try to replace it with a midlands or barrens biome replacement
+				RegistryEntry<Biome> highlandsReplacement = pick(endHighlands, endHighlands, endBiomesMap, x, z, noise);
+				Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> map = vanillaBiome == endMidlands ? endMidlandsMap : endBarrensMap;
 
-				if (vanillaBiome == endMidlands) {
-					WeightedPicker<RegistryEntry<Biome>> midlandsPicker = endMidlandsMap.get(highlandsKey);
-					replacementKey = (midlandsPicker == null) ? vanillaBiome : midlandsPicker.pickFromNoise(sampler, x / 64.0, 0, z / 64.0);
-				} else {
-					WeightedPicker<RegistryEntry<Biome>> barrensPicker = endBarrensMap.get(highlandsKey);
-					replacementKey = (barrensPicker == null) ? vanillaBiome : barrensPicker.pickFromNoise(sampler, x / 64.0, 0, z / 64.0);
-				}
+				return pick(highlandsReplacement, vanillaBiome, map, x, z, noise);
 			} else {
-				// Since the main island and small islands pickers are statically populated by InternalBiomeData, picker will never be null.
-				WeightedPicker<RegistryEntry<Biome>> picker = endBiomesMap.get(vanillaBiome);
-				replacementKey = picker.pickFromNoise(sampler, x / 64.0, 0, z / 64.0);
+				assert END_BIOMES_MAP.containsKey(vanillaBiome.getKey().orElseThrow());
+
+				return pick(vanillaBiome, vanillaBiome, endBiomesMap, x, z, noise);
+			}
+		}
+
+		private <T> T pick(T key, T defaultValue, Map<T, WeightedPicker<T>> pickers, int x, int z, MultiNoiseUtil.MultiNoiseSampler noise) {
+			if (pickers == null) return defaultValue;
+
+			WeightedPicker<T> picker = pickers.get(key);
+			if (picker == null || picker.getEntryCount() <= 1) return defaultValue;
+
+			// The x and z of the entry are divided by 64 to ensure custom biomes are large enough; going larger than this
+			// seems to make custom biomes too hard to find.
+			return picker.pickFromNoise(getSampler(noise), x / 64.0, 0, z / 64.0);
+		}
+
+		private synchronized PerlinNoiseSampler getSampler(MultiNoiseUtil.MultiNoiseSampler noise) {
+			PerlinNoiseSampler ret = samplers.get(noise);
+
+			if (ret == null) {
+				Long seed = Overrides.seed.get();
+				if (seed == null) throw new IllegalStateException("seed isn't set, ChunkGenerator hook not working?");
+
+				ret = new PerlinNoiseSampler(new ChunkRandom(new AtomicSimpleRandom(seed)));
+				samplers.put(noise, ret);
 			}
 
-			return replacementKey;
+			return ret;
+		}
+
+		public static void setSeed(long seed) {
+			Overrides.seed.set(seed);
 		}
 	}
 }
