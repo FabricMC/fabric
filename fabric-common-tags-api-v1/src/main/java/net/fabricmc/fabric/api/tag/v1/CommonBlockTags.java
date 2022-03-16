@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.api.tag.v1;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.tag.TagKey;
 
 import net.fabricmc.fabric.impl.tag.common.TagRegistration;
@@ -41,6 +43,12 @@ public class CommonBlockTags {
 	public static final TagKey<Block> BOOKSHELVES = register("bookshelves");
 	public static final TagKey<Block> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Block> GLASS_PANES = register("glass_panes");
+	/**
+	 * Blocks should be included in this tag if their movement can cause serious issues such as world corruption
+	 * upon being moved, such as chunk loaders or pipes,
+	 * for mods that move blocks but do not respect {@link AbstractBlock.AbstractBlockState#getPistonBehavior}.
+	 */
+	public static final TagKey<Block> MOVEMENT_RESTRICTED = register("movement_restricted");
 
 	private static TagKey<Block> register(String tagID) {
 		return TagRegistration.BLOCK_TAG_REGISTRATION.registerCommon(tagID);
