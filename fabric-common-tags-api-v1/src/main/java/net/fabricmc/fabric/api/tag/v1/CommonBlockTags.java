@@ -41,6 +41,7 @@ public class CommonBlockTags {
 	public static final TagKey<Block> BOOKSHELVES = register("bookshelves");
 	public static final TagKey<Block> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Block> GLASS_PANES = register("glass_panes");
+	public static final TagKey<Block> SHULKER_BOXES = register("shulker_boxes");
 	/**
 	 * Blocks should be included in this tag if their movement can cause serious issues such as world corruption
 	 * upon being moved, such as chunk loaders or pipes,

@@ -72,6 +72,8 @@ public class CommonItemTags {
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Item> GLASS_PANES = register("glass_panes");
 
+	public static final TagKey<Item> SHULKER_BOXES = register("shulker_boxes");
+
 	private static TagKey<Item> register(String tagID) {
 		return TagRegistration.ITEM_TAG_REGISTRATION.registerCommon(tagID);
 	}

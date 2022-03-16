@@ -65,6 +65,28 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 		getOrCreateTagBuilder(CommonBlockTags.BOOKSHELVES)
 				.add(Blocks.BOOKSHELF);
 		generateGlassTags();
+		generateShulkerTag();
+	}
+
+	private void generateShulkerTag() {
+		getOrCreateTagBuilder(CommonBlockTags.SHULKER_BOXES)
+				.add(Blocks.SHULKER_BOX)
+				.add(Blocks.BLUE_SHULKER_BOX)
+				.add(Blocks.BROWN_SHULKER_BOX)
+				.add(Blocks.CYAN_SHULKER_BOX)
+				.add(Blocks.GRAY_SHULKER_BOX)
+				.add(Blocks.GREEN_SHULKER_BOX)
+				.add(Blocks.LIGHT_BLUE_SHULKER_BOX)
+				.add(Blocks.LIGHT_GRAY_SHULKER_BOX)
+				.add(Blocks.LIME_SHULKER_BOX)
+				.add(Blocks.MAGENTA_SHULKER_BOX)
+				.add(Blocks.ORANGE_SHULKER_BOX)
+				.add(Blocks.PINK_SHULKER_BOX)
+				.add(Blocks.PURPLE_SHULKER_BOX)
+				.add(Blocks.RED_SHULKER_BOX)
+				.add(Blocks.WHITE_SHULKER_BOX)
+				.add(Blocks.YELLOW_SHULKER_BOX)
+				.add(Blocks.BLACK_SHULKER_BOX);
 	}
 
 	private void generateGlassTags() {

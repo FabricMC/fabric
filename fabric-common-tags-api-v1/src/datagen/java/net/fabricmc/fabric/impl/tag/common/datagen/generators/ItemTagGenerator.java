@@ -67,6 +67,28 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		generateOreAndRelatedTags();
 		generateConsumableTags();
 		generateGlassTags();
+		generateShulkerTag();
+	}
+
+	private void generateShulkerTag() {
+		getOrCreateTagBuilder(CommonItemTags.SHULKER_BOXES)
+				.add(Items.SHULKER_BOX)
+				.add(Items.BLUE_SHULKER_BOX)
+				.add(Items.BROWN_SHULKER_BOX)
+				.add(Items.CYAN_SHULKER_BOX)
+				.add(Items.GRAY_SHULKER_BOX)
+				.add(Items.GREEN_SHULKER_BOX)
+				.add(Items.LIGHT_BLUE_SHULKER_BOX)
+				.add(Items.LIGHT_GRAY_SHULKER_BOX)
+				.add(Items.LIME_SHULKER_BOX)
+				.add(Items.MAGENTA_SHULKER_BOX)
+				.add(Items.ORANGE_SHULKER_BOX)
+				.add(Items.PINK_SHULKER_BOX)
+				.add(Items.PURPLE_SHULKER_BOX)
+				.add(Items.RED_SHULKER_BOX)
+				.add(Items.WHITE_SHULKER_BOX)
+				.add(Items.YELLOW_SHULKER_BOX)
+				.add(Items.BLACK_SHULKER_BOX);
 	}
 
 	private void generateGlassTags() {
