@@ -104,12 +104,13 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 				.add(BiomeKeys.FROZEN_RIVER)
 				.add(BiomeKeys.FROZEN_PEAKS)
 				.add(BiomeKeys.DEEP_FROZEN_OCEAN)
+				.add(BiomeKeys.ICE_SPIKES)
+				.add(BiomeKeys.FROZEN_OCEAN);
+		getOrCreateTagBuilder(CommonBiomeTags.SNOWY)
 				.add(BiomeKeys.SNOWY_BEACH)
 				.add(BiomeKeys.SNOWY_PLAINS)
 				.add(BiomeKeys.SNOWY_SLOPES)
-				.add(BiomeKeys.SNOWY_TAIGA)
-				.add(BiomeKeys.ICE_SPIKES)
-				.add(BiomeKeys.FROZEN_OCEAN);
+				.add(BiomeKeys.SNOWY_TAIGA);
 		getOrCreateTagBuilder(CommonBiomeTags.BEACH)
 				.addOptionalTag(BiomeTags.IS_BEACH)
 				.add(BiomeKeys.STONY_SHORE);

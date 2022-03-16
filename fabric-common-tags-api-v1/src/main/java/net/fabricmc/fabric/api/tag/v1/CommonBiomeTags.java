@@ -40,6 +40,10 @@ public class CommonBiomeTags {
 	 */
 	public static final TagKey<Biome> PLAINS = register("plains");
 	public static final TagKey<Biome> SAVANNA = register("savanna");
+	/**
+	 * For biomes where ice naturally spawns.
+	 * For biomes where snow alone spawns, see {@link CommonBiomeTags#SNOWY}.
+	 */
 	public static final TagKey<Biome> ICY = register("icy");
 	public static final TagKey<Biome> BEACH = register("beach");
 	public static final TagKey<Biome> FOREST = register("forest");
@@ -69,6 +73,11 @@ public class CommonBiomeTags {
 	public static final TagKey<Biome> WASTELAND = register("wasteland");
 	public static final TagKey<Biome> DEAD = register("dead");
 	public static final TagKey<Biome> FLORAL = register("floral");
+	/**
+	 * For biomes where snow, and not ice, naturally spawns as an predominant feature.
+	 * For biomes where ice is a predominant feature, see {@link CommonBiomeTags#ICY}.
+	 */
+	public static final TagKey<Biome> SNOWY = register("snowy");
 
 	public static final TagKey<Biome> BADLANDS = register("badlands");
 	public static final TagKey<Biome> CAVES = register("caves");
