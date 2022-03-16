@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.tag.v1;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.tag.TagKey;
 
 import net.fabricmc.fabric.impl.tag.common.TagRegistration;
@@ -38,7 +37,6 @@ public class CommonBlockTags {
 	public static final TagKey<Block> EMERALD_ORES = register("emerald_ores");
 	public static final TagKey<Block> COAL_ORES = register("coal_ores");
 	public static final TagKey<Block> ORES = register("ores");
-	public static final TagKey<Block> NETHERITE_ORES = register("netherite_ores");
 	public static final TagKey<Block> CHESTS = register("chests");
 	public static final TagKey<Block> BOOKSHELVES = register("bookshelves");
 	public static final TagKey<Block> GLASS_BLOCKS = register("glass_blocks");

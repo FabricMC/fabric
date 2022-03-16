@@ -32,7 +32,6 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 	protected void generateTags() {
 		getOrCreateTagBuilder(CommonBlockTags.IRON_ORES)
 				.addOptionalTag(BlockTags.IRON_ORES);
-		getOrCreateTagBuilder(CommonBlockTags.NETHERITE_ORES);
 		getOrCreateTagBuilder(CommonBlockTags.GOLD_ORES)
 				.addOptionalTag(BlockTags.GOLD_ORES);
 		getOrCreateTagBuilder(CommonBlockTags.COPPER_ORES)
