@@ -1,0 +1,3 @@
+accessWidener	v2	named
+
+accessible    method    net/minecraft/resource/NamespaceResourceManager$class_7083	<init>	(Lnet/minecraft/resource/NamespaceResourceManager;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/resource/ResourcePack;)V

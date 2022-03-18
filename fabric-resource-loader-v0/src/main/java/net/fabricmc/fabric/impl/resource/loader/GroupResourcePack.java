@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceImpl;
+import net.minecraft.resource.NamespaceResourceManager;
+import net.minecraft.resource.NamespaceResourceManager.class_7083;
 import net.minecraft.resource.ResourceNotFoundException;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
@@ -118,7 +118,7 @@ public abstract class GroupResourcePack implements ResourcePack {
 		return this.namespacedPacks.keySet();
 	}
 
-	public void appendResources(NamespaceResourceManagerAccessor manager, Identifier id, List<Resource> resources) throws IOException {
+	public void appendResources(NamespaceResourceManagerAccessor manager, Identifier id, List<class_7083> resources) throws IOException {
 		List<ModResourcePack> packs = this.namespacedPacks.get(id.getNamespace());
 
 		if (packs == null) {
@@ -129,8 +129,7 @@ public abstract class GroupResourcePack implements ResourcePack {
 
 		for (ModResourcePack pack : packs) {
 			if (pack.contains(manager.getType(), id)) {
-				InputStream metadataInputStream = pack.contains(manager.getType(), metadataId) ? manager.fabric$accessor_open(metadataId, pack) : null;
-				resources.add(new ResourceImpl(pack.getName(), id, manager.fabric$accessor_open(id, pack), metadataInputStream));
+				resources.add(((NamespaceResourceManager) manager).new class_7083(id, metadataId, pack));
 			}
 		}
 	}
