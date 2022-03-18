@@ -59,7 +59,7 @@ public class CommonItemTags {
 	public static final TagKey<Item> QUARTZ_ORES = register("quartz_ores");
 	public static final TagKey<Item> QUARTZ = register("quartz");
 	public static final TagKey<Item> LAPIS_ORES = register("lapis_ores");
-	public static final TagKey<Item> LAPIS = register("lapiss");
+	public static final TagKey<Item> LAPIS = register("lapis");
 	public static final TagKey<Item> DIAMOND_ORES = register("diamond_ores");
 	public static final TagKey<Item> DIAMONDS = register("diamonds");
 	public static final TagKey<Item> EMERALD_ORES = register("emerald_ores");
