@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.command.v1;
 
 import com.mojang.brigadier.CommandDispatcher;
 
+import net.minecraft.class_7157;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -36,17 +38,18 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * </code></pre>
  */
 public interface CommandRegistrationCallback {
-	Event<CommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(CommandRegistrationCallback.class, (callbacks) -> (dispatcher, dedicated) -> {
+	Event<CommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(CommandRegistrationCallback.class, (callbacks) -> (dispatcher, registryAccess, environment) -> {
 		for (CommandRegistrationCallback callback : callbacks) {
-			callback.register(dispatcher, dedicated);
+			callback.register(dispatcher, registryAccess, environment);
 		}
 	});
 
 	/**
 	 * Called when the server is registering commands.
 	 *
-	 * @param dispatcher the command dispatcher to register commands to.
-	 * @param dedicated whether the server this command is being registered on is a dedicated server.
+	 * @param dispatcher the command dispatcher to register commands to
+	 * @param registryAccess object exposing access to the game's registries
+	 * @param environment environment the registrations should be done for, used for commands that are dedicated or integrated server only
 	 */
-	void register(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated);
+	void register(CommandDispatcher<ServerCommandSource> dispatcher, class_7157 registryAccess, CommandManager.RegistrationEnvironment environment);
 }

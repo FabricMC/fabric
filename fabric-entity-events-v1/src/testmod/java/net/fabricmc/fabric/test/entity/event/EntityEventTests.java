@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.entity.event;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -169,7 +169,7 @@ public final class EntityEventTests implements ModInitializer {
 			return wakeUpPos;
 		});
 
-		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			dispatcher.register(CommandManager.literal("addsleeptestwools").executes(context -> {
 				addSleepWools(context.getSource().getPlayer());
 				return 0;

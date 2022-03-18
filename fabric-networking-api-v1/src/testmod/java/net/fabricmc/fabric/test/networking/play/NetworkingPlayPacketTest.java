@@ -60,7 +60,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 	public void onInitialize() {
 		NetworkingTestmods.LOGGER.info("Hello from networking user!");
 
-		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			NetworkingPlayPacketTest.registerCommand(dispatcher);
 		});
 	}
