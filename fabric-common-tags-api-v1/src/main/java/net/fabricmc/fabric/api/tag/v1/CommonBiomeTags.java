@@ -26,9 +26,18 @@ import net.fabricmc.fabric.impl.tag.common.TagRegistration;
  * Note that addition to some vanilla tags implies having certain functionality.
  */
 public class CommonBiomeTags {
+	/**
+	 * Biomes that spawn in the Overworld.
+	 */
 	public static final TagKey<Biome> IN_OVERWORLD = register("in_overworld");
 	// The following are based on Biome categories, see Biome$Category for details
+	/**
+	 * Biomes that spawn in the End.
+	 */
 	public static final TagKey<Biome> IN_THE_END = register("in_the_end");
+	/**
+	 * Biomes that spawn in the Nether.
+	 */
 	public static final TagKey<Biome> IN_NETHER = register("in_nether");
 	public static final TagKey<Biome> TAIGA = register("taiga");
 	public static final TagKey<Biome> EXTREME_HILLS = register("extreme_hills");
@@ -45,7 +54,13 @@ public class CommonBiomeTags {
 	 * For biomes where snow alone spawns, see {@link CommonBiomeTags#SNOWY}.
 	 */
 	public static final TagKey<Biome> ICY = register("icy");
+	/**
+	 * Biomes that exist on the shoreline of a body of water.
+	 */
 	public static final TagKey<Biome> BEACH = register("beach");
+	/**
+	 * Biomes densely populated with deciduous trees.
+	 */
 	public static final TagKey<Biome> FOREST = register("forest");
 	public static final TagKey<Biome> OCEAN = register("ocean");
 	public static final TagKey<Biome> DESERT = register("desert");
@@ -69,9 +84,21 @@ public class CommonBiomeTags {
 	public static final TagKey<Biome> VOID = register("void");
 	public static final TagKey<Biome> MOUNTAIN_PEAK = register("mountain_peak");
 	public static final TagKey<Biome> MOUNTAIN_SLOPE = register("mountain_slope");
+	/**
+	 * Biomes consisting primarily of water.
+	 */
 	public static final TagKey<Biome> AQUATIC = register("aquatic");
+	/**
+	 * Barren biomes that lack vegetation.
+	 */
 	public static final TagKey<Biome> WASTELAND = register("wasteland");
+	/**
+	 * Biomes whose flora primarily consists of dead or decaying vegetation.
+	 */
 	public static final TagKey<Biome> DEAD = register("dead");
+	/**
+	 * Biomes with a large amount of flowers.
+	 */
 	public static final TagKey<Biome> FLORAL = register("floral");
 	/**
 	 * For biomes where snow, and not ice, naturally spawns as an predominant feature.
@@ -81,6 +108,9 @@ public class CommonBiomeTags {
 
 	public static final TagKey<Biome> BADLANDS = register("badlands");
 	public static final TagKey<Biome> CAVES = register("caves");
+	/**
+	 * Biomes that spawn as or on islands in the End.
+	 */
 	public static final TagKey<Biome> END_ISLANDS = register("end_islands");
 	public static final TagKey<Biome> NETHER_FORESTS = register("nether_forests");
 	/**
