@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.mixin.dimension;
 
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Dynamic;
@@ -26,19 +31,13 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.world.gen.GeneratorOptions;
 import net.minecraft.world.level.storage.LevelStorage;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
 /**
  * After removing a dimension mod or a dimension datapack, Minecraft may fail to enter
  * the world, because it fails to deserialize the chunk generator of the custom dimensions in file {@code level.dat}
  * This mixin will remove the custom dimensions from the nbt tag, so the deserializer and DFU cannot see custom dimensions and won't cause errors.
  * The custom dimensions will be re-added later.
- * <p>
- * This Mixin changes a vanilla behavior that is deemed as a bug (MC-197860). In vanilla, the custom dimension is not removed after uninstalling the dimension datapack.
+ *
+ * <p>This Mixin changes a vanilla behavior that is deemed as a bug (MC-197860). In vanilla, the custom dimension is not removed after uninstalling the dimension datapack.
  * This makes custom dimensions non-removable. Most players don't want this behavior.
  * With this Mixin, custom dimensions will be removed when its datapack is removed.
  */
@@ -71,6 +70,7 @@ public class LevelStorageMixin {
 
 		if (dimensions.getSize() > vanillaDimensionIds.length) {
 			NbtCompound newDimensions = new NbtCompound();
+
 			for (String dimId : vanillaDimensionIds) {
 				if (dimensions.contains(dimId)) {
 					newDimensions.put(dimId, dimensions.getCompound(dimId));
