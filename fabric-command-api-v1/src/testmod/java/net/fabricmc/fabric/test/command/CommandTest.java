@@ -26,6 +26,7 @@ import com.mojang.brigadier.tree.RootCommandNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.server.command.CommandManager.RegistrationEnvironment;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
@@ -40,11 +41,11 @@ public final class CommandTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			// A command that exists on both types of servers
 			dispatcher.register(literal("fabric_common_test_command").executes(this::executeCommonCommand));
 
-			if (dedicated) {
+			if (environment == RegistrationEnvironment.DEDICATED) {
 				// The command here should only be present on a dedicated server
 				dispatcher.register(literal("fabric_dedicated_test_command").executes(this::executeDedicatedCommand));
 			} else {

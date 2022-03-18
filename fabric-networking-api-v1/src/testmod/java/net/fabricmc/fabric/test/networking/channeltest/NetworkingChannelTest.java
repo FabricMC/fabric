@@ -47,7 +47,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 public final class NetworkingChannelTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			final LiteralCommandNode<ServerCommandSource> channelTestCommand = literal("network_channel_test").build();
 
 			// Info
