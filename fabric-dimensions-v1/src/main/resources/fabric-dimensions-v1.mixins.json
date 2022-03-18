@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "EntityMixin",
-    "LevelStorageMixin",
+    "LevelStorageBugfixMixin",
     "ServerBugfixMixin",
     "ServerPlayerEntityMixin"
   ],
