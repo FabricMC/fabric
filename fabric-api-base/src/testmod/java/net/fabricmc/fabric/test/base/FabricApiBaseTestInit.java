@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.MixinEnvironment;
 import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 public class FabricApiBaseTestInit implements ModInitializer {

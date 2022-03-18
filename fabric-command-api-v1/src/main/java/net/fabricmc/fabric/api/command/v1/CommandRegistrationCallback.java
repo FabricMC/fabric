@@ -18,38 +18,21 @@ package net.fabricmc.fabric.api.command.v1;
 
 import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.class_7157;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Callback for when a server registers all commands.
- *
- * <p>To register some commands, you would register an event listener and implement the callback.
- *
- * <pre><code>
- * CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
- *     // For example, this command is only registered on an integrated server
- *     if (!dedicated) dispatcher.register(CommandManager.literal("integrated_command").executes(context -> {...}));
- * })};
- * </code></pre>
+ * @deprecated Please migrate to v2. Please use {@link net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback} instead.
  */
+@Deprecated
 public interface CommandRegistrationCallback {
-	Event<CommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(CommandRegistrationCallback.class, (callbacks) -> (dispatcher, registryAccess, environment) -> {
+	Event<CommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(CommandRegistrationCallback.class, (callbacks) -> (dispatcher, dedicated) -> {
 		for (CommandRegistrationCallback callback : callbacks) {
-			callback.register(dispatcher, registryAccess, environment);
+			callback.register(dispatcher, dedicated);
 		}
 	});
 
-	/**
-	 * Called when the server is registering commands.
-	 *
-	 * @param dispatcher the command dispatcher to register commands to
-	 * @param registryAccess object exposing access to the game's registries
-	 * @param environment environment the registrations should be done for, used for commands that are dedicated or integrated server only
-	 */
-	void register(CommandDispatcher<ServerCommandSource> dispatcher, class_7157 registryAccess, CommandManager.RegistrationEnvironment environment);
+	void register(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated);
 }

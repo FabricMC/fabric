@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-command-api-v1",
-  "name": "Fabric Command API (v1)",
+  "id": "fabric-command-api-v2",
+  "name": "Fabric Command API (v2)",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-command-api-v1/icon.png",
+  "icon": "assets/fabric-command-api-v2/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -18,15 +18,13 @@
   "depends": {
     "fabricloader": ">=0.10.5",
     "fabric-api-base": "*",
-    "fabric-command-api-v2": "*"
+    "minecraft": "~1.19-alpha.22.11.a"
   },
-  "description": "Deprecated. Please migrate to v2",
-  "entrypoints": {
-    "main": [
-      "net.fabricmc.fabric.impl.command.v1.LegacyHandler"
-    ]
-  },
+  "description": "Adds command-related hooks.",
+  "mixins": [
+    "fabric-command-api-v2.mixins.json"
+  ],
   "custom": {
-    "fabric-api:module-lifecycle": "deprecated"
+    "fabric-api:module-lifecycle": "stable"
   }
 }

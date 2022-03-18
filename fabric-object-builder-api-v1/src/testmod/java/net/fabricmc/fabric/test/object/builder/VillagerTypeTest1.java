@@ -35,7 +35,7 @@ import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 
 public class VillagerTypeTest1 implements ModInitializer {

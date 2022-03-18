@@ -23,10 +23,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.server.command.CommandManager.RegistrationEnvironment;
 import net.minecraft.server.command.ServerCommandSource;
 
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 /**
- * @deprecated Please migrate to v1. Please use {@link CommandRegistrationCallback} instead.
+ * @deprecated Please migrate to v2. Please use {@link CommandRegistrationCallback} instead.
  */
 @Deprecated
 public class CommandRegistry {
