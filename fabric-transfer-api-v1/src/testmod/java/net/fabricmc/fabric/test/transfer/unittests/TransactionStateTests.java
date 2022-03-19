@@ -18,9 +18,10 @@ package net.fabricmc.fabric.test.transfer.unittests;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
-class TransactionExceptionsTests {
+class TransactionStateTests {
 	public static void run() {
 		testTransactionExceptions();
+		testTransactionLifecycle();
 	}
 
 	private static int callbacksInvoked = 0;
@@ -93,5 +94,23 @@ class TransactionExceptionsTests {
 		if (!failed) {
 			throw new AssertionError(message);
 		}
+	}
+
+	private static void testTransactionLifecycle() {
+		TestUtil.assertEquals(Transaction.Lifecycle.NONE, Transaction.getLifecycle());
+
+		try (Transaction transaction = Transaction.openOuter()) {
+			TestUtil.assertEquals(Transaction.Lifecycle.OPEN, Transaction.getLifecycle());
+
+			transaction.addCloseCallback((tx, result) -> {
+				TestUtil.assertEquals(Transaction.Lifecycle.CLOSING, Transaction.getLifecycle());
+			});
+
+			transaction.addOuterCloseCallback(result -> {
+				TestUtil.assertEquals(Transaction.Lifecycle.OUTER_CLOSING, Transaction.getLifecycle());
+			});
+		}
+
+		TestUtil.assertEquals(Transaction.Lifecycle.NONE, Transaction.getLifecycle());
 	}
 }

@@ -30,7 +30,8 @@ public class UnitTestsInitializer implements ModInitializer {
 		ItemTests.run();
 		PlayerInventoryStorageTests.run();
 		SingleVariantItemStorageTests.run();
-		TransactionExceptionsTests.run();
+		TransactionStateTests.run();
+		UnderlyingViewTests.run();
 
 		LoggerFactory.getLogger("fabric-transfer-api-v1 testmod").info("Transfer API unit tests successful.");
 	}

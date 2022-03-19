@@ -62,4 +62,16 @@ public interface StorageView<T> {
 	 * or an estimate of the number of resources that could be stored if this view has a blank resource.
 	 */
 	long getCapacity();
+
+	/**
+	 * If this is view is a delegate around another storage view, return the underlying view.
+	 * This can be used to check if two views refer to the same inventory "slot".
+	 * <b>Do not try to extract from the underlying view, or you risk bypassing some checks.</b>
+	 *
+	 * <p>It is expected that two storage views with the same underlying view ({@code a.getUnderlyingView() == b.getUnderlyingView()})
+	 * share the same content, and mutating one should mutate the other. However, one of them may allow extraction, and the other may not.
+	 */
+	default StorageView<T> getUnderlyingView() {
+		return this;
+	}
 }

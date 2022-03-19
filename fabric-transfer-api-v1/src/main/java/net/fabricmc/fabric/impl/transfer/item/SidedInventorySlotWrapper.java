@@ -20,6 +20,7 @@ import net.minecraft.inventory.SidedInventory;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
@@ -73,5 +74,10 @@ class SidedInventorySlotWrapper implements SingleSlotStorage<ItemVariant> {
 	@Override
 	public long getCapacity() {
 		return slotWrapper.getCapacity();
+	}
+
+	@Override
+	public StorageView<ItemVariant> getUnderlyingView() {
+		return slotWrapper.getUnderlyingView();
 	}
 }
