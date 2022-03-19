@@ -90,10 +90,17 @@ public interface Transaction extends AutoCloseable, TransactionContext {
 	}
 
 	/**
-	 * @return True if a transaction is open on the current thread, and false otherwise.
+	 * @return True if a transaction is open or closing on the current thread, and false otherwise.
 	 */
 	static boolean isOpen() {
-		return TransactionManagerImpl.MANAGERS.get().isOpen();
+		return getLifecycle() != Lifecycle.NONE;
+	}
+
+	/**
+	 * @return The current lifecycle of the transaction stack on this thread.
+	 */
+	static Lifecycle getLifecycle() {
+		return TransactionManagerImpl.MANAGERS.get().getLifecycle();
 	}
 
 	/**
@@ -148,4 +155,23 @@ public interface Transaction extends AutoCloseable, TransactionContext {
 	 */
 	@Override
 	void close();
+
+	enum Lifecycle {
+		/**
+		 * No transaction is currently open or closing.
+		 */
+		NONE,
+		/**
+		 * A transaction is currently open.
+		 */
+		OPEN,
+		/**
+		 * The current transaction is invoking its close callbacks.
+		 */
+		CLOSING,
+		/**
+		 * The current transaction is invoking its outer close callbacks.
+		 */
+		OUTER_CLOSING
+	}
 }
