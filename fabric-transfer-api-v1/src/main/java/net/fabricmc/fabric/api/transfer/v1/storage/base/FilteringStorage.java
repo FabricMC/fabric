@@ -223,7 +223,7 @@ public abstract class FilteringStorage<T> implements Storage<T> {
 
 		@Override
 		public StorageView<T> getUnderlyingView() {
-			return backingView;
+			return backingView.getUnderlyingView();
 		}
 	}
 }

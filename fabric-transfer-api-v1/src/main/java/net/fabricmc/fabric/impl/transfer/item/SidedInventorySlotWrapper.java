@@ -78,6 +78,6 @@ class SidedInventorySlotWrapper implements SingleSlotStorage<ItemVariant> {
 
 	@Override
 	public StorageView<ItemVariant> getUnderlyingView() {
-		return slotWrapper;
+		return slotWrapper.getUnderlyingView();
 	}
 }
