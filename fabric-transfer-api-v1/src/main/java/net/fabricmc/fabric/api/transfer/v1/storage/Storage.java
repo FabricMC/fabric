@@ -165,9 +165,9 @@ public interface Storage<T> {
 	 * @return An iterable over the contents of this storage.
 	 * @see #iterator
 	 */
-	@SuppressWarnings("unchecked")
-	default Iterable<StorageView<T>> iterable(TransactionContext transaction) {
-		return () -> (Iterator<StorageView<T>>) iterator(transaction);
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	default Iterable<? extends StorageView<T>> iterable(TransactionContext transaction) {
+		return () -> (Iterator) iterator(transaction);
 	}
 
 	/**
