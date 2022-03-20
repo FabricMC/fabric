@@ -16,7 +16,14 @@
 
 package net.fabricmc.fabric.test.item;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
+
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -25,9 +32,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.item.v1.FabricItem;
-
-public class UpdatingItem extends Item implements FabricItem {
+public class UpdatingItem extends Item {
+	private static final EntityAttributeModifier PLUS_FIVE = new EntityAttributeModifier("updating item", 5, EntityAttributeModifier.Operation.ADDITION);
 	private final boolean allowUpdateAnimation;
 
 	public UpdatingItem(boolean allowUpdateAnimation) {
@@ -51,5 +57,17 @@ public class UpdatingItem extends Item implements FabricItem {
 	@Override
 	public boolean allowContinuingBlockBreaking(PlayerEntity player, ItemStack oldStack, ItemStack newStack) {
 		return true; // set to false and you won't be able to break a block in survival with this item
+	}
+
+	@Override
+	public Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
+		// Give + 5 attack damage for 5 seconds every 10 seconds.
+		long ticks = stack.hasNbt() ? stack.getNbt().getLong("ticks") : 0;
+
+		if (slot == EquipmentSlot.MAINHAND && ticks % 200 < 100) {
+			return ImmutableMultimap.of(EntityAttributes.GENERIC_ATTACK_DAMAGE, PLUS_FIVE);
+		} else {
+			return ImmutableMultimap.of();
+		}
 	}
 }
