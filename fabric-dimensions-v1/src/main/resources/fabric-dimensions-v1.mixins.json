@@ -4,8 +4,11 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "EntityMixin",
+    "MixinRegistryCodecs",
+    "RegistryOpsAccessor",
+    "ServerBugfixMixin",
     "ServerPlayerEntityMixin",
-    "ServerBugfixMixin"
+    "SimpleRegistryAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
