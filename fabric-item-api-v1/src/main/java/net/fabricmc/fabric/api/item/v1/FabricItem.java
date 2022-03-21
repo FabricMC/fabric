@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.item.v1;
 
 import com.google.common.collect.Multimap;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
@@ -77,5 +78,17 @@ public interface FabricItem {
 	 */
 	default Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
 		return ((Item) this).getAttributeModifiers(slot);
+	}
+
+	/**
+	 * Determines if mining with this item allows drops to be harvested from the specified block state.
+	 * Stack-aware version of {@link Item#isSuitableFor(BlockState)}.
+	 *
+	 * @param stack the current stack
+	 * @param state the block state of the targeted block
+	 * @return true if drops can be harvested
+	 */
+	default boolean isSuitableFor(ItemStack stack, BlockState state) {
+		return ((Item) this).isSuitableFor(state);
 	}
 }

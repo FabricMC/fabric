@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.item;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
@@ -59,15 +60,29 @@ public class UpdatingItem extends Item {
 		return true; // set to false and you won't be able to break a block in survival with this item
 	}
 
+	// True for 15 seconds every 30 seconds
+	private boolean isEnabled(ItemStack stack) {
+		return !stack.hasNbt() || stack.getNbt().getLong("ticks") % 600 < 300;
+	}
+
 	@Override
 	public Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
-		// Give + 5 attack damage for 5 seconds every 10 seconds.
-		long ticks = stack.hasNbt() ? stack.getNbt().getLong("ticks") : 0;
-
-		if (slot == EquipmentSlot.MAINHAND && ticks % 200 < 100) {
+		// Give + 5 attack damage for 15 seconds every 30 seconds.
+		if (slot == EquipmentSlot.MAINHAND && isEnabled(stack)) {
 			return ImmutableMultimap.of(EntityAttributes.GENERIC_ATTACK_DAMAGE, PLUS_FIVE);
 		} else {
 			return ImmutableMultimap.of();
 		}
+	}
+
+	@Override
+	public boolean isSuitableFor(ItemStack stack, BlockState state) {
+		// Suitable for everything for 15 seconds every 30 seconds.
+		return isEnabled(stack);
+	}
+
+	@Override
+	public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
+		return isEnabled(stack) ? 20 : super.getMiningSpeedMultiplier(stack, state);
 	}
 }
