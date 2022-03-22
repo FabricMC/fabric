@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,6 +34,9 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.resource.loader.GroupResourcePack;
 
+/**
+ * Patches getAllResources and method_41265 to work with GroupResourcePack.
+ */
 @Mixin(NamespaceResourceManager.class)
 public class NamespaceResourceManagerMixin {
 	private final ThreadLocal<List<class_7083>> fabric$getAllResources$resources = new ThreadLocal<>();
@@ -58,7 +60,7 @@ public class NamespaceResourceManagerMixin {
 					target = "Lnet/minecraft/resource/ResourcePack;contains(Lnet/minecraft/resource/ResourceType;Lnet/minecraft/util/Identifier;)Z"
 					)
 			)
-	private boolean onResourceAdd(ResourcePack pack, ResourceType type, Identifier id) throws IOException {
+	private boolean onResourceAdd(ResourcePack pack, ResourceType type, Identifier id) {
 		if (pack instanceof GroupResourcePack) {
 			((GroupResourcePack) pack).appendResources((NamespaceResourceManagerAccessor) this, id, this.fabric$getAllResources$resources.get());
 
@@ -66,5 +68,26 @@ public class NamespaceResourceManagerMixin {
 		}
 
 		return pack.contains(type, id);
+	}
+
+	@Redirect(
+			method = "method_41258",
+			at = @At(
+					value = "INVOKE",
+					target = "Ljava/util/List;add(Ljava/lang/Object;)Z"
+			),
+			allow = 1
+	)
+	private boolean onResourceAdd(List<NamespaceResourceManager.class_7083> entries, Object entryObject) {
+		// Required due to type erasure of List.add
+		NamespaceResourceManager.class_7083 entry = (NamespaceResourceManager.class_7083) entryObject;
+		ResourcePack pack = entry.field_37286;
+
+		if (pack instanceof GroupResourcePack grp) {
+			grp.appendResources((NamespaceResourceManagerAccessor) this, entry.field_37284, entries);
+			return true;
+		}
+
+		return entries.add(entry);
 	}
 }

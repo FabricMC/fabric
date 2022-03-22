@@ -118,7 +118,7 @@ public abstract class GroupResourcePack implements ResourcePack {
 		return this.namespacedPacks.keySet();
 	}
 
-	public void appendResources(NamespaceResourceManagerAccessor manager, Identifier id, List<class_7083> resources) throws IOException {
+	public void appendResources(NamespaceResourceManagerAccessor manager, Identifier id, List<class_7083> resources) {
 		List<ModResourcePack> packs = this.namespacedPacks.get(id.getNamespace());
 
 		if (packs == null) {
