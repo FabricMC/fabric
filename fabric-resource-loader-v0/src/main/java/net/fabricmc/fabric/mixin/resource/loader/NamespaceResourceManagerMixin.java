@@ -25,10 +25,9 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.class_7086;
 import net.minecraft.resource.NamespaceResourceManager;
-import net.minecraft.resource.NamespaceResourceManager.class_7083;
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourceRef;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
@@ -39,27 +38,17 @@ import net.fabricmc.fabric.impl.resource.loader.GroupResourcePack;
  */
 @Mixin(NamespaceResourceManager.class)
 public class NamespaceResourceManagerMixin {
-	private final ThreadLocal<List<class_7083>> fabric$getAllResources$resources = new ThreadLocal<>();
+	private final ThreadLocal<List<NamespaceResourceManager.Entry>> fabric$getAllResources$resources = new ThreadLocal<>();
 
-	@Inject(
-			method = "getAllResources",
-			at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraft/resource/NamespaceResourceManager;getMetadataPath(Lnet/minecraft/util/Identifier;)Lnet/minecraft/util/Identifier;"
-					),
-			locals = LocalCapture.CAPTURE_FAILHARD
-			)
-	private void onGetAllResources(Identifier id, CallbackInfoReturnable<List<class_7086>> cir, List<class_7083> resources) {
+	@Inject(method = "getAllResources",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/NamespaceResourceManager;getMetadataPath(Lnet/minecraft/util/Identifier;)Lnet/minecraft/util/Identifier;"),
+			locals = LocalCapture.CAPTURE_FAILHARD)
+	private void onGetAllResources(Identifier id, CallbackInfoReturnable<List<ResourceRef>> cir, List<NamespaceResourceManager.Entry> resources) {
 		this.fabric$getAllResources$resources.set(resources);
 	}
 
-	@Redirect(
-			method = "getAllResources",
-			at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraft/resource/ResourcePack;contains(Lnet/minecraft/resource/ResourceType;Lnet/minecraft/util/Identifier;)Z"
-					)
-			)
+	@Redirect(method = "getAllResources",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePack;contains(Lnet/minecraft/resource/ResourceType;Lnet/minecraft/util/Identifier;)Z"))
 	private boolean onResourceAdd(ResourcePack pack, ResourceType type, Identifier id) {
 		if (pack instanceof GroupResourcePack) {
 			((GroupResourcePack) pack).appendResources((NamespaceResourceManagerAccessor) this, id, this.fabric$getAllResources$resources.get());
@@ -70,21 +59,16 @@ public class NamespaceResourceManagerMixin {
 		return pack.contains(type, id);
 	}
 
-	@Redirect(
-			method = "method_41258",
-			at = @At(
-					value = "INVOKE",
-					target = "Ljava/util/List;add(Ljava/lang/Object;)Z"
-			),
-			allow = 1
-	)
-	private boolean onResourceAdd(List<NamespaceResourceManager.class_7083> entries, Object entryObject) {
+	@Redirect(method = "findAndAdd",
+			at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z"),
+			allow = 1)
+	private boolean onResourceAdd(List<NamespaceResourceManager.Entry> entries, Object entryObject) {
 		// Required due to type erasure of List.add
-		NamespaceResourceManager.class_7083 entry = (NamespaceResourceManager.class_7083) entryObject;
-		ResourcePack pack = entry.field_37286;
+		NamespaceResourceManager.Entry entry = (NamespaceResourceManager.Entry) entryObject;
+		ResourcePack pack = entry.pack;
 
 		if (pack instanceof GroupResourcePack grp) {
-			grp.appendResources((NamespaceResourceManagerAccessor) this, entry.field_37284, entries);
+			grp.appendResources((NamespaceResourceManagerAccessor) this, entry.id, entries);
 			return true;
 		}
 

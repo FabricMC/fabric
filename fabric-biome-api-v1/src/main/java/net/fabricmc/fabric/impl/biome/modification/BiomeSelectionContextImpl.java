@@ -85,7 +85,7 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 			return false;
 		}
 
-		return instance.method_41607().contains(getBiomeRegistryEntry());
+		return instance.getValidBiomes().contains(getBiomeRegistryEntry());
 	}
 
 	@Override
