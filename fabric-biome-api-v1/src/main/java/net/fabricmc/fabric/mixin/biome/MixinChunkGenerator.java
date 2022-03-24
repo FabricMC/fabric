@@ -21,17 +21,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_7138;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.world.gen.noise.NoiseConfig;
 
 import net.fabricmc.fabric.impl.biome.TheEndBiomeData;
 
 @Mixin(ChunkGenerator.class)
 public class MixinChunkGenerator {
 	@Inject(method = "method_38267", at = @At("HEAD"))
-	private void populateBiomes_lambda_head(Chunk chunk, class_7138 rng, CallbackInfoReturnable<Chunk> ci) {
+	private void populateBiomes_lambda_head(Chunk chunk, NoiseConfig noiseConfig, CallbackInfoReturnable<Chunk> ci) {
 		// capture seed so TheEndBiomeData.Overrides has it if it needs it
-		TheEndBiomeData.Overrides.setSeed(rng.legacyLevelSeed());
+		TheEndBiomeData.Overrides.setSeed(noiseConfig.legacyWorldSeed());
 	}
 }

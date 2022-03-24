@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.class_7157;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.command.TestCommand;
@@ -37,7 +37,7 @@ public abstract class CommandManagerMixin {
 	private CommandDispatcher<ServerCommandSource> dispatcher;
 
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/command/WorldBorderCommand;register(Lcom/mojang/brigadier/CommandDispatcher;)V", shift = At.Shift.AFTER))
-	private void construct(CommandManager.RegistrationEnvironment environment, class_7157 arg, CallbackInfo info) {
+	private void construct(CommandManager.RegistrationEnvironment environment, CommandRegistryAccess registryAccess, CallbackInfo info) {
 		// Registered by vanilla when isDevelopment is enabled.
 		if (!SharedConstants.isDevelopment) {
 			TestCommand.register(this.dispatcher);

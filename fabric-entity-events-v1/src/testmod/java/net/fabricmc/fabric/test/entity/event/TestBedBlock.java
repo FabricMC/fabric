@@ -54,7 +54,7 @@ public class TestBedBlock extends Block {
 			return ActionResult.CONSUME;
 		}
 
-		if (world.getDimension().isBedWorking()) {
+		if (world.getDimension().bedWorks()) {
 			if (!world.isClient) {
 				player.trySleep(pos).ifLeft(sleepFailureReason -> {
 					Text message = sleepFailureReason.getMessage();

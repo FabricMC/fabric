@@ -126,7 +126,4 @@ public interface AbstractBlockSettingsAccessor {
 
 	@Invoker
 	Block.Settings invokeTicksRandomly();
-
-	@Invoker
-	Block.Settings invokeDropsNothing();
 }

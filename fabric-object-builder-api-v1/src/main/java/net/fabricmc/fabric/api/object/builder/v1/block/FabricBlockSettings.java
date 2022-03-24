@@ -165,12 +165,6 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	}
 
 	@Override
-	public FabricBlockSettings dropsNothing() {
-		super.dropsNothing();
-		return this;
-	}
-
-	@Override
 	public FabricBlockSettings dropsLike(Block block) {
 		super.dropsLike(block);
 		return this;

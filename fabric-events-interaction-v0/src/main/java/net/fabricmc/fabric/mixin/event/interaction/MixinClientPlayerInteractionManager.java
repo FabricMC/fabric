@@ -23,11 +23,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_7204;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.client.network.SequencedPacketCreator;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -72,7 +72,7 @@ public abstract class MixinClientPlayerInteractionManager {
 
 			// We also need to let the server process the action if it's accepted.
 			if (result.isAccepted()) {
-				method_41931(client.world, id -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction, id));
+				sendSequencedPacket(client.world, id -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction, id));
 			}
 		}
 	}
@@ -91,7 +91,7 @@ public abstract class MixinClientPlayerInteractionManager {
 		}
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;method_41931(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/class_7204;)V"), method = "interactBlock", cancellable = true)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;sendSequencedPacket(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/network/SequencedPacketCreator;)V"), method = "interactBlock", cancellable = true)
 	public void interactBlock(ClientPlayerEntity player, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<ActionResult> info) {
 		// hook interactBlock between the world border check and the actual block interaction to invoke the use block event first
 		// this needs to be in interactBlock to avoid sending a packet in line with the event javadoc
@@ -103,7 +103,7 @@ public abstract class MixinClientPlayerInteractionManager {
 		if (result != ActionResult.PASS) {
 			if (result == ActionResult.SUCCESS) {
 				// send interaction packet to the server with a new sequentially assigned id
-				method_41931(player.clientWorld, id -> new PlayerInteractBlockC2SPacket(hand, blockHitResult, id));
+				sendSequencedPacket(player.clientWorld, id -> new PlayerInteractBlockC2SPacket(hand, blockHitResult, id));
 			}
 
 			info.setReturnValue(result);
@@ -121,7 +121,7 @@ public abstract class MixinClientPlayerInteractionManager {
 				// send the move packet like vanilla to ensure the position+view vectors are accurate
 				networkHandler.sendPacket(new PlayerMoveC2SPacket.Full(player.getX(), player.getY(), player.getZ(), player.getYaw(), player.getPitch(), player.isOnGround()));
 				// send interaction packet to the server with a new sequentially assigned id
-				method_41931((ClientWorld) player.world, id -> new PlayerInteractItemC2SPacket(hand, id));
+				sendSequencedPacket((ClientWorld) player.world, id -> new PlayerInteractItemC2SPacket(hand, id));
 			}
 
 			info.setReturnValue(result.getResult());
@@ -156,5 +156,5 @@ public abstract class MixinClientPlayerInteractionManager {
 	}
 
 	@Shadow
-	public abstract void method_41931(ClientWorld clientWorld, class_7204 supplier);
+	public abstract void sendSequencedPacket(ClientWorld clientWorld, SequencedPacketCreator supplier);
 }

@@ -46,7 +46,7 @@ public class CreateWorldScreenMixin {
 	private ResourcePackManager packManager;
 
 	@ModifyVariable(method = "create(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/screen/Screen;)V",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;method_41849(Lnet/minecraft/resource/ResourcePackManager;Lnet/minecraft/resource/DataPackSettings;)Lnet/minecraft/server/SaveLoading$ServerConfig;"))
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;createServerConfig(Lnet/minecraft/resource/ResourcePackManager;Lnet/minecraft/resource/DataPackSettings;)Lnet/minecraft/server/SaveLoading$ServerConfig;"))
 	private static ResourcePackManager onCreateResManagerInit(ResourcePackManager manager) {
 		// Add mod data packs to the initial res pack manager so they are active even if the user doesn't use custom data packs
 		((ResourcePackManagerAccessor) manager).getProviders().add(new ModResourcePackCreator(ResourceType.SERVER_DATA));

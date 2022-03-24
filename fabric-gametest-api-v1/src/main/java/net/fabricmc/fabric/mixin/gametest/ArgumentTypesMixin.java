@@ -34,7 +34,7 @@ import net.minecraft.util.registry.Registry;
 @Mixin(ArgumentTypes.class)
 public abstract class ArgumentTypesMixin {
 	@Shadow
-	private static <A extends ArgumentType<?>, T extends ArgumentSerializer.class_7217<A>> ArgumentSerializer<A, T> register(Registry<ArgumentSerializer<?, ?>> registry, String string, Class<? extends A> clazz, ArgumentSerializer<A, T> argumentSerializer) {
+	private static <A extends ArgumentType<?>, T extends ArgumentSerializer.ArgumentTypeProperties<A>> ArgumentSerializer<A, T> register(Registry<ArgumentSerializer<?, ?>> registry, String string, Class<? extends A> clazz, ArgumentSerializer<A, T> argumentSerializer) {
 		throw new AssertionError("Nope.");
 	}
 
@@ -42,8 +42,8 @@ public abstract class ArgumentTypesMixin {
 	private static void register(Registry<ArgumentSerializer<?, ?>> registry, CallbackInfoReturnable<ArgumentSerializer<?, ?>> ci) {
 		// Registered by vanilla when isDevelopment is enabled.
 		if (!SharedConstants.isDevelopment) {
-			register(registry, "test_argument", TestFunctionArgumentType.class, ConstantArgumentSerializer.method_41999(TestFunctionArgumentType::testFunction));
-			register(registry, "test_class", TestClassArgumentType.class, ConstantArgumentSerializer.method_41999(TestClassArgumentType::testClass));
+			register(registry, "test_argument", TestFunctionArgumentType.class, ConstantArgumentSerializer.of(TestFunctionArgumentType::testFunction));
+			register(registry, "test_class", TestClassArgumentType.class, ConstantArgumentSerializer.of(TestClassArgumentType::testClass));
 		}
 	}
 }
