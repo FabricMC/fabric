@@ -140,7 +140,7 @@ public interface PlayerInventoryStorage extends InventoryStorage {
 	}
 
 	/**
-	 * Throw items in the world at the player's location.
+	 * Throw items in the world from the player's location.
 	 *
 	 * <p>Note: This function has full transaction support, and will not actually drop the items until the outermost transaction is committed.
 	 *
