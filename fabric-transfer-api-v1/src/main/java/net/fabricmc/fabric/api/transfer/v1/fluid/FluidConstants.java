@@ -29,6 +29,9 @@ import org.jetbrains.annotations.ApiStatus;
  */
 @ApiStatus.Experimental
 public final class FluidConstants {
+	///////////////////////////
+	// ==== FLUID UNITS ==== //
+	///////////////////////////
 	public static final long BUCKET = 81000;
 	public static final long BOTTLE = 27000;
 	public static final long BLOCK = 81000;
@@ -53,6 +56,17 @@ public final class FluidConstants {
 			return total / denominator;
 		}
 	}
+
+	// ==========================
+	// ==== FLUID ATTRIBUTES ====
+	// ==========================
+	public static final int WATER_TEMPERATURE = 300;
+	public static final int LAVA_TEMPERATURE = 1300;
+
+	public static final int WATER_VISCOSITY = 1000;
+	// TODO: choose values for these 2
+	public static final int LAVA_VISCOSITY = 6000;
+	public static final int LAVA_VISCOSITY_NETHER = 2000;
 
 	private FluidConstants() {
 	}

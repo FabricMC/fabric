@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
-
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,6 +24,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 
@@ -64,39 +64,77 @@ public class FluidVariantProperties {
 		return handler == null ? DEFAULT_HANDLER : handler;
 	}
 
+	/**
+	 * Return the name that should be used for the passed fluid variant.
+	 */
 	public static Text getName(FluidVariant variant) {
 		return getHandlerOrDefault(variant.getFluid()).getName(variant);
 	}
 
+	/**
+	 * Return the sound corresponding to a container of this fluid variant being filled.
+	 */
 	public static SoundEvent getFillSound(FluidVariant variant) {
 		return getHandlerOrDefault(variant.getFluid()).getFillSound(variant);
 	}
 
+	/**
+	 * Return the sound corresponding to a container of this fluid variant being emptied.
+	 */
 	public static SoundEvent getEmptySound(FluidVariant variant) {
 		return getHandlerOrDefault(variant.getFluid()).getEmptySound(variant);
 	}
 
+	/**
+	 * Return an integer in [0, 15]: the light level emitted by this fluid variant, or 0 if it doesn't naturally emit light.
+	 */
 	public static int getLuminance(FluidVariant variant) {
-		return getHandlerOrDefault(variant.getFluid()).getLuminance(variant);
+		int luminance = getHandlerOrDefault(variant.getFluid()).getLuminance(variant);
+
+		if (luminance < 0 || luminance > 15) {
+			throw new RuntimeException("Invalid luminance %d for fluid variant %s".formatted(luminance, variant));
+		}
+
+		return luminance;
 	}
 
-	public static int getDensity(FluidVariant variant) {
-		return getHandlerOrDefault(variant.getFluid()).getDensity(variant);
-	}
-
+	/**
+	 * Return a non-negative integer, representing the temperature of this fluid in Kelvin.
+	 */
 	public static int getTemperature(FluidVariant variant) {
-		return getHandlerOrDefault(variant.getFluid()).getTemperature(variant);
+		int temperature = getHandlerOrDefault(variant.getFluid()).getTemperature(variant);
+
+		if (temperature < 0) {
+			throw new RuntimeException("Invalid temperature %d for fluid variant %s".formatted(temperature, variant));
+		}
+
+		return temperature;
 	}
 
-	public static int getViscosity(FluidVariant variant) {
-		return getHandlerOrDefault(variant.getFluid()).getViscosity(variant);
+	/**
+	 * Return a positive integer, representing the viscosity of this fluid variant.
+	 * Fluids with lower viscosity generally flow faster than fluids with higher viscosity.
+	 *
+	 * @param world World if available, otherwise null.
+	 */
+	public static int getViscosity(FluidVariant variant, @Nullable World world) {
+		int viscosity = getHandlerOrDefault(variant.getFluid()).getViscosity(variant, world);
+
+		if (viscosity <= 0) {
+			throw new RuntimeException("Invalid viscosity %d for fluid variant %s".formatted(viscosity, variant));
+		}
+
+		return viscosity;
 	}
 
+	/**
+	 * Return true if this fluid behaves like a gas.
+	 * Gaseous fluids generally flow upwards.
+	 */
 	public static boolean isGaseous(FluidVariant variant) {
 		return getHandlerOrDefault(variant.getFluid()).isGaseous(variant);
 	}
 
-	// TODO: javadoc
 	// TODO: should something be done for the empty fluid?
 
 	static {
@@ -113,12 +151,16 @@ public class FluidVariantProperties {
 
 			@Override
 			public int getTemperature(FluidVariant variant) {
-				return 1300;
+				return FluidConstants.LAVA_TEMPERATURE;
 			}
 
 			@Override
-			public int getViscosity(FluidVariant variant) {
-				return 6000;
+			public int getViscosity(FluidVariant variant, @Nullable World level) {
+				if (level != null && level.getDimension().isUltrawarm()) {
+					return FluidConstants.LAVA_VISCOSITY_NETHER;
+				} else {
+					return FluidConstants.LAVA_VISCOSITY;
+				}
 			}
 		});
 	}

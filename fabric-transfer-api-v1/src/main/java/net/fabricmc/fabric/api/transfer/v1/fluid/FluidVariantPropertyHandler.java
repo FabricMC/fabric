@@ -17,10 +17,12 @@
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.world.World;
 
 /**
  * Defines the common properties of {@linkplain FluidVariant fluid variants} of a given Fluid.
@@ -60,25 +62,20 @@ public interface FluidVariantPropertyHandler {
 	}
 
 	/**
-	 * Return any integer, representing the density of this fluid.
-	 */
-	default int getDensity(FluidVariant variant) {
-		return 1000;
-	}
-
-	/**
 	 * Return a non-negative integer, representing the temperature of this fluid in Kelvin.
 	 */
 	default int getTemperature(FluidVariant variant) {
-		return 300;
+		return FluidConstants.WATER_TEMPERATURE;
 	}
 
 	/**
 	 * Return a positive integer, representing the viscosity of this fluid.
 	 * Fluids with lower viscosity generally flow faster than fluids with higher viscosity.
+	 *
+	 * @param world World if available, otherwise null.
 	 */
-	default int getViscosity(FluidVariant variant) {
-		return 1000;
+	default int getViscosity(FluidVariant variant, @Nullable World world) {
+		return FluidConstants.WATER_VISCOSITY;
 	}
 
 	/**
@@ -86,6 +83,6 @@ public interface FluidVariantPropertyHandler {
 	 * Gaseous fluids generally flow upwards.
 	 */
 	default boolean isGaseous(FluidVariant variant) {
-		return getDensity(variant) < 0;
+		return false;
 	}
 }
