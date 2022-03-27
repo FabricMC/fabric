@@ -62,7 +62,8 @@ public final class MiningLevelManager {
 
 	/**
 	 * Gets the mining level block tag corresponding to a given integer mining level.
-	 * More precisely, return the corresponding vanilla tag for levels 1 to 3, and the fabric tag for levels above 3.
+	 * More precisely, return the corresponding vanilla tag ({@code #minecraft:needs_x_tool}) for levels 1 to 3,
+	 * and the Fabric tag for levels above 3.
 	 *
 	 * @param miningLevel the integer mining level
 	 * @return the corresponding mining level block tag
