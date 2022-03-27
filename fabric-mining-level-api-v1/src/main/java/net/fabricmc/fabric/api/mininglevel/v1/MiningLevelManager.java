@@ -63,7 +63,7 @@ public final class MiningLevelManager {
 	/**
 	 * Gets the mining level block tag corresponding to a given integer mining level.
 	 * More precisely, return the corresponding vanilla tag ({@code #minecraft:needs_x_tool}) for levels 1 to 3,
-	 * and the Fabric tag for levels above 3.
+	 * and the Fabric tag ({@code #fabric:needs_tool_level_N}) for levels above 3.
 	 *
 	 * @param miningLevel the integer mining level
 	 * @return the corresponding mining level block tag
@@ -75,10 +75,10 @@ public final class MiningLevelManager {
 		}
 
 		return switch (miningLevel) {
-			case 1 -> BlockTags.NEEDS_STONE_TOOL;
-			case 2 -> BlockTags.NEEDS_IRON_TOOL;
-			case 3 -> BlockTags.NEEDS_DIAMOND_TOOL;
-			default -> TagKey.of(Registry.BLOCK.getKey(), new Identifier("fabric", "needs_tool_level_" + miningLevel));
+		case 1 -> BlockTags.NEEDS_STONE_TOOL;
+		case 2 -> BlockTags.NEEDS_IRON_TOOL;
+		case 3 -> BlockTags.NEEDS_DIAMOND_TOOL;
+		default -> TagKey.of(Registry.BLOCK.getKey(), new Identifier("fabric", "needs_tool_level_" + miningLevel));
 		};
 	}
 }
