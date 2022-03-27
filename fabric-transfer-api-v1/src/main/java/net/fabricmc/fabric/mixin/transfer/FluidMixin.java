@@ -16,25 +16,36 @@
 
 package net.fabricmc.fabric.mixin.transfer;
 
+import java.util.Optional;
+
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.LavaFluid;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
+import net.fabricmc.fabric.impl.transfer.fluid.FabricFluid;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantCache;
+import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 
 /**
  * Cache the FluidVariant with a null tag inside each Fluid directly.
  */
 @Mixin(Fluid.class)
-@SuppressWarnings("unused")
-public class FluidMixin implements FluidVariantCache {
-	@SuppressWarnings("ConstantConditions")
+@SuppressWarnings({"unused", "ConstantConditions"})
+public class FluidMixin implements FluidVariantCache, FabricFluid {
 	private final FluidVariant fabric_cachedFluidVariant = new FluidVariantImpl((Fluid) (Object) this, null);
 
 	@Override
 	public FluidVariant fabric_getCachedFluidVariant() {
 		return fabric_cachedFluidVariant;
+	}
+
+	@Override
+	public Optional<SoundEvent> getFabricBucketEmptySound() {
+		// Default behaviour (from playEmptyingSound method in BucketItem).
+		return Optional.of(((Object) this) instanceof LavaFluid ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY);
 	}
 }
