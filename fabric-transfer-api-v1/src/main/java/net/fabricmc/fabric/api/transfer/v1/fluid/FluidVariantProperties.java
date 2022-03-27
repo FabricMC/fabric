@@ -27,6 +27,7 @@ import net.minecraft.text.Text;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
+import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 /**
  * Common fluid variant properties, accessible both client-side and server-side.
@@ -92,7 +93,8 @@ public class FluidVariantProperties {
 		int luminance = getHandlerOrDefault(variant.getFluid()).getLuminance(variant);
 
 		if (luminance < 0 || luminance > 15) {
-			throw new RuntimeException("Invalid luminance %d for fluid variant %s".formatted(luminance, variant));
+			TransferApiImpl.LOGGER.warn("Broken FluidVariantPropertyHandler. Invalid luminance %d for fluid variant %s".formatted(luminance, variant));
+			return DEFAULT_HANDLER.getLuminance(variant);
 		}
 
 		return luminance;
@@ -100,12 +102,14 @@ public class FluidVariantProperties {
 
 	/**
 	 * Return a non-negative integer, representing the temperature of this fluid in Kelvin.
+	 * The reference values are 300 for water, and 1300 for lava.
 	 */
 	public static int getTemperature(FluidVariant variant) {
 		int temperature = getHandlerOrDefault(variant.getFluid()).getTemperature(variant);
 
 		if (temperature < 0) {
-			throw new RuntimeException("Invalid temperature %d for fluid variant %s".formatted(temperature, variant));
+			TransferApiImpl.LOGGER.warn("Broken FluidVariantPropertyHandler. Invalid temperature %d for fluid variant %s".formatted(temperature, variant));
+			return DEFAULT_HANDLER.getTemperature(variant);
 		}
 
 		return temperature;
@@ -115,13 +119,17 @@ public class FluidVariantProperties {
 	 * Return a positive integer, representing the viscosity of this fluid variant.
 	 * Fluids with lower viscosity generally flow faster than fluids with higher viscosity.
 	 *
+	 * <p>More precisely, viscosity should roughly be 200 * {@code FlowableFluid.getFlowSpeed}.
+	 * The reference values are 1000 for water, 2000 for lava in ultrawarm dimensions (such as the nether), and 6000 for lava in other dimensions.
+	 *
 	 * @param world World if available, otherwise null.
 	 */
 	public static int getViscosity(FluidVariant variant, @Nullable World world) {
 		int viscosity = getHandlerOrDefault(variant.getFluid()).getViscosity(variant, world);
 
 		if (viscosity <= 0) {
-			throw new RuntimeException("Invalid viscosity %d for fluid variant %s".formatted(viscosity, variant));
+			TransferApiImpl.LOGGER.warn("Broken FluidVariantPropertyHandler. Invalid viscosity %d for fluid variant %s".formatted(viscosity, variant));
+			return DEFAULT_HANDLER.getViscosity(variant, world);
 		}
 
 		return viscosity;
@@ -134,8 +142,6 @@ public class FluidVariantProperties {
 	public static boolean isGaseous(FluidVariant variant) {
 		return getHandlerOrDefault(variant.getFluid()).isGaseous(variant);
 	}
-
-	// TODO: should something be done for the empty fluid?
 
 	static {
 		register(Fluids.LAVA, new FluidVariantPropertyHandler() {
@@ -152,15 +158,6 @@ public class FluidVariantProperties {
 			@Override
 			public int getTemperature(FluidVariant variant) {
 				return FluidConstants.LAVA_TEMPERATURE;
-			}
-
-			@Override
-			public int getViscosity(FluidVariant variant, @Nullable World level) {
-				if (level != null && level.getDimension().isUltrawarm()) {
-					return FluidConstants.LAVA_VISCOSITY_NETHER;
-				} else {
-					return FluidConstants.LAVA_VISCOSITY;
-				}
 			}
 		});
 	}

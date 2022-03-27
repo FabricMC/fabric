@@ -64,9 +64,12 @@ public final class FluidConstants {
 	public static final int LAVA_TEMPERATURE = 1300;
 
 	public static final int WATER_VISCOSITY = 1000;
-	// TODO: choose values for these 2
 	public static final int LAVA_VISCOSITY = 6000;
 	public static final int LAVA_VISCOSITY_NETHER = 2000;
+	/**
+	 * For flowable fluids, the viscosity should match VISCOSITY_RATIO * {@code FlowableFluid.getFlowSpeed}.
+	 */
+	public static final int VISCOSITY_RATIO = 200;
 
 	private FluidConstants() {
 	}

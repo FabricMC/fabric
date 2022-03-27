@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.transfer.v1.fluid;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -63,6 +64,7 @@ public interface FluidVariantPropertyHandler {
 
 	/**
 	 * Return a non-negative integer, representing the temperature of this fluid in Kelvin.
+	 * The reference values are 300 for water, and 1300 for lava.
 	 */
 	default int getTemperature(FluidVariant variant) {
 		return FluidConstants.WATER_TEMPERATURE;
@@ -72,9 +74,16 @@ public interface FluidVariantPropertyHandler {
 	 * Return a positive integer, representing the viscosity of this fluid.
 	 * Fluids with lower viscosity generally flow faster than fluids with higher viscosity.
 	 *
+	 * <p>More precisely, viscosity should be 200 * {@code FlowableFluid.getFlowSpeed} for flowable fluids.
+	 * The reference values are 1000 for water, 2000 for lava in ultrawarm dimensions (such as the nether), and 6000 for lava in other dimensions.
+	 *
 	 * @param world World if available, otherwise null.
 	 */
 	default int getViscosity(FluidVariant variant, @Nullable World world) {
+		if (world != null && variant.getFluid() instanceof FlowableFluid flowable && flowable.getTickRate(world) > 0) {
+			return FluidConstants.VISCOSITY_RATIO * flowable.getTickRate(world);
+		}
+
 		return FluidConstants.WATER_VISCOSITY;
 	}
 
