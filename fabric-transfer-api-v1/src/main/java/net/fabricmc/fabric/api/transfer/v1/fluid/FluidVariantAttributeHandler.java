@@ -26,14 +26,14 @@ import net.minecraft.text.Text;
 import net.minecraft.world.World;
 
 /**
- * Defines the common properties of {@linkplain FluidVariant fluid variants} of a given Fluid.
- * Register with {@link FluidVariantProperties#register}.
+ * Defines the common attributes of {@linkplain FluidVariant fluid variants} of a given Fluid.
+ * Register with {@link FluidVariantAttributes#register}.
  *
  * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-public interface FluidVariantPropertyHandler {
+public interface FluidVariantAttributeHandler {
 	/**
 	 * Return the name that should be used for the passed fluid variant.
 	 */

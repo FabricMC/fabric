@@ -32,8 +32,8 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantProperties;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantPropertyHandler;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
 
 /**
  * Defines how {@linkplain FluidVariant fluid variants} of a given Fluid should be displayed to clients.
@@ -46,12 +46,12 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantPropertyHandler;
 @Environment(EnvType.CLIENT)
 public interface FluidVariantRenderHandler {
 	/**
-	 * @deprecated Implement {@link FluidVariantPropertyHandler#getName} instead.
+	 * @deprecated Implement {@link FluidVariantAttributeHandler#getName} instead.
 	 * This function will be removed in a future iteration of the API.
 	 */
 	@Deprecated(forRemoval = true)
 	default Text getName(FluidVariant fluidVariant) {
-		return FluidVariantProperties.getName(fluidVariant);
+		return FluidVariantAttributes.getName(fluidVariant);
 	}
 
 	/**
@@ -124,12 +124,12 @@ public interface FluidVariantRenderHandler {
 	}
 
 	/**
-	 * @deprecated Implement {@link FluidVariantPropertyHandler#isGaseous(FluidVariant)} instead.
+	 * @deprecated Implement {@link FluidVariantAttributeHandler#isGaseous(FluidVariant)} instead.
 	 * This function will be removed in a future iteration of the API.
 	 */
 	@Deprecated(forRemoval = true)
 	default boolean fillsFromTop(FluidVariant fluidVariant) {
 		// By default, only gaseous fluids should be filled from top.
-		return FluidVariantProperties.isGaseous(fluidVariant);
+		return FluidVariantAttributes.isGaseous(fluidVariant);
 	}
 }

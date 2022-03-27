@@ -58,7 +58,7 @@ public final class FluidConstants {
 	}
 
 	// ==========================
-	// ==== FLUID PROPERTIES ====
+	// ==== FLUID ATTRIBUTES ====
 	// ==========================
 	public static final int WATER_TEMPERATURE = 300;
 	public static final int LAVA_TEMPERATURE = 1300;

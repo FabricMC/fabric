@@ -38,7 +38,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantProperties;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 
 /**
  * Client-side display of fluid variants.
@@ -79,7 +79,7 @@ public class FluidVariantRendering {
 
 	/**
 	 * Return the name of the passed fluid variant.
-	 * @deprecated use {@link FluidVariantProperties#getName} instead.
+	 * @deprecated use {@link FluidVariantAttributes#getName} instead.
 	 */
 	@Deprecated(forRemoval = true)
 	public static Text getName(FluidVariant fluidVariant) {
@@ -160,7 +160,7 @@ public class FluidVariantRendering {
 
 	/**
 	 * Return {@code true} if this fluid variant should be rendered as filling tanks from the top.
-	 * @deprecated use {@link FluidVariantProperties#isGaseous} instead.
+	 * @deprecated use {@link FluidVariantAttributes#isGaseous} instead.
 	 */
 	@Deprecated(forRemoval = true)
 	public static boolean fillsFromTop(FluidVariant fluidVariant) {

@@ -30,38 +30,38 @@ import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 /**
- * Common fluid variant properties, accessible both client-side and server-side.
+ * Common fluid variant attributes, accessible both client-side and server-side.
  *
  * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-public class FluidVariantProperties {
-	private static final ApiProviderMap<Fluid, FluidVariantPropertyHandler> HANDLERS = ApiProviderMap.create();
-	private static final FluidVariantPropertyHandler DEFAULT_HANDLER = new FluidVariantPropertyHandler() { };
+public class FluidVariantAttributes {
+	private static final ApiProviderMap<Fluid, FluidVariantAttributeHandler> HANDLERS = ApiProviderMap.create();
+	private static final FluidVariantAttributeHandler DEFAULT_HANDLER = new FluidVariantAttributeHandler() { };
 
 	/**
-	 * Register a property handler for the passed fluid.
+	 * Register an attribute handler for the passed fluid.
 	 */
-	public static void register(Fluid fluid, FluidVariantPropertyHandler handler) {
+	public static void register(Fluid fluid, FluidVariantAttributeHandler handler) {
 		if (HANDLERS.putIfAbsent(fluid, handler) != null) {
 			throw new IllegalArgumentException("Duplicate handler registration for fluid " + fluid);
 		}
 	}
 
 	/**
-	 * Return the property handler for the passed fluid, if available, and {@code null} otherwise.
+	 * Return the attribute handler for the passed fluid, if available, and {@code null} otherwise.
 	 */
 	@Nullable
-	public static FluidVariantPropertyHandler getHandler(Fluid fluid) {
+	public static FluidVariantAttributeHandler getHandler(Fluid fluid) {
 		return HANDLERS.get(fluid);
 	}
 
 	/**
-	 * Return the property handler for the passed fluid, if available, or the default instance otherwise.
+	 * Return the attribute handler for the passed fluid, if available, or the default instance otherwise.
 	 */
-	public static FluidVariantPropertyHandler getHandlerOrDefault(Fluid fluid) {
-		FluidVariantPropertyHandler handler = HANDLERS.get(fluid);
+	public static FluidVariantAttributeHandler getHandlerOrDefault(Fluid fluid) {
+		FluidVariantAttributeHandler handler = HANDLERS.get(fluid);
 		return handler == null ? DEFAULT_HANDLER : handler;
 	}
 
@@ -93,7 +93,7 @@ public class FluidVariantProperties {
 		int luminance = getHandlerOrDefault(variant.getFluid()).getLuminance(variant);
 
 		if (luminance < 0 || luminance > 15) {
-			TransferApiImpl.LOGGER.warn("Broken FluidVariantPropertyHandler. Invalid luminance %d for fluid variant %s".formatted(luminance, variant));
+			TransferApiImpl.LOGGER.warn("Broken FluidVariantAttributeHandler. Invalid luminance %d for fluid variant %s".formatted(luminance, variant));
 			return DEFAULT_HANDLER.getLuminance(variant);
 		}
 
@@ -108,7 +108,7 @@ public class FluidVariantProperties {
 		int temperature = getHandlerOrDefault(variant.getFluid()).getTemperature(variant);
 
 		if (temperature < 0) {
-			TransferApiImpl.LOGGER.warn("Broken FluidVariantPropertyHandler. Invalid temperature %d for fluid variant %s".formatted(temperature, variant));
+			TransferApiImpl.LOGGER.warn("Broken FluidVariantAttributeHandler. Invalid temperature %d for fluid variant %s".formatted(temperature, variant));
 			return DEFAULT_HANDLER.getTemperature(variant);
 		}
 
@@ -128,7 +128,7 @@ public class FluidVariantProperties {
 		int viscosity = getHandlerOrDefault(variant.getFluid()).getViscosity(variant, world);
 
 		if (viscosity <= 0) {
-			TransferApiImpl.LOGGER.warn("Broken FluidVariantPropertyHandler. Invalid viscosity %d for fluid variant %s".formatted(viscosity, variant));
+			TransferApiImpl.LOGGER.warn("Broken FluidVariantAttributeHandler. Invalid viscosity %d for fluid variant %s".formatted(viscosity, variant));
 			return DEFAULT_HANDLER.getViscosity(variant, world);
 		}
 
@@ -144,12 +144,7 @@ public class FluidVariantProperties {
 	}
 
 	static {
-		register(Fluids.LAVA, new FluidVariantPropertyHandler() {
-			@Override
-			public SoundEvent getFillSound(FluidVariant variant) {
-				return SoundEvents.ITEM_BUCKET_FILL_LAVA;
-			}
-
+		register(Fluids.LAVA, new FluidVariantAttributeHandler() {
 			@Override
 			public SoundEvent getEmptySound(FluidVariant variant) {
 				return SoundEvents.ITEM_BUCKET_EMPTY_LAVA;
