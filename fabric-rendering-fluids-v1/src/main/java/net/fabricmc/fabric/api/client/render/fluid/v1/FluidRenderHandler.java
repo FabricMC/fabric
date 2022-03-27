@@ -67,6 +67,16 @@ public interface FluidRenderHandler {
 	}
 
 	/**
+	 * Get the fluid fog rendering handler.
+	 *
+	 * @param pos The position of the fluid in the world. May be null!
+	 * @param state The current state of the fluid.
+	 */
+	@Nullable default FluidFogHandler getFogHandler(@Nullable BlockPos pos, FluidState state) {
+		return null;
+	}
+
+	/**
 	 * Tessellate your fluid. This method will be invoked before the default
 	 * fluid renderer. By default it will call the default fluid renderer. Call
 	 * {@code FluidRenderHandler.super.renderFluid} if you want to render over

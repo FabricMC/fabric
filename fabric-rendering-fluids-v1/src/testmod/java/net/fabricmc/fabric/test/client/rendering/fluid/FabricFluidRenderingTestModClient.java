@@ -22,6 +22,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidFogHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 
@@ -45,14 +46,16 @@ public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.NO_OVERLAY, TestFluids.NO_OVERLAY_FLOWING, new SimpleFluidRenderHandler(
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"),
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"),
-				0xFF5555
+				0xFF5555,
+				new SimpleFluidFogHandler(0xFF5555, 0f, 1f)
 		));
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.OVERLAY, TestFluids.OVERLAY_FLOWING, new SimpleFluidRenderHandler(
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"),
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"),
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay"),
-				0x5555FF
+				0x5555FF,
+				new CustomizedFogHandler(0f, 1f)
 		));
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.CUSTOM, TestFluids.CUSTOM_FLOWING, new CustomizedFluidRenderer(
