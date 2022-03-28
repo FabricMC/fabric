@@ -124,12 +124,12 @@ public interface FluidVariantRenderHandler {
 	}
 
 	/**
-	 * @deprecated Implement {@link FluidVariantAttributeHandler#isGaseous(FluidVariant)} instead.
+	 * @deprecated Implement {@link FluidVariantAttributeHandler#isLighterThanAir(FluidVariant)} instead.
 	 * This function will be removed in a future iteration of the API.
 	 */
 	@Deprecated(forRemoval = true)
 	default boolean fillsFromTop(FluidVariant fluidVariant) {
 		// By default, only gaseous fluids should be filled from top.
-		return FluidVariantAttributes.isGaseous(fluidVariant);
+		return FluidVariantAttributes.isLighterThanAir(fluidVariant);
 	}
 }

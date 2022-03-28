@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.transfer.v1.fluid;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.sound.SoundEvent;
@@ -102,7 +103,7 @@ public class FluidVariantAttributes {
 
 	/**
 	 * Return a non-negative integer, representing the temperature of this fluid in Kelvin.
-	 * The reference values are 300 for water, and 1300 for lava.
+	 * The reference values are {@value FluidConstants#WATER_TEMPERATURE} for water, and {@value FluidConstants#LAVA_TEMPERATURE} for lava.
 	 */
 	public static int getTemperature(FluidVariant variant) {
 		int temperature = getHandlerOrDefault(variant.getFluid()).getTemperature(variant);
@@ -119,8 +120,10 @@ public class FluidVariantAttributes {
 	 * Return a positive integer, representing the viscosity of this fluid variant.
 	 * Fluids with lower viscosity generally flow faster than fluids with higher viscosity.
 	 *
-	 * <p>More precisely, viscosity should roughly be 200 * {@code FlowableFluid.getFlowSpeed}.
-	 * The reference values are 1000 for water, 2000 for lava in ultrawarm dimensions (such as the nether), and 6000 for lava in other dimensions.
+	 * <p>More precisely, viscosity should be {@value FluidConstants#VISCOSITY_RATIO} * {@link FlowableFluid#getFlowSpeed} for flowable fluids.
+	 * The reference values are {@value FluidConstants#WATER_VISCOSITY} for water,
+	 * {@value FluidConstants#LAVA_VISCOSITY_NETHER} for lava in ultrawarm dimensions (such as the nether),
+	 * and {@value FluidConstants#LAVA_VISCOSITY} for lava in other dimensions.
 	 *
 	 * @param world World if available, otherwise null.
 	 */
@@ -136,11 +139,11 @@ public class FluidVariantAttributes {
 	}
 
 	/**
-	 * Return true if this fluid behaves like a gas.
-	 * Gaseous fluids generally flow upwards.
+	 * Return true if this fluid is lighter than air.
+	 * Lighter than air fluids generally flow upwards.
 	 */
-	public static boolean isGaseous(FluidVariant variant) {
-		return getHandlerOrDefault(variant.getFluid()).isGaseous(variant);
+	public static boolean isLighterThanAir(FluidVariant variant) {
+		return getHandlerOrDefault(variant.getFluid()).isLighterThanAir(variant);
 	}
 
 	static {

@@ -64,7 +64,7 @@ public interface FluidVariantAttributeHandler {
 
 	/**
 	 * Return a non-negative integer, representing the temperature of this fluid in Kelvin.
-	 * The reference values are 300 for water, and 1300 for lava.
+	 * The reference values are {@value FluidConstants#WATER_TEMPERATURE} for water, and {@value FluidConstants#LAVA_TEMPERATURE} for lava.
 	 */
 	default int getTemperature(FluidVariant variant) {
 		return FluidConstants.WATER_TEMPERATURE;
@@ -74,8 +74,10 @@ public interface FluidVariantAttributeHandler {
 	 * Return a positive integer, representing the viscosity of this fluid.
 	 * Fluids with lower viscosity generally flow faster than fluids with higher viscosity.
 	 *
-	 * <p>More precisely, viscosity should be 200 * {@code FlowableFluid.getFlowSpeed} for flowable fluids.
-	 * The reference values are 1000 for water, 2000 for lava in ultrawarm dimensions (such as the nether), and 6000 for lava in other dimensions.
+	 * <p>More precisely, viscosity should be {@value FluidConstants#VISCOSITY_RATIO} * {@link FlowableFluid#getFlowSpeed} for flowable fluids.
+	 * The reference values are {@value FluidConstants#WATER_VISCOSITY} for water,
+	 * {@value FluidConstants#LAVA_VISCOSITY_NETHER} for lava in ultrawarm dimensions (such as the nether),
+	 * and {@value FluidConstants#LAVA_VISCOSITY} for lava in other dimensions.
 	 *
 	 * @param world World if available, otherwise null.
 	 */
@@ -88,10 +90,10 @@ public interface FluidVariantAttributeHandler {
 	}
 
 	/**
-	 * Return true if this fluid behaves like a gas.
-	 * Gaseous fluids generally flow upwards.
+	 * Return true if this fluid is lighter than air.
+	 * Lighter than air fluids generally flow upwards.
 	 */
-	default boolean isGaseous(FluidVariant variant) {
+	default boolean isLighterThanAir(FluidVariant variant) {
 		return false;
 	}
 }
