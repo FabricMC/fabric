@@ -22,6 +22,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.fluid.FlowableFluid;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
@@ -45,9 +46,11 @@ public interface FluidVariantAttributeHandler {
 
 	/**
 	 * Return the sound corresponding to this fluid being filled, or none if no sound is available.
+	 *
+	 * <p>If a non-empty sound event is returned, {@link Fluid#getBucketFillSound} will return that sound.
 	 */
 	default Optional<SoundEvent> getFillSound(FluidVariant variant) {
-		return variant.getFluid().getBucketFillSound();
+		return Optional.empty();
 	}
 
 	/**

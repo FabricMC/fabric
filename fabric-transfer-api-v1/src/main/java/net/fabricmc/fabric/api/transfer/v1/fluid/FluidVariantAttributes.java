@@ -151,7 +151,23 @@ public class FluidVariantAttributes {
 	}
 
 	static {
+		register(Fluids.WATER, new FluidVariantAttributeHandler() {
+			@Override
+			public Optional<SoundEvent> getFillSound(FluidVariant variant) {
+				return Optional.of(SoundEvents.ITEM_BUCKET_FILL);
+			}
+
+			@Override
+			public Optional<SoundEvent> getEmptySound(FluidVariant variant) {
+				return Optional.of(SoundEvents.ITEM_BUCKET_EMPTY);
+			}
+		});
 		register(Fluids.LAVA, new FluidVariantAttributeHandler() {
+			@Override
+			public Optional<SoundEvent> getFillSound(FluidVariant variant) {
+				return Optional.of(SoundEvents.ITEM_BUCKET_FILL_LAVA);
+			}
+
 			@Override
 			public Optional<SoundEvent> getEmptySound(FluidVariant variant) {
 				return Optional.of(SoundEvents.ITEM_BUCKET_EMPTY_LAVA);
