@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
+import java.util.Optional;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -74,17 +76,19 @@ public class FluidVariantAttributes {
 	}
 
 	/**
-	 * Return the sound corresponding to a container of this fluid variant being filled.
+	 * Return the sound corresponding to a container of this fluid variant being filled if available,
+	 * or the default (water) filling sound otherwise.
 	 */
 	public static SoundEvent getFillSound(FluidVariant variant) {
-		return getHandlerOrDefault(variant.getFluid()).getFillSound(variant);
+		return getHandlerOrDefault(variant.getFluid()).getFillSound(variant).orElse(SoundEvents.ITEM_BUCKET_FILL);
 	}
 
 	/**
-	 * Return the sound corresponding to a container of this fluid variant being emptied.
+	 * Return the sound corresponding to a container of this fluid variant being emptied if available,
+	 * or the default (water) emptying sound otherwise.
 	 */
 	public static SoundEvent getEmptySound(FluidVariant variant) {
-		return getHandlerOrDefault(variant.getFluid()).getEmptySound(variant);
+		return getHandlerOrDefault(variant.getFluid()).getEmptySound(variant).orElse(SoundEvents.ITEM_BUCKET_EMPTY);
 	}
 
 	/**
@@ -149,8 +153,8 @@ public class FluidVariantAttributes {
 	static {
 		register(Fluids.LAVA, new FluidVariantAttributeHandler() {
 			@Override
-			public SoundEvent getEmptySound(FluidVariant variant) {
-				return SoundEvents.ITEM_BUCKET_EMPTY_LAVA;
+			public Optional<SoundEvent> getEmptySound(FluidVariant variant) {
+				return Optional.of(SoundEvents.ITEM_BUCKET_EMPTY_LAVA);
 			}
 
 			@Override

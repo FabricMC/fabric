@@ -129,7 +129,7 @@ public interface FluidVariantRenderHandler {
 	 */
 	@Deprecated(forRemoval = true)
 	default boolean fillsFromTop(FluidVariant fluidVariant) {
-		// By default, only gaseous fluids should be filled from top.
+		// By default, only fluids lighter than air should be filled from top.
 		return FluidVariantAttributes.isLighterThanAir(fluidVariant);
 	}
 }

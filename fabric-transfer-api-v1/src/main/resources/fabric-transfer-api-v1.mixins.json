@@ -5,6 +5,7 @@
   "mixins": [
     "AbstractFurnaceBlockEntityMixin",
     "BucketItemAccessor",
+    "BucketItemMixin",
     "DoubleInventoryAccessor",
     "DropperBlockMixin",
     "FluidMixin",

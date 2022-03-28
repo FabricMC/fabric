@@ -16,12 +16,14 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
+import java.util.Optional;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.fluid.FlowableFluid;
+import net.minecraft.item.BucketItem;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
 
@@ -42,17 +44,19 @@ public interface FluidVariantAttributeHandler {
 	}
 
 	/**
-	 * Return the sound corresponding to this fluid being filled.
+	 * Return the sound corresponding to this fluid being filled, or none if no sound is available.
 	 */
-	default SoundEvent getFillSound(FluidVariant variant) {
-		return variant.getFluid().getBucketFillSound().orElse(SoundEvents.ITEM_BUCKET_FILL);
+	default Optional<SoundEvent> getFillSound(FluidVariant variant) {
+		return variant.getFluid().getBucketFillSound();
 	}
 
 	/**
-	 * Return the sound corresponding to this fluid being emptied.
+	 * Return the sound corresponding to this fluid being emptied, or none if no sound is available.
+	 *
+	 * <p>If a non-empty sound event is returned, {@link BucketItem#playEmptyingSound} will play that sound.
 	 */
-	default SoundEvent getEmptySound(FluidVariant variant) {
-		return SoundEvents.ITEM_BUCKET_EMPTY;
+	default Optional<SoundEvent> getEmptySound(FluidVariant variant) {
+		return Optional.empty();
 	}
 
 	/**
