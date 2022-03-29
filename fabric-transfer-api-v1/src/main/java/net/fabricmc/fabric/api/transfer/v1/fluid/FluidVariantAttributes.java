@@ -80,7 +80,9 @@ public class FluidVariantAttributes {
 	 * or the default (water) filling sound otherwise.
 	 */
 	public static SoundEvent getFillSound(FluidVariant variant) {
-		return getHandlerOrDefault(variant.getFluid()).getFillSound(variant).orElse(SoundEvents.ITEM_BUCKET_FILL);
+		return getHandlerOrDefault(variant.getFluid()).getFillSound(variant)
+				.or(() -> variant.getFluid().getBucketFillSound())
+				.orElse(SoundEvents.ITEM_BUCKET_FILL);
 	}
 
 	/**
@@ -153,11 +155,6 @@ public class FluidVariantAttributes {
 	static {
 		register(Fluids.WATER, new FluidVariantAttributeHandler() {
 			@Override
-			public Optional<SoundEvent> getFillSound(FluidVariant variant) {
-				return Optional.of(SoundEvents.ITEM_BUCKET_FILL);
-			}
-
-			@Override
 			public Optional<SoundEvent> getEmptySound(FluidVariant variant) {
 				return Optional.of(SoundEvents.ITEM_BUCKET_EMPTY);
 			}
@@ -176,6 +173,15 @@ public class FluidVariantAttributes {
 			@Override
 			public int getTemperature(FluidVariant variant) {
 				return FluidConstants.LAVA_TEMPERATURE;
+			}
+
+			@Override
+			public int getViscosity(FluidVariant variant, @Nullable World world) {
+				if (world != null && world.getDimension().isUltrawarm()) {
+					return FluidConstants.LAVA_VISCOSITY_NETHER;
+				} else {
+					return FluidConstants.LAVA_VISCOSITY;
+				}
 			}
 		});
 	}

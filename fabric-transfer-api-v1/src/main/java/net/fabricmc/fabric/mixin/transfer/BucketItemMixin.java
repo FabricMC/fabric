@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.transfer;
 
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -47,13 +46,6 @@ public class BucketItemMixin {
 			index = 4
 	)
 	private SoundEvent hookEmptyingSound(SoundEvent previous) {
-		@Nullable
-		SoundEvent attributeSound = FluidVariantAttributes.getHandlerOrDefault(fluid).getEmptySound(FluidVariant.of(fluid)).orElse(null);
-
-		if (attributeSound != null) {
-			return attributeSound;
-		} else {
-			return previous;
-		}
+		return FluidVariantAttributes.getHandlerOrDefault(fluid).getEmptySound(FluidVariant.of(fluid)).orElse(previous);
 	}
 }

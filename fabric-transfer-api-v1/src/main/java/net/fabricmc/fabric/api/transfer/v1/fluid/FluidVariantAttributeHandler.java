@@ -89,10 +89,6 @@ public interface FluidVariantAttributeHandler {
 	 * @param world World if available, otherwise null.
 	 */
 	default int getViscosity(FluidVariant variant, @Nullable World world) {
-		if (world != null && variant.getFluid() instanceof FlowableFluid flowable && flowable.getTickRate(world) > 0) {
-			return FluidConstants.VISCOSITY_RATIO * flowable.getTickRate(world);
-		}
-
 		return FluidConstants.WATER_VISCOSITY;
 	}
 
