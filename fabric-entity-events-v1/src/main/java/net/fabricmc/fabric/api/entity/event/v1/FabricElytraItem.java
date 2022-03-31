@@ -59,7 +59,7 @@ public interface FabricElytraItem {
 				chestStack.damage(1, entity, p -> p.sendEquipmentBreakStatus(EquipmentSlot.CHEST));
 			}
 
-			entity.emitGameEvent(GameEvent.ELYTRA_FREE_FALL);
+			entity.emitGameEvent(GameEvent.ELYTRA_GLIDE);
 		}
 	}
 }

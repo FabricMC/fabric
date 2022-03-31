@@ -32,6 +32,6 @@ public class MixinChunkGenerator {
 	@Inject(method = "method_38267", at = @At("HEAD"))
 	private void populateBiomes_lambda_head(Chunk chunk, NoiseConfig noiseConfig, CallbackInfoReturnable<Chunk> ci) {
 		// capture seed so TheEndBiomeData.Overrides has it if it needs it
-		TheEndBiomeData.Overrides.setSeed(noiseConfig.legacyWorldSeed());
+		TheEndBiomeData.Overrides.setSeed(noiseConfig.getLegacyWorldSeed());
 	}
 }
