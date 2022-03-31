@@ -42,7 +42,7 @@ public class AttributeTests {
 		assertEquals(0, FluidVariantAttributes.getLuminance(water));
 		assertEquals(FluidConstants.WATER_TEMPERATURE, FluidVariantAttributes.getTemperature(water));
 		assertEquals(FluidConstants.WATER_VISCOSITY, FluidVariantAttributes.getViscosity(water, null));
-		assertEquals(false, FluidVariantAttributes.isLighterThanAir(water));
+		assertEquals(false, FluidVariantAttributes.flowsUpwards(water));
 	}
 
 	private static void testLava() {
@@ -53,6 +53,6 @@ public class AttributeTests {
 		assertEquals(15, FluidVariantAttributes.getLuminance(lava));
 		assertEquals(FluidConstants.LAVA_TEMPERATURE, FluidVariantAttributes.getTemperature(lava));
 		assertEquals(FluidConstants.LAVA_VISCOSITY, FluidVariantAttributes.getViscosity(lava, null));
-		assertEquals(false, FluidVariantAttributes.isLighterThanAir(lava));
+		assertEquals(false, FluidVariantAttributes.flowsUpwards(lava));
 	}
 }

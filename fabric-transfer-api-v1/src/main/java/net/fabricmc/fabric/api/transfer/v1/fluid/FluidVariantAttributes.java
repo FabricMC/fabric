@@ -145,11 +145,10 @@ public class FluidVariantAttributes {
 	}
 
 	/**
-	 * Return true if this fluid is lighter than air.
-	 * Lighter than air fluids generally flow upwards.
+	 * Return true if this fluid flows upwards.
 	 */
-	public static boolean isLighterThanAir(FluidVariant variant) {
-		return getHandlerOrDefault(variant.getFluid()).isLighterThanAir(variant);
+	public static boolean flowsUpwards(FluidVariant variant) {
+		return getHandlerOrDefault(variant.getFluid()).flowsUpwards(variant);
 	}
 
 	static {
