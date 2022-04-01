@@ -17,15 +17,10 @@
 package net.fabricmc.fabric.api.screenhandler.v1;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
 
 /**
  * An API for creating and registering {@linkplain ScreenHandlerType screen handler types}.
@@ -66,7 +61,14 @@ import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
  * </pre>
  *
  * @see net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry registering screens for screen handlers
+ * @deprecated Replaced by <ul>
+ * <li>Creating simple screen handler types directly with {@link ScreenHandlerType}
+ * using an access widener in Fabric Transitive Access Wideners (v1)</li>
+ * <li>Creating extended screen handler types with {@link ExtendedScreenHandlerType}</li>
+ * <li>Registering using {@link Registry#SCREEN_HANDLER} directly</li>
+ * </ul>
  */
+@Deprecated
 public final class ScreenHandlerRegistry {
 	private ScreenHandlerRegistry() {
 	}
@@ -98,14 +100,18 @@ public final class ScreenHandlerRegistry {
 	 * @param factory the client-sided screen handler factory
 	 * @param <T>     the screen handler type
 	 * @return the created type object
+	 * @deprecated Replaced with creating an {@link ExtendedScreenHandlerType} manually and registering it
+	 * in the vanilla registry.
 	 */
+	@Deprecated
 	public static <T extends ScreenHandler> ScreenHandlerType<T> registerExtended(Identifier id, ExtendedClientHandlerFactory<T> factory) {
 		ScreenHandlerType<T> type = new ExtendedScreenHandlerType<>(factory);
 		return Registry.register(Registry.SCREEN_HANDLER, id, type);
 	}
 
 	/**
-	 * A factory for client-sided screen handler instances.
+	 * A factory for screen handler instances.
+	 * This is typically used on the client but is also available on the server.
 	 *
 	 * @param <T> the screen handler type
 	 * @deprecated Replaced by access widener for {@link ScreenHandlerType.Factory} in Fabric Transitive Access Wideners (v1).
@@ -119,27 +125,19 @@ public final class ScreenHandlerRegistry {
 		 * @param inventory the player inventory
 		 * @return the created screen handler
 		 */
-		@Environment(EnvType.CLIENT)
 		T create(int syncId, PlayerInventory inventory);
 	}
 
 	/**
-	 * A factory for client-sided screen handler instances
+	 * A factory for screen handler instances
 	 * with additional screen opening data.
+	 * This is typically used on the client but is also available on the server.
 	 *
 	 * @param <T> the screen handler type
 	 * @see ExtendedScreenHandlerFactory
+	 * @deprecated Replaced with {@link ExtendedScreenHandlerType.ExtendedFactory}.
 	 */
-	public interface ExtendedClientHandlerFactory<T extends ScreenHandler> {
-		/**
-		 * Creates a new client-sided screen handler with additional screen opening data.
-		 *
-		 * @param syncId    the synchronization ID
-		 * @param inventory the player inventory
-		 * @param buf       the packet buffer
-		 * @return the created screen handler
-		 */
-		@Environment(EnvType.CLIENT)
-		T create(int syncId, PlayerInventory inventory, PacketByteBuf buf);
+	@Deprecated
+	public interface ExtendedClientHandlerFactory<T extends ScreenHandler> extends ExtendedScreenHandlerType.ExtendedFactory<T> {
 	}
 }
