@@ -25,7 +25,6 @@
   },
   "description": "Hooks and extensions for creating screen handlers.",
   "mixins": [
-    "fabric-screen-handler-api-v1.mixins.json"
   ],
   "accessWidener": "fabric-screen-handler-api-v1.accesswidener",
   "custom": {

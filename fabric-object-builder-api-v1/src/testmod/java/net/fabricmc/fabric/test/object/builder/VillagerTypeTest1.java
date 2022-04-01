@@ -16,31 +16,12 @@
 
 package net.fabricmc.fabric.test.object.builder;
 
-import static net.minecraft.command.argument.EntityArgumentType.entity;
-import static net.minecraft.command.argument.EntityArgumentType.getEntity;
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
-
-import java.util.Random;
-
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.WanderingTraderEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.LiteralText;
-import net.minecraft.village.TradeOffer;
-import net.minecraft.village.TradeOffers;
-import net.minecraft.village.VillagerProfession;
-
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 
 public class VillagerTypeTest1 implements ModInitializer {
 	@Override
 	public void onInitialize() {
+		/* TODO: 22w13oneblockatatime too lazy to fix/port.
 		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, factories -> {
 			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(Items.NETHERITE_SCRAP, 4), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.15F)));
 		});
@@ -82,5 +63,6 @@ public class VillagerTypeTest1 implements ModInitializer {
 						return 1;
 					})));
 		});
+		 */
 	}
 }

@@ -12,7 +12,6 @@
     "MaterialBuilderAccessor",
     "PointOfInterestTypeAccessor",
     "SpawnRestrictionAccessor",
-    "TypeAwareTradeMixin",
     "VillagerProfessionAccessor",
     "VillagerTypeAccessor"
   ],

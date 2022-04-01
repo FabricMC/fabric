@@ -18,7 +18,7 @@
   "depends": {
     "fabricloader": ">=0.13.2",
     "java": ">=17",
-    "minecraft": "~1.18.2-alpha.22.5.a"
+    "minecraft": "1.19-22.w.13.oneBlockAtATime"
   },
   "description": "Core API module providing key hooks and intercompatibility features."
 }
