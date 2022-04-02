@@ -93,9 +93,10 @@ public interface FluidVariantAttributeHandler {
 	}
 
 	/**
-	 * Return true if this fluid flows upwards.
+	 * Return true if this fluid is lighter than air.
+	 * Fluids that are lighter than air generally flow upwards.
 	 */
-	default boolean flowsUpwards(FluidVariant variant) {
+	default boolean isLighterThanAir(FluidVariant variant) {
 		return false;
 	}
 }

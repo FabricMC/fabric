@@ -160,7 +160,7 @@ public class FluidVariantRendering {
 
 	/**
 	 * Return {@code true} if this fluid variant should be rendered as filling tanks from the top.
-	 * @deprecated use {@link FluidVariantAttributes#flowsUpwards} instead.
+	 * @deprecated use {@link FluidVariantAttributes#isLighterThanAir} instead.
 	 */
 	@Deprecated(forRemoval = true)
 	public static boolean fillsFromTop(FluidVariant fluidVariant) {
