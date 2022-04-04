@@ -123,12 +123,12 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 		protected void onFinalCommit() {
 			// actually drop the stacks
 			for (Entry entry : entries) {
-				long reminder = entry.amount;
+				long remainder = entry.amount;
 
-				while (reminder > 0) {
-					int dropped = (int) Math.min(entry.key.getItem().getMaxCount(), reminder);
+				while (remainder > 0) {
+					int dropped = (int) Math.min(entry.key.getItem().getMaxCount(), remainder);
 					playerInventory.player.dropItem(entry.key.toStack(dropped), entry.throwRandomly, entry.retainOwnership);
-					reminder -= dropped;
+					remainder -= dropped;
 				}
 			}
 
