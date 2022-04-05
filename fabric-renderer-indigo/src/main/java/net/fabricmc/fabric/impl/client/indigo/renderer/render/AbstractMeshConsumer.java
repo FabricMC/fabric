@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MeshImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 
 /**
- * Consumer for pre-baked meshes.  Works by copying the mesh data to a
+ * Consumer for pre-baked meshes.  Works by copying the mesh data to an
  * "editor" quad held in the instance, where all transformations are applied before buffering.
  */
 public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implements Consumer<Mesh> {
@@ -46,7 +46,7 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 	 * Where we handle all pre-buffer coloring, lighting, transformation, etc.
 	 * Reused for all mesh quads. Fixed baking array sized to hold largest possible mesh quad.
 	 */
-	private class Maker extends MutableQuadViewImpl implements QuadEmitter {
+	private class Maker extends MutableQuadViewImpl {
 		{
 			data = new int[EncodingFormat.TOTAL_STRIDE];
 			material(IndigoRenderer.MATERIAL_STANDARD);
@@ -84,44 +84,44 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 		return editorQuad;
 	}
 
-	private void renderQuad(MutableQuadViewImpl q) {
-		if (!transform.transform(editorQuad)) {
+	private void renderQuad(MutableQuadViewImpl quad) {
+		if (!transform.transform(quad)) {
 			return;
 		}
 
-		if (!blockInfo.shouldDrawFace(q.cullFace())) {
+		if (!blockInfo.shouldDrawFace(quad.cullFace())) {
 			return;
 		}
 
-		final RenderMaterialImpl.Value mat = q.material();
+		final RenderMaterialImpl.Value mat = quad.material();
 
 		if (!mat.disableAo(0) && MinecraftClient.isAmbientOcclusionEnabled()) {
 			// needs to happen before offsets are applied
-			aoCalc.compute(q, false);
+			aoCalc.compute(quad, false);
 		}
 
-		tesselateQuad(q, mat, 0);
+		tessellateQuad(quad, mat, 0);
 	}
 
 	/**
 	 * Determines color index and render layer, then routes to appropriate
-	 * tesselate routine based on material properties.
+	 * tessellate routine based on material properties.
 	 */
-	private void tesselateQuad(MutableQuadViewImpl quad, RenderMaterialImpl.Value mat, int textureIndex) {
+	private void tessellateQuad(MutableQuadViewImpl quad, RenderMaterialImpl.Value mat, int textureIndex) {
 		final int colorIndex = mat.disableColorIndex(textureIndex) ? -1 : quad.colorIndex();
 		final RenderLayer renderLayer = blockInfo.effectiveRenderLayer(mat.blendMode(textureIndex));
 
 		if (blockInfo.defaultAo && !mat.disableAo(textureIndex)) {
 			if (mat.emissive(textureIndex)) {
-				tesselateSmoothEmissive(quad, renderLayer, colorIndex);
+				tessellateSmoothEmissive(quad, renderLayer, colorIndex);
 			} else {
-				tesselateSmooth(quad, renderLayer, colorIndex);
+				tessellateSmooth(quad, renderLayer, colorIndex);
 			}
 		} else {
 			if (mat.emissive(textureIndex)) {
-				tesselateFlatEmissive(quad, renderLayer, colorIndex);
+				tessellateFlatEmissive(quad, renderLayer, colorIndex);
 			} else {
-				tesselateFlat(quad, renderLayer, colorIndex);
+				tessellateFlat(quad, renderLayer, colorIndex);
 			}
 		}
 	}

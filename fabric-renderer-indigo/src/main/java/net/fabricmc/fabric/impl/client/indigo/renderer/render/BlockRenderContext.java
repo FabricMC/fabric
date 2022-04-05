@@ -18,37 +18,36 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import java.util.Random;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Matrix3f;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Matrix3f;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
 /**
  * Context for non-terrain block rendering.
  */
-public class BlockRenderContext extends AbstractRenderContext implements RenderContext {
+public class BlockRenderContext extends AbstractRenderContext {
 	private final BlockRenderInfo blockInfo = new BlockRenderInfo();
 	private final AoCalculator aoCalc = new AoCalculator(blockInfo, this::brightness, this::aoLevel);
-	private final MeshConsumer meshConsumer = new MeshConsumer(blockInfo, this::outputBuffer, aoCalc, this::transform);
+
 	private VertexConsumer bufferBuilder;
 	private boolean didOutput = false;
-	// These are kept as fields to avoid avoid the heap allocation for a supplier.
+	// These are kept as fields to avoid the heap allocation for a supplier.
 	// BlockModelRenderer allows the caller to supply both the random object and seed.
 	private Random random;
 	private long seed;
@@ -57,16 +56,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		return random;
 	};
 
-	/**
-	 * Reuse the fallback consumer from the render context used during chunk rebuild to make it properly
-	 * apply the current transforms to vanilla models.
-	 */
-	private final TerrainFallbackConsumer fallbackConsumer = new TerrainFallbackConsumer(blockInfo, this::outputBuffer, aoCalc, this::transform) {
-		@Override
-		protected int overlay() {
-			return overlay;
-		}
-
+	private final AbstractMeshConsumer meshConsumer = new AbstractMeshConsumer(blockInfo, this::outputBuffer, aoCalc, this::transform) {
 		@Override
 		protected Matrix4f matrix() {
 			return matrix;
@@ -76,11 +66,37 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		protected Matrix3f normalMatrix() {
 			return normalMatrix;
 		}
+
+		@Override
+		protected int overlay() {
+			return overlay;
+		}
+	};
+
+	/**
+	 * Reuse the fallback consumer from the render context used during chunk rebuild to make it properly
+	 * apply the current transforms to vanilla models.
+	 */
+	private final TerrainFallbackConsumer fallbackConsumer = new TerrainFallbackConsumer(blockInfo, this::outputBuffer, aoCalc, this::transform) {
+		@Override
+		protected Matrix4f matrix() {
+			return matrix;
+		}
+
+		@Override
+		protected Matrix3f normalMatrix() {
+			return normalMatrix;
+		}
+
+		@Override
+		protected int overlay() {
+			return overlay;
+		}
 	};
 
 	private int brightness(BlockPos pos) {
 		if (blockInfo.blockView == null) {
-			return 15 << 20 | 15 << 4;
+			return LightmapTextureManager.MAX_LIGHT_COORDINATE;
 		}
 
 		return WorldRenderer.getLightmapCoordinates(blockInfo.blockView, blockInfo.blockView.getBlockState(pos), pos);
@@ -117,27 +133,6 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		this.seed = seed;
 
 		return didOutput;
-	}
-
-	private class MeshConsumer extends AbstractMeshConsumer {
-		MeshConsumer(BlockRenderInfo blockInfo, Function<RenderLayer, VertexConsumer> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
-			super(blockInfo, bufferFunc, aoCalc, transform);
-		}
-
-		@Override
-		protected Matrix4f matrix() {
-			return matrix;
-		}
-
-		@Override
-		protected Matrix3f normalMatrix() {
-			return normalMatrix;
-		}
-
-		@Override
-		protected int overlay() {
-			return overlay;
-		}
 	}
 
 	@Override
