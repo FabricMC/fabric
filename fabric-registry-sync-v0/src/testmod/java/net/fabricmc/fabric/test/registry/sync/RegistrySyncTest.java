@@ -40,7 +40,7 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.registry.DynamicRegistryEndCallback;
+import net.fabricmc.fabric.api.event.registry.EndDynamicRegistrySetupCallback;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
@@ -120,7 +120,7 @@ public class RegistrySyncTest implements ModInitializer {
 			});
 		});
 
-		DynamicRegistryEndCallback.EVENT.register(registryManager -> {
+		EndDynamicRegistrySetupCallback.EVENT.register(registryManager -> {
 			Registry<StructurePool> pool = registryManager.get(Registry.STRUCTURE_POOL_KEY);
 			Registry<StructureProcessorList> lists = registryManager.get(Registry.STRUCTURE_PROCESSOR_LIST_KEY);
 			Registry<Biome> biomes = registryManager.get(Registry.BIOME_KEY);
