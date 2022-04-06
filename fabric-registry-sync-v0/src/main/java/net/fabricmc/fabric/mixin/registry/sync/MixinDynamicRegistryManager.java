@@ -24,8 +24,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-import net.fabricmc.fabric.api.event.registry.EndDynamicRegistrySetupCallback;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
+import net.fabricmc.fabric.api.event.registry.EndDynamicRegistrySetupCallback;
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistrySync;
 
 @Mixin(DynamicRegistryManager.class)
