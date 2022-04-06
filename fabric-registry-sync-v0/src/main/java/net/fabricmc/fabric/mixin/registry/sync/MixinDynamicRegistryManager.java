@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistryTailCallback;
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistrySync;
 
 @Mixin(DynamicRegistryManager.class)
@@ -32,6 +33,11 @@ public interface MixinDynamicRegistryManager {
 	@Inject(method = "createAndLoad", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/dynamic/EntryLoader$Impl;<init>()V"), locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void onCreateImpl(CallbackInfoReturnable<DynamicRegistryManager.Mutable> cir, DynamicRegistryManager.Mutable registryManager) {
 		DynamicRegistrySetupCallback.EVENT.invoker().onRegistrySetup(registryManager);
+	}
+
+	@Inject(method = "createAndLoad", at = @At(value = "TAIL", target = "Lnet/minecraft/util/dynamic/EntryLoader$Impl;<init>()V"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private static void afterCreateImpl(CallbackInfoReturnable<DynamicRegistryManager.Mutable> cir, DynamicRegistryManager.Mutable registryManager) {
+		DynamicRegistryTailCallback.EVENT.invoker().onRegistrationFinish(registryManager);
 	}
 
 	/**

@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.registry.sync;
 
 import java.util.Map;
+import java.util.Random;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.apache.commons.lang3.Validate;
@@ -26,17 +27,21 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.structure.pool.StructurePool;
+import net.minecraft.structure.processor.StructureProcessorList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistryTailCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
@@ -113,6 +118,16 @@ public class RegistrySyncTest implements ModInitializer {
 			RegistryEntryAddedCallback.event(registryManager.get(Registry.BIOME_KEY)).register((rawId, id, object) -> {
 				System.out.println(id);
 			});
+		});
+
+		DynamicRegistryTailCallback.EVENT.register(registryManager -> {
+			Registry<StructurePool> pool = registryManager.get(Registry.STRUCTURE_POOL_KEY);
+			Registry<StructureProcessorList> lists = registryManager.get(Registry.STRUCTURE_PROCESSOR_LIST_KEY);
+			Registry<Biome> biomes = registryManager.get(Registry.BIOME_KEY);
+
+			Random random = new Random();
+			StructurePool randomStructurePool = pool.getRandom(random).get().value();
+			StructureProcessorList randomList = lists.getRandom(random).get().value();
 		});
 
 		// Vanilla status effects don't have an entry for the int id 0, test we can handle this.
