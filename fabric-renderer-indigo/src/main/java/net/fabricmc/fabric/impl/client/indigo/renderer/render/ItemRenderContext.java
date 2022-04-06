@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import java.util.List;
-import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -34,10 +33,11 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.render.model.json.ModelTransformation.Mode;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Vec3f;
+import net.minecraft.world.gen.random.AbstractRandom;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -68,7 +68,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	}
 
 	private final ItemColors colorMap;
-	private final Random random = new Random();
+	private final AbstractRandom random = AbstractRandom.method_43047();
 	private final Consumer<BakedModel> fallbackConsumer;
 	private final Vec3f normalVec = new Vec3f();
 
@@ -84,8 +84,8 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	private ItemStack itemStack;
 	private VanillaQuadHandler vanillaHandler;
 
-	private final Supplier<Random> randomSupplier = () -> {
-		final Random result = random;
+	private final Supplier<AbstractRandom> randomSupplier = () -> {
+		final AbstractRandom result = random;
 		result.setSeed(ITEM_RANDOM_SEED);
 		return random;
 	};

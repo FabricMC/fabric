@@ -26,8 +26,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.resource.NamespaceResourceManager;
+import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourcePack;
-import net.minecraft.resource.ResourceRef;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
@@ -43,7 +43,7 @@ public class NamespaceResourceManagerMixin {
 	@Inject(method = "getAllResources",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/NamespaceResourceManager;getMetadataPath(Lnet/minecraft/util/Identifier;)Lnet/minecraft/util/Identifier;"),
 			locals = LocalCapture.CAPTURE_FAILHARD)
-	private void onGetAllResources(Identifier id, CallbackInfoReturnable<List<ResourceRef>> cir, List<NamespaceResourceManager.Entry> resources) {
+	private void onGetAllResources(Identifier id, CallbackInfoReturnable<List<Resource>> cir, List<NamespaceResourceManager.Entry> resources) {
 		this.fabric$getAllResources$resources.set(resources);
 	}
 

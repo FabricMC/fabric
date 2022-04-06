@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.client.indigo.renderer;
 
-import java.util.Random;
 import java.util.Set;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -41,6 +40,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.gen.random.AbstractRandom;
 
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
@@ -85,21 +85,21 @@ public class MixinChunkRebuildTask {
 	 * This is the hook that actually implements the rendering API for terrain rendering.
 	 *
 	 * <p>It's unusual to have a @Redirect in a Fabric library, but in this case
-	 * it is our explicit intention that {@link BlockRenderManager#tesselateBlock(BlockState, BlockPos, BlockRenderView, BufferBuilder, Random)}
+	 * it is our explicit intention that {@link BlockRenderManager#tesselateBlock(BlockState, BlockPos, BlockRenderView, BufferBuilder, AbstractRandom)}
 	 * does not execute for models that will be rendered by our renderer.
 	 *
 	 * <p>Any mod that wants to redirect this specific call is likely also a renderer, in which case this
 	 * renderer should not be present, or the mod should probably instead be relying on the renderer API
 	 * which was specifically created to provide for enhanced terrain rendering.
 	 *
-	 * <p>Note also that {@link BlockRenderManager#tesselateBlock(BlockState, BlockPos, BlockRenderView, BufferBuilder, Random)}
+	 * <p>Note also that {@link BlockRenderManager#tesselateBlock(BlockState, BlockPos, BlockRenderView, BufferBuilder, AbstractRandom)}
 	 * IS called if the block render type is something other than {@link BlockRenderType#MODEL}.
 	 * Normally this does nothing but will allow mods to create rendering hooks that are
 	 * driven off of render type. (Not recommended or encouraged, but also not prevented.)
 	 */
 	@Redirect(method = "Lnet/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask;render(FFFLnet/minecraft/client/render/chunk/ChunkBuilder$ChunkData;Lnet/minecraft/client/render/chunk/BlockBufferBuilderStorage;)Ljava/util/Set;", require = 1, at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/render/block/BlockRenderManager;renderBlock(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;ZLjava/util/Random;)Z"))
-	private boolean hookChunkBuildTesselate(BlockRenderManager renderManager, BlockState blockState, BlockPos blockPos, BlockRenderView blockView, MatrixStack matrix, VertexConsumer bufferBuilder, boolean checkSides, Random random) {
+			target = "Lnet/minecraft/client/render/block/BlockRenderManager;renderBlock(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;ZLnet/minecraft/world/gen/random/AbstractRandom;)Z"))
+	private boolean hookChunkBuildTesselate(BlockRenderManager renderManager, BlockState blockState, BlockPos blockPos, BlockRenderView blockView, MatrixStack matrix, VertexConsumer bufferBuilder, boolean checkSides, AbstractRandom random) {
 		if (blockState.getRenderType() == BlockRenderType.MODEL) {
 			final BakedModel model = renderManager.getModel(blockState);
 

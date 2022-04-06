@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import java.util.List;
-import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -28,6 +27,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.gen.random.AbstractRandom;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
@@ -82,7 +82,7 @@ public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer imple
 
 	@Override
 	public void accept(BakedModel model) {
-		final Supplier<Random> random = blockInfo.randomSupplier;
+		final Supplier<AbstractRandom> random = blockInfo.randomSupplier;
 		final Value defaultMaterial = blockInfo.defaultAo && model.useAmbientOcclusion() ? MATERIAL_SHADED : MATERIAL_FLAT;
 		final BlockState blockState = blockInfo.blockState;
 

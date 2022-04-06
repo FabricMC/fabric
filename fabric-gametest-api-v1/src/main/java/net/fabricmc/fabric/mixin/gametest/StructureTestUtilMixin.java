@@ -20,11 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
@@ -45,7 +45,12 @@ public abstract class StructureTestUtilMixin {
 		Identifier structureId = new Identifier(baseId.getNamespace(), GAMETEST_STRUCTURE_PATH + baseId.getPath() + ".snbt");
 
 		try {
-			Resource resource = world.getServer().getResourceManager().getResource(structureId);
+			Resource resource = world.getServer().getResourceManager().getResource(structureId).orElse(null);
+
+			if (resource == null) {
+				throw new RuntimeException("Unable to get resource: " + structureId);
+			}
+
 			String snbt;
 
 			try (InputStream inputStream = resource.getInputStream()) {

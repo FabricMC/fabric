@@ -60,7 +60,7 @@ public class DropperBlockMixin {
 			ci.cancel();
 
 			// We pick a non empty slot. It's not necessarily the same as the one vanilla picked, but that doesn't matter.
-			int slot = dispenser.chooseNonEmptySlot();
+			int slot = dispenser.chooseNonEmptySlot(world.random);
 
 			if (slot == -1) {
 				TransferApiImpl.LOGGER.warn("Skipping dropper transfer because the empty slot is unexpectedly -1.");

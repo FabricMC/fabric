@@ -16,11 +16,10 @@
 
 package net.fabricmc.fabric.test.object.builder;
 
-import java.util.Random;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOffers;
+import net.minecraft.world.gen.random.AbstractRandom;
 
 class SimpleTradeFactory implements TradeOffers.Factory {
 	private final TradeOffer offer;
@@ -30,7 +29,7 @@ class SimpleTradeFactory implements TradeOffers.Factory {
 	}
 
 	@Override
-	public TradeOffer create(Entity entity, Random random) {
+	public TradeOffer create(Entity entity, AbstractRandom random) {
 		// ALWAYS supply a copy of the offer.
 		return new TradeOffer(this.offer.toNbt());
 	}

@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
-import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -26,11 +25,12 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Matrix3f;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Matrix3f;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.gen.random.AbstractRandom;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -50,9 +50,9 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 	private boolean didOutput = false;
 	// These are kept as fields to avoid avoid the heap allocation for a supplier.
 	// BlockModelRenderer allows the caller to supply both the random object and seed.
-	private Random random;
+	private AbstractRandom random;
 	private long seed;
-	private final Supplier<Random> randomSupplier = () -> {
+	private final Supplier<AbstractRandom> randomSupplier = () -> {
 		random.setSeed(seed);
 		return random;
 	};
@@ -96,7 +96,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		return bufferBuilder;
 	}
 
-	public boolean render(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, Random random, long seed, int overlay) {
+	public boolean render(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, AbstractRandom random, long seed, int overlay) {
 		this.bufferBuilder = buffer;
 		this.matrix = matrixStack.peek().getPositionMatrix();
 		this.normalMatrix = matrixStack.peek().getNormalMatrix();

@@ -17,12 +17,12 @@
 package net.fabricmc.fabric.impl.client.particle;
 
 import java.util.List;
-import java.util.Random;
 
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.world.gen.random.AbstractRandom;
 
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 import net.fabricmc.fabric.mixin.client.particle.ParticleManagerAccessor;
@@ -52,7 +52,7 @@ public class FabricSpriteProviderImpl implements FabricSpriteProvider {
 	}
 
 	@Override
-	public Sprite getSprite(Random random) {
+	public Sprite getSprite(AbstractRandom random) {
 		return delegate.getSprite(random);
 	}
 }

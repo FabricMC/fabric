@@ -18,7 +18,6 @@ package net.fabricmc.fabric.test.renderer.simple.client;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
@@ -35,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.gen.random.AbstractRandom;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
@@ -53,7 +53,7 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 	}
 
 	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, Random random) {
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, AbstractRandom random) {
 		return Collections.emptyList(); // Renderer API makes this obsolete, so return no quads
 	}
 
@@ -98,7 +98,7 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 	}
 
 	@Override
-	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<AbstractRandom> randomSupplier, RenderContext context) {
 		// Emit our frame mesh
 		context.meshConsumer().accept(this.frameMesh);
 
@@ -131,7 +131,7 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 	}
 
 	@Override
-	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+	public void emitItemQuads(ItemStack stack, Supplier<AbstractRandom> randomSupplier, RenderContext context) {
 		// TODO: Implement an item test.
 		// For now we will just leave this as I have not added a block item yet
 	}
