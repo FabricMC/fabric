@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <pre>
  *  * {@code
- *  * DynamicRegistryTailCallback.EVENT.register(registryManager -> {
+ *  * DynamicRegistryEndCallback.EVENT.register(registryManager -> {
  *  *     Registry<StructurePool> pools = registryManager.get(Registry.STRUCTURE_POOL_KEY);
  *  *     Registry<StructurePoolProcessorList> lists = registryManager.get(Registry.STRUCTURE_PROCESSOR_LIST_KEY);
  *  *     ...
@@ -38,13 +38,13 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *  * </pre>
  */
 @FunctionalInterface
-public interface DynamicRegistryTailCallback {
+public interface DynamicRegistryEndCallback {
 	void onRegistrationFinish(DynamicRegistryManager registryManager);
 
-	Event<DynamicRegistryTailCallback> EVENT = EventFactory.createArrayBacked(
-			DynamicRegistryTailCallback.class,
+	Event<DynamicRegistryEndCallback> EVENT = EventFactory.createArrayBacked(
+			DynamicRegistryEndCallback.class,
 			callbacks -> registryManager -> {
-				for (DynamicRegistryTailCallback callback : callbacks) {
+				for (DynamicRegistryEndCallback callback : callbacks) {
 					callback.onRegistrationFinish(registryManager);
 				}
 			}
