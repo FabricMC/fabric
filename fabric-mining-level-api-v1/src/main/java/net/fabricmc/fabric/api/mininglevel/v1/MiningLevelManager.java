@@ -78,7 +78,7 @@ public final class MiningLevelManager {
 		case 1 -> BlockTags.NEEDS_STONE_TOOL;
 		case 2 -> BlockTags.NEEDS_IRON_TOOL;
 		case 3 -> BlockTags.NEEDS_DIAMOND_TOOL;
-		default -> TagKey.of(Registry.BLOCK.getKey(), new Identifier("fabric", "needs_tool_level_" + miningLevel));
+		default -> TagKey.of(Registry.BLOCK_KEY, new Identifier("fabric", "needs_tool_level_" + miningLevel));
 		};
 	}
 }
