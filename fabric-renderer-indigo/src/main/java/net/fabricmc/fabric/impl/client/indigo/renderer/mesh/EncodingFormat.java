@@ -139,4 +139,8 @@ public abstract class EncodingFormat {
 	static int material(int bits, RenderMaterialImpl.Value material) {
 		return (bits & MATERIAL_INVERSE_MASK) | (material.index() << MATERIAL_SHIFT);
 	}
+
+	static int clearMaterial(int bits) {
+		return bits & MATERIAL_INVERSE_MASK;
+	}
 }

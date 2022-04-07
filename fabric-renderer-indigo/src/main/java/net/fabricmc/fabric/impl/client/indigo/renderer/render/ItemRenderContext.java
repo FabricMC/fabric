@@ -21,6 +21,8 @@ import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
@@ -31,9 +33,10 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.render.model.json.ModelTransformation.Mode;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3f;
@@ -52,8 +55,6 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 
 /**
  * The render context used for item rendering.
- * Does not implement emissive lighting for sake
- * of simplicity in the default renderer.
  */
 public class ItemRenderContext extends AbstractRenderContext {
 	/** Value vanilla uses for item rendering.  The only sensible choice, of course.  */
@@ -74,33 +75,36 @@ public class ItemRenderContext extends AbstractRenderContext {
 		return random;
 	};
 
+	private final Maker editorQuad = new Maker();
 	private final MeshConsumer meshConsumer = new MeshConsumer();
 	private final FallbackConsumer fallbackConsumer = new FallbackConsumer();
 
+	private ItemStack itemStack;
+	private Mode transformMode;
 	private MatrixStack matrixStack;
 	private VertexConsumerProvider vertexConsumerProvider;
-	private VertexConsumer modelVertexConsumer;
-	private BlendMode quadBlendMode;
-	private VertexConsumer quadVertexConsumer;
-	private Mode transformMode;
 	private int lightmap;
-	private ItemStack itemStack;
 	private VanillaQuadHandler vanillaHandler;
+
+	private boolean isDefaultTranslucent;
+	private boolean isTranslucentDirect;
+	private VertexConsumer translucentVertexConsumer;
+	private VertexConsumer cutoutVertexConsumer;
+	private VertexConsumer modelVertexConsumer;
 
 	public ItemRenderContext(ItemColors colorMap) {
 		this.colorMap = colorMap;
 	}
 
 	public void renderModel(ItemStack itemStack, Mode transformMode, boolean invert, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int lightmap, int overlay, BakedModel model, VanillaQuadHandler vanillaHandler) {
+		this.itemStack = itemStack;
+		this.transformMode = transformMode;
+		this.matrixStack = matrixStack;
+		this.vertexConsumerProvider = vertexConsumerProvider;
 		this.lightmap = lightmap;
 		this.overlay = overlay;
-		this.itemStack = itemStack;
-		this.vertexConsumerProvider = vertexConsumerProvider;
-		this.matrixStack = matrixStack;
-		this.transformMode = transformMode;
 		this.vanillaHandler = vanillaHandler;
-		quadBlendMode = BlendMode.DEFAULT;
-		modelVertexConsumer = selectVertexConsumer(RenderLayers.getItemLayer(itemStack, transformMode != ModelTransformation.Mode.GROUND));
+		computeOutputInfo();
 
 		matrixStack.push();
 		model.getTransformation().getTransformation(transformMode).apply(invert, matrixStack);
@@ -112,38 +116,34 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 		matrixStack.pop();
 
-		this.matrixStack = null;
 		this.itemStack = null;
+		this.matrixStack = null;
 		this.vanillaHandler = null;
+		translucentVertexConsumer = null;
+		cutoutVertexConsumer = null;
 		modelVertexConsumer = null;
 	}
 
-	private class Maker extends MutableQuadViewImpl implements QuadEmitter {
-		{
-			data = new int[EncodingFormat.TOTAL_STRIDE];
-			clear();
+	private void computeOutputInfo() {
+		isDefaultTranslucent = true;
+		isTranslucentDirect = true;
+
+		Item item = itemStack.getItem();
+
+		if (item instanceof BlockItem blockItem) {
+			BlockState state = blockItem.getBlock().getDefaultState();
+			RenderLayer renderLayer = RenderLayers.getBlockLayer(state);
+
+			if (renderLayer != RenderLayer.getTranslucent()) {
+				isDefaultTranslucent = false;
+			}
+
+			if (transformMode != Mode.GUI && !transformMode.isFirstPerson()) {
+				isTranslucentDirect = false;
+			}
 		}
 
-		@Override
-		public Maker emit() {
-			computeGeometry();
-			renderMeshQuad(this);
-			clear();
-			return this;
-		}
-	}
-
-	private final Maker editorQuad = new Maker();
-
-	/**
-	 * Use non-culling translucent material in GUI to match vanilla behavior. If the item
-	 * is enchanted then also select a dual-output vertex consumer. For models with layered
-	 * coplanar polygons this means we will render the glint more than once. Indigo doesn't
-	 * support sprite layers, so this can't be helped in this implementation.
-	 */
-	private VertexConsumer selectVertexConsumer(RenderLayer layerIn) {
-		final RenderLayer layer = transformMode == ModelTransformation.Mode.GUI ? TexturedRenderLayers.getEntityTranslucentCull() : layerIn;
-		return ItemRenderer.getArmorGlintConsumer(vertexConsumerProvider, layer, true, itemStack.hasGlint());
+		modelVertexConsumer = quadVertexConsumer(BlendMode.DEFAULT);
 	}
 
 	/**
@@ -152,22 +152,33 @@ public class ItemRenderContext extends AbstractRenderContext {
 	 * translucent are mapped to cutout.
 	 */
 	private VertexConsumer quadVertexConsumer(BlendMode blendMode) {
+		boolean translucent;
+		VertexConsumer quadVertexConsumer;
+
 		if (blendMode == BlendMode.DEFAULT) {
-			return modelVertexConsumer;
-		}
-
-		if (blendMode != BlendMode.TRANSLUCENT) {
-			blendMode = BlendMode.CUTOUT;
-		}
-
-		if (blendMode == quadBlendMode) {
-			return quadVertexConsumer;
-		} else if (blendMode == BlendMode.TRANSLUCENT) {
-			quadVertexConsumer = selectVertexConsumer(TexturedRenderLayers.getEntityTranslucentCull());
-			quadBlendMode = BlendMode.TRANSLUCENT;
+			translucent = isDefaultTranslucent;
 		} else {
-			quadVertexConsumer = selectVertexConsumer(TexturedRenderLayers.getEntityCutout());
-			quadBlendMode = BlendMode.CUTOUT;
+			translucent = blendMode == BlendMode.TRANSLUCENT;
+		}
+
+		if (translucent) {
+			if (translucentVertexConsumer == null) {
+				if (isTranslucentDirect) {
+					translucentVertexConsumer = ItemRenderer.getDirectItemGlintConsumer(vertexConsumerProvider, TexturedRenderLayers.getEntityTranslucentCull(), true, itemStack.hasGlint());
+				} else if (MinecraftClient.isFabulousGraphicsOrBetter()) {
+					translucentVertexConsumer = ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, TexturedRenderLayers.getItemEntityTranslucentCull(), true, itemStack.hasGlint());
+				} else {
+					translucentVertexConsumer = ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, TexturedRenderLayers.getEntityTranslucentCull(), true, itemStack.hasGlint());
+				}
+			}
+
+			quadVertexConsumer = translucentVertexConsumer;
+		} else {
+			if (cutoutVertexConsumer == null) {
+				cutoutVertexConsumer = ItemRenderer.getDirectItemGlintConsumer(vertexConsumerProvider, TexturedRenderLayers.getEntityCutout(), true, itemStack.hasGlint());
+			}
+
+			quadVertexConsumer = cutoutVertexConsumer;
 		}
 
 		return quadVertexConsumer;
@@ -227,6 +238,21 @@ public class ItemRenderContext extends AbstractRenderContext {
 			renderQuadEmissive(quad, blendMode, colorIndex);
 		} else {
 			renderQuad(quad, blendMode, colorIndex);
+		}
+	}
+
+	private class Maker extends MutableQuadViewImpl implements QuadEmitter {
+		{
+			data = new int[EncodingFormat.TOTAL_STRIDE];
+			clear();
+		}
+
+		@Override
+		public Maker emit() {
+			computeGeometry();
+			renderMeshQuad(this);
+			clear();
+			return this;
 		}
 	}
 

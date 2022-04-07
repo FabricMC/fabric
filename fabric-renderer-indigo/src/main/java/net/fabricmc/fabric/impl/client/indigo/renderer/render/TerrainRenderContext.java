@@ -103,8 +103,8 @@ public class TerrainRenderContext extends AbstractRenderContext {
 			aoCalc.clear();
 			blockInfo.prepareForBlock(blockState, blockPos, model.useAmbientOcclusion());
 			((FabricBakedModel) model).emitBlockQuads(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, blockInfo.randomSupplier, this);
-		} catch (Throwable var9) {
-			CrashReport crashReport = CrashReport.create(var9, "Tessellating block in world - Indigo Renderer");
+		} catch (Throwable throwable) {
+			CrashReport crashReport = CrashReport.create(throwable, "Tessellating block in world - Indigo Renderer");
 			CrashReportSection crashReportSection = crashReport.addElement("Block being tessellated");
 			CrashReportSection.addBlockInfo(crashReportSection, chunkInfo.blockView, blockPos, blockState);
 			throw new CrashException(crashReport);

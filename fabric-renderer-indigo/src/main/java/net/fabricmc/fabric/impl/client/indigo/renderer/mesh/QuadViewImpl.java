@@ -33,8 +33,8 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3f;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
@@ -163,7 +163,8 @@ public class QuadViewImpl implements QuadView {
 
 		final MutableQuadViewImpl quad = (MutableQuadViewImpl) target;
 		// copy everything except the material
-		System.arraycopy(data, baseIndex + 1, quad.data, quad.baseIndex + 1, EncodingFormat.TOTAL_STRIDE - 1);
+		System.arraycopy(data, baseIndex, quad.data, quad.baseIndex, EncodingFormat.TOTAL_STRIDE);
+		data[baseIndex + HEADER_BITS] = EncodingFormat.clearMaterial(data[baseIndex + HEADER_BITS]);
 		quad.faceNormal.set(faceNormal.getX(), faceNormal.getY(), faceNormal.getZ());
 		quad.nominalFace = this.nominalFace;
 		quad.isGeometryInvalid = false;
