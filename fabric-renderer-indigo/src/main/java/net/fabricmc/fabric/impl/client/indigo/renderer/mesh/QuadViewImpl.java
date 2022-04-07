@@ -164,7 +164,7 @@ public class QuadViewImpl implements QuadView {
 		final MutableQuadViewImpl quad = (MutableQuadViewImpl) target;
 		// copy everything except the material
 		System.arraycopy(data, baseIndex, quad.data, quad.baseIndex, EncodingFormat.TOTAL_STRIDE);
-		data[baseIndex + HEADER_BITS] = EncodingFormat.clearMaterial(data[baseIndex + HEADER_BITS]);
+		quad.data[quad.baseIndex + HEADER_BITS] = EncodingFormat.clearMaterial(quad.data[quad.baseIndex + HEADER_BITS]);
 		quad.faceNormal.set(faceNormal.getX(), faceNormal.getY(), faceNormal.getZ());
 		quad.nominalFace = this.nominalFace;
 		quad.isGeometryInvalid = false;
