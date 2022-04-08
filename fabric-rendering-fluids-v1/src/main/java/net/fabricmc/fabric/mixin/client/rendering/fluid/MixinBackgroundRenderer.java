@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.client.rendering.fluid;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -99,7 +100,7 @@ public abstract class MixinBackgroundRenderer {
 	}
 
 	@Unique
-	private static FluidState getSubmergedFluidState(Camera camera) {
+	private static FluidState getSubmergedFluidState(@NotNull Camera camera) {
 		//Gets the fluid in which the player (player camera) is submerged at the current position.
 		//This is the way used for water in vanilla: from getSubmersionType() method in Camera.
 		return ((CameraAccessor) camera).getArea().getFluidState(camera.getBlockPos());

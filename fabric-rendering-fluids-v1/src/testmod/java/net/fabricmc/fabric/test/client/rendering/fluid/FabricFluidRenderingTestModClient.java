@@ -46,17 +46,15 @@ public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.NO_OVERLAY, TestFluids.NO_OVERLAY_FLOWING, new SimpleFluidRenderHandler(
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"),
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"),
-				0xFF5555,
-				new SimpleFluidFogHandler(0xFF5555, 0f, 1f)
-		));
+				0xFF5555
+		).fogHandler(new SimpleFluidFogHandler(0xFF5555, 0f, 1f)));
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.OVERLAY, TestFluids.OVERLAY_FLOWING, new SimpleFluidRenderHandler(
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"),
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"),
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay"),
-				0x5555FF,
-				new CustomizedFogHandler(0f, 1f)
-		));
+				0x5555FF
+		).fogHandler(new CustomizedFogHandler(0f, 1f)));
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.CUSTOM, TestFluids.CUSTOM_FLOWING, new CustomizedFluidRenderer(
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay")
