@@ -76,12 +76,12 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * Creates a fluid render handler with an overlay texture and a custom,
 	 * fixed tint.
 	 *
-	 * @param stillTexture   The texture for still fluid.
+	 * @param stillTexture The texture for still fluid.
 	 * @param flowingTexture The texture for flowing/falling fluid.
 	 * @param overlayTexture The texture behind glass, leaves and other
-	 *                       {@linkplain FluidRenderHandlerRegistry#setBlockTransparency registered
-	 *                       transparent blocks}.
-	 * @param tint           The fluid color RGB. Alpha is ignored.
+	 * {@linkplain FluidRenderHandlerRegistry#setBlockTransparency registered
+	 * transparent blocks}.
+	 * @param tint The fluid color RGB. Alpha is ignored.
 	 */
 	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, @Nullable Identifier overlayTexture, int tint) {
 		this.stillTexture = stillTexture;
@@ -94,11 +94,11 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	/**
 	 * Creates a fluid render handler with an overlay texture and no tint.
 	 *
-	 * @param stillTexture   The texture for still fluid.
+	 * @param stillTexture The texture for still fluid.
 	 * @param flowingTexture The texture for flowing/falling fluid.
 	 * @param overlayTexture The texture behind glass, leaves and other
-	 *                       {@linkplain FluidRenderHandlerRegistry#setBlockTransparency registered
-	 *                       transparent blocks}.
+	 * {@linkplain FluidRenderHandlerRegistry#setBlockTransparency registered
+	 * transparent blocks}.
 	 */
 	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, Identifier overlayTexture) {
 		this(stillTexture, flowingTexture, overlayTexture, -1);
@@ -108,9 +108,9 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * Creates a fluid render handler without an overlay texture and a custom,
 	 * fixed tint.
 	 *
-	 * @param stillTexture   The texture for still fluid.
+	 * @param stillTexture The texture for still fluid.
 	 * @param flowingTexture The texture for flowing/falling fluid.
-	 * @param tint           The fluid color RGB. Alpha is ignored.
+	 * @param tint The fluid color RGB. Alpha is ignored.
 	 */
 	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, int tint) {
 		this(stillTexture, flowingTexture, null, tint);
@@ -119,7 +119,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	/**
 	 * Creates a fluid render handler without an overlay texture and no tint.
 	 *
-	 * @param stillTexture   The texture for still fluid.
+	 * @param stillTexture The texture for still fluid.
 	 * @param flowingTexture The texture for flowing/falling fluid.
 	 */
 	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture) {
@@ -131,8 +131,8 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * fixed, custom color.
 	 *
 	 * @param tint The fluid color RGB. Alpha is ignored.
-	 * @see #WATER_STILL
-	 * @see #WATER_FLOWING
+	 * @see	#WATER_STILL
+	 * @see	#WATER_FLOWING
 	 * @see #WATER_OVERLAY
 	 */
 	public static SimpleFluidRenderHandler coloredWater(int tint) {
