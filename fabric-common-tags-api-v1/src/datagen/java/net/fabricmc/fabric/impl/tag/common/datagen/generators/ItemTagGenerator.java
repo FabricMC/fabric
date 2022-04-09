@@ -249,26 +249,16 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateOreAndRelatedTags() {
-		getOrCreateTagBuilder(CommonItemTags.IRON_ORES)
-				.addOptionalTag(ItemTags.IRON_ORES);
-		getOrCreateTagBuilder(CommonItemTags.GOLD_ORES)
-				.addOptionalTag(ItemTags.GOLD_ORES);
-		getOrCreateTagBuilder(CommonItemTags.REDSTONE_ORES)
-				.addOptionalTag(ItemTags.REDSTONE_ORES);
-		getOrCreateTagBuilder(CommonItemTags.COPPER_ORES)
-				.addOptionalTag(ItemTags.COPPER_ORES);
-		getOrCreateTagBuilder(CommonItemTags.NETHERITE_ORES);
 		getOrCreateTagBuilder(CommonItemTags.ORES)
-				.addOptionalTag(CommonItemTags.NETHERITE_ORES)
-				.addOptionalTag(CommonItemTags.IRON_ORES)
-				.addOptionalTag(CommonItemTags.COPPER_ORES)
-				.addOptionalTag(CommonItemTags.REDSTONE_ORES)
-				.addOptionalTag(CommonItemTags.GOLD_ORES)
-				.addOptionalTag(CommonItemTags.COAL_ORES)
-				.addOptionalTag(CommonItemTags.DIAMOND_ORES)
-				.addOptionalTag(CommonItemTags.LAPIS_ORES)
+				.addOptionalTag(ItemTags.IRON_ORES)
+				.addOptionalTag(ItemTags.COPPER_ORES)
+				.addOptionalTag(ItemTags.REDSTONE_ORES)
+				.addOptionalTag(ItemTags.GOLD_ORES)
+				.addOptionalTag(ItemTags.COAL_ORES)
+				.addOptionalTag(ItemTags.DIAMOND_ORES)
+				.addOptionalTag(ItemTags.LAPIS_ORES)
 				.addOptionalTag(CommonItemTags.QUARTZ_ORES)
-				.addOptionalTag(CommonItemTags.EMERALD_ORES);
+				.addOptionalTag(ItemTags.EMERALD_ORES);
 		getOrCreateTagBuilder(CommonItemTags.IRON_INGOTS)
 				.add(Items.IRON_INGOT);
 		getOrCreateTagBuilder(CommonItemTags.COPPER_INGOTS)
@@ -295,20 +285,12 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.RAW_COPPER_BLOCK);
 		getOrCreateTagBuilder(CommonItemTags.RAW_GOLD_BLOCKS)
 				.add(Items.RAW_GOLD_BLOCK);
-		getOrCreateTagBuilder(CommonItemTags.COAL_ORES)
-				.addOptionalTag(ItemTags.COAL_ORES);
 		getOrCreateTagBuilder(CommonItemTags.COAL)
 				.addOptionalTag(ItemTags.COALS);
-		getOrCreateTagBuilder(CommonItemTags.EMERALD_ORES)
-				.addOptionalTag(ItemTags.EMERALD_ORES);
 		getOrCreateTagBuilder(CommonItemTags.EMERALDS)
 				.add(Items.EMERALD);
-		getOrCreateTagBuilder(CommonItemTags.LAPIS_ORES)
-				.addOptionalTag(ItemTags.LAPIS_ORES);
 		getOrCreateTagBuilder(CommonItemTags.LAPIS)
 				.add(Items.LAPIS_LAZULI);
-		getOrCreateTagBuilder(CommonItemTags.DIAMOND_ORES)
-				.addOptionalTag(ItemTags.DIAMOND_ORES);
 		getOrCreateTagBuilder(CommonItemTags.DIAMONDS)
 				.add(Items.DIAMOND);
 	}

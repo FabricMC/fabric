@@ -23,7 +23,9 @@ import net.fabricmc.fabric.impl.tag.common.TagRegistration;
 
 /**
  * See {@link net.minecraft.tag.BiomeTags} for vanilla tags.
- * Note that addition to some vanilla tags implies having certain functionality.
+ * Note that addition to some vanilla tags implies having certain functionality,
+ * and as such certain biome tags exist to mirror vanilla tags, and should be preferred
+ * over vanilla unless its behavior is desired.
  */
 public class CommonBiomeTags {
 	/**
