@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#fabric:pickaxes",
+      "required": false
+    },
+    "minecraft:diamond_pickaxe",
+    "minecraft:golden_pickaxe",
+    "minecraft:wooden_pickaxe",
+    "minecraft:stone_pickaxe",
+    "minecraft:iron_pickaxe",
+    "minecraft:netherite_pickaxe"
+  ]
+}
