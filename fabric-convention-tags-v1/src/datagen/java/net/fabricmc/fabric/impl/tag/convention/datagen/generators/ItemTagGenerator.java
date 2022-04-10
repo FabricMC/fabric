@@ -22,36 +22,36 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.tag.convention.v1.CommonItemTags;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 
 public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	/**
-	 * @deprecated Use {@link CommonItemTags#PICKAXES}
+	 * @deprecated Use {@link ConventionalItemTags#PICKAXES}
 	 */
 	@Deprecated
 	private static final Identifier FABRIC_PICKAXES = createFabricId("pickaxes");
 	/**
-	 * @deprecated Use {@link CommonItemTags#SHOVELS}
+	 * @deprecated Use {@link ConventionalItemTags#SHOVELS}
 	 */
 	@Deprecated
 	private static final Identifier FABRIC_SHOVELS = createFabricId("shovels");
 	/**
-	 * @deprecated Use {@link CommonItemTags#HOES}
+	 * @deprecated Use {@link ConventionalItemTags#HOES}
 	 */
 	@Deprecated
 	private static final Identifier FABRIC_HOES = createFabricId("hoes");
 	/**
-	 * @deprecated Use {@link CommonItemTags#AXES}
+	 * @deprecated Use {@link ConventionalItemTags#AXES}
 	 */
 	@Deprecated
 	private static final Identifier FABRIC_AXES = createFabricId("axes");
 	/**
-	 * @deprecated Use {@link CommonItemTags#SHEARS}
+	 * @deprecated Use {@link ConventionalItemTags#SHEARS}
 	 */
 	@Deprecated
 	private static final Identifier FABRIC_SHEARS = createFabricId("shears");
 	/**
-	 * @deprecated Use {@link CommonItemTags#SWORDS}
+	 * @deprecated Use {@link ConventionalItemTags#SWORDS}
 	 */
 	@Deprecated
 	private static final Identifier FABRIC_SWORDS = createFabricId("swords");
@@ -72,59 +72,59 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateDyeTags() {
-		getOrCreateTagBuilder(CommonItemTags.DYES)
-				.addOptionalTag(CommonItemTags.BLACK_DYES)
-				.addOptionalTag(CommonItemTags.BLUE_DYES)
-				.addOptionalTag(CommonItemTags.BROWN_DYES)
-				.addOptionalTag(CommonItemTags.GREEN_DYES)
-				.addOptionalTag(CommonItemTags.RED_DYES)
-				.addOptionalTag(CommonItemTags.WHITE_DYES)
-				.addOptionalTag(CommonItemTags.YELLOW_DYES)
-				.addOptionalTag(CommonItemTags.LIGHT_GRAY_DYES)
-				.addOptionalTag(CommonItemTags.LIGHT_BLUE_DYES)
-				.addOptionalTag(CommonItemTags.LIME_DYES)
-				.addOptionalTag(CommonItemTags.MAGENTA_DYES)
-				.addOptionalTag(CommonItemTags.ORANGE_DYES)
-				.addOptionalTag(CommonItemTags.PINK_DYES)
-				.addOptionalTag(CommonItemTags.CYAN_DYES)
-				.addOptionalTag(CommonItemTags.GRAY_DYES)
-				.addOptionalTag(CommonItemTags.PURPLE_DYES);
-		getOrCreateTagBuilder(CommonItemTags.BLACK_DYES)
+		getOrCreateTagBuilder(ConventionalItemTags.DYES)
+				.addOptionalTag(ConventionalItemTags.BLACK_DYES)
+				.addOptionalTag(ConventionalItemTags.BLUE_DYES)
+				.addOptionalTag(ConventionalItemTags.BROWN_DYES)
+				.addOptionalTag(ConventionalItemTags.GREEN_DYES)
+				.addOptionalTag(ConventionalItemTags.RED_DYES)
+				.addOptionalTag(ConventionalItemTags.WHITE_DYES)
+				.addOptionalTag(ConventionalItemTags.YELLOW_DYES)
+				.addOptionalTag(ConventionalItemTags.LIGHT_GRAY_DYES)
+				.addOptionalTag(ConventionalItemTags.LIGHT_BLUE_DYES)
+				.addOptionalTag(ConventionalItemTags.LIME_DYES)
+				.addOptionalTag(ConventionalItemTags.MAGENTA_DYES)
+				.addOptionalTag(ConventionalItemTags.ORANGE_DYES)
+				.addOptionalTag(ConventionalItemTags.PINK_DYES)
+				.addOptionalTag(ConventionalItemTags.CYAN_DYES)
+				.addOptionalTag(ConventionalItemTags.GRAY_DYES)
+				.addOptionalTag(ConventionalItemTags.PURPLE_DYES);
+		getOrCreateTagBuilder(ConventionalItemTags.BLACK_DYES)
 				.add(Items.BLACK_DYE);
-		getOrCreateTagBuilder(CommonItemTags.BLUE_DYES)
+		getOrCreateTagBuilder(ConventionalItemTags.BLUE_DYES)
 				.add(Items.BLUE_DYE);
-		getOrCreateTagBuilder(CommonItemTags.BROWN_DYES)
+		getOrCreateTagBuilder(ConventionalItemTags.BROWN_DYES)
 				.add(Items.PURPLE_DYE);
-		getOrCreateTagBuilder(CommonItemTags.GREEN_DYES)
+		getOrCreateTagBuilder(ConventionalItemTags.GREEN_DYES)
 				.add(Items.GREEN_DYE);
-		getOrCreateTagBuilder(CommonItemTags.RED_DYES)
+		getOrCreateTagBuilder(ConventionalItemTags.RED_DYES)
 				.add(Items.RED_DYE);
-		getOrCreateTagBuilder(CommonItemTags.WHITE_DYES)
+		getOrCreateTagBuilder(ConventionalItemTags.WHITE_DYES)
 				.add(Items.WHITE_DYE);
-		getOrCreateTagBuilder(CommonItemTags.YELLOW_DYES)
+		getOrCreateTagBuilder(ConventionalItemTags.YELLOW_DYES)
 				.add(Items.YELLOW_DYE);
-		getOrCreateTagBuilder(CommonItemTags.LIGHT_BLUE_DYES)
+		getOrCreateTagBuilder(ConventionalItemTags.LIGHT_BLUE_DYES)
 				.add(Items.LIGHT_BLUE_DYE);
-		getOrCreateTagBuilder(CommonItemTags.LIGHT_GRAY_DYES)
+		getOrCreateTagBuilder(ConventionalItemTags.LIGHT_GRAY_DYES)
 				.add(Items.LIGHT_GRAY_DYE);
-		getOrCreateTagBuilder(CommonItemTags.LIME_DYES)
+		getOrCreateTagBuilder(ConventionalItemTags.LIME_DYES)
 				.add(Items.LIME_DYE);
-		getOrCreateTagBuilder(CommonItemTags.MAGENTA_DYES)
+		getOrCreateTagBuilder(ConventionalItemTags.MAGENTA_DYES)
 				.add(Items.MAGENTA_DYE);
-		getOrCreateTagBuilder(CommonItemTags.ORANGE_DYES)
+		getOrCreateTagBuilder(ConventionalItemTags.ORANGE_DYES)
 				.add(Items.ORANGE_DYE);
-		getOrCreateTagBuilder(CommonItemTags.PINK_DYES)
+		getOrCreateTagBuilder(ConventionalItemTags.PINK_DYES)
 				.add(Items.PINK_DYE);
-		getOrCreateTagBuilder(CommonItemTags.CYAN_DYES)
+		getOrCreateTagBuilder(ConventionalItemTags.CYAN_DYES)
 				.add(Items.CYAN_DYE);
-		getOrCreateTagBuilder(CommonItemTags.GRAY_DYES)
+		getOrCreateTagBuilder(ConventionalItemTags.GRAY_DYES)
 				.add(Items.GRAY_DYE);
-		getOrCreateTagBuilder(CommonItemTags.PURPLE_DYES)
+		getOrCreateTagBuilder(ConventionalItemTags.PURPLE_DYES)
 				.add(Items.PURPLE_DYE);
 	}
 
 	private void generateShulkerTag() {
-		getOrCreateTagBuilder(CommonItemTags.SHULKER_BOXES)
+		getOrCreateTagBuilder(ConventionalItemTags.SHULKER_BOXES)
 				.add(Items.SHULKER_BOX)
 				.add(Items.BLUE_SHULKER_BOX)
 				.add(Items.BROWN_SHULKER_BOX)
@@ -145,7 +145,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateGlassTags() {
-		getOrCreateTagBuilder(CommonItemTags.GLASS_BLOCKS)
+		getOrCreateTagBuilder(ConventionalItemTags.GLASS_BLOCKS)
 				.add(Items.GLASS)
 				.add(Items.GRAY_STAINED_GLASS)
 				.add(Items.BLACK_STAINED_GLASS)
@@ -164,7 +164,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.TINTED_GLASS)
 				.add(Items.WHITE_STAINED_GLASS)
 				.add(Items.YELLOW_STAINED_GLASS);
-		getOrCreateTagBuilder(CommonItemTags.GLASS_PANES)
+		getOrCreateTagBuilder(ConventionalItemTags.GLASS_PANES)
 				.add(Items.GLASS_PANE)
 				.add(Items.GRAY_STAINED_GLASS_PANE)
 				.add(Items.BLACK_STAINED_GLASS_PANE)
@@ -185,7 +185,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateConsumableTags() {
-		getOrCreateTagBuilder(CommonItemTags.FOODS)
+		getOrCreateTagBuilder(ConventionalItemTags.FOODS)
 				.add(Items.BEEF)
 				.add(Items.COOKED_BEEF)
 				.add(Items.APPLE)
@@ -226,30 +226,30 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.SUSPICIOUS_STEW)
 				.add(Items.SWEET_BERRIES)
 				.add(Items.TROPICAL_FISH);
-		getOrCreateTagBuilder(CommonItemTags.POTIONS)
+		getOrCreateTagBuilder(ConventionalItemTags.POTIONS)
 				.add(Items.LINGERING_POTION)
 				.add(Items.SPLASH_POTION)
 				.add(Items.POTION);
 	}
 
 	private void generateBucketTags() {
-		getOrCreateTagBuilder(CommonItemTags.EMPTY_BUCKET)
+		getOrCreateTagBuilder(ConventionalItemTags.EMPTY_BUCKET)
 				.add(Items.BUCKET);
-		getOrCreateTagBuilder(CommonItemTags.LAVA_BUCKET)
+		getOrCreateTagBuilder(ConventionalItemTags.LAVA_BUCKET)
 				.add(Items.LAVA_BUCKET);
-		getOrCreateTagBuilder(CommonItemTags.WATER_BUCKET)
+		getOrCreateTagBuilder(ConventionalItemTags.WATER_BUCKET)
 				.add(Items.AXOLOTL_BUCKET)
 				.add(Items.COD_BUCKET)
 				.add(Items.PUFFERFISH_BUCKET)
 				.add(Items.TROPICAL_FISH_BUCKET)
 				.add(Items.SALMON_BUCKET)
 				.add(Items.WATER_BUCKET);
-		getOrCreateTagBuilder(CommonItemTags.MILK_BUCKET)
+		getOrCreateTagBuilder(ConventionalItemTags.MILK_BUCKET)
 				.add(Items.MILK_BUCKET);
 	}
 
 	private void generateOreAndRelatedTags() {
-		getOrCreateTagBuilder(CommonItemTags.ORES)
+		getOrCreateTagBuilder(ConventionalItemTags.ORES)
 				.addOptionalTag(ItemTags.IRON_ORES)
 				.addOptionalTag(ItemTags.COPPER_ORES)
 				.addOptionalTag(ItemTags.REDSTONE_ORES)
@@ -257,46 +257,46 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ItemTags.COAL_ORES)
 				.addOptionalTag(ItemTags.DIAMOND_ORES)
 				.addOptionalTag(ItemTags.LAPIS_ORES)
-				.addOptionalTag(CommonItemTags.QUARTZ_ORES)
+				.addOptionalTag(ConventionalItemTags.QUARTZ_ORES)
 				.addOptionalTag(ItemTags.EMERALD_ORES);
-		getOrCreateTagBuilder(CommonItemTags.IRON_INGOTS)
+		getOrCreateTagBuilder(ConventionalItemTags.IRON_INGOTS)
 				.add(Items.IRON_INGOT);
-		getOrCreateTagBuilder(CommonItemTags.COPPER_INGOTS)
+		getOrCreateTagBuilder(ConventionalItemTags.COPPER_INGOTS)
 				.add(Items.COPPER_INGOT);
-		getOrCreateTagBuilder(CommonItemTags.GOLD_INGOTS)
+		getOrCreateTagBuilder(ConventionalItemTags.GOLD_INGOTS)
 				.add(Items.GOLD_INGOT);
-		getOrCreateTagBuilder(CommonItemTags.NETHERITE_INGOTS)
+		getOrCreateTagBuilder(ConventionalItemTags.NETHERITE_INGOTS)
 				.add(Items.NETHERITE_INGOT);
-		getOrCreateTagBuilder(CommonItemTags.REDSTONE_DUSTS)
+		getOrCreateTagBuilder(ConventionalItemTags.REDSTONE_DUSTS)
 				.add(Items.REDSTONE);
-		getOrCreateTagBuilder(CommonItemTags.QUARTZ_ORES)
+		getOrCreateTagBuilder(ConventionalItemTags.QUARTZ_ORES)
 				.add(Items.NETHER_QUARTZ_ORE);
-		getOrCreateTagBuilder(CommonItemTags.QUARTZ)
+		getOrCreateTagBuilder(ConventionalItemTags.QUARTZ)
 				.add(Items.QUARTZ);
-		getOrCreateTagBuilder(CommonItemTags.RAW_IRON_ORES)
+		getOrCreateTagBuilder(ConventionalItemTags.RAW_IRON_ORES)
 				.add(Items.RAW_IRON);
-		getOrCreateTagBuilder(CommonItemTags.RAW_COPPER_ORES)
+		getOrCreateTagBuilder(ConventionalItemTags.RAW_COPPER_ORES)
 				.add(Items.RAW_COPPER);
-		getOrCreateTagBuilder(CommonItemTags.RAW_GOLD_ORES)
+		getOrCreateTagBuilder(ConventionalItemTags.RAW_GOLD_ORES)
 				.add(Items.RAW_GOLD);
-		getOrCreateTagBuilder(CommonItemTags.RAW_IRON_BLOCKS)
+		getOrCreateTagBuilder(ConventionalItemTags.RAW_IRON_BLOCKS)
 				.add(Items.RAW_IRON_BLOCK);
-		getOrCreateTagBuilder(CommonItemTags.RAW_COPPER_BLOCKS)
+		getOrCreateTagBuilder(ConventionalItemTags.RAW_COPPER_BLOCKS)
 				.add(Items.RAW_COPPER_BLOCK);
-		getOrCreateTagBuilder(CommonItemTags.RAW_GOLD_BLOCKS)
+		getOrCreateTagBuilder(ConventionalItemTags.RAW_GOLD_BLOCKS)
 				.add(Items.RAW_GOLD_BLOCK);
-		getOrCreateTagBuilder(CommonItemTags.COAL)
+		getOrCreateTagBuilder(ConventionalItemTags.COAL)
 				.addOptionalTag(ItemTags.COALS);
-		getOrCreateTagBuilder(CommonItemTags.EMERALDS)
+		getOrCreateTagBuilder(ConventionalItemTags.EMERALDS)
 				.add(Items.EMERALD);
-		getOrCreateTagBuilder(CommonItemTags.LAPIS)
+		getOrCreateTagBuilder(ConventionalItemTags.LAPIS)
 				.add(Items.LAPIS_LAZULI);
-		getOrCreateTagBuilder(CommonItemTags.DIAMONDS)
+		getOrCreateTagBuilder(ConventionalItemTags.DIAMONDS)
 				.add(Items.DIAMOND);
 	}
 
 	private void generateToolTags() {
-		getOrCreateTagBuilder(CommonItemTags.AXES)
+		getOrCreateTagBuilder(ConventionalItemTags.AXES)
 				.addOptionalTag(FABRIC_AXES)
 				.add(Items.DIAMOND_AXE)
 				.add(Items.GOLDEN_AXE)
@@ -304,7 +304,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.STONE_AXE)
 				.add(Items.IRON_AXE)
 				.add(Items.NETHERITE_AXE);
-		getOrCreateTagBuilder(CommonItemTags.PICKAXES)
+		getOrCreateTagBuilder(ConventionalItemTags.PICKAXES)
 				.addOptionalTag(FABRIC_PICKAXES)
 				.add(Items.DIAMOND_PICKAXE)
 				.add(Items.GOLDEN_PICKAXE)
@@ -312,7 +312,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.STONE_PICKAXE)
 				.add(Items.IRON_PICKAXE)
 				.add(Items.NETHERITE_PICKAXE);
-		getOrCreateTagBuilder(CommonItemTags.HOES)
+		getOrCreateTagBuilder(ConventionalItemTags.HOES)
 				.addOptionalTag(FABRIC_HOES)
 				.add(Items.DIAMOND_HOE)
 				.add(Items.GOLDEN_HOE)
@@ -320,7 +320,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.STONE_HOE)
 				.add(Items.IRON_HOE)
 				.add(Items.NETHERITE_HOE);
-		getOrCreateTagBuilder(CommonItemTags.SWORDS)
+		getOrCreateTagBuilder(ConventionalItemTags.SWORDS)
 				.addOptionalTag(FABRIC_SWORDS)
 				.add(Items.DIAMOND_SWORD)
 				.add(Items.GOLDEN_SWORD)
@@ -328,7 +328,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.STONE_SWORD)
 				.add(Items.IRON_SWORD)
 				.add(Items.NETHERITE_SWORD);
-		getOrCreateTagBuilder(CommonItemTags.SHOVELS)
+		getOrCreateTagBuilder(ConventionalItemTags.SHOVELS)
 				.addOptionalTag(FABRIC_SHOVELS)
 				.add(Items.DIAMOND_SHOVEL)
 				.add(Items.GOLDEN_SHOVEL)
@@ -336,12 +336,12 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.STONE_SHOVEL)
 				.add(Items.IRON_SHOVEL)
 				.add(Items.NETHERITE_SHOVEL);
-		getOrCreateTagBuilder(CommonItemTags.SHEARS)
+		getOrCreateTagBuilder(ConventionalItemTags.SHEARS)
 				.addOptionalTag(FABRIC_SHEARS)
 				.add(Items.SHEARS);
-		getOrCreateTagBuilder(CommonItemTags.SPEARS)
+		getOrCreateTagBuilder(ConventionalItemTags.SPEARS)
 				.add(Items.TRIDENT);
-		getOrCreateTagBuilder(CommonItemTags.BOWS)
+		getOrCreateTagBuilder(ConventionalItemTags.BOWS)
 				.add(Items.CROSSBOW)
 				.add(Items.BOW);
 	}

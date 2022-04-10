@@ -20,7 +20,7 @@ import net.minecraft.entity.EntityType;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.tag.convention.v1.CommonEntityTypeTags;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalEntityTypeTags;
 
 public class EntityTypeTagGenerator extends FabricTagProvider.EntityTypeTagProvider {
 	public EntityTypeTagGenerator(FabricDataGenerator dataGenerator) {
@@ -29,10 +29,10 @@ public class EntityTypeTagGenerator extends FabricTagProvider.EntityTypeTagProvi
 
 	@Override
 	protected void generateTags() {
-		getOrCreateTagBuilder(CommonEntityTypeTags.BOSSES)
+		getOrCreateTagBuilder(ConventionalEntityTypeTags.BOSSES)
 				.add(EntityType.ENDER_DRAGON)
 				.add(EntityType.WITHER);
-		getOrCreateTagBuilder(CommonEntityTypeTags.MINECARTS)
+		getOrCreateTagBuilder(ConventionalEntityTypeTags.MINECARTS)
 				.add(EntityType.MINECART)
 				.add(EntityType.TNT_MINECART)
 				.add(EntityType.CHEST_MINECART)
@@ -40,7 +40,7 @@ public class EntityTypeTagGenerator extends FabricTagProvider.EntityTypeTagProvi
 				.add(EntityType.COMMAND_BLOCK_MINECART)
 				.add(EntityType.HOPPER_MINECART)
 				.add(EntityType.SPAWNER_MINECART);
-		getOrCreateTagBuilder(CommonEntityTypeTags.BOATS)
+		getOrCreateTagBuilder(ConventionalEntityTypeTags.BOATS)
 				.add(EntityType.BOAT);
 	}
 }

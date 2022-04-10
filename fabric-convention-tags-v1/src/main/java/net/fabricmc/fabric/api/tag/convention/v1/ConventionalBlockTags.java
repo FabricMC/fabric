@@ -26,7 +26,7 @@ import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
  * See {@link net.minecraft.tag.BlockTags} for vanilla tags.
  * Note that addition to some vanilla tags implies having certain functionality.
  */
-public class CommonBlockTags {
+public class ConventionalBlockTags {
 	public static final TagKey<Block> QUARTZ_ORES = register("quartz_ores");
 	public static final TagKey<Block> ORES = register("ores");
 	public static final TagKey<Block> CHESTS = register("chests");

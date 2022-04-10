@@ -27,7 +27,7 @@ import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
  * and as such certain biome tags exist to mirror vanilla tags, and should be preferred
  * over vanilla unless its behavior is desired.
  */
-public class CommonBiomeTags {
+public class ConventionalBiomeTags {
 	/**
 	 * Biomes that spawn in the Overworld.
 	 */
@@ -47,13 +47,13 @@ public class CommonBiomeTags {
 	public static final TagKey<Biome> MESA = register("mesa");
 	/**
 	 * For temperate or warmer plains-like biomes.
-	 * For snowy plains-like biomes, see {@link CommonBiomeTags#SNOWY_PLAINS}.
+	 * For snowy plains-like biomes, see {@link ConventionalBiomeTags#SNOWY_PLAINS}.
 	 */
 	public static final TagKey<Biome> PLAINS = register("plains");
 	public static final TagKey<Biome> SAVANNA = register("savanna");
 	/**
 	 * For biomes where ice naturally spawns.
-	 * For biomes where snow alone spawns, see {@link CommonBiomeTags#SNOWY}.
+	 * For biomes where snow alone spawns, see {@link ConventionalBiomeTags#SNOWY}.
 	 */
 	public static final TagKey<Biome> ICY = register("icy");
 	/**
@@ -104,7 +104,7 @@ public class CommonBiomeTags {
 	public static final TagKey<Biome> FLORAL = register("floral");
 	/**
 	 * For biomes where snow, and not ice, naturally spawns as an predominant feature.
-	 * For biomes where ice is a predominant feature, see {@link CommonBiomeTags#ICY}.
+	 * For biomes where ice is a predominant feature, see {@link ConventionalBiomeTags#ICY}.
 	 */
 	public static final TagKey<Biome> SNOWY = register("snowy");
 
@@ -117,7 +117,7 @@ public class CommonBiomeTags {
 	public static final TagKey<Biome> NETHER_FORESTS = register("nether_forests");
 	/**
 	 * For snowy plains-like biomes.
-	 * For warmer plains-like biomes, see {@link CommonBiomeTags#PLAINS}.
+	 * For warmer plains-like biomes, see {@link ConventionalBiomeTags#PLAINS}.
 	 */
 	public static final TagKey<Biome> SNOWY_PLAINS = register("snowy_plains");
 	public static final TagKey<Biome> STONY_SHORES = register("stony_shores");

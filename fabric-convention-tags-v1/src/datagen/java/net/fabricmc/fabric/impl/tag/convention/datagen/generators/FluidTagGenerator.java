@@ -20,7 +20,7 @@ import net.minecraft.tag.FluidTags;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.tag.convention.v1.CommonFluidTags;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalFluidTags;
 
 public class FluidTagGenerator extends FabricTagProvider.FluidTagProvider {
 	public FluidTagGenerator(FabricDataGenerator dataGenerator) {
@@ -29,9 +29,9 @@ public class FluidTagGenerator extends FabricTagProvider.FluidTagProvider {
 
 	@Override
 	protected void generateTags() {
-		getOrCreateTagBuilder(CommonFluidTags.WATER)
+		getOrCreateTagBuilder(ConventionalFluidTags.WATER)
 				.addOptionalTag(FluidTags.WATER);
-		getOrCreateTagBuilder(CommonFluidTags.LAVA)
+		getOrCreateTagBuilder(ConventionalFluidTags.LAVA)
 				.addOptionalTag(FluidTags.LAVA);
 	}
 }

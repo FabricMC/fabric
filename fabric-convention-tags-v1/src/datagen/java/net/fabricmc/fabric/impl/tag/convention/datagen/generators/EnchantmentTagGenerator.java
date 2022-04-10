@@ -22,7 +22,7 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.tag.convention.v1.CommonEnchantmentTags;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalEnchantmentTags;
 
 public class EnchantmentTagGenerator extends FabricTagProvider<Enchantment> {
 	public EnchantmentTagGenerator(FabricDataGenerator dataGenerator) {
@@ -31,20 +31,20 @@ public class EnchantmentTagGenerator extends FabricTagProvider<Enchantment> {
 
 	@Override
 	protected void generateTags() {
-		getOrCreateTagBuilder(CommonEnchantmentTags.INCREASES_BLOCK_DROPS)
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.INCREASES_BLOCK_DROPS)
 				.add(Enchantments.FORTUNE);
-		getOrCreateTagBuilder(CommonEnchantmentTags.INCREASES_ENTITY_DROPS)
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.INCREASES_ENTITY_DROPS)
 				.add(Enchantments.LOOTING);
-		getOrCreateTagBuilder(CommonEnchantmentTags.WEAPON_DAMAGE_ENHANCEMENT)
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.WEAPON_DAMAGE_ENHANCEMENT)
 				.add(Enchantments.BANE_OF_ARTHROPODS)
 				.add(Enchantments.IMPALING)
 				.add(Enchantments.SMITE)
 				.add(Enchantments.POWER)
 				.add(Enchantments.SHARPNESS);
-		getOrCreateTagBuilder(CommonEnchantmentTags.ENTITY_MOVEMENT_ENHANCEMENT)
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_MOVEMENT_ENHANCEMENT)
 				.add(Enchantments.DEPTH_STRIDER)
 				.add(Enchantments.SOUL_SPEED);
-		getOrCreateTagBuilder(CommonEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENT)
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENT)
 				.add(Enchantments.FEATHER_FALLING)
 				.add(Enchantments.PROTECTION)
 				.add(Enchantments.BLAST_PROTECTION)

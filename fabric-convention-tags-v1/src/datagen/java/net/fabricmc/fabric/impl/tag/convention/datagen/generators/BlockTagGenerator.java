@@ -21,7 +21,7 @@ import net.minecraft.tag.BlockTags;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.tag.convention.v1.CommonBlockTags;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 
 public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 	public BlockTagGenerator(FabricDataGenerator dataGenerator) {
@@ -30,9 +30,9 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 
 	@Override
 	protected void generateTags() {
-		getOrCreateTagBuilder(CommonBlockTags.QUARTZ_ORES)
+		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES)
 				.add(Blocks.NETHER_QUARTZ_ORE);
-		getOrCreateTagBuilder(CommonBlockTags.ORES)
+		getOrCreateTagBuilder(ConventionalBlockTags.ORES)
 				.addOptionalTag(BlockTags.REDSTONE_ORES)
 				.addOptionalTag(BlockTags.COPPER_ORES)
 				.addOptionalTag(BlockTags.GOLD_ORES)
@@ -41,19 +41,19 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 				.addOptionalTag(BlockTags.EMERALD_ORES)
 				.addOptionalTag(BlockTags.LAPIS_ORES)
 				.addOptionalTag(BlockTags.DIAMOND_ORES)
-				.addOptionalTag(CommonBlockTags.QUARTZ_ORES);
-		getOrCreateTagBuilder(CommonBlockTags.CHESTS)
+				.addOptionalTag(ConventionalBlockTags.QUARTZ_ORES);
+		getOrCreateTagBuilder(ConventionalBlockTags.CHESTS)
 				.add(Blocks.CHEST)
 				.add(Blocks.ENDER_CHEST)
 				.add(Blocks.TRAPPED_CHEST);
-		getOrCreateTagBuilder(CommonBlockTags.BOOKSHELVES)
+		getOrCreateTagBuilder(ConventionalBlockTags.BOOKSHELVES)
 				.add(Blocks.BOOKSHELF);
 		generateGlassTags();
 		generateShulkerTag();
 	}
 
 	private void generateShulkerTag() {
-		getOrCreateTagBuilder(CommonBlockTags.SHULKER_BOXES)
+		getOrCreateTagBuilder(ConventionalBlockTags.SHULKER_BOXES)
 				.add(Blocks.SHULKER_BOX)
 				.add(Blocks.BLUE_SHULKER_BOX)
 				.add(Blocks.BROWN_SHULKER_BOX)
@@ -74,7 +74,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 	}
 
 	private void generateGlassTags() {
-		getOrCreateTagBuilder(CommonBlockTags.GLASS_BLOCKS)
+		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_BLOCKS)
 				.add(Blocks.GLASS)
 				.add(Blocks.GRAY_STAINED_GLASS)
 				.add(Blocks.BLACK_STAINED_GLASS)
@@ -93,7 +93,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 				.add(Blocks.TINTED_GLASS)
 				.add(Blocks.WHITE_STAINED_GLASS)
 				.add(Blocks.YELLOW_STAINED_GLASS);
-		getOrCreateTagBuilder(CommonBlockTags.GLASS_PANES)
+		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_PANES)
 				.add(Blocks.GLASS_PANE)
 				.add(Blocks.GRAY_STAINED_GLASS_PANE)
 				.add(Blocks.BLACK_STAINED_GLASS_PANE)

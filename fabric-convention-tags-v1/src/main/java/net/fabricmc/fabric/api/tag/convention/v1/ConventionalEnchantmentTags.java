@@ -21,7 +21,7 @@ import net.minecraft.tag.TagKey;
 
 import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 
-public class CommonEnchantmentTags {
+public class ConventionalEnchantmentTags {
 	/**
 	 * A tag containing enchantments that increase the amount or
 	 * quality of drops from blocks, such as {@link net.minecraft.enchantment.Enchantments#FORTUNE}.
