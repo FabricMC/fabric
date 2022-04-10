@@ -118,7 +118,7 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 				.addOptionalTag(BiomeTags.IS_FOREST);
 		getOrCreateTagBuilder(ConventionalBiomeTags.OCEAN)
 				.addOptionalTag(ConventionalBiomeTags.DEEP_OCEAN)
-				.addOptionalTag(ConventionalBiomeTags.DEEP_OCEAN)
+				.addOptionalTag(ConventionalBiomeTags.SHALLOW_OCEAN)
 				.addOptionalTag(BiomeTags.IS_OCEAN);
 		getOrCreateTagBuilder(ConventionalBiomeTags.DESERT)
 				.add(BiomeKeys.DESERT);
