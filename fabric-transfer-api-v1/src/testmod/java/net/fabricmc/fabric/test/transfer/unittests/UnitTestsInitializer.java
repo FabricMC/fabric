@@ -23,6 +23,7 @@ import net.fabricmc.api.ModInitializer;
 public class UnitTestsInitializer implements ModInitializer {
 	@Override
 	public void onInitialize() {
+		AttributeTests.run();
 		BaseStorageTests.run();
 		FluidItemTests.run();
 		FluidTests.run();
