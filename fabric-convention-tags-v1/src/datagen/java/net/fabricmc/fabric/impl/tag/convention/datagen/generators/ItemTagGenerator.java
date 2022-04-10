@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 import net.minecraft.item.Items;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -185,47 +186,11 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateConsumableTags() {
-		getOrCreateTagBuilder(ConventionalItemTags.FOODS)
-				.add(Items.BEEF)
-				.add(Items.COOKED_BEEF)
-				.add(Items.APPLE)
-				.add(Items.BAKED_POTATO)
-				.add(Items.BEETROOT)
-				.add(Items.BEETROOT_SOUP)
-				.add(Items.BREAD)
-				.add(Items.CARROT)
-				.add(Items.CHORUS_FRUIT)
-				.add(Items.COOKED_CHICKEN)
-				.add(Items.COOKED_COD)
-				.add(Items.COOKED_MUTTON)
-				.add(Items.COOKED_PORKCHOP)
-				.add(Items.COOKED_RABBIT)
-				.add(Items.COOKED_SALMON)
-				.add(Items.COOKIE)
-				.add(Items.DRIED_KELP)
-				.add(Items.ENCHANTED_GOLDEN_APPLE)
-				.add(Items.GOLDEN_APPLE)
-				.add(Items.GOLDEN_CARROT)
-				.add(Items.GLOW_BERRIES)
-				.add(Items.HONEY_BOTTLE)
-				.add(Items.MELON_SLICE)
-				.add(Items.MUSHROOM_STEW)
-				.add(Items.POISONOUS_POTATO)
-				.add(Items.POTATO)
-				.add(Items.PUFFERFISH)
-				.add(Items.PUMPKIN_PIE)
-				.add(Items.RABBIT_STEW)
-				.add(Items.CHICKEN)
-				.add(Items.COD)
-				.add(Items.MUTTON)
-				.add(Items.PORKCHOP)
-				.add(Items.RABBIT)
-				.add(Items.SALMON)
-				.add(Items.ROTTEN_FLESH)
-				.add(Items.SPIDER_EYE)
-				.add(Items.SUSPICIOUS_STEW)
-				.add(Items.SWEET_BERRIES)
-				.add(Items.TROPICAL_FISH);
+		Registry.ITEM.forEach(item -> {
+			if (item.getFoodComponent() != null) {
+				getOrCreateTagBuilder(ConventionalItemTags.FOODS).add(item);
+			}
+		});
 		getOrCreateTagBuilder(ConventionalItemTags.POTIONS)
 				.add(Items.LINGERING_POTION)
 				.add(Items.SPLASH_POTION)
