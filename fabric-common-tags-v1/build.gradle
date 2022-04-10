@@ -1,4 +1,4 @@
-archivesBaseName = "fabric-common-tags-api-v1"
+archivesBaseName = "fabric-common-tags-v1"
 version = getSubprojectVersion(project)
 
 moduleDependencies(project, [

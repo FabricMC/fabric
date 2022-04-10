@@ -128,8 +128,4 @@ public class CommonBiomeTags {
 	private static TagKey<Biome> register(String tagID) {
 		return TagRegistration.BIOME_TAG_REGISTRATION.registerCommon(tagID);
 	}
-
-	private static TagKey<Biome> registerFabric(String tagID) {
-		return TagRegistration.BIOME_TAG_REGISTRATION.registerFabric(tagID);
-	}
 }

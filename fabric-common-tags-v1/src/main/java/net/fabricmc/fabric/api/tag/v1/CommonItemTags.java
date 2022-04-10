@@ -93,8 +93,4 @@ public class CommonItemTags {
 	private static TagKey<Item> register(String tagID) {
 		return TagRegistration.ITEM_TAG_REGISTRATION.registerCommon(tagID);
 	}
-
-	private static TagKey<Item> registerFabric(String tagID) {
-		return TagRegistration.ITEM_TAG_REGISTRATION.registerFabric(tagID);
-	}
 }

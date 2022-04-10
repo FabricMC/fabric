@@ -34,8 +34,4 @@ public class CommonFluidTags {
 	private static TagKey<Fluid> register(String tagID) {
 		return TagRegistration.FLUID_TAG_REGISTRATION.registerCommon(tagID);
 	}
-
-	private static TagKey<Fluid> registerFabric(String tagID) {
-		return TagRegistration.FLUID_TAG_REGISTRATION.registerFabric(tagID);
-	}
 }

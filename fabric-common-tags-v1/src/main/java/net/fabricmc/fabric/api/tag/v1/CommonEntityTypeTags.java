@@ -36,8 +36,4 @@ public class CommonEntityTypeTags {
 	private static TagKey<EntityType<?>> register(String tagID) {
 		return TagRegistration.ENTITY_TYPE_TAG_REGISTRATION.registerCommon(tagID);
 	}
-
-	private static TagKey<EntityType<?>> registerFabric(String tagID) {
-		return TagRegistration.ENTITY_TYPE_TAG_REGISTRATION.registerFabric(tagID);
-	}
 }

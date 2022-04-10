@@ -44,8 +44,4 @@ public class CommonBlockTags {
 	private static TagKey<Block> register(String tagID) {
 		return TagRegistration.BLOCK_TAG_REGISTRATION.registerCommon(tagID);
 	}
-
-	private static TagKey<Block> registerFabric(String tagID) {
-		return TagRegistration.BLOCK_TAG_REGISTRATION.registerFabric(tagID);
-	}
 }
