@@ -71,15 +71,6 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		this.blockVision(otherAccessor.getBlockVisionPredicate());
 		this.postProcess(otherAccessor.getPostProcessPredicate());
 		this.emissiveLighting(otherAccessor.getEmissiveLightingPredicate());
-
-		// Now attempt to copy fabric specific data
-		BlockSettingsInternals otherInternals = (BlockSettingsInternals) settings;
-		FabricBlockInternals.ExtraData extraData = otherInternals.getExtraData();
-
-		if (extraData != null) { // If present, populate the extra data on our new settings
-			((BlockSettingsInternals) this).setExtraData(extraData);
-		}
-
 	}
 
 	public static FabricBlockSettings of(Material material) {
