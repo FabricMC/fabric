@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.tag.datagen;
+package net.fabricmc.fabric.impl.tag.convention.datagen;
 
-import net.fabricmc.fabric.impl.tag.datagen.generators.BiomeTagGenerator;
-import net.fabricmc.fabric.impl.tag.datagen.generators.BlockTagGenerator;
-import net.fabricmc.fabric.impl.tag.datagen.generators.EnchantmentTagGenerator;
-import net.fabricmc.fabric.impl.tag.datagen.generators.EntityTypeTagGenerator;
-import net.fabricmc.fabric.impl.tag.datagen.generators.FluidTagGenerator;
-import net.fabricmc.fabric.impl.tag.datagen.generators.ItemTagGenerator;
+import net.fabricmc.fabric.impl.tag.convention.datagen.generators.BiomeTagGenerator;
+import net.fabricmc.fabric.impl.tag.convention.datagen.generators.BlockTagGenerator;
+import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EnchantmentTagGenerator;
+import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EntityTypeTagGenerator;
+import net.fabricmc.fabric.impl.tag.convention.datagen.generators.FluidTagGenerator;
+import net.fabricmc.fabric.impl.tag.convention.datagen.generators.ItemTagGenerator;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 

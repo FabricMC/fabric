@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.tag.common;
+package net.fabricmc.fabric.impl.tag.convention;
 
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;

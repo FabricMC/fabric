@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-common-tags-v1",
-  "name": "Fabric Common tags",
+  "id": "fabric-convention-tags-v1",
+  "name": "Fabric Convention Tags",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-common-tags-v1/icon.png",
+  "icon": "assets/fabric-convention-tags-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",

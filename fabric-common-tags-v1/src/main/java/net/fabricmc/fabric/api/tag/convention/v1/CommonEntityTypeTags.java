@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tag.v1;
+package net.fabricmc.fabric.api.tag.convention.v1;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.tag.TagKey;
 
-import net.fabricmc.fabric.impl.tag.common.TagRegistration;
+import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 
 /**
  * See {@link net.minecraft.tag.EntityTypeTags} for vanilla tags.

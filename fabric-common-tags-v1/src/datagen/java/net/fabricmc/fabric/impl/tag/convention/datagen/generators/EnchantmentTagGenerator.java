@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.tag.datagen.generators;
+package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
@@ -22,7 +22,7 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.tag.v1.CommonEnchantmentTags;
+import net.fabricmc.fabric.api.tag.convention.v1.CommonEnchantmentTags;
 
 public class EnchantmentTagGenerator extends FabricTagProvider<Enchantment> {
 	public EnchantmentTagGenerator(FabricDataGenerator dataGenerator) {
