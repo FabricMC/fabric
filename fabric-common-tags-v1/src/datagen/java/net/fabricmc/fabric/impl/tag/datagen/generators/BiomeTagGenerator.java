@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.tag.common.datagen.generators;
+package net.fabricmc.fabric.impl.tag.datagen.generators;
 
 import net.minecraft.tag.BiomeTags;
 import net.minecraft.util.registry.Registry;
