@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "fabric-object-builder-api-v1-testmod:block/second_multi_betrayal_block"
+  }
+}
