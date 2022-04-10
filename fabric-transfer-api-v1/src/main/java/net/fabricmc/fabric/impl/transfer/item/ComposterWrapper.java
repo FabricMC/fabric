@@ -29,6 +29,8 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ComposterBlock;
 import net.minecraft.item.Items;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -107,6 +109,7 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 			// Mimic ComposterBlock#emptyComposter logic.
 			location.setBlockState(location.getBlockState().with(ComposterBlock.LEVEL, 0));
 			// Play the sound
+			location.world.playSound(null, location.pos, SoundEvents.BLOCK_COMPOSTER_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
 		} else if (increaseProbability > 0) {
 			boolean increaseSuccessful = location.world.getRandom().nextDouble() < increaseProbability;
 
