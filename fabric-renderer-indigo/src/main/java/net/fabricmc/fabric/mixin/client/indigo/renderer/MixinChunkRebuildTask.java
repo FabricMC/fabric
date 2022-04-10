@@ -63,7 +63,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderConte
  * (Though they can use these as an example if they wish.)
  */
 @Mixin(targets = "net.minecraft.client.render.chunk.ChunkBuilder$BuiltChunk$RebuildTask")
-public class MixinChunkRebuildTask {
+public abstract class MixinChunkRebuildTask {
 	@Shadow
 	protected ChunkRendererRegion region;
 	@Shadow

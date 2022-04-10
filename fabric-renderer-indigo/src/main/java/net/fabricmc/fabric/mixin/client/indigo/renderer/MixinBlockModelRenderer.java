@@ -44,7 +44,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderContext
 @Mixin(BlockModelRenderer.class)
 public abstract class MixinBlockModelRenderer implements AccessBlockModelRenderer {
 	@Unique
-	private final ThreadLocal<BlockRenderContext> contexts = ThreadLocal.withInitial(BlockRenderContext::new);
+	private final ThreadLocal<BlockRenderContext> fabric_contexts = ThreadLocal.withInitial(BlockRenderContext::new);
 
 	@Shadow
 	protected abstract void getQuadDimensions(BlockRenderView blockView, BlockState blockState, BlockPos blockPos, int[] vertexData, Direction face, float[] aoData, BitSet controlBits);
@@ -52,7 +52,7 @@ public abstract class MixinBlockModelRenderer implements AccessBlockModelRendere
 	@Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/client/render/model/BakedModel;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;ZLjava/util/Random;JI)Z", cancellable = true)
 	private void hookRender(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrix, VertexConsumer buffer, boolean checkSides, Random rand, long seed, int overlay, CallbackInfoReturnable<Boolean> ci) {
 		if (!((FabricBakedModel) model).isVanillaAdapter()) {
-			BlockRenderContext context = contexts.get();
+			BlockRenderContext context = fabric_contexts.get();
 			// Note that we do not support face-culling here (so checkSides is ignored)
 			ci.setReturnValue(context.render(blockView, model, state, pos, matrix, buffer, rand, seed, overlay));
 		}

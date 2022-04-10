@@ -44,10 +44,10 @@ public abstract class MixinItemRenderer implements AccessItemRenderer {
 	protected ItemColors colors;
 
 	@Unique
-	private final ThreadLocal<ItemRenderContext> contexts = ThreadLocal.withInitial(() -> new ItemRenderContext(colors));
+	private final ThreadLocal<ItemRenderContext> fabric_contexts = ThreadLocal.withInitial(() -> new ItemRenderContext(colors));
 
 	@Unique
-	private final VanillaQuadHandler vanillaHandler = new IndigoQuadHandler(this);
+	private final VanillaQuadHandler fabric_vanillaHandler = new IndigoQuadHandler(this);
 
 	@Shadow
 	protected abstract void renderBakedItemModel(BakedModel model, ItemStack stack, int light, int overlay, MatrixStack matrixStack, VertexConsumer buffer);
@@ -55,7 +55,7 @@ public abstract class MixinItemRenderer implements AccessItemRenderer {
 	@Inject(at = @At("HEAD"), method = "renderItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformation$Mode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/client/render/model/BakedModel;)V", cancellable = true)
 	public void hook_renderItem(ItemStack stack, ModelTransformation.Mode transformMode, boolean invert, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay, BakedModel model, CallbackInfo ci) {
 		if (!stack.isEmpty() && !((FabricBakedModel) model).isVanillaAdapter()) {
-			contexts.get().renderModel(stack, transformMode, invert, matrixStack, vertexConsumerProvider, light, overlay, model, vanillaHandler);
+			fabric_contexts.get().renderModel(stack, transformMode, invert, matrixStack, vertexConsumerProvider, light, overlay, model, fabric_vanillaHandler);
 			ci.cancel();
 		}
 	}
