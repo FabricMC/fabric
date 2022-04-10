@@ -16,7 +16,15 @@
 
 package net.fabricmc.fabric.test.item;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
+
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -25,9 +33,10 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.item.v1.FabricItem;
+public class UpdatingItem extends Item {
+	private static final EntityAttributeModifier PLUS_FIVE = new EntityAttributeModifier(
+			ATTACK_DAMAGE_MODIFIER_ID, "updating item", 5, EntityAttributeModifier.Operation.ADDITION);
 
-public class UpdatingItem extends Item implements FabricItem {
 	private final boolean allowUpdateAnimation;
 
 	public UpdatingItem(boolean allowUpdateAnimation) {
@@ -51,5 +60,31 @@ public class UpdatingItem extends Item implements FabricItem {
 	@Override
 	public boolean allowContinuingBlockBreaking(PlayerEntity player, ItemStack oldStack, ItemStack newStack) {
 		return true; // set to false and you won't be able to break a block in survival with this item
+	}
+
+	// True for 15 seconds every 30 seconds
+	private boolean isEnabled(ItemStack stack) {
+		return !stack.hasNbt() || stack.getNbt().getLong("ticks") % 600 < 300;
+	}
+
+	@Override
+	public Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
+		// Give + 5 attack damage for 15 seconds every 30 seconds.
+		if (slot == EquipmentSlot.MAINHAND && isEnabled(stack)) {
+			return ImmutableMultimap.of(EntityAttributes.GENERIC_ATTACK_DAMAGE, PLUS_FIVE);
+		} else {
+			return ImmutableMultimap.of();
+		}
+	}
+
+	@Override
+	public boolean isSuitableFor(ItemStack stack, BlockState state) {
+		// Suitable for everything for 15 seconds every 30 seconds.
+		return isEnabled(stack);
+	}
+
+	@Override
+	public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
+		return isEnabled(stack) ? 20 : super.getMiningSpeedMultiplier(stack, state);
 	}
 }

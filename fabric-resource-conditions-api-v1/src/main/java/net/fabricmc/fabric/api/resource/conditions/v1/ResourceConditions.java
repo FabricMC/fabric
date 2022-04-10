@@ -38,7 +38,10 @@ import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
  * A resource condition is an identified {@code Predicate<JsonObject>} that can decide whether a resource should be loaded or not.
  * <ul>
  *     <li>A JSON object that may contain a condition can be parsed with {@link #objectMatchesConditions}.
- *     This is the preferred way of implementing conditional objects, as it handles the details of the format (see below) and catches and logs thrown exceptions.</li>
+ *     This is the preferred way of implementing conditional objects, as it handles the details of the format (see below) and catches and logs thrown exceptions.
+ *     This function should only be called from the "apply" phase of a {@link net.minecraft.resource.ResourceReloader},
+ *     otherwise some conditions might behave in unexpected ways.
+ *     </li>
  *     <li>The lower-level {@link #conditionsMatch} and {@link #conditionMatches} may be useful when implementing conditions.</li>
  *     <li>Conditions are registered with {@link #register} and queried with {@link #get}.</li>
  * </ul>
@@ -112,6 +115,9 @@ public final class ResourceConditions {
 	/**
 	 * Check if the passed JSON object either has no {@code fabric:conditions} tag, or all of its conditions match.
 	 * This should be called for objects that may contain a conditions entry.
+	 *
+	 * <p>This function should only be called from the "apply" phase of a {@link net.minecraft.resource.ResourceReloader},
+	 * otherwise some conditions might behave in unexpected ways.
 	 *
 	 * <p>If an exception is thrown during condition testing, it will be caught and logged, and false will be returned.
 	 */

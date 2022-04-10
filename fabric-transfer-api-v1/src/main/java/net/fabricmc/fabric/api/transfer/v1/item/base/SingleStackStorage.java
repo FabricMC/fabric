@@ -84,27 +84,27 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 	}
 
 	@Override
-	public final boolean isResourceBlank() {
+	public boolean isResourceBlank() {
 		return getResource().isBlank();
 	}
 
 	@Override
-	public final ItemVariant getResource() {
+	public ItemVariant getResource() {
 		return ItemVariant.of(getStack());
 	}
 
 	@Override
-	public final long getAmount() {
+	public long getAmount() {
 		return getStack().getCount();
 	}
 
 	@Override
-	public final long getCapacity() {
+	public long getCapacity() {
 		return getCapacity(getResource());
 	}
 
 	@Override
-	public final long insert(ItemVariant insertedVariant, long maxAmount, TransactionContext transaction) {
+	public long insert(ItemVariant insertedVariant, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notBlankNotNegative(insertedVariant, maxAmount);
 
 		ItemStack currentStack = getStack();
@@ -132,7 +132,7 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 	}
 
 	@Override
-	public final long extract(ItemVariant variant, long maxAmount, TransactionContext transaction) {
+	public long extract(ItemVariant variant, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notBlankNotNegative(variant, maxAmount);
 
 		ItemStack currentStack = getStack();
@@ -154,14 +154,14 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 	}
 
 	@Override
-	protected final ItemStack createSnapshot() {
+	protected ItemStack createSnapshot() {
 		ItemStack original = getStack();
 		setStack(original.copy());
 		return original;
 	}
 
 	@Override
-	protected final void readSnapshot(ItemStack snapshot) {
+	protected void readSnapshot(ItemStack snapshot) {
 		setStack(snapshot);
 	}
 }

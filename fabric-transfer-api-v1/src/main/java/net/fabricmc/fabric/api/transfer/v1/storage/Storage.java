@@ -17,15 +17,14 @@
 package net.fabricmc.fabric.api.transfer.v1.storage;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
@@ -48,7 +47,7 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
  *     <li>{@link ExtractionOnlyStorage} and {@link InsertionOnlyStorage} can be used when only extraction or insertion is needed.</li>
  *     <li>{@link SingleViewIterator} can be used to wrap a single view for use with {@link #iterator}.</li>
  *     <li>Resource-specific base implementations may also be available.
- *     For example, Fabric API provides {@link SingleFluidStorage} to accelerate implementations of {@code Storage<FluidVariant>}.</li>
+ *     For example, Fabric API provides {@link SingleVariantStorage} to accelerate implementations of transfer variant storages.</li>
  * </ul>
  *
  * <p><b>Important note:</b> Unless otherwise specified, all transfer functions take a non-blank resource
@@ -141,13 +140,11 @@ public interface Storage<T> {
 	 * Iterate through the contents of this storage, for the scope of the passed transaction.
 	 * Every visited {@link StorageView} represents a stored resource and an amount.
 	 * The iterator doesn't guarantee that a single resource only occurs once during an iteration.
+	 * Calling {@linkplain Iterator#remove remove} on the iterator is not allowed.
 	 *
 	 * <p>The returned iterator and any view it returns are only valid for the scope of to the passed transaction.
 	 * They should not be used once that transaction is closed.
-	 *
-	 * <p>More precisely, as soon as the transaction is closed,
-	 * {@link Iterator#hasNext hasNext()} must return {@code false},
-	 * and any call to {@link Iterator#next next()} must throw a {@link NoSuchElementException}.
+	 * Using the iterator or any view once the transaction is closed is undefined behavior.
 	 *
 	 * <p>{@link #insert} and {@link #extract} may be called safely during iteration.
 	 * Extractions should be visible to an open iterator, but insertions are not required to.
@@ -156,9 +153,9 @@ public interface Storage<T> {
 	 * the iteration.
 	 *
 	 * @param transaction The transaction to which the scope of the returned iterator is tied.
-	 * @return An iterator over the contents of this storage.
+	 * @return An iterator over the contents of this storage. Calling remove on the iterator is not allowed.
 	 */
-	Iterator<StorageView<T>> iterator(TransactionContext transaction);
+	Iterator<? extends StorageView<T>> iterator(TransactionContext transaction);
 
 	/**
 	 * Iterate through the contents of this storage, for the scope of the passed transaction.
@@ -168,8 +165,9 @@ public interface Storage<T> {
 	 * @return An iterable over the contents of this storage.
 	 * @see #iterator
 	 */
-	default Iterable<StorageView<T>> iterable(TransactionContext transaction) {
-		return () -> iterator(transaction);
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	default Iterable<? extends StorageView<T>> iterable(TransactionContext transaction) {
+		return () -> (Iterator) iterator(transaction);
 	}
 
 	/**
