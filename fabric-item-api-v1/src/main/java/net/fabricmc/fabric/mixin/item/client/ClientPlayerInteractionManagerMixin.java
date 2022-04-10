@@ -27,8 +27,6 @@ import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
-import net.fabricmc.fabric.api.item.v1.FabricItem;
-
 @Mixin(ClientPlayerInteractionManager.class)
 public class ClientPlayerInteractionManagerMixin {
 	@Shadow
@@ -58,7 +56,7 @@ public class ClientPlayerInteractionManagerMixin {
 			ItemStack oldStack = this.selectedStack;
 			ItemStack newStack = this.client.player.getMainHandStack();
 
-			if (oldStack.isOf(newStack.getItem()) && ((FabricItem) oldStack.getItem()).allowContinuingBlockBreaking(this.client.player, oldStack, newStack)) {
+			if (oldStack.isOf(newStack.getItem()) && oldStack.getItem().allowContinuingBlockBreaking(this.client.player, oldStack, newStack)) {
 				stackUnchanged = true;
 			}
 		}
