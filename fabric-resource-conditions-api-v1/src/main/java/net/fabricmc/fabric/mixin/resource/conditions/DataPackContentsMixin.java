@@ -21,22 +21,22 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SinglePreparationResourceReloader;
-import net.minecraft.util.profiler.Profiler;
+import net.minecraft.server.DataPackContents;
+import net.minecraft.util.registry.DynamicRegistryManager;
+
+import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 /**
- * This mixin allows us to inject arbitrary logic at the beginning of the "apply" phase.
- * Used by the subclass {@link JsonDataLoaderMixin}.
+ * Clear the tags captured by {@link DataPackContentsMixin}.
+ * This must happen after the resource reload is complete, to ensure that the tags remain available throughout the entire "apply" phase.
  */
-@Mixin(SinglePreparationResourceReloader.class)
-public class SinglePreparationResourceReloaderMixin {
-	// thenAcceptAsync in reload
-	@Inject(at = @At("HEAD"), method = "method_18790")
-	private void applyResourceConditions(ResourceManager resourceManager, Profiler profiler, Object object, CallbackInfo ci) {
-		fabric_applyResourceConditions(resourceManager, profiler, object);
-	}
-
-	protected void fabric_applyResourceConditions(ResourceManager resourceManager, Profiler profiler, Object object) {
+@Mixin(DataPackContents.class)
+public class DataPackContentsMixin {
+	@Inject(
+			method = "refresh",
+			at = @At("HEAD")
+	)
+	public void hookRefresh(DynamicRegistryManager dynamicRegistryManager, CallbackInfo ci) {
+		ResourceConditionsImpl.clearTags();
 	}
 }
