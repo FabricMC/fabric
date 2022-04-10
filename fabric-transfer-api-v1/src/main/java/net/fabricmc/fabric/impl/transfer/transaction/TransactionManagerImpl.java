@@ -47,7 +47,7 @@ public class TransactionManagerImpl {
 	public TransactionContext getCurrentUnsafe() {
 		if (currentDepth == -1) {
 			return null;
-		} else if (stack.get(currentDepth).isOpen) {
+		} else if (stack.get(currentDepth).lifecycle == Transaction.Lifecycle.OPEN) {
 			return stack.get(currentDepth);
 		} else {
 			throw new IllegalStateException("May not call getCurrentUnsafe() from a close callback.");
@@ -65,7 +65,7 @@ public class TransactionManagerImpl {
 		}
 
 		TransactionImpl current = stack.get(currentDepth);
-		current.isOpen = true;
+		current.lifecycle = Transaction.Lifecycle.OPEN;
 		return current;
 	}
 
@@ -79,12 +79,18 @@ public class TransactionManagerImpl {
 		}
 	}
 
+	public Transaction.Lifecycle getLifecycle() {
+		if (currentDepth == -1) {
+			return Transaction.Lifecycle.NONE;
+		} else {
+			return stack.get(currentDepth).lifecycle;
+		}
+	}
+
 	private class TransactionImpl implements Transaction {
 		final int nestingDepth;
 		final ArrayList<CloseCallback> closeCallbacks = new ArrayList<>();
-		// This may be false even when the transaction is not fully closed, to prevent callbacks calling other functions in an invalid state.
-		// It is reset to true in TransactionManagerImpl#open.
-		boolean isOpen = false;
+		Lifecycle lifecycle = Lifecycle.NONE;
 
 		TransactionImpl(int nestingDepth) {
 			this.nestingDepth = nestingDepth;
@@ -104,7 +110,7 @@ public class TransactionManagerImpl {
 
 		// Validate that this transaction is open.
 		private void validateOpen() {
-			if (!isOpen) {
+			if (lifecycle != Lifecycle.OPEN) {
 				throw new IllegalStateException("Transaction operation cannot be applied to a closed transaction.");
 			}
 		}
@@ -120,7 +126,7 @@ public class TransactionManagerImpl {
 			validateCurrentTransaction();
 			validateOpen();
 			// Block transaction operations
-			isOpen = false;
+			lifecycle = Lifecycle.CLOSING;
 
 			// Note: it is important that we don't let exceptions corrupt the global state of the transaction manager.
 			// That is why any callback has to run inside a try block.
@@ -142,6 +148,8 @@ public class TransactionManagerImpl {
 			closeCallbacks.clear();
 
 			if (currentDepth == 0) {
+				lifecycle = Lifecycle.OUTER_CLOSING;
+
 				// Invoke outer close callbacks in reverse order
 				for (int i = outerCloseCallbacks.size() - 1; i >= 0; i--) {
 					try {
@@ -160,6 +168,7 @@ public class TransactionManagerImpl {
 
 			// Only this check will allow openOuter operations.
 			currentDepth--;
+			lifecycle = Lifecycle.NONE;
 
 			// Throw exception if necessary
 			if (closeException != null) {
@@ -179,7 +188,7 @@ public class TransactionManagerImpl {
 
 		@Override
 		public void close() {
-			if (isOpen() && isOpen) { // check that a transaction is open on this thread and that this transaction is open.
+			if (isOpen() && lifecycle == Lifecycle.OPEN) { // check that a transaction is open on this thread and that this transaction is open.
 				abort();
 			}
 		}

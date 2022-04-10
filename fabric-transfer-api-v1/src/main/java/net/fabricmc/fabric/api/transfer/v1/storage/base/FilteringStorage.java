@@ -220,5 +220,10 @@ public abstract class FilteringStorage<T> implements Storage<T> {
 		public long getCapacity() {
 			return backingView.getCapacity();
 		}
+
+		@Override
+		public StorageView<T> getUnderlyingView() {
+			return backingView.getUnderlyingView();
+		}
 	}
 }

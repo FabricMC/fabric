@@ -346,7 +346,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @return the {@link FabricTagBuilder} instance
 		 */
 		public FabricTagBuilder<T> addOptionalTag(TagKey<T> tag) {
-			return addOptional(tag.id());
+			return addOptionalTag(tag.id());
 		}
 
 		/**

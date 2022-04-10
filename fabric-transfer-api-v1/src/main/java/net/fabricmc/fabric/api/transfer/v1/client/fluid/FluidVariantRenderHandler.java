@@ -32,6 +32,8 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
 
 /**
  * Defines how {@linkplain FluidVariant fluid variants} of a given Fluid should be displayed to clients.
@@ -44,10 +46,12 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 @Environment(EnvType.CLIENT)
 public interface FluidVariantRenderHandler {
 	/**
-	 * Return the name that should be used for the passed fluid variant.
+	 * @deprecated Implement {@link FluidVariantAttributeHandler#getName} instead.
+	 * This function will be removed in a future iteration of the API.
 	 */
+	@Deprecated(forRemoval = true)
 	default Text getName(FluidVariant fluidVariant) {
-		return fluidVariant.getFluid().getDefaultState().getBlockState().getBlock().getName();
+		return FluidVariantAttributes.getName(fluidVariant);
 	}
 
 	/**
@@ -120,10 +124,12 @@ public interface FluidVariantRenderHandler {
 	}
 
 	/**
-	 * Return {@code true} if this fluid should fill tanks from top.
+	 * @deprecated Implement {@link FluidVariantAttributeHandler#isLighterThanAir(FluidVariant)} instead.
+	 * This function will be removed in a future iteration of the API.
 	 */
+	@Deprecated(forRemoval = true)
 	default boolean fillsFromTop(FluidVariant fluidVariant) {
-		// By default, fluids should be filled from the bottom.
-		return false;
+		// By default, only fluids lighter than air should be filled from top.
+		return FluidVariantAttributes.isLighterThanAir(fluidVariant);
 	}
 }

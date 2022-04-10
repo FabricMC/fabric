@@ -27,6 +27,15 @@ class BumpVersionTask extends DefaultTask {
 				break
 			}
 
+			// Bump all versions. To be used when buildscript changes are made.
+			if (input == "allPatch") {
+				project.getChildProjects().values().forEach {
+					toUpdate.put(it, 2)
+				}
+
+				break
+			}
+
 			def subProject = project.getChildProjects().get(input)
 
 			if (!subProject) {

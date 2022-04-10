@@ -71,13 +71,13 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 	}
 
 	@Override
-	public void drop(ItemVariant resource, long amount, TransactionContext tx) {
-		StoragePreconditions.notBlankNotNegative(resource, amount);
+	public void drop(ItemVariant variant, long amount, boolean throwRandomly, boolean retainOwnership, TransactionContext transaction) {
+		StoragePreconditions.notBlankNotNegative(variant, amount);
 
 		// Drop in the world on the server side (will be synced by the game with the client).
 		// Dropping items is server-side only because it involves randomness.
 		if (amount > 0 && !playerInventory.player.world.isClient()) {
-			droppedStacks.addDrop(resource, amount, tx);
+			droppedStacks.addDrop(variant, amount, throwRandomly, retainOwnership, transaction);
 		}
 	}
 
@@ -97,18 +97,16 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 	}
 
 	private class DroppedStacks extends SnapshotParticipant<Integer> {
-		final List<ItemVariant> droppedKeys = new ArrayList<>();
-		final List<Long> droppedCounts = new ArrayList<>();
+		final List<Entry> entries = new ArrayList<>();
 
-		void addDrop(ItemVariant key, long count, TransactionContext transaction) {
+		void addDrop(ItemVariant key, long amount, boolean throwRandomly, boolean retainOwnership, TransactionContext transaction) {
 			updateSnapshots(transaction);
-			droppedKeys.add(key);
-			droppedCounts.add(count);
+			entries.add(new Entry(key, amount, throwRandomly, retainOwnership));
 		}
 
 		@Override
 		protected Integer createSnapshot() {
-			return droppedKeys.size();
+			return entries.size();
 		}
 
 		@Override
@@ -116,27 +114,28 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 			// effectively cancel dropping the stacks
 			int previousSize = snapshot;
 
-			while (droppedKeys.size() > previousSize) {
-				droppedKeys.remove(droppedKeys.size() - 1);
-				droppedCounts.remove(droppedCounts.size() - 1);
+			while (entries.size() > previousSize) {
+				entries.remove(entries.size() - 1);
 			}
 		}
 
 		@Override
 		protected void onFinalCommit() {
 			// actually drop the stacks
-			for (int i = 0; i < droppedKeys.size(); ++i) {
-				ItemVariant key = droppedKeys.get(i);
+			for (Entry entry : entries) {
+				long remainder = entry.amount;
 
-				while (droppedCounts.get(i) > 0) {
-					int dropped = (int) Math.min(key.getItem().getMaxCount(), droppedCounts.get(i));
-					playerInventory.player.dropStack(key.toStack(dropped));
-					droppedCounts.set(i, droppedCounts.get(i) - dropped);
+				while (remainder > 0) {
+					int dropped = (int) Math.min(entry.key.getItem().getMaxCount(), remainder);
+					playerInventory.player.dropItem(entry.key.toStack(dropped), entry.throwRandomly, entry.retainOwnership);
+					remainder -= dropped;
 				}
 			}
 
-			droppedKeys.clear();
-			droppedCounts.clear();
+			entries.clear();
+		}
+
+		private record Entry(ItemVariant key, long amount, boolean throwRandomly, boolean retainOwnership) {
 		}
 	}
 }
