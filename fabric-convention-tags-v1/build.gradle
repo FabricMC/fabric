@@ -9,7 +9,7 @@ sourceSets {
 	main {
 		resources {
 			srcDirs += [
-				'src/commontag/generated'
+				'src/generated/resources'
 			]
 		}
 	}
@@ -31,7 +31,7 @@ loom {
 			inherit server
 			name "Data Generation"
 			vmArg "-Dfabric-api.datagen"
-			vmArg "-Dfabric-api.datagen.output-dir=${file("src/commontag/generated")}"
+			vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated/resources")}"
 			vmArg "-Dfabric-api.datagen.strict-validation"
 
 			ideConfigGenerated = true
