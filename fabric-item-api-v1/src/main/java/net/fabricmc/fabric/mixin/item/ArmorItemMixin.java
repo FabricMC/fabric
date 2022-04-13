@@ -16,30 +16,25 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import java.util.UUID;
+
 import com.google.common.collect.ImmutableMultimap;
-
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.ArmorMaterials;
-
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
-
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-
-import java.util.UUID;
+import net.minecraft.item.ArmorMaterial;
+import net.minecraft.item.ArmorMaterials;
 
 @Mixin(ArmorItem.class)
-public class ArmorItemMixin
-{
+public class ArmorItemMixin {
 	@Shadow private static @Final UUID[] MODIFIERS;
 	@Shadow protected @Final float knockbackResistance;
 
@@ -51,6 +46,7 @@ public class ArmorItemMixin
 					MODIFIERS[slot.getEntitySlotId()], "Armor knockback resistance",
 					knockbackResistance, EntityAttributeModifier.Operation.ADDITION));
 		}
+
 		return builder;
 	}
 }
