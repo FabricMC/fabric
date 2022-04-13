@@ -153,7 +153,6 @@ public class ItemRenderContext extends AbstractRenderContext {
 	 */
 	private VertexConsumer quadVertexConsumer(BlendMode blendMode) {
 		boolean translucent;
-		VertexConsumer quadVertexConsumer;
 
 		if (blendMode == BlendMode.DEFAULT) {
 			translucent = isDefaultTranslucent;
@@ -172,16 +171,14 @@ public class ItemRenderContext extends AbstractRenderContext {
 				}
 			}
 
-			quadVertexConsumer = translucentVertexConsumer;
+			return translucentVertexConsumer;
 		} else {
 			if (cutoutVertexConsumer == null) {
 				cutoutVertexConsumer = ItemRenderer.getDirectItemGlintConsumer(vertexConsumerProvider, TexturedRenderLayers.getEntityCutout(), true, itemStack.hasGlint());
 			}
 
-			quadVertexConsumer = cutoutVertexConsumer;
+			return cutoutVertexConsumer;
 		}
-
-		return quadVertexConsumer;
 	}
 
 	private void bufferQuad(MutableQuadViewImpl quad, BlendMode blendMode) {
