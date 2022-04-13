@@ -25,10 +25,10 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.world.gen.random.AbstractRandom;
+import net.minecraft.util.math.random.AbstractRandom;
 
 class SoundButton extends PressableWidget {
-	private static final AbstractRandom RANDOM = AbstractRandom.method_43047();
+	private static final AbstractRandom RANDOM = AbstractRandom.createAtomic();
 
 	SoundButton(int x, int y, int width, int height) {
 		super(x, y, width, height, Text.of("Sound Button"));

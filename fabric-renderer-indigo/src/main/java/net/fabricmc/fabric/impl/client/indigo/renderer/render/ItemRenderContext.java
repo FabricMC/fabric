@@ -37,7 +37,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3f;
-import net.minecraft.world.gen.random.AbstractRandom;
+import net.minecraft.util.math.random.AbstractRandom;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -68,7 +68,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	}
 
 	private final ItemColors colorMap;
-	private final AbstractRandom random = AbstractRandom.method_43047();
+	private final AbstractRandom random = AbstractRandom.createAtomic();
 	private final Consumer<BakedModel> fallbackConsumer;
 	private final Vec3f normalVec = new Vec3f();
 

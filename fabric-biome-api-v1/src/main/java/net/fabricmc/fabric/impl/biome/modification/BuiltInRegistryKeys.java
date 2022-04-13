@@ -23,7 +23,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
-import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.world.gen.structure.StructureType;
 
 /**
  * Utility class for getting the registry keys of built-in worldgen objects and throwing proper exceptions if they
@@ -34,8 +34,8 @@ public final class BuiltInRegistryKeys {
 	private BuiltInRegistryKeys() {
 	}
 
-	public static RegistryKey<StructureFeature> get(StructureFeature structureFeature) {
-		return BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getKey(structureFeature)
+	public static RegistryKey<StructureType> get(StructureType structureFeature) {
+		return BuiltinRegistries.STRUCTURE.getKey(structureFeature)
 				.orElseThrow(() -> new IllegalArgumentException("Given structure is not built-in: " + structureFeature));
 	}
 

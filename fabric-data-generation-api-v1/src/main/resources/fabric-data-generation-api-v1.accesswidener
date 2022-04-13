@@ -29,8 +29,8 @@ transitive-accessible   method  net/minecraft/data/client/TextureKey	of  (Ljava/
 transitive-extendable method net/minecraft/data/server/AbstractTagProvider getOutput (Lnet/minecraft/util/Identifier;)Ljava/nio/file/Path;
 transitive-extendable method net/minecraft/data/server/AbstractTagProvider$ObjectBuilder add ([Lnet/minecraft/util/registry/RegistryKey;)Lnet/minecraft/data/server/AbstractTagProvider$ObjectBuilder;
 
-transitive-accessible	method	net/minecraft/data/server/RecipeProvider	saveRecipe	(Lnet/minecraft/data/DataCache;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V
-transitive-accessible	method	net/minecraft/data/server/RecipeProvider	saveRecipeAdvancement	(Lnet/minecraft/data/DataCache;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V
+transitive-accessible	method	net/minecraft/data/server/RecipeProvider	saveRecipe	(Lnet/minecraft/class_7403;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V
+transitive-accessible	method	net/minecraft/data/server/RecipeProvider	saveRecipeAdvancement	(Lnet/minecraft/class_7403;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V
 transitive-accessible	method	net/minecraft/data/server/RecipeProvider	generate	(Ljava/util/function/Consumer;)V
 transitive-accessible	method	net/minecraft/data/server/RecipeProvider	offerSingleOutputShapelessRecipe	(Ljava/util/function/Consumer;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/item/ItemConvertible;Ljava/lang/String;)V
 transitive-accessible	method	net/minecraft/data/server/RecipeProvider	offerShapelessRecipe	(Ljava/util/function/Consumer;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/item/ItemConvertible;Ljava/lang/String;I)V

@@ -28,7 +28,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import net.minecraft.advancement.Advancement;
-import net.minecraft.data.DataCache;
+import net.minecraft.class_7403;
 import net.minecraft.data.DataProvider;
 import net.minecraft.util.Identifier;
 
@@ -69,7 +69,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	}
 
 	@Override
-	public void run(DataCache cache) throws IOException {
+	public void run(class_7403 cache) throws IOException {
 		final Set<Identifier> identifiers = Sets.newHashSet();
 		final Set<Advancement> advancements = Sets.newHashSet();
 

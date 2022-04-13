@@ -33,7 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.Block;
-import net.minecraft.data.DataCache;
+import net.minecraft.class_7403;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.BlockStateSupplier;
@@ -76,12 +76,12 @@ public class ModelProviderMixin {
 	}
 
 	@Inject(method = "run", at = @At("HEAD"))
-	private void runHead(DataCache cache, CallbackInfo ci) {
+	private void runHead(class_7403 cache, CallbackInfo ci) {
 		dataGeneratorThreadLocal.set(generator);
 	}
 
 	@Inject(method = "run", at = @At("TAIL"))
-	private void runTail(DataCache cache, CallbackInfo ci) {
+	private void runTail(class_7403 cache, CallbackInfo ci) {
 		dataGeneratorThreadLocal.remove();
 	}
 

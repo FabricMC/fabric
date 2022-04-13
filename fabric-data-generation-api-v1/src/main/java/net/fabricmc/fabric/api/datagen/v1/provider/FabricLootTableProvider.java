@@ -30,7 +30,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.data.DataCache;
+import net.minecraft.class_7403;
 import net.minecraft.data.DataProvider;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;
@@ -69,7 +69,7 @@ public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier,
 
 	@ApiStatus.Internal
 	@Override
-	default void run(DataCache cache) throws IOException {
+	default void run(class_7403 cache) throws IOException {
 		HashMap<Identifier, LootTable> builders = Maps.newHashMap();
 		HashMap<Identifier, ConditionJsonProvider[]> conditionMap = new HashMap<>();
 

@@ -31,7 +31,7 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
-import net.minecraft.world.gen.random.AbstractRandom;
+import net.minecraft.util.math.random.AbstractRandom;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
@@ -68,7 +68,7 @@ public class VillagerTypeTest1 implements ModInitializer {
 
 						for (TradeOffers.Factory[] value : TradeOffers.WANDERING_TRADER_TRADES.values()) {
 							for (TradeOffers.Factory factory : value) {
-								final TradeOffer result = factory.create(trader, AbstractRandom.method_43047());
+								final TradeOffer result = factory.create(trader, AbstractRandom.createAtomic());
 
 								if (result == null) {
 									continue;

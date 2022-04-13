@@ -22,6 +22,7 @@ import java.util.function.Function;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.SharedConstants;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 
@@ -36,7 +37,7 @@ public final class FabricDataGenerator extends DataGenerator {
 
 	@ApiStatus.Internal
 	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation) {
-		super(output, Collections.emptyList());
+		super(output, Collections.emptyList(), SharedConstants.getGameVersion(), true);
 		this.modContainer = mod;
 		this.strictValidation = strictValidation;
 	}
@@ -47,9 +48,25 @@ public final class FabricDataGenerator extends DataGenerator {
 	 * @return The {@link DataProvider}
 	 */
 	public <P extends DataProvider> P addProvider(Function<FabricDataGenerator, P> provider) {
+		return addProvider(true, provider);
+	}
+
+	/**
+	 * Helper overloaded method to aid with registering a {@link DataProvider} that has a single argument constructor for a {@link FabricDataGenerator}.
+	 *
+	 * @return The {@link DataProvider}
+	 */
+	public <P extends DataProvider> P addProvider(boolean include, Function<FabricDataGenerator, P> provider) {
 		P p = provider.apply(this);
-		addProvider(p);
+		addProvider(include, p);
 		return p;
+	}
+
+	/**
+	 * Helper overloaded method to aid with registering a {@link DataProvider}.
+	 */
+	public void addProvider(DataProvider dataProvider) {
+		super.addProvider(true, dataProvider);
 	}
 
 	/**
