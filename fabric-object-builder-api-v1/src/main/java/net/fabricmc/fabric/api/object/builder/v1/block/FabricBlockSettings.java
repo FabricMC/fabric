@@ -35,6 +35,9 @@ import net.fabricmc.fabric.mixin.object.builder.AbstractBlockSettingsAccessor;
  * Fabric's version of Block.Settings. Adds additional methods and hooks
  * not found in the original class.
  *
+ * <p>Make note that this behaves slightly different from the
+ * vanilla counterpart, copying some settings that vanilla does not.
+ *
  * <p>To use it, simply replace Block.Settings.of() with
  * FabricBlockSettings.of().
  */
