@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.transfer;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.LoggerFactory;
@@ -53,7 +54,7 @@ public class TransferApiImpl {
 		}
 
 		@Override
-		public Iterator<StorageView> iterator(TransactionContext transaction) {
+		public Iterator<StorageView> iterator() {
 			return Collections.emptyIterator();
 		}
 
@@ -67,4 +68,25 @@ public class TransferApiImpl {
 	 * Not null when writing to an inventory in a transaction, null otherwise.
 	 */
 	public static final ThreadLocal<Object> SUPPRESS_SPECIAL_LOGIC = new ThreadLocal<>();
+
+	public static <T> Iterator<T> singletonIterator(T it) {
+		return new Iterator<T>() {
+			boolean hasNext = true;
+
+			@Override
+			public boolean hasNext() {
+				return hasNext;
+			}
+
+			@Override
+			public T next() {
+				if (!hasNext) {
+					throw new NoSuchElementException();
+				}
+
+				hasNext = false;
+				return it;
+			}
+		};
+	}
 }

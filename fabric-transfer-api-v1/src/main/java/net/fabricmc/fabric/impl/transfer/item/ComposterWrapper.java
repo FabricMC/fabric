@@ -154,7 +154,7 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 		}
 
 		@Override
-		public Iterator<StorageView<ItemVariant>> iterator(TransactionContext transaction) {
+		public Iterator<StorageView<ItemVariant>> iterator() {
 			return Collections.emptyIterator();
 		}
 	}

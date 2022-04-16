@@ -83,7 +83,7 @@ public final class StorageUtil {
 		long totalMoved = 0;
 
 		try (Transaction iterationTransaction = Transaction.openNested(transaction)) {
-			for (StorageView<T> view : from.iterable(iterationTransaction)) {
+			for (StorageView<T> view : from) {
 				if (view.isResourceBlank()) continue;
 				T resource = view.getResource();
 				if (!filter.test(resource)) continue;
@@ -180,7 +180,7 @@ public final class StorageUtil {
 
 	@Nullable
 	private static <T> T findStoredResourceInner(Storage<T> storage, Predicate<T> filter, TransactionContext transaction) {
-		for (StorageView<T> view : storage.iterable(transaction)) {
+		for (StorageView<T> view : storage) {
 			if (!view.isResourceBlank() && filter.test(view.getResource())) {
 				return view.getResource();
 			}
@@ -214,7 +214,7 @@ public final class StorageUtil {
 		if (storage == null) return null;
 
 		try (Transaction nested = Transaction.openNested(transaction)) {
-			for (StorageView<T> view : storage.iterable(nested)) {
+			for (StorageView<T> view : storage) {
 				// Extract below could change the resource, so we have to query it before extracting.
 				T resource = view.getResource();
 
@@ -290,7 +290,7 @@ public final class StorageUtil {
 		int viewCount = 0;
 		boolean hasNonEmptyView = false;
 
-		for (StorageView<T> view : storage.iterable(transaction)) {
+		for (StorageView<T> view : storage) {
 			viewCount++;
 
 			if (view.getAmount() > 0) {

@@ -161,8 +161,8 @@ public abstract class FilteringStorage<T> implements Storage<T> {
 	}
 
 	@Override
-	public Iterator<StorageView<T>> iterator(TransactionContext transaction) {
-		return Iterators.transform(backingStorage.get().iterator(transaction), FilteringStorageView::new);
+	public Iterator<StorageView<T>> iterator() {
+		return Iterators.transform(backingStorage.get().iterator(), FilteringStorageView::new);
 	}
 
 	@Override
