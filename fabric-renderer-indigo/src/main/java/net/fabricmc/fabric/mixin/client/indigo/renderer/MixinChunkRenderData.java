@@ -27,7 +27,7 @@ import net.minecraft.client.render.chunk.ChunkBuilder.ChunkData;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessChunkRendererData;
 
 @Mixin(ChunkData.class)
-public class MixinChunkRenderData implements AccessChunkRendererData {
+public abstract class MixinChunkRenderData implements AccessChunkRendererData {
 	@Shadow
 	private Set<RenderLayer> initializedLayers;
 	@Shadow
