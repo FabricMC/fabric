@@ -130,7 +130,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	public abstract static class BlockTagProvider extends FabricTagProvider<Block> {
 		public BlockTagProvider(FabricDataGenerator dataGenerator) {
-			super(dataGenerator, Registry.BLOCK, "Block Tags");
+			super(dataGenerator, Registry.BLOCK);
 		}
 	}
 
@@ -147,7 +147,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @param dataGenerator a {@link ItemTagProvider} tag provider
 		 */
 		public ItemTagProvider(FabricDataGenerator dataGenerator, @Nullable FabricTagProvider.BlockTagProvider blockTagProvider) {
-			super(dataGenerator, Registry.ITEM, "Item Tags");
+			super(dataGenerator, Registry.ITEM);
 
 			this.blockTagBuilderProvider = blockTagProvider == null ? null : blockTagProvider::getTagBuilder;
 		}
@@ -183,7 +183,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	public abstract static class FluidTagProvider extends FabricTagProvider<Fluid> {
 		public FluidTagProvider(FabricDataGenerator dataGenerator) {
-			super(dataGenerator, Registry.FLUID, "Fluid Tags");
+			super(dataGenerator, Registry.FLUID);
 		}
 	}
 
@@ -192,7 +192,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	public abstract static class EntityTypeTagProvider extends FabricTagProvider<EntityType<?>> {
 		public EntityTypeTagProvider(FabricDataGenerator dataGenerator) {
-			super(dataGenerator, Registry.ENTITY_TYPE, "Entity Type Tags");
+			super(dataGenerator, Registry.ENTITY_TYPE);
 		}
 	}
 
@@ -201,7 +201,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	public abstract static class GameEventTagProvider extends FabricTagProvider<GameEvent> {
 		public GameEventTagProvider(FabricDataGenerator dataGenerator) {
-			super(dataGenerator, Registry.GAME_EVENT, "Game Event Tags");
+			super(dataGenerator, Registry.GAME_EVENT);
 		}
 	}
 
@@ -215,7 +215,6 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @param dataGenerator The data generator instance
 		 * @param registryKey The registry key of the dynamic registry
 		 * @param path The directory name to write the tag file names
-		 * @param name The name used for {@link DataProvider#getName()}
 		 * @throws IllegalArgumentException if the registry is static registry
 		 */
 		protected DynamicRegistryTagProvider(FabricDataGenerator dataGenerator, RegistryKey<? extends Registry<T>> registryKey, String path) {
