@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.datagen;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.IdentityHashMap;
@@ -24,12 +23,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Lifecycle;
 import org.apache.commons.lang3.ArrayUtils;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.data.server.AbstractTagProvider;
 import net.minecraft.util.Identifier;
@@ -92,7 +92,18 @@ public final class FabricDataGenHelper {
 	private FabricDataGenHelper() {
 	}
 
-	public static void run() throws IOException {
+	public static void run() {
+		try {
+			runInternal();
+		} catch (Throwable t) {
+			LOGGER.error(LogUtils.FATAL_MARKER, "Failed to run data generation", t);
+
+			// Ensure we exit with a none zero exit code.
+			System.exit(-1);
+		}
+	}
+
+	private static void runInternal() {
 		Path outputDir = Paths.get(Objects.requireNonNull(OUTPUT_DIR, "No output dir provided with the 'fabric-api.datagen.output-dir' property"));
 
 		List<EntrypointContainer<DataGeneratorEntrypoint>> dataGeneratorInitializers = FabricLoader.getInstance()
@@ -104,16 +115,23 @@ public final class FabricDataGenHelper {
 		}
 
 		for (EntrypointContainer<DataGeneratorEntrypoint> entrypointContainer : dataGeneratorInitializers) {
+			final String id = entrypointContainer.getProvider().getMetadata().getId();
+
 			if (MOD_ID_FILTER != null) {
-				if (!entrypointContainer.getProvider().getMetadata().getId().equals(MOD_ID_FILTER)) {
+				if (!id.equals(MOD_ID_FILTER)) {
 					continue;
 				}
 			}
 
-			LOGGER.info("Running data generator for {}", entrypointContainer.getProvider().getMetadata().getName());
-			FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, entrypointContainer.getProvider(), STRICT_VALIDATION);
-			entrypointContainer.getEntrypoint().onInitializeDataGenerator(dataGenerator);
-			dataGenerator.run();
+			LOGGER.info("Running data generator for {}", id);
+
+			try {
+				FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, entrypointContainer.getProvider(), STRICT_VALIDATION);
+				entrypointContainer.getEntrypoint().onInitializeDataGenerator(dataGenerator);
+				dataGenerator.run();
+			} catch (Throwable t) {
+				throw new RuntimeException("Failed to run data generator from mod (%s)".formatted(id), t);
+			}
 		}
 	}
 
