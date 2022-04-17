@@ -64,3 +64,5 @@ ClassNode loadClass(Path path) {
 
 	return node
 }
+
+generateResources.dependsOn generateAccessWidener

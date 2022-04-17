@@ -1,0 +1,22 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:savanna",
+      "required": false
+    },
+    {
+      "id": "#c:desert",
+      "required": false
+    },
+    {
+      "id": "#c:dead",
+      "required": false
+    },
+    "minecraft:lush_caves",
+    {
+      "id": "#c:wasteland",
+      "required": false
+    }
+  ]
+}

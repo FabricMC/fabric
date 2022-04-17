@@ -1,0 +1,30 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:jungle",
+      "required": false
+    },
+    {
+      "id": "#c:savanna",
+      "required": false
+    },
+    {
+      "id": "#c:desert",
+      "required": false
+    },
+    {
+      "id": "#c:badlands",
+      "required": false
+    },
+    "minecraft:stony_peaks",
+    {
+      "id": "#c:mushroom",
+      "required": false
+    },
+    {
+      "id": "#c:in_nether",
+      "required": false
+    }
+  ]
+}
