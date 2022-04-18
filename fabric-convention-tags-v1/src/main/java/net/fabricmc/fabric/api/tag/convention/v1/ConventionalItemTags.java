@@ -61,10 +61,10 @@ public class ConventionalItemTags {
 	public static final TagKey<Item> FOODS = register("foods");
 	public static final TagKey<Item> POTIONS = register("potions");
 	// Buckets
-	public static final TagKey<Item> WATER_BUCKET = register("bucket/water");
-	public static final TagKey<Item> LAVA_BUCKET = register("bucket/lava");
-	public static final TagKey<Item> MILK_BUCKET = register("bucket/milk");
-	public static final TagKey<Item> EMPTY_BUCKET = register("bucket/empty");
+	public static final TagKey<Item> WATER_BUCKET = register("water_buckets");
+	public static final TagKey<Item> LAVA_BUCKET = register("lava_buckets");
+	public static final TagKey<Item> MILK_BUCKET = register("milk_buckets");
+	public static final TagKey<Item> EMPTY_BUCKET = register("empty_buckets");
 
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Item> GLASS_PANES = register("glass_panes");
