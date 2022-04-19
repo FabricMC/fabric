@@ -67,8 +67,8 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
 	 */
-	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, String name, ResourcePackActivationType activationType) {
-	    String separator = container.getRootPath().getFileSystem().getSeparator();
+	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, String displayName, ResourcePackActivationType activationType) {
+		String separator = container.getRootPath().getFileSystem().getSeparator();
 		subPath = subPath.replace("/", separator);
 		String name = displayName;
 		ModNioResourcePack resourcePack = ModNioResourcePack.create(name, container, subPath, ResourceType.CLIENT_RESOURCES, activationType);
@@ -82,6 +82,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		if (dataPack != null) {
 			builtinResourcePacks.add(new Pair<>(name, dataPack));
 		}
+
 		return true;
 	}
 
