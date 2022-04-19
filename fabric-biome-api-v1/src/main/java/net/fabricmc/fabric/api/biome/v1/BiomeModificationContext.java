@@ -35,30 +35,16 @@ import net.minecraft.world.biome.BiomeParticleConfig;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
+import net.minecraft.world.gen.feature.PlacedFeature;
 
 import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 
 /**
  * Allows {@link Biome} properties to be modified.
+ *
+ * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
 public interface BiomeModificationContext {
-	/**
-	 * @see Biome#getDepth()
-	 * @see Biome.Builder#depth(float)
-	 */
-	void setDepth(float depth);
-
-	/**
-	 * @see Biome#getScale()
-	 * @see Biome.Builder#scale(float)
-	 */
-	void setScale(float scale);
-
 	/**
 	 * @see Biome#getCategory()
 	 * @see Biome.Builder#category(Biome.Category)
@@ -298,35 +284,18 @@ public interface BiomeModificationContext {
 
 	interface GenerationSettingsContext {
 		/**
-		 * Sets the biomes surface builder to a surface builder registered in {@link BuiltinRegistries#CONFIGURED_SURFACE_BUILDER}.
-		 *
-		 * <p>This method is intended for use with the surface builders found in {@link ConfiguredSurfaceBuilders}.
-		 *
-		 * <p><b>NOTE:</b> In case the configured surface builder is overridden in a datapack, the datapacks version
-		 * will be used.
-		 */
-		default void setBuiltInSurfaceBuilder(ConfiguredSurfaceBuilder<?> configuredSurfaceBuilder) {
-			setSurfaceBuilder(BuiltInRegistryKeys.get(configuredSurfaceBuilder));
-		}
-
-		/**
-		 * Sets the biomes surface builder to the surface builder identified by the given key.
-		 */
-		void setSurfaceBuilder(RegistryKey<ConfiguredSurfaceBuilder<?>> surfaceBuilderKey);
-
-		/**
 		 * Removes a feature from one of this biomes generation steps, and returns if any features were removed.
 		 */
-		boolean removeFeature(GenerationStep.Feature step, RegistryKey<ConfiguredFeature<?, ?>> configuredFeatureKey);
+		boolean removeFeature(GenerationStep.Feature step, RegistryKey<PlacedFeature> placedFeatureKey);
 
 		/**
 		 * Removes a feature from all of this biomes generation steps, and returns if any features were removed.
 		 */
-		default boolean removeFeature(RegistryKey<ConfiguredFeature<?, ?>> configuredFeatureKey) {
+		default boolean removeFeature(RegistryKey<PlacedFeature> placedFeatureKey) {
 			boolean anyFound = false;
 
 			for (GenerationStep.Feature step : GenerationStep.Feature.values()) {
-				if (removeFeature(step, configuredFeatureKey)) {
+				if (removeFeature(step, placedFeatureKey)) {
 					anyFound = true;
 				}
 			}
@@ -335,34 +304,37 @@ public interface BiomeModificationContext {
 		}
 
 		/**
-		 * {@link #removeFeature(RegistryKey)} for built-in features (see {@link #addBuiltInFeature(GenerationStep.Feature, ConfiguredFeature)}).
+		 * {@link #removeFeature(RegistryKey)} for built-in features (see {@link #addBuiltInFeature(GenerationStep.Feature, PlacedFeature)}).
 		 */
-		default boolean removeBuiltInFeature(ConfiguredFeature<?, ?> configuredFeature) {
-			return removeFeature(BuiltInRegistryKeys.get(configuredFeature));
+		default boolean removeBuiltInFeature(PlacedFeature placedFeature) {
+			return removeFeature(BuiltInRegistryKeys.get(placedFeature));
 		}
 
 		/**
-		 * {@link #removeFeature(GenerationStep.Feature, RegistryKey)} for built-in features (see {@link #addBuiltInFeature(GenerationStep.Feature, ConfiguredFeature)}).
+		 * {@link #removeFeature(GenerationStep.Feature, RegistryKey)} for built-in features (see {@link #addBuiltInFeature(GenerationStep.Feature, PlacedFeature)}).
 		 */
-		default boolean removeBuiltInFeature(GenerationStep.Feature step, ConfiguredFeature<?, ?> configuredFeature) {
-			return removeFeature(step, BuiltInRegistryKeys.get(configuredFeature));
+		default boolean removeBuiltInFeature(GenerationStep.Feature step, PlacedFeature placedFeature) {
+			return removeFeature(step, BuiltInRegistryKeys.get(placedFeature));
 		}
 
 		/**
-		 * Adds a feature to one of this biomes generation steps, identified by the configured feature's registry key.
+		 * Adds a feature to one of this biomes generation steps, identified by the placed feature's registry key.
+		 *
+		 * @see BuiltinRegistries#PLACED_FEATURE
 		 */
-		void addFeature(GenerationStep.Feature step, RegistryKey<ConfiguredFeature<?, ?>> configuredFeatureKey);
+		void addFeature(GenerationStep.Feature step, RegistryKey<PlacedFeature> placedFeatureKey);
 
 		/**
-		 * Adds a configured feature from {@link BuiltinRegistries#CONFIGURED_FEATURE} to this biome.
+		 * Adds a placed feature from {@link BuiltinRegistries#PLACED_FEATURE} to this biome.
 		 *
-		 * <p>This method is intended for use with the configured features found in {@link net.minecraft.world.gen.feature.ConfiguredFeatures}.
+		 * <p>This method is intended for use with the placed features found in
+		 * classes such as {@link net.minecraft.world.gen.feature.OrePlacedFeatures}.
 		 *
-		 * <p><b>NOTE:</b> In case the configured feature is overridden in a datapack, the datapacks version
+		 * <p><b>NOTE:</b> In case the placed feature is overridden in a datapack, the datapacks version
 		 * will be used.
 		 */
-		default void addBuiltInFeature(GenerationStep.Feature step, ConfiguredFeature<?, ?> configuredFeature) {
-			addFeature(step, BuiltInRegistryKeys.get(configuredFeature));
+		default void addBuiltInFeature(GenerationStep.Feature step, PlacedFeature placedFeature) {
+			addFeature(step, BuiltInRegistryKeys.get(placedFeature));
 		}
 
 		/**
@@ -419,78 +391,9 @@ public interface BiomeModificationContext {
 		default boolean removeBuiltInCarver(GenerationStep.Carver step, ConfiguredCarver<?> configuredCarver) {
 			return removeCarver(step, BuiltInRegistryKeys.get(configuredCarver));
 		}
-
-		/**
-		 * Allows a configured structure to start in this biome.
-		 *
-		 * <p>Structures added this way may start in this biome, with respect to the {@link net.minecraft.world.gen.chunk.StructureConfig}
-		 * set in the {@link net.minecraft.world.gen.chunk.ChunkGenerator}, but structure pieces can always generate in chunks adjacent
-		 * to a started structure, regardless of biome.
-		 *
-		 * <p>Configured structures that have the same underlying {@link StructureFeature} as the given structure will be removed before
-		 * adding the new structure, since only one of them could actually generate.
-		 *
-		 * @see net.minecraft.world.biome.GenerationSettings.Builder#structureFeature(ConfiguredStructureFeature)
-		 */
-		void addStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> configuredStructureKey);
-
-		/**
-		 * Allows a configured structure from {@link BuiltinRegistries#CONFIGURED_STRUCTURE_FEATURE} to start in this biome.
-		 *
-		 * <p>This method is intended for use with the configured structures found in {@link net.minecraft.world.gen.feature.ConfiguredStructureFeatures}.
-		 *
-		 * <p><b>NOTE:</b> In case the configured structure is overridden using a datapack, the definition from the datapack
-		 * will be added to the biome.
-		 *
-		 * <p>Structures added this way may start in this biome, with respect to the {@link net.minecraft.world.gen.chunk.StructureConfig}
-		 * set in the {@link net.minecraft.world.gen.chunk.ChunkGenerator}, but structure pieces can always generate in chunks adjacent
-		 * to a started structure, regardless of biome.
-		 *
-		 * <p>Configured structures that have the same underlying {@link StructureFeature} as the given structure will be removed before
-		 * adding the new structure, since only one of them could actually generate.
-		 */
-		default void addBuiltInStructure(ConfiguredStructureFeature<?, ?> configuredStructure) {
-			addStructure(BuiltInRegistryKeys.get(configuredStructure));
-		}
-
-		/**
-		 * Removes a configured structure from the structures that are allowed to start in this biome.
-		 *
-		 * <p>Please see the note on {@link #addStructure(RegistryKey)} about structures pieces still generating
-		 * if adjacent biomes allow the structure to start.
-		 *
-		 * @return True if any structures were removed.
-		 */
-		boolean removeStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> configuredStructureKey);
-
-		/**
-		 * Removes a structure from the structures that are allowed to start in this biome.
-		 *
-		 * <p>This will remove all configured variations of the given structure from this biome.
-		 *
-		 * <p>This can be used with modded structures or Vanilla structures from {@link net.minecraft.world.gen.feature.StructureFeature}.
-		 *
-		 * @return True if any structures were removed.
-		 */
-		boolean removeStructure(StructureFeature<?> structure);
-
-		/**
-		 * {@link #removeStructure(RegistryKey)} for built-in structures (see {@link #addBuiltInStructure(ConfiguredStructureFeature)}).
-		 */
-		default boolean removeBuiltInStructure(ConfiguredStructureFeature<?, ?> configuredStructure) {
-			return removeStructure(BuiltInRegistryKeys.get(configuredStructure));
-		}
 	}
 
 	interface SpawnSettingsContext {
-		/**
-		 * Associated JSON property: <code>player_spawn_friendly</code>.
-		 *
-		 * @see SpawnSettings#isPlayerSpawnFriendly()
-		 * @see SpawnSettings.Builder#playerSpawnFriendly()
-		 */
-		void setPlayerSpawnFriendly(boolean playerSpawnFriendly);
-
 		/**
 		 * Associated JSON property: <code>creature_spawn_probability</code>.
 		 *
@@ -502,7 +405,7 @@ public interface BiomeModificationContext {
 		/**
 		 * Associated JSON property: <code>spawners</code>.
 		 *
-		 * @see SpawnSettings#getSpawnEntry(SpawnGroup)
+		 * @see SpawnSettings#getSpawnEntries(SpawnGroup)
 		 * @see SpawnSettings.Builder#spawn(SpawnGroup, SpawnSettings.SpawnEntry)
 		 */
 		void addSpawn(SpawnGroup spawnGroup, SpawnSettings.SpawnEntry spawnEntry);

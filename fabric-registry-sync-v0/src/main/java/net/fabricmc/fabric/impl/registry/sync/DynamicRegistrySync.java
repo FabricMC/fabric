@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.impl.registry.sync;
 
 import com.mojang.serialization.Lifecycle;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -34,14 +34,14 @@ import net.fabricmc.fabric.mixin.registry.sync.AccessorRegistry;
  * in case it gets classloaded early.
  */
 public class DynamicRegistrySync {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRegistrySync.class);
 
 	/**
 	 * Sets up a synchronisation that will propagate added entries to the given dynamic registry manager, which
 	 * should be the <em>built-in</em> manager. It is never destroyed. We don't ever have to unregister
 	 * the registry events.
 	 */
-	public static void setupSync(DynamicRegistryManager.Impl template) {
+	public static void setupSync(DynamicRegistryManager template) {
 		LOGGER.debug("Setting up synchronisation of new BuiltinRegistries entries to the built-in DynamicRegistryManager");
 		BuiltinRegistries.REGISTRIES.stream().forEach(source -> setupSync(source, template));
 	}
@@ -50,7 +50,7 @@ public class DynamicRegistrySync {
 	 * Sets up an event registration for the source registy that will ensure all entries added from now on
 	 * are also added to the template for dynamic registry managers.
 	 */
-	private static <T> void setupSync(Registry<T> source, DynamicRegistryManager.Impl template) {
+	private static <T> void setupSync(Registry<T> source, DynamicRegistryManager template) {
 		@SuppressWarnings("unchecked") AccessorRegistry<T> sourceAccessor = (AccessorRegistry<T>) source;
 		RegistryKey<? extends Registry<T>> sourceKey = source.getKey();
 		MutableRegistry<T> target = (MutableRegistry<T>) template.get(sourceKey);

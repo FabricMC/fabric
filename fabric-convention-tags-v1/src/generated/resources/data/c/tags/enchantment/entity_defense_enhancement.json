@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:feather_falling",
+    "minecraft:protection",
+    "minecraft:blast_protection",
+    "minecraft:projectile_protection",
+    "minecraft:fire_protection",
+    "minecraft:respiration"
+  ]
+}

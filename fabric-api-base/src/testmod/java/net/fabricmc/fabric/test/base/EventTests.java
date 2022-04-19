@@ -22,8 +22,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.util.Identifier;
 
@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.base.event.PhaseSorting;
 
 public class EventTests {
-	private static final Logger LOGGER = LogManager.getLogger("fabric-api-base");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-api-base");
 
 	public static void run() {
 		long time1 = System.currentTimeMillis();

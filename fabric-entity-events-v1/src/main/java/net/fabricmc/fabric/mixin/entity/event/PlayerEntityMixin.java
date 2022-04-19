@@ -59,7 +59,7 @@ abstract class PlayerEntityMixin {
 		return day;
 	}
 
-	@Inject(method = "isSleepingLongEnough", at = @At("RETURN"), cancellable = true)
+	@Inject(method = "canResetTimeBySleeping", at = @At("RETURN"), cancellable = true)
 	private void onIsSleepingLongEnough(CallbackInfoReturnable<Boolean> info) {
 		if (info.getReturnValueZ()) {
 			info.setReturnValue(EntitySleepEvents.ALLOW_RESETTING_TIME.invoker().allowResettingTime((PlayerEntity) (Object) this));

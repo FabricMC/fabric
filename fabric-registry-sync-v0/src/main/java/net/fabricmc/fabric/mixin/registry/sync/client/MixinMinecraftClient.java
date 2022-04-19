@@ -16,36 +16,26 @@
 
 package net.fabricmc.fabric.mixin.registry.sync.client;
 
-import java.nio.file.Path;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.resource.DataPackSettings;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.world.SaveProperties;
-import net.minecraft.world.gen.GeneratorOptions;
-import net.minecraft.world.level.LevelInfo;
-import net.minecraft.world.level.storage.LevelStorage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.fabric.impl.registry.sync.PersistentDynamicRegistryHandler;
-import net.fabricmc.fabric.mixin.registry.sync.AccessorLevelStorageSession;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
+import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockInitTracker;
 
 @Mixin(MinecraftClient.class)
 public class MixinMinecraftClient {
 	@Unique
-	private static Logger FABRIC_LOGGER = LogManager.getLogger();
+	private static Logger FABRIC_LOGGER = LoggerFactory.getLogger(MixinMinecraftClient.class);
 
 	// Unmap the registry before loading a new SP/MP setup.
 	@Inject(at = @At("RETURN"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V")
@@ -57,16 +47,11 @@ public class MixinMinecraftClient {
 		}
 	}
 
-	@Inject(method = "createSaveProperties", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/dynamic/RegistryOps;ofLoaded(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;"))
-	private static void createSaveProperties(LevelStorage.Session session, DynamicRegistryManager.Impl impl, ResourceManager resourceManager, DataPackSettings dataPackSettings, CallbackInfoReturnable<SaveProperties> cir) {
-		Path saveDir = ((AccessorLevelStorageSession) session).getDirectory();
-		PersistentDynamicRegistryHandler.remapDynamicRegistries(impl, saveDir);
-	}
-
-	// synthetic in method_29607 just after RegistryOps.of
-	@Inject(method = "method_31125", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/dynamic/RegistryOps;ofLoaded(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;"))
-	private static void method_31125(DynamicRegistryManager.Impl impl, GeneratorOptions generatorOptions, LevelInfo levelInfo, LevelStorage.Session session, DynamicRegistryManager.Impl impl2, ResourceManager resourceManager, DataPackSettings dataPackSettings, CallbackInfoReturnable<SaveProperties> cir) {
-		Path saveDir = ((AccessorLevelStorageSession) session).getDirectory();
-		PersistentDynamicRegistryHandler.remapDynamicRegistries(impl, saveDir);
+	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;thread:Ljava/lang/Thread;", shift = At.Shift.AFTER, ordinal = 0), method = "run")
+	private void onStart(CallbackInfo ci) {
+		// Freeze the registries on the client
+		FABRIC_LOGGER.debug("Freezing registries");
+		Registry.freezeRegistries();
+		BlockInitTracker.postFreeze();
 	}
 }

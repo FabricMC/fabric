@@ -19,8 +19,8 @@ package net.fabricmc.fabric.impl.client.container;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.Identifier;
@@ -31,15 +31,11 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screen.ContainerScreenFactory;
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerFactory;
+import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.impl.container.ContainerProviderImpl;
 
 public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
-	/**
-	 * Use the instance provided by ScreenProviderRegistry.
-	 */
-	public static final ScreenProviderRegistry INSTANCE = new ScreenProviderRegistryImpl();
-
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ScreenProviderRegistryImpl.class);
 
 	private static final Map<Identifier, ContainerFactory<HandledScreen>> FACTORIES = new HashMap<>();
 
@@ -55,7 +51,7 @@ public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
 	@Override
 	public <C extends ScreenHandler> void registerFactory(Identifier identifier, ContainerScreenFactory<C> containerScreenFactory) {
 		registerFactory(identifier, (syncId, identifier1, player, buf) -> {
-			C container = ContainerProviderImpl.INSTANCE.createContainer(syncId, identifier1, player, buf);
+			C container = ((ContainerProviderImpl) ContainerProviderRegistry.INSTANCE).createContainer(syncId, identifier1, player, buf);
 
 			if (container == null) {
 				LOGGER.error("Could not open container for {} - a null object was created!", identifier1.toString());

@@ -6,12 +6,15 @@
     "FileResourcePackProviderAccessor",
     "DefaultResourcePackMixin",
     "KeyedResourceReloadListenerMixin",
+    "LifecycledResourceManagerImplMixin",
     "MinecraftServerMixin",
     "NamespaceResourceManagerAccessor",
     "NamespaceResourceManagerMixin",
     "ReloadableResourceManagerImplMixin",
     "ResourcePackManagerMixin",
-    "ResourcePackManagerAccessor"
+    "ResourcePackManagerAccessor",
+    "ResourcePackProfileAccessor",
+    "SimpleResourceReloadMixin"
   ],
   "client": [
     "client.ClientBuiltinResourcePackProviderMixin",

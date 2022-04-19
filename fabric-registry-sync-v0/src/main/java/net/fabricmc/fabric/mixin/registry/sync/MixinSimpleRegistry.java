@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.mixin.registry.sync;
 
 import com.mojang.serialization.Lifecycle;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,7 +37,7 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 @Mixin(SimpleRegistry.class)
 public abstract class MixinSimpleRegistry<T> extends Registry<T> {
 	@Unique
-	private static final Logger FARBIC_LOGGER = LogManager.getLogger("FabricRegistrySync");
+	private static final Logger FARBIC_LOGGER = LoggerFactory.getLogger("FabricRegistrySync");
 
 	protected MixinSimpleRegistry(RegistryKey<Registry<T>> arg, Lifecycle lifecycle) {
 		super(arg, lifecycle);

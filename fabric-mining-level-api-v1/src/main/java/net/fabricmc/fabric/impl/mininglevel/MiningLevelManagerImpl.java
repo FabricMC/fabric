@@ -21,19 +21,18 @@ import java.util.regex.Pattern;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.tag.TagKey;
 import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.TagGroup;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.yarn.constants.MiningLevels;
 
 public final class MiningLevelManagerImpl {
-	private static final Logger LOGGER = LogManager.getLogger("fabric-mining-level-api-v1/MiningLevelManagerImpl");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-mining-level-api-v1/MiningLevelManagerImpl");
 	private static final String TOOL_TAG_NAMESPACE = "fabric";
 	private static final Pattern TOOL_TAG_PATTERN = Pattern.compile("^needs_tool_level_([0-9]+)$");
 
@@ -44,16 +43,15 @@ public final class MiningLevelManagerImpl {
 
 	public static int getRequiredMiningLevel(BlockState state) {
 		return CACHE.get().computeIntIfAbsent(state, s -> {
-			TagGroup<Block> blockTags = BlockTags.getTagGroup();
 			int miningLevel = MiningLevels.HAND;
 
 			// Handle #fabric:needs_tool_level_N
-			for (Identifier tagId : blockTags.getTagsFor(state.getBlock())) {
-				if (!tagId.getNamespace().equals(TOOL_TAG_NAMESPACE)) {
+			for (TagKey<Block> tagId : state.streamTags().toList()) {
+				if (!tagId.id().getNamespace().equals(TOOL_TAG_NAMESPACE)) {
 					continue;
 				}
 
-				Matcher matcher = TOOL_TAG_PATTERN.matcher(tagId.getPath());
+				Matcher matcher = TOOL_TAG_PATTERN.matcher(tagId.id().getPath());
 
 				if (matcher.matches()) {
 					try {

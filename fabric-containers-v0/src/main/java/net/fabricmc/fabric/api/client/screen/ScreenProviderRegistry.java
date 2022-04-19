@@ -29,7 +29,7 @@ import net.fabricmc.fabric.impl.client.container.ScreenProviderRegistryImpl;
  */
 @Deprecated
 public interface ScreenProviderRegistry {
-	ScreenProviderRegistry INSTANCE = ScreenProviderRegistryImpl.INSTANCE;
+	ScreenProviderRegistry INSTANCE = new ScreenProviderRegistryImpl();
 
 	/**
 	 * Register a "Container -&gt; ContainerScreen" factory. This is used only on the client side.

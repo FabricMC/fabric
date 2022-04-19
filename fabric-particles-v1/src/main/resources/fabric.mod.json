@@ -24,5 +24,6 @@
   ],
   "custom": {
     "fabric-api:module-lifecycle": "stable"
-  }
+  },
+  "accessWidener": "fabric-particles-v1.accesswidener"
 }

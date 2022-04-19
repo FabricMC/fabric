@@ -207,6 +207,10 @@ public interface BlockApiLookup<A, C> {
 	 * The mapping from the parameters of the query to the API is handled by the passed {@code provider}.
 	 * This overload allows using the correct block entity class directly.
 	 *
+	 * <p>Note: The type is not used directly for detecting the supported blocks and block entities in the world, but it is converted to
+	 * its {@linkplain BlockEntityType#blocks} when this method is called.
+	 * If the {@code blocks} field is empty, {@link IllegalArgumentException} is thrown.
+	 *
 	 * @param <T> The block entity class for which an API is exposed.
 	 * @param provider The provider: returns an API if available in the passed block entity with the passed context,
 	 *                 or {@code null} if no API is available.
@@ -223,6 +227,10 @@ public interface BlockApiLookup<A, C> {
 	 * This overload allows registering multiple block entity types at once,
 	 * but due to how generics work in java, the provider has to cast to the correct block entity class if necessary.
 	 *
+	 * <p>Note: The type is not used directly for detecting the supported blocks and block entities in the world, but it is converted to
+	 * its {@linkplain BlockEntityType#blocks} when this method is called.
+	 * If the {@code blocks} field is empty, {@link IllegalArgumentException} is thrown.
+	 *
 	 * @param provider The provider.
 	 * @param blockEntityTypes The block entity types.
 	 */
@@ -235,6 +243,11 @@ public interface BlockApiLookup<A, C> {
 	 * @param fallbackProvider The fallback provider.
 	 */
 	void registerFallback(BlockApiProvider<A, C> fallbackProvider);
+
+	/**
+	 * Return the identifier of this lookup.
+	 */
+	Identifier getId();
 
 	/**
 	 * Return the API class of this lookup.

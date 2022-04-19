@@ -9,14 +9,16 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.10.55" apply false
+	id "fabric-loom" version "0.11.32" apply false
 	id "org.cadixdev.licenser" version "0.6.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 	id "com.modrinth.minotaur" version "1.1.0"
+	id "me.modmuss50.remotesign" version "0.2.4" apply false
 }
 
 def ENV = System.getenv()
+def signingEnabled = ENV.SIGNING_SERVER
 
 version = project.version + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
 logger.lifecycle("Building Fabric: " + version)
@@ -66,6 +68,24 @@ def moduleDependencies(project, List<String> depNames) {
 			api it
 		}
 	}
+
+	// As we manually handle the maven artifacts, we need to also manually specify the deps.
+	project.publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				pom.withXml {
+					def depsNode = asNode().appendNode("dependencies")
+					deps.each {
+						def depNode = depsNode.appendNode("dependency")
+						depNode.appendNode("groupId", it.group)
+						depNode.appendNode("artifactId", it.name)
+						depNode.appendNode("version", it.version)
+						depNode.appendNode("scope", "compile")
+					}
+				}
+			}
+		}
+	}
 }
 
 allprojects {
@@ -74,9 +94,10 @@ allprojects {
 	apply plugin: "maven-publish"
 	apply plugin: "fabric-loom"
 	apply plugin: "org.cadixdev.licenser"
+	apply plugin: "me.modmuss50.remotesign"
 
 	tasks.withType(JavaCompile).configureEach {
-		it.options.release = 16
+		it.options.release = 17
 	}
 
 	group = "net.fabricmc.fabric-api"
@@ -89,6 +110,8 @@ allprojects {
 	}
 
 	loom {
+		runtimeOnlyLog4j = true
+
 		runs {
 			testmodClient {
 				client()
@@ -132,9 +155,8 @@ allprojects {
 		include "**/*.java"
 	}
 
-	task sourcesJar(type: Jar, dependsOn: classes) {
-		archiveClassifier = "sources"
-		from sourceSets.main.allSource
+	java {
+		withSourcesJar()
 	}
 
 	checkstyle {
@@ -150,6 +172,26 @@ allprojects {
 	tasks.withType(GenerateModuleMetadata) {
 		enabled = false
 	}
+
+	if (signingEnabled) {
+		remoteSign {
+			requestUrl = ENV.SIGNING_SERVER
+			pgpAuthKey = ENV.SIGNING_PGP_KEY
+			jarAuthKey = ENV.SIGNING_JAR_KEY
+
+			sign remapJar
+
+			afterEvaluate {
+				// PGP sign all maven publications.
+				sign publishing.publications.mavenJava
+			}
+		}
+	}
+
+	// Run this task after updating minecraft to regenerate any required resources
+	task generateResources {
+		group = "fabric"
+	}
 }
 
 // Apply auxiliary buildscripts to submodules
@@ -159,7 +201,7 @@ apply from: "gradle/module-versioning.gradle"
 
 javadoc {
 	options {
-		source = "16"
+		source = "17"
 		encoding = "UTF-8"
 		charSet = "UTF-8"
 		memberLevel = JavadocMemberLevel.PACKAGE
@@ -220,20 +262,36 @@ subprojects {
 	dependencies {
 		testmodImplementation sourceSets.main.output
 
-		// Make all modules depend on the gametest api to try and promote its usage.
-		if (project.name != "fabric-gametest-api-v1")
+		// Make all modules depend on the gametest api (and thus res loader) to try and promote its usage.
+		if (project.name != "fabric-gametest-api-v1") {
 			testmodImplementation project(path: ':fabric-gametest-api-v1', configuration: 'namedElements')
+			testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
+		}
+
+		// Make all testmods run with registry-sync-v0 as it is required to register new objects.
+		if (project.name != "fabric-registry-sync-v0") {
+			testmodRuntimeOnly project(path: ':fabric-registry-sync-v0', configuration: 'namedElements')
+		}
 	}
 
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
-				from components.java
+				artifact(signingEnabled ? signRemapJar.output : remapJar) {
+					builtBy(signingEnabled ? signRemapJar : remapJar)
+				}
+
+				artifact(remapSourcesJar) {
+					builtBy remapSourcesJar
+				}
 			}
 		}
 
 		setupRepositories(repositories)
 	}
+
+	// We manually handle the pom generation
+	loom.disableDeprecatedPomGeneration(publishing.publications.mavenJava)
 
 	javadoc.enabled = false
 
@@ -252,11 +310,17 @@ task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
 }
 build.dependsOn remapMavenJar
 
+if (signingEnabled) {
+	remoteSign {
+		sign remapMavenJar
+	}
+}
+
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifact(remapMavenJar) {
-				builtBy remapMavenJar
+			artifact(signingEnabled ? signRemapMavenJar.output : remapMavenJar) {
+				builtBy(signingEnabled ? signRemapMavenJar : remapMavenJar)
 			}
 
 			artifact(sourcesJar) {
@@ -310,7 +374,8 @@ sourceSets {
 
 // These modules are not included in the fat jar, maven will resolve them via the pom.
 def devOnlyModules = [
-		"fabric-gametest-api-v1"
+		"fabric-gametest-api-v1",
+		"fabric-data-generation-api-v1"
 ]
 
 dependencies {
@@ -318,11 +383,18 @@ dependencies {
 		subprojects.each {
 			api project(path: ":${it.name}", configuration: "namedElements")
 
-			if (!(it.name in devOnlyModules)) {
-				include project("${it.name}:")
-			}
-
 			testmodImplementation project("${it.name}:").sourceSets.testmod.output
+		}
+	}
+}
+
+remapJar {
+	afterEvaluate {
+		subprojects.each {
+			if (it.name in devOnlyModules) return
+
+			// Include the signed or none signed jar from the sub project.
+			nestedJars.from project("${it.name}:").tasks.getByName(signingEnabled ? "signRemapJar" : "remapJar")
 		}
 	}
 }
@@ -335,11 +407,11 @@ curseforge {
 	project {
 		id = "306612"
 		changelog = ENV.CHANGELOG ?: "No changelog provided"
-		releaseType = project.prerelease ? "beta" : "release"
-		addGameVersion "1.17.1"
+		releaseType = project.prerelease == "true" ? "beta" : "release"
+		addGameVersion "1.18.2"
 		addGameVersion "Fabric"
 
-		mainArtifact(remapJar) {
+		mainArtifact(signingEnabled ? signRemapJar.output : remapJar) {
 			displayName = "[$project.minecraft_version] Fabric API $project.version"
 		}
 
@@ -353,10 +425,15 @@ curseforge {
 	}
 }
 
+if (signingEnabled) {
+	project.tasks.curseforge.dependsOn signRemapJar
+	build.dependsOn signRemapJar
+}
+
 import org.kohsuke.github.GHReleaseBuilder
 import org.kohsuke.github.GitHub
 
-task github(dependsOn: remapMavenJar) {
+task github(dependsOn: (signingEnabled ? signRemapJar : remapJar)) {
 	onlyIf {
 		ENV.GITHUB_TOKEN
 	}
@@ -369,14 +446,14 @@ task github(dependsOn: remapMavenJar) {
 		releaseBuilder.name("[$project.minecraft_version] Fabric API $project.version")
 		releaseBuilder.body(ENV.CHANGELOG ?: "No changelog provided")
 		releaseBuilder.commitish(getBranch())
-		releaseBuilder.prerelease(project.prerelease)
+		releaseBuilder.prerelease(project.prerelease == "true")
 
 		def ghRelease = releaseBuilder.create()
-		ghRelease.uploadAsset(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"), "application/java-archive");
+		ghRelease.uploadAsset(signingEnabled ? signRemapJar.output.get().getAsFile() : remapJar.archiveFile.get().getAsFile(), "application/java-archive");
 	}
 }
 
-task modrinth(type: com.modrinth.minotaur.TaskModrinthUpload, dependsOn: remapMavenJar) {
+task modrinth(type: com.modrinth.minotaur.TaskModrinthUpload, dependsOn: (signingEnabled ? signRemapJar : remapJar)) {
 	onlyIf {
 		ENV.MODRINTH_TOKEN
 	}
@@ -385,10 +462,10 @@ task modrinth(type: com.modrinth.minotaur.TaskModrinthUpload, dependsOn: remapMa
 	projectId = "P7dR8mSH"
 	versionNumber = version
 	versionName = "[$project.minecraft_version] Fabric API $project.version"
-	releaseType = project.prerelease ? "beta" : "release"
+	releaseType = project.prerelease == "true" ? "beta" : "release"
 	changelog = ENV.CHANGELOG ?: "No changelog provided"
 
-	uploadFile = remapJar
+	uploadFile = signingEnabled ? signRemapJar.output : remapJar
 
 	addGameVersion(project.minecraft_version)
 	addLoader('fabric')

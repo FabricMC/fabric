@@ -28,7 +28,7 @@ import net.minecraft.item.Item;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 
 public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
-	private BlockRenderLayerMapImpl() { }
+	public BlockRenderLayerMapImpl() { }
 
 	@Override
 	public void putBlock(Block block, RenderLayer renderLayer) {
@@ -74,8 +74,6 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 			putFluid(fluid, renderLayer);
 		}
 	}
-
-	public static final BlockRenderLayerMap INSTANCE = new BlockRenderLayerMapImpl();
 
 	private static Map<Block, RenderLayer> blockRenderLayerMap = new HashMap<>();
 	private static Map<Item, RenderLayer> itemRenderLayerMap = new HashMap<>();

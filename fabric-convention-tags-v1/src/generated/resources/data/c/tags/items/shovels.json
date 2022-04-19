@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#fabric:shovels",
+      "required": false
+    },
+    "minecraft:diamond_shovel",
+    "minecraft:golden_shovel",
+    "minecraft:wooden_shovel",
+    "minecraft:stone_shovel",
+    "minecraft:iron_shovel",
+    "minecraft:netherite_shovel"
+  ]
+}

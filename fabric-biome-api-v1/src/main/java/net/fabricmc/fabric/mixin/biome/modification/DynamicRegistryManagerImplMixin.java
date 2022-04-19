@@ -16,28 +16,28 @@
 
 package net.fabricmc.fabric.mixin.biome.modification;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.world.biome.Biome;
 
-import net.fabricmc.fabric.impl.biome.modification.BiomeModificationTracker;
+import net.fabricmc.fabric.impl.biome.modification.BiomeModificationMarker;
 
 /**
- * This Mixin allows us to track which biomes already ran through {@link net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl}
- * on a per-DynamicRegistryManager basis.
+ * This Mixin allows us to keep backup copies of biomes for
+ * {@link net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl} on a per-DynamicRegistryManager basis.
  */
-@Mixin(DynamicRegistryManager.Impl.class)
-public class DynamicRegistryManagerImplMixin implements BiomeModificationTracker {
+@Mixin(DynamicRegistryManager.ImmutableImpl.class)
+public class DynamicRegistryManagerImplMixin implements BiomeModificationMarker {
 	@Unique
-	private final Set<Biome> modifiedBiomes = new HashSet<>();
+	private boolean modified;
 
 	@Override
-	public Set<Biome> fabric_getModifiedBiomes() {
-		return this.modifiedBiomes;
+	public void fabric_markModified() {
+		if (modified) {
+			throw new IllegalStateException("This dynamic registries instance has already been modified");
+		}
+
+		modified = true;
 	}
 }

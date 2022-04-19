@@ -67,7 +67,7 @@ final class WrappedInventory implements ItemInsertable, ItemExtractable {
 					if (!simulate) {
 						if (stack.isEmpty()) {
 							inv.setStack(i, input.copy());
-							inv.getStack(i).setCooldown(inserted);
+							inv.getStack(i).setBobbingAnimationTime(inserted);
 						} else {
 							stack.increment(inserted);
 						}

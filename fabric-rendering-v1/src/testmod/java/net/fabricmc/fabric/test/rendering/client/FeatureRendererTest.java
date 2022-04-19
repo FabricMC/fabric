@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -36,7 +36,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 
 public final class FeatureRendererTest implements ClientModInitializer {
-	private static final Logger LOGGER = LogManager.getLogger(FeatureRendererTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FeatureRendererTest.class);
 	private int playerRegistrations = 0;
 
 	@Override

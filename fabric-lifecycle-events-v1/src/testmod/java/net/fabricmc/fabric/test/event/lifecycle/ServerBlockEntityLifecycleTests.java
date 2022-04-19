@@ -19,7 +19,7 @@ package net.fabricmc.fabric.test.event.lifecycle;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.world.ServerWorld;

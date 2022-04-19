@@ -58,10 +58,8 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
  *  manipulating the data via NIO.
  */
 public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer implements Consumer<BakedModel> {
-	private static Value MATERIAL_FLAT = (Value) IndigoRenderer.INSTANCE.materialFinder().disableAo(0, true).find();
-	private static Value MATERIAL_SHADED = (Value) IndigoRenderer.INSTANCE.materialFinder().find();
-
-	private final int[] editorBuffer = new int[EncodingFormat.TOTAL_STRIDE];
+	private static final Value MATERIAL_FLAT = (Value) IndigoRenderer.INSTANCE.materialFinder().disableAo(0, true).find();
+	private static final Value MATERIAL_SHADED = (Value) IndigoRenderer.INSTANCE.materialFinder().find();
 
 	TerrainFallbackConsumer(BlockRenderInfo blockInfo, Function<RenderLayer, VertexConsumer> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
 		super(blockInfo, bufferFunc, aoCalc, transform);
@@ -69,7 +67,7 @@ public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer imple
 
 	private final MutableQuadViewImpl editorQuad = new MutableQuadViewImpl() {
 		{
-			data = editorBuffer;
+			data = new int[EncodingFormat.TOTAL_STRIDE];
 			material(MATERIAL_SHADED);
 		}
 
@@ -86,36 +84,21 @@ public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer imple
 		final Value defaultMaterial = blockInfo.defaultAo && model.useAmbientOcclusion() ? MATERIAL_SHADED : MATERIAL_FLAT;
 		final BlockState blockState = blockInfo.blockState;
 
-		for (int i = 0; i < 6; i++) {
-			final Direction face = ModelHelper.faceFromIndex(i);
-			final List<BakedQuad> quads = model.getQuads(blockState, face, random.get());
+		for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
+			final Direction cullFace = ModelHelper.faceFromIndex(i);
+			final List<BakedQuad> quads = model.getQuads(blockState, cullFace, random.get());
 			final int count = quads.size();
 
 			if (count != 0) {
 				for (int j = 0; j < count; j++) {
 					final BakedQuad q = quads.get(j);
-					renderQuad(q, face, defaultMaterial);
+					renderQuad(q, cullFace, defaultMaterial);
 				}
-			}
-		}
-
-		final List<BakedQuad> quads = model.getQuads(blockState, null, random.get());
-		final int count = quads.size();
-
-		if (count != 0) {
-			for (int j = 0; j < count; j++) {
-				final BakedQuad q = quads.get(j);
-				renderQuad(q, null, defaultMaterial);
 			}
 		}
 	}
 
 	private void renderQuad(BakedQuad quad, Direction cullFace, Value defaultMaterial) {
-		// TODO: should remove in 1.17 cycle, was for OF compat only
-		if (!CompatibilityHelper.canRender(quad.getVertexData())) {
-			return;
-		}
-
 		final MutableQuadViewImpl editorQuad = this.editorQuad;
 		editorQuad.fromVanilla(quad, defaultMaterial, cullFace);
 
@@ -132,16 +115,16 @@ public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer imple
 		if (!editorQuad.material().disableAo(0)) {
 			// needs to happen before offsets are applied
 			aoCalc.compute(editorQuad, true);
-			tesselateSmooth(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
+			tessellateSmooth(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
 		} else {
 			// Recomputing whether the quad has a light face is only needed if it doesn't also have a cull face,
 			// as in those cases, the cull face will always be used to offset the light sampling position
 			if (cullFace == null) {
-				// Can't rely on lazy computation in tesselateFlat() because needs to happen before offsets are applied
+				// Can't rely on lazy computation in tessellateFlat() because needs to happen before offsets are applied
 				editorQuad.geometryFlags();
 			}
 
-			tesselateFlat(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
+			tessellateFlat(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
 		}
 	}
 }

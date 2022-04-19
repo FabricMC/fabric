@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Iterables;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.registry.Registry;

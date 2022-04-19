@@ -23,8 +23,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
@@ -34,7 +34,7 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public final class CommandTest implements ModInitializer {
-	private static final Logger LOGGER = LogManager.getLogger(CommandTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CommandTest.class);
 	private static final SimpleCommandExceptionType WRONG_SIDE_SHOULD_BE_INTEGRATED = new SimpleCommandExceptionType(new LiteralText("This command was registered incorrectly. Should only be present on an integrated server but was ran on a dedicated server!"));
 	private static final SimpleCommandExceptionType WRONG_SIDE_SHOULD_BE_DEDICATED = new SimpleCommandExceptionType(new LiteralText("This command was registered incorrectly. Should only be present on an dedicated server but was ran on an integrated server!"));
 

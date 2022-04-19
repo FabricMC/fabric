@@ -74,6 +74,11 @@ public class FabricDimensionTest implements ModInitializer {
 		}
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+			if (true) {
+				// TODO 22w06a ServerBugfixMixin
+				return;
+			}
+
 			ServerWorld overworld = server.getWorld(World.OVERWORLD);
 			ServerWorld world = server.getWorld(WORLD_KEY);
 
@@ -101,7 +106,7 @@ public class FabricDimensionTest implements ModInitializer {
 
 	private int swapTargeted(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 		ServerPlayerEntity player = context.getSource().getPlayer();
-		ServerWorld serverWorld = player.getServerWorld();
+		ServerWorld serverWorld = player.getWorld();
 		ServerWorld modWorld = getModWorld(context);
 
 		if (serverWorld != modWorld) {

@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import io.netty.buffer.Unpooled;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.screen.ScreenHandler;
@@ -37,12 +37,8 @@ import net.fabricmc.fabric.mixin.container.ServerPlayerEntityAccessor;
 
 public class ContainerProviderImpl implements ContainerProviderRegistry {
 	public static final Identifier OPEN_CONTAINER = new Identifier("fabric", "container/open");
-	/**
-	 * Use the instance provided by ContainerProviderRegistry.
-	 */
-	public static final ContainerProviderImpl INSTANCE = new ContainerProviderImpl();
 
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ContainerProviderImpl.class);
 
 	private static final Map<Identifier, ContainerFactory<ScreenHandler>> FACTORIES = new HashMap<>();
 
@@ -104,7 +100,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		}
 
 		player.currentScreenHandler = screenHandler;
-		((ServerPlayerEntityAccessor) player).callOnSpawn(screenHandler);
+		((ServerPlayerEntityAccessor) player).callOnScreenHandlerOpened(screenHandler);
 	}
 
 	public <C extends ScreenHandler> C createContainer(int syncId, Identifier identifier, PlayerEntity player, PacketByteBuf buf) {

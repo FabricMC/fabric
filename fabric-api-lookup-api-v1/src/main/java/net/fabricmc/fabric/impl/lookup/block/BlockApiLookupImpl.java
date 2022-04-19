@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.mixin.lookup.BlockEntityTypeAccessor;
 
 public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
-	private static final Logger LOGGER = LogManager.getLogger("fabric-api-lookup-api-v1/block");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-api-lookup-api-v1/block");
 	private static final ApiLookupMap<BlockApiLookup<?, ?>> LOOKUPS = ApiLookupMap.create(BlockApiLookupImpl::new);
 
 	@SuppressWarnings("unchecked")
@@ -47,13 +47,15 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 		return (BlockApiLookup<A, C>) LOOKUPS.getLookup(lookupId, apiClass, contextClass);
 	}
 
+	private final Identifier identifier;
 	private final Class<A> apiClass;
 	private final Class<C> contextClass;
 	private final ApiProviderMap<Block, BlockApiProvider<A, C>> providerMap = ApiProviderMap.create();
 	private final List<BlockApiProvider<A, C>> fallbackProviders = new CopyOnWriteArrayList<>();
 
 	@SuppressWarnings("unchecked")
-	private BlockApiLookupImpl(Class<?> apiClass, Class<?> contextClass) {
+	private BlockApiLookupImpl(Identifier identifier, Class<?> apiClass, Class<?> contextClass) {
+		this.identifier = identifier;
 		this.apiClass = (Class<A>) apiClass;
 		this.contextClass = (Class<C>) contextClass;
 	}
@@ -172,6 +174,11 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 		Objects.requireNonNull(fallbackProvider, "BlockApiProvider may not be null.");
 
 		fallbackProviders.add(fallbackProvider);
+	}
+
+	@Override
+	public Identifier getId() {
+		return identifier;
 	}
 
 	@Override

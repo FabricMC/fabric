@@ -23,7 +23,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
+import net.minecraft.world.gen.feature.PlacedFeature;
 
 /**
  * Utility class for getting the registry keys of built-in worldgen objects and throwing proper exceptions if they
@@ -34,11 +34,6 @@ public final class BuiltInRegistryKeys {
 	private BuiltInRegistryKeys() {
 	}
 
-	public static RegistryKey<ConfiguredSurfaceBuilder<?>> get(ConfiguredSurfaceBuilder<?> configuredSurfaceBuilder) {
-		return BuiltinRegistries.CONFIGURED_SURFACE_BUILDER.getKey(configuredSurfaceBuilder)
-				.orElseThrow(() -> new IllegalArgumentException("Given surface builder is not built-in: " + configuredSurfaceBuilder));
-	}
-
 	public static RegistryKey<ConfiguredStructureFeature<?, ?>> get(ConfiguredStructureFeature<?, ?> configuredStructure) {
 		return BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getKey(configuredStructure)
 				.orElseThrow(() -> new IllegalArgumentException("Given configured structure is not built-in: " + configuredStructure));
@@ -47,6 +42,11 @@ public final class BuiltInRegistryKeys {
 	public static RegistryKey<ConfiguredFeature<?, ?>> get(ConfiguredFeature<?, ?> configuredFeature) {
 		return BuiltinRegistries.CONFIGURED_FEATURE.getKey(configuredFeature)
 				.orElseThrow(() -> new IllegalArgumentException("Given configured feature is not built-in: " + configuredFeature));
+	}
+
+	public static RegistryKey<PlacedFeature> get(PlacedFeature placedFeature) {
+		return BuiltinRegistries.PLACED_FEATURE.getKey(placedFeature)
+				.orElseThrow(() -> new IllegalArgumentException("Given placed feature is not built-in: " + placedFeature));
 	}
 
 	public static RegistryKey<ConfiguredCarver<?>> get(ConfiguredCarver<?> configuredCarver) {

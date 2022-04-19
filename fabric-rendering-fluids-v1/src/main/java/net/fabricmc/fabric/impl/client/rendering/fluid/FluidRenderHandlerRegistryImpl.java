@@ -20,6 +20,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.TransparentBlock;
 import net.minecraft.client.MinecraftClient;
@@ -41,7 +42,6 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 
 public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistry {
-	public static final FluidRenderHandlerRegistryImpl INSTANCE = new FluidRenderHandlerRegistryImpl();
 	private static final int DEFAULT_WATER_COLOR = BuiltinRegistries.BIOME.get(BiomeKeys.OCEAN).getWaterColor();
 	private final Map<Fluid, FluidRenderHandler> handlers = new IdentityHashMap<>();
 	private final Map<Fluid, FluidRenderHandler> modHandlers = new IdentityHashMap<>();
@@ -49,7 +49,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 
 	private FluidRenderer fluidRenderer;
 
-	private FluidRenderHandlerRegistryImpl() {
+	public FluidRenderHandlerRegistryImpl() {
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		}
 	}
 
-	public boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, FluidState state) {
-		return fluidRenderer.render(world, pos, vertexConsumer, state);
+	public boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+		return fluidRenderer.render(world, pos, vertexConsumer, blockState, fluidState);
 	}
 }

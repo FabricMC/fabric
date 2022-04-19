@@ -21,6 +21,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
+import net.fabricmc.fabric.test.lookup.api.Inspectable;
+
 public class InspectableItem extends Item implements Inspectable {
 	private final String inspectionResult;
 

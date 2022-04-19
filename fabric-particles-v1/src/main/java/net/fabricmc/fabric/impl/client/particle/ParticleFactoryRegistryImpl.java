@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.particle;
 
-import java.lang.reflect.Constructor;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -29,7 +28,6 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 import net.fabricmc.fabric.mixin.client.particle.ParticleManagerAccessor;
-import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 
 public final class ParticleFactoryRegistryImpl implements ParticleFactoryRegistry {
@@ -66,28 +64,6 @@ public final class ParticleFactoryRegistryImpl implements ParticleFactoryRegistr
 	}
 
 	static class DirectParticleFactoryRegistry implements ParticleFactoryRegistry {
-		private static final Constructor<? extends SpriteProvider> SIMPLE_SPRITE_PROVIDER_CONSTRUCTOR;
-		static {
-			try {
-				String intermediaryClassName = "net.minecraft.class_702$class_4090";
-				String currentClassName = FabricLoader.getInstance().getMappingResolver().mapClassName("intermediary", intermediaryClassName);
-				@SuppressWarnings("unchecked")
-				Class<? extends SpriteProvider> clazz = (Class<? extends SpriteProvider>) Class.forName(currentClassName);
-				SIMPLE_SPRITE_PROVIDER_CONSTRUCTOR = clazz.getDeclaredConstructor(ParticleManager.class);
-				SIMPLE_SPRITE_PROVIDER_CONSTRUCTOR.setAccessible(true);
-			} catch (Exception e) {
-				throw new RuntimeException("Unable to register particles", e);
-			}
-		}
-
-		private static SpriteProvider createSimpleSpriteProvider(ParticleManager particleManager) {
-			try {
-				return SIMPLE_SPRITE_PROVIDER_CONSTRUCTOR.newInstance(particleManager);
-			} catch (Exception e) {
-				throw new RuntimeException("Unable to create SimpleSpriteProvider", e);
-			}
-		}
-
 		private final ParticleManager particleManager;
 
 		DirectParticleFactoryRegistry(ParticleManager particleManager) {
@@ -101,7 +77,7 @@ public final class ParticleFactoryRegistryImpl implements ParticleFactoryRegistr
 
 		@Override
 		public <T extends ParticleEffect> void register(ParticleType<T> type, PendingParticleFactory<T> constructor) {
-			SpriteProvider delegate = createSimpleSpriteProvider(particleManager);
+			SpriteProvider delegate = new ParticleManager.SimpleSpriteProvider();
 			FabricSpriteProvider fabricSpriteProvider = new FabricSpriteProviderImpl(particleManager, delegate);
 			((ParticleManagerAccessor) particleManager).getSpriteAwareFactories().put(Registry.PARTICLE_TYPE.getId(type), delegate);
 			register(type, constructor.create(fabricSpriteProvider));

@@ -21,10 +21,14 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 public class FabricRegistryInit implements ModInitializer {
 	@Override
 	public void onInitialize() {
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
+				RegistrySyncManager.sendPacket(server, handler.player));
+
 		// Synced in PlaySoundS2CPacket.
 		RegistryAttributeHolder.get(Registry.SOUND_EVENT)
 				.addAttribute(RegistryAttribute.SYNCED);
@@ -60,20 +64,11 @@ public class FabricRegistryInit implements ModInitializer {
 		// Doesnt seem to be accessed apart from registering?
 		RegistryAttributeHolder.get(Registry.CARVER);
 
-		// Doesnt seem to be accessed apart from registering?
-		RegistryAttributeHolder.get(Registry.SURFACE_BUILDER);
-
 		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.FEATURE);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registry.DECORATOR);
-
-		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.BLOCK_STATE_PROVIDER_TYPE);
-
-		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registry.BLOCK_PLACER_TYPE);
 
 		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.FOLIAGE_PLACER_TYPE);
@@ -94,8 +89,9 @@ public class FabricRegistryInit implements ModInitializer {
 		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.BIOME_SOURCE);
 
-		// Not synced or saved
-		RegistryAttributeHolder.get(Registry.BLOCK_ENTITY_TYPE);
+		// Synced. Vanilla uses raw ids in BlockEntityUpdateS2CPacket, and mods use the Vanilla syncing since 1.18
+		RegistryAttributeHolder.get(Registry.BLOCK_ENTITY_TYPE)
+				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in PaintingSpawnS2CPacket
 		RegistryAttributeHolder.get(Registry.PAINTING_MOTIVE)

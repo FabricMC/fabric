@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.client.rendering.fluid;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.fluid.FluidState;
@@ -31,19 +32,19 @@ public class CustomizedFluidRenderer extends SimpleFluidRenderHandler {
 	}
 
 	@Override
-	public boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, FluidState state) {
+	public boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
 		int light = getLight(world, pos);
 		float u1 = sprites[2].getFrameU(0);
 		float v1 = sprites[2].getFrameV(0);
 		float u2 = sprites[2].getFrameU(16);
-		float v2 = sprites[2].getFrameV(16 * state.getHeight(world, pos));
+		float v2 = sprites[2].getFrameV(16 * fluidState.getHeight(world, pos));
 
 		float x1 = (pos.getX() & 15) + 0.1f;
 		float y1 = pos.getY() & 15;
 		float z1 = (pos.getZ() & 15) + 0.1f;
 
 		float x2 = (pos.getX() & 15) + 0.9f;
-		float y2 = (pos.getY() & 15) + state.getHeight(world, pos);
+		float y2 = (pos.getY() & 15) + fluidState.getHeight(world, pos);
 		float z2 = (pos.getZ() & 15) + 0.9f;
 
 		vertex(vertexConsumer, x1, y1, z1, 1, 1, 1, u1, v1, light);

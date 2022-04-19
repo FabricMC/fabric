@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.entity.event;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -41,19 +41,22 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.EntityElytraEvents;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 public final class EntityEventTests implements ModInitializer {
-	private static final Logger LOGGER = LogManager.getLogger(EntityEventTests.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EntityEventTests.class);
 	public static final Block TEST_BED = new TestBedBlock(AbstractBlock.Settings.of(Material.WOOL).strength(1, 1));
+	public static final Item DIAMOND_ELYTRA = new DiamondElytraItem();
 
 	@Override
 	public void onInitialize() {
 		Registry.register(Registry.BLOCK, new Identifier("fabric-entity-events-v1-testmod", "test_bed"), TEST_BED);
 		Registry.register(Registry.ITEM, new Identifier("fabric-entity-events-v1-testmod", "test_bed"), new BlockItem(TEST_BED, new Item.Settings().group(ItemGroup.DECORATIONS)));
+		Registry.register(Registry.ITEM, new Identifier("fabric-entity-events-v1-testmod", "diamond_elytra"), DIAMOND_ELYTRA);
 
 		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed) -> {
 			LOGGER.info("Entity Killed: {}", killed);
@@ -72,7 +75,7 @@ public final class EntityEventTests implements ModInitializer {
 		});
 
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-			LOGGER.info("Respawned {}, [{}, {}]", oldPlayer.getGameProfile().getName(), oldPlayer.getServerWorld().getRegistryKey().getValue(), newPlayer.getServerWorld().getRegistryKey().getValue());
+			LOGGER.info("Respawned {}, [{}, {}]", oldPlayer.getGameProfile().getName(), oldPlayer.getWorld().getRegistryKey().getValue(), newPlayer.getWorld().getRegistryKey().getValue());
 		});
 
 		ServerPlayerEvents.ALLOW_DEATH.register((player, source, amount) -> {
@@ -171,6 +174,11 @@ public final class EntityEventTests implements ModInitializer {
 				addSleepWools(context.getSource().getPlayer());
 				return 0;
 			}));
+		});
+
+		// Block elytra flight when holding a torch in the off-hand.
+		EntityElytraEvents.ALLOW.register(entity -> {
+			return !entity.getOffHandStack().isOf(Items.TORCH);
 		});
 	}
 

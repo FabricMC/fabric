@@ -1,6 +1,10 @@
 archivesBaseName = "fabric-particles-v1"
 version = getSubprojectVersion(project)
 
+loom {
+	accessWidenerPath = file("src/main/resources/fabric-particles-v1.accesswidener")
+}
+
 moduleDependencies(project, [
 		'fabric-api-base',
 		'fabric-textures-v0'

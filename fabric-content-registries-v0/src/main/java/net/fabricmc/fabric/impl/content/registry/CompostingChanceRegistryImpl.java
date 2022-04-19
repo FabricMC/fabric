@@ -17,9 +17,9 @@
 package net.fabricmc.fabric.impl.content.registry;
 
 import net.minecraft.block.ComposterBlock;
+import net.minecraft.tag.TagKey;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
-import net.minecraft.tag.Tag;
 
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 
@@ -35,7 +35,7 @@ public class CompostingChanceRegistryImpl implements CompostingChanceRegistry {
 	}
 
 	@Override
-	public void add(Tag<Item> tag, Float value) {
+	public void add(TagKey<Item> tag, Float value) {
 		throw new UnsupportedOperationException("Tags currently not supported!");
 	}
 
@@ -45,7 +45,7 @@ public class CompostingChanceRegistryImpl implements CompostingChanceRegistry {
 	}
 
 	@Override
-	public void remove(Tag<Item> tag) {
+	public void remove(TagKey<Item> tag) {
 		throw new UnsupportedOperationException("Tags currently not supported!");
 	}
 
@@ -55,7 +55,7 @@ public class CompostingChanceRegistryImpl implements CompostingChanceRegistry {
 	}
 
 	@Override
-	public void clear(Tag<Item> tag) {
+	public void clear(TagKey<Item> tag) {
 		throw new UnsupportedOperationException("CompostingChanceRegistry operates directly on the vanilla map - clearing not supported!");
 	}
 }

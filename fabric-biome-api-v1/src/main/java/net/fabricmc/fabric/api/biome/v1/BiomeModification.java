@@ -27,6 +27,8 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
 
 /**
+ * <b>Experimental feature</b>, may be removed or changed without further notice.
+ *
  * @see BiomeModifications
  */
 public class BiomeModification {

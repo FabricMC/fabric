@@ -28,14 +28,15 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.gen.feature.PlacedFeature;
 
 /**
  * Provides an API to modify Biomes after they have been loaded and before they are used in the World.
  *
  * <p>Any modifications made to biomes will not be available for use in server.properties (as of 1.16.1),
  * or the demo level.
+ *
+ * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
 public final class BiomeModifications {
 	/**
@@ -43,20 +44,9 @@ public final class BiomeModifications {
 	 *
 	 * @see BiomeSelectors
 	 */
-	public static void addFeature(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Feature step, RegistryKey<ConfiguredFeature<?, ?>> configuredFeatureKey) {
-		create(configuredFeatureKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
-			context.getGenerationSettings().addFeature(step, configuredFeatureKey);
-		});
-	}
-
-	/**
-	 * Convenience method to add a structure to one or more biomes.
-	 *
-	 * @see BiomeSelectors
-	 */
-	public static void addStructure(Predicate<BiomeSelectionContext> biomeSelector, RegistryKey<ConfiguredStructureFeature<?, ?>> configuredStructureKey) {
-		create(configuredStructureKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
-			context.getGenerationSettings().addStructure(configuredStructureKey);
+	public static void addFeature(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Feature step, RegistryKey<PlacedFeature> placedFeatureRegistryKey) {
+		create(placedFeatureRegistryKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
+			context.getGenerationSettings().addFeature(step, placedFeatureRegistryKey);
 		});
 	}
 

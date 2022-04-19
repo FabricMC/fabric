@@ -1,0 +1,30 @@
+accessWidener	v2	named
+
+accessible  field   net/minecraft/data/server/RecipeProvider   root    Lnet/minecraft/data/DataGenerator;
+
+extendable  method  net/minecraft/data/server/AbstractTagProvider$ObjectBuilder <init>  (Lnet/minecraft/tag/Tag$Builder;Lnet/minecraft/util/registry/Registry;Ljava/lang/String;)V
+extendable  method  net/minecraft/data/server/AbstractTagProvider$ObjectBuilder add     ([Ljava/lang/Object;)Lnet/minecraft/data/server/AbstractTagProvider$ObjectBuilder;
+accessible  field   net/minecraft/data/server/AbstractTagProvider$ObjectBuilder builder Lnet/minecraft/tag/Tag$Builder;
+accessible  field   net/minecraft/data/server/AbstractTagProvider$ObjectBuilder registry    Lnet/minecraft/util/registry/Registry;
+accessible  field   net/minecraft/data/server/AbstractTagProvider$ObjectBuilder source  Ljava/lang/String;
+
+accessible  field   net/minecraft/data/server/AbstractTagProvider   tagBuilders Ljava/util/Map;
+
+accessible  field   net/minecraft/data/server/BlockLootTableGenerator   lootTables  Ljava/util/Map;
+
+accessible    class    net/minecraft/tag/Tag$TagEntry
+
+transitive-accessible   method  net/minecraft/data/family/BlockFamilies register    (Lnet/minecraft/block/Block;)Lnet/minecraft/data/family/BlockFamily$Builder;
+
+transitive-accessible    method    net/minecraft/data/client/ItemModelGenerator    register    (Lnet/minecraft/item/Item;Lnet/minecraft/data/client/Model;)V
+transitive-accessible    method    net/minecraft/data/client/ItemModelGenerator    register    (Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;Lnet/minecraft/data/client/Model;)V
+transitive-accessible    method    net/minecraft/data/client/ItemModelGenerator    register    (Lnet/minecraft/item/Item;Ljava/lang/String;Lnet/minecraft/data/client/Model;)V
+
+transitive-accessible   field   net/minecraft/data/client/BlockStateModelGenerator    blockStateCollector Ljava/util/function/Consumer;
+transitive-accessible   field   net/minecraft/data/client/BlockStateModelGenerator    modelCollector  Ljava/util/function/BiConsumer;
+
+transitive-accessible   method  net/minecraft/data/client/TextureKey  of  (Ljava/lang/String;)Lnet/minecraft/data/client/TextureKey;
+transitive-accessible   method  net/minecraft/data/client/TextureKey	of  (Ljava/lang/String;Lnet/minecraft/data/client/TextureKey;)Lnet/minecraft/data/client/TextureKey;
+
+transitive-extendable method net/minecraft/data/server/AbstractTagProvider getOutput (Lnet/minecraft/util/Identifier;)Ljava/nio/file/Path;
+transitive-extendable method net/minecraft/data/server/AbstractTagProvider$ObjectBuilder add ([Lnet/minecraft/util/registry/RegistryKey;)Lnet/minecraft/data/server/AbstractTagProvider$ObjectBuilder;

@@ -30,7 +30,10 @@ import net.fabricmc.fabric.mixin.object.builder.ModelPredicateProviderRegistrySp
  * {@link net.minecraft.client.item.ModelPredicateProviderRegistry#get(Item, Identifier)}.</p>
  *
  * @see net.minecraft.client.item.ModelPredicateProviderRegistry
+ * @deprecated Replaced by access wideners for {@link net.minecraft.client.item.ModelPredicateProviderRegistry}
+ * registration methods in Fabric Transitive Access Wideners (v1).
  */
+@Deprecated
 public final class FabricModelPredicateProviderRegistry {
 	/**
 	 * Registers a model predicate provider that is applicable for any item.

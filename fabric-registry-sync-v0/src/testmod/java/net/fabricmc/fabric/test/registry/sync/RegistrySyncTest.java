@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.test.registry.sync;
 
+import java.util.Map;
+
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.apache.commons.lang3.Validate;
 
 import net.minecraft.block.AbstractBlock;
@@ -38,6 +41,12 @@ import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
+import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
+import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistryPacketHandler;
+import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
 public class RegistrySyncTest implements ModInitializer {
 	/**
@@ -46,20 +55,40 @@ public class RegistrySyncTest implements ModInitializer {
 	public static final boolean REGISTER_BLOCKS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.blocks", "true"));
 	public static final boolean REGISTER_ITEMS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.items", "true"));
 
+	public static final Identifier PACKET_CHECK_DIRECT = new Identifier("fabric-registry-sync-v0-v1-testmod:packet_check/direct");
+	public static final RegistryPacketHandler DIRECT_PACKET_HANDLER = new DirectRegistryPacketHandler() {
+		@Override
+		public Identifier getPacketId() {
+			return PACKET_CHECK_DIRECT;
+		}
+	};
+
+	public static final Identifier PACKET_CHECK_NBT = new Identifier("fabric-registry-sync-v0-v1-testmod:packet_check/nbt");
+	public static final RegistryPacketHandler NBT_PACKET_HANDLER = new NbtRegistryPacketHandler() {
+		@Override
+		public Identifier getPacketId() {
+			return PACKET_CHECK_NBT;
+		}
+	};
+
+	public static final Identifier PACKET_CHECK_COMPARE = new Identifier("fabric-registry-sync-v0-v1-testmod:packet_check/compare");
+
 	@Override
 	public void onInitialize() {
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap(true, null);
+			NBT_PACKET_HANDLER.sendPacket(handler.player, map);
+			DIRECT_PACKET_HANDLER.sendPacket(handler.player, map);
+			sender.sendPacket(PACKET_CHECK_COMPARE, PacketByteBufs.empty());
+		});
+
 		testBuiltInRegistrySync();
 
 		if (REGISTER_BLOCKS) {
-			for (int i = 0; i < 5; i++) {
-				Block block = new Block(AbstractBlock.Settings.of(Material.STONE));
-				Registry.register(Registry.BLOCK, new Identifier("registry_sync", "block_" + i), block);
-
-				if (REGISTER_ITEMS) {
-					BlockItem blockItem = new BlockItem(block, new Item.Settings());
-					Registry.register(Registry.ITEM, new Identifier("registry_sync", "block_" + i), blockItem);
-				}
-			}
+			// For checking raw id bulk in direct registry packet, make registry_sync namespace have two bulks.
+			registerBlocks("registry_sync", 5, 0);
+			registerBlocks("registry_sync2", 50, 0);
+			registerBlocks("registry_sync", 2, 5);
 
 			Validate.isTrue(RegistryAttributeHolder.get(Registry.BLOCK).hasAttribute(RegistryAttribute.MODDED), "Modded block was registered but registry not marked as modded");
 
@@ -85,6 +114,21 @@ public class RegistrySyncTest implements ModInitializer {
 				System.out.println(id);
 			});
 		});
+
+		// Vanilla status effects don't have an entry for the int id 0, test we can handle this.
+		RegistryAttributeHolder.get(Registry.STATUS_EFFECT).addAttribute(RegistryAttribute.MODDED);
+	}
+
+	private static void registerBlocks(String namespace, int amount, int startingId) {
+		for (int i = 0; i < amount; i++) {
+			Block block = new Block(AbstractBlock.Settings.of(Material.STONE));
+			Registry.register(Registry.BLOCK, new Identifier(namespace, "block_" + (i + startingId)), block);
+
+			if (REGISTER_ITEMS) {
+				BlockItem blockItem = new BlockItem(block, new Item.Settings());
+				Registry.register(Registry.ITEM, new Identifier(namespace, "block_" + (i + startingId)), blockItem);
+			}
+		}
 	}
 
 	/**
@@ -95,19 +139,19 @@ public class RegistrySyncTest implements ModInitializer {
 		System.out.println("Checking built-in registry sync...");
 
 		// Register a configured feature before force-loading the dynamic registry manager
-		ConfiguredFeature<DefaultFeatureConfig, ?> cf1 = Feature.BASALT_PILLAR.configure(DefaultFeatureConfig.INSTANCE);
+		ConfiguredFeature<DefaultFeatureConfig, ?> cf1 = new ConfiguredFeature<>(Feature.BASALT_PILLAR, DefaultFeatureConfig.INSTANCE);
 		Identifier f1Id = new Identifier("registry_sync", "f1");
 		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, f1Id, cf1);
 
 		// Force-Initialize the dynamic registry manager, doing this in a Mod initializer would cause
 		// further registrations into BuiltInRegistries to _NOT_ propagate into DynamicRegistryManager.BUILTIN
-		checkFeature(DynamicRegistryManager.create(), f1Id);
+		checkFeature(DynamicRegistryManager.createAndLoad(), f1Id);
 
-		ConfiguredFeature<DefaultFeatureConfig, ?> cf2 = Feature.DESERT_WELL.configure(DefaultFeatureConfig.INSTANCE);
+		ConfiguredFeature<DefaultFeatureConfig, ?> cf2 = new ConfiguredFeature<>(Feature.DESERT_WELL, DefaultFeatureConfig.INSTANCE);
 		Identifier f2Id = new Identifier("registry_sync", "f2");
 		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, f2Id, cf2);
 
-		DynamicRegistryManager.Impl impl2 = DynamicRegistryManager.create();
+		DynamicRegistryManager impl2 = DynamicRegistryManager.createAndLoad();
 		checkFeature(impl2, f1Id);
 		checkFeature(impl2, f2Id);
 	}
@@ -131,7 +175,7 @@ public class RegistrySyncTest implements ModInitializer {
 			throw new IllegalStateException("Expected that the built-in entry and dynamic entry don't have object identity because the dynamic entry is created by serializing the built-in entry to JSON and back.");
 		}
 
-		if (builtInEntry.feature != entry.feature) {
+		if (builtInEntry.feature() != entry.feature()) {
 			throw new IllegalStateException("Expected both entries to reference the same feature since it's only in Registry and is never copied");
 		}
 	}

@@ -20,8 +20,6 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableSet;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -45,7 +43,6 @@ import net.fabricmc.fabric.mixin.object.builder.SpawnRestrictionAccessor;
  * @param <T> Entity class.
  */
 public class FabricEntityTypeBuilder<T extends Entity> {
-	private static final Logger LOGGER = LogManager.getLogger();
 	private SpawnGroup spawnGroup;
 	private EntityType.EntityFactory<T> factory;
 	private boolean saveable = true;
@@ -229,7 +226,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @return this builder for chaining
 	 */
 	public FabricEntityTypeBuilder<T> trackRangeBlocks(int range) {
-		return trackRangeChunks(range + 15 / 16);
+		return trackRangeChunks((range + 15) / 16);
 	}
 
 	public FabricEntityTypeBuilder<T> trackedUpdateRate(int rate) {

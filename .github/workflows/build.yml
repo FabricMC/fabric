@@ -4,7 +4,7 @@ jobs:
   build:
     strategy:
       matrix:
-        java: [16-jdk, 17-jdk]
+        java: [17-jdk]
     runs-on: ubuntu-20.04
     container:
       image: eclipse-temurin:${{ matrix.java }}
@@ -25,3 +25,7 @@ jobs:
         with:
           name: Artifacts
           path: ./*/build/libs/
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Maven Local
+          path: /root/.m2/repository

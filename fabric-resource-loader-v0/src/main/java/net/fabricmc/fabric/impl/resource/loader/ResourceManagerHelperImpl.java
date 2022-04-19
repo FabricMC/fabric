@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.resource.loader;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -28,8 +28,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.google.common.collect.Lists;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceReloader;
@@ -45,7 +45,7 @@ import net.fabricmc.loader.api.ModContainer;
 public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	private static final Map<ResourceType, ResourceManagerHelperImpl> registryMap = new HashMap<>();
 	private static final Set<Pair<String, ModNioResourcePack>> builtinResourcePacks = new HashSet<>();
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ResourceManagerHelperImpl.class);
 
 	private final Set<Identifier> addedListenerIds = new HashSet<>();
 	private final Set<IdentifiableResourceReloadListener> addedListeners = new LinkedHashSet<>();
@@ -67,30 +67,21 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
 	 */
-	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, String displayName, ResourcePackActivationType activationType) {
-		String separator = container.getRootPath().getFileSystem().getSeparator();
+	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, String name, ResourcePackActivationType activationType) {
+	    String separator = container.getRootPath().getFileSystem().getSeparator();
 		subPath = subPath.replace("/", separator);
+		String name = displayName;
+		ModNioResourcePack resourcePack = ModNioResourcePack.create(name, container, subPath, ResourceType.CLIENT_RESOURCES, activationType);
+		ModNioResourcePack dataPack = ModNioResourcePack.create(name, container, subPath, ResourceType.SERVER_DATA, activationType);
+		if (resourcePack == null && dataPack == null) return false;
 
-		Path resourcePackPath = container.getRootPath().resolve(subPath).toAbsolutePath().normalize();
-
-		if (!Files.exists(resourcePackPath)) {
-			return false;
+		if (resourcePack != null) {
+			builtinResourcePacks.add(new Pair<>(name, resourcePack));
 		}
 
-		builtinResourcePacks.add(new Pair<>(displayName, new ModNioResourcePack(container.getMetadata(), resourcePackPath, ResourceType.CLIENT_RESOURCES, null, activationType) {
-			@Override
-			public String getName() {
-				return displayName; // Built-in resource pack provided by a mod, the name is overriden.
-			}
-		}));
-
-		builtinResourcePacks.add(new Pair<>(displayName, new ModNioResourcePack(container.getMetadata(), resourcePackPath, ResourceType.SERVER_DATA, null, activationType) {
-			@Override
-			public String getName() {
-				return displayName; // Built-in resource pack provided by a mod, the name is overriden.
-			}
-		}));
-
+		if (dataPack != null) {
+			builtinResourcePacks.add(new Pair<>(name, dataPack));
+		}
 		return true;
 	}
 
@@ -128,12 +119,20 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		}
 	}
 
-	public static void sort(ResourceType type, List<ResourceReloader> listeners) {
+	public static List<ResourceReloader> sort(ResourceType type, List<ResourceReloader> listeners) {
+		if (type == null) {
+			return listeners;
+		}
+
 		ResourceManagerHelperImpl instance = get(type);
 
 		if (instance != null) {
-			instance.sort(listeners);
+			List<ResourceReloader> mutable = new ArrayList<>(listeners);
+			instance.sort(mutable);
+			return Collections.unmodifiableList(mutable);
 		}
+
+		return listeners;
 	}
 
 	protected void sort(List<ResourceReloader> listeners) {

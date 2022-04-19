@@ -36,7 +36,7 @@ import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
  * <p>Client-side only.
  */
 public interface BlockRenderLayerMap {
-	BlockRenderLayerMap INSTANCE = BlockRenderLayerMapImpl.INSTANCE;
+	BlockRenderLayerMap INSTANCE = new BlockRenderLayerMapImpl();
 
 	/**
 	 * Map (or re-map) a block state with a render layer.  Re-mapping is not recommended but if done, last one in wins.

@@ -30,7 +30,7 @@ import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderHandlerRegistr
  * rendering.
  */
 public interface FluidRenderHandlerRegistry {
-	FluidRenderHandlerRegistry INSTANCE = FluidRenderHandlerRegistryImpl.INSTANCE;
+	FluidRenderHandlerRegistry INSTANCE = new FluidRenderHandlerRegistryImpl();
 
 	/**
 	 * Get a {@link FluidRenderHandler} for a given Fluid. Supports vanilla and
