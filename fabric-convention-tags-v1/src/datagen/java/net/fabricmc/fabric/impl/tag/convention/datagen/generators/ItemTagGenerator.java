@@ -95,7 +95,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.BLUE_DYES)
 				.add(Items.BLUE_DYE);
 		getOrCreateTagBuilder(ConventionalItemTags.BROWN_DYES)
-				.add(Items.PURPLE_DYE);
+				.add(Items.BROWN_DYE);
 		getOrCreateTagBuilder(ConventionalItemTags.GREEN_DYES)
 				.add(Items.GREEN_DYE);
 		getOrCreateTagBuilder(ConventionalItemTags.RED_DYES)
