@@ -198,18 +198,18 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateBucketTags() {
-		getOrCreateTagBuilder(ConventionalItemTags.EMPTY_BUCKET)
+		getOrCreateTagBuilder(ConventionalItemTags.EMPTY_BUCKETS)
 				.add(Items.BUCKET);
-		getOrCreateTagBuilder(ConventionalItemTags.LAVA_BUCKET)
+		getOrCreateTagBuilder(ConventionalItemTags.LAVA_BUCKETS)
 				.add(Items.LAVA_BUCKET);
-		getOrCreateTagBuilder(ConventionalItemTags.WATER_BUCKET)
+		getOrCreateTagBuilder(ConventionalItemTags.WATER_BUCKETS)
 				.add(Items.AXOLOTL_BUCKET)
 				.add(Items.COD_BUCKET)
 				.add(Items.PUFFERFISH_BUCKET)
 				.add(Items.TROPICAL_FISH_BUCKET)
 				.add(Items.SALMON_BUCKET)
 				.add(Items.WATER_BUCKET);
-		getOrCreateTagBuilder(ConventionalItemTags.MILK_BUCKET)
+		getOrCreateTagBuilder(ConventionalItemTags.MILK_BUCKETS)
 				.add(Items.MILK_BUCKET);
 	}
 
