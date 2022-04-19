@@ -61,10 +61,10 @@ public class ConventionalItemTags {
 	public static final TagKey<Item> FOODS = register("foods");
 	public static final TagKey<Item> POTIONS = register("potions");
 	// Buckets
-	public static final TagKey<Item> WATER_BUCKET = register("bucket/water");
-	public static final TagKey<Item> LAVA_BUCKET = register("bucket/lava");
-	public static final TagKey<Item> MILK_BUCKET = register("bucket/milk");
-	public static final TagKey<Item> EMPTY_BUCKET = register("bucket/empty");
+	public static final TagKey<Item> WATER_BUCKETS = register("water_buckets");
+	public static final TagKey<Item> LAVA_BUCKETS = register("lava_buckets");
+	public static final TagKey<Item> MILK_BUCKETS = register("milk_buckets");
+	public static final TagKey<Item> EMPTY_BUCKETS = register("empty_buckets");
 
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Item> GLASS_PANES = register("glass_panes");
@@ -89,6 +89,20 @@ public class ConventionalItemTags {
 	public static final TagKey<Item> RED_DYES = register("red_dyes");
 	public static final TagKey<Item> WHITE_DYES = register("white_dyes");
 	public static final TagKey<Item> YELLOW_DYES = register("yellow_dyes");
+
+	// Deprecated
+	/** @deprecated Replaced with {@link #WATER_BUCKETS}. */
+	@Deprecated(forRemoval = true)
+	public static final TagKey<Item> WATER_BUCKET = WATER_BUCKETS;
+	/** @deprecated Replaced with {@link #LAVA_BUCKETS}. */
+	@Deprecated(forRemoval = true)
+	public static final TagKey<Item> LAVA_BUCKET = LAVA_BUCKETS;
+	/** @deprecated Replaced with {@link #MILK_BUCKETS}. */
+	@Deprecated(forRemoval = true)
+	public static final TagKey<Item> MILK_BUCKET = MILK_BUCKETS;
+	/** @deprecated Replaced with {@link #EMPTY_BUCKETS}. */
+	@Deprecated(forRemoval = true)
+	public static final TagKey<Item> EMPTY_BUCKET = EMPTY_BUCKETS;
 
 	private static TagKey<Item> register(String tagID) {
 		return TagRegistration.ITEM_TAG_REGISTRATION.registerCommon(tagID);
