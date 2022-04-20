@@ -24,7 +24,6 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -41,7 +40,7 @@ public class PositionedScreen extends HandledScreen<ScreenHandler> {
 	private static Optional<Text> getPositionText(ScreenHandler handler) {
 		if (handler instanceof PositionedScreenHandler) {
 			BlockPos pos = ((PositionedScreenHandler) handler).getPos();
-			return pos != null ? Optional.of(new LiteralText("(" + pos.toShortString() + ")")) : Optional.empty();
+			return pos != null ? Optional.of(Text.literal("(" + pos.toShortString() + ")")) : Optional.empty();
 		} else {
 			return Optional.empty();
 		}

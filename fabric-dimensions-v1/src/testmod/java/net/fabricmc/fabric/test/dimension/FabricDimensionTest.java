@@ -28,7 +28,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -114,7 +114,7 @@ public class FabricDimensionTest implements ModInitializer {
 			FabricDimensions.teleport(player, modWorld, target);
 
 			if (player.world != modWorld) {
-				throw new CommandException(new LiteralText("Teleportation failed!"));
+				throw new CommandException(Text.literal("Teleportation failed!"));
 			}
 
 			modWorld.setBlockState(new BlockPos(0, 100, 0), Blocks.DIAMOND_BLOCK.getDefaultState());

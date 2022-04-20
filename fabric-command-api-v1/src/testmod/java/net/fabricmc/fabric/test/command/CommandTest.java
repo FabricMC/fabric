@@ -23,11 +23,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
@@ -35,8 +35,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public final class CommandTest implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandTest.class);
-	private static final SimpleCommandExceptionType WRONG_SIDE_SHOULD_BE_INTEGRATED = new SimpleCommandExceptionType(new LiteralText("This command was registered incorrectly. Should only be present on an integrated server but was ran on a dedicated server!"));
-	private static final SimpleCommandExceptionType WRONG_SIDE_SHOULD_BE_DEDICATED = new SimpleCommandExceptionType(new LiteralText("This command was registered incorrectly. Should only be present on an dedicated server but was ran on an integrated server!"));
+	private static final SimpleCommandExceptionType WRONG_SIDE_SHOULD_BE_INTEGRATED = new SimpleCommandExceptionType(Text.literal("This command was registered incorrectly. Should only be present on an integrated server but was ran on a dedicated server!"));
+	private static final SimpleCommandExceptionType WRONG_SIDE_SHOULD_BE_DEDICATED = new SimpleCommandExceptionType(Text.literal("This command was registered incorrectly. Should only be present on an dedicated server but was ran on an integrated server!"));
 
 	@Override
 	public void onInitialize() {
@@ -97,8 +97,8 @@ public final class CommandTest implements ModInitializer {
 
 	private int executeCommonCommand(CommandContext<ServerCommandSource> context) {
 		final ServerCommandSource source = context.getSource();
-		source.sendFeedback(new LiteralText("Common test command is working."), false);
-		source.sendFeedback(new LiteralText("Server Is Dedicated: " + source.getServer().isDedicated()), false);
+		source.sendFeedback(Text.literal("Common test command is working."), false);
+		source.sendFeedback(Text.literal("Server Is Dedicated: " + source.getServer().isDedicated()), false);
 
 		return 1;
 	}
@@ -110,8 +110,8 @@ public final class CommandTest implements ModInitializer {
 			throw WRONG_SIDE_SHOULD_BE_DEDICATED.create();
 		}
 
-		source.sendFeedback(new LiteralText("Dedicated test command is working."), false);
-		source.sendFeedback(new LiteralText("Server Is Dedicated: " + source.getServer().isDedicated()), false);
+		source.sendFeedback(Text.literal("Dedicated test command is working."), false);
+		source.sendFeedback(Text.literal("Server Is Dedicated: " + source.getServer().isDedicated()), false);
 
 		return 1;
 	}
@@ -123,8 +123,8 @@ public final class CommandTest implements ModInitializer {
 			throw WRONG_SIDE_SHOULD_BE_INTEGRATED.create();
 		}
 
-		source.sendFeedback(new LiteralText("Integrated test command is working."), false);
-		source.sendFeedback(new LiteralText("Server Is Integrated: " + !source.getServer().isDedicated()), false);
+		source.sendFeedback(Text.literal("Integrated test command is working."), false);
+		source.sendFeedback(Text.literal("Server Is Integrated: " + !source.getServer().isDedicated()), false);
 
 		return 1;
 	}

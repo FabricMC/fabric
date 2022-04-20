@@ -27,11 +27,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.random.AbstractRandom;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
-import net.minecraft.util.math.random.AbstractRandom;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
@@ -51,7 +51,7 @@ public class VillagerTypeTest1 implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
 			dispatcher.register(literal("fabric_refreshtrades").executes(context -> {
 				TradeOfferHelper.refreshOffers();
-				context.getSource().sendFeedback(new LiteralText("Refreshed trades"), false);
+				context.getSource().sendFeedback(Text.literal("Refreshed trades"), false);
 				return 1;
 			}));
 
@@ -60,7 +60,7 @@ public class VillagerTypeTest1 implements ModInitializer {
 						final Entity entity = getEntity(context, "entity");
 
 						if (!(entity instanceof WanderingTraderEntity)) {
-							throw new SimpleCommandExceptionType(new LiteralText("Entity is not a wandering trader")).create();
+							throw new SimpleCommandExceptionType(Text.literal("Entity is not a wandering trader")).create();
 						}
 
 						WanderingTraderEntity trader = (WanderingTraderEntity) entity;

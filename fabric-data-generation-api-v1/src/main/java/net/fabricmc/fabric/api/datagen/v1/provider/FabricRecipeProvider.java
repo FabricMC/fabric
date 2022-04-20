@@ -24,7 +24,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 
-import net.minecraft.class_7403;
+import net.minecraft.data.DataWriter;
 import net.minecraft.data.server.RecipeProvider;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
@@ -65,7 +65,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	}
 
 	@Override
-	public void run(class_7403 cache) {
+	public void run(DataWriter writer) {
 		Path path = this.root.getOutput();
 		Set<Identifier> generatedRecipes = Sets.newHashSet();
 		generateRecipes(provider -> {
@@ -79,12 +79,12 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 			ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(provider);
 			ConditionJsonProvider.write(recipeJson, conditions);
 
-			saveRecipe(cache, recipeJson, path.resolve("data/" + identifier.getNamespace() + "/recipes/" + identifier.getPath() + ".json"));
+			saveRecipe(writer, recipeJson, path.resolve("data/" + identifier.getNamespace() + "/recipes/" + identifier.getPath() + ".json"));
 			JsonObject advancementJson = provider.toAdvancementJson();
 
 			if (advancementJson != null) {
 				ConditionJsonProvider.write(advancementJson, conditions);
-				saveRecipeAdvancement(cache, advancementJson, path.resolve("data/" + identifier.getNamespace() + "/advancements/" + provider.getAdvancementId().getPath() + ".json"));
+				saveRecipeAdvancement(writer, advancementJson, path.resolve("data/" + identifier.getNamespace() + "/advancements/" + provider.getAdvancementId().getPath() + ".json"));
 			}
 		});
 	}

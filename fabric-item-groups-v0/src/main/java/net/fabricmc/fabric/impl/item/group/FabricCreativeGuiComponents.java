@@ -26,9 +26,7 @@ import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 public class FabricCreativeGuiComponents {
@@ -69,15 +67,15 @@ public class FabricCreativeGuiComponents {
 
 				if (this.hovered) {
 					int pageCount = (int) Math.ceil((ItemGroup.GROUPS.length - COMMON_GROUPS.size()) / 9D);
-					gui.renderTooltip(matrixStack, new TranslatableText("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, pageCount), mouseX, mouseY);
+					gui.renderTooltip(matrixStack, Text.translatable("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, pageCount), mouseX, mouseY);
 				}
 			}
 		}
 	}
 
 	public enum Type {
-		NEXT(new LiteralText(">"), CreativeGuiExtensions::fabric_nextPage),
-		PREVIOUS(new LiteralText("<"), CreativeGuiExtensions::fabric_previousPage);
+		NEXT(Text.literal(">"), CreativeGuiExtensions::fabric_nextPage),
+		PREVIOUS(Text.literal("<"), CreativeGuiExtensions::fabric_previousPage);
 
 		Text text;
 		Consumer<CreativeGuiExtensions> clickConsumer;

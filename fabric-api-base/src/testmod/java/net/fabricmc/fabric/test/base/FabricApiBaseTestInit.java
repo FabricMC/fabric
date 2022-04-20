@@ -20,7 +20,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
@@ -45,7 +45,7 @@ public class FabricApiBaseTestInit implements ModInitializer {
 		// Command to call audit the mixin environment
 		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
 			dispatcher.register(literal("audit_mixins").executes(context -> {
-				context.getSource().sendFeedback(new LiteralText("Auditing mixin environment"), false);
+				context.getSource().sendFeedback(Text.literal("Auditing mixin environment"), false);
 
 				try {
 					MixinEnvironment.getCurrentEnvironment().audit();
@@ -54,7 +54,7 @@ public class FabricApiBaseTestInit implements ModInitializer {
 					throw new AssertionError("Failed to audit mixin environment", e);
 				}
 
-				context.getSource().sendFeedback(new LiteralText("Successfully audited mixin environment"), false);
+				context.getSource().sendFeedback(Text.literal("Successfully audited mixin environment"), false);
 
 				return 1;
 			}));

@@ -32,8 +32,6 @@ public abstract class MixinChunkRenderData implements AccessChunkRendererData {
 	private Set<RenderLayer> initializedLayers;
 	@Shadow
 	private Set<RenderLayer> nonEmptyLayers;
-	@Shadow
-	private boolean empty;
 
 	@Override
 	public boolean fabric_markInitialized(RenderLayer renderLayer) {
@@ -42,7 +40,6 @@ public abstract class MixinChunkRenderData implements AccessChunkRendererData {
 
 	@Override
 	public void fabric_markPopulated(RenderLayer renderLayer) {
-		empty = false;
 		nonEmptyLayers.add(renderLayer);
 	}
 }

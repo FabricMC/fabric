@@ -36,7 +36,6 @@ import net.minecraft.network.NetworkSide;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.PacketListener;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
@@ -70,9 +69,9 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 		PacketListener handler = this.packetListener;
 
 		if (handler instanceof DisconnectPacketSource) {
-			this.send(((DisconnectPacketSource) handler).createDisconnectPacket(new TranslatableText("disconnect.genericReason")), listener);
+			this.send(((DisconnectPacketSource) handler).createDisconnectPacket(Text.translatable("disconnect.genericReason")), listener);
 		} else {
-			this.disconnect(new TranslatableText("disconnect.genericReason")); // Don't send packet if we cannot send proper packets
+			this.disconnect(Text.translatable("disconnect.genericReason")); // Don't send packet if we cannot send proper packets
 		}
 	}
 

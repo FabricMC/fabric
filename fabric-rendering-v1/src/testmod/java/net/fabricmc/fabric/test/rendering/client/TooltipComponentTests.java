@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.test.rendering.client;
 
 import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -30,7 +30,7 @@ public class TooltipComponentTests implements ClientModInitializer {
 	public void onInitializeClient() {
 		TooltipComponentCallback.EVENT.register(data -> {
 			if (data instanceof TooltipComponentTestInit.Data d) {
-				return TooltipComponent.of(new LiteralText(d.string()).setStyle(Style.EMPTY.withColor(Formatting.GREEN)).asOrderedText());
+				return TooltipComponent.of(Text.literal(d.string()).setStyle(Style.EMPTY.withColor(Formatting.GREEN)).asOrderedText());
 			}
 
 			return null;

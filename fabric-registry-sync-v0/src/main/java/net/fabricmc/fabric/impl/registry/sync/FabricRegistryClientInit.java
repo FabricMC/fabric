@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.registry.sync;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -39,7 +39,7 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 				RegistrySyncManager.receivePacket(client, packetHandler, buf, RegistrySyncManager.DEBUG || !client.isInSingleplayer(), (e) -> {
 					LOGGER.error("Registry remapping failed!", e);
 
-					client.execute(() -> handler.getConnection().disconnect(new LiteralText("Registry remapping failed: " + e.getMessage())));
+					client.execute(() -> handler.getConnection().disconnect(Text.literal("Registry remapping failed: " + e.getMessage())));
 				}));
 	}
 }

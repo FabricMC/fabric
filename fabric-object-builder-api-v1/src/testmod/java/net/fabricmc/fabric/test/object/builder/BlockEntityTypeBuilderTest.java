@@ -29,7 +29,6 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -94,8 +93,8 @@ public class BlockEntityTypeBuilderTest implements ModInitializer {
 					throw new AssertionError("Incorrect block entity for betrayal block at " + pos + ": " + id);
 				}
 
-				Text posText = new TranslatableText("chat.coordinates", pos.getX(), pos.getY(), pos.getZ());
-				Text message = new TranslatableText("text.fabric-object-builder-api-v1-testmod.block_entity_type_success", posText, BLOCK_ENTITY_TYPE_ID);
+				Text posText = Text.translatable("chat.coordinates", pos.getX(), pos.getY(), pos.getZ());
+				Text message = Text.translatable("text.fabric-object-builder-api-v1-testmod.block_entity_type_success", posText, BLOCK_ENTITY_TYPE_ID);
 
 				player.sendMessage(message, false);
 			}
