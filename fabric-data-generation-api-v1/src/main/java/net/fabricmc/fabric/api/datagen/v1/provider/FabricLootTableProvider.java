@@ -30,8 +30,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.class_7403;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.DataWriter;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
@@ -69,7 +69,7 @@ public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier,
 
 	@ApiStatus.Internal
 	@Override
-	default void run(class_7403 cache) throws IOException {
+	default void run(DataWriter writer) throws IOException {
 		HashMap<Identifier, LootTable> builders = Maps.newHashMap();
 		HashMap<Identifier, ConditionJsonProvider[]> conditionMap = new HashMap<>();
 
@@ -86,7 +86,7 @@ public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier,
 			JsonObject tableJson = (JsonObject) LootManager.toJson(entry.getValue());
 			ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
 
-			DataProvider.writeToPath(GSON, cache, tableJson, getOutputPath(entry.getKey()));
+			DataProvider.writeToPath(GSON, writer, tableJson, getOutputPath(entry.getKey()));
 		}
 	}
 

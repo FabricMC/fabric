@@ -21,11 +21,11 @@ import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.option.StickyKeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
 public class KeyBindingsTest implements ClientModInitializer {
 	@Override
@@ -37,19 +37,19 @@ public class KeyBindingsTest implements ClientModInitializer {
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (binding1.wasPressed()) {
-				client.player.sendMessage(new LiteralText("Key 1 was pressed!"), false);
+				client.player.sendMessage(Text.literal("Key 1 was pressed!"), false);
 			}
 
 			while (binding2.wasPressed()) {
-				client.player.sendMessage(new LiteralText("Key 2 was pressed!"), false);
+				client.player.sendMessage(Text.literal("Key 2 was pressed!"), false);
 			}
 
 			if (stickyBinding.isPressed()) {
-				client.player.sendMessage(new LiteralText("Sticky Key was pressed!"), false);
+				client.player.sendMessage(Text.literal("Sticky Key was pressed!"), false);
 			}
 
 			while (duplicateBinding.wasPressed()) {
-				client.player.sendMessage(new LiteralText("Duplicate Key was pressed!"), false);
+				client.player.sendMessage(Text.literal("Duplicate Key was pressed!"), false);
 			}
 		});
 	}

@@ -37,7 +37,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
@@ -98,14 +98,14 @@ public final class NetworkingChannelTest implements ModInitializer {
 		final Identifier channel = getIdentifier(context, "channel");
 
 		if (ServerPlayNetworking.getReceived(executor).contains(channel)) {
-			throw new SimpleCommandExceptionType(new LiteralText(String.format("Cannot register channel %s twice for server player", channel))).create();
+			throw new SimpleCommandExceptionType(Text.literal(String.format("Cannot register channel %s twice for server player", channel))).create();
 		}
 
 		ServerPlayNetworking.registerReceiver(executor.networkHandler, channel, (server, player, handler, buf, sender) -> {
 			System.out.printf("Received packet on channel %s%n", channel);
 		});
 
-		context.getSource().sendFeedback(new LiteralText(String.format("Registered channel %s for %s", channel, executor.getEntityName())), false);
+		context.getSource().sendFeedback(Text.literal(String.format("Registered channel %s for %s", channel, executor.getEntityName())), false);
 
 		return 1;
 	}
@@ -114,11 +114,11 @@ public final class NetworkingChannelTest implements ModInitializer {
 		final Identifier channel = getIdentifier(context, "channel");
 
 		if (!ServerPlayNetworking.getReceived(player).contains(channel)) {
-			throw new SimpleCommandExceptionType(new LiteralText("Cannot unregister channel the server player entity cannot recieve packets on")).create();
+			throw new SimpleCommandExceptionType(Text.literal("Cannot unregister channel the server player entity cannot recieve packets on")).create();
 		}
 
 		ServerPlayNetworking.unregisterReceiver(player.networkHandler, channel);
-		context.getSource().sendFeedback(new LiteralText(String.format("Unregistered channel %s for %s", getIdentifier(context, "channel"), player.getEntityName())), false);
+		context.getSource().sendFeedback(Text.literal(String.format("Unregistered channel %s for %s", getIdentifier(context, "channel"), player.getEntityName())), false);
 
 		return 1;
 	}

@@ -27,7 +27,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
@@ -111,7 +110,7 @@ public class FluidVariantRendering {
 
 		// If advanced tooltips are enabled, render the fluid id
 		if (context.isAdvanced()) {
-			tooltip.add(new LiteralText(Registry.FLUID.getId(fluidVariant.getFluid()).toString()).formatted(Formatting.DARK_GRAY));
+			tooltip.add(Text.literal(Registry.FLUID.getId(fluidVariant.getFluid()).toString()).formatted(Formatting.DARK_GRAY));
 		}
 
 		// TODO: consider adding an event to append to tooltips?

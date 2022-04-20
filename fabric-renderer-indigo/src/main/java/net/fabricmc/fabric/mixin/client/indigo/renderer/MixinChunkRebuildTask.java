@@ -24,15 +24,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
 import net.minecraft.client.render.chunk.ChunkBuilder;
 import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
+import net.minecraft.client.render.chunk.ChunkOcclusionDataBuilder;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
@@ -65,19 +68,21 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderConte
 @Mixin(targets = "net.minecraft.client.render.chunk.ChunkBuilder$BuiltChunk$RebuildTask")
 public abstract class MixinChunkRebuildTask {
 	@Shadow
-	protected ChunkRendererRegion region;
-	@Shadow
 	protected BuiltChunk field_20839;
 
-	@Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask;render(FFFLnet/minecraft/client/render/chunk/ChunkBuilder$ChunkData;Lnet/minecraft/client/render/chunk/BlockBufferBuilderStorage;)Ljava/util/Set;")
-	private void hookChunkBuild(float cameraX, float cameraY, float cameraZ, ChunkBuilder.ChunkData renderData, BlockBufferBuilderStorage builder, CallbackInfoReturnable<Set<BlockEntity>> ci) {
-		ChunkRendererRegion region = this.region;
+	@Inject(method = "Lnet/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask;render(FFFLnet/minecraft/client/render/chunk/ChunkBuilder$ChunkData;Lnet/minecraft/client/render/chunk/BlockBufferBuilderStorage;)Ljava/util/Set;",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/BlockPos;iterate(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Ljava/lang/Iterable;"),
+			locals = LocalCapture.CAPTURE_FAILHARD)
+	private void hookChunkBuild(float cameraX, float cameraY, float cameraZ,
+			ChunkBuilder.ChunkData renderData, BlockBufferBuilderStorage builder,
+			CallbackInfoReturnable<Set<BlockEntity>> ci,
+			int i, BlockPos blockPos, BlockPos blockPos2, ChunkOcclusionDataBuilder chunkOcclusionDataBuilder, Set set, ChunkRendererRegion region, MatrixStack matrixStack, Set<RenderLayer> initializedLayers/*, AbstractRandom abstractRandom, BlockRenderManager blockRenderManager*/) {
+		// hook just before iterating over the render chunk's chunks blocks, captures the used renderlayer set
+		// accessing this.region is unsafe due to potential async cancellation, the LV has to be used!
 
-		if (region != null) {
-			TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
-			renderer.prepare(region, field_20839, renderData, builder);
-			((AccessChunkRendererRegion) region).fabric_setRenderer(renderer);
-		}
+		TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
+		renderer.prepare(region, field_20839, renderData, builder, initializedLayers);
+		((AccessChunkRendererRegion) region).fabric_setRenderer(renderer);
 	}
 
 	/**
@@ -115,8 +120,11 @@ public abstract class MixinChunkRebuildTask {
 	/**
 	 * Release all references. Probably not necessary but would be $#%! to debug if it is.
 	 */
-	@Inject(at = @At("RETURN"), method = "Lnet/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask;render(FFFLnet/minecraft/client/render/chunk/ChunkBuilder$ChunkData;Lnet/minecraft/client/render/chunk/BlockBufferBuilderStorage;)Ljava/util/Set;")
+	@Inject(method = "Lnet/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask;render(FFFLnet/minecraft/client/render/chunk/ChunkBuilder$ChunkData;Lnet/minecraft/client/render/chunk/BlockBufferBuilderStorage;)Ljava/util/Set;",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/block/BlockModelRenderer;disableBrightnessCache()V"))
 	private void hookRebuildChunkReturn(CallbackInfoReturnable<Set<BlockEntity>> ci) {
+		// hook after iterating over the render chunk's chunks blocks, must be called if and only if hookChunkBuild happened
+
 		TerrainRenderContext.POOL.get().release();
 	}
 }

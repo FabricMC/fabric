@@ -94,7 +94,7 @@ public class FabricRegistryInit implements ModInitializer {
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in PaintingSpawnS2CPacket
-		RegistryAttributeHolder.get(Registry.PAINTING_MOTIVE)
+		RegistryAttributeHolder.get(Registry.PAINTING_VARIANT)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Doesnt seem to be synced or saved, STAT_TYPE seems to handle the syncing.

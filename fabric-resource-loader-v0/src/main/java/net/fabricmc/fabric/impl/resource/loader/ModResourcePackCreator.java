@@ -24,7 +24,7 @@ import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 
@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.resource.ModResourcePack;
  * Represents a resource pack provider for mods and built-in mods resource packs.
  */
 public class ModResourcePackCreator implements ResourcePackProvider {
-	public static final ResourcePackSource RESOURCE_PACK_SOURCE = text -> new TranslatableText("pack.nameAndSource", text, new TranslatableText("pack.source.fabricmod"));
+	public static final ResourcePackSource RESOURCE_PACK_SOURCE = text -> Text.translatable("pack.nameAndSource", text, Text.translatable("pack.source.fabricmod"));
 	public static final ModResourcePackCreator CLIENT_RESOURCE_PACK_PROVIDER = new ModResourcePackCreator(ResourceType.CLIENT_RESOURCES);
 	private final ResourcePackProfile.Factory factory;
 	private final ResourceType type;

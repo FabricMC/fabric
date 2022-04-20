@@ -28,8 +28,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import net.minecraft.advancement.Advancement;
-import net.minecraft.class_7403;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.DataWriter;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -69,7 +69,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	}
 
 	@Override
-	public void run(class_7403 cache) throws IOException {
+	public void run(DataWriter writer) throws IOException {
 		final Set<Identifier> identifiers = Sets.newHashSet();
 		final Set<Advancement> advancements = Sets.newHashSet();
 
@@ -83,7 +83,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 			JsonObject advancementJson = advancement.createTask().toJson();
 			ConditionJsonProvider.write(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
 
-			DataProvider.writeToPath(GSON, cache, advancementJson, getOutputPath(advancement));
+			DataProvider.writeToPath(GSON, writer, advancementJson, getOutputPath(advancement));
 		}
 	}
 

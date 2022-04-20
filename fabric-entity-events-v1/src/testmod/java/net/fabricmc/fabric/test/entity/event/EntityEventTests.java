@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.entity.event;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -31,7 +31,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.command.CommandManager;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -196,7 +196,7 @@ public final class EntityEventTests implements ModInitializer {
 
 	private static ItemStack createNamedItem(Item item, String name) {
 		ItemStack stack = new ItemStack(item);
-		stack.setCustomName(new LiteralText(name));
+		stack.setCustomName(Text.literal(name));
 		return stack;
 	}
 }

@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.event.lifecycle.legacy.client;
 
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
@@ -37,7 +37,7 @@ public class LegacyClientLifecycleEventsTest implements ClientModInitializer {
 		});
 
 		ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
-			lines.add(new LiteralText("A Legacy Tooltip"));
+			lines.add(Text.literal("A Legacy Tooltip"));
 		});
 	}
 }

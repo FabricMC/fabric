@@ -37,15 +37,13 @@ import com.mojang.brigadier.exceptions.BuiltInExceptionProvider;
 import com.mojang.brigadier.exceptions.CommandExceptionType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandException;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
-import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -133,7 +131,7 @@ public final class ClientCommandInternals {
 		Text message = Texts.toText(e.getRawMessage());
 		String context = e.getContext();
 
-		return context != null ? new TranslatableText("command.context.parse_error", message, context) : message;
+		return context != null ? Text.translatable("command.context.parse_error", message, context) : message;
 	}
 
 	/**
@@ -177,7 +175,7 @@ public final class ClientCommandInternals {
 		Map<CommandNode<FabricClientCommandSource>, String> commands = DISPATCHER.getSmartUsage(startNode, context.getSource());
 
 		for (String command : commands.values()) {
-			context.getSource().sendFeedback(new LiteralText("/" + command));
+			context.getSource().sendFeedback(Text.literal("/" + command));
 		}
 
 		return commands.size();

@@ -106,7 +106,7 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 		bufferBuilder.vertex(model, x1, y0, z).color(r, g, b, 1).texture(u1, v0).next();
 		bufferBuilder.vertex(model, x0, y0, z).color(r, g, b, 1).texture(u0, v0).next();
 		bufferBuilder.end();
-		BufferRenderer.draw(bufferBuilder);
+		BufferRenderer.method_43433(bufferBuilder);
 
 		RenderSystem.enableDepthTest();
 	}

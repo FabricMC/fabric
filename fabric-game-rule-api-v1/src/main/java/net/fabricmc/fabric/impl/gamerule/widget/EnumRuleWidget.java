@@ -24,9 +24,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -54,10 +52,10 @@ public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen
 		final String key = this.rootTranslationKey + "." + value.name().toLowerCase(Locale.ROOT);
 
 		if (I18n.hasTranslation(key)) {
-			return new TranslatableText(key);
+			return Text.translatable(key);
 		}
 
-		return new LiteralText(value.toString());
+		return Text.literal(value.toString());
 	}
 
 	public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
