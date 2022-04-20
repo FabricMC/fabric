@@ -16,9 +16,11 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
+import java.util.Set;
 import java.util.function.Consumer;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
 import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
 import net.minecraft.client.render.chunk.ChunkBuilder.ChunkData;
@@ -84,9 +86,9 @@ public class TerrainRenderContext extends AbstractRenderContext {
 		}
 	};
 
-	public void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, ChunkData chunkData, BlockBufferBuilderStorage builders) {
+	public void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, ChunkData chunkData, BlockBufferBuilderStorage builders, Set<RenderLayer> initializedLayers) {
 		blockInfo.setBlockView(blockView);
-		chunkInfo.prepare(blockView, chunkRenderer, chunkData, builders);
+		chunkInfo.prepare(blockView, chunkRenderer, chunkData, builders, initializedLayers);
 	}
 
 	public void release() {

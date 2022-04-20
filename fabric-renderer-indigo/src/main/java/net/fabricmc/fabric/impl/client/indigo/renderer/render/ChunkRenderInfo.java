@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
+import java.util.Set;
+
 import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -72,6 +74,7 @@ public class ChunkRenderInfo {
 	AccessChunkRendererData chunkData;
 	BuiltChunk chunkRenderer;
 	BlockBufferBuilderStorage builders;
+	Set<RenderLayer> initializedLayers;
 	BlockRenderView blockView;
 
 	private final Object2ObjectOpenHashMap<RenderLayer, BufferBuilder> buffers = new Object2ObjectOpenHashMap<>();
@@ -83,12 +86,13 @@ public class ChunkRenderInfo {
 		aoLevelCache.defaultReturnValue(Float.MAX_VALUE);
 	}
 
-	void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, ChunkData chunkData, BlockBufferBuilderStorage builders) {
+	void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, ChunkData chunkData, BlockBufferBuilderStorage builders, Set<RenderLayer> initializedLayers) {
 		this.blockView = blockView;
 		this.chunkOrigin.set(chunkRenderer.getOrigin());
 		this.chunkData = (AccessChunkRendererData) chunkData;
 		this.chunkRenderer = chunkRenderer;
 		this.builders = builders;
+		this.initializedLayers = initializedLayers;
 		buffers.clear();
 		brightnessCache.clear();
 		aoLevelCache.clear();
@@ -110,7 +114,7 @@ public class ChunkRenderInfo {
 			chunkData.fabric_markPopulated(renderLayer);
 			buffers.put(renderLayer, result);
 
-			if (chunkData.fabric_markInitialized(renderLayer)) {
+			if (initializedLayers.add(renderLayer)) {
 				((AccessChunkRenderer) chunkRenderer).fabric_beginBufferBuilding(builder);
 			}
 		}

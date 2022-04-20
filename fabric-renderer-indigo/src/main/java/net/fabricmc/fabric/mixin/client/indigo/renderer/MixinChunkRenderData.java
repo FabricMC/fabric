@@ -29,14 +29,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessChunkRende
 @Mixin(ChunkData.class)
 public abstract class MixinChunkRenderData implements AccessChunkRendererData {
 	@Shadow
-	private Set<RenderLayer> initializedLayers;
-	@Shadow
 	private Set<RenderLayer> nonEmptyLayers;
-
-	@Override
-	public boolean fabric_markInitialized(RenderLayer renderLayer) {
-		return initializedLayers.add(renderLayer);
-	}
 
 	@Override
 	public void fabric_markPopulated(RenderLayer renderLayer) {
