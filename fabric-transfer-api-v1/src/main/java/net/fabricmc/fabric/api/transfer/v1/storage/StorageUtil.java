@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.transfer.v1.storage;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -78,6 +79,7 @@ public final class StorageUtil {
 	 * @throws IllegalStateException If no transaction is passed and a transaction is already active on the current thread.
 	 */
 	public static <T> long move(@Nullable Storage<T> from, @Nullable Storage<T> to, Predicate<T> filter, long maxAmount, @Nullable TransactionContext transaction) {
+		Objects.requireNonNull(filter, "Filter may not be null");
 		if (from == null || to == null) return 0;
 
 		long totalMoved = 0;
@@ -166,6 +168,7 @@ public final class StorageUtil {
 	 */
 	@Nullable
 	public static <T> T findStoredResource(@Nullable Storage<T> storage, Predicate<T> filter) {
+		Objects.requireNonNull(filter, "Filter may not be null");
 		if (storage == null) return null;
 
 		for (StorageView<T> view : storage) {
@@ -199,6 +202,7 @@ public final class StorageUtil {
 	 */
 	@Nullable
 	public static <T> T findExtractableResource(@Nullable Storage<T> storage, Predicate<T> filter, @Nullable TransactionContext transaction) {
+		Objects.requireNonNull(filter, "Filter may not be null");
 		if (storage == null) return null;
 
 		try (Transaction nested = Transaction.openNested(transaction)) {
