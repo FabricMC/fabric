@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,7 +61,9 @@ public final class FluidStorage {
 	 * that is if the return value of {@link Storage#supportsInsertion} or {@link Storage#supportsExtraction} changes,
 	 * the storage should notify its neighbors with a block update so that they can refresh their connections if necessary.
 	 *
-	 * <p>May only be queried on the logical server thread, never client-side or from another thread!
+	 * <p>This may be queried safely both on the logical server and on the logical client threads.
+	 * On the server thread (i.e. with a server world), all transfer functionality is always supported.
+	 * On the client thread (i.e. with a client world), contents of queried Storages are unreliable and should not be modified.
 	 */
 	public static final BlockApiLookup<Storage<FluidVariant>, Direction> SIDED =
 			BlockApiLookup.get(new Identifier("fabric:sided_fluid_storage"), Storage.asClass(), Direction.class);
@@ -129,12 +130,6 @@ public final class FluidStorage {
 	}
 
 	static {
-		// Ensure that the lookup is only queried on the server side.
-		FluidStorage.SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
-			Preconditions.checkArgument(!world.isClient(), "Sided fluid storage may only be queried for a server world.");
-			return null;
-		});
-
 		// Initialize vanilla cauldron wrappers
 		CauldronFluidContent.getForFluid(Fluids.WATER);
 
