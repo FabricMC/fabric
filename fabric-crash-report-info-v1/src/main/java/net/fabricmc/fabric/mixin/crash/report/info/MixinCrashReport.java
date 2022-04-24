@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.mixin.crash.report.info;
 
+import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.TreeSet;
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,7 +39,7 @@ public abstract class MixinCrashReport {
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void fillSystemDetails(CallbackInfo info) {
 		addSection("Fabric Mods", () -> {
-			TreeSet<ModContainer> topLevelMods = new TreeSet<>(Comparator.comparing(mod -> mod.getMetadata().getId()));
+			ArrayList<ModContainer> topLevelMods = new ArrayList<>();
 
 			for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
 				if (container.getContainingMod().isEmpty()) {
@@ -55,7 +55,9 @@ public abstract class MixinCrashReport {
 		});
 	}
 
-	private static void appendMods(StringBuilder modString, int depth, TreeSet<ModContainer> mods) {
+	private static void appendMods(StringBuilder modString, int depth, ArrayList<ModContainer> mods) {
+		mods.sort(Comparator.comparing(mod -> mod.getMetadata().getId()));
+
 		for (ModContainer mod: mods) {
 			modString.append('\n');
 			modString.append("\t".repeat(depth));
@@ -64,8 +66,7 @@ public abstract class MixinCrashReport {
 			modString.append(mod.getMetadata().getVersion().getFriendlyString());
 
 			if (!mod.getContainedMods().isEmpty()) {
-				TreeSet<ModContainer> childMods = new TreeSet<>(Comparator.comparing(m -> m.getMetadata().getId()));
-				childMods.addAll(mod.getContainedMods());
+				ArrayList<ModContainer> childMods = new ArrayList<>(mod.getContainedMods());
 				appendMods(modString, depth + 1, childMods);
 			}
 		}
