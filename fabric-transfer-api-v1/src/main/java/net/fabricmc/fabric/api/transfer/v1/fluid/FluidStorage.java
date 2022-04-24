@@ -33,6 +33,7 @@ import net.minecraft.util.math.Direction;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SidedStorageBlockEntity;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.EmptyItemFluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.FullItemFluidStorage;
@@ -56,6 +57,8 @@ public final class FluidStorage {
 	 * Fluid amounts are always expressed in {@linkplain FluidConstants droplets}.
 	 * The {@code Direction} parameter may never be null.
 	 * Refer to {@link BlockApiLookup} for documentation on how to use this field.
+	 *
+	 * <p>A simple way to expose fluid variant storages for a block entity hierarchy is to extend {@link SidedStorageBlockEntity}.
 	 *
 	 * <p>When the operations supported by a storage change,
 	 * that is if the return value of {@link Storage#supportsInsertion} or {@link Storage#supportsExtraction} changes,
@@ -132,6 +135,15 @@ public final class FluidStorage {
 	static {
 		// Initialize vanilla cauldron wrappers
 		CauldronFluidContent.getForFluid(Fluids.WATER);
+
+		// Support for SidedStorageBlockEntity.
+		FluidStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
+			if (blockEntity instanceof SidedStorageBlockEntity sidedStorageBlockEntity) {
+				return sidedStorageBlockEntity.getFluidStorage(direction);
+			}
+
+			return null;
+		});
 
 		// Register combined fallback
 		FluidStorage.ITEM.registerFallback((stack, context) -> GENERAL_COMBINED_PROVIDER.invoker().find(context));
