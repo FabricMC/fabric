@@ -16,14 +16,6 @@
 
 package net.fabricmc.fabric.mixin.gametest;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.nbt.NbtCompound;
@@ -34,30 +26,66 @@ import net.minecraft.structure.Structure;
 import net.minecraft.test.StructureTestUtil;
 import net.minecraft.util.Identifier;
 
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 @Mixin(StructureTestUtil.class)
 public abstract class StructureTestUtilMixin {
 	private static final String GAMETEST_STRUCTURE_PATH = "gametest/structures/";
 
-	// Replace the default test structure loading with something that works a bit better for mods.
+	// Use "gametest/structures/" as default test structure directory for ".snbt" files. Fall back to vanilla if not found.
 	@Inject(at = @At("HEAD"), method = "createStructure(Ljava/lang/String;Lnet/minecraft/server/world/ServerWorld;)Lnet/minecraft/structure/Structure;", cancellable = true)
 	private static void createStructure(String id, ServerWorld world, CallbackInfoReturnable<Structure> cir) {
 		Identifier baseId = new Identifier(id);
 		Identifier structureId = new Identifier(baseId.getNamespace(), GAMETEST_STRUCTURE_PATH + baseId.getPath() + ".snbt");
 
+		String snbt = null;
 		try {
 			Resource resource = world.getServer().getResourceManager().getResource(structureId);
-			String snbt;
-
 			try (InputStream inputStream = resource.getInputStream()) {
 				snbt = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 			}
-
-			NbtCompound nbtCompound = NbtHelper.fromNbtProviderString(snbt);
-			Structure structure = world.getStructureManager().createStructure(nbtCompound);
-
-			cir.setReturnValue(structure);
-		} catch (IOException | CommandSyntaxException e) {
-			throw new RuntimeException("Error while trying to load structure: " + structureId, e);
+		} catch (IOException ignore) {
 		}
+
+		if (snbt != null) {
+			try {
+				NbtCompound nbtCompound = NbtHelper.fromNbtProviderString(snbt);
+				Structure structure = world.getStructureManager().createStructure(nbtCompound);
+				cir.setReturnValue(structure);
+			} catch (CommandSyntaxException e) {
+				throw new RuntimeException("Error while trying to load structure: " + structureId, e);
+			}
+		}
+	}
+
+	// If not in "gametest/structures/" or world structures, try the test structure directory.
+	// Adds "gametest/structures/" to the error message for a better overview.
+	@Redirect(method = "createStructure(Ljava/lang/String;Lnet/minecraft/server/world/ServerWorld;)Lnet/minecraft/structure/Structure;",
+			at = @At(value = "INVOKE", target = "Ljava/nio/file/Paths;get(Ljava/lang/String;[Ljava/lang/String;)Ljava/nio/file/Path;"))
+	private static Path handlePostCreateStructure(String testStructuresDirectoryName, String[] more, String structureId) throws FileNotFoundException {
+		// createStructure() calls Paths.get() with only the structure id, so technically we should be safe.
+		if (more.length != 1) {
+			return Paths.get(testStructuresDirectoryName, more);
+		}
+
+		more[0] = more[0].replace(':', '/'); // fix path, when it contains a mod id
+		Path path = Paths.get(testStructuresDirectoryName, more);
+		if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
+			throw new FileNotFoundException("Could not find structure '" + structureId + "' in '" + GAMETEST_STRUCTURE_PATH + "' or '" + testStructuresDirectoryName + "' and is not available in the world structures either.");
+		}
+		return path;
 	}
 }

@@ -60,4 +60,10 @@ public class ExampleFabricTestSuite implements FabricGameTest {
 	public void noStructure(TestContext context) {
 		context.setBlockState(0, 2, 0, Blocks.DIAMOND_BLOCK);
 	}
+
+	@GameTest(structureName = "fabric-gametest-api-v1-testmod:exampletestsuite.diamondfallback")
+	public void fallbackDiamond(TestContext context) {
+		// As gametest/structures/exampletestsuite.diamondfallback.snbt does not exist we will fall back to `.nbt`
+		// Nothing to do as the structure placed the block.
+	}
 }
