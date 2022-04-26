@@ -16,6 +16,20 @@
 
 package net.fabricmc.fabric.mixin.gametest;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.nbt.NbtCompound;
@@ -26,21 +40,6 @@ import net.minecraft.structure.Structure;
 import net.minecraft.test.StructureTestUtil;
 import net.minecraft.util.Identifier;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 @Mixin(StructureTestUtil.class)
 public abstract class StructureTestUtilMixin {
 	private static final String GAMETEST_STRUCTURE_PATH = "gametest/structures/";
@@ -50,14 +49,16 @@ public abstract class StructureTestUtilMixin {
 	private static void createStructure(String id, ServerWorld world, CallbackInfoReturnable<Structure> cir) {
 		Identifier baseId = new Identifier(id);
 		Identifier structureId = new Identifier(baseId.getNamespace(), GAMETEST_STRUCTURE_PATH + baseId.getPath() + ".snbt");
-
 		String snbt = null;
+
 		try {
 			Resource resource = world.getServer().getResourceManager().getResource(structureId);
+
 			try (InputStream inputStream = resource.getInputStream()) {
 				snbt = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 			}
 		} catch (IOException ignore) {
+			// Ignore
 		}
 
 		if (snbt != null) {
@@ -83,9 +84,11 @@ public abstract class StructureTestUtilMixin {
 
 		more[0] = more[0].replace(':', '/'); // fix path, when it contains a mod id
 		Path path = Paths.get(testStructuresDirectoryName, more);
+
 		if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
 			throw new FileNotFoundException("Could not find structure '" + structureId + "' in '" + GAMETEST_STRUCTURE_PATH + "' or '" + testStructuresDirectoryName + "' and is not available in the world structures either.");
 		}
+
 		return path;
 	}
 }
