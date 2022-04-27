@@ -50,6 +50,8 @@
     "minecraft:lush_caves",
     "minecraft:snowy_beach",
     "minecraft:swamp",
-    "minecraft:stony_shore"
+    "minecraft:stony_shore",
+    "minecraft:deep_dark",
+    "minecraft:mangrove_swamp"
   ]
 }
