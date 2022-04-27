@@ -77,15 +77,6 @@ public class FluidVariantRendering {
 	}
 
 	/**
-	 * Return the name of the passed fluid variant.
-	 * @deprecated use {@link FluidVariantAttributes#getName} instead.
-	 */
-	@Deprecated(forRemoval = true)
-	public static Text getName(FluidVariant fluidVariant) {
-		return getHandlerOrDefault(fluidVariant.getFluid()).getName(fluidVariant);
-	}
-
-	/**
 	 * Return a mutable list: the tooltip for the passed fluid variant, including the name and additional lines if available
 	 * and the id of the fluid if advanced tooltips are enabled.
 	 *
@@ -103,7 +94,7 @@ public class FluidVariantRendering {
 		List<Text> tooltip = new ArrayList<>();
 
 		// Name first
-		tooltip.add(getName(fluidVariant));
+		tooltip.add(FluidVariantAttributes.getName(fluidVariant));
 
 		// Additional tooltip information
 		getHandlerOrDefault(fluidVariant.getFluid()).appendTooltip(fluidVariant, tooltip, context);
@@ -155,14 +146,5 @@ public class FluidVariantRendering {
 	 */
 	public static int getColor(FluidVariant fluidVariant, @Nullable BlockRenderView view, @Nullable BlockPos pos) {
 		return getHandlerOrDefault(fluidVariant.getFluid()).getColor(fluidVariant, view, pos);
-	}
-
-	/**
-	 * Return {@code true} if this fluid variant should be rendered as filling tanks from the top.
-	 * @deprecated use {@link FluidVariantAttributes#isLighterThanAir} instead.
-	 */
-	@Deprecated(forRemoval = true)
-	public static boolean fillsFromTop(FluidVariant fluidVariant) {
-		return getHandlerOrDefault(fluidVariant.getFluid()).fillsFromTop(fluidVariant);
 	}
 }

@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.transfer.v1.item;
 
 import java.util.List;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.block.Blocks;
@@ -32,6 +31,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SidedStorageBlockEntity;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
@@ -72,6 +72,12 @@ public final class ItemStorage {
 	 *     <li>{@link SingleStackStorage} can also be used for more flexibility. Multiple of them can be combined with {@link CombinedStorage}.</li>
 	 *     <li>Directly providing a custom implementation of {@code Storage<ItemVariant>} is also possible.</li>
 	 * </ul>
+	 *
+	 * <p>A simple way to expose item variant storages for a block entity hierarchy is to extend {@link SidedStorageBlockEntity}.
+	 *
+	 * <p>This may be queried safely both on the logical server and on the logical client threads.
+	 * On the server thread (i.e. with a server world), all transfer functionality is always supported.
+	 * On the client thread (i.e. with a client world), contents of queried Storages are unreliable and should not be modified.
 	 */
 	public static final BlockApiLookup<Storage<ItemVariant>, Direction> SIDED =
 			BlockApiLookup.get(new Identifier("fabric:sided_item_storage"), Storage.asClass(), Direction.class);
@@ -80,14 +86,17 @@ public final class ItemStorage {
 	}
 
 	static {
-		// Ensure that the lookup is only queried on the server side.
-		ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
-			Preconditions.checkArgument(!world.isClient(), "Sided item storage may only be queried for a server world.");
-			return null;
-		});
-
 		// Composter support.
 		ItemStorage.SIDED.registerForBlocks((world, pos, state, blockEntity, direction) -> ComposterWrapper.get(world, pos, direction), Blocks.COMPOSTER);
+
+		// Support for SidedStorageBlockEntity.
+		ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
+			if (blockEntity instanceof SidedStorageBlockEntity sidedStorageBlockEntity) {
+				return sidedStorageBlockEntity.getItemStorage(direction);
+			}
+
+			return null;
+		});
 
 		// Register Inventory fallback.
 		ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {

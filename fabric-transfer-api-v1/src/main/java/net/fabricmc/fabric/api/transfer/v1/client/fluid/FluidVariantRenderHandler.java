@@ -32,8 +32,6 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
 
 /**
  * Defines how {@linkplain FluidVariant fluid variants} of a given Fluid should be displayed to clients.
@@ -45,15 +43,6 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
 @ApiStatus.Experimental
 @Environment(EnvType.CLIENT)
 public interface FluidVariantRenderHandler {
-	/**
-	 * @deprecated Implement {@link FluidVariantAttributeHandler#getName} instead.
-	 * This function will be removed in a future iteration of the API.
-	 */
-	@Deprecated(forRemoval = true)
-	default Text getName(FluidVariant fluidVariant) {
-		return FluidVariantAttributes.getName(fluidVariant);
-	}
-
 	/**
 	 * Append additional tooltips to the passed list if additional information is contained in the fluid variant.
 	 *
@@ -84,26 +73,6 @@ public interface FluidVariantRenderHandler {
 	}
 
 	/**
-	 * @deprecated Use and implement {@linkplain #getSprites(FluidVariant) the other more general overload}.
-	 * This one will be removed in a future iteration of the API.
-	 */
-	@Deprecated(forRemoval = true)
-	@Nullable
-	default Sprite getSprite(FluidVariant fluidVariant) {
-		Sprite[] sprites = getSprites(fluidVariant);
-		return sprites != null ? sprites[0] : null;
-	}
-
-	/**
-	 * @deprecated Use and implement {@linkplain #getColor(FluidVariant, BlockRenderView, BlockPos) the other more general overload}.
-	 * This one will be removed in a future iteration of the API.
-	 */
-	@Deprecated(forRemoval = true)
-	default int getColor(FluidVariant fluidVariant) {
-		return getColor(fluidVariant, null, null);
-	}
-
-	/**
 	 * Return the color to use when rendering {@linkplain #getSprite the sprite} of this fluid variant.
 	 * Transparency (alpha) will generally be taken into account and should be specified as well.
 	 *
@@ -121,15 +90,5 @@ public interface FluidVariantRenderHandler {
 		} else {
 			return -1;
 		}
-	}
-
-	/**
-	 * @deprecated Implement {@link FluidVariantAttributeHandler#isLighterThanAir(FluidVariant)} instead.
-	 * This function will be removed in a future iteration of the API.
-	 */
-	@Deprecated(forRemoval = true)
-	default boolean fillsFromTop(FluidVariant fluidVariant) {
-		// By default, only fluids lighter than air should be filled from top.
-		return FluidVariantAttributes.isLighterThanAir(fluidVariant);
 	}
 }
