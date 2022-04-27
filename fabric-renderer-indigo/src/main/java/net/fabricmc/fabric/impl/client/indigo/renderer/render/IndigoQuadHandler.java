@@ -17,21 +17,20 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessItemRenderer;
-
 public class IndigoQuadHandler implements ItemRenderContext.VanillaQuadHandler {
-	private final AccessItemRenderer itemRenderer;
+	private final ItemRenderer itemRenderer;
 
-	public IndigoQuadHandler(AccessItemRenderer itemRenderer) {
+	public IndigoQuadHandler(ItemRenderer itemRenderer) {
 		this.itemRenderer = itemRenderer;
 	}
 
 	@Override
 	public void accept(BakedModel model, ItemStack stack, int color, int overlay, MatrixStack matrixStack, VertexConsumer buffer) {
-		itemRenderer.fabric_renderBakedItemModel(model, stack, color, overlay, matrixStack, buffer);
+		itemRenderer.renderBakedItemModel(model, stack, color, overlay, matrixStack, buffer);
 	}
 }

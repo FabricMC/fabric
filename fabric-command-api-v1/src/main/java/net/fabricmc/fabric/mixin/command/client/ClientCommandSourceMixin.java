@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import net.minecraft.class_7436;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -39,12 +40,12 @@ abstract class ClientCommandSourceMixin implements FabricClientCommandSource {
 
 	@Override
 	public void sendFeedback(Text message) {
-		client.inGameHud.addChatMessage(MessageType.SYSTEM, message, Util.NIL_UUID);
+		client.inGameHud.method_43592(MessageType.SYSTEM, message, new class_7436(Util.NIL_UUID, message));
 	}
 
 	@Override
 	public void sendError(Text message) {
-		client.inGameHud.addChatMessage(MessageType.SYSTEM, Text.literal("").append(message).formatted(Formatting.RED), Util.NIL_UUID);
+		client.inGameHud.method_43592(MessageType.SYSTEM, Text.literal("").append(message).formatted(Formatting.RED), new class_7436(Util.NIL_UUID, message));
 	}
 
 	@Override

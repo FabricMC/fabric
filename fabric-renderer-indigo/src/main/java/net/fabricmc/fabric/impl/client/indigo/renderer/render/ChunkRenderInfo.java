@@ -28,13 +28,10 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
 import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
-import net.minecraft.client.render.chunk.ChunkBuilder.ChunkData;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessChunkRenderer;
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessChunkRendererData;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
 /**
@@ -71,7 +68,7 @@ public class ChunkRenderInfo {
 	private final Long2FloatOpenHashMap aoLevelCache;
 
 	private final BlockPos.Mutable chunkOrigin = new BlockPos.Mutable();
-	AccessChunkRendererData chunkData;
+	BuiltChunk.RebuildTask.class_7435 chunkData;
 	BuiltChunk chunkRenderer;
 	BlockBufferBuilderStorage builders;
 	Set<RenderLayer> initializedLayers;
@@ -86,10 +83,10 @@ public class ChunkRenderInfo {
 		aoLevelCache.defaultReturnValue(Float.MAX_VALUE);
 	}
 
-	void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, ChunkData chunkData, BlockBufferBuilderStorage builders, Set<RenderLayer> initializedLayers) {
+	void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, BuiltChunk.RebuildTask.class_7435 chunkData, BlockBufferBuilderStorage builders, Set<RenderLayer> initializedLayers) {
 		this.blockView = blockView;
 		this.chunkOrigin.set(chunkRenderer.getOrigin());
-		this.chunkData = (AccessChunkRendererData) chunkData;
+		this.chunkData = chunkData;
 		this.chunkRenderer = chunkRenderer;
 		this.builders = builders;
 		this.initializedLayers = initializedLayers;
@@ -106,20 +103,19 @@ public class ChunkRenderInfo {
 
 	/** Lazily retrieves output buffer for given layer, initializing as needed. */
 	public BufferBuilder getInitializedBuffer(RenderLayer renderLayer) {
-		BufferBuilder result = buffers.get(renderLayer);
+		BufferBuilder builder = buffers.get(renderLayer);
 
-		if (result == null) {
-			BufferBuilder builder = builders.get(renderLayer);
-			result = builder;
-			chunkData.fabric_markPopulated(renderLayer);
-			buffers.put(renderLayer, result);
+		if (builder == null) {
+			builder = builders.get(renderLayer);
 
 			if (initializedLayers.add(renderLayer)) {
-				((AccessChunkRenderer) chunkRenderer).fabric_beginBufferBuilding(builder);
+				chunkRenderer.beginBufferBuilding(builder);
 			}
+
+			buffers.put(renderLayer, builder);
 		}
 
-		return result;
+		return builder;
 	}
 
 	/**

@@ -6,11 +6,8 @@
   "mixins": [
   ],
   "client": [
-    "MixinAmbientOcclusionCalculator",
     "MixinBlockModelRenderer",
     "MixinChunkRebuildTask",
-    "MixinChunkRenderData",
-    "MixinChunkRenderer",
     "MixinChunkRendererRegion",
     "MixinItemRenderer"
   ],

@@ -23,7 +23,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
 import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
-import net.minecraft.client.render.chunk.ChunkBuilder.ChunkData;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
@@ -86,9 +85,9 @@ public class TerrainRenderContext extends AbstractRenderContext {
 		}
 	};
 
-	public void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, ChunkData chunkData, BlockBufferBuilderStorage builders, Set<RenderLayer> initializedLayers) {
+	public void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, BuiltChunk.RebuildTask.class_7435 renderData, BlockBufferBuilderStorage builders, Set<RenderLayer> initializedLayers) {
 		blockInfo.setBlockView(blockView);
-		chunkInfo.prepare(blockView, chunkRenderer, chunkData, builders, initializedLayers);
+		chunkInfo.prepare(blockView, chunkRenderer, renderData, builders, initializedLayers);
 	}
 
 	public void release() {

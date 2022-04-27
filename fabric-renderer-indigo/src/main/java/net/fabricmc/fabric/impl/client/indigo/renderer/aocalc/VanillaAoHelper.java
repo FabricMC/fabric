@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.aocalc;
 
-import java.lang.reflect.Constructor;
 import java.util.BitSet;
-import java.util.function.Supplier;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.block.BlockModelRenderer;
@@ -26,58 +24,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.impl.client.indigo.Indigo;
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessAmbientOcclusionCalculator;
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessBlockModelRenderer;
-import net.fabricmc.loader.api.FabricLoader;
-
 public class VanillaAoHelper {
-	private static Supplier<AccessAmbientOcclusionCalculator> factory;
-
 	// Renderer method we call isn't declared as static, but uses no
 	// instance data and is called from multiple threads in vanilla also.
-	private static AccessBlockModelRenderer blockRenderer;
+	private static BlockModelRenderer blockRenderer;
 
 	public static void initialize(BlockModelRenderer instance) {
-		blockRenderer = (AccessBlockModelRenderer) instance;
-
-		final String target = FabricLoader.getInstance().getMappingResolver()
-				.mapClassName("intermediary", "net.minecraft.class_778$class_780");
-
-		for (Class<?> innerClass : BlockModelRenderer.class.getDeclaredClasses()) {
-			if (innerClass.getName().equals(target)) {
-				Constructor<?> constructor = innerClass.getDeclaredConstructors()[0];
-				constructor.setAccessible(true);
-
-				factory = new Supplier<AccessAmbientOcclusionCalculator>() {
-					@Override
-					public AccessAmbientOcclusionCalculator get() {
-						try {
-							return (AccessAmbientOcclusionCalculator) constructor.newInstance(instance);
-						} catch (Exception e) {
-							Indigo.LOGGER.warn("[Indigo] Exception accessing vanilla smooth lighter", e);
-							return null;
-						}
-					}
-				};
-				break;
-			}
-		}
-
-		if (factory != null && factory.get() == null) {
-			factory = null;
-		}
-
-		if (factory == null) {
-			Indigo.LOGGER.warn("[Indigo] Vanilla smooth lighter unavailable. Indigo lighter will be used even if not configured.");
-		}
-	}
-
-	public static AccessAmbientOcclusionCalculator get() {
-		return factory == null ? null : factory.get();
+		blockRenderer = instance;
 	}
 
 	public static void updateShape(BlockRenderView blockRenderView, BlockState blockState, BlockPos pos, int[] vertexData, Direction face, float[] aoData, BitSet controlBits) {
-		blockRenderer.fabric_updateShape(blockRenderView, blockState, pos, vertexData, face, aoData, controlBits);
+		blockRenderer.getQuadDimensions(blockRenderView, blockState, pos, vertexData, face, aoData, controlBits);
 	}
 }

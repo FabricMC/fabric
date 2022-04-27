@@ -25,7 +25,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -61,7 +60,7 @@ public class MixinFluidRenderer {
 	}
 
 	@Inject(at = @At("HEAD"), method = "render", cancellable = true)
-	public void tesselate(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, CallbackInfoReturnable<Boolean> info) {
+	public void tesselate(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, CallbackInfo info) {
 		if (!fabric_customRendering.get()) {
 			// Prevent recursively looking up custom fluid renderers when default behaviour is being invoked
 			try {
@@ -81,7 +80,7 @@ public class MixinFluidRenderer {
 	}
 
 	@Unique
-	private void tessellateViaHandler(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, CallbackInfoReturnable<Boolean> info) {
+	private void tessellateViaHandler(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, CallbackInfo info) {
 		FluidRendererHookContainer ctr = fabric_renderHandler.get();
 		FluidRenderHandler handler = ((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).getOverride(fluidState.getFluid());
 
@@ -92,12 +91,13 @@ public class MixinFluidRenderer {
 		ctr.handler = handler;
 
 		if (handler != null) {
-			info.setReturnValue(handler.renderFluid(pos, view, vertexConsumer, blockState, fluidState));
+			handler.renderFluid(pos, view, vertexConsumer, blockState, fluidState);
+			info.cancel();
 		}
 	}
 
 	@Inject(at = @At("RETURN"), method = "render")
-	public void tesselateReturn(BlockRenderView world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, CallbackInfoReturnable<Boolean> cir) {
+	public void tesselateReturn(BlockRenderView world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, CallbackInfo ci) {
 		fabric_renderHandler.get().clear();
 	}
 

@@ -61,7 +61,7 @@ public class MixinLevelStorageSession {
 
 	@Shadow
 	@Final
-	private LevelStorage.class_7411 directory;
+	private LevelStorage.LevelSave directory;
 
 	@Unique
 	private boolean fabric_readIdMapFile(File file) throws IOException, RemapException {

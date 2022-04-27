@@ -120,7 +120,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		}
 	}
 
-	public boolean renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
-		return fluidRenderer.render(world, pos, vertexConsumer, blockState, fluidState);
+	public void renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+		fluidRenderer.render(world, pos, vertexConsumer, blockState, fluidState);
 	}
 }
