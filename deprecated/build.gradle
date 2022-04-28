@@ -16,8 +16,8 @@ publishing {
 				allprojects.each {
 					if (it.name == "deprecated") return // Dont depend on yourself :)
 
-					// Depend on all of the deprecated projects and the root project.
-					if (!it.path.startsWith(":deprecated") && it.name != "fabric-api") return
+					// Depend on all of the deprecated projects
+					if (!it.path.startsWith(":deprecated")) return
 
 					def depNode = depsNode.appendNode("dependency")
 					depNode.appendNode("groupId", it.group)
@@ -25,6 +25,13 @@ publishing {
 					depNode.appendNode("version", it.version)
 					depNode.appendNode("scope", "compile")
 				}
+
+				// Depend on the main project.
+				def depNode = depsNode.appendNode("dependency")
+				depNode.appendNode("groupId", group)
+				depNode.appendNode("artifactId", "fabric-api")
+				depNode.appendNode("version", version)
+				depNode.appendNode("scope", "compile")
 			}
 		}
 	}
