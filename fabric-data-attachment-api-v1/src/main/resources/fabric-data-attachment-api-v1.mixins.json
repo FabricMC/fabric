@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.attachment",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "AttachmentTypesMixin",
+    "BlockEntityMixin",
+    "ChunkSerializerMixin",
+    "EntityMixin",
+    "ServerWorldMixin"
+  ]
+}

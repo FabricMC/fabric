@@ -169,7 +169,7 @@ public final class ServerLoginNetworking {
 		 * <pre>{@code
 		 * ServerLoginNetworking.registerGlobalReceiver(CHECK_CHANNEL, (server, handler, understood, buf, synchronizer, responseSender) -&gt; {
 		 * 	if (!understood) {
-		 * 		handler.disconnect(new LiteralText("Only accept clients that can check!"));
+		 * 		handler.disconnect(Text.literal("Only accept clients that can check!"));
 		 * 		return;
 		 * 	}
 		 *
@@ -180,7 +180,7 @@ public final class ServerLoginNetworking {
 		 * 		LoginInfoChecker checker = LoginInfoChecker.get(server);
 		 *
 		 * 		if (!checker.check(handler.getConnectionInfo(), checkMessage)) {
-		 * 			handler.disconnect(new LiteralText("Invalid credentials!"));
+		 * 			handler.disconnect(Text.literal("Invalid credentials!"));
 		 * 			return;
 		 * 		}
 		 *
