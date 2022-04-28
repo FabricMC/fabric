@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.11.33" apply false
+	id "fabric-loom" version "0.12.19" apply false
 	id "org.cadixdev.licenser" version "0.6.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -89,6 +89,31 @@ def moduleDependencies(project, List<String> depNames) {
 }
 
 allprojects {
+	group = "net.fabricmc.fabric-api"
+
+	tasks.withType(GenerateModuleMetadata) {
+		enabled = false
+	}
+
+	if (signingEnabled) {
+		remoteSign {
+			requestUrl = ENV.SIGNING_SERVER
+			pgpAuthKey = ENV.SIGNING_PGP_KEY
+			jarAuthKey = ENV.SIGNING_JAR_KEY
+
+			afterEvaluate {
+				// PGP sign all maven publications.
+				sign publishing.publications.mavenJava
+			}
+		}
+	}
+
+	publishing {
+		setupRepositories(repositories)
+	}
+
+	if (it.name == "deprecated") return
+
 	apply plugin: "java-library"
 	apply plugin: "checkstyle"
 	apply plugin: "maven-publish"
@@ -99,8 +124,6 @@ allprojects {
 	tasks.withType(JavaCompile).configureEach {
 		it.options.release = 17
 	}
-
-	group = "net.fabricmc.fabric-api"
 
 	sourceSets {
 		testmod {
@@ -138,10 +161,6 @@ allprojects {
 		shareRemapCaches = true
 	}
 
-	repositories {
-		mavenLocal()
-	}
-
 	processResources {
 		inputs.property "version", project.version
 
@@ -169,22 +188,9 @@ allprojects {
 		reproducibleFileOrder = true
 	}
 
-	tasks.withType(GenerateModuleMetadata) {
-		enabled = false
-	}
-
 	if (signingEnabled) {
 		remoteSign {
-			requestUrl = ENV.SIGNING_SERVER
-			pgpAuthKey = ENV.SIGNING_PGP_KEY
-			jarAuthKey = ENV.SIGNING_JAR_KEY
-
 			sign remapJar
-
-			afterEvaluate {
-				// PGP sign all maven publications.
-				sign publishing.publications.mavenJava
-			}
 		}
 	}
 
@@ -259,6 +265,8 @@ loom {
 test.dependsOn runGametest
 
 subprojects {
+	if (it.name == "deprecated") return
+
 	dependencies {
 		testmodImplementation sourceSets.main.output
 
@@ -286,8 +294,6 @@ subprojects {
 				}
 			}
 		}
-
-		setupRepositories(repositories)
 	}
 
 	// We manually handle the pom generation
@@ -332,6 +338,9 @@ publishing {
 			pom.withXml {
 				def depsNode = asNode().appendNode("dependencies")
 				subprojects.each {
+					// Dont depend on the deprecated modules in the main artifact.
+					if (it.path.startsWith(":deprecated")) return
+
 					def depNode = depsNode.appendNode("dependency")
 					depNode.appendNode("groupId", it.group)
 					depNode.appendNode("artifactId", it.name)
@@ -341,8 +350,6 @@ publishing {
 			}
 		}
 	}
-
-	setupRepositories(repositories)
 }
 
 // Required until the deprecation is removed. Fabric API's main jar that is published to maven does not contain sub modules.
@@ -364,9 +371,11 @@ void setupRepositories(RepositoryHandler repositories) {
 	}
 }
 
-task licenseFormatAll
-subprojects { p -> licenseFormatAll.dependsOn("${p.path}:licenseFormat") }
-subprojects.each { remapJar.dependsOn("${it.path}:remapJar") }
+subprojects.each {
+	if (it.name == "deprecated") return
+
+	remapJar.dependsOn("${it.path}:remapJar")
+}
 
 sourceSets {
 	testmod
@@ -381,9 +390,11 @@ def devOnlyModules = [
 dependencies {
 	afterEvaluate {
 		subprojects.each {
-			api project(path: ":${it.name}", configuration: "namedElements")
+			if (it.name == "deprecated") return
 
-			testmodImplementation project("${it.name}:").sourceSets.testmod.output
+			api project(path: "${it.path}", configuration: "namedElements")
+
+			testmodImplementation project("${it.path}:").sourceSets.testmod.output
 		}
 	}
 }
@@ -391,10 +402,10 @@ dependencies {
 remapJar {
 	afterEvaluate {
 		subprojects.each {
-			if (it.name in devOnlyModules) return
+			if (it.name in devOnlyModules || it.name == "deprecated") return
 
 			// Include the signed or none signed jar from the sub project.
-			nestedJars.from project("${it.name}:").tasks.getByName(signingEnabled ? "signRemapJar" : "remapJar")
+			nestedJars.from project("${it.path}").tasks.getByName(signingEnabled ? "signRemapJar" : "remapJar")
 		}
 	}
 }
