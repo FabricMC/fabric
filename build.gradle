@@ -10,7 +10,7 @@ plugins {
 	id "idea"
 	id "maven-publish"
 	id "fabric-loom" version "0.12.19" apply false
-	id "org.cadixdev.licenser" version "0.6.1"
+	id "com.diffplug.spotless" version "6.4.2"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 	id "com.modrinth.minotaur" version "1.1.0"
@@ -118,7 +118,7 @@ allprojects {
 	apply plugin: "checkstyle"
 	apply plugin: "maven-publish"
 	apply plugin: "fabric-loom"
-	apply plugin: "org.cadixdev.licenser"
+	apply plugin: "com.diffplug.spotless"
 	apply plugin: "me.modmuss50.remotesign"
 
 	tasks.withType(JavaCompile).configureEach {
@@ -169,9 +169,10 @@ allprojects {
 		}
 	}
 
-	license {
-		header rootProject.file("HEADER")
-		include "**/*.java"
+	spotless {
+		java {
+			licenseHeaderFile(rootProject.file("HEADER"))
+		}
 	}
 
 	java {
