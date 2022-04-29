@@ -9,7 +9,7 @@ version = rootProject.version
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifactId = 'fabric-api-legacy'
+			artifactId = 'fabric-api-deprecated'
 
 			pom.withXml {
 				def depsNode = asNode().appendNode("dependencies")
