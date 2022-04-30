@@ -27,7 +27,6 @@ public class ItemAttributeModifiersCallbackTest implements ModInitializer {
 	public static final int HEAD_SLOT_ID = 3;
 	public static final EntityAttributeModifier MODIFIER = new EntityAttributeModifier("generic_max_health_modifier", 5.0, EntityAttributeModifier.Operation.ADDITION);
 
-
 	@Override
 	public void onInitialize() {
 		ItemAttributeModifiersCallback.EVENT.register((stack, slot, attributeModifiers) -> {
