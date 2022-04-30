@@ -18,6 +18,8 @@ package net.fabricmc.fabric.mixin.item;
 
 import java.util.function.Consumer;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -37,6 +39,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
+import net.fabricmc.fabric.api.item.v1.ItemAttributeModifiersCallback;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 @Mixin(ItemStack.class)
@@ -80,7 +83,12 @@ public abstract class ItemStackMixin {
 			)
 	)
 	public Multimap<EntityAttribute, EntityAttributeModifier> hookGetAttributeModifiers(Item item, EquipmentSlot slot) {
-		return item.getAttributeModifiers((ItemStack) (Object) this, slot);
+		ItemStack stack = (ItemStack) (Object) this;
+		//we need to ensure it is modifiable for the callback
+		Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers = HashMultimap.create(item.getAttributeModifiers(stack, slot));
+		ItemAttributeModifiersCallback.EVENT.invoker().onGetAttributeModifiers(stack, slot, attributeModifiers);
+		//now we can turn it back to immutable
+		return ImmutableMultimap.copyOf(attributeModifiers);
 	}
 
 	@Redirect(
