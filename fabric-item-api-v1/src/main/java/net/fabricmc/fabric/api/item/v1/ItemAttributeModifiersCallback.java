@@ -30,7 +30,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * Stack-aware attribute modifier callback for foreign items.
  * Instead of using Mixin to change attribute modifiers in items not in your mod,
  * you can use this event instead, either checking the Item itself or using a tag.
- * Do not use for your own Item classes; see {@link FabricItem}.
+ * This event provides you with a guaranteed mutable map you can put attribute modifiers in.
+ * Do not use for your own Item classes; see {@link FabricItem#getAttributeModifiers} instead.
  * For example, the following code modifies a Diamond Helmet to give you five extra hearts when wearing.
  *
  * <pre>
