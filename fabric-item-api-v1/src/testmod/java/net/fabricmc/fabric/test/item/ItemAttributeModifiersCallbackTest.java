@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.test.item;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.item.v1.ItemAttributeModifiersCallback;
-
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Items;
+
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.item.v1.ItemAttributeModifiersCallback;
 
 public class ItemAttributeModifiersCallbackTest implements ModInitializer {
 	public static final int HEAD_SLOT_ID = 3;
