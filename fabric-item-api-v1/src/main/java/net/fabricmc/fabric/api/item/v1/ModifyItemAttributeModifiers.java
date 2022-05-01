@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <pre>
  * {@code
- * ItemAttributeModifiersCallback.EVENT.register((stack, slot, attributeModifiers) -> {
+ * ModifyItemAttributeModifiers.EVENT.register((stack, slot, attributeModifiers) -> {
  * 	if (stack.isOf(Items.DIAMOND_HELMET) && slot.getEntitySlotId() == HEAD_SLOT_ID) {
  * 		attributeModifiers.put(EntityAttributes.GENERIC_MAX_HEALTH, MODIFIER);
  * 	}
@@ -45,14 +45,14 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * </pre>
  */
 @FunctionalInterface
-public interface ItemAttributeModifiersCallback {
-	void addAttributeModifiers(ItemStack stack, EquipmentSlot slot, Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers);
+public interface ModifyItemAttributeModifiers {
+	void modifyAttributeModifiers(ItemStack stack, EquipmentSlot slot, Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers);
 
-	Event<ItemAttributeModifiersCallback> EVENT = EventFactory.createArrayBacked(
-			ItemAttributeModifiersCallback.class,
+	Event<ModifyItemAttributeModifiers> EVENT = EventFactory.createArrayBacked(
+			ModifyItemAttributeModifiers.class,
 			callbacks -> (stack, slot, attributeModifiers) -> {
-				for (ItemAttributeModifiersCallback callback : callbacks) {
-					callback.addAttributeModifiers(stack, slot, attributeModifiers);
+				for (ModifyItemAttributeModifiers callback : callbacks) {
+					callback.modifyAttributeModifiers(stack, slot, attributeModifiers);
 				}
 			}
 	);

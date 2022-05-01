@@ -21,15 +21,15 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Items;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.item.v1.ItemAttributeModifiersCallback;
+import net.fabricmc.fabric.api.item.v1.ModifyItemAttributeModifiers;
 
-public class ItemAttributeModifiersCallbackTest implements ModInitializer {
+public class ModifyItemAttributeModifiersTest implements ModInitializer {
 	public static final int HEAD_SLOT_ID = 3;
 	public static final EntityAttributeModifier MODIFIER = new EntityAttributeModifier("generic_max_health_modifier", 5.0, EntityAttributeModifier.Operation.ADDITION);
 
 	@Override
 	public void onInitialize() {
-		ItemAttributeModifiersCallback.EVENT.register((stack, slot, attributeModifiers) -> {
+		ModifyItemAttributeModifiers.EVENT.register((stack, slot, attributeModifiers) -> {
 			if (stack.isOf(Items.DIAMOND_HELMET) && slot.getEntitySlotId() == HEAD_SLOT_ID) {
 				attributeModifiers.put(EntityAttributes.GENERIC_MAX_HEALTH, MODIFIER);
 			}
