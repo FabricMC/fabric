@@ -39,7 +39,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
-import net.fabricmc.fabric.api.item.v1.ModifyItemAttributeModifiers;
+import net.fabricmc.fabric.api.item.v1.ModifyItemAttributeModifiersCallback;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 @Mixin(ItemStack.class)
@@ -86,7 +86,7 @@ public abstract class ItemStackMixin {
 		ItemStack stack = (ItemStack) (Object) this;
 		//we need to ensure it is modifiable for the callback
 		Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers = HashMultimap.create(item.getAttributeModifiers(stack, slot));
-		ModifyItemAttributeModifiers.EVENT.invoker().modifyAttributeModifiers(stack, slot, attributeModifiers);
+		ModifyItemAttributeModifiersCallback.EVENT.invoker().modifyAttributeModifiers(stack, slot, attributeModifiers);
 		//now we can turn it back to immutable
 		return ImmutableMultimap.copyOf(attributeModifiers);
 	}
