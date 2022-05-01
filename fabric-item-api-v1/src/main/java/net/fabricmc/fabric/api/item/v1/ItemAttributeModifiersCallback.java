@@ -46,13 +46,13 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 @FunctionalInterface
 public interface ItemAttributeModifiersCallback {
-	void onGetAttributeModifiers(ItemStack stack, EquipmentSlot slot, Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers);
+	void addAttributeModifiers(ItemStack stack, EquipmentSlot slot, Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers);
 
 	Event<ItemAttributeModifiersCallback> EVENT = EventFactory.createArrayBacked(
 			ItemAttributeModifiersCallback.class,
 			callbacks -> (stack, slot, attributeModifiers) -> {
 				for (ItemAttributeModifiersCallback callback : callbacks) {
-					callback.onGetAttributeModifiers(stack, slot, attributeModifiers);
+					callback.addAttributeModifiers(stack, slot, attributeModifiers);
 				}
 			}
 	);
