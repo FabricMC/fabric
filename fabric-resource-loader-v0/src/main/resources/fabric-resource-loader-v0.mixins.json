@@ -5,6 +5,7 @@
   "mixins": [
     "FileResourcePackProviderAccessor",
     "DefaultResourcePackMixin",
+    "DefaultResourcePackResourceMixin",
     "KeyedResourceReloadListenerMixin",
     "LifecycledResourceManagerImplMixin",
     "MinecraftServerMixin",
