@@ -5,7 +5,7 @@ moduleDependencies(project, [
 		'fabric-api-base'
 ])
 
-dependencies {
-	testmodImplementation project(path: ':fabric-rendering-v1', configuration: 'namedElements')
-	testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
-}
+testDependencies(project, [
+		':fabric-rendering-v1',
+		':fabric-resource-loader-v0'
+])

@@ -21,7 +21,8 @@
   },
   "description": "Builders for objects vanilla has locked down.",
   "mixins": [
-    "fabric-object-builder-v1.mixins.json"
+    "fabric-object-builder-v1.mixins.json",
+    "fabric-object-builder-v1.client.mixins.json"
   ],
   "accessWidener" : "fabric-object-builder-api-v1.accesswidener",
   "custom": {

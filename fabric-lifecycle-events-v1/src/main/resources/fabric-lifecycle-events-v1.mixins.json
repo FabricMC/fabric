@@ -9,14 +9,6 @@
     "ThreadedAnvilChunkStorageMixin",
     "WorldMixin"
   ],
-  "client": [
-    "client.ClientChunkManagerMixin",
-    "client.ClientPlayNetworkHandlerMixin",
-    "client.ClientWorldEntityLoaderMixin",
-    "client.ClientWorldMixin",
-    "client.MinecraftClientMixin",
-    "client.WorldChunkMixin"
-  ],
   "server": [
     "server.WorldChunkMixin"
   ],

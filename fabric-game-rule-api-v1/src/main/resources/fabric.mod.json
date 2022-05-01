@@ -20,7 +20,8 @@
   },
   "description": "Allows registration of custom game rules.",
   "mixins": [
-    "fabric-game-rule-api-v1.mixins.json"
+    "fabric-game-rule-api-v1.mixins.json",
+    "fabric-game-rule-api-v1.client.mixins.json"
   ],
   "accessWidener" : "fabric-game-rule-api-v1.accesswidener",
   "custom": {

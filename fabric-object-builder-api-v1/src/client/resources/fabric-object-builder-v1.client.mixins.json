@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.object.builder.client",
+  "compatibilityLevel": "JAVA_16",
+  "client": [
+    "ModelPredicateProviderRegistryAccessor",
+    "ModelPredicateProviderRegistrySpecificAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

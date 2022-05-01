@@ -20,7 +20,8 @@
   },
   "description": "Asset and data resource loading.",
   "mixins": [
-    "fabric-resource-loader-v0.mixins.json"
+    "fabric-resource-loader-v0.mixins.json",
+    "fabric-resource-loader-v0.client.mixins.json"
   ],
   "accessWidener": "fabric-resource-loader-v0.accesswidener",
   "custom": {

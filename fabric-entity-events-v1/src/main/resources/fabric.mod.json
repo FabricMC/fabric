@@ -20,7 +20,8 @@
   },
   "description": "Events to hook into entities.",
   "mixins": [
-    "fabric-entity-events-v1.mixins.json"
+    "fabric-entity-events-v1.mixins.json",
+    "fabric-entity-events-v1.client.mixins.json"
   ],
   "custom": {
     "fabric-api:module-lifecycle": "stable"

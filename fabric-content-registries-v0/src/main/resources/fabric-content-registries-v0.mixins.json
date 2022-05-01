@@ -11,9 +11,6 @@
     "OxidizableMixin",
     "ShovelItemAccessor"
   ],
-  "client": [
-    "client.MixinClientPlayNetworkHandler"
-  ],
   "injectors": {
     "defaultRequire": 1
   }

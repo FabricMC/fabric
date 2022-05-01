@@ -16,10 +16,6 @@
     "VillagerProfessionAccessor",
     "VillagerTypeAccessor"
   ],
-  "client": [
-    "ModelPredicateProviderRegistryAccessor",
-    "ModelPredicateProviderRegistrySpecificAccessor"
-  ],
   "injectors": {
     "defaultRequire": 1
   }

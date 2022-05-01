@@ -1,13 +1,13 @@
 archivesBaseName = "fabric-object-builder-api-v1"
 version = getSubprojectVersion(project)
 
-dependencies {
-	testmodImplementation project(path: ':fabric-command-api-v1', configuration: 'namedElements')
-}
-
 moduleDependencies(project, [
-		'fabric-api-base',
-		'fabric-resource-loader-v0'
+	'fabric-api-base',
+	'fabric-resource-loader-v0'
+])
+
+testDependencies(project, [
+	':fabric-command-api-v1'
 ])
 
 loom {

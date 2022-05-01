@@ -5,8 +5,8 @@ moduleDependencies(project, [
 		'fabric-api-base'
 ])
 
-dependencies {
-	testmodImplementation project(path: ':fabric-command-api-v1', configuration: 'namedElements')
-	testmodImplementation project(path: ':fabric-lifecycle-events-v1', configuration: 'namedElements')
-	testmodImplementation project(path: ':fabric-key-binding-api-v1', configuration: 'namedElements')
-}
+testDependencies(project, [
+	':fabric-command-api-v1',
+	':fabric-lifecycle-events-v1',
+	':fabric-key-binding-api-v1'
+])

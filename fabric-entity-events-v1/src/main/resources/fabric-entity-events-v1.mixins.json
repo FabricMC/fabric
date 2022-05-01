@@ -12,9 +12,6 @@
     "ServerPlayerEntityMixin",
     "TeleportCommandMixin"
   ],
-  "client": [
-    "elytra.ClientPlayerEntityMixin"
-  ],
   "injectors": {
     "defaultRequire": 1,
     "maxShiftBy": 3

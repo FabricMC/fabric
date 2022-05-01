@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.12.19" apply false
+	id "fabric-loom" version "0.12.20" apply false
 	id "com.diffplug.spotless" version "6.5.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -63,9 +63,16 @@ def getBranch() {
 
 def moduleDependencies(project, List<String> depNames) {
 	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'namedElements') }
+	def clientOutputs = depNames.iterator().collect { findProject(":$it").sourceSets.client.output }
+
 	project.dependencies {
 		deps.each {
 			api it
+		}
+
+		clientOutputs.each {
+			clientCompileClasspath it
+			clientRuntimeClasspath it
 		}
 	}
 
@@ -84,6 +91,22 @@ def moduleDependencies(project, List<String> depNames) {
 					}
 				}
 			}
+		}
+	}
+}
+
+def testDependencies(project, List<String> depNames) {
+	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'namedElements') }
+	def clientOutputs = depNames.iterator().collect { findProject(":$it").sourceSets.client.output }
+
+	project.dependencies {
+		deps.each {
+			testmodImplementation it
+		}
+
+		clientOutputs.each {
+			testmodCompileClasspath it
+			testmodRuntimeClasspath it
 		}
 	}
 }
@@ -126,10 +149,17 @@ allprojects {
 		it.options.release = 17
 	}
 
+	loom {
+		splitEnvironmentSourceSets()
+	}
+
 	sourceSets {
 		testmod {
 			compileClasspath += main.compileClasspath
 			runtimeClasspath += main.runtimeClasspath
+
+			compileClasspath += client.compileClasspath
+			runtimeClasspath += client.runtimeClasspath
 		}
 	}
 
@@ -152,10 +182,22 @@ allprojects {
 		}
 	}
 
+	allprojects.each { p ->
+		if (project.name == "deprecated") return
+
+		loom.mods.register(p.name) {
+			sourceSet p.sourceSets.main
+			sourceSet p.sourceSets.client
+		}
+	}
+
 	dependencies {
 		minecraft "com.mojang:minecraft:$rootProject.minecraft_version"
 		mappings "net.fabricmc:yarn:${rootProject.minecraft_version}${project.yarn_version}:v2"
 		modApi "net.fabricmc:fabric-loader:${project.loader_version}"
+
+		testmodCompileClasspath sourceSets.client.output
+		testmodRuntimeClasspath sourceSets.client.output
 	}
 
 	loom {
@@ -305,9 +347,12 @@ subprojects {
 
 	afterEvaluate {
 		// Disable the gen sources task on sub projects
-		genSourcesWithFernFlower.enabled = false
-		genSourcesWithCfr.enabled = false
-		unpickJar.enabled = false
+		genClientOnlySourcesWithFernFlower.enabled = false
+		genClientOnlySourcesWithCfr.enabled = false
+		genCommonSourcesWithCfr.enabled = false
+		genCommonSourcesWithFernFlower.enabled = false
+		unpickClientOnlyJar.enabled = false
+		unpickCommonJar.enabled = false
 	}
 }
 

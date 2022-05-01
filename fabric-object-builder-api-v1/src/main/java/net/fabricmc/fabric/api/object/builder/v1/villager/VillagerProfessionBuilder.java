@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.render.entity.feature.VillagerResourceMetadata;
 import net.minecraft.item.Item;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
@@ -38,7 +37,7 @@ import net.fabricmc.fabric.mixin.object.builder.VillagerProfessionAccessor;
  *
  * <p>The texture for the villagers are located at <code>assets/IDENTIFIER_NAMESPACE/textures/entity/villager/profession/IDENTIFIER_PATH.png</code>
  *
- * <p>A corresponding <code>IDENTIFIER_PATH.mcmeta</code> file exits in the same directory to define properties such as the {@link VillagerResourceMetadata.HatType HatType} this profession would use.
+ * <p>A corresponding <code>IDENTIFIER_PATH.mcmeta</code> file exits in the same directory to define properties such as the {@link net.minecraft.client.render.entity.feature.VillagerResourceMetadata.HatType HatType} this profession would use.
  *
  * <p>Note this does not register any trades to these villagers. To register trades, add a new entry with your profession as the key to {@link TradeOffers#PROFESSION_TO_LEVELED_TRADE}.
  */

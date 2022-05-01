@@ -27,7 +27,8 @@
   },
   "description": "Adds support for custom mining levels.",
   "mixins": [
-    "fabric-mining-level-api-v1.mixins.json"
+    "fabric-mining-level-api-v1.mixins.json",
+    "fabric-mining-level-api-v1.client.mixins.json"
   ],
   "custom": {
     "fabric-api:module-lifecycle": "stable"

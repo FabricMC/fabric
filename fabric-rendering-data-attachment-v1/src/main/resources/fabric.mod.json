@@ -21,7 +21,8 @@
   },
   "description": "Thread-safe hooks for block entity data use during terrain rendering.",
   "mixins": [
-    "fabric-rendering-data-attachment-v1.mixins.json"
+    "fabric-rendering-data-attachment-v1.mixins.json",
+    "fabric-rendering-data-attachment-v1.client.mixins.json"
   ],
   "custom": {
     "fabric-api:module-lifecycle": "stable"

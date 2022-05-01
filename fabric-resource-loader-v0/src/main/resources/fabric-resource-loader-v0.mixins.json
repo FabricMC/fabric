@@ -16,13 +16,6 @@
     "ResourcePackProfileAccessor",
     "SimpleResourceReloadMixin"
   ],
-  "client": [
-    "client.ClientBuiltinResourcePackProviderMixin",
-    "client.CreateWorldScreenMixin",
-    "client.FontManagerResourceReloadListenerMixin",
-    "client.GameOptionsMixin",
-    "client.KeyedResourceReloadListenerClientMixin"
-  ],
   "injectors": {
     "defaultRequire": 1
   }

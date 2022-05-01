@@ -8,9 +8,6 @@
     "DynamicRegistryManagerAccessor",
     "TagBuilderMixin"
   ],
-  "client": [
-    "client.MinecraftClientMixin"
-  ],
   "server": [
     "server.MainMixin"
   ],
