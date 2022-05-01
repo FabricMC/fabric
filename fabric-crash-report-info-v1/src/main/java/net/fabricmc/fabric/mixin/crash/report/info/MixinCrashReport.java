@@ -58,11 +58,11 @@ public abstract class MixinCrashReport {
 	private static void appendMods(StringBuilder modString, int depth, ArrayList<ModContainer> mods) {
 		mods.sort(Comparator.comparing(mod -> mod.getMetadata().getId()));
 
-		for (ModContainer mod: mods) {
+		for (ModContainer mod : mods) {
 			modString.append('\n');
 			modString.append("\t".repeat(depth));
 			modString.append(mod.getMetadata().getId());
-			modString.append(": ");
+			modString.append(' ');
 			modString.append(mod.getMetadata().getVersion().getFriendlyString());
 
 			if (!mod.getContainedMods().isEmpty()) {
