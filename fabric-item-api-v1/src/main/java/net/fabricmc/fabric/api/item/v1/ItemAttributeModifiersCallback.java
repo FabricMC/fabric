@@ -36,11 +36,11 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <pre>
  * {@code
- *     ItemAttributeModifiersCallback.EVENT.register((stack, slot, attributeModifiers) -> {
- * 			if (stack.isOf(Items.DIAMOND_HELMET) && slot.getEntitySlotId() == HEAD_SLOT_ID) {
- * 				attributeModifiers.put(EntityAttributes.GENERIC_MAX_HEALTH, MODIFIER);
- *          }
- *     });
+ * ItemAttributeModifiersCallback.EVENT.register((stack, slot, attributeModifiers) -> {
+ * 	if (stack.isOf(Items.DIAMOND_HELMET) && slot.getEntitySlotId() == HEAD_SLOT_ID) {
+ * 		attributeModifiers.put(EntityAttributes.GENERIC_MAX_HEALTH, MODIFIER);
+ * 	}
+ * });
  * }
  * </pre>
  */
