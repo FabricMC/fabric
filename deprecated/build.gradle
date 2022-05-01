@@ -1,9 +1,6 @@
 /**
  * This project generates a maven bill of materials (BOM) that includes the deprecated modules, alongside the main project.
  */
-
-apply plugin: "maven-publish"
-
 version = rootProject.version
 
 publishing {

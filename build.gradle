@@ -91,6 +91,9 @@ def moduleDependencies(project, List<String> depNames) {
 allprojects {
 	group = "net.fabricmc.fabric-api"
 
+	apply plugin: "maven-publish"
+	apply plugin: "me.modmuss50.remotesign"
+
 	tasks.withType(GenerateModuleMetadata) {
 		enabled = false
 	}
@@ -116,10 +119,8 @@ allprojects {
 
 	apply plugin: "java-library"
 	apply plugin: "checkstyle"
-	apply plugin: "maven-publish"
 	apply plugin: "fabric-loom"
 	apply plugin: "com.diffplug.spotless"
-	apply plugin: "me.modmuss50.remotesign"
 
 	tasks.withType(JavaCompile).configureEach {
 		it.options.release = 17
