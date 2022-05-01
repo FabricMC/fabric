@@ -75,7 +75,8 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 				.add(BiomeKeys.WOODED_BADLANDS).add(BiomeKeys.MEADOW).add(BiomeKeys.GROVE)
 				.add(BiomeKeys.SNOWY_SLOPES).add(BiomeKeys.FROZEN_PEAKS).add(BiomeKeys.JAGGED_PEAKS)
 				.add(BiomeKeys.STONY_PEAKS).add(BiomeKeys.MUSHROOM_FIELDS).add(BiomeKeys.DRIPSTONE_CAVES)
-				.add(BiomeKeys.LUSH_CAVES).add(BiomeKeys.SNOWY_BEACH).add(BiomeKeys.SWAMP).add(BiomeKeys.STONY_SHORE);
+				.add(BiomeKeys.LUSH_CAVES).add(BiomeKeys.SNOWY_BEACH).add(BiomeKeys.SWAMP).add(BiomeKeys.STONY_SHORE)
+				.add(BiomeKeys.DEEP_DARK).add(BiomeKeys.MANGROVE_SWAMP);
 	}
 
 	private void generateCategoryTags() {
@@ -122,6 +123,7 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 		getOrCreateTagBuilder(ConventionalBiomeTags.RIVER)
 				.addOptionalTag(BiomeTags.IS_RIVER);
 		getOrCreateTagBuilder(ConventionalBiomeTags.SWAMP)
+				.add(BiomeKeys.MANGROVE_SWAMP)
 				.add(BiomeKeys.SWAMP);
 		getOrCreateTagBuilder(ConventionalBiomeTags.MUSHROOM)
 				.add(BiomeKeys.MUSHROOM_FIELDS);
@@ -136,6 +138,7 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 				.addOptionalTag(ConventionalBiomeTags.MESA)
 				.addOptionalTag(BiomeTags.IS_BADLANDS);
 		getOrCreateTagBuilder(ConventionalBiomeTags.CAVES)
+				.add(BiomeKeys.DEEP_DARK)
 				.add(BiomeKeys.DRIPSTONE_CAVES)
 				.add(BiomeKeys.LUSH_CAVES);
 		getOrCreateTagBuilder(ConventionalBiomeTags.VOID)
