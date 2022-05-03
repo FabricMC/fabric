@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.transfer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -52,6 +53,8 @@ public abstract class AbstractFurnaceBlockEntityMixin extends LockableContainerB
 	@Final
 	@Shadow
 	private RecipeType<? extends AbstractCookingRecipe> recipeType;
+	@Unique
+	private boolean fabric_suppressSpecialLogic = false;
 
 	protected AbstractFurnaceBlockEntityMixin(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
 		super(blockEntityType, blockPos, blockState);
@@ -60,10 +63,15 @@ public abstract class AbstractFurnaceBlockEntityMixin extends LockableContainerB
 
 	@Inject(at = @At("HEAD"), method = "setStack", cancellable = true)
 	public void setStackSuppressUpdate(int slot, ItemStack stack, CallbackInfo ci) {
-		if (TransferApiImpl.SUPPRESS_SPECIAL_LOGIC.get() != null) {
+		if (fabric_suppressSpecialLogic) {
 			inventory.set(slot, stack);
 			ci.cancel();
 		}
+	}
+
+	@Override
+	public void fabric_setSuppress(boolean suppress) {
+		fabric_suppressSpecialLogic = suppress;
 	}
 
 	@Override

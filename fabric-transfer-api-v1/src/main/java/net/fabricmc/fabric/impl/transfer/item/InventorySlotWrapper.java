@@ -35,11 +35,13 @@ class InventorySlotWrapper extends SingleStackStorage {
 	 */
 	private final InventoryStorageImpl storage;
 	final int slot;
+	private final SpecialLogicInventory specialInv;
 	private ItemStack lastReleasedSnapshot = null;
 
 	InventorySlotWrapper(InventoryStorageImpl storage, int slot) {
 		this.storage = storage;
 		this.slot = slot;
+		this.specialInv = storage.inventory instanceof SpecialLogicInventory specialInv ? specialInv : null;
 	}
 
 	@Override
@@ -49,12 +51,16 @@ class InventorySlotWrapper extends SingleStackStorage {
 
 	@Override
 	protected void setStack(ItemStack stack) {
-		TransferApiImpl.SUPPRESS_SPECIAL_LOGIC.set(Boolean.TRUE);
-
-		try {
+		if (specialInv == null) {
 			storage.inventory.setStack(slot, stack);
-		} finally {
-			TransferApiImpl.SUPPRESS_SPECIAL_LOGIC.remove();
+		} else {
+			specialInv.fabric_setSuppress(true);
+
+			try {
+				storage.inventory.setStack(slot, stack);
+			} finally {
+				specialInv.fabric_setSuppress(false);
+			}
 		}
 	}
 

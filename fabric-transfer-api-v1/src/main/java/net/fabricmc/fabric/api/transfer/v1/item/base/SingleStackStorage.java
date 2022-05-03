@@ -85,7 +85,7 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 
 	@Override
 	public boolean isResourceBlank() {
-		return getResource().isBlank();
+		return getStack().isEmpty();
 	}
 
 	@Override
