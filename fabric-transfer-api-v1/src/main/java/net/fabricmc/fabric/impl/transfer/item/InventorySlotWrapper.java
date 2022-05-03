@@ -21,7 +21,6 @@ import net.minecraft.item.ItemStack;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 /**
  * A wrapper around a single slot of an inventory.
@@ -65,8 +64,12 @@ class InventorySlotWrapper extends SingleStackStorage {
 	}
 
 	@Override
-	protected boolean canInsert(ItemVariant itemVariant) {
-		return storage.inventory.isValid(slot, itemVariant.toStack());
+	public long insert(ItemVariant insertedVariant, long maxAmount, TransactionContext transaction) {
+		if (!storage.inventory.isValid(slot, ((ItemVariantImpl) insertedVariant).getCachedStack())) {
+			return 0;
+		} else {
+			return super.insert(insertedVariant, maxAmount, transaction);
+		}
 	}
 
 	@Override
