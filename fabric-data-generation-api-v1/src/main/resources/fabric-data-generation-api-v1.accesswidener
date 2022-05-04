@@ -196,8 +196,8 @@ transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerRoots	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	addJigsawOrientationToVariant	(Lnet/minecraft/block/enums/JigsawOrientation;Lnet/minecraft/data/client/BlockStateVariant;)Lnet/minecraft/data/client/BlockStateVariant;
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerCandle	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
-transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	applyExplosionDecay	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/loot/function/LootFunctionConsumingBuilder;)Ljava/lang/Object;
-transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	addSurvivesExplosionCondition	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/loot/condition/LootConditionConsumingBuilder;)Ljava/lang/Object;
+transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	applyExplosionDecay	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/loot/function/LootFunctionConsumingBuilder;)Lnet/minecraft/loot/function/LootFunctionConsumingBuilder;
+transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	addSurvivesExplosionCondition	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/loot/condition/LootConditionConsumingBuilder;)Lnet/minecraft/loot/condition/LootConditionConsumingBuilder;
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	drops	(Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	drops	(Lnet/minecraft/block/Block;Lnet/minecraft/loot/condition/LootCondition$Builder;Lnet/minecraft/loot/entry/LootPoolEntry$Builder;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	dropsWithSilkTouch	(Lnet/minecraft/block/Block;Lnet/minecraft/loot/entry/LootPoolEntry$Builder;)Lnet/minecraft/loot/LootTable$Builder;
@@ -225,7 +225,7 @@ transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	g
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	cropStemDrops	(Lnet/minecraft/block/Block;Lnet/minecraft/item/Item;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	attachedCropStemDrops	(Lnet/minecraft/block/Block;Lnet/minecraft/item/Item;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	dropsWithShears	(Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/loot/LootTable$Builder;
-transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	glowLichenDrops	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;
+transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	glowLichenDrops	(Lnet/minecraft/block/Block;Lnet/minecraft/loot/condition/LootCondition$Builder;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	leavesDrop	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;[F)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	oakLeavesDrop	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;[F)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	mangroveLeavesDrop	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;

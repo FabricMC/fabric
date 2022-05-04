@@ -20,15 +20,16 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.class_7436;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.network.ChatMessageSender;
 import net.minecraft.network.MessageType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
+import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 
@@ -40,12 +41,12 @@ abstract class ClientCommandSourceMixin implements FabricClientCommandSource {
 
 	@Override
 	public void sendFeedback(Text message) {
-		client.inGameHud.method_43592(MessageType.SYSTEM, message, new class_7436(Util.NIL_UUID, message));
+		client.inGameHud.onChatMessage(Registry.field_39206.get(MessageType.SYSTEM), message, new ChatMessageSender(Util.NIL_UUID, message));
 	}
 
 	@Override
 	public void sendError(Text message) {
-		client.inGameHud.method_43592(MessageType.SYSTEM, Text.literal("").append(message).formatted(Formatting.RED), new class_7436(Util.NIL_UUID, message));
+		client.inGameHud.onChatMessage(Registry.field_39206.get(MessageType.SYSTEM), Text.literal("").append(message).formatted(Formatting.RED), new ChatMessageSender(Util.NIL_UUID, message));
 	}
 
 	@Override

@@ -25,8 +25,6 @@ import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -50,8 +48,6 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
  */
 @ApiStatus.NonExtendable
 public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier, LootTable.Builder>>, DataProvider {
-	Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-
 	LootContextType getLootContextType();
 
 	FabricDataGenerator getFabricDataGenerator();
@@ -86,7 +82,7 @@ public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier,
 			JsonObject tableJson = (JsonObject) LootManager.toJson(entry.getValue());
 			ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
 
-			DataProvider.writeToPath(GSON, writer, tableJson, getOutputPath(entry.getKey()));
+			DataProvider.writeToPath(writer, tableJson, getOutputPath(entry.getKey()));
 		}
 	}
 
