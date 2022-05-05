@@ -9,7 +9,8 @@
     "MixinAbstractFurnaceBlockEntity",
     "MixinFireBlock",
     "OxidizableMixin",
-    "ShovelItemAccessor"
+    "ShovelItemAccessor",
+    "VillagerEntityAccessor"
   ],
   "client": [
     "client.MixinClientPlayNetworkHandler"

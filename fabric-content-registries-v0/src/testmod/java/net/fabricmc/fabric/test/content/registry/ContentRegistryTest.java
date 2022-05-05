@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.test.content.registry;
 
+import net.fabricmc.fabric.api.registry.VillagerFoodRegistry;
+
+import net.minecraft.item.Items;
+
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -39,6 +43,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - green wool is tillable to lime wool
 		//  - copper ore, iron ore, gold ore, and diamond ore can be waxed into their deepslate variants and scraped back again
 		//  - aforementioned ores can be scraped from diamond -> gold -> iron -> copper
+		//  - villagers can now collect and consume apples at the same level of bread
 
 		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.getDefaultState());
 		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
@@ -77,5 +82,7 @@ public final class ContentRegistryTest implements ModInitializer {
 			// expected behavior
 			LOGGER.info("OxidizableBlocksRegistry test passed!");
 		}
+
+		VillagerFoodRegistry.INSTANCE.add(Items.APPLE, 4);
 	}
 }
