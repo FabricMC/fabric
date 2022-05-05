@@ -24,7 +24,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 import net.fabricmc.fabric.impl.transfer.item.SpecialLogicInventory;
 
 /**

@@ -36,7 +36,6 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 import net.fabricmc.fabric.impl.transfer.item.SpecialLogicInventory;
 
 /**
