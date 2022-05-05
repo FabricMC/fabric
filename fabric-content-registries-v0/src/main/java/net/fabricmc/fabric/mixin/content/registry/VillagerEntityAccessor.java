@@ -28,7 +28,6 @@ import net.minecraft.item.Item;
 
 @Mixin(VillagerEntity.class)
 public interface VillagerEntityAccessor {
-
 	@Mutable
 	@Accessor("ITEM_FOOD_VALUES")
 	static void setItemFoodValues(Map<Item, Integer> items) {

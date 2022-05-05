@@ -16,22 +16,20 @@
 
 package net.fabricmc.fabric.impl.content.registry;
 
-import net.fabricmc.fabric.api.registry.VillagerFoodRegistry;
-
-import net.fabricmc.fabric.mixin.content.registry.VillagerEntityAccessor;
-
-import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.tag.TagKey;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class VillagerFoodRegistryImpl implements VillagerFoodRegistry {
+import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.tag.TagKey;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 
+import net.fabricmc.fabric.api.registry.VillagerFoodRegistry;
+import net.fabricmc.fabric.mixin.content.registry.VillagerEntityAccessor;
+
+public class VillagerFoodRegistryImpl implements VillagerFoodRegistry {
 	@Override
 	public Integer get(ItemConvertible item) {
 		return VillagerEntity.ITEM_FOOD_VALUES.getOrDefault(item.asItem(), 0);
@@ -77,11 +75,13 @@ public class VillagerFoodRegistryImpl implements VillagerFoodRegistry {
 
 	private static void makeMapsMutable() {
 		Map<Item, Integer> foodValuesMap = VillagerEntity.ITEM_FOOD_VALUES;
+
 		if (!(foodValuesMap instanceof HashMap)) {
 			VillagerEntityAccessor.setItemFoodValues(new HashMap<>(foodValuesMap));
 		}
 
 		Set<Item> gatherableItems = VillagerEntityAccessor.getGatherableItems();
+
 		if (!(gatherableItems instanceof HashSet)) {
 			VillagerEntityAccessor.setGatherableItems(new HashSet<>(gatherableItems));
 		}

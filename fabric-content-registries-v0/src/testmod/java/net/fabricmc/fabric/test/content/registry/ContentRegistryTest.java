@@ -16,21 +16,19 @@
 
 package net.fabricmc.fabric.test.content.registry;
 
-import net.fabricmc.fabric.api.registry.VillagerFoodRegistry;
-
-import net.minecraft.item.Items;
-
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.item.HoeItem;
+import net.minecraft.item.Items;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
+import net.fabricmc.fabric.api.registry.VillagerFoodRegistry;
 
 public final class ContentRegistryTest implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);
