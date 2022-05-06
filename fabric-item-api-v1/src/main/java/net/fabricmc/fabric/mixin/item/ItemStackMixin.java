@@ -19,7 +19,6 @@ package net.fabricmc.fabric.mixin.item;
 import java.util.function.Consumer;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
