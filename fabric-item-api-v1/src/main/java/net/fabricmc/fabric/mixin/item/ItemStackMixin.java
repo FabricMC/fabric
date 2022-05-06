@@ -87,8 +87,7 @@ public abstract class ItemStackMixin {
 		//we need to ensure it is modifiable for the callback
 		Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers = HashMultimap.create(item.getAttributeModifiers(stack, slot));
 		ModifyItemAttributeModifiersCallback.EVENT.invoker().modifyAttributeModifiers(stack, slot, attributeModifiers);
-		//now we can turn it back to immutable
-		return ImmutableMultimap.copyOf(attributeModifiers);
+		return attributeModifiers;
 	}
 
 	@Redirect(
