@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.mixin.content.registry;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.server.network.ServerPlayerInteractionManager;
-
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -27,13 +24,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.brain.task.FarmerVillagerTask;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.registry.VillagerPlantableRegistry;

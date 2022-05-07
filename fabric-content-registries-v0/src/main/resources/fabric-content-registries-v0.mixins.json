@@ -4,8 +4,9 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "AxeItemAccessor",
-    "FarmerWorkTaskAccessor",
     "FarmerVillagerTaskMixin",
+    "FarmerWorkTaskAccessor",
+    "GiveGiftsToHeroTaskAccessor",
     "HoeItemAccessor",
     "HoneycombItemMixin",
     "MixinAbstractFurnaceBlockEntity",

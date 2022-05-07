@@ -22,6 +22,8 @@ import org.slf4j.Logger;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.Items;
+import net.minecraft.util.Identifier;
+import net.minecraft.village.VillagerProfession;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
@@ -32,6 +34,7 @@ import net.fabricmc.fabric.api.registry.VillagerCollectableRegistry;
 import net.fabricmc.fabric.api.registry.VillagerCompostableRegistry;
 import net.fabricmc.fabric.api.registry.VillagerFoodRegistry;
 import net.fabricmc.fabric.api.registry.VillagerPlantableRegistry;
+import net.fabricmc.fabric.api.registry.VillagerHeroGiftRegistry;
 
 public final class ContentRegistryTest implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);
@@ -46,6 +49,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - aforementioned ores can be scraped from diamond -> gold -> iron -> copper
 		//  - villagers can now collect, consume (at the same level of bread) and compost apples
 		//  - villagers can now collect and plant oak saplings
+		//  - assign a loot table to the nitwit villager type
 
 		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.getDefaultState());
 		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
@@ -99,5 +103,7 @@ public final class ContentRegistryTest implements ModInitializer {
 			// expected behavior
 			LOGGER.info("VillagerPlantablesRegistry test passed!");
 		}
+
+		VillagerHeroGiftRegistry.INSTANCE.add(VillagerProfession.NITWIT, new Identifier("fake_loot_table"));
 	}
 }
