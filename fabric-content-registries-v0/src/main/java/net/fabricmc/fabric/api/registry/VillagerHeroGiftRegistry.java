@@ -21,6 +21,10 @@ import net.minecraft.village.VillagerProfession;
 
 import net.fabricmc.fabric.impl.content.registry.VillagerHeroGiftRegistryImpl;
 
+/**
+ * Registry of loot tables for each profession that are used for
+ * generating hero of the village gifts.
+ */
 public interface VillagerHeroGiftRegistry {
 	VillagerHeroGiftRegistry INSTANCE = new VillagerHeroGiftRegistryImpl();
 
