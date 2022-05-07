@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.transfer.unittests;
 
+import static net.fabricmc.fabric.test.transfer.unittests.TestUtil.assertEquals;
+
 import java.util.stream.IntStream;
 
 import org.jetbrains.annotations.Nullable;
@@ -127,6 +129,16 @@ class ItemTests {
 		if (!testInventory.getStack(1).isOf(Items.BUCKET) || testInventory.getStack(1).getCount() != 1) throw new AssertionError("Slot 1 should have been a bucket.");
 
 		checkComparatorOutput(testInventory, null);
+
+		// Check that we return sensible results if amount stored > capacity
+		ItemStack oversizedStack = new ItemStack(Items.DIAMOND_PICKAXE, 2);
+		SimpleInventory simpleInventory = new SimpleInventory(oversizedStack);
+		InventoryStorage wrapper = InventoryStorage.of(simpleInventory, null);
+
+		try (Transaction transaction = Transaction.openOuter()) {
+			assertEquals(0L, wrapper.insert(ItemVariant.of(oversizedStack), 10, transaction));
+			transaction.commit();
+		}
 	}
 
 	private static boolean stackEquals(ItemStack stack, Item item, int count) {
