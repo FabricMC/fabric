@@ -17,17 +17,21 @@
 package net.fabricmc.fabric.api.event.registry;
 
 import java.util.EnumSet;
+import java.util.function.Function;
 
 import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.MutableRegistry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
 import net.fabricmc.fabric.mixin.registry.sync.AccessorRegistry;
+
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Used to create custom registries, with specified registry attributes.
@@ -64,7 +68,19 @@ public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	 * @return An instance of FabricRegistryBuilder
 	 */
 	public static <T> FabricRegistryBuilder<T, SimpleRegistry<T>> createSimple(Class<T> type, Identifier registryId) {
-		return from(new SimpleRegistry<T>(RegistryKey.ofRegistry(registryId), Lifecycle.stable(), null));
+		return createSimple(type, registryId, null);
+	}
+
+	/**
+	 * Create a new {@link FabricRegistryBuilder} using a {@link SimpleRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
+	 *
+	 * @param valueToEntryFunction The Function used internally to get a Reference of a Value for the Registry
+	 * @param registryId The registry {@link Identifier} used as the registry id
+	 * @param <T> The type stored in the Registry
+	 * @return An instance of FabricRegistryBuilder
+	 */
+	public static <T> FabricRegistryBuilder<T, SimpleRegistry<T>> createSimple(Class<T> type, Identifier registryId, @Nullable Function<T, RegistryEntry.Reference<T>> valueToEntryFunction) {
+		return from(new SimpleRegistry<T>(RegistryKey.ofRegistry(registryId), Lifecycle.stable(), valueToEntryFunction));
 	}
 
 	/**
@@ -76,7 +92,20 @@ public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	 * @return An instance of FabricRegistryBuilder
 	 */
 	public static <T> FabricRegistryBuilder<T, DefaultedRegistry<T>> createDefaulted(Class<T> type, Identifier registryId, Identifier defaultId) {
-		return from(new DefaultedRegistry<T>(defaultId.toString(), RegistryKey.ofRegistry(registryId), Lifecycle.stable(), null));
+		return createDefaulted(type, registryId, defaultId, null);
+	}
+
+	/**
+	 * Create a new {@link FabricRegistryBuilder} using a {@link DefaultedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
+	 *
+	 * @param valueToEntryFunction The Function used internally to get a Reference of a Value for the Registry
+	 * @param registryId The registry {@link Identifier} used as the registry id
+	 * @param defaultId The default registry id
+	 * @param <T> The type stored in the Registry
+	 * @return An instance of FabricRegistryBuilder
+	 */
+	public static <T> FabricRegistryBuilder<T, DefaultedRegistry<T>> createDefaulted(Class<T> type, Identifier registryId, Identifier defaultId, @Nullable Function<T, RegistryEntry.Reference<T>> valueToEntryFunction) {
+		return from(new DefaultedRegistry<T>(defaultId.toString(), RegistryKey.ofRegistry(registryId), Lifecycle.stable(), valueToEntryFunction));
 	}
 
 	private final R registry;
