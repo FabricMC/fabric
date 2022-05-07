@@ -28,9 +28,10 @@ import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
-import net.fabricmc.fabric.api.registry.VillagerFoodRegistry;
 import net.fabricmc.fabric.api.registry.VillagerCollectablesRegistry;
 import net.fabricmc.fabric.api.registry.VillagerCompostingRegistry;
+import net.fabricmc.fabric.api.registry.VillagerFoodRegistry;
+import net.fabricmc.fabric.api.registry.VillagerPlantableRegistry;
 
 public final class ContentRegistryTest implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);
@@ -44,6 +45,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - copper ore, iron ore, gold ore, and diamond ore can be waxed into their deepslate variants and scraped back again
 		//  - aforementioned ores can be scraped from diamond -> gold -> iron -> copper
 		//  - villagers can now collect, consume (at the same level of bread) and compost apples
+		//  - villagers can now collect and plant oak saplings
 
 		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.getDefaultState());
 		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
@@ -86,5 +88,16 @@ public final class ContentRegistryTest implements ModInitializer {
 		VillagerCollectablesRegistry.INSTANCE.add(Items.APPLE);
 		VillagerFoodRegistry.INSTANCE.add(Items.APPLE, 4);
 		VillagerCompostingRegistry.INSTANCE.add(Items.APPLE);
+
+		VillagerCollectablesRegistry.INSTANCE.add(Items.OAK_SAPLING);
+		VillagerPlantableRegistry.INSTANCE.add(Items.OAK_SAPLING);
+
+		// assert that VillagerPlantablesRegistry throws when getting a non-BlockItem
+		try {
+			VillagerPlantableRegistry.INSTANCE.add(Items.STICK);
+		} catch (Exception e) {
+			// expected behavior
+			LOGGER.info("VillagerPlantablesRegistry test passed!");
+		}
 	}
 }

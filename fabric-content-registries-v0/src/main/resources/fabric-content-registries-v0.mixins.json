@@ -5,13 +5,15 @@
   "mixins": [
     "AxeItemAccessor",
     "FarmerWorkTaskAccessor",
+    "FarmerVillagerTaskMixin",
     "HoeItemAccessor",
     "HoneycombItemMixin",
     "MixinAbstractFurnaceBlockEntity",
     "MixinFireBlock",
     "OxidizableMixin",
     "ShovelItemAccessor",
-    "VillagerEntityAccessor"
+    "VillagerEntityAccessor",
+    "VillagerEntityMixin"
   ],
   "client": [
     "client.MixinClientPlayNetworkHandler"
