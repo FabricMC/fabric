@@ -57,7 +57,7 @@ public class VillagerPlantableRegistryImpl implements VillagerPlantableRegistry 
 		this.plantables.put(item.asItem(), plantState);
 
 		if (!(plantState.getBlock() instanceof CropBlock)) {
-			LOGGER.info("Registered a plantable block that does not extend CropBlock, this block will not be harvestable by villagers.");
+			LOGGER.info("Registered a plantable block that does not extend CropBlock, this block will not be villager harvestable by default.");
 		}
 	}
 
