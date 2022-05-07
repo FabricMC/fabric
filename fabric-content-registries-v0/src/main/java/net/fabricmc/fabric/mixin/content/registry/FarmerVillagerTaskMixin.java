@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.mixin.content.registry;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.server.network.ServerPlayerInteractionManager;
+
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -48,8 +51,9 @@ public class FarmerVillagerTaskMixin {
 			ItemStack itemStack = simpleInventory.getStack(i);
 
 			if (VillagerPlantableRegistry.INSTANCE.contains(itemStack.getItem())) {
-				serverWorld.setBlockState(this.currentTarget, VillagerPlantableRegistry.INSTANCE.getPlantState(itemStack.getItem()), 3);
-				serverWorld.playSound(null, this.currentTarget.getX(), this.currentTarget.getY(), this.currentTarget.getZ(), SoundEvents.ITEM_CROP_PLANT, SoundCategory.BLOCKS, 1.0F, 1.0F);
+				BlockState state = VillagerPlantableRegistry.INSTANCE.getPlantState(itemStack.getItem());
+				serverWorld.setBlockState(this.currentTarget, state, 3);
+				serverWorld.playSound(null, this.currentTarget.getX(), this.currentTarget.getY(), this.currentTarget.getZ(), state.getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
 				itemStack.decrement(1);
 
 				if (itemStack.isEmpty()) {

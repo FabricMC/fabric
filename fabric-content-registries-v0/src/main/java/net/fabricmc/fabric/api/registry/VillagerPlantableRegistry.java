@@ -27,7 +27,7 @@ import net.fabricmc.fabric.impl.content.registry.VillagerPlantableRegistryImpl;
 /**
  * Registry of items that farmer villagers can plant on farmland.
  *
- * @see VillagerCollectablesRegistry to allow villagers to collect the item
+ * @see VillagerCollectableRegistry to allow villagers to collect the item
  */
 public interface VillagerPlantableRegistry {
 	VillagerPlantableRegistry INSTANCE = new VillagerPlantableRegistryImpl();

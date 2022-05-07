@@ -22,10 +22,10 @@ import java.util.Set;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 
-import net.fabricmc.fabric.api.registry.VillagerCollectablesRegistry;
+import net.fabricmc.fabric.api.registry.VillagerCollectableRegistry;
 import net.fabricmc.fabric.mixin.content.registry.VillagerEntityAccessor;
 
-public class VillagerCollectablesRegistryImpl implements VillagerCollectablesRegistry {
+public class VillagerCollectableRegistryImpl implements VillagerCollectableRegistry {
 	@Override
 	public boolean contains(ItemConvertible item) {
 		makeSetMutable();

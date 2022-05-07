@@ -17,14 +17,14 @@
 package net.fabricmc.fabric.api.registry;
 
 import net.fabricmc.fabric.api.util.ItemList;
-import net.fabricmc.fabric.impl.content.registry.VillagerCompostingRegistryImpl;
+import net.fabricmc.fabric.impl.content.registry.VillagerCompostableRegistryImpl;
 
 /**
  * Registry of items that farmer villagers can collect and
  * use in composters.
  *
- * @see VillagerCollectablesRegistry to allow villagers to collect the item
+ * @see VillagerCollectableRegistry to allow villagers to collect the item
  */
-public interface VillagerCompostingRegistry extends ItemList {
-	VillagerCompostingRegistry INSTANCE = new VillagerCompostingRegistryImpl();
+public interface VillagerCompostableRegistry extends ItemList {
+	VillagerCompostableRegistry INSTANCE = new VillagerCompostableRegistryImpl();
 }

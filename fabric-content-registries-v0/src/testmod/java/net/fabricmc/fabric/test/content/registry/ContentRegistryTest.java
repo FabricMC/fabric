@@ -28,8 +28,8 @@ import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
-import net.fabricmc.fabric.api.registry.VillagerCollectablesRegistry;
-import net.fabricmc.fabric.api.registry.VillagerCompostingRegistry;
+import net.fabricmc.fabric.api.registry.VillagerCollectableRegistry;
+import net.fabricmc.fabric.api.registry.VillagerCompostableRegistry;
 import net.fabricmc.fabric.api.registry.VillagerFoodRegistry;
 import net.fabricmc.fabric.api.registry.VillagerPlantableRegistry;
 
@@ -85,11 +85,11 @@ public final class ContentRegistryTest implements ModInitializer {
 			LOGGER.info("OxidizableBlocksRegistry test passed!");
 		}
 
-		VillagerCollectablesRegistry.INSTANCE.add(Items.APPLE);
+		VillagerCollectableRegistry.INSTANCE.add(Items.APPLE);
 		VillagerFoodRegistry.INSTANCE.add(Items.APPLE, 4);
-		VillagerCompostingRegistry.INSTANCE.add(Items.APPLE);
+		VillagerCompostableRegistry.INSTANCE.add(Items.APPLE);
 
-		VillagerCollectablesRegistry.INSTANCE.add(Items.OAK_SAPLING);
+		VillagerCollectableRegistry.INSTANCE.add(Items.OAK_SAPLING);
 		VillagerPlantableRegistry.INSTANCE.add(Items.OAK_SAPLING);
 
 		// assert that VillagerPlantablesRegistry throws when getting a non-BlockItem

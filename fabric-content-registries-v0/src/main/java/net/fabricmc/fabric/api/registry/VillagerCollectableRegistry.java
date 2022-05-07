@@ -17,12 +17,12 @@
 package net.fabricmc.fabric.api.registry;
 
 import net.fabricmc.fabric.api.util.ItemList;
-import net.fabricmc.fabric.impl.content.registry.VillagerCollectablesRegistryImpl;
+import net.fabricmc.fabric.impl.content.registry.VillagerCollectableRegistryImpl;
 
 /**
  * Registry of items that villagers will be able
  * to collect (pickup item entities).
  */
-public interface VillagerCollectablesRegistry extends ItemList {
-	VillagerCollectablesRegistry INSTANCE = new VillagerCollectablesRegistryImpl();
+public interface VillagerCollectableRegistry extends ItemList {
+	VillagerCollectableRegistry INSTANCE = new VillagerCollectableRegistryImpl();
 }

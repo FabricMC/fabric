@@ -23,7 +23,7 @@ import net.fabricmc.fabric.impl.content.registry.VillagerFoodRegistryImpl;
  * Registry of items to food level values, defining the amount of food
  * a Villager will receive after eating.
  *
- * @see VillagerCollectablesRegistry to allow villagers to collect the item
+ * @see VillagerCollectableRegistry to allow villagers to collect the item
  */
 public interface VillagerFoodRegistry extends Item2ObjectMap<Integer> {
 	VillagerFoodRegistry INSTANCE = new VillagerFoodRegistryImpl();

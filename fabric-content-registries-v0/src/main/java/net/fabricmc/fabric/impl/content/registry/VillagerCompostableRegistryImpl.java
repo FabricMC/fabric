@@ -26,11 +26,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
-import net.fabricmc.fabric.api.registry.VillagerCompostingRegistry;
+import net.fabricmc.fabric.api.registry.VillagerCompostableRegistry;
 import net.fabricmc.fabric.mixin.content.registry.FarmerWorkTaskAccessor;
 
-public class VillagerCompostingRegistryImpl implements VillagerCompostingRegistry {
-	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerCompostingRegistry.class);
+public class VillagerCompostableRegistryImpl implements VillagerCompostableRegistry {
+	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerCompostableRegistry.class);
 
 	@Override
 	public boolean contains(ItemConvertible item) {
