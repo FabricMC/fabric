@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.api.registry;
 
-import net.fabricmc.fabric.api.util.Item2ObjectMap;
-import net.fabricmc.fabric.impl.content.registry.VillagerFoodRegistryImpl;
+import net.fabricmc.fabric.api.util.ItemList;
+import net.fabricmc.fabric.impl.content.registry.VillagerCompostingRegistryImpl;
 
 /**
- * Registry of items to food level values, defining the amount of food
- * a Villager will receive after eating.
+ * Registry of items that farmer villagers can collect and
+ * use in composters.
  *
  * @see VillagerCollectablesRegistry to allow villagers to collect the item
  */
-public interface VillagerFoodRegistry extends Item2ObjectMap<Integer> {
-	VillagerFoodRegistry INSTANCE = new VillagerFoodRegistryImpl();
+public interface VillagerCompostingRegistry extends ItemList {
+	VillagerCompostingRegistry INSTANCE = new VillagerCompostingRegistryImpl();
 }

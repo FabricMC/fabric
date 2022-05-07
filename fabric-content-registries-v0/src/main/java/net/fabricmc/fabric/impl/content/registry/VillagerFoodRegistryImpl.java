@@ -17,9 +17,10 @@
 package net.fabricmc.fabric.impl.content.registry;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.tag.TagKey;
@@ -30,6 +31,8 @@ import net.fabricmc.fabric.api.registry.VillagerFoodRegistry;
 import net.fabricmc.fabric.mixin.content.registry.VillagerEntityAccessor;
 
 public class VillagerFoodRegistryImpl implements VillagerFoodRegistry {
+	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerFoodRegistry.class);
+
 	@Override
 	public Integer get(ItemConvertible item) {
 		return VillagerEntity.ITEM_FOOD_VALUES.getOrDefault(item.asItem(), 0);
@@ -37,10 +40,13 @@ public class VillagerFoodRegistryImpl implements VillagerFoodRegistry {
 
 	@Override
 	public void add(ItemConvertible item, Integer value) {
-		makeMapsMutable();
+		makeMapMutable();
 
-		VillagerEntity.ITEM_FOOD_VALUES.put(item.asItem(), value);
-		VillagerEntityAccessor.getGatherableItems().add(item.asItem());
+		Integer old = VillagerEntity.ITEM_FOOD_VALUES.put(item.asItem(), value);
+
+		if (old != null) {
+			LOGGER.info("Villager food {} replaced, was: {}, now {}.", item.asItem(), old, value);
+		}
 	}
 
 	@Override
@@ -50,7 +56,7 @@ public class VillagerFoodRegistryImpl implements VillagerFoodRegistry {
 
 	@Override
 	public void remove(ItemConvertible item) {
-		makeMapsMutable();
+		makeMapMutable();
 
 		VillagerEntity.ITEM_FOOD_VALUES.put(item.asItem(), 0);
 	}
@@ -62,10 +68,9 @@ public class VillagerFoodRegistryImpl implements VillagerFoodRegistry {
 
 	@Override
 	public void clear(ItemConvertible item) {
-		makeMapsMutable();
+		makeMapMutable();
 
 		VillagerEntity.ITEM_FOOD_VALUES.remove(item.asItem());
-		VillagerEntityAccessor.getGatherableItems().remove(item.asItem());
 	}
 
 	@Override
@@ -73,17 +78,11 @@ public class VillagerFoodRegistryImpl implements VillagerFoodRegistry {
 		throw new UnsupportedOperationException("Tags currently not supported!");
 	}
 
-	private static void makeMapsMutable() {
+	private static void makeMapMutable() {
 		Map<Item, Integer> foodValuesMap = VillagerEntity.ITEM_FOOD_VALUES;
 
 		if (!(foodValuesMap instanceof HashMap)) {
 			VillagerEntityAccessor.setItemFoodValues(new HashMap<>(foodValuesMap));
-		}
-
-		Set<Item> gatherableItems = VillagerEntityAccessor.getGatherableItems();
-
-		if (!(gatherableItems instanceof HashSet)) {
-			VillagerEntityAccessor.setGatherableItems(new HashSet<>(gatherableItems));
 		}
 	}
 }

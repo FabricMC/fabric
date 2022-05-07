@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.registry;
+package net.fabricmc.fabric.api.util;
 
-import net.fabricmc.fabric.api.util.Item2ObjectMap;
-import net.fabricmc.fabric.impl.content.registry.VillagerFoodRegistryImpl;
+import net.minecraft.item.ItemConvertible;
 
-/**
- * Registry of items to food level values, defining the amount of food
- * a Villager will receive after eating.
- *
- * @see VillagerCollectablesRegistry to allow villagers to collect the item
- */
-public interface VillagerFoodRegistry extends Item2ObjectMap<Integer> {
-	VillagerFoodRegistry INSTANCE = new VillagerFoodRegistryImpl();
+public interface ItemList {
+	boolean contains(ItemConvertible item);
+
+	void add(ItemConvertible item);
+
+	boolean remove(ItemConvertible item);
 }
