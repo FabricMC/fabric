@@ -30,10 +30,7 @@ import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
-import net.fabricmc.fabric.api.registry.VillagerCollectableRegistry;
-import net.fabricmc.fabric.api.registry.VillagerCompostableRegistry;
-import net.fabricmc.fabric.api.registry.VillagerFoodRegistry;
-import net.fabricmc.fabric.api.registry.VillagerHeroGiftRegistry;
+import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
 import net.fabricmc.fabric.api.registry.VillagerPlantableRegistry;
 
 public final class ContentRegistryTest implements ModInitializer {
@@ -89,21 +86,23 @@ public final class ContentRegistryTest implements ModInitializer {
 			LOGGER.info("OxidizableBlocksRegistry test passed!");
 		}
 
-		VillagerCollectableRegistry.register(Items.APPLE);
-		VillagerFoodRegistry.register(Items.APPLE, 4);
-		VillagerCompostableRegistry.register(Items.APPLE);
+		VillagerInteractionRegistries.registerCollectable(Items.APPLE);
+		VillagerInteractionRegistries.registerFood(Items.APPLE, 4);
+		VillagerInteractionRegistries.registerCompostable(Items.APPLE);
 
-		VillagerCollectableRegistry.register(Items.OAK_SAPLING);
+		VillagerInteractionRegistries.registerCollectable(Items.OAK_SAPLING);
 		VillagerPlantableRegistry.INSTANCE.register(Items.OAK_SAPLING);
 
 		// assert that VillagerPlantablesRegistry throws when getting a non-BlockItem
 		try {
 			VillagerPlantableRegistry.INSTANCE.register(Items.STICK);
+
+			throw new AssertionError("VillagerPlantablesRegistry didn't throw when item is not BlockItem!");
 		} catch (Exception e) {
 			// expected behavior
 			LOGGER.info("VillagerPlantablesRegistry test passed!");
 		}
 
-		VillagerHeroGiftRegistry.register(VillagerProfession.NITWIT, new Identifier("fake_loot_table"));
+		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, new Identifier("fake_loot_table"));
 	}
 }
