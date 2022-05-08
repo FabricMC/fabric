@@ -30,11 +30,7 @@ import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
-import net.fabricmc.fabric.api.registry.VillagerCollectableRegistry;
-import net.fabricmc.fabric.api.registry.VillagerCompostableRegistry;
-import net.fabricmc.fabric.api.registry.VillagerFoodRegistry;
-import net.fabricmc.fabric.api.registry.VillagerPlantableRegistry;
-import net.fabricmc.fabric.api.registry.VillagerHeroGiftRegistry;
+import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
 
 public final class ContentRegistryTest implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);
@@ -89,21 +85,21 @@ public final class ContentRegistryTest implements ModInitializer {
 			LOGGER.info("OxidizableBlocksRegistry test passed!");
 		}
 
-		VillagerCollectableRegistry.INSTANCE.add(Items.APPLE);
-		VillagerFoodRegistry.INSTANCE.add(Items.APPLE, 4);
-		VillagerCompostableRegistry.INSTANCE.add(Items.APPLE);
+		VillagerInteractionRegistries.COLLECTABLE_REGISTRY.add(Items.APPLE);
+		VillagerInteractionRegistries.FOOD_REGISTRY.put(Items.APPLE, 4);
+		VillagerInteractionRegistries.COMPOSTABLE_REGISTRY.add(Items.APPLE);
 
-		VillagerCollectableRegistry.INSTANCE.add(Items.OAK_SAPLING);
-		VillagerPlantableRegistry.INSTANCE.add(Items.OAK_SAPLING);
+		VillagerInteractionRegistries.COLLECTABLE_REGISTRY.add(Items.OAK_SAPLING);
+		VillagerInteractionRegistries.PLANTABLE_REGISTRY.add(Items.OAK_SAPLING);
 
 		// assert that VillagerPlantablesRegistry throws when getting a non-BlockItem
 		try {
-			VillagerPlantableRegistry.INSTANCE.add(Items.STICK);
+			VillagerInteractionRegistries.PLANTABLE_REGISTRY.add(Items.STICK);
 		} catch (Exception e) {
 			// expected behavior
 			LOGGER.info("VillagerPlantablesRegistry test passed!");
 		}
 
-		VillagerHeroGiftRegistry.INSTANCE.add(VillagerProfession.NITWIT, new Identifier("fake_loot_table"));
+		VillagerInteractionRegistries.HERO_GIFT_REGISTRY.put(VillagerProfession.NITWIT, new Identifier("fake_loot_table"));
 	}
 }

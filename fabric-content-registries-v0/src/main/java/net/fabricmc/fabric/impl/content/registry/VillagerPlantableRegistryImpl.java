@@ -22,6 +22,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.util.registry.Registry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CropBlock;
 import net.minecraft.item.BlockItem;
@@ -29,10 +30,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 
-import net.fabricmc.fabric.api.registry.VillagerPlantableRegistry;
-
-public class VillagerPlantableRegistryImpl implements VillagerPlantableRegistry {
-	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerPlantableRegistry.class);
+public class VillagerPlantableRegistryImpl {
+	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerPlantableRegistryImpl.class);
 
 	private final HashMap<Item, BlockState> plantables = new HashMap<>();
 
@@ -43,7 +42,6 @@ public class VillagerPlantableRegistryImpl implements VillagerPlantableRegistry 
 		add(Items.BEETROOT_SEEDS);
 	}
 
-	@Override
 	public void add(ItemConvertible item) {
 		if (!(item.asItem() instanceof BlockItem)) {
 			throw new IllegalArgumentException("item is not a BlockItem");
@@ -52,31 +50,26 @@ public class VillagerPlantableRegistryImpl implements VillagerPlantableRegistry 
 		this.add(item, ((BlockItem) item.asItem()).getBlock().getDefaultState());
 	}
 
-	@Override
 	public void add(ItemConvertible item, BlockState plantState) {
 		this.plantables.put(item.asItem(), plantState);
 
 		if (!(plantState.getBlock() instanceof CropBlock)) {
-			LOGGER.info("Registered a plantable block that does not extend CropBlock, this block will not be villager harvestable by default.");
+			LOGGER.info("Registered a block ({}) that does not extend CropBlock, this block will not be villager harvestable by default.", Registry.BLOCK.getId(plantState.getBlock()));
 		}
 	}
 
-	@Override
 	public BlockState remove(ItemConvertible item) {
 		return this.plantables.remove(item.asItem());
 	}
 
-	@Override
 	public boolean contains(ItemConvertible item) {
 		return this.plantables.containsKey(item.asItem());
 	}
 
-	@Override
 	public BlockState getPlantState(ItemConvertible item) {
 		return this.plantables.get(item.asItem());
 	}
 
-	@Override
 	public Set<Item> getItems() {
 		return this.plantables.keySet();
 	}
