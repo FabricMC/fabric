@@ -33,7 +33,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 
-import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
+import net.fabricmc.fabric.api.registry.VillagerPlantableRegistry;
 
 @Mixin(FarmerVillagerTask.class)
 public class FarmerVillagerTaskMixin {
@@ -47,8 +47,8 @@ public class FarmerVillagerTaskMixin {
 		for (int i = 0; i < simpleInventory.size(); ++i) {
 			ItemStack itemStack = simpleInventory.getStack(i);
 
-			if (VillagerInteractionRegistries.PLANTABLE_REGISTRY.contains(itemStack.getItem())) {
-				BlockState state = VillagerInteractionRegistries.PLANTABLE_REGISTRY.getPlantState(itemStack.getItem());
+			if (VillagerPlantableRegistry.INSTANCE.contains(itemStack.getItem())) {
+				BlockState state = VillagerPlantableRegistry.INSTANCE.getPlantState(itemStack.getItem());
 				serverWorld.setBlockState(this.currentTarget, state, 3);
 				serverWorld.playSound(null, this.currentTarget.getX(), this.currentTarget.getY(), this.currentTarget.getZ(), state.getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
 				itemStack.decrement(1);

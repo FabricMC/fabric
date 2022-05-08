@@ -30,27 +30,31 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 
-public class VillagerPlantableRegistryImpl {
+import net.fabricmc.fabric.api.registry.VillagerPlantableRegistry;
+
+public class VillagerPlantableRegistryImpl implements VillagerPlantableRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerPlantableRegistryImpl.class);
 
 	private final HashMap<Item, BlockState> plantables = new HashMap<>();
 
 	public VillagerPlantableRegistryImpl() {
-		add(Items.WHEAT_SEEDS);
-		add(Items.POTATO);
-		add(Items.CARROT);
-		add(Items.BEETROOT_SEEDS);
+		register(Items.WHEAT_SEEDS);
+		register(Items.POTATO);
+		register(Items.CARROT);
+		register(Items.BEETROOT_SEEDS);
 	}
 
-	public void add(ItemConvertible item) {
+	@Override
+	public void register(ItemConvertible item) {
 		if (!(item.asItem() instanceof BlockItem)) {
 			throw new IllegalArgumentException("item is not a BlockItem");
 		}
 
-		this.add(item, ((BlockItem) item.asItem()).getBlock().getDefaultState());
+		this.register(item, ((BlockItem) item.asItem()).getBlock().getDefaultState());
 	}
 
-	public void add(ItemConvertible item, BlockState plantState) {
+	@Override
+	public void register(ItemConvertible item, BlockState plantState) {
 		this.plantables.put(item.asItem(), plantState);
 
 		if (!(plantState.getBlock() instanceof CropBlock)) {
@@ -58,18 +62,17 @@ public class VillagerPlantableRegistryImpl {
 		}
 	}
 
-	public BlockState remove(ItemConvertible item) {
-		return this.plantables.remove(item.asItem());
-	}
-
+	@Override
 	public boolean contains(ItemConvertible item) {
 		return this.plantables.containsKey(item.asItem());
 	}
 
+	@Override
 	public BlockState getPlantState(ItemConvertible item) {
 		return this.plantables.get(item.asItem());
 	}
 
+	@Override
 	public Set<Item> getItems() {
 		return this.plantables.keySet();
 	}
