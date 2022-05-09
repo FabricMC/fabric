@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.util;
+package net.fabricmc.fabric.impl.content.registry.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -30,7 +30,7 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.VillagerProfession;
 
-import net.fabricmc.fabric.api.util.ImmutableCollectionUtils;
+import net.fabricmc.fabric.impl.content.registry.util.ImmutableCollectionUtils;
 import net.fabricmc.fabric.mixin.content.registry.VillagerEntityAccessor;
 import net.fabricmc.fabric.mixin.content.registry.FarmerWorkTaskAccessor;
 import net.fabricmc.fabric.mixin.content.registry.GiveGiftsToHeroTaskAccessor;
@@ -44,6 +44,9 @@ import net.fabricmc.fabric.mixin.content.registry.GiveGiftsToHeroTaskAccessor;
  */
 public class VillagerInteractionRegistries {
 	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerInteractionRegistries.class);
+
+	private VillagerInteractionRegistries() {
+	}
 
 	/**
 	 * Registers an item to be collectable (picked up from item entity)
