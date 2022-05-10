@@ -29,12 +29,12 @@ import net.minecraft.item.Item;
 public interface FarmerWorkTaskAccessor {
 	@Mutable
 	@Accessor("COMPOSTABLES")
-	static void setCompostables(List<Item> items) {
+	static void fabric_setCompostables(List<Item> items) {
 		throw new AssertionError("Untransformed @Accessor");
 	}
 
 	@Accessor("COMPOSTABLES")
-	static List<Item> getCompostables() {
+	static List<Item> fabric_getCompostable() {
 		throw new AssertionError("Untransformed @Accessor");
 	}
 }

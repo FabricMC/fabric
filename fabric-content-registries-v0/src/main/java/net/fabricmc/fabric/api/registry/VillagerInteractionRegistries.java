@@ -90,7 +90,7 @@ public class VillagerInteractionRegistries {
 	 */
 	public static void registerGiftLootTable(VillagerProfession profession, Identifier lootTable) {
 		Objects.requireNonNull(profession, "Profession cannot be null!");
-		Identifier oldValue = GiveGiftsToHeroTaskAccessor.getGifts().put(profession, lootTable);
+		Identifier oldValue = GiveGiftsToHeroTaskAccessor.fabric_getGifts().put(profession, lootTable);
 
 		if (oldValue != null) {
 			LOGGER.info("Overriding previous gift loot table of {} profession, was: {}, now: {}", profession.getId(), oldValue, lootTable);
@@ -98,14 +98,14 @@ public class VillagerInteractionRegistries {
 	}
 
 	private static Set<Item> getCollectableRegistry() {
-		return ImmutableCollectionUtils.getAsMutableSet(VillagerEntityAccessor::getGatherableItems, VillagerEntityAccessor::setGatherableItems);
+		return ImmutableCollectionUtils.getAsMutableSet(VillagerEntityAccessor::fabric_getGatherableItems, VillagerEntityAccessor::fabric_setGatherableItems);
 	}
 
 	private static List<Item> getCompostableRegistry() {
-		return ImmutableCollectionUtils.getAsMutableList(FarmerWorkTaskAccessor::getCompostables, FarmerWorkTaskAccessor::setCompostables);
+		return ImmutableCollectionUtils.getAsMutableList(FarmerWorkTaskAccessor::fabric_getCompostable, FarmerWorkTaskAccessor::fabric_setCompostables);
 	}
 
 	private static Map<Item, Integer> getFoodRegistry() {
-		return ImmutableCollectionUtils.getAsMutableMap(() -> VillagerEntity.ITEM_FOOD_VALUES, VillagerEntityAccessor::setItemFoodValues);
+		return ImmutableCollectionUtils.getAsMutableMap(() -> VillagerEntity.ITEM_FOOD_VALUES, VillagerEntityAccessor::fabric_setItemFoodValues);
 	}
 }

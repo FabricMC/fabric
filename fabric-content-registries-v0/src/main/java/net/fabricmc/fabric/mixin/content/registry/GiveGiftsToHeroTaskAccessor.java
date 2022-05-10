@@ -28,7 +28,7 @@ import net.minecraft.village.VillagerProfession;
 @Mixin(GiveGiftsToHeroTask.class)
 public interface GiveGiftsToHeroTaskAccessor {
 	@Accessor("GIFTS")
-	static Map<VillagerProfession, Identifier> getGifts() {
+	static Map<VillagerProfession, Identifier> fabric_getGifts() {
 		throw new AssertionError("Untransformed @Accessor");
 	}
 }

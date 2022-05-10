@@ -47,7 +47,7 @@ public class FarmerVillagerTaskMixin {
 		for (int i = 0; i < simpleInventory.size(); ++i) {
 			ItemStack itemStack = simpleInventory.getStack(i);
 
-			if (VillagerPlantableRegistry.INSTANCE.contains(itemStack.getItem())) {
+			if (!itemStack.isEmpty() && VillagerPlantableRegistry.INSTANCE.contains(itemStack.getItem())) {
 				BlockState state = VillagerPlantableRegistry.INSTANCE.getPlantState(itemStack.getItem());
 				serverWorld.setBlockState(this.currentTarget, state, 3);
 				serverWorld.playSound(null, this.currentTarget.getX(), this.currentTarget.getY(), this.currentTarget.getZ(), state.getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);

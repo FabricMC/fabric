@@ -30,18 +30,18 @@ import net.minecraft.item.Item;
 public interface VillagerEntityAccessor {
 	@Mutable
 	@Accessor("ITEM_FOOD_VALUES")
-	static void setItemFoodValues(Map<Item, Integer> items) {
+	static void fabric_setItemFoodValues(Map<Item, Integer> items) {
 		throw new AssertionError("Untransformed @Accessor");
 	}
 
 	@Mutable
 	@Accessor("GATHERABLE_ITEMS")
-	static void setGatherableItems(Set<Item> items) {
+	static void fabric_setGatherableItems(Set<Item> items) {
 		throw new AssertionError("Untransformed @Accessor");
 	}
 
 	@Accessor("GATHERABLE_ITEMS")
-	static Set<Item> getGatherableItems() {
+	static Set<Item> fabric_getGatherableItems() {
 		throw new AssertionError("Untransformed @Accessor");
 	}
 }
