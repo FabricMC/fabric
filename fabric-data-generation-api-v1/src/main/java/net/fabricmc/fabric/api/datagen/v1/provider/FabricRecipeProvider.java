@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
-import java.nio.file.Path;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -66,7 +65,6 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 
 	@Override
 	public void run(DataWriter writer) {
-		Path path = this.root.getOutput();
 		Set<Identifier> generatedRecipes = Sets.newHashSet();
 		generateRecipes(provider -> {
 			Identifier identifier = getRecipeIdentifier(provider.getRecipeId());
@@ -79,12 +77,12 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 			ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(provider);
 			ConditionJsonProvider.write(recipeJson, conditions);
 
-			saveRecipe(writer, recipeJson, path.resolve("data/" + identifier.getNamespace() + "/recipes/" + identifier.getPath() + ".json"));
+			saveRecipe(writer, recipeJson, this.field_39378.method_44107(identifier));
 			JsonObject advancementJson = provider.toAdvancementJson();
 
 			if (advancementJson != null) {
 				ConditionJsonProvider.write(advancementJson, conditions);
-				saveRecipeAdvancement(writer, advancementJson, path.resolve("data/" + identifier.getNamespace() + "/advancements/" + provider.getAdvancementId().getPath() + ".json"));
+				saveRecipeAdvancement(writer, advancementJson, this.field_39379.method_44107(getRecipeIdentifier(provider.getAdvancementId())));
 			}
 		});
 	}

@@ -76,7 +76,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		dataGenerator.addProvider(TestBiomeTagProvider::new);
 
 		try {
-			new FabricTagProvider<>(dataGenerator, BuiltinRegistries.BIOME, "Biome Tags") {
+			new FabricTagProvider<>(dataGenerator, BuiltinRegistries.BIOME) {
 				@Override
 				protected void generateTags() {
 				}
@@ -87,7 +87,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		try {
-			new FabricTagProvider.DynamicRegistryTagProvider<>(dataGenerator, Registry.ITEM_KEY, "items") {
+			new FabricTagProvider.DynamicRegistryTagProvider<>(dataGenerator, Registry.ITEM_KEY) {
 				@Override
 				protected void generateTags() {
 				}
@@ -164,7 +164,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 	private static class TestBiomeTagProvider extends FabricTagProvider.DynamicRegistryTagProvider<Biome> {
 		private TestBiomeTagProvider(FabricDataGenerator dataGenerator) {
-			super(dataGenerator, Registry.BIOME_KEY, "biomes");
+			super(dataGenerator, Registry.BIOME_KEY);
 		}
 
 		@Override

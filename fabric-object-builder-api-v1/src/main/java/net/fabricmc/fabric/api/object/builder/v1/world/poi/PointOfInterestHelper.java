@@ -17,18 +17,17 @@
 package net.fabricmc.fabric.api.object.builder.v1.world.poi;
 
 import java.util.Set;
-import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.class_7477;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.poi.PointOfInterest;
 import net.minecraft.world.poi.PointOfInterestType;
-
-import net.fabricmc.fabric.mixin.object.builder.PointOfInterestTypeAccessor;
 
 /**
  * This class provides utilities to create a {@link PointOfInterestType}.
@@ -62,26 +61,6 @@ public final class PointOfInterestHelper {
 	/**
 	 * Creates and registers a {@link PointOfInterestType}.
 	 *
-	 * @param id The id of this {@link PointOfInterestType}.
-	 * @param ticketCount the amount of tickets.
-	 * @param completionCondition a {@link Predicate} which determines if two {@link PointOfInterestType}s are the same.
-	 * @param searchDistance the search distance.
-	 * @param blocks all blocks where a {@link PointOfInterest} of this type will be present
-	 * @return a new {@link PointOfInterestType}.
-	 */
-	public static PointOfInterestType register(Identifier id, int ticketCount, Predicate<PointOfInterestType> completionCondition, int searchDistance, Block... blocks) {
-		final ImmutableSet.Builder<BlockState> builder = ImmutableSet.builder();
-
-		for (Block block : blocks) {
-			builder.addAll(block.getStateManager().getStates());
-		}
-
-		return register(id, ticketCount, completionCondition, searchDistance, builder.build());
-	}
-
-	/**
-	 * Creates and registers a {@link PointOfInterestType}.
-	 *
 	 * @param id the id of this {@link PointOfInterestType}.
 	 * @param ticketCount the amount of tickets.
 	 * @param searchDistance the search distance.
@@ -94,31 +73,9 @@ public final class PointOfInterestHelper {
 		return register(id, ticketCount, searchDistance, builder.addAll(blocks).build());
 	}
 
-	/**
-	 * Creates and registers a {@link PointOfInterestType}.
-	 *
-	 * @param id the id of this {@link PointOfInterestType}.
-	 * @param ticketCount the amount of tickets.
-	 * @param typePredicate a {@link Predicate} which determines if two {@link PointOfInterestType}s are the same.
-	 * @param searchDistance the search distance.
-	 * @param states all {@link BlockState block states} where a {@link PointOfInterest} of this type will be present
-	 * @return a new {@link PointOfInterestType}.
-	 */
-	public static PointOfInterestType register(Identifier id, int ticketCount, Predicate<PointOfInterestType> typePredicate, int searchDistance, Iterable<BlockState> states) {
-		final ImmutableSet.Builder<BlockState> builder = ImmutableSet.builder();
-
-		return register(id, ticketCount, typePredicate, searchDistance, builder.addAll(states).build());
-	}
-
 	// INTERNAL METHODS
 
 	private static PointOfInterestType register(Identifier id, int ticketCount, int searchDistance, Set<BlockState> states) {
-		return Registry.register(Registry.POINT_OF_INTEREST_TYPE, id, PointOfInterestTypeAccessor.callSetup(
-				PointOfInterestTypeAccessor.callCreate(id.toString(), states, ticketCount, searchDistance)));
-	}
-
-	private static PointOfInterestType register(Identifier id, int ticketCount, Predicate<PointOfInterestType> typePredicate, int searchDistance, Set<BlockState> states) {
-		return Registry.register(Registry.POINT_OF_INTEREST_TYPE, id, PointOfInterestTypeAccessor.callSetup(
-				PointOfInterestTypeAccessor.callCreate(id.toString(), states, ticketCount, typePredicate, searchDistance)));
+		return class_7477.method_43993(Registry.POINT_OF_INTEREST_TYPE, RegistryKey.of(Registry.POINT_OF_INTEREST_TYPE_KEY, id), states, ticketCount, searchDistance);
 	}
 }

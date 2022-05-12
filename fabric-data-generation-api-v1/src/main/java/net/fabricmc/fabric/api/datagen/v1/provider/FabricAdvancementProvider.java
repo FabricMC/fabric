@@ -26,6 +26,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 
 import net.minecraft.advancement.Advancement;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.util.Identifier;
@@ -41,9 +42,11 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
  */
 public abstract class FabricAdvancementProvider implements DataProvider {
 	protected final FabricDataGenerator dataGenerator;
+	private final DataGenerator.class_7489 pathResolver;
 
 	protected FabricAdvancementProvider(FabricDataGenerator dataGenerator) {
 		this.dataGenerator = dataGenerator;
+		this.pathResolver = dataGenerator.method_44106(DataGenerator.class_7490.DATA_PACK, "advancements");
 	}
 
 	/**

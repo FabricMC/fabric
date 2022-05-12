@@ -1,18 +1,25 @@
 accessWidener	v2	named
 
-accessible  field   net/minecraft/data/server/RecipeProvider   root    Lnet/minecraft/data/DataGenerator;
+accessible  field  net/minecraft/data/server/RecipeProvider  field_39378  Lnet/minecraft/data/DataGenerator$class_7489;
+accessible  field  net/minecraft/data/server/RecipeProvider  field_39379  Lnet/minecraft/data/DataGenerator$class_7489;
 
-extendable  method  net/minecraft/data/server/AbstractTagProvider$ObjectBuilder <init>  (Lnet/minecraft/tag/Tag$Builder;Lnet/minecraft/util/registry/Registry;Ljava/lang/String;)V
+accessible  method  net/minecraft/data/server/AbstractTagProvider$ObjectBuilder <init> (Lnet/minecraft/tag/Builder;Lnet/minecraft/util/registry/Registry;)V
 extendable  method  net/minecraft/data/server/AbstractTagProvider$ObjectBuilder add     ([Ljava/lang/Object;)Lnet/minecraft/data/server/AbstractTagProvider$ObjectBuilder;
-accessible  field   net/minecraft/data/server/AbstractTagProvider$ObjectBuilder builder Lnet/minecraft/tag/Tag$Builder;
+accessible  field   net/minecraft/data/server/AbstractTagProvider$ObjectBuilder builder Lnet/minecraft/tag/Builder;
 accessible  field   net/minecraft/data/server/AbstractTagProvider$ObjectBuilder registry    Lnet/minecraft/util/registry/Registry;
-accessible  field   net/minecraft/data/server/AbstractTagProvider$ObjectBuilder source  Ljava/lang/String;
 
 accessible  field   net/minecraft/data/server/AbstractTagProvider   tagBuilders Ljava/util/Map;
 
 accessible  field   net/minecraft/data/server/BlockLootTableGenerator   lootTables  Ljava/util/Map;
 
-accessible    class    net/minecraft/tag/Tag$TagEntry
+extendable  method  net/minecraft/tag/TagEntry  <init>  (Lnet/minecraft/util/Identifier;ZZ)V
+accessible  field   net/minecraft/tag/TagEntry  id       Lnet/minecraft/util/Identifier;
+accessible  field   net/minecraft/tag/TagEntry  field_39267  Z
+accessible  field   net/minecraft/tag/TagEntry  field_39268  Z
+
+extendable  method  net/minecraft/data/DataGenerator$class_7489 <init> (Lnet/minecraft/data/DataGenerator;Lnet/minecraft/data/DataGenerator$class_7490;Ljava/lang/String;)V
+accessible  field   net/minecraft/data/DataGenerator$class_7489 field_39365    Ljava/nio/file/Path;
+accessible  field   net/minecraft/data/DataGenerator$class_7489 field_39366    Ljava/lang/String;
 
 transitive-accessible   method  net/minecraft/data/family/BlockFamilies register    (Lnet/minecraft/block/Block;)Lnet/minecraft/data/family/BlockFamily$Builder;
 
@@ -26,7 +33,6 @@ transitive-accessible   field   net/minecraft/data/client/BlockStateModelGenerat
 transitive-accessible   method  net/minecraft/data/client/TextureKey  of  (Ljava/lang/String;)Lnet/minecraft/data/client/TextureKey;
 transitive-accessible   method  net/minecraft/data/client/TextureKey	of  (Ljava/lang/String;Lnet/minecraft/data/client/TextureKey;)Lnet/minecraft/data/client/TextureKey;
 
-transitive-extendable method net/minecraft/data/server/AbstractTagProvider getOutput (Lnet/minecraft/util/Identifier;)Ljava/nio/file/Path;
 transitive-extendable method net/minecraft/data/server/AbstractTagProvider$ObjectBuilder add ([Lnet/minecraft/util/registry/RegistryKey;)Lnet/minecraft/data/server/AbstractTagProvider$ObjectBuilder;
 
 transitive-accessible	method	net/minecraft/data/server/RecipeProvider	saveRecipe	(Lnet/minecraft/data/DataWriter;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V
@@ -47,7 +53,7 @@ transitive-accessible	method	net/minecraft/data/server/RecipeProvider	createTran
 transitive-accessible	method	net/minecraft/data/server/RecipeProvider	createDoorRecipe	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/recipe/Ingredient;)Lnet/minecraft/data/server/recipe/CraftingRecipeJsonBuilder;
 transitive-accessible	method	net/minecraft/data/server/RecipeProvider	createFenceRecipe	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/recipe/Ingredient;)Lnet/minecraft/data/server/recipe/CraftingRecipeJsonBuilder;
 transitive-accessible	method	net/minecraft/data/server/RecipeProvider	createFenceGateRecipe	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/recipe/Ingredient;)Lnet/minecraft/data/server/recipe/CraftingRecipeJsonBuilder;
-transitive-accessible	method	net/minecraft/data/server/RecipeProvider	createPressurePlateRecipe	(Ljava/util/function/Consumer;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/item/ItemConvertible;)V
+transitive-accessible	method	net/minecraft/data/server/RecipeProvider	offerPressurePlateRecipe	(Ljava/util/function/Consumer;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/item/ItemConvertible;)V
 transitive-accessible	method	net/minecraft/data/server/RecipeProvider	createPressurePlateRecipe	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/recipe/Ingredient;)Lnet/minecraft/data/server/recipe/CraftingRecipeJsonBuilder;
 transitive-accessible	method	net/minecraft/data/server/RecipeProvider	offerSlabRecipe	(Ljava/util/function/Consumer;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/item/ItemConvertible;)V
 transitive-accessible	method	net/minecraft/data/server/RecipeProvider	createSlabRecipe	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/recipe/Ingredient;)Lnet/minecraft/data/server/recipe/CraftingRecipeJsonBuilder;
@@ -183,7 +189,7 @@ transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerLantern	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerTopSoil	(Lnet/minecraft/block/Block;Lnet/minecraft/util/Identifier;Lnet/minecraft/data/client/BlockStateVariant;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerPressurePlate	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
-transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerInfested	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerParented	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerNorthDefaultHorizontalRotation	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerPiston	(Lnet/minecraft/block/Block;Lnet/minecraft/util/Identifier;Lnet/minecraft/data/client/TextureMap;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerTorch	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
@@ -225,7 +231,7 @@ transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	g
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	cropStemDrops	(Lnet/minecraft/block/Block;Lnet/minecraft/item/Item;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	attachedCropStemDrops	(Lnet/minecraft/block/Block;Lnet/minecraft/item/Item;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	dropsWithShears	(Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/loot/LootTable$Builder;
-transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	glowLichenDrops	(Lnet/minecraft/block/Block;Lnet/minecraft/loot/condition/LootCondition$Builder;)Lnet/minecraft/loot/LootTable$Builder;
+transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	multifaceGrowthDrops	(Lnet/minecraft/block/Block;Lnet/minecraft/loot/condition/LootCondition$Builder;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	leavesDrop	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;[F)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	oakLeavesDrop	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;[F)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/BlockLootTableGenerator	mangroveLeavesDrop	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;
