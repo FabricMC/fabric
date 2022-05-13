@@ -16,22 +16,22 @@
 
 package net.fabricmc.fabric.api.util;
 
+import net.minecraft.tag.TagKey;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
-import net.minecraft.tag.Tag;
 
 public interface Item2ObjectMap<V> {
 	V get(ItemConvertible item);
 
 	void add(ItemConvertible item, V value);
 
-	void add(Tag<Item> tag, V value);
+	void add(TagKey<Item> tag, V value);
 
 	void remove(ItemConvertible item);
 
-	void remove(Tag<Item> tag);
+	void remove(TagKey<Item> tag);
 
 	void clear(ItemConvertible item);
 
-	void clear(Tag<Item> tag);
+	void clear(TagKey<Item> tag);
 }

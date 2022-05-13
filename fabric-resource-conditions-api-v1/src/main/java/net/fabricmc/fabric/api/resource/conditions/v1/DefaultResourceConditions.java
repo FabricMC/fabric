@@ -20,9 +20,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.minecraft.block.Block;
+import net.minecraft.tag.TagKey;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
@@ -90,21 +90,21 @@ public final class DefaultResourceConditions {
 	/**
 	 * Create a condition that returns true if each of the passed block tags exists and has at least one element.
 	 */
-	public static ConditionJsonProvider blockTagsPopulated(Tag.Identified<Block>... tags) {
+	public static ConditionJsonProvider blockTagsPopulated(TagKey<Block>... tags) {
 		return ResourceConditionsImpl.tagsPopulated(BLOCK_TAGS_POPULATED, tags);
 	}
 
 	/**
 	 * Create a condition that returns true if each of the passed fluid tags exists and has at least one element.
 	 */
-	public static ConditionJsonProvider fluidTagsPopulated(Tag.Identified<Fluid>... tags) {
+	public static ConditionJsonProvider fluidTagsPopulated(TagKey<Fluid>... tags) {
 		return ResourceConditionsImpl.tagsPopulated(FLUID_TAGS_POPULATED, tags);
 	}
 
 	/**
 	 * Create a condition that returns true if each of the passed item tags exists and has at least one element.
 	 */
-	public static ConditionJsonProvider itemTagsPopulated(Tag.Identified<Item>... tags) {
+	public static ConditionJsonProvider itemTagsPopulated(TagKey<Item>... tags) {
 		return ResourceConditionsImpl.tagsPopulated(ITEM_TAGS_POPULATED, tags);
 	}
 

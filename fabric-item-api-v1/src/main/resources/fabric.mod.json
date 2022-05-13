@@ -24,6 +24,9 @@
   },
   "description": "Hooks for items",
   "custom": {
-    "fabric-api:module-lifecycle": "stable"
+    "fabric-api:module-lifecycle": "stable",
+    "loom:injected_interfaces": {
+      "net/minecraft/class_1792": ["net/fabricmc/fabric/api/item/v1/FabricItem"]
+    }
   }
 }

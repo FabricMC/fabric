@@ -1,0 +1,41 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#minecraft:redstone_ores",
+      "required": false
+    },
+    {
+      "id": "#minecraft:copper_ores",
+      "required": false
+    },
+    {
+      "id": "#minecraft:gold_ores",
+      "required": false
+    },
+    {
+      "id": "#minecraft:iron_ores",
+      "required": false
+    },
+    {
+      "id": "#minecraft:coal_ores",
+      "required": false
+    },
+    {
+      "id": "#minecraft:emerald_ores",
+      "required": false
+    },
+    {
+      "id": "#minecraft:lapis_ores",
+      "required": false
+    },
+    {
+      "id": "#minecraft:diamond_ores",
+      "required": false
+    },
+    {
+      "id": "#c:quartz_ores",
+      "required": false
+    }
+  ]
+}

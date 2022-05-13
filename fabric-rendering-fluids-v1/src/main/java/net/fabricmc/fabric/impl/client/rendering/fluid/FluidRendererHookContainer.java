@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.rendering.fluid;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
@@ -26,15 +27,16 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 public class FluidRendererHookContainer {
 	public BlockRenderView view;
 	public BlockPos pos;
-	public FluidState state;
+	public BlockState blockState;
+	public FluidState fluidState;
 	public FluidRenderHandler handler;
 	public final Sprite[] sprites = new Sprite[2];
 	public Sprite overlay;
 	public boolean hasOverlay;
 
-	public void getSprites(BlockRenderView world, BlockPos pos, FluidState fluid) {
+	public void getSprites(BlockRenderView world, BlockPos pos, FluidState fluidState) {
 		if (handler != null) {
-			Sprite[] sprites = handler.getFluidSprites(world, pos, state);
+			Sprite[] sprites = handler.getFluidSprites(world, pos, fluidState);
 
 			this.sprites[0] = sprites[0];
 			this.sprites[1] = sprites[1];
@@ -51,7 +53,8 @@ public class FluidRendererHookContainer {
 	public void clear() {
 		view = null;
 		pos = null;
-		state = null;
+		blockState = null;
+		fluidState = null;
 		handler = null;
 		sprites[0] = null;
 		sprites[1] = null;

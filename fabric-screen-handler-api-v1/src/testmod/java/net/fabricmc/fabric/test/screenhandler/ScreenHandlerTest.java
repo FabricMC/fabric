@@ -28,7 +28,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.fabricmc.fabric.test.screenhandler.block.BoxBlock;
 import net.fabricmc.fabric.test.screenhandler.block.BoxBlockEntity;
 import net.fabricmc.fabric.test.screenhandler.item.BagItem;
@@ -46,9 +46,9 @@ public class ScreenHandlerTest implements ModInitializer {
 	public static final Block BOX = new BoxBlock(AbstractBlock.Settings.copy(Blocks.OAK_WOOD));
 	public static final Item BOX_ITEM = new BlockItem(BOX, new Item.Settings().group(ItemGroup.DECORATIONS));
 	public static final BlockEntityType<BoxBlockEntity> BOX_ENTITY = FabricBlockEntityTypeBuilder.create(BoxBlockEntity::new, BOX).build();
-	public static final ScreenHandlerType<BagScreenHandler> BAG_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(id("bag"), BagScreenHandler::new);
-	public static final ScreenHandlerType<PositionedBagScreenHandler> POSITIONED_BAG_SCREEN_HANDLER = ScreenHandlerRegistry.registerExtended(id("positioned_bag"), PositionedBagScreenHandler::new);
-	public static final ScreenHandlerType<BoxScreenHandler> BOX_SCREEN_HANDLER = ScreenHandlerRegistry.registerExtended(id("box"), BoxScreenHandler::new);
+	public static final ScreenHandlerType<BagScreenHandler> BAG_SCREEN_HANDLER = new ScreenHandlerType<>(BagScreenHandler::new);
+	public static final ScreenHandlerType<PositionedBagScreenHandler> POSITIONED_BAG_SCREEN_HANDLER = new ExtendedScreenHandlerType<>(PositionedBagScreenHandler::new);
+	public static final ScreenHandlerType<BoxScreenHandler> BOX_SCREEN_HANDLER = new ExtendedScreenHandlerType<>(BoxScreenHandler::new);
 
 	public static Identifier id(String path) {
 		return new Identifier(ID, path);
@@ -61,5 +61,8 @@ public class ScreenHandlerTest implements ModInitializer {
 		Registry.register(Registry.BLOCK, id("box"), BOX);
 		Registry.register(Registry.ITEM, id("box"), BOX_ITEM);
 		Registry.register(Registry.BLOCK_ENTITY_TYPE, id("box"), BOX_ENTITY);
+		Registry.register(Registry.SCREEN_HANDLER, id("bag"), BAG_SCREEN_HANDLER);
+		Registry.register(Registry.SCREEN_HANDLER, id("positioned_bag"), POSITIONED_BAG_SCREEN_HANDLER);
+		Registry.register(Registry.SCREEN_HANDLER, id("box"), BOX_SCREEN_HANDLER);
 	}
 }

@@ -18,14 +18,16 @@ package net.fabricmc.fabric.api.biome.v1;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
-import net.minecraft.world.dimension.DimensionOptions;
-import net.minecraft.world.gen.feature.PlacedFeature;
+import net.minecraft.tag.TagKey;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryEntryList;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.gen.feature.PlacedFeature;
 
 import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 
@@ -39,6 +41,8 @@ public interface BiomeSelectionContext {
 	 * Returns the biome with modifications by biome modifiers of higher priority already applied.
 	 */
 	Biome getBiome();
+
+	RegistryEntry<Biome> getBiomeRegistryEntry();
 
 	/**
 	 * Returns true if this biome has the given configured feature, which must be registered
@@ -67,11 +71,11 @@ public interface BiomeSelectionContext {
 	 * Returns true if this biome contains a placed feature referencing a configured feature with the given key.
 	 */
 	default boolean hasFeature(RegistryKey<ConfiguredFeature<?, ?>> key) {
-		List<List<Supplier<PlacedFeature>>> featureSteps = getBiome().getGenerationSettings().getFeatures();
+		List<RegistryEntryList<PlacedFeature>> featureSteps = getBiome().getGenerationSettings().getFeatures();
 
-		for (List<Supplier<PlacedFeature>> featureSuppliers : featureSteps) {
-			for (Supplier<PlacedFeature> featureSupplier : featureSuppliers) {
-				if (featureSupplier.get().getDecoratedFeatures().anyMatch(cf -> getFeatureKey(cf).orElse(null) == key)) {
+		for (RegistryEntryList<PlacedFeature> featureSuppliers : featureSteps) {
+			for (RegistryEntry<PlacedFeature> featureSupplier : featureSuppliers) {
+				if (featureSupplier.value().getDecoratedFeatures().anyMatch(cf -> getFeatureKey(cf).orElse(null) == key)) {
 					return true;
 				}
 			}
@@ -84,11 +88,11 @@ public interface BiomeSelectionContext {
 	 * Returns true if this biome contains a placed feature with the given key.
 	 */
 	default boolean hasPlacedFeature(RegistryKey<PlacedFeature> key) {
-		List<List<Supplier<PlacedFeature>>> featureSteps = getBiome().getGenerationSettings().getFeatures();
+		List<RegistryEntryList<PlacedFeature>> featureSteps = getBiome().getGenerationSettings().getFeatures();
 
-		for (List<Supplier<PlacedFeature>> featureSuppliers : featureSteps) {
-			for (Supplier<PlacedFeature> featureSupplier : featureSuppliers) {
-				if (getPlacedFeatureKey(featureSupplier.get()).orElse(null) == key) {
+		for (RegistryEntryList<PlacedFeature> featureSuppliers : featureSteps) {
+			for (RegistryEntry<PlacedFeature> featureSupplier : featureSuppliers) {
+				if (getPlacedFeatureKey(featureSupplier.value()).orElse(null) == key) {
 					return true;
 				}
 			}
@@ -117,16 +121,16 @@ public interface BiomeSelectionContext {
 	 *
 	 * <p>This method is intended for use with the Vanilla configured structures found in {@link net.minecraft.world.gen.feature.ConfiguredStructureFeatures}.
 	 */
-	default boolean hasBuiltInStructure(ConfiguredStructureFeature<?, ?> configuredStructure) {
+	default boolean validForBuiltInStructure(ConfiguredStructureFeature<?, ?> configuredStructure) {
 		RegistryKey<ConfiguredStructureFeature<?, ?>> key = BuiltInRegistryKeys.get(configuredStructure);
-		return hasStructure(key);
+		return validForStructure(key);
 	}
 
 	/**
 	 * Returns true if the configured structure with the given key can start in this biome in any chunk generator
 	 * used by the current world-save.
 	 */
-	boolean hasStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> key);
+	boolean validForStructure(RegistryKey<ConfiguredStructureFeature<?, ?>> key);
 
 	/**
 	 * Tries to retrieve the registry key for the given configured feature, which should be from this biomes
@@ -142,4 +146,9 @@ public interface BiomeSelectionContext {
 	 * <p>If no dimension options exist for the given dimension key, <code>false</code> is returned.
 	 */
 	boolean canGenerateIn(RegistryKey<DimensionOptions> dimensionKey);
+
+	/**
+	 * {@return true if this biome is in the given {@link TagKey}}.
+	 */
+	boolean hasTag(TagKey<Biome> tag);
 }

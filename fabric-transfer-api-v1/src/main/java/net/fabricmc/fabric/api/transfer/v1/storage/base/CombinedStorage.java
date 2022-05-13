@@ -108,7 +108,7 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 		final TransactionContext transaction;
 		final Iterator<S> partIterator = parts.iterator();
 		// Always holds the next StorageView<T>, except during next() while the iterator is being advanced.
-		Iterator<StorageView<T>> currentPartIterator = null;
+		Iterator<? extends StorageView<T>> currentPartIterator = null;
 
 		CombinedIterator(TransactionContext transaction) {
 			this.transaction = transaction;

@@ -16,22 +16,9 @@
 
 package net.fabricmc.fabric.mixin.dimension;
 
-import com.mojang.serialization.Lifecycle;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.resource.DataPackSettings;
 import net.minecraft.server.Main;
-import net.minecraft.util.dynamic.RegistryOps;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.world.gen.GeneratorOptions;
-import net.minecraft.world.level.LevelInfo;
-import net.minecraft.world.level.LevelProperties;
-import net.minecraft.world.level.storage.LevelStorage;
 
 /**
  * This Mixin aims to solve a Minecraft Vanilla bug where datapacks are ignored during creation of the
@@ -52,41 +39,5 @@ import net.minecraft.world.level.storage.LevelStorage;
  */
 @Mixin(value = Main.class)
 public class ServerBugfixMixin {
-	@Unique
-	private static LevelStorage.Session fabric_session;
-
-	@Unique
-	private static DynamicRegistryManager.Impl fabric_dynamicRegistry;
-
-	@Unique
-	private static RegistryOps<NbtElement> fabric_registryOps;
-
-	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/registry/DynamicRegistryManager;create()Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;"), method = "main", allow = 1)
-	private static DynamicRegistryManager.Impl captureDynamicRegistry(DynamicRegistryManager.Impl value) {
-		fabric_dynamicRegistry = value;
-		return value;
-	}
-
-	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/storage/LevelStorage;createSession(Ljava/lang/String;)Lnet/minecraft/world/level/storage/LevelStorage$Session;"), method = "main", allow = 1)
-	private static LevelStorage.Session captureSession(LevelStorage.Session value) {
-		fabric_session = value;
-		return value;
-	}
-
-	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/dynamic/RegistryOps;ofLoaded(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;"), method = "main", allow = 1)
-	private static RegistryOps<NbtElement> captureRegistryOps(RegistryOps<NbtElement> value) {
-		fabric_registryOps = value;
-		return value;
-	}
-
-	@Redirect(method = "main", at = @At(value = "NEW", target = "net/minecraft/world/level/LevelProperties"), allow = 1)
-	private static LevelProperties onCreateNewLevelProperties(LevelInfo levelInfo, GeneratorOptions generatorOptions, Lifecycle lifecycle) {
-		DataPackSettings dataPackSettings = levelInfo.getDataPackSettings();
-
-		// Save the level.dat file
-		fabric_session.backupLevelDataFile(fabric_dynamicRegistry, new LevelProperties(levelInfo, generatorOptions, lifecycle));
-
-		// And reload it again, and replace the actual level properties with it
-		return (LevelProperties) fabric_session.readLevelProperties(fabric_registryOps, dataPackSettings);
-	}
+	// TODO fix me 22w06a
 }

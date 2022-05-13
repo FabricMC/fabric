@@ -51,5 +51,11 @@ public class ItemGroupTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		TEST_ITEM = Registry.register(Registry.ITEM, new Identifier("fabric-item-groups-v0-testmod", "item_test_group"), new Item(new Item.Settings().group(ITEM_GROUP_2)));
+
+		// Exactly two pages of item groups
+		for (int i = 3; i < 10; i++) {
+			Item iconItem = Registry.ITEM.get(i);
+			FabricItemGroupBuilder.build(new Identifier("fabric-item-groups-v0-testmod", "test_group_" + i), () -> new ItemStack(iconItem));
+		}
 	}
 }

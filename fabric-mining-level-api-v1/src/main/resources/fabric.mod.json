@@ -23,8 +23,7 @@
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*",
-    "fabric-resource-loader-v0": "*",
-    "fabric-tag-extensions-v0": "*"
+    "fabric-resource-loader-v0": "*"
   },
   "description": "Adds support for custom mining levels.",
   "mixins": [

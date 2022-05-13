@@ -16,20 +16,27 @@
 
 package net.fabricmc.fabric.impl.resource.conditions;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import net.minecraft.tag.ServerTagManagerHolder;
 import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
+import net.minecraft.tag.TagManagerLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
@@ -85,7 +92,7 @@ public class ResourceConditionsImpl {
 		};
 	}
 
-	public static <T> ConditionJsonProvider tagsPopulated(Identifier id, Tag.Identified<T>... tags) {
+	public static <T> ConditionJsonProvider tagsPopulated(Identifier id, TagKey<T>... tags) {
 		Preconditions.checkArgument(tags.length > 0, "Must register at least one tag.");
 
 		return new ConditionJsonProvider() {
@@ -98,8 +105,8 @@ public class ResourceConditionsImpl {
 			public void writeParameters(JsonObject object) {
 				JsonArray array = new JsonArray();
 
-				for (Tag.Identified<T> tag : tags) {
-					array.add(tag.getId().toString());
+				for (TagKey<T> tag : tags) {
+					array.add(tag.id().toString());
 				}
 
 				object.add("values", array);
@@ -125,15 +132,54 @@ public class ResourceConditionsImpl {
 		return and;
 	}
 
+	/**
+	 * Stores the tags deserialized by {@link TagManagerLoader} before they are bound, to use them in the tags_populated conditions.
+	 * The tags are set at the end of the "apply" phase in {@link TagManagerLoader}, and cleared in {@link net.minecraft.server.DataPackContents#refresh}.
+	 * If the resource reload fails, the thread local is not cleared and:
+	 * - the map will remain in memory until the next reload;
+	 * - any call to {@link #tagsPopulatedMatch} will check the tags from the failed reload instead of failing directly.
+	 * This is probably acceptable.
+	 */
+	public static final ThreadLocal<Map<RegistryKey<?>, Map<Identifier, Tag<RegistryEntry<?>>>>> LOADED_TAGS = new ThreadLocal<>();
+
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	public static void setTags(List<TagManagerLoader.RegistryTags<?>> tags) {
+		Map<RegistryKey<?>, Map<Identifier, Tag<RegistryEntry<?>>>> tagMap = new HashMap<>();
+
+		for (TagManagerLoader.RegistryTags<?> registryTags : tags) {
+			tagMap.put(registryTags.key(), (Map) registryTags.tags());
+		}
+
+		LOADED_TAGS.set(tagMap);
+	}
+
+	public static void clearTags() {
+		LOADED_TAGS.remove();
+	}
+
 	public static <T> boolean tagsPopulatedMatch(JsonObject object, RegistryKey<? extends Registry<T>> registryKey) {
 		JsonArray array = JsonHelper.getArray(object, "values");
+		@Nullable
+		Map<RegistryKey<?>, Map<Identifier, Tag<RegistryEntry<?>>>> allTags = LOADED_TAGS.get();
+
+		if (allTags == null) {
+			LOGGER.warn("Can't retrieve deserialized tags. Failing tags_populated resource condition check.");
+			return false;
+		}
+
+		Map<Identifier, Tag<RegistryEntry<?>>> registryTags = allTags.get(registryKey);
+
+		if (registryTags == null) {
+			// No tag for this registry
+			return array.isEmpty();
+		}
 
 		for (JsonElement element : array) {
 			if (element.isJsonPrimitive()) {
 				Identifier id = new Identifier(element.getAsString());
-				Tag<T> tag = ServerTagManagerHolder.getTagManager().getOrCreateTagGroup(registryKey).getTagOrEmpty(id);
+				Tag<RegistryEntry<?>> tag = registryTags.get(id);
 
-				if (tag.values().isEmpty()) {
+				if (tag == null || tag.values().isEmpty()) {
 					return false;
 				}
 			} else {

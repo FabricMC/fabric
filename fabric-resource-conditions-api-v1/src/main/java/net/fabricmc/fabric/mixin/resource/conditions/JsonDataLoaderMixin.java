@@ -33,6 +33,9 @@ import net.minecraft.util.profiler.Profiler;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
+/**
+ * Using {@link SinglePreparationResourceReloaderMixin}, apply resource conditions at the very beginning of the "apply" phase.
+ */
 @Mixin(JsonDataLoader.class)
 public class JsonDataLoaderMixin extends SinglePreparationResourceReloaderMixin {
 	@Shadow

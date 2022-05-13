@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 /**
  * A wrapper around a single slot of an inventory.
@@ -48,7 +49,13 @@ class InventorySlotWrapper extends SingleStackStorage {
 
 	@Override
 	protected void setStack(ItemStack stack) {
-		storage.inventory.setStack(slot, stack);
+		TransferApiImpl.SUPPRESS_SPECIAL_LOGIC.set(Boolean.TRUE);
+
+		try {
+			storage.inventory.setStack(slot, stack);
+		} finally {
+			TransferApiImpl.SUPPRESS_SPECIAL_LOGIC.remove();
+		}
 	}
 
 	@Override
@@ -78,6 +85,10 @@ class InventorySlotWrapper extends SingleStackStorage {
 		// Try to apply the change to the original stack
 		ItemStack original = lastReleasedSnapshot;
 		ItemStack currentStack = getStack();
+
+		if (storage.inventory instanceof SpecialLogicInventory specialLogicInv) {
+			specialLogicInv.fabric_onFinalCommit(slot, original, currentStack);
+		}
 
 		if (!original.isEmpty() && original.getItem() == currentStack.getItem()) {
 			// None is empty and the items match: just update the amount and NBT, and reuse the original stack.

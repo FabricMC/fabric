@@ -68,7 +68,8 @@ public class FabricCreativeGuiComponents {
 				this.drawTexture(matrixStack, this.x, this.y, u + (type == Type.NEXT ? 11 : 0), v, 11, 10);
 
 				if (this.hovered) {
-					gui.renderTooltip(matrixStack, new TranslatableText("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, ((ItemGroup.GROUPS.length - 12) / 9) + 2), mouseX, mouseY);
+					int pageCount = (int) Math.ceil((ItemGroup.GROUPS.length - COMMON_GROUPS.size()) / 9D);
+					gui.renderTooltip(matrixStack, new TranslatableText("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, pageCount), mouseX, mouseY);
 				}
 			}
 		}

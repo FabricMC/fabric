@@ -17,8 +17,6 @@
 package net.fabricmc.fabric.impl.resource.loader;
 
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 import com.google.common.base.Charsets;
@@ -54,21 +52,9 @@ public final class ModResourcePackUtil {
 				continue;
 			}
 
-			Path path = container.getRootPath();
+			ModResourcePack pack = ModNioResourcePack.create(getName(container.getMetadata()), container, null, type, ResourcePackActivationType.ALWAYS_ENABLED);
 
-			if (subPath != null) {
-				Path childPath = path.resolve(subPath.replace("/", path.getFileSystem().getSeparator())).toAbsolutePath().normalize();
-
-				if (!childPath.startsWith(path) || !Files.exists(childPath)) {
-					continue;
-				}
-
-				path = childPath;
-			}
-
-			ModResourcePack pack = new ModNioResourcePack(container.getMetadata(), path, type, null, ResourcePackActivationType.ALWAYS_ENABLED);
-
-			if (!pack.getNamespaces(type).isEmpty()) {
+			if (pack != null) {
 				packs.add(pack);
 			}
 		}

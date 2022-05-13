@@ -29,7 +29,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
@@ -64,14 +63,14 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderConte
  * (Though they can use these as an example if they wish.)
  */
 @Mixin(targets = "net.minecraft.client.render.chunk.ChunkBuilder$BuiltChunk$RebuildTask")
-public class MixinChunkRebuildTask {
+public abstract class MixinChunkRebuildTask {
 	@Shadow
 	protected ChunkRendererRegion region;
 	@Shadow
 	protected BuiltChunk field_20839;
 
 	@Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask;render(FFFLnet/minecraft/client/render/chunk/ChunkBuilder$ChunkData;Lnet/minecraft/client/render/chunk/BlockBufferBuilderStorage;)Ljava/util/Set;")
-	private void hookChunkBuild(float float_1, float float_2, float float_3, ChunkBuilder.ChunkData renderData, BlockBufferBuilderStorage builder, CallbackInfoReturnable<Set<BlockEntity>> ci) {
+	private void hookChunkBuild(float cameraX, float cameraY, float cameraZ, ChunkBuilder.ChunkData renderData, BlockBufferBuilderStorage builder, CallbackInfoReturnable<Set<BlockEntity>> ci) {
 		ChunkRendererRegion region = this.region;
 
 		if (region != null) {
@@ -85,14 +84,14 @@ public class MixinChunkRebuildTask {
 	 * This is the hook that actually implements the rendering API for terrain rendering.
 	 *
 	 * <p>It's unusual to have a @Redirect in a Fabric library, but in this case
-	 * it is our explicit intention that {@link BlockRenderManager#tesselateBlock(BlockState, BlockPos, BlockRenderView, BufferBuilder, Random)}
+	 * it is our explicit intention that {@link BlockRenderManager#renderBlock(BlockState, BlockPos, BlockRenderView, MatrixStack, VertexConsumer, boolean, Random)}
 	 * does not execute for models that will be rendered by our renderer.
 	 *
 	 * <p>Any mod that wants to redirect this specific call is likely also a renderer, in which case this
 	 * renderer should not be present, or the mod should probably instead be relying on the renderer API
 	 * which was specifically created to provide for enhanced terrain rendering.
 	 *
-	 * <p>Note also that {@link BlockRenderManager#tesselateBlock(BlockState, BlockPos, BlockRenderView, BufferBuilder, Random)}
+	 * <p>Note also that {@link BlockRenderManager#renderBlock(BlockState, BlockPos, BlockRenderView, MatrixStack, VertexConsumer, boolean, Random)}
 	 * IS called if the block render type is something other than {@link BlockRenderType#MODEL}.
 	 * Normally this does nothing but will allow mods to create rendering hooks that are
 	 * driven off of render type. (Not recommended or encouraged, but also not prevented.)
@@ -106,7 +105,7 @@ public class MixinChunkRebuildTask {
 			if (Indigo.ALWAYS_TESSELATE_INDIGO || !((FabricBakedModel) model).isVanillaAdapter()) {
 				Vec3d vec3d = blockState.getModelOffset(blockView, blockPos);
 				matrix.translate(vec3d.x, vec3d.y, vec3d.z);
-				return ((AccessChunkRendererRegion) blockView).fabric_getRenderer().tesselateBlock(blockState, blockPos, model, matrix);
+				return ((AccessChunkRendererRegion) blockView).fabric_getRenderer().tessellateBlock(blockState, blockPos, model, matrix);
 			}
 		}
 

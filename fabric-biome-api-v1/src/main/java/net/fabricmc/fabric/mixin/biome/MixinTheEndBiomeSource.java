@@ -16,44 +16,33 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
-import net.minecraft.world.gen.random.ChunkRandom;
-import net.minecraft.world.gen.random.AtomicSimpleRandom;
 
 import net.fabricmc.fabric.impl.biome.TheEndBiomeData;
 
 @Mixin(TheEndBiomeSource.class)
 public class MixinTheEndBiomeSource {
-	@Shadow
-	@Final
-	private Registry<Biome> biomeRegistry;
-	@Shadow
-	@Final
-	private long seed;
 	@Unique
-	private PerlinNoiseSampler sampler = new PerlinNoiseSampler(new ChunkRandom(new AtomicSimpleRandom(seed)));
+	private TheEndBiomeData.Overrides overrides;
+
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void init(Registry<Biome> biomeRegistry, long seed, CallbackInfo ci) {
+		overrides = TheEndBiomeData.createOverrides(biomeRegistry, seed);
+	}
 
 	@Inject(method = "getBiome", at = @At("RETURN"), cancellable = true)
-	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler multiNoiseSampler, CallbackInfoReturnable<Biome> cir) {
-		Biome vanillaBiome = cir.getReturnValue();
-
-		// Since all vanilla biomes are added to the registry, this will never fail.
-		RegistryKey<Biome> vanillaKey = biomeRegistry.getKey(vanillaBiome).get();
-		RegistryKey<Biome> replacementKey = TheEndBiomeData.pickEndBiome(biomeX, biomeY, biomeZ, sampler, vanillaKey);
-
-		cir.setReturnValue(biomeRegistry.get(replacementKey));
+	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler multiNoiseSampler, CallbackInfoReturnable<RegistryEntry<Biome>> cir) {
+		cir.setReturnValue(overrides.pick(biomeX, biomeY, biomeZ, cir.getReturnValue()));
 	}
 }

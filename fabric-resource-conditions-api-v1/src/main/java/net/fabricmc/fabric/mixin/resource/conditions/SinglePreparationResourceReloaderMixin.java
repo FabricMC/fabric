@@ -25,6 +25,10 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.SinglePreparationResourceReloader;
 import net.minecraft.util.profiler.Profiler;
 
+/**
+ * This mixin allows us to inject arbitrary logic at the beginning of the "apply" phase.
+ * Used by the subclass {@link JsonDataLoaderMixin}.
+ */
 @Mixin(SinglePreparationResourceReloader.class)
 public class SinglePreparationResourceReloaderMixin {
 	// thenAcceptAsync in reload

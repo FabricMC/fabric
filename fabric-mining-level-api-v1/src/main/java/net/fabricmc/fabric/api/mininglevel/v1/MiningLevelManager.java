@@ -16,7 +16,12 @@
 
 package net.fabricmc.fabric.api.mininglevel.v1;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.TagKey;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.impl.mininglevel.MiningLevelManagerImpl;
 
@@ -53,5 +58,27 @@ public final class MiningLevelManager {
 	 */
 	public static int getRequiredMiningLevel(BlockState state) {
 		return MiningLevelManagerImpl.getRequiredMiningLevel(state);
+	}
+
+	/**
+	 * Gets the mining level block tag corresponding to a given integer mining level.
+	 * More precisely, return the corresponding vanilla tag ({@code #minecraft:needs_x_tool}) for levels 1 to 3,
+	 * and the Fabric tag ({@code #fabric:needs_tool_level_N}) for levels above 3.
+	 *
+	 * @param miningLevel the integer mining level
+	 * @return the corresponding mining level block tag
+	 * @throws IllegalArgumentException if a negative or zero mining level is passed
+	 */
+	public static TagKey<Block> getBlockTag(int miningLevel) {
+		if (miningLevel <= 0) {
+			throw new IllegalArgumentException("Mining level tags only exist for mining levels > 0, received: " + miningLevel);
+		}
+
+		return switch (miningLevel) {
+		case 1 -> BlockTags.NEEDS_STONE_TOOL;
+		case 2 -> BlockTags.NEEDS_IRON_TOOL;
+		case 3 -> BlockTags.NEEDS_DIAMOND_TOOL;
+		default -> TagKey.of(Registry.BLOCK_KEY, new Identifier("fabric", "needs_tool_level_" + miningLevel));
+		};
 	}
 }

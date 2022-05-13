@@ -203,5 +203,10 @@
 		<module name="AtclauseOrder">
 			<property name="tagOrder" value="@param,@return,@throws,@deprecated"/>
 		</module>
+
+        <!-- Prevent var for all cases other than new instance creation -->
+        <module name="MatchXpath">
+            <property name="query" value="//VARIABLE_DEF[./TYPE/IDENT[@text='var'] and not(./ASSIGN/EXPR/LITERAL_NEW)]"/>
+        </module>
 	</module>
 </module>
