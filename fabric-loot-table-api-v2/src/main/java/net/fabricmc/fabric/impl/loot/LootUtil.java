@@ -48,7 +48,9 @@ public final class LootUtil {
 			LOGGER.error("Could not open resource for loot table {}", lootTableId, e);
 		}
 
-		// If not builtin or mod, assume external data pack
+		// If not builtin or mod, assume external data pack.
+		// It might also be a virtual loot table injected via mixin instead of being loaded
+		// from a resource, but we can't determine that here.
 		return LootTableSource.DATA_PACK;
 	}
 }
