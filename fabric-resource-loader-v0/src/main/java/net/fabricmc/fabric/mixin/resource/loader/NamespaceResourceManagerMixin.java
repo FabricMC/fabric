@@ -83,6 +83,8 @@ public class NamespaceResourceManagerMixin {
 
 	@Inject(method = "getAllResources", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", remap = false, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
 	private void trackSourceOnGetAllResources(Identifier id, CallbackInfoReturnable<List<Resource>> cir, List<Resource> resources, Identifier metadataPath, Iterator<ResourcePack> packs, ResourcePack resourcePack) {
+		// After the created resource has been added, read it from the list and set its source
+		// to match the tracked source of its resource pack.
 		if (resources.get(resources.size() - 1) instanceof FabricResourceImpl resource) {
 			resource.setFabricPackSource(ResourcePackSourceTracker.getSource(resourcePack));
 		}
@@ -90,6 +92,7 @@ public class NamespaceResourceManagerMixin {
 
 	@Inject(method = "getResource", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
 	private void trackSourceOnGetResource(Identifier id, CallbackInfoReturnable<Resource> cir, ResourcePack metaResourcePack, Identifier metadataPath, int i, ResourcePack resourcePack) {
+		// Set the resource's source to match the tracked source of its resource pack.
 		if (cir.getReturnValue() instanceof FabricResourceImpl resource) {
 			resource.setFabricPackSource(ResourcePackSourceTracker.getSource(resourcePack));
 		}
