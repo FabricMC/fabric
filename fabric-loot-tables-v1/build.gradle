@@ -3,7 +3,7 @@ version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
 		'fabric-api-base',
-		'fabric-loot-table-api-v2'
+		'fabric-loot-api-v2'
 ])
 
 dependencies {

@@ -39,7 +39,7 @@ public enum LootTableSource {
 	DATA_PACK(false),
 
 	/**
-	 * A loot table provided in {@link LootTableEvents#REPLACE}.
+	 * A loot table created in {@link LootTableEvents#REPLACE}.
 	 */
 	REPLACED(false);
 

@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.resource.loader.FabricResource;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 
 public final class LootUtil {
-	public static final Logger LOGGER = LoggerFactory.getLogger("fabric-loot-table-api-v2");
+	public static final Logger LOGGER = LoggerFactory.getLogger("fabric-loot-api-v2");
 
 	public static LootTableSource determineSource(Identifier lootTableId, ResourceManager resourceManager) {
 		Identifier resourceId = new Identifier(lootTableId.getNamespace(), "loot_tables/%s.json".formatted(lootTableId.getPath()));
@@ -45,7 +45,7 @@ public final class LootUtil {
 				return LootTableSource.MOD;
 			}
 		} catch (IOException e) {
-			LOGGER.error("Could not open resource for loot table {}", lootTableId, e);
+			LOGGER.error("Could not open resource for loot table {} to check its source", lootTableId, e);
 		}
 
 		// If not builtin or mod, assume external data pack.
