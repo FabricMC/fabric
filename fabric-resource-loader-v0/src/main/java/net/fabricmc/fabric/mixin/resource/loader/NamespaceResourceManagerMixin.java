@@ -70,8 +70,16 @@ public class NamespaceResourceManagerMixin {
 		return pack.contains(type, id);
 	}
 
-	// The two injectors below set the resource pack sources (see FabricResourceImpl)
-	// for resources created in NamespaceResourceManager.getAllResources and NamespaceResourceManager.getResource.
+	/* The two injectors below set the resource pack sources (see FabricResourceImpl)
+	 * for resources created in NamespaceResourceManager.getAllResources and NamespaceResourceManager.getResource.
+	 *
+	 * Since (in 1.18.2) ResourceImpl doesn't hold a reference to its resource pack,
+	 * we have to get the source from the resource pack when the resource is created.
+	 * These are the main creation sites for resources in 1.18.2
+	 * along with DefaultResourcePack.getResource and Fabric API's GroupResourcePack,
+	 * which also either track the source similarly or provide other types of Resource instances
+	 * that have a different FabricResource implementation.
+	 */
 
 	@Inject(method = "getAllResources", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", remap = false, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
 	private void trackSourceOnGetAllResources(Identifier id, CallbackInfoReturnable<List<Resource>> cir, List<Resource> resources, Identifier metadataPath, Iterator<ResourcePack> packs, ResourcePack resourcePack) {

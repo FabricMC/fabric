@@ -30,7 +30,11 @@ import net.minecraft.resource.ResourcePackSource;
 import net.fabricmc.fabric.impl.resource.loader.ResourcePackSourceTracker;
 
 /**
- * Implements resource pack source tracking.
+ * Implements resource pack source tracking (for {@link net.fabricmc.fabric.impl.resource.loader.FabricResource}).
+ * {@link ResourcePack} doesn't hold a reference to its {@link ResourcePackSource}
+ * so we store the source in a global tracker when the resource packs are created.
+ *
+ * @see ResourcePackSourceTracker
  */
 @Mixin(ResourcePackProfile.class)
 abstract class ResourcePackProfileMixin {

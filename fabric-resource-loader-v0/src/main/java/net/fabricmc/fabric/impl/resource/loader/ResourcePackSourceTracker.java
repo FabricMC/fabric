@@ -22,9 +22,16 @@ import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackSource;
 
 /**
- * Tracks the sources of resource pack profiles.
+ * Tracks the sources of resource packs in a global weak hash map.
+ * {@link ResourcePack} doesn't hold a reference to its {@link ResourcePackSource}
+ * so we store the source in the map when the resource packs are created.
+ * See {@link net.fabricmc.fabric.mixin.resource.loader.ResourcePackProfileMixin ResourcePackProfileMixin}.
+ *
+ * <p>The sources are later read for use in {@link FabricResource} and {@link FabricResourceImpl}.
+ * See {@link net.fabricmc.fabric.mixin.resource.loader.NamespaceResourceManagerMixin NamespaceResourceManagerMixin}.
  */
 public final class ResourcePackSourceTracker {
+	// Use a weak hash map so that if resource packs would be deleted, this won't keep them alive.
 	private static final WeakHashMap<ResourcePack, ResourcePackSource> SOURCES = new WeakHashMap<>();
 
 	/**

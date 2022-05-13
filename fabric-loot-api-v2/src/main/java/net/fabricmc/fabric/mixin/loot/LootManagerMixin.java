@@ -48,6 +48,8 @@ abstract class LootManagerMixin {
 
 	@Inject(method = "apply", at = @At("RETURN"))
 	private void apply(Map<Identifier, JsonObject> jsonMap, ResourceManager resourceManager, Profiler profiler, CallbackInfo info) {
+		// The builder for the new LootManager.tables map with modified loot tables.
+		// We're using an immutable map to match vanilla.
 		ImmutableMap.Builder<Identifier, LootTable> newTables = ImmutableMap.builder();
 
 		tables.forEach((id, table) -> {
@@ -60,20 +62,26 @@ abstract class LootManagerMixin {
 			// noinspection ConstantConditions
 			LootManager lootManager = (LootManager) (Object) this;
 			LootTableSource source = LootUtil.determineSource(id, resourceManager);
-			LootTable replacement = LootTableEvents.REPLACE.invoker().replaceLootTable(resourceManager, lootManager, id, table, source);
-			boolean replaced = replacement != null;
 
-			if (replaced) {
+			// Invoke the REPLACE event for the current loot table.
+			LootTable replacement = LootTableEvents.REPLACE.invoker().replaceLootTable(resourceManager, lootManager, id, table, source);
+
+			if (replacement != null) {
+				// Set the loot table to MODIFY to be the replacement loot table.
+				// The MODIFY event will also see it as a replaced loot table via the source.
 				table = replacement;
 				source = LootTableSource.REPLACED;
 			}
 
+			// Turn the current table into a modifiable builder and invoke the MODIFY event.
 			LootTable.Builder builder = FabricLootTableBuilder.copyOf(table);
 			LootTableEvents.MODIFY.invoker().modifyLootTable(resourceManager, lootManager, id, builder, source);
 
+			// Turn the builder back into a loot table and store it in the new table.
 			newTables.put(id, builder.build());
 		});
 
+		// Finally, store the new loot table map in the field.
 		tables = newTables.build();
 	}
 }

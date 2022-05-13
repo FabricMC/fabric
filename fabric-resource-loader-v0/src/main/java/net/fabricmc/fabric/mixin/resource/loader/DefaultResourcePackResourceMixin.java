@@ -30,6 +30,7 @@ import net.fabricmc.fabric.impl.resource.loader.FabricResource;
 abstract class DefaultResourcePackResourceMixin implements FabricResource {
 	@Override
 	public ResourcePackSource getFabricPackSource() {
+		// The default resource pack only contains built-in vanilla resources.
 		return ResourcePackSource.PACK_SOURCE_BUILTIN;
 	}
 }

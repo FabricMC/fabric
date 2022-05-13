@@ -32,6 +32,7 @@ import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
 
 /**
  * The implementation of the injected interface {@link FabricLootTableBuilder}.
+ * Simply implements the new methods by adding the relevant objects inside the lists.
  */
 @Mixin(LootTable.Builder.class)
 abstract class LootTableBuilderMixin implements FabricLootTableBuilder {
