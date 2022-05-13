@@ -22,7 +22,7 @@ import net.minecraft.resource.ResourcePackSource;
 /**
  * An extended version of {@link FabricResource} that supports
  * setting the pack resource. Only for use from within this module.
- * Note that all resources are <strong>not</strong> instances of this interface.
+ * Note that <strong>not all</strong> resources are instances of this interface.
  */
 public interface FabricResourceImpl extends Resource, FabricResource {
 	void setFabricPackSource(ResourcePackSource packSource);
