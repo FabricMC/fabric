@@ -27,6 +27,10 @@ import net.minecraft.resource.ResourcePackSource;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricResourceImpl;
 
+/**
+ * Implements {@link FabricResourceImpl} (resource source getter/setter)
+ * for vanilla's basic {@link ResourceImpl} used for most game resources.
+ */
 @Mixin(ResourceImpl.class)
 abstract class ResourceImplMixin implements FabricResourceImpl {
 	@Unique

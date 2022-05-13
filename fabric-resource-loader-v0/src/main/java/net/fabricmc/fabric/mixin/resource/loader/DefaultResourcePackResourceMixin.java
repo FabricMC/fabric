@@ -22,6 +22,10 @@ import net.minecraft.resource.ResourcePackSource;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricResource;
 
+/**
+ * Implements {@link FabricResource} for the anonymous resource implementation
+ * in {@link net.minecraft.resource.DefaultResourcePack#getResource}.
+ */
 @Mixin(targets = "net/minecraft/resource/DefaultResourcePack$1")
 abstract class DefaultResourcePackResourceMixin implements FabricResource {
 	@Override

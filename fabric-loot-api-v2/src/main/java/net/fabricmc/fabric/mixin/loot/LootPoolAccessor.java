@@ -25,6 +25,10 @@ import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
 import net.minecraft.loot.provider.number.LootNumberProvider;
 
+/**
+ * Accesses loot pool fields for {@link net.fabricmc.fabric.api.loot.v2.FabricLootPoolBuilder#copyOf(LootPool)}.
+ * These are normally available in the transitive access widener module.
+ */
 @Mixin(LootPool.class)
 public interface LootPoolAccessor {
 	@Accessor("rolls")

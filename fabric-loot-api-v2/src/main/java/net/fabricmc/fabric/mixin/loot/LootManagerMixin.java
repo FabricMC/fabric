@@ -38,6 +38,9 @@ import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.fabricmc.fabric.api.loot.v2.LootTableSource;
 import net.fabricmc.fabric.impl.loot.LootUtil;
 
+/**
+ * Implements the events from {@link LootTableEvents}.
+ */
 @Mixin(LootManager.class)
 abstract class LootManagerMixin {
 	@Shadow

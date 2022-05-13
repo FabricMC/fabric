@@ -30,6 +30,9 @@ import net.minecraft.loot.function.LootFunction;
 
 import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
 
+/**
+ * The implementation of the injected interface {@link FabricLootTableBuilder}.
+ */
 @Mixin(LootTable.Builder.class)
 abstract class LootTableBuilderMixin implements FabricLootTableBuilder {
 	@Shadow

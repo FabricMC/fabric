@@ -23,6 +23,10 @@ import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.function.LootFunction;
 
+/**
+ * Accesses loot table fields for {@link net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder#copyOf(LootTable)}.
+ * These are normally available in the transitive access widener module.
+ */
 @Mixin(LootTable.class)
 public interface LootTableAccessor {
 	@Accessor("pools")
