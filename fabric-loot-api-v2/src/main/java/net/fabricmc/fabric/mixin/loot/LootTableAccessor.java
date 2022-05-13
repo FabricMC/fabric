@@ -25,9 +25,9 @@ import net.minecraft.loot.function.LootFunction;
 
 @Mixin(LootTable.class)
 public interface LootTableAccessor {
-	@Accessor
-	LootPool[] getPools();
+	@Accessor("pools")
+	LootPool[] fabric_getPools();
 
-	@Accessor
-	LootFunction[] getFunctions();
+	@Accessor("functions")
+	LootFunction[] fabric_getFunctions();
 }

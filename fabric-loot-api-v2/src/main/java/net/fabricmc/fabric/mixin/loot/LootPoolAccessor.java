@@ -27,18 +27,18 @@ import net.minecraft.loot.provider.number.LootNumberProvider;
 
 @Mixin(LootPool.class)
 public interface LootPoolAccessor {
-	@Accessor
-	LootNumberProvider getRolls();
+	@Accessor("rolls")
+	LootNumberProvider fabric_getRolls();
 
-	@Accessor
-	LootNumberProvider getBonusRolls();
+	@Accessor("bonusRolls")
+	LootNumberProvider fabric_getBonusRolls();
 
-	@Accessor
-	LootPoolEntry[] getEntries();
+	@Accessor("entries")
+	LootPoolEntry[] fabric_getEntries();
 
-	@Accessor
-	LootCondition[] getConditions();
+	@Accessor("conditions")
+	LootCondition[] fabric_getConditions();
 
-	@Accessor
-	LootFunction[] getFunctions();
+	@Accessor("functions")
+	LootFunction[] fabric_getFunctions();
 }
