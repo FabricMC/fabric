@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.resource.Resource;
 
-import net.fabricmc.fabric.api.resource.FabricResource;
+import net.fabricmc.fabric.impl.resource.loader.FabricResource;
 
 // Even though the interface is injected, we must extend it here,
 // so it works outside of dev.

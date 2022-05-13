@@ -28,7 +28,7 @@ import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.loot.v2.LootTableSource;
-import net.fabricmc.fabric.api.resource.FabricResource;
+import net.fabricmc.fabric.impl.resource.loader.FabricResource;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 
 public final class LootUtil {

@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.resource.ResourcePackSource;
 
-import net.fabricmc.fabric.api.resource.FabricResource;
+import net.fabricmc.fabric.impl.resource.loader.FabricResource;
 
 @Mixin(targets = "net/minecraft/resource/DefaultResourcePack$1")
 abstract class DefaultResourcePackResourceMixin implements FabricResource {

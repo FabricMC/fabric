@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.resource;
+package net.fabricmc.fabric.impl.resource.loader;
 
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,8 @@ import net.minecraft.resource.ResourcePackSource;
 
 /**
  * Extensions to {@link net.minecraft.resource.Resource}.
- * Automatically implemented there as an injected interface.
+ * Automatically implemented there via a mixin.
+ * Currently, this is only for use in other Fabric API modules.
  */
 public interface FabricResource {
 	/**

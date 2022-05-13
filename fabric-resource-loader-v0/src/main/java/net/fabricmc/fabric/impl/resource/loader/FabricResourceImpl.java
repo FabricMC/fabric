@@ -19,6 +19,11 @@ package net.fabricmc.fabric.impl.resource.loader;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourcePackSource;
 
-public interface FabricResourceImpl extends Resource {
+/**
+ * An extended version of {@link FabricResource} that supports
+ * setting the pack resource. Only for use from within this module.
+ * Note that all resources are <strong>not</strong> instances of this interface.
+ */
+public interface FabricResourceImpl extends Resource, FabricResource {
 	void setFabricPackSource(ResourcePackSource packSource);
 }
