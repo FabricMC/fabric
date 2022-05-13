@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
@@ -46,7 +45,7 @@ abstract class LootManagerMixin {
 
 	@Inject(method = "apply", at = @At("RETURN"))
 	private void apply(Map<Identifier, JsonObject> jsonMap, ResourceManager resourceManager, Profiler profiler, CallbackInfo info) {
-		Map<Identifier, LootTable> newTables = new HashMap<>();
+		ImmutableMap.Builder<Identifier, LootTable> newTables = ImmutableMap.builder();
 
 		tables.forEach((id, table) -> {
 			if (id.equals(LootTables.EMPTY)) {
@@ -69,9 +68,9 @@ abstract class LootManagerMixin {
 			LootTable.Builder builder = FabricLootTableBuilder.copyOf(table);
 			LootTableEvents.MODIFY.invoker().modifyLootTable(resourceManager, lootManager, id, builder, source);
 
-			newTables.computeIfAbsent(id, (i) -> builder.build());
+			newTables.put(id, builder.build());
 		});
 
-		tables = ImmutableMap.copyOf(newTables);
+		tables = newTables.build();
 	}
 }
