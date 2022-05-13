@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.loot;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +33,7 @@ import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 public final class LootUtil {
 	public static final Logger LOGGER = LoggerFactory.getLogger("fabric-loot-table-api-v2");
 
-	public static @Nullable LootTableSource determineSource(Identifier lootTableId, ResourceManager resourceManager) {
+	public static LootTableSource determineSource(Identifier lootTableId, ResourceManager resourceManager) {
 		Identifier resourceId = new Identifier(lootTableId.getNamespace(), "loot_tables/%s.json".formatted(lootTableId.getPath()));
 
 		try (Resource resource = resourceManager.getResource(resourceId)) {
@@ -44,12 +43,12 @@ public final class LootUtil {
 				return LootTableSource.VANILLA;
 			} else if (packSource == ModResourcePackCreator.RESOURCE_PACK_SOURCE) {
 				return LootTableSource.MOD;
-			} else {
-				return LootTableSource.DATA_PACK;
 			}
 		} catch (IOException e) {
-			LOGGER.error("Could not determine loot table source for {}", lootTableId, e);
-			return null;
+			LOGGER.error("Could not open resource for loot table {}", lootTableId, e);
 		}
+
+		// If not builtin or mod, assume external data pack
+		return LootTableSource.DATA_PACK;
 	}
 }
