@@ -22,14 +22,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
 
 @Mixin(ClientPlayerEntity.class)
 abstract class ClientPlayerEntityMixin {
-	@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
-	private void onSendChatMessage(String message, CallbackInfo info) {
-		if (ClientCommandInternals.executeCommand(message)) {
+	@Inject(method = "method_44098", at = @At("HEAD"), cancellable = true)
+	private void onSendCommand(String command, Text preview, CallbackInfo info) {
+		if (ClientCommandInternals.executeCommand(command)) {
 			info.cancel();
 		}
 	}
