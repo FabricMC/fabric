@@ -45,13 +45,6 @@ public abstract class WorldMixin implements LoadedChunksCache {
 	@Unique
 	private final Set<WorldChunk> loadedChunks = new HashSet<>();
 
-	@Inject(at = @At("RETURN"), method = "tickBlockEntities")
-	protected void tickWorldAfterBlockEntities(CallbackInfo ci) {
-		if (!this.isClient()) {
-			ServerTickEvents.END_WORLD_TICK.invoker().onEndTick((ServerWorld) (Object) this);
-		}
-	}
-
 	@Override
 	public Set<WorldChunk> fabric_getLoadedChunks() {
 		return this.loadedChunks;
