@@ -20,7 +20,6 @@ import java.util.function.Consumer;
 
 import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.server.command.CommandManager.RegistrationEnvironment;
 import net.minecraft.server.command.ServerCommandSource;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -40,8 +39,7 @@ public class CommandRegistry {
 	 */
 	public void register(boolean dedicated, Consumer<CommandDispatcher<ServerCommandSource>> consumer) {
 		CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> {
-			if (dedicated && environment == RegistrationEnvironment.INTEGRATED
-					|| !dedicated && environment == RegistrationEnvironment.DEDICATED) {
+			if (dedicated && !environment.dedicated) {
 				return;
 			}
 
