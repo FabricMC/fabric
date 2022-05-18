@@ -42,11 +42,11 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
  */
 public abstract class FabricAdvancementProvider implements DataProvider {
 	protected final FabricDataGenerator dataGenerator;
-	private final DataGenerator.class_7489 pathResolver;
+	private final DataGenerator.PathResolver pathResolver;
 
 	protected FabricAdvancementProvider(FabricDataGenerator dataGenerator) {
 		this.dataGenerator = dataGenerator;
-		this.pathResolver = dataGenerator.method_44106(DataGenerator.class_7490.DATA_PACK, "advancements");
+		this.pathResolver = dataGenerator.createPathResolver(DataGenerator.OutputType.DATA_PACK, "advancements");
 	}
 
 	/**

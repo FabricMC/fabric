@@ -68,7 +68,7 @@ public class ChunkRenderInfo {
 	private final Long2FloatOpenHashMap aoLevelCache;
 
 	private final BlockPos.Mutable chunkOrigin = new BlockPos.Mutable();
-	BuiltChunk.RebuildTask.class_7435 chunkData;
+	BuiltChunk.RebuildTask.RenderData renderData;
 	BuiltChunk chunkRenderer;
 	BlockBufferBuilderStorage builders;
 	Set<RenderLayer> initializedLayers;
@@ -83,10 +83,10 @@ public class ChunkRenderInfo {
 		aoLevelCache.defaultReturnValue(Float.MAX_VALUE);
 	}
 
-	void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, BuiltChunk.RebuildTask.class_7435 chunkData, BlockBufferBuilderStorage builders, Set<RenderLayer> initializedLayers) {
+	void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, BuiltChunk.RebuildTask.RenderData renderData, BlockBufferBuilderStorage builders, Set<RenderLayer> initializedLayers) {
 		this.blockView = blockView;
 		this.chunkOrigin.set(chunkRenderer.getOrigin());
-		this.chunkData = chunkData;
+		this.renderData = renderData;
 		this.chunkRenderer = chunkRenderer;
 		this.builders = builders;
 		this.initializedLayers = initializedLayers;
@@ -96,7 +96,7 @@ public class ChunkRenderInfo {
 	}
 
 	void release() {
-		chunkData = null;
+		renderData = null;
 		chunkRenderer = null;
 		buffers.clear();
 	}

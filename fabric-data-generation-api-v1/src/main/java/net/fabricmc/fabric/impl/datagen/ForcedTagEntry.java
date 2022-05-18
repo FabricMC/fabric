@@ -26,12 +26,12 @@ public class ForcedTagEntry extends TagEntry {
 	private final TagEntry delegate;
 
 	public ForcedTagEntry(TagEntry delegate) {
-		super(delegate.id, delegate.field_39267, delegate.field_39268);
+		super(delegate.id, true, delegate.required);
 		this.delegate = delegate;
 	}
 
 	@Override
-	public <T> boolean resolve(TagEntry.class_7474<T> arg, Consumer<T> consumer) {
+	public <T> boolean resolve(TagEntry.ValueGetter<T> arg, Consumer<T> consumer) {
 		return delegate.resolve(arg, consumer);
 	}
 

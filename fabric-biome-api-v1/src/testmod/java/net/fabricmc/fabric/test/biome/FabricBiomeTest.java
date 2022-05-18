@@ -91,7 +91,7 @@ public class FabricBiomeTest implements ModInitializer {
 
 		ConfiguredFeature<?, ?> COMMON_DESERT_WELL = new ConfiguredFeature<>(Feature.DESERT_WELL, DefaultFeatureConfig.INSTANCE);
 		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier(MOD_ID, "fab_desert_well"), COMMON_DESERT_WELL);
-		RegistryEntry<ConfiguredFeature<?, ?>> featureEntry = BuiltinRegistries.CONFIGURED_FEATURE.getOrCreateEntry(BuiltinRegistries.CONFIGURED_FEATURE.getKey(COMMON_DESERT_WELL).orElseThrow());
+		RegistryEntry<ConfiguredFeature<?, ?>> featureEntry = BuiltinRegistries.CONFIGURED_FEATURE.method_44298(BuiltinRegistries.CONFIGURED_FEATURE.getKey(COMMON_DESERT_WELL).orElseThrow());
 
 		// The placement config is taken from the vanilla desert well, but no randomness
 		PlacedFeature PLACED_COMMON_DESERT_WELL = new PlacedFeature(featureEntry, List.of(SquarePlacementModifier.of(), PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of()));
