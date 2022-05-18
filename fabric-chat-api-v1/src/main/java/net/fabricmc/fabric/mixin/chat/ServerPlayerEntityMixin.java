@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.mixin.chat;
 
-import net.fabricmc.fabric.impl.chat.PreviewCacheAccess;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
-import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
+import net.fabricmc.fabric.impl.chat.PreviewCacheAccess;
 
 @Mixin(ServerPlayerEntity.class)
 public class ServerPlayerEntityMixin implements PreviewCacheAccess {

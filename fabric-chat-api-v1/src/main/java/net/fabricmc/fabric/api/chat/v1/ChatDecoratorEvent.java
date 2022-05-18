@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.chat;
+package net.fabricmc.fabric.api.chat.v1;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
-
+import java.util.Objects;
 
 import net.minecraft.class_7492;
 import net.minecraft.util.Identifier;
 
-import java.util.Objects;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * A class for registering a {@link class_7492 ChatDecorator}. Check the chat decorator documentation
@@ -81,6 +80,7 @@ public final class ChatDecoratorEvent {
 		for (class_7492 decorator : decorators) {
 			message = Objects.requireNonNull(decorator.decorate(sender, message), "chat decorator must not return null");
 		}
+
 		return message;
 	}, CONTENT_PHASE, Event.DEFAULT_PHASE, STYLING_PHASE);
 }

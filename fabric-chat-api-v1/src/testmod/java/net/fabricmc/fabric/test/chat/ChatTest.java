@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.test.chat;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.chat.ChatDecoratorEvent;
+import net.fabricmc.fabric.api.chat.v1.ChatDecoratorEvent;
 
 import net.minecraft.text.Text;
 import net.minecraft.util.math.random.AbstractRandom;

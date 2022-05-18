@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.impl.chat;
 
-import net.minecraft.text.Text;
-
 import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.text.Text;
 
 public interface PreviewCacheAccess {
 	@Nullable String fabric_getSerializedOriginalText();

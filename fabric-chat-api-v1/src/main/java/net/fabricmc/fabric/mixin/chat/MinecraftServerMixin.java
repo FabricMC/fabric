@@ -16,16 +16,16 @@
 
 package net.fabricmc.fabric.mixin.chat;
 
-import net.fabricmc.fabric.impl.chat.ChatDecoratorInternals;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.class_7492;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import net.fabricmc.fabric.impl.chat.ChatDecoratorInternals;
 
 @Mixin({MinecraftServer.class, MinecraftDedicatedServer.class})
 public class MinecraftServerMixin {

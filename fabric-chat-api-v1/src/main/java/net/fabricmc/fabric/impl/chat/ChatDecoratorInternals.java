@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.impl.chat;
 
-import net.fabricmc.fabric.api.chat.ChatDecoratorEvent;
+import java.util.Objects;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
+import net.fabricmc.fabric.api.chat.v1.ChatDecoratorEvent;
 
 /**
  *  Contains internals for chat decorators.
@@ -38,11 +38,12 @@ public class ChatDecoratorInternals {
 	public static Text decorate(@Nullable ServerPlayerEntity sender, Text message) {
 		// No caching for sender-less messages (e.g. commands)
 		if (sender == null) return ChatDecoratorEvent.EVENT.invoker().decorate(null, message);
-		PreviewCacheAccess cacheAccess = (PreviewCacheAccess)sender;
+		PreviewCacheAccess cacheAccess = (PreviewCacheAccess) sender;
 		String serializedOriginalText = cacheAccess.fabric_getSerializedOriginalText();
 		// Messages are signed using sorted JSON serialization
 		String serializedCurrentText = Text.Serializer.toSortedJsonString(message);
 		Text cachedPreviewText = cacheAccess.fabric_getPreviewedText();
+
 		// If there is no original text or if the two differs (null check included in equals)
 		// cachedPreviewText null check is for safety, should not happen
 		if (!Objects.equals(serializedOriginalText, serializedCurrentText) || cachedPreviewText == null) {
@@ -51,6 +52,7 @@ public class ChatDecoratorInternals {
 			cacheAccess.fabric_setPreview(serializedCurrentText, previewText);
 			return previewText;
 		}
+
 		// Cache hit
 		return cachedPreviewText;
 	}
