@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.test.chat;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.chat.v1.ChatDecoratorEvent;
-
 import net.minecraft.text.Text;
 import net.minecraft.util.math.random.AbstractRandom;
+
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.chat.v1.ChatDecoratorEvent;
 
 public class ChatTest implements ModInitializer {
 	@Override
@@ -32,6 +32,7 @@ public class ChatTest implements ModInitializer {
 			if (message.getString().contains("tater")) {
 				return message.copy().append(" :tiny_potato:");
 			}
+
 			return message;
 		});
 
@@ -40,6 +41,7 @@ public class ChatTest implements ModInitializer {
 			if (sender != null && sender.getAbilities().creativeMode) {
 				return message.copy().styled(style -> style.withColor(0xFFA500));
 			}
+
 			return message;
 		});
 
@@ -50,6 +52,7 @@ public class ChatTest implements ModInitializer {
 			if (message.getString().startsWith("random")) {
 				return Text.of(Integer.toString(random.nextInt(100)));
 			}
+
 			return message;
 		});
 	}
