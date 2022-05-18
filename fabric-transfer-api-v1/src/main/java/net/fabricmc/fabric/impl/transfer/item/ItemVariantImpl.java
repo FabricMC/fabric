@@ -145,7 +145,7 @@ public class ItemVariantImpl implements ItemVariant {
 		ItemStack ret = cachedStack;
 
 		if (ret == null) {
-			// benign data race if called from multiple threads
+			// multiple stacks could be created at the same time by different threads, but that is not an issue
 			cachedStack = ret = toStack();
 		}
 
