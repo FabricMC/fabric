@@ -71,7 +71,8 @@ def moduleDependencies(project, List<String> depNames) {
 		}
 
 		clientOutputs.each {
-			clientImplementation it
+			clientCompileOnly it
+			clientRuntimeOnly it
 		}
 	}
 
@@ -104,8 +105,8 @@ def testDependencies(project, List<String> depNames) {
 		}
 
 		clientOutputs.each {
-			testmodCompileClasspath it
-			testmodRuntimeClasspath it
+			testmodCompileOnly it
+			testmodRuntimeOnly it
 		}
 	}
 }
@@ -195,8 +196,8 @@ allprojects {
 		mappings "net.fabricmc:yarn:${rootProject.minecraft_version}${project.yarn_version}:v2"
 		modApi "net.fabricmc:fabric-loader:${project.loader_version}"
 
-		testmodCompileClasspath sourceSets.client.output
-		testmodRuntimeClasspath sourceSets.client.output
+		testmodCompileOnly sourceSets.client.output
+		testmodRuntimeOnly sourceSets.client.output
 	}
 
 	loom {
