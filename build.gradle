@@ -71,8 +71,7 @@ def moduleDependencies(project, List<String> depNames) {
 		}
 
 		clientOutputs.each {
-			clientCompileClasspath it
-			clientRuntimeClasspath it
+			clientImplementation it
 		}
 	}
 
