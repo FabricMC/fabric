@@ -440,6 +440,7 @@ dependencies {
 			if (it.name == "deprecated") return
 
 			api project(path: "${it.path}", configuration: "namedElements")
+			clientImplementation project("${it.path}:").sourceSets.client.output
 
 			testmodImplementation project("${it.path}:").sourceSets.testmod.output
 		}
