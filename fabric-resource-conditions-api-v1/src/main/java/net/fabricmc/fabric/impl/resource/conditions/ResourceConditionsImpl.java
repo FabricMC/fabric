@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.resource.conditions;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.tag.Tag;
 import net.minecraft.tag.TagKey;
 import net.minecraft.tag.TagManagerLoader;
 import net.minecraft.util.Identifier;
@@ -140,11 +140,11 @@ public class ResourceConditionsImpl {
 	 * - any call to {@link #tagsPopulatedMatch} will check the tags from the failed reload instead of failing directly.
 	 * This is probably acceptable.
 	 */
-	public static final ThreadLocal<Map<RegistryKey<?>, Map<Identifier, Tag<RegistryEntry<?>>>>> LOADED_TAGS = new ThreadLocal<>();
+	public static final ThreadLocal<Map<RegistryKey<?>, Map<Identifier, Collection<RegistryEntry<?>>>>> LOADED_TAGS = new ThreadLocal<>();
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static void setTags(List<TagManagerLoader.RegistryTags<?>> tags) {
-		Map<RegistryKey<?>, Map<Identifier, Tag<RegistryEntry<?>>>> tagMap = new HashMap<>();
+		Map<RegistryKey<?>, Map<Identifier, Collection<RegistryEntry<?>>>> tagMap = new HashMap<>();
 
 		for (TagManagerLoader.RegistryTags<?> registryTags : tags) {
 			tagMap.put(registryTags.key(), (Map) registryTags.tags());
@@ -160,14 +160,14 @@ public class ResourceConditionsImpl {
 	public static <T> boolean tagsPopulatedMatch(JsonObject object, RegistryKey<? extends Registry<T>> registryKey) {
 		JsonArray array = JsonHelper.getArray(object, "values");
 		@Nullable
-		Map<RegistryKey<?>, Map<Identifier, Tag<RegistryEntry<?>>>> allTags = LOADED_TAGS.get();
+		Map<RegistryKey<?>, Map<Identifier, Collection<RegistryEntry<?>>>> allTags = LOADED_TAGS.get();
 
 		if (allTags == null) {
 			LOGGER.warn("Can't retrieve deserialized tags. Failing tags_populated resource condition check.");
 			return false;
 		}
 
-		Map<Identifier, Tag<RegistryEntry<?>>> registryTags = allTags.get(registryKey);
+		Map<Identifier, Collection<RegistryEntry<?>>> registryTags = allTags.get(registryKey);
 
 		if (registryTags == null) {
 			// No tag for this registry
@@ -177,9 +177,9 @@ public class ResourceConditionsImpl {
 		for (JsonElement element : array) {
 			if (element.isJsonPrimitive()) {
 				Identifier id = new Identifier(element.getAsString());
-				Tag<RegistryEntry<?>> tag = registryTags.get(id);
+				Collection<RegistryEntry<?>> tags = registryTags.get(id);
 
-				if (tag == null || tag.values().isEmpty()) {
+				if (tags == null || tags.isEmpty()) {
 					return false;
 				}
 			} else {

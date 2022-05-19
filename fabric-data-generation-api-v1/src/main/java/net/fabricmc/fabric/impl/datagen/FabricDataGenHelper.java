@@ -74,21 +74,6 @@ public final class FabricDataGenHelper {
 	 */
 	private static final String ENTRYPOINT_KEY = "fabric-datagen";
 
-	/**
-	 * A fake registry instance to be used for {@link DynamicRegistryTagProvider}.
-	 *
-	 * <p>In {@link AbstractTagProvider#run}, it checks for whether the registry has all the elements added to the builder.
-	 * This would be fine for static registry, but there won't be any instance dynamic registry available.
-	 * Therefore, this simply return true for all {@link Registry#containsId} call.
-	 */
-	@SuppressWarnings("rawtypes")
-	private static final Registry FAKE_DYNAMIC_REGISTRY = new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("fabric:fake_dynamic_registry")), Lifecycle.experimental(), null) {
-		@Override
-		public boolean containsId(Identifier id) {
-			return true;
-		}
-	};
-
 	private FabricDataGenHelper() {
 	}
 
@@ -135,9 +120,21 @@ public final class FabricDataGenHelper {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <T> Registry<T> getFakeDynamicRegistry() {
-		return FAKE_DYNAMIC_REGISTRY;
+	/**
+	 * A fake registry instance to be used for {@link DynamicRegistryTagProvider}.
+	 *
+	 * <p>In {@link AbstractTagProvider#run}, it checks for whether the registry has all the elements added to the builder.
+	 * This would be fine for static registry, but there won't be any instance dynamic registry available.
+	 * Therefore, this simply return true for all {@link Registry#containsId} call.
+	 */
+	@SuppressWarnings("rawtypes")
+	public static <T> Registry<T> getFakeDynamicRegistry(RegistryKey<? extends Registry<T>> registryKey) {
+		return new SimpleRegistry<>(registryKey, Lifecycle.experimental(), null) {
+			@Override
+			public boolean containsId(Identifier id) {
+				return true;
+			}
+		};
 	}
 
 	/**

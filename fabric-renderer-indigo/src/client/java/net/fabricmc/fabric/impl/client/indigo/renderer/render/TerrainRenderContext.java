@@ -85,7 +85,7 @@ public class TerrainRenderContext extends AbstractRenderContext {
 		}
 	};
 
-	public void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, BuiltChunk.RebuildTask.class_7435 renderData, BlockBufferBuilderStorage builders, Set<RenderLayer> initializedLayers) {
+	public void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, BuiltChunk.RebuildTask.RenderData renderData, BlockBufferBuilderStorage builders, Set<RenderLayer> initializedLayers) {
 		blockInfo.setBlockView(blockView);
 		chunkInfo.prepare(blockView, chunkRenderer, renderData, builders, initializedLayers);
 	}

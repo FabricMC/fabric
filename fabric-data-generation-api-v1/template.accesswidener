@@ -1,18 +1,25 @@
 accessWidener	v2	named
 
-accessible  field   net/minecraft/data/server/RecipeProvider   root    Lnet/minecraft/data/DataGenerator;
+accessible  field  net/minecraft/data/server/RecipeProvider  recipesPathResolver  Lnet/minecraft/data/DataGenerator$PathResolver;
+accessible  field  net/minecraft/data/server/RecipeProvider  advancementsPathResolver  Lnet/minecraft/data/DataGenerator$PathResolver;
 
-extendable  method  net/minecraft/data/server/AbstractTagProvider$ObjectBuilder <init>  (Lnet/minecraft/tag/Tag$Builder;Lnet/minecraft/util/registry/Registry;Ljava/lang/String;)V
+accessible  method  net/minecraft/data/server/AbstractTagProvider$ObjectBuilder <init> (Lnet/minecraft/tag/TagBuilder;Lnet/minecraft/util/registry/Registry;)V
 extendable  method  net/minecraft/data/server/AbstractTagProvider$ObjectBuilder add     ([Ljava/lang/Object;)Lnet/minecraft/data/server/AbstractTagProvider$ObjectBuilder;
-accessible  field   net/minecraft/data/server/AbstractTagProvider$ObjectBuilder builder Lnet/minecraft/tag/Tag$Builder;
+accessible  field   net/minecraft/data/server/AbstractTagProvider$ObjectBuilder builder Lnet/minecraft/tag/TagBuilder;
 accessible  field   net/minecraft/data/server/AbstractTagProvider$ObjectBuilder registry    Lnet/minecraft/util/registry/Registry;
-accessible  field   net/minecraft/data/server/AbstractTagProvider$ObjectBuilder source  Ljava/lang/String;
 
 accessible  field   net/minecraft/data/server/AbstractTagProvider   tagBuilders Ljava/util/Map;
 
 accessible  field   net/minecraft/data/server/BlockLootTableGenerator   lootTables  Ljava/util/Map;
 
-accessible    class    net/minecraft/tag/Tag$TagEntry
+extendable  method  net/minecraft/tag/TagEntry  <init>  (Lnet/minecraft/util/Identifier;ZZ)V
+accessible  field   net/minecraft/tag/TagEntry  id       Lnet/minecraft/util/Identifier;
+accessible  field   net/minecraft/tag/TagEntry  tag  Z
+accessible  field   net/minecraft/tag/TagEntry  required  Z
+
+extendable  method  net/minecraft/data/DataGenerator$PathResolver <init> (Lnet/minecraft/data/DataGenerator;Lnet/minecraft/data/DataGenerator$OutputType;Ljava/lang/String;)V
+accessible  field   net/minecraft/data/DataGenerator$PathResolver rootPath    Ljava/nio/file/Path;
+accessible  field   net/minecraft/data/DataGenerator$PathResolver directoryName    Ljava/lang/String;
 
 transitive-accessible   method  net/minecraft/data/family/BlockFamilies register    (Lnet/minecraft/block/Block;)Lnet/minecraft/data/family/BlockFamily$Builder;
 
@@ -26,5 +33,4 @@ transitive-accessible   field   net/minecraft/data/client/BlockStateModelGenerat
 transitive-accessible   method  net/minecraft/data/client/TextureKey  of  (Ljava/lang/String;)Lnet/minecraft/data/client/TextureKey;
 transitive-accessible   method  net/minecraft/data/client/TextureKey	of  (Ljava/lang/String;Lnet/minecraft/data/client/TextureKey;)Lnet/minecraft/data/client/TextureKey;
 
-transitive-extendable method net/minecraft/data/server/AbstractTagProvider getOutput (Lnet/minecraft/util/Identifier;)Ljava/nio/file/Path;
 transitive-extendable method net/minecraft/data/server/AbstractTagProvider$ObjectBuilder add ([Lnet/minecraft/util/registry/RegistryKey;)Lnet/minecraft/data/server/AbstractTagProvider$ObjectBuilder;

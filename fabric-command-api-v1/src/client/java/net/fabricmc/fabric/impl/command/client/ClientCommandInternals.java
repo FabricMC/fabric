@@ -53,56 +53,49 @@ import net.fabricmc.fabric.mixin.command.HelpCommandAccessor;
 @Environment(EnvType.CLIENT)
 public final class ClientCommandInternals {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientCommandInternals.class);
-	private static final char PREFIX = '/';
 	private static final String API_COMMAND_NAME = "fabric-command-api-v1:client";
 	private static final String SHORT_API_COMMAND_NAME = "fcc";
 
 	/**
-	 * Executes a client-sided command from a message.
+	 * Executes a client-sided command. Callers should ensure that this is only called
+	 * on slash-prefixed messages and the slash needs to be removed before calling.
+	 * (This is the same requirement as {@code ClientPlayerEntity#sendCommand}.)
 	 *
-	 * @param message the command message
-	 * @return true if the message should not be sent to the server, false otherwise
+	 * @param command the command with slash removed
+	 * @return true if the command should not be sent to the server, false otherwise
 	 */
-	public static boolean executeCommand(String message) {
-		if (message.isEmpty()) {
-			return false; // Nothing to process
-		}
-
-		if (message.charAt(0) != PREFIX) {
-			return false; // Incorrect prefix, won't execute anything.
-		}
-
+	public static boolean executeCommand(String command) {
 		MinecraftClient client = MinecraftClient.getInstance();
 
 		// The interface is implemented on ClientCommandSource with a mixin.
 		// noinspection ConstantConditions
 		FabricClientCommandSource commandSource = (FabricClientCommandSource) client.getNetworkHandler().getCommandSource();
 
-		client.getProfiler().push(message);
+		client.getProfiler().push(command);
 
 		try {
 			// TODO: Check for server commands before executing.
 			//   This requires parsing the command, checking if they match a server command
 			//   and then executing the command with the parse results.
-			DISPATCHER.execute(message.substring(1), commandSource);
+			DISPATCHER.execute(command, commandSource);
 			return true;
 		} catch (CommandSyntaxException e) {
 			boolean ignored = isIgnoredException(e.getType());
 
 			if (ignored) {
-				LOGGER.debug("Syntax exception for client-sided command '{}'", message, e);
+				LOGGER.debug("Syntax exception for client-sided command '{}'", command, e);
 				return false;
 			}
 
-			LOGGER.warn("Syntax exception for client-sided command '{}'", message, e);
+			LOGGER.warn("Syntax exception for client-sided command '{}'", command, e);
 			commandSource.sendError(getErrorMessage(e));
 			return true;
 		} catch (CommandException e) {
-			LOGGER.warn("Error while executing client-sided command '{}'", message, e);
+			LOGGER.warn("Error while executing client-sided command '{}'", command, e);
 			commandSource.sendError(e.getTextMessage());
 			return true;
 		} catch (RuntimeException e) {
-			LOGGER.warn("Error while executing client-sided command '{}'", message, e);
+			LOGGER.warn("Error while executing client-sided command '{}'", command, e);
 			commandSource.sendError(Text.of(e.getMessage()));
 			return true;
 		} finally {
@@ -112,7 +105,7 @@ public final class ClientCommandInternals {
 
 	/**
 	 * Tests whether a command syntax exception with the type
-	 * should be ignored and the message sent to the server.
+	 * should be ignored and the command sent to the server.
 	 *
 	 * @param type the exception type
 	 * @return true if ignored, false otherwise

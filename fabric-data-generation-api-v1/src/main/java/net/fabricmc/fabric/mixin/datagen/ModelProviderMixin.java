@@ -21,9 +21,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import com.google.gson.JsonElement;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -48,12 +46,16 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 
 @Mixin(ModelProvider.class)
 public class ModelProviderMixin {
-	@Shadow
-	@Final
+	@Unique
 	private DataGenerator generator;
 
 	@Unique
-	private static ThreadLocal<DataGenerator> dataGeneratorThreadLocal = new ThreadLocal<>();
+	private static final ThreadLocal<DataGenerator> dataGeneratorThreadLocal = new ThreadLocal<>();
+
+	@Inject(method = "<init>", at = @At("RETURN"))
+	public void init(DataGenerator generator, CallbackInfo ci) {
+		this.generator = generator;
+	}
 
 	@Redirect(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/client/BlockStateModelGenerator;register()V"))
 	private void registerBlockStateModels(BlockStateModelGenerator instance) {

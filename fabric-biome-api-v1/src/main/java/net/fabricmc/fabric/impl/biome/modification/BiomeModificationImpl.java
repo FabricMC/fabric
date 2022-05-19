@@ -26,7 +26,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.base.Suppliers;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.TestOnly;
 import org.slf4j.Logger;
@@ -37,8 +36,6 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.level.LevelProperties;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
@@ -162,18 +159,6 @@ public class BiomeModificationImpl {
 		}
 
 		if (biomesProcessed > 0) {
-			// Rebuild caches within biome sources after modifying feature lists
-			for (DimensionOptions dimension : levelProperties.getGeneratorOptions().getDimensions()) {
-				// The Biome source has a total ordering of feature generation that might have changed
-				// by us adding or removing features from biomes.
-				BiomeSource biomeSource = dimension.getChunkGenerator().getBiomeSource();
-
-				// Replace the Supplier to force it to rebuild on next call
-				biomeSource.indexedFeaturesSupplier = Suppliers.memoize(() -> {
-					return biomeSource.method_39525(biomeSource.biomes.stream().distinct().toList(), true);
-				});
-			}
-
 			LOGGER.info("Applied {} biome modifications to {} of {} new biomes in {}", modifiersApplied, biomesChanged,
 					biomesProcessed, sw);
 		}

@@ -23,11 +23,10 @@ import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import net.minecraft.advancement.Advancement;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.util.Identifier;
@@ -42,12 +41,12 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
  * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
  */
 public abstract class FabricAdvancementProvider implements DataProvider {
-	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
-
 	protected final FabricDataGenerator dataGenerator;
+	private final DataGenerator.PathResolver pathResolver;
 
 	protected FabricAdvancementProvider(FabricDataGenerator dataGenerator) {
 		this.dataGenerator = dataGenerator;
+		this.pathResolver = dataGenerator.createPathResolver(DataGenerator.OutputType.DATA_PACK, "advancements");
 	}
 
 	/**
@@ -83,7 +82,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 			JsonObject advancementJson = advancement.createTask().toJson();
 			ConditionJsonProvider.write(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
 
-			DataProvider.writeToPath(GSON, writer, advancementJson, getOutputPath(advancement));
+			DataProvider.writeToPath(writer, advancementJson, getOutputPath(advancement));
 		}
 	}
 

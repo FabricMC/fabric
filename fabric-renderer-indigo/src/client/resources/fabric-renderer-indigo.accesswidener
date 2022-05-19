@@ -1,7 +1,7 @@
 accessWidener	v2	named
 
 accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask
-accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask$class_7435
+accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask$RenderData
 
 accessible class net/minecraft/client/render/block/BlockModelRenderer$AmbientOcclusionCalculator
 accessible field net/minecraft/client/render/block/BlockModelRenderer$AmbientOcclusionCalculator brightness [F

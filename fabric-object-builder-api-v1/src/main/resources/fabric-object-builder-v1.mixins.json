@@ -10,10 +10,8 @@
     "DefaultAttributeRegistryMixin",
     "DetectorRailBlockMixin",
     "MaterialBuilderAccessor",
-    "PointOfInterestTypeAccessor",
     "SpawnRestrictionAccessor",
     "TypeAwareTradeMixin",
-    "VillagerProfessionAccessor",
     "VillagerTypeAccessor"
   ],
   "injectors": {

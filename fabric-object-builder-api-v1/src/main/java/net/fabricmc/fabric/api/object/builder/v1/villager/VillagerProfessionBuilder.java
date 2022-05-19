@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.object.builder.v1.villager;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import java.util.function.Predicate;
+
 import com.google.common.collect.ImmutableSet;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,11 +28,11 @@ import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.poi.PointOfInterestType;
-
-import net.fabricmc.fabric.mixin.object.builder.VillagerProfessionAccessor;
 
 /**
  * Allows for the creation of new {@link VillagerProfession}s.
@@ -45,7 +47,8 @@ public final class VillagerProfessionBuilder {
 	private final ImmutableSet.Builder<Item> gatherableItemsBuilder = ImmutableSet.builder();
 	private final ImmutableSet.Builder<Block> secondaryJobSiteBlockBuilder = ImmutableSet.builder();
 	private Identifier identifier;
-	private PointOfInterestType pointOfInterestType;
+	private Predicate<RegistryEntry<PointOfInterestType>> pointOfInterestType;
+	private Predicate<RegistryEntry<PointOfInterestType>> acquirableJobSite;
 	@Nullable
 	private SoundEvent workSoundEvent;
 
@@ -75,11 +78,27 @@ public final class VillagerProfessionBuilder {
 	/**
 	 * The {@link PointOfInterestType} the Villager of this profession will search for when finding a workstation.
 	 *
-	 * @param type The {@link PointOfInterestType} the Villager will attempt to find.
+	 * @param key The {@link PointOfInterestType} the Villager will attempt to find.
 	 * @return this builder.
 	 */
-	public VillagerProfessionBuilder workstation(PointOfInterestType type) {
-		this.pointOfInterestType = type;
+	public VillagerProfessionBuilder workstation(RegistryKey<PointOfInterestType> key) {
+		jobSite(entry -> entry.matchesKey(key));
+		return workstation(entry -> entry.matchesKey(key));
+	}
+
+	/**
+	 * The {@link PointOfInterestType} the Villager of this profession will search for when finding a workstation.
+	 *
+	 * @param predicate The {@link PointOfInterestType} the Villager will attempt to find.
+	 * @return this builder.
+	 */
+	public VillagerProfessionBuilder workstation(Predicate<RegistryEntry<PointOfInterestType>> predicate) {
+		this.pointOfInterestType = predicate;
+		return this;
+	}
+
+	public VillagerProfessionBuilder jobSite(Predicate<RegistryEntry<PointOfInterestType>> predicate) {
+		this.acquirableJobSite = predicate;
 		return this;
 	}
 
@@ -155,6 +174,8 @@ public final class VillagerProfessionBuilder {
 	public VillagerProfession build() {
 		checkState(this.identifier != null, "An Identifier is required to build a new VillagerProfession.");
 		checkState(this.pointOfInterestType != null, "A PointOfInterestType is required to build a new VillagerProfession.");
-		return VillagerProfessionAccessor.create(this.identifier.toString(), this.pointOfInterestType, this.gatherableItemsBuilder.build(), this.secondaryJobSiteBlockBuilder.build(), this.workSoundEvent);
+		checkState(this.acquirableJobSite != null, "A PointOfInterestType is required for the acquirableJobSite to build a new VillagerProfession.");
+
+		return new VillagerProfession(this.identifier.toString(), this.pointOfInterestType, this.acquirableJobSite, this.gatherableItemsBuilder.build(), this.secondaryJobSiteBlockBuilder.build(), this.workSoundEvent);
 	}
 }
