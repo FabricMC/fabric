@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.12.29" apply false
+	id "fabric-loom" version "0.12.31" apply false
 	id "com.diffplug.spotless" version "6.5.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -71,8 +71,7 @@ def moduleDependencies(project, List<String> depNames) {
 		}
 
 		clientOutputs.each {
-			clientCompileOnly it
-			clientRuntimeOnly it
+			clientImplementation it
 		}
 	}
 
@@ -105,8 +104,7 @@ def testDependencies(project, List<String> depNames) {
 		}
 
 		clientOutputs.each {
-			testmodCompileOnly it
-			testmodRuntimeOnly it
+			testmodImplementation it
 		}
 	}
 }
@@ -189,6 +187,10 @@ allprojects {
 			sourceSet p.sourceSets.main
 			sourceSet p.sourceSets.client
 		}
+
+		loom.mods.register(p.name + "-testmod") {
+			sourceSet p.sourceSets.testmod
+		}
 	}
 
 	dependencies {
@@ -196,8 +198,8 @@ allprojects {
 		mappings "net.fabricmc:yarn:${rootProject.minecraft_version}${project.yarn_version}:v2"
 		modApi "net.fabricmc:fabric-loader:${project.loader_version}"
 
-		testmodCompileOnly sourceSets.client.output
-		testmodRuntimeOnly sourceSets.client.output
+		testmodImplementation sourceSets.main.output
+		testmodImplementation sourceSets.client.output
 	}
 
 	loom {
