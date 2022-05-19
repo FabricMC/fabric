@@ -76,8 +76,8 @@ public abstract class MixinChunkRebuildTask {
 			locals = LocalCapture.CAPTURE_FAILHARD)
 	private void hookChunkBuild(float cameraX, float cameraY, float cameraZ,
 			BlockBufferBuilderStorage builder,
-			CallbackInfoReturnable<BuiltChunk.RebuildTask.class_7435> ci,
-			BuiltChunk.RebuildTask.class_7435 renderData, int i, BlockPos blockPos, BlockPos blockPos2, ChunkOcclusionDataBuilder chunkOcclusionDataBuilder, ChunkRendererRegion region, MatrixStack matrixStack, Set<RenderLayer> initializedLayers, AbstractRandom abstractRandom, BlockRenderManager blockRenderManager) {
+			CallbackInfoReturnable<BuiltChunk.RebuildTask.RenderData> ci,
+			BuiltChunk.RebuildTask.RenderData renderData, int i, BlockPos blockPos, BlockPos blockPos2, ChunkOcclusionDataBuilder chunkOcclusionDataBuilder, ChunkRendererRegion region, MatrixStack matrixStack, Set<RenderLayer> initializedLayers, AbstractRandom abstractRandom, BlockRenderManager blockRenderManager) {
 		// hook just before iterating over the render chunk's chunks blocks, captures the used renderlayer set
 		// accessing this.region is unsafe due to potential async cancellation, the LV has to be used!
 
