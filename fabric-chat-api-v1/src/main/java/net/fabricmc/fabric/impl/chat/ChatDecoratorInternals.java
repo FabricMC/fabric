@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.chat;
 
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -32,28 +33,33 @@ public class ChatDecoratorInternals {
 	/**
 	 * Checks the cache and calls the chat decorator event.
 	 * @param sender the sender of the message
-	 * @param message the message
-	 * @return the message from cache or {@code null} if there is none
+	 * @param messageFuture the message future
+	 * @return the future that decorates the message
 	 */
-	public static Text decorate(@Nullable ServerPlayerEntity sender, Text message) {
-		// No caching for sender-less messages (e.g. commands)
-		if (sender == null) return ChatDecoratorEvent.EVENT.invoker().decorate(null, message);
-		PreviewCacheAccess cacheAccess = (PreviewCacheAccess) sender;
-		String serializedOriginalText = cacheAccess.fabric_getSerializedOriginalText();
-		// Messages are signed using sorted JSON serialization
-		String serializedCurrentText = Text.Serializer.toSortedJsonString(message);
-		Text cachedPreviewText = cacheAccess.fabric_getPreviewedText();
+	public static CompletableFuture<Text> decorate(@Nullable ServerPlayerEntity sender, CompletableFuture<Text> messageFuture) {
+		return messageFuture.thenCompose((message) -> {
+			// No caching for sender-less messages (e.g. commands)
+			if (sender == null) return ChatDecoratorEvent.EVENT.invoker().decorate(null, message);
+			PreviewCacheAccess cacheAccess = (PreviewCacheAccess) sender;
+			String serializedOriginalText = cacheAccess.fabric_getSerializedOriginalText();
+			// Messages are signed using sorted JSON serialization
+			String serializedCurrentText = Text.Serializer.toSortedJsonString(message);
+			Text cachedPreviewText = cacheAccess.fabric_getPreviewedText();
 
-		// If there is no original text or if the two differs (null check included in equals)
-		// cachedPreviewText null check is for safety, should not happen
-		if (!Objects.equals(serializedOriginalText, serializedCurrentText) || cachedPreviewText == null) {
-			// Store the current text. Note that this is usually called during preview phase.
-			Text previewText = ChatDecoratorEvent.EVENT.invoker().decorate(sender, message);
-			cacheAccess.fabric_setPreview(serializedCurrentText, previewText);
-			return previewText;
-		}
+			// If there is no original text or if the two differs (null check included in equals)
+			// cachedPreviewText null check is for safety, should not happen
+			if (!Objects.equals(serializedOriginalText, serializedCurrentText) || cachedPreviewText == null) {
+				// Store the current text. Note that this is usually called during preview phase.
+				CompletableFuture<Text> previewTextFuture = ChatDecoratorEvent.EVENT.invoker().decorate(sender, message);
+				// Use server thread when writing the preview cache.
+				return previewTextFuture.thenApplyAsync((previewText) -> {
+					cacheAccess.fabric_setPreview(serializedCurrentText, previewText);
+					return previewText;
+				}, sender.getServer());
+			}
 
-		// Cache hit
-		return cachedPreviewText;
+			// Cache hit
+			return CompletableFuture.completedFuture(cachedPreviewText);
+		});
 	}
 }

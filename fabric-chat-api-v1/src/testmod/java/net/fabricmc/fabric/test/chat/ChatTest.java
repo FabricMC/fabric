@@ -16,7 +16,11 @@
 
 package net.fabricmc.fabric.test.chat;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.random.AbstractRandom;
 
 import net.fabricmc.api.ModInitializer;
@@ -26,23 +30,41 @@ public class ChatTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		AbstractRandom random = AbstractRandom.create();
+		Executor ioWorkerExecutor = Util.getIoWorkerExecutor();
 
 		// Basic content phase testing
 		ChatDecoratorEvent.EVENT.register(ChatDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
 			if (message.getString().contains("tater")) {
-				return message.copy().append(" :tiny_potato:");
+				return CompletableFuture.completedFuture(message.copy().append(" :tiny_potato:"));
 			}
 
-			return message;
+			return CompletableFuture.completedFuture(message);
 		});
 
 		// Basic styling phase testing
 		ChatDecoratorEvent.EVENT.register(ChatDecoratorEvent.STYLING_PHASE, (sender, message) -> {
 			if (sender != null && sender.getAbilities().creativeMode) {
-				return message.copy().styled(style -> style.withColor(0xFFA500));
+				return CompletableFuture.completedFuture(message.copy().styled(style -> style.withColor(0xFFA500)));
 			}
 
-			return message;
+			return CompletableFuture.completedFuture(message);
+		});
+
+		// Async testing
+		ChatDecoratorEvent.EVENT.register(ChatDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
+			if (message.getString().contains("wait")) {
+				return CompletableFuture.supplyAsync(() -> {
+					try {
+						Thread.sleep(random.nextBetween(500, 2000));
+					} catch (InterruptedException ignored) {
+						// Ignore interruption
+					}
+
+					return message;
+				}, ioWorkerExecutor);
+			}
+
+			return CompletableFuture.completedFuture(message);
 		});
 
 		// Test whether caching works
@@ -50,10 +72,10 @@ public class ChatTest implements ModInitializer {
 		// and that the previewed content changes after typing other characters.
 		ChatDecoratorEvent.EVENT.register(ChatDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
 			if (message.getString().startsWith("random")) {
-				return Text.of(Integer.toString(random.nextInt(100)));
+				return CompletableFuture.completedFuture(Text.of(Integer.toString(random.nextInt(100))));
 			}
 
-			return message;
+			return CompletableFuture.completedFuture(message);
 		});
 	}
 }

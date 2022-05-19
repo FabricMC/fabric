@@ -22,8 +22,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
-import net.minecraft.server.filter.TextStream;
+import net.minecraft.network.encryption.SignedChatMessage;
+import net.minecraft.server.filter.Message;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -34,8 +34,8 @@ public class ServerPlayNetworkHandlerMixin {
 	@Shadow
 	public ServerPlayerEntity player;
 
-	@Inject(method = "handleMessage", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/class_7492;decorate(Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/text/Text;Lnet/minecraft/network/encryption/ChatMessageSignature;Z)Lnet/minecraft/network/encryption/SignedChatMessage;"))
-	private void clearCachedPreviewAfterUse(ChatMessageC2SPacket packet, TextStream.Message message, CallbackInfo ci) {
+	@Inject(method = "method_44155", at = @At(value = "RETURN"))
+	private void clearCachedPreviewAfterUse(Message<SignedChatMessage> message, CallbackInfo ci) {
 		((PreviewCacheAccess) this.player).fabric_setPreview(null, null);
 	}
 }

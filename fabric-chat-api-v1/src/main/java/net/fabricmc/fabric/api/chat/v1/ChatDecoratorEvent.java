@@ -17,15 +17,17 @@
 package net.fabricmc.fabric.api.chat.v1;
 
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.class_7492;
+import net.minecraft.network.ChatDecorator;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * A class for registering a {@link class_7492 ChatDecorator}. Check the chat decorator documentation
+ * A class for registering a {@link ChatDecorator}. Check the chat decorator documentation
  * for how chat decorators work. Unlike other events, this uses a functional interface that is
  * provided by the vanilla game.
  *
@@ -58,9 +60,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * ChatDecoratorEvent.EVENT.register(ChatDecoratorEvent.STYLING_PHASE, (sender, message) -> {
  *     // Apply orange color to messages sent by server operators
  *     if (sender != null && sender.server.getPlayerManager().isOperator(sender.getGameProfile())) {
- *         return message.copy().styled(style -> style.withColor(0xFFA500));
+ *         return CompletableFuture.completedFuture(
+ *             message.copy().styled(style -> style.withColor(0xFFA500)));
  *     }
- *     return message;
+ *     return CompletableFuture.completedFuture(message);
  * });
  * </code></pre>
  */
@@ -76,11 +79,21 @@ public final class ChatDecoratorEvent {
 	 */
 	public static Identifier STYLING_PHASE = new Identifier("fabric-chat-api-v1", "styling");
 
-	public static Event<class_7492> EVENT = EventFactory.createWithPhases(class_7492.class, decorators -> (sender, message) -> {
-		for (class_7492 decorator : decorators) {
-			message = Objects.requireNonNull(decorator.decorate(sender, message), "chat decorator must not return null");
+	public static Event<ChatDecorator> EVENT = EventFactory.createWithPhases(ChatDecorator.class, decorators -> (sender, message) -> {
+		CompletableFuture<Text> future = null;
+
+		for (ChatDecorator decorator : decorators) {
+			if (future == null) {
+				future = decorator.decorate(sender, message).thenApply(ChatDecoratorEvent::validateDecoratorResult);
+			} else {
+				future = future.thenCompose((decorated) -> decorator.decorate(sender, message).thenApply(ChatDecoratorEvent::validateDecoratorResult));
+			}
 		}
 
-		return message;
+		return future;
 	}, CONTENT_PHASE, Event.DEFAULT_PHASE, STYLING_PHASE);
+
+	private static <T> T validateDecoratorResult(T value) {
+		return Objects.requireNonNull(value, "chat decorator must not return null");
+	}
 }
