@@ -15,6 +15,13 @@ transitive-accessible method net/minecraft/screen/ScreenHandlerType <init> (Lnet
 transitive-accessible class net/minecraft/client/gui/screen/ingame/HandledScreens$Provider
 transitive-accessible method net/minecraft/client/gui/screen/ingame/HandledScreens register (Lnet/minecraft/screen/ScreenHandlerType;Lnet/minecraft/client/gui/screen/ingame/HandledScreens$Provider;)V
 
+## Registering custom entity model layer
+transitive-accessible method net/minecraft/client/render/entity/model/EntityModelLayers registerMain (Ljava/lang/String;)Lnet/minecraft/client/render/entity/model/EntityModelLayer;
+transitive-accessible method net/minecraft/client/render/entity/model/EntityModelLayers register (Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/client/render/entity/model/EntityModelLayer;
+transitive-accessible method net/minecraft/client/render/entity/model/EntityModelLayers create (Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/client/render/entity/model/EntityModelLayer;
+transitive-accessible method net/minecraft/client/render/entity/model/EntityModelLayers createInnerArmor (Ljava/lang/String;)Lnet/minecraft/client/render/entity/model/EntityModelLayer;
+transitive-accessible method net/minecraft/client/render/entity/model/EntityModelLayers createOuterArmor (Ljava/lang/String;)Lnet/minecraft/client/render/entity/model/EntityModelLayer;
+
 ### Generated access wideners below
 # Constructors of non-abstract block classes
 transitive-accessible method net/minecraft/block/AirBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
