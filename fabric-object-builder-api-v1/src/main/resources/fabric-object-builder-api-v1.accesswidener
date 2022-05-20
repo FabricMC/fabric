@@ -3,5 +3,10 @@ extendable  method    net/minecraft/block/AbstractBlock$Settings    <init>  (Lne
 extendable  method    net/minecraft/block/AbstractBlock$Settings    <init>  (Lnet/minecraft/block/Material;Lnet/minecraft/block/MapColor;)V
 
 accessible    method    net/minecraft/world/poi/PointOfInterestTypes    register    (Lnet/minecraft/util/registry/Registry;Lnet/minecraft/util/registry/RegistryKey;Ljava/util/Set;II)Lnet/minecraft/world/poi/PointOfInterestType;
+accessible    method    net/minecraft/client/render/entity/model/EntityModelLayers    registerMain    (Ljava/lang/String;)Lnet/minecraft/client/render/entity/model/EntityModelLayer;
+accessible    method    net/minecraft/client/render/entity/model/EntityModelLayers    register    (Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/client/render/entity/model/EntityModelLayer;
+accessible    method    net/minecraft/client/render/entity/model/EntityModelLayers    create    (Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/client/render/entity/model/EntityModelLayer;
+accessible    method    net/minecraft/client/render/entity/model/EntityModelLayers    createInnerArmor    (Ljava/lang/String;)Lnet/minecraft/client/render/entity/model/EntityModelLayer;
+accessible    method    net/minecraft/client/render/entity/model/EntityModelLayers    createOuterArmor    (Ljava/lang/String;)Lnet/minecraft/client/render/entity/model/EntityModelLayer;
 
 extendable class net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
