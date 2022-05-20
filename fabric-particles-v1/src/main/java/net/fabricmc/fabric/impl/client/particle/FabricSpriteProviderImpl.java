@@ -22,7 +22,7 @@ import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.util.math.random.AbstractRandom;
+import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 import net.fabricmc.fabric.mixin.client.particle.ParticleManagerAccessor;
@@ -52,7 +52,7 @@ public class FabricSpriteProviderImpl implements FabricSpriteProvider {
 	}
 
 	@Override
-	public Sprite getSprite(AbstractRandom random) {
+	public Sprite getSprite(Random random) {
 		return delegate.getSprite(random);
 	}
 }

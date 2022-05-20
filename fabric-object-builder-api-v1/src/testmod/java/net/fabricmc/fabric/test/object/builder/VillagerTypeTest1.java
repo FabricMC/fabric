@@ -28,7 +28,7 @@ import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.random.AbstractRandom;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
@@ -68,7 +68,7 @@ public class VillagerTypeTest1 implements ModInitializer {
 
 						for (TradeOffers.Factory[] value : TradeOffers.WANDERING_TRADER_TRADES.values()) {
 							for (TradeOffers.Factory factory : value) {
-								final TradeOffer result = factory.create(trader, AbstractRandom.createAtomic());
+								final TradeOffer result = factory.create(trader, Random.create());
 
 								if (result == null) {
 									continue;

@@ -30,7 +30,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Matrix3f;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.world.BlockRenderView;
-import net.minecraft.util.math.random.AbstractRandom;
+import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -49,9 +49,9 @@ public class BlockRenderContext extends AbstractRenderContext {
 	private boolean didOutput = false;
 	// These are kept as fields to avoid the heap allocation for a supplier.
 	// BlockModelRenderer allows the caller to supply both the random object and seed.
-	private AbstractRandom random;
+	private Random random;
 	private long seed;
-	private final Supplier<AbstractRandom> randomSupplier = () -> {
+	private final Supplier<Random> randomSupplier = () -> {
 		random.setSeed(seed);
 		return random;
 	};
@@ -112,7 +112,7 @@ public class BlockRenderContext extends AbstractRenderContext {
 		return bufferBuilder;
 	}
 
-	public boolean render(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, AbstractRandom random, long seed, int overlay) {
+	public boolean render(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, Random random, long seed, int overlay) {
 		this.bufferBuilder = buffer;
 		this.matrix = matrixStack.peek().getPositionMatrix();
 		this.normalMatrix = matrixStack.peek().getNormalMatrix();
