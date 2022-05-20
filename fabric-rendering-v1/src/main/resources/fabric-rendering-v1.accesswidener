@@ -1,0 +1,7 @@
+accessWidener	v2	named
+
+accessible    method    net/minecraft/client/render/entity/model/EntityModelLayers    registerMain    (Ljava/lang/String;)Lnet/minecraft/client/render/entity/model/EntityModelLayer;
+accessible    method    net/minecraft/client/render/entity/model/EntityModelLayers    register    (Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/client/render/entity/model/EntityModelLayer;
+accessible    method    net/minecraft/client/render/entity/model/EntityModelLayers    create    (Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/client/render/entity/model/EntityModelLayer;
+accessible    method    net/minecraft/client/render/entity/model/EntityModelLayers    createInnerArmor    (Ljava/lang/String;)Lnet/minecraft/client/render/entity/model/EntityModelLayer;
+accessible    method    net/minecraft/client/render/entity/model/EntityModelLayers    createOuterArmor    (Ljava/lang/String;)Lnet/minecraft/client/render/entity/model/EntityModelLayer;
