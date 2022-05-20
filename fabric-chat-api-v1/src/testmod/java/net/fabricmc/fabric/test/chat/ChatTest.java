@@ -35,7 +35,7 @@ public class ChatTest implements ModInitializer {
 		// Basic content phase testing
 		ChatDecoratorEvent.EVENT.register(ChatDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
 			if (message.getString().contains("tater")) {
-				return CompletableFuture.completedFuture(message.copy().append(" :tiny_potato:"));
+				return CompletableFuture.completedFuture(message.shallowCopy().append(" :tiny_potato:"));
 			}
 
 			return CompletableFuture.completedFuture(message);
@@ -44,7 +44,7 @@ public class ChatTest implements ModInitializer {
 		// Basic styling phase testing
 		ChatDecoratorEvent.EVENT.register(ChatDecoratorEvent.STYLING_PHASE, (sender, message) -> {
 			if (sender != null && sender.getAbilities().creativeMode) {
-				return CompletableFuture.completedFuture(message.copy().styled(style -> style.withColor(0xFFA500)));
+				return CompletableFuture.completedFuture(message.shallowCopy().styled(style -> style.withColor(0xFFA500)));
 			}
 
 			return CompletableFuture.completedFuture(message);

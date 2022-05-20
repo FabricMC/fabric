@@ -49,8 +49,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <pre><code>
  * ChatDecoratorEvent.EVENT.register(ChatDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
- *     // Add smiley face. Has to copy() to get a MutableText.
- *     return message.copy().append(" :)");
+ *     // Add smiley face. Has to shallowCopy() to get a MutableText with siblings and styles.
+ *     return message.shallowCopy().append(" :)");
  * });
  * </code></pre>
  *
@@ -61,7 +61,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *     // Apply orange color to messages sent by server operators
  *     if (sender != null && sender.server.getPlayerManager().isOperator(sender.getGameProfile())) {
  *         return CompletableFuture.completedFuture(
- *             message.copy().styled(style -> style.withColor(0xFFA500)));
+ *             message.shallowCopy().styled(style -> style.withColor(0xFFA500)));
  *     }
  *     return CompletableFuture.completedFuture(message);
  * });
@@ -72,28 +72,28 @@ public final class ChatDecoratorEvent {
 	 * The content phase of the event, passed when registering a chat decorator. Use this when
 	 * the chat decorator modifies the text content of the message.
 	 */
-	public static Identifier CONTENT_PHASE = new Identifier("fabric-chat-api-v1", "content");
+	public static final Identifier CONTENT_PHASE = new Identifier("fabric-chat-api-v1", "content");
 	/**
 	 * The styling phase of the event, passed when registering a chat decorator. Use this when
 	 * the chat decorator only modifies the styling of the message with the text intact.
 	 */
-	public static Identifier STYLING_PHASE = new Identifier("fabric-chat-api-v1", "styling");
+	public static final Identifier STYLING_PHASE = new Identifier("fabric-chat-api-v1", "styling");
 
-	public static Event<ChatDecorator> EVENT = EventFactory.createWithPhases(ChatDecorator.class, decorators -> (sender, message) -> {
+	public static final Event<ChatDecorator> EVENT = EventFactory.createWithPhases(ChatDecorator.class, decorators -> (sender, message) -> {
 		CompletableFuture<Text> future = null;
 
 		for (ChatDecorator decorator : decorators) {
 			if (future == null) {
 				future = decorator.decorate(sender, message).thenApply(ChatDecoratorEvent::validateDecoratorResult);
 			} else {
-				future = future.thenCompose((decorated) -> decorator.decorate(sender, message).thenApply(ChatDecoratorEvent::validateDecoratorResult));
+				future = future.thenCompose((decorated) -> decorator.decorate(sender, decorated).thenApply(ChatDecoratorEvent::validateDecoratorResult));
 			}
 		}
 
-		return future;
+		return future == null ? CompletableFuture.completedFuture(message) : future;
 	}, CONTENT_PHASE, Event.DEFAULT_PHASE, STYLING_PHASE);
 
-	private static <T> T validateDecoratorResult(T value) {
+	private static <T extends Text> T validateDecoratorResult(T value) {
 		return Objects.requireNonNull(value, "chat decorator must not return null");
 	}
 }
