@@ -21,7 +21,10 @@
   "description": "Allows for automatic data generation.",
   "mixins": [
     "fabric-data-generation-api-v1.mixins.json",
-    "fabric-data-generation-api-v1.client.mixins.json"
+    {
+      "config": "fabric-data-generation-api-v1.client.mixins.json",
+      "environment": "client"
+    }
   ],
   "accessWidener" : "fabric-data-generation-api-v1.accesswidener",
   "custom": {

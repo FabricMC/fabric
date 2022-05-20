@@ -25,7 +25,10 @@
   },
   "mixins": [
     "fabric-lifecycle-events-v1.mixins.json",
-    "fabric-lifecycle-events-v1.client.mixins.json"
+    {
+      "config": "fabric-lifecycle-events-v1.client.mixins.json",
+      "environment": "client"
+    }
   ],
   "depends": {
     "fabricloader": ">=0.4.0",
