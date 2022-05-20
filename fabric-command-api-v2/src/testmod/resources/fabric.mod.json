@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-command-api-v2-testmod",
+  "name": "Fabric Command API (v2) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-command-api-v2": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.command.CommandTest"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.command.client.ClientCommandTest"
+    ]
+  }
+}

@@ -18,9 +18,9 @@
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*",
-    "fabric-command-api-v1": "*"
+    "fabric-command-api-v2": "*"
   },
-  "description": "Deprecated. Please migrate to v1",
+  "description": "Deprecated. Please migrate to v2",
   "mixins": [
   ],
   "custom": {
