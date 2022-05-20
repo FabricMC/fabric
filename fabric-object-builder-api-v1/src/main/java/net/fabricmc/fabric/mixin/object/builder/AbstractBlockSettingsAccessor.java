@@ -98,6 +98,9 @@ public interface AbstractBlockSettingsAccessor {
 	@Accessor
 	AbstractBlock.ContextPredicate getEmissiveLightingPredicate();
 
+	@Accessor
+	Function<BlockState, AbstractBlock.OffsetType> getOffsetType();
+
 	/* SETTERS */
 	@Accessor
 	void setMaterial(Material material);
