@@ -3,10 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.chat",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "MessageArgumentTypeSignedMessageMixin",
-    "MinecraftServerMixin",
-    "ServerPlayerEntityMixin",
-    "ServerPlayNetworkHandlerMixin"
+    "MinecraftServerMixin"
   ],
   "client": [
   ],

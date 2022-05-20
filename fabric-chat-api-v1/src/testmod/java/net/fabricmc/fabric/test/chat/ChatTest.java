@@ -19,7 +19,6 @@ package net.fabricmc.fabric.test.chat;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.random.AbstractRandom;
 
@@ -62,17 +61,6 @@ public class ChatTest implements ModInitializer {
 
 					return message;
 				}, ioWorkerExecutor);
-			}
-
-			return CompletableFuture.completedFuture(message);
-		});
-
-		// Test whether caching works
-		// Make sure that the message is sent with the previewed content,
-		// and that the previewed content changes after typing other characters.
-		ChatDecoratorEvent.EVENT.register(ChatDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
-			if (message.getString().startsWith("random")) {
-				return CompletableFuture.completedFuture(Text.of(Integer.toString(random.nextInt(100))));
 			}
 
 			return CompletableFuture.completedFuture(message);

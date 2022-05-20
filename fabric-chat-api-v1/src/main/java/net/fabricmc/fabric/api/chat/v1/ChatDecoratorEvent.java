@@ -38,12 +38,11 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * function. If not given, the chat decorator will run in the default phase, which is between
  * the content phase and the styling phase.
  *
- * <p>Note that this API may <strong>cache the result of the chat decorator</strong>. If the player
- * sent a chat message that exactly matched the one the player had previewed just before, the
- * decorator will not be called again; instead, the cached, previously decorated message is used.
- * This is to avoid a pitfall when using externally controlled results as the decorated message,
- * because the server discards any messages whose decorated version differs from the previewed one.
- * If the player or the server disabled the chat preview, the cache will not be used.
+ * <p>When implementing a chat decorator, it is <strong>very important that the decorator returns
+ * the same contents between previewing and submission</strong> - otherwise the game discards the
+ * message because it was improperly signed. The most straightforward way of doing this is by
+ * making sure the decorator returns the same result for a given message. Another way to solve this
+ * issue is to cache the decorated message.
  *
  * <p>Example of registering a content phase chat decorator:
  *
