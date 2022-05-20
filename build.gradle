@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.12.31" apply false
+	id "fabric-loom" version "0.12.35" apply false
 	id "com.diffplug.spotless" version "6.5.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -244,6 +244,19 @@ allprojects {
 	task generateResources {
 		group = "fabric"
 	}
+
+	task testmodJar(type: Jar) {
+		from sourceSets.testmod.output
+		destinationDirectory = new File(project.buildDir, "devlibs")
+		archiveClassifier = "testmod"
+	}
+
+	task remapTestmodJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: testmodJar) {
+		input = testmodJar.archiveFile
+		archiveClassifier = "testmod"
+		addNestedDependencies = false
+	}
+	build.dependsOn remapTestmodJar
 }
 
 // Apply auxiliary buildscripts to submodules
