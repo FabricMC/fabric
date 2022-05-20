@@ -22,9 +22,13 @@ import net.minecraft.item.ItemStack;
 
 /**
  * Internal class that allows inventory instances to defer special logic until {@link InventorySlotWrapper#onFinalCommit()} is called.
- * Special logic should be suppressed when {@link net.fabricmc.fabric.impl.transfer.TransferApiImpl#SUPPRESS_SPECIAL_LOGIC} is true.
  */
 @ApiStatus.Internal
 public interface SpecialLogicInventory {
+	/**
+	 * Decide whether special logic should now be suppressed. If true, must remain suppressed until the next call.
+	 */
+	void fabric_setSuppress(boolean suppress);
+
 	void fabric_onFinalCommit(int slot, ItemStack oldStack, ItemStack newStack);
 }

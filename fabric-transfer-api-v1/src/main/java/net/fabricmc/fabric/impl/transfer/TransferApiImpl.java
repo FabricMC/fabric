@@ -62,9 +62,4 @@ public class TransferApiImpl {
 			return 0;
 		}
 	};
-
-	/**
-	 * Not null when writing to an inventory in a transaction, null otherwise.
-	 */
-	public static final ThreadLocal<Object> SUPPRESS_SPECIAL_LOGIC = new ThreadLocal<>();
 }
