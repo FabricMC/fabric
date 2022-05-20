@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.mixin.crash.report.info;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,22 +39,36 @@ public abstract class MixinCrashReport {
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void fillSystemDetails(CallbackInfo info) {
 		addSection("Fabric Mods", () -> {
-			Map<String, String> mods = new TreeMap<>();
+			ArrayList<ModContainer> topLevelMods = new ArrayList<>();
 
 			for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
-				mods.put(container.getMetadata().getId(), container.getMetadata().getName() + " " + container.getMetadata().getVersion().getFriendlyString());
+				if (container.getContainingMod().isEmpty()) {
+					topLevelMods.add(container);
+				}
 			}
 
 			StringBuilder modString = new StringBuilder();
 
-			for (String id : mods.keySet()) {
-				modString.append("\n\t\t");
-				modString.append(id);
-				modString.append(": ");
-				modString.append(mods.get(id));
-			}
+			appendMods(modString, 2, topLevelMods);
 
 			return modString.toString();
 		});
+	}
+
+	private static void appendMods(StringBuilder modString, int depth, ArrayList<ModContainer> mods) {
+		mods.sort(Comparator.comparing(mod -> mod.getMetadata().getId()));
+
+		for (ModContainer mod : mods) {
+			modString.append('\n');
+			modString.append("\t".repeat(depth));
+			modString.append(mod.getMetadata().getId());
+			modString.append(' ');
+			modString.append(mod.getMetadata().getVersion().getFriendlyString());
+
+			if (!mod.getContainedMods().isEmpty()) {
+				ArrayList<ModContainer> childMods = new ArrayList<>(mod.getContainedMods());
+				appendMods(modString, depth + 1, childMods);
+			}
+		}
 	}
 }

@@ -19,14 +19,14 @@ package net.fabricmc.fabric.mixin.datagen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.tag.Builder;
+import net.minecraft.tag.TagBuilder;
 
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 
 /**
  * Extends Tag.Builder to support setting the replace field.
  */
-@Mixin(Builder.class)
+@Mixin(TagBuilder.class)
 public class TagBuilderMixin implements FabricTagBuilder {
 	@Unique
 	private boolean replace = false;

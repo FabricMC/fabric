@@ -77,12 +77,12 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 			ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(provider);
 			ConditionJsonProvider.write(recipeJson, conditions);
 
-			saveRecipe(writer, recipeJson, this.field_39378.method_44107(identifier));
+			saveRecipe(writer, recipeJson, this.recipesPathResolver.resolveJson(identifier));
 			JsonObject advancementJson = provider.toAdvancementJson();
 
 			if (advancementJson != null) {
 				ConditionJsonProvider.write(advancementJson, conditions);
-				saveRecipeAdvancement(writer, advancementJson, this.field_39379.method_44107(getRecipeIdentifier(provider.getAdvancementId())));
+				saveRecipeAdvancement(writer, advancementJson, this.advancementsPathResolver.resolveJson(getRecipeIdentifier(provider.getAdvancementId())));
 			}
 		});
 	}

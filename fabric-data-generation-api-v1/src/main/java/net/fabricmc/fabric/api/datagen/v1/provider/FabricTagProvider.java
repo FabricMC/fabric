@@ -28,7 +28,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.Builder;
+import net.minecraft.tag.TagBuilder;
 import net.minecraft.tag.EntityTypeTags;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.tag.GameEventTags;
@@ -115,7 +115,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	public abstract static class ItemTagProvider extends FabricTagProvider<Item> {
 		@Nullable
-		private final Function<TagKey<Block>, Builder> blockTagBuilderProvider;
+		private final Function<TagKey<Block>, TagBuilder> blockTagBuilderProvider;
 
 		/**
 		 * Construct an {@link ItemTagProvider} tag provider <b>with</b> an associated {@link BlockTagProvider} tag provider.
@@ -148,8 +148,8 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @param itemTag The item tag to copy to.
 		 */
 		public void copy(TagKey<Block> blockTag, TagKey<Item> itemTag) {
-			Builder blockTagBuilder = Objects.requireNonNull(this.blockTagBuilderProvider, "Pass Block tag provider via constructor to use copy").apply(blockTag);
-			Builder itemTagBuilder = this.getTagBuilder(itemTag);
+			TagBuilder blockTagBuilder = Objects.requireNonNull(this.blockTagBuilderProvider, "Pass Block tag provider via constructor to use copy").apply(blockTag);
+			TagBuilder itemTagBuilder = this.getTagBuilder(itemTag);
 			blockTagBuilder.build().stream().filter((entry) -> entry.canAdd(this.registry::containsId, (id) -> true)).forEach(itemTagBuilder::add);
 		}
 	}
@@ -324,7 +324,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @return the {@link FabricTagBuilder} instance
 		 */
 		public FabricTagBuilder<T> forceAddTag(TagKey<T> tag) {
-			builder.add(new ForcedTagEntry(TagEntry.method_43937(tag.id())));
+			builder.add(new ForcedTagEntry(TagEntry.create(tag.id())));
 			return this;
 		}
 
