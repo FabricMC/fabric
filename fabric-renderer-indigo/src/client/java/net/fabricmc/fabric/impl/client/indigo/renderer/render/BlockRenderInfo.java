@@ -26,7 +26,7 @@ import net.minecraft.client.render.RenderLayers;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
-import net.minecraft.util.math.random.AbstractRandom;
+import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 
@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
  */
 public class BlockRenderInfo {
 	private final BlockColors blockColorMap = MinecraftClient.getInstance().getBlockColors();
-	private final AbstractRandom random = AbstractRandom.createAtomic();
+	private final Random random = Random.create();
 	public BlockRenderView blockView;
 	public BlockPos blockPos;
 	public BlockState blockState;
@@ -47,8 +47,8 @@ public class BlockRenderInfo {
 	boolean defaultAo;
 	RenderLayer defaultLayer;
 
-	public final Supplier<AbstractRandom> randomSupplier = () -> {
-		final AbstractRandom result = random;
+	public final Supplier<Random> randomSupplier = () -> {
+		final Random result = random;
 		long seed = this.seed;
 
 		if (seed == -1L) {

@@ -13,5 +13,7 @@
   "piglin_safe" : false,
   "height": 256,
   "min_y": 0,
-  "effects": "fabric_dimension:void"
+  "effects": "fabric_dimension:void",
+  "monster_spawn_block_light_limit": 15,
+  "monster_spawn_light_level": 15
 }

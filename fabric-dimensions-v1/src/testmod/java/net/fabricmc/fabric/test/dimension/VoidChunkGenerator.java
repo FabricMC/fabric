@@ -52,7 +52,7 @@ public class VoidChunkGenerator extends ChunkGenerator {
 	private final Registry<Biome> biomeRegistry;
 
 	public VoidChunkGenerator(Registry<StructureSet> registry, Registry<Biome> biomeRegistry) {
-		super(registry, Optional.empty(), new FixedBiomeSource(biomeRegistry.method_44298(BiomeKeys.PLAINS)));
+		super(registry, Optional.empty(), new FixedBiomeSource(biomeRegistry.getOrCreateEntry(BiomeKeys.PLAINS)));
 		this.biomeRegistry = biomeRegistry;
 	}
 

@@ -19,7 +19,7 @@ package net.fabricmc.fabric.test.object.builder;
 import net.minecraft.entity.Entity;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOffers;
-import net.minecraft.util.math.random.AbstractRandom;
+import net.minecraft.util.math.random.Random;
 
 class SimpleTradeFactory implements TradeOffers.Factory {
 	private final TradeOffer offer;
@@ -29,7 +29,7 @@ class SimpleTradeFactory implements TradeOffers.Factory {
 	}
 
 	@Override
-	public TradeOffer create(Entity entity, AbstractRandom random) {
+	public TradeOffer create(Entity entity, Random random) {
 		// ALWAYS supply a copy of the offer.
 		return new TradeOffer(this.offer.toNbt());
 	}

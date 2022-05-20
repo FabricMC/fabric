@@ -26,6 +26,8 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
+import net.minecraft.util.math.random.CheckedRandom;
+import net.minecraft.util.math.random.ChunkRandom;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
@@ -33,8 +35,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
-import net.minecraft.util.math.random.AtomicSimpleRandom;
-import net.minecraft.util.math.random.ChunkRandom;
 
 /**
  * Internal data for modding Vanilla's {@link TheEndBiomeSource}.
@@ -162,7 +162,7 @@ public final class TheEndBiomeData {
 				Long seed = Overrides.seed.get();
 				if (seed == null) throw new IllegalStateException("seed isn't set, ChunkGenerator hook not working?");
 
-				ret = new PerlinNoiseSampler(new ChunkRandom(new AtomicSimpleRandom(seed)));
+				ret = new PerlinNoiseSampler(new ChunkRandom(new CheckedRandom(seed)));
 				samplers.put(noise, ret);
 			}
 

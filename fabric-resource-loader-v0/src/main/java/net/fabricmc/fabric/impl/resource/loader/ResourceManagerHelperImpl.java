@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
@@ -61,13 +60,17 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	 * @param id             the identifier of the resource pack
 	 * @param subPath        the sub path in the mod resources
 	 * @param container      the mod container
+	 * @param displayName    the display name of the resource pack
 	 * @param activationType the activation type of the resource pack
 	 * @return {@code true} if successfully registered the resource pack, else {@code false}
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, String, ResourcePackActivationType)
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
 	 */
-	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, ResourcePackActivationType activationType) {
-		String name = id.getNamespace() + "/" + id.getPath();
+	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, String displayName, ResourcePackActivationType activationType) {
+		String separator = container.getRootPath().getFileSystem().getSeparator();
+		subPath = subPath.replace("/", separator);
+		String name = displayName;
 		ModNioResourcePack resourcePack = ModNioResourcePack.create(name, container, subPath, ResourceType.CLIENT_RESOURCES, activationType);
 		ModNioResourcePack dataPack = ModNioResourcePack.create(name, container, subPath, ResourceType.SERVER_DATA, activationType);
 		if (resourcePack == null && dataPack == null) return false;
@@ -83,6 +86,22 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		return true;
 	}
 
+	/**
+	 * Registers a built-in resource pack. Internal implementation.
+	 *
+	 * @param id             the identifier of the resource pack
+	 * @param subPath        the sub path in the mod resources
+	 * @param container      the mod container
+	 * @param activationType the activation type of the resource pack
+	 * @return {@code true} if successfully registered the resource pack, else {@code false}
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, String, ResourcePackActivationType)
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
+	 */
+	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, ResourcePackActivationType activationType) {
+		return registerBuiltinResourcePack(id, subPath, container, id.getNamespace() + "/" + id.getPath(), activationType);
+	}
+
 	public static void registerBuiltinResourcePacks(ResourceType resourceType, Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
 		// Loop through each registered built-in resource packs and add them if valid.
 		for (Pair<String, ModNioResourcePack> entry : builtinResourcePacks) {
@@ -93,7 +112,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 				// Make the resource pack profile for built-in pack, should never be always enabled.
 				ResourcePackProfile profile = ResourcePackProfile.of(entry.getLeft(),
 						pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED,
-						entry::getRight, factory, ResourcePackProfile.InsertionPosition.TOP, ResourcePackSource.PACK_SOURCE_BUILTIN);
+						entry::getRight, factory, ResourcePackProfile.InsertionPosition.TOP, new BuiltinModResourcePackSource(pack.getFabricModMetadata().getId()));
 				if (profile != null) {
 					consumer.accept(profile);
 				}

@@ -26,7 +26,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
-import net.minecraft.util.math.random.AbstractRandom;
+import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -42,7 +42,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
  */
 public interface FabricBakedModel {
 	/**
-	 * When true, signals renderer this producer is implemented through {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, AbstractRandom)}.
+	 * When true, signals renderer this producer is implemented through {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)}.
 	 * Also means the model does not rely on any non-vanilla features.
 	 * Allows the renderer to optimize or route vanilla models through the unmodified vanilla pipeline if desired.
 	 *
@@ -64,7 +64,7 @@ public interface FabricBakedModel {
 	 * <p>Also called to render block models outside of chunk rebuild or block entity rendering.
 	 * Typically this happens when the block is being rendered as an entity, not as a block placed in the world.
 	 * Currently this happens for falling blocks and blocks being pushed by a piston, but renderers
-	 * should invoke this for all calls to {@link BlockModelRenderer#render(BlockRenderView, BakedModel, BlockState, BlockPos, MatrixStack, VertexConsumer, boolean, AbstractRandom, long, int)}
+	 * should invoke this for all calls to {@link BlockModelRenderer#render(BlockRenderView, BakedModel, BlockState, BlockPos, MatrixStack, VertexConsumer, boolean, Random, long, int)}
 	 * that occur outside of chunk rebuilds to allow for features added by mods, unless
 	 * {@link #isVanillaAdapter()} returns true.
 	 *
@@ -78,7 +78,7 @@ public interface FabricBakedModel {
 	 * neighboring blocks (if appropriate).  Models only need to consider "sides" to the
 	 * extent the model is driven by connection with neighbor blocks or other world state.
 	 *
-	 * <p>Note: with {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, AbstractRandom)}, the random
+	 * <p>Note: with {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)}, the random
 	 * parameter is normally initialized with the same seed prior to each face layer.
 	 * Model authors should note this method is called only once per block, and call the provided
 	 * Random supplier multiple times if re-seeding is necessary. For wrapped vanilla baked models,
@@ -94,7 +94,7 @@ public interface FabricBakedModel {
 	 * Will not be thread-safe. Do not cache or retain a reference.
 	 * @param context Accepts model output.
 	 */
-	void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<AbstractRandom> randomSupplier, RenderContext context);
+	void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context);
 
 	/**
 	 * This method will be called during item rendering to generate both the static and
@@ -123,5 +123,5 @@ public interface FabricBakedModel {
 	 * logic here, instead of returning every possible shape from {@link BakedModel#getOverrides}
 	 * as vanilla baked models.
 	 */
-	void emitItemQuads(ItemStack stack, Supplier<AbstractRandom> randomSupplier, RenderContext context);
+	void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context);
 }
