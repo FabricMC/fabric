@@ -81,9 +81,9 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 				} else {
 					amount += insertedAmount;
 				}
-			}
 
-			return insertedAmount;
+				return insertedAmount;
+			}
 		}
 
 		return 0;
@@ -103,9 +103,9 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 				if (amount == 0) {
 					variant = getBlankVariant();
 				}
-			}
 
-			return extractedAmount;
+				return extractedAmount;
+			}
 		}
 
 		return 0;
