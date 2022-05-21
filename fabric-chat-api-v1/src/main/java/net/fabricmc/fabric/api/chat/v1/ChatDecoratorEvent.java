@@ -48,8 +48,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <pre><code>
  * ChatDecoratorEvent.EVENT.register(ChatDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
- *     // Add smiley face. Has to shallowCopy() to get a MutableText with siblings and styles.
- *     return message.shallowCopy().append(" :)");
+ *     // Add smiley face. Has to copy() to get a MutableText with siblings and styles.
+ *     return message.copy().append(" :)");
  * });
  * </code></pre>
  *
@@ -60,7 +60,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *     // Apply orange color to messages sent by server operators
  *     if (sender != null && sender.server.getPlayerManager().isOperator(sender.getGameProfile())) {
  *         return CompletableFuture.completedFuture(
- *             message.shallowCopy().styled(style -> style.withColor(0xFFA500)));
+ *             message.copy().styled(style -> style.withColor(0xFFA500)));
  *     }
  *     return CompletableFuture.completedFuture(message);
  * });
