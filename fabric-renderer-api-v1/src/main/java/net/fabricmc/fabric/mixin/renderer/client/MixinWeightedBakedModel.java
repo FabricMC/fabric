@@ -35,7 +35,7 @@ import net.minecraft.util.collection.Weighted;
 import net.minecraft.util.collection.Weighting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
-import net.minecraft.util.math.random.AbstractRandom;
+import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -67,7 +67,7 @@ public class MixinWeightedBakedModel implements FabricBakedModel {
 	}
 
 	@Override
-	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<AbstractRandom> randomSupplier, RenderContext context) {
+	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
 		Weighted.Present<BakedModel> selected = Weighting.getAt(this.models, Math.abs((int) randomSupplier.get().nextLong()) % this.totalWeight).orElse(null);
 
 		if (selected != null) {
@@ -76,7 +76,7 @@ public class MixinWeightedBakedModel implements FabricBakedModel {
 	}
 
 	@Override
-	public void emitItemQuads(ItemStack stack, Supplier<AbstractRandom> randomSupplier, RenderContext context) {
+	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
 		Weighted.Present<BakedModel> selected = Weighting.getAt(this.models, Math.abs((int) randomSupplier.get().nextLong()) % this.totalWeight).orElse(null);
 
 		if (selected != null) {

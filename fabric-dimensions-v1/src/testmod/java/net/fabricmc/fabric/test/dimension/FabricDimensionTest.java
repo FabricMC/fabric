@@ -40,27 +40,18 @@ import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public class FabricDimensionTest implements ModInitializer {
 	// The dimension options refer to the JSON-file in the dimension subfolder of the datapack,
 	// which will always share it's ID with the world that is created from it
-	private static final RegistryKey<DimensionOptions> DIMENSION_KEY = RegistryKey.of(
-			Registry.DIMENSION_KEY,
-			new Identifier("fabric_dimension", "void")
-	);
+	private static final RegistryKey<DimensionOptions> DIMENSION_KEY = RegistryKey.of(Registry.DIMENSION_KEY, new Identifier("fabric_dimension", "void"));
 
-	private static RegistryKey<World> WORLD_KEY = RegistryKey.of(
-			Registry.WORLD_KEY,
-			DIMENSION_KEY.getValue()
-	);
+	private static RegistryKey<World> WORLD_KEY = RegistryKey.of(Registry.WORLD_KEY, DIMENSION_KEY.getValue());
 
-	private static final RegistryKey<DimensionType> DIMENSION_TYPE_KEY = RegistryKey.of(
-			Registry.DIMENSION_TYPE_KEY,
-			new Identifier("fabric_dimension", "void_type")
-	);
+	private static final RegistryKey<DimensionType> DIMENSION_TYPE_KEY = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, new Identifier("fabric_dimension", "void_type"));
 
 	@Override
 	public void onInitialize() {
@@ -99,9 +90,8 @@ public class FabricDimensionTest implements ModInitializer {
 			if (!teleported.getPos().equals(target.position)) throw new AssertionError("Target Position not reached.");
 		});
 
-		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) ->
-				dispatcher.register(literal("fabric_dimension_test").executes(FabricDimensionTest.this::swapTargeted))
-		);
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("fabric_dimension_test")
+				.executes(FabricDimensionTest.this::swapTargeted)));
 	}
 
 	private int swapTargeted(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {

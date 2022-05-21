@@ -85,7 +85,7 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 
 	@Override
 	public boolean isResourceBlank() {
-		return getResource().isBlank();
+		return getStack().isEmpty();
 	}
 
 	@Override
@@ -123,9 +123,9 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 				}
 
 				setStack(currentStack);
-			}
 
-			return insertedAmount;
+				return insertedAmount;
+			}
 		}
 
 		return 0;
@@ -145,9 +145,9 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 				currentStack = getStack();
 				currentStack.decrement(extracted);
 				setStack(currentStack);
-			}
 
-			return extracted;
+				return extracted;
+			}
 		}
 
 		return 0;
