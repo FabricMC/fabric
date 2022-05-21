@@ -67,6 +67,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * </code></pre>
  */
 public final class ChatDecoratorEvent {
+	private ChatDecoratorEvent() {
+	}
+
 	/**
 	 * The content phase of the event, passed when registering a chat decorator. Use this when
 	 * the chat decorator modifies the text content of the message.
