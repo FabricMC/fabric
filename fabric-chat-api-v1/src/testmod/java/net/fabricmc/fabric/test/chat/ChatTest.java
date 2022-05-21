@@ -22,6 +22,7 @@ import java.util.concurrent.Executor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.random.Random;
 
@@ -80,6 +81,21 @@ public class ChatTest implements ModInitializer {
 		);
 		ServerChatEvents.SEND_COMMAND_MESSAGE.register(
 				(message, source, typeKey) -> LOGGER.info("ChatTest: command sent \"{}\"", message)
+		);
+
+		// ServerChatEvents blocking
+		ServerChatEvents.ALLOW_CHAT_MESSAGE.register(
+				(message, sender, typeKey) -> !message.raw().getContent().getString().contains("sadtater")
+		);
+		ServerChatEvents.ALLOW_GAME_MESSAGE.register((message, typeKey) -> {
+			if (message.getContent() instanceof TranslatableTextContent translatable) {
+				return !translatable.getKey().startsWith("death.");
+			}
+
+			return true;
+		});
+		ServerChatEvents.ALLOW_COMMAND_MESSAGE.register(
+				(message, source, typeKey) -> !message.raw().getContent().getString().contains("sadtater")
 		);
 	}
 }

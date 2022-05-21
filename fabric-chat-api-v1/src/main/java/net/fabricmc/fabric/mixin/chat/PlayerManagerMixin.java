@@ -36,18 +36,33 @@ import net.fabricmc.fabric.api.chat.v1.ServerChatEvents;
 
 @Mixin(PlayerManager.class)
 public class PlayerManagerMixin {
-	@Inject(method = "broadcast(Lnet/minecraft/server/filter/Message;Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/util/registry/RegistryKey;)V", at = @At("HEAD"))
+	@Inject(method = "broadcast(Lnet/minecraft/server/filter/Message;Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/util/registry/RegistryKey;)V", at = @At("HEAD"), cancellable = true)
 	private void onSendChatMessage(Message<SignedChatMessage> message, ServerPlayerEntity sender, RegistryKey<MessageType> typeKey, CallbackInfo ci) {
+		if (!ServerChatEvents.ALLOW_CHAT_MESSAGE.invoker().allowChatMessage(message, sender, typeKey)) {
+			ci.cancel();
+			return;
+		}
+
 		ServerChatEvents.SEND_CHAT_MESSAGE.invoker().onSendChatMessage(message, sender, typeKey);
 	}
 
-	@Inject(method = "broadcast(Lnet/minecraft/text/Text;Ljava/util/function/Function;Lnet/minecraft/util/registry/RegistryKey;)V", at = @At("HEAD"))
+	@Inject(method = "broadcast(Lnet/minecraft/text/Text;Ljava/util/function/Function;Lnet/minecraft/util/registry/RegistryKey;)V", at = @At("HEAD"), cancellable = true)
 	private void onSendGameMessage(Text message, Function<ServerPlayerEntity, Text> playerMessageFactory, RegistryKey<MessageType> typeKey, CallbackInfo ci) {
+		if (!ServerChatEvents.ALLOW_GAME_MESSAGE.invoker().allowGameMessage(message, typeKey)) {
+			ci.cancel();
+			return;
+		}
+
 		ServerChatEvents.SEND_GAME_MESSAGE.invoker().onSendGameMessage(message, typeKey);
 	}
 
-	@Inject(method = "method_44166", at = @At("HEAD"))
+	@Inject(method = "method_44166", at = @At("HEAD"), cancellable = true)
 	private void onSendCommandMessage(Message<SignedChatMessage> message, ServerCommandSource source, RegistryKey<MessageType> typeKey, CallbackInfo ci) {
+		if (!ServerChatEvents.ALLOW_COMMAND_MESSAGE.invoker().allowCommandMessage(message, source, typeKey)) {
+			ci.cancel();
+			return;
+		}
+
 		ServerChatEvents.SEND_COMMAND_MESSAGE.invoker().onSendCommandMessage(message, source, typeKey);
 	}
 }
