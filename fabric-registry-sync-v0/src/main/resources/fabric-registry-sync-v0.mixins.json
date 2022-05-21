@@ -16,13 +16,6 @@
     "MixinSimpleRegistry",
     "MixinStructuresToConfiguredStructuresFix"
   ],
-  "client": [
-    "client.MixinBlockColorMap",
-    "client.MixinItemColorMap",
-    "client.MixinItemModelMap",
-    "client.MixinMinecraftClient",
-    "client.MixinParticleManager"
-  ],
   "injectors": {
     "defaultRequire": 1
   }

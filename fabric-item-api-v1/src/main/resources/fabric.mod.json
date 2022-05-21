@@ -16,7 +16,11 @@
     "FabricMC"
   ],
   "mixins": [
-    "fabric-item-api-v1.mixins.json"
+    "fabric-item-api-v1.mixins.json",
+    {
+      "config": "fabric-item-api-v1.client.mixins.json",
+      "environment": "client"
+    }
   ],
   "depends": {
     "fabricloader": ">=0.4.0",

@@ -5,10 +5,6 @@
   "mixins": [
     "MixinItemGroup"
   ],
-  "client": [
-    "client.MixinItemGroup",
-    "client.MixinCreativePlayerInventoryGui"
-  ],
   "injectors": {
     "defaultRequire": 1
   }

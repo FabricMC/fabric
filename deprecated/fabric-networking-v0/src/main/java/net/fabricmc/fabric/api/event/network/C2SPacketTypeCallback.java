@@ -21,7 +21,6 @@ import java.util.Collection;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.networking.v1.S2CPlayChannelEvents;
@@ -38,7 +37,7 @@ import net.fabricmc.fabric.api.networking.v1.S2CPlayChannelEvents;
 @Deprecated
 public interface C2SPacketTypeCallback {
 	/**
-	 * @deprecated Please migrate to {@link C2SPlayChannelEvents#REGISTER}.
+	 * @deprecated Please migrate to {@link net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents#REGISTER}.
 	 */
 	@Deprecated
 	Event<C2SPacketTypeCallback> REGISTERED = EventFactory.createArrayBacked(
@@ -51,7 +50,7 @@ public interface C2SPacketTypeCallback {
 	);
 
 	/**
-	 * @deprecated Please migrate to {@link C2SPlayChannelEvents#UNREGISTER}.
+	 * @deprecated Please migrate to {@link net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents#UNREGISTER}.
 	 */
 	@Deprecated
 	Event<C2SPacketTypeCallback> UNREGISTERED = EventFactory.createArrayBacked(

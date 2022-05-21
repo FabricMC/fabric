@@ -23,7 +23,11 @@
   "description": "Adds command-related hooks.",
   "accessWidener": "fabric-command-api-v2.accesswidener",
   "mixins": [
-    "fabric-command-api-v2.mixins.json"
+    "fabric-command-api-v2.mixins.json",
+    {
+      "config": "fabric-command-api-v2.client.mixins.json",
+      "environment": "client"
+    }
   ],
   "custom": {
     "fabric-api:module-lifecycle": "stable"
