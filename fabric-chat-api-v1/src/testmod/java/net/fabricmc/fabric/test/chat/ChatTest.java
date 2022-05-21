@@ -19,13 +19,19 @@ package net.fabricmc.fabric.test.chat;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.util.Util;
 import net.minecraft.util.math.random.AbstractRandom;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.chat.v1.ChatDecoratorEvent;
+import net.fabricmc.fabric.api.chat.v1.ServerChatEvents;
 
 public class ChatTest implements ModInitializer {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ChatTest.class);
+
 	@Override
 	public void onInitialize() {
 		AbstractRandom random = AbstractRandom.create();
@@ -65,5 +71,16 @@ public class ChatTest implements ModInitializer {
 
 			return CompletableFuture.completedFuture(message);
 		});
+
+		// ServerChatEvents
+		ServerChatEvents.SEND_CHAT_MESSAGE.register(
+				(message, sender, typeKey) -> LOGGER.info("ChatTest: {} sent \"{}\"", sender, message)
+		);
+		ServerChatEvents.SEND_GAME_MESSAGE.register(
+				(message, typeKey) -> LOGGER.info("ChatTest: server sent \"{}\"", message)
+		);
+		ServerChatEvents.SEND_COMMAND_MESSAGE.register(
+				(message, source, typeKey) -> LOGGER.info("ChatTest: command sent \"{}\"", message)
+		);
 	}
 }
