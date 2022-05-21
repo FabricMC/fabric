@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.util.Util;
-import net.minecraft.util.math.random.AbstractRandom;
+import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.chat.v1.ChatDecoratorEvent;
@@ -34,7 +34,6 @@ public class ChatTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		AbstractRandom random = AbstractRandom.create();
 		Executor ioWorkerExecutor = Util.getIoWorkerExecutor();
 
 		// Basic content phase testing
@@ -60,7 +59,7 @@ public class ChatTest implements ModInitializer {
 			if (message.getString().contains("wait")) {
 				return CompletableFuture.supplyAsync(() -> {
 					try {
-						Thread.sleep(random.nextBetween(500, 2000));
+						Thread.sleep(Random.create().nextBetween(500, 2000));
 					} catch (InterruptedException ignored) {
 						// Ignore interruption
 					}
