@@ -147,6 +147,11 @@ allprojects {
 		it.options.release = 17
 	}
 
+	java {
+		// Must be added before the split source sets are setup.
+		withSourcesJar()
+	}
+
 	loom {
 		splitEnvironmentSourceSets()
 	}
@@ -218,10 +223,6 @@ allprojects {
 		java {
 			licenseHeaderFile(rootProject.file("HEADER"))
 		}
-	}
-
-	java {
-		withSourcesJar()
 	}
 
 	checkstyle {
