@@ -18,6 +18,9 @@ package net.fabricmc.fabric.api.chat.v1;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ChatDecorator;
 import net.minecraft.text.Text;
@@ -86,16 +89,23 @@ public final class ChatDecoratorEvent {
 
 		for (ChatDecorator decorator : decorators) {
 			if (future == null) {
-				future = decorator.decorate(sender, message).thenApply(ChatDecoratorEvent::validateDecoratorResult);
+				future = decorator.decorate(sender, message).handle((decorated, throwable) -> handle(decorated, throwable, decorator));
 			} else {
-				future = future.thenCompose((decorated) -> decorator.decorate(sender, decorated).thenApply(ChatDecoratorEvent::validateDecoratorResult));
+				future = future.thenCompose((decorated) -> decorator.decorate(sender, decorated).handle((newlyDecorated, throwable) -> handle(newlyDecorated, throwable, decorator)));
 			}
 		}
 
 		return future == null ? CompletableFuture.completedFuture(message) : future;
 	}, CONTENT_PHASE, Event.DEFAULT_PHASE, STYLING_PHASE);
 
-	private static <T extends Text> T validateDecoratorResult(T value) {
-		return Objects.requireNonNull(value, "chat decorator must not return null");
+	private static <T extends Text> T handle(T decorated, @Nullable Throwable throwable, ChatDecorator decorator) {
+		String decoratorName = decorator.getClass().getName();
+
+		if (throwable != null) {
+			if (throwable instanceof CompletionException) throwable = throwable.getCause();
+			throw new CompletionException("chat decorator %s failed".formatted(decoratorName), throwable);
+		}
+
+		return Objects.requireNonNull(decorated, "chat decorator %s returned null".formatted(decoratorName));
 	}
 }
