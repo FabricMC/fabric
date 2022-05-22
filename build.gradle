@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.12.27" apply false
+	id "fabric-loom" version "0.12.38" apply false
 	id "com.diffplug.spotless" version "6.5.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -63,9 +63,15 @@ def getBranch() {
 
 def moduleDependencies(project, List<String> depNames) {
 	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'namedElements') }
+	def clientOutputs = depNames.iterator().collect { findProject(":$it").sourceSets.client.output }
+
 	project.dependencies {
 		deps.each {
 			api it
+		}
+
+		clientOutputs.each {
+			clientImplementation it
 		}
 	}
 
@@ -84,6 +90,21 @@ def moduleDependencies(project, List<String> depNames) {
 					}
 				}
 			}
+		}
+	}
+}
+
+def testDependencies(project, List<String> depNames) {
+	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'namedElements') }
+	def clientOutputs = depNames.iterator().collect { findProject(":$it").sourceSets.client.output }
+
+	project.dependencies {
+		deps.each {
+			testmodImplementation it
+		}
+
+		clientOutputs.each {
+			testmodImplementation it
 		}
 	}
 }
@@ -126,10 +147,22 @@ allprojects {
 		it.options.release = 17
 	}
 
+	java {
+		// Must be added before the split source sets are setup.
+		withSourcesJar()
+	}
+
+	loom {
+		splitEnvironmentSourceSets()
+	}
+
 	sourceSets {
 		testmod {
 			compileClasspath += main.compileClasspath
 			runtimeClasspath += main.runtimeClasspath
+
+			compileClasspath += client.compileClasspath
+			runtimeClasspath += client.runtimeClasspath
 		}
 	}
 
@@ -152,17 +185,33 @@ allprojects {
 		}
 	}
 
+	allprojects.each { p ->
+		if (project.name == "deprecated") return
+
+		loom.mods.register(p.name) {
+			sourceSet p.sourceSets.main
+			sourceSet p.sourceSets.client
+		}
+
+		loom.mods.register(p.name + "-testmod") {
+			sourceSet p.sourceSets.testmod
+		}
+	}
+
 	dependencies {
 		minecraft "com.mojang:minecraft:$rootProject.minecraft_version"
 		mappings "net.fabricmc:yarn:${rootProject.minecraft_version}${project.yarn_version}:v2"
 		modApi "net.fabricmc:fabric-loader:${project.loader_version}"
+
+		testmodImplementation sourceSets.main.output
+		testmodImplementation sourceSets.client.output
 	}
 
 	loom {
 		shareRemapCaches = true
 	}
 
-	processResources {
+	tasks.withType(ProcessResources).configureEach {
 		inputs.property "version", project.version
 
 		filesMatching("fabric.mod.json") {
@@ -174,10 +223,6 @@ allprojects {
 		java {
 			licenseHeaderFile(rootProject.file("HEADER"))
 		}
-	}
-
-	java {
-		withSourcesJar()
 	}
 
 	checkstyle {
@@ -200,6 +245,19 @@ allprojects {
 	task generateResources {
 		group = "fabric"
 	}
+
+	task testmodJar(type: Jar) {
+		from sourceSets.testmod.output
+		destinationDirectory = new File(project.buildDir, "devlibs")
+		archiveClassifier = "testmod"
+	}
+
+	task remapTestmodJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: testmodJar) {
+		input = testmodJar.archiveFile
+		archiveClassifier = "testmod"
+		addNestedDependencies = false
+	}
+	build.dependsOn remapTestmodJar
 }
 
 // Apply auxiliary buildscripts to submodules
@@ -226,10 +284,13 @@ javadoc {
 	}
 
 	allprojects.each {
+		if (it.name == "deprecated") return
+
 		source(it.sourceSets.main.allJava.srcDirs)
+		source(it.sourceSets.client.allJava.srcDirs)
 	}
 
-	classpath = sourceSets.main.compileClasspath
+	classpath = files(sourceSets.main.compileClasspath, sourceSets.client.compileClasspath)
 	include("**/api/**")
 	failOnError false
 }
@@ -305,9 +366,12 @@ subprojects {
 
 	afterEvaluate {
 		// Disable the gen sources task on sub projects
-		genSourcesWithFernFlower.enabled = false
-		genSourcesWithCfr.enabled = false
-		unpickJar.enabled = false
+		genClientOnlySourcesWithFernFlower.enabled = false
+		genClientOnlySourcesWithCfr.enabled = false
+		genCommonSourcesWithCfr.enabled = false
+		genCommonSourcesWithFernFlower.enabled = false
+		unpickClientOnlyJar.enabled = false
+		unpickCommonJar.enabled = false
 	}
 }
 
@@ -395,6 +459,7 @@ dependencies {
 			if (it.name == "deprecated") return
 
 			api project(path: "${it.path}", configuration: "namedElements")
+			clientImplementation project("${it.path}:").sourceSets.client.output
 
 			testmodImplementation project("${it.path}:").sourceSets.testmod.output
 		}

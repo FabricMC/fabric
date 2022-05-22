@@ -27,7 +27,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
@@ -37,7 +36,7 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAc
  * <p>Server-side networking functionalities include receiving serverbound query responses and sending clientbound query requests.
  *
  * @see ServerPlayNetworking
- * @see ClientLoginNetworking
+ * @see net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking
  */
 public final class ServerLoginNetworking {
 	/**

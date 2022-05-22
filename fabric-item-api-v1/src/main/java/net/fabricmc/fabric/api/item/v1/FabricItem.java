@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.item.v1;
 import com.google.common.collect.Multimap;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -42,7 +41,7 @@ public interface FabricItem {
 	 * This function is called on the client side when the NBT or count of the stack has changed, but not the item,
 	 * and returning false cancels this animation.
 	 *
-	 * @param player   the current player; this may be safely cast to {@link ClientPlayerEntity} in client-only code
+	 * @param player   the current player; this may be safely cast to {@link net.minecraft.client.network.ClientPlayerEntity} in client-only code
 	 * @param hand     the hand; this function applies both to the main hand and the off hand
 	 * @param oldStack the previous stack, of this item
 	 * @param newStack the new stack, also of this item

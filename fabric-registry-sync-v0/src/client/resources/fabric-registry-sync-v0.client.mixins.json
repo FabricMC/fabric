@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.registry.sync.client",
+  "compatibilityLevel": "JAVA_16",
+  "client": [
+    "MixinBlockColorMap",
+    "MixinItemColorMap",
+    "MixinItemModelMap",
+    "MixinMinecraftClient",
+    "MixinParticleManager"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -10,11 +10,6 @@
     "IntRuleAccessor",
     "RuleKeyMixin"
   ],
-  "client": [
-    "client.EditGameRulesScreenAccessor",
-    "client.RuleListWidgetMixin",
-    "client.RuleListWidgetVisitorMixin"
-  ],
   "injectors": {
     "defaultRequire": 1
   }

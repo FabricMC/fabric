@@ -14,12 +14,6 @@
     "accessor.ServerLoginNetworkHandlerAccessor",
     "accessor.ThreadedAnvilChunkStorageAccessor"
   ],
-  "client": [
-    "accessor.ConnectScreenAccessor",
-    "accessor.MinecraftClientAccessor",
-    "client.ClientLoginNetworkHandlerMixin",
-    "client.ClientPlayNetworkHandlerMixin"
-  ],
   "injectors": {
     "defaultRequire": 1
   }

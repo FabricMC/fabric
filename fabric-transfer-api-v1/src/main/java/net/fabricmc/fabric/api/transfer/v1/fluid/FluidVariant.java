@@ -24,7 +24,6 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 
@@ -33,7 +32,7 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
  *
  * <p>Do not extend this class. Use {@link #of(Fluid)} and {@link #of(Fluid, NbtCompound)} to create instances.
  *
- * <p>{@link FluidVariantRendering} can be used for client-side rendering of fluid variants.
+ * <p>{@link net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering} can be used for client-side rendering of fluid variants.
  *
  * <p><b>Fluid variants must always be compared with {@link #equals}, never by reference!</b>
  * {@link #hashCode} is guaranteed to be correct and constant time independently of the size of the NBT.

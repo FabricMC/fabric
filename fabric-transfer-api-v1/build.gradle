@@ -9,8 +9,8 @@ moduleDependencies(project, [
 	'fabric-textures-v0' // transitive dependency of Rendering Fluids
 ])
 
-dependencies {
-	testmodImplementation project(path: ':fabric-object-builder-api-v1', configuration: 'namedElements')
-	testmodImplementation project(path: ':fabric-rendering-v1', configuration: 'namedElements')
-	testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
-}
+testDependencies(project, [
+	':fabric-object-builder-api-v1',
+	':fabric-rendering-v1',
+	':fabric-resource-loader-v0'
+])

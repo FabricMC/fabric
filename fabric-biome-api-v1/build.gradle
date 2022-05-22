@@ -5,7 +5,7 @@ loom {
     accessWidenerPath = file("src/main/resources/fabric-biome-api-v1.accesswidener")
 }
 
-dependencies {
-	testmodImplementation project(path: ':fabric-api-base', configuration: 'namedElements')
-	testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
-}
+testDependencies(project, [
+	':fabric-api-base',
+	':fabric-resource-loader-v0'
+])

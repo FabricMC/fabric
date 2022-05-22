@@ -1,11 +1,11 @@
 archivesBaseName = "fabric-resource-loader-v0"
 version = getSubprojectVersion(project)
 
-dependencies {
-	testmodImplementation project(path: ':fabric-lifecycle-events-v1', configuration: 'namedElements')
-	testmodImplementation project(path: ':fabric-api-base', configuration: 'namedElements')
-}
-
 loom {
 	accessWidenerPath = file("src/main/resources/fabric-resource-loader-v0.accesswidener")
 }
+
+testDependencies(project, [
+	':fabric-lifecycle-events-v1',
+	':fabric-api-base'
+])
