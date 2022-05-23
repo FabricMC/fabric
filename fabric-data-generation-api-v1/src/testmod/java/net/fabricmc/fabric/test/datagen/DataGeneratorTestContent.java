@@ -34,11 +34,13 @@ public class DataGeneratorTestContent implements ModInitializer {
 
 	public static Block SIMPLE_BLOCK;
 	public static Block BLOCK_WITHOUT_ITEM;
+	public static Block BLOCK_WITHOUT_LOOT_TABLE;
 
 	@Override
 	public void onInitialize() {
 		SIMPLE_BLOCK = createBlock("simple_block", true);
 		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false);
+		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false);
 	}
 
 	private static Block createBlock(String name, boolean hasItem) {
