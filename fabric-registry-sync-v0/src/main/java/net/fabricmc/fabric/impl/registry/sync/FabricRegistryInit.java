@@ -124,11 +124,11 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(Registry.CAT_VARIANT)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Uses a data tracker (and thus, raw IDs) to sync cat entities to the client
+		// Uses a data tracker (and thus, raw IDs) to sync frog entities to the client
 		RegistryAttributeHolder.get(Registry.FROG_VARIANT)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Uses a data tracker (and thus, raw IDs) to sync cat entities to the client
+		// Uses a data tracker (and thus, raw IDs) to sync painting entities to the client
 		RegistryAttributeHolder.get(Registry.PAINTING_VARIANT)
 				.addAttribute(RegistryAttribute.SYNCED);
 
