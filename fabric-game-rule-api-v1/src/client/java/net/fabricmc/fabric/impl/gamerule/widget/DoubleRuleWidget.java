@@ -39,7 +39,7 @@ public final class DoubleRuleWidget extends EditGameRulesScreen.NamedRuleWidget 
 		EditGameRulesScreenAccessor accessor = (EditGameRulesScreenAccessor) gameRuleScreen;
 
 		this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 10, 5, 42, 20,
-				name.shallowCopy()
+				name.copy()
 				.append("\n")
 				.append(ruleName)
 				.append("\n")
