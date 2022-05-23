@@ -120,6 +120,22 @@ public class FabricRegistryInit implements ModInitializer {
 		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.STRUCTURE_POOL_ELEMENT);
 
+		// Uses a data tracker (and thus, raw IDs) to sync cat entities to the client
+		RegistryAttributeHolder.get(Registry.CAT_VARIANT)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		// Uses a data tracker (and thus, raw IDs) to sync cat entities to the client
+		RegistryAttributeHolder.get(Registry.FROG_VARIANT)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		// Uses a data tracker (and thus, raw IDs) to sync cat entities to the client
+		RegistryAttributeHolder.get(Registry.PAINTING_VARIANT)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		//  Uses the raw ID when syncing the command tree to the client
+		RegistryAttributeHolder.get(Registry.COMMAND_ARGUMENT_TYPE)
+				.addAttribute(RegistryAttribute.SYNCED);
+
 		// Synced in OpenScreenS2CPacket
 		RegistryAttributeHolder.get(Registry.SCREEN_HANDLER)
 				.addAttribute(RegistryAttribute.SYNCED);
