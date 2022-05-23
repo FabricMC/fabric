@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.chat;
+package net.fabricmc.fabric.test.message;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -27,8 +27,8 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.chat.v1.ChatDecoratorEvent;
-import net.fabricmc.fabric.api.chat.v1.ServerChatEvents;
+import net.fabricmc.fabric.api.message.v1.ChatDecoratorEvent;
+import net.fabricmc.fabric.api.message.v1.ServerChatEvents;
 
 public class ChatTest implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChatTest.class);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.chat.v1;
+package net.fabricmc.fabric.api.message.v1;
 
 import net.minecraft.network.MessageType;
 import net.minecraft.network.encryption.SignedChatMessage;

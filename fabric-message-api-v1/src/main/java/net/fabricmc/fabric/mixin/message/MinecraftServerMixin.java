@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.chat;
+package net.fabricmc.fabric.mixin.message;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.network.ChatDecorator;
 import net.minecraft.server.MinecraftServer;
 
-import net.fabricmc.fabric.api.chat.v1.ChatDecoratorEvent;
+import net.fabricmc.fabric.api.message.v1.ChatDecoratorEvent;
 
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin {

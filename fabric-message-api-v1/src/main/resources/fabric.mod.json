@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-chat-api-v1",
-  "name": "Fabric Chat API (v1)",
+  "id": "fabric-message-api-v1",
+  "name": "Fabric Message API (v1)",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-chat-api-v1/icon.png",
+  "icon": "assets/fabric-message-api-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -19,9 +19,9 @@
     "fabricloader": ">=0.10.5",
     "fabric-api-base": "*"
   },
-  "description": "Adds chat-related hooks.",
+  "description": "Adds message-related hooks.",
   "mixins": [
-    "fabric-chat-api-v1.mixins.json"
+    "fabric-message-api-v1.mixins.json"
   ],
   "custom": {
     "fabric-api:module-lifecycle": "experimental"

@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.chat",
+  "package": "net.fabricmc.fabric.mixin.message",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "MinecraftServerMixin",

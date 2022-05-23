@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.chat;
+package net.fabricmc.fabric.mixin.message;
 
 import java.util.function.Function;
 
@@ -32,7 +32,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.registry.RegistryKey;
 
-import net.fabricmc.fabric.api.chat.v1.ServerChatEvents;
+import net.fabricmc.fabric.api.message.v1.ServerChatEvents;
 
 @Mixin(PlayerManager.class)
 public class PlayerManagerMixin {

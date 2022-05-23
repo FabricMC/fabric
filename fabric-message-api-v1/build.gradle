@@ -1,4 +1,4 @@
-archivesBaseName = "fabric-chat-api-v1"
+archivesBaseName = "fabric-message-api-v1"
 version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
