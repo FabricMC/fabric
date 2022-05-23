@@ -62,6 +62,8 @@ public abstract class MixinCrashReport {
 			modString.append('\n');
 			modString.append("\t".repeat(depth));
 			modString.append(mod.getMetadata().getId());
+			modString.append(": ");
+			modString.append(mod.getMetadata().getName());
 			modString.append(' ');
 			modString.append(mod.getMetadata().getVersion().getFriendlyString());
 
