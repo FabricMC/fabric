@@ -27,6 +27,7 @@ import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.loot.v2.LootTableSource;
+import net.fabricmc.fabric.impl.resource.loader.BuiltinModResourcePackSource;
 import net.fabricmc.fabric.impl.resource.loader.FabricResource;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 
@@ -41,7 +42,7 @@ public final class LootUtil {
 
 			if (packSource == ResourcePackSource.PACK_SOURCE_BUILTIN) {
 				return LootTableSource.VANILLA;
-			} else if (packSource == ModResourcePackCreator.RESOURCE_PACK_SOURCE) {
+			} else if (packSource == ModResourcePackCreator.RESOURCE_PACK_SOURCE || packSource instanceof BuiltinModResourcePackSource) {
 				return LootTableSource.MOD;
 			}
 		} catch (IOException e) {

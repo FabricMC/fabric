@@ -48,6 +48,30 @@ public final class LootTableEvents {
 
 	/**
 	 * This event can be used to modify loot tables.
+	 * The main use case is to add items to vanilla or mod loot tables (e.g. modded seeds to grass).
+	 *
+	 * <p>You can also modify loot tables that are created by {@link #REPLACE}.
+	 * They have the loot table source {@link LootTableSource#REPLACED}.
+	 *
+	 * <h2>Example: adding diamonds to the cobblestone loot table</h2>
+	 * <pre>
+	 * {@code
+	 * LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
+	 *     // If the loot table is for the cobblestone block and it is not overridden by a user:
+	 *     if (Blocks.COBBLESTONE.getLootTableId().equals(id) && source.isBuiltin()) {
+	 *         // Create a new loot pool that will hold the diamonds.
+	 *         LootPool.Builder pool = LootPool.builder()
+	 *             // Add diamonds...
+	 *             .with(ItemEntry.builder(Items.DIAMOND))
+	 *             // ...only if the block would survive a potential explosion.
+	 *             .conditionally(SurvivesExplosionLootCondition.builder());
+	 *
+	 *         // Add the loot pool to the loot table
+	 *         tableBuilder.pool(pool);
+	 *     }
+	 * });
+	 * }
+	 * </pre>
 	 */
 	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (resourceManager, lootManager, id, tableBuilder, source) -> {
 		for (Modify listener : listeners) {
