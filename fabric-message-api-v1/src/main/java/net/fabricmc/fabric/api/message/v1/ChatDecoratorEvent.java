@@ -77,12 +77,12 @@ public final class ChatDecoratorEvent {
 	 * The content phase of the event, passed when registering a chat decorator. Use this when
 	 * the chat decorator modifies the text content of the message.
 	 */
-	public static final Identifier CONTENT_PHASE = new Identifier("fabric-message-api-v1", "content");
+	public static final Identifier CONTENT_PHASE = new Identifier("fabric", "content");
 	/**
 	 * The styling phase of the event, passed when registering a chat decorator. Use this when
 	 * the chat decorator only modifies the styling of the message with the text intact.
 	 */
-	public static final Identifier STYLING_PHASE = new Identifier("fabric-message-api-v1", "styling");
+	public static final Identifier STYLING_PHASE = new Identifier("fabric", "styling");
 
 	public static final Event<ChatDecorator> EVENT = EventFactory.createWithPhases(ChatDecorator.class, decorators -> (sender, message) -> {
 		CompletableFuture<Text> future = null;
