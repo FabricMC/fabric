@@ -43,7 +43,7 @@ public class PlayerManagerMixin {
 			return;
 		}
 
-		ServerChatEvents.SEND_CHAT_MESSAGE.invoker().onSendChatMessage(message, sender, typeKey);
+		ServerChatEvents.CHAT_MESSAGE.invoker().onChatMessage(message, sender, typeKey);
 	}
 
 	@Inject(method = "broadcast(Lnet/minecraft/text/Text;Ljava/util/function/Function;Lnet/minecraft/util/registry/RegistryKey;)V", at = @At("HEAD"), cancellable = true)
@@ -53,7 +53,7 @@ public class PlayerManagerMixin {
 			return;
 		}
 
-		ServerChatEvents.SEND_GAME_MESSAGE.invoker().onSendGameMessage(message, typeKey);
+		ServerChatEvents.GAME_MESSAGE.invoker().onGameMessage(message, typeKey);
 	}
 
 	@Inject(method = "broadcast(Lnet/minecraft/server/filter/FilteredMessage;Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/util/registry/RegistryKey;)V", at = @At("HEAD"), cancellable = true)
@@ -63,6 +63,6 @@ public class PlayerManagerMixin {
 			return;
 		}
 
-		ServerChatEvents.SEND_COMMAND_MESSAGE.invoker().onSendCommandMessage(message, source, typeKey);
+		ServerChatEvents.COMMAND_MESSAGE.invoker().onCommandMessage(message, source, typeKey);
 	}
 }

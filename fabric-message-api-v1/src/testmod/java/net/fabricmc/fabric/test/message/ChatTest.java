@@ -73,13 +73,13 @@ public class ChatTest implements ModInitializer {
 		});
 
 		// ServerChatEvents
-		ServerChatEvents.SEND_CHAT_MESSAGE.register(
+		ServerChatEvents.CHAT_MESSAGE.register(
 				(message, sender, typeKey) -> LOGGER.info("ChatTest: {} sent \"{}\"", sender, message)
 		);
-		ServerChatEvents.SEND_GAME_MESSAGE.register(
+		ServerChatEvents.GAME_MESSAGE.register(
 				(message, typeKey) -> LOGGER.info("ChatTest: server sent \"{}\"", message)
 		);
-		ServerChatEvents.SEND_COMMAND_MESSAGE.register(
+		ServerChatEvents.COMMAND_MESSAGE.register(
 				(message, source, typeKey) -> LOGGER.info("ChatTest: command sent \"{}\"", message)
 		);
 

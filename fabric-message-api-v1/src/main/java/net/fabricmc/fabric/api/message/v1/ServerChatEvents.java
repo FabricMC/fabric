@@ -28,12 +28,18 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 public final class ServerChatEvents {
-	private ServerChatEvents() {
-	}
-
 	/**
-	 * An event that is called when a player sends a chat message to all players, either via the
-	 * chat hud or the {@code /say} command. Mods can use this event to block the message.
+	 * An event triggered when the server broadcasts a chat message sent by a player,
+	 * typically from a client GUI or a player-executed command. Mods can use this to block
+	 * the message.
+	 *
+	 * <p>If a listener returned {@code false}, the message will not be broadcast,
+	 * the remaining listeners will not be called (if any), and {@link #CHAT_MESSAGE}
+	 * event will not be triggered.
+	 *
+	 * <p>If the message is from a player-executed command, this will be called
+	 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
+	 * and after triggering {@link #COMMAND_MESSAGE} event.
 	 */
 	public static final Event<AllowChatMessage> ALLOW_CHAT_MESSAGE = EventFactory.createArrayBacked(AllowChatMessage.class, handlers -> (message, sender, typeKey) -> {
 		for (AllowChatMessage handler : handlers) {
@@ -44,9 +50,13 @@ public final class ServerChatEvents {
 	});
 
 	/**
-	 * An event that is called when the server sends a game message to all players. Game messages
-	 * include death messages, join/leave messages, and advancement messages. Mods can use this
-	 * event to block the message.
+	 * An event triggered when the server broadcasts a game message to all players. Game
+	 * messages include death messages, join/leave messages, and advancement messages.
+	 * Mods can use this to block the message.
+	 *
+	 * <p>If a listener returned {@code false}, the message will not be broadcast,
+	 * the remaining listeners will not be called (if any), and {@link #GAME_MESSAGE}
+	 * event will not be triggered.
 	 */
 	public static final Event<AllowGameMessage> ALLOW_GAME_MESSAGE = EventFactory.createArrayBacked(AllowGameMessage.class, handlers -> (message, typeKey) -> {
 		for (AllowGameMessage handler : handlers) {
@@ -57,10 +67,17 @@ public final class ServerChatEvents {
 	});
 
 	/**
-	 * An event that is called when a command sends a message to all players. Note that if a player
-	 * executed the command, {@link #ALLOW_CHAT_MESSAGE} will also be triggered. To check whether the
-	 * player executed the command, use {@code source.getPlayer() != null}. Mods can use this event
+	 * An event triggered when the server broadcasts a command message to all players, such as one
+	 * from {@code /me}, {@code /msg}, {@code /say}, and {@code /tellraw}. Mods can use this
 	 * to block the message.
+	 *
+	 * <p>If a listener returned {@code false}, the message will not be broadcast,
+	 * the remaining listeners will not be called (if any), and {@link #COMMAND_MESSAGE}
+	 * event will not be triggered.
+	 *
+	 * <p>If the command is executed by a player and the message is not blocked,
+	 * {@link #ALLOW_CHAT_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
+	 * triggered after triggering {@link #COMMAND_MESSAGE}.
 	 */
 	public static final Event<AllowCommandMessage> ALLOW_COMMAND_MESSAGE = EventFactory.createArrayBacked(AllowCommandMessage.class, handlers -> (message, source, typeKey) -> {
 		for (AllowCommandMessage handler : handlers) {
@@ -71,45 +88,64 @@ public final class ServerChatEvents {
 	});
 
 	/**
-	 * An event that is called when a player sends a chat message to all players, either via the
-	 * chat hud or the {@code /say} command.
+	 * An event triggered when the server broadcasts a chat message sent by a player, typically
+	 * from a client GUI or a player-executed command. Is not called when {@linkplain
+	 * #ALLOW_CHAT_MESSAGE chat messages are blocked}.
+	 *
+	 * <p>If the message is from a player-executed command, this will be called
+	 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
+	 * and after triggering {@link #COMMAND_MESSAGE} event.
 	 */
-	public static final Event<SendChatMessage> SEND_CHAT_MESSAGE = EventFactory.createArrayBacked(SendChatMessage.class, handlers -> (message, sender, typeKey) -> {
-		for (SendChatMessage handler : handlers) {
-			handler.onSendChatMessage(message, sender, typeKey);
+	public static final Event<ChatMessage> CHAT_MESSAGE = EventFactory.createArrayBacked(ChatMessage.class, handlers -> (message, sender, typeKey) -> {
+		for (ChatMessage handler : handlers) {
+			handler.onChatMessage(message, sender, typeKey);
 		}
 	});
 
 	/**
-	 * An event that is called when the server sends a game message to all players. Game messages
-	 * include death messages, join/leave messages, and advancement messages.
+	 * An event triggered when the server broadcasts a game message to all players. Game messages
+	 * include death messages, join/leave messages, and advancement messages. Is not called
+	 * when {@linkplain #ALLOW_GAME_MESSAGE game messages are blocked}.
 	 */
-	public static final Event<SendGameMessage> SEND_GAME_MESSAGE = EventFactory.createArrayBacked(SendGameMessage.class, handlers -> (message, typeKey) -> {
-		for (SendGameMessage handler : handlers) {
-			handler.onSendGameMessage(message, typeKey);
+	public static final Event<GameMessage> GAME_MESSAGE = EventFactory.createArrayBacked(GameMessage.class, handlers -> (message, typeKey) -> {
+		for (GameMessage handler : handlers) {
+			handler.onGameMessage(message, typeKey);
 		}
 	});
 
 	/**
-	 * An event that is called when a command sends a message to all players. Note that if a player
-	 * executed the command, {@link #SEND_CHAT_MESSAGE} will also be triggered. To check whether the
-	 * player executed the command, use {@code source.getPlayer() != null}.
+	 * An event triggered when the server broadcasts a command message to all players, such as one
+	 * from {@code /me}, {@code /msg}, {@code /say}, and {@code /tellraw}. Is not called
+	 * when {@linkplain #ALLOW_COMMAND_MESSAGE command messages are blocked}.
+	 *
+	 * <p>If the command is executed by a player, {@link #ALLOW_CHAT_MESSAGE} and
+	 * {@link #CHAT_MESSAGE} events will also be triggered after this event.
 	 */
-	public static final Event<SendCommandMessage> SEND_COMMAND_MESSAGE = EventFactory.createArrayBacked(SendCommandMessage.class, handlers -> (message, source, typeKey) -> {
-		for (SendCommandMessage handler : handlers) {
-			handler.onSendCommandMessage(message, source, typeKey);
+	public static final Event<CommandMessage> COMMAND_MESSAGE = EventFactory.createArrayBacked(CommandMessage.class, handlers -> (message, source, typeKey) -> {
+		for (CommandMessage handler : handlers) {
+			handler.onCommandMessage(message, source, typeKey);
 		}
 	});
+
+	private ServerChatEvents() {
+	}
 
 	@FunctionalInterface
 	public interface AllowChatMessage {
 		/**
-		 * Called when a player sends a chat message to all players, either via the
-		 * chat hud or the {@code /say} command.
-		 * @param message the sent message; use {@code message.raw().getContent()} to get the text
-		 * @param sender the player that sent the message
+		 * Called when the server broadcasts a chat message sent by a player, typically
+		 * from a client GUI or a player-executed command. Returning {@code false}
+		 * prevents the message from being broadcast and the {@link #CHAT_MESSAGE} event
+		 * from triggering.
+		 *
+		 * <p>If the message is from a player-executed command, this will be called
+		 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
+		 * and after triggering {@link #COMMAND_MESSAGE} event.
+		 *
+		 * @param message the broadcast message with chat decorators applied; use {@code message.raw().getContent()} to get the text
+		 * @param sender  the player that sent the message
 		 * @param typeKey the message type
-		 * @return {@code true} if the message should be sent, {@code false} otherwise
+		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
 		boolean allowChatMessage(FilteredMessage<SignedChatMessage> message, ServerPlayerEntity sender, RegistryKey<MessageType> typeKey);
 	}
@@ -117,11 +153,14 @@ public final class ServerChatEvents {
 	@FunctionalInterface
 	public interface AllowGameMessage {
 		/**
-		 * Called when the server sends a game message to all players. Game messages
-		 * include death messages, join/leave messages, and advancement messages.
-		 * @param message the sent message; use {@code message.raw().getContent()} to get the text
+		 * Called when the server broadcasts a game message to all players. Game messages
+		 * include death messages, join/leave messages, and advancement messages. Returning {@code false}
+		 * prevents the message from being broadcast and the {@link #GAME_MESSAGE} event
+		 * from triggering.
+		 *
+		 * @param message the broadcast message; use {@code message.raw().getContent()} to get the text
 		 * @param typeKey the message type
-		 * @return {@code true} if the message should be sent, {@code false} otherwise
+		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
 		boolean allowGameMessage(Text message, RegistryKey<MessageType> typeKey);
 	}
@@ -129,46 +168,68 @@ public final class ServerChatEvents {
 	@FunctionalInterface
 	public interface AllowCommandMessage {
 		/**
-		 * Called when a command sends a chat message to all players.
-		 * @param message the sent message; use {@code message.raw().getContent()} to get the text
-		 * @param source the command source that sent the message
+		 * Called when the server broadcasts a command message to all players, such as one
+		 * from {@code /me}, {@code /msg}, {@code /say}, and {@code /tellraw}. Returning {@code false}
+		 * prevents the message from being broadcast and the {@link #COMMAND_MESSAGE} event
+		 * from triggering.
+		 *
+		 * <p>If the command is executed by a player and the message is not blocked,
+		 * {@link #ALLOW_CHAT_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
+		 * triggered after triggering {@link #COMMAND_MESSAGE}.
+		 *
+		 * @param message the broadcast message with chat decorators applied if applicable; use {@code message.raw().getContent()} to get the text
+		 * @param source  the command source that sent the message
 		 * @param typeKey the message type
-		 * @return {@code true} if the message should be sent, {@code false} otherwise
+		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
 		boolean allowCommandMessage(FilteredMessage<SignedChatMessage> message, ServerCommandSource source, RegistryKey<MessageType> typeKey);
 	}
 
 	@FunctionalInterface
-	public interface SendChatMessage {
+	public interface ChatMessage {
 		/**
-		 * Called when a player sends a chat message to all players, either via the
-		 * chat hud or the {@code /say} command.
-		 * @param message the sent message; use {@code message.raw().getContent()} to get the text
-		 * @param sender the player that sent the message
+		 * Called when the server broadcasts a chat message sent by a player, typically
+		 * from a client GUI or a player-executed command. Is not called when {@linkplain
+		 * #ALLOW_CHAT_MESSAGE chat messages are blocked}.
+		 *
+		 * <p>If the message is from a player-executed command, this will be called
+		 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
+		 * and after triggering {@link #COMMAND_MESSAGE} event.
+		 *
+		 * @param message the broadcast message with chat decorators applied; use {@code message.raw().getContent()} to get the text
+		 * @param sender  the player that sent the message
 		 * @param typeKey the message type
 		 */
-		void onSendChatMessage(FilteredMessage<SignedChatMessage> message, ServerPlayerEntity sender, RegistryKey<MessageType> typeKey);
+		void onChatMessage(FilteredMessage<SignedChatMessage> message, ServerPlayerEntity sender, RegistryKey<MessageType> typeKey);
 	}
 
 	@FunctionalInterface
-	public interface SendGameMessage {
+	public interface GameMessage {
 		/**
-		 * Called when the server sends a game message to all players. Game messages
-		 * include death messages, join/leave messages, and advancement messages.
-		 * @param message the sent message; use {@code message.raw().getContent()} to get the text
+		 * Called when the server broadcasts a game message to all players. Game messages
+		 * include death messages, join/leave messages, and advancement messages. Is not called
+		 * when {@linkplain #ALLOW_GAME_MESSAGE game messages are blocked}.
+		 *
+		 * @param message the broadcast message; use {@code message.raw().getContent()} to get the text
 		 * @param typeKey the message type
 		 */
-		void onSendGameMessage(Text message, RegistryKey<MessageType> typeKey);
+		void onGameMessage(Text message, RegistryKey<MessageType> typeKey);
 	}
 
 	@FunctionalInterface
-	public interface SendCommandMessage {
+	public interface CommandMessage {
 		/**
-		 * Called when a command sends a chat message to all players.
-		 * @param message the sent message; use {@code message.raw().getContent()} to get the text
-		 * @param source the command source that sent the message
+		 * Called when the server broadcasts a command message to all players, such as one
+		 * from {@code /me}, {@code /msg}, {@code /say}, and {@code /tellraw}. Is not called
+		 * when {@linkplain #ALLOW_COMMAND_MESSAGE command messages are blocked}.
+		 *
+		 * <p>If the command is executed by a player, {@link #ALLOW_CHAT_MESSAGE} and
+		 * {@link #CHAT_MESSAGE} events will also be triggered after this event.
+		 *
+		 * @param message the broadcast message with chat decorators applied if applicable; use {@code message.raw().getContent()} to get the text
+		 * @param source  the command source that sent the message
 		 * @param typeKey the message type
 		 */
-		void onSendCommandMessage(FilteredMessage<SignedChatMessage> message, ServerCommandSource source, RegistryKey<MessageType> typeKey);
+		void onCommandMessage(FilteredMessage<SignedChatMessage> message, ServerCommandSource source, RegistryKey<MessageType> typeKey);
 	}
 }
