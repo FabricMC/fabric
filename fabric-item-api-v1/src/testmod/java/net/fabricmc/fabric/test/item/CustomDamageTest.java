@@ -53,7 +53,7 @@ public class CustomDamageTest implements ModInitializer {
 		@Override
 		public Text getName(ItemStack stack) {
 			int v = stack.getOrCreateNbt().getInt("weird");
-			return super.getName(stack).shallowCopy().append(" (Weird Value: " + v + ")");
+			return super.getName(stack).copy().append(" (Weird Value: " + v + ")");
 		}
 	}
 }
