@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.resource.loader;
+package net.fabricmc.fabric.impl.resource.loader;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-
-import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackSource;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 
-@Mixin(ResourcePackProfile.class)
-public interface ResourcePackProfileAccessor {
-	@Accessor("source")
-	ResourcePackSource getResourcePackSource();
+public class BuiltinModResourcePackSource implements ResourcePackSource {
+	private final String modId;
+
+	public BuiltinModResourcePackSource(String modId) {
+		this.modId = modId;
+	}
+
+	@Override
+	public Text decorate(Text packName) {
+		return new TranslatableText("pack.nameAndSource", packName, new TranslatableText("pack.source.builtinMod", modId)).formatted(Formatting.GRAY);
+	}
 }

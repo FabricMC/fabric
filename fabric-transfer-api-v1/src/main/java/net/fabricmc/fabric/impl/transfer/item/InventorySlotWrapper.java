@@ -21,7 +21,6 @@ import net.minecraft.item.ItemStack;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 /**
  * A wrapper around a single slot of an inventory.
@@ -35,11 +34,13 @@ class InventorySlotWrapper extends SingleStackStorage {
 	 */
 	private final InventoryStorageImpl storage;
 	final int slot;
+	private final SpecialLogicInventory specialInv;
 	private ItemStack lastReleasedSnapshot = null;
 
 	InventorySlotWrapper(InventoryStorageImpl storage, int slot) {
 		this.storage = storage;
 		this.slot = slot;
+		this.specialInv = storage.inventory instanceof SpecialLogicInventory specialInv ? specialInv : null;
 	}
 
 	@Override
@@ -49,18 +50,26 @@ class InventorySlotWrapper extends SingleStackStorage {
 
 	@Override
 	protected void setStack(ItemStack stack) {
-		TransferApiImpl.SUPPRESS_SPECIAL_LOGIC.set(Boolean.TRUE);
-
-		try {
+		if (specialInv == null) {
 			storage.inventory.setStack(slot, stack);
-		} finally {
-			TransferApiImpl.SUPPRESS_SPECIAL_LOGIC.remove();
+		} else {
+			specialInv.fabric_setSuppress(true);
+
+			try {
+				storage.inventory.setStack(slot, stack);
+			} finally {
+				specialInv.fabric_setSuppress(false);
+			}
 		}
 	}
 
 	@Override
-	protected boolean canInsert(ItemVariant itemVariant) {
-		return storage.inventory.isValid(slot, itemVariant.toStack());
+	public long insert(ItemVariant insertedVariant, long maxAmount, TransactionContext transaction) {
+		if (!storage.inventory.isValid(slot, ((ItemVariantImpl) insertedVariant).getCachedStack())) {
+			return 0;
+		} else {
+			return super.insert(insertedVariant, maxAmount, transaction);
+		}
 	}
 
 	@Override

@@ -16,7 +16,6 @@
     "ResourceMixin",
     "ResourcePackManagerMixin",
     "ResourcePackManagerAccessor",
-    "ResourcePackProfileAccessor",
     "ResourcePackProfileMixin",
     "SimpleResourceReloadMixin"
   ],
