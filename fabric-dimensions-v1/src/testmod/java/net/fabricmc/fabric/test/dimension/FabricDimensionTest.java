@@ -102,6 +102,14 @@ public class FabricDimensionTest implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) ->
 				dispatcher.register(literal("fabric_dimension_test").executes(FabricDimensionTest.this::swapTargeted))
 		);
+
+		// Used to test https://github.com/FabricMC/fabric/issues/2239
+		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(literal("fabric_dimension_test_desync")
+				.executes(FabricDimensionTest.this::testDesync)));
+
+		// Used to test https://github.com/FabricMC/fabric/issues/2238
+		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(literal("fabric_dimension_test_entity")
+				.executes(FabricDimensionTest.this::testEntityTeleport)));
 	}
 
 	private int swapTargeted(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
@@ -124,6 +132,50 @@ public class FabricDimensionTest implements ModInitializer {
 					(float) Math.random() * 360 - 180, (float) Math.random() * 360 - 180);
 			FabricDimensions.teleport(player, getWorld(context, World.OVERWORLD), target);
 		}
+
+		return 1;
+	}
+
+	private int testDesync(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+		ServerPlayerEntity player = context.getSource().getPlayer();
+
+		if (player == null) {
+			context.getSource().sendFeedback(new LiteralText("You must be a player to execute this command."), false);
+			return 1;
+		}
+
+		if (!context.getSource().getServer().isDedicated()) {
+			context.getSource().sendFeedback(new LiteralText("This command can only be executed on dedicated servers."), false);
+			return 1;
+		}
+
+		TeleportTarget target = new TeleportTarget(player.getPos().add(5, 0, 0), player.getVelocity(), player.getYaw(), player.getPitch());
+		FabricDimensions.teleport(player, (ServerWorld) player.world, target);
+
+		return 1;
+	}
+
+	private int testEntityTeleport(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+		ServerPlayerEntity player = context.getSource().getPlayer();
+
+		if (player == null) {
+			context.getSource().sendFeedback(new LiteralText("You must be a player to execute this command."), false);
+			return 1;
+		}
+
+		Entity entity = player.world
+				.getOtherEntities(player, player.getBoundingBox().expand(100, 100, 100))
+				.stream()
+				.findFirst()
+				.orElse(null);
+
+		if (entity == null) {
+			context.getSource().sendFeedback(new LiteralText("No entities found."), false);
+			return 1;
+		}
+
+		TeleportTarget target = new TeleportTarget(player.getPos(), player.getVelocity(), player.getYaw(), player.getPitch());
+		FabricDimensions.teleport(entity, (ServerWorld) entity.world, target);
 
 		return 1;
 	}
