@@ -27,7 +27,7 @@ import net.minecraft.network.MessageType;
 import net.minecraft.network.encryption.SignedChatMessage;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.filter.Message;
+import net.minecraft.server.filter.FilteredMessage;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.registry.RegistryKey;
@@ -36,8 +36,8 @@ import net.fabricmc.fabric.api.message.v1.ServerChatEvents;
 
 @Mixin(PlayerManager.class)
 public class PlayerManagerMixin {
-	@Inject(method = "broadcast(Lnet/minecraft/server/filter/Message;Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/util/registry/RegistryKey;)V", at = @At("HEAD"), cancellable = true)
-	private void onSendChatMessage(Message<SignedChatMessage> message, ServerPlayerEntity sender, RegistryKey<MessageType> typeKey, CallbackInfo ci) {
+	@Inject(method = "broadcast(Lnet/minecraft/server/filter/FilteredMessage;Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/util/registry/RegistryKey;)V", at = @At("HEAD"), cancellable = true)
+	private void onSendChatMessage(FilteredMessage<SignedChatMessage> message, ServerPlayerEntity sender, RegistryKey<MessageType> typeKey, CallbackInfo ci) {
 		if (!ServerChatEvents.ALLOW_CHAT_MESSAGE.invoker().allowChatMessage(message, sender, typeKey)) {
 			ci.cancel();
 			return;
@@ -56,8 +56,8 @@ public class PlayerManagerMixin {
 		ServerChatEvents.SEND_GAME_MESSAGE.invoker().onSendGameMessage(message, typeKey);
 	}
 
-	@Inject(method = "method_44166", at = @At("HEAD"), cancellable = true)
-	private void onSendCommandMessage(Message<SignedChatMessage> message, ServerCommandSource source, RegistryKey<MessageType> typeKey, CallbackInfo ci) {
+	@Inject(method = "broadcast(Lnet/minecraft/server/filter/FilteredMessage;Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/util/registry/RegistryKey;)V", at = @At("HEAD"), cancellable = true)
+	private void onSendCommandMessage(FilteredMessage<SignedChatMessage> message, ServerCommandSource source, RegistryKey<MessageType> typeKey, CallbackInfo ci) {
 		if (!ServerChatEvents.ALLOW_COMMAND_MESSAGE.invoker().allowCommandMessage(message, source, typeKey)) {
 			ci.cancel();
 			return;
