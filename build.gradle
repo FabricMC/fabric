@@ -260,6 +260,19 @@ allprojects {
 	build.dependsOn remapTestmodJar
 }
 
+remapTestmodJar {
+	def testModJarTasks = []
+
+	subprojects {
+		if (it.name == "deprecated" || !it.file("src/testmod").exists()) return
+
+		testModJarTasks += it.tasks.remapTestmodJar
+	}
+
+	nestedJars.setFrom(testModJarTasks)
+	addNestedDependencies = true
+}
+
 // Apply auxiliary buildscripts to submodules
 // This must be done after all plugins are applied to subprojects
 apply from: "gradle/module-validation.gradle"
