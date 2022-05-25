@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.resource.loader;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
@@ -41,6 +42,10 @@ public class BuiltinResourcePackTestMod implements ModInitializer {
 		FabricLoader.getInstance().getModContainer(MODID)
 				.map(container -> ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "test2"),
 						container, ResourcePackActivationType.NORMAL))
+				.filter(success -> !success).ifPresent(success -> LOGGER.warn("Could not register built-in resource pack."));
+		FabricLoader.getInstance().getModContainer(MODID)
+				.map(container -> ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "test3"),
+						container, "Fabric Loader Text Text Pack", Text.translatable("fabric-resource-loader-v0-testmod.text-test-pack"), ResourcePackActivationType.NORMAL))
 				.filter(success -> !success).ifPresent(success -> LOGGER.warn("Could not register built-in resource pack."));
 	}
 }

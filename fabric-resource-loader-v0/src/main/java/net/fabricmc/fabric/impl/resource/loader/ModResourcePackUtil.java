@@ -16,13 +16,22 @@
 
 package net.fabricmc.fabric.impl.resource.loader;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.google.common.base.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
+import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackProfile;
+import net.minecraft.resource.ResourcePackSource;
+import net.minecraft.resource.metadata.PackResourceMetadata;
+import net.minecraft.text.Text;
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.ResourceType;
 
@@ -36,6 +45,7 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
  * Internal utilities for managing resource packs.
  */
 public final class ModResourcePackUtil {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModResourcePackUtil.class);
 	private ModResourcePackUtil() {
 	}
 
@@ -78,6 +88,54 @@ public final class ModResourcePackUtil {
 			String pack = String.format("{\"pack\":{\"pack_format\":" + type.getPackVersion(SharedConstants.getGameVersion()) + ",\"description\":\"%s\"}}", description);
 			return IOUtils.toInputStream(pack, Charsets.UTF_8);
 		default:
+			return null;
+		}
+	}
+
+	// Basically a copy of the vanilla method, with an additional parameter for Text
+	@Nullable
+	public static ResourcePackProfile of(String name, Text text, boolean alwaysEnabled, Supplier<ResourcePack> packFactory, ResourcePackProfile.Factory profileFactory, ResourcePackProfile.InsertionPosition insertionPosition, ResourcePackSource packSource) {
+		try {
+			ResourcePack resourcePack = packFactory.get();
+
+			ResourcePackProfile var8;
+
+			label54: {
+				try {
+					PackResourceMetadata packResourceMetadata = resourcePack.parseMetadata(PackResourceMetadata.READER);
+
+					if (packResourceMetadata != null) {
+						var8 = profileFactory.create(name, text, alwaysEnabled, packFactory, packResourceMetadata, insertionPosition, packSource);
+						break label54;
+					}
+
+					LOGGER.warn("Couldn't find pack meta for pack {}", name);
+				} catch (Throwable var10) {
+					if (resourcePack != null) {
+						try {
+							resourcePack.close();
+						} catch (Throwable var9) {
+							var10.addSuppressed(var9);
+						}
+					}
+
+					throw var10;
+				}
+
+				if (resourcePack != null) {
+					resourcePack.close();
+				}
+
+				return null;
+			}
+
+			if (resourcePack != null) {
+				resourcePack.close();
+			}
+
+			return var8;
+		} catch (IOException var11) {
+			LOGGER.warn("Couldn't get pack info for: {}", var11.toString());
 			return null;
 		}
 	}

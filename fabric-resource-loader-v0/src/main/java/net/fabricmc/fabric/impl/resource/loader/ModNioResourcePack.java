@@ -36,9 +36,10 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
+import net.minecraft.text.Text;
 import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
@@ -54,6 +55,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	private static final Pattern RESOURCE_PACK_PATH = Pattern.compile("[a-z0-9-_.]+");
 
 	private final String name;
+	private final Text displayName;
 	private final ModMetadata modInfo;
 	private final List<Path> basePaths;
 	private final ResourceType type;
@@ -61,7 +63,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	private final ResourcePackActivationType activationType;
 	private final Map<ResourceType, Set<String>> namespaces;
 
-	public static ModNioResourcePack create(String name, ModContainer mod, String subPath, ResourceType type, ResourcePackActivationType activationType) {
+	public static ModNioResourcePack create(String name, Text displayName, ModContainer mod, String subPath, ResourceType type, ResourcePackActivationType activationType) {
 		List<Path> rootPaths = mod.getRootPaths();
 		List<Path> paths;
 
@@ -84,15 +86,21 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 
 		if (paths.isEmpty()) return null;
 
-		ModNioResourcePack ret = new ModNioResourcePack(name, mod.getMetadata(), paths, type, null, activationType);
+		ModNioResourcePack ret = new ModNioResourcePack(name, displayName, mod.getMetadata(), paths, type, null, activationType);
 
 		return ret.getNamespaces(type).isEmpty() ? null : ret;
 	}
 
-	private ModNioResourcePack(String name, ModMetadata modInfo, List<Path> paths, ResourceType type, AutoCloseable closer, ResourcePackActivationType activationType) {
+	@Deprecated
+	public static ModNioResourcePack create(String name, ModContainer mod, String subPath, ResourceType type, ResourcePackActivationType activationType) {
+		return create(name, Text.literal(name), mod, subPath, type, activationType);
+	}
+
+	private ModNioResourcePack(String name, Text displayName, ModMetadata modInfo, List<Path> paths, ResourceType type, AutoCloseable closer, ResourcePackActivationType activationType) {
 		super(null);
 
 		this.name = name;
+		this.displayName = displayName;
 		this.modInfo = modInfo;
 		this.basePaths = paths;
 		this.type = type;
@@ -155,8 +163,8 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		return null;
 	}
 
-	private static final String resPrefix = ResourceType.CLIENT_RESOURCES.getDirectory()+"/";
-	private static final String dataPrefix = ResourceType.SERVER_DATA.getDirectory()+"/";
+	private static final String resPrefix = ResourceType.CLIENT_RESOURCES.getDirectory() + "/";
+	private static final String dataPrefix = ResourceType.SERVER_DATA.getDirectory() + "/";
 
 	private boolean hasAbsentNs(String filename) {
 		int prefixLen;
@@ -275,5 +283,9 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	public Text getDisplayName() {
+		return displayName;
 	}
 }

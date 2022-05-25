@@ -28,9 +28,10 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.google.common.collect.Lists;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
+import net.minecraft.text.Text;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
@@ -64,6 +65,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	 * @param activationType the activation type of the resource pack
 	 * @return {@code true} if successfully registered the resource pack, else {@code false}
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, String, ResourcePackActivationType)
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, String, Text, ResourcePackActivationType)
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
 	 */
@@ -92,9 +94,42 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	 * @param id             the identifier of the resource pack
 	 * @param subPath        the sub path in the mod resources
 	 * @param container      the mod container
+	 * @param displayName    the display name of the resource pack
+	 * @param activationType the activation type of the resource pack
+	 * @return {@code true} if successfully registered the resource pack, else {@code false}
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, String, ResourcePackActivationType)
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, String, Text, ResourcePackActivationType)
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
+	 */
+	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, String name, Text displayName, ResourcePackActivationType activationType) {
+		String separator = container.getRootPath().getFileSystem().getSeparator();
+		subPath = subPath.replace("/", separator);
+		ModNioResourcePack resourcePack = ModNioResourcePack.create(name, displayName, container, subPath, ResourceType.CLIENT_RESOURCES, activationType);
+		ModNioResourcePack dataPack = ModNioResourcePack.create(name, displayName, container, subPath, ResourceType.SERVER_DATA, activationType);
+		if (resourcePack == null && dataPack == null) return false;
+
+		if (resourcePack != null) {
+			builtinResourcePacks.add(new Pair<>(name, resourcePack));
+		}
+
+		if (dataPack != null) {
+			builtinResourcePacks.add(new Pair<>(name, dataPack));
+		}
+
+		return true;
+	}
+
+	/**
+	 * Registers a built-in resource pack. Internal implementation.
+	 *
+	 * @param id             the identifier of the resource pack
+	 * @param subPath        the sub path in the mod resources
+	 * @param container      the mod container
 	 * @param activationType the activation type of the resource pack
 	 * @return {@code true} if successfully registered the resource pack, else {@code false}
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, String, Text, ResourcePackActivationType)
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, String, ResourcePackActivationType)
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
 	 */
@@ -110,7 +145,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 			// Add the built-in pack only if namespaces for the specified resource type are present.
 			if (!pack.getNamespaces(resourceType).isEmpty()) {
 				// Make the resource pack profile for built-in pack, should never be always enabled.
-				ResourcePackProfile profile = ResourcePackProfile.of(entry.getLeft(),
+				ResourcePackProfile profile = ModResourcePackUtil.of(entry.getLeft(), entry.getRight().getDisplayName(),
 						pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED,
 						entry::getRight, factory, ResourcePackProfile.InsertionPosition.TOP, new BuiltinModResourcePackSource(pack.getFabricModMetadata().getId()));
 				if (profile != null) {
