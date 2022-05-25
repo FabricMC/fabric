@@ -98,42 +98,24 @@ public final class ModResourcePackUtil {
 		try {
 			ResourcePack resourcePack = packFactory.get();
 
-			ResourcePackProfile var8;
+			ResourcePackProfile profile;
 
-			label54: {
-				try {
+			parseMetadata: {
+				try (resourcePack) {
 					PackResourceMetadata packResourceMetadata = resourcePack.parseMetadata(PackResourceMetadata.READER);
 
 					if (packResourceMetadata != null) {
-						var8 = profileFactory.create(name, text, alwaysEnabled, packFactory, packResourceMetadata, insertionPosition, packSource);
-						break label54;
+						profile = profileFactory.create(name, text, alwaysEnabled, packFactory, packResourceMetadata, insertionPosition, packSource);
+						break parseMetadata;
 					}
 
 					LOGGER.warn("Couldn't find pack meta for pack {}", name);
-				} catch (Throwable var10) {
-					if (resourcePack != null) {
-						try {
-							resourcePack.close();
-						} catch (Throwable var9) {
-							var10.addSuppressed(var9);
-						}
-					}
-
-					throw var10;
-				}
-
-				if (resourcePack != null) {
-					resourcePack.close();
 				}
 
 				return null;
 			}
 
-			if (resourcePack != null) {
-				resourcePack.close();
-			}
-
-			return var8;
+			return profile;
 		} catch (IOException var11) {
 			LOGGER.warn("Couldn't get pack info for: {}", var11.toString());
 			return null;
