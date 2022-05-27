@@ -87,8 +87,8 @@ public class CreateWorldScreenMixin {
 		return (defaultDataPackSettings = new DataPackSettings(enabled, disabled));
 	}
 
-	@ModifyArg(method = "create(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/screen/Screen;)V", at = @At(value = "NEW", target = "net/minecraft/client/gui/screen/world/CreateWorldScreen"), index = 1)
-	private static DataPackSettings useReplacedDefaultSettings() {
+	@ModifyArg(method = "create(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/screen/Screen;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;<init>(Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/resource/DataPackSettings;Lnet/minecraft/client/gui/screen/world/MoreOptionsDialog;)V"), index = 1)
+	private static DataPackSettings useReplacedDefaultSettings(DataPackSettings dataPackSettings) {
 		return defaultDataPackSettings;
 	}
 
