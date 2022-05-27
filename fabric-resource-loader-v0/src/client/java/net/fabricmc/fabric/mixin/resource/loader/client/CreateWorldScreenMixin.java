@@ -22,7 +22,6 @@ import java.util.List;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
-import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
