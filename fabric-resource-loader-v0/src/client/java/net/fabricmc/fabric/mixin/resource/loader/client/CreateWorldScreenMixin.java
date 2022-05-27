@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
+import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -51,9 +52,6 @@ import net.fabricmc.fabric.mixin.resource.loader.ResourcePackManagerAccessor;
 public class CreateWorldScreenMixin {
 	@Unique
 	private static DataPackSettings defaultDataPackSettings;
-
-	@Unique
-	private static ResourceManager loadingDataPackManager;
 
 	@Shadow
 	private ResourcePackManager packManager;
@@ -95,16 +93,10 @@ public class CreateWorldScreenMixin {
 		return defaultDataPackSettings;
 	}
 
-	@Inject(method = "method_41854", at = @At("HEAD"), remap = false)
-	private static void captureResourceManager(ResourceManager resourceManager, DataPackSettings dataPackSettings, CallbackInfoReturnable<Pair<?, ?>> cir) {
-		loadingDataPackManager = resourceManager;
-	}
-
 	@Redirect(method = "method_41854", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/DynamicRegistryManager$Mutable;toImmutable()Lnet/minecraft/util/registry/DynamicRegistryManager$Immutable;"), remap = false)
-	private static DynamicRegistryManager.Immutable loadDynamicRegistry(DynamicRegistryManager.Mutable mutableRegistryManager) {
+	private static DynamicRegistryManager.Immutable loadDynamicRegistry(DynamicRegistryManager.Mutable mutableRegistryManager, ResourceManager dataPackManager) {
 		// This loads the dynamic registry from the data pack
-		RegistryOps.ofLoaded(JsonOps.INSTANCE, mutableRegistryManager, loadingDataPackManager);
-		loadingDataPackManager = null;
+		RegistryOps.ofLoaded(JsonOps.INSTANCE, mutableRegistryManager, dataPackManager);
 		return mutableRegistryManager.toImmutable();
 	}
 
