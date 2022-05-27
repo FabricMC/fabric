@@ -52,6 +52,9 @@ public class CreateWorldScreenMixin {
 	@Unique
 	private static DataPackSettings defaultDataPackSettings;
 
+	@Unique
+	private static ResourceManager loadingDataPackManager;
+
 	@Shadow
 	private ResourcePackManager packManager;
 
@@ -92,10 +95,16 @@ public class CreateWorldScreenMixin {
 		return defaultDataPackSettings;
 	}
 
+	@Inject(method = "method_41854", at = @At("HEAD"), remap = false)
+	private static void captureResourceManager(ResourceManager resourceManager, DataPackSettings dataPackSettings, CallbackInfoReturnable<Pair<?, ?>> cir) {
+		loadingDataPackManager = resourceManager;
+	}
+
 	@Redirect(method = "method_41854", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/DynamicRegistryManager$Mutable;toImmutable()Lnet/minecraft/util/registry/DynamicRegistryManager$Immutable;"), remap = false)
-	private static DynamicRegistryManager.Immutable loadDynamicRegistry(DynamicRegistryManager.Mutable mutableRegistryManager, ResourceManager resourceManager) {
+	private static DynamicRegistryManager.Immutable loadDynamicRegistry(DynamicRegistryManager.Mutable mutableRegistryManager) {
 		// This loads the dynamic registry from the data pack
-		RegistryOps.ofLoaded(JsonOps.INSTANCE, mutableRegistryManager, resourceManager);
+		RegistryOps.ofLoaded(JsonOps.INSTANCE, mutableRegistryManager, loadingDataPackManager);
+		loadingDataPackManager = null;
 		return mutableRegistryManager.toImmutable();
 	}
 
