@@ -14,7 +14,8 @@
     "ReloadableResourceManagerImplMixin",
     "ResourcePackManagerAccessor",
     "ResourcePackManagerMixin",
-    "SimpleResourceReloadMixin"
+    "SimpleResourceReloadMixin",
+    "TestServerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
