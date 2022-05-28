@@ -111,6 +111,14 @@ public class FabricBiomeTest implements ModInitializer {
 				.add(ModificationPhase.ADDITIONS,
 						BiomeSelectors.tag(TagKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "tag_selector_test"))),
 						context -> context.getEffects().setSkyColor(0x770000));
+
+		// Make sure data packs can define dynamic registry contents
+		// See #2225, #2261
+		BiomeModifications.addFeature(
+				BiomeSelectors.foundInOverworld(),
+				GenerationStep.Feature.VEGETAL_DECORATION,
+				RegistryKey.of(Registry.PLACED_FEATURE_KEY, new Identifier(MOD_ID, "concrete_pile"))
+		);
 	}
 
 	// These are used for testing the spacing of custom end biomes.
