@@ -70,7 +70,7 @@ public final class ClientCommandManager {
 	/**
 	 * Gets the active command dispatcher that handles client command registration and execution.
 	 *
-	 * <p>May be null when not connected to a server.</p>
+	 * <p>May be null when not connected to a server (dedicated or integrated).</p>
 	 *
 	 * @return active dispatcher if present
 	 */
