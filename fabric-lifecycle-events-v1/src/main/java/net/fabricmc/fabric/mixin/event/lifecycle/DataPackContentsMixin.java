@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.content.registry.client;
+package net.fabricmc.fabric.mixin.event.lifecycle;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.packet.s2c.play.SynchronizeTagsS2CPacket;
+import net.minecraft.server.DataPackContents;
+import net.minecraft.util.registry.DynamicRegistryManager;
 
-import net.fabricmc.fabric.api.registry.FuelRegistry;
-import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 
-@Mixin(ClientPlayNetworkHandler.class)
-public abstract class MixinClientPlayNetworkHandler {
-	@Inject(at = @At("TAIL"), method = "onSynchronizeTags")
-	private void onSynchronizeTagsHook(SynchronizeTagsS2CPacket packet, CallbackInfo info) {
-		((FuelRegistryImpl) FuelRegistry.INSTANCE).resetCache();
+@Mixin(DataPackContents.class)
+public class DataPackContentsMixin {
+	@Inject(method = "refresh", at = @At("TAIL"))
+	private void hookRefresh(DynamicRegistryManager registries, CallbackInfo ci) {
+		CommonLifecycleEvents.TAGS_LOADED.invoker().tagsLoaded(registries, false);
 	}
 }

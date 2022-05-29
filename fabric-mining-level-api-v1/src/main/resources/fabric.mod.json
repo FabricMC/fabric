@@ -15,14 +15,10 @@
   "authors": [
     "FabricMC"
   ],
-  "entrypoints": {
-    "main": [
-      "net.fabricmc.fabric.impl.mininglevel.FabricMiningLevelInit"
-    ]
-  },
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*",
+    "fabric-lifecycle-events-v1": "*",
     "fabric-resource-loader-v0": "*"
   },
   "description": "Adds support for custom mining levels.",

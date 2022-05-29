@@ -29,6 +29,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.tag.TagKey;
 import net.minecraft.tag.BlockTags;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.yarn.constants.MiningLevels;
 
 public final class MiningLevelManagerImpl {
@@ -36,10 +37,12 @@ public final class MiningLevelManagerImpl {
 	private static final String TOOL_TAG_NAMESPACE = "fabric";
 	private static final Pattern TOOL_TAG_PATTERN = Pattern.compile("^needs_tool_level_([0-9]+)$");
 
-	// A cache of block state mining levels. Cleared by
-	// - MiningLevelCacheInvalidator when tags are reloaded
-	// - ClientPlayNetworkHandlerMixin when tags are synced
+	// A cache of block state mining levels. Cleared when tags are updated.
 	private static final ThreadLocal<Reference2IntMap<BlockState>> CACHE = ThreadLocal.withInitial(Reference2IntOpenHashMap::new);
+
+	static {
+		CommonLifecycleEvents.TAGS_LOADED.register((registries, isClient) -> CACHE.get().clear());
+	}
 
 	public static int getRequiredMiningLevel(BlockState state) {
 		return CACHE.get().computeIntIfAbsent(state, s -> {
@@ -74,9 +77,5 @@ public final class MiningLevelManagerImpl {
 
 			return miningLevel;
 		});
-	}
-
-	public static void clearCache() {
-		CACHE.get().clear();
 	}
 }

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.mininglevel;
-
-import net.minecraft.resource.ResourceType;
+package net.fabricmc.fabric.test.event.lifecycle;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 
-public final class FabricMiningLevelInit implements ModInitializer {
+public class CommonLifecycleTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new MiningLevelCacheInvalidator());
+		CommonLifecycleEvents.TAGS_LOADED.register((registries, isClient) -> {
+			ServerLifecycleTests.LOGGER.info("Tags (re)loaded on {} {}", isClient ? "client" : "server", Thread.currentThread());
+		});
 	}
 }
