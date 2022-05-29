@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Iterables;
 import com.mojang.brigadier.AmbiguityConsumer;
 import com.mojang.brigadier.CommandDispatcher;
@@ -38,6 +36,7 @@ import com.mojang.brigadier.exceptions.BuiltInExceptionProvider;
 import com.mojang.brigadier.exceptions.CommandExceptionType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,9 +55,9 @@ public final class ClientCommandInternals {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientCommandInternals.class);
 	private static final String API_COMMAND_NAME = "fabric-command-api-v2:client";
 	private static final String SHORT_API_COMMAND_NAME = "fcc";
-	private static CommandDispatcher<FabricClientCommandSource> DISPATCHER;
+	private static @Nullable CommandDispatcher<FabricClientCommandSource> DISPATCHER;
 
-	public static void setActiveDispatcher(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+	public static void setActiveDispatcher(@Nullable CommandDispatcher<FabricClientCommandSource> dispatcher) {
 		DISPATCHER = dispatcher;
 	}
 
