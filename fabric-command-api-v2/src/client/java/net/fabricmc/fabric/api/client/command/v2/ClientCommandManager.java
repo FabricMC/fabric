@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.command.v2;
 
+import javax.annotation.Nullable;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -23,6 +25,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
 
 /**
  * Manages client-sided commands and provides some related helper methods.
@@ -30,8 +33,8 @@ import net.fabricmc.api.Environment;
  * <p>Client-sided commands are fully executed on the client,
  * so players can use them in both singleplayer and multiplayer.
  *
- * <p>Registrations can be done in the {@link #DISPATCHER} during a {@link net.fabricmc.api.ClientModInitializer}'s
- * initialization. (See example below.)
+ * <p>Registrations can be done in handlers for {@link ClientCommandRegistrationCallback#EVENT}
+ * (See example below.)
  *
  * <p>The commands are run on the client game thread by default.
  * Avoid doing any heavy calculations here as that can freeze the game's rendering.
@@ -49,23 +52,31 @@ import net.fabricmc.api.Environment;
  * <h2>Example command</h2>
  * <pre>
  * {@code
- * ClientCommandManager.DISPATCHER.register(
- * 	ClientCommandManager.literal("hello").executes(context -> {
- * 		context.getSource().sendFeedback(new LiteralText("Hello, world!"));
- * 		return 0;
- * 	})
- * );
+ * ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+ * 		dispatcher.register(
+ * 			ClientCommandManager.literal("hello").executes(context -> {
+ * 				context.getSource().sendFeedback(Text.literal("Hello, world!"));
+ * 				return 0;
+ * 			})
+ * 		);
+ * });
  * }
  * </pre>
  */
 @Environment(EnvType.CLIENT)
 public final class ClientCommandManager {
-	/**
-	 * The command dispatcher that handles client command registration and execution.
-	 */
-	public static CommandDispatcher<FabricClientCommandSource> DISPATCHER = new CommandDispatcher<>();
-
 	private ClientCommandManager() {
+	}
+
+	/**
+	 * Gets the active command dispatcher that handles client command registration and execution.
+	 *
+	 * <p>May be null when not connected to a server.</p>
+	 *
+	 * @return active dispatcher if present
+	 */
+	public static @Nullable CommandDispatcher<FabricClientCommandSource> getActiveDispatcher() {
+		return ClientCommandInternals.getActiveDispatcher();
 	}
 
 	/**

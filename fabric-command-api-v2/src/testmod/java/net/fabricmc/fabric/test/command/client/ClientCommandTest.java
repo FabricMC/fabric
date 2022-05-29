@@ -132,7 +132,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 			MinecraftClient client = MinecraftClient.getInstance();
 			ClientCommandSource commandSource = client.getNetworkHandler().getCommandSource();
 
-			RootCommandNode<FabricClientCommandSource> rootNode = ClientCommandManager.DISPATCHER.getRoot();
+			RootCommandNode<FabricClientCommandSource> rootNode = ClientCommandManager.getActiveDispatcher().getRoot();
 			CommandNode<FabricClientCommandSource> hiddenClientCommand = rootNode.getChild("hidden_client_command");
 
 			if (!(commandSource instanceof FabricClientCommandSource)) {

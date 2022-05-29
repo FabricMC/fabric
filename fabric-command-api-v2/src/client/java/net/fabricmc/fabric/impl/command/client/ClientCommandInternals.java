@@ -16,13 +16,14 @@
 
 package net.fabricmc.fabric.impl.command.client;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.DISPATCHER;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 import com.google.common.collect.Iterables;
 import com.mojang.brigadier.AmbiguityConsumer;
@@ -55,6 +56,15 @@ public final class ClientCommandInternals {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientCommandInternals.class);
 	private static final String API_COMMAND_NAME = "fabric-command-api-v2:client";
 	private static final String SHORT_API_COMMAND_NAME = "fcc";
+	private static CommandDispatcher<FabricClientCommandSource> DISPATCHER;
+
+	public static void setActiveDispatcher(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+		DISPATCHER = dispatcher;
+	}
+
+	public static @Nullable CommandDispatcher<FabricClientCommandSource> getActiveDispatcher() {
+		return DISPATCHER;
+	}
 
 	/**
 	 * Executes a client-sided command. Callers should ensure that this is only called

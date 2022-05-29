@@ -31,7 +31,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
@@ -48,7 +47,7 @@ abstract class ClientPlayNetworkHandlerMixin {
 	@Inject(method = "onGameJoin", at = @At("HEAD"))
 	private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo info) {
 		final CommandDispatcher<FabricClientCommandSource> dispatcher = new CommandDispatcher<>();
-		ClientCommandManager.DISPATCHER = dispatcher;
+		ClientCommandInternals.setActiveDispatcher(dispatcher);
 		ClientCommandRegistrationCallback.EVENT.invoker().register(dispatcher, new CommandRegistryAccess(packet.registryManager()));
 		ClientCommandInternals.finalizeInit();
 	}
