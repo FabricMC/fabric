@@ -63,7 +63,7 @@ public final class ClientCommandManager {
 	/**
 	 * The command dispatcher that handles client command registration and execution.
 	 */
-	public static final CommandDispatcher<FabricClientCommandSource> DISPATCHER = new CommandDispatcher<>();
+	public static CommandDispatcher<FabricClientCommandSource> DISPATCHER = new CommandDispatcher<>();
 
 	private ClientCommandManager() {
 	}

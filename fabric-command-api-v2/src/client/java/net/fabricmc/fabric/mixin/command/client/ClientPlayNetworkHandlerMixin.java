@@ -26,9 +26,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
+import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
 
@@ -40,6 +44,14 @@ abstract class ClientPlayNetworkHandlerMixin {
 	@Shadow
 	@Final
 	private ClientCommandSource commandSource;
+
+	@Inject(method = "onGameJoin", at = @At("HEAD"))
+	private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo info) {
+		final CommandDispatcher<FabricClientCommandSource> dispatcher = new CommandDispatcher<>();
+		ClientCommandManager.DISPATCHER = dispatcher;
+		ClientCommandRegistrationCallback.EVENT.invoker().register(dispatcher, new CommandRegistryAccess(packet.registryManager()));
+		ClientCommandInternals.finalizeInit();
+	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Inject(method = "onCommandTree", at = @At("RETURN"))
