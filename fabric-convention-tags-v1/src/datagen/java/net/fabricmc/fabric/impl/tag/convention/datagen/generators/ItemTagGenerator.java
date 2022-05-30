@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
@@ -23,6 +24,7 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 
 public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
@@ -334,17 +336,39 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	private void generateSandstoneBlocksTag() {
 		getOrCreateTagBuilder(ConventionalItemTags.YELLOW_SANDSTONE_BLOCKS)
 				.add(Items.SANDSTONE)
-				.add(Items.CUT_SANDSTONE_SLAB)
+				.add(Items.CUT_SANDSTONE)
 				.add(Items.CHISELED_SANDSTONE)
 				.add(Items.SMOOTH_SANDSTONE);
 		getOrCreateTagBuilder(ConventionalItemTags.RED_SANDSTONE_BLOCKS)
 				.add(Items.RED_SANDSTONE)
-				.add(Items.CUT_RED_SANDSTONE_SLAB)
+				.add(Items.CUT_RED_SANDSTONE)
 				.add(Items.CHISELED_RED_SANDSTONE)
 				.add(Items.SMOOTH_RED_SANDSTONE);
 		getOrCreateTagBuilder(ConventionalItemTags.SANDSTONE_BLOCKS)
 				.addOptionalTag(ConventionalItemTags.YELLOW_SANDSTONE_BLOCKS)
 				.addOptionalTag(ConventionalItemTags.RED_SANDSTONE_BLOCKS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.YELLOW_SANDSTONE_SLABS)
+				.add(Items.SANDSTONE_SLAB)
+				.add(Items.CUT_SANDSTONE_SLAB)
+				.add(Items.SMOOTH_SANDSTONE_SLAB);
+		getOrCreateTagBuilder(ConventionalItemTags.RED_SANDSTONE_SLABS)
+				.add(Items.RED_SANDSTONE_SLAB)
+				.add(Items.CUT_RED_SANDSTONE_SLAB)
+				.add(Items.SMOOTH_RED_SANDSTONE_SLAB);
+		getOrCreateTagBuilder(ConventionalItemTags.SANDSTONE_SLABS)
+				.addOptionalTag(ConventionalItemTags.YELLOW_SANDSTONE_SLABS)
+				.addOptionalTag(ConventionalItemTags.RED_SANDSTONE_SLABS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.YELLOW_SANDSTONE_STAIRS)
+				.add(Items.SANDSTONE_STAIRS)
+				.add(Items.SMOOTH_SANDSTONE_STAIRS);
+		getOrCreateTagBuilder(ConventionalItemTags.RED_SANDSTONE_STAIRS)
+				.add(Items.RED_SANDSTONE_STAIRS)
+				.add(Items.SMOOTH_RED_SANDSTONE_STAIRS);
+		getOrCreateTagBuilder(ConventionalItemTags.SANDSTONE_STAIRS)
+				.addOptionalTag(ConventionalItemTags.YELLOW_SANDSTONE_SLABS)
+				.addOptionalTag(ConventionalItemTags.RED_SANDSTONE_SLABS);
 	}
 
 	private static Identifier createFabricId(String id) {

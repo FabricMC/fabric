@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.tag.convention.v1;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tag.TagKey;
 
@@ -72,6 +73,12 @@ public class ConventionalItemTags {
 	public static final TagKey<Item> YELLOW_SANDSTONE_BLOCKS = register("yellow_sandstone_blocks");
 	public static final TagKey<Item> RED_SANDSTONE_BLOCKS = register("red_sandstone_blocks");
 	public static final TagKey<Item> SANDSTONE_BLOCKS = register("sandstone_blocks");
+	public static final TagKey<Item> YELLOW_SANDSTONE_SLABS = register("yellow_sandstone_slabs");
+	public static final TagKey<Item> RED_SANDSTONE_SLABS = register("red_sandstone_slabs");
+	public static final TagKey<Item> SANDSTONE_SLABS = register("sandstone_slabs");
+	public static final TagKey<Item> YELLOW_SANDSTONE_STAIRS = register("yellow_sandstone_stairs");
+	public static final TagKey<Item> RED_SANDSTONE_STAIRS = register("red_sandstone_stairs");
+	public static final TagKey<Item> SANDSTONE_STAIRS = register("sandstone_stairs");
 
 	public static final TagKey<Item> JOB_SITE_BLOCKS = register("job_site_blocks");
 

@@ -135,16 +135,38 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 	private void generateSandstoneBlocksTag() {
 		getOrCreateTagBuilder(ConventionalBlockTags.YELLOW_SANDSTONE_BLOCKS)
 				.add(Blocks.SANDSTONE)
-				.add(Blocks.CUT_SANDSTONE_SLAB)
+				.add(Blocks.CUT_SANDSTONE)
 				.add(Blocks.CHISELED_SANDSTONE)
 				.add(Blocks.SMOOTH_SANDSTONE);
 		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_BLOCKS)
 				.add(Blocks.RED_SANDSTONE)
-				.add(Blocks.CUT_RED_SANDSTONE_SLAB)
+				.add(Blocks.CUT_RED_SANDSTONE)
 				.add(Blocks.CHISELED_RED_SANDSTONE)
 				.add(Blocks.SMOOTH_RED_SANDSTONE);
 		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_BLOCKS)
 				.addOptionalTag(ConventionalBlockTags.YELLOW_SANDSTONE_BLOCKS)
 				.addOptionalTag(ConventionalBlockTags.RED_SANDSTONE_BLOCKS);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.YELLOW_SANDSTONE_SLABS)
+				.add(Blocks.SANDSTONE_SLAB)
+				.add(Blocks.CUT_SANDSTONE_SLAB)
+				.add(Blocks.SMOOTH_SANDSTONE_SLAB);
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_SLABS)
+				.add(Blocks.RED_SANDSTONE_SLAB)
+				.add(Blocks.CUT_RED_SANDSTONE_SLAB)
+				.add(Blocks.SMOOTH_RED_SANDSTONE_SLAB);
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_SLABS)
+				.addOptionalTag(ConventionalBlockTags.YELLOW_SANDSTONE_SLABS)
+				.addOptionalTag(ConventionalBlockTags.RED_SANDSTONE_SLABS);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.YELLOW_SANDSTONE_STAIRS)
+				.add(Blocks.SANDSTONE_STAIRS)
+				.add(Blocks.SMOOTH_SANDSTONE_STAIRS);
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_STAIRS)
+				.add(Blocks.RED_SANDSTONE_STAIRS)
+				.add(Blocks.SMOOTH_RED_SANDSTONE_STAIRS);
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_STAIRS)
+				.addOptionalTag(ConventionalBlockTags.YELLOW_SANDSTONE_SLABS)
+				.addOptionalTag(ConventionalBlockTags.RED_SANDSTONE_SLABS);
 	}
 }
