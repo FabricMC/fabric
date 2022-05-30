@@ -70,6 +70,8 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		generateGlassTags();
 		generateShulkerTag();
 		generateDyeTags();
+		generateJobSiteBlocksTag();
+		generateSandstoneBlocksTag();
 	}
 
 	private void generateDyeTags() {
@@ -310,6 +312,39 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.BOWS)
 				.add(Items.CROSSBOW)
 				.add(Items.BOW);
+	}
+
+	private void generateJobSiteBlocksTag() {
+		getOrCreateTagBuilder(ConventionalItemTags.JOB_SITE_BLOCKS)
+				.add(Items.BARREL)
+				.add(Items.BLAST_FURNACE)
+				.add(Items.BREWING_STAND)
+				.add(Items.CARTOGRAPHY_TABLE)
+				.add(Items.CAULDRON)
+				.add(Items.COMPOSTER)
+				.add(Items.FLETCHING_TABLE)
+				.add(Items.GRINDSTONE)
+				.add(Items.LECTERN)
+				.add(Items.LOOM)
+				.add(Items.SMITHING_TABLE)
+				.add(Items.SMOKER)
+				.add(Items.STONECUTTER);
+	}
+
+	private void generateSandstoneBlocksTag() {
+		getOrCreateTagBuilder(ConventionalItemTags.YELLOW_SANDSTONE_BLOCKS)
+				.add(Items.SANDSTONE)
+				.add(Items.CUT_SANDSTONE_SLAB)
+				.add(Items.CHISELED_SANDSTONE)
+				.add(Items.SMOOTH_SANDSTONE);
+		getOrCreateTagBuilder(ConventionalItemTags.RED_SANDSTONE_BLOCKS)
+				.add(Items.RED_SANDSTONE)
+				.add(Items.CUT_RED_SANDSTONE_SLAB)
+				.add(Items.CHISELED_RED_SANDSTONE)
+				.add(Items.SMOOTH_RED_SANDSTONE);
+		getOrCreateTagBuilder(ConventionalItemTags.SANDSTONE_BLOCKS)
+				.addOptionalTag(ConventionalItemTags.YELLOW_SANDSTONE_BLOCKS)
+				.addOptionalTag(ConventionalItemTags.RED_SANDSTONE_BLOCKS);
 	}
 
 	private static Identifier createFabricId(String id) {

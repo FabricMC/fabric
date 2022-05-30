@@ -50,6 +50,8 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 				.add(Blocks.BOOKSHELF);
 		generateGlassTags();
 		generateShulkerTag();
+		generateJobSiteBlocksTag();
+		generateSandstoneBlocksTag();
 	}
 
 	private void generateShulkerTag() {
@@ -111,5 +113,38 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 				.add(Blocks.RED_STAINED_GLASS_PANE)
 				.add(Blocks.WHITE_STAINED_GLASS_PANE)
 				.add(Blocks.YELLOW_STAINED_GLASS_PANE);
+	}
+
+	private void generateJobSiteBlocksTag() {
+		getOrCreateTagBuilder(ConventionalBlockTags.JOB_SITE_BLOCKS)
+				.add(Blocks.BARREL)
+				.add(Blocks.BLAST_FURNACE)
+				.add(Blocks.BREWING_STAND)
+				.add(Blocks.CARTOGRAPHY_TABLE)
+				.add(Blocks.CAULDRON)
+				.add(Blocks.COMPOSTER)
+				.add(Blocks.FLETCHING_TABLE)
+				.add(Blocks.GRINDSTONE)
+				.add(Blocks.LECTERN)
+				.add(Blocks.LOOM)
+				.add(Blocks.SMITHING_TABLE)
+				.add(Blocks.SMOKER)
+				.add(Blocks.STONECUTTER);
+	}
+
+	private void generateSandstoneBlocksTag() {
+		getOrCreateTagBuilder(ConventionalBlockTags.YELLOW_SANDSTONE_BLOCKS)
+				.add(Blocks.SANDSTONE)
+				.add(Blocks.CUT_SANDSTONE_SLAB)
+				.add(Blocks.CHISELED_SANDSTONE)
+				.add(Blocks.SMOOTH_SANDSTONE);
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_BLOCKS)
+				.add(Blocks.RED_SANDSTONE)
+				.add(Blocks.CUT_RED_SANDSTONE_SLAB)
+				.add(Blocks.CHISELED_RED_SANDSTONE)
+				.add(Blocks.SMOOTH_RED_SANDSTONE);
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_BLOCKS)
+				.addOptionalTag(ConventionalBlockTags.YELLOW_SANDSTONE_BLOCKS)
+				.addOptionalTag(ConventionalBlockTags.RED_SANDSTONE_BLOCKS);
 	}
 }
