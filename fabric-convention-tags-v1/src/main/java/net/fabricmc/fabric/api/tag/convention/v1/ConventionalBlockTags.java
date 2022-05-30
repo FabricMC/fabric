@@ -18,7 +18,12 @@ package net.fabricmc.fabric.api.tag.convention.v1;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
+import net.minecraft.item.Item;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.TagKey;
+import net.minecraft.village.VillagerProfession;
+import net.minecraft.world.poi.PointOfInterestType;
 
 import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 
@@ -33,7 +38,15 @@ public class ConventionalBlockTags {
 	public static final TagKey<Block> BOOKSHELVES = register("bookshelves");
 	public static final TagKey<Block> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Block> GLASS_PANES = register("glass_panes");
+
+	public static final TagKey<Block> YELLOW_SANDSTONE_BLOCKS = register("yellow_sandstone_blocks");
+	public static final TagKey<Block> RED_SANDSTONE_BLOCKS = register("red_sandstone_blocks");
+	public static final TagKey<Block> SANDSTONE_BLOCKS = register("sandstone_blocks");
+
+	public static final TagKey<Block> JOB_SITE_BLOCKS = register("job_site_blocks");
+
 	public static final TagKey<Block> SHULKER_BOXES = register("shulker_boxes");
+
 	/**
 	 * Blocks should be included in this tag if their movement can cause serious issues such as world corruption
 	 * upon being moved, such as chunk loaders or pipes,

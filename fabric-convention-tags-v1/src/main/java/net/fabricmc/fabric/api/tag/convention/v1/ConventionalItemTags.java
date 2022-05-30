@@ -69,6 +69,12 @@ public class ConventionalItemTags {
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Item> GLASS_PANES = register("glass_panes");
 
+	public static final TagKey<Item> YELLOW_SANDSTONE_BLOCKS = register("yellow_sandstone_blocks");
+	public static final TagKey<Item> RED_SANDSTONE_BLOCKS = register("red_sandstone_blocks");
+	public static final TagKey<Item> SANDSTONE_BLOCKS = register("sandstone_blocks");
+
+	public static final TagKey<Item> JOB_SITE_BLOCKS = register("job_site_blocks");
+
 	public static final TagKey<Item> SHULKER_BOXES = register("shulker_boxes");
 
 	// Dyes
