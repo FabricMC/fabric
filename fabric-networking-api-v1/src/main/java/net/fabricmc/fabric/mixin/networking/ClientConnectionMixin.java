@@ -63,22 +63,12 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 		this.playChannels = Collections.newSetFromMap(new ConcurrentHashMap<>());
 	}
 
-	@Unique
-	private Throwable caughtException;
-
-	// Must be fully qualified due to mixin not working in production without it
-	@SuppressWarnings("UnnecessaryQualifiedMemberReference")
-	@Inject(method = "Lnet/minecraft/network/ClientConnection;exceptionCaught(Lio/netty/channel/ChannelHandlerContext;Ljava/lang/Throwable;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;send(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;)V"))
-	private void resendOnExceptionCaught$captureThrowable(ChannelHandlerContext context, Throwable ex, CallbackInfo ci) {
-		caughtException = ex;
-	}
-
 	// Must be fully qualified due to mixin not working in production without it
 	@SuppressWarnings("UnnecessaryQualifiedMemberReference")
 	@Redirect(method = "Lnet/minecraft/network/ClientConnection;exceptionCaught(Lio/netty/channel/ChannelHandlerContext;Ljava/lang/Throwable;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;send(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;)V"))
-	private void resendOnExceptionCaught(ClientConnection self, Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> listener) {
+	private void resendOnExceptionCaught(ClientConnection self, Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> listener, ChannelHandlerContext context, Throwable ex) {
 		PacketListener handler = this.packetListener;
-		Text disconnectMessage = new TranslatableText("disconnect.genericReason", "Internal Exception: " + caughtException);
+		Text disconnectMessage = new TranslatableText("disconnect.genericReason", "Internal Exception: " + ex);
 
 		if (handler instanceof DisconnectPacketSource) {
 			this.send(((DisconnectPacketSource) handler).createDisconnectPacket(disconnectMessage), listener);
