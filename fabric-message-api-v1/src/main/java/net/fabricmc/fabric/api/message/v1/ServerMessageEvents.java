@@ -27,7 +27,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-public final class ServerChatEvents {
+public final class ServerMessageEvents {
 	/**
 	 * An event triggered when the server broadcasts a chat message sent by a player,
 	 * typically from a client GUI or a player-executed command. Mods can use this to block
@@ -127,7 +127,7 @@ public final class ServerChatEvents {
 		}
 	});
 
-	private ServerChatEvents() {
+	private ServerMessageEvents() {
 	}
 
 	@FunctionalInterface

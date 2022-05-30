@@ -28,7 +28,7 @@ import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.message.v1.ServerChatDecoratorEvent;
-import net.fabricmc.fabric.api.message.v1.ServerChatEvents;
+import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 
 public class ChatTest implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChatTest.class);
@@ -72,29 +72,29 @@ public class ChatTest implements ModInitializer {
 			return CompletableFuture.completedFuture(message);
 		});
 
-		// ServerChatEvents
-		ServerChatEvents.CHAT_MESSAGE.register(
+		// ServerMessageEvents
+		ServerMessageEvents.CHAT_MESSAGE.register(
 				(message, sender, typeKey) -> LOGGER.info("ChatTest: {} sent \"{}\"", sender, message)
 		);
-		ServerChatEvents.GAME_MESSAGE.register(
+		ServerMessageEvents.GAME_MESSAGE.register(
 				(message, typeKey) -> LOGGER.info("ChatTest: server sent \"{}\"", message)
 		);
-		ServerChatEvents.COMMAND_MESSAGE.register(
+		ServerMessageEvents.COMMAND_MESSAGE.register(
 				(message, source, typeKey) -> LOGGER.info("ChatTest: command sent \"{}\"", message)
 		);
 
-		// ServerChatEvents blocking
-		ServerChatEvents.ALLOW_CHAT_MESSAGE.register(
+		// ServerMessageEvents blocking
+		ServerMessageEvents.ALLOW_CHAT_MESSAGE.register(
 				(message, sender, typeKey) -> !message.raw().getContent().getString().contains("sadtater")
 		);
-		ServerChatEvents.ALLOW_GAME_MESSAGE.register((message, typeKey) -> {
+		ServerMessageEvents.ALLOW_GAME_MESSAGE.register((message, typeKey) -> {
 			if (message.getContent() instanceof TranslatableTextContent translatable) {
 				return !translatable.getKey().startsWith("death.");
 			}
 
 			return true;
 		});
-		ServerChatEvents.ALLOW_COMMAND_MESSAGE.register(
+		ServerMessageEvents.ALLOW_COMMAND_MESSAGE.register(
 				(message, source, typeKey) -> !message.raw().getContent().getString().contains("sadtater")
 		);
 	}
