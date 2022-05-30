@@ -18,12 +18,7 @@ package net.fabricmc.fabric.api.tag.convention.v1;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.item.Item;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.TagKey;
-import net.minecraft.village.VillagerProfession;
-import net.minecraft.world.poi.PointOfInterestType;
 
 import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 
