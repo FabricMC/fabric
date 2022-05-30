@@ -44,7 +44,7 @@ public class ConventionalBlockTags {
 	public static final TagKey<Block> RED_SANDSTONE_STAIRS = register("red_sandstone_stairs");
 	public static final TagKey<Block> SANDSTONE_STAIRS = register("sandstone_stairs");
 
-	public static final TagKey<Block> JOB_SITE_BLOCKS = register("job_site_blocks");
+	public static final TagKey<Block> VILLAGER_JOB_SITES = register("villager_job_sites");
 
 	public static final TagKey<Block> SHULKER_BOXES = register("shulker_boxes");
 

@@ -116,7 +116,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 	}
 
 	private void generateJobSiteBlocksTag() {
-		getOrCreateTagBuilder(ConventionalBlockTags.JOB_SITE_BLOCKS)
+		getOrCreateTagBuilder(ConventionalBlockTags.VILLAGER_JOB_SITES)
 				.add(Blocks.BARREL)
 				.add(Blocks.BLAST_FURNACE)
 				.add(Blocks.BREWING_STAND)

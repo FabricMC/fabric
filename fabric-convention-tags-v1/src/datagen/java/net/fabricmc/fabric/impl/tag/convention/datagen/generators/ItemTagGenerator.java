@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
@@ -24,7 +23,6 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 
 public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
@@ -317,7 +315,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateJobSiteBlocksTag() {
-		getOrCreateTagBuilder(ConventionalItemTags.JOB_SITE_BLOCKS)
+		getOrCreateTagBuilder(ConventionalItemTags.VILLAGER_JOB_SITES)
 				.add(Items.BARREL)
 				.add(Items.BLAST_FURNACE)
 				.add(Items.BREWING_STAND)

@@ -80,7 +80,7 @@ public class ConventionalItemTags {
 	public static final TagKey<Item> RED_SANDSTONE_STAIRS = register("red_sandstone_stairs");
 	public static final TagKey<Item> SANDSTONE_STAIRS = register("sandstone_stairs");
 
-	public static final TagKey<Item> JOB_SITE_BLOCKS = register("job_site_blocks");
+	public static final TagKey<Item> VILLAGER_JOB_SITES = register("villager_job_sites");
 
 	public static final TagKey<Item> SHULKER_BOXES = register("shulker_boxes");
 
