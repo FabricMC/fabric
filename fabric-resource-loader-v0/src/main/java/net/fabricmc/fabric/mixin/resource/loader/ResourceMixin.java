@@ -14,24 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.loot.table;
-
-import java.util.List;
+package net.fabricmc.fabric.mixin.resource.loader;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.entry.LootPoolEntry;
-import net.minecraft.loot.function.LootFunction;
+import net.minecraft.resource.Resource;
 
-@Mixin(LootPool.Builder.class)
-public interface LootPoolBuilderHooks {
-	@Accessor
-	List<LootPoolEntry> getEntries();
-	@Accessor
-	List<LootCondition> getConditions();
-	@Accessor
-	List<LootFunction> getFunctions();
+import net.fabricmc.fabric.impl.resource.loader.FabricResource;
+
+// Add FabricResource to Resource's superinterfaces.
+@Mixin(Resource.class)
+interface ResourceMixin extends FabricResource {
 }

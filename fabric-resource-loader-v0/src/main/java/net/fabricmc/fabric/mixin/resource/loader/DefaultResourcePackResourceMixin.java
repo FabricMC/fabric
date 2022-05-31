@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.loot.table;
-
-import java.util.List;
+package net.fabricmc.fabric.mixin.resource.loader;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.function.LootFunction;
+import net.minecraft.resource.ResourcePackSource;
 
-@Mixin(LootTable.Builder.class)
-public interface LootSupplierBuilderHooks {
-	@Accessor
-	List<LootPool> getPools();
-	@Accessor
-	List<LootFunction> getFunctions();
+import net.fabricmc.fabric.impl.resource.loader.FabricResource;
+
+/**
+ * Implements {@link FabricResource} for the anonymous resource implementation
+ * in {@link net.minecraft.resource.DefaultResourcePack#getResource}.
+ */
+@Mixin(targets = "net/minecraft/resource/DefaultResourcePack$1")
+abstract class DefaultResourcePackResourceMixin implements FabricResource {
+	@Override
+	public ResourcePackSource getFabricPackSource() {
+		// The default resource pack only contains built-in vanilla resources.
+		return ResourcePackSource.PACK_SOURCE_BUILTIN;
+	}
 }

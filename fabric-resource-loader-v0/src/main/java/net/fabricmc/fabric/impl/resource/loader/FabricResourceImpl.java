@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.loot.table;
+package net.fabricmc.fabric.impl.resource.loader;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import net.minecraft.resource.Resource;
+import net.minecraft.resource.ResourcePackSource;
 
-import net.minecraft.loot.entry.LootPoolEntry;
-import net.minecraft.loot.entry.LootPoolEntryType;
-import net.minecraft.loot.entry.LootPoolEntryTypes;
-import net.minecraft.util.JsonSerializer;
-
-@Mixin(LootPoolEntryTypes.class)
-public interface LootPoolEntryTypesAccessor {
-	@Invoker("register")
-	static LootPoolEntryType register(String id, JsonSerializer<? extends LootPoolEntry> serializer) {
-		throw new UnsupportedOperationException("Mixin dummy");
-	}
+/**
+ * An extended version of {@link FabricResource} that supports
+ * setting the pack resource. Only for use from within this module.
+ * Note that <strong>not all</strong> resources are instances of this interface.
+ */
+public interface FabricResourceImpl extends Resource, FabricResource {
+	void setFabricPackSource(ResourcePackSource packSource);
 }

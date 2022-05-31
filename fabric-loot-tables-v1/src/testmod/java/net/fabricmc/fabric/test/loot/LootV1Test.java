@@ -20,28 +20,31 @@ import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
-import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.LootGsons;
 import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.condition.SurvivesExplosionLootCondition;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.entry.TagEntry;
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
+import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 import net.fabricmc.fabric.api.loot.v1.LootEntryTypeRegistry;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 
-public class LootTest implements ModInitializer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(LootTest.class);
+public class LootV1Test implements ModInitializer {
+	private static final Logger LOGGER = LoggerFactory.getLogger(LootV1Test.class);
 
 	private static final Gson LOOT_GSON = LootGsons.getTableGsonBuilder().create();
 	private static final String LOOT_ENTRY_JSON = "{\"type\":\"minecraft:item\",\"name\":\"minecraft:apple\"}";
@@ -53,7 +56,9 @@ public class LootTest implements ModInitializer {
 
 		// Test loot table load event
 		LootTableLoadingCallback.EVENT.register((resourceManager, manager, id, supplier, setter) -> {
-			if ("minecraft:blocks/dirt".equals(id.toString())) {
+			// Add feathers and apples to dirt (only one drops at the time since they're in the same pool),
+			// and replace grass block drops with wheat
+			if (Blocks.DIRT.getLootTableId().equals(id)) {
 				LootPoolEntry entryFromString = LOOT_GSON.fromJson(LOOT_ENTRY_JSON, LootPoolEntry.class);
 
 				LootPool pool = FabricLootPoolBuilder.builder()
@@ -64,6 +69,11 @@ public class LootTest implements ModInitializer {
 						.build();
 
 				supplier.withPool(pool);
+			} else if (Blocks.GRASS_BLOCK.getLootTableId().equals(id)) {
+				LootTable table = FabricLootSupplierBuilder.builder()
+						.pool(FabricLootPoolBuilder.builder().with(ItemEntry.builder(Items.WHEAT)))
+						.build();
+				setter.set(table);
 			}
 		});
 	}

@@ -16,19 +16,18 @@
 
 package net.fabricmc.fabric.mixin.loot.table;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.loot.LootPool;
-import net.minecraft.loot.provider.number.LootNumberProvider;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
+import net.minecraft.loot.provider.number.LootNumberProvider;
 
 import net.fabricmc.fabric.api.loot.v1.FabricLootPool;
 
@@ -36,32 +35,37 @@ import net.fabricmc.fabric.api.loot.v1.FabricLootPool;
 public abstract class MixinLootPool implements FabricLootPool {
 	@Shadow
 	@Final
-	private LootPoolEntry[] entries;
+	LootPoolEntry[] entries;
 
 	@Shadow
 	@Final
-	private LootCondition[] conditions;
+	LootCondition[] conditions;
 
 	@Shadow
 	@Final
-	private LootFunction[] functions;
+	LootFunction[] functions;
+
+	@Shadow
+	@Final
+	LootNumberProvider rolls;
 
 	@Override
 	public List<LootPoolEntry> getEntries() {
-		return Arrays.asList(entries);
+		return ImmutableList.copyOf(entries);
 	}
 
 	@Override
 	public List<LootCondition> getConditions() {
-		return Arrays.asList(conditions);
+		return ImmutableList.copyOf(conditions);
 	}
 
 	@Override
 	public List<LootFunction> getFunctions() {
-		return Arrays.asList(functions);
+		return ImmutableList.copyOf(functions);
 	}
 
-	@Accessor
 	@Override
-	public abstract LootNumberProvider getRolls();
+	public LootNumberProvider getRolls() {
+		return rolls;
+	}
 }

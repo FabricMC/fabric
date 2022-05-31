@@ -15,6 +15,15 @@ transitive-accessible method net/minecraft/screen/ScreenHandlerType <init> (Lnet
 transitive-accessible class net/minecraft/client/gui/screen/ingame/HandledScreens$Provider
 transitive-accessible method net/minecraft/client/gui/screen/ingame/HandledScreens register (Lnet/minecraft/screen/ScreenHandlerType;Lnet/minecraft/client/gui/screen/ingame/HandledScreens$Provider;)V
 
+# Data contained in loot tables and pools
+transitive-accessible field net/minecraft/loot/LootPool entries [Lnet/minecraft/loot/entry/LootPoolEntry;
+transitive-accessible field net/minecraft/loot/LootPool conditions [Lnet/minecraft/loot/condition/LootCondition;
+transitive-accessible field net/minecraft/loot/LootPool functions [Lnet/minecraft/loot/function/LootFunction;
+transitive-accessible field net/minecraft/loot/LootPool rolls Lnet/minecraft/loot/provider/number/LootNumberProvider;
+transitive-accessible field net/minecraft/loot/LootPool bonusRolls Lnet/minecraft/loot/provider/number/LootNumberProvider;
+transitive-accessible field net/minecraft/loot/LootTable pools [Lnet/minecraft/loot/LootPool;
+transitive-accessible field net/minecraft/loot/LootTable functions [Lnet/minecraft/loot/function/LootFunction;
+
 ### Generated access wideners below
 # Constructors of non-abstract block classes
 transitive-accessible method net/minecraft/block/AirBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
