@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.resource.loader;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Charsets;
@@ -24,6 +25,9 @@ import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.SharedConstants;
+import net.minecraft.resource.DataPackSettings;
+import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceType;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
@@ -88,5 +92,33 @@ public final class ModResourcePackUtil {
 		} else {
 			return "Fabric Mod \"" + info.getId() + "\"";
 		}
+	}
+
+	/**
+	 * Creates the default data pack settings that replaces
+	 * {@code DataPackSettings.SAFE_MODE} used in vanilla.
+	 * @return the default data pack settings
+	 */
+	public static DataPackSettings createDefaultDataPackSettings() {
+		ModResourcePackCreator modResourcePackCreator = new ModResourcePackCreator(ResourceType.SERVER_DATA);
+		List<ResourcePackProfile> moddedResourcePacks = new ArrayList<>();
+		modResourcePackCreator.register(moddedResourcePacks::add);
+
+		List<String> enabled = new ArrayList<>(DataPackSettings.SAFE_MODE.getEnabled());
+		List<String> disabled = new ArrayList<>(DataPackSettings.SAFE_MODE.getDisabled());
+
+		// This ensures that any built-in registered data packs by mods which needs to be enabled by default are
+		// as the data pack screen automatically put any data pack as disabled except the Default data pack.
+		for (ResourcePackProfile profile : moddedResourcePacks) {
+			try (ResourcePack pack = profile.createResourcePack()) {
+				if (pack instanceof FabricModResourcePack || (pack instanceof ModNioResourcePack && ((ModNioResourcePack) pack).getActivationType().isEnabledByDefault())) {
+					enabled.add(profile.getName());
+				} else {
+					disabled.add(profile.getName());
+				}
+			}
+		}
+
+		return new DataPackSettings(enabled, disabled);
 	}
 }
