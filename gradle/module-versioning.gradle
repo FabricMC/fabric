@@ -38,7 +38,7 @@ class BumpVersionTask extends DefaultTask {
 				break
 			}
 
-			def subProject = project.getChildProjects().get(input)
+			def subProject = project.childProjects[input] ?: project.childProjects["deprecated"].childProjects[input]
 
 			if (!subProject) {
 				println "Could not find project with name: $input"
