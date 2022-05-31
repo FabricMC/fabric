@@ -142,7 +142,7 @@ public final class ServerMessageEvents {
 		 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
 		 * and after triggering {@link #COMMAND_MESSAGE} event.
 		 *
-		 * @param message the broadcast message with chat decorators applied; use {@code message.raw().getContent()} to get the text
+		 * @param message the broadcast message with message decorators applied; use {@code message.raw().getContent()} to get the text
 		 * @param sender  the player that sent the message
 		 * @param typeKey the message type
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
@@ -177,7 +177,7 @@ public final class ServerMessageEvents {
 		 * {@link #ALLOW_CHAT_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
 		 * triggered after triggering {@link #COMMAND_MESSAGE}.
 		 *
-		 * @param message the broadcast message with chat decorators applied if applicable; use {@code message.raw().getContent()} to get the text
+		 * @param message the broadcast message with message decorators applied if applicable; use {@code message.raw().getContent()} to get the text
 		 * @param source  the command source that sent the message
 		 * @param typeKey the message type
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
@@ -196,7 +196,7 @@ public final class ServerMessageEvents {
 		 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
 		 * and after triggering {@link #COMMAND_MESSAGE} event.
 		 *
-		 * @param message the broadcast message with chat decorators applied; use {@code message.raw().getContent()} to get the text
+		 * @param message the broadcast message with message decorators applied; use {@code message.raw().getContent()} to get the text
 		 * @param sender  the player that sent the message
 		 * @param typeKey the message type
 		 */
@@ -226,7 +226,7 @@ public final class ServerMessageEvents {
 		 * <p>If the command is executed by a player, {@link #ALLOW_CHAT_MESSAGE} and
 		 * {@link #CHAT_MESSAGE} events will also be triggered after this event.
 		 *
-		 * @param message the broadcast message with chat decorators applied if applicable; use {@code message.raw().getContent()} to get the text
+		 * @param message the broadcast message with message decorators applied if applicable; use {@code message.raw().getContent()} to get the text
 		 * @param source  the command source that sent the message
 		 * @param typeKey the message type
 		 */

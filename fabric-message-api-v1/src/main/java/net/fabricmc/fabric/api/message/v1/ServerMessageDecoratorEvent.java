@@ -30,36 +30,34 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * A class for registering a {@link ChatDecorator}. Check the chat decorator documentation
- * for how chat decorators work. Unlike other events, this uses a functional interface that is
+ * A class for registering a {@link ChatDecorator}. Check the message decorator documentation
+ * for how message decorators work. Unlike other events, this uses a functional interface that is
  * provided by the vanilla game.
  *
  * <p>This event uses phases to provide better mod compatibilities between mods that add custom
- * content and styling. Chat decorators with the styling phase will always apply after the ones with
- * the content phase. When registering the chat decorator, it is recommended to choose one of
- * the phases from this interface and pass that to the {@link Event#register(Identifier, Object)}
- * function. If not given, the chat decorator will run in the default phase, which is between
+ * content and styling. Message decorators with the styling phase will always apply after the ones
+ * with the content phase. When registering the message decorator, it is recommended to choose one
+ * of the phases from this interface and pass that to the {@link Event#register(Identifier, Object)}
+ * function. If not given, the message decorator will run in the default phase, which is between
  * the content phase and the styling phase.
  *
- * <p>When implementing a chat decorator, it is <strong>very important that the decorator returns
- * the same contents between previewing and submission</strong> - otherwise the game discards the
- * message because it was improperly signed. The most straightforward way of doing this is by
- * making sure the decorator returns the same result for a given message. Another way to solve this
- * issue is to cache the decorated message.
+ * <p>When implementing a message decorator, it is <strong>very important that the decorator be
+ * idempotent; i.e. return the same text when given the same text (and sender)</strong> -
+ * otherwise the game discards the message because it was improperly signed.
  *
- * <p>Example of registering a content phase chat decorator:
+ * <p>Example of registering a content phase message decorator:
  *
  * <pre><code>
- * ServerChatDecoratorEvent.EVENT.register(ServerChatDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
+ * ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
  *     // Add smiley face. Has to copy() to get a MutableText with siblings and styles.
  *     return message.copy().append(" :)");
  * });
  * </code></pre>
  *
- * <p>Example of registering a styling phase chat decorator:
+ * <p>Example of registering a styling phase message decorator:
  *
  * <pre><code>
- * ServerChatDecoratorEvent.EVENT.register(ServerChatDecoratorEvent.STYLING_PHASE, (sender, message) -> {
+ * ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.STYLING_PHASE, (sender, message) -> {
  *     // Apply orange color to messages sent by server operators
  *     if (sender != null && sender.server.getPlayerManager().isOperator(sender.getGameProfile())) {
  *         return CompletableFuture.completedFuture(
@@ -69,18 +67,18 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * });
  * </code></pre>
  */
-public final class ServerChatDecoratorEvent {
-	private ServerChatDecoratorEvent() {
+public final class ServerMessageDecoratorEvent {
+	private ServerMessageDecoratorEvent() {
 	}
 
 	/**
-	 * The content phase of the event, passed when registering a chat decorator. Use this when
-	 * the chat decorator modifies the text content of the message.
+	 * The content phase of the event, passed when registering a message decorator. Use this when
+	 * the decorator modifies the text content of the message.
 	 */
 	public static final Identifier CONTENT_PHASE = new Identifier("fabric", "content");
 	/**
-	 * The styling phase of the event, passed when registering a chat decorator. Use this when
-	 * the chat decorator only modifies the styling of the message with the text intact.
+	 * The styling phase of the event, passed when registering a message decorator. Use this when
+	 * the decorator only modifies the styling of the message with the text intact.
 	 */
 	public static final Identifier STYLING_PHASE = new Identifier("fabric", "styling");
 
@@ -103,9 +101,9 @@ public final class ServerChatDecoratorEvent {
 
 		if (throwable != null) {
 			if (throwable instanceof CompletionException) throwable = throwable.getCause();
-			throw new CompletionException("chat decorator %s failed".formatted(decoratorName), throwable);
+			throw new CompletionException("message decorator %s failed".formatted(decoratorName), throwable);
 		}
 
-		return Objects.requireNonNull(decorated, "chat decorator %s returned null".formatted(decoratorName));
+		return Objects.requireNonNull(decorated, "message decorator %s returned null".formatted(decoratorName));
 	}
 }

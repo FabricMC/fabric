@@ -27,7 +27,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.message.v1.ServerChatDecoratorEvent;
+import net.fabricmc.fabric.api.message.v1.ServerMessageDecoratorEvent;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 
 public class ChatTest implements ModInitializer {
@@ -38,7 +38,7 @@ public class ChatTest implements ModInitializer {
 		Executor ioWorkerExecutor = Util.getIoWorkerExecutor();
 
 		// Basic content phase testing
-		ServerChatDecoratorEvent.EVENT.register(ServerChatDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
+		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
 			if (message.getString().contains("tater")) {
 				return CompletableFuture.completedFuture(message.copy().append(" :tiny_potato:"));
 			}
@@ -47,7 +47,7 @@ public class ChatTest implements ModInitializer {
 		});
 
 		// Basic styling phase testing
-		ServerChatDecoratorEvent.EVENT.register(ServerChatDecoratorEvent.STYLING_PHASE, (sender, message) -> {
+		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.STYLING_PHASE, (sender, message) -> {
 			if (sender != null && sender.getAbilities().creativeMode) {
 				return CompletableFuture.completedFuture(message.copy().styled(style -> style.withColor(0xFFA500)));
 			}
@@ -56,7 +56,7 @@ public class ChatTest implements ModInitializer {
 		});
 
 		// Async testing
-		ServerChatDecoratorEvent.EVENT.register(ServerChatDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
+		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
 			if (message.getString().contains("wait")) {
 				return CompletableFuture.supplyAsync(() -> {
 					try {

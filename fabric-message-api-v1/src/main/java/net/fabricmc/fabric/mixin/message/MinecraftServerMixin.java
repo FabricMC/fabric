@@ -24,13 +24,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.network.ChatDecorator;
 import net.minecraft.server.MinecraftServer;
 
-import net.fabricmc.fabric.api.message.v1.ServerChatDecoratorEvent;
+import net.fabricmc.fabric.api.message.v1.ServerMessageDecoratorEvent;
 
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin {
 	@Inject(method = "getChatDecorator", at = @At("RETURN"), cancellable = true)
 	private void onGetChatDecorator(CallbackInfoReturnable<ChatDecorator> cir) {
 		ChatDecorator originalDecorator = cir.getReturnValue();
-		cir.setReturnValue((sender, message) -> originalDecorator.decorate(sender, message).thenCompose((decorated) -> ServerChatDecoratorEvent.EVENT.invoker().decorate(sender, decorated)));
+		cir.setReturnValue((sender, message) -> originalDecorator.decorate(sender, message).thenCompose((decorated) -> ServerMessageDecoratorEvent.EVENT.invoker().decorate(sender, decorated)));
 	}
 }
