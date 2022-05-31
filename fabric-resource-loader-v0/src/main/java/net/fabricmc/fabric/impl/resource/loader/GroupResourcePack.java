@@ -128,7 +128,9 @@ public abstract class GroupResourcePack implements ResourcePack {
 
 		for (ModResourcePack pack : packs) {
 			if (pack.contains(manager.getType(), id)) {
-				resources.add(((NamespaceResourceManager) manager).new Entry(id, metadataId, pack));
+				final NamespaceResourceManager.Entry entry = ((NamespaceResourceManager) manager).new Entry(id, metadataId, pack);
+				((FabricNamespaceResourceManagerEntry) entry).setFabricPackSource(ModResourcePackCreator.RESOURCE_PACK_SOURCE);
+				resources.add(entry);
 			}
 		}
 	}
