@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.resource.loader;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,7 +33,9 @@ import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.impl.resource.loader.FabricResourceImpl;
 import net.fabricmc.fabric.impl.resource.loader.GroupResourcePack;
+import net.fabricmc.fabric.impl.resource.loader.ResourcePackSourceTracker;
 
 @Mixin(NamespaceResourceManager.class)
 public class NamespaceResourceManagerMixin {
@@ -65,5 +68,33 @@ public class NamespaceResourceManagerMixin {
 		}
 
 		return pack.contains(type, id);
+	}
+
+	/* The two injectors below set the resource pack sources (see FabricResourceImpl)
+	 * for resources created in NamespaceResourceManager.getAllResources and NamespaceResourceManager.getResource.
+	 *
+	 * Since (in 1.18.2) ResourceImpl doesn't hold a reference to its resource pack,
+	 * we have to get the source from the resource pack when the resource is created.
+	 * These are the main creation sites for resources in 1.18.2
+	 * along with DefaultResourcePack.getResource and Fabric API's GroupResourcePack,
+	 * which also either track the source similarly or provide other types of Resource instances
+	 * that have a different FabricResource implementation.
+	 */
+
+	@Inject(method = "getAllResources", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", remap = false, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void trackSourceOnGetAllResources(Identifier id, CallbackInfoReturnable<List<Resource>> cir, List<Resource> resources, Identifier metadataPath, Iterator<ResourcePack> packs, ResourcePack resourcePack) {
+		// After the created resource has been added, read it from the list and set its source
+		// to match the tracked source of its resource pack.
+		if (resources.get(resources.size() - 1) instanceof FabricResourceImpl resource) {
+			resource.setFabricPackSource(ResourcePackSourceTracker.getSource(resourcePack));
+		}
+	}
+
+	@Inject(method = "getResource", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void trackSourceOnGetResource(Identifier id, CallbackInfoReturnable<Resource> cir, ResourcePack metaResourcePack, Identifier metadataPath, int i, ResourcePack resourcePack) {
+		// Set the resource's source to match the tracked source of its resource pack.
+		if (cir.getReturnValue() instanceof FabricResourceImpl resource) {
+			resource.setFabricPackSource(ResourcePackSourceTracker.getSource(resourcePack));
+		}
 	}
 }

@@ -16,17 +16,15 @@
 
 package net.fabricmc.fabric.mixin.loot.table;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.function.LootFunction;
 
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplier;
@@ -35,22 +33,19 @@ import net.fabricmc.fabric.api.loot.v1.FabricLootSupplier;
 public abstract class MixinLootSupplier implements FabricLootSupplier {
 	@Shadow
 	@Final
-	private LootPool[] pools;
+	LootPool[] pools;
+
 	@Shadow
 	@Final
-	private LootFunction[] functions;
+	LootFunction[] functions;
 
 	@Override
 	public List<LootPool> getPools() {
-		return Arrays.asList(pools);
+		return ImmutableList.copyOf(pools);
 	}
 
 	@Override
 	public List<LootFunction> getFunctions() {
-		return Arrays.asList(functions);
+		return ImmutableList.copyOf(functions);
 	}
-
-	@Accessor
-	@Override
-	public abstract LootContextType getType();
 }

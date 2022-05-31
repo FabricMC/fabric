@@ -26,19 +26,17 @@ import net.minecraft.client.world.ClientWorld;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.mixin.event.lifecycle.WorldMixin;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ClientWorld.class)
-public abstract class ClientWorldMixin extends WorldMixin {
-	// We override our injection on the clientworld so only the client world's tick invocations will run
-	@Override
-	protected void tickWorldAfterBlockEntities(CallbackInfo ci) {
-		ClientTickEvents.END_WORLD_TICK.invoker().onEndTick((ClientWorld) (Object) this);
-	}
-
+public abstract class ClientWorldMixin {
 	@Inject(method = "tickEntities", at = @At("HEAD"))
 	private void startWorldTick(CallbackInfo ci) {
 		ClientTickEvents.START_WORLD_TICK.invoker().onStartTick((ClientWorld) (Object) this);
+	}
+
+	@Inject(method = "tickEntities", at = @At("TAIL"))
+	protected void endWorldTick(CallbackInfo ci) {
+		ClientTickEvents.END_WORLD_TICK.invoker().onEndTick((ClientWorld) (Object) this);
 	}
 }

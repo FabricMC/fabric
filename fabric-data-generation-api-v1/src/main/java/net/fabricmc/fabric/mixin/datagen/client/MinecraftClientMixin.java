@@ -30,13 +30,9 @@ public class MinecraftClientMixin {
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;getBackendDescription()Ljava/lang/String;"))
 	private void main(CallbackInfo info) {
 		if (FabricDataGenHelper.ENABLED) {
-			try {
-				FabricDataGenHelper.run();
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.exit(-1);
-			}
+			FabricDataGenHelper.run();
 
+			// Exit gracefully.
 			System.exit(0);
 		}
 	}

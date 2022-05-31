@@ -10,7 +10,7 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.loot.LootTest"
+      "net.fabricmc.fabric.test.loot.LootV1Test"
     ]
   }
 }

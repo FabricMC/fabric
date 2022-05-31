@@ -130,7 +130,9 @@ public abstract class GroupResourcePack implements ResourcePack {
 		for (ModResourcePack pack : packs) {
 			if (pack.contains(manager.getType(), id)) {
 				InputStream metadataInputStream = pack.contains(manager.getType(), metadataId) ? manager.fabric$accessor_open(metadataId, pack) : null;
-				resources.add(new ResourceImpl(pack.getName(), id, manager.fabric$accessor_open(id, pack), metadataInputStream));
+				ResourceImpl resource = new ResourceImpl(pack.getName(), id, manager.fabric$accessor_open(id, pack), metadataInputStream);
+				((FabricResourceImpl) resource).setFabricPackSource(ModResourcePackCreator.RESOURCE_PACK_SOURCE);
+				resources.add(resource);
 			}
 		}
 	}

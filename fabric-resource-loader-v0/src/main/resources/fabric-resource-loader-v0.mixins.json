@@ -5,15 +5,18 @@
   "mixins": [
     "FileResourcePackProviderAccessor",
     "DefaultResourcePackMixin",
+    "DefaultResourcePackResourceMixin",
     "KeyedResourceReloadListenerMixin",
     "LifecycledResourceManagerImplMixin",
     "MinecraftServerMixin",
     "NamespaceResourceManagerAccessor",
     "NamespaceResourceManagerMixin",
     "ReloadableResourceManagerImplMixin",
+    "ResourceImplMixin",
+    "ResourceMixin",
     "ResourcePackManagerMixin",
     "ResourcePackManagerAccessor",
-    "ResourcePackProfileAccessor",
+    "ResourcePackProfileMixin",
     "SimpleResourceReloadMixin"
   ],
   "client": [

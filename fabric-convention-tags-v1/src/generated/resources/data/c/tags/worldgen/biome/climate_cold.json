@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:grove",
+    "minecraft:jagged_peaks",
+    {
+      "id": "#c:icy",
+      "required": false
+    }
+  ]
+}

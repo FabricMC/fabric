@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.client.indigo.renderer;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 
@@ -25,6 +26,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderConte
 
 @Mixin(ChunkRendererRegion.class)
 public abstract class MixinChunkRendererRegion implements AccessChunkRendererRegion {
+	@Unique
 	private TerrainRenderContext fabric_renderer;
 
 	@Override
