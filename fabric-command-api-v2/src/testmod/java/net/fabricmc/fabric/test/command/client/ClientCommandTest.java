@@ -26,14 +26,16 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
+import net.minecraft.command.argument.ItemStackArgument;
+import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 @Environment(EnvType.CLIENT)
@@ -46,43 +48,55 @@ public final class ClientCommandTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("test_client_command").executes(context -> {
-			context.getSource().sendFeedback(Text.literal("This is a client command!"));
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+			dispatcher.register(ClientCommandManager.literal("test_client_command").executes(context -> {
+				context.getSource().sendFeedback(Text.literal("This is a client command!"));
 
-			if (context.getSource().getClient() == null) {
-				throw IS_NULL.create("client");
-			}
+				if (context.getSource().getClient() == null) {
+					throw IS_NULL.create("client");
+				}
 
-			if (context.getSource().getWorld() == null) {
-				throw IS_NULL.create("world");
-			}
+				if (context.getSource().getWorld() == null) {
+					throw IS_NULL.create("world");
+				}
 
-			if (context.getSource().getPlayer() == null) {
-				throw IS_NULL.create("player");
-			}
+				if (context.getSource().getPlayer() == null) {
+					throw IS_NULL.create("player");
+				}
 
-			return 0;
-		}));
+				return 0;
+			}));
 
-		// Command with argument
-		ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("test_client_command_with_arg").then(
-				ClientCommandManager.argument("number", DoubleArgumentType.doubleArg()).executes(context -> {
-					double number = DoubleArgumentType.getDouble(context, "number");
+			// Command with argument
+			dispatcher.register(ClientCommandManager.literal("test_client_command_with_arg").then(
+					ClientCommandManager.argument("number", DoubleArgumentType.doubleArg()).executes(context -> {
+						double number = DoubleArgumentType.getDouble(context, "number");
 
-					// Test error formatting
-					context.getSource().sendError(Text.literal("Your number is " + number));
+						// Test error formatting
+						context.getSource().sendError(Text.literal("Your number is " + number));
 
-					return 0;
-				})
-		));
+						return 0;
+					})
+			));
 
-		// Unexecutable command
-		ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("hidden_client_command").requires(source -> false).executes(context -> {
-			throw UNEXECUTABLE_EXECUTED.create();
-		}));
+			// Unexecutable command
+			dispatcher.register(ClientCommandManager.literal("hidden_client_command").requires(source -> false).executes(context -> {
+				throw UNEXECUTABLE_EXECUTED.create();
+			}));
 
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-			RootCommandNode<FabricClientCommandSource> rootNode = ClientCommandManager.DISPATCHER.getRoot();
+			// Command with argument using CommandRegistryAccess
+			dispatcher.register(ClientCommandManager.literal("test_client_command_with_registry_using_arg").then(
+					ClientCommandManager.argument("item", ItemStackArgumentType.itemStack(registryAccess)).executes(context -> {
+						final ItemStackArgument item = ItemStackArgumentType.getItemStackArgument(context, "item");
+						context.getSource().sendFeedback(item.createStack(1, false).toHoverableText());
+
+						return 0;
+					})
+			));
+
+			// Tests
+
+			RootCommandNode<FabricClientCommandSource> rootNode = dispatcher.getRoot();
 
 			// We climb the tree again
 			CommandNode<FabricClientCommandSource> testClientCommand = rootNode.getChild("test_client_command");
@@ -118,7 +132,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 			MinecraftClient client = MinecraftClient.getInstance();
 			ClientCommandSource commandSource = client.getNetworkHandler().getCommandSource();
 
-			RootCommandNode<FabricClientCommandSource> rootNode = ClientCommandManager.DISPATCHER.getRoot();
+			RootCommandNode<FabricClientCommandSource> rootNode = ClientCommandManager.getActiveDispatcher().getRoot();
 			CommandNode<FabricClientCommandSource> hiddenClientCommand = rootNode.getChild("hidden_client_command");
 
 			if (!(commandSource instanceof FabricClientCommandSource)) {
