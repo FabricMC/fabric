@@ -89,7 +89,7 @@ public class ChatTest implements ModInitializer {
 		);
 		ServerMessageEvents.ALLOW_GAME_MESSAGE.register((message, typeKey) -> {
 			if (message.getContent() instanceof TranslatableTextContent translatable) {
-				return !translatable.getKey().startsWith("death.");
+				return !translatable.getKey().startsWith("death.attack.badRespawnPoint.");
 			}
 
 			return true;
