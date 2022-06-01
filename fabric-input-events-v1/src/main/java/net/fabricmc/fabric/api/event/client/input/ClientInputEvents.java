@@ -235,8 +235,6 @@ public final class ClientInputEvents {
 	 */
 	private static Event<KeybindState> createKeybindStateEvent() {
 		return EventFactory.createArrayBacked(KeybindState.class,
-				(code, scancode, modKeys, nullableKey, nullableBinding) -> {
-				},
 				listeners -> (code, scancode, modKeys, nullableKey, nullableBinding) -> {
 					Key key = nullableKey;
 					KeyBinding binding = nullableBinding;
@@ -287,7 +285,6 @@ public final class ClientInputEvents {
 	private static Event<MouseButtonState> createMouseButtonStateEvent(Event<KeybindState> keybindStateEvent) {
 		Objects.requireNonNull(keybindStateEvent); // safeguard against bad initializer code
 		return EventFactory.createArrayBacked(MouseButtonState.class,
-				(button, modKeys, nullKey) -> keybindStateEvent.invoker().onKeybind(button, SPECIAL_MOUSE_KEY_SCANCODE, modKeys, null, null),
 				listeners -> (button, modKeys, nullKey) -> {
 					Key key = null;
 
@@ -321,7 +318,6 @@ public final class ClientInputEvents {
 	private static Event<KeyState> createKeyStateEvent(Event<KeybindState> keybindStateEvent) {
 		Objects.requireNonNull(keybindStateEvent); // safeguard against bad initializer code
 		return EventFactory.createArrayBacked(KeyState.class,
-				(code, scancode, modKeys, nullKey) -> keybindStateEvent.invoker().onKeybind(code, scancode, modKeys, null, null),
 				listeners -> (code, scancode, modKeys, nullKey) -> {
 					Key key = null;
 
