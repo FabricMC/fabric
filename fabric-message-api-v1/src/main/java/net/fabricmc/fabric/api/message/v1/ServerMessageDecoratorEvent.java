@@ -42,8 +42,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * the content phase and the styling phase.
  *
  * <p>When implementing a message decorator, it is <strong>very important that the decorator be
- * pure; i.e. return the same text when given the same text (and sender)</strong> -
- * otherwise the game discards the message because it was improperly signed.
+ * pure; i.e. return the same text when called multiple times for the same arguments (message and
+ * sender)</strong> - otherwise the server detects a mismatch between the preview and the actual message,
+ * and discards the message because it was improperly signed.
  *
  * <p>Example of registering a content phase message decorator:
  *
