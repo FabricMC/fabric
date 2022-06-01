@@ -2,7 +2,7 @@
   "replace": false,
   "values": [
     {
-      "id": "#c:yellow_sandstone_blocks",
+      "id": "#c:normal_sandstone_blocks",
       "required": false
     },
     {

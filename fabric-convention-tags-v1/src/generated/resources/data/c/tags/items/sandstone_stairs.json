@@ -2,7 +2,7 @@
   "replace": false,
   "values": [
     {
-      "id": "#c:yellow_sandstone_slabs",
+      "id": "#c:normal_sandstone_slabs",
       "required": false
     },
     {

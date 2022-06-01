@@ -332,7 +332,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateSandstoneBlocksTag() {
-		getOrCreateTagBuilder(ConventionalItemTags.YELLOW_SANDSTONE_BLOCKS)
+		getOrCreateTagBuilder(ConventionalItemTags.NORMAL_SANDSTONE_BLOCKS)
 				.add(Items.SANDSTONE)
 				.add(Items.CUT_SANDSTONE)
 				.add(Items.CHISELED_SANDSTONE)
@@ -343,10 +343,10 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.CHISELED_RED_SANDSTONE)
 				.add(Items.SMOOTH_RED_SANDSTONE);
 		getOrCreateTagBuilder(ConventionalItemTags.SANDSTONE_BLOCKS)
-				.addOptionalTag(ConventionalItemTags.YELLOW_SANDSTONE_BLOCKS)
+				.addOptionalTag(ConventionalItemTags.NORMAL_SANDSTONE_BLOCKS)
 				.addOptionalTag(ConventionalItemTags.RED_SANDSTONE_BLOCKS);
 
-		getOrCreateTagBuilder(ConventionalItemTags.YELLOW_SANDSTONE_SLABS)
+		getOrCreateTagBuilder(ConventionalItemTags.NORMAL_SANDSTONE_SLABS)
 				.add(Items.SANDSTONE_SLAB)
 				.add(Items.CUT_SANDSTONE_SLAB)
 				.add(Items.SMOOTH_SANDSTONE_SLAB);
@@ -355,17 +355,17 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.CUT_RED_SANDSTONE_SLAB)
 				.add(Items.SMOOTH_RED_SANDSTONE_SLAB);
 		getOrCreateTagBuilder(ConventionalItemTags.SANDSTONE_SLABS)
-				.addOptionalTag(ConventionalItemTags.YELLOW_SANDSTONE_SLABS)
+				.addOptionalTag(ConventionalItemTags.NORMAL_SANDSTONE_SLABS)
 				.addOptionalTag(ConventionalItemTags.RED_SANDSTONE_SLABS);
 
-		getOrCreateTagBuilder(ConventionalItemTags.YELLOW_SANDSTONE_STAIRS)
+		getOrCreateTagBuilder(ConventionalItemTags.NORMAL_SANDSTONE_STAIRS)
 				.add(Items.SANDSTONE_STAIRS)
 				.add(Items.SMOOTH_SANDSTONE_STAIRS);
 		getOrCreateTagBuilder(ConventionalItemTags.RED_SANDSTONE_STAIRS)
 				.add(Items.RED_SANDSTONE_STAIRS)
 				.add(Items.SMOOTH_RED_SANDSTONE_STAIRS);
 		getOrCreateTagBuilder(ConventionalItemTags.SANDSTONE_STAIRS)
-				.addOptionalTag(ConventionalItemTags.YELLOW_SANDSTONE_SLABS)
+				.addOptionalTag(ConventionalItemTags.NORMAL_SANDSTONE_SLABS)
 				.addOptionalTag(ConventionalItemTags.RED_SANDSTONE_SLABS);
 	}
 

@@ -34,13 +34,13 @@ public class ConventionalBlockTags {
 	public static final TagKey<Block> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Block> GLASS_PANES = register("glass_panes");
 
-	public static final TagKey<Block> YELLOW_SANDSTONE_BLOCKS = register("yellow_sandstone_blocks");
+	public static final TagKey<Block> NORMAL_SANDSTONE_BLOCKS = register("normal_sandstone_blocks");
 	public static final TagKey<Block> RED_SANDSTONE_BLOCKS = register("red_sandstone_blocks");
 	public static final TagKey<Block> SANDSTONE_BLOCKS = register("sandstone_blocks");
-	public static final TagKey<Block> YELLOW_SANDSTONE_SLABS = register("yellow_sandstone_slabs");
+	public static final TagKey<Block> NORMAL_SANDSTONE_SLABS = register("normal_sandstone_slabs");
 	public static final TagKey<Block> RED_SANDSTONE_SLABS = register("red_sandstone_slabs");
 	public static final TagKey<Block> SANDSTONE_SLABS = register("sandstone_slabs");
-	public static final TagKey<Block> YELLOW_SANDSTONE_STAIRS = register("yellow_sandstone_stairs");
+	public static final TagKey<Block> NORMAL_SANDSTONE_STAIRS = register("normal_sandstone_stairs");
 	public static final TagKey<Block> RED_SANDSTONE_STAIRS = register("red_sandstone_stairs");
 	public static final TagKey<Block> SANDSTONE_STAIRS = register("sandstone_stairs");
 

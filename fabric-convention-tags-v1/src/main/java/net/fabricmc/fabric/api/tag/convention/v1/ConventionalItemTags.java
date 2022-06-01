@@ -70,13 +70,13 @@ public class ConventionalItemTags {
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Item> GLASS_PANES = register("glass_panes");
 
-	public static final TagKey<Item> YELLOW_SANDSTONE_BLOCKS = register("yellow_sandstone_blocks");
+	public static final TagKey<Item> NORMAL_SANDSTONE_BLOCKS = register("normal_sandstone_blocks");
 	public static final TagKey<Item> RED_SANDSTONE_BLOCKS = register("red_sandstone_blocks");
 	public static final TagKey<Item> SANDSTONE_BLOCKS = register("sandstone_blocks");
-	public static final TagKey<Item> YELLOW_SANDSTONE_SLABS = register("yellow_sandstone_slabs");
+	public static final TagKey<Item> NORMAL_SANDSTONE_SLABS = register("normal_sandstone_slabs");
 	public static final TagKey<Item> RED_SANDSTONE_SLABS = register("red_sandstone_slabs");
 	public static final TagKey<Item> SANDSTONE_SLABS = register("sandstone_slabs");
-	public static final TagKey<Item> YELLOW_SANDSTONE_STAIRS = register("yellow_sandstone_stairs");
+	public static final TagKey<Item> NORMAL_SANDSTONE_STAIRS = register("normal_sandstone_stairs");
 	public static final TagKey<Item> RED_SANDSTONE_STAIRS = register("red_sandstone_stairs");
 	public static final TagKey<Item> SANDSTONE_STAIRS = register("sandstone_stairs");
 
