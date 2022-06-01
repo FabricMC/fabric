@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import net.minecraft.entity.ai.brain.task.FarmerVillagerTask;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 
@@ -41,8 +41,7 @@ public class FarmerVillagerTaskMixin {
 
 	@ModifyArg(method = "keepRunning", at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/SimpleInventory;getStack(I)Lnet/minecraft/item/ItemStack;"), index = 0)
 	private int fabric_storeCurrentSlot(int slot) {
-		this.fabric_currentInventorySlot = slot;
-		return slot;
+		return this.fabric_currentInventorySlot = slot;
 	}
 
 	@ModifyVariable(method = "keepRunning", at = @At("LOAD"))
@@ -52,10 +51,10 @@ public class FarmerVillagerTaskMixin {
 		}
 
 		SimpleInventory simpleInventory = villagerEntity.getInventory();
-		Item currentItem = simpleInventory.getStack(this.fabric_currentInventorySlot).getItem();
+		ItemStack currentStack = simpleInventory.getStack(this.fabric_currentInventorySlot);
 
-		if (VillagerPlantableRegistry.contains(currentItem)) {
-			serverWorld.setBlockState(this.currentTarget, VillagerPlantableRegistry.getPlantState(currentItem), 3);
+		if (!currentStack.isEmpty() && VillagerPlantableRegistry.contains(currentStack.getItem())) {
+			serverWorld.setBlockState(this.currentTarget, VillagerPlantableRegistry.getPlantState(currentStack.getItem()), 3);
 			return true;
 		}
 

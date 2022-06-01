@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.api.registry;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -27,6 +29,7 @@ import net.minecraft.block.CropBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.Items;
 import net.minecraft.util.registry.Registry;
 
 /**
@@ -35,6 +38,12 @@ import net.minecraft.util.registry.Registry;
 public class VillagerPlantableRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerPlantableRegistry.class);
 	private static final HashMap<Item, BlockState> PLANTABLES = new HashMap<>();
+	static {
+		register(Items.WHEAT_SEEDS);
+		register(Items.CARROT);
+		register(Items.POTATO);
+		register(Items.BEETROOT_SEEDS);
+	}
 
 	private VillagerPlantableRegistry() {
 	}
@@ -47,6 +56,8 @@ public class VillagerPlantableRegistry {
 	 * @param item the BlockItem to register
 	 */
 	public static void register(ItemConvertible item) {
+		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
+
 		if (!(item.asItem() instanceof BlockItem)) {
 			throw new IllegalArgumentException("item is not a BlockItem");
 		}
@@ -62,6 +73,9 @@ public class VillagerPlantableRegistry {
 	 * @param plantState the state that will be planted
 	 */
 	public static void register(ItemConvertible item, BlockState plantState) {
+		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
+		Objects.requireNonNull(plantState, "Plant block state cannot be null!");
+
 		PLANTABLES.put(item.asItem(), plantState);
 
 		if (!(plantState.getBlock() instanceof CropBlock)) {
@@ -75,6 +89,7 @@ public class VillagerPlantableRegistry {
 	 * @return true if the item is registered as a seed
 	 */
 	public static boolean contains(ItemConvertible item) {
+		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
 		return PLANTABLES.containsKey(item.asItem());
 	}
 
@@ -84,6 +99,7 @@ public class VillagerPlantableRegistry {
 	 * @return the state associated with the seed item
 	 */
 	public static BlockState getPlantState(ItemConvertible item) {
+		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
 		return PLANTABLES.get(item.asItem());
 	}
 
@@ -92,6 +108,6 @@ public class VillagerPlantableRegistry {
 	 * @return all currently registered seed items.
 	 */
 	public static Set<Item> getItems() {
-		return PLANTABLES.keySet();
+		return Collections.unmodifiableSet(PLANTABLES.keySet());
 	}
 }

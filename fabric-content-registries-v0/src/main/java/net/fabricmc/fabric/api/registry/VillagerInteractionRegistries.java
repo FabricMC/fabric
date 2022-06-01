@@ -38,7 +38,6 @@ import net.fabricmc.fabric.mixin.content.registry.GiveGiftsToHeroTaskAccessor;
 /**
  * Registries for modifying villager interactions that
  * villagers have with the world.
- * 
  * @see VillagerPlantableRegistry for registering plants that farmers can plant
  */
 public class VillagerInteractionRegistries {
@@ -54,7 +53,7 @@ public class VillagerInteractionRegistries {
 	 * @param item the item to register
 	 */
 	public static void registerCollectable(ItemConvertible item) {
-		Objects.requireNonNull(item, "Item cannot be null!");
+		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
 		getCollectableRegistry().add(item.asItem());
 	}
 
@@ -63,7 +62,7 @@ public class VillagerInteractionRegistries {
 	 * @param item the item to register
 	 */
 	public static void registerCompostable(ItemConvertible item) {
-		Objects.requireNonNull(item, "Item cannot be null!");
+		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
 		getCompostableRegistry().add(item.asItem());
 	}
 
@@ -73,8 +72,8 @@ public class VillagerInteractionRegistries {
 	 * @param foodValue the amount of breeding power the item has (1 = normal food item, 4 = bread)
 	 */
 	public static void registerFood(ItemConvertible item, int foodValue) {
-		Objects.requireNonNull(item, "Item cannot be null!");
-		Objects.requireNonNull(item, "Food value cannot be null!");
+		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
+		Objects.requireNonNull(foodValue, "Food value cannot be null!");
 		Integer oldValue = getFoodRegistry().put(item.asItem(), foodValue);
 
 		if (oldValue != null) {
@@ -89,6 +88,7 @@ public class VillagerInteractionRegistries {
 	 */
 	public static void registerGiftLootTable(VillagerProfession profession, Identifier lootTable) {
 		Objects.requireNonNull(profession, "Profession cannot be null!");
+		Objects.requireNonNull(lootTable, "Loot table identifier cannot be null!");
 		Identifier oldValue = GiveGiftsToHeroTaskAccessor.fabric_getGifts().put(profession, lootTable);
 
 		if (oldValue != null) {
