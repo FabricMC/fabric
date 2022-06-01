@@ -42,7 +42,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * the content phase and the styling phase.
  *
  * <p>When implementing a message decorator, it is <strong>very important that the decorator be
- * idempotent; i.e. return the same text when given the same text (and sender)</strong> -
+ * pure; i.e. return the same text when given the same text (and sender)</strong> -
  * otherwise the game discards the message because it was improperly signed.
  *
  * <p>Example of registering a content phase message decorator:
