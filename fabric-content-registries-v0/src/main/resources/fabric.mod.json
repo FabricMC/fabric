@@ -25,6 +25,7 @@
   "mixins": [
     "fabric-content-registries-v0.mixins.json"
   ],
+  "accessWidener" : "fabric-content-registries-v0.accesswidener",
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   }

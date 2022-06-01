@@ -23,10 +23,7 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
 /**
  * API that exposes some internals of the minecraft default biome source for the overworld.
- *
- * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
-@Deprecated
 public final class OverworldBiomes {
 	private OverworldBiomes() {
 	}

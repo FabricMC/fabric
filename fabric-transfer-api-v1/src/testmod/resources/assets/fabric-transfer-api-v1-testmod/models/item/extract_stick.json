@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "fabric-transfer-api-v1-testmod:item/extract_stick"
+  }
+}

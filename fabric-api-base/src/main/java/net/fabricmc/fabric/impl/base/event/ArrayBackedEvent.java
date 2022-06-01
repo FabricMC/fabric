@@ -17,18 +17,34 @@
 package net.fabricmc.fabric.impl.base.event;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 
 class ArrayBackedEvent<T> extends Event<T> {
+	static final Logger LOGGER = LogManager.getLogger("fabric-api-base");
+
 	private final Function<T[], T> invokerFactory;
-	private final Lock lock = new ReentrantLock();
+	private final Object lock = new Object();
 	private T[] handlers;
+	/**
+	 * Registered event phases.
+	 */
+	private final Map<Identifier, EventPhaseData<T>> phases = new LinkedHashMap<>();
+	/**
+	 * Phases sorted in the correct dependency order.
+	 */
+	private final List<EventPhaseData<T>> sortedPhases = new ArrayList<>();
 
 	@SuppressWarnings("unchecked")
 	ArrayBackedEvent(Class<? super T> type, Function<T[], T> invokerFactory) {
@@ -43,16 +59,72 @@ class ArrayBackedEvent<T> extends Event<T> {
 
 	@Override
 	public void register(T listener) {
+		register(DEFAULT_PHASE, listener);
+	}
+
+	@Override
+	public void register(Identifier phaseIdentifier, T listener) {
+		Objects.requireNonNull(phaseIdentifier, "Tried to register a listener for a null phase!");
 		Objects.requireNonNull(listener, "Tried to register a null listener!");
 
-		lock.lock();
+		synchronized (lock) {
+			getOrCreatePhase(phaseIdentifier, true).addListener(listener);
+			rebuildInvoker(handlers.length + 1);
+		}
+	}
 
-		try {
-			handlers = Arrays.copyOf(handlers, handlers.length + 1);
-			handlers[handlers.length - 1] = listener;
-			update();
-		} finally {
-			lock.unlock();
+	private EventPhaseData<T> getOrCreatePhase(Identifier id, boolean sortIfCreate) {
+		EventPhaseData<T> phase = phases.get(id);
+
+		if (phase == null) {
+			phase = new EventPhaseData<>(id, handlers.getClass().getComponentType());
+			phases.put(id, phase);
+			sortedPhases.add(phase);
+
+			if (sortIfCreate) {
+				PhaseSorting.sortPhases(sortedPhases);
+			}
+		}
+
+		return phase;
+	}
+
+	private void rebuildInvoker(int newLength) {
+		// Rebuild handlers.
+		if (sortedPhases.size() == 1) {
+			// Special case with a single phase: use the array of the phase directly.
+			handlers = sortedPhases.get(0).listeners;
+		} else {
+			@SuppressWarnings("unchecked")
+			T[] newHandlers = (T[]) Array.newInstance(handlers.getClass().getComponentType(), newLength);
+			int newHandlersIndex = 0;
+
+			for (EventPhaseData<T> existingPhase : sortedPhases) {
+				int length = existingPhase.listeners.length;
+				System.arraycopy(existingPhase.listeners, 0, newHandlers, newHandlersIndex, length);
+				newHandlersIndex += length;
+			}
+
+			handlers = newHandlers;
+		}
+
+		// Rebuild invoker.
+		update();
+	}
+
+	@Override
+	public void addPhaseOrdering(Identifier firstPhase, Identifier secondPhase) {
+		Objects.requireNonNull(firstPhase, "Tried to add an ordering for a null phase.");
+		Objects.requireNonNull(secondPhase, "Tried to add an ordering for a null phase.");
+		if (firstPhase.equals(secondPhase)) throw new IllegalArgumentException("Tried to add a phase that depends on itself.");
+
+		synchronized (lock) {
+			EventPhaseData<T> first = getOrCreatePhase(firstPhase, false);
+			EventPhaseData<T> second = getOrCreatePhase(secondPhase, false);
+			first.subsequentPhases.add(second);
+			second.previousPhases.add(first);
+			PhaseSorting.sortPhases(this.sortedPhases);
+			rebuildInvoker(handlers.length);
 		}
 	}
 }

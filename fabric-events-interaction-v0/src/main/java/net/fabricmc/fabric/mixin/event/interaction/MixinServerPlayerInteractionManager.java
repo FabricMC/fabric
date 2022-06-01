@@ -26,7 +26,9 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -61,6 +63,15 @@ public class MixinServerPlayerInteractionManager {
 		if (result != ActionResult.PASS) {
 			// The client might have broken the block on its side, so make sure to let it know.
 			this.player.networkHandler.sendPacket(new BlockUpdateS2CPacket(world, pos));
+
+			if (world.getBlockState(pos).getBlock() instanceof BlockEntityProvider) {
+				BlockEntityUpdateS2CPacket updatePacket = world.getBlockEntity(pos).toUpdatePacket();
+
+				if (updatePacket != null) {
+					this.player.networkHandler.sendPacket(updatePacket);
+				}
+			}
+
 			info.cancel();
 		}
 	}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-transfer-api-v1-testmod",
+  "name": "Fabric Transfer API (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-transfer-api-v1": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.transfer.ingame.TransferTestInitializer",
+      "net.fabricmc.fabric.test.transfer.unittests.UnitTestsInitializer"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.transfer.ingame.client.FluidVariantRenderTest"
+    ]
+  }
+}

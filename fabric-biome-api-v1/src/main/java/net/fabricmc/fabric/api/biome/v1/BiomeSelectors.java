@@ -36,10 +36,7 @@ import net.fabricmc.fabric.mixin.biome.VanillaLayeredBiomeSourceAccessor;
 
 /**
  * Provides several convenient biome selectors that can be used with {@link BiomeModifications}.
- *
- * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
-@Deprecated
 public final class BiomeSelectors {
 	private BiomeSelectors() {
 	}

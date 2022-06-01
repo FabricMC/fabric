@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.resource.loader",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "AbstractFileResourcePackAccessor",
     "FileResourcePackProviderAccessor",
     "DefaultResourcePackMixin",
     "KeyedResourceReloadListenerMixin",
