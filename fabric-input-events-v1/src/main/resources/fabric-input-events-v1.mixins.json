@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.event.input",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "client.accessor.InputUtilTypeAccessor",
+    "client.accessor.KeyBindingAccessor",
+    "client.KeyboardMixin",
+    "client.MouseMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
