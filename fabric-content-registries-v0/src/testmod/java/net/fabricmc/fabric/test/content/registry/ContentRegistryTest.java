@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.content.registry;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.item.HoeItem;
@@ -91,11 +91,11 @@ public final class ContentRegistryTest implements ModInitializer {
 		VillagerInteractionRegistries.registerCompostable(Items.APPLE);
 
 		VillagerInteractionRegistries.registerCollectable(Items.OAK_SAPLING);
-		VillagerPlantableRegistry.INSTANCE.register(Items.OAK_SAPLING);
+		VillagerPlantableRegistry.register(Items.OAK_SAPLING);
 
 		// assert that VillagerPlantablesRegistry throws when getting a non-BlockItem
 		try {
-			VillagerPlantableRegistry.INSTANCE.register(Items.STICK);
+			VillagerPlantableRegistry.register(Items.STICK);
 
 			throw new AssertionError("VillagerPlantablesRegistry didn't throw when item is not BlockItem!");
 		} catch (Exception e) {

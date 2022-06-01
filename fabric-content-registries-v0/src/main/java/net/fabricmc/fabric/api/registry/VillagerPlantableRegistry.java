@@ -16,51 +16,79 @@
 
 package net.fabricmc.fabric.api.registry;
 
+import java.util.HashMap;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.block.BlockState;
+import net.minecraft.block.CropBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
-
-import net.fabricmc.fabric.impl.content.registry.VillagerPlantableRegistryImpl;
+import net.minecraft.util.registry.Registry;
 
 /**
  * Registry of items that farmer villagers can plant on farmland.
  */
-public interface VillagerPlantableRegistry {
-	VillagerPlantableRegistry INSTANCE = new VillagerPlantableRegistryImpl();
+public class VillagerPlantableRegistry {
+	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerPlantableRegistry.class);
+	private static final HashMap<Item, BlockState> PLANTABLES = new HashMap<>();
 
 	/**
 	 * Registers a BlockItem to be plantable by farmer villagers.
 	 * This will use the default state of the associated block.
+	 * For the crop to be harvestable, the block should extend CropBlock, so the
+	 * farmer can test the {@link CropBlock#isMature(BlockState)} method.
 	 * @param item the BlockItem to register
 	 */
-	void register(ItemConvertible item);
+	public static void register(ItemConvertible item) {
+		if (!(item.asItem() instanceof BlockItem)) {
+			throw new IllegalArgumentException("item is not a BlockItem");
+		}
+
+		register(item, ((BlockItem) item.asItem()).getBlock().getDefaultState());
+	}
 
 	/**
 	 * Register an item with an associated to be plantable by farmer villagers.
+	 * For the crop to be harvestable, the block should extend CropBlock, so the
+	 * farmer can test the {@link CropBlock#isMature(BlockState)} method.
 	 * @param item       the seed item
 	 * @param plantState the state that will be planted
 	 */
-	void register(ItemConvertible item, BlockState plantState);
+	public static void register(ItemConvertible item, BlockState plantState) {
+		PLANTABLES.put(item.asItem(), plantState);
+
+		if (!(plantState.getBlock() instanceof CropBlock)) {
+			LOGGER.info("Registered a block ({}) that does not extend CropBlock, this block will not be villager harvestable by default.", Registry.BLOCK.getId(plantState.getBlock()));
+		}
+	}
 
 	/**
 	 * Tests if the item is a registered seed item.
 	 * @param item the item to test
 	 * @return true if the item is registered as a seed
 	 */
-	boolean contains(ItemConvertible item);
+	public static boolean contains(ItemConvertible item) {
+		return PLANTABLES.containsKey(item.asItem());
+	}
 
 	/**
 	 * Get the state that is associated with the provided seed item.
 	 * @param item the seed item
 	 * @return the state associated with the seed item
 	 */
-	BlockState getPlantState(ItemConvertible item);
+	public static BlockState getPlantState(ItemConvertible item) {
+		return PLANTABLES.get(item.asItem());
+	}
 
 	/**
 	 * Get all currently registered seed items.
 	 * @return all currently registered seed items.
 	 */
-	Set<Item> getItems();
+	public static Set<Item> getItems() {
+		return PLANTABLES.keySet();
+	}
 }

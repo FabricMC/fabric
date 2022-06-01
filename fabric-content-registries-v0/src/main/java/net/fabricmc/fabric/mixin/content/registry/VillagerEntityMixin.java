@@ -32,6 +32,6 @@ import net.fabricmc.fabric.api.registry.VillagerPlantableRegistry;
 public class VillagerEntityMixin {
 	@Redirect(method = "hasSeedToPlant", at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/SimpleInventory;containsAny(Ljava/util/Set;)Z"))
 	private boolean fabric_useRegistry(SimpleInventory inventory, Set<Item> items) {
-		return inventory.containsAny(VillagerPlantableRegistry.INSTANCE.getItems());
+		return inventory.containsAny(VillagerPlantableRegistry.getItems());
 	}
 }

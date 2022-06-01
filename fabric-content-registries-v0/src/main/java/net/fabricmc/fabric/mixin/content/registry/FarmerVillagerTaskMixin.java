@@ -20,17 +20,14 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.brain.task.FarmerVillagerTask;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.Item;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.registry.VillagerPlantableRegistry;
@@ -40,30 +37,28 @@ public class FarmerVillagerTaskMixin {
 	@Nullable
 	@Shadow private BlockPos currentTarget;
 
-	@Inject(method = "keepRunning", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/VillagerEntity;getInventory()Lnet/minecraft/inventory/SimpleInventory;"))
-	private void fabric_useRegistry(ServerWorld serverWorld, VillagerEntity villagerEntity, long l, CallbackInfo ci) {
-		SimpleInventory simpleInventory = villagerEntity.getInventory();
+	private int fabric_currentInventorySlot = -1;
 
-		for (int i = 0; i < simpleInventory.size(); ++i) {
-			ItemStack itemStack = simpleInventory.getStack(i);
-
-			if (!itemStack.isEmpty() && VillagerPlantableRegistry.INSTANCE.contains(itemStack.getItem())) {
-				BlockState state = VillagerPlantableRegistry.INSTANCE.getPlantState(itemStack.getItem());
-				serverWorld.setBlockState(this.currentTarget, state, 3);
-				serverWorld.playSound(null, this.currentTarget.getX(), this.currentTarget.getY(), this.currentTarget.getZ(), state.getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
-				itemStack.decrement(1);
-
-				if (itemStack.isEmpty()) {
-					simpleInventory.setStack(i, ItemStack.EMPTY);
-				}
-
-				break;
-			}
-		}
+	@ModifyArg(method = "keepRunning", at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/SimpleInventory;getStack(I)Lnet/minecraft/item/ItemStack;"), index = 0)
+	private int fabric_storeCurrentSlot(int slot) {
+		this.fabric_currentInventorySlot = slot;
+		return slot;
 	}
 
-	@Redirect(method = "keepRunning", at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/SimpleInventory;size()I"))
-	private int fabric_stopDefaultBehaviour(SimpleInventory inventory) {
-		return -1;
+	@ModifyVariable(method = "keepRunning", at = @At("LOAD"))
+	private boolean fabric_useRegistryForPlace(boolean current, ServerWorld serverWorld, VillagerEntity villagerEntity, long l) {
+		if (current) {
+			return true;
+		}
+
+		SimpleInventory simpleInventory = villagerEntity.getInventory();
+		Item currentItem = simpleInventory.getStack(this.fabric_currentInventorySlot).getItem();
+
+		if (VillagerPlantableRegistry.contains(currentItem)) {
+			serverWorld.setBlockState(this.currentTarget, VillagerPlantableRegistry.getPlantState(currentItem), 3);
+			return true;
+		}
+
+		return false;
 	}
 }
