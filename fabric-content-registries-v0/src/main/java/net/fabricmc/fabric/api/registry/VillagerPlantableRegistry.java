@@ -36,6 +36,9 @@ public class VillagerPlantableRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerPlantableRegistry.class);
 	private static final HashMap<Item, BlockState> PLANTABLES = new HashMap<>();
 
+	private VillagerPlantableRegistry() {
+	}
+
 	/**
 	 * Registers a BlockItem to be plantable by farmer villagers.
 	 * This will use the default state of the associated block.

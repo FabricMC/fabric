@@ -38,8 +38,7 @@ import net.fabricmc.fabric.mixin.content.registry.GiveGiftsToHeroTaskAccessor;
 /**
  * Registries for modifying villager interactions that
  * villagers have with the world.
- * The registries are:
- *
+ * 
  * @see VillagerPlantableRegistry for registering plants that farmers can plant
  */
 public class VillagerInteractionRegistries {
