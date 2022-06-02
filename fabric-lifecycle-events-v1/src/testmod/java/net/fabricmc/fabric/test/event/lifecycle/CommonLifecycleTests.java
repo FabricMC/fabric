@@ -23,7 +23,7 @@ public class CommonLifecycleTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
-			ServerLifecycleTests.LOGGER.info("Tags (re)loaded on {} {}", isClient ? "client" : "server", Thread.currentThread());
+			ServerLifecycleTests.LOGGER.info("Tags (re)loaded on {} {}", client ? "client" : "server", Thread.currentThread());
 		});
 	}
 }
