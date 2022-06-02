@@ -51,8 +51,8 @@ public final class ServerLifecycleTests implements ModInitializer {
 			LOGGER.info("Unloaded world " + world.getRegistryKey().getValue().toString());
 		});
 
-		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((playerManager, player) -> {
-			LOGGER.info("SyncDataPackContents received for {}", player == null ? "reload" : "join");
+		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
+			LOGGER.info("SyncDataPackContents received for {}", joined ? "join" : "reload");
 		});
 	}
 }

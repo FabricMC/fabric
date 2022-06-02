@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.event.lifecycle.v1;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.resource.LifecycledResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
@@ -80,12 +78,12 @@ public final class ServerLifecycleEvents {
 	});
 
 	/**
-	 * Called when a Minecraft server is about to send tag and recipe data to one or multiple players.
+	 * Called when a Minecraft server is about to send tag and recipe data to a player.
 	 * @see SyncDataPackContents
 	 */
-	public static final Event<SyncDataPackContents> SYNC_DATA_PACK_CONTENTS = EventFactory.createArrayBacked(SyncDataPackContents.class, callbacks -> (playerManager, player) -> {
+	public static final Event<SyncDataPackContents> SYNC_DATA_PACK_CONTENTS = EventFactory.createArrayBacked(SyncDataPackContents.class, callbacks -> (player, joined) -> {
 		for (SyncDataPackContents callback : callbacks) {
-			callback.syncDataPackContents(playerManager, player);
+			callback.syncDataPackContents(player, joined);
 		}
 	});
 
@@ -132,36 +130,16 @@ public final class ServerLifecycleEvents {
 	@FunctionalInterface
 	public interface SyncDataPackContents {
 		/**
-		 * Called right before tags and recipes are sent to one or multiple clients.
+		 * Called right before tags and recipes are sent to a player,
+		 * either because the player joined, or because the server reloaded resources.
 		 * The {@linkplain MinecraftServer#getResourceManager() server resource manager} is up-to-date when this is called.
 		 *
-		 * <p>If {@code player} is non-{@code null}, then that player just joined and data should only be sent to that player.
-		 * Otherwise, if {@code player} is {@code null}, the server just finished a reload and data should be sent to all players in the {@code playerManager}.
+		 * <p>For example, this event can be used to sync data loaded with custom resource reloaders.
 		 *
-		 * <p>Usage example, to send a packet to each relevant player with custom data:
-		 * <pre>{@code
-		 * ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((playerManager, player) -> {
-		 *     // 1) Encode packet
-		 *     PacketByteBuf buf = PacketByteBufs.create();
-		 *     // Fill buffer with data...
-		 *     // Create packet
-		 *     Packet<?> packet = ServerPlayNetworking.createS2CPacket(CHANNEL_NAME, buf);
-		 *
-		 *     // 2) Send to relevant player(s)
-		 *     if (player == null) {
-		 *         // Reload: send to all
-		 *         playerManager.sendToAll(packet);
-		 *     } else {
-		 *         // Player joined: send only to that player
-		 *         player.networkHandler.sendPacket(packet);
-		 *     }
-		 * });
-		 * }</pre>
-		 *
-		 * @param playerManager The player manager, always present.
-		 * @param player Null if the data is synced to all players, otherwise the player the data should be synced to.
+		 * @param player Player to which the data is being sent.
+		 * @param joined True if the player is joining the server, false if the server finished a successful resource reload.
 		 */
-		void syncDataPackContents(PlayerManager playerManager, @Nullable ServerPlayerEntity player);
+		void syncDataPackContents(ServerPlayerEntity player, boolean joined);
 	}
 
 	@FunctionalInterface
