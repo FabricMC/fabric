@@ -21,16 +21,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.network.ChatDecorator;
+import net.minecraft.network.message.MessageDecorator;
 import net.minecraft.server.MinecraftServer;
 
 import net.fabricmc.fabric.api.message.v1.ServerMessageDecoratorEvent;
 
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin {
-	@Inject(method = "getChatDecorator", at = @At("RETURN"), cancellable = true)
-	private void onGetChatDecorator(CallbackInfoReturnable<ChatDecorator> cir) {
-		ChatDecorator originalDecorator = cir.getReturnValue();
+	@Inject(method = "getMessageDecorator", at = @At("RETURN"), cancellable = true)
+	private void onGetChatDecorator(CallbackInfoReturnable<MessageDecorator> cir) {
+		MessageDecorator originalDecorator = cir.getReturnValue();
 		cir.setReturnValue((sender, message) -> originalDecorator.decorate(sender, message).thenCompose((decorated) -> ServerMessageDecoratorEvent.EVENT.invoker().decorate(sender, decorated)));
 	}
 }

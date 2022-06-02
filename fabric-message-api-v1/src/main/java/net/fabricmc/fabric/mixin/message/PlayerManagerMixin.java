@@ -23,8 +23,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.network.MessageType;
-import net.minecraft.network.encryption.SignedChatMessage;
+import net.minecraft.network.message.MessageType;
+import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.filter.FilteredMessage;
@@ -37,7 +37,7 @@ import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 @Mixin(PlayerManager.class)
 public class PlayerManagerMixin {
 	@Inject(method = "broadcast(Lnet/minecraft/server/filter/FilteredMessage;Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/util/registry/RegistryKey;)V", at = @At("HEAD"), cancellable = true)
-	private void onSendChatMessage(FilteredMessage<SignedChatMessage> message, ServerPlayerEntity sender, RegistryKey<MessageType> typeKey, CallbackInfo ci) {
+	private void onSendChatMessage(FilteredMessage<SignedMessage> message, ServerPlayerEntity sender, RegistryKey<MessageType> typeKey, CallbackInfo ci) {
 		if (!ServerMessageEvents.ALLOW_CHAT_MESSAGE.invoker().allowChatMessage(message, sender, typeKey)) {
 			ci.cancel();
 			return;
@@ -57,7 +57,7 @@ public class PlayerManagerMixin {
 	}
 
 	@Inject(method = "broadcast(Lnet/minecraft/server/filter/FilteredMessage;Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/util/registry/RegistryKey;)V", at = @At("HEAD"), cancellable = true)
-	private void onSendCommandMessage(FilteredMessage<SignedChatMessage> message, ServerCommandSource source, RegistryKey<MessageType> typeKey, CallbackInfo ci) {
+	private void onSendCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source, RegistryKey<MessageType> typeKey, CallbackInfo ci) {
 		if (!ServerMessageEvents.ALLOW_COMMAND_MESSAGE.invoker().allowCommandMessage(message, source, typeKey)) {
 			ci.cancel();
 			return;

@@ -22,7 +22,7 @@ import java.util.concurrent.CompletionException;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.ChatDecorator;
+import net.minecraft.network.message.MessageDecorator;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * A class for registering a {@link ChatDecorator}. Check the message decorator documentation
+ * A class for registering a {@link MessageDecorator}. Check the message decorator documentation
  * for how message decorators work. Unlike other events, this uses a functional interface that is
  * provided by the vanilla game.
  *
@@ -83,10 +83,10 @@ public final class ServerMessageDecoratorEvent {
 	 */
 	public static final Identifier STYLING_PHASE = new Identifier("fabric", "styling");
 
-	public static final Event<ChatDecorator> EVENT = EventFactory.createWithPhases(ChatDecorator.class, decorators -> (sender, message) -> {
+	public static final Event<MessageDecorator> EVENT = EventFactory.createWithPhases(MessageDecorator.class, decorators -> (sender, message) -> {
 		CompletableFuture<Text> future = null;
 
-		for (ChatDecorator decorator : decorators) {
+		for (MessageDecorator decorator : decorators) {
 			if (future == null) {
 				future = decorator.decorate(sender, message).handle((decorated, throwable) -> handle(decorated, throwable, decorator));
 			} else {
@@ -97,7 +97,7 @@ public final class ServerMessageDecoratorEvent {
 		return future == null ? CompletableFuture.completedFuture(message) : future;
 	}, CONTENT_PHASE, Event.DEFAULT_PHASE, STYLING_PHASE);
 
-	private static <T extends Text> T handle(T decorated, @Nullable Throwable throwable, ChatDecorator decorator) {
+	private static <T extends Text> T handle(T decorated, @Nullable Throwable throwable, MessageDecorator decorator) {
 		String decoratorName = decorator.getClass().getName();
 
 		if (throwable != null) {

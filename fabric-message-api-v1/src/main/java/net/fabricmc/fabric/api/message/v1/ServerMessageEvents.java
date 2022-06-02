@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.message.v1;
 
-import net.minecraft.network.MessageType;
-import net.minecraft.network.encryption.SignedChatMessage;
+import net.minecraft.network.message.MessageType;
+import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.filter.FilteredMessage;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -147,7 +147,7 @@ public final class ServerMessageEvents {
 		 * @param typeKey the message type
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
-		boolean allowChatMessage(FilteredMessage<SignedChatMessage> message, ServerPlayerEntity sender, RegistryKey<MessageType> typeKey);
+		boolean allowChatMessage(FilteredMessage<SignedMessage> message, ServerPlayerEntity sender, RegistryKey<MessageType> typeKey);
 	}
 
 	@FunctionalInterface
@@ -182,7 +182,7 @@ public final class ServerMessageEvents {
 		 * @param typeKey the message type
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
-		boolean allowCommandMessage(FilteredMessage<SignedChatMessage> message, ServerCommandSource source, RegistryKey<MessageType> typeKey);
+		boolean allowCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source, RegistryKey<MessageType> typeKey);
 	}
 
 	@FunctionalInterface
@@ -200,7 +200,7 @@ public final class ServerMessageEvents {
 		 * @param sender  the player that sent the message
 		 * @param typeKey the message type
 		 */
-		void onChatMessage(FilteredMessage<SignedChatMessage> message, ServerPlayerEntity sender, RegistryKey<MessageType> typeKey);
+		void onChatMessage(FilteredMessage<SignedMessage> message, ServerPlayerEntity sender, RegistryKey<MessageType> typeKey);
 	}
 
 	@FunctionalInterface
@@ -230,6 +230,6 @@ public final class ServerMessageEvents {
 		 * @param source  the command source that sent the message
 		 * @param typeKey the message type
 		 */
-		void onCommandMessage(FilteredMessage<SignedChatMessage> message, ServerCommandSource source, RegistryKey<MessageType> typeKey);
+		void onCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source, RegistryKey<MessageType> typeKey);
 	}
 }

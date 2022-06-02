@@ -30,7 +30,7 @@ public class ConditionalResourcesTest {
 		return new Identifier(MOD_ID, path);
 	}
 
-	@GameTest(structureName = FabricGameTest.EMPTY_STRUCTURE)
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void conditionalRecipes(TestContext context) {
 		RecipeManager manager = context.getWorld().getRecipeManager();
 

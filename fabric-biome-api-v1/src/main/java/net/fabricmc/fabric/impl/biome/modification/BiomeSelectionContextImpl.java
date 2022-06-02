@@ -29,7 +29,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
-import net.minecraft.world.gen.structure.StructureType;
+import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.level.LevelProperties;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
@@ -78,8 +78,8 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	}
 
 	@Override
-	public boolean validForStructure(RegistryKey<StructureType> key) {
-		StructureType instance = dynamicRegistries.get(Registry.STRUCTURE_KEY).get(key);
+	public boolean validForStructure(RegistryKey<Structure> key) {
+		Structure instance = dynamicRegistries.get(Registry.STRUCTURE_KEY).get(key);
 
 		if (instance == null) {
 			return false;
@@ -89,9 +89,9 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	}
 
 	@Override
-	public Optional<RegistryKey<StructureType>> getStructureKey(StructureType structureFeature) {
-		Registry<StructureType> registry = dynamicRegistries.get(Registry.STRUCTURE_KEY);
-		return registry.getKey(structureFeature);
+	public Optional<RegistryKey<Structure>> getStructureKey(Structure structure) {
+		Registry<Structure> registry = dynamicRegistries.get(Registry.STRUCTURE_KEY);
+		return registry.getKey(structure);
 	}
 
 	@Override
