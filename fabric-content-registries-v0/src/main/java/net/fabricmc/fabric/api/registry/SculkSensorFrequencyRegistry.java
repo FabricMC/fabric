@@ -33,11 +33,13 @@ public class SculkSensorFrequencyRegistry {
 	}
 
 	/**
-	 * Registers a sculk sensor frequency for the given game event.<br>
+	 * Registers a sculk sensor frequency for the given game event.
 	 *
-	 * <p>A frequency is defined as the redstone signal strength a sculk sensor will emit to a comparator when it detects a specific vibration.<br>
-	 * As redstone signal strengths are limited to a maximum of 15, a frequency must also be between 1 and 15. As such, many game events will share a single frequency.<br>
-	 * Note that the game event must also be in the {@linkplain GameEventTags#VIBRATIONS} tag to be detected by sculk sensors in the first place.
+	 * <p>A frequency is defined as the redstone signal strength a sculk sensor will emit to a comparator when it detects a specific vibration.
+	 *
+	 * <p>As redstone signal strengths are limited to a maximum of 15, a frequency must also be between 1 and 15. As such, many game events will share a single frequency.
+	 *
+	 * <p>Note that the game event must also be in the {@linkplain GameEventTags#VIBRATIONS} tag to be detected by sculk sensors in the first place.
 	 *
 	 * @param event The event to register the frequency for.
 	 * @param frequency The frequency to register.
