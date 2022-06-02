@@ -111,6 +111,6 @@ abstract class ClientPlayNetworkHandlerMixin {
 			)
 	)
 	private void hookOnSynchronizeTags(SynchronizeTagsS2CPacket packet, CallbackInfo ci) {
-		CommonLifecycleEvents.TAGS_LOADED.invoker().tagsLoaded(registryManager, true);
+		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(registryManager, true);
 	}
 }

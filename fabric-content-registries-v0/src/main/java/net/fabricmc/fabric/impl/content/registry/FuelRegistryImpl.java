@@ -43,7 +43,7 @@ public final class FuelRegistryImpl implements FuelRegistry {
 
 	public FuelRegistryImpl() {
 		// Reset cache after tags change since it depends on tags.
-		CommonLifecycleEvents.TAGS_LOADED.register((registries, isClient) -> {
+		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
 			resetCache();
 		});
 	}

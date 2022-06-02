@@ -41,7 +41,7 @@ public final class MiningLevelManagerImpl {
 	private static final ThreadLocal<Reference2IntMap<BlockState>> CACHE = ThreadLocal.withInitial(Reference2IntOpenHashMap::new);
 
 	static {
-		CommonLifecycleEvents.TAGS_LOADED.register((registries, isClient) -> CACHE.get().clear());
+		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> CACHE.get().clear());
 	}
 
 	public static int getRequiredMiningLevel(BlockState state) {

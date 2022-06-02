@@ -30,6 +30,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 public class DataPackContentsMixin {
 	@Inject(method = "refresh", at = @At("TAIL"))
 	private void hookRefresh(DynamicRegistryManager registries, CallbackInfo ci) {
-		CommonLifecycleEvents.TAGS_LOADED.invoker().tagsLoaded(registries, false);
+		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(registries, false);
 	}
 }

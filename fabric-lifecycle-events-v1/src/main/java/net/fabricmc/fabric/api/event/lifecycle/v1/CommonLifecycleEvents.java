@@ -28,17 +28,17 @@ public class CommonLifecycleEvents {
 	/**
 	 * Called when tags are loaded or updated.
 	 */
-	public static final Event<TagsLoaded> TAGS_LOADED = EventFactory.createArrayBacked(TagsLoaded.class, callbacks -> (registries, isClient) -> {
+	public static final Event<TagsLoaded> TAGS_LOADED = EventFactory.createArrayBacked(TagsLoaded.class, callbacks -> (registries, client) -> {
 		for (TagsLoaded callback : callbacks) {
-			callback.tagsLoaded(registries, isClient);
+			callback.onTagsLoaded(registries, client);
 		}
 	});
 
 	public interface TagsLoaded {
 		/**
 		 * @param registries Up-to-date registries from which the tags can be retrieved.
-		 * @param isClient True if the client just received a sync packet, false if the server just (re)loaded the tags.
+		 * @param client True if the client just received a sync packet, false if the server just (re)loaded the tags.
 		 */
-		void tagsLoaded(DynamicRegistryManager registries, boolean isClient);
+		void onTagsLoaded(DynamicRegistryManager registries, boolean client);
 	}
 }
