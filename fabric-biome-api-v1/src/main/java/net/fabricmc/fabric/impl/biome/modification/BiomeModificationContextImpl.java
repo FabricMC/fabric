@@ -54,7 +54,6 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.PlacedFeature;
-import net.minecraft.world.gen.structure.StructureType;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 
@@ -197,7 +196,6 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	private class GenerationSettingsContextImpl implements GenerationSettingsContext {
 		private final Registry<ConfiguredCarver<?>> carvers = registries.get(Registry.CONFIGURED_CARVER_KEY);
 		private final Registry<PlacedFeature> features = registries.get(Registry.PLACED_FEATURE_KEY);
-		private final Registry<StructureType> structures = registries.get(Registry.STRUCTURE_KEY);
 		private final GenerationSettings generationSettings = biome.getGenerationSettings();
 
 		private boolean rebuildFlowerFeatures;

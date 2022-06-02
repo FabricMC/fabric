@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 
 public class WorldDependentAttributesTest {
-	@GameTest(structureName = FabricGameTest.EMPTY_STRUCTURE)
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testViscosity(TestContext context) {
 		ServerWorld overworld = context.getWorld();
 		ServerWorld nether = overworld.getServer().getWorld(ServerWorld.NETHER);

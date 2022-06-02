@@ -51,12 +51,12 @@ public class ExampleFabricTestSuite implements FabricGameTest {
 		);
 	}
 
-	@GameTest(structureName = "fabric-gametest-api-v1-testmod:exampletestsuite.diamond")
+	@GameTest(templateName = "fabric-gametest-api-v1-testmod:exampletestsuite.diamond")
 	public void diamond(TestContext context) {
 		// Nothing to do as the structure placed the block.
 	}
 
-	@GameTest(structureName = EMPTY_STRUCTURE)
+	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void noStructure(TestContext context) {
 		context.setBlockState(0, 2, 0, Blocks.DIAMOND_BLOCK);
 	}
