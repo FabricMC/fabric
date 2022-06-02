@@ -83,7 +83,7 @@ public final class ServerLifecycleEvents {
 	 */
 	public static final Event<SyncDataPackContents> SYNC_DATA_PACK_CONTENTS = EventFactory.createArrayBacked(SyncDataPackContents.class, callbacks -> (player, joined) -> {
 		for (SyncDataPackContents callback : callbacks) {
-			callback.syncDataPackContents(player, joined);
+			callback.onSyncDataPackContents(player, joined);
 		}
 	});
 
@@ -139,7 +139,7 @@ public final class ServerLifecycleEvents {
 		 * @param player Player to which the data is being sent.
 		 * @param joined True if the player is joining the server, false if the server finished a successful resource reload.
 		 */
-		void syncDataPackContents(ServerPlayerEntity player, boolean joined);
+		void onSyncDataPackContents(ServerPlayerEntity player, boolean joined);
 	}
 
 	@FunctionalInterface

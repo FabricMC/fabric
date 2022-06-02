@@ -34,7 +34,7 @@ public class PlayerManagerMixin {
 			at = @At(value = "INVOKE", target = "net/minecraft/network/packet/s2c/play/SynchronizeRecipesS2CPacket.<init>(Ljava/util/Collection;)V")
 	)
 	private void hookOnPlayerConnect(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
-		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.invoker().syncDataPackContents(player, true);
+		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.invoker().onSyncDataPackContents(player, true);
 	}
 
 	@Inject(
@@ -43,7 +43,7 @@ public class PlayerManagerMixin {
 	)
 	private void hookOnDataPacksReloaded(CallbackInfo ci) {
 		for (ServerPlayerEntity player : ((PlayerManager) (Object) this).getPlayerList()) {
-			ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.invoker().syncDataPackContents(player, false);
+			ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.invoker().onSyncDataPackContents(player, false);
 		}
 	}
 }
