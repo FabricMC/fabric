@@ -70,8 +70,8 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		generateGlassTags();
 		generateShulkerTag();
 		generateDyeTags();
-		generateJobSiteBlocksTag();
-		generateSandstoneBlocksTag();
+		generateVillageJobSitesTag();
+		generateSandstoneTags();
 	}
 
 	private void generateDyeTags() {
@@ -314,7 +314,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.BOW);
 	}
 
-	private void generateJobSiteBlocksTag() {
+	private void generateVillageJobSitesTag() {
 		getOrCreateTagBuilder(ConventionalItemTags.VILLAGER_JOB_SITES)
 				.add(Items.BARREL)
 				.add(Items.BLAST_FURNACE)
@@ -331,7 +331,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.STONECUTTER);
 	}
 
-	private void generateSandstoneBlocksTag() {
+	private void generateSandstoneTags() {
 		getOrCreateTagBuilder(ConventionalItemTags.NORMAL_SANDSTONE_BLOCKS)
 				.add(Items.SANDSTONE)
 				.add(Items.CUT_SANDSTONE)

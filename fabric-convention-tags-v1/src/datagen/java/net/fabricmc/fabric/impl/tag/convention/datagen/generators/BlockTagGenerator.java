@@ -50,8 +50,8 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 				.add(Blocks.BOOKSHELF);
 		generateGlassTags();
 		generateShulkerTag();
-		generateJobSiteBlocksTag();
-		generateSandstoneBlocksTag();
+		generateVillagerJobSitesTag();
+		generateSandstoneTags();
 	}
 
 	private void generateShulkerTag() {
@@ -115,7 +115,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 				.add(Blocks.YELLOW_STAINED_GLASS_PANE);
 	}
 
-	private void generateJobSiteBlocksTag() {
+	private void generateVillagerJobSitesTag() {
 		getOrCreateTagBuilder(ConventionalBlockTags.VILLAGER_JOB_SITES)
 				.add(Blocks.BARREL)
 				.add(Blocks.BLAST_FURNACE)
@@ -132,7 +132,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 				.add(Blocks.STONECUTTER);
 	}
 
-	private void generateSandstoneBlocksTag() {
+	private void generateSandstoneTags() {
 		getOrCreateTagBuilder(ConventionalBlockTags.NORMAL_SANDSTONE_BLOCKS)
 				.add(Blocks.SANDSTONE)
 				.add(Blocks.CUT_SANDSTONE)
