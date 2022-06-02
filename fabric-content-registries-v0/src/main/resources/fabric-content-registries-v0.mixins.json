@@ -9,7 +9,8 @@
     "MixinAbstractFurnaceBlockEntity",
     "MixinFireBlock",
     "OxidizableMixin",
-    "ShovelItemAccessor"
+    "ShovelItemAccessor",
+    "SculkSensorBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1
