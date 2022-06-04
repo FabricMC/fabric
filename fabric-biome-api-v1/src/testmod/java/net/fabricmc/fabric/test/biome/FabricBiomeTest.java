@@ -119,6 +119,16 @@ public class FabricBiomeTest implements ModInitializer {
 				GenerationStep.Feature.VEGETAL_DECORATION,
 				RegistryKey.of(Registry.PLACED_FEATURE_KEY, new Identifier(MOD_ID, "concrete_pile"))
 		);
+
+		// Make sure data packs can define biomes
+		NetherBiomes.addNetherBiome(
+				RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "example_biome")),
+				MultiNoiseUtil.createNoiseHypercube(1.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.5f, 0.3f)
+		);
+		TheEndBiomes.addHighlandsBiome(
+				RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "example_biome")),
+				10.0
+		);
 	}
 
 	// These are used for testing the spacing of custom end biomes.

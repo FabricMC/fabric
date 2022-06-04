@@ -16,39 +16,25 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.mojang.datafixers.util.Pair;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
-import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 
-import net.fabricmc.fabric.impl.biome.NetherBiomeData;
+import net.fabricmc.fabric.impl.biome.BiomeSourceAccess;
 
-/**
- * This Mixin is responsible for adding mod-biomes to the NETHER preset in the MultiNoiseBiomeSource.
- */
-@Mixin(MultiNoiseBiomeSource.Preset.class)
-public class MixinMultiNoiseBiomeSource {
-	// NOTE: This is a lambda-function in the NETHER preset field initializer
-	@Inject(method = "method_31088", at = @At("RETURN"), cancellable = true)
-	private static void appendNetherBiomes(Registry<Biome> registry, CallbackInfoReturnable<MultiNoiseUtil.Entries<RegistryEntry<Biome>>> cri) {
-		MultiNoiseUtil.Entries<RegistryEntry<Biome>> biomes = cri.getReturnValue();
-		List<Pair<MultiNoiseUtil.NoiseHypercube, RegistryEntry<Biome>>> entries = new ArrayList<>(biomes.getEntries());
+@Mixin(MultiNoiseBiomeSource.class)
+public class MixinMultiNoiseBiomeSource implements BiomeSourceAccess {
+	@Unique
+	private boolean modifyBiomeEntries = true;
 
-		// add fabric biome noise point data to list && BiomeSource biome list
-		NetherBiomeData.getNetherBiomeNoisePoints().forEach((biomeKey, noisePoint) -> {
-			entries.add(Pair.of(noisePoint, registry.entryOf(biomeKey)));
-		});
+	@Override
+	public void fabric_setModifyBiomeEntries(boolean modifyBiomeEntries) {
+		this.modifyBiomeEntries = modifyBiomeEntries;
+	}
 
-		cri.setReturnValue(new MultiNoiseUtil.Entries<>(entries));
+	@Override
+	public boolean fabric_shouldModifyBiomeEntries() {
+		return this.modifyBiomeEntries;
 	}
 }
