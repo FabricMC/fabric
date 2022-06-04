@@ -16,12 +16,14 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
 import com.google.common.collect.Sets;
 
+import net.minecraft.block.Block;
 import net.minecraft.data.server.BlockLootTableGenerator;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
@@ -39,6 +41,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
  */
 public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerator implements FabricLootTableProvider {
 	protected final FabricDataGenerator dataGenerator;
+	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
 
 	protected FabricBlockLootTableProvider(FabricDataGenerator dataGenerator) {
 		this.dataGenerator = dataGenerator;
@@ -50,6 +53,13 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 	 * <p>Use the range of {@link BlockLootTableGenerator#addDrop} methods to generate block drops.
 	 */
 	protected abstract void generateBlockLootTables();
+
+	/**
+	 * Disable strict validation for the passed block.
+	 */
+	public void excludeFromStrictValidation(Block block) {
+		excludedFromStrictValidation.add(Registry.BLOCK.getId(block));
+	}
 
 	@Override
 	public LootContextType getLootContextType() {
@@ -85,6 +95,8 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 					}
 				}
 			}
+
+			missing.removeAll(excludedFromStrictValidation);
 
 			if (!missing.isEmpty()) {
 				throw new IllegalStateException("Missing loot table(s) for %s".formatted(missing));
