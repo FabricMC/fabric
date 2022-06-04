@@ -1,6 +1,10 @@
 {
   "replace": false,
   "values": [
+    {
+      "id": "#minecraft:is_overworld",
+      "required": false
+    },
     "minecraft:river",
     "minecraft:frozen_river",
     "minecraft:cold_ocean",
