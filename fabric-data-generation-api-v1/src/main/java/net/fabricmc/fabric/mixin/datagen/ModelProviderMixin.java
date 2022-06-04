@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.datagen;
 
-import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -81,8 +80,8 @@ public class ModelProviderMixin {
 		}
 	}
 
-	@Inject(method = "run", at = @At(value = "INVOKE_ASSIGN", target = "com/google/common/collect/Maps.newHashMap()Ljava/util/HashMap;"), locals = LocalCapture.CAPTURE_FAILHARD)
-	private void runHead(DataWriter writer, CallbackInfo ci, Path path, Map<Block, BlockStateSupplier> map) {
+	@Inject(method = "run", at = @At(value = "INVOKE_ASSIGN", target = "com/google/common/collect/Maps.newHashMap()Ljava/util/HashMap;", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void runHead(DataWriter writer, CallbackInfo ci, Map<Block, BlockStateSupplier> map) {
 		dataGeneratorThreadLocal.set(generator);
 		blockStateMapThreadLocal.set(map);
 	}
