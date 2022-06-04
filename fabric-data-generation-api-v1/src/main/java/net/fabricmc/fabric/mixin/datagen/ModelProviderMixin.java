@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.datagen;
 
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -57,6 +58,9 @@ public class ModelProviderMixin {
 		this.generator = generator;
 	}
 
+	@Unique
+	private static ThreadLocal<Map<Block, BlockStateSupplier>> blockStateMapThreadLocal = new ThreadLocal<>();
+
 	@Redirect(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/client/BlockStateModelGenerator;register()V"))
 	private void registerBlockStateModels(BlockStateModelGenerator instance) {
 		if (((Object) this) instanceof FabricModelProvider fabricModelProvider) {
@@ -77,14 +81,16 @@ public class ModelProviderMixin {
 		}
 	}
 
-	@Inject(method = "run", at = @At("HEAD"))
-	private void runHead(DataWriter writer, CallbackInfo ci) {
+	@Inject(method = "run", at = @At(value = "INVOKE_ASSIGN", target = "com/google/common/collect/Maps.newHashMap()Ljava/util/HashMap;"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void runHead(DataWriter writer, CallbackInfo ci, Path path, Map<Block, BlockStateSupplier> map) {
 		dataGeneratorThreadLocal.set(generator);
+		blockStateMapThreadLocal.set(map);
 	}
 
 	@Inject(method = "run", at = @At("TAIL"))
 	private void runTail(DataWriter writer, CallbackInfo ci) {
 		dataGeneratorThreadLocal.remove();
+		blockStateMapThreadLocal.remove();
 	}
 
 	@Inject(method = "method_25738", at = @At("HEAD"), cancellable = true)
@@ -105,7 +111,8 @@ public class ModelProviderMixin {
 	@Inject(method = "method_25741", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/client/ModelIds;getItemModelId(Lnet/minecraft/item/Item;)Lnet/minecraft/util/Identifier;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void filterItemsForProcessingMod(Set<Item> set, Map<Identifier, Supplier<JsonElement>> map, Block block, CallbackInfo ci, Item item) {
 		if (dataGeneratorThreadLocal.get() instanceof FabricDataGenerator dataGenerator) {
-			if (!dataGenerator.isStrictValidationEnabled()) {
+			// Only generate the item model if the block state json was registered
+			if (!blockStateMapThreadLocal.get().containsKey(block)) {
 				ci.cancel();
 				return;
 			}
