@@ -79,7 +79,7 @@ public class ModelProviderMixin {
 		}
 	}
 
-	@Inject(method = "run", at = @At(value = "INVOKE_ASSIGN", target = "com/google/common/collect/Maps.newHashMap()Ljava/util/HashMap;"), locals = LocalCapture.CAPTURE_FAILHARD)
+	@Inject(method = "run", at = @At(value = "INVOKE_ASSIGN", target = "com/google/common/collect/Maps.newHashMap()Ljava/util/HashMap;", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
 	private void runHead(DataCache cache, CallbackInfo ci, Path path, Map<Block, BlockStateSupplier> map) {
 		dataGeneratorThreadLocal.set(generator);
 		blockStateMapThreadLocal.set(map);
