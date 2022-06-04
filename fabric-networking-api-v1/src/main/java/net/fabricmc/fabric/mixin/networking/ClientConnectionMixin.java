@@ -66,13 +66,14 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 	// Must be fully qualified due to mixin not working in production without it
 	@SuppressWarnings("UnnecessaryQualifiedMemberReference")
 	@Redirect(method = "Lnet/minecraft/network/ClientConnection;exceptionCaught(Lio/netty/channel/ChannelHandlerContext;Ljava/lang/Throwable;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;send(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;)V"))
-	private void resendOnExceptionCaught(ClientConnection self, Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> listener) {
+	private void resendOnExceptionCaught(ClientConnection self, Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> listener, ChannelHandlerContext context, Throwable ex) {
 		PacketListener handler = this.packetListener;
+		Text disconnectMessage = new TranslatableText("disconnect.genericReason", "Internal Exception: " + ex);
 
 		if (handler instanceof DisconnectPacketSource) {
-			this.send(((DisconnectPacketSource) handler).createDisconnectPacket(new TranslatableText("disconnect.genericReason")), listener);
+			this.send(((DisconnectPacketSource) handler).createDisconnectPacket(disconnectMessage), listener);
 		} else {
-			this.disconnect(new TranslatableText("disconnect.genericReason")); // Don't send packet if we cannot send proper packets
+			this.disconnect(disconnectMessage); // Don't send packet if we cannot send proper packets
 		}
 	}
 
@@ -84,7 +85,7 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 	}
 
 	@Inject(method = "channelInactive", at = @At("HEAD"))
-	private void handleDisconnect(ChannelHandlerContext channelHandlerContext, CallbackInfo ci) throws Exception {
+	private void handleDisconnect(ChannelHandlerContext channelHandlerContext, CallbackInfo ci) {
 		if (packetListener instanceof NetworkHandlerExtensions) { // not the case for client/server query
 			((NetworkHandlerExtensions) packetListener).getAddon().handleDisconnect();
 		}
