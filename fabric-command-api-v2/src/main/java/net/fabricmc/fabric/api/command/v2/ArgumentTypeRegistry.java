@@ -24,7 +24,7 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.mixin.command.ArgumentTypesAccessor;
 
-public class ArgumentTypeRegistry {
+public final class ArgumentTypeRegistry {
 	/**
 	 * Register a new argument type.
 	 *
