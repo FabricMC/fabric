@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.client.message",
+  "compatibilityLevel": "JAVA_16",
+  "client": [
+    "ClientWorldAccessor",
+    "InGameHudMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1,
+    "maxShiftBy": 3
+  }
+}
