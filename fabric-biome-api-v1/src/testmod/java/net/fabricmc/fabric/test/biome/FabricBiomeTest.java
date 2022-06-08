@@ -16,15 +16,24 @@
 
 package net.fabricmc.fabric.test.biome;
 
-import java.util.List;
+import static net.minecraft.server.command.CommandManager.literal;
 
-import net.minecraft.tag.TagKey;
-import net.minecraft.util.registry.RegistryEntry;
+import java.util.List;
+import java.util.Objects;
+
+import com.mojang.datafixers.util.Pair;
+
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BiomeMoodSound;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.BiomeKeys;
@@ -50,6 +59,7 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.biome.v1.NetherBiomes;
 import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 /**
  * <b>NOTES FOR TESTING:</b>
@@ -129,6 +139,40 @@ public class FabricBiomeTest implements ModInitializer {
 				RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "example_biome")),
 				10.0
 		);
+
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+			dispatcher.register(literal("fabric-biome-test").executes(context -> {
+				try {
+					autoTest(context.getSource());
+				} catch (Exception e) {
+					e.printStackTrace();
+					return -1;
+				}
+
+				return 1;
+			}));
+		});
+	}
+
+	private void autoTest(ServerCommandSource commandSource) {
+		ServerWorld overworld = commandSource.getServer().getWorld(World.OVERWORLD);
+		ServerWorld end = commandSource.getServer().getWorld(World.END);
+		ServerWorld nether = commandSource.getServer().getWorld(World.NETHER);
+
+		locateAndLoadBiome(overworld, CUSTOM_PLAINS);
+		locateAndLoadBiome(nether, TEST_CRIMSON_FOREST);
+		locateAndLoadBiome(end, TEST_END_HIGHLANDS);
+
+		locateAndLoadBiome(nether, RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "example_biome")));
+		locateAndLoadBiome(end, RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "example_biome")));
+	}
+
+	private void locateAndLoadBiome(ServerWorld world, RegistryKey<Biome> biome) {
+		Pair<BlockPos, RegistryEntry<Biome>> pair = world.locateBiome(entry -> entry.matchesKey(biome), BlockPos.ORIGIN, 10000, 32, 64);
+		Objects.requireNonNull(pair, "Unable to locate biome (%s) in world (%s)".formatted(biome, world.getRegistryKey()));
+
+		// Load the block.
+		world.getBlockState(pair.getFirst());
 	}
 
 	// These are used for testing the spacing of custom end biomes.
