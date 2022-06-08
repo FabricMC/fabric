@@ -48,6 +48,7 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 				.add(BiomeKeys.SOUL_SAND_VALLEY)
 				.add(BiomeKeys.BASALT_DELTAS);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IN_THE_END)
+				.addOptionalTag(BiomeTags.IS_END)
 				.add(BiomeKeys.END_BARRENS)
 				.add(BiomeKeys.END_MIDLANDS)
 				.add(BiomeKeys.END_HIGHLANDS)
@@ -55,6 +56,7 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 				.add(BiomeKeys.SMALL_END_ISLANDS);
 		// We avoid the vanilla group tags here as mods may add to them without actually spawning them in the overworld
 		getOrCreateTagBuilder(ConventionalBiomeTags.IN_OVERWORLD)
+				.addOptionalTag(BiomeTags.IS_OVERWORLD)
 				.add(BiomeKeys.RIVER).add(BiomeKeys.FROZEN_RIVER)
 				.add(BiomeKeys.COLD_OCEAN).add(BiomeKeys.DEEP_COLD_OCEAN)
 				.add(BiomeKeys.DEEP_FROZEN_OCEAN).add(BiomeKeys.DEEP_OCEAN)
@@ -95,6 +97,7 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 				.add(BiomeKeys.SUNFLOWER_PLAINS)
 				.add(BiomeKeys.PLAINS);
 		getOrCreateTagBuilder(ConventionalBiomeTags.SAVANNA)
+				.addOptionalTag(BiomeTags.IS_SAVANNA)
 				.add(BiomeKeys.SAVANNA_PLATEAU)
 				.add(BiomeKeys.WINDSWEPT_SAVANNA)
 				.add(BiomeKeys.SAVANNA);
@@ -160,6 +163,8 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 		getOrCreateTagBuilder(ConventionalBiomeTags.CLIMATE_COLD)
 				.add(BiomeKeys.GROVE)
 				.add(BiomeKeys.JAGGED_PEAKS)
+				.add(BiomeKeys.TAIGA).add(BiomeKeys.SNOWY_TAIGA)
+				.add(BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA).add(BiomeKeys.OLD_GROWTH_PINE_TAIGA)
 				.addOptionalTag(ConventionalBiomeTags.ICY);
 		getOrCreateTagBuilder(ConventionalBiomeTags.CLIMATE_TEMPERATE)
 				.add(BiomeKeys.FOREST)

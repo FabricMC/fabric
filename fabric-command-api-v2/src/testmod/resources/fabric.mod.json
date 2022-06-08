@@ -10,7 +10,8 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.command.CommandTest"
+      "net.fabricmc.fabric.test.command.CommandTest",
+      "net.fabricmc.fabric.test.command.CustomArgumentTest"
     ],
     "client": [
       "net.fabricmc.fabric.test.command.client.ClientCommandTest"
