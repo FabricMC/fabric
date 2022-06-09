@@ -18,12 +18,12 @@ package net.fabricmc.fabric.test.biome;
 
 import java.util.List;
 
-import net.minecraft.tag.TagKey;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.sound.BiomeMoodSound;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
@@ -124,8 +124,7 @@ public class FabricBiomeTest implements ModInitializer {
 	// These are used for testing the spacing of custom end biomes.
 	private static Biome createEndHighlands() {
 		GenerationSettings.Builder builder = new GenerationSettings.Builder()
-				.feature(GenerationStep.Feature.SURFACE_STRUCTURES, EndPlacedFeatures.END_GATEWAY_RETURN)
-				.feature(GenerationStep.Feature.VEGETAL_DECORATION, EndPlacedFeatures.CHORUS_PLANT);
+				.feature(GenerationStep.Feature.SURFACE_STRUCTURES, EndPlacedFeatures.END_GATEWAY_RETURN);
 		return composeEndSpawnSettings(builder);
 	}
 
@@ -141,7 +140,7 @@ public class FabricBiomeTest implements ModInitializer {
 
 	private static Biome composeEndSpawnSettings(GenerationSettings.Builder builder) {
 		SpawnSettings.Builder builder2 = new SpawnSettings.Builder();
-		DefaultBiomeFeatures.addEndMobs(builder2);
+		DefaultBiomeFeatures.addPlainsMobs(builder2);
 		return (new Biome.Builder()).precipitation(Biome.Precipitation.NONE).temperature(0.5F).downfall(0.5F).effects((new BiomeEffects.Builder()).waterColor(4159204).waterFogColor(329011).fogColor(10518688).skyColor(0).moodSound(BiomeMoodSound.CAVE).build()).spawnSettings(builder2.build()).generationSettings(builder.build()).build();
 	}
 }

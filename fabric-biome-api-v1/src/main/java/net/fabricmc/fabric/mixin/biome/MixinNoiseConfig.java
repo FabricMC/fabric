@@ -16,22 +16,28 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.source.util.MultiNoiseUtil;
+import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
-import net.fabricmc.fabric.impl.biome.TheEndBiomeData;
+import net.fabricmc.fabric.impl.biome.MultiNoiseSamplerHooks;
 
-@Mixin(ChunkGenerator.class)
-public class MixinChunkGenerator {
-	@Inject(method = "method_38267", at = @At("HEAD"))
-	private void populateBiomes_lambda_head(Chunk chunk, NoiseConfig noiseConfig, CallbackInfoReturnable<Chunk> ci) {
-		// capture seed so TheEndBiomeData.Overrides has it if it needs it
-		TheEndBiomeData.Overrides.setSeed(noiseConfig.getLegacyWorldSeed());
+@Mixin(NoiseConfig.class)
+public class MixinNoiseConfig {
+	@Shadow
+	@Final
+	private MultiNoiseUtil.MultiNoiseSampler multiNoiseSampler;
+
+	@Inject(method = "<init>", at = @At("TAIL"))
+	private void init(ChunkGeneratorSettings chunkGeneratorSettings, Registry<?> noiseRegistry, long seed, CallbackInfo ci) {
+		((MultiNoiseSamplerHooks) (Object) multiNoiseSampler).fabric_setSeed(seed);
 	}
 }
