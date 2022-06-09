@@ -26,15 +26,15 @@ import net.fabricmc.fabric.impl.biome.MultiNoiseSamplerHooks;
 @Mixin(MultiNoiseUtil.MultiNoiseSampler.class)
 public class MixinMultiNoiseSampler implements MultiNoiseSamplerHooks {
 	@Unique
-	private Long fabric_seed = null;
+	private Long seed = null;
 
 	@Override
 	public Long fabric_getSeed() {
-		return fabric_seed;
+		return seed;
 	}
 
 	@Override
 	public void fabric_setSeed(long seed) {
-		fabric_seed = seed;
+		this.seed = seed;
 	}
 }

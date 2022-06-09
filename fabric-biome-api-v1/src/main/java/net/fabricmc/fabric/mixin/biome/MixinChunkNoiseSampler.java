@@ -40,15 +40,15 @@ import net.fabricmc.fabric.impl.biome.MultiNoiseSamplerHooks;
 @Mixin(ChunkNoiseSampler.class)
 public class MixinChunkNoiseSampler {
 	@Unique
-	private long fabric_seed;
+	private long seed;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void init(int horizontalSize, NoiseConfig noiseConfig, int i, int j, GenerationShapeConfig generationShapeConfig, DensityFunctionTypes.class_7050 arg, ChunkGeneratorSettings chunkGeneratorSettings, AquiferSampler.FluidLevelSampler fluidLevelSampler, Blender blender, CallbackInfo ci) {
-		fabric_seed = noiseConfig.getLegacyWorldSeed();
+		seed = noiseConfig.getLegacyWorldSeed();
 	}
 
 	@Inject(method = "createMultiNoiseSampler", at = @At("RETURN"))
 	private void createMultiNoiseSampler(NoiseRouter noiseRouter, List<MultiNoiseUtil.NoiseHypercube> list, CallbackInfoReturnable<MultiNoiseUtil.MultiNoiseSampler> cir) {
-		((MultiNoiseSamplerHooks) (Object) cir.getReturnValue()).fabric_setSeed(fabric_seed);
+		((MultiNoiseSamplerHooks) (Object) cir.getReturnValue()).fabric_setSeed(seed);
 	}
 }
