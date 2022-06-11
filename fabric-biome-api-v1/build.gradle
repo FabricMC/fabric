@@ -7,6 +7,5 @@ loom {
 
 testDependencies(project, [
 	':fabric-api-base',
-	':fabric-resource-loader-v0',
-	':fabric-command-api-v2'
+	':fabric-resource-loader-v0'
 ])
