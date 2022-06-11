@@ -196,6 +196,9 @@ public final class TheEndBiomeData {
 			if (a == b) return true;
 			if (a == null || b == null) return false;
 			if (a.getType() != b.getType()) return false;
+			// This Optional#get is safe - if a has key, b should also have key
+			// given a.getType() != b.getType() check above
+			// noinspection OptionalGetWithoutIsPresent
 			return a.getKeyOrValue().map(key -> b.getKey().get() == key, b.value()::equals);
 		}
 
