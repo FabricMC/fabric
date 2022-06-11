@@ -32,6 +32,7 @@ import net.minecraft.world.biome.source.BiomeSource;
 
 @Mixin(BiomeSource.class)
 public class MixinBiomeSource {
+	// Not marked as @Final because of AW
 	@Shadow
 	public Set<RegistryEntry<Biome>> biomes;
 

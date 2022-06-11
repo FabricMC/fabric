@@ -47,10 +47,6 @@ public final class WeightedPicker<T> {
 		entries.add(new WeightedEntry<>(biome, weight, currentTotal));
 	}
 
-	public String logEntries(Function<T, String> stringifier) {
-		return String.join(", ", this.entries.stream().map(WeightedEntry::entry).map(stringifier).toList());
-	}
-
 	double getCurrentWeightTotal() {
 		return currentTotal;
 	}

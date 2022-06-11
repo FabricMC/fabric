@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.logging.LogUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,7 @@ public final class NetherBiomeData {
 
 	private static final Map<RegistryKey<Biome>, MultiNoiseUtil.NoiseHypercube> NETHER_BIOME_NOISE_POINTS = new HashMap<>();
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(NetherBiomeData.class);
+	private static final Logger LOGGER = LogUtils.getLogger();
 
 	private NetherBiomeData() {
 	}
@@ -92,21 +93,18 @@ public final class NetherBiomeData {
 
 		for (Map.Entry<RegistryKey<Biome>, MultiNoiseUtil.NoiseHypercube> entry : NETHER_BIOME_NOISE_POINTS.entrySet()) {
 			if (biomeRegistry.contains(entry.getKey())) {
-				LOGGER.info("Nether biome {} loaded successfully", entry.getKey().getValue());
 				entryList.add(Pair.of(entry.getValue(), biomeRegistry.entryOf(entry.getKey())));
 			} else {
 				LOGGER.warn("Nether biome {} not loaded", entry.getKey().getValue());
 			}
 		}
 
-		LOGGER.info("Loaded biomes!");
 		return new MultiNoiseUtil.Entries<>(entryList);
 	}
 
 	public static void modifyBiomeSource(Registry<Biome> biomeRegistry, BiomeSource biomeSource) {
 		if (biomeSource instanceof MultiNoiseBiomeSource multiNoiseBiomeSource) {
 			if (((BiomeSourceAccess) multiNoiseBiomeSource).fabric_shouldModifyBiomeEntries() && multiNoiseBiomeSource.matchesInstance(MultiNoiseBiomeSource.Preset.NETHER)) {
-				LOGGER.info("Biomes: {}", String.join(" ", biomeRegistry.streamEntries().map(RegistryEntry::getKey).flatMap(Optional::stream).map(RegistryKey::getValue).filter((id) -> !id.getNamespace().equals("minecraft")).map(Identifier::toString).toList()));
 				multiNoiseBiomeSource.biomeEntries = NetherBiomeData.withModdedBiomeEntries(
 						MultiNoiseBiomeSource.Preset.NETHER.biomeSourceFunction.apply(biomeRegistry),
 						biomeRegistry);

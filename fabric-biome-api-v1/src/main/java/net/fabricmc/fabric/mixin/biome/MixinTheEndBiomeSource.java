@@ -64,8 +64,6 @@ public class MixinTheEndBiomeSource extends MixinBiomeSource {
 		if (!biomeSetModified) {
 			biomeSetModified = true;
 			biomes.addAll(overrides.get().customBiomes);
-			Logger LOGGER = LoggerFactory.getLogger("MixinTheEndBiomeSource");
-			biomes.forEach(biome -> LOGGER.info("Loaded: {}", biome.getKey().map(RegistryKey::getValue).map(Identifier::toString).orElse("<no id?>")));
 		}
 	}
 }

@@ -115,9 +115,6 @@ public final class TheEndBiomeData {
 		private final RegistryEntry<Biome> endBarrens;
 		private final RegistryEntry<Biome> endHighlands;
 
-		private static final Logger LOGGER = LogUtils.getLogger();
-		private int unloggedBarrens = 100;
-
 		// Maps where the keys have been resolved to actual entries
 		private final @Nullable Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> endBiomesMap;
 		private final @Nullable Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> endMidlandsMap;
@@ -133,26 +130,9 @@ public final class TheEndBiomeData {
 			this.endBarrens = biomeRegistry.entryOf(BiomeKeys.END_BARRENS);
 			this.endHighlands = biomeRegistry.entryOf(BiomeKeys.END_HIGHLANDS);
 
-			LOGGER.info("Biome map size: {}", END_BIOMES_MAP.size());
-			LOGGER.info("Barrens map size: {}", END_BARRENS_MAP.size());
-			LOGGER.info("Midlands map size: {}", END_MIDLANDS_MAP.size());
-
 			this.endBiomesMap = resolveOverrides(biomeRegistry, END_BIOMES_MAP, BiomeKeys.THE_END);
 			this.endMidlandsMap = resolveOverrides(biomeRegistry, END_MIDLANDS_MAP, BiomeKeys.END_MIDLANDS);
 			this.endBarrensMap = resolveOverrides(biomeRegistry, END_BARRENS_MAP, BiomeKeys.END_BARRENS);
-
-			log("end", this.endBiomesMap);
-			log("midlands", this.endMidlandsMap);
-			log("barrens", this.endBarrensMap);
-		}
-
-		private void log(String name, @Nullable Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> map) {
-			LOGGER.info("Picker for {}", name);
-			if (map == null) {
-				LOGGER.info("(null map)");
-				return;
-			}
-			map.forEach((entry, picker) -> LOGGER.info("{}: {}", entry.getKey().map(RegistryKey::getValue).map(Identifier::toString).orElse("<unknown>"), picker.logEntries(entry2 -> entry2.getKey().map(RegistryKey::getValue).map(Identifier::toString).orElse("<unknown>"))));
 		}
 
 		// Resolves all RegistryKey instances to RegistryEntries
@@ -193,7 +173,7 @@ public final class TheEndBiomeData {
 			int count = picker.getEntryCount();
 			if (count == 0 || (count == 1 && key.matches(endHighlands::matchesKey))) return defaultValue;
 
-				// The x and z of the entry are divided by 64 to ensure custom biomes are large enough; going larger than this
+			// The x and z of the entry are divided by 64 to ensure custom biomes are large enough; going larger than this
 			// seems to make custom biomes too hard to find.
 			return picker.pickFromNoise(getSampler(noise), x / 64.0, 0, z / 64.0);
 		}
