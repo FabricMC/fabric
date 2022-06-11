@@ -5,7 +5,12 @@
   "mixins": [
     "MixinChunkGenerator",
     "MixinMinecraftServer",
+
+    "MixinBiomeSource",
+    "MixinChunkNoiseSampler",
     "MixinMultiNoiseBiomeSource",
+    "MixinMultiNoiseSampler",
+    "MixinNoiseConfig",
     "MixinTheEndBiomeSource",
     "modification.DynamicRegistryManagerImplMixin",
     "modification.MinecraftServerMixin"
