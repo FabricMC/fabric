@@ -70,8 +70,9 @@ public class ClientTags {
 	 * @return if the entry is in the given tag.
 	 */
 	@SuppressWarnings("unchecked")
+	@Environment(EnvType.CLIENT)
 	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, T entry) {
-		Optional<? extends Registry<?>> maybeRegistry = Registry.REGISTRIES.getOrEmpty(tagKey.registry().getValue());
+		Optional<? extends Registry<?>> maybeRegistry = getRegistry(tagKey);
 
 		if (maybeRegistry.isPresent()) {
 			if (tagKey.isOf(maybeRegistry.get().getKey())) {
@@ -101,8 +102,6 @@ public class ClientTags {
 	 * <p>If the tag does synced tag does exist, it is queried. If it does not exist,
 	 * the tag loaded from the available mods is checked.
 	 *
-	 * <p>Client-side only.
-	 *
 	 * @param tagKey        the {@code TagKey} to being checked.
 	 * @param registryEntry the entry to check.
 	 * @return if the entry is in the given tag.
@@ -110,17 +109,11 @@ public class ClientTags {
 	@Environment(EnvType.CLIENT)
 	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, RegistryEntry<T> registryEntry) {
 		// Check if the tag exists in the dynamic registry first
-		if (MinecraftClient.getInstance() != null) {
-			if (MinecraftClient.getInstance().world != null) {
-				if (MinecraftClient.getInstance().world.getRegistryManager() != null) {
-					Optional<? extends Registry<T>> maybeRegistry = MinecraftClient.getInstance().world
-							.getRegistryManager().getOptional(tagKey.registry());
-					if (maybeRegistry.isPresent()) {
-						if (maybeRegistry.get().containsTag(tagKey)) {
-							return registryEntry.isIn(tagKey);
-						}
-					}
-				}
+		Optional<? extends Registry<T>> maybeRegistry = getRegistry(tagKey);
+
+		if (maybeRegistry.isPresent()) {
+			if (maybeRegistry.get().containsTag(tagKey)) {
+				registryEntry.isIn(tagKey);
 			}
 		}
 
@@ -146,5 +139,22 @@ public class ClientTags {
 		}
 
 		return false;
+	}
+
+	@Environment(EnvType.CLIENT)
+	@SuppressWarnings("unchecked")
+	private static <T> Optional<? extends Registry<T>> getRegistry(TagKey<T> tagKey) {
+		// Check if the tag represents a dynamic registry
+		if (MinecraftClient.getInstance() != null) {
+			if (MinecraftClient.getInstance().world != null) {
+				if (MinecraftClient.getInstance().world.getRegistryManager() != null) {
+					Optional<? extends Registry<T>> maybeRegistry = MinecraftClient.getInstance().world
+							.getRegistryManager().getOptional(tagKey.registry());
+					if (maybeRegistry.isPresent()) return maybeRegistry;
+				}
+			}
+		}
+
+		return (Optional<? extends Registry<T>>) Registry.REGISTRIES.getOrEmpty(tagKey.registry().getValue());
 	}
 }
