@@ -117,7 +117,7 @@ public class ClientTags {
 							.getRegistryManager().getOptional(tagKey.registry());
 					if (maybeRegistry.isPresent()) {
 						if (maybeRegistry.get().containsTag(tagKey)) {
-							registryEntry.isIn(tagKey);
+							return registryEntry.isIn(tagKey);
 						}
 					}
 				}
