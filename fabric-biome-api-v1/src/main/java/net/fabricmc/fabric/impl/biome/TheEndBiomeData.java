@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.biome;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
@@ -26,6 +27,13 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
+import com.mojang.logging.LogUtils;
+
+import it.unimi.dsi.fastutil.Hash;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
+
+import net.minecraft.util.Identifier;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
@@ -38,6 +46,8 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
+
+import org.slf4j.Logger;
 
 /**
  * Internal data for modding Vanilla's {@link TheEndBiomeSource}.
@@ -105,6 +115,9 @@ public final class TheEndBiomeData {
 		private final RegistryEntry<Biome> endBarrens;
 		private final RegistryEntry<Biome> endHighlands;
 
+		private static final Logger LOGGER = LogUtils.getLogger();
+		private int unloggedBarrens = 100;
+
 		// Maps where the keys have been resolved to actual entries
 		private final @Nullable Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> endBiomesMap;
 		private final @Nullable Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> endMidlandsMap;
@@ -120,18 +133,36 @@ public final class TheEndBiomeData {
 			this.endBarrens = biomeRegistry.entryOf(BiomeKeys.END_BARRENS);
 			this.endHighlands = biomeRegistry.entryOf(BiomeKeys.END_HIGHLANDS);
 
-			this.endBiomesMap = resolveOverrides(biomeRegistry, END_BIOMES_MAP);
-			this.endMidlandsMap = resolveOverrides(biomeRegistry, END_MIDLANDS_MAP);
-			this.endBarrensMap = resolveOverrides(biomeRegistry, END_BARRENS_MAP);
+			LOGGER.info("Biome map size: {}", END_BIOMES_MAP.size());
+			LOGGER.info("Barrens map size: {}", END_BARRENS_MAP.size());
+			LOGGER.info("Midlands map size: {}", END_MIDLANDS_MAP.size());
+
+			this.endBiomesMap = resolveOverrides(biomeRegistry, END_BIOMES_MAP, BiomeKeys.THE_END);
+			this.endMidlandsMap = resolveOverrides(biomeRegistry, END_MIDLANDS_MAP, BiomeKeys.END_MIDLANDS);
+			this.endBarrensMap = resolveOverrides(biomeRegistry, END_BARRENS_MAP, BiomeKeys.END_BARRENS);
+
+			log("end", this.endBiomesMap);
+			log("midlands", this.endMidlandsMap);
+			log("barrens", this.endBarrensMap);
+		}
+
+		private void log(String name, @Nullable Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> map) {
+			LOGGER.info("Picker for {}", name);
+			if (map == null) {
+				LOGGER.info("(null map)");
+				return;
+			}
+			map.forEach((entry, picker) -> LOGGER.info("{}: {}", entry.getKey().map(RegistryKey::getValue).map(Identifier::toString).orElse("<unknown>"), picker.logEntries(entry2 -> entry2.getKey().map(RegistryKey::getValue).map(Identifier::toString).orElse("<unknown>"))));
 		}
 
 		// Resolves all RegistryKey instances to RegistryEntries
-		private @Nullable Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> resolveOverrides(Registry<Biome> biomeRegistry, Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> overrides) {
-			Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> result = new IdentityHashMap<>(overrides.size());
+		private @Nullable Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> resolveOverrides(Registry<Biome> biomeRegistry, Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> overrides, RegistryKey<Biome> vanillaKey) {
+			Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> result = new Object2ObjectOpenCustomHashMap<>(overrides.size(), RegistryKeyHashStrategy.INSTANCE);
 
 			for (Map.Entry<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> entry : overrides.entrySet()) {
 				WeightedPicker<RegistryKey<Biome>> picker = entry.getValue();
-				if (picker.getEntryCount() <= 1) continue; // don't use no-op entries
+				int count = picker.getEntryCount();
+				if (count == 0 || (count == 1 && entry.getKey() == vanillaKey)) continue; // don't use no-op entries, for vanilla key biome check 1 as we have default entry
 
 				result.put(biomeRegistry.entryOf(entry.getKey()), picker.map(biomeRegistry::entryOf));
 			}
@@ -140,10 +171,11 @@ public final class TheEndBiomeData {
 		}
 
 		public RegistryEntry<Biome> pick(int x, int y, int z, MultiNoiseUtil.MultiNoiseSampler noise, RegistryEntry<Biome> vanillaBiome) {
-			if (vanillaBiome == endMidlands || vanillaBiome == endBarrens) {
+			boolean isMidlands = vanillaBiome.matches(endMidlands::matchesKey);
+			if (isMidlands || vanillaBiome.matches(endBarrens::matchesKey)) {
 				// select a random highlands biome replacement, then try to replace it with a midlands or barrens biome replacement
 				RegistryEntry<Biome> highlandsReplacement = pick(endHighlands, endHighlands, endBiomesMap, x, z, noise);
-				Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> map = vanillaBiome == endMidlands ? endMidlandsMap : endBarrensMap;
+				Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> map = isMidlands ? endMidlandsMap : endBarrensMap;
 
 				return pick(highlandsReplacement, vanillaBiome, map, x, z, noise);
 			} else {
@@ -153,13 +185,15 @@ public final class TheEndBiomeData {
 			}
 		}
 
-		private <T> T pick(T key, T defaultValue, Map<T, WeightedPicker<T>> pickers, int x, int z, MultiNoiseUtil.MultiNoiseSampler noise) {
+		private <T extends RegistryEntry<Biome>> T pick(T key, T defaultValue, Map<T, WeightedPicker<T>> pickers, int x, int z, MultiNoiseUtil.MultiNoiseSampler noise) {
 			if (pickers == null) return defaultValue;
 
 			WeightedPicker<T> picker = pickers.get(key);
-			if (picker == null || picker.getEntryCount() <= 1) return defaultValue;
+			if (picker == null) return defaultValue;
+			int count = picker.getEntryCount();
+			if (count == 0 || (count == 1 && key.matches(endHighlands::matchesKey))) return defaultValue;
 
-			// The x and z of the entry are divided by 64 to ensure custom biomes are large enough; going larger than this
+				// The x and z of the entry are divided by 64 to ensure custom biomes are large enough; going larger than this
 			// seems to make custom biomes too hard to find.
 			return picker.pickFromNoise(getSampler(noise), x / 64.0, 0, z / 64.0);
 		}
@@ -179,6 +213,22 @@ public final class TheEndBiomeData {
 			}
 
 			return ret;
+		}
+	}
+	enum RegistryKeyHashStrategy implements Hash.Strategy<RegistryEntry<?>> {
+		INSTANCE;
+		@Override
+		public boolean equals(RegistryEntry<?> a, RegistryEntry<?> b) {
+			if (a == b) return true;
+			if (a == null || b == null) return false;
+			if (a.getType() != b.getType()) return false;
+			return a.getKeyOrValue().map(key -> b.getKey().get() == key, b.value()::equals);
+		}
+
+		@Override
+		public int hashCode(RegistryEntry<?> a) {
+			if (a == null) return 0;
+			return a.getKeyOrValue().map(System::identityHashCode, Object::hashCode);
 		}
 	}
 }

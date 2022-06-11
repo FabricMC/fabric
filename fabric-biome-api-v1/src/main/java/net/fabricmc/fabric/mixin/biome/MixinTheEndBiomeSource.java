@@ -21,6 +21,11 @@ import java.util.function.Supplier;
 
 import com.google.common.base.Suppliers;
 
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.RegistryKey;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -58,7 +63,9 @@ public class MixinTheEndBiomeSource extends MixinBiomeSource {
 	protected void fabric_modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
 		if (!biomeSetModified) {
 			biomeSetModified = true;
-			biomes.addAll(overrides.customBiomes);
+			biomes.addAll(overrides.get().customBiomes);
+			Logger LOGGER = LoggerFactory.getLogger("MixinTheEndBiomeSource");
+			biomes.forEach(biome -> LOGGER.info("Loaded: {}", biome.getKey().map(RegistryKey::getValue).map(Identifier::toString).orElse("<no id?>")));
 		}
 	}
 }

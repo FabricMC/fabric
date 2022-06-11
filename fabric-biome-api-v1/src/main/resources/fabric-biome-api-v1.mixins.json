@@ -3,7 +3,6 @@
   "package": "net.fabricmc.fabric.mixin.biome",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "MixinChunkGenerator",
     "MixinMinecraftServer",
 
     "MixinBiomeSource",

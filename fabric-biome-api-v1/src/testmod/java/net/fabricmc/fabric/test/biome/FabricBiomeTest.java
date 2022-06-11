@@ -24,6 +24,8 @@ import java.util.Objects;
 
 import com.mojang.datafixers.util.Pair;
 
+import com.mojang.logging.LogUtils;
+
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BiomeMoodSound;
@@ -62,6 +64,8 @@ import net.fabricmc.fabric.api.biome.v1.NetherBiomes;
 import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
+import org.slf4j.Logger;
+
 /**
  * <b>NOTES FOR TESTING:</b>
  * When running with this test-mod, also test this when running a dedicated server since there
@@ -74,19 +78,19 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
  */
 public class FabricBiomeTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-biome-api-v1-testmod";
+	private static final Logger LOGGER = LogUtils.getLogger();
 
 	private static final RegistryKey<Biome> TEST_CRIMSON_FOREST = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "test_crimson_forest"));
 	private static final RegistryKey<Biome> CUSTOM_PLAINS = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "custom_plains"));
 	private static final RegistryKey<Biome> TEST_END_HIGHLANDS = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "test_end_highlands"));
 	private static final RegistryKey<Biome> TEST_END_MIDLANDS = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "test_end_midlands"));
 	private static final RegistryKey<Biome> TEST_END_BARRRENS = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "test_end_barrens"));
-
 	@Override
 	public void onInitialize() {
 		Registry.register(BuiltinRegistries.BIOME, TEST_CRIMSON_FOREST.getValue(), TheNetherBiomeCreator.createCrimsonForest());
 
 		NetherBiomes.addNetherBiome(BiomeKeys.PLAINS, MultiNoiseUtil.createNoiseHypercube(0.0F, 0.5F, 0.0F, 0.0F, 0.0f, 0, 0.1F));
-		NetherBiomes.addNetherBiome(TEST_CRIMSON_FOREST, MultiNoiseUtil.createNoiseHypercube(0.0F, 0.0F, 0.0f, 0.35F, 0.0f, 0.35F, 0.2F));
+		NetherBiomes.addNetherBiome(TEST_CRIMSON_FOREST, MultiNoiseUtil.createNoiseHypercube(0.0F, -0.15F, 0.0f, 0.0F, 0.0f, 0.0F, 0.2F));
 
 		Registry.register(BuiltinRegistries.BIOME, CUSTOM_PLAINS.getValue(), OverworldBiomeCreator.createPlains(false, false, false));
 
@@ -96,10 +100,10 @@ public class FabricBiomeTest implements ModInitializer {
 
 		// TESTING HINT: to get to the end:
 		// /execute in minecraft:the_end run tp @s 0 90 0
-		TheEndBiomes.addHighlandsBiome(BiomeKeys.PLAINS, 5.0);
+		//TheEndBiomes.addHighlandsBiome(BiomeKeys.PLAINS, 5.0);
 		TheEndBiomes.addHighlandsBiome(TEST_END_HIGHLANDS, 5.0);
-		TheEndBiomes.addMidlandsBiome(TEST_END_HIGHLANDS, TEST_END_MIDLANDS, 1.0);
-		TheEndBiomes.addBarrensBiome(TEST_END_HIGHLANDS, TEST_END_BARRRENS, 1.0);
+		TheEndBiomes.addMidlandsBiome(TEST_END_HIGHLANDS, TEST_END_MIDLANDS, 10.0);
+		TheEndBiomes.addBarrensBiome(TEST_END_HIGHLANDS, TEST_END_BARRRENS, 10.0);
 
 		ConfiguredFeature<?, ?> COMMON_DESERT_WELL = new ConfiguredFeature<>(Feature.DESERT_WELL, DefaultFeatureConfig.INSTANCE);
 		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier(MOD_ID, "fab_desert_well"), COMMON_DESERT_WELL);
@@ -161,7 +165,7 @@ public class FabricBiomeTest implements ModInitializer {
 		ServerWorld end = commandSource.getServer().getWorld(World.END);
 		ServerWorld nether = commandSource.getServer().getWorld(World.NETHER);
 
-		locateAndLoadBiome(overworld, CUSTOM_PLAINS);
+		//locateAndLoadBiome(overworld, CUSTOM_PLAINS);
 		locateAndLoadBiome(nether, TEST_CRIMSON_FOREST);
 		locateAndLoadBiome(end, TEST_END_HIGHLANDS);
 
@@ -171,10 +175,12 @@ public class FabricBiomeTest implements ModInitializer {
 
 	private void locateAndLoadBiome(ServerWorld world, RegistryKey<Biome> biome) {
 		Pair<BlockPos, RegistryEntry<Biome>> pair = world.locateBiome(entry -> entry.matchesKey(biome), BlockPos.ORIGIN, 10000, 32, 64);
-		Objects.requireNonNull(pair, "Unable to locate biome (%s) in world (%s)".formatted(biome, world.getRegistryKey()));
-
-		// Load the block.
-		world.getBlockState(pair.getFirst());
+		if (pair == null) {
+			LOGGER.warn("Unable to locate biome (%s) in world (%s)".formatted(biome, world.getRegistryKey()));
+		} else{
+			// Load the block.
+			world.getBlockState(pair.getFirst());
+		}
 	}
 
 	// These are used for testing the spacing of custom end biomes.
