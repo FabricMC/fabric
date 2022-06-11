@@ -18,9 +18,6 @@ package net.fabricmc.fabric.test.biome;
 
 import java.util.List;
 
-import com.mojang.logging.LogUtils;
-import org.slf4j.Logger;
-
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;

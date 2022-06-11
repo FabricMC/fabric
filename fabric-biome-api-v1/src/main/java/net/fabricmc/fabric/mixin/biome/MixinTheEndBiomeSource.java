@@ -20,12 +20,6 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import com.google.common.base.Suppliers;
-
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.RegistryKey;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;

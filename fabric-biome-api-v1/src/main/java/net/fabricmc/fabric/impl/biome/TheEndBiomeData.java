@@ -19,7 +19,6 @@ package net.fabricmc.fabric.impl.biome;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
@@ -27,14 +26,9 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
-import com.mojang.logging.LogUtils;
-
+import org.jetbrains.annotations.ApiStatus;
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
-
-import net.minecraft.util.Identifier;
-
-import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.util.math.random.CheckedRandom;
@@ -46,8 +40,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
-
-import org.slf4j.Logger;
 
 /**
  * Internal data for modding Vanilla's {@link TheEndBiomeSource}.
@@ -152,6 +144,7 @@ public final class TheEndBiomeData {
 
 		public RegistryEntry<Biome> pick(int x, int y, int z, MultiNoiseUtil.MultiNoiseSampler noise, RegistryEntry<Biome> vanillaBiome) {
 			boolean isMidlands = vanillaBiome.matches(endMidlands::matchesKey);
+
 			if (isMidlands || vanillaBiome.matches(endBarrens::matchesKey)) {
 				// select a random highlands biome replacement, then try to replace it with a midlands or barrens biome replacement
 				RegistryEntry<Biome> highlandsReplacement = pick(endHighlands, endHighlands, endBiomesMap, x, z, noise);
@@ -195,6 +188,7 @@ public final class TheEndBiomeData {
 			return ret;
 		}
 	}
+
 	enum RegistryKeyHashStrategy implements Hash.Strategy<RegistryEntry<?>> {
 		INSTANCE;
 		@Override
