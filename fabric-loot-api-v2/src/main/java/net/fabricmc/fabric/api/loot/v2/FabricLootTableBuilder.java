@@ -83,7 +83,7 @@ public interface FabricLootTableBuilder {
 	 * when you want the loot table to only drop items from one of the loot pool entries
 	 * instead of both.
 	 *
-	 * <p>Calling this method turns all pools into builders and rebuilds into back into loot pools afterwards,
+	 * <p>Calling this method turns all pools into builders and rebuilds them back into loot pools afterwards,
 	 * so it is more efficient to do all transformations with one {@code modifyPools} call.
 	 *
 	 * @param modifier the modifying function
