@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.loot.v2;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.ApiStatus;
 
@@ -29,7 +30,7 @@ import net.fabricmc.fabric.mixin.loot.LootTableAccessor;
 
 /**
  * Convenience extensions to {@link LootTable.Builder}
- * for adding pre-built objects or collections.
+ * for adding pre-built objects or collections and modifying loot pools.
  *
  * <p>This interface is automatically injected to {@link LootTable.Builder}.
  */
@@ -72,6 +73,23 @@ public interface FabricLootTableBuilder {
 	 * @return this builder
 	 */
 	default LootTable.Builder apply(Collection<? extends LootFunction> functions) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
+	 * Modifies all loot pools already present in this builder.
+	 *
+	 * <p>This method can be used instead of simply adding a new pool
+	 * when you want the loot table to only drop items from one of the loot pool entries
+	 * instead of both.
+	 *
+	 * <p>Calling this method turns all pools into builders and rebuilds into back into loot pools afterwards,
+	 * so it is more efficient to do all transformations with one {@code modifyPools} call.
+	 *
+	 * @param modifier the modifying function
+	 * @return this builder
+	 */
+	default LootTable.Builder modifyPools(Consumer<? super LootPool.Builder> modifier) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 

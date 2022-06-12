@@ -54,6 +54,13 @@ public final class LootTableEvents {
 	 * They have the loot table source {@link LootTableSource#REPLACED}.
 	 *
 	 * <h2>Example: adding diamonds to the cobblestone loot table</h2>
+	 * We'll add a new diamond {@linkplain net.minecraft.loot.LootPool loot pool} to the cobblestone loot table
+	 * that will be dropped alongside the original cobblestone loot pool.
+	 *
+	 * <p>If you want only one of the items to drop, you can use
+	 * {@link FabricLootTableBuilder#modifyPools(java.util.function.Consumer)} to add the new item to
+	 * the original loot pool instead.
+	 *
 	 * <pre>
 	 * {@code
 	 * LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {

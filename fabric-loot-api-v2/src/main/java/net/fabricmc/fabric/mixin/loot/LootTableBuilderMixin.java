@@ -18,6 +18,8 @@ package net.fabricmc.fabric.mixin.loot;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.function.Consumer;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,6 +30,7 @@ import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.function.LootFunction;
 
+import net.fabricmc.fabric.api.loot.v2.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
 
 /**
@@ -71,6 +74,19 @@ abstract class LootTableBuilderMixin implements FabricLootTableBuilder {
 	@Override
 	public LootTable.Builder apply(Collection<? extends LootFunction> functions) {
 		this.functions.addAll(functions);
+		return self();
+	}
+
+	@Override
+	public LootTable.Builder modifyPools(Consumer<? super LootPool.Builder> modifier) {
+		ListIterator<LootPool> iterator = pools.listIterator();
+
+		while (iterator.hasNext()) {
+			LootPool.Builder poolBuilder = FabricLootPoolBuilder.copyOf(iterator.next());
+			modifier.accept(poolBuilder);
+			iterator.set(poolBuilder.build());
+		}
+
 		return self();
 	}
 }
