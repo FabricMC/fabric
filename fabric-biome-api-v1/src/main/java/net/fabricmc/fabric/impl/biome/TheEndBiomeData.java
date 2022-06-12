@@ -31,8 +31,6 @@ import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
-import net.minecraft.util.math.random.CheckedRandom;
-import net.minecraft.util.math.random.ChunkRandom;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
@@ -168,24 +166,7 @@ public final class TheEndBiomeData {
 
 			// The x and z of the entry are divided by 64 to ensure custom biomes are large enough; going larger than this
 			// seems to make custom biomes too hard to find.
-			return picker.pickFromNoise(getSampler(noise), x / 64.0, 0, z / 64.0);
-		}
-
-		private synchronized PerlinNoiseSampler getSampler(MultiNoiseUtil.MultiNoiseSampler noise) {
-			PerlinNoiseSampler ret = samplers.get(noise);
-
-			if (ret == null) {
-				Long seed = ((MultiNoiseSamplerHooks) (Object) noise).fabric_getSeed();
-
-				if (seed == null) {
-					throw new IllegalStateException("MultiNoiseSampler doesn't have a seed set, created using different method?");
-				}
-
-				ret = new PerlinNoiseSampler(new ChunkRandom(new CheckedRandom(seed)));
-				samplers.put(noise, ret);
-			}
-
-			return ret;
+			return picker.pickFromNoise(((MultiNoiseSamplerHooks) (Object) noise).fabric_getEndBiomesSampler(), x / 64.0, 0, z / 64.0);
 		}
 	}
 
