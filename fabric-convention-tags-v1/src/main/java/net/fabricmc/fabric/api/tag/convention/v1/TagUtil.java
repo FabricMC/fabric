@@ -31,6 +31,8 @@ import net.minecraft.util.registry.RegistryKey;
  */
 public class TagUtil {
 	/**
+	* See {@link TagUtil#isIn(DynamicRegistryManager, TagKey, Object)} to check tags that refer to entries in dynamic
+	* registries.
 	* @return if the entry is in the provided tag.
 	*/
 	public static <T> boolean isIn(TagKey<T> tagKey, T entry) {
