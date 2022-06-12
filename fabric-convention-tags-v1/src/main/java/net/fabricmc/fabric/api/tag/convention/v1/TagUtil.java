@@ -18,7 +18,10 @@ package net.fabricmc.fabric.api.tag.convention.v1;
 
 import java.util.Optional;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.tag.TagKey;
+import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
@@ -28,11 +31,32 @@ import net.minecraft.util.registry.RegistryKey;
  */
 public class TagUtil {
 	/**
+	* @return if the entry is in the provided tag.
+	*/
+	public static <T> boolean isIn(TagKey<T> tagKey, T entry) {
+		return isIn(null, tagKey, entry);
+	}
+
+	/**
+	 * @param registryManager the registry manager instance of the client or server. If the tag refers to entries
+	 *                        within a dynamic registry, such as {@link net.minecraft.world.biome.Biome}s,
+	 *                        this must be passed to correctly evaluate the tag. Otherwise, the registry is found by
+	 *                        looking in {@link Registry#REGISTRIES}.
 	 * @return if the entry is in the provided tag.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> boolean isIn(TagKey<T> tagKey, T entry) {
-		Optional<? extends Registry<?>> maybeRegistry = Registry.REGISTRIES.getOrEmpty(tagKey.registry().getValue());
+	public static <T> boolean isIn(@Nullable DynamicRegistryManager registryManager, TagKey<T> tagKey, T entry) {
+		Optional<? extends Registry<?>> maybeRegistry;
+
+		if (registryManager != null) {
+			maybeRegistry = registryManager.getOptional(tagKey.registry());
+
+			if (maybeRegistry.isEmpty()) {
+				maybeRegistry = Registry.REGISTRIES.getOrEmpty(tagKey.registry().getValue());
+			}
+		} else {
+			maybeRegistry = Registry.REGISTRIES.getOrEmpty(tagKey.registry().getValue());
+		}
 
 		if (maybeRegistry.isPresent()) {
 			if (tagKey.isOf(maybeRegistry.get().getKey())) {
