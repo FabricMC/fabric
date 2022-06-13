@@ -92,7 +92,7 @@ public class VillagerInteractionRegistries {
 		Identifier oldValue = GiveGiftsToHeroTaskAccessor.fabric_getGifts().put(profession, lootTable);
 
 		if (oldValue != null) {
-			LOGGER.info("Overriding previous gift loot table of {} profession, was: {}, now: {}", profession.getId(), oldValue, lootTable);
+			LOGGER.info("Overriding previous gift loot table of {} profession, was: {}, now: {}", profession.id(), oldValue, lootTable);
 		}
 	}
 
