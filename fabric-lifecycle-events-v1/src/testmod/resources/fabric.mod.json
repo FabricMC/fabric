@@ -10,6 +10,7 @@
   },
   "entrypoints": {
     "main": [
+      "net.fabricmc.fabric.test.event.lifecycle.CommonLifecycleTests",
       "net.fabricmc.fabric.test.event.lifecycle.ServerBlockEntityLifecycleTests",
       "net.fabricmc.fabric.test.event.lifecycle.ServerEntityLifecycleTests",
       "net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests",
