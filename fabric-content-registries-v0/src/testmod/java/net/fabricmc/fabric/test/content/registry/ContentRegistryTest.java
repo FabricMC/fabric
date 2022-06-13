@@ -16,17 +16,22 @@
 
 package net.fabricmc.fabric.test.content.registry;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.item.HoeItem;
+import net.minecraft.item.Items;
+import net.minecraft.util.Identifier;
+import net.minecraft.village.VillagerProfession;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
+import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
+import net.fabricmc.fabric.api.registry.VillagerPlantableRegistry;
 
 public final class ContentRegistryTest implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);
@@ -39,6 +44,9 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - green wool is tillable to lime wool
 		//  - copper ore, iron ore, gold ore, and diamond ore can be waxed into their deepslate variants and scraped back again
 		//  - aforementioned ores can be scraped from diamond -> gold -> iron -> copper
+		//  - villagers can now collect, consume (at the same level of bread) and compost apples
+		//  - villagers can now collect and plant oak saplings
+		//  - assign a loot table to the nitwit villager type
 
 		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.getDefaultState());
 		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
@@ -77,5 +85,24 @@ public final class ContentRegistryTest implements ModInitializer {
 			// expected behavior
 			LOGGER.info("OxidizableBlocksRegistry test passed!");
 		}
+
+		VillagerInteractionRegistries.registerCollectable(Items.APPLE);
+		VillagerInteractionRegistries.registerFood(Items.APPLE, 4);
+		VillagerInteractionRegistries.registerCompostable(Items.APPLE);
+
+		VillagerInteractionRegistries.registerCollectable(Items.OAK_SAPLING);
+		VillagerPlantableRegistry.register(Items.OAK_SAPLING);
+
+		// assert that VillagerPlantablesRegistry throws when getting a non-BlockItem
+		try {
+			VillagerPlantableRegistry.register(Items.STICK);
+
+			throw new AssertionError("VillagerPlantablesRegistry didn't throw when item is not BlockItem!");
+		} catch (Exception e) {
+			// expected behavior
+			LOGGER.info("VillagerPlantablesRegistry test passed!");
+		}
+
+		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, new Identifier("fake_loot_table"));
 	}
 }
