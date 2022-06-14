@@ -3,21 +3,23 @@
   "package": "net.fabricmc.fabric.mixin.resource.loader",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "FileResourcePackProviderAccessor",
     "DefaultResourcePackMixin",
     "DefaultResourcePackResourceMixin",
+    "FileResourcePackProviderAccessor",
     "KeyedResourceReloadListenerMixin",
     "LifecycledResourceManagerImplMixin",
+    "MainMixin",
     "MinecraftServerMixin",
     "NamespaceResourceManagerAccessor",
     "NamespaceResourceManagerMixin",
     "ReloadableResourceManagerImplMixin",
     "ResourceImplMixin",
     "ResourceMixin",
-    "ResourcePackManagerMixin",
     "ResourcePackManagerAccessor",
+    "ResourcePackManagerMixin",
     "ResourcePackProfileMixin",
-    "SimpleResourceReloadMixin"
+    "SimpleResourceReloadMixin",
+    "TestServerMixin"
   ],
   "client": [
     "client.ClientBuiltinResourcePackProviderMixin",
