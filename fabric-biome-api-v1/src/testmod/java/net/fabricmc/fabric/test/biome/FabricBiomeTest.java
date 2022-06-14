@@ -18,12 +18,12 @@ package net.fabricmc.fabric.test.biome;
 
 import java.util.List;
 
-import net.minecraft.tag.TagKey;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.sound.BiomeMoodSound;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
