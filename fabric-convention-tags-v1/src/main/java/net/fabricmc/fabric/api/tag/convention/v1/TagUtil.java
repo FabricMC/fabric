@@ -29,7 +29,7 @@ import net.minecraft.util.registry.RegistryKey;
 /**
  * A Helper class for dealing with {@link TagKey}s when their type has no easy way of querying if they are in a tag.
  */
-public class TagUtil {
+public final class TagUtil {
 	/**
 	* See {@link TagUtil#isIn(DynamicRegistryManager, TagKey, Object)} to check tags that refer to entries in dynamic
 	* registries.
