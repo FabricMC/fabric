@@ -44,10 +44,13 @@ import net.fabricmc.fabric.api.tag.client.v1.impl.DataLoader;
  * directly, allowing for mods to query tags such as {@link net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags}
  * even when connected to a vanilla server.
  */
-public class ClientTags {
+public final class ClientTags {
 	private static final Map<TagKey<?>, Set<Identifier>> LOCAL_TAG_CACHE =
 			Collections.synchronizedMap(new Object2ObjectOpenHashMap<>());
 	private static final DataLoader LOADER = new DataLoader();
+
+	private ClientTags() {
+	}
 
 	/**
 	 * Load a tag into the cache, loading any contained tags along with it.
