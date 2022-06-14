@@ -75,7 +75,7 @@ public class FabricBiomeTest implements ModInitializer {
 		Registry.register(BuiltinRegistries.BIOME, TEST_CRIMSON_FOREST.getValue(), TheNetherBiomeCreator.createCrimsonForest());
 
 		NetherBiomes.addNetherBiome(BiomeKeys.PLAINS, MultiNoiseUtil.createNoiseHypercube(0.0F, 0.5F, 0.0F, 0.0F, 0.0f, 0, 0.1F));
-		NetherBiomes.addNetherBiome(TEST_CRIMSON_FOREST, MultiNoiseUtil.createNoiseHypercube(0.0F, 0.0F, 0.0f, 0.35F, 0.0f, 0.35F, 0.2F));
+		NetherBiomes.addNetherBiome(TEST_CRIMSON_FOREST, MultiNoiseUtil.createNoiseHypercube(0.0F, -0.15F, 0.0f, 0.0F, 0.0f, 0.0F, 0.2F));
 
 		Registry.register(BuiltinRegistries.BIOME, CUSTOM_PLAINS.getValue(), OverworldBiomeCreator.createPlains(false, false, false));
 
@@ -85,9 +85,10 @@ public class FabricBiomeTest implements ModInitializer {
 
 		// TESTING HINT: to get to the end:
 		// /execute in minecraft:the_end run tp @s 0 90 0
+		TheEndBiomes.addHighlandsBiome(BiomeKeys.PLAINS, 5.0);
 		TheEndBiomes.addHighlandsBiome(TEST_END_HIGHLANDS, 5.0);
-		TheEndBiomes.addMidlandsBiome(TEST_END_HIGHLANDS, TEST_END_MIDLANDS, 1.0);
-		TheEndBiomes.addBarrensBiome(TEST_END_HIGHLANDS, TEST_END_BARRRENS, 1.0);
+		TheEndBiomes.addMidlandsBiome(TEST_END_HIGHLANDS, TEST_END_MIDLANDS, 10.0);
+		TheEndBiomes.addBarrensBiome(TEST_END_HIGHLANDS, TEST_END_BARRRENS, 10.0);
 
 		ConfiguredFeature<?, ?> COMMON_DESERT_WELL = new ConfiguredFeature<>(Feature.DESERT_WELL, DefaultFeatureConfig.INSTANCE);
 		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier(MOD_ID, "fab_desert_well"), COMMON_DESERT_WELL);
@@ -111,13 +112,30 @@ public class FabricBiomeTest implements ModInitializer {
 				.add(ModificationPhase.ADDITIONS,
 						BiomeSelectors.tag(TagKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "tag_selector_test"))),
 						context -> context.getEffects().setSkyColor(0x770000));
+
+		// Make sure data packs can define dynamic registry contents
+		// See #2225, #2261
+		BiomeModifications.addFeature(
+				BiomeSelectors.foundInOverworld(),
+				GenerationStep.Feature.VEGETAL_DECORATION,
+				RegistryKey.of(Registry.PLACED_FEATURE_KEY, new Identifier(MOD_ID, "concrete_pile"))
+		);
+
+		// Make sure data packs can define biomes
+		NetherBiomes.addNetherBiome(
+				RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "example_biome")),
+				MultiNoiseUtil.createNoiseHypercube(1.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.5f, 0.3f)
+		);
+		TheEndBiomes.addHighlandsBiome(
+				RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "example_biome")),
+				10.0
+		);
 	}
 
 	// These are used for testing the spacing of custom end biomes.
 	private static Biome createEndHighlands() {
 		GenerationSettings.Builder builder = new GenerationSettings.Builder()
-				.feature(GenerationStep.Feature.SURFACE_STRUCTURES, EndPlacedFeatures.END_GATEWAY_RETURN)
-				.feature(GenerationStep.Feature.VEGETAL_DECORATION, EndPlacedFeatures.CHORUS_PLANT);
+				.feature(GenerationStep.Feature.SURFACE_STRUCTURES, EndPlacedFeatures.END_GATEWAY_RETURN);
 		return composeEndSpawnSettings(builder);
 	}
 
@@ -133,7 +151,7 @@ public class FabricBiomeTest implements ModInitializer {
 
 	private static Biome composeEndSpawnSettings(GenerationSettings.Builder builder) {
 		SpawnSettings.Builder builder2 = new SpawnSettings.Builder();
-		DefaultBiomeFeatures.addEndMobs(builder2);
+		DefaultBiomeFeatures.addPlainsMobs(builder2);
 		return (new Biome.Builder()).precipitation(Biome.Precipitation.NONE).category(Biome.Category.THEEND).temperature(0.5F).downfall(0.5F).effects((new BiomeEffects.Builder()).waterColor(4159204).waterFogColor(329011).fogColor(10518688).skyColor(0).moodSound(BiomeMoodSound.CAVE).build()).spawnSettings(builder2.build()).generationSettings(builder.build()).build();
 	}
 }
