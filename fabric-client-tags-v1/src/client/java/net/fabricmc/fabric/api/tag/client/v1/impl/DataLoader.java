@@ -28,6 +28,8 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.tag.TagEntry;
 import net.minecraft.tag.TagFile;
@@ -42,12 +44,13 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
 public class DataLoader {
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-tags-v1");
 	/**
 	 * Load a given tag from the available mods into a set of {@code Identifier}s.
 	 * Parsing based on {@link net.minecraft.tag.TagGroupLoader#loadTags(net.minecraft.resource.ResourceManager)}
 	 */
 	public HashSet<Identifier> loadTag(TagKey<?> tagKey) {
-		var list = new HashSet<TagEntry>();
+		var tags = new HashSet<TagEntry>();
 		HashSet<Path> tagFiles = getTagFiles(tagKey.registry(), tagKey.id());
 
 		for (Path tagPath : tagFiles) {
@@ -58,19 +61,19 @@ public class DataLoader {
 
 				if (maybeTagFile != null) {
 					if (maybeTagFile.replace()) {
-						list.clear();
+						tags.clear();
 					}
 
-					list.addAll(maybeTagFile.entries());
+					tags.addAll(maybeTagFile.entries());
 				}
-			} catch (IOException ignored) {
-				// no-op
+			} catch (IOException e) {
+				LOGGER.error("Error loading tag: " + tagKey, e);
 			}
 		}
 
 		HashSet<Identifier> ids = new HashSet<>();
 
-		for (TagEntry tagEntry : list) {
+		for (TagEntry tagEntry : tags) {
 			tagEntry.resolve(new TagEntry.ValueGetter<>() {
 				@Nullable
 				@Override
@@ -91,16 +94,16 @@ public class DataLoader {
 	}
 
 	/**
-	 * @param registryKey the RegistryKey of the TagKey.
-	 * @param identifier  the Identifier of the tag.
-	 * @return the paths to all tag json files within the available mods.
+	 * @param registryKey the RegistryKey of the TagKey
+	 * @param identifier  the Identifier of the tag
+	 * @return the paths to all tag json files within the available mods
 	 */
 	private HashSet<Path> getTagFiles(RegistryKey<? extends Registry<?>> registryKey, Identifier identifier) {
 		return getTagFiles(TagManagerLoader.getPath(registryKey), identifier);
 	}
 
 	/**
-	 * @return the paths to all tag json files within the available mods.
+	 * @return the paths to all tag json files within the available mods
 	 */
 	private HashSet<Path> getTagFiles(String tagType, Identifier identifier) {
 		String tagFile = "data/%s/%s/%s.json".formatted(identifier.getNamespace(), tagType, identifier.getPath());
@@ -108,7 +111,7 @@ public class DataLoader {
 	}
 
 	/**
-	 * @return all paths from the available mods that match the given internal path.
+	 * @return all paths from the available mods that match the given internal path
 	 */
 	private HashSet<Path> getResourcePaths(String path) {
 		HashSet<Path> out = new HashSet<>();

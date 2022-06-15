@@ -3,7 +3,7 @@
   "id": "fabric-client-tags-v1",
   "name": "Fabric Client Tags",
   "version": "${version}",
-  "environment": "*",
+  "environment": "client",
   "license": "Apache-2.0",
   "icon": "assets/fabric-client-tags-v1/icon.png",
   "contact": {
@@ -17,9 +17,9 @@
   ],
   "depends": {
     "fabricloader": ">=0.4.0",
-    "minecraft": ">=1.18.2"
+    "minecraft": "~1.19"
   },
-  "description": "Contains common tags used by mods for vanilla things.",
+  "description": "Adds the ability to load tags from the local mods.",
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   }

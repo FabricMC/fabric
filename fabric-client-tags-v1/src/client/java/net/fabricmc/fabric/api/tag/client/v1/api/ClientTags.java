@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.tag.TagKey;
@@ -44,19 +44,20 @@ import net.fabricmc.fabric.api.tag.client.v1.impl.DataLoader;
  * directly, allowing for mods to query tags such as {@link net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags}
  * even when connected to a vanilla server.
  */
+@Environment(EnvType.CLIENT)
 public final class ClientTags {
 	private static final Map<TagKey<?>, Set<Identifier>> LOCAL_TAG_CACHE =
-			Collections.synchronizedMap(new Object2ObjectOpenHashMap<>());
+			Collections.synchronizedMap(new Reference2ObjectOpenHashMap<>());
 	private static final DataLoader LOADER = new DataLoader();
 
 	private ClientTags() {
 	}
 
 	/**
-	 * Load a tag into the cache, loading any contained tags along with it.
+	 * Loads a tag into the cache, recursively loading any contained tags along with it.
 	 *
-	 * @param tagKey the {@code TagKey} to load.
-	 * @return a set of {@code Identifier}s this tag contains.
+	 * @param tagKey the {@code TagKey} to load
+	 * @return a set of {@code Identifier}s this tag contains
 	 */
 	public static Set<Identifier> getOrCreateLocalTag(TagKey<?> tagKey) {
 		return LOCAL_TAG_CACHE.computeIfAbsent(tagKey, LOADER::loadTag);
@@ -65,15 +66,14 @@ public final class ClientTags {
 	/**
 	 * Checks if an entry is in a tag.
 	 *
-	 * <p>If the tag does synced tag does exist, it is queried. If it does not exist,
-	 * the tag loaded from the available mods is checked.
+	 * <p>If the synced tag does exist, it is queried. If it does not exist,
+	 * the tag populated from the available mods is checked.
 	 *
-	 * @param tagKey the {@code TagKey} to being checked.
-	 * @param entry  the entry to check.
-	 * @return if the entry is in the given tag.
+	 * @param tagKey the {@code TagKey} to being checked
+	 * @param entry  the entry to check
+	 * @return if the entry is in the given tag
 	 */
 	@SuppressWarnings("unchecked")
-	@Environment(EnvType.CLIENT)
 	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, T entry) {
 		Optional<? extends Registry<?>> maybeRegistry = getRegistry(tagKey);
 
@@ -102,21 +102,20 @@ public final class ClientTags {
 	 * Checks if an entry is in a tag, for use with entries from a dynamic registry,
 	 * such as {@link net.minecraft.world.biome.Biome}s.
 	 *
-	 * <p>If the tag does synced tag does exist, it is queried. If it does not exist,
-	 * the tag loaded from the available mods is checked.
+	 * <p>If the synced tag does exist, it is queried. If it does not exist,
+	 * the tag populated from the available mods is checked.
 	 *
-	 * @param tagKey        the {@code TagKey} to being checked.
-	 * @param registryEntry the entry to check.
-	 * @return if the entry is in the given tag.
+	 * @param tagKey        the {@code TagKey} to be checked
+	 * @param registryEntry the entry to check
+	 * @return if the entry is in the given tag
 	 */
-	@Environment(EnvType.CLIENT)
 	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, RegistryEntry<T> registryEntry) {
 		// Check if the tag exists in the dynamic registry first
 		Optional<? extends Registry<T>> maybeRegistry = getRegistry(tagKey);
 
 		if (maybeRegistry.isPresent()) {
 			if (maybeRegistry.get().containsTag(tagKey)) {
-				registryEntry.isIn(tagKey);
+				return registryEntry.isIn(tagKey);
 			}
 		}
 
@@ -128,11 +127,11 @@ public final class ClientTags {
 	}
 
 	/**
-	 * Checks if an entry is in a tag produced from the available mods.
+	 * Checks if an entry is in a tag provided by the available mods.
 	 *
-	 * @param tagKey      the {@code TagKey} to being checked.
-	 * @param registryKey the entry to check.
-	 * @return if the entry is in the given tag.
+	 * @param tagKey      the {@code TagKey} to being checked
+	 * @param registryKey the entry to check
+	 * @return if the entry is in the given tag
 	 */
 	public static <T> boolean isInLocal(TagKey<T> tagKey, RegistryKey<T> registryKey) {
 		if (tagKey.registry().getValue().equals(registryKey.getRegistry())) {
@@ -144,7 +143,6 @@ public final class ClientTags {
 		return false;
 	}
 
-	@Environment(EnvType.CLIENT)
 	@SuppressWarnings("unchecked")
 	private static <T> Optional<? extends Registry<T>> getRegistry(TagKey<T> tagKey) {
 		// Check if the tag represents a dynamic registry
