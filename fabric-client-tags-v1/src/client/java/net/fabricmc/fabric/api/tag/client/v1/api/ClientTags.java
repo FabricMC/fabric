@@ -32,7 +32,7 @@ import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.tag.client.v1.impl.DataLoader;
+import net.fabricmc.fabric.impl.tag.client.DataLoader;
 
 /**
  * Tags are loaded by the server, either the internal server in singleplayer or the connected server and

@@ -39,7 +39,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 
-import net.fabricmc.fabric.api.tag.client.v1.api.ClientTags;
+import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
