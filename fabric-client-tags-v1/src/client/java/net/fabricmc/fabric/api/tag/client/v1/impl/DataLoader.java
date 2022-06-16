@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tag.client.v1.impl;
+package net.fabricmc.fabric.impl.tag.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
