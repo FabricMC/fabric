@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tag.client.v1.api;
+package net.fabricmc.fabric.api.tag.client.v1;
 
 import java.util.Collections;
 import java.util.Map;
