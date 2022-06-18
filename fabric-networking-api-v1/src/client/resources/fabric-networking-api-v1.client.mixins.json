@@ -6,7 +6,9 @@
     "accessor.ConnectScreenAccessor",
     "accessor.MinecraftClientAccessor",
     "client.ClientLoginNetworkHandlerMixin",
-    "client.ClientPlayNetworkHandlerMixin"
+    "client.ClientPlayNetworkHandlerMixin",
+    "client.DisconnectedScreenMixin",
+    "client.ParentElementMixin"
   ],
   "injectors": {
     "defaultRequire": 1
