@@ -49,10 +49,11 @@ public abstract class MixinItemRenderer {
 	@Unique
 	private final VanillaQuadHandler fabric_vanillaHandler = new IndigoQuadHandler((ItemRenderer) (Object) this);
 
-	@Inject(at = @At("HEAD"), method = "renderItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformation$Mode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/client/render/model/BakedModel;)V", cancellable = true)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/BakedModel;isBuiltin()Z"), method = "renderItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformation$Mode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/client/render/model/BakedModel;)V", cancellable = true)
 	public void hook_renderItem(ItemStack stack, ModelTransformation.Mode transformMode, boolean invert, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay, BakedModel model, CallbackInfo ci) {
-		if (!stack.isEmpty() && !((FabricBakedModel) model).isVanillaAdapter()) {
+		if (!((FabricBakedModel) model).isVanillaAdapter()) {
 			fabric_contexts.get().renderModel(stack, transformMode, invert, matrixStack, vertexConsumerProvider, light, overlay, model, fabric_vanillaHandler);
+			matrixStack.pop();
 			ci.cancel();
 		}
 	}
