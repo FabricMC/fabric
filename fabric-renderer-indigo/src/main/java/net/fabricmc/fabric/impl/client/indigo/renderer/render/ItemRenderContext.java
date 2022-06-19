@@ -106,15 +106,10 @@ public class ItemRenderContext extends AbstractRenderContext {
 		this.vanillaHandler = vanillaHandler;
 		computeOutputInfo();
 
-		matrixStack.push();
-		model.getTransformation().getTransformation(transformMode).apply(invert, matrixStack);
-		matrixStack.translate(-0.5D, -0.5D, -0.5D);
 		matrix = matrixStack.peek().getPositionMatrix();
 		normalMatrix = matrixStack.peek().getNormalMatrix();
 
 		((FabricBakedModel) model).emitItemQuads(itemStack, randomSupplier, this);
-
-		matrixStack.pop();
 
 		this.itemStack = null;
 		this.matrixStack = null;
