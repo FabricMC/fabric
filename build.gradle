@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.12.38" apply false
+	id "fabric-loom" version "0.12.48" apply false
 	id "com.diffplug.spotless" version "6.5.1"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -463,7 +463,6 @@ sourceSets {
 // These modules are not included in the fat jar, maven will resolve them via the pom.
 def devOnlyModules = [
 		"fabric-gametest-api-v1",
-		"fabric-data-generation-api-v1"
 ]
 
 dependencies {
@@ -499,7 +498,7 @@ curseforge {
 		id = "306612"
 		changelog = ENV.CHANGELOG ?: "No changelog provided"
 		releaseType = project.prerelease == "true" ? "beta" : "release"
-		addGameVersion "1.19-Snapshot"
+		addGameVersion "1.19"
 		addGameVersion "Fabric"
 
 		mainArtifact(signingEnabled ? signRemapJar.output : remapJar) {

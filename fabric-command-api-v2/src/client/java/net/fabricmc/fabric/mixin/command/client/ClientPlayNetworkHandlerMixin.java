@@ -44,7 +44,7 @@ abstract class ClientPlayNetworkHandlerMixin {
 	@Final
 	private ClientCommandSource commandSource;
 
-	@Inject(method = "onGameJoin", at = @At("HEAD"))
+	@Inject(method = "onGameJoin", at = @At("RETURN"))
 	private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo info) {
 		final CommandDispatcher<FabricClientCommandSource> dispatcher = new CommandDispatcher<>();
 		ClientCommandInternals.setActiveDispatcher(dispatcher);

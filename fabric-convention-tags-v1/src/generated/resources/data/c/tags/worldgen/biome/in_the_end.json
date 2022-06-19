@@ -1,6 +1,10 @@
 {
   "replace": false,
   "values": [
+    {
+      "id": "#minecraft:is_end",
+      "required": false
+    },
     "minecraft:end_barrens",
     "minecraft:end_midlands",
     "minecraft:end_highlands",
