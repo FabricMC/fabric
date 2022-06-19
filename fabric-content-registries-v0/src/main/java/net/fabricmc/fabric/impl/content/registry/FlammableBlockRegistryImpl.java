@@ -16,78 +16,63 @@
 
 package net.fabricmc.fabric.impl.content.registry;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import net.minecraft.block.Block;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceType;
 import net.minecraft.tag.TagKey;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 
-public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, SimpleSynchronousResourceReloadListener {
+public class FlammableBlockRegistryImpl implements FlammableBlockRegistry {
 	private static final FlammableBlockRegistry.Entry REMOVED = new FlammableBlockRegistry.Entry(0, 0);
 	private static final Map<Block, FlammableBlockRegistryImpl> REGISTRIES = new HashMap<>();
-	private static final Collection<Identifier> RELOAD_DEPS = Collections.singletonList(ResourceReloadListenerKeys.TAGS);
-	private static int idCounter = 0;
 
 	private final Map<Block, FlammableBlockRegistry.Entry> registeredEntriesBlock = new HashMap<>();
 	private final Map<TagKey<Block>, FlammableBlockRegistry.Entry> registeredEntriesTag = new HashMap<>();
-	private final Map<Block, FlammableBlockRegistry.Entry> computedEntries = new HashMap<>();
-	private final Identifier id;
+	private volatile Map<Block, FlammableBlockRegistry.Entry> computedEntries = null;
 	private final Block key;
-	private boolean tagsPresent = false;
 
 	private FlammableBlockRegistryImpl(Block key) {
-		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(this);
-		this.id = new Identifier("fabric:private/fire_registry_" + (++idCounter));
 		this.key = key;
+
+		// Reset computed values after tags change since they depends on tags.
+		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
+			computedEntries = null;
+		});
 	}
 
-	// TODO: Asynchronous?
-	@Override
-	public void reload(ResourceManager var1) {
-		reload();
-		tagsPresent = true;
-	}
+	private Map<Block, FlammableBlockRegistry.Entry> getEntryMap() {
+		Map<Block, FlammableBlockRegistry.Entry> ret = computedEntries;
 
-	private void reload() {
-		computedEntries.clear();
+		if (ret == null) {
+			ret = new IdentityHashMap<>();
 
-		// tags take precedence before blocks
-		for (TagKey<Block> tag : registeredEntriesTag.keySet()) {
-			FlammableBlockRegistry.Entry entry = registeredEntriesTag.get(tag);
+			// tags take precedence over blocks
+			for (TagKey<Block> tag : registeredEntriesTag.keySet()) {
+				FlammableBlockRegistry.Entry entry = registeredEntriesTag.get(tag);
 
-			for (RegistryEntry<Block> block : Registry.BLOCK.iterateEntries(tag)) {
-				computedEntries.put(block.value(), entry);
+				for (RegistryEntry<Block> block : Registry.BLOCK.iterateEntries(tag)) {
+					ret.put(block.value(), entry);
+				}
 			}
+
+			ret.putAll(registeredEntriesBlock);
+
+			computedEntries = ret;
 		}
 
-		computedEntries.putAll(registeredEntriesBlock);
-
-		/* computedBurnChances.clear();
-		computedSpreadChances.clear();
-
-		for (Block block : computedEntries.keySet()) {
-			FlammableBlockRegistry.Entry entry = computedEntries.get(block);
-			computedBurnChances.put(block, entry.getBurnChance());
-			computedSpreadChances.put(block, entry.getSpreadChance());
-		} */
+		return ret;
 	}
 
 	// User-facing fire registry interface - queries vanilla fire block
 	@Override
 	public Entry get(Block block) {
-		Entry entry = computedEntries.get(block);
+		Entry entry = getEntryMap().get(block);
 
 		if (entry != null) {
 			return entry;
@@ -97,25 +82,21 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 	}
 
 	public Entry getFabric(Block block) {
-		return computedEntries.get(block);
+		return getEntryMap().get(block);
 	}
 
 	@Override
 	public void add(Block block, Entry value) {
 		registeredEntriesBlock.put(block, value);
 
-		if (tagsPresent) {
-			reload();
-		}
+		computedEntries = null;
 	}
 
 	@Override
 	public void add(TagKey<Block> tag, Entry value) {
 		registeredEntriesTag.put(tag, value);
 
-		if (tagsPresent) {
-			reload();
-		}
+		computedEntries = null;
 	}
 
 	@Override
@@ -132,18 +113,14 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 	public void clear(Block block) {
 		registeredEntriesBlock.remove(block);
 
-		if (tagsPresent) {
-			reload();
-		}
+		computedEntries = null;
 	}
 
 	@Override
 	public void clear(TagKey<Block> tag) {
 		registeredEntriesTag.remove(tag);
 
-		if (tagsPresent) {
-			reload();
-		}
+		computedEntries = null;
 	}
 
 	public static FlammableBlockRegistryImpl getInstance(Block block) {
@@ -152,15 +129,5 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 		}
 
 		return REGISTRIES.computeIfAbsent(block, FlammableBlockRegistryImpl::new);
-	}
-
-	@Override
-	public Identifier getFabricId() {
-		return id;
-	}
-
-	@Override
-	public Collection<Identifier> getFabricDependencies() {
-		return RELOAD_DEPS;
 	}
 }

@@ -22,10 +22,12 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.Items;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.VillagerProfession;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
@@ -47,7 +49,9 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - villagers can now collect, consume (at the same level of bread) and compost apples
 		//  - villagers can now collect and plant oak saplings
 		//  - assign a loot table to the nitwit villager type
+		//  - sand is now flammable
 
+		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);
 		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.getDefaultState());
 		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
 
