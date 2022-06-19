@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.biome;
+package net.fabricmc.fabric.mixin.resource.loader;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
+import net.minecraft.resource.DataPackSettings;
+import net.minecraft.server.Main;
 
-import net.fabricmc.fabric.impl.biome.BiomeSourceAccess;
+import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 
-@Mixin(MultiNoiseBiomeSource.class)
-public class MixinMultiNoiseBiomeSource implements BiomeSourceAccess {
-	@Unique
-	private boolean modifyBiomeEntries = true;
-
-	@Override
-	public void fabric_setModifyBiomeEntries(boolean modifyBiomeEntries) {
-		this.modifyBiomeEntries = modifyBiomeEntries;
-	}
-
-	@Override
-	public boolean fabric_shouldModifyBiomeEntries() {
-		return this.modifyBiomeEntries;
+@Mixin(Main.class)
+public class MainMixin {
+	@Redirect(method = "method_40372", at = @At(value = "FIELD", target = "Lnet/minecraft/resource/DataPackSettings;SAFE_MODE:Lnet/minecraft/resource/DataPackSettings;"))
+	private static DataPackSettings replaceDefaultDataPackSettings() {
+		return ModResourcePackUtil.createDefaultDataPackSettings();
 	}
 }

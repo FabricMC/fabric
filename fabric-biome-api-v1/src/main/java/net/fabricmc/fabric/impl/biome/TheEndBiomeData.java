@@ -16,10 +16,15 @@
 
 package net.fabricmc.fabric.impl.biome;
 
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.Hash;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
@@ -37,6 +42,7 @@ import net.minecraft.world.gen.random.ChunkRandom;
  */
 @ApiStatus.Internal
 public final class TheEndBiomeData {
+	public static final Set<RegistryKey<Biome>> ADDED_BIOMES = new HashSet<>();
 	private static final Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> END_BIOMES_MAP = new IdentityHashMap<>();
 	private static final Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> END_MIDLANDS_MAP = new IdentityHashMap<>();
 	private static final Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> END_BARRENS_MAP = new IdentityHashMap<>();
@@ -63,6 +69,7 @@ public final class TheEndBiomeData {
 		Preconditions.checkNotNull(variant, "variant entry is null");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (got %s)", weight);
 		END_BIOMES_MAP.computeIfAbsent(replaced, key -> new WeightedPicker<>()).add(variant, weight);
+		ADDED_BIOMES.add(variant);
 	}
 
 	public static void addEndMidlandsReplacement(RegistryKey<Biome> highlands, RegistryKey<Biome> midlands, double weight) {
@@ -70,6 +77,7 @@ public final class TheEndBiomeData {
 		Preconditions.checkNotNull(midlands, "midlands entry is null");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (got %s)", weight);
 		END_MIDLANDS_MAP.computeIfAbsent(highlands, key -> new WeightedPicker<>()).add(midlands, weight);
+		ADDED_BIOMES.add(midlands);
 	}
 
 	public static void addEndBarrensReplacement(RegistryKey<Biome> highlands, RegistryKey<Biome> barrens, double weight) {
@@ -77,6 +85,7 @@ public final class TheEndBiomeData {
 		Preconditions.checkNotNull(barrens, "midlands entry is null");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (got %s)", weight);
 		END_BARRENS_MAP.computeIfAbsent(highlands, key -> new WeightedPicker<>()).add(barrens, weight);
+		ADDED_BIOMES.add(barrens);
 	}
 
 	public static Overrides createOverrides(Registry<Biome> biomeRegistry, long seed) {
@@ -87,6 +96,7 @@ public final class TheEndBiomeData {
 	 * An instance of this class is attached to each {@link TheEndBiomeSource}.
 	 */
 	public static class Overrides {
+		public final Set<RegistryEntry<Biome>> customBiomes;
 		private final PerlinNoiseSampler sampler;
 
 		// Vanilla entries to compare against
@@ -100,6 +110,7 @@ public final class TheEndBiomeData {
 		private final Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> endBarrensMap;
 
 		public Overrides(Registry<Biome> biomeRegistry, long seed) {
+			this.customBiomes = ADDED_BIOMES.stream().map(biomeRegistry::entryOf).collect(Collectors.toSet());
 			this.sampler = new PerlinNoiseSampler(new ChunkRandom(new AtomicSimpleRandom(seed)));
 			this.endMidlands = biomeRegistry.entryOf(BiomeKeys.END_MIDLANDS);
 			this.endBarrens = biomeRegistry.entryOf(BiomeKeys.END_BARRENS);
@@ -112,7 +123,7 @@ public final class TheEndBiomeData {
 
 		// Resolves all RegistryKey instances to RegistryEntries
 		private Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> resolveOverrides(Registry<Biome> biomeRegistry, Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> overrides) {
-			var result = new IdentityHashMap<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>>(overrides.size());
+			Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> result = new Object2ObjectOpenCustomHashMap<>(overrides.size(), RegistryEntryHashStrategy.INSTANCE);
 
 			for (Map.Entry<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> entry : overrides.entrySet()) {
 				result.put(biomeRegistry.entryOf(entry.getKey()), entry.getValue().map(biomeRegistry::entryOf));
@@ -126,12 +137,14 @@ public final class TheEndBiomeData {
 
 			// The x and z of the entry are divided by 64 to ensure custom biomes are large enough; going larger than this]
 			// seems to make custom biomes too hard to find.
-			if (vanillaBiome == endMidlands || vanillaBiome == endBarrens) {
+			boolean isMidlands = vanillaBiome.matches(endMidlands::matchesKey);
+
+			if (isMidlands || vanillaBiome.matches(endBarrens::matchesKey)) {
 				// Since the highlands picker is statically populated by InternalBiomeData, picker will never be null.
 				WeightedPicker<RegistryEntry<Biome>> highlandsPicker = endBiomesMap.get(endHighlands);
 				RegistryEntry<Biome> highlandsKey = highlandsPicker.pickFromNoise(sampler, x / 64.0, 0, z / 64.0);
 
-				if (vanillaBiome == endMidlands) {
+				if (isMidlands) {
 					WeightedPicker<RegistryEntry<Biome>> midlandsPicker = endMidlandsMap.get(highlandsKey);
 					replacementKey = (midlandsPicker == null) ? vanillaBiome : midlandsPicker.pickFromNoise(sampler, x / 64.0, 0, z / 64.0);
 				} else {
@@ -145,6 +158,27 @@ public final class TheEndBiomeData {
 			}
 
 			return replacementKey;
+		}
+	}
+
+	enum RegistryEntryHashStrategy implements Hash.Strategy<RegistryEntry<?>> {
+		INSTANCE;
+
+		@Override
+		public boolean equals(RegistryEntry<?> a, RegistryEntry<?> b) {
+			if (a == b) return true;
+			if (a == null || b == null) return false;
+			if (a.getType() != b.getType()) return false;
+			// This Optional#get is safe - if a has key, b should also have key
+			// given a.getType() != b.getType() check above
+			// noinspection OptionalGetWithoutIsPresent
+			return a.getKeyOrValue().map(key -> b.getKey().get() == key, b.value()::equals);
+		}
+
+		@Override
+		public int hashCode(RegistryEntry<?> a) {
+			if (a == null) return 0;
+			return a.getKeyOrValue().map(System::identityHashCode, Object::hashCode);
 		}
 	}
 }

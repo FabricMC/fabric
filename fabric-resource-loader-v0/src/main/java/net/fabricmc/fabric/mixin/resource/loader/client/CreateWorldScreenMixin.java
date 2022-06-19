@@ -17,8 +17,7 @@
 package net.fabricmc.fabric.mixin.resource.loader.client;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Supplier;
 
 import com.mojang.datafixers.util.Pair;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,17 +25,17 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.resource.DataPackSettings;
-import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackManager;
-import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.util.registry.DynamicRegistryManager;
 
-import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
+import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 import net.fabricmc.fabric.mixin.resource.loader.ResourcePackManagerAccessor;
 
 @Mixin(CreateWorldScreen.class)
@@ -52,25 +51,14 @@ public class CreateWorldScreenMixin {
 
 	@ModifyArg(method = "create", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;<init>(Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/resource/DataPackSettings;Lnet/minecraft/client/gui/screen/world/MoreOptionsDialog;)V"), index = 1)
 	private static DataPackSettings onNew(DataPackSettings settings) {
-		ModResourcePackCreator modResourcePackCreator = new ModResourcePackCreator(ResourceType.SERVER_DATA);
-		List<ResourcePackProfile> moddedResourcePacks = new ArrayList<>();
-		modResourcePackCreator.register(moddedResourcePacks::add);
+		return ModResourcePackUtil.createDefaultDataPackSettings();
+	}
 
-		List<String> enabled = new ArrayList<>(settings.getEnabled());
-		List<String> disabled = new ArrayList<>(settings.getDisabled());
-
-		// This ensure that any built-in registered data packs by mods which needs to be enabled by default are
-		// as the data pack screen automatically put any data pack as disabled except the Default data pack.
-		for (ResourcePackProfile profile : moddedResourcePacks) {
-			ResourcePack pack = profile.createResourcePack();
-
-			if (pack instanceof ModNioResourcePack && ((ModNioResourcePack) pack).getActivationType().isEnabledByDefault()) {
-				enabled.add(profile.getName());
-			} else {
-				disabled.add(profile.getName());
-			}
-		}
-
-		return new DataPackSettings(enabled, disabled);
+	@Redirect(method = "create(Lnet/minecraft/client/gui/screen/Screen;)Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;", at = @At(value = "INVOKE", target = "Ljava/util/function/Supplier;get()Ljava/lang/Object;"))
+	@SuppressWarnings("unchecked")
+	private static <T> T loadDynamicRegistry(Supplier<T> instance) {
+		DynamicRegistryManager.Mutable dynamicRegistryManager = DynamicRegistryManager.createAndLoad();
+		ModResourcePackUtil.loadDynamicRegistry(dynamicRegistryManager);
+		return (T) dynamicRegistryManager.toImmutable();
 	}
 }
