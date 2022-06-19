@@ -26,7 +26,7 @@ import net.minecraft.world.event.GameEvent;
 /**
  * Provides a method for registering sculk sensor frequencies.
  */
-public class SculkSensorFrequencyRegistry {
+public final class SculkSensorFrequencyRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SculkSensorFrequencyRegistry.class);
 
 	private SculkSensorFrequencyRegistry() {

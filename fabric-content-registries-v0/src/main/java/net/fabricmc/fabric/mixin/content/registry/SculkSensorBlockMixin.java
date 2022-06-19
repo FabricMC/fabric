@@ -26,7 +26,6 @@ import net.minecraft.block.SculkSensorBlock;
 
 @Mixin(SculkSensorBlock.class)
 public class SculkSensorBlockMixin {
-	@Dynamic("Call to Object2IntMaps.unmodifiable in initialization of FREQUENCIES")
 	@Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2IntMaps;unmodifiable(Lit/unimi/dsi/fastutil/objects/Object2IntMap;)Lit/unimi/dsi/fastutil/objects/Object2IntMap;"))
 	private static <K> Object2IntMap<K> makeFrequenciesMapModifiable(Object2IntMap<? extends K> m) {
 		return (Object2IntMap<K>) m;
