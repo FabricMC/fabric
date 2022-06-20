@@ -54,10 +54,6 @@ transitive-accessible method net/minecraft/block/Material$Builder burnable ()Lne
 transitive-accessible method net/minecraft/block/Material$Builder destroyedByPiston ()Lnet/minecraft/block/Material$Builder;
 transitive-accessible method net/minecraft/block/Material$Builder blocksPistons ()Lnet/minecraft/block/Material$Builder;
 
-# Entity constructors
-transitive-accessible method net/minecraft/entity/projectile/ProjectileEntity <init> (Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V
-transitive-accessible method net/minecraft/entity/projectile/FishingBobberEntity <init> (Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;II)V
-
 # Item constructors
 transitive-accessible method net/minecraft/item/AxeItem <init> (Lnet/minecraft/item/ToolMaterial;FFLnet/minecraft/item/Item$Settings;)V
 transitive-accessible method net/minecraft/item/MusicDiscItem <init> (ILnet/minecraft/sound/SoundEvent;Lnet/minecraft/item/Item$Settings;)V
@@ -93,10 +89,332 @@ transitive-accessible method net/minecraft/scoreboard/ScoreboardCriterion create
 transitive-accessible class net/minecraft/client/model/ModelPart$Vertex
 transitive-accessible class net/minecraft/client/model/ModelPart$Quad
 
-# Miscellaneous
+# Entity methods
+transitive-accessible method net/minecraft/entity/Entity isBeingRainedOn ()Z
+transitive-accessible method net/minecraft/entity/Entity isInsideBubbleColumn ()Z
+transitive-accessible method net/minecraft/entity/Entity doesNotCollide (Lnet/minecraft/util/math/Box;)Z
+transitive-accessible method net/minecraft/entity/Entity getPosWithYOffset (F)Lnet/minecraft/util/math/BlockPos;
+transitive-accessible method net/minecraft/entity/Entity playAmethystChimeSound (Lnet/minecraft/block/BlockState;)V
+
+# Living entity methods
+transitive-accessible method net/minecraft/entity/LivingEntity getFallSound (I)Lnet/minecraft/sound/SoundEvent;
+transitive-accessible method net/minecraft/entity/LivingEntity damageArmor (Lnet/minecraft/entity/damage/DamageSource;F)V
+transitive-accessible method net/minecraft/entity/LivingEntity damageHelmet (Lnet/minecraft/entity/damage/DamageSource;F)V
+transitive-accessible method net/minecraft/entity/LivingEntity damageShield (F)V
+transitive-accessible method net/minecraft/entity/LivingEntity getStackReference (Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/entity/EquipmentSlot;)Lnet/minecraft/inventory/StackReference;
+transitive-accessible method net/minecraft/entity/LivingEntity getEquipmentSlot (I)Lnet/minecraft/entity/EquipmentSlot;
+
+# Experience orb methods
+transitive-accessible method net/minecraft/entity/ExperienceOrbEntity isMergeable (Lnet/minecraft/entity/ExperienceOrbEntity;)Z
+transitive-accessible method net/minecraft/entity/ExperienceOrbEntity merge (Lnet/minecraft/entity/ExperienceOrbEntity;)V
+transitive-accessible method net/minecraft/entity/ExperienceOrbEntity repairPlayerGears (Lnet/minecraft/entity/player/PlayerEntity;I)I
+transitive-accessible method net/minecraft/entity/ExperienceOrbEntity getMendingRepairCost (I)I
+transitive-accessible method net/minecraft/entity/ExperienceOrbEntity getMendingRepairAmount (I)I
+transitive-accessible method net/minecraft/entity/ExperienceOrbEntity isMergeable (Lnet/minecraft/entity/ExperienceOrbEntity;II)Z
+
+# Item entity methods
+transitive-accessible method net/minecraft/entity/ItemEntity tryMerge ()V
+transitive-accessible method net/minecraft/entity/ItemEntity canMerge ()Z
+transitive-accessible method net/minecraft/entity/ItemEntity tryMerge (Lnet/minecraft/entity/ItemEntity;)V
+transitive-accessible method net/minecraft/entity/ItemEntity merge (Lnet/minecraft/entity/ItemEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)V
+transitive-accessible method net/minecraft/entity/ItemEntity merge (Lnet/minecraft/entity/ItemEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/ItemEntity;Lnet/minecraft/item/ItemStack;)V
+
+# Lightning entity methods
+transitive-accessible method net/minecraft/entity/LightningEntity getAffectedBlockPos ()Lnet/minecraft/util/math/BlockPos;
+transitive-accessible method net/minecraft/entity/LightningEntity cleanOxidation (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;)V
+transitive-accessible method net/minecraft/entity/LightningEntity cleanOxidationAround (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos$Mutable;I)V
+transitive-accessible method net/minecraft/entity/LightningEntity cleanOxidationAround (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;)Ljava/util/Optional;
+
+# TNT entity methods
+transitive-accessible method net/minecraft/entity/TntEntity explode ()V
+
+# Wither methods
+transitive-accessible method net/minecraft/entity/boss/WitherEntity getHeadX (I)D
+transitive-accessible method net/minecraft/entity/boss/WitherEntity getHeadY (I)D
+transitive-accessible method net/minecraft/entity/boss/WitherEntity getHeadZ (I)D
+transitive-accessible method net/minecraft/entity/boss/WitherEntity shootSkullAt (ILnet/minecraft/entity/LivingEntity;)V
+transitive-accessible method net/minecraft/entity/boss/WitherEntity shootSkullAt (IDDDZ)V
+
+# Armor stand methods
+transitive-accessible method net/minecraft/entity/decoration/ArmorStandEntity isSlotDisabled (Lnet/minecraft/entity/EquipmentSlot;)Z
+transitive-accessible method net/minecraft/entity/decoration/ArmorStandEntity equip (Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/entity/EquipmentSlot;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/Hand;)Z
+transitive-accessible method net/minecraft/entity/decoration/ArmorStandEntity setSmall (Z)V
+transitive-accessible method net/minecraft/entity/decoration/ArmorStandEntity setShowArms (Z)V
+transitive-accessible method net/minecraft/entity/decoration/ArmorStandEntity setHideBasePlate (Z)V
+transitive-accessible method net/minecraft/entity/decoration/ArmorStandEntity setMarker (Z)V
+
+# Item frame methods
+transitive-accessible method net/minecraft/entity/decoration/ItemFrameEntity dropHeldStack (Lnet/minecraft/entity/Entity;Z)V
+transitive-accessible method net/minecraft/entity/decoration/ItemFrameEntity setRotation (IZ)V
+transitive-accessible method net/minecraft/entity/decoration/ItemFrameEntity getAsItemStack ()Lnet/minecraft/item/ItemStack;
+
+# Painting methods
+transitive-accessible method net/minecraft/entity/decoration/painting/PaintingEntity setVariant (Lnet/minecraft/util/registry/RegistryEntry;)V
+transitive-accessible method net/minecraft/entity/decoration/painting/PaintingEntity getSize (Lnet/minecraft/util/registry/RegistryEntry;)I
+
+# Mob entity methods
+transitive-accessible method net/minecraft/entity/mob/MobEntity enchantMainHandItem (Lnet/minecraft/util/math/random/Random;F)V
+transitive-accessible method net/minecraft/entity/mob/MobEntity enchantEquipment (Lnet/minecraft/util/math/random/Random;FLnet/minecraft/entity/EquipmentSlot;)V
+
+# Skeleton methods
+transitive-accessible method net/minecraft/entity/mob/AbstractSkeletonEntity getStepSound ()Lnet/minecraft/sound/SoundEvent;
+
+# Blaze methods
+transitive-accessible method net/minecraft/entity/mob/BlazeEntity isFireActive ()Z
+transitive-accessible method net/minecraft/entity/mob/BlazeEntity setFireActive (Z)V
+
+# Creeper methods
+transitive-accessible method net/minecraft/entity/mob/CreeperEntity explode ()V
+
+# Enderman methods
+transitive-accessible method net/minecraft/entity/mob/EndermanEntity isPlayerStaring (Lnet/minecraft/entity/player/PlayerEntity;)Z
+transitive-accessible method net/minecraft/entity/mob/EndermanEntity teleportTo (Lnet/minecraft/entity/Entity;)Z
+transitive-accessible method net/minecraft/entity/mob/EndermanEntity teleportTo (DDD)Z
+transitive-accessible method net/minecraft/entity/mob/EndermanEntity damageFromPotion (Lnet/minecraft/entity/damage/DamageSource;Lnet/minecraft/entity/projectile/thrown/PotionEntity;F)Z
+
+# Evoker methods
+transitive-accessible method net/minecraft/entity/mob/EvokerEntity setWololoTarget (Lnet/minecraft/entity/passive/SheepEntity;)V
+transitive-accessible method net/minecraft/entity/mob/EvokerEntity getWololoTarget ()Lnet/minecraft/entity/passive/SheepEntity;
+
+# Guardian methods
+transitive-accessible method net/minecraft/entity/mob/GuardianEntity setSpikesRetracted (Z)V
+transitive-accessible method net/minecraft/entity/mob/GuardianEntity setBeamTarget (I)V
+
+# Hoglin methods
+transitive-accessible method net/minecraft/entity/mob/HoglinEntity zombify (Lnet/minecraft/server/world/ServerWorld;)V
+transitive-accessible method net/minecraft/entity/mob/HoglinEntity isImmuneToZombification ()Z
+transitive-accessible method net/minecraft/entity/mob/HoglinEntity setCannotBeHunted (Z)V
+
+# Piglin methods
+transitive-accessible method net/minecraft/entity/mob/PiglinEntity setCannotHunt (Z)V
+transitive-accessible method net/minecraft/entity/mob/PiglinEntity isCharging ()Z
+
+# Pillager methods
+transitive-accessible method net/minecraft/entity/mob/PillagerEntity isRaidCaptain (Lnet/minecraft/item/ItemStack;)Z
+
+# Shulker methods
+transitive-accessible method net/minecraft/entity/mob/ShulkerEntity tryAttachOrTeleport ()V
+transitive-accessible method net/minecraft/entity/mob/ShulkerEntity canStay (Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;)Z
+transitive-accessible method net/minecraft/entity/mob/ShulkerEntity isInvalidPosition (Lnet/minecraft/util/math/BlockPos;)Z
+transitive-accessible method net/minecraft/entity/mob/ShulkerEntity isClosed ()Z
+transitive-accessible method net/minecraft/entity/mob/ShulkerEntity spawnNewShulker ()V
+transitive-accessible method net/minecraft/entity/mob/ShulkerEntity setAttachedFace (Lnet/minecraft/util/math/Direction;)V
+transitive-accessible method net/minecraft/entity/mob/ShulkerEntity getPeekAmount ()I
+transitive-accessible method net/minecraft/entity/mob/ShulkerEntity setPeekAmount (I)V
+transitive-accessible method net/minecraft/entity/mob/ShulkerEntity setColor (Lnet/minecraft/util/DyeColor;)V
+
+# Warden methods
+transitive-accessible method net/minecraft/entity/mob/WardenEntity isDiggingOrEmerging ()Z
+transitive-accessible method net/minecraft/entity/mob/WardenEntity getHeartRate ()I
+transitive-accessible method net/minecraft/entity/mob/WardenEntity playListeningSound ()V
+transitive-accessible method net/minecraft/entity/mob/WardenEntity getAngerAtTarget ()I
+
+# Horse methods
+transitive-accessible method net/minecraft/entity/passive/AbstractHorseEntity setEating ()V
+transitive-accessible method net/minecraft/entity/passive/HorseEntity setVariant (I)V
+transitive-accessible method net/minecraft/entity/passive/HorseEntity getVariant ()I
+transitive-accessible method net/minecraft/entity/passive/HorseEntity setVariant (Lnet/minecraft/entity/passive/HorseColor;Lnet/minecraft/entity/passive/HorseMarking;)V
+transitive-accessible method net/minecraft/entity/passive/HorseEntity setArmorTypeFromStack (Lnet/minecraft/item/ItemStack;)V
+
+# Allay methods
+transitive-accessible method net/minecraft/entity/passive/AllayEntity isItemPickupCoolingDown ()Z
+
+# Axolotl methods
+transitive-accessible method net/minecraft/entity/passive/AxolotlEntity setVariant (Lnet/minecraft/entity/passive/AxolotlEntity$Variant;)V
+
+# Bee methods
+transitive-accessible method net/minecraft/entity/passive/BeeEntity startMovingTo (Lnet/minecraft/util/math/BlockPos;)V
+transitive-accessible method net/minecraft/entity/passive/BeeEntity failedPollinatingTooLong ()Z
+transitive-accessible method net/minecraft/entity/passive/BeeEntity canEnterHive ()Z
+transitive-accessible method net/minecraft/entity/passive/BeeEntity isHiveNearFire ()Z
+transitive-accessible method net/minecraft/entity/passive/BeeEntity doesHiveHaveSpace (Lnet/minecraft/util/math/BlockPos;)Z
+transitive-accessible method net/minecraft/entity/passive/BeeEntity getCropsGrownSincePollination ()I
+transitive-accessible method net/minecraft/entity/passive/BeeEntity resetCropCounter ()V
+transitive-accessible method net/minecraft/entity/passive/BeeEntity addCropCounter ()V
+transitive-accessible method net/minecraft/entity/passive/BeeEntity isHiveValid ()Z
+transitive-accessible method net/minecraft/entity/passive/BeeEntity setHasNectar (Z)V
+transitive-accessible method net/minecraft/entity/passive/BeeEntity setHasStung (Z)V
+transitive-accessible method net/minecraft/entity/passive/BeeEntity isNearTarget ()Z
+transitive-accessible method net/minecraft/entity/passive/BeeEntity setNearTarget (Z)V
+transitive-accessible method net/minecraft/entity/passive/BeeEntity isTooFar (Lnet/minecraft/util/math/BlockPos;)Z
+transitive-accessible method net/minecraft/entity/passive/BeeEntity isFlowers (Lnet/minecraft/util/math/BlockPos;)Z
+
+# Fox methods
+transitive-accessible method net/minecraft/entity/passive/FoxEntity canEat (Lnet/minecraft/item/ItemStack;)Z
+transitive-accessible method net/minecraft/entity/passive/FoxEntity setType (Lnet/minecraft/entity/passive/FoxEntity$Type;)V
+transitive-accessible method net/minecraft/entity/passive/FoxEntity getTrustedUuids ()Ljava/util/List;
+transitive-accessible method net/minecraft/entity/passive/FoxEntity addTrustedUuid (Ljava/util/UUID;)V
+transitive-accessible method net/minecraft/entity/passive/FoxEntity setWalking (Z)V
+transitive-accessible method net/minecraft/entity/passive/FoxEntity isAggressive ()Z
+transitive-accessible method net/minecraft/entity/passive/FoxEntity setAggressive (Z)V
+transitive-accessible method net/minecraft/entity/passive/FoxEntity setSleeping (Z)V
+transitive-accessible method net/minecraft/entity/passive/FoxEntity spit (Lnet/minecraft/item/ItemStack;)V
+transitive-accessible method net/minecraft/entity/passive/FoxEntity dropItem (Lnet/minecraft/item/ItemStack;)V
+transitive-accessible method net/minecraft/entity/passive/FoxEntity stopSleeping ()V
+transitive-accessible method net/minecraft/entity/passive/FoxEntity stopActions ()V
+transitive-accessible method net/minecraft/entity/passive/FoxEntity wantsToPickupItem ()Z
+transitive-accessible method net/minecraft/entity/passive/FoxEntity canTrust (Ljava/util/UUID;)Z
+
+# Frog methods
+transitive-accessible method net/minecraft/entity/passive/FrogEntity shouldWalk ()Z
+transitive-accessible method net/minecraft/entity/passive/FrogEntity shouldSwim ()Z
+
+# Glow squid methods
+transitive-accessible method net/minecraft/entity/passive/GlowSquidEntity setDarkTicksRemaining (I)V
+
+# Llama methods
+transitive-accessible method net/minecraft/entity/passive/LlamaEntity setCarpetColor (Lnet/minecraft/util/DyeColor;)V
+transitive-accessible method net/minecraft/entity/passive/LlamaEntity spitAt (Lnet/minecraft/entity/LivingEntity;)V
+transitive-accessible method net/minecraft/entity/passive/LlamaEntity setSpit (Z)V
+transitive-accessible method net/minecraft/entity/passive/LlamaEntity getColorFromCarpet (Lnet/minecraft/item/ItemStack;)Lnet/minecraft/util/DyeColor;
+
+# Mooshroom methods
+transitive-accessible method net/minecraft/entity/passive/MooshroomEntity setType (Lnet/minecraft/entity/passive/MooshroomEntity$Type;)V
+transitive-accessible method net/minecraft/entity/passive/MooshroomEntity chooseBabyType (Lnet/minecraft/entity/passive/MooshroomEntity;)Lnet/minecraft/entity/passive/MooshroomEntity$Type;
+
+# Ocelot methods
+transitive-accessible method net/minecraft/entity/passive/OcelotEntity showEmoteParticle (Z)V
+
+# Panda methods
+transitive-accessible method net/minecraft/entity/passive/PandaEntity getEatingTicks ()I
+transitive-accessible method net/minecraft/entity/passive/PandaEntity setEatingTicks (I)V
+transitive-accessible method net/minecraft/entity/passive/PandaEntity sneeze ()V
+transitive-accessible method net/minecraft/entity/passive/PandaEntity canEat (Lnet/minecraft/item/ItemStack;)Z
+
+# Parrot methods
+transitive-accessible method net/minecraft/entity/passive/ParrotEntity getSound (Lnet/minecraft/entity/EntityType;)Lnet/minecraft/sound/SoundEvent;
+
+# Pig methods
+transitive-accessible method net/minecraft/entity/passive/PigEntity canBeControlledByRider (Lnet/minecraft/entity/Entity;)Z
+
+# Pufferfish methods
+transitive-accessible method net/minecraft/entity/passive/PufferfishEntity sting (Lnet/minecraft/entity/mob/MobEntity;)V
+transitive-accessible method net/minecraft/entity/passive/PufferfishEntity getScaleForPuffState (I)F
+
+# Rabbit methods
+transitive-accessible method net/minecraft/entity/passive/RabbitEntity lookTowards (DD)V
+transitive-accessible method net/minecraft/entity/passive/RabbitEntity scheduleJump ()V
+transitive-accessible method net/minecraft/entity/passive/RabbitEntity chooseType (Lnet/minecraft/world/WorldAccess;)I
+transitive-accessible method net/minecraft/entity/passive/RabbitEntity wantsCarrots ()Z
+transitive-accessible method net/minecraft/entity/passive/RabbitEntity isTempting (Lnet/minecraft/item/ItemStack;)Z
+
+# Sheep methods
+transitive-accessible method net/minecraft/entity/passive/SheepEntity getChildColor (Lnet/minecraft/entity/passive/AnimalEntity;Lnet/minecraft/entity/passive/AnimalEntity;)Lnet/minecraft/util/DyeColor;
+
+# Squid methods
+transitive-accessible method net/minecraft/entity/passive/SquidEntity squirt ()V
+
+# Strider methods
+transitive-accessible method net/minecraft/entity/passive/StriderEntity canEntityControl (Lnet/minecraft/entity/Entity;)Z
+transitive-accessible method net/minecraft/entity/passive/StriderEntity isEscapingDanger ()Z
+transitive-accessible method net/minecraft/entity/passive/StriderEntity isBeingTempted ()Z
+
+# Tadpole methods
+transitive-accessible method net/minecraft/entity/passive/TadpoleEntity isSlimeBall (Lnet/minecraft/item/ItemStack;)Z
+transitive-accessible method net/minecraft/entity/passive/TadpoleEntity eatSlimeBall (Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;)V
+transitive-accessible method net/minecraft/entity/passive/TadpoleEntity decrementItem (Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;)V
+transitive-accessible method net/minecraft/entity/passive/TadpoleEntity getTadpoleAge ()I
+transitive-accessible method net/minecraft/entity/passive/TadpoleEntity increaseAge (I)V
+transitive-accessible method net/minecraft/entity/passive/TadpoleEntity setTadpoleAge (I)V
+transitive-accessible method net/minecraft/entity/passive/TadpoleEntity growUp ()V
+transitive-accessible method net/minecraft/entity/passive/TadpoleEntity getTicksUntilGrowth ()I
+
+# Trader llama methods
+transitive-accessible method net/minecraft/entity/passive/TraderLlamaEntity tryDespawn ()V
+transitive-accessible method net/minecraft/entity/passive/TraderLlamaEntity canDespawn ()Z
+transitive-accessible method net/minecraft/entity/passive/TraderLlamaEntity heldByTrader ()Z
+transitive-accessible method net/minecraft/entity/passive/TraderLlamaEntity leashedByPlayer ()Z
+
+# Tropical fish methods
+transitive-accessible method net/minecraft/entity/passive/TropicalFishEntity toVariant (Lnet/minecraft/entity/passive/TropicalFishEntity$Variety;Lnet/minecraft/util/DyeColor;Lnet/minecraft/util/DyeColor;)I
+transitive-accessible method net/minecraft/entity/passive/TropicalFishEntity getBaseDyeColorIndex (I)I
+transitive-accessible method net/minecraft/entity/passive/TropicalFishEntity getPatternDyeColorIndex (I)I
+transitive-accessible method net/minecraft/entity/passive/TropicalFishEntity getPattern (I)I
+
+# Turtle methods
+transitive-accessible method net/minecraft/entity/passive/TurtleEntity getHomePos ()Lnet/minecraft/util/math/BlockPos;
+transitive-accessible method net/minecraft/entity/passive/TurtleEntity setTravelPos (Lnet/minecraft/util/math/BlockPos;)V
+transitive-accessible method net/minecraft/entity/passive/TurtleEntity getTravelPos ()Lnet/minecraft/util/math/BlockPos;
+transitive-accessible method net/minecraft/entity/passive/TurtleEntity setHasEgg (Z)V
+transitive-accessible method net/minecraft/entity/passive/TurtleEntity setDiggingSand (Z)V
+transitive-accessible method net/minecraft/entity/passive/TurtleEntity isLandBound ()Z
+transitive-accessible method net/minecraft/entity/passive/TurtleEntity setLandBound (Z)V
+transitive-accessible method net/minecraft/entity/passive/TurtleEntity isActivelyTraveling ()Z
+transitive-accessible method net/minecraft/entity/passive/TurtleEntity setActivelyTraveling (Z)V
+
+# Villager methods
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity sayNo ()V
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity beginTradeWith (Lnet/minecraft/entity/player/PlayerEntity;)V
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity clearSpecialPrices ()V
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity needsRestock ()Z
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity canRestock ()Z
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity restockAndUpdateDemandBonus ()V
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity updateDemandBonus ()V
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity prepareOffersFor (Lnet/minecraft/entity/player/PlayerEntity;)V
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity lacksFood ()Z
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity consumeAvailableFood ()V
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity depleteFood (I)V
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity canLevelUp ()Z
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity levelUp ()V
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity getAvailableFood ()I
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity decayGossip ()V
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity clearDailyRestockCount ()V
+transitive-accessible method net/minecraft/entity/passive/VillagerEntity hasRecentlySlept (J)Z
+
+# Wandering trader methods
+transitive-accessible method net/minecraft/entity/passive/WanderingTraderEntity getWanderTarget ()Lnet/minecraft/util/math/BlockPos;
+
+# Wolf methods
+transitive-accessible method net/minecraft/entity/passive/WolfEntity resetShake ()V
+
+# Projectile methods
+transitive-accessible method net/minecraft/entity/projectile/ProjectileEntity <init> (Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V
+transitive-accessible method net/minecraft/entity/projectile/ProjectileEntity isOwner (Lnet/minecraft/entity/Entity;)Z
+transitive-accessible method net/minecraft/entity/projectile/ProjectileEntity shouldLeaveOwner ()Z
+transitive-accessible method net/minecraft/entity/projectile/ProjectileEntity canHit (Lnet/minecraft/entity/Entity;)Z
+
+# Persistent projectile methods
+transitive-accessible method net/minecraft/entity/projectile/PersistentProjectileEntity asItemStack ()Lnet/minecraft/item/ItemStack;
+
+# Arrow methods
+transitive-accessible method net/minecraft/entity/projectile/ArrowEntity setColor (I)V
+
+# Firework rocket methods
+transitive-accessible method net/minecraft/entity/projectile/FireworkRocketEntity explodeAndRemove ()V
+transitive-accessible method net/minecraft/entity/projectile/FireworkRocketEntity hasExplosionEffects ()Z
+transitive-accessible method net/minecraft/entity/projectile/FireworkRocketEntity explode ()V
+transitive-accessible method net/minecraft/entity/projectile/FireworkRocketEntity wasShotByEntity ()Z
+
+# Fishing bobber methods and subclasses
+transitive-accessible class net/minecraft/entity/projectile/FishingBobberEntity$State
+transitive-accessible class net/minecraft/entity/projectile/FishingBobberEntity$PositionType
+transitive-accessible method net/minecraft/entity/projectile/FishingBobberEntity <init> (Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;II)V
+transitive-accessible method net/minecraft/entity/projectile/FishingBobberEntity updateHookedEntityId (Lnet/minecraft/entity/Entity;)V
+transitive-accessible method net/minecraft/entity/projectile/FishingBobberEntity isOpenOrWaterAround (Lnet/minecraft/util/math/BlockPos;)Z
+transitive-accessible method net/minecraft/entity/projectile/FishingBobberEntity getPositionType (Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/entity/projectile/FishingBobberEntity$PositionType;
+transitive-accessible method net/minecraft/entity/projectile/FishingBobberEntity getPositionType (Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/entity/projectile/FishingBobberEntity$PositionType;
+
+# Shulker bullet methods
+transitive-accessible method net/minecraft/entity/projectile/ShulkerBulletEntity setDirection (Lnet/minecraft/util/math/Direction;)V
+transitive-accessible method net/minecraft/entity/projectile/ShulkerBulletEntity changeTargetDirection (Lnet/minecraft/util/math/Direction$Axis;)V
+
+# Trident entity methods
+transitive-accessible method net/minecraft/entity/projectile/TridentEntity isOwnerAlive ()Z
+
+# Minecart methods
 transitive-accessible method net/minecraft/entity/vehicle/AbstractMinecartEntity getItem ()Lnet/minecraft/item/Item;
+
+# Boat methods
+transitive-accessible method net/minecraft/entity/vehicle/BoatEntity checkLocation ()Lnet/minecraft/entity/vehicle/BoatEntity$Location;
+transitive-accessible method net/minecraft/entity/vehicle/BoatEntity checkBoatInWater ()Z
+transitive-accessible method net/minecraft/entity/vehicle/BoatEntity getUnderWaterLocation ()Lnet/minecraft/entity/vehicle/BoatEntity$Location;
+transitive-accessible method net/minecraft/entity/vehicle/BoatEntity setBubbleWobbleTicks (I)V
+transitive-accessible method net/minecraft/entity/vehicle/BoatEntity getBubbleWobbleTicks ()I
+
+# Miscellaneous
+transitive-accessible method net/minecraft/item/BlockItem getPlaceSound (Lnet/minecraft/block/BlockState;)Lnet/minecraft/sound/SoundEvent;
 transitive-accessible method net/minecraft/text/TextColor getHexCode ()Ljava/lang/String;
-transitive-accessible method net/minecraft/text/TranslatableTextContent getArg (I)Lnet/minecraft/text/StringVisitable;
 transitive-accessible method net/minecraft/server/world/ServerWorld sendToPlayerIfNearby (Lnet/minecraft/server/network/ServerPlayerEntity;ZDDDLnet/minecraft/network/Packet;)Z
+transitive-accessible method net/minecraft/text/TranslatableTextContent getArg (I)Lnet/minecraft/text/StringVisitable;
 
 ### Generated access wideners below
