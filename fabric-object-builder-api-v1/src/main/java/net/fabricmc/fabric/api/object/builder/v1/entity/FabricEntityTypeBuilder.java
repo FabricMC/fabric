@@ -34,7 +34,6 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
-import net.fabricmc.fabric.mixin.object.builder.SpawnRestrictionAccessor;
 
 /**
  * Extended version of {@link EntityType.Builder} with added registration for
@@ -536,7 +535,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			EntityType<T> type = super.build();
 
 			if (this.spawnPredicate != null) {
-				SpawnRestrictionAccessor.callRegister(type, this.restrictionLocation, this.restrictionHeightmap, this.spawnPredicate);
+				SpawnRestriction.register(type, this.restrictionLocation, this.restrictionHeightmap, this.spawnPredicate);
 			}
 
 			return type;

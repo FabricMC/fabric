@@ -19,7 +19,7 @@ import java.util.stream.Collectors
 task generateAccessWidener {
 	doLast {
 		List<String> lines = file("template.accesswidener").text.lines().collect(Collectors.toCollection { [] })
-		Path inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.mergedJar
+		Path inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.commonJar
 
 		try (def fs = FileSystems.newFileSystem(URI.create("jar:${inputJar.toUri()}"), [create: false])) {
 			generateBlockConstructors(lines, fs)
