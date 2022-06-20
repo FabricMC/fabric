@@ -26,6 +26,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.Items;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -37,6 +38,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.SculkSensorFrequencyRegistry;
@@ -54,6 +56,7 @@ public final class ContentRegistryTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Expected behavior:
+		//  - sand is now flammable
 		//  - red wool is flattenable to yellow wool
 		//  - quartz pillars are strippable to hay blocks
 		//  - green wool is tillable to lime wool
@@ -64,6 +67,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - assign a loot table to the nitwit villager type
 		//  - right-clicking a 'test_event' block will emit a 'test_event' game event, which will have a sculk sensor frequency of 2
 
+		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);
 		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.getDefaultState());
 		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
 

@@ -59,7 +59,7 @@ import java.util.zip.ZipFile
 
 task generateAccessWidener() {
 	doLast {
-		File inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.mergedJar.toFile()
+		File inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.commonJar.toFile()
 		String accessWidener = file("template.accesswidener").text + "\n"
 
 		visitMethods(inputJar, "net/minecraft/data/server/RecipeProvider.class") { name, desc, owner ->
@@ -78,6 +78,10 @@ task generateAccessWidener() {
 		}
 
 		visitMethods(inputJar, "net/minecraft/data/server/BlockLootTableGenerator.class") { name, desc, owner ->
+			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
+		}
+
+		visitMethods(inputJar, "net/minecraft/data/client/ItemModelGenerator.class") { name, desc, owner ->
 			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
