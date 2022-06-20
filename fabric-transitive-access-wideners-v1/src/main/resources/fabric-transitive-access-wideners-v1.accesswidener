@@ -54,6 +54,51 @@ transitive-accessible method net/minecraft/block/Material$Builder burnable ()Lne
 transitive-accessible method net/minecraft/block/Material$Builder destroyedByPiston ()Lnet/minecraft/block/Material$Builder;
 transitive-accessible method net/minecraft/block/Material$Builder blocksPistons ()Lnet/minecraft/block/Material$Builder;
 
+# Entity constructors
+transitive-accessible method net/minecraft/entity/projectile/ProjectileEntity <init> (Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V
+transitive-accessible method net/minecraft/entity/projectile/FishingBobberEntity <init> (Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;II)V
+
+# Item constructors
+transitive-accessible method net/minecraft/item/AxeItem <init> (Lnet/minecraft/item/ToolMaterial;FFLnet/minecraft/item/Item$Settings;)V
+transitive-accessible method net/minecraft/item/MusicDiscItem <init> (ILnet/minecraft/sound/SoundEvent;Lnet/minecraft/item/Item$Settings;)V
+transitive-accessible method net/minecraft/item/PickaxeItem <init> (Lnet/minecraft/item/ToolMaterial;IFLnet/minecraft/item/Item$Settings;)V
+
+# Item usage context constructors
+transitive-accessible method net/minecraft/item/ItemUsageContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
+transitive-accessible method net/minecraft/item/ItemPlacementContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
+
+# Text filtering
+transitive-accessible method net/minecraft/server/network/ServerPlayNetworkHandler filterText (Ljava/lang/Object;Ljava/util/function/Consumer;Ljava/util/function/BiFunction;)V
+transitive-accessible method net/minecraft/server/network/ServerPlayNetworkHandler filterText (Ljava/lang/String;Ljava/util/function/Consumer;)V
+transitive-accessible method net/minecraft/server/network/ServerPlayNetworkHandler filterTexts (Ljava/util/List;Ljava/util/function/Consumer;)V
+
+# Registering custom renderers
+transitive-accessible method net/minecraft/client/render/entity/EntityRenderers register (Lnet/minecraft/entity/EntityType;Lnet/minecraft/client/render/entity/EntityRendererFactory;)V
+transitive-accessible method net/minecraft/client/render/block/entity/BlockEntityRendererFactories register (Lnet/minecraft/block/entity/BlockEntityType;Lnet/minecraft/client/render/block/entity/BlockEntityRendererFactory;)V
+
+# Recipe factories
+transitive-accessible class net/minecraft/recipe/CookingRecipeSerializer$RecipeFactory
+transitive-accessible class net/minecraft/recipe/CuttingRecipe$Serializer$RecipeFactory
+
+# Registering custom brewing recipes
+transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerItemRecipe (Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;)V
+transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerPotionType (Lnet/minecraft/item/Item;)V
+transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerPotionRecipe (Lnet/minecraft/potion/Potion;Lnet/minecraft/item/Item;Lnet/minecraft/potion/Potion;)V
+
+# Registering custom scoreboard criteria
+transitive-accessible method net/minecraft/scoreboard/ScoreboardCriterion create (Ljava/lang/String;ZLnet/minecraft/scoreboard/ScoreboardCriterion$RenderType;)Lnet/minecraft/scoreboard/ScoreboardCriterion;
+transitive-accessible method net/minecraft/scoreboard/ScoreboardCriterion create (Ljava/lang/String;)Lnet/minecraft/scoreboard/ScoreboardCriterion;
+
+# Model part subclasses
+transitive-accessible class net/minecraft/client/model/ModelPart$Vertex
+transitive-accessible class net/minecraft/client/model/ModelPart$Quad
+
+# Miscellaneous
+transitive-accessible method net/minecraft/entity/vehicle/AbstractMinecartEntity getItem ()Lnet/minecraft/item/Item;
+transitive-accessible method net/minecraft/text/TextColor getHexCode ()Ljava/lang/String;
+transitive-accessible method net/minecraft/text/TranslatableTextContent getArg (I)Lnet/minecraft/text/StringVisitable;
+transitive-accessible method net/minecraft/server/world/ServerWorld sendToPlayerIfNearby (Lnet/minecraft/server/network/ServerPlayerEntity;ZDDDLnet/minecraft/network/Packet;)Z
+
 ### Generated access wideners below
 # Constructors of non-abstract block classes
 transitive-accessible method net/minecraft/block/AirBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
