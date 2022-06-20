@@ -452,8 +452,8 @@ public class AoCalculator {
 			}
 
 			if (!isClear2 && !isClear1) {
-				cAo2 = ao0;
-				cLight2 = light0;
+				cAo2 = ao1;
+				cLight2 = light1;
 			} else {
 				searchPos.set(lightPos).move(aoFace.neighbors[1]).move(aoFace.neighbors[2]);
 				searchState = world.getBlockState(searchPos);
@@ -462,8 +462,8 @@ public class AoCalculator {
 			}
 
 			if (!isClear3 && !isClear1) {
-				cAo3 = ao0;
-				cLight3 = light0;
+				cAo3 = ao1;
+				cLight3 = light1;
 			} else {
 				searchPos.set(lightPos).move(aoFace.neighbors[1]).move(aoFace.neighbors[3]);
 				searchState = world.getBlockState(searchPos);
