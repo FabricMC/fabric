@@ -30,7 +30,7 @@ import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.impl.tag.client.DataLoader;
+import net.fabricmc.fabric.impl.tag.client.ClientTagsLoader;
 
 /**
  * Tags are loaded by the server, either the internal server in singleplayer or the connected server and
@@ -45,7 +45,6 @@ import net.fabricmc.fabric.impl.tag.client.DataLoader;
 @Environment(EnvType.CLIENT)
 public final class ClientTags {
 	private static final Map<TagKey<?>, Set<Identifier>> LOCAL_TAG_CACHE = new ConcurrentHashMap<>();
-	private static final DataLoader LOADER = new DataLoader();
 
 	private ClientTags() {
 	}
@@ -57,7 +56,7 @@ public final class ClientTags {
 	 * @return a set of {@code Identifier}s this tag contains
 	 */
 	public static Set<Identifier> getOrCreateLocalTag(TagKey<?> tagKey) {
-		return LOCAL_TAG_CACHE.computeIfAbsent(tagKey, LOADER::loadTag);
+		return LOCAL_TAG_CACHE.computeIfAbsent(tagKey, ClientTagsLoader::loadTag);
 	}
 
 	/**

@@ -45,13 +45,13 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
 @ApiStatus.Internal
-public class DataLoader {
-	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-tags-v1");
+public class ClientTagsLoader {
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-tags-api-v1");
 	/**
 	 * Load a given tag from the available mods into a set of {@code Identifier}s.
 	 * Parsing based on {@link net.minecraft.tag.TagGroupLoader#loadTags(net.minecraft.resource.ResourceManager)}
 	 */
-	public HashSet<Identifier> loadTag(TagKey<?> tagKey) {
+	public static HashSet<Identifier> loadTag(TagKey<?> tagKey) {
 		var tags = new HashSet<TagEntry>();
 		HashSet<Path> tagFiles = getTagFiles(tagKey.registry(), tagKey.id());
 
@@ -100,14 +100,14 @@ public class DataLoader {
 	 * @param identifier  the Identifier of the tag
 	 * @return the paths to all tag json files within the available mods
 	 */
-	private HashSet<Path> getTagFiles(RegistryKey<? extends Registry<?>> registryKey, Identifier identifier) {
+	private static HashSet<Path> getTagFiles(RegistryKey<? extends Registry<?>> registryKey, Identifier identifier) {
 		return getTagFiles(TagManagerLoader.getPath(registryKey), identifier);
 	}
 
 	/**
 	 * @return the paths to all tag json files within the available mods
 	 */
-	private HashSet<Path> getTagFiles(String tagType, Identifier identifier) {
+	private static HashSet<Path> getTagFiles(String tagType, Identifier identifier) {
 		String tagFile = "data/%s/%s/%s.json".formatted(identifier.getNamespace(), tagType, identifier.getPath());
 		return getResourcePaths(tagFile);
 	}
@@ -115,7 +115,7 @@ public class DataLoader {
 	/**
 	 * @return all paths from the available mods that match the given internal path
 	 */
-	private HashSet<Path> getResourcePaths(String path) {
+	private static HashSet<Path> getResourcePaths(String path) {
 		HashSet<Path> out = new HashSet<>();
 
 		for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
