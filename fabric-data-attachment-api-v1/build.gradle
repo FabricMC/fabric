@@ -4,7 +4,3 @@ version = getSubprojectVersion(project)
 moduleDependencies(project, [
 	'fabric-api-base',
 ])
-
-dependencies {
-	testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
-}
