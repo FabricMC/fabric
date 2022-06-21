@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
+import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.AXIS_ALIGNED_FLAG;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.LIGHT_FACE_FLAG;
 
 import java.util.function.Function;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
@@ -177,8 +177,12 @@ public abstract class AbstractQuadRenderer {
 		// for reference.
 		if (quad.cullFace() != null) {
 			mpos.move(quad.cullFace());
-		} else if ((quad.geometryFlags() & LIGHT_FACE_FLAG) != 0 || Block.isShapeFullCube(blockState.getCollisionShape(blockInfo.blockView, pos))) {
-			mpos.move(quad.lightFace());
+		} else {
+			final int flags = quad.geometryFlags();
+
+			if ((flags & LIGHT_FACE_FLAG) != 0 || ((flags & AXIS_ALIGNED_FLAG) != 0 && blockState.isFullCube(blockInfo.blockView, pos))) {
+				mpos.move(quad.lightFace());
+			}
 		}
 
 		// Unfortunately cannot use brightness cache here unless we implement one specifically for flat lighting. See #329

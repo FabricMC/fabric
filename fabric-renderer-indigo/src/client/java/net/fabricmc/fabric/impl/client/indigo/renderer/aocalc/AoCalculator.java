@@ -197,7 +197,7 @@ public class AoCalculator {
 		int flags = quad.geometryFlags();
 
 		// force to block face if shape is full cube - matches vanilla logic
-		if ((flags & LIGHT_FACE_FLAG) == 0 && (flags & AXIS_ALIGNED_FLAG) == AXIS_ALIGNED_FLAG && blockInfo.blockState.isFullCube(blockInfo.blockView, blockInfo.blockPos)) {
+		if ((flags & LIGHT_FACE_FLAG) == 0 && (flags & AXIS_ALIGNED_FLAG) != 0 && blockInfo.blockState.isFullCube(blockInfo.blockView, blockInfo.blockPos)) {
 			flags |= LIGHT_FACE_FLAG;
 		}
 
@@ -388,40 +388,56 @@ public class AoCalculator {
 
 			AoFace aoFace = AoFace.get(lightFace);
 
+			// Vanilla was further offsetting the positions for opaque block checks in the
+			// direction of the light face, but it was actually mis-sampling and causing
+			// visible artifacts in certain situations
+
 			searchPos.set(lightPos, aoFace.neighbors[0]);
 			searchState = world.getBlockState(searchPos);
 			final int light0 = brightnessFunc.apply(searchPos, searchState);
 			final float ao0 = aoFunc.apply(searchPos, searchState);
+
+			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
+				searchPos.move(lightFace);
+				searchState = world.getBlockState(searchPos);
+			}
+
+			final boolean isClear0 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity(world, searchPos) == 0;
+
 			searchPos.set(lightPos, aoFace.neighbors[1]);
 			searchState = world.getBlockState(searchPos);
 			final int light1 = brightnessFunc.apply(searchPos, searchState);
 			final float ao1 = aoFunc.apply(searchPos, searchState);
+
+			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
+				searchPos.move(lightFace);
+				searchState = world.getBlockState(searchPos);
+			}
+
+			final boolean isClear1 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity(world, searchPos) == 0;
+
 			searchPos.set(lightPos, aoFace.neighbors[2]);
 			searchState = world.getBlockState(searchPos);
 			final int light2 = brightnessFunc.apply(searchPos, searchState);
 			final float ao2 = aoFunc.apply(searchPos, searchState);
+
+			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
+				searchPos.move(lightFace);
+				searchState = world.getBlockState(searchPos);
+			}
+
+			final boolean isClear2 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity(world, searchPos) == 0;
+
 			searchPos.set(lightPos, aoFace.neighbors[3]);
 			searchState = world.getBlockState(searchPos);
 			final int light3 = brightnessFunc.apply(searchPos, searchState);
 			final float ao3 = aoFunc.apply(searchPos, searchState);
 
-			// vanilla was further offsetting these in the direction of the light face
-			// but it was actually mis-sampling and causing visible artifacts in certain situation
-			searchPos.set(lightPos, aoFace.neighbors[0]); //.move(lightFace);
-			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.move(lightFace);
-			searchState = world.getBlockState(searchPos);
-			final boolean isClear0 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity(world, searchPos) == 0;
-			searchPos.set(lightPos, aoFace.neighbors[1]); //.move(lightFace);
-			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.move(lightFace);
-			searchState = world.getBlockState(searchPos);
-			final boolean isClear1 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity(world, searchPos) == 0;
-			searchPos.set(lightPos, aoFace.neighbors[2]); //.move(lightFace);
-			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.move(lightFace);
-			searchState = world.getBlockState(searchPos);
-			final boolean isClear2 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity(world, searchPos) == 0;
-			searchPos.set(lightPos, aoFace.neighbors[3]); //.move(lightFace);
-			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.move(lightFace);
-			searchState = world.getBlockState(searchPos);
+			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
+				searchPos.move(lightFace);
+				searchState = world.getBlockState(searchPos);
+			}
+
 			final boolean isClear3 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity(world, searchPos) == 0;
 
 			// c = corner - values at corners of face
