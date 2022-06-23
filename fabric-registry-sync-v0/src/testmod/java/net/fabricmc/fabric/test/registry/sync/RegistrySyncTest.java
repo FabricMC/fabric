@@ -109,6 +109,15 @@ public class RegistrySyncTest implements ModInitializer {
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.SYNCED));
 		Validate.isTrue(!RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.PERSISTED));
 
+		SimpleRegistry<String> fakeVanillaRegistry = FabricRegistryBuilder.createSimple(String.class, new Identifier("registry_sync", "fake_vanilla_registry"))
+				.attribute(RegistryAttribute.SYNCED)
+				.buildAndRegister();
+
+		Registry.register(fakeVanillaRegistry, new Identifier("minecraft", "test"), "test");
+		Registry.register(fakeVanillaRegistry, new Identifier("brigadier", "test"), "test");
+
+		Validate.isTrue(!RegistryAttributeHolder.get(fakeVanillaRegistry).hasAttribute(RegistryAttribute.MODDED));
+
 		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
 			RegistryEntryAddedCallback.event(registryManager.get(Registry.BIOME_KEY)).register((rawId, id, object) -> {
 				System.out.println(id);
