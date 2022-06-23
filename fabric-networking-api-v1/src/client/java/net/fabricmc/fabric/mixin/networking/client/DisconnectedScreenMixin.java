@@ -32,13 +32,11 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
-import net.fabricmc.fabric.impl.networking.client.DisconnectedScreenHooks;
-
 /**
  * This mixin makes disconnect reason text scrollable.
  */
 @Mixin(DisconnectedScreen.class)
-public abstract class DisconnectedScreenMixin extends Screen implements DisconnectedScreenHooks {
+public abstract class DisconnectedScreenMixin extends Screen {
 	@Shadow
 	private int reasonHeight;
 
@@ -88,7 +86,8 @@ public abstract class DisconnectedScreenMixin extends Screen implements Disconne
 	}
 
 	@Override
-	public void fabric_mouseScrolled(double mouseX, double mouseY, double amount) {
+	public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
 		scroll = MathHelper.clamp(scroll - (MathHelper.sign(amount) * client.textRenderer.fontHeight * 10), 0, actualReasonHeight - reasonHeight);
+		return super.mouseScrolled(mouseX, mouseY, amount);
 	}
 }
