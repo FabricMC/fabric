@@ -39,7 +39,7 @@ public class TextureHelper {
 		if (quad.nominalFace() != null && (MutableQuadView.BAKE_LOCK_UV & bakeFlags) != 0) {
 			// Assigns normalized UV coordinates based on vertex positions
 			applyModifier(quad, spriteIndex, UVLOCKERS[quad.nominalFace().getId()]);
-		} else if ((MutableQuadView.BAKE_NORMALIZED & bakeFlags) == 0) {
+		} else if ((MutableQuadView.BAKE_NORMALIZED & bakeFlags) != 0) {
 			// Scales from 0-16 to 0-1
 			applyModifier(quad, spriteIndex, (q, i, t) -> q.sprite(i, t, q.spriteU(i, t) * NORMALIZER, q.spriteV(i, t) * NORMALIZER));
 		}
