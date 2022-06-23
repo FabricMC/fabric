@@ -42,7 +42,7 @@ public abstract class MixinSimpleRegistry<T> extends Registry<T> {
 	private static final Logger FARBIC_LOGGER = LoggerFactory.getLogger("FabricRegistrySync");
 
 	// Namespaces used by the vanilla game. "brigadier" is used by command argument type registry.
-	// While Realms use "mco" namespace, it is irrelevant for Registry Sync.
+	// While Realms use "realms" namespace, it is irrelevant for Registry Sync.
 	@Unique
 	private static final Set<String> VANILLA_NAMESPACES = Set.of("minecraft", "brigadier");
 
