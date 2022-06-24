@@ -40,14 +40,14 @@ public abstract class DisconnectedScreenMixin extends Screen {
 	@Shadow
 	private int reasonHeight;
 
-	@Shadow
-	private MultilineText reasonFormatted;
-
 	@Unique
 	private int actualReasonHeight;
 
 	@Unique
 	private int scroll;
+
+	@Unique
+	private int maxScroll;
 
 	private DisconnectedScreenMixin() {
 		super(null);
@@ -59,6 +59,7 @@ public abstract class DisconnectedScreenMixin extends Screen {
 		actualReasonHeight = reasonHeight;
 		reasonHeight = Math.min(reasonHeight, height - 100);
 		scroll = 0;
+		maxScroll = actualReasonHeight - reasonHeight - textRenderer.fontHeight;
 	}
 
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/MultilineText;drawCenterWithShadow(Lnet/minecraft/client/util/math/MatrixStack;II)I"))
@@ -70,14 +71,14 @@ public abstract class DisconnectedScreenMixin extends Screen {
 
 		// Draw gradient at the top/bottom to indicate that the text is scrollable.
 		if (actualReasonHeight > reasonHeight) {
-			int startX = (width - reasonFormatted.getMaxWidth()) / 2;
-			int endX = (width + reasonFormatted.getMaxWidth()) / 2;
+			int startX = (width - instance.getMaxWidth()) / 2;
+			int endX = (width + instance.getMaxWidth()) / 2;
 
 			if (scroll > 0) {
 				fillGradient(matrixStack, startX, y, endX, y + 10, 0xFF000000, 0);
 			}
 
-			if (scroll < actualReasonHeight - reasonHeight) {
+			if (scroll < maxScroll) {
 				fillGradient(matrixStack, startX, y + reasonHeight - 10, endX, y + reasonHeight, 0, 0xFF000000);
 			}
 		}
@@ -87,7 +88,7 @@ public abstract class DisconnectedScreenMixin extends Screen {
 
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-		scroll = MathHelper.clamp(scroll - (MathHelper.sign(amount) * client.textRenderer.fontHeight * 10), 0, actualReasonHeight - reasonHeight);
+		scroll = MathHelper.clamp(scroll - (MathHelper.sign(amount) * client.textRenderer.fontHeight * 10), 0, maxScroll);
 		return super.mouseScrolled(mouseX, mouseY, amount);
 	}
 }
