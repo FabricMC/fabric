@@ -108,8 +108,8 @@ transitive-accessible method net/minecraft/entity/projectile/ProjectileEntity <i
 transitive-accessible method net/minecraft/entity/projectile/FishingBobberEntity <init> (Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;II)V
 
 # Miscellaneous other methods
-transitive-accessible method net/minecraft/text/TextColor getHexCode ()Ljava/lang/String;
 transitive-accessible method net/minecraft/server/world/ServerWorld sendToPlayerIfNearby (Lnet/minecraft/server/network/ServerPlayerEntity;ZDDDLnet/minecraft/network/Packet;)Z
+transitive-accessible method net/minecraft/text/TextColor getHexCode ()Ljava/lang/String;
 transitive-accessible method net/minecraft/text/TranslatableTextContent getArg (I)Lnet/minecraft/text/StringVisitable;
 
 ### Generated access wideners below

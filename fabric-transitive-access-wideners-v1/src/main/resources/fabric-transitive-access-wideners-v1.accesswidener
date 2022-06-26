@@ -103,25 +103,13 @@ transitive-accessible method net/minecraft/entity/LivingEntity damageArmor (Lnet
 transitive-accessible method net/minecraft/entity/LivingEntity damageHelmet (Lnet/minecraft/entity/damage/DamageSource;F)V
 transitive-accessible method net/minecraft/entity/LivingEntity damageShield (F)V
 
-# Armor stand methods
-transitive-accessible method net/minecraft/entity/decoration/ArmorStandEntity isSlotDisabled (Lnet/minecraft/entity/EquipmentSlot;)Z
-transitive-accessible method net/minecraft/entity/decoration/ArmorStandEntity equip (Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/entity/EquipmentSlot;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/Hand;)Z
-transitive-accessible method net/minecraft/entity/decoration/ArmorStandEntity setSmall (Z)V
-transitive-accessible method net/minecraft/entity/decoration/ArmorStandEntity setShowArms (Z)V
-transitive-accessible method net/minecraft/entity/decoration/ArmorStandEntity setHideBasePlate (Z)V
-transitive-accessible method net/minecraft/entity/decoration/ArmorStandEntity setMarker (Z)V
-
-# Miscellaneous entity methods and constructors
-transitive-accessible method net/minecraft/entity/decoration/ItemFrameEntity getAsItemStack ()Lnet/minecraft/item/ItemStack;
+# Entity constructors
 transitive-accessible method net/minecraft/entity/projectile/ProjectileEntity <init> (Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V
-transitive-accessible method net/minecraft/entity/projectile/PersistentProjectileEntity asItemStack ()Lnet/minecraft/item/ItemStack;
 transitive-accessible method net/minecraft/entity/projectile/FishingBobberEntity <init> (Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;II)V
-transitive-accessible method net/minecraft/entity/vehicle/AbstractMinecartEntity getItem ()Lnet/minecraft/item/Item;
 
 # Miscellaneous other methods
-transitive-accessible method net/minecraft/item/BlockItem getPlaceSound (Lnet/minecraft/block/BlockState;)Lnet/minecraft/sound/SoundEvent;
-transitive-accessible method net/minecraft/text/TextColor getHexCode ()Ljava/lang/String;
 transitive-accessible method net/minecraft/server/world/ServerWorld sendToPlayerIfNearby (Lnet/minecraft/server/network/ServerPlayerEntity;ZDDDLnet/minecraft/network/Packet;)Z
+transitive-accessible method net/minecraft/text/TextColor getHexCode ()Ljava/lang/String;
 transitive-accessible method net/minecraft/text/TranslatableTextContent getArg (I)Lnet/minecraft/text/StringVisitable;
 
 ### Generated access wideners below
