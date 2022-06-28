@@ -18,8 +18,11 @@ package net.fabricmc.fabric.mixin.resource.loader.client;
 
 import java.io.File;
 
+import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -35,20 +38,30 @@ import net.minecraft.resource.DataPackSettings;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.world.gen.GeneratorOptions;
+import net.minecraft.world.gen.WorldPresets;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 import net.fabricmc.fabric.mixin.resource.loader.ResourcePackManagerAccessor;
 
 @Mixin(CreateWorldScreen.class)
-public class CreateWorldScreenMixin {
+public abstract class CreateWorldScreenMixin {
 	@Unique
 	private static DataPackSettings defaultDataPackSettings;
 
 	@Shadow
 	private ResourcePackManager packManager;
+
+	@Shadow
+	@Final
+	private static Logger LOGGER;
+
+	@Unique
+	private static RegistryOps<JsonElement> loadedOps;
 
 	@ModifyVariable(method = "create(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/screen/Screen;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;createServerConfig(Lnet/minecraft/resource/ResourcePackManager;Lnet/minecraft/resource/DataPackSettings;)Lnet/minecraft/server/SaveLoading$ServerConfig;"))
@@ -71,8 +84,22 @@ public class CreateWorldScreenMixin {
 	@Redirect(method = "method_41854", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/DynamicRegistryManager$Mutable;toImmutable()Lnet/minecraft/util/registry/DynamicRegistryManager$Immutable;"))
 	private static DynamicRegistryManager.Immutable loadDynamicRegistry(DynamicRegistryManager.Mutable mutableRegistryManager, ResourceManager dataPackManager) {
 		// This loads the dynamic registry from the data pack
-		RegistryOps.ofLoaded(JsonOps.INSTANCE, mutableRegistryManager, dataPackManager);
+		loadedOps = RegistryOps.ofLoaded(JsonOps.INSTANCE, mutableRegistryManager, dataPackManager);
 		return mutableRegistryManager.toImmutable();
+	}
+
+	/**
+	 * Fix GeneratorOptions not having custom dimensions.
+	 * Taken from {@link CreateWorldScreen#applyDataPacks(ResourcePackManager)}.
+	 */
+	@SuppressWarnings("JavadocReference")
+	@Redirect(method = "method_41854", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/WorldPresets;createDefaultOptions(Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/world/gen/GeneratorOptions;"))
+	private static GeneratorOptions loadDatapackDimensions(DynamicRegistryManager dynamicRegistryManager) {
+		GeneratorOptions defaultGen = WorldPresets.createDefaultOptions(dynamicRegistryManager);
+		RegistryOps<JsonElement> registryOps = RegistryOps.of(JsonOps.INSTANCE, dynamicRegistryManager);
+		return GeneratorOptions.CODEC.encodeStart(registryOps, defaultGen)
+				.flatMap(json -> GeneratorOptions.CODEC.parse(loadedOps, json))
+				.getOrThrow(false, Util.addPrefix("Error parsing worldgen settings after loading data packs: ", LOGGER::error));
 	}
 
 	@Inject(method = "getScannedPack",
