@@ -170,7 +170,8 @@ public class BiomeModificationImpl {
 
 				// Replace the Supplier to force it to rebuild on next call
 				biomeSource.indexedFeaturesSupplier = Suppliers.memoize(() -> {
-					return biomeSource.method_39525(biomeSource.biomes.stream().distinct().toList(), true);
+					// Using getBiomes to allow MixinBiomeSource to work
+					return biomeSource.method_39525(biomeSource.getBiomes().stream().distinct().toList(), true);
 				});
 			}
 

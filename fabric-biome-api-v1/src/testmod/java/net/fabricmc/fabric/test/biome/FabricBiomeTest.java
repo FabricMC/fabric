@@ -116,7 +116,7 @@ public class FabricBiomeTest implements ModInitializer {
 		// Make sure data packs can define dynamic registry contents
 		// See #2225, #2261
 		BiomeModifications.addFeature(
-				BiomeSelectors.foundInOverworld(),
+				BiomeSelectors.foundInOverworld().or(BiomeSelectors.foundInTheEnd()),
 				GenerationStep.Feature.VEGETAL_DECORATION,
 				RegistryKey.of(Registry.PLACED_FEATURE_KEY, new Identifier(MOD_ID, "concrete_pile"))
 		);
