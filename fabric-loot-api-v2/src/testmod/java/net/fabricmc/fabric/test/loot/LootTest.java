@@ -85,6 +85,12 @@ public class LootTest implements ModInitializer {
 			if (Blocks.RED_WOOL.getLootTableId().equals(id) && source != LootTableSource.MOD) {
 				throw new AssertionError("red wool loot table should have LootTableSource.MOD");
 			}
+
+			// Modify yellow wool to drop *either* yellow wool or emeralds by adding
+			// emeralds to the same loot pool.
+			if (Blocks.YELLOW_WOOL.getLootTableId().equals(id)) {
+				tableBuilder.modifyPools(poolBuilder -> poolBuilder.with(ItemEntry.builder(Items.EMERALD)));
+			}
 		});
 	}
 }
