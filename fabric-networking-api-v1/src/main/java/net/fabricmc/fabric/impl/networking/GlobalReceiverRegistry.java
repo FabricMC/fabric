@@ -68,7 +68,7 @@ public final class GlobalReceiverRegistry<H> {
 		try {
 			final boolean replaced = this.handlers.putIfAbsent(channelName, handler) == null;
 
-			if (!replaced) {
+			if (replaced) {
 				this.handleRegistration(channelName, handler);
 			}
 
