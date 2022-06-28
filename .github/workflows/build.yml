@@ -14,7 +14,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: gradle/wrapper-validation-action@v1
-      - run: ./gradlew check build publishToMavenLocal --stacktrace --parallel --warning-mode=fail
+      - run: ./gradlew check build publishToMavenLocal --stacktrace --warning-mode=fail -Porg.gradle.parallel.threads=4
       - run: mkdir run && echo "eula=true" >> run/eula.txt
       - run: ./gradlew runAutoTestServer --stacktrace --warning-mode=fail
       - uses: actions/upload-artifact@v2
