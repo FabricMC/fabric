@@ -16,10 +16,13 @@
 
 package net.fabricmc.fabric.api.tag.client.v1;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.tag.TagKey;
@@ -44,7 +47,8 @@ import net.fabricmc.fabric.impl.tag.client.ClientTagsLoader;
  */
 @Environment(EnvType.CLIENT)
 public final class ClientTags {
-	private static final Map<TagKey<?>, Set<Identifier>> LOCAL_TAG_CACHE = new ConcurrentHashMap<>();
+	private static final Map<TagKey<?>, Set<Identifier>> LOCAL_TAG_CACHE =
+			Collections.synchronizedMap(new Reference2ObjectOpenHashMap<>());
 
 	private ClientTags() {
 	}
