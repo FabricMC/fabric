@@ -5,3 +5,7 @@ extendable  method    net/minecraft/block/AbstractBlock$Settings    <init>  (Lne
 accessible    method    net/minecraft/world/poi/PointOfInterestTypes    register    (Lnet/minecraft/util/registry/Registry;Lnet/minecraft/util/registry/RegistryKey;Ljava/util/Set;II)Lnet/minecraft/world/poi/PointOfInterestType;
 
 extendable class net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
+
+accessible method net/minecraft/village/VillagerProfession <init> (Ljava/lang/String;Lnet/minecraft/world/poi/PointOfInterestType;Lcom/google/common/collect/ImmutableSet;Lcom/google/common/collect/ImmutableSet;Lnet/minecraft/sound/SoundEvent;)V
+accessible field net/minecraft/village/VillagerType BIOME_TO_TYPE Ljava/util/Map;
+accessible method net/minecraft/village/VillagerType <init> (Ljava/lang/String;)V

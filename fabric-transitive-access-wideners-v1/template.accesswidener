@@ -24,4 +24,15 @@ transitive-accessible field net/minecraft/loot/LootPool bonusRolls Lnet/minecraf
 transitive-accessible field net/minecraft/loot/LootTable pools [Lnet/minecraft/loot/LootPool;
 transitive-accessible field net/minecraft/loot/LootTable functions [Lnet/minecraft/loot/function/LootFunction;
 
+# Creating block entity types
+transitive-extendable class net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
+
+# Villagers
+transitive-accessible method net/minecraft/village/VillagerProfession <init> (Ljava/lang/String;Lnet/minecraft/world/poi/PointOfInterestType;Lcom/google/common/collect/ImmutableSet;Lcom/google/common/collect/ImmutableSet;Lnet/minecraft/sound/SoundEvent;)V
+transitive-accessible field net/minecraft/village/VillagerType BIOME_TO_TYPE Ljava/util/Map;
+transitive-accessible method net/minecraft/village/VillagerType <init> (Ljava/lang/String;)V
+
+# Access stack list in SimpleInventory
+transitive-accessible field net/minecraft/inventory/SimpleInventory stacks Lnet/minecraft/util/collection/DefaultedList;
+
 ### Generated access wideners below
