@@ -23,11 +23,14 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 
 /**
- * A Helper class for dealing with {@link TagKey}s when their type has no easy way of querying if they are in a tag.
+ * A Helper class for checking whether a {@link TagKey} contains some entry.
+ * This can be useful for {@link TagKey}s whose type has no easy way of querying if they are in a tag, such as {@link net.minecraft.enchantment.Enchantment}s.
+ *
+ * <p>For dynamic registry entries, use {@link #isIn(DynamicRegistryManager, TagKey, Object)} with a non-null dynamic registry manager.
+ * For non-dynamic registry entries, the simpler {@link #isIn(TagKey, Object)} can be used.
  */
 public final class TagUtil {
 	private TagUtil() {
@@ -35,7 +38,7 @@ public final class TagUtil {
 
 	/**
 	 * See {@link TagUtil#isIn(DynamicRegistryManager, TagKey, Object)} to check tags that refer to entries in dynamic
-	 * registries.
+	 * registries, such as {@link net.minecraft.world.biome.Biome}s.
 	 * @return if the entry is in the provided tag.
 	 */
 	public static <T> boolean isIn(TagKey<T> tagKey, T entry) {
@@ -72,12 +75,5 @@ public final class TagUtil {
 		}
 
 		return false;
-	}
-
-	/**
-	 * @return if the entry is in the provided tag.
-	 */
-	public static <T> boolean isIn(TagKey<T> tagKey, RegistryEntry<T> registryEntry) {
-		return registryEntry.isIn(tagKey);
 	}
 }

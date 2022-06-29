@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.BiomeKeys;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -40,9 +42,13 @@ public class TagUtilTest implements ModInitializer {
 				throw new AssertionError("Failed to find fortune in c:fortune!");
 			}
 
+			if (TagUtil.isIn(ConventionalBiomeTags.IN_OVERWORLD, server.getRegistryManager().get(Registry.BIOME_KEY).get(BiomeKeys.BADLANDS))) {
+				throw new AssertionError("Found a dynamic entry in a static registry?!");
+			}
+
 			// If this fails, the tag is missing a biome or the util is broken
-			if (!TagUtil.isIn(ConventionalBiomeTags.IN_OVERWORLD, server.getOverworld().getBiome(BlockPos.ORIGIN))) {
-				throw new AssertionError("Failed to find an overworld biome (%s) in c:in_overworld!".formatted(server.getOverworld().getBiome(BlockPos.ORIGIN)));
+			if (!TagUtil.isIn(server.getRegistryManager(), ConventionalBiomeTags.IN_OVERWORLD, server.getRegistryManager().get(Registry.BIOME_KEY).get(BiomeKeys.BADLANDS))) {
+				throw new AssertionError("Failed to find an overworld biome (%s) in c:in_overworld!".formatted(BiomeKeys.BADLANDS));
 			}
 
 			if (!TagUtil.isIn(server.getRegistryManager(), ConventionalBlockTags.ORES, Blocks.DIAMOND_ORE)) {
