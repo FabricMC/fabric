@@ -6,6 +6,5 @@ accessible    method    net/minecraft/world/poi/PointOfInterestTypes    register
 
 extendable class net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
 
-accessible method net/minecraft/village/VillagerProfession <init> (Ljava/lang/String;Lnet/minecraft/world/poi/PointOfInterestType;Lcom/google/common/collect/ImmutableSet;Lcom/google/common/collect/ImmutableSet;Lnet/minecraft/sound/SoundEvent;)V
 accessible field net/minecraft/village/VillagerType BIOME_TO_TYPE Ljava/util/Map;
 accessible method net/minecraft/village/VillagerType <init> (Ljava/lang/String;)V
