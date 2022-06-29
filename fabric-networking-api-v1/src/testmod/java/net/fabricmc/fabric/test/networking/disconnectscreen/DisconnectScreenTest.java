@@ -27,10 +27,10 @@ public class DisconnectScreenTest implements ClientModInitializer {
 	public void onInitializeClient() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
 				dispatcher.register(ClientCommandManager.literal("disconnect_screen_test").executes(context -> {
-					StringBuilder builder = new StringBuilder("A very long disconnect reason:\n");
+					StringBuilder builder = new StringBuilder("A very long disconnect reason:");
 
 					for (int i = 0; i < 100; i++) {
-						builder.append("Line ").append(i + 1).append('\n');
+						builder.append("\nLine ").append(i + 1);
 					}
 
 					context.getSource().getPlayer().networkHandler.getConnection().disconnect(Text.of(builder.toString()));

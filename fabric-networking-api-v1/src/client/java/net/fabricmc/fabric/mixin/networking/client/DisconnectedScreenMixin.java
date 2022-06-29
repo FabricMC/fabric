@@ -59,7 +59,7 @@ public abstract class DisconnectedScreenMixin extends Screen {
 		actualReasonHeight = reasonHeight;
 		reasonHeight = Math.min(reasonHeight, height - 100);
 		scroll = 0;
-		maxScroll = actualReasonHeight - reasonHeight - textRenderer.fontHeight;
+		maxScroll = actualReasonHeight - reasonHeight;
 	}
 
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/MultilineText;drawCenterWithShadow(Lnet/minecraft/client/util/math/MatrixStack;II)I"))
