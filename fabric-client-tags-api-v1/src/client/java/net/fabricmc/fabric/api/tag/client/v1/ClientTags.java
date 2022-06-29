@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
