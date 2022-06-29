@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.BiomeKeys;
 
