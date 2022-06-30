@@ -159,10 +159,10 @@ public final class ServerMessageEvents {
 		 * from triggering.
 		 *
 		 * @param message the broadcast message; use {@code message.raw().getContent()} to get the text
-		 * @param typeKey the message type
+		 * @param overlay true when the message is an overlay
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
-		boolean allowGameMessage(Text message, RegistryKey<MessageType> typeKey);
+		boolean allowGameMessage(Text message, boolean overlay);
 	}
 
 	@FunctionalInterface
@@ -211,9 +211,9 @@ public final class ServerMessageEvents {
 		 * when {@linkplain #ALLOW_GAME_MESSAGE game messages are blocked}.
 		 *
 		 * @param message the broadcast message; use {@code message.raw().getContent()} to get the text
-		 * @param typeKey the message type
+		 * @param overlay true when the message is an overlay
 		 */
-		void onGameMessage(Text message, RegistryKey<MessageType> typeKey);
+		void onGameMessage(Text message, boolean overlay);
 	}
 
 	@FunctionalInterface

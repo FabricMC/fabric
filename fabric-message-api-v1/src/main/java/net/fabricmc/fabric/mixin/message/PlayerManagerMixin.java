@@ -46,14 +46,14 @@ public class PlayerManagerMixin {
 		ServerMessageEvents.CHAT_MESSAGE.invoker().onChatMessage(message, sender, typeKey);
 	}
 
-	@Inject(method = "broadcast(Lnet/minecraft/text/Text;Ljava/util/function/Function;Lnet/minecraft/util/registry/RegistryKey;)V", at = @At("HEAD"), cancellable = true)
-	private void onSendGameMessage(Text message, Function<ServerPlayerEntity, Text> playerMessageFactory, RegistryKey<MessageType> typeKey, CallbackInfo ci) {
-		if (!ServerMessageEvents.ALLOW_GAME_MESSAGE.invoker().allowGameMessage(message, typeKey)) {
+	@Inject(method = "broadcast(Lnet/minecraft/text/Text;Ljava/util/function/Function;Z)V", at = @At("HEAD"), cancellable = true)
+	private void onSendGameMessage(Text message, Function<ServerPlayerEntity, Text> playerMessageFactory, boolean overlay, CallbackInfo ci) {
+		if (!ServerMessageEvents.ALLOW_GAME_MESSAGE.invoker().allowGameMessage(message, overlay)) {
 			ci.cancel();
 			return;
 		}
 
-		ServerMessageEvents.GAME_MESSAGE.invoker().onGameMessage(message, typeKey);
+		ServerMessageEvents.GAME_MESSAGE.invoker().onGameMessage(message, overlay);
 	}
 
 	@Inject(method = "broadcast(Lnet/minecraft/server/filter/FilteredMessage;Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/util/registry/RegistryKey;)V", at = @At("HEAD"), cancellable = true)

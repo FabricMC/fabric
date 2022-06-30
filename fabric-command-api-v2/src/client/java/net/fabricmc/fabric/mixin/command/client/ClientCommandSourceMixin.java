@@ -19,18 +19,13 @@ package net.fabricmc.fabric.mixin.command.client;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.message.MessageSender;
-import net.minecraft.network.message.MessageType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Util;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
@@ -42,18 +37,12 @@ abstract class ClientCommandSourceMixin implements FabricClientCommandSource {
 
 	@Override
 	public void sendFeedback(Text message) {
-		client.inGameHud.onChatMessage(getSystemMessageType(), message, new MessageSender(Util.NIL_UUID, message));
+		this.client.method_44714().method_44736(message, false);
 	}
 
 	@Override
 	public void sendError(Text message) {
-		client.inGameHud.onChatMessage(getSystemMessageType(), Text.literal("").append(message).formatted(Formatting.RED), new MessageSender(Util.NIL_UUID, message));
-	}
-
-	@Unique
-	private MessageType getSystemMessageType() {
-		Registry<MessageType> registry = client.world.getRegistryManager().get(Registry.MESSAGE_TYPE_KEY);
-		return registry.get(MessageType.SYSTEM);
+		sendFeedback(Text.literal("").append(message).formatted(Formatting.RED));
 	}
 
 	@Override
