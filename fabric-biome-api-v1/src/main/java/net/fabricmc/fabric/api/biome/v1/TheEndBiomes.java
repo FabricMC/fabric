@@ -104,15 +104,27 @@ public final class TheEndBiomes {
 		TheEndBiomeData.addEndBarrensReplacement(highlands, barrens, weight);
 	}
 
+	/**
+	 * Returns true if the given biome was added in the end, considering the Vanilla end biomes,
+	 * and any biomes added to the End by mods.
+	 */
 	public static boolean isIntendedForEndBiome(RegistryKey<Biome> biome){
 		return TheEndBiomeData.isIntendedForEndBiome(biome);
 	}
 
+	/**
+	 * Returns true if the given biome was added as midland biome in the end, considering the Vanilla end biomes,
+	 * and any biomes added to the End as midland biome by mods.
+	 */
 	public static boolean isIntendedForEndMidlands(RegistryKey<Biome> biome){
 		return TheEndBiomeData.isIntendedForEndMidlands(biome);
 	}
 
-	public static boolean isIntendedForBarrens(RegistryKey<Biome> biome){
-		return TheEndBiomeData.isIntendedForBarrens(biome);
+	/**
+	 * Returns true if the given biome was added as barrens biome in the end, considering the Vanilla end biomes,
+	 * and any biomes added to the End as barrens biome by mods.
+	 */
+	public static boolean isIntendedForEndBarrens(RegistryKey<Biome> biome){
+		return TheEndBiomeData.isIntendedForEndBarrens(biome);
 	}
 }

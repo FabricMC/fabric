@@ -110,7 +110,7 @@ public final class TheEndBiomeData {
 	 * Returns true if the given biome was added as barrens biome in the end, considering the Vanilla end biomes,
 	 * and any biomes added to the End as barrens biome by mods.
 	 */
-	public static boolean isIntendedForBarrens(RegistryKey<Biome> biome){
+	public static boolean isIntendedForEndBarrens(RegistryKey<Biome> biome){
 		return END_BARRENS_MAP.containsKey(biome);
 	}
 
