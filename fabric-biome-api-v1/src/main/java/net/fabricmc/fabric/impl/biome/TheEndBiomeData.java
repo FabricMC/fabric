@@ -90,6 +90,30 @@ public final class TheEndBiomeData {
 		ADDED_BIOMES.add(barrens);
 	}
 
+	/**
+	 * Returns true if the given biome was added in the end, considering the Vanilla end biomes,
+	 * and any biomes added to the End by mods.
+	 */
+	public static boolean isIntendedForEndBiome(RegistryKey<Biome> biome){
+		return END_BARRENS_MAP.containsKey(biome);
+	}
+
+	/**
+	 * Returns true if the given biome was added as midland biome in the end, considering the Vanilla end biomes,
+	 * and any biomes added to the End as midland biome by mods.
+	 */
+	public static boolean isIntendedForEndMidlands(RegistryKey<Biome> biome){
+		return END_MIDLANDS_MAP.containsKey(biome);
+	}
+
+	/**
+	 * Returns true if the given biome was added as barrens biome in the end, considering the Vanilla end biomes,
+	 * and any biomes added to the End as barrens biome by mods.
+	 */
+	public static boolean isIntendedForBarrens(RegistryKey<Biome> biome){
+		return END_BARRENS_MAP.containsKey(biome);
+	}
+
 	public static Overrides createOverrides(Registry<Biome> biomeRegistry) {
 		return new Overrides(biomeRegistry);
 	}

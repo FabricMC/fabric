@@ -103,4 +103,16 @@ public final class TheEndBiomes {
 	public static void addBarrensBiome(RegistryKey<Biome> highlands, RegistryKey<Biome> barrens, double weight) {
 		TheEndBiomeData.addEndBarrensReplacement(highlands, barrens, weight);
 	}
+
+	public static boolean isIntendedForEndBiome(RegistryKey<Biome> biome){
+		return TheEndBiomeData.isIntendedForEndBiome(biome);
+	}
+
+	public static boolean isIntendedForEndMidlands(RegistryKey<Biome> biome){
+		return TheEndBiomeData.isIntendedForEndMidlands(biome);
+	}
+
+	public static boolean isIntendedForBarrens(RegistryKey<Biome> biome){
+		return TheEndBiomeData.isIntendedForBarrens(biome);
+	}
 }
