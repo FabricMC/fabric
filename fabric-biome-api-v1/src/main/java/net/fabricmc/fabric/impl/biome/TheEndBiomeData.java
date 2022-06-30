@@ -95,7 +95,7 @@ public final class TheEndBiomeData {
 	 * and any biomes added to the End by mods.
 	 */
 	public static boolean isIntendedForEndBiome(RegistryKey<Biome> biome){
-		return END_BARRENS_MAP.containsKey(biome);
+		return END_BIOMES_MAP.containsKey(biome);
 	}
 
 	/**
