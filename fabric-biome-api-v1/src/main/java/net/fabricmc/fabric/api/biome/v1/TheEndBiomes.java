@@ -118,7 +118,7 @@ public final class TheEndBiomes {
 	 * and any biomes added to the End by mods.
 	 * @param biome The biome to search for
 	 */
-	public static boolean isSmallIslandsBiome(RegistryKey<Biome> biome){
+	public static boolean isSmallIslandsBiome(RegistryKey<Biome> biome) {
 		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.SMALL_END_ISLANDS;
 	}
 
