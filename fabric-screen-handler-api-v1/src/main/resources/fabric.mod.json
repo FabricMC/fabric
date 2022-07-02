@@ -29,6 +29,9 @@
   ],
   "accessWidener": "fabric-screen-handler-api-v1.accesswidener",
   "custom": {
-    "fabric-api:module-lifecycle": "stable"
+    "fabric-api:module-lifecycle": "stable",
+    "loom:injected_interfaces": {
+      "net/minecraft/class_3908": ["net/fabricmc/fabric/api/screenhandler/v1/FabricScreenHandlerFactory"]
+    }
   }
 }
