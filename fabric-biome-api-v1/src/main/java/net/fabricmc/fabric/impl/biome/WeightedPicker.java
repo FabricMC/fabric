@@ -102,16 +102,6 @@ public final class WeightedPicker<T> {
 	}
 
 	/**
-	 * Returns any {@link WeightedEntry} that contains the passed element.
-	 *
-	 * @param element The Element you are looking for
-	 * @return The result of the search
-	 */
-	Optional<WeightedEntry<T>> getAny(T element){
-		return entries.stream().filter(w -> w.entry==element).findAny();
-	}
-
-	/**
 	 * Represents a modded entry in a list, and its corresponding weight.
 	 *
 	 * @param entry            the entry

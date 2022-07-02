@@ -110,7 +110,7 @@ public final class TheEndBiomes {
 	 * @param biome The biome to search for
 	 */
 	public static boolean canGenerateAsMainIslandBiome(RegistryKey<Biome> biome){
-		return TheEndBiomeData.canGenerateAsEndBiomeIn(BiomeKeys.THE_END, biome);
+		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.THE_END;
 	}
 
 	/**
@@ -119,7 +119,7 @@ public final class TheEndBiomes {
 	 * @param biome The biome to search for
 	 */
 	public static boolean canGenerateAsSmallIslandsBiome(RegistryKey<Biome> biome){
-		return TheEndBiomeData.canGenerateAsEndBiomeIn(BiomeKeys.SMALL_END_ISLANDS, biome);
+		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.SMALL_END_ISLANDS;
 	}
 
 	/**
@@ -128,7 +128,7 @@ public final class TheEndBiomes {
 	 * @param biome The biome to search for
 	 */
 	public static boolean canGenerateAsHighlandsBiome(RegistryKey<Biome> biome){
-		return TheEndBiomeData.canGenerateAsEndBiomeIn(BiomeKeys.END_HIGHLANDS, biome);
+		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.END_HIGHLANDS;
 	}
 
 	/**
@@ -137,7 +137,7 @@ public final class TheEndBiomes {
 	 * @param biome The biome to search for
 	 */
 	public static boolean canGenerateAsEndMidlands(RegistryKey<Biome> biome){
-		return TheEndBiomeData.canGenerateAsEndMidlands(biome);
+		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.END_MIDLANDS;
 	}
 
 	/**
@@ -146,6 +146,6 @@ public final class TheEndBiomes {
 	 * @param biome The biome to search for
 	 */
 	public static boolean canGenerateAsEndBarrens(RegistryKey<Biome> biome){
-		return TheEndBiomeData.canGenerateAsEndBarrens(biome);
+		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.END_BARRENS;
 	}
 }
