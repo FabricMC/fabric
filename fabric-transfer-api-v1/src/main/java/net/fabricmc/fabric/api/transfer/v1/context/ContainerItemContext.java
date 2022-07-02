@@ -88,7 +88,21 @@ import net.fabricmc.fabric.impl.transfer.context.SingleSlotContainerItemContext;
 @ApiStatus.Experimental
 public interface ContainerItemContext {
 	/**
-	 * Return a context for the passed player's hand. This is recommended for item use interactions.
+	 * Returns a context for interaction with a player's hand. This is recommended for item use interactions.
+	 *
+	 * <p>In creative mode, {@link #withInitial(ItemStack)} is used to avoid modifying the item in hand.
+	 * Otherwise, {@link #ofPlayerHand} is used.
+	 */
+	static ContainerItemContext forPlayerInteraction(PlayerEntity player, Hand hand) {
+		if (player.getAbilities().creativeMode) {
+			return withInitial(player.getStackInHand(hand));
+		} else {
+			return ofPlayerHand(player, hand);
+		}
+	}
+
+	/**
+	 * Return a context for the passed player's hand.
 	 */
 	static ContainerItemContext ofPlayerHand(PlayerEntity player, Hand hand) {
 		return new PlayerContainerItemContext(player, hand);
