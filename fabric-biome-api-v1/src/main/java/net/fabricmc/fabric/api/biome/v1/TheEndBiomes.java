@@ -136,7 +136,7 @@ public final class TheEndBiomes {
 	 * and any biomes added to the End as midland biome by mods.
 	 * @param biome The biome to search for
 	 */
-	public static boolean isMidlandsBiome(RegistryKey<Biome> biome){
+	public static boolean isMidlandsBiome(RegistryKey<Biome> biome) {
 		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.END_MIDLANDS;
 	}
 
