@@ -109,7 +109,7 @@ public final class TheEndBiomes {
 	 * and any biomes added to the End by mods.
 	 * @param biome The biome to search for
 	 */
-	public static boolean canGenerateAsMainIslandBiome(RegistryKey<Biome> biome){
+	public static boolean isMainIslandBiome(RegistryKey<Biome> biome){
 		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.THE_END;
 	}
 
@@ -118,7 +118,7 @@ public final class TheEndBiomes {
 	 * and any biomes added to the End by mods.
 	 * @param biome The biome to search for
 	 */
-	public static boolean canGenerateAsSmallIslandsBiome(RegistryKey<Biome> biome){
+	public static boolean isSmallIslandsBiome(RegistryKey<Biome> biome){
 		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.SMALL_END_ISLANDS;
 	}
 
@@ -127,7 +127,7 @@ public final class TheEndBiomes {
 	 * and any biomes added to the End by mods.
 	 * @param biome The biome to search for
 	 */
-	public static boolean canGenerateAsHighlandsBiome(RegistryKey<Biome> biome){
+	public static boolean isHighlandsBiome(RegistryKey<Biome> biome){
 		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.END_HIGHLANDS;
 	}
 
@@ -136,7 +136,7 @@ public final class TheEndBiomes {
 	 * and any biomes added to the End as midland biome by mods.
 	 * @param biome The biome to search for
 	 */
-	public static boolean canGenerateAsEndMidlands(RegistryKey<Biome> biome){
+	public static boolean isMidlandsBiome(RegistryKey<Biome> biome){
 		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.END_MIDLANDS;
 	}
 
@@ -145,7 +145,7 @@ public final class TheEndBiomes {
 	 * and any biomes added to the End as barrens biome by mods.
 	 * @param biome The biome to search for
 	 */
-	public static boolean canGenerateAsEndBarrens(RegistryKey<Biome> biome){
+	public static boolean isBarrensBiome(RegistryKey<Biome> biome){
 		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.END_BARRENS;
 	}
 }

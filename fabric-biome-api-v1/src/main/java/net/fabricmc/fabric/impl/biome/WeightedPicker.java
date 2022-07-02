@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.biome;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 import com.google.common.base.Preconditions;
