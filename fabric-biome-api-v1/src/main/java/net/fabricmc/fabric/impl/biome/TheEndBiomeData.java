@@ -90,12 +90,16 @@ public final class TheEndBiomeData {
 		ADDED_BIOMES.add(barrens);
 	}
 
+	private static boolean containsValue(Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> map, RegistryKey<Biome> biome){
+		return map.values().stream().anyMatch(w->w.getAny(biome).isPresent());
+	}
+
 	/**
 	 * Returns true if the given biome was added in the end, considering the Vanilla end biomes,
 	 * and any biomes added to the End by mods.
 	 */
 	public static boolean isIntendedForEndBiome(RegistryKey<Biome> biome){
-		return END_BIOMES_MAP.containsKey(biome);
+		return END_BIOMES_MAP.containsKey(biome) || containsValue(END_BIOMES_MAP, biome);
 	}
 
 	/**
@@ -103,7 +107,7 @@ public final class TheEndBiomeData {
 	 * and any biomes added to the End as midland biome by mods.
 	 */
 	public static boolean isIntendedForEndMidlands(RegistryKey<Biome> biome){
-		return END_MIDLANDS_MAP.containsKey(biome);
+		return containsValue(END_MIDLANDS_MAP, biome);
 	}
 
 	/**
@@ -111,7 +115,7 @@ public final class TheEndBiomeData {
 	 * and any biomes added to the End as barrens biome by mods.
 	 */
 	public static boolean isIntendedForEndBarrens(RegistryKey<Biome> biome){
-		return END_BARRENS_MAP.containsKey(biome);
+		return containsValue(END_BARRENS_MAP, biome);
 	}
 
 	public static Overrides createOverrides(Registry<Biome> biomeRegistry) {

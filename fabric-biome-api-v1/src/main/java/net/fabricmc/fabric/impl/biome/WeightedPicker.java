@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.biome;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 import com.google.common.base.Preconditions;
@@ -98,6 +99,16 @@ public final class WeightedPicker<T> {
 		}
 
 		return entries.get(low);
+	}
+
+	/**
+	 * Returns any {@link WeightedEntry} that contains the passed element.
+	 *
+	 * @param element The Element you are looking for
+	 * @return The result of the search
+	 */
+	Optional<WeightedEntry<T>> getAny(T element){
+		return entries.stream().filter(w -> w.entry==element).findAny();
 	}
 
 	/**
