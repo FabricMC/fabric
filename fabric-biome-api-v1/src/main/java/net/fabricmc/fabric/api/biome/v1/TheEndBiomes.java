@@ -145,7 +145,7 @@ public final class TheEndBiomes {
 	 * and any biomes added to the End as barrens biome by mods.
 	 * @param biome The biome to search for
 	 */
-	public static boolean isBarrensBiome(RegistryKey<Biome> biome){
+	public static boolean isBarrensBiome(RegistryKey<Biome> biome) {
 		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.END_BARRENS;
 	}
 }
