@@ -95,11 +95,15 @@ public final class TheEndBiomeData {
 	}
 
 	/**
-	 * Returns true if the given biome was added in the end, considering the Vanilla end biomes,
+	 * Returns true if the given biome was added for the specified keyBiome in the end, considering the Vanilla end biomes,
 	 * and any biomes added to the End by mods.
+	 *
+	 * @param keyBiome The parent biome type
+	 * @param biome The biome you are looking for
 	 */
-	public static boolean canGenerateAsEndBiome(RegistryKey<Biome> biome){
-		return END_BIOMES_MAP.containsKey(biome) || containsValue(END_BIOMES_MAP, biome);
+	public static boolean canGenerateAsEndBiomeIn(RegistryKey<Biome> keyBiome, RegistryKey<Biome> biome){
+		WeightedPicker<RegistryKey<Biome>> highlandBiomes = END_BIOMES_MAP.get(keyBiome);
+		return highlandBiomes!=null && highlandBiomes.getAny(biome).isPresent();
 	}
 
 	/**

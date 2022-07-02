@@ -105,16 +105,36 @@ public final class TheEndBiomes {
 	}
 
 	/**
-	 * Returns true if the given biome was added in the end, considering the Vanilla end biomes,
+	 * Returns true if the given biome was added as a main end Biome in the end, considering the Vanilla end biomes,
 	 * and any biomes added to the End by mods.
+	 * @param biome The biome to search for
 	 */
-	public static boolean canGenerateAsEndBiome(RegistryKey<Biome> biome){
-		return TheEndBiomeData.canGenerateAsEndBiome(biome);
+	public static boolean canGenerateAsMainIslandBiome(RegistryKey<Biome> biome){
+		return TheEndBiomeData.canGenerateAsEndBiomeIn(BiomeKeys.THE_END, biome);
+	}
+
+	/**
+	 * Returns true if the given biome was added as a small end islands Biome in the end, considering the Vanilla end biomes,
+	 * and any biomes added to the End by mods.
+	 * @param biome The biome to search for
+	 */
+	public static boolean canGenerateAsSmallIslandsBiome(RegistryKey<Biome> biome){
+		return TheEndBiomeData.canGenerateAsEndBiomeIn(BiomeKeys.SMALL_END_ISLANDS, biome);
+	}
+
+	/**
+	 * Returns true if the given biome was added as a Highland Biome in the end, considering the Vanilla end biomes,
+	 * and any biomes added to the End by mods.
+	 * @param biome The biome to search for
+	 */
+	public static boolean canGenerateAsHighlandsBiome(RegistryKey<Biome> biome){
+		return TheEndBiomeData.canGenerateAsEndBiomeIn(BiomeKeys.END_HIGHLANDS, biome);
 	}
 
 	/**
 	 * Returns true if the given biome was added as midland biome in the end, considering the Vanilla end biomes,
 	 * and any biomes added to the End as midland biome by mods.
+	 * @param biome The biome to search for
 	 */
 	public static boolean canGenerateAsEndMidlands(RegistryKey<Biome> biome){
 		return TheEndBiomeData.canGenerateAsEndMidlands(biome);
@@ -123,6 +143,7 @@ public final class TheEndBiomes {
 	/**
 	 * Returns true if the given biome was added as barrens biome in the end, considering the Vanilla end biomes,
 	 * and any biomes added to the End as barrens biome by mods.
+	 * @param biome The biome to search for
 	 */
 	public static boolean canGenerateAsEndBarrens(RegistryKey<Biome> biome){
 		return TheEndBiomeData.canGenerateAsEndBarrens(biome);
