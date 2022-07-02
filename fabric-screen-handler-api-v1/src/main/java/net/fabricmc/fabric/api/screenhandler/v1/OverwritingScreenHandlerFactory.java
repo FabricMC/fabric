@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.screenhandler.v1;
 
+import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandlerFactory;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.text.Text;
@@ -32,6 +33,10 @@ import net.minecraft.text.Text;
 public final class OverwritingScreenHandlerFactory extends SimpleNamedScreenHandlerFactory {
 	public OverwritingScreenHandlerFactory(ScreenHandlerFactory baseFactory, Text name) {
 		super(baseFactory, name);
+	}
+
+	public OverwritingScreenHandlerFactory(NamedScreenHandlerFactory baseFactory) {
+		this(baseFactory, baseFactory.getDisplayName());
 	}
 
 	@Override
