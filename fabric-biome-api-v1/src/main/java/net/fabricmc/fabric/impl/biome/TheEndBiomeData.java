@@ -98,7 +98,7 @@ public final class TheEndBiomeData {
 	 * Returns true if the given biome was added in the end, considering the Vanilla end biomes,
 	 * and any biomes added to the End by mods.
 	 */
-	public static boolean isIntendedForEndBiome(RegistryKey<Biome> biome){
+	public static boolean canGenerateAsEndBiome(RegistryKey<Biome> biome){
 		return END_BIOMES_MAP.containsKey(biome) || containsValue(END_BIOMES_MAP, biome);
 	}
 
@@ -106,7 +106,7 @@ public final class TheEndBiomeData {
 	 * Returns true if the given biome was added as midland biome in the end, considering the Vanilla end biomes,
 	 * and any biomes added to the End as midland biome by mods.
 	 */
-	public static boolean isIntendedForEndMidlands(RegistryKey<Biome> biome){
+	public static boolean canGenerateAsEndMidlands(RegistryKey<Biome> biome){
 		return containsValue(END_MIDLANDS_MAP, biome);
 	}
 
@@ -114,7 +114,7 @@ public final class TheEndBiomeData {
 	 * Returns true if the given biome was added as barrens biome in the end, considering the Vanilla end biomes,
 	 * and any biomes added to the End as barrens biome by mods.
 	 */
-	public static boolean isIntendedForEndBarrens(RegistryKey<Biome> biome){
+	public static boolean canGenerateAsEndBarrens(RegistryKey<Biome> biome){
 		return containsValue(END_BARRENS_MAP, biome);
 	}
 
