@@ -109,7 +109,7 @@ public final class TheEndBiomes {
 	 * and any biomes added to the End by mods.
 	 * @param biome The biome to search for
 	 */
-	public static boolean isMainIslandBiome(RegistryKey<Biome> biome){
+	public static boolean isMainIslandBiome(RegistryKey<Biome> biome) {
 		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.THE_END;
 	}
 
