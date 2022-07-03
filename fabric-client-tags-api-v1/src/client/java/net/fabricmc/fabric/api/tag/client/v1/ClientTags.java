@@ -16,12 +16,11 @@
 
 package net.fabricmc.fabric.api.tag.client.v1;
 
-import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.tag.TagKey;
@@ -35,7 +34,9 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.tag.client.ClientTagsLoader;
 
 /**
- * Tags are loaded by the server, either the internal server in singleplayer or the connected server and
+ * Allows the use of tags by directly loading them from the installed mods.
+ *
+ * <p>Tags are loaded by the server, either the internal server in singleplayer or the connected server and
  * synced to the client. This can be a pain point for interoperability, as a tag that does not exist on the server
  * because it is part of a mod only present on the client will no longer be available to the client that may wish to
  * query it.
@@ -46,8 +47,7 @@ import net.fabricmc.fabric.impl.tag.client.ClientTagsLoader;
  */
 @Environment(EnvType.CLIENT)
 public final class ClientTags {
-	private static final Map<TagKey<?>, Set<Identifier>> LOCAL_TAG_CACHE =
-			Collections.synchronizedMap(new Reference2ObjectOpenHashMap<>());
+	private static final Map<TagKey<?>, Set<Identifier>> LOCAL_TAG_CACHE = new ConcurrentHashMap<>();
 
 	private ClientTags() {
 	}
@@ -59,7 +59,14 @@ public final class ClientTags {
 	 * @return a set of {@code Identifier}s this tag contains
 	 */
 	public static Set<Identifier> getOrCreateLocalTag(TagKey<?> tagKey) {
-		return LOCAL_TAG_CACHE.computeIfAbsent(tagKey, ClientTagsLoader::loadTag);
+		Set<Identifier> ids = LOCAL_TAG_CACHE.get(tagKey);
+
+		if (ids == null) {
+			ids = ClientTagsLoader.loadTag(tagKey);
+			LOCAL_TAG_CACHE.put(tagKey, ids);
+		}
+
+		return ids;
 	}
 
 	/**
@@ -74,6 +81,9 @@ public final class ClientTags {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, T entry) {
+		Objects.requireNonNull(tagKey);
+		Objects.requireNonNull(entry);
+
 		Optional<? extends Registry<?>> maybeRegistry = getRegistry(tagKey);
 
 		if (maybeRegistry.isPresent()) {
@@ -109,6 +119,9 @@ public final class ClientTags {
 	 * @return if the entry is in the given tag
 	 */
 	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, RegistryEntry<T> registryEntry) {
+		Objects.requireNonNull(tagKey);
+		Objects.requireNonNull(registryEntry);
+
 		// Check if the tag exists in the dynamic registry first
 		Optional<? extends Registry<T>> maybeRegistry = getRegistry(tagKey);
 
@@ -133,6 +146,9 @@ public final class ClientTags {
 	 * @return if the entry is in the given tag
 	 */
 	public static <T> boolean isInLocal(TagKey<T> tagKey, RegistryKey<T> registryKey) {
+		Objects.requireNonNull(tagKey);
+		Objects.requireNonNull(registryKey);
+
 		if (tagKey.registry().getValue().equals(registryKey.getRegistry())) {
 			// Check local tags
 			Set<Identifier> ids = getOrCreateLocalTag(tagKey);
@@ -144,6 +160,8 @@ public final class ClientTags {
 
 	@SuppressWarnings("unchecked")
 	private static <T> Optional<? extends Registry<T>> getRegistry(TagKey<T> tagKey) {
+		Objects.requireNonNull(tagKey);
+
 		// Check if the tag represents a dynamic registry
 		if (MinecraftClient.getInstance() != null) {
 			if (MinecraftClient.getInstance().world != null) {
