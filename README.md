@@ -79,10 +79,7 @@ Instead of hardcoding version constants all over the build script, Gradle proper
 ## Contributing
 
 See something Fabric API doesn't support, a bug or something that may be useful? We welcome contributions to improve Fabric API.
-
-Check out [the Contributing guidelines](../CONTRIBUTING.md)*.
-
-\* The contributing guidelines are work in progress
+Make sure to read [the development guidelines](./CONTRIBUTING.md).
 
 ## Modules
 
