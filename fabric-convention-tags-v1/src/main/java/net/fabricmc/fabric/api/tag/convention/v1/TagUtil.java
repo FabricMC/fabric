@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.tag.convention.v1;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
@@ -55,6 +56,8 @@ public final class TagUtil {
 	@SuppressWarnings("unchecked")
 	public static <T> boolean isIn(@Nullable DynamicRegistryManager registryManager, TagKey<T> tagKey, T entry) {
 		Optional<? extends Registry<?>> maybeRegistry;
+		Objects.requireNonNull(tagKey);
+		Objects.requireNonNull(entry);
 
 		if (registryManager != null) {
 			maybeRegistry = registryManager.getOptional(tagKey.registry());
@@ -69,8 +72,9 @@ public final class TagUtil {
 				Optional<RegistryKey<T>> maybeKey = registry.getKey(entry);
 
 				// Check synced tag
-				return maybeKey.filter(registryKey -> registry.entryOf(registryKey).isIn(tagKey))
-						.isPresent();
+				if (maybeKey.isPresent()) {
+					return registry.entryOf(maybeKey.get()).isIn(tagKey);
+				}
 			}
 		}
 
