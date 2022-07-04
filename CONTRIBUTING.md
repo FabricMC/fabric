@@ -89,7 +89,7 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
     - Remember that deprecating code is always an option.
 
 ### Targeted Minecraft versions
-- Fabric API does not have strict Minecraft version support policies, but rathers supports what is feasible and what the community is interested in.
+- Fabric API does not have strict Minecraft version support policies, but rather supports what is feasible and what the community is interested in.
     - In particular, the latest stable Minecraft version and the latest subsequent snapshot or pre-release version are always supported.
     - Which features go in older stable versions is a tradeoff between how easy it is, how many mods are still using that version, and what the community is willing to contribute.
 - New features can be targeted at any supported version.
@@ -133,7 +133,7 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
 - Builders can be used instead of constructors or factory methods with large amounts of parameters.
     - TODO: any specific builder guidelines?
 
-### API class modifiers and member visiblity
+### API class modifiers and member visibility
 
 - Classes in Fabric API should be `final` classes unless the class exposed in the API is explicitly meant for extension.
 - `private` constructors should be used in API classes unless the class is explicitly meant to be instantiated.
@@ -240,7 +240,7 @@ public final class FooEvents {
     - Complex class hierarchies.
 - Functional operators (i.e. interfaces) should be designed for maximal readability, and only used when necessary.
     - Ask for concrete objects if applicable.
-    - Don't include superflous methods, for example replace shouldApply+apply with a single apply that returns success.
+    - Don't include superfluous methods, for example replace shouldApply+apply with a single apply that returns success.
     - Consider having the user implement a larger interface as a class.
     - Consider using a custom interface if it is beneficial for comprehension or documentation.
 - The overall complexity of a module shouldn't be ignored in favor of the simplicity of each individual piece. Similarly, the overall complexity of one small piece shouldn't be ignored in favor of the simplicity of the module as a whole.
@@ -259,7 +259,7 @@ public final class FooEvents {
 
 Since Minecraft has two primary threads, the render and server threads, APIs dealing with shared state need to consider thread safety. This will usually require consideration on a case-by-case basis.
 
-- A cache shared between the render and the server threads may for example wish to use locking for unfrequent accesses, or otherwise a copy-on-write strategy to ensure lock-free reads and thread-safe writes.
+- A cache shared between the render and the server threads may for example wish to use locking for infrequent accesses, or otherwise a copy-on-write strategy to ensure lock-free reads and thread-safe writes.
 - Read-only access from multiple threads does not need synchronization.
 
 ## Documentation
@@ -272,7 +272,7 @@ Since Minecraft has two primary threads, the render and server threads, APIs dea
 - Good documentation doesn't only explain what something is, but (as appropriate) why it exists, what are the intended use cases, what use cases something is not suitable for and any semantics that need to be kept in mind.
     - In particular, tricky implementation details should be explained by a few comments when appropriate.
 - Direct references to classes or members should use `@link` tag, unspecific further reading elsewhere may use `@see`.
-- Deprecated elements should describe and reference the replacement or alternative in Javadoc ``@deprecated`. The ``@deprecated` tag has to be last, everything else may be removed while adding it.
+- Deprecated elements should describe and reference the replacement or alternative in Javadoc `@deprecated`. The `@deprecated` tag has to be last, everything else may be removed while adding it.
 - The Fabric Wiki is the proper place for additional in-depth documentation and how-tos. Examples are not necessary for simple events.
 
 ## Structure of Fabric API
@@ -315,7 +315,7 @@ Do not increment versions when writing a pull request. Version increments will b
 
 Every module should in its `fabric.mod.json` declare dependencies for:
 - `"fabricloader": ">=x.y.z"`, where `x.y.z` is the version used at the time the module is added.
-- Other used modules, for example `"fabric-api-base": "*"` if events are used. No explicit version needs to be specificed.
+- Other used modules, for example `"fabric-api-base": "*"` if events are used. No explicit version needs to be specified.
 - TODO what about minecraft and java version dependencies?
 - In general, version ranges in module dependencies should be optimistic, omitting an upper bound until it is known.
 
@@ -342,19 +342,19 @@ TODO: add a few examples?
 
 ### Mixins
 
-These guidelines should be followed with regards to a mixin's visiblity and naming:
+These guidelines should be followed with regards to a mixin's visibility and naming:
 
 | | Accessors | Mixin |
 | -------- | -------- | -------- |
 | Naming   | **Target**Accessor | **Target**Mixin (May include `Client/Server` or `Legacy` prefix if needed) |
-| Visiblity | public | package-private* |
+| Visibility | public | package-private* |
 
 \* A mixin may be public if a sub class extends a super mixin in a different package. Example: `abstract class ServerWorldMixin extends WorldMixin`
 
 The organization of mixins with a package is dependent on the type of module.
 - Generally if there are a small amount of mixins, then having all mixins in the same package is fine.
 - Client only and dedicated server only mixins should be moved into `client/server` subpackages.
-- If a module is generally complex or has multiple distinct parts, multiple mixins for each class target may exist assuming said mixins are seperated into subpackages by feature.
+- If a module is generally complex or has multiple distinct parts, multiple mixins for each class target may exist assuming said mixins are separated into subpackages by feature.
 
 
 ## Code formatting
@@ -377,7 +377,7 @@ Fabric API uses the Gradle checkstyle plugin. If you run `gradle check` any styl
 
 ### Style guidelines
 
-These are less strict guildelines for the code style, but you should generally obey these:
+These are less strict guidelines for the code style, but you should generally obey these:
 
 - No redundant static access qualifiers.
   - For example if you call `ClassHere.staticThing()` inside of another method in `ClassHere`, you should avoid fully qualifying the static access to `staticThing()`.
