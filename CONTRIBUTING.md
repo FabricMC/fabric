@@ -2,7 +2,7 @@
 
 This document describes the development guidelines for Fabric API. It may be amended at any time. Therefore you should refer to the development guidelines when working on any contributions.
 
-Following these guidelines should ensure your contributions to Fabric API are quick to review, consistent with other code in Fabric API and well thought out. This document should not be seen completely as a strict ruleset but instead the thought process that a Fabric API maintainer would consider during the design, implementation and review of contributions to Fabric API.
+Following these guidelines should ensure your contributions to Fabric API are quick to review, consistent with other code in Fabric API and well thought out. This document should not be seen completely as a strict ruleset but instead the thought process that a Fabric team member would consider during the design, implementation and review of contributions to Fabric API.
 
 Old code or parts thereof might not yet be up to the standards defined by these guidelines. When working with old code, try to adhere to these guidelines, but don't bulk update legacy code to match them. The team will handle updating older code to match the newer standards when appropriate.
 
@@ -23,46 +23,37 @@ It is highly recommended that an issue be opened or a message be posted in the o
 
 The rest of this document is split in the following categories:
 
-**General design considerations**: Broad guidelines to keep in mind when writing APIs for Fabric.
-
-**API conventions**: Guidelines for common API patterns.
-
-**Implementation guidelines**: Guidelines to keep in mind when writing implementation code.
-
-**Documentation**: Guidelines for writing documentation. Extensive documentation of the offered features is essential for usability.
-
-**Structure of Fabric API**: Organization of code within Fabric API.
-
-**Code formatting**: Specific Java code formatting standards.
-
-**Testing**: Guidelines for writing testmod code. Tests showing that the submitted feature is working should be included in the PR.
-
-**Pull Request checklist**: Smaller things to keep in mind when submitting a Pull Request.
-
-TODO: once on github, check if the formatting still matches and try to link to the relevant sections
+- **General design considerations**: Broad guidelines to keep in mind when writing APIs for Fabric.
+- **API conventions**: Guidelines for common API patterns.
+- **Implementation guidelines**: Guidelines to keep in mind when writing implementation code.
+- **Documentation**: Guidelines for writing documentation. Extensive documentation of the offered features is essential for usability.
+- **Structure of Fabric API**: Organization of code within Fabric API.
+- **Code formatting**: Specific Java code formatting standards.
+- **Testing**: Guidelines for writing testmod code. Tests showing that the submitted feature is working should be included in the PR.
+- **Pull Request checklist**: Smaller things to keep in mind when submitting a Pull Request.
 
 ## General design considerations
 
 When designing an API addition, the following goals should be kept in mind:
 - Simplicity: Additions should be
-    - easy to use
-    - inherently hard to misuse or protected against misuse
-    - reasonably self contained
-    - sufficiently capable, yet not excessively loaded with niche features
-    - suitable for simple implementations
-    - not overly abstract
-- Familiarity: Additions should reuse or extend existing designs/patterns in other parts of Fabric API or vanilla
-- Extensibility: Additions should be open for future expansion without needing to deprecate anything
+    - easy to use,
+    - inherently hard to misuse or protected against misuse,
+    - reasonably self contained,
+    - sufficiently capable, yet not excessively loaded with niche features,
+    - suitable for simple implementations,
+    - not overly abstract.
+- Familiarity: Additions should reuse or extend existing designs/patterns in other parts of Fabric API or vanilla.
+- Extensibility: Additions should be open for future expansion without needing to deprecate anything.
 - Portability: Additions should not be too closely coupled with specific vanilla code. They should
-    - avoid exposure of unimportant aspects
-    - project into the future and consider potential future vanilla development
-    - avoid auxiliary libraries
-    - be portable for the sake of simplicity and extensibility
+    - avoid exposure of unimportant aspects,
+    - project into the future and consider potential future vanilla development,
+    - avoid auxiliary libraries,
+    - be portable for the sake of simplicity and extensibility.
 - Performance: Additions should
-    - be fast to initialize and execute
-    - have low or zero allocation rate
-    - have low resident memory use
-    - keep extreme uses in mind (nuke, bulk command execution, spamming etc)
+    - be fast to initialize and execute,
+    - have low or zero allocation rate,
+    - have low resident memory use,
+    - keep extreme uses in mind (nuke, bulk command execution, spamming etc).
 
 One important consideration when designing an API is spending some time thinking about the API in isolation without any influence from underlying implementation and vanilla code. Considering the API as a single entity rather than a part of a larger implementation, akin a regular user of the API may help find missing coverage, bad return values or parts of the API that could be improved.
 
@@ -115,23 +106,22 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
 - Transitive Access Wideners (TAWs) should be used to expose access to private or protected members in vanilla classes.
     - Most TAWs should go in the dedicated `fabric-transitive-access-wideners-v1` module.
         - Remember to add the `transitive-` prefix, otherwise dependent mods will not see the access modifications.
-        - Some TAWs such as Block subclass constructors are automatically generated. Make sure that you don't edit the `.accesswidener` file directly. Rather edit the template file (`.accesswidener.template`) and run the `gradlew generateAccessWidener` to update the generated file.
+        - Some TAWs such as Block subclass constructors are automatically generated. Make sure that you don't edit the `.accesswidener` file directly. Rather edit the template file (`.accesswidener.template`) and run the `gradlew generateAccessWidener` task to update the generated file.
         - Large amounts of TAWs for a specific purpose can be included in another module, as is the case for the data generation API, for example.
     - Do **not** expose TAWs for functions that take a `String` identifier.
-        - This makes it too easy to forget the mod ID namespace, so the ID would often end up in the vanilla `minecraft` namespace.
+        - This makes it too easy to forget the mod ID namespace, so the identifier would often end up in the vanilla `minecraft` namespace.
         - In general, keep the API guidelines in mind when deciding whether something should be a TAW.
 - Interface injection (i.e. making a minecraft class or interface extend a Fabric interface) should be considered over separate static helpers.
-    - Interface injection requires both a `fabric.mod.json` custom value, and a mixin to actually implement the interface at runtime.
+    - Interface injection requires both a `fabric.mod.json` custom value to make it visible in Minecraft source code, and a mixin to actually implement the interface at runtime.
     - Injected interfaces should have **no abstract methods**.
         - Methods that are guaranteed to be implemented via a mixin to a vanilla class should contain a default body that throws an error. For example:
         ```java
-        default injectedMethod() {
+        default void injectedMethod() {
 		    throw new UnsupportedOperationException("Implemented via mixin");
         }
         ```
         - Never use interface injection to add methods that modders must implement. Rather define a subclass or subinterface in Fabric API.
 - Builders can be used instead of constructors or factory methods with large amounts of parameters.
-    - TODO: any specific builder guidelines?
 
 ### API class modifiers and member visibility
 
@@ -214,7 +204,7 @@ public final class FooEvents {
     - The methods should be named in line with the action of the event, such as `entryAdded(...)`.
     - Method names for notification events should be prefixed with `on`.
       For example, a `DataLoad` event would have an `onDataLoad` method.
-    - Events that may allow or block some action should start with `ALLOW_`. For example, an event to cancel player death might be called `ALLOW_PLAYER_DEATH`.
+    - Events that may allow or block some action should start with `Allow`. For example, an event to cancel player death might be called `AllowPlayerDeath`, with method name `allowDeath`.
 - `Event<>` fields and methods.
     - The field or method exposing the `Event<>` object should be named similarly to the callback interface.
 - The `fabric-lifecycle-events-v1` module is a good example of event naming standards.
@@ -230,7 +220,7 @@ public final class FooEvents {
 
 ### Simplicity
 
-- Simple code that is easy to debug and reason is generally preferable to the shortest possible implementation.
+- Simple code that is easy to debug and reason about is generally preferable to the shortest possible implementation.
 - Limited duplication can be better than indirection, unless the code is complex or used several times.
 - Indirections might make the code harder to read, and should be weighed against their benefits. Examples include:
     - Lambda composition (forEach, streams).
@@ -316,11 +306,8 @@ Do not increment versions when writing a pull request. Version increments will b
 Every module should in its `fabric.mod.json` declare dependencies for:
 - `"fabricloader": ">=x.y.z"`, where `x.y.z` is the version used at the time the module is added.
 - Other used modules, for example `"fabric-api-base": "*"` if events are used. No explicit version needs to be specified.
-- TODO what about minecraft and java version dependencies?
+- Minecraft and Java version dependencies do not need to be specified.
 - In general, version ranges in module dependencies should be optimistic, omitting an upper bound until it is known.
-
-Every module should declare dependencies for fabric-loader no less than `>=0.6.1`, for any other used modules like fabric-api-base for events and for minecraft if it uses any type in MC or one of its libraries.
-TODO: should update this, we're using star dependencies most of the time!
 
 
 ### Packages
@@ -337,19 +324,19 @@ Inside the relevant sourceset, all Fabric API code should be in a subpackage of 
 - For API only: add the module major version with a v prefix, for example `.v1`
 - Further subpackages can be added as needed, all singular.
 
-TODO: add a few examples?
+A good example is the Lifecycle Events (v1) module.
 
 
 ### Mixins
 
 These guidelines should be followed with regards to a mixin's visibility and naming:
 
-| | Accessors | Mixin |
-| -------- | -------- | -------- |
-| Naming   | **Target**Accessor | **Target**Mixin (May include `Client/Server` or `Legacy` prefix if needed) |
-| Visibility | public | package-private* |
+|            | Accessors          | Mixin                                                                      |
+|------------|--------------------|----------------------------------------------------------------------------|
+| Naming     | **Target**Accessor | **Target**Mixin (May include `Client/Server` or `Legacy` prefix if needed) |
+| Visibility | public             | package-private*                                                           |
 
-\* A mixin may be public if a sub class extends a super mixin in a different package. Example: `abstract class ServerWorldMixin extends WorldMixin`
+\* A mixin may be public if a subclass extends a super mixin in a different package. Example: `abstract class ServerWorldMixin extends WorldMixin`
 
 The organization of mixins with a package is dependent on the type of module.
 - Generally if there are a small amount of mixins, then having all mixins in the same package is fine.
@@ -385,15 +372,23 @@ These are less strict guidelines for the code style, but you should generally ob
   - Generally keep consistent with the current standard inside of the class you are editing.
 
 ## Testing
-TODO: this section needs updating for gametests
+Including testing code when submitting new features is essential, both to demonstrate the feature, and to ensure that it works correctly.
+Testing code should not be in the regular source sets, it belongs to so-called "test mods".
 
-Test mods should provide the necessary content to debug an issue with the api manually. If possible, it should also try to verify the api+implementation is working - especially after migrating to other Minecraft versions. Test mods can also be helpful in order to illustrate how to use a module as a fallback for wiki pages that have yet to be written. Testmods are located in the `testmod` source set. Example: `fabric-lifecycle-events-v1/src/testmod/`
+- Test mods are located in the `testmod` source set. Example: `fabric-lifecycle-events-v1/src/testmod/`
+- Test mods should provide the necessary content to debug an issue with the api manually.
+  - Test mods can also be helpful in order to illustrate how to use a module as a fallback for wiki pages that have yet to be written.
+- If a test mod can be partially automated then it is encouraged to implement an automatically failing test if something goes wrong.
+  - This allows issues with the implementation or porting issues to be detected immediately.  
+  - For example, if a test mod checks if commands are registered on the server and the commands are not on the `CommandDispatcher` then the test should fail. 
+  - Good places to run the automated checks include:
+    - The mod initializer if applicable.
+    - In a listener for `ServerLifecycleEvents.SERVER_STARTED` if a server instance is required.
+    - A game test.
+  - Test failures should always throw an `AssertionError` explaining what condition was not met during the test.
 
-If a testmod can be partially automated then it is encouraged to implement an automatically failing test if something goes wrong. For example if a testmod checks if commands are registered on the server and the commands are not on the CommandDispatcher then the test should fail.
-
-Test failures should always throw an `AssertionError` explaining what condition was not met during the test.
-
-Fabric API pull requests should be tested in the dev environment and in production (on both a client and dedicated server). TODO: reminder of how to build
+Fabric API pull requests should be tested in the dev environment and in production (on both a client and dedicated server).
+The `gradlew build` command can be used to produce the Fabric API fatjar, located in `builds/libs/`.
 
 #### Common Mistakes
 One highly likely cause of a production failure is the use of `remap=false` in a mixin. If `remap=false` is used, you need to verify the mixin works in dev and production. Most likely the mixin will not work in production.
@@ -425,4 +420,4 @@ The supported values for the `ModuleLifecycle` are:
 - `"deprecated"`
 
 ### Testing
-See the Testing section above. Make sure to describe in the pull request body how you tested your code, and include a relevant testmod with your pull request.
+See the Testing section above. Make sure to describe in the pull request body how you tested your code, and include relevant test mod code with your pull request.
