@@ -42,7 +42,7 @@
  * {@link net.minecraft.screen.SimpleNamedScreenHandlerFactory} that wraps such factory.
  *
  * <h2>Overwriting screen handlers</h2>
- * You might have noticed that calling {@code openHandledScreen} while on another screen will move
+ * You might have noticed that calling {@link net.minecraft.entity.player.PlayerEntity#openHandledScreen(net.minecraft.screen.NamedScreenHandlerFactory) openHandledScreen} while on another screen will move
  * the cursor to the center of the screen. This is because the current screen gets closed before
  * opening the screen, resetting the cursor position. Since this behavior can be problematic,
  * this API provides a way to disable this. By overriding {@link
