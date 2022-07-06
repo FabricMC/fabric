@@ -64,8 +64,11 @@ public abstract class ExactViewStorage<T extends TransferVariant<?>, S> extends 
 	public long insert(T resource, long maxAmount, TransactionContext transaction) {
 		var slot = map.get(resource);
 		if (slot == null) {
-			slot = newSlot();
-			mod.put(resource, slot);
+			slot = mod.get(resource);
+			if (slot == null) {
+				slot = newSlot();
+				mod.put(resource, slot);
+			}
 		}
 		return slot.insert(resource, maxAmount, transaction);
 	}
@@ -103,7 +106,7 @@ public abstract class ExactViewStorage<T extends TransferVariant<?>, S> extends 
 	public @NotNull StorageView<T> exactView(@Nullable TransactionContext transaction, T resource) {
 		StorageView<T> view = map.get(resource);
 		if (view == null)
-			view = map.get(resource);
+			view = mod.get(resource);
 		return view != null ? view : new BlankVariantView<>(blankVariant(), 0);
 	}
 
