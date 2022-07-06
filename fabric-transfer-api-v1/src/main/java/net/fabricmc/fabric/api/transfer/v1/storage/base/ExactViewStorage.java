@@ -13,6 +13,12 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import java.util.*;
+/**
+ * ExactViewStorage provides a variant-to-slot-map implement for {@link Storage}.
+ * @param <T> The type param {@code T} of {@link Storage}
+ * @param <S> The type param {@code T} of {@link SnapshotParticipant}
+ * @see ItemImpl
+ */
 public abstract class ExactViewStorage<T extends TransferVariant<?>, S> extends SnapshotParticipant<S> implements Storage<T> {
 	/**
 	 * <b>Don't</b> iterate this map if not necessary. Iterate this storage directly instead.
@@ -130,6 +136,9 @@ public abstract class ExactViewStorage<T extends TransferVariant<?>, S> extends 
 		}
 	}
 
+	/**
+	 * ItemImpl is a simple implement for {@link ExactViewStorage<ItemVariant>}.
+	 */
 	public static class ItemImpl extends ExactViewStorage<ItemVariant, Object> {
 		@Override
 		public ItemVariant blankVariant() {
