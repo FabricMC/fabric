@@ -14,7 +14,10 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import java.util.*;
 /**
- * ExactViewStorage provides a variant-to-slot-map implement for {@link Storage}.
+ * A storage that provides a variant-to-slot-map implement for {@link Storage}.
+ * Capacity is almost infinite.
+ * If extending {@link Slot}, {@link #newSlot()} should be overrided.
+ *
  * @param <T> The type param {@code T} of {@link Storage}
  * @param <S> The type param {@code T} of {@link SnapshotParticipant}
  * @see ItemImpl
@@ -106,6 +109,11 @@ public abstract class ExactViewStorage<T extends TransferVariant<?>, S> extends 
 
 	public abstract T blankVariant();
 
+	/**
+	 * Just extending {@link Slot} affects nothing, this method should also be overrided to return extended {@link Slot}.
+	 *
+	 * @return Empty slot.
+	 */
 	protected SingleSlotStorage<T> newSlot() {
 		return new Slot();
 	}
@@ -137,7 +145,7 @@ public abstract class ExactViewStorage<T extends TransferVariant<?>, S> extends 
 	}
 
 	/**
-	 * ItemImpl is a simple implement for {@link ExactViewStorage<ItemVariant>}.
+	 * A simple implement for {@link ExactViewStorage<ItemVariant>}.
 	 */
 	public static class ItemImpl extends ExactViewStorage<ItemVariant, Object> {
 		@Override
