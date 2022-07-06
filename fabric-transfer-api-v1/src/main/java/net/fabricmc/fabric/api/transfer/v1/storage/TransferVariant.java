@@ -97,7 +97,7 @@ public interface TransferVariant<O> {
 	 */
 	default NbtCompound copyOrCreateNbt() {
 		NbtCompound nbt = getNbt();
-		return nbt == null ? new NbtCompound() : nbt;
+		return nbt == null ? new NbtCompound() : nbt.copy();
 	}
 
 	/**
