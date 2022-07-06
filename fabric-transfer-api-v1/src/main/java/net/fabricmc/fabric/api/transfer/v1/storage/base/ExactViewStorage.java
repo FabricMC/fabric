@@ -14,29 +14,43 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import java.util.*;
 /**
- * A storage that provides a variant-to-slot-map.
- * Capacity is almost infinite.
- * If extending {@link Slot}, {@link #newSlot()} should be overrided.
+ * A storage that provides a variant-to-slot map.<br>
+ * Its {@link Storage#exactView(TransactionContext, Object)} is quick.<br>
+ * Capacity is almost infinite.<br>
  *
  * @param <T> The type param {@code T} of {@link Storage}
  * @param <S> The type param {@code T} of {@link SnapshotParticipant}
+ * @implNote If extending {@link Slot}, {@link #newSlot()} should be overrided.
  * @see ItemImpl
  */
 public abstract class ExactViewStorage<T extends TransferVariant<?>, S> extends SnapshotParticipant<S> implements Storage<T> {
 	/**
-	 * <b>Don't</b> iterate this map if not necessary. Iterate this storage directly instead.
-	 *
 	 * @see #iterator()
 	 */
-	protected final Map<T, SingleSlotStorage<T>> map = new LinkedHashMap<>();
+	protected final Map<T, SingleSlotStorage<T>> map;
 	/**
 	 * If a variant is contained here, its corresponding slot might be modified.
+	 *
+	 * @see #iterator()
+	 * @see #onFinalCommit()
 	 */
-	protected final Set<T> pendings = new HashSet<>();
+	protected final Set<T> pendings;
 	/**
 	 * To avoid {@link ConcurrentModificationException} while iterating.
+	 *
+	 * @see #onFinalCommit()
 	 */
-	protected final Map<T, SingleSlotStorage<T>> mod = new LinkedHashMap<>();
+	protected final Map<T, SingleSlotStorage<T>> mod;
+
+	public ExactViewStorage() {
+		this(new LinkedHashMap<>(), new HashSet<>(), new LinkedHashMap<>());
+	}
+
+	protected ExactViewStorage(Map<T, SingleSlotStorage<T>> map, Set<T> pendings, Map<T, SingleSlotStorage<T>> mod) {
+		this.map = map;
+		this.pendings = pendings;
+		this.mod = mod;
+	}
 
 	/**
 	 * Overriding method <b>mustn't</b> invoke this super.
@@ -112,6 +126,18 @@ public abstract class ExactViewStorage<T extends TransferVariant<?>, S> extends 
 
 	public abstract T blankVariant();
 
+	public Map<T, SingleSlotStorage<T>> getMap() {
+		return map;
+	}
+
+	public Set<T> getPendings() {
+		return pendings;
+	}
+
+	public Map<T, SingleSlotStorage<T>> getMod() {
+		return mod;
+	}
+
 	/**
 	 * Just extending {@link Slot} affects nothing, this method should also be overrided to return extended {@link Slot}.
 	 *
@@ -148,7 +174,7 @@ public abstract class ExactViewStorage<T extends TransferVariant<?>, S> extends 
 	}
 
 	/**
-	 * A simple implement for {@link ExactViewStorage<ItemVariant>}.
+	 * A simple implement to {@link ExactViewStorage<ItemVariant>}.
 	 */
 	public static class ItemImpl extends ExactViewStorage<ItemVariant, Object> {
 		@Override
