@@ -14,7 +14,7 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import java.util.*;
 /**
- * A storage that provides a variant-to-slot-map implement for {@link Storage}.
+ * A storage that provides a variant-to-slot-map.
  * Capacity is almost infinite.
  * If extending {@link Slot}, {@link #newSlot()} should be overrided.
  *
