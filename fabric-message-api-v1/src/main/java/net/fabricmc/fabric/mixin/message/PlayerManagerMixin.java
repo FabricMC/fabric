@@ -30,20 +30,19 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.filter.FilteredMessage;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 
 @Mixin(PlayerManager.class)
 public class PlayerManagerMixin {
-	@Inject(method = "broadcast(Lnet/minecraft/server/filter/FilteredMessage;Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/util/registry/RegistryKey;)V", at = @At("HEAD"), cancellable = true)
-	private void onSendChatMessage(FilteredMessage<SignedMessage> message, ServerPlayerEntity sender, RegistryKey<MessageType> typeKey, CallbackInfo ci) {
-		if (!ServerMessageEvents.ALLOW_CHAT_MESSAGE.invoker().allowChatMessage(message, sender, typeKey)) {
+	@Inject(method = "broadcast(Lnet/minecraft/server/filter/FilteredMessage;Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/network/message/MessageType$class_7602;)V", at = @At("HEAD"), cancellable = true)
+	private void onSendChatMessage(FilteredMessage<SignedMessage> message, ServerPlayerEntity sender, MessageType.class_7602 params, CallbackInfo ci) {
+		if (!ServerMessageEvents.ALLOW_CHAT_MESSAGE.invoker().allowChatMessage(message, sender, params)) {
 			ci.cancel();
 			return;
 		}
 
-		ServerMessageEvents.CHAT_MESSAGE.invoker().onChatMessage(message, sender, typeKey);
+		ServerMessageEvents.CHAT_MESSAGE.invoker().onChatMessage(message, sender, params);
 	}
 
 	@Inject(method = "broadcast(Lnet/minecraft/text/Text;Ljava/util/function/Function;Z)V", at = @At("HEAD"), cancellable = true)
@@ -56,13 +55,13 @@ public class PlayerManagerMixin {
 		ServerMessageEvents.GAME_MESSAGE.invoker().onGameMessage(message, overlay);
 	}
 
-	@Inject(method = "broadcast(Lnet/minecraft/server/filter/FilteredMessage;Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/util/registry/RegistryKey;)V", at = @At("HEAD"), cancellable = true)
-	private void onSendCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source, RegistryKey<MessageType> typeKey, CallbackInfo ci) {
-		if (!ServerMessageEvents.ALLOW_COMMAND_MESSAGE.invoker().allowCommandMessage(message, source, typeKey)) {
+	@Inject(method = "broadcast(Lnet/minecraft/server/filter/FilteredMessage;Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/network/message/MessageType$class_7602;)V", at = @At("HEAD"), cancellable = true)
+	private void onSendCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source, MessageType.class_7602 params, CallbackInfo ci) {
+		if (!ServerMessageEvents.ALLOW_COMMAND_MESSAGE.invoker().allowCommandMessage(message, source, params)) {
 			ci.cancel();
 			return;
 		}
 
-		ServerMessageEvents.COMMAND_MESSAGE.invoker().onCommandMessage(message, source, typeKey);
+		ServerMessageEvents.COMMAND_MESSAGE.invoker().onCommandMessage(message, source, params);
 	}
 }

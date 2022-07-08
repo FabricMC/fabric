@@ -22,7 +22,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.filter.FilteredMessage;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -144,10 +143,10 @@ public final class ServerMessageEvents {
 		 *
 		 * @param message the broadcast message with message decorators applied; use {@code message.raw().getContent()} to get the text
 		 * @param sender  the player that sent the message
-		 * @param typeKey the message type
+		 * @param params the {@link MessageType.class_7602}
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
-		boolean allowChatMessage(FilteredMessage<SignedMessage> message, ServerPlayerEntity sender, RegistryKey<MessageType> typeKey);
+		boolean allowChatMessage(FilteredMessage<SignedMessage> message, ServerPlayerEntity sender, MessageType.class_7602 params);
 	}
 
 	@FunctionalInterface
@@ -179,10 +178,10 @@ public final class ServerMessageEvents {
 		 *
 		 * @param message the broadcast message with message decorators applied if applicable; use {@code message.raw().getContent()} to get the text
 		 * @param source  the command source that sent the message
-		 * @param typeKey the message type
+		 * @param params the {@link MessageType.class_7602}
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
-		boolean allowCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source, RegistryKey<MessageType> typeKey);
+		boolean allowCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source, MessageType.class_7602 params);
 	}
 
 	@FunctionalInterface
@@ -198,9 +197,9 @@ public final class ServerMessageEvents {
 		 *
 		 * @param message the broadcast message with message decorators applied; use {@code message.raw().getContent()} to get the text
 		 * @param sender  the player that sent the message
-		 * @param typeKey the message type
+		 * @param params the {@link MessageType.class_7602}
 		 */
-		void onChatMessage(FilteredMessage<SignedMessage> message, ServerPlayerEntity sender, RegistryKey<MessageType> typeKey);
+		void onChatMessage(FilteredMessage<SignedMessage> message, ServerPlayerEntity sender, MessageType.class_7602 params);
 	}
 
 	@FunctionalInterface
@@ -228,8 +227,8 @@ public final class ServerMessageEvents {
 		 *
 		 * @param message the broadcast message with message decorators applied if applicable; use {@code message.raw().getContent()} to get the text
 		 * @param source  the command source that sent the message
-		 * @param typeKey the message type
+		 * @param params the {@link MessageType.class_7602}
 		 */
-		void onCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source, RegistryKey<MessageType> typeKey);
+		void onCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source, MessageType.class_7602 params);
 	}
 }

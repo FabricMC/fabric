@@ -37,7 +37,7 @@ abstract class ClientCommandSourceMixin implements FabricClientCommandSource {
 
 	@Override
 	public void sendFeedback(Text message) {
-		this.client.method_44714().method_44736(message, false);
+		this.client.getMessageHandler().onGameMessage(message, false);
 	}
 
 	@Override
