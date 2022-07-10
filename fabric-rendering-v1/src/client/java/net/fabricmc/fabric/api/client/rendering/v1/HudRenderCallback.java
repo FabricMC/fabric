@@ -22,9 +22,9 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 public interface HudRenderCallback {
-	Event<HudRenderCallback> EVENT = EventFactory.createArrayBacked(HudRenderCallback.class, (listeners) -> (matrixStack, delta) -> {
+	Event<HudRenderCallback> EVENT = EventFactory.createArrayBacked(HudRenderCallback.class, (listeners) -> (matrixStack, delta, scaledWidth, scaledHeight) -> {
 		for (HudRenderCallback event : listeners) {
-			event.onHudRender(matrixStack, delta);
+			event.onHudRender(matrixStack, delta, scaledWidth, scaledHeight);
 		}
 	});
 
@@ -33,6 +33,8 @@ public interface HudRenderCallback {
 	 *
 	 * @param matrixStack the matrixStack
 	 * @param tickDelta Progress for linearly interpolating between the previous and current game state
+	 * @param scaledWidth scaled width of the screen
+	 * @param scaledHeight scaled height of the screen
 	 */
-	void onHudRender(MatrixStack matrixStack, float tickDelta);
+	void onHudRender(MatrixStack matrixStack, float tickDelta, int scaledWidth, int scaledHeight);
 }

@@ -47,7 +47,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 public class FluidVariantRenderTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		HudRenderCallback.EVENT.register((matrices, tickDelta) -> {
+		HudRenderCallback.EVENT.register((matrices, tickDelta, scaledWidth, scaledHeight) -> {
 			PlayerEntity player = MinecraftClient.getInstance().player;
 			if (player == null) return;
 
