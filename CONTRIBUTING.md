@@ -23,14 +23,14 @@ It is highly recommended that an issue be opened or a message be posted in the o
 
 The rest of this document is split in the following categories:
 
-- **General design considerations**: Broad guidelines to keep in mind when writing APIs for Fabric.
-- **API conventions**: Guidelines for common API patterns.
-- **Implementation guidelines**: Guidelines to keep in mind when writing implementation code.
-- **Documentation**: Guidelines for writing documentation. Extensive documentation of the offered features is essential for usability.
-- **Structure of Fabric API**: Organization of code within Fabric API.
-- **Code formatting**: Specific Java code formatting standards.
-- **Testing**: Guidelines for writing testmod code. Tests showing that the submitted feature is working should be included in the PR.
-- **Pull Request checklist**: Smaller things to keep in mind when submitting a Pull Request.
+- [**General design considerations**](#general-design-considerations): Broad guidelines to keep in mind when writing APIs for Fabric.
+- [**API conventions**](#api-conventions): Guidelines for common API patterns.
+- [**Implementation guidelines**](#implementation-guidelines): Guidelines to keep in mind when writing implementation code.
+- [**Documentation**](#documentation): Guidelines for writing documentation. Extensive documentation of the offered features is essential for usability.
+- [**Structure of Fabric API**](#structure-of-fabric-api): Organization of code within Fabric API.
+- [**Code formatting**](#code-formatting): Specific Java code formatting standards.
+- [**Testing**](#testing): Guidelines for writing testmod code. Tests showing that the submitted feature is working should be included in the PR.
+- [**Pull Request checklist**](#checklist-before-submitting-a-pull-request): Smaller things to keep in mind when submitting a Pull Request.
 
 ## General design considerations
 
@@ -106,18 +106,18 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
 - Transitive Access Wideners (TAWs) should be used to expose access to private or protected members in vanilla classes.
     - Most TAWs should go in the dedicated `fabric-transitive-access-wideners-v1` module.
         - Remember to add the `transitive-` prefix, otherwise dependent mods will not see the access modifications.
-        - Some TAWs such as Block subclass constructors are automatically generated. Make sure that you don't edit the `.accesswidener` file directly. Rather edit the template file (`.accesswidener.template`) and run the `gradlew generateAccessWidener` task to update the generated file.
+        - Some TAWs such as Block subclass constructors are automatically generated. Make sure that you don't edit the `.accesswidener` file in `src` directly. Rather edit the template file (`template.accesswidener`) and run the `gradlew generateAccessWidener` task to update the generated file.
         - Large amounts of TAWs for a specific purpose can be included in another module, as is the case for the data generation API, for example.
     - Do **not** expose TAWs for functions that take a `String` identifier.
         - This makes it too easy to forget the mod ID namespace, so the identifier would often end up in the vanilla `minecraft` namespace.
-        - In general, keep the API guidelines in mind when deciding whether something should be a TAW.
+    - In general, keep the API guidelines in mind when deciding whether something should be a TAW.
 - Interface injection (i.e. making a minecraft class or interface extend a Fabric interface) should be considered over separate static helpers.
     - Interface injection requires both a `fabric.mod.json` custom value to make it visible in Minecraft source code, and a mixin to actually implement the interface at runtime.
     - Injected interfaces should have **no abstract methods**.
         - Methods that are guaranteed to be implemented via a mixin to a vanilla class should contain a default body that throws an error. For example:
         ```java
         default void injectedMethod() {
-		    throw new UnsupportedOperationException("Implemented via mixin");
+            throw new UnsupportedOperationException("Implemented via mixin");
         }
         ```
         - Never use interface injection to add methods that modders must implement. Rather define a subclass or subinterface in Fabric API.
@@ -147,7 +147,7 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
 - `@ApiStatus.Internal` is recommended for implementation classes to avoid IDE autocompletion suggesting them. There should be no need for internal methods or classes in the public API package.
 
 ### Naming
-- All names should follow the yarn naming standards.
+- All names should follow the [Yarn naming standards](https://github.com/FabricMC/yarn/blob/HEAD/CONVENTIONS.md).
 - If a class only contains getter methods, the `get` prefix may be omitted for methods. The `get` prefix may also be omitted where it is not appropriate.
 - Accessor mixins should be named **Target**Accessor, other mixins should be named **Target**Mixin, where `Target` is the target class name. More details in the mixin section below.
 
@@ -223,14 +223,13 @@ public final class FooEvents {
 - Simple code that is easy to debug and reason about is generally preferable to the shortest possible implementation.
 - Limited duplication can be better than indirection, unless the code is complex or used several times.
 - Indirections might make the code harder to read, and should be weighed against their benefits. Examples include:
-    - Lambda composition (forEach, streams).
-    - Method calls.
+    - Lambda methods (forEach, streams).
     - Method splitting.
     - Recursion.
     - Complex class hierarchies.
 - Functional operators (i.e. interfaces) should be designed for maximal readability, and only used when necessary.
     - Ask for concrete objects if applicable.
-    - Don't include superfluous methods, for example replace shouldApply+apply with a single apply that returns success.
+    - Don't include superfluous methods. For example, replace `shouldApply`+`apply` with a single `apply` that returns success.
     - Consider having the user implement a larger interface as a class.
     - Consider using a custom interface if it is beneficial for comprehension or documentation.
 - The overall complexity of a module shouldn't be ignored in favor of the simplicity of each individual piece. Similarly, the overall complexity of one small piece shouldn't be ignored in favor of the simplicity of the module as a whole.
@@ -249,7 +248,21 @@ public final class FooEvents {
 
 Since Minecraft has two primary threads, the render and server threads, APIs dealing with shared state need to consider thread safety. This will usually require consideration on a case-by-case basis.
 
-- A cache shared between the render and the server threads may for example wish to use locking for infrequent accesses, or otherwise a copy-on-write strategy to ensure lock-free reads and thread-safe writes.
+- A registry shared between the render and the server threads may for example wish to use locking for infrequent accesses, or otherwise a copy-on-write strategy to ensure lock-free reads and thread-safe writes.
+- Lazily initialized caches accessed from multiple threads require `volatile`. Use an intermediate variable to only have one volatile read:
+```java
+private volatile Stuff cachedStuff = null;
+
+private Stuff stuff() {
+    Stuff stuff = this.cachedStuff;
+
+    if (stuff == null) {
+        this.cachedStuff = stuff = compute();
+    }
+
+    return stuff;
+}
+```
 - Read-only access from multiple threads does not need synchronization.
 
 ## Documentation
@@ -257,7 +270,7 @@ Since Minecraft has two primary threads, the render and server threads, APIs dea
 - Every API class should carry a Javadoc block explaining its purpose and reference related classes. Example code in the primary class of any major feature should outline the use, including related vanilla invocations/registrations/etc as applicable to provide an idea of how to start.
     - Parameters, implementation bodies, etc... may be omitted as appropriate, since the examples are not meant as to be fully working implementations.
     - The examples should be more akin to pseudocode with a checklist for the process and pointers to everything needed.
-    - These examples should be written for developers that have a knowledge of java and basic knowledge of the Minecraft codebase.
+    - These examples should be written for developers that have a knowledge of Java and basic knowledge of the Minecraft codebase.
 - A brief description belongs in the 1st paragraph, with further paragraphs separated by blank lines and starting with `<p>`. Javadoc for methods may follow with another blank line before describing parameters, return values and exceptions with the appropriate tags. All accessible members should be described appropriately.
 - Good documentation doesn't only explain what something is, but (as appropriate) why it exists, what are the intended use cases, what use cases something is not suitable for and any semantics that need to be kept in mind.
     - In particular, tricky implementation details should be explained by a few comments when appropriate.
@@ -273,20 +286,21 @@ Fabric API is organized in different modules. Each module is located in a specif
     - Consider future developments when naming a module: they might later be expanded.
 - Module names should usually be suffixed by `-api`.
     - Modules whose primary purpose is not interaction with their API do not need this suffix. For example, `fabric-transitive-access-wideners-v1` or `fabric-convention-tags-v1`.
+    - Event modules should have the `-events` suffix instead.
 - Module names should always be suffixed by a major version (`-v1`, `-v2`, etc).
     - The major version starts at `v1` for new functionality, unless they replace a module with equivalent functionality, in which case the version is incremented.
-    - `vn` and `vn+1` module names need not match exactly. For example, `fabric-loot-table-api-v1` was replaced by `fabric-loot-api-v2`.
+    - `vn` and `vn+1` module names need not match exactly. For example, `fabric-loot-tables-v1` was replaced by `fabric-loot-api-v2`.
 
 ### Deprecated modules
 Modules that are entirely deprecated are in the `deprecated/` folder. All of their API classes should be deprecated, and their `fabric.mod.json` should have the deprecated lifecycle marker. (See PR checklist below).
 
-A module may only be deprecated if all of its functionality is also provided by a non-deprecated module.
+A module may only be deprecated if all of its functionality is also provided by a non-deprecated module or vanilla Minecraft itself.
 
 ### Experimental modules
 Modules whose design is hard to evaluate might go through an experimental phase, allowing for relaxed backwards compatibility requirements, as described in the Backwards compatibility section.
 
 Writers of experimental modules need to consider the following additional requirements:
-- All API classes should be marked as `@ApiStatus.Experimental`. Do not use `@Deprecated` for experimental modules.
+- All API classes should be marked as `@ApiStatus.Experimental`. Do not use `@Deprecated` to generate compiler and IDE warnings for experimental modules.
 - All API classes should carry a javadoc comment, worded similarly to the following example:
   ```java
   /**
@@ -360,7 +374,7 @@ The general code formatting is as follows:
 - Statements should use the block form except for single-line if statements that use a short condition and nothing else.
 - Ternary operator use only within a single line total.
 
-Fabric API uses the Gradle checkstyle plugin. If you run `gradle check` any style errors will be logged in the output. The style errors can also be viewed in a generated webpage by the gradle task.
+Fabric API uses the Gradle checkstyle plugin. If you run `gradle check` any style errors will be logged in the output. The style errors can also be viewed in a generated webpage by the Gradle task.
 
 ### Style guidelines
 
@@ -390,13 +404,13 @@ Testing code should not be in the regular source sets, it belongs to so-called "
 Fabric API pull requests should be tested in the dev environment and in production (on both a client and dedicated server).
 The `gradlew build` command can be used to produce the Fabric API fatjar, located in `builds/libs/`.
 
-#### Common Mistakes
+#### Common mistakes
 One highly likely cause of a production failure is the use of `remap=false` in a mixin. If `remap=false` is used, you need to verify the mixin works in dev and production. Most likely the mixin will not work in production.
 
 ## Checklist before submitting a pull request
 
 ### Apply license headers
-There is a gradle task that can automate this for you. Simply run `gradlew spotlessApply`.
+There is a Gradle task that can automate this for you. Simply run `gradlew spotlessApply`.
 
 ### Run checks
 - The `gradlew check` task runs all the style checks and game tests.
