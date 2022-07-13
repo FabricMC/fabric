@@ -66,6 +66,10 @@ public interface ResourceManagerHelper {
 	 * <p>The path in which the resource pack is located is in the mod JAR file under the {@code "resourcepacks/<id path>"} directory. {@code id path} being the path specified
 	 * in the identifier of this built-in resource pack.
 	 *
+	 * <p><b>Note about {@code pack.mcmeta}</b>: since 1.18.2, resource and data pack {@code pack_format} are different.
+	 * To work around this, Fabric provides additional entry that can be used to specify different pack format for them.
+	 * Use {@code fabric:resource_pack_format} for client resources and {@code fabric:data_pack_format} for server data pack.
+	 *
 	 * @param id             the identifier of the resource pack
 	 * @param container      the mod container
 	 * @param activationType the activation type of the resource pack
@@ -85,6 +89,10 @@ public interface ResourceManagerHelper {
 	 *
 	 * <p>The path in which the resource pack is located is in the mod JAR file under the {@code "resourcepacks/<id path>"} directory. {@code id path} being the path specified
 	 * in the identifier of this built-in resource pack.
+	 *
+	 * <p><b>Note about {@code pack.mcmeta}</b>: since 1.18.2, resource and data pack {@code pack_format} are different.
+	 * To work around this, Fabric provides additional entry that can be used to specify different pack format for them.
+	 * Use {@code fabric:resource_pack_format} for client resources and {@code fabric:data_pack_format} for server data pack.
 	 *
 	 * @param id             the identifier of the resource pack
 	 * @param container      the mod container
@@ -108,6 +116,10 @@ public interface ResourceManagerHelper {
 	 *
 	 * <p>Note about the enabled by default parameter: a resource pack cannot be enabled by default, only data packs can.
 	 * Making this work for resource packs is near impossible without touching how Vanilla handles disabled resource packs.
+	 *
+	 * <p><b>Note about {@code pack.mcmeta}</b>: since 1.18.2, resource and data pack {@code pack_format} are different.
+	 * To work around this, Fabric provides additional entry that can be used to specify different pack format for them.
+	 * Use {@code fabric:resource_pack_format} for client resources and {@code fabric:data_pack_format} for server data pack.
 	 *
 	 * @param id               the identifier of the resource pack
 	 * @param subPath          the sub path in the mod resources
