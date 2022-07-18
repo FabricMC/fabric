@@ -46,7 +46,7 @@ public abstract class MixinArmorFeatureRenderer extends FeatureRenderer<LivingEn
 		ArmorRenderer renderer = ArmorRendererRegistryImpl.get(stack.getItem());
 
 		if (renderer != null) {
-			renderer.render(matrices, vertexConsumers, stack, entity, armorSlot, light, getContextModel());
+			renderer.render(matrices, vertexConsumers, stack, entity, armorSlot, light, getContextModel(), model);
 			ci.cancel();
 		}
 	}

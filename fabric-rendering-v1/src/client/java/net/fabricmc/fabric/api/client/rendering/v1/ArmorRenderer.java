@@ -81,6 +81,7 @@ public interface ArmorRenderer {
 	 * @param slot				the equipment slot in which the armor stack is worn
 	 * @param light				packed lightmap coordinates
 	 * @param contextModel		the model provided by {@link FeatureRenderer#getContextModel()}
+	 * @param originalModel		the original armor model
 	 */
-	void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, ItemStack stack, LivingEntity entity, EquipmentSlot slot, int light, BipedEntityModel<LivingEntity> contextModel);
+	void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, ItemStack stack, LivingEntity entity, EquipmentSlot slot, int light, BipedEntityModel<LivingEntity> contextModel, BipedEntityModel<LivingEntity> originalModel);
 }
