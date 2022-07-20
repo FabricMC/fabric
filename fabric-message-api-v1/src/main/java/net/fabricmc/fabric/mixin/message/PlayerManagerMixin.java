@@ -35,8 +35,8 @@ import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 
 @Mixin(PlayerManager.class)
 public class PlayerManagerMixin {
-	@Inject(method = "broadcast(Lnet/minecraft/server/filter/FilteredMessage;Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/network/message/MessageType$class_7602;)V", at = @At("HEAD"), cancellable = true)
-	private void onSendChatMessage(FilteredMessage<SignedMessage> message, ServerPlayerEntity sender, MessageType.class_7602 params, CallbackInfo ci) {
+	@Inject(method = "broadcast(Lnet/minecraft/server/filter/FilteredMessage;Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/network/message/MessageType$Parameters;)V", at = @At("HEAD"), cancellable = true)
+	private void onSendChatMessage(FilteredMessage<SignedMessage> message, ServerPlayerEntity sender, MessageType.Parameters params, CallbackInfo ci) {
 		if (!ServerMessageEvents.ALLOW_CHAT_MESSAGE.invoker().allowChatMessage(message, sender, params)) {
 			ci.cancel();
 			return;
@@ -55,8 +55,8 @@ public class PlayerManagerMixin {
 		ServerMessageEvents.GAME_MESSAGE.invoker().onGameMessage(message, overlay);
 	}
 
-	@Inject(method = "broadcast(Lnet/minecraft/server/filter/FilteredMessage;Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/network/message/MessageType$class_7602;)V", at = @At("HEAD"), cancellable = true)
-	private void onSendCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source, MessageType.class_7602 params, CallbackInfo ci) {
+	@Inject(method = "broadcast(Lnet/minecraft/server/filter/FilteredMessage;Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/network/message/MessageType$Parameters;)V", at = @At("HEAD"), cancellable = true)
+	private void onSendCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source, MessageType.Parameters params, CallbackInfo ci) {
 		if (!ServerMessageEvents.ALLOW_COMMAND_MESSAGE.invoker().allowCommandMessage(message, source, params)) {
 			ci.cancel();
 			return;

@@ -143,10 +143,10 @@ public final class ServerMessageEvents {
 		 *
 		 * @param message the broadcast message with message decorators applied; use {@code message.raw().getContent()} to get the text
 		 * @param sender  the player that sent the message
-		 * @param params the {@link MessageType.class_7602}
+		 * @param params the {@link MessageType.Parameters}
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
-		boolean allowChatMessage(FilteredMessage<SignedMessage> message, ServerPlayerEntity sender, MessageType.class_7602 params);
+		boolean allowChatMessage(FilteredMessage<SignedMessage> message, ServerPlayerEntity sender, MessageType.Parameters params);
 	}
 
 	@FunctionalInterface
@@ -178,10 +178,10 @@ public final class ServerMessageEvents {
 		 *
 		 * @param message the broadcast message with message decorators applied if applicable; use {@code message.raw().getContent()} to get the text
 		 * @param source  the command source that sent the message
-		 * @param params the {@link MessageType.class_7602}
+		 * @param params the {@link MessageType.Parameters}
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
-		boolean allowCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source, MessageType.class_7602 params);
+		boolean allowCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source, MessageType.Parameters params);
 	}
 
 	@FunctionalInterface
@@ -197,9 +197,9 @@ public final class ServerMessageEvents {
 		 *
 		 * @param message the broadcast message with message decorators applied; use {@code message.raw().getContent()} to get the text
 		 * @param sender  the player that sent the message
-		 * @param params the {@link MessageType.class_7602}
+		 * @param params the {@link MessageType.Parameters}
 		 */
-		void onChatMessage(FilteredMessage<SignedMessage> message, ServerPlayerEntity sender, MessageType.class_7602 params);
+		void onChatMessage(FilteredMessage<SignedMessage> message, ServerPlayerEntity sender, MessageType.Parameters params);
 	}
 
 	@FunctionalInterface
@@ -227,8 +227,8 @@ public final class ServerMessageEvents {
 		 *
 		 * @param message the broadcast message with message decorators applied if applicable; use {@code message.raw().getContent()} to get the text
 		 * @param source  the command source that sent the message
-		 * @param params the {@link MessageType.class_7602}
+		 * @param params the {@link MessageType.Parameters}
 		 */
-		void onCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source, MessageType.class_7602 params);
+		void onCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source, MessageType.Parameters params);
 	}
 }
