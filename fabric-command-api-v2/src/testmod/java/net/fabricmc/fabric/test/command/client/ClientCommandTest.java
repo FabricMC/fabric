@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.command.argument.ItemStackArgumentType;
@@ -93,6 +94,12 @@ public final class ClientCommandTest implements ClientModInitializer {
 						return 0;
 					})
 			));
+
+			dispatcher.register(ClientCommandManager.literal("test_open_game_menu_screen").executes(context -> {
+				MinecraftClient client = context.getSource().getClient();
+				client.execute(() -> client.setScreen(new GameMenuScreen(true)));
+				return 0;
+			}));
 
 			// Tests
 
