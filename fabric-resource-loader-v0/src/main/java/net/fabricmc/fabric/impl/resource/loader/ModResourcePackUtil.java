@@ -77,17 +77,20 @@ public final class ModResourcePackUtil {
 		switch (filename) {
 		case "pack.mcmeta":
 			String description = Objects.requireNonNullElse(info.getName(), "");
-
-			JsonObject pack = new JsonObject();
-			pack.addProperty("pack_format", type.getPackVersion(SharedConstants.getGameVersion()));
-			pack.addProperty("description", description);
-			JsonObject metadata = new JsonObject();
-			metadata.add("pack", pack);
-
-			return IOUtils.toInputStream(GSON.toJson(metadata), Charsets.UTF_8);
+			String metadata = serializeMetadata(type.getPackVersion(SharedConstants.getGameVersion()), description);
+			return IOUtils.toInputStream(metadata, Charsets.UTF_8);
 		default:
 			return null;
 		}
+	}
+
+	public static String serializeMetadata(int packVersion, String description) {
+		JsonObject pack = new JsonObject();
+		pack.addProperty("pack_format", packVersion);
+		pack.addProperty("description", description);
+		JsonObject metadata = new JsonObject();
+		metadata.add("pack", pack);
+		return GSON.toJson(metadata);
 	}
 
 	public static String getName(ModMetadata info) {
