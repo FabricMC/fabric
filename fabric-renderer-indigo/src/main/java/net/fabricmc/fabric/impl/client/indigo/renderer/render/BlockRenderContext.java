@@ -94,17 +94,17 @@ public class BlockRenderContext extends AbstractRenderContext {
 		}
 	};
 
-	private int brightness(BlockPos pos) {
+	private int brightness(BlockPos pos, BlockState state) {
 		if (blockInfo.blockView == null) {
 			return LightmapTextureManager.MAX_LIGHT_COORDINATE;
 		}
 
-		return WorldRenderer.getLightmapCoordinates(blockInfo.blockView, blockInfo.blockView.getBlockState(pos), pos);
+		return WorldRenderer.getLightmapCoordinates(blockInfo.blockView, state, pos);
 	}
 
-	private float aoLevel(BlockPos pos) {
+	private float aoLevel(BlockPos pos, BlockState state) {
 		final BlockRenderView blockView = blockInfo.blockView;
-		return blockView == null ? 1f : AoLuminanceFix.INSTANCE.apply(blockView, pos);
+		return blockView == null ? 1f : AoLuminanceFix.INSTANCE.apply(blockView, pos, state);
 	}
 
 	private VertexConsumer outputBuffer(RenderLayer renderLayer) {

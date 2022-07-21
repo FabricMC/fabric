@@ -119,27 +119,27 @@ public class ChunkRenderInfo {
 	}
 
 	/**
-	 * Cached values for {@link BlockState#getBlockBrightness(BlockRenderView, BlockPos)}.
+	 * Cached values for {@link WorldRenderer#getLightmapCoordinates(BlockRenderView, BlockState, BlockPos)}.
 	 * See also the comments for {@link #brightnessCache}.
 	 */
-	int cachedBrightness(BlockPos pos) {
+	int cachedBrightness(BlockPos pos, BlockState state) {
 		long key = pos.asLong();
 		int result = brightnessCache.get(key);
 
 		if (result == Integer.MAX_VALUE) {
-			result = WorldRenderer.getLightmapCoordinates(blockView, blockView.getBlockState(pos), pos);
+			result = WorldRenderer.getLightmapCoordinates(blockView, state, pos);
 			brightnessCache.put(key, result);
 		}
 
 		return result;
 	}
 
-	float cachedAoLevel(BlockPos pos) {
+	float cachedAoLevel(BlockPos pos, BlockState state) {
 		long key = pos.asLong();
 		float result = aoLevelCache.get(key);
 
 		if (result == Float.MAX_VALUE) {
-			result = AoLuminanceFix.INSTANCE.apply(blockView, pos);
+			result = AoLuminanceFix.INSTANCE.apply(blockView, pos, state);
 			aoLevelCache.put(key, result);
 		}
 
