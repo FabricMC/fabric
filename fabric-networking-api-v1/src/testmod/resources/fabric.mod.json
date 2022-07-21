@@ -17,6 +17,7 @@
     ],
     "client": [
       "net.fabricmc.fabric.test.networking.channeltest.NetworkingChannelClientTest",
+      "net.fabricmc.fabric.test.networking.disconnectscreen.DisconnectScreenTest",
       "net.fabricmc.fabric.test.networking.keybindreciever.NetworkingKeybindClientPacketTest",
       "net.fabricmc.fabric.test.networking.login.NetworkingLoginQueryClientTest",
       "net.fabricmc.fabric.test.networking.play.NetworkingPlayPacketClientTest"

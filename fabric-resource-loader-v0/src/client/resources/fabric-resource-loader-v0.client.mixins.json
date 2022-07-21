@@ -7,7 +7,8 @@
     "CreateWorldScreenMixin",
     "FontManagerResourceReloadListenerMixin",
     "GameOptionsMixin",
-    "KeyedResourceReloadListenerClientMixin"
+    "KeyedResourceReloadListenerClientMixin",
+    "MoreOptionsDialogAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

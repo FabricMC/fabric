@@ -18,7 +18,7 @@ package net.fabricmc.fabric.mixin.item;
 
 import java.util.function.Consumer;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -83,8 +83,8 @@ public abstract class ItemStackMixin {
 	)
 	public Multimap<EntityAttribute, EntityAttributeModifier> hookGetAttributeModifiers(Item item, EquipmentSlot slot) {
 		ItemStack stack = (ItemStack) (Object) this;
-		//we need to ensure it is modifiable for the callback
-		Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers = HashMultimap.create(item.getAttributeModifiers(stack, slot));
+		//we need to ensure it is modifiable for the callback, use linked map to preserve ordering
+		Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers = LinkedHashMultimap.create(item.getAttributeModifiers(stack, slot));
 		ModifyItemAttributeModifiersCallback.EVENT.invoker().modifyAttributeModifiers(stack, slot, attributeModifiers);
 		return attributeModifiers;
 	}
