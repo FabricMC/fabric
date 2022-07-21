@@ -160,7 +160,7 @@ public final class ServerMessageEvents {
 		 *
 		 * @param server the server that sent the message
 		 * @param message the broadcast message; use {@code message.raw().getContent()} to get the text
-		 * @param overlay true when the message is an overlay
+		 * @param overlay {@code true} when the message is an overlay
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
 		boolean allowGameMessage(MinecraftServer server, Text message, boolean overlay);
@@ -213,7 +213,7 @@ public final class ServerMessageEvents {
 		 *
 		 * @param server the server that sent the message
 		 * @param message the broadcast message; use {@code message.raw().getContent()} to get the text
-		 * @param overlay true when the message is an overlay
+		 * @param overlay {@code true} when the message is an overlay
 		 */
 		void onGameMessage(MinecraftServer server, Text message, boolean overlay);
 	}
