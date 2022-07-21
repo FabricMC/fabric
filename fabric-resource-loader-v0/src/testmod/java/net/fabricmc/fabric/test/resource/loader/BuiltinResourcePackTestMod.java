@@ -65,7 +65,7 @@ public class BuiltinResourcePackTestMod implements ModInitializer {
 			throw new AssertionError("Metadata parsing test for description \"%s\" failed".formatted(description), exc);
 		}
 
-		String parsedDescription = json.get("description").getAsString();
+		String parsedDescription = json.get("pack").getAsJsonObject().get("description").getAsString();
 
 		if (!description.equals(parsedDescription)) {
 			throw new AssertionError("Metadata parsing test for description failed: expected \"%s\", got \"%s\"".formatted(description, parsedDescription));
