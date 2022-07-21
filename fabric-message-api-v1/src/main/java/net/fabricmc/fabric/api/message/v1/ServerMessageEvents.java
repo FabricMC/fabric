@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.message.v1;
 
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.filter.FilteredMessage;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -57,9 +58,9 @@ public final class ServerMessageEvents {
 	 * the remaining listeners will not be called (if any), and {@link #GAME_MESSAGE}
 	 * event will not be triggered.
 	 */
-	public static final Event<AllowGameMessage> ALLOW_GAME_MESSAGE = EventFactory.createArrayBacked(AllowGameMessage.class, handlers -> (message, typeKey) -> {
+	public static final Event<AllowGameMessage> ALLOW_GAME_MESSAGE = EventFactory.createArrayBacked(AllowGameMessage.class, handlers -> (server, message, typeKey) -> {
 		for (AllowGameMessage handler : handlers) {
-			if (!handler.allowGameMessage(message, typeKey)) return false;
+			if (!handler.allowGameMessage(server, message, typeKey)) return false;
 		}
 
 		return true;
@@ -106,9 +107,9 @@ public final class ServerMessageEvents {
 	 * include death messages, join/leave messages, and advancement messages. Is not called
 	 * when {@linkplain #ALLOW_GAME_MESSAGE game messages are blocked}.
 	 */
-	public static final Event<GameMessage> GAME_MESSAGE = EventFactory.createArrayBacked(GameMessage.class, handlers -> (message, typeKey) -> {
+	public static final Event<GameMessage> GAME_MESSAGE = EventFactory.createArrayBacked(GameMessage.class, handlers -> (server, message, typeKey) -> {
 		for (GameMessage handler : handlers) {
-			handler.onGameMessage(message, typeKey);
+			handler.onGameMessage(server, message, typeKey);
 		}
 	});
 
@@ -157,11 +158,12 @@ public final class ServerMessageEvents {
 		 * prevents the message from being broadcast and the {@link #GAME_MESSAGE} event
 		 * from triggering.
 		 *
+		 * @param server the server that sent the message
 		 * @param message the broadcast message; use {@code message.raw().getContent()} to get the text
 		 * @param overlay true when the message is an overlay
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
-		boolean allowGameMessage(Text message, boolean overlay);
+		boolean allowGameMessage(MinecraftServer server, Text message, boolean overlay);
 	}
 
 	@FunctionalInterface
@@ -209,10 +211,11 @@ public final class ServerMessageEvents {
 		 * include death messages, join/leave messages, and advancement messages. Is not called
 		 * when {@linkplain #ALLOW_GAME_MESSAGE game messages are blocked}.
 		 *
+		 * @param server the server that sent the message
 		 * @param message the broadcast message; use {@code message.raw().getContent()} to get the text
 		 * @param overlay true when the message is an overlay
 		 */
-		void onGameMessage(Text message, boolean overlay);
+		void onGameMessage(MinecraftServer server, Text message, boolean overlay);
 	}
 
 	@FunctionalInterface
