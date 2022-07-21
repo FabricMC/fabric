@@ -17,10 +17,14 @@
 package net.fabricmc.fabric.mixin.resource.loader.client;
 
 import java.io.File;
+import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,25 +35,29 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
+import net.minecraft.client.gui.screen.world.MoreOptionsDialog;
+import net.minecraft.client.world.GeneratorOptionsHolder;
 import net.minecraft.resource.DataPackSettings;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.server.SaveLoading;
 import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.gen.GeneratorOptions;
-import net.minecraft.world.gen.WorldPresets;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 import net.fabricmc.fabric.mixin.resource.loader.ResourcePackManagerAccessor;
 
 @Mixin(CreateWorldScreen.class)
-public abstract class CreateWorldScreenMixin {
+public abstract class CreateWorldScreenMixin extends Screen {
 	@Unique
 	private static DataPackSettings defaultDataPackSettings;
 
@@ -60,8 +68,25 @@ public abstract class CreateWorldScreenMixin {
 	@Final
 	private static Logger LOGGER;
 
-	@Unique
-	private static RegistryOps<JsonElement> loadedOps;
+	@Shadow
+	@Final
+	public MoreOptionsDialog moreOptionsDialog;
+
+	@Shadow
+	protected DataPackSettings dataPackSettings;
+
+	@Shadow
+	private static SaveLoading.ServerConfig createServerConfig(ResourcePackManager resourcePackManager, DataPackSettings dataPackSettings) {
+		return null;
+	}
+
+	@Shadow
+	@Nullable
+	protected abstract Pair<File, ResourcePackManager> getScannedPack();
+
+	private CreateWorldScreenMixin() {
+		super(null);
+	}
 
 	@ModifyVariable(method = "create(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/screen/Screen;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;createServerConfig(Lnet/minecraft/resource/ResourcePackManager;Lnet/minecraft/resource/DataPackSettings;)Lnet/minecraft/server/SaveLoading$ServerConfig;"))
@@ -84,22 +109,34 @@ public abstract class CreateWorldScreenMixin {
 	@Redirect(method = "method_41854", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/DynamicRegistryManager$Mutable;toImmutable()Lnet/minecraft/util/registry/DynamicRegistryManager$Immutable;"))
 	private static DynamicRegistryManager.Immutable loadDynamicRegistry(DynamicRegistryManager.Mutable mutableRegistryManager, ResourceManager dataPackManager) {
 		// This loads the dynamic registry from the data pack
-		loadedOps = RegistryOps.ofLoaded(JsonOps.INSTANCE, mutableRegistryManager, dataPackManager);
+		RegistryOps.ofLoaded(JsonOps.INSTANCE, mutableRegistryManager, dataPackManager);
 		return mutableRegistryManager.toImmutable();
 	}
 
 	/**
-	 * Fix GeneratorOptions not having custom dimensions.
+	 * Load the DynamicRegistryManager again to fix GeneratorOptions not having custom dimensions.
 	 * Taken from {@link CreateWorldScreen#applyDataPacks(ResourcePackManager)}.
 	 */
 	@SuppressWarnings("JavadocReference")
-	@Redirect(method = "method_41854", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/WorldPresets;createDefaultOptions(Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/world/gen/GeneratorOptions;"))
-	private static GeneratorOptions loadDatapackDimensions(DynamicRegistryManager dynamicRegistryManager) {
-		GeneratorOptions defaultGen = WorldPresets.createDefaultOptions(dynamicRegistryManager);
-		RegistryOps<JsonElement> registryOps = RegistryOps.of(JsonOps.INSTANCE, dynamicRegistryManager);
-		return GeneratorOptions.CODEC.encodeStart(registryOps, defaultGen)
-				.flatMap(json -> GeneratorOptions.CODEC.parse(loadedOps, json))
-				.getOrThrow(false, Util.addPrefix("Error parsing worldgen settings after loading data packs: ", LOGGER::error));
+	@Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;clearDataPackTempDir()V"))
+	private void loadDatapackDimensions(CallbackInfo ci) {
+		CompletableFuture<Void> future = SaveLoading.load(createServerConfig(getScannedPack().getSecond(), dataPackSettings), (resourceManager, dataPackSettings1) -> {
+			GeneratorOptionsHolder holder = moreOptionsDialog.getGeneratorOptionsHolder();
+			DynamicRegistryManager.Mutable newDrm = DynamicRegistryManager.createAndLoad();
+			DynamicOps<JsonElement> heldOps = RegistryOps.of(JsonOps.INSTANCE, holder.dynamicRegistryManager());
+			DynamicOps<JsonElement> newOps = RegistryOps.ofLoaded(JsonOps.INSTANCE, newDrm, resourceManager);
+			DataResult<GeneratorOptions> result = GeneratorOptions.CODEC.encodeStart(heldOps, holder.generatorOptions())
+					.flatMap(json -> GeneratorOptions.CODEC.parse(newOps, json));
+			return Pair.of(result, newDrm.toImmutable());
+		}, (resourceManager, dataPackContents, drm, result) -> {
+			resourceManager.close();
+			GeneratorOptions options = result.getOrThrow(false, Util.addPrefix("Error parsing worldgen settings after loading data packs: ", LOGGER::error));
+			GeneratorOptionsHolder holder = new GeneratorOptionsHolder(options, result.lifecycle().add(drm.getRegistryLifecycle()), drm, dataPackContents);
+			((MoreOptionsDialogAccessor) moreOptionsDialog).callSetGeneratorOptionsHolder(holder);
+			return null;
+		}, Util.getMainWorkerExecutor(), client);
+
+		client.runTasks(future::isDone);
 	}
 
 	@Inject(method = "getScannedPack",
