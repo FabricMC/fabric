@@ -41,9 +41,9 @@ public final class ServerMessageEvents {
 	 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
 	 * and after triggering {@link #COMMAND_MESSAGE} event.
 	 */
-	public static final Event<AllowChatMessage> ALLOW_CHAT_MESSAGE = EventFactory.createArrayBacked(AllowChatMessage.class, handlers -> (message, sender, typeKey) -> {
+	public static final Event<AllowChatMessage> ALLOW_CHAT_MESSAGE = EventFactory.createArrayBacked(AllowChatMessage.class, handlers -> (message, sender, params) -> {
 		for (AllowChatMessage handler : handlers) {
-			if (!handler.allowChatMessage(message, sender, typeKey)) return false;
+			if (!handler.allowChatMessage(message, sender, params)) return false;
 		}
 
 		return true;
@@ -58,9 +58,9 @@ public final class ServerMessageEvents {
 	 * the remaining listeners will not be called (if any), and {@link #GAME_MESSAGE}
 	 * event will not be triggered.
 	 */
-	public static final Event<AllowGameMessage> ALLOW_GAME_MESSAGE = EventFactory.createArrayBacked(AllowGameMessage.class, handlers -> (server, message, typeKey) -> {
+	public static final Event<AllowGameMessage> ALLOW_GAME_MESSAGE = EventFactory.createArrayBacked(AllowGameMessage.class, handlers -> (server, message, overlay) -> {
 		for (AllowGameMessage handler : handlers) {
-			if (!handler.allowGameMessage(server, message, typeKey)) return false;
+			if (!handler.allowGameMessage(server, message, overlay)) return false;
 		}
 
 		return true;
@@ -79,9 +79,9 @@ public final class ServerMessageEvents {
 	 * {@link #ALLOW_CHAT_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
 	 * triggered after triggering {@link #COMMAND_MESSAGE}.
 	 */
-	public static final Event<AllowCommandMessage> ALLOW_COMMAND_MESSAGE = EventFactory.createArrayBacked(AllowCommandMessage.class, handlers -> (message, source, typeKey) -> {
+	public static final Event<AllowCommandMessage> ALLOW_COMMAND_MESSAGE = EventFactory.createArrayBacked(AllowCommandMessage.class, handlers -> (message, source, params) -> {
 		for (AllowCommandMessage handler : handlers) {
-			if (!handler.allowCommandMessage(message, source, typeKey)) return false;
+			if (!handler.allowCommandMessage(message, source, params)) return false;
 		}
 
 		return true;
@@ -96,9 +96,9 @@ public final class ServerMessageEvents {
 	 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
 	 * and after triggering {@link #COMMAND_MESSAGE} event.
 	 */
-	public static final Event<ChatMessage> CHAT_MESSAGE = EventFactory.createArrayBacked(ChatMessage.class, handlers -> (message, sender, typeKey) -> {
+	public static final Event<ChatMessage> CHAT_MESSAGE = EventFactory.createArrayBacked(ChatMessage.class, handlers -> (message, sender, params) -> {
 		for (ChatMessage handler : handlers) {
-			handler.onChatMessage(message, sender, typeKey);
+			handler.onChatMessage(message, sender, params);
 		}
 	});
 
@@ -107,9 +107,9 @@ public final class ServerMessageEvents {
 	 * include death messages, join/leave messages, and advancement messages. Is not called
 	 * when {@linkplain #ALLOW_GAME_MESSAGE game messages are blocked}.
 	 */
-	public static final Event<GameMessage> GAME_MESSAGE = EventFactory.createArrayBacked(GameMessage.class, handlers -> (server, message, typeKey) -> {
+	public static final Event<GameMessage> GAME_MESSAGE = EventFactory.createArrayBacked(GameMessage.class, handlers -> (server, message, overlay) -> {
 		for (GameMessage handler : handlers) {
-			handler.onGameMessage(server, message, typeKey);
+			handler.onGameMessage(server, message, overlay);
 		}
 	});
 
@@ -121,9 +121,9 @@ public final class ServerMessageEvents {
 	 * <p>If the command is executed by a player, {@link #ALLOW_CHAT_MESSAGE} and
 	 * {@link #CHAT_MESSAGE} events will also be triggered after this event.
 	 */
-	public static final Event<CommandMessage> COMMAND_MESSAGE = EventFactory.createArrayBacked(CommandMessage.class, handlers -> (message, source, typeKey) -> {
+	public static final Event<CommandMessage> COMMAND_MESSAGE = EventFactory.createArrayBacked(CommandMessage.class, handlers -> (message, source, params) -> {
 		for (CommandMessage handler : handlers) {
-			handler.onCommandMessage(message, source, typeKey);
+			handler.onCommandMessage(message, source, params);
 		}
 	});
 
