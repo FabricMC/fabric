@@ -84,18 +84,18 @@ public class ChatTest implements ModInitializer {
 
 		// ServerMessageEvents
 		ServerMessageEvents.CHAT_MESSAGE.register(
-				(message, sender, typeKey) -> LOGGER.info("ChatTest: {} sent \"{}\"", sender, message)
+				(message, sender, params) -> LOGGER.info("ChatTest: {} sent \"{}\"", sender, message)
 		);
 		ServerMessageEvents.GAME_MESSAGE.register(
 				(server, message, overlay) -> LOGGER.info("ChatTest: server sent \"{}\"", message)
 		);
 		ServerMessageEvents.COMMAND_MESSAGE.register(
-				(message, source, typeKey) -> LOGGER.info("ChatTest: command sent \"{}\"", message)
+				(message, source, params) -> LOGGER.info("ChatTest: command sent \"{}\"", message)
 		);
 
 		// ServerMessageEvents blocking
 		ServerMessageEvents.ALLOW_CHAT_MESSAGE.register(
-				(message, sender, typeKey) -> !message.raw().getContent().getString().contains("sadtater")
+				(message, sender, params) -> !message.raw().getContent().getString().contains("sadtater")
 		);
 		ServerMessageEvents.ALLOW_GAME_MESSAGE.register((server, message, overlay) -> {
 			if (message.getContent() instanceof TranslatableTextContent translatable) {
@@ -105,7 +105,7 @@ public class ChatTest implements ModInitializer {
 			return true;
 		});
 		ServerMessageEvents.ALLOW_COMMAND_MESSAGE.register(
-				(message, source, typeKey) -> !message.raw().getContent().getString().contains("sadtater")
+				(message, source, params) -> !message.raw().getContent().getString().contains("sadtater")
 		);
 	}
 }
