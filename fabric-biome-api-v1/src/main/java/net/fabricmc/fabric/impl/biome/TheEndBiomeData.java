@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.biome;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
-import org.jetbrains.annotations.ApiStatus;
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
@@ -44,7 +44,7 @@ import net.minecraft.world.biome.source.util.MultiNoiseUtil;
  */
 @ApiStatus.Internal
 public final class TheEndBiomeData {
-	public static final Set<RegistryKey<Biome>> ADDED_BIOMES = new HashSet<>();
+	public static final Map<RegistryKey<Biome>, RegistryKey<Biome>> ADDED_BIOMES = new HashMap<>();
 	private static final Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> END_BIOMES_MAP = new IdentityHashMap<>();
 	private static final Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> END_MIDLANDS_MAP = new IdentityHashMap<>();
 	private static final Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> END_BARRENS_MAP = new IdentityHashMap<>();
@@ -71,7 +71,7 @@ public final class TheEndBiomeData {
 		Preconditions.checkNotNull(variant, "variant entry is null");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (got %s)", weight);
 		END_BIOMES_MAP.computeIfAbsent(replaced, key -> new WeightedPicker<>()).add(variant, weight);
-		ADDED_BIOMES.add(variant);
+		ADDED_BIOMES.put(variant, replaced);
 	}
 
 	public static void addEndMidlandsReplacement(RegistryKey<Biome> highlands, RegistryKey<Biome> midlands, double weight) {
@@ -79,7 +79,7 @@ public final class TheEndBiomeData {
 		Preconditions.checkNotNull(midlands, "midlands entry is null");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (got %s)", weight);
 		END_MIDLANDS_MAP.computeIfAbsent(highlands, key -> new WeightedPicker<>()).add(midlands, weight);
-		ADDED_BIOMES.add(midlands);
+		ADDED_BIOMES.put(midlands, BiomeKeys.END_MIDLANDS);
 	}
 
 	public static void addEndBarrensReplacement(RegistryKey<Biome> highlands, RegistryKey<Biome> barrens, double weight) {
@@ -87,7 +87,7 @@ public final class TheEndBiomeData {
 		Preconditions.checkNotNull(barrens, "midlands entry is null");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (got %s)", weight);
 		END_BARRENS_MAP.computeIfAbsent(highlands, key -> new WeightedPicker<>()).add(barrens, weight);
-		ADDED_BIOMES.add(barrens);
+		ADDED_BIOMES.put(barrens, BiomeKeys.END_BARRENS);
 	}
 
 	public static Overrides createOverrides(Registry<Biome> biomeRegistry) {
@@ -114,7 +114,7 @@ public final class TheEndBiomeData {
 		private final Map<MultiNoiseUtil.MultiNoiseSampler, PerlinNoiseSampler> samplers = new WeakHashMap<>();
 
 		public Overrides(Registry<Biome> biomeRegistry) {
-			this.customBiomes = ADDED_BIOMES.stream().map(biomeRegistry::entryOf).collect(Collectors.toSet());
+			this.customBiomes = ADDED_BIOMES.keySet().stream().map(biomeRegistry::entryOf).collect(Collectors.toSet());
 
 			this.endMidlands = biomeRegistry.entryOf(BiomeKeys.END_MIDLANDS);
 			this.endBarrens = biomeRegistry.entryOf(BiomeKeys.END_BARRENS);

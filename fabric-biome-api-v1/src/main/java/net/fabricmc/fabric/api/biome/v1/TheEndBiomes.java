@@ -103,4 +103,49 @@ public final class TheEndBiomes {
 	public static void addBarrensBiome(RegistryKey<Biome> highlands, RegistryKey<Biome> barrens, double weight) {
 		TheEndBiomeData.addEndBarrensReplacement(highlands, barrens, weight);
 	}
+
+	/**
+	 * Returns true if the given biome was added as a main end Biome in the end, considering the Vanilla end biomes,
+	 * and any biomes added to the End by mods.
+	 * @param biome The biome to search for
+	 */
+	public static boolean isMainIslandBiome(RegistryKey<Biome> biome) {
+		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.THE_END;
+	}
+
+	/**
+	 * Returns true if the given biome was added as a small end islands Biome in the end, considering the Vanilla end biomes,
+	 * and any biomes added to the End by mods.
+	 * @param biome The biome to search for
+	 */
+	public static boolean isSmallIslandsBiome(RegistryKey<Biome> biome) {
+		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.SMALL_END_ISLANDS;
+	}
+
+	/**
+	 * Returns true if the given biome was added as a Highland Biome in the end, considering the Vanilla end biomes,
+	 * and any biomes added to the End by mods.
+	 * @param biome The biome to search for
+	 */
+	public static boolean isHighlandsBiome(RegistryKey<Biome> biome) {
+		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.END_HIGHLANDS;
+	}
+
+	/**
+	 * Returns true if the given biome was added as midland biome in the end, considering the Vanilla end biomes,
+	 * and any biomes added to the End as midland biome by mods.
+	 * @param biome The biome to search for
+	 */
+	public static boolean isMidlandsBiome(RegistryKey<Biome> biome) {
+		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.END_MIDLANDS;
+	}
+
+	/**
+	 * Returns true if the given biome was added as barrens biome in the end, considering the Vanilla end biomes,
+	 * and any biomes added to the End as barrens biome by mods.
+	 * @param biome The biome to search for
+	 */
+	public static boolean isBarrensBiome(RegistryKey<Biome> biome) {
+		return TheEndBiomeData.ADDED_BIOMES.get(biome) == BiomeKeys.END_BARRENS;
+	}
 }
