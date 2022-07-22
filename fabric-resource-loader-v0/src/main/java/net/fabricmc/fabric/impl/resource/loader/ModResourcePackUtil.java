@@ -29,6 +29,7 @@ import net.minecraft.resource.DataPackSettings;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
@@ -56,7 +57,7 @@ public final class ModResourcePackUtil {
 				continue;
 			}
 
-			ModResourcePack pack = ModNioResourcePack.create(getName(container.getMetadata()), container, null, type, ResourcePackActivationType.ALWAYS_ENABLED);
+			ModResourcePack pack = ModNioResourcePack.create(new Identifier("fabric", container.getMetadata().getId()), getName(container.getMetadata()), container, null, type, ResourcePackActivationType.ALWAYS_ENABLED);
 
 			if (pack != null) {
 				packs.add(pack);
