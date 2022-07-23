@@ -58,10 +58,10 @@ public class GameOptionsMixin {
 	@Inject(method = "load", at = @At("RETURN"))
 	private void onLoad(CallbackInfo ci) {
 		// Track built-in resource packs if they are enabled by default.
-		// - If there is NO line with the resource pack id, add it to the enabled packs and to the tracker file.
-		// - If there is a line with the pack id, do not add it to the enabled packs and let
+		// - If there is NO value with matching resource pack id, add it to the enabled packs and the tracker file.
+		// - If there is a matching value and pack id, do not add it to the enabled packs and let
 		//   the options value decides if it is enabled or not.
-		// - If there is a line without matching pack id (e.g. because the mod is removed),
+		// - If there is a value without matching pack id (e.g. because the mod is removed),
 		//   remove it from the tracker file so that it would be enabled again if added back later.
 
 		File dataDir = FabricLoader.getInstance().getGameDir().resolve("data").toFile();
