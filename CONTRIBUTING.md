@@ -114,7 +114,9 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
 - Interface injection (i.e. making a minecraft class or interface extend a Fabric interface) should be considered over separate static helpers.
     - Interface injection requires both a `fabric.mod.json` custom value to make it visible in Minecraft source code, and a mixin to actually implement the interface at runtime.
     - Injected interfaces should have **no abstract methods**.
-        - Methods that are guaranteed to be implemented via a mixin to a vanilla class should contain a default body that throws an error. For example:
+        - Methods that are guaranteed to be implemented via a mixin to a vanilla class should contain a default body that throws an error.
+          Otherwise, the compiler will complain when it can't find the implementation of an interface method on a class.
+          For example:
         ```java
         default void injectedMethod() {
             throw new UnsupportedOperationException("Implemented via mixin");
@@ -128,7 +130,7 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
 - Classes in Fabric API should be `final` classes unless the class exposed in the API is explicitly meant for extension.
 - `private` constructors should be used in API classes unless the class is explicitly meant to be instantiated.
     - This only applies to modder-facing classes, i.e. classes in the `net.fabricmc.fabric.api` subpackage. See below for package structure.
-    - They should be placed at the very bottom of the class to not hurt readability.
+    - They should be placed at the very bottom or top of the class to not hurt readability.
 - Access modifiers for fields and methods should be as strict as possible.
     - If a method is intended to only be for use by mods implementing an api, a `protected` method should suffice.
 
@@ -154,7 +156,8 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
 ### Events
 
 - Events should not be used if there is only one subscriber, like a handler in a registered unique namespace.
-- Events should be produced and fully usable without object allocation.
+- Events should be produced and fully usable with minimal object allocation.
+  - In particular, avoid data holder objects for inputs, but rather pass them as separate parameters.
 - Events should use dedicated callback interfaces.
     - Callback interfaces should be `@FunctionalInterface`s.
     - Callback methods should be uniquely named such that a handler can implement multiple at once.
