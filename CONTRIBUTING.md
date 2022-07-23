@@ -158,7 +158,7 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
 - Events should use dedicated callback interfaces.
     - Callback interfaces should be `@FunctionalInterface`s.
     - Callback methods should be uniquely named such that a handler can implement multiple at once.
-        - Avoid words that are already clear from the parameters. For example, prefer `onStartTick(MinecraftServer)` over `onStartServerTick(MinecraftServer)`. The interface should still be named `StartServerTick`.
+        - Avoid words that are already clear from the parameters. For example, prefer `onStartTick(MinecraftServer)` over `onStartServerTick(MinecraftServer)`. The interface should still be named `StartServerTick` if "server" is not already implied by the containing class.
     - Callback signatures should use the most specific type, if appropriate. E.g. `WorldChunk` over `Chunk`.
     - Callback signatures should pass context that the listener might be expected to use, without excess. For example:
         - Events involving a `MinecraftServer` directly should consider passing a `MinecraftServer` parameter.
@@ -199,13 +199,13 @@ public final class FooEvents {
 
 #### Event naming
 
-- Callback interfaces.
+- Callback interfaces:
     - Callback interfaces should be named using present tense. For example, `ChunkUnload` and not `ChunkUnloaded`.
     - The methods should be named in line with the action of the event, such as `entryAdded(...)`.
     - Method names for notification events should be prefixed with `on`.
       For example, a `DataLoad` event would have an `onDataLoad` method.
     - Events that may allow or block some action should start with `Allow`. For example, an event to cancel player death might be called `AllowPlayerDeath`, with method name `allowDeath`.
-- `Event<>` fields and methods.
+- `Event<>` fields and methods:
     - The field or method exposing the `Event<>` object should be named similarly to the callback interface.
 - The `fabric-lifecycle-events-v1` module is a good example of event naming standards.
 
@@ -223,7 +223,7 @@ public final class FooEvents {
 - Simple code that is easy to debug and reason about is generally preferable to the shortest possible implementation.
 - Limited duplication can be better than indirection, unless the code is complex or used several times.
 - Indirections might make the code harder to read, and should be weighed against their benefits. Examples include:
-    - Lambda methods (forEach, streams).
+    - Lambda methods (`forEach`, streams).
     - Method splitting.
     - Recursion.
     - Complex class hierarchies.
@@ -267,14 +267,14 @@ private Stuff stuff() {
 
 ## Documentation
 
-- Every API class should carry a Javadoc block explaining its purpose and reference related classes. Example code in the primary class of any major feature should outline the use, including related vanilla invocations/registrations/etc as applicable to provide an idea of how to start.
+- Every API class should carry a Javadoc comment explaining its purpose and reference related classes. Example code in the primary class of any major feature should outline the use, including related vanilla invocations/registrations/etc as applicable to provide an idea of how to start.
     - Parameters, implementation bodies, etc... may be omitted as appropriate, since the examples are not meant as to be fully working implementations.
     - The examples should be more akin to pseudocode with a checklist for the process and pointers to everything needed.
     - These examples should be written for developers that have a knowledge of Java and basic knowledge of the Minecraft codebase.
 - A brief description belongs in the 1st paragraph, with further paragraphs separated by blank lines and starting with `<p>`. Javadoc for methods may follow with another blank line before describing parameters, return values and exceptions with the appropriate tags. All accessible members should be described appropriately.
 - Good documentation doesn't only explain what something is, but (as appropriate) why it exists, what are the intended use cases, what use cases something is not suitable for and any semantics that need to be kept in mind.
     - In particular, tricky implementation details should be explained by a few comments when appropriate.
-- Direct references to classes or members should use `@link` tag, unspecific further reading elsewhere may use `@see`.
+- Direct references to classes or members should use the `@link` and `@linkplain` tags, unspecific further reading elsewhere may use `@see`.
 - Deprecated elements should describe and reference the replacement or alternative in Javadoc `@deprecated`. The `@deprecated` tag has to be last, everything else may be removed while adding it.
 - The Fabric Wiki is the proper place for additional in-depth documentation and how-tos. Examples are not necessary for simple events.
 
