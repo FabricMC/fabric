@@ -41,10 +41,12 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * function. If not given, the message decorator will run in the default phase, which is between
  * the content phase and the styling phase.
  *
- * <p>When implementing a message decorator, it is <strong>very important that the decorator be
- * pure; i.e. return the same text when called multiple times for the same arguments (message and
- * sender)</strong> - otherwise the server detects a mismatch between the preview and the actual message,
- * and discards the message because it was improperly signed.
+ * <p>The message decorator's result is cached (as of 1.19.1) if the chat preview is enabled.
+ * If the original message did not change between the last preview and submission, the decorator
+ * is not called during submission and the cached preview is used instead. Note that the
+ * decorator can still be called during submission if the chat preview is disabled, the
+ * sent message was not the same as the previewed message, or if text filtering was enabled and
+ * it produced a different message.
  *
  * <p>Example of registering a content phase message decorator:
  *

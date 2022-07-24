@@ -22,6 +22,7 @@ import java.util.concurrent.Executor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.random.Random;
@@ -41,6 +42,15 @@ public class ChatTest implements ModInitializer {
 		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
 			if (message.getString().contains("tater")) {
 				return CompletableFuture.completedFuture(message.copy().append(" :tiny_potato:"));
+			}
+
+			return CompletableFuture.completedFuture(message);
+		});
+
+		// Content phase testing, with variable info
+		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
+			if (message.getString().contains("random")) {
+				return CompletableFuture.completedFuture(Text.of(String.valueOf(Random.create().nextBetween(0, 100))));
 			}
 
 			return CompletableFuture.completedFuture(message);
@@ -74,20 +84,20 @@ public class ChatTest implements ModInitializer {
 
 		// ServerMessageEvents
 		ServerMessageEvents.CHAT_MESSAGE.register(
-				(message, sender, typeKey) -> LOGGER.info("ChatTest: {} sent \"{}\"", sender, message)
+				(message, sender, params) -> LOGGER.info("ChatTest: {} sent \"{}\"", sender, message)
 		);
 		ServerMessageEvents.GAME_MESSAGE.register(
-				(message, typeKey) -> LOGGER.info("ChatTest: server sent \"{}\"", message)
+				(server, message, overlay) -> LOGGER.info("ChatTest: server sent \"{}\"", message)
 		);
 		ServerMessageEvents.COMMAND_MESSAGE.register(
-				(message, source, typeKey) -> LOGGER.info("ChatTest: command sent \"{}\"", message)
+				(message, source, params) -> LOGGER.info("ChatTest: command sent \"{}\"", message)
 		);
 
 		// ServerMessageEvents blocking
 		ServerMessageEvents.ALLOW_CHAT_MESSAGE.register(
-				(message, sender, typeKey) -> !message.raw().getContent().getString().contains("sadtater")
+				(message, sender, params) -> !message.raw().getContent().getString().contains("sadtater")
 		);
-		ServerMessageEvents.ALLOW_GAME_MESSAGE.register((message, typeKey) -> {
+		ServerMessageEvents.ALLOW_GAME_MESSAGE.register((server, message, overlay) -> {
 			if (message.getContent() instanceof TranslatableTextContent translatable) {
 				return !translatable.getKey().startsWith("death.attack.badRespawnPoint.");
 			}
@@ -95,7 +105,7 @@ public class ChatTest implements ModInitializer {
 			return true;
 		});
 		ServerMessageEvents.ALLOW_COMMAND_MESSAGE.register(
-				(message, source, typeKey) -> !message.raw().getContent().getString().contains("sadtater")
+				(message, source, params) -> !message.raw().getContent().getString().contains("sadtater")
 		);
 	}
 }
