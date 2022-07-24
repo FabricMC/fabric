@@ -94,7 +94,6 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
     - This pattern may be used if the backing implementation may be changed by another mod (such as the renderer api). Even then there should be static methods to access the standard api facilities.
 - Avoid unnecessary use of generics.
     - Unless Vanilla Minecraft mandates the use of generics, or a good reason exists to use generics.
-    - In particular, use of self types should be avoided.
 - Avoid optionals in return values, fields and parameters.
     - Where possible, you should prefer a `@Nullable T`.
     - If vanilla exposes optionals in return types, then returning an optional is fine.
