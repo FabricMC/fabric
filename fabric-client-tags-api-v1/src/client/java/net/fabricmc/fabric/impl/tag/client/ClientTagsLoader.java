@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -51,7 +53,7 @@ public class ClientTagsLoader {
 	 * Load a given tag from the available mods into a set of {@code Identifier}s.
 	 * Parsing based on {@link net.minecraft.tag.TagGroupLoader#loadTags(net.minecraft.resource.ResourceManager)}
 	 */
-	public static HashSet<Identifier> loadTag(TagKey<?> tagKey) {
+	public static Set<Identifier> loadTag(TagKey<?> tagKey) {
 		var tags = new HashSet<TagEntry>();
 		HashSet<Path> tagFiles = getTagFiles(tagKey.registry(), tagKey.id());
 
@@ -92,7 +94,7 @@ public class ClientTagsLoader {
 			}, ids::add);
 		}
 
-		return ids;
+		return Collections.unmodifiableSet(ids);
 	}
 
 	/**

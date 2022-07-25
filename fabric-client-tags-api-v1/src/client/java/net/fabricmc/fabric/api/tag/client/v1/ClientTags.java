@@ -64,7 +64,7 @@ public final class ClientTags {
 
 		if (ids == null) {
 			ids = ClientTagsLoader.loadTag(tagKey);
-			LOCAL_TAG_CACHE.put(tagKey, Collections.unmodifiableSet(ids));
+			LOCAL_TAG_CACHE.put(tagKey, ids);
 		}
 
 		return ids;
