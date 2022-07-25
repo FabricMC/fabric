@@ -16,24 +16,23 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.fabricmc.fabric.api.event.Event;
-
-import net.fabricmc.fabric.api.event.EventFactory;
-
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 
-public interface CrosshairRenderCallback {
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
-	Event<CrosshairRenderCallback> EVENT = EventFactory.createArrayBacked(CrosshairRenderCallback.class, listeners -> ((matrices, scaledWidth, scaledHeight, zOffset) -> {
+public interface CrosshairRenderCallback {
+	Event<CrosshairRenderCallback> EVENT = EventFactory.createArrayBacked(CrosshairRenderCallback.class, listeners -> (matrices, scaledWidth, scaledHeight, zOffset) -> {
 		boolean result = true;
+
 		for (CrosshairRenderCallback callback : listeners) {
 			if (!callback.onCrosshairRender(matrices, scaledWidth, scaledHeight, zOffset)) {
 				result = false;
 			}
 		}
+
 		return result;
-	}));
+	});
 
 	/**
 	 * Called before crosshair is rendered.
@@ -46,8 +45,4 @@ public interface CrosshairRenderCallback {
 	 * @return {@code false} if crosshair should be disabled, otherwise {@code true}.
 	 */
 	boolean onCrosshairRender(MatrixStack matrices, int scaledWidth, int scaledHeight, int zOffset);
-
-	default void drawTexture(MatrixStack matrices, int x, int y, int zOffset, int u, int v, int width, int height) {
-		DrawableHelper.drawTexture(matrices, x, y, zOffset, u, v, width, height, 256, 256);
-	}
 }

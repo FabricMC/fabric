@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.mixin.client.rendering;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -54,8 +53,9 @@ public class MixinInGameHud extends DrawableHelper {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, GUI_ICONS_TEXTURE);
 		RenderSystem.enableBlend();
+
 		// Disable crosshair rendering if needed
-		if (!result){
+		if (!result) {
 			ci.cancel();
 		}
 	}
