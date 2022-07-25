@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.tag.client.v1;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -63,7 +64,7 @@ public final class ClientTags {
 
 		if (ids == null) {
 			ids = ClientTagsLoader.loadTag(tagKey);
-			LOCAL_TAG_CACHE.put(tagKey, ids);
+			LOCAL_TAG_CACHE.put(tagKey, Collections.unmodifiableSet(ids));
 		}
 
 		return ids;
@@ -86,25 +87,27 @@ public final class ClientTags {
 
 		Optional<? extends Registry<?>> maybeRegistry = getRegistry(tagKey);
 
-		if (maybeRegistry.isPresent()) {
-			if (tagKey.isOf(maybeRegistry.get().getKey())) {
-				Registry<T> registry = (Registry<T>) maybeRegistry.get();
-
-				Optional<RegistryKey<T>> maybeKey = registry.getKey(entry);
-
-				// Check synced tag
-				if (registry.containsTag(tagKey)) {
-					return maybeKey.filter(registryKey -> registry.entryOf(registryKey).isIn(tagKey))
-							.isPresent();
-				}
-
-				// Check local tags
-				Set<Identifier> ids = getOrCreateLocalTag(tagKey);
-				return maybeKey.filter(registryKey -> ids.contains(registryKey.getValue())).isPresent();
-			}
+		if (maybeRegistry.isEmpty()) {
+			return false;
 		}
 
-		return false;
+		if (!tagKey.isOf(maybeRegistry.get().getKey())) {
+			return false;
+		}
+
+		Registry<T> registry = (Registry<T>) maybeRegistry.get();
+
+		Optional<RegistryKey<T>> maybeKey = registry.getKey(entry);
+
+		// Check synced tag
+		if (registry.containsTag(tagKey)) {
+			return maybeKey.filter(registryKey -> registry.entryOf(registryKey).isIn(tagKey))
+					.isPresent();
+		}
+
+		// Check local tags
+		Set<Identifier> ids = getOrCreateLocalTag(tagKey);
+		return maybeKey.filter(registryKey -> ids.contains(registryKey.getValue())).isPresent();
 	}
 
 	/**
