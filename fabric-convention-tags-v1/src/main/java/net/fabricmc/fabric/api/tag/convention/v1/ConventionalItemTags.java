@@ -25,7 +25,10 @@ import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
  * See {@link net.minecraft.tag.ItemTags} for vanilla tags.
  * Note that addition to some vanilla tags implies having certain functionality.
  */
-public class ConventionalItemTags {
+public final class ConventionalItemTags {
+	private ConventionalItemTags() {
+	}
+
 	// Tool tags
 	public static final TagKey<Item> PICKAXES = register("pickaxes");
 	public static final TagKey<Item> SHOVELS = register("shovels");

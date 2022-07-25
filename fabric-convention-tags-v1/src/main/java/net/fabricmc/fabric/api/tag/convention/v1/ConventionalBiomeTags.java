@@ -27,7 +27,10 @@ import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
  * and as such certain biome tags exist to mirror vanilla tags, and should be preferred
  * over vanilla unless its behavior is desired.
  */
-public class ConventionalBiomeTags {
+public final class ConventionalBiomeTags {
+	private ConventionalBiomeTags() {
+	}
+
 	/**
 	 * Biomes that spawn in the Overworld.
 	 */
