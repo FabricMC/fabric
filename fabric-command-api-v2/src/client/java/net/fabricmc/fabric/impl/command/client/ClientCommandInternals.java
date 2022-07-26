@@ -128,7 +128,7 @@ public final class ClientCommandInternals {
 		return type == builtins.dispatcherUnknownCommand() || type == builtins.dispatcherParseException();
 	}
 
-	// See CommandSuggestor.method_30505. That cannot be used directly as it returns an OrderedText instead of a Text.
+	// See ChatInputSuggestor.formatException. That cannot be used directly as it returns an OrderedText instead of a Text.
 	private static Text getErrorMessage(CommandSyntaxException e) {
 		Text message = Texts.toText(e.getRawMessage());
 		String context = e.getContext();
