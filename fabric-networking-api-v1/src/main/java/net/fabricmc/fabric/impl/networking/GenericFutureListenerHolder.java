@@ -28,7 +28,7 @@ import net.minecraft.network.Packet;
 
 /**
  * We still need to support {@link GenericFutureListener} so we use this disguise impl {@link class_7648}
- * to get our {@link GenericFutureListener} to into {@link ClientConnection}
+ * to get our {@link GenericFutureListener} to into {@link ClientConnection}.
  */
 public final class GenericFutureListenerHolder implements class_7648 {
 	private final GenericFutureListener<? extends Future<? super Void>> delegate;
