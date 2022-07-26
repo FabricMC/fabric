@@ -49,7 +49,7 @@ public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, P
 	@Override
 	public void sendToPlayer(PlayerEntity player, Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
 		if (player instanceof ServerPlayerEntity) {
-			((ServerPlayerEntity) player).networkHandler.sendPacket(packet, completionListener);
+			((ServerPlayerEntity) player).networkHandler.sendPacket(packet, GenericFutureListenerHolder.create(completionListener));
 			return;
 		}
 
