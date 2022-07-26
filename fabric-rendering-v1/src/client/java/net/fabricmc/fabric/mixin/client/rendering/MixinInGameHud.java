@@ -30,6 +30,7 @@ import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.GameRenderer;
 
 import net.fabricmc.fabric.api.client.rendering.v1.CrosshairRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.CrosshairRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 @Mixin(InGameHud.class)
@@ -47,7 +48,9 @@ public class MixinInGameHud extends DrawableHelper {
 
 	@Inject(method = "renderCrosshair", at = @At(value = "INVOKE", target = "com/mojang/blaze3d/systems/RenderSystem.blendFuncSeparate (Lcom/mojang/blaze3d/platform/GlStateManager$SrcFactor;Lcom/mojang/blaze3d/platform/GlStateManager$DstFactor;Lcom/mojang/blaze3d/platform/GlStateManager$SrcFactor;Lcom/mojang/blaze3d/platform/GlStateManager$DstFactor;)V"), cancellable = true)
 	public void renderCrosshair(MatrixStack matrices, CallbackInfo ci) {
-		boolean result = CrosshairRenderCallback.EVENT.invoker().onCrosshairRender(matrices, this.scaledWidth, this.scaledHeight, this.getZOffset());
+		CrosshairRenderHandler handler = new CrosshairRenderHandler();
+		CrosshairRenderCallback.EVENT.invoker().onCrosshairRender(handler);
+		handler.render(matrices, this.scaledWidth, this.scaledHeight, this.getZOffset());
 		// Reset these in case they are changed
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -55,7 +58,7 @@ public class MixinInGameHud extends DrawableHelper {
 		RenderSystem.enableBlend();
 
 		// Disable crosshair rendering if needed
-		if (!result) {
+		if (handler.isVanillaCanceled()) {
 			ci.cancel();
 		}
 	}
