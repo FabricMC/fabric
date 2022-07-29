@@ -49,7 +49,5 @@
  * net.fabricmc.fabric.api.screenhandler.v1.FabricScreenHandlerFactory#shouldCloseCurrentScreen()}
  * on the screen handler factory to return {@code false} and passing that to the {@code
  * openHandledScreen} method, it will stop closing the screen and instead "overwrites" it.
- * To make the process easier, {@link net.fabricmc.fabric.api.screenhandler.v1.OverwritingScreenHandlerFactory}
- * can be used to wrap existing factories, including extended ones.
  */
 package net.fabricmc.fabric.api.screenhandler.v1;
