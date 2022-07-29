@@ -23,11 +23,10 @@ package net.fabricmc.fabric.api.screenhandler.v1;
  */
 public interface FabricScreenHandlerFactory {
 	/**
+	 * {@return whether the server should send {@link
+	 * net.minecraft.network.packet.s2c.play.CloseScreenS2CPacket} when opening the screen}
 	 *
-	 * @return whether the server should send {@link
-	 * net.minecraft.network.packet.s2c.play.CloseScreenS2CPacket} when opening the screen
-	 *
-	 * <p></p>In vanilla game, opening a new screen will always send the close screen packet.
+	 * <p>In vanilla, opening a new screen will always send the close screen packet.
 	 * This, among other things, causes the mouse cursor to move to the center of the screen,
 	 * which might not be expected in some cases. If this returns {@code false}, the packet
 	 * is not sent to the client, stopping the behavior.
