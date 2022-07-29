@@ -28,12 +28,11 @@ import static net.minecraft.util.math.Direction.UP;
 import static net.minecraft.util.math.Direction.WEST;
 
 import java.util.BitSet;
-import java.util.function.ToIntFunction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -55,10 +54,15 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderInfo;
  */
 @Environment(EnvType.CLIENT)
 public class AoCalculator {
+	@FunctionalInterface
+	public interface BrightnessFunc {
+		int apply(BlockPos pos, BlockState state);
+	}
+
 	/** Used to receive a method reference in constructor for ao value lookup. */
 	@FunctionalInterface
 	public interface AoFunc {
-		float apply(BlockPos pos);
+		float apply(BlockPos pos, BlockState state);
 	}
 
 	/**
@@ -81,10 +85,10 @@ public class AoCalculator {
 	private final BlockPos.Mutable lightPos = new BlockPos.Mutable();
 	private final BlockPos.Mutable searchPos = new BlockPos.Mutable();
 	private final BlockRenderInfo blockInfo;
-	private final ToIntFunction<BlockPos> brightnessFunc;
+	private final BrightnessFunc brightnessFunc;
 	private final AoFunc aoFunc;
 
-	/** caches results of {@link #computeFace(Direction, boolean)} for the current block. */
+	/** caches results of {@link #computeFace(Direction, boolean, boolean)} for the current block. */
 	private final AoFaceData[] faceData = new AoFaceData[12];
 
 	/** indicates which elements of {@link #faceData} have been computed for the current block. */
@@ -97,7 +101,7 @@ public class AoCalculator {
 	public final float[] ao = new float[4];
 	public final int[] light = new int[4];
 
-	public AoCalculator(BlockRenderInfo blockInfo, ToIntFunction<BlockPos> brightnessFunc, AoFunc aoFunc) {
+	public AoCalculator(BlockRenderInfo blockInfo, BrightnessFunc brightnessFunc, AoFunc aoFunc) {
 		this.blockInfo = blockInfo;
 		this.brightnessFunc = brightnessFunc;
 		this.aoFunc = aoFunc;
@@ -193,7 +197,7 @@ public class AoCalculator {
 		int flags = quad.geometryFlags();
 
 		// force to block face if shape is full cube - matches vanilla logic
-		if ((flags & LIGHT_FACE_FLAG) == 0 && (flags & AXIS_ALIGNED_FLAG) == AXIS_ALIGNED_FLAG && Block.isShapeFullCube(blockInfo.blockState.getCollisionShape(blockInfo.blockView, blockInfo.blockPos))) {
+		if ((flags & LIGHT_FACE_FLAG) == 0 && (flags & AXIS_ALIGNED_FLAG) != 0 && blockInfo.blockState.isFullCube(blockInfo.blockView, blockInfo.blockPos)) {
 			flags |= LIGHT_FACE_FLAG;
 		}
 
@@ -355,7 +359,7 @@ public class AoCalculator {
 
 	/**
 	 * Computes smoothed brightness and Ao shading for four corners of a block face.
-	 * Outer block face is what you normally see and what you get get when second
+	 * Outer block face is what you normally see and what you get when the second
 	 * parameter is true. Inner is light *within* the block and usually darker.
 	 * It is blended with the outer face for inset surfaces, but is also used directly
 	 * in vanilla logic for some blocks that aren't full opaque cubes.
@@ -371,45 +375,76 @@ public class AoCalculator {
 
 			final BlockRenderView world = blockInfo.blockView;
 			final BlockPos pos = blockInfo.blockPos;
+			final BlockState blockState = blockInfo.blockState;
 			final BlockPos.Mutable lightPos = this.lightPos;
 			final BlockPos.Mutable searchPos = this.searchPos;
+			BlockState searchState;
 
-			lightPos.set(isOnBlockFace ? pos.offset(lightFace) : pos);
+			if (isOnBlockFace) {
+				lightPos.set(pos, lightFace);
+			} else {
+				lightPos.set(pos);
+			}
+
 			AoFace aoFace = AoFace.get(lightFace);
 
-			searchPos.set(lightPos).move(aoFace.neighbors[0]);
-			final int light0 = brightnessFunc.applyAsInt(searchPos);
-			final float ao0 = aoFunc.apply(searchPos);
-			searchPos.set(lightPos).move(aoFace.neighbors[1]);
-			final int light1 = brightnessFunc.applyAsInt(searchPos);
-			final float ao1 = aoFunc.apply(searchPos);
-			searchPos.set(lightPos).move(aoFace.neighbors[2]);
-			final int light2 = brightnessFunc.applyAsInt(searchPos);
-			final float ao2 = aoFunc.apply(searchPos);
-			searchPos.set(lightPos).move(aoFace.neighbors[3]);
-			final int light3 = brightnessFunc.applyAsInt(searchPos);
-			final float ao3 = aoFunc.apply(searchPos);
+			// Vanilla was further offsetting the positions for opaque block checks in the
+			// direction of the light face, but it was actually mis-sampling and causing
+			// visible artifacts in certain situations
 
-			// vanilla was further offsetting these in the direction of the light face
-			// but it was actually mis-sampling and causing visible artifacts in certain situation
-			searchPos.set(lightPos).move(aoFace.neighbors[0]); //.setOffset(lightFace);
-			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.move(lightFace);
-			final boolean isClear0 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
-			searchPos.set(lightPos).move(aoFace.neighbors[1]); //.setOffset(lightFace);
-			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.move(lightFace);
-			final boolean isClear1 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
-			searchPos.set(lightPos).move(aoFace.neighbors[2]); //.setOffset(lightFace);
-			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.move(lightFace);
-			final boolean isClear2 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
-			searchPos.set(lightPos).move(aoFace.neighbors[3]); //.setOffset(lightFace);
-			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.move(lightFace);
-			final boolean isClear3 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
+			searchPos.set(lightPos, aoFace.neighbors[0]);
+			searchState = world.getBlockState(searchPos);
+			final int light0 = brightnessFunc.apply(searchPos, searchState);
+			final float ao0 = aoFunc.apply(searchPos, searchState);
+
+			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
+				searchPos.move(lightFace);
+				searchState = world.getBlockState(searchPos);
+			}
+
+			final boolean isClear0 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity(world, searchPos) == 0;
+
+			searchPos.set(lightPos, aoFace.neighbors[1]);
+			searchState = world.getBlockState(searchPos);
+			final int light1 = brightnessFunc.apply(searchPos, searchState);
+			final float ao1 = aoFunc.apply(searchPos, searchState);
+
+			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
+				searchPos.move(lightFace);
+				searchState = world.getBlockState(searchPos);
+			}
+
+			final boolean isClear1 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity(world, searchPos) == 0;
+
+			searchPos.set(lightPos, aoFace.neighbors[2]);
+			searchState = world.getBlockState(searchPos);
+			final int light2 = brightnessFunc.apply(searchPos, searchState);
+			final float ao2 = aoFunc.apply(searchPos, searchState);
+
+			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
+				searchPos.move(lightFace);
+				searchState = world.getBlockState(searchPos);
+			}
+
+			final boolean isClear2 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity(world, searchPos) == 0;
+
+			searchPos.set(lightPos, aoFace.neighbors[3]);
+			searchState = world.getBlockState(searchPos);
+			final int light3 = brightnessFunc.apply(searchPos, searchState);
+			final float ao3 = aoFunc.apply(searchPos, searchState);
+
+			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
+				searchPos.move(lightFace);
+				searchState = world.getBlockState(searchPos);
+			}
+
+			final boolean isClear3 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity(world, searchPos) == 0;
 
 			// c = corner - values at corners of face
 			int cLight0, cLight1, cLight2, cLight3;
 			float cAo0, cAo1, cAo2, cAo3;
 
-			// If neighbors on both side of the corner are opaque, then apparently we use the light/shade
+			// If neighbors on both sides of the corner are opaque, then apparently we use the light/shade
 			// from one of the sides adjacent to the corner.  If either neighbor is clear (no light subtraction)
 			// then we use values from the outwardly diagonal corner. (outwardly = position is one more away from light face)
 			if (!isClear2 && !isClear0) {
@@ -417,8 +452,9 @@ public class AoCalculator {
 				cLight0 = light0;
 			} else {
 				searchPos.set(lightPos).move(aoFace.neighbors[0]).move(aoFace.neighbors[2]);
-				cAo0 = aoFunc.apply(searchPos);
-				cLight0 = brightnessFunc.applyAsInt(searchPos);
+				searchState = world.getBlockState(searchPos);
+				cAo0 = aoFunc.apply(searchPos, searchState);
+				cLight0 = brightnessFunc.apply(searchPos, searchState);
 			}
 
 			if (!isClear3 && !isClear0) {
@@ -426,8 +462,9 @@ public class AoCalculator {
 				cLight1 = light0;
 			} else {
 				searchPos.set(lightPos).move(aoFace.neighbors[0]).move(aoFace.neighbors[3]);
-				cAo1 = aoFunc.apply(searchPos);
-				cLight1 = brightnessFunc.applyAsInt(searchPos);
+				searchState = world.getBlockState(searchPos);
+				cAo1 = aoFunc.apply(searchPos, searchState);
+				cLight1 = brightnessFunc.apply(searchPos, searchState);
 			}
 
 			if (!isClear2 && !isClear1) {
@@ -435,8 +472,9 @@ public class AoCalculator {
 				cLight2 = light1;
 			} else {
 				searchPos.set(lightPos).move(aoFace.neighbors[1]).move(aoFace.neighbors[2]);
-				cAo2 = aoFunc.apply(searchPos);
-				cLight2 = brightnessFunc.applyAsInt(searchPos);
+				searchState = world.getBlockState(searchPos);
+				cAo2 = aoFunc.apply(searchPos, searchState);
+				cLight2 = brightnessFunc.apply(searchPos, searchState);
 			}
 
 			if (!isClear3 && !isClear1) {
@@ -444,22 +482,24 @@ public class AoCalculator {
 				cLight3 = light1;
 			} else {
 				searchPos.set(lightPos).move(aoFace.neighbors[1]).move(aoFace.neighbors[3]);
-				cAo3 = aoFunc.apply(searchPos);
-				cLight3 = brightnessFunc.applyAsInt(searchPos);
+				searchState = world.getBlockState(searchPos);
+				cAo3 = aoFunc.apply(searchPos, searchState);
+				cLight3 = brightnessFunc.apply(searchPos, searchState);
 			}
 
 			// If on block face or neighbor isn't occluding, "center" will be neighbor brightness
 			// Doesn't use light pos because logic not based solely on this block's geometry
 			int lightCenter;
-			searchPos.set(pos).move(lightFace);
+			searchPos.set(pos, lightFace);
+			searchState = world.getBlockState(searchPos);
 
-			if (isOnBlockFace || !world.getBlockState(searchPos).isOpaqueFullCube(world, searchPos)) {
-				lightCenter = brightnessFunc.applyAsInt(searchPos);
+			if (isOnBlockFace || !searchState.isOpaqueFullCube(world, searchPos)) {
+				lightCenter = brightnessFunc.apply(searchPos, searchState);
 			} else {
-				lightCenter = brightnessFunc.applyAsInt(pos);
+				lightCenter = brightnessFunc.apply(pos, blockState);
 			}
 
-			float aoCenter = aoFunc.apply(isOnBlockFace ? lightPos : pos);
+			float aoCenter = aoFunc.apply(lightPos, world.getBlockState(lightPos));
 			float worldBrightness = world.getBrightness(lightFace, shade);
 
 			result.a0 = ((ao3 + ao0 + cAo1 + aoCenter) * 0.25F) * worldBrightness;
@@ -495,12 +535,12 @@ public class AoCalculator {
 		if (b == 0) b = d;
 		if (c == 0) c = d;
 		// bitwise divide by 4, clamp to expected (positive) range
-		return a + b + c + d >> 2 & 16711935;
+		return a + b + c + d >> 2 & 0xFF00FF;
 	}
 
 	private static int meanInnerBrightness(int a, int b, int c, int d) {
 		// bitwise divide by 4, clamp to expected (positive) range
-		return a + b + c + d >> 2 & 16711935;
+		return a + b + c + d >> 2 & 0xFF00FF;
 	}
 
 	private static int nonZeroMin(int a, int b) {
