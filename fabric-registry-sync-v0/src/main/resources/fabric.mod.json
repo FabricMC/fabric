@@ -22,7 +22,11 @@
   },
   "description": "Syncs registry mappings.",
   "mixins": [
-    "fabric-registry-sync-v0.mixins.json"
+    "fabric-registry-sync-v0.mixins.json",
+    {
+      "config": "fabric-registry-sync-v0.client.mixins.json",
+      "environment": "client"
+    }
   ],
   "entrypoints": {
     "main": [

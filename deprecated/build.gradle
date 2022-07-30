@@ -1,0 +1,35 @@
+/**
+ * This project generates a maven bill of materials (BOM) that includes the deprecated modules, alongside the main project.
+ */
+version = rootProject.version
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifactId = 'fabric-api-deprecated'
+
+			pom.withXml {
+				def depsNode = asNode().appendNode("dependencies")
+				allprojects.each {
+					if (it.name == "deprecated") return // Dont depend on yourself :)
+
+					// Depend on all of the deprecated projects
+					if (!it.path.startsWith(":deprecated")) return
+
+					def depNode = depsNode.appendNode("dependency")
+					depNode.appendNode("groupId", it.group)
+					depNode.appendNode("artifactId", it.name)
+					depNode.appendNode("version", it.version)
+					depNode.appendNode("scope", "compile")
+				}
+
+				// Depend on the main project.
+				def depNode = depsNode.appendNode("dependency")
+				depNode.appendNode("groupId", group)
+				depNode.appendNode("artifactId", "fabric-api")
+				depNode.appendNode("version", version)
+				depNode.appendNode("scope", "compile")
+			}
+		}
+	}
+}

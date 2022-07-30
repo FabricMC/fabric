@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.networking",
+  "compatibilityLevel": "JAVA_16",
+  "client": [
+    "accessor.ConnectScreenAccessor",
+    "accessor.MinecraftClientAccessor",
+    "client.ClientLoginNetworkHandlerMixin",
+    "client.ClientPlayNetworkHandlerMixin",
+    "client.DisconnectedScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

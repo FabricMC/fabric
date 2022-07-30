@@ -25,7 +25,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 class StopSoundButton extends PressableWidget {
@@ -43,7 +42,7 @@ class StopSoundButton extends PressableWidget {
 		DrawableHelper.drawTexture(matrices, this.x, this.y, this.width, this.height, 43, 27, 9, 9, 256, 256);
 
 		if (this.isMouseOver(mouseX, mouseY)) {
-			this.screen.renderTooltip(matrices, new LiteralText("Click to stop all sounds"), this.x, this.y);
+			this.screen.renderTooltip(matrices, Text.literal("Click to stop all sounds"), this.x, this.y);
 		}
 	}
 

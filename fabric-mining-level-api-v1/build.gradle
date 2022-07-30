@@ -3,9 +3,10 @@ version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
 		'fabric-api-base',
+		'fabric-lifecycle-events-v1',
 		'fabric-resource-loader-v0'
 ])
 
-dependencies {
-	testmodImplementation project(path: ':fabric-lifecycle-events-v1', configuration: 'namedElements')
-}
+testDependencies(project, [
+		':fabric-lifecycle-events-v1'
+])

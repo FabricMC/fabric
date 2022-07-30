@@ -22,7 +22,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 /**
  * A storage that is also its only storage view.
@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 @ApiStatus.Experimental
 public interface SingleSlotStorage<T> extends Storage<T>, StorageView<T> {
 	@Override
-	default Iterator<StorageView<T>> iterator(TransactionContext transaction) {
-		return SingleViewIterator.create(this, transaction);
+	default Iterator<StorageView<T>> iterator() {
+		return TransferApiImpl.singletonIterator(this);
 	}
 }

@@ -20,7 +20,10 @@
   },
   "description": "Hooks for registering custom particles.",
   "mixins": [
-    "fabric-particles-v1.mixins.json"
+    {
+      "config": "fabric-particles-v1.client.mixins.json",
+      "environment": "client"
+    }
   ],
   "custom": {
     "fabric-api:module-lifecycle": "stable"

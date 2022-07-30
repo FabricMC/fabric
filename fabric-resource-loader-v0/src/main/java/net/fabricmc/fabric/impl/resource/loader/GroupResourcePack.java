@@ -30,8 +30,7 @@ import java.util.stream.Collectors;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceImpl;
+import net.minecraft.resource.NamespaceResourceManager;
 import net.minecraft.resource.ResourceNotFoundException;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
@@ -75,7 +74,7 @@ public abstract class GroupResourcePack implements ResourcePack {
 	}
 
 	@Override
-	public Collection<Identifier> findResources(ResourceType type, String namespace, String prefix, int maxDepth, Predicate<String> pathFilter) {
+	public Collection<Identifier> findResources(ResourceType type, String namespace, String prefix, Predicate<Identifier> predicate) {
 		List<ModResourcePack> packs = this.namespacedPacks.get(namespace);
 
 		if (packs == null) {
@@ -86,7 +85,7 @@ public abstract class GroupResourcePack implements ResourcePack {
 
 		for (int i = packs.size() - 1; i >= 0; i--) {
 			ResourcePack pack = packs.get(i);
-			Collection<Identifier> modResources = pack.findResources(type, namespace, prefix, maxDepth, pathFilter);
+			Collection<Identifier> modResources = pack.findResources(type, namespace, prefix, predicate);
 
 			resources.addAll(modResources);
 		}
@@ -118,7 +117,7 @@ public abstract class GroupResourcePack implements ResourcePack {
 		return this.namespacedPacks.keySet();
 	}
 
-	public void appendResources(NamespaceResourceManagerAccessor manager, Identifier id, List<Resource> resources) throws IOException {
+	public void appendResources(NamespaceResourceManagerAccessor manager, Identifier id, List<NamespaceResourceManager.Entry> resources) {
 		List<ModResourcePack> packs = this.namespacedPacks.get(id.getNamespace());
 
 		if (packs == null) {
@@ -129,8 +128,9 @@ public abstract class GroupResourcePack implements ResourcePack {
 
 		for (ModResourcePack pack : packs) {
 			if (pack.contains(manager.getType(), id)) {
-				InputStream metadataInputStream = pack.contains(manager.getType(), metadataId) ? manager.fabric$accessor_open(metadataId, pack) : null;
-				resources.add(new ResourceImpl(pack.getName(), id, manager.fabric$accessor_open(id, pack), metadataInputStream));
+				final NamespaceResourceManager.Entry entry = ((NamespaceResourceManager) manager).new Entry(id, metadataId, pack);
+				((FabricNamespaceResourceManagerEntry) entry).setFabricPackSource(ModResourcePackCreator.RESOURCE_PACK_SOURCE);
+				resources.add(entry);
 			}
 		}
 	}

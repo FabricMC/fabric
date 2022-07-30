@@ -20,9 +20,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -30,17 +31,20 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import net.minecraft.class_7648;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
+import net.minecraft.network.NetworkState;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.PacketListener;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
+import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
 
@@ -50,10 +54,10 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 	private PacketListener packetListener;
 
 	@Shadow
-	public abstract void send(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> callback);
+	public abstract void disconnect(Text disconnectReason);
 
 	@Shadow
-	public abstract void disconnect(Text disconnectReason);
+	public abstract void send(Packet<?> packet, @Nullable class_7648 arg);
 
 	@Unique
 	private Collection<Identifier> playChannels;
@@ -64,29 +68,38 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 	}
 
 	// Must be fully qualified due to mixin not working in production without it
-	@SuppressWarnings("UnnecessaryQualifiedMemberReference")
-	@Redirect(method = "Lnet/minecraft/network/ClientConnection;exceptionCaught(Lio/netty/channel/ChannelHandlerContext;Ljava/lang/Throwable;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;send(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;)V"))
-	private void resendOnExceptionCaught(ClientConnection self, Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> listener) {
+	@Redirect(method = "exceptionCaught", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;send(Lnet/minecraft/network/Packet;Lnet/minecraft/class_7648;)V"))
+	private void resendOnExceptionCaught(ClientConnection self, Packet<?> packet, class_7648 listener, ChannelHandlerContext context, Throwable ex) {
 		PacketListener handler = this.packetListener;
+		Text disconnectMessage = Text.translatable("disconnect.genericReason", "Internal Exception: " + ex);
 
 		if (handler instanceof DisconnectPacketSource) {
-			this.send(((DisconnectPacketSource) handler).createDisconnectPacket(new TranslatableText("disconnect.genericReason")), listener);
+			this.send(((DisconnectPacketSource) handler).createDisconnectPacket(disconnectMessage), listener);
 		} else {
-			this.disconnect(new TranslatableText("disconnect.genericReason")); // Don't send packet if we cannot send proper packets
+			this.disconnect(disconnectMessage); // Don't send packet if we cannot send proper packets
 		}
 	}
 
 	@Inject(method = "sendImmediately", at = @At(value = "FIELD", target = "Lnet/minecraft/network/ClientConnection;packetsSentCounter:I"))
-	private void checkPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> callback, CallbackInfo ci) {
+	private void checkPacket(Packet<?> packet, class_7648 callback, CallbackInfo ci) {
 		if (this.packetListener instanceof PacketCallbackListener) {
 			((PacketCallbackListener) this.packetListener).sent(packet);
 		}
 	}
 
 	@Inject(method = "channelInactive", at = @At("HEAD"))
-	private void handleDisconnect(ChannelHandlerContext channelHandlerContext, CallbackInfo ci) throws Exception {
+	private void handleDisconnect(ChannelHandlerContext channelHandlerContext, CallbackInfo ci) {
 		if (packetListener instanceof NetworkHandlerExtensions) { // not the case for client/server query
 			((NetworkHandlerExtensions) packetListener).getAddon().handleDisconnect();
+		}
+	}
+
+	@Inject(method = "sendInternal", at = @At(value = "INVOKE_ASSIGN", target = "Lio/netty/channel/Channel;writeAndFlush(Ljava/lang/Object;)Lio/netty/channel/ChannelFuture;"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void sendInternal(Packet<?> packet, @Nullable class_7648 listener, NetworkState packetState, NetworkState currentState, CallbackInfo ci, ChannelFuture channelFuture) {
+		if (listener instanceof GenericFutureListenerHolder holder) {
+			channelFuture.addListener(holder.getDelegate());
+			channelFuture.addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+			ci.cancel();
 		}
 	}
 

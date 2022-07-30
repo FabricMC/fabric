@@ -30,13 +30,15 @@ class BumpVersionTask extends DefaultTask {
 			// Bump all versions. To be used when buildscript changes are made.
 			if (input == "allPatch") {
 				project.getChildProjects().values().forEach {
+					if (it.name == "deprecated") return
+
 					toUpdate.put(it, 2)
 				}
 
 				break
 			}
 
-			def subProject = project.getChildProjects().get(input)
+			def subProject = project.childProjects[input] ?: project.childProjects["deprecated"].childProjects[input]
 
 			if (!subProject) {
 				println "Could not find project with name: $input"
@@ -65,7 +67,9 @@ class BumpVersionTask extends DefaultTask {
 			def temp = [:]
 
 			toUpdate.keySet().forEach { p ->
-				project.childProjects.values().forEach { cp ->
+				project.allprojects.each { cp ->
+					if (cp.name == "deprecated" || cp.name == "fabric-api") return
+
 					def config = cp.configurations.api
 					config.allDependencies.forEach { dep ->
 						if (dep.name == p.name) {

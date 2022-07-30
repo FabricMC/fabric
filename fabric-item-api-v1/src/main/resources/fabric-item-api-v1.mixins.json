@@ -5,12 +5,8 @@
   "mixins": [
     "ItemStackMixin",
     "ItemMixin",
-    "LivingEntityMixin"
-  ],
-  "client": [
-    "client.ClientPlayerInteractionManagerMixin",
-    "client.HeldItemRendererMixin",
-    "client.ItemStackMixin"
+    "LivingEntityMixin",
+    "ArmorItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1

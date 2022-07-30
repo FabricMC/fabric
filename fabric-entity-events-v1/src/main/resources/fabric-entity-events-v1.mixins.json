@@ -5,16 +5,12 @@
   "mixins": [
     "elytra.LivingEntityMixin",
     "elytra.PlayerEntityMixin",
-    "BedBlockMixin",
     "EntityMixin",
     "LivingEntityMixin",
     "PlayerEntityMixin",
     "PlayerManagerMixin",
     "ServerPlayerEntityMixin",
     "TeleportCommandMixin"
-  ],
-  "client": [
-    "elytra.ClientPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1,

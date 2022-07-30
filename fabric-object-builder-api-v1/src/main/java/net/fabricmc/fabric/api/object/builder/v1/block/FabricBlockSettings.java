@@ -35,6 +35,9 @@ import net.fabricmc.fabric.mixin.object.builder.AbstractBlockSettingsAccessor;
  * Fabric's version of Block.Settings. Adds additional methods and hooks
  * not found in the original class.
  *
+ * <p>Make note that this behaves slightly different from the
+ * vanilla counterpart, copying some settings that vanilla does not.
+ *
  * <p>To use it, simply replace Block.Settings.of() with
  * FabricBlockSettings.of().
  */
@@ -60,10 +63,18 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		this.sounds(otherAccessor.getSoundGroup());
 		this.slipperiness(otherAccessor.getSlipperiness());
 		this.velocityMultiplier(otherAccessor.getVelocityMultiplier());
+		this.jumpVelocityMultiplier(otherAccessor.getJumpVelocityMultiplier());
 		thisAccessor.setDynamicBounds(otherAccessor.getDynamicBounds());
 		thisAccessor.setOpaque(otherAccessor.getOpaque());
 		thisAccessor.setIsAir(otherAccessor.getIsAir());
 		thisAccessor.setToolRequired(otherAccessor.isToolRequired());
+		this.allowsSpawning(otherAccessor.getAllowsSpawningPredicate());
+		this.solidBlock(otherAccessor.getSolidBlockPredicate());
+		this.suffocates(otherAccessor.getSuffocationPredicate());
+		this.blockVision(otherAccessor.getBlockVisionPredicate());
+		this.postProcess(otherAccessor.getPostProcessPredicate());
+		this.emissiveLighting(otherAccessor.getEmissiveLightingPredicate());
+		this.offsetType(otherAccessor.getOffsetType());
 	}
 
 	public static FabricBlockSettings of(Material material) {
@@ -161,12 +172,6 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	@Override
 	public FabricBlockSettings dynamicBounds() {
 		super.dynamicBounds();
-		return this;
-	}
-
-	@Override
-	public FabricBlockSettings dropsNothing() {
-		super.dropsNothing();
 		return this;
 	}
 

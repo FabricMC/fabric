@@ -84,27 +84,27 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 	}
 
 	@Override
-	public final boolean isResourceBlank() {
-		return getResource().isBlank();
+	public boolean isResourceBlank() {
+		return getStack().isEmpty();
 	}
 
 	@Override
-	public final ItemVariant getResource() {
+	public ItemVariant getResource() {
 		return ItemVariant.of(getStack());
 	}
 
 	@Override
-	public final long getAmount() {
+	public long getAmount() {
 		return getStack().getCount();
 	}
 
 	@Override
-	public final long getCapacity() {
+	public long getCapacity() {
 		return getCapacity(getResource());
 	}
 
 	@Override
-	public final long insert(ItemVariant insertedVariant, long maxAmount, TransactionContext transaction) {
+	public long insert(ItemVariant insertedVariant, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notBlankNotNegative(insertedVariant, maxAmount);
 
 		ItemStack currentStack = getStack();
@@ -123,16 +123,16 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 				}
 
 				setStack(currentStack);
-			}
 
-			return insertedAmount;
+				return insertedAmount;
+			}
 		}
 
 		return 0;
 	}
 
 	@Override
-	public final long extract(ItemVariant variant, long maxAmount, TransactionContext transaction) {
+	public long extract(ItemVariant variant, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notBlankNotNegative(variant, maxAmount);
 
 		ItemStack currentStack = getStack();
@@ -145,23 +145,23 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 				currentStack = getStack();
 				currentStack.decrement(extracted);
 				setStack(currentStack);
-			}
 
-			return extracted;
+				return extracted;
+			}
 		}
 
 		return 0;
 	}
 
 	@Override
-	protected final ItemStack createSnapshot() {
+	protected ItemStack createSnapshot() {
 		ItemStack original = getStack();
 		setStack(original.copy());
 		return original;
 	}
 
 	@Override
-	protected final void readSnapshot(ItemStack snapshot) {
+	protected void readSnapshot(ItemStack snapshot) {
 		setStack(snapshot);
 	}
 }

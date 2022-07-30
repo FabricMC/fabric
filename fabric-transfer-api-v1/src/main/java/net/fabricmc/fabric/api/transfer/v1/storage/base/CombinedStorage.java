@@ -26,7 +26,6 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 /**
  * A {@link Storage} wrapping multiple storages.
@@ -96,37 +95,29 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 	}
 
 	@Override
-	public Iterator<StorageView<T>> iterator(TransactionContext transaction) {
-		return new CombinedIterator(transaction);
+	public Iterator<StorageView<T>> iterator() {
+		return new CombinedIterator();
 	}
 
 	/**
 	 * The combined iterator for multiple storages.
 	 */
-	private class CombinedIterator implements Iterator<StorageView<T>>, Transaction.CloseCallback {
-		boolean open = true;
-		final TransactionContext transaction;
+	private class CombinedIterator implements Iterator<StorageView<T>> {
 		final Iterator<S> partIterator = parts.iterator();
 		// Always holds the next StorageView<T>, except during next() while the iterator is being advanced.
-		Iterator<StorageView<T>> currentPartIterator = null;
+		Iterator<? extends StorageView<T>> currentPartIterator = null;
 
-		CombinedIterator(TransactionContext transaction) {
-			this.transaction = transaction;
+		CombinedIterator() {
 			advanceCurrentPartIterator();
-			transaction.addCloseCallback(this);
 		}
 
 		@Override
 		public boolean hasNext() {
-			return open && currentPartIterator != null && currentPartIterator.hasNext();
+			return currentPartIterator != null && currentPartIterator.hasNext();
 		}
 
 		@Override
 		public StorageView<T> next() {
-			if (!open) {
-				throw new NoSuchElementException("The transaction for this iterator was closed.");
-			}
-
 			if (!hasNext()) {
 				throw new NoSuchElementException();
 			}
@@ -143,18 +134,12 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 
 		private void advanceCurrentPartIterator() {
 			while (partIterator.hasNext()) {
-				this.currentPartIterator = partIterator.next().iterator(transaction);
+				this.currentPartIterator = partIterator.next().iterator();
 
 				if (this.currentPartIterator.hasNext()) {
 					break;
 				}
 			}
-		}
-
-		@Override
-		public void onClose(TransactionContext transaction, Transaction.Result result) {
-			// As soon as the transaction is closed, this iterator is not valid anymore.
-			open = false;
 		}
 	}
 }

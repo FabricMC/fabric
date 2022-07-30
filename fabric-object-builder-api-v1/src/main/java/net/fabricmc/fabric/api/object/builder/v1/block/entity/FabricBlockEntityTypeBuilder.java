@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.block.entity;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.mojang.datafixers.types.Type;
 
 import net.minecraft.block.Block;
@@ -31,15 +35,40 @@ import net.minecraft.util.math.BlockPos;
  */
 public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 	private final Factory<? extends T> factory;
-	private final Block[] blocks;
+	private final List<Block> blocks;
 
-	private FabricBlockEntityTypeBuilder(Factory<? extends T> factory, Block[] blocks) {
+	private FabricBlockEntityTypeBuilder(Factory<? extends T> factory, List<Block> blocks) {
 		this.factory = factory;
 		this.blocks = blocks;
 	}
 
 	public static <T extends BlockEntity> FabricBlockEntityTypeBuilder<T> create(Factory<? extends T> factory, Block... blocks) {
-		return new FabricBlockEntityTypeBuilder<>(factory, blocks);
+		List<Block> blocksList = new ArrayList<>(blocks.length);
+		Collections.addAll(blocksList, blocks);
+
+		return new FabricBlockEntityTypeBuilder<>(factory, blocksList);
+	}
+
+	/**
+	 * Adds a supported block for the block entity type.
+	 *
+	 * @param block the supported block
+	 * @return this builder
+	 */
+	public FabricBlockEntityTypeBuilder<T> addBlock(Block block) {
+		this.blocks.add(block);
+		return this;
+	}
+
+	/**
+	 * Adds supported blocks for the block entity type.
+	 *
+	 * @param blocks the supported blocks
+	 * @return this builder
+	 */
+	public FabricBlockEntityTypeBuilder<T> addBlocks(Block... blocks) {
+		Collections.addAll(this.blocks, blocks);
+		return this;
 	}
 
 	public BlockEntityType<T> build() {
@@ -47,7 +76,7 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 	}
 
 	public BlockEntityType<T> build(Type<?> type) {
-		return BlockEntityType.Builder.<T>create(factory::create, blocks)
+		return BlockEntityType.Builder.<T>create(factory::create, blocks.toArray(new Block[0]))
 				.build(type);
 	}
 

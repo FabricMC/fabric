@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:deep_ocean",
+      "required": false
+    },
+    {
+      "id": "#c:shallow_ocean",
+      "required": false
+    },
+    {
+      "id": "#minecraft:is_ocean",
+      "required": false
+    }
+  ]
+}

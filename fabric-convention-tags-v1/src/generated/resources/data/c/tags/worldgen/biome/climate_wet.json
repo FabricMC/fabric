@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:aquatic",
+      "required": false
+    },
+    {
+      "id": "#c:swamp",
+      "required": false
+    },
+    "minecraft:lush_caves",
+    {
+      "id": "#c:jungle",
+      "required": false
+    }
+  ]
+}

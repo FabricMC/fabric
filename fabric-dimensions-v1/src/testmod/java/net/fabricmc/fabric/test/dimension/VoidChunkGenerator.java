@@ -36,21 +36,18 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.FixedBiomeSource;
-import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
+import net.minecraft.world.gen.noise.NoiseConfig;
 
 public class VoidChunkGenerator extends ChunkGenerator {
 	public static final Codec<VoidChunkGenerator> CODEC = RecordCodecBuilder.create((instance) ->
-			method_41042(instance).and(
-				RegistryOps.createRegistryCodec(Registry.BIOME_KEY).forGetter((generator) -> generator.biomeRegistry)
-			)
-			.apply(instance, instance.stable(VoidChunkGenerator::new))
-	);
+			createStructureSetRegistryGetter(instance).and(RegistryOps.createRegistryCodec(Registry.BIOME_KEY).forGetter((generator) -> generator.biomeRegistry))
+					.apply(instance, instance.stable(VoidChunkGenerator::new)));
 
 	private final Registry<Biome> biomeRegistry;
 
@@ -65,22 +62,11 @@ public class VoidChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public ChunkGenerator withSeed(long seed) {
-		return this;
+	public void carve(ChunkRegion chunkRegion, long l, NoiseConfig noiseConfig, BiomeAccess biomeAccess, StructureAccessor structureAccessor, Chunk chunk, GenerationStep.Carver carver) {
 	}
 
 	@Override
-	public MultiNoiseUtil.MultiNoiseSampler getMultiNoiseSampler() {
-		// Mirror what Vanilla does in the debug chunk generator
-		return MultiNoiseUtil.method_40443();
-	}
-
-	@Override
-	public void carve(ChunkRegion chunkRegion, long l, BiomeAccess biomeAccess, StructureAccessor structureAccessor, Chunk chunk, GenerationStep.Carver carver) {
-	}
-
-	@Override
-	public void buildSurface(ChunkRegion region, StructureAccessor structureAccessor, Chunk chunk) {
+	public void buildSurface(ChunkRegion region, StructureAccessor structureAccessor, NoiseConfig noiseConfig, Chunk chunk) {
 	}
 
 	@Override
@@ -93,7 +79,7 @@ public class VoidChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public CompletableFuture<Chunk> populateNoise(Executor executor, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
+	public CompletableFuture<Chunk> populateNoise(Executor executor, Blender blender, NoiseConfig noiseConfig, StructureAccessor structureAccessor, Chunk chunk) {
 		return CompletableFuture.completedFuture(chunk);
 	}
 
@@ -108,16 +94,16 @@ public class VoidChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public int getHeight(int x, int z, Heightmap.Type heightmapType, HeightLimitView heightLimitView) {
+	public int getHeight(int x, int z, Heightmap.Type heightmapType, HeightLimitView heightLimitView, NoiseConfig noiseConfig) {
 		return 0;
 	}
 
 	@Override
-	public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView heightLimitView) {
+	public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView heightLimitView, NoiseConfig noiseConfig) {
 		return new VerticalBlockSample(0, new BlockState[0]);
 	}
 
 	@Override
-	public void getDebugHudText(List<String> list, BlockPos blockPos) {
+	public void getDebugHudText(List<String> list, NoiseConfig noiseConfig, BlockPos blockPos) {
 	}
 }

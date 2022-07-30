@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.resource.loader.client",
+  "compatibilityLevel": "JAVA_16",
+  "client": [
+    "ClientBuiltinResourcePackProviderMixin",
+    "CreateWorldScreenMixin",
+    "FontManagerResourceReloadListenerMixin",
+    "GameOptionsMixin",
+    "KeyedResourceReloadListenerClientMixin",
+    "MoreOptionsDialogAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

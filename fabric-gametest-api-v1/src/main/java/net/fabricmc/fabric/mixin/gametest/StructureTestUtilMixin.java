@@ -20,17 +20,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.resource.Resource;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.structure.Structure;
+import net.minecraft.structure.StructureTemplate;
 import net.minecraft.test.StructureTestUtil;
 import net.minecraft.util.Identifier;
 
@@ -39,13 +39,18 @@ public abstract class StructureTestUtilMixin {
 	private static final String GAMETEST_STRUCTURE_PATH = "gametest/structures/";
 
 	// Replace the default test structure loading with something that works a bit better for mods.
-	@Inject(at = @At("HEAD"), method = "createStructure(Ljava/lang/String;Lnet/minecraft/server/world/ServerWorld;)Lnet/minecraft/structure/Structure;", cancellable = true)
-	private static void createStructure(String id, ServerWorld world, CallbackInfoReturnable<Structure> cir) {
+	@Inject(at = @At("HEAD"), method = "createStructureTemplate(Ljava/lang/String;Lnet/minecraft/server/world/ServerWorld;)Lnet/minecraft/structure/StructureTemplate;", cancellable = true)
+	private static void createStructure(String id, ServerWorld world, CallbackInfoReturnable<StructureTemplate> cir) {
 		Identifier baseId = new Identifier(id);
 		Identifier structureId = new Identifier(baseId.getNamespace(), GAMETEST_STRUCTURE_PATH + baseId.getPath() + ".snbt");
 
 		try {
-			Resource resource = world.getServer().getResourceManager().getResource(structureId);
+			Resource resource = world.getServer().getResourceManager().getResource(structureId).orElse(null);
+
+			if (resource == null) {
+				throw new RuntimeException("Unable to get resource: " + structureId);
+			}
+
 			String snbt;
 
 			try (InputStream inputStream = resource.getInputStream()) {
@@ -53,7 +58,7 @@ public abstract class StructureTestUtilMixin {
 			}
 
 			NbtCompound nbtCompound = NbtHelper.fromNbtProviderString(snbt);
-			Structure structure = world.getStructureManager().createStructure(nbtCompound);
+			StructureTemplate structure = world.getStructureTemplateManager().createTemplate(nbtCompound);
 
 			cir.setReturnValue(structure);
 		} catch (IOException | CommandSyntaxException e) {

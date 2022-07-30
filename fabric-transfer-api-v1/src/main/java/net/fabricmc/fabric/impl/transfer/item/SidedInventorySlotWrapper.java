@@ -20,6 +20,7 @@ import net.minecraft.inventory.SidedInventory;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
@@ -39,7 +40,7 @@ class SidedInventorySlotWrapper implements SingleSlotStorage<ItemVariant> {
 
 	@Override
 	public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
-		if (!sidedInventory.canInsert(slotWrapper.slot, resource.toStack(), direction)) {
+		if (!sidedInventory.canInsert(slotWrapper.slot, ((ItemVariantImpl) resource).getCachedStack(), direction)) {
 			return 0;
 		} else {
 			return slotWrapper.insert(resource, maxAmount, transaction);
@@ -48,7 +49,7 @@ class SidedInventorySlotWrapper implements SingleSlotStorage<ItemVariant> {
 
 	@Override
 	public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
-		if (!sidedInventory.canExtract(slotWrapper.slot, resource.toStack(), direction)) {
+		if (!sidedInventory.canExtract(slotWrapper.slot, ((ItemVariantImpl) resource).getCachedStack(), direction)) {
 			return 0;
 		} else {
 			return slotWrapper.extract(resource, maxAmount, transaction);
@@ -73,5 +74,10 @@ class SidedInventorySlotWrapper implements SingleSlotStorage<ItemVariant> {
 	@Override
 	public long getCapacity() {
 		return slotWrapper.getCapacity();
+	}
+
+	@Override
+	public StorageView<ItemVariant> getUnderlyingView() {
+		return slotWrapper.getUnderlyingView();
 	}
 }

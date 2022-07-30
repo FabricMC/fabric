@@ -20,6 +20,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,8 +38,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.ResourceType;
@@ -52,6 +54,7 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 public class ModNioResourcePack extends AbstractFileResourcePack implements ModResourcePack {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModNioResourcePack.class);
 	private static final Pattern RESOURCE_PACK_PATH = Pattern.compile("[a-z0-9-_.]+");
+	private static final FileSystem DEFAULT_FS = FileSystems.getDefault();
 
 	private final String name;
 	private final ModMetadata modInfo;
@@ -74,7 +77,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 				path = path.toAbsolutePath().normalize();
 				Path childPath = path.resolve(subPath.replace("/", path.getFileSystem().getSeparator())).normalize();
 
-				if (!childPath.startsWith(path) || !Files.exists(childPath)) {
+				if (!childPath.startsWith(path) || !exists(childPath)) {
 					continue;
 				}
 
@@ -147,7 +150,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		for (Path basePath : basePaths) {
 			Path childPath = basePath.resolve(filename.replace("/", basePath.getFileSystem().getSeparator())).toAbsolutePath().normalize();
 
-			if (childPath.startsWith(basePath) && Files.exists(childPath)) {
+			if (childPath.startsWith(basePath) && exists(childPath)) {
 				return childPath;
 			}
 		}
@@ -209,7 +212,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	}
 
 	@Override
-	public Collection<Identifier> findResources(ResourceType type, String namespace, String path, int depth, Predicate<String> predicate) {
+	public Collection<Identifier> findResources(ResourceType type, String namespace, String path, Predicate<Identifier> predicate) {
 		if (!namespaces.getOrDefault(type, Collections.emptySet()).contains(namespace)) {
 			return Collections.emptyList();
 		}
@@ -220,21 +223,20 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 			String separator = basePath.getFileSystem().getSeparator();
 			Path nsPath = basePath.resolve(type.getDirectory()).resolve(namespace);
 			Path searchPath = nsPath.resolve(path.replace("/", separator)).normalize();
-			if (!Files.exists(searchPath)) continue;
+			if (!exists(searchPath)) continue;
 
 			try {
 				Files.walkFileTree(searchPath, new SimpleFileVisitor<Path>() {
 					@Override
 					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 						String fileName = file.getFileName().toString();
+						if (fileName.endsWith(".mcmeta")) return FileVisitResult.CONTINUE;
 
-						if (!fileName.endsWith(".mcmeta")
-								&& predicate.test(fileName)) {
-							try {
-								ids.add(new Identifier(namespace, nsPath.relativize(file).toString().replace(separator, "/")));
-							} catch (InvalidIdentifierException e) {
-								LOGGER.error(e.getMessage());
-							}
+						try {
+							Identifier id = new Identifier(namespace, nsPath.relativize(file).toString().replace(separator, "/"));
+							if (predicate.test(id)) ids.add(id);
+						} catch (InvalidIdentifierException e) {
+							LOGGER.error(e.getMessage());
 						}
 
 						return FileVisitResult.CONTINUE;
@@ -276,5 +278,10 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	private static boolean exists(Path path) {
+		// NIO Files.exists is notoriously slow when checking the file system
+		return path.getFileSystem() == DEFAULT_FS ? path.toFile().exists() : Files.exists(path);
 	}
 }

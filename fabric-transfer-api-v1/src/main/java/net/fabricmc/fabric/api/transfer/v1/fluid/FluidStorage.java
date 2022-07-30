@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,6 +33,7 @@ import net.minecraft.util.math.Direction;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SidedStorageBlockEntity;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.EmptyItemFluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.FullItemFluidStorage;
@@ -58,11 +58,15 @@ public final class FluidStorage {
 	 * The {@code Direction} parameter may never be null.
 	 * Refer to {@link BlockApiLookup} for documentation on how to use this field.
 	 *
+	 * <p>A simple way to expose fluid variant storages for a block entity hierarchy is to extend {@link SidedStorageBlockEntity}.
+	 *
 	 * <p>When the operations supported by a storage change,
 	 * that is if the return value of {@link Storage#supportsInsertion} or {@link Storage#supportsExtraction} changes,
 	 * the storage should notify its neighbors with a block update so that they can refresh their connections if necessary.
 	 *
-	 * <p>May only be queried on the logical server thread, never client-side or from another thread!
+	 * <p>This may be queried safely both on the logical server and on the logical client threads.
+	 * On the server thread (i.e. with a server world), all transfer functionality is always supported.
+	 * On the client thread (i.e. with a client world), contents of queried Storages are unreliable and should not be modified.
 	 */
 	public static final BlockApiLookup<Storage<FluidVariant>, Direction> SIDED =
 			BlockApiLookup.get(new Identifier("fabric:sided_fluid_storage"), Storage.asClass(), Direction.class);
@@ -129,14 +133,17 @@ public final class FluidStorage {
 	}
 
 	static {
-		// Ensure that the lookup is only queried on the server side.
-		FluidStorage.SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
-			Preconditions.checkArgument(!world.isClient(), "Sided fluid storage may only be queried for a server world.");
-			return null;
-		});
-
 		// Initialize vanilla cauldron wrappers
 		CauldronFluidContent.getForFluid(Fluids.WATER);
+
+		// Support for SidedStorageBlockEntity.
+		FluidStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
+			if (blockEntity instanceof SidedStorageBlockEntity sidedStorageBlockEntity) {
+				return sidedStorageBlockEntity.getFluidStorage(direction);
+			}
+
+			return null;
+		});
 
 		// Register combined fallback
 		FluidStorage.ITEM.registerFallback((stack, context) -> GENERAL_COMBINED_PROVIDER.invoker().find(context));

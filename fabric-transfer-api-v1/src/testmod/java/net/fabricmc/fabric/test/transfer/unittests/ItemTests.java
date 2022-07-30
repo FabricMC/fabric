@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.transfer.unittests;
 
+import static net.fabricmc.fabric.test.transfer.unittests.TestUtil.assertEquals;
+
 import java.util.stream.IntStream;
 
 import org.jetbrains.annotations.Nullable;
@@ -90,7 +92,7 @@ class ItemTests {
 	private static void testInventoryWrappers() {
 		ItemVariant emptyBucket = ItemVariant.of(Items.BUCKET);
 		TestSidedInventory testInventory = new TestSidedInventory();
-		checkComparatorOutput(testInventory, null);
+		checkComparatorOutput(testInventory);
 
 		// Create a few wrappers.
 		InventoryStorage unsidedWrapper = InventoryStorage.of(testInventory, null);
@@ -126,7 +128,17 @@ class ItemTests {
 		if (!testInventory.getStack(0).isEmpty()) throw new AssertionError("Slot 0 should have been empty.");
 		if (!testInventory.getStack(1).isOf(Items.BUCKET) || testInventory.getStack(1).getCount() != 1) throw new AssertionError("Slot 1 should have been a bucket.");
 
-		checkComparatorOutput(testInventory, null);
+		checkComparatorOutput(testInventory);
+
+		// Check that we return sensible results if amount stored > capacity
+		ItemStack oversizedStack = new ItemStack(Items.DIAMOND_PICKAXE, 2);
+		SimpleInventory simpleInventory = new SimpleInventory(oversizedStack);
+		InventoryStorage wrapper = InventoryStorage.of(simpleInventory, null);
+
+		try (Transaction transaction = Transaction.openOuter()) {
+			assertEquals(0L, wrapper.insert(ItemVariant.of(oversizedStack), 10, transaction));
+			transaction.commit();
+		}
 	}
 
 	private static boolean stackEquals(ItemStack stack, Item item, int count) {
@@ -179,7 +191,7 @@ class ItemTests {
 				throw new AssertionError("Only 6 diamonds should have been inserted.");
 			}
 
-			checkComparatorOutput(inventory, transaction);
+			checkComparatorOutput(inventory);
 		}
 	}
 
@@ -197,7 +209,7 @@ class ItemTests {
 				throw new AssertionError("Only 5 pickaxes should have been inserted.");
 			}
 
-			checkComparatorOutput(inventory, transaction);
+			checkComparatorOutput(inventory);
 		}
 	}
 
@@ -216,11 +228,11 @@ class ItemTests {
 		}
 	}
 
-	private static void checkComparatorOutput(Inventory inventory, @Nullable Transaction transaction) {
+	private static void checkComparatorOutput(Inventory inventory) {
 		Storage<ItemVariant> storage = InventoryStorage.of(inventory, null);
 
 		int vanillaOutput = ScreenHandler.calculateComparatorOutput(inventory);
-		int transferApiOutput = StorageUtil.calculateComparatorOutput(storage, transaction);
+		int transferApiOutput = StorageUtil.calculateComparatorOutput(storage);
 
 		if (vanillaOutput != transferApiOutput) {
 			String error = String.format(

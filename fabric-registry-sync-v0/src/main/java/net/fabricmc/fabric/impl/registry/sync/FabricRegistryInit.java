@@ -94,7 +94,7 @@ public class FabricRegistryInit implements ModInitializer {
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in PaintingSpawnS2CPacket
-		RegistryAttributeHolder.get(Registry.PAINTING_MOTIVE)
+		RegistryAttributeHolder.get(Registry.PAINTING_VARIANT)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Doesnt seem to be synced or saved, STAT_TYPE seems to handle the syncing.
@@ -104,7 +104,7 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(Registry.CHUNK_STATUS);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registry.STRUCTURE_FEATURE);
+		RegistryAttributeHolder.get(Registry.STRUCTURE_TYPE);
 
 		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.STRUCTURE_PIECE);
@@ -119,6 +119,22 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.STRUCTURE_POOL_ELEMENT);
+
+		// Uses a data tracker (and thus, raw IDs) to sync cat entities to the client
+		RegistryAttributeHolder.get(Registry.CAT_VARIANT)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		// Uses a data tracker (and thus, raw IDs) to sync frog entities to the client
+		RegistryAttributeHolder.get(Registry.FROG_VARIANT)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		// Uses a data tracker (and thus, raw IDs) to sync painting entities to the client
+		RegistryAttributeHolder.get(Registry.PAINTING_VARIANT)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		//  Uses the raw ID when syncing the command tree to the client
+		RegistryAttributeHolder.get(Registry.COMMAND_ARGUMENT_TYPE)
+				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in OpenScreenS2CPacket
 		RegistryAttributeHolder.get(Registry.SCREEN_HANDLER)

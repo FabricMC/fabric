@@ -31,7 +31,7 @@ public class ExampleTestSuite {
 		);
 	}
 
-	@GameTest(structureName = FabricGameTest.EMPTY_STRUCTURE)
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void noStructure(TestContext context) {
 		context.setBlockState(0, 2, 0, Blocks.DIAMOND_BLOCK);
 

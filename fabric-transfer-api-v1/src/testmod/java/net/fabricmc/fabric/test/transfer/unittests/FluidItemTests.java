@@ -165,7 +165,7 @@ class FluidItemTests {
 		PotionUtil.setPotion(testInventory.getStack(0), Potions.LUCK);
 		Storage<FluidVariant> luckyStorage = new InventoryContainerItem(testInventory, 0).find(FluidStorage.ITEM);
 
-		if (StorageUtil.findStoredResource(luckyStorage, null) != null) {
+		if (StorageUtil.findStoredResource(luckyStorage) != null) {
 			throw new AssertionError("Found a resource in an unhandled potion.");
 		}
 	}

@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.gamerule.client",
+  "compatibilityLevel": "JAVA_16",
+  "client": [
+    "EditGameRulesScreenAccessor",
+    "RuleListWidgetMixin",
+    "RuleListWidgetVisitorMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

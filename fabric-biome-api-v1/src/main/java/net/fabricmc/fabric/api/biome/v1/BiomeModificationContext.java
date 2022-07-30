@@ -46,12 +46,6 @@ import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
  */
 public interface BiomeModificationContext {
 	/**
-	 * @see Biome#getCategory()
-	 * @see Biome.Builder#category(Biome.Category)
-	 */
-	void setCategory(Biome.Category category);
-
-	/**
 	 * Returns the modification context for the biomes weather properties.
 	 */
 	WeatherContext getWeather();

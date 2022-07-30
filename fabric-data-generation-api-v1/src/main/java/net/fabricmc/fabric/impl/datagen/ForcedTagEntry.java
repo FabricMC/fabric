@@ -17,23 +17,22 @@
 package net.fabricmc.fabric.impl.datagen;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
-import com.google.gson.JsonArray;
-
-import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagEntry;
 import net.minecraft.util.Identifier;
 
-public record ForcedTagEntry(Tag.Entry delegate) implements Tag.Entry {
-	@Override
-	public <T> boolean resolve(Function<Identifier, Tag<T>> tagGetter, Function<Identifier, T> objectGetter, Consumer<T> collector) {
-		return delegate.resolve(tagGetter, objectGetter, collector);
+public class ForcedTagEntry extends TagEntry {
+	private final TagEntry delegate;
+
+	public ForcedTagEntry(TagEntry delegate) {
+		super(delegate.id, true, delegate.required);
+		this.delegate = delegate;
 	}
 
 	@Override
-	public void addToJson(JsonArray json) {
-		delegate.addToJson(json);
+	public <T> boolean resolve(TagEntry.ValueGetter<T> arg, Consumer<T> consumer) {
+		return delegate.resolve(arg, consumer);
 	}
 
 	@Override

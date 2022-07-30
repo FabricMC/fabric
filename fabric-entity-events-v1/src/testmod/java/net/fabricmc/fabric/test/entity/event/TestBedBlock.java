@@ -24,7 +24,6 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -50,11 +49,11 @@ public class TestBedBlock extends Block {
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		if (state.get(OCCUPIED)) {
-			player.sendMessage(new TranslatableText("block.minecraft.bed.occupied"), true);
+			player.sendMessage(Text.translatable("block.minecraft.bed.occupied"), true);
 			return ActionResult.CONSUME;
 		}
 
-		if (world.getDimension().isBedWorking()) {
+		if (world.getDimension().bedWorks()) {
 			if (!world.isClient) {
 				player.trySleep(pos).ifLeft(sleepFailureReason -> {
 					Text message = sleepFailureReason.getMessage();
