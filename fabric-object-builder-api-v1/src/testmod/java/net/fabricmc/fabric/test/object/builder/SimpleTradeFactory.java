@@ -16,11 +16,10 @@
 
 package net.fabricmc.fabric.test.object.builder;
 
-import java.util.Random;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOffers;
+import net.minecraft.util.math.random.Random;
 
 class SimpleTradeFactory implements TradeOffers.Factory {
 	private final TradeOffer offer;

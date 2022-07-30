@@ -16,9 +16,11 @@
 
 package net.fabricmc.fabric.mixin.registry.sync;
 
+import java.util.Set;
+
 import com.mojang.serialization.Lifecycle;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,17 +29,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.SimpleRegistry;
 
-import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 
 @Mixin(SimpleRegistry.class)
 public abstract class MixinSimpleRegistry<T> extends Registry<T> {
 	@Unique
 	private static final Logger FARBIC_LOGGER = LoggerFactory.getLogger("FabricRegistrySync");
+
+	// Namespaces used by the vanilla game. "brigadier" is used by command argument type registry.
+	// While Realms use "realms" namespace, it is irrelevant for Registry Sync.
+	@Unique
+	private static final Set<String> VANILLA_NAMESPACES = Set.of("minecraft", "brigadier");
 
 	protected MixinSimpleRegistry(RegistryKey<Registry<T>> arg, Lifecycle lifecycle) {
 		super(arg, lifecycle);
@@ -55,7 +62,7 @@ public abstract class MixinSimpleRegistry<T> extends Registry<T> {
 
 	@Unique
 	private void onChange(RegistryKey<Registry<T>> registryKey) {
-		if (RegistrySyncManager.postBootstrap || !registryKey.getValue().getNamespace().equals("minecraft")) {
+		if (RegistrySyncManager.postBootstrap || !VANILLA_NAMESPACES.contains(registryKey.getValue().getNamespace())) {
 			RegistryAttributeHolder holder = RegistryAttributeHolder.get(this);
 
 			if (!holder.hasAttribute(RegistryAttribute.MODDED)) {

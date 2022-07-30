@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.class_7648;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
@@ -44,6 +45,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
+import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
 import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryResponseC2SPacketAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
@@ -113,8 +115,8 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	private void sendCompressionPacket() {
 		// Compression is not needed for local transport
 		if (this.server.getNetworkCompressionThreshold() >= 0 && !this.connection.isLocal()) {
-			this.connection.send(new LoginCompressionS2CPacket(this.server.getNetworkCompressionThreshold()), (channelFuture) ->
-					this.connection.setCompressionThreshold(this.server.getNetworkCompressionThreshold(), true)
+			this.connection.send(new LoginCompressionS2CPacket(this.server.getNetworkCompressionThreshold()),
+					class_7648.method_45084(() -> connection.setCompressionThreshold(server.getNetworkCompressionThreshold(), true))
 			);
 		}
 	}
@@ -174,7 +176,12 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	}
 
 	@Override
-	public void sendPacket(Packet<?> packet, GenericFutureListener<? extends io.netty.util.concurrent.Future<? super Void>> callback) {
+	public void sendPacket(Packet<?> packet, @Nullable GenericFutureListener<? extends io.netty.util.concurrent.Future<? super Void>> callback) {
+		sendPacket(packet, GenericFutureListenerHolder.create(callback));
+	}
+
+	@Override
+	public void sendPacket(Packet<?> packet, class_7648 callback) {
 		Objects.requireNonNull(packet, "Packet cannot be null");
 
 		this.connection.send(packet, callback);

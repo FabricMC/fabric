@@ -21,7 +21,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.passive.PigEntity;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -48,12 +48,12 @@ public class FabricEntityApiLookupTest {
 
 		INSPECTABLE.registerSelf(INSPECTABLE_PIG);
 		INSPECTABLE.registerForTypes(
-				(entity, context) -> () -> new LiteralText("registerForTypes: " + entity.getClass().getName()),
+				(entity, context) -> () -> Text.literal("registerForTypes: " + entity.getClass().getName()),
 				EntityType.PLAYER,
 				EntityType.COW);
 		INSPECTABLE.registerFallback((entity, context) -> {
 			if (entity instanceof CreeperEntity) {
-				return () -> new LiteralText("registerFallback: CreeperEntity");
+				return () -> Text.literal("registerFallback: CreeperEntity");
 			} else {
 				return null;
 			}

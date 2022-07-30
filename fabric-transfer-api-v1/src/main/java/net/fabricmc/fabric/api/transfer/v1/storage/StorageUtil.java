@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.transfer.v1.storage;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -78,12 +79,13 @@ public final class StorageUtil {
 	 * @throws IllegalStateException If no transaction is passed and a transaction is already active on the current thread.
 	 */
 	public static <T> long move(@Nullable Storage<T> from, @Nullable Storage<T> to, Predicate<T> filter, long maxAmount, @Nullable TransactionContext transaction) {
+		Objects.requireNonNull(filter, "Filter may not be null");
 		if (from == null || to == null) return 0;
 
 		long totalMoved = 0;
 
 		try (Transaction iterationTransaction = Transaction.openNested(transaction)) {
-			for (StorageView<T> view : from.iterable(iterationTransaction)) {
+			for (StorageView<T> view : from) {
 				if (view.isResourceBlank()) continue;
 				T resource = view.getResource();
 				if (!filter.test(resource)) continue;
@@ -148,12 +150,12 @@ public final class StorageUtil {
 	/**
 	 * Attempt to find a resource stored in the passed storage.
 	 *
-	 * @see #findStoredResource(Storage, Predicate, TransactionContext)
+	 * @see #findStoredResource(Storage, Predicate)
 	 * @return A non-blank resource stored in the storage, or {@code null} if none could be found.
 	 */
 	@Nullable
-	public static <T> T findStoredResource(@Nullable Storage<T> storage, @Nullable TransactionContext transaction) {
-		return findStoredResource(storage, r -> true, transaction);
+	public static <T> T findStoredResource(@Nullable Storage<T> storage) {
+		return findStoredResource(storage, r -> true);
 	}
 
 	/**
@@ -161,26 +163,15 @@ public final class StorageUtil {
 	 *
 	 * @param storage The storage to inspect, may be null.
 	 * @param filter The filter. Only a resource for which this filter returns {@code true} will be returned.
-	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this query.
 	 * @param <T> The type of the stored resources.
 	 * @return A non-blank resource stored in the storage that matches the filter, or {@code null} if none could be found.
 	 */
 	@Nullable
-	public static <T> T findStoredResource(@Nullable Storage<T> storage, Predicate<T> filter, @Nullable TransactionContext transaction) {
+	public static <T> T findStoredResource(@Nullable Storage<T> storage, Predicate<T> filter) {
+		Objects.requireNonNull(filter, "Filter may not be null");
 		if (storage == null) return null;
 
-		if (transaction == null) {
-			try (Transaction outer = Transaction.openOuter()) {
-				return findStoredResourceInner(storage, filter, outer);
-			}
-		} else {
-			return findStoredResourceInner(storage, filter, transaction);
-		}
-	}
-
-	@Nullable
-	private static <T> T findStoredResourceInner(Storage<T> storage, Predicate<T> filter, TransactionContext transaction) {
-		for (StorageView<T> view : storage.iterable(transaction)) {
+		for (StorageView<T> view : storage) {
 			if (!view.isResourceBlank() && filter.test(view.getResource())) {
 				return view.getResource();
 			}
@@ -211,10 +202,11 @@ public final class StorageUtil {
 	 */
 	@Nullable
 	public static <T> T findExtractableResource(@Nullable Storage<T> storage, Predicate<T> filter, @Nullable TransactionContext transaction) {
+		Objects.requireNonNull(filter, "Filter may not be null");
 		if (storage == null) return null;
 
 		try (Transaction nested = Transaction.openNested(transaction)) {
-			for (StorageView<T> view : storage.iterable(nested)) {
+			for (StorageView<T> view : storage) {
 				// Extract below could change the resource, so we have to query it before extracting.
 				T resource = view.getResource();
 
@@ -269,28 +261,17 @@ public final class StorageUtil {
 	 * Compute the comparator output for a storage, similar to {@link ScreenHandler#calculateComparatorOutput(Inventory)}.
 	 *
 	 * @param storage The storage for which the comparator level should be computed.
-	 * @param transaction The current transaction, or {@code null} if a transaction should be opened for this computation.
 	 * @param <T> The type of the stored resources.
 	 * @return An integer between 0 and 15 (inclusive): the comparator output for the passed storage.
 	 */
-	public static <T> int calculateComparatorOutput(@Nullable Storage<T> storage, @Nullable TransactionContext transaction) {
+	public static <T> int calculateComparatorOutput(@Nullable Storage<T> storage) {
 		if (storage == null) return 0;
 
-		if (transaction == null) {
-			try (Transaction outer = Transaction.openOuter()) {
-				return calculateComparatorOutputInner(storage, outer);
-			}
-		} else {
-			return calculateComparatorOutputInner(storage, transaction);
-		}
-	}
-
-	private static <T> int calculateComparatorOutputInner(Storage<T> storage, TransactionContext transaction) {
 		double fillPercentage = 0;
 		int viewCount = 0;
 		boolean hasNonEmptyView = false;
 
-		for (StorageView<T> view : storage.iterable(transaction)) {
+		for (StorageView<T> view : storage) {
 			viewCount++;
 
 			if (view.getAmount() > 0) {

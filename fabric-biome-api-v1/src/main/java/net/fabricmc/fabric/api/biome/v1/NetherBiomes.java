@@ -55,7 +55,7 @@ public final class NetherBiomes {
 	 *
 	 * @param biome           The biome to add. Must not be null.
 	 * @param mixedNoisePoint data about the given {@link Biome}'s spawning information in the nether.
-	 * @see MultiNoiseUtil.NoiseValuePoint
+	 * @see MultiNoiseUtil.NoiseHypercube
 	 */
 	public static void addNetherBiome(RegistryKey<Biome> biome, MultiNoiseUtil.NoiseHypercube mixedNoisePoint) {
 		NetherBiomeData.addNetherBiome(biome, mixedNoisePoint);

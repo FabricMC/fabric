@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -48,6 +49,10 @@ public class ItemVariantImpl implements ItemVariant {
 	private final Item item;
 	private final @Nullable NbtCompound nbt;
 	private final int hashCode;
+	/**
+	 * Lazily computed, equivalent to calling toStack(1). <b>MAKE SURE IT IS NEVER MODIFIED!</b>
+	 */
+	private volatile @Nullable ItemStack cachedStack = null;
 
 	public ItemVariantImpl(Item item, NbtCompound nbt) {
 		this.item = item;
@@ -134,5 +139,16 @@ public class ItemVariantImpl implements ItemVariant {
 	@Override
 	public int hashCode() {
 		return hashCode;
+	}
+
+	public ItemStack getCachedStack() {
+		ItemStack ret = cachedStack;
+
+		if (ret == null) {
+			// multiple stacks could be created at the same time by different threads, but that is not an issue
+			cachedStack = ret = toStack();
+		}
+
+		return ret;
 	}
 }

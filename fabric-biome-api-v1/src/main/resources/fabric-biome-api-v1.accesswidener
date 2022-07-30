@@ -1,18 +1,21 @@
 accessWidener	v1	named
 accessible  class   net/minecraft/world/biome/Biome$Weather
 
+# Used to set nether biomes
+accessible  field   net/minecraft/world/biome/source/MultiNoiseBiomeSource instance Ljava/util/Optional;
+accessible  class   net/minecraft/world/biome/source/MultiNoiseBiomeSource$Instance
+accessible  field   net/minecraft/world/biome/source/MultiNoiseBiomeSource$Preset biomeSourceFunction Ljava/util/function/Function;
+accessible  field   net/minecraft/world/biome/source/MultiNoiseBiomeSource biomeEntries Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$Entries;
+mutable     field   net/minecraft/world/biome/source/MultiNoiseBiomeSource biomeEntries Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$Entries;
+
 # Rebuilding biome source feature lists
-accessible method net/minecraft/world/biome/source/BiomeSource method_39525 (Ljava/util/List;Z)Ljava/util/List;
 accessible field net/minecraft/world/biome/source/BiomeSource biomes Ljava/util/Set;
-accessible field net/minecraft/world/biome/source/BiomeSource indexedFeaturesSupplier Ljava/util/function/Supplier;
-mutable field net/minecraft/world/biome/source/BiomeSource indexedFeaturesSupplier Ljava/util/function/Supplier;
+mutable    field net/minecraft/world/biome/source/BiomeSource biomes Ljava/util/Set;
 
 # Top-Level Biome Fields Access
 accessible field net/minecraft/world/biome/Biome weather Lnet/minecraft/world/biome/Biome$Weather;
 accessible field net/minecraft/world/biome/Biome generationSettings Lnet/minecraft/world/biome/GenerationSettings;
 accessible field net/minecraft/world/biome/Biome spawnSettings Lnet/minecraft/world/biome/SpawnSettings;
-accessible field net/minecraft/world/biome/Biome category Lnet/minecraft/world/biome/Biome$Category;
-mutable field net/minecraft/world/biome/Biome category Lnet/minecraft/world/biome/Biome$Category;
 
 # Biome Weather
 accessible field net/minecraft/world/biome/Biome$Weather precipitation Lnet/minecraft/world/biome/Biome$Precipitation;

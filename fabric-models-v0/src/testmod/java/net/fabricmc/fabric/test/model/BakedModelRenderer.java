@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.model;
 
-import java.util.Random;
-
 import org.apache.commons.lang3.ArrayUtils;
 
 import net.minecraft.client.render.OverlayTexture;
@@ -26,10 +24,11 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 
 public class BakedModelRenderer {
 	private static final Direction[] CULL_FACES = ArrayUtils.add(Direction.values(), null);
-	private static final Random RANDOM = new Random();
+	private static final Random RANDOM = Random.create();
 
 	public static void renderBakedModel(BakedModel model, VertexConsumer vertices, MatrixStack.Entry entry, int light) {
 		for (Direction cullFace : CULL_FACES) {

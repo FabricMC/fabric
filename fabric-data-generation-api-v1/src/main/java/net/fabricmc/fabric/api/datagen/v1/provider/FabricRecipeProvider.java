@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
-import java.nio.file.Path;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -24,7 +23,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 
-import net.minecraft.data.DataCache;
+import net.minecraft.data.DataWriter;
 import net.minecraft.data.server.RecipeProvider;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
@@ -65,8 +64,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	}
 
 	@Override
-	public void run(DataCache cache) {
-		Path path = this.root.getOutput();
+	public void run(DataWriter writer) {
 		Set<Identifier> generatedRecipes = Sets.newHashSet();
 		generateRecipes(provider -> {
 			Identifier identifier = getRecipeIdentifier(provider.getRecipeId());
@@ -79,12 +77,12 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 			ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(provider);
 			ConditionJsonProvider.write(recipeJson, conditions);
 
-			saveRecipe(cache, recipeJson, path.resolve("data/" + identifier.getNamespace() + "/recipes/" + identifier.getPath() + ".json"));
+			saveRecipe(writer, recipeJson, this.recipesPathResolver.resolveJson(identifier));
 			JsonObject advancementJson = provider.toAdvancementJson();
 
 			if (advancementJson != null) {
 				ConditionJsonProvider.write(advancementJson, conditions);
-				saveRecipeAdvancement(cache, advancementJson, path.resolve("data/" + identifier.getNamespace() + "/advancements/" + provider.getAdvancementId().getPath() + ".json"));
+				saveRecipeAdvancement(writer, advancementJson, this.advancementsPathResolver.resolveJson(getRecipeIdentifier(provider.getAdvancementId())));
 			}
 		});
 	}

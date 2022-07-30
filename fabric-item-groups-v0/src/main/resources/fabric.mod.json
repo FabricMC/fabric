@@ -23,7 +23,11 @@
   },
   "description": "An API for adding custom item groups.",
   "mixins": [
-    "fabric-item-groups-v0.mixins.json"
+    "fabric-item-groups-v0.mixins.json",
+    {
+      "config": "fabric-item-groups-v0.client.mixins.json",
+      "environment": "client"
+    }
   ],
   "custom": {
     "fabric-api:module-lifecycle": "stable"

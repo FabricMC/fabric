@@ -21,7 +21,7 @@ import static net.fabricmc.fabric.test.lookup.FabricApiLookupTest.ensureExceptio
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.ToolItem;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -43,7 +43,7 @@ public class FabricItemApiLookupTest {
 			if (stack.hasCustomName()) {
 				return stack.getName();
 			} else {
-				return new LiteralText("Unnamed gem.");
+				return Text.literal("Unnamed gem.");
 			}
 		}, Items.DIAMOND, Items.DIAMOND_BLOCK);
 		// Test registerSelf
@@ -53,7 +53,7 @@ public class FabricItemApiLookupTest {
 			Item item = stack.getItem();
 
 			if (item instanceof ToolItem) {
-				return () -> new LiteralText("Tool mining level: " + ((ToolItem) item).getMaterial().getMiningLevel());
+				return () -> Text.literal("Tool mining level: " + ((ToolItem) item).getMaterial().getMiningLevel());
 			} else {
 				return null;
 			}

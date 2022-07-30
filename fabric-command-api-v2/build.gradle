@@ -1,0 +1,14 @@
+archivesBaseName = "fabric-command-api-v2"
+version = getSubprojectVersion(project)
+
+moduleDependencies(project, [
+		'fabric-api-base'
+])
+
+testDependencies(project, [
+		':fabric-lifecycle-events-v1',
+])
+
+loom {
+	accessWidenerPath = file('src/main/resources/fabric-command-api-v2.accesswidener')
+}

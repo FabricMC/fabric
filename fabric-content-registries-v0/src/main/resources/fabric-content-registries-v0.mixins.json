@@ -4,15 +4,18 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "AxeItemAccessor",
+    "FarmerVillagerTaskMixin",
+    "FarmerWorkTaskAccessor",
+    "GiveGiftsToHeroTaskAccessor",
     "HoeItemAccessor",
     "HoneycombItemMixin",
     "MixinAbstractFurnaceBlockEntity",
     "MixinFireBlock",
     "OxidizableMixin",
-    "ShovelItemAccessor"
-  ],
-  "client": [
-    "client.MixinClientPlayNetworkHandler"
+    "SculkSensorBlockMixin",
+    "ShovelItemAccessor",
+    "VillagerEntityAccessor",
+    "VillagerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

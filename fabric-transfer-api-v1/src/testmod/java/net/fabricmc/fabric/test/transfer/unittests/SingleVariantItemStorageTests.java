@@ -27,7 +27,6 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
@@ -75,7 +74,7 @@ public class SingleVariantItemStorageTests {
 		}
 
 		// Make sure custom NBT is kept.
-		Text customName = new LiteralText("Lava-containing diamond!");
+		Text customName = Text.literal("Lava-containing diamond!");
 		inv.getStack(0).setCustomName(customName);
 
 		try (Transaction tx = Transaction.openOuter()) {

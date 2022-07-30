@@ -22,12 +22,12 @@ import java.util.Collection;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
@@ -36,16 +36,16 @@ import net.minecraft.world.GameRules;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 
 public class GameRulesTestMod implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GameRulesTestMod.class);
 	private static final Direction[] CARDINAL_DIRECTIONS = Arrays.stream(Direction.values()).filter(direction -> direction != Direction.UP && direction != Direction.DOWN).toArray(Direction[]::new);
-	public static final CustomGameRuleCategory GREEN_CATEGORY = new CustomGameRuleCategory(new Identifier("fabric", "green"), new LiteralText("This One is Green").styled(style -> style.withBold(true).withColor(Formatting.DARK_GREEN)));
-	public static final CustomGameRuleCategory RED_CATEGORY = new CustomGameRuleCategory(new Identifier("fabric", "red"), new LiteralText("This One is Red").styled(style -> style.withBold(true).withColor(Formatting.DARK_RED)));
+	public static final CustomGameRuleCategory GREEN_CATEGORY = new CustomGameRuleCategory(new Identifier("fabric", "green"), Text.literal("This One is Green").styled(style -> style.withBold(true).withColor(Formatting.DARK_GREEN)));
+	public static final CustomGameRuleCategory RED_CATEGORY = new CustomGameRuleCategory(new Identifier("fabric", "red"), Text.literal("This One is Red").styled(style -> style.withBold(true).withColor(Formatting.DARK_RED)));
 
 	// Bounded, Integer, Double and Float rules
 	public static final GameRules.Key<GameRules.IntRule> POSITIVE_ONLY_TEST_INT = register("positiveOnlyTestInteger", GameRules.Category.UPDATES, GameRuleFactory.createIntRule(2, 0));

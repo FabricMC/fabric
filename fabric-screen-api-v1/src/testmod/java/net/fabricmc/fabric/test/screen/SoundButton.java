@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.test.screen;
 
-import java.util.Random;
-
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
@@ -27,9 +24,11 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.math.random.Random;
 
 class SoundButton extends PressableWidget {
-	private static final Random RANDOM = new Random();
+	private static final Random RANDOM = Random.create();
 
 	SoundButton(int x, int y, int width, int height) {
 		super(x, y, width, height, Text.of("Sound Button"));

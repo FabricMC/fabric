@@ -1,0 +1,69 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:black_dyes",
+      "required": false
+    },
+    {
+      "id": "#c:blue_dyes",
+      "required": false
+    },
+    {
+      "id": "#c:brown_dyes",
+      "required": false
+    },
+    {
+      "id": "#c:green_dyes",
+      "required": false
+    },
+    {
+      "id": "#c:red_dyes",
+      "required": false
+    },
+    {
+      "id": "#c:white_dyes",
+      "required": false
+    },
+    {
+      "id": "#c:yellow_dyes",
+      "required": false
+    },
+    {
+      "id": "#c:light_gray_dyes",
+      "required": false
+    },
+    {
+      "id": "#c:light_blue_dyes",
+      "required": false
+    },
+    {
+      "id": "#c:lime_dyes",
+      "required": false
+    },
+    {
+      "id": "#c:magenta_dyes",
+      "required": false
+    },
+    {
+      "id": "#c:orange_dyes",
+      "required": false
+    },
+    {
+      "id": "#c:pink_dyes",
+      "required": false
+    },
+    {
+      "id": "#c:cyan_dyes",
+      "required": false
+    },
+    {
+      "id": "#c:gray_dyes",
+      "required": false
+    },
+    {
+      "id": "#c:purple_dyes",
+      "required": false
+    }
+  ]
+}

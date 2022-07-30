@@ -29,7 +29,11 @@
   },
   "description": "Low-level, vanilla protocol oriented networking hooks.",
   "mixins": [
-    "fabric-networking-api-v1.mixins.json"
+    "fabric-networking-api-v1.mixins.json",
+    {
+      "config": "fabric-networking-api-v1.client.mixins.json",
+      "environment": "client"
+    }
   ],
   "custom": {
     "fabric-api:module-lifecycle": "stable"

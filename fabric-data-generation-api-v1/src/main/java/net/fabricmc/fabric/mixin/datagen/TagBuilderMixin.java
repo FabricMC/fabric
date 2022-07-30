@@ -18,17 +18,15 @@ package net.fabricmc.fabric.mixin.datagen;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagBuilder;
 
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 
 /**
  * Extends Tag.Builder to support setting the replace field.
  */
-@Mixin(Tag.Builder.class)
+@Mixin(TagBuilder.class)
 public class TagBuilderMixin implements FabricTagBuilder {
 	@Unique
 	private boolean replace = false;
@@ -38,8 +36,8 @@ public class TagBuilderMixin implements FabricTagBuilder {
 		this.replace = replace;
 	}
 
-	@ModifyArg(method = "toJson", at = @At(value = "INVOKE", target = "Lcom/google/gson/JsonObject;addProperty(Ljava/lang/String;Ljava/lang/Boolean;)V"), index = 1)
-	public Boolean modifyReplace(Boolean replace) {
-		return this.replace;
+	@Override
+	public boolean fabric_isReplaced() {
+		return replace;
 	}
 }

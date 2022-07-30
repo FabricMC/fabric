@@ -18,7 +18,6 @@ package net.fabricmc.fabric.test.lookup.entity;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.PigEntity;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
 
@@ -31,6 +30,6 @@ public class InspectablePigEntity extends PigEntity implements Inspectable {
 
 	@Override
 	public Text inspect() {
-		return new LiteralText("InspectablePigEntity");
+		return Text.literal("InspectablePigEntity");
 	}
 }

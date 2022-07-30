@@ -1,0 +1,14 @@
+accessWidener	v2	named
+
+accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask
+accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask$RenderData
+
+accessible class net/minecraft/client/render/block/BlockModelRenderer$AmbientOcclusionCalculator
+accessible field net/minecraft/client/render/block/BlockModelRenderer$AmbientOcclusionCalculator brightness [F
+accessible field net/minecraft/client/render/block/BlockModelRenderer$AmbientOcclusionCalculator light [I
+
+accessible method net/minecraft/client/render/block/BlockModelRenderer getQuadDimensions (Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;[ILnet/minecraft/util/math/Direction;[FLjava/util/BitSet;)V
+
+accessible method net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk beginBufferBuilding (Lnet/minecraft/client/render/BufferBuilder;)V
+
+accessible method net/minecraft/client/render/item/ItemRenderer renderBakedItemModel (Lnet/minecraft/client/render/model/BakedModel;Lnet/minecraft/item/ItemStack;IILnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;)V

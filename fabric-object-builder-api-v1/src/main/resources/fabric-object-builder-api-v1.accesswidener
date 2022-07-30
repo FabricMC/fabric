@@ -2,4 +2,6 @@ accessWidener	v1	named
 extendable  method    net/minecraft/block/AbstractBlock$Settings    <init>  (Lnet/minecraft/block/Material;Ljava/util/function/Function;)V
 extendable  method    net/minecraft/block/AbstractBlock$Settings    <init>  (Lnet/minecraft/block/Material;Lnet/minecraft/block/MapColor;)V
 
+accessible    method    net/minecraft/world/poi/PointOfInterestTypes    register    (Lnet/minecraft/util/registry/Registry;Lnet/minecraft/util/registry/RegistryKey;Ljava/util/Set;II)Lnet/minecraft/world/poi/PointOfInterestType;
+
 extendable class net/minecraft/block/entity/BlockEntityType$BlockEntityFactory

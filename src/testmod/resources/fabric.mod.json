@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-testmod",
+  "name": "Fabric API Test Mod",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0"
+}

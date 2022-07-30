@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
+import java.util.Set;
+import java.util.function.Supplier;
+
+import com.google.common.base.Suppliers;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,17 +36,28 @@ import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.fabricmc.fabric.impl.biome.TheEndBiomeData;
 
 @Mixin(TheEndBiomeSource.class)
-public class MixinTheEndBiomeSource {
+public class MixinTheEndBiomeSource extends MixinBiomeSource {
 	@Unique
-	private TheEndBiomeData.Overrides overrides;
+	private Supplier<TheEndBiomeData.Overrides> overrides;
+
+	@Unique
+	private boolean biomeSetModified = false;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void init(Registry<Biome> biomeRegistry, long seed, CallbackInfo ci) {
-		overrides = TheEndBiomeData.createOverrides(biomeRegistry, seed);
+	private void init(Registry<Biome> biomeRegistry, CallbackInfo ci) {
+		overrides = Suppliers.memoize(() -> TheEndBiomeData.createOverrides(biomeRegistry));
 	}
 
 	@Inject(method = "getBiome", at = @At("RETURN"), cancellable = true)
-	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler multiNoiseSampler, CallbackInfoReturnable<RegistryEntry<Biome>> cir) {
-		cir.setReturnValue(overrides.pick(biomeX, biomeY, biomeZ, cir.getReturnValue()));
+	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noise, CallbackInfoReturnable<RegistryEntry<Biome>> cir) {
+		cir.setReturnValue(overrides.get().pick(biomeX, biomeY, biomeZ, noise, cir.getReturnValue()));
+	}
+
+	@Override
+	protected void fabric_modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
+		if (!biomeSetModified) {
+			biomeSetModified = true;
+			biomes.addAll(overrides.get().customBiomes);
+		}
 	}
 }

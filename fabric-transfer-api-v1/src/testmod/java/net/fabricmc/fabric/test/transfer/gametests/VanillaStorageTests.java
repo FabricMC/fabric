@@ -40,7 +40,7 @@ public class VanillaStorageTests {
 	 * Regression test for https://github.com/FabricMC/fabric/issues/1972.
 	 * Ensures that furnace cook time is only reset when extraction is actually committed.
 	 */
-	@GameTest(structureName = FabricGameTest.EMPTY_STRUCTURE)
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testFurnaceCookTime(TestContext context) {
 		BlockPos pos = new BlockPos(0, 1, 0);
 		context.setBlockState(pos, Blocks.FURNACE.getDefaultState());
@@ -86,7 +86,7 @@ public class VanillaStorageTests {
 	/**
 	 * Tests that containers such as chests don't update adjacent comparators until the very end of a committed transaction.
 	 */
-	@GameTest(structureName = FabricGameTest.EMPTY_STRUCTURE)
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testChestComparator(TestContext context) {
 		World world = context.getWorld();
 

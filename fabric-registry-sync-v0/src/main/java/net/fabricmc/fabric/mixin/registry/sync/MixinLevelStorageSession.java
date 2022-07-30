@@ -22,12 +22,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -40,9 +39,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.SaveProperties;
 import net.minecraft.world.level.storage.LevelStorage;
-import net.minecraft.util.registry.DynamicRegistryManager;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistryMapSerializer;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
@@ -62,7 +61,7 @@ public class MixinLevelStorageSession {
 
 	@Shadow
 	@Final
-	private Path directory;
+	private LevelStorage.LevelSave directory;
 
 	@Unique
 	private boolean fabric_readIdMapFile(File file) throws IOException, RemapException {
@@ -85,7 +84,7 @@ public class MixinLevelStorageSession {
 
 	@Unique
 	private File fabric_getWorldIdMapFile(int i) {
-		return new File(new File(directory.toFile(), "data"), "fabricRegistry" + ".dat" + (i == 0 ? "" : ("." + i)));
+		return new File(new File(directory.path().toFile(), "data"), "fabricRegistry" + ".dat" + (i == 0 ? "" : ("." + i)));
 	}
 
 	@Unique
@@ -136,7 +135,7 @@ public class MixinLevelStorageSession {
 
 	@Inject(method = "backupLevelDataFile(Lnet/minecraft/util/registry/DynamicRegistryManager;Lnet/minecraft/world/SaveProperties;Lnet/minecraft/nbt/NbtCompound;)V", at = @At("HEAD"))
 	public void saveWorld(DynamicRegistryManager registryTracker, SaveProperties saveProperties, NbtCompound compoundTag, CallbackInfo info) {
-		if (!Files.exists(directory)) {
+		if (!Files.exists(directory.path())) {
 			return;
 		}
 

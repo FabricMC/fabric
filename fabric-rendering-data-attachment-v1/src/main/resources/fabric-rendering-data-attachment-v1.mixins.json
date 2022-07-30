@@ -6,10 +6,6 @@
     "MixinBlockEntity",
     "MixinViewableWorld"
   ],
-  "client": [
-    "client.MixinChunkRendererRegion",
-    "client.MixinChunkRendererRegionBuilder"
-  ],
   "injectors": {
     "defaultRequire": 1
   }

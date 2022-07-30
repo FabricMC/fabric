@@ -25,13 +25,11 @@ import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.data.DataCache;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.DataWriter;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
@@ -50,8 +48,6 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
  */
 @ApiStatus.NonExtendable
 public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier, LootTable.Builder>>, DataProvider {
-	Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-
 	LootContextType getLootContextType();
 
 	FabricDataGenerator getFabricDataGenerator();
@@ -69,7 +65,7 @@ public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier,
 
 	@ApiStatus.Internal
 	@Override
-	default void run(DataCache cache) throws IOException {
+	default void run(DataWriter writer) throws IOException {
 		HashMap<Identifier, LootTable> builders = Maps.newHashMap();
 		HashMap<Identifier, ConditionJsonProvider[]> conditionMap = new HashMap<>();
 
@@ -86,7 +82,7 @@ public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier,
 			JsonObject tableJson = (JsonObject) LootManager.toJson(entry.getValue());
 			ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
 
-			DataProvider.writeToPath(GSON, cache, tableJson, getOutputPath(entry.getKey()));
+			DataProvider.writeToPath(writer, tableJson, getOutputPath(entry.getKey()));
 		}
 	}
 
