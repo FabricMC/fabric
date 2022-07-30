@@ -79,7 +79,7 @@ public abstract class MixinBackgroundRenderer {
 	}
 
 	@Inject(method = "applyFog", at = @At("HEAD"), cancellable = true)
-	private static void applyFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci) {
+	private static void applyFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci) {
 		FluidState submergedFluidState = getSubmergedFluidState(camera);
 		FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(submergedFluidState.getFluid());
 
