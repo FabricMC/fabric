@@ -64,9 +64,9 @@ transitive-accessible method net/minecraft/item/ItemUsageContext <init> (Lnet/mi
 transitive-accessible method net/minecraft/item/ItemPlacementContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
 
 # Text filtering
-transitive-accessible method net/minecraft/server/network/ServerPlayNetworkHandler filterText (Ljava/lang/Object;Ljava/util/function/Consumer;Ljava/util/function/BiFunction;)V
-transitive-accessible method net/minecraft/server/network/ServerPlayNetworkHandler filterText (Ljava/lang/String;Ljava/util/function/Consumer;)V
-transitive-accessible method net/minecraft/server/network/ServerPlayNetworkHandler filterTexts (Ljava/util/List;Ljava/util/function/Consumer;)V
+transitive-accessible method net/minecraft/server/network/ServerPlayNetworkHandler filterText (Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/util/concurrent/CompletableFuture;
+transitive-accessible method net/minecraft/server/network/ServerPlayNetworkHandler filterText (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
+transitive-accessible method net/minecraft/server/network/ServerPlayNetworkHandler filterTexts (Ljava/util/List;)Ljava/util/concurrent/CompletableFuture;
 
 # Registering custom renderers
 transitive-accessible method net/minecraft/client/render/entity/EntityRenderers register (Lnet/minecraft/entity/EntityType;Lnet/minecraft/client/render/entity/EntityRendererFactory;)V
