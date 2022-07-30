@@ -56,7 +56,7 @@ transitive-accessible method net/minecraft/block/Material$Builder blocksPistons 
 
 # Item constructors
 transitive-accessible method net/minecraft/item/AxeItem <init> (Lnet/minecraft/item/ToolMaterial;FFLnet/minecraft/item/Item$Settings;)V
-transitive-accessible method net/minecraft/item/MusicDiscItem <init> (ILnet/minecraft/sound/SoundEvent;Lnet/minecraft/item/Item$Settings;)V
+transitive-accessible method net/minecraft/item/MusicDiscItem <init> (ILnet/minecraft/sound/SoundEvent;Lnet/minecraft/item/Item$Settings;I)V
 transitive-accessible method net/minecraft/item/PickaxeItem <init> (Lnet/minecraft/item/ToolMaterial;IFLnet/minecraft/item/Item$Settings;)V
 
 # Item usage context constructors
