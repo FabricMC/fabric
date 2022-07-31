@@ -74,38 +74,38 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateFoodTags() {
-
 		getOrCreateTagBuilder(ConventionalItemTags.MEAT)
-			.addOptionalTag(ConventionalItemTags.RAW_MEAT)
-			.addOptionalTag(ConventionalItemTags.COOKED_MEAT);
+				.addOptionalTag(ConventionalItemTags.RAW_MEAT)
+				.addOptionalTag(ConventionalItemTags.COOKED_MEAT);
 
 		getOrCreateTagBuilder(ConventionalItemTags.POISONOUS_FOOD)
-			.add(Items.ROTTEN_FLESH)
-			.add(Items.SPIDER_EYE)
-			.add(Items.SUSPICIOUS_STEW)
-			.add(Items.POISONOUS_POTATO)
-			.add(Items.PUFFERFISH);
+				.add(Items.ROTTEN_FLESH)
+				.add(Items.SPIDER_EYE)
+				.add(Items.SUSPICIOUS_STEW)
+				.add(Items.POISONOUS_POTATO)
+				.add(Items.PUFFERFISH);
 
 		getOrCreateTagBuilder(ConventionalItemTags.RAW_MEAT)
-			.add(Items.BEEF)
-			.add(Items.MUTTON)
-			.add(Items.CHICKEN)
-			.add(Items.PORKCHOP)
-			.add(Items.RABBIT);
+				.add(Items.BEEF)
+				.add(Items.MUTTON)
+				.add(Items.CHICKEN)
+				.add(Items.PORKCHOP)
+				.add(Items.RABBIT);
+
 		getOrCreateTagBuilder(ConventionalItemTags.COOKED_MEAT)
-			.add(Items.COOKED_BEEF)
-			.add(Items.COOKED_MUTTON)
-			.add(Items.COOKED_CHICKEN)
-			.add(Items.COOKED_PORKCHOP)
-			.add(Items.COOKED_RABBIT);
+				.add(Items.COOKED_BEEF)
+				.add(Items.COOKED_MUTTON)
+				.add(Items.COOKED_CHICKEN)
+				.add(Items.COOKED_PORKCHOP)
+				.add(Items.COOKED_RABBIT);
 
 		getOrCreateTagBuilder(ConventionalItemTags.RAW_FISH)
-			.add(Items.COD)
-			.add(Items.SALMON);
-		
+				.add(Items.COD)
+				.add(Items.SALMON);
+
 		getOrCreateTagBuilder(ConventionalItemTags.COOKED_FISH)
-			.add(Items.COOKED_COD)
-			.add(Items.COOKED_SALMON);
+				.add(Items.COOKED_COD)
+				.add(Items.COOKED_SALMON);
 	}
 
 	private void generateDyeTags() {
