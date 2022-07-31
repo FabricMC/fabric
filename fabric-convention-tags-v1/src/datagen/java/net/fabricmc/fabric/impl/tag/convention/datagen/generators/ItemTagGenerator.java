@@ -86,6 +86,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.PUFFERFISH);
 
 		getOrCreateTagBuilder(ConventionalItemTags.RAW_MEAT)
+				.addOptionalTag(ConventionalItemTags.RAW_FISH)
 				.add(Items.BEEF)
 				.add(Items.MUTTON)
 				.add(Items.CHICKEN)
@@ -93,6 +94,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.RABBIT);
 
 		getOrCreateTagBuilder(ConventionalItemTags.COOKED_MEAT)
+				.addOptionalTag(ConventionalItemTags.COOKED_FISH)
 				.add(Items.COOKED_BEEF)
 				.add(Items.COOKED_MUTTON)
 				.add(Items.COOKED_CHICKEN)
