@@ -90,7 +90,7 @@ public class ConventionalItemTags {
 	public static final TagKey<Item> WHITE_DYES = register("white_dyes");
 	public static final TagKey<Item> YELLOW_DYES = register("yellow_dyes");
 
-	// Note: FISH is not here because it is covered by minecraft:item/fishies
+	// Note: FISH is not here because it is covered by minecraft:item/fishes
 	// Foods
 	public static final TagKey<Item> MEAT = register("meat");
 	public static final TagKey<Item> RAW_MEAT = register("raw_meat");
