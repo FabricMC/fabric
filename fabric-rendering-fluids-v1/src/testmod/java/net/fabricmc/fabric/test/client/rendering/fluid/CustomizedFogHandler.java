@@ -23,34 +23,23 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidFogHandler;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FogParameters;
 
 public class CustomizedFogHandler implements FluidFogHandler {
-	private final float startRadius;
-	private final float endRadius;
+	private final FogParameters parameters;
 
 	public CustomizedFogHandler(float startRadius, float endRadius) {
-		this.startRadius = startRadius;
-		this.endRadius = endRadius;
+		this.parameters = new FogParameters(startRadius, endRadius, FogShape.SPHERE);
 	}
 
 	@Override
-	public int getFogColor(Camera camera, float tickDelta, ClientWorld world) {
+	public int getFogColor(Camera camera, float tickDelta, ClientWorld world, int viewDistance, float skyDarkness) {
 		// Gets the water fog color from the current biome, based on the player (player camera) position
 		return world.getBiome(new BlockPos(camera.getPos())).value().getWaterFogColor();
 	}
 
 	@Override
-	public float getFogStartRadius(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
-		return startRadius;
-	}
-
-	@Override
-	public float getFogEndRadius(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
-		return endRadius;
-	}
-
-	@Override
-	public FogShape getFogShape(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
-		return FogShape.SPHERE;
+	public FogParameters getFogParameters(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta) {
+		return parameters;
 	}
 }

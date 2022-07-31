@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.client.render.fluid.v1;
 
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.FogShape;
 import net.minecraft.client.world.ClientWorld;
 
 /**
@@ -28,44 +27,23 @@ public interface FluidFogHandler {
 	/**
 	 * Gets the fluid fog color RGB. Alpha is ignored.
 	 *
-	 * @param camera    Camera submerged by the fluid.
-	 * @param tickDelta Time passed from the last tick.
-	 * @param world     Current client world.
+	 * @param camera       Camera submerged by the fluid.
+	 * @param tickDelta    Time passed from the last tick.
+	 * @param world        Current client world.
+	 * @param viewDistance Current view distance.
+	 * @param skyDarkness  Current sky darkness.
 	 * @return the color of the fog, or {@code -1} to make it hidden.
 	 */
-	int getFogColor(Camera camera, float tickDelta, ClientWorld world);
+	int getFogColor(Camera camera, float tickDelta, ClientWorld world, int viewDistance, float skyDarkness);
 
 	/**
-	 * Gets the distance in blocks, from the camera position, in which the fog starts rendering.
-	 *
-	 * <p>This could be negative, in this case the fog starts partially opaque.
+	 * Gets the fog rendering parameters.
 	 *
 	 * @param camera       Camera submerged by the fluid.
 	 * @param fogType      Type of fog.
-	 * @param viewDistance Current view distance of the submerged player.
+	 * @param viewDistance Current view distance.
 	 * @param thickFog     Specifies if a thick fog must be rendered.
+	 * @param tickDelta    Time passed from the last tick.
 	 */
-	float getFogStartRadius(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
-
-	/**
-	 * Gets the distance in blocks, from the camera position, after which the fog is totally opaque.
-	 *
-	 * <p>If this is less than the start distance, will be ignored.
-	 *
-	 * @param camera       Camera submerged by the fluid.
-	 * @param fogType      Type of fog.
-	 * @param viewDistance Current view distance of the submerged player.
-	 * @param thickFog     Specifies if a thick fog must be rendered.
-	 */
-	float getFogEndRadius(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
-
-	/**
-	 * Gets the shape of the fluid fog.
-	 *
-	 * @param camera       Camera submerged by the fluid.
-	 * @param fogType      Type of fog.
-	 * @param viewDistance Current view distance of the submerged player.
-	 * @param thickFog     Specifies if a thick fog must be rendered.
-	 */
-	FogShape getFogShape(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog);
+	FogParameters getFogParameters(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta);
 }

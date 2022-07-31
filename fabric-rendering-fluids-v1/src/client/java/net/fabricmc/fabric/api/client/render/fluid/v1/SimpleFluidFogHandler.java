@@ -22,13 +22,11 @@ import net.minecraft.client.render.FogShape;
 import net.minecraft.client.world.ClientWorld;
 
 /**
- * A simple {@link FluidFogHandler} with fixed fluid fog settings.
+ * A simple {@link FluidFogHandler} with fixed fog settings.
  */
 public class SimpleFluidFogHandler implements FluidFogHandler {
 	protected final int color;
-	protected final float startRadius;
-	protected final float endRadius;
-	protected final FogShape shape;
+	protected final FogParameters parameters;
 
 	/**
 	 * Creates a new handler with the specified fog settings.
@@ -36,13 +34,11 @@ public class SimpleFluidFogHandler implements FluidFogHandler {
 	 * @param color       Fluid fog color RGB. Alpha is ignored.
 	 * @param startRadius Distance in blocks, from the camera position, in which the fog starts rendering.
 	 * @param endRadius   Distance in blocks, from the camera position, after which the fog is totally opaque.
-	 * @param shape       Shape of the fluid fog.
+	 * @param shape       Shape of the fog.
 	 */
 	public SimpleFluidFogHandler(int color, float startRadius, float endRadius, FogShape shape) {
 		this.color = color;
-		this.startRadius = startRadius;
-		this.endRadius = endRadius;
-		this.shape = shape;
+		this.parameters = new FogParameters(startRadius, endRadius, shape);
 	}
 
 	/**
@@ -57,34 +53,31 @@ public class SimpleFluidFogHandler implements FluidFogHandler {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Gets the fluid fog color RGB. Alpha is ignored.
+	 *
+	 * @param camera       Camera submerged by the fluid.
+	 * @param tickDelta    Time passed from the last tick.
+	 * @param world        Current client world.
+	 * @param viewDistance Current view distance.
+	 * @param skyDarkness  Current sky darkness.
+	 * @return the color of the fog, or {@code -1} to make it hidden.
 	 */
 	@Override
-	public int getFogColor(Camera camera, float tickDelta, ClientWorld world) {
+	public int getFogColor(Camera camera, float tickDelta, ClientWorld world, int viewDistance, float skyDarkness) {
 		return color;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Gets the fog rendering parameters.
+	 *
+	 * @param camera       Camera submerged by the fluid.
+	 * @param fogType      Type of fog.
+	 * @param viewDistance Current view distance.
+	 * @param thickFog     Specifies if a thick fog must be rendered.
+	 * @param tickDelta    Time passed from the last tick.
 	 */
 	@Override
-	public float getFogStartRadius(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
-		return startRadius;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public float getFogEndRadius(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
-		return endRadius;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public FogShape getFogShape(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog) {
-		return shape;
+	public FogParameters getFogParameters(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta) {
+		return parameters;
 	}
 }

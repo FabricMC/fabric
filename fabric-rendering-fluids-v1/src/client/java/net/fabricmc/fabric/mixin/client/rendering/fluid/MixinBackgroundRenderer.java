@@ -33,6 +33,7 @@ import net.minecraft.fluid.FluidState;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidFogHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FogParameters;
 
 @Mixin(BackgroundRenderer.class)
 public abstract class MixinBackgroundRenderer {
@@ -52,7 +53,7 @@ public abstract class MixinBackgroundRenderer {
 	private static int fogColor = -1;
 
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
-	private static void render(Camera camera, float tickDelta, ClientWorld world, int i, float f, CallbackInfo ci) {
+	private static void render(Camera camera, float tickDelta, ClientWorld world, int viewDistance, float skyDarkness, CallbackInfo ci) {
 		FluidState submergedFluidState = getSubmergedFluidState(camera);
 		FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(submergedFluidState.getFluid());
 
@@ -60,16 +61,17 @@ public abstract class MixinBackgroundRenderer {
 			FluidFogHandler fogHandler = handler.getFogHandler(camera.getBlockPos(), submergedFluidState);
 
 			if (fogHandler != null) {
-				//Gets the fog color of the fluid that submerges the camera
-				fogColor = fogHandler.getFogColor(camera, tickDelta, world);
+				//Gets the fog color of the fluid that submerges the camera.
+				fogColor = fogHandler.getFogColor(camera, tickDelta, world, viewDistance, skyDarkness);
 
 				if (fogColor != -1) {
+					//Gets the red, green, and blue values.
 					red = (fogColor >> 16 & 255) / 255f;
 					green = (fogColor >> 8 & 255) / 255f;
 					blue = (fogColor & 255) / 255f;
 					lastWaterFogColorUpdateTime = -1L;
 
-					//Sets the fog color
+					//Sets the fog color.
 					RenderSystem.clearColor(red, green, blue, 0.0f);
 
 					ci.cancel();
@@ -87,12 +89,13 @@ public abstract class MixinBackgroundRenderer {
 			FluidFogHandler fogHandler = handler.getFogHandler(camera.getBlockPos(), submergedFluidState);
 
 			if (fogHandler != null && fogColor != -1) {
-				//Sets the fog start, end, and shape of the fluid that submerges the camera
-				float start = fogHandler.getFogStartRadius(camera, fogType, viewDistance, thickFog);
-				float end = fogHandler.getFogEndRadius(camera, fogType, viewDistance, thickFog);
-				RenderSystem.setShaderFogStart(start);
-				RenderSystem.setShaderFogEnd(Math.max(end, start)); //This ensures that the end radius is greater than the start radius
-				RenderSystem.setShaderFogShape(fogHandler.getFogShape(camera, fogType, viewDistance, thickFog));
+				//Gets the fog parameters of the fluid that submerges the camera.
+				FogParameters parameters = fogHandler.getFogParameters(camera, fogType, viewDistance, thickFog, tickDelta);
+
+				//Sets the fog parameters.
+				RenderSystem.setShaderFogStart(parameters.fogStart());
+				RenderSystem.setShaderFogEnd(parameters.fogEnd());
+				RenderSystem.setShaderFogShape(parameters.fogShape());
 
 				ci.cancel();
 			}
@@ -102,7 +105,6 @@ public abstract class MixinBackgroundRenderer {
 	@Unique
 	private static FluidState getSubmergedFluidState(@NotNull Camera camera) {
 		//Gets the fluid in which the player (player camera) is submerged at the current position.
-		//This is the way used for water in vanilla: from getSubmersionType() method in Camera.
 		return ((CameraAccessor) camera).getArea().getFluidState(camera.getBlockPos());
 	}
 }
