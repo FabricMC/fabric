@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:raw_meat",
+      "required": false
+    },
+    {
+      "id": "#c:cooked_meat",
+      "required": false
+    }
+  ]
+}
