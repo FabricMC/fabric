@@ -70,10 +70,21 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		generateGlassTags();
 		generateShulkerTag();
 		generateDyeTags();
-		generateFoodTags();
+		generateMiscTags();
 	}
 
-	private void generateFoodTags() {
+	private void generateConsumableTags() {
+		Registry.ITEM.forEach(item -> {
+			if (item.getFoodComponent() != null) {
+				getOrCreateTagBuilder(ConventionalItemTags.FOODS).add(item);
+			}
+		});
+
+		getOrCreateTagBuilder(ConventionalItemTags.POTIONS)
+				.add(Items.LINGERING_POTION)
+				.add(Items.SPLASH_POTION)
+				.add(Items.POTION);
+
 		getOrCreateTagBuilder(ConventionalItemTags.MEAT)
 				.addOptionalTag(ConventionalItemTags.RAW_MEAT)
 				.addOptionalTag(ConventionalItemTags.COOKED_MEAT);
@@ -108,6 +119,29 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.COOKED_FISH)
 				.add(Items.COOKED_COD)
 				.add(Items.COOKED_SALMON);
+
+		getOrCreateTagBuilder(ConventionalItemTags.SUGARY_FOOD)
+				.add(Items.CAKE)
+				.add(Items.PUMPKIN_PIE)
+				.add(Items.COOKIE)
+				.add(Items.HONEY_BOTTLE)
+				.add(Items.SWEET_BERRIES);
+
+		getOrCreateTagBuilder(ConventionalItemTags.FRUITS)
+				.add(Items.SWEET_BERRIES)
+				.add(Items.CHORUS_FRUIT)
+				.add(Items.MELON_SLICE)
+				.add(Items.APPLE);
+
+		getOrCreateTagBuilder(ConventionalItemTags.MUSHROOMS)
+				.add(Items.BROWN_MUSHROOM)
+				.add(Items.RED_MUSHROOM);
+
+		getOrCreateTagBuilder(ConventionalItemTags.SEEDS)
+				.add(Items.WHEAT_SEEDS)
+				.add(Items.BEETROOT_SEEDS)
+				.add(Items.MELON_SEEDS)
+				.add(Items.PUMPKIN_SEEDS);
 	}
 
 	private void generateDyeTags() {
@@ -223,16 +257,13 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.YELLOW_STAINED_GLASS_PANE);
 	}
 
-	private void generateConsumableTags() {
-		Registry.ITEM.forEach(item -> {
-			if (item.getFoodComponent() != null) {
-				getOrCreateTagBuilder(ConventionalItemTags.FOODS).add(item);
-			}
-		});
-		getOrCreateTagBuilder(ConventionalItemTags.POTIONS)
-				.add(Items.LINGERING_POTION)
-				.add(Items.SPLASH_POTION)
-				.add(Items.POTION);
+	private void generateMiscTags() {
+		getOrCreateTagBuilder(ConventionalItemTags.BOOKS)
+				.add(Items.BOOK)
+				.add(Items.ENCHANTED_BOOK)
+				.add(Items.WRITABLE_BOOK)
+				.add(Items.WRITTEN_BOOK)
+				.add(Items.KNOWLEDGE_BOOK);
 	}
 
 	private void generateBucketTags() {

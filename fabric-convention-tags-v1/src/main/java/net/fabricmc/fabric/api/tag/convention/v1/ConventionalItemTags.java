@@ -57,9 +57,7 @@ public class ConventionalItemTags {
 	public static final TagKey<Item> DIAMONDS = register("diamonds");
 	public static final TagKey<Item> EMERALDS = register("emeralds");
 	public static final TagKey<Item> COAL = register("coal");
-	// Consumables
-	public static final TagKey<Item> FOODS = register("foods");
-	public static final TagKey<Item> POTIONS = register("potions");
+
 	// Buckets
 	public static final TagKey<Item> WATER_BUCKETS = register("water_buckets");
 	public static final TagKey<Item> LAVA_BUCKETS = register("lava_buckets");
@@ -90,14 +88,22 @@ public class ConventionalItemTags {
 	public static final TagKey<Item> WHITE_DYES = register("white_dyes");
 	public static final TagKey<Item> YELLOW_DYES = register("yellow_dyes");
 
-	// Note: FISH is not here because it is covered by minecraft:item/fishes
-	// Foods
+	// Consumables
+	public static final TagKey<Item> FOODS = register("foods");
 	public static final TagKey<Item> MEAT = register("meat");
 	public static final TagKey<Item> RAW_MEAT = register("raw_meat");
 	public static final TagKey<Item> COOKED_MEAT = register("cooked_meat");
 	public static final TagKey<Item> RAW_FISH = register("raw_fish");
 	public static final TagKey<Item> COOKED_FISH = register("cooked_fish");
-	public static final TagKey<Item> POISONOUS_FOOD = register("poisonous_food");
+	public static final TagKey<Item> POISONOUS_FOOD = register("poisonous_foods");
+	public static final TagKey<Item> SUGARY_FOOD = register("sugary_foods");
+	public static final TagKey<Item> FRUITS = register("fruits");
+	public static final TagKey<Item> POTIONS = register("potions");
+	public static final TagKey<Item> MUSHROOMS = register("mushrooms");
+	public static final TagKey<Item> SEEDS = register("seeds");
+
+	// Misc
+	public static final TagKey<Item> BOOKS = register("books");
 
 	// Deprecated
 	/** @deprecated Replaced with {@link #WATER_BUCKETS}. */
