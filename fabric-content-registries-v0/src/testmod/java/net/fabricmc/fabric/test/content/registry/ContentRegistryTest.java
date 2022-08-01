@@ -23,6 +23,7 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.Items;
@@ -40,6 +41,7 @@ import net.minecraft.world.event.GameEvent;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
+import net.fabricmc.fabric.api.registry.LandPathNodeTypesRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.SculkSensorFrequencyRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
@@ -66,6 +68,9 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - villagers can now collect and plant oak saplings
 		//  - assign a loot table to the nitwit villager type
 		//  - right-clicking a 'test_event' block will emit a 'test_event' game event, which will have a sculk sensor frequency of 2
+		//  - dead bush is now considered as a dangerous block like sweet berry bushes (all entities except foxes should avoid it)
+
+		LandPathNodeTypesRegistry.register(Blocks.DEAD_BUSH, PathNodeType.DAMAGE_OTHER);
 
 		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);
 		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.getDefaultState());
