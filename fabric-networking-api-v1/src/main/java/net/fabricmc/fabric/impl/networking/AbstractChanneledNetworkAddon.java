@@ -30,10 +30,10 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.class_7648;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.PacketCallbacks;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 
@@ -182,7 +182,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	@Override
-	public void sendPacket(Packet<?> packet, class_7648 callback) {
+	public void sendPacket(Packet<?> packet, PacketCallbacks callback) {
 		Objects.requireNonNull(packet, "Packet cannot be null");
 
 		this.connection.send(packet, callback);

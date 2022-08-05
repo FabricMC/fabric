@@ -498,7 +498,7 @@ curseforge {
 		id = "306612"
 		changelog = ENV.CHANGELOG ?: "No changelog provided"
 		releaseType = project.prerelease == "true" ? "beta" : "release"
-		addGameVersion "1.19.1"
+		addGameVersion "1.19.2"
 		addGameVersion "Fabric"
 
 		mainArtifact(signingEnabled ? signRemapJar.output : remapJar) {
