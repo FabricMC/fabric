@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "fabric-api",
-  "provide": [
+  "provides": [
     "fabric"
   ],
   "name": "Fabric API",
