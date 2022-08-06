@@ -10,8 +10,7 @@
     "DefaultAttributeRegistryMixin",
     "DetectorRailBlockMixin",
     "MaterialBuilderAccessor",
-    "TypeAwareTradeMixin",
-    "VillagerTypeAccessor"
+    "TypeAwareTradeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -71,8 +71,8 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		String separator = container.getRootPath().getFileSystem().getSeparator();
 		subPath = subPath.replace("/", separator);
 		String name = displayName;
-		ModNioResourcePack resourcePack = ModNioResourcePack.create(name, container, subPath, ResourceType.CLIENT_RESOURCES, activationType);
-		ModNioResourcePack dataPack = ModNioResourcePack.create(name, container, subPath, ResourceType.SERVER_DATA, activationType);
+		ModNioResourcePack resourcePack = ModNioResourcePack.create(id, name, container, subPath, ResourceType.CLIENT_RESOURCES, activationType);
+		ModNioResourcePack dataPack = ModNioResourcePack.create(id, name, container, subPath, ResourceType.SERVER_DATA, activationType);
 		if (resourcePack == null && dataPack == null) return false;
 
 		if (resourcePack != null) {

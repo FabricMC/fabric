@@ -27,7 +27,10 @@ import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
  * and as such certain biome tags exist to mirror vanilla tags, and should be preferred
  * over vanilla unless its behavior is desired.
  */
-public class ConventionalBiomeTags {
+public final class ConventionalBiomeTags {
+	private ConventionalBiomeTags() {
+	}
+
 	/**
 	 * Biomes that spawn in the Overworld.
 	 */
@@ -52,10 +55,15 @@ public class ConventionalBiomeTags {
 	public static final TagKey<Biome> PLAINS = register("plains");
 	public static final TagKey<Biome> SAVANNA = register("savanna");
 	/**
-	 * For biomes where ice naturally spawns.
+	 * For land biomes where ice naturally spawns.
 	 * For biomes where snow alone spawns, see {@link ConventionalBiomeTags#SNOWY}.
 	 */
 	public static final TagKey<Biome> ICY = register("icy");
+	/**
+	 * For water biomes where ice naturally spawns.
+	 * For biomes where snow alone spawns, see {@link ConventionalBiomeTags#SNOWY}.
+	 */
+	public static final TagKey<Biome> AQUATIC_ICY = register("aquatic_icy");
 	/**
 	 * Biomes that exist on the shoreline of a body of water.
 	 */

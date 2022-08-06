@@ -16,9 +16,16 @@
 
 package net.fabricmc.fabric.mixin.resource.loader.client;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,32 +33,99 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.option.GameOptions;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
+import net.fabricmc.loader.api.FabricLoader;
 
 @Mixin(GameOptions.class)
 public class GameOptionsMixin {
 	@Shadow
 	public List<String> resourcePacks;
 
+	@Shadow
+	@Final
+	static Logger LOGGER;
+
 	@Inject(method = "load", at = @At("RETURN"))
 	private void onLoad(CallbackInfo ci) {
-		// Add built-in resource packs if they are enabled by default only if the options file is blank.
-		if (this.resourcePacks.isEmpty()) {
-			List<ResourcePackProfile> profiles = new ArrayList<>();
-			ModResourcePackCreator.CLIENT_RESOURCE_PACK_PROVIDER.register(profiles::add);
-			this.resourcePacks = new ArrayList<>();
+		// Track built-in resource packs if they are enabled by default.
+		// - If there is NO value with matching resource pack id, add it to the enabled packs and the tracker file.
+		// - If there is a matching value and pack id, do not add it to the enabled packs and let
+		//   the options value decides if it is enabled or not.
+		// - If there is a value without matching pack id (e.g. because the mod is removed),
+		//   remove it from the tracker file so that it would be enabled again if added back later.
 
-			for (ResourcePackProfile profile : profiles) {
-				ResourcePack pack = profile.createResourcePack();
-				if (profile.getSource() == ModResourcePackCreator.RESOURCE_PACK_SOURCE
-						|| (pack instanceof ModNioResourcePack && ((ModNioResourcePack) pack).getActivationType().isEnabledByDefault())) {
-					this.resourcePacks.add(profile.getName());
+		File dataDir = FabricLoader.getInstance().getGameDir().resolve("data").toFile();
+
+		if (!dataDir.exists() && !dataDir.mkdirs()) {
+			LOGGER.warn("[Fabric Resource Loader] Could not create data directory: " + dataDir.getAbsolutePath());
+		}
+
+		File trackerFile = new File(dataDir, "fabricDefaultResourcePacks.dat");
+		Set<Identifier> trackedPacks = new HashSet<>();
+
+		if (trackerFile.exists()) {
+			try {
+				NbtCompound data = NbtIo.readCompressed(trackerFile);
+				NbtList values = data.getList("values", NbtElement.STRING_TYPE);
+
+				for (int i = 0; i < values.size(); i++) {
+					trackedPacks.add(new Identifier(values.getString(i)));
+				}
+			} catch (IOException e) {
+				LOGGER.warn("[Fabric Resource Loader] Could not read " + trackerFile.getAbsolutePath(), e);
+			}
+		}
+
+		Set<Identifier> removedPacks = new HashSet<>(trackedPacks);
+		Set<String> resourcePacks = new LinkedHashSet<>(this.resourcePacks);
+
+		List<ResourcePackProfile> profiles = new ArrayList<>();
+		ModResourcePackCreator.CLIENT_RESOURCE_PACK_PROVIDER.register(profiles::add);
+
+		for (ResourcePackProfile profile : profiles) {
+			// Always add "Fabric Mods" pack to enabled resource packs.
+			if (profile.getSource() == ModResourcePackCreator.RESOURCE_PACK_SOURCE) {
+				resourcePacks.add(profile.getName());
+				continue;
+			}
+
+			ResourcePack pack = profile.createResourcePack();
+
+			if (pack instanceof ModNioResourcePack builtinPack && builtinPack.getActivationType().isEnabledByDefault()) {
+				if (trackedPacks.add(builtinPack.getId())) {
+					resourcePacks.add(profile.getName());
+				} else {
+					removedPacks.remove(builtinPack.getId());
 				}
 			}
 		}
+
+		try {
+			NbtList values = new NbtList();
+
+			for (Identifier id : trackedPacks) {
+				if (!removedPacks.contains(id)) {
+					values.add(NbtString.of(id.toString()));
+				}
+			}
+
+			NbtCompound nbt = new NbtCompound();
+			nbt.put("values", values);
+			NbtIo.writeCompressed(nbt, trackerFile);
+		} catch (IOException e) {
+			LOGGER.warn("[Fabric Resource Loader] Could not write to " + trackerFile.getAbsolutePath(), e);
+		}
+
+		this.resourcePacks = new ArrayList<>(resourcePacks);
 	}
 }

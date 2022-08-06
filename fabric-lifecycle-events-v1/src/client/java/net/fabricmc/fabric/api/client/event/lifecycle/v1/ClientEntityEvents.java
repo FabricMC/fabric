@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 @Environment(EnvType.CLIENT)
 public final class ClientEntityEvents {
-	public ClientEntityEvents() {
+	private ClientEntityEvents() {
 	}
 
 	/**

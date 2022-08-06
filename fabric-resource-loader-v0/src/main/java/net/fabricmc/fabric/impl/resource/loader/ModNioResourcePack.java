@@ -56,6 +56,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	private static final Pattern RESOURCE_PACK_PATH = Pattern.compile("[a-z0-9-_.]+");
 	private static final FileSystem DEFAULT_FS = FileSystems.getDefault();
 
+	private final Identifier id;
 	private final String name;
 	private final ModMetadata modInfo;
 	private final List<Path> basePaths;
@@ -64,7 +65,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	private final ResourcePackActivationType activationType;
 	private final Map<ResourceType, Set<String>> namespaces;
 
-	public static ModNioResourcePack create(String name, ModContainer mod, String subPath, ResourceType type, ResourcePackActivationType activationType) {
+	public static ModNioResourcePack create(Identifier id, String name, ModContainer mod, String subPath, ResourceType type, ResourcePackActivationType activationType) {
 		List<Path> rootPaths = mod.getRootPaths();
 		List<Path> paths;
 
@@ -87,14 +88,15 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 
 		if (paths.isEmpty()) return null;
 
-		ModNioResourcePack ret = new ModNioResourcePack(name, mod.getMetadata(), paths, type, null, activationType);
+		ModNioResourcePack ret = new ModNioResourcePack(id, name, mod.getMetadata(), paths, type, null, activationType);
 
 		return ret.getNamespaces(type).isEmpty() ? null : ret;
 	}
 
-	private ModNioResourcePack(String name, ModMetadata modInfo, List<Path> paths, ResourceType type, AutoCloseable closer, ResourcePackActivationType activationType) {
+	private ModNioResourcePack(Identifier id, String name, ModMetadata modInfo, List<Path> paths, ResourceType type, AutoCloseable closer, ResourcePackActivationType activationType) {
 		super(null);
 
+		this.id = id;
 		this.name = name;
 		this.modInfo = modInfo;
 		this.basePaths = paths;
@@ -158,8 +160,8 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		return null;
 	}
 
-	private static final String resPrefix = ResourceType.CLIENT_RESOURCES.getDirectory()+"/";
-	private static final String dataPrefix = ResourceType.SERVER_DATA.getDirectory()+"/";
+	private static final String resPrefix = ResourceType.CLIENT_RESOURCES.getDirectory() + "/";
+	private static final String dataPrefix = ResourceType.SERVER_DATA.getDirectory() + "/";
 
 	private boolean hasAbsentNs(String filename) {
 		int prefixLen;
@@ -278,6 +280,10 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	public Identifier getId() {
+		return id;
 	}
 
 	private static boolean exists(Path path) {

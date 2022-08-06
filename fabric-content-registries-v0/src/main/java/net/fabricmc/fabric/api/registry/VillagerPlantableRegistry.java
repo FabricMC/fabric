@@ -35,7 +35,7 @@ import net.minecraft.util.registry.Registry;
 /**
  * Registry of items that farmer villagers can plant on farmland.
  */
-public class VillagerPlantableRegistry {
+public final class VillagerPlantableRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerPlantableRegistry.class);
 	private static final HashMap<Item, BlockState> PLANTABLES = new HashMap<>();
 	static {

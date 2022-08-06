@@ -47,9 +47,12 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
  */
 @ApiStatus.Experimental
 @Environment(EnvType.CLIENT)
-public class FluidVariantRendering {
+public final class FluidVariantRendering {
 	private static final ApiProviderMap<Fluid, FluidVariantRenderHandler> HANDLERS = ApiProviderMap.create();
 	private static final FluidVariantRenderHandler DEFAULT_HANDLER = new FluidVariantRenderHandler() { };
+
+	private FluidVariantRendering () {
+	}
 
 	/**
 	 * Register a render handler for the passed fluid.
