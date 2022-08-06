@@ -9,3 +9,9 @@ testDependencies(project, [
 	':fabric-lifecycle-events-v1',
 	':fabric-api-base'
 ])
+
+validateMixinNames {
+	// Loom bug where it doesnt ignore mixins with multiple targets.
+	exclude "**/KeyedResourceReloadListenerMixin.class"
+	exclude "**/KeyedResourceReloadListenerClientMixin.class"
+}

@@ -3,10 +3,10 @@
   "package": "net.fabricmc.fabric.mixin.renderer",
   "compatibilityLevel": "JAVA_16",
   "client": [
-    "client.MixinBakedModel",
-    "client.MixinMultipartBakedModel",
-    "client.MixinWeightedBakedModel",
-    "client.MixinSpriteAtlasTexture"
+    "client.BakedModelMixin",
+    "client.MultipartBakedModelMixin",
+    "client.WeightedBakedModelMixin",
+    "client.SpriteAtlasTextureMixin"
   ],
   "injectors": {
     "defaultRequire": 1

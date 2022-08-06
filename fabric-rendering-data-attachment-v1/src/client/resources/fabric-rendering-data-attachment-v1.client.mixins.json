@@ -3,8 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.rendering.data.attachment.client",
   "compatibilityLevel": "JAVA_16",
   "client": [
-    "MixinChunkRendererRegion",
-    "MixinChunkRendererRegionBuilder"
+    "ChunkRendererRegionMixin",
+    "ChunkRendererRegionBuilderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

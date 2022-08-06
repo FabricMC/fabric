@@ -4,8 +4,7 @@
   "compatibilityLevel": "JAVA_16",
   "client": [
     "KeyBindingAccessor",
-    "KeyCodeAccessor",
-    "MixinGameOptions"
+    "GameOptionsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

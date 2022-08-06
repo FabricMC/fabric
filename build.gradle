@@ -254,6 +254,12 @@ allprojects {
 		addNestedDependencies = false
 	}
 	build.dependsOn remapTestmodJar
+
+	task validateMixinNames(type: net.fabricmc.loom.task.ValidateMixinNameTask) {
+		source(sourceSets.main.output)
+		source(sourceSets.client.output)
+		source(sourceSets.testmod.output)
+	}
 }
 
 remapTestmodJar {
