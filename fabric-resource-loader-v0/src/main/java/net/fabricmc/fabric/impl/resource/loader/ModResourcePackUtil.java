@@ -19,8 +19,11 @@ package net.fabricmc.fabric.impl.resource.loader;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.base.Charsets;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,6 +43,8 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
  * Internal utilities for managing resource packs.
  */
 public final class ModResourcePackUtil {
+	private static final Gson GSON = new Gson();
+
 	private ModResourcePackUtil() {
 	}
 
@@ -71,19 +76,21 @@ public final class ModResourcePackUtil {
 	public static InputStream openDefault(ModMetadata info, ResourceType type, String filename) {
 		switch (filename) {
 		case "pack.mcmeta":
-			String description = info.getName();
-
-			if (description == null) {
-				description = "";
-			} else {
-				description = description.replaceAll("\"", "\\\"");
-			}
-
-			String pack = String.format("{\"pack\":{\"pack_format\":" + type.getPackVersion(SharedConstants.getGameVersion()) + ",\"description\":\"%s\"}}", description);
-			return IOUtils.toInputStream(pack, Charsets.UTF_8);
+			String description = Objects.requireNonNullElse(info.getName(), "");
+			String metadata = serializeMetadata(type.getPackVersion(SharedConstants.getGameVersion()), description);
+			return IOUtils.toInputStream(metadata, Charsets.UTF_8);
 		default:
 			return null;
 		}
+	}
+
+	public static String serializeMetadata(int packVersion, String description) {
+		JsonObject pack = new JsonObject();
+		pack.addProperty("pack_format", packVersion);
+		pack.addProperty("description", description);
+		JsonObject metadata = new JsonObject();
+		metadata.add("pack", pack);
+		return GSON.toJson(metadata);
 	}
 
 	public static String getName(ModMetadata info) {
