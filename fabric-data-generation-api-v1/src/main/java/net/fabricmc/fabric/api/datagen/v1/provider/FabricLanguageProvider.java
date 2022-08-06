@@ -17,15 +17,10 @@
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.annotation.Nullable;
-
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import net.minecraft.data.DataProvider;

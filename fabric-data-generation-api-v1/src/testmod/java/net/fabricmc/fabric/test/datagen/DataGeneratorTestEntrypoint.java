@@ -137,6 +137,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 			try {
 				Optional<Path> path = dataGenerator.getModContainer().findPath("assets/testmod/lang/en_us.json");
+
 				if (path.isPresent()) {
 					languageConsumer.addLanguage(path.get());
 				}

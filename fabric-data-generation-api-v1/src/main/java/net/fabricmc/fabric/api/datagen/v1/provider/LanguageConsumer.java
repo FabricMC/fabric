@@ -16,8 +16,12 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
-import com.google.gson.Gson;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -30,11 +34,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.stat.StatType;
 import net.minecraft.util.Identifier;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Map;
 
 /**
  * A consumer used by {@link FabricLanguageProvider#generateLanguages(LanguageConsumer)}.
@@ -137,7 +136,9 @@ public interface LanguageConsumer {
 	 */
 	default void addLanguage(Path existingLanguageFile) throws IOException {
 		Gson gson = new Gson();
+
 		JsonObject langEntryJson = gson.fromJson(Files.readString(existingLanguageFile), JsonObject.class);
+
 		for (Map.Entry<String, JsonElement> stringJsonElementEntry : langEntryJson.entrySet()) {
 			addLanguage(stringJsonElementEntry.getKey(), stringJsonElementEntry.getValue().getAsString());
 		}
