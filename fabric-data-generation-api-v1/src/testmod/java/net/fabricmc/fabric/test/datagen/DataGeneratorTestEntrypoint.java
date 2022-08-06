@@ -24,6 +24,10 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_B
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
+
+import net.fabricmc.fabric.api.datagen.v1.provider.LanguageConsumer;
+
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
@@ -71,6 +75,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		dataGenerator.addProvider(TestAdvancementProvider::new);
 		dataGenerator.addProvider(TestBlockLootTableProvider::new);
 		dataGenerator.addProvider(TestBarterLootTableProvider::new);
+		dataGenerator.addProvider(TestLangProvider::new);
 
 		TestBlockTagProvider blockTagProvider = dataGenerator.addProvider(TestBlockTagProvider::new);
 		dataGenerator.addProvider(new TestItemTagProvider(dataGenerator, blockTagProvider));
@@ -107,6 +112,19 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		protected void generateRecipes(Consumer<RecipeJsonProvider> exporter) {
 			offerPlanksRecipe2(exporter, SIMPLE_BLOCK, ItemTags.ACACIA_LOGS);
+		}
+	}
+
+	private static class TestLangProvider extends FabricLanguageProvider {
+		private TestLangProvider(FabricDataGenerator dataGenerator) {
+			super(dataGenerator);
+		}
+
+		@Override
+		public void generateLanguages(LanguageConsumer languageConsumer) {
+			languageConsumer.addLanguage("en_us", "block.fabric-data-gen-api-v1-testmod.simple_block", "Simple Block");
+			languageConsumer.addLanguage("de_de", "block.fabric-data-gen-api-v1-testmod.simple_block", "Einfacher Block");
+			languageConsumer.addLanguage("ja_jp", "block.fabric-data-gen-api-v1-testmod.simple_block", "シンプルブロック");
 		}
 	}
 
