@@ -43,8 +43,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	private final String languageCode;
 
 	protected FabricLanguageProvider(FabricDataGenerator dataGenerator) {
-		this.dataGenerator = dataGenerator;
-		this.languageCode = "en_us";
+		this(dataGenerator, "en_us");
 	}
 
 	protected FabricLanguageProvider(FabricDataGenerator dataGenerator, String languageCode) {
