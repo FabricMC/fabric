@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
@@ -61,7 +62,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 
 	@Override
 	public void run(DataWriter writer) throws IOException {
-		HashMap<String, String> languageEntries = new HashMap<>();
+		TreeMap<String, String> languageEntries = new TreeMap<>();
 
 		generateLanguages(languageEntries::put);
 
