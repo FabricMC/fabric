@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+
 /**
  * A consumer used by {@link FabricLanguageProvider#generateLanguages(LanguageConsumer)}.
  */
@@ -24,9 +28,35 @@ public interface LanguageConsumer {
 	/**
 	 * Adds a language entry.
 	 *
-	 * @param languageCode The code of the language, eg: en_us or de_de etc.
 	 * @param languageKey  The key of the language entry.
 	 * @param value        The value of the entry.
 	 */
-	void addLanguage(String languageCode, String languageKey, String value);
+	void addLanguage(String languageKey, String value);
+
+	/**
+	 * Adds a language entry for an {@link Item}.
+	 * @param item The {@link Item} to get the language entry key from.
+	 * @param value The value of the entry.
+	 */
+	default void addLanguage(Item item, String value) {
+		addLanguage(item.getTranslationKey(), value);
+	};
+
+	/**
+	 * Adds a language entry for a {@link Block}.
+	 * @param block The {@link Block} to get the language entry key from.
+	 * @param value The value of the entry.
+	 */
+	default void addLanguage(Block block, String value) {
+		addLanguage(block.getTranslationKey(), value);
+	}
+
+	/**
+	 * Adds a language entry for an {@link ItemGroup}.
+	 * @param group The {@link ItemGroup} to get the language entry key from.
+	 * @param value The value of the entry.
+	 */
+	default void addLanguage(ItemGroup group, String value) {
+		addLanguage("itemGroup." + group.getName(), value);
+	}
 }

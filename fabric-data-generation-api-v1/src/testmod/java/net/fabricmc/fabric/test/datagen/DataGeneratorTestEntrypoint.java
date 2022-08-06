@@ -20,6 +20,7 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WI
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -64,6 +65,9 @@ import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	private static final ConditionJsonProvider NEVER_LOADED = DefaultResourceConditions.allModsLoaded("a");
 	private static final ConditionJsonProvider ALWAYS_LOADED = DefaultResourceConditions.not(NEVER_LOADED);
+	public static void main(String[] args) {
+		System.out.println(System.getProperty("user.dir"));
+	}
 
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
@@ -73,7 +77,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		dataGenerator.addProvider(TestAdvancementProvider::new);
 		dataGenerator.addProvider(TestBlockLootTableProvider::new);
 		dataGenerator.addProvider(TestBarterLootTableProvider::new);
-		dataGenerator.addProvider(TestLangProvider::new);
+		dataGenerator.addProvider(ExistingEnglishLangProvider::new);
+		dataGenerator.addProvider(JapaneseLangProvider::new);
 
 		TestBlockTagProvider blockTagProvider = dataGenerator.addProvider(TestBlockTagProvider::new);
 		dataGenerator.addProvider(new TestItemTagProvider(dataGenerator, blockTagProvider));
@@ -113,16 +118,28 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestLangProvider extends FabricLanguageProvider {
-		private TestLangProvider(FabricDataGenerator dataGenerator) {
-			super(dataGenerator);
+	private static class ExistingEnglishLangProvider extends FabricLanguageProvider {
+		private ExistingEnglishLangProvider(FabricDataGenerator dataGenerator) {
+			// 1 = resources folder
+			super(dataGenerator, dataGenerator.getModContainer().getRootPaths().get(1).resolve("assets/testmod/lang/en_us.json"));
 		}
 
 		@Override
 		public void generateLanguages(LanguageConsumer languageConsumer) {
-			languageConsumer.addLanguage("en_us", "block.fabric-data-gen-api-v1-testmod.simple_block", "Simple Block");
-			languageConsumer.addLanguage("de_de", "block.fabric-data-gen-api-v1-testmod.simple_block", "Einfacher Block");
-			languageConsumer.addLanguage("ja_jp", "block.fabric-data-gen-api-v1-testmod.simple_block", "シンプルブロック");
+			languageConsumer.addLanguage(SIMPLE_BLOCK, "Simple Block");
+		}
+	}
+
+	private static class JapaneseLangProvider extends FabricLanguageProvider {
+		protected JapaneseLangProvider(FabricDataGenerator dataGenerator) {
+			super(dataGenerator, "jp_jp", null);
+		}
+
+		@Override
+		public void generateLanguages(LanguageConsumer languageConsumer) {
+			languageConsumer.addLanguage(SIMPLE_BLOCK, "シンプルブロック");
+			languageConsumer.addLanguage(SIMPLE_ITEM_GROUP, "データ生成項目");
+			languageConsumer.addLanguage("this.is.a.test", "こんにちは");
 		}
 	}
 

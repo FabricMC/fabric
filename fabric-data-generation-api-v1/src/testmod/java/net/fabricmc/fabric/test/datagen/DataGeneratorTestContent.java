@@ -24,10 +24,13 @@ import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 
 public class DataGeneratorTestContent implements ModInitializer {
 	public static final String MOD_ID = "fabric-data-gen-api-v1-testmod";
@@ -35,9 +38,11 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static Block SIMPLE_BLOCK;
 	public static Block BLOCK_WITHOUT_ITEM;
 	public static Block BLOCK_WITHOUT_LOOT_TABLE;
+	public static ItemGroup SIMPLE_ITEM_GROUP;
 
 	@Override
 	public void onInitialize() {
+		SIMPLE_ITEM_GROUP = FabricItemGroupBuilder.build(new Identifier(MOD_ID, "default"), () -> new ItemStack(Items.BONE));
 		SIMPLE_BLOCK = createBlock("simple_block", true);
 		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false);
 		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false);
