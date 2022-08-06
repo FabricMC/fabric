@@ -23,6 +23,8 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_B
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -33,6 +35,8 @@ import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
@@ -127,9 +131,15 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		public void generateLanguages(LanguageConsumer languageConsumer) {
 			languageConsumer.addLanguage(SIMPLE_BLOCK, "Simple Block");
+			languageConsumer.addLanguage(new Identifier(MOD_ID, "identifier_test"), "Identifier Test");
+			languageConsumer.addLanguage(EntityType.ALLAY, "Allay");
+			languageConsumer.addLanguage(EntityAttributes.GENERIC_ARMOR, "Generic Armor");
 
 			try {
-				languageConsumer.addLanguage(dataGenerator.getModContainer().getRootPaths().get(1).resolve("assets/testmod/lang/en_us.json"));
+				Optional<Path> path = dataGenerator.getModContainer().findPath("assets/testmod/lang/en_us.json");
+				if (path.isPresent()) {
+					languageConsumer.addLanguage(path.get());
+				}
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
