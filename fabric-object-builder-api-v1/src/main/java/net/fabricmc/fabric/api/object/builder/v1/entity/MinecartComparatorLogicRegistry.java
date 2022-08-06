@@ -34,6 +34,9 @@ public final class MinecartComparatorLogicRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MinecartComparatorLogicRegistry.class);
 	private static final Map<EntityType<?>, MinecartComparatorLogic<?>> logics = new HashMap<>();
 
+	private MinecartComparatorLogicRegistry() {
+	}
+
 	/**
 	 * Gets the registered custom comparator logic for the specified minecart entity type.
 	 *

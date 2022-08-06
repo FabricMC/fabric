@@ -39,6 +39,9 @@ import net.minecraft.world.gen.feature.PlacedFeature;
  * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
 public final class BiomeModifications {
+	private BiomeModifications() {
+	}
+
 	/**
 	 * Convenience method to add a feature to one or more biomes.
 	 *

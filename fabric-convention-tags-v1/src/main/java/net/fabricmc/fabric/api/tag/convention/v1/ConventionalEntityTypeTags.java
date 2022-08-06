@@ -25,7 +25,10 @@ import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
  * See {@link net.minecraft.tag.EntityTypeTags} for vanilla tags.
  * Note that addition to some vanilla tags implies having certain functionality.
  */
-public class ConventionalEntityTypeTags {
+public final class ConventionalEntityTypeTags {
+	private ConventionalEntityTypeTags() {
+	}
+
 	/**
 	 * Tag containing entity types that display a boss health bar.
 	 */

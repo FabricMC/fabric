@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 /**
  * Collection of utilities for model implementations.
  */
-public abstract class ModelHelper {
+public final class ModelHelper {
 	private ModelHelper() { }
 
 	/** Result from {@link #toFaceIndex(Direction)} for null values. */

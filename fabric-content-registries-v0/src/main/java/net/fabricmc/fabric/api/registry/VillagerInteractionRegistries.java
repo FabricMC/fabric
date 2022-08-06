@@ -40,7 +40,7 @@ import net.fabricmc.fabric.mixin.content.registry.GiveGiftsToHeroTaskAccessor;
  * villagers have with the world.
  * @see VillagerPlantableRegistry for registering plants that farmers can plant
  */
-public class VillagerInteractionRegistries {
+public final class VillagerInteractionRegistries {
 	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerInteractionRegistries.class);
 
 	private VillagerInteractionRegistries() {
