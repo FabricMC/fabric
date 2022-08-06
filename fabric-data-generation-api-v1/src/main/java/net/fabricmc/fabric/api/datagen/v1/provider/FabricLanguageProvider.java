@@ -34,25 +34,22 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 /**
  * Extend this class and implement {@link FabricLanguageProvider#generateLanguages(LanguageConsumer)}.
- * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricDataGenerator, String, Path)}  FabricLanguageProvider} to declare what language code is being generated if it isn't en_us
+ * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricDataGenerator, String)}  FabricLanguageProvider} to declare what language code is being generated if it isn't en_us
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
  */
 public abstract class FabricLanguageProvider implements DataProvider {
 	protected final FabricDataGenerator dataGenerator;
 	private final String languageCode;
-	private final Path existingLanguageFile;
 
-	protected FabricLanguageProvider(FabricDataGenerator dataGenerator, @Nullable Path existingLanguageFile) {
+	protected FabricLanguageProvider(FabricDataGenerator dataGenerator) {
 		this.dataGenerator = dataGenerator;
 		this.languageCode = "en_us";
-		this.existingLanguageFile = existingLanguageFile;
 	}
 
-	protected FabricLanguageProvider(FabricDataGenerator dataGenerator, String languageCode, @Nullable Path existingLanguageFile) {
+	protected FabricLanguageProvider(FabricDataGenerator dataGenerator, String languageCode) {
 		this.dataGenerator = dataGenerator;
 		this.languageCode = languageCode;
-		this.existingLanguageFile = existingLanguageFile;
 	}
 
 	/**
@@ -68,12 +65,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 
 		generateLanguages(languageEntries::put);
 
-		Gson gson = new Gson();
 		JsonObject langEntryJson = new JsonObject();
-
-		if (existingLanguageFile != null) {
-			langEntryJson = gson.fromJson(Files.readString(this.existingLanguageFile), JsonObject.class);
-		}
 
 		for (Map.Entry<String, String> entry : languageEntries.entrySet()) {
 			langEntryJson.addProperty(entry.getKey(), entry.getValue());

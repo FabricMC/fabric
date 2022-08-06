@@ -22,6 +22,7 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
 
+import java.io.IOException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -120,19 +121,24 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 	private static class ExistingEnglishLangProvider extends FabricLanguageProvider {
 		private ExistingEnglishLangProvider(FabricDataGenerator dataGenerator) {
-			// 1 = resources folder
-			super(dataGenerator, dataGenerator.getModContainer().getRootPaths().get(1).resolve("assets/testmod/lang/en_us.json"));
+			super(dataGenerator);
 		}
 
 		@Override
 		public void generateLanguages(LanguageConsumer languageConsumer) {
 			languageConsumer.addLanguage(SIMPLE_BLOCK, "Simple Block");
+
+			try {
+				languageConsumer.addLanguage(dataGenerator.getModContainer().getRootPaths().get(1).resolve("assets/testmod/lang/en_us.json"));
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
 	private static class JapaneseLangProvider extends FabricLanguageProvider {
 		protected JapaneseLangProvider(FabricDataGenerator dataGenerator) {
-			super(dataGenerator, "jp_jp", null);
+			super(dataGenerator, "jp_jp");
 		}
 
 		@Override
