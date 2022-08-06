@@ -11,8 +11,7 @@
     "DetectorRailBlockMixin",
     "MaterialBuilderAccessor",
     "SpawnRestrictionAccessor",
-    "TypeAwareTradeMixin",
-    "VillagerTypeAccessor"
+    "TypeAwareTradeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
