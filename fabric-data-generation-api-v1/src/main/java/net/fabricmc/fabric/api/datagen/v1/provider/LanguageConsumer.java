@@ -29,6 +29,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.stat.StatType;
+import net.minecraft.util.Identifier;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -118,6 +119,15 @@ public interface LanguageConsumer {
 	 */
 	default void addLanguage(StatusEffect statusEffect, String value) {
 		addLanguage(statusEffect.getTranslationKey(), value);
+	}
+
+	/**
+	 * Adds a language entry for an {@link Identifier}.
+	 * @param identifier The {@link Identifier} to get the language entry key from.
+	 * @param value The value of the entry.
+	 */
+	default void addLanguage(Identifier identifier, String value) {
+		addLanguage(identifier.toTranslationKey(), value);
 	}
 
 	/**
