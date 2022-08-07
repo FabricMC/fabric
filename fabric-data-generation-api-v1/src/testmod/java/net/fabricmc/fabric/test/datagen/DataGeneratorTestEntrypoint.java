@@ -21,8 +21,13 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WI
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import javax.imageio.ImageIO;
 
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
@@ -50,12 +55,16 @@ import net.minecraft.world.biome.BiomeKeys;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.provider.BlockTextureConsumer;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTextureProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.ItemTextureConsumer;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.TextureConsumer;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 
@@ -71,6 +80,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		dataGenerator.addProvider(TestAdvancementProvider::new);
 		dataGenerator.addProvider(TestBlockLootTableProvider::new);
 		dataGenerator.addProvider(TestBarterLootTableProvider::new);
+		dataGenerator.addProvider(TestTextureProvider::new);
 
 		TestBlockTagProvider blockTagProvider = dataGenerator.addProvider(TestBlockTagProvider::new);
 		dataGenerator.addProvider(new TestItemTagProvider(dataGenerator, blockTagProvider));
@@ -96,6 +106,53 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			throw new AssertionError("Using DynamicRegistryTagProvider with static registry didn't throw an exception!");
 		} catch (IllegalArgumentException e) {
 			// no-op
+		}
+	}
+
+	private static class TestTextureProvider extends FabricTextureProvider {
+		private TestTextureProvider(FabricDataGenerator generator) {
+			super(generator);
+
+			try {
+				BufferedImage fabricIcon = ImageIO.read(generator.getModContainer().findPath("assets/testmod/textures/misc/fabric.png").get().toFile());
+				BufferedImage overlay = ImageIO.read(generator.getModContainer().findPath("assets/testmod/textures/misc/overlay-test.png").get().toFile());
+
+				Graphics2D graphics2D = fabricIcon.createGraphics();
+				graphics2D.drawImage(overlay, 0, 0, 32, 32, null);
+
+				OVERLAY_TEST = fabricIcon;
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		private final BufferedImage OVERLAY_TEST;
+
+		@Override
+		public void generateItemTextures(ItemTextureConsumer itemTextureConsumer) {
+			try {
+				itemTextureConsumer.addItemTexture(SIMPLE_BLOCK.asItem(), OVERLAY_TEST);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public void generateBlockTextures(BlockTextureConsumer blockTextureConsumer) {
+			try {
+				blockTextureConsumer.addblockTexture(SIMPLE_BLOCK, OVERLAY_TEST);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public void generateMiscTextures(TextureConsumer textureConsumer) {
+			try {
+				textureConsumer.addTexture(new Identifier(MOD_ID, "textures/misc/final-overlay.png"), OVERLAY_TEST);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
