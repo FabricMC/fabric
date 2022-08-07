@@ -16,12 +16,16 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
 import com.google.common.hash.HashCode;
+import com.mojang.authlib.minecraft.client.MinecraftClient;
 
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
@@ -55,6 +59,16 @@ public abstract class FabricTextureProvider implements DataProvider {
 	 * Implement this method to add textures anywhere in the "assets" folder.
 	 */
 	public abstract void generateMiscTextures(TextureConsumer textureConsumer);
+
+	/**
+	 * Get a texture from the "assets" folder of the Minecraft jar.
+	 * @param texturePath The path of the texture.
+	 * @return A buffered image containing the texture.
+	 * @throws IOException If the texture doesn't exist, or is of an invalid file type, this is thrown.
+	 */
+	public BufferedImage getMinecraftTexture(Identifier texturePath) throws IOException {
+		return ImageIO.read(MinecraftClient.class.getResourceAsStream("/assets/" + texturePath.getNamespace() + "/" + texturePath.getPath()));
+	}
 
 	@Override
 	public void run(DataWriter writer) throws IOException {

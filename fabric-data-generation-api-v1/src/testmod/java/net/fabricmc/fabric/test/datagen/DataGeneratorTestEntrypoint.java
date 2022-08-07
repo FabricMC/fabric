@@ -23,6 +23,8 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_B
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -110,23 +112,37 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestTextureProvider extends FabricTextureProvider {
+		/**
+		 * Utility method, for testing purposes only.
+		 * @param bi The bufferedimage to deep copy.
+		 * @return The copied image.
+		 */
+		private static BufferedImage deepCopy(BufferedImage bi) {
+			ColorModel cm = bi.getColorModel();
+			boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+			WritableRaster raster = bi.copyData(null);
+			return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+		}
+
 		private TestTextureProvider(FabricDataGenerator generator) {
 			super(generator);
 
 			try {
-				BufferedImage fabricIcon = ImageIO.read(generator.getModContainer().findPath("assets/testmod/textures/misc/fabric.png").get().toFile());
+				FABRIC_LOGO = ImageIO.read(generator.getModContainer().findPath("assets/testmod/textures/misc/fabric.png").get().toFile());
 				BufferedImage overlay = ImageIO.read(generator.getModContainer().findPath("assets/testmod/textures/misc/overlay-test.png").get().toFile());
 
-				Graphics2D graphics2D = fabricIcon.createGraphics();
+				BufferedImage copy = deepCopy(FABRIC_LOGO);
+				Graphics2D graphics2D = copy.createGraphics();
 				graphics2D.drawImage(overlay, 0, 0, 32, 32, null);
 
-				OVERLAY_TEST = fabricIcon;
+				OVERLAY_TEST = copy;
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 		}
 
 		private final BufferedImage OVERLAY_TEST;
+		private final BufferedImage FABRIC_LOGO;
 
 		@Override
 		public void generateItemTextures(ItemTextureConsumer itemTextureConsumer) {
@@ -150,6 +166,13 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		public void generateMiscTextures(TextureConsumer textureConsumer) {
 			try {
 				textureConsumer.addTexture(new Identifier(MOD_ID, "textures/misc/final-overlay.png"), OVERLAY_TEST);
+
+				BufferedImage obsidianTexture = getMinecraftTexture(new Identifier("textures/block/obsidian.png"));
+
+				Graphics2D graphics2D = obsidianTexture.createGraphics();
+				graphics2D.drawImage(FABRIC_LOGO, 0, 0, 16, 16, null);
+
+				textureConsumer.addTexture(new Identifier(MOD_ID, "textures/misc/obsidian-overlay.png"), obsidianTexture);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
