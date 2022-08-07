@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
@@ -47,7 +48,7 @@ public class LandPathNodeTypesRegistry {
 		Objects.requireNonNull(nodeType, "PathNodeType cannot be null!");
 
 		//Registers a provider that always returns the specified node type.
-		register(block, (world, pos) -> nodeType);
+		register(block, (state, world, pos) -> nodeType);
 	}
 
 	/**
@@ -67,15 +68,17 @@ public class LandPathNodeTypesRegistry {
 	/**
 	 * Gets the {@link PathNodeType} for the specified position.
 	 *
+	 * @param state Current block state.
 	 * @param world Current world.
 	 * @param pos   Current position.
 	 */
-	public static @Nullable PathNodeType getPathNodeType(@NotNull BlockView world, @NotNull BlockPos pos) {
+	public static @Nullable PathNodeType getPathNodeType(@NotNull BlockState state, @NotNull BlockView world, @NotNull BlockPos pos) {
+		Objects.requireNonNull(state, "BlockState cannot be null!");
 		Objects.requireNonNull(world, "BlockView cannot be null!");
 		Objects.requireNonNull(pos, "BlockPos cannot be null!");
 
 		//Gets the node type for the block in the specified position.
-		PathNodeTypeProvider provider = NODE_TYPES.get(world.getBlockState(pos).getBlock());
-		return provider != null ? provider.getPathNodeType(world, pos) : null;
+		PathNodeTypeProvider provider = NODE_TYPES.get(state.getBlock());
+		return provider != null ? provider.getPathNodeType(state, world, pos) : null;
 	}
 }

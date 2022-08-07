@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.registry;
 
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
@@ -29,8 +30,9 @@ public interface PathNodeTypeProvider {
 	/**
 	 * Gets the {@link PathNodeType} for the specified position.
 	 *
+	 * @param state Current block state.
 	 * @param world Current world.
 	 * @param pos   Current position.
 	 */
-	@NotNull PathNodeType getPathNodeType(BlockView world, BlockPos pos);
+	@NotNull PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos);
 }

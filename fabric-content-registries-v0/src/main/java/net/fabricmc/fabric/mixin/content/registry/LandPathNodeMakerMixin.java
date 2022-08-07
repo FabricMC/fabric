@@ -16,12 +16,13 @@
 
 package net.fabricmc.fabric.mixin.content.registry;
 
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.pathing.LandPathNodeMaker;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.util.math.BlockPos;
@@ -34,9 +35,9 @@ public class LandPathNodeMakerMixin {
 	/**
 	 * Gets the node type for the specified position.
 	 */
-	@Inject(method = "getCommonNodeType", at = @At("HEAD"), cancellable = true)
-	private static void getCommonNodeType(@NotNull BlockView world, BlockPos pos, @NotNull CallbackInfoReturnable<PathNodeType> cir) {
-		PathNodeType nodeType = LandPathNodeTypesRegistry.getPathNodeType(world, pos);
+	@Inject(method = "getCommonNodeType", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/BlockView;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", shift = At.Shift.BY, by = 2), locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
+	private static void getCommonNodeType(BlockView world, BlockPos pos, CallbackInfoReturnable<PathNodeType> cir, BlockState state) {
+		PathNodeType nodeType = LandPathNodeTypesRegistry.getPathNodeType(state, world, pos);
 
 		if (nodeType != null) {
 			cir.setReturnValue(nodeType);
