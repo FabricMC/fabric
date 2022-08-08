@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.registry;
 import java.util.HashMap;
 import java.util.Objects;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -31,7 +30,7 @@ import net.minecraft.world.BlockView;
 /**
  * A registry for associations between blocks and path node types, for land entities.
  */
-public class LandPathNodeTypesRegistry {
+public final class LandPathNodeTypesRegistry {
 	private static final HashMap<Block, PathNodeTypeProvider> NODE_TYPES = new HashMap<>();
 
 	private LandPathNodeTypesRegistry() {
@@ -43,7 +42,7 @@ public class LandPathNodeTypesRegistry {
 	 * @param block    Block to register.
 	 * @param nodeType {@link PathNodeType} to associate to the block.
 	 */
-	public static void register(@NotNull Block block, @NotNull PathNodeType nodeType) {
+	public static void register(Block block, PathNodeType nodeType) {
 		Objects.requireNonNull(block, "Block cannot be null!");
 		Objects.requireNonNull(nodeType, "PathNodeType cannot be null!");
 
@@ -57,7 +56,7 @@ public class LandPathNodeTypesRegistry {
 	 * @param block    Block to register.
 	 * @param provider {@link PathNodeTypeProvider} to associate to the block.
 	 */
-	public static void register(@NotNull Block block, @NotNull PathNodeTypeProvider provider) {
+	public static void register(Block block, PathNodeTypeProvider provider) {
 		Objects.requireNonNull(block, "Block cannot be null!");
 		Objects.requireNonNull(provider, "PathNodeTypeProvider cannot be null!");
 
@@ -72,7 +71,7 @@ public class LandPathNodeTypesRegistry {
 	 * @param world Current world.
 	 * @param pos   Current position.
 	 */
-	public static @Nullable PathNodeType getPathNodeType(@NotNull BlockState state, @NotNull BlockView world, @NotNull BlockPos pos) {
+	public static @Nullable PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos) {
 		Objects.requireNonNull(state, "BlockState cannot be null!");
 		Objects.requireNonNull(world, "BlockView cannot be null!");
 		Objects.requireNonNull(pos, "BlockPos cannot be null!");
