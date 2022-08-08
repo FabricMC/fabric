@@ -65,9 +65,6 @@ import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
 
 @Mixin(SimpleRegistry.class)
 public abstract class SimpleRegistryMixin<T> extends Registry<T> implements RemappableRegistry, ListenableRegistry<T> {
-	@Unique
-	private static final Logger FARBIC_LOGGER = LoggerFactory.getLogger("FabricRegistrySync");
-
 	// Namespaces used by the vanilla game. "brigadier" is used by command argument type registry.
 	// While Realms use "realms" namespace, it is irrelevant for Registry Sync.
 	@Unique
@@ -95,7 +92,7 @@ public abstract class SimpleRegistryMixin<T> extends Registry<T> implements Rema
 	public abstract @Nullable T get(@Nullable Identifier id);
 
 	@Unique
-	private static Logger FABRIC_LOGGER = LoggerFactory.getLogger(SimpleRegistryMixin.class);
+	private static final Logger FABRIC_LOGGER = LoggerFactory.getLogger(SimpleRegistryMixin.class);
 
 	public SimpleRegistryMixin(RegistryKey<? extends Registry<T>> key, Lifecycle lifecycle) {
 		super(key, lifecycle);
@@ -169,7 +166,7 @@ public abstract class SimpleRegistryMixin<T> extends Registry<T> implements Rema
 
 			if (!holder.hasAttribute(RegistryAttribute.MODDED)) {
 				Identifier id = getKey().getValue();
-				FARBIC_LOGGER.debug("Registry {} has been marked as modded, registry entry {} was changed", id, registryKey.getValue());
+				FABRIC_LOGGER.debug("Registry {} has been marked as modded, registry entry {} was changed", id, registryKey.getValue());
 				RegistryAttributeHolder.get(this).addAttribute(RegistryAttribute.MODDED);
 			}
 		}
