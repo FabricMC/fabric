@@ -78,7 +78,8 @@ public final class LandPathNodeTypesRegistry {
 	 * @param world Current world.
 	 * @param pos   Current position.
 	 */
-	public static @Nullable PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos) {
+	@Nullable
+	public static PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos) {
 		Objects.requireNonNull(state, "BlockState cannot be null!");
 		Objects.requireNonNull(world, "BlockView cannot be null!");
 		Objects.requireNonNull(pos, "BlockPos cannot be null!");

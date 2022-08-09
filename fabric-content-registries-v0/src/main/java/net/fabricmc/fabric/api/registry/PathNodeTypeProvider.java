@@ -34,5 +34,5 @@ public interface PathNodeTypeProvider {
 	 * @param world Current world.
 	 * @param pos   Current position.
 	 */
-	@NotNull PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos);
+	PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos);
 }
