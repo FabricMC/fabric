@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -31,6 +33,7 @@ import net.minecraft.world.BlockView;
  * A registry for associations between blocks and path node types, for land entities.
  */
 public final class LandPathNodeTypesRegistry {
+	private static final Logger LOGGER = LoggerFactory.getLogger(LandPathNodeTypesRegistry.class);
 	private static final HashMap<Block, PathNodeTypeProvider> NODE_TYPES = new HashMap<>();
 
 	private LandPathNodeTypesRegistry() {
@@ -61,7 +64,11 @@ public final class LandPathNodeTypesRegistry {
 		Objects.requireNonNull(provider, "PathNodeTypeProvider cannot be null!");
 
 		//Registers the provider.
-		NODE_TYPES.putIfAbsent(block, provider);
+		PathNodeTypeProvider old = NODE_TYPES.put(block, provider);
+
+		if (old != null) {
+			LOGGER.debug("Replaced PathNodeType provider for the block {}", block);
+		}
 	}
 
 	/**
