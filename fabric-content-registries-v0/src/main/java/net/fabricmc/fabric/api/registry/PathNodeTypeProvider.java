@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.registry;
 
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.util.math.BlockPos;
