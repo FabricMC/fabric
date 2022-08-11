@@ -70,7 +70,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - right-clicking a 'test_event' block will emit a 'test_event' game event, which will have a sculk sensor frequency of 2
 		//  - dead bush is now considered as a dangerous block like sweet berry bushes (all entities except foxes should avoid it)
 
-		LandPathNodeTypesRegistry.register(Blocks.DEAD_BUSH, PathNodeType.DAMAGE_OTHER);
+		LandPathNodeTypesRegistry.register(Blocks.DEAD_BUSH, PathNodeType.DAMAGE_OTHER, PathNodeType.DANGER_OTHER);
 
 		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);
 		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.getDefaultState());
