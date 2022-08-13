@@ -28,8 +28,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 
-import org.jetbrains.annotations.Nullable;
-
 /**
  * General-purpose Fabric-provided extensions for {@link Item} subclasses.
  *
@@ -114,8 +112,10 @@ public interface FabricItem {
 	 * @return the leftover item
 	 */
 	default ItemStack getRecipeRemainder(ItemStack stack) {
-		if (!hasRecipeRemainder(stack))
+		if (!hasRecipeRemainder(stack)) {
 			return ItemStack.EMPTY;
+		}
+
 		return ((Item) this).getRecipeRemainder().getDefaultStack();
 	}
 }
