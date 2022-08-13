@@ -27,6 +27,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * General-purpose Fabric-provided extensions for {@link Item} subclasses.
  *
@@ -89,5 +91,30 @@ public interface FabricItem {
 	 */
 	default boolean isSuitableFor(ItemStack stack, BlockState state) {
 		return ((Item) this).isSuitableFor(state);
+	}
+
+	/**
+	 * Determines if the item will have a leftover item after it's been used.
+	 * Example: Using lava in a furnace as fuel,
+	 * Stack-aware version of {@link Item#hasRecipeRemainder()}.
+	 *
+	 * @param stack the current stack
+	 * @return true if the item has a recipe remainder
+	 */
+	default boolean hasRecipeRemainder(ItemStack stack) {
+		return ((Item) this).hasRecipeRemainder();
+	}
+
+	/**
+	 * Return a leftover item for use in recipes
+	 * Stack-aware version of {@link Item#getRecipeRemainder()}.
+	 *
+	 * @param stack the old {@link ItemStack}
+	 * @return the leftover item
+	 */
+	default ItemStack getRecipeRemainder(ItemStack stack) {
+		if (!hasRecipeRemainder(stack))
+			return ItemStack.EMPTY;
+		return ((Item) this).getRecipeRemainder().getDefaultStack();
 	}
 }

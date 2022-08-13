@@ -3,10 +3,16 @@
   "package": "net.fabricmc.fabric.mixin.item",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "ItemStackMixin",
+    "AbstractFurnaceBlockEntityAccessor",
+    "AbstractFurnaceBlockEntityMixin",
+    "ArmorItemMixin",
+    "BannerDuplicateRecipeMixin",
+    "BookCloningRecipeMixin",
+    "BrewingStandBlockEntityMixin",
     "ItemMixin",
+    "ItemStackMixin",
     "LivingEntityMixin",
-    "ArmorItemMixin"
+    "RecipeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
