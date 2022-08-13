@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.item;
+package net.fabricmc.fabric.impl.item;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
 
-@Mixin(AbstractFurnaceBlockEntity.class)
-public interface AbstractFurnaceBlockEntityAccessor {
-	@Accessor
-	DefaultedList<ItemStack> getInventory();
+@ApiStatus.Internal
+public class RecipeRemainderHandler {
+	public static ItemStack capturedRecipeItemStack;
 }

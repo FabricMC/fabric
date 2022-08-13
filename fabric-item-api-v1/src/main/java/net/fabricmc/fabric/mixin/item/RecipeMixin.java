@@ -17,31 +17,34 @@
 package net.fabricmc.fabric.mixin.item;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.util.collection.DefaultedList;
 
+import net.fabricmc.fabric.impl.item.RecipeRemainderHandler;
+
 @Mixin(Recipe.class)
 public interface RecipeMixin<C extends Inventory> {
-	/**
-	 * @author FabricMC
-	 * @reason support stack aware recipe remainders
-	 */
-	@Overwrite
-	default DefaultedList<ItemStack> getRemainder(C inventory) {
-		DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(inventory.size(), ItemStack.EMPTY);
+	@Inject(method = "getRemainder", at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/Inventory;getStack(I)Lnet/minecraft/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILHARD)
+	default void captureStack(C inventory, CallbackInfoReturnable<DefaultedList<ItemStack>> cir, DefaultedList<ItemStack> defaultedList, int i) {
+		RecipeRemainderHandler.capturedRecipeItemStack = inventory.getStack(i);
+	}
 
-		for (int i = 0; i < defaultedList.size(); ++i) {
-			ItemStack item = inventory.getStack(i);
+	@Redirect(method = "getRemainder", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;hasRecipeRemainder()Z"))
+	private boolean hasStackRemainder(Item instance) {
+		return RecipeRemainderHandler.capturedRecipeItemStack.getItem().hasRecipeRemainder(RecipeRemainderHandler.capturedRecipeItemStack);
+	}
 
-			if (item.getItem().hasRecipeRemainder(item)) {
-				defaultedList.set(i, item.getItem().getRecipeRemainder(item));
-			}
-		}
-
-		return defaultedList;
+	@Redirect(method = "getRemainder", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/collection/DefaultedList;set(ILjava/lang/Object;)Ljava/lang/Object;"))
+	private Object getStackRemainder(DefaultedList<ItemStack> inventory, int index, Object element) {
+		return inventory.set(index, RecipeRemainderHandler.capturedRecipeItemStack.getItem().getRecipeRemainder(RecipeRemainderHandler.capturedRecipeItemStack));
 	}
 }

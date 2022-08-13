@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.item;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -30,12 +31,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 @Mixin(AbstractFurnaceBlockEntity.class)
-public class AbstractFurnaceBlockEntityMixin {
+public abstract class AbstractFurnaceBlockEntityMixin {
+	@Shadow
+	protected DefaultedList<ItemStack> inventory;
 	private static DefaultedList<ItemStack> capturedInventory;
 
 	@Inject(method = "tick", at = @At("HEAD"))
 	private static void getStackCraftingRemainder(World world, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity blockEntity, CallbackInfo ci) {
-		capturedInventory = ((AbstractFurnaceBlockEntityAccessor) blockEntity).getInventory();
+		capturedInventory = ((AbstractFurnaceBlockEntityMixin) (Object) blockEntity).inventory;
 	}
 
 	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isEmpty()Z", ordinal = 2))

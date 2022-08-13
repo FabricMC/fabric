@@ -17,37 +17,36 @@
 package net.fabricmc.fabric.mixin.item;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.WrittenBookItem;
 import net.minecraft.recipe.BookCloningRecipe;
 import net.minecraft.util.collection.DefaultedList;
 
 @Mixin(BookCloningRecipe.class)
 public class BookCloningRecipeMixin {
-	/**
-	 * @author FabricMC
-	 * @reason support stack aware recipe remainders
-	 */
-	@Overwrite
-	public DefaultedList<ItemStack> getRemainder(CraftingInventory craftingInventory) {
-		DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(craftingInventory.size(), ItemStack.EMPTY);
+	@Unique
+	private ItemStack capturedItemStack;
 
-		for (int i = 0; i < defaultedList.size(); ++i) {
-			ItemStack itemStack = craftingInventory.getStack(i);
+	@Inject(method = "getRemainder(Lnet/minecraft/inventory/CraftingInventory;)Lnet/minecraft/util/collection/DefaultedList;", at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/CraftingInventory;getStack(I)Lnet/minecraft/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void captureStack(CraftingInventory craftingInventory, CallbackInfoReturnable<DefaultedList<ItemStack>> cir, DefaultedList<ItemStack> defaultedList, int i) {
+		capturedItemStack = craftingInventory.getStack(i);
+	}
 
-			if (itemStack.getItem().hasRecipeRemainder(itemStack)) {
-				defaultedList.set(i, itemStack.getItem().getRecipeRemainder(itemStack));
-			} else if (itemStack.getItem() instanceof WrittenBookItem) {
-				ItemStack itemStack2 = itemStack.copy();
-				itemStack2.setCount(1);
-				defaultedList.set(i, itemStack2);
-				break;
-			}
-		}
+	@Redirect(method = "getRemainder(Lnet/minecraft/inventory/CraftingInventory;)Lnet/minecraft/util/collection/DefaultedList;", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;hasRecipeRemainder()Z"))
+	private boolean hasStackRecipeRemainder(Item instance) {
+		return capturedItemStack.getItem().hasRecipeRemainder(capturedItemStack);
+	}
 
-		return defaultedList;
+	@Redirect(method = "getRemainder(Lnet/minecraft/inventory/CraftingInventory;)Lnet/minecraft/util/collection/DefaultedList;", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/collection/DefaultedList;set(ILjava/lang/Object;)Ljava/lang/Object;"))
+	private Object getStackRecipeRemainder(DefaultedList<ItemStack> inventory, int index, Object element) {
+		return inventory.set(index, capturedItemStack.getItem().getRecipeRemainder(capturedItemStack));
 	}
 }
