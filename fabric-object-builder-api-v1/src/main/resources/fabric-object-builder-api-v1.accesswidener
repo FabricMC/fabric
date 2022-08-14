@@ -9,7 +9,5 @@ extendable class net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
 
 accessible method net/minecraft/entity/SpawnRestriction register (Lnet/minecraft/entity/EntityType;Lnet/minecraft/entity/SpawnRestriction$Location;Lnet/minecraft/world/Heightmap$Type;Lnet/minecraft/entity/SpawnRestriction$SpawnPredicate;)V
 
-accessible method net/minecraft/block/Material$Builder lightPassesThrough ()Lnet/minecraft/block/Material$Builder;
-
 accessible field net/minecraft/village/VillagerType BIOME_TO_TYPE Ljava/util/Map;
 accessible method net/minecraft/village/VillagerType <init> (Ljava/lang/String;)V

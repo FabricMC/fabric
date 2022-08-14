@@ -49,7 +49,6 @@ transitive-accessible class net/minecraft/village/TradeOffers$SellDyedArmorFacto
 transitive-accessible method net/minecraft/entity/SpawnRestriction register (Lnet/minecraft/entity/EntityType;Lnet/minecraft/entity/SpawnRestriction$Location;Lnet/minecraft/world/Heightmap$Type;Lnet/minecraft/entity/SpawnRestriction$SpawnPredicate;)V
 
 # Creating custom block materials
-transitive-accessible method net/minecraft/block/Material$Builder lightPassesThrough ()Lnet/minecraft/block/Material$Builder;
 transitive-accessible method net/minecraft/block/Material$Builder burnable ()Lnet/minecraft/block/Material$Builder;
 transitive-accessible method net/minecraft/block/Material$Builder destroyedByPiston ()Lnet/minecraft/block/Material$Builder;
 transitive-accessible method net/minecraft/block/Material$Builder blocksPistons ()Lnet/minecraft/block/Material$Builder;

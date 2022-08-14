@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.object.builder;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.block.Material;
 import net.minecraft.block.piston.PistonBehavior;
@@ -26,4 +27,7 @@ import net.minecraft.block.piston.PistonBehavior;
 public interface MaterialBuilderAccessor {
 	@Accessor
 	void setPistonBehavior(PistonBehavior behavior);
+
+	@Invoker
+	Material.Builder invokeLightPassesThrough();
 }

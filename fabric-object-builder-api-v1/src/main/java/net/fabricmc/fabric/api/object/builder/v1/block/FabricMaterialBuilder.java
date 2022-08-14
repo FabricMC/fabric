@@ -43,9 +43,8 @@ public class FabricMaterialBuilder extends Material.Builder {
 		return this;
 	}
 
-	@Override
 	public FabricMaterialBuilder lightPassesThrough() {
-		super.lightPassesThrough();
+		((MaterialBuilderAccessor) this).invokeLightPassesThrough();
 		return this;
 	}
 
