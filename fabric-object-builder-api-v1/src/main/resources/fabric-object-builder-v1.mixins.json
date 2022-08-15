@@ -10,7 +10,6 @@
     "DefaultAttributeRegistryMixin",
     "DetectorRailBlockMixin",
     "MaterialBuilderAccessor",
-    "SpawnRestrictionAccessor",
     "TypeAwareTradeMixin"
   ],
   "injectors": {
