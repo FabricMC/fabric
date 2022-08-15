@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.crash.report.info",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "MixinCrashReport"
+    "SystemDetailsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

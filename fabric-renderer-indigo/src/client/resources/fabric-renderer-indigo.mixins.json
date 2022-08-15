@@ -6,10 +6,10 @@
   "mixins": [
   ],
   "client": [
-    "MixinBlockModelRenderer",
-    "MixinChunkRebuildTask",
-    "MixinChunkRendererRegion",
-    "MixinItemRenderer"
+    "BlockModelRendererMixin",
+    "ChunkBuilderBuiltChunkRebuildTaskMixin",
+    "ChunkRendererRegionMixin",
+    "ItemRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
