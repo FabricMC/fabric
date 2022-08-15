@@ -43,6 +43,9 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  */
 @ApiStatus.Experimental
 public final class StorageUtil {
+	private StorageUtil() {
+	}
+
 	/**
 	 * Move resources between two storages, matching the passed filter, and return the amount that was successfully transferred.
 	 *

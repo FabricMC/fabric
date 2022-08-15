@@ -76,6 +76,7 @@ public final class PointOfInterestHelper {
 	// INTERNAL METHODS
 
 	private static PointOfInterestType register(Identifier id, int ticketCount, int searchDistance, Set<BlockState> states) {
+		PointOfInterestTypes.POI_STATES.addAll(states);
 		return PointOfInterestTypes.register(Registry.POINT_OF_INTEREST_TYPE, RegistryKey.of(Registry.POINT_OF_INTEREST_TYPE_KEY, id), states, ticketCount, searchDistance);
 	}
 }

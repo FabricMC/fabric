@@ -39,9 +39,12 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-public class FluidVariantAttributes {
+public final class FluidVariantAttributes {
 	private static final ApiProviderMap<Fluid, FluidVariantAttributeHandler> HANDLERS = ApiProviderMap.create();
 	private static final FluidVariantAttributeHandler DEFAULT_HANDLER = new FluidVariantAttributeHandler() { };
+
+	private FluidVariantAttributes() {
+	}
 
 	/**
 	 * Register an attribute handler for the passed fluid.

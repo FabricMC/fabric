@@ -30,6 +30,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * Events for manipulating loot tables.
  */
 public final class LootTableEvents {
+	private LootTableEvents() {
+	}
+
 	/**
 	 * This event can be used to replace loot tables.
 	 * If a loot table is replaced, the iteration will stop for that loot table.

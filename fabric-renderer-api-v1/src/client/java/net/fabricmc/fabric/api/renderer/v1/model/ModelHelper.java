@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import org.jetbrains.annotations.Contract;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedQuad;
@@ -35,7 +34,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 /**
  * Collection of utilities for model implementations.
  */
-public abstract class ModelHelper {
+public final class ModelHelper {
 	private ModelHelper() { }
 
 	/** Result from {@link #toFaceIndex(Direction)} for null values. */
@@ -57,7 +56,6 @@ public abstract class ModelHelper {
 	 * optionally including the null face. (Use &lt; or  &lt;= {@link #NULL_FACE_ID}
 	 * to exclude or include the null value, respectively.)
 	 */
-	@Contract("null -> null")
 	public static Direction faceFromIndex(int faceIndex) {
 		return FACES[faceIndex];
 	}

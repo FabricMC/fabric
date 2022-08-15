@@ -45,6 +45,9 @@ public final class FabricDefaultAttributeRegistry {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDefaultAttributeRegistry.class);
 
+	private FabricDefaultAttributeRegistry() {
+	}
+
 	/**
 	 * Registers a default attribute for a type of living entity.
 	 *

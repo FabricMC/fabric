@@ -23,9 +23,9 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.class_7648;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.PacketCallbacks;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
@@ -64,7 +64,7 @@ public interface PacketSender {
 	 * @param packet the packet
 	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
 	 */
-	void sendPacket(Packet<?> packet, @Nullable class_7648 callback);
+	void sendPacket(Packet<?> packet, @Nullable PacketCallbacks callback);
 
 	/**
 	 * Sends a packet to a channel.
@@ -98,7 +98,7 @@ public interface PacketSender {
 	 * @param buf the content of the packet
 	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}
 	 */
-	default void sendPacket(Identifier channel, PacketByteBuf buf, @Nullable class_7648 callback) {
+	default void sendPacket(Identifier channel, PacketByteBuf buf, @Nullable PacketCallbacks callback) {
 		Objects.requireNonNull(channel, "Channel cannot be null");
 		Objects.requireNonNull(buf, "Payload cannot be null");
 

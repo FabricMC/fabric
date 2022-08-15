@@ -28,7 +28,7 @@ import org.jetbrains.annotations.ApiStatus;
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-public class StoragePreconditions {
+public final class StoragePreconditions {
 	/**
 	 * Ensure that the passed transfer variant is not blank.
 	 *

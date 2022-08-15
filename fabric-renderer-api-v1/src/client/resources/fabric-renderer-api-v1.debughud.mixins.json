@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.renderer.client.debughud",
   "compatibilityLevel": "JAVA_16",
   "client": [
-    "MixinDebugHud"
+    "DebugHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

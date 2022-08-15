@@ -1,0 +1,11 @@
+archivesBaseName = "fabric-client-tags-api-v1"
+version = getSubprojectVersion(project)
+
+moduleDependencies(project, [
+		'fabric-api-base'
+])
+
+testDependencies(project, [
+		':fabric-convention-tags-v1',
+		':fabric-lifecycle-events-v1',
+])

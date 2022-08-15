@@ -25,7 +25,10 @@ import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
  * See {@link net.minecraft.tag.FluidTags} for vanilla tags.
  * Note that addition to some vanilla tags implies having certain functionality.
  */
-public class ConventionalFluidTags {
+public final class ConventionalFluidTags {
+	private ConventionalFluidTags() {
+	}
+
 	public static final TagKey<Fluid> LAVA = register("lava");
 	public static final TagKey<Fluid> WATER = register("water");
 	public static final TagKey<Fluid> MILK = register("milk");

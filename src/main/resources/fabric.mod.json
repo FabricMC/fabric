@@ -1,6 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "fabric",
+  "id": "fabric-api",
+  "provides": [
+    "fabric"
+  ],
   "name": "Fabric API",
   "version": "${version}",
   "environment": "*",
@@ -16,7 +19,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.14.8",
+    "fabricloader": ">=0.14.9",
     "java": ">=17",
     "minecraft": "~1.19.1-beta.2"
   },

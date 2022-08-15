@@ -42,7 +42,11 @@ import net.minecraft.world.poi.PointOfInterestType;
  * <p>A corresponding <code>IDENTIFIER_PATH.mcmeta</code> file exits in the same directory to define properties such as the {@link net.minecraft.client.render.entity.feature.VillagerResourceMetadata.HatType HatType} this profession would use.
  *
  * <p>Note this does not register any trades to these villagers. To register trades, add a new entry with your profession as the key to {@link TradeOffers#PROFESSION_TO_LEVELED_TRADE}.
+ *
+ * @deprecated Replaced by access widener for {@link VillagerProfession#VillagerProfession}
+ * in Fabric Transitive Access Wideners (v1).
  */
+@Deprecated
 public final class VillagerProfessionBuilder {
 	private final ImmutableSet.Builder<Item> gatherableItemsBuilder = ImmutableSet.builder();
 	private final ImmutableSet.Builder<Block> secondaryJobSiteBlockBuilder = ImmutableSet.builder();
