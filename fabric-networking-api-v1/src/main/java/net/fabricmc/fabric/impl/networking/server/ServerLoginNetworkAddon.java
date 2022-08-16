@@ -29,10 +29,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.class_7648;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
 import net.minecraft.network.packet.s2c.login.LoginCompressionS2CPacket;
 import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
@@ -116,7 +116,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 		// Compression is not needed for local transport
 		if (this.server.getNetworkCompressionThreshold() >= 0 && !this.connection.isLocal()) {
 			this.connection.send(new LoginCompressionS2CPacket(this.server.getNetworkCompressionThreshold()),
-					class_7648.method_45084(() -> connection.setCompressionThreshold(server.getNetworkCompressionThreshold(), true))
+					PacketCallbacks.always(() -> connection.setCompressionThreshold(server.getNetworkCompressionThreshold(), true))
 			);
 		}
 	}
@@ -181,7 +181,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	}
 
 	@Override
-	public void sendPacket(Packet<?> packet, class_7648 callback) {
+	public void sendPacket(Packet<?> packet, PacketCallbacks callback) {
 		Objects.requireNonNull(packet, "Packet cannot be null");
 
 		this.connection.send(packet, callback);

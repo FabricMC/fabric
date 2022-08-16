@@ -3,8 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.event.interaction.client",
   "compatibilityLevel": "JAVA_16",
   "client": [
-    "MixinClientPlayerInteractionManager",
-    "MixinMinecraftClient"
+    "ClientPlayerInteractionManagerMixin",
+    "MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

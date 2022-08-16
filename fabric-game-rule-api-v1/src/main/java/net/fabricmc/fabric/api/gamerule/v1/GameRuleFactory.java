@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 import net.fabricmc.fabric.impl.gamerule.EnumRuleType;
 import net.fabricmc.fabric.impl.gamerule.rule.BoundedIntRule;
-import net.fabricmc.fabric.mixin.gamerule.BooleanRuleAccessor;
+import net.fabricmc.fabric.mixin.gamerule.GameRulesBooleanRuleAccessor;
 
 /**
  * A utility class containing factory methods to create game rule types.
@@ -70,7 +70,7 @@ public final class GameRuleFactory {
 	 * @return a boolean rule type
 	 */
 	public static GameRules.Type<GameRules.BooleanRule> createBooleanRule(boolean defaultValue, BiConsumer<MinecraftServer, GameRules.BooleanRule> changedCallback) {
-		return BooleanRuleAccessor.invokeCreate(defaultValue, changedCallback);
+		return GameRulesBooleanRuleAccessor.invokeCreate(defaultValue, changedCallback);
 	}
 
 	/**

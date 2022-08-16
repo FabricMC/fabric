@@ -3,15 +3,14 @@
   "package": "net.fabricmc.fabric.mixin.biome",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "MixinMinecraftServer",
-
-    "MixinBiomeSource",
-    "MixinChunkNoiseSampler",
-    "MixinMultiNoiseBiomeSource",
-    "MixinMultiNoiseSampler",
-    "MixinNoiseConfig",
-    "MixinTheEndBiomeSource",
-    "modification.DynamicRegistryManagerImplMixin",
+    "MinecraftServerMixin",
+    "BiomeSourceMixin",
+    "ChunkNoiseSamplerMixin",
+    "MultiNoiseBiomeSourceMixin",
+    "MultiNoiseUtilMultiNoiseSamplerMixin",
+    "NoiseConfigMixin",
+    "TheEndBiomeSourceMixin",
+    "modification.DynamicRegistryManagerImmutableImplMixin",
     "modification.MinecraftServerMixin"
   ],
   "injectors": {

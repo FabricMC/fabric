@@ -22,15 +22,15 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.class_7648;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
+import net.minecraft.network.PacketCallbacks;
 
 /**
- * We still need to support {@link GenericFutureListener} so we use this disguise impl {@link class_7648}
+ * We still need to support {@link GenericFutureListener} so we use this disguise impl {@link PacketCallbacks}
  * to get our {@link GenericFutureListener} to into {@link ClientConnection}.
  */
-public final class GenericFutureListenerHolder implements class_7648 {
+public final class GenericFutureListenerHolder implements PacketCallbacks {
 	private final GenericFutureListener<? extends Future<? super Void>> delegate;
 
 	private GenericFutureListenerHolder(GenericFutureListener<? extends Future<? super Void>> delegate) {
@@ -51,13 +51,13 @@ public final class GenericFutureListenerHolder implements class_7648 {
 	}
 
 	@Override
-	public void method_45083() {
+	public void onSuccess() {
 		throw new AssertionError("Should not be called");
 	}
 
 	@Nullable
 	@Override
-	public Packet<?> method_45086() {
+	public Packet<?> getFailurePacket() {
 		throw new AssertionError("Should not be called");
 	}
 }

@@ -9,3 +9,8 @@ moduleDependencies(project, [
 		'fabric-api-base',
 		'fabric-textures-v0'
 ])
+
+validateMixinNames {
+	// Loom needs to handle inner mixins better
+	exclude "**/ParticleManagerAccessor\$SimpleSpriteProviderAccessor.class"
+}

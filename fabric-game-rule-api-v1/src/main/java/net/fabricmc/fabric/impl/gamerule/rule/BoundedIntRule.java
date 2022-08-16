@@ -24,7 +24,7 @@ import net.minecraft.world.GameRules;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
-import net.fabricmc.fabric.mixin.gamerule.IntRuleAccessor;
+import net.fabricmc.fabric.mixin.gamerule.GameRulesIntRuleAccessor;
 
 public final class BoundedIntRule extends GameRules.IntRule {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GameRuleRegistry.class);
@@ -47,7 +47,7 @@ public final class BoundedIntRule extends GameRules.IntRule {
 			return;
 		}
 
-		((IntRuleAccessor) (Object) this).setValue(i);
+		((GameRulesIntRuleAccessor) (Object) this).setValue(i);
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public final class BoundedIntRule extends GameRules.IntRule {
 				return false;
 			}
 
-			((IntRuleAccessor) (Object) this).setValue(value);
+			((GameRulesIntRuleAccessor) (Object) this).setValue(value);
 			return true;
 		} catch (NumberFormatException var3) {
 			return false;
@@ -69,7 +69,7 @@ public final class BoundedIntRule extends GameRules.IntRule {
 
 	@Override
 	protected GameRules.IntRule copy() {
-		return new BoundedIntRule(this.type, ((IntRuleAccessor) (Object) this).getValue(), this.minimumValue, this.maximumValue);
+		return new BoundedIntRule(this.type, ((GameRulesIntRuleAccessor) (Object) this).getValue(), this.minimumValue, this.maximumValue);
 	}
 
 	private static int parseInt(String input) {

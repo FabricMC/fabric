@@ -22,12 +22,11 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
 import net.minecraft.world.biome.Biome;
-
-import net.fabricmc.fabric.mixin.object.builder.VillagerTypeAccessor;
 
 /**
  * Utilities related to the creation of {@link VillagerType}s.
@@ -40,7 +39,11 @@ import net.fabricmc.fabric.mixin.object.builder.VillagerTypeAccessor;
  * To allow a villager type to be spawned in a specific biome, use {@link VillagerTypeHelper#addVillagerTypeToBiome(RegistryKey, VillagerType)}.
  *
  * <p>The texture used for the appearance of the villager is located at {@code assets/IDENTIFIER_NAMESPACE/textures/entity/villager/type/IDENTIFIER_PATH.png}.
+ *
+ * @deprecated Replaced by access wideners for {@link VillagerType#create} and {@link VillagerType#BIOME_TO_TYPE}
+ * in Fabric Transitive Access Wideners (v1).
  */
+@Deprecated
 public final class VillagerTypeHelper {
 	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerTypeHelper.class);
 
@@ -52,7 +55,7 @@ public final class VillagerTypeHelper {
 	 */
 	public static VillagerType register(Identifier id) {
 		Objects.requireNonNull(id, "Id of villager type cannot be null");
-		return VillagerTypeAccessor.callRegister(id.toString());
+		return Registry.register(Registry.VILLAGER_TYPE, new Identifier(id.toString()), new VillagerType(id.toString()));
 	}
 
 	/**
@@ -65,7 +68,7 @@ public final class VillagerTypeHelper {
 		Objects.requireNonNull(biomeKey, "Biome registry key cannot be null");
 		Objects.requireNonNull(villagerType, "Villager type cannot be null");
 
-		if (VillagerTypeAccessor.getBiomeTypeToIdMap().put(biomeKey, villagerType) != null) {
+		if (VillagerType.BIOME_TO_TYPE.put(biomeKey, villagerType) != null) {
 			LOGGER.debug("Overriding existing Biome -> VillagerType registration for Biome {}", biomeKey.getValue().toString());
 		}
 	}
