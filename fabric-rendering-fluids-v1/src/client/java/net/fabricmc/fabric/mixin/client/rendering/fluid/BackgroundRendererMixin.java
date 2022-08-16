@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.client.render.fluid.v1.FogParameters;
 
 @Mixin(BackgroundRenderer.class)
-public abstract class MixinBackgroundRenderer {
+public abstract class BackgroundRendererMixin {
 	@Shadow
 	private static float red;
 

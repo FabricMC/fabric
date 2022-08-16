@@ -3,8 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.client.rendering.fluid",
   "compatibilityLevel": "JAVA_16",
   "client": [
+    "BackgroundRendererMixin",
     "CameraAccessor",
-    "MixinBackgroundRenderer",
     "FluidRendererMixin"
   ],
   "injectors": {
