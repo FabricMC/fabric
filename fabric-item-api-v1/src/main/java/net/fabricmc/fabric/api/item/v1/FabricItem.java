@@ -93,9 +93,11 @@ public interface FabricItem {
 	}
 
 	/**
-	 * Determines if the item will have a leftover item after it's been used.
-	 * Example: Using lava in a furnace as fuel,
-	 * Stack-aware version of {@link Item#hasRecipeRemainder()}.
+	 * Determines if the item will leave a new item stack after being consumed in a recipe.
+	 * (This is also known as "recipe remainder".)
+	 * For example, using a lava bucket in a furnace as fuel will leave an empty bucket.
+	 *
+	 * <p>This is a stack-aware version of {@link Item#hasRecipeRemainder()}.
 	 *
 	 * @param stack the current stack
 	 * @return true if the item has a recipe remainder
