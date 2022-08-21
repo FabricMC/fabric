@@ -24,7 +24,7 @@ import net.minecraft.util.Hand;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 public class PlayerContainerItemContext implements ContainerItemContext {
@@ -53,7 +53,7 @@ public class PlayerContainerItemContext implements ContainerItemContext {
 	}
 
 	@Override
-	public List<SingleSlotStorage<ItemVariant>> getAdditionalSlots() {
+	public List<? extends SingleSlotStorage<ItemVariant>> getAdditionalSlots() {
 		return playerWrapper.getSlots();
 	}
 }

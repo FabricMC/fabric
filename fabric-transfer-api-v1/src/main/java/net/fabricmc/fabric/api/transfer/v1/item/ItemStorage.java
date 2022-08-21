@@ -121,6 +121,7 @@ public final class ItemStorage {
 						Storage<ItemVariant> first = InventoryStorage.of(accessor.fabric_getFirst(), direction);
 						Storage<ItemVariant> second = InventoryStorage.of(accessor.fabric_getSecond(), direction);
 
+						// TODO: expose a SlottedStorage here
 						return new CombinedStorage<>(List.of(first, second));
 					}
 				} else {

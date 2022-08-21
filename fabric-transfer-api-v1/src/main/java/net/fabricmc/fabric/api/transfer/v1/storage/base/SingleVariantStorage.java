@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.transfer.v1.storage.base;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.fabricmc.fabric.api.transfer.v1.storage.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;

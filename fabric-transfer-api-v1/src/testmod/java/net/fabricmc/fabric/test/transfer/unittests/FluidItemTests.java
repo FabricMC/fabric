@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
@@ -134,7 +134,7 @@ class FluidItemTests {
 		}
 
 		@Override
-		public List<SingleSlotStorage<ItemVariant>> getAdditionalSlots() {
+		public List<? extends SingleSlotStorage<ItemVariant>> getAdditionalSlots() {
 			return inventory.getSlots();
 		}
 	}

@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.transfer.v1.storage.base;
+package net.fabricmc.fabric.api.transfer.v1.storage;
 
 import java.util.Iterator;
+import java.util.List;
 
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -34,9 +36,23 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-public interface SingleSlotStorage<T> extends Storage<T>, StorageView<T> {
+public interface SingleSlotStorage<T> extends SlottedStorage<T>, StorageView<T> {
 	@Override
 	default Iterator<StorageView<T>> iterator() {
 		return TransferApiImpl.singletonIterator(this);
+	}
+
+	@Override
+	default SingleSlotStorage<T> getSlot(int slot) {
+		if (slot != 0) {
+			throw new IndexOutOfBoundsException("Slot index must be 0, but it is " + slot);
+		}
+
+		return this;
+	}
+
+	@Override
+	default List<? extends SingleSlotStorage<T>> getSlots() {
+		return List.of(this);
 	}
 }

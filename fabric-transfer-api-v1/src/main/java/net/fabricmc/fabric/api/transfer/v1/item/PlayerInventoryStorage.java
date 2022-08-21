@@ -25,7 +25,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Hand;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.impl.transfer.item.CursorSlotWrapper;
 

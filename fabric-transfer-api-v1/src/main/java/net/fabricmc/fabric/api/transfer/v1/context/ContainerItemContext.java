@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.impl.transfer.context.InitialContentsContainerItemContext;
@@ -237,5 +237,5 @@ public interface ContainerItemContext {
 	 *
 	 * @return An unmodifiable list containing additional slots of this context. If no additional slot is available, the list is empty.
 	 */
-	List<SingleSlotStorage<ItemVariant>> getAdditionalSlots();
+	List<? extends SingleSlotStorage<ItemVariant>> getAdditionalSlots();
 }

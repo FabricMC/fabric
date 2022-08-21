@@ -28,7 +28,6 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
@@ -131,7 +130,7 @@ public final class StorageUtil {
 	 * @return How much was inserted.
 	 * @see Storage#insert
 	 */
-	public static <T> long insertStacking(List<SingleSlotStorage<T>> slots, T resource, long maxAmount, TransactionContext transaction) {
+	public static <T> long insertStacking(List<? extends SingleSlotStorage<T>> slots, T resource, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notNegative(maxAmount);
 		long amount = 0;
 
@@ -148,6 +147,28 @@ public final class StorageUtil {
 		}
 
 		return amount;
+	}
+
+	/**
+	 * Insert resources in a storage, attempting to stack them with existing resources first if possible.
+	 *
+	 * @param storage The storage, may be null.
+	 * @param resource The resource to insert. May not be blank.
+	 * @param maxAmount The maximum amount of resource to insert. May not be negative.
+	 * @param transaction The transaction this operation is part of.
+	 * @return A nonnegative integer not greater than maxAmount: the amount that was inserted.
+	 */
+	public static <T> long tryInsertStacking(@Nullable Storage<T> storage, T resource, long maxAmount, TransactionContext transaction) {
+		StoragePreconditions.notNegative(maxAmount);
+
+		if (storage instanceof SlottedStorage<T> slottedStorage) {
+			// TODO: it would be more efficient to iterate twice using the iterator, as the slot list might be expensive to construct?
+			return insertStacking(slottedStorage.getSlots(), resource, maxAmount, transaction);
+		} else if (storage != null) {
+			return storage.insert(resource, maxAmount, transaction);
+		} else {
+			return 0;
+		}
 	}
 
 	/**
