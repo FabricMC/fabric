@@ -104,8 +104,11 @@ public interface FabricItem {
 	}
 
 	/**
-	 * Return a leftover item for use in recipes
-	 * Stack-aware version of {@link Item#getRecipeRemainder()}.
+	 * Returns a leftover item stack after {@code stack} is consumed in a recipe.
+	 * (This is also known as "recipe remainder".)
+	 * For example, using a lava bucket in a furnace as fuel will leave an empty bucket.
+	 *
+	 * <p>This is a stack-aware version of {@link Item#getRecipeRemainder()}.
 	 *
 	 * @param stack the old {@link ItemStack}
 	 * @return the leftover item
