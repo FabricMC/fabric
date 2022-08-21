@@ -16,11 +16,14 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid.base;
 
+import java.util.Objects;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.nbt.NbtCompound;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 
 /**
@@ -36,6 +39,29 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
  */
 @ApiStatus.Experimental
 public abstract class SingleFluidStorage extends SingleVariantStorage<FluidVariant> {
+	/**
+	 * Create a fluid storage with a fixed capacity and a change handler.
+	 *
+	 * @param capacity Fixed capacity of the fluid storage. Must be nonnegative.
+	 * @param onChange Change handler, generally for {@code markDirty()} or similar calls. May not be null.
+	 */
+	public static SingleFluidStorage withFixedCapacity(long capacity, Runnable onChange) {
+		StoragePreconditions.notNegative(capacity);
+		Objects.requireNonNull(onChange, "onChange may not be null");
+
+		return new SingleFluidStorage() {
+			@Override
+			protected long getCapacity(FluidVariant variant) {
+				return capacity;
+			}
+
+			@Override
+			protected void onFinalCommit() {
+				onChange.run();
+			}
+		};
+	}
+
 	@Override
 	protected final FluidVariant getBlankVariant() {
 		return FluidVariant.blank();

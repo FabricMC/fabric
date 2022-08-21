@@ -24,22 +24,11 @@ import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 
 public class FluidChuteBlockEntity extends BlockEntity {
-	SingleFluidStorage storage = new SingleFluidStorage() {
-		@Override
-		protected long getCapacity(FluidVariant variant) {
-			return FluidConstants.BUCKET * 4;
-		}
-
-		@Override
-		protected void onFinalCommit() {
-			markDirty();
-		}
-	};
+	final SingleFluidStorage storage = SingleFluidStorage.withFixedCapacity(FluidConstants.BUCKET * 4, this::markDirty);
 
 	private int tickCounter = 0;
 
