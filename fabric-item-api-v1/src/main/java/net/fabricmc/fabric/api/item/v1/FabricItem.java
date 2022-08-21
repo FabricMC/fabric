@@ -100,7 +100,7 @@ public interface FabricItem {
 	 * <p>This is a stack-aware version of {@link Item#hasRecipeRemainder()}.
 	 *
 	 * @param stack the current stack
-	 * @return true if the item has a recipe remainder
+	 * @return {@code true} if the item has a recipe remainder
 	 */
 	default boolean hasRecipeRemainder(ItemStack stack) {
 		return ((Item) this).hasRecipeRemainder();
