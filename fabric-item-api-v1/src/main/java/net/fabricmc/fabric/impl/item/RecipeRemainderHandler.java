@@ -22,5 +22,5 @@ import net.minecraft.item.ItemStack;
 
 @ApiStatus.Internal
 public class RecipeRemainderHandler {
-	public static ItemStack capturedRecipeItemStack;
+	public static ThreadLocal<ItemStack> capturedRecipeItemStack = new ThreadLocal<>();
 }

@@ -42,11 +42,11 @@ public class BannerDuplicateRecipeMixin {
 
 	@Redirect(method = "getRemainder(Lnet/minecraft/inventory/CraftingInventory;)Lnet/minecraft/util/collection/DefaultedList;", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;hasRecipeRemainder()Z"))
 	private boolean hasStackRecipeRemainder(Item instance) {
-		return capturedItemStack.getItem().hasRecipeRemainder(capturedItemStack);
+		return capturedItemStack.hasRecipeRemainder();
 	}
 
 	@Redirect(method = "getRemainder(Lnet/minecraft/inventory/CraftingInventory;)Lnet/minecraft/util/collection/DefaultedList;", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/collection/DefaultedList;set(ILjava/lang/Object;)Ljava/lang/Object;"))
 	private Object getStackRecipeRemainder(DefaultedList<ItemStack> inventory, int index, Object element) {
-		return inventory.set(index, capturedItemStack.getItem().getRecipeRemainder(capturedItemStack));
+		return inventory.set(index, capturedItemStack.getRecipeRemainder());
 	}
 }

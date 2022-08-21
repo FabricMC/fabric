@@ -44,11 +44,11 @@ public class BrewingStandBlockEntityMixin {
 
 	@Redirect(method = "craft", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;hasRecipeRemainder()Z"))
 	private static boolean hasStackRecipeRemainder(Item instance) {
-		return capturedItemStack.getItem().hasRecipeRemainder(capturedItemStack);
+		return capturedItemStack.hasRecipeRemainder();
 	}
 
 	@ModifyVariable(method = "craft", at = @At(value = "STORE"), index = 4)
 	private static ItemStack createStackRecipeRemainder(ItemStack old) {
-		return capturedItemStack.getItem().getRecipeRemainder(capturedItemStack);
+		return capturedItemStack.getRecipeRemainder();
 	}
 }
