@@ -112,7 +112,7 @@ public interface FabricItem {
 	 *
 	 * <p>This is a stack-aware version of {@link Item#getRecipeRemainder()}.
 	 *
-	 * @param stack the old {@link ItemStack}
+	 * @param stack the consumed {@link ItemStack}
 	 * @return the leftover item
 	 */
 	default ItemStack getRecipeRemainder(ItemStack stack) {
