@@ -29,7 +29,7 @@ public final class FabricDimensionInternals {
 	/**
 	 * The target passed to the last call to {@link FabricDimensions#teleport(Entity, ServerWorld, TeleportTarget)}.
 	 */
-	private static TeleportTarget currentTarget;
+	private static final ThreadLocal<TeleportTarget> currentTarget = new ThreadLocal<>();
 
 	private FabricDimensionInternals() {
 		throw new AssertionError();
@@ -39,7 +39,7 @@ public final class FabricDimensionInternals {
 	 * Returns the last target set when a user of the API requested teleportation, or null.
 	 */
 	public static TeleportTarget getCustomTarget() {
-		return currentTarget;
+		return currentTarget.get();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -48,7 +48,7 @@ public final class FabricDimensionInternals {
 		Preconditions.checkArgument(Thread.currentThread() == ((ServerWorld) teleported.world).getServer().getThread(), "Entities must be teleported from the main server thread");
 
 		try {
-			currentTarget = target;
+			currentTarget.set(target);
 
 			// Fast path for teleporting within the same dimension.
 			if (teleported.getWorld() == dimension) {
@@ -66,7 +66,7 @@ public final class FabricDimensionInternals {
 
 			return (E) teleported.moveToWorld(dimension);
 		} finally {
-			currentTarget = null;
+			currentTarget.set(null);
 		}
 	}
 }
