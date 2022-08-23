@@ -107,5 +107,7 @@ public class ChatTest implements ModInitializer {
 		ServerMessageEvents.ALLOW_COMMAND_MESSAGE.register(
 				(message, source, params) -> !message.getContent().getString().contains("sadtater")
 		);
+
+		ChannelTest.test();
 	}
 }
