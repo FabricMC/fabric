@@ -568,6 +568,6 @@ task checkVersion {
 }
 
 github.mustRunAfter checkVersion
-modrinth.mustRunAfter checkVersion
+project.tasks.modrinth.mustRunAfter checkVersion
 publish.mustRunAfter checkVersion
 project.tasks.curseforge.mustRunAfter checkVersion
