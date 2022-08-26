@@ -17,12 +17,15 @@
 package net.fabricmc.fabric.test.dimension;
 
 import static net.minecraft.entity.EntityType.COW;
+import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -97,6 +100,12 @@ public class FabricDimensionTest implements ModInitializer {
 			// Used to test https://github.com/FabricMC/fabric/issues/2238
 			dispatcher.register(literal("fabric_dimension_test_entity")
 					.executes(FabricDimensionTest.this::testEntityTeleport));
+
+			// Used to test teleport to vanilla dimension
+			dispatcher.register(literal("fabric_dimension_test_tp")
+					.then(argument("target", DimensionArgumentType.dimension())
+					.executes((context) ->
+							testVanillaTeleport(context, DimensionArgumentType.getDimensionArgument(context, "target")))));
 		});
 	}
 
@@ -165,6 +174,14 @@ public class FabricDimensionTest implements ModInitializer {
 
 		TeleportTarget target = new TeleportTarget(player.getPos(), player.getVelocity(), player.getYaw(), player.getPitch());
 		FabricDimensions.teleport(entity, (ServerWorld) entity.world, target);
+
+		return 1;
+	}
+
+	private int testVanillaTeleport(CommandContext<ServerCommandSource> context, ServerWorld targetWorld) throws CommandSyntaxException {
+		Entity entity = context.getSource().getEntityOrThrow();
+		TeleportTarget target = new TeleportTarget(entity.getPos(), entity.getVelocity(), entity.getYaw(), entity.getPitch());
+		FabricDimensions.teleport(entity, targetWorld, target);
 
 		return 1;
 	}
