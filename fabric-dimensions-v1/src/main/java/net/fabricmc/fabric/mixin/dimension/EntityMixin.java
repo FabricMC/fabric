@@ -21,12 +21,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.TeleportTarget;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.impl.dimension.Teleportable;
 
@@ -34,6 +37,7 @@ import net.fabricmc.fabric.impl.dimension.Teleportable;
  * This mixin implements {@link Entity#getTeleportTarget(ServerWorld)} for modded dimensions, as Vanilla will
  * not return a teleport target for anything but Vanilla dimensions and prevents changing teleport target in
  * {@link ServerPlayerEntity#getTeleportTarget(ServerWorld)} when teleporting to END using api.
+ * This also prevents several End dimension-specific code when teleporting using api.
  */
 @Mixin(value = {ServerPlayerEntity.class, Entity.class})
 public class EntityMixin implements Teleportable {
@@ -54,5 +58,17 @@ public class EntityMixin implements Teleportable {
 		if (customTarget != null) {
 			cir.setReturnValue(customTarget);
 		}
+	}
+
+	/**
+	 * This stops the following behaviors, in 1 mixin.
+	 * - ServerWorld#createEndSpawnPlatform in Entity
+	 * - End-to-overworld spawning behavior in ServerPlayerEntity
+	 * - ServerPlayerEntity#createEndSpawnPlatform in ServerPlayerEntity
+	 */
+	@Redirect(method = "moveToWorld", at = @At(value = "FIELD", target = "Lnet/minecraft/world/World;END:Lnet/minecraft/util/registry/RegistryKey;"))
+	private RegistryKey<World> stopEndSpecificBehavior() {
+		if (this.customTeleportTarget != null) return null;
+		return World.END;
 	}
 }
