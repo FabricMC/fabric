@@ -34,7 +34,7 @@ public final class FabricDimensionInternals {
 		Preconditions.checkArgument(Thread.currentThread() == ((ServerWorld) teleported.world).getServer().getThread(), "Entities must be teleported from the main server thread");
 
 		try {
-			((Teleportable) target).fabric_setCustomTeleportTarget(target);
+			((Teleportable) teleported).fabric_setCustomTeleportTarget(target);
 
 			// Fast path for teleporting within the same dimension.
 			if (teleported.getWorld() == dimension) {
@@ -52,7 +52,7 @@ public final class FabricDimensionInternals {
 
 			return (E) teleported.moveToWorld(dimension);
 		} finally {
-			((Teleportable) target).fabric_setCustomTeleportTarget(null);
+			((Teleportable) teleported).fabric_setCustomTeleportTarget(null);
 		}
 	}
 }
