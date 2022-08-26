@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.mixin.dimension;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -26,7 +28,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.TeleportTarget;
 
-import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
+import net.fabricmc.fabric.impl.dimension.Teleportable;
 
 /**
  * This mixin implements {@link Entity#getTeleportTarget(ServerWorld)} for modded dimensions, as Vanilla will
@@ -34,16 +36,23 @@ import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
  * {@link ServerPlayerEntity#getTeleportTarget(ServerWorld)} when teleporting to END using api.
  */
 @Mixin(value = {ServerPlayerEntity.class, Entity.class})
-public class EntityMixin {
-	@SuppressWarnings("ConstantConditions")
+public class EntityMixin implements Teleportable {
+	@Unique
+	@Nullable
+	protected TeleportTarget customTeleportTarget;
+
+	@Override
+	public void fabric_setCustomTeleportTarget(TeleportTarget teleportTarget) {
+		this.customTeleportTarget = teleportTarget;
+	}
+
 	@Inject(method = "getTeleportTarget", at = @At("HEAD"), cancellable = true, allow = 1)
-	public void getTeleportTarget(ServerWorld destination, CallbackInfoReturnable<TeleportTarget> cri) {
-		Entity self = (Entity) (Object) this;
+	public void getTeleportTarget(ServerWorld destination, CallbackInfoReturnable<TeleportTarget> cir) {
 		// Check if a destination has been set for the entity currently being teleported
-		TeleportTarget customTarget = FabricDimensionInternals.getCustomTarget();
+		TeleportTarget customTarget = this.customTeleportTarget;
 
 		if (customTarget != null) {
-			cri.setReturnValue(customTarget);
+			cir.setReturnValue(customTarget);
 		}
 	}
 }

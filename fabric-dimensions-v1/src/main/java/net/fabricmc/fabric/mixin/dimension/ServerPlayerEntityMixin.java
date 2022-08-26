@@ -30,8 +30,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
-
 /**
  * This mixin prevents END dimension specific events when using api. Specifically:
  * <ol>
@@ -41,11 +39,11 @@ import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
  * </ol>
  */
 @Mixin(ServerPlayerEntity.class)
-public class ServerPlayerEntityMixin {
+public class ServerPlayerEntityMixin extends EntityMixin {
 	@Inject(method = "createEndSpawnPlatform", at = @At("HEAD"), cancellable = true, allow = 1)
 	public void getTeleportTarget(ServerWorld world, BlockPos centerPos, CallbackInfo ci) {
 		// Check if a destination has been set for the entity currently being teleported
-		if (FabricDimensionInternals.getCustomTarget() != null) {
+		if (this.customTeleportTarget != null) {
 			ci.cancel();
 		}
 	}
@@ -61,7 +59,7 @@ public class ServerPlayerEntityMixin {
 	)
 	public RegistryKey<World> moveToWorld() {
 		// Check if a destination has been set for the entity currently being teleported
-		if (FabricDimensionInternals.getCustomTarget() != null) {
+		if (this.customTeleportTarget != null) {
 			return null;
 		}
 
