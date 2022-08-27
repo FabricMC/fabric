@@ -23,7 +23,7 @@ import net.minecraft.network.message.SentMessage;
 import net.minecraft.network.message.SignedMessage;
 
 @Mixin(SentMessage.Chat.class)
-public interface SentMessageAccessor {
+public interface SentMessageChatAccessor {
 	@Accessor
 	SignedMessage getMessage();
 }

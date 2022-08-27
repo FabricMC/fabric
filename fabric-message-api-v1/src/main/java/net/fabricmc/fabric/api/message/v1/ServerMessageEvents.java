@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.message.v1;
 
+import java.util.UUID;
+
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.MinecraftServer;
@@ -83,6 +85,25 @@ public final class ServerMessageEvents {
 	public static final Event<AllowCommandMessage> ALLOW_COMMAND_MESSAGE = EventFactory.createArrayBacked(AllowCommandMessage.class, handlers -> (message, source, params) -> {
 		for (AllowCommandMessage handler : handlers) {
 			if (!handler.allowCommandMessage(message, source, params)) return false;
+		}
+
+		return true;
+	});
+
+	/**
+	 * An event triggered when a command or chat message is sent. Listeners on this event
+	 * are triggered for every player receiving that message. If any listener attached returns
+	 * {@code false} the message will not be sent to that specific player.
+	 *
+	 * <p>If a listener returns {@code false}, the server will not broadcast the message to that
+	 * player and no further listeners will be checked and the message will be called. The
+	 * {@link #CHAT_MESSAGE} or {@link #COMMAND_MESSAGE} are still run.
+	 *
+	 * <p>This also applies to {@see net.minecraft.server.PlayerManager#broadcast()}
+	 */
+	public static final Event<AllowMessageToPlayer> ALLOW_MESSAGE_TO_PLAYER = EventFactory.createArrayBacked(AllowMessageToPlayer.class, handlers -> (message, sender, receiver, params) -> {
+		for (AllowMessageToPlayer handler : handlers) {
+			if (!handler.allowMessageToPlayer(message, sender, receiver, params)) return false;
 		}
 
 		return true;
@@ -188,6 +209,25 @@ public final class ServerMessageEvents {
 		 * @return {@code true} if the message body should be broadcast, otherwise {@code false}
 		 */
 		boolean allowCommandMessage(SignedMessage message, ServerCommandSource source, MessageType.Parameters params);
+	}
+
+	@FunctionalInterface
+	public interface AllowMessageToPlayer {
+		/**
+		 * Called when a player is going to be sent a message either from the chat GUI or a
+		 * command (including player specific commands such as {@code /msg}). Returning false
+		 * prevents only this player from receiving the message. This does not block the
+		 * {@link #COMMAND_MESSAGE} or {@link #CHAT_MESSAGE} from sending.
+		 *
+		 * <p>This only applies to messages sent by a player.w
+		 *
+		 * @param message the broadcast message with message decorators applied; use {@code message.getContent()} to get the text
+		 * @param sender the uuid of the player that sent the message
+		 * @param receiver the player receiving the message
+		 * @param params the {@link MessageType.Parameters}
+		 * @return {@code true} if the message body should be broadcast, otherwise {@code false}
+		 */
+		boolean allowMessageToPlayer(SignedMessage message, UUID sender, ServerPlayerEntity receiver, MessageType.Parameters params);
 	}
 
 	@FunctionalInterface

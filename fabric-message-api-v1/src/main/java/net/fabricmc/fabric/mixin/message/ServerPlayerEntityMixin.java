@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.message;
 
+import java.util.UUID;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,13 +26,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SentMessage;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.network.message.SignedMessage;
 
-import net.fabricmc.fabric.api.message.v1.MessageChannels;
+import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 
 @Mixin(ServerPlayerEntity.class)
 public class ServerPlayerEntityMixin {
 	@Inject(method = "sendChatMessage", at = @At(value = "HEAD"), cancellable = true)
 	public void sendChatMessage(SentMessage message, boolean filterMaskEnabled, MessageType.Parameters params, CallbackInfo ci) {
-		if (!MessageChannels.isInSameChannel(((ServerPlayerEntity) (Object) this).getUuid(), ((SentMessageAccessor) message).getMessage().createMetadata().sender())) ci.cancel();
+		if (message instanceof SentMessage.Profileless) return;
+
+		SignedMessage signedMessage = ((SentMessageChatAccessor) message).getMessage();
+		UUID sender = ((SentMessageChatAccessor) message).getMessage().createMetadata().sender();
+		if (!ServerMessageEvents.ALLOW_MESSAGE_TO_PLAYER.invoker().allowMessageToPlayer(signedMessage, sender, ((ServerPlayerEntity) (Object) this), params)) ci.cancel();
 	}
 }
