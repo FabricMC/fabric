@@ -218,7 +218,16 @@ public interface BlockApiLookup<A, C> {
 	 */
 	@SuppressWarnings("unchecked")
 	default <T extends BlockEntity> void registerForBlockEntity(BiFunction<? super T, C, @Nullable A> provider, BlockEntityType<T> blockEntityType) {
-		registerForBlockEntities((blockEntity, context) -> provider.apply((T) blockEntity, context), blockEntityType);
+		registerForBlockEntities((blockEntity, context) -> {
+			// There is an extremely rare chance that the block entity is different
+			// from the one associated with the current block state.
+			// For example, if the block state is of a chest but the block entity is a mob spawner,
+			// the (T) cast below would otherwise fail when a mod registers an API for chests
+			// since it tries to cast MobSpawnerBlockEntity to ChestBlockEntity.
+			// See also: BlockWithEntity#checkType
+			if (blockEntity.getType() != blockEntityType) return null;
+			return provider.apply((T) blockEntity, context);
+		}, blockEntityType);
 	}
 
 	/**
