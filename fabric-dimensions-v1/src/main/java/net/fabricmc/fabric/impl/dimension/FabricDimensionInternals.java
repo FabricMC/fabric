@@ -17,12 +17,14 @@
 package net.fabricmc.fabric.impl.dimension;
 
 import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.TeleportTarget;
 
+@ApiStatus.Internal
 public final class FabricDimensionInternals {
 	private FabricDimensionInternals() {
 		throw new AssertionError();

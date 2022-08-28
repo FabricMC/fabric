@@ -16,10 +16,12 @@
 
 package net.fabricmc.fabric.impl.dimension;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.TeleportTarget;
 
+@ApiStatus.Internal
 public interface Teleportable {
 	/**
 	 * Sets the last target set when a user of the API requested teleportation, or null.
