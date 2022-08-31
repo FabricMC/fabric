@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.registry;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.util.math.BlockPos;
@@ -31,15 +33,16 @@ public interface PathNodeTypeProvider {
 	 * <p>Is possible to specify what to return if the block is a direct target of an entity path,
 	 * or is a neighbor block that the entity will find in the path.
 	 *
-	 * <p>For example, for cactus you should specify DAMAGE_CACTUS if the block is a direct target (isNeighbor = false)
+	 * <p>For example, for cactus you should specify DAMAGE_CACTUS if the block is a direct target (neighbor = false)
 	 * to specify that an entity should not pass through or above the block because it will cause damage,
-	 * and DANGER_CACTUS if the cactus will be found as a neighbor block in the entity path (isNeighbor = true)
+	 * and DANGER_CACTUS if the cactus will be found as a neighbor block in the entity path (neighbor = true)
 	 * to specify that the entity should not get close to the block because here is danger.
 	 *
-	 * @param state      Current block state.
-	 * @param world      Current world.
-	 * @param pos        Current position.
-	 * @param isNeighbor Specifies if the block is not a directly targeted block, but a neighbor block in the path.
+	 * @param state    Current block state.
+	 * @param world    Current world.
+	 * @param pos      Current position.
+	 * @param neighbor Specifies if the block is not a directly targeted block, but a neighbor block in the path.
 	 */
-	PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos, boolean isNeighbor);
+	@Nullable
+	PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos, boolean neighbor);
 }

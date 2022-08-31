@@ -51,14 +51,14 @@ public final class LandPathNodeTypesRegistry {
 	 * @param block              Block to register.
 	 * @param nodeType           {@link PathNodeType} to associate to the block.
 	 *                           (Set null to not specify a node type and use the default behaviour)
-	 * @param nodeTypeAsNeighbor {@link PathNodeType} to associate to the block, if is a neighbor block in the path.
+	 * @param nodeTypeIfNeighbor {@link PathNodeType} to associate to the block, if is a neighbor block in the path.
 	 *                           (Set null to not specify a node type and use the default behaviour)
 	 */
-	public static void register(Block block, PathNodeType nodeType, PathNodeType nodeTypeAsNeighbor) {
+	public static void register(Block block, @Nullable PathNodeType nodeType, @Nullable PathNodeType nodeTypeIfNeighbor) {
 		Objects.requireNonNull(block, "Block cannot be null!");
 
 		//Registers a provider that always returns the specified node type.
-		register(block, (state, world, pos, isNeighbor) -> isNeighbor ? nodeTypeAsNeighbor : nodeType);
+		register(block, (state, world, pos, neighbor) -> neighbor ? nodeTypeIfNeighbor : nodeType);
 	}
 
 	/**
@@ -85,19 +85,19 @@ public final class LandPathNodeTypesRegistry {
 	/**
 	 * Gets the {@link PathNodeType} for the specified position.
 	 *
-	 * @param state      Current block state.
-	 * @param world      Current world.
-	 * @param pos        Current position.
-	 * @param isNeighbor Specifies if the block is not a directly targeted block, but a neighbor block in the path.
+	 * @param state    Current block state.
+	 * @param world    Current world.
+	 * @param pos      Current position.
+	 * @param neighbor Specifies if the block is not a directly targeted block, but a neighbor block in the path.
 	 */
 	@Nullable
-	public static PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos, boolean isNeighbor) {
+	public static PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos, boolean neighbor) {
 		Objects.requireNonNull(state, "BlockState cannot be null!");
 		Objects.requireNonNull(world, "BlockView cannot be null!");
 		Objects.requireNonNull(pos, "BlockPos cannot be null!");
 
 		//Gets the node type for the block in the specified position.
 		PathNodeTypeProvider provider = NODE_TYPES.get(state.getBlock());
-		return provider != null ? provider.getPathNodeType(state, world, pos, isNeighbor) : null;
+		return provider != null ? provider.getPathNodeType(state, world, pos, neighbor) : null;
 	}
 }
