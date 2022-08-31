@@ -35,7 +35,7 @@ public class LandPathNodeMakerMixin {
 	/**
 	 * Overrides the node type for the specified position in a path.
 	 */
-	@Inject(method = "getCommonNodeType", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/BlockView;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", shift = At.Shift.BY, by = 2), locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
+	@Inject(method = "getCommonNodeType", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/BlockView;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", shift = At.Shift.BY, by = 2), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private static void getCommonNodeType(BlockView world, BlockPos pos, CallbackInfoReturnable<PathNodeType> cir, BlockState state) {
 		PathNodeType nodeType = LandPathNodeTypesRegistry.getPathNodeType(state, world, pos, false);
 
@@ -47,7 +47,7 @@ public class LandPathNodeMakerMixin {
 	/**
 	 * Overrides the node type for the specified position, if the position is found as neighbor block in a path.
 	 */
-	@Inject(method = "getNodeTypeFromNeighbors", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/BlockView;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", shift = At.Shift.BY, by = 2), locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
+	@Inject(method = "getNodeTypeFromNeighbors", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/BlockView;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", shift = At.Shift.BY, by = 2), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private static void getNodeTypeFromNeighbors(BlockView world, BlockPos.Mutable pos, PathNodeType nodeType, CallbackInfoReturnable<PathNodeType> cir, int i, int j, int k, int l, int m, int n, BlockState state) {
 		PathNodeType neighborNodeType = LandPathNodeTypesRegistry.getPathNodeType(state, world, pos, true);
 
