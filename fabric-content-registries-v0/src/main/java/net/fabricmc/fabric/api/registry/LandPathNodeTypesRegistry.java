@@ -16,7 +16,8 @@
 
 package net.fabricmc.fabric.api.registry;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
@@ -31,50 +32,50 @@ import net.minecraft.world.BlockView;
 
 /**
  * A registry to associate specific node types to blocks.
- * Specifying a node type for a block will change the way an entity recognizes the block when trying to pathfinding.
+ * Specifying a node type for a block will change the way an entity recognizes the block when trying to pathfind.
  * For example, you can specify that a block is dangerous and should be avoided by entities.
  * This works only for entities that move on air and land.
  */
 public final class LandPathNodeTypesRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LandPathNodeTypesRegistry.class);
-	private static final HashMap<Block, PathNodeTypeProvider> NODE_TYPES = new HashMap<>();
+	private static final Map<Block, PathNodeTypeProvider> NODE_TYPES = new IdentityHashMap<>();
 
 	private LandPathNodeTypesRegistry() {
 	}
 
 	/**
 	 * Registers a {@link PathNodeType} for the specified block.
-	 * This will override the default block behaviour.
+	 * This will override the default block behavior.
 	 * For example, you can make a safe block as dangerous and vice-versa.
 	 * Duplicated registrations for the same block will replace the previous registration.
 	 *
 	 * @param block              Block to register.
-	 * @param nodeType           {@link PathNodeType} to associate to the block.
-	 *                           (Set null to not specify a node type and use the default behaviour)
+	 * @param nodeType           {@link PathNodeType} to associate with the block.
+	 *                           (Pass {@code null} to not specify a node type and use the default behavior)
 	 * @param nodeTypeIfNeighbor {@link PathNodeType} to associate to the block, if is a neighbor block in the path.
-	 *                           (Set null to not specify a node type and use the default behaviour)
+	 *                           (Pass {@code null} to not specify a node type and use the default behavior)
 	 */
 	public static void register(Block block, @Nullable PathNodeType nodeType, @Nullable PathNodeType nodeTypeIfNeighbor) {
 		Objects.requireNonNull(block, "Block cannot be null!");
 
-		//Registers a provider that always returns the specified node type.
+		// Registers a provider that always returns the specified node type.
 		register(block, (state, world, pos, neighbor) -> neighbor ? nodeTypeIfNeighbor : nodeType);
 	}
 
 	/**
 	 * Registers a {@link PathNodeTypeProvider} for the specified block.
-	 * This will override the default block behaviour.
+	 * This will override the default block behavior.
 	 * For example, you can make a safe block as dangerous and vice-versa.
 	 * Duplicated registrations for the same block will replace the previous registrations.
 	 *
 	 * @param block    Block to register.
-	 * @param provider {@link PathNodeTypeProvider} to associate to the block.
+	 * @param provider {@link PathNodeTypeProvider} to associate with the block.
 	 */
 	public static void register(Block block, PathNodeTypeProvider provider) {
 		Objects.requireNonNull(block, "Block cannot be null!");
 		Objects.requireNonNull(provider, "PathNodeTypeProvider cannot be null!");
 
-		//Registers the provider.
+		// Registers the provider.
 		PathNodeTypeProvider old = NODE_TYPES.put(block, provider);
 
 		if (old != null) {
@@ -83,12 +84,16 @@ public final class LandPathNodeTypesRegistry {
 	}
 
 	/**
-	 * Gets the {@link PathNodeType} for the specified position.
+	 * Gets the custom {@link PathNodeType} registered for the specified block at the specified position.
+	 *
+	 * <p>If no custom {@link PathNodeType} is registered for the block, it returns {@code null}.
+	 * You cannot use this method to retrieve vanilla block node types.
 	 *
 	 * @param state    Current block state.
 	 * @param world    Current world.
 	 * @param pos      Current position.
 	 * @param neighbor Specifies if the block is not a directly targeted block, but a neighbor block in the path.
+	 * @return the custom {@link PathNodeType} registered for the specified block at the specified position.
 	 */
 	@Nullable
 	public static PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos, boolean neighbor) {
@@ -96,7 +101,7 @@ public final class LandPathNodeTypesRegistry {
 		Objects.requireNonNull(world, "BlockView cannot be null!");
 		Objects.requireNonNull(pos, "BlockPos cannot be null!");
 
-		//Gets the node type for the block in the specified position.
+		// Gets the node type for the block at the specified position.
 		PathNodeTypeProvider provider = NODE_TYPES.get(state.getBlock());
 		return provider != null ? provider.getPathNodeType(state, world, pos, neighbor) : null;
 	}

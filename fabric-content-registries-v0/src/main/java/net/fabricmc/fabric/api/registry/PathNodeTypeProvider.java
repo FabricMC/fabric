@@ -24,24 +24,27 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
 /**
- * Provider of {@link PathNodeType}.
+ * A functional interface that provides the {@link PathNodeType}, given the block state and position.
  */
+@FunctionalInterface
 public interface PathNodeTypeProvider {
 	/**
-	 * Gets the {@link PathNodeType} for the specified position.
+	 * Gets the {@link PathNodeType} for the specified block at the specified position.
 	 *
-	 * <p>Is possible to specify what to return if the block is a direct target of an entity path,
-	 * or is a neighbor block that the entity will find in the path.
+	 * <p>You can specify what to return if the block is a direct target of an entity path,
+	 * or a neighbor block that the entity will find in the path.
 	 *
-	 * <p>For example, for cactus you should specify DAMAGE_CACTUS if the block is a direct target (neighbor = false)
-	 * to specify that an entity should not pass through or above the block because it will cause damage,
-	 * and DANGER_CACTUS if the cactus will be found as a neighbor block in the entity path (neighbor = true)
-	 * to specify that the entity should not get close to the block because here is danger.
+	 * <p>For example, for a cactus-like block you should specify {@link PathNodeType#DAMAGE_CACTUS} if the block
+	 * is a direct target ({@code neighbor == false}) to specify that an entity should not pass through or above
+	 * the block because it will cause damage, and {@link PathNodeType#DANGER_CACTUS} if the cactus will be found
+	 * as a neighbor block in the entity path ({@code neighbor == true}) to specify that the entity should not get
+	 * close to the block because is dangerous.
 	 *
 	 * @param state    Current block state.
 	 * @param world    Current world.
 	 * @param pos      Current position.
 	 * @param neighbor Specifies if the block is not a directly targeted block, but a neighbor block in the path.
+	 * @return the custom {@link PathNodeType} registered for the specified block at the specified position.
 	 */
 	@Nullable
 	PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos, boolean neighbor);
