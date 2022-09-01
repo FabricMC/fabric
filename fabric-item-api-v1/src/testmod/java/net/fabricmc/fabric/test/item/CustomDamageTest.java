@@ -55,5 +55,11 @@ public class CustomDamageTest implements ModInitializer {
 			int v = stack.getOrCreateNbt().getInt("weird");
 			return super.getName(stack).copy().append(" (Weird Value: " + v + ")");
 		}
+
+		@Override
+		public ItemStack getRecipeRemainder(ItemStack stack) {
+			stack.setDamage(stack.getDamage() + 1);
+			return stack;
+		}
 	}
 }

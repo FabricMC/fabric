@@ -21,27 +21,12 @@ import net.minecraft.item.ItemStack;
 
 public interface FabricItemStack {
 	/**
-	 * Determines if the item will have a leftover item after it's been used.
-	 * Example: Using lava in a furnace as fuel,
-	 * Stack-aware version of {@link Item#hasRecipeRemainder()}.
-	 *
-	 * @return true if the item has a recipe remainder
-	 */
-	default boolean hasRecipeRemainder() {
-		return ((ItemStack) this).getItem().hasRecipeRemainder((ItemStack) this);
-	}
-
-	/**
 	 * Return a leftover item for use in recipes
 	 * Stack-aware version of {@link Item#getRecipeRemainder()}.
 	 *
 	 * @return the leftover item
 	 */
 	default ItemStack getRecipeRemainder() {
-		if (!hasRecipeRemainder()) {
-			return ItemStack.EMPTY;
-		}
-
 		return ((ItemStack) this).getItem().getRecipeRemainder((ItemStack) this);
 	}
 }
