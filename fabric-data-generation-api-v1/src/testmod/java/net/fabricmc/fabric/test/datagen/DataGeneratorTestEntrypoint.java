@@ -148,7 +148,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class JapaneseLangProvider extends FabricLanguageProvider {
-		protected JapaneseLangProvider(FabricDataGenerator dataGenerator) {
+		private JapaneseLangProvider(FabricDataGenerator dataGenerator) {
 			super(dataGenerator, "jp_jp");
 		}
 
