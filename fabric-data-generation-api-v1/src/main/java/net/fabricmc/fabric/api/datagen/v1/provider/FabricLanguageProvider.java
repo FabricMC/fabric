@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 /**
  * Extend this class and implement {@link FabricLanguageProvider#generateLanguages(LanguageConsumer)}.
- * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricDataGenerator, String)}  FabricLanguageProvider} to declare what language code is being generated if it isn't en_us
+ * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricDataGenerator, String)} FabricLanguageProvider} to declare what language code is being generated if it isn't {@code en_us}.
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
  */

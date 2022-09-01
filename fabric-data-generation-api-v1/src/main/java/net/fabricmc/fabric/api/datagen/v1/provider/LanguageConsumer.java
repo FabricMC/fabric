@@ -132,7 +132,7 @@ public interface LanguageConsumer {
 	/**
 	 * Merges an existing language file into the data generated language file.
 	 * @param existingLanguageFile The path to the existing language file.
-	 * @throws IOException If the path is invalid, an IOException is thrown.
+	 * @throws IOException if reading the file failed.
 	 */
 	default void addLanguage(Path existingLanguageFile) throws IOException {
 		Gson gson = new Gson();

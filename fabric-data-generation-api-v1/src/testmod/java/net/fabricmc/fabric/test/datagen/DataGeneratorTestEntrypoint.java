@@ -70,9 +70,6 @@ import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	private static final ConditionJsonProvider NEVER_LOADED = DefaultResourceConditions.allModsLoaded("a");
 	private static final ConditionJsonProvider ALWAYS_LOADED = DefaultResourceConditions.not(NEVER_LOADED);
-	public static void main(String[] args) {
-		System.out.println(System.getProperty("user.dir"));
-	}
 
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
@@ -149,7 +146,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 	private static class JapaneseLangProvider extends FabricLanguageProvider {
 		private JapaneseLangProvider(FabricDataGenerator dataGenerator) {
-			super(dataGenerator, "jp_jp");
+			super(dataGenerator, "ja_jp");
 		}
 
 		@Override
