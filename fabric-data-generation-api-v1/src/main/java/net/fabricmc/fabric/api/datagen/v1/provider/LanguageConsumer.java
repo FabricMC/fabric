@@ -130,7 +130,7 @@ public interface LanguageConsumer {
 	}
 
 	/**
-	 * Merges an existing language file into the data generated language file.
+	 * Merges an existing language file into the generated language file.
 	 * @param existingLanguageFile The path to the existing language file.
 	 * @throws IOException if reading the file failed.
 	 */
