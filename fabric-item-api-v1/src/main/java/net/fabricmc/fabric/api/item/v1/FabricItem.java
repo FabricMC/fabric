@@ -93,20 +93,6 @@ public interface FabricItem {
 	}
 
 	/**
-	 * Determines if the item will leave a new item stack after being consumed in a recipe.
-	 * (This is also known as "recipe remainder".)
-	 * For example, using a lava bucket in a furnace as fuel will leave an empty bucket.
-	 *
-	 * <p>This is a stack-aware version of {@link Item#hasRecipeRemainder()}.
-	 *
-	 * @param stack the current stack
-	 * @return {@code true} if the item has a recipe remainder
-	 */
-	default boolean hasRecipeRemainder(ItemStack stack) {
-		return ((Item) this).hasRecipeRemainder();
-	}
-
-	/**
 	 * Returns a leftover item stack after {@code stack} is consumed in a recipe.
 	 * (This is also known as "recipe remainder".)
 	 * For example, using a lava bucket in a furnace as fuel will leave an empty bucket.
@@ -117,10 +103,6 @@ public interface FabricItem {
 	 * @return the leftover item stack
 	 */
 	default ItemStack getRecipeRemainder(ItemStack stack) {
-		if (!hasRecipeRemainder(stack)) {
-			return ItemStack.EMPTY;
-		}
-
-		return ((Item) this).getRecipeRemainder().getDefaultStack();
+		return ((Item) this).hasRecipeRemainder() ? ((Item) this).getRecipeRemainder().getDefaultStack() : ItemStack.EMPTY;
 	}
 }
