@@ -45,6 +45,6 @@ public interface RecipeMixin<C extends Inventory> {
 
 	@Redirect(method = "getRemainder", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/collection/DefaultedList;set(ILjava/lang/Object;)Ljava/lang/Object;"))
 	private Object getStackRemainder(DefaultedList<ItemStack> inventory, int index, Object element) {
-		return inventory.set(index, RecipeRemainderHandler.capturedRecipeItemStack.get().getRecipeRemainder().copy());
+		return inventory.set(index, RecipeRemainderHandler.capturedRecipeItemStack.get().getRecipeRemainder());
 	}
 }
