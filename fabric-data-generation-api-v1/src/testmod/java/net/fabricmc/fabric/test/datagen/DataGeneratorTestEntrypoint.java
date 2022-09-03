@@ -62,7 +62,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.LanguageConsumer;
+import net.fabricmc.fabric.api.datagen.v1.provider.TranslationConsumer;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
@@ -126,17 +126,17 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		public void generateLanguages(LanguageConsumer languageConsumer) {
-			languageConsumer.addLanguage(SIMPLE_BLOCK, "Simple Block");
-			languageConsumer.addLanguage(new Identifier(MOD_ID, "identifier_test"), "Identifier Test");
-			languageConsumer.addLanguage(EntityType.ALLAY, "Allay");
-			languageConsumer.addLanguage(EntityAttributes.GENERIC_ARMOR, "Generic Armor");
+		public void generateTranslations(TranslationConsumer translationConsumer) {
+			translationConsumer.add(SIMPLE_BLOCK, "Simple Block");
+			translationConsumer.add(new Identifier(MOD_ID, "identifier_test"), "Identifier Test");
+			translationConsumer.add(EntityType.ALLAY, "Allay");
+			translationConsumer.add(EntityAttributes.GENERIC_ARMOR, "Generic Armor");
 
 			try {
 				Optional<Path> path = dataGenerator.getModContainer().findPath("assets/testmod/lang/en_us.json");
 
 				if (path.isPresent()) {
-					languageConsumer.addLanguage(path.get());
+					translationConsumer.add(path.get());
 				}
 			} catch (IOException e) {
 				throw new RuntimeException(e);
@@ -150,10 +150,10 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		public void generateLanguages(LanguageConsumer languageConsumer) {
-			languageConsumer.addLanguage(SIMPLE_BLOCK, "シンプルブロック");
-			languageConsumer.addLanguage(SIMPLE_ITEM_GROUP, "データ生成項目");
-			languageConsumer.addLanguage("this.is.a.test", "こんにちは");
+		public void generateTranslations(TranslationConsumer translationConsumer) {
+			translationConsumer.add(SIMPLE_BLOCK, "シンプルブロック");
+			translationConsumer.add(SIMPLE_ITEM_GROUP, "データ生成項目");
+			translationConsumer.add("this.is.a.test", "こんにちは");
 		}
 	}
 

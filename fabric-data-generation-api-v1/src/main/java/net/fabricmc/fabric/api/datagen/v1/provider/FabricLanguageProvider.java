@@ -29,7 +29,7 @@ import net.minecraft.data.DataWriter;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 /**
- * Extend this class and implement {@link FabricLanguageProvider#generateLanguages(LanguageConsumer)}.
+ * Extend this class and implement {@link FabricLanguageProvider#generateTranslations(TranslationConsumer)}.
  * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricDataGenerator, String)} FabricLanguageProvider} to declare what language code is being generated if it isn't {@code en_us}.
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
@@ -50,19 +50,19 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	/**
 	 * Implement this method to register languages.
 	 *
-	 * <p>Call {@link LanguageConsumer#addLanguage(String, String)} to add a language entry.
+	 * <p>Call {@link TranslationConsumer#add(String, String)} to add a translation.
 	 */
-	public abstract void generateLanguages(LanguageConsumer languageConsumer);
+	public abstract void generateTranslations(TranslationConsumer translationConsumer);
 
 	@Override
 	public void run(DataWriter writer) throws IOException {
-		TreeMap<String, String> languageEntries = new TreeMap<>();
+		TreeMap<String, String> translationEntries = new TreeMap<>();
 
-		generateLanguages(languageEntries::put);
+		generateTranslations(translationEntries::put);
 
 		JsonObject langEntryJson = new JsonObject();
 
-		for (Map.Entry<String, String> entry : languageEntries.entrySet()) {
+		for (Map.Entry<String, String> entry : translationEntries.entrySet()) {
 			langEntryJson.addProperty(entry.getKey(), entry.getValue());
 		}
 
@@ -75,6 +75,6 @@ public abstract class FabricLanguageProvider implements DataProvider {
 
 	@Override
 	public String getName() {
-		return "Languages";
+		return "Language";
 	}
 }
