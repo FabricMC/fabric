@@ -27,7 +27,7 @@ public interface FabricItemStack {
 	 *
 	 * <p>This is a stack-aware version of {@link Item#getRecipeRemainder()}.
 	 *
-	 * @return the leftover item
+	 * @return the leftover item stack
 	 */
 	default ItemStack getRecipeRemainder() {
 		return ((ItemStack) this).getItem().getRecipeRemainder((ItemStack) this);
