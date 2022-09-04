@@ -186,7 +186,7 @@ public abstract class SimpleRegistryMixin<T> extends Registry<T> implements Rema
 			RegistryEntry.Reference<T> oldObject = idToEntry.get(registryId.getValue());
 
 			if (oldObject != null && oldObject != object) {
-				int oldId = entryToRawId.getInt(oldObject);
+				int oldId = entryToRawId.getInt(oldObject.value());
 
 				if (oldId != id && checkDuplicateKeys) {
 					throw new RuntimeException("Attempted to register ID " + registryId + " at different raw IDs (" + oldId + ", " + id + ")! If you're trying to override an item, use .set(), not .register()!");
