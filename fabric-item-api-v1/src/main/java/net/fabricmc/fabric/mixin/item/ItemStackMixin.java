@@ -43,7 +43,7 @@ import net.fabricmc.fabric.api.item.v1.ModifyItemAttributeModifiersCallback;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 @Mixin(ItemStack.class)
-public abstract class ItemStackMixin implements FabricItemStack {
+abstract class ItemStackMixin implements FabricItemStack {
 	@Shadow public abstract Item getItem();
 
 	@Unique

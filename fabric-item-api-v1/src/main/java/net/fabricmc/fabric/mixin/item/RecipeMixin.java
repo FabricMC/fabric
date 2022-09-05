@@ -33,7 +33,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.fabricmc.fabric.impl.item.RecipeRemainderHandler;
 
 @Mixin(Recipe.class)
-public interface RecipeMixin<C extends Inventory> {
+interface RecipeMixin<C extends Inventory> {
 	@Inject(method = "getRemainder", at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/Inventory;getStack(I)Lnet/minecraft/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILHARD)
 	default void captureStack(C inventory, CallbackInfoReturnable<DefaultedList<ItemStack>> cir, DefaultedList<ItemStack> defaultedList, int i) {
 		RecipeRemainderHandler.capturedRecipeItemStack.set(inventory.getStack(i));

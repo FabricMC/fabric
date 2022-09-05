@@ -32,7 +32,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 @Mixin(AbstractFurnaceBlockEntity.class)
-public abstract class AbstractFurnaceBlockEntityMixin {
+abstract class AbstractFurnaceBlockEntityMixin {
 	@Shadow
 	protected DefaultedList<ItemStack> inventory;
 	private static DefaultedList<ItemStack> capturedInventory;

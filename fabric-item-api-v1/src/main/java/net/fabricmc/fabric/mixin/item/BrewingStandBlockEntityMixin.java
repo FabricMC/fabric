@@ -33,7 +33,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 @Mixin(BrewingStandBlockEntity.class)
-public class BrewingStandBlockEntityMixin {
+class BrewingStandBlockEntityMixin {
 	@Unique
 	private static ItemStack capturedItemStack;
 
