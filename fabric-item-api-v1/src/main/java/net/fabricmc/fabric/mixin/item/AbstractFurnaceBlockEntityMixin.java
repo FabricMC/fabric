@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.BlockState;
@@ -41,10 +42,13 @@ public abstract class AbstractFurnaceBlockEntityMixin {
 		capturedInventory = ((AbstractFurnaceBlockEntityMixin) (Object) blockEntity).inventory;
 	}
 
-	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isEmpty()Z", ordinal = 2))
-	private static boolean setStackCraftingRemainder(ItemStack stack) {
+	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isEmpty()Z"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V")))
+	private static boolean setStackCraftingRemainder(ItemStack oldStack) {
+		// We need the item stack before it gets decremented.
+		ItemStack stack = capturedInventory.get(1);
+
 		//Gets the remainder.
-		ItemStack remainder = stack.getRecipeRemainder();
+		ItemStack remainder = capturedInventory.get(1).getRecipeRemainder();
 
 		//Decrements the stack like vanilla do.
 		stack.decrement(1);
@@ -54,6 +58,6 @@ public abstract class AbstractFurnaceBlockEntityMixin {
 			capturedInventory.set(1, remainder);
 		}
 
-		return true;
+		return false;
 	}
 }
