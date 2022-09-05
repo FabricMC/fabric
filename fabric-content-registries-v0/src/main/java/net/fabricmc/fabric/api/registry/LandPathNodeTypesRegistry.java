@@ -105,4 +105,31 @@ public final class LandPathNodeTypesRegistry {
 		PathNodeTypeProvider provider = NODE_TYPES.get(state.getBlock());
 		return provider != null ? provider.getPathNodeType(state, world, pos, neighbor) : null;
 	}
+
+	/**
+	 * A functional interface that provides the {@link PathNodeType}, given the block state and position.
+	 */
+	@FunctionalInterface
+	public interface PathNodeTypeProvider {
+		/**
+		 * Gets the {@link PathNodeType} for the specified block at the specified position.
+		 *
+		 * <p>You can specify what to return if the block is a direct target of an entity path,
+		 * or a neighbor block that the entity will find in the path.
+		 *
+		 * <p>For example, for a cactus-like block you should specify {@link PathNodeType#DAMAGE_CACTUS} if the block
+		 * is a direct target ({@code neighbor == false}) to specify that an entity should not pass through or above
+		 * the block because it will cause damage, and {@link PathNodeType#DANGER_CACTUS} if the cactus will be found
+		 * as a neighbor block in the entity path ({@code neighbor == true}) to specify that the entity should not get
+		 * close to the block because is dangerous.
+		 *
+		 * @param state    Current block state.
+		 * @param world    Current world.
+		 * @param pos      Current position.
+		 * @param neighbor Specifies if the block is not a directly targeted block, but a neighbor block in the path.
+		 * @return the custom {@link PathNodeType} registered for the specified block at the specified position.
+		 */
+		@Nullable
+		PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos, boolean neighbor);
+	}
 }
