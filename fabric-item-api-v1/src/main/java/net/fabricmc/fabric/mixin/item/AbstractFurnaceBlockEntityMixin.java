@@ -42,6 +42,10 @@ abstract class AbstractFurnaceBlockEntityMixin {
 		capturedInventory = ((AbstractFurnaceBlockEntityMixin) (Object) blockEntity).inventory;
 	}
 
+	// Don't decrement the stack here.
+	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V"))
+	private static void preventDecrement(ItemStack instance, int amount) {}
+
 	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isEmpty()Z"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V")))
 	private static boolean setStackCraftingRemainder(ItemStack oldStack) {
 		// We need the item stack before it gets decremented.
