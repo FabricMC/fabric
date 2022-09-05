@@ -19,6 +19,14 @@ package net.fabricmc.fabric.api.item.v1;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+/**
+ * General-purpose Fabric-provided extensions for {@link ItemStack} subclasses.
+ *
+ * <p>Note: This interface is automatically implemented on the {@link ItemStack} class via Mixin and interface injection.
+ *
+ * <p>Note to maintainers: Functions should only be added to this interface if they are general-purpose enough,
+ * to be evaluated on a case-by-case basis. Otherwise, they are better suited for more specialized APIs.
+ */
 public interface FabricItemStack {
 	/**
 	 * Returns a leftover item stack after this item stack is consumed in a recipe.

@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.item;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -43,8 +44,8 @@ public interface RecipeMixin<C extends Inventory> {
 		return true;
 	}
 
-	@Redirect(method = "getRemainder", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/collection/DefaultedList;set(ILjava/lang/Object;)Ljava/lang/Object;"))
-	private Object getStackRemainder(DefaultedList<ItemStack> inventory, int index, Object element) {
-		return inventory.set(index, RecipeRemainderHandler.capturedRecipeItemStack.get().getRecipeRemainder());
+	@ModifyArg(method = "getRemainder", index = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/util/collection/DefaultedList;set(ILjava/lang/Object;)Ljava/lang/Object;"))
+	private Object getStackRemainder(Object oldStack) {
+		return RecipeRemainderHandler.capturedRecipeItemStack.get().getRecipeRemainder();
 	}
 }

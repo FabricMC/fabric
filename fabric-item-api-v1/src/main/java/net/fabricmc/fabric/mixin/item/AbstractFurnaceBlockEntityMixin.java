@@ -48,7 +48,7 @@ public abstract class AbstractFurnaceBlockEntityMixin {
 		ItemStack stack = capturedInventory.get(1);
 
 		//Gets the remainder.
-		ItemStack remainder = capturedInventory.get(1).getRecipeRemainder();
+		ItemStack remainder = stack.getRecipeRemainder();
 
 		//Decrements the stack like vanilla do.
 		stack.decrement(1);
