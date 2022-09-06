@@ -25,6 +25,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ToolMaterials;
 import net.minecraft.util.Hand;
 
 /**
@@ -37,12 +38,13 @@ import net.minecraft.util.Hand;
  */
 public interface FabricItem {
 	/**
-	 * When the NBT of an item stack in the main hand or off hand changes, vanilla runs an "update animation".
-	 * This function is called on the client side when the NBT or count of the stack has changed, but not the item,
-	 * and returning false cancels this animation.
+	 * When the NBT of an item stack in the main hand or off hand changes, vanilla runs an "update animation". This
+	 * function is called on the client side when the NBT or count of the stack has changed, but not the item, and
+	 * returning false cancels this animation.
 	 *
-	 * @param player   the current player; this may be safely cast to {@link net.minecraft.client.network.ClientPlayerEntity} in client-only code
-	 * @param hand     the hand; this function applies both to the main hand and the off hand
+	 * @param player the current player; this may be safely cast to
+	 *        {@link net.minecraft.client.network.ClientPlayerEntity} in client-only code
+	 * @param hand the hand; this function applies both to the main hand and the off hand
 	 * @param oldStack the previous stack, of this item
 	 * @param newStack the new stack, also of this item
 	 * @return true to run the vanilla animation, false to cancel it.
@@ -52,11 +54,10 @@ public interface FabricItem {
 	}
 
 	/**
-	 * When the NBT of the selected stack changes, block breaking progress is reset.
-	 * This function is called when the NBT of the selected stack has changed,
-	 * and returning true allows the block breaking progress to continue.
+	 * When the NBT of the selected stack changes, block breaking progress is reset. This function is called when the
+	 * NBT of the selected stack has changed, and returning true allows the block breaking progress to continue.
 	 *
-	 * @param player   the player breaking the block
+	 * @param player the player breaking the block
 	 * @param oldStack the previous stack, of this item
 	 * @param newStack the new stack, also of this item
 	 * @return true to allow continuing block breaking, false to reset the progress.
@@ -66,22 +67,26 @@ public interface FabricItem {
 	}
 
 	/**
-	 * Return the attribute modifiers to apply when this stack is worn in a living entity equipment slot.
-	 * Stack-aware version of {@link Item#getAttributeModifiers(EquipmentSlot)}.
+	 * Return the attribute modifiers to apply when this stack is worn in a living entity equipment slot. Stack-aware
+	 * version of {@link Item#getAttributeModifiers(EquipmentSlot)}.
 	 *
-	 * <p>Note that attribute modifiers are only updated when the stack changes, i.e. when {@code ItemStack.areEqual(old, new)} is false.
+	 * <p>Note that attribute modifiers are only updated when the stack changes, i.e. when
+	 * {@code ItemStack.areEqual(old, new)} is false.
 	 *
 	 * @param stack the current stack
-	 * @param slot  the equipment slot this stack is in
+	 * @param slot the equipment slot this stack is in
 	 * @return the attribute modifiers
 	 */
-	default Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
+	default Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(
+			ItemStack stack,
+			EquipmentSlot slot
+	) {
 		return ((Item) this).getAttributeModifiers(slot);
 	}
 
 	/**
-	 * Determines if mining with this item allows drops to be harvested from the specified block state.
-	 * Stack-aware version of {@link Item#isSuitableFor(BlockState)}.
+	 * Determines if mining with this item allows drops to be harvested from the specified block state. Stack-aware
+	 * version of {@link Item#isSuitableFor(BlockState)}.
 	 *
 	 * @param stack the current stack
 	 * @param state the block state of the targeted block
@@ -89,5 +94,16 @@ public interface FabricItem {
 	 */
 	default boolean isSuitableFor(ItemStack stack, BlockState state) {
 		return ((Item) this).isSuitableFor(state);
+	}
+
+	/**
+	 * Decides how "enchant-able" this item is, for example enchanting a gold tool will net you more enchants than
+	 * enchanting a diamond one. Stack-aware version of {@link Item#getEnchantability()}.
+	 *
+	 * @see ToolMaterials#getEnchantability()
+	 * @param stack the current stack
+	 */
+	default int getEnchantability(ItemStack stack) {
+		return ((Item) this).getEnchantability();
 	}
 }

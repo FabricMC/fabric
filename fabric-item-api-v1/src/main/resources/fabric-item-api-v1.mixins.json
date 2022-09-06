@@ -3,10 +3,11 @@
   "package": "net.fabricmc.fabric.mixin.item",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "ItemStackMixin",
+    "ArmorItemMixin",
+    "EnchantmentHelperMixin",
     "ItemMixin",
-    "LivingEntityMixin",
-    "ArmorItemMixin"
+    "ItemStackMixin",
+    "LivingEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
