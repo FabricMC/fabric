@@ -19,5 +19,8 @@
     "client": [
       "net.fabricmc.fabric.test.item.client.TooltipTests"
     ]
-  }
+  },
+  "mixins": [
+    "fabric-item-api-v1-testmod.mixins.json"
+  ]
 }

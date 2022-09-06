@@ -17,52 +17,35 @@
 package net.fabricmc.fabric.mixin.item;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 @Mixin(AbstractFurnaceBlockEntity.class)
 abstract class AbstractFurnaceBlockEntityMixin {
-	@Shadow
-	protected DefaultedList<ItemStack> inventory;
-	private static DefaultedList<ItemStack> capturedInventory;
+	@Unique
+	private static ItemStack remainder;
 
-	@Inject(method = "tick", at = @At("HEAD"))
-	private static void getStackCraftingRemainder(World world, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity blockEntity, CallbackInfo ci) {
-		capturedInventory = ((AbstractFurnaceBlockEntityMixin) (Object) blockEntity).inventory;
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private static void getRemainder(World world, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity blockEntity, CallbackInfo ci, boolean bl, boolean bl2, ItemStack stack, Recipe recipe, int i, Item item) {
+		//Gets the remainder before the decrement.
+		remainder = stack.getRecipeRemainder();
 	}
 
-	// Don't decrement the stack here.
-	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V"))
-	private static void preventDecrement(ItemStack instance, int amount) {
-	}
-
-	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isEmpty()Z"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V")))
-	private static boolean setStackCraftingRemainder(ItemStack oldStack) {
-		// We need the item stack before it gets decremented.
-		ItemStack stack = capturedInventory.get(1);
-
-		//Gets the remainder.
-		ItemStack remainder = stack.getRecipeRemainder();
-
-		//Decrements the stack like vanilla do.
-		stack.decrement(1);
-
-		//Insert the remainder if the stack is empty.
-		if (stack.isEmpty()) {
-			capturedInventory.set(1, remainder);
-		}
-
-		return false;
+	@ModifyArg(method = "tick", index = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/util/collection/DefaultedList;set(ILjava/lang/Object;)Ljava/lang/Object;"))
+	private static Object setRemainder(Object oldStack) {
+		//Puts the remainder into the inventory.
+		return remainder;
 	}
 }
