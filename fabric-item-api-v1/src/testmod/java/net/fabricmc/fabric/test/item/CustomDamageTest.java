@@ -16,10 +16,12 @@
 
 package net.fabricmc.fabric.test.item;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ToolMaterials;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.potion.Potions;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -27,13 +29,10 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
+import net.fabricmc.fabric.test.item.mixin.BrewingRecipeRegistryInvoker;
 
 public class CustomDamageTest implements ModInitializer {
-	@Override
-	public void onInitialize() {
-		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "weird_pickaxe"), new WeirdPick());
-	}
-
 	public static final CustomDamageHandler WEIRD_DAMAGE_HANDLER = (stack, amount, entity, breakCallback) -> {
 		// If sneaking, apply all damage to vanilla. Otherwise, increment a tag on the stack by one and don't apply any damage
 		if (entity.isSneaking()) {
@@ -44,6 +43,17 @@ public class CustomDamageTest implements ModInitializer {
 			return 0;
 		}
 	};
+
+	@Override
+	public void onInitialize() {
+		Item item = Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "weird_pickaxe"), new WeirdPick());
+
+		//Weird pick can be used as fuel and will burn until is fully damaged.
+		FuelRegistry.INSTANCE.add(item, 200);
+
+		//Weird pick can be used to craft the luck potion.
+		BrewingRecipeRegistryInvoker.invokeRegisterPotionType(Potions.AWKWARD, item, Potions.LUCK);
+	}
 
 	public static class WeirdPick extends PickaxeItem {
 		protected WeirdPick() {
