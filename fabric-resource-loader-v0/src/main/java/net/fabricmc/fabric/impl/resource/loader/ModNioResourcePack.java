@@ -42,7 +42,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.resource.AbstractFileResourcePack;
+import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.metadata.ResourceMetadataReader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 
@@ -51,9 +53,9 @@ import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
-public class ModNioResourcePack extends AbstractFileResourcePack implements ModResourcePack {
+public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModNioResourcePack.class);
-	private static final Pattern RESOURCE_PACK_PATH = Pattern.compile("[a-z0-9-_.]+");
+	private static final Pattern RESOURCE_PACK_PATH = Pattern.compile("[a-z\\d-_.]+");
 	private static final FileSystem DEFAULT_FS = FileSystems.getDefault();
 
 	private final Identifier id;
@@ -94,8 +96,6 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	}
 
 	private ModNioResourcePack(Identifier id, String name, ModMetadata modInfo, List<Path> paths, ResourceType type, AutoCloseable closer, ResourcePackActivationType activationType) {
-		super(null);
-
 		this.id = id;
 		this.name = name;
 		this.modInfo = modInfo;
@@ -183,7 +183,6 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		return !namespaces.get(type).contains(filename.substring(prefixLen, nsEnd));
 	}
 
-	@Override
 	protected InputStream openFile(String filename) throws IOException {
 		InputStream stream;
 
@@ -204,13 +203,17 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	}
 
 	@Override
-	protected boolean containsFile(String filename) {
-		if (ModResourcePackUtil.containsDefault(modInfo, filename)) {
-			return true;
+	public InputStream openRoot(String fileName) throws IOException {
+		if (!fileName.contains("/") && !fileName.contains("\\")) {
+			return this.openFile(fileName);
+		} else {
+			throw new IllegalArgumentException("Root resources can only be filenames, not paths (no / allowed!)");
 		}
+	}
 
-		Path path = getPath(filename);
-		return path != null && Files.isRegularFile(path);
+	@Override
+	public InputStream open(ResourceType type, Identifier id) throws IOException {
+		return openFile(getFilename(type, id));
 	}
 
 	@Override
@@ -253,8 +256,27 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	}
 
 	@Override
+	public boolean contains(ResourceType type, Identifier id) {
+		String filename = getFilename(type, id);
+
+		if (ModResourcePackUtil.containsDefault(modInfo, filename)) {
+			return true;
+		}
+
+		Path path = getPath(filename);
+		return path != null && Files.isRegularFile(path);
+	}
+
+	@Override
 	public Set<String> getNamespaces(ResourceType type) {
 		return namespaces.getOrDefault(type, Collections.emptySet());
+	}
+
+	@Override
+	public <T> T parseMetadata(ResourceMetadataReader<T> metaReader) throws IOException {
+		try (InputStream is = openRoot("pack.mcmeta")) {
+			return AbstractFileResourcePack.parseMetadata(metaReader, is);
+		}
 	}
 
 	@Override
@@ -289,5 +311,9 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	private static boolean exists(Path path) {
 		// NIO Files.exists is notoriously slow when checking the file system
 		return path.getFileSystem() == DEFAULT_FS ? path.toFile().exists() : Files.exists(path);
+	}
+
+	private static String getFilename(ResourceType type, Identifier id) {
+		return type.getDirectory() + "/" + id.getNamespace() + "/" + id.getPath();
 	}
 }
