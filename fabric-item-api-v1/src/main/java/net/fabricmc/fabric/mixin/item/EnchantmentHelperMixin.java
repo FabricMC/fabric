@@ -1,18 +1,16 @@
 package net.fabricmc.fabric.mixin.item;
 
-import net.minecraft.enchantment.EnchantmentHelper;
-
-import net.minecraft.item.Item;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.random.Random;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.random.Random;
+
 /**
- * Implements stack-aware item enchantability
+ * Implements stack-aware item enchantability.
  */
 @Mixin(EnchantmentHelper.class)
 public class EnchantmentHelperMixin {
