@@ -55,7 +55,7 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 
 public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModNioResourcePack.class);
-	private static final Pattern RESOURCE_PACK_PATH = Pattern.compile("[a-z\\d-_.]+");
+	private static final Pattern RESOURCE_PACK_PATH = Pattern.compile("[a-z0-9-_.]+");
 	private static final FileSystem DEFAULT_FS = FileSystems.getDefault();
 
 	private final Identifier id;
