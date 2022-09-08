@@ -185,7 +185,7 @@ public abstract class SimpleRegistryMixin<T> extends Registry<T> implements Rema
 		} else {
 			RegistryEntry.Reference<T> oldObject = idToEntry.get(registryId.getValue());
 
-			if (oldObject != null && oldObject != object) {
+			if (oldObject != null && oldObject.value() != null && oldObject.value() != object) {
 				int oldId = entryToRawId.getInt(oldObject.value());
 
 				if (oldId != id && checkDuplicateKeys) {
