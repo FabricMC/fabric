@@ -45,8 +45,8 @@ public abstract class SingleItemStorage extends SingleVariantStorage<ItemVariant
 	 * Simple implementation of reading from NBT, to match what is written by {@link #writeNbt}.
 	 * Other formats are allowed, this is just a suggestion.
 	 */
-	public void readNbt(NbtCompound compound) {
-		variant = ItemVariant.fromNbt(compound.getCompound("variant"));
-		amount = compound.getLong("amount");
+	public void readNbt(NbtCompound nbt) {
+		variant = ItemVariant.fromNbt(nbt.getCompound("variant"));
+		amount = nbt.getLong("amount");
 	}
 }

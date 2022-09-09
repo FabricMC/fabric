@@ -73,10 +73,10 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 	/**
 	 * Simple implementation of writing to NBT. Other formats are allowed, this is just a convenient suggestion.
 	 */
-	// reading from NBT is not provided because it would need to call the static FluidVariant/ItemVariant.fromNbt
-	public void writeNbt(NbtCompound compound) {
-		compound.put("variant", variant.toNbt());
-		compound.putLong("amount", amount);
+	// Reading from NBT is not provided because it would need to call the static FluidVariant/ItemVariant.fromNbt
+	public void writeNbt(NbtCompound nbt) {
+		nbt.put("variant", variant.toNbt());
+		nbt.putLong("amount", amount);
 	}
 
 	@Override
