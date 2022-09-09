@@ -173,7 +173,7 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	@Deprecated(forRemoval = true)
 	@Nullable
 	default StorageView<T> exactView(TransactionContext transaction, T resource) {
-		return null;
+		return exactView(resource);
 	}
 
 	/**

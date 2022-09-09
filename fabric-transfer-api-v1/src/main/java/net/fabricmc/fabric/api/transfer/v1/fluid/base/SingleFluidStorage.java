@@ -67,6 +67,10 @@ public abstract class SingleFluidStorage extends SingleVariantStorage<FluidVaria
 		return FluidVariant.blank();
 	}
 
+	/**
+	 * Simple implementation of reading from NBT, to match what is written by {@link #writeNbt}.
+	 * Other formats are allowed, this is just a suggestion.
+	 */
 	public void readNbt(NbtCompound compound) {
 		variant = FluidVariant.fromNbt(compound.getCompound("variant"));
 		amount = compound.getLong("amount");
