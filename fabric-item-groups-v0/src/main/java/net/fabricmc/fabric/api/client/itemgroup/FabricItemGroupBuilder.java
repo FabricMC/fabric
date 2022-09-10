@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.itemgroup;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -24,8 +25,8 @@ import java.util.function.Supplier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
 
 import net.fabricmc.fabric.impl.item.group.ItemGroupExtensions;
 
@@ -65,11 +66,12 @@ import net.fabricmc.fabric.impl.item.group.ItemGroupExtensions;
  * items to your item group.</p>
  */
 public final class FabricItemGroupBuilder {
-	private Identifier identifier;
+	private final Identifier identifier;
 	private Supplier<ItemStack> stackSupplier = () -> ItemStack.EMPTY;
 	private BiConsumer<List<ItemStack>, ItemGroup> stacksForDisplay;
 
 	private FabricItemGroupBuilder(Identifier identifier) {
+		Objects.requireNonNull(identifier, "identifier cannot be null");
 		this.identifier = identifier;
 	}
 
@@ -90,6 +92,7 @@ public final class FabricItemGroupBuilder {
 	 * @return this builder
 	 */
 	public FabricItemGroupBuilder icon(Supplier<ItemStack> stackSupplier) {
+		Objects.requireNonNull(stackSupplier, "icon cannot be null");
 		this.stackSupplier = stackSupplier;
 		return this;
 	}
@@ -113,6 +116,8 @@ public final class FabricItemGroupBuilder {
 	 * item groups} in addition to this, as that adds the item stack to the search result.
 	 * See the <a href="#search">creative inventory searching</a> section for details.
 	 *
+	 * <p>Calling this multiple times overwrites the previously set stacks.</p>
+	 *
 	 * @param stacksForDisplay a callback that adds item stacks to the passed list
 	 * @return this builder
 	 */
@@ -130,6 +135,8 @@ public final class FabricItemGroupBuilder {
 	 * <p>Compared to the other overload, this one also passes the new ItemGroup.
 	 * This allows you to call {@link Item#appendStacks} yourself if you want.</p>
 	 *
+	 * <p>Calling this multiple times overwrites the previously set stacks.</p>
+	 *
 	 * @param stacksForDisplay a callback that adds item stacks to the passed list
 	 * @return this builder
 	 */
@@ -145,7 +152,7 @@ public final class FabricItemGroupBuilder {
 	 *
 	 * @param identifier    the id of the ItemGroup, to be used as the translation key
 	 * @param stackSupplier the supplier that returns the item stack to be used as an icon
-	 * @return An instance of the built ItemGroup
+	 * @return an instance of the built ItemGroup
 	 */
 	public static ItemGroup build(Identifier identifier, Supplier<ItemStack> stackSupplier) {
 		return new FabricItemGroupBuilder(identifier).icon(stackSupplier).build();
@@ -154,7 +161,7 @@ public final class FabricItemGroupBuilder {
 	/**
 	 * Creates an instance of the ItemGroup.
 	 *
-	 * @return An instance of the built ItemGroup
+	 * @return an instance of the built ItemGroup
 	 */
 	public ItemGroup build() {
 		((ItemGroupExtensions) ItemGroup.BUILDING_BLOCKS).fabric_expandArray();
