@@ -29,6 +29,41 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.item.group.ItemGroupExtensions;
 
+/**
+ * A builder for {@link ItemGroup}. Item groups are used to group items in the creative
+ * inventory.
+ *
+ * <p>Example of creating an empty group (recommended for modded item-only group):</p>
+ * <pre><code>
+ * MY_GROUP = FabricItemGroupBuilder.build(
+ * 	new Identifier("my_mod", "example_group"),
+ * 	() -> new ItemStack(MY_ITEM);
+ * );
+ * // Use item settings to assign a group. Otherwise, it won't appear on creative inventory
+ * // search result.
+ * MY_ITEM = new Item(new Item.Settings().group(MY_GROUP));
+ * </code></pre>
+ *
+ * <p>Example of creating a group with vanilla item stacks:</p>
+ * <pre><code>
+ * ItemGroup myGroup = FabricItemGroupBuilder.create(new Identifier("my_mod", "group_2"))
+ * 	.icon(Items.STONE::getDefaultStack)
+ * 	.appendItems((stacks) -> {
+ * 	   stacks.add(new ItemStack(Items.STONE));
+ * 	   stacks.add(new ItemStack(Items.COBBLESTONE));
+ * 	})
+ * 	.build();
+ * </code></pre>
+ *
+ * <h2 id="search">Creative inventory searching</h2>
+ * <p>Creative inventory search is implemented as a special item group. Adding items with
+ * the builder by default does not add them to the search result; to make the item searchable,
+ * set the item group via {@link Item.Settings#group(ItemGroup)} as well. If there are
+ * multiple searchable item stacks of the item (such as colored variants or ones with
+ * different NBT), override {@link Item#appendStacks(ItemGroup, DefaultedList)} on your
+ * item as well. This should be called by {@link #appendItems(BiConsumer)} to actually add
+ * items to your item group.</p>
+ */
 public final class FabricItemGroupBuilder {
 	private Identifier identifier;
 	private Supplier<ItemStack> stackSupplier = () -> ItemStack.EMPTY;
@@ -39,20 +74,20 @@ public final class FabricItemGroupBuilder {
 	}
 
 	/**
-	 * Create a new Item Group Builder.
+	 * Creates a new item group builder.
 	 *
-	 * @param identifier the id will become the name of the ItemGroup and will be used for the translation key
-	 * @return a FabricItemGroupBuilder
+	 * @param identifier the id of the ItemGroup, to be used as the translation key
+	 * @return a new builder
 	 */
 	public static FabricItemGroupBuilder create(Identifier identifier) {
 		return new FabricItemGroupBuilder(identifier);
 	}
 
 	/**
-	 * This is used to add an icon to to the item group.
+	 * Sets an icon for the group. This is displayed on the creative inventory tab.
 	 *
-	 * @param stackSupplier the supplier should return the item stack that you wish to show on the tab
-	 * @return a reference to the FabricItemGroupBuilder
+	 * @param stackSupplier the supplier that returns the item stack to be used as an icon
+	 * @return this builder
 	 */
 	public FabricItemGroupBuilder icon(Supplier<ItemStack> stackSupplier) {
 		this.stackSupplier = stackSupplier;
@@ -72,23 +107,31 @@ public final class FabricItemGroupBuilder {
 	}
 
 	/**
-	 * Set the item stacks of this item group, by having the consumer add them to the passed list.
-	 * This bypasses {@link Item#appendStacks}. If you want to append stacks from your items, consider using {@linkplain #appendItems(BiConsumer) the other overload}.
+	 * Sets the item stacks of this item group, by having the consumer add them to the passed list.
+	 * This bypasses {@link Item#appendStacks}, and by default, does not append the stack to the search result.
+	 * To add modded items, consider setting the group via {@linkplain Item.Settings#group(ItemGroup)
+	 * item groups} in addition to this, as that adds the item stack to the search result.
+	 * See the <a href="#search">creative inventory searching</a> section for details.
 	 *
-	 * @param stacksForDisplay Add ItemStack's to this list to show in the ItemGroup
-	 * @return a reference to the FabricItemGroupBuilder
+	 * @param stacksForDisplay a callback that adds item stacks to the passed list
+	 * @return this builder
 	 */
 	public FabricItemGroupBuilder appendItems(Consumer<List<ItemStack>> stacksForDisplay) {
 		return appendItems((itemStacks, itemGroup) -> stacksForDisplay.accept(itemStacks));
 	}
 
 	/**
-	 * Set the item stacks of this item group, by having the consumer add them to the passed list.
-	 * Compared to the other overload, this one also passes the new ItemGroup.
-	 * This allows you to call {@link Item#appendStacks} yourself if you want.
+	 * Sets the item stacks of this item group, by having the consumer add them to the passed list.
+	 * This bypasses {@link Item#appendStacks}, and by default, does not append the stack to the search result.
+	 * To add modded items, consider setting the group via {@linkplain Item.Settings#group(ItemGroup)
+	 * item groups} in addition to this, as that adds the item stack to the search result.
+	 * See the <a href="#search">creative inventory searching</a> section for details.
 	 *
-	 * @param stacksForDisplay Add ItemStack's to this list to show in the ItemGroup, and check if the item is in the ItemGroup
-	 * @return a reference to the FabricItemGroupBuilder
+	 * <p>Compared to the other overload, this one also passes the new ItemGroup.
+	 * This allows you to call {@link Item#appendStacks} yourself if you want.</p>
+	 *
+	 * @param stacksForDisplay a callback that adds item stacks to the passed list
+	 * @return this builder
 	 */
 	public FabricItemGroupBuilder appendItems(BiConsumer<List<ItemStack>, ItemGroup> stacksForDisplay) {
 		this.stacksForDisplay = stacksForDisplay;
@@ -96,10 +139,12 @@ public final class FabricItemGroupBuilder {
 	}
 
 	/**
-	 * This is a single method that makes creating an ItemGroup with an icon one call.
+	 * This is a single method that makes creating an empty ItemGroup with an icon one call.
+	 * Items should be added using {@linkplain Item.Settings#group(ItemGroup) item settings}.
+	 * Useful for modded item-only group.
 	 *
-	 * @param identifier    the id will become the name of the ItemGroup and will be used for the translation key
-	 * @param stackSupplier the supplier should return the item stack that you wish to show on the tab
+	 * @param identifier    the id of the ItemGroup, to be used as the translation key
+	 * @param stackSupplier the supplier that returns the item stack to be used as an icon
 	 * @return An instance of the built ItemGroup
 	 */
 	public static ItemGroup build(Identifier identifier, Supplier<ItemStack> stackSupplier) {
@@ -107,7 +152,7 @@ public final class FabricItemGroupBuilder {
 	}
 
 	/**
-	 * Create an instance of the ItemGroup.
+	 * Creates an instance of the ItemGroup.
 	 *
 	 * @return An instance of the built ItemGroup
 	 */
