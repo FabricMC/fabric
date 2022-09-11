@@ -153,8 +153,8 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 		} else {
 			RegistryEntry.Reference<T> oldObject = idToEntry.get(registryId.getValue());
 
-			if (oldObject != null && oldObject != object) {
-				int oldId = entryToRawId.getInt(oldObject);
+			if (oldObject != null && oldObject.value() != null && oldObject.value() != object) {
+				int oldId = entryToRawId.getInt(oldObject.value());
 
 				if (oldId != id && checkDuplicateKeys) {
 					throw new RuntimeException("Attempted to register ID " + registryId + " at different raw IDs (" + oldId + ", " + id + ")! If you're trying to override an item, use .set(), not .register()!");
