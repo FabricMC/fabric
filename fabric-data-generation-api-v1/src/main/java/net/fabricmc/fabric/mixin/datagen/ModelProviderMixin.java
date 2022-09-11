@@ -42,7 +42,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.assets.FabricModelProvider;
 
 @Mixin(ModelProvider.class)
 public class ModelProviderMixin {

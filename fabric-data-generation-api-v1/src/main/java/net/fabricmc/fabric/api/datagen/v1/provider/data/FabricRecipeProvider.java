@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.datagen.v1.provider;
+package net.fabricmc.fabric.api.datagen.v1.provider.data;
 
 import java.util.Set;
 import java.util.function.Consumer;

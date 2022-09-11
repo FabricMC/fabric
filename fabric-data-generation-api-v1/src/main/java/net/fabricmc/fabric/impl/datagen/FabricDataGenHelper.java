@@ -39,7 +39,7 @@ import net.minecraft.util.registry.SimpleRegistry;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider.DynamicRegistryTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.data.FabricTagProvider.DynamicRegistryTagProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;

@@ -50,12 +50,12 @@ import net.minecraft.world.biome.BiomeKeys;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.assets.FabricAdvancementProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.data.FabricBlockLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.assets.FabricModelProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.data.FabricRecipeProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.data.FabricTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.data.SimpleFabricLootTableProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 

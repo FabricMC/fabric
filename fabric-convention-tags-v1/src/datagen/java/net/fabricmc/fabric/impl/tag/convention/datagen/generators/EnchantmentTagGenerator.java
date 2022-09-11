@@ -21,7 +21,7 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.data.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalEnchantmentTags;
 
 public class EnchantmentTagGenerator extends FabricTagProvider<Enchantment> {

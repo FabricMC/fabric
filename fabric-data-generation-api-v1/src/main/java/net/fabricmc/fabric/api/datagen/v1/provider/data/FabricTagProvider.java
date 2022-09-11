@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.datagen.v1.provider;
+package net.fabricmc.fabric.api.datagen.v1.provider.data;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -28,11 +28,11 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.TagBuilder;
 import net.minecraft.tag.EntityTypeTags;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.tag.GameEventTags;
 import net.minecraft.tag.ItemTags;
+import net.minecraft.tag.TagBuilder;
 import net.minecraft.tag.TagEntry;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
