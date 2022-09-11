@@ -134,13 +134,15 @@ public interface TranslationConsumer {
 	 * @param existingLanguageFile The path to the existing language file.
 	 * @throws IOException If loading the language file failed.
 	 */
-	default void add(Path existingLanguageFile) throws IOException {
-		Gson gson = new Gson();
+	default void add(Path existingLanguageFile) {
+		try (Reader reader = Files.newBufferedReader(existingLanguageFile)) {
+			JsonObject translations = JsonParser.parseReader(reader).getAsJsonObject();
 
-		JsonObject langEntryJson = gson.fromJson(Files.readString(existingLanguageFile), JsonObject.class);
-
-		for (Map.Entry<String, JsonElement> stringJsonElementEntry : langEntryJson.entrySet()) {
-			add(stringJsonElementEntry.getKey(), stringJsonElementEntry.getValue().getAsString());
+			for (String key : translations.keySet()) {
+				add(key, translations.get(key).getAsString());
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 }
