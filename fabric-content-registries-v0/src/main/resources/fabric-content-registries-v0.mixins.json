@@ -9,7 +9,6 @@
     "GiveGiftsToHeroTaskAccessor",
     "HoeItemAccessor",
     "HoneycombItemMixin",
-    "LandPathNodeMakerMixin",
     "AbstractFurnaceBlockEntityMixin",
     "FireBlockMixin",
     "OxidizableMixin",
