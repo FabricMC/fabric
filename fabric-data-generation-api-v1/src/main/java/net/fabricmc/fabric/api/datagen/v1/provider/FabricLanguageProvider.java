@@ -23,6 +23,7 @@ import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
 
+import net.fabricmc.fabric.api.datagen.v1.provider.consumers.TranslationConsumer;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 

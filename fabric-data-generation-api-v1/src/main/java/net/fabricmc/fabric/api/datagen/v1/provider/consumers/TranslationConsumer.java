@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.datagen.v1.provider;
+package net.fabricmc.fabric.api.datagen.v1.provider.consumers;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
