@@ -26,11 +26,19 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 
 public class FluidChuteBlock extends Block implements BlockEntityProvider {
 	public FluidChuteBlock() {
@@ -54,5 +62,21 @@ public class FluidChuteBlock extends Block implements BlockEntityProvider {
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		return SHAPE;
+	}
+
+	@Override
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+		if (!world.isClient() && world.getBlockEntity(pos) instanceof FluidChuteBlockEntity chute) {
+			if (!FluidStorageUtil.interactWithFluidStorage(chute.storage, player, hand)) {
+				player.sendMessage(
+						Text.literal("Fluid: ")
+								.append(FluidVariantAttributes.getName(chute.storage.variant))
+								.append(", amount: " + chute.storage.amount),
+						false
+				);
+			}
+		}
+
+		return ActionResult.success(world.isClient());
 	}
 }

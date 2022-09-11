@@ -21,12 +21,15 @@ import java.util.Optional;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
@@ -42,6 +45,7 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 public final class FluidVariantAttributes {
 	private static final ApiProviderMap<Fluid, FluidVariantAttributeHandler> HANDLERS = ApiProviderMap.create();
 	private static final FluidVariantAttributeHandler DEFAULT_HANDLER = new FluidVariantAttributeHandler() { };
+	private static volatile boolean coloredVanillaFluidNames = false;
 
 	private FluidVariantAttributes() {
 	}
@@ -53,6 +57,13 @@ public final class FluidVariantAttributes {
 		if (HANDLERS.putIfAbsent(fluid, handler) != null) {
 			throw new IllegalArgumentException("Duplicate handler registration for fluid " + fluid);
 		}
+	}
+
+	/**
+	 * Enable blue- and red-colored names for water and lava respectively.
+	 */
+	public static void enableColoredVanillaFluidNames() {
+		coloredVanillaFluidNames = true;
 	}
 
 	/**
@@ -158,11 +169,29 @@ public final class FluidVariantAttributes {
 	static {
 		register(Fluids.WATER, new FluidVariantAttributeHandler() {
 			@Override
+			public Text getName(FluidVariant fluidVariant) {
+				if (coloredVanillaFluidNames) {
+					return Blocks.WATER.getName().setStyle(Style.EMPTY.withColor(Formatting.BLUE));
+				} else {
+					return FluidVariantAttributeHandler.super.getName(fluidVariant);
+				}
+			}
+
+			@Override
 			public Optional<SoundEvent> getEmptySound(FluidVariant variant) {
 				return Optional.of(SoundEvents.ITEM_BUCKET_EMPTY);
 			}
 		});
 		register(Fluids.LAVA, new FluidVariantAttributeHandler() {
+			@Override
+			public Text getName(FluidVariant fluidVariant) {
+				if (coloredVanillaFluidNames) {
+					return Blocks.LAVA.getName().setStyle(Style.EMPTY.withColor(Formatting.RED));
+				} else {
+					return FluidVariantAttributeHandler.super.getName(fluidVariant);
+				}
+			}
+
 			@Override
 			public Optional<SoundEvent> getFillSound(FluidVariant variant) {
 				return Optional.of(SoundEvents.ITEM_BUCKET_FILL_LAVA);

@@ -93,6 +93,14 @@ public interface TransferVariant<O> {
 	}
 
 	/**
+	 * Return a copy of the tag of this variant, or a new compound if this variant doesn't have a tag.
+	 */
+	default NbtCompound copyOrCreateNbt() {
+		NbtCompound nbt = getNbt();
+		return nbt == null ? new NbtCompound() : nbt.copy();
+	}
+
+	/**
 	 * Save this variant into an NBT compound tag. Subinterfaces should have a matching static {@code fromNbt}.
 	 *
 	 * <p>Note: This is safe to use for persisting data as objects are saved using their full Identifier.
