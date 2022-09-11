@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.api.datagen.v1.provider.assets;
+package net.fabricmc.fabric.api.datagen.v1.provider;
 
 import java.io.IOException;
 import java.util.function.BiConsumer;

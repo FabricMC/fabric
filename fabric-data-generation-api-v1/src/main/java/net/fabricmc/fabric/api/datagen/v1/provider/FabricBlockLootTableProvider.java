@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.datagen.v1.provider.data;
+package net.fabricmc.fabric.api.datagen.v1.provider;
 
 import java.util.HashSet;
 import java.util.Map;
