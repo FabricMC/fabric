@@ -324,7 +324,7 @@ public interface BiomeModificationContext {
 		 * <p>This method is intended for use with the placed features found in
 		 * classes such as {@link net.minecraft.world.gen.feature.OrePlacedFeatures}.
 		 *
-		 * <p><b>NOTE:</b> In case the placed feature is overridden in a data pack, the data packs version
+		 * <p><b>NOTE:</b> In case the placed feature is overridden in a data pack, the data pack's version
 		 * will be used.
 		 */
 		default void addBuiltInFeature(GenerationStep.Feature step, PlacedFeature placedFeature) {
