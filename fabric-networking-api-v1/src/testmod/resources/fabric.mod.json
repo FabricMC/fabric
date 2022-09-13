@@ -13,6 +13,7 @@
       "net.fabricmc.fabric.test.networking.channeltest.NetworkingChannelTest",
       "net.fabricmc.fabric.test.networking.keybindreciever.NetworkingKeybindPacketTest",
       "net.fabricmc.fabric.test.networking.login.NetworkingLoginQueryTest",
+      "net.fabricmc.fabric.test.networking.packetsplitter.PacketSplitterTest",
       "net.fabricmc.fabric.test.networking.play.NetworkingPlayPacketTest"
     ],
     "client": [

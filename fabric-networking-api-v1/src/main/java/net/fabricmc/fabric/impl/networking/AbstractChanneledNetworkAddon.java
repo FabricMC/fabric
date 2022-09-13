@@ -65,7 +65,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 
 	public abstract void lateInit();
 
-	protected void registerPendingChannels(ChannelInfoHolder holder) {
+	protected void registerPendingChannels(ClientConnectionExtensions holder) {
 		final Collection<Identifier> pending = holder.getPendingChannelsNames();
 
 		if (!pending.isEmpty()) {

@@ -5,6 +5,7 @@
   "mixins": [
     "ClientConnectionMixin",
     "EntityTrackerEntryMixin",
+    "PacketEncoderMixin",
     "PlayerManagerMixin",
     "ServerLoginNetworkHandlerMixin",
     "ServerPlayNetworkHandlerMixin",

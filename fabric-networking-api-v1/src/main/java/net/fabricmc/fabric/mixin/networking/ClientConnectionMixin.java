@@ -42,14 +42,16 @@ import net.minecraft.network.listener.PacketListener;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
+import net.fabricmc.fabric.impl.networking.ClientConnectionExtensions;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
 import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
+import net.fabricmc.fabric.impl.networking.vanilla.PacketMerger;
+import net.fabricmc.fabric.impl.networking.vanilla.PacketSplitter;
 
 @Mixin(ClientConnection.class)
-abstract class ClientConnectionMixin implements ChannelInfoHolder {
+abstract class ClientConnectionMixin implements ClientConnectionExtensions {
 	@Shadow
 	private PacketListener packetListener;
 
@@ -62,9 +64,13 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 	@Unique
 	private Collection<Identifier> playChannels;
 
+	@Unique
+	private PacketMerger packetMerger;
+
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddedFields(NetworkSide side, CallbackInfo ci) {
 		this.playChannels = Collections.newSetFromMap(new ConcurrentHashMap<>());
+		this.packetMerger = new PacketMerger((ClientConnection) (Object) this);
 	}
 
 	// Must be fully qualified due to mixin not working in production without it
@@ -103,8 +109,18 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 		}
 	}
 
+	@Inject(method = "channelActive", at = @At("HEAD"))
+	private void addSplitter(ChannelHandlerContext context, CallbackInfo ci) {
+		context.channel().pipeline().addBefore("packet_handler", PacketSplitter.ID, new PacketSplitter(context.channel().pipeline().get("encoder"), (ClientConnection) (Object) this));
+	}
+
 	@Override
 	public Collection<Identifier> getPendingChannelsNames() {
 		return this.playChannels;
+	}
+
+	@Override
+	public PacketMerger getPacketMerger() {
+		return this.packetMerger;
 	}
 }

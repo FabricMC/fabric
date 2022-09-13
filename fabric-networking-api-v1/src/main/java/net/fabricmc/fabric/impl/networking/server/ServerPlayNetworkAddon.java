@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.networking.v1.S2CPlayChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
-import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
+import net.fabricmc.fabric.impl.networking.ClientConnectionExtensions;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.CustomPayloadC2SPacketAccessor;
 
@@ -46,7 +46,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		this.server = server;
 
 		// Must register pending channels via lateinit
-		this.registerPendingChannels((ChannelInfoHolder) this.connection);
+		this.registerPendingChannels((ClientConnectionExtensions) this.connection);
 
 		// Register global receivers and attach to session
 		this.receiver.startSession(this);

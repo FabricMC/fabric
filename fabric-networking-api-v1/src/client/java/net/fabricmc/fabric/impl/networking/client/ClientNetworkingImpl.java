@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
+import net.fabricmc.fabric.impl.networking.ClientConnectionExtensions;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
@@ -123,7 +123,7 @@ public final class ClientNetworkingImpl {
 				ids.add(buf.readIdentifier());
 			}
 
-			((ChannelInfoHolder) handler.getConnection()).getPendingChannelsNames().addAll(ids);
+			((ClientConnectionExtensions) handler.getConnection()).getPendingChannelsNames().addAll(ids);
 			NetworkingImpl.LOGGER.debug("Received accepted channels from the server");
 
 			PacketByteBuf response = PacketByteBufs.create();
@@ -137,5 +137,8 @@ public final class ClientNetworkingImpl {
 			NetworkingImpl.LOGGER.debug("Sent accepted channels to the server");
 			return CompletableFuture.completedFuture(response);
 		});
+
+		ClientPlayNetworking.registerGlobalReceiver(NetworkingImpl.SPLIT_CHANNEL, (client, handler, buf, responseSender) ->
+				((ClientConnectionExtensions) handler.getConnection()).getPacketMerger().handle(buf));
 	}
 }

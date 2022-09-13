@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
@@ -47,6 +47,8 @@ public final class NetworkingImpl {
 	 * Dynamic registration of supported channels is still allowed using {@link NetworkingImpl#REGISTER_CHANNEL} and {@link NetworkingImpl#UNREGISTER_CHANNEL}.
 	 */
 	public static final Identifier EARLY_REGISTRATION_CHANNEL = new Identifier(MOD_ID, "early_registration");
+
+	public static final Identifier SPLIT_CHANNEL = new Identifier(MOD_ID, "split");
 
 	public static void init() {
 		// Login setup
@@ -77,9 +79,12 @@ public final class NetworkingImpl {
 				ids.add(buf.readIdentifier());
 			}
 
-			((ChannelInfoHolder) handler.getConnection()).getPendingChannelsNames().addAll(ids);
+			((ClientConnectionExtensions) handler.getConnection()).getPendingChannelsNames().addAll(ids);
 			NetworkingImpl.LOGGER.debug("Received accepted channels from the client for \"{}\"", handler.getConnectionInfo());
 		});
+
+		ServerPlayNetworking.registerGlobalReceiver(SPLIT_CHANNEL, (server, player, handler, buf, responseSender) ->
+				((ClientConnectionExtensions) handler.connection).getPacketMerger().handle(buf));
 	}
 
 	public static boolean isReservedPlayChannel(Identifier channelName) {

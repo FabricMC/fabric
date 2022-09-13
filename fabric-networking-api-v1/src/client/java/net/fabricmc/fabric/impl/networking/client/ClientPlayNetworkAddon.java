@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
-import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
+import net.fabricmc.fabric.impl.networking.ClientConnectionExtensions;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 
 @Environment(EnvType.CLIENT)
@@ -48,7 +48,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		this.client = client;
 
 		// Must register pending channels via lateinit
-		this.registerPendingChannels((ChannelInfoHolder) this.connection);
+		this.registerPendingChannels((ClientConnectionExtensions) this.connection);
 
 		// Register global receivers and attach to session
 		this.receiver.startSession(this);

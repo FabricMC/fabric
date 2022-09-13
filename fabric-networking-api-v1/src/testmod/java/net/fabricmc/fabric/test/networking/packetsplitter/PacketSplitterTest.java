@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.networking;
+package net.fabricmc.fabric.test.networking.packetsplitter;
 
-import java.util.Collection;
+import net.minecraft.util.registry.Registry;
 
-import net.minecraft.util.Identifier;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
-public interface ChannelInfoHolder {
-	/**
-	 * @return Channels which are declared as receivable by the other side but have not been declared yet.
-	 */
-	Collection<Identifier> getPendingChannelsNames();
+public class PacketSplitterTest implements ModInitializer {
+	@Override
+	public void onInitialize() {
+		Registry.register(Registry.RECIPE_SERIALIZER, NetworkingTestmods.id("big_recipe"), BigRecipe.SERIALIZER);
+	}
 }
