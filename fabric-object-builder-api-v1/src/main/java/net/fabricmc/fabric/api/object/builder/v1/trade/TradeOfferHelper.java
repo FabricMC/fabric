@@ -31,7 +31,7 @@ public final class TradeOfferHelper {
 	/**
 	 * Registers trade offer factories for use by villagers.
 	 *
-	 * <p>Below is an example, of registering a trade off factory to be added a blacksmith with a profession level of 3:
+	 * <p>Below is an example, of registering a trade offer factory to be added a blacksmith with a profession level of 3:
 	 * <blockquote><pre>
 	 * TradeOfferHelper.registerVillagerOffers(VillagerProfession.BLACKSMITH, 3, factories -> {
 	 * 	factories.add(new CustomTradeFactory(...);

@@ -73,7 +73,7 @@ public interface FluidVariantRenderHandler {
 	}
 
 	/**
-	 * Return the color to use when rendering {@linkplain #getSprite the sprite} of this fluid variant.
+	 * Return the color to use when rendering {@linkplain FluidVariantRendering#getSprite the sprite} of this fluid variant.
 	 * Transparency (alpha) will generally be taken into account and should be specified as well.
 	 *
 	 * <p>The world and position are optional context parameters and may be {@code null}.

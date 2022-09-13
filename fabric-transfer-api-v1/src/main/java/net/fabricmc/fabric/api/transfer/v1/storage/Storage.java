@@ -88,7 +88,7 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	 * @param resource The resource to insert. May not be blank.
 	 * @param maxAmount The maximum amount of resource to insert. May not be negative.
 	 * @param transaction The transaction this operation is part of.
-	 * @return A nonnegative integer not greater than maxAmount: the amount that was inserted.
+	 * @return A non-negative integer not greater than maxAmount: the amount that was inserted.
 	 */
 	long insert(T resource, long maxAmount, TransactionContext transaction);
 
@@ -119,7 +119,7 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	 * @param resource The resource to extract. May not be blank.
 	 * @param maxAmount The maximum amount of resource to extract. May not be negative.
 	 * @param transaction The transaction this operation is part of.
-	 * @return A nonnegative integer not greater than maxAmount: the amount that was extracted.
+	 * @return A non-negative integer not greater than maxAmount: the amount that was extracted.
 	 */
 	long extract(T resource, long maxAmount, TransactionContext transaction);
 

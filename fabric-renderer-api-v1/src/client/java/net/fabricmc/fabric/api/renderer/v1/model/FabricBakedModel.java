@@ -62,8 +62,8 @@ public interface FabricBakedModel {
 	 * in the model. Models must output all quads/meshes in a single pass.
 	 *
 	 * <p>Also called to render block models outside of chunk rebuild or block entity rendering.
-	 * Typically this happens when the block is being rendered as an entity, not as a block placed in the world.
-	 * Currently this happens for falling blocks and blocks being pushed by a piston, but renderers
+	 * Typically, this happens when the block is being rendered as an entity, not as a block placed in the world.
+	 * Currently, this happens for falling blocks and blocks being pushed by a piston, but renderers
 	 * should invoke this for all calls to {@link BlockModelRenderer#render(BlockRenderView, BakedModel, BlockState, BlockPos, MatrixStack, VertexConsumer, boolean, Random, long, int)}
 	 * that occur outside of chunk rebuilds to allow for features added by mods, unless
 	 * {@link #isVanillaAdapter()} returns true.
@@ -104,7 +104,7 @@ public interface FabricBakedModel {
 	 * <p>Vanilla item rendering is normally very limited. It ignores lightmaps, vertex colors,
 	 * and vertex normals. Renderers are expected to implement enhanced features for item
 	 * models. If a feature is impractical due to performance or other concerns, then the
-	 * renderer must at least give acceptable visual results without the need for special-
+	 * renderer must at least give acceptable visual results without the need for special
 	 * case handling in model implementations.
 	 *
 	 * <p>Calls to this method will generally happen on the main client thread but nothing

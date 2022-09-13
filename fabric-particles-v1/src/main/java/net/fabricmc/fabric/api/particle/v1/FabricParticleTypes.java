@@ -38,8 +38,6 @@ import net.minecraft.particle.ParticleType;
  * }}
  * </pre>
  * </blockquote>
- *
- * @see ParticleModClient in the fabric example mods for a more complete usage.
  */
 public final class FabricParticleTypes {
 	private FabricParticleTypes() { }

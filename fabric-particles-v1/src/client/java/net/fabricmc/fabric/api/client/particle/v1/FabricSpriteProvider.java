@@ -29,9 +29,9 @@ import net.minecraft.particle.ParticleType;
  * but in a way that's accessible to mods, and that exposes the atlas as well.
  *
  * <p>Custom sprites registered using ParticleFactoryRegistry have the options
- * to supply a particle factory which will recieve an instance of this
+ * to supply a particle factory which will receive an instance of this
  * interface containing the sprites set loaded for their particle from the
- * active resourcepacks.
+ * active resource packs.
  *
  * @see ParticleFactoryRegistry#register(ParticleType, ParticleFactory)
  * @see ParticleFactoryRegistry.PendingParticleFactory
@@ -44,7 +44,7 @@ public interface FabricSpriteProvider extends SpriteProvider {
 
 	/**
 	 * Gets the list of all sprites available for this particle to use.
-	 * This is defined in your resourcepack.
+	 * This is defined in your resource pack.
 	 */
 	List<Sprite> getSprites();
 }

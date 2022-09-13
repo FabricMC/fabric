@@ -62,7 +62,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <pre><code>
  * ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.STYLING_PHASE, (sender, message) -> {
  *     // Apply orange color to messages sent by server operators
- *     if (sender != null && sender.server.getPlayerManager().isOperator(sender.getGameProfile())) {
+ *     if (sender != null &amp;&amp; sender.server.getPlayerManager().isOperator(sender.getGameProfile())) {
  *         return CompletableFuture.completedFuture(
  *             message.copy().styled(style -> style.withColor(0xFFA500)));
  *     }

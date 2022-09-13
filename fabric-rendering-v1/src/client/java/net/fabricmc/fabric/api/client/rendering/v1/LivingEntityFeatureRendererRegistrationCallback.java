@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * Listeners should filter out the specific entity renderer they want to hook into, usually through {@code instanceof} checks or filtering by entity type.
  * Once listeners find a suitable entity renderer, they should register their feature renderer via the registration helper.
  *
- * <p>For example, to register a feature renderer for a player model, the example below may used:
+ * <p>For example, to register a feature renderer for a player model, the example below may be used:
  * <blockquote><pre>
  * LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper) -> {
  * 	if (entityRenderer instanceof PlayerEntityModel) {

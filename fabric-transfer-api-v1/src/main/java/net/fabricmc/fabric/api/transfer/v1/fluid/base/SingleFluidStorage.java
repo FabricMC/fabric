@@ -42,7 +42,7 @@ public abstract class SingleFluidStorage extends SingleVariantStorage<FluidVaria
 	/**
 	 * Create a fluid storage with a fixed capacity and a change handler.
 	 *
-	 * @param capacity Fixed capacity of the fluid storage. Must be nonnegative.
+	 * @param capacity Fixed capacity of the fluid storage. Must be non-negative.
 	 * @param onChange Change handler, generally for {@code markDirty()} or similar calls. May not be null.
 	 */
 	public static SingleFluidStorage withFixedCapacity(long capacity, Runnable onChange) {
