@@ -25,7 +25,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 
 /**
  * A storage that can store a single item variant at any given time.
- * Implementors should at least override {@link #getCapacity(ItemVariant)},
+ * Implementors should at least override {@code getCapacity(ItemVariant)},
  * and probably {@link #onFinalCommit} as well for {@code markDirty()} and similar calls.
  *
  * <p>This is a convenient specialization of {@link SingleVariantStorage} for items that additionally offers methods
