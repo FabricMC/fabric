@@ -27,10 +27,10 @@ import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
  *
  * <p>Helper class for {@link KeyBinding} for use by Fabric mods.</p>
  *
- * <pre><code>
+ * <pre>{@code
  * KeyBinding left = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.example.left", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.category.example"));
  * KeyBinding right = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.example.right", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_U, "key.category.example"));
- * </code></pre>
+ * }</pre>
  */
 public final class KeyBindingHelper {
 	private KeyBindingHelper() {

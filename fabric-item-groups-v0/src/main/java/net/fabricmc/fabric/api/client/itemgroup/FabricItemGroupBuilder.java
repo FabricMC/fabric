@@ -35,7 +35,7 @@ import net.fabricmc.fabric.impl.item.group.ItemGroupExtensions;
  * inventory.
  *
  * <p>Example of creating an empty group (recommended for modded item-only group):</p>
- * <pre><code>
+ * <pre>{@code
  * MY_GROUP = FabricItemGroupBuilder.build(
  * 	new Identifier("my_mod", "example_group"),
  * 	() -> new ItemStack(MY_ITEM);
@@ -43,10 +43,10 @@ import net.fabricmc.fabric.impl.item.group.ItemGroupExtensions;
  * // Use item settings to assign a group. Otherwise, it won't appear on creative inventory
  * // search result.
  * MY_ITEM = new Item(new Item.Settings().group(MY_GROUP));
- * </code></pre>
+ * }</pre>
  *
  * <p>Example of creating a group with vanilla item stacks:</p>
- * <pre><code>
+ * <pre>{@code
  * ItemGroup myGroup = FabricItemGroupBuilder.create(new Identifier("my_mod", "group_2"))
  * 	.icon(Items.STONE::getDefaultStack)
  * 	.appendItems((stacks) -> {
@@ -54,7 +54,7 @@ import net.fabricmc.fabric.impl.item.group.ItemGroupExtensions;
  * 	   stacks.add(new ItemStack(Items.COBBLESTONE));
  * 	})
  * 	.build();
- * </code></pre>
+ * }</pre>
  *
  * <h2 id="search">Creative inventory searching</h2>
  * <p>Creative inventory search is implemented as a special item group. Adding items with
