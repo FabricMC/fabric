@@ -79,7 +79,7 @@ public final class ServerEntityEvents {
 	});
 
 	/**
-	 * Called during {@link LivingEntity#tick()} after the Entity's equipment has been changed.
+	 * Called during {@link LivingEntity#tick()} if the Entity's equipment has been changed.
 	 *
 	 * <p>This event is also called when the entity joins the world.
 	 */
