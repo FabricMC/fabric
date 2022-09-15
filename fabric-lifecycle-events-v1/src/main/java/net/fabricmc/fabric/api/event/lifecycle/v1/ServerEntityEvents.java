@@ -101,6 +101,6 @@ public final class ServerEntityEvents {
 
 	@FunctionalInterface
 	public interface EquipmentChange {
-		void onChange(LivingEntity livingEntity, EquipmentSlot equipmentSlot, ItemStack previousStack, ItemStack nextStack);
+		void onChange(LivingEntity livingEntity, EquipmentSlot equipmentSlot, ItemStack previousStack, ItemStack currentStack);
 	}
 }
