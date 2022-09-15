@@ -210,6 +210,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 		if (fileName.contains("/") || fileName.contains("\\")) {
 			throw new IllegalArgumentException("Root resources can only be filenames, not paths (no / allowed!)");
 		}
+
 		return this.openFile(fileName);
 	}
 
