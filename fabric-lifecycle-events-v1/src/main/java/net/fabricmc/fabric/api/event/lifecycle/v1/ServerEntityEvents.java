@@ -17,6 +17,9 @@
 package net.fabricmc.fabric.api.event.lifecycle.v1;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.profiler.Profiler;
 
@@ -75,6 +78,17 @@ public final class ServerEntityEvents {
 		}
 	});
 
+	/**
+	 * Called when an Entity's equipment is changed.
+	 *
+	 * <p>This event is also called when the entity joins the world.
+	 */
+	public static final Event<EquipmentChange> EQUIPMENT_CHANGE = EventFactory.createArrayBacked(ServerEntityEvents.EquipmentChange.class, callbacks -> (livingEntity, equipmentSlot, previous, next) -> {
+		for (EquipmentChange callback : callbacks) {
+			callback.onChange(livingEntity, equipmentSlot, previous, next);
+		}
+	});
+
 	@FunctionalInterface
 	public interface Load {
 		void onLoad(Entity entity, ServerWorld world);
@@ -83,5 +97,10 @@ public final class ServerEntityEvents {
 	@FunctionalInterface
 	public interface Unload {
 		void onUnload(Entity entity, ServerWorld world);
+	}
+
+	@FunctionalInterface
+	public interface EquipmentChange {
+		void onChange(LivingEntity livingEntity, EquipmentSlot equipmentSlot, ItemStack previousStack, ItemStack nextStack);
 	}
 }
