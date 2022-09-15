@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -185,7 +186,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 		return !namespaces.get(type).contains(filename.substring(prefixLen, nsEnd));
 	}
 
-	protected InputStream openFile(String filename) throws IOException {
+	private InputStream openFile(String filename) throws IOException {
 		InputStream stream;
 
 		Path path = getPath(filename);
@@ -206,11 +207,10 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 
 	@Override
 	public InputStream openRoot(String fileName) throws IOException {
-		if (!fileName.contains("/") && !fileName.contains("\\")) {
-			return this.openFile(fileName);
-		} else {
+		if (fileName.contains("/") || fileName.contains("\\")) {
 			throw new IllegalArgumentException("Root resources can only be filenames, not paths (no / allowed!)");
 		}
+		return this.openFile(fileName);
 	}
 
 	@Override
@@ -276,7 +276,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 
 	@Override
 	public <T> T parseMetadata(ResourceMetadataReader<T> metaReader) throws IOException {
-		try (InputStream is = openRoot("pack.mcmeta")) {
+		try (InputStream is = openFile("pack.mcmeta")) {
 			return AbstractFileResourcePack.parseMetadata(metaReader, is);
 		}
 	}
@@ -316,6 +316,6 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	}
 
 	private static String getFilename(ResourceType type, Identifier id) {
-		return type.getDirectory() + "/" + id.getNamespace() + "/" + id.getPath();
+		return String.format(Locale.ROOT, "%s/%s/%s", type.getDirectory(), id.getNamespace(), id.getPath());
 	}
 }
