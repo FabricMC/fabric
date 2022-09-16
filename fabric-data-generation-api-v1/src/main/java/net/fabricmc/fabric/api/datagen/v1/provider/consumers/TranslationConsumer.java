@@ -17,12 +17,12 @@
 package net.fabricmc.fabric.api.datagen.v1.provider.consumers;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.google.gson.JsonObject;
-
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
+import com.google.gson.JsonParser;
 
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
@@ -33,6 +33,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.stat.StatType;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 
 /**
  * A consumer used by {@link FabricLanguageProvider#generateTranslations(TranslationConsumer)}.
@@ -133,15 +135,13 @@ public interface TranslationConsumer {
 	 * @param existingLanguageFile The path to the existing language file.
 	 * @throws IOException If loading the language file failed.
 	 */
-	default void add(Path existingLanguageFile) {
+	default void add(Path existingLanguageFile) throws IOException {
 		try (Reader reader = Files.newBufferedReader(existingLanguageFile)) {
 			JsonObject translations = JsonParser.parseReader(reader).getAsJsonObject();
 
 			for (String key : translations.keySet()) {
 				add(key, translations.get(key).getAsString());
 			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
 		}
 	}
 }
