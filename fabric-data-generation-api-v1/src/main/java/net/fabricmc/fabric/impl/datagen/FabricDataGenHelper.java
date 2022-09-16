@@ -111,14 +111,15 @@ public final class FabricDataGenHelper {
 
 			LOGGER.info("Running data generator for {}", id);
 
-			final DataGeneratorEntrypoint entrypoint = entrypointContainer.getEntrypoint();
-			ModContainer modContainer = entrypoint.getEffectiveModContainer();
-
-			if (modContainer == null) {
-				modContainer = entrypointContainer.getProvider();
-			}
-
 			try {
+				final DataGeneratorEntrypoint entrypoint = entrypointContainer.getEntrypoint();
+				final String effectiveModId = entrypoint.getEffectiveModId();
+				ModContainer modContainer = entrypointContainer.getProvider();
+
+				if (effectiveModId != null) {
+					modContainer = FabricLoader.getInstance().getModContainer(effectiveModId).orElseThrow(() -> new RuntimeException("Failed to find effective mod container for modid (%s)".formatted(effectiveModId)));
+				}
+
 				FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, modContainer, STRICT_VALIDATION);
 				entrypoint.onInitializeDataGenerator(dataGenerator);
 				dataGenerator.run();
