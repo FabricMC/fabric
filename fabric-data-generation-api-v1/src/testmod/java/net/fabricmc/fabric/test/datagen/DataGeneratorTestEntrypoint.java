@@ -137,6 +137,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 				if (path.isPresent()) {
 					translationConsumer.add(path.get());
+				} else {
+					throw new RuntimeException("The existing language file could not be found in the testmod assets!");
 				}
 			} catch (IOException e) {
 				throw new RuntimeException(e);
