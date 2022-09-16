@@ -23,14 +23,11 @@ import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
 
-import net.fabricmc.fabric.api.datagen.v1.provider.consumers.TranslationConsumer;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.fabricmc.fabric.api.datagen.v1.provider.consumers.TranslationConsumer;
 
 /**
  * Extend this class and implement {@link FabricLanguageProvider#generateTranslations(TranslationConsumer)}.
@@ -63,9 +60,10 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		TreeMap<String, String> translationEntries = new TreeMap<>();
 
 		generateTranslations((String key, String value) -> {
-			if(translationEntries.containsKey(key)) {
+			if (translationEntries.containsKey(key)) {
 				throw new RuntimeException("Existing translation key found - " + key + " - Duplicate will be ignored.");
 			}
+
 			translationEntries.put(key, value);
 		});
 

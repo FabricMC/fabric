@@ -28,6 +28,9 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
@@ -62,12 +65,13 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.consumers.TranslationConsumer;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.consumers.TranslationConsumer;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 
 public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataGeneratorTestEntrypoint.class);
 	private static final ConditionJsonProvider NEVER_LOADED = DefaultResourceConditions.allModsLoaded("a");
 	private static final ConditionJsonProvider ALWAYS_LOADED = DefaultResourceConditions.not(NEVER_LOADED);
 
@@ -142,6 +146,12 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 				}
 			} catch (IOException e) {
 				throw new RuntimeException(e);
+			}
+
+			try {
+				translationConsumer.add(EntityType.ALLAY, "Allay Duplicate Test");
+			} catch (RuntimeException e) {
+				LOGGER.info("Duplicate test passed.");
 			}
 		}
 	}
