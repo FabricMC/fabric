@@ -29,6 +29,9 @@ import net.minecraft.data.DataWriter;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Extend this class and implement {@link FabricLanguageProvider#generateTranslations(TranslationConsumer)}.
  * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricDataGenerator, String)} FabricLanguageProvider} to declare what language code is being generated if it isn't {@code en_us}.
@@ -59,7 +62,12 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	public void run(DataWriter writer) throws IOException {
 		TreeMap<String, String> translationEntries = new TreeMap<>();
 
-		generateTranslations(translationEntries::put);
+		generateTranslations((String key, String value) -> {
+			if(translationEntries.containsKey(key)) {
+				throw new RuntimeException("Existing translation key found - " + key + " - Duplicate will be ignored.");
+			}
+			translationEntries.put(key, value);
+		});
 
 		JsonObject langEntryJson = new JsonObject();
 
