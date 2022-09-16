@@ -35,10 +35,10 @@ public interface DataGeneratorEntrypoint {
 	void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator);
 
 	/**
-	 * Return the modid of the mod the data is being generated for.
-	 * A null return will run the data generation using the modid that registered the current entrypoint.
+	 * Returns the modid of the mod the data is being generated for.
+	 * A {@code null} return will run the data generator using the modid that registered the current entrypoint.
 	 *
-	 * @return a {@link String} or null
+	 * @return a {@link String} or {@code null}
 	 */
 	@Nullable
 	default String getEffectiveModId() {
