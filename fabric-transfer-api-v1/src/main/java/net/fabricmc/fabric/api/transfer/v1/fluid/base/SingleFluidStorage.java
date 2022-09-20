@@ -24,11 +24,12 @@ import net.minecraft.nbt.NbtCompound;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 
 /**
  * A storage that can store a single fluid variant at any given time.
- * Implementors should at least override {@code getCapacity(FluidVariant)},
+ * Implementors should at least override {@link #getCapacity(TransferVariant) getCapacity(FluidVariant)},
  * and probably {@link #onFinalCommit} as well for {@code markDirty()} and similar calls.
  *
  * <p>This is a convenient specialization of {@link SingleVariantStorage} for fluids that additionally offers methods
