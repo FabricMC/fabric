@@ -31,10 +31,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
 /**
- * A registry to associate specific node types to blocks.
+ * A registry to associate block states with specific path node types.
  * Specifying a node type for a block will change the way an entity recognizes the block when trying to pathfind.
- * For example, you can specify that a block is dangerous and should be avoided by entities.
+ * You can make a safe block dangerous and vice-versa.
  * This works only for entities that move on air and land.
+ * Duplicated registrations for the same block will replace the previous registration entry.
  */
 public final class LandPathNodeTypesRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LandPathNodeTypesRegistry.class);
@@ -44,36 +45,35 @@ public final class LandPathNodeTypesRegistry {
 	}
 
 	/**
-	 * Registers a {@link PathNodeType} for the specified block.
-	 * This will override the default block behavior.
-	 * For example, you can make a safe block as dangerous and vice-versa.
-	 * Duplicated registrations for the same block will replace the previous registration.
+	 * Registers a {@link PathNodeType} for the specified block, overriding the default block behavior.
 	 *
 	 * @param block              Block to register.
-	 * @param nodeType           {@link PathNodeType} to associate with the block.
+	 * @param nodeType           {@link PathNodeType} to associate with the block if it is a direct target
+	 *                           in an entity path.
 	 *                           (Pass {@code null} to not specify a node type and use the default behavior)
-	 * @param nodeTypeIfNeighbor {@link PathNodeType} to associate to the block, if is a neighbor block in the path.
+	 * @param nodeTypeIfNeighbor {@link PathNodeType} to associate with the block, if it is in a direct neighbor
+	 *                           position to an entity path that is directly next to a block
+	 *                           that the entity will pass through or above.
 	 *                           (Pass {@code null} to not specify a node type and use the default behavior)
 	 */
 	public static void register(Block block, @Nullable PathNodeType nodeType, @Nullable PathNodeType nodeTypeIfNeighbor) {
 		Objects.requireNonNull(block, "Block cannot be null!");
 
 		// Registers a provider that always returns the specified node type.
-		register(block, (state, world, pos, neighbor) -> neighbor ? nodeTypeIfNeighbor : nodeType);
+		register(block, (state, neighbor) -> neighbor ? nodeTypeIfNeighbor : nodeType);
 	}
 
 	/**
-	 * Registers a {@link PathNodeTypeProvider} for the specified block.
-	 * This will override the default block behavior.
-	 * For example, you can make a safe block as dangerous and vice-versa.
-	 * Duplicated registrations for the same block will replace the previous registrations.
+	 * Registers a {@link StaticPathNodeTypeProvider} for the specified block overriding the default block behavior.
+	 *
+	 * <p>A static provider provides the node type basing on the block state.
 	 *
 	 * @param block    Block to register.
-	 * @param provider {@link PathNodeTypeProvider} to associate with the block.
+	 * @param provider {@link StaticPathNodeTypeProvider} to associate with the block.
 	 */
-	public static void register(Block block, PathNodeTypeProvider provider) {
+	public static void register(Block block, StaticPathNodeTypeProvider provider) {
 		Objects.requireNonNull(block, "Block cannot be null!");
-		Objects.requireNonNull(provider, "PathNodeTypeProvider cannot be null!");
+		Objects.requireNonNull(provider, "StaticPathNodeTypeProvider cannot be null!");
 
 		// Registers the provider.
 		PathNodeTypeProvider old = NODE_TYPES.put(block, provider);
@@ -84,16 +84,41 @@ public final class LandPathNodeTypesRegistry {
 	}
 
 	/**
-	 * Gets the custom {@link PathNodeType} registered for the specified block at the specified position.
+	 * Registers a {@link DynamicPathNodeTypeProvider} for the specified block, overriding the default block behavior.
 	 *
-	 * <p>If no custom {@link PathNodeType} is registered for the block, it returns {@code null}.
+	 * <p>A dynamic provider provides the node type basing on the block state, world and position.
+	 * This is more difficult to handle, must be used only if you want to change the node type basing on the position
+	 * of the block in the world, and may degrade the game performances because cannot be optimized but must be
+	 * recalculated at every tick for every entity.
+	 *
+	 * @param block    Block to register.
+	 * @param provider {@link DynamicPathNodeTypeProvider} to associate with the block.
+	 */
+	public static void registerDynamic(Block block, DynamicPathNodeTypeProvider provider) {
+		Objects.requireNonNull(block, "Block cannot be null!");
+		Objects.requireNonNull(provider, "DynamicPathNodeTypeProvider cannot be null!");
+
+		// Registers the provider.
+		PathNodeTypeProvider old = NODE_TYPES.put(block, provider);
+
+		if (old != null) {
+			LOGGER.debug("Replaced PathNodeType provider for the block {}", block);
+		}
+	}
+
+	/**
+	 * Gets the {@link PathNodeType} from the provider registered for the specified block at the specified position.
+	 *
+	 * <p>If no valid {@link PathNodeType} provider is registered for the block, it returns {@code null}.
 	 * You cannot use this method to retrieve vanilla block node types.
 	 *
 	 * @param state    Current block state.
 	 * @param world    Current world.
 	 * @param pos      Current position.
 	 * @param neighbor Specifies if the block is not a directly targeted block, but a neighbor block in the path.
-	 * @return the custom {@link PathNodeType} registered for the specified block at the specified position.
+	 * @return the custom {@link PathNodeType} from the provider registered for the specified block,
+	 * passing the block state, the world, and the position to the provider, or {@code null} if no valid
+	 * provider is registered for the block.
 	 */
 	@Nullable
 	public static PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos, boolean neighbor) {
@@ -101,21 +126,164 @@ public final class LandPathNodeTypesRegistry {
 		Objects.requireNonNull(world, "BlockView cannot be null!");
 		Objects.requireNonNull(pos, "BlockPos cannot be null!");
 
-		// Gets the node type for the block at the specified position.
+		// Gets the node type provider for the block.
 		PathNodeTypeProvider provider = NODE_TYPES.get(state.getBlock());
-		return provider != null ? provider.getPathNodeType(state, world, pos, neighbor) : null;
+
+		//Gets the node type from the registered provider.
+		if (provider instanceof StaticPathNodeTypeProvider staticProvider) {
+			return staticProvider.getPathNodeType(state, neighbor);
+		} else if (provider instanceof DynamicPathNodeTypeProvider dynamicProvider) {
+			return dynamicProvider.getPathNodeType(state, world, pos, neighbor);
+		}
+
+		//If no valid provider is found returns null.
+		return null;
 	}
 
 	/**
-	 * A functional interface that provides the {@link PathNodeType}, given the block state and position.
+	 * Gets the {@link PathNodeType} from the provider registered for the specified block state.
+	 *
+	 * <p>This searches only for static providers.
+	 *
+	 * <p>If no valid {@link PathNodeType} provider is registered for the block, it returns {@code null}.
+	 * You cannot use this method to retrieve vanilla block node types.
+	 *
+	 * @param state    Current block state.
+	 * @param neighbor Specifies if the block is not a directly targeted block, but a neighbor block in the path.
+	 * @return the custom {@link PathNodeType} from the static provider registered for the specified block,
+	 * passing the specified block state to the provider, or {@code null} if no valid static provider
+	 * is registered for the block.
+	 */
+	@Nullable
+	public static PathNodeType getStaticPathNodeType(BlockState state, boolean neighbor) {
+		Objects.requireNonNull(state, "BlockState cannot be null!");
+
+		// Gets the node type provider for the block.
+		PathNodeTypeProvider provider = NODE_TYPES.get(state.getBlock());
+
+		//Gets the node type from the registered provider.
+		if (provider instanceof StaticPathNodeTypeProvider staticProvider) {
+			return staticProvider.getPathNodeType(state, neighbor);
+		}
+
+		//If no valid provider is found returns null.
+		return null;
+	}
+
+	/**
+	 * Checks if a block state is registered as dynamic.
+	 *
+	 * @param state Current block state.
+	 * @return {@code true} if the current block of the block state is registered as dynamic, {@code false} otherwise.
+	 */
+	public static boolean isDynamic(BlockState state) {
+		Objects.requireNonNull(state, "BlockState cannot be null!");
+
+		return isDynamic(state.getBlock());
+	}
+
+	/**
+	 * Checks if a block is registered as dynamic.
+	 *
+	 * @param block Current block.
+	 * @return {@code true} if the current block is registered as dynamic, {@code false} otherwise.
+	 */
+	public static boolean isDynamic(Block block) {
+		Objects.requireNonNull(block, "Block cannot be null!");
+
+		return NODE_TYPES.get(block) instanceof DynamicPathNodeTypeProvider;
+	}
+
+	/**
+	 * Checks if a block state is registered as static.
+	 *
+	 * @param state Current block state.
+	 * @return {@code true} if the current block of the block state is registered as static, {@code false} otherwise.
+	 */
+	public static boolean isStatic(BlockState state) {
+		Objects.requireNonNull(state, "BlockState cannot be null!");
+
+		return isStatic(state.getBlock());
+	}
+
+	/**
+	 * Checks if a block is registered as static.
+	 *
+	 * @param block Current block.
+	 * @return {@code true} if the current block is registered as static, {@code false} otherwise.
+	 */
+	public static boolean isStatic(Block block) {
+		Objects.requireNonNull(block, "Block cannot be null!");
+
+		return NODE_TYPES.get(block) instanceof StaticPathNodeTypeProvider;
+	}
+
+	/**
+	 * Checks if a block state is registered.
+	 *
+	 * @param state Current block state.
+	 * @return {@code true} if the current block of the block state is contained into the registry, {@code false} otherwise.
+	 */
+	public static boolean contains(BlockState state) {
+		Objects.requireNonNull(state, "BlockState cannot be null!");
+
+		return contains(state.getBlock());
+	}
+
+	/**
+	 * Checks if a block is registered.
+	 *
+	 * @param block Current block.
+	 * @return {@code true} if the current block is contained into the registry, {@code false} otherwise.
+	 */
+	public static boolean contains(Block block) {
+		Objects.requireNonNull(block, "Block cannot be null!");
+
+		return NODE_TYPES.containsKey(block);
+	}
+
+	/**
+	 * General provider, this is a marker interface.
+	 */
+	private interface PathNodeTypeProvider {
+	}
+
+	/**
+	 * A functional interface that provides the {@link PathNodeType}, given the block state.
 	 */
 	@FunctionalInterface
-	public interface PathNodeTypeProvider {
+	public interface StaticPathNodeTypeProvider extends PathNodeTypeProvider {
 		/**
-		 * Gets the {@link PathNodeType} for the specified block at the specified position.
+		 * Gets the {@link PathNodeType} for the specified block state.
 		 *
-		 * <p>You can specify what to return if the block is a direct target of an entity path,
-		 * or a neighbor block that the entity will find in the path.
+		 * <p>You can specify what to return if the block state is a direct target of an entity path,
+		 * or a neighbor block of the entity path.
+		 *
+		 * <p>For example, for a cactus-like block you should use {@link PathNodeType#DAMAGE_CACTUS} if the block
+		 * is a direct target in the entity path ({@code neighbor == false}) to specify that an entity should not pass
+		 * through or above the block because it will cause damage, and you should use{@link PathNodeType#DANGER_CACTUS}
+		 * if the block is a neighbor block in the entity path ({@code neighbor == true}) to specify that the entity
+		 * should not get close to the block because it is dangerous.
+		 *
+		 * @param state    Current block state.
+		 * @param neighbor Specifies that the block is in a direct neighbor position to an entity path
+		 *                 that is directly next to a block that the entity will pass through or above.
+		 * @return the custom {@link PathNodeType} registered for the specified block state.
+		 */
+		@Nullable
+		PathNodeType getPathNodeType(BlockState state, boolean neighbor);
+	}
+
+	/**
+	 * A functional interface that provides the {@link PathNodeType}, given the block state world and position.
+	 */
+	@FunctionalInterface
+	public interface DynamicPathNodeTypeProvider extends PathNodeTypeProvider {
+		/**
+		 * Gets the {@link PathNodeType} for the specified block state at the specified position.
+		 *
+		 * <p>You can specify what to return if the block state is a direct target of an entity path,
+		 * or a neighbor block of the entity path.
 		 *
 		 * <p>For example, for a cactus-like block you should specify {@link PathNodeType#DAMAGE_CACTUS} if the block
 		 * is a direct target ({@code neighbor == false}) to specify that an entity should not pass through or above
@@ -126,8 +294,9 @@ public final class LandPathNodeTypesRegistry {
 		 * @param state    Current block state.
 		 * @param world    Current world.
 		 * @param pos      Current position.
-		 * @param neighbor Specifies if the block is not a directly targeted block, but a neighbor block in the path.
-		 * @return the custom {@link PathNodeType} registered for the specified block at the specified position.
+		 * @param neighbor Specifies that the block is in a direct neighbor position to an entity path
+		 *                 (directly next to a block that the entity will pass through or above).
+		 * @return the custom {@link PathNodeType} registered for the specified block state at the specified position.
 		 */
 		@Nullable
 		PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos, boolean neighbor);

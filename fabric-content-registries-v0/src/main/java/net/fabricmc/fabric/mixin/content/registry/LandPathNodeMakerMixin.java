@@ -30,10 +30,11 @@ import net.minecraft.world.BlockView;
 
 import net.fabricmc.fabric.api.registry.LandPathNodeTypesRegistry;
 
-@Mixin(LandPathNodeMaker.class)
+// Applied a bit earlier than other mods to ensure changes and optimizations to default vanilla behavior
+@Mixin(value = LandPathNodeMaker.class, priority = 999)
 public class LandPathNodeMakerMixin {
 	/**
-	 * Overrides the node type for the specified position in a path.
+	 * Overrides the node type for the specified position, if the position is a direct target in a path.
 	 */
 	@Inject(method = "getCommonNodeType", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/BlockView;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", shift = At.Shift.BY, by = 2), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private static void getCommonNodeType(BlockView world, BlockPos pos, CallbackInfoReturnable<PathNodeType> cir, BlockState state) {
