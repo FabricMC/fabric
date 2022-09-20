@@ -39,6 +39,7 @@ public interface DataGeneratorEntrypoint {
 	 * A {@code null} return will run the data generator using the mod ID that registered the current entrypoint.
 	 *
 	 * @return a {@link String} or {@code null}
+	 * @throws RuntimeException If the mod ID does not exist.
 	 */
 	@Nullable
 	default String getEffectiveModId() {
