@@ -66,7 +66,6 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.consumers.TranslationConsumer;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 
@@ -130,17 +129,17 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		public void generateTranslations(TranslationConsumer translationConsumer) {
-			translationConsumer.add(SIMPLE_BLOCK, "Simple Block");
-			translationConsumer.add(new Identifier(MOD_ID, "identifier_test"), "Identifier Test");
-			translationConsumer.add(EntityType.ALLAY, "Allay");
-			translationConsumer.add(EntityAttributes.GENERIC_ARMOR, "Generic Armor");
+		public void generateTranslations(TranslationBuilder translationBuilder) {
+			translationBuilder.add(SIMPLE_BLOCK, "Simple Block");
+			translationBuilder.add(new Identifier(MOD_ID, "identifier_test"), "Identifier Test");
+			translationBuilder.add(EntityType.ALLAY, "Allay");
+			translationBuilder.add(EntityAttributes.GENERIC_ARMOR, "Generic Armor");
 
 			try {
-				Optional<Path> path = dataGenerator.getModContainer().findPath("assets/testmod/lang/en_us.json");
+				Optional<Path> path = dataGenerator.getModContainer().findPath("assets/testmod/lang/en_us.base.json");
 
 				if (path.isPresent()) {
-					translationConsumer.add(path.get());
+					translationBuilder.add(path.get());
 				} else {
 					throw new RuntimeException("The existing language file could not be found in the testmod assets!");
 				}
@@ -149,7 +148,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			}
 
 			try {
-				translationConsumer.add(EntityType.ALLAY, "Allay Duplicate Test");
+				translationBuilder.add(EntityType.ALLAY, "Allay Duplicate Test");
 			} catch (RuntimeException e) {
 				LOGGER.info("Duplicate test passed.");
 			}
@@ -162,10 +161,10 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		public void generateTranslations(TranslationConsumer translationConsumer) {
-			translationConsumer.add(SIMPLE_BLOCK, "シンプルブロック");
-			translationConsumer.add(SIMPLE_ITEM_GROUP, "データ生成項目");
-			translationConsumer.add("this.is.a.test", "こんにちは");
+		public void generateTranslations(TranslationBuilder translationBuilder) {
+			translationBuilder.add(SIMPLE_BLOCK, "シンプルブロック");
+			translationBuilder.add(SIMPLE_ITEM_GROUP, "データ生成項目");
+			translationBuilder.add("this.is.a.test", "こんにちは");
 		}
 	}
 
