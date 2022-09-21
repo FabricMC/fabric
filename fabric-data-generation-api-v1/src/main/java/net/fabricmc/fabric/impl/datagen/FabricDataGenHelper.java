@@ -117,7 +117,7 @@ public final class FabricDataGenHelper {
 				ModContainer modContainer = entrypointContainer.getProvider();
 
 				if (effectiveModId != null) {
-					modContainer = FabricLoader.getInstance().getModContainer(effectiveModId).orElseThrow(() -> new RuntimeException("Failed to find effective mod container for modid (%s)".formatted(effectiveModId)));
+					modContainer = FabricLoader.getInstance().getModContainer(effectiveModId).orElseThrow(() -> new RuntimeException("Failed to find effective mod container for mod id (%s)".formatted(effectiveModId)));
 				}
 
 				FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, modContainer, STRICT_VALIDATION);
