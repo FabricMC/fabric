@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Range;
 
 import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
 
 @ApiStatus.Internal
@@ -70,7 +71,7 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 
 	@Override
 	public NbtCompound updateWithAllFixers(DataFixTypes dataFixTypes, NbtCompound compound) {
-		var current = new Dynamic<>(NbtOps.INSTANCE, compound);
+		Dynamic<NbtElement> current = new Dynamic<>(NbtOps.INSTANCE, compound);
 
 		for (Map.Entry<String, DataFixerEntry> entry : this.modDataFixers.entrySet()) {
 			int modDataVersion = FabricDataFixesInternals.getModDataVersion(compound, entry.getKey());
