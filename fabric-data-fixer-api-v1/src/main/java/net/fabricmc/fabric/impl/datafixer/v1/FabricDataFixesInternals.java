@@ -20,7 +20,11 @@ import com.mojang.datafixers.DataFixUtils;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.logging.LogUtils;
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 import org.slf4j.Logger;
 
 import net.minecraft.SharedConstants;
@@ -32,7 +36,8 @@ import net.minecraft.nbt.NbtCompound;
 public abstract class FabricDataFixesInternals {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
-	public record DataFixerEntry(DataFixer dataFixer, int currentVersion) {}
+	public record DataFixerEntry(DataFixer dataFixer, int currentVersion) {
+	}
 
 	@Contract(pure = true)
 	@Range(from = 0, to = Integer.MAX_VALUE)
@@ -45,6 +50,7 @@ public abstract class FabricDataFixesInternals {
 	public static @NotNull FabricDataFixesInternals get() {
 		if (instance == null) {
 			Schema latestVanillaSchema;
+
 			try {
 				latestVanillaSchema = Schemas.getFixer()
 						.getSchema(DataFixUtils.makeKey(SharedConstants.getGameVersion().getSaveVersion().getId()));

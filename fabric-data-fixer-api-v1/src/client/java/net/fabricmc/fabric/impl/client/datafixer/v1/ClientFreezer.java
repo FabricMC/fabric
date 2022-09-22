@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.impl.client.datafixer.v1;
 
-import net.fabricmc.api.ClientModInitializer;
 import org.jetbrains.annotations.ApiStatus;
 
+import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 

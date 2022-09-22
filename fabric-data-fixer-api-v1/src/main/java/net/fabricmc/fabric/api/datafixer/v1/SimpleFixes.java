@@ -106,10 +106,12 @@ public final class SimpleFixes {
 		requireNonNull(changes, "Changes cannot be null");
 		requireNonNull(schema, "Schema cannot be null");
 
-		var mapBuilder = ImmutableMap.<String, String>builder();
-		for (var entry : changes.entrySet()) {
+		ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
+
+		for (Map.Entry<Identifier, Identifier> entry : changes.entrySet()) {
 			mapBuilder.put(entry.getKey().toString(), entry.getValue().toString());
 		}
+
 		builder.addFixer(new BiomeRenameFix(schema, false, name, mapBuilder.build()));
 	}
 }

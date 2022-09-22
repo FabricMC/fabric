@@ -16,9 +16,11 @@
 
 package net.fabricmc.fabric.api.datafixer.v1;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
+import com.google.common.base.Preconditions;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
@@ -29,11 +31,8 @@ import org.jetbrains.annotations.Range;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Util;
 
-import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.requireNonNull;
+import net.fabricmc.loader.api.ModContainer;
 
 /**
  * Provides methods to register custom {@link DataFixer}s.
@@ -45,14 +44,14 @@ public final class FabricDataFixes {
 
 	/**
 	 * A "base" version {@code 0} schema, for use by all mods.
-	 * <p>
-	 * This schema <em>must</em> be the first one added!
+	 *
+	 * <p>This schema <em>must</em> be the first one added!
 	 *
 	 * @see DataFixerBuilder#addSchema(int, BiFunction)
 	 */
 	public static final BiFunction<Integer, Schema, Schema> BASE_SCHEMA = (version, parent) -> {
-		checkArgument(version == 0, "version must be 0");
-		checkArgument(parent == null, "parent must be null");
+		Preconditions.checkArgument(version == 0, "version must be 0");
+		Preconditions.checkArgument(parent == null, "parent must be null");
 		return FabricDataFixesInternals.get().createBaseSchema();
 	};
 
@@ -66,10 +65,10 @@ public final class FabricDataFixes {
 	public static void registerFixer(@NotNull String modId,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
 			@NotNull DataFixer dataFixer) {
-		requireNonNull(modId, "modId cannot be null");
+		Objects.requireNonNull(modId, "modId cannot be null");
 		//noinspection ConstantConditions
-		checkArgument(currentVersion >= 0, "currentVersion must be positive");
-		requireNonNull(dataFixer, "dataFixer cannot be null");
+		Preconditions.checkArgument(currentVersion >= 0, "currentVersion must be positive");
+		Objects.requireNonNull(dataFixer, "dataFixer cannot be null");
 
 		if (isFrozen()) {
 			throw new IllegalStateException("Can't register data fixer after registry is frozen");
@@ -88,7 +87,7 @@ public final class FabricDataFixes {
 	public static void registerFixer(@NotNull ModContainer mod,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
 			@NotNull DataFixer dataFixer) {
-		requireNonNull(mod, "mod cannot be null");
+		Objects.requireNonNull(mod, "mod cannot be null");
 
 		registerFixer(mod.getMetadata().getId(), currentVersion, dataFixer);
 	}
@@ -101,8 +100,8 @@ public final class FabricDataFixes {
 	 */
 	public static void buildAndRegisterFixer(@NotNull ModContainer mod,
 			@NotNull FabricDataFixerBuilder dataFixerBuilder) {
-		requireNonNull(mod, "mod cannot be null");
-		requireNonNull(dataFixerBuilder, "data fixer builder cannot be null");
+		Objects.requireNonNull(mod, "mod cannot be null");
+		Objects.requireNonNull(dataFixerBuilder, "data fixer builder cannot be null");
 
 		registerFixer(mod.getMetadata().getId(), dataFixerBuilder.getDataVersion(),
 				dataFixerBuilder.build(Util::getBootstrapExecutor));
@@ -115,12 +114,14 @@ public final class FabricDataFixes {
 	 * @return the mod's data fixer, or empty if the mod hasn't registered one
 	 */
 	public static @NotNull Optional<DataFixer> getFixer(@NotNull String modId) {
-		requireNonNull(modId, "modId cannot be null");
+		Objects.requireNonNull(modId, "modId cannot be null");
 
 		FabricDataFixesInternals.DataFixerEntry entry = FabricDataFixesInternals.get().getFixerEntry(modId);
+
 		if (entry == null) {
 			return Optional.empty();
 		}
+
 		return Optional.of(entry.dataFixer());
 	}
 
@@ -134,8 +135,8 @@ public final class FabricDataFixes {
 	@Contract(pure = true)
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	public static int getModDataVersion(@NotNull NbtCompound compound, @NotNull String modId) {
-		requireNonNull(compound, "compound cannot be null");
-		requireNonNull(modId, "modId cannot be null");
+		Objects.requireNonNull(compound, "compound cannot be null");
+		Objects.requireNonNull(modId, "modId cannot be null");
 
 		return FabricDataFixesInternals.getModDataVersion(compound, modId);
 	}

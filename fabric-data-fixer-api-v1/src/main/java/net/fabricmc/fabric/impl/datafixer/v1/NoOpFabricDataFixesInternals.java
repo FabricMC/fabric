@@ -42,7 +42,8 @@ public final class NoOpFabricDataFixesInternals extends FabricDataFixesInternals
 
 	@Override
 	public void registerFixer(@NotNull String modId, @Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
-			@NotNull DataFixer dataFixer) {}
+			@NotNull DataFixer dataFixer) {
+	}
 
 	@Override
 	public @Nullable DataFixerEntry getFixerEntry(@NotNull String modId) {

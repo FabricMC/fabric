@@ -44,7 +44,7 @@ public class FabricDataFixerBuilder extends DataFixerBuilder {
 	}
 
 	/**
-	 * {@return the current data version}
+	 * Returns the current data version.
 	 */
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	public int getDataVersion() {
@@ -53,8 +53,8 @@ public class FabricDataFixerBuilder extends DataFixerBuilder {
 
 	/**
 	 * Builds the final {@code DataFixer}.
-	 * <p>
-	 * This will build either an {@linkplain #buildUnoptimized() unoptimized fixer} or an
+	 *
+	 * <p>This will build either an {@linkplain #buildUnoptimized() unoptimized fixer} or an
 	 * {@linkplain #buildOptimized(Executor) optimized fixer}, depending on the vanilla game's settings.
 	 *
 	 * @param executorGetter the executor supplier, only invoked if the game is using optimized data fixers
@@ -63,8 +63,8 @@ public class FabricDataFixerBuilder extends DataFixerBuilder {
 	@Contract(value = "_ -> new")
 	public @NotNull DataFixer build(@NotNull Supplier<Executor> executorGetter) {
 		return switch (SharedConstants.dataFixerPhase) {
-			case UNINITIALIZED_UNOPTIMIZED, INITIALIZED_UNOPTIMIZED -> this.buildUnoptimized();
-			case UNINITIALIZED_OPTIMIZED, INITIALIZED_OPTIMIZED -> this.buildOptimized(executorGetter.get());
+		case UNINITIALIZED_UNOPTIMIZED, INITIALIZED_UNOPTIMIZED -> this.buildUnoptimized();
+		case UNINITIALIZED_OPTIMIZED, INITIALIZED_OPTIMIZED -> this.buildOptimized(executorGetter.get());
 		};
 	}
 }

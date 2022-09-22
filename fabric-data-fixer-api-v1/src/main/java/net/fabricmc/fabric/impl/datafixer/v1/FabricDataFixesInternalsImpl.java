@@ -105,5 +105,4 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 	public boolean isFrozen() {
 		return this.frozen;
 	}
-
 }

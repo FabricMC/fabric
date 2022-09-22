@@ -16,12 +16,11 @@
 
 package net.fabricmc.fabric.impl.datafixer.v1.server;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-
 import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
-
-import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
 public final class ServerFreezer implements DedicatedServerModInitializer {
