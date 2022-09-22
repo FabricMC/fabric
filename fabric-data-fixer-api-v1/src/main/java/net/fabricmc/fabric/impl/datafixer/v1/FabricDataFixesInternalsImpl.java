@@ -86,12 +86,15 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 	}
 
 	@Override
-	public NbtCompound addModDataVersions(NbtCompound compound) {
+	public NbtCompound addModDataVersions(NbtCompound nbt) {
+		NbtCompound dataVersions = nbt.getCompound(DATA_VERSIONS_KEY);
+
 		for (Map.Entry<String, DataFixerEntry> entry : this.modDataFixers.entrySet()) {
-			compound.putInt(entry.getKey() + "_DataVersion", entry.getValue().currentVersion());
+			dataVersions.putInt(entry.getKey(), entry.getValue().currentVersion());
 		}
 
-		return compound;
+		nbt.put(DATA_VERSIONS_KEY, dataVersions);
+		return nbt;
 	}
 
 	@Override

@@ -62,8 +62,8 @@ public final class NoOpFabricDataFixesInternals extends FabricDataFixesInternals
 	}
 
 	@Override
-	public NbtCompound addModDataVersions(NbtCompound compound) {
-		return compound;
+	public NbtCompound addModDataVersions(NbtCompound nbt) {
+		return nbt;
 	}
 
 	@Override

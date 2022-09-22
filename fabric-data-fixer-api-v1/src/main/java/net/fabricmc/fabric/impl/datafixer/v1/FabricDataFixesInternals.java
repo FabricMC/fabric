@@ -37,14 +37,16 @@ import net.minecraft.nbt.NbtCompound;
 @ApiStatus.Internal
 public abstract class FabricDataFixesInternals {
 	private static final Logger LOGGER = LogUtils.getLogger();
+	protected static final String DATA_VERSIONS_KEY = "_FabricDataVersions";
 
 	public record DataFixerEntry(DataFixer dataFixer, int currentVersion) {
 	}
 
 	@Contract(pure = true)
 	@Range(from = 0, to = Integer.MAX_VALUE)
-	public static int getModDataVersion(NbtCompound compound, String modId) {
-		return compound.getInt(modId + "_DataVersion");
+	public static int getModDataVersion(NbtCompound nbt, String modId) {
+		NbtCompound dataVersions = nbt.getCompound(DATA_VERSIONS_KEY);
+		return dataVersions.getInt(modId);
 	}
 
 	private static FabricDataFixesInternals instance;
@@ -82,7 +84,7 @@ public abstract class FabricDataFixesInternals {
 
 	public abstract NbtCompound updateWithAllFixers(DataFixTypes dataFixTypes, NbtCompound compound);
 
-	public abstract NbtCompound addModDataVersions(NbtCompound compound);
+	public abstract NbtCompound addModDataVersions(NbtCompound nbt);
 
 	public abstract void freeze();
 
