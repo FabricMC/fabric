@@ -248,6 +248,12 @@ allprojects {
 		archiveClassifier = "testmod"
 	}
 
+	[jar, testmodJar, sourcesJar].each {
+		it.from(rootProject.file("LICENSE")) {
+			rename { "${it}-${project.archivesBaseName}"}
+		}
+	}
+
 	task remapTestmodJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: testmodJar) {
 		input = testmodJar.archiveFile
 		archiveClassifier = "testmod"
