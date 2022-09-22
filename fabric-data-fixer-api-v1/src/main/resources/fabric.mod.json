@@ -20,7 +20,20 @@
     "fabricloader": ">=0.14.9"
   },
   "description": "Provides support for modded data fixers.",
+  "entrypoints": {
+    "server": [
+      "net.fabricmc.fabric.impl.datafixer.v1.server.ServerFreezer"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.client.datafixer.v1.ClientFreezer"
+    ]
+  },
   "mixins": [
+    "fabric-data-fixer-api-v1.mixins.json",
+    {
+      "config": "fabric-data-fixer-api-v1.client.mixins.json",
+      "environment": "client"
+    }
   ],
   "custom": {
     "fabric-api:module-lifecycle": "experimental"
