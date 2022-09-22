@@ -217,7 +217,7 @@ allprojects {
 
 	spotless {
 		java {
-			licenseHeaderFile(rootProject.file("HEADER"))
+			licenseHeaderFile(rootProject.file("HEADER")).named('default')
 		}
 	}
 

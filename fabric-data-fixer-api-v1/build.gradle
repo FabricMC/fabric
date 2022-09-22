@@ -5,3 +5,9 @@ moduleDependencies(project, [
 		'fabric-api-base',
 		'fabric-lifecycle-events-v1'
 ])
+
+spotless {
+	java {
+		licenseHeaderFile(project.file("LICENSE-PORT")).named('port').onlyIfContentMatches('Quilt')
+	}
+}
