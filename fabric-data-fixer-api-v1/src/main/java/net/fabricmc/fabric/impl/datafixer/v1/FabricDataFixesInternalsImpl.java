@@ -37,6 +37,7 @@ import net.minecraft.nbt.NbtOps;
 
 @ApiStatus.Internal
 public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals {
+	// From QSL.
 	private final Schema latestVanillaSchema;
 
 	private Map<String, DataFixerEntry> modDataFixers;

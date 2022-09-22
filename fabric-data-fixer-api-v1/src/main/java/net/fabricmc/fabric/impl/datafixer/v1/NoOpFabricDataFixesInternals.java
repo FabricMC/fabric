@@ -32,6 +32,7 @@ import net.fabricmc.fabric.api.datafixer.v1.EmptySchema;
 
 @ApiStatus.Internal
 public final class NoOpFabricDataFixesInternals extends FabricDataFixesInternals {
+	// From QSL.
 	private final Schema schema = new EmptySchema(0);
 
 	private boolean frozen = false;

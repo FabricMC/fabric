@@ -32,6 +32,7 @@ import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 
 @Mixin(HotbarStorage.class)
 public abstract class HotbarStorageMixin {
+	// From QSL.
 	@Inject(
 			method = "save",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/nbt/NbtIo;write(Lnet/minecraft/nbt/NbtCompound;Ljava/io/File;)V"),

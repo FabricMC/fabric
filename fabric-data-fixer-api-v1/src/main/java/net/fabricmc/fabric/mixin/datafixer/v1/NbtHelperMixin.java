@@ -33,6 +33,7 @@ import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 
 @Mixin(NbtHelper.class)
 public abstract class NbtHelperMixin {
+	// From QSL.
 	@Inject(
 			method = "update(Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/datafixer/DataFixTypes;Lnet/minecraft/nbt/NbtCompound;II)Lnet/minecraft/nbt/NbtCompound;",
 			at = @At("RETURN"),

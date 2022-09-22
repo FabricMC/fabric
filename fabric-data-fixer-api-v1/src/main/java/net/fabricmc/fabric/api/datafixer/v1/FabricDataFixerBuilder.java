@@ -38,6 +38,7 @@ import net.fabricmc.loader.api.ModContainer;
  * An extended variant of the {@link DataFixerBuilder} class, which provides an extra method.
  */
 public class FabricDataFixerBuilder extends DataFixerBuilder {
+	// From QSL.
 	protected final int dataVersion;
 
 	/**

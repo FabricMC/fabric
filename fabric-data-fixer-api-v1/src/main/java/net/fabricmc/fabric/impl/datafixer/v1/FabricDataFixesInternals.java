@@ -39,6 +39,7 @@ import net.fabricmc.loader.api.metadata.CustomValue;
 
 @ApiStatus.Internal
 public abstract class FabricDataFixesInternals {
+	// From QSL.
 	private static final Logger LOGGER = LogUtils.getLogger();
 	protected static final String DATA_VERSIONS_KEY = "_FabricDataVersions";
 	public static final String METADATA_VERSION_KEY = "fabric-data-fixer-api-v1:version";

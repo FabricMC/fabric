@@ -27,6 +27,7 @@ import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 
 @ApiStatus.Internal
 public final class ClientFreezer implements ClientModInitializer {
+	// From QSL.
 	@Override
 	public void onInitializeClient() {
 		ClientLifecycleEvents.CLIENT_STARTED.register((client) -> FabricDataFixesInternals.get().freeze());

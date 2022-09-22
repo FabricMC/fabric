@@ -37,6 +37,7 @@ import net.minecraft.util.Identifier;
  * Provides methods to add common {@link DataFix}es to {@link DataFixerBuilder}s.
  */
 public final class SimpleFixes {
+	// From QSL.
 	private SimpleFixes() {
 		throw new RuntimeException("SimpleFixes contains only static declarations.");
 	}

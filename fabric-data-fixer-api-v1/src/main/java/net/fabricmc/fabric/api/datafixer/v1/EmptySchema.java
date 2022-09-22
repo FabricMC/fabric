@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Range;
  * Represents an empty {@link Schema}, having no parent and containing no type definitions.
  */
 public final class EmptySchema extends FirstSchema {
+	// From QSL.
 	/**
 	 * Constructs an empty schema.
 	 *

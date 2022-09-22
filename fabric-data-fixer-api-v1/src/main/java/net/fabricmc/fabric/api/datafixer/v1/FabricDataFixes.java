@@ -39,6 +39,7 @@ import net.fabricmc.loader.api.ModContainer;
  * Provides methods to register custom {@link DataFixer}s.
  */
 public final class FabricDataFixes {
+	// From QSL.
 	private FabricDataFixes() {
 		throw new RuntimeException("FabricDataFixes only contains static declarations.");
 	}

@@ -27,6 +27,7 @@ import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 
 @ApiStatus.Internal
 public final class ServerFreezer implements DedicatedServerModInitializer {
+	// From QSL.
 	@Override
 	public void onInitializeServer() {
 		ServerLifecycleEvents.SERVER_STARTING.register((server) -> FabricDataFixesInternals.get().freeze());

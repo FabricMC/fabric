@@ -30,6 +30,7 @@ import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 
 @Mixin(ChunkSerializer.class)
 public abstract class ChunkSerializerMixin {
+	// From QSL.
 	@ModifyVariable(
 			method = "serialize",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/nbt/NbtCompound;putInt(Ljava/lang/String;I)V", ordinal = 0)

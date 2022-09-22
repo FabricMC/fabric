@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Range;
  * Represents a {@link Schema} that has no parent.
  */
 public class FirstSchema extends Schema {
+	// From QSL.
 	/**
 	 * Creates a schema.
 	 * @param versionKey the data version key

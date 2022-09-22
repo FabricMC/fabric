@@ -31,6 +31,7 @@ import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 
 @Mixin(StructureTemplate.class)
 public abstract class StructureTemplateMixin {
+	// From QSL.
 	@Inject(method = "writeNbt", at = @At("RETURN"))
 	private void addModDataVersions(NbtCompound nbt, CallbackInfoReturnable<NbtCompound> cir) {
 		FabricDataFixesInternals.get().addModDataVersions(nbt);
