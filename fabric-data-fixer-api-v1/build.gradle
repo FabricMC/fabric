@@ -6,8 +6,32 @@ moduleDependencies(project, [
 		'fabric-lifecycle-events-v1'
 ])
 
+testDependencies(project, [
+		':fabric-biome-api-v1',
+		':fabric-item-api-v1',
+		':fabric-object-builder-api-v1'
+])
+
+loom {
+	runs {
+		genOldSave {
+			inherit testmodServer
+			name "Generate old save"
+			vmArg "-XfabricDataFixerGenMode"
+
+			ideConfigGenerated = true
+			runDir "build/oldsave"
+		}
+	}
+}
+
 spotless {
 	java {
-		licenseHeaderFile(project.file("LICENSE-PORT")).named('port').onlyIfContentMatches('Quilt')
+		/**
+		 * This module contains a code from QSL, and they need a separate license header.
+		 * Code ported from QSL should be marked as "From QSL" in a comment,
+		 * inside the "source" (i.e. not inside header comment).
+		 */
+		licenseHeaderFile(project.file("HEADER-PORT")).named('port').onlyIfContentMatches('.*From QSL.*')
 	}
 }
