@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.datafixer.v1.server;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
-import net.fabricmc.fabric.impl.datafixer.v1.QuiltDataFixesInternals;
+import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 
 import org.jetbrains.annotations.ApiStatus;
 
@@ -27,6 +27,6 @@ import org.jetbrains.annotations.ApiStatus;
 public final class ServerFreezer implements DedicatedServerModInitializer {
 	@Override
 	public void onInitializeServer() {
-		ServerLifecycleEvents.SERVER_STARTING.register((server) -> QuiltDataFixesInternals.get().freeze());
+		ServerLifecycleEvents.SERVER_STARTING.register((server) -> FabricDataFixesInternals.get().freeze());
 	}
 }

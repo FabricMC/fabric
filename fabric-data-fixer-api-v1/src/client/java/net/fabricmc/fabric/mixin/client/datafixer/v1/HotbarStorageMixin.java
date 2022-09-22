@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.client.option.HotbarStorage;
 import net.minecraft.nbt.NbtCompound;
 
-import net.fabricmc.fabric.impl.datafixer.v1.QuiltDataFixesInternals;
+import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 
 @Mixin(HotbarStorage.class)
 public abstract class HotbarStorageMixin {
@@ -35,6 +35,6 @@ public abstract class HotbarStorageMixin {
 			locals = LocalCapture.CAPTURE_FAILHARD
 	)
 	private void addModDataVersions(CallbackInfo ci, NbtCompound compound) {
-		QuiltDataFixesInternals.get().addModDataVersions(compound);
+		FabricDataFixesInternals.get().addModDataVersions(compound);
 	}
 }

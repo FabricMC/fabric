@@ -24,12 +24,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 
-import net.fabricmc.fabric.impl.datafixer.v1.QuiltDataFixesInternals;
+import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin {
 	@Inject(method = "writeCustomDataToNbt", at = @At("RETURN"))
 	public void addModDataVersions(NbtCompound compound, CallbackInfo ci) {
-		QuiltDataFixesInternals.get().addModDataVersions(compound);
+		FabricDataFixesInternals.get().addModDataVersions(compound);
 	}
 }

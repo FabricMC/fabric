@@ -30,7 +30,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Util;
 
 import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.fabric.impl.datafixer.v1.QuiltDataFixesInternals;
+import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -38,9 +38,9 @@ import static java.util.Objects.requireNonNull;
 /**
  * Provides methods to register custom {@link DataFixer}s.
  */
-public final class QuiltDataFixes {
-	private QuiltDataFixes() {
-		throw new RuntimeException("QuiltDataFixes only contains static declarations.");
+public final class FabricDataFixes {
+	private FabricDataFixes() {
+		throw new RuntimeException("FabricDataFixes only contains static declarations.");
 	}
 
 	/**
@@ -53,7 +53,7 @@ public final class QuiltDataFixes {
 	public static final BiFunction<Integer, Schema, Schema> BASE_SCHEMA = (version, parent) -> {
 		checkArgument(version == 0, "version must be 0");
 		checkArgument(parent == null, "parent must be null");
-		return QuiltDataFixesInternals.get().createBaseSchema();
+		return FabricDataFixesInternals.get().createBaseSchema();
 	};
 
 	/**
@@ -75,7 +75,7 @@ public final class QuiltDataFixes {
 			throw new IllegalStateException("Can't register data fixer after registry is frozen");
 		}
 
-		QuiltDataFixesInternals.get().registerFixer(modId, currentVersion, dataFixer);
+		FabricDataFixesInternals.get().registerFixer(modId, currentVersion, dataFixer);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public final class QuiltDataFixes {
 	 * @param dataFixerBuilder the data fixer builder
 	 */
 	public static void buildAndRegisterFixer(@NotNull ModContainer mod,
-			@NotNull QuiltDataFixerBuilder dataFixerBuilder) {
+			@NotNull FabricDataFixerBuilder dataFixerBuilder) {
 		requireNonNull(mod, "mod cannot be null");
 		requireNonNull(dataFixerBuilder, "data fixer builder cannot be null");
 
@@ -117,7 +117,7 @@ public final class QuiltDataFixes {
 	public static @NotNull Optional<DataFixer> getFixer(@NotNull String modId) {
 		requireNonNull(modId, "modId cannot be null");
 
-		QuiltDataFixesInternals.DataFixerEntry entry = QuiltDataFixesInternals.get().getFixerEntry(modId);
+		FabricDataFixesInternals.DataFixerEntry entry = FabricDataFixesInternals.get().getFixerEntry(modId);
 		if (entry == null) {
 			return Optional.empty();
 		}
@@ -137,7 +137,7 @@ public final class QuiltDataFixes {
 		requireNonNull(compound, "compound cannot be null");
 		requireNonNull(modId, "modId cannot be null");
 
-		return QuiltDataFixesInternals.getModDataVersion(compound, modId);
+		return FabricDataFixesInternals.getModDataVersion(compound, modId);
 	}
 
 	/**
@@ -147,6 +147,6 @@ public final class QuiltDataFixes {
 	 */
 	@Contract(pure = true)
 	public static boolean isFrozen() {
-		return QuiltDataFixesInternals.get().isFrozen();
+		return FabricDataFixesInternals.get().isFrozen();
 	}
 }

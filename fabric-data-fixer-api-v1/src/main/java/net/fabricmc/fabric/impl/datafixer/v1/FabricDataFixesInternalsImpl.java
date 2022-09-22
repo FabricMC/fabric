@@ -16,8 +16,13 @@
 
 package net.fabricmc.fabric.impl.datafixer.v1;
 
+import java.util.Collections;
+import java.util.Map;
+
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
+import com.mojang.serialization.Dynamic;
+import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,47 +30,74 @@ import org.jetbrains.annotations.Range;
 
 import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
-
-import net.fabricmc.fabric.api.datafixer.v1.EmptySchema;
+import net.minecraft.nbt.NbtOps;
 
 @ApiStatus.Internal
-public final class NoOpQuiltDataFixesInternals extends QuiltDataFixesInternals {
-	private final Schema schema;
+public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals {
+	private final @NotNull Schema latestVanillaSchema;
 
+	private Map<String, DataFixerEntry> modDataFixers;
 	private boolean frozen;
 
-	public NoOpQuiltDataFixesInternals() {
-		this.schema = new EmptySchema(0);
+	public FabricDataFixesInternalsImpl(@NotNull Schema latestVanillaSchema) {
+		this.latestVanillaSchema = latestVanillaSchema;
 
+		this.modDataFixers = new Object2ReferenceOpenHashMap<>();
 		this.frozen = false;
 	}
 
 	@Override
 	public void registerFixer(@NotNull String modId, @Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
-			@NotNull DataFixer dataFixer) {}
+			@NotNull DataFixer dataFixer) {
+		if (this.modDataFixers.containsKey(modId)) {
+			throw new IllegalArgumentException("Mod '" + modId + "' already has a registered data fixer");
+		}
+
+		this.modDataFixers.put(modId, new DataFixerEntry(dataFixer, currentVersion));
+	}
 
 	@Override
 	public @Nullable DataFixerEntry getFixerEntry(@NotNull String modId) {
-		return null;
+		return modDataFixers.get(modId);
 	}
 
 	@Override
 	public @NotNull Schema createBaseSchema() {
-		return this.schema;
+		return new Schema(0, this.latestVanillaSchema);
 	}
 
 	@Override
 	public @NotNull NbtCompound updateWithAllFixers(@NotNull DataFixTypes dataFixTypes, @NotNull NbtCompound compound) {
-		return compound.copy();
+		var current = new Dynamic<>(NbtOps.INSTANCE, compound);
+
+		for (Map.Entry<String, DataFixerEntry> entry : this.modDataFixers.entrySet()) {
+			int modDataVersion = FabricDataFixesInternals.getModDataVersion(compound, entry.getKey());
+			DataFixerEntry dataFixerEntry = entry.getValue();
+
+			current = dataFixerEntry.dataFixer()
+					.update(dataFixTypes.getTypeReference(),
+							current,
+							modDataVersion, dataFixerEntry.currentVersion());
+		}
+
+		return (NbtCompound) current.getValue();
 	}
 
 	@Override
 	public @NotNull NbtCompound addModDataVersions(@NotNull NbtCompound compound) {
+		for (Map.Entry<String, DataFixerEntry> entry : this.modDataFixers.entrySet()) {
+			compound.putInt(entry.getKey() + "_DataVersion", entry.getValue().currentVersion());
+		}
+
 		return compound;
 	}
 
 	@Override
 	public void freeze() {
+		if (!this.frozen) {
+			modDataFixers = Collections.unmodifiableMap(this.modDataFixers);
+		}
+
 		this.frozen = true;
 	}
 
@@ -73,4 +105,5 @@ public final class NoOpQuiltDataFixesInternals extends QuiltDataFixesInternals {
 	public boolean isFrozen() {
 		return this.frozen;
 	}
+
 }

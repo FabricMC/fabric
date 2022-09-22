@@ -20,12 +20,12 @@ import net.fabricmc.api.ClientModInitializer;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.impl.datafixer.v1.QuiltDataFixesInternals;
+import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 
 @ApiStatus.Internal
 public final class ClientFreezer implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ClientLifecycleEvents.CLIENT_STARTED.register((client) -> QuiltDataFixesInternals.get().freeze());
+		ClientLifecycleEvents.CLIENT_STARTED.register((client) -> FabricDataFixesInternals.get().freeze());
 	}
 }

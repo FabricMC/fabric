@@ -15,9 +15,9 @@
  *
  * public static void initialize(ModContainer mod) {
  *     // create a builder
- *     var builder = new QuiltDataFixerBuilder(CURRENT_DATA_VERSION);
+ *     var builder = new FabricDataFixerBuilder(CURRENT_DATA_VERSION);
  *     // add the "base" version 0 schema
- *     builder.addSchema(0, QuiltDataFixes.BASE_SCHEMA);
+ *     builder.addSchema(0, FabricDataFixes.BASE_SCHEMA);
  *     // add a schema for upgrading from version 0 to version 1
  *     Schema schemaV1 = builder.addSchema(1, IdentifierNormalizingSchema::new)
  *     // add fixes to the schema - for example, an item rename (identifier change)
@@ -29,13 +29,13 @@
  *     // register the fixer!
  *     // this will create either an unoptimized fixer or an optimized fixer,
  *     //  depending on the game configuration
- *     QuiltDataFixes.buildAndRegisterFixer(mod, builder);
+ *     FabricDataFixes.buildAndRegisterFixer(mod, builder);
  * }
  * </code></pre>
  *
- * @see net.fabricmc.fabric.api.datafixer.v1.QuiltDataFixes
+ * @see net.fabricmc.fabric.api.datafixer.v1.FabricDataFixes
  * @see net.fabricmc.fabric.api.datafixer.v1.SimpleFixes
- * @see net.fabricmc.fabric.api.datafixer.v1.QuiltDataFixerBuilder
+ * @see net.fabricmc.fabric.api.datafixer.v1.FabricDataFixerBuilder
  */
 
 package net.fabricmc.fabric.api.datafixer.v1;

@@ -30,15 +30,15 @@ import net.minecraft.SharedConstants;
 /**
  * An extended variant of the {@link DataFixerBuilder} class, which provides an extra method.
  */
-public class QuiltDataFixerBuilder extends DataFixerBuilder {
+public class FabricDataFixerBuilder extends DataFixerBuilder {
 	protected final int dataVersion;
 
 	/**
-	 * Creates a new {@code QuiltDataFixerBuilder}.
+	 * Creates a new {@code FabricDataFixerBuilder}.
 	 *
 	 * @param dataVersion the current data version
 	 */
-	public QuiltDataFixerBuilder(@Range(from = 0, to = Integer.MAX_VALUE) int dataVersion) {
+	public FabricDataFixerBuilder(@Range(from = 0, to = Integer.MAX_VALUE) int dataVersion) {
 		super(dataVersion);
 		this.dataVersion = dataVersion;
 	}

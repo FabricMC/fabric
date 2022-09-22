@@ -24,14 +24,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.structure.StructureTemplate;
 
-import net.fabricmc.fabric.impl.datafixer.v1.QuiltDataFixesInternals;
+import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 
 @Mixin(StructureTemplate.class)
 public abstract class StructureTemplateMixin {
 	@Inject(method = "writeNbt", at = @At("TAIL"), cancellable = true)
 	private void addModDataVersions(NbtCompound compound, CallbackInfoReturnable<NbtCompound> cir) {
 		NbtCompound out = cir.getReturnValue();
-		QuiltDataFixesInternals.get().addModDataVersions(out);
+		FabricDataFixesInternals.get().addModDataVersions(out);
 		cir.setReturnValue(out);
 	}
 }

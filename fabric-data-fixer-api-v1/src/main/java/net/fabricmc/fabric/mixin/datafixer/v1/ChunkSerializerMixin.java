@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.ChunkSerializer;
 
-import net.fabricmc.fabric.impl.datafixer.v1.QuiltDataFixesInternals;
+import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 
 @Mixin(ChunkSerializer.class)
 public abstract class ChunkSerializerMixin {
@@ -32,6 +32,6 @@ public abstract class ChunkSerializerMixin {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/nbt/NbtCompound;putInt(Ljava/lang/String;I)V", ordinal = 0)
 	)
 	private static NbtCompound addModDataVersions(NbtCompound compound) {
-		return QuiltDataFixesInternals.get().addModDataVersions(compound);
+		return FabricDataFixesInternals.get().addModDataVersions(compound);
 	}
 }

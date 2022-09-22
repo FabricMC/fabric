@@ -26,7 +26,7 @@ import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 
-import net.fabricmc.fabric.impl.datafixer.v1.QuiltDataFixesInternals;
+import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 
 @Mixin(NbtHelper.class)
 public abstract class NbtHelperMixin {
@@ -37,6 +37,6 @@ public abstract class NbtHelperMixin {
 	)
 	private static void updateDataWithFixers(DataFixer fixer, DataFixTypes fixTypes, NbtCompound compound,
 											 int oldVersion, int targetVersion, CallbackInfoReturnable<NbtCompound> cir) {
-		cir.setReturnValue(QuiltDataFixesInternals.get().updateWithAllFixers(fixTypes, cir.getReturnValue()));
+		cir.setReturnValue(FabricDataFixesInternals.get().updateWithAllFixers(fixTypes, cir.getReturnValue()));
 	}
 }

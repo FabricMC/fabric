@@ -29,7 +29,7 @@ import net.minecraft.datafixer.Schemas;
 import net.minecraft.nbt.NbtCompound;
 
 @ApiStatus.Internal
-public abstract class QuiltDataFixesInternals {
+public abstract class FabricDataFixesInternals {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	public record DataFixerEntry(DataFixer dataFixer, int currentVersion) {}
@@ -40,9 +40,9 @@ public abstract class QuiltDataFixesInternals {
 		return compound.getInt(modId + "_DataVersion");
 	}
 
-	private static QuiltDataFixesInternals instance;
+	private static FabricDataFixesInternals instance;
 
-	public static @NotNull QuiltDataFixesInternals get() {
+	public static @NotNull FabricDataFixesInternals get() {
 		if (instance == null) {
 			Schema latestVanillaSchema;
 			try {
@@ -53,12 +53,12 @@ public abstract class QuiltDataFixesInternals {
 			}
 
 			if (latestVanillaSchema == null) {
-				LOGGER.warn("[Quilt DFU API] Failed to initialize! Either someone stopped DFU from initializing,");
-				LOGGER.warn("[Quilt DFU API]  or this Minecraft build is hosed.");
-				LOGGER.warn("[Quilt DFU API] Using no-op implementation.");
-				instance = new NoOpQuiltDataFixesInternals();
+				LOGGER.warn("[Fabric DFU API] Failed to initialize! Either someone stopped DFU from initializing,");
+				LOGGER.warn("[Fabric DFU API]  or this Minecraft build is hosed.");
+				LOGGER.warn("[Fabric DFU API] Using no-op implementation.");
+				instance = new NoOpFabricDataFixesInternals();
 			} else {
-				instance = new QuiltDataFixesInternalsImpl(latestVanillaSchema);
+				instance = new FabricDataFixesInternalsImpl(latestVanillaSchema);
 			}
 		}
 
