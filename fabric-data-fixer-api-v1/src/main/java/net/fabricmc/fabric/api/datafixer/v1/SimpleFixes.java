@@ -19,8 +19,6 @@
 
 package net.fabricmc.fabric.api.datafixer.v1;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.Map;
 import java.util.Objects;
 
@@ -28,7 +26,6 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.DataFix;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
-import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.datafixer.fix.BiomeRenameFix;
 import net.minecraft.datafixer.fix.BlockNameFix;
@@ -54,14 +51,14 @@ public final class SimpleFixes {
 	 * @param schema  the schema this fixer should be a part of
 	 * @see BlockNameFix
 	 */
-	public static void addBlockRenameFix(@NotNull DataFixerBuilder builder, @NotNull String name,
-			@NotNull Identifier oldId, @NotNull Identifier newId,
-			@NotNull Schema schema) {
-		requireNonNull(builder, "DataFixerBuilder cannot be null");
-		requireNonNull(name, "Fix name cannot be null");
-		requireNonNull(oldId, "Old identifier cannot be null");
-		requireNonNull(newId, "New identifier cannot be null");
-		requireNonNull(schema, "Schema cannot be null");
+	public static void addBlockRenameFix(DataFixerBuilder builder, String name,
+			Identifier oldId, Identifier newId,
+			Schema schema) {
+		Objects.requireNonNull(builder, "DataFixerBuilder cannot be null");
+		Objects.requireNonNull(name, "Fix name cannot be null");
+		Objects.requireNonNull(oldId, "Old identifier cannot be null");
+		Objects.requireNonNull(newId, "New identifier cannot be null");
+		Objects.requireNonNull(schema, "Schema cannot be null");
 
 		final String oldIdStr = oldId.toString(), newIdStr = newId.toString();
 		builder.addFixer(BlockNameFix.create(schema, name, (inputName) ->
@@ -78,14 +75,14 @@ public final class SimpleFixes {
 	 * @param schema  the schema this fix should be a part of
 	 * @see ItemNameFix
 	 */
-	public static void addItemRenameFix(@NotNull DataFixerBuilder builder, @NotNull String name,
-			@NotNull Identifier oldId, @NotNull Identifier newId,
-			@NotNull Schema schema) {
-		requireNonNull(builder, "DataFixerBuilder cannot be null");
-		requireNonNull(name, "Fix name cannot be null");
-		requireNonNull(oldId, "Old identifier cannot be null");
-		requireNonNull(newId, "New identifier cannot be null");
-		requireNonNull(schema, "Schema cannot be null");
+	public static void addItemRenameFix(DataFixerBuilder builder, String name,
+			Identifier oldId, Identifier newId,
+			Schema schema) {
+		Objects.requireNonNull(builder, "DataFixerBuilder cannot be null");
+		Objects.requireNonNull(name, "Fix name cannot be null");
+		Objects.requireNonNull(oldId, "Old identifier cannot be null");
+		Objects.requireNonNull(newId, "New identifier cannot be null");
+		Objects.requireNonNull(schema, "Schema cannot be null");
 
 		final String oldIdStr = oldId.toString(), newIdStr = newId.toString();
 		builder.addFixer(ItemNameFix.create(schema, name, (inputName) ->
@@ -101,13 +98,13 @@ public final class SimpleFixes {
 	 * @param schema  the schema this fixer should be a part of
 	 * @see BiomeRenameFix
 	 */
-	public static void addBiomeRenameFix(@NotNull DataFixerBuilder builder, @NotNull String name,
-			@NotNull Map<Identifier, Identifier> changes,
-			@NotNull Schema schema) {
-		requireNonNull(builder, "DataFixerBuilder cannot be null");
-		requireNonNull(name, "Fix name cannot be null");
-		requireNonNull(changes, "Changes cannot be null");
-		requireNonNull(schema, "Schema cannot be null");
+	public static void addBiomeRenameFix(DataFixerBuilder builder, String name,
+			Map<Identifier, Identifier> changes,
+			Schema schema) {
+		Objects.requireNonNull(builder, "DataFixerBuilder cannot be null");
+		Objects.requireNonNull(name, "Fix name cannot be null");
+		Objects.requireNonNull(changes, "Changes cannot be null");
+		Objects.requireNonNull(schema, "Schema cannot be null");
 
 		ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
 

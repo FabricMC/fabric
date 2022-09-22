@@ -25,7 +25,6 @@ import java.util.function.Supplier;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerBuilder;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 import net.minecraft.SharedConstants;
@@ -64,7 +63,7 @@ public class FabricDataFixerBuilder extends DataFixerBuilder {
 	 * @return the newly built data fixer
 	 */
 	@Contract(value = "_ -> new")
-	public @NotNull DataFixer build(@NotNull Supplier<Executor> executorGetter) {
+	public DataFixer build(Supplier<Executor> executorGetter) {
 		return switch (SharedConstants.dataFixerPhase) {
 		case UNINITIALIZED_UNOPTIMIZED, INITIALIZED_UNOPTIMIZED -> this.buildUnoptimized();
 		case UNINITIALIZED_OPTIMIZED, INITIALIZED_OPTIMIZED -> this.buildOptimized(executorGetter.get());

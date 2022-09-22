@@ -25,7 +25,6 @@ import com.mojang.datafixers.schemas.Schema;
 import com.mojang.logging.LogUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.slf4j.Logger;
@@ -44,13 +43,13 @@ public abstract class FabricDataFixesInternals {
 
 	@Contract(pure = true)
 	@Range(from = 0, to = Integer.MAX_VALUE)
-	public static int getModDataVersion(@NotNull NbtCompound compound, @NotNull String modId) {
+	public static int getModDataVersion(NbtCompound compound, String modId) {
 		return compound.getInt(modId + "_DataVersion");
 	}
 
 	private static FabricDataFixesInternals instance;
 
-	public static @NotNull FabricDataFixesInternals get() {
+	public static FabricDataFixesInternals get() {
 		if (instance == null) {
 			Schema latestVanillaSchema;
 
@@ -74,17 +73,16 @@ public abstract class FabricDataFixesInternals {
 		return instance;
 	}
 
-	public abstract void registerFixer(@NotNull String modId, @Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
-			@NotNull DataFixer dataFixer);
+	public abstract void registerFixer(String modId, @Range(from = 0, to = Integer.MAX_VALUE) int currentVersion, DataFixer dataFixer);
 
-	public abstract @Nullable DataFixerEntry getFixerEntry(@NotNull String modId);
+	public abstract @Nullable DataFixerEntry getFixerEntry(String modId);
 
 	@Contract(value = "-> new", pure = true)
-	public abstract @NotNull Schema createBaseSchema();
+	public abstract Schema createBaseSchema();
 
-	public abstract @NotNull NbtCompound updateWithAllFixers(@NotNull DataFixTypes dataFixTypes, @NotNull NbtCompound compound);
+	public abstract NbtCompound updateWithAllFixers(DataFixTypes dataFixTypes, NbtCompound compound);
 
-	public abstract @NotNull NbtCompound addModDataVersions(@NotNull NbtCompound compound);
+	public abstract NbtCompound addModDataVersions(NbtCompound compound);
 
 	public abstract void freeze();
 

@@ -22,7 +22,6 @@ package net.fabricmc.fabric.impl.datafixer.v1;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
@@ -44,27 +43,26 @@ public final class NoOpFabricDataFixesInternals extends FabricDataFixesInternals
 	}
 
 	@Override
-	public void registerFixer(@NotNull String modId, @Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
-			@NotNull DataFixer dataFixer) {
+	public void registerFixer(String modId, @Range(from = 0, to = Integer.MAX_VALUE) int currentVersion, DataFixer dataFixer) {
 	}
 
 	@Override
-	public @Nullable DataFixerEntry getFixerEntry(@NotNull String modId) {
+	public @Nullable DataFixerEntry getFixerEntry(String modId) {
 		return null;
 	}
 
 	@Override
-	public @NotNull Schema createBaseSchema() {
+	public Schema createBaseSchema() {
 		return this.schema;
 	}
 
 	@Override
-	public @NotNull NbtCompound updateWithAllFixers(@NotNull DataFixTypes dataFixTypes, @NotNull NbtCompound compound) {
+	public NbtCompound updateWithAllFixers(DataFixTypes dataFixTypes, NbtCompound compound) {
 		return compound.copy();
 	}
 
 	@Override
-	public @NotNull NbtCompound addModDataVersions(@NotNull NbtCompound compound) {
+	public NbtCompound addModDataVersions(NbtCompound compound) {
 		return compound;
 	}
 

@@ -28,7 +28,6 @@ import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 import net.minecraft.nbt.NbtCompound;
@@ -65,9 +64,9 @@ public final class FabricDataFixes {
 	 * @param currentVersion the current version of the mod's data
 	 * @param dataFixer      the data fixer
 	 */
-	public static void registerFixer(@NotNull String modId,
+	public static void registerFixer(String modId,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
-			@NotNull DataFixer dataFixer) {
+			DataFixer dataFixer) {
 		Objects.requireNonNull(modId, "modId cannot be null");
 		//noinspection ConstantConditions
 		Preconditions.checkArgument(currentVersion >= 0, "currentVersion must be positive");
@@ -87,9 +86,9 @@ public final class FabricDataFixes {
 	 * @param currentVersion the current version of the mod's data
 	 * @param dataFixer      the data fixer
 	 */
-	public static void registerFixer(@NotNull ModContainer mod,
+	public static void registerFixer(ModContainer mod,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
-			@NotNull DataFixer dataFixer) {
+			DataFixer dataFixer) {
 		Objects.requireNonNull(mod, "mod cannot be null");
 
 		registerFixer(mod.getMetadata().getId(), currentVersion, dataFixer);
@@ -101,8 +100,8 @@ public final class FabricDataFixes {
 	 * @param mod              the mod container
 	 * @param dataFixerBuilder the data fixer builder
 	 */
-	public static void buildAndRegisterFixer(@NotNull ModContainer mod,
-			@NotNull FabricDataFixerBuilder dataFixerBuilder) {
+	public static void buildAndRegisterFixer(ModContainer mod,
+			FabricDataFixerBuilder dataFixerBuilder) {
 		Objects.requireNonNull(mod, "mod cannot be null");
 		Objects.requireNonNull(dataFixerBuilder, "data fixer builder cannot be null");
 
@@ -116,7 +115,7 @@ public final class FabricDataFixes {
 	 * @param modId the mod identifier
 	 * @return the mod's data fixer, or empty if the mod hasn't registered one
 	 */
-	public static @NotNull Optional<DataFixer> getFixer(@NotNull String modId) {
+	public static Optional<DataFixer> getFixer(String modId) {
 		Objects.requireNonNull(modId, "modId cannot be null");
 
 		FabricDataFixesInternals.DataFixerEntry entry = FabricDataFixesInternals.get().getFixerEntry(modId);
@@ -137,7 +136,7 @@ public final class FabricDataFixes {
 	 */
 	@Contract(pure = true)
 	@Range(from = 0, to = Integer.MAX_VALUE)
-	public static int getModDataVersion(@NotNull NbtCompound compound, @NotNull String modId) {
+	public static int getModDataVersion(NbtCompound compound, String modId) {
 		Objects.requireNonNull(compound, "compound cannot be null");
 		Objects.requireNonNull(modId, "modId cannot be null");
 
