@@ -32,7 +32,7 @@ import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin {
 	@Inject(method = "writeCustomDataToNbt", at = @At("RETURN"))
-	public void addModDataVersions(NbtCompound compound, CallbackInfo ci) {
-		FabricDataFixesInternals.get().addModDataVersions(compound);
+	public void addModDataVersions(NbtCompound nbt, CallbackInfo ci) {
+		FabricDataFixesInternals.get().addModDataVersions(nbt);
 	}
 }

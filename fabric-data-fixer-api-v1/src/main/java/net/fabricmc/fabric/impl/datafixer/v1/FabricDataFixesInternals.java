@@ -58,7 +58,7 @@ public abstract class FabricDataFixesInternals {
 			try {
 				latestVanillaSchema = Schemas.getFixer()
 						.getSchema(DataFixUtils.makeKey(SharedConstants.getGameVersion().getSaveVersion().getId()));
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				latestVanillaSchema = null;
 			}
 
@@ -82,7 +82,7 @@ public abstract class FabricDataFixesInternals {
 	@Contract(value = "-> new", pure = true)
 	public abstract Schema createBaseSchema();
 
-	public abstract NbtCompound updateWithAllFixers(DataFixTypes dataFixTypes, NbtCompound compound);
+	public abstract NbtCompound updateWithAllFixers(DataFixTypes dataFixTypes, NbtCompound nbt);
 
 	public abstract NbtCompound addModDataVersions(NbtCompound nbt);
 

@@ -31,10 +31,8 @@ import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 
 @Mixin(StructureTemplate.class)
 public abstract class StructureTemplateMixin {
-	@Inject(method = "writeNbt", at = @At("TAIL"), cancellable = true)
-	private void addModDataVersions(NbtCompound compound, CallbackInfoReturnable<NbtCompound> cir) {
-		NbtCompound out = cir.getReturnValue();
-		FabricDataFixesInternals.get().addModDataVersions(out);
-		cir.setReturnValue(out);
+	@Inject(method = "writeNbt", at = @At("RETURN"))
+	private void addModDataVersions(NbtCompound nbt, CallbackInfoReturnable<NbtCompound> cir) {
+		FabricDataFixesInternals.get().addModDataVersions(nbt);
 	}
 }

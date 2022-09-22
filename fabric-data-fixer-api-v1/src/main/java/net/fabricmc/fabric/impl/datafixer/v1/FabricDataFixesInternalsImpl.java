@@ -53,7 +53,7 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 	public void registerFixer(String modId, @Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
 			DataFixer dataFixer) {
 		if (this.modDataFixers.containsKey(modId)) {
-			throw new IllegalArgumentException("Mod '" + modId + "' already has a registered data fixer");
+			throw new IllegalArgumentException("Mod '" + modId + "' has already registered a data fixer");
 		}
 
 		this.modDataFixers.put(modId, new DataFixerEntry(dataFixer, currentVersion));
@@ -70,11 +70,11 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 	}
 
 	@Override
-	public NbtCompound updateWithAllFixers(DataFixTypes dataFixTypes, NbtCompound compound) {
-		Dynamic<NbtElement> current = new Dynamic<>(NbtOps.INSTANCE, compound);
+	public NbtCompound updateWithAllFixers(DataFixTypes dataFixTypes, NbtCompound nbt) {
+		Dynamic<NbtElement> current = new Dynamic<>(NbtOps.INSTANCE, nbt);
 
 		for (Map.Entry<String, DataFixerEntry> entry : this.modDataFixers.entrySet()) {
-			int modDataVersion = FabricDataFixesInternals.getModDataVersion(compound, entry.getKey());
+			int modDataVersion = FabricDataFixesInternals.getModDataVersion(nbt, entry.getKey());
 			DataFixerEntry dataFixerEntry = entry.getValue();
 
 			current = dataFixerEntry.dataFixer()

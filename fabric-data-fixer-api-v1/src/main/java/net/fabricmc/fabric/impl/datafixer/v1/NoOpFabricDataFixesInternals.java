@@ -32,14 +32,11 @@ import net.fabricmc.fabric.api.datafixer.v1.EmptySchema;
 
 @ApiStatus.Internal
 public final class NoOpFabricDataFixesInternals extends FabricDataFixesInternals {
-	private final Schema schema;
+	private final Schema schema = new EmptySchema(0);
 
-	private boolean frozen;
+	private boolean frozen = false;
 
 	public NoOpFabricDataFixesInternals() {
-		this.schema = new EmptySchema(0);
-
-		this.frozen = false;
 	}
 
 	@Override
@@ -57,8 +54,8 @@ public final class NoOpFabricDataFixesInternals extends FabricDataFixesInternals
 	}
 
 	@Override
-	public NbtCompound updateWithAllFixers(DataFixTypes dataFixTypes, NbtCompound compound) {
-		return compound.copy();
+	public NbtCompound updateWithAllFixers(DataFixTypes dataFixTypes, NbtCompound nbt) {
+		return nbt.copy();
 	}
 
 	@Override

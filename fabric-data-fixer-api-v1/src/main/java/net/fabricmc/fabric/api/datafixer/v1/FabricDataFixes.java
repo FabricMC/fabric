@@ -31,7 +31,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Range;
 
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 import net.fabricmc.loader.api.ModContainer;
@@ -62,9 +61,10 @@ public final class FabricDataFixes {
 	/**
 	 * Registers a new data fixer.
 	 *
-	 * @param modId          the mod identifier
+	 * @param modId          the mod ID
 	 * @param currentVersion the current version of the mod's data
 	 * @param dataFixer      the data fixer
+	 * @throws IllegalArgumentException if the data fixer for {@code modId} is already registered
 	 */
 	public static void registerFixer(String modId,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
@@ -87,6 +87,7 @@ public final class FabricDataFixes {
 	 * @param mod            the mod container
 	 * @param currentVersion the current version of the mod's data
 	 * @param dataFixer      the data fixer
+	 * @throws IllegalArgumentException if the data fixer for {@code mod} is already registered
 	 */
 	public static void registerFixer(ModContainer mod,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
@@ -105,6 +106,7 @@ public final class FabricDataFixes {
 	 * @param mod            the mod container
 	 * @param dataFixer      the data fixer
 	 * @throws RuntimeException if the version field does not exist or is not a number
+	 * @throws IllegalArgumentException if the data fixer for {@code mod} is already registered
 	 */
 	public static void registerFixer(ModContainer mod, DataFixer dataFixer) {
 		Objects.requireNonNull(mod, "mod cannot be null");
@@ -121,22 +123,23 @@ public final class FabricDataFixes {
 	 * Builds and registers a new data fixer.
 	 *
 	 * @param mod              the mod container
-	 * @param dataFixerBuilder the data fixer builder
+	 * @param builder the data fixer builder
+	 * @throws IllegalArgumentException if the data fixer for {@code mod} is already registered
 	 */
 	public static void buildAndRegisterFixer(ModContainer mod,
-			FabricDataFixerBuilder dataFixerBuilder) {
+			FabricDataFixerBuilder builder) {
 		Objects.requireNonNull(mod, "mod cannot be null");
-		Objects.requireNonNull(dataFixerBuilder, "data fixer builder cannot be null");
+		Objects.requireNonNull(builder, "data fixer builder cannot be null");
 
-		registerFixer(mod.getMetadata().getId(), dataFixerBuilder.getDataVersion(),
-				dataFixerBuilder.build(Util::getBootstrapExecutor));
+		registerFixer(mod.getMetadata().getId(), builder.getDataVersion(),
+				builder.build());
 	}
 
 	/**
 	 * Gets a mod's data fixer.
 	 *
-	 * @param modId the mod identifier
-	 * @return the mod's data fixer, or empty if the mod hasn't registered one
+	 * @param modId the mod ID
+	 * @return the mod's data fixer, or empty optional if the mod hasn't registered one
 	 */
 	public static Optional<DataFixer> getFixer(String modId) {
 		Objects.requireNonNull(modId, "modId cannot be null");
@@ -153,21 +156,22 @@ public final class FabricDataFixes {
 	/**
 	 * Gets a mod's data version from a {@link NbtCompound}.
 	 *
-	 * @param compound the compound
-	 * @param modId    the mod identifier
-	 * @return the mod's data version, or {@code 0} if the compound has no data for that mod
+	 * @param nbt the NBT compound
+	 * @param modId    the mod ID
+	 * @return the mod's data version, or {@code 0} if the NBT has no data for that mod
 	 */
 	@Contract(pure = true)
 	@Range(from = 0, to = Integer.MAX_VALUE)
-	public static int getModDataVersion(NbtCompound compound, String modId) {
-		Objects.requireNonNull(compound, "compound cannot be null");
+	public static int getModDataVersion(NbtCompound nbt, String modId) {
+		Objects.requireNonNull(nbt, "compound cannot be null");
 		Objects.requireNonNull(modId, "modId cannot be null");
 
-		return FabricDataFixesInternals.getModDataVersion(compound, modId);
+		return FabricDataFixesInternals.getModDataVersion(nbt, modId);
 	}
 
 	/**
-	 * Checks if the data fixer registry is frozen.
+	 * Checks if the data fixer registry is frozen. Data fixers cannot be registered
+	 * after the registry gets frozen.
 	 *
 	 * @return {@code true} if frozen, or {@code false} otherwise.
 	 */

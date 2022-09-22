@@ -19,6 +19,7 @@
 
 package net.fabricmc.fabric.api.datafixer.v1;
 
+import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
@@ -47,7 +48,7 @@ public class FabricDataFixerBuilder extends DataFixerBuilder {
 	}
 
 	/**
-	 * Returns the current data version.
+	 * @return the current data version
 	 */
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	public int getDataVersion() {
@@ -65,6 +66,7 @@ public class FabricDataFixerBuilder extends DataFixerBuilder {
 	 */
 	@Contract(value = "_ -> new")
 	public DataFixer build(Supplier<Executor> executorGetter) {
+		Objects.requireNonNull(executorGetter, "executorGetter cannot be null");
 		return switch (SharedConstants.dataFixerPhase) {
 		case UNINITIALIZED_UNOPTIMIZED, INITIALIZED_UNOPTIMIZED -> this.buildUnoptimized();
 		case UNINITIALIZED_OPTIMIZED, INITIALIZED_OPTIMIZED -> this.buildOptimized(executorGetter.get());
