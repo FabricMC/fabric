@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Range;
 
 import net.minecraft.SharedConstants;
+import net.minecraft.util.Util;
 
 /**
  * An extended variant of the {@link DataFixerBuilder} class, which provides an extra method.
@@ -68,5 +69,18 @@ public class FabricDataFixerBuilder extends DataFixerBuilder {
 		case UNINITIALIZED_UNOPTIMIZED, INITIALIZED_UNOPTIMIZED -> this.buildUnoptimized();
 		case UNINITIALIZED_OPTIMIZED, INITIALIZED_OPTIMIZED -> this.buildOptimized(executorGetter.get());
 		};
+	}
+
+	/**
+	 * Builds the final {@code DataFixer}.
+	 *
+	 * <p>This will build either an {@linkplain #buildUnoptimized() unoptimized fixer} or an
+	 * {@linkplain #buildOptimized(Executor) optimized fixer}, depending on the vanilla game's settings.
+	 * Optimization is performed using the {@linkplain Util#getBootstrapExecutor() bootstrap executor}.
+	 *
+	 * @return the newly built data fixer
+	 */
+	public DataFixer build() {
+		return build(Util::getBootstrapExecutor);
 	}
 }

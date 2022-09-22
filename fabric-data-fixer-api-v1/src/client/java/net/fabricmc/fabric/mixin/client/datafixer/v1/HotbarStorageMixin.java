@@ -37,7 +37,7 @@ public abstract class HotbarStorageMixin {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/nbt/NbtIo;write(Lnet/minecraft/nbt/NbtCompound;Ljava/io/File;)V"),
 			locals = LocalCapture.CAPTURE_FAILHARD
 	)
-	private void addModDataVersions(CallbackInfo ci, NbtCompound compound) {
-		FabricDataFixesInternals.get().addModDataVersions(compound);
+	private void addModDataVersions(CallbackInfo ci, NbtCompound nbt) {
+		FabricDataFixesInternals.get().addModDataVersions(nbt);
 	}
 }
