@@ -31,6 +31,9 @@ import org.jetbrains.annotations.Range;
 import net.minecraft.SharedConstants;
 import net.minecraft.util.Util;
 
+import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
+import net.fabricmc.loader.api.ModContainer;
+
 /**
  * An extended variant of the {@link DataFixerBuilder} class, which provides an extra method.
  */
@@ -45,6 +48,22 @@ public class FabricDataFixerBuilder extends DataFixerBuilder {
 	public FabricDataFixerBuilder(@Range(from = 0, to = Integer.MAX_VALUE) int dataVersion) {
 		super(dataVersion);
 		this.dataVersion = dataVersion;
+	}
+
+	/**
+	 * Creates a new {@code FabricDataFixerBuilder}. This method gets the current version from
+	 * the {@code fabric-data-fixer-api-v1:version} field in the {@code custom} object of
+	 * the {@code fabric.mod.json} file of {@code mod}. To specify the version
+	 * manually, use the other overload.
+	 *
+	 * @param mod the mod container
+	 * @return the data fixer builder
+	 * @throws RuntimeException if the version field does not exist or is not a number
+	 */
+	public static FabricDataFixerBuilder create(ModContainer mod) {
+		Objects.requireNonNull(mod, "mod cannot be null");
+		int dataVersion = FabricDataFixesInternals.getDataVersionFromMetadata(mod);
+		return new FabricDataFixerBuilder(dataVersion);
 	}
 
 	/**

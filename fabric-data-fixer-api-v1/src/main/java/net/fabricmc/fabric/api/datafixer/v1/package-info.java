@@ -54,6 +54,7 @@
  * }</pre>
  *
  * <h3 id="data-version">Data version</h3>
+ *
  * <p>A data fixer needs an integer "data version" to function. This is different from the
  * mod version given in {@code version} key of the {@code fabric.mod.json} file.
  *

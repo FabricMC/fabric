@@ -34,13 +34,11 @@ import net.minecraft.nbt.NbtCompound;
 
 import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.metadata.CustomValue;
 
 /**
  * Provides methods to register custom {@link DataFixer}s.
  */
 public final class FabricDataFixes {
-	private static final String METADATA_VERSION_KEY = "fabric-data-fixer-api-v1:version";
 	private FabricDataFixes() {
 		throw new RuntimeException("FabricDataFixes only contains static declarations.");
 	}
@@ -99,7 +97,7 @@ public final class FabricDataFixes {
 
 	/**
 	 * Registers a new data fixer. This method gets the current version from
-	 * the {@value #METADATA_VERSION_KEY} field in the {@code custom} object of
+	 * the {@code fabric-data-fixer-api-v1:version} field in the {@code custom} object of
 	 * the {@code fabric.mod.json} file of {@code mod}. To specify the version
 	 * manually, use the other overloads.
 	 *
@@ -110,13 +108,7 @@ public final class FabricDataFixes {
 	 */
 	public static void registerFixer(ModContainer mod, DataFixer dataFixer) {
 		Objects.requireNonNull(mod, "mod cannot be null");
-		CustomValue version = mod.getMetadata().getCustomValue(METADATA_VERSION_KEY);
-
-		if (version == null || version.getType() != CustomValue.CvType.NUMBER) {
-			throw new RuntimeException("FabricDataFixes#registerFixer called without passing the version or setting it in the fabric.mod.json file");
-		}
-
-		registerFixer(mod.getMetadata().getId(), version.getAsNumber().intValue(), dataFixer);
+		registerFixer(mod.getMetadata().getId(), FabricDataFixesInternals.getDataVersionFromMetadata(mod), dataFixer);
 	}
 
 	/**

@@ -34,12 +34,27 @@ import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.datafixer.Schemas;
 import net.minecraft.nbt.NbtCompound;
 
+import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.CustomValue;
+
 @ApiStatus.Internal
 public abstract class FabricDataFixesInternals {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	protected static final String DATA_VERSIONS_KEY = "_FabricDataVersions";
+	public static final String METADATA_VERSION_KEY = "fabric-data-fixer-api-v1:version";
 
 	public record DataFixerEntry(DataFixer dataFixer, int currentVersion) {
+	}
+
+	@Range(from = 0, to = Integer.MAX_VALUE)
+	public static int getDataVersionFromMetadata(ModContainer mod) {
+		CustomValue version = mod.getMetadata().getCustomValue(METADATA_VERSION_KEY);
+
+		if (version == null || version.getType() != CustomValue.CvType.NUMBER) {
+			throw new RuntimeException("Data version is not set in the fabric.mod.json file; set it or pass explicitly");
+		}
+
+		return version.getAsNumber().intValue();
 	}
 
 	@Contract(pure = true)
