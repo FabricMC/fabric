@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.registry.sync.client;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,8 +34,10 @@ import net.fabricmc.fabric.impl.registry.sync.trackers.Int2ObjectMapTracker;
 
 @Mixin(ItemModels.class)
 public class ItemModelsMixin {
+	@Final
 	@Shadow
 	public Int2ObjectMap<ModelIdentifier> modelIds;
+	@Final
 	@Shadow
 	private Int2ObjectMap<BakedModel> models;
 

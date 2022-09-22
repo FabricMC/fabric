@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.event.interaction.client;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -56,8 +57,10 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 @Mixin(ClientPlayerInteractionManager.class)
 public abstract class ClientPlayerInteractionManagerMixin {
 	@Shadow
+	@Final
 	private MinecraftClient client;
 	@Shadow
+	@Final
 	private ClientPlayNetworkHandler networkHandler;
 	@Shadow
 	private GameMode gameMode;
