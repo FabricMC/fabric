@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle.client;
 
+import java.util.List;
+import java.io.File;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -31,9 +34,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-
-import java.io.File;
-import java.util.List;
 
 @Environment(EnvType.CLIENT)
 @Mixin(MinecraftClient.class)
