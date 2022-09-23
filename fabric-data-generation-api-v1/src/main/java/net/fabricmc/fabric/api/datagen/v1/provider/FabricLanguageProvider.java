@@ -108,16 +108,16 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	@FunctionalInterface
 	public interface TranslationBuilder {
 		/**
-		 * Adds a language entry.
+		 * Adds a translation.
 		 *
-		 * @param languageKey  The key of the language entry.
+		 * @param translationKey  The key of the translation.
 		 * @param value        The value of the entry.
 		 */
-		void add(String languageKey, String value);
+		void add(String translationKey, String value);
 
 		/**
-		 * Adds a language entry for an {@link Item}.
-		 * @param item The {@link Item} to get the language entry key from.
+		 * Adds a translation for an {@link Item}.
+		 * @param item The {@link Item} to get the translation key from.
 		 * @param value The value of the entry.
 		 */
 		default void add(Item item, String value) {
@@ -125,8 +125,8 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		};
 
 		/**
-		 * Adds a language entry for a {@link Block}.
-		 * @param block The {@link Block} to get the language entry key from.
+		 * Adds a translation for a {@link Block}.
+		 * @param block The {@link Block} to get the translation key from.
 		 * @param value The value of the entry.
 		 */
 		default void add(Block block, String value) {
@@ -134,8 +134,8 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		}
 
 		/**
-		 * Adds a language entry for an {@link ItemGroup}.
-		 * @param group The {@link ItemGroup} to get the language entry key from.
+		 * Adds a translation for an {@link ItemGroup}.
+		 * @param group The {@link ItemGroup} to get the translation key from.
 		 * @param value The value of the entry.
 		 */
 		default void add(ItemGroup group, String value) {
@@ -143,8 +143,8 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		}
 
 		/**
-		 * Adds a language entry for an {@link EntityType}.
-		 * @param entityType The {@link EntityType} to get the language entry key from.
+		 * Adds a translation for an {@link EntityType}.
+		 * @param entityType The {@link EntityType} to get the translation key from.
 		 * @param value The value of the entry.
 		 */
 		default void add(EntityType<?> entityType, String value) {
@@ -152,8 +152,8 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		}
 
 		/**
-		 * Adds a language entry for an {@link Enchantment}.
-		 * @param enchantment The {@link Enchantment} to get the language entry key from.
+		 * Adds a translation for an {@link Enchantment}.
+		 * @param enchantment The {@link Enchantment} to get the translation key from.
 		 * @param value The value of the entry.
 		 */
 		default void add(Enchantment enchantment, String value) {
@@ -161,8 +161,8 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		}
 
 		/**
-		 * Adds a language entry for an {@link EntityAttribute}.
-		 * @param entityAttribute The {@link EntityAttribute} to get the language entry key from.
+		 * Adds a translation for an {@link EntityAttribute}.
+		 * @param entityAttribute The {@link EntityAttribute} to get the translation key from.
 		 * @param value The value of the entry.
 		 */
 		default void add(EntityAttribute entityAttribute, String value) {
@@ -170,8 +170,8 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		}
 
 		/**
-		 * Adds a language entry for a {@link StatType}.
-		 * @param statType The {@link StatType} to get the language entry key from.
+		 * Adds a translation for a {@link StatType}.
+		 * @param statType The {@link StatType} to get the translation key from.
 		 * @param value The value of the entry.
 		 */
 		default void add(StatType<?> statType, String value) {
@@ -179,8 +179,8 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		}
 
 		/**
-		 * Adds a language entry for a {@link StatusEffect}.
-		 * @param statusEffect The {@link StatusEffect} to get the language entry key from.
+		 * Adds a translation for a {@link StatusEffect}.
+		 * @param statusEffect The {@link StatusEffect} to get the translation key from.
 		 * @param value The value of the entry.
 		 */
 		default void add(StatusEffect statusEffect, String value) {
@@ -188,8 +188,8 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		}
 
 		/**
-		 * Adds a language entry for an {@link Identifier}.
-		 * @param identifier The {@link Identifier} to get the language entry key from.
+		 * Adds a translation for an {@link Identifier}.
+		 * @param identifier The {@link Identifier} to get the translation key from.
 		 * @param value The value of the entry.
 		 */
 		default void add(Identifier identifier, String value) {
