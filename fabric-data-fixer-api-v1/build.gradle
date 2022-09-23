@@ -17,10 +17,9 @@ loom {
 		genOldSave {
 			inherit testmodServer
 			name "Generate old save"
-			vmArg "-XfabricDataFixerGenMode"
+			vmArg "-Dfabric.dataFixerTestMod.genMode=true"
 
 			ideConfigGenerated = true
-			runDir "build/oldsave"
 		}
 	}
 }

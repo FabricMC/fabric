@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.mojang.datafixers.schemas.Schema;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
@@ -37,16 +36,14 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.biome.TheEndBiomeCreator;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
 import net.fabricmc.fabric.api.datafixer.v1.FabricDataFixerBuilder;
 import net.fabricmc.fabric.api.datafixer.v1.FabricDataFixes;
@@ -68,7 +65,7 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 	 * If {@code true}, generates a "base" save data for running a data fixer. If
 	 * {@code false} (default), runs the data fixer.
 	 */
-	public static final boolean GENERATE_MODE = Boolean.getBoolean("fabricDataFixerGenMode");
+	public static final boolean GENERATE_MODE = Boolean.getBoolean("fabric.dataFixerTestMod.genMode");
 
 	public static final Identifier OLD_ITEM_ID = new Identifier(MOD_ID, "old_item");
 	public static final Identifier NEW_ITEM_ID = new Identifier(MOD_ID, "new_item");
@@ -82,20 +79,18 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 	public static final Identifier NEW_BIOME_ID = new Identifier(MOD_ID, "new_biome");
 	public static final RegistryKey<Biome> BIOME_KEY = RegistryKey.of(
 			Registry.BIOME_KEY, GENERATE_MODE ? OLD_BIOME_ID : NEW_BIOME_ID);
+	public static final Biome BIOME = TheEndBiomeCreator.createEndHighlands();
 
 	@Override
 	public void onInitialize() {
 		Registry.register(Registry.ITEM, GENERATE_MODE ? OLD_ITEM_ID : NEW_ITEM_ID, ITEM);
 		Registry.register(Registry.BLOCK, GENERATE_MODE ? OLD_BLOCK_ID : NEW_BLOCK_ID, BLOCK);
+		BuiltinRegistries.add(BuiltinRegistries.BIOME, BIOME_KEY, BIOME);
 		TheEndBiomes.addMainIslandBiome(BIOME_KEY, 10);
-		BiomeModifications.addFeature(
-				BiomeSelectors.includeByKey(BIOME_KEY),
-				GenerationStep.Feature.VEGETAL_DECORATION,
-				RegistryKey.of(Registry.PLACED_FEATURE_KEY, new Identifier("minecraft:chorus_plant")));
 
-		if (GENERATE_MODE) {
-			ServerLifecycleEvents.SERVER_STARTED.register(this);
-		} else {
+		ServerLifecycleEvents.SERVER_STARTED.register(this);
+
+		if (!GENERATE_MODE) {
 			// Not generate mode - run the data fixer and tests.
 			initDataFixer();
 			testNbt();
@@ -161,6 +156,13 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 	@Override
 	public void onServerStarted(MinecraftServer server) {
 		ServerWorld world = server.getOverworld();
+		ServerWorld end = Objects.requireNonNull(server.getWorld(World.END));
+		LOGGER.info("Loading the End...");
+		end.getChunk(0, 0); // Load chunks to generate modded biome/test upgrading
+
+		// In non-generate mode, we only have to load the End, nothing else needed
+		if (!GENERATE_MODE) return;
+
 		LOGGER.info("Preparing world for data fixer testing...");
 
 		BlockPos chestPos = new BlockPos(0, 10, 0);
@@ -171,16 +173,6 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 		}
 
 		world.setBlockState(chestPos.down(), BLOCK.getDefaultState());
-
-		LOGGER.info("Locating modded biome, this may take a while...");
-		Pair<BlockPos, RegistryEntry<Biome>> biomePos = Objects.requireNonNull(server.getWorld(World.END)).locateBiome(
-				(biome) -> biome.matchesId(OLD_BIOME_ID),
-				BlockPos.ORIGIN,
-				10,
-				16,
-				128
-		);
-		if (biomePos == null) LOGGER.warn("Could not locate the biome, try a different seed?");
 
 		LOGGER.info("Generation finished, stopping server...");
 		server.stop(false);
