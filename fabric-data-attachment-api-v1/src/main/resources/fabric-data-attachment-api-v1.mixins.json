@@ -8,5 +8,8 @@
     "ChunkSerializerMixin",
     "EntityMixin",
     "ServerWorldMixin"
-  ]
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

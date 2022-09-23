@@ -31,13 +31,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSerializer;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
 public class ChunkAdderItem extends Item {
 	public static AttachmentType<Integer, WorldChunk> INT = AttachmentType.forChunk(
 			AttachmentsTestmod.id("int"),
 			Integer.class,
-			AttachmentType.Serializer.fromCodec(Codec.INT)
+			AttachmentSerializer.fromCodec(Codec.INT)
 	);
 
 	private final int delta;

@@ -25,13 +25,14 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSerializer;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
 @ApiStatus.Internal
 public class AttachmentTypeImpl<A, T> implements AttachmentType<A, T> {
 	private static volatile Map<TypeIdentifier, AttachmentType<?, ?>> attachmentsMap = new HashMap<>();
 
-	public static <A, T> AttachmentType<A, T> create(Identifier identifier, Class<A> attachmentClass, Class<T> targetClass, @Nullable Serializer<A, ? super T> serializer) {
+	public static <A, T> AttachmentType<A, T> create(Identifier identifier, Class<A> attachmentClass, Class<T> targetClass, @Nullable AttachmentSerializer<A, ? super T> serializer) {
 		Objects.requireNonNull(identifier, "Identifier may not be null.");
 		Objects.requireNonNull(attachmentClass, "Attachment class may not be null.");
 
@@ -61,9 +62,9 @@ public class AttachmentTypeImpl<A, T> implements AttachmentType<A, T> {
 	private final Class<A> attachmentClass;
 	private final Class<T> targetClass;
 	@Nullable
-	private final Serializer<A, ? super T> serializer;
+	private final AttachmentSerializer<A, ? super T> serializer;
 
-	public AttachmentTypeImpl(Identifier identifier, Class<A> attachmentClass, Class<T> targetClass, @Nullable Serializer<A, ? super T> serializer) {
+	public AttachmentTypeImpl(Identifier identifier, Class<A> attachmentClass, Class<T> targetClass, @Nullable AttachmentSerializer<A, ? super T> serializer) {
 		this.identifier = identifier;
 		this.attachmentClass = attachmentClass;
 		this.targetClass = targetClass;
@@ -87,7 +88,7 @@ public class AttachmentTypeImpl<A, T> implements AttachmentType<A, T> {
 
 	@Override
 	@Nullable
-	public Serializer<A, ? super T> getSerializer() {
+	public AttachmentSerializer<A, ? super T> getSerializer() {
 		return serializer;
 	}
 

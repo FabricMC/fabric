@@ -23,13 +23,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkSerializer;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkManager;
+import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.ProtoChunk;
+import net.minecraft.world.chunk.UpgradeData;
 import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.chunk.light.LightingProvider;
+import net.minecraft.world.gen.chunk.BlendingData;
 import net.minecraft.world.poi.PointOfInterestStorage;
 
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
@@ -38,14 +45,20 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 public class ChunkSerializerMixin {
 	@Inject(
 			at = @At(
-					value = "INVOKE_ASSIGN",
-					target = "net/minecraft/world/chunk/WorldChunk.<init>(Lnet/minecraft/world/World;Lnet/minecraft/util/math/ChunkPos;Lnet/minecraft/world/chunk/UpgradeData;Lnet/minecraft/world/tick/ChunkTickScheduler;Lnet/minecraft/world/tick/ChunkTickScheduler;J[Lnet/minecraft/world/chunk/ChunkSection;Lnet/minecraft/world/chunk/WorldChunk$EntityLoader;Lnet/minecraft/world/gen/chunk/BlendingData;)V"
+					value = "INVOKE",
+					target = "net/minecraft/world/chunk/WorldChunk.<init>(Lnet/minecraft/world/World;Lnet/minecraft/util/math/ChunkPos;Lnet/minecraft/world/chunk/UpgradeData;Lnet/minecraft/world/tick/ChunkTickScheduler;Lnet/minecraft/world/tick/ChunkTickScheduler;J[Lnet/minecraft/world/chunk/ChunkSection;Lnet/minecraft/world/chunk/WorldChunk$EntityLoader;Lnet/minecraft/world/gen/chunk/BlendingData;)V",
+					shift = At.Shift.BY,
+					by = 2
 			),
 			method = "deserialize",
 			locals = LocalCapture.CAPTURE_FAILHARD
 	)
-	private static void injectReadNbt(ServerWorld world, PointOfInterestStorage poiStorage, ChunkPos chunkPos, NbtCompound nbt, CallbackInfoReturnable<ProtoChunk> cir, WorldChunk chunk) {
-		((AttachmentTargetImpl) chunk).readAttachmentsFromNbt(WorldChunk.class, nbt);
+	private static void injectReadNbt(ServerWorld world, PointOfInterestStorage poiStorage, ChunkPos chunkPos, NbtCompound nbt, CallbackInfoReturnable<ProtoChunk> cir, UpgradeData upgradeData, boolean bl, NbtList nbtList, int i, ChunkSection[] chunkSections, boolean bl2, ChunkManager chunkManager, LightingProvider lightingProvider, Registry<?> registry, long m, ChunkStatus.ChunkType chunkType, BlendingData blendingData, Chunk chunk) {
+		if (chunk instanceof WorldChunk) {
+			((AttachmentTargetImpl) chunk).readAttachmentsFromNbt(WorldChunk.class, nbt);
+		} else {
+			throw new AssertionError("chunk is not a WorldChunk! This is not supposed to happen!");
+		}
 	}
 
 	@Inject(

@@ -27,13 +27,14 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSerializer;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
 public class BlockEntityAdderItem extends Item {
 	public static AttachmentType<Integer, BlockEntity> INT = AttachmentType.forBlockEntity(
 			AttachmentsTestmod.id("int"),
 			Integer.class,
-			AttachmentType.Serializer.fromCodec(Codec.INT)
+			AttachmentSerializer.fromCodec(Codec.INT)
 	);
 
 	private final int delta;

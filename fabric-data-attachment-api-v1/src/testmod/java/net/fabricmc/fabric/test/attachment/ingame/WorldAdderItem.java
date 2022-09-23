@@ -29,13 +29,14 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSerializer;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
 public class WorldAdderItem extends Item {
 	public static AttachmentType<Integer, World> INT = AttachmentType.forWorld(
 			AttachmentsTestmod.id("int"),
 			Integer.class,
-			AttachmentType.Serializer.fromCodec(Codec.INT)
+			AttachmentSerializer.fromCodec(Codec.INT)
 	);
 
 	private final int delta;

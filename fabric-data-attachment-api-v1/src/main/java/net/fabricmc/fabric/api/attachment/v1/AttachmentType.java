@@ -16,19 +16,13 @@
 
 package net.fabricmc.fabric.api.attachment.v1;
 
-import java.util.Objects;
 import java.util.function.Function;
 
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
@@ -61,7 +55,7 @@ public interface AttachmentType<A, T> {
 	 *
 	 * @throws IllegalArgumentException If an attachment type with the given identifier already exists for block entities.
 	 */
-	static <A> AttachmentType<A, BlockEntity> forBlockEntity(Identifier identifier, Class<A> attachmentClass, @Nullable Serializer<A, ? super BlockEntity> serializer) {
+	static <A> AttachmentType<A, BlockEntity> forBlockEntity(Identifier identifier, Class<A> attachmentClass, @Nullable AttachmentSerializer<A, ? super BlockEntity> serializer) {
 		return AttachmentTypeImpl.create(identifier, attachmentClass, BlockEntity.class, serializer);
 	}
 
@@ -73,7 +67,7 @@ public interface AttachmentType<A, T> {
 	 *
 	 * @throws IllegalArgumentException If an attachment type with the given identifier already exists for block entities.
 	 */
-	static <A> AttachmentType<A, WorldChunk> forChunk(Identifier identifier, Class<A> attachmentClass, @Nullable Serializer<A, ? super WorldChunk> serializer) {
+	static <A> AttachmentType<A, WorldChunk> forChunk(Identifier identifier, Class<A> attachmentClass, @Nullable AttachmentSerializer<A, ? super WorldChunk> serializer) {
 		return AttachmentTypeImpl.create(identifier, attachmentClass, WorldChunk.class, serializer);
 	}
 
@@ -88,12 +82,12 @@ public interface AttachmentType<A, T> {
 	 *     <li>On the (logical) client and server: when a player dies and respawns.
 	 *     {@code ServerPlayerEvents.COPY_FROM} can be used to copy the data on the server.</li>
 	 *     <li>On the client: when a player changes dimensions.</li>
-	 *     <li>On the client and server: when a non-player entity changes dimensions.</li>
+	 *     <li>On the client and server: when a non-player entity changes dimensions.</li> TODO on the server serializable attachments are persisted
 	 * </ul>
 	 *
 	 * @throws IllegalArgumentException If an attachment type with the given identifier already exists for block entities.
 	 */
-	static <A> AttachmentType<A, Entity> forEntity(Identifier identifier, Class<A> attachmentClass, @Nullable Serializer<A, ? super Entity> serializer) {
+	static <A> AttachmentType<A, Entity> forEntity(Identifier identifier, Class<A> attachmentClass, @Nullable AttachmentSerializer<A, ? super Entity> serializer) {
 		return AttachmentTypeImpl.create(identifier, attachmentClass, Entity.class, serializer);
 	}
 
@@ -105,7 +99,7 @@ public interface AttachmentType<A, T> {
 	 *
 	 * @throws IllegalArgumentException If an attachment type with the given identifier already exists for block entities.
 	 */
-	static <A> AttachmentType<A, World> forWorld(Identifier identifier, Class<A> attachmentClass, @Nullable Serializer<A, ? super World> serializer) {
+	static <A> AttachmentType<A, World> forWorld(Identifier identifier, Class<A> attachmentClass, @Nullable AttachmentSerializer<A, ? super World> serializer) {
 		return AttachmentTypeImpl.create(identifier, attachmentClass, World.class, serializer);
 	}
 
@@ -153,59 +147,5 @@ public interface AttachmentType<A, T> {
 	 */
 	// TODO: should maybe remove from API?
 	@Nullable
-	Serializer<A, ? super T> getSerializer();
-
-	interface Serializer<A, T> {
-		/**
-		 * Serialize the value to a new NBT compound.
-		 * If null is returned, the value will not be saved at all.
-		 */
-		@Nullable
-		NbtCompound toNbt(A value);
-
-		/**
-		 * Create a new instance from an NBT compound previously created by {@link #toNbt}.
-		 * If null is returned, the instance will not be placed in the attachment target.
-		 */
-		@Nullable
-		A fromNbt(T target, NbtCompound nbt);
-
-		/**
-		 * Create an attachment serializer from a codec.
-		 */
-		static <A, T> Serializer<A, T> fromCodec(Codec<A> codec) {
-			Objects.requireNonNull(codec, "Codec may not be null.");
-
-			return new Serializer<>() {
-				@Override
-				@Nullable
-				public NbtCompound toNbt(A value) {
-					@Nullable
-					NbtElement element = codec.encodeStart(NbtOps.INSTANCE, value).result().orElse(null);
-
-					if (element instanceof NbtCompound compound) {
-						return compound;
-					} else if (element != null) {
-						NbtCompound compound = new NbtCompound();
-						compound.put("fabric:value", element);
-						return compound;
-					}
-
-					return null;
-				}
-
-				@Override
-				@Nullable
-				public A fromNbt(T target, NbtCompound nbt) {
-					NbtElement toDecode = nbt;
-
-					if (nbt.getSize() == 1 && nbt.contains("fabric:value")) {
-						toDecode = nbt.get("fabric:value");
-					}
-
-					return codec.decode(NbtOps.INSTANCE, toDecode).result().map(Pair::getFirst).orElse(null);
-				}
-			};
-		}
-	}
+	AttachmentSerializer<A, ? super T> getSerializer();
 }

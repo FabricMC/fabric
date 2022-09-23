@@ -28,6 +28,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSerializer;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
 @ApiStatus.Internal
@@ -44,7 +45,7 @@ public final class DataAttachmentsImpl {
 
 		for (Map.Entry<AttachmentType<?, ?>, Object> entry : map.entrySet()) {
 			AttachmentType<?, ?> attachmentType = entry.getKey();
-			AttachmentType.Serializer serializer = attachmentType.getSerializer();
+			AttachmentSerializer serializer = attachmentType.getSerializer();
 
 			if (serializer != null) {
 				try {
@@ -80,7 +81,7 @@ public final class DataAttachmentsImpl {
 				AttachmentType<?, T> attachmentType = AttachmentTypeImpl.get(attachmentId, targetClass);
 
 				if (attachmentType != null) {
-					AttachmentType.Serializer<?, ? super T> serializer = attachmentType.getSerializer();
+					AttachmentSerializer<?, ? super T> serializer = attachmentType.getSerializer();
 
 					if (serializer != null) {
 						@Nullable

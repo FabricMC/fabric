@@ -32,13 +32,14 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSerializer;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
 public class EntityAdderItem extends Item {
 	public static AttachmentType<Integer, Entity> INT = AttachmentType.forEntity(
 			AttachmentsTestmod.id("int"),
 			Integer.class,
-			AttachmentType.Serializer.fromCodec(Codec.INT)
+			AttachmentSerializer.fromCodec(Codec.INT)
 	);
 
 	private final int delta;
