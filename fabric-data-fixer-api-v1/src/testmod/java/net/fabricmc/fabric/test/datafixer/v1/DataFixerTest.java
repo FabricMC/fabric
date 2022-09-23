@@ -159,6 +159,7 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 		ServerWorld end = Objects.requireNonNull(server.getWorld(World.END));
 		LOGGER.info("Loading the End...");
 		end.getChunk(0, 0); // Load chunks to generate modded biome/test upgrading
+		LOGGER.info("Loaded the End");
 
 		// In non-generate mode, we only have to load the End, nothing else needed
 		if (!GENERATE_MODE) return;
