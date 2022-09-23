@@ -95,7 +95,12 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 			dataVersions.putInt(entry.getKey(), entry.getValue().currentVersion());
 		}
 
-		nbt.put(DATA_VERSIONS_KEY, dataVersions);
+		if (dataVersions.isEmpty()) {
+			nbt.remove(DATA_VERSIONS_KEY);
+		} else {
+			nbt.put(DATA_VERSIONS_KEY, dataVersions);
+		}
+
 		return nbt;
 	}
 
