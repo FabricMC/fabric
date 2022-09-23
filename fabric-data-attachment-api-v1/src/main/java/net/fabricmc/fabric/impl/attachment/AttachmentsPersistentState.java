@@ -21,6 +21,10 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 
+/**
+ * Backing storage for server-side world attachments.
+ * Thanks to custom {@link #isDirty()} logic, the file is only written if something needs to be persisted.
+ */
 public class AttachmentsPersistentState extends PersistentState {
 	public static final String ID = "fabric_data_attachments";
 

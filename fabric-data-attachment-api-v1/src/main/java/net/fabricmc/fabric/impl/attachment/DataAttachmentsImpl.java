@@ -31,6 +31,9 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSerializer;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
+/**
+ * Extra bits of logic for the implementation of data attachments.
+ */
 @ApiStatus.Internal
 public final class DataAttachmentsImpl {
 	public static final String NBT_KEY = "fabric:attachments";
@@ -45,9 +48,9 @@ public final class DataAttachmentsImpl {
 
 		for (Map.Entry<AttachmentType<?, ?>, Object> entry : map.entrySet()) {
 			AttachmentType<?, ?> attachmentType = entry.getKey();
-			AttachmentSerializer serializer = attachmentType.getSerializer();
+			AttachmentSerializer serializer = ((AttachmentTypeImpl<?, ?>) attachmentType).getSerializer();
 
-			if (serializer != null) {
+			if (serializer != null && entry.getValue() != null) {
 				try {
 					@Nullable
 					NbtCompound attachmentNbt = serializer.toNbt(entry.getValue());
@@ -78,7 +81,7 @@ public final class DataAttachmentsImpl {
 		for (String key : attachmentsTag.getKeys()) {
 			try {
 				Identifier attachmentId = new Identifier(key);
-				AttachmentType<?, T> attachmentType = AttachmentTypeImpl.get(attachmentId, targetClass);
+				AttachmentTypeImpl<?, T> attachmentType = AttachmentTypeImpl.get(attachmentId, targetClass);
 
 				if (attachmentType != null) {
 					AttachmentSerializer<?, ? super T> serializer = attachmentType.getSerializer();

@@ -29,15 +29,17 @@ import net.minecraft.nbt.NbtOps;
 /**
  * Serializer for an {@link AttachmentType}, that defines how the attachment is serialized to NBT and back.
  *
+ * <p>Note that serializers are only used on the logical server side.
+ *
  * @param <A> Type of the attached object.
  * @param <T> Type of the host of this attachment.
  */
 public interface AttachmentSerializer<A, T> {
 	/**
 	 * Serialize the value to a new NBT compound.
-	 * If null is returned, the value will not be saved at all.
+	 * If {@code null} is returned, the value will not be saved at all.
 	 *
-	 * @param value The current value of the attachment. TODO: what if null is put in the map?
+	 * @param value The current value of the attachment. Never {@code null}.
 	 * @return The serialized attachment, or {@code null} if nothing should be saved.
 	 */
 	@Nullable
@@ -45,10 +47,10 @@ public interface AttachmentSerializer<A, T> {
 
 	/**
 	 * Create a new instance from an NBT compound previously created by {@link #toNbt}.
-	 * If null is returned, the instance will not be placed in the attachment target.
+	 * If {@code null} is returned, the instance will not be placed in the attachment target.
 	 *
 	 * @param target The target of this attachment. This can be used to capture a reference (for example to a host entity).
-	 * @param nbt The nbt data of this attachment. Never null.
+	 * @param nbt The nbt data of this attachment. Never {@code null}.
 	 * @return The deserialized attachment, or {@code null} if no attachment should be loaded.
 	 */
 	@Nullable

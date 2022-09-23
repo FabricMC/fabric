@@ -54,8 +54,8 @@ public class AttachmentTypeImpl<A, T> implements AttachmentType<A, T> {
 	}
 
 	@Nullable
-	public static <T> AttachmentType<?, T> get(Identifier identifier, Class<T> targetClass) {
-		return (AttachmentType<?, T>) attachmentsMap.get(new TypeIdentifier(identifier, targetClass));
+	public static <T> AttachmentTypeImpl<?, T> get(Identifier identifier, Class<T> targetClass) {
+		return (AttachmentTypeImpl<?, T>) attachmentsMap.get(new TypeIdentifier(identifier, targetClass));
 	}
 
 	private final Identifier identifier;
@@ -86,7 +86,6 @@ public class AttachmentTypeImpl<A, T> implements AttachmentType<A, T> {
 		return targetClass;
 	}
 
-	@Override
 	@Nullable
 	public AttachmentSerializer<A, ? super T> getSerializer() {
 		return serializer;

@@ -25,14 +25,15 @@ import net.minecraft.nbt.NbtCompound;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
+/**
+ * Internal interface implemented by the attachment targets via mixin. Mostly a duck with a bit of extra logic.
+ */
 @ApiStatus.Internal
 public interface AttachmentTargetImpl {
 	<T> T get(AttachmentType<T, ?> type);
 
 	@Nullable
 	<T> T set(AttachmentType<T, ?> type, T value);
-
-	<T> T remove(AttachmentType<T, ?> type);
 
 	@Nullable
 	IdentityHashMap<AttachmentType<?, ?>, Object> getAttachmentsHolder();
@@ -52,7 +53,7 @@ public interface AttachmentTargetImpl {
 		if (map == null) return false;
 
 		for (AttachmentType<?, ?> type : map.keySet()) {
-			if (type.getSerializer() != null) {
+			if (((AttachmentTypeImpl<?, ?>) type).getSerializer() != null) {
 				return true;
 			}
 		}

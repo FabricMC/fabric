@@ -42,26 +42,25 @@ public class AttachmentTypesMixin implements AttachmentTargetImpl {
 	@Override
 	@Nullable
 	public <T> T set(AttachmentType<T, ?> type, T value) {
-		if (fabric_dataAttachments == null) {
-			fabric_dataAttachments = new IdentityHashMap<>();
+		if (value == null) {
+			if (fabric_dataAttachments == null) {
+				return null;
+			}
+
+			T returned = (T) fabric_dataAttachments.remove(type);
+
+			if (fabric_dataAttachments.isEmpty()) {
+				fabric_dataAttachments = null;
+			}
+
+			return returned;
+		} else {
+			if (fabric_dataAttachments == null) {
+				fabric_dataAttachments = new IdentityHashMap<>();
+			}
+
+			return (T) fabric_dataAttachments.put(type, value); // TODO: call markDirty if relevant? (also applies to other places)
 		}
-
-		return (T) fabric_dataAttachments.put(type, value); // TODO: call markDirty if relevant? (also applies to other places)
-	}
-
-	@Override
-	public <T> T remove(AttachmentType<T, ?> type) {
-		if (fabric_dataAttachments == null) {
-			return null;
-		}
-
-		T returned = (T) fabric_dataAttachments.remove(type);
-
-		if (fabric_dataAttachments.isEmpty()) {
-			fabric_dataAttachments = null;
-		}
-
-		return returned;
 	}
 
 	@Override

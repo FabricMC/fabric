@@ -77,12 +77,27 @@ public interface AttachmentType<A, T> {
 	 * <p>Serialization will only be used on the logical server.
 	 * Entity data is always persisted, there is no need to call any method after modifying the attachments.
 	 *
-	 * <p>Note that data is not transferred automatically in the following cases, and requires special handling if desired:
+	 * <p><h3>Notes on persistence</h3>
+	 *
+	 * <p><h4>Serializable server-side attachments</h4>
+	 * Serializable attachments will generally be persisted (on the server side), with the following caveat:
 	 * <ul>
-	 *     <li>On the (logical) client and server: when a player dies and respawns.
-	 *     {@code ServerPlayerEvents.COPY_FROM} can be used to copy the data on the server.</li>
-	 *     <li>On the client: when a player changes dimensions.</li>
-	 *     <li>On the client and server: when a non-player entity changes dimensions.</li> TODO on the server serializable attachments are persisted
+	 *     <li>When a player dies and respawns, attachment data is not carried over.
+	 *     {@code ServerPlayerEvents.COPY_FROM} can be used to copy the data from the old player entity to the new player entity, if desired.</li>
+	 * </ul>
+	 *
+	 * <p><h4>Non-serializable server-side attachments</h4>
+	 * Non-serializable attachments will disappear on the server in the following circumstances:
+	 * <ul>
+	 *     <li>When a player dies and respawns.</li>
+	 *     <li>When a non-player entity changes dimension.</li>
+	 * </ul>
+	 *
+	 * <p><h4>Client-side attachments</h4>
+	 * On the logical client, entity attachments should be used with caution, as they will disappear in (at least) the following circumstances:
+	 * <ul>
+	 *     <li>When the client player dies or changes dimension, the player and all the other entities lose their attachments.</li>
+	 *     <li>When an entity changes dimension, it loses any client-side attachment.</li>
 	 * </ul>
 	 *
 	 * @throws IllegalArgumentException If an attachment type with the given identifier already exists for block entities.
@@ -103,10 +118,17 @@ public interface AttachmentType<A, T> {
 		return AttachmentTypeImpl.create(identifier, attachmentClass, World.class, serializer);
 	}
 
+	/**
+	 * Return the value attached to the target, or {@code null} if no attachment is present.
+	 */
 	default A get(T target) {
 		return ((AttachmentTargetImpl) target).get(this);
 	}
 
+	/**
+	 * If the given target already has an attached value, return it.
+	 * Otherwise, create it using {@code computeFunction}, attach it if it is non-null, and return it.
+	 */
 	default A computeIfAbsent(T target, Function<? super T, A> computeFunction) {
 		AttachmentTargetImpl impl = (AttachmentTargetImpl) target;
 		A attachment = impl.get(this);
@@ -118,13 +140,24 @@ public interface AttachmentType<A, T> {
 		return attachment;
 	}
 
+	/**
+	 * Attach a new value to the target, replacing the old value.
+	 *
+	 * @param value The new value, or {@code null} to remove the attachment.
+	 * @return The old attached value, or {@code null} if no attachment was present.
+	 */
 	@Nullable
-	default A set(T target, A value) {
+	default A set(T target, @Nullable A value) {
 		return ((AttachmentTargetImpl) target).set(this, value);
 	}
 
+	/**
+	 * Remove the attached value from the target, if there is one.
+	 *
+	 * @return The old attached value, or {@code null} if no attachment was present.
+	 */
 	default A remove(T target) {
-		return ((AttachmentTargetImpl) target).remove(this);
+		return ((AttachmentTargetImpl) target).set(this, null);
 	}
 
 	/**
@@ -141,11 +174,4 @@ public interface AttachmentType<A, T> {
 	 * Return the target class of this attachment type.
 	 */
 	Class<T> getTargetClass();
-
-	/**
-	 * Return the serializer of this attachment type, or {@code null} if it has no serializer.
-	 */
-	// TODO: should maybe remove from API?
-	@Nullable
-	AttachmentSerializer<A, ? super T> getSerializer();
 }
