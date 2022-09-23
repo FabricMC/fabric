@@ -51,6 +51,18 @@ public final class ClientLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called once Minecraft has completed the initial resource reload.
+	 * Everything is loaded in this state.
+	 *
+	 * <p>This will be called when the splash screen begins to fade.
+	 */
+	public static final Event<ClientStartupFinished> CLIENT_STARTUP_FINISHED = EventFactory.createArrayBacked(ClientStartupFinished.class, callbacks -> client -> {
+		for (ClientStartupFinished callback : callbacks) {
+			callback.onClientStartupFinished(client);
+		}
+	});
+
 	@FunctionalInterface
 	public interface ClientStarted {
 		void onClientStarted(MinecraftClient client);
@@ -59,5 +71,10 @@ public final class ClientLifecycleEvents {
 	@FunctionalInterface
 	public interface ClientStopping {
 		void onClientStopping(MinecraftClient client);
+	}
+
+	@FunctionalInterface
+	public interface ClientStartupFinished {
+		void onClientStartupFinished(MinecraftClient client);
 	}
 }

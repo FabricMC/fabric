@@ -20,13 +20,20 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.RunArgs;
+import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourceReload;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+
+import java.io.File;
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 @Mixin(MinecraftClient.class)
@@ -50,5 +57,10 @@ public abstract class MinecraftClientMixin {
 	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;thread:Ljava/lang/Thread;", shift = At.Shift.AFTER, ordinal = 0), method = "run")
 	private void onStart(CallbackInfo ci) {
 		ClientLifecycleEvents.CLIENT_STARTED.invoker().onClientStarted((MinecraftClient) (Object) this);
+	}
+
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;setOverlay(Lnet/minecraft/client/gui/screen/Overlay;)V"), locals = LocalCapture.CAPTURE_FAILHARD, method = "<init>")
+	private void onFinishedStart(RunArgs args, CallbackInfo ci, File assetDir, String autoServerAddr, int autoServerPort, List<ResourcePack> packs, ResourceReload resourceReload) {
+		resourceReload.whenComplete().thenRun(() -> ClientLifecycleEvents.CLIENT_STARTUP_FINISHED.invoker().onClientStartupFinished((MinecraftClient) (Object) this));
 	}
 }

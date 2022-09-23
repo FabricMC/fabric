@@ -25,6 +25,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 public final class ClientLifecycleTests implements ClientModInitializer {
 	private boolean startCalled;
 	private boolean stopCalled;
+	private boolean startFinishedCalled;
 
 	@Override
 	public void onInitializeClient() {
@@ -46,6 +47,15 @@ public final class ClientLifecycleTests implements ClientModInitializer {
 
 			stopCalled = true;
 			System.out.println("Client has started stopping!");
+		});
+
+		ClientLifecycleEvents.CLIENT_STARTUP_FINISHED.register(client -> {
+			if (startFinishedCalled) {
+				throw new IllegalStateException("Start finished was already called!");
+			}
+
+			startFinishedCalled = true;
+			System.out.println("Client has finished starting");
 		});
 	}
 }
