@@ -36,6 +36,7 @@ public interface ColorProviderRegistry<T, Provider> {
 	 * @param provider The color provider to register.
 	 * @param objects  The objects which should be colored using this provider.
 	 */
+	@SuppressWarnings("unchecked") // @SafeVarargs is not allowed on interface methods.
 	void register(Provider provider, T... objects);
 
 	/**

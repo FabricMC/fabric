@@ -90,6 +90,7 @@ public final class DefaultResourceConditions {
 	/**
 	 * Create a condition that returns true if each of the passed block tags exists and has at least one element.
 	 */
+	@SafeVarargs
 	public static ConditionJsonProvider blockTagsPopulated(TagKey<Block>... tags) {
 		return ResourceConditionsImpl.tagsPopulated(BLOCK_TAGS_POPULATED, tags);
 	}
@@ -97,6 +98,7 @@ public final class DefaultResourceConditions {
 	/**
 	 * Create a condition that returns true if each of the passed fluid tags exists and has at least one element.
 	 */
+	@SafeVarargs
 	public static ConditionJsonProvider fluidTagsPopulated(TagKey<Fluid>... tags) {
 		return ResourceConditionsImpl.tagsPopulated(FLUID_TAGS_POPULATED, tags);
 	}
@@ -104,6 +106,7 @@ public final class DefaultResourceConditions {
 	/**
 	 * Create a condition that returns true if each of the passed item tags exists and has at least one element.
 	 */
+	@SafeVarargs
 	public static ConditionJsonProvider itemTagsPopulated(TagKey<Item>... tags) {
 		return ResourceConditionsImpl.tagsPopulated(ITEM_TAGS_POPULATED, tags);
 	}
