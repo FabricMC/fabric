@@ -59,7 +59,7 @@ public class AttachmentTypesMixin implements AttachmentTargetImpl {
 				fabric_dataAttachments = new IdentityHashMap<>();
 			}
 
-			return (T) fabric_dataAttachments.put(type, value); // TODO: call markDirty if relevant? (also applies to other places)
+			return (T) fabric_dataAttachments.put(type, value);
 		}
 	}
 
