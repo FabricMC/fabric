@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.event.interaction;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,10 +38,12 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 @Mixin(targets = "net/minecraft/server/network/ServerPlayNetworkHandler$1")
 public abstract class ServerPlayNetworkHandlerMixin implements PlayerInteractEntityC2SPacket.Handler {
 	@Shadow
-	public ServerPlayNetworkHandler field_28963;
+	@Final
+	ServerPlayNetworkHandler field_28963;
 
 	@Shadow
-	public Entity field_28962;
+	@Final
+	Entity field_28962;
 
 	@Inject(method = "interactAt(Lnet/minecraft/util/Hand;Lnet/minecraft/util/math/Vec3d;)V", at = @At(value = "HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(Hand hand, Vec3d hitPosition, CallbackInfo info) {

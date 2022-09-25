@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.event.interaction;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -51,9 +52,10 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 @Mixin(ServerPlayerInteractionManager.class)
 public class ServerPlayerInteractionManagerMixin {
 	@Shadow
-	public ServerWorld world;
+	protected ServerWorld world;
+	@Final
 	@Shadow
-	public ServerPlayerEntity player;
+	protected ServerPlayerEntity player;
 
 	@Inject(at = @At("HEAD"), method = "processBlockBreakingAction", cancellable = true)
 	public void startBlockBreak(BlockPos pos, PlayerActionC2SPacket.Action playerAction, Direction direction, int worldHeight, int i, CallbackInfo info) {
