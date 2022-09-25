@@ -9,8 +9,8 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.13.12" apply false
-	id "com.diffplug.spotless" version "6.5.1"
+	id "fabric-loom" version "1.0.7" apply false
+	id "com.diffplug.spotless" version "6.11.0"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 	id "com.modrinth.minotaur" version "2.4.3"
@@ -223,7 +223,7 @@ allprojects {
 
 	checkstyle {
 		configFile = rootProject.file("checkstyle.xml")
-		toolVersion = "9.1"
+		toolVersion = "10.3.3"
 	}
 
 	tasks.withType(AbstractArchiveTask) {
@@ -246,6 +246,12 @@ allprojects {
 		from sourceSets.testmod.output
 		destinationDirectory = new File(project.buildDir, "devlibs")
 		archiveClassifier = "testmod"
+	}
+
+	[jar, testmodJar, sourcesJar].each {
+		it.from(rootProject.file("LICENSE")) {
+			rename { "${it}-${project.archivesBaseName}"}
+		}
 	}
 
 	task remapTestmodJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: testmodJar) {
