@@ -42,6 +42,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider.DynamicRegistryTagProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
 @ApiStatus.Internal
@@ -126,8 +127,16 @@ public final class FabricDataGenHelper {
 			LOGGER.info("Running data generator for {}", id);
 
 			try {
-				FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, entrypointContainer.getProvider(), STRICT_VALIDATION);
-				entrypointContainer.getEntrypoint().onInitializeDataGenerator(dataGenerator);
+				final DataGeneratorEntrypoint entrypoint = entrypointContainer.getEntrypoint();
+				final String effectiveModId = entrypoint.getEffectiveModId();
+				ModContainer modContainer = entrypointContainer.getProvider();
+
+				if (effectiveModId != null) {
+					modContainer = FabricLoader.getInstance().getModContainer(effectiveModId).orElseThrow(() -> new RuntimeException("Failed to find effective mod container for mod id (%s)".formatted(effectiveModId)));
+				}
+
+				FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, modContainer, STRICT_VALIDATION);
+				entrypoint.onInitializeDataGenerator(dataGenerator);
 				dataGenerator.run();
 			} catch (Throwable t) {
 				throw new RuntimeException("Failed to run data generator from mod (%s)".formatted(id), t);
