@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.datagen.v1;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * An entry point for data generation.
  *
@@ -31,4 +33,16 @@ public interface DataGeneratorEntrypoint {
 	 * @param fabricDataGenerator The {@link FabricDataGenerator} instance
 	 */
 	void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator);
+
+	/**
+	 * Returns the mod ID of the mod the data is being generated for.
+	 * A {@code null} return will run the data generator using the mod ID that registered the current entrypoint.
+	 *
+	 * @return a {@link String} or {@code null}
+	 * @throws RuntimeException If the mod ID does not exist.
+	 */
+	@Nullable
+	default String getEffectiveModId() {
+		return null;
+	}
 }
