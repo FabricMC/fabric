@@ -30,8 +30,8 @@ import net.minecraft.network.PacketByteBuf;
  * <p>This is exposed for convenience for code that needs to be generic across multiple transfer variants,
  * but note that a {@link Storage} is not necessarily bound to {@code TransferVariant}. Its generic parameter can be any immutable object.
  *
- * <p><b>Transfer variants must always be compared with {@link #equals}, never by reference!</b>
- * {@link #hashCode} is guaranteed to be correct and constant time independently of the size of the NBT.
+ * <p><b>Transfer variants must always be compared with {@code equals}, never by reference!</b>
+ * {@code hashCode} is guaranteed to be correct and constant time independently of the size of the NBT.
  *
  * @param <O> The type of the immutable object instance, for example {@code Item} or {@code Fluid}.
  *

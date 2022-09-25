@@ -44,7 +44,7 @@ public interface ColorProviderRegistry<T, Provider> {
 	 * <p>Please note that the underlying registry may not be fully populated or stable until the game has started,
 	 * as other mods may overwrite the registry.
 	 *
-	 * @param object The object to acquire the provide for.
+	 * @param object The object to acquire the provider for.
 	 * @return The registered mapper for this provider, or {@code null} if none is registered or available.
 	 */
 	@Nullable

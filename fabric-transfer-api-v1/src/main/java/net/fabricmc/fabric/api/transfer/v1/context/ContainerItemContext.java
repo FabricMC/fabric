@@ -165,7 +165,7 @@ public interface ContainerItemContext {
 
 	/**
 	 * Return the current item variant of this context, that is the variant in the slot of the context.
-	 * If the result is non blank, {@link #getAmount} should be
+	 * If the result is not blank, {@link #getAmount} should be positive.
 	 */
 	default ItemVariant getItemVariant() {
 		return getMainSlot().getResource();
@@ -214,7 +214,7 @@ public interface ContainerItemContext {
 	 * @param newVariant The variant of the items after the conversion. May not be blank.
 	 * @param maxAmount The maximum amount of items to convert. May not be negative.
 	 * @param transaction The transaction this operation is part of.
-	 * @return A nonnegative integer not greater than maxAmount: the amount that was transformed.
+	 * @return A non-negative integer not greater than maxAmount: the amount that was transformed.
 	 */
 	default long exchange(ItemVariant newVariant, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notBlankNotNegative(newVariant, maxAmount);

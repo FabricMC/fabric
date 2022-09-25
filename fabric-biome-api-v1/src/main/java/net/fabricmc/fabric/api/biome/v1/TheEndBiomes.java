@@ -94,7 +94,7 @@ public final class TheEndBiomes {
 	 * the edge of the large outer islands and are similar to edge biomes in the overworld. If you don't call
 	 * this method, the vanilla biome will be used by default.</p>
 	 *
-	 * @param highlands The highlands biome to where the barrends biome is added
+	 * @param highlands The highlands biome to where the barrens biome is added
 	 * @param barrens   the biome to be added as a barrens biome
 	 * @param weight    the weight of the entry. The weight in this method corresponds to its selection likelihood, with
 	 *                  heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.

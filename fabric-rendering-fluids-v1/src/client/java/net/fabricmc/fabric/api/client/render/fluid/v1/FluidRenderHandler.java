@@ -68,7 +68,7 @@ public interface FluidRenderHandler {
 
 	/**
 	 * Tessellate your fluid. This method will be invoked before the default
-	 * fluid renderer. By default it will call the default fluid renderer. Call
+	 * fluid renderer. By default, it will call the default fluid renderer. Call
 	 * {@code FluidRenderHandler.super.renderFluid} if you want to render over
 	 * the default fluid renderer.
 	 *
@@ -81,7 +81,6 @@ public interface FluidRenderHandler {
 	 * @param vertexConsumer The vertex consumer to tessellate the fluid in.
 	 * @param blockState The block state being rendered.
 	 * @param fluidState The fluid state being rendered.
-	 * @return Whether anything is tessellated.
 	 */
 	default void renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
 		((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).renderFluid(pos, world, vertexConsumer, blockState, fluidState);

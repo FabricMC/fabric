@@ -28,7 +28,7 @@ import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.util.registry.Registry;
 
 /**
- * A registry for {@linkplain MinecartComparatorLogic custom minecart compator logic}.
+ * A registry for {@linkplain MinecartComparatorLogic custom minecart comparator logic}.
  */
 public final class MinecartComparatorLogicRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MinecartComparatorLogicRegistry.class);

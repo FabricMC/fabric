@@ -92,7 +92,7 @@ public abstract class SingleVariantItemStorage<T extends TransferVariant<?>> imp
 	 * Implementors should generally convert the passed {@code currentVariant} to a stack,
 	 * then edit the NBT of the stack so it contains the correct resource and amount.
 	 *
-	 * <p>When the new amount is 0, it is recommended that the subtags corresponding to the resource and amount
+	 * <p>When the new amount is 0, it is recommended that the sub-NBTs corresponding to the resource and amount
 	 * be removed, for example using {@link ItemStack#removeSubNbt}, so that newly-crafted containers can stack with
 	 * emptied containers.
 	 *
