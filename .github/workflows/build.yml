@@ -4,12 +4,13 @@ jobs:
   build:
     strategy:
       matrix:
-        java: [17-jdk]
-    runs-on: ubuntu-20.04
-    container:
-      image: eclipse-temurin:${{ matrix.java }}
-      options: --user root
+        java: [17]
+    runs-on: ubuntu-22.04
     steps:
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0

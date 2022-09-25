@@ -6,13 +6,12 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
-    container:
-      image: eclipse-temurin:17-jdk
-      options: --user root
+    runs-on: ubuntu-22.04
     steps:
-      - run: apt update && apt install git -y && git --version
-      - run: git config --global --add safe.directory /__w/fabric/fabric
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
