@@ -92,6 +92,7 @@ public class ResourceConditionsImpl {
 		};
 	}
 
+	@SafeVarargs
 	public static <T> ConditionJsonProvider tagsPopulated(Identifier id, TagKey<T>... tags) {
 		Preconditions.checkArgument(tags.length > 0, "Must register at least one tag.");
 
