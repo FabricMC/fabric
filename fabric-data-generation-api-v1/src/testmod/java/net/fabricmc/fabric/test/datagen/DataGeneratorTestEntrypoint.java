@@ -20,9 +20,16 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WI
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
@@ -31,6 +38,8 @@ import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
@@ -52,6 +61,7 @@ import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -60,6 +70,7 @@ import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 
 public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataGeneratorTestEntrypoint.class);
 	private static final ConditionJsonProvider NEVER_LOADED = DefaultResourceConditions.allModsLoaded("a");
 	private static final ConditionJsonProvider ALWAYS_LOADED = DefaultResourceConditions.not(NEVER_LOADED);
 
@@ -71,6 +82,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		dataGenerator.addProvider(TestAdvancementProvider::new);
 		dataGenerator.addProvider(TestBlockLootTableProvider::new);
 		dataGenerator.addProvider(TestBarterLootTableProvider::new);
+		dataGenerator.addProvider(ExistingEnglishLangProvider::new);
+		dataGenerator.addProvider(JapaneseLangProvider::new);
 
 		TestBlockTagProvider blockTagProvider = dataGenerator.addProvider(TestBlockTagProvider::new);
 		dataGenerator.addProvider(new TestItemTagProvider(dataGenerator, blockTagProvider));
@@ -107,6 +120,51 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		protected void generateRecipes(Consumer<RecipeJsonProvider> exporter) {
 			offerPlanksRecipe2(exporter, SIMPLE_BLOCK, ItemTags.ACACIA_LOGS);
+		}
+	}
+
+	private static class ExistingEnglishLangProvider extends FabricLanguageProvider {
+		private ExistingEnglishLangProvider(FabricDataGenerator dataGenerator) {
+			super(dataGenerator);
+		}
+
+		@Override
+		public void generateTranslations(TranslationBuilder translationBuilder) {
+			translationBuilder.add(SIMPLE_BLOCK, "Simple Block");
+			translationBuilder.add(new Identifier(MOD_ID, "identifier_test"), "Identifier Test");
+			translationBuilder.add(EntityType.ALLAY, "Allay");
+			translationBuilder.add(EntityAttributes.GENERIC_ARMOR, "Generic Armor");
+
+			try {
+				Optional<Path> path = dataGenerator.getModContainer().findPath("assets/testmod/lang/en_us.base.json");
+
+				if (path.isPresent()) {
+					translationBuilder.add(path.get());
+				} else {
+					throw new RuntimeException("The existing language file could not be found in the testmod assets!");
+				}
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+
+			try {
+				translationBuilder.add(EntityType.ALLAY, "Allay Duplicate Test");
+			} catch (RuntimeException e) {
+				LOGGER.info("Duplicate test passed.");
+			}
+		}
+	}
+
+	private static class JapaneseLangProvider extends FabricLanguageProvider {
+		private JapaneseLangProvider(FabricDataGenerator dataGenerator) {
+			super(dataGenerator, "ja_jp");
+		}
+
+		@Override
+		public void generateTranslations(TranslationBuilder translationBuilder) {
+			translationBuilder.add(SIMPLE_BLOCK, "シンプルブロック");
+			translationBuilder.add(SIMPLE_ITEM_GROUP, "データ生成項目");
+			translationBuilder.add("this.is.a.test", "こんにちは");
 		}
 	}
 
