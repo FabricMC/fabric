@@ -25,6 +25,10 @@ import javax.xml.transform.TransformerException;
 
 import net.minecraft.test.XmlReportingTestCompletionListener;
 
+/**
+ * An extension of {@link XmlReportingTestCompletionListener} which creates the destination directory before saving
+ * the report.
+ */
 final class SavingXmlReportingTestCompletionListener extends XmlReportingTestCompletionListener {
 	SavingXmlReportingTestCompletionListener(File file) throws ParserConfigurationException {
 		super(file);
