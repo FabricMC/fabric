@@ -46,7 +46,7 @@ public final class ClientPlayConnectionEvents {
 	 * An event for notification when the client play network handler is ready to send packets to the server.
 	 *
 	 * <p>At this stage, the network handler is ready to send packets to the server.
-	 * Since the client's local state has been setup.
+	 * Since the client's local state has been set up.
 	 */
 	public static final Event<Join> JOIN = EventFactory.createArrayBacked(Join.class, callbacks -> (handler, sender, client) -> {
 		for (Join callback : callbacks) {

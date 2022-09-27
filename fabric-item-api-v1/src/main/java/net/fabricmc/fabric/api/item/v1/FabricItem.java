@@ -33,7 +33,7 @@ import net.minecraft.util.Hand;
  * <p>Note: This interface is automatically implemented on all items via Mixin and interface injection.
  *
  * <p>Note to maintainers: Functions should only be added to this interface if they are general-purpose enough,
- * to be evaluated on a case-by-case basis. Otherwise they are better suited for more specialized APIs.
+ * to be evaluated on a case-by-case basis. Otherwise, they are better suited for more specialized APIs.
  */
 public interface FabricItem {
 	/**

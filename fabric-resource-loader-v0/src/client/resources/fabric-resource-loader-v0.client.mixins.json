@@ -5,7 +5,7 @@
   "client": [
     "ClientBuiltinResourcePackProviderMixin",
     "CreateWorldScreenMixin",
-    "FontManagerResourceReloadListenerMixin",
+    "FontManagerMixin",
     "GameOptionsMixin",
     "KeyedResourceReloadListenerClientMixin",
     "MoreOptionsDialogAccessor"

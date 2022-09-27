@@ -19,9 +19,16 @@ package net.fabricmc.fabric.test.rendering;
 import java.util.Optional;
 
 import net.minecraft.client.item.TooltipData;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.recipe.Ingredient;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -29,10 +36,12 @@ import net.fabricmc.api.ModInitializer;
 
 public class TooltipComponentTestInit implements ModInitializer {
 	public static Item CUSTOM_TOOLTIP_ITEM = new CustomTooltipItem();
+	public static Item CUSTOM_ARMOR_ITEM = new ArmorItem(TestArmorMaterial.INSTANCE, EquipmentSlot.CHEST, new Item.Settings().group(ItemGroup.MISC));
 
 	@Override
 	public void onInitialize() {
 		Registry.register(Registry.ITEM, new Identifier("fabric-rendering-v1-testmod", "custom_tooltip"), CUSTOM_TOOLTIP_ITEM);
+		Registry.register(Registry.ITEM, new Identifier("fabric-rendering-v1-testmod", "test_chest"), CUSTOM_ARMOR_ITEM);
 	}
 
 	private static class CustomTooltipItem extends Item {
@@ -47,4 +56,51 @@ public class TooltipComponentTestInit implements ModInitializer {
 	}
 
 	public record Data(String string) implements TooltipData { }
+
+	public static final class TestArmorMaterial implements ArmorMaterial {
+		public static final TestArmorMaterial INSTANCE = new TestArmorMaterial();
+
+		private TestArmorMaterial() {
+		}
+
+		@Override
+		public int getDurability(EquipmentSlot slot) {
+			return 0;
+		}
+
+		@Override
+		public int getProtectionAmount(EquipmentSlot slot) {
+			return 0;
+		}
+
+		@Override
+		public int getEnchantability() {
+			return 0;
+		}
+
+		@Override
+		public SoundEvent getEquipSound() {
+			return SoundEvents.ITEM_ARMOR_EQUIP_LEATHER;
+		}
+
+		@Override
+		public Ingredient getRepairIngredient() {
+			return Ingredient.ofItems(Items.LEATHER);
+		}
+
+		@Override
+		public String getName() {
+			return "fabric-rendering-v1-testmod:test";
+		}
+
+		@Override
+		public float getToughness() {
+			return 0;
+		}
+
+		@Override
+		public float getKnockbackResistance() {
+			return 0;
+		}
+	}
 }

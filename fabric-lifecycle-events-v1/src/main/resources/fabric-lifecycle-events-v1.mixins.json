@@ -4,9 +4,10 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "DataPackContentsMixin",
+    "LivingEntityMixin",
     "MinecraftServerMixin",
     "PlayerManagerMixin",
-    "ServerWorldEntityLoaderMixin",
+    "ServerWorldServerEntityHandlerMixin",
     "ServerWorldMixin",
     "ThreadedAnvilChunkStorageMixin",
     "WorldMixin"

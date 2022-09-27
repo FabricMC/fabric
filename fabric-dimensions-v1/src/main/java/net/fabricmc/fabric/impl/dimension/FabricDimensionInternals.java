@@ -17,29 +17,17 @@
 package net.fabricmc.fabric.impl.dimension;
 
 import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.TeleportTarget;
 
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
-
+@ApiStatus.Internal
 public final class FabricDimensionInternals {
-	/**
-	 * The target passed to the last call to {@link FabricDimensions#teleport(Entity, ServerWorld, TeleportTarget)}.
-	 */
-	private static TeleportTarget currentTarget;
-
 	private FabricDimensionInternals() {
 		throw new AssertionError();
-	}
-
-	/**
-	 * Returns the last target set when a user of the API requested teleportation, or null.
-	 */
-	public static TeleportTarget getCustomTarget() {
-		return currentTarget;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -48,7 +36,7 @@ public final class FabricDimensionInternals {
 		Preconditions.checkArgument(Thread.currentThread() == ((ServerWorld) teleported.world).getServer().getThread(), "Entities must be teleported from the main server thread");
 
 		try {
-			currentTarget = target;
+			((Teleportable) teleported).fabric_setCustomTeleportTarget(target);
 
 			// Fast path for teleporting within the same dimension.
 			if (teleported.getWorld() == dimension) {
@@ -66,7 +54,7 @@ public final class FabricDimensionInternals {
 
 			return (E) teleported.moveToWorld(dimension);
 		} finally {
-			currentTarget = null;
+			((Teleportable) teleported).fabric_setCustomTeleportTarget(null);
 		}
 	}
 }

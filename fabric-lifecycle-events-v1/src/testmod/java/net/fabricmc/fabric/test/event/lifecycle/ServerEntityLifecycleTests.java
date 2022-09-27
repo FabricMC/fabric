@@ -58,6 +58,12 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 			}
 		});
 
+		ServerEntityEvents.EQUIPMENT_CHANGE.register((livingEntity, equipmentSlot, previousStack, currentStack) -> {
+			if (PRINT_SERVER_ENTITY_MESSAGES) {
+				logger.info("[SERVER] Entity equipment change: Entity: {}, Slot {}, Previous: {}, Current {} ", livingEntity, equipmentSlot.name(), previousStack, currentStack);
+			}
+		});
+
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			if (this.serverTicks++ % 200 == 0) {
 				int entities = 0;

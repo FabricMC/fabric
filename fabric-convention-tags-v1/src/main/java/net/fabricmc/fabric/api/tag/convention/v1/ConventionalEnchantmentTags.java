@@ -44,7 +44,7 @@ public final class ConventionalEnchantmentTags {
 	 */
 	public static final TagKey<Enchantment> ENTITY_MOVEMENT_ENHANCEMENT = register("entity_movement_enhancement");
 	/**
-	 * For enchantments that decrease damage taken or otherwise benefit, in regards to damage, the entity wearing armor enchanted with it.
+	 * For enchantments that decrease damage taken or otherwise benefit, in regard to damage, the entity wearing armor enchanted with it.
 	 */
 	public static final TagKey<Enchantment> ENTITY_DEFENSE_ENHANCEMENT = register("entity_defense_enhancement");
 

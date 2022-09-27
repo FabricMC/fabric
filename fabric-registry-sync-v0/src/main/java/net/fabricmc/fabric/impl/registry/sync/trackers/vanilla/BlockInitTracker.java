@@ -25,7 +25,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.mixin.registry.sync.AccessorDebugChunkGenerator;
+import net.fabricmc.fabric.mixin.registry.sync.DebugChunkGeneratorAccessor;
 
 public final class BlockInitTracker implements RegistryEntryAddedCallback<Block> {
 	private final Registry<Block> registry;
@@ -55,8 +55,8 @@ public final class BlockInitTracker implements RegistryEntryAddedCallback<Block>
 		final int xLength = MathHelper.ceil(MathHelper.sqrt(blockStateList.size()));
 		final int zLength = MathHelper.ceil(blockStateList.size() / (float) xLength);
 
-		AccessorDebugChunkGenerator.setBLOCK_STATES(blockStateList);
-		AccessorDebugChunkGenerator.setX_SIDE_LENGTH(xLength);
-		AccessorDebugChunkGenerator.setZ_SIDE_LENGTH(zLength);
+		DebugChunkGeneratorAccessor.setBLOCK_STATES(blockStateList);
+		DebugChunkGeneratorAccessor.setX_SIDE_LENGTH(xLength);
+		DebugChunkGeneratorAccessor.setZ_SIDE_LENGTH(zLength);
 	}
 }

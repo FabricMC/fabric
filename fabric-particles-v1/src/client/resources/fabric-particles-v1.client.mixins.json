@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.client.particle",
   "compatibilityLevel": "JAVA_16",
   "client": [
-    "MixinParticleManager",
+    "ParticleManagerMixin",
     "ParticleManagerAccessor",
     "ParticleManagerAccessor$SimpleSpriteProviderAccessor"
   ],

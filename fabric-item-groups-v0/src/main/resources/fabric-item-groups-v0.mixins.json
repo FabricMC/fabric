@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.item.group",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "MixinItemGroup"
+    "ItemGroupMixin"
   ],
   "injectors": {
     "defaultRequire": 1

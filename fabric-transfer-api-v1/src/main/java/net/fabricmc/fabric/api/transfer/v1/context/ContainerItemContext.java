@@ -88,7 +88,21 @@ import net.fabricmc.fabric.impl.transfer.context.SingleSlotContainerItemContext;
 @ApiStatus.Experimental
 public interface ContainerItemContext {
 	/**
-	 * Return a context for the passed player's hand. This is recommended for item use interactions.
+	 * Returns a context for interaction with a player's hand. This is recommended for item use interactions.
+	 *
+	 * <p>In creative mode, {@link #withInitial(ItemStack)} is used to avoid modifying the item in hand.
+	 * Otherwise, {@link #ofPlayerHand} is used.
+	 */
+	static ContainerItemContext forPlayerInteraction(PlayerEntity player, Hand hand) {
+		if (player.getAbilities().creativeMode) {
+			return withInitial(player.getStackInHand(hand));
+		} else {
+			return ofPlayerHand(player, hand);
+		}
+	}
+
+	/**
+	 * Return a context for the passed player's hand.
 	 */
 	static ContainerItemContext ofPlayerHand(PlayerEntity player, Hand hand) {
 		return new PlayerContainerItemContext(player, hand);
@@ -151,7 +165,7 @@ public interface ContainerItemContext {
 
 	/**
 	 * Return the current item variant of this context, that is the variant in the slot of the context.
-	 * If the result is non blank, {@link #getAmount} should be
+	 * If the result is not blank, {@link #getAmount} should be positive.
 	 */
 	default ItemVariant getItemVariant() {
 		return getMainSlot().getResource();
@@ -200,7 +214,7 @@ public interface ContainerItemContext {
 	 * @param newVariant The variant of the items after the conversion. May not be blank.
 	 * @param maxAmount The maximum amount of items to convert. May not be negative.
 	 * @param transaction The transaction this operation is part of.
-	 * @return A nonnegative integer not greater than maxAmount: the amount that was transformed.
+	 * @return A non-negative integer not greater than maxAmount: the amount that was transformed.
 	 */
 	default long exchange(ItemVariant newVariant, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notBlankNotNegative(newVariant, maxAmount);

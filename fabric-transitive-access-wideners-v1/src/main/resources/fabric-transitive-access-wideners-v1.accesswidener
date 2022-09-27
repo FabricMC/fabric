@@ -24,6 +24,84 @@ transitive-accessible field net/minecraft/loot/LootPool bonusRolls Lnet/minecraf
 transitive-accessible field net/minecraft/loot/LootTable pools [Lnet/minecraft/loot/LootPool;
 transitive-accessible field net/minecraft/loot/LootTable functions [Lnet/minecraft/loot/function/LootFunction;
 
+# Creating custom damage sources
+transitive-accessible method net/minecraft/entity/damage/DamageSource <init> (Ljava/lang/String;)V
+transitive-accessible method net/minecraft/entity/damage/DamageSource setBypassesArmor ()Lnet/minecraft/entity/damage/DamageSource;
+transitive-accessible method net/minecraft/entity/damage/DamageSource setFallingBlock ()Lnet/minecraft/entity/damage/DamageSource;
+transitive-accessible method net/minecraft/entity/damage/DamageSource setOutOfWorld ()Lnet/minecraft/entity/damage/DamageSource;
+transitive-accessible method net/minecraft/entity/damage/DamageSource setUnblockable ()Lnet/minecraft/entity/damage/DamageSource;
+transitive-accessible method net/minecraft/entity/damage/DamageSource setBypassesProtection ()Lnet/minecraft/entity/damage/DamageSource;
+transitive-accessible method net/minecraft/entity/damage/DamageSource setFire ()Lnet/minecraft/entity/damage/DamageSource;
+
+# Villager trade factories
+transitive-accessible class net/minecraft/village/TradeOffers$BuyForOneEmeraldFactory
+transitive-accessible class net/minecraft/village/TradeOffers$SellItemFactory
+transitive-accessible class net/minecraft/village/TradeOffers$SellSuspiciousStewFactory
+transitive-accessible class net/minecraft/village/TradeOffers$ProcessItemFactory
+transitive-accessible class net/minecraft/village/TradeOffers$SellEnchantedToolFactory
+transitive-accessible class net/minecraft/village/TradeOffers$TypeAwareBuyForOneEmeraldFactory
+transitive-accessible class net/minecraft/village/TradeOffers$SellPotionHoldingItemFactory
+transitive-accessible class net/minecraft/village/TradeOffers$EnchantBookFactory
+transitive-accessible class net/minecraft/village/TradeOffers$SellMapFactory
+transitive-accessible class net/minecraft/village/TradeOffers$SellDyedArmorFactory
+
+# Registering custom entity spawn restrictions
+transitive-accessible method net/minecraft/entity/SpawnRestriction register (Lnet/minecraft/entity/EntityType;Lnet/minecraft/entity/SpawnRestriction$Location;Lnet/minecraft/world/Heightmap$Type;Lnet/minecraft/entity/SpawnRestriction$SpawnPredicate;)V
+
+# Creating custom block materials
+transitive-accessible method net/minecraft/block/Material$Builder burnable ()Lnet/minecraft/block/Material$Builder;
+transitive-accessible method net/minecraft/block/Material$Builder destroyedByPiston ()Lnet/minecraft/block/Material$Builder;
+transitive-accessible method net/minecraft/block/Material$Builder blocksPistons ()Lnet/minecraft/block/Material$Builder;
+
+# Item constructors
+transitive-accessible method net/minecraft/item/AxeItem <init> (Lnet/minecraft/item/ToolMaterial;FFLnet/minecraft/item/Item$Settings;)V
+transitive-accessible method net/minecraft/item/MusicDiscItem <init> (ILnet/minecraft/sound/SoundEvent;Lnet/minecraft/item/Item$Settings;I)V
+transitive-accessible method net/minecraft/item/PickaxeItem <init> (Lnet/minecraft/item/ToolMaterial;IFLnet/minecraft/item/Item$Settings;)V
+
+# Item usage context constructors
+transitive-accessible method net/minecraft/item/ItemUsageContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
+transitive-accessible method net/minecraft/item/ItemPlacementContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
+
+# Recipe factories
+transitive-accessible class net/minecraft/recipe/CookingRecipeSerializer$RecipeFactory
+transitive-accessible class net/minecraft/recipe/CuttingRecipe$Serializer$RecipeFactory
+
+# Registering custom brewing recipes
+transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerItemRecipe (Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;)V
+transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerPotionType (Lnet/minecraft/item/Item;)V
+transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerPotionRecipe (Lnet/minecraft/potion/Potion;Lnet/minecraft/item/Item;Lnet/minecraft/potion/Potion;)V
+
+# Registering custom scoreboard criteria
+transitive-accessible method net/minecraft/scoreboard/ScoreboardCriterion create (Ljava/lang/String;ZLnet/minecraft/scoreboard/ScoreboardCriterion$RenderType;)Lnet/minecraft/scoreboard/ScoreboardCriterion;
+transitive-accessible method net/minecraft/scoreboard/ScoreboardCriterion create (Ljava/lang/String;)Lnet/minecraft/scoreboard/ScoreboardCriterion;
+
+# Model part subclasses
+transitive-accessible class net/minecraft/client/model/ModelPart$Vertex
+transitive-accessible class net/minecraft/client/model/ModelPart$Quad
+
+# Creating custom render layers
+transitive-accessible method net/minecraft/client/render/RenderLayer of (Lnet/minecraft/client/render/RenderPhase$Shader;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;
+
+# Creating custom sensor types
+transitive-accessible method net/minecraft/entity/ai/brain/sensor/SensorType <init> (Ljava/util/function/Supplier;)V
+
+# Creating custom activities
+transitive-accessible method net/minecraft/entity/ai/brain/Activity <init> (Ljava/lang/String;)V
+
+# Living entity methods
+transitive-accessible method net/minecraft/entity/LivingEntity damageArmor (Lnet/minecraft/entity/damage/DamageSource;F)V
+transitive-accessible method net/minecraft/entity/LivingEntity damageHelmet (Lnet/minecraft/entity/damage/DamageSource;F)V
+transitive-accessible method net/minecraft/entity/LivingEntity damageShield (F)V
+
+# Entity constructors
+transitive-accessible method net/minecraft/entity/projectile/ProjectileEntity <init> (Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V
+transitive-accessible method net/minecraft/entity/projectile/FishingBobberEntity <init> (Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;II)V
+
+# Miscellaneous other methods
+transitive-accessible method net/minecraft/server/world/ServerWorld sendToPlayerIfNearby (Lnet/minecraft/server/network/ServerPlayerEntity;ZDDDLnet/minecraft/network/Packet;)Z
+transitive-accessible method net/minecraft/text/TextColor getHexCode ()Ljava/lang/String;
+transitive-accessible method net/minecraft/text/TranslatableTextContent getArg (I)Lnet/minecraft/text/StringVisitable;
+
 # Creating block entity types
 transitive-extendable class net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
 

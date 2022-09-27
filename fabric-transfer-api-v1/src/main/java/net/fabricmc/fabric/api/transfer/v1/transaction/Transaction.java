@@ -104,7 +104,7 @@ public interface Transaction extends AutoCloseable, TransactionContext {
 	}
 
 	/**
-	 * Open a nested transaction if {@code maybeParent} is non null, or an outer transaction if {@code maybeParent} is null.
+	 * Open a nested transaction if {@code maybeParent} is non-null, or an outer transaction if {@code maybeParent} is null.
 	 */
 	static Transaction openNested(@Nullable TransactionContext maybeParent) {
 		return maybeParent == null ? openOuter() : maybeParent.openNested();

@@ -10,8 +10,7 @@
     "DefaultAttributeRegistryMixin",
     "DetectorRailBlockMixin",
     "MaterialBuilderAccessor",
-    "SpawnRestrictionAccessor",
-    "TypeAwareTradeMixin"
+    "TradeOffersTypeAwareBuyForOneEmeraldFactoryMixin"
   ],
   "injectors": {
     "defaultRequire": 1
