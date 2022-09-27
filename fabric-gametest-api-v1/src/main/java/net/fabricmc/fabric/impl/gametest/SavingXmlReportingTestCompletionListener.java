@@ -25,8 +25,8 @@ import javax.xml.transform.TransformerException;
 
 import net.minecraft.test.XmlReportingTestCompletionListener;
 
-public class SavingXmlReportingTestCompletionListener extends XmlReportingTestCompletionListener {
-	public SavingXmlReportingTestCompletionListener(File file) throws ParserConfigurationException {
+final class SavingXmlReportingTestCompletionListener extends XmlReportingTestCompletionListener {
+	SavingXmlReportingTestCompletionListener(File file) throws ParserConfigurationException {
 		super(file);
 	}
 
