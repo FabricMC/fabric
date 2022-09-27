@@ -38,7 +38,7 @@ import net.minecraft.util.Identifier;
 public abstract class StructureTestUtilMixin {
 	private static final String GAMETEST_STRUCTURE_PATH = "gametest/structures/";
 
-	// Replace the default test structure loading with something that works a bit better for mods.
+	// Add a handler which looks in data/<mod>/gametest/structures/*.snbt before searching the default paths.
 	@Inject(at = @At("HEAD"), method = "createStructureTemplate(Ljava/lang/String;Lnet/minecraft/server/world/ServerWorld;)Lnet/minecraft/structure/StructureTemplate;", cancellable = true)
 	private static void createStructure(String id, ServerWorld world, CallbackInfoReturnable<StructureTemplate> cir) {
 		Identifier baseId = new Identifier(id);
@@ -47,9 +47,7 @@ public abstract class StructureTestUtilMixin {
 		try {
 			Resource resource = world.getServer().getResourceManager().getResource(structureId).orElse(null);
 
-			if (resource == null) {
-				throw new RuntimeException("Unable to get resource: " + structureId);
-			}
+			if (resource == null) return;
 
 			String snbt;
 
