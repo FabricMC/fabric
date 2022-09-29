@@ -1,0 +1,8 @@
+archivesBaseName = "fabric-sound-api-v1"
+version = getSubprojectVersion(project)
+
+testDependencies(project, [
+		':fabric-api-base',
+		':fabric-resource-loader-v0',
+		':fabric-command-api-v2'
+])
