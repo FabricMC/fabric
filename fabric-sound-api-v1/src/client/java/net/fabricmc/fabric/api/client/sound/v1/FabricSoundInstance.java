@@ -30,18 +30,18 @@ import net.minecraft.util.Identifier;
  */
 public interface FabricSoundInstance {
 	/**
-	 * Load the audio stream for this sound.
+	 * Loads the audio stream for this sound.
 	 *
-	 * <p>By default this will load {@literal .ogg} files from active resource packs. It may be overridden to provide a
+	 * <p>By default this will load {@code .ogg} files from active resource packs. It may be overridden to provide a
 	 * custom {@link AudioStream} implementation which provides audio from another source, such as over the network or
 	 * driven from user input.
 	 *
-	 * @param loader          The default sound loader, capable of loading {@literal .ogg} files.
+	 * @param loader          The default sound loader, capable of loading {@code .ogg} files.
 	 * @param id              The resolved sound ID, equal to {@link SoundInstance#getSound()}'s location.
 	 * @param repeatInstantly Whether this sound should loop. This is true when the sound
 	 *                        {@linkplain SoundInstance#isRepeatable() is repeatable} and has
 	 *                        {@linkplain SoundInstance#getRepeatDelay() no delay}.
-	 * @return The loaded audio stream.
+	 * @return the loaded audio stream
 	 */
 	default CompletableFuture<AudioStream> getAudioStream(SoundLoader loader, Identifier id, boolean repeatInstantly) {
 		return loader.loadStreamed(id, repeatInstantly);

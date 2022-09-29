@@ -36,7 +36,7 @@ public class SoundSystemMixin {
 					target = "Lnet/minecraft/client/sound/SoundLoader;loadStreamed(Lnet/minecraft/util/Identifier;Z)Ljava/util/concurrent/CompletableFuture;"
 			)
 	)
-	private CompletableFuture<?> getStream(SoundLoader loader, Identifier location, boolean looping, SoundInstance sound) {
-		return sound.getAudioStream(loader, location, looping);
+	private CompletableFuture<?> getStream(SoundLoader loader, Identifier id, boolean looping, SoundInstance sound) {
+		return sound.getAudioStream(loader, id, looping);
 	}
 }

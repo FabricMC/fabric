@@ -27,15 +27,15 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
 class SineSound extends AbstractSoundInstance {
-	protected SineSound(Vec3d position) {
+	SineSound(Vec3d pos) {
 		super(new Identifier(ClientSoundTest.MOD_ID, "sine_wave"), SoundCategory.BLOCKS, SoundInstance.createRandom());
-		x = position.x;
-		y = position.y;
-		z = position.z;
+		x = pos.x;
+		y = pos.y;
+		z = pos.z;
 	}
 
 	@Override
-	public CompletableFuture<AudioStream> getAudioStream(SoundLoader loader, Identifier location, boolean repeatInstantly) {
+	public CompletableFuture<AudioStream> getAudioStream(SoundLoader loader, Identifier id, boolean repeatInstantly) {
 		return CompletableFuture.completedFuture(new SineStream());
 	}
 }

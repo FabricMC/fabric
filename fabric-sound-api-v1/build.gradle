@@ -1,6 +1,12 @@
 archivesBaseName = "fabric-sound-api-v1"
 version = getSubprojectVersion(project)
 
+loom {
+	interfaceInjection {
+		interfaceInjectionSourceSets.add sourceSets.client
+	}
+}
+
 testDependencies(project, [
 		':fabric-api-base',
 		':fabric-resource-loader-v0',
