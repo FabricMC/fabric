@@ -19,6 +19,10 @@ package net.fabricmc.fabric.api.item.v1;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+/*
+ * Fabric-provided extensions for {@link ItemStack}.
+ * This interface is automatically implemented on all item stacks via Mixin and interface injection.
+ */
 public interface FabricItemStack {
 	/**
 	 * Return a leftover item for use in recipes
