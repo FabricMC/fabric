@@ -96,7 +96,11 @@ public interface FabricItem {
 	 * (This is also known as "recipe remainder".)
 	 * For example, using a lava bucket in a furnace as fuel will leave an empty bucket.
 	 *
+	 * <p>The passed {@code stack} should not be modified, and its count should be ignored.
+	 * The returned stack, if not empty, must be a new instance with count 1.
+	 *
 	 * <p>This is a stack-aware version of {@link Item#getRecipeRemainder()}.
+	 * Using {@link FabricItemStack#hasRecipeRemainder} and {@link FabricItemStack#getRecipeRemainder} instead of calling this function directly is recommended.
 	 *
 	 * @param stack the consumed {@link ItemStack}
 	 * @return the leftover item stack
