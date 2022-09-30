@@ -96,11 +96,15 @@ public interface FabricItem {
 	 * (This is also known as "recipe remainder".)
 	 * For example, using a lava bucket in a furnace as fuel will leave an empty bucket.
 	 *
-	 * <p>The passed {@code stack} should not be modified, and its count should be ignored.
-	 * The returned stack, if not empty, must be a new instance with count 1.
-	 *
 	 * <p>This is a stack-aware version of {@link Item#getRecipeRemainder()}.
-	 * Using {@link FabricItemStack#hasRecipeRemainder} and {@link FabricItemStack#getRecipeRemainder} instead of calling this function directly is recommended.
+	 *
+	 * <p>Reimplementing this method must follow the "best and only practice rule",
+	 * to avoid compatibility issues with other mods using recipe remainders, that
+	 * the returned stack must have a count of 1.
+	 * The only exception is the empty stack that has a count of zero.
+	 *
+	 * <p>For other use cases, is highly recommended to set the remainder via {@link Item.Settings#recipeRemainder(Item)}
+	 * or override {@link Item#getRecipeRemainder()} instead of this.
 	 *
 	 * @param stack the consumed {@link ItemStack}
 	 * @return the leftover item stack
