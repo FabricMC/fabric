@@ -98,13 +98,15 @@ public interface FabricItem {
 	 *
 	 * <p>This is a stack-aware version of {@link Item#getRecipeRemainder()}.
 	 *
-	 * <p>Reimplementing this method must follow the "best and only practice rule",
-	 * to avoid compatibility issues with other mods using recipe remainders, that
-	 * the returned stack must have a count of 1.
+	 * <p>Overriding this method must follow the rule,
+	 * to avoid compatibility issues with other mods using recipe remainders,
+	 * that the returned stack must be a new instance with a count of 1.
 	 * The only exception is the empty stack that has a count of zero.
 	 *
-	 * <p>For other use cases, is highly recommended to set the remainder via {@link Item.Settings#recipeRemainder(Item)}
-	 * or override {@link Item#getRecipeRemainder()} instead of this.
+	 * <p>Note that simple item remainders can also be set via {@link Item.Settings#recipeRemainder(Item)}.
+	 *
+	 * <p>If you want to get a remainder for a stack,
+	 * is recommended to use the stack version of this method: {@link FabricItemStack#getRecipeRemainder()}.
 	 *
 	 * @param stack the consumed {@link ItemStack}
 	 * @return the leftover item stack
