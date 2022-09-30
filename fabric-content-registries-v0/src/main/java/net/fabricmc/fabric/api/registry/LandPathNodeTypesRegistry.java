@@ -171,75 +171,26 @@ public final class LandPathNodeTypesRegistry {
 	}
 
 	/**
-	 * Checks if a block state is registered as dynamic.
-	 *
-	 * @param state Current block state.
-	 * @return {@code true} if the current block of the block state is registered as dynamic, {@code false} otherwise.
-	 */
-	public static boolean isDynamic(BlockState state) {
-		Objects.requireNonNull(state, "BlockState cannot be null!");
-
-		return isDynamic(state.getBlock());
-	}
-
-	/**
-	 * Checks if a block is registered as dynamic.
+	 * Gets the provider type registered for the specified block.
 	 *
 	 * @param block Current block.
-	 * @return {@code true} if the current block is registered as dynamic, {@code false} otherwise.
+	 * @return an enum constant indicating the provider type registered for the specified block.
 	 */
-	public static boolean isDynamic(Block block) {
+	public static ProviderType getProviderType(Block block) {
 		Objects.requireNonNull(block, "Block cannot be null!");
 
-		return NODE_TYPES.get(block) instanceof DynamicPathNodeTypeProvider;
-	}
+		// Gets the node type provider for the block.
+		PathNodeTypeProvider provider = NODE_TYPES.get(block);
 
-	/**
-	 * Checks if a block state is registered as static.
-	 *
-	 * @param state Current block state.
-	 * @return {@code true} if the current block of the block state is registered as static, {@code false} otherwise.
-	 */
-	public static boolean isStatic(BlockState state) {
-		Objects.requireNonNull(state, "BlockState cannot be null!");
+		//Gets the node type from the registered provider.
+		if (provider instanceof StaticPathNodeTypeProvider) {
+			return ProviderType.STATIC;
+		} else if (provider instanceof DynamicPathNodeTypeProvider) {
+			return ProviderType.DYNAMIC;
+		}
 
-		return isStatic(state.getBlock());
-	}
-
-	/**
-	 * Checks if a block is registered as static.
-	 *
-	 * @param block Current block.
-	 * @return {@code true} if the current block is registered as static, {@code false} otherwise.
-	 */
-	public static boolean isStatic(Block block) {
-		Objects.requireNonNull(block, "Block cannot be null!");
-
-		return NODE_TYPES.get(block) instanceof StaticPathNodeTypeProvider;
-	}
-
-	/**
-	 * Checks if a block state is registered.
-	 *
-	 * @param state Current block state.
-	 * @return {@code true} if the current block of the block state is contained into the registry, {@code false} otherwise.
-	 */
-	public static boolean contains(BlockState state) {
-		Objects.requireNonNull(state, "BlockState cannot be null!");
-
-		return contains(state.getBlock());
-	}
-
-	/**
-	 * Checks if a block is registered.
-	 *
-	 * @param block Current block.
-	 * @return {@code true} if the current block is contained into the registry, {@code false} otherwise.
-	 */
-	public static boolean contains(Block block) {
-		Objects.requireNonNull(block, "Block cannot be null!");
-
-		return NODE_TYPES.containsKey(block);
+		//If no valid provider is found returns NONE.
+		return ProviderType.NONE;
 	}
 
 	/**
@@ -300,5 +251,25 @@ public final class LandPathNodeTypesRegistry {
 		 */
 		@Nullable
 		PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos, boolean neighbor);
+	}
+
+	/**
+	 * Specifies what {@link PathNodeTypeProvider} type is registered for the block.
+	 */
+	public enum ProviderType {
+		/**
+		 * No provider is registered for the block.
+		 */
+		NONE,
+
+		/**
+		 * A static provider is registered for the block.
+		 */
+		STATIC,
+
+		/**
+		 * A dynamic provider is registered for the block.
+		 */
+		DYNAMIC
 	}
 }
