@@ -35,11 +35,11 @@ import net.minecraft.world.World;
 @Mixin(BrewingStandBlockEntity.class)
 public class BrewingStandBlockEntityMixin {
 	@Unique
-	private static ItemStack capturedItemStack;
+	private static final ThreadLocal<ItemStack> capturedItemStack = new ThreadLocal<>();
 
 	@Inject(method = "craft", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V"), locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void captureItemStack(World world, BlockPos pos, DefaultedList<ItemStack> slots, CallbackInfo ci, ItemStack itemStack) {
-		capturedItemStack = itemStack;
+		capturedItemStack.set(itemStack);
 	}
 
 	@Redirect(method = "craft", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;hasRecipeRemainder()Z"))
@@ -49,6 +49,6 @@ public class BrewingStandBlockEntityMixin {
 
 	@ModifyVariable(method = "craft", at = @At(value = "STORE"), index = 4)
 	private static ItemStack createStackRecipeRemainder(ItemStack old) {
-		return capturedItemStack.getRecipeRemainder();
+		return capturedItemStack.get().getRecipeRemainder();
 	}
 }
