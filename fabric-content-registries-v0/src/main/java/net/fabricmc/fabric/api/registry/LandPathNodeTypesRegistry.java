@@ -107,7 +107,7 @@ public final class LandPathNodeTypesRegistry {
 	}
 
 	/**
-	 * Gets the {@link PathNodeType} from the provider registered for the specified block at the specified position.
+	 * Gets the {@link PathNodeType} from the provider registered for the specified block state at the specified position.
 	 *
 	 * <p>If no valid {@link PathNodeType} provider is registered for the block, it returns {@code null}.
 	 * You cannot use this method to retrieve vanilla block node types.
@@ -130,10 +130,12 @@ public final class LandPathNodeTypesRegistry {
 		PathNodeTypeProvider provider = NODE_TYPES.get(state.getBlock());
 
 		//Gets the node type from the registered provider.
-		if (provider instanceof StaticPathNodeTypeProvider staticProvider) {
-			return staticProvider.getPathNodeType(state, neighbor);
-		} else if (provider instanceof DynamicPathNodeTypeProvider dynamicProvider) {
+		if (provider instanceof DynamicPathNodeTypeProvider dynamicProvider) {
+			//This can return null too.
 			return dynamicProvider.getPathNodeType(state, world, pos, neighbor);
+		} else if (provider instanceof StaticPathNodeTypeProvider staticProvider) {
+			//This can return null too.
+			return staticProvider.getPathNodeType(state, neighbor);
 		}
 
 		//If no valid provider is found returns null.
@@ -151,8 +153,7 @@ public final class LandPathNodeTypesRegistry {
 	 * @param state    Current block state.
 	 * @param neighbor Specifies if the block is not a directly targeted block, but a neighbor block in the path.
 	 * @return the custom {@link PathNodeType} from the static provider registered for the specified block,
-	 * passing the specified block state to the provider, or {@code null} if no valid static provider
-	 * is registered for the block.
+	 * passing the block state to the provider, or {@code null} if no valid static provider is registered for the block.
 	 */
 	@Nullable
 	public static PathNodeType getStaticPathNodeType(BlockState state, boolean neighbor) {
@@ -163,6 +164,7 @@ public final class LandPathNodeTypesRegistry {
 
 		//Gets the node type from the registered provider.
 		if (provider instanceof StaticPathNodeTypeProvider staticProvider) {
+			//This can return null too.
 			return staticProvider.getPathNodeType(state, neighbor);
 		}
 
