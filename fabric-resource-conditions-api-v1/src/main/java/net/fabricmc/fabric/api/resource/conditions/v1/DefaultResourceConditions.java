@@ -20,9 +20,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.minecraft.block.Block;
-import net.minecraft.tag.TagKey;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
@@ -41,6 +41,7 @@ public final class DefaultResourceConditions {
 	private static final Identifier BLOCK_TAGS_POPULATED = new Identifier("fabric:block_tags_populated");
 	private static final Identifier FLUID_TAGS_POPULATED = new Identifier("fabric:fluid_tags_populated");
 	private static final Identifier ITEM_TAGS_POPULATED = new Identifier("fabric:item_tags_populated");
+	private static final Identifier TAGS_POPULATED = new Identifier("fabric:tags_populated");
 
 	/**
 	 * Create a NOT condition: returns true if its child condition is false, and false if its child is true.
@@ -92,7 +93,7 @@ public final class DefaultResourceConditions {
 	 */
 	@SafeVarargs
 	public static ConditionJsonProvider blockTagsPopulated(TagKey<Block>... tags) {
-		return ResourceConditionsImpl.tagsPopulated(BLOCK_TAGS_POPULATED, tags);
+		return ResourceConditionsImpl.tagsPopulated(BLOCK_TAGS_POPULATED, false, tags);
 	}
 
 	/**
@@ -100,7 +101,7 @@ public final class DefaultResourceConditions {
 	 */
 	@SafeVarargs
 	public static ConditionJsonProvider fluidTagsPopulated(TagKey<Fluid>... tags) {
-		return ResourceConditionsImpl.tagsPopulated(FLUID_TAGS_POPULATED, tags);
+		return ResourceConditionsImpl.tagsPopulated(FLUID_TAGS_POPULATED, false, tags);
 	}
 
 	/**
@@ -108,7 +109,16 @@ public final class DefaultResourceConditions {
 	 */
 	@SafeVarargs
 	public static ConditionJsonProvider itemTagsPopulated(TagKey<Item>... tags) {
-		return ResourceConditionsImpl.tagsPopulated(ITEM_TAGS_POPULATED, tags);
+		return ResourceConditionsImpl.tagsPopulated(ITEM_TAGS_POPULATED, false, tags);
+	}
+
+	/**
+	 * Create a condition that returns true if each of the passed tags exists and has at least one element.
+	 * This works for any registries, and the registry ID of the tags is serialized to JSON as well as the tags.
+	 */
+	@SafeVarargs
+	public static <T> ConditionJsonProvider tagsPopulated(TagKey<T>... tags) {
+		return ResourceConditionsImpl.tagsPopulated(TAGS_POPULATED, true, tags);
 	}
 
 	static void init() {
@@ -133,6 +143,7 @@ public final class DefaultResourceConditions {
 		ResourceConditions.register(BLOCK_TAGS_POPULATED, object -> ResourceConditionsImpl.tagsPopulatedMatch(object, Registry.BLOCK_KEY));
 		ResourceConditions.register(FLUID_TAGS_POPULATED, object -> ResourceConditionsImpl.tagsPopulatedMatch(object, Registry.FLUID_KEY));
 		ResourceConditions.register(ITEM_TAGS_POPULATED, object -> ResourceConditionsImpl.tagsPopulatedMatch(object, Registry.ITEM_KEY));
+		ResourceConditions.register(TAGS_POPULATED, ResourceConditionsImpl::tagsPopulatedMatch);
 	}
 
 	private DefaultResourceConditions() {

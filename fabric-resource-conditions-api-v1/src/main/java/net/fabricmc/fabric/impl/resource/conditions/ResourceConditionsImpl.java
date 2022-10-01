@@ -93,7 +93,7 @@ public class ResourceConditionsImpl {
 	}
 
 	@SafeVarargs
-	public static <T> ConditionJsonProvider tagsPopulated(Identifier id, TagKey<T>... tags) {
+	public static <T> ConditionJsonProvider tagsPopulated(Identifier id, boolean includeRegistry, TagKey<T>... tags) {
 		Preconditions.checkArgument(tags.length > 0, "Must register at least one tag.");
 
 		return new ConditionJsonProvider() {
@@ -111,6 +111,11 @@ public class ResourceConditionsImpl {
 				}
 
 				object.add("values", array);
+
+				if (includeRegistry) {
+					// tags[0] is guaranteed to exist
+					object.addProperty("registry", tags[0].registry().getValue().toString());
+				}
 			}
 		};
 	}
@@ -158,7 +163,13 @@ public class ResourceConditionsImpl {
 		LOADED_TAGS.remove();
 	}
 
-	public static <T> boolean tagsPopulatedMatch(JsonObject object, RegistryKey<? extends Registry<T>> registryKey) {
+	public static boolean tagsPopulatedMatch(JsonObject object) {
+		String key = JsonHelper.getString(object, "registry");
+		RegistryKey<? extends Registry<?>> registryRef = RegistryKey.ofRegistry(new Identifier(key));
+		return tagsPopulatedMatch(object, registryRef);
+	}
+
+	public static boolean tagsPopulatedMatch(JsonObject object, RegistryKey<? extends Registry<?>> registryKey) {
 		JsonArray array = JsonHelper.getArray(object, "values");
 		@Nullable
 		Map<RegistryKey<?>, Map<Identifier, Collection<RegistryEntry<?>>>> allTags = LOADED_TAGS.get();
