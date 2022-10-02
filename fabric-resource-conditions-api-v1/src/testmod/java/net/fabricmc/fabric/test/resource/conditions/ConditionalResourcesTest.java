@@ -50,12 +50,16 @@ public class ConditionalResourcesTest {
 			throw new AssertionError("tags_populated recipe should have been loaded.");
 		}
 
+		if (manager.get(id("tags_populated_default")).isEmpty()) {
+			throw new AssertionError("tags_populated_default recipe should have been loaded.");
+		}
+
 		if (manager.get(id("tags_not_populated")).isPresent()) {
 			throw new AssertionError("tags_not_populated recipe should not have been loaded.");
 		}
 
 		long loadedRecipes = manager.values().stream().filter(r -> r.getId().getNamespace().equals(MOD_ID)).count();
-		if (loadedRecipes != 3) throw new AssertionError("Unexpected loaded recipe count: " + loadedRecipes);
+		if (loadedRecipes != 4) throw new AssertionError("Unexpected loaded recipe count: " + loadedRecipes);
 
 		context.complete();
 	}

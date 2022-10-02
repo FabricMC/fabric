@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.resource.conditions.v1;
 
+import java.util.Objects;
+
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -43,7 +45,8 @@ public interface ConditionJsonProvider {
 		JsonArray array = new JsonArray();
 
 		for (ConditionJsonProvider condition : conditions) {
-			if (condition != null) array.add(condition.toJson());
+			Objects.requireNonNull(condition, "condition cannot be null");
+			array.add(condition.toJson());
 		}
 
 		conditionalObject.add(ResourceConditions.CONDITIONS_KEY, array);
