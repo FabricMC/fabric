@@ -55,7 +55,7 @@ public class ConditionalResourcesTest {
 		}
 
 		long loadedRecipes = manager.values().stream().filter(r -> r.getId().getNamespace().equals(MOD_ID)).count();
-		if (loadedRecipes != 2) throw new AssertionError("Unexpected loaded recipe count: " + loadedRecipes);
+		if (loadedRecipes != 3) throw new AssertionError("Unexpected loaded recipe count: " + loadedRecipes);
 
 		context.complete();
 	}

@@ -43,7 +43,7 @@ public interface ConditionJsonProvider {
 		JsonArray array = new JsonArray();
 
 		for (ConditionJsonProvider condition : conditions) {
-			array.add(condition.toJson());
+			if (condition != null) array.add(condition.toJson());
 		}
 
 		conditionalObject.add(ResourceConditions.CONDITIONS_KEY, array);
