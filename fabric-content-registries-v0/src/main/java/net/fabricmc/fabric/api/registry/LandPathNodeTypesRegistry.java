@@ -127,85 +127,51 @@ public final class LandPathNodeTypesRegistry {
 		Objects.requireNonNull(pos, "BlockPos cannot be null!");
 
 		// Gets the node type provider for the block.
-		PathNodeTypeProvider provider = NODE_TYPES.get(state.getBlock());
+		PathNodeTypeProvider provider = getPathNodeTypeProvider(state.getBlock());
 
-		//Gets the node type from the registered provider.
-		if (provider instanceof DynamicPathNodeTypeProvider dynamicProvider) {
-			//This can return null too.
-			return dynamicProvider.getPathNodeType(state, world, pos, neighbor);
-		} else if (provider instanceof StaticPathNodeTypeProvider staticProvider) {
-			//This can return null too.
-			return staticProvider.getPathNodeType(state, neighbor);
+		//If no provider exists, returns null.
+		if (provider == null) return null;
+
+		//If a provider exists, returns the node type obtained from the provider.
+		//The node type can be null too.
+		if (provider instanceof DynamicPathNodeTypeProvider) {
+			return ((DynamicPathNodeTypeProvider) provider).getPathNodeType(state, world, pos, neighbor);
+		} else {
+			return ((StaticPathNodeTypeProvider) provider).getPathNodeType(state, neighbor);
 		}
-
-		//If no valid provider is found returns null.
-		return null;
 	}
 
 	/**
-	 * Gets the {@link PathNodeType} from the provider registered for the specified block state.
+	 * Gets the {@link PathNodeTypeProvider} registered for the specified block.
 	 *
-	 * <p>This searches only for static providers.
+	 * <p>If no {@link PathNodeTypeProvider} is registered for the block, it returns {@code null}.
 	 *
-	 * <p>If no valid {@link PathNodeType} provider is registered for the block, it returns {@code null}.
-	 * You cannot use this method to retrieve vanilla block node types.
-	 *
-	 * @param state    Current block state.
-	 * @param neighbor Specifies if the block is not a directly targeted block, but a neighbor block in the path.
-	 * @return the custom {@link PathNodeType} from the static provider registered for the specified block,
-	 * passing the block state to the provider, or {@code null} if no valid static provider is registered for the block.
-	 */
-	@Nullable
-	public static PathNodeType getStaticPathNodeType(BlockState state, boolean neighbor) {
-		Objects.requireNonNull(state, "BlockState cannot be null!");
-
-		// Gets the node type provider for the block.
-		PathNodeTypeProvider provider = NODE_TYPES.get(state.getBlock());
-
-		//Gets the node type from the registered provider.
-		if (provider instanceof StaticPathNodeTypeProvider staticProvider) {
-			//This can return null too.
-			return staticProvider.getPathNodeType(state, neighbor);
-		}
-
-		//If no valid provider is found returns null.
-		return null;
-	}
-
-	/**
-	 * Gets the provider type registered for the specified block.
+	 * <p>Tip: This method is intended to be used in any cases in which you need to get
+	 * the raw provider for the block, if you need the {@link PathNodeType} for the block state instead,
+	 * you can simply use {@link #getPathNodeType}.
 	 *
 	 * @param block Current block.
-	 * @return an enum constant indicating the provider type registered for the specified block.
+	 * @return the {@link PathNodeTypeProvider} registered for the specified block,
+	 * or {@code null} if no provider is registered for the block.
 	 */
-	public static ProviderType getProviderType(Block block) {
+	@Nullable
+	public static PathNodeTypeProvider getPathNodeTypeProvider(Block block) {
 		Objects.requireNonNull(block, "Block cannot be null!");
 
-		// Gets the node type provider for the block.
-		PathNodeTypeProvider provider = NODE_TYPES.get(block);
-
-		//Gets the node type from the registered provider.
-		if (provider instanceof StaticPathNodeTypeProvider) {
-			return ProviderType.STATIC;
-		} else if (provider instanceof DynamicPathNodeTypeProvider) {
-			return ProviderType.DYNAMIC;
-		}
-
-		//If no valid provider is found returns NONE.
-		return ProviderType.NONE;
+		return NODE_TYPES.get(block);
 	}
 
 	/**
-	 * General provider, this is a marker interface.
+	 * Generic provider, this is a marker interface.
 	 */
-	private interface PathNodeTypeProvider {
+	public sealed interface PathNodeTypeProvider permits StaticPathNodeTypeProvider, DynamicPathNodeTypeProvider {
 	}
 
 	/**
 	 * A functional interface that provides the {@link PathNodeType}, given the block state.
 	 */
 	@FunctionalInterface
-	public interface StaticPathNodeTypeProvider extends PathNodeTypeProvider {
+	public non-sealed interface StaticPathNodeTypeProvider extends PathNodeTypeProvider {
 		/**
 		 * Gets the {@link PathNodeType} for the specified block state.
 		 *
@@ -231,7 +197,7 @@ public final class LandPathNodeTypesRegistry {
 	 * A functional interface that provides the {@link PathNodeType}, given the block state world and position.
 	 */
 	@FunctionalInterface
-	public interface DynamicPathNodeTypeProvider extends PathNodeTypeProvider {
+	public non-sealed interface DynamicPathNodeTypeProvider extends PathNodeTypeProvider {
 		/**
 		 * Gets the {@link PathNodeType} for the specified block state at the specified position.
 		 *
@@ -253,25 +219,5 @@ public final class LandPathNodeTypesRegistry {
 		 */
 		@Nullable
 		PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos, boolean neighbor);
-	}
-
-	/**
-	 * Specifies what {@link PathNodeTypeProvider} type is registered for the block.
-	 */
-	public enum ProviderType {
-		/**
-		 * No provider is registered for the block.
-		 */
-		NONE,
-
-		/**
-		 * A static provider is registered for the block.
-		 */
-		STATIC,
-
-		/**
-		 * A dynamic provider is registered for the block.
-		 */
-		DYNAMIC
 	}
 }
