@@ -95,7 +95,7 @@ public final class ResourceConditionsImpl {
 	@SafeVarargs
 	public static <T> ConditionJsonProvider tagsPopulated(Identifier id, boolean includeRegistry, TagKey<T>... tags) {
 		Preconditions.checkArgument(tags.length > 0, "Must register at least one tag.");
-		final RegistryKey<? extends Registry<T>> registryRef = tags[0].registry();
+		final RegistryKey<? extends Registry<?>> registryRef = tags[0].registry();
 
 		return new ConditionJsonProvider() {
 			@Override
