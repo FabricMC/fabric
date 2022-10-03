@@ -142,11 +142,17 @@ public final class LandPathNodeTypesRegistry {
 	}
 
 	/**
-	 * Gets the {@link PathNodeTypeProvider} registered for the specified block.
+	 * Gets the raw {@link PathNodeTypeProvider} registered for the specified block.
 	 *
 	 * <p>If no {@link PathNodeTypeProvider} is registered for the block, it returns {@code null}.
 	 *
-	 * <p>Tip: This method is intended to be used in any cases in which you need to get
+	 * <p>Note 1: {@link PathNodeTypeProvider} is a marker interface with no methods,
+	 * so you need to cast the result to a subtype, in order to get something from it.
+	 * Currently, the result can be of {@link StaticPathNodeTypeProvider} or {@link DynamicPathNodeTypeProvider}.
+	 * Note that more kinds of providers might be added if the API is expanded in the future,
+	 * so make sure not to fail without exceptions if another type of object is returned.
+	 *
+	 * <p>Note 2: This method is intended to be used in any cases in which you need to get
 	 * the raw provider for the block, if you need the {@link PathNodeType} for the block state instead,
 	 * you can simply use {@link #getPathNodeType}.
 	 *
