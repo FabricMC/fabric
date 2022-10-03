@@ -44,7 +44,10 @@ public final class DefaultResourceConditions {
 	private static final Identifier TAGS_POPULATED = new Identifier("fabric:tags_populated");
 
 	/**
-	 * Create a NOT condition: returns true if its child condition is false, and false if its child is true.
+	 * Creates a NOT condition that returns true if its child condition is false, and false if its child is true.
+	 *
+	 * @apiNote This condition's ID is {@code fabric:not}, and takes one property, {@code value},
+	 * which is a condition provider.
 	 */
 	public static ConditionJsonProvider not(ConditionJsonProvider value) {
 		return new ConditionJsonProvider() {
@@ -61,28 +64,40 @@ public final class DefaultResourceConditions {
 	}
 
 	/**
-	 * Create a condition that returns true if all of its child conditions are true.
+	 * Creates a condition that returns true if all of its child conditions are true.
+	 *
+	 * @apiNote This condition's ID is {@code fabric:and}, and takes one property, {@code values},
+	 * which is an array of condition providers.
 	 */
 	public static ConditionJsonProvider and(ConditionJsonProvider... values) {
 		return ResourceConditionsImpl.array(AND, values);
 	}
 
 	/**
-	 * Create a condition that returns true if at least one of its child conditions is true.
+	 * Creates a condition that returns true if any of its child conditions are true.
+	 *
+	 * @apiNote This condition's ID is {@code fabric:or}, and takes one property, {@code values},
+	 * which is an array of condition providers.
 	 */
 	public static ConditionJsonProvider or(ConditionJsonProvider... values) {
 		return ResourceConditionsImpl.array(OR, values);
 	}
 
 	/**
-	 * Create a condition that returns true if all the passed mod ids correspond to a loaded mod.
+	 * Creates a condition that returns true if all the passed mod ids correspond to a loaded mod.
+	 *
+	 * @apiNote This condition's ID is {@code fabric:all_mods_loaded}, and takes one property,
+	 * {@code values}, which is an array of string mod IDs.
 	 */
 	public static ConditionJsonProvider allModsLoaded(String... modIds) {
 		return ResourceConditionsImpl.mods(ALL_MODS_LOADED, modIds);
 	}
 
 	/**
-	 * Create a condition that returns true if at least one of the passed mod ids corresponds to a loaded mod.
+	 * Creates a condition that returns true if at least one of the passed mod ids corresponds to a loaded mod.
+	 *
+	 * @apiNote This condition's ID is {@code fabric:any_mod_loaded}, and takes one property,
+	 * {@code values}, which is an array of string mod IDs.
 	 */
 	public static ConditionJsonProvider anyModLoaded(String... modIds) {
 		return ResourceConditionsImpl.mods(ANY_MOD_LOADED, modIds);
@@ -119,8 +134,12 @@ public final class DefaultResourceConditions {
 	}
 
 	/**
-	 * Create a condition that returns true if each of the passed tags exists and has at least one element.
+	 * Creates a condition that returns true if each of the passed tags exists and has at least one element.
 	 * This works for any registries, and the registry ID of the tags is serialized to JSON as well as the tags.
+	 *
+	 * @apiNote This condition's ID is {@code fabric:tags_populated}, and takes up to two properties:
+	 * {@code values}, which is an array of string tag IDs, and {@code registry}, which is the ID of
+	 * the registry of the tags. If {@code registry} is not provided, it defaults to {@code minecraft:item}.
 	 */
 	@SafeVarargs
 	public static <T> ConditionJsonProvider tagsPopulated(TagKey<T>... tags) {
