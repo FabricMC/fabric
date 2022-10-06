@@ -47,7 +47,7 @@ public final class DefaultResourceConditions {
 	 * Creates a NOT condition that returns true if its child condition is false, and false if its child is true.
 	 *
 	 * @apiNote This condition's ID is {@code fabric:not}, and takes one property, {@code value},
-	 * which is a condition provider.
+	 * which is a condition.
 	 */
 	public static ConditionJsonProvider not(ConditionJsonProvider value) {
 		return new ConditionJsonProvider() {
@@ -67,7 +67,7 @@ public final class DefaultResourceConditions {
 	 * Creates a condition that returns true if all of its child conditions are true.
 	 *
 	 * @apiNote This condition's ID is {@code fabric:and}, and takes one property, {@code values},
-	 * which is an array of condition providers.
+	 * which is an array of conditions.
 	 */
 	public static ConditionJsonProvider and(ConditionJsonProvider... values) {
 		return ResourceConditionsImpl.array(AND, values);
@@ -77,7 +77,7 @@ public final class DefaultResourceConditions {
 	 * Creates a condition that returns true if any of its child conditions are true.
 	 *
 	 * @apiNote This condition's ID is {@code fabric:or}, and takes one property, {@code values},
-	 * which is an array of condition providers.
+	 * which is an array of conditions.
 	 */
 	public static ConditionJsonProvider or(ConditionJsonProvider... values) {
 		return ResourceConditionsImpl.array(OR, values);

@@ -15,9 +15,9 @@
  */
 
 /**
- * Provides a way of conditionally loading JSON-based resources. This can be used with
- * recipes, loot tables, advancements, predicates, and item modifiers. Conditions are
- * identified by an identifier and registered at {@link
+ * Provides a way of conditionally loading JSON-based resources. By default, this can
+ * be used with recipes, loot tables, advancements, predicates, and item modifiers.
+ * Conditions are identified by an identifier and registered at {@link
  * net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions}.
  *
  * <h2>JSON format</h2>
