@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.ingredient",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "IngredientMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

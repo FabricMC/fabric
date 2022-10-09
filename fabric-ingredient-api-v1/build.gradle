@@ -1,0 +1,10 @@
+archivesBaseName = "fabric-ingredient-api-v1"
+version = getSubprojectVersion(project)
+
+loom {
+	accessWidenerPath = file('src/main/resources/fabric-ingredient-api-v1.accesswidener')
+}
+
+moduleDependencies(project, [
+		'fabric-registry-sync-v0'
+])
