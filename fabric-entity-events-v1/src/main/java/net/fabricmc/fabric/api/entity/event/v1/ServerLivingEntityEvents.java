@@ -25,7 +25,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Various server-side only events related to living entities.
  */
-public class ServerLivingEntityEvents {
+public final class ServerLivingEntityEvents {
 	/**
 	 * An event that is called when a living entity is going to take damage.
 	 *
@@ -110,5 +110,8 @@ public class ServerLivingEntityEvents {
 		 * @param damageSource the source of the fatal damage
 		 */
 		void afterDeath(LivingEntity entity, DamageSource damageSource);
+	}
+
+	private ServerLivingEntityEvents() {
 	}
 }
