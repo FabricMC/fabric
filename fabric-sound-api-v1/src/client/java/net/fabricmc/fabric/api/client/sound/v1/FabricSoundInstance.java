@@ -45,6 +45,7 @@ public interface FabricSoundInstance {
 	 * driven from user input.
 	 *
 	 * <h3>Usage Example</h3>
+	 *
 	 * <p>Creating a sound with a custom audio stream requires the following:
 	 *
 	 * <p>Firstly, an entry in {@code sounds.json}. The name can be set to any sound (though it is recommended to use
