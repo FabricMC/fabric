@@ -23,6 +23,7 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
@@ -45,6 +46,7 @@ import net.fabricmc.fabric.api.entity.event.v1.EntityElytraEvents;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 public final class EntityEventTests implements ModInitializer {
@@ -78,15 +80,39 @@ public final class EntityEventTests implements ModInitializer {
 			LOGGER.info("Respawned {}, [{}, {}]", oldPlayer.getGameProfile().getName(), oldPlayer.getWorld().getRegistryKey().getValue(), newPlayer.getWorld().getRegistryKey().getValue());
 		});
 
-		ServerPlayerEvents.ALLOW_DEATH.register((player, source, amount) -> {
-			LOGGER.info("{} is going to die to {} damage from {} damage source", player.getGameProfile().getName(), amount, source.getName());
+		// No fall damage if holding a feather in the main hand
+		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+			if (source == DamageSource.FALL && entity.getStackInHand(Hand.MAIN_HAND).isOf(Items.FEATHER)) {
+				LOGGER.info("Avoided {} of fall damage by holding a feather", amount);
+				return false;
+			}
 
+			return true;
+		});
+
+		ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) -> {
+			LOGGER.info("{} is going to die to {} damage from {} damage source", entity.getName().getString(), amount, source.getName());
+
+			if (entity.getStackInHand(Hand.MAIN_HAND).getItem() == Items.CARROT) {
+				entity.setHealth(3.0f);
+				return false;
+			}
+
+			return true;
+		});
+
+		// Test that the legacy event still works
+		ServerPlayerEvents.ALLOW_DEATH.register((player, source, amount) -> {
 			if (player.getStackInHand(Hand.MAIN_HAND).getItem() == Items.APPLE) {
 				player.setHealth(3.0f);
 				return false;
 			}
 
 			return true;
+		});
+
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			LOGGER.info("{} died due to {} damage source", entity.getName().getString(), source.getName());
 		});
 
 		EntitySleepEvents.ALLOW_SLEEPING.register((player, sleepingPos) -> {
