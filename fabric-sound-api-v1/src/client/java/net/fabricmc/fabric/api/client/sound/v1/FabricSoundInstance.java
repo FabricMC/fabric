@@ -30,11 +30,53 @@ import net.minecraft.util.Identifier;
  */
 public interface FabricSoundInstance {
 	/**
+	 * An empty sound, which may be used as a placeholder in your {@code sounds.json} file for sounds with custom audio
+	 * streams.
+	 *
+	 * @see #getAudioStream(SoundLoader, Identifier, boolean)
+	 */
+	Identifier EMPTY_SOUND = new Identifier("fabric-sound-api-v1", "empty");
+
+	/**
 	 * Loads the audio stream for this sound.
 	 *
 	 * <p>By default this will load {@code .ogg} files from active resource packs. It may be overridden to provide a
 	 * custom {@link AudioStream} implementation which provides audio from another source, such as over the network or
 	 * driven from user input.
+	 *
+	 * <h3>Usage Example</h3>
+	 * <p>Creating a sound with a custom audio stream requires the following:
+	 *
+	 * <p>Firstly, an entry in {@code sounds.json}. The name can be set to any sound (though it is recommended to use
+	 * the dummy {@link #EMPTY_SOUND}), and the "stream" property set to true:
+	 *
+	 * <pre>{@code
+	 * {
+	 *   "custom_sound": {"sounds": [{"name": "fabric-sound-api-v1:empty", "stream": true}]}
+	 * }
+	 * }</pre>
+	 *
+	 * <p>You should then define your own implementation of {@link AudioStream}, which provides audio data to the sound
+	 * engine.
+	 *
+	 * <p>Finally, you'll need an implementation of {@link SoundInstance} which overrides {@link #getAudioStream} to
+	 * return your custom implementation. {@link SoundInstance#getSound()} should return the newly-added entry in
+	 * {@code sounds.json}.
+	 *
+	 * <pre>{@code
+	 * class CustomSound extends AbstractSoundInstance {
+	 *     CustomSound() {
+	 *         // Use the sound defined in sounds.json
+	 *         super(new Identifier("mod_id", "custom_sound"), SoundCategory.BLOCKS, SoundInstance.createRandom());
+	 *     }
+	 *
+	 *     @Override
+	 *     public CompletableFuture<AudioStream> getAudioStream(SoundLoader loader, Identifier id, boolean repeatInstantly) {
+	 *         // Return your custom AudioStream implementation.
+	 *         return CompletableFuture.completedFuture(new CustomStream());
+	 *     }
+	 * }
+	 * }</pre>
 	 *
 	 * @param loader          The default sound loader, capable of loading {@code .ogg} files.
 	 * @param id              The resolved sound ID, equal to {@link SoundInstance#getSound()}'s location.
