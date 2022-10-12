@@ -18,6 +18,9 @@
     ],
     "client": [
       "net.fabricmc.fabric.test.item.client.TooltipTests"
+    ],
+    "fabric-gametest" : [
+      "net.fabricmc.fabric.test.item.gametest.FurnaceGameTest"
     ]
   }
 }
