@@ -28,8 +28,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public final class ServerLivingEntityEvents {
 	/**
 	 * An event that is called when a living entity is going to take damage.
-	 *
-	 * <p>Mods can cancel this to prevent the damage entirely.
+	 * This is fired from {@link LivingEntity#damage}, before armor or any other mitigation are applied.
+	 * Mods can cancel this to prevent the damage entirely.
 	 */
 	public static final Event<AllowDamage> ALLOW_DAMAGE = EventFactory.createArrayBacked(AllowDamage.class, callbacks -> (entity, source, amount) -> {
 		for (AllowDamage callback : callbacks) {
@@ -54,9 +54,9 @@ public final class ServerLivingEntityEvents {
 	 *     <li>a mod that changes death mechanics switching the player over to the mod's play-mode, where death doesn't apply</li>
 	 * </ul>
 	 */
-	public static final Event<AllowDeath> ALLOW_DEATH = EventFactory.createArrayBacked(AllowDeath.class, callbacks -> (player, damageSource, damageAmount) -> {
+	public static final Event<AllowDeath> ALLOW_DEATH = EventFactory.createArrayBacked(AllowDeath.class, callbacks -> (entity, damageSource, damageAmount) -> {
 		for (AllowDeath callback : callbacks) {
-			if (!callback.allowDeath(player, damageSource, damageAmount)) {
+			if (!callback.allowDeath(entity, damageSource, damageAmount)) {
 				return false;
 			}
 		}
@@ -67,9 +67,9 @@ public final class ServerLivingEntityEvents {
 	/**
 	 * An event that is called when a living entity dies.
 	 */
-	public static final Event<AfterDeath> AFTER_DEATH = EventFactory.createArrayBacked(AfterDeath.class, callbacks -> (player, damageSource) -> {
+	public static final Event<AfterDeath> AFTER_DEATH = EventFactory.createArrayBacked(AfterDeath.class, callbacks -> (entity, damageSource) -> {
 		for (AfterDeath callback : callbacks) {
-			callback.afterDeath(player, damageSource);
+			callback.afterDeath(entity, damageSource);
 		}
 	});
 
