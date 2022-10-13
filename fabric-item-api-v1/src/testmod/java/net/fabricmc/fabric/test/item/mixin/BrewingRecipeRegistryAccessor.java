@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.item.v1;
+package net.fabricmc.fabric.test.item.mixin;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.recipe.BrewingRecipeRegistry;
 
-/*
- * Fabric-provided extensions for {@link ItemStack}.
- * This interface is automatically implemented on all item stacks via Mixin and interface injection.
- */
-public interface FabricItemStack {
-	/**
-	 * Return a leftover item for use in recipes.
-	 *
-	 * <p>See {@link FabricItem#getRecipeRemainder(ItemStack)} for a more in depth description.
-	 *
-	 * <p>Stack-aware version of {@link Item#getRecipeRemainder()}.
-	 *
-	 * @return the leftover item
-	 */
-	default ItemStack getRecipeRemainder() {
-		return ((ItemStack) this).getItem().getRecipeRemainder((ItemStack) this);
+@Mixin(BrewingRecipeRegistry.class)
+public interface BrewingRecipeRegistryAccessor {
+	@Invoker
+	static void callRegisterPotionRecipe(Potion input, Item item, Potion output) {
+		throw new UnsupportedOperationException();
 	}
 }

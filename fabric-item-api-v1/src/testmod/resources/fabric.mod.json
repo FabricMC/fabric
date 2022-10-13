@@ -22,5 +22,8 @@
     "fabric-gametest" : [
       "net.fabricmc.fabric.test.item.gametest.FurnaceGameTest"
     ]
-  }
+  },
+  "mixins": [
+    "fabric-item-api-tests-v1.mixins.json"
+  ]
 }

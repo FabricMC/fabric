@@ -35,22 +35,25 @@ import net.minecraft.world.World;
 @Mixin(BrewingStandBlockEntity.class)
 public class BrewingStandBlockEntityMixin {
 	@Unique
-	private static final ThreadLocal<ItemStack> fabric_capturedItemStack = new ThreadLocal<>();
+	private static final ThreadLocal<ItemStack> capturedItemStack = new ThreadLocal<>();
 
 	@Inject(method = "craft", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V"), locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void captureItemStack(World world, BlockPos pos, DefaultedList<ItemStack> slots, CallbackInfo ci, ItemStack itemStack) {
-		fabric_capturedItemStack.set(itemStack);
+		capturedItemStack.set(itemStack.getRecipeRemainder());
 	}
 
 	@Redirect(method = "craft", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;hasRecipeRemainder()Z"))
 	private static boolean hasStackRecipeRemainder(Item instance) {
-		return true;
+		return !capturedItemStack.get().isEmpty();
 	}
 
+	/**
+	 * Injected after the {@link Item#getRecipeRemainder} to replace the old remainder with are new one.
+	 */
 	@ModifyVariable(method = "craft", at = @At(value = "STORE"), index = 4)
 	private static ItemStack createStackRecipeRemainder(ItemStack old) {
-		ItemStack remainder = fabric_capturedItemStack.get().getRecipeRemainder();
-		fabric_capturedItemStack.remove();
+		ItemStack remainder = capturedItemStack.get();
+		capturedItemStack.remove();
 		return remainder;
 	}
 }
