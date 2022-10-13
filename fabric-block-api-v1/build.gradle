@@ -1,0 +1,8 @@
+archivesBaseName = "fabric-block-api-v1"
+version = getSubprojectVersion(project)
+
+moduleDependencies(project, [
+])
+
+testDependencies(project, [
+])

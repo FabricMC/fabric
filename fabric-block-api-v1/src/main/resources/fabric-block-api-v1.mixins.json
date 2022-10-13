@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.block",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "BlockMixin",
+    "BlockStateMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

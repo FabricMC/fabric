@@ -30,11 +30,16 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.block.v1.FabricBlock;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 
-public final class FrameBlock extends Block implements BlockEntityProvider {
+// Need to implement FabricBlock manually because this is a testmod for another Fabric module, otherwise it would be injected.
+public final class FrameBlock extends Block implements BlockEntityProvider, FabricBlock {
 	public final Identifier id;
 
 	public FrameBlock(Identifier id) {
@@ -93,5 +98,17 @@ public final class FrameBlock extends Block implements BlockEntityProvider {
 	@Override
 	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 		return new FrameBlockEntity(pos, state);
+	}
+
+	// The frames don't look exactly like the block they are mimicking,
+	// but the goal here is just to test is just to test the behavior with the pillar's connected textures. ;-)
+	@Override
+	public BlockState getAppearance(BlockState state, BlockRenderView renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+		// For this specific block, the render attachment works on both the client and the server, so let's use that.
+		if (((RenderAttachedBlockView) renderView).getBlockEntityRenderAttachment(pos) instanceof Block mimickedBlock) {
+			return mimickedBlock.getDefaultState();
+		}
+
+		return state;
 	}
 }
