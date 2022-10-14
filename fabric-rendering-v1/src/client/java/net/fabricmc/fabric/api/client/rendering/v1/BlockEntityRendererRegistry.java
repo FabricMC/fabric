@@ -28,7 +28,10 @@ import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl
 
 /**
  * Helper class for registering BlockEntityRenderers.
+ *
+ * <p>Use {@link net.minecraft.client.render.block.entity.BlockEntityRendererFactories#register(BlockEntityType, BlockEntityRendererFactory)} instead.
  */
+@Deprecated
 @Environment(EnvType.CLIENT)
 public final class BlockEntityRendererRegistry {
 	/**
@@ -40,7 +43,7 @@ public final class BlockEntityRendererRegistry {
 	 *                            class is already loaded
 	 * @param <E> the {@link BlockEntity}
 	 */
-	public static <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
+	public static <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<E> blockEntityRendererFactory) {
 		BlockEntityRendererRegistryImpl.register(blockEntityType, blockEntityRendererFactory);
 	}
 
