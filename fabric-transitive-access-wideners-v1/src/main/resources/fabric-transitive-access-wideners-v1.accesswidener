@@ -82,7 +82,7 @@ transitive-accessible class net/minecraft/client/model/ModelPart$Quad
 # Creating custom render layers
 transitive-accessible method net/minecraft/client/render/RenderLayer of (Lnet/minecraft/client/render/RenderPhase$Shader;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;
 
-# Registering custom block entity renderer's
+# Registering custom block entity renderers
 transitive-accessible method net/minecraft/client/render/block/entity/BlockEntityRendererFactories register (Lnet/minecraft/block/entity/BlockEntityType;Lnet/minecraft/client/render/block/entity/BlockEntityRendererFactory;)V
 
 # Creating custom sensor types
