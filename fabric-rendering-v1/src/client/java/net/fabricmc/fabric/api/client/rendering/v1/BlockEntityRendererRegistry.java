@@ -43,7 +43,7 @@ public final class BlockEntityRendererRegistry {
 	 *                            class is already loaded
 	 * @param <E> the {@link BlockEntity}
 	 */
-	public static <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<E> blockEntityRendererFactory) {
+	public static <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
 		BlockEntityRendererRegistryImpl.register(blockEntityType, blockEntityRendererFactory);
 	}
 
