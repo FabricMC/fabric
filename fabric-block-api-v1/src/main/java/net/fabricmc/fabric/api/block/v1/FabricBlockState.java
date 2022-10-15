@@ -23,6 +23,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
+/**
+ * General-purpose Fabric-provided extensions for {@link BlockState}, matching the functionality provided in {@link FabricBlock}.
+ *
+ * <p>Note: This interface is automatically implemented on all block states via Mixin and interface injection.
+ */
 public interface FabricBlockState {
 	/**
 	 * Return the current appearance of the block, i.e. which block state this block reports to look like on a given side.
