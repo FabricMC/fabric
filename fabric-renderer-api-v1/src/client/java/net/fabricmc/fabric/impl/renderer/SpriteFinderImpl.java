@@ -96,7 +96,7 @@ public class SpriteFinderImpl implements SpriteFinder {
 			if (lowU && highV) {
 				Node node = this.nodes[1];
 				if(node == null) {
-					this.nodes[1] = (node = new Node(this.fallbackSprite, this.rootMidU + this.cellRadius, this.rootMidV + this.cellRadius * -1));
+					this.nodes[1] = (node = new Node(this.fallbackSprite, this.rootMidU + this.cellRadius * -1, this.rootMidV + this.cellRadius));
 				}
 				node.add(sprite);
 			}
