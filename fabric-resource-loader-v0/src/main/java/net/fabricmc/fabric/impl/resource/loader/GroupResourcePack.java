@@ -40,7 +40,7 @@ import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.fabric.mixin.resource.loader.NamespaceResourceManagerAccessor;
 
 /**
- * Represents a group resource pack, holds multiple resource packs as one.
+ * Represents a group resource pack that holds multiple resource packs as one.
  */
 public abstract class GroupResourcePack implements ResourcePack {
 	protected final ResourceType type;

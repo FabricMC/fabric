@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resource.AbstractFileResourcePack;
@@ -43,6 +44,7 @@ import net.fabricmc.fabric.impl.resource.loader.GroupResourcePack;
  * will be searched in the provided modded resource packs.
  */
 @Environment(EnvType.CLIENT)
+@ApiStatus.Internal
 public class ProgrammerArtResourcePack extends GroupResourcePack {
 	private final AbstractFileResourcePack originalResourcePack;
 

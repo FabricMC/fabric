@@ -43,7 +43,7 @@
  * <p>The Resource Loader allows mods to register resource reload listeners through
  * {@link net.fabricmc.fabric.api.resource.ResourceManagerHelper#registerReloadListener(net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener)},
  * which are triggered when resources are reloaded.
- * A resource reload listener can depend on another and vanilla resource reload listener identifiers may be found in {@link net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys}.</p>
+ * A resource reload listener can depend on vanilla resource reload listener by using identifiers found in {@link net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys}.</p>
  */
 
 package net.fabricmc.fabric.api.resource;

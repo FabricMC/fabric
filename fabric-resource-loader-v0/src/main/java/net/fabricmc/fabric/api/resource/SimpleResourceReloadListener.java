@@ -52,7 +52,7 @@ public interface SimpleResourceReloadListener<T> extends IdentifiableResourceRel
 	}
 
 	/**
-	 * Asynchronously process and load resource-based data. The code
+	 * Asynchronously processes and loads resource-based data. The code
 	 * must be thread-safe and not modify game state!
 	 *
 	 * @param manager  The resource manager used during reloading.
@@ -63,7 +63,7 @@ public interface SimpleResourceReloadListener<T> extends IdentifiableResourceRel
 	CompletableFuture<T> load(ResourceManager manager, Profiler profiler, Executor executor);
 
 	/**
-	 * Synchronously apply loaded data to the game state.
+	 * Synchronously applies loaded data to the game state.
 	 *
 	 * @param manager  The resource manager used during reloading.
 	 * @param profiler The profiler which may be used for this stage.

@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.loader.api.FabricLoader;
 
 /**
- * The Fabric mods resource pack, holds all the mod resource packs as one pack.
+ * The Fabric mods resource pack that holds all the mod resource packs as one pack.
  */
 public class FabricModResourcePack extends GroupResourcePack {
 	public FabricModResourcePack(ResourceType type, List<ModResourcePack> packs) {
@@ -50,8 +50,7 @@ public class FabricModResourcePack extends GroupResourcePack {
 			return IOUtils.toInputStream(pack, Charsets.UTF_8);
 		} else if ("pack.png".equals(fileName)) {
 			InputStream stream = FabricLoader.getInstance().getModContainer("fabric-resource-loader-v0")
-					.flatMap(container -> container.getMetadata().getIconPath(512).map(container::getPath))
-					.filter(Files::exists)
+					.flatMap(container -> container.getMetadata().getIconPath(512).flatMap(container::findPath))
 					.map(iconPath -> {
 						try {
 							return Files.newInputStream(iconPath);

@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.resource.loader;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -43,7 +43,7 @@ import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.ModContainer;
 
 public class ResourceManagerHelperImpl implements ResourceManagerHelper {
-	private static final Map<ResourceType, ResourceManagerHelperImpl> registryMap = new HashMap<>();
+	private static final Map<ResourceType, ResourceManagerHelperImpl> registryMap = new EnumMap<>(ResourceType.class);
 	private static final Set<Pair<String, ModNioResourcePack>> builtinResourcePacks = new HashSet<>();
 	private static final Logger LOGGER = LoggerFactory.getLogger(ResourceManagerHelperImpl.class);
 
@@ -65,10 +65,9 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	 * @return {@code true} if successfully registered the resource pack, else {@code false}
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, String, ResourcePackActivationType)
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
-	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
 	 */
 	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, String displayName, ResourcePackActivationType activationType) {
-		String separator = container.getRootPath().getFileSystem().getSeparator();
+		String separator = container.getRootPaths().get(0).getFileSystem().getSeparator();
 		subPath = subPath.replace("/", separator);
 		String name = displayName;
 		ModNioResourcePack resourcePack = ModNioResourcePack.create(id, name, container, subPath, ResourceType.CLIENT_RESOURCES, activationType);
@@ -96,7 +95,6 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	 * @return {@code true} if successfully registered the resource pack, else {@code false}
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, String, ResourcePackActivationType)
-	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
 	 */
 	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, ResourcePackActivationType activationType) {
 		return registerBuiltinResourcePack(id, subPath, container, id.getNamespace() + "/" + id.getPath(), activationType);

@@ -27,7 +27,7 @@ import net.minecraft.resource.ResourcePackSource;
  * so we store the source in the map when the resource packs are created.
  * See {@link net.fabricmc.fabric.mixin.resource.loader.ResourcePackProfileMixin ResourcePackProfileMixin}.
  *
- * <p>The sources are later read for use in {@link FabricResource} and {@link FabricResourceImpl}.
+ * <p>The sources are later read for use in {@link FabricResource}.
  * See {@link net.fabricmc.fabric.mixin.resource.loader.NamespaceResourceManagerMixin NamespaceResourceManagerMixin}.
  */
 public final class ResourcePackSourceTracker {
