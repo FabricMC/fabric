@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.test.rendering.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "SignTypeAccessor"
+  ],
+  "client": [
+    "BlockEntityRendererFactoriesAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

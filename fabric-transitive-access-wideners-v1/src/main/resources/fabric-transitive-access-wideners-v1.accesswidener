@@ -53,6 +53,10 @@ transitive-accessible method net/minecraft/block/Material$Builder burnable ()Lne
 transitive-accessible method net/minecraft/block/Material$Builder destroyedByPiston ()Lnet/minecraft/block/Material$Builder;
 transitive-accessible method net/minecraft/block/Material$Builder blocksPistons ()Lnet/minecraft/block/Material$Builder;
 
+# Custom Sign Types
+transitive-accessible method net/minecraft/util/SignType <init> (Ljava/lang/String;)V
+transitive-accessible method net/minecraft/util/SignType register (Lnet/minecraft/util/SignType;)Lnet/minecraft/util/SignType;
+
 # Item constructors
 transitive-accessible method net/minecraft/item/AxeItem <init> (Lnet/minecraft/item/ToolMaterial;FFLnet/minecraft/item/Item$Settings;)V
 transitive-accessible method net/minecraft/item/MusicDiscItem <init> (ILnet/minecraft/sound/SoundEvent;Lnet/minecraft/item/Item$Settings;I)V
