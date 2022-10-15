@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "fabric-transitive-access-wideners-v1-testmod:block/test_sign"
+    }
+  }
+}
