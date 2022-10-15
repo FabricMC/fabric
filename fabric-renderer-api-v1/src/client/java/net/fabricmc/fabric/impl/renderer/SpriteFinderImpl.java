@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.impl.renderer;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
@@ -37,12 +36,10 @@ import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
  * a fixed cell size.
  */
 public class SpriteFinderImpl implements SpriteFinder {
-	private final Node root;
-	private final SpriteAtlasTexture spriteAtlasTexture;
+	private final Finder root;
 
 	public SpriteFinderImpl(Map<Identifier, Sprite> sprites, SpriteAtlasTexture spriteAtlasTexture) {
-		root = new Node(0.5f, 0.5f, 0.25f);
-		this.spriteAtlasTexture = spriteAtlasTexture;
+		root = new Finder(spriteAtlasTexture.getSprite(MissingSprite.getMissingSpriteId()), 0.5f, 0.5f, 0.25f);
 		sprites.values().forEach(root::add);
 	}
 
@@ -64,78 +61,161 @@ public class SpriteFinderImpl implements SpriteFinder {
 		return root.find(u, v);
 	}
 
-	private class Node {
-		final float midU;
-		final float midV;
-		final float cellRadius;
-		Object lowLow = null;
-		Object lowHigh = null;
-		Object highLow = null;
-		Object highHigh = null;
+	private static class Finder {
+		private final Sprite fallbackSprite;
+		private final Node[] nodes;
 
-		Node(float midU, float midV, float radius) {
-			this.midU = midU;
-			this.midV = midV;
-			cellRadius = radius;
-		}
+		private final float rootMidU, rootMidV;
+		private final float cellRadius;
 
 		static final float EPS = 0.00001f;
 
-		void add(Sprite sprite) {
-			final boolean lowU = sprite.getMinU() < midU - EPS;
-			final boolean highU = sprite.getMaxU() > midU + EPS;
-			final boolean lowV = sprite.getMinV() < midV - EPS;
-			final boolean highV = sprite.getMaxV() > midV + EPS;
+		public Finder(Sprite fallbackSprite, float rootMidU, float rootMidV, float cellRadius) {
+			this.fallbackSprite = fallbackSprite;
+			this.rootMidU = rootMidU;
+			this.rootMidV = rootMidV;
+			this.cellRadius = cellRadius;
+
+			this.nodes = new Node[4];
+		}
+
+		public void add(Sprite sprite) {
+			boolean lowU = sprite.getMinU() < this.rootMidU - EPS;
+			boolean highU = sprite.getMaxU() > this.rootMidU + EPS;
+			boolean lowV = sprite.getMinV() < this.rootMidV - EPS;
+			boolean highV = sprite.getMaxV() > this.rootMidV + EPS;
 
 			if (lowU && lowV) {
-				addInner(sprite, lowLow, -1, -1, q -> lowLow = q);
+				Node node = this.nodes[0];
+				if(node == null) {
+					this.nodes[0] = (node = new Node(this.fallbackSprite, this.rootMidU + this.cellRadius * -1, this.rootMidV + this.cellRadius * -1));
+				}
+				node.add(sprite);
 			}
 
 			if (lowU && highV) {
-				addInner(sprite, lowHigh, -1, 1, q -> lowHigh = q);
+				Node node = this.nodes[1];
+				if(node == null) {
+					this.nodes[1] = (node = new Node(this.fallbackSprite, this.rootMidU + this.cellRadius, this.rootMidV + this.cellRadius * -1));
+				}
+				node.add(sprite);
 			}
 
 			if (highU && lowV) {
-				addInner(sprite, highLow, 1, -1, q -> highLow = q);
+				Node node = this.nodes[0];
+				if(node == null) {
+					this.nodes[0] = (node = new Node(this.fallbackSprite, this.rootMidU + this.cellRadius, this.rootMidV + this.cellRadius * -1));
+				}
+				node.add(sprite);
 			}
 
 			if (highU && highV) {
-				addInner(sprite, highHigh, 1, 1, q -> highHigh = q);
+				Node node = this.nodes[0];
+				if(node == null) {
+					this.nodes[0] = (node = new Node(this.fallbackSprite, this.rootMidU + this.cellRadius, this.rootMidV + this.cellRadius));
+				}
+				node.add(sprite);
 			}
 		}
 
-		private void addInner(Sprite sprite, Object quadrant, int uStep, int vStep, Consumer<Object> setter) {
-			if (quadrant == null) {
-				setter.accept(sprite);
-			} else if (quadrant instanceof Node) {
-				((Node) quadrant).add(sprite);
-			} else {
-				Node n = new Node(midU + cellRadius * uStep, midV + cellRadius * vStep, cellRadius * 0.5f);
-
-				if (quadrant instanceof Sprite) {
-					n.add((Sprite) quadrant);
+		public Sprite find(float u, float v) {
+			if(u < rootMidU) {
+				if(v < rootMidV) {
+					Node node = nodes[0];
+					if(node == null) {
+						return fallbackSprite;
+					}
+					return node.find(u, v);
 				}
 
-				n.add(sprite);
-				setter.accept(n);
+				Node node = nodes[1];
+				if(node == null) {
+					return fallbackSprite;
+				}
+				return node.find(u, v);
 			}
+
+			if(v < rootMidV) {
+				Node node = nodes[2];
+				if(node == null) {
+					return fallbackSprite;
+				}
+				return node.find(u, v);
+			}
+
+			Node node = nodes[3];
+			if(node == null) {
+				return fallbackSprite;
+			}
+			return node.find(u, v);
 		}
 
-		private Sprite find(float u, float v) {
-			if (u < midU) {
-				return v < midV ? findInner(lowLow, u, v) : findInner(lowHigh, u, v);
-			} else {
-				return v < midV ? findInner(highLow, u, v) : findInner(highHigh, u, v);
-			}
-		}
+		private static class Node {
+			private final float midU, midV;
+			private final Sprite fallbackSprite;
+			private final Sprite[] sprites;
 
-		private Sprite findInner(Object quadrant, float u, float v) {
-			if (quadrant instanceof Sprite) {
-				return (Sprite) quadrant;
-			} else if (quadrant instanceof Node) {
-				return ((Node) quadrant).find(u, v);
-			} else {
-				return spriteAtlasTexture.getSprite(MissingSprite.getMissingSpriteId());
+			public Node(Sprite fallbackSprite, float midU, float midV) {
+				this.fallbackSprite = fallbackSprite;
+				this.midU = midU;
+				this.midV = midV;
+
+				this.sprites = new Sprite[4];
+			}
+
+			private void add(Sprite sprite) {
+				boolean lowU = sprite.getMinU() < midU - EPS;
+				boolean highU = sprite.getMaxU() > midU + EPS;
+				boolean lowV = sprite.getMinV() < midV - EPS;
+				boolean highV = sprite.getMaxV() > midV + EPS;
+
+				if (lowU && lowV) {
+					sprites[0] = sprite;
+				}
+
+				if (lowU && highV) {
+					sprites[1] = sprite;
+				}
+
+				if (highU && lowV) {
+					sprites[2] = sprite;
+				}
+
+				if (highU && highV) {
+					sprites[3] = sprite;
+				}
+			}
+
+			private Sprite find(float u, float v) {
+				if(u < midU) {
+					if(v < midV) {
+						Sprite sprite = sprites[0];
+						if(sprite == null) {
+							return fallbackSprite;
+						}
+						return sprite;
+					}
+
+					Sprite sprite = sprites[1];
+					if(sprite == null) {
+						return fallbackSprite;
+					}
+					return sprite;
+				}
+
+				if(v < midV) {
+					Sprite sprite = sprites[2];
+					if(sprite == null) {
+						return fallbackSprite;
+					}
+					return sprite;
+				}
+
+				Sprite sprite = this.sprites[3];
+				if(sprite == null) {
+					return this.fallbackSprite;
+				}
+				return sprite;
 			}
 		}
 	}
