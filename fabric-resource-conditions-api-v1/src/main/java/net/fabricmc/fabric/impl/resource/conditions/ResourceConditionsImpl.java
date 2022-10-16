@@ -43,7 +43,7 @@ import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.loader.api.FabricLoader;
 
 @ApiStatus.Internal
-public class ResourceConditionsImpl {
+public final class ResourceConditionsImpl {
 	public static final Logger LOGGER = LoggerFactory.getLogger("Fabric Resource Conditions");
 
 	// Providers
@@ -93,8 +93,9 @@ public class ResourceConditionsImpl {
 	}
 
 	@SafeVarargs
-	public static <T> ConditionJsonProvider tagsPopulated(Identifier id, TagKey<T>... tags) {
+	public static <T> ConditionJsonProvider tagsPopulated(Identifier id, boolean includeRegistry, TagKey<T>... tags) {
 		Preconditions.checkArgument(tags.length > 0, "Must register at least one tag.");
+		final RegistryKey<? extends Registry<?>> registryRef = tags[0].registry();
 
 		return new ConditionJsonProvider() {
 			@Override
@@ -111,6 +112,12 @@ public class ResourceConditionsImpl {
 				}
 
 				object.add("values", array);
+
+				if (includeRegistry && registryRef != Registry.ITEM_KEY) {
+					// tags[0] is guaranteed to exist.
+					// Skip if this is the default (minecraft:item)
+					object.addProperty("registry", registryRef.getValue().toString());
+				}
 			}
 		};
 	}
@@ -158,7 +165,13 @@ public class ResourceConditionsImpl {
 		LOADED_TAGS.remove();
 	}
 
-	public static <T> boolean tagsPopulatedMatch(JsonObject object, RegistryKey<? extends Registry<T>> registryKey) {
+	public static boolean tagsPopulatedMatch(JsonObject object) {
+		String key = JsonHelper.getString(object, "registry", "minecraft:item");
+		RegistryKey<? extends Registry<?>> registryRef = RegistryKey.ofRegistry(new Identifier(key));
+		return tagsPopulatedMatch(object, registryRef);
+	}
+
+	public static boolean tagsPopulatedMatch(JsonObject object, RegistryKey<? extends Registry<?>> registryKey) {
 		JsonArray array = JsonHelper.getArray(object, "values");
 		@Nullable
 		Map<RegistryKey<?>, Map<Identifier, Collection<RegistryEntry<?>>>> allTags = LOADED_TAGS.get();
