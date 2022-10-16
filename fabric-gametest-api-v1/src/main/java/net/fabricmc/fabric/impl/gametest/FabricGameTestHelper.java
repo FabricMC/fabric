@@ -37,7 +37,6 @@ import net.minecraft.test.TestFunction;
 import net.minecraft.test.TestFunctions;
 import net.minecraft.test.TestServer;
 import net.minecraft.test.TestUtil;
-import net.minecraft.test.XmlReportingTestCompletionListener;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.level.storage.LevelStorage;
 
@@ -56,7 +55,7 @@ public final class FabricGameTestHelper {
 
 		if (reportPath != null) {
 			try {
-				TestFailureLogger.setCompletionListener(new XmlReportingTestCompletionListener(new File(reportPath)));
+				TestFailureLogger.setCompletionListener(new SavingXmlReportingTestCompletionListener(new File(reportPath)));
 			} catch (ParserConfigurationException e) {
 				throw new RuntimeException(e);
 			}
