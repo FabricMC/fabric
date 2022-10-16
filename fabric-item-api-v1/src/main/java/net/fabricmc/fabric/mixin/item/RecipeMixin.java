@@ -35,18 +35,18 @@ import net.fabricmc.fabric.impl.item.RecipeRemainderHandler;
 public interface RecipeMixin<C extends Inventory> {
 	@Inject(method = "getRemainder", at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/Inventory;getStack(I)Lnet/minecraft/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILHARD)
 	default void captureStack(C inventory, CallbackInfoReturnable<DefaultedList<ItemStack>> cir, DefaultedList<ItemStack> defaultedList, int i) {
-		RecipeRemainderHandler.capturedRecipeItemStack.set(inventory.getStack(i));
+		RecipeRemainderHandler.remainderStack.set(inventory.getStack(i).getRecipeRemainder());
 	}
 
 	@Redirect(method = "getRemainder", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;hasRecipeRemainder()Z"))
 	private boolean hasStackRemainder(Item instance) {
-		return true;
+		return !RecipeRemainderHandler.remainderStack.get().isEmpty();
 	}
 
 	@Redirect(method = "getRemainder", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/collection/DefaultedList;set(ILjava/lang/Object;)Ljava/lang/Object;"))
 	private Object getStackRemainder(DefaultedList<ItemStack> inventory, int index, Object element) {
-		Object remainder = inventory.set(index, RecipeRemainderHandler.capturedRecipeItemStack.get().getRecipeRemainder());
-		RecipeRemainderHandler.capturedRecipeItemStack.remove();
+		Object remainder = inventory.set(index, RecipeRemainderHandler.remainderStack.get());
+		RecipeRemainderHandler.remainderStack.remove();
 		return remainder;
 	}
 }

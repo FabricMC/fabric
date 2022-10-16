@@ -24,7 +24,6 @@ import net.minecraft.block.entity.FurnaceBlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.test.GameTest;
-import net.minecraft.test.GameTestException;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
 
@@ -42,13 +41,13 @@ public class FurnaceGameTest implements FabricGameTest {
 		setInputs(blockEntity, new ItemStack(Blocks.COBBLESTONE, 8), new ItemStack(Items.COAL, 2));
 
 		cook(blockEntity, context, 1);
-		assertInventory(blockEntity,
+		assertInventory(blockEntity, "Testing vanilla smelting.",
 				new ItemStack(Blocks.COBBLESTONE, 7),
 				new ItemStack(Items.COAL, 1),
 				new ItemStack(Blocks.STONE, 1));
 
 		cook(blockEntity, context, 7);
-		assertInventory(blockEntity,
+		assertInventory(blockEntity, "Testing vanilla smelting.",
 				ItemStack.EMPTY,
 				new ItemStack(Items.COAL, 1),
 				new ItemStack(Blocks.STONE, 8));
@@ -64,8 +63,7 @@ public class FurnaceGameTest implements FabricGameTest {
 		setInputs(blockEntity, new ItemStack(Blocks.COBBLESTONE, 64), new ItemStack(Items.LAVA_BUCKET));
 
 		cook(blockEntity, context, 64);
-
-		assertInventory(blockEntity,
+		assertInventory(blockEntity, "Testing vanilla smelting recipe remainder.",
 				ItemStack.EMPTY,
 				new ItemStack(Items.BUCKET),
 				new ItemStack(Blocks.STONE, 64));
@@ -81,19 +79,19 @@ public class FurnaceGameTest implements FabricGameTest {
 		setInputs(blockEntity, new ItemStack(Blocks.COBBLESTONE, 32), new ItemStack(CustomDamageTest.WEIRD_PICK));
 
 		cook(blockEntity, context, 1);
-		assertInventory(blockEntity,
+		assertInventory(blockEntity, "Testing fabric smelting recipe remainder.",
 				new ItemStack(Blocks.COBBLESTONE, 31),
-				withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 1),
+				RecipeGameTest.withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 1),
 				new ItemStack(Blocks.STONE, 1));
 
 		cook(blockEntity, context, 30);
-		assertInventory(blockEntity,
+		assertInventory(blockEntity, "Testing fabric smelting recipe remainder.",
 				new ItemStack(Blocks.COBBLESTONE, 1),
-				withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 30),
+				RecipeGameTest.withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 31),
 				new ItemStack(Blocks.STONE, 31));
 
 		cook(blockEntity, context, 1);
-		assertInventory(blockEntity,
+		assertInventory(blockEntity, "Testing fabric smelting recipe remainder.",
 				ItemStack.EMPTY,
 				ItemStack.EMPTY,
 				new ItemStack(Blocks.STONE, 32));
@@ -101,32 +99,17 @@ public class FurnaceGameTest implements FabricGameTest {
 		context.complete();
 	}
 
-	private ItemStack withDamage(ItemStack stack, int damage) {
-		stack.setDamage(damage);
-		return stack;
-	}
-
 	private void setInputs(FurnaceBlockEntity blockEntity, ItemStack ingredient, ItemStack fuel) {
 		blockEntity.setStack(0, ingredient);
 		blockEntity.setStack(1, fuel);
 	}
 
-	private void assertInventory(FurnaceBlockEntity blockEntity, ItemStack... stacks) {
+	private void assertInventory(FurnaceBlockEntity blockEntity, String extraErrorInfo, ItemStack... stacks) {
 		for (int i = 0; i < stacks.length; i++) {
-			ItemStack beStack = blockEntity.getStack(i);
-			ItemStack stack = stacks[i];
+			ItemStack currentStack = blockEntity.getStack(i);
+			ItemStack expectedStack = stacks[i];
 
-			if (beStack.isEmpty() && stack.isEmpty()) {
-				continue;
-			}
-
-			if (!stack.isItemEqual(stacks[i])) {
-				throw new GameTestException("Item stacks dont match");
-			}
-
-			if (stack.getCount() != stacks[i].getCount()) {
-				throw new GameTestException("Size doesnt match");
-			}
+			RecipeGameTest.assertStacks(currentStack, expectedStack, extraErrorInfo);
 		}
 	}
 

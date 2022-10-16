@@ -96,17 +96,17 @@ public interface FabricItem {
 	 * (This is also known as "recipe remainder".)
 	 * For example, using a lava bucket in a furnace as fuel will leave an empty bucket.
 	 *
-	 * <p>Here is an example for a recipe remainder that decrements the item's damage.
+	 * <p>Here is an example for a recipe remainder that increments the item's damage.
 	 *
 	 * <pre>
-	 * 			if (stack.getDamage() < stack.getMaxDamage() - 1) {
-	 * 				ItemStack moreDamaged = stack.copy();
-	 * 				moreDamaged.setCount(1);
-	 * 				moreDamaged.setDamage(stack.getDamage() + 1);
-	 * 				return moreDamaged;
-	 *                        }
+	 *  if (stack.getDamage() < stack.getMaxDamage() - 1) {
+	 *  	ItemStack moreDamaged = stack.copy();
+	 *  	moreDamaged.setCount(1);
+	 *  	moreDamaged.setDamage(stack.getDamage() + 1);
+	 *  	return moreDamaged;
+	 *  }
 	 *
-	 * 			return ItemStack.EMPTY;
+	 *  return ItemStack.EMPTY;
 	 * </pre>
 	 *
 	 *
