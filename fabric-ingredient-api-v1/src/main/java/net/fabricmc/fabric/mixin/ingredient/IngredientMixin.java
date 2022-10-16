@@ -18,14 +18,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 
 import net.fabricmc.fabric.api.ingredient.v1.CustomIngredientSerializer;
-import net.fabricmc.fabric.api.ingredient.v1.CustomIngredients;
 import net.fabricmc.fabric.api.ingredient.v1.FabricIngredient;
 import net.fabricmc.fabric.impl.ingredient.CustomIngredientImpl;
 import net.fabricmc.fabric.impl.ingredient.builtin.OrIngredient;
 
-// TODO: check for other required mixins (ShapelessRecipe at least)
-// TODO: JSON and network serialization and deserialization tests
-// TODO: test what happens with vanilla clients
 @Mixin(Ingredient.class)
 public class IngredientMixin implements FabricIngredient {
 	@Shadow
@@ -35,7 +31,7 @@ public class IngredientMixin implements FabricIngredient {
 	@Inject(at = @At("HEAD"), method = "cacheMatchingStacks", cancellable = true)
 	private void injectCacheMatchingStacks(CallbackInfo ci) {
 		if (isCustom() && matchingStacks == null) {
-			matchingStacks = getCustomIngredient().getPreviewStacks();
+			matchingStacks = getCustomIngredient().getMatchingStacks();
 			ci.cancel();
 		}
 	}
@@ -57,7 +53,7 @@ public class IngredientMixin implements FabricIngredient {
 
 		if (obj.has(CustomIngredientImpl.TYPE_KEY)) {
 			Identifier id = new Identifier(JsonHelper.getString(obj, CustomIngredientImpl.TYPE_KEY));
-			CustomIngredientSerializer<?> serializer = CustomIngredients.get(id);
+			CustomIngredientSerializer<?> serializer = CustomIngredientSerializer.get(id);
 
 			if (serializer != null) {
 				cir.setReturnValue(serializer.read(obj).toVanilla());
@@ -88,7 +84,7 @@ public class IngredientMixin implements FabricIngredient {
 
 		if (size == CustomIngredientImpl.PACKET_MARKER) {
 			Identifier type = buf.readIdentifier();
-			CustomIngredientSerializer<?> serializer = CustomIngredients.get(type);
+			CustomIngredientSerializer<?> serializer = CustomIngredientSerializer.get(type);
 
 			if (serializer == null) {
 				throw new IllegalArgumentException("Cannot deserialize custom ingredient of unkown type " + type);

@@ -26,7 +26,7 @@ public class OrIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public boolean matchesStack(ItemStack stack) {
+	public boolean test(ItemStack stack) {
 		for (Ingredient ingredient : ingredients) {
 			if (ingredient.test(stack)) {
 				return true;
@@ -37,7 +37,7 @@ public class OrIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public ItemStack[] getPreviewStacks() {
+	public ItemStack[] getMatchingStacks() {
 		List<ItemStack> previewStacks = new ArrayList<>();
 
 		for (Ingredient ingredient : ingredients) {
@@ -48,9 +48,9 @@ public class OrIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public boolean ignoresNbt() {
+	public boolean requiresTesting() {
 		for (Ingredient ingredient : ingredients) {
-			if (!ingredient.ignoresNbt()) {
+			if (!ingredient.requiresTesting()) {
 				return false;
 			}
 		}
@@ -60,7 +60,7 @@ public class OrIngredient implements CustomIngredient {
 
 	@Override
 	public CustomIngredientSerializer<?> getSerializer() {
-		return null;
+		return OrIngredient.Serializer.INSTANCE;
 	}
 
 	public static class Serializer implements CustomIngredientSerializer<OrIngredient> {

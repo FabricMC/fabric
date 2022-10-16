@@ -3,7 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.ingredient",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "IngredientMixin"
+    "IngredientMixin",
+    "ShapelessRecipeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
