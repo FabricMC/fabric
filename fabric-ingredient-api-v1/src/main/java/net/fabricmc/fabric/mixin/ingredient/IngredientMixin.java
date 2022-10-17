@@ -48,7 +48,7 @@ public class IngredientMixin implements FabricIngredient {
 			method = "fromJson",
 			cancellable = true
 	)
-	public static void injectFromJson(JsonElement json, CallbackInfoReturnable<Ingredient> cir) {
+	private static void injectFromJson(JsonElement json, CallbackInfoReturnable<Ingredient> cir) {
 		JsonObject obj = json.getAsJsonObject();
 
 		if (obj.has(CustomIngredientImpl.TYPE_KEY)) {
@@ -68,7 +68,7 @@ public class IngredientMixin implements FabricIngredient {
 	 * The {@link OrIngredient} should be used instead.
 	 */
 	@Inject(at = @At("HEAD"), method = "entryFromJson")
-	public static void injectEntryFromJson(JsonObject obj, CallbackInfoReturnable<?> cir) {
+	private static void injectEntryFromJson(JsonObject obj, CallbackInfoReturnable<?> cir) {
 		if (obj.has(CustomIngredientImpl.TYPE_KEY)) {
 			throw new IllegalArgumentException("Custom ingredient cannot be used inside an array ingredient");
 		}

@@ -1,67 +1,66 @@
 package net.fabricmc.fabric.impl.ingredient;
 
 import java.util.Arrays;
+import java.util.BitSet;
+import java.util.List;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.collection.DefaultedList;
 
 /**
  * Helper class to perform a shapeless recipe match when ingredients that require testing are involved.
  *
- * <p>The problem to solve is a maximum cardinality bipartite matching,
- * for which this implementation uses the augmenting path algorithm.
+ * <p>The problem to solve is a maximum cardinality bipartite matching, for which this implementation uses the augmenting path algorithm.
+ * This has good performance in simple cases, and sufficient O(N^3) asymptotic complexity in the worst case.
  */
 @ApiStatus.Internal
 public class ShapelessMatch {
-	private final boolean[] visited;
 	private final int[] match;
-	private final IntList[] adj;
+	/**
+	 * The first {@code size} bits are for the visited array (on the left partition).
+	 * The remaining {@code size * size} bits are for the adjacency matrix.
+	 */
+	private final BitSet bitSet;
 
 	private ShapelessMatch(int size) {
-		visited = new boolean[size];
 		match = new int[size];
-		adj = new IntList[size];
+		bitSet = new BitSet(size * (size+1));
 	}
 
 	private boolean augment(int l) {
-		if (visited[l]) return false;
-		visited[l] = true;
+		if (bitSet.get(l)) return false;
+		bitSet.set(l);
 
-		for (int r : adj[l]) {
-			if (match[r] == -1 || augment(match[r])) {
-				match[r] = l;
-				return true;
+		for (int r = 0; r < match.length; ++r) {
+			if (bitSet.get(match.length + l * match.length + r)) {
+				if (match[r] == -1 || augment(match[r])) {
+					match[r] = l;
+					return true;
+				}
 			}
 		}
 
 		return false;
 	}
 
-	public static boolean isMatch(CraftingInventory inventory, DefaultedList<Ingredient> ingredients) {
+	public static boolean isMatch(List<ItemStack> stacks, List<Ingredient> ingredients) {
+		if (stacks.size() != ingredients.size()) {
+			return false;
+		}
+
 		ShapelessMatch m = new ShapelessMatch(ingredients.size());
 
 		// Build stack -> ingredient bipartite graph
-		int stackIndex = 0;
-
-		for (int i = 0; i < inventory.size(); ++i) {
-			ItemStack stack = inventory.getStack(i);
-			if (stack.isEmpty()) continue;
-
-			m.adj[stackIndex] = new IntArrayList();
+		for (int i = 0; i < stacks.size(); ++i) {
+			ItemStack stack = stacks.get(i);
 
 			for (int j = 0; j < ingredients.size(); ++j) {
 				if (ingredients.get(j).test(stack)) {
-					m.adj[stackIndex].add(j);
+					m.bitSet.set((i + 1) * m.match.length + j);
 				}
 			}
-
-			++stackIndex;
 		}
 
 		// Init matches to -1 (no match)
@@ -73,7 +72,7 @@ public class ShapelessMatch {
 				return false;
 			}
 
-			Arrays.fill(m.visited, false);
+			m.bitSet.set(0, m.match.length, false);
 		}
 
 		return true;

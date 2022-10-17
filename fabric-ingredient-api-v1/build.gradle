@@ -6,5 +6,4 @@ loom {
 }
 
 moduleDependencies(project, [
-		'fabric-registry-sync-v0'
 ])
