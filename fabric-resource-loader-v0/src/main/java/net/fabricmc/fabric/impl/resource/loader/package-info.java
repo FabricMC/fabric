@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import org.jetbrains.annotations.ApiStatus;
-
 /**
  * Contains implementations for Fabric Resource Loader.
  * Mods should never use code in this package.
  */
 @ApiStatus.Internal
 package net.fabricmc.fabric.impl.resource.loader;
+
+import org.jetbrains.annotations.ApiStatus;
