@@ -37,7 +37,7 @@ public class ServerPlayerEntityMixin {
 		if (message instanceof SentMessage.Profileless) return;
 
 		SignedMessage signedMessage = ((SentMessageChatAccessor) message).getMessage();
-		UUID sender = ((SentMessageChatAccessor) message).getMessage().createMetadata().sender();
+		UUID sender = signedMessage.signedHeader().sender();
 		if (!ServerMessageEvents.ALLOW_MESSAGE_TO_PLAYER.invoker().allowMessageToPlayer(signedMessage, sender, ((ServerPlayerEntity) (Object) this), params)) ci.cancel();
 	}
 }
