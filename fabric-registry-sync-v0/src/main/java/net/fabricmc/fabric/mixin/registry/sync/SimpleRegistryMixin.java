@@ -172,8 +172,8 @@ public abstract class SimpleRegistryMixin<T> extends Registry<T> implements Rema
 		}
 	}
 
-	@Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Lnet/minecraft/util/registry/RegistryEntry;", at = @At("HEAD"))
-	public void setPre(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable<T> info) {
+	@Inject(method = "set", at = @At("HEAD"))
+	public void setPre(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, CallbackInfoReturnable<RegistryEntry<T>> info) {
 		int indexedEntriesId = entryToRawId.getInt(object);
 
 		if (indexedEntriesId >= 0) {
@@ -188,7 +188,7 @@ public abstract class SimpleRegistryMixin<T> extends Registry<T> implements Rema
 			if (oldObject != null && oldObject.value() != null && oldObject.value() != object) {
 				int oldId = entryToRawId.getInt(oldObject.value());
 
-				if (oldId != id && checkDuplicateKeys) {
+				if (oldId != id) {
 					throw new RuntimeException("Attempted to register ID " + registryId + " at different raw IDs (" + oldId + ", " + id + ")! If you're trying to override an item, use .set(), not .register()!");
 				}
 
@@ -200,8 +200,8 @@ public abstract class SimpleRegistryMixin<T> extends Registry<T> implements Rema
 		}
 	}
 
-	@Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Lnet/minecraft/util/registry/RegistryEntry;", at = @At("RETURN"))
-	public void setPost(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable<T> info) {
+	@Inject(method = "set", at = @At("RETURN"))
+	public void setPost(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, CallbackInfoReturnable<RegistryEntry<T>> info) {
 		if (fabric_isObjectNew) {
 			fabric_addObjectEvent.invoker().onEntryAdded(id, registryId.getValue(), object);
 		}
