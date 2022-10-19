@@ -219,14 +219,15 @@ public final class ServerMessageEvents {
 	public interface AllowMessageToPlayer {
 		/**
 		 * Called when a player is going to be sent a message either from the chat GUI or a
-		 * command (including player specific commands such as {@code /msg}). Returning false
-		 * prevents only this player from receiving the message. This does not block the
-		 * {@link #COMMAND_MESSAGE} or {@link #CHAT_MESSAGE} from sending.
+		 * command (including player specific commands such as {@code /msg}). Returning {@code false}
+		 * prevents only this player from receiving the message body. However,
+		 * due to client-side limitations, the header (which includes the sender profile)
+		 * will always be sent.
 		 *
-		 * <p>This only applies to messages sent by a player.w
+		 * <p>This only applies to messages sent by a player, not other entities (via {@code /execute}).
 		 *
 		 * @param message the broadcast message with message decorators applied; use {@code message.getContent()} to get the text
-		 * @param sender the uuid of the player that sent the message
+		 * @param sender the UUID of the player that sent the message
 		 * @param receiver the player receiving the message
 		 * @param params the {@link MessageType.Parameters}
 		 * @return {@code true} if the message body should be broadcast, otherwise {@code false}
