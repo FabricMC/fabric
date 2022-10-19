@@ -91,15 +91,19 @@ public final class ServerMessageEvents {
 	});
 
 	/**
-	 * An event triggered when a command or chat message is sent. Listeners on this event
+	 * An event triggered when a player sends a chat message. Listeners on this event
 	 * are triggered for every player receiving that message. If any listener attached returns
-	 * {@code false} the message will not be sent to that specific player.
+	 * {@code false} the message body will not be sent to that specific player. However,
+	 * due to client-side limitations, the header (which includes the sender profile)
+	 * will always be sent. Note that this only applies to messages sent by a player,
+	 * not other entities (via {@code /execute}).
 	 *
-	 * <p>If a listener returns {@code false}, the server will not broadcast the message to that
-	 * player and no further listeners will be checked and the message will be called. The
-	 * {@link #CHAT_MESSAGE} or {@link #COMMAND_MESSAGE} are still run.
+	 * <p>If a listener returns {@code false}, the server will not broadcast the message body
+	 * to that player and no further listeners will be run.
 	 *
-	 * <p>This also applies to {@see net.minecraft.server.PlayerManager#broadcast()}
+	 * <p>This event is triggered after {@link #CHAT_MESSAGE}, {@link #COMMAND_MESSAGE},
+	 * or their allow variant. If those events blocked the message body from being sent,
+	 * then this event will not be triggered.
 	 */
 	public static final Event<AllowMessageToPlayer> ALLOW_MESSAGE_TO_PLAYER = EventFactory.createArrayBacked(AllowMessageToPlayer.class, handlers -> (message, sender, receiver, params) -> {
 		for (AllowMessageToPlayer handler : handlers) {
