@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.itemgroup",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "class_7706Accessor",
+    "ItemGroupAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
