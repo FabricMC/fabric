@@ -39,7 +39,10 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import net.minecraft.resource.InputSupplier;
+
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -215,8 +218,10 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	}
 
 	@Override
-	public InputStream open(ResourceType type, Identifier id) throws IOException {
-		return openFile(getFilename(type, id));
+	@Nullable
+	public InputSupplier<InputStream> open(ResourceType type, Identifier id) {
+		final Path path = getPath(getFilename(type, id));
+		return path == null ? null : InputSupplier.create(path);
 	}
 
 	@Override

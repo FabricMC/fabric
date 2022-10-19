@@ -102,7 +102,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		return registerBuiltinResourcePack(id, subPath, container, id.getNamespace() + "/" + id.getPath(), activationType);
 	}
 
-	public static void registerBuiltinResourcePacks(ResourceType resourceType, Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
+	public static void registerBuiltinResourcePacks(ResourceType resourceType, Consumer<ResourcePackProfile> consumer) {
 		// Loop through each registered built-in resource packs and add them if valid.
 		for (Pair<String, ModNioResourcePack> entry : builtinResourcePacks) {
 			ModNioResourcePack pack = entry.getRight();

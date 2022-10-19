@@ -34,7 +34,6 @@ import net.fabricmc.fabric.api.resource.ModResourcePack;
 public class ModResourcePackCreator implements ResourcePackProvider {
 	public static final ResourcePackSource RESOURCE_PACK_SOURCE = text -> Text.translatable("pack.nameAndSource", text, Text.translatable("pack.source.fabricmod"));
 	public static final ModResourcePackCreator CLIENT_RESOURCE_PACK_PROVIDER = new ModResourcePackCreator(ResourceType.CLIENT_RESOURCES);
-	private final ResourcePackProfile.Factory factory;
 	private final ResourceType type;
 
 	public ModResourcePackCreator(ResourceType type) {
@@ -48,12 +47,8 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 	 *
 	 * @param consumer The resource pack profile consumer.
 	 */
-	public void register(Consumer<ResourcePackProfile> consumer) {
-		this.register(consumer, this.factory);
-	}
-
 	@Override
-	public void register(Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
+	public void register(Consumer<ResourcePackProfile> consumer) {
 		/*
 			Register order rule in this provider:
 			1. Mod resource packs

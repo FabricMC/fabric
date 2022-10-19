@@ -21,10 +21,11 @@ import org.spongepowered.asm.mixin.MixinEnvironment;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 
-import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+//import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 
 public class FabricApiBaseGameTest {
-	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	// TODO 22w42a
+	//@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void auditMixins(TestContext context) {
 		MixinEnvironment.getCurrentEnvironment().audit();
 
