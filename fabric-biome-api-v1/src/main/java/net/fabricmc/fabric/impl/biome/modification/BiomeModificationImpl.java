@@ -36,7 +36,6 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.level.LevelProperties;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
@@ -103,7 +102,7 @@ public class BiomeModificationImpl {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	public void finalizeWorldGen(DynamicRegistryManager impl, LevelProperties levelProperties) {
+	public void finalizeWorldGen(DynamicRegistryManager impl) {
 		Stopwatch sw = Stopwatch.createStarted();
 
 		// Now that we apply biome modifications inside the MinecraftServer constructor, we should only ever do
@@ -134,7 +133,7 @@ public class BiomeModificationImpl {
 
 			// Make a copy of the biome to allow selection contexts to see it unmodified,
 			// But do so only once it's known anything wants to modify the biome at all
-			BiomeSelectionContext context = new BiomeSelectionContextImpl(impl, levelProperties, key, biome);
+			BiomeSelectionContext context = new BiomeSelectionContextImpl(impl, key, biome);
 			BiomeModificationContextImpl modificationContext = null;
 
 			for (ModifierRecord modifier : sortedModifiers) {

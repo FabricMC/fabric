@@ -18,10 +18,7 @@ package net.fabricmc.fabric.test.base;
 
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
-import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
-
-//import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 
 public class FabricApiBaseGameTest {
 	// TODO 22w42a

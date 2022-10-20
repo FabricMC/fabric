@@ -45,6 +45,6 @@ public abstract class MinecraftServerMixin {
 			throw new RuntimeException("Incompatible SaveProperties passed to MinecraftServer: " + saveProperties);
 		}
 
-		BiomeModificationImpl.INSTANCE.finalizeWorldGen(getRegistryManager(), levelProperties);
+		BiomeModificationImpl.INSTANCE.finalizeWorldGen(getRegistryManager());
 	}
 }

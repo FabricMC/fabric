@@ -25,7 +25,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.SimpleRegistry;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockInitTracker;
@@ -41,6 +43,11 @@ public class MinecraftServerMixin {
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
 			// Freeze the registries on the server
 			FABRIC_LOGGER.debug("Freezing registries");
+			BuiltinRegistries.REGISTRIES.freeze();
+			for (Registry<?> registry : BuiltinRegistries.REGISTRIES) {
+				((SimpleRegistry<?>) registry).freeze();
+			}
+
 			Registry.freezeRegistries();
 			BlockInitTracker.postFreeze();
 		}
