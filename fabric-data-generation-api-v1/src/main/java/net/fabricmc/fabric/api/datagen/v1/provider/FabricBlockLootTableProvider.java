@@ -37,7 +37,7 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 /**
- * Extend this class and implement {@link FabricBlockLootTableProvider#generateBlockLootTables}.
+ * Extend this class and implement {@link FabricBlockLootTableProvider#generate}.
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
  */
@@ -55,7 +55,8 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 	 *
 	 * <p>Use the range of {@link BlockLootTableGenerator#addDrop} methods to generate block drops.
 	 */
-	protected abstract void generateBlockLootTables();
+	@Override
+	public abstract void generate();
 
 	/**
 	 * Disable strict validation for the passed block.
@@ -76,7 +77,7 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 
 	@Override
 	public void accept(BiConsumer<Identifier, LootTable.Builder> biConsumer) {
-		generateBlockLootTables();
+		generate();
 
 		for (Map.Entry<Identifier, LootTable.Builder> entry : lootTables.entrySet()) {
 			Identifier identifier = entry.getKey();
