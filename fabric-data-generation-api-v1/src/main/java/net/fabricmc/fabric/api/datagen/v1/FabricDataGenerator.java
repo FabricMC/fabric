@@ -38,7 +38,7 @@ public final class FabricDataGenerator extends DataGenerator {
 
 	@ApiStatus.Internal
 	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation) {
-		super(output, Collections.emptyList(), SharedConstants.getGameVersion(), true);
+		super(output, SharedConstants.getGameVersion(), true);
 		this.modContainer = Objects.requireNonNull(mod);
 		this.strictValidation = strictValidation;
 	}

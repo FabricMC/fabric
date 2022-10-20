@@ -138,7 +138,7 @@ public final class FabricDataGenHelper {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static <T> Registry<T> getFakeDynamicRegistry(RegistryKey<? extends Registry<T>> registryKey) {
-		return new SimpleRegistry<>(registryKey, Lifecycle.experimental(), null) {
+		return new SimpleRegistry<>(registryKey, Lifecycle.experimental(), false) {
 			@Override
 			public boolean containsId(Identifier id) {
 				return true;

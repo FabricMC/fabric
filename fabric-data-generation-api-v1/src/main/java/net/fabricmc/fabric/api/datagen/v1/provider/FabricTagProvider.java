@@ -72,7 +72,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 * @param registry The backing registry for the Tag type.
 	 */
 	public FabricTagProvider(FabricDataGenerator dataGenerator, Registry<T> registry) {
-		super(dataGenerator, registry);
+		super(dataGenerator.getOutput(), registry);
 		this.fabricDataGenerator = dataGenerator;
 
 		if (!(this instanceof DynamicRegistryTagProvider) && BuiltinRegistries.REGISTRIES.contains((RegistryKey) registry.getKey())) {

@@ -31,7 +31,7 @@ public abstract class FabricModelProvider extends ModelProvider {
 	protected final FabricDataGenerator dataGenerator;
 
 	public FabricModelProvider(FabricDataGenerator dataGenerator) {
-		super(dataGenerator);
+		super(dataGenerator.getOutput());
 		this.dataGenerator = dataGenerator;
 	}
 

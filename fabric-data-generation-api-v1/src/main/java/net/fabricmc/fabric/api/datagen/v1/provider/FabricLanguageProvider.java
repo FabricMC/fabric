@@ -26,6 +26,9 @@ import java.util.TreeMap;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import net.minecraft.data.DataOutput;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.block.Block;
@@ -93,7 +96,9 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	}
 
 	private Path getLangFilePath(String code) {
-		return dataGenerator.getOutput().resolve("assets/%s/lang/%s.json".formatted(dataGenerator.getModId(), code));
+		return dataGenerator.getOutput()
+				.getResolver(DataOutput.OutputType.RESOURCE_PACK, "lang")
+				.resolveJson(new Identifier(dataGenerator.getModId(), code));
 	}
 
 	@Override
@@ -139,7 +144,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param value The value of the entry.
 		 */
 		default void add(ItemGroup group, String value) {
-			add("itemGroup." + group.getName(), value);
+			add(group.getDisplayName().toString(), value);
 		}
 
 		/**

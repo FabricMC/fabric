@@ -1,7 +1,7 @@
 accessWidener	v2	named
 
-accessible  field  net/minecraft/data/server/RecipeProvider  recipesPathResolver  Lnet/minecraft/data/DataGenerator$PathResolver;
-accessible  field  net/minecraft/data/server/RecipeProvider  advancementsPathResolver  Lnet/minecraft/data/DataGenerator$PathResolver;
+accessible  field  net/minecraft/data/server/RecipeProvider  recipesPathResolver  Lnet/minecraft/data/DataOutput$PathResolver;
+accessible  field  net/minecraft/data/server/RecipeProvider  advancementsPathResolver  Lnet/minecraft/data/DataOutput$PathResolver;
 
 accessible  method  net/minecraft/data/server/AbstractTagProvider$ObjectBuilder <init> (Lnet/minecraft/tag/TagBuilder;Lnet/minecraft/util/registry/Registry;)V
 extendable  method  net/minecraft/data/server/AbstractTagProvider$ObjectBuilder add     ([Ljava/lang/Object;)Lnet/minecraft/data/server/AbstractTagProvider$ObjectBuilder;

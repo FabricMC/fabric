@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +25,7 @@ import java.util.function.BiConsumer;
 import com.google.common.collect.Sets;
 
 import net.minecraft.block.Block;
+import net.minecraft.class_7701;
 import net.minecraft.data.server.BlockLootTableGenerator;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
@@ -44,6 +46,7 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
 
 	protected FabricBlockLootTableProvider(FabricDataGenerator dataGenerator) {
+		super(Collections.emptySet(), class_7701.field_40180.method_45383());
 		this.dataGenerator = dataGenerator;
 	}
 

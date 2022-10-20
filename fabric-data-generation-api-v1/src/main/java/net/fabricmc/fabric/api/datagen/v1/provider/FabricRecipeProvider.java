@@ -43,7 +43,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	protected final FabricDataGenerator dataGenerator;
 
 	public FabricRecipeProvider(FabricDataGenerator dataGenerator) {
-		super(dataGenerator);
+		super(dataGenerator.getOutput());
 		this.dataGenerator = dataGenerator;
 	}
 
