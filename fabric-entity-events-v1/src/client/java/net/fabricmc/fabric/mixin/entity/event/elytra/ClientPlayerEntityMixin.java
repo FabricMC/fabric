@@ -36,8 +36,8 @@ import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 @SuppressWarnings("unused")
 @Mixin(ClientPlayerEntity.class)
 abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
-	ClientPlayerEntityMixin(ClientWorld world, GameProfile profile, PlayerPublicKey playerPublicKey) {
-		super(world, profile, playerPublicKey);
+	ClientPlayerEntityMixin(ClientWorld world, GameProfile profile) {
+		super(world, profile);
 		throw new AssertionError();
 	}
 

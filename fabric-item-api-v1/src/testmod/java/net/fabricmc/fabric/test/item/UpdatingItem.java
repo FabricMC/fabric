@@ -40,7 +40,7 @@ public class UpdatingItem extends Item {
 	private final boolean allowUpdateAnimation;
 
 	public UpdatingItem(boolean allowUpdateAnimation) {
-		super(new Settings().group(ItemGroup.MISC));
+		super(new Settings());
 		this.allowUpdateAnimation = allowUpdateAnimation;
 	}
 

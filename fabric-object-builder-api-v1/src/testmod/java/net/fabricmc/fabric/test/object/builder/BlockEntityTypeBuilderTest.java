@@ -72,7 +72,7 @@ public class BlockEntityTypeBuilderTest implements ModInitializer {
 	private static void register(Identifier id, Block block) {
 		Registry.register(Registry.BLOCK, id, block);
 
-		Item item = new BlockItem(block, new Item.Settings().group(ItemGroup.MISC));
+		Item item = new BlockItem(block, new Item.Settings());
 		Registry.register(Registry.ITEM, id, item);
 	}
 

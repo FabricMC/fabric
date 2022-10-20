@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.test.item.group;
 
-import net.minecraft.class_7699;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -39,10 +39,10 @@ public class ItemGroupTest implements ModInitializer {
 		}
 
 		@Override
-		protected void addItems(class_7699 arg, ItemGroup.StackAdder arg2) {
-			arg2.addAll(Registry.ITEM.stream()
-								.map(ItemStack::new)
-								.toList());
+		protected void addItems(FeatureSet featureSet, StackAdder adder) {
+			adder.addAll(Registry.ITEM.stream()
+					            .map(ItemStack::new)
+					            .toList());
 		}
 	};
 
@@ -60,8 +60,8 @@ public class ItemGroupTest implements ModInitializer {
 				}
 
 				@Override
-				protected void addItems(class_7699 arg, ItemGroup.StackAdder arg2) {
-					arg2.add(new ItemStack(TEST_ITEM));
+				protected void addItems(FeatureSet featureSet, StackAdder adder) {
+					adder.add(new ItemStack(TEST_ITEM));
 				}
 			};
 		}

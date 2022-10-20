@@ -45,7 +45,7 @@ public final class RendererTest implements ModInitializer {
 	public void onInitialize() {
 		for (FrameBlock frameBlock : FRAMES) {
 			Registry.register(Registry.BLOCK, frameBlock.id, frameBlock);
-			Registry.register(Registry.ITEM, frameBlock.id, new BlockItem(frameBlock, new Item.Settings().group(ItemGroup.MISC)));
+			Registry.register(Registry.ITEM, frameBlock.id, new BlockItem(frameBlock, new Item.Settings()));
 		}
 
 		Registry.register(Registry.BLOCK_ENTITY_TYPE, id("frame"), FRAME_BLOCK_ENTITY);

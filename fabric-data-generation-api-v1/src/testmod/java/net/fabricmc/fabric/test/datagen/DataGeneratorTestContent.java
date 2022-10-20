@@ -22,11 +22,11 @@ import java.util.List;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
-import net.minecraft.class_7699;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -74,7 +74,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 		}
 
 		@Override
-		protected void addItems(class_7699 arg, StackAdder adder) {
+		protected void addItems(FeatureSet featureSet, StackAdder adder) {
 			adder.addAll(items);
 		}
 	}

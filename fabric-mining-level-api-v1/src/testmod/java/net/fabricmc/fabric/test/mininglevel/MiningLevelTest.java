@@ -80,7 +80,7 @@ public final class MiningLevelTest implements ModInitializer {
 	private static void register(String id, Block block) {
 		Identifier identifier = new Identifier(ID, id);
 		Registry.register(Registry.BLOCK, identifier, block);
-		Registry.register(Registry.ITEM, identifier, new BlockItem(block, new Item.Settings().group(ItemGroup.MISC)));
+		Registry.register(Registry.ITEM, identifier, new BlockItem(block, new Item.Settings()));
 	}
 
 	private static void test() {

@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class ExtractStickItem extends Item {
 	public ExtractStickItem() {
-		super(new Settings().group(ItemGroup.MISC));
+		super(new Settings());
 	}
 
 	@Override

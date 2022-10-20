@@ -63,6 +63,6 @@ public class TransferTestInitializer implements ModInitializer {
 	private static void registerBlock(Block block, String name) {
 		Identifier id = new Identifier(MOD_ID, name);
 		Registry.register(Registry.BLOCK, id, block);
-		Registry.register(Registry.ITEM, id, new BlockItem(block, new Item.Settings().group(ItemGroup.MISC)));
+		Registry.register(Registry.ITEM, id, new BlockItem(block, new Item.Settings()));
 	}
 }

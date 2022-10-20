@@ -25,6 +25,6 @@ import net.fabricmc.fabric.api.entity.event.v1.FabricElytraItem;
 
 public class DiamondElytraItem extends ArmorItem implements FabricElytraItem {
 	public DiamondElytraItem() {
-		super(ArmorMaterials.DIAMOND, EquipmentSlot.CHEST, new Settings().maxCount(1).group(ItemGroup.COMBAT));
+		super(ArmorMaterials.DIAMOND, EquipmentSlot.CHEST, new Settings().maxCount(1));
 	}
 }

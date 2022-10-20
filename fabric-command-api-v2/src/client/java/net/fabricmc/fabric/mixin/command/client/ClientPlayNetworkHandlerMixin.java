@@ -17,6 +17,9 @@
 package net.fabricmc.fabric.mixin.command.client;
 
 import com.mojang.brigadier.CommandDispatcher;
+
+import net.minecraft.resource.featuretoggle.FeatureFlags;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,7 +28,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_7701;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.command.CommandRegistryAccess;
@@ -50,7 +52,7 @@ abstract class ClientPlayNetworkHandlerMixin {
 	private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo info) {
 		final CommandDispatcher<FabricClientCommandSource> dispatcher = new CommandDispatcher<>();
 		ClientCommandInternals.setActiveDispatcher(dispatcher);
-		ClientCommandRegistrationCallback.EVENT.invoker().register(dispatcher, new CommandRegistryAccess(packet.registryManager(), class_7701.field_40180.method_45383()));
+		ClientCommandRegistrationCallback.EVENT.invoker().register(dispatcher, new CommandRegistryAccess(packet.registryManager(), FeatureFlags.FEATURE_MANAGER.getFeatureSet()));
 		ClientCommandInternals.finalizeInit();
 	}
 
