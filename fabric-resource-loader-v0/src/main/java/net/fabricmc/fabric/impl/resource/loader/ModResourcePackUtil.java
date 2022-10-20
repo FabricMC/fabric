@@ -28,12 +28,12 @@ import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.class_7701;
 import net.minecraft.class_7712;
 import net.minecraft.resource.DataPackSettings;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
@@ -131,7 +131,7 @@ public final class ModResourcePackUtil {
 
 		return new class_7712(
 				new DataPackSettings(enabled, disabled),
-				class_7701.field_40183
+				FeatureFlags.DEFAULT_ENABLED_FEATURES
 		);
 	}
 }

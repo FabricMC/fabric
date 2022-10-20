@@ -86,12 +86,6 @@ public class FabricItemSettings extends Item.Settings {
 	}
 
 	@Override
-	public FabricItemSettings group(ItemGroup group) {
-		super.group(group);
-		return this;
-	}
-
-	@Override
 	public FabricItemSettings rarity(Rarity rarity) {
 		super.rarity(rarity);
 		return this;

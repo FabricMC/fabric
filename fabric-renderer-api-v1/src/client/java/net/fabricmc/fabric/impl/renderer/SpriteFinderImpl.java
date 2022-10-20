@@ -93,7 +93,7 @@ public class SpriteFinderImpl implements SpriteFinder {
 				// Prefer failing with a log warning rather than risking a stack overflow.
 				if (badSpriteCount++ < 5) {
 					String errorMessage = "SpriteFinderImpl: Skipping sprite {} with broken bounds [{}, {}]x[{}, {}]. Sprite bounds should be between 0 and 1.";
-					LOGGER.error(errorMessage, sprite.getId(), sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
+					LOGGER.error(errorMessage, sprite.method_45852(), sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
 				}
 
 				return;

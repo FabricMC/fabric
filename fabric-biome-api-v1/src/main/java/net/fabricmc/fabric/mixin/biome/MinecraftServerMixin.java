@@ -46,6 +46,6 @@ public class MinecraftServerMixin {
 		// This is the last point where we can safely modify worldgen related things
 		// plus, this is server-side only, and DRM is easily accessible
 		// please blame Mojang for using dynamic registry
-		this.saveProperties.getGeneratorOptions().getDimensions().stream().forEach(dimensionOptions -> NetherBiomeData.modifyBiomeSource(this.registryManager.get(Registry.BIOME_KEY), dimensionOptions.getChunkGenerator().getBiomeSource()));
+		this.registryManager.get(Registry.DIMENSION_KEY).stream().forEach(dimensionOptions -> NetherBiomeData.modifyBiomeSource(this.registryManager.get(Registry.BIOME_KEY), dimensionOptions.chunkGenerator().getBiomeSource()));
 	}
 }

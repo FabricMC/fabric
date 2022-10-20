@@ -63,7 +63,7 @@ task generateAccessWidener() {
 		File inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.commonJar.toFile()
 		String accessWidener = file("template.accesswidener").text + "\n"
 
-		visitMethods(inputJar, "net/minecraft/data/server/RecipeProvider.class") { name, desc, owner ->
+		visitMethods(inputJar, "net/minecraft/data/server/recipe/RecipeProvider.class") { name, desc, owner ->
 			if (it.name == "generate")
 				return
 
@@ -78,7 +78,7 @@ task generateAccessWidener() {
 			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
-		visitMethods(inputJar, "net/minecraft/data/server/BlockLootTableGenerator.class") { name, desc, owner ->
+		visitMethods(inputJar, "net/minecraft/data/server/loottable/BlockLootTableGenerator.class") { name, desc, owner ->
 			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 

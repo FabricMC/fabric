@@ -96,13 +96,13 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 
 	@Override
 	public boolean canGenerateIn(RegistryKey<DimensionOptions> dimensionKey) {
-		DimensionOptions dimension = levelProperties.getGeneratorOptions().getDimensions().get(dimensionKey);
+		DimensionOptions dimension = dynamicRegistries.get(Registry.DIMENSION_KEY).get(dimensionKey);
 
 		if (dimension == null) {
 			return false;
 		}
 
-		return dimension.getChunkGenerator().getBiomeSource().getBiomes().stream().anyMatch(entry -> entry.value() == biome);
+		return dimension.chunkGenerator().getBiomeSource().getBiomes().stream().anyMatch(entry -> entry.value() == biome);
 	}
 
 	@Override

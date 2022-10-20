@@ -80,7 +80,7 @@ public interface ClientSpriteRegistryCallback {
 		 * @param sprite The sprite to be added.
 		 */
 		public void register(Sprite sprite) {
-			spriteMap.put(sprite.getId(), sprite);
+			spriteMap.put(sprite.method_45852(), sprite);
 		}
 	}
 }

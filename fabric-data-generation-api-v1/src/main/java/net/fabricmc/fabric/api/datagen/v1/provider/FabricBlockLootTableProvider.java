@@ -25,12 +25,12 @@ import java.util.function.BiConsumer;
 import com.google.common.collect.Sets;
 
 import net.minecraft.block.Block;
-import net.minecraft.class_7701;
-import net.minecraft.data.server.BlockLootTableGenerator;
+import net.minecraft.data.server.loottable.BlockLootTableGenerator;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -46,7 +46,7 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
 
 	protected FabricBlockLootTableProvider(FabricDataGenerator dataGenerator) {
-		super(Collections.emptySet(), class_7701.field_40180.method_45383());
+		super(Collections.emptySet(), FeatureFlags.FEATURE_MANAGER.getFeatureSet());
 		this.dataGenerator = dataGenerator;
 	}
 

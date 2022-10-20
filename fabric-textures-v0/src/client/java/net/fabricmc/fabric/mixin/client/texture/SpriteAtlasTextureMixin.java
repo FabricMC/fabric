@@ -102,7 +102,7 @@ public abstract class SpriteAtlasTextureMixin {
 				lastSpriteSize = result.size();
 
 				for (DependentSprite sprite : dependentSprites) {
-					Identifier id = ((Sprite) sprite).getId();
+					Identifier id = ((Sprite) sprite).method_45852();
 
 					if (!result.contains(id) && result.containsAll(sprite.getDependencies())) {
 						result.add(id);
@@ -114,7 +114,7 @@ public abstract class SpriteAtlasTextureMixin {
 				CrashReport report = CrashReport.create(new Throwable(), "Resolving sprite dependencies");
 
 				for (DependentSprite sprite : dependentSprites) {
-					Identifier id = ((Sprite) sprite).getId();
+					Identifier id = ((Sprite) sprite).method_45852();
 
 					if (!result.contains(id)) {
 						CrashReportSection element = report.addElement("Unresolved sprite");

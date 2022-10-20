@@ -361,15 +361,13 @@ subprojects {
 
 		// Make all modules depend on the gametest api (and thus res loader) to try and promote its usage.
 		if (project.name != "fabric-gametest-api-v1") {
-			// TODO 22w42a
-//			testmodImplementation project(path: ':fabric-gametest-api-v1', configuration: 'namedElements')
-//			testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
+			testmodImplementation project(path: ':fabric-gametest-api-v1', configuration: 'namedElements')
+			testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
 		}
 
 		// Make all testmods run with registry-sync-v0 as it is required to register new objects.
 		if (project.name != "fabric-registry-sync-v0") {
-			// TODO 22w42a
-//			testmodRuntimeOnly project(path: ':fabric-registry-sync-v0', configuration: 'namedElements')
+			testmodRuntimeOnly project(path: ':fabric-registry-sync-v0', configuration: 'namedElements')
 		}
 	}
 
