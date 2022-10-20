@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.resource.loader;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -28,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.AbstractFileResourcePack;
+import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
 
@@ -43,60 +43,33 @@ public class FabricModResourcePack extends GroupResourcePack {
 	}
 
 	@Override
-	public InputStream openRoot(String fileName) throws IOException {
+	public InputSupplier<InputStream> openRoot(String... pathSegments) {
+		String fileName = String.join("/", pathSegments);
+
 		if ("pack.mcmeta".equals(fileName)) {
 			String description = "Mod resources.";
 			String pack = String.format("{\"pack\":{\"pack_format\":" + type.getPackVersion(SharedConstants.getGameVersion()) + ",\"description\":\"%s\"}}", description);
-			return IOUtils.toInputStream(pack, Charsets.UTF_8);
+			return () -> IOUtils.toInputStream(pack, Charsets.UTF_8);
 		} else if ("pack.png".equals(fileName)) {
-			InputStream stream = FabricLoader.getInstance().getModContainer("fabric-resource-loader-v0")
+			return FabricLoader.getInstance().getModContainer("fabric-resource-loader-v0")
 					.flatMap(container -> container.getMetadata().getIconPath(512).map(container::getPath))
 					.filter(Files::exists)
-					.map(iconPath -> {
-						try {
-							return Files.newInputStream(iconPath);
-						} catch (IOException e) {
-							return null;
-						}
-					}).orElse(null);
-
-			if (stream != null) {
-				return stream;
-			}
+					.map(path -> (InputSupplier<InputStream>) (() -> Files.newInputStream(path)))
+					.orElse(null);
 		}
 
-		// ReloadableResourceManagerImpl gets away with FileNotFoundException.
-		throw new FileNotFoundException("\"" + fileName + "\" in Fabric mod resource pack");
+		return null;
 	}
 
 	@Override
 	public <T> @Nullable T parseMetadata(ResourceMetadataReader<T> metaReader) throws IOException {
-		try {
-			InputStream inputStream = this.openRoot("pack.mcmeta");
-			Throwable error = null;
-			T metadata;
+		InputSupplier<InputStream> inputSupplier = this.openRoot("pack.mcmeta");
 
-			try {
-				metadata = AbstractFileResourcePack.parseMetadata(metaReader, inputStream);
-			} catch (Throwable e) {
-				error = e;
-				throw e;
-			} finally {
-				if (inputStream != null) {
-					if (error != null) {
-						try {
-							inputStream.close();
-						} catch (Throwable e) {
-							error.addSuppressed(e);
-						}
-					} else {
-						inputStream.close();
-					}
-				}
+		if (inputSupplier != null) {
+			try (InputStream input = inputSupplier.get()) {
+				return AbstractFileResourcePack.parseMetadata(metaReader, input);
 			}
-
-			return metadata;
-		} catch (FileNotFoundException | RuntimeException e) {
+		} else {
 			return null;
 		}
 	}

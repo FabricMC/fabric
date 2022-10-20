@@ -38,6 +38,4 @@ public interface FabricResource {
 		LoggerFactory.getLogger(FabricResource.class).error("Unknown Resource implementation {}, returning PACK_SOURCE_NONE as the source", getClass().getName());
 		return ResourcePackSource.PACK_SOURCE_NONE;
 	}
-
-	void setFabricPackSource(ResourcePackSource packSource);
 }

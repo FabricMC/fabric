@@ -44,7 +44,7 @@ public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
 	private Set<ResourcePackProvider> providers;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	public void construct(ResourcePackProfile.Factory arg, ResourcePackProvider[] resourcePackProviders, CallbackInfo info) {
+	public void construct(ResourcePackProvider[] resourcePackProviders, CallbackInfo info) {
 		providers = new HashSet<>(providers);
 
 		// Search resource pack providers to find any server-related pack provider.
@@ -52,8 +52,8 @@ public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
 
 		for (ResourcePackProvider provider : this.providers) {
 			if (provider instanceof FileResourcePackProvider
-					&& (((FileResourcePackProviderAccessor) provider).getResourcePackSource() == ResourcePackSource.PACK_SOURCE_WORLD
-					|| ((FileResourcePackProviderAccessor) provider).getResourcePackSource() == ResourcePackSource.PACK_SOURCE_SERVER)) {
+					&& (((FileResourcePackProvider) provider).source == ResourcePackSource.field_25349
+					|| ((FileResourcePackProvider) provider).source == ResourcePackSource.field_25350)) {
 				shouldAddServerProvider = true;
 				break;
 			}

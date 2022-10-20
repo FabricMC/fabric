@@ -24,6 +24,7 @@ import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
@@ -32,14 +33,22 @@ import net.fabricmc.fabric.api.resource.ModResourcePack;
  * Represents a resource pack provider for mods and built-in mods resource packs.
  */
 public class ModResourcePackCreator implements ResourcePackProvider {
-	public static final ResourcePackSource RESOURCE_PACK_SOURCE = text -> Text.translatable("pack.nameAndSource", text, Text.translatable("pack.source.fabricmod"));
+	public static final ResourcePackSource RESOURCE_PACK_SOURCE = new ResourcePackSource() {
+		@Override
+		public Text decorate(Text packName) {
+			return Text.translatable("pack.nameAndSource", packName, Text.translatable("pack.source.fabricmod"));
+		}
+
+		@Override
+		public boolean method_45279() {
+			return true;
+		}
+	};
 	public static final ModResourcePackCreator CLIENT_RESOURCE_PACK_PROVIDER = new ModResourcePackCreator(ResourceType.CLIENT_RESOURCES);
 	private final ResourceType type;
 
 	public ModResourcePackCreator(ResourceType type) {
 		this.type = type;
-		this.factory = (name, text, bl, supplier, metadata, initialPosition, source) ->
-				new ResourcePackProfile(name, text, bl, supplier, metadata, type, initialPosition, source);
 	}
 
 	/**
@@ -70,8 +79,9 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			// Mod resource packs must always be enabled to avoid issues
 			// and inserted on top to ensure that they are applied before user resource packs and after default/programmer art resource pack.
 			// @TODO: "inserted on top" comment is deprecated, it does not guarantee the condition "applied before user resource packs".
-			ResourcePackProfile resourcePackProfile = ResourcePackProfile.of("Fabric Mods",
-					true, () -> new FabricModResourcePack(this.type, packs), factory, ResourcePackProfile.InsertionPosition.TOP,
+			MutableText title = Text.literal("Fabric Mods");
+			ResourcePackProfile resourcePackProfile = ResourcePackProfile.method_45275("fabric", title,
+					true, factory -> new FabricModResourcePack(this.type, packs), type, ResourcePackProfile.InsertionPosition.TOP,
 					RESOURCE_PACK_SOURCE);
 
 			if (resourcePackProfile != null) {
@@ -80,6 +90,6 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 		}
 
 		// Register all built-in resource packs provided by mods.
-		ResourceManagerHelperImpl.registerBuiltinResourcePacks(this.type, consumer, factory);
+		ResourceManagerHelperImpl.registerBuiltinResourcePacks(this.type, consumer);
 	}
 }

@@ -16,16 +16,13 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
-import java.util.Objects;
-
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourcePackSource;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricResource;
+import net.fabricmc.fabric.impl.resource.loader.ResourcePackSourceTracker;
 
 /**
  * Implements {@link FabricResource} (resource source getter/setter)
@@ -35,16 +32,10 @@ import net.fabricmc.fabric.impl.resource.loader.FabricResource;
  */
 @Mixin(Resource.class)
 class ResourceMixin implements FabricResource {
-	@Unique
-	private @Nullable ResourcePackSource fabric_packSource;
-
+	@SuppressWarnings("ConstantConditions")
 	@Override
 	public ResourcePackSource getFabricPackSource() {
-		return Objects.requireNonNullElse(fabric_packSource, ResourcePackSource.PACK_SOURCE_NONE);
-	}
-
-	@Override
-	public void setFabricPackSource(ResourcePackSource packSource) {
-		this.fabric_packSource = packSource;
+		Resource self = (Resource) (Object) this;
+		return ResourcePackSourceTracker.getSource(self.method_45304());
 	}
 }

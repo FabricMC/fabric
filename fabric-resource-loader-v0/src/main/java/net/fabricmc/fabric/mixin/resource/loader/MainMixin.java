@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.resource.DataPackSettings;
+import net.minecraft.class_7712;
 import net.minecraft.server.Main;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
@@ -28,7 +28,7 @@ import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 @Mixin(Main.class)
 public class MainMixin {
 	@Redirect(method = "main", at = @At(value = "FIELD", target = "Lnet/minecraft/resource/DataPackSettings;SAFE_MODE:Lnet/minecraft/resource/DataPackSettings;"))
-	private static DataPackSettings replaceDefaultDataPackSettings() {
+	private static class_7712 replaceDefaultDataPackSettings() {
 		return ModResourcePackUtil.createDefaultDataPackSettings();
 	}
 }

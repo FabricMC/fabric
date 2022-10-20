@@ -28,6 +28,11 @@ public class BuiltinModResourcePackSource implements ResourcePackSource {
 	}
 
 	@Override
+	public boolean method_45279() {
+		return true;
+	}
+
+	@Override
 	public Text decorate(Text packName) {
 		return Text.translatable("pack.nameAndSource", packName, Text.translatable("pack.source.builtinMod", modId)).formatted(Formatting.GRAY);
 	}

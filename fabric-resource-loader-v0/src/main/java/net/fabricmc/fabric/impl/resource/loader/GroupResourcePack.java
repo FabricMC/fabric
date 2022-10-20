@@ -16,28 +16,24 @@
 
 package net.fabricmc.fabric.impl.resource.loader;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
+import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.NamespaceResourceManager;
-import net.minecraft.resource.ResourceNotFoundException;
+import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.metadata.ResourceMetadata;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
-import net.fabricmc.fabric.mixin.resource.loader.NamespaceResourceManagerAccessor;
 
 /**
  * Represents a group resource pack, holds multiple resource packs as one.
@@ -56,60 +52,32 @@ public abstract class GroupResourcePack implements ResourcePack {
 	}
 
 	@Override
-	public InputStream open(ResourceType type, Identifier id) throws IOException {
+	public InputSupplier<InputStream> open(ResourceType type, Identifier id) {
 		List<ModResourcePack> packs = this.namespacedPacks.get(id.getNamespace());
 
 		if (packs != null) {
 			for (int i = packs.size() - 1; i >= 0; i--) {
 				ResourcePack pack = packs.get(i);
+				InputSupplier<InputStream> supplier = pack.open(type, id);
 
-				if (pack.contains(type, id)) {
-					return pack.open(type, id);
+				if (supplier != null) {
+					return supplier;
 				}
 			}
 		}
 
-		throw new ResourceNotFoundException(null,
-				String.format("%s/%s/%s", type.getDirectory(), id.getNamespace(), id.getPath()));
+		return null;
 	}
 
 	@Override
-	public Collection<Identifier> findResources(ResourceType type, String namespace, String prefix, Predicate<Identifier> predicate) {
+	public void findResources(ResourceType type, String namespace, String prefix, class_7664 arg) {
 		List<ModResourcePack> packs = this.namespacedPacks.get(namespace);
 
-		if (packs == null) {
-			return Collections.emptyList();
-		}
-
-		Set<Identifier> resources = new HashSet<>();
-
-		for (int i = packs.size() - 1; i >= 0; i--) {
-			ResourcePack pack = packs.get(i);
-			Collection<Identifier> modResources = pack.findResources(type, namespace, prefix, predicate);
-
-			resources.addAll(modResources);
-		}
-
-		return resources;
-	}
-
-	@Override
-	public boolean contains(ResourceType type, Identifier id) {
-		List<ModResourcePack> packs = this.namespacedPacks.get(id.getNamespace());
-
-		if (packs == null) {
-			return false;
-		}
-
 		for (int i = packs.size() - 1; i >= 0; i--) {
 			ResourcePack pack = packs.get(i);
 
-			if (pack.contains(type, id)) {
-				return true;
-			}
+			pack.findResources(type, namespace, prefix, arg);
 		}
-
-		return false;
 	}
 
 	@Override
@@ -117,20 +85,25 @@ public abstract class GroupResourcePack implements ResourcePack {
 		return this.namespacedPacks.keySet();
 	}
 
-	public void appendResources(NamespaceResourceManagerAccessor manager, Identifier id, List<NamespaceResourceManager.Entry> resources) {
+	public void appendResources(ResourceType type, Identifier id, List<Resource> resources) {
 		List<ModResourcePack> packs = this.namespacedPacks.get(id.getNamespace());
 
 		if (packs == null) {
 			return;
 		}
 
-		Identifier metadataId = NamespaceResourceManagerAccessor.fabric$accessor_getMetadataPath(id);
+		Identifier metadataId = NamespaceResourceManager.getMetadataPath(id);
 
 		for (ModResourcePack pack : packs) {
-			if (pack.contains(manager.getType(), id)) {
-				final NamespaceResourceManager.Entry entry = ((NamespaceResourceManager) manager).new Entry(id, metadataId, pack);
-				((FabricNamespaceResourceManagerEntry) entry).setFabricPackSource(ModResourcePackCreator.RESOURCE_PACK_SOURCE);
-				resources.add(entry);
+			InputSupplier<InputStream> supplier = pack.open(type, id);
+
+			if (supplier != null) {
+				InputSupplier<ResourceMetadata> metadataSupplier = () -> {
+					InputSupplier<InputStream> rawMetadataSupplier = pack.open(this.type, metadataId);
+					return rawMetadataSupplier != null ? NamespaceResourceManager.method_45297(rawMetadataSupplier) : ResourceMetadata.NONE;
+				};
+
+				resources.add(new Resource(pack, supplier, metadataSupplier));
 			}
 		}
 	}

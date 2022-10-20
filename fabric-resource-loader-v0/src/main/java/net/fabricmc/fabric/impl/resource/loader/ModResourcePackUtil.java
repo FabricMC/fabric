@@ -28,6 +28,8 @@ import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.SharedConstants;
+import net.minecraft.class_7701;
+import net.minecraft.class_7712;
 import net.minecraft.resource.DataPackSettings;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
@@ -107,7 +109,7 @@ public final class ModResourcePackUtil {
 	 * {@code DataPackSettings.SAFE_MODE} used in vanilla.
 	 * @return the default data pack settings
 	 */
-	public static DataPackSettings createDefaultDataPackSettings() {
+	public static class_7712 createDefaultDataPackSettings() {
 		ModResourcePackCreator modResourcePackCreator = new ModResourcePackCreator(ResourceType.SERVER_DATA);
 		List<ResourcePackProfile> moddedResourcePacks = new ArrayList<>();
 		modResourcePackCreator.register(moddedResourcePacks::add);
@@ -127,6 +129,9 @@ public final class ModResourcePackUtil {
 			}
 		}
 
-		return new DataPackSettings(enabled, disabled);
+		return new class_7712(
+				new DataPackSettings(enabled, disabled),
+				class_7701.field_40183
+		);
 	}
 }

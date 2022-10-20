@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.resource.loader;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 
@@ -68,7 +70,9 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
 	 */
 	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, String displayName, ResourcePackActivationType activationType) {
-		String separator = container.getRootPath().getFileSystem().getSeparator();
+		// Assuming the mod has multiple paths, we simply "hope" that the  file separator is *not* different across them
+		List<Path> paths = container.getRootPaths();
+		String separator = paths.get(0).getFileSystem().getSeparator();
 		subPath = subPath.replace("/", separator);
 		String name = displayName;
 		ModNioResourcePack resourcePack = ModNioResourcePack.create(id, name, container, subPath, ResourceType.CLIENT_RESOURCES, activationType);
@@ -110,12 +114,16 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 			// Add the built-in pack only if namespaces for the specified resource type are present.
 			if (!pack.getNamespaces(resourceType).isEmpty()) {
 				// Make the resource pack profile for built-in pack, should never be always enabled.
-				ResourcePackProfile profile = ResourcePackProfile.of(entry.getLeft(),
+				ResourcePackProfile profile = ResourcePackProfile.method_45275(
+						entry.getRight().getId().toString(),
+						Text.literal(entry.getLeft()),
 						pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED,
-						entry::getRight, factory, ResourcePackProfile.InsertionPosition.TOP, new BuiltinModResourcePackSource(pack.getFabricModMetadata().getId()));
-				if (profile != null) {
-					consumer.accept(profile);
-				}
+						ignored -> entry.getRight(),
+						resourceType,
+						ResourcePackProfile.InsertionPosition.TOP,
+						new BuiltinModResourcePackSource(pack.getFabricModMetadata().getName())
+				);
+				consumer.accept(profile);
 			}
 		}
 	}

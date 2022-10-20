@@ -16,34 +16,19 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
-import java.util.function.Supplier;
-
-import com.mojang.serialization.JsonOps;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.resource.DataPackSettings;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.class_7712;
 import net.minecraft.test.TestServer;
-import net.minecraft.util.dynamic.RegistryOps;
-import net.minecraft.util.registry.DynamicRegistryManager;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 
 @Mixin(TestServer.class)
 public class TestServerMixin {
 	@Redirect(method = "create", at = @At(value = "FIELD", target = "Lnet/minecraft/resource/DataPackSettings;SAFE_MODE:Lnet/minecraft/resource/DataPackSettings;"))
-	private static DataPackSettings replaceDefaultDataPackSettings() {
+	private static class_7712 replaceDefaultDataPackSettings() {
 		return ModResourcePackUtil.createDefaultDataPackSettings();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Redirect(method = "method_40377", at = @At(value = "INVOKE", target = "Ljava/util/function/Supplier;get()Ljava/lang/Object;"))
-	private static <T> T loadRegistry(Supplier<T> unused, ResourceManager resourceManager) {
-		DynamicRegistryManager.Mutable mutableRegistryManager = DynamicRegistryManager.createAndLoad();
-		// This loads the dynamic registry manager
-		RegistryOps.ofLoaded(JsonOps.INSTANCE, mutableRegistryManager, resourceManager);
-		return (T) mutableRegistryManager.toImmutable();
 	}
 }
