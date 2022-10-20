@@ -18,21 +18,16 @@ package net.fabricmc.fabric.mixin.registry.sync;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.SimpleRegistry;
 
 @Mixin(BuiltinRegistries.class)
 public class BuiltinRegistriesMixin {
-	@Inject(method = "<clinit>", at = @At("TAIL"))
-	private static void unfreezeBultinRegistries(CallbackInfo ci) {
-		((SimpleRegistry<?>) BuiltinRegistries.REGISTRIES).frozen = false;
-		
-		for (Registry<?> registry : BuiltinRegistries.REGISTRIES) {
-			((SimpleRegistry<?>) registry).frozen = false;
-		}
+	@Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/Registry;freeze()Lnet/minecraft/util/registry/Registry;"))
+	private static Registry<?> unfreezeBultinRegistries(Registry<?> reg) {
+		// Don't freeze
+		return reg;
 	}
 }

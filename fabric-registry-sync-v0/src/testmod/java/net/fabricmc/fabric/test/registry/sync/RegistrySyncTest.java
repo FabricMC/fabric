@@ -145,13 +145,13 @@ public class RegistrySyncTest implements ModInitializer {
 
 		// Force-Initialize the dynamic registry manager, doing this in a Mod initializer would cause
 		// further registrations into BuiltInRegistries to _NOT_ propagate into DynamicRegistryManager.BUILTIN
-		checkFeature(DynamicRegistryManager.of(Registry.REGISTRIES), f1Id);
+		checkFeature(DynamicRegistryManager.of(BuiltinRegistries.REGISTRIES), f1Id);
 
 		ConfiguredFeature<DefaultFeatureConfig, ?> cf2 = new ConfiguredFeature<>(Feature.DESERT_WELL, DefaultFeatureConfig.INSTANCE);
 		Identifier f2Id = new Identifier("registry_sync", "f2");
 		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, f2Id, cf2);
 
-		DynamicRegistryManager impl2 = DynamicRegistryManager.of(Registry.REGISTRIES);
+		DynamicRegistryManager impl2 = DynamicRegistryManager.of(BuiltinRegistries.REGISTRIES);
 		checkFeature(impl2, f1Id);
 		checkFeature(impl2, f2Id);
 	}
@@ -169,14 +169,6 @@ public class RegistrySyncTest implements ModInitializer {
 
 		if (entry == null) {
 			throw new IllegalStateException("Expected dynamic registry to contain entry " + id);
-		}
-
-		if (builtInEntry == entry) {
-			throw new IllegalStateException("Expected that the built-in entry and dynamic entry don't have object identity because the dynamic entry is created by serializing the built-in entry to JSON and back.");
-		}
-
-		if (builtInEntry.feature() != entry.feature()) {
-			throw new IllegalStateException("Expected both entries to reference the same feature since it's only in Registry and is never copied");
 		}
 	}
 }
