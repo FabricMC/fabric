@@ -30,21 +30,18 @@ import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.structure.Structure;
-import net.minecraft.world.level.LevelProperties;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 
 @ApiStatus.Internal
 public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	private final DynamicRegistryManager dynamicRegistries;
-	private final LevelProperties levelProperties;
 	private final RegistryKey<Biome> key;
 	private final Biome biome;
 	private final RegistryEntry<Biome> entry;
 
-	public BiomeSelectionContextImpl(DynamicRegistryManager dynamicRegistries, LevelProperties levelProperties, RegistryKey<Biome> key, Biome biome) {
+	public BiomeSelectionContextImpl(DynamicRegistryManager dynamicRegistries, RegistryKey<Biome> key, Biome biome) {
 		this.dynamicRegistries = dynamicRegistries;
-		this.levelProperties = levelProperties;
 		this.key = key;
 		this.biome = biome;
 		this.entry = dynamicRegistries.get(Registry.BIOME_KEY).getEntry(this.key).orElseThrow();

@@ -1,0 +1,4 @@
+accessWidener	v2	named
+
+accessible    field    net/minecraft/util/registry/SimpleRegistry frozen Z
+accessible method net/minecraft/util/registry/RegistryEntry$Reference method_45918 (Ljava/lang/Object;)V

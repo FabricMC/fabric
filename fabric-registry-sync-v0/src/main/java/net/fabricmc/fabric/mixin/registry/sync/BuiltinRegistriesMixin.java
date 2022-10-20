@@ -16,40 +16,23 @@
 
 package net.fabricmc.fabric.mixin.registry.sync;
 
-import java.util.EnumSet;
-import java.util.Set;
-
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
 
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
-import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
-import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
-
-@Mixin(Registry.class)
-public abstract class RegistryMixin<T> implements RegistryAttributeHolder, FabricRegistry {
-	@Unique
-	private final EnumSet<RegistryAttribute> attributes = EnumSet.noneOf(RegistryAttribute.class);
-
-	@Override
-	public RegistryAttributeHolder addAttribute(RegistryAttribute attribute) {
-		attributes.add(attribute);
-		return this;
-	}
-
-	@Override
-	public boolean hasAttribute(RegistryAttribute attribute) {
-		return attributes.contains(attribute);
-	}
-
-	@Override
-	public void build(Set<RegistryAttribute> attributes) {
-		this.attributes.addAll(attributes);
+@Mixin(BuiltinRegistries.class)
+public class BuiltinRegistriesMixin {
+	@Inject(method = "<clinit>", at = @At("TAIL"))
+	private static void unfreezeBultinRegistries(CallbackInfo ci) {
+		((SimpleRegistry<?>) BuiltinRegistries.REGISTRIES).frozen = false;
+		
+		for (Registry<?> registry : BuiltinRegistries.REGISTRIES) {
+			((SimpleRegistry<?>) registry).frozen = false;
+		}
 	}
 }
