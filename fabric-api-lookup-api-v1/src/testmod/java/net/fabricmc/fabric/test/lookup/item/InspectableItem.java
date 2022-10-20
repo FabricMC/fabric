@@ -26,7 +26,7 @@ public class InspectableItem extends Item implements Inspectable {
 	private final String inspectionResult;
 
 	public InspectableItem(String inspectionResult) {
-		super(new Settings().group(ItemGroup.MISC));
+		super(new Settings());
 		this.inspectionResult = inspectionResult;
 	}
 
