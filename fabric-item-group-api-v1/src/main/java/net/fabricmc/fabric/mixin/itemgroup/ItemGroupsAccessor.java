@@ -16,22 +16,26 @@
 
 package net.fabricmc.fabric.mixin.itemgroup;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.class_7706;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 
-@Mixin(class_7706.class)
-public interface class_7706Accessor {
-	@Accessor("field_40207")
-	static void setItemGroups(ItemGroup[] itemGroups) {
+@Mixin(ItemGroups.class)
+public interface ItemGroupsAccessor {
+	@Accessor("GROUPS")
+	@Final
+	@Mutable
+	static void setGroups(ItemGroup[] groups) {
 		throw new AssertionError();
 	}
 
-	@Invoker("method_45429")
-	static ItemGroup[] invokeBuildArray(ItemGroup[] itemGroups) {
+	@Invoker("asArray")
+	static ItemGroup[] invokeAsArray(ItemGroup[] groups) {
 		throw new AssertionError();
 	}
 }

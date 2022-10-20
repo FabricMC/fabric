@@ -21,12 +21,12 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.class_7706;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.mixin.itemgroup.ItemGroupAccessor;
-import net.fabricmc.fabric.mixin.itemgroup.class_7706Accessor;
+import net.fabricmc.fabric.mixin.itemgroup.ItemGroupsAccessor;
 
 @ApiStatus.Internal
 public final class ItemGroupHelper {
@@ -34,11 +34,11 @@ public final class ItemGroupHelper {
 	}
 
 	public static void appendItemGroup(FabricItemGroup itemGroup) {
-		final int index = class_7706.field_40207.length + 1;
-		final ItemGroup[] itemGroups = Stream.concat(Arrays.stream(class_7706.field_40207), Stream.of(itemGroup))
+		final int index = ItemGroups.GROUPS.length;
+		final ItemGroup[] itemGroups = Stream.concat(Arrays.stream(ItemGroups.GROUPS), Stream.of(itemGroup))
 				.toArray(ItemGroup[]::new);
 
 		((ItemGroupAccessor) itemGroup).setIndex(index);
-		class_7706Accessor.setItemGroups(class_7706Accessor.invokeBuildArray(itemGroups));
+		ItemGroupsAccessor.setGroups(ItemGroupsAccessor.invokeAsArray(itemGroups));
 	}
 }

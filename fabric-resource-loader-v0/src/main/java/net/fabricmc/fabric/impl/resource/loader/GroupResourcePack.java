@@ -70,7 +70,7 @@ public abstract class GroupResourcePack implements ResourcePack {
 	}
 
 	@Override
-	public void findResources(ResourceType type, String namespace, String prefix, class_7664 arg) {
+	public void findResources(ResourceType type, String namespace, String prefix, ResultConsumer arg) {
 		List<ModResourcePack> packs = this.namespacedPacks.get(namespace);
 
 		for (int i = packs.size() - 1; i >= 0; i--) {
@@ -100,7 +100,7 @@ public abstract class GroupResourcePack implements ResourcePack {
 			if (supplier != null) {
 				InputSupplier<ResourceMetadata> metadataSupplier = () -> {
 					InputSupplier<InputStream> rawMetadataSupplier = pack.open(this.type, metadataId);
-					return rawMetadataSupplier != null ? NamespaceResourceManager.method_45297(rawMetadataSupplier) : ResourceMetadata.NONE;
+					return rawMetadataSupplier != null ? NamespaceResourceManager.loadMetadata(rawMetadataSupplier) : ResourceMetadata.NONE;
 				};
 
 				resources.add(new Resource(pack, supplier, metadataSupplier));

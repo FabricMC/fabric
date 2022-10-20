@@ -52,8 +52,8 @@ public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
 
 		for (ResourcePackProvider provider : this.providers) {
 			if (provider instanceof FileResourcePackProvider
-					&& (((FileResourcePackProvider) provider).source == ResourcePackSource.field_25349
-					|| ((FileResourcePackProvider) provider).source == ResourcePackSource.field_25350)) {
+					&& (((FileResourcePackProvider) provider).source == ResourcePackSource.WORLD
+					|| ((FileResourcePackProvider) provider).source == ResourcePackSource.SERVER)) {
 				shouldAddServerProvider = true;
 				break;
 			}

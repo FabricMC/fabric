@@ -21,17 +21,17 @@ import java.util.function.Consumer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.class_7706;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class FabricCreativeGuiComponents {
 	private static final Identifier BUTTON_TEX = new Identifier("fabric", "textures/gui/creative_buttons.png");
-	public static final Set<ItemGroup> COMMON_GROUPS = Set.of(class_7706.field_40200, class_7706.field_40206, class_7706.field_40199);
+	public static final Set<ItemGroup> COMMON_GROUPS = Set.of(ItemGroups.SEARCH, ItemGroups.INVENTORY, ItemGroups.HOTBAR);
 
 	public static class ItemGroupButtonWidget extends ButtonWidget {
 		final CreativeGuiExtensions extensions;
@@ -60,7 +60,7 @@ public class FabricCreativeGuiComponents {
 				this.drawTexture(matrixStack, this.x, this.y, u + (type == Type.NEXT ? 11 : 0), v, 11, 10);
 
 				if (this.hovered) {
-					int pageCount = (int) Math.ceil((class_7706.field_40207.length - COMMON_GROUPS.size()) / 9D);
+					int pageCount = (int) Math.ceil((ItemGroups.GROUPS.length - COMMON_GROUPS.size()) / 9D);
 					gui.renderTooltip(matrixStack, Text.translatable("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, pageCount), mouseX, mouseY);
 				}
 			}

@@ -203,7 +203,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	@Nullable
 	@Override
 	public InputSupplier<InputStream> openRoot(String... pathSegments) {
-		FileNameUtil.method_46345(pathSegments);
+		FileNameUtil.isPathValid(pathSegments);
 
 		return this.openFile(String.join("/", pathSegments));
 	}
@@ -216,7 +216,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	}
 
 	@Override
-	public void findResources(ResourceType type, String namespace, String path, class_7664 visitor) {
+	public void findResources(ResourceType type, String namespace, String path, ResultConsumer visitor) {
 		if (!namespaces.getOrDefault(type, Collections.emptySet()).contains(namespace)) {
 			return;
 		}

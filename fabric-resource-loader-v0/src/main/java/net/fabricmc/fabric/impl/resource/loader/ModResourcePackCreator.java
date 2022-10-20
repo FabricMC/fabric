@@ -40,7 +40,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 		}
 
 		@Override
-		public boolean method_45279() {
+		public boolean canBeEnabledLater() {
 			return true;
 		}
 	};
@@ -80,7 +80,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			// and inserted on top to ensure that they are applied before user resource packs and after default/programmer art resource pack.
 			// @TODO: "inserted on top" comment is deprecated, it does not guarantee the condition "applied before user resource packs".
 			MutableText title = Text.literal("Fabric Mods");
-			ResourcePackProfile resourcePackProfile = ResourcePackProfile.method_45275("fabric", title,
+			ResourcePackProfile resourcePackProfile = ResourcePackProfile.create("fabric", title,
 					true, factory -> new FabricModResourcePack(this.type, packs), type, ResourcePackProfile.InsertionPosition.TOP,
 					RESOURCE_PACK_SOURCE);
 

@@ -36,6 +36,6 @@ class ResourceMixin implements FabricResource {
 	@Override
 	public ResourcePackSource getFabricPackSource() {
 		Resource self = (Resource) (Object) this;
-		return ResourcePackSourceTracker.getSource(self.method_45304());
+		return ResourcePackSourceTracker.getSource(self.getPack());
 	}
 }

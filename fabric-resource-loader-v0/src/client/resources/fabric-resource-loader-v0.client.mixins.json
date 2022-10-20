@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.resource.loader.client",
   "compatibilityLevel": "JAVA_16",
   "client": [
-    "ClientBuiltinResourcePackProviderMixin",
+    "ServerResourcePackProviderMixin",
     "CreateWorldScreenMixin",
     "FontManagerMixin",
     "GameOptionsMixin",

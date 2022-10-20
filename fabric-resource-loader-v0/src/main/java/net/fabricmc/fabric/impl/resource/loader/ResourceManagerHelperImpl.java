@@ -114,7 +114,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 			// Add the built-in pack only if namespaces for the specified resource type are present.
 			if (!pack.getNamespaces(resourceType).isEmpty()) {
 				// Make the resource pack profile for built-in pack, should never be always enabled.
-				ResourcePackProfile profile = ResourcePackProfile.method_45275(
+				ResourcePackProfile profile = ResourcePackProfile.create(
 						entry.getRight().getId().toString(),
 						Text.literal(entry.getLeft()),
 						pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED,

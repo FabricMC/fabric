@@ -6,7 +6,7 @@
   "environment": "*",
   "license": "Apache-2.0",
   "depends": {
-    "fabric-item-groups-v0": "*"
+    "fabric-item-group-api-v1": "*"
   },
   "entrypoints": {
     "main": [

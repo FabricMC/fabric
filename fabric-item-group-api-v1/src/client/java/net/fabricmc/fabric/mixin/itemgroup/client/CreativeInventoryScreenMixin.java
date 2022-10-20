@@ -23,12 +23,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_7706;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 
@@ -68,7 +68,7 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 
 	@Override
 	public void fabric_nextPage() {
-		if (fabric_getPageOffset(fabric_currentPage + 1) >= class_7706.field_40207.length) {
+		if (fabric_getPageOffset(fabric_currentPage + 1) >= ItemGroups.GROUPS.length) {
 			return;
 		}
 
@@ -88,13 +88,13 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 
 	@Override
 	public boolean fabric_isButtonVisible(FabricCreativeGuiComponents.Type type) {
-		return class_7706.field_40207.length > 12;
+		return ItemGroups.GROUPS.length > 12;
 	}
 
 	@Override
 	public boolean fabric_isButtonEnabled(FabricCreativeGuiComponents.Type type) {
 		if (type == FabricCreativeGuiComponents.Type.NEXT) {
-			return !(fabric_getPageOffset(fabric_currentPage + 1) >= class_7706.field_40207.length);
+			return !(fabric_getPageOffset(fabric_currentPage + 1) >= ItemGroups.GROUPS.length);
 		}
 
 		if (type == FabricCreativeGuiComponents.Type.PREVIOUS) {
@@ -110,7 +110,7 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 		int curPos = getSelectedTab();
 
 		if (curPos < minPos || curPos > maxPos) {
-			setSelectedTab(class_7706.field_40207[fabric_getPageOffset(fabric_currentPage)]);
+			setSelectedTab(ItemGroups.GROUPS[fabric_getPageOffset(fabric_currentPage)]);
 		}
 	}
 

@@ -28,7 +28,7 @@ public class BuiltinModResourcePackSource implements ResourcePackSource {
 	}
 
 	@Override
-	public boolean method_45279() {
+	public boolean canBeEnabledLater() {
 		return true;
 	}
 

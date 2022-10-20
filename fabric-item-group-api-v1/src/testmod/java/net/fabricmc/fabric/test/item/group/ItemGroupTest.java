@@ -28,7 +28,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 
 public class ItemGroupTest implements ModInitializer {
-	private static final String MOD_ID = "fabric-item-groups-v0-testmod";
+	private static final String MOD_ID = "fabric-item-group-api-v1-testmod";
 	private static Item TEST_ITEM;
 
 	//Adds an item group with all items in it
@@ -39,8 +39,8 @@ public class ItemGroupTest implements ModInitializer {
 		}
 
 		@Override
-		protected void method_45411(class_7699 arg, class_7704 arg2) {
-			arg2.method_45423(Registry.ITEM.stream()
+		protected void addItems(class_7699 arg, ItemGroup.StackAdder arg2) {
+			arg2.addAll(Registry.ITEM.stream()
 								.map(ItemStack::new)
 								.toList());
 		}
@@ -60,8 +60,8 @@ public class ItemGroupTest implements ModInitializer {
 				}
 
 				@Override
-				protected void method_45411(class_7699 arg, class_7704 arg2) {
-					arg2.method_45420(new ItemStack(TEST_ITEM));
+				protected void addItems(class_7699 arg, ItemGroup.StackAdder arg2) {
+					arg2.add(new ItemStack(TEST_ITEM));
 				}
 			};
 		}
