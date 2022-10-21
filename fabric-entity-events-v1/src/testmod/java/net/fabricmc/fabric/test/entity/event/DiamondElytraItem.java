@@ -19,7 +19,6 @@ package net.fabricmc.fabric.test.entity.event;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterials;
-import net.minecraft.item.ItemGroup;
 
 import net.fabricmc.fabric.api.entity.event.v1.FabricElytraItem;
 

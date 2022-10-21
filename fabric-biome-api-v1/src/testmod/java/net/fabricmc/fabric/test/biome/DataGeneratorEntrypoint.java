@@ -14,29 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.datagen;
-
-import java.nio.file.Path;
-
-import org.jetbrains.annotations.ApiStatus;
-
-import net.minecraft.data.DataOutput;
+package net.fabricmc.fabric.test.biome;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBuiltinRegistriesProvider;
 
-/**
- * Extends {@link DataOutput} to keep track of the {@link FabricDataGenerator} that it originated from.
- */
-@ApiStatus.Internal
-public class FabricDataOutput extends DataOutput {
-	private final FabricDataGenerator generator;
-
-	public FabricDataOutput(FabricDataGenerator generator, Path path) {
-		super(path);
-		this.generator = generator;
-	}
-
-	public FabricDataGenerator getGenerator() {
-		return generator;
+public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint {
+	@Override
+	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
+		dataGenerator.addProvider(FabricBuiltinRegistriesProvider.forCurrentMod());
 	}
 }

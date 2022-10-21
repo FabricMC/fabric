@@ -28,7 +28,7 @@ import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 @Mixin(ServerPropertiesHandler.class)
 public class ServerPropertiesHandlerMixin {
 	@Redirect(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/class_7712;field_40260:Lnet/minecraft/class_7712;"))
-	private static class_7712 replaceDefaultDataPackSettings() {
+	private class_7712 replaceDefaultDataPackSettings() {
 		return ModResourcePackUtil.createDefaultDataPackSettings();
 	}
 }

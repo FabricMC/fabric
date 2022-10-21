@@ -24,6 +24,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 
 import net.fabricmc.fabric.impl.datagen.FabricDataOutput;
@@ -46,7 +47,7 @@ public final class FabricDataGenerator extends DataGenerator {
 	}
 
 	@Override
-	public FabricDataOutput getOutputFor(String packName) {
+	public DataOutput getOutputFor(String packName) {
 		return new FabricDataOutput(this, super.getOutputFor(packName).getPath());
 	}
 

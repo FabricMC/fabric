@@ -16,19 +16,25 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.class_7712;
+import net.minecraft.resource.DataPackSettings;
 import net.minecraft.test.TestServer;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 
+/**
+ * Vanilla enables all available datapacks automatically in TestServer#create, but it does so in alphabetical order,
+ * which means the Vanilla pack has higher precedence than modded, breaking our tests.
+ */
 @Mixin(TestServer.class)
 public class TestServerMixin {
-	@Redirect(method = "create", at = @At(value = "FIELD", target = "Lnet/minecraft/resource/DataPackSettings;SAFE_MODE:Lnet/minecraft/resource/DataPackSettings;"))
-	private static class_7712 replaceDefaultDataPackSettings() {
-		return ModResourcePackUtil.createDefaultDataPackSettings();
+	@Redirect(method = "create", at = @At(value = "NEW", target = "(Ljava/util/List;Ljava/util/List;)Lnet/minecraft/resource/DataPackSettings;"))
+	private static DataPackSettings replaceDefaultDataPackSettings(List<String> enabled, List<String> disabled) {
+		return ModResourcePackUtil.createDefaultDataPackSettings().dataPacks();
 	}
 }

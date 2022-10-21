@@ -23,7 +23,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
@@ -55,7 +54,8 @@ public class TooltipComponentTestInit implements ModInitializer {
 		}
 	}
 
-	public record Data(String string) implements TooltipData { }
+	public record Data(String string) implements TooltipData {
+	}
 
 	public static final class TestArmorMaterial implements ArmorMaterial {
 		public static final TestArmorMaterial INSTANCE = new TestArmorMaterial();

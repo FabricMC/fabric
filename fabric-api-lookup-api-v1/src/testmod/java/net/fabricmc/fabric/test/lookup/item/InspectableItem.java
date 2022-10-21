@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.test.lookup.item;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.test.lookup.api.Inspectable;
