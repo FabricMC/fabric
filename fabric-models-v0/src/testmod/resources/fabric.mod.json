@@ -7,7 +7,6 @@
   "license": "Apache-2.0",
   "depends": {
     "fabric-models-v0": "*",
-    "fabric-renderer-registries-v1": "*",
     "fabric-resource-loader-v0": "*"
   },
   "entrypoints": {
