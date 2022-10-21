@@ -101,7 +101,7 @@ public final class FrameBlock extends Block implements BlockEntityProvider, Fabr
 	}
 
 	// The frames don't look exactly like the block they are mimicking,
-	// but the goal here is just to test is just to test the behavior with the pillar's connected textures. ;-)
+	// but the goal here is just to test the behavior with the pillar's connected textures. ;-)
 	@Override
 	public BlockState getAppearance(BlockState state, BlockRenderView renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 		// For this specific block, the render attachment works on both the client and the server, so let's use that.

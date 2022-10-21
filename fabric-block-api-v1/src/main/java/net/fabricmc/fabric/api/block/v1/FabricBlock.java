@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.block.v1;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -99,6 +100,7 @@ public interface FabricBlock {
 	 * @param sourcePos   (optional) position of the block that is querying the appearance, or null if unknown
 	 * @return the appearance of the block on the given side; the original {@code state} can be returned if there is no better option
 	 */
+	@ApiStatus.OverrideOnly // Call using the method in FabricBlockState
 	default BlockState getAppearance(BlockState state, BlockRenderView renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 		return state;
 	}
