@@ -5,13 +5,13 @@
   "mixins": [
     "KeyedResourceReloadListenerMixin",
     "LifecycledResourceManagerImplMixin",
-    "MainMixin",
     "MinecraftServerMixin",
     "NamespaceResourceManagerMixin",
     "ReloadableResourceManagerImplMixin",
     "ResourceMixin",
     "ResourcePackManagerMixin",
     "ResourcePackProfileMixin",
+    "ServerPropertiesHandlerMixin",
     "SimpleResourceReloadMixin",
     "TestServerMixin"
   ],

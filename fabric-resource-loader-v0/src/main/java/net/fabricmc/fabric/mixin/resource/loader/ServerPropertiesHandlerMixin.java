@@ -22,12 +22,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.class_7712;
 import net.minecraft.server.Main;
+import net.minecraft.server.dedicated.ServerPropertiesHandler;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 
-@Mixin(Main.class)
-public class MainMixin {
-	@Redirect(method = "main", at = @At(value = "FIELD", target = "Lnet/minecraft/resource/DataPackSettings;SAFE_MODE:Lnet/minecraft/resource/DataPackSettings;"))
+@Mixin(ServerPropertiesHandler.class)
+public class ServerPropertiesHandlerMixin {
+	@Redirect(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/class_7712;field_40260:Lnet/minecraft/class_7712;"))
 	private static class_7712 replaceDefaultDataPackSettings() {
 		return ModResourcePackUtil.createDefaultDataPackSettings();
 	}

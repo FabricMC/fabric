@@ -1,5 +1,9 @@
 accessWidener	v2	named
 
+accessible field net/minecraft/data/DataGenerator output Lnet/minecraft/data/DataOutput;
+mutable field net/minecraft/data/DataGenerator output Lnet/minecraft/data/DataOutput;
+accessible field net/minecraft/data/DataGenerator outputPath Ljava/nio/file/Path;
+
 accessible  field  net/minecraft/data/server/recipe/RecipeProvider  recipesPathResolver  Lnet/minecraft/data/DataOutput$PathResolver;
 accessible  field  net/minecraft/data/server/recipe/RecipeProvider  advancementsPathResolver  Lnet/minecraft/data/DataOutput$PathResolver;
 

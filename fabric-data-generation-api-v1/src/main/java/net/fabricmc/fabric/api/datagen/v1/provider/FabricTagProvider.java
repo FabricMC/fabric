@@ -19,20 +19,20 @@ package net.fabricmc.fabric.api.datagen.v1.provider;
 import java.util.Objects;
 import java.util.function.Function;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.class_7655;
 import net.minecraft.data.server.tag.AbstractTagProvider;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.TagBuilder;
 import net.minecraft.tag.EntityTypeTags;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.tag.GameEventTags;
 import net.minecraft.tag.ItemTags;
+import net.minecraft.tag.TagBuilder;
 import net.minecraft.tag.TagEntry;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
@@ -44,7 +44,6 @@ import net.minecraft.world.event.GameEvent;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 import net.fabricmc.fabric.impl.datagen.ForcedTagEntry;
-import net.fabricmc.fabric.mixin.datagen.DynamicRegistryManagerAccessor;
 
 /**
  * Implement this class (or one of the inner classes) to generate a tag list.
@@ -69,7 +68,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 * <p>Common implementations of this class are provided. For example @see BlockTagProvider
 	 *
 	 * @param dataGenerator The data generator instance
-	 * @param registry The backing registry for the Tag type.
+	 * @param registry      The backing registry for the Tag type.
 	 */
 	public FabricTagProvider(FabricDataGenerator dataGenerator, Registry<T> registry) {
 		super(dataGenerator.getOutput(), registry);
@@ -145,7 +144,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * <p>Any block ids that do not exist in the item registry will be filtered out automatically.
 		 *
 		 * @param blockTag The block tag to copy from.
-		 * @param itemTag The item tag to copy to.
+		 * @param itemTag  The item tag to copy to.
 		 */
 		public void copy(TagKey<Block> blockTag, TagKey<Item> itemTag) {
 			TagBuilder blockTagBuilder = Objects.requireNonNull(this.blockTagBuilderProvider, "Pass Block tag provider via constructor to use copy").apply(blockTag);
@@ -189,12 +188,15 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * Construct a new {@link DynamicRegistryTagProvider}.
 		 *
 		 * @param dataGenerator The data generator instance
-		 * @param registryKey The registry key of the dynamic registry
+		 * @param registryKey   The registry key of the dynamic registry
 		 * @throws IllegalArgumentException if the registry is static registry
 		 */
 		protected DynamicRegistryTagProvider(FabricDataGenerator dataGenerator, RegistryKey<? extends Registry<T>> registryKey) {
 			super(dataGenerator, FabricDataGenHelper.getFakeDynamicRegistry(registryKey));
-			Preconditions.checkArgument(DynamicRegistryManagerAccessor.getInfos().containsKey(registryKey), "Only dynamic registries are supported in this tag provider.");
+			if (class_7655.field_39968.stream().noneMatch(o -> o.key() == registryKey)
+					&& class_7655.field_39969.stream().noneMatch(o -> o.key() == registryKey)) {
+				throw new IllegalArgumentException("Only dynamic registries are supported in this tag provider.");
+			}
 		}
 	}
 

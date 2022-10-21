@@ -26,11 +26,9 @@ import java.util.function.Consumer;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
-
-import net.minecraft.data.DataOutput;
-
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.loot.LootManager;

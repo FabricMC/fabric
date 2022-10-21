@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.datagen;
+package net.fabricmc.fabric.impl.datagen;
 
-import java.util.Map;
+import java.nio.file.Path;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import net.minecraft.data.DataOutput;
 
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
-@Mixin(DynamicRegistryManager.class)
-public interface DynamicRegistryManagerAccessor {
-	@Accessor("INFOS")
-	static Map<RegistryKey<? extends Registry<?>>, ?> getInfos() {
-		throw new AssertionError();
+/**
+ * Extends {@link DataOutput} to keep track of the {@link FabricDataGenerator} that it originated from.
+ */
+public class FabricDataOutput extends DataOutput {
+	private final FabricDataGenerator generator;
+
+	public FabricDataOutput(FabricDataGenerator generator, Path path) {
+		super(path);
+		this.generator = generator;
+	}
+
+	public FabricDataGenerator getGenerator() {
+		return generator;
 	}
 }

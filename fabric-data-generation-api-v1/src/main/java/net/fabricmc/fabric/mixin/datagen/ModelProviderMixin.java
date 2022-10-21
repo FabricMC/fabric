@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.Block;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataWriter;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.BlockStateSupplier;
@@ -43,18 +43,21 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.fabricmc.fabric.impl.datagen.FabricDataOutput;
 
 @Mixin(ModelProvider.class)
 public class ModelProviderMixin {
 	@Unique
-	private DataGenerator generator;
+	private FabricDataGenerator generator;
 
 	@Unique
-	private static final ThreadLocal<DataGenerator> dataGeneratorThreadLocal = new ThreadLocal<>();
+	private static final ThreadLocal<FabricDataGenerator> dataGeneratorThreadLocal = new ThreadLocal<>();
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	public void init(DataGenerator generator, CallbackInfo ci) {
-		this.generator = generator;
+	public void init(DataOutput generator, CallbackInfo ci) {
+		if (generator instanceof FabricDataOutput fabricDataOutput) {
+			this.generator = fabricDataOutput.getGenerator();
+		}
 	}
 
 	@Unique
@@ -94,7 +97,9 @@ public class ModelProviderMixin {
 
 	@Inject(method = "method_25738", at = @At("HEAD"), cancellable = true)
 	private static void filterBlocksForProcessingMod(Map<Block, BlockStateSupplier> map, Block block, CallbackInfoReturnable<Boolean> cir) {
-		if (dataGeneratorThreadLocal.get() instanceof FabricDataGenerator dataGenerator) {
+		FabricDataGenerator dataGenerator = dataGeneratorThreadLocal.get();
+
+		if (dataGenerator != null) {
 			if (!dataGenerator.isStrictValidationEnabled()) {
 				cir.setReturnValue(false);
 				return;
@@ -109,7 +114,9 @@ public class ModelProviderMixin {
 
 	@Inject(method = "method_25741", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/client/ModelIds;getItemModelId(Lnet/minecraft/item/Item;)Lnet/minecraft/util/Identifier;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void filterItemsForProcessingMod(Set<Item> set, Map<Identifier, Supplier<JsonElement>> map, Block block, CallbackInfo ci, Item item) {
-		if (dataGeneratorThreadLocal.get() instanceof FabricDataGenerator dataGenerator) {
+		FabricDataGenerator dataGenerator = dataGeneratorThreadLocal.get();
+
+		if (dataGenerator != null) {
 			// Only generate the item model if the block state json was registered
 			if (!blockStateMapThreadLocal.get().containsKey(block)) {
 				ci.cancel();

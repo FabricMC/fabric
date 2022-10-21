@@ -40,6 +40,7 @@ import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.MusicSound;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.collection.Pool;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
@@ -60,16 +61,14 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 @ApiStatus.Internal
 public class BiomeModificationContextImpl implements BiomeModificationContext {
 	private final DynamicRegistryManager registries;
-	private final RegistryKey<Biome> biomeKey;
 	private final Biome biome;
 	private final WeatherContext weather;
 	private final EffectsContext effects;
 	private final GenerationSettingsContextImpl generationSettings;
 	private final SpawnSettingsContextImpl spawnSettings;
 
-	public BiomeModificationContextImpl(DynamicRegistryManager registries, RegistryKey<Biome> biomeKey, Biome biome) {
+	public BiomeModificationContextImpl(DynamicRegistryManager registries, Biome biome) {
 		this.registries = registries;
-		this.biomeKey = biomeKey;
 		this.biome = biome;
 		this.weather = new WeatherContextImpl();
 		this.effects = new EffectsContextImpl();
@@ -257,7 +256,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		@Override
 		public boolean removeFeature(GenerationStep.Feature step, RegistryKey<PlacedFeature> placedFeatureKey) {
-			PlacedFeature configuredFeature = features.getOrThrow(placedFeatureKey);
+			PlacedFeature placedFeature = getEntry(features, placedFeatureKey).value();
 
 			int stepIndex = step.ordinal();
 			List<RegistryEntryList<PlacedFeature>> featureSteps = generationSettings.features;
@@ -269,7 +268,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			RegistryEntryList<PlacedFeature> featuresInStep = featureSteps.get(stepIndex);
 			List<RegistryEntry<PlacedFeature>> features = new ArrayList<>(featuresInStep.stream().toList());
 
-			if (features.removeIf(feature -> feature.value() == configuredFeature)) {
+			if (features.removeIf(feature -> feature.value() == placedFeature)) {
 				featureSteps.set(stepIndex, RegistryEntryList.of(features));
 				rebuildFlowerFeatures = true;
 
@@ -289,21 +288,21 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 				featureSteps.add(RegistryEntryList.of(Collections.emptyList()));
 			}
 
-			featureSteps.set(index, plus(featureSteps.get(index), features.getEntry(entry).orElseThrow()));
+			featureSteps.set(index, plus(featureSteps.get(index), getEntry(features, entry)));
 
-			// Ensure the list of flower features is up to date
+			// Ensure the list of flower features is up-to-date
 			rebuildFlowerFeatures = true;
 		}
 
 		@Override
 		public void addCarver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> entry) {
 			// We do not need to delay evaluation of this since the registries are already fully built
-			generationSettings.carvers.put(step, plus(generationSettings.carvers.get(step), carvers.getEntry(entry).orElseThrow()));
+			generationSettings.carvers.put(step, plus(generationSettings.carvers.get(step), getEntry(carvers, entry)));
 		}
 
 		@Override
 		public boolean removeCarver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
-			ConfiguredCarver<?> carver = carvers.getOrThrow(configuredCarverKey);
+			ConfiguredCarver<?> carver = getEntry(carvers, configuredCarverKey).value();
 			List<RegistryEntry<ConfiguredCarver<?>>> genCarvers = new ArrayList<>(generationSettings.carvers.get(step).stream().toList());
 
 			if (genCarvers.removeIf(entry -> entry.value() == carver)) {
@@ -319,6 +318,30 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			list.add(entry);
 			return RegistryEntryList.of(list);
 		}
+	}
+
+	/**
+	 * Gets an entry from the given registry, assuming it's a registry loaded from data packs.
+	 * Gives more helpful error messages if an entry is missing by checking if the modder
+	 * forgot to data-gen the JSONs corresponding to their built-in objects.
+	 */
+	private static <T> RegistryEntry.Reference<T> getEntry(Registry<T> registry, RegistryKey<T> key) {
+		var entry = registry.getEntry(key).orElse(null);
+		if (entry == null) {
+			// Entry is missing. Check if it exists in the built-in registries and warn modders
+			// about the worldgen changing to JSON-only.
+			var builtInAccess = BuiltinRegistries.method_45968();
+			var builtInRegistry = builtInAccess.get(registry.getKey());
+			if (builtInRegistry.contains(key)) {
+				throw new IllegalArgumentException("Entry " + key + " only exists in the built-in registry " +
+						"but a corresponding JSON file couldn't be found in the loaded data packs. " +
+						"Since 1.19.3+, the built-in registry for world generation objects is only used for data generation purposes.");
+			}
+
+			// The key doesn't exist in either built-in registries or data packs
+			throw new IllegalArgumentException("Couldn't find registry entry for " + key);
+		}
+		return entry;
 	}
 
 	private class SpawnSettingsContextImpl implements SpawnSettingsContext {
