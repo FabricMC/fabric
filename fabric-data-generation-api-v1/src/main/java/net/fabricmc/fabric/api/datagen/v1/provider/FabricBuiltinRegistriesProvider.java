@@ -34,6 +34,7 @@ import net.minecraft.class_7655;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
+import net.minecraft.data.report.WorldgenProvider;
 import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -44,6 +45,8 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 /**
  * Data-generates all entries from {@link BuiltinRegistries} that matches a given filter (i.e. mod id).
+ *
+ * @see WorldgenProvider For Vanilla's data provider that does the same for the entire registry.
  */
 public class FabricBuiltinRegistriesProvider implements DataProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricBuiltinRegistriesProvider.class);
