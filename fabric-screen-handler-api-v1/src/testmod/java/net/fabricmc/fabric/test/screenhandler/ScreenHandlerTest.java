@@ -22,12 +22,12 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.fabricmc.fabric.test.screenhandler.block.BoxBlock;
 import net.fabricmc.fabric.test.screenhandler.block.BoxBlockEntity;
@@ -36,7 +36,6 @@ import net.fabricmc.fabric.test.screenhandler.item.PositionedBagItem;
 import net.fabricmc.fabric.test.screenhandler.screen.BagScreenHandler;
 import net.fabricmc.fabric.test.screenhandler.screen.BoxScreenHandler;
 import net.fabricmc.fabric.test.screenhandler.screen.PositionedBagScreenHandler;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
 public class ScreenHandlerTest implements ModInitializer {
 	public static final String ID = "fabric-screen-handler-api-v1-testmod";

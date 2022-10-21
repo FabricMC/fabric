@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.lookup.item;
+package net.fabricmc.fabric.test.biome;
 
-import net.minecraft.item.Item;
-import net.minecraft.text.Text;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBuiltinRegistriesProvider;
 
-import net.fabricmc.fabric.test.lookup.api.Inspectable;
-
-public class InspectableItem extends Item implements Inspectable {
-	private final String inspectionResult;
-
-	public InspectableItem(String inspectionResult) {
-		super(new Settings());
-		this.inspectionResult = inspectionResult;
-	}
-
+public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint {
 	@Override
-	public Text inspect() {
-		return Text.literal(inspectionResult);
+	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
+		dataGenerator.addProvider(FabricBuiltinRegistriesProvider.forCurrentMod());
 	}
 }

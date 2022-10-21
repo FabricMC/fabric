@@ -22,8 +22,8 @@ import java.util.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.util.Identifier;
 
@@ -55,7 +55,8 @@ public class RegistrySyncTestClient implements ClientModInitializer {
 			Objects.requireNonNull(nbtPacketMap, "nbtPacketMap");
 			Objects.requireNonNull(directPacketMap, "directPacketMap");
 
-			var registryDiffs = Sets.symmetricDifference(directPacketMap.keySet(), nbtPacketMap.keySet());
+			Sets.SetView<Identifier> registryDiffs = Sets.symmetricDifference(directPacketMap.keySet(), nbtPacketMap.keySet());
+
 			if (!registryDiffs.isEmpty()) {
 				throw new IllegalStateException("Non-Equal set of synched registries between NBT/Direct: " + nbtPacketMap.keySet() + " != " + directPacketMap.keySet());
 			}
