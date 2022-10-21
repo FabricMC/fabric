@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.message;
 
-import java.util.Set;
 import java.util.function.Function;
 
 import org.spongepowered.asm.mixin.Final;
@@ -46,9 +45,9 @@ public abstract class PlayerManagerMixin {
 	private void onSendChatMessage(SignedMessage message, ServerPlayerEntity sender, MessageType.Parameters params, CallbackInfo ci) {
 		if (!ServerMessageEvents.ALLOW_CHAT_MESSAGE.invoker().allowChatMessage(message, sender, params)) {
 			// TODO 22w42a
-//			if (!message.headerSignature().isEmpty()) {
-//				sendMessageHeader(message, Set.of());
-//			}
+			// if (!message.headerSignature().isEmpty()) {
+			// 	sendMessageHeader(message, Set.of());
+			// }
 
 			ci.cancel();
 			return;
@@ -71,9 +70,9 @@ public abstract class PlayerManagerMixin {
 	private void onSendCommandMessage(SignedMessage message, ServerCommandSource source, MessageType.Parameters params, CallbackInfo ci) {
 		if (!ServerMessageEvents.ALLOW_COMMAND_MESSAGE.invoker().allowCommandMessage(message, source, params)) {
 			// TODO 22w42a
-//			if (!message.headerSignature().isEmpty()) {
-//				sendMessageHeader(message, Set.of());
-//			}
+			// if (!message.headerSignature().isEmpty()) {
+			// 	sendMessageHeader(message, Set.of());
+			// }
 
 			ci.cancel();
 			return;

@@ -326,21 +326,24 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	 * forgot to data-gen the JSONs corresponding to their built-in objects.
 	 */
 	private static <T> RegistryEntry.Reference<T> getEntry(Registry<T> registry, RegistryKey<T> key) {
-		var entry = registry.getEntry(key).orElse(null);
+		RegistryEntry.Reference<T> entry = registry.getEntry(key).orElse(null);
+
 		if (entry == null) {
 			// Entry is missing. Check if it exists in the built-in registries and warn modders
 			// about the worldgen changing to JSON-only.
-			var builtInAccess = BuiltinRegistries.method_45968();
-			var builtInRegistry = builtInAccess.get(registry.getKey());
+			DynamicRegistryManager.Immutable builtInAccess = BuiltinRegistries.method_45968();
+			Registry<T> builtInRegistry = builtInAccess.get(registry.getKey());
+
 			if (builtInRegistry.contains(key)) {
-				throw new IllegalArgumentException("Entry " + key + " only exists in the built-in registry " +
-						"but a corresponding JSON file couldn't be found in the loaded data packs. " +
-						"Since 1.19.3+, the built-in registry for world generation objects is only used for data generation purposes.");
+				throw new IllegalArgumentException("Entry " + key + " only exists in the built-in registry "
+						+ "but a corresponding JSON file couldn't be found in the loaded data packs. "
+						+ "Since 1.19.3+, the built-in registry for world generation objects is only used for data generation purposes.");
 			}
 
 			// The key doesn't exist in either built-in registries or data packs
 			throw new IllegalArgumentException("Couldn't find registry entry for " + key);
 		}
+
 		return entry;
 	}
 

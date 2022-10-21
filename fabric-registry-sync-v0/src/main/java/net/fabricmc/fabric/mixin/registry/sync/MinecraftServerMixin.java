@@ -44,6 +44,7 @@ public class MinecraftServerMixin {
 			// Freeze the registries on the server
 			FABRIC_LOGGER.debug("Freezing registries");
 			BuiltinRegistries.REGISTRIES.freeze();
+
 			for (Registry<?> registry : BuiltinRegistries.REGISTRIES) {
 				((SimpleRegistry<?>) registry).freeze();
 			}

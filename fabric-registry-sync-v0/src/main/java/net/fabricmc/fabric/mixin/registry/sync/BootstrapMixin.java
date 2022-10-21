@@ -29,7 +29,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Items;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.biome.BiomeKeys;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;

@@ -161,8 +161,8 @@ public abstract class SimpleRegistryMixin<T> extends Registry<T> implements Rema
 		// trying to access their values.
 		if (info.getReturnValue() instanceof RegistryEntry.Reference<T> reference) {
 			reference.method_45918(entry);
-
 		}
+
 		onChange(registryKey);
 	}
 

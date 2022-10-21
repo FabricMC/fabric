@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.item.v1;
 
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Rarity;
 
@@ -46,6 +45,7 @@ public class FabricItemSettings extends Item.Settings {
 	/**
 	 * Sets the custom damage handler of the item.
 	 * Note that this is only called on an ItemStack if {@link ItemStack#isDamageable()} returns true.
+	 *
 	 * @see CustomDamageHandler
 	 */
 	public FabricItemSettings customDamage(CustomDamageHandler handler) {
