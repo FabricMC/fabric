@@ -23,9 +23,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.block.SculkSensorBlock;
+import net.minecraft.world.event.listener.VibrationListener;
 
-@Mixin(SculkSensorBlock.class)
-public class SculkSensorBlockMixin {
+@Mixin(VibrationListener.class)
+public class VibrationListenerMixin {
 	/**
 	 * Redirects the call to {@linkplain Object2IntMaps#unmodifiable(Object2IntMap)} in initialization of {@linkplain SculkSensorBlock#FREQUENCIES}.
 	 */
