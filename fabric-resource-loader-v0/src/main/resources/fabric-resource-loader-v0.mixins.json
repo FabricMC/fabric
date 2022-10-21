@@ -12,7 +12,8 @@
     "ResourcePackManagerMixin",
     "ResourcePackProfileMixin",
     "ServerPropertiesHandlerMixin",
-    "SimpleResourceReloadMixin"
+    "SimpleResourceReloadMixin",
+    "TestServerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
