@@ -26,14 +26,8 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.client.texture.SpriteRegistryCallbackHolder;
 
+// TODO 22w42a fix me
 public interface ClientSpriteRegistryCallback {
-	/**
-	 * @deprecated Use the {@link ClientSpriteRegistryCallback#event(Identifier)} registration method. Since 1.14
-	 * started making use of multiple sprite atlases, it is unwise to register sprites to *all* of them.
-	 */
-	@Deprecated
-	Event<ClientSpriteRegistryCallback> EVENT = SpriteRegistryCallbackHolder.EVENT_GLOBAL;
-
 	void registerSprites(SpriteAtlasTexture atlasTexture, Registry registry);
 
 	/**
@@ -46,14 +40,6 @@ public interface ClientSpriteRegistryCallback {
 	 */
 	static Event<ClientSpriteRegistryCallback> event(Identifier atlasId) {
 		return SpriteRegistryCallbackHolder.eventLocal(atlasId);
-	}
-
-	/**
-	 * @deprecated Use the {@link ClientSpriteRegistryCallback#event(Identifier)} registration method.
-	 */
-	@Deprecated
-	static void registerBlockAtlas(ClientSpriteRegistryCallback callback) {
-		event(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).register(callback);
 	}
 
 	class Registry {
