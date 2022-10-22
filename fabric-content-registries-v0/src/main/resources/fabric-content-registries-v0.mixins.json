@@ -13,7 +13,7 @@
     "AbstractFurnaceBlockEntityMixin",
     "FireBlockMixin",
     "OxidizableMixin",
-    "SculkSensorBlockMixin",
+    "VibrationListenerMixin",
     "ShovelItemAccessor",
     "VillagerEntityAccessor",
     "VillagerEntityMixin"

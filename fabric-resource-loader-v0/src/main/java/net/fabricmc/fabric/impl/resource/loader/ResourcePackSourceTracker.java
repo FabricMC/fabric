@@ -38,10 +38,10 @@ public final class ResourcePackSourceTracker {
 	 * Gets the source of a pack.
 	 *
 	 * @param pack the resource pack
-	 * @return the source, or {@link ResourcePackSource#PACK_SOURCE_NONE} if not tracked
+	 * @return the source, or {@link ResourcePackSource#NONE} if not tracked
 	 */
 	public static ResourcePackSource getSource(ResourcePack pack) {
-		return SOURCES.getOrDefault(pack, ResourcePackSource.PACK_SOURCE_NONE);
+		return SOURCES.getOrDefault(pack, ResourcePackSource.NONE);
 	}
 
 	/**

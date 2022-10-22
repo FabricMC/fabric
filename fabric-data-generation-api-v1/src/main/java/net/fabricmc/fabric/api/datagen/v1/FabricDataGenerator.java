@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.datagen.v1;
 
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -25,8 +24,10 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 
+import net.fabricmc.fabric.impl.datagen.FabricDataOutput;
 import net.fabricmc.loader.api.ModContainer;
 
 /**
@@ -38,9 +39,16 @@ public final class FabricDataGenerator extends DataGenerator {
 
 	@ApiStatus.Internal
 	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation) {
-		super(output, Collections.emptyList(), SharedConstants.getGameVersion(), true);
+		super(output, SharedConstants.getGameVersion(), true);
 		this.modContainer = Objects.requireNonNull(mod);
 		this.strictValidation = strictValidation;
+
+		this.output = new FabricDataOutput(this, output);
+	}
+
+	@Override
+	public DataOutput getOutputFor(String packName) {
+		return new FabricDataOutput(this, super.getOutputFor(packName).getPath());
 	}
 
 	/**

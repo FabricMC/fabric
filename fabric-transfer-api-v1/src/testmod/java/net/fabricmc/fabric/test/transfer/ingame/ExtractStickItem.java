@@ -17,20 +17,19 @@
 package net.fabricmc.fabric.test.transfer.ingame;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class ExtractStickItem extends Item {
 	public ExtractStickItem() {
-		super(new Settings().group(ItemGroup.MISC));
+		super(new Settings());
 	}
 
 	@Override

@@ -4,7 +4,6 @@
   "compatibilityLevel": "JAVA_16",
   "client": [
     "ClientCommandSourceMixin",
-    "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {

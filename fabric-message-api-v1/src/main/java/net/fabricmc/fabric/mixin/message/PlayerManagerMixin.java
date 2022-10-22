@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.message;
 
-import java.util.Set;
 import java.util.function.Function;
 
 import org.spongepowered.asm.mixin.Final;
@@ -42,16 +41,9 @@ public abstract class PlayerManagerMixin {
 	@Final
 	private MinecraftServer server;
 
-	@Shadow
-	public abstract void sendMessageHeader(SignedMessage message, Set<ServerPlayerEntity> except);
-
 	@Inject(method = "broadcast(Lnet/minecraft/network/message/SignedMessage;Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/network/message/MessageType$Parameters;)V", at = @At("HEAD"), cancellable = true)
 	private void onSendChatMessage(SignedMessage message, ServerPlayerEntity sender, MessageType.Parameters params, CallbackInfo ci) {
 		if (!ServerMessageEvents.ALLOW_CHAT_MESSAGE.invoker().allowChatMessage(message, sender, params)) {
-			if (!message.headerSignature().isEmpty()) {
-				sendMessageHeader(message, Set.of());
-			}
-
 			ci.cancel();
 			return;
 		}
@@ -72,10 +64,6 @@ public abstract class PlayerManagerMixin {
 	@Inject(method = "broadcast(Lnet/minecraft/network/message/SignedMessage;Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/network/message/MessageType$Parameters;)V", at = @At("HEAD"), cancellable = true)
 	private void onSendCommandMessage(SignedMessage message, ServerCommandSource source, MessageType.Parameters params, CallbackInfo ci) {
 		if (!ServerMessageEvents.ALLOW_COMMAND_MESSAGE.invoker().allowCommandMessage(message, source, params)) {
-			if (!message.headerSignature().isEmpty()) {
-				sendMessageHeader(message, Set.of());
-			}
-
 			ci.cancel();
 			return;
 		}

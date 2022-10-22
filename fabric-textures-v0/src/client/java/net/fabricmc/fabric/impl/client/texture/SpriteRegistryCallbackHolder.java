@@ -18,9 +18,6 @@ package net.fabricmc.fabric.impl.client.texture;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import net.minecraft.util.Identifier;
 
@@ -29,11 +26,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 
 public final class SpriteRegistryCallbackHolder {
-	public static final Event<ClientSpriteRegistryCallback> EVENT_GLOBAL = createEvent();
 	private static final Map<Identifier, Event<ClientSpriteRegistryCallback>> eventMap = new ConcurrentHashMap<>();
-	private static final ReadWriteLock eventMapLock = new ReentrantReadWriteLock();
-	private static final Lock eventMapReadLock = eventMapLock.readLock();
-	private static final Lock eventMapWriteLock = eventMapLock.writeLock();
 
 	private SpriteRegistryCallbackHolder() { }
 

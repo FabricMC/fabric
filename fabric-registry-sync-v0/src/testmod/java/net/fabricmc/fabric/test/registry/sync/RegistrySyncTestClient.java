@@ -20,9 +20,10 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.util.Identifier;
 
@@ -50,6 +51,15 @@ public class RegistrySyncTestClient implements ClientModInitializer {
 
 			Map<Identifier, Object2IntMap<Identifier>> directPacketMap = RegistrySyncTest.DIRECT_PACKET_HANDLER.getSyncedRegistryMap();
 			Map<Identifier, Object2IntMap<Identifier>> nbtPacketMap = RegistrySyncTest.NBT_PACKET_HANDLER.getSyncedRegistryMap();
+
+			Objects.requireNonNull(nbtPacketMap, "nbtPacketMap");
+			Objects.requireNonNull(directPacketMap, "directPacketMap");
+
+			Sets.SetView<Identifier> registryDiffs = Sets.symmetricDifference(directPacketMap.keySet(), nbtPacketMap.keySet());
+
+			if (!registryDiffs.isEmpty()) {
+				throw new IllegalStateException("Non-Equal set of synched registries between NBT/Direct: " + nbtPacketMap.keySet() + " != " + directPacketMap.keySet());
+			}
 
 			Preconditions.checkArgument(Objects.requireNonNull(nbtPacketMap).equals(directPacketMap), "nbt packet and direct packet are not equal!");
 		});

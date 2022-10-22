@@ -23,7 +23,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
@@ -36,7 +35,7 @@ import net.fabricmc.api.ModInitializer;
 
 public class TooltipComponentTestInit implements ModInitializer {
 	public static Item CUSTOM_TOOLTIP_ITEM = new CustomTooltipItem();
-	public static Item CUSTOM_ARMOR_ITEM = new ArmorItem(TestArmorMaterial.INSTANCE, EquipmentSlot.CHEST, new Item.Settings().group(ItemGroup.MISC));
+	public static Item CUSTOM_ARMOR_ITEM = new ArmorItem(TestArmorMaterial.INSTANCE, EquipmentSlot.CHEST, new Item.Settings());
 
 	@Override
 	public void onInitialize() {
@@ -46,7 +45,7 @@ public class TooltipComponentTestInit implements ModInitializer {
 
 	private static class CustomTooltipItem extends Item {
 		CustomTooltipItem() {
-			super(new Settings().group(ItemGroup.MISC));
+			super(new Settings());
 		}
 
 		@Override
@@ -55,7 +54,8 @@ public class TooltipComponentTestInit implements ModInitializer {
 		}
 	}
 
-	public record Data(String string) implements TooltipData { }
+	public record Data(String string) implements TooltipData {
+	}
 
 	public static final class TestArmorMaterial implements ArmorMaterial {
 		public static final TestArmorMaterial INSTANCE = new TestArmorMaterial();

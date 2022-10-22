@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.test.lookup.item;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.test.lookup.api.Inspectable;
@@ -26,7 +25,7 @@ public class InspectableItem extends Item implements Inspectable {
 	private final String inspectionResult;
 
 	public InspectableItem(String inspectionResult) {
-		super(new Settings().group(ItemGroup.MISC));
+		super(new Settings());
 		this.inspectionResult = inspectionResult;
 	}
 

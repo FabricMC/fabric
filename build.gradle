@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "1.0.7" apply false
+	id "fabric-loom" version "1.0.11" apply false
 	id "com.diffplug.spotless" version "6.11.0"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -286,6 +286,11 @@ remapTestmodJar {
 apply from: "gradle/module-validation.gradle"
 apply from: "gradle/module-versioning.gradle"
 
+loom {
+	// Required as the item-group API uses access widened classes in its API, without this the javadoc generation fails.
+	accessWidenerPath = file("fabric-item-group-api-v1/src/main/resources/fabric-item-group-api-v1.accesswidener")
+}
+
 javadoc {
 	options {
 		source = "17"
@@ -318,7 +323,7 @@ javadoc {
 
 	classpath = files(sourceSets.main.compileClasspath, sourceSets.client.compileClasspath)
 	include("**/api/**")
-	failOnError false
+	failOnError true
 }
 
 task javadocJar(type: Jar) {
@@ -511,7 +516,7 @@ curseforge {
 		id = "306612"
 		changelog = ENV.CHANGELOG ?: "No changelog provided"
 		releaseType = project.prerelease == "true" ? "beta" : "release"
-		addGameVersion "1.19.2"
+		addGameVersion "1.19.3"
 		addGameVersion "Fabric"
 
 		mainArtifact(signingEnabled ? signRemapJar.output : remapJar) {

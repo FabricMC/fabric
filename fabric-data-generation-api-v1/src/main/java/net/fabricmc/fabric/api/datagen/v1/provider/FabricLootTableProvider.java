@@ -28,6 +28,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.loot.LootManager;
@@ -87,6 +88,6 @@ public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier,
 	}
 
 	private Path getOutputPath(Identifier lootTableId) {
-		return getFabricDataGenerator().getOutput().resolve("data/%s/loot_tables/%s.json".formatted(lootTableId.getNamespace(), lootTableId.getPath()));
+		return getFabricDataGenerator().getOutput().getResolver(DataOutput.OutputType.DATA_PACK, "loot_tables").resolveJson(lootTableId);
 	}
 }

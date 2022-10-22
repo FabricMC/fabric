@@ -29,7 +29,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
 import net.minecraft.network.packet.s2c.play.SynchronizeTagsS2CPacket;
-import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.api.EnvType;
@@ -44,8 +43,6 @@ import net.fabricmc.fabric.impl.event.lifecycle.LoadedChunksCache;
 abstract class ClientPlayNetworkHandlerMixin {
 	@Shadow
 	private ClientWorld world;
-	@Shadow
-	private DynamicRegistryManager.Immutable registryManager;
 
 	@Inject(method = "onPlayerRespawn", at = @At(value = "NEW", target = "net/minecraft/client/world/ClientWorld"))
 	private void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
@@ -102,6 +99,7 @@ abstract class ClientPlayNetworkHandlerMixin {
 		}
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	@Inject(
 			method = "onSynchronizeTags",
 			at = @At(
@@ -111,6 +109,7 @@ abstract class ClientPlayNetworkHandlerMixin {
 			)
 	)
 	private void hookOnSynchronizeTags(SynchronizeTagsS2CPacket packet, CallbackInfo ci) {
-		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(registryManager, true);
+		ClientPlayNetworkHandler self = (ClientPlayNetworkHandler) (Object) this;
+		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(self.getRegistryManager(), true);
 	}
 }

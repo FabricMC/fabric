@@ -181,7 +181,7 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 		int regNamespaceGroupAmount = combinedBuf.readVarInt();
 
 		for (int i = 0; i < regNamespaceGroupAmount; i++) {
-			String regNamespace = combinedBuf.readString();
+			String regNamespace = unoptimizeNamespace(combinedBuf.readString());
 			int regNamespaceGroupLength = combinedBuf.readVarInt();
 
 			for (int j = 0; j < regNamespaceGroupLength; j++) {
@@ -192,7 +192,7 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 				int lastBulkLastRawId = 0;
 
 				for (int k = 0; k < idNamespaceGroupAmount; k++) {
-					String idNamespace = combinedBuf.readString();
+					String idNamespace = unoptimizeNamespace(combinedBuf.readString());
 					int rawIdBulkAmount = combinedBuf.readVarInt();
 
 					for (int l = 0; l < rawIdBulkAmount; l++) {
@@ -241,7 +241,11 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 		return map;
 	}
 
-	private String optimizeNamespace(String namespace) {
+	private static String optimizeNamespace(String namespace) {
 		return namespace.equals(Identifier.DEFAULT_NAMESPACE) ? "" : namespace;
+	}
+
+	private static String unoptimizeNamespace(String namespace) {
+		return namespace.isEmpty() ? Identifier.DEFAULT_NAMESPACE : namespace;
 	}
 }

@@ -35,7 +35,7 @@ public final class LootUtil {
 		if (resource != null) {
 			ResourcePackSource packSource = ((FabricResource) resource).getFabricPackSource();
 
-			if (packSource == ResourcePackSource.PACK_SOURCE_BUILTIN) {
+			if (packSource == ResourcePackSource.BUILTIN) {
 				return LootTableSource.VANILLA;
 			} else if (packSource == ModResourcePackCreator.RESOURCE_PACK_SOURCE || packSource instanceof BuiltinModResourcePackSource) {
 				return LootTableSource.MOD;

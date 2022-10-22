@@ -26,7 +26,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 
 import net.minecraft.advancement.Advancement;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.util.Identifier;
@@ -42,11 +42,11 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
  */
 public abstract class FabricAdvancementProvider implements DataProvider {
 	protected final FabricDataGenerator dataGenerator;
-	private final DataGenerator.PathResolver pathResolver;
+	private final DataOutput.PathResolver pathResolver;
 
 	protected FabricAdvancementProvider(FabricDataGenerator dataGenerator) {
 		this.dataGenerator = dataGenerator;
-		this.pathResolver = dataGenerator.createPathResolver(DataGenerator.OutputType.DATA_PACK, "advancements");
+		this.pathResolver = dataGenerator.getOutput().getResolver(DataOutput.OutputType.DATA_PACK, "advancements");
 	}
 
 	/**
@@ -87,7 +87,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	}
 
 	private Path getOutputPath(Advancement advancement) {
-		return dataGenerator.getOutput().resolve("data/%s/advancements/%s.json".formatted(advancement.getId().getNamespace(), advancement.getId().getPath()));
+		return pathResolver.resolveJson(advancement.getId());
 	}
 
 	@Override

@@ -27,7 +27,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.command.CommandManager;
@@ -55,7 +54,7 @@ public final class EntityEventTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		Registry.register(Registry.BLOCK, new Identifier("fabric-entity-events-v1-testmod", "test_bed"), TEST_BED);
-		Registry.register(Registry.ITEM, new Identifier("fabric-entity-events-v1-testmod", "test_bed"), new BlockItem(TEST_BED, new Item.Settings().group(ItemGroup.DECORATIONS)));
+		Registry.register(Registry.ITEM, new Identifier("fabric-entity-events-v1-testmod", "test_bed"), new BlockItem(TEST_BED, new Item.Settings()));
 		Registry.register(Registry.ITEM, new Identifier("fabric-entity-events-v1-testmod", "diamond_elytra"), DIAMOND_ELYTRA);
 
 		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed) -> {

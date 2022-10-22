@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -24,18 +25,19 @@ import java.util.function.BiConsumer;
 import com.google.common.collect.Sets;
 
 import net.minecraft.block.Block;
-import net.minecraft.data.server.BlockLootTableGenerator;
+import net.minecraft.data.server.loottable.BlockLootTableGenerator;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 /**
- * Extend this class and implement {@link FabricBlockLootTableProvider#generateBlockLootTables}.
+ * Extend this class and implement {@link FabricBlockLootTableProvider#generate}.
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
  */
@@ -44,6 +46,7 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
 
 	protected FabricBlockLootTableProvider(FabricDataGenerator dataGenerator) {
+		super(Collections.emptySet(), FeatureFlags.FEATURE_MANAGER.getFeatureSet());
 		this.dataGenerator = dataGenerator;
 	}
 
@@ -52,7 +55,8 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 	 *
 	 * <p>Use the range of {@link BlockLootTableGenerator#addDrop} methods to generate block drops.
 	 */
-	protected abstract void generateBlockLootTables();
+	@Override
+	public abstract void generate();
 
 	/**
 	 * Disable strict validation for the passed block.
@@ -73,7 +77,7 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 
 	@Override
 	public void accept(BiConsumer<Identifier, LootTable.Builder> biConsumer) {
-		generateBlockLootTables();
+		generate();
 
 		for (Map.Entry<Identifier, LootTable.Builder> entry : lootTables.entrySet()) {
 			Identifier identifier = entry.getKey();

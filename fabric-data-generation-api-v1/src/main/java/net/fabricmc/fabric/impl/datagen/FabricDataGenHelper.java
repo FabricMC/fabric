@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.data.server.AbstractTagProvider;
+import net.minecraft.data.server.tag.AbstractTagProvider;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -138,7 +138,7 @@ public final class FabricDataGenHelper {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static <T> Registry<T> getFakeDynamicRegistry(RegistryKey<? extends Registry<T>> registryKey) {
-		return new SimpleRegistry<>(registryKey, Lifecycle.experimental(), null) {
+		return new SimpleRegistry<>(registryKey, Lifecycle.experimental(), false) {
 			@Override
 			public boolean containsId(Identifier id) {
 				return true;

@@ -19,7 +19,6 @@ package net.fabricmc.fabric.test.renderer.simple;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -34,7 +33,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
  * <p>There are no fancy shaders or glow that is provided by this renderer test.
  */
 public final class RendererTest implements ModInitializer {
-	public static final FrameBlock[] FRAMES = new FrameBlock[] {
+	public static final FrameBlock[] FRAMES = new FrameBlock[]{
 			new FrameBlock(id("frame")),
 			new FrameBlock(id("frame_multipart")),
 			new FrameBlock(id("frame_weighted")),
@@ -45,7 +44,7 @@ public final class RendererTest implements ModInitializer {
 	public void onInitialize() {
 		for (FrameBlock frameBlock : FRAMES) {
 			Registry.register(Registry.BLOCK, frameBlock.id, frameBlock);
-			Registry.register(Registry.ITEM, frameBlock.id, new BlockItem(frameBlock, new Item.Settings().group(ItemGroup.MISC)));
+			Registry.register(Registry.ITEM, frameBlock.id, new BlockItem(frameBlock, new Item.Settings()));
 		}
 
 		Registry.register(Registry.BLOCK_ENTITY_TYPE, id("frame"), FRAME_BLOCK_ENTITY);

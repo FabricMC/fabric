@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.resource.loader;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.DirectoryStream;
@@ -28,7 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -36,19 +34,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.resource.AbstractFileResourcePack;
+import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
+import net.minecraft.util.PathUtil;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.InvalidIdentifierException;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
@@ -186,46 +185,40 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 		return !namespaces.get(type).contains(filename.substring(prefixLen, nsEnd));
 	}
 
-	private InputStream openFile(String filename) throws IOException {
-		InputStream stream;
-
+	private InputSupplier<InputStream> openFile(String filename) {
 		Path path = getPath(filename);
 
 		if (path != null && Files.isRegularFile(path)) {
-			return Files.newInputStream(path);
+			return () -> Files.newInputStream(path);
 		}
 
-		stream = ModResourcePackUtil.openDefault(this.modInfo, this.type, filename);
-
-		if (stream != null) {
-			return stream;
+		if (ModResourcePackUtil.containsDefault(this.modInfo, filename)) {
+			return () -> ModResourcePackUtil.openDefault(this.modInfo, this.type, filename);
 		}
 
-		// ReloadableResourceManagerImpl gets away with FileNotFoundException.
-		throw new FileNotFoundException("\"" + filename + "\" in Fabric mod \"" + modInfo.getId() + "\"");
+		return null;
+	}
+
+	@Nullable
+	@Override
+	public InputSupplier<InputStream> openRoot(String... pathSegments) {
+		PathUtil.validatePath(pathSegments);
+
+		return this.openFile(String.join("/", pathSegments));
 	}
 
 	@Override
-	public InputStream openRoot(String fileName) throws IOException {
-		if (fileName.contains("/") || fileName.contains("\\")) {
-			throw new IllegalArgumentException("Root resources can only be filenames, not paths (no / allowed!)");
-		}
-
-		return this.openFile(fileName);
+	@Nullable
+	public InputSupplier<InputStream> open(ResourceType type, Identifier id) {
+		final Path path = getPath(getFilename(type, id));
+		return path == null ? null : InputSupplier.create(path);
 	}
 
 	@Override
-	public InputStream open(ResourceType type, Identifier id) throws IOException {
-		return openFile(getFilename(type, id));
-	}
-
-	@Override
-	public Collection<Identifier> findResources(ResourceType type, String namespace, String path, Predicate<Identifier> predicate) {
+	public void findResources(ResourceType type, String namespace, String path, ResultConsumer visitor) {
 		if (!namespaces.getOrDefault(type, Collections.emptySet()).contains(namespace)) {
-			return Collections.emptyList();
+			return;
 		}
-
-		List<Identifier> ids = new ArrayList<>();
 
 		for (Path basePath : basePaths) {
 			String separator = basePath.getFileSystem().getSeparator();
@@ -234,17 +227,16 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 			if (!exists(searchPath)) continue;
 
 			try {
-				Files.walkFileTree(searchPath, new SimpleFileVisitor<Path>() {
+				Files.walkFileTree(searchPath, new SimpleFileVisitor<>() {
 					@Override
-					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-						String fileName = file.getFileName().toString();
-						if (fileName.endsWith(".mcmeta")) return FileVisitResult.CONTINUE;
+					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+						String filename = nsPath.relativize(file).toString().replace(separator, "/");
+						Identifier identifier = Identifier.of(namespace, filename);
 
-						try {
-							Identifier id = new Identifier(namespace, nsPath.relativize(file).toString().replace(separator, "/"));
-							if (predicate.test(id)) ids.add(id);
-						} catch (InvalidIdentifierException e) {
-							LOGGER.error(e.getMessage());
+						if (identifier == null) {
+							LOGGER.error("Invalid path in mod resource-pack {}: {}:{}, ignoring", id, namespace, filename);
+						} else {
+							visitor.accept(identifier, InputSupplier.create(file));
 						}
 
 						return FileVisitResult.CONTINUE;
@@ -254,20 +246,6 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 				LOGGER.warn("findResources at " + path + " in namespace " + namespace + ", mod " + modInfo.getId() + " failed!", e);
 			}
 		}
-
-		return ids;
-	}
-
-	@Override
-	public boolean contains(ResourceType type, Identifier id) {
-		String filename = getFilename(type, id);
-
-		if (ModResourcePackUtil.containsDefault(modInfo, filename)) {
-			return true;
-		}
-
-		Path path = getPath(filename);
-		return path != null && Files.isRegularFile(path);
 	}
 
 	@Override
@@ -277,7 +255,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 
 	@Override
 	public <T> T parseMetadata(ResourceMetadataReader<T> metaReader) throws IOException {
-		try (InputStream is = openFile("pack.mcmeta")) {
+		try (InputStream is = openFile("pack.mcmeta").get()) {
 			return AbstractFileResourcePack.parseMetadata(metaReader, is);
 		}
 	}

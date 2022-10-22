@@ -27,7 +27,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -72,7 +71,7 @@ public class BlockEntityTypeBuilderTest implements ModInitializer {
 	private static void register(Identifier id, Block block) {
 		Registry.register(Registry.BLOCK, id, block);
 
-		Item item = new BlockItem(block, new Item.Settings().group(ItemGroup.MISC));
+		Item item = new BlockItem(block, new Item.Settings());
 		Registry.register(Registry.ITEM, id, item);
 	}
 

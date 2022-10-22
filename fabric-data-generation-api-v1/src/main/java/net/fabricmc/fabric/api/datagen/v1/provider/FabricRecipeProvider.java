@@ -24,8 +24,8 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 
 import net.minecraft.data.DataWriter;
-import net.minecraft.data.server.RecipeProvider;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.util.Identifier;
@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 /**
- * Extend this class and implement {@link FabricRecipeProvider#generateRecipes}.
+ * Extend this class and implement {@link FabricRecipeProvider#generate}.
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
  */
@@ -43,14 +43,15 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	protected final FabricDataGenerator dataGenerator;
 
 	public FabricRecipeProvider(FabricDataGenerator dataGenerator) {
-		super(dataGenerator);
+		super(dataGenerator.getOutput());
 		this.dataGenerator = dataGenerator;
 	}
 
 	/**
 	 * Implement this method and then use the range of methods in {@link RecipeProvider} or from one of the recipe json factories such as {@link ShapedRecipeJsonBuilder} or {@link ShapelessRecipeJsonBuilder}.
 	 */
-	protected abstract void generateRecipes(Consumer<RecipeJsonProvider> exporter);
+	@Override
+	public abstract void generate(Consumer<RecipeJsonProvider> exporter);
 
 	/**
 	 * Return a new exporter that applies the specified conditions to any recipe json provider it receives.
@@ -66,7 +67,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	@Override
 	public void run(DataWriter writer) {
 		Set<Identifier> generatedRecipes = Sets.newHashSet();
-		generateRecipes(provider -> {
+		generate(provider -> {
 			Identifier identifier = getRecipeIdentifier(provider.getRecipeId());
 
 			if (!generatedRecipes.add(identifier)) {
@@ -85,6 +86,11 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 				saveRecipeAdvancement(writer, advancementJson, this.advancementsPathResolver.resolveJson(getRecipeIdentifier(provider.getAdvancementId())));
 			}
 		});
+	}
+
+	@Override
+	public String getName() {
+		return "Recipes";
 	}
 
 	/**

@@ -30,14 +30,13 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.Items;
-import net.minecraft.network.encryption.PlayerPublicKey;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 
 @SuppressWarnings("unused")
 @Mixin(ClientPlayerEntity.class)
 abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
-	ClientPlayerEntityMixin(ClientWorld world, GameProfile profile, PlayerPublicKey playerPublicKey) {
-		super(world, profile, playerPublicKey);
+	ClientPlayerEntityMixin(ClientWorld world, GameProfile profile) {
+		super(world, profile);
 		throw new AssertionError();
 	}
 

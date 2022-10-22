@@ -6,6 +6,7 @@
     "DebugChunkGeneratorAccessor",
     "RegistryAccessor",
     "BootstrapMixin",
+    "BuiltinRegistriesMixin",
     "ChunkSerializerMixin",
     "DynamicRegistryManagerMixin",
     "IdListMixin",

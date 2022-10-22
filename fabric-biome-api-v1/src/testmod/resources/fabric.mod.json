@@ -11,6 +11,9 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.biome.FabricBiomeTest"
+    ],
+    "fabric-datagen": [
+      "net.fabricmc.fabric.test.biome.DataGeneratorEntrypoint"
     ]
   }
 }

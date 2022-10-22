@@ -22,12 +22,12 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.fabricmc.fabric.test.screenhandler.block.BoxBlock;
 import net.fabricmc.fabric.test.screenhandler.block.BoxBlockEntity;
@@ -36,15 +36,14 @@ import net.fabricmc.fabric.test.screenhandler.item.PositionedBagItem;
 import net.fabricmc.fabric.test.screenhandler.screen.BagScreenHandler;
 import net.fabricmc.fabric.test.screenhandler.screen.BoxScreenHandler;
 import net.fabricmc.fabric.test.screenhandler.screen.PositionedBagScreenHandler;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
 public class ScreenHandlerTest implements ModInitializer {
 	public static final String ID = "fabric-screen-handler-api-v1-testmod";
 
-	public static final Item BAG = new BagItem(new Item.Settings().group(ItemGroup.TOOLS).maxCount(1));
-	public static final Item POSITIONED_BAG = new PositionedBagItem(new Item.Settings().group(ItemGroup.TOOLS).maxCount(1));
+	public static final Item BAG = new BagItem(new Item.Settings().maxCount(1));
+	public static final Item POSITIONED_BAG = new PositionedBagItem(new Item.Settings().maxCount(1));
 	public static final Block BOX = new BoxBlock(AbstractBlock.Settings.copy(Blocks.OAK_WOOD));
-	public static final Item BOX_ITEM = new BlockItem(BOX, new Item.Settings().group(ItemGroup.DECORATIONS));
+	public static final Item BOX_ITEM = new BlockItem(BOX, new Item.Settings());
 	public static final BlockEntityType<BoxBlockEntity> BOX_ENTITY = FabricBlockEntityTypeBuilder.create(BoxBlockEntity::new, BOX).build();
 	public static final ScreenHandlerType<BagScreenHandler> BAG_SCREEN_HANDLER = new ScreenHandlerType<>(BagScreenHandler::new);
 	public static final ScreenHandlerType<PositionedBagScreenHandler> POSITIONED_BAG_SCREEN_HANDLER = new ExtendedScreenHandlerType<>(PositionedBagScreenHandler::new);

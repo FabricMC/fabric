@@ -47,6 +47,7 @@ import net.minecraft.loot.LootTables;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
+import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.TagKey;
@@ -118,7 +119,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void generateRecipes(Consumer<RecipeJsonProvider> exporter) {
+		public void generate(Consumer<RecipeJsonProvider> exporter) {
 			offerPlanksRecipe2(exporter, SIMPLE_BLOCK, ItemTags.ACACIA_LOGS);
 		}
 	}
@@ -174,9 +175,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void generateRecipes(Consumer<RecipeJsonProvider> exporter) {
-			ShapelessRecipeJsonBuilder.create(Items.GOLD_INGOT).input(Items.DIRT).criterion("has_dirt", conditionsFromItem(Items.DIRT)).offerTo(withConditions(exporter, NEVER_LOADED));
-			ShapelessRecipeJsonBuilder.create(Items.DIAMOND).input(Items.STICK).criterion("has_stick", conditionsFromItem(Items.STICK)).offerTo(withConditions(exporter, ALWAYS_LOADED));
+		public void generate(Consumer<RecipeJsonProvider> exporter) {
+			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLD_INGOT).input(Items.DIRT).criterion("has_dirt", conditionsFromItem(Items.DIRT)).offerTo(withConditions(exporter, NEVER_LOADED));
+			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND).input(Items.STICK).criterion("has_stick", conditionsFromItem(Items.STICK)).offerTo(withConditions(exporter, ALWAYS_LOADED));
 		}
 	}
 
@@ -278,7 +279,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void generateBlockLootTables() {
+		public void generate() {
 			addDrop(SIMPLE_BLOCK);
 			addDrop(BLOCK_WITHOUT_ITEM, drops(SIMPLE_BLOCK));
 

@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.itemgroup.client",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "ItemGroupMixin",
+    "CreativeInventoryScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -23,7 +23,6 @@ import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -63,6 +62,6 @@ public class TransferTestInitializer implements ModInitializer {
 	private static void registerBlock(Block block, String name) {
 		Identifier id = new Identifier(MOD_ID, name);
 		Registry.register(Registry.BLOCK, id, block);
-		Registry.register(Registry.ITEM, id, new BlockItem(block, new Item.Settings().group(ItemGroup.MISC)));
+		Registry.register(Registry.ITEM, id, new BlockItem(block, new Item.Settings()));
 	}
 }

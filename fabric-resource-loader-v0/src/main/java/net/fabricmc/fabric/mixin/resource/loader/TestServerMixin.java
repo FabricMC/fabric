@@ -16,34 +16,25 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
-import java.util.function.Supplier;
+import java.util.List;
 
-import com.mojang.serialization.JsonOps;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.resource.DataPackSettings;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.test.TestServer;
-import net.minecraft.util.dynamic.RegistryOps;
-import net.minecraft.util.registry.DynamicRegistryManager;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 
+/**
+ * Vanilla enables all available datapacks automatically in TestServer#create, but it does so in alphabetical order,
+ * which means the Vanilla pack has higher precedence than modded, breaking our tests.
+ */
 @Mixin(TestServer.class)
 public class TestServerMixin {
-	@Redirect(method = "create", at = @At(value = "FIELD", target = "Lnet/minecraft/resource/DataPackSettings;SAFE_MODE:Lnet/minecraft/resource/DataPackSettings;"))
-	private static DataPackSettings replaceDefaultDataPackSettings() {
-		return ModResourcePackUtil.createDefaultDataPackSettings();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Redirect(method = "method_40377", at = @At(value = "INVOKE", target = "Ljava/util/function/Supplier;get()Ljava/lang/Object;"))
-	private static <T> T loadRegistry(Supplier<T> unused, ResourceManager resourceManager) {
-		DynamicRegistryManager.Mutable mutableRegistryManager = DynamicRegistryManager.createAndLoad();
-		// This loads the dynamic registry manager
-		RegistryOps.ofLoaded(JsonOps.INSTANCE, mutableRegistryManager, resourceManager);
-		return (T) mutableRegistryManager.toImmutable();
+	@Redirect(method = "create", at = @At(value = "NEW", target = "(Ljava/util/List;Ljava/util/List;)Lnet/minecraft/resource/DataPackSettings;"))
+	private static DataPackSettings replaceDefaultDataPackSettings(List<String> enabled, List<String> disabled) {
+		return ModResourcePackUtil.createDefaultDataPackSettings().dataPacks();
 	}
 }

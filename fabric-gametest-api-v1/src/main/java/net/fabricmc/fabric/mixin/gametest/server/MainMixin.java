@@ -47,7 +47,7 @@ public class MainMixin {
 	}
 
 	// Inject after resourcePackManager is stored
-	@Inject(method = "main", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", shift = At.Shift.BY, by = 2, target = "Lnet/minecraft/resource/ResourcePackManager;<init>(Lnet/minecraft/resource/ResourceType;[Lnet/minecraft/resource/ResourcePackProvider;)V"))
+	@Inject(method = "main", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", shift = At.Shift.BY, by = 2, target = "Lnet/minecraft/resource/VanillaDataPackProvider;createManager(Ljava/nio/file/Path;)Lnet/minecraft/resource/ResourcePackManager;"))
 	private static void main(String[] args, CallbackInfo info, OptionParser optionParser, OptionSpec optionSpec, OptionSpec optionSpec2, OptionSpec optionSpec3, OptionSpec optionSpec4, OptionSpec optionSpec5, OptionSpec optionSpec6, OptionSpec optionSpec7, OptionSpec optionSpec8, OptionSpec optionSpec9, OptionSpec optionSpec10, OptionSpec optionSpec11, OptionSpec optionSpec12, OptionSpec optionSpec13, OptionSpec optionSpec14, OptionSpec optionSpec15, OptionSet optionSet, Path path, ServerPropertiesLoader serverPropertiesLoader, Path path2, EulaReader eulaReader, File file, ApiServices lv, String string, LevelStorage levelStorage, LevelStorage.Session session, LevelSummary levelSummary, boolean bl, ResourcePackManager resourcePackManager) {
 		if (FabricGameTestHelper.ENABLED) {
 			FabricGameTestHelper.runHeadlessServer(session, resourcePackManager);
