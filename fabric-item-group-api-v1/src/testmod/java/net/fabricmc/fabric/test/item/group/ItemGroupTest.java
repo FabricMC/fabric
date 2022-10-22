@@ -58,7 +58,7 @@ public class ItemGroupTest implements ModInitializer {
 
 		checkAllVanillaGroupsHaveAssignedIds();
 
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register((featureSet, content) -> {
+		ItemGroupEvents.modifyContent(ItemGroups.BUILDING_BLOCKS).register((featureSet, content) -> {
 			content.add(TEST_ITEM);
 
 			content.addBefore(Blocks.OAK_FENCE, Items.DIAMOND, Items.DIAMOND_BLOCK);

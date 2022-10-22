@@ -28,8 +28,8 @@ public class ItemGroupEvents {
 	/**
 	 * This event allows the content of any item group to be modified.
 	 * <p/>
-	 * If you know beforehand which item group you'd like to modify, use {@link #modifyEntriesEvent(ItemGroup)}
-	 * or {@link #modifyEntriesEvent(Identifier)} instead.
+	 * If you know beforehand which item group you'd like to modify, use {@link #modifyContent(ItemGroup)}
+	 * or {@link #modifyContent(Identifier)} instead.
 	 * <p/>
 	 * This event is invoked after those two more specific events.
 	 */
@@ -39,12 +39,12 @@ public class ItemGroupEvents {
 		}
 	});
 
-	public static Event<ModifyContent> modifyEntriesEvent(ItemGroup itemGroup) {
-		return modifyEntriesEvent(itemGroup.getId());
+	public static Event<ModifyContent> modifyContent(ItemGroup itemGroup) {
+		return modifyContent(itemGroup.getId());
 	}
 
-	public static Event<ModifyContent> modifyEntriesEvent(Identifier identifier) {
-		return ItemGroupEventsImpl.getOrCreateModifyEntriesEvent(identifier);
+	public static Event<ModifyContent> modifyContent(Identifier identifier) {
+		return ItemGroupEventsImpl.getOrCreateModifyContentEvent(identifier);
 	}
 
 	@FunctionalInterface

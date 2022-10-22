@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 public class ItemGroupEventsImpl {
 	private static final Map<Identifier, Event<ItemGroupEvents.ModifyContent>> IDENTIFIER_EVENT_MAP = new HashMap<>();
 
-	public static Event<ItemGroupEvents.ModifyContent> getOrCreateModifyEntriesEvent(Identifier identifier) {
+	public static Event<ItemGroupEvents.ModifyContent> getOrCreateModifyContentEvent(Identifier identifier) {
 		return IDENTIFIER_EVENT_MAP.computeIfAbsent(identifier, (g -> createModifyEvent()));
 	}
 
@@ -42,9 +42,9 @@ public class ItemGroupEventsImpl {
 	}
 
 	private static Event<ItemGroupEvents.ModifyContent> createModifyEvent() {
-		return EventFactory.createArrayBacked(ItemGroupEvents.ModifyContent.class, callbacks -> (featureSet, entries) -> {
+		return EventFactory.createArrayBacked(ItemGroupEvents.ModifyContent.class, callbacks -> (featureSet, content) -> {
 			for (ItemGroupEvents.ModifyContent callback : callbacks) {
-				callback.modifyContent(featureSet, entries);
+				callback.modifyContent(featureSet, content);
 			}
 		});
 	}
