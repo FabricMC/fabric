@@ -32,8 +32,7 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_1761": ["net/fabricmc/fabric/api/itemgroup/v1/IdentifiableItemGroup"],
-      "net/minecraft/class_1761\u0024class_7704": ["net/fabricmc/fabric/api/itemgroup/v1/FabricItemGroupEntries"]
+      "net/minecraft/class_1761": ["net/fabricmc/fabric/api/itemgroup/v1/IdentifiableItemGroup"]
     }
   }
 }
