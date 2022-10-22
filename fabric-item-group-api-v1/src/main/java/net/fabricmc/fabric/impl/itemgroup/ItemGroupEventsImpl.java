@@ -44,7 +44,7 @@ public class ItemGroupEventsImpl {
 	private static Event<ItemGroupEvents.ModifyEntries> createModifyEvent() {
 		return EventFactory.createArrayBacked(ItemGroupEvents.ModifyEntries.class, callbacks -> (featureSet, entries) -> {
 			for (ItemGroupEvents.ModifyEntries callback : callbacks) {
-				callback.modifyItems(featureSet, entries);
+				callback.modifyEntries(featureSet, entries);
 			}
 		});
 	}

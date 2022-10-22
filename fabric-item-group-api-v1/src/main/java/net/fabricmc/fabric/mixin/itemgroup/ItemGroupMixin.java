@@ -16,13 +16,16 @@
 
 package net.fabricmc.fabric.mixin.itemgroup;
 
+import java.util.LinkedList;
+import java.util.Objects;
+
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStackSet;
@@ -31,6 +34,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.itemgroup.v1.IdentifiableItemGroup;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.impl.itemgroup.ItemGroupEventsImpl;
 import net.fabricmc.fabric.impl.itemgroup.MinecraftItemGroups;
@@ -41,13 +45,40 @@ public class ItemGroupMixin implements IdentifiableItemGroup {
 	@Final
 	private int index;
 
-	@Inject(method = "getStacks", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemGroup;addItems(Lnet/minecraft/resource/featuretoggle/FeatureSet;Lnet/minecraft/item/ItemGroup$Entries;)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void getStacks(FeatureSet featureSet, boolean search, CallbackInfoReturnable<ItemStackSet> cir, ItemGroup.EntriesImpl entries) {
+	@Shadow
+	private ItemStackSet displayStacks;
+
+	@Shadow
+	private ItemStackSet searchTabStacks;
+
+	@SuppressWarnings("ConstantConditions")
+	@Inject(method = "getStacks", at = @At(value = "FIELD", target = "Lnet/minecraft/item/ItemGroup;searchTabStacks:Lnet/minecraft/item/ItemStackSet;", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER))
+	public void getStacks(FeatureSet featureSet, boolean search, CallbackInfoReturnable<ItemStackSet> cir) {
+		// Sanity check for the injection point. It should be after these fields are set.
+		Objects.requireNonNull(displayStacks, "displayStacks");
+		Objects.requireNonNull(searchTabStacks, "searchTabStacks");
+
+		// Convert the entries to lists
+		var mutableDisplayStacks = new LinkedList<>(displayStacks);
+		var mutableSearchTabStacks = new LinkedList<>(searchTabStacks);
+		var entries = new FabricItemGroupEntries(featureSet, mutableDisplayStacks, mutableSearchTabStacks);
+
 		final Event<ItemGroupEvents.ModifyEntries> modifyEntriesEvent = ItemGroupEventsImpl.getModifyEntriesEvent(getId());
 
 		if (modifyEntriesEvent != null) {
-			modifyEntriesEvent.invoker().modifyItems(featureSet, entries);
+			modifyEntriesEvent.invoker().modifyEntries(featureSet, entries);
 		}
+
+		// Now trigger the global event
+		ItemGroup self = (ItemGroup) (Object) this;
+		ItemGroupEvents.MODIFY_ENTRIES_ALL.invoker().modifyEntries(self, featureSet, entries);
+
+		// Convert the stacks back to sets after the events had a chance to modify them
+		displayStacks.clear();
+		displayStacks.addAll(mutableDisplayStacks);
+
+		searchTabStacks.clear();
+		searchTabStacks.addAll(mutableSearchTabStacks);
 	}
 
 	@Override

@@ -21,9 +21,24 @@ import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.itemgroup.ItemGroupEventsImpl;
 
 public class ItemGroupEvents {
+	/**
+	 * This event allows the entries of any item group to be modified.
+	 * <p/>
+	 * If you know beforehand which item group you'd like to modify, use {@link #modifyEntriesEvent(ItemGroup)}
+	 * or {@link #modifyEntriesEvent(Identifier)} instead.
+	 * <p/>
+	 * This event is invoked after those two more specific events.
+	 */
+	public static final Event<ModifyEntriesAll> MODIFY_ENTRIES_ALL = EventFactory.createArrayBacked(ModifyEntriesAll.class, callbacks -> (group, featureSet, entries) -> {
+		for (ModifyEntriesAll callback : callbacks) {
+			callback.modifyEntries(group, featureSet, entries);
+		}
+	});
+
 	public static Event<ModifyEntries> modifyEntriesEvent(ItemGroup itemGroup) {
 		return modifyEntriesEvent(itemGroup.getId());
 	}
@@ -34,6 +49,11 @@ public class ItemGroupEvents {
 
 	@FunctionalInterface
 	public interface ModifyEntries {
-		void modifyItems(FeatureSet featureSet, ItemGroup.Entries entries);
+		void modifyEntries(FeatureSet featureSet, FabricItemGroupEntries entries);
+	}
+
+	@FunctionalInterface
+	public interface ModifyEntriesAll {
+		void modifyEntries(ItemGroup group, FeatureSet featureSet, FabricItemGroupEntries entries);
 	}
 }
