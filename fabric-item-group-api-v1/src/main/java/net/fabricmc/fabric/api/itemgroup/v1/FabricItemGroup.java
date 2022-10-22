@@ -38,7 +38,7 @@ public abstract class FabricItemGroup extends ItemGroup implements IdentifiableI
 	}
 
 	@Override
-	public Identifier getId() {
+	public final Identifier getId() {
 		return identifier;
 	}
 }
