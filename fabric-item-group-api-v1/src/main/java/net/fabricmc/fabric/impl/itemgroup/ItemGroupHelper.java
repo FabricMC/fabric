@@ -34,6 +34,12 @@ public final class ItemGroupHelper {
 	}
 
 	public static void appendItemGroup(FabricItemGroup itemGroup) {
+		for (ItemGroup existingGroup : ItemGroups.GROUPS) {
+			if (existingGroup.getId().equals(itemGroup.getId())) {
+				throw new IllegalStateException("Duplicate item group: " + itemGroup.getId());
+			}
+		}
+
 		final int index = ItemGroups.GROUPS.length;
 		final ItemGroup[] itemGroups = Stream.concat(Arrays.stream(ItemGroups.GROUPS), Stream.of(itemGroup))
 				.toArray(ItemGroup[]::new);

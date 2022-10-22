@@ -4,7 +4,9 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "ItemGroupsAccessor",
-    "ItemGroupAccessor"
+    "ItemGroupMixin",
+    "ItemGroupAccessor",
+    "ItemGroupsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
