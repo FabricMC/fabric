@@ -26,12 +26,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.network.ClientCommandSource;
+import net.minecraft.client.network.ClientDynamicRegistryType;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
-import net.minecraft.resource.featuretoggle.FeatureFlags;
+import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.util.registry.CombinedDynamicRegistries;
 
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -46,11 +48,17 @@ abstract class ClientPlayNetworkHandlerMixin {
 	@Final
 	private ClientCommandSource commandSource;
 
+	@Shadow
+	private FeatureSet field_40482;
+
+	@Shadow
+	private CombinedDynamicRegistries<ClientDynamicRegistryType> registryManager;
+
 	@Inject(method = "onGameJoin", at = @At("RETURN"))
 	private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo info) {
 		final CommandDispatcher<FabricClientCommandSource> dispatcher = new CommandDispatcher<>();
 		ClientCommandInternals.setActiveDispatcher(dispatcher);
-		ClientCommandRegistrationCallback.EVENT.invoker().register(dispatcher, new CommandRegistryAccess(packet.registryManager(), FeatureFlags.FEATURE_MANAGER.getFeatureSet()));
+		ClientCommandRegistrationCallback.EVENT.invoker().register(dispatcher, new CommandRegistryAccess(this.registryManager.getCombinedRegistryManager(), this.field_40482));
 		ClientCommandInternals.finalizeInit();
 	}
 
