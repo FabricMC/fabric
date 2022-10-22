@@ -28,7 +28,7 @@ import net.fabricmc.fabric.impl.itemgroup.ItemGroupHelper;
 /**
  * Extend this abstract class to create a new {@link ItemGroup} for a mod.
  *
- * <p>Each new instance of this class is automatically appended to {@link ItemGroups#GROUPS}
+ * <p>Each new instance of this class is automatically appended to {@link ItemGroups#GROUPS}.
  *
  * <p>Example:
  * <pre>{@code

@@ -70,6 +70,7 @@ public class FabricBuiltinRegistriesProvider implements DataProvider {
 		);
 	}
 
+	@Override
 	public void run(DataWriter writer) {
 		DynamicRegistryManager dynamicRegistryManager = BuiltinRegistries.createBuiltinRegistryManager();
 		DynamicOps<JsonElement> dynamicOps = RegistryOps.of(JsonOps.INSTANCE, dynamicRegistryManager);
@@ -107,6 +108,7 @@ public class FabricBuiltinRegistriesProvider implements DataProvider {
 		}
 	}
 
+	@Override
 	public String getName() {
 		return "Built-In Registry Content";
 	}
