@@ -34,7 +34,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.itemgroup.v1.IdentifiableItemGroup;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupContent;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.impl.itemgroup.ItemGroupEventsImpl;
 import net.fabricmc.fabric.impl.itemgroup.MinecraftItemGroups;
@@ -61,24 +61,22 @@ public class ItemGroupMixin implements IdentifiableItemGroup {
 		// Convert the entries to lists
 		var mutableDisplayStacks = new LinkedList<>(displayStacks);
 		var mutableSearchTabStacks = new LinkedList<>(searchTabStacks);
-		var content = new ItemGroupContent(featureSet, mutableDisplayStacks, mutableSearchTabStacks);
+		var entries = new FabricItemGroupEntries(featureSet, mutableDisplayStacks, mutableSearchTabStacks);
 
-		final Event<ItemGroupEvents.ModifyContent> modifyEntriesEvent = ItemGroupEventsImpl.getModifyEntriesEvent(getId());
+		final Event<ItemGroupEvents.ModifyEntries> modifyEntriesEvent = ItemGroupEventsImpl.getModifyEntriesEvent(getId());
 
 		if (modifyEntriesEvent != null) {
-			modifyEntriesEvent.invoker().modifyContent(featureSet, content);
+			modifyEntriesEvent.invoker().modifyEntries(featureSet, entries);
 		}
 
 		// Now trigger the global event
 		ItemGroup self = (ItemGroup) (Object) this;
-		ItemGroupEvents.MODIFY_CONTENT_ALL.invoker().modifyContent(self, featureSet, content);
+		ItemGroupEvents.MODIFY_ENTRIES_ALL.invoker().modifyEntries(self, featureSet, entries);
 
 		// Convert the stacks back to sets after the events had a chance to modify them
-		displayStacks = new ItemStackSet();
 		displayStacks.clear();
 		displayStacks.addAll(mutableDisplayStacks);
 
-		searchTabStacks = new ItemStackSet();
 		searchTabStacks.clear();
 		searchTabStacks.addAll(mutableSearchTabStacks);
 	}

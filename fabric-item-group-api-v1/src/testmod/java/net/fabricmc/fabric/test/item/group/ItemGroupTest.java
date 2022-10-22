@@ -58,7 +58,7 @@ public class ItemGroupTest implements ModInitializer {
 
 		checkAllVanillaGroupsHaveAssignedIds();
 
-		ItemGroupEvents.modifyContent(ItemGroups.BUILDING_BLOCKS).register((featureSet, content) -> {
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register((featureSet, content) -> {
 			content.add(TEST_ITEM);
 
 			content.addBefore(Blocks.OAK_FENCE, Items.DIAMOND, Items.DIAMOND_BLOCK);
@@ -70,7 +70,7 @@ public class ItemGroupTest implements ModInitializer {
 		});
 
 		// Add a differently damaged pickaxe to all groups
-		ItemGroupEvents.MODIFY_CONTENT_ALL.register((group, featureSet, content) -> {
+		ItemGroupEvents.MODIFY_ENTRIES_ALL.register((group, featureSet, content) -> {
 			ItemStack minDmgPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
 			minDmgPickaxe.setDamage(1);
 			content.prepend(minDmgPickaxe);

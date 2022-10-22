@@ -30,13 +30,41 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 
 /**
- * This class allows the content of {@link ItemGroup item groups} to be modified by the events in {@link ItemGroupEvents}.
+ * This class allows the entries of {@link ItemGroup item groups} to be modified by the events in {@link ItemGroupEvents}.
  */
 @ApiStatus.Experimental
-public record ItemGroupContent(FeatureSet featureSet, List<ItemStack> displayStacks, List<ItemStack> searchTabStacks)
-		implements ItemGroup.Entries {
+public class FabricItemGroupEntries implements ItemGroup.Entries {
+	private final FeatureSet featureSet;
+	private final List<ItemStack> displayStacks;
+	private final List<ItemStack> searchTabStacks;
+
 	@ApiStatus.Internal
-	public ItemGroupContent {
+	public FabricItemGroupEntries(FeatureSet featureSet, List<ItemStack> displayStacks, List<ItemStack> searchTabStacks) {
+		this.featureSet = featureSet;
+		this.displayStacks = displayStacks;
+		this.searchTabStacks = searchTabStacks;
+	}
+
+	/**
+	 * @return The currently enabled feature set.
+	 */
+	public FeatureSet getFeatureSet() {
+		return featureSet;
+	}
+
+	/**
+	 * @return The stacks that will be shown in the tab in the creative mode inventory. This list can be modified.
+	 */
+	public List<ItemStack> getDisplayStacks() {
+		return displayStacks;
+	}
+
+	/**
+	 * @return The stacks that will be searched by the creative mode inventory search. This list can be
+	 * modified.
+	 */
+	public List<ItemStack> getSearchTabStacks() {
+		return searchTabStacks;
 	}
 
 	/**
