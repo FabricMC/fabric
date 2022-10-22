@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.item.group;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -28,8 +30,8 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.impl.itemgroup.MinecraftItemGroups;
 
 public class ItemGroupTest implements ModInitializer {
 	private static final String MOD_ID = "fabric-item-group-api-v1-testmod";
@@ -54,18 +56,39 @@ public class ItemGroupTest implements ModInitializer {
 	public void onInitialize() {
 		TEST_ITEM = Registry.register(Registry.ITEM, new Identifier("fabric-item-groups-v0-testmod", "item_test_group"), new Item(new Item.Settings()));
 
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register((featureSet, entries) -> {
-			entries.add(TEST_ITEM);
+		checkAllVanillaGroupsHaveAssignedIds();
 
-			// Cast only required in test mod
-			FabricItemGroupEntries fabricEntries = (FabricItemGroupEntries) entries;
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register((featureSet, content) -> {
+			content.add(TEST_ITEM);
 
-			fabricEntries.addBefore(Blocks.OAK_FENCE, Items.DIAMOND);
-			fabricEntries.addAfter(Blocks.OAK_DOOR, Items.EMERALD);
+			content.addBefore(Blocks.OAK_FENCE, Items.DIAMOND, Items.DIAMOND_BLOCK);
+			content.addAfter(Blocks.OAK_DOOR, Items.EMERALD, Items.EMERALD_BLOCK);
 
 			// Test adding when the existing entry does not exist.
-			fabricEntries.addBefore(Blocks.BEDROCK, Items.GOLD_INGOT);
-			fabricEntries.addAfter(Blocks.BEDROCK, Items.IRON_INGOT);
+			content.addBefore(Blocks.BEDROCK, Items.GOLD_INGOT, Items.GOLD_BLOCK);
+			content.addAfter(Blocks.BEDROCK, Items.IRON_INGOT, Items.IRON_BLOCK);
 		});
+
+		// Add a differently damaged pickaxe to all groups
+		ItemGroupEvents.MODIFY_CONTENT_ALL.register((group, featureSet, content) -> {
+			ItemStack minDmgPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
+			minDmgPickaxe.setDamage(1);
+			content.prepend(minDmgPickaxe);
+
+			ItemStack maxDmgPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
+			maxDmgPickaxe.setDamage(maxDmgPickaxe.getMaxDamage() - 1);
+			content.add(maxDmgPickaxe);
+		});
+	}
+
+	private static void checkAllVanillaGroupsHaveAssignedIds() {
+		for (ItemGroup group : ItemGroups.GROUPS) {
+			if (group instanceof FabricItemGroup) {
+				continue; // Skip groups added by test mods
+			}
+
+			Preconditions.checkArgument(MinecraftItemGroups.MAP.containsKey(group),
+					"Missing ID for Vanilla ItemGroup %s. Assign one in MinecraftItemGroups.", group);
+		}
 	}
 }

@@ -30,21 +30,21 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
 @ApiStatus.Internal
 public class ItemGroupEventsImpl {
-	private static final Map<Identifier, Event<ItemGroupEvents.ModifyEntries>> IDENTIFIER_EVENT_MAP = new HashMap<>();
+	private static final Map<Identifier, Event<ItemGroupEvents.ModifyContent>> IDENTIFIER_EVENT_MAP = new HashMap<>();
 
-	public static Event<ItemGroupEvents.ModifyEntries> getOrCreateModifyEntriesEvent(Identifier identifier) {
+	public static Event<ItemGroupEvents.ModifyContent> getOrCreateModifyEntriesEvent(Identifier identifier) {
 		return IDENTIFIER_EVENT_MAP.computeIfAbsent(identifier, (g -> createModifyEvent()));
 	}
 
 	@Nullable
-	public static Event<ItemGroupEvents.ModifyEntries> getModifyEntriesEvent(Identifier identifier) {
+	public static Event<ItemGroupEvents.ModifyContent> getModifyEntriesEvent(Identifier identifier) {
 		return IDENTIFIER_EVENT_MAP.get(identifier);
 	}
 
-	private static Event<ItemGroupEvents.ModifyEntries> createModifyEvent() {
-		return EventFactory.createArrayBacked(ItemGroupEvents.ModifyEntries.class, callbacks -> (featureSet, entries) -> {
-			for (ItemGroupEvents.ModifyEntries callback : callbacks) {
-				callback.modifyItems(featureSet, entries);
+	private static Event<ItemGroupEvents.ModifyContent> createModifyEvent() {
+		return EventFactory.createArrayBacked(ItemGroupEvents.ModifyContent.class, callbacks -> (featureSet, entries) -> {
+			for (ItemGroupEvents.ModifyContent callback : callbacks) {
+				callback.modifyContent(featureSet, entries);
 			}
 		});
 	}

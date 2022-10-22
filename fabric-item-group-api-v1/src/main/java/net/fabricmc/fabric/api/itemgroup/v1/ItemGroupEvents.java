@@ -21,19 +21,39 @@ import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.itemgroup.ItemGroupEventsImpl;
 
 public class ItemGroupEvents {
-	public static Event<ModifyEntries> modifyEntriesEvent(ItemGroup itemGroup) {
+	/**
+	 * This event allows the content of any item group to be modified.
+	 * <p/>
+	 * If you know beforehand which item group you'd like to modify, use {@link #modifyEntriesEvent(ItemGroup)}
+	 * or {@link #modifyEntriesEvent(Identifier)} instead.
+	 * <p/>
+	 * This event is invoked after those two more specific events.
+	 */
+	public static final Event<ModifyContentAll> MODIFY_CONTENT_ALL = EventFactory.createArrayBacked(ModifyContentAll.class, callbacks -> (group, featureSet, content) -> {
+		for (ModifyContentAll callback : callbacks) {
+			callback.modifyContent(group, featureSet, content);
+		}
+	});
+
+	public static Event<ModifyContent> modifyEntriesEvent(ItemGroup itemGroup) {
 		return modifyEntriesEvent(itemGroup.getId());
 	}
 
-	public static Event<ModifyEntries> modifyEntriesEvent(Identifier identifier) {
+	public static Event<ModifyContent> modifyEntriesEvent(Identifier identifier) {
 		return ItemGroupEventsImpl.getOrCreateModifyEntriesEvent(identifier);
 	}
 
 	@FunctionalInterface
-	public interface ModifyEntries {
-		void modifyItems(FeatureSet featureSet, ItemGroup.Entries entries);
+	public interface ModifyContent {
+		void modifyContent(FeatureSet featureSet, ItemGroupContent content);
+	}
+
+	@FunctionalInterface
+	public interface ModifyContentAll {
+		void modifyContent(ItemGroup group, FeatureSet featureSet, ItemGroupContent content);
 	}
 }
