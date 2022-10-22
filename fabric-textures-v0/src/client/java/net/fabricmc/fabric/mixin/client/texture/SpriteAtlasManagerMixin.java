@@ -27,7 +27,6 @@ import net.minecraft.client.render.model.SpriteAtlasManager;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.impl.client.texture.SpriteRegistryCallbackHolder;
 
 /**
@@ -43,14 +42,15 @@ public class SpriteAtlasManagerMixin {
 		for (Map.Entry<Identifier, SpriteAtlasManager.class_7773> entry : atlases.entrySet()) {
 			SpriteAtlasManager.class_7773 resourceFinder = entry.getValue();
 
-			ClientSpriteRegistryCallback eventInvoker = SpriteRegistryCallbackHolder.eventLocal(entry.getKey()).invoker();
-
 			entry.setValue(resourceManager -> {
 				// First run vanilla logic
 				Map<Identifier, Resource> resources = resourceFinder.apply(resourceManager);
 
 				// Then invoke event
-				eventInvoker.registerSprites(resourceManager, resources);
+				SpriteRegistryCallbackHolder
+						.eventLocal(entry.getKey())
+						.invoker()
+						.registerSprites(resourceManager, resources);
 
 				return resources;
 			});
