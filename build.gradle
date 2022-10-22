@@ -323,7 +323,7 @@ javadoc {
 
 	classpath = files(sourceSets.main.compileClasspath, sourceSets.client.compileClasspath)
 	include("**/api/**")
-	failOnError false
+	failOnError true
 }
 
 task javadocJar(type: Jar) {
