@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 
 public class CustomizedFluidRenderer extends SimpleFluidRenderHandler {
 	public CustomizedFluidRenderer(Identifier overlayTexture) {
-		super(null, null, overlayTexture);
+		super(overlayTexture, overlayTexture, overlayTexture);
 	}
 
 	@Override

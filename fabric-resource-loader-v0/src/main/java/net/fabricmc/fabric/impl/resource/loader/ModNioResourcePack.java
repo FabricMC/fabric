@@ -48,7 +48,6 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
 import net.minecraft.util.FileNameUtil;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.InvalidIdentifierException;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
@@ -228,17 +227,16 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 			if (!exists(searchPath)) continue;
 
 			try {
-				Files.walkFileTree(searchPath, new SimpleFileVisitor<Path>() {
+				Files.walkFileTree(searchPath, new SimpleFileVisitor<>() {
 					@Override
-					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-						String fileName = file.getFileName().toString();
-						if (fileName.endsWith(".mcmeta")) return FileVisitResult.CONTINUE;
+					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+						String filename = nsPath.relativize(file).toString().replace(separator, "/");
+						Identifier identifier = Identifier.of(namespace, filename);
 
-						try {
-							Identifier id = new Identifier(namespace, nsPath.relativize(file).toString().replace(separator, "/"));
-							visitor.accept(id, () -> Files.newInputStream(file));
-						} catch (InvalidIdentifierException e) {
-							LOGGER.error(e.getMessage());
+						if (identifier == null) {
+							LOGGER.error("Invalid path in mod resource-pack {}: {}:{}, ignoring", id, namespace, filename);
+						} else {
+							visitor.accept(identifier, InputSupplier.create(file));
 						}
 
 						return FileVisitResult.CONTINUE;

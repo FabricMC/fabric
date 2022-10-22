@@ -17,56 +17,34 @@
 package net.fabricmc.fabric.api.event.client;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.class_7766;
+import net.minecraft.resource.Resource;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.client.texture.SpriteRegistryCallbackHolder;
 
-// TODO 22w42a fix me
 public interface ClientSpriteRegistryCallback {
-	void registerSprites(SpriteAtlasTexture atlasTexture, Registry registry);
+	/**
+	 * Add sprites to the map of sprites that will be baked into the sprite atlas.
+	 *
+	 * @see class_7766#method_45834 For adding textures from a folder recursively.
+	 * @see class_7766#method_45830 For adding a single texture.
+	 */
+	void registerSprites(ResourceManager resourceManager, Map<Identifier, Resource> sprites);
 
 	/**
 	 * Get an event instance for a given atlas path.
 	 *
 	 * @param atlasId The atlas texture ID you want to register to.
 	 * @return The event for a given atlas path.
-	 *
 	 * @since 0.1.1
+	 *
+	 * @see net.minecraft.client.texture.SpriteAtlasTexture#BLOCK_ATLAS_TEXTURE
 	 */
 	static Event<ClientSpriteRegistryCallback> event(Identifier atlasId) {
 		return SpriteRegistryCallbackHolder.eventLocal(atlasId);
-	}
-
-	class Registry {
-		private final Map<Identifier, Sprite> spriteMap;
-		private final Consumer<Identifier> defaultSpriteRegister;
-
-		public Registry(Map<Identifier, Sprite> spriteMap, Consumer<Identifier> defaultSpriteRegister) {
-			this.spriteMap = spriteMap;
-			this.defaultSpriteRegister = defaultSpriteRegister;
-		}
-
-		/**
-		 * Register a sprite to be loaded using the default implementation.
-		 *
-		 * @param id The sprite identifier.
-		 */
-		public void register(Identifier id) {
-			this.defaultSpriteRegister.accept(id);
-		}
-
-		/**
-		 * Register a custom sprite to be added and loaded.
-		 *
-		 * @param sprite The sprite to be added.
-		 */
-		public void register(Sprite sprite) {
-			spriteMap.put(sprite.method_45852(), sprite);
-		}
 	}
 }
