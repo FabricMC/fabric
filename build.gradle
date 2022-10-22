@@ -286,6 +286,11 @@ remapTestmodJar {
 apply from: "gradle/module-validation.gradle"
 apply from: "gradle/module-versioning.gradle"
 
+loom {
+	// Required as the item-group API uses access widened classes in its API, without this the javadoc generation fails.
+	accessWidenerPath = file("fabric-item-group-api-v1/src/main/resources/fabric-item-group-api-v1.accesswidener")
+}
+
 javadoc {
 	options {
 		source = "17"
