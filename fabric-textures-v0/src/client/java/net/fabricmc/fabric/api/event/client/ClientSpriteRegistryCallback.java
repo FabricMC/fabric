@@ -41,6 +41,8 @@ public interface ClientSpriteRegistryCallback {
 	 * @param atlasId The atlas texture ID you want to register to.
 	 * @return The event for a given atlas path.
 	 * @since 0.1.1
+	 *
+	 * @see net.minecraft.client.texture.SpriteAtlasTexture#BLOCK_ATLAS_TEXTURE
 	 */
 	static Event<ClientSpriteRegistryCallback> event(Identifier atlasId) {
 		return SpriteRegistryCallbackHolder.eventLocal(atlasId);
