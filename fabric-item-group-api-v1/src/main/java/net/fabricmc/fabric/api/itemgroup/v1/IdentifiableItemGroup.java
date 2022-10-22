@@ -20,11 +20,11 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 
 /**
- * This interface is automatically implemented on all {@link ItemGroup} via Mixin and interface injection.
+ * This interface is automatically injected to {@link ItemGroup}.
  */
 public interface IdentifiableItemGroup {
 	/**
-	 * @return The unique identifier of this {@link ItemGroup}.
+	 * {@return the unique identifier of this {@link ItemGroup}}
 	 */
 	default Identifier getId() {
 		throw new AssertionError("Not implemented");

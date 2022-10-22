@@ -24,7 +24,7 @@ import net.minecraft.item.ItemGroup;
 
 @Mixin(ItemGroup.class)
 public interface ItemGroupAccessor {
-	@Accessor("index")
+	@Accessor
 	@Mutable
 	void setIndex(int index);
 }

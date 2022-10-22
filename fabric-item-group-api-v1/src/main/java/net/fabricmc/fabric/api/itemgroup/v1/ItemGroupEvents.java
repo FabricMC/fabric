@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.itemgroup.ItemGroupEventsImpl;
 
-public class ItemGroupEvents {
+public final class ItemGroupEvents {
 	/**
 	 * This event allows the entries of any item group to be modified.
 	 * <p/>
@@ -43,8 +43,8 @@ public class ItemGroupEvents {
 		return modifyEntriesEvent(itemGroup.getId());
 	}
 
-	public static Event<ModifyEntries> modifyEntriesEvent(Identifier identifier) {
-		return ItemGroupEventsImpl.getOrCreateModifyEntriesEvent(identifier);
+	public static Event<ModifyEntries> modifyEntriesEvent(Identifier groupId) {
+		return ItemGroupEventsImpl.getOrCreateModifyEntriesEvent(groupId);
 	}
 
 	@FunctionalInterface

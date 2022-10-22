@@ -34,7 +34,7 @@ public interface ItemGroupsAccessor {
 		throw new AssertionError();
 	}
 
-	@Invoker("asArray")
+	@Invoker
 	static ItemGroup[] invokeAsArray(ItemGroup[] groups) {
 		throw new AssertionError();
 	}

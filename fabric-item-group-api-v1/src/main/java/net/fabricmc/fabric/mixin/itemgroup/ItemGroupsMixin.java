@@ -25,13 +25,13 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 
 @Mixin(ItemGroups.class)
-public class ItemGroupsMixin {
+abstract class ItemGroupsMixin {
 	@Inject(method = "asArray", at = @At("HEAD"))
 	private static void asArray(ItemGroup[] groups, CallbackInfoReturnable<ItemGroup[]> cir) {
-		// Ensure that all item groups have a none null id.
+		// Ensure that all item groups have a nonnull id.
 		for (ItemGroup group : groups) {
 			if (group.getId() == null) {
-				throw new NullPointerException("Item group %s has a null id".formatted(group.getClass()));
+				throw new NullPointerException("Item group %s has a null id".formatted(group.getClass().getName()));
 			}
 		}
 	}

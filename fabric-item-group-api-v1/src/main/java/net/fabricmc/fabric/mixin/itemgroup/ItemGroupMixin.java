@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.itemgroup.ItemGroupEventsImpl;
 import net.fabricmc.fabric.impl.itemgroup.MinecraftItemGroups;
 
 @Mixin(ItemGroup.class)
-public class ItemGroupMixin implements IdentifiableItemGroup {
+abstract class ItemGroupMixin implements IdentifiableItemGroup {
 	@Shadow
 	@Final
 	private int index;
