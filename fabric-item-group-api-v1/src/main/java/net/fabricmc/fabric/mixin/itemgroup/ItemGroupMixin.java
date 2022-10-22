@@ -16,22 +16,51 @@
 
 package net.fabricmc.fabric.mixin.itemgroup;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStackSet;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.itemgroup.v1.IdentifiableItemGroup;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.impl.itemgroup.MinecraftItemGroups;
 
 @Mixin(ItemGroup.class)
 public class ItemGroupMixin implements IdentifiableItemGroup {
+	@Shadow
+	@Final
+	private int index;
+
+	@Unique
+	private final Event<ItemGroupEvents.ModifyEntries> modifyEntriesEvent = EventFactory.createArrayBacked(ItemGroupEvents.ModifyEntries.class, callbacks -> (entries) -> {
+		for (ItemGroupEvents.ModifyEntries callback : callbacks) {
+			callback.modifyItems(entries);
+		}
+	});
+
+	@Inject(method = "getStacks", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemGroup;addItems(Lnet/minecraft/resource/featuretoggle/FeatureSet;Lnet/minecraft/item/ItemGroup$Entries;)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
+	public void getStacks(FeatureSet featureSet, boolean search, CallbackInfoReturnable<ItemStackSet> cir, ItemGroup.EntriesImpl entries) {
+		modifyEntriesEvent.invoker().modifyItems(entries);
+	}
+
 	@Override
 	public Identifier getId() {
 		final Identifier identifier = MinecraftItemGroups.MAP.get((ItemGroup) (Object) this);
 
 		if (identifier == null) {
-			throw new NullPointerException("Unable to find identifier for " + this.getClass());
+			// Fallback when no ID is found for this ItemGroup.
+			return new Identifier("minecraft", "unknown_index_" + index);
 		}
 
 		return identifier;

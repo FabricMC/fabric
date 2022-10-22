@@ -25,19 +25,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.class_7780;
+import net.minecraft.util.registry.CombinedDynamicRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 
-@Mixin(class_7780.class)
-public class class_7780Mixin {
+@Mixin(CombinedDynamicRegistries.class)
+public class CombinedDynamicRegistriesMixin {
 	@Shadow
 	@Final
-	private DynamicRegistryManager.Immutable field_40583;
+	private DynamicRegistryManager.Immutable combinedRegistryManager;
 
 	@Inject(method = "<init>(Ljava/util/List;Ljava/util/List;)V", at = @At("RETURN"))
 	private void init(List list, List list2, CallbackInfo ci) {
-		DynamicRegistrySetupCallback.EVENT.invoker().onRegistrySetup(this.field_40583);
+		DynamicRegistrySetupCallback.EVENT.invoker().onRegistrySetup(this.combinedRegistryManager);
 	}
 }

@@ -160,7 +160,7 @@ public abstract class SimpleRegistryMixin<T> extends Registry<T> implements Rema
 		// Unfrozen registries cannot be interacted with otherwise, because the references would throw when
 		// trying to access their values.
 		if (info.getReturnValue() instanceof RegistryEntry.Reference<T> reference) {
-			reference.method_45918(entry);
+			reference.setValue(entry);
 		}
 
 		onChange(registryKey);

@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "ItemGroupsAccessor",
+    "ItemGroupEntriesImplMixin",
+    "ItemGroupEntriesMixin",
     "ItemGroupMixin",
     "ItemGroupAccessor",
     "ItemGroupsMixin"

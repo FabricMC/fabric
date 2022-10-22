@@ -30,7 +30,6 @@ import com.mojang.serialization.JsonOps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.class_7655;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
@@ -40,6 +39,7 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.RegistryLoader;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
@@ -71,12 +71,12 @@ public class FabricBuiltinRegistriesProvider implements DataProvider {
 	}
 
 	public void run(DataWriter writer) {
-		DynamicRegistryManager dynamicRegistryManager = BuiltinRegistries.method_45968();
+		DynamicRegistryManager dynamicRegistryManager = BuiltinRegistries.createBuiltinRegistryManager();
 		DynamicOps<JsonElement> dynamicOps = RegistryOps.of(JsonOps.INSTANCE, dynamicRegistryManager);
-		class_7655.field_39968.forEach((info) -> this.writeRegistryEntries(writer, dynamicRegistryManager, dynamicOps, info));
+		RegistryLoader.DYNAMIC_REGISTRIES.forEach((info) -> this.writeRegistryEntries(writer, dynamicRegistryManager, dynamicOps, info));
 	}
 
-	private <T> void writeRegistryEntries(DataWriter writer, DynamicRegistryManager registryManager, DynamicOps<JsonElement> ops, class_7655.class_7657<T> registry) {
+	private <T> void writeRegistryEntries(DataWriter writer, DynamicRegistryManager registryManager, DynamicOps<JsonElement> ops, RegistryLoader.Entry<T> registry) {
 		RegistryKey<? extends Registry<T>> registryKey = registry.key();
 		Registry<T> registry2 = registryManager.get(registryKey);
 		DataOutput.PathResolver pathResolver = this.output.getResolver(DataOutput.OutputType.DATA_PACK, registryKey.getValue().getPath());

@@ -39,8 +39,8 @@ public class ItemGroupTest implements ModInitializer {
 		}
 
 		@Override
-		protected void addItems(FeatureSet featureSet, StackAdder adder) {
-			adder.addAll(Registry.ITEM.stream()
+		protected void addItems(FeatureSet featureSet, Entries entries) {
+			entries.addAll(Registry.ITEM.stream()
 					.map(ItemStack::new)
 					.toList());
 		}
@@ -60,8 +60,8 @@ public class ItemGroupTest implements ModInitializer {
 				}
 
 				@Override
-				protected void addItems(FeatureSet featureSet, StackAdder adder) {
-					adder.add(new ItemStack(TEST_ITEM));
+				protected void addItems(FeatureSet featureSet, Entries entries) {
+					entries.add(new ItemStack(TEST_ITEM));
 				}
 			};
 		}

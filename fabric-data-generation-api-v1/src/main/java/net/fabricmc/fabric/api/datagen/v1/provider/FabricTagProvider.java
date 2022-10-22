@@ -22,7 +22,6 @@ import java.util.function.Function;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.class_7655;
 import net.minecraft.data.server.tag.AbstractTagProvider;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
@@ -39,6 +38,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.RegistryLoader;
 import net.minecraft.world.event.GameEvent;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -193,8 +193,8 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 */
 		protected DynamicRegistryTagProvider(FabricDataGenerator dataGenerator, RegistryKey<? extends Registry<T>> registryKey) {
 			super(dataGenerator, FabricDataGenHelper.getFakeDynamicRegistry(registryKey));
-			if (class_7655.field_39968.stream().noneMatch(o -> o.key() == registryKey)
-					&& class_7655.field_39969.stream().noneMatch(o -> o.key() == registryKey)) {
+			if (RegistryLoader.DYNAMIC_REGISTRIES.stream().noneMatch(o -> o.key() == registryKey)
+					&& RegistryLoader.DIMENSION_REGISTRIES.stream().noneMatch(o -> o.key() == registryKey)) {
 				throw new IllegalArgumentException("Only dynamic registries are supported in this tag provider.");
 			}
 		}

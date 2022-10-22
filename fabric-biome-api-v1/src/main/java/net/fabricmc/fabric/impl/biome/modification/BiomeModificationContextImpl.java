@@ -331,7 +331,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		if (entry == null) {
 			// Entry is missing. Check if it exists in the built-in registries and warn modders
 			// about the worldgen changing to JSON-only.
-			DynamicRegistryManager.Immutable builtInAccess = BuiltinRegistries.method_45968();
+			DynamicRegistryManager.Immutable builtInAccess = BuiltinRegistries.createBuiltinRegistryManager();
 			Registry<T> builtInRegistry = builtInAccess.get(registry.getKey());
 
 			if (builtInRegistry.contains(key)) {

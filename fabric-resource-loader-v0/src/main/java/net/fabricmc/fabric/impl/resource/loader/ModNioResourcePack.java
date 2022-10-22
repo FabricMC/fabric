@@ -46,7 +46,7 @@ import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
-import net.minecraft.util.FileNameUtil;
+import net.minecraft.util.PathUtil;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
@@ -202,7 +202,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	@Nullable
 	@Override
 	public InputSupplier<InputStream> openRoot(String... pathSegments) {
-		FileNameUtil.isPathValid(pathSegments);
+		PathUtil.validatePath(pathSegments);
 
 		return this.openFile(String.join("/", pathSegments));
 	}

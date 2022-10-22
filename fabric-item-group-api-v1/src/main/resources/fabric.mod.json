@@ -22,16 +22,18 @@
   },
   "description": "An API for adding custom item groups.",
   "mixins": [
-    "fabric-item-groups-v1.mixins.json",
+    "fabric-item-group-api-v1.mixins.json",
     {
       "config": "fabric-item-groups-v1.client.mixins.json",
       "environment": "client"
     }
   ],
+  "accessWidener": "fabric-item-group-api-v1.accesswidener",
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_1761": ["net/fabricmc/fabric/api/itemgroup/v1/IdentifiableItemGroup"]
+      "net/minecraft/class_1761": ["net/fabricmc/fabric/api/itemgroup/v1/IdentifiableItemGroup"],
+      "net/minecraft/class_1761\\u0024class_7704": ["net/fabricmc/fabric/api/itemgroup/v1/FabricItemGroupEntries"]
     }
   }
 }
