@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.itemgroup;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.spongepowered.asm.mixin.Final;
@@ -122,14 +124,17 @@ public abstract class ItemGroupEntriesImplMixin implements FabricItemGroupEntrie
 
 	@Unique
 	private void addAt(ItemStack at, ItemStack stack, ItemStackSet set) {
-		final ItemStackSet tempSet = new ItemStackSet();
+		List<ItemStack> list = new LinkedList<>(set);
+		int i = list.indexOf(at);
 
-		tempSet.addAll(set.headSet(at));
-		tempSet.add(stack);
-		tempSet.addAll(set.tailSet(at));
+		if (i < 0) {
+			throw new IllegalStateException();
+		}
+
+		list.add(i, stack);
 
 		set.clear();
-		set.addAll(tempSet);
+		set.addAll(list);
 	}
 
 	@Unique

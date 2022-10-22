@@ -19,7 +19,6 @@ package net.fabricmc.fabric.mixin.itemgroup;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -31,9 +30,9 @@ import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.itemgroup.v1.IdentifiableItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.impl.itemgroup.ItemGroupEventsImpl;
 import net.fabricmc.fabric.impl.itemgroup.MinecraftItemGroups;
 
 @Mixin(ItemGroup.class)
@@ -42,16 +41,13 @@ public class ItemGroupMixin implements IdentifiableItemGroup {
 	@Final
 	private int index;
 
-	@Unique
-	private final Event<ItemGroupEvents.ModifyEntries> modifyEntriesEvent = EventFactory.createArrayBacked(ItemGroupEvents.ModifyEntries.class, callbacks -> (entries) -> {
-		for (ItemGroupEvents.ModifyEntries callback : callbacks) {
-			callback.modifyItems(entries);
-		}
-	});
-
 	@Inject(method = "getStacks", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemGroup;addItems(Lnet/minecraft/resource/featuretoggle/FeatureSet;Lnet/minecraft/item/ItemGroup$Entries;)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void getStacks(FeatureSet featureSet, boolean search, CallbackInfoReturnable<ItemStackSet> cir, ItemGroup.EntriesImpl entries) {
-		modifyEntriesEvent.invoker().modifyItems(entries);
+		final Event<ItemGroupEvents.ModifyEntries> modifyEntriesEvent = ItemGroupEventsImpl.getModifyEntriesEvent(getId());
+
+		if (modifyEntriesEvent != null) {
+			modifyEntriesEvent.invoker().modifyItems(featureSet, entries);
+		}
 	}
 
 	@Override
@@ -60,7 +56,7 @@ public class ItemGroupMixin implements IdentifiableItemGroup {
 
 		if (identifier == null) {
 			// Fallback when no ID is found for this ItemGroup.
-			return new Identifier("minecraft", "unknown_index_" + index);
+			return new Identifier("minecraft", "unidentified_" + index);
 		}
 
 		return identifier;

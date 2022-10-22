@@ -38,7 +38,7 @@ public interface FabricItemGroupEntries {
 	}
 
 	default void addBefore(ItemConvertible item, ItemStack newStack) {
-		addBefore(test -> test.getItem() == item, newStack, ItemGroup.StackVisibility.PARENT_AND_SEARCH_TABS);
+		addBefore(test -> test.getItem() == item.asItem(), newStack, ItemGroup.StackVisibility.PARENT_AND_SEARCH_TABS);
 	}
 
 	default void addBefore(ItemStack stack, ItemStack newStack) {
@@ -65,7 +65,7 @@ public interface FabricItemGroupEntries {
 	}
 
 	default void addAfter(ItemConvertible item, ItemStack newStack) {
-		addAfter(test -> test.getItem() == item, newStack, ItemGroup.StackVisibility.PARENT_AND_SEARCH_TABS);
+		addAfter(test -> test.getItem() == item.asItem(), newStack, ItemGroup.StackVisibility.PARENT_AND_SEARCH_TABS);
 	}
 
 	default void addAfter(ItemStack stack, ItemStack newStack) {

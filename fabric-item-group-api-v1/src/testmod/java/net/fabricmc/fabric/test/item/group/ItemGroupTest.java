@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.test.item.group;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.resource.featuretoggle.FeatureSet;
@@ -26,6 +28,8 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
 public class ItemGroupTest implements ModInitializer {
 	private static final String MOD_ID = "fabric-item-group-api-v1-testmod";
@@ -50,20 +54,18 @@ public class ItemGroupTest implements ModInitializer {
 	public void onInitialize() {
 		TEST_ITEM = Registry.register(Registry.ITEM, new Identifier("fabric-item-groups-v0-testmod", "item_test_group"), new Item(new Item.Settings()));
 
-		// Exactly two pages of item groups
-		for (int i = 3; i < 10; i++) {
-			Item iconItem = Registry.ITEM.get(i);
-			new FabricItemGroup(new Identifier(MOD_ID, "test_group_" + i)) {
-				@Override
-				public ItemStack createIcon() {
-					return new ItemStack(iconItem);
-				}
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register((featureSet, entries) -> {
+			entries.add(TEST_ITEM);
 
-				@Override
-				protected void addItems(FeatureSet featureSet, Entries entries) {
-					entries.add(new ItemStack(TEST_ITEM));
-				}
-			};
-		}
+			// Cast only required in test mod
+			FabricItemGroupEntries fabricEntries = (FabricItemGroupEntries) entries;
+
+			fabricEntries.addBefore(Blocks.OAK_FENCE, Items.DIAMOND);
+			fabricEntries.addAfter(Blocks.OAK_DOOR, Items.EMERALD);
+
+			// Test adding when the existing entry does not exist.
+			fabricEntries.addBefore(Blocks.BEDROCK, Items.GOLD_INGOT);
+			fabricEntries.addAfter(Blocks.BEDROCK, Items.IRON_INGOT);
+		});
 	}
 }

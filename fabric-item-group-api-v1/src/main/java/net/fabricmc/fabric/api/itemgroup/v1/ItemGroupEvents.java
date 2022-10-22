@@ -17,21 +17,23 @@
 package net.fabricmc.fabric.api.itemgroup.v1;
 
 import net.minecraft.item.ItemGroup;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.impl.itemgroup.ItemGroupEventsImpl;
 
 public class ItemGroupEvents {
 	public static Event<ModifyEntries> modifyEntriesEvent(ItemGroup itemGroup) {
-		return null;
+		return modifyEntriesEvent(itemGroup.getId());
 	}
 
 	public static Event<ModifyEntries> modifyEntriesEvent(Identifier identifier) {
-		return null;
+		return ItemGroupEventsImpl.getOrCreateModifyEntriesEvent(identifier);
 	}
 
 	@FunctionalInterface
 	public interface ModifyEntries {
-		void modifyItems(ItemGroup.Entries entries);
+		void modifyItems(FeatureSet featureSet, ItemGroup.Entries entries);
 	}
 }
