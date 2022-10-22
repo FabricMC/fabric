@@ -224,7 +224,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	/**
 	 * Adds stacks after the last group entry matching a predicate, or at the end, if no entries match.
 	 *
-	 * @param afterLast  Add <code>newStacks</code> after the last group entry matching this predicate.
+	 * @param afterLast  Add {@code newStacks} after the last group entry matching this predicate.
 	 * @param newStacks  The stacks to add. Only {@link #isEnabled(ItemStack) enabled} stacks will be added.
 	 * @param visibility Determines whether the stack will be shown in the tab itself, returned
 	 *                   for searches, or both.
