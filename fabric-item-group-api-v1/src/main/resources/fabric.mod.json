@@ -24,7 +24,7 @@
   "mixins": [
     "fabric-item-group-api-v1.mixins.json",
     {
-      "config": "fabric-item-groups-v1.client.mixins.json",
+      "config": "fabric-item-group-api-v1.client.mixins.json",
       "environment": "client"
     }
   ],

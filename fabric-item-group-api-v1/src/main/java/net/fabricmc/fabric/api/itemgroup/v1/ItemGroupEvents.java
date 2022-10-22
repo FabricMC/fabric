@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.itemgroup.v1;
 
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 
@@ -24,7 +25,15 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.itemgroup.ItemGroupEventsImpl;
 
+/**
+ * Holds events related to {@link ItemGroups}.
+ *
+ * @see FabricItemGroup
+ */
 public final class ItemGroupEvents {
+	private ItemGroupEvents() {
+	}
+
 	/**
 	 * This event allows the entries of any item group to be modified.
 	 * <p/>

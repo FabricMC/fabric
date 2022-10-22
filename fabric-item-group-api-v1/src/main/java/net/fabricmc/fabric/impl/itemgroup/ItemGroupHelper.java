@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.impl.itemgroup;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
-
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.item.ItemGroup;
@@ -41,8 +39,7 @@ public final class ItemGroupHelper {
 		}
 
 		final int index = ItemGroups.GROUPS.length;
-		final ItemGroup[] itemGroups = Stream.concat(Arrays.stream(ItemGroups.GROUPS), Stream.of(itemGroup))
-				.toArray(ItemGroup[]::new);
+		final ItemGroup[] itemGroups = ArrayUtils.add(ItemGroups.GROUPS, itemGroup);
 
 		((ItemGroupAccessor) itemGroup).setIndex(index);
 		ItemGroupsAccessor.setGroups(ItemGroupsAccessor.invokeAsArray(itemGroups));

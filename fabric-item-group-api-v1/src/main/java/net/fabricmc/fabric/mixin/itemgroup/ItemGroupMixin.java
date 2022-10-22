@@ -83,7 +83,7 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup {
 
 	@Override
 	public Identifier getId() {
-		final Identifier identifier = MinecraftItemGroups.MAP.get((ItemGroup) (Object) this);
+		final Identifier identifier = MinecraftItemGroups.GROUP_ID_MAP.get((ItemGroup) (Object) this);
 
 		if (identifier == null) {
 			// Fallback when no ID is found for this ItemGroup.

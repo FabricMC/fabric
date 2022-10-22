@@ -40,7 +40,7 @@ public final class MinecraftItemGroups {
 	public static final Identifier SPAWN_EGGS_ID = new Identifier("minecraft:spawn_eggs");
 	public static final Identifier INVENTORY_ID = new Identifier("minecraft:inventory");
 
-	public static final Map<ItemGroup, Identifier> MAP = new ImmutableMap.Builder<ItemGroup, Identifier>()
+	public static final Map<ItemGroup, Identifier> GROUP_ID_MAP = new ImmutableMap.Builder<ItemGroup, Identifier>()
 			.put(ItemGroups.BUILDING_BLOCKS, MinecraftItemGroups.BUILDING_BLOCKS_ID)
 			.put(ItemGroups.NATURE, MinecraftItemGroups.NATURE_ID)
 			.put(ItemGroups.FUNCTIONAL, MinecraftItemGroups.FUNCTIONAL_ID)

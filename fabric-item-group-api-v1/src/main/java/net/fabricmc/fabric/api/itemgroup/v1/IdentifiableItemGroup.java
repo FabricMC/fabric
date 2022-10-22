@@ -24,7 +24,7 @@ import net.minecraft.util.Identifier;
  */
 public interface IdentifiableItemGroup {
 	/**
-	 * {@return the unique identifier of this {@link ItemGroup}}
+	 * {@return the unique identifier of this {@link ItemGroup}}.
 	 */
 	default Identifier getId() {
 		throw new AssertionError("Not implemented");

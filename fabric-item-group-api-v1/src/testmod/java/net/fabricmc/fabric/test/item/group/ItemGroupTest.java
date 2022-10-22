@@ -87,7 +87,7 @@ public class ItemGroupTest implements ModInitializer {
 				continue; // Skip groups added by test mods
 			}
 
-			Preconditions.checkArgument(MinecraftItemGroups.MAP.containsKey(group),
+			Preconditions.checkArgument(MinecraftItemGroups.GROUP_ID_MAP.containsKey(group),
 					"Missing ID for Vanilla ItemGroup %s. Assign one in MinecraftItemGroups.", group);
 		}
 	}

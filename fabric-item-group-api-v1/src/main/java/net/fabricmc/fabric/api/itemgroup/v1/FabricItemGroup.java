@@ -19,11 +19,32 @@ package net.fabricmc.fabric.api.itemgroup.v1;
 import java.util.Objects;
 
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.itemgroup.ItemGroupHelper;
 
+/**
+ * Extend this abstract class to create a new {@link ItemGroup} for a mod.
+ *
+ * <p>Each new instance of this class is automatically appended to {@link ItemGroups#GROUPS}
+ *
+ * <p>Example:
+ * <pre>{@code
+ * public static final ItemGroup ITEM_GROUP = new FabricItemGroup(new Identifier("modid", "test_group")) {
+ *    @Override
+ *    public ItemStack createIcon() {
+ *       return new ItemStack(Items.DIAMOND);
+ *    }
+ *
+ *    @Override
+ *    protected void addItems(FeatureSet featureSet, Entries entries) {
+ *       entries.add(TEST_ITEM);
+ *     }
+ * };
+ * }</pre>
+ */
 public abstract class FabricItemGroup extends ItemGroup implements IdentifiableItemGroup {
 	private final Identifier identifier;
 
