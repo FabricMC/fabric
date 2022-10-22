@@ -66,12 +66,12 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup {
 		final Event<ItemGroupEvents.ModifyEntries> modifyEntriesEvent = ItemGroupEventsImpl.getModifyEntriesEvent(getId());
 
 		if (modifyEntriesEvent != null) {
-			modifyEntriesEvent.invoker().modifyEntries(enabledFeatures, entries);
+			modifyEntriesEvent.invoker().modifyEntries(entries);
 		}
 
 		// Now trigger the global event
 		ItemGroup self = (ItemGroup) (Object) this;
-		ItemGroupEvents.MODIFY_ENTRIES_ALL.invoker().modifyEntries(self, enabledFeatures, entries);
+		ItemGroupEvents.MODIFY_ENTRIES_ALL.invoker().modifyEntries(self, entries);
 
 		// Convert the stacks back to sets after the events had a chance to modify them
 		displayStacks.clear();

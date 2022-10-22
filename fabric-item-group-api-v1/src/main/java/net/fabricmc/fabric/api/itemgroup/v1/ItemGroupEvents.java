@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.itemgroup.v1;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
-import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -42,9 +41,9 @@ public final class ItemGroupEvents {
 	 * <p/>
 	 * This event is invoked after those two more specific events.
 	 */
-	public static final Event<ModifyEntriesAll> MODIFY_ENTRIES_ALL = EventFactory.createArrayBacked(ModifyEntriesAll.class, callbacks -> (group, enabledFeatures, entries) -> {
+	public static final Event<ModifyEntriesAll> MODIFY_ENTRIES_ALL = EventFactory.createArrayBacked(ModifyEntriesAll.class, callbacks -> (group, entries) -> {
 		for (ModifyEntriesAll callback : callbacks) {
-			callback.modifyEntries(group, enabledFeatures, entries);
+			callback.modifyEntries(group, entries);
 		}
 	});
 
@@ -58,11 +57,11 @@ public final class ItemGroupEvents {
 
 	@FunctionalInterface
 	public interface ModifyEntries {
-		void modifyEntries(FeatureSet enabledFeatures, FabricItemGroupEntries entries);
+		void modifyEntries(FabricItemGroupEntries entries);
 	}
 
 	@FunctionalInterface
 	public interface ModifyEntriesAll {
-		void modifyEntries(ItemGroup group, FeatureSet enabledFeatures, FabricItemGroupEntries entries);
+		void modifyEntries(ItemGroup group, FabricItemGroupEntries entries);
 	}
 }
