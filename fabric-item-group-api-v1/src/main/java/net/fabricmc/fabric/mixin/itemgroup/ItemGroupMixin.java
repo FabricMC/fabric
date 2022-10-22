@@ -53,7 +53,7 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup {
 
 	@SuppressWarnings("ConstantConditions")
 	@Inject(method = "getStacks", at = @At(value = "FIELD", target = "Lnet/minecraft/item/ItemGroup;searchTabStacks:Lnet/minecraft/item/ItemStackSet;", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER))
-	public void getStacks(FeatureSet featureSet, boolean search, CallbackInfoReturnable<ItemStackSet> cir) {
+	public void getStacks(FeatureSet enabledFeatures, boolean search, CallbackInfoReturnable<ItemStackSet> cir) {
 		// Sanity check for the injection point. It should be after these fields are set.
 		Objects.requireNonNull(displayStacks, "displayStacks");
 		Objects.requireNonNull(searchTabStacks, "searchTabStacks");
@@ -61,17 +61,17 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup {
 		// Convert the entries to lists
 		var mutableDisplayStacks = new LinkedList<>(displayStacks);
 		var mutableSearchTabStacks = new LinkedList<>(searchTabStacks);
-		var entries = new FabricItemGroupEntries(featureSet, mutableDisplayStacks, mutableSearchTabStacks);
+		var entries = new FabricItemGroupEntries(enabledFeatures, mutableDisplayStacks, mutableSearchTabStacks);
 
 		final Event<ItemGroupEvents.ModifyEntries> modifyEntriesEvent = ItemGroupEventsImpl.getModifyEntriesEvent(getId());
 
 		if (modifyEntriesEvent != null) {
-			modifyEntriesEvent.invoker().modifyEntries(featureSet, entries);
+			modifyEntriesEvent.invoker().modifyEntries(enabledFeatures, entries);
 		}
 
 		// Now trigger the global event
 		ItemGroup self = (ItemGroup) (Object) this;
-		ItemGroupEvents.MODIFY_ENTRIES_ALL.invoker().modifyEntries(self, featureSet, entries);
+		ItemGroupEvents.MODIFY_ENTRIES_ALL.invoker().modifyEntries(self, enabledFeatures, entries);
 
 		// Convert the stacks back to sets after the events had a chance to modify them
 		displayStacks.clear();

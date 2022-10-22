@@ -42,9 +42,9 @@ public final class ItemGroupEvents {
 	 * <p/>
 	 * This event is invoked after those two more specific events.
 	 */
-	public static final Event<ModifyEntriesAll> MODIFY_ENTRIES_ALL = EventFactory.createArrayBacked(ModifyEntriesAll.class, callbacks -> (group, featureSet, entries) -> {
+	public static final Event<ModifyEntriesAll> MODIFY_ENTRIES_ALL = EventFactory.createArrayBacked(ModifyEntriesAll.class, callbacks -> (group, enabledFeatures, entries) -> {
 		for (ModifyEntriesAll callback : callbacks) {
-			callback.modifyEntries(group, featureSet, entries);
+			callback.modifyEntries(group, enabledFeatures, entries);
 		}
 	});
 
@@ -58,11 +58,11 @@ public final class ItemGroupEvents {
 
 	@FunctionalInterface
 	public interface ModifyEntries {
-		void modifyEntries(FeatureSet featureSet, FabricItemGroupEntries entries);
+		void modifyEntries(FeatureSet enabledFeatures, FabricItemGroupEntries entries);
 	}
 
 	@FunctionalInterface
 	public interface ModifyEntriesAll {
-		void modifyEntries(ItemGroup group, FeatureSet featureSet, FabricItemGroupEntries entries);
+		void modifyEntries(ItemGroup group, FeatureSet enabledFeatures, FabricItemGroupEntries entries);
 	}
 }

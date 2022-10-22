@@ -39,7 +39,7 @@ import net.fabricmc.fabric.impl.itemgroup.ItemGroupHelper;
  *    }
  *
  *    @Override
- *    protected void addItems(FeatureSet featureSet, Entries entries) {
+ *    protected void addItems(FeatureSet enabledFeatures, Entries entries) {
  *       entries.add(TEST_ITEM);
  *     }
  * };

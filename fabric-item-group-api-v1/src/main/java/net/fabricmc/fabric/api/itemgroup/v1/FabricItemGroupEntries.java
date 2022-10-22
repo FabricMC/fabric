@@ -34,13 +34,13 @@ import net.minecraft.resource.featuretoggle.FeatureSet;
  */
 @ApiStatus.Experimental
 public class FabricItemGroupEntries implements ItemGroup.Entries {
-	private final FeatureSet featureSet;
+	private final FeatureSet enabledFeatures;
 	private final List<ItemStack> displayStacks;
 	private final List<ItemStack> searchTabStacks;
 
 	@ApiStatus.Internal
-	public FabricItemGroupEntries(FeatureSet featureSet, List<ItemStack> displayStacks, List<ItemStack> searchTabStacks) {
-		this.featureSet = featureSet;
+	public FabricItemGroupEntries(FeatureSet enabledFeatures, List<ItemStack> displayStacks, List<ItemStack> searchTabStacks) {
+		this.enabledFeatures = enabledFeatures;
 		this.displayStacks = displayStacks;
 		this.searchTabStacks = searchTabStacks;
 	}
@@ -48,8 +48,8 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	/**
 	 * @return The currently enabled feature set.
 	 */
-	public FeatureSet getFeatureSet() {
-		return featureSet;
+	public FeatureSet getEnabledFeatures() {
+		return enabledFeatures;
 	}
 
 	/**
@@ -368,7 +368,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	 * @see Item#method_45382
 	 */
 	private boolean isEnabled(ItemStack stack) {
-		return stack.getItem().method_45382(featureSet);
+		return stack.getItem().method_45382(enabledFeatures);
 	}
 
 	private Collection<ItemStack> getEnabledStacks(Collection<ItemStack> newStacks) {
