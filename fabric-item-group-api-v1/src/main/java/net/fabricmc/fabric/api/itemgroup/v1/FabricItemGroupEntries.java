@@ -225,7 +225,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	 * Adds stacks after the last group entry matching a predicate, or at the end, if no entries match.
 	 *
 	 * @param afterLast  Add {@code newStacks} after the last group entry matching this predicate.
-	 * @param newStacks  The stacks to add. Only {@link #isEnabled(ItemStack) enabled} stacks will be added.
+	 * @param newStacks  The stacks to add. Only {@linkplain #isEnabled(ItemStack) enabled} stacks will be added.
 	 * @param visibility Determines whether the stack will be shown in the tab itself, returned
 	 *                   for searches, or both.
 	 */
@@ -291,8 +291,8 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	/**
 	 * Adds stacks before an existing item in the group, or at the end, if the item isn't in the group.
 	 *
-	 * @param beforeFirst Add <code>newStacks</code> before the first entry of this item in the group.
-	 * @param newStacks   The stacks to add. Only {@link #isEnabled(ItemStack) enabled} stacks will be added.
+	 * @param beforeFirst Add {@code newStacks} before the first entry of this item in the group.
+	 * @param newStacks   The stacks to add. Only {@linkplain #isEnabled(ItemStack) enabled} stacks will be added.
 	 * @param visibility  Determines whether the stack will be shown in the tab itself, returned
 	 *                    for searches, or both.
 	 */
@@ -316,8 +316,8 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	/**
 	 * Adds stacks before an existing stack to the group, or at the end, if the stack isn't in the group.
 	 *
-	 * @param beforeFirst Add <code>newStacks</code> before the first group entry matching this stack (compared using {@link ItemStack#canCombine}).
-	 * @param newStacks   The stacks to add. Only {@link #isEnabled(ItemStack) enabled} stacks will be added.
+	 * @param beforeFirst Add {@code newStacks} before the first group entry matching this stack (compared using {@link ItemStack#canCombine}).
+	 * @param newStacks   The stacks to add. Only {@linkplain #isEnabled(ItemStack) enabled} stacks will be added.
 	 * @param visibility  Determines whether the stack will be shown in the tab itself, returned
 	 *                    for searches, or both.
 	 */
@@ -341,8 +341,8 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	/**
 	 * Adds stacks before the first group entry matching a predicate, or at the end, if no entries match.
 	 *
-	 * @param beforeFirst Add <code>newStacks</code> before the first group entry matching this predicate.
-	 * @param newStacks   The stacks to add. Only {@link #isEnabled(ItemStack) enabled} stacks will be added.
+	 * @param beforeFirst Add {@code newStacks} before the first group entry matching this predicate.
+	 * @param newStacks   The stacks to add. Only {@linkplain #isEnabled(ItemStack) enabled} stacks will be added.
 	 * @param visibility  Determines whether the stack will be shown in the tab itself, returned
 	 *                    for searches, or both.
 	 */
