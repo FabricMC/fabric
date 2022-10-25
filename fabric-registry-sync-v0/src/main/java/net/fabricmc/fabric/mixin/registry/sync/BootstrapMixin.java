@@ -29,7 +29,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Items;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.BiomeKeys;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.trackers.StateIdTracker;
@@ -44,7 +43,6 @@ public class BootstrapMixin {
 		// static initializer is called, to register vanilla-provided blocks
 		// and items from the respective classes - otherwise, they would
 		// duplicate our calls from below.
-		Object oBiome = BiomeKeys.THE_END;
 		Object oBlock = Blocks.AIR;
 		Object oFluid = Fluids.EMPTY;
 		Object oItem = Items.AIR;
