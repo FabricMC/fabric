@@ -124,15 +124,18 @@ public class RegistrySyncTest implements ModInitializer {
 		Validate.isTrue(!RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.PERSISTED));
 
 		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
-			RegistryEntryAddedCallback.event(registryManager.get(Registry.BIOME_KEY)).register((rawId, id, object) -> {
-				LOGGER.info("Biome added: {}", id);
-			});
+			registryManager.getOptional(Registry.BIOME_KEY).ifPresent(registry ->
+				RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> {
+					LOGGER.info("Biome added: {}", id);
+				})
+			);
 		});
 		EndDynamicRegistrySetupCallback.EVENT.register((registryManager, combined) -> {
-			Registry<Biome> registry = combined.get(Registry.BIOME_KEY);
-			if (registry.get(BiomeKeys.PLAINS) == null) {
-				throw new AssertionError(String.format(Locale.ROOT, "Registry sync: missing plains biome! found %d biomes", registry.size()));
-			}
+			combined.getOptional(Registry.BIOME_KEY).ifPresent(registry -> {
+				if (registry.get(BiomeKeys.PLAINS) == null) {
+					throw new AssertionError(String.format(Locale.ROOT, "Registry sync: missing plains biome! found %d biomes", registry.size()));
+				}
+			});
 
 			LOGGER.info(
 					"Loaded dynamically managed registries: {}",
