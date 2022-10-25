@@ -7,7 +7,6 @@
     "BuiltinRegistriesMixin",
     "ChunkSerializerMixin",
     "DebugChunkGeneratorAccessor",
-    "DynamicRegistryManagerMixin",
     "IdListMixin",
     "LevelStorageSessionMixin",
     "MinecraftServerMixin",
