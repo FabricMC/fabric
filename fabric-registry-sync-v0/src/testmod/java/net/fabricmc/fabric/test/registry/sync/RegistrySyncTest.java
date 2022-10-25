@@ -16,9 +16,19 @@
 
 package net.fabricmc.fabric.test.registry.sync;
 
+import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+
+import net.fabricmc.fabric.api.event.registry.EndDynamicRegistrySetupCallback;
+
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
+
 import org.apache.commons.lang3.Validate;
 
 import net.minecraft.block.AbstractBlock;
@@ -48,7 +58,11 @@ import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler
 import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistryPacketHandler;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
+import org.slf4j.Logger;
+
 public class RegistrySyncTest implements ModInitializer {
+	private static final Logger LOGGER = LogUtils.getLogger();
+
 	/**
 	 * These are system property's as it allows for easier testing with different run configurations.
 	 */
@@ -111,8 +125,23 @@ public class RegistrySyncTest implements ModInitializer {
 
 		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
 			RegistryEntryAddedCallback.event(registryManager.get(Registry.BIOME_KEY)).register((rawId, id, object) -> {
-				System.out.println(id);
+				LOGGER.info("Biome added: {}", id);
 			});
+		});
+		EndDynamicRegistrySetupCallback.EVENT.register((registryManager, combined) -> {
+			Registry<Biome> registry = combined.get(Registry.BIOME_KEY);
+			if (registry.get(BiomeKeys.PLAINS) == null) {
+				throw new AssertionError(String.format(Locale.ROOT, "Registry sync: missing plains biome! found %d biomes", registry.size()));
+			}
+
+			LOGGER.info(
+					"Loaded dynamically managed registries: {}",
+					registryManager.streamAllRegistries()
+							.map(DynamicRegistryManager.Entry::key)
+							.map(RegistryKey::getValue)
+							.map(Identifier::toString)
+							.collect(Collectors.joining(", "))
+			);
 		});
 
 		// Vanilla status effects don't have an entry for the int id 0, test we can handle this.
@@ -136,7 +165,7 @@ public class RegistrySyncTest implements ModInitializer {
 	 * class-loaded.
 	 */
 	private void testBuiltInRegistrySync() {
-		System.out.println("Checking built-in registry sync...");
+		LOGGER.info("Checking built-in registry sync...");
 
 		// Register a configured feature before force-loading the dynamic registry manager
 		ConfiguredFeature<DefaultFeatureConfig, ?> cf1 = new ConfiguredFeature<>(Feature.BASALT_PILLAR, DefaultFeatureConfig.INSTANCE);
