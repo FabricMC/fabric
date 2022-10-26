@@ -17,14 +17,13 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.helper;
 
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3i;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
-
-import org.joml.Vector3f;
 
 /**
  * Static routines of general utility for renderer implementations.

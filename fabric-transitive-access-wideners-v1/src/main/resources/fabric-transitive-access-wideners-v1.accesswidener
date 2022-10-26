@@ -1,8 +1,9 @@
 accessWidener v2 named
 
 # Registering custom model predicate providers for item models
-transitive-accessible method net/minecraft/client/item/ModelPredicateProviderRegistry register (Lnet/minecraft/util/Identifier;Lnet/minecraft/client/item/UnclampedModelPredicateProvider;)Lnet/minecraft/client/item/UnclampedModelPredicateProvider;
-transitive-accessible method net/minecraft/client/item/ModelPredicateProviderRegistry register (Lnet/minecraft/item/Item;Lnet/minecraft/util/Identifier;Lnet/minecraft/client/item/UnclampedModelPredicateProvider;)V
+transitive-accessible method net/minecraft/client/item/ModelPredicateProviderRegistry register (Lnet/minecraft/item/Item;Lnet/minecraft/util/Identifier;Lnet/minecraft/client/item/ClampedModelPredicateProvider;)V
+transitive-accessible method net/minecraft/client/item/ModelPredicateProviderRegistry register (Lnet/minecraft/util/Identifier;Lnet/minecraft/client/item/ClampedModelPredicateProvider;)Lnet/minecraft/client/item/ClampedModelPredicateProvider;
+transitive-accessible method net/minecraft/client/item/ModelPredicateProviderRegistry registerCustomModelData (Lnet/minecraft/client/item/ModelPredicateProvider;)V
 
 # Registering custom advancement criteria
 transitive-accessible method net/minecraft/advancement/criterion/Criteria register (Lnet/minecraft/advancement/criterion/Criterion;)Lnet/minecraft/advancement/criterion/Criterion;

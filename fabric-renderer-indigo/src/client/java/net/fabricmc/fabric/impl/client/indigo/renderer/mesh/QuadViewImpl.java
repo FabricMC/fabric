@@ -32,6 +32,7 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Z;
 
 import com.google.common.base.Preconditions;
+import org.joml.Vector3f;
 
 import net.minecraft.util.math.Direction;
 
@@ -41,8 +42,6 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
-
-import org.joml.Vector3f;
 
 /**
  * Base class for all quads / quad makers. Handles the ugly bits

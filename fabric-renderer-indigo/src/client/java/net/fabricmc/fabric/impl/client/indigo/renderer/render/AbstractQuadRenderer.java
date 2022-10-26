@@ -21,6 +21,10 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHel
 
 import java.util.function.Function;
 
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
@@ -34,10 +38,6 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
-
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 /**
  * Base quad-rendering class for fallback and mesh consumers.

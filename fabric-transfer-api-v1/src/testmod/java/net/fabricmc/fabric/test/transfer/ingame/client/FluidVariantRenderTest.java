@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.transfer.ingame.client;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import org.joml.Matrix4f;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -40,8 +41,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
-
-import org.joml.Matrix4f;
 
 /**
  * Renders the water sprite in the top left of the screen, to make sure that it correctly depends on the position.

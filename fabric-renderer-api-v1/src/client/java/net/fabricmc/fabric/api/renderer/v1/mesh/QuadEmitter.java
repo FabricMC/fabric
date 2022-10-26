@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
+import org.joml.Vector3f;
+
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec2f;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-
-import org.joml.Vector3f;
 
 /**
  * Specialized {@link MutableQuadView} obtained via {@link MeshBuilder#getEmitter()}

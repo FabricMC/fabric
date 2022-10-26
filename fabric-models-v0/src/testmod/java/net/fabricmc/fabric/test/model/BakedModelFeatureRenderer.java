@@ -18,6 +18,9 @@ package net.fabricmc.fabric.test.model;
 
 import java.util.function.Supplier;
 
+import org.joml.AxisAngle4f;
+import org.joml.Quaternionf;
+
 import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -27,11 +30,6 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.MathHelper;
-
-import org.joml.AxisAngle4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 public class BakedModelFeatureRenderer<T extends LivingEntity, M extends EntityModel<T>> extends FeatureRenderer<T, M> {
 	private Supplier<BakedModel> modelSupplier;

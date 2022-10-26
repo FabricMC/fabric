@@ -18,8 +18,6 @@ package net.fabricmc.fabric.mixin.renderer.client;
 
 import java.util.Map;
 
-import net.minecraft.client.texture.SpriteLoader;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.texture.SpriteLoader;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.renderer.SpriteFinderImpl;

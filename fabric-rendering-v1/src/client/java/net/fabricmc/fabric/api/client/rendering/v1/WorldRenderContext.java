@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.rendering.v1;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.Camera;
@@ -34,8 +35,6 @@ import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
-import org.joml.Matrix4f;
 
 /**
  * Except as noted below, the properties exposed here match the parameters passed to

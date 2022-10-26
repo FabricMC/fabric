@@ -20,11 +20,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
 
-import net.minecraft.client.render.model.Baker;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;

@@ -101,7 +101,7 @@ public class FabricBuiltinRegistriesProvider implements DataProvider {
 			}
 
 			Path path = pathResolver.resolveJson(key.getValue());
-			writeToPath(path, writer, ops, registry.elementCodec(), regEntry.getValue());
+			futures.add(writeToPath(path, writer, ops, registry.elementCodec(), regEntry.getValue()));
 		}
 
 		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));

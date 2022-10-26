@@ -24,7 +24,6 @@ import java.util.Objects;
 import com.google.common.base.Charsets;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 

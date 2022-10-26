@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.joml.Vector3f;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.item.ItemColors;
@@ -51,8 +53,6 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MeshImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
-
-import org.joml.Vector3f;
 
 /**
  * The render context used for item rendering.

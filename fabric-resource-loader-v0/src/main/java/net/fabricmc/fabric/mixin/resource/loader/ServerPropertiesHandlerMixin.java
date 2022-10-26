@@ -16,12 +16,11 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
-import net.minecraft.resource.DataConfiguration;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import net.minecraft.resource.DataConfiguration;
 import net.minecraft.server.dedicated.ServerPropertiesHandler;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;

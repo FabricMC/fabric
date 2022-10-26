@@ -82,7 +82,6 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		final FabricDataGenerator.Pack pack = dataGenerator.create();
 
 		pack.addProvider(TestRecipeProvider::new);
-		pack.addProvider(TestConditionalRecipeProvider::new);
 		pack.addProvider(TestModelProvider::new);
 		pack.addProvider(TestAdvancementProvider::new);
 		pack.addProvider(TestBlockLootTableProvider::new);
@@ -129,6 +128,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		public void generate(Consumer<RecipeJsonProvider> exporter) {
 			offerPlanksRecipe2(exporter, SIMPLE_BLOCK, ItemTags.ACACIA_LOGS);
+
+			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLD_INGOT).input(Items.DIRT).criterion("has_dirt", conditionsFromItem(Items.DIRT)).offerTo(withConditions(exporter, NEVER_LOADED));
+			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND).input(Items.STICK).criterion("has_stick", conditionsFromItem(Items.STICK)).offerTo(withConditions(exporter, ALWAYS_LOADED));
 		}
 	}
 
@@ -174,18 +176,6 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			translationBuilder.add(SIMPLE_BLOCK, "シンプルブロック");
 			translationBuilder.add(SIMPLE_ITEM_GROUP, "データ生成項目");
 			translationBuilder.add("this.is.a.test", "こんにちは");
-		}
-	}
-
-	private static class TestConditionalRecipeProvider extends FabricRecipeProvider {
-		private TestConditionalRecipeProvider(FabricDataOutput output) {
-			super(output);
-		}
-
-		@Override
-		public void generate(Consumer<RecipeJsonProvider> exporter) {
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLD_INGOT).input(Items.DIRT).criterion("has_dirt", conditionsFromItem(Items.DIRT)).offerTo(withConditions(exporter, NEVER_LOADED));
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND).input(Items.STICK).criterion("has_stick", conditionsFromItem(Items.STICK)).offerTo(withConditions(exporter, ALWAYS_LOADED));
 		}
 	}
 

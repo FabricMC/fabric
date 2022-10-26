@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
@@ -26,8 +27,6 @@ import net.minecraft.util.math.Vec2f;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-
-import org.joml.Vector3f;
 
 /**
  * A mutable {@link QuadView} instance. The base interface for

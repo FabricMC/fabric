@@ -19,9 +19,6 @@ package net.fabricmc.fabric.mixin.resource.loader.client;
 import java.io.File;
 
 import com.mojang.datafixers.util.Pair;
-
-import net.minecraft.resource.DataConfiguration;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -34,6 +31,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
+import net.minecraft.resource.DataConfiguration;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourceType;
 
@@ -53,7 +51,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
 	}
 
 	@ModifyVariable(method = "create(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/screen/Screen;)V",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;createServerConfig(Lnet/minecraft/resource/ResourcePackManager;Lnet/minecraft/class_7712;)Lnet/minecraft/server/SaveLoading$ServerConfig;"))
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;createServerConfig(Lnet/minecraft/resource/ResourcePackManager;Lnet/minecraft/resource/DataConfiguration;)Lnet/minecraft/server/SaveLoading$ServerConfig;"))
 	private static ResourcePackManager onCreateResManagerInit(ResourcePackManager manager) {
 		// Add mod data packs to the initial res pack manager so they are active even if the user doesn't use custom data packs
 		manager.providers.add(new ModResourcePackCreator(ResourceType.SERVER_DATA));

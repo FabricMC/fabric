@@ -19,6 +19,9 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
@@ -36,9 +39,6 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
-
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 
 /**
  * Implementation of {@link RenderContext} used during terrain rendering.
