@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.registry.sync.trackers.vanilla;
 
 import java.util.List;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Identifier;
@@ -27,6 +29,7 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.mixin.registry.sync.DebugChunkGeneratorAccessor;
 
+@ApiStatus.Internal
 public final class BlockInitTracker implements RegistryEntryAddedCallback<Block> {
 	private final Registry<Block> registry;
 
