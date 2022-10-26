@@ -98,11 +98,16 @@ public final class FabricDataGenerator extends DataGenerator {
 		throw new UnsupportedOperationException();
 	}
 
-	public class Pack extends DataGenerator.Pack {
-		protected Pack(boolean shouldRun, String name, FabricDataOutput output) {
+	public final class Pack extends DataGenerator.Pack {
+		private Pack(boolean shouldRun, String name, FabricDataOutput output) {
 			super(shouldRun, name, output);
 		}
 
+		/**
+		 * Method to register a {@link Factory} to create a {@link DataProvider} that has a single argument constructor for a {@link FabricDataOutput}.
+		 *
+		 * @return The {@link DataProvider}
+		 */
 		public <T extends DataProvider> T addProvider(Factory<T> factory) {
 			return super.addProvider(output -> factory.create((FabricDataOutput) output));
 		}
