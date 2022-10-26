@@ -30,7 +30,6 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.RegistryLoader;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
-import net.fabricmc.fabric.api.event.registry.EndDynamicRegistrySetupCallback;
 
 @Mixin(RegistryLoader.class)
 public class RegistryLoaderMixin {
@@ -45,19 +44,5 @@ public class RegistryLoaderMixin {
 	)
 	private static void beforeLoad(ResourceManager resourceManager, DynamicRegistryManager baseRegistryManager, List<RegistryLoader.Entry<?>> entries, CallbackInfoReturnable<DynamicRegistryManager.Immutable> cir, Map a, List b, DynamicRegistryManager registryManager) {
 		DynamicRegistrySetupCallback.EVENT.invoker().onRegistrySetup(registryManager);
-	}
-
-	@Inject(
-			method = "load(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/util/registry/DynamicRegistryManager$Immutable;",
-			at = @At(
-					value = "INVOKE",
-					target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V",
-					ordinal = 0,
-					shift = At.Shift.AFTER
-			),
-			locals = LocalCapture.CAPTURE_FAILHARD
-	)
-	private static void afterLoad(ResourceManager resourceManager, DynamicRegistryManager baseRegistryManager, List<RegistryLoader.Entry<?>> entries, CallbackInfoReturnable<DynamicRegistryManager.Immutable> cir, Map a, List b, DynamicRegistryManager registryManager, DynamicRegistryManager combined) {
-		EndDynamicRegistrySetupCallback.EVENT.invoker().onEndDynamicRegistrySetup(registryManager, combined);
 	}
 }

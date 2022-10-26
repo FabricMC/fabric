@@ -16,18 +16,10 @@
 
 package net.fabricmc.fabric.test.registry.sync;
 
-import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-
-import net.fabricmc.fabric.api.event.registry.EndDynamicRegistrySetupCallback;
-
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
 
 import org.apache.commons.lang3.Validate;
 
@@ -128,22 +120,6 @@ public class RegistrySyncTest implements ModInitializer {
 				RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> {
 					LOGGER.info("Biome added: {}", id);
 				})
-			);
-		});
-		EndDynamicRegistrySetupCallback.EVENT.register((registryManager, combined) -> {
-			combined.getOptional(Registry.BIOME_KEY).ifPresent(registry -> {
-				if (registry.get(BiomeKeys.PLAINS) == null) {
-					throw new AssertionError(String.format(Locale.ROOT, "Registry sync: missing plains biome! found %d biomes", registry.size()));
-				}
-			});
-
-			LOGGER.info(
-					"Loaded dynamically managed registries: {}",
-					registryManager.streamAllRegistries()
-							.map(DynamicRegistryManager.Entry::key)
-							.map(RegistryKey::getValue)
-							.map(Identifier::toString)
-							.collect(Collectors.joining(", "))
 			);
 		});
 
