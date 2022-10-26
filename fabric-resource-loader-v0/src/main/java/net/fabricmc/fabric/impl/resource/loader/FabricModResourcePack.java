@@ -78,4 +78,9 @@ public class FabricModResourcePack extends GroupResourcePack {
 	public String getName() {
 		return "Fabric Mods";
 	}
+
+	@Override
+	public boolean isAlwaysStable() {
+		return true;
+	}
 }
