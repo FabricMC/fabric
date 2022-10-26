@@ -24,6 +24,8 @@ extendable  method  net/minecraft/data/DataOutput$PathResolver  <init>  (Lnet/mi
 accessible  field   net/minecraft/data/DataOutput$PathResolver rootPath    Ljava/nio/file/Path;
 accessible  field   net/minecraft/data/DataOutput$PathResolver directoryName    Ljava/lang/String;
 
+extendable  method  net/minecraft/data/DataGenerator$Pack    <init>    (Lnet/minecraft/data/DataGenerator;ZLjava/lang/String;Lnet/minecraft/data/DataOutput;)V
+
 transitive-accessible   method  net/minecraft/data/family/BlockFamilies register    (Lnet/minecraft/block/Block;)Lnet/minecraft/data/family/BlockFamily$Builder;
 
 transitive-accessible   field   net/minecraft/data/client/BlockStateModelGenerator    blockStateCollector Ljava/util/function/Consumer;

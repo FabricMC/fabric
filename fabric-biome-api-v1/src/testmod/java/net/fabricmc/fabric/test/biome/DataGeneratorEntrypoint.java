@@ -22,6 +22,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricBuiltinRegistriesProvid
 public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
-		dataGenerator.addProvider(FabricBuiltinRegistriesProvider.forCurrentMod());
+		FabricDataGenerator.Pack pack = dataGenerator.create();
+		pack.addProvider(FabricBuiltinRegistriesProvider.forCurrentMod());
 	}
 }

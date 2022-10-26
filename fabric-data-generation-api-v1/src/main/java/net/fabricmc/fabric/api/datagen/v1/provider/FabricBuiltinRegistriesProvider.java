@@ -16,11 +16,12 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
-import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 
 import com.google.gson.JsonElement;
@@ -42,6 +43,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.RegistryLoader;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 
 /**
  * Data-generates all entries from {@link BuiltinRegistries} that matches a given filter (i.e. mod id).
@@ -52,9 +54,9 @@ public class FabricBuiltinRegistriesProvider implements DataProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricBuiltinRegistriesProvider.class);
 
 	private final Predicate<RegistryKey<?>> entryFilter;
-	private final DataOutput output;
+	private final FabricDataOutput output;
 
-	private FabricBuiltinRegistriesProvider(DataOutput output, Predicate<RegistryKey<?>> entryFilter) {
+	private FabricBuiltinRegistriesProvider(FabricDataOutput output, Predicate<RegistryKey<?>> entryFilter) {
 		this.output = output;
 		this.entryFilter = entryFilter;
 	}
@@ -63,24 +65,33 @@ public class FabricBuiltinRegistriesProvider implements DataProvider {
 	 * @return A provider that will export all entries from {@link BuiltinRegistries} for the mod running the
 	 * data generation.
 	 */
-	public static Function<FabricDataGenerator, DataProvider> forCurrentMod() {
-		return fabricDataGenerator -> new FabricBuiltinRegistriesProvider(
-				fabricDataGenerator.getOutput(),
-				e -> e.getValue().getNamespace().equals(fabricDataGenerator.getModId())
+	public static FabricDataGenerator.Pack.Factory<FabricBuiltinRegistriesProvider> forCurrentMod() {
+		return output -> new FabricBuiltinRegistriesProvider(
+				output,
+				e -> e.getValue().getNamespace().equals(output.getModId())
 		);
 	}
 
 	@Override
-	public void run(DataWriter writer) {
+	public CompletableFuture<?> run(DataWriter writer) {
 		DynamicRegistryManager dynamicRegistryManager = BuiltinRegistries.createBuiltinRegistryManager();
 		DynamicOps<JsonElement> dynamicOps = RegistryOps.of(JsonOps.INSTANCE, dynamicRegistryManager);
-		RegistryLoader.DYNAMIC_REGISTRIES.forEach((info) -> this.writeRegistryEntries(writer, dynamicRegistryManager, dynamicOps, info));
+
+		final List<CompletableFuture<?>> futures = new ArrayList<>();
+
+		for (RegistryLoader.Entry<?> entry : RegistryLoader.DYNAMIC_REGISTRIES) {
+			futures.add(this.writeRegistryEntries(writer, dynamicRegistryManager, dynamicOps, entry));
+		}
+
+		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
 	}
 
-	private <T> void writeRegistryEntries(DataWriter writer, DynamicRegistryManager registryManager, DynamicOps<JsonElement> ops, RegistryLoader.Entry<T> registry) {
+	private <T> CompletableFuture<?> writeRegistryEntries(DataWriter writer, DynamicRegistryManager registryManager, DynamicOps<JsonElement> ops, RegistryLoader.Entry<T> registry) {
 		RegistryKey<? extends Registry<T>> registryKey = registry.key();
 		Registry<T> registry2 = registryManager.get(registryKey);
 		DataOutput.PathResolver pathResolver = this.output.getResolver(DataOutput.OutputType.DATA_PACK, registryKey.getValue().getPath());
+
+		final List<CompletableFuture<?>> futures = new ArrayList<>();
 
 		for (Map.Entry<RegistryKey<T>, T> regEntry : registry2.getEntrySet()) {
 			RegistryKey<T> key = regEntry.getKey();
@@ -92,20 +103,20 @@ public class FabricBuiltinRegistriesProvider implements DataProvider {
 			Path path = pathResolver.resolveJson(key.getValue());
 			writeToPath(path, writer, ops, registry.elementCodec(), regEntry.getValue());
 		}
+
+		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
 	}
 
-	private static <E> void writeToPath(Path path, DataWriter cache, DynamicOps<JsonElement> json, Encoder<E> encoder, E value) {
-		try {
-			Optional<JsonElement> optional = encoder.encodeStart(json, value).resultOrPartial((error) -> {
-				LOGGER.error("Couldn't serialize element {}: {}", path, error);
-			});
+	private static <E> CompletableFuture<?> writeToPath(Path path, DataWriter cache, DynamicOps<JsonElement> json, Encoder<E> encoder, E value) {
+		Optional<JsonElement> optional = encoder.encodeStart(json, value).resultOrPartial((error) -> {
+			LOGGER.error("Couldn't serialize element {}: {}", path, error);
+		});
 
-			if (optional.isPresent()) {
-				DataProvider.writeToPath(cache, optional.get(), path);
-			}
-		} catch (IOException var6) {
-			LOGGER.error("Couldn't save element {}", path, var6);
+		if (optional.isPresent()) {
+			return DataProvider.writeToPath(cache, optional.get(), path);
 		}
+
+		return CompletableFuture.completedFuture(null);
 	}
 
 	@Override

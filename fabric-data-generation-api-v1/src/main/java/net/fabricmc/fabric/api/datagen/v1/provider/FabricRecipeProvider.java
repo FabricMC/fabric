@@ -35,20 +35,21 @@ import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 /**
  * Extend this class and implement {@link FabricRecipeProvider#generate}.
  *
- * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
+ * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
  */
 public abstract class FabricRecipeProvider extends RecipeProvider {
-	protected final FabricDataGenerator dataGenerator;
+	protected final FabricDataOutput output;
 
-	public FabricRecipeProvider(FabricDataGenerator dataGenerator) {
-		super(dataGenerator.getOutput());
-		this.dataGenerator = dataGenerator;
+	public FabricRecipeProvider(FabricDataOutput output) {
+		super(output);
+		this.output = output;
 	}
 
 	/**
@@ -98,6 +99,6 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	 * Override this method to change the recipe identifier. The default implementation normalizes the namespace to the mod ID.
 	 */
 	protected Identifier getRecipeIdentifier(Identifier identifier) {
-		return new Identifier(dataGenerator.getModId(), identifier.getPath());
+		return new Identifier(output.getModId(), identifier.getPath());
 	}
 }
