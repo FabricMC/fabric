@@ -26,6 +26,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * This event gets triggered when a new {@link DynamicRegistryManager} gets created and
  * filled with new entries.
+ *
+ * <p><strong>Important Note</strong>: The passed dynamic registry manager might not
+ * contain the registry. Use {@link DynamicRegistryManager#getOptional} to
+ * prevent crashes.
  */
 @ApiStatus.Experimental
 public interface EndDynamicRegistrySetupCallback {

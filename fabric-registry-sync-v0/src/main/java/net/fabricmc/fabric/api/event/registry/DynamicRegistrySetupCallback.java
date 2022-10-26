@@ -29,13 +29,18 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <pre>
  * {@code
  * DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
- *     Registry<Biome> biomes = registryManager.get(Registry.BIOME_KEY);
- *     RegistryEntryAddedCallback.event(biomes).register((rawId, id, object) -> {
- *         // Do something
+ *     registryManager.getOptional(Registry.BIOME_KEY).ifPresent(biomes -> {
+ *         RegistryEntryAddedCallback.event(biomes).register((rawId, id, object) -> {
+ *             // Do something
+ *         });
  *     });
  * });
  * }
  * </pre>
+ *
+ * <p><strong>Important Note</strong>: The passed dynamic registry manager might not
+ * contain the registry. Use {@link DynamicRegistryManager#getOptional} to
+ * prevent crashes.
  */
 @FunctionalInterface
 public interface DynamicRegistrySetupCallback {
