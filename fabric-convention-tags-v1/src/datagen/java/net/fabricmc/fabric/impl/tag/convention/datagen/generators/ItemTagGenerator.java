@@ -21,7 +21,7 @@ import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 
@@ -57,8 +57,8 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	@Deprecated
 	private static final Identifier FABRIC_SWORDS = createFabricId("swords");
 
-	public ItemTagGenerator(FabricDataGenerator dataGenerator) {
-		super(dataGenerator);
+	public ItemTagGenerator(FabricDataOutput output) {
+		super(output);
 	}
 
 	@Override

@@ -32,9 +32,9 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Z;
 
 import com.google.common.base.Preconditions;
+import org.joml.Vector3f;
 
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3f;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
@@ -51,7 +51,7 @@ public class QuadViewImpl implements QuadView {
 	protected Direction nominalFace;
 	/** True when geometry flags or light face may not match geometry. */
 	protected boolean isGeometryInvalid = true;
-	protected final Vec3f faceNormal = new Vec3f();
+	protected final Vector3f faceNormal = new Vector3f();
 	private boolean shade = true;
 
 	/** Size and where it comes from will vary in subtypes. But in all cases quad is fully encoded to array. */
@@ -153,7 +153,7 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
-	public final Vec3f faceNormal() {
+	public final Vector3f faceNormal() {
 		computeGeometry();
 		return faceNormal;
 	}
@@ -167,15 +167,15 @@ public class QuadViewImpl implements QuadView {
 		RenderMaterial material = quad.material();
 		System.arraycopy(data, baseIndex, quad.data, quad.baseIndex, EncodingFormat.TOTAL_STRIDE);
 		quad.material(material);
-		quad.faceNormal.set(faceNormal.getX(), faceNormal.getY(), faceNormal.getZ());
+		quad.faceNormal.set(faceNormal.x(), faceNormal.y(), faceNormal.z());
 		quad.nominalFace = this.nominalFace;
 		quad.isGeometryInvalid = false;
 	}
 
 	@Override
-	public Vec3f copyPos(int vertexIndex, Vec3f target) {
+	public Vector3f copyPos(int vertexIndex, Vector3f target) {
 		if (target == null) {
-			target = new Vec3f();
+			target = new Vector3f();
 		}
 
 		final int index = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_X;
@@ -213,10 +213,10 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
-	public Vec3f copyNormal(int vertexIndex, Vec3f target) {
+	public Vector3f copyNormal(int vertexIndex, Vector3f target) {
 		if (hasNormal(vertexIndex)) {
 			if (target == null) {
-				target = new Vec3f();
+				target = new Vector3f();
 			}
 
 			final int normal = data[normalIndex(vertexIndex)];

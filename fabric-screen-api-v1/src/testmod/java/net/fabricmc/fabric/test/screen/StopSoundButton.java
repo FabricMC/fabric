@@ -39,10 +39,10 @@ class StopSoundButton extends PressableWidget {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float tickDelta) {
 		// Render the armor icon to test
 		RenderSystem.setShaderTexture(0, InGameHud.GUI_ICONS_TEXTURE);
-		DrawableHelper.drawTexture(matrices, this.x, this.y, this.width, this.height, 43, 27, 9, 9, 256, 256);
+		DrawableHelper.drawTexture(matrices, this.method_46426(), this.method_46427(), this.width, this.height, 43, 27, 9, 9, 256, 256);
 
 		if (this.isMouseOver(mouseX, mouseY)) {
-			this.screen.renderTooltip(matrices, Text.literal("Click to stop all sounds"), this.x, this.y);
+			this.screen.renderTooltip(matrices, Text.literal("Click to stop all sounds"), this.method_46426(), this.method_46427());
 		}
 	}
 

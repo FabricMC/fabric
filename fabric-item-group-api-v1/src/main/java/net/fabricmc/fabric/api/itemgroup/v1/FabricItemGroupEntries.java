@@ -365,10 +365,10 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 
 	/**
 	 * @return True if the item of a given stack is enabled in the current {@link FeatureSet}.
-	 * @see Item#method_45382
+	 * @see Item#isEnabled
 	 */
 	private boolean isEnabled(ItemStack stack) {
-		return stack.getItem().method_45382(enabledFeatures);
+		return stack.getItem().isEnabled(enabledFeatures);
 	}
 
 	private Collection<ItemStack> getEnabledStacks(Collection<ItemStack> newStacks) {

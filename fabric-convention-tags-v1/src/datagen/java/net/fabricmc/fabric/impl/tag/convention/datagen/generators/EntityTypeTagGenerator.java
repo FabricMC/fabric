@@ -18,13 +18,13 @@ package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
 import net.minecraft.entity.EntityType;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalEntityTypeTags;
 
 public class EntityTypeTagGenerator extends FabricTagProvider.EntityTypeTagProvider {
-	public EntityTypeTagGenerator(FabricDataGenerator dataGenerator) {
-		super(dataGenerator);
+	public EntityTypeTagGenerator(FabricDataOutput output) {
+		super(output);
 	}
 
 	@Override

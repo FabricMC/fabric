@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.12.0"
+    "fabricloader": ">=0.14.10"
   },
   "description": "Allows for automatic data generation.",
   "mixins": [

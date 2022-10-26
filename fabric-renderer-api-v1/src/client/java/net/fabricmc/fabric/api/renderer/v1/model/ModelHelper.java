@@ -20,14 +20,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
+import org.joml.Vector3f;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.render.model.json.Transformation;
 import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 
@@ -109,10 +110,10 @@ public final class ModelHelper {
 	 * This means you can use values from a vanilla JSON file as inputs to this method.
 	 */
 	private static Transformation makeTransform(float rotationX, float rotationY, float rotationZ, float translationX, float translationY, float translationZ, float scaleX, float scaleY, float scaleZ) {
-		Vec3f translation = new Vec3f(translationX, translationY, translationZ);
-		translation.scale(0.0625f);
-		translation.clamp(-5.0F, 5.0F);
-		return new Transformation(new Vec3f(rotationX, rotationY, rotationZ), translation, new Vec3f(scaleX, scaleY, scaleZ));
+		Vector3f translation = new Vector3f(translationX, translationY, translationZ);
+		translation.mul(0.0625f);
+		translation.set(MathHelper.clamp(translation.x, -5.0F, 5.0F), MathHelper.clamp(translation.y, -5.0F, 5.0F), MathHelper.clamp(translation.z, -5.0F, 5.0F));
+		return new Transformation(new Vector3f(rotationX, rotationY, rotationZ), translation, new Vector3f(scaleX, scaleY, scaleZ));
 	}
 
 	public static final Transformation TRANSFORM_BLOCK_GUI = makeTransform(30, 225, 0, 0, 0, 0, 0.625f, 0.625f, 0.625f);

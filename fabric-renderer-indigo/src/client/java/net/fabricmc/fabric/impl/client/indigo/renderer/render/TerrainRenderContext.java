@@ -19,6 +19,9 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
@@ -30,8 +33,6 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Matrix3f;
-import net.minecraft.util.math.Matrix4f;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;

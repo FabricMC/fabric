@@ -29,9 +29,9 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_7712;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
+import net.minecraft.resource.DataConfiguration;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourceType;
 
@@ -41,7 +41,7 @@ import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 @Mixin(CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin extends Screen {
 	@Unique
-	private static class_7712 defaultDataPackSettings;
+	private static DataConfiguration defaultDataConfiguration;
 
 	@Shadow
 	private ResourcePackManager packManager;
@@ -51,21 +51,21 @@ public abstract class CreateWorldScreenMixin extends Screen {
 	}
 
 	@ModifyVariable(method = "create(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/screen/Screen;)V",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;createServerConfig(Lnet/minecraft/resource/ResourcePackManager;Lnet/minecraft/class_7712;)Lnet/minecraft/server/SaveLoading$ServerConfig;"))
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;createServerConfig(Lnet/minecraft/resource/ResourcePackManager;Lnet/minecraft/resource/DataConfiguration;)Lnet/minecraft/server/SaveLoading$ServerConfig;"))
 	private static ResourcePackManager onCreateResManagerInit(ResourcePackManager manager) {
 		// Add mod data packs to the initial res pack manager so they are active even if the user doesn't use custom data packs
 		manager.providers.add(new ModResourcePackCreator(ResourceType.SERVER_DATA));
 		return manager;
 	}
 
-	@Redirect(method = "create(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/screen/Screen;)V", at = @At(value = "FIELD", target = "Lnet/minecraft/class_7712;field_40260:Lnet/minecraft/class_7712;", ordinal = 0))
-	private static class_7712 replaceDefaultSettings() {
-		return (defaultDataPackSettings = ModResourcePackUtil.createDefaultDataPackSettings());
+	@Redirect(method = "create(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/screen/Screen;)V", at = @At(value = "FIELD", target = "Lnet/minecraft/resource/DataConfiguration;SAFE_MODE:Lnet/minecraft/resource/DataConfiguration;", ordinal = 0))
+	private static DataConfiguration replaceDefaultSettings() {
+		return (defaultDataConfiguration = ModResourcePackUtil.createDefaultDataConfiguration());
 	}
 
-	@ModifyArg(method = "create(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/screen/Screen;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;<init>(Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/class_7712;Lnet/minecraft/client/gui/screen/world/MoreOptionsDialog;)V"), index = 1)
-	private static class_7712 useReplacedDefaultSettings(class_7712 dataPackSettings) {
-		return defaultDataPackSettings;
+	@ModifyArg(method = "create(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/screen/Screen;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;<init>(Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/resource/DataConfiguration;Lnet/minecraft/client/gui/screen/world/MoreOptionsDialog;)V"), index = 1)
+	private static DataConfiguration useReplacedDefaultSettings(DataConfiguration dataPackSettings) {
+		return defaultDataConfiguration;
 	}
 
 	@Inject(method = "getScannedPack",

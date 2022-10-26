@@ -19,6 +19,9 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
@@ -27,10 +30,8 @@ import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Matrix3f;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.world.BlockRenderView;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;

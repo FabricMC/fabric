@@ -49,16 +49,16 @@ abstract class ClientPlayNetworkHandlerMixin {
 	private ClientCommandSource commandSource;
 
 	@Shadow
-	private FeatureSet field_40482;
+	private FeatureSet enabledFeatures;
 
 	@Shadow
-	private CombinedDynamicRegistries<ClientDynamicRegistryType> registryManager;
+	private CombinedDynamicRegistries<ClientDynamicRegistryType> combinedDynamicRegistries;
 
 	@Inject(method = "onGameJoin", at = @At("RETURN"))
 	private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo info) {
 		final CommandDispatcher<FabricClientCommandSource> dispatcher = new CommandDispatcher<>();
 		ClientCommandInternals.setActiveDispatcher(dispatcher);
-		ClientCommandRegistrationCallback.EVENT.invoker().register(dispatcher, new CommandRegistryAccess(this.registryManager.getCombinedRegistryManager(), this.field_40482));
+		ClientCommandRegistrationCallback.EVENT.invoker().register(dispatcher, new CommandRegistryAccess(this.combinedDynamicRegistries.getCombinedRegistryManager(), this.enabledFeatures));
 		ClientCommandInternals.finalizeInit();
 	}
 
@@ -71,14 +71,14 @@ abstract class ClientPlayNetworkHandlerMixin {
 		ClientCommandInternals.addCommands((CommandDispatcher) commandDispatcher, (FabricClientCommandSource) commandSource);
 	}
 
-	@Inject(method = "method_45731", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "sendCommand", at = @At("HEAD"), cancellable = true)
 	private void onSendCommand(String command, CallbackInfoReturnable<Boolean> cir) {
 		if (ClientCommandInternals.executeCommand(command)) {
 			cir.setReturnValue(true);
 		}
 	}
 
-	@Inject(method = "method_45730", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "sendChatCommand", at = @At("HEAD"), cancellable = true)
 	private void onSendCommand(String command, CallbackInfo info) {
 		if (ClientCommandInternals.executeCommand(command)) {
 			info.cancel();

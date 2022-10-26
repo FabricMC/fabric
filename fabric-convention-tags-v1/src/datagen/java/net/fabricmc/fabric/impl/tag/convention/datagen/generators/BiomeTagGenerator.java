@@ -21,13 +21,13 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 
 public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvider<Biome> {
-	public BiomeTagGenerator(FabricDataGenerator dataGenerator) {
-		super(dataGenerator, Registry.BIOME_KEY);
+	public BiomeTagGenerator(FabricDataOutput output) {
+		super(output, Registry.BIOME_KEY);
 	}
 
 	@Override

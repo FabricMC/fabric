@@ -39,7 +39,7 @@ public class ArmorRenderingTests implements ClientModInitializer {
 				armorModel = new BipedEntityModel<>(MinecraftClient.getInstance().getEntityModelLoader().getModelPart(EntityModelLayers.PLAYER_OUTER_ARMOR));
 			}
 
-			model.setAttributes(armorModel);
+			model.copyBipedStateTo(armorModel);
 			armorModel.setVisible(false);
 			armorModel.body.visible = slot == EquipmentSlot.CHEST;
 			armorModel.leftArm.visible = slot == EquipmentSlot.CHEST;
