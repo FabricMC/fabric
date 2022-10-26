@@ -38,7 +38,6 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
@@ -52,6 +51,8 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MeshImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
+
+import org.joml.Vector3f;
 
 /**
  * The render context used for item rendering.
@@ -68,7 +69,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 	private final ItemColors colorMap;
 	private final Random random = Random.create();
-	private final Vec3f normalVec = new Vec3f();
+	private final Vector3f normalVec = new Vector3f();
 
 	private final Supplier<Random> randomSupplier = () -> {
 		random.setSeed(ITEM_RANDOM_SEED);

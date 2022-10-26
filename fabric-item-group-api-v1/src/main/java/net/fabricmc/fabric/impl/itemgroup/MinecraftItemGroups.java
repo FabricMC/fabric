@@ -28,7 +28,7 @@ import net.minecraft.util.Identifier;
 @ApiStatus.Internal
 public final class MinecraftItemGroups {
 	public static final Identifier BUILDING_BLOCKS_ID = new Identifier("minecraft:building_blocks");
-	public static final Identifier NATURE_ID = new Identifier("minecraft:nature");
+	public static final Identifier NATURAL_ID = new Identifier("minecraft:natural");
 	public static final Identifier FUNCTIONAL_ID = new Identifier("minecraft:functional");
 	public static final Identifier REDSTONE_ID = new Identifier("minecraft:redstone");
 	public static final Identifier HOTBAR_ID = new Identifier("minecraft:hotbar");
@@ -42,7 +42,7 @@ public final class MinecraftItemGroups {
 
 	public static final Map<ItemGroup, Identifier> GROUP_ID_MAP = new ImmutableMap.Builder<ItemGroup, Identifier>()
 			.put(ItemGroups.BUILDING_BLOCKS, MinecraftItemGroups.BUILDING_BLOCKS_ID)
-			.put(ItemGroups.NATURE, MinecraftItemGroups.NATURE_ID)
+			.put(ItemGroups.field_40743, MinecraftItemGroups.NATURAL_ID)
 			.put(ItemGroups.FUNCTIONAL, MinecraftItemGroups.FUNCTIONAL_ID)
 			.put(ItemGroups.REDSTONE, MinecraftItemGroups.REDSTONE_ID)
 			.put(ItemGroups.HOTBAR, MinecraftItemGroups.HOTBAR_ID)

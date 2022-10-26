@@ -24,11 +24,12 @@ import java.util.Objects;
 import com.google.common.base.Charsets;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.class_7712;
+import net.minecraft.resource.DataConfiguration;
 import net.minecraft.resource.DataPackSettings;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
@@ -109,7 +110,7 @@ public final class ModResourcePackUtil {
 	 * {@code DataPackSettings.SAFE_MODE} used in vanilla.
 	 * @return the default data pack settings
 	 */
-	public static class_7712 createDefaultDataPackSettings() {
+	public static DataConfiguration createDefaultDataConfiguration() {
 		ModResourcePackCreator modResourcePackCreator = new ModResourcePackCreator(ResourceType.SERVER_DATA);
 		List<ResourcePackProfile> moddedResourcePacks = new ArrayList<>();
 		modResourcePackCreator.register(moddedResourcePacks::add);
@@ -129,7 +130,7 @@ public final class ModResourcePackUtil {
 			}
 		}
 
-		return new class_7712(
+		return new DataConfiguration(
 				new DataPackSettings(enabled, disabled),
 				FeatureFlags.DEFAULT_ENABLED_FEATURES
 		);

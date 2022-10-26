@@ -20,13 +20,14 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec2f;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+
+import org.joml.Vector3f;
 
 /**
  * A mutable {@link QuadView} instance. The base interface for
@@ -182,8 +183,8 @@ public interface MutableQuadView extends QuadView {
 	/**
 	 * Same as {@link #pos(int, float, float, float)} but accepts vector type.
 	 */
-	default MutableQuadView pos(int vertexIndex, Vec3f vec) {
-		return pos(vertexIndex, vec.getX(), vec.getY(), vec.getZ());
+	default MutableQuadView pos(int vertexIndex, Vector3f vec) {
+		return pos(vertexIndex, vec.x(), vec.y(), vec.z());
 	}
 
 	/**
@@ -200,8 +201,8 @@ public interface MutableQuadView extends QuadView {
 	/**
 	 * Same as {@link #normal(int, float, float, float)} but accepts vector type.
 	 */
-	default MutableQuadView normal(int vertexIndex, Vec3f vec) {
-		return normal(vertexIndex, vec.getX(), vec.getY(), vec.getZ());
+	default MutableQuadView normal(int vertexIndex, Vector3f vec) {
+		return normal(vertexIndex, vec.x(), vec.y(), vec.z());
 	}
 
 	/**

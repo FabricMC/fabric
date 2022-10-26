@@ -16,13 +16,17 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 
+import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.RecipeProvider;
@@ -65,8 +69,9 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	}
 
 	@Override
-	public void run(DataWriter writer) {
+	public CompletableFuture<?> run(DataWriter writer) {
 		Set<Identifier> generatedRecipes = Sets.newHashSet();
+		List<CompletableFuture<?>> list = new ArrayList<>();
 		generate(provider -> {
 			Identifier identifier = getRecipeIdentifier(provider.getRecipeId());
 
@@ -78,19 +83,15 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 			ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(provider);
 			ConditionJsonProvider.write(recipeJson, conditions);
 
-			saveRecipe(writer, recipeJson, this.recipesPathResolver.resolveJson(identifier));
+			list.add(DataProvider.writeToPath(writer, recipeJson, this.recipesPathResolver.resolveJson(identifier)));
 			JsonObject advancementJson = provider.toAdvancementJson();
 
 			if (advancementJson != null) {
 				ConditionJsonProvider.write(advancementJson, conditions);
-				saveRecipeAdvancement(writer, advancementJson, this.advancementsPathResolver.resolveJson(getRecipeIdentifier(provider.getAdvancementId())));
+				list.add(DataProvider.writeToPath(writer, advancementJson, this.advancementsPathResolver.resolveJson(getRecipeIdentifier(provider.getAdvancementId()))));
 			}
 		});
-	}
-
-	@Override
-	public String getName() {
-		return "Recipes";
+		return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));
 	}
 
 	/**

@@ -27,7 +27,11 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.MathHelper;
+
+import org.joml.AxisAngle4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class BakedModelFeatureRenderer<T extends LivingEntity, M extends EntityModel<T>> extends FeatureRenderer<T, M> {
 	private Supplier<BakedModel> modelSupplier;
@@ -44,7 +48,7 @@ public class BakedModelFeatureRenderer<T extends LivingEntity, M extends EntityM
 		matrices.push();
 		//matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(headYaw));
 		//matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(headPitch));
-		matrices.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(animationProgress * 0.07F));
+		matrices.multiply(new Quaternionf(new AxisAngle4f(animationProgress * 0.07F, 0, 1, 0)));
 		matrices.scale(-0.75F, -0.75F, 0.75F);
 		float aboveHead = (float) (Math.sin(animationProgress * 0.08F)) * 0.5F + 0.5F;
 		matrices.translate(-0.5F, 0.75F + aboveHead, -0.5F);

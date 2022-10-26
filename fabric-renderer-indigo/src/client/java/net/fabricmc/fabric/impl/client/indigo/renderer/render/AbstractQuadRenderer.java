@@ -28,15 +28,16 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Matrix3f;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3f;
 
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
+
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 /**
  * Base quad-rendering class for fallback and mesh consumers.
@@ -47,7 +48,7 @@ public abstract class AbstractQuadRenderer {
 	protected final BlockRenderInfo blockInfo;
 	protected final AoCalculator aoCalc;
 	protected final QuadTransform transform;
-	protected final Vec3f normalVec = new Vec3f();
+	protected final Vector3f normalVec = new Vector3f();
 
 	protected abstract Matrix4f matrix();
 
@@ -82,15 +83,15 @@ public abstract class AbstractQuadRenderer {
 		bufferQuad(bufferFunc.apply(renderLayer), quad, matrix(), overlay(), normalMatrix(), normalVec);
 	}
 
-	public static void bufferQuad(VertexConsumer buff, MutableQuadViewImpl quad, Matrix4f matrix, int overlay, Matrix3f normalMatrix, Vec3f normalVec) {
+	public static void bufferQuad(VertexConsumer buff, MutableQuadViewImpl quad, Matrix4f matrix, int overlay, Matrix3f normalMatrix, Vector3f normalVec) {
 		final boolean useNormals = quad.hasVertexNormals();
 
 		if (useNormals) {
 			quad.populateMissingNormals();
 		} else {
-			final Vec3f faceNormal = quad.faceNormal();
-			normalVec.set(faceNormal.getX(), faceNormal.getY(), faceNormal.getZ());
-			normalVec.transform(normalMatrix);
+			final Vector3f faceNormal = quad.faceNormal();
+			normalVec.set(faceNormal.x(), faceNormal.y(), faceNormal.z());
+			normalVec.mul(normalMatrix);
 		}
 
 		for (int i = 0; i < 4; i++) {
@@ -103,10 +104,10 @@ public abstract class AbstractQuadRenderer {
 
 			if (useNormals) {
 				normalVec.set(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
-				normalVec.transform(normalMatrix);
+				normalVec.mul(normalMatrix);
 			}
 
-			buff.normal(normalVec.getX(), normalVec.getY(), normalVec.getZ());
+			buff.normal(normalVec.x(), normalVec.y(), normalVec.z());
 			buff.next();
 		}
 	}

@@ -35,12 +35,12 @@ import net.fabricmc.fabric.impl.client.texture.SpriteRegistryCallbackHolder;
 @Mixin(SpriteAtlasManager.class)
 public class SpriteAtlasManagerMixin {
 	@ModifyVariable(method = "<init>", at = @At("HEAD"))
-	private static Map<Identifier, SpriteAtlasManager.class_7773> initAtlases(Map<Identifier, SpriteAtlasManager.class_7773> atlases) {
+	private static Map<Identifier, SpriteAtlasManager.SpriteResourceLoader> initAtlases(Map<Identifier, SpriteAtlasManager.SpriteResourceLoader> atlases) {
 		// Make modifiable
 		atlases = new HashMap<>(atlases);
 
-		for (Map.Entry<Identifier, SpriteAtlasManager.class_7773> entry : atlases.entrySet()) {
-			SpriteAtlasManager.class_7773 resourceFinder = entry.getValue();
+		for (Map.Entry<Identifier, SpriteAtlasManager.SpriteResourceLoader> entry : atlases.entrySet()) {
+			SpriteAtlasManager.SpriteResourceLoader resourceFinder = entry.getValue();
 
 			entry.setValue(resourceManager -> {
 				// First run vanilla logic

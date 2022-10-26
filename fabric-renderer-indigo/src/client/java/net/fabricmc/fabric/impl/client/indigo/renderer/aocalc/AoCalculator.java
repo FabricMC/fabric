@@ -29,6 +29,7 @@ import static net.minecraft.util.math.Direction.WEST;
 
 import java.util.BitSet;
 
+import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,6 @@ import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.api.EnvType;
@@ -284,11 +284,11 @@ public class AoCalculator {
 	}
 
 	/** used exclusively in irregular face to avoid new heap allocations each call. */
-	private final Vec3f vertexNormal = new Vec3f();
+	private final Vector3f vertexNormal = new Vector3f();
 
 	private void irregularFace(MutableQuadViewImpl quad) {
-		final Vec3f faceNorm = quad.faceNormal();
-		Vec3f normal;
+		final Vector3f faceNorm = quad.faceNormal();
+		Vector3f normal;
 		final float[] w = this.w;
 		final float[] aoResult = this.ao;
 		final int[] lightResult = this.light;
@@ -298,7 +298,7 @@ public class AoCalculator {
 			float ao = 0, sky = 0, block = 0, maxAo = 0;
 			int maxSky = 0, maxBlock = 0;
 
-			final float x = normal.getX();
+			final float x = normal.x();
 
 			if (!MathHelper.approximatelyEquals(0f, x)) {
 				final Direction face = x > 0 ? Direction.EAST : Direction.WEST;
@@ -316,7 +316,7 @@ public class AoCalculator {
 				maxBlock = b;
 			}
 
-			final float y = normal.getY();
+			final float y = normal.y();
 
 			if (!MathHelper.approximatelyEquals(0f, y)) {
 				final Direction face = y > 0 ? Direction.UP : Direction.DOWN;
@@ -334,7 +334,7 @@ public class AoCalculator {
 				maxBlock = Math.max(maxBlock, b);
 			}
 
-			final float z = normal.getZ();
+			final float z = normal.z();
 
 			if (!MathHelper.approximatelyEquals(0f, z)) {
 				final Direction face = z > 0 ? Direction.SOUTH : Direction.NORTH;

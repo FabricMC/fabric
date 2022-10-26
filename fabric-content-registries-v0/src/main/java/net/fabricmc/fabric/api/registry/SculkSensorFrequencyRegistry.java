@@ -51,7 +51,7 @@ public final class SculkSensorFrequencyRegistry {
 			throw new IllegalArgumentException("Attempted to register Sculk Sensor frequency for event "+event.getId()+" with frequency "+frequency+". Sculk Sensor frequencies must be between 1 and 15 inclusive.");
 		}
 
-		int replaced = VibrationListener.field_40356.put(event, frequency);
+		int replaced = VibrationListener.FREQUENCIES.put(event, frequency);
 
 		if (replaced != 0) {
 			LOGGER.debug("Replaced old frequency mapping for {} - was {}, now {}", event.getId(), replaced, frequency);

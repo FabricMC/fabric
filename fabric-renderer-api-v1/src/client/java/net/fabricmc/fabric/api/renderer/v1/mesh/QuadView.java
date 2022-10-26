@@ -22,10 +22,11 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+
+import org.joml.Vector3f;
 
 /**
  * Interface for reading quad data encoded by {@link MeshBuilder}.
@@ -104,7 +105,7 @@ public interface QuadView {
 	 * <p>Not typically needed by models. Exposed to enable standard lighting
 	 * utility functions for use by renderers.
 	 */
-	Vec3f faceNormal();
+	Vector3f faceNormal();
 
 	/**
 	 * Generates a new BakedQuad instance with texture
@@ -139,7 +140,7 @@ public interface QuadView {
 	 * Pass a non-null target to avoid allocation - will be returned with values.
 	 * Otherwise returns a new instance.
 	 */
-	Vec3f copyPos(int vertexIndex, @Nullable Vec3f target);
+	Vector3f copyPos(int vertexIndex, @Nullable Vector3f target);
 
 	/**
 	 * Convenience: access x, y, z by index 0-2.
@@ -172,7 +173,7 @@ public interface QuadView {
 	 * Otherwise returns a new instance. Returns null if normal not present.
 	 */
 	@Nullable
-	Vec3f copyNormal(int vertexIndex, @Nullable Vec3f target);
+	Vector3f copyNormal(int vertexIndex, @Nullable Vector3f target);
 
 	/**
 	 * Will return {@link Float#NaN} if normal not present.

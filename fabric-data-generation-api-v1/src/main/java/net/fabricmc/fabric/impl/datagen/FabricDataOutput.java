@@ -28,6 +28,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
  * Extends {@link DataOutput} to keep track of the {@link FabricDataGenerator} that it originated from.
  */
 @ApiStatus.Internal
+// TODO: should probably be a subclass of class_7856, and moved to API
 public class FabricDataOutput extends DataOutput {
 	private final FabricDataGenerator generator;
 
