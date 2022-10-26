@@ -20,8 +20,8 @@ import java.util.Map;
 
 import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-
 import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -49,8 +49,6 @@ import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
 import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistryPacketHandler;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
-
-import org.slf4j.Logger;
 
 public class RegistrySyncTest implements ModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -116,11 +114,11 @@ public class RegistrySyncTest implements ModInitializer {
 		Validate.isTrue(!RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.PERSISTED));
 
 		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
-			registryManager.getOptional(Registry.BIOME_KEY).ifPresent(registry ->
+			registryManager.getOptional(Registry.BIOME_KEY).ifPresent(registry -> {
 				RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> {
 					LOGGER.info("Biome added: {}", id);
-				})
-			);
+				});
+			});
 		});
 
 		// Vanilla status effects don't have an entry for the int id 0, test we can handle this.
