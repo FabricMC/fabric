@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.dimension;
 
 import static net.minecraft.entity.EntityType.COW;
+import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 import com.mojang.brigadier.context.CommandContext;
@@ -24,7 +25,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.entity.Entity;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -37,7 +40,6 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionOptions;
-import net.minecraft.world.dimension.DimensionType;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -45,13 +47,11 @@ import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public class FabricDimensionTest implements ModInitializer {
-	// The dimension options refer to the JSON-file in the dimension subfolder of the datapack,
-	// which will always share it's ID with the world that is created from it
+	// The dimension options refer to the JSON-file in the dimension subfolder of the data pack,
+	// which will always share its ID with the world that is created from it
 	private static final RegistryKey<DimensionOptions> DIMENSION_KEY = RegistryKey.of(Registry.DIMENSION_KEY, new Identifier("fabric_dimension", "void"));
 
 	private static RegistryKey<World> WORLD_KEY = RegistryKey.of(Registry.WORLD_KEY, DIMENSION_KEY.getValue());
-
-	private static final RegistryKey<DimensionType> DIMENSION_TYPE_KEY = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, new Identifier("fabric_dimension", "void_type"));
 
 	@Override
 	public void onInitialize() {
@@ -72,6 +72,7 @@ public class FabricDimensionTest implements ModInitializer {
 
 			Entity entity = COW.create(overworld);
 
+			if (entity == null) throw new AssertionError("Could not create entity!");
 			if (!entity.world.getRegistryKey().equals(World.OVERWORLD)) throw new AssertionError("Entity starting world isn't the overworld");
 
 			TeleportTarget target = new TeleportTarget(Vec3d.ZERO, new Vec3d(1, 1, 1), 45f, 60f);
@@ -85,20 +86,37 @@ public class FabricDimensionTest implements ModInitializer {
 			if (!teleported.getPos().equals(target.position)) throw new AssertionError("Target Position not reached.");
 		});
 
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("fabric_dimension_test")
-				.executes(FabricDimensionTest.this::swapTargeted)));
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+			dispatcher.register(literal("fabric_dimension_test")
+					.executes(FabricDimensionTest.this::swapTargeted));
 
-		// Used to test https://github.com/FabricMC/fabric/issues/2239
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("fabric_dimension_test_desync")
-				.executes(FabricDimensionTest.this::testDesync)));
+			// Used to test https://github.com/FabricMC/fabric/issues/2239
+			// Dedicated-only
+			if (environment != CommandManager.RegistrationEnvironment.INTEGRATED) {
+				dispatcher.register(literal("fabric_dimension_test_desync")
+						.executes(FabricDimensionTest.this::testDesync));
+			}
 
-		// Used to test https://github.com/FabricMC/fabric/issues/2238
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("fabric_dimension_test_entity")
-				.executes(FabricDimensionTest.this::testEntityTeleport)));
+			// Used to test https://github.com/FabricMC/fabric/issues/2238
+			dispatcher.register(literal("fabric_dimension_test_entity")
+					.executes(FabricDimensionTest.this::testEntityTeleport));
+
+			// Used to test teleport to vanilla dimension
+			dispatcher.register(literal("fabric_dimension_test_tp")
+					.then(argument("target", DimensionArgumentType.dimension())
+					.executes((context) ->
+							testVanillaTeleport(context, DimensionArgumentType.getDimensionArgument(context, "target")))));
+		});
 	}
 
-	private int swapTargeted(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+	private int swapTargeted(CommandContext<ServerCommandSource> context) {
 		ServerPlayerEntity player = context.getSource().getPlayer();
+
+		if (player == null) {
+			context.getSource().sendFeedback(Text.literal("You must be a player to execute this command."), false);
+			return 1;
+		}
+
 		ServerWorld serverWorld = player.getWorld();
 		ServerWorld modWorld = getModWorld(context);
 
@@ -121,16 +139,11 @@ public class FabricDimensionTest implements ModInitializer {
 		return 1;
 	}
 
-	private int testDesync(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+	private int testDesync(CommandContext<ServerCommandSource> context) {
 		ServerPlayerEntity player = context.getSource().getPlayer();
 
 		if (player == null) {
 			context.getSource().sendFeedback(Text.literal("You must be a player to execute this command."), false);
-			return 1;
-		}
-
-		if (!context.getSource().getServer().isDedicated()) {
-			context.getSource().sendFeedback(Text.literal("This command can only be executed on dedicated servers."), false);
 			return 1;
 		}
 
@@ -140,7 +153,7 @@ public class FabricDimensionTest implements ModInitializer {
 		return 1;
 	}
 
-	private int testEntityTeleport(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+	private int testEntityTeleport(CommandContext<ServerCommandSource> context) {
 		ServerPlayerEntity player = context.getSource().getPlayer();
 
 		if (player == null) {
@@ -161,6 +174,14 @@ public class FabricDimensionTest implements ModInitializer {
 
 		TeleportTarget target = new TeleportTarget(player.getPos(), player.getVelocity(), player.getYaw(), player.getPitch());
 		FabricDimensions.teleport(entity, (ServerWorld) entity.world, target);
+
+		return 1;
+	}
+
+	private int testVanillaTeleport(CommandContext<ServerCommandSource> context, ServerWorld targetWorld) throws CommandSyntaxException {
+		Entity entity = context.getSource().getEntityOrThrow();
+		TeleportTarget target = new TeleportTarget(entity.getPos(), entity.getVelocity(), entity.getYaw(), entity.getPitch());
+		FabricDimensions.teleport(entity, targetWorld, target);
 
 		return 1;
 	}

@@ -22,6 +22,7 @@ import java.util.List;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -34,8 +35,10 @@ import net.fabricmc.fabric.impl.registry.sync.RemovableIdList;
 public class IdListMixin<T> implements RemovableIdList<T> {
 	@Shadow
 	private int nextId;
+	@Final
 	@Shadow
 	private Object2IntMap<T> idMap;
+	@Final
 	@Shadow
 	private List<T> list;
 

@@ -34,7 +34,7 @@ import net.fabricmc.loader.api.FabricLoader;
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin {
 	@Unique
-	private static Logger FABRIC_LOGGER = LoggerFactory.getLogger(MinecraftServerMixin.class);
+	private static final Logger FABRIC_LOGGER = LoggerFactory.getLogger(MinecraftServerMixin.class);
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setupServer()Z"), method = "runServer")
 	private void beforeSetupServer(CallbackInfo info) {

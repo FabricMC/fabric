@@ -38,7 +38,6 @@ import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
  * <p>This class should be only used for the logical server.
  *
  * @see ServerLoginNetworking
- * @see net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
  */
 public final class ServerPlayNetworking {
 	/**
@@ -159,7 +158,7 @@ public final class ServerPlayNetworking {
 	}
 
 	/**
-	 * Gets all channel names that a the connected client declared the ability to receive a packets on.
+	 * Gets all channel names that a connected client declared the ability to receive a packets on.
 	 *
 	 * @param handler the network handler
 	 * @return True if the connected client has declared the ability to receive a packet on the specified channel
@@ -198,7 +197,7 @@ public final class ServerPlayNetworking {
 	}
 
 	/**
-	 * Creates a packet which may be sent to a the connected client.
+	 * Creates a packet which may be sent to a connected client.
 	 *
 	 * @param channelName the channel name
 	 * @param buf the packet byte buf which represents the payload of the packet

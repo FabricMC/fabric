@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.registry.sync.client;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,6 +32,7 @@ import net.fabricmc.fabric.impl.registry.sync.trackers.IdListTracker;
 
 @Mixin(BlockColors.class)
 public class BlockColorsMixin {
+	@Final
 	@Shadow
 	private IdList<BlockColorProvider> providers;
 

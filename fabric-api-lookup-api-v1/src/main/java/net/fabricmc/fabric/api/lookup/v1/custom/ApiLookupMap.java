@@ -26,7 +26,7 @@ import net.fabricmc.fabric.impl.lookup.custom.ApiLookupMapImpl;
 
 //CHECKSTYLE.OFF: JavadocStyle - Checkstyle didn't like <A, C>, even though {@code ... } already escapes it.
 /**
- * A a map meant to be used as the backing storage for custom {@code ApiLookup} instances,
+ * A map meant to be used as the backing storage for custom {@code ApiLookup} instances,
  * to implement a custom equivalent of {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#get BlockApiLookup#get}.
  *
  * <p><h3>Usage Example</h3>

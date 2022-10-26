@@ -77,7 +77,7 @@ public interface MutableQuadView extends QuadView {
 	/**
 	 * When set, U texture coordinates for the given sprite are
 	 * flipped as part of baking. Can be useful for some randomization
-	 * and texture mapping scenarios. Results are different than what
+	 * and texture mapping scenarios. Results are different from what
 	 * can be obtained via rotation and both can be applied.
 	 * Pass in bakeFlags parameter to {@link #spriteBake(int, Sprite, int)}.
 	 */
@@ -114,7 +114,7 @@ public interface MutableQuadView extends QuadView {
 	 * <p>When called with a non-null value, also sets {@link #nominalFace(Direction)}
 	 * to the same value.
 	 *
-	 * <p>This is different than the value reported by {@link BakedQuad#getFace()}. That value
+	 * <p>This is different from the value reported by {@link BakedQuad#getFace()}. That value
 	 * is computed based on face geometry and must be non-null in vanilla quads.
 	 * That computed value is returned by {@link #lightFace()}.
 	 */
@@ -149,7 +149,7 @@ public interface MutableQuadView extends QuadView {
 	 *
 	 * <p>Calling this method does not emit the quad.
 	 *
-	 * @deprecated Use {@link #fromVanilla(BakedQuad, RenderMaterial, Direction, int[], int)}
+	 * @deprecated Use {@link #fromVanilla(BakedQuad, RenderMaterial, Direction)}
 	 * which has better encapsulation and removed outdated item flag
 	 */
 	@Deprecated

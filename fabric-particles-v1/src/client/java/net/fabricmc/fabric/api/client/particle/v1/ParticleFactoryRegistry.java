@@ -54,7 +54,7 @@ public interface ParticleFactoryRegistry {
 	 * @param <T> The type of particle effects this factory deals with.
 	 */
 	@FunctionalInterface
-	public interface PendingParticleFactory<T extends ParticleEffect> {
+	interface PendingParticleFactory<T extends ParticleEffect> {
 		/**
 		 * Called to create a new particle factory.
 		 *

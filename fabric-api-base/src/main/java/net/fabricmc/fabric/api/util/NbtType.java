@@ -22,7 +22,7 @@ import net.minecraft.nbt.NbtElement;
 /**
  * NBT type ID constants. Useful for filtering by value type in a few cases.
  *
- * <p>For the current list of types, check with {@link NbtElement#TYPES}.
+ * <p>For the current list of types, check with {@link NbtElement}.
  *
  * @see NbtCompound#contains(String, int)
  * @see net.minecraft.nbt.NbtTypes#byId(int)

@@ -34,8 +34,8 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
  * <p>Some events require a screen instance in order to obtain an event instance.
  * The events that require a screen instance can be identified by the use of a method passing a screen instance.
  * All events in {@link ScreenKeyboardEvents} and {@link ScreenMouseEvents} require a screen instance.
- * This registration model is used since a screen being (re)initialized will reset the screen to it's default state, therefore reverting all changes a mod developer may have applied to a screen.
- * Furthermore this design was chosen to reduce the amount of wasted iterations of events as a mod developer would only need to register screen events for rendering, ticking, keyboards and mice if needed on a per instance basis.
+ * This registration model is used since a screen being (re)initialized will reset the screen to its default state, therefore reverting all changes a mod developer may have applied to a screen.
+ * Furthermore, this design was chosen to reduce the amount of wasted iterations of events as a mod developer would only need to register screen events for rendering, ticking, keyboards and mice if needed on a per instance basis.
  *
  * <p>The primary entrypoint into a screen is when it is being opened, this is signified by an event {@link ScreenEvents#BEFORE_INIT before} and {@link ScreenEvents#AFTER_INIT after} initialization of the screen.
  *
@@ -46,7 +46,7 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 @Environment(EnvType.CLIENT)
 public final class ScreenEvents {
 	/**
-	 * An event that is called before {@link Screen#init(MinecraftClient, int, int) a screen is initialized} to it's default state.
+	 * An event that is called before {@link Screen#init(MinecraftClient, int, int) a screen is initialized} to its default state.
 	 * It should be noted some of the methods in {@link Screens} such as a screen's {@link Screens#getTextRenderer(Screen) text renderer} may not be initialized yet, and as such their use is discouraged.
 	 *
 	 * <!--<p>Typically this event is used to register screen events such as listening to when child elements are added to the screen. ------ Uncomment when child add/remove event is added for elements-->
@@ -78,7 +78,7 @@ public final class ScreenEvents {
 	});
 
 	/**
-	 * An event that is called after {@link Screen#init(MinecraftClient, int, int) a screen is initialized} to it's default state.
+	 * An event that is called after {@link Screen#init(MinecraftClient, int, int) a screen is initialized} to its default state.
 	 *
 	 * <p>Typically this event is used to modify a screen after the screen has been initialized.
 	 * Modifications such as changing sizes of buttons, removing buttons and adding/removing child elements to the screen can be done safely using this event.
@@ -92,8 +92,8 @@ public final class ScreenEvents {
 	 * });
 	 * }</pre>
 	 *
-	 * <p>Note that by adding an element to a screen, the element is not automatically {@link net.minecraft.client.gui.screen.TickableElement ticked} or {@link net.minecraft.client.gui.Drawable drawn}.
-	 * Unless the element is button, you need to call the specific {@link TickableElement#tick() tick} and {@link net.minecraft.client.gui.Drawable#render(MatrixStack, int, int, float) render} methods in the corresponding screen events.
+	 * <p>Note that by adding an element to a screen, the element is not automatically {@link net.minecraft.client.gui.Drawable drawn}.
+	 * Unless the element is button, you need to call the specific {@link net.minecraft.client.gui.Drawable#render(MatrixStack, int, int, float) render} methods in the corresponding screen events.
 	 *
 	 * <p>This event can also indicate that the previous screen has been closed.
 	 * @see ScreenEvents#BEFORE_INIT

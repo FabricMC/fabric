@@ -167,6 +167,19 @@ public abstract class FilteringStorage<T> implements Storage<T> {
 
 	@Override
 	@Nullable
+	public StorageView<T> exactView(T resource) {
+		StorageView<T> exact = backingStorage.get().exactView(resource);
+
+		if (exact != null) {
+			return new FilteringStorageView(exact);
+		} else {
+			return null;
+		}
+	}
+
+	@Deprecated(forRemoval = true)
+	@Override
+	@Nullable
 	public StorageView<T> exactView(TransactionContext transaction, T resource) {
 		StorageView<T> exact = backingStorage.get().exactView(transaction, resource);
 

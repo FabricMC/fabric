@@ -111,7 +111,7 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> FLORAL = register("floral");
 	/**
-	 * For biomes where snow, and not ice, naturally spawns as an predominant feature.
+	 * For biomes where snow, and not ice, naturally spawns as a predominant feature.
 	 * For biomes where ice is a predominant feature, see {@link ConventionalBiomeTags#ICY}.
 	 */
 	public static final TagKey<Biome> SNOWY = register("snowy");

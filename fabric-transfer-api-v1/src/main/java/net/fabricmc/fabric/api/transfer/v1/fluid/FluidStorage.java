@@ -117,7 +117,7 @@ public final class FluidStorage {
 	 * This means that per-item combined providers registered through {@code combinedItemApiProvider} DO NOT prevent these general providers from running,
 	 * however regular providers registered through {@code ItemApiLookup#register...} that return a non-null API instance DO prevent it.
 	 */
-	public static Event<CombinedItemApiProvider> GENERAL_COMBINED_PROVIDER = CombinedProvidersImpl.createEvent(false);
+	public static final Event<CombinedItemApiProvider> GENERAL_COMBINED_PROVIDER = CombinedProvidersImpl.createEvent(false);
 
 	@FunctionalInterface
 	public interface CombinedItemApiProvider {

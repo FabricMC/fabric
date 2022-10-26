@@ -25,7 +25,7 @@ import net.minecraft.util.Identifier;
 /**
  * Interface for "identifiable" resource reload listeners.
  *
- * <p>"Identifiable" listeners have an unique identifier, which can be depended on,
+ * <p>"Identifiable" listeners have a unique identifier, which can be depended on,
  * and can provide dependencies that they would like to see executed before
  * themselves.
  *

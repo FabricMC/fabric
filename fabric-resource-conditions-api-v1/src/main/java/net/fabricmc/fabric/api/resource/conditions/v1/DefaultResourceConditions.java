@@ -20,9 +20,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.minecraft.block.Block;
-import net.minecraft.tag.TagKey;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
@@ -41,9 +41,13 @@ public final class DefaultResourceConditions {
 	private static final Identifier BLOCK_TAGS_POPULATED = new Identifier("fabric:block_tags_populated");
 	private static final Identifier FLUID_TAGS_POPULATED = new Identifier("fabric:fluid_tags_populated");
 	private static final Identifier ITEM_TAGS_POPULATED = new Identifier("fabric:item_tags_populated");
+	private static final Identifier TAGS_POPULATED = new Identifier("fabric:tags_populated");
 
 	/**
-	 * Create a NOT condition: returns true if its child condition is false, and false if its child is true.
+	 * Creates a NOT condition that returns true if its child condition is false, and false if its child is true.
+	 *
+	 * @apiNote This condition's ID is {@code fabric:not}, and takes one property, {@code value},
+	 * which is a condition.
 	 */
 	public static ConditionJsonProvider not(ConditionJsonProvider value) {
 		return new ConditionJsonProvider() {
@@ -60,28 +64,40 @@ public final class DefaultResourceConditions {
 	}
 
 	/**
-	 * Create a condition that returns true if all of its child conditions are true.
+	 * Creates a condition that returns true if all of its child conditions are true.
+	 *
+	 * @apiNote This condition's ID is {@code fabric:and}, and takes one property, {@code values},
+	 * which is an array of conditions.
 	 */
 	public static ConditionJsonProvider and(ConditionJsonProvider... values) {
 		return ResourceConditionsImpl.array(AND, values);
 	}
 
 	/**
-	 * Create a condition that returns true if at least one of its child conditions is true.
+	 * Creates a condition that returns true if any of its child conditions are true.
+	 *
+	 * @apiNote This condition's ID is {@code fabric:or}, and takes one property, {@code values},
+	 * which is an array of conditions.
 	 */
 	public static ConditionJsonProvider or(ConditionJsonProvider... values) {
 		return ResourceConditionsImpl.array(OR, values);
 	}
 
 	/**
-	 * Create a condition that returns true if all the passed mod ids correspond to a loaded mod.
+	 * Creates a condition that returns true if all the passed mod ids correspond to a loaded mod.
+	 *
+	 * @apiNote This condition's ID is {@code fabric:all_mods_loaded}, and takes one property,
+	 * {@code values}, which is an array of string mod IDs.
 	 */
 	public static ConditionJsonProvider allModsLoaded(String... modIds) {
 		return ResourceConditionsImpl.mods(ALL_MODS_LOADED, modIds);
 	}
 
 	/**
-	 * Create a condition that returns true if at least one of the passed mod ids corresponds to a loaded mod.
+	 * Creates a condition that returns true if at least one of the passed mod ids corresponds to a loaded mod.
+	 *
+	 * @apiNote This condition's ID is {@code fabric:any_mod_loaded}, and takes one property,
+	 * {@code values}, which is an array of string mod IDs.
 	 */
 	public static ConditionJsonProvider anyModLoaded(String... modIds) {
 		return ResourceConditionsImpl.mods(ANY_MOD_LOADED, modIds);
@@ -89,23 +105,45 @@ public final class DefaultResourceConditions {
 
 	/**
 	 * Create a condition that returns true if each of the passed block tags exists and has at least one element.
+	 * @deprecated Use {@link #tagsPopulated} instead.
 	 */
+	@SafeVarargs
+	@Deprecated
 	public static ConditionJsonProvider blockTagsPopulated(TagKey<Block>... tags) {
-		return ResourceConditionsImpl.tagsPopulated(BLOCK_TAGS_POPULATED, tags);
+		return ResourceConditionsImpl.tagsPopulated(BLOCK_TAGS_POPULATED, false, tags);
 	}
 
 	/**
 	 * Create a condition that returns true if each of the passed fluid tags exists and has at least one element.
+	 * @deprecated Use {@link #tagsPopulated} instead.
 	 */
+	@SafeVarargs
+	@Deprecated
 	public static ConditionJsonProvider fluidTagsPopulated(TagKey<Fluid>... tags) {
-		return ResourceConditionsImpl.tagsPopulated(FLUID_TAGS_POPULATED, tags);
+		return ResourceConditionsImpl.tagsPopulated(FLUID_TAGS_POPULATED, false, tags);
 	}
 
 	/**
 	 * Create a condition that returns true if each of the passed item tags exists and has at least one element.
+	 * @deprecated Use {@link #tagsPopulated} instead.
 	 */
+	@SafeVarargs
+	@Deprecated
 	public static ConditionJsonProvider itemTagsPopulated(TagKey<Item>... tags) {
-		return ResourceConditionsImpl.tagsPopulated(ITEM_TAGS_POPULATED, tags);
+		return ResourceConditionsImpl.tagsPopulated(ITEM_TAGS_POPULATED, false, tags);
+	}
+
+	/**
+	 * Creates a condition that returns true if each of the passed tags exists and has at least one element.
+	 * This works for any registries, and the registry ID of the tags is serialized to JSON as well as the tags.
+	 *
+	 * @apiNote This condition's ID is {@code fabric:tags_populated}, and takes up to two properties:
+	 * {@code values}, which is an array of string tag IDs, and {@code registry}, which is the ID of
+	 * the registry of the tags. If {@code registry} is not provided, it defaults to {@code minecraft:item}.
+	 */
+	@SafeVarargs
+	public static <T> ConditionJsonProvider tagsPopulated(TagKey<T>... tags) {
+		return ResourceConditionsImpl.tagsPopulated(TAGS_POPULATED, true, tags);
 	}
 
 	static void init() {
@@ -130,6 +168,7 @@ public final class DefaultResourceConditions {
 		ResourceConditions.register(BLOCK_TAGS_POPULATED, object -> ResourceConditionsImpl.tagsPopulatedMatch(object, Registry.BLOCK_KEY));
 		ResourceConditions.register(FLUID_TAGS_POPULATED, object -> ResourceConditionsImpl.tagsPopulatedMatch(object, Registry.FLUID_KEY));
 		ResourceConditions.register(ITEM_TAGS_POPULATED, object -> ResourceConditionsImpl.tagsPopulatedMatch(object, Registry.ITEM_KEY));
+		ResourceConditions.register(TAGS_POPULATED, ResourceConditionsImpl::tagsPopulatedMatch);
 	}
 
 	private DefaultResourceConditions() {

@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public final class EntityTrackingEvents {
 	/**
 	 * An event that is called before player starts tracking an entity.
-	 * Typically this occurs when an entity enters a client's view distance.
+	 * Typically, this occurs when an entity enters a client's view distance.
 	 * This event is called before the player's client is sent the entity's {@link Entity#createSpawnPacket() spawn packet}.
 	 */
 	public static final Event<StartTracking> START_TRACKING = EventFactory.createArrayBacked(StartTracking.class, callbacks -> (trackedEntity, player) -> {

@@ -324,7 +324,7 @@ public interface BiomeModificationContext {
 		 * <p>This method is intended for use with the placed features found in
 		 * classes such as {@link net.minecraft.world.gen.feature.OrePlacedFeatures}.
 		 *
-		 * <p><b>NOTE:</b> In case the placed feature is overridden in a datapack, the datapacks version
+		 * <p><b>NOTE:</b> In case the placed feature is overridden in a data pack, the data pack's version
 		 * will be used.
 		 */
 		default void addBuiltInFeature(GenerationStep.Feature step, PlacedFeature placedFeature) {
@@ -341,7 +341,7 @@ public interface BiomeModificationContext {
 		 *
 		 * <p>This method is intended for use with the configured carvers found in {@link net.minecraft.world.gen.carver.ConfiguredCarvers}.
 		 *
-		 * <p><b>NOTE:</b> In case the configured carver is overridden in a datapack, the datapacks version
+		 * <p><b>NOTE:</b> In case the configured carver is overridden in a data pack, the data pack's version
 		 * will be used.
 		 */
 		default void addBuiltInCarver(GenerationStep.Carver step, ConfiguredCarver<?> configuredCarver) {

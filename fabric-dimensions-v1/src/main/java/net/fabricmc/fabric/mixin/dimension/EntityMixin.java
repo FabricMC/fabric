@@ -16,34 +16,59 @@
 
 package net.fabricmc.fabric.mixin.dimension;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.TeleportTarget;
+import net.minecraft.world.World;
 
-import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
+import net.fabricmc.fabric.impl.dimension.Teleportable;
 
 /**
  * This mixin implements {@link Entity#getTeleportTarget(ServerWorld)} for modded dimensions, as Vanilla will
  * not return a teleport target for anything but Vanilla dimensions and prevents changing teleport target in
  * {@link ServerPlayerEntity#getTeleportTarget(ServerWorld)} when teleporting to END using api.
+ * This also prevents several End dimension-specific code when teleporting using api.
  */
 @Mixin(value = {ServerPlayerEntity.class, Entity.class})
-public class EntityMixin {
-	@SuppressWarnings("ConstantConditions")
+public class EntityMixin implements Teleportable {
+	@Unique
+	@Nullable
+	protected TeleportTarget customTeleportTarget;
+
+	@Override
+	public void fabric_setCustomTeleportTarget(TeleportTarget teleportTarget) {
+		this.customTeleportTarget = teleportTarget;
+	}
+
 	@Inject(method = "getTeleportTarget", at = @At("HEAD"), cancellable = true, allow = 1)
-	public void getTeleportTarget(ServerWorld destination, CallbackInfoReturnable<TeleportTarget> cri) {
-		Entity self = (Entity) (Object) this;
+	public void getTeleportTarget(ServerWorld destination, CallbackInfoReturnable<TeleportTarget> cir) {
 		// Check if a destination has been set for the entity currently being teleported
-		TeleportTarget customTarget = FabricDimensionInternals.getCustomTarget();
+		TeleportTarget customTarget = this.customTeleportTarget;
 
 		if (customTarget != null) {
-			cri.setReturnValue(customTarget);
+			cir.setReturnValue(customTarget);
 		}
+	}
+
+	/**
+	 * This stops the following behaviors, in 1 mixin.
+	 * - ServerWorld#createEndSpawnPlatform in Entity
+	 * - End-to-overworld spawning behavior in ServerPlayerEntity
+	 * - ServerPlayerEntity#createEndSpawnPlatform in ServerPlayerEntity
+	 */
+	@Redirect(method = "moveToWorld", at = @At(value = "FIELD", target = "Lnet/minecraft/world/World;END:Lnet/minecraft/util/registry/RegistryKey;"))
+	private RegistryKey<World> stopEndSpecificBehavior() {
+		if (this.customTeleportTarget != null) return null;
+		return World.END;
 	}
 }

@@ -183,7 +183,7 @@ public final class ClientPlayNetworking {
 	}
 
 	/**
-	 * Creates a packet which may be sent to a the connected server.
+	 * Creates a packet which may be sent to the connected server.
 	 *
 	 * @param channelName the channel name
 	 * @param buf the packet byte buf which represents the payload of the packet

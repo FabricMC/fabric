@@ -37,8 +37,6 @@ public abstract class ItemGroupMixin implements ItemGroupExtensions {
 		ItemGroup[] tempGroups = GROUPS;
 		GROUPS = new ItemGroup[GROUPS.length + 1];
 
-		for (int i = 0; i < tempGroups.length; i++) {
-			GROUPS[i] = tempGroups[i];
-		}
+		System.arraycopy(tempGroups, 0, GROUPS, 0, tempGroups.length);
 	}
 }

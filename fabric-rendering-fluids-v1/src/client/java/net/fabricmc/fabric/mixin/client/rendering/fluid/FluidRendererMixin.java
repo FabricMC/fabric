@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.client.rendering.fluid;
 
 import org.objectweb.asm.Opcodes;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -42,8 +43,10 @@ import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRendererHookContaine
 
 @Mixin(FluidRenderer.class)
 public class FluidRendererMixin {
+	@Final
 	@Shadow
 	private Sprite[] lavaSprites;
+	@Final
 	@Shadow
 	private Sprite[] waterSprites;
 	@Shadow

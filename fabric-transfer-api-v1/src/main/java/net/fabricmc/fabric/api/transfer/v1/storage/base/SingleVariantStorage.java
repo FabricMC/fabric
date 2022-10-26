@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.transfer.v1.storage.base;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.nbt.NbtCompound;
+
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
@@ -34,6 +36,9 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
  *
  * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
+ *
+ * @see net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage SingleFluidStorage for fluid variants.
+ * @see net.fabricmc.fabric.api.transfer.v1.item.base.SingleItemStorage SingleItemStorage for item variants.
  */
 @ApiStatus.Experimental
 public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends SnapshotParticipant<ResourceAmount<T>> implements SingleSlotStorage<T> {
@@ -63,6 +68,15 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 	 */
 	protected boolean canExtract(T variant) {
 		return true;
+	}
+
+	/**
+	 * Simple implementation of writing to NBT. Other formats are allowed, this is just a convenient suggestion.
+	 */
+	// Reading from NBT is not provided because it would need to call the static FluidVariant/ItemVariant.fromNbt
+	public void writeNbt(NbtCompound nbt) {
+		nbt.put("variant", variant.toNbt());
+		nbt.putLong("amount", amount);
 	}
 
 	@Override
