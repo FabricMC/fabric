@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.object.builder.v1.client.model;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
-import net.minecraft.client.item.UnclampedModelPredicateProvider;
+import net.minecraft.client.item.ClampedModelPredicateProvider;
 
 import net.fabricmc.fabric.mixin.object.builder.client.ModelPredicateProviderRegistryAccessor;
 import net.fabricmc.fabric.mixin.object.builder.client.ModelPredicateProviderRegistrySpecificAccessor;
@@ -41,7 +41,7 @@ public final class FabricModelPredicateProviderRegistry {
 	 * @param id       the identifier of the provider
 	 * @param provider the provider
 	 */
-	public static void register(Identifier id, UnclampedModelPredicateProvider provider) {
+	public static void register(Identifier id, ClampedModelPredicateProvider provider) {
 		ModelPredicateProviderRegistryAccessor.callRegister(id, provider);
 	}
 
@@ -52,7 +52,7 @@ public final class FabricModelPredicateProviderRegistry {
 	 * @param id       the identifier of the provider
 	 * @param provider the provider
 	 */
-	public static void register(Item item, Identifier id, UnclampedModelPredicateProvider provider) {
+	public static void register(Item item, Identifier id, ClampedModelPredicateProvider provider) {
 		ModelPredicateProviderRegistrySpecificAccessor.callRegister(item, id, provider);
 	}
 }

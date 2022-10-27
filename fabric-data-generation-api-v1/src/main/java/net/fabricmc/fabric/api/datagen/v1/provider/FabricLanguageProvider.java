@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -42,23 +43,24 @@ import net.minecraft.stat.StatType;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 
 /**
  * Extend this class and implement {@link FabricLanguageProvider#generateTranslations(TranslationBuilder)}.
- * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricDataGenerator, String)} FabricLanguageProvider} to declare what language code is being generated if it isn't {@code en_us}.
+ * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricDataOutput, String)} FabricLanguageProvider} to declare what language code is being generated if it isn't {@code en_us}.
  *
- * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
+ * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
  */
 public abstract class FabricLanguageProvider implements DataProvider {
-	protected final FabricDataGenerator dataGenerator;
+	protected final FabricDataOutput dataOutput;
 	private final String languageCode;
 
-	protected FabricLanguageProvider(FabricDataGenerator dataGenerator) {
-		this(dataGenerator, "en_us");
+	protected FabricLanguageProvider(FabricDataOutput dataOutput) {
+		this(dataOutput, "en_us");
 	}
 
-	protected FabricLanguageProvider(FabricDataGenerator dataGenerator, String languageCode) {
-		this.dataGenerator = dataGenerator;
+	protected FabricLanguageProvider(FabricDataOutput dataOutput, String languageCode) {
+		this.dataOutput = dataOutput;
 		this.languageCode = languageCode;
 	}
 
@@ -70,7 +72,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	public abstract void generateTranslations(TranslationBuilder translationBuilder);
 
 	@Override
-	public void run(DataWriter writer) throws IOException {
+	public CompletableFuture<?> run(DataWriter writer) {
 		TreeMap<String, String> translationEntries = new TreeMap<>();
 
 		generateTranslations((String key, String value) -> {
@@ -90,18 +92,18 @@ public abstract class FabricLanguageProvider implements DataProvider {
 			langEntryJson.addProperty(entry.getKey(), entry.getValue());
 		}
 
-		DataProvider.writeToPath(writer, langEntryJson, getLangFilePath(this.languageCode));
+		return DataProvider.writeToPath(writer, langEntryJson, getLangFilePath(this.languageCode));
 	}
 
 	private Path getLangFilePath(String code) {
-		return dataGenerator.getOutput()
+		return dataOutput
 				.getResolver(DataOutput.OutputType.RESOURCE_PACK, "lang")
-				.resolveJson(new Identifier(dataGenerator.getModId(), code));
+				.resolveJson(new Identifier(dataOutput.getModId(), code));
 	}
 
 	@Override
-	public String getName() {
-		return "Language";
+	public final String getName() {
+		return "Language (%s)".formatted(languageCode);
 	}
 
 	/**

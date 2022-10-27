@@ -24,16 +24,17 @@ import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 
 /**
  * Extend this class and implement {@link java.util.function.Consumer#accept}. Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
  */
 public abstract class SimpleFabricLootTableProvider implements FabricLootTableProvider {
-	protected final FabricDataGenerator dataGenerator;
+	protected final FabricDataOutput output;
 	protected final LootContextType lootContextType;
 
-	public SimpleFabricLootTableProvider(FabricDataGenerator dataGenerator, LootContextType lootContextType) {
-		this.dataGenerator = dataGenerator;
+	public SimpleFabricLootTableProvider(FabricDataOutput output, LootContextType lootContextType) {
+		this.output = output;
 		this.lootContextType = lootContextType;
 	}
 
@@ -45,8 +46,8 @@ public abstract class SimpleFabricLootTableProvider implements FabricLootTablePr
 
 	@ApiStatus.Internal
 	@Override
-	public final FabricDataGenerator getFabricDataGenerator() {
-		return dataGenerator;
+	public final FabricDataOutput getFabricDataOutput() {
+		return output;
 	}
 
 	@Override

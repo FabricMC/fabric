@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.test.client.rendering.fluid;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.class_7766;
+import net.minecraft.client.texture.SpriteLoader;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 
@@ -60,10 +60,11 @@ public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay")
 		));
 
+		// TODO: this looks useless - vanilla should load every sprite in the block folder already; double check
 		ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((resourceManager, sprites) -> {
-			class_7766.method_45830(resourceManager, new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"), sprites::put);
-			class_7766.method_45830(resourceManager, new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"), sprites::put);
-			class_7766.method_45830(resourceManager, new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay"), sprites::put);
+			SpriteLoader.addResource(resourceManager, new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"), sprites::put);
+			SpriteLoader.addResource(resourceManager, new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"), sprites::put);
+			SpriteLoader.addResource(resourceManager, new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay"), sprites::put);
 		});
 	}
 }

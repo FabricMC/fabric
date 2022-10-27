@@ -17,10 +17,12 @@
 package net.fabricmc.fabric.api.event.client;
 
 import java.util.Map;
+import java.util.function.BiConsumer;
 
-import net.minecraft.class_7766;
+import net.minecraft.client.texture.SpriteLoader;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -30,8 +32,8 @@ public interface ClientSpriteRegistryCallback {
 	/**
 	 * Add sprites to the map of sprites that will be baked into the sprite atlas.
 	 *
-	 * @see class_7766#method_45834 For adding textures from a folder recursively.
-	 * @see class_7766#method_45830 For adding a single texture.
+	 * @see SpriteLoader#addResources(ResourceManager, String, BiConsumer) For adding textures from a folder recursively.
+	 * @see SpriteLoader#addResource(ResourceManager, Identifier, BiConsumer) For adding a single texture.
 	 */
 	void registerSprites(ResourceManager resourceManager, Map<Identifier, Resource> sprites);
 
@@ -42,7 +44,7 @@ public interface ClientSpriteRegistryCallback {
 	 * @return The event for a given atlas path.
 	 * @since 0.1.1
 	 *
-	 * @see net.minecraft.client.texture.SpriteAtlasTexture#BLOCK_ATLAS_TEXTURE
+	 * @see PlayerScreenHandler#BLOCK_ATLAS_TEXTURE
 	 */
 	static Event<ClientSpriteRegistryCallback> event(Identifier atlasId) {
 		return SpriteRegistryCallbackHolder.eventLocal(atlasId);

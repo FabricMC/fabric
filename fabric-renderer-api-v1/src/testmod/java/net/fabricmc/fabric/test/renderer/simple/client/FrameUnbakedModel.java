@@ -22,8 +22,8 @@ import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.class_7775;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
@@ -48,7 +48,7 @@ final class FrameUnbakedModel implements UnbakedModel {
 	}
 
 	@Override
-	public void method_45785(Function<Identifier, UnbakedModel> function) {
+	public void setParents(Function<Identifier, UnbakedModel> function) {
 	}
 
 	/*
@@ -57,7 +57,7 @@ final class FrameUnbakedModel implements UnbakedModel {
 	 */
 	@Nullable
 	@Override
-	public BakedModel bake(class_7775 arg, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
 		// The renderer api may not have an implementation.
 		// For this reason we will just null check the renderer impl
 		if (RendererAccess.INSTANCE.hasRenderer()) {

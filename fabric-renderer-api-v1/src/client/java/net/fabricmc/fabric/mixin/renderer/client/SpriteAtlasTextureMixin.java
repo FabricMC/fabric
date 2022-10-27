@@ -25,9 +25,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.class_7766;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.texture.SpriteLoader;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.renderer.SpriteFinderImpl;
@@ -40,8 +40,8 @@ public class SpriteAtlasTextureMixin implements SpriteFinderImpl.SpriteFinderAcc
 
 	private SpriteFinderImpl fabric_spriteFinder = null;
 
-	@Inject(at = @At("RETURN"), method = "method_45848")
-	private void uploadHook(class_7766.class_7767 arg, CallbackInfo ci) {
+	@Inject(at = @At("RETURN"), method = "upload")
+	private void uploadHook(SpriteLoader.StitchResult arg, CallbackInfo ci) {
 		fabric_spriteFinder = null;
 	}
 

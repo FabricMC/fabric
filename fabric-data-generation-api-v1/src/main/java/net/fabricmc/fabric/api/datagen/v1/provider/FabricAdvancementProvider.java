@@ -16,9 +16,11 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
-import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
@@ -32,21 +34,22 @@ import net.minecraft.data.DataWriter;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 /**
  * Extend this class and implement {@link FabricAdvancementProvider#generateAdvancement}.
  *
- * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
+ * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
  */
 public abstract class FabricAdvancementProvider implements DataProvider {
-	protected final FabricDataGenerator dataGenerator;
+	protected final FabricDataOutput output;
 	private final DataOutput.PathResolver pathResolver;
 
-	protected FabricAdvancementProvider(FabricDataGenerator dataGenerator) {
-		this.dataGenerator = dataGenerator;
-		this.pathResolver = dataGenerator.getOutput().getResolver(DataOutput.OutputType.DATA_PACK, "advancements");
+	protected FabricAdvancementProvider(FabricDataOutput output) {
+		this.output = output;
+		this.pathResolver = output.getResolver(DataOutput.OutputType.DATA_PACK, "advancements");
 	}
 
 	/**
@@ -68,11 +71,13 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	}
 
 	@Override
-	public void run(DataWriter writer) throws IOException {
+	public CompletableFuture<?> run(DataWriter writer) {
 		final Set<Identifier> identifiers = Sets.newHashSet();
 		final Set<Advancement> advancements = Sets.newHashSet();
 
 		generateAdvancement(advancements::add);
+
+		final List<CompletableFuture<?>> futures = new ArrayList<>();
 
 		for (Advancement advancement : advancements) {
 			if (!identifiers.add(advancement.getId())) {
@@ -82,8 +87,10 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 			JsonObject advancementJson = advancement.createTask().toJson();
 			ConditionJsonProvider.write(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
 
-			DataProvider.writeToPath(writer, advancementJson, getOutputPath(advancement));
+			futures.add(DataProvider.writeToPath(writer, advancementJson, getOutputPath(advancement)));
 		}
+
+		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
 	}
 
 	private Path getOutputPath(Advancement advancement) {
