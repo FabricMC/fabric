@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.rendering.v1;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.Camera;
@@ -30,7 +31,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.api.EnvType;

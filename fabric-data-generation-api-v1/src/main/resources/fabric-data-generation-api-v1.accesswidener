@@ -2,7 +2,6 @@ accessWidener	v2	named
 
 accessible field net/minecraft/data/DataGenerator output Lnet/minecraft/data/DataOutput;
 mutable field net/minecraft/data/DataGenerator output Lnet/minecraft/data/DataOutput;
-accessible field net/minecraft/data/DataGenerator outputPath Ljava/nio/file/Path;
 
 accessible  field  net/minecraft/data/server/recipe/RecipeProvider  recipesPathResolver  Lnet/minecraft/data/DataOutput$PathResolver;
 accessible  field  net/minecraft/data/server/recipe/RecipeProvider  advancementsPathResolver  Lnet/minecraft/data/DataOutput$PathResolver;
@@ -25,6 +24,8 @@ extendable  method  net/minecraft/data/DataOutput$PathResolver  <init>  (Lnet/mi
 accessible  field   net/minecraft/data/DataOutput$PathResolver rootPath    Ljava/nio/file/Path;
 accessible  field   net/minecraft/data/DataOutput$PathResolver directoryName    Ljava/lang/String;
 
+extendable  method  net/minecraft/data/DataGenerator$Pack    <init>    (Lnet/minecraft/data/DataGenerator;ZLjava/lang/String;Lnet/minecraft/data/DataOutput;)V
+
 transitive-accessible   method  net/minecraft/data/family/BlockFamilies register    (Lnet/minecraft/block/Block;)Lnet/minecraft/data/family/BlockFamily$Builder;
 
 transitive-accessible   field   net/minecraft/data/client/BlockStateModelGenerator    blockStateCollector Ljava/util/function/Consumer;
@@ -42,9 +43,7 @@ transitive-accessible   class net/minecraft/data/client/BlockStateModelGenerator
 transitive-accessible   class net/minecraft/data/client/BlockStateModelGenerator$LogTexturePool
 transitive-accessible   class net/minecraft/data/client/BlockStateModelGenerator$BuiltinModelPool
 
-transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	saveRecipeAdvancement	(Lnet/minecraft/data/DataWriter;Lnet/minecraft/util/Identifier;Lnet/minecraft/advancement/Advancement$Builder;)V
-transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	saveRecipe	(Lnet/minecraft/data/DataWriter;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V
-transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	saveRecipeAdvancement	(Lnet/minecraft/data/DataWriter;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V
+transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	saveRecipeAdvancement	(Lnet/minecraft/data/DataWriter;Lnet/minecraft/util/Identifier;Lnet/minecraft/advancement/Advancement$Builder;)Ljava/util/concurrent/CompletableFuture;
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	generate	(Ljava/util/function/Consumer;)V
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	generateFamilies	(Ljava/util/function/Consumer;Lnet/minecraft/resource/featuretoggle/FeatureSet;)V
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	offerSingleOutputShapelessRecipe	(Ljava/util/function/Consumer;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/item/ItemConvertible;Ljava/lang/String;)V

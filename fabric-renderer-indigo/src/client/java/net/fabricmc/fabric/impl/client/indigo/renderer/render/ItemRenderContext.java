@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.joml.Vector3f;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.item.ItemColors;
@@ -38,7 +40,6 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
@@ -68,7 +69,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 	private final ItemColors colorMap;
 	private final Random random = Random.create();
-	private final Vec3f normalVec = new Vec3f();
+	private final Vector3f normalVec = new Vector3f();
 
 	private final Supplier<Random> randomSupplier = () -> {
 		random.setSeed(ITEM_RANDOM_SEED);

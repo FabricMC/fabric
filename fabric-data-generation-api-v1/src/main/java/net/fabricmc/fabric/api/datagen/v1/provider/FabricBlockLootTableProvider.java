@@ -35,19 +35,20 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 
 /**
  * Extend this class and implement {@link FabricBlockLootTableProvider#generate}.
  *
- * <p>Register an instance of the class with {@link FabricDataGenerator#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
+ * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
  */
 public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerator implements FabricLootTableProvider {
-	protected final FabricDataGenerator dataGenerator;
+	private final FabricDataOutput output;
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
 
-	protected FabricBlockLootTableProvider(FabricDataGenerator dataGenerator) {
+	protected FabricBlockLootTableProvider(FabricDataOutput dataOutput) {
 		super(Collections.emptySet(), FeatureFlags.FEATURE_MANAGER.getFeatureSet());
-		this.dataGenerator = dataGenerator;
+		this.output = dataOutput;
 	}
 
 	/**
@@ -71,8 +72,8 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 	}
 
 	@Override
-	public FabricDataGenerator getFabricDataGenerator() {
-		return dataGenerator;
+	public FabricDataOutput getFabricDataOutput() {
+		return output;
 	}
 
 	@Override
@@ -89,11 +90,11 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 			biConsumer.accept(identifier, entry.getValue());
 		}
 
-		if (dataGenerator.isStrictValidationEnabled()) {
+		if (output.isStrictValidationEnabled()) {
 			Set<Identifier> missing = Sets.newHashSet();
 
 			for (Identifier blockId : Registry.BLOCK.getIds()) {
-				if (blockId.getNamespace().equals(dataGenerator.getModId())) {
+				if (blockId.getNamespace().equals(output.getModId())) {
 					if (!lootTables.containsKey(Registry.BLOCK.get(blockId).getLootTableId())) {
 						missing.add(blockId);
 					}

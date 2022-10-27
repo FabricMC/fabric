@@ -39,7 +39,7 @@ public class FabricCreativeGuiComponents {
 		final Type type;
 
 		public ItemGroupButtonWidget(int x, int y, Type type, CreativeGuiExtensions extensions) {
-			super(x, y, 11, 10, type.text, (bw) -> type.clickConsumer.accept(extensions));
+			super(x, y, 11, 10, type.text, (bw) -> type.clickConsumer.accept(extensions), EMPTY, ButtonWidget.field_40754);
 			this.extensions = extensions;
 			this.type = type;
 			this.gui = (CreativeInventoryScreen) extensions;
@@ -47,7 +47,7 @@ public class FabricCreativeGuiComponents {
 
 		@Override
 		public void render(MatrixStack matrixStack, int mouseX, int mouseY, float float_1) {
-			this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+			this.hovered = mouseX >= this.method_46426() && mouseY >= this.method_46427() && mouseX < this.method_46426() + this.width && mouseY < this.method_46427() + this.height;
 			this.visible = extensions.fabric_isButtonVisible(type);
 			this.active = extensions.fabric_isButtonEnabled(type);
 
@@ -57,7 +57,7 @@ public class FabricCreativeGuiComponents {
 
 				RenderSystem.setShaderTexture(0, BUTTON_TEX);
 				RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-				this.drawTexture(matrixStack, this.x, this.y, u + (type == Type.NEXT ? 11 : 0), v, 11, 10);
+				this.drawTexture(matrixStack, this.method_46426(), this.method_46427(), u + (type == Type.NEXT ? 11 : 0), v, 11, 10);
 
 				if (this.hovered) {
 					int pageCount = (int) Math.ceil((ItemGroups.GROUPS.length - COMMON_GROUPS.size()) / 9D);

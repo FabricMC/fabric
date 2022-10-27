@@ -1,8 +1,9 @@
 accessWidener v2 named
 
 # Registering custom model predicate providers for item models
-transitive-accessible method net/minecraft/client/item/ModelPredicateProviderRegistry register (Lnet/minecraft/util/Identifier;Lnet/minecraft/client/item/UnclampedModelPredicateProvider;)Lnet/minecraft/client/item/UnclampedModelPredicateProvider;
-transitive-accessible method net/minecraft/client/item/ModelPredicateProviderRegistry register (Lnet/minecraft/item/Item;Lnet/minecraft/util/Identifier;Lnet/minecraft/client/item/UnclampedModelPredicateProvider;)V
+transitive-accessible method net/minecraft/client/item/ModelPredicateProviderRegistry register (Lnet/minecraft/item/Item;Lnet/minecraft/util/Identifier;Lnet/minecraft/client/item/ClampedModelPredicateProvider;)V
+transitive-accessible method net/minecraft/client/item/ModelPredicateProviderRegistry register (Lnet/minecraft/util/Identifier;Lnet/minecraft/client/item/ClampedModelPredicateProvider;)Lnet/minecraft/client/item/ClampedModelPredicateProvider;
+transitive-accessible method net/minecraft/client/item/ModelPredicateProviderRegistry registerCustomModelData (Lnet/minecraft/client/item/ModelPredicateProvider;)V
 
 # Registering custom advancement criteria
 transitive-accessible method net/minecraft/advancement/criterion/Criteria register (Lnet/minecraft/advancement/criterion/Criterion;)Lnet/minecraft/advancement/criterion/Criterion;
@@ -114,7 +115,6 @@ transitive-accessible field net/minecraft/inventory/SimpleInventory stacks Lnet/
 
 ### Generated access wideners below
 # Constructors of non-abstract block classes
-transitive-accessible method net/minecraft/block/AbstractButtonBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;IZLnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundEvent;)V
 transitive-accessible method net/minecraft/block/AirBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/AttachedStemBlock <init> (Lnet/minecraft/block/GourdBlock;Ljava/util/function/Supplier;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/AzaleaBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
@@ -122,6 +122,7 @@ transitive-accessible method net/minecraft/block/BarrierBlock <init> (Lnet/minec
 transitive-accessible method net/minecraft/block/BigDripleafBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/BigDripleafStemBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/BlastFurnaceBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
+transitive-accessible method net/minecraft/block/ButtonBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;IZLnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundEvent;)V
 transitive-accessible method net/minecraft/block/CactusBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/CakeBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/CandleCakeBlock <init> (Lnet/minecraft/block/Block;Lnet/minecraft/block/AbstractBlock$Settings;)V
