@@ -9,3 +9,7 @@ moduleDependencies(project, [
 		'fabric-api-base',
 		'fabric-networking-api-v1'
 ])
+
+testDependencies(project, [
+        ':fabric-lifecycle-events-v1'
+])

@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.test.registry.sync;
 
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -38,6 +40,7 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
@@ -113,12 +116,23 @@ public class RegistrySyncTest implements ModInitializer {
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.SYNCED));
 		Validate.isTrue(!RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.PERSISTED));
 
+		final AtomicInteger setupCalled = new AtomicInteger(4);
+
 		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
+			setupCalled.decrementAndGet();
 			registryManager.getOptional(Registry.BIOME_KEY).ifPresent(registry -> {
 				RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> {
 					LOGGER.info("Biome added: {}", id);
 				});
 			});
+		});
+
+		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+			int remaining = setupCalled.get();
+
+			if (remaining > 0) {
+				throw new IllegalStateException(String.format(Locale.ROOT, "Expected DRM setup to be called at least 4 times, %d remaining", remaining));
+			}
 		});
 
 		// Vanilla status effects don't have an entry for the int id 0, test we can handle this.
