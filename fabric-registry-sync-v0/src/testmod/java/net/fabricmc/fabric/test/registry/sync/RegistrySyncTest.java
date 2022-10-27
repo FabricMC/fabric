@@ -16,9 +16,8 @@
 
 package net.fabricmc.fabric.test.registry.sync;
 
-import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -116,10 +115,10 @@ public class RegistrySyncTest implements ModInitializer {
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.SYNCED));
 		Validate.isTrue(!RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.PERSISTED));
 
-		final AtomicInteger setupCalled = new AtomicInteger(4);
+		final AtomicBoolean setupCalled = new AtomicBoolean(false);
 
 		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
-			setupCalled.decrementAndGet();
+			setupCalled.set(true);
 			registryManager.getOptional(Registry.BIOME_KEY).ifPresent(registry -> {
 				RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> {
 					LOGGER.info("Biome added: {}", id);
@@ -128,10 +127,8 @@ public class RegistrySyncTest implements ModInitializer {
 		});
 
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-			int remaining = setupCalled.get();
-
-			if (remaining > 0) {
-				throw new IllegalStateException(String.format(Locale.ROOT, "Expected DRM setup to be called at least 4 times, %d remaining", remaining));
+			if (!setupCalled.get()) {
+				throw new IllegalStateException("DRM setup was not called before startup!");
 			}
 		});
 
