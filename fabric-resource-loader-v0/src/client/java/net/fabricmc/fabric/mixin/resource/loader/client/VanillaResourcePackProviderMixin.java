@@ -35,7 +35,7 @@ public class VanillaResourcePackProviderMixin {
 	private void addBuiltinResourcePacks(Consumer<ResourcePackProfile> consumer, CallbackInfo ci) {
 		// Register mod and built-in resource packs after the vanilla built-in resource packs are registered.
 		// noinspection ConstantConditions
-		if ((Object)this instanceof DefaultClientResourcePackProvider) {
+		if ((Object) this instanceof DefaultClientResourcePackProvider) {
 			ModResourcePackCreator.CLIENT_RESOURCE_PACK_PROVIDER.register(consumer);
 		}
 	}
