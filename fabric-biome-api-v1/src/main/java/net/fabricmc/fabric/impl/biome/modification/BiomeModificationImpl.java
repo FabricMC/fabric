@@ -26,7 +26,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import com.google.common.base.Stopwatch;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.TestOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +41,6 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 
-@ApiStatus.Internal
 public class BiomeModificationImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BiomeModificationImpl.class);
 
