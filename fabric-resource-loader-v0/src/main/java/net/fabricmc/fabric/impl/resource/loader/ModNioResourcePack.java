@@ -46,8 +46,9 @@ import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
-import net.minecraft.util.PathUtil;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.PathUtil;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
@@ -61,7 +62,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	private static final FileSystem DEFAULT_FS = FileSystems.getDefault();
 
 	private final Identifier id;
-	private final String name;
+	private final Text name;
 	private final ModMetadata modInfo;
 	private final List<Path> basePaths;
 	private final ResourceType type;
@@ -69,7 +70,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	private final ResourcePackActivationType activationType;
 	private final Map<ResourceType, Set<String>> namespaces;
 
-	public static ModNioResourcePack create(Identifier id, String name, ModContainer mod, String subPath, ResourceType type, ResourcePackActivationType activationType) {
+	public static ModNioResourcePack create(Identifier id, Text name, ModContainer mod, String subPath, ResourceType type, ResourcePackActivationType activationType) {
 		List<Path> rootPaths = mod.getRootPaths();
 		List<Path> paths;
 
@@ -97,7 +98,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 		return ret.getNamespaces(type).isEmpty() ? null : ret;
 	}
 
-	private ModNioResourcePack(Identifier id, String name, ModMetadata modInfo, List<Path> paths, ResourceType type, AutoCloseable closer, ResourcePackActivationType activationType) {
+	private ModNioResourcePack(Identifier id, Text name, ModMetadata modInfo, List<Path> paths, ResourceType type, AutoCloseable closer, ResourcePackActivationType activationType) {
 		this.id = id;
 		this.name = name;
 		this.modInfo = modInfo;
@@ -282,7 +283,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 
 	@Override
 	public String getName() {
-		return name;
+		return name.getString();
 	}
 
 	public Identifier getId() {

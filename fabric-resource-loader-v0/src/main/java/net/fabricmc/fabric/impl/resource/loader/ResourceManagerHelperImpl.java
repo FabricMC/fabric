@@ -46,7 +46,7 @@ import net.fabricmc.loader.api.ModContainer;
 
 public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	private static final Map<ResourceType, ResourceManagerHelperImpl> registryMap = new HashMap<>();
-	private static final Set<Pair<String, ModNioResourcePack>> builtinResourcePacks = new HashSet<>();
+	private static final Set<Pair<Text, ModNioResourcePack>> builtinResourcePacks = new HashSet<>();
 	private static final Logger LOGGER = LoggerFactory.getLogger(ResourceManagerHelperImpl.class);
 
 	private final Set<Identifier> addedListenerIds = new HashSet<>();
@@ -65,26 +65,24 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	 * @param displayName    the display name of the resource pack
 	 * @param activationType the activation type of the resource pack
 	 * @return {@code true} if successfully registered the resource pack, else {@code false}
-	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, String, ResourcePackActivationType)
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, Text, ResourcePackActivationType)
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
-	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
 	 */
-	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, String displayName, ResourcePackActivationType activationType) {
+	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, Text displayName, ResourcePackActivationType activationType) {
 		// Assuming the mod has multiple paths, we simply "hope" that the  file separator is *not* different across them
 		List<Path> paths = container.getRootPaths();
 		String separator = paths.get(0).getFileSystem().getSeparator();
 		subPath = subPath.replace("/", separator);
-		String name = displayName;
-		ModNioResourcePack resourcePack = ModNioResourcePack.create(id, name, container, subPath, ResourceType.CLIENT_RESOURCES, activationType);
-		ModNioResourcePack dataPack = ModNioResourcePack.create(id, name, container, subPath, ResourceType.SERVER_DATA, activationType);
+		ModNioResourcePack resourcePack = ModNioResourcePack.create(id, displayName, container, subPath, ResourceType.CLIENT_RESOURCES, activationType);
+		ModNioResourcePack dataPack = ModNioResourcePack.create(id, displayName, container, subPath, ResourceType.SERVER_DATA, activationType);
 		if (resourcePack == null && dataPack == null) return false;
 
 		if (resourcePack != null) {
-			builtinResourcePacks.add(new Pair<>(name, resourcePack));
+			builtinResourcePacks.add(new Pair<>(displayName, resourcePack));
 		}
 
 		if (dataPack != null) {
-			builtinResourcePacks.add(new Pair<>(name, dataPack));
+			builtinResourcePacks.add(new Pair<>(displayName, dataPack));
 		}
 
 		return true;
@@ -99,16 +97,15 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	 * @param activationType the activation type of the resource pack
 	 * @return {@code true} if successfully registered the resource pack, else {@code false}
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
-	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, String, ResourcePackActivationType)
-	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, Text, ResourcePackActivationType)
 	 */
 	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, ResourcePackActivationType activationType) {
-		return registerBuiltinResourcePack(id, subPath, container, id.getNamespace() + "/" + id.getPath(), activationType);
+		return registerBuiltinResourcePack(id, subPath, container, Text.literal(id.getNamespace() + "/" + id.getPath()), activationType);
 	}
 
 	public static void registerBuiltinResourcePacks(ResourceType resourceType, Consumer<ResourcePackProfile> consumer) {
 		// Loop through each registered built-in resource packs and add them if valid.
-		for (Pair<String, ModNioResourcePack> entry : builtinResourcePacks) {
+		for (Pair<Text, ModNioResourcePack> entry : builtinResourcePacks) {
 			ModNioResourcePack pack = entry.getRight();
 
 			// Add the built-in pack only if namespaces for the specified resource type are present.
@@ -116,7 +113,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 				// Make the resource pack profile for built-in pack, should never be always enabled.
 				ResourcePackProfile profile = ResourcePackProfile.create(
 						entry.getRight().getId().toString(),
-						Text.literal(entry.getLeft()),
+						entry.getLeft(),
 						pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED,
 						ignored -> entry.getRight(),
 						resourceType,
