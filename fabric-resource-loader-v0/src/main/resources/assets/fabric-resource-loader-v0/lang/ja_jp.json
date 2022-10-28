@@ -1,4 +1,5 @@
 {
   "pack.source.fabricmod": "Fabric mod",
-  "pack.source.builtinMod": "ビルトイン: %s"
+  "pack.source.builtinMod": "ビルトイン: %s",
+  "pack.name.fabricMods": "Fabric Mod"
 }

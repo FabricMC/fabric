@@ -79,7 +79,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			// Mod resource packs must always be enabled to avoid issues
 			// and inserted on top to ensure that they are applied before user resource packs and after default/programmer art resource pack.
 			// @TODO: "inserted on top" comment is deprecated, it does not guarantee the condition "applied before user resource packs".
-			MutableText title = Text.literal("Fabric Mods");
+			MutableText title = Text.translatable("pack.name.fabricMods");
 			ResourcePackProfile resourcePackProfile = ResourcePackProfile.create("fabric", title,
 					true, factory -> new FabricModResourcePack(this.type, packs), type, ResourcePackProfile.InsertionPosition.TOP,
 					RESOURCE_PACK_SOURCE);

@@ -34,6 +34,7 @@ import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
@@ -96,11 +97,11 @@ public final class ModResourcePackUtil {
 		return GSON.toJson(metadata);
 	}
 
-	public static String getName(ModMetadata info) {
+	public static Text getName(ModMetadata info) {
 		if (info.getName() != null) {
-			return info.getName();
+			return Text.literal(info.getName());
 		} else {
-			return "Fabric Mod \"" + info.getId() + "\"";
+			return Text.translatable("pack.name.fabricMod", info.getId());
 		}
 	}
 
