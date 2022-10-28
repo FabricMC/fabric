@@ -42,6 +42,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * contain the registry, as this event is invoked for each layer of
  * the combined registry manager, and each layer holds different registries.
  * Use {@link DynamicRegistryManager#getOptional} to prevent crashes.
+ *
+ * @see net.minecraft.util.registry.ServerDynamicRegistryType
  */
 @FunctionalInterface
 public interface DynamicRegistrySetupCallback {
