@@ -50,10 +50,15 @@ class GenerateImplPackageInfos extends DefaultTask {
 
 							target.resolve('package-info.java').withWriter {
 								def packageName = relativePath.toString().replace(File.separator, '.')
-								it.write("$headerText\n")
-								it.write('@ApiStatus.Internal\n')
-								it.write("package $packageName;\n\n")
-								it.write('import org.jetbrains.annotations.ApiStatus;\n')
+								it.write("""$headerText
+								|/**
+								| * Implementation code for ${project.name}.
+								| */
+								|@ApiStatus.Internal
+								|package $packageName;
+								|
+								|import org.jetbrains.annotations.ApiStatus;
+								|""".stripMargin())
 							}
 						}
 					}
