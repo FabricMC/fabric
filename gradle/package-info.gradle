@@ -1,29 +1,25 @@
 import java.nio.file.Files
-import java.nio.file.Path
-
-def generatedSources = file 'src/generated/java'
-sourceSets.main.java.srcDir generatedSources
 
 task generateImplPackageInfos(type: GenerateImplPackageInfos) {
 	for (def sourceSet in [sourceSets.main, sourceSets.client]) {
 		sourceRoots.from sourceSet.java.srcDirs
 	}
 
-	header = rootProject.file('HEADER').toPath()
-	outputDir = generatedSources.toPath()
+	header = rootProject.file('HEADER')
+	outputDir = file('src/generated/java')
 }
 
-compileJava.dependsOn generateImplPackageInfos
-sourcesJar.dependsOn generateImplPackageInfos
+sourceSets.main.java.srcDir generateImplPackageInfos.outputDir
 
 class GenerateImplPackageInfos extends DefaultTask {
-	@InputFile Path header
+	@InputFile File header
 	@InputFiles final ConfigurableFileCollection sourceRoots = project.objects.fileCollection()
-	@OutputDirectory Path outputDir
+	@OutputDirectory final DirectoryProperty outputDir = project.objects.directoryProperty()
 
 	@TaskAction
 	def run() {
-		outputDir.deleteDir()
+		def output = outputDir.get().asFile.toPath()
+		output.deleteDir()
 		def headerText = header.readLines().join("\n") // normalize line endings
 
 		for (def sourceRoot in sourceRoots) {
@@ -43,7 +39,7 @@ class GenerateImplPackageInfos extends DefaultTask {
 
 					if (containsJava && Files.notExists(it.resolve('package-info.java'))) {
 						def relativePath = root.relativize(it)
-						def target = outputDir.resolve(relativePath)
+						def target = output.resolve(relativePath)
 						Files.createDirectories(target)
 
 						target.resolve('package-info.java').withWriter {
