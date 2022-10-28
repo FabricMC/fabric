@@ -266,6 +266,9 @@ allprojects {
 		source(sourceSets.client.output)
 		source(sourceSets.testmod.output)
 	}
+
+	// Apply to each valid subproject.
+	apply from: rootProject.file('gradle/package-info.gradle')
 }
 
 remapTestmodJar {

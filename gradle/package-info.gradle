@@ -1,0 +1,64 @@
+import java.nio.file.Files
+import java.nio.file.Path
+
+def generatedSources = file 'src/generated/java'
+sourceSets.main.java.srcDir generatedSources
+
+task generateImplPackageInfos(type: GenerateImplPackageInfos) {
+	for (def sourceSet in [sourceSets.main, sourceSets.client]) {
+		sourceRoots.from sourceSet.java.srcDirs
+	}
+
+	header = rootProject.file('HEADER').toPath()
+	outputDir = generatedSources.toPath()
+}
+
+compileJava {
+	dependsOn generateImplPackageInfos
+}
+
+class GenerateImplPackageInfos extends DefaultTask {
+	@InputFile Path header
+	@InputFiles final ConfigurableFileCollection sourceRoots = project.objects.fileCollection()
+	@OutputDirectory Path outputDir
+
+	@TaskAction
+	def run() {
+		outputDir.deleteDir()
+		def headerText = header.readLines().join("\n") // normalize line endings
+
+		for (def sourceRoot in sourceRoots) {
+			def root = sourceRoot.toPath()
+
+			for (def dir in ['impl', 'mixin']) {
+				def implDir = root.resolve("net/fabricmc/fabric/$dir")
+
+				if (Files.notExists(implDir)) {
+					continue
+				}
+
+				implDir.eachDirRecurse {
+					def containsJava = Files.list(it).any {
+						Files.isRegularFile(it) && it.fileName.toString().endsWith('.java')
+					}
+
+					if (containsJava) {
+						if (Files.notExists(it.resolve('package-info.java'))) {
+							def relativePath = root.relativize(it)
+							def target = outputDir.resolve(relativePath)
+							Files.createDirectories(target)
+
+							target.resolve('package-info.java').withWriter {
+								def packageName = relativePath.toString().replace(File.separator, '.')
+								it.write("$headerText\n")
+								it.write('@ApiStatus.Internal\n')
+								it.write("package $packageName;\n\n")
+								it.write('import org.jetbrains.annotations.ApiStatus;\n')
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
