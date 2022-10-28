@@ -39,8 +39,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * </pre>
  *
  * <p><strong>Important Note</strong>: The passed dynamic registry manager might not
- * contain the registry. Use {@link DynamicRegistryManager#getOptional} to
- * prevent crashes.
+ * contain the registry, as this event is invoked for each layer of
+ * the combined registry manager, and each layer holds different registries.
+ * Use {@link DynamicRegistryManager#getOptional} to prevent crashes.
  */
 @FunctionalInterface
 public interface DynamicRegistrySetupCallback {
