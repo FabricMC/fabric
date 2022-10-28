@@ -13,9 +13,8 @@ task generateImplPackageInfos(type: GenerateImplPackageInfos) {
 	outputDir = generatedSources.toPath()
 }
 
-compileJava {
-	dependsOn generateImplPackageInfos
-}
+compileJava.dependsOn generateImplPackageInfos
+sourcesJar.dependsOn generateImplPackageInfos
 
 class GenerateImplPackageInfos extends DefaultTask {
 	@InputFile Path header
