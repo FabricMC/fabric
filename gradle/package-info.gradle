@@ -42,24 +42,22 @@ class GenerateImplPackageInfos extends DefaultTask {
 						Files.isRegularFile(it) && it.fileName.toString().endsWith('.java')
 					}
 
-					if (containsJava) {
-						if (Files.notExists(it.resolve('package-info.java'))) {
-							def relativePath = root.relativize(it)
-							def target = outputDir.resolve(relativePath)
-							Files.createDirectories(target)
+					if (containsJava && Files.notExists(it.resolve('package-info.java'))) {
+						def relativePath = root.relativize(it)
+						def target = outputDir.resolve(relativePath)
+						Files.createDirectories(target)
 
-							target.resolve('package-info.java').withWriter {
-								def packageName = relativePath.toString().replace(File.separator, '.')
-								it.write("""$headerText
-								|/**
-								| * Implementation code for ${project.name}.
-								| */
-								|@ApiStatus.Internal
-								|package $packageName;
-								|
-								|import org.jetbrains.annotations.ApiStatus;
-								|""".stripMargin())
-							}
+						target.resolve('package-info.java').withWriter {
+							def packageName = relativePath.toString().replace(File.separator, '.')
+							it.write("""$headerText
+							|/**
+							| * Implementation code for ${project.name}.
+							| */
+							|@ApiStatus.Internal
+							|package $packageName;
+							|
+							|import org.jetbrains.annotations.ApiStatus;
+							|""".stripMargin())
 						}
 					}
 				}
