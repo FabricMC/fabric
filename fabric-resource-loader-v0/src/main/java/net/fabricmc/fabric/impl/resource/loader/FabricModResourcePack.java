@@ -52,8 +52,7 @@ public class FabricModResourcePack extends GroupResourcePack {
 			return () -> IOUtils.toInputStream(pack, Charsets.UTF_8);
 		} else if ("pack.png".equals(fileName)) {
 			return FabricLoader.getInstance().getModContainer("fabric-resource-loader-v0")
-					.flatMap(container -> container.getMetadata().getIconPath(512).map(container::getPath))
-					.filter(Files::exists)
+					.flatMap(container -> container.getMetadata().getIconPath(512).flatMap(container::findPath))
 					.map(path -> (InputSupplier<InputStream>) (() -> Files.newInputStream(path)))
 					.orElse(null);
 		}
@@ -77,5 +76,10 @@ public class FabricModResourcePack extends GroupResourcePack {
 	@Override
 	public String getName() {
 		return "Fabric Mods";
+	}
+
+	@Override
+	public boolean isAlwaysStable() {
+		return true;
 	}
 }

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.resource;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
@@ -26,6 +28,7 @@ import net.fabricmc.loader.api.ModContainer;
 /**
  * Helper for working with {@link ResourceManager} instances, and other resource loader generalities.
  */
+@ApiStatus.NonExtendable
 public interface ResourceManagerHelper {
 	/**
 	 * Add a resource reload listener for a given registry.

@@ -44,9 +44,10 @@ public class MinecraftServerMixin {
 		ResourcePackProfile profile = resourcePackManager.getProfile(profileName);
 
 		if (profile.getSource() instanceof BuiltinModResourcePackSource) {
-			ResourcePack pack = profile.createResourcePack();
-			// Prevents automatic load for built-in data packs provided by mods.
-			return pack instanceof ModNioResourcePack modPack && !modPack.getActivationType().isEnabledByDefault();
+			try (ResourcePack pack = profile.createResourcePack()) {
+				// Prevents automatic load for built-in data packs provided by mods.
+				return pack instanceof ModNioResourcePack modPack && !modPack.getActivationType().isEnabledByDefault();
+			}
 		}
 
 		return false;

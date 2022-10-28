@@ -99,13 +99,13 @@ public class GameOptionsMixin {
 				continue;
 			}
 
-			ResourcePack pack = profile.createResourcePack();
-
-			if (pack instanceof ModNioResourcePack builtinPack && builtinPack.getActivationType().isEnabledByDefault()) {
-				if (trackedPacks.add(builtinPack.getId())) {
-					resourcePacks.add(profile.getName());
-				} else {
-					removedPacks.remove(builtinPack.getId());
+			try (ResourcePack pack = profile.createResourcePack()) {
+				if (pack instanceof ModNioResourcePack builtinPack && builtinPack.getActivationType().isEnabledByDefault()) {
+					if (trackedPacks.add(builtinPack.getId())) {
+						resourcePacks.add(profile.getName());
+					} else {
+						removedPacks.remove(builtinPack.getId());
+					}
 				}
 			}
 		}
