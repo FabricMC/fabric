@@ -1,6 +1,9 @@
 import java.nio.file.Files
 
 task generateImplPackageInfos(type: GenerateImplPackageInfos) {
+	group = 'fabric'
+	description = 'Generates package-info files for implementation packages.'
+
 	for (def sourceSet in [sourceSets.main, sourceSets.client]) {
 		sourceRoots.from sourceSet.java.srcDirs
 	}
