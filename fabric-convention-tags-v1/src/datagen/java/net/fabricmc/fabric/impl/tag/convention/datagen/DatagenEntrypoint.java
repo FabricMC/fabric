@@ -28,7 +28,7 @@ import net.fabricmc.fabric.impl.tag.convention.datagen.generators.ItemTagGenerat
 public class DatagenEntrypoint implements DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
-		final FabricDataGenerator.Pack pack = fabricDataGenerator.create();
+		final FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
 
 		pack.addProvider(ItemTagGenerator::new);
 		pack.addProvider(FluidTagGenerator::new);

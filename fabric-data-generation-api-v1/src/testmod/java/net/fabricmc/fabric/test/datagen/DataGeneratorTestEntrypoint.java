@@ -79,7 +79,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
-		final FabricDataGenerator.Pack pack = dataGenerator.create();
+		final FabricDataGenerator.Pack pack = dataGenerator.createPack();
 
 		pack.addProvider(TestRecipeProvider::new);
 		pack.addProvider(TestModelProvider::new);

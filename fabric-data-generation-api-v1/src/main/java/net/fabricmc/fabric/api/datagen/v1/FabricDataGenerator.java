@@ -44,7 +44,7 @@ public final class FabricDataGenerator extends DataGenerator {
 		this.fabricOutput = new FabricDataOutput(mod, output, strictValidation);
 	}
 
-	public Pack create() {
+	public Pack createPack() {
 		return new Pack(true, modContainer.getMetadata().getName(), this.fabricOutput);
 	}
 
@@ -81,7 +81,7 @@ public final class FabricDataGenerator extends DataGenerator {
 	}
 
 	/**
-	 * @deprecated Please use {@link FabricDataGenerator#create()}
+	 * @deprecated Please use {@link FabricDataGenerator#createPack()}
 	 */
 	@Override
 	@Deprecated
