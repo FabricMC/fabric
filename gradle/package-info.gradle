@@ -1,47 +1,73 @@
 import java.nio.file.Files
 
-task generateImplPackageInfos(type: GenerateImplPackageInfos) {
-	group = 'fabric'
-	description = 'Generates package-info files for implementation packages.'
+for (def sourceSet in [sourceSets.main, sourceSets.client]) {
+	// We have to capture the source set name for the lazy string literals,
+	// otherwise it'll just be whatever the last source set is in the list.
+	def sourceSetName = sourceSet.name
+	def taskName = sourceSet.getTaskName('generate', 'ImplPackageInfos')
+	def task = tasks.register(taskName, GenerateImplPackageInfos) {
+		group = 'fabric'
+		description = "Generates package-info files for $sourceSetName implementation packages."
 
-	for (def sourceSet in [sourceSets.main, sourceSets.client]) {
-		sourceRoots.from sourceSet.java.srcDirs
+		// Only apply to default source directory since we also add the generated
+		// sources to the source set.
+		sourceRoot = file("src/$sourceSetName/java")
+		header = rootProject.file('HEADER')
+		outputDir = file("src/generated/$sourceSetName")
+
+		def mainSources = tasks.generateImplPackageInfos.outputDir.get().asFile
+		// The exists check is an ugly hack. We need it since Gradle wants to see existing directories
+		// for all InputDirectory properties (understandably).
+		if (sourceSetName != 'main' && mainSources.exists()) {
+			mainGeneratedSources = tasks.generateImplPackageInfos.outputDir
+		}
 	}
-
-	header = rootProject.file('HEADER')
-	outputDir = file('src/generated/java')
+	sourceSet.java.srcDir task.flatMap { it.outputDir }
 }
 
-sourceSets.main.java.srcDir generateImplPackageInfos.outputDir
-
 class GenerateImplPackageInfos extends DefaultTask {
-	@InputFile File header
-	@InputFiles final ConfigurableFileCollection sourceRoots = project.objects.fileCollection()
-	@OutputDirectory final DirectoryProperty outputDir = project.objects.directoryProperty()
+	@InputFile
+	File header
+
+	@SkipWhenEmpty
+	@InputDirectory
+	final DirectoryProperty sourceRoot = project.objects.directoryProperty()
+
+	@OutputDirectory
+	final DirectoryProperty outputDir = project.objects.directoryProperty()
+
+	/**
+	 * If not empty, no duplicates will be generated if this directory
+	 * already contains a matching package-info.
+ 	 */
+	@Optional
+	@InputDirectory
+	final DirectoryProperty mainGeneratedSources = project.objects.directoryProperty()
 
 	@TaskAction
 	def run() {
 		def output = outputDir.get().asFile.toPath()
 		output.deleteDir()
 		def headerText = header.readLines().join("\n") // normalize line endings
+		def root = sourceRoot.get().asFile.toPath()
+		def priorityRoot = mainGeneratedSources.getOrNull()?.asFile?.toPath()
 
-		for (def sourceRoot in sourceRoots) {
-			def root = sourceRoot.toPath()
+		for (def dir in ['impl', 'mixin']) {
+			def implDir = root.resolve("net/fabricmc/fabric/$dir")
 
-			for (def dir in ['impl', 'mixin']) {
-				def implDir = root.resolve("net/fabricmc/fabric/$dir")
+			if (Files.notExists(implDir)) {
+				continue
+			}
 
-				if (Files.notExists(implDir)) {
-					continue
+			implDir.eachDirRecurse {
+				def containsJava = Files.list(it).any {
+					Files.isRegularFile(it) && it.fileName.toString().endsWith('.java')
 				}
 
-				implDir.eachDirRecurse {
-					def containsJava = Files.list(it).any {
-						Files.isRegularFile(it) && it.fileName.toString().endsWith('.java')
-					}
+				if (containsJava && Files.notExists(it.resolve('package-info.java'))) {
+					def relativePath = root.relativize(it)
 
-					if (containsJava && Files.notExists(it.resolve('package-info.java'))) {
-						def relativePath = root.relativize(it)
+					if (priorityRoot == null || Files.notExists(priorityRoot.resolve(relativePath).resolve('package-info.java'))) {
 						def target = output.resolve(relativePath)
 						Files.createDirectories(target)
 
