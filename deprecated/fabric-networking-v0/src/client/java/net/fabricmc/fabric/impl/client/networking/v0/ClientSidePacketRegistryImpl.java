@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.networking.v0;
+package net.fabricmc.fabric.impl.client.networking.v0;
 
 import java.util.Objects;
 

@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.networking.accessor;
+package net.fabricmc.fabric.impl.client.item.group;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+public interface CreativeGuiExtensions {
+	void fabric_nextPage();
 
-import net.minecraft.client.gui.screen.ConnectScreen;
-import net.minecraft.network.ClientConnection;
+	void fabric_previousPage();
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+	int fabric_currentPage();
 
-@Environment(EnvType.CLIENT)
-@Mixin(ConnectScreen.class)
-public interface ConnectScreenAccessor {
-	@Accessor
-	ClientConnection getConnection();
+	boolean fabric_isButtonVisible(FabricCreativeGuiComponents.Type type);
+
+	boolean fabric_isButtonEnabled(FabricCreativeGuiComponents.Type type);
 }

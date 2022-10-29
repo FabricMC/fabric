@@ -43,8 +43,8 @@ import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.mixin.networking.accessor.ConnectScreenAccessor;
-import net.fabricmc.fabric.mixin.networking.accessor.MinecraftClientAccessor;
+import net.fabricmc.fabric.mixin.networking.client.accessor.ConnectScreenAccessor;
+import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAccessor;
 
 @Environment(EnvType.CLIENT)
 public final class ClientNetworkingImpl {
