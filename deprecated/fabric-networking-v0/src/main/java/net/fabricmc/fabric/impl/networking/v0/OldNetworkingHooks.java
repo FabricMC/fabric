@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.networking;
+package net.fabricmc.fabric.impl.networking.v0;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.network.C2SPacketTypeCallback;

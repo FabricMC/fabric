@@ -17,10 +17,10 @@
   ],
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.impl.event.lifecycle.LegacyEventInvokers"
+      "net.fabricmc.fabric.impl.event.lifecycle.v0.LegacyEventInvokers"
     ],
     "client": [
-      "net.fabricmc.fabric.impl.event.lifecycle.client.LegacyClientEventInvokers"
+      "net.fabricmc.fabric.impl.event.lifecycle.v0.client.LegacyClientEventInvokers"
     ]
   },
   "depends": {

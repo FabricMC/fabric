@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.rendering;
+package net.fabricmc.fabric.impl.networking.v0;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
+import net.fabricmc.fabric.api.event.network.S2CPacketTypeCallback;
+import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
 
-public class RenderingCallbackInvoker implements ClientModInitializer {
+public final class OldClientNetworkingHooks implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		InvalidateRenderStateCallback.EVENT.register(() -> net.fabricmc.fabric.api.client.render.InvalidateRenderStateCallback.EVENT.invoker().onInvalidate());
+		// Must be lambdas below
+		C2SPlayChannelEvents.REGISTER.register((handler, client, sender, channels) -> S2CPacketTypeCallback.REGISTERED.invoker().accept(channels));
+		C2SPlayChannelEvents.UNREGISTER.register((handler, client, sender, channels) -> S2CPacketTypeCallback.UNREGISTERED.invoker().accept(channels));
 	}
 }

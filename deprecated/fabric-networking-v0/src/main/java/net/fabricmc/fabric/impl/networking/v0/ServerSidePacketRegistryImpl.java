@@ -14,68 +14,74 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.networking;
+package net.fabricmc.fabric.impl.networking.v0;
 
 import java.util.Objects;
 
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
-import net.minecraft.client.MinecraftClient;
+import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ThreadExecutor;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketConsumer;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.PacketRegistry;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
-public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, PacketRegistry {
+public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, PacketRegistry {
 	@Override
-	public boolean canServerReceive(Identifier id) {
-		return ClientPlayNetworking.getSendable().contains(id);
+	public boolean canPlayerReceive(PlayerEntity player, Identifier id) {
+		if (player instanceof ServerPlayerEntity) {
+			return ServerPlayNetworking.canSend((ServerPlayerEntity) player, id);
+		}
+
+		return false;
 	}
 
 	@Override
-	public void sendToServer(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
-		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			MinecraftClient.getInstance().getNetworkHandler().getConnection().send(packet, GenericFutureListenerHolder.create(completionListener));
+	public void sendToPlayer(PlayerEntity player, Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
+		if (player instanceof ServerPlayerEntity) {
+			((ServerPlayerEntity) player).networkHandler.sendPacket(packet, GenericFutureListenerHolder.create(completionListener));
 			return;
 		}
 
-		throw new IllegalStateException("Cannot send packet to server while not in game!"); // TODO: Error message
+		throw new RuntimeException("Can only send to ServerPlayerEntities!");
 	}
 
 	@Override
 	public Packet<?> toPacket(Identifier id, PacketByteBuf buf) {
-		return ClientPlayNetworking.createC2SPacket(id, buf);
+		return new CustomPayloadS2CPacket(id, buf);
 	}
 
 	@Override
 	public void register(Identifier id, PacketConsumer consumer) {
-		// id is checked in client networking
 		Objects.requireNonNull(consumer, "PacketConsumer cannot be null");
 
-		ClientPlayNetworking.registerGlobalReceiver(id, (client, handler, buf, sender) -> {
+		ServerPlayNetworking.registerGlobalReceiver(id, (server, player, handler, buf, sender) -> {
 			consumer.accept(new PacketContext() {
 				@Override
 				public EnvType getPacketEnvironment() {
-					return EnvType.CLIENT;
+					return EnvType.SERVER;
 				}
 
 				@Override
 				public PlayerEntity getPlayer() {
-					return client.player;
+					return player;
 				}
 
 				@Override
 				public ThreadExecutor<?> getTaskQueue() {
-					return client;
+					return server;
 				}
 			}, buf);
 		});
@@ -83,6 +89,6 @@ public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, P
 
 	@Override
 	public void unregister(Identifier id) {
-		ClientPlayNetworking.unregisterGlobalReceiver(id);
+		ServerPlayNetworking.unregisterGlobalReceiver(id);
 	}
 }
