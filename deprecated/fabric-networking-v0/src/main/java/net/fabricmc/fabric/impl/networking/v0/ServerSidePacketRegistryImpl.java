@@ -21,8 +21,6 @@ import java.util.Objects;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
-import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
@@ -37,6 +35,7 @@ import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.PacketRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
 
 public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, PacketRegistry {
 	@Override
