@@ -408,24 +408,11 @@ subprojects {
 	}
 }
 
-task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
-	input = jar.archiveFile
-	archiveFileName = "${archivesBaseName}-${project.version}-maven.jar"
-	addNestedDependencies = false
-}
-build.dependsOn remapMavenJar
-
-if (signingEnabled) {
-	remoteSign {
-		sign remapMavenJar
-	}
-}
-
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifact(signingEnabled ? signRemapMavenJar.output : remapMavenJar) {
-				builtBy(signingEnabled ? signRemapMavenJar : remapMavenJar)
+			artifact(signingEnabled ? signRemapJar.output : remapJar) {
+				builtBy(signingEnabled ? signRemapJar : remapJar)
 			}
 
 			artifact(sourcesJar) {
