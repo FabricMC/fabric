@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.block.v1;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -42,7 +41,7 @@ public interface FabricBlock {
 	 * These will want to override this method. In that case, make sure to carefully read the implementation guidelines below.
 	 *
 	 * <p>Common consumers are models with connected textures that wish to seamlessly connect to mimic blocks.
-	 * These will want to check the apparent block state using this method.
+	 * These will want to check the apparent block state using {@link FabricBlockState#getAppearance}.
 	 *
 	 * <p>Generally, the appearance will be queried from a nearby block,
 	 * identified by the optional {@code sourcePos} and {@code sourceState} parameters.
@@ -100,7 +99,6 @@ public interface FabricBlock {
 	 * @param sourcePos   (optional) position of the block that is querying the appearance, or null if unknown
 	 * @return the appearance of the block on the given side; the original {@code state} can be returned if there is no better option
 	 */
-	@ApiStatus.OverrideOnly // Call using the method in FabricBlockState
 	default BlockState getAppearance(BlockState state, BlockRenderView renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 		return state;
 	}
