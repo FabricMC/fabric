@@ -22,4 +22,6 @@ public interface MultiNoiseSamplerHooks {
 	PerlinNoiseSampler fabric_getEndBiomesSampler();
 
 	void fabric_setSeed(long seed);
+
+	long fabric_getSeed();
 }

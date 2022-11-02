@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
+import java.util.concurrent.CompletableFuture;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.command.CommandRegistryWrapper;
 import net.minecraft.item.Items;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
@@ -57,12 +62,12 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	@Deprecated
 	private static final Identifier FABRIC_SWORDS = createFabricId("swords");
 
-	public ItemTagGenerator(FabricDataOutput output) {
-		super(output);
+	public ItemTagGenerator(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> completableFuture) {
+		super(output, completableFuture);
 	}
 
 	@Override
-	protected void generateTags() {
+	protected void configure(CommandRegistryWrapper.class_7874 arg) {
 		generateToolTags();
 		generateBucketTags();
 		generateOreAndRelatedTags();

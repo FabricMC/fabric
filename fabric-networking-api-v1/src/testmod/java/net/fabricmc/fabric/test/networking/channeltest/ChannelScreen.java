@@ -39,22 +39,22 @@ final class ChannelScreen extends Screen {
 
 	@Override
 	protected void init() {
-		this.s2cButton = this.addDrawableChild(ButtonWidget.method_46430(Text.literal("S2C"), this::toS2C)
-				.method_46433(this.width / 2 - 55, 5)
-				.method_46437(50, 20)
-				.method_46436((button2, matrices1, mouseX1, mouseY1) -> {
+		this.s2cButton = this.addDrawableChild(ButtonWidget.createBuilder(Text.literal("S2C"), this::toS2C)
+				.setPosition(this.width / 2 - 55, 5)
+				.setSize(50, 20)
+				.setTooltipSupplier((button2, matrices1, mouseX1, mouseY1) -> {
 					this.renderTooltip(matrices1, Text.literal("Packets this client can receive"), mouseX1, mouseY1);
-				}).method_46431());
-		this.c2sButton = this.addDrawableChild(ButtonWidget.method_46430(Text.literal("C2S"), this::toC2S)
-				.method_46433(this.width / 2 + 5, 5)
-				.method_46437(50, 20)
-				.method_46436((button1, matrices, mouseX, mouseY) -> {
+				}).build());
+		this.c2sButton = this.addDrawableChild(ButtonWidget.createBuilder(Text.literal("C2S"), this::toC2S)
+				.setPosition(this.width / 2 + 5, 5)
+				.setSize(50, 20)
+				.setTooltipSupplier((button1, matrices, mouseX, mouseY) -> {
 					this.renderTooltip(matrices, Text.literal("Packets the server can receive"), mouseX, mouseY);
-				}).method_46431());
-		this.closeButton = this.addDrawableChild(ButtonWidget.method_46430(Text.literal("Close"), button -> this.close())
-				.method_46433(this.width / 2 - 60, this.height - 25)
-				.method_46437(120, 20)
-				.method_46431());
+				}).build());
+		this.closeButton = this.addDrawableChild(ButtonWidget.createBuilder(Text.literal("Close"), button -> this.close())
+				.setPosition(this.width / 2 - 60, this.height - 25)
+				.setSize(120, 20)
+				.build());
 		this.channelList = this.addDrawable(new ChannelList(this.client, this.width, this.height - 60, 30, this.height - 30, this.textRenderer.fontHeight + 2));
 	}
 

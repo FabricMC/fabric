@@ -44,7 +44,7 @@ public class ChunkNoiseSamplerMixin {
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void init(int horizontalSize, NoiseConfig noiseConfig, int i, int j, GenerationShapeConfig generationShapeConfig, DensityFunctionTypes.Beardifying arg, ChunkGeneratorSettings chunkGeneratorSettings, AquiferSampler.FluidLevelSampler fluidLevelSampler, Blender blender, CallbackInfo ci) {
-		seed = noiseConfig.getLegacyWorldSeed();
+		seed = ((MultiNoiseSamplerHooks) (Object) noiseConfig.getMultiNoiseSampler()).fabric_getSeed();
 	}
 
 	@Inject(method = "createMultiNoiseSampler", at = @At("RETURN"))

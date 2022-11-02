@@ -17,12 +17,11 @@
 package net.fabricmc.fabric.test.biome;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBuiltinRegistriesProvider;
 
 public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		FabricDataGenerator.Pack pack = dataGenerator.createPack();
-		pack.addProvider(FabricBuiltinRegistriesProvider.forCurrentMod());
+		pack.addProvider(WorldgenProvider::new);
 	}
 }

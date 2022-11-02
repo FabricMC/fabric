@@ -41,6 +41,11 @@ public class MultiNoiseUtilMultiNoiseSamplerMixin implements MultiNoiseSamplerHo
 	}
 
 	@Override
+	public long fabric_getSeed() {
+		return this.seed;
+	}
+
+	@Override
 	public PerlinNoiseSampler fabric_getEndBiomesSampler() {
 		if (endBiomesSampler == null) {
 			Preconditions.checkState(seed != null, "MultiNoiseSampler doesn't have a seed set, created using different method?");

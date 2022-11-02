@@ -6,10 +6,9 @@ mutable field net/minecraft/data/DataGenerator output Lnet/minecraft/data/DataOu
 accessible  field  net/minecraft/data/server/recipe/RecipeProvider  recipesPathResolver  Lnet/minecraft/data/DataOutput$PathResolver;
 accessible  field  net/minecraft/data/server/recipe/RecipeProvider  advancementsPathResolver  Lnet/minecraft/data/DataOutput$PathResolver;
 
-accessible  method  net/minecraft/data/server/tag/AbstractTagProvider$ObjectBuilder <init> (Lnet/minecraft/tag/TagBuilder;Lnet/minecraft/util/registry/Registry;)V
-extendable  method  net/minecraft/data/server/tag/AbstractTagProvider$ObjectBuilder add     ([Ljava/lang/Object;)Lnet/minecraft/data/server/tag/AbstractTagProvider$ObjectBuilder;
 accessible  field   net/minecraft/data/server/tag/AbstractTagProvider$ObjectBuilder builder Lnet/minecraft/tag/TagBuilder;
-accessible  field   net/minecraft/data/server/tag/AbstractTagProvider$ObjectBuilder registry    Lnet/minecraft/util/registry/Registry;
+extendable  method  net/minecraft/data/server/tag/AbstractTagProvider$ObjectBuilder method_46835  (Lnet/minecraft/util/registry/RegistryKey;)Lnet/minecraft/data/server/tag/AbstractTagProvider$ObjectBuilder;
+extendable  method  net/minecraft/data/server/tag/AbstractTagProvider$ObjectBuilder add    ([Lnet/minecraft/util/registry/RegistryKey;)Lnet/minecraft/data/server/tag/AbstractTagProvider$ObjectBuilder;
 
 accessible  field   net/minecraft/data/server/tag/AbstractTagProvider   tagBuilders Ljava/util/Map;
 

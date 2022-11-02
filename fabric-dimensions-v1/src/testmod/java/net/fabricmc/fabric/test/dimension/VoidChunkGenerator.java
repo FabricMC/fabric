@@ -25,6 +25,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.class_7871;
 import net.minecraft.structure.StructureSet;
 import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.math.BlockPos;
@@ -41,19 +42,19 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.world.gen.chunk.FlatChunkGenerator;
+import net.minecraft.world.gen.chunk.FlatChunkGeneratorConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
 public class VoidChunkGenerator extends ChunkGenerator {
+
 	public static final Codec<VoidChunkGenerator> CODEC = RecordCodecBuilder.create((instance) ->
-			createStructureSetRegistryGetter(instance).and(RegistryOps.createRegistryCodec(Registry.BIOME_KEY).forGetter((generator) -> generator.biomeRegistry))
+			instance.group(RegistryOps.method_46636(Registry.BIOME_KEY))
 					.apply(instance, instance.stable(VoidChunkGenerator::new)));
 
-	private final Registry<Biome> biomeRegistry;
-
-	public VoidChunkGenerator(Registry<StructureSet> registry, Registry<Biome> biomeRegistry) {
-		super(registry, Optional.empty(), new FixedBiomeSource(biomeRegistry.getOrCreateEntry(BiomeKeys.PLAINS)));
-		this.biomeRegistry = biomeRegistry;
+	public VoidChunkGenerator(class_7871<Biome> biomeRegistry) {
+		super(new FixedBiomeSource(biomeRegistry.method_46747(BiomeKeys.PLAINS)));
 	}
 
 	@Override

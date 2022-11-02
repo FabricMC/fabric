@@ -30,13 +30,8 @@ import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.DefaultFeatureConfig;
-import net.minecraft.world.gen.feature.Feature;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -87,8 +82,6 @@ public class RegistrySyncTest implements ModInitializer {
 			DIRECT_PACKET_HANDLER.sendPacket(handler.player, map);
 			sender.sendPacket(PACKET_CHECK_COMPARE, PacketByteBufs.empty());
 		});
-
-		testBuiltInRegistrySync();
 
 		if (REGISTER_BLOCKS) {
 			// For checking raw id bulk in direct registry packet, make registry_sync namespace have two bulks.
@@ -145,47 +138,6 @@ public class RegistrySyncTest implements ModInitializer {
 				BlockItem blockItem = new BlockItem(block, new Item.Settings());
 				Registry.register(Registry.ITEM, new Identifier(namespace, "block_" + (i + startingId)), blockItem);
 			}
-		}
-	}
-
-	/**
-	 * Tests that built-in registries are properly synchronized even after the dynamic reigstry managers have been
-	 * class-loaded.
-	 */
-	private void testBuiltInRegistrySync() {
-		LOGGER.info("Checking built-in registry sync...");
-
-		// Register a configured feature before force-loading the dynamic registry manager
-		ConfiguredFeature<DefaultFeatureConfig, ?> cf1 = new ConfiguredFeature<>(Feature.BASALT_PILLAR, DefaultFeatureConfig.INSTANCE);
-		Identifier f1Id = new Identifier("registry_sync", "f1");
-		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, f1Id, cf1);
-
-		// Force-Initialize the dynamic registry manager, doing this in a Mod initializer would cause
-		// further registrations into BuiltInRegistries to _NOT_ propagate into DynamicRegistryManager.BUILTIN
-		checkFeature(DynamicRegistryManager.of(BuiltinRegistries.REGISTRIES), f1Id);
-
-		ConfiguredFeature<DefaultFeatureConfig, ?> cf2 = new ConfiguredFeature<>(Feature.DESERT_WELL, DefaultFeatureConfig.INSTANCE);
-		Identifier f2Id = new Identifier("registry_sync", "f2");
-		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, f2Id, cf2);
-
-		DynamicRegistryManager impl2 = DynamicRegistryManager.of(BuiltinRegistries.REGISTRIES);
-		checkFeature(impl2, f1Id);
-		checkFeature(impl2, f2Id);
-	}
-
-	private void checkFeature(DynamicRegistryManager manager, Identifier id) {
-		Registry<ConfiguredFeature<?, ?>> registry = manager.get(Registry.CONFIGURED_FEATURE_KEY);
-
-		ConfiguredFeature<?, ?> builtInEntry = BuiltinRegistries.CONFIGURED_FEATURE.get(id);
-
-		if (builtInEntry == null) {
-			throw new IllegalStateException("Expected built-in entry to exist for: " + id);
-		}
-
-		ConfiguredFeature<?, ?> entry = registry.get(id);
-
-		if (entry == null) {
-			throw new IllegalStateException("Expected dynamic registry to contain entry " + id);
 		}
 	}
 }

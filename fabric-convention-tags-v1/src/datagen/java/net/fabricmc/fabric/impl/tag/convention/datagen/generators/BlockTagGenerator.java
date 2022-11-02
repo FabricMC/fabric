@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
+import java.util.concurrent.CompletableFuture;
+
 import net.minecraft.block.Blocks;
+import net.minecraft.command.CommandRegistryWrapper;
 import net.minecraft.tag.BlockTags;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -24,12 +27,12 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 
 public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
-	public BlockTagGenerator(FabricDataOutput output) {
-		super(output);
+	public BlockTagGenerator(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture) {
+		super(output, registriesFuture);
 	}
 
 	@Override
-	protected void generateTags() {
+	protected void configure(CommandRegistryWrapper.class_7874 registries) {
 		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES)
 				.add(Blocks.NETHER_QUARTZ_ORE);
 		getOrCreateTagBuilder(ConventionalBlockTags.ORES)

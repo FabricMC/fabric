@@ -45,29 +45,6 @@ public interface BiomeSelectionContext {
 	RegistryEntry<Biome> getBiomeRegistryEntry();
 
 	/**
-	 * Returns true if this biome has the given configured feature, which must be registered
-	 * in the {@link net.minecraft.util.registry.BuiltinRegistries}.
-	 *
-	 * <p>This method is intended for use with the Vanilla configured features found in
-	 * classes such as {@link net.minecraft.world.gen.feature.OreConfiguredFeatures}.
-	 */
-	default boolean hasBuiltInFeature(ConfiguredFeature<?, ?> configuredFeature) {
-		RegistryKey<ConfiguredFeature<?, ?>> key = BuiltInRegistryKeys.get(configuredFeature);
-		return hasFeature(key);
-	}
-
-	/**
-	 * Returns true if this biome has the given placed feature, which must be registered
-	 * in the {@link net.minecraft.util.registry.BuiltinRegistries}.
-	 *
-	 * <p>This method is intended for use with the Vanilla placed features found in
-	 * classes such as {@link net.minecraft.world.gen.feature.OrePlacedFeatures}.
-	 */
-	default boolean hasBuiltInPlacedFeature(PlacedFeature placedFeature) {
-		return hasPlacedFeature(BuiltInRegistryKeys.get(placedFeature));
-	}
-
-	/**
 	 * Returns true if this biome contains a placed feature referencing a configured feature with the given key.
 	 */
 	default boolean hasFeature(RegistryKey<ConfiguredFeature<?, ?>> key) {
@@ -114,17 +91,6 @@ public interface BiomeSelectionContext {
 	 * from this biomes feature list.
 	 */
 	Optional<RegistryKey<PlacedFeature>> getPlacedFeatureKey(PlacedFeature placedFeature);
-
-	/**
-	 * Returns true if the given built-in configured structure from {@link net.minecraft.util.registry.BuiltinRegistries}
-	 * can start in this biome in any of the chunk generators used by the current world-save.
-	 *
-	 * <p>This method is intended for use with the Vanilla configured structures found in {@link net.minecraft.world.gen.structure.Structures}.
-	 */
-	default boolean validForBuiltInStructure(Structure structureFeature) {
-		RegistryKey<Structure> key = BuiltInRegistryKeys.get(structureFeature);
-		return validForStructure(key);
-	}
 
 	/**
 	 * Returns true if the configured structure with the given key can start in this biome in any chunk generator
