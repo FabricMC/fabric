@@ -26,6 +26,8 @@ transitive-accessible   method  net/minecraft/data/family/BlockFamilies register
 transitive-accessible   field   net/minecraft/data/client/BlockStateModelGenerator    blockStateCollector Ljava/util/function/Consumer;
 transitive-accessible   field   net/minecraft/data/client/BlockStateModelGenerator    modelCollector  Ljava/util/function/BiConsumer;
 
+transitive-accessible   field   net/minecraft/data/client/ItemModelGenerator    writer  Ljava/util/function/BiConsumer;
+
 transitive-accessible   method  net/minecraft/data/client/TextureKey	of  (Ljava/lang/String;)Lnet/minecraft/data/client/TextureKey;
 transitive-accessible   method  net/minecraft/data/client/TextureKey	of  (Ljava/lang/String;Lnet/minecraft/data/client/TextureKey;)Lnet/minecraft/data/client/TextureKey;
 
