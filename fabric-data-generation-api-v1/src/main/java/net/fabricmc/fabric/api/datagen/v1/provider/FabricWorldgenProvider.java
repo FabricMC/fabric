@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.datagen.v1.provider;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.class_7871;
+import net.minecraft.class_7876;
 import net.minecraft.command.CommandRegistryWrapper;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
@@ -42,6 +44,7 @@ import net.minecraft.data.report.WorldgenProvider;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.RegistryLoader;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
@@ -49,6 +52,9 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 
+/**
+ * A provider to help with data-generation of worldgen objects.
+ */
 @ApiStatus.Experimental
 public abstract class FabricWorldgenProvider implements DataProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WorldgenProvider.class);
@@ -56,8 +62,7 @@ public abstract class FabricWorldgenProvider implements DataProvider {
 	private final FabricDataOutput output;
 	private final CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture;
 
-	public FabricWorldgenProvider(FabricDataOutput output,
-									CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture) {
+	public FabricWorldgenProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture) {
 		this.output = output;
 		this.registriesFuture = registriesFuture;
 	}
@@ -66,68 +71,103 @@ public abstract class FabricWorldgenProvider implements DataProvider {
 
 	public static final class Entries {
 		private final CommandRegistryWrapper.class_7874 registries;
-		private final Map<RegistryKey<? extends Registry<?>>, RegistryEntries<?>> queuedEntries;
+		// Registry ID -> Entries for that registry
+		private final Map<Identifier, RegistryEntries<?>> queuedEntries;
 
 		@ApiStatus.Internal
 		Entries(CommandRegistryWrapper.class_7874 registries) {
 			this.registries = registries;
 			this.queuedEntries = RegistryLoader.DYNAMIC_REGISTRIES.stream()
 					.collect(Collectors.toMap(
-							RegistryLoader.Entry::key,
-							RegistryEntries::create
+							e -> e.key().getValue(),
+							e -> RegistryEntries.create(registries, e)
 					));
 		}
 
+		/**
+		 * Gets access to all lookups.
+		 */
+		public CommandRegistryWrapper.class_7874 getLookups() {
+			return registries;
+		}
+
+		/**
+		 * Gets a lookup for entries from the given registry.
+		 */
+		public <T> class_7871<T> getLookup(RegistryKey<? extends Registry<T>> registryKey) {
+			return registries.method_46762(registryKey);
+		}
+
+		/**
+		 * Returns a lookup for placed features. Useful when creating biomes.
+		 */
 		public class_7871<PlacedFeature> placedFeatures() {
-			return registries.method_46762(Registry.PLACED_FEATURE_KEY);
+			return getLookup(Registry.PLACED_FEATURE_KEY);
 		}
 
+		/**
+		 * Returns a lookup for configured carvers features. Useful when creating biomes.
+		 */
 		public class_7871<ConfiguredCarver<?>> configuredCarvers() {
-			return registries.method_46762(Registry.CONFIGURED_CARVER_KEY);
+			return getLookup(Registry.CONFIGURED_CARVER_KEY);
 		}
 
-		public <T> RegistryEntries<T> of(RegistryKey<? extends Registry<T>> registry) {
-			return getQueuedEnries(registry);
+		/**
+		 * Gets a reference to a registry entry for use in other registrations.
+		 */
+		public <T> RegistryEntry<T> ref(RegistryKey<T> key) {
+			RegistryEntries<T> entries = getQueuedEntries(key);
+			return RegistryEntry.Reference.standAlone(entries.lookup, key);
+		}
+
+		/**
+		 * Adds a new object to be data generated and returns a reference to it for use in other worldgen objects.
+		 */
+		public <T> RegistryEntry<T> add(RegistryKey<T> registry, T object) {
+			return getQueuedEntries(registry).add(registry.getValue(), object);
 		}
 
 		@SuppressWarnings("unchecked")
-		@ApiStatus.Internal
-		<T> RegistryEntries<T> getQueuedEnries(RegistryKey<? extends Registry<T>> registryKey) {
-			RegistryEntries<?> regEntries = queuedEntries.get(registryKey);
+		<T> RegistryEntries<T> getQueuedEntries(RegistryKey<T> key) {
+			RegistryEntries<?> regEntries = queuedEntries.get(key.getRegistry());
 
 			if (regEntries == null) {
-				throw new IllegalArgumentException("Registry " + registryKey + " is not loaded from datapacks");
+				throw new IllegalArgumentException("Registry " + key.getRegistry() + " is not loaded from datapacks");
 			}
 
 			return (RegistryEntries<T>) regEntries;
 		}
 	}
 
-	public static class RegistryEntries<T> {
+	private static class RegistryEntries<T> {
+		final net.minecraft.class_7876<T> lookup;
 		final RegistryKey<? extends Registry<T>> registry;
 		final Codec<T> elementCodec;
-		List<Entry<T>> entries = new ArrayList<>();
+		Map<RegistryKey<T>, T> entries = new IdentityHashMap<>();
 
-		public RegistryEntries(RegistryKey<? extends Registry<T>> registry, Codec<T> elementCodec) {
+		RegistryEntries(class_7876<T> lookup,
+						RegistryKey<? extends Registry<T>> registry,
+						Codec<T> elementCodec) {
+			this.lookup = lookup;
 			this.registry = registry;
 			this.elementCodec = elementCodec;
 		}
 
-		public static <T> RegistryEntries<T> create(RegistryLoader.Entry<T> loaderEntry) {
-			return new RegistryEntries<>(loaderEntry.key(), loaderEntry.elementCodec());
+		static <T> RegistryEntries<T> create(CommandRegistryWrapper.class_7874 lookups, RegistryLoader.Entry<T> loaderEntry) {
+			CommandRegistryWrapper.Impl<T> lookup = lookups.method_46762(loaderEntry.key());
+			return new RegistryEntries<>(lookup, loaderEntry.key(), loaderEntry.elementCodec());
 		}
 
-		public RegistryEntries<T> add(RegistryKey<T> key, T value) {
-			entries.add(new Entry<>(key, value));
-			return this;
+		public RegistryEntry<T> add(RegistryKey<T> key, T value) {
+			if (entries.put(key, value) != null) {
+				throw new IllegalArgumentException("Trying to add registry key " + key + " more than once.");
+			}
+
+			return RegistryEntry.Reference.standAlone(lookup, key);
 		}
 
-		public RegistryEntries<T> add(Identifier id, T value) {
-			entries.add(new Entry<>(RegistryKey.of(registry, id), value));
-			return this;
-		}
-
-		record Entry<T>(RegistryKey<T> key, T value) {
+		public RegistryEntry<T> add(Identifier id, T value) {
+			return add(RegistryKey.of(registry, id), value);
 		}
 	}
 
@@ -136,7 +176,7 @@ public abstract class FabricWorldgenProvider implements DataProvider {
 		return registriesFuture.thenCompose(registries -> {
 			return CompletableFuture
 					.supplyAsync(() -> {
-						var entries = new Entries(registries);
+						Entries entries = new Entries(registries);
 						configure(registries, entries);
 						return entries;
 					})
@@ -158,11 +198,9 @@ public abstract class FabricWorldgenProvider implements DataProvider {
 		final DataOutput.PathResolver pathResolver = output.getResolver(DataOutput.OutputType.DATA_PACK, registry.getValue().getPath());
 		final List<CompletableFuture<?>> futures = new ArrayList<>();
 
-		for (RegistryEntries.Entry<T> entry : entries.entries) {
-			RegistryKey<T> key = entry.key;
-
-			Path path = pathResolver.resolveJson(key.getValue());
-			futures.add(writeToPath(path, writer, ops, entries.elementCodec, entry.value));
+		for (Map.Entry<RegistryKey<T>, T> entry : entries.entries.entrySet()) {
+			Path path = pathResolver.resolveJson(entry.getKey().getValue());
+			futures.add(writeToPath(path, writer, ops, entries.elementCodec, entry.getValue()));
 		}
 
 		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));

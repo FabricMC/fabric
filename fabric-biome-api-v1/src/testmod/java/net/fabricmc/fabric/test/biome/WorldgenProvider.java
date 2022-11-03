@@ -51,24 +51,19 @@ public class WorldgenProvider extends FabricWorldgenProvider {
 
 	@Override
 	protected void configure(CommandRegistryWrapper.class_7874 registries, Entries entries) {
-		entries.of(Registry.BIOME_KEY)
-				.add(FabricBiomeTest.TEST_CRIMSON_FOREST, TheNetherBiomeCreator.createCrimsonForest(entries.placedFeatures(), entries.configuredCarvers()))
-				.add(FabricBiomeTest.CUSTOM_PLAINS, OverworldBiomeCreator.createPlains(entries.placedFeatures(), entries.configuredCarvers(), false, false, false))
-				.add(FabricBiomeTest.TEST_END_HIGHLANDS, createEndHighlands(entries))
-				.add(FabricBiomeTest.TEST_END_MIDLANDS, createEndMidlands(entries))
-				.add(FabricBiomeTest.TEST_END_BARRRENS, createEndBarrens(entries));
+		entries.add(FabricBiomeTest.TEST_CRIMSON_FOREST, TheNetherBiomeCreator.createCrimsonForest(entries.placedFeatures(), entries.configuredCarvers()));
+		entries.add(FabricBiomeTest.CUSTOM_PLAINS, OverworldBiomeCreator.createPlains(entries.placedFeatures(), entries.configuredCarvers(), false, false, false));
+		entries.add(FabricBiomeTest.TEST_END_HIGHLANDS, createEndHighlands(entries));;
+		entries.add(FabricBiomeTest.TEST_END_MIDLANDS, createEndMidlands(entries));
+		entries.add(FabricBiomeTest.TEST_END_BARRRENS, createEndBarrens(entries));
 
 		ConfiguredFeature<?, ?> COMMON_DESERT_WELL = new ConfiguredFeature<>(Feature.DESERT_WELL, DefaultFeatureConfig.INSTANCE);
 
-		entries.of(Registry.CONFIGURED_FEATURE_KEY)
-						.add(FabricBiomeTest.COMMON_DESERT_WELL, COMMON_DESERT_WELL);
-		RegistryEntry<ConfiguredFeature<?, ?>> featureEntry =
-				RegistryEntry.Reference.standAlone(registries.method_46762(Registry.CONFIGURED_FEATURE_KEY), FabricBiomeTest.COMMON_DESERT_WELL);
+		var featureRef = entries.add(FabricBiomeTest.COMMON_DESERT_WELL, COMMON_DESERT_WELL);
 
 		// The placement config is taken from the vanilla desert well, but no randomness
-		PlacedFeature PLACED_COMMON_DESERT_WELL = new PlacedFeature(featureEntry, List.of(SquarePlacementModifier.of(), PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of()));
-		entries.of(Registry.PLACED_FEATURE_KEY)
-				.add(new Identifier(FabricBiomeTest.MOD_ID, "fab_desert_well"), PLACED_COMMON_DESERT_WELL);
+		PlacedFeature PLACED_COMMON_DESERT_WELL = new PlacedFeature(featureRef, List.of(SquarePlacementModifier.of(), PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of()));
+		entries.add(FabricBiomeTest.PLACED_COMMON_DESERT_WELL, PLACED_COMMON_DESERT_WELL);
 	}
 
 	@Override
