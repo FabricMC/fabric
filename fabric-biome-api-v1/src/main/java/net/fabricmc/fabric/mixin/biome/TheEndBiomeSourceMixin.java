@@ -27,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.class_7871;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
@@ -43,9 +44,25 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	@Unique
 	private boolean biomeSetModified = false;
 
+	@Inject(method = "method_46680", at = @At("HEAD"))
+	private static void rememberLookup(class_7871<Biome> biomes, CallbackInfoReturnable<?> ci) {
+		TheEndBiomeData.biomeRegistry.set(biomes);
+	}
+
+	@Inject(method = "method_46680", at = @At("TAIL"))
+	private static void clearLookup(class_7871<Biome> biomes, CallbackInfoReturnable<?> ci) {
+		TheEndBiomeData.biomeRegistry.remove();
+	}
+
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void init(Registry<Biome> biomeRegistry, CallbackInfo ci) {
-		overrides = Suppliers.memoize(() -> TheEndBiomeData.createOverrides(biomeRegistry));
+	private void init(RegistryEntry<Biome> centerBiome, RegistryEntry<Biome> highlandsBiome, RegistryEntry<Biome> midlandsBiome, RegistryEntry<Biome> smallIslandsBiome, RegistryEntry<Biome> barrensBiome, CallbackInfo ci) {
+		overrides = Suppliers.memoize(() -> {
+			var biomes = TheEndBiomeData.biomeRegistry.get();
+			if (biomes == null) {
+				throw new IllegalStateException("Biome registry not set by Mixin");
+			}
+			return TheEndBiomeData.createOverrides(biomes);
+		});
 	}
 
 	@Inject(method = "getBiome", at = @At("RETURN"), cancellable = true)

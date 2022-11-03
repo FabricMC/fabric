@@ -47,8 +47,8 @@ public class WorldgenProvider extends FabricWorldgenProvider {
 
 		entries.of(Registry.CONFIGURED_FEATURE_KEY)
 						.add(FabricBiomeTest.COMMON_DESERT_WELL, COMMON_DESERT_WELL);
-		RegistryEntry<ConfiguredFeature<?, ?>> featureEntry = registries.method_46762(Registry.CONFIGURED_FEATURE_KEY)
-				.method_46747(FabricBiomeTest.COMMON_DESERT_WELL);
+		RegistryEntry<ConfiguredFeature<?, ?>> featureEntry =
+				RegistryEntry.Reference.standAlone(registries.method_46762(Registry.CONFIGURED_FEATURE_KEY), FabricBiomeTest.COMMON_DESERT_WELL);
 
 		// The placement config is taken from the vanilla desert well, but no randomness
 		PlacedFeature PLACED_COMMON_DESERT_WELL = new PlacedFeature(featureEntry, List.of(SquarePlacementModifier.of(), PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of()));

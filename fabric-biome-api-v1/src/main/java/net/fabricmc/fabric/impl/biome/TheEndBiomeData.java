@@ -29,6 +29,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.class_7871;
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
@@ -43,6 +44,7 @@ import net.minecraft.world.biome.source.util.MultiNoiseUtil;
  */
 @ApiStatus.Internal
 public final class TheEndBiomeData {
+	public static final ThreadLocal<class_7871<Biome>> biomeRegistry = new ThreadLocal<>();
 	public static final Set<RegistryKey<Biome>> ADDED_BIOMES = new HashSet<>();
 	private static final Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> END_BIOMES_MAP = new IdentityHashMap<>();
 	private static final Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> END_MIDLANDS_MAP = new IdentityHashMap<>();
@@ -89,8 +91,8 @@ public final class TheEndBiomeData {
 		ADDED_BIOMES.add(barrens);
 	}
 
-	public static Overrides createOverrides(Registry<Biome> biomeRegistry) {
-		return new Overrides(biomeRegistry);
+	public static Overrides createOverrides(class_7871<Biome> biomes) {
+		return new Overrides(biomes);
 	}
 
 	/**
@@ -112,12 +114,12 @@ public final class TheEndBiomeData {
 		// cache for our own sampler (used for random biome replacement selection)
 		private final Map<MultiNoiseUtil.MultiNoiseSampler, PerlinNoiseSampler> samplers = new WeakHashMap<>();
 
-		public Overrides(Registry<Biome> biomeRegistry) {
-			this.customBiomes = ADDED_BIOMES.stream().map(biomeRegistry::entryOf).collect(Collectors.toSet());
+		public Overrides(class_7871<Biome> biomeRegistry) {
+			this.customBiomes = ADDED_BIOMES.stream().map(biomeRegistry::method_46747).collect(Collectors.toSet());
 
-			this.endMidlands = biomeRegistry.entryOf(BiomeKeys.END_MIDLANDS);
-			this.endBarrens = biomeRegistry.entryOf(BiomeKeys.END_BARRENS);
-			this.endHighlands = biomeRegistry.entryOf(BiomeKeys.END_HIGHLANDS);
+			this.endMidlands = biomeRegistry.method_46747(BiomeKeys.END_MIDLANDS);
+			this.endBarrens = biomeRegistry.method_46747(BiomeKeys.END_BARRENS);
+			this.endHighlands = biomeRegistry.method_46747(BiomeKeys.END_HIGHLANDS);
 
 			this.endBiomesMap = resolveOverrides(biomeRegistry, END_BIOMES_MAP, BiomeKeys.THE_END);
 			this.endMidlandsMap = resolveOverrides(biomeRegistry, END_MIDLANDS_MAP, BiomeKeys.END_MIDLANDS);
@@ -125,7 +127,7 @@ public final class TheEndBiomeData {
 		}
 
 		// Resolves all RegistryKey instances to RegistryEntries
-		private @Nullable Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> resolveOverrides(Registry<Biome> biomeRegistry, Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> overrides, RegistryKey<Biome> vanillaKey) {
+		private @Nullable Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> resolveOverrides(class_7871<Biome> biomeRegistry, Map<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> overrides, RegistryKey<Biome> vanillaKey) {
 			Map<RegistryEntry<Biome>, WeightedPicker<RegistryEntry<Biome>>> result = new Object2ObjectOpenCustomHashMap<>(overrides.size(), RegistryKeyHashStrategy.INSTANCE);
 
 			for (Map.Entry<RegistryKey<Biome>, WeightedPicker<RegistryKey<Biome>>> entry : overrides.entrySet()) {
@@ -133,7 +135,7 @@ public final class TheEndBiomeData {
 				int count = picker.getEntryCount();
 				if (count == 0 || (count == 1 && entry.getKey() == vanillaKey)) continue; // don't use no-op entries, for vanilla key biome check 1 as we have default entry
 
-				result.put(biomeRegistry.entryOf(entry.getKey()), picker.map(biomeRegistry::entryOf));
+				result.put(biomeRegistry.method_46747(entry.getKey()), picker.map(biomeRegistry::method_46747));
 			}
 
 			return result.isEmpty() ? null : result;

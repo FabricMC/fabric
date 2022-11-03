@@ -27,9 +27,9 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalEnchantmentTags;
 
-public class EnchantmentTagGenerator extends FabricTagProvider<Enchantment> {
+public class EnchantmentTagGenerator extends FabricTagProvider.EnchantmentTagProvider {
 	public EnchantmentTagGenerator(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture) {
-		super(output, Registry.ENCHANTMENT_KEY, registriesFuture);
+		super(output, registriesFuture);
 	}
 
 	@Override

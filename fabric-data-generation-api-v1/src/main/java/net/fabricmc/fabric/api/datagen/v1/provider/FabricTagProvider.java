@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandRegistryWrapper;
 import net.minecraft.data.server.tag.AbstractTagProvider;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
@@ -82,7 +83,16 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	/**
 	 * Override to enable adding objects to the tag builder directly.
 	 */
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	protected RegistryKey<T> reverseLookup(T element) {
+		var registry = Registry.REGISTRIES.get((RegistryKey) field_40957);
+		if (registry != null) {
+			var key = registry.getKey(element);
+			if (key.isPresent()) {
+				return (RegistryKey<T>) key.get();
+			}
+		}
+
 		throw new UnsupportedOperationException("Adding objects is not supported by " + getClass());
 	}
 
@@ -105,8 +115,9 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 			super(output, Registry.BLOCK_KEY, registriesFuture);
 		}
 
-		public void add() {
-
+		@Override
+		protected RegistryKey<Block> reverseLookup(Block element) {
+			return element.getRegistryEntry().registryKey();
 		}
 	}
 
@@ -151,6 +162,11 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 			TagBuilder itemTagBuilder = this.getTagBuilder(itemTag);
 			blockTagBuilder.build().forEach(itemTagBuilder::add);
 		}
+
+		@Override
+		protected RegistryKey<Item> reverseLookup(Item element) {
+			return element.getRegistryEntry().registryKey();
+		}
 	}
 
 	/**
@@ -159,6 +175,26 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	public abstract static class FluidTagProvider extends FabricTagProvider<Fluid> {
 		public FluidTagProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> completableFuture) {
 			super(output, Registry.FLUID_KEY, completableFuture);
+		}
+
+		@Override
+		protected RegistryKey<Fluid> reverseLookup(Fluid element) {
+			return element.getRegistryEntry().registryKey();
+		}
+	}
+
+	/**
+	 * Extend this class to create {@link Enchantment} tags in the "/enchantments" tag directory.
+	 */
+	public abstract static class EnchantmentTagProvider extends FabricTagProvider<Enchantment> {
+		public EnchantmentTagProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> completableFuture) {
+			super(output, Registry.ENCHANTMENT_KEY, completableFuture);
+		}
+
+		@Override
+		protected RegistryKey<Enchantment> reverseLookup(Enchantment element) {
+			return Registry.ENCHANTMENT.getKey(element)
+					.orElseThrow(() -> new IllegalArgumentException("Enchantment " + element + " is not registered"));
 		}
 	}
 
@@ -169,6 +205,11 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		public EntityTypeTagProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> completableFuture) {
 			super(output, Registry.ENTITY_TYPE_KEY, completableFuture);
 		}
+
+		@Override
+		protected RegistryKey<EntityType<?>> reverseLookup(EntityType<?> element) {
+			return element.getRegistryEntry().registryKey();
+		}
 	}
 
 	/**
@@ -177,6 +218,11 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	public abstract static class GameEventTagProvider extends FabricTagProvider<GameEvent> {
 		public GameEventTagProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> completableFuture) {
 			super(output, Registry.GAME_EVENT_KEY, completableFuture);
+		}
+
+		@Override
+		protected RegistryKey<GameEvent> reverseLookup(GameEvent element) {
+			return element.getRegistryEntry().registryKey();
 		}
 	}
 
