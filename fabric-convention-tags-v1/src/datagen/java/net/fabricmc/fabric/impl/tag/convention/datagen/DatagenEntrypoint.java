@@ -25,10 +25,6 @@ import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EntityTypeTagG
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.FluidTagGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.ItemTagGenerator;
 
-import net.minecraft.command.CommandRegistryWrapper;
-
-import java.util.concurrent.CompletableFuture;
-
 public class DatagenEntrypoint implements DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {

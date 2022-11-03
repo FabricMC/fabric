@@ -19,9 +19,7 @@ package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.command.CommandRegistryWrapper;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;

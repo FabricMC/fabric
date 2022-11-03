@@ -18,8 +18,6 @@ package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.command.CommandRegistryWrapper;
 import net.minecraft.item.Items;
 import net.minecraft.tag.ItemTags;

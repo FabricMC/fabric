@@ -31,7 +31,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.class_7871;
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;

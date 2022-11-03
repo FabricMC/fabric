@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import com.mojang.logging.LogUtils;
-import com.mojang.serialization.Lifecycle;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -34,11 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.class_7887;
 import net.minecraft.command.CommandRegistryWrapper;
-import net.minecraft.data.server.tag.AbstractTagProvider;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;

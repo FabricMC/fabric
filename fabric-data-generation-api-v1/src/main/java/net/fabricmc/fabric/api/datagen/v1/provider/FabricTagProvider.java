@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -40,13 +41,12 @@ import net.minecraft.tag.TagEntry;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.RegistryLoader;
 import net.minecraft.world.event.GameEvent;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 import net.fabricmc.fabric.impl.datagen.ForcedTagEntry;
 
 /**
@@ -85,9 +85,11 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	protected RegistryKey<T> reverseLookup(T element) {
-		var registry = Registry.REGISTRIES.get((RegistryKey) field_40957);
+		Registry registry = Registry.REGISTRIES.get((RegistryKey) field_40957);
+
 		if (registry != null) {
-			var key = registry.getKey(element);
+			Optional<RegistryEntry<T>> key = registry.getKey(element);
+
 			if (key.isPresent()) {
 				return (RegistryKey<T>) key.get();
 			}

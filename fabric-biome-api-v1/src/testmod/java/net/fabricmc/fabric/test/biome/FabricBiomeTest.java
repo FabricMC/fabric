@@ -64,7 +64,6 @@ public class FabricBiomeTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-
 		NetherBiomes.addNetherBiome(BiomeKeys.PLAINS, MultiNoiseUtil.createNoiseHypercube(0.0F, 0.5F, 0.0F, 0.0F, 0.0f, 0, 0.1F));
 		NetherBiomes.addNetherBiome(TEST_CRIMSON_FOREST, MultiNoiseUtil.createNoiseHypercube(0.0F, -0.15F, 0.0f, 0.0F, 0.0f, 0.0F, 0.2F));
 
@@ -108,5 +107,4 @@ public class FabricBiomeTest implements ModInitializer {
 				10.0
 		);
 	}
-
 }

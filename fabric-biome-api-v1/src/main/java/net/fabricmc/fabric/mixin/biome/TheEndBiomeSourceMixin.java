@@ -28,7 +28,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.class_7871;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
@@ -57,10 +56,12 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void init(RegistryEntry<Biome> centerBiome, RegistryEntry<Biome> highlandsBiome, RegistryEntry<Biome> midlandsBiome, RegistryEntry<Biome> smallIslandsBiome, RegistryEntry<Biome> barrensBiome, CallbackInfo ci) {
 		overrides = Suppliers.memoize(() -> {
-			var biomes = TheEndBiomeData.biomeRegistry.get();
+			class_7871<Biome> biomes = TheEndBiomeData.biomeRegistry.get();
+
 			if (biomes == null) {
 				throw new IllegalStateException("Biome registry not set by Mixin");
 			}
+
 			return TheEndBiomeData.createOverrides(biomes);
 		});
 	}

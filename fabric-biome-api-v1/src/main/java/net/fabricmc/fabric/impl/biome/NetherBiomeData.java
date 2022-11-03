@@ -90,7 +90,8 @@ public final class NetherBiomeData {
 		ArrayList<Pair<MultiNoiseUtil.NoiseHypercube, RegistryEntry<Biome>>> entryList = new ArrayList<>(entries.getEntries());
 
 		for (Map.Entry<RegistryKey<Biome>, MultiNoiseUtil.NoiseHypercube> entry : NETHER_BIOME_NOISE_POINTS.entrySet()) {
-			var biomeEntry = biomes.method_46746(entry.getKey()).orElse(null);
+			RegistryEntry.Reference<Biome> biomeEntry = biomes.method_46746(entry.getKey()).orElse(null);
+
 			if (biomeEntry != null) {
 				entryList.add(Pair.of(entry.getValue(), biomeEntry));
 			} else {

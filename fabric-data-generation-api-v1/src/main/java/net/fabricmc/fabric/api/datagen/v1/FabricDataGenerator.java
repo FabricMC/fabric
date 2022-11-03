@@ -20,14 +20,10 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.class_7887;
-import net.minecraft.command.CommandRegistryWrapper;
-
-import net.minecraft.util.Util;
-
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.SharedConstants;
+import net.minecraft.command.CommandRegistryWrapper;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;

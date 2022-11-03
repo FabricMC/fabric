@@ -36,8 +36,6 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
-import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
-
 /**
  * Allows {@link Biome} properties to be modified.
  *

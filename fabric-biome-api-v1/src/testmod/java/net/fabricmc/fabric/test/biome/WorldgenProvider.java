@@ -8,7 +8,6 @@ import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
@@ -54,7 +53,6 @@ public class WorldgenProvider extends FabricWorldgenProvider {
 		PlacedFeature PLACED_COMMON_DESERT_WELL = new PlacedFeature(featureEntry, List.of(SquarePlacementModifier.of(), PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of()));
 		entries.of(Registry.PLACED_FEATURE_KEY)
 				.add(new Identifier(FabricBiomeTest.MOD_ID, "fab_desert_well"), PLACED_COMMON_DESERT_WELL);
-
 	}
 
 	@Override

@@ -29,8 +29,6 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.structure.Structure;
 
-import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
-
 /**
  * Context given to a biome selector for deciding whether it applies to a biome or not.
  */

@@ -36,7 +36,6 @@ import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.RegistryLoader;
-import net.minecraft.util.registry.SimpleRegistry;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 
@@ -53,6 +52,7 @@ public class RegistryLoaderMixin {
 	)
 	private static void beforeLoad(ResourceManager resourceManager, DynamicRegistryManager baseRegistryManager, List<RegistryLoader.Entry<?>> entries, CallbackInfoReturnable<DynamicRegistryManager.Immutable> cir, Map a, List<Pair<MutableRegistry<?>, ?>> registriesList, RegistryOps.class_7863 registryManager) {
 		Map<RegistryKey<? extends Registry<?>>, Registry<?>> registries = new IdentityHashMap<>(registriesList.size());
+
 		for (Pair<MutableRegistry<?>, ?> pair : registriesList) {
 			registries.put(pair.getFirst().getKey(), pair.getFirst());
 		}

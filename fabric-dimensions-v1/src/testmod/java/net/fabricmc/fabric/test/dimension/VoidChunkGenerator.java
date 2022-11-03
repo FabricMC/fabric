@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.test.dimension;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -26,7 +25,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.class_7871;
-import net.minecraft.structure.StructureSet;
 import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -42,13 +40,10 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.FlatChunkGenerator;
-import net.minecraft.world.gen.chunk.FlatChunkGeneratorConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
 public class VoidChunkGenerator extends ChunkGenerator {
-
 	public static final Codec<VoidChunkGenerator> CODEC = RecordCodecBuilder.create((instance) ->
 			instance.group(RegistryOps.method_46636(Registry.BIOME_KEY))
 					.apply(instance, instance.stable(VoidChunkGenerator::new)));

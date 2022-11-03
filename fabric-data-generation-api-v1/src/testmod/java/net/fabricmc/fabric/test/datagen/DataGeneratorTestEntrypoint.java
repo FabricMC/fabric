@@ -36,7 +36,6 @@ import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.command.CommandRegistryWrapper;
-import net.minecraft.data.DataProvider;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
@@ -91,7 +90,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		pack.addProvider(JapaneseLangProvider::new);
 
 		TestBlockTagProvider blockTagProvider = pack.addProvider(TestBlockTagProvider::new);
-		pack.addProvider( (output, registries) -> new TestItemTagProvider(output, registries, blockTagProvider));
+		pack.addProvider((output, registries) -> new TestItemTagProvider(output, registries, blockTagProvider));
 		pack.addProvider(TestBiomeTagProvider::new);
 	}
 
@@ -173,7 +172,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestBlockTagProvider extends FabricTagProvider.BlockTagProvider {
-		public TestBlockTagProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture) {
+		TestBlockTagProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture) {
 			super(output, registriesFuture);
 		}
 

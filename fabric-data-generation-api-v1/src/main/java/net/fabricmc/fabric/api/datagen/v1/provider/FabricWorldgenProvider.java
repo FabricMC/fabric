@@ -42,7 +42,6 @@ import net.minecraft.data.report.WorldgenProvider;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.RegistryLoader;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
@@ -58,7 +57,7 @@ public abstract class FabricWorldgenProvider implements DataProvider {
 	private final CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture;
 
 	public FabricWorldgenProvider(FabricDataOutput output,
-								  CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture) {
+									CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture) {
 		this.output = output;
 		this.registriesFuture = registriesFuture;
 	}
@@ -94,10 +93,12 @@ public abstract class FabricWorldgenProvider implements DataProvider {
 		@SuppressWarnings("unchecked")
 		@ApiStatus.Internal
 		<T> RegistryEntries<T> getQueuedEnries(RegistryKey<? extends Registry<T>> registryKey) {
-			var regEntries = queuedEntries.get(registryKey);
+			RegistryEntries<?> regEntries = queuedEntries.get(registryKey);
+
 			if (regEntries == null) {
 				throw new IllegalArgumentException("Registry " + registryKey + " is not loaded from datapacks");
 			}
+
 			return (RegistryEntries<T>) regEntries;
 		}
 	}
@@ -141,10 +142,9 @@ public abstract class FabricWorldgenProvider implements DataProvider {
 					})
 					.thenCompose(entries -> {
 						final RegistryOps<JsonElement> dynamicOps = RegistryOps.method_46632(JsonOps.INSTANCE, registries);
+						ArrayList<CompletableFuture<?>> futures = new ArrayList<>();
 
-						var futures = new ArrayList<CompletableFuture<?>>();
-
-						for (var registryEntries : entries.queuedEntries.values()) {
+						for (RegistryEntries<?> registryEntries : entries.queuedEntries.values()) {
 							futures.add(writeRegistryEntries(writer, dynamicOps, registryEntries));
 						}
 
@@ -154,12 +154,11 @@ public abstract class FabricWorldgenProvider implements DataProvider {
 	}
 
 	private <T> CompletableFuture<?> writeRegistryEntries(DataWriter writer, RegistryOps<JsonElement> ops, RegistryEntries<T> entries) {
-		var registry = entries.registry;
-
+		final RegistryKey<? extends Registry<T>> registry = entries.registry;
 		final DataOutput.PathResolver pathResolver = output.getResolver(DataOutput.OutputType.DATA_PACK, registry.getValue().getPath());
 		final List<CompletableFuture<?>> futures = new ArrayList<>();
 
-		for (var entry : entries.entries) {
+		for (RegistryEntries.Entry<T> entry : entries.entries) {
 			RegistryKey<T> key = entry.key;
 
 			Path path = pathResolver.resolveJson(key.getValue());
