@@ -45,7 +45,7 @@ public class ItemGroupTest implements ModInitializer {
 		}
 
 		@Override
-		protected void addItems(FeatureSet featureSet, Entries entries) {
+		protected void addItems(FeatureSet featureSet, Entries entries, boolean opItems) {
 			entries.addAll(Registry.ITEM.stream()
 					.map(ItemStack::new)
 					.toList());

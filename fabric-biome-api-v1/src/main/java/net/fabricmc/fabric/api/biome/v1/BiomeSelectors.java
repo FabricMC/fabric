@@ -25,11 +25,12 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.tag.TagKey;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.dimension.DimensionOptions;
+
+import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 
 /**
  * Provides several convenient biome selectors that can be used with {@link BiomeModifications}.
@@ -48,20 +49,13 @@ public final class BiomeSelectors {
 	}
 
 	/**
-	 * Matches Biomes that have not been originally defined in a data pack, but that are defined in code.
-	 */
-	public static Predicate<BiomeSelectionContext> builtIn() {
-		return context -> BuiltinRegistries.BIOME.containsId(context.getBiomeKey().getValue());
-	}
-
-	/**
 	 * Returns a biome selector that will match all biomes from the minecraft namespace.
 	 */
 	public static Predicate<BiomeSelectionContext> vanilla() {
 		return context -> {
-			// In addition to the namespace, we also check that it doesn't come from a data pack.
+			// In addition to the namespace, we also check that it exists in the vanilla registries
 			return context.getBiomeKey().getValue().getNamespace().equals("minecraft")
-					&& BuiltinRegistries.BIOME.containsId(context.getBiomeKey().getValue());
+					&& BuiltInRegistryKeys.isBuiltinBiome(context.getBiomeKey());
 		};
 	}
 

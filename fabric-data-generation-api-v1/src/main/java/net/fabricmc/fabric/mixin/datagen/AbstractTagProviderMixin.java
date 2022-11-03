@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.datagen;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 
 import com.google.gson.JsonElement;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,7 +38,7 @@ import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 @Mixin(AbstractTagProvider.class)
 public class AbstractTagProviderMixin {
 	@Inject(method = "method_27046", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/DataOutput$PathResolver;resolveJson(Lnet/minecraft/util/Identifier;)Ljava/nio/file/Path;"), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void addReplaced(DataWriter dataWriter, Map.Entry<?, ?> entry, CallbackInfoReturnable<CompletableFuture<?>> ci, Identifier id, TagBuilder builder, List list, List list2, JsonElement jsonElement) {
+	public void addReplaced(Predicate<?> p, DataWriter dataWriter, Map.Entry<?, ?> entry, CallbackInfoReturnable<CompletableFuture<?>> ci, Identifier id, TagBuilder builder, List list, List list2, JsonElement jsonElement) {
 		if (builder instanceof FabricTagBuilder fabricTagBuilder) {
 			jsonElement.getAsJsonObject().addProperty("replace", fabricTagBuilder.fabric_isReplaced());
 		}

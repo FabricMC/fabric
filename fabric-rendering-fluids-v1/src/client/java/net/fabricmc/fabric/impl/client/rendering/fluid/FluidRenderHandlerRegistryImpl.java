@@ -34,7 +34,6 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.biome.BiomeKeys;
 
@@ -42,7 +41,10 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 
 public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistry {
-	private static final int DEFAULT_WATER_COLOR = BuiltinRegistries.BIOME.get(BiomeKeys.OCEAN).getWaterColor();
+	/**
+	 * The water color of {@link BiomeKeys#OCEAN}.
+	 */
+	private static final int DEFAULT_WATER_COLOR = 0x3f76e4;
 	private final Map<Fluid, FluidRenderHandler> handlers = new IdentityHashMap<>();
 	private final Map<Fluid, FluidRenderHandler> modHandlers = new IdentityHashMap<>();
 	private final Map<Block, Boolean> overlayBlocks = new IdentityHashMap<>();

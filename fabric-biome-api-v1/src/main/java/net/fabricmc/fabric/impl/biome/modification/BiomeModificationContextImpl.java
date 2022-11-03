@@ -40,7 +40,6 @@ import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.MusicSound;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.collection.Pool;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
@@ -329,18 +328,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		RegistryEntry.Reference<T> entry = registry.getEntry(key).orElse(null);
 
 		if (entry == null) {
-			// Entry is missing. Check if it exists in the built-in registries and warn modders
-			// about the worldgen changing to JSON-only.
-			DynamicRegistryManager.Immutable builtInAccess = BuiltinRegistries.createBuiltinRegistryManager();
-			Registry<T> builtInRegistry = builtInAccess.get(registry.getKey());
-
-			if (builtInRegistry.contains(key)) {
-				throw new IllegalArgumentException("Entry " + key + " only exists in the built-in registry "
-						+ "but a corresponding JSON file couldn't be found in the loaded data packs. "
-						+ "Since 1.19.3+, the built-in registry for world generation objects is only used for data generation purposes.");
-			}
-
-			// The key doesn't exist in either built-in registries or data packs
+			// The key doesn't exist in the data packs
 			throw new IllegalArgumentException("Couldn't find registry entry for " + key);
 		}
 

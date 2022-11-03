@@ -19,38 +19,27 @@ package net.fabricmc.fabric.impl.biome.modification;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntryLookup;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.gen.carver.ConfiguredCarver;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.PlacedFeature;
-import net.minecraft.world.gen.structure.Structure;
+import net.minecraft.util.registry.RegistryWrapper;
+import net.minecraft.world.biome.Biome;
 
 /**
- * Utility class for getting the registry keys of built-in worldgen objects and throwing proper exceptions if they
- * are not registered.
+ * Utility class for accessing the worldgen data that vanilla uses to generate its vanilla datapack.
  */
 @ApiStatus.Internal
 public final class BuiltInRegistryKeys {
+	private static final RegistryWrapper.WrapperLookup vanillaRegistries = BuiltinRegistries.createWrapperLookup();
+
 	private BuiltInRegistryKeys() {
 	}
 
-	public static RegistryKey<Structure> get(Structure structureFeature) {
-		return BuiltinRegistries.STRUCTURE.getKey(structureFeature)
-				.orElseThrow(() -> new IllegalArgumentException("Given structure is not built-in: " + structureFeature));
+	public static boolean isBuiltinBiome(RegistryKey<Biome> key) {
+		return biomeRegistryWrapper().getOptional(key).isPresent();
 	}
 
-	public static RegistryKey<ConfiguredFeature<?, ?>> get(ConfiguredFeature<?, ?> configuredFeature) {
-		return BuiltinRegistries.CONFIGURED_FEATURE.getKey(configuredFeature)
-				.orElseThrow(() -> new IllegalArgumentException("Given configured feature is not built-in: " + configuredFeature));
-	}
-
-	public static RegistryKey<PlacedFeature> get(PlacedFeature placedFeature) {
-		return BuiltinRegistries.PLACED_FEATURE.getKey(placedFeature)
-				.orElseThrow(() -> new IllegalArgumentException("Given placed feature is not built-in: " + placedFeature));
-	}
-
-	public static RegistryKey<ConfiguredCarver<?>> get(ConfiguredCarver<?> configuredCarver) {
-		return BuiltinRegistries.CONFIGURED_CARVER.getKey(configuredCarver)
-				.orElseThrow(() -> new IllegalArgumentException("Given configured carver is not built-in: " + configuredCarver));
+	public static RegistryEntryLookup<Biome> biomeRegistryWrapper() {
+		return vanillaRegistries.getWrapperOrThrow(Registry.BIOME_KEY);
 	}
 }

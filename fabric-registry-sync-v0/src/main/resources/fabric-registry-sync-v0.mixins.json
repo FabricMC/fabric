@@ -4,7 +4,6 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "BootstrapMixin",
-    "BuiltinRegistriesMixin",
     "ChunkSerializerMixin",
     "DebugChunkGeneratorAccessor",
     "IdListMixin",

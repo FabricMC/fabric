@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
+import java.util.concurrent.CompletableFuture;
+
+import net.minecraft.util.registry.RegistryWrapper;
 import net.minecraft.tag.BiomeTags;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
@@ -25,13 +28,13 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 
-public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvider<Biome> {
-	public BiomeTagGenerator(FabricDataOutput output) {
-		super(output, Registry.BIOME_KEY);
+public class BiomeTagGenerator extends FabricTagProvider<Biome> {
+	public BiomeTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
+		super(output, Registry.BIOME_KEY, completableFuture);
 	}
 
 	@Override
-	protected void generateTags() {
+	protected void configure(RegistryWrapper.WrapperLookup arg) {
 		generateDimensionTags();
 		generateCategoryTags();
 		generateOtherBiomeTypes();

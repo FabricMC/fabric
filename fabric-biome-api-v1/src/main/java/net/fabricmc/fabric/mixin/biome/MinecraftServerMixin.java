@@ -44,6 +44,6 @@ public class MinecraftServerMixin {
 		// please blame Mojang for using dynamic registry
 		Registry<DimensionOptions> registry = getRegistryManager().get(Registry.DIMENSION_KEY);
 
-		registry.stream().forEach(dimensionOptions -> NetherBiomeData.modifyBiomeSource(getRegistryManager().get(Registry.BIOME_KEY), dimensionOptions.chunkGenerator().getBiomeSource()));
+		registry.stream().forEach(dimensionOptions -> NetherBiomeData.modifyBiomeSource(getRegistryManager().getWrapperOrThrow(Registry.BIOME_KEY), dimensionOptions.chunkGenerator().getBiomeSource()));
 	}
 }

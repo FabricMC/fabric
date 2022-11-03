@@ -74,7 +74,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 		}
 
 		@Override
-		protected void addItems(FeatureSet featureSet, Entries entries) {
+		protected void addItems(FeatureSet featureSet, Entries entries, boolean showAdminItems) {
 			entries.addAll(items);
 		}
 	}

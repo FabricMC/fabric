@@ -29,14 +29,15 @@ import com.mojang.logging.LogUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntryLookup;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
+
+import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 
 /**
  * Internal data for modding Vanilla's {@link MultiNoiseBiomeSource.Preset#NETHER}.
@@ -67,10 +68,10 @@ public final class NetherBiomeData {
 
 	public static boolean canGenerateInNether(RegistryKey<Biome> biome) {
 		if (NETHER_BIOMES.isEmpty()) {
-			MultiNoiseBiomeSource source = MultiNoiseBiomeSource.Preset.NETHER.getBiomeSource(BuiltinRegistries.BIOME);
+			MultiNoiseBiomeSource source = MultiNoiseBiomeSource.Preset.NETHER.getBiomeSource(BuiltInRegistryKeys.biomeRegistryWrapper());
 
 			for (RegistryEntry<Biome> entry : source.getBiomes()) {
-				BuiltinRegistries.BIOME.getKey(entry.value()).ifPresent(NETHER_BIOMES::add);
+				entry.getKey().ifPresent(NETHER_BIOMES::add);
 			}
 		}
 
@@ -81,7 +82,7 @@ public final class NetherBiomeData {
 		NETHER_BIOMES.clear(); // Clear cached biome source data
 	}
 
-	private static MultiNoiseUtil.Entries<RegistryEntry<Biome>> withModdedBiomeEntries(MultiNoiseUtil.Entries<RegistryEntry<Biome>> entries, Registry<Biome> biomeRegistry) {
+	private static MultiNoiseUtil.Entries<RegistryEntry<Biome>> withModdedBiomeEntries(MultiNoiseUtil.Entries<RegistryEntry<Biome>> entries, RegistryEntryLookup<Biome> biomes) {
 		if (NETHER_BIOME_NOISE_POINTS.isEmpty()) {
 			return entries;
 		}
@@ -89,8 +90,10 @@ public final class NetherBiomeData {
 		ArrayList<Pair<MultiNoiseUtil.NoiseHypercube, RegistryEntry<Biome>>> entryList = new ArrayList<>(entries.getEntries());
 
 		for (Map.Entry<RegistryKey<Biome>, MultiNoiseUtil.NoiseHypercube> entry : NETHER_BIOME_NOISE_POINTS.entrySet()) {
-			if (biomeRegistry.contains(entry.getKey())) {
-				entryList.add(Pair.of(entry.getValue(), biomeRegistry.entryOf(entry.getKey())));
+			RegistryEntry.Reference<Biome> biomeEntry = biomes.getOptional(entry.getKey()).orElse(null);
+
+			if (biomeEntry != null) {
+				entryList.add(Pair.of(entry.getValue(), biomeEntry));
 			} else {
 				LOGGER.warn("Nether biome {} not loaded", entry.getKey().getValue());
 			}
@@ -99,7 +102,7 @@ public final class NetherBiomeData {
 		return new MultiNoiseUtil.Entries<>(entryList);
 	}
 
-	public static void modifyBiomeSource(Registry<Biome> biomeRegistry, BiomeSource biomeSource) {
+	public static void modifyBiomeSource(RegistryEntryLookup<Biome> biomeRegistry, BiomeSource biomeSource) {
 		if (biomeSource instanceof MultiNoiseBiomeSource multiNoiseBiomeSource) {
 			if (((BiomeSourceAccess) multiNoiseBiomeSource).fabric_shouldModifyBiomeEntries() && multiNoiseBiomeSource.matchesInstance(MultiNoiseBiomeSource.Preset.NETHER)) {
 				multiNoiseBiomeSource.biomeEntries = NetherBiomeData.withModdedBiomeEntries(

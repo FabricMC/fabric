@@ -22,24 +22,20 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import com.mojang.logging.LogUtils;
-import com.mojang.serialization.Lifecycle;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.data.server.tag.AbstractTagProvider;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
+import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.RegistryWrapper;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider.DynamicRegistryTagProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -100,6 +96,9 @@ public final class FabricDataGenHelper {
 					DataGeneratorEntrypoint.class.getName(), ENTRYPOINT_KEY);
 		}
 
+		// Load the registries synchronously
+		CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture = CompletableFuture.completedFuture(BuiltinRegistries.createWrapperLookup());
+
 		for (EntrypointContainer<DataGeneratorEntrypoint> entrypointContainer : dataGeneratorInitializers) {
 			final String id = entrypointContainer.getProvider().getMetadata().getId();
 
@@ -120,30 +119,13 @@ public final class FabricDataGenHelper {
 					modContainer = FabricLoader.getInstance().getModContainer(effectiveModId).orElseThrow(() -> new RuntimeException("Failed to find effective mod container for mod id (%s)".formatted(effectiveModId)));
 				}
 
-				FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, modContainer, STRICT_VALIDATION);
+				FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, modContainer, STRICT_VALIDATION, registriesFuture);
 				entrypoint.onInitializeDataGenerator(dataGenerator);
 				dataGenerator.run();
 			} catch (Throwable t) {
 				throw new RuntimeException("Failed to run data generator from mod (%s)".formatted(id), t);
 			}
 		}
-	}
-
-	/**
-	 * A fake registry instance to be used for {@link DynamicRegistryTagProvider}.
-	 *
-	 * <p>In {@link AbstractTagProvider#run}, it checks for whether the registry has all the elements added to the builder.
-	 * This would be fine for static registry, but there won't be any instance dynamic registry available.
-	 * Therefore, this simply return true for all {@link Registry#containsId} call.
-	 */
-	@SuppressWarnings("rawtypes")
-	public static <T> Registry<T> getFakeDynamicRegistry(RegistryKey<? extends Registry<T>> registryKey) {
-		return new SimpleRegistry<>(registryKey, Lifecycle.experimental(), false) {
-			@Override
-			public boolean containsId(Identifier id) {
-				return true;
-			}
-		};
 	}
 
 	/**

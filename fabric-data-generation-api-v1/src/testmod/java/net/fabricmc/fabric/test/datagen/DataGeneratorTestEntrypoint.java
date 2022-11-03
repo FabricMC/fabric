@@ -25,6 +25,7 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_I
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -34,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
-import net.minecraft.data.DataProvider;
+import net.minecraft.util.registry.RegistryWrapper;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
@@ -54,7 +55,6 @@ import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.TagKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -90,34 +90,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		pack.addProvider(JapaneseLangProvider::new);
 
 		TestBlockTagProvider blockTagProvider = pack.addProvider(TestBlockTagProvider::new);
-		pack.addProvider((FabricDataGenerator.Pack.Factory<TestItemTagProvider>) output -> new TestItemTagProvider(output, blockTagProvider));
+		pack.addProvider((output, registries) -> new TestItemTagProvider(output, registries, blockTagProvider));
 		pack.addProvider(TestBiomeTagProvider::new);
-
-		try {
-			pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) output -> {
-				new FabricTagProvider<>(output, BuiltinRegistries.BIOME) {
-					@Override
-					protected void generateTags() {
-					}
-				};
-				throw new AssertionError("Using FabricTagProvider with built-in registry didn't throw an exception!");
-			});
-		} catch (IllegalArgumentException e) {
-			// no-op
-		}
-
-		try {
-			pack.addProvider((FabricDataGenerator.Pack.Factory<DataProvider>) output -> {
-				new FabricTagProvider.DynamicRegistryTagProvider<>(output, Registry.ITEM_KEY) {
-					@Override
-					protected void generateTags() {
-					}
-				};
-				throw new AssertionError("Using DynamicRegistryTagProvider with static registry didn't throw an exception!");
-			});
-		} catch (IllegalArgumentException e) {
-			// no-op
-		}
 	}
 
 	private static class TestRecipeProvider extends FabricRecipeProvider {
@@ -198,46 +172,39 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestBlockTagProvider extends FabricTagProvider.BlockTagProvider {
-		private TestBlockTagProvider(FabricDataOutput output) {
-			super(output);
+		TestBlockTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(output, registriesFuture);
 		}
 
 		@Override
-		protected void generateTags() {
+		protected void configure(RegistryWrapper.WrapperLookup registries) {
 			getOrCreateTagBuilder(BlockTags.FIRE).add(SIMPLE_BLOCK);
-			getOrCreateTagBuilder(BlockTags.ANVIL).setReplace(true).add(SIMPLE_BLOCK, BLOCK_WITHOUT_ITEM);
+			getOrCreateTagBuilder(BlockTags.ANVIL).setReplace(true).add(SIMPLE_BLOCK);
 			getOrCreateTagBuilder(BlockTags.ACACIA_LOGS).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
 		}
 	}
 
 	private static class TestItemTagProvider extends FabricTagProvider.ItemTagProvider {
-		private TestItemTagProvider(FabricDataOutput output, BlockTagProvider blockTagProvider) {
-			super(output, blockTagProvider);
+		private TestItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture, BlockTagProvider blockTagProvider) {
+			super(output, registriesFuture, blockTagProvider);
 		}
 
 		@Override
-		protected void generateTags() {
+		protected void configure(RegistryWrapper.WrapperLookup registries) {
 			copy(BlockTags.ANVIL, ItemTags.ANVIL);
 		}
 	}
 
-	private static class TestBiomeTagProvider extends FabricTagProvider.DynamicRegistryTagProvider<Biome> {
-		private TestBiomeTagProvider(FabricDataOutput output) {
-			super(output, Registry.BIOME_KEY);
+	private static class TestBiomeTagProvider extends FabricTagProvider<Biome> {
+		private TestBiomeTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(output, Registry.BIOME_KEY, registriesFuture);
 		}
 
 		@Override
-		protected void generateTags() {
-			FabricTagBuilder<Biome> builder = getOrCreateTagBuilder(TagKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "biome_tag_test")))
+		protected void configure(RegistryWrapper.WrapperLookup registries) {
+			getOrCreateTagBuilder(TagKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "biome_tag_test")))
 					.add(BiomeKeys.BADLANDS, BiomeKeys.BAMBOO_JUNGLE)
 					.add(BiomeKeys.BASALT_DELTAS);
-
-			try {
-				builder.add(BuiltinRegistries.BIOME.get(BiomeKeys.PLAINS));
-				throw new AssertionError("Adding built-in entry to dynamic registry tag builder didn't throw an exception!");
-			} catch (UnsupportedOperationException e) {
-				// no-op
-			}
 		}
 	}
 

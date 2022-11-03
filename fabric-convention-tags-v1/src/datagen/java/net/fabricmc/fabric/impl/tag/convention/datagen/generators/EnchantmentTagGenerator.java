@@ -16,21 +16,22 @@
 
 package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
-import net.minecraft.enchantment.Enchantment;
+import java.util.concurrent.CompletableFuture;
+
+import net.minecraft.util.registry.RegistryWrapper;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalEnchantmentTags;
 
-public class EnchantmentTagGenerator extends FabricTagProvider<Enchantment> {
-	public EnchantmentTagGenerator(FabricDataOutput output) {
-		super(output, Registry.ENCHANTMENT);
+public class EnchantmentTagGenerator extends FabricTagProvider.EnchantmentTagProvider {
+	public EnchantmentTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+		super(output, registriesFuture);
 	}
 
 	@Override
-	protected void generateTags() {
+	protected void configure(RegistryWrapper.WrapperLookup registries) {
 		getOrCreateTagBuilder(ConventionalEnchantmentTags.INCREASES_BLOCK_DROPS)
 				.add(Enchantments.FORTUNE);
 		getOrCreateTagBuilder(ConventionalEnchantmentTags.INCREASES_ENTITY_DROPS)

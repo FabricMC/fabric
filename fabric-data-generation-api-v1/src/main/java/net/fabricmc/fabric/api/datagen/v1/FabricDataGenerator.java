@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.datagen.v1;
 
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.ApiStatus;
 
@@ -25,6 +26,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
+import net.minecraft.util.registry.RegistryWrapper;
 
 import net.fabricmc.loader.api.ModContainer;
 
@@ -35,13 +37,15 @@ public final class FabricDataGenerator extends DataGenerator {
 	private final ModContainer modContainer;
 	private final boolean strictValidation;
 	private final FabricDataOutput fabricOutput;
+	private final CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture;
 
 	@ApiStatus.Internal
-	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation) {
+	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 		super(output, SharedConstants.getGameVersion(), true);
 		this.modContainer = Objects.requireNonNull(mod);
 		this.strictValidation = strictValidation;
 		this.fabricOutput = new FabricDataOutput(mod, output, strictValidation);
+		this.registriesFuture = registriesFuture;
 	}
 
 	public Pack createPack() {
@@ -85,7 +89,7 @@ public final class FabricDataGenerator extends DataGenerator {
 	 */
 	@Override
 	@Deprecated
-	public DataGenerator.Pack createVanilla(boolean shouldRun) {
+	public DataGenerator.Pack createVanillaPack(boolean shouldRun) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -112,9 +116,18 @@ public final class FabricDataGenerator extends DataGenerator {
 			return super.addProvider(output -> factory.create((FabricDataOutput) output));
 		}
 
+		public <T extends DataProvider> T addProvider(RegistryDependentFactory<T> factory) {
+			return super.addProvider(output -> factory.create((FabricDataOutput) output, registriesFuture));
+		}
+
 		@FunctionalInterface
 		public interface Factory<T extends DataProvider> {
 			T create(FabricDataOutput output);
+		}
+
+		@FunctionalInterface
+		public interface RegistryDependentFactory<T extends DataProvider> {
+			T create(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture);
 		}
 	}
 }
