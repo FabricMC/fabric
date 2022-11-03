@@ -19,7 +19,7 @@ package net.fabricmc.fabric.test.biome;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.command.CommandRegistryWrapper;
+import net.minecraft.util.registry.RegistryWrapper;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
@@ -43,12 +43,12 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricWorldgenProvider;
 
 public class WorldgenProvider extends FabricWorldgenProvider {
-	public WorldgenProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture) {
+	public WorldgenProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 		super(output, registriesFuture);
 	}
 
 	@Override
-	protected void configure(CommandRegistryWrapper.class_7874 registries, Entries entries) {
+	protected void configure(RegistryWrapper.WrapperLookup registries, Entries entries) {
 		entries.add(FabricBiomeTest.TEST_CRIMSON_FOREST, TheNetherBiomeCreator.createCrimsonForest(entries.placedFeatures(), entries.configuredCarvers()));
 		entries.add(FabricBiomeTest.CUSTOM_PLAINS, OverworldBiomeCreator.createPlains(entries.placedFeatures(), entries.configuredCarvers(), false, false, false));
 		entries.add(FabricBiomeTest.TEST_END_HIGHLANDS, createEndHighlands(entries));

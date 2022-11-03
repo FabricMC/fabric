@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
-import net.minecraft.command.CommandRegistryWrapper;
+import net.minecraft.util.registry.RegistryWrapper;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
@@ -172,12 +172,12 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestBlockTagProvider extends FabricTagProvider.BlockTagProvider {
-		TestBlockTagProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture) {
+		TestBlockTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 			super(output, registriesFuture);
 		}
 
 		@Override
-		protected void configure(CommandRegistryWrapper.class_7874 registries) {
+		protected void configure(RegistryWrapper.WrapperLookup registries) {
 			getOrCreateTagBuilder(BlockTags.FIRE).add(SIMPLE_BLOCK);
 			getOrCreateTagBuilder(BlockTags.ANVIL).setReplace(true).add(SIMPLE_BLOCK);
 			getOrCreateTagBuilder(BlockTags.ACACIA_LOGS).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
@@ -185,23 +185,23 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestItemTagProvider extends FabricTagProvider.ItemTagProvider {
-		private TestItemTagProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture, BlockTagProvider blockTagProvider) {
+		private TestItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture, BlockTagProvider blockTagProvider) {
 			super(output, registriesFuture, blockTagProvider);
 		}
 
 		@Override
-		protected void configure(CommandRegistryWrapper.class_7874 registries) {
+		protected void configure(RegistryWrapper.WrapperLookup registries) {
 			copy(BlockTags.ANVIL, ItemTags.ANVIL);
 		}
 	}
 
 	private static class TestBiomeTagProvider extends FabricTagProvider<Biome> {
-		private TestBiomeTagProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture) {
+		private TestBiomeTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 			super(output, Registry.BIOME_KEY, registriesFuture);
 		}
 
 		@Override
-		protected void configure(CommandRegistryWrapper.class_7874 registries) {
+		protected void configure(RegistryWrapper.WrapperLookup registries) {
 			getOrCreateTagBuilder(TagKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "biome_tag_test")))
 					.add(BiomeKeys.BADLANDS, BiomeKeys.BAMBOO_JUNGLE)
 					.add(BiomeKeys.BASALT_DELTAS);

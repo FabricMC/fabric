@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.class_7871;
+import net.minecraft.util.registry.RegistryEntryLookup;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
@@ -38,7 +38,7 @@ public class NoiseConfigMixin {
 	private MultiNoiseUtil.MultiNoiseSampler multiNoiseSampler;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(ChunkGeneratorSettings chunkGeneratorSettings, class_7871<DoublePerlinNoiseSampler.NoiseParameters> arg, long seed, CallbackInfo ci) {
+	private void init(ChunkGeneratorSettings chunkGeneratorSettings, RegistryEntryLookup<DoublePerlinNoiseSampler.NoiseParameters> arg, long seed, CallbackInfo ci) {
 		((MultiNoiseSamplerHooks) (Object) multiNoiseSampler).fabric_setSeed(seed);
 	}
 }

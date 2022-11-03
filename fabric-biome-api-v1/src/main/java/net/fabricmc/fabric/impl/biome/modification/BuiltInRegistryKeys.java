@@ -18,11 +18,11 @@ package net.fabricmc.fabric.impl.biome.modification;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.class_7871;
-import net.minecraft.class_7887;
-import net.minecraft.command.CommandRegistryWrapper;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntryLookup;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.RegistryWrapper;
 import net.minecraft.world.biome.Biome;
 
 /**
@@ -30,16 +30,16 @@ import net.minecraft.world.biome.Biome;
  */
 @ApiStatus.Internal
 public final class BuiltInRegistryKeys {
-	private static final CommandRegistryWrapper.class_7874 vanillaRegistries = class_7887.method_46817();
+	private static final RegistryWrapper.WrapperLookup vanillaRegistries = BuiltinRegistries.createWrapperLookup();
 
 	private BuiltInRegistryKeys() {
 	}
 
 	public static boolean isBuiltinBiome(RegistryKey<Biome> key) {
-		return vanillaRegistries.method_46762(Registry.BIOME_KEY).method_46746(key).isPresent();
+		return biomeRegistryWrapper().getOptional(key).isPresent();
 	}
 
-	public static class_7871<Biome> biomeRegistryWrapper() {
-		return vanillaRegistries.method_46762(Registry.BIOME_KEY);
+	public static RegistryEntryLookup<Biome> biomeRegistryWrapper() {
+		return vanillaRegistries.getWrapperOrThrow(Registry.BIOME_KEY);
 	}
 }

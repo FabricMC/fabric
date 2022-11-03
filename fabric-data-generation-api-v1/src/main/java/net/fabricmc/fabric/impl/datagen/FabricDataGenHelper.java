@@ -31,8 +31,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.class_7887;
-import net.minecraft.command.CommandRegistryWrapper;
+import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.RegistryWrapper;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -97,7 +97,7 @@ public final class FabricDataGenHelper {
 		}
 
 		// Load the registries synchronously
-		CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture = CompletableFuture.completedFuture(class_7887.method_46817());
+		CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture = CompletableFuture.completedFuture(BuiltinRegistries.createWrapperLookup());
 
 		for (EntrypointContainer<DataGeneratorEntrypoint> entrypointContainer : dataGeneratorInitializers) {
 			final String id = entrypointContainer.getProvider().getMetadata().getId();

@@ -52,7 +52,7 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup {
 	private ItemStackSet searchTabStacks;
 
 	@SuppressWarnings("ConstantConditions")
-	@Inject(method = "getStacks", at = @At(value = "FIELD", target = "Lnet/minecraft/item/ItemGroup;field_40860:Lnet/minecraft/item/ItemStackSet;", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER))
+	@Inject(method = "getStacks", at = @At(value = "FIELD", target = "Lnet/minecraft/item/ItemGroup;searchTabStacks:Lnet/minecraft/item/ItemStackSet;", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER))
 	public void getStacks(FeatureSet enabledFeatures, boolean search, boolean showAdminItems, CallbackInfoReturnable<ItemStackSet> cir) {
 		// Sanity check for the injection point. It should be after these fields are set.
 		Objects.requireNonNull(displayStacks, "displayStacks");

@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.command.CommandRegistryWrapper;
+import net.minecraft.util.registry.RegistryWrapper;
 import net.minecraft.data.server.tag.AbstractTagProvider;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
@@ -71,14 +71,14 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 * @param output        The {@link FabricDataOutput} instance
 	 * @param registriesFuture      The backing registry for the Tag type.
 	 */
-	public FabricTagProvider(FabricDataOutput output, RegistryKey<? extends Registry<T>> registryKey, CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture) {
+	public FabricTagProvider(FabricDataOutput output, RegistryKey<? extends Registry<T>> registryKey, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 		super(output, registryKey, registriesFuture);
 	}
 
 	/**
 	 * Implement this method and then use {@link FabricTagProvider#getOrCreateTagBuilder} to get and register new tag builders.
 	 */
-	protected abstract void configure(CommandRegistryWrapper.class_7874 arg);
+	protected abstract void configure(RegistryWrapper.WrapperLookup arg);
 
 	/**
 	 * Override to enable adding objects to the tag builder directly.
@@ -113,7 +113,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 * Extend this class to create {@link Block} tags in the "/blocks" tag directory.
 	 */
 	public abstract static class BlockTagProvider extends FabricTagProvider<Block> {
-		public BlockTagProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture) {
+		public BlockTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 			super(output, Registry.BLOCK_KEY, registriesFuture);
 		}
 
@@ -135,7 +135,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 *
 		 * @param output The {@link FabricDataOutput} instance
 		 */
-		public ItemTagProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> completableFuture, @Nullable FabricTagProvider.BlockTagProvider blockTagProvider) {
+		public ItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture, @Nullable FabricTagProvider.BlockTagProvider blockTagProvider) {
 			super(output, Registry.ITEM_KEY, completableFuture);
 
 			this.blockTagBuilderProvider = blockTagProvider == null ? null : blockTagProvider::getTagBuilder;
@@ -146,7 +146,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 *
 		 * @param output The {@link FabricDataOutput} instance
 		 */
-		public ItemTagProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> completableFuture) {
+		public ItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
 			this(output, completableFuture, null);
 		}
 
@@ -175,7 +175,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 * Extend this class to create {@link Fluid} tags in the "/fluids" tag directory.
 	 */
 	public abstract static class FluidTagProvider extends FabricTagProvider<Fluid> {
-		public FluidTagProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> completableFuture) {
+		public FluidTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
 			super(output, Registry.FLUID_KEY, completableFuture);
 		}
 
@@ -189,7 +189,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 * Extend this class to create {@link Enchantment} tags in the "/enchantments" tag directory.
 	 */
 	public abstract static class EnchantmentTagProvider extends FabricTagProvider<Enchantment> {
-		public EnchantmentTagProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> completableFuture) {
+		public EnchantmentTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
 			super(output, Registry.ENCHANTMENT_KEY, completableFuture);
 		}
 
@@ -204,7 +204,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 * Extend this class to create {@link EntityType} tags in the "/entity_types" tag directory.
 	 */
 	public abstract static class EntityTypeTagProvider extends FabricTagProvider<EntityType<?>> {
-		public EntityTypeTagProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> completableFuture) {
+		public EntityTypeTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
 			super(output, Registry.ENTITY_TYPE_KEY, completableFuture);
 		}
 
@@ -218,7 +218,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 * Extend this class to create {@link GameEvent} tags in the "/game_events" tag directory.
 	 */
 	public abstract static class GameEventTagProvider extends FabricTagProvider<GameEvent> {
-		public GameEventTagProvider(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> completableFuture) {
+		public GameEventTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
 			super(output, Registry.GAME_EVENT_KEY, completableFuture);
 		}
 

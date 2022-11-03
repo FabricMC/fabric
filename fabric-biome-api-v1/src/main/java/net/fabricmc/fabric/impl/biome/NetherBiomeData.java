@@ -29,7 +29,7 @@ import com.mojang.logging.LogUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 
-import net.minecraft.class_7871;
+import net.minecraft.util.registry.RegistryEntryLookup;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -82,7 +82,7 @@ public final class NetherBiomeData {
 		NETHER_BIOMES.clear(); // Clear cached biome source data
 	}
 
-	private static MultiNoiseUtil.Entries<RegistryEntry<Biome>> withModdedBiomeEntries(MultiNoiseUtil.Entries<RegistryEntry<Biome>> entries, class_7871<Biome> biomes) {
+	private static MultiNoiseUtil.Entries<RegistryEntry<Biome>> withModdedBiomeEntries(MultiNoiseUtil.Entries<RegistryEntry<Biome>> entries, RegistryEntryLookup<Biome> biomes) {
 		if (NETHER_BIOME_NOISE_POINTS.isEmpty()) {
 			return entries;
 		}
@@ -90,7 +90,7 @@ public final class NetherBiomeData {
 		ArrayList<Pair<MultiNoiseUtil.NoiseHypercube, RegistryEntry<Biome>>> entryList = new ArrayList<>(entries.getEntries());
 
 		for (Map.Entry<RegistryKey<Biome>, MultiNoiseUtil.NoiseHypercube> entry : NETHER_BIOME_NOISE_POINTS.entrySet()) {
-			RegistryEntry.Reference<Biome> biomeEntry = biomes.method_46746(entry.getKey()).orElse(null);
+			RegistryEntry.Reference<Biome> biomeEntry = biomes.getOptional(entry.getKey()).orElse(null);
 
 			if (biomeEntry != null) {
 				entryList.add(Pair.of(entry.getValue(), biomeEntry));
@@ -102,7 +102,7 @@ public final class NetherBiomeData {
 		return new MultiNoiseUtil.Entries<>(entryList);
 	}
 
-	public static void modifyBiomeSource(class_7871<Biome> biomeRegistry, BiomeSource biomeSource) {
+	public static void modifyBiomeSource(RegistryEntryLookup<Biome> biomeRegistry, BiomeSource biomeSource) {
 		if (biomeSource instanceof MultiNoiseBiomeSource multiNoiseBiomeSource) {
 			if (((BiomeSourceAccess) multiNoiseBiomeSource).fabric_shouldModifyBiomeEntries() && multiNoiseBiomeSource.matchesInstance(MultiNoiseBiomeSource.Preset.NETHER)) {
 				multiNoiseBiomeSource.biomeEntries = NetherBiomeData.withModdedBiomeEntries(

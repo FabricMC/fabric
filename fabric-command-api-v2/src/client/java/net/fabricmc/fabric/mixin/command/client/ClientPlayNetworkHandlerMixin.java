@@ -58,7 +58,7 @@ abstract class ClientPlayNetworkHandlerMixin {
 	private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo info) {
 		final CommandDispatcher<FabricClientCommandSource> dispatcher = new CommandDispatcher<>();
 		ClientCommandInternals.setActiveDispatcher(dispatcher);
-		ClientCommandRegistrationCallback.EVENT.invoker().register(dispatcher, CommandRegistryAccess.method_46722(this.combinedDynamicRegistries.getCombinedRegistryManager(), this.enabledFeatures));
+		ClientCommandRegistrationCallback.EVENT.invoker().register(dispatcher, CommandRegistryAccess.of(this.combinedDynamicRegistries.getCombinedRegistryManager(), this.enabledFeatures));
 		ClientCommandInternals.finalizeInit();
 	}
 

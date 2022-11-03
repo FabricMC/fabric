@@ -50,7 +50,7 @@ public class RegistryLoaderMixin {
 			),
 			locals = LocalCapture.CAPTURE_FAILHARD
 	)
-	private static void beforeLoad(ResourceManager resourceManager, DynamicRegistryManager baseRegistryManager, List<RegistryLoader.Entry<?>> entries, CallbackInfoReturnable<DynamicRegistryManager.Immutable> cir, Map a, List<Pair<MutableRegistry<?>, ?>> registriesList, RegistryOps.class_7863 registryManager) {
+	private static void beforeLoad(ResourceManager resourceManager, DynamicRegistryManager baseRegistryManager, List<RegistryLoader.Entry<?>> entries, CallbackInfoReturnable<DynamicRegistryManager.Immutable> cir, Map a, List<Pair<MutableRegistry<?>, ?>> registriesList, RegistryOps.RegistryInfoGetter registryManager) {
 		Map<RegistryKey<? extends Registry<?>>, Registry<?>> registries = new IdentityHashMap<>(registriesList.size());
 
 		for (Pair<MutableRegistry<?>, ?> pair : registriesList) {

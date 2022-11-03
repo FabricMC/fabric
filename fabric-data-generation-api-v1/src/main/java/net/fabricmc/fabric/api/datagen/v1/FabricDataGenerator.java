@@ -23,10 +23,10 @@ import java.util.concurrent.CompletableFuture;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.command.CommandRegistryWrapper;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
+import net.minecraft.util.registry.RegistryWrapper;
 
 import net.fabricmc.loader.api.ModContainer;
 
@@ -37,10 +37,10 @@ public final class FabricDataGenerator extends DataGenerator {
 	private final ModContainer modContainer;
 	private final boolean strictValidation;
 	private final FabricDataOutput fabricOutput;
-	private final CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture;
+	private final CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture;
 
 	@ApiStatus.Internal
-	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation, CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture) {
+	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 		super(output, SharedConstants.getGameVersion(), true);
 		this.modContainer = Objects.requireNonNull(mod);
 		this.strictValidation = strictValidation;
@@ -127,7 +127,7 @@ public final class FabricDataGenerator extends DataGenerator {
 
 		@FunctionalInterface
 		public interface RegistryDependentFactory<T extends DataProvider> {
-			T create(FabricDataOutput output, CompletableFuture<CommandRegistryWrapper.class_7874> registriesFuture);
+			T create(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture);
 		}
 	}
 }
