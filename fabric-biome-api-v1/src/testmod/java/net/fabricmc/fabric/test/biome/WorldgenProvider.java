@@ -21,8 +21,6 @@ import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.command.CommandRegistryWrapper;
 import net.minecraft.sound.BiomeMoodSound;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
@@ -53,13 +51,14 @@ public class WorldgenProvider extends FabricWorldgenProvider {
 	protected void configure(CommandRegistryWrapper.class_7874 registries, Entries entries) {
 		entries.add(FabricBiomeTest.TEST_CRIMSON_FOREST, TheNetherBiomeCreator.createCrimsonForest(entries.placedFeatures(), entries.configuredCarvers()));
 		entries.add(FabricBiomeTest.CUSTOM_PLAINS, OverworldBiomeCreator.createPlains(entries.placedFeatures(), entries.configuredCarvers(), false, false, false));
-		entries.add(FabricBiomeTest.TEST_END_HIGHLANDS, createEndHighlands(entries));;
+		entries.add(FabricBiomeTest.TEST_END_HIGHLANDS, createEndHighlands(entries));
+		;
 		entries.add(FabricBiomeTest.TEST_END_MIDLANDS, createEndMidlands(entries));
 		entries.add(FabricBiomeTest.TEST_END_BARRRENS, createEndBarrens(entries));
 
 		ConfiguredFeature<?, ?> COMMON_DESERT_WELL = new ConfiguredFeature<>(Feature.DESERT_WELL, DefaultFeatureConfig.INSTANCE);
 
-		var featureRef = entries.add(FabricBiomeTest.COMMON_DESERT_WELL, COMMON_DESERT_WELL);
+		RegistryEntry<ConfiguredFeature<?, ?>> featureRef = entries.add(FabricBiomeTest.COMMON_DESERT_WELL, COMMON_DESERT_WELL);
 
 		// The placement config is taken from the vanilla desert well, but no randomness
 		PlacedFeature PLACED_COMMON_DESERT_WELL = new PlacedFeature(featureRef, List.of(SquarePlacementModifier.of(), PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of()));
