@@ -53,16 +53,17 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 
 /**
- * A provider to help with data-generation of worldgen objects.
+ * A provider to help with data-generation of dynamic registry objects,
+ * such as biomes, features, or message types.
  */
 @ApiStatus.Experimental
-public abstract class FabricWorldgenProvider implements DataProvider {
+public abstract class FabricDynamicRegistryProvider implements DataProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WorldgenProvider.class);
 
 	private final FabricDataOutput output;
 	private final CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture;
 
-	public FabricWorldgenProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+	public FabricDynamicRegistryProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 		this.output = output;
 		this.registriesFuture = registriesFuture;
 	}
@@ -85,7 +86,7 @@ public abstract class FabricWorldgenProvider implements DataProvider {
 		}
 
 		/**
-		 * Gets access to all lookups.
+		 * Gets access to all registry lookups.
 		 */
 		public RegistryWrapper.WrapperLookup getLookups() {
 			return registries;
@@ -106,7 +107,7 @@ public abstract class FabricWorldgenProvider implements DataProvider {
 		}
 
 		/**
-		 * Returns a lookup for configured carvers features. Useful when creating biomes.
+		 * Returns a lookup for configured carvers. Useful when creating biomes.
 		 */
 		public RegistryEntryLookup<ConfiguredCarver<?>> configuredCarvers() {
 			return getLookup(Registry.CONFIGURED_CARVER_KEY);
@@ -121,7 +122,7 @@ public abstract class FabricWorldgenProvider implements DataProvider {
 		}
 
 		/**
-		 * Adds a new object to be data generated and returns a reference to it for use in other worldgen objects.
+		 * Adds a new object to be data generated and returns a reference to it for use in other objects.
 		 */
 		public <T> RegistryEntry<T> add(RegistryKey<T> registry, T object) {
 			return getQueuedEntries(registry).add(registry.getValue(), object);
