@@ -38,11 +38,14 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	private final List<ItemStack> displayStacks;
 	private final List<ItemStack> searchTabStacks;
 
+	private final boolean showOpRestrictedItems;
+
 	@ApiStatus.Internal
-	public FabricItemGroupEntries(FeatureSet enabledFeatures, List<ItemStack> displayStacks, List<ItemStack> searchTabStacks) {
+	public FabricItemGroupEntries(FeatureSet enabledFeatures, List<ItemStack> displayStacks, List<ItemStack> searchTabStacks, boolean showOpRestrictedItems) {
 		this.enabledFeatures = enabledFeatures;
 		this.displayStacks = displayStacks;
 		this.searchTabStacks = searchTabStacks;
+		this.showOpRestrictedItems = showOpRestrictedItems;
 	}
 
 	/**
@@ -50,6 +53,13 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	 */
 	public FeatureSet getEnabledFeatures() {
 		return enabledFeatures;
+	}
+
+	/**
+	 * @return Whether to show items restricted to operators, such as command blocks.
+	 */
+	public boolean shouldShowOpRestrictedItems() {
+		return showOpRestrictedItems;
 	}
 
 	/**

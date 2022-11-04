@@ -67,7 +67,7 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup, FabricItemGroup 
 		// Convert the entries to lists
 		var mutableDisplayStacks = new LinkedList<>(displayStacks);
 		var mutableSearchTabStacks = new LinkedList<>(searchTabStacks);
-		var entries = new FabricItemGroupEntries(enabledFeatures, mutableDisplayStacks, mutableSearchTabStacks);
+		var entries = new FabricItemGroupEntries(enabledFeatures, mutableDisplayStacks, mutableSearchTabStacks, operatorEnabled);
 
 		final Event<ItemGroupEvents.ModifyEntries> modifyEntriesEvent = ItemGroupEventsImpl.getModifyEntriesEvent(getId());
 
