@@ -29,10 +29,9 @@ import net.minecraft.world.World;
  * General-purpose Fabric-provided extensions for {@link Block} subclasses.
  *
  * <p>Note: This interface is automatically implemented on all blocks via Mixin and interface injection.
- *
- * <p>Note to maintainers: Functions should only be added to this interface if they are general-purpose enough,
- * to be evaluated on a case-by-case basis. Otherwise, they are better suited for more specialized APIs.
  */
+// Note to maintainers: Functions should only be added to this interface if they are general-purpose enough,
+// to be evaluated on a case-by-case basis. Otherwise, they are better suited for more specialized APIs.
 public interface FabricBlock {
 	/**
 	 * Return the current appearance of the block, i.e. which block state this block reports to look like on a given side.
@@ -55,39 +54,39 @@ public interface FabricBlock {
 	 * <h3>Implementation guidelines</h3>
 	 *
 	 * <p>This can be called on the server, where block entity data can be safely accessed,
-	 * and on the client, possibly in a meshing thread, where block entity data is not safe to access !
+	 * and on the client, possibly in a meshing thread, where block entity data is not safe to access!
 	 * Here is an example of how data from a block entity can be handled safely.
 	 * The block entity needs to implement {@code RenderAttachmentBlockEntity} for this to work.
 	 * <pre>{@code @Override
 	 * public BlockState getAppearance(BlockState state, BlockRenderView renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
-	 *      if (renderView instanceof ServerWorld serverWorld) {
-	 *          // Server side, ok to use block entity directly!
-	 *          BlockEntity blockEntity = serverWorld.getBlockEntity(pos);
+	 *     if (renderView instanceof ServerWorld serverWorld) {
+	 *         // Server side, ok to use block entity directly!
+	 *         BlockEntity blockEntity = serverWorld.getBlockEntity(pos);
 	 *
-	 *          if (blockEntity instanceof ...) {
-	 *              // Get data from block entity
-	 *              return ...;
-	 *          }
-	 *      } else {
-	 *      	// Client side, need to use the render attachment!
-	 *          RenderAttachedBlockView attachmentView = (RenderAttachedBlockView) renderView;
-	 *          Object data = attachmentView.getBlockEntityRenderAttachment(pos);
+	 *         if (blockEntity instanceof ...) {
+	 *             // Get data from block entity
+	 *             return ...;
+	 *         }
+	 *     } else {
+	 *         // Client side, need to use the render attachment!
+	 *         RenderAttachedBlockView attachmentView = (RenderAttachedBlockView) renderView;
+	 *         Object data = attachmentView.getBlockEntityRenderAttachment(pos);
 	 *
-	 *     	    // Check if data is not null and of the correct type, and use that to determine the appearance
-	 *     	    if (data instanceof ...) {
-	 *     	        // get appearance for side ...
-	 *     	        return ...;
-	 *            }
-	 *      }
+	 *         // Check if data is not null and of the correct type, and use that to determine the appearance
+	 *         if (data instanceof ...) {
+	 *             // get appearance for side ...
+	 *             return ...;
+	 *         }
+	 *     }
 	 *
-	 *     	// Example of varying the appearance based on the source pos
-	 *      if (sourcePos != null) {
-	 *          // get appearance for side ...
-	 *          return ...;
-	 *      }
+	 *     // Example of varying the appearance based on the source pos
+	 *     if (sourcePos != null) {
+	 *         // get appearance for side ...
+	 *         return ...;
+	 *     }
 	 *
-	 *      // If there is no other appearance, just return the original block state
-	 *      return state;
+	 *     // If there is no other appearance, just return the original block state
+	 *     return state;
 	 * });
 	 * }</pre>
 	 *
