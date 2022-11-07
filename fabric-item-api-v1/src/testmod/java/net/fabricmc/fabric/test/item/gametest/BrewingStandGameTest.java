@@ -33,11 +33,12 @@ import net.fabricmc.fabric.test.item.CustomDamageTest;
 
 public class BrewingStandGameTest implements FabricGameTest {
 	private static final int BREWING_TIME = 800;
+	private static final BlockPos POS = new BlockPos(0, 1, 0);
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void basicBrewing(TestContext context) {
-		context.setBlockState(BlockPos.ORIGIN, Blocks.BREWING_STAND);
-		BrewingStandBlockEntity blockEntity = (BrewingStandBlockEntity) Objects.requireNonNull(context.getBlockEntity(BlockPos.ORIGIN));
+		context.setBlockState(POS, Blocks.BREWING_STAND);
+		BrewingStandBlockEntity blockEntity = (BrewingStandBlockEntity) Objects.requireNonNull(context.getBlockEntity(POS));
 
 		loadFuel(blockEntity, context);
 
@@ -57,8 +58,8 @@ public class BrewingStandGameTest implements FabricGameTest {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void vanillaRemainderTest(TestContext context) {
-		context.setBlockState(BlockPos.ORIGIN, Blocks.BREWING_STAND);
-		BrewingStandBlockEntity blockEntity = (BrewingStandBlockEntity) Objects.requireNonNull(context.getBlockEntity(BlockPos.ORIGIN));
+		context.setBlockState(POS, Blocks.BREWING_STAND);
+		BrewingStandBlockEntity blockEntity = (BrewingStandBlockEntity) Objects.requireNonNull(context.getBlockEntity(POS));
 
 		loadFuel(blockEntity, context);
 
@@ -78,8 +79,8 @@ public class BrewingStandGameTest implements FabricGameTest {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void fabricRemainderTest(TestContext context) {
-		context.setBlockState(BlockPos.ORIGIN, Blocks.BREWING_STAND);
-		BrewingStandBlockEntity blockEntity = (BrewingStandBlockEntity) Objects.requireNonNull(context.getBlockEntity(BlockPos.ORIGIN));
+		context.setBlockState(POS, Blocks.BREWING_STAND);
+		BrewingStandBlockEntity blockEntity = (BrewingStandBlockEntity) Objects.requireNonNull(context.getBlockEntity(POS));
 
 		loadFuel(blockEntity, context);
 
@@ -137,12 +138,12 @@ public class BrewingStandGameTest implements FabricGameTest {
 
 	private void loadFuel(BrewingStandBlockEntity blockEntity, TestContext context) {
 		blockEntity.setStack(4, new ItemStack(Items.BLAZE_POWDER));
-		BrewingStandBlockEntity.tick(context.getWorld(), BlockPos.ORIGIN, context.getBlockState(BlockPos.ORIGIN), blockEntity);
+		BrewingStandBlockEntity.tick(context.getWorld(), POS, context.getBlockState(POS), blockEntity);
 	}
 
 	private void brew(BrewingStandBlockEntity blockEntity, TestContext context) {
 		for (int i = 0; i < BREWING_TIME; i++) {
-			BrewingStandBlockEntity.tick(context.getWorld(), BlockPos.ORIGIN, context.getBlockState(BlockPos.ORIGIN), blockEntity);
+			BrewingStandBlockEntity.tick(context.getWorld(), POS, context.getBlockState(POS), blockEntity);
 		}
 	}
 }

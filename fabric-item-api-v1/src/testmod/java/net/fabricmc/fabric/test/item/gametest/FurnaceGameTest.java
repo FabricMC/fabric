@@ -32,11 +32,12 @@ import net.fabricmc.fabric.test.item.CustomDamageTest;
 
 public class FurnaceGameTest implements FabricGameTest {
 	private static final int COOK_TIME = 200;
+	private static final BlockPos POS = new BlockPos(0, 1, 0);
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void basicSmelt(TestContext context) {
-		context.setBlockState(BlockPos.ORIGIN, Blocks.FURNACE);
-		FurnaceBlockEntity blockEntity = (FurnaceBlockEntity) Objects.requireNonNull(context.getBlockEntity(BlockPos.ORIGIN));
+		context.setBlockState(POS, Blocks.FURNACE);
+		FurnaceBlockEntity blockEntity = (FurnaceBlockEntity) Objects.requireNonNull(context.getBlockEntity(POS));
 
 		setInputs(blockEntity, new ItemStack(Blocks.COBBLESTONE, 8), new ItemStack(Items.COAL, 2));
 
@@ -57,8 +58,8 @@ public class FurnaceGameTest implements FabricGameTest {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void vanillaRemainderTest(TestContext context) {
-		context.setBlockState(BlockPos.ORIGIN, Blocks.FURNACE);
-		FurnaceBlockEntity blockEntity = (FurnaceBlockEntity) Objects.requireNonNull(context.getBlockEntity(BlockPos.ORIGIN));
+		context.setBlockState(POS, Blocks.FURNACE);
+		FurnaceBlockEntity blockEntity = (FurnaceBlockEntity) Objects.requireNonNull(context.getBlockEntity(POS));
 
 		setInputs(blockEntity, new ItemStack(Blocks.COBBLESTONE, 64), new ItemStack(Items.LAVA_BUCKET));
 
@@ -73,8 +74,8 @@ public class FurnaceGameTest implements FabricGameTest {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void fabricRemainderTest(TestContext context) {
-		context.setBlockState(BlockPos.ORIGIN, Blocks.FURNACE);
-		FurnaceBlockEntity blockEntity = (FurnaceBlockEntity) Objects.requireNonNull(context.getBlockEntity(BlockPos.ORIGIN));
+		context.setBlockState(POS, Blocks.FURNACE);
+		FurnaceBlockEntity blockEntity = (FurnaceBlockEntity) Objects.requireNonNull(context.getBlockEntity(POS));
 
 		setInputs(blockEntity, new ItemStack(Blocks.COBBLESTONE, 32), new ItemStack(CustomDamageTest.WEIRD_PICK));
 
@@ -115,7 +116,7 @@ public class FurnaceGameTest implements FabricGameTest {
 
 	private void cook(FurnaceBlockEntity blockEntity, TestContext context, int items) {
 		for (int i = 0; i < COOK_TIME * items; i++) {
-			AbstractFurnaceBlockEntity.tick(context.getWorld(), BlockPos.ORIGIN, context.getBlockState(BlockPos.ORIGIN), blockEntity);
+			AbstractFurnaceBlockEntity.tick(context.getWorld(), POS, context.getBlockState(POS), blockEntity);
 		}
 	}
 }
