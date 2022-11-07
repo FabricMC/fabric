@@ -16,22 +16,23 @@
 
 package net.fabricmc.fabric.test.renderer.simple.client;
 
-import net.minecraft.client.render.RenderLayer;
+import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
-import net.fabricmc.fabric.test.renderer.simple.FrameBlock;
+import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.util.ModelIdentifier;
+
+import net.fabricmc.fabric.api.client.model.ModelProviderContext;
+import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
 import net.fabricmc.fabric.test.renderer.simple.RendererTest;
 
-public final class RendererClientTest implements ClientModInitializer {
+public class PillarModelVariantProvider implements ModelVariantProvider {
 	@Override
-	public void onInitializeClient() {
-		ModelLoadingRegistry.INSTANCE.registerResourceProvider(manager -> new FrameModelResourceProvider());
-		ModelLoadingRegistry.INSTANCE.registerVariantProvider(manager -> new PillarModelVariantProvider());
-
-		for (FrameBlock frameBlock : RendererTest.FRAMES) {
-			BlockRenderLayerMap.INSTANCE.putBlock(frameBlock, RenderLayer.getCutoutMipped());
+	@Nullable
+	public UnbakedModel loadModelVariant(ModelIdentifier modelId, ModelProviderContext context) {
+		if (RendererTest.PILLAR_ID.equals(modelId)) {
+			return new PillarUnbakedModel();
+		} else {
+			return null;
 		}
 	}
 }
