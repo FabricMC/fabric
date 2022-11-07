@@ -86,6 +86,10 @@ public final class ServerPlayerEvents {
 		void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive);
 	}
 
+	/**
+	 * @deprecated Use the more general {@link ServerLivingEntityEvents#ALLOW_DEATH} event instead and check for {@code instanceof ServerPlayerEntity}.
+	 */
+	@Deprecated
 	@FunctionalInterface
 	public interface AllowDeath {
 		/**
