@@ -48,6 +48,7 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 @Mixin(ServerPlayerEntity.class)
@@ -69,6 +70,11 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 			attacker.onKilledOther(this.getWorld(), (ServerPlayerEntity) (Object) this);
 			ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(this.getWorld(), attacker, (ServerPlayerEntity) (Object) this);
 		}
+	}
+
+	@Inject(method = "onDeath", at = @At("TAIL"))
+	private void notifyDeath(DamageSource source, CallbackInfo ci) {
+		ServerLivingEntityEvents.AFTER_DEATH.invoker().afterDeath((ServerPlayerEntity) (Object) this, source);
 	}
 
 	/**
