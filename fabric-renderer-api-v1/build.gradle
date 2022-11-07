@@ -6,6 +6,7 @@ moduleDependencies(project, [
 ])
 
 dependencies {
+	testmodImplementation project(path: ':fabric-block-api-v1', configuration: 'namedElements')
 	testmodImplementation project(path: ':fabric-blockrenderlayer-v1', configuration: 'namedElements')
 	testmodImplementation project(path: ':fabric-models-v0', configuration: 'namedElements')
 	testmodImplementation project(path: ':fabric-object-builder-api-v1', configuration: 'namedElements')
