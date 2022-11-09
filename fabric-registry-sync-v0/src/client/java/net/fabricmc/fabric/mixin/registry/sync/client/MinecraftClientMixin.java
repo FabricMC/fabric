@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.Registries;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
@@ -51,7 +51,7 @@ public class MinecraftClientMixin {
 	private void onStart(CallbackInfo ci) {
 		// Freeze the registries on the client
 		FABRIC_LOGGER.debug("Freezing registries");
-		Registry.freezeRegistries();
+		Registries.method_47476();
 		BlockInitTracker.postFreeze();
 	}
 }

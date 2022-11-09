@@ -19,14 +19,14 @@ package net.fabricmc.fabric.impl.screenhandler;
 import java.util.Objects;
 
 import io.netty.buffer.Unpooled;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import net.minecraft.util.registry.Registries;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -54,7 +54,7 @@ public final class Networking {
 		Objects.requireNonNull(factory, "factory is null");
 		Objects.requireNonNull(handler, "handler is null");
 
-		Identifier typeId = Registry.SCREEN_HANDLER.getId(handler.getType());
+		Identifier typeId = Registries.SCREEN_HANDLER.getId(handler.getType());
 
 		if (typeId == null) {
 			LOGGER.warn("Trying to open unregistered screen handler {}", handler);

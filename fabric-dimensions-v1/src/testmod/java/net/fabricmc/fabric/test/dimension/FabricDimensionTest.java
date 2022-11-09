@@ -24,6 +24,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.class_7924;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.entity.Entity;
@@ -35,6 +36,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.TeleportTarget;
@@ -49,15 +51,15 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 public class FabricDimensionTest implements ModInitializer {
 	// The dimension options refer to the JSON-file in the dimension subfolder of the data pack,
 	// which will always share its ID with the world that is created from it
-	private static final RegistryKey<DimensionOptions> DIMENSION_KEY = RegistryKey.of(Registry.DIMENSION_KEY, new Identifier("fabric_dimension", "void"));
+	private static final RegistryKey<DimensionOptions> DIMENSION_KEY = RegistryKey.of(class_7924.field_41224, new Identifier("fabric_dimension", "void"));
 
-	private static RegistryKey<World> WORLD_KEY = RegistryKey.of(Registry.WORLD_KEY, DIMENSION_KEY.getValue());
+	private static RegistryKey<World> WORLD_KEY = RegistryKey.of(class_7924.DIMENSION, DIMENSION_KEY.getValue());
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registry.CHUNK_GENERATOR, new Identifier("fabric_dimension", "void"), VoidChunkGenerator.CODEC);
+		Registry.register(Registries.CHUNK_GENERATOR, new Identifier("fabric_dimension", "void"), VoidChunkGenerator.CODEC);
 
-		WORLD_KEY = RegistryKey.of(Registry.WORLD_KEY, new Identifier("fabric_dimension", "void"));
+		WORLD_KEY = RegistryKey.of(class_7924.DIMENSION, new Identifier("fabric_dimension", "void"));
 
 		if (System.getProperty("fabric-api.gametest") != null) {
 			// The gametest server does not support custom worlds

@@ -16,14 +16,13 @@
 
 package net.fabricmc.fabric.impl.itemgroup;
 
-import org.apache.commons.lang3.ArrayUtils;
+import java.util.ArrayList;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.fabric.mixin.itemgroup.ItemGroupAccessor;
 import net.fabricmc.fabric.mixin.itemgroup.ItemGroupsAccessor;
 
 @ApiStatus.Internal
@@ -31,17 +30,16 @@ public final class ItemGroupHelper {
 	private ItemGroupHelper() {
 	}
 
-	public static void appendItemGroup(FabricItemGroup itemGroup) {
-		for (ItemGroup existingGroup : ItemGroups.GROUPS) {
+	public static void appendItemGroup(ItemGroup itemGroup) {
+		for (ItemGroup existingGroup : ItemGroups.getGroups()) {
 			if (existingGroup.getId().equals(itemGroup.getId())) {
 				throw new IllegalStateException("Duplicate item group: " + itemGroup.getId());
 			}
 		}
 
-		final int index = ItemGroups.GROUPS.length;
-		final ItemGroup[] itemGroups = ArrayUtils.add(ItemGroups.GROUPS, itemGroup);
+		var itemGroups = new ArrayList<>(ItemGroups.getGroups());
+		itemGroups.add(itemGroup);
 
-		((ItemGroupAccessor) itemGroup).setIndex(index);
-		ItemGroupsAccessor.setGroups(ItemGroupsAccessor.invokeAsArray(itemGroups));
+		ItemGroupsAccessor.setGroups(ItemGroupsAccessor.invokeBuildList(itemGroups.toArray(ItemGroup[]::new)));
 	}
 }

@@ -24,6 +24,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
@@ -51,7 +52,7 @@ public final class BlockInitTracker implements RegistryEntryAddedCallback<Block>
 	}
 
 	public static void postFreeze() {
-		final List<BlockState> blockStateList = Registry.BLOCK.stream()
+		final List<BlockState> blockStateList = Registries.BLOCK.stream()
 				.flatMap((block) -> block.getStateManager().getStates().stream())
 				.toList();
 

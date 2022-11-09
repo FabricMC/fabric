@@ -25,6 +25,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
@@ -74,7 +75,7 @@ public class ArmorKnockbackResistanceTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod",
+		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod",
 				"wooden_boots"), new ArmorItem(WOOD_ARMOR, EquipmentSlot.FEET, new Item.Settings()));
 	}
 }

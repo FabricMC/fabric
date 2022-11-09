@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.class_7924;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
@@ -44,7 +45,7 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 		this.dynamicRegistries = dynamicRegistries;
 		this.key = key;
 		this.biome = biome;
-		this.entry = dynamicRegistries.get(Registry.BIOME_KEY).getEntry(this.key).orElseThrow();
+		this.entry = dynamicRegistries.get(class_7924.BIOME_WORLDGEN).getEntry(this.key).orElseThrow();
 	}
 
 	@Override
@@ -64,19 +65,19 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 
 	@Override
 	public Optional<RegistryKey<ConfiguredFeature<?, ?>>> getFeatureKey(ConfiguredFeature<?, ?> configuredFeature) {
-		Registry<ConfiguredFeature<?, ?>> registry = dynamicRegistries.get(Registry.CONFIGURED_FEATURE_KEY);
+		Registry<ConfiguredFeature<?, ?>> registry = dynamicRegistries.get(class_7924.CONFIGURED_FEATURE_WORLDGEN);
 		return registry.getKey(configuredFeature);
 	}
 
 	@Override
 	public Optional<RegistryKey<PlacedFeature>> getPlacedFeatureKey(PlacedFeature placedFeature) {
-		Registry<PlacedFeature> registry = dynamicRegistries.get(Registry.PLACED_FEATURE_KEY);
+		Registry<PlacedFeature> registry = dynamicRegistries.get(class_7924.PLACED_FEATURE_WORLDGEN);
 		return registry.getKey(placedFeature);
 	}
 
 	@Override
 	public boolean validForStructure(RegistryKey<Structure> key) {
-		Structure instance = dynamicRegistries.get(Registry.STRUCTURE_KEY).get(key);
+		Structure instance = dynamicRegistries.get(class_7924.STRUCTURE_WORLDGEN).get(key);
 
 		if (instance == null) {
 			return false;
@@ -87,13 +88,13 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 
 	@Override
 	public Optional<RegistryKey<Structure>> getStructureKey(Structure structure) {
-		Registry<Structure> registry = dynamicRegistries.get(Registry.STRUCTURE_KEY);
+		Registry<Structure> registry = dynamicRegistries.get(class_7924.STRUCTURE_WORLDGEN);
 		return registry.getKey(structure);
 	}
 
 	@Override
 	public boolean canGenerateIn(RegistryKey<DimensionOptions> dimensionKey) {
-		DimensionOptions dimension = dynamicRegistries.get(Registry.DIMENSION_KEY).get(dimensionKey);
+		DimensionOptions dimension = dynamicRegistries.get(class_7924.field_41224).get(dimensionKey);
 
 		if (dimension == null) {
 			return false;
@@ -104,7 +105,7 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 
 	@Override
 	public boolean hasTag(TagKey<Biome> tag) {
-		Registry<Biome> biomeRegistry = dynamicRegistries.get(Registry.BIOME_KEY);
+		Registry<Biome> biomeRegistry = dynamicRegistries.get(class_7924.BIOME_WORLDGEN);
 		return biomeRegistry.entryOf(getBiomeKey()).isIn(tag);
 	}
 }

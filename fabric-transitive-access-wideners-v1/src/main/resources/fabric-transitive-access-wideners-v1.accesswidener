@@ -155,7 +155,7 @@ transitive-accessible method net/minecraft/block/FarmlandBlock <init> (Lnet/mine
 transitive-accessible method net/minecraft/block/FernBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/FletchingTableBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/FluidBlock <init> (Lnet/minecraft/fluid/FlowableFluid;Lnet/minecraft/block/AbstractBlock$Settings;)V
-transitive-accessible method net/minecraft/block/FungusBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;Lnet/minecraft/util/registry/RegistryKey;)V
+transitive-accessible method net/minecraft/block/FungusBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;Lnet/minecraft/util/registry/RegistryKey;Lnet/minecraft/block/Block;)V
 transitive-accessible method net/minecraft/block/FurnaceBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/GrindstoneBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/HangingRootsBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V

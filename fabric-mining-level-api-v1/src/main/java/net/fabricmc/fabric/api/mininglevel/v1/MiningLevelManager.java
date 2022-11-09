@@ -18,10 +18,10 @@ package net.fabricmc.fabric.api.mininglevel.v1;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.class_7924;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.impl.mininglevel.MiningLevelManagerImpl;
 
@@ -78,7 +78,7 @@ public final class MiningLevelManager {
 		case 1 -> BlockTags.NEEDS_STONE_TOOL;
 		case 2 -> BlockTags.NEEDS_IRON_TOOL;
 		case 3 -> BlockTags.NEEDS_DIAMOND_TOOL;
-		default -> TagKey.of(Registry.BLOCK_KEY, new Identifier("fabric", "needs_tool_level_" + miningLevel));
+		default -> TagKey.of(class_7924.BLOCK, new Identifier("fabric", "needs_tool_level_" + miningLevel));
 		};
 	}
 }

@@ -32,6 +32,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
@@ -78,8 +79,8 @@ public final class MiningLevelTest implements ModInitializer {
 
 	private static void register(String id, Block block) {
 		Identifier identifier = new Identifier(ID, id);
-		Registry.register(Registry.BLOCK, identifier, block);
-		Registry.register(Registry.ITEM, identifier, new BlockItem(block, new Item.Settings()));
+		Registry.register(Registries.BLOCK, identifier, block);
+		Registry.register(Registries.ITEM, identifier, new BlockItem(block, new Item.Settings()));
 	}
 
 	private static void test() {

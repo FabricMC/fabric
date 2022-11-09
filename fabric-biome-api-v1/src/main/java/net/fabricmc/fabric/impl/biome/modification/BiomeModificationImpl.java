@@ -31,6 +31,7 @@ import org.jetbrains.annotations.TestOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.class_7924;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
@@ -110,7 +111,7 @@ public class BiomeModificationImpl {
 		BiomeModificationMarker modificationTracker = (BiomeModificationMarker) impl;
 		modificationTracker.fabric_markModified();
 
-		Registry<Biome> biomes = impl.get(Registry.BIOME_KEY);
+		Registry<Biome> biomes = impl.get(class_7924.BIOME_WORLDGEN);
 
 		// Build a list of all biome keys in ascending order of their raw-id to get a consistent result in case
 		// someone does something stupid.

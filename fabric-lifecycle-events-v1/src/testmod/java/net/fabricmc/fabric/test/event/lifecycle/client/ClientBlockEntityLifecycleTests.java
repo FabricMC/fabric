@@ -22,7 +22,7 @@ import java.util.List;
 import org.slf4j.Logger;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -45,7 +45,7 @@ public final class ClientBlockEntityLifecycleTests implements ClientModInitializ
 			this.clientBlockEntities.add(blockEntity);
 
 			if (PRINT_CLIENT_BLOCKENTITY_MESSAGES) {
-				logger.info("[CLIENT]" + " LOADED " + Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.clientBlockEntities.size());
+				logger.info("[CLIENT]" + " LOADED " + Registries.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.clientBlockEntities.size());
 			}
 		});
 
@@ -53,7 +53,7 @@ public final class ClientBlockEntityLifecycleTests implements ClientModInitializ
 			this.clientBlockEntities.remove(blockEntity);
 
 			if (PRINT_CLIENT_BLOCKENTITY_MESSAGES) {
-				logger.info("[CLIENT]" + " UNLOADED " + Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.clientBlockEntities.size());
+				logger.info("[CLIENT]" + " UNLOADED " + Registries.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.clientBlockEntities.size());
 			}
 		});
 

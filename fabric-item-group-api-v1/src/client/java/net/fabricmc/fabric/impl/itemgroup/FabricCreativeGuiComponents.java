@@ -39,7 +39,7 @@ public class FabricCreativeGuiComponents {
 		final Type type;
 
 		public ItemGroupButtonWidget(int x, int y, Type type, CreativeGuiExtensions extensions) {
-			super(x, y, 11, 10, type.text, (bw) -> type.clickConsumer.accept(extensions), EMPTY_TOOLTIP, ButtonWidget.DEFAULT_NARRATION_SUPPLIER);
+			super(x, y, 11, 10, type.text, (bw) -> type.clickConsumer.accept(extensions), ButtonWidget.DEFAULT_NARRATION_SUPPLIER);
 			this.extensions = extensions;
 			this.type = type;
 			this.gui = (CreativeInventoryScreen) extensions;
@@ -60,7 +60,7 @@ public class FabricCreativeGuiComponents {
 				this.drawTexture(matrixStack, this.getX(), this.getY(), u + (type == Type.NEXT ? 11 : 0), v, 11, 10);
 
 				if (this.hovered) {
-					int pageCount = (int) Math.ceil((ItemGroups.GROUPS.length - COMMON_GROUPS.size()) / 9D);
+					int pageCount = (int) Math.ceil((ItemGroups.getGroupsToDisplay().size() - COMMON_GROUPS.size()) / 9D);
 					gui.renderTooltip(matrixStack, Text.translatable("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, pageCount), mouseX, mouseY);
 				}
 			}

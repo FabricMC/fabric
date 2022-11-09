@@ -35,15 +35,16 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.thread.ThreadExecutor;
 
@@ -146,8 +147,8 @@ public final class RegistrySyncManager {
 	public static Map<Identifier, Object2IntMap<Identifier>> createAndPopulateRegistryMap(boolean isClientSync, @Nullable Map<Identifier, Object2IntMap<Identifier>> activeMap) {
 		Map<Identifier, Object2IntMap<Identifier>> map = new LinkedHashMap<>();
 
-		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
-			Registry registry = Registry.REGISTRIES.get(registryId);
+		for (Identifier registryId : Registries.REGISTRIES.getIds()) {
+			Registry registry = Registries.REGISTRIES.get(registryId);
 
 			if (DEBUG_WRITE_REGISTRY_DATA) {
 				File location = new File(".fabric" + File.separatorChar + "debug" + File.separatorChar + "registry");
@@ -289,13 +290,13 @@ public final class RegistrySyncManager {
 	public static void apply(Map<Identifier, Object2IntMap<Identifier>> map, RemappableRegistry.RemapMode mode) throws RemapException {
 		Set<Identifier> containedRegistries = Sets.newHashSet(map.keySet());
 
-		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
+		for (Identifier registryId : Registries.REGISTRIES.getIds()) {
 			if (!containedRegistries.remove(registryId)) {
 				continue;
 			}
 
 			Object2IntMap<Identifier> registryMap = map.get(registryId);
-			Registry registry = Registry.REGISTRIES.get(registryId);
+			Registry registry = Registries.REGISTRIES.get(registryId);
 
 			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry);
 
@@ -321,8 +322,8 @@ public final class RegistrySyncManager {
 	}
 
 	public static void unmap() throws RemapException {
-		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
-			Registry registry = Registry.REGISTRIES.get(registryId);
+		for (Identifier registryId : Registries.REGISTRIES.getIds()) {
+			Registry registry = Registries.REGISTRIES.get(registryId);
 
 			if (registry instanceof RemappableRegistry) {
 				((RemappableRegistry) registry).unmap(registryId.toString());

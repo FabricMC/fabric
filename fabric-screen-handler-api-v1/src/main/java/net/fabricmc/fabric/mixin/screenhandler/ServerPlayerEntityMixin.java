@@ -27,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import net.minecraft.util.registry.Registries;
 import net.minecraft.network.Packet;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
@@ -34,7 +35,6 @@ import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
@@ -69,7 +69,7 @@ public abstract class ServerPlayerEntityMixin {
 		if (factory instanceof ExtendedScreenHandlerFactory || (factory instanceof SimpleNamedScreenHandlerFactory simpleFactory && simpleFactory.baseFactory instanceof ExtendedScreenHandlerFactory)) {
 			fabric_openedScreenHandler.set(handler);
 		} else if (handler.getType() instanceof ExtendedScreenHandlerType<?>) {
-			Identifier id = Registry.SCREEN_HANDLER.getId(handler.getType());
+			Identifier id = Registries.SCREEN_HANDLER.getId(handler.getType());
 			throw new IllegalArgumentException("[Fabric] Extended screen handler " + id + " must be opened with an ExtendedScreenHandlerFactory!");
 		}
 	}
@@ -86,7 +86,7 @@ public abstract class ServerPlayerEntityMixin {
 			if (handler.getType() instanceof ExtendedScreenHandlerType<?>) {
 				Networking.sendOpenPacket((ServerPlayerEntity) (Object) this, (ExtendedScreenHandlerFactory) factory, handler, screenHandlerSyncId);
 			} else {
-				Identifier id = Registry.SCREEN_HANDLER.getId(handler.getType());
+				Identifier id = Registries.SCREEN_HANDLER.getId(handler.getType());
 				throw new IllegalArgumentException("[Fabric] Non-extended screen handler " + id + " must not be opened with an ExtendedScreenHandlerFactory!");
 			}
 		} else {

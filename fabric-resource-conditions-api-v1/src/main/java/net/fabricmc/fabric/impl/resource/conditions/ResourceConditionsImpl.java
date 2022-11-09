@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.class_7924;
 import net.minecraft.tag.TagKey;
 import net.minecraft.tag.TagManagerLoader;
 import net.minecraft.util.Identifier;
@@ -113,7 +114,7 @@ public final class ResourceConditionsImpl {
 
 				object.add("values", array);
 
-				if (includeRegistry && registryRef != Registry.ITEM_KEY) {
+				if (includeRegistry && registryRef != class_7924.ITEM) {
 					// tags[0] is guaranteed to exist.
 					// Skip if this is the default (minecraft:item)
 					object.addProperty("registry", registryRef.getValue().toString());

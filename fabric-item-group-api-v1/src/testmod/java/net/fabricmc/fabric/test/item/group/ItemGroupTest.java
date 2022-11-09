@@ -24,8 +24,9 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
@@ -38,23 +39,18 @@ public class ItemGroupTest implements ModInitializer {
 	private static Item TEST_ITEM;
 
 	//Adds an item group with all items in it
-	private static final ItemGroup ITEM_GROUP = new FabricItemGroup(new Identifier(MOD_ID, "test_group")) {
-		@Override
-		public ItemStack createIcon() {
-			return new ItemStack(Items.DIAMOND);
-		}
-
-		@Override
-		protected void addItems(FeatureSet featureSet, Entries entries, boolean opItems) {
-			entries.addAll(Registry.ITEM.stream()
-					.map(ItemStack::new)
-					.toList());
-		}
-	};
+	private static final ItemGroup ITEM_GROUP2 = FabricItemGroup.builder(new Identifier(MOD_ID, "test_group"))
+			.displayName(Text.translatable(""))
+			.entries((enabledFeatures, entries, operatorEnabled) -> {
+				entries.addAll(Registries.ITEM.stream()
+						.map(ItemStack::new)
+						.toList());
+			})
+			.build();
 
 	@Override
 	public void onInitialize() {
-		TEST_ITEM = Registry.register(Registry.ITEM, new Identifier("fabric-item-groups-v0-testmod", "item_test_group"), new Item(new Item.Settings()));
+		TEST_ITEM = Registry.register(Registries.ITEM, new Identifier("fabric-item-groups-v0-testmod", "item_test_group"), new Item(new Item.Settings()));
 
 		checkAllVanillaGroupsHaveAssignedIds();
 
@@ -82,10 +78,11 @@ public class ItemGroupTest implements ModInitializer {
 	}
 
 	private static void checkAllVanillaGroupsHaveAssignedIds() {
-		for (ItemGroup group : ItemGroups.GROUPS) {
-			if (group instanceof FabricItemGroup) {
-				continue; // Skip groups added by test mods
-			}
+		for (ItemGroup group : ItemGroups.getGroups()) {
+			// TODO 22w45a fix me
+//			if (group instanceof FabricItemGroup) {
+//				continue; // Skip groups added by test mods
+//			}
 
 			Preconditions.checkArgument(MinecraftItemGroups.GROUP_ID_MAP.containsKey(group),
 					"Missing ID for Vanilla ItemGroup %s. Assign one in MinecraftItemGroups.", group);

@@ -68,7 +68,7 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 
 	@Override
 	public void fabric_nextPage() {
-		if (fabric_getPageOffset(fabric_currentPage + 1) >= ItemGroups.GROUPS.length) {
+		if (fabric_getPageOffset(fabric_currentPage + 1) >= ItemGroups.getGroupsToDisplay().size()) {
 			return;
 		}
 
@@ -88,13 +88,14 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 
 	@Override
 	public boolean fabric_isButtonVisible(FabricCreativeGuiComponents.Type type) {
-		return ItemGroups.GROUPS.length > 12;
+		// todo 22w45a fix me as im dynamic now
+		return ItemGroups.getGroupsToDisplay().size() > 12;
 	}
 
 	@Override
 	public boolean fabric_isButtonEnabled(FabricCreativeGuiComponents.Type type) {
 		if (type == FabricCreativeGuiComponents.Type.NEXT) {
-			return !(fabric_getPageOffset(fabric_currentPage + 1) >= ItemGroups.GROUPS.length);
+			return !(fabric_getPageOffset(fabric_currentPage + 1) >= ItemGroups.getGroupsToDisplay().size());
 		}
 
 		if (type == FabricCreativeGuiComponents.Type.PREVIOUS) {
@@ -110,7 +111,7 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 		int curPos = getSelectedTab();
 
 		if (curPos < minPos || curPos > maxPos) {
-			setSelectedTab(ItemGroups.GROUPS[fabric_getPageOffset(fabric_currentPage)]);
+			setSelectedTab(ItemGroups.getGroupsToDisplay().get(fabric_getPageOffset(fabric_currentPage)));
 		}
 	}
 
@@ -158,7 +159,8 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 			return true;
 		}
 
-		return fabric_currentPage == fabric_getOffsetPage(itemGroup.getIndex());
+		// TODO 22w45a fix me
+		return fabric_currentPage == fabric_getOffsetPage( /* itemGroup.getIndex() */ -1);
 	}
 
 	@Override

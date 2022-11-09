@@ -16,50 +16,16 @@
 
 package net.fabricmc.fabric.api.itemgroup.v1;
 
-import java.util.Objects;
-
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemGroups;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.itemgroup.ItemGroupHelper;
+import net.fabricmc.fabric.impl.itemgroup.FabricItemGroupBuilderImpl;
 
-/**
- * Extend this abstract class to create a new {@link ItemGroup} for a mod.
- *
- * <p>Each new instance of this class is automatically appended to {@link ItemGroups#GROUPS}.
- *
- * <p>Example:
- * <pre>{@code
- * public static final ItemGroup ITEM_GROUP = new FabricItemGroup(new Identifier("modid", "test_group")) {
- *    @Override
- *    public ItemStack createIcon() {
- *       return new ItemStack(Items.DIAMOND);
- *    }
- *
- *    @Override
- *    protected void addItems(FeatureSet enabledFeatures, Entries entries) {
- *       entries.add(TEST_ITEM);
- *     }
- * };
- * }</pre>
- */
-public abstract class FabricItemGroup extends ItemGroup implements IdentifiableItemGroup {
-	private final Identifier identifier;
-
-	public FabricItemGroup(Identifier identifier) {
-		super(-1, getText(Objects.requireNonNull(identifier, "identifier")));
-		this.identifier = identifier;
-		ItemGroupHelper.appendItemGroup(this);
+public final class FabricItemGroup {
+	private FabricItemGroup() {
 	}
 
-	private static Text getText(Identifier identifier) {
-		return Text.translatable("itemGroup.%s.%s".formatted(identifier.getNamespace(), identifier.getPath()));
-	}
-
-	@Override
-	public final Identifier getId() {
-		return identifier;
+	public static ItemGroup.Builder builder(Identifier identifier) {
+		return new FabricItemGroupBuilderImpl(identifier);
 	}
 }

@@ -25,10 +25,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.Bootstrap;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Items;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.trackers.StateIdTracker;
@@ -48,19 +48,19 @@ public class BootstrapMixin {
 		Object oItem = Items.AIR;
 
 		// state ID tracking
-		StateIdTracker.register(Registry.BLOCK, Block.STATE_IDS, (block) -> block.getStateManager().getStates());
-		StateIdTracker.register(Registry.FLUID, Fluid.STATE_IDS, (fluid) -> fluid.getStateManager().getStates());
+		StateIdTracker.register(Registries.BLOCK, Block.STATE_IDS, (block) -> block.getStateManager().getStates());
+		StateIdTracker.register(Registries.FLUID, Fluid.STATE_IDS, (fluid) -> fluid.getStateManager().getStates());
 
 		// map tracking
-		BlockItemTracker.register(Registry.ITEM);
+		BlockItemTracker.register(Registries.ITEM);
 
 		// block initialization, like Blocks
-		BlockInitTracker.register(Registry.BLOCK);
+		BlockInitTracker.register(Registries.BLOCK);
 
 		RegistrySyncManager.bootstrapRegistries();
 	}
 
-	@Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/Registry;freezeRegistries()V"))
+	@Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/Registries;method_47476()V"))
 	private static void skipFreeze() {
 		// Don't freeze
 	}

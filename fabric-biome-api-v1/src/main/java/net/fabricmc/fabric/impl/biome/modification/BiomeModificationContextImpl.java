@@ -33,6 +33,7 @@ import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.class_7924;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeAdditionsSound;
@@ -192,8 +193,8 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	}
 
 	private class GenerationSettingsContextImpl implements GenerationSettingsContext {
-		private final Registry<ConfiguredCarver<?>> carvers = registries.get(Registry.CONFIGURED_CARVER_KEY);
-		private final Registry<PlacedFeature> features = registries.get(Registry.PLACED_FEATURE_KEY);
+		private final Registry<ConfiguredCarver<?>> carvers = registries.get(class_7924.CONFIGURED_CARVER_WORLDGEN);
+		private final Registry<PlacedFeature> features = registries.get(class_7924.PLACED_FEATURE_WORLDGEN);
 		private final GenerationSettings generationSettings = biome.getGenerationSettings();
 
 		private boolean rebuildFlowerFeatures;

@@ -45,6 +45,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
@@ -64,7 +65,7 @@ import net.fabricmc.fabric.impl.registry.sync.RemapStateImpl;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
 
 @Mixin(SimpleRegistry.class)
-public abstract class SimpleRegistryMixin<T> extends Registry<T> implements RemappableRegistry, ListenableRegistry<T> {
+public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, RemappableRegistry, ListenableRegistry<T> {
 	// Namespaces used by the vanilla game. "brigadier" is used by command argument type registry.
 	// While Realms use "realms" namespace, it is irrelevant for Registry Sync.
 	@Unique
@@ -93,10 +94,6 @@ public abstract class SimpleRegistryMixin<T> extends Registry<T> implements Rema
 
 	@Unique
 	private static final Logger FABRIC_LOGGER = LoggerFactory.getLogger(SimpleRegistryMixin.class);
-
-	public SimpleRegistryMixin(RegistryKey<? extends Registry<T>> key, Lifecycle lifecycle) {
-		super(key, lifecycle);
-	}
 
 	@Unique
 	private final Event<RegistryEntryAddedCallback<T>> fabric_addObjectEvent = EventFactory.createArrayBacked(RegistryEntryAddedCallback.class,

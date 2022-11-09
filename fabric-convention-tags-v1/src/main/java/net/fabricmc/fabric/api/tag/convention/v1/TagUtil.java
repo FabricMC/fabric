@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.util.registry.Registries;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
@@ -50,7 +51,7 @@ public final class TagUtil {
 	 * @param registryManager the registry manager instance of the client or server. If the tag refers to entries
 	 *                        within a dynamic registry, such as {@link net.minecraft.world.biome.Biome}s,
 	 *                        this must be passed to correctly evaluate the tag. Otherwise, the registry is found by
-	 *                        looking in {@link Registry#REGISTRIES}.
+	 *                        looking in {@link Registries#REGISTRIES}.
 	 * @return if the entry is in the provided tag.
 	 */
 	@SuppressWarnings("unchecked")
@@ -62,7 +63,7 @@ public final class TagUtil {
 		if (registryManager != null) {
 			maybeRegistry = registryManager.getOptional(tagKey.registry());
 		} else {
-			maybeRegistry = Registry.REGISTRIES.getOrEmpty(tagKey.registry().getValue());
+			maybeRegistry = Registries.REGISTRIES.getOrEmpty(tagKey.registry().getValue());
 		}
 
 		if (maybeRegistry.isPresent()) {
