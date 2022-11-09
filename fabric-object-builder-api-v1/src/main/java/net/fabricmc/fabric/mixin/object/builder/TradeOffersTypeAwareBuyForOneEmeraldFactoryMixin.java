@@ -25,12 +25,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import net.minecraft.class_7922;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOffers;
+import net.minecraft.village.VillagerType;
 
 @Mixin(TradeOffers.TypeAwareBuyForOneEmeraldFactory.class)
 public abstract class TradeOffersTypeAwareBuyForOneEmeraldFactoryMixin {
@@ -40,8 +41,8 @@ public abstract class TradeOffersTypeAwareBuyForOneEmeraldFactoryMixin {
 	 * We want to prevent this default logic so modded villager types will work.
 	 * So we return an empty stream so an exception is never thrown.
 	 */
-	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/DefaultedRegistry;stream()Ljava/util/stream/Stream;"))
-	private <T> Stream<T> disableVanillaCheck(DefaultedRegistry<T> registry) {
+	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_7922;stream()Ljava/util/stream/Stream;"))
+	private <T> Stream<T> disableVanillaCheck(class_7922<VillagerType> instance) {
 		return Stream.empty();
 	}
 

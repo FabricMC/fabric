@@ -9,9 +9,8 @@
     "IdListMixin",
     "LevelStorageSessionMixin",
     "MinecraftServerMixin",
-    "RegistryAccessor",
+    "RegistriesAccessor",
     "RegistryLoaderMixin",
-    "RegistryMixin",
     "SimpleRegistryMixin",
     "StructuresToConfiguredStructuresFixMixin"
   ],

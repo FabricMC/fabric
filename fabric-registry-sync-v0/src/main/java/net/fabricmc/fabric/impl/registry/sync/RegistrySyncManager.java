@@ -196,7 +196,7 @@ public final class RegistrySyncManager {
 				previousIdMap = activeMap.get(registryId);
 			}
 
-			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry);
+			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry.getKey());
 
 			if (!attributeHolder.hasAttribute(isClientSync ? RegistryAttribute.SYNCED : RegistryAttribute.PERSISTED)) {
 				LOGGER.debug("Not {} registry: {}", isClientSync ? "syncing" : "saving", registryId);
@@ -298,7 +298,7 @@ public final class RegistrySyncManager {
 			Object2IntMap<Identifier> registryMap = map.get(registryId);
 			Registry registry = Registries.REGISTRIES.get(registryId);
 
-			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry);
+			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry.getKey());
 
 			if (!attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
 				LOGGER.debug("Not applying registry data to vanilla registry {}", registryId.toString());

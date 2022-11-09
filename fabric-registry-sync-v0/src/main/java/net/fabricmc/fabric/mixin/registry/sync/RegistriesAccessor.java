@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.registry.sync;
+package net.fabricmc.fabric.mixin.registry.sync;
 
-import java.util.Set;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
-import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+import net.minecraft.util.registry.MutableRegistry;
+import net.minecraft.util.registry.Registries;
 
-public interface FabricRegistry extends RegistryAttributeHolder {
-	void build(Set<RegistryAttribute> attributes);
+@Mixin(Registries.class)
+public interface RegistriesAccessor<T> {
+	@Accessor()
+	static MutableRegistry<MutableRegistry<?>> getROOT() {
+		throw new UnsupportedOperationException();
+	}
 }

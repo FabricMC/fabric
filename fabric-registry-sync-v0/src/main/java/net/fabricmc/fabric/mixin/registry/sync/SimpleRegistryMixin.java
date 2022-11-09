@@ -92,6 +92,9 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	@Shadow
 	public abstract @Nullable T get(@Nullable Identifier id);
 
+	@Shadow
+	public abstract RegistryKey<? extends Registry<T>> getKey();
+
 	@Unique
 	private static final Logger FABRIC_LOGGER = LoggerFactory.getLogger(SimpleRegistryMixin.class);
 
@@ -166,12 +169,12 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	@Unique
 	private void onChange(RegistryKey<Registry<T>> registryKey) {
 		if (RegistrySyncManager.postBootstrap || !VANILLA_NAMESPACES.contains(registryKey.getValue().getNamespace())) {
-			RegistryAttributeHolder holder = RegistryAttributeHolder.get(this);
+			RegistryAttributeHolder holder = RegistryAttributeHolder.get(getKey());
 
 			if (!holder.hasAttribute(RegistryAttribute.MODDED)) {
 				Identifier id = getKey().getValue();
 				FABRIC_LOGGER.debug("Registry {} has been marked as modded, registry entry {} was changed", id, registryKey.getValue());
-				RegistryAttributeHolder.get(this).addAttribute(RegistryAttribute.MODDED);
+				RegistryAttributeHolder.get(getKey()).addAttribute(RegistryAttribute.MODDED);
 			}
 		}
 	}
