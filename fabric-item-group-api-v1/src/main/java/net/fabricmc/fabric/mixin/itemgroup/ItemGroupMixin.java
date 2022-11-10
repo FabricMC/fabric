@@ -18,42 +18,48 @@ package net.fabricmc.fabric.mixin.itemgroup;
 
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.UUID;
 
-import org.objectweb.asm.Opcodes;
-import org.spongepowered.asm.mixin.Final;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStackSet;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.itemgroup.v1.IdentifiableItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
+import net.fabricmc.fabric.api.itemgroup.v1.IdentifiableItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.impl.itemgroup.FabricItemGroup;
 import net.fabricmc.fabric.impl.itemgroup.ItemGroupEventsImpl;
 import net.fabricmc.fabric.impl.itemgroup.MinecraftItemGroups;
 
 @Mixin(ItemGroup.class)
-abstract class ItemGroupMixin implements IdentifiableItemGroup {
-	@Shadow
-	@Final
-	private int index;
-
+abstract class ItemGroupMixin implements IdentifiableItemGroup, FabricItemGroup {
 	@Shadow(aliases = "field_40859")
 	private ItemStackSet displayStacks;
 
 	@Shadow(aliases = "field_40860")
 	private ItemStackSet searchTabStacks;
 
+	@Unique
+	private int page = -1;
+
+	@Unique
+	@Nullable
+	private UUID fallbackUUIDCache;
+
 	@SuppressWarnings("ConstantConditions")
-	@Inject(method = "getStacks", at = @At(value = "FIELD", target = "Lnet/minecraft/item/ItemGroup;searchTabStacks:Lnet/minecraft/item/ItemStackSet;", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER))
-	public void getStacks(FeatureSet enabledFeatures, boolean search, boolean showAdminItems, CallbackInfoReturnable<ItemStackSet> cir) {
+	@Inject(method = "updateEntries", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemGroup;reloadSearchProvider()V"))
+	public void getStacks(FeatureSet enabledFeatures, boolean operatorEnabled, CallbackInfo ci) {
 		// Sanity check for the injection point. It should be after these fields are set.
 		Objects.requireNonNull(displayStacks, "displayStacks");
 		Objects.requireNonNull(searchTabStacks, "searchTabStacks");
@@ -71,7 +77,10 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup {
 
 		// Now trigger the global event
 		ItemGroup self = (ItemGroup) (Object) this;
-		ItemGroupEvents.MODIFY_ENTRIES_ALL.invoker().modifyEntries(self, entries);
+
+		if (self != ItemGroups.OPERATOR || ItemGroups.operatorEnabled) {
+			ItemGroupEvents.MODIFY_ENTRIES_ALL.invoker().modifyEntries(self, entries);
+		}
 
 		// Convert the stacks back to sets after the events had a chance to modify them
 		displayStacks.clear();
@@ -86,10 +95,28 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup {
 		final Identifier identifier = MinecraftItemGroups.GROUP_ID_MAP.get((ItemGroup) (Object) this);
 
 		if (identifier == null) {
+			if (fallbackUUIDCache == null) {
+				fallbackUUIDCache = UUID.randomUUID();
+			}
+
 			// Fallback when no ID is found for this ItemGroup.
-			return new Identifier("minecraft", "unidentified_" + index);
+			return new Identifier("minecraft", "unidentified_" + fallbackUUIDCache);
 		}
 
 		return identifier;
+	}
+
+	@Override
+	public int getPage() {
+		if (page < 0) {
+			throw new IllegalStateException("Item group has no page");
+		}
+
+		return page;
+	}
+
+	@Override
+	public void setPage(int page) {
+		this.page = page;
 	}
 }

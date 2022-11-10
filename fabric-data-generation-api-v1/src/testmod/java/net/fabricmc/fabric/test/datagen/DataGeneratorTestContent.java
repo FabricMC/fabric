@@ -22,12 +22,16 @@ import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registries;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
 public class DataGeneratorTestContent implements ModInitializer {
 	public static final String MOD_ID = "fabric-data-gen-api-v1-testmod";
@@ -37,14 +41,8 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static Block BLOCK_WITHOUT_LOOT_TABLE;
 
 	public static final ItemGroup SIMPLE_ITEM_GROUP = FabricItemGroup.builder(new Identifier(MOD_ID, "simple"))
-			// todo 22w45a
-//			.entries(new ItemGroup.EntryCollector() {
-//				@Override
-//				public void accept(FeatureSet enabledFeatures, ItemGroup.Entries entries, boolean operatorEnabled) {
-//
-//					SIMPLE_BLOCK.asItem();
-//				}
-//			})
+			.icon(() -> new ItemStack(Items.DIAMOND_PICKAXE))
+			.displayName(Text.literal("Data gen test"))
 			.build();
 
 	@Override
@@ -52,6 +50,8 @@ public class DataGeneratorTestContent implements ModInitializer {
 		SIMPLE_BLOCK = createBlock("simple_block", true);
 		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false);
 		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false);
+
+		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.add(SIMPLE_BLOCK));
 	}
 
 	private static Block createBlock(String name, boolean hasItem) {
@@ -59,7 +59,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 		Block block = Registry.register(Registries.BLOCK, identifier, new Block(AbstractBlock.Settings.of(Material.STONE)));
 
 		if (hasItem) {
-			Item item = Registry.register(Registries.ITEM, identifier, new BlockItem(block, new Item.Settings()));
+			Registry.register(Registries.ITEM, identifier, new BlockItem(block, new Item.Settings()));
 		}
 
 		return block;

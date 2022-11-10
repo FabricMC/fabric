@@ -40,6 +40,6 @@ public final class ItemGroupHelper {
 		var itemGroups = new ArrayList<>(ItemGroups.getGroups());
 		itemGroups.add(itemGroup);
 
-		ItemGroupsAccessor.setGroups(ItemGroupsAccessor.invokeBuildList(itemGroups.toArray(ItemGroup[]::new)));
+		ItemGroupsAccessor.setGroups(ItemGroupsAccessor.invokeCollect(itemGroups.toArray(ItemGroup[]::new)));
 	}
 }

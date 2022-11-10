@@ -34,6 +34,7 @@ import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.impl.itemgroup.CreativeGuiExtensions;
 import net.fabricmc.fabric.impl.itemgroup.FabricCreativeGuiComponents;
+import net.fabricmc.fabric.impl.itemgroup.FabricItemGroup;
 
 @Mixin(CreativeInventoryScreen.class)
 public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> extends AbstractInventoryScreen<T> implements CreativeGuiExtensions {
@@ -44,31 +45,12 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 	@Shadow
 	protected abstract void setSelectedTab(ItemGroup itemGroup_1);
 
-	@Shadow
-	public abstract int getSelectedTab(); /* XXX getSelectedTab XXX */
-
 	// "static" matches selectedTab
 	private static int fabric_currentPage = 0;
 
-	private int fabric_getPageOffset(int page) {
-		return switch (page) {
-		case 0 -> 0;
-		case 1 -> 12;
-		default -> 12 + ((12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()) * (page - 1));
-		};
-	}
-
-	private int fabric_getOffsetPage(int offset) {
-		if (offset < 12) {
-			return 0;
-		} else {
-			return 1 + ((offset - 12) / (12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()));
-		}
-	}
-
 	@Override
 	public void fabric_nextPage() {
-		if (fabric_getPageOffset(fabric_currentPage + 1) >= ItemGroups.getGroupsToDisplay().size()) {
+		if (!fabric_hasGroupForPage(fabric_currentPage + 1)) {
 			return;
 		}
 
@@ -88,14 +70,13 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 
 	@Override
 	public boolean fabric_isButtonVisible(FabricCreativeGuiComponents.Type type) {
-		// todo 22w45a fix me as im dynamic now
-		return ItemGroups.getGroupsToDisplay().size() > 12;
+		return ItemGroups.getGroupsToDisplay().size() > 14;
 	}
 
 	@Override
 	public boolean fabric_isButtonEnabled(FabricCreativeGuiComponents.Type type) {
 		if (type == FabricCreativeGuiComponents.Type.NEXT) {
-			return !(fabric_getPageOffset(fabric_currentPage + 1) >= ItemGroups.getGroupsToDisplay().size());
+			return fabric_hasGroupForPage(fabric_currentPage + 1);
 		}
 
 		if (type == FabricCreativeGuiComponents.Type.PREVIOUS) {
@@ -106,21 +87,18 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 	}
 
 	private void fabric_updateSelection() {
-		int minPos = fabric_getPageOffset(fabric_currentPage);
-		int maxPos = fabric_getPageOffset(fabric_currentPage + 1) - 1;
-		int curPos = getSelectedTab();
-
-		if (curPos < minPos || curPos > maxPos) {
-			setSelectedTab(ItemGroups.getGroupsToDisplay().get(fabric_getPageOffset(fabric_currentPage)));
-		}
+		ItemGroups.getGroupsToDisplay().stream()
+				.filter(this::fabric_isGroupVisible)
+				.findFirst()
+				.ifPresent(this::setSelectedTab);
 	}
 
 	@Inject(method = "init", at = @At("RETURN"))
 	private void init(CallbackInfo info) {
 		fabric_updateSelection();
 
-		int xpos = x + 116;
-		int ypos = y - 10;
+		int xpos = x + 170;
+		int ypos = y + 5;
 
 		addDrawableChild(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos + 11, ypos, FabricCreativeGuiComponents.Type.NEXT, this));
 		addDrawableChild(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, this));
@@ -159,8 +137,17 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 			return true;
 		}
 
-		// TODO 22w45a fix me
-		return fabric_currentPage == fabric_getOffsetPage( /* itemGroup.getIndex() */ -1);
+		return fabric_currentPage == fabric_getPage(itemGroup);
+	}
+
+	private static int fabric_getPage(ItemGroup itemGroup) {
+		final FabricItemGroup fabricItemGroup = (FabricItemGroup) itemGroup;
+		return fabricItemGroup.getPage();
+	}
+
+	private static boolean fabric_hasGroupForPage(int page) {
+		return ItemGroups.getGroupsToDisplay().stream()
+				.anyMatch(itemGroup -> fabric_getPage(itemGroup) == page);
 	}
 
 	@Override
