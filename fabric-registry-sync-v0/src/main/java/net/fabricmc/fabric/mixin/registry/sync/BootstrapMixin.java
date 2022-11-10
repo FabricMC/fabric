@@ -62,6 +62,7 @@ public class BootstrapMixin {
 
 	@Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/Registries;method_47476()V"))
 	private static void skipFreeze() {
-		// Don't freeze
+		// Don't freeze right away
+		Registries.method_47487();
 	}
 }

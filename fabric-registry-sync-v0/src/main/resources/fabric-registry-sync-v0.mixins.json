@@ -10,6 +10,7 @@
     "LevelStorageSessionMixin",
     "MinecraftServerMixin",
     "RegistriesAccessor",
+    "RegistriesMixin",
     "RegistryLoaderMixin",
     "SimpleRegistryMixin",
     "StructuresToConfiguredStructuresFixMixin"
