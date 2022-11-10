@@ -29,7 +29,7 @@ public class RegistriesMixin {
 	@Unique
 	private static boolean hasInitialised = false;
 
-	@Inject(method = "method_47487", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "init", at = @At("HEAD"), cancellable = true)
 	private static void init(CallbackInfo ci) {
 		if (hasInitialised) {
 			ci.cancel();

@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
-import net.minecraft.class_7924;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
@@ -114,7 +114,7 @@ public class RegistrySyncTest implements ModInitializer {
 
 		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
 			setupCalled.set(true);
-			registryManager.getOptional(class_7924.BIOME_WORLDGEN).ifPresent(registry -> {
+			registryManager.getOptional(RegistryKeys.BIOME_WORLDGEN).ifPresent(registry -> {
 				RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> {
 					LOGGER.info("Biome added: {}", id);
 				});

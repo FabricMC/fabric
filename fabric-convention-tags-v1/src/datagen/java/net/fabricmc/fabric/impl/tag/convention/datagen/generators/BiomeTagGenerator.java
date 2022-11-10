@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.class_7924;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.tag.BiomeTags;
 import net.minecraft.util.registry.RegistryWrapper;
 import net.minecraft.world.biome.Biome;
@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 
 public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 	public BiomeTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-		super(output, class_7924.BIOME_WORLDGEN, completableFuture);
+		super(output, RegistryKeys.BIOME_WORLDGEN, completableFuture);
 	}
 
 	@Override

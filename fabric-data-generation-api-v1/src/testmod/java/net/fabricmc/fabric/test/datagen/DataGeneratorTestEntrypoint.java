@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
-import net.minecraft.class_7924;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
@@ -197,12 +197,12 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 	private static class TestBiomeTagProvider extends FabricTagProvider<Biome> {
 		private TestBiomeTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-			super(output, class_7924.BIOME_WORLDGEN, registriesFuture);
+			super(output, RegistryKeys.BIOME_WORLDGEN, registriesFuture);
 		}
 
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup registries) {
-			getOrCreateTagBuilder(TagKey.of(class_7924.BIOME_WORLDGEN, new Identifier(MOD_ID, "biome_tag_test")))
+			getOrCreateTagBuilder(TagKey.of(RegistryKeys.BIOME_WORLDGEN, new Identifier(MOD_ID, "biome_tag_test")))
 					.add(BiomeKeys.BADLANDS, BiomeKeys.BAMBOO_JUNGLE)
 					.add(BiomeKeys.BASALT_DELTAS);
 		}

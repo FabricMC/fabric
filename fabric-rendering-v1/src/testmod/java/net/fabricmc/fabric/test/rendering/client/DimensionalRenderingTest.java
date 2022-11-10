@@ -19,7 +19,7 @@ package net.fabricmc.fabric.test.rendering.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.joml.Matrix4f;
 
-import net.minecraft.class_7924;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.DimensionEffects;
 import net.minecraft.client.render.GameRenderer;
@@ -85,7 +85,7 @@ public class DimensionalRenderingTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		DimensionRenderingRegistry.registerSkyRenderer(RegistryKey.of(class_7924.DIMENSION, new Identifier("fabric_dimension", "void")), DimensionalRenderingTest::render);
+		DimensionRenderingRegistry.registerSkyRenderer(RegistryKey.of(RegistryKeys.DIMENSION, new Identifier("fabric_dimension", "void")), DimensionalRenderingTest::render);
 		DimensionRenderingRegistry.registerDimensionEffects(new Identifier("fabric_dimension", "void"), new DimensionEffects.End());
 	}
 }

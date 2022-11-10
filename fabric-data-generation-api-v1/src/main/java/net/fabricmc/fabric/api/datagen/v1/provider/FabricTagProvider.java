@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.util.registry.Registries;
-import net.minecraft.class_7924;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.data.server.tag.AbstractTagProvider;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
@@ -116,7 +116,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	public abstract static class BlockTagProvider extends FabricTagProvider<Block> {
 		public BlockTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-			super(output, class_7924.BLOCK, registriesFuture);
+			super(output, RegistryKeys.BLOCK, registriesFuture);
 		}
 
 		@Override
@@ -138,7 +138,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @param output The {@link FabricDataOutput} instance
 		 */
 		public ItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture, @Nullable FabricTagProvider.BlockTagProvider blockTagProvider) {
-			super(output, class_7924.ITEM, completableFuture);
+			super(output, RegistryKeys.ITEM, completableFuture);
 
 			this.blockTagBuilderProvider = blockTagProvider == null ? null : blockTagProvider::getTagBuilder;
 		}
@@ -178,7 +178,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	public abstract static class FluidTagProvider extends FabricTagProvider<Fluid> {
 		public FluidTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-			super(output, class_7924.FLUID, completableFuture);
+			super(output, RegistryKeys.FLUID, completableFuture);
 		}
 
 		@Override
@@ -192,7 +192,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	public abstract static class EnchantmentTagProvider extends FabricTagProvider<Enchantment> {
 		public EnchantmentTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-			super(output, class_7924.ENCHANTMENT, completableFuture);
+			super(output, RegistryKeys.ENCHANTMENT, completableFuture);
 		}
 
 		@Override
@@ -207,7 +207,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	public abstract static class EntityTypeTagProvider extends FabricTagProvider<EntityType<?>> {
 		public EntityTypeTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-			super(output, class_7924.ENTITY_TYPE, completableFuture);
+			super(output, RegistryKeys.ENTITY_TYPE, completableFuture);
 		}
 
 		@Override
@@ -221,7 +221,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	public abstract static class GameEventTagProvider extends FabricTagProvider<GameEvent> {
 		public GameEventTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-			super(output, class_7924.GAME_EVENT, completableFuture);
+			super(output, RegistryKeys.GAME_EVENT, completableFuture);
 		}
 
 		@Override

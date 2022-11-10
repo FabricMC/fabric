@@ -23,7 +23,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.registry.Registries;
-import net.minecraft.class_7924;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.poi.PointOfInterest;
@@ -77,6 +77,6 @@ public final class PointOfInterestHelper {
 	// INTERNAL METHODS
 
 	private static PointOfInterestType register(Identifier id, int ticketCount, int searchDistance, Set<BlockState> states) {
-		return PointOfInterestTypes.register(Registries.POINT_OF_INTEREST_TYPE, RegistryKey.of(class_7924.POINT_OF_INTEREST_TYPE, id), states, ticketCount, searchDistance);
+		return PointOfInterestTypes.register(Registries.POINT_OF_INTEREST_TYPE, RegistryKey.of(RegistryKeys.POINT_OF_INTEREST_TYPE, id), states, ticketCount, searchDistance);
 	}
 }

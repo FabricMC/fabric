@@ -51,7 +51,7 @@ public class MinecraftClientMixin {
 	private void onStart(CallbackInfo ci) {
 		// Freeze the registries on the client
 		FABRIC_LOGGER.debug("Freezing registries");
-		Registries.method_47476();
+		Registries.bootstrap();
 		BlockInitTracker.postFreeze();
 	}
 }

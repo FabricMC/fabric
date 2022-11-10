@@ -34,7 +34,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.class_7924;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
@@ -102,14 +102,14 @@ public abstract class FabricWorldgenProvider implements DataProvider {
 		 * Returns a lookup for placed features. Useful when creating biomes.
 		 */
 		public RegistryEntryLookup<PlacedFeature> placedFeatures() {
-			return getLookup(class_7924.PLACED_FEATURE_WORLDGEN);
+			return getLookup(RegistryKeys.PLACED_FEATURE_WORLDGEN);
 		}
 
 		/**
 		 * Returns a lookup for configured carvers features. Useful when creating biomes.
 		 */
 		public RegistryEntryLookup<ConfiguredCarver<?>> configuredCarvers() {
-			return getLookup(class_7924.CONFIGURED_CARVER_WORLDGEN);
+			return getLookup(RegistryKeys.CONFIGURED_CARVER_WORLDGEN);
 		}
 
 		/**

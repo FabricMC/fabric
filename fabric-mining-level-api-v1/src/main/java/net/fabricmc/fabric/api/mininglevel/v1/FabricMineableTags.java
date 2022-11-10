@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.mininglevel.v1;
 
 import net.minecraft.block.Block;
-import net.minecraft.class_7924;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 
@@ -46,6 +46,6 @@ public final class FabricMineableTags {
 	}
 
 	private static TagKey<Block> register(String id) {
-		return TagKey.of(class_7924.BLOCK, new Identifier("fabric", id));
+		return TagKey.of(RegistryKeys.BLOCK, new Identifier("fabric", id));
 	}
 }

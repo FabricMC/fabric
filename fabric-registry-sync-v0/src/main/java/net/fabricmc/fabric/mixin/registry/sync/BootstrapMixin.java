@@ -60,9 +60,8 @@ public class BootstrapMixin {
 		RegistrySyncManager.bootstrapRegistries();
 	}
 
-	@Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/Registries;method_47476()V"))
-	private static void skipFreeze() {
-		// Don't freeze right away
-		Registries.method_47487();
+	@Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/Registries;bootstrap()V"))
+	private static void initialize() {
+		Registries.init();
 	}
 }

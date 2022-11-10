@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.class_7924;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -43,8 +43,8 @@ public class MinecraftServerMixin {
 		// This is the last point where we can safely modify worldgen related things
 		// plus, this is server-side only, and DRM is easily accessible
 		// please blame Mojang for using dynamic registry
-		Registry<DimensionOptions> registry = getRegistryManager().get(class_7924.field_41224);
+		Registry<DimensionOptions> registry = getRegistryManager().get(RegistryKeys.field_41224);
 
-		registry.stream().forEach(dimensionOptions -> NetherBiomeData.modifyBiomeSource(getRegistryManager().getWrapperOrThrow(class_7924.BIOME_WORLDGEN), dimensionOptions.chunkGenerator().getBiomeSource()));
+		registry.stream().forEach(dimensionOptions -> NetherBiomeData.modifyBiomeSource(getRegistryManager().getWrapperOrThrow(RegistryKeys.BIOME_WORLDGEN), dimensionOptions.chunkGenerator().getBiomeSource()));
 	}
 }

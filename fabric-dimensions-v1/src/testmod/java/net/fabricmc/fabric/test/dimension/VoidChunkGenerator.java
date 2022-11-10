@@ -24,7 +24,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.class_7924;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryEntryLookup;
@@ -45,7 +45,7 @@ import net.minecraft.world.gen.noise.NoiseConfig;
 
 public class VoidChunkGenerator extends ChunkGenerator {
 	public static final Codec<VoidChunkGenerator> CODEC = RecordCodecBuilder.create((instance) ->
-			instance.group(RegistryOps.getEntryLookupCodec(class_7924.BIOME_WORLDGEN))
+			instance.group(RegistryOps.getEntryLookupCodec(RegistryKeys.BIOME_WORLDGEN))
 					.apply(instance, instance.stable(VoidChunkGenerator::new)));
 
 	public VoidChunkGenerator(RegistryEntryLookup<Biome> biomeRegistry) {

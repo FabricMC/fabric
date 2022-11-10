@@ -32,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_7924;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryEntryLookup;
@@ -62,7 +62,7 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	@Inject(method = "<clinit>", at = @At("TAIL"))
 	private static void modifyCodec(CallbackInfo ci) {
 		CODEC = RecordCodecBuilder.create((instance) -> {
-			return instance.group(RegistryOps.getEntryLookupCodec(class_7924.BIOME_WORLDGEN)).apply(instance, instance.stable(TheEndBiomeSource::createVanilla));
+			return instance.group(RegistryOps.getEntryLookupCodec(RegistryKeys.BIOME_WORLDGEN)).apply(instance, instance.stable(TheEndBiomeSource::createVanilla));
 		});
 	}
 

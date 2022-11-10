@@ -42,7 +42,7 @@ public class MinecraftServerMixin {
 			// Freeze the registries on the server
 			FABRIC_LOGGER.debug("Freezing registries");
 
-			Registries.method_47476();
+			Registries.bootstrap();
 			BlockInitTracker.postFreeze();
 		}
 	}

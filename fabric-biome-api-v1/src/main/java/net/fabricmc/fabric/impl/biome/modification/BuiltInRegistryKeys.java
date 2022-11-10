@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.biome.modification;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.class_7924;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryEntryLookup;
 import net.minecraft.util.registry.RegistryKey;
@@ -40,6 +40,6 @@ public final class BuiltInRegistryKeys {
 	}
 
 	public static RegistryEntryLookup<Biome> biomeRegistryWrapper() {
-		return vanillaRegistries.getWrapperOrThrow(class_7924.BIOME_WORLDGEN);
+		return vanillaRegistries.getWrapperOrThrow(RegistryKeys.BIOME_WORLDGEN);
 	}
 }

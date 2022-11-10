@@ -24,7 +24,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.class_7924;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.entity.Entity;
@@ -51,15 +51,15 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 public class FabricDimensionTest implements ModInitializer {
 	// The dimension options refer to the JSON-file in the dimension subfolder of the data pack,
 	// which will always share its ID with the world that is created from it
-	private static final RegistryKey<DimensionOptions> DIMENSION_KEY = RegistryKey.of(class_7924.field_41224, new Identifier("fabric_dimension", "void"));
+	private static final RegistryKey<DimensionOptions> DIMENSION_KEY = RegistryKey.of(RegistryKeys.field_41224, new Identifier("fabric_dimension", "void"));
 
-	private static RegistryKey<World> WORLD_KEY = RegistryKey.of(class_7924.DIMENSION, DIMENSION_KEY.getValue());
+	private static RegistryKey<World> WORLD_KEY = RegistryKey.of(RegistryKeys.DIMENSION, DIMENSION_KEY.getValue());
 
 	@Override
 	public void onInitialize() {
 		Registry.register(Registries.CHUNK_GENERATOR, new Identifier("fabric_dimension", "void"), VoidChunkGenerator.CODEC);
 
-		WORLD_KEY = RegistryKey.of(class_7924.DIMENSION, new Identifier("fabric_dimension", "void"));
+		WORLD_KEY = RegistryKey.of(RegistryKeys.DIMENSION, new Identifier("fabric_dimension", "void"));
 
 		if (System.getProperty("fabric-api.gametest") != null) {
 			// The gametest server does not support custom worlds

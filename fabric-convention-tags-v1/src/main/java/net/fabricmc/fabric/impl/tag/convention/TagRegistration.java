@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.impl.tag.convention;
 
 import net.minecraft.block.Block;
-import net.minecraft.class_7924;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
@@ -29,12 +29,12 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class TagRegistration<T> {
-	public static final TagRegistration<Item> ITEM_TAG_REGISTRATION = new TagRegistration<>(class_7924.ITEM);
-	public static final TagRegistration<Block> BLOCK_TAG_REGISTRATION = new TagRegistration<>(class_7924.BLOCK);
-	public static final TagRegistration<Biome> BIOME_TAG_REGISTRATION = new TagRegistration<>(class_7924.BIOME_WORLDGEN);
-	public static final TagRegistration<Fluid> FLUID_TAG_REGISTRATION = new TagRegistration<>(class_7924.FLUID);
-	public static final TagRegistration<EntityType<?>> ENTITY_TYPE_TAG_REGISTRATION = new TagRegistration<>(class_7924.ENTITY_TYPE);
-	public static final TagRegistration<Enchantment> ENCHANTMENT_TAG_REGISTRATION = new TagRegistration<>(class_7924.ENCHANTMENT);
+	public static final TagRegistration<Item> ITEM_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.ITEM);
+	public static final TagRegistration<Block> BLOCK_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.BLOCK);
+	public static final TagRegistration<Biome> BIOME_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.BIOME_WORLDGEN);
+	public static final TagRegistration<Fluid> FLUID_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.FLUID);
+	public static final TagRegistration<EntityType<?>> ENTITY_TYPE_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.ENTITY_TYPE);
+	public static final TagRegistration<Enchantment> ENCHANTMENT_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.ENCHANTMENT);
 	private final RegistryKey<Registry<T>> registryKey;
 
 	private TagRegistration(RegistryKey<Registry<T>> registry) {
