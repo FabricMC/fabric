@@ -18,13 +18,13 @@ package net.fabricmc.fabric.api.object.builder.v1.entity;
 
 import java.util.function.Supplier;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import net.minecraft.util.registry.Registries;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.mixin.object.builder.DefaultAttributeRegistryAccessor;
 
@@ -79,7 +79,7 @@ public final class FabricDefaultAttributeRegistry {
 	 */
 	public static void register(EntityType<? extends LivingEntity> type, DefaultAttributeContainer container) {
 		if (DefaultAttributeRegistryAccessor.getRegistry().put(type, container) != null) {
-			LOGGER.debug("Overriding existing registration for entity type {}", Registry.ENTITY_TYPE.getId(type));
+			LOGGER.debug("Overriding existing registration for entity type {}", Registries.ENTITY_TYPE.getId(type));
 		}
 	}
 }

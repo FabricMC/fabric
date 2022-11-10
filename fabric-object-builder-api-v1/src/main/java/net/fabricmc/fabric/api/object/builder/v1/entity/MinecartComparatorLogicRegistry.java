@@ -19,13 +19,13 @@ package net.fabricmc.fabric.api.object.builder.v1.entity;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import net.minecraft.util.registry.Registries;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
-import net.minecraft.util.registry.Registry;
 
 /**
  * A registry for {@linkplain MinecartComparatorLogic custom minecart comparator logic}.
@@ -60,7 +60,7 @@ public final class MinecartComparatorLogicRegistry {
 	 */
 	public static <T extends AbstractMinecartEntity> void register(EntityType<T> type, MinecartComparatorLogic<? super T> logic) {
 		if (logics.put(type, logic) != null) {
-			LOGGER.warn("Overriding existing minecart comparator logic for entity type {}", Registry.ENTITY_TYPE.getId(type));
+			LOGGER.warn("Overriding existing minecart comparator logic for entity type {}", Registries.ENTITY_TYPE.getId(type));
 		}
 	}
 }

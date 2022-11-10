@@ -31,6 +31,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOffers;
+import net.minecraft.village.VillagerType;
 
 @Mixin(TradeOffers.TypeAwareBuyForOneEmeraldFactory.class)
 public abstract class TradeOffersTypeAwareBuyForOneEmeraldFactoryMixin {
@@ -41,7 +42,7 @@ public abstract class TradeOffersTypeAwareBuyForOneEmeraldFactoryMixin {
 	 * So we return an empty stream so an exception is never thrown.
 	 */
 	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/DefaultedRegistry;stream()Ljava/util/stream/Stream;"))
-	private <T> Stream<T> disableVanillaCheck(DefaultedRegistry<T> registry) {
+	private <T> Stream<T> disableVanillaCheck(DefaultedRegistry<VillagerType> instance) {
 		return Stream.empty();
 	}
 

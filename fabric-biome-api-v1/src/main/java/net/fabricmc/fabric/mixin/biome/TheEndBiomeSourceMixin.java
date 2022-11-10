@@ -32,10 +32,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.util.registry.RegistryEntryLookup;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.util.dynamic.RegistryOps;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryEntryLookup;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
@@ -62,7 +62,7 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	@Inject(method = "<clinit>", at = @At("TAIL"))
 	private static void modifyCodec(CallbackInfo ci) {
 		CODEC = RecordCodecBuilder.create((instance) -> {
-			return instance.group(RegistryOps.getEntryLookupCodec(Registry.BIOME_KEY)).apply(instance, instance.stable(TheEndBiomeSource::method_46680));
+			return instance.group(RegistryOps.getEntryLookupCodec(RegistryKeys.BIOME_WORLDGEN)).apply(instance, instance.stable(TheEndBiomeSource::createVanilla));
 		});
 	}
 
@@ -70,7 +70,7 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	 * Captures the biome registry at the beginning of the static factory method to allow access to it in the
 	 * constructor.
 	 */
-	@Inject(method = "method_46680", at = @At("HEAD"))
+	@Inject(method = "createVanilla", at = @At("HEAD"))
 	private static void rememberLookup(RegistryEntryLookup<Biome> biomes, CallbackInfoReturnable<?> ci) {
 		TheEndBiomeData.biomeRegistry.set(biomes);
 	}
@@ -78,7 +78,7 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	/**
 	 * Frees up the captured biome registry.
 	 */
-	@Inject(method = "method_46680", at = @At("TAIL"))
+	@Inject(method = "createVanilla", at = @At("TAIL"))
 	private static void clearLookup(RegistryEntryLookup<Biome> biomes, CallbackInfoReturnable<?> ci) {
 		TheEndBiomeData.biomeRegistry.remove();
 	}

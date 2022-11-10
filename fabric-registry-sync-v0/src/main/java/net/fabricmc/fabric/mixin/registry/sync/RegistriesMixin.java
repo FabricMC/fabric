@@ -16,25 +16,25 @@
 
 package net.fabricmc.fabric.mixin.registry.sync;
 
-import com.mojang.serialization.Lifecycle;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.Registries;
 
-@Mixin(Registry.class)
-public interface RegistryAccessor<T> {
-	@Accessor()
-	static MutableRegistry<MutableRegistry<?>> getROOT() {
-		throw new UnsupportedOperationException();
+@Mixin(Registries.class)
+public class RegistriesMixin {
+	@Unique
+	private static boolean hasInitialised = false;
+
+	@Inject(method = "init", at = @At("HEAD"), cancellable = true)
+	private static void init(CallbackInfo ci) {
+		if (hasInitialised) {
+			ci.cancel();
+		}
+
+		hasInitialised = true;
 	}
-
-	@Accessor()
-	RegistryKey<Registry<T>> getRegistryKey();
-
-	@Invoker
-	Lifecycle callGetEntryLifecycle(T object);
 }

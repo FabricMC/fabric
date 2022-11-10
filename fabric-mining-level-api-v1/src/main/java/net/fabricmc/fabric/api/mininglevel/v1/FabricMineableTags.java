@@ -17,9 +17,9 @@
 package net.fabricmc.fabric.api.mininglevel.v1;
 
 import net.minecraft.block.Block;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 /**
  * Defines additional {@code mineable} tags for vanilla tools not covered by vanilla.
@@ -46,6 +46,6 @@ public final class FabricMineableTags {
 	}
 
 	private static TagKey<Block> register(String id) {
-		return TagKey.of(Registry.BLOCK_KEY, new Identifier("fabric", id));
+		return TagKey.of(RegistryKeys.BLOCK, new Identifier("fabric", id));
 	}
 }

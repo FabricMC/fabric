@@ -24,11 +24,11 @@ import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.Registries;
 
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
-import net.fabricmc.fabric.mixin.client.particle.ParticleManagerAccessor;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.mixin.client.particle.ParticleManagerAccessor;
 
 public final class ParticleFactoryRegistryImpl implements ParticleFactoryRegistry {
 	public static final ParticleFactoryRegistryImpl INSTANCE = new ParticleFactoryRegistryImpl();
@@ -72,14 +72,14 @@ public final class ParticleFactoryRegistryImpl implements ParticleFactoryRegistr
 
 		@Override
 		public <T extends ParticleEffect> void register(ParticleType<T> type, ParticleFactory<T> factory) {
-			((ParticleManagerAccessor) particleManager).getFactories().put(Registry.PARTICLE_TYPE.getRawId(type), factory);
+			((ParticleManagerAccessor) particleManager).getFactories().put(Registries.PARTICLE_TYPE.getRawId(type), factory);
 		}
 
 		@Override
 		public <T extends ParticleEffect> void register(ParticleType<T> type, PendingParticleFactory<T> constructor) {
 			SpriteProvider delegate = new ParticleManager.SimpleSpriteProvider();
 			FabricSpriteProvider fabricSpriteProvider = new FabricSpriteProviderImpl(particleManager, delegate);
-			((ParticleManagerAccessor) particleManager).getSpriteAwareFactories().put(Registry.PARTICLE_TYPE.getId(type), delegate);
+			((ParticleManagerAccessor) particleManager).getSpriteAwareFactories().put(Registries.PARTICLE_TYPE.getId(type), delegate);
 			register(type, constructor.create(fabricSpriteProvider));
 		}
 	}

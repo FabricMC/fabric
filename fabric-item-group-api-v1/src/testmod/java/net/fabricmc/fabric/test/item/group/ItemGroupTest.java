@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.item.group;
 
-import com.google.common.base.Preconditions;
+import com.google.common.base.Supplier;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
@@ -24,39 +24,33 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.impl.itemgroup.MinecraftItemGroups;
 
 public class ItemGroupTest implements ModInitializer {
 	private static final String MOD_ID = "fabric-item-group-api-v1-testmod";
 	private static Item TEST_ITEM;
 
 	//Adds an item group with all items in it
-	private static final ItemGroup ITEM_GROUP = new FabricItemGroup(new Identifier(MOD_ID, "test_group")) {
-		@Override
-		public ItemStack createIcon() {
-			return new ItemStack(Items.DIAMOND);
-		}
-
-		@Override
-		protected void addItems(FeatureSet featureSet, Entries entries, boolean opItems) {
-			entries.addAll(Registry.ITEM.stream()
-					.map(ItemStack::new)
-					.toList());
-		}
-	};
+	private static final ItemGroup ITEM_GROUP = FabricItemGroup.builder(new Identifier(MOD_ID, "test_group"))
+			.displayName(Text.literal("Test Item Group"))
+			.icon(() -> new ItemStack(Items.DIAMOND))
+			.entries((enabledFeatures, entries, operatorEnabled) -> {
+				entries.addAll(Registries.ITEM.stream()
+						.map(ItemStack::new)
+						.toList());
+			})
+			.build();
 
 	@Override
 	public void onInitialize() {
-		TEST_ITEM = Registry.register(Registry.ITEM, new Identifier("fabric-item-groups-v0-testmod", "item_test_group"), new Item(new Item.Settings()));
-
-		checkAllVanillaGroupsHaveAssignedIds();
+		TEST_ITEM = Registry.register(Registries.ITEM, new Identifier("fabric-item-groups-v0-testmod", "item_test_group"), new Item(new Item.Settings()));
 
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register((content) -> {
 			content.add(TEST_ITEM);
@@ -79,16 +73,16 @@ public class ItemGroupTest implements ModInitializer {
 			maxDmgPickaxe.setDamage(maxDmgPickaxe.getMaxDamage() - 1);
 			content.add(maxDmgPickaxe);
 		});
-	}
 
-	private static void checkAllVanillaGroupsHaveAssignedIds() {
-		for (ItemGroup group : ItemGroups.GROUPS) {
-			if (group instanceof FabricItemGroup) {
-				continue; // Skip groups added by test mods
-			}
-
-			Preconditions.checkArgument(MinecraftItemGroups.GROUP_ID_MAP.containsKey(group),
-					"Missing ID for Vanilla ItemGroup %s. Assign one in MinecraftItemGroups.", group);
+		for (int i = 0; i < 100; i++) {
+			final int index = i;
+			FabricItemGroup.builder(new Identifier(MOD_ID, "test_group_" + i))
+					.displayName(Text.literal("Test Item Group: " + i))
+					.icon((Supplier<ItemStack>) () -> new ItemStack(Registries.BLOCK.get(index)))
+					.entries((enabledFeatures, entries, operatorEnabled) -> {
+						entries.add(new ItemStack(Registries.ITEM.get(index)));
+					})
+					.build();
 		}
 	}
 }

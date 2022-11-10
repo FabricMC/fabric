@@ -28,7 +28,7 @@ import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.util.collection.IdList;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.Registries;
 
 import net.fabricmc.fabric.impl.client.rendering.ColorProviderRegistryImpl;
 
@@ -45,6 +45,6 @@ public class ItemColorsMixin implements ColorProviderRegistryImpl.ColorMapperHol
 
 	@Override
 	public ItemColorProvider get(ItemConvertible item) {
-		return providers.get(Registry.ITEM.getRawId(item.asItem()));
+		return providers.get(Registries.ITEM.getRawId(item.asItem()));
 	}
 }

@@ -23,6 +23,7 @@ import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup;
@@ -43,7 +44,7 @@ public class FabricEntityApiLookupTest {
 			.build();
 
 	public static void onInitialize() {
-		Registry.register(Registry.ENTITY_TYPE, new Identifier(FabricApiLookupTest.MOD_ID, "inspectable_pig"), INSPECTABLE_PIG);
+		Registry.register(Registries.ENTITY_TYPE, new Identifier(FabricApiLookupTest.MOD_ID, "inspectable_pig"), INSPECTABLE_PIG);
 		FabricDefaultAttributeRegistry.register(INSPECTABLE_PIG, PigEntity.createPigAttributes());
 
 		INSPECTABLE.registerSelf(INSPECTABLE_PIG);

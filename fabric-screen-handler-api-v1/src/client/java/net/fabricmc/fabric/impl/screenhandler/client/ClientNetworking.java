@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.screenhandler.client;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -28,7 +28,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.Registries;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -58,7 +58,7 @@ public final class ClientNetworking implements ClientModInitializer {
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private void openScreen(Identifier typeId, int syncId, Text title, PacketByteBuf buf) {
 		try {
-			ScreenHandlerType<?> type = Registry.SCREEN_HANDLER.get(typeId);
+			ScreenHandlerType<?> type = Registries.SCREEN_HANDLER.get(typeId);
 
 			if (type == null) {
 				LOGGER.warn("Unknown screen handler ID: {}", typeId);

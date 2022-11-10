@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.loot.table;
+package net.fabricmc.fabric.impl.itemgroup;
 
-import net.minecraft.loot.entry.LootPoolEntry;
-import net.minecraft.loot.entry.LootPoolEntryType;
+import org.jetbrains.annotations.ApiStatus;
+
+import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonSerializer;
-import net.minecraft.util.registry.Registries;
-import net.minecraft.util.registry.Registry;
 
-public final class LootEntryTypeRegistryImpl implements net.fabricmc.fabric.api.loot.v1.LootEntryTypeRegistry {
-	public LootEntryTypeRegistryImpl() { }
+@ApiStatus.Internal
+public final class FabricItemGroupBuilderImpl extends ItemGroup.Builder {
+	public FabricItemGroupBuilderImpl(Identifier identifier) {
+		// Set when building.
+		super(null, -1);
+	}
 
 	@Override
-	public void register(Identifier id, JsonSerializer<? extends LootPoolEntry> serializer) {
-		Registry.register(Registries.LOOT_POOL_ENTRY_TYPE, id, new LootPoolEntryType(serializer));
+	public ItemGroup build() {
+		final ItemGroup itemGroup = super.build();
+		ItemGroupHelper.appendItemGroup(itemGroup);
+		return itemGroup;
 	}
 }

@@ -34,6 +34,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.World;
@@ -140,8 +141,8 @@ public final class ContentRegistryTest implements ModInitializer {
 
 		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, new Identifier("fake_loot_table"));
 
-		Registry.register(Registry.GAME_EVENT, TEST_EVENT_ID, TEST_EVENT);
-		Registry.register(Registry.BLOCK, TEST_EVENT_ID, new TestEventBlock(AbstractBlock.Settings.copy(Blocks.STONE)));
+		Registry.register(Registries.GAME_EVENT, TEST_EVENT_ID, TEST_EVENT);
+		Registry.register(Registries.BLOCK, TEST_EVENT_ID, new TestEventBlock(AbstractBlock.Settings.copy(Blocks.STONE)));
 		SculkSensorFrequencyRegistry.register(TEST_EVENT, 2);
 
 		// assert that SculkSensorFrequencyRegistry throws when registering a frequency outside the allowed range

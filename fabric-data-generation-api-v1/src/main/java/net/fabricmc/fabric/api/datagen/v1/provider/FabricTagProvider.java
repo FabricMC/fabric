@@ -25,7 +25,8 @@ import java.util.stream.Stream;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.util.registry.RegistryWrapper;
+import net.minecraft.util.registry.Registries;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.data.server.tag.AbstractTagProvider;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
@@ -43,6 +44,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.RegistryWrapper;
 import net.minecraft.world.event.GameEvent;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -85,7 +87,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	protected RegistryKey<T> reverseLookup(T element) {
-		Registry registry = Registry.REGISTRIES.get((RegistryKey) field_40957);
+		Registry registry = Registries.REGISTRIES.get((RegistryKey) registryRef);
 
 		if (registry != null) {
 			Optional<RegistryEntry<T>> key = registry.getKey(element);
@@ -114,7 +116,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	public abstract static class BlockTagProvider extends FabricTagProvider<Block> {
 		public BlockTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-			super(output, Registry.BLOCK_KEY, registriesFuture);
+			super(output, RegistryKeys.BLOCK, registriesFuture);
 		}
 
 		@Override
@@ -136,7 +138,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @param output The {@link FabricDataOutput} instance
 		 */
 		public ItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture, @Nullable FabricTagProvider.BlockTagProvider blockTagProvider) {
-			super(output, Registry.ITEM_KEY, completableFuture);
+			super(output, RegistryKeys.ITEM, completableFuture);
 
 			this.blockTagBuilderProvider = blockTagProvider == null ? null : blockTagProvider::getTagBuilder;
 		}
@@ -176,7 +178,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	public abstract static class FluidTagProvider extends FabricTagProvider<Fluid> {
 		public FluidTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-			super(output, Registry.FLUID_KEY, completableFuture);
+			super(output, RegistryKeys.FLUID, completableFuture);
 		}
 
 		@Override
@@ -190,12 +192,12 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	public abstract static class EnchantmentTagProvider extends FabricTagProvider<Enchantment> {
 		public EnchantmentTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-			super(output, Registry.ENCHANTMENT_KEY, completableFuture);
+			super(output, RegistryKeys.ENCHANTMENT, completableFuture);
 		}
 
 		@Override
 		protected RegistryKey<Enchantment> reverseLookup(Enchantment element) {
-			return Registry.ENCHANTMENT.getKey(element)
+			return Registries.ENCHANTMENT.getKey(element)
 					.orElseThrow(() -> new IllegalArgumentException("Enchantment " + element + " is not registered"));
 		}
 	}
@@ -205,7 +207,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	public abstract static class EntityTypeTagProvider extends FabricTagProvider<EntityType<?>> {
 		public EntityTypeTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-			super(output, Registry.ENTITY_TYPE_KEY, completableFuture);
+			super(output, RegistryKeys.ENTITY_TYPE, completableFuture);
 		}
 
 		@Override
@@ -219,7 +221,7 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	 */
 	public abstract static class GameEventTagProvider extends FabricTagProvider<GameEvent> {
 		public GameEventTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-			super(output, Registry.GAME_EVENT_KEY, completableFuture);
+			super(output, RegistryKeys.GAME_EVENT, completableFuture);
 		}
 
 		@Override
@@ -229,12 +231,12 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	}
 
 	/**
-	 * An extension to {@link ObjectBuilder} that provides additional functionality.
+	 * An extension to {@link ProvidedTagBuilder} that provides additional functionality.
 	 */
-	public final class FabricTagBuilder extends ObjectBuilder<T> {
-		private final AbstractTagProvider.ObjectBuilder<T> parent;
+	public final class FabricTagBuilder extends ProvidedTagBuilder<T> {
+		private final AbstractTagProvider.ProvidedTagBuilder<T> parent;
 
-		private FabricTagBuilder(ObjectBuilder<T> parent) {
+		private FabricTagBuilder(ProvidedTagBuilder<T> parent) {
 			super(parent.builder);
 			this.parent = parent;
 		}
@@ -278,20 +280,9 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * @return the {@link FabricTagBuilder} instance
 		 * @see #add(Identifier)
 		 */
-		public FabricTagBuilder add(RegistryKey<T> registryKey) {
-			parent.method_46835(registryKey);
-			return this;
-		}
-
-		/**
-		 * Add a single element to the tag.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 * @see #add(Identifier)
-		 */
 		@Override
-		public FabricTagBuilder method_46835(RegistryKey<T> registryKey) {
-			parent.method_46835(registryKey);
+		public FabricTagBuilder add(RegistryKey<T> registryKey) {
+			parent.add(registryKey);
 			return this;
 		}
 
