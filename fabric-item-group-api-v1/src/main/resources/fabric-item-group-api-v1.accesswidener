@@ -17,5 +17,5 @@ transitive-accessible field net/minecraft/item/ItemGroups INVENTORY Lnet/minecra
 
 transitive-accessible class net/minecraft/item/ItemGroup$StackVisibility
 
-accessible class net/minecraft/item/ItemGroup$Entries
+transitive-accessible class net/minecraft/item/ItemGroup$Entries
 accessible class net/minecraft/item/ItemGroup$EntriesImpl
