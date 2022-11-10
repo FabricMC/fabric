@@ -40,7 +40,7 @@ public class ItemGroupTest implements ModInitializer {
 	//Adds an item group with all items in it
 	private static final ItemGroup ITEM_GROUP = FabricItemGroup.builder(new Identifier(MOD_ID, "test_group"))
 			.displayName(Text.literal("Test Item Group"))
-			.icon((Supplier<ItemStack>) () -> new ItemStack(Items.DIAMOND))
+			.icon(() -> new ItemStack(Items.DIAMOND))
 			.entries((enabledFeatures, entries, operatorEnabled) -> {
 				entries.addAll(Registries.ITEM.stream()
 						.map(ItemStack::new)

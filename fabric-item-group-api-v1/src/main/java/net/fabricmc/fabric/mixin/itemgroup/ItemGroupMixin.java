@@ -51,11 +51,11 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup, FabricItemGroup 
 	private ItemStackSet searchTabStacks;
 
 	@Unique
-	private int page = -1;
+	private int fabric_page = -1;
 
 	@Unique
 	@Nullable
-	private UUID fallbackUUIDCache;
+	private UUID fabric_fallbackUUID;
 
 	@SuppressWarnings("ConstantConditions")
 	@Inject(method = "updateEntries", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemGroup;reloadSearchProvider()V"))
@@ -95,12 +95,12 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup, FabricItemGroup 
 		final Identifier identifier = MinecraftItemGroups.GROUP_ID_MAP.get((ItemGroup) (Object) this);
 
 		if (identifier == null) {
-			if (fallbackUUIDCache == null) {
-				fallbackUUIDCache = UUID.randomUUID();
+			if (fabric_fallbackUUID == null) {
+				fabric_fallbackUUID = UUID.randomUUID();
 			}
 
 			// Fallback when no ID is found for this ItemGroup.
-			return new Identifier("minecraft", "unidentified_" + fallbackUUIDCache);
+			return new Identifier("minecraft", "unidentified_" + fabric_fallbackUUID);
 		}
 
 		return identifier;
@@ -108,15 +108,15 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup, FabricItemGroup 
 
 	@Override
 	public int getPage() {
-		if (page < 0) {
+		if (fabric_page < 0) {
 			throw new IllegalStateException("Item group has no page");
 		}
 
-		return page;
+		return fabric_page;
 	}
 
 	@Override
 	public void setPage(int page) {
-		this.page = page;
+		this.fabric_page = page;
 	}
 }

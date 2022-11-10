@@ -30,7 +30,6 @@ public final class FabricItemGroupBuilderImpl extends ItemGroup.Builder {
 
 	@Override
 	public ItemGroup build() {
-		// TODO set top/botoom and ids here
 		final ItemGroup itemGroup = super.build();
 		ItemGroupHelper.appendItemGroup(itemGroup);
 		return itemGroup;
