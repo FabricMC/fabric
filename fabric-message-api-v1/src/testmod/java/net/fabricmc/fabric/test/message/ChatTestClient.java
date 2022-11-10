@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.test.message;
 
 import org.slf4j.Logger;
@@ -17,6 +33,7 @@ public class ChatTestClient implements ClientModInitializer {
 				LOGGER.info("Blocked chat message: " + message);
 				return false;
 			}
+
 			return true;
 		});
 		ClientMessageEvents.SEND_CHAT_MESSAGE.register((message) -> LOGGER.info("Sent chat message: " + message));
@@ -26,6 +43,7 @@ public class ChatTestClient implements ClientModInitializer {
 				LOGGER.info("Blocked chat message: " + command);
 				return false;
 			}
+
 			return true;
 		});
 		ClientMessageEvents.SEND_COMMAND_MESSAGE.register((command) -> LOGGER.info("Sent command message: " + command));
@@ -35,6 +53,7 @@ public class ChatTestClient implements ClientModInitializer {
 				LOGGER.info("Blocked receiving chat message: " + message.getString());
 				return false;
 			}
+
 			return true;
 		});
 		ClientMessageEvents.RECEIVE_CHAT_MESSAGE.register((message, signedMessage, sender, params, receptionTimestamp) -> LOGGER.info("Received chat message sent by {} at time {}: {}", sender == null ? "null" : sender.getName(), receptionTimestamp.toEpochMilli(), message.getString()));
@@ -44,6 +63,7 @@ public class ChatTestClient implements ClientModInitializer {
 				LOGGER.info("Blocked receiving \"unknown or incomplete command\" message: " + message.getString());
 				return false;
 			}
+
 			return true;
 		});
 		ClientMessageEvents.RECEIVE_GAME_MESSAGE.register((message, overlay) -> LOGGER.info("Received game message with overlay {}: {}", overlay, message.getString()));

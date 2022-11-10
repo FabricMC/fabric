@@ -1,9 +1,7 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.message",
-  "compatibilityLevel": "JAVA_16",
-  "mixins": [
-  ],
+  "compatibilityLevel": "JAVA_17",
   "client": [
     "ClientPlayNetworkHandlerMixin", "MessageHandlerMixin"
   ],

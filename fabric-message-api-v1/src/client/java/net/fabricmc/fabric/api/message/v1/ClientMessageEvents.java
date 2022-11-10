@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.api.message.v1;
 
 import java.time.Instant;
@@ -30,6 +46,7 @@ public class ClientMessageEvents {
 				return false;
 			}
 		}
+
 		return true;
 	});
 
@@ -48,6 +65,7 @@ public class ClientMessageEvents {
 				return false;
 			}
 		}
+
 		return true;
 	});
 
@@ -88,6 +106,7 @@ public class ClientMessageEvents {
 				return false;
 			}
 		}
+
 		return true;
 	});
 
@@ -110,6 +129,7 @@ public class ClientMessageEvents {
 				return false;
 			}
 		}
+
 		return true;
 	});
 
@@ -152,6 +172,7 @@ public class ClientMessageEvents {
 		boolean allowSendChatMessage(String message);
 	}
 
+	@FunctionalInterface
 	public interface AllowSendCommandMessage {
 		/**
 		 * An event triggered when the client is about to send a command,
@@ -166,6 +187,7 @@ public class ClientMessageEvents {
 		boolean allowSendCommandMessage(String message);
 	}
 
+	@FunctionalInterface
 	public interface SendChatMessage {
 		/**
 		 * Called when the client sends a chat message,
@@ -177,6 +199,7 @@ public class ClientMessageEvents {
 		void onSendChatMessage(String message);
 	}
 
+	@FunctionalInterface
 	public interface SendCommandMessage {
 		/**
 		 * Called when the client sends a command,
@@ -189,6 +212,7 @@ public class ClientMessageEvents {
 		void onSendCommandMessage(String message);
 	}
 
+	@FunctionalInterface
 	public interface AllowReceiveChatMessage {
 		/**
 		 * Called when the client receives a chat message,
@@ -206,6 +230,7 @@ public class ClientMessageEvents {
 		boolean allowReceiveChatMessage(Text message, @Nullable SignedMessage signedMessage, @Nullable GameProfile sender, MessageType.Parameters params, Instant receptionTimestamp);
 	}
 
+	@FunctionalInterface
 	public interface AllowReceiveGameMessage {
 		/**
 		 * Called when the client receives a game message,
@@ -224,6 +249,7 @@ public class ClientMessageEvents {
 		boolean allowReceiveGameMessage(Text message, boolean overlay);
 	}
 
+	@FunctionalInterface
 	public interface ReceiveChatMessage {
 		/**
 		 * Called when the client received a chat message,
@@ -239,6 +265,7 @@ public class ClientMessageEvents {
 		void onReceiveChatMessage(Text message, @Nullable SignedMessage signedMessage, @Nullable GameProfile sender, MessageType.Parameters params, Instant receptionTimestamp);
 	}
 
+	@FunctionalInterface
 	public interface ReceiveGameMessage {
 		/**
 		 * Called when the client received a game message,
