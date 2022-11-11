@@ -58,7 +58,6 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
  */
 @ApiStatus.Experimental
 public abstract class FabricDynamicRegistryProvider implements DataProvider {
-public abstract class FabricWorldgenProvider implements DataProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDynamicRegistryProvider.class);
 
 	private final FabricDataOutput output;
