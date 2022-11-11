@@ -16,33 +16,37 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
+import java.net.Proxy;
+
+import com.mojang.datafixers.DataFixer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.util.registry.RegistryKeys;
+import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.WorldGenerationProgressListener;
+import net.minecraft.server.SaveLoader;
+import net.minecraft.server.WorldGenerationProgressListenerFactory;
+import net.minecraft.util.ApiServices;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.world.dimension.DimensionOptions;
+import net.minecraft.world.level.storage.LevelStorage;
 
 import net.fabricmc.fabric.impl.biome.NetherBiomeData;
 
-@Mixin(MinecraftServer.class)
+@Mixin(value = MinecraftServer.class, priority = 990)
 public class MinecraftServerMixin {
 	@Shadow
 	private DynamicRegistryManager.Immutable getRegistryManager() {
 		throw new AssertionError();
 	}
 
-	@Inject(method = "createWorlds", at = @At("HEAD"))
-	private void addNetherBiomes(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
-		// This is the last point where we can safely modify worldgen related things
-		// plus, this is server-side only, and DRM is easily accessible
-		// please blame Mojang for using dynamic registry
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void addNetherBiomes(Thread serverThread, LevelStorage.Session session, ResourcePackManager dataPackManager, SaveLoader saveLoader, Proxy proxy, DataFixer dataFixer, ApiServices apiServices, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory, CallbackInfo ci) {
 		Registry<DimensionOptions> registry = getRegistryManager().get(RegistryKeys.field_41224);
 
 		registry.stream().forEach(dimensionOptions -> NetherBiomeData.modifyBiomeSource(getRegistryManager().getWrapperOrThrow(RegistryKeys.BIOME_WORLDGEN), dimensionOptions.chunkGenerator().getBiomeSource()));
