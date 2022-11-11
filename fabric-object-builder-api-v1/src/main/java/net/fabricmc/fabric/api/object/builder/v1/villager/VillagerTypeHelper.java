@@ -18,10 +18,11 @@ package net.fabricmc.fabric.api.object.builder.v1.villager;
 
 import java.util.Objects;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.village.VillagerProfession;
@@ -55,7 +56,7 @@ public final class VillagerTypeHelper {
 	 */
 	public static VillagerType register(Identifier id) {
 		Objects.requireNonNull(id, "Id of villager type cannot be null");
-		return Registry.register(Registry.VILLAGER_TYPE, new Identifier(id.toString()), new VillagerType(id.toString()));
+		return Registry.register(Registries.VILLAGER_TYPE, new Identifier(id.toString()), new VillagerType(id.toString()));
 	}
 
 	/**

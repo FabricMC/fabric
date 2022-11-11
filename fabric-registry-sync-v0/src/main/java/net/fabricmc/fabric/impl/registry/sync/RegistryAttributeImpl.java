@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.registry.sync;
+package net.fabricmc.fabric.impl.registry.sync;
 
 import java.util.EnumSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
-import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
 
-@Mixin(Registry.class)
-public abstract class RegistryMixin<T> implements RegistryAttributeHolder, FabricRegistry {
-	@Unique
+public final class RegistryAttributeImpl implements RegistryAttributeHolder {
+	private static final Map<RegistryKey<?>, RegistryAttributeHolder> HOLDER_MAP = new HashMap<>();
+
+	public static RegistryAttributeHolder getHolder(RegistryKey<?> registryKey) {
+		return HOLDER_MAP.computeIfAbsent(registryKey, key -> new RegistryAttributeImpl());
+	}
+
 	private final EnumSet<RegistryAttribute> attributes = EnumSet.noneOf(RegistryAttribute.class);
+
+	private RegistryAttributeImpl() {
+	}
 
 	@Override
 	public RegistryAttributeHolder addAttribute(RegistryAttribute attribute) {
@@ -42,10 +46,5 @@ public abstract class RegistryMixin<T> implements RegistryAttributeHolder, Fabri
 	@Override
 	public boolean hasAttribute(RegistryAttribute attribute) {
 		return attributes.contains(attribute);
-	}
-
-	@Override
-	public void build(Set<RegistryAttribute> attributes) {
-		this.attributes.addAll(attributes);
 	}
 }

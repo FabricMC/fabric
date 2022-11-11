@@ -24,6 +24,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
@@ -57,14 +58,14 @@ public class FabricApiLookupTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		Identifier chute = new Identifier(MOD_ID, "chute");
-		Registry.register(Registry.BLOCK, chute, CHUTE_BLOCK);
-		Registry.register(Registry.ITEM, chute, CHUTE_ITEM);
-		CHUTE_BLOCK_ENTITY_TYPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, chute, FabricBlockEntityTypeBuilder.create(ChuteBlockEntity::new, CHUTE_BLOCK).build());
+		Registry.register(Registries.BLOCK, chute, CHUTE_BLOCK);
+		Registry.register(Registries.ITEM, chute, CHUTE_ITEM);
+		CHUTE_BLOCK_ENTITY_TYPE = Registry.register(Registries.BLOCK_ENTITY_TYPE, chute, FabricBlockEntityTypeBuilder.create(ChuteBlockEntity::new, CHUTE_BLOCK).build());
 
 		Identifier cobbleGen = new Identifier(MOD_ID, "cobble_gen");
-		Registry.register(Registry.BLOCK, cobbleGen, COBBLE_GEN_BLOCK);
-		Registry.register(Registry.ITEM, cobbleGen, COBBLE_GEN_ITEM);
-		COBBLE_GEN_BLOCK_ENTITY_TYPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, cobbleGen, FabricBlockEntityTypeBuilder.create(CobbleGenBlockEntity::new, COBBLE_GEN_BLOCK).build());
+		Registry.register(Registries.BLOCK, cobbleGen, COBBLE_GEN_BLOCK);
+		Registry.register(Registries.ITEM, cobbleGen, COBBLE_GEN_ITEM);
+		COBBLE_GEN_BLOCK_ENTITY_TYPE = Registry.register(Registries.BLOCK_ENTITY_TYPE, cobbleGen, FabricBlockEntityTypeBuilder.create(CobbleGenBlockEntity::new, COBBLE_GEN_BLOCK).build());
 
 		InventoryExtractableProvider extractableProvider = new InventoryExtractableProvider();
 		InventoryInsertableProvider insertableProvider = new InventoryInsertableProvider();
@@ -77,8 +78,8 @@ public class FabricApiLookupTest implements ModInitializer {
 		testSelfRegistration();
 
 		Identifier inspector = new Identifier(FabricApiLookupTest.MOD_ID, "inspector");
-		Registry.register(Registry.BLOCK, inspector, INSPECTOR_BLOCK);
-		Registry.register(Registry.ITEM, inspector, INSPECTOR_ITEM);
+		Registry.register(Registries.BLOCK, inspector, INSPECTOR_BLOCK);
+		Registry.register(Registries.ITEM, inspector, INSPECTOR_ITEM);
 
 		FabricItemApiLookupTest.onInitialize();
 		FabricEntityApiLookupTest.onInitialize();

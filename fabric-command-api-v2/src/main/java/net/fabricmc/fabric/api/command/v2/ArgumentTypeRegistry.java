@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.command.v2;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 
+import net.minecraft.util.registry.Registries;
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -37,7 +38,7 @@ public final class ArgumentTypeRegistry {
 	public static <A extends ArgumentType<?>, T extends ArgumentSerializer.ArgumentTypeProperties<A>> void registerArgumentType(
 			Identifier id, Class<? extends A> clazz, ArgumentSerializer<A, T> serializer) {
 		ArgumentTypesAccessor.fabric_getClassMap().put(clazz, serializer);
-		Registry.register(Registry.COMMAND_ARGUMENT_TYPE, id, serializer);
+		Registry.register(Registries.COMMAND_ARGUMENT_TYPE, id, serializer);
 	}
 
 	private ArgumentTypeRegistry() {

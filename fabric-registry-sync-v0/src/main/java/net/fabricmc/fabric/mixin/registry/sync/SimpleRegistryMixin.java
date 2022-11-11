@@ -45,6 +45,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
@@ -64,7 +65,7 @@ import net.fabricmc.fabric.impl.registry.sync.RemapStateImpl;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
 
 @Mixin(SimpleRegistry.class)
-public abstract class SimpleRegistryMixin<T> extends Registry<T> implements RemappableRegistry, ListenableRegistry<T> {
+public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, RemappableRegistry, ListenableRegistry<T> {
 	// Namespaces used by the vanilla game. "brigadier" is used by command argument type registry.
 	// While Realms use "realms" namespace, it is irrelevant for Registry Sync.
 	@Unique
@@ -91,12 +92,11 @@ public abstract class SimpleRegistryMixin<T> extends Registry<T> implements Rema
 	@Shadow
 	public abstract @Nullable T get(@Nullable Identifier id);
 
+	@Shadow
+	public abstract RegistryKey<? extends Registry<T>> getKey();
+
 	@Unique
 	private static final Logger FABRIC_LOGGER = LoggerFactory.getLogger(SimpleRegistryMixin.class);
-
-	public SimpleRegistryMixin(RegistryKey<? extends Registry<T>> key, Lifecycle lifecycle) {
-		super(key, lifecycle);
-	}
 
 	@Unique
 	private final Event<RegistryEntryAddedCallback<T>> fabric_addObjectEvent = EventFactory.createArrayBacked(RegistryEntryAddedCallback.class,
@@ -169,12 +169,12 @@ public abstract class SimpleRegistryMixin<T> extends Registry<T> implements Rema
 	@Unique
 	private void onChange(RegistryKey<Registry<T>> registryKey) {
 		if (RegistrySyncManager.postBootstrap || !VANILLA_NAMESPACES.contains(registryKey.getValue().getNamespace())) {
-			RegistryAttributeHolder holder = RegistryAttributeHolder.get(this);
+			RegistryAttributeHolder holder = RegistryAttributeHolder.get(getKey());
 
 			if (!holder.hasAttribute(RegistryAttribute.MODDED)) {
 				Identifier id = getKey().getValue();
 				FABRIC_LOGGER.debug("Registry {} has been marked as modded, registry entry {} was changed", id, registryKey.getValue());
-				RegistryAttributeHolder.get(this).addAttribute(RegistryAttribute.MODDED);
+				RegistryAttributeHolder.get(getKey()).addAttribute(RegistryAttribute.MODDED);
 			}
 		}
 	}

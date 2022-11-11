@@ -22,11 +22,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.util.registry.Registries;
 
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.util.NbtType;
@@ -45,7 +45,7 @@ public final class FrameBlockEntity extends BlockEntity implements RenderAttachm
 		super.readNbt(tag);
 
 		if (tag.contains("block", NbtType.STRING)) {
-			this.block = Registry.BLOCK.get(new Identifier(tag.getString("block")));
+			this.block = Registries.BLOCK.get(new Identifier(tag.getString("block")));
 		} else {
 			this.block = null;
 		}
@@ -58,7 +58,7 @@ public final class FrameBlockEntity extends BlockEntity implements RenderAttachm
 	@Override
 	public void writeNbt(NbtCompound tag) {
 		if (this.block != null) {
-			tag.putString("block", Registry.BLOCK.getId(this.block).toString());
+			tag.putString("block", Registries.BLOCK.getId(this.block).toString());
 		}
 	}
 

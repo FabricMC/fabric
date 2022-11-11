@@ -14,27 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.registry.sync;
+package net.fabricmc.fabric.mixin.block;
 
-import com.mojang.serialization.Lifecycle;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.block.BlockState;
 
-@Mixin(Registry.class)
-public interface RegistryAccessor<T> {
-	@Accessor()
-	static MutableRegistry<MutableRegistry<?>> getROOT() {
-		throw new UnsupportedOperationException();
-	}
+import net.fabricmc.fabric.api.block.v1.FabricBlockState;
 
-	@Accessor()
-	RegistryKey<Registry<T>> getRegistryKey();
-
-	@Invoker
-	Lifecycle callGetEntryLifecycle(T object);
-}
+@Mixin(BlockState.class)
+public class BlockStateMixin implements FabricBlockState { }

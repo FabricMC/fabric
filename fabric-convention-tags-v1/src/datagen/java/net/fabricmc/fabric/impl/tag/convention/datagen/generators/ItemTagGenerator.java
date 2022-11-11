@@ -18,11 +18,11 @@ package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.util.registry.RegistryWrapper;
 import net.minecraft.item.Items;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.Registries;
+import net.minecraft.util.registry.RegistryWrapper;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -189,7 +189,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateConsumableTags() {
-		Registry.ITEM.forEach(item -> {
+		Registries.ITEM.forEach(item -> {
 			if (item.getFoodComponent() != null) {
 				getOrCreateTagBuilder(ConventionalItemTags.FOODS).add(item);
 			}

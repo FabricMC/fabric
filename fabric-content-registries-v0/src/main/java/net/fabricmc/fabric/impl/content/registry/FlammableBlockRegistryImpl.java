@@ -22,7 +22,7 @@ import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.tag.TagKey;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.util.registry.RegistryEntry;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
@@ -56,7 +56,7 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry {
 			for (TagKey<Block> tag : registeredEntriesTag.keySet()) {
 				FlammableBlockRegistry.Entry entry = registeredEntriesTag.get(tag);
 
-				for (RegistryEntry<Block> block : Registry.BLOCK.iterateEntries(tag)) {
+				for (RegistryEntry<Block> block : Registries.BLOCK.iterateEntries(tag)) {
 					ret.put(block.value(), entry);
 				}
 			}

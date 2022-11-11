@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.test.biome;
 
+import net.minecraft.util.registry.RegistryKeys;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -47,18 +47,18 @@ import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
 public class FabricBiomeTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-biome-api-v1-testmod";
 
-	public static final RegistryKey<Biome> TEST_CRIMSON_FOREST = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "test_crimson_forest"));
-	public static final RegistryKey<Biome> CUSTOM_PLAINS = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "custom_plains"));
-	public static final RegistryKey<Biome> TEST_END_HIGHLANDS = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "test_end_highlands"));
-	public static final RegistryKey<Biome> TEST_END_MIDLANDS = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "test_end_midlands"));
-	public static final RegistryKey<Biome> TEST_END_BARRRENS = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "test_end_barrens"));
+	public static final RegistryKey<Biome> TEST_CRIMSON_FOREST = RegistryKey.of(RegistryKeys.BIOME_WORLDGEN, new Identifier(MOD_ID, "test_crimson_forest"));
+	public static final RegistryKey<Biome> CUSTOM_PLAINS = RegistryKey.of(RegistryKeys.BIOME_WORLDGEN, new Identifier(MOD_ID, "custom_plains"));
+	public static final RegistryKey<Biome> TEST_END_HIGHLANDS = RegistryKey.of(RegistryKeys.BIOME_WORLDGEN, new Identifier(MOD_ID, "test_end_highlands"));
+	public static final RegistryKey<Biome> TEST_END_MIDLANDS = RegistryKey.of(RegistryKeys.BIOME_WORLDGEN, new Identifier(MOD_ID, "test_end_midlands"));
+	public static final RegistryKey<Biome> TEST_END_BARRRENS = RegistryKey.of(RegistryKeys.BIOME_WORLDGEN, new Identifier(MOD_ID, "test_end_barrens"));
 
 	public static final RegistryKey<ConfiguredFeature<?, ?>> COMMON_DESERT_WELL = RegistryKey.of(
-			Registry.CONFIGURED_FEATURE_KEY,
+			RegistryKeys.CONFIGURED_FEATURE_WORLDGEN,
 			new Identifier(FabricBiomeTest.MOD_ID, "fab_desert_well")
 	);
 	public static final RegistryKey<PlacedFeature> PLACED_COMMON_DESERT_WELL = RegistryKey.of(
-			Registry.PLACED_FEATURE_KEY,
+			RegistryKeys.PLACED_FEATURE_WORLDGEN,
 			new Identifier(FabricBiomeTest.MOD_ID, "fab_desert_well")
 	);
 
@@ -86,7 +86,7 @@ public class FabricBiomeTest implements ModInitializer {
 							);
 						})
 				.add(ModificationPhase.ADDITIONS,
-						BiomeSelectors.tag(TagKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "tag_selector_test"))),
+						BiomeSelectors.tag(TagKey.of(RegistryKeys.BIOME_WORLDGEN, new Identifier(MOD_ID, "tag_selector_test"))),
 						context -> context.getEffects().setSkyColor(0x770000));
 
 		// Make sure data packs can define dynamic registry contents
@@ -94,16 +94,16 @@ public class FabricBiomeTest implements ModInitializer {
 		BiomeModifications.addFeature(
 				BiomeSelectors.foundInOverworld(),
 				GenerationStep.Feature.VEGETAL_DECORATION,
-				RegistryKey.of(Registry.PLACED_FEATURE_KEY, new Identifier(MOD_ID, "concrete_pile"))
+				RegistryKey.of(RegistryKeys.PLACED_FEATURE_WORLDGEN, new Identifier(MOD_ID, "concrete_pile"))
 		);
 
 		// Make sure data packs can define biomes
 		NetherBiomes.addNetherBiome(
-				RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "example_biome")),
+				RegistryKey.of(RegistryKeys.BIOME_WORLDGEN, new Identifier(MOD_ID, "example_biome")),
 				MultiNoiseUtil.createNoiseHypercube(1.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.5f, 0.3f)
 		);
 		TheEndBiomes.addHighlandsBiome(
-				RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "example_biome")),
+				RegistryKey.of(RegistryKeys.BIOME_WORLDGEN, new Identifier(MOD_ID, "example_biome")),
 				10.0
 		);
 	}

@@ -33,6 +33,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
@@ -65,14 +66,14 @@ public class BlockEntityTypeBuilderTest implements ModInitializer {
 		register(FIRST_MULTI_BETRAYAL_BLOCK_ID, FIRST_MULTI_BETRAYAL_BLOCK);
 		register(SECOND_MULTI_BETRAYAL_BLOCK_ID, SECOND_MULTI_BETRAYAL_BLOCK);
 
-		Registry.register(Registry.BLOCK_ENTITY_TYPE, BLOCK_ENTITY_TYPE_ID, BLOCK_ENTITY_TYPE);
+		Registry.register(Registries.BLOCK_ENTITY_TYPE, BLOCK_ENTITY_TYPE_ID, BLOCK_ENTITY_TYPE);
 	}
 
 	private static void register(Identifier id, Block block) {
-		Registry.register(Registry.BLOCK, id, block);
+		Registry.register(Registries.BLOCK, id, block);
 
 		Item item = new BlockItem(block, new Item.Settings());
-		Registry.register(Registry.ITEM, id, item);
+		Registry.register(Registries.ITEM, id, item);
 	}
 
 	private static class BetrayalBlock extends Block implements BlockEntityProvider {

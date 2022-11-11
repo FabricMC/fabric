@@ -18,13 +18,13 @@ package net.fabricmc.fabric.api.object.builder.v1.entity;
 
 import java.util.function.Supplier;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import net.minecraft.util.registry.Registries;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.mixin.object.builder.DefaultAttributeRegistryAccessor;
 
@@ -51,6 +51,17 @@ public final class FabricDefaultAttributeRegistry {
 	/**
 	 * Registers a default attribute for a type of living entity.
 	 *
+	 * @param type    the entity type
+	 * @param builder the builder that creates the default attribute
+	 * @see	FabricDefaultAttributeRegistry#register(EntityType, DefaultAttributeContainer)
+	 */
+	public static void register(EntityType<? extends LivingEntity> type, DefaultAttributeContainer.Builder builder) {
+		register(type, builder.build());
+	}
+
+	/**
+	 * Registers a default attribute for a type of living entity.
+	 *
 	 * <p>It can be used in a fashion similar to this:
 	 * <blockquote><pre>
 	 * EntityAttributeRegistry.INSTANCE.register(type, LivingEntity.createLivingAttributes());
@@ -62,13 +73,13 @@ public final class FabricDefaultAttributeRegistry {
 	 *
 	 * <p>For convenience, this can also be done on the {@link FabricEntityTypeBuilder} to simplify the building process.
 	 *
-	 * @param type    the entity type
-	 * @param builder the builder that creates the default attribute
+	 * @param type      the entity type
+	 * @param container the container for the default attribute
 	 * @see	FabricEntityTypeBuilder.Living#defaultAttributes(Supplier)
 	 */
-	public static void register(EntityType<? extends LivingEntity> type, DefaultAttributeContainer.Builder builder) {
-		if (DefaultAttributeRegistryAccessor.getRegistry().put(type, builder.build()) != null) {
-			LOGGER.debug("Overriding existing registration for entity type {}", Registry.ENTITY_TYPE.getId(type));
+	public static void register(EntityType<? extends LivingEntity> type, DefaultAttributeContainer container) {
+		if (DefaultAttributeRegistryAccessor.getRegistry().put(type, container) != null) {
+			LOGGER.debug("Overriding existing registration for entity type {}", Registries.ENTITY_TYPE.getId(type));
 		}
 	}
 }

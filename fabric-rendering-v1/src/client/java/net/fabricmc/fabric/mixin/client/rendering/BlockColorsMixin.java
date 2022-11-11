@@ -27,7 +27,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.util.collection.IdList;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.Registries;
 
 import net.fabricmc.fabric.impl.client.rendering.ColorProviderRegistryImpl;
 
@@ -44,6 +44,6 @@ public class BlockColorsMixin implements ColorProviderRegistryImpl.ColorMapperHo
 
 	@Override
 	public BlockColorProvider get(Block block) {
-		return providers.get(Registry.BLOCK.getRawId(block));
+		return providers.get(Registries.BLOCK.getRawId(block));
 	}
 }

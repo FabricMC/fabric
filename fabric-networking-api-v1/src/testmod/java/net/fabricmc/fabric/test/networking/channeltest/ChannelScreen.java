@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.networking.channeltest;
 
+import net.minecraft.class_7919;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -42,15 +43,13 @@ final class ChannelScreen extends Screen {
 		this.s2cButton = this.addDrawableChild(ButtonWidget.createBuilder(Text.literal("S2C"), this::toS2C)
 				.setPosition(this.width / 2 - 55, 5)
 				.setSize(50, 20)
-				.setTooltipSupplier((button2, matrices1, mouseX1, mouseY1) -> {
-					this.renderTooltip(matrices1, Text.literal("Packets this client can receive"), mouseX1, mouseY1);
-				}).build());
+				.setTooltipSupplier(class_7919.method_47407(Text.literal("Packets this client can receive")))
+				.build());
 		this.c2sButton = this.addDrawableChild(ButtonWidget.createBuilder(Text.literal("C2S"), this::toC2S)
 				.setPosition(this.width / 2 + 5, 5)
 				.setSize(50, 20)
-				.setTooltipSupplier((button1, matrices, mouseX, mouseY) -> {
-					this.renderTooltip(matrices, Text.literal("Packets the server can receive"), mouseX, mouseY);
-				}).build());
+				.setTooltipSupplier(class_7919.method_47407(Text.literal("Packets the server can receive")))
+				.build());
 		this.closeButton = this.addDrawableChild(ButtonWidget.createBuilder(Text.literal("Close"), button -> this.close())
 				.setPosition(this.width / 2 - 60, this.height - 25)
 				.setSize(120, 20)

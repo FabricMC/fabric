@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.itemgroup;
 
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -30,12 +32,12 @@ public interface ItemGroupsAccessor {
 	@Accessor("GROUPS")
 	@Final
 	@Mutable
-	static void setGroups(ItemGroup[] groups) {
+	static void setGroups(List<ItemGroup> groups) {
 		throw new AssertionError();
 	}
 
-	@Invoker
-	static ItemGroup[] invokeAsArray(ItemGroup[] groups) {
+	@Invoker("collect")
+	static List<ItemGroup> invokeCollect(ItemGroup[] groups) {
 		throw new AssertionError();
 	}
 }

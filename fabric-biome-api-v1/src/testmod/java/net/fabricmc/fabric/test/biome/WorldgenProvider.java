@@ -72,24 +72,24 @@ public class WorldgenProvider extends FabricDynamicRegistryProvider {
 
 	// These are used for testing the spacing of custom end biomes.
 	private static Biome createEndHighlands(Entries entries) {
-		GenerationSettings.Builder builder = new GenerationSettings.Builder(entries.placedFeatures(), entries.configuredCarvers())
-				.feature(GenerationStep.Feature.SURFACE_STRUCTURES, EndPlacedFeatures.END_GATEWAY_RETURN);
+		GenerationSettings.Builder builder = new GenerationSettings.Builder()
+				.feature(GenerationStep.Feature.SURFACE_STRUCTURES, entries.ref(EndPlacedFeatures.END_GATEWAY_RETURN));
 		return composeEndSpawnSettings(builder);
 	}
 
 	public static Biome createEndMidlands(Entries entries) {
-		GenerationSettings.Builder builder = (new GenerationSettings.Builder(entries.placedFeatures(), entries.configuredCarvers()));
+		GenerationSettings.Builder builder = (new GenerationSettings.Builder());
 		return composeEndSpawnSettings(builder);
 	}
 
 	public static Biome createEndBarrens(Entries entries) {
-		GenerationSettings.Builder builder = (new GenerationSettings.Builder(entries.placedFeatures(), entries.configuredCarvers()));
+		GenerationSettings.Builder builder = (new GenerationSettings.Builder());
 		return composeEndSpawnSettings(builder);
 	}
 
 	private static Biome composeEndSpawnSettings(GenerationSettings.Builder builder) {
 		SpawnSettings.Builder builder2 = new SpawnSettings.Builder();
 		DefaultBiomeFeatures.addPlainsMobs(builder2);
-		return (new Biome.Builder()).precipitation(Biome.Precipitation.NONE).temperature(0.5F).downfall(0.5F).effects((new BiomeEffects.Builder()).waterColor(4159204).waterFogColor(329011).fogColor(10518688).skyColor(0).moodSound(BiomeMoodSound.CAVE).build()).spawnSettings(builder2.build()).generationSettings(builder.method_46671()).build();
+		return (new Biome.Builder()).precipitation(Biome.Precipitation.NONE).temperature(0.5F).downfall(0.5F).effects((new BiomeEffects.Builder()).waterColor(4159204).waterFogColor(329011).fogColor(10518688).skyColor(0).moodSound(BiomeMoodSound.CAVE).build()).spawnSettings(builder2.build()).generationSettings(builder.build()).build();
 	}
 }
