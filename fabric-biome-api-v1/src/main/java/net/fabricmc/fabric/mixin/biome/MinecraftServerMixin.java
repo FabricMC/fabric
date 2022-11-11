@@ -38,6 +38,7 @@ import net.minecraft.world.level.storage.LevelStorage;
 
 import net.fabricmc.fabric.impl.biome.NetherBiomeData;
 
+// Priority set just below biome modification mixin's
 @Mixin(value = MinecraftServer.class, priority = 990)
 public class MinecraftServerMixin {
 	@Shadow
