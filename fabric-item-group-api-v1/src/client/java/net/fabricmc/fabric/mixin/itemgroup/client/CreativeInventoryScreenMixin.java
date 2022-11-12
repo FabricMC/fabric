@@ -70,7 +70,7 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 
 	@Override
 	public boolean fabric_isButtonVisible(FabricCreativeGuiComponents.Type type) {
-		return ItemGroups.getGroupsToDisplay().size() > 14;
+		return ItemGroups.getGroupsToDisplay().size() > (ItemGroups.operatorEnabled ? 14 : 13);
 	}
 
 	@Override
