@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.itemgroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus;
 
@@ -30,6 +31,11 @@ public final class ItemGroupHelper {
 	private ItemGroupHelper() {
 	}
 
+	/**
+	 * A list of item groups, but with special groups grouped at the end.
+	 */
+	public static List<ItemGroup> sortedGroups = ItemGroups.getGroups();
+
 	public static void appendItemGroup(ItemGroup itemGroup) {
 		for (ItemGroup existingGroup : ItemGroups.getGroups()) {
 			if (existingGroup.getId().equals(itemGroup.getId())) {
@@ -40,6 +46,12 @@ public final class ItemGroupHelper {
 		var itemGroups = new ArrayList<>(ItemGroups.getGroups());
 		itemGroups.add(itemGroup);
 
-		ItemGroupsAccessor.setGroups(ItemGroupsAccessor.invokeCollect(itemGroups.toArray(ItemGroup[]::new)));
+		List<ItemGroup> validated = ItemGroupsAccessor.invokeCollect(itemGroups.toArray(ItemGroup[]::new));
+		ItemGroupsAccessor.setGroups(validated);
+		sortedGroups = validated.stream().sorted((a, b) -> {
+			if (a.isSpecial() && !b.isSpecial()) return 1;
+			if (!a.isSpecial() && b.isSpecial()) return -1;
+			return 0;
+		}).toList();
 	}
 }
