@@ -60,6 +60,13 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup, FabricItemGroup 
 	@SuppressWarnings("ConstantConditions")
 	@Inject(method = "updateEntries", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemGroup;reloadSearchProvider()V"))
 	public void getStacks(FeatureSet enabledFeatures, boolean operatorEnabled, CallbackInfo ci) {
+		ItemGroup self = (ItemGroup) (Object) this;
+
+		// Do not modify special item groups at all.
+		// Special item groups include Saved Hotbars, Search, and Survival Inventory.
+		// Note, search gets modified as part of the parent item group.
+		if (self.isSpecial()) return;
+
 		// Sanity check for the injection point. It should be after these fields are set.
 		Objects.requireNonNull(displayStacks, "displayStacks");
 		Objects.requireNonNull(searchTabStacks, "searchTabStacks");
@@ -76,8 +83,6 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup, FabricItemGroup 
 		}
 
 		// Now trigger the global event
-		ItemGroup self = (ItemGroup) (Object) this;
-
 		if (self != ItemGroups.OPERATOR || ItemGroups.operatorEnabled) {
 			ItemGroupEvents.MODIFY_ENTRIES_ALL.invoker().modifyEntries(self, entries);
 		}
