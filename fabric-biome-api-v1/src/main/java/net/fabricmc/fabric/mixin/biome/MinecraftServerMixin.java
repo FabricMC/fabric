@@ -24,14 +24,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.SaveProperties;
 
 import net.fabricmc.fabric.impl.biome.NetherBiomeData;
 
-@Mixin(MinecraftServer.class)
+// Priority set just below biome modification mixin's
+@Mixin(value = MinecraftServer.class, priority = 990)
 public class MinecraftServerMixin {
 	@Shadow
 	@Final
@@ -41,11 +41,8 @@ public class MinecraftServerMixin {
 	@Final
 	private DynamicRegistryManager.Immutable registryManager;
 
-	@Inject(method = "createWorlds", at = @At("HEAD"))
-	private void addNetherBiomes(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
-		// This is the last point where we can safely modify worldgen related things
-		// plus, this is server-side only, and DRM is easily accessible
-		// please blame Mojang for using dynamic registry
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void addNetherBiomes(CallbackInfo ci) {
 		this.saveProperties.getGeneratorOptions().getDimensions().stream().forEach(dimensionOptions -> NetherBiomeData.modifyBiomeSource(this.registryManager.get(Registry.BIOME_KEY), dimensionOptions.getChunkGenerator().getBiomeSource()));
 	}
 }
