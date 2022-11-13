@@ -35,6 +35,7 @@ import net.minecraft.text.Text;
 import net.fabricmc.fabric.impl.itemgroup.CreativeGuiExtensions;
 import net.fabricmc.fabric.impl.itemgroup.FabricCreativeGuiComponents;
 import net.fabricmc.fabric.impl.itemgroup.FabricItemGroup;
+import net.fabricmc.fabric.impl.itemgroup.ItemGroupHelper;
 
 @Mixin(CreativeInventoryScreen.class)
 public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> extends AbstractInventoryScreen<T> implements CreativeGuiExtensions {
@@ -70,7 +71,7 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 
 	@Override
 	public boolean fabric_isButtonVisible(FabricCreativeGuiComponents.Type type) {
-		return ItemGroups.getGroupsToDisplay().size() > 14;
+		return ItemGroups.getGroupsToDisplay().size() > (ItemGroups.operatorEnabled ? 14 : 13);
 	}
 
 	@Override
@@ -87,7 +88,7 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 	}
 
 	private void fabric_updateSelection() {
-		ItemGroups.getGroupsToDisplay().stream()
+		ItemGroupHelper.sortedGroups.stream()
 				.filter(this::fabric_isGroupVisible)
 				.findFirst()
 				.ifPresent(this::setSelectedTab);
