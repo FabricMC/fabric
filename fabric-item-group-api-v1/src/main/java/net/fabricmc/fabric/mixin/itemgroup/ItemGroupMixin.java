@@ -62,10 +62,10 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup, FabricItemGroup 
 	public void getStacks(FeatureSet enabledFeatures, boolean operatorEnabled, CallbackInfo ci) {
 		ItemGroup self = (ItemGroup) (Object) this;
 
-		// Do not modify special item groups at all.
+		// Do not modify special item groups (except Operator Blocks) at all.
 		// Special item groups include Saved Hotbars, Search, and Survival Inventory.
 		// Note, search gets modified as part of the parent item group.
-		if (self.isSpecial()) return;
+		if (self.isSpecial() && self != ItemGroups.OPERATOR) return;
 
 		// Sanity check for the injection point. It should be after these fields are set.
 		Objects.requireNonNull(displayStacks, "displayStacks");
