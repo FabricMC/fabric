@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.impl.transfer.item;
 
+import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -72,8 +75,25 @@ class InventorySlotWrapper extends SingleStackStorage {
 		}
 	}
 
+	/**
+	 * Special cases because vanilla checks the current stack in the following functions (which it shouldn't):
+	 * <ul>
+	 *     <li>{@link AbstractFurnaceBlockEntity#isValid(int, ItemStack)}.</li>
+	 *     <li>{@link BrewingStandBlockEntity#isValid(int, ItemStack)}.</li>
+	 * </ul>
+	 */
 	@Override
 	public int getCapacity(ItemVariant variant) {
+		// Special case to limit buckets to 1 in furnace fuel inputs.
+		if (storage.inventory instanceof AbstractFurnaceBlockEntity && slot == 1 && variant.isOf(Items.BUCKET)) {
+			return 1;
+		}
+
+		// Special case to limit brewing stand "bottle inputs" to 1.
+		if (storage.inventory instanceof BrewingStandBlockEntity && slot < 3) {
+			return 1;
+		}
+
 		return Math.min(storage.inventory.getMaxCountPerStack(), variant.getItem().getMaxCount());
 	}
 
