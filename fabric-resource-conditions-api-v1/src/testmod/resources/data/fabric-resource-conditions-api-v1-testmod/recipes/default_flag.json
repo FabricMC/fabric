@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:command_block"
+    }
+  ],
+  "result": {
+    "item": "minecraft:diamond"
+  },
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:feature_enabled",
+      "feature": "minecraft:vanilla"
+    }
+  ]
+}
