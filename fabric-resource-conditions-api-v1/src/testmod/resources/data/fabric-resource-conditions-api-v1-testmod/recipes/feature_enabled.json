@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "minecraft:command_block"
+      "item": "minecraft:blue_dye"
     }
   ],
   "result": {
@@ -11,7 +11,7 @@
   "fabric:load_conditions": [
     {
       "condition": "fabric:feature_enabled",
-      "feature": "minecraft:bundle"
+      "feature": "minecraft:vanilla"
     }
   ]
 }

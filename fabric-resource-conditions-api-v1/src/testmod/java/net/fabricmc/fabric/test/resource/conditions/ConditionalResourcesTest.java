@@ -59,7 +59,6 @@ public class ConditionalResourcesTest {
 		}
 
 		if (manager.get(id("feature_enabled")).isEmpty()) {
-			// NOTE: vanilla TestServer auto-enables all features, therefore "bundle" is available.
 			throw new AssertionError("feature_enabled recipe should have been loaded.");
 		}
 

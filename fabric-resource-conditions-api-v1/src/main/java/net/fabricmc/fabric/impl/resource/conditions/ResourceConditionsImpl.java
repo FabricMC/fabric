@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
@@ -240,8 +239,11 @@ public final class ResourceConditionsImpl {
 
 	public static boolean featureEnabledMatch(JsonObject object) {
 		Identifier featureId = new Identifier(JsonHelper.getString(object, "feature"));
-		return FeatureFlags.FEATURE_MANAGER.featureSetOf(Set.of(featureId), (unknown) -> {
-			throw new JsonParseException("Found unknown feature while parsing feature_enabled condition: " + unknown);
-		}).isSubsetOf(currentFeature);
+		FeatureFlag flag = ((FeatureManagerAccessor) FeatureFlags.FEATURE_MANAGER).getFeatureFlags().get(featureId);
+
+		if (flag == null) throw new JsonParseException("Unknown feature flag: " + featureId);
+
+		FeatureSet features = currentFeature;
+		return currentFeature.contains(flag);
 	}
 }
