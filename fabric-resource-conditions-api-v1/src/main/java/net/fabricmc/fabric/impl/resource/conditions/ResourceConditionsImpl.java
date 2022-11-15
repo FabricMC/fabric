@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.tag.TagKey;
 import net.minecraft.tag.TagManagerLoader;
 import net.minecraft.util.Identifier;
@@ -235,10 +236,12 @@ public final class ResourceConditionsImpl {
 		};
 	}
 
+	public static FeatureSet currentFeature = FeatureFlags.DEFAULT_ENABLED_FEATURES;
+
 	public static boolean featureEnabledMatch(JsonObject object) {
 		Identifier featureId = new Identifier(JsonHelper.getString(object, "feature"));
 		return FeatureFlags.FEATURE_MANAGER.featureSetOf(Set.of(featureId), (unknown) -> {
 			throw new JsonParseException("Found unknown feature while parsing feature_enabled condition: " + unknown);
-		}).isSubsetOf(FeatureFlags.FEATURE_MANAGER.getFeatureSet());
+		}).isSubsetOf(currentFeature);
 	}
 }

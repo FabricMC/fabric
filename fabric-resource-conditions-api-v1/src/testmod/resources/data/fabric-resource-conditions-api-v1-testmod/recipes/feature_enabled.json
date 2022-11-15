@@ -11,7 +11,7 @@
   "fabric:load_conditions": [
     {
       "condition": "fabric:feature_enabled",
-      "feature": "minecraft:vanilla"
+      "feature": "minecraft:bundle"
     }
   ]
 }

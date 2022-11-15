@@ -58,8 +58,9 @@ public class ConditionalResourcesTest {
 			throw new AssertionError("tags_not_populated recipe should not have been loaded.");
 		}
 
-		if (manager.get(id("default_flag")).isEmpty()) {
-			throw new AssertionError("default_flag recipe should have been loaded.");
+		if (manager.get(id("feature_enabled")).isEmpty()) {
+			// NOTE: vanilla TestServer auto-enables all features, therefore "bundle" is available.
+			throw new AssertionError("feature_enabled recipe should have been loaded.");
 		}
 
 		long loadedRecipes = manager.values().stream().filter(r -> r.getId().getNamespace().equals(MOD_ID)).count();

@@ -16,12 +16,19 @@
 
 package net.fabricmc.fabric.mixin.resource.conditions;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.DataPackContents;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
@@ -38,5 +45,13 @@ public class DataPackContentsMixin {
 	)
 	public void hookRefresh(DynamicRegistryManager dynamicRegistryManager, CallbackInfo ci) {
 		ResourceConditionsImpl.clearTags();
+	}
+
+	@Inject(
+			method = "reload",
+			at = @At("HEAD")
+	)
+	private static void hookReload(ResourceManager manager, DynamicRegistryManager.Immutable dynamicRegistryManager, FeatureSet enabledFeatures, CommandManager.RegistrationEnvironment environment, int functionPermissionLevel, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<DataPackContents>> cir) {
+		ResourceConditionsImpl.currentFeature = enabledFeatures;
 	}
 }
