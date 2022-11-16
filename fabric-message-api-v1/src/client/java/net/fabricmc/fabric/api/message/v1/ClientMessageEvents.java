@@ -55,8 +55,9 @@ public final class ClientMessageEvents {
 
 	/**
 	 * An event triggered when the client is about to send a command,
-	 * which includes whenever the player executes a vanilla command
-	 * or any other server-side commands. Mods can use this to block the message.
+	 * which is whenever the player executes a command
+	 * including client commands registered with {@code fabric-command-api}.
+	 * Mods can use this to block the message.
 	 *
 	 * <p>If a listener returned {@code false}, the command will not be sent,
 	 * the remaining listeners will not be called (if any), and {@link #SEND_COMMAND_MESSAGE}
@@ -89,9 +90,9 @@ public final class ClientMessageEvents {
 
 	/**
 	 * An event triggered when the client sends a command,
-	 * which includes whenever the player executes a vanilla command
-	 * or any other server-side commands. Is not called when {@linkplain
-	 * #ALLOW_SEND_COMMAND_MESSAGE command messages are blocked}.
+	 * which is whenever the player executes a command
+	 * including client commands registered with {@code fabric-command-api}.
+	 * Is not called when {@linkplain #ALLOW_SEND_COMMAND_MESSAGE command messages are blocked}.
 	 *
 	 * <p>This event will also be triggered when executing a client command
 	 * registered with {@code fabric-command-api}.
@@ -186,10 +187,10 @@ public final class ClientMessageEvents {
 	public interface AllowSendCommandMessage {
 		/**
 		 * Called when the client is about to send a command,
-		 * which includes whenever the player executes a vanilla command
-		 * or any other server-side commands. Returning {@code false}
-		 * prevents the command from being sent and the {@link #SEND_COMMAND_MESSAGE} event
-		 * from triggering.
+		 * which is whenever the player executes a command
+		 * including client commands registered with {@code fabric-command-api}.
+		 * Returning {@code false} prevents the command from being sent and
+		 * the {@link #SEND_COMMAND_MESSAGE} event from triggering.
 		 *
 		 * <p>Also, this is called before client commands are checked and executed.
 		 * Therefore, client commands registered with {@code fabric-command-api}
@@ -217,9 +218,9 @@ public final class ClientMessageEvents {
 	public interface SendCommandMessage {
 		/**
 		 * Called when the client sends a command,
-		 * which includes whenever the player executes a vanilla command
-		 * or any other server-side commands. Is not called when {@linkplain
-		 * #ALLOW_SEND_COMMAND_MESSAGE command messages are blocked}.
+		 * which is whenever the player executes a command
+		 * including client commands registered with {@code fabric-command-api}.
+		 * Is not called when {@linkplain #ALLOW_SEND_COMMAND_MESSAGE command messages are blocked}.
 		 *
 		 * <p>This will also be called when executing a client command
 		 * registered with {@code fabric-command-api}.
