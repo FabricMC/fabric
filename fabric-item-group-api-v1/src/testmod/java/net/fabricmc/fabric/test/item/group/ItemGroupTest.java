@@ -24,10 +24,10 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -44,6 +44,7 @@ public class ItemGroupTest implements ModInitializer {
 			.entries((enabledFeatures, entries, operatorEnabled) -> {
 				entries.addAll(Registries.ITEM.stream()
 						.map(ItemStack::new)
+						.filter(input -> !input.isEmpty())
 						.toList());
 			})
 			.build();
@@ -80,7 +81,11 @@ public class ItemGroupTest implements ModInitializer {
 					.displayName(Text.literal("Test Item Group: " + i))
 					.icon((Supplier<ItemStack>) () -> new ItemStack(Registries.BLOCK.get(index)))
 					.entries((enabledFeatures, entries, operatorEnabled) -> {
-						entries.add(new ItemStack(Registries.ITEM.get(index)));
+						var itemStack = new ItemStack(Registries.ITEM.get(index));
+
+						if (!itemStack.isEmpty()) {
+							entries.add(itemStack);
+						}
 					})
 					.build();
 		}
