@@ -31,7 +31,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Contains client-side events triggered when sending or receiving messages.
  */
-public class ClientMessageEvents {
+public final class ClientMessageEvents {
+	private ClientMessageEvents() {
+	}
+
 	/**
 	 * An event triggered when the client is about to send a chat message,
 	 * typically from a client GUI. Mods can use this to block the message.
@@ -58,6 +61,10 @@ public class ClientMessageEvents {
 	 * <p>If a listener returned {@code false}, the command will not be sent,
 	 * the remaining listeners will not be called (if any), and {@link #SEND_COMMAND_MESSAGE}
 	 * event will not be triggered.
+	 *
+	 * <p>Also, this is called before client commands are checked and executed.
+	 * Therefore, client commands registered with {@code fabric-command-api}
+	 * will not be executed if a listener returned {@code false}.
 	 */
 	public static final Event<AllowSendCommandMessage> ALLOW_SEND_COMMAND_MESSAGE = EventFactory.createArrayBacked(AllowSendCommandMessage.class, listeners -> (command) -> {
 		for (AllowSendCommandMessage listener : listeners) {
@@ -85,6 +92,9 @@ public class ClientMessageEvents {
 	 * which includes whenever the player executes a vanilla command
 	 * or any other server-side commands. Is not called when {@linkplain
 	 * #ALLOW_SEND_COMMAND_MESSAGE command messages are blocked}.
+	 *
+	 * <p>This event will also be triggered when executing a client command
+	 * registered with {@code fabric-command-api}.
 	 */
 	public static final Event<SendCommandMessage> SEND_COMMAND_MESSAGE = EventFactory.createArrayBacked(SendCommandMessage.class, listeners -> (command) -> {
 		for (SendCommandMessage listener : listeners) {
@@ -134,7 +144,7 @@ public class ClientMessageEvents {
 	});
 
 	/**
-	 * An event triggered when the client received a chat message,
+	 * An event triggered when the client receives a chat message,
 	 * which is any message sent by a player. Is not called when
 	 * {@linkplain #ALLOW_RECEIVE_CHAT_MESSAGE chat messages are blocked}.
 	 */
@@ -145,7 +155,7 @@ public class ClientMessageEvents {
 	});
 
 	/**
-	 * An event triggered when the client received a chat message,
+	 * An event triggered when the client receives a chat message,
 	 * which is any message sent by the server. Is not called when
 	 * {@linkplain #ALLOW_RECEIVE_CHAT_MESSAGE chat messages are blocked}.
 	 *
@@ -175,11 +185,15 @@ public class ClientMessageEvents {
 	@FunctionalInterface
 	public interface AllowSendCommandMessage {
 		/**
-		 * An event triggered when the client is about to send a command,
+		 * Called when the client is about to send a command,
 		 * which includes whenever the player executes a vanilla command
 		 * or any other server-side commands. Returning {@code false}
 		 * prevents the command from being sent and the {@link #SEND_COMMAND_MESSAGE} event
 		 * from triggering.
+		 *
+		 * <p>Also, this is called before client commands are checked and executed.
+		 * Therefore, client commands registered with {@code fabric-command-api}
+		 * will not be executed if {@code false} is returned.
 		 *
 		 * @param message the command that will be sent to the server
 		 * @return {@code true} if the command should be sent, otherwise {@code false}
@@ -206,6 +220,9 @@ public class ClientMessageEvents {
 		 * which includes whenever the player executes a vanilla command
 		 * or any other server-side commands. Is not called when {@linkplain
 		 * #ALLOW_SEND_COMMAND_MESSAGE command messages are blocked}.
+		 *
+		 * <p>This will also be called when executing a client command
+		 * registered with {@code fabric-command-api}.
 		 *
 		 * @param message the command that being sent to the server
 		 */
@@ -252,7 +269,7 @@ public class ClientMessageEvents {
 	@FunctionalInterface
 	public interface ReceiveChatMessage {
 		/**
-		 * Called when the client received a chat message,
+		 * Called when the client receives a chat message,
 		 * which is any message sent by a player. Is not called when
 		 * {@linkplain #ALLOW_RECEIVE_CHAT_MESSAGE chat messages are blocked}.
 		 *
@@ -268,7 +285,7 @@ public class ClientMessageEvents {
 	@FunctionalInterface
 	public interface ReceiveGameMessage {
 		/**
-		 * Called when the client received a game message,
+		 * Called when the client receives a game message,
 		 * which is any message sent by the server. Is not called when
 		 * {@linkplain #ALLOW_RECEIVE_GAME_MESSAGE game messages are blocked}.
 		 *

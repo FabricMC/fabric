@@ -25,7 +25,11 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 
 import net.fabricmc.fabric.api.message.v1.ClientMessageEvents;
 
-@Mixin(ClientPlayNetworkHandler.class)
+/**
+ * Mixin to {@link ClientPlayNetworkHandler} to listen for sending messages and commands.
+ * Priority set to 800 to inject before {@code fabric-command-api} so that this api will be called first.
+ */
+@Mixin(value = ClientPlayNetworkHandler.class, priority = 800)
 public abstract class ClientPlayNetworkHandlerMixin {
 	@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
 	private void fabric_onSendChatMessage(String content, CallbackInfo ci) {
