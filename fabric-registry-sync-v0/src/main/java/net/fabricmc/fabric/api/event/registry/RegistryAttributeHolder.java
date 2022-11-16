@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.event.registry;
 
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistryAttributeImpl;
 

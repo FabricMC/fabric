@@ -30,7 +30,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
-import net.minecraft.util.registry.Registries;
+import net.minecraft.registry.Registries;
 
 /**
  * Registry of items that farmer villagers can plant on farmland.

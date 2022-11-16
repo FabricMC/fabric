@@ -30,7 +30,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registries;
+import net.minecraft.registry.Registries;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.api.EnvType;

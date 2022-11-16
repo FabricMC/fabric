@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.registry.sync;
 
-import net.minecraft.util.registry.Registries;
+import net.minecraft.registry.Registries;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;

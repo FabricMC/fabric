@@ -24,10 +24,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.util.registry.RegistryKeys;
-import net.minecraft.util.dynamic.RegistryOps;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.RegistryEntryLookup;
+import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;

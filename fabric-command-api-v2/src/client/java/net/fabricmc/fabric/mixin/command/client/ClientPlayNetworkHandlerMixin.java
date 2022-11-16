@@ -33,7 +33,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.resource.featuretoggle.FeatureSet;
-import net.minecraft.util.registry.CombinedDynamicRegistries;
+import net.minecraft.registry.CombinedDynamicRegistries;
 
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;

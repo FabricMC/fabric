@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.util.registry.RegistryKeys;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.world.biome.BiomeKeys;
 

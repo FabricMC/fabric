@@ -18,11 +18,11 @@ package net.fabricmc.fabric.impl.biome.modification;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.util.registry.RegistryKeys;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.RegistryEntryLookup;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.RegistryWrapper;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.biome.Biome;
 
 /**

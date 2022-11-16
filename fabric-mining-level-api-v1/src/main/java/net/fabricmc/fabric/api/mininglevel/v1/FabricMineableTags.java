@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.api.mininglevel.v1;
 
 import net.minecraft.block.Block;
-import net.minecraft.util.registry.RegistryKeys;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
 /**

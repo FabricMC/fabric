@@ -91,7 +91,7 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 		float b = (color & 255) / 255f;
 		RenderSystem.disableDepthTest();
 
-		RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionColorTexProgram);
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
 		float x0 = (float) i;
@@ -108,7 +108,7 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 		bufferBuilder.vertex(model, x1, y1, z).color(r, g, b, 1).texture(u1, v1).next();
 		bufferBuilder.vertex(model, x1, y0, z).color(r, g, b, 1).texture(u1, v0).next();
 		bufferBuilder.vertex(model, x0, y0, z).color(r, g, b, 1).texture(u0, v0).next();
-		BufferRenderer.drawWithShader(bufferBuilder.end());
+		BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 
 		RenderSystem.enableDepthTest();
 	}

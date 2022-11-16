@@ -19,9 +19,9 @@ package net.fabricmc.fabric.test.biome;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.util.registry.RegistryWrapper;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.sound.BiomeMoodSound;
-import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;

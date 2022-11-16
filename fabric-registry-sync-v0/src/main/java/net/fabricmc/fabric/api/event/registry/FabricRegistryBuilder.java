@@ -21,11 +21,11 @@ import java.util.EnumSet;
 import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.DefaultedRegistry;
-import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleDefaultedRegistry;
-import net.minecraft.util.registry.SimpleRegistry;
+import net.minecraft.registry.DefaultedRegistry;
+import net.minecraft.registry.MutableRegistry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.SimpleDefaultedRegistry;
+import net.minecraft.registry.SimpleRegistry;
 
 import net.fabricmc.fabric.mixin.registry.sync.RegistriesAccessor;
 
@@ -47,7 +47,7 @@ public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	/**
 	 * Create a new {@link FabricRegistryBuilder}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
-	 * @param registry The base registry type such as {@link net.minecraft.util.registry.SimpleRegistry} or {@link net.minecraft.util.registry.DefaultedRegistry}
+	 * @param registry The base registry type such as {@link net.minecraft.registry.SimpleRegistry} or {@link net.minecraft.registry.DefaultedRegistry}
 	 * @param <T> The type stored in the Registry
 	 * @param <R> The registry type
 	 * @return An instance of FabricRegistryBuilder

@@ -22,7 +22,7 @@ import java.util.List;
 import org.slf4j.Logger;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.registry.Registries;
+import net.minecraft.registry.Registries;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.api.ClientModInitializer;

@@ -19,8 +19,8 @@ package net.fabricmc.fabric.mixin.registry.sync;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.util.registry.Registries;
+import net.minecraft.registry.MutableRegistry;
+import net.minecraft.registry.Registries;
 
 @Mixin(Registries.class)
 public interface RegistriesAccessor<T> {
