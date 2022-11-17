@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.tag.TagManagerLoader;
+import net.minecraft.registry.tag.TagManagerLoader;
 
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 

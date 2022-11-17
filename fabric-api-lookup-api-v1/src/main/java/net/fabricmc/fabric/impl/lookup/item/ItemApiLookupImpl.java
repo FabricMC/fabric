@@ -28,7 +28,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registries;
+import net.minecraft.registry.Registries;
 
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;

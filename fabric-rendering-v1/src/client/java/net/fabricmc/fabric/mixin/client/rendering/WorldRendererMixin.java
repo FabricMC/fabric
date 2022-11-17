@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.ShaderEffect;
+import net.minecraft.client.gl.PostEffectProcessor;
 import net.minecraft.client.render.BufferBuilderStorage;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
@@ -53,7 +53,7 @@ public abstract class WorldRendererMixin {
 	@Shadow
 	private BufferBuilderStorage bufferBuilders;
 	@Shadow private ClientWorld world;
-	@Shadow private ShaderEffect transparencyShader;
+	@Shadow private PostEffectProcessor transparencyPostProcessor;
 	@Final
 	@Shadow
 	private MinecraftClient client;
@@ -62,7 +62,7 @@ public abstract class WorldRendererMixin {
 
 	@Inject(method = "render", at = @At("HEAD"))
 	private void beforeRender(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci) {
-		context.prepare((WorldRenderer) (Object) this, matrices, tickDelta, limitTime, renderBlockOutline, camera, gameRenderer, lightmapTextureManager, matrix4f, bufferBuilders.getEntityVertexConsumers(), world.getProfiler(), transparencyShader != null, world);
+		context.prepare((WorldRenderer) (Object) this, matrices, tickDelta, limitTime, renderBlockOutline, camera, gameRenderer, lightmapTextureManager, matrix4f, bufferBuilders.getEntityVertexConsumers(), world.getProfiler(), transparencyPostProcessor != null, world);
 		WorldRenderEvents.START.invoker().onStart(context);
 		didRenderParticles = false;
 	}

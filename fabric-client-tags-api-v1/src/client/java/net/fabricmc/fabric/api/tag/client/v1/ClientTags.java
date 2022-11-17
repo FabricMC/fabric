@@ -23,12 +23,12 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.RegistryKey;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

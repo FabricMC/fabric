@@ -30,19 +30,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.dynamic.RegistryOps;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.RegistryLoader;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.MutableRegistry;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryLoader;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 
 @Mixin(RegistryLoader.class)
 public class RegistryLoaderMixin {
 	@Inject(
-			method = "load(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/util/registry/DynamicRegistryManager$Immutable;",
+			method = "load(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;",
 			at = @At(
 					value = "INVOKE",
 					target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V",

@@ -20,12 +20,12 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.util.registry.RegistryKeys;
-import net.minecraft.tag.TagKey;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -94,7 +94,7 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 
 	@Override
 	public boolean canGenerateIn(RegistryKey<DimensionOptions> dimensionKey) {
-		DimensionOptions dimension = dynamicRegistries.get(RegistryKeys.field_41224).get(dimensionKey);
+		DimensionOptions dimension = dynamicRegistries.get(RegistryKeys.DIMENSION).get(dimensionKey);
 
 		if (dimension == null) {
 			return false;

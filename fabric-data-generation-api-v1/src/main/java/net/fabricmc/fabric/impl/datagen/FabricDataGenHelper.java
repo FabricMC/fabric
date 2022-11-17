@@ -31,8 +31,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.RegistryWrapper;
+import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.RegistryWrapper;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;

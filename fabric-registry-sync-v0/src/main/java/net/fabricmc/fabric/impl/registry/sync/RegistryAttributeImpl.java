@@ -20,7 +20,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;

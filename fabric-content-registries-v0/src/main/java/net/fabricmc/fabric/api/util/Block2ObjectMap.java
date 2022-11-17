@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.util;
 
 import net.minecraft.block.Block;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.TagKey;
 
 public interface Block2ObjectMap<V> {
 	V get(Block block);

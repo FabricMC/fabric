@@ -34,19 +34,19 @@ import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.util.registry.RegistryKeys;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.dynamic.RegistryOps;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryEntryLookup;
-import net.minecraft.util.registry.RegistryEntryOwner;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.RegistryLoader;
-import net.minecraft.util.registry.RegistryWrapper;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.entry.RegistryEntryOwner;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryLoader;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.PlacedFeature;
 

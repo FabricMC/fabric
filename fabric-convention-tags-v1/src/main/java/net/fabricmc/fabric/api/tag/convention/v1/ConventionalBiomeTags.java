@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.api.tag.convention.v1;
 
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.world.biome.Biome;
 
 import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 
 /**
- * See {@link net.minecraft.tag.BiomeTags} for vanilla tags.
+ * See {@link net.minecraft.registry.tag.BiomeTags} for vanilla tags.
  * Note that addition to some vanilla tags implies having certain functionality,
  * and as such certain biome tags exist to mirror vanilla tags, and should be preferred
  * over vanilla unless its behavior is desired.

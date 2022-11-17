@@ -23,10 +23,10 @@ import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.resource.featuretoggle.FeatureFlag;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
-import net.minecraft.util.registry.RegistryKeys;
 
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 

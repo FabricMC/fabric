@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.screenhandler.v1;
 
-import net.minecraft.util.registry.Registries;
+import net.minecraft.registry.Registries;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registry;
 
 /**
  * An API for creating and registering {@linkplain ScreenHandlerType screen handler types}.

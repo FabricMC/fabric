@@ -22,7 +22,7 @@ import java.util.Map;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.World;
 
 import net.fabricmc.api.ModInitializer;

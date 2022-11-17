@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.mixin.itemgroup;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
-import net.minecraft.item.ItemStackSet;
+import net.minecraft.item.ItemStack;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 
@@ -44,11 +46,11 @@ import net.fabricmc.fabric.impl.itemgroup.MinecraftItemGroups;
 
 @Mixin(ItemGroup.class)
 abstract class ItemGroupMixin implements IdentifiableItemGroup, FabricItemGroup {
-	@Shadow(aliases = "field_40859")
-	private ItemStackSet displayStacks;
+	@Shadow
+	private Collection<ItemStack> displayStacks;
 
-	@Shadow(aliases = "field_40860")
-	private ItemStackSet searchTabStacks;
+	@Shadow
+	private Set<ItemStack> searchTabStacks;
 
 	@Unique
 	private int fabric_page = -1;

@@ -6,18 +6,18 @@ mutable field net/minecraft/data/DataGenerator output Lnet/minecraft/data/DataOu
 accessible  field  net/minecraft/data/server/recipe/RecipeProvider  recipesPathResolver  Lnet/minecraft/data/DataOutput$PathResolver;
 accessible  field  net/minecraft/data/server/recipe/RecipeProvider  advancementsPathResolver  Lnet/minecraft/data/DataOutput$PathResolver;
 
-accessible  field   net/minecraft/data/server/tag/AbstractTagProvider$ProvidedTagBuilder builder Lnet/minecraft/tag/TagBuilder;
-extendable  method  net/minecraft/data/server/tag/AbstractTagProvider$ProvidedTagBuilder add  (Lnet/minecraft/util/registry/RegistryKey;)Lnet/minecraft/data/server/tag/AbstractTagProvider$ProvidedTagBuilder;
-extendable  method  net/minecraft/data/server/tag/AbstractTagProvider$ProvidedTagBuilder add    ([Lnet/minecraft/util/registry/RegistryKey;)Lnet/minecraft/data/server/tag/AbstractTagProvider$ProvidedTagBuilder;
+accessible  field   net/minecraft/data/server/tag/AbstractTagProvider$ProvidedTagBuilder builder Lnet/minecraft/registry/tag/TagBuilder;
+extendable  method  net/minecraft/data/server/tag/AbstractTagProvider$ProvidedTagBuilder add  (Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/data/server/tag/AbstractTagProvider$ProvidedTagBuilder;
+extendable  method  net/minecraft/data/server/tag/AbstractTagProvider$ProvidedTagBuilder add    ([Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/data/server/tag/AbstractTagProvider$ProvidedTagBuilder;
 
 accessible  field   net/minecraft/data/server/tag/AbstractTagProvider   tagBuilders Ljava/util/Map;
 
 accessible  field   net/minecraft/data/server/loottable/BlockLootTableGenerator   lootTables  Ljava/util/Map;
 
-extendable  method  net/minecraft/tag/TagEntry  <init>  (Lnet/minecraft/util/Identifier;ZZ)V
-accessible  field   net/minecraft/tag/TagEntry  id       Lnet/minecraft/util/Identifier;
-accessible  field   net/minecraft/tag/TagEntry  tag  Z
-accessible  field   net/minecraft/tag/TagEntry  required  Z
+extendable  method  net/minecraft/registry/tag/TagEntry  <init>  (Lnet/minecraft/util/Identifier;ZZ)V
+accessible  field   net/minecraft/registry/tag/TagEntry  id       Lnet/minecraft/util/Identifier;
+accessible  field   net/minecraft/registry/tag/TagEntry  tag  Z
+accessible  field   net/minecraft/registry/tag/TagEntry  required  Z
 
 extendable  method  net/minecraft/data/DataOutput$PathResolver  <init>  (Lnet/minecraft/data/DataOutput;Lnet/minecraft/data/DataOutput$OutputType;Ljava/lang/String;)V
 accessible  field   net/minecraft/data/DataOutput$PathResolver rootPath    Ljava/nio/file/Path;
@@ -33,7 +33,7 @@ transitive-accessible   field   net/minecraft/data/client/BlockStateModelGenerat
 transitive-accessible   method  net/minecraft/data/client/TextureKey	of  (Ljava/lang/String;)Lnet/minecraft/data/client/TextureKey;
 transitive-accessible   method  net/minecraft/data/client/TextureKey	of  (Ljava/lang/String;Lnet/minecraft/data/client/TextureKey;)Lnet/minecraft/data/client/TextureKey;
 
-transitive-extendable   method  net/minecraft/data/server/tag/AbstractTagProvider$ProvidedTagBuilder add ([Lnet/minecraft/util/registry/RegistryKey;)Lnet/minecraft/data/server/tag/AbstractTagProvider$ProvidedTagBuilder;
+transitive-extendable   method  net/minecraft/data/server/tag/AbstractTagProvider$ProvidedTagBuilder add ([Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/data/server/tag/AbstractTagProvider$ProvidedTagBuilder;
 
 transitive-accessible   method  net/minecraft/data/client/TexturedModel makeFactory (Ljava/util/function/Function;Lnet/minecraft/data/client/Model;)Lnet/minecraft/data/client/TexturedModel$Factory;
 
