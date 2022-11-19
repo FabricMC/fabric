@@ -78,7 +78,7 @@ public final class EntitySelectorOptionRegistry {
 	public static void registerNonRepeatable(Identifier id, Text description, EntitySelectorOptions.SelectorHandler handler) {
 		register(id, description, (reader) -> {
 			handler.handle(reader);
-			reader.setCustomFlag(id, true);
-		}, (reader) -> !reader.getCustomFlag(id)); // has a flag = used before
+			((FabricEntitySelectorReader) reader).setCustomFlag(id, true);
+		}, (reader) -> !((FabricEntitySelectorReader) reader).getCustomFlag(id)); // has a flag = used before
 	}
 }
