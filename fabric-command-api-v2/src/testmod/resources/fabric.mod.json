@@ -15,6 +15,9 @@
     ],
     "client": [
       "net.fabricmc.fabric.test.command.client.ClientCommandTest"
+    ],
+    "fabric-gametest": [
+      "net.fabricmc.fabric.test.command.EntitySelectorGameTest"
     ]
   }
 }
