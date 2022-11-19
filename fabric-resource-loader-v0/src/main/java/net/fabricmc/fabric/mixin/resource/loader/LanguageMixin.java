@@ -53,7 +53,7 @@ class LanguageMixin {
 		Map<String, String> map = new HashMap<>(cir.buildOrThrow());
 
 		for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
-			loadModLanguage(mod, map::put);
+			if (!mod.getMetadata().getType().equals("builtin")) loadModLanguage(mod, map::put);
 		}
 
 		return ImmutableMap.copyOf(map);
