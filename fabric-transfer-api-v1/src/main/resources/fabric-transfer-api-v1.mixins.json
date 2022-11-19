@@ -12,7 +12,6 @@
     "HopperBlockEntityMixin",
     "ItemMixin",
     "LootableContainerBlockEntityMixin",
-    "ShulkerBoxBlockEntityMixin",
     "SimpleInventoryMixin"
   ]
 }
