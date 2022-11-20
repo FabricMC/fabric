@@ -34,17 +34,17 @@ import net.minecraft.world.World;
 @Mixin(AbstractFurnaceBlockEntity.class)
 public abstract class AbstractFurnaceBlockEntityMixin {
 	@Unique
-	private static final ThreadLocal<ItemStack> remainderStack = new ThreadLocal<>();
+	private static final ThreadLocal<ItemStack> REMAINDER_STACK = new ThreadLocal<>();
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"), locals = LocalCapture.CAPTURE_FAILHARD, allow = 1)
 	private static void getStackRemainder(World world, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity blockEntity, CallbackInfo ci, boolean bl, boolean bl2, ItemStack itemStack, boolean bl3, boolean bl4, Recipe recipe, int i) {
-		remainderStack.set(itemStack.getRecipeRemainder());
+		REMAINDER_STACK.set(itemStack.getRecipeRemainder());
 	}
 
 	@ModifyArg(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/collection/DefaultedList;set(ILjava/lang/Object;)Ljava/lang/Object;"), index = 1, allow = 1)
 	private static <E> E setStackRemainder(E element) {
-		E remainder = (E) remainderStack.get();
-		remainderStack.remove();
+		E remainder = (E) REMAINDER_STACK.get();
+		REMAINDER_STACK.remove();
 		return remainder;
 	}
 }

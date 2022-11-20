@@ -101,7 +101,6 @@ public interface FabricItem {
 	 * <pre>
 	 *  if (stack.getDamage() < stack.getMaxDamage() - 1) {
 	 *  	ItemStack moreDamaged = stack.copy();
-	 *  	moreDamaged.setCount(1);
 	 *  	moreDamaged.setDamage(stack.getDamage() + 1);
 	 *  	return moreDamaged;
 	 *  }
