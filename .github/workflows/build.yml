@@ -45,7 +45,7 @@ jobs:
         with:
           distribution: 'microsoft'
           java-version: '17'
-      - uses: openrndr/setup-opengl@v1.1
+      - uses: GabrielBB/xvfb-action@v1
       - run: ./gradlew runAutoTestClient --stacktrace --warning-mode=fail -Porg.gradle.parallel.threads=4
       - uses: actions/upload-artifact@v2
         with:
