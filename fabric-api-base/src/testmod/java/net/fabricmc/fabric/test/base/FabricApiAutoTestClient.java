@@ -16,121 +16,101 @@
 
 package net.fabricmc.fabric.test.base;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
+import static net.fabricmc.fabric.test.base.FabricClientTestHelper.clickScreenButton;
+import static net.fabricmc.fabric.test.base.FabricClientTestHelper.openGameMenu;
+import static net.fabricmc.fabric.test.base.FabricClientTestHelper.takeScreenshot;
+import static net.fabricmc.fabric.test.base.FabricClientTestHelper.waitForLoadingComplete;
+import static net.fabricmc.fabric.test.base.FabricClientTestHelper.waitForScreen;
+import static net.fabricmc.fabric.test.base.FabricClientTestHelper.waitForWorldTicks;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import org.spongepowered.asm.mixin.MixinEnvironment;
+
 import net.minecraft.client.gui.screen.ConfirmScreen;
-import net.minecraft.client.gui.screen.GameMenuScreen;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.GridWidget;
-import net.minecraft.client.util.ScreenshotRecorder;
-import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.test.base.mixin.ScreenAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class FabricApiAutoTestClient implements ClientModInitializer {
-	int ticks = 0;
-	boolean loaded = false;
-
 	@Override
 	public void onInitializeClient() {
 		if (System.getProperty("fabric.autoTest") == null) {
 			return;
 		}
 
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-			if (!loaded && screen instanceof TitleScreen) {
-				after1s(screen, () -> clickButton(screen, "menu.singleplayer"));
-			}
-
-			if (screen instanceof SelectWorldScreen) {
-				after1s(screen, () -> clickButton(screen, "selectWorld.create"));
-			}
-
-			if (screen instanceof CreateWorldScreen) {
-				after1s(screen, () -> clickButton(screen, "selectWorld.create"));
-			}
-
-			if (screen instanceof ConfirmScreen) {
-				after1s(screen, () -> clickButton(screen, "gui.yes"));
-			}
-
-			if (screen instanceof GameMenuScreen) {
-				after1s(screen, () -> clickButton(screen, "menu.returnToMenu"));
-			}
-
-			// See server tick event bellow
-
-			if (loaded && screen instanceof TitleScreen) {
-				after1s(screen, () -> clickButton(screen, "menu.quit"));
+		var thread = new Thread(() -> {
+			try {
+				runTest();
+			} catch (Throwable t) {
+				t.printStackTrace();
+				System.exit(1);
 			}
 		});
-
-		ServerTickEvents.END_SERVER_TICK.register(server -> {
-			ticks++;
-
-			if (!loaded && ticks > 200) {
-				loaded = true;
-				MinecraftClient.getInstance().submit(() -> MinecraftClient.getInstance().setScreen(new GameMenuScreen(true)));
-			}
-		});
+		thread.setName("Fabric Auto Test");
+		thread.start();
 	}
 
-	private void after1s(Screen screen, Runnable runnable) {
-		ScreenEvents.afterTick(screen).register(new ScreenEvents.AfterTick() {
-			LocalDateTime time = LocalDateTime.now();
+	private void runTest() {
+		waitForLoadingComplete();
 
-			@Override
-			public void afterTick(Screen screen) {
-				if (MinecraftClient.getInstance().getOverlay() != null) {
-					// The main menu is hidden behind the loading overlay, wait for it to go.
-					time = LocalDateTime.now();
-					return;
-				}
+		{
+			waitForScreen(TitleScreen.class);
+			takeScreenshot("title_screen");
+			clickScreenButton("menu.singleplayer");
+		}
 
-				if (LocalDateTime.now().isAfter(time.plus(Duration.ofSeconds(1)))) {
-					runnable.run();
-				}
-			}
-		});
+		if (!isDirEmpty(FabricLoader.getInstance().getGameDir().resolve("saves"))) {
+			waitForScreen(SelectWorldScreen.class);
+			takeScreenshot("select_world_screen");
+			clickScreenButton("selectWorld.create");
+		}
+
+		{
+			waitForScreen(CreateWorldScreen.class);
+			clickScreenButton("selectWorld.gameMode");
+			clickScreenButton("selectWorld.gameMode");
+			takeScreenshot("create_world_screen");
+			clickScreenButton("selectWorld.create");
+		}
+
+		{
+			// API test mods use experimental features
+			waitForScreen(ConfirmScreen.class);
+			clickScreenButton("gui.yes");
+		}
+
+		{
+			waitForWorldTicks(200);
+			takeScreenshot("in_game_overworld");
+		}
+
+		MixinEnvironment.getCurrentEnvironment().audit();
+
+		{
+			openGameMenu();
+			takeScreenshot("game_menu");
+			clickScreenButton("menu.returnToMenu");
+		}
+
+		{
+			waitForScreen(TitleScreen.class);
+			clickScreenButton("menu.quit");
+		}
 	}
 
-	private void clickButton(Screen screen, String translationKey) {
-		final String expected = Text.translatable(translationKey).getString();
-		final ScreenAccessor screenAccessor = (ScreenAccessor) screen;
-
-		ScreenshotRecorder.saveScreenshot(FabricLoader.getInstance().getGameDir().toFile(), translationKey + ".png", MinecraftClient.getInstance().getFramebuffer(), (message) -> {
-		});
-
-		for (Drawable drawable : screenAccessor.getDrawables()) {
-			if (drawable instanceof ButtonWidget buttonWidget) {
-				if (expected.equals(buttonWidget.getMessage().getString())) {
-					buttonWidget.onPress();
-					break;
-				}
-			}
-
-			if (drawable instanceof GridWidget gridWidget) {
-				for (Element child : gridWidget.children()) {
-					if (child instanceof ButtonWidget buttonWidget) {
-						if (expected.equals(buttonWidget.getMessage().getString())) {
-							buttonWidget.onPress();
-							break;
-						}
-					}
-				}
-			}
+	private boolean isDirEmpty(Path path) {
+		try (DirectoryStream<Path> directory = Files.newDirectoryStream(path)) {
+			return !directory.iterator().hasNext();
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
 		}
 	}
 }
