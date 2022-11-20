@@ -53,32 +53,32 @@ public final class FabricClientTestHelper {
 	}
 
 	public static void openGameMenu() {
-		submit(client -> {
-			client.setScreen(new GameMenuScreen(true));
-			return null;
-		});
-
+		setScreen((client) -> new GameMenuScreen(true));
 		waitForScreen(GameMenuScreen.class);
 	}
 
 	public static void openInventory() {
-		submit(client -> {
-			client.setScreen(new InventoryScreen(Objects.requireNonNull(client.player)));
-			return null;
-		});
+		setScreen((client) -> new InventoryScreen(Objects.requireNonNull(client.player)));
 
 		boolean creative = submitAndWait(client -> Objects.requireNonNull(client.player).isCreative());
 		waitForScreen(creative ? CreativeInventoryScreen.class : InventoryScreen.class);
 	}
 
 	public static void closeScreen() {
+		setScreen((client) -> null);
+	}
+
+	private static void setScreen(Function<MinecraftClient, Screen> screenSupplier) {
 		submit(client -> {
-			client.setScreen(null);
+			client.setScreen(screenSupplier.apply(client));
 			return null;
 		});
 	}
 
 	public static void takeScreenshot(String name) {
+		// Allow time for any screens to open
+		waitFor(Duration.ofSeconds(1));
+
 		submitAndWait(client -> {
 			ScreenshotRecorder.saveScreenshot(FabricLoader.getInstance().getGameDir().toFile(), name + ".png", client.getFramebuffer(), (message) -> {
 			});

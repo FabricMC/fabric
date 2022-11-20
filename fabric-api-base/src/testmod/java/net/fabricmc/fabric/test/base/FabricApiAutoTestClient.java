@@ -103,7 +103,6 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 		{
 			// See if the player render events are working.
 			setPerspective(Perspective.THIRD_PERSON_BACK);
-			waitForWorldTicks(20);
 			takeScreenshot("in_game_overworld_third_person");
 		}
 

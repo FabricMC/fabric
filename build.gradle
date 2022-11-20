@@ -384,6 +384,10 @@ task runProductionAutoTestClient(type: JavaExec, dependsOn: [remapJar, remapTest
 	mainClass = "net.fabricmc.loader.impl.launch.knot.KnotClient"
 	workingDir = file("run")
 
+	afterEvaluate {
+		dependsOn downloadAssets
+	}
+
 	doFirst {
 		classpath.from loom.minecraftProvider.minecraftClientJar
 		workingDir.mkdirs()
