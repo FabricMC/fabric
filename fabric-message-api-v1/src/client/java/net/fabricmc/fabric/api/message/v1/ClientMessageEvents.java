@@ -58,6 +58,7 @@ public final class ClientMessageEvents {
 	 * which is whenever the player executes a command
 	 * including client commands registered with {@code fabric-command-api}.
 	 * Mods can use this to block the message.
+	 * The command string does not include a slash at the beginning.
 	 *
 	 * <p>If a listener returned {@code false}, the command will not be sent,
 	 * the remaining listeners will not be called (if any), and {@link #SEND_COMMAND_MESSAGE}
@@ -93,6 +94,7 @@ public final class ClientMessageEvents {
 	 * which is whenever the player executes a command
 	 * including client commands registered with {@code fabric-command-api}.
 	 * Is not called when {@linkplain #ALLOW_SEND_COMMAND_MESSAGE command messages are blocked}.
+	 * The command string does not include a slash at the beginning.
 	 *
 	 * <p>This event will also be triggered when executing a client command
 	 * registered with {@code fabric-command-api}.
@@ -191,15 +193,16 @@ public final class ClientMessageEvents {
 		 * including client commands registered with {@code fabric-command-api}.
 		 * Returning {@code false} prevents the command from being sent and
 		 * the {@link #SEND_COMMAND_MESSAGE} event from triggering.
+		 * The command string does not include a slash at the beginning.
 		 *
 		 * <p>Also, this is called before client commands are checked and executed.
 		 * Therefore, client commands registered with {@code fabric-command-api}
 		 * will not be executed if {@code false} is returned.
 		 *
-		 * @param message the command that will be sent to the server
+		 * @param command the command that will be sent to the server, without a slash at the beginning.
 		 * @return {@code true} if the command should be sent, otherwise {@code false}
 		 */
-		boolean allowSendCommandMessage(String message);
+		boolean allowSendCommandMessage(String command);
 	}
 
 	@FunctionalInterface
@@ -209,7 +212,7 @@ public final class ClientMessageEvents {
 		 * typically from a client GUI. Is not called when {@linkplain
 		 * #ALLOW_SEND_CHAT_MESSAGE chat messages are blocked}.
 		 *
-		 * @param message the message that being sent to the server
+		 * @param message the message that is being sent to the server
 		 */
 		void onSendChatMessage(String message);
 	}
@@ -221,13 +224,14 @@ public final class ClientMessageEvents {
 		 * which is whenever the player executes a command
 		 * including client commands registered with {@code fabric-command-api}.
 		 * Is not called when {@linkplain #ALLOW_SEND_COMMAND_MESSAGE command messages are blocked}.
+		 * The command string does not include a slash at the beginning.
 		 *
 		 * <p>This will also be called when executing a client command
 		 * registered with {@code fabric-command-api}.
 		 *
-		 * @param message the command that being sent to the server
+		 * @param command the command that is being sent to the server, without a slash at the beginning.
 		 */
-		void onSendCommandMessage(String message);
+		void onSendCommandMessage(String command);
 	}
 
 	@FunctionalInterface
