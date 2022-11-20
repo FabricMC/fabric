@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.networking.accessor;
+package net.fabricmc.fabric.mixin.networking.client.accessor;
 
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.network.ClientConnection;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
-@Mixin(MinecraftClient.class)
-public interface MinecraftClientAccessor {
-	@Nullable
-	@Accessor("integratedServerConnection")
+@Mixin(ConnectScreen.class)
+public interface ConnectScreenAccessor {
+	@Accessor
 	ClientConnection getConnection();
 }
