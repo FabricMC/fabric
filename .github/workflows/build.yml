@@ -48,7 +48,7 @@ jobs:
       - name: Run Auto test Client
         uses: GabrielBB/xvfb-action@v1
         with:
-          run: ./gradlew runAutoTestClient --stacktrace --warning-mode=fail
+          run: ./gradlew runProductionAutoTestClient --stacktrace --warning-mode=fail
       - uses: actions/upload-artifact@v2
         with:
           name: Test Screenshots
