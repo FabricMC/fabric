@@ -18,9 +18,11 @@ package net.fabricmc.fabric.test.transfer.gametests;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ComparatorBlock;
+import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.FurnaceBlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.test.GameTest;
@@ -133,6 +135,52 @@ public class VanillaStorageTests {
 
 		if (storage.simulateInsert(ItemVariant.of(Items.SHULKER_BOX), 1, null) > 0) {
 			context.throwPositionedException("Expected shulker box to be rejected", pos);
+		}
+
+		context.complete();
+	}
+
+	/**
+	 * {@link Inventory#isValid(int, ItemStack)} is supposed to be independent of the stack size.
+	 * However, to limit some stackable inputs to a size of 1, brewing stands and furnaces don't follow this rule in all cases.
+	 * This test ensures that the Transfer API works around this issue for furnaces.
+	 */
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void testBadFurnaceIsValid(TestContext context) {
+		BlockPos pos = new BlockPos(0, 1, 0);
+		context.setBlockState(pos, Blocks.FURNACE.getDefaultState());
+		FurnaceBlockEntity furnace = (FurnaceBlockEntity) context.getBlockEntity(pos);
+		InventoryStorage furnaceWrapper = InventoryStorage.of(furnace, null);
+
+		try (Transaction tx = Transaction.openOuter()) {
+			if (furnaceWrapper.getSlot(1).insert(ItemVariant.of(Items.BUCKET), 2, tx) != 1) {
+				throw new GameTestException("Exactly 1 bucket should have been inserted");
+			}
+		}
+
+		context.complete();
+	}
+
+	/**
+	 * Same as {@link #testBadFurnaceIsValid(TestContext)}, but for brewing stands.
+	 */
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void testBadBrewingStandIsValid(TestContext context) {
+		BlockPos pos = new BlockPos(0, 1, 0);
+		context.setBlockState(pos, Blocks.BREWING_STAND.getDefaultState());
+		BrewingStandBlockEntity brewingStand = (BrewingStandBlockEntity) context.getBlockEntity(pos);
+		InventoryStorage brewingStandWrapper = InventoryStorage.of(brewingStand, null);
+
+		try (Transaction tx = Transaction.openOuter()) {
+			for (int bottleSlot = 0; bottleSlot < 3; ++bottleSlot) {
+				if (brewingStandWrapper.getSlot(bottleSlot).insert(ItemVariant.of(Items.GLASS_BOTTLE), 2, tx) != 1) {
+					throw new GameTestException("Exactly 1 glass bottle should have been inserted");
+				}
+			}
+
+			if (brewingStandWrapper.getSlot(3).insert(ItemVariant.of(Items.REDSTONE), 2, tx) != 2) {
+				throw new GameTestException("Brewing ingredient insertion should not be limited");
+			}
 		}
 
 		context.complete();
