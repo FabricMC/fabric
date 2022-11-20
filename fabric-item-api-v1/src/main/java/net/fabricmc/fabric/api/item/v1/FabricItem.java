@@ -91,4 +91,36 @@ public interface FabricItem {
 	default boolean isSuitableFor(ItemStack stack, BlockState state) {
 		return ((Item) this).isSuitableFor(state);
 	}
+
+	/**
+	 * Returns a leftover item stack after {@code stack} is consumed in a recipe.
+	 * (This is also known as "recipe remainder".)
+	 * For example, using a lava bucket in a furnace as fuel will leave an empty bucket.
+	 *
+	 * <p>Here is an example for a recipe remainder that increments the item's damage.
+	 *
+	 * <pre>
+	 *  if (stack.getDamage() < stack.getMaxDamage() - 1) {
+	 *  	ItemStack moreDamaged = stack.copy();
+	 *  	moreDamaged.setDamage(stack.getDamage() + 1);
+	 *  	return moreDamaged;
+	 *  }
+	 *
+	 *  return ItemStack.EMPTY;
+	 * </pre>
+	 *
+	 *
+	 * <p>This is a stack-aware version of {@link Item#getRecipeRemainder()}.
+	 *
+	 * <p>Note that simple item remainders can also be set via {@link Item.Settings#recipeRemainder(Item)}.
+	 *
+	 * <p>If you want to get a remainder for a stack,
+	 * is recommended to use the stack version of this method: {@link FabricItemStack#getRecipeRemainder()}.
+	 *
+	 * @param stack the consumed {@link ItemStack}
+	 * @return the leftover item stack
+	 */
+	default ItemStack getRecipeRemainder(ItemStack stack) {
+		return ((Item) this).hasRecipeRemainder() ? ((Item) this).getRecipeRemainder().getDefaultStack() : ItemStack.EMPTY;
+	}
 }
