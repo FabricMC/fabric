@@ -124,6 +124,13 @@ public final class FabricClientTestHelper {
 		waitFor("World load", client -> Objects.requireNonNull(client.world).getTime() > startTicks + ticks, Duration.ofMinutes(10));
 	}
 
+	public static void enableDebugHud() {
+		submitAndWait(client -> {
+			client.options.debugEnabled = true;
+			return null;
+		});
+	}
+
 	private static void waitFor(String what, Predicate<MinecraftClient> predicate) {
 		waitFor(what, predicate, Duration.ofSeconds(10));
 	}

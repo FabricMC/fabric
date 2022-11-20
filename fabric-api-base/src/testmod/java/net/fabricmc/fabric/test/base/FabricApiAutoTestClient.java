@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.base;
 
 import static net.fabricmc.fabric.test.base.FabricClientTestHelper.clickScreenButton;
+import static net.fabricmc.fabric.test.base.FabricClientTestHelper.enableDebugHud;
 import static net.fabricmc.fabric.test.base.FabricClientTestHelper.openGameMenu;
 import static net.fabricmc.fabric.test.base.FabricClientTestHelper.takeScreenshot;
 import static net.fabricmc.fabric.test.base.FabricClientTestHelper.waitForLoadingComplete;
@@ -88,6 +89,7 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 		}
 
 		{
+			enableDebugHud();
 			waitForWorldTicks(200);
 			takeScreenshot("in_game_overworld");
 		}
