@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.networking;
+package net.fabricmc.fabric.impl.networking.v0;
 
 import java.util.Objects;
 
@@ -35,6 +35,7 @@ import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.PacketRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
 
 public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, PacketRegistry {
 	@Override

@@ -33,7 +33,7 @@
       "net.fabricmc.fabric.impl.registry.sync.FabricRegistryInit"
     ],
     "client": [
-      "net.fabricmc.fabric.impl.registry.sync.FabricRegistryClientInit"
+      "net.fabricmc.fabric.impl.client.registry.sync.FabricRegistryClientInit"
     ]
   },
   "accessWidener": "fabric-registry-sync-v0.accesswidener",

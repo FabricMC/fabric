@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.itemgroup;
+package net.fabricmc.fabric.impl.client.rendering.v0;
 
-import org.jetbrains.annotations.ApiStatus;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 
-@ApiStatus.Internal
-public interface CreativeGuiExtensions {
-	void fabric_nextPage();
-
-	void fabric_previousPage();
-
-	int fabric_currentPage();
-
-	boolean fabric_isButtonVisible(FabricCreativeGuiComponents.Type type);
-
-	boolean fabric_isButtonEnabled(FabricCreativeGuiComponents.Type type);
+public class RenderingCallbackInvoker implements ClientModInitializer {
+	@Override
+	public void onInitializeClient() {
+		InvalidateRenderStateCallback.EVENT.register(() -> net.fabricmc.fabric.api.client.render.InvalidateRenderStateCallback.EVENT.invoker().onInvalidate());
+	}
 }

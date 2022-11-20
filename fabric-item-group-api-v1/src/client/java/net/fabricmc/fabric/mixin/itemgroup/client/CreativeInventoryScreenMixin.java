@@ -32,8 +32,8 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 
-import net.fabricmc.fabric.impl.itemgroup.CreativeGuiExtensions;
-import net.fabricmc.fabric.impl.itemgroup.FabricCreativeGuiComponents;
+import net.fabricmc.fabric.impl.client.itemgroup.CreativeGuiExtensions;
+import net.fabricmc.fabric.impl.client.itemgroup.FabricCreativeGuiComponents;
 import net.fabricmc.fabric.impl.itemgroup.FabricItemGroup;
 import net.fabricmc.fabric.impl.itemgroup.ItemGroupHelper;
 

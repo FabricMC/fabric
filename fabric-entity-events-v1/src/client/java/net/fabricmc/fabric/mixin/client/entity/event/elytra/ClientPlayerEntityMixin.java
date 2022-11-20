@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.entity.event.elytra;
+package net.fabricmc.fabric.mixin.client.entity.event.elytra;
 
 import com.mojang.authlib.GameProfile;
 import org.spongepowered.asm.mixin.Final;

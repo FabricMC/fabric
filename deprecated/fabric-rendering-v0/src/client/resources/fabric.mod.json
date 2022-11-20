@@ -17,7 +17,7 @@
   ],
   "entrypoints": {
     "client": [
-      "net.fabricmc.fabric.impl.client.rendering.RenderingCallbackInvoker"
+      "net.fabricmc.fabric.impl.client.rendering.v0.RenderingCallbackInvoker"
     ]
   },
   "depends": {

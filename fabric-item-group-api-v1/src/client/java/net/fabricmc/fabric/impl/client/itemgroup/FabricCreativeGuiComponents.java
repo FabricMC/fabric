@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.itemgroup;
+package net.fabricmc.fabric.impl.client.itemgroup;
 
 import java.util.Set;
 import java.util.function.Consumer;

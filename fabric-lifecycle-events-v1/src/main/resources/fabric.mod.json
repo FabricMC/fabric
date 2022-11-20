@@ -20,7 +20,7 @@
       "net.fabricmc.fabric.impl.event.lifecycle.LifecycleEventsImpl"
     ],
     "client": [
-      "net.fabricmc.fabric.impl.event.lifecycle.ClientLifecycleEventsImpl"
+      "net.fabricmc.fabric.impl.client.event.lifecycle.ClientLifecycleEventsImpl"
     ]
   },
   "mixins": [
