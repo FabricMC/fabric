@@ -48,7 +48,7 @@ public abstract class ItemStackMixin {
 		cir.getReturnValue().ifPresent(list::add);
 		ItemTooltipDataCallback.EVENT.invoker().getTooltipData((ItemStack) (Object) this, list);
 
-		if ((cir.getReturnValue().isPresent() && list.size() > 2) || list.size() > 1) {
+		if (list.size() > 1) {
 			cir.setReturnValue(Optional.of(new BundledTooltipData(list)));
 		}
 
