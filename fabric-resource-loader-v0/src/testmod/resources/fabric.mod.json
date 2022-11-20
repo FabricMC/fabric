@@ -11,6 +11,7 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.resource.loader.BuiltinResourcePackTestMod",
+      "net.fabricmc.fabric.test.resource.loader.LanguageTestMod",
       "net.fabricmc.fabric.test.resource.loader.ResourceReloadListenerTestMod"
     ]
   }

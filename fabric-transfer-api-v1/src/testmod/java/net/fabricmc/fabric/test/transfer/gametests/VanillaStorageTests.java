@@ -21,6 +21,7 @@ import net.minecraft.block.ComparatorBlock;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.FurnaceBlockEntity;
+import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -117,6 +118,23 @@ public class VanillaStorageTests {
 			if (!world.getBlockTickScheduler().isQueued(context.getAbsolutePos(comparatorPos), Blocks.COMPARATOR)) {
 				throw new GameTestException("Comparator should have a tick scheduled.");
 			}
+		}
+
+		context.complete();
+	}
+
+	/**
+	 * Tests that shulker boxes cannot be inserted into other shulker boxes.
+	 */
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void testShulkerNoInsert(TestContext context) {
+		BlockPos pos = new BlockPos(0, 2, 0);
+		context.setBlockState(pos, Blocks.SHULKER_BOX);
+		ShulkerBoxBlockEntity shulker = (ShulkerBoxBlockEntity) context.getBlockEntity(pos);
+		InventoryStorage storage = InventoryStorage.of(shulker, null);
+
+		if (storage.simulateInsert(ItemVariant.of(Items.SHULKER_BOX), 1, null) > 0) {
+			context.throwPositionedException("Expected shulker box to be rejected", pos);
 		}
 
 		context.complete();
