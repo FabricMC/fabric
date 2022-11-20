@@ -44,7 +44,8 @@ public class FluidVariantImpl implements FluidVariant {
 				fluid = flowable.getStill();
 			} else {
 				// If not a FlowableFluid, we don't know how to convert -> crash.
-				throw new IllegalArgumentException("Fluid may not be flowing.");
+				Identifier id = Registry.FLUID.getId(fluid);
+				throw new IllegalArgumentException("Cannot convert flowing fluid %s (%s) into a still fluid.".formatted(id, fluid));
 			}
 		}
 
