@@ -6,6 +6,7 @@
     "DefaultResourcePackMixin",
     "FileResourcePackProviderAccessor",
     "KeyedResourceReloadListenerMixin",
+    "LanguageMixin",
     "LifecycledResourceManagerImplMixin",
     "MainMixin",
     "MinecraftServerMixin",
