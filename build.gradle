@@ -386,6 +386,7 @@ task runProductionAutoTestClient(type: JavaExec, dependsOn: [remapJar, remapTest
 
 	doFirst {
 		classpath.from loom.minecraftProvider.minecraftClientJar
+		workingDir.mkdirs()
 
 		args(
 			"--assetIndex", loom.minecraftProvider.versionInfo.assetIndex().fabricId(loom.minecraftProvider.minecraftVersion()),
