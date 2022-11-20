@@ -3,7 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.message",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ClientPlayNetworkHandlerMixin", "MessageHandlerMixin"
+    "ClientPlayNetworkHandlerMixin",
+    "MessageHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
