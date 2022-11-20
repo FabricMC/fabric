@@ -34,3 +34,19 @@ jobs:
         with:
           name: Maven Local
           path: /root/.m2/repository
+
+  client_test:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'microsoft'
+          java-version: '17'
+      - run: ./gradlew runAutoTestClient--stacktrace --warning-mode=fail -Porg.gradle.parallel.threads=4
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Test Screenshots
+          path: run/screenshots
