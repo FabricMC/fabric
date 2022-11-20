@@ -26,7 +26,7 @@ import net.fabricmc.loader.api.FabricLoader;
 // Provides thread safe utils for interacting with a running game.
 public final class FabricClientTestHelper {
 	public static void waitForLoadingComplete() {
-		waitFor("Loading to complete", client -> client.getOverlay() == null);
+		waitFor("Loading to complete", client -> client.getOverlay() == null, Duration.ofMinutes(5));
 	}
 
 	public static void waitForScreen(Class<? extends Screen> screenClass) {
