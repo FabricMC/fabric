@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.transfer.item;
 
+import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
@@ -65,10 +66,19 @@ class InventorySlotWrapper extends SingleStackStorage {
 
 	@Override
 	public long insert(ItemVariant insertedVariant, long maxAmount, TransactionContext transaction) {
-		if (!storage.inventory.isValid(slot, ((ItemVariantImpl) insertedVariant).getCachedStack())) {
+		if (!canInsert(slot, ((ItemVariantImpl) insertedVariant).getCachedStack())) {
 			return 0;
 		} else {
 			return super.insert(insertedVariant, maxAmount, transaction);
+		}
+	}
+
+	private boolean canInsert(int slot, ItemStack stack) {
+		if (storage.inventory instanceof ShulkerBoxBlockEntity shulker) {
+			// Shulkers override canInsert but not isValid.
+			return shulker.canInsert(slot, stack, null);
+		} else {
+			return storage.inventory.isValid(slot, stack);
 		}
 	}
 
