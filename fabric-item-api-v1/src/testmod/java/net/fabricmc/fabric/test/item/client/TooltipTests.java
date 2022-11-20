@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.item.client;
 
+import net.minecraft.item.BundleItem;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -23,6 +24,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipDataCallback;
 
 @Environment(EnvType.CLIENT)
 public class TooltipTests implements ClientModInitializer {
@@ -31,6 +33,13 @@ public class TooltipTests implements ClientModInitializer {
 		// Adds a tooltip to all items so testing can be verified easily.
 		ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
 			lines.add(Text.literal("Fancy Tooltips").formatted(Formatting.LIGHT_PURPLE));
+		});
+
+		ItemTooltipDataCallback.EVENT.register((stack, list) -> {
+			// Re adds tooltip data's of bundles so items are rendered twice.
+			if (stack.getItem() instanceof BundleItem bundle) {
+				bundle.getTooltipData(stack).ifPresent(list::add);
+			}
 		});
 	}
 }

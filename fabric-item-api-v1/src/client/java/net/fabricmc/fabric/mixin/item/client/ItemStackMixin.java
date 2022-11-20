@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.mixin.item.client;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,16 +26,30 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.item.TooltipData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipDataCallback;
+import net.fabricmc.fabric.impl.item.BundledTooltipData;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
 	@Inject(method = "getTooltip", at = @At("RETURN"))
 	private void getTooltip(PlayerEntity entity, TooltipContext tooltipContext, CallbackInfoReturnable<List<Text>> info) {
 		ItemTooltipCallback.EVENT.invoker().getTooltip((ItemStack) (Object) this, tooltipContext, info.getReturnValue());
+	}
+
+	@Inject(method = "getTooltipData", at = @At("RETURN"), cancellable = true)
+	private void getTooltipData(CallbackInfoReturnable<Optional<TooltipData>> cir) {
+		List<TooltipData> list = new ArrayList<>();
+		cir.getReturnValue().ifPresent(list::add);
+		ItemTooltipDataCallback.EVENT.invoker().getTooltipData((ItemStack) (Object) this, list);
+
+		if ((cir.getReturnValue().isPresent() && list.size() > 1) || !list.isEmpty()) {
+			cir.setReturnValue(Optional.of(new BundledTooltipData(list)));
+		}
 	}
 }
