@@ -38,7 +38,7 @@ public class CustomDamageTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "weird_pickaxe"), new WeirdPick());
+		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "weird_pickaxe"), WEIRD_PICK);
 		FuelRegistry.INSTANCE.add(WEIRD_PICK, 200);
 		BrewingRecipeRegistryAccessor.callRegisterPotionRecipe(Potions.WATER, WEIRD_PICK, Potions.AWKWARD);
 	}
