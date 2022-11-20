@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.resource.loader;
+package net.fabricmc.fabric.mixin.resource.loader.server;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,7 +60,7 @@ class LanguageMixin {
 	}
 
 	private static void loadModLanguage(ModContainer container, BiConsumer<String, String> entryConsumer) {
-		Path path = container.findPath("/assets/" + container.getMetadata().getId() + "/lang/" + DEFAULT_LANGUAGE + ".json").orElse(null);
+		Path path = container.findPath("assets/" + container.getMetadata().getId() + "/lang/" + DEFAULT_LANGUAGE + ".json").orElse(null);
 		if (path == null || !Files.isRegularFile(path)) return;
 
 		try (InputStream stream = Files.newInputStream(path)) {

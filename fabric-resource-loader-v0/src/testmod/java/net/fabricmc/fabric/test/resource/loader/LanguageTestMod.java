@@ -18,11 +18,11 @@ package net.fabricmc.fabric.test.resource.loader;
 
 import net.minecraft.text.Text;
 
-import net.fabricmc.api.ModInitializer;
+import net.fabricmc.api.DedicatedServerModInitializer;
 
-public class LanguageTestMod implements ModInitializer {
+public class LanguageTestMod implements DedicatedServerModInitializer {
 	@Override
-	public void onInitialize() {
+	public void onInitializeServer() {
 		testTranslationLoaded();
 	}
 
