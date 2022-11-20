@@ -17,8 +17,11 @@
 package net.fabricmc.fabric.test.base;
 
 import static net.fabricmc.fabric.test.base.FabricClientTestHelper.clickScreenButton;
+import static net.fabricmc.fabric.test.base.FabricClientTestHelper.closeScreen;
 import static net.fabricmc.fabric.test.base.FabricClientTestHelper.enableDebugHud;
 import static net.fabricmc.fabric.test.base.FabricClientTestHelper.openGameMenu;
+import static net.fabricmc.fabric.test.base.FabricClientTestHelper.openInventory;
+import static net.fabricmc.fabric.test.base.FabricClientTestHelper.setPerspective;
 import static net.fabricmc.fabric.test.base.FabricClientTestHelper.takeScreenshot;
 import static net.fabricmc.fabric.test.base.FabricClientTestHelper.waitForLoadingComplete;
 import static net.fabricmc.fabric.test.base.FabricClientTestHelper.waitForScreen;
@@ -36,6 +39,7 @@ import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
+import net.minecraft.client.option.Perspective;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -95,6 +99,19 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 		}
 
 		MixinEnvironment.getCurrentEnvironment().audit();
+
+		{
+			// See if the player render events are working.
+			setPerspective(Perspective.THIRD_PERSON_BACK);
+			waitForWorldTicks(20);
+			takeScreenshot("in_game_overworld_third_person");
+		}
+
+		{
+			openInventory();
+			takeScreenshot("in_game_inventory");
+			closeScreen();
+		}
 
 		{
 			openGameMenu();

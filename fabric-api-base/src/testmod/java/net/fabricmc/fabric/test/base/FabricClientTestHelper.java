@@ -28,10 +28,13 @@ import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.PressableWidget;
+import net.minecraft.client.option.Perspective;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.text.Text;
 
@@ -56,6 +59,23 @@ public final class FabricClientTestHelper {
 		});
 
 		waitForScreen(GameMenuScreen.class);
+	}
+
+	public static void openInventory() {
+		submit(client -> {
+			client.setScreen(new InventoryScreen(Objects.requireNonNull(client.player)));
+			return null;
+		});
+
+		boolean creative = submitAndWait(client -> Objects.requireNonNull(client.player).isCreative());
+		waitForScreen(creative ? CreativeInventoryScreen.class : InventoryScreen.class);
+	}
+
+	public static void closeScreen() {
+		submit(client -> {
+			client.setScreen(null);
+			return null;
+		});
 	}
 
 	public static void takeScreenshot(String name) {
@@ -127,6 +147,13 @@ public final class FabricClientTestHelper {
 	public static void enableDebugHud() {
 		submitAndWait(client -> {
 			client.options.debugEnabled = true;
+			return null;
+		});
+	}
+
+	public static void setPerspective(Perspective perspective) {
+		submitAndWait(client -> {
+			client.options.setPerspective(perspective);
 			return null;
 		});
 	}
