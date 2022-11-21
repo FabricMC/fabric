@@ -17,9 +17,6 @@
 package net.fabricmc.fabric.test.networking.keybindreciever;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -35,9 +32,8 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 public final class NetworkingKeybindPacketTest implements ModInitializer {
 	public static final Identifier KEYBINDING_PACKET_ID = NetworkingTestmods.id("keybind_press_test");
 
-	private static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		// TODO: Can we send chat off the server thread?
-		server.execute(() -> {
+	private static void receive(PacketByteBuf buf, PacketSender responseSender, ServerPlayNetworking.ServerThreadRunner runner) {
+		runner.run((player) -> {
 			player.sendMessage(Text.literal("So you pressed ").append(Text.keybind("fabric-networking-api-v1-testmod-keybind").styled(style -> style.withFormatting(Formatting.BLUE))), false);
 		});
 	}

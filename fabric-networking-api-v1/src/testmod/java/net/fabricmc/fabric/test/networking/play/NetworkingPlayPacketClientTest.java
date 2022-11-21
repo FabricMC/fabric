@@ -16,15 +16,11 @@
 
 package net.fabricmc.fabric.test.networking.play;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
 public final class NetworkingPlayPacketClientTest implements ClientModInitializer {
 	@Override
@@ -32,12 +28,10 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 		//ClientPlayNetworking.registerGlobalReceiver(NetworkingPlayPacketTest.TEST_CHANNEL, this::receive);
 
 		ClientPlayConnectionEvents.INIT.register((handler, client) -> {
-			ClientPlayNetworking.registerReceiver(NetworkingPlayPacketTest.TEST_CHANNEL, (client1, handler1, buf, sender1) -> receive(handler1, sender1, client1, buf));
+			ClientPlayNetworking.registerReceiver(NetworkingPlayPacketTest.TEST_CHANNEL, (buf, sender1, runner) -> {
+				Text text = buf.readText();
+				runner.run((client2) -> client2.inGameHud.setOverlayMessage(text, true));
+			});
 		});
-	}
-
-	private void receive(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client, PacketByteBuf buf) {
-		Text text = buf.readText();
-		client.execute(() -> client.inGameHud.setOverlayMessage(text, true));
 	}
 }

@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.client.registry.sync;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -36,11 +37,15 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 	}
 
 	private void registerSyncPacketReceiver(RegistryPacketHandler packetHandler) {
-		ClientPlayNetworking.registerGlobalReceiver(packetHandler.getPacketId(), (client, handler, buf, responseSender) ->
-				RegistrySyncManager.receivePacket(client, packetHandler, buf, RegistrySyncManager.DEBUG || !client.isInSingleplayer(), (e) -> {
-					LOGGER.error("Registry remapping failed!", e);
+		ClientPlayNetworking.registerGlobalReceiver(packetHandler.getPacketId(), (buf, responseSender, runner) -> {
+			// While the Networking API thread safety change works for 99% of the use cases,
+			// this isn't one of them.
+			MinecraftClient client = MinecraftClient.getInstance();
+			RegistrySyncManager.receivePacket(client, packetHandler, buf, RegistrySyncManager.DEBUG || !client.isInSingleplayer(), (e) -> {
+				LOGGER.error("Registry remapping failed!", e);
 
-					client.execute(() -> handler.getConnection().disconnect(Text.literal("Registry remapping failed: " + e.getMessage())));
-				}));
+				runner.run((cl) -> cl.getNetworkHandler().getConnection().disconnect(Text.literal("Registry remapping failed: " + e.getMessage())));
+			});
+		});
 	}
 }

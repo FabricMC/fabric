@@ -101,7 +101,7 @@ public final class NetworkingChannelTest implements ModInitializer {
 			throw new SimpleCommandExceptionType(Text.literal(String.format("Cannot register channel %s twice for server player", channel))).create();
 		}
 
-		ServerPlayNetworking.registerReceiver(executor.networkHandler, channel, (server, player, handler, buf, sender) -> {
+		ServerPlayNetworking.registerReceiver(executor.networkHandler, channel, (buf, sender, runner) -> {
 			System.out.printf("Received packet on channel %s%n", channel);
 		});
 

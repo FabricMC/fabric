@@ -39,13 +39,13 @@ public class RegistrySyncTestClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientPlayNetworking.registerGlobalReceiver(RegistrySyncTest.PACKET_CHECK_DIRECT, (client, handler, buf, responseSender) ->
+		ClientPlayNetworking.registerGlobalReceiver(RegistrySyncTest.PACKET_CHECK_DIRECT, (buf, responseSender, runner) ->
 				RegistrySyncTest.DIRECT_PACKET_HANDLER.receivePacket(buf));
 
-		ClientPlayNetworking.registerGlobalReceiver(RegistrySyncTest.PACKET_CHECK_NBT, (client, handler, buf, responseSender) ->
+		ClientPlayNetworking.registerGlobalReceiver(RegistrySyncTest.PACKET_CHECK_NBT, (buf, responseSender, runner) ->
 				RegistrySyncTest.NBT_PACKET_HANDLER.receivePacket(buf));
 
-		ClientPlayNetworking.registerGlobalReceiver(RegistrySyncTest.PACKET_CHECK_COMPARE, (client, handler, buf, responseSender) -> {
+		ClientPlayNetworking.registerGlobalReceiver(RegistrySyncTest.PACKET_CHECK_COMPARE, (buf, responseSender, runner) -> {
 			logBufferSize(RegistrySyncTest.NBT_PACKET_HANDLER);
 			logBufferSize(RegistrySyncTest.DIRECT_PACKET_HANDLER);
 

@@ -43,7 +43,7 @@ public final class ClientNetworking implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientPlayNetworking.registerGlobalReceiver(Networking.OPEN_ID, (client, handler, buf, responseSender) -> {
+		ClientPlayNetworking.registerGlobalReceiver(Networking.OPEN_ID, (buf, responseSender, runner) -> {
 			Identifier typeId = buf.readIdentifier();
 			int syncId = buf.readVarInt();
 			Text title = buf.readText();
@@ -51,7 +51,7 @@ public final class ClientNetworking implements ClientModInitializer {
 			// The buf will be released after the screen is opened
 			buf.retain();
 
-			client.execute(() -> this.openScreen(typeId, syncId, title, buf));
+			runner.run((client) -> this.openScreen(typeId, syncId, title, buf));
 		});
 	}
 

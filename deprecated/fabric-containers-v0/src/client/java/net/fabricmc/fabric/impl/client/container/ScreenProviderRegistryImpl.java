@@ -63,14 +63,14 @@ public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
 	}
 
 	public static void init() {
-		ClientPlayNetworking.registerGlobalReceiver(ContainerProviderImpl.OPEN_CONTAINER, (client, handler, buf, responseSender) -> {
+		ClientPlayNetworking.registerGlobalReceiver(ContainerProviderImpl.OPEN_CONTAINER, (buf, responseSender, runner) -> {
 			Identifier identifier = buf.readIdentifier();
 			int syncId = buf.readUnsignedByte();
 
 			// Retain the buf since we must open the screen handler with it's extra modded data on the client thread
 			buf.retain();
 
-			client.execute(() -> {
+			runner.run((client) -> {
 				try {
 					ContainerFactory<HandledScreen> factory = FACTORIES.get(identifier);
 
