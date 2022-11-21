@@ -35,6 +35,7 @@ import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.CustomPayloadC2SPacketAccessor;
 
+@SuppressWarnings("deprecation") // ServerPlayNetworking.PlayPacketHandle deprecation
 public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerPlayNetworking.PlayChannelHandler> {
 	private final ServerPlayNetworkHandler handler;
 	private final MinecraftServer server;

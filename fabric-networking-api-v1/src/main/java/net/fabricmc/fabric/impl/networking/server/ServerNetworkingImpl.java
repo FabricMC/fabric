@@ -30,6 +30,7 @@ import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 
 public final class ServerNetworkingImpl {
 	public static final GlobalReceiverRegistry<ServerLoginNetworking.LoginQueryResponseHandler> LOGIN = new GlobalReceiverRegistry<>();
+	@SuppressWarnings("deprecation") // cannot change until full removal
 	public static final GlobalReceiverRegistry<ServerPlayNetworking.PlayChannelHandler> PLAY = new GlobalReceiverRegistry<>();
 
 	public static ServerPlayNetworkAddon getAddon(ServerPlayNetworkHandler handler) {

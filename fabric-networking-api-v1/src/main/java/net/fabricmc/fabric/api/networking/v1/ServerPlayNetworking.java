@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.networking.v1;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -52,9 +53,32 @@ public final class ServerPlayNetworking {
 	 * @return false if a handler is already registered to the channel
 	 * @see ServerPlayNetworking#unregisterGlobalReceiver(Identifier)
 	 * @see ServerPlayNetworking#registerReceiver(ServerPlayNetworkHandler, Identifier, PlayChannelHandler)
+	 * @deprecated Use {@link #registerGlobalReceiver(Identifier, PlayPacketHandler)} instead, as that provides better thread safety.
 	 */
+	@Deprecated
 	public static boolean registerGlobalReceiver(Identifier channelName, PlayChannelHandler channelHandler) {
 		return ServerNetworkingImpl.PLAY.registerGlobalReceiver(channelName, channelHandler);
+	}
+
+	/**
+	 * Registers a handler to a channel.
+	 * A global receiver is registered to all connections, in the present and future.
+	 *
+	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
+	 * Use {@link #unregisterReceiver(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.
+	 *
+	 * <p>The handler registered using this method only receives the buffer and the response sender.
+	 * To access the player or the server, the code must be executed in the server thread
+	 * using the passed {@link ServerThreadRunner}. This prevents the common pitfall of running thread-unsafe
+	 * code in the network IO thread and crashing the game.
+	 *
+	 * @param channelName the id of the channel
+	 * @param handler the handler
+	 * @return false if a handler is already registered to the channel
+	 * @see ServerPlayNetworking#registerReceiver(ServerPlayNetworkHandler, Identifier, PlayPacketHandler)
+	 */
+	public static boolean registerGlobalReceiver(Identifier channelName, PlayPacketHandler handler) {
+		return ServerNetworkingImpl.PLAY.registerGlobalReceiver(channelName, (server, player, networkHandler, buf, sender) -> handler.receive(buf, sender, (fn) -> server.execute(() -> fn.accept(player))));
 	}
 
 	/**
@@ -63,12 +87,17 @@ public final class ServerPlayNetworking {
 	 *
 	 * <p>The {@code channel} is guaranteed not to have a handler after this call.
 	 *
+	 * @implNote This returns the internal {@link PlayChannelHandler} when the receiver is registered
+	 * using {@link #registerGlobalReceiver(Identifier, PlayPacketHandler)}.
+	 * This is subject to change in a future breaking change update.
+	 *
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 * @see ServerPlayNetworking#registerGlobalReceiver(Identifier, PlayChannelHandler)
 	 * @see ServerPlayNetworking#unregisterReceiver(ServerPlayNetworkHandler, Identifier)
 	 */
 	@Nullable
+	@SuppressWarnings("deprecated")
 	public static PlayChannelHandler unregisterGlobalReceiver(Identifier channelName) {
 		return ServerNetworkingImpl.PLAY.unregisterGlobalReceiver(channelName);
 	}
@@ -107,14 +136,47 @@ public final class ServerPlayNetworking {
 	}
 
 	/**
+	 * Registers a handler to a channel.
+	 * This method differs from {@link ServerPlayNetworking#registerGlobalReceiver(Identifier, PlayPacketHandler)} since
+	 * the channel handler will only be applied to the player represented by the {@link ServerPlayNetworkHandler}.
+	 *
+	 * <p>For example, if you only register a receiver using this method when a {@linkplain ServerLoginNetworking#registerGlobalReceiver(Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
+	 * login response has been received, you should use {@link ServerPlayConnectionEvents#INIT} to register the channel handler.
+	 *
+	 * <p>If a handler is already registered to the {@code channelName}, this method will return {@code false}, and no change will be made.
+	 * Use {@link #unregisterReceiver(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.
+	 *
+	 * <p>The handler registered using this method only receives the buffer and the response sender.
+	 * To access the player or the server, the code must be executed in the server thread
+	 * using the passed {@link ServerThreadRunner}. This prevents the common pitfall of running thread-unsafe
+	 * code in the network IO thread and crashing the game.
+	 *
+	 * @param networkHandler the handler
+	 * @param channelName the id of the channel
+	 * @param handler the handler
+	 * @return false if a handler is already registered to the channel name
+	 * @see ServerPlayConnectionEvents#INIT
+	 */
+	public static boolean registerReceiver(ServerPlayNetworkHandler networkHandler, Identifier channelName, PlayPacketHandler handler) {
+		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
+
+		return ServerNetworkingImpl.getAddon(networkHandler).registerChannel(channelName, (server, player, networkHandler2, buf, sender) -> handler.receive(buf, sender, (fn) -> server.execute(() -> fn.accept(player))));
+	}
+
+	/**
 	 * Removes the handler of a channel.
 	 *
 	 * <p>The {@code channelName} is guaranteed not to have a handler after this call.
+	 *
+	 * @implNote This returns the internal {@link PlayChannelHandler} when the receiver is registered
+	 * using {@link #registerGlobalReceiver(Identifier, PlayPacketHandler)}.
+	 * This is subject to change in a future breaking change update.
 	 *
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel name
 	 */
 	@Nullable
+	@SuppressWarnings("deprecated")
 	public static PlayChannelHandler unregisterReceiver(ServerPlayNetworkHandler networkHandler, Identifier channelName) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
@@ -266,6 +328,7 @@ public final class ServerPlayNetworking {
 	}
 
 	@FunctionalInterface
+	@Deprecated
 	public interface PlayChannelHandler {
 		/**
 		 * Handles an incoming packet.
@@ -289,7 +352,58 @@ public final class ServerPlayNetworking {
 		 * @param handler the network handler that received this packet, representing the player/client who sent the packet
 		 * @param buf the payload of the packet
 		 * @param responseSender the packet sender
+		 * @deprecated Use {@link PlayPacketHandler} instead, as that provides better thread safety.
 		 */
+		@Deprecated
 		void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender);
+	}
+
+	@FunctionalInterface
+	public interface PlayPacketHandler {
+		/**
+		 * Handles an incoming packet.
+		 *
+		 * <p>This method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
+		 * To access the player or the server instance, you must call {@link ServerThreadRunner#run}
+		 * to execute the code in the server thread. Note that <strong>packets must be read in the
+		 * network thread</strong> (i.e. outside {@code runner.run()}).
+		 *
+		 * <p>An example usage of this is to create an explosion where the player is looking:
+		 * <pre>{@code
+		 * ServerPlayNetworking.registerReceiver(new Identifier("mymod", "boom"), (buf, responseSender, runner) -> {
+		 * 	// Read packets outside runner.run
+		 * 	boolean fire = buf.readBoolean();
+		 *
+		 * 	// Use runner.run to access the player instance safely in the server thread
+		 * 	runner.run((player) -> {
+		 * 		ModPacketHandler.createExplosion(player, fire);
+		 * 	});
+		 * });
+		 * }</pre>
+		 *
+		 * @param buf the payload of the packet
+		 * @param responseSender the packet sender
+		 * @param runner the runner to execute something in the server thread
+		 * @see ServerThreadRunner
+		 * @see #registerGlobalReceiver(Identifier, PlayPacketHandler)
+		 */
+		void receive(PacketByteBuf buf, PacketSender responseSender, ServerThreadRunner runner);
+	}
+
+	@FunctionalInterface
+	public interface ServerThreadRunner {
+		/**
+		 * Runs a function in the server thread. This is necessary to access the player or the
+		 * server instance. <strong>Do not read packets in the passed {@code runner}</strong>,
+		 * as the packet buffer is already released and unreadable. Instead, read packets outside
+		 * {@code runner} and call the logic in {@code runner}.
+		 *
+		 * <p>To access the server instance, use {@link ServerPlayerEntity#server}.
+		 * To access the network handler, use {@link ServerPlayerEntity#networkHandler}.
+		 *
+		 * @param runner the method that takes the player instance and handles the packet's logic
+		 * @see PlayPacketHandler
+		 */
+		void run(Consumer<ServerPlayerEntity> runner);
 	}
 }
