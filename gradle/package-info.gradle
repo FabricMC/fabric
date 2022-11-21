@@ -16,6 +16,12 @@ for (def sourceSet in [sourceSets.main, sourceSets.client]) {
 		outputDir = file("src/generated/$sourceSetName")
 	}
 	sourceSet.java.srcDir task
+
+	def cleanTask = tasks.register(sourceSet.getTaskName('clean', 'ImplPackageInfos'), Delete) {
+		group = 'fabric'
+		delete file("src/generated/$sourceSetName")
+	}
+	clean.dependsOn cleanTask
 }
 
 class GenerateImplPackageInfos extends DefaultTask {
