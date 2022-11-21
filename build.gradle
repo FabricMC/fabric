@@ -315,8 +315,8 @@ javadoc {
 	allprojects.each {
 		if (it.name == "deprecated") return
 
-		source(it.sourceSets.main.allJava.srcDirs)
-		source(it.sourceSets.client.allJava.srcDirs)
+		source(it.sourceSets.main.allJava)
+		source(it.sourceSets.client.allJava)
 	}
 
 	classpath = files(sourceSets.main.compileClasspath, sourceSets.client.compileClasspath)
