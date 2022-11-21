@@ -37,6 +37,7 @@ import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 
 @Environment(EnvType.CLIENT)
+@SuppressWarnings("deprecation")
 public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientPlayNetworking.PlayChannelHandler> {
 	private final ClientPlayNetworkHandler handler;
 	private final MinecraftClient client;

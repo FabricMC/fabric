@@ -49,6 +49,7 @@ import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAcces
 @Environment(EnvType.CLIENT)
 public final class ClientNetworkingImpl {
 	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>();
+	@SuppressWarnings("deprecation")
 	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayChannelHandler> PLAY = new GlobalReceiverRegistry<>();
 	private static ClientPlayNetworkAddon currentPlayAddon;
 
@@ -65,7 +66,7 @@ public final class ClientNetworkingImpl {
 	}
 
 	/**
-	 * Due to the way logging into a integrated or remote dedicated server will differ, we need to obtain the login client connection differently.
+	 * Due to the way logging into an integrated or remote dedicated server will differ, we need to obtain the login client connection differently.
 	 */
 	@Nullable
 	public static ClientConnection getLoginConnection() {
