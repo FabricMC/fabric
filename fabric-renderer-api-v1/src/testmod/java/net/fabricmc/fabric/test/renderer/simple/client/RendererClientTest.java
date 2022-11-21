@@ -28,6 +28,7 @@ public final class RendererClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ModelLoadingRegistry.INSTANCE.registerResourceProvider(manager -> new FrameModelResourceProvider());
+		ModelLoadingRegistry.INSTANCE.registerVariantProvider(manager -> new PillarModelVariantProvider());
 
 		for (FrameBlock frameBlock : RendererTest.FRAMES) {
 			BlockRenderLayerMap.INSTANCE.putBlock(frameBlock, RenderLayer.getCutoutMipped());

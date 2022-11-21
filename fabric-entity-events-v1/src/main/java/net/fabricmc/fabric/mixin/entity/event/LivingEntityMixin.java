@@ -37,7 +37,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
@@ -48,7 +47,7 @@ import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin {
@@ -65,13 +64,21 @@ abstract class LivingEntityMixin {
 		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity((ServerWorld) ((LivingEntity) (Object) this).world, attacker, (LivingEntity) (Object) this);
 	}
 
-	@Redirect(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isDead()Z", ordinal = 1))
-	boolean beforePlayerKilled(LivingEntity livingEntity, DamageSource source, float amount) {
-		if (livingEntity instanceof ServerPlayerEntity) {
-			return isDead() && ServerPlayerEvents.ALLOW_DEATH.invoker().allowDeath((ServerPlayerEntity) livingEntity, source, amount);
-		}
+	@Inject(method = "onDeath", at = @At(value = "INVOKE", target = "net/minecraft/world/World.sendEntityStatus(Lnet/minecraft/entity/Entity;B)V"))
+	private void notifyDeath(DamageSource source, CallbackInfo ci) {
+		ServerLivingEntityEvents.AFTER_DEATH.invoker().afterDeath((LivingEntity) (Object) this, source);
+	}
 
-		return isDead();
+	@Redirect(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isDead()Z", ordinal = 1))
+	boolean beforeEntityKilled(LivingEntity livingEntity, DamageSource source, float amount) {
+		return isDead() && ServerLivingEntityEvents.ALLOW_DEATH.invoker().allowDeath(livingEntity, source, amount);
+	}
+
+	@Inject(method = "damage", at = @At(value = "INVOKE", target = "net/minecraft/entity/LivingEntity.isSleeping()Z"), cancellable = true)
+	private void beforeDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+		if (!ServerLivingEntityEvents.ALLOW_DAMAGE.invoker().allowDamage((LivingEntity) (Object) this, source, amount)) {
+			cir.setReturnValue(false);
+		}
 	}
 
 	@Inject(method = "sleep", at = @At("RETURN"))

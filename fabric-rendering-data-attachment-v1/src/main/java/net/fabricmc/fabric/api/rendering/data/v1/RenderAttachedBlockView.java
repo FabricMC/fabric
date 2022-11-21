@@ -48,7 +48,7 @@ import net.minecraft.world.BlockRenderView;
  * and then use {@link #getBlockEntityRenderAttachment(BlockPos)} to retrieve it.  When called from the
  * main thread, that method will simply retrieve the data directly.
  *
- * <p>This interface is only guaranteed to be present in the client environment.
+ * <p>This interface is guaranteed to be implemented on every {@link BlockRenderView} subclass.
  */
 // XXX can not link net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
 public interface RenderAttachedBlockView extends BlockRenderView {

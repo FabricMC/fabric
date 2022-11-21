@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.entity.event.v1;
 
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -50,18 +49,9 @@ public final class ServerPlayerEvents {
 	/**
 	 * An event that is called when a player takes fatal damage.
 	 *
-	 * <p>Mods can cancel this to keep the player alive.
-	 *
-	 * <p>Vanilla checks for player health {@code <= 0} each tick (with {@link LivingEntity#isDead()}), and kills if true -
-	 * so the player will still die next tick if this event is cancelled. It's assumed that the listener will do
-	 * something to prevent this, for example:
-	 *
-	 * <ul>
-	 *     <li>a minigame mod teleporting the player into a 'respawn room' and setting their health to 20.0</li>
-	 *     <li>a mod that changes death mechanics switching the player over to the mod's play-mode, where death doesn't
-	 *     apply</li>
-	 * </ul>
+	 * @deprecated Use the more general {@link ServerLivingEntityEvents#ALLOW_DEATH} event instead and check for {@code instanceof ServerPlayerEntity}.
 	 */
+	@Deprecated
 	public static final Event<AllowDeath> ALLOW_DEATH = EventFactory.createArrayBacked(AllowDeath.class, callbacks -> (player, damageSource, damageAmount) -> {
 		for (AllowDeath callback : callbacks) {
 			if (!callback.allowDeath(player, damageSource, damageAmount)) {
@@ -96,6 +86,10 @@ public final class ServerPlayerEvents {
 		void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive);
 	}
 
+	/**
+	 * @deprecated Use the more general {@link ServerLivingEntityEvents#ALLOW_DEATH} event instead and check for {@code instanceof ServerPlayerEntity}.
+	 */
+	@Deprecated
 	@FunctionalInterface
 	public interface AllowDeath {
 		/**
@@ -110,5 +104,16 @@ public final class ServerPlayerEvents {
 	}
 
 	private ServerPlayerEvents() {
+	}
+
+	static {
+		// Forward general living entity event to (older) player-specific event.
+		ServerLivingEntityEvents.ALLOW_DEATH.register((entity, damageSource, damageAmount) -> {
+			if (entity instanceof ServerPlayerEntity player) {
+				return ServerPlayerEvents.ALLOW_DEATH.invoker().allowDeath(player, damageSource, damageAmount);
+			}
+
+			return true;
+		});
 	}
 }
