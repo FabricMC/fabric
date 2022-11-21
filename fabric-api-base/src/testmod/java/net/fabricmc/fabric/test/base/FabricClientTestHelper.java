@@ -27,6 +27,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.GameMenuScreen;
+import net.minecraft.client.gui.screen.LevelLoadingScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -139,7 +140,7 @@ public final class FabricClientTestHelper {
 
 	public static void waitForWorldTicks(long ticks) {
 		// Wait for the world to be loaded and get the start ticks
-		waitFor("World load", client -> client.world != null, Duration.ofMinutes(30));
+		waitFor("World load", client -> client.world != null && !(client.currentScreen instanceof LevelLoadingScreen), Duration.ofMinutes(30));
 		final long startTicks = submitAndWait(client -> client.world.getTime());
 		waitFor("World load", client -> Objects.requireNonNull(client.world).getTime() > startTicks + ticks, Duration.ofMinutes(10));
 	}
