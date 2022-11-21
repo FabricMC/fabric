@@ -14,13 +14,6 @@ for (def sourceSet in [sourceSets.main, sourceSets.client]) {
 		sourceRoot = file("src/$sourceSetName/java")
 		header = rootProject.file('HEADER')
 		outputDir = file("src/generated/$sourceSetName")
-
-		def mainSources = tasks.generateImplPackageInfos.outputDir.get().asFile
-		// The exists check is an ugly hack. We need it since Gradle wants to see existing directories
-		// for all InputDirectory properties (understandably).
-		if (sourceSetName != 'main' && mainSources.exists()) {
-			mainGeneratedSources = tasks.generateImplPackageInfos.outputDir
-		}
 	}
 	sourceSet.java.srcDir task.flatMap { it.outputDir }
 }
@@ -36,21 +29,12 @@ class GenerateImplPackageInfos extends DefaultTask {
 	@OutputDirectory
 	final DirectoryProperty outputDir = project.objects.directoryProperty()
 
-	/**
-	 * If not empty, no duplicates will be generated if this directory
-	 * already contains a matching package-info.
- 	 */
-	@Optional
-	@InputDirectory
-	final DirectoryProperty mainGeneratedSources = project.objects.directoryProperty()
-
 	@TaskAction
 	def run() {
 		def output = outputDir.get().asFile.toPath()
 		output.deleteDir()
 		def headerText = header.readLines().join("\n") // normalize line endings
 		def root = sourceRoot.get().asFile.toPath()
-		def priorityRoot = mainGeneratedSources.getOrNull()?.asFile?.toPath()
 
 		for (def dir in ['impl', 'mixin']) {
 			def implDir = root.resolve("net/fabricmc/fabric/$dir")
@@ -66,23 +50,20 @@ class GenerateImplPackageInfos extends DefaultTask {
 
 				if (containsJava && Files.notExists(it.resolve('package-info.java'))) {
 					def relativePath = root.relativize(it)
+					def target = output.resolve(relativePath)
+					Files.createDirectories(target)
 
-					if (priorityRoot == null || Files.notExists(priorityRoot.resolve(relativePath).resolve('package-info.java'))) {
-						def target = output.resolve(relativePath)
-						Files.createDirectories(target)
-
-						target.resolve('package-info.java').withWriter {
-							def packageName = relativePath.toString().replace(File.separator, '.')
-							it.write("""$headerText
-							|/**
-							| * Implementation code for ${project.name}.
-							| */
-							|@ApiStatus.Internal
-							|package $packageName;
-							|
-							|import org.jetbrains.annotations.ApiStatus;
-							|""".stripMargin())
-						}
+					target.resolve('package-info.java').withWriter {
+						def packageName = relativePath.toString().replace(File.separator, '.')
+						it.write("""$headerText
+						|/**
+						| * Implementation code for ${project.name}.
+						| */
+						|@ApiStatus.Internal
+						|package $packageName;
+						|
+						|import org.jetbrains.annotations.ApiStatus;
+						|""".stripMargin())
 					}
 				}
 			}
