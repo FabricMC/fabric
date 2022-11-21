@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.datagen.v1;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.registry.RegistryBuilder;
+
 /**
  * An entry point for data generation.
  *
@@ -44,5 +46,13 @@ public interface DataGeneratorEntrypoint {
 	@Nullable
 	default String getEffectiveModId() {
 		return null;
+	}
+
+	/**
+	 * Build a registry containing dynamic registry entries.
+	 *
+	 * @param registryBuilder a {@link RegistryBuilder} instance
+	 */
+	default void buildRegistry(RegistryBuilder registryBuilder) {
 	}
 }

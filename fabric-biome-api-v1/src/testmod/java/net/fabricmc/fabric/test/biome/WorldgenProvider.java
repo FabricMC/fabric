@@ -19,20 +19,13 @@ package net.fabricmc.fabric.test.biome;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeEffects;
-import net.minecraft.world.biome.GenerationSettings;
-import net.minecraft.world.biome.OverworldBiomeCreator;
-import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.biome.TheNetherBiomeCreator;
-import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
-import net.minecraft.world.gen.feature.EndPlacedFeatures;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.feature.PlacedFeatures;
@@ -49,12 +42,11 @@ public class WorldgenProvider extends FabricDynamicRegistryProvider {
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup registries, Entries entries) {
-		entries.add(FabricBiomeTest.TEST_CRIMSON_FOREST, TheNetherBiomeCreator.createCrimsonForest(entries.placedFeatures(), entries.configuredCarvers()));
-		entries.add(FabricBiomeTest.CUSTOM_PLAINS, OverworldBiomeCreator.createPlains(entries.placedFeatures(), entries.configuredCarvers(), false, false, false));
-		entries.add(FabricBiomeTest.TEST_END_HIGHLANDS, createEndHighlands(entries));
-		;
-		entries.add(FabricBiomeTest.TEST_END_MIDLANDS, createEndMidlands(entries));
-		entries.add(FabricBiomeTest.TEST_END_BARRRENS, createEndBarrens(entries));
+		final RegistryWrapper.Impl<Biome> biomeRegistry = registries.getWrapperOrThrow(RegistryKeys.BIOME_WORLDGEN);
+
+		for (RegistryKey<Biome> biomeRegistryKey : FabricBiomeTest.TEST_BIOMES) {
+			entries.add(biomeRegistryKey, biomeRegistry.getOrThrow(biomeRegistryKey).value());
+		}
 
 		ConfiguredFeature<?, ?> COMMON_DESERT_WELL = new ConfiguredFeature<>(Feature.DESERT_WELL, DefaultFeatureConfig.INSTANCE);
 
@@ -68,28 +60,5 @@ public class WorldgenProvider extends FabricDynamicRegistryProvider {
 	@Override
 	public String getName() {
 		return "Fabric Biome Testmod";
-	}
-
-	// These are used for testing the spacing of custom end biomes.
-	private static Biome createEndHighlands(Entries entries) {
-		GenerationSettings.Builder builder = new GenerationSettings.Builder()
-				.feature(GenerationStep.Feature.SURFACE_STRUCTURES, entries.ref(EndPlacedFeatures.END_GATEWAY_RETURN));
-		return composeEndSpawnSettings(builder);
-	}
-
-	public static Biome createEndMidlands(Entries entries) {
-		GenerationSettings.Builder builder = (new GenerationSettings.Builder());
-		return composeEndSpawnSettings(builder);
-	}
-
-	public static Biome createEndBarrens(Entries entries) {
-		GenerationSettings.Builder builder = (new GenerationSettings.Builder());
-		return composeEndSpawnSettings(builder);
-	}
-
-	private static Biome composeEndSpawnSettings(GenerationSettings.Builder builder) {
-		SpawnSettings.Builder builder2 = new SpawnSettings.Builder();
-		DefaultBiomeFeatures.addPlainsMobs(builder2);
-		return (new Biome.Builder()).precipitation(Biome.Precipitation.NONE).temperature(0.5F).downfall(0.5F).effects((new BiomeEffects.Builder()).waterColor(4159204).waterFogColor(329011).fogColor(10518688).skyColor(0).moodSound(BiomeMoodSound.CAVE).build()).spawnSettings(builder2.build()).generationSettings(builder.build()).build();
 	}
 }

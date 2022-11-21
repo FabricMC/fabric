@@ -25,6 +25,11 @@ accessible  field   net/minecraft/data/DataOutput$PathResolver directoryName    
 
 extendable  method  net/minecraft/data/DataGenerator$Pack    <init>    (Lnet/minecraft/data/DataGenerator;ZLjava/lang/String;Lnet/minecraft/data/DataOutput;)V
 
+accessible  field   net/minecraft/registry/BuiltinRegistries    REGISTRY_BUILDER    Lnet/minecraft/registry/RegistryBuilder;
+accessible  method  net/minecraft/registry/BuiltinRegistries    validate    (Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)V
+accessible    field    net/minecraft/registry/RegistryBuilder    registries    Ljava/util/List;
+accessible    class    net/minecraft/registry/RegistryBuilder$RegistryInfo
+
 transitive-accessible   method  net/minecraft/data/family/BlockFamilies register    (Lnet/minecraft/block/Block;)Lnet/minecraft/data/family/BlockFamily$Builder;
 
 transitive-accessible   field   net/minecraft/data/client/BlockStateModelGenerator    blockStateCollector Ljava/util/function/Consumer;
@@ -221,6 +226,8 @@ transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	getTurtleEggModel	(ILjava/lang/String;Lnet/minecraft/data/client/TextureMap;)Lnet/minecraft/util/Identifier;
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	getTurtleEggModel	(Ljava/lang/Integer;Ljava/lang/Integer;)Lnet/minecraft/util/Identifier;
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerWallPlant	(Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	method_47812	(Lnet/minecraft/data/client/MultipartBlockStateSupplier;Lnet/minecraft/data/client/When$PropertyCondition;Lnet/minecraft/data/client/VariantSettings$Rotation;)V
+transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	method_47814	(Lnet/minecraft/data/client/MultipartBlockStateSupplier;Lnet/minecraft/data/client/When$PropertyCondition;Lnet/minecraft/data/client/VariantSettings$Rotation;Lnet/minecraft/state/property/BooleanProperty;Lnet/minecraft/data/client/Model;Z)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerShulkerBox	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerPlantPart	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;Lnet/minecraft/data/client/BlockStateModelGenerator$TintType;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerBed	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V

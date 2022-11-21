@@ -16,6 +16,23 @@
 
 package net.fabricmc.fabric.test.biome;
 
+import net.minecraft.registry.Registerable;
+import net.minecraft.registry.RegistryBuilder;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.sound.BiomeMoodSound;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeEffects;
+import net.minecraft.world.biome.GenerationSettings;
+import net.minecraft.world.biome.OverworldBiomeCreator;
+import net.minecraft.world.biome.SpawnSettings;
+import net.minecraft.world.biome.TheNetherBiomeCreator;
+import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.carver.ConfiguredCarver;
+import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
+import net.minecraft.world.gen.feature.EndPlacedFeatures;
+import net.minecraft.world.gen.feature.PlacedFeature;
+
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint {
@@ -23,5 +40,46 @@ public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		FabricDataGenerator.Pack pack = dataGenerator.createPack();
 		pack.addProvider(WorldgenProvider::new);
+		pack.addProvider(TestBiomeTagProvider::new);
+	}
+
+	@Override
+	public void buildRegistry(RegistryBuilder registryBuilder) {
+		registryBuilder.addRegistry(RegistryKeys.BIOME_WORLDGEN, this::bootstrapBiomes);
+	}
+
+	private void bootstrapBiomes(Registerable<Biome> biomeRegisterable) {
+		RegistryEntryLookup<PlacedFeature> placedFeatures = biomeRegisterable.getRegistryLookup(RegistryKeys.PLACED_FEATURE_WORLDGEN);
+		RegistryEntryLookup<ConfiguredCarver<?>> configuredCarvers = biomeRegisterable.getRegistryLookup(RegistryKeys.CONFIGURED_CARVER_WORLDGEN);
+
+		biomeRegisterable.register(FabricBiomeTest.TEST_CRIMSON_FOREST, TheNetherBiomeCreator.createCrimsonForest(placedFeatures, configuredCarvers));
+		biomeRegisterable.register(FabricBiomeTest.CUSTOM_PLAINS, OverworldBiomeCreator.createPlains(placedFeatures, configuredCarvers, false, false, false));
+		biomeRegisterable.register(FabricBiomeTest.TEST_END_HIGHLANDS, createEndHighlands(placedFeatures));
+		biomeRegisterable.register(FabricBiomeTest.TEST_END_MIDLANDS, createEndMidlands());
+		biomeRegisterable.register(FabricBiomeTest.TEST_END_BARRRENS, createEndBarrens());
+	}
+
+	// These are used for testing the spacing of custom end biomes.
+	private static Biome createEndHighlands(RegistryEntryLookup<PlacedFeature> placedFeatures) {
+		GenerationSettings.Builder builder = new GenerationSettings.Builder()
+				.feature(GenerationStep.Feature.SURFACE_STRUCTURES, placedFeatures.getOrThrow(EndPlacedFeatures.END_GATEWAY_RETURN));
+		return composeEndSpawnSettings(builder);
+	}
+
+	public static Biome createEndMidlands() {
+		GenerationSettings.Builder builder = (new GenerationSettings.Builder());
+		return composeEndSpawnSettings(builder);
+	}
+
+	public static Biome createEndBarrens() {
+		GenerationSettings.Builder builder = (new GenerationSettings.Builder());
+		return composeEndSpawnSettings(builder);
+	}
+
+	private static Biome composeEndSpawnSettings(GenerationSettings.Builder builder) {
+		SpawnSettings.Builder builder2 = new SpawnSettings.Builder();
+		DefaultBiomeFeatures.addPlainsMobs(builder2);
+		return (new Biome.Builder()).precipitation(Biome.Precipitation.NONE).temperature(0.5F).downfall(0.5F).effects((new BiomeEffects.Builder()).waterColor(4159204).waterFogColor(329011).fogColor(10518688).skyColor(0).moodSound(
+				BiomeMoodSound.CAVE).build()).spawnSettings(builder2.build()).generationSettings(builder.build()).build();
 	}
 }

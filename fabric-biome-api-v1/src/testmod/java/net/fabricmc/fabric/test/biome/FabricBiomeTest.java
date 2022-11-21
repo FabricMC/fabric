@@ -16,10 +16,12 @@
 
 package net.fabricmc.fabric.test.biome;
 
+import java.util.List;
+
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
@@ -52,6 +54,14 @@ public class FabricBiomeTest implements ModInitializer {
 	public static final RegistryKey<Biome> TEST_END_HIGHLANDS = RegistryKey.of(RegistryKeys.BIOME_WORLDGEN, new Identifier(MOD_ID, "test_end_highlands"));
 	public static final RegistryKey<Biome> TEST_END_MIDLANDS = RegistryKey.of(RegistryKeys.BIOME_WORLDGEN, new Identifier(MOD_ID, "test_end_midlands"));
 	public static final RegistryKey<Biome> TEST_END_BARRRENS = RegistryKey.of(RegistryKeys.BIOME_WORLDGEN, new Identifier(MOD_ID, "test_end_barrens"));
+
+	public static final List<RegistryKey<Biome>> TEST_BIOMES = List.of(
+			TEST_CRIMSON_FOREST,
+			CUSTOM_PLAINS,
+			TEST_END_HIGHLANDS,
+			TEST_END_MIDLANDS,
+			TEST_END_BARRRENS
+	);
 
 	public static final RegistryKey<ConfiguredFeature<?, ?>> COMMON_DESERT_WELL = RegistryKey.of(
 			RegistryKeys.CONFIGURED_FEATURE_WORLDGEN,
