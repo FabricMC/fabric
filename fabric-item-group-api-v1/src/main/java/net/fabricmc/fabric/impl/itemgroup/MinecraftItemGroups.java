@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.itemgroup;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
@@ -42,7 +43,7 @@ public final class MinecraftItemGroups {
 	public static final Identifier OP_ID = new Identifier("minecraft:op");
 	public static final Identifier INVENTORY_ID = new Identifier("minecraft:inventory");
 
-	public static final Map<ItemGroup, Identifier> GROUP_ID_MAP = new ImmutableMap.Builder<ItemGroup, Identifier>()
+	public static final Map<ItemGroup, Identifier> GROUP_ID_MAP = new HashMap<>(new ImmutableMap.Builder<ItemGroup, Identifier>()
 			.put(ItemGroups.BUILDING_BLOCKS, MinecraftItemGroups.BUILDING_BLOCKS_ID)
 			.put(ItemGroups.COLORED_BLOCKS, MinecraftItemGroups.COLOURED_BLOCKS_ID)
 			.put(ItemGroups.NATURAL, MinecraftItemGroups.NATURAL_ID)
@@ -57,7 +58,7 @@ public final class MinecraftItemGroups {
 			.put(ItemGroups.SPAWN_EGGS, MinecraftItemGroups.SPAWN_EGGS_ID)
 			.put(ItemGroups.OPERATOR, MinecraftItemGroups.OP_ID)
 			.put(ItemGroups.INVENTORY, MinecraftItemGroups.INVENTORY_ID)
-			.build();
+			.build());
 
 	private MinecraftItemGroups() {
 	}

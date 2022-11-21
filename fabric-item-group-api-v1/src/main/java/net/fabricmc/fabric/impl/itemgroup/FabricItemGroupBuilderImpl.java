@@ -23,15 +23,19 @@ import net.minecraft.util.Identifier;
 
 @ApiStatus.Internal
 public final class FabricItemGroupBuilderImpl extends ItemGroup.Builder {
+	private final Identifier identifier;
+
 	public FabricItemGroupBuilderImpl(Identifier identifier) {
 		// Set when building.
 		super(null, -1);
+		this.identifier = identifier;
 	}
 
 	@Override
 	public ItemGroup build() {
 		final ItemGroup itemGroup = super.build();
 		ItemGroupHelper.appendItemGroup(itemGroup);
+		MinecraftItemGroups.GROUP_ID_MAP.put(itemGroup, identifier);
 		return itemGroup;
 	}
 }
