@@ -29,10 +29,10 @@ import net.minecraft.client.util.math.MatrixStack;
 record BundledTooltipComponentImpl(List<TooltipComponent> list) implements TooltipComponent {
 	@Override
 	public int getHeight() {
-		int h = -2;
+		int h = 0;
 
 		for (TooltipComponent component : list) {
-			h += component.getHeight() + 2;
+			h += component.getHeight();
 		}
 
 		return h;
@@ -55,7 +55,7 @@ record BundledTooltipComponentImpl(List<TooltipComponent> list) implements Toolt
 
 		for (TooltipComponent component : list) {
 			component.drawText(textRenderer, x, y1, matrix, vertexConsumers);
-			y1 += component.getHeight() + 2;
+			y1 += component.getHeight();
 		}
 	}
 
@@ -65,7 +65,7 @@ record BundledTooltipComponentImpl(List<TooltipComponent> list) implements Toolt
 
 		for (TooltipComponent component : list) {
 			component.drawItems(textRenderer, x, y1, matrices, itemRenderer, z);
-			y1 += component.getHeight() + 2;
+			y1 += component.getHeight();
 		}
 	}
 }
