@@ -378,7 +378,7 @@ dependencies {
 
 import net.fabricmc.loom.util.OperatingSystem
 
-// This is very far beyond loom's API if you copy this, your on your own.
+// This is very far beyond loom's API if you copy this, you're on your own.
 task runProductionAutoTestClient(type: JavaExec, dependsOn: [remapJar, remapTestmodJar]) {
 	classpath.from configurations.productionRuntime
 	mainClass = "net.fabricmc.loader.impl.launch.knot.KnotClient"
