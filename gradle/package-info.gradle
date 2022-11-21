@@ -15,7 +15,7 @@ for (def sourceSet in [sourceSets.main, sourceSets.client]) {
 		header = rootProject.file('HEADER')
 		outputDir = file("src/generated/$sourceSetName")
 	}
-	sourceSet.java.srcDir task.flatMap { it.outputDir }
+	sourceSet.java.srcDir task
 }
 
 class GenerateImplPackageInfos extends DefaultTask {
