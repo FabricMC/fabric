@@ -31,20 +31,20 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.object.builder.v1.sign.SignTypeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.fabricmc.fabric.test.rendering.mixin.SignTypeAccessor;
 
 public class TealSignTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-rendering-v1-testmod";
-	public static final SignType TEAL_TYPE = SignTypeAccessor.callRegister(SignTypeAccessor.createSignType(MOD_ID + ":teal"));
+	public static final SignType TEAL_TYPE = SignTypeRegistry.registerSignType(new Identifier(MOD_ID, "teal"));
 	public static final SignBlock TEAL_SIGN = new SignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), TEAL_TYPE) {
 		@Override
 		public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 			return new TealSign(pos, state);
 		}
 	};
-	public static final WallSignBlock TEAL_WALL_SIGN = new WallSignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), SignType.OAK) {
+	public static final WallSignBlock TEAL_WALL_SIGN = new WallSignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), TEAL_TYPE) {
 		@Override
 		public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 			return new TealSign(pos, state);
