@@ -83,7 +83,7 @@ abstract class ClientPlayNetworkHandlerMixin {
 	}
 
 	// Called when the client disconnects from a server.
-	@Inject(method = "method_47658", at = @At("HEAD"))
+	@Inject(method = "clearWorld", at = @At("HEAD"))
 	private void onClearWorld(CallbackInfo ci) {
 		// If a world already exists, we need to unload all (block)entities in the world.
 		if (this.world != null) {

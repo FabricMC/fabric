@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 
 public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 	public BiomeTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-		super(output, RegistryKeys.BIOME_WORLDGEN, completableFuture);
+		super(output, RegistryKeys.BIOME, completableFuture);
 	}
 
 	@Override

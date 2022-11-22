@@ -45,7 +45,7 @@ import net.minecraft.world.gen.noise.NoiseConfig;
 
 public class VoidChunkGenerator extends ChunkGenerator {
 	public static final Codec<VoidChunkGenerator> CODEC = RecordCodecBuilder.create((instance) ->
-			instance.group(RegistryOps.getEntryLookupCodec(RegistryKeys.BIOME_WORLDGEN))
+			instance.group(RegistryOps.getEntryLookupCodec(RegistryKeys.BIOME))
 					.apply(instance, instance.stable(VoidChunkGenerator::new)));
 
 	public VoidChunkGenerator(RegistryEntryLookup<Biome> biomeRegistry) {

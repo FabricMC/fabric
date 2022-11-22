@@ -193,8 +193,8 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	}
 
 	private class GenerationSettingsContextImpl implements GenerationSettingsContext {
-		private final Registry<ConfiguredCarver<?>> carvers = registries.get(RegistryKeys.CONFIGURED_CARVER_WORLDGEN);
-		private final Registry<PlacedFeature> features = registries.get(RegistryKeys.PLACED_FEATURE_WORLDGEN);
+		private final Registry<ConfiguredCarver<?>> carvers = registries.get(RegistryKeys.CONFIGURED_CARVER);
+		private final Registry<PlacedFeature> features = registries.get(RegistryKeys.PLACED_FEATURE);
 		private final GenerationSettings generationSettings = biome.getGenerationSettings();
 
 		private boolean rebuildFlowerFeatures;

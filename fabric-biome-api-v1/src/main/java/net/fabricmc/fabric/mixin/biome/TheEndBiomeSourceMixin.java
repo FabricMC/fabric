@@ -62,7 +62,7 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	@Inject(method = "<clinit>", at = @At("TAIL"))
 	private static void modifyCodec(CallbackInfo ci) {
 		CODEC = RecordCodecBuilder.create((instance) -> {
-			return instance.group(RegistryOps.getEntryLookupCodec(RegistryKeys.BIOME_WORLDGEN)).apply(instance, instance.stable(TheEndBiomeSource::createVanilla));
+			return instance.group(RegistryOps.getEntryLookupCodec(RegistryKeys.BIOME)).apply(instance, instance.stable(TheEndBiomeSource::createVanilla));
 		});
 	}
 
