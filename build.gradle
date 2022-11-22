@@ -354,14 +354,65 @@ loom {
 		}
 		autoTestServer {
 			inherit testmodServer
-
 			name "Auto Test Server"
-
+			vmArg "-Dfabric.autoTest"
+		}
+		autoTestClient {
+			inherit testmodClient
+			name "Auto Test Client"
 			vmArg "-Dfabric.autoTest"
 		}
 	}
 }
 test.dependsOn runGametest
+
+configurations {
+	productionRuntime {
+		extendsFrom configurations.minecraftLibraries
+		extendsFrom configurations.loaderLibraries
+		extendsFrom configurations.minecraftRuntimeOnlyLibraries
+	}
+}
+
+dependencies {
+	productionRuntime "net.fabricmc:fabric-loader:${project.loader_version}"
+	productionRuntime "net.fabricmc:intermediary:${project.minecraft_version}"
+}
+
+import net.fabricmc.loom.util.OperatingSystem
+
+// This is very far beyond loom's API if you copy this, you're on your own.
+task runProductionAutoTestClient(type: JavaExec, dependsOn: [remapJar, remapTestmodJar]) {
+	classpath.from configurations.productionRuntime
+	mainClass = "net.fabricmc.loader.impl.launch.knot.KnotClient"
+	workingDir = file("run")
+
+	afterEvaluate {
+		dependsOn downloadAssets
+	}
+
+	doFirst {
+		classpath.from loom.minecraftProvider.minecraftClientJar
+		workingDir.mkdirs()
+
+		args(
+			"--assetIndex", loom.minecraftProvider.versionInfo.assetIndex().fabricId(loom.minecraftProvider.minecraftVersion()),
+			"--assetsDir", new File(loom.files.userCache, "assets").absolutePath,
+			"--gameDir", workingDir.absolutePath
+		)
+
+		if (OperatingSystem.CURRENT_OS == OperatingSystem.MAC_OS) {
+			jvmArgs(
+				"-XstartOnFirstThread"
+			)
+		}
+
+		jvmArgs(
+			"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
+			"-Dfabric.autoTest"
+		)
+	}
+}
 
 subprojects {
 	if (it.name == "deprecated") return
