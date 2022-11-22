@@ -266,6 +266,9 @@ allprojects {
 		source(sourceSets.client.output)
 		source(sourceSets.testmod.output)
 	}
+
+	// Apply to each valid subproject.
+	apply from: rootProject.file('gradle/package-info.gradle')
 }
 
 remapTestmodJar {
@@ -319,8 +322,8 @@ javadoc {
 	allprojects.each {
 		if (it.name == "deprecated") return
 
-		source(it.sourceSets.main.allJava.srcDirs)
-		source(it.sourceSets.client.allJava.srcDirs)
+		source(it.sourceSets.main.allJava)
+		source(it.sourceSets.client.allJava)
 	}
 
 	classpath = files(sourceSets.main.compileClasspath, sourceSets.client.compileClasspath)

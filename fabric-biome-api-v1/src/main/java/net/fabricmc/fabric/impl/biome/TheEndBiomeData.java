@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.registry.RegistryEntryLookup;
@@ -41,7 +40,6 @@ import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 /**
  * Internal data for modding Vanilla's {@link TheEndBiomeSource}.
  */
-@ApiStatus.Internal
 public final class TheEndBiomeData {
 	public static final ThreadLocal<RegistryEntryLookup<Biome>> biomeRegistry = new ThreadLocal<>();
 	public static final Set<RegistryKey<Biome>> ADDED_BIOMES = new HashSet<>();

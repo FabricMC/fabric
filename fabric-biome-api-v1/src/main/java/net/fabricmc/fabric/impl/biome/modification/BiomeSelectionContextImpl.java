@@ -18,14 +18,12 @@ package net.fabricmc.fabric.impl.biome.modification;
 
 import java.util.Optional;
 
-import org.jetbrains.annotations.ApiStatus;
-
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -34,7 +32,6 @@ import net.minecraft.world.gen.structure.Structure;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 
-@ApiStatus.Internal
 public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	private final DynamicRegistryManager dynamicRegistries;
 	private final RegistryKey<Biome> key;
