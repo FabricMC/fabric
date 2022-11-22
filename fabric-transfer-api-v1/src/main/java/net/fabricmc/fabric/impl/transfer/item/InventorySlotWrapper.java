@@ -71,9 +71,11 @@ class InventorySlotWrapper extends SingleStackStorage {
 	public long insert(ItemVariant insertedVariant, long maxAmount, TransactionContext transaction) {
 		if (!canInsert(slot, ((ItemVariantImpl) insertedVariant).getCachedStack())) {
 			return 0;
-		} else {
-			return super.insert(insertedVariant, maxAmount, transaction);
 		}
+
+		long ret = super.insert(insertedVariant, maxAmount, transaction);
+		if (specialInv != null && ret > 0) specialInv.fabric_onTransfer(slot, transaction);
+		return ret;
 	}
 
 	private boolean canInsert(int slot, ItemStack stack) {
@@ -83,6 +85,13 @@ class InventorySlotWrapper extends SingleStackStorage {
 		} else {
 			return storage.inventory.isValid(slot, stack);
 		}
+	}
+
+	@Override
+	public long extract(ItemVariant variant, long maxAmount, TransactionContext transaction) {
+		long ret = super.extract(variant, maxAmount, transaction);
+		if (specialInv != null && ret > 0) specialInv.fabric_onTransfer(slot, transaction);
+		return ret;
 	}
 
 	/**
