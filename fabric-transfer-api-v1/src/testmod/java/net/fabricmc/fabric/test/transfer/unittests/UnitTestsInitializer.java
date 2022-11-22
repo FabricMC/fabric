@@ -27,6 +27,7 @@ public class UnitTestsInitializer implements ModInitializer {
 		BaseStorageTests.run();
 		FluidItemTests.run();
 		FluidTests.run();
+		FluidVariantTests.run();
 		ItemTests.run();
 		PlayerInventoryStorageTests.run();
 		SingleVariantItemStorageTests.run();
