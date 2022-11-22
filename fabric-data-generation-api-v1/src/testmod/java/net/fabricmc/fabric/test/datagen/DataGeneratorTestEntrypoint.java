@@ -197,12 +197,12 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 	private static class TestBiomeTagProvider extends FabricTagProvider<Biome> {
 		private TestBiomeTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-			super(output, RegistryKeys.BIOME_WORLDGEN, registriesFuture);
+			super(output, RegistryKeys.BIOME, registriesFuture);
 		}
 
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup registries) {
-			getOrCreateTagBuilder(TagKey.of(RegistryKeys.BIOME_WORLDGEN, new Identifier(MOD_ID, "biome_tag_test")))
+			getOrCreateTagBuilder(TagKey.of(RegistryKeys.BIOME, new Identifier(MOD_ID, "biome_tag_test")))
 					.add(BiomeKeys.BADLANDS, BiomeKeys.BAMBOO_JUNGLE)
 					.add(BiomeKeys.BASALT_DELTAS);
 		}

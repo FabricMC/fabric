@@ -50,6 +50,6 @@ public class MinecraftServerMixin {
 	private void addNetherBiomes(Thread serverThread, LevelStorage.Session session, ResourcePackManager dataPackManager, SaveLoader saveLoader, Proxy proxy, DataFixer dataFixer, ApiServices apiServices, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory, CallbackInfo ci) {
 		Registry<DimensionOptions> registry = getRegistryManager().get(RegistryKeys.DIMENSION);
 
-		registry.stream().forEach(dimensionOptions -> NetherBiomeData.modifyBiomeSource(getRegistryManager().getWrapperOrThrow(RegistryKeys.BIOME_WORLDGEN), dimensionOptions.chunkGenerator().getBiomeSource()));
+		registry.stream().forEach(dimensionOptions -> NetherBiomeData.modifyBiomeSource(getRegistryManager().getWrapperOrThrow(RegistryKeys.BIOME), dimensionOptions.chunkGenerator().getBiomeSource()));
 	}
 }

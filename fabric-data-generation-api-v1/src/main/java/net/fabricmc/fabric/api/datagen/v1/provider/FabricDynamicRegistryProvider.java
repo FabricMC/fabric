@@ -103,14 +103,14 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		 * Returns a lookup for placed features. Useful when creating biomes.
 		 */
 		public RegistryEntryLookup<PlacedFeature> placedFeatures() {
-			return getLookup(RegistryKeys.PLACED_FEATURE_WORLDGEN);
+			return getLookup(RegistryKeys.PLACED_FEATURE);
 		}
 
 		/**
 		 * Returns a lookup for configured carvers. Useful when creating biomes.
 		 */
 		public RegistryEntryLookup<ConfiguredCarver<?>> configuredCarvers() {
-			return getLookup(RegistryKeys.CONFIGURED_CARVER_WORLDGEN);
+			return getLookup(RegistryKeys.CONFIGURED_CARVER);
 		}
 
 		/**

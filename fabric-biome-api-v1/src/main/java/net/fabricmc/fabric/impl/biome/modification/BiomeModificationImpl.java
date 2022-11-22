@@ -111,7 +111,7 @@ public class BiomeModificationImpl {
 		BiomeModificationMarker modificationTracker = (BiomeModificationMarker) impl;
 		modificationTracker.fabric_markModified();
 
-		Registry<Biome> biomes = impl.get(RegistryKeys.BIOME_WORLDGEN);
+		Registry<Biome> biomes = impl.get(RegistryKeys.BIOME);
 
 		// Build a list of all biome keys in ascending order of their raw-id to get a consistent result in case
 		// someone does something stupid.

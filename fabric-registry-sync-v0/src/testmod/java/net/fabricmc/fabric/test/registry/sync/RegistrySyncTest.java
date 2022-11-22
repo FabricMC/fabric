@@ -114,7 +114,7 @@ public class RegistrySyncTest implements ModInitializer {
 
 		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
 			setupCalled.set(true);
-			registryManager.getOptional(RegistryKeys.BIOME_WORLDGEN).ifPresent(registry -> {
+			registryManager.getOptional(RegistryKeys.BIOME).ifPresent(registry -> {
 				RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> {
 					LOGGER.info("Biome added: {}", id);
 				});
