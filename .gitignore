@@ -27,6 +27,9 @@ jars/
 out/
 classes/
 
+# Generated sources
+**/src/generated/
+
 # Debug artifacts
 run
 *.log

@@ -16,14 +16,11 @@
 
 package net.fabricmc.fabric.impl.transfer.item;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.item.ItemStack;
 
 /**
  * Internal class that allows inventory instances to defer special logic until {@link InventorySlotWrapper#onFinalCommit()} is called.
  */
-@ApiStatus.Internal
 public interface SpecialLogicInventory {
 	/**
 	 * Decide whether special logic should now be suppressed. If true, must remain suppressed until the next call.
