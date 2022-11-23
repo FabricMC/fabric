@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.itemgroup;
+package net.fabricmc.fabric.test.base.mixin;
 
-import net.minecraft.util.Identifier;
+import java.util.List;
 
-public interface FabricItemGroup {
-	int getPage();
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-	void setPage(int page);
+import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.screen.Screen;
 
-	void setId(Identifier identifier);
+@Mixin(Screen.class)
+public interface ScreenAccessor {
+	@Accessor
+	List<Drawable> getDrawables();
 }

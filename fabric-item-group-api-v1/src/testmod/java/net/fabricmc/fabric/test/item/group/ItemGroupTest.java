@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.item.group;
 
+import java.util.Objects;
+
 import com.google.common.base.Supplier;
 
 import net.minecraft.block.Blocks;
@@ -89,5 +91,8 @@ public class ItemGroupTest implements ModInitializer {
 					})
 					.build();
 		}
+
+		assert Objects.equals(ItemGroups.HOTBAR.getId().toString(), "minecraft:hotbar");
+		assert Objects.equals(ITEM_GROUP.getId().toString(), "fabric-item-group-api-v1-testmod:test_group");
 	}
 }

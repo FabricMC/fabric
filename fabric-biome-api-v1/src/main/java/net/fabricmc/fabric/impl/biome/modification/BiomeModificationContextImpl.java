@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.registry.RegistryKeys;
@@ -58,7 +57,6 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 
-@ApiStatus.Internal
 public class BiomeModificationContextImpl implements BiomeModificationContext {
 	private final DynamicRegistryManager registries;
 	private final Biome biome;
@@ -193,8 +191,8 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	}
 
 	private class GenerationSettingsContextImpl implements GenerationSettingsContext {
-		private final Registry<ConfiguredCarver<?>> carvers = registries.get(RegistryKeys.CONFIGURED_CARVER_WORLDGEN);
-		private final Registry<PlacedFeature> features = registries.get(RegistryKeys.PLACED_FEATURE_WORLDGEN);
+		private final Registry<ConfiguredCarver<?>> carvers = registries.get(RegistryKeys.CONFIGURED_CARVER);
+		private final Registry<PlacedFeature> features = registries.get(RegistryKeys.PLACED_FEATURE);
 		private final GenerationSettings generationSettings = biome.getGenerationSettings();
 
 		private boolean rebuildFlowerFeatures;

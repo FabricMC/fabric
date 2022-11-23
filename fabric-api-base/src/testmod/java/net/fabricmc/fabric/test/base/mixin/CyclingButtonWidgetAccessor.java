@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.itemgroup;
+package net.fabricmc.fabric.test.base.mixin;
 
-import net.minecraft.util.Identifier;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-public interface FabricItemGroup {
-	int getPage();
+import net.minecraft.client.gui.widget.CyclingButtonWidget;
+import net.minecraft.text.Text;
 
-	void setPage(int page);
-
-	void setId(Identifier identifier);
+@Mixin(CyclingButtonWidget.class)
+public interface CyclingButtonWidgetAccessor {
+	@Accessor
+	Text getOptionText();
 }

@@ -14,10 +14,27 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.rendering.data.attachment;
+package net.fabricmc.fabric.test.base;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
-public interface RenderDataObjectConsumer {
-	void fabric_acceptRenderDataObjects(Long2ObjectOpenHashMap<Object> renderDataObjects);
+import net.fabricmc.api.DedicatedServerModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+
+public class FabricApiAutoTestServer implements DedicatedServerModInitializer {
+	private int ticks = 0;
+
+	@Override
+	public void onInitializeServer() {
+		if (System.getProperty("fabric.autoTest") != null) {
+			ServerTickEvents.END_SERVER_TICK.register(server -> {
+				ticks++;
+
+				if (ticks == 50) {
+					MixinEnvironment.getCurrentEnvironment().audit();
+					server.stop(false);
+				}
+			});
+		}
+	}
 }
