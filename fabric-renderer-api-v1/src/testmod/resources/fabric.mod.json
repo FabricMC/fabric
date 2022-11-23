@@ -16,8 +16,5 @@
     "client": [
       "net.fabricmc.fabric.test.renderer.simple.client.RendererClientTest"
     ]
-  },
-  "mixins": [
-    "fabric-renderer-api-v1-testmod.mixins.json"
-  ]
+  }
 }
