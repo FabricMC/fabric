@@ -41,6 +41,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryBuilder;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -104,7 +105,7 @@ public final class FabricDataGenHelper {
 					DataGeneratorEntrypoint.class.getName(), ENTRYPOINT_KEY);
 		}
 
-		CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture = createRegistryWrapper(dataGeneratorInitializers);
+		CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture = CompletableFuture.supplyAsync(() -> createRegistryWrapper(dataGeneratorInitializers), Util.getMainWorkerExecutor());
 
 		for (EntrypointContainer<DataGeneratorEntrypoint> entrypointContainer : dataGeneratorInitializers) {
 			final String id = entrypointContainer.getProvider().getMetadata().getId();
@@ -135,7 +136,7 @@ public final class FabricDataGenHelper {
 		}
 	}
 
-	private static CompletableFuture<RegistryWrapper.WrapperLookup> createRegistryWrapper(List<EntrypointContainer<DataGeneratorEntrypoint>> dataGeneratorInitializers) {
+	private static RegistryWrapper.WrapperLookup createRegistryWrapper(List<EntrypointContainer<DataGeneratorEntrypoint>> dataGeneratorInitializers) {
 		// Build a list of all the RegistryBuilder's including vanilla's
 		List<RegistryBuilder> builders = new ArrayList<>();
 		builders.add(BuiltinRegistries.REGISTRY_BUILDER);
@@ -192,7 +193,7 @@ public final class FabricDataGenHelper {
 
 		RegistryWrapper.WrapperLookup wrapperLookup = merged.createWrapperLookup(DynamicRegistryManager.of(Registries.REGISTRIES));
 		BuiltinRegistries.validate(wrapperLookup);
-		return CompletableFuture.completedFuture(wrapperLookup);
+		return wrapperLookup;
 	}
 
 	/**

@@ -51,6 +51,8 @@ public interface DataGeneratorEntrypoint {
 	/**
 	 * Build a registry containing dynamic registry entries.
 	 *
+	 * <p>This is invoked asynchronously.
+	 *
 	 * @param registryBuilder a {@link RegistryBuilder} instance
 	 */
 	default void buildRegistry(RegistryBuilder registryBuilder) {
