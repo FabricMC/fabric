@@ -28,13 +28,12 @@ import net.minecraft.test.TestServer;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 
 /**
- * Vanilla enables all available datapacks automatically in TestServer#create, but it does so in alphabetical order,
- * which means the Vanilla pack has higher precedence than modded, breaking our tests.
+ * @see ModResourcePackUtil#createTestServerSettings
  */
 @Mixin(TestServer.class)
 public class TestServerMixin {
 	@Redirect(method = "create", at = @At(value = "NEW", target = "(Ljava/util/List;Ljava/util/List;)Lnet/minecraft/resource/DataPackSettings;"))
 	private static DataPackSettings replaceDefaultDataPackSettings(List<String> enabled, List<String> disabled) {
-		return ModResourcePackUtil.createDefaultDataConfiguration().dataPacks();
+		return ModResourcePackUtil.createTestServerSettings(enabled, disabled);
 	}
 }
