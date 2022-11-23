@@ -42,9 +42,17 @@ public class WorldgenProvider extends FabricDynamicRegistryProvider {
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup registries, Entries entries) {
-		final RegistryWrapper.Impl<Biome> biomeRegistry = registries.getWrapperOrThrow(RegistryKeys.BIOME_WORLDGEN);
+		final RegistryWrapper.Impl<Biome> biomeRegistry = registries.getWrapperOrThrow(RegistryKeys.BIOME);
 
-		for (RegistryKey<Biome> biomeRegistryKey : FabricBiomeTest.TEST_BIOMES) {
+		List<RegistryKey<Biome>> allBiomes = List.of(
+				TestBiomes.TEST_CRIMSON_FOREST,
+				TestBiomes.CUSTOM_PLAINS,
+				TestBiomes.TEST_END_HIGHLANDS,
+				TestBiomes.TEST_END_MIDLANDS,
+				TestBiomes.TEST_END_BARRRENS
+		);
+
+		for (RegistryKey<Biome> biomeRegistryKey : allBiomes) {
 			entries.add(biomeRegistryKey, biomeRegistry.getOrThrow(biomeRegistryKey).value());
 		}
 

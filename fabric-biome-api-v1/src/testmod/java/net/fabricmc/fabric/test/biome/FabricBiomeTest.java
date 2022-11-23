@@ -16,13 +16,10 @@
 
 package net.fabricmc.fabric.test.biome;
 
-import java.util.List;
-
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.gen.GenerationStep;
@@ -49,20 +46,6 @@ import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
 public class FabricBiomeTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-biome-api-v1-testmod";
 
-	public static final RegistryKey<Biome> TEST_CRIMSON_FOREST = RegistryKey.of(RegistryKeys.BIOME, new Identifier(MOD_ID, "test_crimson_forest"));
-	public static final RegistryKey<Biome> CUSTOM_PLAINS = RegistryKey.of(RegistryKeys.BIOME, new Identifier(MOD_ID, "custom_plains"));
-	public static final RegistryKey<Biome> TEST_END_HIGHLANDS = RegistryKey.of(RegistryKeys.BIOME, new Identifier(MOD_ID, "test_end_highlands"));
-	public static final RegistryKey<Biome> TEST_END_MIDLANDS = RegistryKey.of(RegistryKeys.BIOME, new Identifier(MOD_ID, "test_end_midlands"));
-	public static final RegistryKey<Biome> TEST_END_BARRRENS = RegistryKey.of(RegistryKeys.BIOME, new Identifier(MOD_ID, "test_end_barrens"));
-
-	public static final List<RegistryKey<Biome>> TEST_BIOMES = List.of(
-			TEST_CRIMSON_FOREST,
-			CUSTOM_PLAINS,
-			TEST_END_HIGHLANDS,
-			TEST_END_MIDLANDS,
-			TEST_END_BARRRENS
-	);
-
 	public static final RegistryKey<ConfiguredFeature<?, ?>> COMMON_DESERT_WELL = RegistryKey.of(
 			RegistryKeys.CONFIGURED_FEATURE,
 			new Identifier(FabricBiomeTest.MOD_ID, "fab_desert_well")
@@ -75,14 +58,14 @@ public class FabricBiomeTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		NetherBiomes.addNetherBiome(BiomeKeys.PLAINS, MultiNoiseUtil.createNoiseHypercube(0.0F, 0.5F, 0.0F, 0.0F, 0.0f, 0, 0.1F));
-		NetherBiomes.addNetherBiome(TEST_CRIMSON_FOREST, MultiNoiseUtil.createNoiseHypercube(0.0F, -0.15F, 0.0f, 0.0F, 0.0f, 0.0F, 0.2F));
+		NetherBiomes.addNetherBiome(TestBiomes.TEST_CRIMSON_FOREST, MultiNoiseUtil.createNoiseHypercube(0.0F, -0.15F, 0.0f, 0.0F, 0.0f, 0.0F, 0.2F));
 
 		// TESTING HINT: to get to the end:
 		// /execute in minecraft:the_end run tp @s 0 90 0
 		TheEndBiomes.addHighlandsBiome(BiomeKeys.PLAINS, 5.0);
-		TheEndBiomes.addHighlandsBiome(TEST_END_HIGHLANDS, 5.0);
-		TheEndBiomes.addMidlandsBiome(TEST_END_HIGHLANDS, TEST_END_MIDLANDS, 10.0);
-		TheEndBiomes.addBarrensBiome(TEST_END_HIGHLANDS, TEST_END_BARRRENS, 10.0);
+		TheEndBiomes.addHighlandsBiome(TestBiomes.TEST_END_HIGHLANDS, 5.0);
+		TheEndBiomes.addMidlandsBiome(TestBiomes.TEST_END_HIGHLANDS, TestBiomes.TEST_END_MIDLANDS, 10.0);
+		TheEndBiomes.addBarrensBiome(TestBiomes.TEST_END_HIGHLANDS, TestBiomes.TEST_END_BARRRENS, 10.0);
 
 		BiomeModifications.create(new Identifier("fabric:test_mod"))
 				.add(ModificationPhase.ADDITIONS,

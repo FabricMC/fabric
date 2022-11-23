@@ -29,11 +29,13 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 
 public class TestBiomeTagProvider extends FabricTagProvider<Biome> {
 	public TestBiomeTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-		super(output, RegistryKeys.BIOME_WORLDGEN, registriesFuture);
+		super(output, RegistryKeys.BIOME, registriesFuture);
 	}
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup registries) {
-		getOrCreateTagBuilder(TagKey.of(RegistryKeys.BIOME_WORLDGEN, new Identifier(FabricBiomeTest.MOD_ID, "biome_tag_test"))).add(FabricBiomeTest.CUSTOM_PLAINS).add(FabricBiomeTest.TEST_END_HIGHLANDS);
+		getOrCreateTagBuilder(TagKey.of(RegistryKeys.BIOME, new Identifier(FabricBiomeTest.MOD_ID, "biome_tag_test")))
+				.add(TestBiomes.CUSTOM_PLAINS)
+				.add(TestBiomes.TEST_END_HIGHLANDS);
 	}
 }
