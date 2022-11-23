@@ -54,3 +54,26 @@ jobs:
         with:
           name: Test Screenshots
           path: run/screenshots
+
+  coverage:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'microsoft'
+          java-version: '17'
+      - name: Run coverage
+        uses: modmuss50/xvfb-action@v1
+        with:
+          run: ./gradlew coverage --stacktrace --warning-mode=fail
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Coverage Client Screenshots
+          path: run/screenshots
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Coverage Report
+          path: build/reports/jacoco/coverage/html

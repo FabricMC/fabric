@@ -9,6 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
+	id 'jacoco'
 	id "fabric-loom" version "1.0.12" apply false
 	id "com.diffplug.spotless" version "6.11.0"
 	id "org.ajoberstar.grgit" version "3.1.0"
@@ -372,9 +373,49 @@ loom {
 			name "Auto Test Client"
 			vmArg "-Dfabric.autoTest"
 		}
+
+		// Create duplicate tasks for this, as jacoco slows things down a bit
+		gametestCoverage {
+			inherit gametest
+			name "Game Test Coverage"
+			ideConfigGenerated = false
+		}
+
+		autoTestClientCoverage {
+			inherit autoTestClient
+			name "Auto Test Client Coverage"
+			ideConfigGenerated = false
+		}
 	}
 }
 test.dependsOn runGametest
+
+def coverageTasks = [runGametestCoverage, runAutoTestClientCoverage]
+
+jacoco {
+	coverageTasks.forEach {
+		applyTo it
+	}
+}
+
+task coverage(type: JacocoReport, dependsOn: coverageTasks) {
+	coverageTasks.forEach {
+		executionData it
+	}
+
+	// Add all source as input
+	allprojects { p ->
+		if (p.path.startsWith(":deprecated")) return
+		sourceSets p.sourceSets.main, p.sourceSets.client, p.sourceSets.testmod
+	}
+
+	// Exclude mixins
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: '**/mixin/**')
+		}))
+	}
+}
 
 configurations {
 	productionRuntime {
