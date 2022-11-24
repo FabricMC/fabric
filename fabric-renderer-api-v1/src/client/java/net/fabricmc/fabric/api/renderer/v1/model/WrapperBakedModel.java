@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.renderer.v1.model;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.render.model.BakedModel;
 
 /**
@@ -28,10 +30,11 @@ import net.minecraft.client.render.model.BakedModel;
  */
 public interface WrapperBakedModel {
 	/**
-	 * Return the wrapped model.
+	 * Return the wrapped model, if there is one at the moment, or {@code null} otherwise.
 	 *
 	 * <p>If there are multiple layers of wrapping, this method does not necessarily return the innermost model.
 	 */
+	@Nullable
 	BakedModel getWrappedModel();
 
 	/**
@@ -39,7 +42,15 @@ public interface WrapperBakedModel {
 	 */
 	static BakedModel unwrap(BakedModel model) {
 		while (model instanceof WrapperBakedModel wrapper) {
-			model = wrapper.getWrappedModel();
+			BakedModel wrapped = wrapper.getWrappedModel();
+
+			if (wrapped == null) {
+				return model;
+			} else if (wrapped == model) {
+				throw new IllegalArgumentException("Model " + model + " is wrapping itself!");
+			} else {
+				model = wrapped;
+			}
 		}
 
 		return model;
