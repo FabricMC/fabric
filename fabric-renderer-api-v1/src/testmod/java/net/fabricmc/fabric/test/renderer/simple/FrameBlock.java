@@ -49,25 +49,22 @@ public final class FrameBlock extends Block implements BlockEntityProvider, Fabr
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (world.isClient()) {
-			return ActionResult.PASS;
-		}
-
-		BlockEntity blockEntity = world.getBlockEntity(pos);
-
-		if (blockEntity instanceof FrameBlockEntity) {
+		if (world.getBlockEntity(pos) instanceof FrameBlockEntity frame) {
 			ItemStack stack = player.getStackInHand(hand);
 			Block handBlock = Block.getBlockFromItem(stack.getItem());
 
 			@Nullable
-			Block currentBlock = ((FrameBlockEntity) blockEntity).getBlock();
+			Block currentBlock = frame.getBlock();
 
 			if (stack.isEmpty()) {
 				// Try to remove if the stack in hand is empty
 				if (currentBlock != null) {
-					player.getInventory().offerOrDrop(new ItemStack(currentBlock));
-					((FrameBlockEntity) blockEntity).setBlock(null);
-					return ActionResult.SUCCESS;
+					if (!world.isClient()) {
+						player.getInventory().offerOrDrop(new ItemStack(currentBlock));
+						frame.setBlock(null);
+					}
+
+					return ActionResult.success(world.isClient());
 				}
 
 				return ActionResult.PASS;
@@ -83,12 +80,17 @@ public final class FrameBlock extends Block implements BlockEntityProvider, Fabr
 				return ActionResult.FAIL;
 			}
 
-			if (currentBlock != null) {
-				player.getInventory().offerOrDrop(new ItemStack(currentBlock));
+			stack.decrement(1);
+
+			if (!world.isClient()) {
+				if (currentBlock != null) {
+					player.getInventory().offerOrDrop(new ItemStack(currentBlock));
+				}
+
+				frame.setBlock(handBlock);
 			}
 
-			((FrameBlockEntity) blockEntity).setBlock(handBlock);
-			return ActionResult.SUCCESS;
+			return ActionResult.success(world.isClient());
 		}
 
 		return ActionResult.FAIL;
