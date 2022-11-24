@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.event.interaction.client;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -64,33 +65,38 @@ public abstract class ClientPlayerInteractionManagerMixin {
 	private ClientPlayNetworkHandler networkHandler;
 	@Shadow
 	private GameMode gameMode;
+	@Shadow
+	private int blockBreakingCooldown;
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "attackBlock", cancellable = true)
 	public void attackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
+		fabric_fireAttackBlockCallback(pos, direction, info);
+	}
+
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "updateBlockBreakingProgress", cancellable = true)
+	public void method_2902(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
+		if (gameMode.isCreative()) {
+			fabric_fireAttackBlockCallback(pos, direction, info);
+		}
+	}
+
+	@Unique
+	private void fabric_fireAttackBlockCallback(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
 		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(client.player, client.world, Hand.MAIN_HAND, pos, direction);
 
 		if (result != ActionResult.PASS) {
-			// Returning true will spawn particles and trigger the animation of the hand -> only for SUCCESS.
-			info.setReturnValue(result == ActionResult.SUCCESS);
+			// Returning true will spawn particles and trigger the animation of the hand -> only for SUCCESS or CONSUME_PARTIAL.
+			info.setReturnValue(result == ActionResult.SUCCESS || result == ActionResult.CONSUME_PARTIAL);
+
+			// Set block break delay for CONSUME_PARTIAL
+			if (result == ActionResult.CONSUME_PARTIAL) {
+				blockBreakingCooldown = 5;
+			}
 
 			// We also need to let the server process the action if it's accepted.
 			if (result.isAccepted()) {
 				sendSequencedPacket(client.world, id -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction, id));
 			}
-		}
-	}
-
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "updateBlockBreakingProgress", cancellable = true)
-	public void method_2902(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
-		if (!gameMode.isCreative()) {
-			return;
-		}
-
-		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(client.player, client.world, Hand.MAIN_HAND, pos, direction);
-
-		if (result != ActionResult.PASS) {
-			// Returning true will spawn particles and trigger the animation of the hand -> only for SUCCESS.
-			info.setReturnValue(result == ActionResult.SUCCESS);
 		}
 	}
 

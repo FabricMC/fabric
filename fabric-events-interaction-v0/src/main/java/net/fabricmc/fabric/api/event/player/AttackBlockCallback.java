@@ -30,12 +30,21 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * Callback for left-clicking ("attacking") a block.
  * Is hooked in before the spectator check, so make sure to check for the player's game mode as well!
  *
- * <p>Upon return:
- * <ul><li>SUCCESS cancels further processing and, on the client, sends a packet to the server.
- * <li>PASS falls back to further processing.
- * <li>FAIL cancels further processing and does not send a packet to the server.</ul>
+ * <p>On the client-side, the return values have the following meaning:
+ * <ul>
+ *     <li>SUCCESS cancels further processing and sends a packet to the server.
+ *     <b>However, it does not set the cooldown for block breaking, allowing block breaking again in the next client tick.</b></li>
+ *     <li>CONSUME_PARTIAL cancels further processing and sends a packet to the server.
+ *     <b>Additionally, it sets the cooldown for block breaking on the client, preventing spamming.</b></li>
+ *     <li>PASS falls back to further processing.</li>
+ *     <li>FAIL cancels further processing and does not send a packet to the server.</li>
+ * </ul>
  *
- * <p>ATTACK_BLOCK does not let you control the packet sending process yet.
+ * <p>On the server-side, the return values have the following meaning:
+ * <ul>
+ *     <li>PASS falls back to further processing.</li>
+ *     <li>Any other value cancels further processing.</li>
+ * </ul>
  */
 public interface AttackBlockCallback {
 	Event<AttackBlockCallback> EVENT = EventFactory.createArrayBacked(AttackBlockCallback.class,
