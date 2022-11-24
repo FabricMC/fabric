@@ -41,7 +41,7 @@ public class ChiseledBookshelfBlockEntityMixin implements SpecialLogicInventory 
 	@Shadow
 	private DefaultedList<ItemStack> inventory;
 	@Shadow
-	private int field_41601; // last interacted slot
+	private int lastInteractedSlot; // last interacted slot
 	@Unique
 	private boolean fabric_suppressSpecialLogic = false;
 
@@ -67,24 +67,24 @@ public class ChiseledBookshelfBlockEntityMixin implements SpecialLogicInventory 
 	private final SnapshotParticipant<Integer> fabric_lastInteractedParticipant = new SnapshotParticipant<>() {
 		@Override
 		protected Integer createSnapshot() {
-			return field_41601;
+			return lastInteractedSlot;
 		}
 
 		@Override
 		protected void readSnapshot(Integer snapshot) {
-			field_41601 = snapshot;
+			lastInteractedSlot = snapshot;
 		}
 
 		@Override
 		protected void onFinalCommit() {
-			updateState(field_41601);
+			updateState(lastInteractedSlot);
 		}
 	};
 
 	@Override
 	public void fabric_onTransfer(int slot, TransactionContext transaction) {
 		fabric_lastInteractedParticipant.updateSnapshots(transaction);
-		field_41601 = slot;
+		lastInteractedSlot = slot;
 	}
 
 	@Override

@@ -172,27 +172,27 @@ public class VanillaStorageTests {
 		// Second, check that we correctly update the last modified slot.
 		try (Transaction tx = Transaction.openOuter()) {
 			if (storage.getSlot(1).insert(book, 1, tx) != 1) throw new GameTestException("Should have inserted 1 book");
-			if (bookshelf.method_47887() != 1) throw new GameTestException("Last modified slot should be 1");
+			if (bookshelf.getLastInteractedSlot() != 1) throw new GameTestException("Last modified slot should be 1");
 
 			if (storage.getSlot(2).insert(book, 1, tx) != 1) throw new GameTestException("Should have inserted 1 book");
-			if (bookshelf.method_47887() != 2) throw new GameTestException("Last modified slot should be 2");
+			if (bookshelf.getLastInteractedSlot() != 2) throw new GameTestException("Last modified slot should be 2");
 
 			if (storage.getSlot(1).extract(book, 1, tx) != 1) throw new GameTestException("Should have extracted 1 book");
-			if (bookshelf.method_47887() != 1) throw new GameTestException("Last modified slot should be 1");
+			if (bookshelf.getLastInteractedSlot() != 1) throw new GameTestException("Last modified slot should be 1");
 
 			// Now, create an aborted nested transaction.
 			try (Transaction nested = tx.openNested()) {
 				if (storage.insert(book, 100, nested) != 5) throw new GameTestException("Should have inserted 5 books");
 				// Now, last modified slot should be 5.
-				if (bookshelf.method_47887() != 5) throw new GameTestException("Last modified slot should be 5");
+				if (bookshelf.getLastInteractedSlot() != 5) throw new GameTestException("Last modified slot should be 5");
 			}
 
 			// And it's back to 1 in theory.
-			if (bookshelf.method_47887() != 1) throw new GameTestException("Last modified slot should be 1");
+			if (bookshelf.getLastInteractedSlot() != 1) throw new GameTestException("Last modified slot should be 1");
 			tx.commit();
 		}
 
-		if (bookshelf.method_47887() != 1) throw new GameTestException("Last modified slot should be 1 after committing transaction");
+		if (bookshelf.getLastInteractedSlot() != 1) throw new GameTestException("Last modified slot should be 1 after committing transaction");
 
 		// Let's also check the state properties. Only slot 2 should be occupied.
 		BlockState state = bookshelf.getCachedState();

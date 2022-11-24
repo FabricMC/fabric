@@ -322,7 +322,7 @@ javadoc {
 				"https://javadoc.lwjgl.org/",
 				"https://www.javadoc.io/doc/com.google.code.gson/gson/2.10/",
 				"https://javadoc.io/doc/org.jetbrains/annotations/latest/",
-				"https://fastutil.di.unimi.it/docs/",
+				"https://javadoc.io/doc/it.unimi.dsi/fastutil/",
 				"https://javadoc.scijava.org/JOML/",
 				"https://maven.fabricmc.net/docs/yarn-${rootProject.minecraft_version}${project.yarn_version}/"
 		)
