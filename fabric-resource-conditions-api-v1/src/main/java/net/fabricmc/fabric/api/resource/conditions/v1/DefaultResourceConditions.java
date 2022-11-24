@@ -155,7 +155,7 @@ public final class DefaultResourceConditions {
 	 * @apiNote This condition's ID is {@code fabric:features_enabled}, and takes one property:
 	 * {@code features}, which is the array of the IDs of the feature flag to check.
 	 */
-	public static ConditionJsonProvider featuresEnabled(FeatureFlag ...features) {
+	public static ConditionJsonProvider featuresEnabled(FeatureFlag... features) {
 		return ResourceConditionsImpl.featuresEnabled(FEATURES_ENABLED, features);
 	}
 

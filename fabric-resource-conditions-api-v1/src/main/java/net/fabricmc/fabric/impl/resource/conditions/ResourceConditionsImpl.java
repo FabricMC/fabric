@@ -209,7 +209,7 @@ public final class ResourceConditionsImpl {
 		return true;
 	}
 
-	public static ConditionJsonProvider featuresEnabled(Identifier id, final FeatureFlag ...features) {
+	public static ConditionJsonProvider featuresEnabled(Identifier id, final FeatureFlag... features) {
 		final Set<Identifier> ids = FeatureFlags.FEATURE_MANAGER.toId(FeatureFlags.FEATURE_MANAGER.featureSetOf(features));
 
 		return new ConditionJsonProvider() {
