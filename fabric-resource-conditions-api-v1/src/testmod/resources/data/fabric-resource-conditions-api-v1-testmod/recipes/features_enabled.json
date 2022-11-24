@@ -10,8 +10,11 @@
   },
   "fabric:load_conditions": [
     {
-      "condition": "fabric:feature_enabled",
-      "feature": "minecraft:vanilla"
+      "condition": "fabric:features_enabled",
+      "features": [
+        "minecraft:vanilla",
+        "minecraft:bundle"
+      ]
     }
   ]
 }
