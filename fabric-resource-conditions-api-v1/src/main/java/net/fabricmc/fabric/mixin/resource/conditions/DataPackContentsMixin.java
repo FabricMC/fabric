@@ -33,12 +33,12 @@ import net.minecraft.server.command.CommandManager;
 
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
-/**
- * Clear the tags captured by {@link DataPackContentsMixin}.
- * This must happen after the resource reload is complete, to ensure that the tags remain available throughout the entire "apply" phase.
- */
 @Mixin(DataPackContents.class)
 public class DataPackContentsMixin {
+	/**
+	 * Clear the tags captured by {@link DataPackContentsMixin}.
+	 * This must happen after the resource reload is complete, to ensure that the tags remain available throughout the entire "apply" phase.
+	 */
 	@Inject(
 			method = "refresh",
 			at = @At("HEAD")
