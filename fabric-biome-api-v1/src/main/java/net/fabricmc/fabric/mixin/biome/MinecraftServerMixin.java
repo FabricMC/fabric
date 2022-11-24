@@ -30,9 +30,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.SaveLoader;
 import net.minecraft.server.WorldGenerationProgressListenerFactory;
 import net.minecraft.util.ApiServices;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKeys;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.level.storage.LevelStorage;
 
@@ -48,8 +48,8 @@ public class MinecraftServerMixin {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void addNetherBiomes(Thread serverThread, LevelStorage.Session session, ResourcePackManager dataPackManager, SaveLoader saveLoader, Proxy proxy, DataFixer dataFixer, ApiServices apiServices, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory, CallbackInfo ci) {
-		Registry<DimensionOptions> registry = getRegistryManager().get(RegistryKeys.field_41224);
+		Registry<DimensionOptions> registry = getRegistryManager().get(RegistryKeys.DIMENSION);
 
-		registry.stream().forEach(dimensionOptions -> NetherBiomeData.modifyBiomeSource(getRegistryManager().getWrapperOrThrow(RegistryKeys.BIOME_WORLDGEN), dimensionOptions.chunkGenerator().getBiomeSource()));
+		registry.stream().forEach(dimensionOptions -> NetherBiomeData.modifyBiomeSource(getRegistryManager().getWrapperOrThrow(RegistryKeys.BIOME), dimensionOptions.chunkGenerator().getBiomeSource()));
 	}
 }

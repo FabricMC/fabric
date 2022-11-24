@@ -29,7 +29,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.DataPackContents;
 import net.minecraft.server.command.CommandManager;
-import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.registry.DynamicRegistryManager;
 
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 

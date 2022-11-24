@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.registry.Registries;
+import net.minecraft.registry.Registries;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockInitTracker;

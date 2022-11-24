@@ -9,7 +9,8 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "1.0.11" apply false
+	id 'jacoco'
+	id "fabric-loom" version "1.0.12" apply false
 	id "com.diffplug.spotless" version "6.11.0"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -248,9 +249,19 @@ allprojects {
 		archiveClassifier = "testmod"
 	}
 
-	[jar, testmodJar, sourcesJar].each {
+	[jar, sourcesJar].each {
 		it.from(rootProject.file("LICENSE")) {
 			rename { "${it}-${project.archivesBaseName}"}
+		}
+	}
+
+	if (file("src/client").exists() && !file("src/main").exists()) {
+		remapJar {
+			additionalClientOnlyEntries.add("LICENSE-${project.archivesBaseName}")
+		}
+
+		remapSourcesJar {
+			additionalClientOnlyEntries.add("LICENSE-${project.archivesBaseName}")
 		}
 	}
 
@@ -266,6 +277,9 @@ allprojects {
 		source(sourceSets.client.output)
 		source(sourceSets.testmod.output)
 	}
+
+	// Apply to each valid subproject.
+	apply from: rootProject.file('gradle/package-info.gradle')
 }
 
 remapTestmodJar {
@@ -306,9 +320,9 @@ javadoc {
 				"https://www.slf4j.org/apidocs/",
 				"https://netty.io/4.1/api/",
 				"https://javadoc.lwjgl.org/",
-				"https://www.javadoc.io/doc/com.google.code.gson/gson/2.9.1/",
+				"https://www.javadoc.io/doc/com.google.code.gson/gson/2.10/",
 				"https://javadoc.io/doc/org.jetbrains/annotations/latest/",
-				"https://fastutil.di.unimi.it/docs/",
+				"https://javadoc.io/doc/it.unimi.dsi/fastutil/",
 				"https://javadoc.scijava.org/JOML/",
 				"https://maven.fabricmc.net/docs/yarn-${rootProject.minecraft_version}${project.yarn_version}/"
 		)
@@ -319,8 +333,8 @@ javadoc {
 	allprojects.each {
 		if (it.name == "deprecated") return
 
-		source(it.sourceSets.main.allJava.srcDirs)
-		source(it.sourceSets.client.allJava.srcDirs)
+		source(it.sourceSets.main.allJava)
+		source(it.sourceSets.client.allJava)
 	}
 
 	classpath = files(sourceSets.main.compileClasspath, sourceSets.client.compileClasspath)
@@ -351,14 +365,105 @@ loom {
 		}
 		autoTestServer {
 			inherit testmodServer
-
 			name "Auto Test Server"
-
 			vmArg "-Dfabric.autoTest"
+		}
+		autoTestClient {
+			inherit testmodClient
+			name "Auto Test Client"
+			vmArg "-Dfabric.autoTest"
+		}
+
+		// Create duplicate tasks for this, as jacoco slows things down a bit
+		gametestCoverage {
+			inherit gametest
+			name "Game Test Coverage"
+			ideConfigGenerated = false
+		}
+
+		autoTestClientCoverage {
+			inherit autoTestClient
+			name "Auto Test Client Coverage"
+			ideConfigGenerated = false
 		}
 	}
 }
 test.dependsOn runGametest
+
+def coverageTasks = [runGametestCoverage, runAutoTestClientCoverage]
+
+jacoco {
+	coverageTasks.forEach {
+		applyTo it
+	}
+}
+
+task coverage(type: JacocoReport, dependsOn: coverageTasks) {
+	coverageTasks.forEach {
+		executionData it
+	}
+
+	// Add all source as input
+	allprojects { p ->
+		if (p.path.startsWith(":deprecated")) return
+		sourceSets p.sourceSets.main, p.sourceSets.client, p.sourceSets.testmod
+	}
+
+	// Exclude mixins
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: '**/mixin/**')
+		}))
+	}
+}
+
+configurations {
+	productionRuntime {
+		extendsFrom configurations.minecraftLibraries
+		extendsFrom configurations.loaderLibraries
+		extendsFrom configurations.minecraftRuntimeOnlyLibraries
+	}
+}
+
+dependencies {
+	productionRuntime "net.fabricmc:fabric-loader:${project.loader_version}"
+	productionRuntime "net.fabricmc:intermediary:${project.minecraft_version}"
+}
+
+import net.fabricmc.loom.util.OperatingSystem
+
+// This is very far beyond loom's API if you copy this, you're on your own.
+task runProductionAutoTestClient(type: JavaExec, dependsOn: [remapJar, remapTestmodJar]) {
+	classpath.from configurations.productionRuntime
+	mainClass = "net.fabricmc.loader.impl.launch.knot.KnotClient"
+	workingDir = file("run")
+
+	afterEvaluate {
+		dependsOn downloadAssets
+	}
+
+	doFirst {
+		classpath.from loom.minecraftProvider.minecraftClientJar
+		workingDir.mkdirs()
+
+		args(
+			"--assetIndex", loom.minecraftProvider.versionInfo.assetIndex().fabricId(loom.minecraftProvider.minecraftVersion()),
+			"--assetsDir", new File(loom.files.userCache, "assets").absolutePath,
+			"--gameDir", workingDir.absolutePath
+		)
+
+		if (OperatingSystem.CURRENT_OS == OperatingSystem.MAC_OS) {
+			jvmArgs(
+				"-XstartOnFirstThread"
+			)
+		}
+
+		jvmArgs(
+			"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
+			"-Dfabric.autoTest"
+		)
+	}
+}
 
 subprojects {
 	if (it.name == "deprecated") return

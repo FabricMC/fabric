@@ -19,8 +19,6 @@ package net.fabricmc.fabric.impl.client.screen;
 import java.util.AbstractList;
 import java.util.List;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
@@ -30,7 +28,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 // TODO: When events for listening to addition of child elements are added, fire events from this list.
-@ApiStatus.Internal
 @Environment(EnvType.CLIENT)
 public final class ButtonList extends AbstractList<ClickableWidget> {
 	private final List<Drawable> drawables;

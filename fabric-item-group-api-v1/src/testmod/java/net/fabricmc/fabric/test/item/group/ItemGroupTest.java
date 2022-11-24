@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.item.group;
 
+import java.util.Objects;
+
 import com.google.common.base.Supplier;
 
 import net.minecraft.block.Blocks;
@@ -24,10 +26,10 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registries;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -44,6 +46,7 @@ public class ItemGroupTest implements ModInitializer {
 			.entries((enabledFeatures, entries, operatorEnabled) -> {
 				entries.addAll(Registries.ITEM.stream()
 						.map(ItemStack::new)
+						.filter(input -> !input.isEmpty())
 						.toList());
 			})
 			.build();
@@ -80,9 +83,16 @@ public class ItemGroupTest implements ModInitializer {
 					.displayName(Text.literal("Test Item Group: " + i))
 					.icon((Supplier<ItemStack>) () -> new ItemStack(Registries.BLOCK.get(index)))
 					.entries((enabledFeatures, entries, operatorEnabled) -> {
-						entries.add(new ItemStack(Registries.ITEM.get(index)));
+						var itemStack = new ItemStack(Registries.ITEM.get(index));
+
+						if (!itemStack.isEmpty()) {
+							entries.add(itemStack);
+						}
 					})
 					.build();
 		}
+
+		assert Objects.equals(ItemGroups.HOTBAR.getId().toString(), "minecraft:hotbar");
+		assert Objects.equals(ITEM_GROUP.getId().toString(), "fabric-item-group-api-v1-testmod:test_group");
 	}
 }

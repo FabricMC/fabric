@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.mixin.itemgroup;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
-import net.minecraft.item.ItemStackSet;
+import net.minecraft.item.ItemStack;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 
@@ -44,14 +46,17 @@ import net.fabricmc.fabric.impl.itemgroup.MinecraftItemGroups;
 
 @Mixin(ItemGroup.class)
 abstract class ItemGroupMixin implements IdentifiableItemGroup, FabricItemGroup {
-	@Shadow(aliases = "field_40859")
-	private ItemStackSet displayStacks;
+	@Shadow
+	private Collection<ItemStack> displayStacks;
 
-	@Shadow(aliases = "field_40860")
-	private ItemStackSet searchTabStacks;
+	@Shadow
+	private Set<ItemStack> searchTabStacks;
 
 	@Unique
 	private int fabric_page = -1;
+
+	@Unique
+	private Identifier identifier;
 
 	@Unique
 	@Nullable
@@ -97,15 +102,19 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup, FabricItemGroup 
 
 	@Override
 	public Identifier getId() {
-		final Identifier identifier = MinecraftItemGroups.GROUP_ID_MAP.get((ItemGroup) (Object) this);
+		if (this.identifier != null) {
+			return identifier;
+		}
 
+		final Identifier vanillaId = MinecraftItemGroups.GROUP_ID_MAP.get((ItemGroup) (Object) this);
+
+		if (vanillaId != null) {
+			return vanillaId;
+		}
+
+		// No id known, generate a random one
 		if (identifier == null) {
-			if (fabric_fallbackUUID == null) {
-				fabric_fallbackUUID = UUID.randomUUID();
-			}
-
-			// Fallback when no ID is found for this ItemGroup.
-			return new Identifier("minecraft", "unidentified_" + fabric_fallbackUUID);
+			setId(new Identifier("minecraft", "unidentified_" + UUID.randomUUID()));
 		}
 
 		return identifier;
@@ -123,5 +132,14 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup, FabricItemGroup 
 	@Override
 	public void setPage(int page) {
 		this.fabric_page = page;
+	}
+
+	@Override
+	public void setId(Identifier identifier) {
+		if (this.identifier != null) {
+			throw new IllegalStateException("Cannot set id to (%s) as item group already has id (%s)".formatted(identifier, this.identifier));
+		}
+
+		this.identifier = identifier;
 	}
 }

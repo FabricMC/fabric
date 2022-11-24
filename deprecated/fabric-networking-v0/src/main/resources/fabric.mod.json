@@ -17,10 +17,10 @@
   ],
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.impl.networking.OldNetworkingHooks"
+      "net.fabricmc.fabric.impl.networking.v0.OldNetworkingHooks"
     ],
     "client": [
-      "net.fabricmc.fabric.impl.networking.OldClientNetworkingHooks"
+      "net.fabricmc.fabric.impl.client.networking.v0.OldClientNetworkingHooks"
     ]
   },
   "depends": {

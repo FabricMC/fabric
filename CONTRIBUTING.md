@@ -145,7 +145,7 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
     - The annotation is not required on individual members, unless the class itself is not experimental.
 - `@ApiStatus.NonExtendable` should be used for API interfaces or classes that modders must not implement or override, but can't be `final` for some reason.
     - Adding methods to such interfaces or classes is not a breaking change.
-- `@ApiStatus.Internal` is recommended for implementation classes to avoid IDE autocompletion suggesting them. There should be no need for internal methods or classes in the public API package.
+- `@ApiStatus.Internal` is automatically applied to all implementation packages to avoid IDE autocompletion suggesting them. There should be no need for internal methods or classes in the public API package.
 
 ### Naming
 - All names should follow the [Yarn naming standards](https://github.com/FabricMC/yarn/blob/HEAD/CONVENTIONS.md).

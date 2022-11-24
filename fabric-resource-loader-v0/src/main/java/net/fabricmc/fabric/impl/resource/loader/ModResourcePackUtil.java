@@ -18,8 +18,11 @@ package net.fabricmc.fabric.impl.resource.loader;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import com.google.common.base.Charsets;
 import com.google.gson.Gson;
@@ -134,5 +137,34 @@ public final class ModResourcePackUtil {
 				new DataPackSettings(enabled, disabled),
 				FeatureFlags.DEFAULT_ENABLED_FEATURES
 		);
+	}
+
+	/**
+	 * Vanilla enables all available datapacks automatically in TestServer#create, but it does so in alphabetical order,
+	 * which means the Vanilla pack has higher precedence than modded, breaking our tests.
+	 * To fix this, we move all modded pack profiles to the end of the list.
+	 */
+	public static DataPackSettings createTestServerSettings(List<String> enabled, List<String> disabled) {
+		// Collect modded profiles
+		Set<String> moddedProfiles = new HashSet<>();
+		ModResourcePackCreator modResourcePackCreator = new ModResourcePackCreator(ResourceType.SERVER_DATA);
+		modResourcePackCreator.register(profile -> moddedProfiles.add(profile.getName()));
+
+		// Remove them from the enabled list
+		List<String> moveToTheEnd = new ArrayList<>();
+
+		for (Iterator<String> it = enabled.iterator(); it.hasNext();) {
+			String profile = it.next();
+
+			if (moddedProfiles.contains(profile)) {
+				moveToTheEnd.add(profile);
+				it.remove();
+			}
+		}
+
+		// Add back at the end
+		enabled.addAll(moveToTheEnd);
+
+		return new DataPackSettings(enabled, disabled);
 	}
 }

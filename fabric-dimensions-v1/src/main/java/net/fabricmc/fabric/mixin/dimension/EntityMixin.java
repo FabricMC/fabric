@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
@@ -66,7 +66,7 @@ public class EntityMixin implements Teleportable {
 	 * - End-to-overworld spawning behavior in ServerPlayerEntity
 	 * - ServerPlayerEntity#createEndSpawnPlatform in ServerPlayerEntity
 	 */
-	@Redirect(method = "moveToWorld", at = @At(value = "FIELD", target = "Lnet/minecraft/world/World;END:Lnet/minecraft/util/registry/RegistryKey;"))
+	@Redirect(method = "moveToWorld", at = @At(value = "FIELD", target = "Lnet/minecraft/world/World;END:Lnet/minecraft/registry/RegistryKey;"))
 	private RegistryKey<World> stopEndSpecificBehavior() {
 		if (this.customTeleportTarget != null) return null;
 		return World.END;

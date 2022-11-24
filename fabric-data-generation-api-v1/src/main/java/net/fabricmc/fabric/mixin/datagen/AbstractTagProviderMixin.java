@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.data.DataWriter;
 import net.minecraft.data.server.tag.AbstractTagProvider;
-import net.minecraft.tag.TagBuilder;
+import net.minecraft.registry.tag.TagBuilder;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;

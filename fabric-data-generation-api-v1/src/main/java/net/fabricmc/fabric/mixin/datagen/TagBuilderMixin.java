@@ -19,7 +19,7 @@ package net.fabricmc.fabric.mixin.datagen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.tag.TagBuilder;
+import net.minecraft.registry.tag.TagBuilder;
 
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 

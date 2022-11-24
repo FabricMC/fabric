@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.itemgroup;
 
+import java.util.Objects;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.item.ItemGroup;
@@ -23,14 +25,19 @@ import net.minecraft.util.Identifier;
 
 @ApiStatus.Internal
 public final class FabricItemGroupBuilderImpl extends ItemGroup.Builder {
+	private final Identifier identifier;
+
 	public FabricItemGroupBuilderImpl(Identifier identifier) {
 		// Set when building.
 		super(null, -1);
+		this.identifier = Objects.requireNonNull(identifier);
 	}
 
 	@Override
 	public ItemGroup build() {
 		final ItemGroup itemGroup = super.build();
+		final FabricItemGroup fabricItemGroup = (FabricItemGroup) itemGroup;
+		fabricItemGroup.setId(identifier);
 		ItemGroupHelper.appendItemGroup(itemGroup);
 		return itemGroup;
 	}

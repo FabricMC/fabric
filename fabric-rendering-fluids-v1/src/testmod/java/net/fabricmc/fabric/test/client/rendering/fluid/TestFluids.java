@@ -19,8 +19,8 @@ package net.fabricmc.fabric.test.client.rendering.fluid;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidBlock;
-import net.minecraft.util.registry.Registries;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 public class TestFluids {
 	public static final NoOverlayFluid NO_OVERLAY = Registry.register(Registries.FLUID, "fabric-rendering-fluids-v1-testmod:no_overlay", new NoOverlayFluid.Still());

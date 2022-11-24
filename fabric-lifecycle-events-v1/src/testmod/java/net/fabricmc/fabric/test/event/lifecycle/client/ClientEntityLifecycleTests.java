@@ -23,7 +23,7 @@ import com.google.common.collect.Iterables;
 import org.slf4j.Logger;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.registry.Registries;
+import net.minecraft.registry.Registries;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;

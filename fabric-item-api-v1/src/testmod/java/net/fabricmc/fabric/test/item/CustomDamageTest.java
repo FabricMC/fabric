@@ -16,23 +16,31 @@
 
 package net.fabricmc.fabric.test.item;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ToolMaterials;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.potion.Potions;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registries;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
+import net.fabricmc.fabric.test.item.mixin.BrewingRecipeRegistryAccessor;
 
 public class CustomDamageTest implements ModInitializer {
+	public static final Item WEIRD_PICK = new WeirdPick();
+
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "weird_pickaxe"), new WeirdPick());
+		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "weird_pickaxe"), WEIRD_PICK);
+		FuelRegistry.INSTANCE.add(WEIRD_PICK, 200);
+		BrewingRecipeRegistryAccessor.callRegisterPotionRecipe(Potions.WATER, WEIRD_PICK, Potions.AWKWARD);
 	}
 
 	public static final CustomDamageHandler WEIRD_DAMAGE_HANDLER = (stack, amount, entity, breakCallback) -> {
@@ -55,6 +63,18 @@ public class CustomDamageTest implements ModInitializer {
 		public Text getName(ItemStack stack) {
 			int v = stack.getOrCreateNbt().getInt("weird");
 			return super.getName(stack).copy().append(" (Weird Value: " + v + ")");
+		}
+
+		@Override
+		public ItemStack getRecipeRemainder(ItemStack stack) {
+			if (stack.getDamage() < stack.getMaxDamage() - 1) {
+				ItemStack moreDamaged = stack.copy();
+				moreDamaged.setCount(1);
+				moreDamaged.setDamage(stack.getDamage() + 1);
+				return moreDamaged;
+			}
+
+			return ItemStack.EMPTY;
 		}
 	}
 }

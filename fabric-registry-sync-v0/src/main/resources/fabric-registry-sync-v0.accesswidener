@@ -1,5 +1,5 @@
 accessWidener	v2	named
 
-accessible    field    net/minecraft/util/registry/SimpleRegistry frozen Z
-accessible method net/minecraft/util/registry/RegistryEntry$Reference setValue (Ljava/lang/Object;)V
-accessible    method    net/minecraft/util/registry/Registries    init    ()V
+accessible    field    net/minecraft/registry/SimpleRegistry frozen Z
+accessible method net/minecraft/registry/entry/RegistryEntry$Reference setValue (Ljava/lang/Object;)V
+accessible    method    net/minecraft/registry/Registries    init    ()V

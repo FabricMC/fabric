@@ -26,7 +26,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
-import net.minecraft.util.registry.RegistryWrapper;
+import net.minecraft.registry.RegistryWrapper;
 
 import net.fabricmc.loader.api.ModContainer;
 

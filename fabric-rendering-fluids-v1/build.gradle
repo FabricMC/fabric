@@ -2,10 +2,5 @@ archivesBaseName = "fabric-rendering-fluids-v1"
 version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
-		'fabric-api-base',
-		'fabric-textures-v0'
-])
-
-testDependencies(project, [
-	':fabric-textures-v0'
+		'fabric-api-base'
 ])

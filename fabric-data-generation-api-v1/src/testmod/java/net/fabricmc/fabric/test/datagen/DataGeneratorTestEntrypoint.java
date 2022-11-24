@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
-import net.minecraft.util.registry.RegistryKeys;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
@@ -50,12 +50,12 @@ import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.recipe.book.RecipeCategory;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.ItemTags;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.RegistryWrapper;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
@@ -197,12 +197,12 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 	private static class TestBiomeTagProvider extends FabricTagProvider<Biome> {
 		private TestBiomeTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-			super(output, RegistryKeys.BIOME_WORLDGEN, registriesFuture);
+			super(output, RegistryKeys.BIOME, registriesFuture);
 		}
 
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup registries) {
-			getOrCreateTagBuilder(TagKey.of(RegistryKeys.BIOME_WORLDGEN, new Identifier(MOD_ID, "biome_tag_test")))
+			getOrCreateTagBuilder(TagKey.of(RegistryKeys.BIOME, new Identifier(MOD_ID, "biome_tag_test")))
 					.add(BiomeKeys.BADLANDS, BiomeKeys.BAMBOO_JUNGLE)
 					.add(BiomeKeys.BASALT_DELTAS);
 		}

@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.datagen;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import net.minecraft.tag.TagEntry;
+import net.minecraft.registry.tag.TagEntry;
 import net.minecraft.util.Identifier;
 
 public class ForcedTagEntry extends TagEntry {

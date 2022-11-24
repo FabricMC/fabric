@@ -28,7 +28,7 @@ import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.registry.Registries;
+import net.minecraft.registry.Registries;
 
 import net.fabricmc.fabric.impl.registry.sync.trackers.Int2ObjectMapTracker;
 

@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
-import net.minecraft.util.registry.Registries;
+import net.minecraft.registry.Registries;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 

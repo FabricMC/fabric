@@ -147,13 +147,13 @@ abstract class LivingEntityMixin {
 	}
 
 	@Dynamic("method_18404: Synthetic lambda body for Optional.ifPresent in wakeUp")
-	@Redirect(method = "method_18404", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BedBlock;findWakeUpPosition(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/CollisionView;Lnet/minecraft/util/math/BlockPos;F)Ljava/util/Optional;"))
-	private Optional<Vec3d> modifyWakeUpPosition(EntityType<?> type, CollisionView world, BlockPos pos, float yaw) {
+	@Redirect(method = "method_18404", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BedBlock;findWakeUpPosition(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/CollisionView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;F)Ljava/util/Optional;"))
+	private Optional<Vec3d> modifyWakeUpPosition(EntityType<?> type, CollisionView world, BlockPos pos, Direction direction, float yaw) {
 		Optional<Vec3d> original = Optional.empty();
 		BlockState bedState = world.getBlockState(pos);
 
 		if (bedState.getBlock() instanceof BedBlock) {
-			original = BedBlock.findWakeUpPosition(type, world, pos, yaw);
+			original = BedBlock.findWakeUpPosition(type, world, pos, direction, yaw);
 		}
 
 		Vec3d newPos = EntitySleepEvents.MODIFY_WAKE_UP_POSITION.invoker().modifyWakeUpPosition((LivingEntity) (Object) this, pos, bedState, original.orElse(null));

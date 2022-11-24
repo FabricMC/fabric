@@ -81,7 +81,7 @@ transitive-accessible class net/minecraft/client/model/ModelPart$Vertex
 transitive-accessible class net/minecraft/client/model/ModelPart$Quad
 
 # Creating custom render layers
-transitive-accessible method net/minecraft/client/render/RenderLayer of (Lnet/minecraft/client/render/RenderPhase$Shader;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;
+transitive-accessible method net/minecraft/client/render/RenderLayer of (Lnet/minecraft/client/render/RenderPhase$ShaderProgram;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;
 
 # Creating custom sensor types
 transitive-accessible method net/minecraft/entity/ai/brain/sensor/SensorType <init> (Ljava/util/function/Supplier;)V
@@ -155,7 +155,7 @@ transitive-accessible method net/minecraft/block/FarmlandBlock <init> (Lnet/mine
 transitive-accessible method net/minecraft/block/FernBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/FletchingTableBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/FluidBlock <init> (Lnet/minecraft/fluid/FlowableFluid;Lnet/minecraft/block/AbstractBlock$Settings;)V
-transitive-accessible method net/minecraft/block/FungusBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;Lnet/minecraft/util/registry/RegistryKey;Lnet/minecraft/block/Block;)V
+transitive-accessible method net/minecraft/block/FungusBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/block/Block;)V
 transitive-accessible method net/minecraft/block/FurnaceBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/GrindstoneBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/HangingRootsBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
