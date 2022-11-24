@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
@@ -31,21 +32,19 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.resource.featuretoggle.FeatureFlag;
-import net.minecraft.resource.featuretoggle.FeatureFlags;
-import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.registry.tag.TagManagerLoader;
+import net.minecraft.resource.featuretoggle.FeatureFlag;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
-import net.fabricmc.fabric.mixin.resource.conditions.FeatureFlagAccessor;
-import net.fabricmc.fabric.mixin.resource.conditions.FeatureManagerAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 
 @ApiStatus.Internal
@@ -210,17 +209,8 @@ public final class ResourceConditionsImpl {
 		return true;
 	}
 
-	public static ConditionJsonProvider featureEnabled(Identifier id, final FeatureFlag feature) {
-		final Identifier featureId = ((FeatureManagerAccessor) FeatureFlags.FEATURE_MANAGER).getFeatureFlags().entrySet()
-				.stream()
-				.filter(flag -> {
-					FeatureFlagAccessor f1 = (FeatureFlagAccessor) flag.getValue();
-					FeatureFlagAccessor f2 = (FeatureFlagAccessor) feature;
-					return f2.getMask() == f2.getMask() && f1.getUniverse().toString().equals(f2.getUniverse().toString());
-				})
-				.findFirst()
-				.map(Map.Entry::getKey)
-				.orElseThrow(() -> new IllegalArgumentException("Unknown feature passed"));
+	public static ConditionJsonProvider featuresEnabled(Identifier id, final FeatureFlag ...features) {
+		final Set<Identifier> ids = FeatureFlags.FEATURE_MANAGER.toId(FeatureFlags.FEATURE_MANAGER.featureSetOf(features));
 
 		return new ConditionJsonProvider() {
 			@Override
@@ -230,20 +220,25 @@ public final class ResourceConditionsImpl {
 
 			@Override
 			public void writeParameters(JsonObject object) {
-				object.addProperty("feature", feature.toString());
+				JsonArray array = new JsonArray();
+
+				for (Identifier id : ids) {
+					array.add(id.toString());
+				}
+
+				object.add("features", array);
 			}
 		};
 	}
 
-	public static FeatureSet currentFeature = FeatureFlags.DEFAULT_ENABLED_FEATURES;
+	public static ThreadLocal<FeatureSet> currentFeature = ThreadLocal.withInitial(() -> FeatureFlags.DEFAULT_ENABLED_FEATURES);
 
-	public static boolean featureEnabledMatch(JsonObject object) {
-		Identifier featureId = new Identifier(JsonHelper.getString(object, "feature"));
-		FeatureFlag flag = ((FeatureManagerAccessor) FeatureFlags.FEATURE_MANAGER).getFeatureFlags().get(featureId);
+	public static boolean featuresEnabledMatch(JsonObject object) {
+		List<Identifier> featureIds = JsonHelper.getArray(object, "features").asList().stream().map((element) -> new Identifier(element.getAsString())).toList();
+		FeatureSet set = FeatureFlags.FEATURE_MANAGER.featureSetOf(featureIds, (id) -> {
+			throw new JsonParseException("Unknown feature flag: " + id);
+		});
 
-		if (flag == null) throw new JsonParseException("Unknown feature flag: " + featureId);
-
-		FeatureSet features = currentFeature;
-		return currentFeature.contains(flag);
+		return set.isSubsetOf(currentFeature.get());
 	}
 }

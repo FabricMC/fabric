@@ -4,8 +4,6 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "DataPackContentsMixin",
-    "FeatureFlagAccessor",
-    "FeatureManagerAccessor",
     "JsonDataLoaderMixin",
     "SinglePreparationResourceReloaderMixin",
     "TagManagerLoaderMixin"
