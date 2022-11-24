@@ -74,15 +74,17 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		private final RegistryWrapper.WrapperLookup registries;
 		// Registry ID -> Entries for that registry
 		private final Map<Identifier, RegistryEntries<?>> queuedEntries;
+		private final String modId;
 
 		@ApiStatus.Internal
-		Entries(RegistryWrapper.WrapperLookup registries) {
+		Entries(RegistryWrapper.WrapperLookup registries, String modId) {
 			this.registries = registries;
 			this.queuedEntries = RegistryLoader.DYNAMIC_REGISTRIES.stream()
 					.collect(Collectors.toMap(
 							e -> e.key().getValue(),
 							e -> RegistryEntries.create(registries, e)
 					));
+			this.modId = modId;
 		}
 
 		/**
@@ -122,10 +124,31 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		}
 
 		/**
-		 * Adds a new object to be data generated and returns a reference to it for use in other objects.
+		 * Adds a new object to be data generated.
+		 *
+		 * @return a reference to it for use in other objects.
 		 */
 		public <T> RegistryEntry<T> add(RegistryKey<T> registry, T object) {
 			return getQueuedEntries(registry).add(registry.getValue(), object);
+		}
+
+		/**
+		 * Adds a new {@link RegistryKey} from a given {@link RegistryWrapper.Impl} to be data generated.
+		 *
+		 * @return a reference to it for use in other objects.
+		 */
+		public <T> RegistryEntry<T> add(RegistryWrapper.Impl<T> registry, RegistryKey<T> valueKey) {
+			return add(valueKey, registry.getOrThrow(valueKey).value());
+		}
+
+		/**
+		 * All the registry entries matching the current effective modid will be data generated.
+		 */
+		public <T> List<RegistryEntry<T>> addAll(RegistryWrapper.Impl<T> registry) {
+			return registry.streamKeys()
+					.filter(registryKey -> registryKey.getValue().getNamespace().equals(modId))
+					.map(key -> add(registry, key))
+					.toList();
 		}
 
 		@SuppressWarnings("unchecked")
@@ -177,7 +200,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		return registriesFuture.thenCompose(registries -> {
 			return CompletableFuture
 					.supplyAsync(() -> {
-						Entries entries = new Entries(registries);
+						Entries entries = new Entries(registries, output.getModId());
 						configure(registries, entries);
 						return entries;
 					})
