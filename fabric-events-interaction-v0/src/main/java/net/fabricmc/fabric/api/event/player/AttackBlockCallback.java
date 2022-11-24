@@ -32,10 +32,13 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <p>On the client-side, the return values have the following meaning:
  * <ul>
- *     <li>SUCCESS cancels further processing and sends a packet to the server.
+ *     <li>SUCCESS cancels further processing, causes a hand swing, and sends a packet to the server.
  *     <b>However, it does not set the cooldown for block breaking, allowing block breaking again in the next client tick.</b></li>
- *     <li>CONSUME_PARTIAL cancels further processing and sends a packet to the server.
- *     <b>Additionally, it sets the cooldown for block breaking on the client, preventing spamming.</b></li>
+ *     <li>CONSUME cancels further processing, and sends a packet to the server. It does NOT cause a hand swing.
+ *     <b>However, it does not set the cooldown for block breaking, allowing block breaking again in the next client tick.</b></li>
+ *     <li>CONSUME_PARTIAL cancels further processing, causes a hand swing, and sends a packet to the server.
+ *     <b>Additionally, it sets the cooldown for block breaking on the client, preventing spamming.</b>
+ *     Note that this behavior is different from the normal uses of CONSUME_PARTIAL.</li>
  *     <li>PASS falls back to further processing.</li>
  *     <li>FAIL cancels further processing and does not send a packet to the server.</li>
  * </ul>
