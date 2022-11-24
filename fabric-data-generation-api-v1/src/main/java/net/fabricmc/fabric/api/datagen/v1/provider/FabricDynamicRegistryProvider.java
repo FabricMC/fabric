@@ -142,7 +142,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		}
 
 		/**
-		 * All the registry entries matching the current effective modid will be data generated.
+		 * All the registry entries whose namespace matches the current effective mod ID will be data generated.
 		 */
 		public <T> List<RegistryEntry<T>> addAll(RegistryWrapper.Impl<T> registry) {
 			return registry.streamKeys()
