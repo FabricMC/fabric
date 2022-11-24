@@ -105,7 +105,9 @@ public final class FabricDataGenHelper {
 					DataGeneratorEntrypoint.class.getName(), ENTRYPOINT_KEY);
 		}
 
-		CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture = CompletableFuture.supplyAsync(() -> createRegistryWrapper(dataGeneratorInitializers), Util.getMainWorkerExecutor());
+		// Ensure that the DataGeneratorEntrypoint is constructed on the main thread.
+		final List<DataGeneratorEntrypoint> entrypoints = dataGeneratorInitializers.stream().map(EntrypointContainer::getEntrypoint).toList();
+		CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture = CompletableFuture.supplyAsync(() -> createRegistryWrapper(entrypoints), Util.getMainWorkerExecutor());
 
 		for (EntrypointContainer<DataGeneratorEntrypoint> entrypointContainer : dataGeneratorInitializers) {
 			final String id = entrypointContainer.getProvider().getMetadata().getId();
@@ -136,14 +138,14 @@ public final class FabricDataGenHelper {
 		}
 	}
 
-	private static RegistryWrapper.WrapperLookup createRegistryWrapper(List<EntrypointContainer<DataGeneratorEntrypoint>> dataGeneratorInitializers) {
+	private static RegistryWrapper.WrapperLookup createRegistryWrapper(List<DataGeneratorEntrypoint> dataGeneratorInitializers) {
 		// Build a list of all the RegistryBuilder's including vanilla's
 		List<RegistryBuilder> builders = new ArrayList<>();
 		builders.add(BuiltinRegistries.REGISTRY_BUILDER);
 
-		for (EntrypointContainer<DataGeneratorEntrypoint> dataGeneratorInitializer : dataGeneratorInitializers) {
+		for (DataGeneratorEntrypoint entrypoint : dataGeneratorInitializers) {
 			final var registryBuilder = new RegistryBuilder();
-			dataGeneratorInitializer.getEntrypoint().buildRegistry(registryBuilder);
+			entrypoint.buildRegistry(registryBuilder);
 			builders.add(registryBuilder);
 		}
 
