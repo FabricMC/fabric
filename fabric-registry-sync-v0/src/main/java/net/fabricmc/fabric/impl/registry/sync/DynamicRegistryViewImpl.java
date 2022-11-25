@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.event.registry.DynamicRegistryView;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 
-public class DynamicRegistryViewImpl implements DynamicRegistryView {
+public final class DynamicRegistryViewImpl implements DynamicRegistryView {
 	private final Map<RegistryKey<? extends Registry<?>>, Registry<?>> registries;
 
 	public DynamicRegistryViewImpl(Map<RegistryKey<? extends Registry<?>>, Registry<?>> registries) {
