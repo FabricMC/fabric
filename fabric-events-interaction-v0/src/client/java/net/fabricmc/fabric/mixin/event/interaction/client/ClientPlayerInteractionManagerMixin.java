@@ -65,8 +65,6 @@ public abstract class ClientPlayerInteractionManagerMixin {
 	private ClientPlayNetworkHandler networkHandler;
 	@Shadow
 	private GameMode gameMode;
-	@Shadow
-	private int blockBreakingCooldown;
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "attackBlock", cancellable = true)
 	public void attackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
@@ -85,13 +83,8 @@ public abstract class ClientPlayerInteractionManagerMixin {
 		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(client.player, client.world, Hand.MAIN_HAND, pos, direction);
 
 		if (result != ActionResult.PASS) {
-			// Returning true will spawn particles and trigger the animation of the hand -> only for SUCCESS or CONSUME_PARTIAL.
-			info.setReturnValue(result == ActionResult.SUCCESS || result == ActionResult.CONSUME_PARTIAL);
-
-			// Set block break delay for CONSUME_PARTIAL
-			if (result == ActionResult.CONSUME_PARTIAL) {
-				blockBreakingCooldown = 5;
-			}
+			// Returning true will spawn particles and trigger the animation of the hand -> only for SUCCESS.
+			info.setReturnValue(result == ActionResult.SUCCESS);
 
 			// We also need to let the server process the action if it's accepted.
 			if (result.isAccepted()) {
