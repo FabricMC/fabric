@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
@@ -210,7 +211,7 @@ public final class ResourceConditionsImpl {
 	}
 
 	public static ConditionJsonProvider featuresEnabled(Identifier id, final FeatureFlag... features) {
-		final Set<Identifier> ids = FeatureFlags.FEATURE_MANAGER.toId(FeatureFlags.FEATURE_MANAGER.featureSetOf(features));
+		final Set<Identifier> ids = new TreeSet<>(FeatureFlags.FEATURE_MANAGER.toId(FeatureFlags.FEATURE_MANAGER.featureSetOf(features)));
 
 		return new ConditionJsonProvider() {
 			@Override
