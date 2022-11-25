@@ -102,29 +102,45 @@ public final class FabricDataGenerator extends DataGenerator {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * Represents a pack of generated data (i.e. resource pack). Providers are added to a pack.
+	 */
 	public final class Pack extends DataGenerator.Pack {
 		private Pack(boolean shouldRun, String name, FabricDataOutput output) {
 			super(shouldRun, name, output);
 		}
 
 		/**
-		 * Method to register a {@link Factory} to create a {@link DataProvider} that has a single argument constructor for a {@link FabricDataOutput}.
+		 * Registers a constructor of {@link DataProvider} which takes a {@link FabricDataOutput}.
 		 *
-		 * @return The {@link DataProvider}
+		 * @return the {@link DataProvider}
 		 */
 		public <T extends DataProvider> T addProvider(Factory<T> factory) {
 			return super.addProvider(output -> factory.create((FabricDataOutput) output));
 		}
 
+		/**
+		 * Registers a constructor of {@link DataProvider} which takes a {@link FabricDataOutput} and the registries.
+		 * This is used, for example, with {@link net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider}.
+		 *
+		 * @return the {@link DataProvider}
+		 */
 		public <T extends DataProvider> T addProvider(RegistryDependentFactory<T> factory) {
 			return super.addProvider(output -> factory.create((FabricDataOutput) output, registriesFuture));
 		}
 
+		/**
+		 * A factory of a data provider. This is usually the constructor.
+		 */
 		@FunctionalInterface
 		public interface Factory<T extends DataProvider> {
 			T create(FabricDataOutput output);
 		}
 
+		/**
+		 * A factory of a data provider. This is usually the constructor.
+		 * The provider has access to the registries.
+		 */
 		@FunctionalInterface
 		public interface RegistryDependentFactory<T extends DataProvider> {
 			T create(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture);

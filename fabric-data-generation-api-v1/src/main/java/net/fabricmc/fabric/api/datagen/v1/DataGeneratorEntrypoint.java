@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.datagen.v1;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.registry.RegistryBuilder;
+import net.minecraft.registry.RegistryKey;
 
 /**
  * An entry point for data generation.
@@ -49,7 +50,9 @@ public interface DataGeneratorEntrypoint {
 	}
 
 	/**
-	 * Build a registry containing dynamic registry entries.
+	 * Builds a registry containing dynamic registry entries to be generated.
+	 * Users should call {@link RegistryBuilder#addRegistry(RegistryKey, RegistryBuilder.BootstrapFunction)}
+	 * to register a bootstrap function, which adds registry entries to be generated.
 	 *
 	 * <p>This is invoked asynchronously.
 	 *

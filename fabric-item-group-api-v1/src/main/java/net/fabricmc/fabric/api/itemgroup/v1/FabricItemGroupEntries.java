@@ -49,29 +49,30 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	}
 
 	/**
-	 * @return The currently enabled feature set.
+	 * @return the currently enabled feature set
 	 */
 	public FeatureSet getEnabledFeatures() {
 		return enabledFeatures;
 	}
 
 	/**
-	 * @return Whether to show items restricted to operators, such as command blocks.
+	 * @return whether to show items restricted to operators, such as command blocks
 	 */
 	public boolean shouldShowOpRestrictedItems() {
 		return showOpRestrictedItems;
 	}
 
 	/**
-	 * @return The stacks that will be shown in the tab in the creative mode inventory. This list can be modified.
+	 * @return the stacks that will be shown in the tab in the creative mode inventory
+	 * @apiNote This list can be modified.
 	 */
 	public List<ItemStack> getDisplayStacks() {
 		return displayStacks;
 	}
 
 	/**
-	 * @return The stacks that will be searched by the creative mode inventory search. This list can be
-	 * modified.
+	 * @return the stacks that will be searched by the creative mode inventory search
+	 * @apiNote This list can be modified.
 	 */
 	public List<ItemStack> getSearchTabStacks() {
 		return searchTabStacks;
