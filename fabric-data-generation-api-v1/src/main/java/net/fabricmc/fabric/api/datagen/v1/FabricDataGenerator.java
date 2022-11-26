@@ -103,7 +103,7 @@ public final class FabricDataGenerator extends DataGenerator {
 	}
 
 	/**
-	 * Represents a pack of generated data (i.e. resource pack). Providers are added to a pack.
+	 * Represents a pack of generated data (i.e. data pack or resource pack). Providers are added to a pack.
 	 */
 	public final class Pack extends DataGenerator.Pack {
 		private Pack(boolean shouldRun, String name, FabricDataOutput output) {
