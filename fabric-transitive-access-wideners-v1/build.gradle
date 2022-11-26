@@ -14,19 +14,44 @@ import java.nio.file.FileSystem
 import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.stream.Collectors
+
+File generatedAccessWidener = file('src/main/resources/fabric-transitive-access-wideners-v1.accesswidener')
 
 task generateAccessWidener {
 	doLast {
-		List<String> lines = file("template.accesswidener").text.lines().collect(Collectors.toCollection { [] })
-		Path inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.commonJar
-
-		try (def fs = FileSystems.newFileSystem(URI.create("jar:${inputJar.toUri()}"), [create: false])) {
-			generateBlockConstructors(lines, fs)
-		}
-
-		file('src/main/resources/fabric-transitive-access-wideners-v1.accesswidener').text = String.join('\n', lines) + '\n'
+		List<String> lines = generateAccessWidener()
+		generatedAccessWidener.text = String.join('\n', lines) + '\n'
 	}
+}
+
+task validateGeneratedAccessWidener {
+	inputs.file file('template.accesswidener')
+	inputs.file generatedAccessWidener
+
+	// Ignore outputs for up-to-date checks as there aren't any (so only inputs are checked)
+	outputs.upToDateWhen { true }
+
+	doLast {
+		def expectedLines = generateAccessWidener()
+		def actualLines = generatedAccessWidener.readLines()
+
+		if (expectedLines != actualLines) {
+			throw new AssertionError("Generated access widener does not match the current output! Rerun $project.path:generateAccessWidener.")
+		}
+	}
+}
+
+check.dependsOn validateGeneratedAccessWidener
+
+List<String> generateAccessWidener() {
+	List<String> lines = new ArrayList<>(file('template.accesswidener').readLines())
+	Path inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.commonJar
+
+	try (def fs = FileSystems.newFileSystem(URI.create("jar:${inputJar.toUri()}"), [create: false])) {
+		generateBlockConstructors(lines, fs)
+	}
+
+	return lines
 }
 
 def generateBlockConstructors(List<String> lines, FileSystem fs) {
