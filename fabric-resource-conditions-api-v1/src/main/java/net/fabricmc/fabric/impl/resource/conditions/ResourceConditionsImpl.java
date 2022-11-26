@@ -128,6 +128,28 @@ public final class ResourceConditionsImpl {
 		};
 	}
 
+	public static ConditionJsonProvider featuresEnabled(Identifier id, final FeatureFlag... features) {
+		final Set<Identifier> ids = new TreeSet<>(FeatureFlags.FEATURE_MANAGER.toId(FeatureFlags.FEATURE_MANAGER.featureSetOf(features)));
+
+		return new ConditionJsonProvider() {
+			@Override
+			public Identifier getConditionId() {
+				return id;
+			}
+
+			@Override
+			public void writeParameters(JsonObject object) {
+				JsonArray array = new JsonArray();
+
+				for (Identifier id : ids) {
+					array.add(id.toString());
+				}
+
+				object.add("features", array);
+			}
+		};
+	}
+
 	// Condition implementations
 
 	public static boolean modsLoadedMatch(JsonObject object, boolean and) {
@@ -208,28 +230,6 @@ public final class ResourceConditionsImpl {
 		}
 
 		return true;
-	}
-
-	public static ConditionJsonProvider featuresEnabled(Identifier id, final FeatureFlag... features) {
-		final Set<Identifier> ids = new TreeSet<>(FeatureFlags.FEATURE_MANAGER.toId(FeatureFlags.FEATURE_MANAGER.featureSetOf(features)));
-
-		return new ConditionJsonProvider() {
-			@Override
-			public Identifier getConditionId() {
-				return id;
-			}
-
-			@Override
-			public void writeParameters(JsonObject object) {
-				JsonArray array = new JsonArray();
-
-				for (Identifier id : ids) {
-					array.add(id.toString());
-				}
-
-				object.add("features", array);
-			}
-		};
 	}
 
 	public static ThreadLocal<FeatureSet> currentFeature = ThreadLocal.withInitial(() -> FeatureFlags.DEFAULT_ENABLED_FEATURES);
