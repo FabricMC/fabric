@@ -34,6 +34,7 @@ import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
  * Contains {@link ConditionJsonProvider}s for resource conditions provided by fabric itself.
  */
 public final class DefaultResourceConditions {
+	private static final Identifier NEVER = new Identifier("fabric:never");
 	private static final Identifier NOT = new Identifier("fabric:not");
 	private static final Identifier AND = new Identifier("fabric:and");
 	private static final Identifier OR = new Identifier("fabric:or");
@@ -44,6 +45,24 @@ public final class DefaultResourceConditions {
 	private static final Identifier ITEM_TAGS_POPULATED = new Identifier("fabric:item_tags_populated");
 	private static final Identifier TAGS_POPULATED = new Identifier("fabric:tags_populated");
 	private static final Identifier FEATURES_ENABLED = new Identifier("fabric:features_enabled");
+
+	/**
+	 * Creates a condition that always returns false.
+	 *
+	 * @apiNote This condition's ID is @{code fabric:never}, and doesn't take any properties.
+	 */
+	public static ConditionJsonProvider never() {
+		return new ConditionJsonProvider() {
+			@Override
+			public Identifier getConditionId() {
+				return NEVER;
+			}
+
+			@Override
+			public void writeParameters(JsonObject object) {
+			}
+		};
+	}
 
 	/**
 	 * Creates a NOT condition that returns true if its child condition is false, and false if its child is true.
@@ -164,6 +183,7 @@ public final class DefaultResourceConditions {
 	}
 
 	static {
+		ResourceConditions.register(NEVER, object -> false);
 		ResourceConditions.register(NOT, object -> {
 			JsonObject condition = JsonHelper.getObject(object, "value");
 			return !ResourceConditions.conditionMatches(condition);
