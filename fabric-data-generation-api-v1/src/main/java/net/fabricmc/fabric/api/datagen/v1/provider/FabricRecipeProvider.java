@@ -25,6 +25,7 @@ import java.util.function.Consumer;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
@@ -32,11 +33,13 @@ import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
+import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 /**
@@ -100,5 +103,42 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	 */
 	protected Identifier getRecipeIdentifier(Identifier identifier) {
 		return new Identifier(output.getModId(), identifier.getPath());
+	}
+
+	protected final void disabled(Consumer<RecipeJsonProvider> exporter, Identifier identifier) {
+		FabricRecipeProvider.this.withConditions(exporter, DefaultResourceConditions.never()).accept(
+				new RecipeJsonProvider() {
+					@Override
+					public JsonObject toJson() {
+						return new JsonObject();
+					}
+
+					@Override
+					public void serialize(JsonObject json) {
+					}
+
+					@Override
+					public Identifier getRecipeId() {
+						return identifier;
+					}
+
+					@Override
+					public RecipeSerializer<?> getSerializer() {
+						return null;
+					}
+
+					@Nullable
+					@Override
+					public JsonObject toAdvancementJson() {
+						return null;
+					}
+
+					@Nullable
+					@Override
+					public Identifier getAdvancementId() {
+						return null;
+					}
+				}
+		);
 	}
 }
