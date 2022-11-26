@@ -18,9 +18,6 @@
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*"
   },
-  "recommends": {
-    "fabric-textures-v0": "*"
-  },
   "description": "Hooks for registering fluid renders.",
   "mixins": [
     {
