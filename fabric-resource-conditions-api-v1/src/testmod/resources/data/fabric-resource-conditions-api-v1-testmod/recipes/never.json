@@ -1,4 +1,5 @@
 {
+  "__comment": "this is going to be skipped before any check, so /shrug.",
   "fabric:load_conditions": [
     {
       "condition": "fabric:never"
