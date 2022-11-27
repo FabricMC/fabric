@@ -24,6 +24,7 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_I
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
@@ -50,6 +51,7 @@ import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.recipe.book.RecipeCategory;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;
@@ -58,6 +60,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.dimension.DimensionOptions;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.dimension.DimensionTypes;
+import net.minecraft.world.gen.WorldPreset;
+import net.minecraft.world.gen.WorldPresets;
+import net.minecraft.world.gen.chunk.FlatChunkGenerator;
+import net.minecraft.world.gen.chunk.FlatChunkGeneratorConfig;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -69,6 +78,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.WorldPresetProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 
@@ -91,7 +101,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		TestBlockTagProvider blockTagProvider = pack.addProvider(TestBlockTagProvider::new);
 		pack.addProvider((output, registries) -> new TestItemTagProvider(output, registries, blockTagProvider));
+
 		pack.addProvider(TestBiomeTagProvider::new);
+		pack.addProvider(TestWorldPresetProvider::new);
 	}
 
 	private static class TestRecipeProvider extends FabricRecipeProvider {
@@ -265,6 +277,23 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							LootPool.builder().rolls(ConstantLootNumberProvider.create(1.0F)).with(ItemEntry.builder(SIMPLE_BLOCK))
 					)
 			);
+		}
+	}
+
+	private static class TestWorldPresetProvider extends WorldPresetProvider {
+		private TestWorldPresetProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(output, registriesFuture);
+		}
+
+		@Override
+		public void generate(RegistryWrapper.WrapperLookup lookup) {
+			RegistryEntry<DimensionType> overworldType = lookup.getWrapperOrThrow(RegistryKeys.DIMENSION_TYPE).getOrThrow(DimensionTypes.OVERWORLD);
+			FlatChunkGenerator generator = new FlatChunkGenerator(FlatChunkGeneratorConfig.getDefaultConfig(
+					lookup.getWrapperOrThrow(RegistryKeys.BIOME),
+					lookup.getWrapperOrThrow(RegistryKeys.STRUCTURE_SET),
+					lookup.getWrapperOrThrow(RegistryKeys.PLACED_FEATURE)
+			));
+			this.addPreset(WorldPresets.FLAT, new WorldPreset(Map.of(DimensionOptions.OVERWORLD, new DimensionOptions(overworldType, generator))));
 		}
 	}
 }
