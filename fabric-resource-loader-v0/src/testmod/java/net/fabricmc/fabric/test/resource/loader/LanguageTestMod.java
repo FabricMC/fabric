@@ -27,9 +27,13 @@ public class LanguageTestMod implements DedicatedServerModInitializer {
 	}
 
 	private static void testTranslationLoaded() {
-		String expected = "Fabric mod";
-		String actual = Text.translatable("pack.source.fabricmod").getString();
+		testTranslationLoaded("pack.source.fabricmod", "Fabric mod");
+		testTranslationLoaded("text.fabric-resource-loader-v0-testmod.server.lang.test0", "Test from fabric-resource-loader-v0-testmod");
+		testTranslationLoaded("text.fabric-resource-loader-v0-testmod.server.lang.test1", "Test from fabric-resource-loader-v0-testmod-test1");
+	}
 
+	private static void testTranslationLoaded(String key, String expected) {
+		String actual = Text.translatable(key).getString();
 		if (!expected.equals(actual)) {
 			throw new AssertionError("Expected 'pack.source.fabricmod' to translate to " + expected + ", but translated to " + actual);
 		}

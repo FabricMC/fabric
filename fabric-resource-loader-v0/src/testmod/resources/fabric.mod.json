@@ -8,6 +8,11 @@
   "depends": {
     "fabric-resource-loader-v0": "*"
   },
+  "custom": {
+    "fabric:server-language-namespaces": [
+      "fabric-resource-loader-v0-testmod-test"
+    ]
+  },
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.resource.loader.BuiltinResourcePackTestMod",

@@ -26,6 +26,10 @@ import java.util.function.BiConsumer;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonParseException;
+
+import net.fabricmc.loader.api.metadata.CustomValue;
+import net.fabricmc.loader.api.metadata.ModMetadata;
+
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -60,7 +64,23 @@ class LanguageMixin {
 	}
 
 	private static void loadModLanguage(ModContainer container, BiConsumer<String, String> entryConsumer) {
-		Path path = container.findPath("assets/" + container.getMetadata().getId() + "/lang/" + DEFAULT_LANGUAGE + ".json").orElse(null);
+		ModMetadata metadata = container.getMetadata();
+		loadSingleFile(container, metadata.getId(), entryConsumer);
+		if (metadata.containsCustomValue("fabric:server-language-namespaces")) {
+			final CustomValue cv = metadata.getCustomValue("fabric:server-language-namespaces");
+			if (cv.getType() == CustomValue.CvType.ARRAY) {
+				cv.getAsArray().forEach(cvEach -> {
+					if (cvEach.getType() == CustomValue.CvType.STRING) {
+						String namespace = cvEach.getAsString();
+						loadSingleFile(container, namespace, entryConsumer);
+					}
+				});
+			}
+		}
+	}
+
+	private static void loadSingleFile(ModContainer container, String namespace, BiConsumer<String, String> entryConsumer) {
+		Path path = container.findPath("assets/" + namespace + "/lang/" + DEFAULT_LANGUAGE + ".json").orElse(null);
 		if (path == null || !Files.isRegularFile(path)) return;
 
 		try (InputStream stream = Files.newInputStream(path)) {
