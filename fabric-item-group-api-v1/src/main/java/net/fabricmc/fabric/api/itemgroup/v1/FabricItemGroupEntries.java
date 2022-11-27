@@ -87,6 +87,8 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	@Override
 	public void add(ItemStack stack, ItemGroup.StackVisibility visibility) {
 		if (isEnabled(stack)) {
+			checkStack(stack);
+
 			switch (visibility) {
 			case PARENT_AND_SEARCH_TABS -> {
 				this.displayStacks.add(stack);
@@ -114,6 +116,8 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	 */
 	public void prepend(ItemStack stack, ItemGroup.StackVisibility visibility) {
 		if (isEnabled(stack)) {
+			checkStack(stack);
+
 			switch (visibility) {
 			case PARENT_AND_SEARCH_TABS -> {
 				this.displayStacks.add(0, stack);
@@ -395,6 +399,8 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	 * Adds the {@link ItemStack} before the first match, if no matches the {@link ItemStack} is appended to the end of the {@link ItemGroup}.
 	 */
 	private static void addBefore(Predicate<ItemStack> predicate, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
+		checkStacks(newStacks);
+
 		for (int i = 0; i < addTo.size(); i++) {
 			if (predicate.test(addTo.get(i))) {
 				addTo.subList(i, i).addAll(newStacks);
@@ -407,6 +413,8 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	}
 
 	private static void addAfter(Predicate<ItemStack> predicate, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
+		checkStacks(newStacks);
+
 		// Iterate in reverse to add after the last match
 		for (int i = addTo.size() - 1; i >= 0; i--) {
 			if (predicate.test(addTo.get(i))) {
@@ -420,6 +428,8 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	}
 
 	private static void addBefore(ItemStack anchor, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
+		checkStacks(newStacks);
+
 		for (int i = 0; i < addTo.size(); i++) {
 			if (ItemStack.canCombine(anchor, addTo.get(i))) {
 				addTo.subList(i, i).addAll(newStacks);
@@ -432,6 +442,8 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	}
 
 	private static void addAfter(ItemStack anchor, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
+		checkStacks(newStacks);
+
 		// Iterate in reverse to add after the last match
 		for (int i = addTo.size() - 1; i >= 0; i--) {
 			if (ItemStack.canCombine(anchor, addTo.get(i))) {
@@ -445,6 +457,8 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	}
 
 	private static void addBefore(ItemConvertible anchor, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
+		checkStacks(newStacks);
+
 		Item anchorItem = anchor.asItem();
 
 		for (int i = 0; i < addTo.size(); i++) {
@@ -459,6 +473,8 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	}
 
 	private static void addAfter(ItemConvertible anchor, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
+		checkStacks(newStacks);
+
 		Item anchorItem = anchor.asItem();
 
 		// Iterate in reverse to add after the last match
@@ -471,5 +487,21 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 
 		// Anchor not found, add to end
 		addTo.addAll(newStacks);
+	}
+
+	private static void checkStacks(Collection<ItemStack> stacks) {
+		for (ItemStack stack : stacks) {
+			checkStack(stack);
+		}
+	}
+
+	private static void checkStack(ItemStack stack) {
+		if (stack.isEmpty()) {
+			throw new IllegalArgumentException("Cannot add empty stack");
+		}
+
+		if (stack.getCount() != 1) {
+			throw new IllegalArgumentException("Stack size must be exactly 1");
+		}
 	}
 }
