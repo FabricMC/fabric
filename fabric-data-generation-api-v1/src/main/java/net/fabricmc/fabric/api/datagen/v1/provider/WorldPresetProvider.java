@@ -45,13 +45,13 @@ public abstract class WorldPresetProvider implements DataProvider {
 	protected final boolean addPreset(RegistryKey<WorldPreset> key, WorldPreset preset) {
 		Objects.requireNonNull(key, "Preset key cannot be null");
 		Objects.requireNonNull(preset, "World preset cannot be null");
-		return presets.putIfAbsent(key, preset) != null;
+		return presets.computeIfAbsent(key, ignored -> preset) == preset;
 	}
 
 	protected final boolean addPreset(Identifier id, WorldPreset preset) {
 		Objects.requireNonNull(id, "Preset id cannot be null");
 		Objects.requireNonNull(preset, "World preset cannot be null");
-		return presets.putIfAbsent(RegistryKey.of(RegistryKeys.WORLD_PRESET, id), preset) != null;
+		return presets.computeIfAbsent(RegistryKey.of(RegistryKeys.WORLD_PRESET, id), ignored -> preset) == preset;
 	}
 
 	@Override
