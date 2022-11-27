@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * Callback for left-clicking ("attacking") a block.
  * Is hooked in before the spectator check, so make sure to check for the player's game mode as well!
  *
- * <p>On the client-side, the return values have the following meaning:
+ * <p>On the logical client, the return values have the following meaning:
  * <ul>
  *     <li>SUCCESS cancels further processing, causes a hand swing, and sends a packet to the server.</li>
  *     <li>CONSUME cancels further processing, and sends a packet to the server. It does NOT cause a hand swing.</li>
@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *     <li>FAIL cancels further processing and does not send a packet to the server.</li>
  * </ul>
  *
- * <p>On the server-side, the return values have the following meaning:
+ * <p>On the logical server, the return values have the following meaning:
  * <ul>
  *     <li>PASS falls back to further processing.</li>
  *     <li>Any other value cancels further processing.</li>
