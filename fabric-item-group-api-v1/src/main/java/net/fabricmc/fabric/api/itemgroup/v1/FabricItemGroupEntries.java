@@ -501,7 +501,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 		}
 
 		if (stack.getCount() != 1) {
-			throw new IllegalArgumentException("Stack size must be exactly 1");
+			throw new IllegalArgumentException("Stack size must be exactly 1 for stack: " + stack);
 		}
 	}
 }
