@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.message.v1;
+package net.fabricmc.fabric.api.client.message.v1;
 
 import java.time.Instant;
 

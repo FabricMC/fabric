@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.message;
+package net.fabricmc.fabric.mixin.client.message;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 
-import net.fabricmc.fabric.api.message.v1.ClientMessageEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientMessageEvents;
 
 /**
  * Mixin to {@link ClientPlayNetworkHandler} to listen for sending messages and commands.

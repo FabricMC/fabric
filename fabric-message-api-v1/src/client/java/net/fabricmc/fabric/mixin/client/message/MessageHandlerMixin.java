@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.message;
+package net.fabricmc.fabric.mixin.client.message;
 
 import java.time.Instant;
 
@@ -32,7 +32,7 @@ import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.text.Text;
 
-import net.fabricmc.fabric.api.message.v1.ClientMessageEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientMessageEvents;
 
 @Mixin(MessageHandler.class)
 public abstract class MessageHandlerMixin {
