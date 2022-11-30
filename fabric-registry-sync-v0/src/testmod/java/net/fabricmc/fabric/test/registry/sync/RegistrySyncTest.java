@@ -29,9 +29,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.SimpleRegistry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -39,7 +41,6 @@ import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
@@ -89,10 +90,10 @@ public class RegistrySyncTest implements ModInitializer {
 			registerBlocks("registry_sync2", 50, 0);
 			registerBlocks("registry_sync", 2, 5);
 
-			Validate.isTrue(RegistryAttributeHolder.get(Registry.BLOCK).hasAttribute(RegistryAttribute.MODDED), "Modded block was registered but registry not marked as modded");
+			Validate.isTrue(RegistryAttributeHolder.get(Registries.BLOCK).hasAttribute(RegistryAttribute.MODDED), "Modded block was registered but registry not marked as modded");
 
 			if (REGISTER_ITEMS) {
-				Validate.isTrue(RegistryAttributeHolder.get(Registry.ITEM).hasAttribute(RegistryAttribute.MODDED), "Modded item was registered but registry not marked as modded");
+				Validate.isTrue(RegistryAttributeHolder.get(Registries.ITEM).hasAttribute(RegistryAttribute.MODDED), "Modded item was registered but registry not marked as modded");
 			}
 		}
 
@@ -102,7 +103,7 @@ public class RegistrySyncTest implements ModInitializer {
 
 		Registry.register(fabricRegistry, new Identifier("registry_sync", "test"), "test");
 
-		Validate.isTrue(Registry.REGISTRIES.getIds().contains(new Identifier("registry_sync", "fabric_registry")));
+		Validate.isTrue(Registries.REGISTRIES.getIds().contains(new Identifier("registry_sync", "fabric_registry")));
 
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.MODDED));
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.SYNCED));
@@ -112,10 +113,8 @@ public class RegistrySyncTest implements ModInitializer {
 
 		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
 			setupCalled.set(true);
-			registryManager.getOptional(Registry.BIOME_KEY).ifPresent(registry -> {
-				RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> {
-					LOGGER.info("Biome added: {}", id);
-				});
+			registryManager.registerEntryAdded(RegistryKeys.BIOME, (rawId, id, object) -> {
+				LOGGER.info("Biome added: {}", id);
 			});
 		});
 
@@ -126,17 +125,17 @@ public class RegistrySyncTest implements ModInitializer {
 		});
 
 		// Vanilla status effects don't have an entry for the int id 0, test we can handle this.
-		RegistryAttributeHolder.get(Registry.STATUS_EFFECT).addAttribute(RegistryAttribute.MODDED);
+		RegistryAttributeHolder.get(Registries.STATUS_EFFECT).addAttribute(RegistryAttribute.MODDED);
 	}
 
 	private static void registerBlocks(String namespace, int amount, int startingId) {
 		for (int i = 0; i < amount; i++) {
 			Block block = new Block(AbstractBlock.Settings.of(Material.STONE));
-			Registry.register(Registry.BLOCK, new Identifier(namespace, "block_" + (i + startingId)), block);
+			Registry.register(Registries.BLOCK, new Identifier(namespace, "block_" + (i + startingId)), block);
 
 			if (REGISTER_ITEMS) {
 				BlockItem blockItem = new BlockItem(block, new Item.Settings());
-				Registry.register(Registry.ITEM, new Identifier(namespace, "block_" + (i + startingId)), blockItem);
+				Registry.register(Registries.ITEM, new Identifier(namespace, "block_" + (i + startingId)), blockItem);
 			}
 		}
 	}

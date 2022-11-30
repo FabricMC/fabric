@@ -20,15 +20,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
@@ -114,7 +114,7 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 			Objects.requireNonNull(item, "Item convertible in item form may not be null.");
 
 			if (providerMap.putIfAbsent(item, provider) != null) {
-				LOGGER.warn("Encountered duplicate API provider registration for item: " + Registry.ITEM.getId(item));
+				LOGGER.warn("Encountered duplicate API provider registration for item: " + Registries.ITEM.getId(item));
 			}
 		}
 	}

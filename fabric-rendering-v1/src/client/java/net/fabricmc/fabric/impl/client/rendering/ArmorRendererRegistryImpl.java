@@ -21,9 +21,9 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Item;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.item.ItemConvertible;
+import net.minecraft.registry.Registries;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 
@@ -41,7 +41,7 @@ public class ArmorRendererRegistryImpl {
 			Objects.requireNonNull(item.asItem(), "armor item is null");
 
 			if (RENDERERS.putIfAbsent(item.asItem(), renderer) != null) {
-				throw new IllegalArgumentException("Custom armor renderer already exists for " + Registry.ITEM.getId(item.asItem()));
+				throw new IllegalArgumentException("Custom armor renderer already exists for " + Registries.ITEM.getId(item.asItem()));
 			}
 		}
 	}

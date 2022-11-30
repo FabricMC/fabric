@@ -17,9 +17,7 @@
 package net.fabricmc.fabric.impl.rendering.data.attachment;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import org.jetbrains.annotations.ApiStatus;
 
-@ApiStatus.Internal
 public interface RenderDataObjectConsumer {
 	void fabric_acceptRenderDataObjects(Long2ObjectOpenHashMap<Object> renderDataObjects);
 }

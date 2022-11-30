@@ -17,12 +17,12 @@
 package net.fabricmc.fabric.api.tag.convention.v1;
 
 import net.minecraft.item.Item;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 
 /**
- * See {@link net.minecraft.tag.ItemTags} for vanilla tags.
+ * See {@link net.minecraft.registry.tag.ItemTags} for vanilla tags.
  * Note that addition to some vanilla tags implies having certain functionality.
  */
 public final class ConventionalItemTags {

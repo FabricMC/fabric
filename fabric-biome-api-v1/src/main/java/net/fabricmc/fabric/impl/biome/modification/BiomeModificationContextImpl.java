@@ -30,9 +30,9 @@ import java.util.stream.Collectors;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeAdditionsSound;
@@ -40,11 +40,11 @@ import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.MusicSound;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.collection.Pool;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryEntryList;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.BiomeParticleConfig;
@@ -57,7 +57,6 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 
-@ApiStatus.Internal
 public class BiomeModificationContextImpl implements BiomeModificationContext {
 	private final DynamicRegistryManager registries;
 	private final Biome biome;
@@ -171,7 +170,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public void setAmbientSound(Optional<SoundEvent> sound) {
+		public void setAmbientSound(Optional<RegistryEntry<SoundEvent>> sound) {
 			effects.loopSound = Objects.requireNonNull(sound);
 		}
 
@@ -192,8 +191,8 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	}
 
 	private class GenerationSettingsContextImpl implements GenerationSettingsContext {
-		private final Registry<ConfiguredCarver<?>> carvers = registries.get(Registry.CONFIGURED_CARVER_KEY);
-		private final Registry<PlacedFeature> features = registries.get(Registry.PLACED_FEATURE_KEY);
+		private final Registry<ConfiguredCarver<?>> carvers = registries.get(RegistryKeys.CONFIGURED_CARVER);
+		private final Registry<PlacedFeature> features = registries.get(RegistryKeys.PLACED_FEATURE);
 		private final GenerationSettings generationSettings = biome.getGenerationSettings();
 
 		private boolean rebuildFlowerFeatures;

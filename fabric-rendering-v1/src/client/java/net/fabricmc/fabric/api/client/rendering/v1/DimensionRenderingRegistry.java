@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.DimensionEffects;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.World;
 
 import net.fabricmc.api.EnvType;

@@ -18,16 +18,17 @@ package net.fabricmc.fabric.impl.transfer.fluid;
 
 import java.util.Objects;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
@@ -37,7 +38,15 @@ public class FluidVariantImpl implements FluidVariant {
 
 		if (!fluid.isStill(fluid.getDefaultState()) && fluid != Fluids.EMPTY) {
 			// Note: the empty fluid is not still, that's why we check for it specifically.
-			throw new IllegalArgumentException("Fluid may not be flowing.");
+
+			if (fluid instanceof FlowableFluid flowable) {
+				// Normalize FlowableFluids to their still variants.
+				fluid = flowable.getStill();
+			} else {
+				// If not a FlowableFluid, we don't know how to convert -> crash.
+				Identifier id = Registries.FLUID.getId(fluid);
+				throw new IllegalArgumentException("Cannot convert flowing fluid %s (%s) into a still fluid.".formatted(id, fluid));
+			}
 		}
 
 		if (nbt == null || fluid == Fluids.EMPTY) {
@@ -79,7 +88,7 @@ public class FluidVariantImpl implements FluidVariant {
 	@Override
 	public NbtCompound toNbt() {
 		NbtCompound result = new NbtCompound();
-		result.putString("fluid", Registry.FLUID.getId(fluid).toString());
+		result.putString("fluid", Registries.FLUID.getId(fluid).toString());
 
 		if (nbt != null) {
 			result.put("tag", nbt.copy());
@@ -90,7 +99,7 @@ public class FluidVariantImpl implements FluidVariant {
 
 	public static FluidVariant fromNbt(NbtCompound compound) {
 		try {
-			Fluid fluid = Registry.FLUID.get(new Identifier(compound.getString("fluid")));
+			Fluid fluid = Registries.FLUID.get(new Identifier(compound.getString("fluid")));
 			NbtCompound nbt = compound.contains("tag") ? compound.getCompound("tag") : null;
 			return of(fluid, nbt);
 		} catch (RuntimeException runtimeException) {
@@ -105,7 +114,7 @@ public class FluidVariantImpl implements FluidVariant {
 			buf.writeBoolean(false);
 		} else {
 			buf.writeBoolean(true);
-			buf.writeVarInt(Registry.FLUID.getRawId(fluid));
+			buf.writeVarInt(Registries.FLUID.getRawId(fluid));
 			buf.writeNbt(nbt);
 		}
 	}
@@ -114,7 +123,7 @@ public class FluidVariantImpl implements FluidVariant {
 		if (!buf.readBoolean()) {
 			return FluidVariant.blank();
 		} else {
-			Fluid fluid = Registry.FLUID.get(buf.readVarInt());
+			Fluid fluid = Registries.FLUID.get(buf.readVarInt());
 			NbtCompound nbt = buf.readNbt();
 			return of(fluid, nbt);
 		}

@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.test.biome;
 
+import net.minecraft.registry.RegistryBuilder;
+import net.minecraft.registry.RegistryKeys;
+
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint {
@@ -23,5 +26,11 @@ public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		FabricDataGenerator.Pack pack = dataGenerator.createPack();
 		pack.addProvider(WorldgenProvider::new);
+		pack.addProvider(TestBiomeTagProvider::new);
+	}
+
+	@Override
+	public void buildRegistry(RegistryBuilder registryBuilder) {
+		registryBuilder.addRegistry(RegistryKeys.BIOME, TestBiomes::bootstrap);
 	}
 }

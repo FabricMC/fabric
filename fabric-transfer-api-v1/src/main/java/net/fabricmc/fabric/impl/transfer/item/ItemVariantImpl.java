@@ -18,9 +18,9 @@ package net.fabricmc.fabric.impl.transfer.item;
 
 import java.util.Objects;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -28,7 +28,7 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 
@@ -79,7 +79,7 @@ public class ItemVariantImpl implements ItemVariant {
 	@Override
 	public NbtCompound toNbt() {
 		NbtCompound result = new NbtCompound();
-		result.putString("item", Registry.ITEM.getId(item).toString());
+		result.putString("item", Registries.ITEM.getId(item).toString());
 
 		if (nbt != null) {
 			result.put("tag", nbt.copy());
@@ -90,7 +90,7 @@ public class ItemVariantImpl implements ItemVariant {
 
 	public static ItemVariant fromNbt(NbtCompound tag) {
 		try {
-			Item item = Registry.ITEM.get(new Identifier(tag.getString("item")));
+			Item item = Registries.ITEM.get(new Identifier(tag.getString("item")));
 			NbtCompound aTag = tag.contains("tag") ? tag.getCompound("tag") : null;
 			return of(item, aTag);
 		} catch (RuntimeException runtimeException) {

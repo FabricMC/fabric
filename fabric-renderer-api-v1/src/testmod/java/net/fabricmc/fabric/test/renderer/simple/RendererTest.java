@@ -22,7 +22,8 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -49,17 +50,17 @@ public final class RendererTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		for (FrameBlock frameBlock : FRAMES) {
-			Registry.register(Registry.BLOCK, frameBlock.id, frameBlock);
-			Registry.register(Registry.ITEM, frameBlock.id, new BlockItem(frameBlock, new Item.Settings()));
+			Registry.register(Registries.BLOCK, frameBlock.id, frameBlock);
+			Registry.register(Registries.ITEM, frameBlock.id, new BlockItem(frameBlock, new Item.Settings()));
 		}
 
 		// To anyone testing this: pillars are supposed to connect vertically with each other.
 		// Additionally, they should also connect vertically to frame blocks containing a pillar.
 		// (The frame block will not change, but adjacent pillars should adjust their textures).
-		Registry.register(Registry.BLOCK, PILLAR_ID, PILLAR);
-		Registry.register(Registry.ITEM, PILLAR_ID, new BlockItem(PILLAR, new Item.Settings()));
+		Registry.register(Registries.BLOCK, PILLAR_ID, PILLAR);
+		Registry.register(Registries.ITEM, PILLAR_ID, new BlockItem(PILLAR, new Item.Settings()));
 
-		Registry.register(Registry.BLOCK_ENTITY_TYPE, id("frame"), FRAME_BLOCK_ENTITY);
+		Registry.register(Registries.BLOCK_ENTITY_TYPE, id("frame"), FRAME_BLOCK_ENTITY);
 	}
 
 	public static Identifier id(String path) {

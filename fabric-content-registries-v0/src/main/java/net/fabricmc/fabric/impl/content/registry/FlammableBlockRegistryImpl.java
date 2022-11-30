@@ -21,9 +21,9 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import net.minecraft.block.Block;
-import net.minecraft.tag.TagKey;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.registry.tag.TagKey;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
@@ -56,7 +56,7 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry {
 			for (TagKey<Block> tag : registeredEntriesTag.keySet()) {
 				FlammableBlockRegistry.Entry entry = registeredEntriesTag.get(tag);
 
-				for (RegistryEntry<Block> block : Registry.BLOCK.iterateEntries(tag)) {
+				for (RegistryEntry<Block> block : Registries.BLOCK.iterateEntries(tag)) {
 					ret.put(block.value(), entry);
 				}
 			}

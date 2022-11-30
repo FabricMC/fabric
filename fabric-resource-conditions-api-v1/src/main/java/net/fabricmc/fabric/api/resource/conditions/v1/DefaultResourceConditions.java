@@ -22,10 +22,11 @@ import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
+import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
@@ -42,6 +43,7 @@ public final class DefaultResourceConditions {
 	private static final Identifier FLUID_TAGS_POPULATED = new Identifier("fabric:fluid_tags_populated");
 	private static final Identifier ITEM_TAGS_POPULATED = new Identifier("fabric:item_tags_populated");
 	private static final Identifier TAGS_POPULATED = new Identifier("fabric:tags_populated");
+	private static final Identifier FEATURES_ENABLED = new Identifier("fabric:features_enabled");
 
 	/**
 	 * Creates a NOT condition that returns true if its child condition is false, and false if its child is true.
@@ -146,6 +148,17 @@ public final class DefaultResourceConditions {
 		return ResourceConditionsImpl.tagsPopulated(TAGS_POPULATED, true, tags);
 	}
 
+	/**
+	 * Creates a condition that returns true if all the passed features are enabled.
+	 * @param features the features to check for
+	 *
+	 * @apiNote This condition's ID is {@code fabric:features_enabled}, and takes one property:
+	 * {@code features}, which is the array of the IDs of the feature flag to check.
+	 */
+	public static ConditionJsonProvider featuresEnabled(FeatureFlag... features) {
+		return ResourceConditionsImpl.featuresEnabled(FEATURES_ENABLED, features);
+	}
+
 	static void init() {
 		// init static
 	}
@@ -165,10 +178,11 @@ public final class DefaultResourceConditions {
 		});
 		ResourceConditions.register(ALL_MODS_LOADED, object -> ResourceConditionsImpl.modsLoadedMatch(object, true));
 		ResourceConditions.register(ANY_MOD_LOADED, object -> ResourceConditionsImpl.modsLoadedMatch(object, false));
-		ResourceConditions.register(BLOCK_TAGS_POPULATED, object -> ResourceConditionsImpl.tagsPopulatedMatch(object, Registry.BLOCK_KEY));
-		ResourceConditions.register(FLUID_TAGS_POPULATED, object -> ResourceConditionsImpl.tagsPopulatedMatch(object, Registry.FLUID_KEY));
-		ResourceConditions.register(ITEM_TAGS_POPULATED, object -> ResourceConditionsImpl.tagsPopulatedMatch(object, Registry.ITEM_KEY));
+		ResourceConditions.register(BLOCK_TAGS_POPULATED, object -> ResourceConditionsImpl.tagsPopulatedMatch(object, RegistryKeys.BLOCK));
+		ResourceConditions.register(FLUID_TAGS_POPULATED, object -> ResourceConditionsImpl.tagsPopulatedMatch(object, RegistryKeys.FLUID));
+		ResourceConditions.register(ITEM_TAGS_POPULATED, object -> ResourceConditionsImpl.tagsPopulatedMatch(object, RegistryKeys.ITEM));
 		ResourceConditions.register(TAGS_POPULATED, ResourceConditionsImpl::tagsPopulatedMatch);
+		ResourceConditions.register(FEATURES_ENABLED, ResourceConditionsImpl::featuresEnabledMatch);
 	}
 
 	private DefaultResourceConditions() {

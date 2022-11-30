@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
@@ -31,13 +33,17 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.tag.TagKey;
-import net.minecraft.tag.TagManagerLoader;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.TagKey;
+import net.minecraft.registry.tag.TagManagerLoader;
+import net.minecraft.resource.featuretoggle.FeatureFlag;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.loader.api.FabricLoader;
@@ -113,7 +119,7 @@ public final class ResourceConditionsImpl {
 
 				object.add("values", array);
 
-				if (includeRegistry && registryRef != Registry.ITEM_KEY) {
+				if (includeRegistry && registryRef != RegistryKeys.ITEM) {
 					// tags[0] is guaranteed to exist.
 					// Skip if this is the default (minecraft:item)
 					object.addProperty("registry", registryRef.getValue().toString());
@@ -202,5 +208,38 @@ public final class ResourceConditionsImpl {
 		}
 
 		return true;
+	}
+
+	public static ConditionJsonProvider featuresEnabled(Identifier id, final FeatureFlag... features) {
+		final Set<Identifier> ids = new TreeSet<>(FeatureFlags.FEATURE_MANAGER.toId(FeatureFlags.FEATURE_MANAGER.featureSetOf(features)));
+
+		return new ConditionJsonProvider() {
+			@Override
+			public Identifier getConditionId() {
+				return id;
+			}
+
+			@Override
+			public void writeParameters(JsonObject object) {
+				JsonArray array = new JsonArray();
+
+				for (Identifier id : ids) {
+					array.add(id.toString());
+				}
+
+				object.add("features", array);
+			}
+		};
+	}
+
+	public static ThreadLocal<FeatureSet> currentFeature = ThreadLocal.withInitial(() -> FeatureFlags.DEFAULT_ENABLED_FEATURES);
+
+	public static boolean featuresEnabledMatch(JsonObject object) {
+		List<Identifier> featureIds = JsonHelper.getArray(object, "features").asList().stream().map((element) -> new Identifier(element.getAsString())).toList();
+		FeatureSet set = FeatureFlags.FEATURE_MANAGER.featureSetOf(featureIds, (id) -> {
+			throw new JsonParseException("Unknown feature flag: " + id);
+		});
+
+		return set.isSubsetOf(currentFeature.get());
 	}
 }

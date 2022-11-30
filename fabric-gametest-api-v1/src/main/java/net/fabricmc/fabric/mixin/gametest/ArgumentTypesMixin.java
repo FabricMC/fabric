@@ -29,7 +29,7 @@ import net.minecraft.command.argument.TestClassArgumentType;
 import net.minecraft.command.argument.TestFunctionArgumentType;
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registry;
 
 @Mixin(ArgumentTypes.class)
 public abstract class ArgumentTypesMixin {
@@ -38,7 +38,7 @@ public abstract class ArgumentTypesMixin {
 		throw new AssertionError("Nope.");
 	}
 
-	@Inject(method = "register(Lnet/minecraft/util/registry/Registry;)Lnet/minecraft/command/argument/serialize/ArgumentSerializer;", at = @At("RETURN"))
+	@Inject(method = "register(Lnet/minecraft/registry/Registry;)Lnet/minecraft/command/argument/serialize/ArgumentSerializer;", at = @At("RETURN"))
 	private static void register(Registry<ArgumentSerializer<?, ?>> registry, CallbackInfoReturnable<ArgumentSerializer<?, ?>> ci) {
 		// Registered by vanilla when isDevelopment is enabled.
 		if (!SharedConstants.isDevelopment) {

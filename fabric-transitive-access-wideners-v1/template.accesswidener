@@ -81,7 +81,7 @@ transitive-accessible class net/minecraft/client/model/ModelPart$Vertex
 transitive-accessible class net/minecraft/client/model/ModelPart$Quad
 
 # Creating custom render layers
-transitive-accessible method net/minecraft/client/render/RenderLayer of (Lnet/minecraft/client/render/RenderPhase$Shader;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;
+transitive-accessible method net/minecraft/client/render/RenderLayer of (Lnet/minecraft/client/render/RenderPhase$ShaderProgram;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;
 
 # Creating custom sensor types
 transitive-accessible method net/minecraft/entity/ai/brain/sensor/SensorType <init> (Ljava/util/function/Supplier;)V
@@ -112,5 +112,9 @@ transitive-accessible method net/minecraft/village/VillagerType <init> (Ljava/la
 
 # Access stack list in SimpleInventory
 transitive-accessible field net/minecraft/inventory/SimpleInventory stacks Lnet/minecraft/util/collection/DefaultedList;
+
+# Creating custom sound events
+transitive-accessible method net/minecraft/sound/SoundEvent of (Lnet/minecraft/util/Identifier;F)Lnet/minecraft/sound/SoundEvent;
+transitive-accessible method net/minecraft/sound/SoundEvent of (Lnet/minecraft/util/Identifier;)Lnet/minecraft/sound/SoundEvent;
 
 ### Generated access wideners below

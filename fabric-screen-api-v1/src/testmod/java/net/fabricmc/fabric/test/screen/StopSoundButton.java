@@ -52,6 +52,6 @@ class StopSoundButton extends PressableWidget {
 	}
 
 	@Override
-	public void appendNarrations(NarrationMessageBuilder arg) {
+	protected void appendClickableNarrations(NarrationMessageBuilder narrationMessageBuilder) {
 	}
 }

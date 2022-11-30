@@ -16,13 +16,10 @@
 
 package net.fabricmc.fabric.impl.biome.modification;
 
-import org.jetbrains.annotations.ApiStatus;
-
 /**
  * Prevents double-modification of biomes in the same dynamic registry manager from occurring and fails-fast
  * if it does occur.
  */
-@ApiStatus.Internal
 public interface BiomeModificationMarker {
 	void fabric_markModified();
 }

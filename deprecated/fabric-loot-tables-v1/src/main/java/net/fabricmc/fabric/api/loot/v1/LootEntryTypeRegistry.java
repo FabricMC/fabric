@@ -27,7 +27,7 @@ import net.fabricmc.fabric.impl.loot.table.LootEntryTypeRegistryImpl;
  * custom loot entry types.
  *
  * @see #register
- * @deprecated Use {@link net.minecraft.util.registry.Registry#LOOT_POOL_ENTRY_TYPE} from vanilla instead.
+ * @deprecated Use {@link net.minecraft.registry.Registries#LOOT_POOL_ENTRY_TYPE} from vanilla instead.
  */
 @Deprecated
 public interface LootEntryTypeRegistry {

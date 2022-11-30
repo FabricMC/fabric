@@ -23,9 +23,9 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 
 class SoundButton extends PressableWidget {
 	private static final Random RANDOM = Random.create();
@@ -36,11 +36,11 @@ class SoundButton extends PressableWidget {
 
 	@Override
 	public void onPress() {
-		final SoundEvent event = Registry.SOUND_EVENT.getRandom(RANDOM).map(RegistryEntry::value).orElse(SoundEvents.ENTITY_GENERIC_EXPLODE);
+		final SoundEvent event = Registries.SOUND_EVENT.getRandom(RANDOM).map(RegistryEntry::value).orElse(SoundEvents.ENTITY_GENERIC_EXPLODE);
 		MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(event, 1.0F, 1.0F));
 	}
 
 	@Override
-	public void appendNarrations(NarrationMessageBuilder arg) {
+	protected void appendClickableNarrations(NarrationMessageBuilder narrationMessageBuilder) {
 	}
 }

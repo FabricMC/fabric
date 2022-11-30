@@ -16,11 +16,10 @@
 
 package net.fabricmc.fabric.test.biome;
 
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.gen.GenerationStep;
@@ -47,32 +46,26 @@ import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
 public class FabricBiomeTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-biome-api-v1-testmod";
 
-	public static final RegistryKey<Biome> TEST_CRIMSON_FOREST = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "test_crimson_forest"));
-	public static final RegistryKey<Biome> CUSTOM_PLAINS = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "custom_plains"));
-	public static final RegistryKey<Biome> TEST_END_HIGHLANDS = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "test_end_highlands"));
-	public static final RegistryKey<Biome> TEST_END_MIDLANDS = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "test_end_midlands"));
-	public static final RegistryKey<Biome> TEST_END_BARRRENS = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "test_end_barrens"));
-
 	public static final RegistryKey<ConfiguredFeature<?, ?>> COMMON_DESERT_WELL = RegistryKey.of(
-			Registry.CONFIGURED_FEATURE_KEY,
+			RegistryKeys.CONFIGURED_FEATURE,
 			new Identifier(FabricBiomeTest.MOD_ID, "fab_desert_well")
 	);
 	public static final RegistryKey<PlacedFeature> PLACED_COMMON_DESERT_WELL = RegistryKey.of(
-			Registry.PLACED_FEATURE_KEY,
+			RegistryKeys.PLACED_FEATURE,
 			new Identifier(FabricBiomeTest.MOD_ID, "fab_desert_well")
 	);
 
 	@Override
 	public void onInitialize() {
 		NetherBiomes.addNetherBiome(BiomeKeys.PLAINS, MultiNoiseUtil.createNoiseHypercube(0.0F, 0.5F, 0.0F, 0.0F, 0.0f, 0, 0.1F));
-		NetherBiomes.addNetherBiome(TEST_CRIMSON_FOREST, MultiNoiseUtil.createNoiseHypercube(0.0F, -0.15F, 0.0f, 0.0F, 0.0f, 0.0F, 0.2F));
+		NetherBiomes.addNetherBiome(TestBiomes.TEST_CRIMSON_FOREST, MultiNoiseUtil.createNoiseHypercube(0.0F, -0.15F, 0.0f, 0.0F, 0.0f, 0.0F, 0.2F));
 
 		// TESTING HINT: to get to the end:
 		// /execute in minecraft:the_end run tp @s 0 90 0
 		TheEndBiomes.addHighlandsBiome(BiomeKeys.PLAINS, 5.0);
-		TheEndBiomes.addHighlandsBiome(TEST_END_HIGHLANDS, 5.0);
-		TheEndBiomes.addMidlandsBiome(TEST_END_HIGHLANDS, TEST_END_MIDLANDS, 10.0);
-		TheEndBiomes.addBarrensBiome(TEST_END_HIGHLANDS, TEST_END_BARRRENS, 10.0);
+		TheEndBiomes.addHighlandsBiome(TestBiomes.TEST_END_HIGHLANDS, 5.0);
+		TheEndBiomes.addMidlandsBiome(TestBiomes.TEST_END_HIGHLANDS, TestBiomes.TEST_END_MIDLANDS, 10.0);
+		TheEndBiomes.addBarrensBiome(TestBiomes.TEST_END_HIGHLANDS, TestBiomes.TEST_END_BARRRENS, 10.0);
 
 		BiomeModifications.create(new Identifier("fabric:test_mod"))
 				.add(ModificationPhase.ADDITIONS,
@@ -86,7 +79,7 @@ public class FabricBiomeTest implements ModInitializer {
 							);
 						})
 				.add(ModificationPhase.ADDITIONS,
-						BiomeSelectors.tag(TagKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "tag_selector_test"))),
+						BiomeSelectors.tag(TagKey.of(RegistryKeys.BIOME, new Identifier(MOD_ID, "tag_selector_test"))),
 						context -> context.getEffects().setSkyColor(0x770000));
 
 		// Make sure data packs can define dynamic registry contents
@@ -94,16 +87,16 @@ public class FabricBiomeTest implements ModInitializer {
 		BiomeModifications.addFeature(
 				BiomeSelectors.foundInOverworld(),
 				GenerationStep.Feature.VEGETAL_DECORATION,
-				RegistryKey.of(Registry.PLACED_FEATURE_KEY, new Identifier(MOD_ID, "concrete_pile"))
+				RegistryKey.of(RegistryKeys.PLACED_FEATURE, new Identifier(MOD_ID, "concrete_pile"))
 		);
 
 		// Make sure data packs can define biomes
 		NetherBiomes.addNetherBiome(
-				RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "example_biome")),
+				RegistryKey.of(RegistryKeys.BIOME, new Identifier(MOD_ID, "example_biome")),
 				MultiNoiseUtil.createNoiseHypercube(1.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.5f, 0.3f)
 		);
 		TheEndBiomes.addHighlandsBiome(
-				RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "example_biome")),
+				RegistryKey.of(RegistryKeys.BIOME, new Identifier(MOD_ID, "example_biome")),
 				10.0
 		);
 	}

@@ -30,7 +30,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 /**
  * Registry of items that farmer villagers can plant on farmland.
@@ -79,7 +79,7 @@ public final class VillagerPlantableRegistry {
 		PLANTABLES.put(item.asItem(), plantState);
 
 		if (!(plantState.getBlock() instanceof CropBlock)) {
-			LOGGER.info("Registered a block ({}) that does not extend CropBlock, this block will not be villager harvestable by default.", Registry.BLOCK.getId(plantState.getBlock()));
+			LOGGER.info("Registered a block ({}) that does not extend CropBlock, this block will not be villager harvestable by default.", Registries.BLOCK.getId(plantState.getBlock()));
 		}
 	}
 

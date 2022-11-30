@@ -25,12 +25,10 @@ import java.util.Map;
 import java.util.PriorityQueue;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Contains phase-sorting logic for {@link ArrayBackedEvent}.
  */
-@ApiStatus.Internal
 public class PhaseSorting {
 	@VisibleForTesting
 	public static boolean ENABLE_CYCLE_WARNING = true;

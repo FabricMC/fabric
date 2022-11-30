@@ -28,7 +28,7 @@ import net.minecraft.client.render.item.ItemModels;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 import net.fabricmc.fabric.impl.registry.sync.trackers.Int2ObjectMapTracker;
 
@@ -43,7 +43,7 @@ public class ItemModelsMixin {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void onInit(BakedModelManager bakedModelManager, CallbackInfo info) {
-		Int2ObjectMapTracker.register(Registry.ITEM, "ItemModels.modelIds", modelIds);
-		Int2ObjectMapTracker.register(Registry.ITEM, "ItemModels.models", models);
+		Int2ObjectMapTracker.register(Registries.ITEM, "ItemModels.modelIds", modelIds);
+		Int2ObjectMapTracker.register(Registries.ITEM, "ItemModels.models", models);
 	}
 }

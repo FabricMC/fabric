@@ -25,16 +25,16 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
@@ -76,7 +76,7 @@ public class EntityApiLookupImpl<A, C> implements EntityApiLookup<A, C> {
 							String errorMessage = String.format(
 									"Failed to register self-implementing entities for API class %s. Can not create entity of type %s.",
 									apiClass.getCanonicalName(),
-									Registry.ENTITY_TYPE.getId(entityType)
+									Registries.ENTITY_TYPE.getId(entityType)
 							);
 							throw new NullPointerException(errorMessage);
 						}
@@ -143,7 +143,7 @@ public class EntityApiLookupImpl<A, C> implements EntityApiLookup<A, C> {
 
 		for (EntityType<?> entityType : entityTypes) {
 			if (providerMap.putIfAbsent(entityType, provider) != null) {
-				LOGGER.warn("Encountered duplicate API provider registration for entity type: " + Registry.ENTITY_TYPE.getId(entityType));
+				LOGGER.warn("Encountered duplicate API provider registration for entity type: " + Registries.ENTITY_TYPE.getId(entityType));
 			}
 		}
 	}

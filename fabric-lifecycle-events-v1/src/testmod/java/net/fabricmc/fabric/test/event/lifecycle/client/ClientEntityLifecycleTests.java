@@ -23,14 +23,14 @@ import com.google.common.collect.Iterables;
 import org.slf4j.Logger;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 
 /**
@@ -50,7 +50,7 @@ public final class ClientEntityLifecycleTests implements ClientModInitializer {
 			this.clientEntities.add(entity);
 
 			if (PRINT_CLIENT_ENTITY_MESSAGES) {
-				logger.info("[CLIENT]" + " LOADED " + Registry.ENTITY_TYPE.getId(entity.getType()).toString() + " - Entities: " + this.clientEntities.size());
+				logger.info("[CLIENT]" + " LOADED " + Registries.ENTITY_TYPE.getId(entity.getType()).toString() + " - Entities: " + this.clientEntities.size());
 			}
 		});
 
@@ -58,7 +58,7 @@ public final class ClientEntityLifecycleTests implements ClientModInitializer {
 			this.clientEntities.remove(entity);
 
 			if (PRINT_CLIENT_ENTITY_MESSAGES) {
-				logger.info("[CLIENT]" + " UNLOADED " + Registry.ENTITY_TYPE.getId(entity.getType()).toString() + " - Entities: " + this.clientEntities.size());
+				logger.info("[CLIENT]" + " UNLOADED " + Registries.ENTITY_TYPE.getId(entity.getType()).toString() + " - Entities: " + this.clientEntities.size());
 			}
 		});
 

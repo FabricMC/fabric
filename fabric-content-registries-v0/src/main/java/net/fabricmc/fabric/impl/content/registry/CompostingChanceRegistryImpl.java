@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.impl.content.registry;
 
 import net.minecraft.block.ComposterBlock;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 

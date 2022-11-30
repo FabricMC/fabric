@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -57,7 +57,7 @@ public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendere
 		Objects.requireNonNull(renderer, "renderer is null");
 
 		if (RENDERERS.putIfAbsent(item.asItem(), renderer) != null) {
-			throw new IllegalArgumentException("Item " + Registry.ITEM.getId(item.asItem()) + " already has a builtin renderer!");
+			throw new IllegalArgumentException("Item " + Registries.ITEM.getId(item.asItem()) + " already has a builtin renderer!");
 		}
 	}
 

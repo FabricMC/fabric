@@ -19,7 +19,7 @@ package net.fabricmc.fabric.mixin.biome.modification;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.registry.DynamicRegistryManager;
 
 import net.fabricmc.fabric.impl.biome.modification.BiomeModificationMarker;
 

@@ -12,6 +12,9 @@
     "main": [
       "net.fabricmc.fabric.test.resource.loader.BuiltinResourcePackTestMod",
       "net.fabricmc.fabric.test.resource.loader.ResourceReloadListenerTestMod"
+    ],
+    "server": [
+      "net.fabricmc.fabric.test.resource.loader.LanguageTestMod"
     ]
   }
 }

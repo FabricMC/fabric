@@ -32,7 +32,7 @@ import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -40,7 +40,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 /**
  * Extend this class and implement {@link FabricBlockLootTableProvider#generate}.
  *
- * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
+ * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
 public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerator implements FabricLootTableProvider {
 	private final FabricDataOutput output;
@@ -63,7 +63,7 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 	 * Disable strict validation for the passed block.
 	 */
 	public void excludeFromStrictValidation(Block block) {
-		excludedFromStrictValidation.add(Registry.BLOCK.getId(block));
+		excludedFromStrictValidation.add(Registries.BLOCK.getId(block));
 	}
 
 	@Override
@@ -93,9 +93,9 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 		if (output.isStrictValidationEnabled()) {
 			Set<Identifier> missing = Sets.newHashSet();
 
-			for (Identifier blockId : Registry.BLOCK.getIds()) {
+			for (Identifier blockId : Registries.BLOCK.getIds()) {
 				if (blockId.getNamespace().equals(output.getModId())) {
-					if (!lootTables.containsKey(Registry.BLOCK.get(blockId).getLootTableId())) {
+					if (!lootTables.containsKey(Registries.BLOCK.get(blockId).getLootTableId())) {
 						missing.add(blockId);
 					}
 				}

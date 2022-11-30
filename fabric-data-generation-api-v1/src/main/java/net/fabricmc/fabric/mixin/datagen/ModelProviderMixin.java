@@ -40,7 +40,7 @@ import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.ModelProvider;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
@@ -105,7 +105,7 @@ public class ModelProviderMixin {
 				return;
 			}
 
-			if (!Registry.BLOCK.getId(block).getNamespace().equals(dataOutput.getModId())) {
+			if (!Registries.BLOCK.getId(block).getNamespace().equals(dataOutput.getModId())) {
 				// Skip over blocks that are not from the mod we are processing.
 				cir.setReturnValue(false);
 			}
@@ -123,7 +123,7 @@ public class ModelProviderMixin {
 				return;
 			}
 
-			if (!Registry.ITEM.getId(item).getNamespace().equals(dataOutput.getModId())) {
+			if (!Registries.ITEM.getId(item).getNamespace().equals(dataOutput.getModId())) {
 				// Skip over any items from other mods.
 				ci.cancel();
 			}

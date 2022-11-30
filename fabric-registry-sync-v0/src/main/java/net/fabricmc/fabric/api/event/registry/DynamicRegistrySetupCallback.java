@@ -16,44 +16,36 @@
 
 package net.fabricmc.fabric.api.event.registry;
 
-import net.minecraft.util.registry.DynamicRegistryManager;
-
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * This event gets triggered when a new {@link DynamicRegistryManager} gets created, but before it gets filled.
+ * This event gets triggered before a dynamic registry is being loaded.
  * Therefore, this is the ideal place to register callbacks to dynamic registries.
- * For example, the following code is used to register a callback that gets triggered for any registered Biome, both JSON and code defined.
+ * For example, the following code is used to register a callback that gets triggered for any registered Biome:
  *
  * <pre>
  * {@code
- * DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
- *     registryManager.getOptional(Registry.BIOME_KEY).ifPresent(biomes -> {
- *         RegistryEntryAddedCallback.event(biomes).register((rawId, id, object) -> {
- *             // Do something
- *         });
+ * DynamicRegistrySetupCallback.EVENT.register(registryView -> {
+ *     registryView.registerEntryAdded(RegistryKeys.BIOME, (rawId, id, object) -> {
+ *         // Do something
  *     });
  * });
  * }
  * </pre>
  *
- * <p><strong>Important Note</strong>: The passed dynamic registry manager might not
- * contain the registry, as this event is invoked for each layer of
- * the combined registry manager, and each layer holds different registries.
- * Use {@link DynamicRegistryManager#getOptional} to prevent crashes.
- *
- * @see net.minecraft.util.registry.ServerDynamicRegistryType
+ * @see DynamicRegistryView
+ * @see net.minecraft.registry.ServerDynamicRegistryType
  */
 @FunctionalInterface
 public interface DynamicRegistrySetupCallback {
-	void onRegistrySetup(DynamicRegistryManager registryManager);
+	void onRegistrySetup(DynamicRegistryView registryView);
 
 	Event<DynamicRegistrySetupCallback> EVENT = EventFactory.createArrayBacked(
 			DynamicRegistrySetupCallback.class,
-			callbacks -> registryManager -> {
+			callbacks -> registryView -> {
 				for (DynamicRegistrySetupCallback callback : callbacks) {
-					callback.onRegistrySetup(registryManager);
+					callback.onRegistrySetup(registryView);
 				}
 			}
 	);

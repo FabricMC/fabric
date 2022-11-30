@@ -37,7 +37,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -55,9 +56,9 @@ public final class EntityEventTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registry.BLOCK, new Identifier("fabric-entity-events-v1-testmod", "test_bed"), TEST_BED);
-		Registry.register(Registry.ITEM, new Identifier("fabric-entity-events-v1-testmod", "test_bed"), new BlockItem(TEST_BED, new Item.Settings()));
-		Registry.register(Registry.ITEM, new Identifier("fabric-entity-events-v1-testmod", "diamond_elytra"), DIAMOND_ELYTRA);
+		Registry.register(Registries.BLOCK, new Identifier("fabric-entity-events-v1-testmod", "test_bed"), TEST_BED);
+		Registry.register(Registries.ITEM, new Identifier("fabric-entity-events-v1-testmod", "test_bed"), new BlockItem(TEST_BED, new Item.Settings()));
+		Registry.register(Registries.ITEM, new Identifier("fabric-entity-events-v1-testmod", "diamond_elytra"), DIAMOND_ELYTRA);
 
 		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed) -> {
 			LOGGER.info("Entity Killed: {}", killed);

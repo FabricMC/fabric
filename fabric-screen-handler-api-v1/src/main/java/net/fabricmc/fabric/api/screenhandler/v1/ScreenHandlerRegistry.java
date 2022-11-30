@@ -16,11 +16,12 @@
 
 package net.fabricmc.fabric.api.screenhandler.v1;
 
+import net.minecraft.registry.Registries;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registry;
 
 /**
  * An API for creating and registering {@linkplain ScreenHandlerType screen handler types}.
@@ -65,7 +66,7 @@ import net.minecraft.util.registry.Registry;
  * <li>Creating simple screen handler types directly with {@link ScreenHandlerType}
  * using an access widener in Fabric Transitive Access Wideners (v1)</li>
  * <li>Creating extended screen handler types with {@link ExtendedScreenHandlerType}</li>
- * <li>Registering using {@link Registry#SCREEN_HANDLER} directly</li>
+ * <li>Registering using {@link Registries#SCREEN_HANDLER} directly</li>
  * </ul>
  */
 @Deprecated
@@ -87,7 +88,7 @@ public final class ScreenHandlerRegistry {
 		// Wrap our factory in vanilla's factory; it will not be public for users.
 		// noinspection Convert2MethodRef - Must be a lambda or else dedicated server will crash
 		ScreenHandlerType<T> type = new ScreenHandlerType<>((syncId, inventory) -> factory.create(syncId, inventory));
-		return Registry.register(Registry.SCREEN_HANDLER, id, type);
+		return Registry.register(Registries.SCREEN_HANDLER, id, type);
 	}
 
 	/**
@@ -106,7 +107,7 @@ public final class ScreenHandlerRegistry {
 	@Deprecated
 	public static <T extends ScreenHandler> ScreenHandlerType<T> registerExtended(Identifier id, ExtendedClientHandlerFactory<T> factory) {
 		ScreenHandlerType<T> type = new ExtendedScreenHandlerType<>(factory);
-		return Registry.register(Registry.SCREEN_HANDLER, id, type);
+		return Registry.register(Registries.SCREEN_HANDLER, id, type);
 	}
 
 	/**

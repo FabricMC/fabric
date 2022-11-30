@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -30,12 +30,12 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.mixin.lookup.BlockEntityTypeAccessor;
 
 public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
@@ -140,7 +140,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 			Objects.requireNonNull(block, "Encountered null block while registering a block API provider mapping.");
 
 			if (providerMap.putIfAbsent(block, provider) != null) {
-				LOGGER.warn("Encountered duplicate API provider registration for block: " + Registry.BLOCK.getId(block));
+				LOGGER.warn("Encountered duplicate API provider registration for block: " + Registries.BLOCK.getId(block));
 			}
 		}
 	}

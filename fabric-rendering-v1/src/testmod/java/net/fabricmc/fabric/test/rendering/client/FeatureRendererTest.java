@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -30,7 +30,7 @@ import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityType;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
@@ -44,7 +44,7 @@ public final class FeatureRendererTest implements ClientModInitializer {
 		LOGGER.info("Registering feature renderer tests");
 		LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
 			// minecraft:player SHOULD be printed twice
-			LOGGER.info(String.format("Received registration for %s", Registry.ENTITY_TYPE.getId(entityType)));
+			LOGGER.info(String.format("Received registration for %s", Registries.ENTITY_TYPE.getId(entityType)));
 
 			if (entityType == EntityType.PLAYER) {
 				this.playerRegistrations++;

@@ -23,7 +23,8 @@ import net.minecraft.item.Items;
 import net.minecraft.item.ToolItem;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.test.lookup.FabricApiLookupTest;
@@ -36,7 +37,7 @@ public class FabricItemApiLookupTest {
 	public static final InspectableItem HELLO_ITEM = new InspectableItem("Hello Fabric API tester!");
 
 	public static void onInitialize() {
-		Registry.register(Registry.ITEM, new Identifier(FabricApiLookupTest.MOD_ID, "hello"), HELLO_ITEM);
+		Registry.register(Registries.ITEM, new Identifier(FabricApiLookupTest.MOD_ID, "hello"), HELLO_ITEM);
 
 		// Diamonds and diamond blocks can be inspected and will also print their name.
 		INSPECTABLE.registerForItems((stack, ignored) -> () -> {

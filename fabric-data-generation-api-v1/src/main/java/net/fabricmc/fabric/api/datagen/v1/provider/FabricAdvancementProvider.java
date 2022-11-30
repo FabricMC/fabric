@@ -41,7 +41,7 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 /**
  * Extend this class and implement {@link FabricAdvancementProvider#generateAdvancement}.
  *
- * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
+ * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
 public abstract class FabricAdvancementProvider implements DataProvider {
 	protected final FabricDataOutput output;

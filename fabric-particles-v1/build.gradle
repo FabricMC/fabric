@@ -6,8 +6,7 @@ loom {
 }
 
 moduleDependencies(project, [
-		'fabric-api-base',
-		'fabric-textures-v0'
+		'fabric-api-base'
 ])
 
 validateMixinNames {

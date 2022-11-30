@@ -16,19 +16,16 @@
 
 package net.fabricmc.fabric.impl.biome.modification;
 
-import org.jetbrains.annotations.ApiStatus;
-
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntryLookup;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.RegistryWrapper;
+import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.biome.Biome;
 
 /**
  * Utility class for accessing the worldgen data that vanilla uses to generate its vanilla datapack.
  */
-@ApiStatus.Internal
 public final class BuiltInRegistryKeys {
 	private static final RegistryWrapper.WrapperLookup vanillaRegistries = BuiltinRegistries.createWrapperLookup();
 
@@ -40,6 +37,6 @@ public final class BuiltInRegistryKeys {
 	}
 
 	public static RegistryEntryLookup<Biome> biomeRegistryWrapper() {
-		return vanillaRegistries.getWrapperOrThrow(Registry.BIOME_KEY);
+		return vanillaRegistries.getWrapperOrThrow(RegistryKeys.BIOME);
 	}
 }

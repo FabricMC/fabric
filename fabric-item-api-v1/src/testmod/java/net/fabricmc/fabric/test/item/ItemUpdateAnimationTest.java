@@ -17,14 +17,15 @@
 package net.fabricmc.fabric.test.item;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 
 public class ItemUpdateAnimationTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "updating_allowed"), new UpdatingItem(true));
-		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "updating_disallowed"), new UpdatingItem(false));
+		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "updating_allowed"), new UpdatingItem(true));
+		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "updating_disallowed"), new UpdatingItem(false));
 	}
 }

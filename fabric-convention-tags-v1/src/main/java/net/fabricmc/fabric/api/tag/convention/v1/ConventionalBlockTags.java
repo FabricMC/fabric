@@ -18,12 +18,12 @@ package net.fabricmc.fabric.api.tag.convention.v1;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 
 /**
- * See {@link net.minecraft.tag.BlockTags} for vanilla tags.
+ * See {@link net.minecraft.registry.tag.BlockTags} for vanilla tags.
  * Note that addition to some vanilla tags implies having certain functionality.
  */
 public final class ConventionalBlockTags {

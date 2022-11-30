@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.tag.convention.v1;
 
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 

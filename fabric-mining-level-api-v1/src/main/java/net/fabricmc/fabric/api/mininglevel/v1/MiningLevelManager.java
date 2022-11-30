@@ -18,10 +18,10 @@ package net.fabricmc.fabric.api.mininglevel.v1;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.impl.mininglevel.MiningLevelManagerImpl;
 
@@ -30,9 +30,9 @@ import net.fabricmc.fabric.impl.mininglevel.MiningLevelManagerImpl;
  *
  * <h2>Mining level tags</h2>
  * {@code MiningLevelManager} supports the vanilla minimum mining level tags:
- * {@link net.minecraft.tag.BlockTags#NEEDS_STONE_TOOL #needs_stone_tool},
- * {@link net.minecraft.tag.BlockTags#NEEDS_IRON_TOOL #needs_iron_tool} and
- * {@link net.minecraft.tag.BlockTags#NEEDS_DIAMOND_TOOL #needs_diamond_tool}.
+ * {@link net.minecraft.registry.tag.BlockTags#NEEDS_STONE_TOOL #needs_stone_tool},
+ * {@link net.minecraft.registry.tag.BlockTags#NEEDS_IRON_TOOL #needs_iron_tool} and
+ * {@link net.minecraft.registry.tag.BlockTags#NEEDS_DIAMOND_TOOL #needs_diamond_tool}.
  * In addition to them, you can use dynamic mining level tags for any mining level (such as wood, netherite
  * or a custom one). The dynamic tags are checked automatically.
  *
@@ -78,7 +78,7 @@ public final class MiningLevelManager {
 		case 1 -> BlockTags.NEEDS_STONE_TOOL;
 		case 2 -> BlockTags.NEEDS_IRON_TOOL;
 		case 3 -> BlockTags.NEEDS_DIAMOND_TOOL;
-		default -> TagKey.of(Registry.BLOCK_KEY, new Identifier("fabric", "needs_tool_level_" + miningLevel));
+		default -> TagKey.of(RegistryKeys.BLOCK, new Identifier("fabric", "needs_tool_level_" + miningLevel));
 		};
 	}
 }

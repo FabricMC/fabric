@@ -24,8 +24,8 @@ import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.tag.TagKey;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.tag.TagKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.dimension.DimensionOptions;
@@ -88,7 +88,7 @@ public final class BiomeSelectors {
 	/**
 	 * Returns a biome selector that will match all biomes in the given tag.
 	 *
-	 * @see net.minecraft.tag.BiomeTags
+	 * @see net.minecraft.registry.tag.BiomeTags
 	 */
 	public static Predicate<BiomeSelectionContext> tag(TagKey<Biome> tag) {
 		return context -> context.hasTag(tag);

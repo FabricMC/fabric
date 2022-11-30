@@ -24,7 +24,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -55,13 +56,13 @@ public class ScreenHandlerTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registry.ITEM, id("bag"), BAG);
-		Registry.register(Registry.ITEM, id("positioned_bag"), POSITIONED_BAG);
-		Registry.register(Registry.BLOCK, id("box"), BOX);
-		Registry.register(Registry.ITEM, id("box"), BOX_ITEM);
-		Registry.register(Registry.BLOCK_ENTITY_TYPE, id("box"), BOX_ENTITY);
-		Registry.register(Registry.SCREEN_HANDLER, id("bag"), BAG_SCREEN_HANDLER);
-		Registry.register(Registry.SCREEN_HANDLER, id("positioned_bag"), POSITIONED_BAG_SCREEN_HANDLER);
-		Registry.register(Registry.SCREEN_HANDLER, id("box"), BOX_SCREEN_HANDLER);
+		Registry.register(Registries.ITEM, id("bag"), BAG);
+		Registry.register(Registries.ITEM, id("positioned_bag"), POSITIONED_BAG);
+		Registry.register(Registries.BLOCK, id("box"), BOX);
+		Registry.register(Registries.ITEM, id("box"), BOX_ITEM);
+		Registry.register(Registries.BLOCK_ENTITY_TYPE, id("box"), BOX_ENTITY);
+		Registry.register(Registries.SCREEN_HANDLER, id("bag"), BAG_SCREEN_HANDLER);
+		Registry.register(Registries.SCREEN_HANDLER, id("positioned_bag"), POSITIONED_BAG_SCREEN_HANDLER);
+		Registry.register(Registries.SCREEN_HANDLER, id("box"), BOX_SCREEN_HANDLER);
 	}
 }

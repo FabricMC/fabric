@@ -16,22 +16,22 @@
 
 package net.fabricmc.fabric.test.datagen;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
 public class DataGeneratorTestContent implements ModInitializer {
 	public static final String MOD_ID = "fabric-data-gen-api-v1-testmod";
@@ -40,42 +40,28 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static Block BLOCK_WITHOUT_ITEM;
 	public static Block BLOCK_WITHOUT_LOOT_TABLE;
 
-	public static final SimpleItemGroup SIMPLE_ITEM_GROUP = new SimpleItemGroup();
+	public static final ItemGroup SIMPLE_ITEM_GROUP = FabricItemGroup.builder(new Identifier(MOD_ID, "simple"))
+			.icon(() -> new ItemStack(Items.DIAMOND_PICKAXE))
+			.displayName(Text.literal("Data gen test"))
+			.build();
 
 	@Override
 	public void onInitialize() {
 		SIMPLE_BLOCK = createBlock("simple_block", true);
 		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false);
 		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false);
+
+		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.add(SIMPLE_BLOCK));
 	}
 
 	private static Block createBlock(String name, boolean hasItem) {
 		Identifier identifier = new Identifier(MOD_ID, name);
-		Block block = Registry.register(Registry.BLOCK, identifier, new Block(AbstractBlock.Settings.of(Material.STONE)));
+		Block block = Registry.register(Registries.BLOCK, identifier, new Block(AbstractBlock.Settings.of(Material.STONE)));
 
 		if (hasItem) {
-			Item item = Registry.register(Registry.ITEM, identifier, new BlockItem(block, new Item.Settings()));
-			SIMPLE_ITEM_GROUP.items.add(new ItemStack(item));
+			Registry.register(Registries.ITEM, identifier, new BlockItem(block, new Item.Settings()));
 		}
 
 		return block;
-	}
-
-	private static class SimpleItemGroup extends FabricItemGroup {
-		public List<ItemStack> items = new ArrayList<>();
-
-		SimpleItemGroup() {
-			super(new Identifier(MOD_ID, "simple"));
-		}
-
-		@Override
-		public ItemStack createIcon() {
-			return new ItemStack(Items.BONE);
-		}
-
-		@Override
-		protected void addItems(FeatureSet featureSet, Entries entries, boolean showAdminItems) {
-			entries.addAll(items);
-		}
 	}
 }
