@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.rendering.client;
+package net.fabricmc.fabric.test.object.builder.client;
 
 import net.minecraft.client.render.block.entity.SignBlockEntityRenderer;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.test.rendering.TealSignTest;
-import net.fabricmc.fabric.test.rendering.mixin.BlockEntityRendererFactoriesAccessor;
+import net.fabricmc.fabric.test.object.builder.TealSignTest;
+import net.fabricmc.fabric.test.object.builder.mixin.BlockEntityRendererFactoriesAccessor;
 
 public class TealSignClientTest implements ClientModInitializer {
 	@Override

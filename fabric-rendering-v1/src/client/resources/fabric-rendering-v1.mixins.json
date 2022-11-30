@@ -11,14 +11,12 @@
     "ItemColorsMixin",
     "WorldRendererMixin",
     "EntityModelLayersAccessor",
-    "EntityModelLayersMixin",
     "EntityModelsMixin",
     "LivingEntityRendererAccessor",
     "BlockEntityRendererFactoriesMixin",
     "EntityRenderersMixin",
     "ScreenMixin",
-    "DimensionEffectsAccessor",
-    "TexturedRenderLayersMixin"
+    "DimensionEffectsAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

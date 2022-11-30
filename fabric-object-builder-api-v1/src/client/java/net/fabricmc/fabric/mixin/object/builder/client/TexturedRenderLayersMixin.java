@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.rendering.mixin;
+package net.fabricmc.fabric.mixin.object.builder.client;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.render.TexturedRenderLayers;
 
-@Mixin(BlockEntityRendererFactories.class)
-public interface BlockEntityRendererFactoriesAccessor {
-	@Invoker
-	static <T extends BlockEntity> void callRegister(BlockEntityType<? extends T> type, BlockEntityRendererFactory<T> factory) {
-		throw new UnsupportedOperationException();
+@Mixin(TexturedRenderLayers.class)
+public class TexturedRenderLayersMixin {
+	@ModifyArg(method = "createSignTextureId", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;<init>(Ljava/lang/String;)V"))
+	private static String modifyTextureId(String id) {
+		if (id.contains(":")) {
+			String[] split = id.substring("entity/signs/".length()).split(":");
+			return split[0] + ":entity/signs/" + split[1];
+		}
+
+		return id;
 	}
 }

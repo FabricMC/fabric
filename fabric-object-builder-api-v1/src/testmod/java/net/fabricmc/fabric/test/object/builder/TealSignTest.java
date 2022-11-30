@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.rendering;
+package net.fabricmc.fabric.test.object.builder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
