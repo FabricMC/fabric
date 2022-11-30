@@ -34,7 +34,7 @@ import net.fabricmc.fabric.mixin.registry.sync.RegistryLoaderAccessor;
  * Methods for registering dynamically loadable registries. These registries are loaded after
  * static registries are frozen and have full access to them.
  *
- * <p> NOTE: These registries are not reloadable.
+ * <p>NOTE: These registries are not reloadable.
  *
  * @apiNote The path used for {@code key} is used as path for resource search as well,
  * so {@code "fabric-api:dynamic_data"} would be searched in {@code "resources/data/modid/dynamic_data/"},
