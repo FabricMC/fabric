@@ -125,12 +125,8 @@ public class RegistrySyncTest implements ModInitializer {
 
 		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
 			setupCalled.set(true);
-			registryManager.registerEntryAdded(RegistryKeys.BIOME, (rawId, id, object) ->
-				LOGGER.info("Biome added: {}", id)
-			);
-			registryManager.registerEntryAdded(CustomData.KEY, (rawId, id, object) ->
-				LOGGER.info("Custom data added: {}", id)
-			);
+			registryManager.registerEntryAdded(RegistryKeys.BIOME, (rawId, id, object) -> LOGGER.info("Biome added: {}", id));
+			registryManager.registerEntryAdded(CustomData.KEY, (rawId, id, object) -> LOGGER.info("Custom data added: {}", id));
 			registryManager.getOptional(CustomData.KEY).ifPresent(registry -> {
 				Identifier id = new Identifier(MODID, "statically_registered_data");
 				Registry.register(registry, id, new CustomData(id));
