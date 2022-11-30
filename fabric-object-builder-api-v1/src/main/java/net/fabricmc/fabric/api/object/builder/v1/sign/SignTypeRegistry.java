@@ -32,7 +32,7 @@ public class SignTypeRegistry {
 	/**
 	 * Creates and registers a {@link SignType}.
 	 *
-	 * @param id The id of this {@link SignType}.
+	 * @param id the id of this {@link SignType}
 	 * @return a new {@link SignType}.
 	 */
 	public static SignType registerSignType(Identifier id) {
