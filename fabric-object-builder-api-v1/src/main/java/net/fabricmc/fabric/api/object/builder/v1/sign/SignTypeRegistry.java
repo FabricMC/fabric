@@ -22,7 +22,7 @@ import net.minecraft.util.SignType;
 import net.fabricmc.fabric.mixin.object.builder.SignTypeAccessor;
 
 /**
- * This class allows registering different {@link SignType}'s under a namespace.
+ * This class allows registering {@link SignType}s.
  *
  * <P>A {@link SignType} is used to tell the game what texture a sign should use.
  *
