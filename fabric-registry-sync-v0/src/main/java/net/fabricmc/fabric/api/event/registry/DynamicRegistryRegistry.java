@@ -32,7 +32,7 @@ import net.fabricmc.fabric.mixin.registry.sync.RegistryLoaderAccessor;
 
 /**
  * @apiNote The path used for {@code key} is used as path for resource search as well,
- * so {@code "fabric-api:dynamic_data"} would be searched in {@code "data/modid/dynamic_data"},
+ * so {@code "fabric-api:dynamic_data"} would be searched in {@code "resources/data/modid/dynamic_data/"},
  * {@code modid} being mod id of any mod, it is recommended to use your mod id in
  * registry path to avoid path clashes, like {@code "fabric-api:fabric-api/dynamic_data"}.
  */
