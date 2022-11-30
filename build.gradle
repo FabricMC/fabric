@@ -478,7 +478,7 @@ task serverPropertiesJar(type: Jar) {
 						""".stripMargin().stripIndent()
 	}
 
-	archiveName = "test-server-properties.jar"
+	archiveFileName = "test-server-properties.jar"
 	destinationDirectory = file("build/tmp")
 	from(propsFile)
 }
