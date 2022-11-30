@@ -71,16 +71,18 @@ public class DynamicRegistryRegistry {
 	 */
 	public static <T> RegistryLoader.Entry<T> register(RegistryLoader.Entry<T> entry) {
 		Objects.requireNonNull(entry, "Entry cannot be null!");
-		RegistryLoader.DYNAMIC_REGISTRIES.stream().filter(e -> e.key().getValue().getPath().equals(entry.key().getValue().getPath())).findFirst().ifPresent(e -> {
+		String path = entry.key().getValue().getPath();
+		RegistryLoader.DYNAMIC_REGISTRIES.stream().filter(e -> e.key().getValue().getPath().equals(path)).findFirst().ifPresent(e -> {
 			throw new IllegalStateException("Dynamic registry path clash between " + e + " and " + entry);
 		});
 
-		List<RegistryLoader.Entry<?>> list = new ArrayList<>(RegistryLoader.DYNAMIC_REGISTRIES);
-		list.add(entry);
-		RegistryLoaderAccessor.setDynamicRegistries(Collections.unmodifiableList(list));
+		DynamicRegistryRegistry.MUTABLE_REGISTRIES.add(entry);
+		RegistryLoaderAccessor.setDynamicRegistries(Collections.unmodifiableList(DynamicRegistryRegistry.MUTABLE_REGISTRIES));
 
 		return entry;
 	}
+
+	private static final List<RegistryLoader.Entry<?>> MUTABLE_REGISTRIES = new ArrayList<>(RegistryLoader.DYNAMIC_REGISTRIES);
 
 	private DynamicRegistryRegistry() { }
 }
