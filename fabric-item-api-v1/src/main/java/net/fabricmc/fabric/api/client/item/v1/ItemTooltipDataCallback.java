@@ -24,6 +24,22 @@ import net.minecraft.item.ItemStack;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * Event for adding more tooltip data to a stack's tooltip.
+ * Called when an item stack's tooltip is rendered.
+ *
+ * <p>Keep in mind that:
+ * <ul>
+ *     <li> If {@link net.minecraft.item.Item#getTooltipData} is not empty
+ *     for the stack, it's added to the list before the event is fired.
+ *     <li> Data added to {@code list} will be converted to a {@link net.minecraft.client.gui.tooltip.TooltipComponent}
+ * 	   via {@link net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback#EVENT} before being rendered.
+ * 	   If you don't register a TooltipComponent, minecraft will throw an error.
+ * 	   <li> These are rendered between item's name and the rest of the tooltip and
+ * 	   all data added to {@code list} will be rendered in the order they were added,
+ * 	   so the first added is rendered on top while the last added is at the bottom.
+ * </ul>
+ */
 public interface ItemTooltipDataCallback {
 	/**
 	 * Fired when {@link ItemStack#getTooltipData()} is called.
@@ -35,10 +51,8 @@ public interface ItemTooltipDataCallback {
 	});
 
 	/**
-	 * Called when an item stack's tooltip data is requested. Data added to {@code list}
-	 * will be converted to a {@link net.minecraft.client.gui.tooltip.TooltipComponent}
-	 * via {@link net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback#EVENT}
-	 * before being rendered.
+	 * Called when an item stack's tooltip is rendered.
+	 * Any data added to {@code list} will be rendered with the tooltip.
 	 *
 	 * @param stack the stack requesting tooltip data.
 	 * @param list	the list containing the data's to be displayed on the stack's tooltip.
