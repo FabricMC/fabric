@@ -169,6 +169,8 @@ public final class ContentRegistryTest implements ModInitializer {
 		var dirtyPotion = new DirtyPotionItem(new Item.Settings().maxCount(1).group(ItemGroup.BREWING));
 		Registry.register(Registry.ITEM, new Identifier("fabric-content-registries-v0-testmod", "dirty_potion"),
 				dirtyPotion);
+		/* Mods should use BrewingRecipeRegistry.registerPotionType(Item), which is access widened by fabric-transitive-access-wideners-v1
+		 * This testmod uses an accessor due to Loom limitations that prevent TAWs from applying across Gradle subproject boundaries */
 		BrewingRecipeRegistryAccessor.callRegisterPotionType(dirtyPotion);
 		FabricBrewingRecipeRegistry.registerItemRecipe((PotionItem) Items.POTION, Ingredient.fromTag(ItemTags.DIRT), dirtyPotion);
 	}

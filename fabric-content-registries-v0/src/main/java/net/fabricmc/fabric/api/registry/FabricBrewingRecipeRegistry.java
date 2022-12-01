@@ -35,7 +35,8 @@ public final class FabricBrewingRecipeRegistry {
 
 	/**
 	 * Register a recipe for brewing one potion type into another (e.g. regular to splash).
-	 * Only one registration is necessary for all potions of the input type to be brewable into the output type.
+	 * Only one recipe is necessary for all potions of the input type to be brewable into the output type using the ingredient.
+	 * Use {@link BrewingRecipeRegistry#registerPotionType(Item)} to register new potion types.
 	 * @param input the input potion type (e.g. regular potion)
 	 * @param ingredient the required ingredient (e.g. gunpowder)
 	 * @param output the output type  (e.g. splash potion)
@@ -52,6 +53,7 @@ public final class FabricBrewingRecipeRegistry {
 	/**
 	 * Register a recipe for converting from one potion to another (e.g. awkward to instant health).
 	 * This does not automatically create long or strong versions of the output potion.
+	 * They require separate recipes.
 	 * @param input input potion (e.g. awkward)
 	 * @param ingredient the required ingredient (e.g. glistering melon)
 	 * @param output output potion (e.g. instant health)
