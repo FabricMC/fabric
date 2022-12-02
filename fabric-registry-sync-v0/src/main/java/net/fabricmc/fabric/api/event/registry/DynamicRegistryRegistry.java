@@ -21,18 +21,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryLoader;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.mixin.registry.sync.RegistryLoaderAccessor;
 
 /**
- * Methods for registering dynamically loadable registries. These registries are loaded after
- * static registries are frozen and have full access to them.
+ * Methods for registering dynamically loadable registries. These registries are loaded
+ * after static registries are frozen and have full access to them, alongside any other
+ * dynamic registry loaded before them.
  *
  * <p>NOTE: These registries are not reloadable.
  *
@@ -42,19 +44,6 @@ import net.fabricmc.fabric.mixin.registry.sync.RegistryLoaderAccessor;
  * registry path to avoid path clashes, like {@code "fabric-api:fabric-api/dynamic_data"}.
  */
 public class DynamicRegistryRegistry {
-	/**
-	 * Registers a dynamically loaded registry.
-	 *
-	 * @param key Identifier for the registry
-	 * @param codec The codec used for deserialization
-	 * @throws IllegalStateException if key path clashes with an already registered entry
-	 */
-	public static <T> RegistryLoader.Entry<T> register(Identifier key, Codec<T> codec) {
-		Objects.requireNonNull(key, "Identifier cannot be null!");
-		Objects.requireNonNull(codec, "Codec cannot be null!");
-		return register(new RegistryLoader.Entry<>(RegistryKey.ofRegistry(key), codec));
-	}
-
 	/**
 	 * Registers a dynamically loaded registry.
 	 *
@@ -76,18 +65,105 @@ public class DynamicRegistryRegistry {
 	 */
 	public static <T> RegistryLoader.Entry<T> register(RegistryLoader.Entry<T> entry) {
 		Objects.requireNonNull(entry, "Entry cannot be null!");
-		String path = entry.key().getValue().getPath();
-		RegistryLoader.DYNAMIC_REGISTRIES.stream().filter(e -> e.key().getValue().getPath().equals(path)).findFirst().ifPresent(e -> {
-			throw new IllegalStateException("Dynamic registry path clash between " + e + " and " + entry);
-		});
-
-		DynamicRegistryRegistry.MUTABLE_REGISTRIES.add(entry);
+		validateKey(entry.key());
+		MUTABLE_REGISTRIES.add(entry);
 		RegistryLoaderAccessor.setDynamicRegistries(Collections.unmodifiableList(DynamicRegistryRegistry.MUTABLE_REGISTRIES));
-
 		return entry;
 	}
 
+	/**
+	 * Registers a dynamically loaded registry before a specific entry.
+	 * If there is no matching entry with key, entry is added to the end of the list.
+	 *
+	 * @param before Entry key to register before.
+	 * @param key Registry key for the registry
+	 * @param codec The codec used for deserialization
+	 * @throws IllegalStateException if key path clashes with an already registered entry
+	 */
+	public static <T> RegistryLoader.Entry<T> registerBefore(RegistryKey<? extends Registry<?>> before, RegistryKey<? extends Registry<T>> key, Codec<T> codec) {
+		Objects.requireNonNull(before, "Before key cannot be null!");
+		Objects.requireNonNull(key, "Registry key cannot be null!");
+		Objects.requireNonNull(codec, "Codec cannot be null!");
+		return registerBefore(before, new RegistryLoader.Entry<>(key, codec));
+	}
+
+	/**
+	 * Registers a dynamically loaded registry before a specific entry.
+	 * If there is no matching entry with key, entry is added to the end of the list.
+	 *
+	 * @param before Entry key to register before.
+	 * @param entry The entry
+	 * @throws IllegalStateException if key path clashes with an already registered entry
+	 */
+	public static <T> RegistryLoader.Entry<T> registerBefore(RegistryKey<? extends Registry<?>> before, RegistryLoader.Entry<T> entry) {
+		Objects.requireNonNull(before, "Before key cannot be null!");
+		Objects.requireNonNull(entry, "Entry cannot be null!");
+		validateKey(entry.key());
+		MUTABLE_REGISTRIES.add(findIndex(before, false), entry);
+		RegistryLoaderAccessor.setDynamicRegistries(Collections.unmodifiableList(DynamicRegistryRegistry.MUTABLE_REGISTRIES));
+		return entry;
+	}
+
+	/**
+	 * Registers a dynamically loaded registry after a specific entry.
+	 * If there is no matching entry with key, entry is added to the end of the list.
+	 *
+	 * @param after Entry key to register after.
+	 * @param key Registry key for the registry
+	 * @param codec The codec used for deserialization
+	 * @throws IllegalStateException if key path clashes with an already registered entry
+	 */
+	public static <T> RegistryLoader.Entry<T> registerAfter(RegistryKey<? extends Registry<?>> after, RegistryKey<? extends Registry<T>> key, Codec<T> codec) {
+		Objects.requireNonNull(after, "After key cannot be null!");
+		Objects.requireNonNull(key, "Registry key cannot be null!");
+		Objects.requireNonNull(codec, "Codec cannot be null!");
+		return registerAfter(after, new RegistryLoader.Entry<>(key, codec));
+	}
+
+	/**
+	 * Registers a dynamically loaded registry after a specific entry.
+	 * If there is no matching entry with key, entry is added to the end of the list.
+	 *
+	 * @param after Entry key to register after.
+	 * @param entry The entry
+	 * @throws IllegalStateException if key path clashes with an already registered entry
+	 */
+	public static <T> RegistryLoader.Entry<T> registerAfter(RegistryKey<? extends Registry<?>> after, RegistryLoader.Entry<T> entry) {
+		Objects.requireNonNull(after, "After key cannot be null!");
+		Objects.requireNonNull(entry, "Entry cannot be null!");
+		validateKey(entry.key());
+		MUTABLE_REGISTRIES.add(findIndex(after, true), entry);
+		RegistryLoaderAccessor.setDynamicRegistries(Collections.unmodifiableList(DynamicRegistryRegistry.MUTABLE_REGISTRIES));
+		return entry;
+	}
+
+	// private
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicRegistryRegistry.class);
 	private static final List<RegistryLoader.Entry<?>> MUTABLE_REGISTRIES = new ArrayList<>(RegistryLoader.DYNAMIC_REGISTRIES);
+
+	private static void validateKey(RegistryKey<?> key) {
+		String path = key.getValue().getPath();
+
+		for (RegistryLoader.Entry<?> entry : MUTABLE_REGISTRIES) {
+			if (entry.key().getValue().getPath().equals(path)) {
+				throw new IllegalStateException("Dynamic registry path clash between " + entry.key() + " and " + key);
+			}
+		}
+	}
+
+	private static int findIndex(RegistryKey<? extends Registry<?>> key, boolean after) {
+		for (int i = 0; i < MUTABLE_REGISTRIES.size(); ++i) {
+			RegistryKey<?> curr = MUTABLE_REGISTRIES.get(i).key();
+
+			if (curr.isOf(key) && curr.getValue().equals(key.getValue())) {
+				return after ? i + 1 : i;
+			}
+		}
+
+		LOGGER.warn("No matching entry for key: " + key);
+		return MUTABLE_REGISTRIES.size();
+	}
 
 	private DynamicRegistryRegistry() { }
 }
