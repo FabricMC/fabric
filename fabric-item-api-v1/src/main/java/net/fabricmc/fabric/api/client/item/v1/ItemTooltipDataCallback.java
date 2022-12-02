@@ -30,11 +30,14 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <p>Keep in mind that:
  * <ul>
+ *     <li> This event should be used for adding item independent data.
+ *     If your data only affects one item, or one class, you should override
+ *     {@link net.minecraft.item.Item#getTooltipData} instead of using this event.
  *     <li> If {@link net.minecraft.item.Item#getTooltipData} is not empty
  *     for the stack, it's added to the list before the event is fired.
  *     <li> Data added to {@code list} will be converted to a {@link net.minecraft.client.gui.tooltip.TooltipComponent}
  * 	   via {@link net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback#EVENT} before being rendered.
- * 	   If you don't register a TooltipComponent, minecraft will throw an error.
+ * 	   If you don't register a TooltipComponent for your data, minecraft will throw an error.
  * 	   <li> These are rendered between item's name and the rest of the tooltip and
  * 	   all data added to {@code list} will be rendered in the order they were added,
  * 	   so the first added is rendered on top while the last added is at the bottom.
