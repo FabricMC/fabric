@@ -81,7 +81,9 @@ public final class ServerLivingEntityEvents {
 	 * This is fired before minecraft does its own checks, so it's not guaranteed that block at pos
 	 * is in {@link net.minecraft.registry.tag.BlockTags#CLIMBABLE}.
 	 *
-	 * <p>If your mod has special climbing behaviour, you should use this event.
+	 * <p>This event is for checking for special climbing behaviours,
+	 * if any callback returns {@code true}, position will be declared climbable.
+	 * Use this event if your block has special climbing behaviour independent of minecraft's.
 	 */
 	public static final Event<AllowClimb> ALLOW_CLIMB = EventFactory.createArrayBacked(AllowClimb.class, callbacks -> ((entity, pos, state) -> {
 		for (AllowClimb callback : callbacks) {
@@ -99,6 +101,7 @@ public final class ServerLivingEntityEvents {
 	 *
 	 * <p>This event is for adding extra conditions to minecraft's climbing behaviour,
 	 * and if any callback returns {@code false}, position will be declared unclimbable.
+	 * Use this event if your block has special climbing behaviour dependent to minecraft's.
 	 */
 	public static final Event<AllowClimbClimbable> ALLOW_CLIMB_CLIMBABLE = EventFactory.createArrayBacked(AllowClimbClimbable.class, callbacks -> (entity, pos, state) -> {
 		for (AllowClimbClimbable callback : callbacks) {
