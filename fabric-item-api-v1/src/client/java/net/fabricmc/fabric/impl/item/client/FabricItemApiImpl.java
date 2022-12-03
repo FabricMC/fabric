@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.item.client;
 
-import net.minecraft.client.item.TooltipData;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -28,20 +27,10 @@ public class FabricItemApiImpl implements ClientModInitializer {
 	public void onInitializeClient() {
 		TooltipComponentCallback.EVENT.register(maybe -> {
 			if (maybe instanceof BundledTooltipData data) {
-				return new BundledTooltipComponentImpl(data.list().stream().map(FabricItemApiImpl::getComponent).toList());
+				return new BundledTooltipComponentImpl(data.list().stream().map(TooltipComponent::of).toList());
 			}
 
 			return null;
 		});
-	}
-
-	private static TooltipComponent getComponent(TooltipData data) {
-		TooltipComponent component = TooltipComponentCallback.EVENT.invoker().getComponent(data);
-
-		if (component != null) {
-			return component;
-		}
-
-		return TooltipComponent.of(data);
 	}
 }
