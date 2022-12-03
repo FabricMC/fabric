@@ -174,14 +174,25 @@ abstract class LivingEntityMixin {
 	private void allowClimb(CallbackInfoReturnable<Boolean> cir) {
 		LivingEntity self = (LivingEntity) (Object) this;
 		BlockPos pos = self.getBlockPos();
-		ActionResult result = ServerLivingEntityEvents.ALLOW_CLIMB.invoker().allowClimb(self, pos, self.getBlockStateAtPos());
 
-		if (result == ActionResult.SUCCESS) {
+		if (ServerLivingEntityEvents.ALLOW_CLIMB.invoker().allowClimb(self, pos, self.getBlockStateAtPos())) {
 			this.climbingPos = Optional.of(pos);
 			cir.setReturnValue(true);
 		}
+	}
 
-		if (result == ActionResult.FAIL) {
+	@Inject(
+			method = "isClimbing",
+			at = @At(
+					value = "INVOKE",
+					target = "java/util/Optional.of (Ljava/lang/Object;)Ljava/util/Optional;",
+					ordinal = 0
+			),
+			locals = LocalCapture.CAPTURE_FAILHARD,
+			cancellable = true
+	)
+	private void allowClimbClimbable(CallbackInfoReturnable<Boolean> cir, BlockPos pos, BlockState state) {
+		if (!ServerLivingEntityEvents.ALLOW_CLIMB_CLIMBABLE.invoker().allowClimb((LivingEntity) (Object) this, pos, state)) {
 			cir.setReturnValue(false);
 		}
 	}

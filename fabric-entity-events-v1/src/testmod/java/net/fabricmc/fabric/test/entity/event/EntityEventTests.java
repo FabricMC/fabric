@@ -119,19 +119,19 @@ public final class EntityEventTests implements ModInitializer {
 		ServerLivingEntityEvents.ALLOW_CLIMB.register((entity, pos, state) -> {
 			// Can climb walls
 			if (state.getBlock() instanceof WallBlock || entity.world.getBlockState(pos.down()).getBlock() instanceof WallBlock) {
-				return ActionResult.SUCCESS;
+				return true;
 			}
 
-			return ActionResult.PASS;
+			return false;
 		});
 
-		ServerLivingEntityEvents.ALLOW_CLIMB.register((entity, pos, state) -> {
-			// Can't climb if either hand is holding something
+		ServerLivingEntityEvents.ALLOW_CLIMB_CLIMBABLE.register((entity, pos, state) -> {
+			// Can't climb climbable blocks if either hand is holding something
 			if (entity instanceof PlayerEntity player && (!player.getStackInHand(Hand.MAIN_HAND).isEmpty() || !player.getStackInHand(Hand.OFF_HAND).isEmpty())) {
-				return ActionResult.FAIL;
+				return false;
 			}
 
-			return ActionResult.PASS;
+			return true;
 		});
 
 		EntitySleepEvents.ALLOW_SLEEPING.register((player, sleepingPos) -> {

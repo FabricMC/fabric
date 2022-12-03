@@ -78,34 +78,37 @@ public final class ServerLivingEntityEvents {
 
 	/**
 	 * An event that is called when minecraft checks if an entity is at a climbable block position.
-	 * This is fired before minecraft does its own checks.
+	 * This is fired before minecraft does its own checks, so it's not guaranteed that block at pos
+	 * is in {@link net.minecraft.registry.tag.BlockTags#CLIMBABLE}.
 	 *
-	 * <p><b>Return types:</b>
-	 * <ul>
-	 * 	   <li>{@link ActionResult#SUCCESS} Allows climbing unless another callback returns {@link ActionResult#FAIL}</li>
-	 * 	   <li>{@link ActionResult#FAIL} Cancels further processing and doesn't allow climbing,
-	 * 	   even if another callback returns {@link ActionResult#SUCCESS}</li>
-	 * 	   <li>{@link ActionResult#PASS} Does nothing, should be used as default return value.
-	 * 	   If the overall event returns this, minecraft does its own checks.</li>
-	 * </ul>
+	 * <p>If your mod has special climbing behaviour, you should use this event.
 	 */
 	public static final Event<AllowClimb> ALLOW_CLIMB = EventFactory.createArrayBacked(AllowClimb.class, callbacks -> ((entity, pos, state) -> {
-		boolean allowed = false;
-
 		for (AllowClimb callback : callbacks) {
-			ActionResult result = callback.allowClimb(entity, pos, state);
-
-			if (result.isAccepted()) {
-				allowed = true;
-			}
-
-			if (result == ActionResult.FAIL) {
-				return ActionResult.FAIL;
+			if (callback.allowClimb(entity, pos, state)) {
+				return true;
 			}
 		}
 
-		return allowed ? ActionResult.SUCCESS : ActionResult.PASS;
+		return false;
 	}));
+
+	/**
+	 * An event that is called when minecraft checks if an entity is at a climbable block position.
+	 * This is fired after minecraft checks if the block is in {@link net.minecraft.registry.tag.BlockTags#CLIMBABLE}
+	 *
+	 * <p>This event is for adding extra conditions to minecraft's climbing behaviour,
+	 * and if any callback returns {@code false}, position will be declared unclimbable.
+	 */
+	public static final Event<AllowClimbClimbable> ALLOW_CLIMB_CLIMBABLE = EventFactory.createArrayBacked(AllowClimbClimbable.class, callbacks -> (entity, pos, state) -> {
+		for (AllowClimbClimbable callback : callbacks) {
+			if (!callback.allowClimb(entity, pos, state)) {
+				return false;
+			}
+		}
+
+		return true;
+	});
 
 	@FunctionalInterface
 	public interface AllowDamage {
@@ -127,7 +130,7 @@ public final class ServerLivingEntityEvents {
 		/**
 		 * Called when a living entity takes fatal damage (before totems of undying can take effect).
 		 *
-		 * @param entity the entity
+		 * @param entity       the entity
 		 * @param damageSource the source of the fatal damage
 		 * @param damageAmount the amount of damage that has killed the entity
 		 * @return true if the death should go ahead, false to cancel the death.
@@ -140,7 +143,7 @@ public final class ServerLivingEntityEvents {
 		/**
 		 * Called when a living entity dies. The death cannot be canceled at this point.
 		 *
-		 * @param entity the entity
+		 * @param entity       the entity
 		 * @param damageSource the source of the fatal damage
 		 */
 		void afterDeath(LivingEntity entity, DamageSource damageSource);
@@ -152,13 +155,26 @@ public final class ServerLivingEntityEvents {
 		 * Called when minecraft checks if a living entity is in a climbable block pos.
 		 *
 		 * @param entity the entity
-		 * @param pos the block pos being checked
-		 * @param state the block state of the block at {@code pos}
-		 * @return {@link ActionResult#SUCCESS} to allow climbing,
-		 * 		   {@link ActionResult#FAIL} to prevent climbing,
-		 * 		   {@link ActionResult#PASS} to fall back to other callbacks or vanilla
+		 * @param pos    the block pos being checked
+		 * @param state  the block state of the block at {@code pos}
 		 */
-		ActionResult allowClimb(LivingEntity entity, BlockPos pos, BlockState state);
+		boolean allowClimb(LivingEntity entity, BlockPos pos, BlockState state);
+	}
+
+	public interface AllowClimbClimbable {
+		/**
+		 * Called after minecraft checks if a living entity is in a climbable block pos.
+		 * If your block is in {@link net.minecraft.registry.tag.BlockTags#CLIMBABLE},
+		 * you can check for extra conditions here.
+		 *
+		 * @param entity the entity
+		 * @param pos    the block pos being checked
+		 * @param state  the block state of the block at {@code pos}
+		 * @return {@link ActionResult#SUCCESS} to allow climbing,
+		 * {@link ActionResult#FAIL} to prevent climbing,
+		 * {@link ActionResult#PASS} to fall back to other callbacks or vanilla
+		 */
+		boolean allowClimb(LivingEntity entity, BlockPos pos, BlockState state);
 	}
 
 	private ServerLivingEntityEvents() {
