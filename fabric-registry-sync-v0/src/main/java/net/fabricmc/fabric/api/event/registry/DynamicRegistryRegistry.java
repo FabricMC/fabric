@@ -154,15 +154,17 @@ public class DynamicRegistryRegistry {
 
 	private static int findIndex(RegistryKey<? extends Registry<?>> key, boolean after) {
 		for (int i = 0; i < MUTABLE_REGISTRIES.size(); ++i) {
-			RegistryKey<?> curr = MUTABLE_REGISTRIES.get(i).key();
-
-			if (curr.isOf(key) && curr.getValue().equals(key.getValue())) {
+			if (keysEqual(MUTABLE_REGISTRIES.get(i).key(), key)) {
 				return after ? i + 1 : i;
 			}
 		}
 
 		LOGGER.warn("No matching entry for key: " + key);
 		return MUTABLE_REGISTRIES.size();
+	}
+
+	private static boolean keysEqual(RegistryKey<?> first, RegistryKey<?> second) {
+		return first.getRegistry().equals(second.getRegistry()) && first.getValue().equals(second.getValue());
 	}
 
 	private DynamicRegistryRegistry() { }
