@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.mojang.serialization.Codec;
@@ -38,11 +39,16 @@ import net.fabricmc.fabric.mixin.registry.sync.RegistryLoaderAccessor;
  *
  * <p>NOTE: These registries are not reloadable.
  *
+ * <p><b>Experimental feature</b>, dynamic registries are a pretty new feature, and Mojang
+ * can make any changes to these registries during snapshots. Since we cannot guarantee this
+ * will work in the next snapshots, we reserve the right to remove or change it without further notice.
+ *
  * @apiNote The path used for {@code key} is used as path for resource search as well,
  * so {@code "fabric-api:dynamic_data"} would be searched in {@code "resources/data/modid/dynamic_data/"},
  * {@code modid} being mod id of any mod, it is recommended to use your mod id in
  * registry path to avoid path clashes, like {@code "fabric-api:fabric-api/dynamic_data"}.
  */
+@ApiStatus.Experimental
 public class DynamicRegistryRegistry {
 	/**
 	 * Registers a dynamically loaded registry.
