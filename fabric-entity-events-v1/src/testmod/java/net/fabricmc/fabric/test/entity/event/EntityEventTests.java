@@ -23,6 +23,7 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
+import net.minecraft.block.WallBlock;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -113,6 +114,24 @@ public final class EntityEventTests implements ModInitializer {
 
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			LOGGER.info("{} died due to {} damage source", entity.getName().getString(), source.getName());
+		});
+
+		ServerLivingEntityEvents.ALLOW_CLIMB.register((entity, pos, state) -> {
+			// Can climb walls
+			if (state.getBlock() instanceof WallBlock || entity.world.getBlockState(pos.down()).getBlock() instanceof WallBlock) {
+				return ActionResult.SUCCESS;
+			}
+
+			return ActionResult.PASS;
+		});
+
+		ServerLivingEntityEvents.ALLOW_CLIMB.register((entity, pos, state) -> {
+			// Can't climb if either hand is holding something
+			if (entity instanceof PlayerEntity player && (!player.getStackInHand(Hand.MAIN_HAND).isEmpty() || !player.getStackInHand(Hand.OFF_HAND).isEmpty())) {
+				return ActionResult.FAIL;
+			}
+
+			return ActionResult.PASS;
 		});
 
 		EntitySleepEvents.ALLOW_SLEEPING.register((player, sleepingPos) -> {

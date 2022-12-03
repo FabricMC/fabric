@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.api.entity.event.v1;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -73,6 +76,37 @@ public final class ServerLivingEntityEvents {
 		}
 	});
 
+	/**
+	 * An event that is called when minecraft checks if an entity is at a climbable block position.
+	 * This is fired before minecraft does its own checks.
+	 *
+	 * <p><b>Return types:</b>
+	 * <ul>
+	 * 	   <li>{@link ActionResult#SUCCESS} Allows climbing unless another callback returns {@link ActionResult#FAIL}</li>
+	 * 	   <li>{@link ActionResult#FAIL} Cancels further processing and doesn't allow climbing,
+	 * 	   even if another callback returns {@link ActionResult#SUCCESS}</li>
+	 * 	   <li>{@link ActionResult#PASS} Does nothing, should be used as default return value.
+	 * 	   If the overall event returns this, minecraft does its own checks.</li>
+	 * </ul>
+	 */
+	public static final Event<AllowClimb> ALLOW_CLIMB = EventFactory.createArrayBacked(AllowClimb.class, callbacks -> ((entity, pos, state) -> {
+		boolean allowed = false;
+
+		for (AllowClimb callback : callbacks) {
+			ActionResult result = callback.allowClimb(entity, pos, state);
+
+			if (result.isAccepted()) {
+				allowed = true;
+			}
+
+			if (result == ActionResult.FAIL) {
+				return ActionResult.FAIL;
+			}
+		}
+
+		return allowed ? ActionResult.SUCCESS : ActionResult.PASS;
+	}));
+
 	@FunctionalInterface
 	public interface AllowDamage {
 		/**
@@ -110,6 +144,21 @@ public final class ServerLivingEntityEvents {
 		 * @param damageSource the source of the fatal damage
 		 */
 		void afterDeath(LivingEntity entity, DamageSource damageSource);
+	}
+
+	@FunctionalInterface
+	public interface AllowClimb {
+		/**
+		 * Called when minecraft checks if a living entity is in a climbable block pos.
+		 *
+		 * @param entity the entity
+		 * @param pos the block pos being checked
+		 * @param state the block state of the block at {@code pos}
+		 * @return {@link ActionResult#SUCCESS} to allow climbing,
+		 * 		   {@link ActionResult#FAIL} to prevent climbing,
+		 * 		   {@link ActionResult#PASS} to fall back to other callbacks or vanilla
+		 */
+		ActionResult allowClimb(LivingEntity entity, BlockPos pos, BlockState state);
 	}
 
 	private ServerLivingEntityEvents() {

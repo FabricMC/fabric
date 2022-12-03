@@ -57,6 +57,9 @@ abstract class LivingEntityMixin {
 	@Shadow
 	public abstract Optional<BlockPos> getSleepingPosition();
 
+	@Shadow
+	private Optional<BlockPos> climbingPos;
+
 	@Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;onKilledOther(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;)Z", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void onEntityKilledOther(DamageSource source, CallbackInfo ci, Entity attacker) {
 		// FIXME: Cannot use shadowed fields from supermixins - needs a fix so people can use fabric api in a dev environment even though this is fine in this repo and prod.
@@ -158,5 +161,28 @@ abstract class LivingEntityMixin {
 
 		Vec3d newPos = EntitySleepEvents.MODIFY_WAKE_UP_POSITION.invoker().modifyWakeUpPosition((LivingEntity) (Object) this, pos, bedState, original.orElse(null));
 		return Optional.ofNullable(newPos);
+	}
+
+	@Inject(
+			method = "isClimbing",
+			at = @At(
+					value = "INVOKE",
+					target = "net/minecraft/entity/LivingEntity.getBlockPos ()Lnet/minecraft/util/math/BlockPos;"
+			),
+			cancellable = true
+	)
+	private void allowClimb(CallbackInfoReturnable<Boolean> cir) {
+		LivingEntity self = (LivingEntity) (Object) this;
+		BlockPos pos = self.getBlockPos();
+		ActionResult result = ServerLivingEntityEvents.ALLOW_CLIMB.invoker().allowClimb(self, pos, self.getBlockStateAtPos());
+
+		if (result == ActionResult.SUCCESS) {
+			this.climbingPos = Optional.of(pos);
+			cir.setReturnValue(true);
+		}
+
+		if (result == ActionResult.FAIL) {
+			cir.setReturnValue(false);
+		}
 	}
 }
