@@ -63,10 +63,6 @@ public final class ClientMessageEvents {
 	 * <p>If a listener returned {@code false}, the command will not be sent,
 	 * the remaining listeners will not be called (if any), and {@link #SEND_COMMAND_MESSAGE}
 	 * event will not be triggered.
-	 *
-	 * <p>Also, this is called before client commands are checked and executed.
-	 * Therefore, client commands registered with {@code fabric-command-api}
-	 * will not be executed if a listener returned {@code false}.
 	 */
 	public static final Event<AllowSendCommandMessage> ALLOW_SEND_COMMAND_MESSAGE = EventFactory.createArrayBacked(AllowSendCommandMessage.class, listeners -> (command) -> {
 		for (AllowSendCommandMessage listener : listeners) {
@@ -95,9 +91,6 @@ public final class ClientMessageEvents {
 	 * including client commands registered with {@code fabric-command-api}.
 	 * Is not called when {@linkplain #ALLOW_SEND_COMMAND_MESSAGE command messages are blocked}.
 	 * The command string does not include a slash at the beginning.
-	 *
-	 * <p>This event will also be triggered when executing a client command
-	 * registered with {@code fabric-command-api}.
 	 */
 	public static final Event<SendCommandMessage> SEND_COMMAND_MESSAGE = EventFactory.createArrayBacked(SendCommandMessage.class, listeners -> (command) -> {
 		for (SendCommandMessage listener : listeners) {
@@ -195,10 +188,6 @@ public final class ClientMessageEvents {
 		 * the {@link #SEND_COMMAND_MESSAGE} event from triggering.
 		 * The command string does not include a slash at the beginning.
 		 *
-		 * <p>Also, this is called before client commands are checked and executed.
-		 * Therefore, client commands registered with {@code fabric-command-api}
-		 * will not be executed if {@code false} is returned.
-		 *
 		 * @param command the command that will be sent to the server, without a slash at the beginning.
 		 * @return {@code true} if the command should be sent, otherwise {@code false}
 		 */
@@ -225,9 +214,6 @@ public final class ClientMessageEvents {
 		 * including client commands registered with {@code fabric-command-api}.
 		 * Is not called when {@linkplain #ALLOW_SEND_COMMAND_MESSAGE command messages are blocked}.
 		 * The command string does not include a slash at the beginning.
-		 *
-		 * <p>This will also be called when executing a client command
-		 * registered with {@code fabric-command-api}.
 		 *
 		 * @param command the command that is being sent to the server, without a slash at the beginning.
 		 */
