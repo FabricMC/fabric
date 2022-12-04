@@ -40,8 +40,8 @@ public final class ClientMessageEvents {
 	 * typically from a client GUI. Mods can use this to block the message.
 	 *
 	 * <p>If a listener returned {@code false}, the message will not be sent,
-	 * the remaining listeners will not be called (if any), and {@link #SEND_CHAT_MESSAGE}
-	 * event will not be triggered.
+	 * the remaining listeners will not be called (if any), and
+	 * {@link #CANCELED_SEND_CHAT_MESSAGE} will be triggered instead of {@link #SEND_CHAT_MESSAGE}.
 	 */
 	public static final Event<AllowSendChatMessage> ALLOW_SEND_CHAT_MESSAGE = EventFactory.createArrayBacked(AllowSendChatMessage.class, listeners -> (message) -> {
 		for (AllowSendChatMessage listener : listeners) {
@@ -61,8 +61,8 @@ public final class ClientMessageEvents {
 	 * The command string does not include a slash at the beginning.
 	 *
 	 * <p>If a listener returned {@code false}, the command will not be sent,
-	 * the remaining listeners will not be called (if any), and {@link #SEND_COMMAND_MESSAGE}
-	 * event will not be triggered.
+	 * the remaining listeners will not be called (if any), and
+	 * {@link #CANCELED_SEND_COMMAND_MESSAGE} will be triggered instead of {@link #SEND_COMMAND_MESSAGE}.
 	 */
 	public static final Event<AllowSendCommandMessage> ALLOW_SEND_COMMAND_MESSAGE = EventFactory.createArrayBacked(AllowSendCommandMessage.class, listeners -> (command) -> {
 		for (AllowSendCommandMessage listener : listeners) {
@@ -99,12 +99,31 @@ public final class ClientMessageEvents {
 	});
 
 	/**
+	 * An event triggered when sending a chat message is canceled with {@link #ALLOW_SEND_CHAT_MESSAGE}.
+	 */
+	public static final Event<CanceledSendChatMessage> CANCELED_SEND_CHAT_MESSAGE = EventFactory.createArrayBacked(CanceledSendChatMessage.class, listeners -> (message) -> {
+		for (CanceledSendChatMessage listener : listeners) {
+			listener.onCanceledSendChatMessage(message);
+		}
+	});
+
+	/**
+	 * An event triggered when sending a command is canceled with {@link #ALLOW_SEND_COMMAND_MESSAGE}.
+	 * The command string does not include a slash at the beginning.
+	 */
+	public static final Event<CanceledSendCommandMessage> CANCELED_SEND_COMMAND_MESSAGE = EventFactory.createArrayBacked(CanceledSendCommandMessage.class, listeners -> (command) -> {
+		for (CanceledSendCommandMessage listener : listeners) {
+			listener.onCanceledSendCommandMessage(command);
+		}
+	});
+
+	/**
 	 * An event triggered when the client receives a chat message,
 	 * which is any message sent by a player. Mods can use this to block the message.
 	 *
 	 * <p>If a listener returned {@code false}, the message will not be displayed,
-	 * the remaining listeners will not be called (if any), and {@link #RECEIVE_CHAT_MESSAGE}
-	 * event will not be triggered.
+	 * the remaining listeners will not be called (if any), and
+	 * {@link #CANCELED_RECEIVE_CHAT_MESSAGE} will be triggered instead of {@link #RECEIVE_CHAT_MESSAGE}.
 	 */
 	public static final Event<AllowReceiveChatMessage> ALLOW_RECEIVE_CHAT_MESSAGE = EventFactory.createArrayBacked(AllowReceiveChatMessage.class, listeners -> (message, signedMessage, sender, params, receptionTimestamp) -> {
 		for (AllowReceiveChatMessage listener : listeners) {
@@ -122,8 +141,8 @@ public final class ClientMessageEvents {
 	 * Mods can use this to block the message or toggle overlay.
 	 *
 	 * <p>If a listener returned {@code false}, the message will not be displayed,
-	 * the remaining listeners will not be called (if any), and {@link #RECEIVE_CHAT_MESSAGE}
-	 * event will not be triggered.
+	 * the remaining listeners will not be called (if any), and
+	 * {@link #CANCELED_RECEIVE_GAME_MESSAGE} will be triggered instead of {@link #RECEIVE_GAME_MESSAGE}.
 	 *
 	 * <p>Overlay is whether the message will be displayed in the action bar.
 	 * To toggle overlay, return false and call
@@ -164,13 +183,33 @@ public final class ClientMessageEvents {
 		}
 	});
 
+	/**
+	 * An event triggered when receiving a chat message is canceled with {@link #ALLOW_RECEIVE_CHAT_MESSAGE}.
+	 */
+	public static final Event<CanceledReceiveChatMessage> CANCELED_RECEIVE_CHAT_MESSAGE = EventFactory.createArrayBacked(CanceledReceiveChatMessage.class, listeners -> (message, signedMessage, sender, params, receptionTimestamp) -> {
+		for (CanceledReceiveChatMessage listener : listeners) {
+			listener.onCanceledReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp);
+		}
+	});
+
+	/**
+	 * An event triggered when receiving a game message is canceled with {@link #ALLOW_RECEIVE_GAME_MESSAGE}.
+	 *
+	 * <p>Overlay is whether the message would have been displayed in the action bar.
+	 */
+	public static final Event<CanceledReceiveGameMessage> CANCELED_RECEIVE_GAME_MESSAGE = EventFactory.createArrayBacked(CanceledReceiveGameMessage.class, listeners -> (message, overlay) -> {
+		for (CanceledReceiveGameMessage listener : listeners) {
+			listener.onCanceledReceiveGameMessage(message, overlay);
+		}
+	});
+
 	@FunctionalInterface
 	public interface AllowSendChatMessage {
 		/**
 		 * Called when the client is about to send a chat message,
 		 * typically from a client GUI. Returning {@code false}
-		 * prevents the message from being sent and the {@link #SEND_CHAT_MESSAGE} event
-		 * from triggering.
+		 * prevents the message from being sent, and
+		 * {@link #CANCELED_SEND_CHAT_MESSAGE} will be triggered instead of {@link #SEND_CHAT_MESSAGE}.
 		 *
 		 * @param message the message that will be sent to the server
 		 * @return {@code true} if the message should be sent, otherwise {@code false}
@@ -184,8 +223,8 @@ public final class ClientMessageEvents {
 		 * Called when the client is about to send a command,
 		 * which is whenever the player executes a command
 		 * including client commands registered with {@code fabric-command-api}.
-		 * Returning {@code false} prevents the command from being sent and
-		 * the {@link #SEND_COMMAND_MESSAGE} event from triggering.
+		 * Returning {@code false} prevents the command from being sent, and
+		 * {@link #CANCELED_SEND_COMMAND_MESSAGE} will be triggered instead of {@link #SEND_COMMAND_MESSAGE}.
 		 * The command string does not include a slash at the beginning.
 		 *
 		 * @param command the command that will be sent to the server, without a slash at the beginning.
@@ -221,16 +260,37 @@ public final class ClientMessageEvents {
 	}
 
 	@FunctionalInterface
+	public interface CanceledSendChatMessage {
+		/**
+		 * Called when sending a chat message is canceled with {@link #ALLOW_SEND_CHAT_MESSAGE}.
+		 *
+		 * @param message the message that is canceled from being sent to the server
+		 */
+		void onCanceledSendChatMessage(String message);
+	}
+
+	@FunctionalInterface
+	public interface CanceledSendCommandMessage {
+		/**
+		 * Called when sending a command is canceled with {@link #ALLOW_SEND_COMMAND_MESSAGE}.
+		 * The command string does not include a slash at the beginning.
+		 *
+		 * @param command the command that is being sent to the server, without a slash at the beginning.
+		 */
+		void onCanceledSendCommandMessage(String command);
+	}
+
+	@FunctionalInterface
 	public interface AllowReceiveChatMessage {
 		/**
 		 * Called when the client receives a chat message,
 		 * which is any message sent by a player.
-		 * Returning {@code false} prevents the message from being displayed and
-		 * the {@link #RECEIVE_CHAT_MESSAGE} event from triggering.
+		 * Returning {@code false} prevents the message from being displayed, and
+		 * {@link #CANCELED_RECEIVE_CHAT_MESSAGE} will be triggered instead of {@link #RECEIVE_CHAT_MESSAGE}.
 		 *
 		 * @param message            the message received from the server
-		 * @param signedMessage      the signed message received from the server (may be null)
-		 * @param sender             the sender of the message (may be null)
+		 * @param signedMessage      the signed message received from the server (nullable)
+		 * @param sender             the sender of the message (nullable)
 		 * @param params             the parameters of the message
 		 * @param receptionTimestamp the timestamp when the message was received
 		 * @return {@code true} if the message should be displayed, otherwise {@code false}
@@ -243,8 +303,8 @@ public final class ClientMessageEvents {
 		/**
 		 * Called when the client receives a game message,
 		 * which is any message sent by the server. Returning {@code false}
-		 * prevents the message from being displayed and the {@link #RECEIVE_GAME_MESSAGE}
-		 * event from triggering.
+		 * prevents the message from being displayed, and
+		 * {@link #CANCELED_RECEIVE_GAME_MESSAGE} will be triggered instead of {@link #RECEIVE_GAME_MESSAGE}.
 		 *
 		 * <p>Overlay is whether the message will be displayed in the action bar.
 		 * To toggle overlay, return false and call
@@ -265,8 +325,8 @@ public final class ClientMessageEvents {
 		 * {@linkplain #ALLOW_RECEIVE_CHAT_MESSAGE chat messages are blocked}.
 		 *
 		 * @param message            the message received from the server
-		 * @param signedMessage      the signed message received from the server (may be null)
-		 * @param sender             the sender of the message (may be null)
+		 * @param signedMessage      the signed message received from the server (nullable)
+		 * @param sender             the sender of the message (nullable)
 		 * @param params             the parameters of the message
 		 * @param receptionTimestamp the timestamp when the message was received
 		 */
@@ -287,5 +347,30 @@ public final class ClientMessageEvents {
 		 * @param overlay whether the message will be displayed in the action bar
 		 */
 		void onReceiveGameMessage(Text message, boolean overlay);
+	}
+
+	@FunctionalInterface
+	public interface CanceledReceiveChatMessage {
+		/**
+		 * Called when receiving a chat message is canceled with {@link #ALLOW_RECEIVE_CHAT_MESSAGE}.
+		 *
+		 * @param message            the message received from the server
+		 * @param signedMessage      the signed message received from the server (nullable)
+		 * @param sender             the sender of the message (nullable)
+		 * @param params             the parameters of the message
+		 * @param receptionTimestamp the timestamp when the message was received
+		 */
+		void onCanceledReceiveChatMessage(Text message, @Nullable SignedMessage signedMessage, @Nullable GameProfile sender, MessageType.Parameters params, Instant receptionTimestamp);
+	}
+
+	@FunctionalInterface
+	public interface CanceledReceiveGameMessage {
+		/**
+		 * Called when receiving a game message is canceled with {@link #ALLOW_RECEIVE_GAME_MESSAGE}.
+		 *
+		 * @param message the message received from the server
+		 * @param overlay whether the message would have been displayed in the action bar
+		 */
+		void onCanceledReceiveGameMessage(Text message, boolean overlay);
 	}
 }

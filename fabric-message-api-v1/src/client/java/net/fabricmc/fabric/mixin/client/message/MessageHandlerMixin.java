@@ -57,12 +57,12 @@ public abstract class MessageHandlerMixin {
 
 	@Unique
 	private void fabric_onChatMessage(Text message, @Nullable SignedMessage signedMessage, @Nullable GameProfile sender, MessageType.Parameters params, Instant receptionTimestamp, CallbackInfoReturnable<Boolean> cir) {
-		if (!ClientMessageEvents.ALLOW_RECEIVE_CHAT_MESSAGE.invoker().allowReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp)) {
+		if (ClientMessageEvents.ALLOW_RECEIVE_CHAT_MESSAGE.invoker().allowReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp)) {
+			ClientMessageEvents.RECEIVE_CHAT_MESSAGE.invoker().onReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp);
+		} else {
+			ClientMessageEvents.CANCELED_RECEIVE_CHAT_MESSAGE.invoker().onCanceledReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp);
 			cir.setReturnValue(false);
-			return;
 		}
-
-		ClientMessageEvents.RECEIVE_CHAT_MESSAGE.invoker().onReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp);
 	}
 
 	@Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;setOverlayMessage(Lnet/minecraft/text/Text;Z)V"), cancellable = true)
@@ -72,11 +72,11 @@ public abstract class MessageHandlerMixin {
 
 	@Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;addMessage(Lnet/minecraft/text/Text;)V"), cancellable = true)
 	private void fabric_onGameMessage(Text message, boolean overlay, CallbackInfo ci) {
-		if (!ClientMessageEvents.ALLOW_RECEIVE_GAME_MESSAGE.invoker().allowReceiveGameMessage(message, overlay)) {
+		if (ClientMessageEvents.ALLOW_RECEIVE_GAME_MESSAGE.invoker().allowReceiveGameMessage(message, overlay)) {
+			ClientMessageEvents.RECEIVE_GAME_MESSAGE.invoker().onReceiveGameMessage(message, overlay);
+		} else {
+			ClientMessageEvents.CANCELED_RECEIVE_GAME_MESSAGE.invoker().onCanceledReceiveGameMessage(message, overlay);
 			ci.cancel();
-			return;
 		}
-
-		ClientMessageEvents.RECEIVE_GAME_MESSAGE.invoker().onReceiveGameMessage(message, overlay);
 	}
 }

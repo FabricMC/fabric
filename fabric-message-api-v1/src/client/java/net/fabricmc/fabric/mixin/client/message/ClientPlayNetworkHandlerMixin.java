@@ -33,21 +33,21 @@ import net.fabricmc.fabric.api.client.message.v1.ClientMessageEvents;
 public abstract class ClientPlayNetworkHandlerMixin {
 	@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
 	private void fabric_onSendChatMessage(String content, CallbackInfo ci) {
-		if (!ClientMessageEvents.ALLOW_SEND_CHAT_MESSAGE.invoker().allowSendChatMessage(content)) {
+		if (ClientMessageEvents.ALLOW_SEND_CHAT_MESSAGE.invoker().allowSendChatMessage(content)) {
+			ClientMessageEvents.SEND_CHAT_MESSAGE.invoker().onSendChatMessage(content);
+		} else {
+			ClientMessageEvents.CANCELED_SEND_CHAT_MESSAGE.invoker().onCanceledSendChatMessage(content);
 			ci.cancel();
-			return;
 		}
-
-		ClientMessageEvents.SEND_CHAT_MESSAGE.invoker().onSendChatMessage(content);
 	}
 
 	@Inject(method = "sendChatCommand", at = @At("HEAD"), cancellable = true)
 	private void fabric_onSendCommandMessage(String command, CallbackInfo ci) {
-		if (!ClientMessageEvents.ALLOW_SEND_COMMAND_MESSAGE.invoker().allowSendCommandMessage(command)) {
+		if (ClientMessageEvents.ALLOW_SEND_COMMAND_MESSAGE.invoker().allowSendCommandMessage(command)) {
+			ClientMessageEvents.SEND_COMMAND_MESSAGE.invoker().onSendCommandMessage(command);
+		} else {
+			ClientMessageEvents.CANCELED_SEND_COMMAND_MESSAGE.invoker().onCanceledSendCommandMessage(command);
 			ci.cancel();
-			return;
 		}
-
-		ClientMessageEvents.SEND_COMMAND_MESSAGE.invoker().onSendCommandMessage(command);
 	}
 }
