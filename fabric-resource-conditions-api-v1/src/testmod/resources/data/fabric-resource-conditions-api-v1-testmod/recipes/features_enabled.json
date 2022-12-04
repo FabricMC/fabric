@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:blue_dye"
+    }
+  ],
+  "result": {
+    "item": "minecraft:diamond"
+  },
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:features_enabled",
+      "features": [
+        "minecraft:vanilla",
+        "minecraft:bundle"
+      ]
+    }
+  ]
+}

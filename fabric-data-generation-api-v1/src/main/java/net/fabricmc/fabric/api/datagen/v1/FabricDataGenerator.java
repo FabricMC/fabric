@@ -24,9 +24,9 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.loader.api.ModContainer;
 
@@ -48,13 +48,24 @@ public final class FabricDataGenerator extends DataGenerator {
 		this.registriesFuture = registriesFuture;
 	}
 
+	/**
+	 * Create a default {@link Pack} instance for generating a mod's data.
+	 */
 	public Pack createPack() {
 		return new Pack(true, modContainer.getMetadata().getName(), this.fabricOutput);
 	}
 
-	public Pack createSubPack(String packName) {
-		Path path = this.output.resolvePath(DataOutput.OutputType.DATA_PACK).resolve(getModId()).resolve("datapacks").resolve(packName);
-		return new Pack(true, packName, new FabricDataOutput(modContainer, path, strictValidation));
+	/**
+	 * Create a new {@link Pack} instance for generating a builtin resource pack.
+	 *
+	 * <p>To be used in conjunction with {@link net.fabricmc.fabric.api.resource.ResourceManagerHelper#registerBuiltinResourcePack}
+	 *
+	 * <p>The path in which the resource pack is generated is {@code "resourcepacks/<id path>"}. {@code id path} being the path specified
+	 * in the identifier.
+	 */
+	public Pack createBuiltinResourcePack(Identifier id) {
+		Path path = this.output.getPath().resolve("resourcepacks").resolve(id.getPath());
+		return new Pack(true, id.toString(), new FabricDataOutput(modContainer, path, strictValidation));
 	}
 
 	/**
@@ -94,7 +105,7 @@ public final class FabricDataGenerator extends DataGenerator {
 	}
 
 	/**
-	 * @deprecated Please use {@link FabricDataGenerator#createSubPack(String)}
+	 * @deprecated Please use {@link FabricDataGenerator#createBuiltinResourcePack(Identifier)}
 	 */
 	@Override
 	@Deprecated
@@ -102,29 +113,45 @@ public final class FabricDataGenerator extends DataGenerator {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * Represents a pack of generated data (i.e. data pack or resource pack). Providers are added to a pack.
+	 */
 	public final class Pack extends DataGenerator.Pack {
 		private Pack(boolean shouldRun, String name, FabricDataOutput output) {
 			super(shouldRun, name, output);
 		}
 
 		/**
-		 * Method to register a {@link Factory} to create a {@link DataProvider} that has a single argument constructor for a {@link FabricDataOutput}.
+		 * Registers a constructor of {@link DataProvider} which takes a {@link FabricDataOutput}.
 		 *
-		 * @return The {@link DataProvider}
+		 * @return the {@link DataProvider}
 		 */
 		public <T extends DataProvider> T addProvider(Factory<T> factory) {
 			return super.addProvider(output -> factory.create((FabricDataOutput) output));
 		}
 
+		/**
+		 * Registers a constructor of {@link DataProvider} which takes a {@link FabricDataOutput} and the registries.
+		 * This is used, for example, with {@link net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider}.
+		 *
+		 * @return the {@link DataProvider}
+		 */
 		public <T extends DataProvider> T addProvider(RegistryDependentFactory<T> factory) {
 			return super.addProvider(output -> factory.create((FabricDataOutput) output, registriesFuture));
 		}
 
+		/**
+		 * A factory of a data provider. This is usually the constructor.
+		 */
 		@FunctionalInterface
 		public interface Factory<T extends DataProvider> {
 			T create(FabricDataOutput output);
 		}
 
+		/**
+		 * A factory of a data provider. This is usually the constructor.
+		 * The provider has access to the registries.
+		 */
 		@FunctionalInterface
 		public interface RegistryDependentFactory<T extends DataProvider> {
 			T create(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture);

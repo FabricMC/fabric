@@ -58,8 +58,12 @@ public class ConditionalResourcesTest {
 			throw new AssertionError("tags_not_populated recipe should not have been loaded.");
 		}
 
+		if (manager.get(id("features_enabled")).isEmpty()) {
+			throw new AssertionError("features_enabled recipe should have been loaded.");
+		}
+
 		long loadedRecipes = manager.values().stream().filter(r -> r.getId().getNamespace().equals(MOD_ID)).count();
-		if (loadedRecipes != 4) throw new AssertionError("Unexpected loaded recipe count: " + loadedRecipes);
+		if (loadedRecipes != 5) throw new AssertionError("Unexpected loaded recipe count: " + loadedRecipes);
 
 		context.complete();
 	}

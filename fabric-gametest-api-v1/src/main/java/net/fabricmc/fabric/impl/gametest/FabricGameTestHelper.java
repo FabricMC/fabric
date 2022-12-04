@@ -101,6 +101,8 @@ public final class FabricGameTestHelper {
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException("Failed to invoke test method (%s) in (%s) because %s".formatted(method.getName(), method.getDeclaringClass().getCanonicalName(), e.getMessage()), e);
 		} catch (InvocationTargetException e) {
+			LOGGER.error("Exception occurred when invoking test method {} in ({})", method.getName(), method.getDeclaringClass().getCanonicalName(), e);
+
 			if (e.getCause() instanceof RuntimeException runtimeException) {
 				throw runtimeException;
 			} else {

@@ -113,6 +113,10 @@ transitive-accessible method net/minecraft/village/VillagerType <init> (Ljava/la
 # Access stack list in SimpleInventory
 transitive-accessible field net/minecraft/inventory/SimpleInventory stacks Lnet/minecraft/util/collection/DefaultedList;
 
+# Creating custom sound events
+transitive-accessible method net/minecraft/sound/SoundEvent of (Lnet/minecraft/util/Identifier;F)Lnet/minecraft/sound/SoundEvent;
+transitive-accessible method net/minecraft/sound/SoundEvent of (Lnet/minecraft/util/Identifier;)Lnet/minecraft/sound/SoundEvent;
+
 ### Generated access wideners below
 # Constructors of non-abstract block classes
 transitive-accessible method net/minecraft/block/AirBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V

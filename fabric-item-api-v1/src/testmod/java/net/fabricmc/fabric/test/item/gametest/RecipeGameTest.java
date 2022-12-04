@@ -124,7 +124,7 @@ public class RecipeGameTest implements FabricGameTest {
 			return;
 		}
 
-		if (!currentStack.isItemEqual(expectedStack)) {
+		if (!currentStack.isOf(expectedStack.getItem())) {
 			throw new GameTestException("Item stacks dont match. " + extraErrorInfo);
 		}
 

@@ -25,13 +25,18 @@ import java.util.stream.Stream;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.data.server.tag.AbstractTagProvider;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryBuilder;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.registry.tag.FluidTags;
@@ -41,10 +46,6 @@ import net.minecraft.registry.tag.TagBuilder;
 import net.minecraft.registry.tag.TagEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.event.GameEvent;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -54,7 +55,12 @@ import net.fabricmc.fabric.impl.datagen.ForcedTagEntry;
 /**
  * Implement this class (or one of the inner classes) to generate a tag list.
  *
- * <p>Register your implementation using {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
+ * <p>Register your implementation using {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
+ *
+ * <p>When generating tags for modded dynamic registry entries (such as biomes), either the entry
+ * must be added to the registry using {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint#buildRegistry(RegistryBuilder)}
+ * or {@link TagBuilder#addOptional(Identifier)} must be used. Otherwise, the data generator cannot
+ * find the entry and crashes.
  *
  * <p>Commonly used implementations of this class are provided:
  *
@@ -66,12 +72,12 @@ import net.fabricmc.fabric.impl.datagen.ForcedTagEntry;
  */
 public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 	/**
-	 * Construct a new {@link FabricTagProvider} with the default computed path.
+	 * Constructs a new {@link FabricTagProvider} with the default computed path.
 	 *
-	 * <p>Common implementations of this class are provided. For example @see BlockTagProvider
+	 * <p>Common implementations of this class are provided.
 	 *
-	 * @param output        The {@link FabricDataOutput} instance
-	 * @param registriesFuture      The backing registry for the Tag type.
+	 * @param output        the {@link FabricDataOutput} instance
+	 * @param registriesFuture      the backing registry for the tag type
 	 */
 	public FabricTagProvider(FabricDataOutput output, RegistryKey<? extends Registry<T>> registryKey, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 		super(output, registryKey, registriesFuture);
@@ -156,7 +162,6 @@ public abstract class FabricTagProvider<T> extends AbstractTagProvider<T> {
 		 * Copy the entries from a tag with the {@link Block} type into this item tag.
 		 *
 		 * <p>The {@link ItemTagProvider} tag provider must be constructed with an associated {@link BlockTagProvider} tag provider to use this method.
-		 *
 		 *
 		 * @param blockTag The block tag to copy from.
 		 * @param itemTag  The item tag to copy to.
