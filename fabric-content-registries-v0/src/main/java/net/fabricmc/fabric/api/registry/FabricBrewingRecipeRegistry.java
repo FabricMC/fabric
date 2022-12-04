@@ -24,8 +24,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.recipe.BrewingRecipeRegistry;
 import net.minecraft.recipe.Ingredient;
 
-import net.fabricmc.fabric.mixin.content.registry.BrewingRecipeRegistryAccessor;
-
 /**
  * Counterpart of {@link BrewingRecipeRegistry} with methods that allow adding recipes which use Ingredients instead of Items.
  */
@@ -47,7 +45,7 @@ public final class FabricBrewingRecipeRegistry {
 		Objects.requireNonNull(ingredient, "Ingredient cannot be null!");
 		Objects.requireNonNull(output, "Output cannot be null!");
 
-		BrewingRecipeRegistryAccessor.getItemRecipes().add(new BrewingRecipeRegistry.Recipe<>(input, ingredient, output));
+		BrewingRecipeRegistry.ITEM_RECIPES.add(new BrewingRecipeRegistry.Recipe<>(input, ingredient, output));
 	}
 
 	/**
@@ -64,6 +62,6 @@ public final class FabricBrewingRecipeRegistry {
 		Objects.requireNonNull(ingredient, "Ingredient cannot be null!");
 		Objects.requireNonNull(output, "Output cannot be null");
 
-		BrewingRecipeRegistryAccessor.getPotionRecipes().add(new BrewingRecipeRegistry.Recipe<>(input, ingredient, output));
+		BrewingRecipeRegistry.POTION_RECIPES.add(new BrewingRecipeRegistry.Recipe<>(input, ingredient, output));
 	}
 }

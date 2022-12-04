@@ -16,8 +16,7 @@
     "SculkSensorBlockMixin",
     "ShovelItemAccessor",
     "VillagerEntityAccessor",
-    "VillagerEntityMixin",
-    "BrewingRecipeRegistryAccessor"
+    "VillagerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
