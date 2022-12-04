@@ -295,7 +295,7 @@ public final class ClientMessageEvents {
 		 * {@linkplain #ALLOW_RECEIVE_GAME_MESSAGE game messages are blocked}.
 		 *
 		 * <p>Overlay is whether the message will be displayed in the action bar.
-		 * Use {@link #ALLOW_RECEIVE_GAME_MESSAGE to toggle overlay}.
+		 * Use {@link #ALLOW_RECEIVE_GAME_MESSAGE} to toggle overlay.
 		 *
 		 * @param message the message received from the server
 		 * @param overlay whether the message will be displayed in the action bar
