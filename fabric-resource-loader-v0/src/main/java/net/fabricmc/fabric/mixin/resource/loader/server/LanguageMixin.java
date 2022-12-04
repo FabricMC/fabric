@@ -26,10 +26,6 @@ import java.util.function.BiConsumer;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonParseException;
-
-import net.fabricmc.loader.api.metadata.CustomValue;
-import net.fabricmc.loader.api.metadata.ModMetadata;
-
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,8 +35,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.util.Language;
 
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.fabric.impl.resource.loader.ServerLanguageUtil;
 
 @Mixin(Language.class)
 class LanguageMixin {
@@ -48,41 +43,18 @@ class LanguageMixin {
 	@Final
 	private static Logger LOGGER;
 
-	@Shadow
-	@Final
-	public static String DEFAULT_LANGUAGE;
-
 	@Redirect(method = "create", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;build()Lcom/google/common/collect/ImmutableMap;"))
 	private static ImmutableMap<String, String> create(ImmutableMap.Builder<String, String> cir) {
 		Map<String, String> map = new HashMap<>(cir.buildOrThrow());
 
-		for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
-			if (!mod.getMetadata().getType().equals("builtin")) loadModLanguage(mod, map::put);
+		for (Path path : ServerLanguageUtil.getModLanguageFiles()) {
+			loadFromPath(path, map::put);
 		}
 
 		return ImmutableMap.copyOf(map);
 	}
 
-	private static void loadModLanguage(ModContainer container, BiConsumer<String, String> entryConsumer) {
-		ModMetadata metadata = container.getMetadata();
-		loadSingleFile(container, metadata.getId(), entryConsumer);
-		if (metadata.containsCustomValue("fabric:server-language-namespaces")) {
-			final CustomValue cv = metadata.getCustomValue("fabric:server-language-namespaces");
-			if (cv.getType() == CustomValue.CvType.ARRAY) {
-				cv.getAsArray().forEach(cvEach -> {
-					if (cvEach.getType() == CustomValue.CvType.STRING) {
-						String namespace = cvEach.getAsString();
-						loadSingleFile(container, namespace, entryConsumer);
-					}
-				});
-			}
-		}
-	}
-
-	private static void loadSingleFile(ModContainer container, String namespace, BiConsumer<String, String> entryConsumer) {
-		Path path = container.findPath("assets/" + namespace + "/lang/" + DEFAULT_LANGUAGE + ".json").orElse(null);
-		if (path == null || !Files.isRegularFile(path)) return;
-
+	private static void loadFromPath(Path path, BiConsumer<String, String> entryConsumer) {
 		try (InputStream stream = Files.newInputStream(path)) {
 			LOGGER.debug("Loading translations from {}", path);
 			load(stream, entryConsumer);
