@@ -24,6 +24,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.WallBlock;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -36,6 +37,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.registry.Registries;
@@ -116,22 +118,17 @@ public final class EntityEventTests implements ModInitializer {
 			LOGGER.info("{} died due to {} damage source", entity.getName().getString(), source.getName());
 		});
 
-		ServerLivingEntityEvents.ALLOW_CLIMB.register((entity, pos, state) -> {
-			// Can climb walls
-			if (state.getBlock() instanceof WallBlock || entity.world.getBlockState(pos.down()).getBlock() instanceof WallBlock) {
-				return true;
-			}
-
-			return false;
-		});
+		// Can climb walls
+		ServerLivingEntityEvents.ALLOW_CLIMB.register(EntityEventTests::canClimbWalls);
 
 		ServerLivingEntityEvents.ALLOW_CLIMB_CLIMBABLE.register((entity, pos, state) -> {
 			// Can't climb climbable blocks if either hand is holding something
-			if (entity instanceof PlayerEntity player && (!player.getStackInHand(Hand.MAIN_HAND).isEmpty() || !player.getStackInHand(Hand.OFF_HAND).isEmpty())) {
-				return false;
-			}
+			return !(entity instanceof PlayerEntity player) || (player.getStackInHand(Hand.MAIN_HAND).isEmpty() && player.getStackInHand(Hand.OFF_HAND).isEmpty());
+		});
 
-			return true;
+		ServerLivingEntityEvents.MODIFY_CLIMBING_SPEED.register((entity, pos, state, motion) -> {
+			// Climb walls slower
+			return canClimbWalls(entity, pos, state) ? motion.multiply(1, 0.7, 1) : motion;
 		});
 
 		EntitySleepEvents.ALLOW_SLEEPING.register((player, sleepingPos) -> {
@@ -243,5 +240,10 @@ public final class EntityEventTests implements ModInitializer {
 		ItemStack stack = new ItemStack(item);
 		stack.setCustomName(Text.literal(name));
 		return stack;
+	}
+
+	private static boolean canClimbWalls(LivingEntity entity, BlockPos pos, BlockState state) {
+		// Can climb walls
+		return state.getBlock() instanceof WallBlock || entity.world.getBlockState(pos.down()).getBlock() instanceof WallBlock;
 	}
 }

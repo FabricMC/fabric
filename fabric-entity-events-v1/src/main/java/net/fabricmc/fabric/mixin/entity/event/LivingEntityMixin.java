@@ -196,4 +196,15 @@ abstract class LivingEntityMixin {
 			cir.setReturnValue(false);
 		}
 	}
+
+	@ModifyVariable(
+			method = "applyClimbingSpeed",
+			at = @At("STORE"),
+			index = 1,
+			argsOnly = true
+	)
+	private Vec3d modifyClimbingSpeed(Vec3d motion) {
+		LivingEntity self = (LivingEntity) (Object) this;
+		return ServerLivingEntityEvents.MODIFY_CLIMBING_SPEED.invoker().modifyClimbingSpeed(self, self.getBlockPos(), self.getBlockStateAtPos(), motion);
+	}
 }

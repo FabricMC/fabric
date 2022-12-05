@@ -24,6 +24,8 @@ import net.minecraft.util.math.BlockPos;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+import net.minecraft.util.math.Vec3d;
+
 /**
  * Various server-side only events related to living entities.
  */
@@ -112,6 +114,19 @@ public final class ServerLivingEntityEvents {
 		return true;
 	});
 
+	/**
+	 * An event that is called when minecraft is calculating an entities climbing motion.
+	 * When this is fired, the block position is guaranteed to be climbable. Which means e
+	 * ither one of {@link #ALLOW_CLIMB} callbacks returned {@code true}, or none of the
+	 * {@link #ALLOW_CLIMB_CLIMBABLE} callbacks returned {@code false}.
+	 */
+	public static final Event<ModifyClimbingSpeed> MODIFY_CLIMBING_SPEED = EventFactory.createArrayBacked(ModifyClimbingSpeed.class, callbacks -> (entity, pos, state, motion) -> {
+		for (ModifyClimbingSpeed callback : callbacks) {
+			motion = callback.modifyClimbingSpeed(entity, pos, state, motion);
+		}
+		return motion;
+	});
+
 	@FunctionalInterface
 	public interface AllowDamage {
 		/**
@@ -161,6 +176,21 @@ public final class ServerLivingEntityEvents {
 		 * @param state  the block state of the block at {@code pos}
 		 */
 		boolean allowClimb(LivingEntity entity, BlockPos pos, BlockState state);
+	}
+
+	@FunctionalInterface
+	public interface ModifyClimbingSpeed {
+
+		/**
+		 * Called when minecraft is updating a climbing entities motion.
+		 *
+		 * @param entity 	the entity
+		 * @param pos 		the block pos being checked
+		 * @param state  	the block state of the block at {@code pos}
+		 * @param motion	the current motion for the climbing entity
+		 * @return the new motion, or just the parameter if nothing changed
+		 */
+		Vec3d modifyClimbingSpeed(LivingEntity entity, BlockPos pos, BlockState state, Vec3d motion);
 	}
 
 	private ServerLivingEntityEvents() {
