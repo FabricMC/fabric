@@ -108,7 +108,7 @@ public final class ScreenEvents {
 	 * An event that is called after {@link Screen#removed()} is called.
 	 * This event signifies that the screen is now closed.
 	 *
-	 * <p>This event is typically used to undo any screen specific state changes such as setting the keyboard to receive {@link net.minecraft.client.Keyboard#setRepeatEvents(boolean) repeat events} or terminate threads spawned by a screen.
+	 * <p>This event is typically used to undo any screen specific state changes or to terminate threads spawned by a screen.
 	 * This event may precede initialization events {@link ScreenEvents#BEFORE_INIT} but there is no guarantee that event will be called immediately afterwards.
 	 */
 	public static Event<Remove> remove(Screen screen) {

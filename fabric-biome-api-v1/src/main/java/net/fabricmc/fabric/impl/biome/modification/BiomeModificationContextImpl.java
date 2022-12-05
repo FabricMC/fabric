@@ -170,7 +170,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public void setAmbientSound(Optional<SoundEvent> sound) {
+		public void setAmbientSound(Optional<RegistryEntry<SoundEvent>> sound) {
 			effects.loopSound = Objects.requireNonNull(sound);
 		}
 

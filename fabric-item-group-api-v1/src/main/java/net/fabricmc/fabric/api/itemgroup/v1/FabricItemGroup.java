@@ -23,15 +23,18 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.itemgroup.FabricItemGroupBuilderImpl;
 
+/**
+ * Contains a method to create an item group builder.
+ */
 public final class FabricItemGroup {
 	private FabricItemGroup() {
 	}
 
 	/**
-	 * Create a new builder for {@link ItemGroup}. Item groups are used to group items in the creative
+	 * Creates a new builder for {@link ItemGroup}. Item groups are used to group items in the creative
 	 * inventory.
 	 *
-	 * <p>Each new  {@link ItemGroup} instance of this class is automatically appended to {@link ItemGroups#getGroups()} when
+	 * <p>Each new {@link ItemGroup} instance of this class is automatically appended to {@link ItemGroups#getGroups()} when
 	 * {@link ItemGroup.Builder#build()} is invoked.
 	 *
 	 * <p>Example:
@@ -45,7 +48,7 @@ public final class FabricItemGroup {
 	 *    .build();
 	 * }</pre>
 	 *
-	 * @param identifier identifier the id of the ItemGroup, to be used as the default translation key
+	 * @param identifier the id of the ItemGroup, to be used as the default translation key
 	 * @return a new {@link ItemGroup} instance
 	 */
 	public static ItemGroup.Builder builder(Identifier identifier) {

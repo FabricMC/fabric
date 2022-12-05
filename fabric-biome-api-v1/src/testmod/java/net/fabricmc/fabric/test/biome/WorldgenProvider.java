@@ -19,7 +19,6 @@ package net.fabricmc.fabric.test.biome;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -44,17 +43,7 @@ public class WorldgenProvider extends FabricDynamicRegistryProvider {
 	protected void configure(RegistryWrapper.WrapperLookup registries, Entries entries) {
 		final RegistryWrapper.Impl<Biome> biomeRegistry = registries.getWrapperOrThrow(RegistryKeys.BIOME);
 
-		List<RegistryKey<Biome>> allBiomes = List.of(
-				TestBiomes.TEST_CRIMSON_FOREST,
-				TestBiomes.CUSTOM_PLAINS,
-				TestBiomes.TEST_END_HIGHLANDS,
-				TestBiomes.TEST_END_MIDLANDS,
-				TestBiomes.TEST_END_BARRRENS
-		);
-
-		for (RegistryKey<Biome> biomeRegistryKey : allBiomes) {
-			entries.add(biomeRegistryKey, biomeRegistry.getOrThrow(biomeRegistryKey).value());
-		}
+		entries.addAll(biomeRegistry);
 
 		ConfiguredFeature<?, ?> COMMON_DESERT_WELL = new ConfiguredFeature<>(Feature.DESERT_WELL, DefaultFeatureConfig.INSTANCE);
 

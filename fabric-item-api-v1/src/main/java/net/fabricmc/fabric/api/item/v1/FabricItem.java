@@ -98,7 +98,7 @@ public interface FabricItem {
 	 *
 	 * <p>Here is an example for a recipe remainder that increments the item's damage.
 	 *
-	 * <pre>
+	 * <pre>{@code
 	 *  if (stack.getDamage() < stack.getMaxDamage() - 1) {
 	 *  	ItemStack moreDamaged = stack.copy();
 	 *  	moreDamaged.setDamage(stack.getDamage() + 1);
@@ -106,7 +106,7 @@ public interface FabricItem {
 	 *  }
 	 *
 	 *  return ItemStack.EMPTY;
-	 * </pre>
+	 * }</pre>
 	 *
 	 *
 	 * <p>This is a stack-aware version of {@link Item#getRecipeRemainder()}.

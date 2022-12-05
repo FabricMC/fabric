@@ -47,21 +47,43 @@ public final class ItemGroupEvents {
 		}
 	});
 
+	/**
+	 * Returns the modify entries event for a specific item group.
+	 * @param itemGroup the item group to modify
+	 * @return the event
+	 */
 	public static Event<ModifyEntries> modifyEntriesEvent(ItemGroup itemGroup) {
 		return modifyEntriesEvent(itemGroup.getId());
 	}
 
+	/**
+	 * Returns the modify entries event for a specific item group. This uses the group ID and
+	 * is suitable for modifying a modded item group that might not exist.
+	 * @param groupId the ID of the item group to modify
+	 * @return the event
+	 */
 	public static Event<ModifyEntries> modifyEntriesEvent(Identifier groupId) {
 		return ItemGroupEventsImpl.getOrCreateModifyEntriesEvent(groupId);
 	}
 
 	@FunctionalInterface
 	public interface ModifyEntries {
+		/**
+		 * Modifies the item group entries.
+		 * @param entries the entries
+		 * @see FabricItemGroupEntries
+		 */
 		void modifyEntries(FabricItemGroupEntries entries);
 	}
 
 	@FunctionalInterface
 	public interface ModifyEntriesAll {
+		/**
+		 * Modifies the item group entries.
+		 * @param group the item group that is being modified
+		 * @param entries the entries
+		 * @see FabricItemGroupEntries
+		 */
 		void modifyEntries(ItemGroup group, FabricItemGroupEntries entries);
 	}
 }
