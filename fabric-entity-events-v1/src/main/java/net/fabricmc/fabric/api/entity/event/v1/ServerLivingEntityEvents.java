@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.entity.event.v1;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -78,32 +79,10 @@ public final class ServerLivingEntityEvents {
 
 	/**
 	 * An event that is called when minecraft checks if an entity is at a climbable block position.
-	 * This is fired before minecraft does its own checks, so it's not guaranteed that block at pos
-	 * is in {@link net.minecraft.registry.tag.BlockTags#CLIMBABLE}.
-	 *
-	 * <p>This event is for checking for special climbing behaviours,
-	 * if any callback returns {@code true}, position will be declared climbable.
-	 * Use this event if your block has special climbing behaviour independent of minecraft's.
+	 * This is fired after minecraft checks if the block is
+	 * {@linkplain net.minecraft.registry.tag.BlockTags#CLIMBABLE climbable}.
 	 */
-	public static final Event<AllowClimb> ALLOW_CLIMB = EventFactory.createArrayBacked(AllowClimb.class, callbacks -> ((entity, pos, state) -> {
-		for (AllowClimb callback : callbacks) {
-			if (callback.allowClimb(entity, pos, state)) {
-				return true;
-			}
-		}
-
-		return false;
-	}));
-
-	/**
-	 * An event that is called when minecraft checks if an entity is at a climbable block position.
-	 * This is fired after minecraft checks if the block is in {@link net.minecraft.registry.tag.BlockTags#CLIMBABLE}
-	 *
-	 * <p>This event is for adding extra conditions to minecraft's climbing behaviour,
-	 * and if any callback returns {@code false}, position will be declared unclimbable.
-	 * Use this event if your block has special climbing behaviour dependent to minecraft's.
-	 */
-	public static final Event<AllowClimb> ALLOW_CLIMB_CLIMBABLE = EventFactory.createArrayBacked(AllowClimb.class, callbacks -> (entity, pos, state) -> {
+	public static final Event<AllowClimb> ALLOW_CLIMB = EventFactory.createArrayBacked(AllowClimb.class, callbacks -> (entity, pos, state) -> {
 		for (AllowClimb callback : callbacks) {
 			if (!callback.allowClimb(entity, pos, state)) {
 				return false;
@@ -115,9 +94,7 @@ public final class ServerLivingEntityEvents {
 
 	/**
 	 * An event that is called when minecraft is calculating an entities climbing motion.
-	 * When this is fired, the block position is guaranteed to be climbable. Which means
-	 * either one of {@link #ALLOW_CLIMB} callbacks returned {@code true}, or none of the
-	 * {@link #ALLOW_CLIMB_CLIMBABLE} callbacks returned {@code false}.
+	 * When this is fired, the block position is guaranteed to be climbable.
 	 */
 	public static final Event<ModifyClimbingSpeed> MODIFY_CLIMBING_SPEED = EventFactory.createArrayBacked(ModifyClimbingSpeed.class, callbacks -> (entity, pos, state, motion) -> {
 		for (ModifyClimbingSpeed callback : callbacks) {
