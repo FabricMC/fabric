@@ -10,6 +10,7 @@
   },
   "entrypoints": {
     "main": [
+      "net.fabricmc.fabric.test.registry.sync.DynamicRegistryTest",
       "net.fabricmc.fabric.test.registry.sync.RegistrySyncTest"
     ],
     "client": [

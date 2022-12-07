@@ -17,14 +17,9 @@
 package net.fabricmc.fabric.test.registry.sync;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.mojang.logging.LogUtils;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -33,17 +28,10 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.Biome;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.registry.DynamicRegistryRegistry;
-import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
@@ -55,7 +43,6 @@ import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistryPacketHandler;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
 public class RegistrySyncTest implements ModInitializer {
-	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final String MODID = "fabric-registry-sync-v0-testmod";
 
 	/**
@@ -116,29 +103,6 @@ public class RegistrySyncTest implements ModInitializer {
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.SYNCED));
 		Validate.isTrue(!RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.PERSISTED));
 
-		try {
-			DynamicRegistryRegistry.registerBefore(RegistryKeys.BIOME, DynamicData.BEFORE_KEY, DynamicData.CODEC);
-			DynamicRegistryRegistry.registerAfter(RegistryKeys.BIOME, DynamicData.AFTER_KEY, DynamicData.CODEC);
-			DynamicRegistryRegistry.register(RegistryKey.ofRegistry(new Identifier(MODID, "worldgen/biome")), Codec.BOOL);
-		} catch (IllegalStateException ignored) {
-			LOGGER.info("DynamicRegistryRegistry path clash test passed!");
-		}
-
-		final AtomicBoolean setupCalled = new AtomicBoolean(false);
-
-		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
-			setupCalled.set(true);
-			registryManager.registerEntryAdded(RegistryKeys.BIOME, (rawId, id, object) -> LOGGER.info("Biome added: {}", id));
-			registryManager.registerEntryAdded(DynamicData.BEFORE_KEY, (rawId, id, object) -> LOGGER.info("Before biome data: {}", id));
-			registryManager.registerEntryAdded(DynamicData.AFTER_KEY, (rawId, id, object) -> LOGGER.info("After biome data: {}", id));
-		});
-
-		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-			if (!setupCalled.get()) {
-				throw new IllegalStateException("DRM setup was not called before startup!");
-			}
-		});
-
 		// Vanilla status effects don't have an entry for the int id 0, test we can handle this.
 		RegistryAttributeHolder.get(Registries.STATUS_EFFECT).addAttribute(RegistryAttribute.MODDED);
 	}
@@ -153,13 +117,5 @@ public class RegistrySyncTest implements ModInitializer {
 				Registry.register(Registries.ITEM, new Identifier(namespace, "block_" + (i + startingId)), blockItem);
 			}
 		}
-	}
-
-	private record DynamicData(RegistryEntry<Biome> biome) {
-		private static final RegistryKey<Registry<DynamicData>> BEFORE_KEY = RegistryKey.ofRegistry(new Identifier(MODID, "fabric-api/before_biome"));
-		private static final RegistryKey<Registry<DynamicData>> AFTER_KEY = RegistryKey.ofRegistry(new Identifier(MODID, "fabric-api/after_biome"));
-		private static final Codec<DynamicData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Biome.REGISTRY_CODEC.fieldOf("biome").forGetter(DynamicData::biome)
-		).apply(instance, DynamicData::new));
 	}
 }
