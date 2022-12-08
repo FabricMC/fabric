@@ -19,7 +19,8 @@ package net.fabricmc.fabric.impl.resource.loader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,11 +30,11 @@ import net.minecraft.util.Language;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
-public class ServerLanguageUtil {
+public final class ServerLanguageUtil {
 	private static final String ASSETS_PREFIX = ResourceType.CLIENT_RESOURCES.getDirectory() + '/';
 
 	public static Collection<Path> getModLanguageFiles() {
-		Set<Path> paths = new HashSet<>();
+		Set<Path> paths = new LinkedHashSet<>();
 
 		for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
 			if (mod.getMetadata().getType().equals("builtin")) continue;
@@ -47,6 +48,8 @@ public class ServerLanguageUtil {
 			}
 		}
 
-		return paths;
+		return Collections.unmodifiableCollection(paths);
 	}
+
+	private ServerLanguageUtil() {}
 }
