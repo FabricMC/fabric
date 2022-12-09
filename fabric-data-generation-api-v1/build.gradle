@@ -56,6 +56,8 @@ import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 
+import java.lang.reflect.Modifier
+import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
 task generateAccessWidener() {
@@ -63,14 +65,16 @@ task generateAccessWidener() {
 		File inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.commonJar.toFile()
 		String accessWidener = file("template.accesswidener").text + "\n"
 
-		visitMethods(inputJar, "net/minecraft/data/server/recipe/RecipeProvider.class") { name, desc, owner ->
+		def classes = getClasses(inputJar)
+
+		visitMethods(classes["net/minecraft/data/server/recipe/RecipeProvider"]) { name, desc, owner ->
 			if (it.name == "generate")
 				return
 
 			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
-		visitMethods(inputJar, "net/minecraft/data/client/BlockStateModelGenerator.class") { name, desc, owner ->
+		visitMethods(classes["net/minecraft/data/client/BlockStateModelGenerator"]) { name, desc, owner ->
 			if (desc == "()V")
 				// Skip over methods that dont take any arguments, as they are specific to minecraft.
 				return
@@ -78,40 +82,100 @@ task generateAccessWidener() {
 			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
-		visitMethods(inputJar, "net/minecraft/data/server/loottable/BlockLootTableGenerator.class") { name, desc, owner ->
+		visitMethods(classes["net/minecraft/data/server/loottable/BlockLootTableGenerator"]) { name, desc, owner ->
 			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
-		visitMethods(inputJar, "net/minecraft/data/client/ItemModelGenerator.class") { name, desc, owner ->
+		visitMethods(classes["net/minecraft/data/client/ItemModelGenerator"]) { name, desc, owner ->
 			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
+		}
+
+		classes.values().forEach { classNode ->
+			visitFinalMethods(classNode) { name, desc, owner ->
+				if (name != "getName" || desc != "()Ljava/lang/String;") {
+					// Not the method we are after
+					return
+				}
+
+				if (!hasAncestor(classNode, classes, "net/minecraft/data/DataProvider")) {
+					// Not a decedent of DataProvider
+					return
+				}
+
+				accessWidener += "transitive-extendable\tmethod\t${owner}\t${name}\t${desc}\n"
+			}
 		}
 
 		file("src/main/resources/fabric-data-generation-api-v1.accesswidener").text = accessWidener
 	}
 }
 
-def visitMethods(File input, String className, closure) {
-	def clazz = getClassNode(input, className)
-
-	clazz.methods.forEach {
+def visitMethods(ClassNode classNode, closure) {
+	classNode.methods.forEach {
 		if ((it.access & Opcodes.ACC_SYNTHETIC) != 0 || (it.access & Opcodes.ACC_PUBLIC) != 0)
 			return
 
 		if (it.name.startsWith("<"))
 			return
 
-		closure(it.name, it.desc, clazz.name)
+		closure(it.name, it.desc, classNode.name)
 	}
 }
 
-ClassNode getClassNode(File input, String className) {
-	new ZipFile(input).withCloseable { ZipFile zip  ->
-		zip.getInputStream(zip.getEntry(className)).withCloseable { is ->
-			ClassReader reader = new ClassReader(is)
-			ClassNode classNode = new ClassNode()
-			reader.accept(classNode, 0)
+def visitFinalMethods(ClassNode classNode, closure) {
+	classNode.methods.forEach {
+		if (!Modifier.isFinal(it.access))
+			return
 
-			return classNode
+		if (it.name.startsWith("<"))
+			return
+
+		closure(it.name, it.desc, classNode.name)
+	}
+}
+
+// Return a map of all class names to classNodes
+def getClasses(File input) {
+	Map<String, ClassNode> classes = [:]
+
+	new ZipFile(input).withCloseable { ZipFile zip  ->
+		zip.entries().toList().forEach { ZipEntry entry ->
+			if (!entry.name.endsWith(".class")) {
+				return
+			}
+
+			zip.getInputStream(entry).withCloseable { is ->
+				ClassReader reader = new ClassReader(is)
+				ClassNode classNode = new ClassNode()
+				reader.accept(classNode, 0)
+
+				classes.put(classNode.name, classNode)
+			}
+		}
+	}
+
+	return classes
+}
+
+def hasAncestor(ClassNode classNode, Map<String, ClassNode> classes, String ancestorName) {
+	if (classNode.superName == ancestorName) {
+		return true
+	}
+
+	// Recuse through the super classes
+	def superClass = classes.get(classNode.superName)
+	if (superClass != null && hasAncestor(superClass, classes, ancestorName)) {
+		return true
+	}
+
+	for (def interfaceName : classNode.interfaces) {
+		if (interfaceName == ancestorName) {
+			return true
+		}
+
+		def ifaceClass = classes.get(interfaceName)
+		if (ifaceClass != null && hasAncestor(ifaceClass, classes, ancestorName)) {
+			return true
 		}
 	}
 }
