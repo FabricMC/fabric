@@ -98,7 +98,7 @@ task generateAccessWidener() {
 				}
 
 				if (!hasAncestor(classNode, classes, "net/minecraft/data/DataProvider")) {
-					// Not a decedent of DataProvider
+					// Not a descendant of DataProvider
 					return
 				}
 
@@ -147,7 +147,7 @@ def getClasses(File input) {
 			zip.getInputStream(entry).withCloseable { is ->
 				ClassReader reader = new ClassReader(is)
 				ClassNode classNode = new ClassNode()
-				reader.accept(classNode, 0)
+				reader.accept(classNode, ClassReader.SKIP_CODE)
 
 				classes.put(classNode.name, classNode)
 			}
