@@ -38,6 +38,7 @@ public class ConventionalItemTags {
 	public static final TagKey<Item> SPEARS = register("spears");
 	public static final TagKey<Item> SWORDS = register("swords");
 	public static final TagKey<Item> BOWS = register("bows");
+	public static final TagKey<Item> SHIELDS = register("shields");
 	// Ores and ingots
 	public static final TagKey<Item> IRON_INGOTS = register("iron_ingots");
 	public static final TagKey<Item> RAW_IRON_ORES = register("raw_iron_ores");
