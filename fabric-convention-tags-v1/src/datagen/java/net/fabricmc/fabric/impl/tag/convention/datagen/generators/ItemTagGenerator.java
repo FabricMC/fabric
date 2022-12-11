@@ -310,6 +310,8 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.BOWS)
 				.add(Items.CROSSBOW)
 				.add(Items.BOW);
+		getOrCreateTagBuilder(ConventionalItemTags.SHIELDS)
+				.add(Items.SHIELD);
 	}
 
 	private static Identifier createFabricId(String id) {
