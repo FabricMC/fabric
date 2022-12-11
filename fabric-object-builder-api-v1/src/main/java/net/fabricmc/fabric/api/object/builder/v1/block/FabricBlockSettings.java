@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.block;
 
+import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
 import net.minecraft.block.AbstractBlock;
@@ -24,6 +25,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
 import net.minecraft.entity.EntityType;
+import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
@@ -53,6 +55,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		AbstractBlockSettingsAccessor thisAccessor = (AbstractBlockSettingsAccessor) this;
 		AbstractBlockSettingsAccessor otherAccessor = (AbstractBlockSettingsAccessor) settings;
 
+		// Copied in vanilla: sorted by vanilla copy order
 		thisAccessor.setMaterial(otherAccessor.getMaterial());
 		this.hardness(otherAccessor.getHardness());
 		this.resistance(otherAccessor.getResistance());
@@ -63,18 +66,23 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		this.sounds(otherAccessor.getSoundGroup());
 		this.slipperiness(otherAccessor.getSlipperiness());
 		this.velocityMultiplier(otherAccessor.getVelocityMultiplier());
-		this.jumpVelocityMultiplier(otherAccessor.getJumpVelocityMultiplier());
 		thisAccessor.setDynamicBounds(otherAccessor.getDynamicBounds());
 		thisAccessor.setOpaque(otherAccessor.getOpaque());
 		thisAccessor.setIsAir(otherAccessor.getIsAir());
 		thisAccessor.setToolRequired(otherAccessor.isToolRequired());
+		this.offsetType(otherAccessor.getOffsetType());
+		thisAccessor.setBlockBreakParticles(otherAccessor.getBlockBreakParticles());
+		thisAccessor.setRequiredFeatures(otherAccessor.getRequiredFeatures());
+
+		// Not copied in vanilla: field definition order
+		this.jumpVelocityMultiplier(otherAccessor.getJumpVelocityMultiplier());
+		this.drops(otherAccessor.getLootTableId());
 		this.allowsSpawning(otherAccessor.getAllowsSpawningPredicate());
 		this.solidBlock(otherAccessor.getSolidBlockPredicate());
 		this.suffocates(otherAccessor.getSuffocationPredicate());
 		this.blockVision(otherAccessor.getBlockVisionPredicate());
 		this.postProcess(otherAccessor.getPostProcessPredicate());
 		this.emissiveLighting(otherAccessor.getEmissiveLightingPredicate());
-		this.offsetType(otherAccessor.getOffsetType());
 	}
 
 	public static FabricBlockSettings of(Material material) {
@@ -176,6 +184,12 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	}
 
 	@Override
+	public FabricBlockSettings dropsNothing() {
+		super.dropsNothing();
+		return this;
+	}
+
+	@Override
 	public FabricBlockSettings dropsLike(Block block) {
 		super.dropsLike(block);
 		return this;
@@ -223,6 +237,57 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		return this;
 	}
 
+	/**
+	 * Make the block require tool to drop and slows down mining speed if the incorrect tool is used.
+	 */
+	@Override
+	public FabricBlockSettings requiresTool() {
+		super.requiresTool();
+		return this;
+	}
+
+	@Override
+	public FabricBlockSettings mapColor(MapColor color) {
+		super.mapColor(color);
+		return this;
+	}
+
+	@Override
+	public FabricBlockSettings hardness(float hardness) {
+		super.hardness(hardness);
+		return this;
+	}
+
+	@Override
+	public FabricBlockSettings resistance(float resistance) {
+		super.resistance(resistance);
+		return this;
+	}
+
+	@Override
+	public FabricBlockSettings offsetType(AbstractBlock.OffsetType offsetType) {
+		super.offsetType(offsetType);
+		return this;
+	}
+
+	@Override
+	public FabricBlockSettings offsetType(Function<BlockState, AbstractBlock.OffsetType> offsetType) {
+		super.offsetType(offsetType);
+		return this;
+	}
+
+	@Override
+	public FabricBlockSettings noBlockBreakParticles() {
+		super.noBlockBreakParticles();
+		return this;
+	}
+
+	@Override
+	public FabricBlockSettings requires(FeatureFlag... features) {
+		super.requires(features);
+		return this;
+	}
+
 	/* FABRIC ADDITIONS*/
 
 	/**
@@ -239,27 +304,8 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		return this;
 	}
 
-	public FabricBlockSettings hardness(float hardness) {
-		((AbstractBlockSettingsAccessor) this).setHardness(hardness);
-		return this;
-	}
-
-	public FabricBlockSettings resistance(float resistance) {
-		((AbstractBlockSettingsAccessor) this).setResistance(Math.max(0.0F, resistance));
-		return this;
-	}
-
 	public FabricBlockSettings drops(Identifier dropTableId) {
 		((AbstractBlockSettingsAccessor) this).setLootTableId(dropTableId);
-		return this;
-	}
-
-	/**
-	 * Make the block require tool to drop and slows down mining speed if the incorrect tool is used.
-	 */
-	@Override
-	public FabricBlockSettings requiresTool() {
-		super.requiresTool();
 		return this;
 	}
 
@@ -279,11 +325,6 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	@Deprecated
 	public FabricBlockSettings materialColor(DyeColor color) {
 		return this.mapColor(color);
-	}
-
-	public FabricBlockSettings mapColor(MapColor color) {
-		((AbstractBlockSettingsAccessor) this).setMapColorProvider(ignored -> color);
-		return this;
 	}
 
 	public FabricBlockSettings mapColor(DyeColor color) {

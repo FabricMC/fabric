@@ -284,3 +284,16 @@ transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	regist
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	register	(Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;Lnet/minecraft/data/client/Model;)V
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	registerCompass	(Lnet/minecraft/item/Item;)V
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	registerClock	(Lnet/minecraft/item/Item;)V
+transitive-extendable	method	net/minecraft/data/server/advancement/AdvancementProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/report/CommandSyntaxProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/report/BlockListProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/report/RegistryDumpProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/server/loottable/LootTableProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/MetadataProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/client/ModelProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/server/BiomeParametersProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/dev/NbtProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/SnbtProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/server/recipe/RecipeProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/report/DynamicRegistriesProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/server/tag/AbstractTagProvider	getName	()Ljava/lang/String;

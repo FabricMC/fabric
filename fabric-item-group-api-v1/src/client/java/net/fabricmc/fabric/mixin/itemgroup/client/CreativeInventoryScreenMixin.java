@@ -99,7 +99,7 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 		fabric_updateSelection();
 
 		int xpos = x + 170;
-		int ypos = y + 5;
+		int ypos = y + 4;
 
 		addDrawableChild(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos + 11, ypos, FabricCreativeGuiComponents.Type.NEXT, this));
 		addDrawableChild(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, this));
