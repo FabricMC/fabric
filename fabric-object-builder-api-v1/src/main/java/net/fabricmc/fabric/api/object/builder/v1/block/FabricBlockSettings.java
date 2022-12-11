@@ -53,6 +53,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		AbstractBlockSettingsAccessor thisAccessor = (AbstractBlockSettingsAccessor) this;
 		AbstractBlockSettingsAccessor otherAccessor = (AbstractBlockSettingsAccessor) settings;
 
+		// Copied in vanilla: sorted by vanilla copy order
 		thisAccessor.setMaterial(otherAccessor.getMaterial());
 		this.hardness(otherAccessor.getHardness());
 		this.resistance(otherAccessor.getResistance());
@@ -63,21 +64,23 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		this.sounds(otherAccessor.getSoundGroup());
 		this.slipperiness(otherAccessor.getSlipperiness());
 		this.velocityMultiplier(otherAccessor.getVelocityMultiplier());
-		this.jumpVelocityMultiplier(otherAccessor.getJumpVelocityMultiplier());
 		thisAccessor.setDynamicBounds(otherAccessor.getDynamicBounds());
 		thisAccessor.setOpaque(otherAccessor.getOpaque());
 		thisAccessor.setIsAir(otherAccessor.getIsAir());
 		thisAccessor.setToolRequired(otherAccessor.isToolRequired());
+		this.offsetType(otherAccessor.getOffsetType());
+		thisAccessor.setBlockBreakParticles(otherAccessor.getBlockBreakParticles());
+		thisAccessor.setRequiredFeatures(otherAccessor.getRequiredFeatures());
+
+		// Not copied in vanilla: field definition order
+		this.jumpVelocityMultiplier(otherAccessor.getJumpVelocityMultiplier());
+		this.drops(otherAccessor.getLootTableId());
 		this.allowsSpawning(otherAccessor.getAllowsSpawningPredicate());
 		this.solidBlock(otherAccessor.getSolidBlockPredicate());
 		this.suffocates(otherAccessor.getSuffocationPredicate());
 		this.blockVision(otherAccessor.getBlockVisionPredicate());
 		this.postProcess(otherAccessor.getPostProcessPredicate());
 		this.emissiveLighting(otherAccessor.getEmissiveLightingPredicate());
-		this.offsetType(otherAccessor.getOffsetType());
-		this.drops(otherAccessor.getLootTableId());
-		thisAccessor.setBlockBreakParticles(otherAccessor.getBlockBreakParticles());
-		thisAccessor.setRequiredFeatures(otherAccessor.getRequiredFeatures());
 	}
 
 	public static FabricBlockSettings of(Material material) {
