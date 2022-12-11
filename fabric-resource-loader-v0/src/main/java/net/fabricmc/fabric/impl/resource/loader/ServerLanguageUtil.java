@@ -33,6 +33,9 @@ import net.fabricmc.loader.api.ModContainer;
 public final class ServerLanguageUtil {
 	private static final String ASSETS_PREFIX = ResourceType.CLIENT_RESOURCES.getDirectory() + '/';
 
+	private ServerLanguageUtil() {
+	}
+
 	public static Collection<Path> getModLanguageFiles() {
 		Set<Path> paths = new LinkedHashSet<>();
 
@@ -50,6 +53,4 @@ public final class ServerLanguageUtil {
 
 		return Collections.unmodifiableCollection(paths);
 	}
-
-	private ServerLanguageUtil() {}
 }
