@@ -21,10 +21,8 @@ import java.util.function.ToIntFunction;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
@@ -116,12 +114,6 @@ public interface AbstractBlockSettingsAccessor {
 	void setMaterial(Material material);
 
 	@Accessor
-	void setHardness(float hardness);
-
-	@Accessor
-	void setResistance(float resistance);
-
-	@Accessor
 	void setCollidable(boolean collidable);
 
 	@Accessor
@@ -150,21 +142,4 @@ public interface AbstractBlockSettingsAccessor {
 
 	@Accessor
 	void setRequiredFeatures(FeatureSet requiredFeatures);
-
-	// Cannot be an invoker due to conflicts in mixin: method_9631(Ljava/util/function/ToIntFunction;)Lnet/minecraft/class_4970$class_2251; for target net.minecraft.block.AbstractBlock$Settings conflicts with existing mapping field_10663:Ljava/util/function/ToIntFunction;
-	@Accessor("luminance")
-	void setLuminanceFunction(ToIntFunction<BlockState> luminanceFunction);
-
-	/* INVOKERS */
-	@Invoker
-	Block.Settings invokeSounds(BlockSoundGroup group);
-
-	@Invoker
-	Block.Settings invokeBreakInstantly();
-
-	@Invoker
-	Block.Settings invokeStrength(float strength);
-
-	@Invoker
-	Block.Settings invokeTicksRandomly();
 }
