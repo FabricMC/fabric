@@ -39,12 +39,14 @@ public class FabricCreativeGuiComponents {
 		final CreativeGuiExtensions extensions;
 		final CreativeInventoryScreen gui;
 		final Type type;
+		final boolean programmer_art;
 
-		public ItemGroupButtonWidget(int x, int y, Type type, CreativeGuiExtensions extensions) {
+		public ItemGroupButtonWidget(int x, int y, Type type, CreativeGuiExtensions extensions, boolean programmer_art) {
 			super(x, y, 10, 10, type.text, (bw) -> type.clickConsumer.accept(extensions), ButtonWidget.DEFAULT_NARRATION_SUPPLIER);
 			this.extensions = extensions;
 			this.type = type;
 			this.gui = (CreativeInventoryScreen) extensions;
+			this.programmer_art = programmer_art;
 		}
 
 		@Override
@@ -55,7 +57,7 @@ public class FabricCreativeGuiComponents {
 
 			if (this.visible) {
 				int u = active && this.isHovered() ? 20 : 0;
-				int v = active ? 0 : 10;
+				int v = active ? ((this.isHovered() && programmer_art) ? 10 : 0) : 10;
 
 				RenderSystem.setShaderTexture(0, BUTTON_TEX);
 				RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
