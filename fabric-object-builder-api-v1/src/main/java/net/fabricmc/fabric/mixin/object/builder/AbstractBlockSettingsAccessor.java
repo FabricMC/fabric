@@ -29,6 +29,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
 import net.minecraft.entity.EntityType;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 
@@ -101,6 +102,15 @@ public interface AbstractBlockSettingsAccessor {
 	@Accessor
 	Function<BlockState, AbstractBlock.OffsetType> getOffsetType();
 
+	@Accessor
+	Identifier getLootTableId();
+
+	@Accessor
+	boolean getBlockBreakParticles();
+
+	@Accessor
+	FeatureSet getRequiredFeatures();
+
 	/* SETTERS */
 	@Accessor
 	void setMaterial(Material material);
@@ -134,6 +144,12 @@ public interface AbstractBlockSettingsAccessor {
 
 	@Accessor
 	void setToolRequired(boolean toolRequired);
+
+	@Accessor
+	void setBlockBreakParticles(boolean blockBreakParticles);
+
+	@Accessor
+	void setRequiredFeatures(FeatureSet requiredFeatures);
 
 	// Cannot be an invoker due to conflicts in mixin: method_9631(Ljava/util/function/ToIntFunction;)Lnet/minecraft/class_4970$class_2251; for target net.minecraft.block.AbstractBlock$Settings conflicts with existing mapping field_10663:Ljava/util/function/ToIntFunction;
 	@Accessor("luminance")

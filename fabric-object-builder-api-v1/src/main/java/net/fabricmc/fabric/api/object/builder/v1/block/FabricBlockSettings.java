@@ -75,6 +75,9 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		this.postProcess(otherAccessor.getPostProcessPredicate());
 		this.emissiveLighting(otherAccessor.getEmissiveLightingPredicate());
 		this.offsetType(otherAccessor.getOffsetType());
+		this.drops(otherAccessor.getLootTableId());
+		thisAccessor.setBlockBreakParticles(otherAccessor.getBlockBreakParticles());
+		thisAccessor.setRequiredFeatures(otherAccessor.getRequiredFeatures());
 	}
 
 	public static FabricBlockSettings of(Material material) {
