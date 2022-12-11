@@ -107,7 +107,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 		this.namespaces = readNamespaces(paths, modInfo.getId());
 	}
 
-	private static Map<ResourceType, Set<String>> readNamespaces(List<Path> paths, String modId) {
+	static Map<ResourceType, Set<String>> readNamespaces(List<Path> paths, String modId) {
 		Map<ResourceType, Set<String>> ret = new EnumMap<>(ResourceType.class);
 
 		for (ResourceType type : ResourceType.values()) {
