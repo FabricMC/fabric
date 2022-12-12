@@ -18,12 +18,28 @@ package net.fabricmc.fabric.api.datagen.v1;
 
 import net.minecraft.data.client.Model;
 
+import net.fabricmc.fabric.api.datagen.v1.builder.DisplayBuilder;
+import net.fabricmc.fabric.api.datagen.v1.builder.ElementBuilder;
+import net.fabricmc.fabric.api.datagen.v1.builder.OverrideBuilder;
+
 /**
  * Fabric-provided extensions for {@link Model}.
  *
  * <p>Note: This interface is automatically implemented on all blocks via Mixin and interface injection.
  */
 public interface FabricModel {
+	default Model withDisplay(DisplayBuilder.Position position, DisplayBuilder builder) {
+		return (Model) this;
+	}
+
+	default Model addElement(ElementBuilder builder) {
+		return (Model) this;
+	}
+
+	default Model addOverride(OverrideBuilder builder) {
+		return (Model) this;
+	}
+
 	/**
 	 * Sets the <code>gui_light</code> property of a model JSON. Only useful for <em>item</em> models.
 	 *
