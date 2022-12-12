@@ -20,6 +20,7 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_TH
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_ITEM;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_VANILLA_LOOT_TABLE;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_OCCLUSION;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
@@ -37,9 +38,14 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.data.client.BlockStateModelGenerator;
+import net.minecraft.data.client.BlockStateVariant;
 import net.minecraft.data.client.ItemModelGenerator;
+import net.minecraft.data.client.Models;
+import net.minecraft.data.client.TextureKey;
+import net.minecraft.data.client.TextureMap;
+import net.minecraft.data.client.VariantSettings;
+import net.minecraft.data.client.VariantsBlockStateSupplier;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.entity.EntityType;
@@ -54,18 +60,20 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricModel;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
@@ -237,11 +245,20 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerSimpleCubeAll(BLOCK_WITHOUT_LOOT_TABLE);
 			blockStateModelGenerator.registerSimpleCubeAll(BLOCK_WITH_VANILLA_LOOT_TABLE);
 			blockStateModelGenerator.registerSimpleCubeAll(BLOCK_THAT_DROPS_NOTHING);
+
+			Identifier noOcclusionModel = Models.CUBE_ALL
+					.setAmbientOcclusion(false)
+					.upload(BLOCK_WITHOUT_OCCLUSION,
+							new TextureMap().put(TextureKey.ALL, new Identifier(MOD_ID, "block_without_occlusion")),
+							blockStateModelGenerator.modelCollector);
+			blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(BLOCK_WITHOUT_OCCLUSION,
+					BlockStateVariant.create().put(VariantSettings.MODEL, noOcclusionModel)));
 		}
 
 		@Override
 		public void generateItemModels(ItemModelGenerator itemModelGenerator) {
 			//itemModelGenerator.register(item, Models.SLAB);
+			Models.GENERATED.setGUILight(FabricModel.GUILight.SIDE).upload(new Identifier(MOD_ID, "item/item_with_side_icon"), new TextureMap().put(TextureKey.LAYER0, new Identifier(MOD_ID, "item_with_side_icon")), itemModelGenerator.writer);
 		}
 	}
 
@@ -321,6 +338,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		public void generate() {
 			addDrop(SIMPLE_BLOCK);
 			addDrop(BLOCK_WITHOUT_ITEM, drops(SIMPLE_BLOCK));
+			addDrop(BLOCK_WITHOUT_OCCLUSION, drops(SIMPLE_BLOCK));
 
 			excludeFromStrictValidation(BLOCK_WITHOUT_LOOT_TABLE);
 		}

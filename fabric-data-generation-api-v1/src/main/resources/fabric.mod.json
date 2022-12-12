@@ -28,6 +28,9 @@
   ],
   "accessWidener" : "fabric-data-generation-api-v1.accesswidener",
   "custom": {
-    "fabric-api:module-lifecycle": "stable"
+    "fabric-api:module-lifecycle": "stable",
+    "loom:injected_interfaces": {
+      "net/minecraft/class_4942": ["net/fabricmc/fabric/api/datagen/v1/FabricModel"]
+    }
   }
 }

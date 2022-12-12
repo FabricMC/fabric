@@ -43,6 +43,9 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static Block BLOCK_WITH_VANILLA_LOOT_TABLE;
 	public static Block BLOCK_THAT_DROPS_NOTHING;
 
+	public static Block BLOCK_WITHOUT_OCCLUSION;
+	public static Item ITEM_WITH_SIDE_ICON;
+
 	public static final ItemGroup SIMPLE_ITEM_GROUP = FabricItemGroup.builder(new Identifier(MOD_ID, "simple"))
 			.icon(() -> new ItemStack(Items.DIAMOND_PICKAXE))
 			.displayName(Text.translatable("fabric-data-gen-api-v1-testmod.simple_item_group"))
@@ -56,6 +59,9 @@ public class DataGeneratorTestContent implements ModInitializer {
 		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, AbstractBlock.Settings.of(Material.STONE).dropsLike(Blocks.STONE));
 		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, AbstractBlock.Settings.of(Material.STONE).dropsNothing());
 
+		BLOCK_WITHOUT_OCCLUSION = createBlock("block_without_occlusion", false);
+		ITEM_WITH_SIDE_ICON = createItem("item_with_side_icon");
+
 		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.add(SIMPLE_BLOCK));
 	}
 
@@ -68,5 +74,10 @@ public class DataGeneratorTestContent implements ModInitializer {
 		}
 
 		return block;
+	}
+
+	private static Item createItem(String name) {
+		Identifier identifier = new Identifier(MOD_ID, name);
+		return Registry.register(Registries.ITEM, identifier, new Item(new Item.Settings()));
 	}
 }
