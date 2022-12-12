@@ -25,7 +25,7 @@ import net.fabricmc.fabric.api.datagen.v1.builder.OverrideBuilder;
 /**
  * Fabric-provided extensions for {@link Model}.
  *
- * <p>Note: This interface is automatically implemented on all blocks via Mixin and interface injection.
+ * <p>Note: This interface is automatically implemented on all models via Mixin and interface injection.
  */
 public interface FabricModel {
 	default Model withDisplay(DisplayBuilder.Position position, DisplayBuilder builder) {
