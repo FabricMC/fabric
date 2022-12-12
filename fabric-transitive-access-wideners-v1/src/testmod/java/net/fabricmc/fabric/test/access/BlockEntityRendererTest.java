@@ -24,6 +24,6 @@ import net.fabricmc.api.ClientModInitializer;
 public class BlockEntityRendererTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		BlockEntityRendererFactories.register(SignTestBlockEntity.TEST_SIGN_BLOCK_ENTITY, SignBlockEntityRenderer::new);
+		BlockEntityRendererFactories.register(SignBlockEntityTest.TEST_SIGN_BLOCK_ENTITY, SignBlockEntityRenderer::new);
 	}
 }

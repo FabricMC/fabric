@@ -11,7 +11,7 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.access.SignTestBlockEntity"
+      "net.fabricmc.fabric.test.access.SignBlockEntityTest"
     ],
     "client": [
       "net.fabricmc.fabric.test.access.BlockEntityRendererTest"

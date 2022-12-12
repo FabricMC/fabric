@@ -34,7 +34,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
-public class SignTestBlockEntity implements ModInitializer {
+public final class SignBlockEntityTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-transitive-access-wideners-v1-testmod";
 	public static final SignBlock TEST_SIGN = new SignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), SignType.OAK) {
 		@Override
