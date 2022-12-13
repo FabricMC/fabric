@@ -24,9 +24,23 @@ import org.joml.Vector3d;
  * Instantiate this class in order to provide an optional set of <code>display</code> properties for a given model JSON.
  */
 public class DisplayBuilder {
+	private final Position position;
 	private Vector3d rotation = new Vector3d();
 	private Vector3d translation = new Vector3d();
 	private Vector3d scale = new Vector3d();
+
+	/**
+	 * Create a new display builder with a given display position to apply a transformation for.
+	 *
+	 * @param position The corresponding {@link Position} to apply this display to.
+	 */
+	public DisplayBuilder(Position position) {
+		this.position = position;
+	}
+
+	public String getPositionKey() {
+		return position.name().toLowerCase();
+	}
 
 	/**
 	 * Rotate the model by the given vector.

@@ -55,8 +55,8 @@ public class ModelMixin implements FabricModel {
 	private boolean ambientOcclusion = true;
 
 	@Override
-	public Model withDisplay(DisplayBuilder.Position position, DisplayBuilder builder) {
-		this.display.add(position.name().toLowerCase(), builder.build());
+	public Model withDisplay(DisplayBuilder builder) {
+		this.display.add(builder.getPositionKey(), builder.build());
 		return (Model) (Object) this;
 	}
 

@@ -62,17 +62,15 @@ public interface FabricModel {
 	}
 
 	/**
-	 * Adds an entry to the <code>elements</code> property of a model.
-	 * Element entries consist of a pair of opposite vertices of a cuboid to draw the element out as, with an optional
-	 * rotation, shading and set of rendered faces.
+	 * Adds an entry to the <code>display</code> property of a model.
+	 * Display entries consist of a linear transformation (translation, rotation and scaling) applied to a given
+	 * "position" that the item (or BlockItem) with the given model may be in, e.g. whether it's being displayed in a
+	 * player's hand or in a GUI.
 	 *
-	 * @param position A {@link DisplayBuilder.Position} to set the property for. Can be either hand of either first or
-	 *                    third person, the head, the ground (as a dropped item), within GUIs or within item frames
-	 *                    (<code>FIXED</code>).
 	 * @param builder A {@link DisplayBuilder} to build the required display property from.
 	 * @return The current newly-modified {@link Model} instance.
 	 */
-	default Model withDisplay(DisplayBuilder.Position position, DisplayBuilder builder) {
+	default Model withDisplay(DisplayBuilder builder) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
