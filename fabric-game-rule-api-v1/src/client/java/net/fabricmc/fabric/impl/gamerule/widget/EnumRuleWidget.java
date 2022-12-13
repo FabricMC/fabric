@@ -26,11 +26,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 
-@Environment(EnvType.CLIENT)
 public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen.NamedRuleWidget {
 	private final ButtonWidget buttonWidget;
 	private final String rootTranslationKey;

@@ -16,11 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.aocalc;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
 
-@Environment(EnvType.CLIENT)
 @FunctionalInterface
 interface AoVertexClampFunction {
 	float clamp(float x);
