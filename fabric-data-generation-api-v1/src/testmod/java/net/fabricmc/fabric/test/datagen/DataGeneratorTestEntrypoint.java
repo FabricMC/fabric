@@ -21,6 +21,7 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WI
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_VANILLA_LOOT_TABLE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_OCCLUSION;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.ITEM_WITH_NORMAL_ICON;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
@@ -259,6 +260,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		public void generateItemModels(ItemModelGenerator itemModelGenerator) {
 			//itemModelGenerator.register(item, Models.SLAB);
 			Models.GENERATED.setGUILight(FabricModel.GUILight.SIDE).upload(new Identifier(MOD_ID, "item/item_with_side_icon"), new TextureMap().put(TextureKey.LAYER0, new Identifier(MOD_ID, "item_with_side_icon")), itemModelGenerator.writer);
+			itemModelGenerator.register(ITEM_WITH_NORMAL_ICON, Models.GENERATED);
 		}
 	}
 

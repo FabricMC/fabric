@@ -45,6 +45,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 
 	public static Block BLOCK_WITHOUT_OCCLUSION;
 	public static Item ITEM_WITH_SIDE_ICON;
+	public static Item ITEM_WITH_NORMAL_ICON;
 
 	public static final ItemGroup SIMPLE_ITEM_GROUP = FabricItemGroup.builder(new Identifier(MOD_ID, "simple"))
 			.icon(() -> new ItemStack(Items.DIAMOND_PICKAXE))
@@ -61,6 +62,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 
 		BLOCK_WITHOUT_OCCLUSION = createBlock("block_without_occlusion", false);
 		ITEM_WITH_SIDE_ICON = createItem("item_with_side_icon");
+		ITEM_WITH_NORMAL_ICON = createItem("item_with_normal_icon");
 
 		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.add(SIMPLE_BLOCK));
 	}

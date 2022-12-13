@@ -28,14 +28,41 @@ import net.fabricmc.fabric.api.datagen.v1.builder.OverrideBuilder;
  * <p>Note: This interface is automatically implemented on all models via Mixin and interface injection.
  */
 public interface FabricModel {
+	/**
+	 * Adds an entry to the <code>elements</code> property of a model.
+	 * Element entries consist of a pair of opposite vertices of a cuboid to draw the element out as, with an optional
+	 * rotation, shading and set of rendered faces.
+	 *
+	 * @param position A {@link DisplayBuilder.Position} to set the property for. Can be either hand of either first or
+	 *                    third person, the head, the ground (as a dropped item), within GUIs or within item frames
+	 *                    (<code>FIXED</code>).
+	 * @param builder A {@link DisplayBuilder} to build the required display property from.
+	 * @return The current newly-modified {@link Model} instance.
+	 */
 	default Model withDisplay(DisplayBuilder.Position position, DisplayBuilder builder) {
 		return (Model) this;
 	}
 
+	/**
+	 * Adds an entry to the <code>elements</code> property of a model.
+	 * Element entries consist of a pair of opposite vertices of a cuboid to draw the element out as, with an optional
+	 * rotation, shading and set of rendered faces.
+	 *
+	 * @param builder An {@link ElementBuilder} to build an individual entry from
+	 * @return The current newly-modified {@link Model} instance.
+	 */
 	default Model addElement(ElementBuilder builder) {
 		return (Model) this;
 	}
 
+	/**
+	 * Adds an entry to the <code>overrides</code> property of a model. Only useful for <em>item</em> models.
+	 * Override entries consist of a model ID and a set of "predicates" to override upon, all represented as a float
+	 * between 0 and 1.
+	 *
+	 * @param builder An {@link OverrideBuilder} to build an individual entry from
+	 * @return The current newly-modified {@link Model} instance.
+	 */
 	default Model addOverride(OverrideBuilder builder) {
 		return (Model) this;
 	}
