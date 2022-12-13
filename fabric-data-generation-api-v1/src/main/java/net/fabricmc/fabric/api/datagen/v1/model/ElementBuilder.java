@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.datagen.v1.builder;
+package net.fabricmc.fabric.api.datagen.v1.model;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
