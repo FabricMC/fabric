@@ -16,7 +16,14 @@
 
 package net.fabricmc.fabric.api.datagen.v1.model;
 
+import java.util.Optional;
+
+import net.minecraft.block.Block;
 import net.minecraft.data.client.Model;
+import net.minecraft.data.client.ModelIds;
+import net.minecraft.data.client.TextureKey;
+import net.minecraft.item.Item;
+import net.minecraft.util.Identifier;
 
 /**
  * Fabric-provided extensions for {@link Model}.
@@ -24,6 +31,34 @@ import net.minecraft.data.client.Model;
  * <p>Note: This interface is automatically implemented on all models via Mixin and interface injection.
  */
 public interface FabricModel {
+	static Model make(Identifier parent, TextureKey... requiredTextureKeys) {
+		return new Model(Optional.of(parent), Optional.empty(), requiredTextureKeys);
+	}
+
+	static Model make(Identifier parent, String variant, TextureKey... requiredTextureKeys) {
+		return new Model(Optional.of(parent), Optional.of(variant), requiredTextureKeys);
+	}
+
+	static Model block(Identifier parent, TextureKey... requiredTextureKeys) {
+		return new Model(Optional.of(new Identifier(parent.getNamespace(), "block/" + parent.getPath())), Optional.empty(), requiredTextureKeys);
+	}
+
+	static Model block(Identifier parent, String variant, TextureKey... requiredTextureKeys) {
+		return new Model(Optional.of(new Identifier(parent.getNamespace(), "block/" + parent.getPath())), Optional.of(variant), requiredTextureKeys);
+	}
+
+	static Model block(Block parent, TextureKey... requiredTextureKeys) {
+		return new Model(Optional.of(ModelIds.getBlockModelId(parent)), Optional.empty(), requiredTextureKeys);
+	}
+
+	static Model item(Identifier parent, TextureKey... requiredTextureKeys) {
+		return new Model(Optional.of(new Identifier(parent.getNamespace(), "item/" + parent.getPath())), Optional.empty(), requiredTextureKeys);
+	}
+
+	static Model item(Item parent, TextureKey... requiredTextureKeys) {
+		return new Model(Optional.of(ModelIds.getItemModelId(parent)), Optional.empty(), requiredTextureKeys);
+	}
+
 	/**
 	 * Adds an entry to the <code>elements</code> property of a model.
 	 * Element entries consist of a pair of opposite vertices of a cuboid to draw the element out as, with an optional

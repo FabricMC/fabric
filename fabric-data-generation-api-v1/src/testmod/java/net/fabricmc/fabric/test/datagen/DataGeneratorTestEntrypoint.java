@@ -34,8 +34,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import net.minecraft.data.client.Model;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +43,7 @@ import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.BlockStateVariant;
 import net.minecraft.data.client.ItemModelGenerator;
+import net.minecraft.data.client.Model;
 import net.minecraft.data.client.Models;
 import net.minecraft.data.client.TextureKey;
 import net.minecraft.data.client.TextureMap;
@@ -94,7 +93,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	private static final ConditionJsonProvider NEVER_LOADED = DefaultResourceConditions.allModsLoaded("a");
 	private static final ConditionJsonProvider ALWAYS_LOADED = DefaultResourceConditions.not(NEVER_LOADED);
 
-	private static final Model CUSTOM_MODEL = new Model(Optional.of(new Identifier(MOD_ID, "item/custom")), Optional.empty(), TextureKey.CONTENT);
+	private static final Model CUSTOM_MODEL = FabricModel.item(new Identifier(MOD_ID, "custom"), TextureKey.CONTENT);
 	private static final TextureMap CUSTOM_TEXTURE_MAP = new TextureMap().put(TextureKey.CONTENT, TextureMap.getId(ITEM_WITH_CUSTOM_MODEL));
 
 	@Override
