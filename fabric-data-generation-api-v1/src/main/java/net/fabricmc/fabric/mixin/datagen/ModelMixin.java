@@ -18,8 +18,6 @@ package net.fabricmc.fabric.mixin.datagen;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -35,7 +33,6 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.data.client.Model;
 import net.minecraft.data.client.TextureKey;
-import net.minecraft.data.client.TextureMap;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.model.DisplayBuilder;
@@ -112,10 +109,7 @@ public class ModelMixin implements FabricModel {
 		if (!ambientOcclusion) {
 			jsonObject.addProperty("ambientocclusion", false);
 		}
-	}
 
-	@Inject(method = "upload(Lnet/minecraft/util/Identifier;Lnet/minecraft/data/client/TextureMap;Ljava/util/function/BiConsumer;)Lnet/minecraft/util/Identifier;", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void clearExtraProperties(Identifier id, TextureMap textures, BiConsumer<Identifier, Supplier<JsonElement>> modelCollector, CallbackInfoReturnable<Identifier> cir, Map<TextureKey, Identifier> map) {
 		display.keySet().forEach(display::remove);
 		elements.clear();
 		overrides.clear();
