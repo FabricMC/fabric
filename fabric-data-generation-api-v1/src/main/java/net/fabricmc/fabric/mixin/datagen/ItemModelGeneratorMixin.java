@@ -62,9 +62,19 @@ public class ItemModelGeneratorMixin implements FabricItemModelGenerator {
 	}
 
 	@Override
+	public void register(Item item, Model model, DisplayBuilder... displays) {
+		register(item, model, TextureMap.layer0(item), displays);
+	}
+
+	@Override
 	public void register(Item item, Model model, TextureMap textureMap, ElementBuilder... elements) {
 		Arrays.stream(elements).forEach(model::addElement);
 		model.upload(ModelIds.getItemModelId(item), textureMap, this.writer);
+	}
+
+	@Override
+	public void register(Item item, Model model, ElementBuilder... elements) {
+		register(item, model, TextureMap.layer0(item), elements);
 	}
 
 	@Override
@@ -74,8 +84,18 @@ public class ItemModelGeneratorMixin implements FabricItemModelGenerator {
 	}
 
 	@Override
+	public void register(Item item, Model model, OverrideBuilder... overrides) {
+		register(item, model, TextureMap.layer0(item), overrides);
+	}
+
+	@Override
 	public void register(Item item, Model model, TextureMap textureMap, FabricModel.GuiLight guiLight) {
 		model.setGuiLight(guiLight).upload(ModelIds.getItemModelId(item), textureMap, this.writer);
+	}
+
+	@Override
+	public void register(Item item, Model model, FabricModel.GuiLight guiLight) {
+		register(item, model, TextureMap.layer0(item), guiLight);
 	}
 
 	@Override

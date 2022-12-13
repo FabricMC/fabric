@@ -66,6 +66,17 @@ public interface FabricItemModelGenerator {
 	}
 
 	/**
+	 * Generates an item model based on a model template and specific set of displays.
+	 *
+	 * @param item The item to generate this model for.
+	 * @param model The desired template to generate this model out of.
+	 * @param displays A list of {@link DisplayBuilder}s from which to generate individual model displays.
+	 */
+	default void register(Item item, Model model, DisplayBuilder... displays) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
 	 * Generates an item model based on a model template, texture mapping and specific set of model elements.
 	 *
 	 * @param item The item to generate this model for.
@@ -74,6 +85,17 @@ public interface FabricItemModelGenerator {
 	 * @param elements A list of {@link ElementBuilder}s from which to generate individual model elements.
 	 */
 	default void register(Item item, Model model, TextureMap textureMap, ElementBuilder... elements) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
+	 * Generates an item model based on a model template and specific set of model elements.
+	 *
+	 * @param item The item to generate this model for.
+	 * @param model The desired template to generate this model out of.
+	 * @param elements A list of {@link ElementBuilder}s from which to generate individual model elements.
+	 */
+	default void register(Item item, Model model, ElementBuilder... elements) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
@@ -90,6 +112,17 @@ public interface FabricItemModelGenerator {
 	}
 
 	/**
+	 * Generates an item model based on a model template and specific set of overrides.
+	 *
+	 * @param item The item to generate this model for.
+	 * @param model The desired template to generate this model out of.
+	 * @param overrides A list of {@link OverrideBuilder}s from which to generate individual model overrides.
+	 */
+	default void register(Item item, Model model, OverrideBuilder... overrides) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
 	 * Generates an item model based on a model template and texture mapping, with an optional <code>gui_light</code>
 	 * property.
 	 *
@@ -99,6 +132,18 @@ public interface FabricItemModelGenerator {
 	 * @param guiLight A {@link FabricModel.GuiLight} entry, either <code>FRONT</code> or <code>SIDE</code>.
 	 */
 	default void register(Item item, Model model, TextureMap textureMap, FabricModel.GuiLight guiLight) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
+	 * Generates an item model based on a model template, with an optional <code>gui_light</code>
+	 * property.
+	 *
+	 * @param item The item to generate this model for.
+	 * @param model The desired template to generate this model out of.
+	 * @param guiLight A {@link FabricModel.GuiLight} entry, either <code>FRONT</code> or <code>SIDE</code>.
+	 */
+	default void register(Item item, Model model, FabricModel.GuiLight guiLight) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 

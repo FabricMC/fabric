@@ -268,10 +268,10 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		public void generateItemModels(ItemModelGenerator itemModelGenerator) {
 			//itemModelGenerator.register(item, Models.SLAB);
-			itemModelGenerator.register(ITEM_WITH_CUSTOM_MODEL, CUSTOM_MODEL, CUSTOM_TEXTURE_MAP);
-
-			itemModelGenerator.register(ITEM_WITH_SIDE_ICON, Models.GENERATED, TextureMap.layer0(ITEM_WITH_SIDE_ICON), FabricModel.GuiLight.SIDE);
 			itemModelGenerator.register(ITEM_WITH_NORMAL_ICON, Models.GENERATED);
+			itemModelGenerator.register(ITEM_WITH_SIDE_ICON, Models.GENERATED, TextureMap.layer0(ITEM_WITH_SIDE_ICON), FabricModel.GuiLight.SIDE);
+
+			itemModelGenerator.register(ITEM_WITH_CUSTOM_MODEL, CUSTOM_MODEL, CUSTOM_TEXTURE_MAP);
 		}
 	}
 
