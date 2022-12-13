@@ -21,6 +21,7 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WI
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_VANILLA_LOOT_TABLE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_OCCLUSION;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.ITEM_WITH_CUSTOM_MODEL;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.ITEM_WITH_NORMAL_ICON;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
@@ -32,6 +33,8 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import net.minecraft.data.client.Model;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +77,7 @@ import net.minecraft.world.biome.BiomeKeys;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.FabricModel;
+import net.fabricmc.fabric.api.datagen.v1.model.FabricModel;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
@@ -90,6 +93,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DataGeneratorTestEntrypoint.class);
 	private static final ConditionJsonProvider NEVER_LOADED = DefaultResourceConditions.allModsLoaded("a");
 	private static final ConditionJsonProvider ALWAYS_LOADED = DefaultResourceConditions.not(NEVER_LOADED);
+
+	private static final Model CUSTOM_MODEL = new Model(Optional.of(new Identifier(MOD_ID, "item/custom")), Optional.empty(), TextureKey.CONTENT);
+	private static final TextureMap CUSTOM_TEXTURE_MAP = new TextureMap().put(TextureKey.CONTENT, TextureMap.getId(ITEM_WITH_CUSTOM_MODEL));
 
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
@@ -259,6 +265,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		public void generateItemModels(ItemModelGenerator itemModelGenerator) {
 			//itemModelGenerator.register(item, Models.SLAB);
+			itemModelGenerator.register(ITEM_WITH_CUSTOM_MODEL, CUSTOM_MODEL, CUSTOM_TEXTURE_MAP);
+
 			Models.GENERATED.setGuiLight(FabricModel.GuiLight.SIDE).upload(new Identifier(MOD_ID, "item/item_with_side_icon"), new TextureMap().put(TextureKey.LAYER0, new Identifier(MOD_ID, "item_with_side_icon")), itemModelGenerator.writer);
 			itemModelGenerator.register(ITEM_WITH_NORMAL_ICON, Models.GENERATED);
 		}

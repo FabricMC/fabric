@@ -25,10 +25,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -42,8 +42,9 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static Block BLOCK_WITHOUT_LOOT_TABLE;
 	public static Block BLOCK_WITH_VANILLA_LOOT_TABLE;
 	public static Block BLOCK_THAT_DROPS_NOTHING;
-
 	public static Block BLOCK_WITHOUT_OCCLUSION;
+
+	public static Item ITEM_WITH_CUSTOM_MODEL;
 	public static Item ITEM_WITH_SIDE_ICON;
 	public static Item ITEM_WITH_NORMAL_ICON;
 
@@ -59,8 +60,9 @@ public class DataGeneratorTestContent implements ModInitializer {
 		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false, AbstractBlock.Settings.of(Material.STONE));
 		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, AbstractBlock.Settings.of(Material.STONE).dropsLike(Blocks.STONE));
 		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, AbstractBlock.Settings.of(Material.STONE).dropsNothing());
-
 		BLOCK_WITHOUT_OCCLUSION = createBlock("block_without_occlusion", false);
+
+		ITEM_WITH_CUSTOM_MODEL = createItem("item_with_custom_model");
 		ITEM_WITH_SIDE_ICON = createItem("item_with_side_icon");
 		ITEM_WITH_NORMAL_ICON = createItem("item_with_normal_icon");
 

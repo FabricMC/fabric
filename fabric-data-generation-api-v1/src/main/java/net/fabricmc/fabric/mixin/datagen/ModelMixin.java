@@ -37,9 +37,9 @@ import net.minecraft.data.client.TextureKey;
 import net.minecraft.data.client.TextureMap;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricModel;
 import net.fabricmc.fabric.api.datagen.v1.model.DisplayBuilder;
 import net.fabricmc.fabric.api.datagen.v1.model.ElementBuilder;
+import net.fabricmc.fabric.api.datagen.v1.model.FabricModel;
 import net.fabricmc.fabric.api.datagen.v1.model.OverrideBuilder;
 
 @Mixin(Model.class)

@@ -30,7 +30,8 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_4942": ["net/fabricmc/fabric/api/datagen/v1/FabricModel"]
+      "net/minecraft/class_4915": ["net/fabricmc/fabric/api/datagen/v1/model/FabricItemModelGenerator"],
+      "net/minecraft/class_4942": ["net/fabricmc/fabric/api/datagen/v1/model/FabricModel"]
     }
   }
 }

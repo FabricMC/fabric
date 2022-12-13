@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.datagen.v1;
+package net.fabricmc.fabric.api.datagen.v1.model;
 
 import net.minecraft.data.client.Model;
-
-import net.fabricmc.fabric.api.datagen.v1.model.DisplayBuilder;
-import net.fabricmc.fabric.api.datagen.v1.model.ElementBuilder;
-import net.fabricmc.fabric.api.datagen.v1.model.OverrideBuilder;
 
 /**
  * Fabric-provided extensions for {@link Model}.
