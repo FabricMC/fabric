@@ -35,6 +35,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.model.ElementBuilder;
 import net.fabricmc.fabric.api.datagen.v1.model.FabricItemModelGenerator;
+import net.fabricmc.fabric.api.datagen.v1.model.FabricModel;
 import net.fabricmc.fabric.api.datagen.v1.model.OverrideBuilder;
 
 @Mixin(ItemModelGenerator.class)
@@ -64,9 +65,19 @@ public class ItemModelGeneratorMixin implements FabricItemModelGenerator {
 	}
 
 	@Override
+	public void register(Item item, Model model, TextureMap textureMap, FabricModel.GuiLight guiLight) {
+		model.setGuiLight(guiLight).upload(ModelIds.getItemModelId(item), textureMap, this.writer);
+	}
+
+	@Override
 	public void register(Item item, Model model, TextureMap textureMap, List<ElementBuilder> elements, List<OverrideBuilder> overrides) {
+		register(item, model, textureMap, null, elements, overrides);
+	}
+
+	@Override
+	public void register(Item item, Model model, TextureMap textureMap, FabricModel.GuiLight guiLight, List<ElementBuilder> elements, List<OverrideBuilder> overrides) {
 		elements.forEach(model::addElement);
 		overrides.forEach(model::addOverride);
-		model.upload(ModelIds.getItemModelId(item), textureMap, this.writer);
+		model.setGuiLight(guiLight).upload(ModelIds.getItemModelId(item), textureMap, this.writer);
 	}
 }

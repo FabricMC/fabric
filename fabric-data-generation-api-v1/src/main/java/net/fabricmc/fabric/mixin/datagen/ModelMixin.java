@@ -25,6 +25,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -51,9 +52,10 @@ public class ModelMixin implements FabricModel {
 	@Unique
 	private final List<JsonObject> overrides = new ObjectArrayList<>();
 	@Unique
-	private GuiLight guiLight;
+	@Nullable
+	private GuiLight guiLight = null;
 	@Unique
-	private boolean ambientOcclusion;
+	private boolean ambientOcclusion = true;
 
 	@Override
 	public Model withDisplay(DisplayBuilder.Position position, DisplayBuilder builder) {
@@ -74,7 +76,7 @@ public class ModelMixin implements FabricModel {
 	}
 
 	@Override
-	public Model setGuiLight(GuiLight light) {
+	public Model setGuiLight(@Nullable GuiLight light) {
 		this.guiLight = light;
 		return (Model) (Object) this;
 	}

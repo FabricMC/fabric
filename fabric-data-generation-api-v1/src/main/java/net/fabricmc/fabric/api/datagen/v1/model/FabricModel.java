@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.datagen.v1.model;
 
 import java.util.Optional;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.data.client.Model;
 import net.minecraft.data.client.ModelIds;
@@ -101,10 +103,11 @@ public interface FabricModel {
 	/**
 	 * Sets the <code>gui_light</code> property of a model JSON. Only useful for <em>item</em> models.
 	 *
-	 * @param light Either one of the two {@link GuiLight} entries (<code>FRONT</code>/<code>SIDE</code>).
+	 * @param light Either one of the two {@link GuiLight} entries (<code>FRONT</code>/<code>SIDE</code>), or
+	 *                 <code>null</code> for the default fallback.
 	 * @return The current newly-modified {@link Model} instance.
 	 */
-	default Model setGuiLight(GuiLight light) {
+	default Model setGuiLight(@Nullable GuiLight light) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
@@ -113,7 +116,7 @@ public interface FabricModel {
 	 * applicable to the parent model.
 	 *
 	 * @param occlude Whether to use ambient occlusion on the given block model. Defaults to <code>true</code> if not
-	 *                directly specified.
+	 *                   directly specified.
 	 * @return The current newly-modified {@link Model} instance.
 	 */
 	default Model setAmbientOcclusion(boolean occlude) {

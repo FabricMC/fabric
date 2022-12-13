@@ -24,6 +24,7 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WI
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_EMPTY_MODEL;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.ITEM_WITH_CUSTOM_MODEL;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.ITEM_WITH_NORMAL_ICON;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.ITEM_WITH_SIDE_ICON;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
@@ -269,7 +270,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			//itemModelGenerator.register(item, Models.SLAB);
 			itemModelGenerator.register(ITEM_WITH_CUSTOM_MODEL, CUSTOM_MODEL, CUSTOM_TEXTURE_MAP);
 
-			Models.GENERATED.setGuiLight(FabricModel.GuiLight.SIDE).upload(new Identifier(MOD_ID, "item/item_with_side_icon"), new TextureMap().put(TextureKey.LAYER0, new Identifier(MOD_ID, "item_with_side_icon")), itemModelGenerator.writer);
+			itemModelGenerator.register(ITEM_WITH_SIDE_ICON, Models.GENERATED, TextureMap.layer0(ITEM_WITH_SIDE_ICON), FabricModel.GuiLight.SIDE);
 			itemModelGenerator.register(ITEM_WITH_NORMAL_ICON, Models.GENERATED);
 		}
 	}

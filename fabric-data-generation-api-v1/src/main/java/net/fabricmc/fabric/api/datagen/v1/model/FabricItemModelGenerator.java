@@ -78,6 +78,19 @@ public interface FabricItemModelGenerator {
 	}
 
 	/**
+	 * Generates an item model based on a model template and texture mapping, with an optional <code>gui_light</code>
+	 * property.
+	 *
+	 * @param item The item to generate this model for.
+	 * @param model The desired template to generate this model out of.
+	 * @param textureMap The desired texture mapping for this model.
+	 * @param guiLight A {@link FabricModel.GuiLight} entry, either <code>FRONT</code> or <code>SIDE</code>.
+	 */
+	default void register(Item item, Model model, TextureMap textureMap, FabricModel.GuiLight guiLight) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
 	 * Generates an item model based on a model template, texture mapping and specific set of given model elements and
 	 * overrides.
 	 *
@@ -88,6 +101,20 @@ public interface FabricItemModelGenerator {
 	 * @param overrides A list of {@link OverrideBuilder}s from which to generate individual model overrides.
 	 */
 	default void register(Item item, Model model, TextureMap textureMap, List<ElementBuilder> elements, List<OverrideBuilder> overrides) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
+	 * Generates an item model based on a model template, texture mapping and specific set of given model elements and
+	 * overrides.
+	 *
+	 * @param item The item to generate this model for.
+	 * @param model The desired template to generate this model out of.
+	 * @param textureMap The desired texture mapping for this model.
+	 * @param elements A list of {@link ElementBuilder}s from which to generate individual model elements.
+	 * @param overrides A list of {@link OverrideBuilder}s from which to generate individual model overrides.
+	 */
+	default void register(Item item, Model model, TextureMap textureMap, FabricModel.GuiLight guiLight, List<ElementBuilder> elements, List<OverrideBuilder> overrides) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 }
