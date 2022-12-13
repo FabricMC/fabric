@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.item.client;
+package net.fabricmc.fabric.mixin.client.item;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,15 +25,12 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 
 @Mixin(ClientPlayerInteractionManager.class)
 public class ClientPlayerInteractionManagerMixin {
 	@Shadow
 	@Final
 	private MinecraftClient client;
-	@Shadow
-	private BlockPos currentBreakingPos;
 	@Shadow
 	private ItemStack selectedStack;
 

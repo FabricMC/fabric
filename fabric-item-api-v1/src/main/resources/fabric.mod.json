@@ -17,7 +17,7 @@
   ],
   "entrypoints": {
     "client": [
-      "net.fabricmc.fabric.impl.item.client.FabricItemApiImpl"
+      "net.fabricmc.fabric.impl.client.item.FabricItemApiImpl"
     ]
   },
   "mixins": [

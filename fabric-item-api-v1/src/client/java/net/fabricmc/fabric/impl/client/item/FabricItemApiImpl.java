@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.item;
+package net.fabricmc.fabric.impl.client.item;
 
-import java.util.List;
+import net.minecraft.client.gui.tooltip.TooltipComponent;
 
-import org.jetbrains.annotations.ApiStatus;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 
-import net.minecraft.client.item.TooltipData;
+public class FabricItemApiImpl implements ClientModInitializer {
+	@Override
+	public void onInitializeClient() {
+		TooltipComponentCallback.EVENT.register(maybe -> {
+			if (maybe instanceof ListTooltipData data) {
+				return new ListTooltipComponent(data.list().stream().map(TooltipComponent::of).toList());
+			}
 
-@ApiStatus.Internal
-public record BundledTooltipData(List<TooltipData> list) implements TooltipData {
+			return null;
+		});
+	}
 }

@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.item.client",
+  "package": "net.fabricmc.fabric.mixin.client.item",
   "compatibilityLevel": "JAVA_16",
   "client": [
     "ClientPlayerInteractionManagerMixin",

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.item.client;
+package net.fabricmc.fabric.impl.client.item;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 
-record BundledTooltipComponentImpl(List<TooltipComponent> list) implements TooltipComponent {
+record ListTooltipComponent(List<TooltipComponent> list) implements TooltipComponent {
 	@Override
 	public int getHeight() {
 		int h = 0;

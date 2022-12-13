@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.item.client;
+package net.fabricmc.fabric.mixin.client.item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipDataCallback;
-import net.fabricmc.fabric.impl.item.BundledTooltipData;
+import net.fabricmc.fabric.impl.client.item.ListTooltipData;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
@@ -49,7 +49,7 @@ public abstract class ItemStackMixin {
 		ItemTooltipDataCallback.EVENT.invoker().getTooltipData((ItemStack) (Object) this, list);
 
 		if (list.size() > 1) {
-			cir.setReturnValue(Optional.of(new BundledTooltipData(list)));
+			cir.setReturnValue(Optional.of(new ListTooltipData(list)));
 		}
 
 		if (list.size() == 1) {
