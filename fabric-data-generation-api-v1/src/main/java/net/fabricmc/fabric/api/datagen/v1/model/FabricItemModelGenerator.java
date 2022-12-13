@@ -78,7 +78,7 @@ public interface FabricItemModelGenerator {
 	}
 
 	/**
-	 * Generates an item model based on a model template, texture mapping and specific set of given mode elements and
+	 * Generates an item model based on a model template, texture mapping and specific set of given model elements and
 	 * overrides.
 	 *
 	 * @param item The item to generate this model for.

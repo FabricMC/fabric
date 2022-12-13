@@ -43,6 +43,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static Block BLOCK_WITH_VANILLA_LOOT_TABLE;
 	public static Block BLOCK_THAT_DROPS_NOTHING;
 	public static Block BLOCK_WITHOUT_OCCLUSION;
+	public static Block BLOCK_WITH_EMPTY_MODEL;
 
 	public static Item ITEM_WITH_CUSTOM_MODEL;
 	public static Item ITEM_WITH_SIDE_ICON;
@@ -61,6 +62,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, AbstractBlock.Settings.of(Material.STONE).dropsLike(Blocks.STONE));
 		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, AbstractBlock.Settings.of(Material.STONE).dropsNothing());
 		BLOCK_WITHOUT_OCCLUSION = createBlock("block_without_occlusion", false);
+		BLOCK_WITH_EMPTY_MODEL = createBlock("block_with_empty_model", false);
 
 		ITEM_WITH_CUSTOM_MODEL = createItem("item_with_custom_model");
 		ITEM_WITH_SIDE_ICON = createItem("item_with_side_icon");

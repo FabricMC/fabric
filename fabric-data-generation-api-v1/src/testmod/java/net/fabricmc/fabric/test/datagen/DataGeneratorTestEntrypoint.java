@@ -21,6 +21,7 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WI
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_VANILLA_LOOT_TABLE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_OCCLUSION;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_EMPTY_MODEL;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.ITEM_WITH_CUSTOM_MODEL;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.ITEM_WITH_NORMAL_ICON;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
@@ -259,6 +260,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							blockStateModelGenerator.modelCollector);
 			blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(BLOCK_WITHOUT_OCCLUSION,
 					BlockStateVariant.create().put(VariantSettings.MODEL, noOcclusionModel)));
+
+			blockStateModelGenerator.registerEmptyModel(BLOCK_WITH_EMPTY_MODEL);
 		}
 
 		@Override
@@ -348,6 +351,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			addDrop(SIMPLE_BLOCK);
 			addDrop(BLOCK_WITHOUT_ITEM, drops(SIMPLE_BLOCK));
 			addDrop(BLOCK_WITHOUT_OCCLUSION, drops(SIMPLE_BLOCK));
+			addDrop(BLOCK_WITH_EMPTY_MODEL, drops(SIMPLE_BLOCK));
 
 			excludeFromStrictValidation(BLOCK_WITHOUT_LOOT_TABLE);
 		}
