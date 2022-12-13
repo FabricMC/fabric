@@ -40,7 +40,7 @@ public interface FabricModel {
 	 * @return The current newly-modified {@link Model} instance.
 	 */
 	default Model withDisplay(DisplayBuilder.Position position, DisplayBuilder builder) {
-		return (Model) this;
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
@@ -52,7 +52,7 @@ public interface FabricModel {
 	 * @return The current newly-modified {@link Model} instance.
 	 */
 	default Model addElement(ElementBuilder builder) {
-		return (Model) this;
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
@@ -64,17 +64,17 @@ public interface FabricModel {
 	 * @return The current newly-modified {@link Model} instance.
 	 */
 	default Model addOverride(OverrideBuilder builder) {
-		return (Model) this;
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
 	 * Sets the <code>gui_light</code> property of a model JSON. Only useful for <em>item</em> models.
 	 *
-	 * @param light Either one of the two {@link GUILight} entries (<code>FRONT</code>/<code>SIDE</code>).
+	 * @param light Either one of the two {@link GuiLight} entries (<code>FRONT</code>/<code>SIDE</code>).
 	 * @return The current newly-modified {@link Model} instance.
 	 */
-	default Model setGUILight(GUILight light) {
-		return (Model) this;
+	default Model setGuiLight(GuiLight light) {
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
@@ -86,7 +86,7 @@ public interface FabricModel {
 	 * @return The current newly-modified {@link Model} instance.
 	 */
 	default Model setAmbientOcclusion(boolean occlude) {
-		return (Model) this;
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
@@ -94,7 +94,7 @@ public interface FabricModel {
 	 * <code>SIDE</code> if not directly specified. "Flat" item models (i.e. those with the <code>item/generated</code>
 	 * parent) usually inherit <code>FRONT</code> for this property.
 	 */
-	enum GUILight {
+	enum GuiLight {
 		/**
 		 * Render as a flat item icon within GUIs.
 		 */

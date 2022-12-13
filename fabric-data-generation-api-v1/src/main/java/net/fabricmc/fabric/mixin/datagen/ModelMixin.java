@@ -33,6 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.data.client.Model;
+import net.minecraft.data.client.TextureKey;
 import net.minecraft.data.client.TextureMap;
 import net.minecraft.util.Identifier;
 
@@ -50,7 +51,7 @@ public class ModelMixin implements FabricModel {
 	@Unique
 	private final List<JsonObject> overrides = new ObjectArrayList<>();
 	@Unique
-	private GUILight guiLight;
+	private GuiLight guiLight;
 	@Unique
 	private boolean ambientOcclusion;
 
@@ -73,7 +74,7 @@ public class ModelMixin implements FabricModel {
 	}
 
 	@Override
-	public Model setGUILight(GUILight light) {
+	public Model setGuiLight(GuiLight light) {
 		this.guiLight = light;
 		return (Model) (Object) this;
 	}
@@ -85,7 +86,7 @@ public class ModelMixin implements FabricModel {
 	}
 
 	@Inject(method = "method_25851", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void addExtraProperties(Map map, CallbackInfoReturnable<JsonElement> cir, JsonObject jsonObject) {
+	public void addExtraProperties(Map<TextureKey, Identifier> map, CallbackInfoReturnable<JsonElement> cir, JsonObject jsonObject) {
 		if (!display.keySet().isEmpty()) {
 			jsonObject.add("display", display);
 		}
@@ -112,7 +113,7 @@ public class ModelMixin implements FabricModel {
 	}
 
 	@Inject(method = "upload(Lnet/minecraft/util/Identifier;Lnet/minecraft/data/client/TextureMap;Ljava/util/function/BiConsumer;)Lnet/minecraft/util/Identifier;", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void clearExtraProperties(Identifier id, TextureMap textures, BiConsumer<Identifier, Supplier<JsonElement>> modelCollector, CallbackInfoReturnable<Identifier> cir, Map map) {
+	public void clearExtraProperties(Identifier id, TextureMap textures, BiConsumer<Identifier, Supplier<JsonElement>> modelCollector, CallbackInfoReturnable<Identifier> cir, Map<TextureKey, Identifier> map) {
 		display.keySet().forEach(display::remove);
 		elements.clear();
 		overrides.clear();

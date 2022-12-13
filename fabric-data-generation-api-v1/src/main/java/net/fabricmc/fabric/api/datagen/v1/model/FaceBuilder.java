@@ -18,10 +18,12 @@ package net.fabricmc.fabric.api.datagen.v1.model;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector4i;
 
 import net.minecraft.data.client.TextureKey;
 import net.minecraft.data.client.VariantSettings;
+import net.minecraft.util.math.Direction;
 
 /**
  * Instantiate this class in order to provide a set of <code>faces</code> to be rendered for an element of a JSON model.
@@ -29,7 +31,8 @@ import net.minecraft.data.client.VariantSettings;
 public class FaceBuilder {
 	private final Vector4i uv;
 	private final TextureKey texture;
-	private final Face cullFace;
+	@Nullable
+	private final Direction cullFace;
 	private final VariantSettings.Rotation rotation;
 	private final int tintIndex;
 
@@ -42,7 +45,7 @@ public class FaceBuilder {
 	 * @param rotation The rotation of this texture (quarter-turns only).
 	 * @param tintIndex The tint index for this face, if applicable.
 	 */
-	public FaceBuilder(Vector4i uv, TextureKey texture, Face cullFace, VariantSettings.Rotation rotation, int tintIndex) {
+	public FaceBuilder(Vector4i uv, TextureKey texture, @Nullable Direction cullFace, VariantSettings.Rotation rotation, int tintIndex) {
 		this.uv = uv;
 		this.texture = texture;
 		this.cullFace = cullFace;
@@ -58,7 +61,7 @@ public class FaceBuilder {
 	 * @param cullFace If specified, this face need not render if a block is directly adjacent to the given one.
 	 * @param rotation The rotation of this texture (quarter-turns only).
 	 */
-	public FaceBuilder(Vector4i uv, TextureKey texture, Face cullFace, VariantSettings.Rotation rotation) {
+	public FaceBuilder(Vector4i uv, TextureKey texture, @Nullable Direction cullFace, VariantSettings.Rotation rotation) {
 		this(uv, texture, cullFace, rotation, -1);
 	}
 
@@ -69,7 +72,7 @@ public class FaceBuilder {
 	 * @param texture A key corresponding to the texture to be applied for this element face.
 	 * @param cullFace If specified, this face need not render if a block is directly adjacent to the given one.
 	 */
-	public FaceBuilder(Vector4i uv, TextureKey texture, Face cullFace) {
+	public FaceBuilder(Vector4i uv, TextureKey texture, @Nullable Direction cullFace) {
 		this(uv, texture, cullFace, VariantSettings.Rotation.R0, -1);
 	}
 
@@ -80,7 +83,7 @@ public class FaceBuilder {
 	 * @param texture A key corresponding to the texture to be applied for this element face.
 	 */
 	public FaceBuilder(Vector4i uv, TextureKey texture) {
-		this(uv, texture, Face.NONE, VariantSettings.Rotation.R0, -1);
+		this(uv, texture, null, VariantSettings.Rotation.R0, -1);
 	}
 
 	/**
@@ -95,7 +98,7 @@ public class FaceBuilder {
 	 * @param rotation The rotation of this texture (quarter-turns only).
 	 * @param tintIndex The tint index for this face, if applicable.
 	 */
-	public FaceBuilder(int x1, int y1, int x2, int y2, TextureKey texture, Face cullFace, VariantSettings.Rotation rotation, int tintIndex) {
+	public FaceBuilder(int x1, int y1, int x2, int y2, TextureKey texture, @Nullable Direction cullFace, VariantSettings.Rotation rotation, int tintIndex) {
 		this(new Vector4i(x1, y1, x2, y2), texture, cullFace, rotation, tintIndex);
 	}
 
@@ -110,7 +113,7 @@ public class FaceBuilder {
 	 * @param cullFace If specified, this face need not render if a block is directly adjacent to the given one.
 	 * @param rotation The rotation of this texture (quarter-turns only).
 	 */
-	public FaceBuilder(int x1, int y1, int x2, int y2, TextureKey texture, Face cullFace, VariantSettings.Rotation rotation) {
+	public FaceBuilder(int x1, int y1, int x2, int y2, TextureKey texture, @Nullable Direction cullFace, VariantSettings.Rotation rotation) {
 		this(x1, y1, x2, y2, texture, cullFace, rotation, -1);
 	}
 
@@ -124,7 +127,7 @@ public class FaceBuilder {
 	 * @param texture A key corresponding to the texture to be applied for this element face.
 	 * @param cullFace If specified, this face need not render if a block is directly adjacent to the given one.
 	 */
-	public FaceBuilder(int x1, int y1, int x2, int y2, TextureKey texture, Face cullFace) {
+	public FaceBuilder(int x1, int y1, int x2, int y2, TextureKey texture, @Nullable Direction cullFace) {
 		this(x1, y1, x2, y2, texture, cullFace, VariantSettings.Rotation.R0, -1);
 	}
 
@@ -138,7 +141,7 @@ public class FaceBuilder {
 	 * @param texture A key corresponding to the texture to be applied for this element face.
 	 */
 	public FaceBuilder(int x1, int y1, int x2, int y2, TextureKey texture) {
-		this(x1, y1, x2, y2, texture, Face.NONE, VariantSettings.Rotation.R0, -1);
+		this(x1, y1, x2, y2, texture, null, VariantSettings.Rotation.R0, -1);
 	}
 
 	/**
@@ -148,7 +151,7 @@ public class FaceBuilder {
 	 * @param texture A key corresponding to the texture to be applied for this element face.
 	 */
 	public FaceBuilder(TextureKey texture) {
-		this(new Vector4i(0), texture, Face.NONE, VariantSettings.Rotation.R0, -1);
+		this(new Vector4i(0), texture, null, VariantSettings.Rotation.R0, -1);
 	}
 
 	public JsonObject build() {
@@ -163,7 +166,7 @@ public class FaceBuilder {
 
 		face.addProperty("texture", "#" + texture.getName());
 
-		if (cullFace != Face.NONE) {
+		if (cullFace != null) {
 			face.addProperty("cullface", cullFace.name().toLowerCase());
 		}
 
@@ -176,13 +179,5 @@ public class FaceBuilder {
 		}
 
 		return face;
-	}
-
-	public enum Face {
-		DOWN, UP, NORTH, SOUTH, WEST, EAST,
-		/**
-		 * Fallback value; do not use directly.
-		 */
-		NONE
 	}
 }

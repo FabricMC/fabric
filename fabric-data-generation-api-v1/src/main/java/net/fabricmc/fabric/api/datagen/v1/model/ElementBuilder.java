@@ -16,13 +16,15 @@
 
 package net.fabricmc.fabric.api.datagen.v1.model;
 
+import java.util.EnumMap;
+
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
+
+import net.minecraft.util.math.Direction;
 
 /**
  * Instantiate this class in order to provide any specific <code>elements</code> to a given block/item model JSON.
@@ -33,7 +35,7 @@ public class ElementBuilder {
 	@Nullable
 	private final RotationBuilder rotation;
 	private final boolean shade;
-	private final Object2ObjectMap<FaceBuilder.Face, FaceBuilder> faces = new Object2ObjectArrayMap<>();
+	private final EnumMap<Direction, FaceBuilder> faces = new EnumMap<>(Direction.class);
 
 	/**
 	 * Create a new element builder with a given pair of opposite vertices and optional {@link RotationBuilder} and
@@ -126,7 +128,7 @@ public class ElementBuilder {
 	 * @param builder An instanced {@link FaceBuilder} from which to build this face's data.
 	 * @return The current newly-modified {@link ElementBuilder} instance.
 	 */
-	public ElementBuilder withFace(FaceBuilder.Face face, FaceBuilder builder) {
+	public ElementBuilder withFace(Direction face, FaceBuilder builder) {
 		this.faces.putIfAbsent(face, builder);
 		return this;
 	}
@@ -156,7 +158,7 @@ public class ElementBuilder {
 
 		JsonArray faces = new JsonArray();
 		this.faces.forEach((f, b) -> {
-			Preconditions.checkArgument(f != FaceBuilder.Face.NONE);
+			Preconditions.checkArgument(f != null);
 			JsonObject face = new JsonObject();
 			face.add(f.name().toLowerCase(), b.build());
 			faces.add(face);
