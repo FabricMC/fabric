@@ -38,10 +38,10 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.sound.SoundEntryBuilder;
+import net.fabricmc.fabric.api.datagen.v1.sound.SoundEntry;
 
 /**
- * Extend this class and implement {@link FabricSoundProvider#generateSounds(SoundBuilder)}.
+ * Extend this class and implement {@link FabricSoundProvider#generateSounds(SoundGenerator)}.
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
@@ -55,12 +55,12 @@ public abstract class FabricSoundProvider implements DataProvider {
 	/**
 	 * Implement this method to register sounds.
 	 *
-	 * <p>Call {@link FabricSoundProvider.SoundBuilder#add(SoundEvent, SoundEntryBuilder...)} to add a list of sound entries
+	 * <p>Call {@link SoundGenerator#add(SoundEvent, SoundEntry...)} to add a list of sound entries
 	 * for a given {@link SoundEvent}. An optional subtitle to use for the event can be provided in the form of an
 	 * existing translation key for this subtitle, along with the option to <code>replace</code> the sound entries for
 	 * this event with your own via resource pack, if specifying an existing event from some other namespace.
 	 */
-	public abstract void generateSounds(SoundBuilder soundBuilder);
+	public abstract void generateSounds(SoundGenerator soundGenerator);
 
 	@Override
 	public CompletableFuture<?> run(DataWriter writer) {
@@ -70,7 +70,7 @@ public abstract class FabricSoundProvider implements DataProvider {
 			Objects.requireNonNull(sound);
 			Objects.requireNonNull(entries);
 
-			List<Identifier> keys = Arrays.stream(entries).map(SoundEntryBuilder::name).toList();
+			List<Identifier> keys = Arrays.stream(entries).map(SoundEntry::name).toList();
 
 			if (!keys.stream().filter(i -> Collections.frequency(keys, i) > 1).toList().isEmpty()) {
 				throw new RuntimeException("Entries for sound event " + sound.getId() + " contain duplicate sound names. Event will be omitted.");
@@ -79,7 +79,7 @@ public abstract class FabricSoundProvider implements DataProvider {
 			JsonObject soundEventData = new JsonObject();
 			JsonArray soundEntries = new JsonArray();
 
-			Arrays.asList(entries).forEach(e -> soundEntries.add(e.build()));
+			Arrays.asList(entries).forEach(e -> soundEntries.add(e.toJson()));
 			soundEventData.add("sounds", soundEntries);
 
 			if (replace) {
@@ -102,7 +102,7 @@ public abstract class FabricSoundProvider implements DataProvider {
 		Path soundsPath = dataOutput
 				.getResolver(DataOutput.OutputType.RESOURCE_PACK, ".")
 				.resolveJson(new Identifier(dataOutput.getModId(), "sounds"));
-		return DataProvider.writeToPath(writer, soundsJson, soundsPath);
+		return DataProvider.writeToPath(writer, soundsJson, soundsPath.normalize());
 	}
 
 	@Override
@@ -112,18 +112,18 @@ public abstract class FabricSoundProvider implements DataProvider {
 
 	@ApiStatus.NonExtendable
 	@FunctionalInterface
-	public interface SoundBuilder {
-		void add(SoundEvent sound, boolean replace, @Nullable String subtitle, SoundEntryBuilder... entries);
+	public interface SoundGenerator {
+		void add(SoundEvent sound, boolean replace, @Nullable String subtitle, SoundEntry... entries);
 
-		default void add(SoundEvent sound, boolean replace, SoundEntryBuilder... entries) {
+		default void add(SoundEvent sound, boolean replace, SoundEntry... entries) {
 			add(sound, replace, null, entries);
 		}
 
-		default void add(SoundEvent sound, @Nullable String subtitle, SoundEntryBuilder... entries) {
+		default void add(SoundEvent sound, @Nullable String subtitle, SoundEntry... entries) {
 			add(sound, false, subtitle, entries);
 		}
 
-		default void add(SoundEvent sound, SoundEntryBuilder... entries) {
+		default void add(SoundEvent sound, SoundEntry... entries) {
 			add(sound, false, null, entries);
 		}
 	}
