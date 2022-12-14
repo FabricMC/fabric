@@ -71,6 +71,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricSoundProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.sound.SoundEntryBuilder;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 
@@ -279,8 +280,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		public void generateSounds(SoundBuilder soundBuilder) {
 			soundBuilder.add(SoundEvents.BLOCK_METAL_BREAK, true,
-					new SoundEntry(new Identifier(MOD_ID, "replacement_sound_1")),
-					new SoundEntry(new Identifier(MOD_ID, "replacement_sound_2"), 0.5f, 0.5f, 2, false, 16, false, Type.SOUND));
+					new SoundEntryBuilder(new Identifier(MOD_ID, "replacement_sound_1")),
+					new SoundEntryBuilder(new Identifier(MOD_ID, "replacement_sound_2"), 0.5f, 0.5f, 2, false, 16, false, SoundEntryBuilder.Type.SOUND));
 		}
 	}
 }

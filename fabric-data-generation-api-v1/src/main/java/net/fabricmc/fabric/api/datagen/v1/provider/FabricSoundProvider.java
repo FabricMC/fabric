@@ -26,9 +26,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,6 +38,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.sound.SoundEntryBuilder;
 
 /**
  * Extend this class and implement {@link FabricSoundProvider#generateSounds(SoundBuilder)}.
@@ -56,7 +55,7 @@ public abstract class FabricSoundProvider implements DataProvider {
 	/**
 	 * Implement this method to register sounds.
 	 *
-	 * <p>Call {@link FabricSoundProvider.SoundBuilder#add(SoundEvent, SoundEntry...)} to add a list of sound entries
+	 * <p>Call {@link FabricSoundProvider.SoundBuilder#add(SoundEvent, SoundEntryBuilder...)} to add a list of sound entries
 	 * for a given {@link SoundEvent}. An optional subtitle to use for the event can be provided in the form of an
 	 * existing translation key for this subtitle, along with the option to <code>replace</code> the sound entries for
 	 * this event with your own via resource pack, if specifying an existing event from some other namespace.
@@ -71,7 +70,7 @@ public abstract class FabricSoundProvider implements DataProvider {
 			Objects.requireNonNull(sound);
 			Objects.requireNonNull(entries);
 
-			List<Identifier> keys = Arrays.stream(entries).map(SoundEntry::name).toList();
+			List<Identifier> keys = Arrays.stream(entries).map(SoundEntryBuilder::name).toList();
 
 			if (!keys.stream().filter(i -> Collections.frequency(keys, i) > 1).toList().isEmpty()) {
 				throw new RuntimeException("Entries for sound event " + sound.getId() + " contain duplicate sound names. Event will be omitted.");
@@ -114,77 +113,18 @@ public abstract class FabricSoundProvider implements DataProvider {
 	@ApiStatus.NonExtendable
 	@FunctionalInterface
 	public interface SoundBuilder {
-		void add(SoundEvent sound, boolean replace, @Nullable String subtitle, SoundEntry... entries);
+		void add(SoundEvent sound, boolean replace, @Nullable String subtitle, SoundEntryBuilder... entries);
 
-		default void add(SoundEvent sound, boolean replace, SoundEntry... entries) {
+		default void add(SoundEvent sound, boolean replace, SoundEntryBuilder... entries) {
 			add(sound, replace, null, entries);
 		}
 
-		default void add(SoundEvent sound, @Nullable String subtitle, SoundEntry... entries) {
+		default void add(SoundEvent sound, @Nullable String subtitle, SoundEntryBuilder... entries) {
 			add(sound, false, subtitle, entries);
 		}
 
-		default void add(SoundEvent sound, SoundEntry... entries) {
+		default void add(SoundEvent sound, SoundEntryBuilder... entries) {
 			add(sound, false, null, entries);
 		}
-	}
-
-	public record SoundEntry(Identifier name, float volume, float pitch, int weight, boolean stream, int attenuationDistance, boolean preload, @Nullable Type type) {
-		// TODO: add more constructors for different param combinations
-		public SoundEntry(Identifier name, Type type) {
-			this(name, 1, 1, 1, false, 16, false, type);
-		}
-
-		public SoundEntry(Identifier name) {
-			this(name, 1, 1, 1, false, 16, false, null);
-		}
-
-		private boolean allDefaults() {
-			return volume == 1 && pitch == 1 && weight == 1 && !stream && attenuationDistance == 16 && !preload && type != null;
-		}
-
-		private JsonElement build() {
-			if (allDefaults()) {
-				return new JsonPrimitive(name.toString());
-			} else {
-				JsonObject soundEntry = new JsonObject();
-				soundEntry.addProperty("name", name.toString());
-
-				if (volume != 1) {
-					soundEntry.addProperty("volume", volume);
-				}
-
-				if (pitch != 1) {
-					soundEntry.addProperty("pitch", pitch);
-				}
-
-				if (weight != 1) {
-					soundEntry.addProperty("weight", weight);
-				}
-
-				if (stream) {
-					soundEntry.addProperty("stream", true);
-				}
-
-				if (attenuationDistance != 16) {
-					soundEntry.addProperty("attenuation_distance", attenuationDistance);
-				}
-
-				if (preload) {
-					soundEntry.addProperty("preload", true);
-				}
-
-				if (type != null) {
-					soundEntry.addProperty("type", type.name().toLowerCase());
-				}
-
-				return soundEntry;
-			}
-		}
-	}
-
-	public enum Type {
-		SOUND,
-		EVENT
 	}
 }
