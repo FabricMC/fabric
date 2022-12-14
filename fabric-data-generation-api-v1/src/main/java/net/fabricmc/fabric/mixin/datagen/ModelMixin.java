@@ -16,15 +16,19 @@
 
 package net.fabricmc.fabric.mixin.datagen;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -35,70 +39,121 @@ import net.minecraft.data.client.Model;
 import net.minecraft.data.client.TextureKey;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.datagen.v1.model.DisplayBuilder;
-import net.fabricmc.fabric.api.datagen.v1.model.ElementBuilder;
-import net.fabricmc.fabric.api.datagen.v1.model.FabricModel;
-import net.fabricmc.fabric.api.datagen.v1.model.OverrideBuilder;
+import net.fabricmc.fabric.api.datagen.v1.model.builder.ItemModelBuilder;
+import net.fabricmc.fabric.api.datagen.v1.model.property.DisplayBuilder;
+import net.fabricmc.fabric.api.datagen.v1.model.property.ElementBuilder;
+import net.fabricmc.fabric.api.datagen.v1.model.property.OverrideBuilder;
+import net.fabricmc.fabric.impl.datagen.FabricModel;
 
 @Mixin(Model.class)
 public class ModelMixin implements FabricModel {
+	@Shadow
+	@Final
+	private Optional<Identifier> parent;
+	@Shadow
+	@Final
+	private Set<TextureKey> requiredTextures;
+	@Shadow
+	@Final
+	private Optional<String> variant;
 	@Unique
-	private final JsonObject display = new JsonObject();
+	private final EnumMap<DisplayBuilder.Position, DisplayBuilder> displays = new EnumMap<>(DisplayBuilder.Position.class);
 	@Unique
-	private final List<JsonObject> elements = new ObjectArrayList<>();
+	private final List<ElementBuilder> elements = new ArrayList<>();
 	@Unique
-	private final List<JsonObject> overrides = new ObjectArrayList<>();
+	private final List<OverrideBuilder> overrides = new ArrayList<>();
 	@Unique
-	@Nullable
-	private GuiLight guiLight = null;
+	private ItemModelBuilder.GuiLight guiLight = null;
 	@Unique
 	private boolean ambientOcclusion = true;
 
 	@Override
-	public Model withDisplay(DisplayBuilder builder) {
-		this.display.add(builder.getPositionKey(), builder.build());
+	public Optional<Identifier> getParent() {
+		return parent;
+	}
+
+	@Override
+	public Set<TextureKey> getRequiredTextures() {
+		return requiredTextures;
+	}
+
+	@Override
+	public Optional<String> getVariant() {
+		return variant;
+	}
+
+	@Override
+	public Model withDisplay(DisplayBuilder.Position position, DisplayBuilder builder) {
+		this.displays.put(position, builder);
 		return (Model) (Object) this;
+	}
+
+	@Override
+	public EnumMap<DisplayBuilder.Position, DisplayBuilder> getDisplayBuilders() {
+		return displays;
 	}
 
 	@Override
 	public Model addElement(ElementBuilder builder) {
-		this.elements.add(builder.build());
+		this.elements.add(builder);
 		return (Model) (Object) this;
+	}
+
+	@Override
+	public List<ElementBuilder> getElementBuilders() {
+		return elements;
 	}
 
 	@Override
 	public Model addOverride(OverrideBuilder builder) {
-		this.overrides.add(builder.build());
+		this.overrides.add(builder);
 		return (Model) (Object) this;
 	}
 
 	@Override
-	public Model setGuiLight(@Nullable GuiLight light) {
-		this.guiLight = light;
+	public List<OverrideBuilder> getOverrideBuilders() {
+		return overrides;
+	}
+
+	@Override
+	public Model setGuiLight(ItemModelBuilder.GuiLight guiLight) {
+		this.guiLight = guiLight;
 		return (Model) (Object) this;
 	}
 
 	@Override
-	public Model setAmbientOcclusion(boolean occlude) {
-		this.ambientOcclusion = occlude;
+	public ItemModelBuilder.GuiLight getGuiLight() {
+		return guiLight;
+	}
+
+	@Override
+	public Model setAmbientOcclusion(boolean ambientOcclusion) {
+		this.ambientOcclusion = ambientOcclusion;
 		return (Model) (Object) this;
+	}
+
+	@Override
+	public boolean getAmbientOcclusion() {
+		return ambientOcclusion;
 	}
 
 	@Inject(method = "method_25851", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void addExtraProperties(Map<TextureKey, Identifier> map, CallbackInfoReturnable<JsonElement> cir, JsonObject jsonObject) {
-		if (!display.keySet().isEmpty()) {
+		if (!displays.isEmpty()) {
+			JsonObject display = new JsonObject();
+			this.displays.forEach((p, d) -> display.add(p.name().toLowerCase(), d.build()));
 			jsonObject.add("display", display);
 		}
 
 		if (!elements.isEmpty()) {
 			JsonArray elements = new JsonArray();
-			this.elements.forEach(elements::add);
+			this.elements.forEach(e -> elements.add(e.build()));
 			jsonObject.add("elements", elements);
 		}
 
 		if (!overrides.isEmpty()) {
 			JsonArray overrides = new JsonArray();
-			this.overrides.forEach(overrides::add);
+			this.overrides.forEach(o -> overrides.add(o.build()));
 			jsonObject.add("overrides", overrides);
 		}
 
@@ -110,7 +165,7 @@ public class ModelMixin implements FabricModel {
 			jsonObject.addProperty("ambientocclusion", false);
 		}
 
-		display.keySet().forEach(display::remove);
+		displays.clear();
 		elements.clear();
 		overrides.clear();
 		guiLight = null;

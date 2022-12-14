@@ -21,8 +21,8 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WI
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_VANILLA_LOOT_TABLE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_OCCLUSION;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_CUSTOM_MODEL;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_EMPTY_MODEL;
-import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.ITEM_WITH_CUSTOM_MODEL;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.ITEM_WITH_NORMAL_ICON;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.ITEM_WITH_SIDE_ICON;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
@@ -78,7 +78,9 @@ import net.minecraft.world.biome.BiomeKeys;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.model.FabricModel;
+import net.fabricmc.fabric.api.datagen.v1.model.builder.BlockModelBuilder;
+import net.fabricmc.fabric.api.datagen.v1.model.builder.ItemModelBuilder;
+import net.fabricmc.fabric.api.datagen.v1.model.property.DisplayBuilder;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
@@ -94,9 +96,6 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DataGeneratorTestEntrypoint.class);
 	private static final ConditionJsonProvider NEVER_LOADED = DefaultResourceConditions.allModsLoaded("a");
 	private static final ConditionJsonProvider ALWAYS_LOADED = DefaultResourceConditions.not(NEVER_LOADED);
-
-	private static final Model CUSTOM_MODEL = FabricModel.item(new Identifier(MOD_ID, "custom"), TextureKey.CONTENT);
-	private static final TextureMap CUSTOM_TEXTURE_MAP = new TextureMap().put(TextureKey.CONTENT, TextureMap.getId(ITEM_WITH_CUSTOM_MODEL));
 
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
@@ -254,13 +253,22 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerSimpleCubeAll(BLOCK_WITH_VANILLA_LOOT_TABLE);
 			blockStateModelGenerator.registerSimpleCubeAll(BLOCK_THAT_DROPS_NOTHING);
 
-			Identifier noOcclusionModel = Models.CUBE_ALL
-					.setAmbientOcclusion(false)
-					.upload(BLOCK_WITHOUT_OCCLUSION,
-							new TextureMap().put(TextureKey.ALL, new Identifier(MOD_ID, "block_without_occlusion")),
-							blockStateModelGenerator.modelCollector);
-			blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(BLOCK_WITHOUT_OCCLUSION,
-					BlockStateVariant.create().put(VariantSettings.MODEL, noOcclusionModel)));
+			// TODO: needs more simplification
+			TextureKey texture1 = TextureKey.of("texture1");
+			TextureKey texture2 = TextureKey.of("texture2");
+			Model customModel = BlockModelBuilder.createNew(new Identifier(MOD_ID, "custom"))
+					.addTextureKey(texture1)
+					.addTextureKey(texture2)
+					.addDisplay(DisplayBuilder.Position.FIXED, new DisplayBuilder()
+							.rotate(45, 45, 45)
+							.scale(2, 2, 2))
+					.noAmbientOcclusion()
+					.build();
+			TextureMap customTextureMap = new TextureMap()
+					.put(texture1, new Identifier(MOD_ID, "block_with_custom_model_1"))
+					.put(texture2, new Identifier(MOD_ID, "block_with_custom_model_2"));
+			blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(BLOCK_WITH_CUSTOM_MODEL,
+					BlockStateVariant.create().put(VariantSettings.MODEL, customModel.upload(BLOCK_WITH_CUSTOM_MODEL, customTextureMap, blockStateModelGenerator.modelCollector))));
 
 			blockStateModelGenerator.registerEmptyModel(BLOCK_WITH_EMPTY_MODEL);
 		}
@@ -268,10 +276,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		public void generateItemModels(ItemModelGenerator itemModelGenerator) {
 			//itemModelGenerator.register(item, Models.SLAB);
+			Model sideItemModel = ItemModelBuilder.copyFrom(Models.GENERATED).setGuiLight(ItemModelBuilder.GuiLight.SIDE).build();
+			itemModelGenerator.register(ITEM_WITH_SIDE_ICON, sideItemModel, TextureMap.layer0(ITEM_WITH_SIDE_ICON));
 			itemModelGenerator.register(ITEM_WITH_NORMAL_ICON, Models.GENERATED);
-			itemModelGenerator.register(ITEM_WITH_SIDE_ICON, Models.GENERATED, TextureMap.layer0(ITEM_WITH_SIDE_ICON), FabricModel.GuiLight.SIDE);
-
-			itemModelGenerator.register(ITEM_WITH_CUSTOM_MODEL, CUSTOM_MODEL, CUSTOM_TEXTURE_MAP);
 		}
 	}
 
@@ -351,7 +358,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		public void generate() {
 			addDrop(SIMPLE_BLOCK);
 			addDrop(BLOCK_WITHOUT_ITEM, drops(SIMPLE_BLOCK));
-			addDrop(BLOCK_WITHOUT_OCCLUSION, drops(SIMPLE_BLOCK));
+			addDrop(BLOCK_WITH_CUSTOM_MODEL, drops(SIMPLE_BLOCK));
 			addDrop(BLOCK_WITH_EMPTY_MODEL, drops(SIMPLE_BLOCK));
 
 			excludeFromStrictValidation(BLOCK_WITHOUT_LOOT_TABLE);

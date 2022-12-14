@@ -32,7 +32,7 @@
     "loom:injected_interfaces": {
       "net/minecraft/class_4910": ["net/fabricmc/fabric/api/datagen/v1/model/FabricBlockStateModelGenerator"],
       "net/minecraft/class_4915": ["net/fabricmc/fabric/api/datagen/v1/model/FabricItemModelGenerator"],
-      "net/minecraft/class_4942": ["net/fabricmc/fabric/api/datagen/v1/model/FabricModel"]
+      "net/minecraft/class_4942": ["net/fabricmc/fabric/impl/datagen/FabricModel"]
     }
   }
 }

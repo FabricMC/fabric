@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.datagen.v1.model;
+package net.fabricmc.fabric.api.datagen.v1.model.property;
+
+import java.util.Objects;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -24,23 +26,9 @@ import org.joml.Vector3d;
  * Instantiate this class in order to provide an optional set of <code>display</code> properties for a given model JSON.
  */
 public class DisplayBuilder {
-	private final Position position;
 	private Vector3d rotation = new Vector3d();
 	private Vector3d translation = new Vector3d();
 	private Vector3d scale = new Vector3d();
-
-	/**
-	 * Create a new display builder with a given display position to apply a transformation for.
-	 *
-	 * @param position The corresponding {@link Position} to apply this display to.
-	 */
-	public DisplayBuilder(Position position) {
-		this.position = position;
-	}
-
-	public String getPositionKey() {
-		return position.name().toLowerCase();
-	}
 
 	/**
 	 * Rotate the model by the given vector.
@@ -121,16 +109,17 @@ public class DisplayBuilder {
 
 	public JsonObject build() {
 		JsonObject display = new JsonObject();
+		Vector3d zero = new Vector3d();
 
-		if (rotation != rotation.zero()) {
+		if (!Objects.equals(rotation, zero)) {
 			display.add("rotation", vecArray(rotation));
 		}
 
-		if (translation != translation.zero()) {
+		if (!Objects.equals(translation, zero)) {
 			display.add("translation", vecArray(translation));
 		}
 
-		if (scale != scale.zero()) {
+		if (!Objects.equals(scale, zero)) {
 			display.add("scale", vecArray(scale));
 		}
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.datagen.v1.model;
+package net.fabricmc.fabric.api.datagen.v1.model.property;
 
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.objects.Object2FloatLinkedOpenHashMap;

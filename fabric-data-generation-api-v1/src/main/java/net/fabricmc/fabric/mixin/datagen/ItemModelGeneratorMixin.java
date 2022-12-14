@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.datagen;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -33,11 +31,7 @@ import net.minecraft.data.client.TextureMap;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.datagen.v1.model.DisplayBuilder;
-import net.fabricmc.fabric.api.datagen.v1.model.ElementBuilder;
 import net.fabricmc.fabric.api.datagen.v1.model.FabricItemModelGenerator;
-import net.fabricmc.fabric.api.datagen.v1.model.FabricModel;
-import net.fabricmc.fabric.api.datagen.v1.model.OverrideBuilder;
 
 @Mixin(ItemModelGenerator.class)
 public class ItemModelGeneratorMixin implements FabricItemModelGenerator {
@@ -53,56 +47,5 @@ public class ItemModelGeneratorMixin implements FabricItemModelGenerator {
 	@Override
 	public void register(Item item, String suffix, Model model, TextureMap textureMap) {
 		model.upload(ModelIds.getItemSubModelId(item, suffix), textureMap, this.writer);
-	}
-
-	@Override
-	public void register(Item item, Model model, TextureMap textureMap, DisplayBuilder... displays) {
-		Arrays.stream(displays).forEach(model::withDisplay);
-		model.upload(ModelIds.getItemModelId(item), textureMap, this.writer);
-	}
-
-	@Override
-	public void register(Item item, Model model, DisplayBuilder... displays) {
-		register(item, model, TextureMap.layer0(item), displays);
-	}
-
-	@Override
-	public void register(Item item, Model model, TextureMap textureMap, ElementBuilder... elements) {
-		Arrays.stream(elements).forEach(model::addElement);
-		model.upload(ModelIds.getItemModelId(item), textureMap, this.writer);
-	}
-
-	@Override
-	public void register(Item item, Model model, ElementBuilder... elements) {
-		register(item, model, TextureMap.layer0(item), elements);
-	}
-
-	@Override
-	public void register(Item item, Model model, TextureMap textureMap, OverrideBuilder... overrides) {
-		Arrays.stream(overrides).forEach(model::addOverride);
-		model.upload(ModelIds.getItemModelId(item), textureMap, this.writer);
-	}
-
-	@Override
-	public void register(Item item, Model model, OverrideBuilder... overrides) {
-		register(item, model, TextureMap.layer0(item), overrides);
-	}
-
-	@Override
-	public void register(Item item, Model model, TextureMap textureMap, FabricModel.GuiLight guiLight) {
-		model.setGuiLight(guiLight).upload(ModelIds.getItemModelId(item), textureMap, this.writer);
-	}
-
-	@Override
-	public void register(Item item, Model model, FabricModel.GuiLight guiLight) {
-		register(item, model, TextureMap.layer0(item), guiLight);
-	}
-
-	@Override
-	public void register(Item item, Model model, TextureMap textureMap, FabricModel.GuiLight guiLight, List<DisplayBuilder> displays, List<ElementBuilder> elements, List<OverrideBuilder> overrides) {
-		displays.forEach(model::withDisplay);
-		elements.forEach(model::addElement);
-		overrides.forEach(model::addOverride);
-		model.setGuiLight(guiLight).upload(ModelIds.getItemModelId(item), textureMap, this.writer);
 	}
 }
