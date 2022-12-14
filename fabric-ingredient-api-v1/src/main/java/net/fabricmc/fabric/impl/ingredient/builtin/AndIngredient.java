@@ -29,31 +29,36 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.ingredient.v1.CustomIngredientSerializer;
 
 @ApiStatus.Internal
-public class OrIngredient extends CombinedIngredient {
-	public static final CustomIngredientSerializer<OrIngredient> SERIALIZER =
-			new CombinedIngredient.Serializer<>(new Identifier("fabric", "or"), OrIngredient::new);
+public class AndIngredient extends CombinedIngredient {
+	public static final CustomIngredientSerializer<AndIngredient> SERIALIZER =
+			new Serializer<>(new Identifier("fabric", "and"), AndIngredient::new);
 
-	public OrIngredient(Ingredient[] ingredients) {
+	public AndIngredient(Ingredient[] ingredients) {
 		super(ingredients);
 	}
 
 	@Override
 	public boolean test(ItemStack stack) {
 		for (Ingredient ingredient : ingredients) {
-			if (ingredient.test(stack)) {
-				return true;
+			if (!ingredient.test(stack)) {
+				return false;
 			}
 		}
 
-		return false;
+		return true;
 	}
 
 	@Override
 	public ItemStack[] getMatchingStacks() {
 		List<ItemStack> previewStacks = new ArrayList<>();
 
-		for (Ingredient ingredient : ingredients) {
-			previewStacks.addAll(Arrays.asList(ingredient.getMatchingStacks()));
+		if (ingredients.length > 0) {
+			previewStacks.addAll(Arrays.asList(ingredients[0].getMatchingStacks()));
+		}
+
+		for (int i = 1; i < ingredients.length; ++i) {
+			Ingredient ing = ingredients[i];
+			previewStacks.removeIf(stack -> !ing.test(stack));
 		}
 
 		return previewStacks.toArray(ItemStack[]::new);

@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.impl.ingredient;
 
 import java.util.Map;
@@ -17,6 +33,10 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.ingredient.v1.CustomIngredient;
 import net.fabricmc.fabric.api.ingredient.v1.CustomIngredientSerializer;
+import net.fabricmc.fabric.impl.ingredient.builtin.AndIngredient;
+import net.fabricmc.fabric.impl.ingredient.builtin.DifferenceIngredient;
+import net.fabricmc.fabric.impl.ingredient.builtin.NbtIngredient;
+import net.fabricmc.fabric.impl.ingredient.builtin.OrIngredient;
 
 @ApiStatus.Internal
 public class CustomIngredientImpl extends Ingredient {
@@ -42,6 +62,13 @@ public class CustomIngredientImpl extends Ingredient {
 		return REGISTERED_SERIALIZERS.get(identifier);
 	}
 
+	static {
+		CustomIngredientSerializer.register(AndIngredient.SERIALIZER);
+		CustomIngredientSerializer.register(OrIngredient.SERIALIZER);
+		CustomIngredientSerializer.register(DifferenceIngredient.SERIALIZER);
+		CustomIngredientSerializer.register(NbtIngredient.SERIALIZER);
+	}
+
 	// Actual custom ingredient logic
 
 	private final CustomIngredient customIngredient;
@@ -53,11 +80,6 @@ public class CustomIngredientImpl extends Ingredient {
 	}
 
 	@Override
-	public boolean isCustom() {
-		return true;
-	}
-
-	@Override
 	public CustomIngredient getCustomIngredient() {
 		return customIngredient;
 	}
@@ -65,6 +87,15 @@ public class CustomIngredientImpl extends Ingredient {
 	@Override
 	public boolean requiresTesting() {
 		return customIngredient.requiresTesting();
+	}
+
+	@Override
+	public ItemStack[] getMatchingStacks() {
+		if (this.matchingStacks == null) {
+			this.matchingStacks = customIngredient.getMatchingStacks();
+		}
+
+		return this.matchingStacks;
 	}
 
 	@Override
@@ -92,7 +123,8 @@ public class CustomIngredientImpl extends Ingredient {
 		// We don't want to resolve the matching stacks,
 		// as this might cause the ingredient to use outdated tags when it's done too early.
 		// So we just return false when the matching stacks haven't been resolved yet (i.e. when the field is null).
-		return matchingStacks == null || matchingStacks.length == 0;
+		// TODO: this is a bit hacky, can we not do better?
+		return matchingStacks != null && matchingStacks.length == 0;
 	}
 
 	private <T> T coerceIngredient() {

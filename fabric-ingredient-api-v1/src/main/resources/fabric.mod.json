@@ -15,11 +15,6 @@
   "authors": [
     "FabricMC"
   ],
-  "entrypoints": {
-    "main": [
-      "net.fabricmc.fabric.impl.ingredient.IngredientApiInitializer"
-    ]
-  },
   "mixins": [
     "fabric-ingredient-api-v1.mixins.json"
   ],

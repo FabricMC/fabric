@@ -43,12 +43,14 @@ import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
@@ -69,6 +71,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
+import net.fabricmc.fabric.api.ingredient.v1.DefaultCustomIngredients;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 
@@ -105,6 +108,56 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLD_INGOT).input(Items.DIRT).criterion("has_dirt", conditionsFromItem(Items.DIRT)).offerTo(withConditions(exporter, NEVER_LOADED));
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND).input(Items.STICK).criterion("has_stick", conditionsFromItem(Items.STICK)).offerTo(withConditions(exporter, ALWAYS_LOADED));
+
+			/* Generate test recipes using all types of custom ingredients for easy testing */
+
+			// Test partial NBT
+			// 1 undamaged pickaxe + 8 pickaxes with any damage value to test shapeless matching logic.
+			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND_BLOCK)
+					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
+					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
+					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
+					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
+					.input(DefaultCustomIngredients.nbt(new ItemStack(Items.DIAMOND_PICKAXE), false))
+					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
+					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
+					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
+					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
+					.criterion("has_pickaxe", conditionsFromItem(Items.DIAMOND_PICKAXE))
+					.offerTo(exporter);
+
+			// Test strict NBT
+			ItemStack appleWithGoldenName = new ItemStack(Items.APPLE);
+			appleWithGoldenName.setCustomName(Text.literal("Golden Apple"));
+			appleWithGoldenName.setRepairCost(0);
+			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLDEN_APPLE)
+					.input(DefaultCustomIngredients.nbt(appleWithGoldenName, true))
+					.criterion("has_apple", conditionsFromItem(Items.APPLE))
+					.offerTo(exporter);
+
+			// Test AND
+			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.TORCH)
+					// charcoal only
+					.input(DefaultCustomIngredients.and(Ingredient.fromTag(ItemTags.COALS), Ingredient.ofItems(Items.CHARCOAL)))
+					.criterion("has_charcoal", conditionsFromItem(Items.CHARCOAL))
+					.offerTo(exporter);
+
+			// Test OR
+			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLD_BLOCK)
+					.input(DefaultCustomIngredients.or(Ingredient.ofItems(Items.GOLDEN_PICKAXE), Ingredient.ofItems(Items.GOLDEN_SHOVEL)))
+					.criterion("has_pickaxe", conditionsFromItem(Items.GOLDEN_PICKAXE))
+					.criterion("has_shovel", conditionsFromItem(Items.GOLDEN_SHOVEL))
+					.offerTo(exporter);
+
+			// Test difference
+			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.BEACON)
+					.input(DefaultCustomIngredients.difference(
+							DefaultCustomIngredients.or(
+									Ingredient.fromTag(ItemTags.BEACON_PAYMENT_ITEMS),
+									Ingredient.ofItems(Items.COPPER_INGOT)),
+							Ingredient.ofItems(Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND)))
+					.criterion("has_payment", conditionsFromTag(ItemTags.BEACON_PAYMENT_ITEMS))
+					.offerTo(exporter);
 		}
 	}
 
@@ -179,7 +232,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup registries) {
 			getOrCreateTagBuilder(BlockTags.FIRE).add(SIMPLE_BLOCK);
-			getOrCreateTagBuilder(BlockTags.ANVIL).setReplace(true).add(SIMPLE_BLOCK);
+			getOrCreateTagBuilder(BlockTags.DIRT).setReplace(true).add(SIMPLE_BLOCK);
 			getOrCreateTagBuilder(BlockTags.ACACIA_LOGS).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
 		}
 	}
@@ -191,7 +244,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup registries) {
-			copy(BlockTags.ANVIL, ItemTags.ANVIL);
+			copy(BlockTags.DIRT, ItemTags.DIRT);
 		}
 	}
 

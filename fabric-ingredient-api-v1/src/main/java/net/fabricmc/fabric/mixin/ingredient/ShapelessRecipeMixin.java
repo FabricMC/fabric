@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.mixin.ingredient;
 
 import java.util.ArrayList;
@@ -16,6 +32,7 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.ShapelessRecipe;
+import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
@@ -31,7 +48,7 @@ public class ShapelessRecipeMixin {
 	private boolean fabric_requiresTesting = false;
 
 	@Inject(at = @At("RETURN"), method = "<init>")
-	private void cacheRequiresTesting(Identifier id, String group, ItemStack output, DefaultedList<Ingredient> input, CallbackInfo ci) {
+	private void cacheRequiresTesting(Identifier id, String group, CraftingRecipeCategory category, ItemStack output, DefaultedList<Ingredient> input, CallbackInfo ci) {
 		for (Ingredient ingredient : input) {
 			if (ingredient.requiresTesting()) {
 				fabric_requiresTesting = true;
