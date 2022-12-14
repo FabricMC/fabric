@@ -56,9 +56,7 @@ public abstract class FabricSoundProvider implements DataProvider {
 	 * Implement this method to register sounds.
 	 *
 	 * <p>Call {@link SoundGenerator#add(SoundEvent, SoundEntry...)} to add a list of sound entries
-	 * for a given {@link SoundEvent}. An optional subtitle to use for the event can be provided in the form of an
-	 * existing translation key for this subtitle, along with the option to <code>replace</code> the sound entries for
-	 * this event with your own via resource pack, if specifying an existing event from some other namespace.
+	 * for a given {@link SoundEvent}.
 	 */
 	public abstract void generateSounds(SoundGenerator soundGenerator);
 
@@ -113,16 +111,52 @@ public abstract class FabricSoundProvider implements DataProvider {
 	@ApiStatus.NonExtendable
 	@FunctionalInterface
 	public interface SoundGenerator {
+		/**
+		 * Adds an individual {@link SoundEvent} and its respective sounds to your mod's <code>sounds.json</code> file.
+		 *
+		 * @param sound The {@link SoundEvent} to add an entry for.
+		 * @param replace Set this to <code>true</code> if this entry corresponds to a sound event from vanilla
+		 *                Minecraft or some other mod's namespace, in order to replace the default sounds from the
+		 *                original namespace's sounds file via your own namespace's resource pack.
+		 * @param subtitle An optional subtitle to use for the event, given as a translation key for the subtitle.
+		 * @param entries A list of {@link SoundEntry} instances from which to generate individual sound entry data for
+		 *                this event.
+		 */
 		void add(SoundEvent sound, boolean replace, @Nullable String subtitle, SoundEntry... entries);
 
+		/**
+		 * Adds an individual {@link SoundEvent} and its respective sounds to your mod's <code>sounds.json</code> file.
+		 *
+		 * @param sound The {@link SoundEvent} to add an entry for.
+		 * @param replace Set this to <code>true</code> if this entry corresponds to a sound event from vanilla
+		 *                Minecraft or some other mod's namespace, in order to replace the default sounds from the
+		 *                original namespace's sounds file via your own namespace's resource pack.
+		 * @param entries A list of {@link SoundEntry} instances from which to generate individual sound entry data for
+		 *                this event.
+		 */
 		default void add(SoundEvent sound, boolean replace, SoundEntry... entries) {
 			add(sound, replace, null, entries);
 		}
 
+		/**
+		 * Adds an individual {@link SoundEvent} and its respective sounds to your mod's <code>sounds.json</code> file.
+		 *
+		 * @param sound The {@link SoundEvent} to add an entry for.
+		 * @param subtitle An optional subtitle to use for the event, given as a translation key for the subtitle.
+		 * @param entries A list of {@link SoundEntry} instances from which to generate individual sound entry data for
+		 *                this event.
+		 */
 		default void add(SoundEvent sound, @Nullable String subtitle, SoundEntry... entries) {
 			add(sound, false, subtitle, entries);
 		}
 
+		/**
+		 * Adds an individual {@link SoundEvent} and its respective sounds to your mod's <code>sounds.json</code> file.
+		 *
+		 * @param sound The {@link SoundEvent} to add an entry for.
+		 * @param entries A list of {@link SoundEntry} instances from which to generate individual sound entry data for
+		 *                this event.
+		 */
 		default void add(SoundEvent sound, SoundEntry... entries) {
 			add(sound, false, null, entries);
 		}
