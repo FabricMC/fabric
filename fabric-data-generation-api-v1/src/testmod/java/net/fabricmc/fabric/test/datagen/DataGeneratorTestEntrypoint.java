@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.datagen;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_ITEM;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.PARTICLE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
 
@@ -67,6 +68,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricParticleProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricSoundProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -92,6 +94,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		pack.addProvider(ExistingEnglishLangProvider::new);
 		pack.addProvider(JapaneseLangProvider::new);
 		pack.addProvider(TestSoundProvider::new);
+		pack.addProvider(TestParticleProvider::new);
 
 		TestBlockTagProvider blockTagProvider = pack.addProvider(TestBlockTagProvider::new);
 		pack.addProvider((output, registries) -> new TestItemTagProvider(output, registries, blockTagProvider));
@@ -285,6 +288,17 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 					SoundEntryBuilder.event(new Identifier(MOD_ID, "replacement_event")).setWeight(2).build());
 			soundGenerator.add(SoundEvents.BLOCK_DEEPSLATE_BREAK, true,
 					SoundEntryBuilder.event(new Identifier(MOD_ID, "replacement_event")).build());
+		}
+	}
+
+	private static class TestParticleProvider extends FabricParticleProvider {
+		private TestParticleProvider(FabricDataOutput dataOutput) {
+			super(dataOutput);
+		}
+
+		@Override
+		protected void generateParticleTextures(ParticleGenerator particleGenerator) {
+			particleGenerator.add(PARTICLE, new Identifier(MOD_ID, "particle_texture_1"), new Identifier(MOD_ID, "particle_texture_2"));
 		}
 	}
 }

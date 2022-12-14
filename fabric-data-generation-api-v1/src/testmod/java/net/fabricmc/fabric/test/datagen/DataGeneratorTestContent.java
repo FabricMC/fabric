@@ -24,14 +24,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 
 public class DataGeneratorTestContent implements ModInitializer {
 	public static final String MOD_ID = "fabric-data-gen-api-v1-testmod";
@@ -45,6 +47,8 @@ public class DataGeneratorTestContent implements ModInitializer {
 			.displayName(Text.literal("Data gen test"))
 			.build();
 
+	public static DefaultParticleType PARTICLE;
+
 	@Override
 	public void onInitialize() {
 		SIMPLE_BLOCK = createBlock("simple_block", true);
@@ -52,6 +56,9 @@ public class DataGeneratorTestContent implements ModInitializer {
 		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false);
 
 		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.add(SIMPLE_BLOCK));
+
+		PARTICLE = FabricParticleTypes.simple();
+		Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "particle"), PARTICLE);
 	}
 
 	private static Block createBlock(String name, boolean hasItem) {
