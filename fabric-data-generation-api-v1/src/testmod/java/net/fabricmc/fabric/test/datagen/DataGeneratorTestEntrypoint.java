@@ -278,8 +278,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generateSounds(SoundBuilder soundBuilder) {
-			soundBuilder.add(SoundEvents.BLOCK_METAL_BREAK, true, new SoundEntry(new Identifier(MOD_ID, "replacement_sound_1")));
-			soundBuilder.add(SoundEvents.BLOCK_METAL_BREAK, true, new SoundEntry(new Identifier(MOD_ID, "replacement_sound_2"), 0.5f, 0.5f, 2, false, 16, false, Type.SOUND));
+			soundBuilder.add(SoundEvents.BLOCK_METAL_BREAK, true,
+					new SoundEntry(new Identifier(MOD_ID, "replacement_sound_1")),
+					new SoundEntry(new Identifier(MOD_ID, "replacement_sound_2"), 0.5f, 0.5f, 2, false, 16, false, Type.SOUND));
 		}
 	}
 }
