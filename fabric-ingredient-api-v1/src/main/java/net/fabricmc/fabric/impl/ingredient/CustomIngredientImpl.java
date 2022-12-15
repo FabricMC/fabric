@@ -27,7 +27,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 
@@ -104,17 +103,11 @@ public class CustomIngredientImpl extends Ingredient {
 	}
 
 	@Override
-	public void write(PacketByteBuf buf) {
-		buf.writeVarInt(PACKET_MARKER);
-		buf.writeIdentifier(customIngredient.getSerializer().getIdentifier());
-		customIngredient.getSerializer().write(buf, coerceIngredient());
-	}
-
-	@Override
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public JsonElement toJson() {
 		JsonObject json = new JsonObject();
 		json.addProperty(TYPE_KEY, customIngredient.getSerializer().getIdentifier().toString());
-		customIngredient.getSerializer().write(json, coerceIngredient());
+		((CustomIngredientSerializer) customIngredient.getSerializer()).write(json, customIngredient);
 		return json;
 	}
 
@@ -125,9 +118,5 @@ public class CustomIngredientImpl extends Ingredient {
 		// So we just return false when the matching stacks haven't been resolved yet (i.e. when the field is null).
 		// TODO: this is a bit hacky, can we not do better?
 		return matchingStacks != null && matchingStacks.length == 0;
-	}
-
-	private <T> T coerceIngredient() {
-		return (T) customIngredient;
 	}
 }

@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.item.ItemStack;
@@ -30,6 +31,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 
+import net.fabricmc.fabric.api.ingredient.v1.CustomIngredient;
 import net.fabricmc.fabric.api.ingredient.v1.CustomIngredientSerializer;
 import net.fabricmc.fabric.api.ingredient.v1.FabricIngredient;
 import net.fabricmc.fabric.impl.ingredient.CustomIngredientImpl;
@@ -72,6 +74,27 @@ public class IngredientMixin implements FabricIngredient {
 	private static void injectEntryFromJson(JsonObject obj, CallbackInfoReturnable<?> cir) {
 		if (obj.has(CustomIngredientImpl.TYPE_KEY)) {
 			throw new IllegalArgumentException("Custom ingredient cannot be used inside an array ingredient. You can replace the array by a fabric:or ingredient.");
+		}
+	}
+
+	@Inject(
+			at = @At(
+					value = "INVOKE",
+					target = "net/minecraft/network/PacketByteBuf.writeCollection (Ljava/util/Collection;Lnet/minecraft/network/PacketByteBuf$PacketWriter;)V"
+			),
+			method = "write",
+			cancellable = true
+	)
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	private void injectWrite(PacketByteBuf buf, CallbackInfo ci) {
+		// Done here instead of writing the ingredient in the subclass for compat with faux ingredient extension API
+		CustomIngredient customIngredient = getCustomIngredient();
+
+		if (customIngredient != null) {
+			buf.writeVarInt(CustomIngredientImpl.PACKET_MARKER);
+			buf.writeIdentifier(customIngredient.getSerializer().getIdentifier());
+			((CustomIngredientSerializer) customIngredient.getSerializer()).write(buf, customIngredient);
+			ci.cancel();
 		}
 	}
 
