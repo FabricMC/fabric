@@ -261,7 +261,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 					.addTextureKey(texture2)
 					.addDisplay(DisplayBuilder.Position.FIXED, new DisplayBuilder()
 							.rotate(45, 45, 45)
-							.scale(2, 2, 2))
+							.scale(2))
 					.noAmbientOcclusion()
 					.build();
 			TextureMap customTextureMap = new TextureMap()

@@ -89,6 +89,16 @@ public class DisplayBuilder {
 	}
 
 	/**
+	 * Scale the model by the given scale factor.
+	 *
+	 * @param f The constant factor to scale the model by in all three cardinal directions.
+	 * @return The current newly-modified {@link DisplayBuilder} instance.
+	 */
+	public DisplayBuilder scale(double f) {
+		return scale(new Vector3d(f));
+	}
+
+	/**
 	 * Scale the model by the given vector.
 	 *
 	 * @param vec A scale vector.
@@ -128,7 +138,7 @@ public class DisplayBuilder {
 
 	/**
 	 * The place where a given set of display transformations should be applied. <code>FIXED</code> refers to the item
-	 * model as attached to an <em>item frame</em>, while the others are as given.
+	 * model as attached to an <em>item frame</em>, while the others are as their name implies.
 	 */
 	public enum Position {
 		THIRDPERSON_RIGHTHAND,

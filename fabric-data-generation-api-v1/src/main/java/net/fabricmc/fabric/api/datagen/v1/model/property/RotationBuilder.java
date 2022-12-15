@@ -20,12 +20,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.joml.Vector3d;
 
+import net.minecraft.util.math.Direction;
+
 /**
  * Instantiate this class in order to provide an optional <code>rotation</code> to an element of a JSON model.
  */
 public class RotationBuilder {
 	private final Vector3d origin;
-	private final Axis axis;
+	private final Direction.Axis axis;
 	private final float angle;
 	private final boolean rescale;
 
@@ -38,7 +40,7 @@ public class RotationBuilder {
 	 * @param rescale Whether to scale the rotated faces across the whole block. Internally defaults to
 	 *                   <code>false</code>.
 	 */
-	public RotationBuilder(Vector3d origin, Axis axis, float angle, boolean rescale) {
+	public RotationBuilder(Vector3d origin, Direction.Axis axis, float angle, boolean rescale) {
 		this.origin = origin;
 		this.axis = axis;
 		this.angle = angle;
@@ -52,7 +54,7 @@ public class RotationBuilder {
 	 * @param axis The coordinate axis to rotate around (either X, Y or Z).
 	 * @param angle The angle of rotation.
 	 */
-	public RotationBuilder(Vector3d origin, Axis axis, float angle) {
+	public RotationBuilder(Vector3d origin, Direction.Axis axis, float angle) {
 		this(origin, axis, angle, false);
 	}
 
@@ -67,7 +69,7 @@ public class RotationBuilder {
 	 * @param rescale Whether to scale the rotated faces across the whole block. Internally defaults to
 	 *                   <code>false</code>.
 	 */
-	public RotationBuilder(double x, double y, double z, Axis axis, float angle, boolean rescale) {
+	public RotationBuilder(double x, double y, double z, Direction.Axis axis, float angle, boolean rescale) {
 		this(new Vector3d(x, y, z), axis, angle, rescale);
 	}
 
@@ -80,15 +82,8 @@ public class RotationBuilder {
 	 * @param axis The coordinate axis to rotate around (either X, Y or Z).
 	 * @param angle The angle of rotation.
 	 */
-	public RotationBuilder(double x, double y, double z, Axis axis, float angle) {
+	public RotationBuilder(double x, double y, double z, Direction.Axis axis, float angle) {
 		this(new Vector3d(x, y, z), axis, angle, false);
-	}
-
-	/**
-	 * The coordinate axis to apply a rotation around, as provided by a rotation builder.
-	 */
-	public enum Axis {
-		X, Y, Z
 	}
 
 	public JsonObject build() {
@@ -100,7 +95,7 @@ public class RotationBuilder {
 		origin.add(this.origin.z());
 		rotation.add("origin", origin);
 
-		rotation.addProperty("axis", axis.name().toLowerCase());
+		rotation.addProperty("axis", axis.getName());
 		rotation.addProperty("angle", angle);
 
 		if (rescale) {
