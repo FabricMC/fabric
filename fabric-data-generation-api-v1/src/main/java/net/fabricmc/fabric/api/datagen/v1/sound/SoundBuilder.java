@@ -17,22 +17,18 @@
 package net.fabricmc.fabric.api.datagen.v1.sound;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
-import net.minecraft.client.sound.Sound;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 /**
- * Utility class for building a {@link Sound} with a given set of properties, without necessarily passing them all
- * as parameters.
+ * Utility class for building a sound entry with a given set of properties, without necessarily passing them all as parameters.
  */
-@Environment(EnvType.CLIENT)
 public class SoundBuilder {
 	private final Identifier name;
-	private final Sound.RegistrationType event;
+	private final boolean event;
 
 	private float volume = 1;
 	private float pitch = 1;
@@ -41,9 +37,13 @@ public class SoundBuilder {
 	private int attenuationDistance = 16;
 	private boolean preload = false;
 
-	private SoundBuilder(Identifier name, Sound.RegistrationType event) {
+	private SoundBuilder(Identifier name, boolean event) {
 		this.name = name;
 		this.event = event;
+	}
+
+	public Identifier getName() {
+		return name;
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class SoundBuilder {
 	 * @param name The name of the sound as a namespaced ID with relative folder path.
 	 */
 	public static SoundBuilder sound(Identifier name) {
-		return new SoundBuilder(name, Sound.RegistrationType.FILE);
+		return new SoundBuilder(name, false);
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class SoundBuilder {
 	 * @param name The ID of the sound event.
 	 */
 	public static SoundBuilder event(Identifier name) {
-		return new SoundBuilder(name, Sound.RegistrationType.SOUND_EVENT);
+		return new SoundBuilder(name, true);
 	}
 
 	/**
@@ -121,10 +121,46 @@ public class SoundBuilder {
 		return this;
 	}
 
-	/**
-	 * Return a finalised {@link Sound} instance to generate data from.
-	 */
-	public Sound build() {
-		return new Sound(name.toString(), ConstantFloatProvider.create(volume), ConstantFloatProvider.create(pitch), weight, event, stream, preload, attenuationDistance);
+	private boolean allDefaults() {
+		return volume == 1 && pitch == 1 && weight == 1 && attenuationDistance == 16 && !stream && !preload && !event;
+	}
+
+	public JsonElement build() {
+		if (allDefaults()) {
+			return new JsonPrimitive(name.toString());
+		} else {
+			JsonObject soundEntry = new JsonObject();
+			soundEntry.addProperty("name", name.toString());
+
+			if (volume != 1) {
+				soundEntry.addProperty("volume", volume);
+			}
+
+			if (pitch != 1) {
+				soundEntry.addProperty("pitch", pitch);
+			}
+
+			if (weight != 1) {
+				soundEntry.addProperty("weight", weight);
+			}
+
+			if (stream) {
+				soundEntry.addProperty("stream", true);
+			}
+
+			if (attenuationDistance != 16) {
+				soundEntry.addProperty("attenuation_distance", attenuationDistance);
+			}
+
+			if (preload) {
+				soundEntry.addProperty("preload", true);
+			}
+
+			if (event) {
+				soundEntry.addProperty("type", "event");
+			}
+
+			return soundEntry;
+		}
 	}
 }

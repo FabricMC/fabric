@@ -55,6 +55,7 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
@@ -69,8 +70,10 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricParticleProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricSoundProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.sound.SoundBuilder;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 
@@ -91,6 +94,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		pack.addProvider(ExistingEnglishLangProvider::new);
 		pack.addProvider(JapaneseLangProvider::new);
 		pack.addProvider(TestParticleProvider::new);
+		pack.addProvider(TestSoundProvider::new);
 
 		TestBlockTagProvider blockTagProvider = pack.addProvider(TestBlockTagProvider::new);
 		pack.addProvider((output, registries) -> new TestItemTagProvider(output, registries, blockTagProvider));
@@ -279,6 +283,22 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		protected void generateParticleTextures(ParticleGenerator particleGenerator) {
 			particleGenerator.add(PARTICLE, new Identifier(MOD_ID, "particle_texture_1"), new Identifier(MOD_ID, "particle_texture_2"));
+		}
+	}
+
+	private static class TestSoundProvider extends FabricSoundProvider {
+		private TestSoundProvider(FabricDataOutput dataOutput) {
+			super(dataOutput);
+		}
+
+		@Override
+		public void generateSounds(SoundGenerator soundGenerator) {
+			soundGenerator.add(SoundEvents.BLOCK_METAL_BREAK, true,
+					SoundBuilder.sound(new Identifier(MOD_ID, "replacement_sound_1")),
+					SoundBuilder.sound(new Identifier(MOD_ID, "replacement_sound_2")).setVolume(0.5f).setPitch(0.5f),
+					SoundBuilder.event(new Identifier(MOD_ID, "replacement_event")).setWeight(2));
+			soundGenerator.add(SoundEvents.BLOCK_DEEPSLATE_BREAK, true,
+					SoundBuilder.event(new Identifier(MOD_ID, "replacement_event")));
 		}
 	}
 }
