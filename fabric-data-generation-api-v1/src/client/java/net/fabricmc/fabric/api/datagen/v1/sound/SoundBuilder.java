@@ -18,15 +18,21 @@ package net.fabricmc.fabric.api.datagen.v1.sound;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.client.sound.Sound;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 /**
- * Utility class for building a {@link SoundEntry} with a given set of properties, without necessarily passing them all
+ * Utility class for building a {@link Sound} with a given set of properties, without necessarily passing them all
  * as parameters.
  */
-public class SoundEntryBuilder {
+@Environment(EnvType.CLIENT)
+public class SoundBuilder {
 	private final Identifier name;
-	private final boolean event;
+	private final Sound.RegistrationType event;
 
 	private float volume = 1;
 	private float pitch = 1;
@@ -35,7 +41,7 @@ public class SoundEntryBuilder {
 	private int attenuationDistance = 16;
 	private boolean preload = false;
 
-	private SoundEntryBuilder(Identifier name, boolean event) {
+	private SoundBuilder(Identifier name, Sound.RegistrationType event) {
 		this.name = name;
 		this.event = event;
 	}
@@ -45,8 +51,8 @@ public class SoundEntryBuilder {
 	 *
 	 * @param name The name of the sound as a namespaced ID with relative folder path.
 	 */
-	public static SoundEntryBuilder sound(Identifier name) {
-		return new SoundEntryBuilder(name, false);
+	public static SoundBuilder sound(Identifier name) {
+		return new SoundBuilder(name, Sound.RegistrationType.FILE);
 	}
 
 	/**
@@ -54,15 +60,15 @@ public class SoundEntryBuilder {
 	 *
 	 * @param name The ID of the sound event.
 	 */
-	public static SoundEntryBuilder event(Identifier name) {
-		return new SoundEntryBuilder(name, true);
+	public static SoundBuilder event(Identifier name) {
+		return new SoundBuilder(name, Sound.RegistrationType.SOUND_EVENT);
 	}
 
 	/**
 	 * Sets the volume that the sound should play at as a number between <code>0.0</code> and <code>1.0</code>. Defaults
 	 * to <code>1.0</code>.
 	 */
-	public SoundEntryBuilder setVolume(float volume) {
+	public SoundBuilder setVolume(float volume) {
 		Preconditions.checkArgument(volume >= 0 && volume <= 1);
 		this.volume = volume;
 		return this;
@@ -71,7 +77,7 @@ public class SoundEntryBuilder {
 	/**
 	 * Sets the pitch that the sound should play at. Note that this is internally clamped in-game between 0.5 and 2.0.
 	 */
-	public SoundEntryBuilder setPitch(float pitch) {
+	public SoundBuilder setPitch(float pitch) {
 		Preconditions.checkArgument(pitch > 0);
 		this.pitch = pitch;
 		return this;
@@ -81,7 +87,7 @@ public class SoundEntryBuilder {
 	 * Sets how much likelier it should be for this sound to play. For example, setting this to 2 will mean that this
 	 * sound is twice as likely to play for this event.
 	 */
-	public SoundEntryBuilder setWeight(int weight) {
+	public SoundBuilder setWeight(int weight) {
 		Preconditions.checkArgument(weight >= 0);
 		this.weight = weight;
 		return this;
@@ -92,7 +98,7 @@ public class SoundEntryBuilder {
 	 * than a couple of seconds, such as music tracks, in order to minimise lag. If set, only 4 instances of this sound
 	 * can play in-game at once.
 	 */
-	public SoundEntryBuilder stream() {
+	public SoundBuilder stream() {
 		this.stream = true;
 		return this;
 	}
@@ -100,7 +106,7 @@ public class SoundEntryBuilder {
 	/**
 	 * Sets the reduction rate of this sound depending on distance from the source. Defaults to 16.
 	 */
-	public SoundEntryBuilder setAttenuationDistance(int attenuationDistance) {
+	public SoundBuilder setAttenuationDistance(int attenuationDistance) {
 		Preconditions.checkArgument(attenuationDistance >= 0);
 		this.attenuationDistance = attenuationDistance;
 		return this;
@@ -110,15 +116,15 @@ public class SoundEntryBuilder {
 	 * Dictates that this sound should be loaded in advance when loading the resource pack containing it rather than
 	 * when the sound itself plays.
 	 */
-	public SoundEntryBuilder preload() {
+	public SoundBuilder preload() {
 		this.preload = true;
 		return this;
 	}
 
 	/**
-	 * Return a finalised {@link SoundEntry} instance to generate data from.
+	 * Return a finalised {@link Sound} instance to generate data from.
 	 */
-	public SoundEntry build() {
-		return new SoundEntry(name, volume, pitch, weight, stream, attenuationDistance, preload, event);
+	public Sound build() {
+		return new Sound(name.toString(), ConstantFloatProvider.create(volume), ConstantFloatProvider.create(pitch), weight, event, stream, preload, attenuationDistance);
 	}
 }

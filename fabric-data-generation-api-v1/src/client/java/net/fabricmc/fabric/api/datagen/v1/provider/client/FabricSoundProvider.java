@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.datagen.v1.provider;
+package net.fabricmc.fabric.api.datagen.v1.provider.client;
 
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -26,19 +26,23 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.sound.Sound;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
+import net.minecraft.util.math.floatprovider.FloatSupplier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.sound.SoundEntry;
 
 /**
  * Extend this class and implement {@link FabricSoundProvider#generateSounds(SoundGenerator)}.
@@ -46,6 +50,8 @@ import net.fabricmc.fabric.api.datagen.v1.sound.SoundEntry;
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
 public abstract class FabricSoundProvider implements DataProvider {
+
+	private static final FloatSupplier ONE = ConstantFloatProvider.create(1.0F);
 	protected final FabricDataOutput dataOutput;
 
 	protected FabricSoundProvider(FabricDataOutput dataOutput) {
@@ -55,7 +61,7 @@ public abstract class FabricSoundProvider implements DataProvider {
 	/**
 	 * Implement this method to register sounds.
 	 *
-	 * <p>Call {@link SoundGenerator#add(SoundEvent, SoundEntry...)} to add a list of sound entries
+	 * <p>Call {@link SoundGenerator#add(SoundEvent, Sound...)} to add a list of sound entries
 	 * for a given {@link SoundEvent}.
 	 */
 	public abstract void generateSounds(SoundGenerator soundGenerator);
@@ -68,7 +74,7 @@ public abstract class FabricSoundProvider implements DataProvider {
 			Objects.requireNonNull(sound);
 			Objects.requireNonNull(entries);
 
-			List<Identifier> keys = Arrays.stream(entries).map(SoundEntry::name).toList();
+			List<Identifier> keys = Arrays.stream(entries).map(Sound::getIdentifier).toList();
 
 			if (!keys.stream().filter(i -> Collections.frequency(keys, i) > 1).toList().isEmpty()) {
 				throw new RuntimeException("Entries for sound event " + sound.getId() + " contain duplicate sound names. Event will be omitted.");
@@ -77,7 +83,7 @@ public abstract class FabricSoundProvider implements DataProvider {
 			JsonObject soundEventData = new JsonObject();
 			JsonArray soundEntries = new JsonArray();
 
-			Arrays.asList(entries).forEach(e -> soundEntries.add(e.toJson()));
+			Arrays.asList(entries).forEach(s -> soundEntries.add(toJson(s)));
 			soundEventData.add("sounds", soundEntries);
 
 			if (replace) {
@@ -102,6 +108,56 @@ public abstract class FabricSoundProvider implements DataProvider {
 				.resolveJson(new Identifier(dataOutput.getModId(), "sounds"));
 		return DataProvider.writeToPath(writer, soundsJson, soundsPath.normalize());
 	}
+	
+	private boolean allDefaults(Sound sound) {
+		return sound.getVolume().get(null) == 1 && sound.getPitch().get(null) == 1
+				&& sound.getWeight() == 1 && sound.getAttenuation() == 16
+				&& !sound.isStreamed() && !sound.isPreloaded()
+				&& sound.getRegistrationType() == Sound.RegistrationType.FILE;
+	}
+
+	private JsonElement toJson(Sound sound) {
+		String soundId = sound.getIdentifier().toString();
+		if (allDefaults(sound)) {
+			return new JsonPrimitive(soundId);
+		} else {
+			JsonObject soundEntry = new JsonObject();
+			soundEntry.addProperty("name", soundId);
+
+			float volume = sound.getVolume().get(null);
+			float pitch = sound.getPitch().get(null);
+
+			if (volume != 1) {
+				soundEntry.addProperty("volume", volume);
+			}
+
+			if (pitch != 1) {
+				soundEntry.addProperty("pitch", pitch);
+			}
+
+			if (sound.getWeight() != 1) {
+				soundEntry.addProperty("weight", sound.getWeight());
+			}
+
+			if (sound.isStreamed()) {
+				soundEntry.addProperty("stream", true);
+			}
+
+			if (sound.getAttenuation() != 16) {
+				soundEntry.addProperty("attenuation_distance", sound.getAttenuation());
+			}
+
+			if (sound.isPreloaded()) {
+				soundEntry.addProperty("preload", true);
+			}
+
+			if (sound.getRegistrationType() == Sound.RegistrationType.SOUND_EVENT) {
+				soundEntry.addProperty("type", "event");
+			}
+
+			return soundEntry;
+		}
+	}
 
 	@Override
 	public String getName() {
@@ -119,10 +175,10 @@ public abstract class FabricSoundProvider implements DataProvider {
 		 *                Minecraft or some other mod's namespace, in order to replace the default sounds from the
 		 *                original namespace's sounds file via your own namespace's resource pack.
 		 * @param subtitle An optional subtitle to use for the event, given as a translation key for the subtitle.
-		 * @param entries A list of {@link SoundEntry} instances from which to generate individual sound entry data for
+		 * @param sounds A list of {@link Sound} instances from which to generate individual sound entry data for
 		 *                this event.
 		 */
-		void add(SoundEvent sound, boolean replace, @Nullable String subtitle, SoundEntry... entries);
+		void add(SoundEvent sound, boolean replace, @Nullable String subtitle, Sound... sounds);
 
 		/**
 		 * Adds an individual {@link SoundEvent} and its respective sounds to your mod's <code>sounds.json</code> file.
@@ -131,11 +187,11 @@ public abstract class FabricSoundProvider implements DataProvider {
 		 * @param replace Set this to <code>true</code> if this entry corresponds to a sound event from vanilla
 		 *                Minecraft or some other mod's namespace, in order to replace the default sounds from the
 		 *                original namespace's sounds file via your own namespace's resource pack.
-		 * @param entries A list of {@link SoundEntry} instances from which to generate individual sound entry data for
+		 * @param sounds A list of {@link Sound} instances from which to generate individual sound entry data for
 		 *                this event.
 		 */
-		default void add(SoundEvent sound, boolean replace, SoundEntry... entries) {
-			add(sound, replace, null, entries);
+		default void add(SoundEvent sound, boolean replace, Sound... sounds) {
+			add(sound, replace, null, sounds);
 		}
 
 		/**
@@ -143,22 +199,22 @@ public abstract class FabricSoundProvider implements DataProvider {
 		 *
 		 * @param sound The {@link SoundEvent} to add an entry for.
 		 * @param subtitle An optional subtitle to use for the event, given as a translation key for the subtitle.
-		 * @param entries A list of {@link SoundEntry} instances from which to generate individual sound entry data for
+		 * @param sounds A list of {@link Sound} instances from which to generate individual sound entry data for
 		 *                this event.
 		 */
-		default void add(SoundEvent sound, @Nullable String subtitle, SoundEntry... entries) {
-			add(sound, false, subtitle, entries);
+		default void add(SoundEvent sound, @Nullable String subtitle, Sound... sounds) {
+			add(sound, false, subtitle, sounds);
 		}
 
 		/**
 		 * Adds an individual {@link SoundEvent} and its respective sounds to your mod's <code>sounds.json</code> file.
 		 *
 		 * @param sound The {@link SoundEvent} to add an entry for.
-		 * @param entries A list of {@link SoundEntry} instances from which to generate individual sound entry data for
+		 * @param sounds A list of {@link Sound} instances from which to generate individual sound entry data for
 		 *                this event.
 		 */
-		default void add(SoundEvent sound, SoundEntry... entries) {
-			add(sound, false, null, entries);
+		default void add(SoundEvent sound, Sound... sounds) {
+			add(sound, false, null, sounds);
 		}
 	}
 }
