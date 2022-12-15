@@ -38,8 +38,6 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
-import net.minecraft.util.math.floatprovider.FloatSupplier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -50,8 +48,6 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
 public abstract class FabricSoundProvider implements DataProvider {
-
-	private static final FloatSupplier ONE = ConstantFloatProvider.create(1.0F);
 	protected final FabricDataOutput dataOutput;
 
 	protected FabricSoundProvider(FabricDataOutput dataOutput) {
@@ -108,7 +104,7 @@ public abstract class FabricSoundProvider implements DataProvider {
 				.resolveJson(new Identifier(dataOutput.getModId(), "sounds"));
 		return DataProvider.writeToPath(writer, soundsJson, soundsPath.normalize());
 	}
-	
+
 	private boolean allDefaults(Sound sound) {
 		return sound.getVolume().get(null) == 1 && sound.getPitch().get(null) == 1
 				&& sound.getWeight() == 1 && sound.getAttenuation() == 16
@@ -118,6 +114,7 @@ public abstract class FabricSoundProvider implements DataProvider {
 
 	private JsonElement toJson(Sound sound) {
 		String soundId = sound.getIdentifier().toString();
+
 		if (allDefaults(sound)) {
 			return new JsonPrimitive(soundId);
 		} else {
