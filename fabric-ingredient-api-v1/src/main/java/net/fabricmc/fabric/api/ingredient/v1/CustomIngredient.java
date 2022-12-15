@@ -46,10 +46,10 @@ import net.fabricmc.fabric.impl.ingredient.CustomIngredientImpl;
  */
 public interface CustomIngredient {
 	/**
-	 * Check if a stack matches this ingredient.
+	 * Checks if a stack matches this ingredient.
 	 *
 	 * @param stack the stack to test
-	 * @return true if the stack matches this ingredient, false otherwise
+	 * @return {@code true} if the stack matches this ingredient, {@code false} otherwise
 	 */
 	boolean test(ItemStack stack);
 
@@ -73,12 +73,12 @@ public interface CustomIngredient {
 	/**
 	 * Return whether this ingredient always requires {@linkplain #test direct stack testing}.
 	 *
-	 * <p>If false, {@linkplain #test testing this ingredient} with an item stack must be equivalent to checking whether
-	 * the item stack's item is contained in the ingredient's {@linkplain #getMatchingStacks() list of matching stacks}.
+	 * <p>If {@code false}, {@linkplain #test testing this ingredient} with an item stack must be equivalent to checking whether
+	 * the item stack's item is included in the ingredient's {@linkplain #getMatchingStacks() list of matching stacks}.
 	 * In that case, optimized matching logic can be used, for example using {@link Ingredient#getMatchingItemIds()}.
 	 *
-	 * <p>If true, the ingredient must always be tested using {@link #test(ItemStack)}.
-	 * Note: Fabric patches some vanilla systems such as shapeless recipes to account for this.
+	 * <p>If {@code true}, the ingredient must always be tested using {@link #test(ItemStack)}.
+	 * Note that Fabric patches some vanilla systems such as shapeless recipes to account for this.
 	 *
 	 * @return true if this ingredient ignores NBT data when matching stacks, false otherwise
 	 */
@@ -87,7 +87,7 @@ public interface CustomIngredient {
 	/**
 	 * {@return the serializer for this ingredient}
 	 *
-	 * <p>The serializer must have be registered using {@link CustomIngredientSerializer#register}.
+	 * <p>The serializer must have been registered using {@link CustomIngredientSerializer#register}.
 	 */
 	CustomIngredientSerializer<?> getSerializer();
 

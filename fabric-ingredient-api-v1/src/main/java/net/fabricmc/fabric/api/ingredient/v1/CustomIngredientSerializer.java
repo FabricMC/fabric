@@ -33,7 +33,7 @@ import net.fabricmc.fabric.impl.ingredient.CustomIngredientImpl;
  */
 public interface CustomIngredientSerializer<T extends CustomIngredient> {
 	/**
-	 * Register a custom ingredient serializer, using the {@linkplain CustomIngredientSerializer#getIdentifier() serializer's identifier}.
+	 * Registers a custom ingredient serializer, using the {@linkplain CustomIngredientSerializer#getIdentifier() serializer's identifier}.
 	 *
 	 * @throws IllegalArgumentException if the serializer is already registered
 	 */
@@ -42,7 +42,7 @@ public interface CustomIngredientSerializer<T extends CustomIngredient> {
 	}
 
 	/**
-	 * {@return the custom ingredient serializer registered with the given identifier, or {@code null} if none is registered}.
+	 * {@return the custom ingredient serializer registered with the given identifier, or {@code null} if there is no such serializer}.
 	 */
 	@Nullable
 	static CustomIngredientSerializer<?> get(Identifier identifier) {
@@ -55,22 +55,22 @@ public interface CustomIngredientSerializer<T extends CustomIngredient> {
 	Identifier getIdentifier();
 
 	/**
-	 * Deserialize the custom ingredient from a JSON object.
+	 * Deserializes the custom ingredient from a JSON object.
 	 */
 	T read(JsonObject json);
 
 	/**
-	 * Serialize the custom ingredient to a JSON object.
+	 * Serializes the custom ingredient to a JSON object.
 	 */
 	void write(JsonObject json, T ingredient);
 
 	/**
-	 * Deserialize the custom ingredient from a packet buffer.
+	 * Deserializes the custom ingredient from a packet buffer.
 	 */
 	T read(PacketByteBuf buf);
 
 	/**
-	 * Serialize the custom ingredient to a packet buffer.
+	 * Serializes the custom ingredient to a packet buffer.
 	 */
 	void write(PacketByteBuf buf, T ingredient);
 }

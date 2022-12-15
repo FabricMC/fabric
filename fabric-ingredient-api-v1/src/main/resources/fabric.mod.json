@@ -20,7 +20,7 @@
   ],
   "accessWidener": "fabric-ingredient-api-v1.accesswidener",
   "depends": {
-    "fabricloader": ">=0.14.9"
+    "fabricloader": ">=0.14.11"
   },
   "description": "Creation of custom ingredients",
   "custom": {

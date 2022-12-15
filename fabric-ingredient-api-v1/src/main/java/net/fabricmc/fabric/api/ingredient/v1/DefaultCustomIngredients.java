@@ -31,11 +31,11 @@ import net.fabricmc.fabric.impl.ingredient.builtin.NbtIngredient;
 import net.fabricmc.fabric.impl.ingredient.builtin.OrIngredient;
 
 /**
- * Factory methods for the custom ingredients directly provided by fabric.
+ * Factory methods for the custom ingredients directly provided by Fabric API.
  */
 public final class DefaultCustomIngredients {
 	/**
-	 * Create an ingredient that matches what its sub-ingredients all match.
+	 * Creates an ingredient that matches when its sub-ingredients all match.
 	 *
 	 * <p>The JSON format is as follows:
 	 * <pre>{@code
@@ -56,7 +56,7 @@ public final class DefaultCustomIngredients {
 	}
 
 	/**
-	 * Create an ingredient that matches what any of its sub-ingredients matches.
+	 * Creates an ingredient that matches when any of its sub-ingredients matches.
 	 *
 	 * <p>The JSON format is as follows:
 	 * <pre>{@code
@@ -77,7 +77,7 @@ public final class DefaultCustomIngredients {
 	}
 
 	/**
-	 * Create an ingredient that matches if its base ingredient matches, and its subtracted ingredient does NOT match.
+	 * Creates an ingredient that matches if its base ingredient matches, and its subtracted ingredient <strong>does not</strong> match.
 	 *
 	 * <p>The JSON format is as follows:
 	 * <pre>{@code
@@ -96,10 +96,10 @@ public final class DefaultCustomIngredients {
 	}
 
 	/**
-	 * Create an ingredient that wraps another ingredient to also check for stack NBT.
+	 * Creates an ingredient that wraps another ingredient to also check for stack NBT.
 	 * This check can either be strict (the exact NBT must match) or non-strict (the ingredient NBT must be a subset of the stack NBT).
 	 *
-	 * <p>Note: refer to {@link NbtHelper#matches} for the non-strict matching.
+	 * <p>See {@link NbtHelper#matches} for the non-strict matching.
 	 *
 	 * <p>The JSON format is as follows:
 	 * <pre>{@code
@@ -118,10 +118,10 @@ public final class DefaultCustomIngredients {
 	}
 
 	/**
-	 * Create an ingredient that matches the passed template stack, NBT included.
+	 * Creates an ingredient that matches the passed template stack, including NBT.
 	 * This check can either be strict (the exact NBT must match) or non-strict (the template NBT must be a subset of the stack NBT).
 	 *
-	 * <p>Note: refer to {@link NbtHelper#matches} for the non-strict matching.
+	 * <p>See {@link NbtHelper#matches} for the non-strict matching.
 	 */
 	public static Ingredient nbt(ItemStack stack, boolean strict) {
 		Objects.requireNonNull(stack);
