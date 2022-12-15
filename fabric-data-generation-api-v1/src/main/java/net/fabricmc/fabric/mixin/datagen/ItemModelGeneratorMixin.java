@@ -32,6 +32,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.model.FabricItemModelGenerator;
+import net.fabricmc.fabric.api.datagen.v1.model.builder.ModelBuilder;
 
 @Mixin(ItemModelGenerator.class)
 public class ItemModelGeneratorMixin implements FabricItemModelGenerator {
@@ -45,7 +46,17 @@ public class ItemModelGeneratorMixin implements FabricItemModelGenerator {
 	}
 
 	@Override
+	public void register(Item item, ModelBuilder modelBuilder) {
+		modelBuilder.buildModel().upload(ModelIds.getItemModelId(item), modelBuilder.mapTextures(), this.writer);
+	}
+
+	@Override
 	public void register(Item item, String suffix, Model model, TextureMap textureMap) {
 		model.upload(ModelIds.getItemSubModelId(item, suffix), textureMap, this.writer);
+	}
+
+	@Override
+	public void register(Item item, String suffix, ModelBuilder modelBuilder) {
+		modelBuilder.buildModel().upload(ModelIds.getItemSubModelId(item, suffix), modelBuilder.mapTextures(), this.writer);
 	}
 }
