@@ -19,13 +19,11 @@ package net.fabricmc.fabric.mixin.ingredient;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
@@ -37,7 +35,7 @@ import net.fabricmc.fabric.api.ingredient.v1.FabricIngredient;
 import net.fabricmc.fabric.impl.ingredient.CustomIngredientImpl;
 import net.fabricmc.fabric.impl.ingredient.builtin.OrIngredient;
 
-@Mixin(value = Ingredient.class, priority = 900) // overwrite before faux ingredient extension API injects in the method
+@Mixin(value = Ingredient.class, priority = 900) // TODO: remove this and simplify network serialization if we merge the PR soon enough
 public class IngredientMixin implements FabricIngredient {
 	/**
 	 * Inject right when vanilla detected a json object and check for our custom key.
@@ -98,28 +96,26 @@ public class IngredientMixin implements FabricIngredient {
 		}
 	}
 
-	/**
-	 * @author FabricMC
-	 * @reason Support custom ingredient network deserialization.
-	 */
-	@Overwrite
-	public static Ingredient fromPacket(PacketByteBuf buf) {
-		int size = buf.readVarInt();
+	@Inject(
+			at = @At("HEAD"),
+			method = "fromPacket",
+			cancellable = true
+	)
+	public static void injectFromPacket(PacketByteBuf buf, CallbackInfoReturnable<Ingredient> cir) {
+		int index = buf.readerIndex();
 
-		if (size == CustomIngredientImpl.PACKET_MARKER) {
+		if (buf.readVarInt() == CustomIngredientImpl.PACKET_MARKER) {
 			Identifier type = buf.readIdentifier();
 			CustomIngredientSerializer<?> serializer = CustomIngredientSerializer.get(type);
 
 			if (serializer == null) {
-				throw new IllegalArgumentException("Cannot deserialize custom ingredient of unkown type " + type);
+				throw new IllegalArgumentException("Cannot deserialize custom ingredient of unknown type " + type);
 			}
 
-			return serializer.read(buf).toVanilla();
+			cir.setReturnValue(serializer.read(buf).toVanilla());
 		} else {
-			// Vanilla path - we have to overwrite as we can't read the size a second time.
-			ItemStack[] stacks = new ItemStack[size];
-			for (int i = 0; i < stacks.length; ++i) stacks[i] = buf.readItemStack();
-			return Ingredient.ofStacks(stacks);
+			// Reset index for vanilla's normal deserialization logic.
+			buf.readerIndex(index);
 		}
 	}
 }
