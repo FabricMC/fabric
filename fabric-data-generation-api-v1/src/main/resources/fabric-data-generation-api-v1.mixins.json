@@ -8,8 +8,7 @@
     "ItemModelGeneratorMixin",
     "ModelMixin",
     "ModelProviderMixin",
-    "TagBuilderMixin",
-    "TextureMapAccessor"
+    "TagBuilderMixin"
   ],
   "server": [
     "server.MainMixin"

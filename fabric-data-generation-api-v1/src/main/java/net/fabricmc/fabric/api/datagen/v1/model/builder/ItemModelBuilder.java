@@ -18,19 +18,14 @@ package net.fabricmc.fabric.api.datagen.v1.model.builder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import com.google.common.base.Preconditions;
 
 import net.minecraft.data.client.Model;
 import net.minecraft.data.client.TextureKey;
-import net.minecraft.data.client.TextureMap;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.model.property.DisplayBuilder;
 import net.fabricmc.fabric.api.datagen.v1.model.property.ElementBuilder;
 import net.fabricmc.fabric.api.datagen.v1.model.property.OverrideBuilder;
-import net.fabricmc.fabric.mixin.datagen.TextureMapAccessor;
 
 public class ItemModelBuilder extends ModelBuilder {
 	private final List<OverrideBuilder> overrides = new ArrayList<>();
@@ -44,16 +39,13 @@ public class ItemModelBuilder extends ModelBuilder {
 		return new ItemModelBuilder(parent);
 	}
 
-	public static ItemModelBuilder copyFrom(Model model, TextureMap textures) {
-		Map<TextureKey, Identifier> copyTextures = ((TextureMapAccessor) textures).getEntries();
-		Preconditions.checkArgument(copyTextures.keySet().equals(model.getRequiredTextures()), "Texture map does not match slots for provided model " + model);
-
+	public static ItemModelBuilder copyFrom(Model model) {
 		ItemModelBuilder builder = new ItemModelBuilder(model.getParent().orElse(null));
-		builder.requiredTextures.addAll(model.getRequiredTextures());
-		builder.textures.putAll(copyTextures);
 
+		builder.requiredTextures.addAll(model.getRequiredTextures());
 		builder.displays.putAll(model.getDisplayBuilders());
 		builder.elements.addAll(model.getElementBuilders());
+
 		builder.guiLight = model.getGuiLight();
 		builder.overrides.addAll(model.getOverrideBuilders());
 
@@ -61,13 +53,8 @@ public class ItemModelBuilder extends ModelBuilder {
 	}
 
 	@Override
-	public ItemModelBuilder addTexture(TextureKey key, Identifier texture) {
-		return (ItemModelBuilder) super.addTexture(key, texture);
-	}
-
-	@Override
-	public ItemModelBuilder addTexture(String key, Identifier texture) {
-		return (ItemModelBuilder) super.addTexture(key, texture);
+	public ItemModelBuilder addTextureKey(TextureKey texture) {
+		return (ItemModelBuilder) super.addTextureKey(texture);
 	}
 
 	@Override
@@ -103,8 +90,8 @@ public class ItemModelBuilder extends ModelBuilder {
 	}
 
 	@Override
-	public Model buildModel() {
-		Model itemModel = super.buildModel();
+	public Model build() {
+		Model itemModel = super.build();
 		itemModel.setGuiLight(guiLight);
 		overrides.forEach(itemModel::addOverride);
 		return itemModel;
