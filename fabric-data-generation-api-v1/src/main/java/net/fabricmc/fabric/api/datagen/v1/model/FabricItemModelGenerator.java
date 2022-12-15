@@ -20,8 +20,6 @@ import net.minecraft.data.client.Model;
 import net.minecraft.data.client.TextureMap;
 import net.minecraft.item.Item;
 
-import net.fabricmc.fabric.api.datagen.v1.model.builder.ModelBuilder;
-
 /**
  * Fabric-provided extensions for {@link net.minecraft.data.client.ItemModelGenerator}.
  *
@@ -41,17 +39,6 @@ public interface FabricItemModelGenerator {
 	}
 
 	/**
-	 * Generates an item's model based on an already-prepared {@link ModelBuilder}. Textures get automatically mapped to
-	 * the resulting model when built.
-	 *
-	 * @param item The item to generate this model for.
-	 * @param modelBuilder The desired model builder to generate from.
-	 */
-	default void register(Item item, ModelBuilder modelBuilder) {
-		throw new UnsupportedOperationException("Implemented via mixin");
-	}
-
-	/**
 	 * Generates an item's model based on the given model template and corresponding texture mapping. Both the model and
 	 * mapping must be made with the same set of texture keys.
 	 *
@@ -61,18 +48,6 @@ public interface FabricItemModelGenerator {
 	 * @param textureMap The desired texture mapping for this model.
 	 */
 	default void register(Item item, String suffix, Model model, TextureMap textureMap) {
-		throw new UnsupportedOperationException("Implemented via mixin");
-	}
-
-	/**
-	 * Generates an item's model based on an already-prepared {@link ModelBuilder}. Textures get automatically mapped to
-	 * the resulting model when built.
-	 *
-	 * @param item The item to generate this model for.
-	 * @param suffix An optional suffix for the generated model's file name.
-	 * @param modelBuilder The desired model builder to generate from.
-	 */
-	default void register(Item item, String suffix, ModelBuilder modelBuilder) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 }
