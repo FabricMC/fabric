@@ -47,6 +47,7 @@ import net.fabricmc.fabric.impl.ingredient.CustomIngredientImpl;
 public interface CustomIngredient {
 	/**
 	 * Checks if a stack matches this ingredient.
+	 * The stack <strong>must not</strong> be modified in any way.
 	 *
 	 * @param stack the stack to test
 	 * @return {@code true} if the stack matches this ingredient, {@code false} otherwise
@@ -71,16 +72,10 @@ public interface CustomIngredient {
 	ItemStack[] getMatchingStacks();
 
 	/**
-	 * Return whether this ingredient always requires {@linkplain #test direct stack testing}.
+	 * Returns whether this ingredient always requires {@linkplain #test direct stack testing}.
 	 *
-	 * <p>If {@code false}, {@linkplain #test testing this ingredient} with an item stack must be equivalent to checking whether
-	 * the item stack's item is included in the ingredient's {@linkplain #getMatchingStacks() list of matching stacks}.
-	 * In that case, optimized matching logic can be used, for example using {@link Ingredient#getMatchingItemIds()}.
-	 *
-	 * <p>If {@code true}, the ingredient must always be tested using {@link #test(ItemStack)}.
-	 * Note that Fabric patches some vanilla systems such as shapeless recipes to account for this.
-	 *
-	 * @return true if this ingredient ignores NBT data when matching stacks, false otherwise
+	 * @return {@code false} if this ingredient ignores NBT data when matching stacks, {@code true} otherwise
+	 * @see FabricIngredient#requiresTesting()
 	 */
 	boolean requiresTesting();
 

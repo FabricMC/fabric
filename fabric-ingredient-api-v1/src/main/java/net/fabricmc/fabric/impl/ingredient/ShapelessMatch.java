@@ -31,7 +31,6 @@ import net.minecraft.recipe.Ingredient;
  * <p>The problem to solve is a maximum cardinality bipartite matching, for which this implementation uses the augmenting path algorithm.
  * This has good performance in simple cases, and sufficient O(N^3) asymptotic complexity in the worst case.
  */
-@ApiStatus.Internal
 public class ShapelessMatch {
 	private final int[] match;
 	/**

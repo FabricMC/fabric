@@ -20,15 +20,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.ingredient.v1.CustomIngredientSerializer;
 
-@ApiStatus.Internal
 public class OrIngredient extends CombinedIngredient {
 	public static final CustomIngredientSerializer<OrIngredient> SERIALIZER =
 			new CombinedIngredient.Serializer<>(new Identifier("fabric", "or"), OrIngredient::new);

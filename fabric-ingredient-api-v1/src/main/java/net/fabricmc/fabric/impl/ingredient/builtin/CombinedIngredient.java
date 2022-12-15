@@ -46,12 +46,12 @@ abstract class CombinedIngredient implements CustomIngredient {
 	@Override
 	public boolean requiresTesting() {
 		for (Ingredient ingredient : ingredients) {
-			if (!ingredient.requiresTesting()) {
-				return false;
+			if (ingredient.requiresTesting()) {
+				return true;
 			}
 		}
 
-		return true;
+		return false;
 	}
 
 	static class Serializer<I extends CombinedIngredient> implements CustomIngredientSerializer<I> {

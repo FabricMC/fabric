@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.ItemStack;
@@ -37,7 +36,6 @@ import net.fabricmc.fabric.impl.ingredient.builtin.DifferenceIngredient;
 import net.fabricmc.fabric.impl.ingredient.builtin.NbtIngredient;
 import net.fabricmc.fabric.impl.ingredient.builtin.OrIngredient;
 
-@ApiStatus.Internal
 public class CustomIngredientImpl extends Ingredient {
 	// Static helpers used by the API
 

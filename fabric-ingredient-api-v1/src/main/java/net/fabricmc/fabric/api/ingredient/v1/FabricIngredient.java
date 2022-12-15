@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.ingredient.v1;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 
 /**
@@ -34,7 +35,18 @@ public interface FabricIngredient {
 	}
 
 	/**
-	 * @see CustomIngredient#requiresTesting()
+	 * Returns whether this ingredient always requires {@linkplain Ingredient#test direct stack testing}.
+	 * Vanilla ingredients will always return {@code false},
+	 * and custom ingredients need to {@linkplain CustomIngredient#requiresTesting() provide this information}.
+	 *
+	 * <p>If {@code false}, {@linkplain Ingredient#test testing this ingredient} with an item stack must be equivalent to checking whether
+	 * the item stack's item is included in the ingredient's {@linkplain Ingredient#getMatchingStacks() list of matching stacks}.
+	 * In that case, optimized matching logic can be used, for example using {@link Ingredient#getMatchingItemIds()}.
+	 *
+	 * <p>If {@code true}, the ingredient must always be tested using {@link Ingredient#test(ItemStack)}.
+	 * Note that Fabric patches some vanilla systems such as shapeless recipes to account for this.
+	 *
+	 * @return {@code false} if this ingredient ignores NBT data when matching stacks, {@code true} otherwise
 	 */
 	default boolean requiresTesting() {
 		return getCustomIngredient() != null && getCustomIngredient().requiresTesting();
