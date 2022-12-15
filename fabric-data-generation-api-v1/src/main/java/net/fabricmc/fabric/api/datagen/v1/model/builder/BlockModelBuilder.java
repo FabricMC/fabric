@@ -16,13 +16,22 @@
 
 package net.fabricmc.fabric.api.datagen.v1.model.builder;
 
+import java.util.Map;
+
+import com.google.common.base.Preconditions;
+
 import net.minecraft.data.client.Model;
 import net.minecraft.data.client.TextureKey;
+import net.minecraft.data.client.TextureMap;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.model.property.DisplayBuilder;
 import net.fabricmc.fabric.api.datagen.v1.model.property.ElementBuilder;
+import net.fabricmc.fabric.mixin.datagen.TextureMapAccessor;
 
+/**
+ * Dedicated builder class for standard Minecraft block models.
+ */
 public class BlockModelBuilder extends ModelBuilder {
 	private boolean occlude = true;
 
@@ -34,18 +43,34 @@ public class BlockModelBuilder extends ModelBuilder {
 		return new BlockModelBuilder(parent);
 	}
 
-	public static BlockModelBuilder copyFrom(Model model) {
+	public static BlockModelBuilder copyFrom(Model model, TextureMap textures) {
+		Map<TextureKey, Identifier> copyTextures = ((TextureMapAccessor) textures).getEntries();
+		Preconditions.checkArgument(copyTextures.keySet().equals(model.getRequiredTextures()), "Texture map does not match slots for provided model " + model);
+
 		BlockModelBuilder builder = new BlockModelBuilder(model.getParent().orElse(null));
 		builder.requiredTextures.addAll(model.getRequiredTextures());
+		builder.textures.putAll(copyTextures);
+
 		builder.displays.putAll(model.getDisplayBuilders());
 		builder.elements.addAll(model.getElementBuilders());
 		builder.occlude = model.getAmbientOcclusion();
+
 		return builder;
 	}
 
 	@Override
-	public BlockModelBuilder addTextureKey(TextureKey texture) {
-		return (BlockModelBuilder) super.addTextureKey(texture);
+	public BlockModelBuilder addTexture(TextureKey key, Identifier texture) {
+		return (BlockModelBuilder) super.addTexture(key, texture);
+	}
+
+	@Override
+	public BlockModelBuilder addTexture(String key, Identifier texture) {
+		return (BlockModelBuilder) super.addTexture(key, texture);
+	}
+
+	@Override
+	public BlockModelBuilder clearTextures() {
+		return (BlockModelBuilder) super.clearTextures();
 	}
 
 	@Override
@@ -54,21 +79,31 @@ public class BlockModelBuilder extends ModelBuilder {
 	}
 
 	@Override
+	public BlockModelBuilder clearDisplays() {
+		return (BlockModelBuilder) super.clearDisplays();
+	}
+
+	@Override
 	public BlockModelBuilder addElement(ElementBuilder element) {
 		return (BlockModelBuilder) super.addElement(element);
 	}
 
+	@Override
+	public BlockModelBuilder clearElements() {
+		return (BlockModelBuilder) super.clearElements();
+	}
+
 	/**
-	 * Disables ambient occlusion for this model.
+	 * Toggles ambient occlusion for this model.
 	 */
-	public BlockModelBuilder noAmbientOcclusion() {
-		this.occlude = false;
+	public BlockModelBuilder occludes(boolean occlude) {
+		this.occlude = occlude;
 		return this;
 	}
 
 	@Override
-	public Model build() {
-		Model blockModel = super.build();
+	public Model buildModel() {
+		Model blockModel = super.buildModel();
 		blockModel.setAmbientOcclusion(occlude);
 		return blockModel;
 	}

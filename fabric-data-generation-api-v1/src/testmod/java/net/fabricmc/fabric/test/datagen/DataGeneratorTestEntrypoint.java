@@ -20,8 +20,8 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_TH
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_ITEM;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_VANILLA_LOOT_TABLE;
-import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_OCCLUSION;
-import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_CUSTOM_MODEL;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_CUSTOM_MODEL_1;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_CUSTOM_MODEL_2;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_EMPTY_MODEL;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.ITEM_WITH_NORMAL_ICON;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.ITEM_WITH_SIDE_ICON;
@@ -45,9 +45,7 @@ import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.BlockStateVariant;
 import net.minecraft.data.client.ItemModelGenerator;
-import net.minecraft.data.client.Model;
 import net.minecraft.data.client.Models;
-import net.minecraft.data.client.TextureKey;
 import net.minecraft.data.client.TextureMap;
 import net.minecraft.data.client.VariantSettings;
 import net.minecraft.data.client.VariantsBlockStateSupplier;
@@ -254,21 +252,23 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerSimpleCubeAll(BLOCK_THAT_DROPS_NOTHING);
 
 			// TODO: needs more simplification
-			TextureKey texture1 = TextureKey.of("texture1");
-			TextureKey texture2 = TextureKey.of("texture2");
-			Model customModel = BlockModelBuilder.createNew(new Identifier(MOD_ID, "custom"))
-					.addTextureKey(texture1)
-					.addTextureKey(texture2)
+			BlockModelBuilder customModel = BlockModelBuilder.createNew(new Identifier(MOD_ID, "custom"))
+					.addTexture("texture1", new Identifier(MOD_ID, "block_with_custom_model_1_1"))
+					.addTexture("texture2", new Identifier(MOD_ID, "block_with_custom_model_1_2"))
 					.addDisplay(DisplayBuilder.Position.FIXED, new DisplayBuilder()
 							.rotate(45, 45, 45)
 							.scale(2))
-					.noAmbientOcclusion()
-					.build();
-			TextureMap customTextureMap = new TextureMap()
-					.put(texture1, new Identifier(MOD_ID, "block_with_custom_model_1"))
-					.put(texture2, new Identifier(MOD_ID, "block_with_custom_model_2"));
-			blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(BLOCK_WITH_CUSTOM_MODEL,
-					BlockStateVariant.create().put(VariantSettings.MODEL, customModel.upload(BLOCK_WITH_CUSTOM_MODEL, customTextureMap, blockStateModelGenerator.modelCollector))));
+					.occludes(false);
+			blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(BLOCK_WITH_CUSTOM_MODEL_1,
+					BlockStateVariant.create().put(VariantSettings.MODEL, customModel.buildModel().upload(BLOCK_WITH_CUSTOM_MODEL_1, customModel.mapTextures(), blockStateModelGenerator.modelCollector))));
+
+			customModel.clearElements().clearDisplays()
+					.addTexture("texture1", new Identifier(MOD_ID, "block_with_custom_model_2_1"))
+					.addTexture("texture2", new Identifier(MOD_ID, "block_with_custom_model_2_2"))
+					.addTexture("texture3", new Identifier(MOD_ID, "block_with_custom_model_2_3"))
+					.occludes(true);
+			blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(BLOCK_WITH_CUSTOM_MODEL_2,
+					BlockStateVariant.create().put(VariantSettings.MODEL, customModel.buildModel().upload(BLOCK_WITH_CUSTOM_MODEL_2, customModel.mapTextures(), blockStateModelGenerator.modelCollector))));
 
 			blockStateModelGenerator.registerEmptyModel(BLOCK_WITH_EMPTY_MODEL);
 		}
@@ -276,8 +276,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		public void generateItemModels(ItemModelGenerator itemModelGenerator) {
 			//itemModelGenerator.register(item, Models.SLAB);
-			Model sideItemModel = ItemModelBuilder.copyFrom(Models.GENERATED).setGuiLight(ItemModelBuilder.GuiLight.SIDE).build();
-			itemModelGenerator.register(ITEM_WITH_SIDE_ICON, sideItemModel, TextureMap.layer0(ITEM_WITH_SIDE_ICON));
+			itemModelGenerator.register(ITEM_WITH_SIDE_ICON, ItemModelBuilder
+					.copyFrom(Models.GENERATED, TextureMap.layer0(ITEM_WITH_SIDE_ICON))
+					.setGuiLight(ItemModelBuilder.GuiLight.SIDE));
 			itemModelGenerator.register(ITEM_WITH_NORMAL_ICON, Models.GENERATED);
 		}
 	}
@@ -358,7 +359,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		public void generate() {
 			addDrop(SIMPLE_BLOCK);
 			addDrop(BLOCK_WITHOUT_ITEM, drops(SIMPLE_BLOCK));
-			addDrop(BLOCK_WITH_CUSTOM_MODEL, drops(SIMPLE_BLOCK));
+			addDrop(BLOCK_WITH_CUSTOM_MODEL_1, drops(SIMPLE_BLOCK));
+			addDrop(BLOCK_WITH_CUSTOM_MODEL_2, drops(SIMPLE_BLOCK));
 			addDrop(BLOCK_WITH_EMPTY_MODEL, drops(SIMPLE_BLOCK));
 
 			excludeFromStrictValidation(BLOCK_WITHOUT_LOOT_TABLE);
