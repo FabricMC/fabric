@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.datagen.v1.model.builder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +27,7 @@ import java.util.Set;
 
 import net.minecraft.data.client.Model;
 import net.minecraft.data.client.TextureKey;
+import net.minecraft.data.client.TextureMap;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.model.property.DisplayBuilder;
@@ -34,6 +36,7 @@ import net.fabricmc.fabric.api.datagen.v1.model.property.ElementBuilder;
 public abstract class ModelBuilder {
 	protected final Identifier parent;
 	protected final Set<TextureKey> requiredTextures = new HashSet<>();
+	protected final HashMap<TextureKey, Identifier> textures = new HashMap<>();
 	protected final EnumMap<DisplayBuilder.Position, DisplayBuilder> displays = new EnumMap<>(DisplayBuilder.Position.class);
 	protected final List<ElementBuilder> elements = new ArrayList<>();
 
@@ -41,9 +44,14 @@ public abstract class ModelBuilder {
 		this.parent = parent;
 	}
 
-	public ModelBuilder addTextureKey(TextureKey texture) {
-		this.requiredTextures.add(texture);
+	public ModelBuilder addTexture(TextureKey key, Identifier texture) {
+		this.requiredTextures.add(key);
+		this.textures.put(key, texture);
 		return this;
+	}
+
+	public ModelBuilder addTexture(String key, Identifier texture) {
+		return addTexture(TextureKey.of(key), texture);
 	}
 
 	/**
@@ -73,12 +81,18 @@ public abstract class ModelBuilder {
 		return this;
 	}
 
-	public Model build() {
+	public Model buildModel() {
 		TextureKey[] textures = Arrays.copyOf(requiredTextures.toArray(), requiredTextures.size(), TextureKey[].class);
 		Model model = new Model(Optional.ofNullable(parent), Optional.empty(), textures);
 
 		displays.forEach(model::withDisplay);
 		elements.forEach(model::addElement);
 		return model;
+	}
+
+	public TextureMap mapTextures() {
+		TextureMap map = new TextureMap();
+		textures.forEach(map::put);
+		return map;
 	}
 }
