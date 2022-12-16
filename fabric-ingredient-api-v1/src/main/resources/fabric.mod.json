@@ -20,7 +20,16 @@
   ],
   "accessWidener": "fabric-ingredient-api-v1.accesswidener",
   "depends": {
-    "fabricloader": ">=0.14.10"
+    "fabricloader": ">=0.14.10",
+    "fabric-networking-api-v1": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.ingredient.CustomIngredientSync"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.ingredient.client.CustomIngredientSyncClient"
+    ]
   },
   "description": "Creation of new types of recipe ingredients.",
   "custom": {

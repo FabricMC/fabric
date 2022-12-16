@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.ingredient.v1;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 import org.jetbrains.annotations.Nullable;
 

@@ -6,4 +6,5 @@ loom {
 }
 
 moduleDependencies(project, [
+		"fabric-networking-api-v1",
 ])

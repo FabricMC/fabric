@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.ingredient;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
@@ -26,6 +27,7 @@ import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 
@@ -42,7 +44,7 @@ public class CustomIngredientImpl extends Ingredient {
 	public static final String TYPE_KEY = "fabric:type";
 	public static final int PACKET_MARKER = -1;
 
-	private static final Map<Identifier, CustomIngredientSerializer<?>> REGISTERED_SERIALIZERS = new ConcurrentHashMap<>();
+	static final Map<Identifier, CustomIngredientSerializer<?>> REGISTERED_SERIALIZERS = new ConcurrentHashMap<>();
 
 	public static void registerSerializer(CustomIngredientSerializer<?> serializer) {
 		Objects.requireNonNull(serializer.getIdentifier(), "CustomIngredientSerializer identifier may not be null.");
@@ -101,11 +103,28 @@ public class CustomIngredientImpl extends Ingredient {
 	}
 
 	@Override
-	@SuppressWarnings({"unchecked", "rawtypes"})
+	public void write(PacketByteBuf buf) {
+		// Can be null if we're not writing a packet from the PacketEncoder; in that case, always write the full ingredient.
+		// Chances are this is a mod's doing and the client has the Ingredient API with the relevant ingredients.
+		Set<Identifier> supportedIngredients = CustomIngredientSync.CURRENT_SUPPORTED_INGREDIENTS.get();
+
+		if (supportedIngredients != null && !supportedIngredients.contains(customIngredient.getSerializer().getIdentifier())) {
+			// The client doesn't support this custom ingredient, so we send the matching stacks as a regular ingredient.
+			// Conveniently, this is exactly what the super call does.
+			super.write(buf);
+		} else {
+			// The client supports this custom ingredient, so we send it as a custom ingredient.
+			buf.writeVarInt(PACKET_MARKER);
+			buf.writeIdentifier(customIngredient.getSerializer().getIdentifier());
+			customIngredient.getSerializer().write(buf, coerceIngredient());
+		}
+	}
+
+	@Override
 	public JsonElement toJson() {
 		JsonObject json = new JsonObject();
 		json.addProperty(TYPE_KEY, customIngredient.getSerializer().getIdentifier().toString());
-		((CustomIngredientSerializer) customIngredient.getSerializer()).write(json, customIngredient);
+		customIngredient.getSerializer().write(json, coerceIngredient());
 		return json;
 	}
 
@@ -116,5 +135,9 @@ public class CustomIngredientImpl extends Ingredient {
 		// So we just return false when the matching stacks haven't been resolved yet (i.e. when the field is null).
 		// TODO: this is a bit hacky, can we not do better?
 		return matchingStacks != null && matchingStacks.length == 0;
+	}
+
+	private <T> T coerceIngredient() {
+		return (T) customIngredient;
 	}
 }

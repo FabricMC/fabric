@@ -21,7 +21,6 @@ import com.google.gson.JsonObject;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -29,13 +28,12 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 
-import net.fabricmc.fabric.api.ingredient.v1.CustomIngredient;
 import net.fabricmc.fabric.api.ingredient.v1.CustomIngredientSerializer;
 import net.fabricmc.fabric.api.ingredient.v1.FabricIngredient;
 import net.fabricmc.fabric.impl.ingredient.CustomIngredientImpl;
 import net.fabricmc.fabric.impl.ingredient.builtin.OrIngredient;
 
-@Mixin(value = Ingredient.class, priority = 900) // TODO: remove this and simplify network serialization if we merge the PR soon enough
+@Mixin(Ingredient.class)
 public class IngredientMixin implements FabricIngredient {
 	/**
 	 * Inject right when vanilla detected a json object and check for our custom key.
@@ -76,32 +74,11 @@ public class IngredientMixin implements FabricIngredient {
 	}
 
 	@Inject(
-			at = @At(
-					value = "INVOKE",
-					target = "net/minecraft/network/PacketByteBuf.writeCollection (Ljava/util/Collection;Lnet/minecraft/network/PacketByteBuf$PacketWriter;)V"
-			),
-			method = "write",
-			cancellable = true
-	)
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	private void injectWrite(PacketByteBuf buf, CallbackInfo ci) {
-		// Done here instead of writing the ingredient in the subclass for compat with faux ingredient extension API
-		CustomIngredient customIngredient = getCustomIngredient();
-
-		if (customIngredient != null) {
-			buf.writeVarInt(CustomIngredientImpl.PACKET_MARKER);
-			buf.writeIdentifier(customIngredient.getSerializer().getIdentifier());
-			((CustomIngredientSerializer) customIngredient.getSerializer()).write(buf, customIngredient);
-			ci.cancel();
-		}
-	}
-
-	@Inject(
 			at = @At("HEAD"),
 			method = "fromPacket",
 			cancellable = true
 	)
-	public static void injectFromPacket(PacketByteBuf buf, CallbackInfoReturnable<Ingredient> cir) {
+	private static void injectFromPacket(PacketByteBuf buf, CallbackInfoReturnable<Ingredient> cir) {
 		int index = buf.readerIndex();
 
 		if (buf.readVarInt() == CustomIngredientImpl.PACKET_MARKER) {
