@@ -47,7 +47,7 @@ public interface FabricItemModelGenerator {
 	 * @param item The item to generate this model for.
 	 * @param modelBuilder The desired model builder to generate from.
 	 */
-	default void register(Item item, ModelBuilder modelBuilder) {
+	default void build(Item item, ModelBuilder<?> modelBuilder) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
@@ -72,7 +72,7 @@ public interface FabricItemModelGenerator {
 	 * @param suffix An optional suffix for the generated model's file name.
 	 * @param modelBuilder The desired model builder to generate from.
 	 */
-	default void register(Item item, String suffix, ModelBuilder modelBuilder) {
+	default void build(Item item, String suffix, ModelBuilder<?> modelBuilder) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 }

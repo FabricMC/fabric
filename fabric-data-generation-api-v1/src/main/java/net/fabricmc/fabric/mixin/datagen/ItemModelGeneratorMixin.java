@@ -46,7 +46,7 @@ public class ItemModelGeneratorMixin implements FabricItemModelGenerator {
 	}
 
 	@Override
-	public void register(Item item, ModelBuilder modelBuilder) {
+	public void build(Item item, ModelBuilder<?> modelBuilder) {
 		modelBuilder.buildModel().upload(ModelIds.getItemModelId(item), modelBuilder.mapTextures(), this.writer);
 	}
 
@@ -56,7 +56,7 @@ public class ItemModelGeneratorMixin implements FabricItemModelGenerator {
 	}
 
 	@Override
-	public void register(Item item, String suffix, ModelBuilder modelBuilder) {
+	public void build(Item item, String suffix, ModelBuilder<?> modelBuilder) {
 		modelBuilder.buildModel().upload(ModelIds.getItemSubModelId(item, suffix), modelBuilder.mapTextures(), this.writer);
 	}
 }

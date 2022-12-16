@@ -36,7 +36,7 @@ import net.minecraft.data.client.VariantsBlockStateSupplier;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.model.FabricBlockStateModelGenerator;
-import net.fabricmc.fabric.api.datagen.v1.model.builder.BlockModelBuilder;
+import net.fabricmc.fabric.api.datagen.v1.model.builder.ModelBuilder;
 
 @Mixin(BlockStateModelGenerator.class)
 public abstract class BlockStateModelGeneratorMixin implements FabricBlockStateModelGenerator {
@@ -60,7 +60,7 @@ public abstract class BlockStateModelGeneratorMixin implements FabricBlockStateM
 	}
 
 	@Override
-	public void buildWithSingletonState(Block block, BlockModelBuilder builder) {
+	public void buildWithSingletonState(Block block, ModelBuilder<?> builder) {
 		Identifier model = builder.buildModel().upload(block, builder.mapTextures(), this.modelCollector);
 		this.blockStateCollector.accept(VariantsBlockStateSupplier.create(block, BlockStateVariant.create().put(VariantSettings.MODEL, model)));
 	}

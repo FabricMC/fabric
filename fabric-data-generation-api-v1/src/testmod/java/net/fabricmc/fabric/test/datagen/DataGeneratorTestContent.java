@@ -46,8 +46,9 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static Block BLOCK_WITH_CUSTOM_MODEL_2;
 	public static Block BLOCK_WITH_EMPTY_MODEL;
 
-	public static Item ITEM_WITH_SIDE_ICON;
-	public static Item ITEM_WITH_NORMAL_ICON;
+	public static Item ITEM_WITH_CUSTOM_MODEL_1;
+	public static Item ITEM_WITH_CUSTOM_MODEL_2;
+	public static Item ITEM_WITH_NORMAL_MODEL;
 
 	public static final ItemGroup SIMPLE_ITEM_GROUP = FabricItemGroup.builder(new Identifier(MOD_ID, "simple"))
 			.icon(() -> new ItemStack(Items.DIAMOND_PICKAXE))
@@ -65,8 +66,9 @@ public class DataGeneratorTestContent implements ModInitializer {
 		BLOCK_WITH_CUSTOM_MODEL_2 = createBlock("block_with_custom_model_2", false);
 		BLOCK_WITH_EMPTY_MODEL = createBlock("block_with_empty_model", false);
 
-		ITEM_WITH_SIDE_ICON = createItem("item_with_side_icon");
-		ITEM_WITH_NORMAL_ICON = createItem("item_with_normal_icon");
+		ITEM_WITH_CUSTOM_MODEL_1 = createItem("item_with_custom_model_1");
+		ITEM_WITH_CUSTOM_MODEL_2 = createItem("item_with_custom_model_2");
+		ITEM_WITH_NORMAL_MODEL = createItem("item_with_normal_model");
 
 		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.add(SIMPLE_BLOCK));
 	}
