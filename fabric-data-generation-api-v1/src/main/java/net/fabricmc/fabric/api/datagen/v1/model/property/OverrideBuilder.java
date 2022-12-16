@@ -16,9 +16,11 @@
 
 package net.fabricmc.fabric.api.datagen.v1.model.property;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.objects.Object2FloatLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.util.Identifier;
 
@@ -42,14 +44,33 @@ public class OverrideBuilder {
 	 * Adds a new predicate set to dictate when to switch to the provided item model.
 	 *
 	 * @param key The ID of an item property to check for.
-	 * @param value The value of the property for which the override should be carried out.
-	 * @return The current newly-modified {@link OverrideBuilder} instance.
+	 * @param value The value of the property for which the override should be carried out. Must be between 0 and 1.
 	 */
 	public OverrideBuilder predicate(Identifier key, float value) {
+		Preconditions.checkArgument(value >= 0 && value <= 1, "Predicate value out of range");
 		this.predicates.putIfAbsent(key, value);
 		return this;
 	}
 
+	/**
+	 * Removes a predicate with the given ID from this builder.
+	 *
+	 * @param key The predicate ID whose entry to remove.
+	 */
+	public OverrideBuilder removePredicate(Identifier key) {
+		this.predicates.removeFloat(key);
+		return this;
+	}
+
+	/**
+	 * Clears all current predicates for this builder.
+	 */
+	public OverrideBuilder clearPredicates() {
+		this.predicates.clear();
+		return this;
+	}
+
+	@ApiStatus.Internal
 	public JsonObject build() {
 		JsonObject override = new JsonObject();
 

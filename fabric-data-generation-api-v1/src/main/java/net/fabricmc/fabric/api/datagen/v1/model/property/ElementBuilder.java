@@ -21,6 +21,7 @@ import java.util.EnumMap;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
@@ -47,6 +48,12 @@ public class ElementBuilder {
 	 * @param renderShadows Whether to render shadows cast by this element.
 	 */
 	public ElementBuilder(Vector3d from, Vector3d to, @Nullable RotationBuilder rotation, boolean renderShadows) {
+		double[] components = {from.x, from.y, from.z, to.x, to.y, to.z};
+
+		for (double c : components) {
+			Preconditions.checkArgument(c >= -16 && c <= 32, "Component out of range");
+		}
+
 		this.from = from;
 		this.to = to;
 		this.rotation = rotation;
@@ -126,13 +133,31 @@ public class ElementBuilder {
 	 *
 	 * @param face The face to specify this data for.
 	 * @param builder An instanced {@link FaceBuilder} from which to build this face's data.
-	 * @return The current newly-modified {@link ElementBuilder} instance.
 	 */
-	public ElementBuilder withFace(Direction face, FaceBuilder builder) {
-		this.faces.putIfAbsent(face, builder);
+	public ElementBuilder addFace(Direction face, FaceBuilder builder) {
+		this.faces.put(face, builder);
 		return this;
 	}
 
+	/**
+	 * Removes the specified face for this builder.
+	 *
+	 * @param face The face direction whose {@link FaceBuilder} to remove.
+	 */
+	public ElementBuilder removeFace(Direction face) {
+		this.faces.remove(face);
+		return this;
+	}
+
+	/**
+	 * Clears all current faces for this builder.
+	 */
+	public ElementBuilder clearFaces() {
+		this.faces.clear();
+		return this;
+	}
+
+	@ApiStatus.Internal
 	public JsonObject build() {
 		JsonObject element = new JsonObject();
 

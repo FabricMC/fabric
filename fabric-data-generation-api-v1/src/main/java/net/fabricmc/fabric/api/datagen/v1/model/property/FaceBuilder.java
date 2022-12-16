@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.api.datagen.v1.model.property;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector4i;
 
@@ -46,6 +48,12 @@ public class FaceBuilder {
 	 * @param tintIndex The tint index for this face, if applicable.
 	 */
 	public FaceBuilder(Vector4i uv, TextureKey texture, @Nullable Direction cullFace, VariantSettings.Rotation rotation, int tintIndex) {
+		int[] components = {uv.x, uv.y, uv.z, uv.w};
+
+		for (int c : components) {
+			Preconditions.checkArgument(c >= 0 && c <= 16, "Component out of range");
+		}
+
 		this.uv = uv;
 		this.texture = texture;
 		this.cullFace = cullFace;
@@ -154,6 +162,7 @@ public class FaceBuilder {
 		this(new Vector4i(0), texture, null, VariantSettings.Rotation.R0, -1);
 	}
 
+	@ApiStatus.Internal
 	public JsonObject build() {
 		var face = new JsonObject();
 

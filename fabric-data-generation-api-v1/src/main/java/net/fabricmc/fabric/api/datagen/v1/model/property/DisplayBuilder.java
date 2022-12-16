@@ -20,6 +20,7 @@ import java.util.Objects;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector3d;
 
 /**
@@ -36,7 +37,6 @@ public class DisplayBuilder {
 	 * @param x The X-coordinate of the rotation.
 	 * @param y The Y-coordinate of the rotation.
 	 * @param z The Z-coordinate of the rotation.
-	 * @return The current newly-modified {@link DisplayBuilder} instance.
 	 */
 	public DisplayBuilder rotate(double x, double y, double z) {
 		return rotate(new Vector3d(x, y, z));
@@ -46,7 +46,6 @@ public class DisplayBuilder {
 	 * Rotate the model by the given vector.
 	 *
 	 * @param vec A rotation vector.
-	 * @return The current newly-modified {@link DisplayBuilder} instance.
 	 */
 	public DisplayBuilder rotate(Vector3d vec) {
 		this.rotation = vec;
@@ -54,22 +53,21 @@ public class DisplayBuilder {
 	}
 
 	/**
-	 * Translate the model by the given vector.
+	 * Translate the model by the given vector. Note that the game internally clamps this vector between (-80, -80, -80)
+	 * and (80, 80, 80).
 	 *
 	 * @param x The X-coordinate of the translation.
 	 * @param y The Y-coordinate of the translation.
 	 * @param z The Z-coordinate of the translation.
-	 * @return The current newly-modified {@link DisplayBuilder} instance.
 	 */
 	public DisplayBuilder translate(double x, double y, double z) {
 		return translate(new Vector3d(x, y, z));
 	}
 
 	/**
-	 * Translate the model by the given vector.
-	 *
+	 * Translate the model by the given vector. Note that the game internally clamps this vector between (-80, -80, -80)
+	 * and (80, 80, 80).
 	 * @param vec A translation vector.
-	 * @return The current newly-modified {@link DisplayBuilder} instance.
 	 */
 	public DisplayBuilder translate(Vector3d vec) {
 		this.translation = vec;
@@ -77,32 +75,31 @@ public class DisplayBuilder {
 	}
 
 	/**
-	 * Scale the model by the given vector.
+	 * Scale the model by the given vector. Note that the game internally clamps this vector between (-4, -4, -4) and
+	 * (4, 4, 4).
 	 *
 	 * @param x The scalar for the X-direction.
 	 * @param y The scalar for the Y-direction.
 	 * @param z The scalar for the Z-direction.
-	 * @return The current newly-modified {@link DisplayBuilder} instance.
 	 */
 	public DisplayBuilder scale(double x, double y, double z) {
 		return scale(new Vector3d(x, y, z));
 	}
 
 	/**
-	 * Scale the model by the given scale factor.
+	 * Scale the model by the given scale factor. Note that the game internally clamps this between -4 and 4.
 	 *
 	 * @param f The constant factor to scale the model by in all three cardinal directions.
-	 * @return The current newly-modified {@link DisplayBuilder} instance.
 	 */
 	public DisplayBuilder scale(double f) {
 		return scale(new Vector3d(f));
 	}
 
 	/**
-	 * Scale the model by the given vector.
+	 * Scale the model by the given vector. Note that the game internally clamps this vector between (-4, -4, -4) and
+	 * (4, 4, 4).
 	 *
 	 * @param vec A scale vector.
-	 * @return The current newly-modified {@link DisplayBuilder} instance.
 	 */
 	public DisplayBuilder scale(Vector3d vec) {
 		this.scale = vec;
@@ -117,6 +114,7 @@ public class DisplayBuilder {
 		return entry;
 	}
 
+	@ApiStatus.Internal
 	public JsonObject build() {
 		JsonObject display = new JsonObject();
 		Vector3d zero = new Vector3d();

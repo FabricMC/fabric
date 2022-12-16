@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.datagen.v1.model.property;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector3d;
 
 import net.minecraft.util.math.Direction;
@@ -28,7 +29,7 @@ import net.minecraft.util.math.Direction;
 public class RotationBuilder {
 	private final Vector3d origin;
 	private final Direction.Axis axis;
-	private final float angle;
+	private final Angle angle;
 	private final boolean rescale;
 
 	/**
@@ -36,11 +37,11 @@ public class RotationBuilder {
 	 *
 	 * @param origin An origin point to rotate around, passed as a {@link Vector3d}.
 	 * @param axis The coordinate axis to rotate around (either X, Y or Z).
-	 * @param angle The angle of rotation.
+	 * @param angle The angle of rotation. Limited to 45° through -45° in increments of 22.5°.
 	 * @param rescale Whether to scale the rotated faces across the whole block. Internally defaults to
-	 *                   <code>false</code>.
+	 *                <code>false</code>.
 	 */
-	public RotationBuilder(Vector3d origin, Direction.Axis axis, float angle, boolean rescale) {
+	public RotationBuilder(Vector3d origin, Direction.Axis axis, Angle angle, boolean rescale) {
 		this.origin = origin;
 		this.axis = axis;
 		this.angle = angle;
@@ -52,9 +53,9 @@ public class RotationBuilder {
 	 *
 	 * @param origin An origin point to rotate around, passed as a {@link Vector3d}.
 	 * @param axis The coordinate axis to rotate around (either X, Y or Z).
-	 * @param angle The angle of rotation.
+	 * @param angle The angle of rotation. Limited to 45° through -45° in increments of 22.5°.
 	 */
-	public RotationBuilder(Vector3d origin, Direction.Axis axis, float angle) {
+	public RotationBuilder(Vector3d origin, Direction.Axis axis, Angle angle) {
 		this(origin, axis, angle, false);
 	}
 
@@ -65,11 +66,11 @@ public class RotationBuilder {
 	 * @param y The Y-coordinate of the origin point to rotate around.
 	 * @param z The Z-coordinate of the origin point to rotate around.
 	 * @param axis The coordinate axis to rotate around (either X, Y or Z).
-	 * @param angle The angle of rotation.
+	 * @param angle The angle of rotation. Limited to 45° through -45° in increments of 22.5°.
 	 * @param rescale Whether to scale the rotated faces across the whole block. Internally defaults to
-	 *                   <code>false</code>.
+	 *                <code>false</code>.
 	 */
-	public RotationBuilder(double x, double y, double z, Direction.Axis axis, float angle, boolean rescale) {
+	public RotationBuilder(double x, double y, double z, Direction.Axis axis, Angle angle, boolean rescale) {
 		this(new Vector3d(x, y, z), axis, angle, rescale);
 	}
 
@@ -80,12 +81,13 @@ public class RotationBuilder {
 	 * @param y The Y-coordinate of the origin point to rotate around.
 	 * @param z The Z-coordinate of the origin point to rotate around.
 	 * @param axis The coordinate axis to rotate around (either X, Y or Z).
-	 * @param angle The angle of rotation.
+	 * @param angle The angle of rotation. Limited to 45° through -45° in increments of 22.5°.
 	 */
-	public RotationBuilder(double x, double y, double z, Direction.Axis axis, float angle) {
+	public RotationBuilder(double x, double y, double z, Direction.Axis axis, Angle angle) {
 		this(new Vector3d(x, y, z), axis, angle, false);
 	}
 
+	@ApiStatus.Internal
 	public JsonObject build() {
 		JsonObject rotation = new JsonObject();
 
@@ -96,12 +98,30 @@ public class RotationBuilder {
 		rotation.add("origin", origin);
 
 		rotation.addProperty("axis", axis.getName());
-		rotation.addProperty("angle", angle);
+		rotation.addProperty("angle", angle.getAngle());
 
 		if (rescale) {
 			rotation.addProperty("rescale", true);
 		}
 
 		return rotation;
+	}
+
+	public enum Angle {
+		PLUS45(45),
+		PLUS22p5(22.5f),
+		ZERO(0),
+		MINUS22p5(-22.5f),
+		MINUS45(-45);
+
+		private final float angle;
+
+		Angle(float angle) {
+			this.angle = angle;
+		}
+
+		public float getAngle() {
+			return angle;
+		}
 	}
 }
