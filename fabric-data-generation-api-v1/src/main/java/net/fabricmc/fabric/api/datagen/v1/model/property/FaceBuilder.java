@@ -21,6 +21,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
 import org.joml.Vector4i;
 
 import net.minecraft.data.client.TextureKey;
@@ -31,135 +32,87 @@ import net.minecraft.util.math.Direction;
  * Instantiate this class in order to provide a set of <code>faces</code> to be rendered for an element of a JSON model.
  */
 public class FaceBuilder {
-	private final Vector4i uv;
 	private final TextureKey texture;
+	private Vector4i uv = new Vector4i(0);
 	@Nullable
-	private final Direction cullFace;
-	private final VariantSettings.Rotation rotation;
-	private final int tintIndex;
+	private Direction cullFace = null;
+	private VariantSettings.Rotation rotation = VariantSettings.Rotation.R0;
+	private int tintIndex = -1;
 
 	/**
-	 * Create a new face builder with a given UV, texture key, cull face, rotation and tint index.
+	 * Create a new face builder for the given texture key.
 	 *
-	 * @param uv The UV area of a texture to use for this face, given as a {@link Vector4i}.
 	 * @param texture A key corresponding to the texture to be applied for this element face.
-	 * @param cullFace If specified, this face need not render if a block is directly adjacent to the given one.
-	 * @param rotation The rotation of this texture (quarter-turns only).
-	 * @param tintIndex The tint index for this face, if applicable.
 	 */
-	public FaceBuilder(Vector4i uv, TextureKey texture, @Nullable Direction cullFace, VariantSettings.Rotation rotation, int tintIndex) {
+	public FaceBuilder(TextureKey texture) {
+		this.texture = texture;
+	}
+
+	public FaceBuilder(String textureKey) {
+		this.texture = TextureKey.of(textureKey);
+	}
+
+	/**
+	 * Specifies the area of the texture to use for the face being built. Defaults to the zero vector, in which case
+	 * the UV is automatically determined based on the position of the element.
+	 *
+	 * @param uv The UV coordinates to use for this face texture, given as a {@link Vector4i}.
+	 */
+	public FaceBuilder withUv(Vector4i uv) {
+		validateUv(uv);
+		this.uv = uv;
+		return this;
+	}
+
+	/**
+	 * Specifies the area of the texture to use for the face being built, given in terms of a pair of 2D vectors.
+	 * Defaults to the zero vector, in which case the UV is automatically determined based on the position of the element.
+	 */
+	public FaceBuilder withUv(Vector2i u, Vector2i v) {
+		return withUv(new Vector4i(u, v.x(), v.y()));
+	}
+
+	/**
+	 * Specifies the area of the texture to use for the face being built, given in terms of individual vector components.
+	 * Defaults to the zero vector, in which case the UV is automatically determined based on the position of the element.
+	 */
+	public FaceBuilder withUv(int x1, int y1, int x2, int y2) {
+		return withUv(new Vector4i(x1, y1, x2, y2));
+	}
+
+	/**
+	 * Specifies whether this face need not be rendered when there is a block adjacent to it in the specified position.
+	 *
+	 * @param cullFace The position from which an adjacent block should cull this face, or <code>null</code> to never hide (default).
+	 */
+	public FaceBuilder withCulling(@Nullable Direction cullFace) {
+		this.cullFace = cullFace;
+		return this;
+	}
+
+	/**
+	 * Specifies a texture rotation for the face being built. Only accepts quarter-turns.
+	 */
+	public FaceBuilder withRotation(VariantSettings.Rotation rotation) {
+		this.rotation = rotation;
+		return this;
+	}
+
+	/**
+	 * Specified a tint index for this face. Tint indexes are hardcoded into a respective item/block and correspond to
+	 * some colour to be applied to a given face texture as defined in its class. Defaults to -1 (no tint index).
+	 */
+	public FaceBuilder withTintIndex(int tintIndex) {
+		this.tintIndex = tintIndex;
+		return this;
+	}
+
+	private void validateUv(Vector4i uv) {
 		int[] components = {uv.x, uv.y, uv.z, uv.w};
 
 		for (int c : components) {
 			Preconditions.checkArgument(c >= 0 && c <= 16, "Component out of range");
 		}
-
-		this.uv = uv;
-		this.texture = texture;
-		this.cullFace = cullFace;
-		this.rotation = rotation;
-		this.tintIndex = tintIndex;
-	}
-
-	/**
-	 * Create a new face builder with a given UV, texture key, cull face and rotation.
-	 *
-	 * @param uv The UV area of a texture to use for this face, given as a {@link Vector4i}.
-	 * @param texture A key corresponding to the texture to be applied for this element face.
-	 * @param cullFace If specified, this face need not render if a block is directly adjacent to the given one.
-	 * @param rotation The rotation of this texture (quarter-turns only).
-	 */
-	public FaceBuilder(Vector4i uv, TextureKey texture, @Nullable Direction cullFace, VariantSettings.Rotation rotation) {
-		this(uv, texture, cullFace, rotation, -1);
-	}
-
-	/**
-	 * Create a new face builder with a given UV, texture key and cull face.
-	 *
-	 * @param uv The UV area of a texture to use for this face, given as a {@link Vector4i}.
-	 * @param texture A key corresponding to the texture to be applied for this element face.
-	 * @param cullFace If specified, this face need not render if a block is directly adjacent to the given one.
-	 */
-	public FaceBuilder(Vector4i uv, TextureKey texture, @Nullable Direction cullFace) {
-		this(uv, texture, cullFace, VariantSettings.Rotation.R0, -1);
-	}
-
-	/**
-	 * Create a new face builder with a given UV and texture key..
-	 *
-	 * @param uv The UV area of a texture to use for this face, given as a {@link Vector4i}.
-	 * @param texture A key corresponding to the texture to be applied for this element face.
-	 */
-	public FaceBuilder(Vector4i uv, TextureKey texture) {
-		this(uv, texture, null, VariantSettings.Rotation.R0, -1);
-	}
-
-	/**
-	 * Create a new face builder with a given UV, texture key, cull face, rotation and tint index.
-	 *
-	 * @param x1 The X-coordinate of the first vertex (U).
-	 * @param y1 The Y-coordinate of the first vertex (U).
-	 * @param x2 The X-coordinate of the second vertex (V).
-	 * @param y2 The Y-coordinate of the second vertex (V).
-	 * @param texture A key corresponding to the texture to be applied for this element face.
-	 * @param cullFace If specified, this face need not render if a block is directly adjacent to the given one.
-	 * @param rotation The rotation of this texture (quarter-turns only).
-	 * @param tintIndex The tint index for this face, if applicable.
-	 */
-	public FaceBuilder(int x1, int y1, int x2, int y2, TextureKey texture, @Nullable Direction cullFace, VariantSettings.Rotation rotation, int tintIndex) {
-		this(new Vector4i(x1, y1, x2, y2), texture, cullFace, rotation, tintIndex);
-	}
-
-	/**
-	 * Create a new face builder with a given UV, texture key, cull face and rotation.
-	 *
-	 * @param x1 The X-coordinate of the first vertex (U).
-	 * @param y1 The Y-coordinate of the first vertex (U).
-	 * @param x2 The X-coordinate of the second vertex (V).
-	 * @param y2 The Y-coordinate of the second vertex (V).
-	 * @param texture A key corresponding to the texture to be applied for this element face.
-	 * @param cullFace If specified, this face need not render if a block is directly adjacent to the given one.
-	 * @param rotation The rotation of this texture (quarter-turns only).
-	 */
-	public FaceBuilder(int x1, int y1, int x2, int y2, TextureKey texture, @Nullable Direction cullFace, VariantSettings.Rotation rotation) {
-		this(x1, y1, x2, y2, texture, cullFace, rotation, -1);
-	}
-
-	/**
-	 * Create a new face builder with a given UV, texture key and cull face.
-	 *
-	 * @param x1 The X-coordinate of the first vertex (U).
-	 * @param y1 The Y-coordinate of the first vertex (U).
-	 * @param x2 The X-coordinate of the second vertex (V).
-	 * @param y2 The Y-coordinate of the second vertex (V).
-	 * @param texture A key corresponding to the texture to be applied for this element face.
-	 * @param cullFace If specified, this face need not render if a block is directly adjacent to the given one.
-	 */
-	public FaceBuilder(int x1, int y1, int x2, int y2, TextureKey texture, @Nullable Direction cullFace) {
-		this(x1, y1, x2, y2, texture, cullFace, VariantSettings.Rotation.R0, -1);
-	}
-
-	/**
-	 * Create a new face builder with a given UV and texture key.
-	 *
-	 * @param x1 The X-coordinate of the first vertex (U).
-	 * @param y1 The Y-coordinate of the first vertex (U).
-	 * @param x2 The X-coordinate of the second vertex (V).
-	 * @param y2 The Y-coordinate of the second vertex (V).
-	 * @param texture A key corresponding to the texture to be applied for this element face.
-	 */
-	public FaceBuilder(int x1, int y1, int x2, int y2, TextureKey texture) {
-		this(x1, y1, x2, y2, texture, null, VariantSettings.Rotation.R0, -1);
-	}
-
-	/**
-	 * Create a new face builder with a given texture key.
-	 * Defaults UV data to be based on the position of the element whose face is being built.
-	 *
-	 * @param texture A key corresponding to the texture to be applied for this element face.
-	 */
-	public FaceBuilder(TextureKey texture) {
-		this(new Vector4i(0), texture, null, VariantSettings.Rotation.R0, -1);
 	}
 
 	@ApiStatus.Internal

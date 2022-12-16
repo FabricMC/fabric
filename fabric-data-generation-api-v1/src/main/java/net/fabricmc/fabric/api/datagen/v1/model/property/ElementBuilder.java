@@ -34,8 +34,8 @@ public class ElementBuilder {
 	private final Vector3d from;
 	private final Vector3d to;
 	@Nullable
-	private final RotationBuilder rotation;
-	private final boolean shade;
+	private RotationBuilder rotation = null;
+	private boolean shade = true;
 	private final EnumMap<Direction, FaceBuilder> faces = new EnumMap<>(Direction.class);
 
 	/**
@@ -44,10 +44,8 @@ public class ElementBuilder {
 	 *
 	 * @param from The vertex to start drawing out a cuboid element from, given as a {@link Vector3d}.
 	 * @param to The vertex to stop drawing the element at, given as a {@link Vector3d}.
-	 * @param rotation An instance of a {@link RotationBuilder} to provide a <code>rotation</code> for the element.
-	 * @param renderShadows Whether to render shadows cast by this element.
 	 */
-	public ElementBuilder(Vector3d from, Vector3d to, @Nullable RotationBuilder rotation, boolean renderShadows) {
+	public ElementBuilder(Vector3d from, Vector3d to) {
 		double[] components = {from.x, from.y, from.z, to.x, to.y, to.z};
 
 		for (double c : components) {
@@ -56,61 +54,6 @@ public class ElementBuilder {
 
 		this.from = from;
 		this.to = to;
-		this.rotation = rotation;
-		this.shade = renderShadows;
-	}
-
-	/**
-	 * Create a new element builder with a given pair of opposite vertices and optional {@link RotationBuilder}.
-	 *
-	 * @param from The vertex to start drawing out a cuboid element from, given as a {@link Vector3d}.
-	 * @param to The vertex to stop drawing the element at, given as a {@link Vector3d}.
-	 * @param rotation An instance of a {@link RotationBuilder} to provide a <code>rotation</code> for the element.
-	 */
-	public ElementBuilder(Vector3d from, Vector3d to, @Nullable RotationBuilder rotation) {
-		this(from, to, rotation, true);
-	}
-
-	/**
-	 * Create a new element builder with a given pair of opposite vertices.
-	 *
-	 * @param from The vertex to start drawing out a cuboid element from, given as a {@link Vector3d}.
-	 * @param to The vertex to stop drawing the element at, given as a {@link Vector3d}.
-	 */
-	public ElementBuilder(Vector3d from, Vector3d to) {
-		this(from, to, null, true);
-	}
-
-	/**
-	 * Create a new element builder with a given pair of opposite vertices and optional {@link RotationBuilder} and
-	 * shading.
-	 *
-	 * @param fromX The X-coordinate of the vertex to start drawing out a cuboid element from.
-	 * @param fromY The Y-coordinate of the vertex to start drawing out a cuboid element from.
-	 * @param fromZ The Z-coordinate of the vertex to start drawing out a cuboid element from.
-	 * @param toX The X-coordinate of the vertex to stop drawing the element at.
-	 * @param toY The Y-coordinate of the vertex to stop drawing the element at.
-	 * @param toZ The Z-coordinate of the vertex to stop drawing the element at.
-	 * @param rotation An instance of a {@link RotationBuilder} to provide a <code>rotation</code> for the element.
-	 * @param renderShadows Whether to render shadows cast by this element.
-	 */
-	public ElementBuilder(double fromX, double fromY, double fromZ, double toX, double toY, double toZ, @Nullable RotationBuilder rotation, boolean renderShadows) {
-		this(new Vector3d(fromX, fromY, fromZ), new Vector3d(toX, toY, toZ), rotation, renderShadows);
-	}
-
-	/**
-	 * Create a new element builder with a given pair of opposite vertices and optional {@link RotationBuilder}.
-	 *
-	 * @param fromX The X-coordinate of the vertex to start drawing out a cuboid element from.
-	 * @param fromY The Y-coordinate of the vertex to start drawing out a cuboid element from.
-	 * @param fromZ The Z-coordinate of the vertex to start drawing out a cuboid element from.
-	 * @param toX The X-coordinate of the vertex to stop drawing the element at.
-	 * @param toY The Y-coordinate of the vertex to stop drawing the element at.
-	 * @param toZ The Z-coordinate of the vertex to stop drawing the element at.
-	 * @param rotation An instance of a {@link RotationBuilder} to provide a <code>rotation</code> for the element.
-	 */
-	public ElementBuilder(double fromX, double fromY, double fromZ, double toX, double toY, double toZ, @Nullable RotationBuilder rotation) {
-		this(new Vector3d(fromX, fromY, fromZ), new Vector3d(toX, toY, toZ), rotation, true);
 	}
 
 	/**
@@ -124,7 +67,26 @@ public class ElementBuilder {
 	 * @param toZ The Z-coordinate of the vertex to stop drawing the element at.
 	 */
 	public ElementBuilder(double fromX, double fromY, double fromZ, double toX, double toY, double toZ) {
-		this(new Vector3d(fromX, fromY, fromZ), new Vector3d(toX, toY, toZ), null, true);
+		this(new Vector3d(fromX, fromY, fromZ), new Vector3d(toX, toY, toZ));
+	}
+
+	/**
+	 * Sets a rotation to be applied to the element being built.
+	 *
+	 * @param rotation An instance of a {@link RotationBuilder} to provide a <code>rotation</code> for the element, or
+	 *                 <code>null</code> for no rotation.
+	 */
+	public ElementBuilder withRotation(@Nullable RotationBuilder rotation) {
+		this.rotation = rotation;
+		return this;
+	}
+
+	/**
+	 * Toggles whether to render shadows cast by the element being built.
+	 */
+	public ElementBuilder withShading(boolean shade) {
+		this.shade = shade;
+		return this;
 	}
 
 	/**

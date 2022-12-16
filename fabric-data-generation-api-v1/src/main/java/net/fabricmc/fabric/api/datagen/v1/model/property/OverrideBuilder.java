@@ -41,14 +41,14 @@ public class OverrideBuilder {
 	}
 
 	/**
-	 * Adds a new predicate set to dictate when to switch to the provided item model.
+	 * Adds a predicate to dictate when to switch to the provided item model.
 	 *
 	 * @param key The ID of an item property to check for.
 	 * @param value The value of the property for which the override should be carried out. Must be between 0 and 1.
 	 */
 	public OverrideBuilder predicate(Identifier key, float value) {
 		Preconditions.checkArgument(value >= 0 && value <= 1, "Predicate value out of range");
-		this.predicates.putIfAbsent(key, value);
+		this.predicates.put(key, value);
 		return this;
 	}
 
