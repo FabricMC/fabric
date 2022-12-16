@@ -28,15 +28,13 @@ import net.minecraft.data.client.TextureKey;
 import net.minecraft.data.client.TextureMap;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.datagen.v1.model.property.DisplayBuilder;
-import net.fabricmc.fabric.api.datagen.v1.model.property.ElementBuilder;
 import net.fabricmc.fabric.api.datagen.v1.model.property.OverrideBuilder;
 import net.fabricmc.fabric.mixin.datagen.TextureMapAccessor;
 
 /**
  * Dedicated builder class for standard Minecraft item models.
  */
-public class ItemModelBuilder extends ModelBuilder {
+public class ItemModelBuilder extends ModelBuilder<ItemModelBuilder> {
 	private final List<OverrideBuilder> overrides = new ArrayList<>();
 	private GuiLight guiLight = null;
 
@@ -76,41 +74,6 @@ public class ItemModelBuilder extends ModelBuilder {
 		builder.overrides.addAll(model.getOverrideBuilders());
 
 		return builder;
-	}
-
-	@Override
-	public ItemModelBuilder addTexture(TextureKey key, Identifier texture) {
-		return (ItemModelBuilder) super.addTexture(key, texture);
-	}
-
-	@Override
-	public ItemModelBuilder addTexture(String key, Identifier texture) {
-		return (ItemModelBuilder) super.addTexture(key, texture);
-	}
-
-	@Override
-	public ModelBuilder clearTextures() {
-		return super.clearTextures();
-	}
-
-	@Override
-	public ItemModelBuilder addDisplay(DisplayBuilder.Position position, DisplayBuilder display) {
-		return (ItemModelBuilder) super.addDisplay(position, display);
-	}
-
-	@Override
-	public ItemModelBuilder clearDisplays() {
-		return (ItemModelBuilder) super.clearDisplays();
-	}
-
-	@Override
-	public ItemModelBuilder addElement(ElementBuilder element) {
-		return (ItemModelBuilder) super.addElement(element);
-	}
-
-	@Override
-	public ItemModelBuilder clearElements() {
-		return (ItemModelBuilder) super.clearElements();
 	}
 
 	/**

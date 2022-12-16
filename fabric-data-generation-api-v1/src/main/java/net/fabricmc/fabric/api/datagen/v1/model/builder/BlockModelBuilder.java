@@ -25,14 +25,12 @@ import net.minecraft.data.client.TextureKey;
 import net.minecraft.data.client.TextureMap;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.datagen.v1.model.property.DisplayBuilder;
-import net.fabricmc.fabric.api.datagen.v1.model.property.ElementBuilder;
 import net.fabricmc.fabric.mixin.datagen.TextureMapAccessor;
 
 /**
  * Dedicated builder class for standard Minecraft block models.
  */
-public class BlockModelBuilder extends ModelBuilder {
+public class BlockModelBuilder extends ModelBuilder<BlockModelBuilder> {
 	private boolean occlude = true;
 
 	private BlockModelBuilder(Identifier parent) {
@@ -56,41 +54,6 @@ public class BlockModelBuilder extends ModelBuilder {
 		builder.occlude = model.getAmbientOcclusion();
 
 		return builder;
-	}
-
-	@Override
-	public BlockModelBuilder addTexture(TextureKey key, Identifier texture) {
-		return (BlockModelBuilder) super.addTexture(key, texture);
-	}
-
-	@Override
-	public BlockModelBuilder addTexture(String key, Identifier texture) {
-		return (BlockModelBuilder) super.addTexture(key, texture);
-	}
-
-	@Override
-	public BlockModelBuilder clearTextures() {
-		return (BlockModelBuilder) super.clearTextures();
-	}
-
-	@Override
-	public BlockModelBuilder addDisplay(DisplayBuilder.Position position, DisplayBuilder display) {
-		return (BlockModelBuilder) super.addDisplay(position, display);
-	}
-
-	@Override
-	public BlockModelBuilder clearDisplays() {
-		return (BlockModelBuilder) super.clearDisplays();
-	}
-
-	@Override
-	public BlockModelBuilder addElement(ElementBuilder element) {
-		return (BlockModelBuilder) super.addElement(element);
-	}
-
-	@Override
-	public BlockModelBuilder clearElements() {
-		return (BlockModelBuilder) super.clearElements();
 	}
 
 	/**

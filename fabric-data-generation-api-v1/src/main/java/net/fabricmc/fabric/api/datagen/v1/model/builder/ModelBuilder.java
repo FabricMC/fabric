@@ -39,7 +39,8 @@ import net.fabricmc.fabric.api.datagen.v1.model.property.ElementBuilder;
  *
  * <p>Note that custom non-block/item models may generally need to be generated under {@link net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider#generateItemModels(ItemModelGenerator)}.
  */
-public abstract class ModelBuilder {
+@SuppressWarnings("unchecked")
+public abstract class ModelBuilder<T extends ModelBuilder<T>> {
 	protected final Identifier parent;
 	protected final Set<TextureKey> requiredTextures = new HashSet<>();
 	protected final HashMap<TextureKey, Identifier> textures = new HashMap<>();
@@ -51,34 +52,48 @@ public abstract class ModelBuilder {
 	}
 
 	/**
-	 * Adds a new texture key for this model and associates a texture file with it.
+	 * Adds a texture key for this model and associates a texture file with it. If the key already exists for this
+	 * builder, its texture will simply be replaced. If using a {@link TextureKey} instance, an optional parent for the
+	 * key itself can be specified.
 	 *
 	 * @param key An instanced {@link TextureKey} to hold the texture for.
 	 * @param texture The namespaced ID of the texture for this key.
 	 */
-	public ModelBuilder addTexture(TextureKey key, Identifier texture) {
+	public T addTexture(TextureKey key, Identifier texture) {
 		this.requiredTextures.add(key);
 		this.textures.put(key, texture);
-		return this;
+		return (T) this;
 	}
 
 	/**
-	 * Adds a new texture key for this model and associates a texture file with it.
+	 * Adds a texture key for this model and associates a texture file with it. If the key already exists for this
+	 * builder, its texture will simply be replaced.
 	 *
 	 * @param key A key to hold the texture for.
 	 * @param texture The namespaced ID of the texture for this key.
 	 */
-	public ModelBuilder addTexture(String key, Identifier texture) {
+	public T addTexture(String key, Identifier texture) {
 		return addTexture(TextureKey.of(key), texture);
+	}
+
+	/**
+	 * Removes a texture and its key from this model builder.
+	 *
+	 * @param key The texture key to remove.
+	 */
+	public T removeTexture(TextureKey key) {
+		this.requiredTextures.remove(key);
+		this.textures.remove(key);
+		return (T) this;
 	}
 
 	/**
 	 * Clears all current textures and texture keys for this model builder.
 	 */
-	public ModelBuilder clearTextures() {
+	public T clearTextures() {
 		this.requiredTextures.clear();
 		this.textures.clear();
-		return this;
+		return (T) this;
 	}
 
 	/**
@@ -92,17 +107,27 @@ public abstract class ModelBuilder {
 	 *                 (<code>FIXED</code>).
 	 * @param display A {@link DisplayBuilder} to build the required display property from.
 	 */
-	public ModelBuilder addDisplay(DisplayBuilder.Position position, DisplayBuilder display) {
+	public T addDisplay(DisplayBuilder.Position position, DisplayBuilder display) {
 		this.displays.put(position, display);
-		return this;
+		return (T) this;
+	}
+
+	/**
+	 * Removes a display entry from this model builder.
+	 *
+	 * @param position The display position whose entry to remove.
+	 */
+	public T removeDisplay(DisplayBuilder.Position position) {
+		this.displays.remove(position);
+		return (T) this;
 	}
 
 	/**
 	 * Clears all current {@link DisplayBuilder}s for this model builder.
 	 */
-	public ModelBuilder clearDisplays() {
+	public T clearDisplays() {
 		this.displays.clear();
-		return this;
+		return (T) this;
 	}
 
 	/**
@@ -111,17 +136,17 @@ public abstract class ModelBuilder {
 	 *
 	 * @param element An {@link ElementBuilder} to build an individual entry from.
 	 */
-	public ModelBuilder addElement(ElementBuilder element) {
+	public T addElement(ElementBuilder element) {
 		this.elements.add(element);
-		return this;
+		return (T) this;
 	}
 
 	/**
 	 * Clears all current {@link ElementBuilder}s for this model builder.
 	 */
-	public ModelBuilder clearElements() {
+	public T clearElements() {
 		this.elements.clear();
-		return this;
+		return (T) this;
 	}
 
 	/**
