@@ -19,6 +19,8 @@ package net.fabricmc.fabric.api.datagen.v1.model;
 import net.minecraft.block.Block;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.datagen.v1.model.builder.BlockModelBuilder;
+
 /**
  * Fabric-provided extensions for {@link net.minecraft.data.client.BlockStateModelGenerator}.
  *
@@ -43,6 +45,10 @@ public interface FabricBlockStateModelGenerator {
 	 * @param id   The ID/path for the generated "model".
 	 */
 	default void registerEmptyModel(Block block, Identifier id) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	default void buildWithSingletonState(Block block, BlockModelBuilder builder) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 }

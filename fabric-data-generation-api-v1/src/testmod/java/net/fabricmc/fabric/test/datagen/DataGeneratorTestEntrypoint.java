@@ -43,12 +43,9 @@ import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.data.client.BlockStateModelGenerator;
-import net.minecraft.data.client.BlockStateVariant;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.Models;
 import net.minecraft.data.client.TextureMap;
-import net.minecraft.data.client.VariantSettings;
-import net.minecraft.data.client.VariantsBlockStateSupplier;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.entity.EntityType;
@@ -251,7 +248,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerSimpleCubeAll(BLOCK_WITH_VANILLA_LOOT_TABLE);
 			blockStateModelGenerator.registerSimpleCubeAll(BLOCK_THAT_DROPS_NOTHING);
 
-			// TODO: needs more simplification
+			// TODO: needs more simplification?
 			BlockModelBuilder customModel = BlockModelBuilder.createNew(new Identifier(MOD_ID, "custom"))
 					.addTexture("texture1", new Identifier(MOD_ID, "block_with_custom_model_1_1"))
 					.addTexture("texture2", new Identifier(MOD_ID, "block_with_custom_model_1_2"))
@@ -259,16 +256,14 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							.rotate(45, 45, 45)
 							.scale(2))
 					.occludes(false);
-			blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(BLOCK_WITH_CUSTOM_MODEL_1,
-					BlockStateVariant.create().put(VariantSettings.MODEL, customModel.buildModel().upload(BLOCK_WITH_CUSTOM_MODEL_1, customModel.mapTextures(), blockStateModelGenerator.modelCollector))));
+			blockStateModelGenerator.buildWithSingletonState(BLOCK_WITH_CUSTOM_MODEL_1, customModel);
 
 			customModel.clearElements().clearDisplays()
 					.addTexture("texture1", new Identifier(MOD_ID, "block_with_custom_model_2_1"))
 					.addTexture("texture2", new Identifier(MOD_ID, "block_with_custom_model_2_2"))
 					.addTexture("texture3", new Identifier(MOD_ID, "block_with_custom_model_2_3"))
 					.occludes(true);
-			blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(BLOCK_WITH_CUSTOM_MODEL_2,
-					BlockStateVariant.create().put(VariantSettings.MODEL, customModel.buildModel().upload(BLOCK_WITH_CUSTOM_MODEL_2, customModel.mapTextures(), blockStateModelGenerator.modelCollector))));
+			blockStateModelGenerator.buildWithSingletonState(BLOCK_WITH_CUSTOM_MODEL_2, customModel);
 
 			blockStateModelGenerator.registerEmptyModel(BLOCK_WITH_EMPTY_MODEL);
 		}

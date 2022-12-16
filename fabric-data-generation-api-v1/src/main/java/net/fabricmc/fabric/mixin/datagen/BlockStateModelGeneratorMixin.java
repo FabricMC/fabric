@@ -29,10 +29,14 @@ import org.spongepowered.asm.mixin.Shadow;
 import net.minecraft.block.Block;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.BlockStateSupplier;
+import net.minecraft.data.client.BlockStateVariant;
 import net.minecraft.data.client.ModelIds;
+import net.minecraft.data.client.VariantSettings;
+import net.minecraft.data.client.VariantsBlockStateSupplier;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.model.FabricBlockStateModelGenerator;
+import net.fabricmc.fabric.api.datagen.v1.model.builder.BlockModelBuilder;
 
 @Mixin(BlockStateModelGenerator.class)
 public abstract class BlockStateModelGeneratorMixin implements FabricBlockStateModelGenerator {
@@ -53,5 +57,11 @@ public abstract class BlockStateModelGeneratorMixin implements FabricBlockStateM
 	public void registerEmptyModel(Block block, Identifier id) {
 		this.modelCollector.accept(id, JsonObject::new);
 		this.blockStateCollector.accept(BlockStateModelGenerator.createSingletonBlockState(block, id));
+	}
+
+	@Override
+	public void buildWithSingletonState(Block block, BlockModelBuilder builder) {
+		Identifier model = builder.buildModel().upload(block, builder.mapTextures(), this.modelCollector);
+		this.blockStateCollector.accept(VariantsBlockStateSupplier.create(block, BlockStateVariant.create().put(VariantSettings.MODEL, model)));
 	}
 }
