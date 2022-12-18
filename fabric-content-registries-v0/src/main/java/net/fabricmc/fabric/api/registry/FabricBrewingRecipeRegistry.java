@@ -37,7 +37,7 @@ public final class FabricBrewingRecipeRegistry {
 	 * Use {@link BrewingRecipeRegistry#registerPotionType(Item)} to register new potion types.
 	 * @param input the input potion type (e.g. regular potion)
 	 * @param ingredient the required ingredient (e.g. gunpowder)
-	 * @param output the output type  (e.g. splash potion)
+	 * @param output the output type (e.g. splash potion)
 	 * @see BrewingRecipeRegistry#registerItemRecipe(Item, Item, Item)
 	 */
 	public static void registerItemRecipe(PotionItem input, Ingredient ingredient, PotionItem output) {
