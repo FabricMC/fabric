@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.ingredient.client;
+package net.fabricmc.fabric.impl.recipe.ingredient.client;
 
 import java.util.concurrent.CompletableFuture;
 
