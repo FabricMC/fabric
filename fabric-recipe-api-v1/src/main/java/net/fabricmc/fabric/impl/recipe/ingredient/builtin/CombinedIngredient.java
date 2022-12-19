@@ -30,14 +30,14 @@ import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
 /**
- * Based class for AND and OR ingredients.
+ * Base class for ALL and ANY ingredients.
  */
 abstract class CombinedIngredient implements CustomIngredient {
 	protected final Ingredient[] ingredients;
 
 	protected CombinedIngredient(Ingredient[] ingredients) {
 		if (ingredients.length == 0) {
-			throw new IllegalArgumentException("AND or OR ingredient must have at least one sub-ingredient");
+			throw new IllegalArgumentException("ALL or ANY ingredient must have at least one sub-ingredient");
 		}
 
 		this.ingredients = ingredients;

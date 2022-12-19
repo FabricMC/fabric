@@ -25,6 +25,7 @@
   },
   "entrypoints": {
     "main": [
+      "net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientInit",
       "net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientSync"
     ],
     "client": [

@@ -32,11 +32,10 @@ public class SerializationTests {
 	 */
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testArrayDeserialization(TestContext context) {
-		//CHECKSTYLE.OFF: RegexpMultiline - Checkstyle doesn't like multiline strings
 		String ingredientJson = """
 [
 	{
-		"fabric:type": "fabric:and",
+		"fabric:type": "fabric:all",
 		"ingredients": [
 			{
 				"item": "minecraft:stone"
@@ -47,7 +46,6 @@ public class SerializationTests {
 	}
 ]
 				""";
-		//CHECKSTYLE.ON: RegexpMultiline
 		JsonElement json = JsonParser.parseString(ingredientJson);
 
 		try {

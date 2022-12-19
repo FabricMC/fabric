@@ -31,7 +31,7 @@ import net.minecraft.util.JsonHelper;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.FabricIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
-import net.fabricmc.fabric.impl.recipe.ingredient.builtin.OrIngredient;
+import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AnyIngredient;
 
 @Mixin(Ingredient.class)
 public class IngredientMixin implements FabricIngredient {
@@ -64,12 +64,12 @@ public class IngredientMixin implements FabricIngredient {
 
 	/**
 	 * Throw exception when someone attempts to use our custom key inside an array ingredient.
-	 * The {@link OrIngredient} should be used instead.
+	 * The {@link AnyIngredient} should be used instead.
 	 */
 	@Inject(at = @At("HEAD"), method = "entryFromJson")
 	private static void injectEntryFromJson(JsonObject obj, CallbackInfoReturnable<?> cir) {
 		if (obj.has(CustomIngredientImpl.TYPE_KEY)) {
-			throw new IllegalArgumentException("Custom ingredient cannot be used inside an array ingredient. You can replace the array by a fabric:or ingredient.");
+			throw new IllegalArgumentException("Custom ingredient cannot be used inside an array ingredient. You can replace the array by a fabric:any ingredient.");
 		}
 	}
 

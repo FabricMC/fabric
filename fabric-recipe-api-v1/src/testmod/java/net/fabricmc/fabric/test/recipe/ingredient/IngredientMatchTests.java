@@ -33,42 +33,42 @@ import net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients;
 
 public class IngredientMatchTests {
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
-	public void testAndIngredient(TestContext context) {
-		Ingredient andIngredient = DefaultCustomIngredients.and(Ingredient.ofItems(Items.APPLE, Items.CARROT), Ingredient.ofItems(Items.STICK, Items.CARROT));
+	public void testAllIngredient(TestContext context) {
+		Ingredient allIngredient = DefaultCustomIngredients.all(Ingredient.ofItems(Items.APPLE, Items.CARROT), Ingredient.ofItems(Items.STICK, Items.CARROT));
 
-		assertEquals(1, andIngredient.getMatchingStacks().length);
-		assertEquals(Items.CARROT, andIngredient.getMatchingStacks()[0].getItem());
-		assertEquals(false, andIngredient.isEmpty());
+		assertEquals(1, allIngredient.getMatchingStacks().length);
+		assertEquals(Items.CARROT, allIngredient.getMatchingStacks()[0].getItem());
+		assertEquals(false, allIngredient.isEmpty());
 
-		assertEquals(false, andIngredient.test(new ItemStack(Items.APPLE)));
-		assertEquals(true, andIngredient.test(new ItemStack(Items.CARROT)));
-		assertEquals(false, andIngredient.test(new ItemStack(Items.STICK)));
+		assertEquals(false, allIngredient.test(new ItemStack(Items.APPLE)));
+		assertEquals(true, allIngredient.test(new ItemStack(Items.CARROT)));
+		assertEquals(false, allIngredient.test(new ItemStack(Items.STICK)));
 
-		Ingredient emptyAndIngredient = DefaultCustomIngredients.and(Ingredient.ofItems(Items.APPLE), Ingredient.ofItems(Items.STICK));
+		Ingredient emptyAllIngredient = DefaultCustomIngredients.all(Ingredient.ofItems(Items.APPLE), Ingredient.ofItems(Items.STICK));
 
-		assertEquals(0, emptyAndIngredient.getMatchingStacks().length);
-		assertEquals(true, emptyAndIngredient.isEmpty());
+		assertEquals(0, emptyAllIngredient.getMatchingStacks().length);
+		assertEquals(true, emptyAllIngredient.isEmpty());
 
-		assertEquals(false, emptyAndIngredient.test(new ItemStack(Items.APPLE)));
-		assertEquals(false, emptyAndIngredient.test(new ItemStack(Items.STICK)));
+		assertEquals(false, emptyAllIngredient.test(new ItemStack(Items.APPLE)));
+		assertEquals(false, emptyAllIngredient.test(new ItemStack(Items.STICK)));
 
 		context.complete();
 	}
 
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
-	public void testOrIngredient(TestContext context) {
-		Ingredient orIngredient = DefaultCustomIngredients.or(Ingredient.ofItems(Items.APPLE, Items.CARROT), Ingredient.ofItems(Items.STICK, Items.CARROT));
+	public void testAnyIngredient(TestContext context) {
+		Ingredient anyIngredient = DefaultCustomIngredients.any(Ingredient.ofItems(Items.APPLE, Items.CARROT), Ingredient.ofItems(Items.STICK, Items.CARROT));
 
-		assertEquals(4, orIngredient.getMatchingStacks().length);
-		assertEquals(Items.APPLE, orIngredient.getMatchingStacks()[0].getItem());
-		assertEquals(Items.CARROT, orIngredient.getMatchingStacks()[1].getItem());
-		assertEquals(Items.STICK, orIngredient.getMatchingStacks()[2].getItem());;
-		assertEquals(Items.CARROT, orIngredient.getMatchingStacks()[3].getItem());
-		assertEquals(false, orIngredient.isEmpty());
+		assertEquals(4, anyIngredient.getMatchingStacks().length);
+		assertEquals(Items.APPLE, anyIngredient.getMatchingStacks()[0].getItem());
+		assertEquals(Items.CARROT, anyIngredient.getMatchingStacks()[1].getItem());
+		assertEquals(Items.STICK, anyIngredient.getMatchingStacks()[2].getItem());;
+		assertEquals(Items.CARROT, anyIngredient.getMatchingStacks()[3].getItem());
+		assertEquals(false, anyIngredient.isEmpty());
 
-		assertEquals(true, orIngredient.test(new ItemStack(Items.APPLE)));
-		assertEquals(true, orIngredient.test(new ItemStack(Items.CARROT)));
-		assertEquals(true, orIngredient.test(new ItemStack(Items.STICK)));
+		assertEquals(true, anyIngredient.test(new ItemStack(Items.APPLE)));
+		assertEquals(true, anyIngredient.test(new ItemStack(Items.CARROT)));
+		assertEquals(true, anyIngredient.test(new ItemStack(Items.STICK)));
 
 		context.complete();
 	}

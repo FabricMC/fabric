@@ -26,33 +26,31 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
-public class AndIngredient extends CombinedIngredient {
-	public static final CustomIngredientSerializer<AndIngredient> SERIALIZER =
-			new Serializer<>(new Identifier("fabric", "and"), AndIngredient::new);
+public class AnyIngredient extends CombinedIngredient {
+	public static final CustomIngredientSerializer<AnyIngredient> SERIALIZER =
+			new CombinedIngredient.Serializer<>(new Identifier("fabric", "any"), AnyIngredient::new);
 
-	public AndIngredient(Ingredient[] ingredients) {
+	public AnyIngredient(Ingredient[] ingredients) {
 		super(ingredients);
 	}
 
 	@Override
 	public boolean test(ItemStack stack) {
 		for (Ingredient ingredient : ingredients) {
-			if (!ingredient.test(stack)) {
-				return false;
+			if (ingredient.test(stack)) {
+				return true;
 			}
 		}
 
-		return true;
+		return false;
 	}
 
 	@Override
 	public ItemStack[] getMatchingStacks() {
-		// There's always at least one sub ingredient, so accessing ingredients[0] is safe.
-		List<ItemStack> previewStacks = new ArrayList<>(Arrays.asList(ingredients[0].getMatchingStacks()));
+		List<ItemStack> previewStacks = new ArrayList<>();
 
-		for (int i = 1; i < ingredients.length; ++i) {
-			Ingredient ing = ingredients[i];
-			previewStacks.removeIf(stack -> !ing.test(stack));
+		for (Ingredient ingredient : ingredients) {
+			previewStacks.addAll(Arrays.asList(ingredient.getMatchingStacks()));
 		}
 
 		return previewStacks.toArray(ItemStack[]::new);

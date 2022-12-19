@@ -138,13 +138,13 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			// Test AND
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.TORCH)
 					// charcoal only
-					.input(DefaultCustomIngredients.and(Ingredient.fromTag(ItemTags.COALS), Ingredient.ofItems(Items.CHARCOAL)))
+					.input(DefaultCustomIngredients.all(Ingredient.fromTag(ItemTags.COALS), Ingredient.ofItems(Items.CHARCOAL)))
 					.criterion("has_charcoal", conditionsFromItem(Items.CHARCOAL))
 					.offerTo(exporter);
 
 			// Test OR
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLD_BLOCK)
-					.input(DefaultCustomIngredients.or(Ingredient.ofItems(Items.GOLDEN_PICKAXE), Ingredient.ofItems(Items.GOLDEN_SHOVEL)))
+					.input(DefaultCustomIngredients.any(Ingredient.ofItems(Items.GOLDEN_PICKAXE), Ingredient.ofItems(Items.GOLDEN_SHOVEL)))
 					.criterion("has_pickaxe", conditionsFromItem(Items.GOLDEN_PICKAXE))
 					.criterion("has_shovel", conditionsFromItem(Items.GOLDEN_SHOVEL))
 					.offerTo(exporter);
@@ -152,7 +152,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			// Test difference
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.BEACON)
 					.input(DefaultCustomIngredients.difference(
-							DefaultCustomIngredients.or(
+							DefaultCustomIngredients.any(
 									Ingredient.fromTag(ItemTags.BEACON_PAYMENT_ITEMS),
 									Ingredient.ofItems(Items.COPPER_INGOT)),
 							Ingredient.ofItems(Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND)))

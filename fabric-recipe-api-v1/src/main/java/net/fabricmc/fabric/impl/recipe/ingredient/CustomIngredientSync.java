@@ -45,7 +45,7 @@ import net.fabricmc.fabric.mixin.recipe.ingredient.PacketEncoderMixin;
  */
 public class CustomIngredientSync implements ModInitializer {
 	public static final Identifier PACKET_ID = new Identifier("fabric", "custom_ingredient_sync");
-	public static final int PROTOCOL_VERSION = 0;
+	public static final int PROTOCOL_VERSION = 1;
 	public static final ThreadLocal<Set<Identifier>> CURRENT_SUPPORTED_INGREDIENTS = new ThreadLocal<>();
 
 	public static PacketByteBuf createPacket() {
@@ -64,8 +64,8 @@ public class CustomIngredientSync implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ServerLoginConnectionEvents.QUERY_START.register((handler, server, sender, synchronizer) -> {
-			// Send packet with 0 so the client can send us back the list of supported tags.
-			// 0 is sent in case we need a different protocol later for some reason.
+			// Send packet with 1 so the client can send us back the list of supported tags.
+			// 1 is sent in case we need a different protocol later for some reason.
 			PacketByteBuf buf = PacketByteBufs.create();
 			buf.writeVarInt(PROTOCOL_VERSION);
 			sender.sendPacket(PACKET_ID, buf);

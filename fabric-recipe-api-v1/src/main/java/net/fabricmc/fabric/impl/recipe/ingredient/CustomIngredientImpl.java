@@ -33,10 +33,6 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
-import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AndIngredient;
-import net.fabricmc.fabric.impl.recipe.ingredient.builtin.DifferenceIngredient;
-import net.fabricmc.fabric.impl.recipe.ingredient.builtin.NbtIngredient;
-import net.fabricmc.fabric.impl.recipe.ingredient.builtin.OrIngredient;
 
 public class CustomIngredientImpl extends Ingredient {
 	// Static helpers used by the API
@@ -59,13 +55,6 @@ public class CustomIngredientImpl extends Ingredient {
 		Objects.requireNonNull(identifier, "Identifier may not be null.");
 
 		return REGISTERED_SERIALIZERS.get(identifier);
-	}
-
-	static {
-		CustomIngredientSerializer.register(AndIngredient.SERIALIZER);
-		CustomIngredientSerializer.register(OrIngredient.SERIALIZER);
-		CustomIngredientSerializer.register(DifferenceIngredient.SERIALIZER);
-		CustomIngredientSerializer.register(NbtIngredient.SERIALIZER);
 	}
 
 	// Actual custom ingredient logic
@@ -133,7 +122,6 @@ public class CustomIngredientImpl extends Ingredient {
 		// We don't want to resolve the matching stacks,
 		// as this might cause the ingredient to use outdated tags when it's done too early.
 		// So we just return false when the matching stacks haven't been resolved yet (i.e. when the field is null).
-		// TODO: this is a bit hacky, can we not do better?
 		return matchingStacks != null && matchingStacks.length == 0;
 	}
 

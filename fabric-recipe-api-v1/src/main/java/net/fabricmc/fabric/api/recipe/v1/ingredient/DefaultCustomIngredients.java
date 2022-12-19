@@ -25,10 +25,10 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.recipe.Ingredient;
 
-import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AndIngredient;
+import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AllIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.DifferenceIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.NbtIngredient;
-import net.fabricmc.fabric.impl.recipe.ingredient.builtin.OrIngredient;
+import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AnyIngredient;
 
 /**
  * Factory methods for the custom ingredients directly provided by Fabric API.
@@ -40,7 +40,7 @@ public final class DefaultCustomIngredients {
 	 * <p>The JSON format is as follows:
 	 * <pre>{@code
 	 * {
-	 *     "fabric:type": "fabric:and",
+	 *     "fabric:type": "fabric:all",
 	 *     "ingredients": [
 	 *         // sub-ingredient 1,
 	 *         // sub-ingredient 2,
@@ -51,10 +51,10 @@ public final class DefaultCustomIngredients {
 	 *
 	 * @throws IllegalArgumentException if the array is empty
 	 */
-	public static Ingredient and(Ingredient... ingredients) {
+	public static Ingredient all(Ingredient... ingredients) {
 		for (Ingredient ing : ingredients) Objects.requireNonNull(ing, "Ingredient cannot be null");
 
-		return new AndIngredient(ingredients).toVanilla();
+		return new AllIngredient(ingredients).toVanilla();
 	}
 
 	/**
@@ -63,7 +63,7 @@ public final class DefaultCustomIngredients {
 	 * <p>The JSON format is as follows:
 	 * <pre>{@code
 	 * {
-	 *     "fabric:type": "fabric:or",
+	 *     "fabric:type": "fabric:any",
 	 *     "ingredients": [
 	 *         // sub-ingredient 1,
 	 *         // sub-ingredient 2,
@@ -74,10 +74,10 @@ public final class DefaultCustomIngredients {
 	 *
 	 * @throws IllegalArgumentException if the array is empty
 	 */
-	public static Ingredient or(Ingredient... ingredients) {
+	public static Ingredient any(Ingredient... ingredients) {
 		for (Ingredient ing : ingredients) Objects.requireNonNull(ing, "Ingredient cannot be null");
 
-		return new OrIngredient(ingredients).toVanilla();
+		return new AnyIngredient(ingredients).toVanilla();
 	}
 
 	/**
