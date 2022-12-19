@@ -52,8 +52,6 @@ import net.minecraft.world.World;
  * on their block entity class, cast the {@link BlockRenderView} to {@link RenderAttachedBlockView}
  * and then use {@link #getBlockEntityRenderAttachment(BlockPos)} to retrieve the data. When called from the
  * main thread, that method will simply retrieve the data directly.
- *
- * <p>This interface is guaranteed to be implemented on every {@link BlockRenderView} subclass.
  */
 public interface RenderAttachedBlockView extends BlockRenderView {
 	/**
