@@ -26,7 +26,9 @@ import net.minecraft.nbt.NbtElement;
  *
  * @see NbtCompound#contains(String, int)
  * @see net.minecraft.nbt.NbtTypes#byId(int)
+ * @deprecated Use the constants in {@link NbtElement} instead.
  */
+@Deprecated
 public final class NbtType {
 	public static final int END = 0;
 	public static final int BYTE = 1;
