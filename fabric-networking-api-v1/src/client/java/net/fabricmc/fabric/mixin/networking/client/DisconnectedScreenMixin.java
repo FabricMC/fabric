@@ -27,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.font.MultilineText;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.DisconnectedScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -64,8 +65,7 @@ public abstract class DisconnectedScreenMixin extends Screen {
 
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/MultilineText;drawCenterWithShadow(Lnet/minecraft/client/util/math/MatrixStack;II)I"))
 	private int render(MultilineText instance, MatrixStack matrixStack, int x, int y) {
-		double scale = client.getWindow().getScaleFactor();
-		RenderSystem.enableScissor(0, (int) (y * scale), (int) (width * scale), (int) (reasonHeight * scale));
+		DrawableHelper.enableScissor(0, y, width, y + reasonHeight);
 		instance.drawCenterWithShadow(matrixStack, x, y - scroll);
 		RenderSystem.disableScissor();
 
