@@ -31,6 +31,8 @@ import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
 import net.minecraft.registry.Registry;
 
+import net.fabricmc.fabric.impl.gametest.FabricGameTestHelper;
+
 @Mixin(ArgumentTypes.class)
 public abstract class ArgumentTypesMixin {
 	@Shadow
@@ -41,7 +43,7 @@ public abstract class ArgumentTypesMixin {
 	@Inject(method = "register(Lnet/minecraft/registry/Registry;)Lnet/minecraft/command/argument/serialize/ArgumentSerializer;", at = @At("RETURN"))
 	private static void register(Registry<ArgumentSerializer<?, ?>> registry, CallbackInfoReturnable<ArgumentSerializer<?, ?>> ci) {
 		// Registered by vanilla when isDevelopment is enabled.
-		if (!SharedConstants.isDevelopment) {
+		if (FabricGameTestHelper.COMMAND_ENABLED && !SharedConstants.isDevelopment) {
 			register(registry, "test_argument", TestFunctionArgumentType.class, ConstantArgumentSerializer.of(TestFunctionArgumentType::testFunction));
 			register(registry, "test_class", TestClassArgumentType.class, ConstantArgumentSerializer.of(TestClassArgumentType::testClass));
 		}
