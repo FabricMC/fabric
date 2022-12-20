@@ -22,6 +22,9 @@
       "net.fabricmc.fabric.test.event.lifecycle.client.ClientEntityLifecycleTests",
       "net.fabricmc.fabric.test.event.lifecycle.client.ClientLifecycleTests",
       "net.fabricmc.fabric.test.event.lifecycle.client.ClientTickTests"
+    ],
+    "fabric-gametest" : [
+      "net.fabricmc.fabric.test.event.lifecycle.gametest.ServerBlockEntityEventsGameTest"
     ]
   }
 }
