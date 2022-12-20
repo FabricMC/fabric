@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.Model;
 import net.minecraft.data.client.TextureKey;
@@ -41,12 +43,13 @@ import net.fabricmc.fabric.api.datagen.v1.model.property.ElementBuilder;
  */
 @SuppressWarnings("unchecked")
 public abstract class ModelBuilder<T extends ModelBuilder<T>> {
-	protected final Identifier parent;
-	protected final Set<TextureKey> requiredTextures = new HashSet<>();
-	protected final HashMap<TextureKey, Identifier> textures = new HashMap<>();
-	protected final EnumMap<DisplayBuilder.Position, DisplayBuilder> displays = new EnumMap<>(DisplayBuilder.Position.class);
-	protected final List<ElementBuilder> elements = new ArrayList<>();
+	private final Identifier parent;
+	private final Set<TextureKey> requiredTextures = new HashSet<>();
+	private final HashMap<TextureKey, Identifier> textures = new HashMap<>();
+	private final EnumMap<DisplayBuilder.Position, DisplayBuilder> displays = new EnumMap<>(DisplayBuilder.Position.class);
+	private final List<ElementBuilder> elements = new ArrayList<>();
 
+	@ApiStatus.Internal
 	protected ModelBuilder(Identifier parent) {
 		this.parent = parent;
 	}
@@ -157,8 +160,8 @@ public abstract class ModelBuilder<T extends ModelBuilder<T>> {
 		TextureKey[] textures = Arrays.copyOf(requiredTextures.toArray(), requiredTextures.size(), TextureKey[].class);
 		Model model = new Model(Optional.ofNullable(parent), Optional.empty(), textures);
 
-		displays.forEach(model::withDisplay);
-		elements.forEach(model::addElement);
+		displays.forEach(model::fabric_withDisplay);
+		elements.forEach(model::fabric_addElement);
 		return model;
 	}
 

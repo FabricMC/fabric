@@ -31,7 +31,7 @@ import net.minecraft.util.math.Direction;
 /**
  * Instantiate this class in order to provide a set of <code>faces</code> to be rendered for an element of a JSON model.
  */
-public class FaceBuilder {
+public final class FaceBuilder {
 	private final TextureKey texture;
 	private Vector4i uv = new Vector4i(0);
 	@Nullable

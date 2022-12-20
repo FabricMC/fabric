@@ -68,72 +68,72 @@ public class ModelMixin implements FabricModel {
 	private boolean ambientOcclusion = true;
 
 	@Override
-	public Optional<Identifier> getParent() {
+	public Optional<Identifier> fabric_getParent() {
 		return parent;
 	}
 
 	@Override
-	public Set<TextureKey> getRequiredTextures() {
+	public Set<TextureKey> fabric_getRequiredTextures() {
 		return requiredTextures;
 	}
 
 	@Override
-	public Optional<String> getVariant() {
+	public Optional<String> fabric_getVariant() {
 		return variant;
 	}
 
 	@Override
-	public Model withDisplay(DisplayBuilder.Position position, DisplayBuilder builder) {
+	public Model fabric_withDisplay(DisplayBuilder.Position position, DisplayBuilder builder) {
 		this.displays.put(position, builder);
 		return (Model) (Object) this;
 	}
 
 	@Override
-	public EnumMap<DisplayBuilder.Position, DisplayBuilder> getDisplayBuilders() {
+	public EnumMap<DisplayBuilder.Position, DisplayBuilder> fabric_getDisplayBuilders() {
 		return displays;
 	}
 
 	@Override
-	public Model addElement(ElementBuilder builder) {
+	public Model fabric_addElement(ElementBuilder builder) {
 		this.elements.add(builder);
 		return (Model) (Object) this;
 	}
 
 	@Override
-	public List<ElementBuilder> getElementBuilders() {
+	public List<ElementBuilder> fabric_getElementBuilders() {
 		return elements;
 	}
 
 	@Override
-	public Model addOverride(OverrideBuilder builder) {
+	public Model fabric_addOverride(OverrideBuilder builder) {
 		this.overrides.add(builder);
 		return (Model) (Object) this;
 	}
 
 	@Override
-	public List<OverrideBuilder> getOverrideBuilders() {
+	public List<OverrideBuilder> fabric_getOverrideBuilders() {
 		return overrides;
 	}
 
 	@Override
-	public Model setGuiLight(ItemModelBuilder.GuiLight guiLight) {
+	public Model fabric_setGuiLight(ItemModelBuilder.GuiLight guiLight) {
 		this.guiLight = guiLight;
 		return (Model) (Object) this;
 	}
 
 	@Override
-	public ItemModelBuilder.GuiLight getGuiLight() {
+	public ItemModelBuilder.GuiLight fabric_getGuiLight() {
 		return guiLight;
 	}
 
 	@Override
-	public Model setAmbientOcclusion(boolean ambientOcclusion) {
+	public Model fabric_setAmbientOcclusion(boolean ambientOcclusion) {
 		this.ambientOcclusion = ambientOcclusion;
 		return (Model) (Object) this;
 	}
 
 	@Override
-	public boolean getAmbientOcclusion() {
+	public boolean fabric_getAmbientOcclusion() {
 		return ambientOcclusion;
 	}
 

@@ -31,55 +31,55 @@ import net.fabricmc.fabric.api.datagen.v1.model.property.ElementBuilder;
 import net.fabricmc.fabric.api.datagen.v1.model.property.OverrideBuilder;
 
 public interface FabricModel {
-	default Model withDisplay(DisplayBuilder.Position position, DisplayBuilder builder) {
+	default Model fabric_withDisplay(DisplayBuilder.Position position, DisplayBuilder builder) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default EnumMap<DisplayBuilder.Position, DisplayBuilder> getDisplayBuilders() {
+	default EnumMap<DisplayBuilder.Position, DisplayBuilder> fabric_getDisplayBuilders() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default Model addElement(ElementBuilder builder) {
+	default Model fabric_addElement(ElementBuilder builder) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default List<ElementBuilder> getElementBuilders() {
+	default List<ElementBuilder> fabric_getElementBuilders() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default Model addOverride(OverrideBuilder builder) {
+	default Model fabric_addOverride(OverrideBuilder builder) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default List<OverrideBuilder> getOverrideBuilders() {
+	default List<OverrideBuilder> fabric_getOverrideBuilders() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default Model setGuiLight(ItemModelBuilder.GuiLight light) {
+	default Model fabric_setGuiLight(ItemModelBuilder.GuiLight light) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default ItemModelBuilder.GuiLight getGuiLight() {
+	default ItemModelBuilder.GuiLight fabric_getGuiLight() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default Model setAmbientOcclusion(boolean occlude) {
+	default Model fabric_setAmbientOcclusion(boolean occlude) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default boolean getAmbientOcclusion() {
+	default boolean fabric_getAmbientOcclusion() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default Optional<Identifier> getParent() {
+	default Optional<Identifier> fabric_getParent() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default Optional<String> getVariant() {
+	default Optional<String> fabric_getVariant() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default Set<TextureKey> getRequiredTextures() {
+	default Set<TextureKey> fabric_getRequiredTextures() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 }

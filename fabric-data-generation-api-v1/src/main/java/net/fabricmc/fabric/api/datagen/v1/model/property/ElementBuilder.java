@@ -30,7 +30,7 @@ import net.minecraft.util.math.Direction;
 /**
  * Instantiate this class in order to provide any specific <code>elements</code> to a given block/item model JSON.
  */
-public class ElementBuilder {
+public final class ElementBuilder {
 	private final Vector3d from;
 	private final Vector3d to;
 	@Nullable

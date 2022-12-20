@@ -43,15 +43,14 @@ public class BlockModelBuilder extends ModelBuilder<BlockModelBuilder> {
 
 	public static BlockModelBuilder copyFrom(Model model, TextureMap textures) {
 		Map<TextureKey, Identifier> copyTextures = ((TextureMapAccessor) textures).getEntries();
-		Preconditions.checkArgument(copyTextures.keySet().equals(model.getRequiredTextures()), "Texture map does not match slots for provided model " + model);
+		Preconditions.checkArgument(copyTextures.keySet().equals(model.fabric_getRequiredTextures()), "Texture map does not match slots for provided model " + model);
 
-		BlockModelBuilder builder = new BlockModelBuilder(model.getParent().orElse(null));
-		builder.requiredTextures.addAll(model.getRequiredTextures());
-		builder.textures.putAll(copyTextures);
+		BlockModelBuilder builder = new BlockModelBuilder(model.fabric_getParent().orElse(null));
+		copyTextures.forEach(builder::addTexture);
 
-		builder.displays.putAll(model.getDisplayBuilders());
-		builder.elements.addAll(model.getElementBuilders());
-		builder.occlude = model.getAmbientOcclusion();
+		model.fabric_getDisplayBuilders().forEach(builder::addDisplay);
+		model.fabric_getElementBuilders().forEach(builder::addElement);
+		builder.occlude = model.fabric_getAmbientOcclusion();
 
 		return builder;
 	}
@@ -67,7 +66,7 @@ public class BlockModelBuilder extends ModelBuilder<BlockModelBuilder> {
 	@Override
 	public Model buildModel() {
 		Model blockModel = super.buildModel();
-		blockModel.setAmbientOcclusion(occlude);
+		blockModel.fabric_setAmbientOcclusion(occlude);
 		return blockModel;
 	}
 }

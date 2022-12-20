@@ -26,7 +26,7 @@ import org.joml.Vector3d;
 /**
  * Instantiate this class in order to provide an optional set of <code>display</code> properties for a given model JSON.
  */
-public class DisplayBuilder {
+public final class DisplayBuilder {
 	private Vector3d rotation = new Vector3d();
 	private Vector3d translation = new Vector3d();
 	private Vector3d scale = new Vector3d();

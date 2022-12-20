@@ -27,7 +27,7 @@ import net.minecraft.util.Identifier;
 /**
  * Instantiate this class in order to provide an optional set of <code>overrides</code> for a given item model JSON.
  */
-public class OverrideBuilder {
+public final class OverrideBuilder {
 	private final Identifier model;
 	private final Object2FloatMap<Identifier> predicates = new Object2FloatLinkedOpenHashMap<>();
 

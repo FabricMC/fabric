@@ -26,7 +26,7 @@ import net.minecraft.util.math.Direction;
 /**
  * Instantiate this class in order to provide an optional <code>rotation</code> to an element of a JSON model.
  */
-public class RotationBuilder {
+public final class RotationBuilder {
 	private final Vector3d origin;
 	private final Direction.Axis axis;
 	private final Angle angle;

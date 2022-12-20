@@ -62,16 +62,15 @@ public class ItemModelBuilder extends ModelBuilder<ItemModelBuilder> {
 	 */
 	public static ItemModelBuilder copyFrom(Model model, TextureMap textures) {
 		Map<TextureKey, Identifier> copyTextures = ((TextureMapAccessor) textures).getEntries();
-		Preconditions.checkArgument(copyTextures.keySet().equals(model.getRequiredTextures()), "Texture map does not match slots for provided model " + model);
+		Preconditions.checkArgument(copyTextures.keySet().equals(model.fabric_getRequiredTextures()), "Texture map does not match slots for provided model " + model);
 
-		ItemModelBuilder builder = new ItemModelBuilder(model.getParent().orElse(null));
-		builder.requiredTextures.addAll(model.getRequiredTextures());
-		builder.textures.putAll(copyTextures);
+		ItemModelBuilder builder = new ItemModelBuilder(model.fabric_getParent().orElse(null));
+		copyTextures.forEach(builder::addTexture);
 
-		builder.displays.putAll(model.getDisplayBuilders());
-		builder.elements.addAll(model.getElementBuilders());
-		builder.guiLight = model.getGuiLight();
-		builder.overrides.addAll(model.getOverrideBuilders());
+		model.fabric_getDisplayBuilders().forEach(builder::addDisplay);
+		model.fabric_getElementBuilders().forEach(builder::addElement);
+		builder.guiLight = model.fabric_getGuiLight();
+		builder.overrides.addAll(model.fabric_getOverrideBuilders());
 
 		return builder;
 	}
@@ -109,8 +108,8 @@ public class ItemModelBuilder extends ModelBuilder<ItemModelBuilder> {
 	@Override
 	public Model buildModel() {
 		Model itemModel = super.buildModel();
-		itemModel.setGuiLight(guiLight);
-		overrides.forEach(itemModel::addOverride);
+		itemModel.fabric_setGuiLight(guiLight);
+		overrides.forEach(itemModel::fabric_addOverride);
 		return itemModel;
 	}
 

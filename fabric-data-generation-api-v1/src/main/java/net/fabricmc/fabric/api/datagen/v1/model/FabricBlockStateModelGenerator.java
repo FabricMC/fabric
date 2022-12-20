@@ -48,6 +48,12 @@ public interface FabricBlockStateModelGenerator {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
+	/**
+	 * Create a singleton block state and model file to be built by an instanced @{link ModelBuilder} for a given block.
+	 *
+	 * @param block The block to register a block state and model for.
+	 * @param builder The {@link ModelBuilder} from which to build a block model.
+	 */
 	default void buildWithSingletonState(Block block, ModelBuilder<?> builder) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
