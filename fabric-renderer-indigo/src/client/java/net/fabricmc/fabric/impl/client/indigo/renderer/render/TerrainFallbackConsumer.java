@@ -102,29 +102,6 @@ public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer imple
 		final MutableQuadViewImpl editorQuad = this.editorQuad;
 		editorQuad.fromVanilla(quad, defaultMaterial, cullFace);
 
-		if (!transform.transform(editorQuad)) {
-			return;
-		}
-
-		cullFace = editorQuad.cullFace();
-
-		if (cullFace != null && !blockInfo.shouldDrawFace(cullFace)) {
-			return;
-		}
-
-		if (!editorQuad.material().disableAo(0)) {
-			// needs to happen before offsets are applied
-			aoCalc.compute(editorQuad, true);
-			tessellateSmooth(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
-		} else {
-			// Recomputing whether the quad has a light face is only needed if it doesn't also have a cull face,
-			// as in those cases, the cull face will always be used to offset the light sampling position
-			if (cullFace == null) {
-				// Can't rely on lazy computation in tessellateFlat() because needs to happen before offsets are applied
-				editorQuad.geometryFlags();
-			}
-
-			tessellateFlat(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
-		}
+		renderQuad(editorQuad, true);
 	}
 }
