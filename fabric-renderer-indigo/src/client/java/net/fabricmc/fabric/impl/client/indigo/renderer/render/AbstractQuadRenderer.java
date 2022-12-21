@@ -95,16 +95,6 @@ public abstract class AbstractQuadRenderer {
 				tessellateSmooth(quad, renderLayer, colorIndex);
 			}
 		} else {
-			if (isVanilla) {
-				// TODO: this is probably not needed?
-				// Recomputing whether the quad has a light face is only needed if it doesn't also have a cull face,
-				// as in those cases, the cull face will always be used to offset the light sampling position
-				if (quad.cullFace() == null) {
-					// Can't rely on lazy computation in tessellateFlat() because needs to happen before offsets are applied
-					quad.geometryFlags();
-				}
-			}
-
 			if (mat.emissive(textureIndex)) {
 				tessellateFlatEmissive(quad, renderLayer, colorIndex);
 			} else {
