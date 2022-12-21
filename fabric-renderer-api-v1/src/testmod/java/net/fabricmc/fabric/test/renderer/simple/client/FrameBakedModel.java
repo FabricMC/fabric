@@ -36,9 +36,10 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 import net.minecraft.util.math.random.Random;
 
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
+import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
@@ -46,10 +47,13 @@ import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 final class FrameBakedModel implements BakedModel, FabricBakedModel {
 	private final Mesh frameMesh;
 	private final Sprite frameSprite;
+	private final RenderMaterial translucentMaterial;
 
 	FrameBakedModel(Mesh frameMesh, Sprite frameSprite) {
 		this.frameMesh = frameMesh;
 		this.frameSprite = frameSprite;
+
+		this.translucentMaterial = RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(0, BlendMode.TRANSLUCENT).find();
 	}
 
 	@Override
@@ -112,22 +116,40 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 			return; // No inner block to render
 		}
 
-		Sprite sprite = MinecraftClient.getInstance().getBlockRenderManager().getModels().getModelManager().getBlockModels().getModelParticleSprite(data.getDefaultState());
-		QuadEmitter emitter = context.getEmitter();
+		// Now, we emit a transparent scaled-down version of the inner model
 
-		// We can emit our quads outside of the mesh as the block being put in the frame is very much dynamic.
-		// Emit the quads for each face of the block inside the frame
-		for (Direction direction : Direction.values()) {
-			// Add a face, with an inset to give the appearance of the block being in a frame.
-			emitter.square(direction, 0.1F, 0.1F, 0.9F, 0.9F, 0.1F)
-					// Set the sprite of the fact, use whole texture via BAKE_LOCK_UV
-					.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV)
-					// Allow textures
-					// TODO: the magic values here are not documented at all and probably should be
-					.spriteColor(0, -1, -1, -1, -1)
-					// Emit the quad
-					.emit();
-		}
+		// Let's push a transform to scale the model down and make it transparent
+		context.pushTransform(quad -> {
+			// Scale model down
+			for (int vertex = 0; vertex < 4; ++vertex) {
+				float x = quad.x(vertex) * 0.8f + 0.1f;
+				float y = quad.y(vertex) * 0.8f + 0.1f;
+				float z = quad.z(vertex) * 0.8f + 0.1f;
+				quad.pos(vertex, x, y, z);
+			}
+
+			// Make the quad partially transparent
+			// Change material to transulcent
+			quad.material(translucentMaterial);
+
+			// Change vertex colors to be partially transparent
+			for (int vertex = 0; vertex < 4; ++vertex) {
+				int color = quad.spriteColor(vertex, 0);
+				int alpha = (color >> 24) & 0xFF;
+				alpha = alpha * 3 / 4;
+				color = (color & 0xFFFFFF) | (alpha << 24);
+				quad.spriteColor(vertex, 0, color);
+			}
+
+			// Return true because we want the quad to be rendered
+			return true;
+		});
+
+		// Emit the inner block model
+		context.fallbackConsumer().accept(MinecraftClient.getInstance().getBlockRenderManager().getModel(data.getDefaultState()));
+
+		// Let's not forget to pop the transform!
+		context.popTransform();
 	}
 
 	@Override
