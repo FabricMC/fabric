@@ -36,6 +36,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 import net.minecraft.util.math.random.Random;
 
+import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -48,12 +49,15 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 	private final Mesh frameMesh;
 	private final Sprite frameSprite;
 	private final RenderMaterial translucentMaterial;
+	private final RenderMaterial translucentEmissiveMaterial;
 
 	FrameBakedModel(Mesh frameMesh, Sprite frameSprite) {
 		this.frameMesh = frameMesh;
 		this.frameSprite = frameSprite;
 
-		this.translucentMaterial = RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(0, BlendMode.TRANSLUCENT).find();
+		Renderer renderer = RendererAccess.INSTANCE.getRenderer();
+		this.translucentMaterial = renderer.materialFinder().blendMode(0, BlendMode.TRANSLUCENT).find();
+		this.translucentEmissiveMaterial = renderer.materialFinder().blendMode(0, BlendMode.TRANSLUCENT).emissive(0, true).find();
 	}
 
 	@Override
@@ -117,6 +121,8 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 		}
 
 		// Now, we emit a transparent scaled-down version of the inner model
+		// Try both emissive and non-emissive versions of the translucent material
+		RenderMaterial material = pos.getX() % 2 == 0 ? translucentMaterial : translucentEmissiveMaterial;
 
 		// Let's push a transform to scale the model down and make it transparent
 		context.pushTransform(quad -> {
@@ -129,8 +135,8 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 			}
 
 			// Make the quad partially transparent
-			// Change material to transulcent
-			quad.material(translucentMaterial);
+			// Change material to translucent
+			quad.material(material);
 
 			// Change vertex colors to be partially transparent
 			for (int vertex = 0; vertex < 4; ++vertex) {
