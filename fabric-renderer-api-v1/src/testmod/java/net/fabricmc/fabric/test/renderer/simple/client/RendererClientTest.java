@@ -37,7 +37,6 @@ public final class RendererClientTest implements ClientModInitializer {
 			// We don't specify a material for the frame mesh,
 			// so it will use the default material, i.e. the one from BlockRenderLayerMap.
 			BlockRenderLayerMap.INSTANCE.putBlock(frameBlock, RenderLayer.getCutoutMipped());
-			BlockRenderLayerMap.INSTANCE.putItem(frameBlock.asItem(), RenderLayer.getCutoutMipped());
 
 			String itemPath = Registries.ITEM.getId(frameBlock.asItem()).getPath();
 			FrameModelResourceProvider.FRAME_MODELS.add(id("item/" + itemPath));

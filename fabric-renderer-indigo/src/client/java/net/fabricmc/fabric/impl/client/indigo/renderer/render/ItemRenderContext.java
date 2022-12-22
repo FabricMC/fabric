@@ -287,24 +287,14 @@ public class ItemRenderContext extends AbstractRenderContext {
 					if (count != 0) {
 						for (int j = 0; j < count; j++) {
 							final BakedQuad q = quads.get(j);
-							renderQuadWithTransform(q, cullFace);
+							editorQuad.fromVanilla(q, IndigoRenderer.MATERIAL_STANDARD, cullFace);
+							renderMeshQuad(editorQuad);
 						}
 					}
 				}
 			} else {
 				vanillaHandler.accept(model, itemStack, lightmap, overlay, matrixStack, modelVertexConsumer);
 			}
-		}
-
-		private void renderQuadWithTransform(BakedQuad quad, Direction cullFace) {
-			final Maker editorQuad = ItemRenderContext.this.editorQuad;
-			editorQuad.fromVanilla(quad, IndigoRenderer.MATERIAL_STANDARD, cullFace);
-
-			if (!transform(editorQuad)) {
-				return;
-			}
-
-			renderQuad(editorQuad, BlendMode.DEFAULT, editorQuad.colorIndex());
 		}
 	}
 
