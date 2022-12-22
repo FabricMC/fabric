@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
@@ -42,6 +43,7 @@ import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 
@@ -77,7 +79,7 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 
 	@Override
 	public boolean isSideLit() {
-		return false;
+		return true; // we want the block to be lit from the side when rendered as an item
 	}
 
 	@Override
@@ -92,7 +94,7 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 
 	@Override
 	public ModelTransformation getTransformation() {
-		return ModelTransformation.NONE;
+		return ModelHelper.MODEL_TRANSFORM_BLOCK;
 	}
 
 	@Override
@@ -120,10 +122,40 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 			return; // No inner block to render
 		}
 
+		BlockState innerState = data.getDefaultState();
+
 		// Now, we emit a transparent scaled-down version of the inner model
 		// Try both emissive and non-emissive versions of the translucent material
 		RenderMaterial material = pos.getX() % 2 == 0 ? translucentMaterial : translucentEmissiveMaterial;
 
+		emitInnerQuads(context, material, () -> {
+			// Use emitBlockQuads to allow for Renderer API features
+			((FabricBakedModel) MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState)).emitBlockQuads(blockView, innerState, pos, randomSupplier, context);
+		});
+	}
+
+	@Override
+	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+		// Emit our frame mesh
+		context.meshConsumer().accept(this.frameMesh);
+
+		// Emit a scaled-down fence for testing, trying both materials again.
+		RenderMaterial material = stack.hasCustomName() ? translucentEmissiveMaterial : translucentMaterial;
+
+		BlockState innerState = Blocks.OAK_FENCE.getDefaultState();
+
+		emitInnerQuads(context, material, () -> {
+			// Need to use the fallback consumer directly:
+			// - we can't use emitBlockQuads because we don't have a blockView
+			// - we can't use emitItemQuads because multipart models don't have item quads
+			context.blockFallbackConsumer().accept(MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState), innerState);
+		});
+	}
+
+	/**
+	 * Emit a scaled-down version of the inner model.
+	 */
+	private void emitInnerQuads(RenderContext context, RenderMaterial material, Runnable innerModelEmitter) {
 		// Let's push a transform to scale the model down and make it transparent
 		context.pushTransform(quad -> {
 			// Scale model down
@@ -152,15 +184,9 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 		});
 
 		// Emit the inner block model
-		((FabricBakedModel) MinecraftClient.getInstance().getBlockRenderManager().getModel(data.getDefaultState())).emitBlockQuads(blockView, data.getDefaultState(), pos, randomSupplier, context);
+		innerModelEmitter.run();
 
 		// Let's not forget to pop the transform!
 		context.popTransform();
-	}
-
-	@Override
-	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-		// TODO: Implement an item test.
-		// For now we will just leave this as I have not added a block item yet
 	}
 }
