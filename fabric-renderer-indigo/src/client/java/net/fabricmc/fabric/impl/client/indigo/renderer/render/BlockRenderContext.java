@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -143,6 +144,11 @@ public class BlockRenderContext extends AbstractRenderContext {
 
 	@Override
 	public Consumer<BakedModel> fallbackConsumer() {
+		return fallbackConsumer;
+	}
+
+	@Override
+	public BiConsumer<BakedModel, BlockState> blockFallbackConsumer() {
 		return fallbackConsumer;
 	}
 

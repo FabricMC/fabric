@@ -17,9 +17,11 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import net.minecraft.block.BlockState;
@@ -266,15 +268,20 @@ public class ItemRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	private class FallbackConsumer implements Consumer<BakedModel> {
+	private class FallbackConsumer implements Consumer<BakedModel>, BiConsumer<BakedModel, BlockState> {
 		@Override
 		public void accept(BakedModel model) {
+			accept(model, null);
+		}
+
+		@Override
+		public void accept(BakedModel model, @Nullable BlockState state) {
 			if (hasTransform()) {
 				// if there's a transform in effect, convert to mesh-based quads so that we can apply it
 				for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
 					final Direction cullFace = ModelHelper.faceFromIndex(i);
 					random.setSeed(ITEM_RANDOM_SEED);
-					final List<BakedQuad> quads = model.getQuads(null, cullFace, random);
+					final List<BakedQuad> quads = model.getQuads(state, cullFace, random);
 					final int count = quads.size();
 
 					if (count != 0) {

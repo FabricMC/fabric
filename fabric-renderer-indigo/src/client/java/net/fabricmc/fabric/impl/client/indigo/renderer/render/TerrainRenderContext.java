@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.joml.Matrix3f;
@@ -123,6 +124,11 @@ public class TerrainRenderContext extends AbstractRenderContext {
 
 	@Override
 	public Consumer<BakedModel> fallbackConsumer() {
+		return fallbackConsumer;
+	}
+
+	@Override
+	public BiConsumer<BakedModel, BlockState> blockFallbackConsumer() {
 		return fallbackConsumer;
 	}
 
