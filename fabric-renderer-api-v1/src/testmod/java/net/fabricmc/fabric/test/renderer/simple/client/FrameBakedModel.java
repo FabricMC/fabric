@@ -152,7 +152,7 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 		});
 
 		// Emit the inner block model
-		context.fallbackConsumer().accept(MinecraftClient.getInstance().getBlockRenderManager().getModel(data.getDefaultState()));
+		((FabricBakedModel) MinecraftClient.getInstance().getBlockRenderManager().getModel(data.getDefaultState())).emitBlockQuads(blockView, data.getDefaultState(), pos, randomSupplier, context);
 
 		// Let's not forget to pop the transform!
 		context.popTransform();
