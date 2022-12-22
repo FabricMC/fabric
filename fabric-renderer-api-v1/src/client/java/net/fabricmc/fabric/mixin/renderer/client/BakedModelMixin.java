@@ -42,7 +42,7 @@ public interface BakedModelMixin extends FabricBakedModel {
 
 	@Override
 	default void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		context.fallbackConsumer().accept((BakedModel) this);
+		context.blockFallbackConsumer().accept((BakedModel) this, state);
 	}
 
 	@Override

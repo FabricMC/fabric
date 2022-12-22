@@ -17,9 +17,12 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
@@ -57,7 +60,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
  *  vertex data is sent to the byte buffer.  Generally POJO array access will be faster than
  *  manipulating the data via NIO.
  */
-public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer implements Consumer<BakedModel> {
+public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer implements Consumer<BakedModel>, BiConsumer<BakedModel, @Nullable BlockState> {
 	private static final Value MATERIAL_FLAT = (Value) IndigoRenderer.INSTANCE.materialFinder().disableAo(0, true).find();
 	private static final Value MATERIAL_SHADED = (Value) IndigoRenderer.INSTANCE.materialFinder().find();
 
@@ -79,10 +82,14 @@ public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer imple
 	};
 
 	@Override
-	public void accept(BakedModel model) {
+	public void accept(BakedModel bakedModel) {
+		accept(bakedModel, blockInfo.blockState);
+	}
+
+	@Override
+	public void accept(BakedModel model, @Nullable BlockState blockState) {
 		final Supplier<Random> random = blockInfo.randomSupplier;
 		final Value defaultMaterial = blockInfo.defaultAo && model.useAmbientOcclusion() ? MATERIAL_SHADED : MATERIAL_FLAT;
-		final BlockState blockState = blockInfo.blockState;
 
 		for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
 			final Direction cullFace = ModelHelper.faceFromIndex(i);

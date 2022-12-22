@@ -16,8 +16,12 @@
 
 package net.fabricmc.fabric.api.renderer.v1.render;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -42,8 +46,32 @@ public interface RenderContext {
 	 * Fabric causes vanilla baked models to send themselves
 	 * via this interface. Can also be used by compound models that contain a mix
 	 * of vanilla baked models, packaged quads and/or dynamic elements.
+	 *
+	 * <p>For block contexts, this will use the block state of the block being rendered to get the quads.
+	 * For item contexts, this will pass a {@code null} block state to {@link BakedModel#getQuads}.
+	 * {@link #blockFallbackConsumer()} can be used instead to pass the block state explicitly.
 	 */
 	Consumer<BakedModel> fallbackConsumer();
+
+	/**
+	 * Fallback consumer that can process a vanilla {@link BakedModel}.
+	 * Fabric causes vanilla baked models to send themselves
+	 * via this interface. Can also be used by compound models that contain a mix
+	 * of vanilla baked models, packaged quads and/or dynamic elements.
+	 *
+	 * <p>This overload allows passing the block state (or {@code null} to query the item quads).
+	 * This is useful when a model is being wrapped, and expects a different
+	 * block state than the one of the block being rendered.
+	 *
+	 * <p>For item render contexts, you can use this function if you want to render the model with a specific block state.
+	 * Otherwise, use {@link #fallbackConsumer()} to render the usual item quads.
+	 */
+	default BiConsumer<BakedModel, @Nullable BlockState> blockFallbackConsumer() {
+		// Default implementation is provided for compat with older renderer implementations,
+		// but they should always override this function.
+		Consumer<BakedModel> fallback = fallbackConsumer();
+		return (model, state) -> fallback.accept(model);
+	}
 
 	/**
 	 * Returns a {@link QuadEmitter} instance that emits directly to the render buffer.
