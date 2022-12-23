@@ -42,7 +42,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 
 	public static final ItemGroup SIMPLE_ITEM_GROUP = FabricItemGroup.builder(new Identifier(MOD_ID, "simple"))
 			.icon(() -> new ItemStack(Items.DIAMOND_PICKAXE))
-			.displayName(Text.literal("Data gen test"))
+			.displayName(Text.translatable("fabric-data-gen-api-v1-testmod.simple_item_group"))
 			.build();
 
 	@Override
