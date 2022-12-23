@@ -35,12 +35,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 
-@Environment(EnvType.CLIENT)
 @Mixin(WorldChunk.class)
 abstract class WorldChunkMixin {
 	@Shadow

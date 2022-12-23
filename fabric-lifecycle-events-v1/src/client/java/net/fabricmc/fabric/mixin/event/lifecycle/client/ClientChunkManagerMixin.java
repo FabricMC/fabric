@@ -27,19 +27,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.network.packet.s2c.play.ChunkData;
 import net.minecraft.client.world.ClientChunkManager;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.network.packet.s2c.play.ChunkData;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.chunk.WorldChunk;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 
-@Environment(EnvType.CLIENT)
 @Mixin(ClientChunkManager.class)
 public abstract class ClientChunkManagerMixin {
 	@Final

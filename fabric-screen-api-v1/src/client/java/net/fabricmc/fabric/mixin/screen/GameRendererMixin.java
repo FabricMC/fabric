@@ -30,11 +30,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 
-@Environment(EnvType.CLIENT)
 @Mixin(GameRenderer.class)
 abstract class GameRendererMixin {
 	@Shadow

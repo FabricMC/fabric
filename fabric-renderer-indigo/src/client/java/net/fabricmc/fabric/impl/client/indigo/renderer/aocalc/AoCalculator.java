@@ -40,8 +40,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoFace.WeightFunction;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
@@ -52,7 +50,6 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderInfo;
 /**
  * Adaptation of inner, non-static class in BlockModelRenderer that serves same purpose.
  */
-@Environment(EnvType.CLIENT)
 public class AoCalculator {
 	@FunctionalInterface
 	public interface BrightnessFunc {

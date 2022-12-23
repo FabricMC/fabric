@@ -22,8 +22,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.util.hit.HitResult;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext.BlockOutlineContext;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -47,7 +45,6 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <p>These events are not dependent on the Fabric rendering API or Indigo but work when those are present.
  */
-@Environment(EnvType.CLIENT)
 public final class WorldRenderEvents {
 	private WorldRenderEvents() { }
 
@@ -255,31 +252,26 @@ public final class WorldRenderEvents {
 		}
 	});
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface Start {
 		void onStart(WorldRenderContext context);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AfterSetup {
 		void afterSetup(WorldRenderContext context);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BeforeEntities {
 		void beforeEntities(WorldRenderContext context);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AfterEntities {
 		void afterEntities(WorldRenderContext context);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BeforeBlockOutline {
 		/**
@@ -295,31 +287,26 @@ public final class WorldRenderEvents {
 		boolean beforeBlockOutline(WorldRenderContext context, @Nullable HitResult hitResult);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BlockOutline {
 		boolean onBlockOutline(WorldRenderContext worldRenderContext, BlockOutlineContext blockOutlineContext);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface DebugRender {
 		void beforeDebugRender(WorldRenderContext context);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AfterTranslucent {
 		void afterTranslucent(WorldRenderContext context);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface Last {
 		void onLast(WorldRenderContext context);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface End {
 		void onEnd(WorldRenderContext context);

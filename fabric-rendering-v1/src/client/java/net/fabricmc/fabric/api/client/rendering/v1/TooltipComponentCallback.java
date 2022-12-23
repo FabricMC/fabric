@@ -19,11 +19,9 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.item.Item;
 import net.minecraft.client.item.TooltipData;
+import net.minecraft.item.Item;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -35,7 +33,6 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>Note that failure to map some data to a component will throw an exception,
  * so make sure that any data you return in {@link Item#getTooltipData} will be handled by one of the callbacks.
  */
-@Environment(EnvType.CLIENT)
 public interface TooltipComponentCallback {
 	Event<TooltipComponentCallback> EVENT = EventFactory.createArrayBacked(TooltipComponentCallback.class, listeners -> data -> {
 		for (TooltipComponentCallback listener : listeners) {

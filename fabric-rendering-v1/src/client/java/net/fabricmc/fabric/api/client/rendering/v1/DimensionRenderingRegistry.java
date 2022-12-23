@@ -19,12 +19,10 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.DimensionEffects;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.client.rendering.DimensionRenderingRegistryImpl;
 
 /**
@@ -32,7 +30,6 @@ import net.fabricmc.fabric.impl.client.rendering.DimensionRenderingRegistryImpl;
  * They may be used to render the sky, weather, or clouds.
  * The {@link DimensionEffects} is the vanilla dimensional renderer.
  */
-@Environment(EnvType.CLIENT)
 public interface DimensionRenderingRegistry {
 	/**
 	 * Registers the custom sky renderer for a {@link World}.

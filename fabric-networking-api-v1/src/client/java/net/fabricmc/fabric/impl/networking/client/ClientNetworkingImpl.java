@@ -34,8 +34,6 @@ import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -47,7 +45,6 @@ import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ConnectScreenAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAccessor;
 
-@Environment(EnvType.CLIENT)
 public final class ClientNetworkingImpl {
 	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>();
 	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayChannelHandler> PLAY = new GlobalReceiverRegistry<>();

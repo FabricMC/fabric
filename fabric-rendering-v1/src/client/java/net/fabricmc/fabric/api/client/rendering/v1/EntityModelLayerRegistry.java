@@ -21,15 +21,12 @@ import java.util.Objects;
 import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.client.rendering.EntityModelLayerImpl;
 import net.fabricmc.fabric.mixin.client.rendering.EntityModelLayersAccessor;
 
 /**
  * A helpers for registering entity model layers and providers for the layer's textured model data.
  */
-@Environment(EnvType.CLIENT)
 public final class EntityModelLayerRegistry {
 	/**
 	 * Registers an entity model layer and registers a provider for a {@linkplain TexturedModelData}.
@@ -52,7 +49,6 @@ public final class EntityModelLayerRegistry {
 	}
 
 	@FunctionalInterface
-	@Environment(EnvType.CLIENT)
 	public interface TexturedModelDataProvider {
 		/**
 		 * Creates the textured model data for use in a {@link EntityModelLayer}.

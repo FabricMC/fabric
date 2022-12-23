@@ -20,12 +20,9 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.profiler.Profiler;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-@Environment(EnvType.CLIENT)
 public final class ClientEntityEvents {
 	private ClientEntityEvents() {
 	}

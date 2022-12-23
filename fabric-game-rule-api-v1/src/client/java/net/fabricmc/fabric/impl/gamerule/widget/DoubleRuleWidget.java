@@ -22,15 +22,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
 import net.minecraft.text.OrderedText;
+import net.minecraft.text.Text;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
 import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
 
-@Environment(EnvType.CLIENT)
 public final class DoubleRuleWidget extends EditGameRulesScreen.NamedRuleWidget {
 	private final TextFieldWidget textFieldWidget;
 

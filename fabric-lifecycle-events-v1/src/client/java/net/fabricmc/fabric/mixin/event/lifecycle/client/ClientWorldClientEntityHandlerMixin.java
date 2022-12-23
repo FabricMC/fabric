@@ -26,11 +26,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 
-@Environment(EnvType.CLIENT)
 @Mixin(targets = "net/minecraft/client/world/ClientWorld$ClientEntityHandler")
 abstract class ClientWorldClientEntityHandlerMixin {
 	// final synthetic Lnet/minecraft/client/world/ClientWorld; field_27735

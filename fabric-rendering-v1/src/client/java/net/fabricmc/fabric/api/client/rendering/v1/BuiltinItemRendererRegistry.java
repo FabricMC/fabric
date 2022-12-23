@@ -25,14 +25,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.client.rendering.BuiltinItemRendererRegistryImpl;
 
 /**
  * This registry holds {@linkplain DynamicItemRenderer builtin item renderers} for items.
  */
-@Environment(EnvType.CLIENT)
 public interface BuiltinItemRendererRegistry {
 	/**
 	 * The singleton instance of the renderer registry.
@@ -88,7 +85,6 @@ public interface BuiltinItemRendererRegistry {
 	 * The renderers are registered with {@link BuiltinItemRendererRegistry#register(ItemConvertible, DynamicItemRenderer)}.
 	 */
 	@FunctionalInterface
-	@Environment(EnvType.CLIENT)
 	interface DynamicItemRenderer {
 		/**
 		 * Renders an item stack.

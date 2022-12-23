@@ -31,14 +31,11 @@ import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
 import net.minecraft.network.packet.s2c.play.SynchronizeTagsS2CPacket;
 import net.minecraft.world.chunk.WorldChunk;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.impl.event.lifecycle.LoadedChunksCache;
 
-@Environment(EnvType.CLIENT)
 @Mixin(ClientPlayNetworkHandler.class)
 abstract class ClientPlayNetworkHandlerMixin {
 	@Shadow
