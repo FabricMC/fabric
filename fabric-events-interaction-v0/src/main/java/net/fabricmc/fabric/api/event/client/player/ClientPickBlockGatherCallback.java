@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * This event is emitted at the beginning of the block picking process in
  * order to find any applicable ItemStack. The first non-empty ItemStack
- * will be returned, overriding vanilla behaviour.
+ * will be returned, overriding vanilla behavior.
  */
 public interface ClientPickBlockGatherCallback {
 	Event<ClientPickBlockGatherCallback> EVENT = EventFactory.createArrayBacked(ClientPickBlockGatherCallback.class,
