@@ -47,6 +47,6 @@ public interface BakedModelMixin extends FabricBakedModel {
 
 	@Override
 	default void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-		context.fallbackConsumer().accept((BakedModel) this);
+		context.blockFallbackConsumer().accept((BakedModel) this, null); // Pass null to enforce item quads in block render contexts
 	}
 }

@@ -47,7 +47,7 @@ public interface RenderContext {
 	 * via this interface. Can also be used by compound models that contain a mix
 	 * of vanilla baked models, packaged quads and/or dynamic elements.
 	 *
-	 * <p>For block contexts, this will use the block state of the block being rendered to get the quads.
+	 * <p>For block contexts, this will pass the block state being rendered to {@link BakedModel#getQuads}.
 	 * For item contexts, this will pass a {@code null} block state to {@link BakedModel#getQuads}.
 	 * {@link #blockFallbackConsumer()} can be used instead to pass the block state explicitly.
 	 */

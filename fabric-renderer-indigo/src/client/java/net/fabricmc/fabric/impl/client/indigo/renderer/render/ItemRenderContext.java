@@ -268,7 +268,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	private class FallbackConsumer implements Consumer<BakedModel>, BiConsumer<BakedModel, BlockState> {
+	private class FallbackConsumer implements Consumer<BakedModel>, BiConsumer<BakedModel, @Nullable BlockState> {
 		@Override
 		public void accept(BakedModel model) {
 			accept(model, null);
