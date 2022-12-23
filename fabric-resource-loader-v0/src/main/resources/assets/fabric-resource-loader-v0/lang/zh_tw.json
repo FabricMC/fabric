@@ -1,0 +1,6 @@
+{
+  "pack.source.fabricmod": "Fabric 模組",
+  "pack.source.builtinMod": "內建：%s",
+  "pack.name.fabricMod": "Fabric 模組「%s」",
+  "pack.name.fabricMods": "Fabric 模組"
+}
