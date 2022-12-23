@@ -136,6 +136,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	/**
 	 * @deprecated Please use {@link FabricBlockSettings#luminance(ToIntFunction)}.
 	 */
+	@Deprecated
 	public FabricBlockSettings lightLevel(ToIntFunction<BlockState> levelFunction) {
 		return this.luminance(levelFunction);
 	}

@@ -203,7 +203,7 @@ public interface BiomeModificationContext {
 
 		/**
 		 * @see BiomeEffects#getLoopSound()
-		 * @see BiomeEffects.Builder#loopSound(SoundEvent)
+		 * @see BiomeEffects.Builder#loopSound(RegistryEntry)
 		 */
 		default void clearAmbientSound() {
 			setAmbientSound(Optional.empty());

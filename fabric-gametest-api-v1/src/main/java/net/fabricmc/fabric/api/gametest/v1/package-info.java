@@ -60,7 +60,7 @@
  * JVM arguments. The server works like the usual dedicated server, except that all
  * experimental features are turned on by default.
  *
- * <p>To export the test result, set {@systemProperty fabric-api.gametest.report-file}
+ * <p>To export the test result, set {@code fabric-api.gametest.report-file}
  * property to the output file path.
  *
  * <p>Example of a Gradle run config to launch GameTest:
