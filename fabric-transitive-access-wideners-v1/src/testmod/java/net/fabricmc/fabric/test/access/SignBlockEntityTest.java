@@ -25,10 +25,11 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.SignItem;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.SignType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -53,10 +54,10 @@ public final class SignBlockEntityTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registry.BLOCK, new Identifier(MOD_ID, "test_sign"), TEST_SIGN);
-		Registry.register(Registry.BLOCK, new Identifier(MOD_ID, "test_wall_sign"), TEST_WALL_SIGN);
-		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "test_sign"), TEST_SIGN_ITEM);
-		Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "test_sign"), TEST_SIGN_BLOCK_ENTITY);
+		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "test_sign"), TEST_SIGN);
+		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "test_wall_sign"), TEST_WALL_SIGN);
+		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "test_sign"), TEST_SIGN_ITEM);
+		Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "test_sign"), TEST_SIGN_BLOCK_ENTITY);
 	}
 
 	public static class TestSign extends SignBlockEntity {
