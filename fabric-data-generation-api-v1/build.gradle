@@ -136,7 +136,7 @@ def visitFinalMethods(ClassNode classNode, closure) {
 
 // Return a map of all class names to classNodes
 def getClasses(File input) {
-	Map<String, ClassNode> classes = [:]
+	Map<String, ClassNode> classes = new TreeMap<>()
 
 	new ZipFile(input).withCloseable { ZipFile zip  ->
 		zip.entries().toList().forEach { ZipEntry entry ->
