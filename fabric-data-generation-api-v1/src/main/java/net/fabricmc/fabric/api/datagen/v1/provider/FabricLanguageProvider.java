@@ -40,6 +40,8 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.stat.StatType;
+import net.minecraft.text.TextContent;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -147,7 +149,14 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param value The value of the entry.
 		 */
 		default void add(ItemGroup group, String value) {
-			add(group.getDisplayName().toString(), value);
+			final TextContent content = group.getDisplayName().getContent();
+
+			if (content instanceof TranslatableTextContent translatableTextContent) {
+				add(translatableTextContent.getKey(), value);
+				return;
+			}
+
+			throw new UnsupportedOperationException("Cannot add language entry for ItemGroup (%s) as the display name is not translatable.".formatted(group.getDisplayName().getString()));
 		}
 
 		/**
