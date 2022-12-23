@@ -34,6 +34,7 @@ public final class ClientBlockEntityEvents {
 	 * Called when a BlockEntity is loaded into a ClientWorld.
 	 *
 	 * <p>When this event is called, the block entity is already in the world.
+	 * However, its data might not be loaded yet, so don't rely on it.
 	 */
 	public static final Event<ClientBlockEntityEvents.Load> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(ClientBlockEntityEvents.Load.class, callbacks -> (blockEntity, world) -> {
 		if (EventFactory.isProfilingEnabled()) {
