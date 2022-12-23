@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.spongepowered.asm.mixin.Final;
@@ -45,7 +45,8 @@ public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void construct(ResourcePackProvider[] resourcePackProviders, CallbackInfo info) {
-		providers = new HashSet<>(providers);
+		// Use a LinkedHashSet to preserve ordering
+		providers = new LinkedHashSet<>(providers);
 
 		// Search resource pack providers to find any server-related pack provider.
 		boolean shouldAddServerProvider = false;
