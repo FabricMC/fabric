@@ -5,6 +5,12 @@ loom {
 	accessWidenerPath = file('src/main/resources/fabric-transitive-access-wideners-v1.accesswidener')
 }
 
+testDependencies(project, [
+		':fabric-rendering-v1',
+		':fabric-object-builder-api-v1'
+])
+
+
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
