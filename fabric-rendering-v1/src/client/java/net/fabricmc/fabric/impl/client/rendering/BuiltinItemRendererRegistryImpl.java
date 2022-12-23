@@ -58,8 +58,11 @@ public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendere
 		}
 	}
 
+	@Override
 	@Nullable
-	public static DynamicItemRenderer getRenderer(Item item) {
-		return RENDERERS.get(item);
+	public DynamicItemRenderer get(ItemConvertible item) {
+		Objects.requireNonNull(item.asItem(), "item is null");
+
+		return RENDERERS.get(item.asItem());
 	}
 }
