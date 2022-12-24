@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.recipe.v1.ingredient;
 
+import java.util.List;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.item.Item;
@@ -69,7 +71,7 @@ public interface CustomIngredient {
 	 *
 	 * <p>Note: no caching needs to be done by the implementation, this is already handled by the ingredient itself.
 	 */
-	ItemStack[] getMatchingStacks();
+	List<ItemStack> getMatchingStacks();
 
 	/**
 	 * Returns whether this ingredient always requires {@linkplain #test direct stack testing}.

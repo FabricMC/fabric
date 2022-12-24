@@ -84,7 +84,7 @@ public class CustomIngredientImpl extends Ingredient {
 	@Override
 	public ItemStack[] getMatchingStacks() {
 		if (this.matchingStacks == null) {
-			this.matchingStacks = customIngredient.getMatchingStacks();
+			this.matchingStacks = customIngredient.getMatchingStacks().toArray(ItemStack[]::new);
 		}
 
 		return this.matchingStacks;

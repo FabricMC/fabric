@@ -46,7 +46,7 @@ public class AllIngredient extends CombinedIngredient {
 	}
 
 	@Override
-	public ItemStack[] getMatchingStacks() {
+	public List<ItemStack> getMatchingStacks() {
 		// There's always at least one sub ingredient, so accessing ingredients[0] is safe.
 		List<ItemStack> previewStacks = new ArrayList<>(Arrays.asList(ingredients[0].getMatchingStacks()));
 
@@ -55,7 +55,7 @@ public class AllIngredient extends CombinedIngredient {
 			previewStacks.removeIf(stack -> !ing.test(stack));
 		}
 
-		return previewStacks.toArray(ItemStack[]::new);
+		return previewStacks;
 	}
 
 	@Override

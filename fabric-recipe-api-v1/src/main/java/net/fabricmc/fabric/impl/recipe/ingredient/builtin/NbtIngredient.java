@@ -73,7 +73,7 @@ public class NbtIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public ItemStack[] getMatchingStacks() {
+	public List<ItemStack> getMatchingStacks() {
 		List<ItemStack> stacks = new ArrayList<>(List.of(base.getMatchingStacks()));
 		stacks.replaceAll(stack -> {
 			ItemStack copy = stack.copy();
@@ -85,7 +85,7 @@ public class NbtIngredient implements CustomIngredient {
 			return copy;
 		});
 		stacks.removeIf(stack -> !base.test(stack));
-		return stacks.toArray(ItemStack[]::new);
+		return stacks;
 	}
 
 	@Override

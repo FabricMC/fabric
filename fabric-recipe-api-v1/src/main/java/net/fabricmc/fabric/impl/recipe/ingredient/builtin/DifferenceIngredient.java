@@ -46,10 +46,10 @@ public class DifferenceIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public ItemStack[] getMatchingStacks() {
+	public List<ItemStack> getMatchingStacks() {
 		List<ItemStack> stacks = new ArrayList<>(List.of(base.getMatchingStacks()));
-		stacks.removeIf(subtracted::test);
-		return stacks.toArray(ItemStack[]::new);
+		stacks.removeIf(subtracted);
+		return stacks;
 	}
 
 	@Override
