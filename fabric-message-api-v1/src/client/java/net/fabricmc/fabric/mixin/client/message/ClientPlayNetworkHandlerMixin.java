@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 
-import net.fabricmc.fabric.api.client.message.v1.ClientMessageEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 
 /**
  * Mixin to {@link ClientPlayNetworkHandler} to listen for sending messages and commands.
@@ -33,20 +33,20 @@ import net.fabricmc.fabric.api.client.message.v1.ClientMessageEvents;
 public abstract class ClientPlayNetworkHandlerMixin {
 	@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
 	private void fabric_onSendChatMessage(String content, CallbackInfo ci) {
-		if (ClientMessageEvents.ALLOW_SEND_CHAT_MESSAGE.invoker().allowSendChatMessage(content)) {
-			ClientMessageEvents.SEND_CHAT_MESSAGE.invoker().onSendChatMessage(content);
+		if (ClientSendMessageEvents.ALLOW_CHAT.invoker().allowSendChatMessage(content)) {
+			ClientSendMessageEvents.CHAT.invoker().onSendChatMessage(content);
 		} else {
-			ClientMessageEvents.CANCELED_SEND_CHAT_MESSAGE.invoker().onCanceledSendChatMessage(content);
+			ClientSendMessageEvents.CHAT_CANCELED.invoker().onSendChatMessageCanceled(content);
 			ci.cancel();
 		}
 	}
 
 	@Inject(method = "sendChatCommand", at = @At("HEAD"), cancellable = true)
 	private void fabric_onSendCommandMessage(String command, CallbackInfo ci) {
-		if (ClientMessageEvents.ALLOW_SEND_COMMAND_MESSAGE.invoker().allowSendCommandMessage(command)) {
-			ClientMessageEvents.SEND_COMMAND_MESSAGE.invoker().onSendCommandMessage(command);
+		if (ClientSendMessageEvents.ALLOW_COMMAND.invoker().allowSendCommandMessage(command)) {
+			ClientSendMessageEvents.COMMAND.invoker().onSendCommandMessage(command);
 		} else {
-			ClientMessageEvents.CANCELED_SEND_COMMAND_MESSAGE.invoker().onCanceledSendCommandMessage(command);
+			ClientSendMessageEvents.COMMAND_CANCELED.invoker().onSendCommandMessageCanceled(command);
 			ci.cancel();
 		}
 	}

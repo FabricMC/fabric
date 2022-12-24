@@ -32,7 +32,7 @@ import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.text.Text;
 
-import net.fabricmc.fabric.api.client.message.v1.ClientMessageEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 
 @Mixin(MessageHandler.class)
 public abstract class MessageHandlerMixin {
@@ -57,10 +57,10 @@ public abstract class MessageHandlerMixin {
 
 	@Unique
 	private void fabric_onChatMessage(Text message, @Nullable SignedMessage signedMessage, @Nullable GameProfile sender, MessageType.Parameters params, Instant receptionTimestamp, CallbackInfoReturnable<Boolean> cir) {
-		if (ClientMessageEvents.ALLOW_RECEIVE_CHAT_MESSAGE.invoker().allowReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp)) {
-			ClientMessageEvents.RECEIVE_CHAT_MESSAGE.invoker().onReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp);
+		if (ClientReceiveMessageEvents.ALLOW_CHAT.invoker().allowReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp)) {
+			ClientReceiveMessageEvents.CHAT.invoker().onReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp);
 		} else {
-			ClientMessageEvents.CANCELED_RECEIVE_CHAT_MESSAGE.invoker().onCanceledReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp);
+			ClientReceiveMessageEvents.CHAT_CANCELED.invoker().onReceiveChatMessageCanceled(message, signedMessage, sender, params, receptionTimestamp);
 			cir.setReturnValue(false);
 		}
 	}
@@ -72,10 +72,10 @@ public abstract class MessageHandlerMixin {
 
 	@Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;addMessage(Lnet/minecraft/text/Text;)V"), cancellable = true)
 	private void fabric_onGameMessage(Text message, boolean overlay, CallbackInfo ci) {
-		if (ClientMessageEvents.ALLOW_RECEIVE_GAME_MESSAGE.invoker().allowReceiveGameMessage(message, overlay)) {
-			ClientMessageEvents.RECEIVE_GAME_MESSAGE.invoker().onReceiveGameMessage(message, overlay);
+		if (ClientReceiveMessageEvents.ALLOW_GAME.invoker().allowReceiveGameMessage(message, overlay)) {
+			ClientReceiveMessageEvents.GAME.invoker().onReceiveGameMessage(message, overlay);
 		} else {
-			ClientMessageEvents.CANCELED_RECEIVE_GAME_MESSAGE.invoker().onCanceledReceiveGameMessage(message, overlay);
+			ClientReceiveMessageEvents.GAME_CANCELED.invoker().onReceiveGameMessageCanceled(message, overlay);
 			ci.cancel();
 		}
 	}
