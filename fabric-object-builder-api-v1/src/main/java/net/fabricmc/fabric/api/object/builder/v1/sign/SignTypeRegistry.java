@@ -24,9 +24,9 @@ import net.fabricmc.fabric.mixin.object.builder.SignTypeAccessor;
 /**
  * This class allows registering {@link SignType}s.
  *
- * <P>A {@link SignType} is used to tell the game what texture a sign should use.
+ * <p>A {@link SignType} is used to tell the game what texture a sign should use.
  *
- * <P>These textures are stored under {@code namespace/textures/entity/signs/}.
+ * <p>These textures are stored under {@code namespace/textures/entity/signs/}.
  */
 public final class SignTypeRegistry {
 	private SignTypeRegistry() {
