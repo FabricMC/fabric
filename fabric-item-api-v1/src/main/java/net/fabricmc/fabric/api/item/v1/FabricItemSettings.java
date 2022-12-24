@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.item.v1;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.util.Rarity;
 
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
@@ -94,6 +95,12 @@ public class FabricItemSettings extends Item.Settings {
 	@Override
 	public FabricItemSettings fireproof() {
 		super.fireproof();
+		return this;
+	}
+
+	@Override
+	public FabricItemSettings requires(FeatureFlag... features) {
+		super.requires(features);
 		return this;
 	}
 }

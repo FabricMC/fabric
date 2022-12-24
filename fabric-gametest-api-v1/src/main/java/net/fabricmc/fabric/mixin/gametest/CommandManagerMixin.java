@@ -30,6 +30,8 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.command.TestCommand;
 
+import net.fabricmc.fabric.impl.gametest.FabricGameTestHelper;
+
 @Mixin(CommandManager.class)
 public abstract class CommandManagerMixin {
 	@Shadow
@@ -39,7 +41,7 @@ public abstract class CommandManagerMixin {
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/command/WorldBorderCommand;register(Lcom/mojang/brigadier/CommandDispatcher;)V", shift = At.Shift.AFTER))
 	private void construct(CommandManager.RegistrationEnvironment environment, CommandRegistryAccess registryAccess, CallbackInfo info) {
 		// Registered by vanilla when isDevelopment is enabled.
-		if (!SharedConstants.isDevelopment) {
+		if (FabricGameTestHelper.COMMAND_ENABLED && !SharedConstants.isDevelopment) {
 			TestCommand.register(this.dispatcher);
 		}
 	}

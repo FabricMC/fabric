@@ -45,12 +45,9 @@ import net.minecraft.command.CommandException;
 import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.mixin.command.HelpCommandAccessor;
 
-@Environment(EnvType.CLIENT)
 public final class ClientCommandInternals {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientCommandInternals.class);
 	private static final String API_COMMAND_NAME = "fabric-command-api-v2:client";

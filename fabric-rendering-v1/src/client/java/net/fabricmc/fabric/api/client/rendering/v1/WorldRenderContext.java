@@ -33,14 +33,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.profiler.Profiler;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 /**
  * Except as noted below, the properties exposed here match the parameters passed to
  * {@link WorldRenderer#render(MatrixStack, float, long, boolean, Camera, GameRenderer, LightmapTextureManager, Matrix4f)}.
  */
-@Environment(EnvType.CLIENT)
 public interface WorldRenderContext {
 	/**
 	 * The world renderer instance doing the rendering and invoking the event.
@@ -119,7 +115,6 @@ public interface WorldRenderContext {
 	 * Used in {@code BLOCK_OUTLINE} to convey the parameters normally sent to
 	 * {@code WorldRenderer.drawBlockOutline}.
 	 */
-	@Environment(EnvType.CLIENT)
 	interface BlockOutlineContext {
 		/**
 		 * @deprecated Use {@link #consumers()} directly.

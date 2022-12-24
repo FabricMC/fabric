@@ -3,3 +3,5 @@ accessible  method  net/minecraft/world/GameRules$Type <init>  (Ljava/util/funct
 extendable  method  net/minecraft/world/GameRules$Type <init>  (Ljava/util/function/Supplier;Ljava/util/function/Function;Ljava/util/function/BiConsumer;Lnet/minecraft/world/GameRules$Acceptor;)V
 accessible  class   net/minecraft/world/GameRules$Acceptor
 accessible  class   net/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleWidgetFactory
+accessible  field   net/minecraft/client/gui/screen/world/EditGameRulesScreen$NamedRuleWidget name  Ljava/util/List;
+mutable  field   net/minecraft/client/gui/screen/world/EditGameRulesScreen$NamedRuleWidget name  Ljava/util/List;

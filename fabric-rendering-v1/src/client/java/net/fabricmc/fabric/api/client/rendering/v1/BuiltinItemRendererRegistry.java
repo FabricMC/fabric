@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.json.ModelTransformation;
@@ -25,14 +25,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.client.rendering.BuiltinItemRendererRegistryImpl;
 
 /**
  * This registry holds {@linkplain DynamicItemRenderer builtin item renderers} for items.
  */
-@Environment(EnvType.CLIENT)
 public interface BuiltinItemRendererRegistry {
 	/**
 	 * The singleton instance of the renderer registry.
@@ -78,7 +75,13 @@ public interface BuiltinItemRendererRegistry {
 	 * @throws IllegalArgumentException if the item already has a registered renderer
 	 * @throws NullPointerException if either the item or the renderer is null
 	 */
-	void register(@NotNull ItemConvertible item, @NotNull DynamicItemRenderer renderer);
+	void register(ItemConvertible item, DynamicItemRenderer renderer);
+
+	/**
+	 * Returns the renderer for the item, or {@code null} if the item has no renderer.
+	 */
+	@Nullable
+	DynamicItemRenderer get(ItemConvertible item);
 
 	/**
 	 * Dynamic item renderers render items with custom code.
@@ -88,7 +91,6 @@ public interface BuiltinItemRendererRegistry {
 	 * The renderers are registered with {@link BuiltinItemRendererRegistry#register(ItemConvertible, DynamicItemRenderer)}.
 	 */
 	@FunctionalInterface
-	@Environment(EnvType.CLIENT)
 	interface DynamicItemRenderer {
 		/**
 		 * Renders an item stack.

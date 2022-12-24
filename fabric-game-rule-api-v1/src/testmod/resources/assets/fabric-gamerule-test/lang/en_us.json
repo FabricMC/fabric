@@ -1,5 +1,5 @@
 {
-  "gamerule.cardinalDirection": "Random Cardinal Direction",
+  "gamerule.cardinalDirection": "Random Cardinal Direction Very Long Title",
   "gamerule.cardinalDirection.description": "A cardinal direction. Should never be up or down",
   "gamerule.cardinalDirection.north": "Northbound",
   "gamerule.cardinalDirection.south": "Southbound",

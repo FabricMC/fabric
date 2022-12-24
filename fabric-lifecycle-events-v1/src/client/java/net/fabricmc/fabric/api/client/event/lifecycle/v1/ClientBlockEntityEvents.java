@@ -20,12 +20,9 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.profiler.Profiler;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-@Environment(EnvType.CLIENT)
 public final class ClientBlockEntityEvents {
 	private ClientBlockEntityEvents() {
 	}
@@ -34,6 +31,7 @@ public final class ClientBlockEntityEvents {
 	 * Called when a BlockEntity is loaded into a ClientWorld.
 	 *
 	 * <p>When this event is called, the block entity is already in the world.
+	 * However, its data might not be loaded yet, so don't rely on it.
 	 */
 	public static final Event<ClientBlockEntityEvents.Load> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(ClientBlockEntityEvents.Load.class, callbacks -> (blockEntity, world) -> {
 		if (EventFactory.isProfilingEnabled()) {

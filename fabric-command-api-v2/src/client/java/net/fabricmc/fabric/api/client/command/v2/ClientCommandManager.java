@@ -22,8 +22,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
 
 /**
@@ -62,7 +60,6 @@ import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
  * }
  * </pre>
  */
-@Environment(EnvType.CLIENT)
 public final class ClientCommandManager {
 	private ClientCommandManager() {
 	}

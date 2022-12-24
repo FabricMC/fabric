@@ -26,12 +26,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.registry.Registries;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 
-@Environment(EnvType.CLIENT)
 public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendererRegistry {
 	private static final Map<Item, DynamicItemRenderer> RENDERERS = new HashMap<>();
 
@@ -61,8 +58,11 @@ public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendere
 		}
 	}
 
+	@Override
 	@Nullable
-	public static DynamicItemRenderer getRenderer(Item item) {
-		return RENDERERS.get(item);
+	public DynamicItemRenderer get(ItemConvertible item) {
+		Objects.requireNonNull(item.asItem(), "item is null");
+
+		return RENDERERS.get(item.asItem());
 	}
 }

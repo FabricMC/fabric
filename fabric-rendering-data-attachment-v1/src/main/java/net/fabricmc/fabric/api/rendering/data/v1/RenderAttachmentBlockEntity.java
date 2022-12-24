@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.rendering.data.v1;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.world.BlockRenderView;
 
 /**
  * Interface for {@link BlockEntity}s which provide dynamic model state data.
@@ -27,7 +28,10 @@ import net.minecraft.block.entity.BlockEntity;
  * cached during render chunk building on the main thread (safely) and accessible
  * during chunk rendering on non-main threads.
  *
- * <p>For this reason, please ensure that all accesses to the passed model data are
+ * <p>To access the dynamic data, cast the {@link BlockRenderView} to {@link RenderAttachedBlockView},
+ * and then call {@link #getRenderAttachmentData()} with the correct position.
+ *
+ * <p>Due to chunk meshing happening on non-main threads, please ensure that all accesses to the passed model data are
  * thread-safe. This can be achieved by, for example, passing a pre-generated
  * immutable object, or ensuring all gets performed on the passed object are atomic
  * and well-checked for unusual states.

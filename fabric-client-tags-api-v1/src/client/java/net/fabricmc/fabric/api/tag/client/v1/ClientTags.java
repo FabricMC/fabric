@@ -30,8 +30,6 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.RegistryKey;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.tag.client.ClientTagsLoader;
 
 /**
@@ -46,7 +44,6 @@ import net.fabricmc.fabric.impl.tag.client.ClientTagsLoader;
  * directly, allowing for mods to query tags such as {@link net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags}
  * even when connected to a vanilla server.
  */
-@Environment(EnvType.CLIENT)
 public final class ClientTags {
 	private static final Map<TagKey<?>, Set<Identifier>> LOCAL_TAG_CACHE = new ConcurrentHashMap<>();
 

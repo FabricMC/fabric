@@ -20,8 +20,6 @@ import java.util.Objects;
 
 import net.minecraft.client.gui.screen.Screen;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 
@@ -38,7 +36,6 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
  *
  * @see ScreenEvents
  */
-@Environment(EnvType.CLIENT)
 public final class ScreenMouseEvents {
 	/**
 	 * An event that checks if the mouse click should be allowed.
@@ -148,7 +145,6 @@ public final class ScreenMouseEvents {
 	private ScreenMouseEvents() {
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AllowMouseClick {
 		/**
@@ -160,7 +156,6 @@ public final class ScreenMouseEvents {
 		boolean allowMouseClick(Screen screen, double mouseX, double mouseY, int button);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BeforeMouseClick {
 		/**
@@ -172,7 +167,6 @@ public final class ScreenMouseEvents {
 		void beforeMouseClick(Screen screen, double mouseX, double mouseY, int button);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AfterMouseClick {
 		/**
@@ -184,7 +178,6 @@ public final class ScreenMouseEvents {
 		void afterMouseClick(Screen screen, double mouseX, double mouseY, int button);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AllowMouseRelease {
 		/**
@@ -198,7 +191,6 @@ public final class ScreenMouseEvents {
 		boolean allowMouseRelease(Screen screen, double mouseX, double mouseY, int button);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BeforeMouseRelease {
 		/**
@@ -212,7 +204,6 @@ public final class ScreenMouseEvents {
 		void beforeMouseRelease(Screen screen, double mouseX, double mouseY, int button);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AfterMouseRelease {
 		/**
@@ -226,7 +217,6 @@ public final class ScreenMouseEvents {
 		void afterMouseRelease(Screen screen, double mouseX, double mouseY, int button);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AllowMouseScroll {
 		/**
@@ -241,7 +231,6 @@ public final class ScreenMouseEvents {
 		boolean allowMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BeforeMouseScroll {
 		/**
@@ -255,7 +244,6 @@ public final class ScreenMouseEvents {
 		void beforeMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AfterMouseScroll {
 		/**

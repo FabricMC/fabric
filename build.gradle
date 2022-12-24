@@ -15,7 +15,7 @@ plugins {
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 	id "com.modrinth.minotaur" version "2.4.3"
-	id "me.modmuss50.remotesign" version "0.3.0" apply false
+	id "me.modmuss50.remotesign" version "0.4.0" apply false
 }
 
 def ENV = System.getenv()
@@ -312,18 +312,6 @@ javadoc {
 		charSet = "UTF-8"
 		memberLevel = JavadocMemberLevel.PACKAGE
 		links(
-				"https://guava.dev/releases/31.1-jre/api/docs/",
-				"https://asm.ow2.io/javadoc/",
-				"https://docs.oracle.com/en/java/javase/17/docs/api/",
-				"https://jenkins.liteloader.com/job/Mixin/javadoc/",
-				"https://logging.apache.org/log4j/2.x/log4j-api/apidocs/",
-				"https://www.slf4j.org/apidocs/",
-				"https://netty.io/4.1/api/",
-				"https://javadoc.lwjgl.org/",
-				"https://www.javadoc.io/doc/com.google.code.gson/gson/2.10/",
-				"https://javadoc.io/doc/org.jetbrains/annotations/latest/",
-				"https://javadoc.io/doc/it.unimi.dsi/fastutil/",
-				"https://javadoc.scijava.org/JOML/",
 				"https://maven.fabricmc.net/docs/yarn-${rootProject.minecraft_version}${project.yarn_version}/"
 		)
 		// Disable the crazy super-strict doclint tool in Java 8
@@ -423,11 +411,14 @@ configurations {
 		extendsFrom configurations.loaderLibraries
 		extendsFrom configurations.minecraftRuntimeOnlyLibraries
 	}
+	productionRuntimeServer
 }
 
 dependencies {
 	productionRuntime "net.fabricmc:fabric-loader:${project.loader_version}"
 	productionRuntime "net.fabricmc:intermediary:${project.minecraft_version}"
+
+	productionRuntimeServer "net.fabricmc:fabric-installer:${project.installer_version}:server"
 }
 
 import net.fabricmc.loom.util.OperatingSystem
@@ -462,6 +453,38 @@ task runProductionAutoTestClient(type: JavaExec, dependsOn: [remapJar, remapTest
 			"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
 			"-Dfabric.autoTest"
 		)
+	}
+}
+
+task serverPropertiesJar(type: Jar) {
+	def propsFile = file("build/tmp/install.properties")
+
+	doFirst {
+		propsFile.text = """\
+						fabric-loader-version=${project.loader_version}
+						game-version=${project.minecraft_version}
+						""".stripMargin().stripIndent()
+	}
+
+	archiveFileName = "test-server-properties.jar"
+	destinationDirectory = file("build/tmp")
+	from(propsFile)
+}
+
+task runProductionAutoTestServer(type: JavaExec, dependsOn: [remapJar, remapTestmodJar, serverPropertiesJar]) {
+	classpath.from configurations.productionRuntimeServer, serverPropertiesJar
+	mainClass = "net.fabricmc.installer.ServerLauncher"
+	workingDir = file("run")
+
+	doFirst {
+		workingDir.mkdirs()
+
+		jvmArgs(
+			"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
+			"-Dfabric.autoTest"
+		)
+
+		args("nogui")
 	}
 }
 
@@ -525,6 +548,7 @@ publishing {
 			}
 
 			artifact javadocJar
+			artifact remapTestmodJar
 
 			pom.withXml {
 				def depsNode = asNode().appendNode("dependencies")

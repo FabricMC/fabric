@@ -5,6 +5,12 @@ loom {
 	accessWidenerPath = file('src/main/resources/fabric-transitive-access-wideners-v1.accesswidener')
 }
 
+testDependencies(project, [
+		':fabric-rendering-v1',
+		':fabric-object-builder-api-v1'
+])
+
+
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
@@ -18,11 +24,25 @@ import java.util.stream.Collectors
 
 task generateAccessWidener {
 	doLast {
-		List<String> lines = file("template.accesswidener").text.lines().collect(Collectors.toCollection { [] })
-		Path inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.commonJar
+		List<String> lines = new ArrayList<>();
+		lines.add("accessWidener v2 named")
+		lines.add("")
+		lines.add("# DO NOT EDIT BY HAND! This file is generated automatically.")
+		lines.add("# Edit \"template.accesswidener\" instead then run \"gradlew generateAccessWidener\".")
+		lines.add("")
+		lines.addAll(file("template.accesswidener").text.lines().toList())
 
-		try (def fs = FileSystems.newFileSystem(URI.create("jar:${inputJar.toUri()}"), [create: false])) {
+		Path commonJar = loom.namedMinecraftProvider.parentMinecraftProvider.commonJar
+
+		try (def fs = FileSystems.newFileSystem(URI.create("jar:${commonJar.toUri()}"), [create: false])) {
 			generateBlockConstructors(lines, fs)
+			lines.add("")
+		}
+
+		Path clientJar = loom.namedMinecraftProvider.parentMinecraftProvider.clientOnlyJar
+
+		try (def fs = FileSystems.newFileSystem(URI.create("jar:${clientJar.toUri()}"), [create: false])) {
+			generateRenderPhaseFields(lines, fs)
 		}
 
 		file('src/main/resources/fabric-transitive-access-wideners-v1.accesswidener').text = String.join('\n', lines) + '\n'
@@ -53,6 +73,17 @@ def generateBlockConstructors(List<String> lines, FileSystem fs) {
 				}
 			}
 		}
+}
+
+def generateRenderPhaseFields(List<String> lines, FileSystem fs) {
+	lines.add("# Protected static fields of RenderPhase")
+
+	for (def field : loadClass(fs.getPath("net/minecraft/client/render/RenderPhase.class")).fields) {
+		// All protected static fields of RenderPhase
+		if ((field.access & Opcodes.ACC_PROTECTED) != 0 && (field.access & Opcodes.ACC_STATIC) != 0) {
+			lines.add("transitive-accessible field net/minecraft/client/render/RenderPhase ${field.name} ${field.desc}")
+		}
+	}
 }
 
 ClassNode loadClass(Path path) {
