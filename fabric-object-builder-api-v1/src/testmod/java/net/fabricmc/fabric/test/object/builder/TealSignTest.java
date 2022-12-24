@@ -25,15 +25,14 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.SignItem;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.SignType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.object.builder.v1.sign.SignTypeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.object.builder.v1.sign.SignTypeRegistry;
 
 public class TealSignTest implements ModInitializer {
 	public static final SignType TEAL_TYPE = SignTypeRegistry.registerSignType(ObjectBuilderTestConstants.id("teal"));
