@@ -19,8 +19,6 @@ package net.fabricmc.fabric.api.object.builder.v1.sign;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.SignType;
 
-import net.fabricmc.fabric.mixin.object.builder.SignTypeAccessor;
-
 /**
  * This class allows registering {@link SignType}s.
  *
@@ -39,6 +37,6 @@ public final class SignTypeRegistry {
 	 * @return a new {@link SignType}.
 	 */
 	public static SignType registerSignType(Identifier id) {
-		return SignTypeAccessor.callRegister(SignTypeAccessor.createSignType(id.toString()));
+		return SignType.register(new SignType(id.toString()));
 	}
 }

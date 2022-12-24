@@ -12,3 +12,6 @@ accessible method net/minecraft/entity/SpawnRestriction register (Lnet/minecraft
 
 accessible field net/minecraft/village/VillagerType BIOME_TO_TYPE Ljava/util/Map;
 accessible method net/minecraft/village/VillagerType <init> (Ljava/lang/String;)V
+
+accessible method net/minecraft/util/SignType <init> (Ljava/lang/String;)V
+accessible method net/minecraft/util/SignType register (Lnet/minecraft/util/SignType;)Lnet/minecraft/util/SignType;
