@@ -16,13 +16,12 @@
 
 package net.fabricmc.fabric.test.message;
 
-import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 
 public class ChatTestClient implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChatTestClient.class);
