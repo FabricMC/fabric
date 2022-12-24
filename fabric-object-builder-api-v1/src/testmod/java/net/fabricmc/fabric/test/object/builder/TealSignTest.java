@@ -36,8 +36,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
 public class TealSignTest implements ModInitializer {
-	public static final String MOD_ID = "fabric-rendering-v1-testmod";
-	public static final SignType TEAL_TYPE = SignTypeRegistry.registerSignType(new Identifier(MOD_ID, "teal"));
+	public static final SignType TEAL_TYPE = SignTypeRegistry.registerSignType(ObjectBuilderTestConstants.id("teal"));
 	public static final SignBlock TEAL_SIGN = new SignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), TEAL_TYPE) {
 		@Override
 		public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
@@ -55,10 +54,10 @@ public class TealSignTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registry.BLOCK, new Identifier(MOD_ID, "teal_sign"), TEAL_SIGN);
-		Registry.register(Registry.BLOCK, new Identifier(MOD_ID, "teal_wall_sign"), TEAL_WALL_SIGN);
-		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "teal_sign"), TEAL_SIGN_ITEM);
-		Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "teal_sign"), TEST_SIGN_BLOCK_ENTITY);
+		Registry.register(Registry.BLOCK, ObjectBuilderTestConstants.id("teal_sign"), TEAL_SIGN);
+		Registry.register(Registry.BLOCK, ObjectBuilderTestConstants.id("teal_wall_sign"), TEAL_WALL_SIGN);
+		Registry.register(Registry.ITEM, ObjectBuilderTestConstants.id("teal_sign"), TEAL_SIGN_ITEM);
+		Registry.register(Registry.BLOCK_ENTITY_TYPE, ObjectBuilderTestConstants.id("teal_sign"), TEST_SIGN_BLOCK_ENTITY);
 	}
 
 	public static class TealSign extends SignBlockEntity {
