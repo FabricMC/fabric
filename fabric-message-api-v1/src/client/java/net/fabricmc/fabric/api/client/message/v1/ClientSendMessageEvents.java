@@ -69,11 +69,14 @@ public final class ClientSendMessageEvents {
 	 * An event triggered when the client sends a chat message,
 	 * typically from a client GUI. Is not called when {@linkplain
 	 * #ALLOW_CHAT chat messages are blocked}.
+	 * Mods can use this to modify the message.
 	 */
 	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, listeners -> (message) -> {
 		for (Chat listener : listeners) {
-			listener.onSendChatMessage(message);
+			message = listener.onSendChatMessage(message);
 		}
+
+		return message;
 	});
 
 	/**
@@ -82,11 +85,14 @@ public final class ClientSendMessageEvents {
 	 * including client commands registered with {@code fabric-command-api}.
 	 * Is not called when {@linkplain #ALLOW_COMMAND command messages are blocked}.
 	 * The command string does not include a slash at the beginning.
+	 * Mods can use this to modify the command.
 	 */
 	public static final Event<Command> COMMAND = EventFactory.createArrayBacked(Command.class, listeners -> (command) -> {
 		for (Command listener : listeners) {
-			listener.onSendCommandMessage(command);
+			command = listener.onSendCommandMessage(command);
 		}
+
+		return command;
 	});
 
 	/**
@@ -145,9 +151,10 @@ public final class ClientSendMessageEvents {
 		 * typically from a client GUI. Is not called when {@linkplain
 		 * #ALLOW_CHAT chat messages are blocked}.
 		 *
-		 * @param message the message that is being sent to the server
+		 * @param message the message that will be sent to the server
+		 * @return the modified message that will be sent to the server
 		 */
-		void onSendChatMessage(String message);
+		String onSendChatMessage(String message);
 	}
 
 	@FunctionalInterface
@@ -159,9 +166,10 @@ public final class ClientSendMessageEvents {
 		 * Is not called when {@linkplain #ALLOW_COMMAND command messages are blocked}.
 		 * The command string does not include a slash at the beginning.
 		 *
-		 * @param command the command that is being sent to the server, without a slash at the beginning.
+		 * @param command the command that will be sent to the server, without a slash at the beginning.
+		 * @return the modified command that will be sent to the server, without a slash at the beginning.
 		 */
-		void onSendCommandMessage(String command);
+		String onSendCommandMessage(String command);
 	}
 
 	@FunctionalInterface

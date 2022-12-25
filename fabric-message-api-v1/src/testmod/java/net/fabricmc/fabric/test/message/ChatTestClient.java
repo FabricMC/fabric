@@ -37,7 +37,10 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return true;
 		});
-		ClientSendMessageEvents.CHAT.register((message) -> LOGGER.info("Sent chat message: " + message));
+		ClientSendMessageEvents.CHAT.register((message) -> {
+			LOGGER.info("Sent chat message: " + message);
+			return message;
+		});
 		ClientSendMessageEvents.CHAT_CANCELED.register((message) -> LOGGER.info("Canceled sending chat message: " + message));
 		//Test client send command events
 		ClientSendMessageEvents.ALLOW_COMMAND.register((command) -> {
@@ -48,7 +51,10 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return true;
 		});
-		ClientSendMessageEvents.COMMAND.register((command) -> LOGGER.info("Sent command message: " + command));
+		ClientSendMessageEvents.COMMAND.register((command) -> {
+			LOGGER.info("Sent command message: " + command);
+			return command;
+		});
 		ClientSendMessageEvents.COMMAND_CANCELED.register((command) -> LOGGER.info("Canceled sending command message: " + command));
 		//Test client receive message events
 		ClientReceiveMessageEvents.ALLOW_CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
@@ -59,7 +65,10 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return true;
 		});
-		ClientReceiveMessageEvents.CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> LOGGER.info("Received chat message sent by {} at time {}: {}", sender == null ? "null" : sender.getName(), receptionTimestamp.toEpochMilli(), message.getString()));
+		ClientReceiveMessageEvents.CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
+			LOGGER.info("Received chat message sent by {} at time {}: {}", sender == null ? "null" : sender.getName(), receptionTimestamp.toEpochMilli(), message.getString());
+			return message;
+		});
 		ClientReceiveMessageEvents.CHAT_CANCELED.register((message, signedMessage, sender, params, receptionTimestamp) -> LOGGER.info("Cancelled receiving chat message sent by {} at time {}: {}", sender == null ? "null" : sender.getName(), receptionTimestamp.toEpochMilli(), message.getString()));
 		//Test client receive game message events
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
@@ -70,7 +79,10 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return true;
 		});
-		ClientReceiveMessageEvents.GAME.register((message, overlay) -> LOGGER.info("Received game message with overlay {}: {}", overlay, message.getString()));
+		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
+			LOGGER.info("Received game message with overlay {}: {}", overlay, message.getString());
+			return message;
+		});
 		ClientReceiveMessageEvents.GAME_CANCELED.register((message, overlay) -> LOGGER.info("Cancelled receiving game message with overlay {}: {}", overlay, message.getString()));
 	}
 }

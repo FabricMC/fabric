@@ -80,25 +80,31 @@ public final class ClientReceiveMessageEvents {
 	 * An event triggered when the client receives a chat message,
 	 * which is any message sent by a player. Is not called when
 	 * {@linkplain #ALLOW_CHAT chat messages are blocked}.
+	 * Mods can use this to modify the message.
 	 */
 	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, listeners -> (message, signedMessage, sender, params, receptionTimestamp) -> {
 		for (Chat listener : listeners) {
-			listener.onReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp);
+			message = listener.onReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp);
 		}
+
+		return message;
 	});
 
 	/**
 	 * An event triggered when the client receives a chat message,
 	 * which is any message sent by the server. Is not called when
 	 * {@linkplain #ALLOW_CHAT chat messages are blocked}.
+	 * Mods can use this to modify the message.
 	 *
 	 * <p>Overlay is whether the message will be displayed in the action bar.
 	 * Use {@link #ALLOW_GAME to toggle overlay}.
 	 */
 	public static final Event<Game> GAME = EventFactory.createArrayBacked(Game.class, listeners -> (message, overlay) -> {
 		for (Game listener : listeners) {
-			listener.onReceiveGameMessage(message, overlay);
+			message = listener.onReceiveGameMessage(message, overlay);
 		}
+
+		return message;
 	});
 
 	/**
@@ -170,8 +176,9 @@ public final class ClientReceiveMessageEvents {
 		 * @param sender             the sender of the message (nullable)
 		 * @param params             the parameters of the message
 		 * @param receptionTimestamp the timestamp when the message was received
+		 * @return the modified message to display
 		 */
-		void onReceiveChatMessage(Text message, @Nullable SignedMessage signedMessage, @Nullable GameProfile sender, MessageType.Parameters params, Instant receptionTimestamp);
+		Text onReceiveChatMessage(Text message, @Nullable SignedMessage signedMessage, @Nullable GameProfile sender, MessageType.Parameters params, Instant receptionTimestamp);
 	}
 
 	@FunctionalInterface
@@ -186,8 +193,9 @@ public final class ClientReceiveMessageEvents {
 		 *
 		 * @param message the message received from the server
 		 * @param overlay whether the message will be displayed in the action bar
+		 * @return the modified message to display
 		 */
-		void onReceiveGameMessage(Text message, boolean overlay);
+		Text onReceiveGameMessage(Text message, boolean overlay);
 	}
 
 	@FunctionalInterface
