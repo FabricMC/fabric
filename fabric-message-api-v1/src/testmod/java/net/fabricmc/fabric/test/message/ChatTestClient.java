@@ -19,6 +19,8 @@ package net.fabricmc.fabric.test.message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.text.Text;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -31,12 +33,12 @@ public class ChatTestClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		//Register test client commands
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(ClientCommandManager.literal("blocked_client_command").executes(context -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(ClientCommandManager.literal("block").then(ClientCommandManager.literal("send").executes(context -> {
 			throw new AssertionError("This client command should be blocked!");
-		})));
+		}))));
 		//Test client send message events
 		ClientSendMessageEvents.ALLOW_CHAT.register((message) -> {
-			if (message.contains("blocked")) {
+			if (message.contains("block send")) {
 				LOGGER.info("Blocked chat message: " + message);
 				return false;
 			}
@@ -44,13 +46,17 @@ public class ChatTestClient implements ClientModInitializer {
 			return true;
 		});
 		ClientSendMessageEvents.CHAT.register((message) -> {
+			if (message.contains("modify send")) {
+				message = "sending modified chat message";
+			}
+
 			LOGGER.info("Sent chat message: " + message);
 			return message;
 		});
 		ClientSendMessageEvents.CHAT_CANCELED.register((message) -> LOGGER.info("Canceled sending chat message: " + message));
 		//Test client send command events
 		ClientSendMessageEvents.ALLOW_COMMAND.register((command) -> {
-			if (command.contains("blocked")) {
+			if (command.contains("block send")) {
 				LOGGER.info("Blocked command message: " + command);
 				return false;
 			}
@@ -58,6 +64,10 @@ public class ChatTestClient implements ClientModInitializer {
 			return true;
 		});
 		ClientSendMessageEvents.COMMAND.register((command) -> {
+			if (command.contains("modify send")) {
+				command = "sending modified command message";
+			}
+
 			LOGGER.info("Sent command message: " + command);
 			return command;
 		});
@@ -72,20 +82,28 @@ public class ChatTestClient implements ClientModInitializer {
 			return true;
 		});
 		ClientReceiveMessageEvents.CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
+			if (message.getString().contains("modify receive")) {
+				message = Text.of("modified receiving chat message");
+			}
+
 			LOGGER.info("Received chat message sent by {} at time {}: {}", sender == null ? "null" : sender.getName(), receptionTimestamp.toEpochMilli(), message.getString());
 			return message;
 		});
 		ClientReceiveMessageEvents.CHAT_CANCELED.register((message, signedMessage, sender, params, receptionTimestamp) -> LOGGER.info("Cancelled receiving chat message sent by {} at time {}: {}", sender == null ? "null" : sender.getName(), receptionTimestamp.toEpochMilli(), message.getString()));
 		//Test client receive game message events
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
-			if (message.getString().startsWith("Unknown or incomplete command")) {
-				LOGGER.info("Blocked receiving \"unknown or incomplete command\" message: " + message.getString());
+			if (message.getString().startsWith("block receive")) {
+				LOGGER.info("Blocked receiving game message: " + message.getString());
 				return false;
 			}
 
 			return true;
 		});
 		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
+			if (message.getString().contains("modify receive")) {
+				message = Text.of("modified receiving game message");
+			}
+
 			LOGGER.info("Received game message with overlay {}: {}", overlay, message.getString());
 			return message;
 		});
