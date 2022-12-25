@@ -20,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 
@@ -28,6 +30,10 @@ public class ChatTestClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		//Register test client commands
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(ClientCommandManager.literal("blocked_client_command").executes(context -> {
+			throw new AssertionError("This client command should be blocked!");
+		})));
 		//Test client send message events
 		ClientSendMessageEvents.ALLOW_CHAT.register((message) -> {
 			if (message.contains("blocked")) {
@@ -45,7 +51,7 @@ public class ChatTestClient implements ClientModInitializer {
 		//Test client send command events
 		ClientSendMessageEvents.ALLOW_COMMAND.register((command) -> {
 			if (command.contains("blocked")) {
-				LOGGER.info("Blocked chat message: " + command);
+				LOGGER.info("Blocked command message: " + command);
 				return false;
 			}
 
