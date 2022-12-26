@@ -255,7 +255,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * Sets the features this entity requires. If the feature is not enabled,
+	 * Sets the features this entity requires. If a feature is not enabled,
 	 * the entity cannot be spawned, and existing ones will despawn immediately.
 	 * @param requiredFeatures the features
 	 * @return this builder for chaining
