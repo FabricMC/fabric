@@ -30,7 +30,9 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 
@@ -54,6 +56,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private boolean spawnableFarFromPlayer;
 	private EntityDimensions dimensions = EntityDimensions.changing(-1.0f, -1.0f);
 	private ImmutableSet<Block> specificSpawnBlocks = ImmutableSet.of();
+
+	private FeatureSet requiredFeatures = FeatureFlags.VANILLA_FEATURES;
 
 	protected FabricEntityTypeBuilder(SpawnGroup spawnGroup, EntityType.EntityFactory<T> factory) {
 		this.spawnGroup = spawnGroup;
@@ -251,19 +255,25 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
+	 * Sets the features this entity requires. If the feature is not enabled,
+	 * the entity cannot be spawned, and existing ones will despawn immediately.
+	 * @param requiredFeatures the features
+	 * @return this builder for chaining
+	 */
+	public FabricEntityTypeBuilder<T> requires(FeatureFlag... requiredFeatures) {
+		this.requiredFeatures = FeatureFlags.FEATURE_MANAGER.featureSetOf(requiredFeatures);
+		return this;
+	}
+
+	/**
 	 * Creates the entity type.
 	 *
 	 * @return a new {@link EntityType}
 	 */
 	public EntityType<T> build() {
-		if (this.saveable) {
-			// SNIP! Modded datafixers are not supported anyway.
-			// TODO: Flesh out once modded datafixers exist.
-		}
+		// Modded DFU is a dream, currently not possible without screwing it up.
 
-		EntityType<T> type = new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates, FeatureFlags.DEFAULT_ENABLED_FEATURES);
-
-		return type;
+		return new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates, this.requiredFeatures);
 	}
 
 	/**
