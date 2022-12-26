@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.object.builder;
 
+import java.util.List;
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
@@ -27,17 +29,20 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.test.GameTest;
+import net.minecraft.test.TestContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.world.World;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
 public class BlockEntityTypeBuilderTest implements ModInitializer {
@@ -74,6 +79,20 @@ public class BlockEntityTypeBuilderTest implements ModInitializer {
 
 		Item item = new BlockItem(block, new Item.Settings());
 		Registry.register(Registries.ITEM, id, item);
+	}
+
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void testBlockUse(TestContext context) {
+		List<Block> blocks = List.of(INITIAL_BETRAYAL_BLOCK, ADDED_BETRAYAL_BLOCK, FIRST_MULTI_BETRAYAL_BLOCK, SECOND_MULTI_BETRAYAL_BLOCK);
+		BlockPos.Mutable pos = BlockPos.ORIGIN.mutableCopy();
+
+		for (Block block : blocks) {
+			context.setBlockState(pos, block);
+			context.useBlock(pos);
+			pos.up();
+		}
+
+		context.complete();
 	}
 
 	private static class BetrayalBlock extends Block implements BlockEntityProvider {
