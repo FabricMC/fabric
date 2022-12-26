@@ -16,23 +16,24 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.entity;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.registry.Registries;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
+import net.minecraft.registry.Registries;
 
 /**
  * A registry for {@linkplain MinecartComparatorLogic custom minecart comparator logic}.
  */
 public final class MinecartComparatorLogicRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MinecartComparatorLogicRegistry.class);
-	private static final Map<EntityType<?>, MinecartComparatorLogic<?>> logics = new HashMap<>();
+	private static final Map<EntityType<?>, MinecartComparatorLogic<?>> logics = new IdentityHashMap<>();
 
 	private MinecartComparatorLogicRegistry() {
 	}
@@ -57,8 +58,12 @@ public final class MinecartComparatorLogicRegistry {
 	 * @param <T>   the handled minecart type
 	 * @param type  the minecart entity type
 	 * @param logic the logic to register
+	 * @throws NullPointerException if the type or the logic is {@code null}
 	 */
 	public static <T extends AbstractMinecartEntity> void register(EntityType<T> type, MinecartComparatorLogic<? super T> logic) {
+		Objects.requireNonNull(type, "Entity type cannot be null");
+		Objects.requireNonNull(logic, "Logic cannot be null");
+
 		if (logics.put(type, logic) != null) {
 			LOGGER.warn("Overriding existing minecart comparator logic for entity type {}", Registries.ENTITY_TYPE.getId(type));
 		}
