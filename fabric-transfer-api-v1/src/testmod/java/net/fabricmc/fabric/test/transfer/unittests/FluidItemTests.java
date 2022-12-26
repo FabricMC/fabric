@@ -154,10 +154,10 @@ class FluidItemTests {
 		if (PotionUtil.getPotion(testInventory.getStack(0)) != Potions.WATER) throw new AssertionError("Expected water potion.");
 
 		// Try to empty from water potion
-		Storage<FluidVariant> waterBottleStroage = new InventoryContainerItem(testInventory, 0).find(FluidStorage.ITEM);
+		Storage<FluidVariant> waterBottleStorage = new InventoryContainerItem(testInventory, 0).find(FluidStorage.ITEM);
 
 		try (Transaction transaction = Transaction.openOuter()) {
-			if (waterBottleStroage.extract(water, Long.MAX_VALUE, transaction) != BOTTLE) throw new AssertionError("Failed to extract.");
+			if (waterBottleStorage.extract(water, Long.MAX_VALUE, transaction) != BOTTLE) throw new AssertionError("Failed to extract.");
 			transaction.commit();
 		}
 

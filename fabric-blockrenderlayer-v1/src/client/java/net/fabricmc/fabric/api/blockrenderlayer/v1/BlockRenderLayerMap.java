@@ -57,7 +57,7 @@ public interface BlockRenderLayerMap {
 	void putBlocks(RenderLayer renderLayer, Block... blocks);
 
 	/**
-	 * Map (or re-map) a item with a render layer.  Re-mapping is not recommended but if done, last one in wins.
+	 * Map (or re-map) an item with a render layer.  Re-mapping is not recommended but if done, last one in wins.
 	 * Must be called from client thread prior to world load/rendering. Best practice will be to call from mod's client initializer.
 	 *
 	 * @param item Identifies item to be mapped.

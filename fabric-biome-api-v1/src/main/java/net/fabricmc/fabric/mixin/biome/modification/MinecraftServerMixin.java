@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.biome.modification;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,8 +32,9 @@ import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
+	@Final
 	@Shadow
-	private SaveProperties saveProperties;
+	protected SaveProperties saveProperties;
 
 	@Shadow
 	public abstract DynamicRegistryManager.Immutable getRegistryManager();

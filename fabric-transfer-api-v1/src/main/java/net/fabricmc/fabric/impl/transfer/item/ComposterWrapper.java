@@ -18,8 +18,6 @@ package net.fabricmc.fabric.impl.transfer.item;
 
 import static net.minecraft.util.math.Direction.UP;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -39,7 +37,6 @@ import net.minecraft.world.WorldEvents;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
@@ -151,11 +148,6 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 			updateSnapshots(transaction);
 			increaseProbability = insertedIncreaseProbability;
 			return 1;
-		}
-
-		@Override
-		public Iterator<StorageView<ItemVariant>> iterator() {
-			return Collections.emptyIterator();
 		}
 	}
 

@@ -16,13 +16,17 @@
 
 package net.fabricmc.fabric.api.transfer.v1.storage.base;
 
+import java.util.Collections;
+import java.util.Iterator;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 /**
- * A {@link Storage} that supports insertion, and not extraction.
+ * A {@link Storage} that supports insertion, and not extraction. By default, it doesn't have any storage view either.
  *
  * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
@@ -37,5 +41,10 @@ public interface InsertionOnlyStorage<T> extends Storage<T> {
 	@Override
 	default long extract(T resource, long maxAmount, TransactionContext transaction) {
 		return 0;
+	}
+
+	@Override
+	default Iterator<StorageView<T>> iterator() {
+		return Collections.emptyIterator();
 	}
 }

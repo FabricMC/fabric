@@ -35,7 +35,7 @@ import net.fabricmc.fabric.impl.transfer.item.CursorSlotWrapper;
  * with an additional transactional wrapper for {@link PlayerInventory#offerOrDrop}.
  *
  * <p>Note that this is a wrapper around all the slots of the player inventory.
- * However, {@link #insert} is overriden to behave like {@link #offer}.
+ * However, {@link #insert} is overridden to behave like {@link #offer}.
  * For simple insertions, {@link #offer} or {@link #offerOrDrop} is recommended.
  * {@link #getSlots} can also be used and combined with {@link CombinedStorage} to retrieve a wrapper around a specific range of slots.
  *

@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.TestCommand;
 import net.minecraft.test.GameTestBatch;
 import net.minecraft.test.TestContext;
 import net.minecraft.test.TestFailureLogger;
@@ -37,14 +38,24 @@ import net.minecraft.test.TestFunction;
 import net.minecraft.test.TestFunctions;
 import net.minecraft.test.TestServer;
 import net.minecraft.test.TestUtil;
-import net.minecraft.test.XmlReportingTestCompletionListener;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.level.storage.LevelStorage;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.fabricmc.loader.api.FabricLoader;
 
 public final class FabricGameTestHelper {
 	public static final boolean ENABLED = System.getProperty("fabric-api.gametest") != null;
+
+	/**
+	 * When enabled the {@link TestCommand} and related arguments will be registered.
+	 *
+	 * <p>When {@link EnvType#CLIENT} the default value is true.
+	 *
+	 * <p>When {@link EnvType#SERVER} the default value is false.
+	 */
+	public static final boolean COMMAND_ENABLED = Boolean.parseBoolean(System.getProperty("fabric-api.gametest.command", FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT ? "true" : "false"));
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricGameTestHelper.class);
 
@@ -56,7 +67,7 @@ public final class FabricGameTestHelper {
 
 		if (reportPath != null) {
 			try {
-				TestFailureLogger.setCompletionListener(new XmlReportingTestCompletionListener(new File(reportPath)));
+				TestFailureLogger.setCompletionListener(new SavingXmlReportingTestCompletionListener(new File(reportPath)));
 			} catch (ParserConfigurationException e) {
 				throw new RuntimeException(e);
 			}

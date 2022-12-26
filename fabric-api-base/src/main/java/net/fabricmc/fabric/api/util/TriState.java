@@ -64,8 +64,8 @@ public enum TriState {
 	/**
 	 * Gets the value of the tri-state.
 	 *
-	 * @return true if the tri-state is {@link TriState#TRUE}.
-	 * Otherwise false.
+	 * @return true if the tri-state is {@link TriState#TRUE},
+	 * otherwise false.
 	 */
 	public boolean get() {
 		return this == TRUE;
@@ -86,7 +86,7 @@ public enum TriState {
 	 * Gets the value of this tri-state.
 	 * If the value is {@link TriState#DEFAULT} then use the supplied value.
 	 *
-	 * @param value the value to fallback to
+	 * @param value the value to fall back to
 	 * @return the value of the tri-state or the supplied value if {@link TriState#DEFAULT}.
 	 */
 	public boolean orElse(boolean value) {
@@ -97,7 +97,7 @@ public enum TriState {
 	 * Gets the value of this tri-state.
 	 * If the value is {@link TriState#DEFAULT} then use the supplied value.
 	 *
-	 * @param supplier the supplier used to get the value to fallback to
+	 * @param supplier the supplier used to get the value to fall back to
 	 * @return the value of the tri-state or the value of the supplier if the tri-state is {@link TriState#DEFAULT}.
 	 */
 	public boolean orElseGet(BooleanSupplier supplier) {

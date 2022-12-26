@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-sound-api-v1-testmod",
+  "name": "Fabric Sound API (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "client",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-sound-api-v1": "*",
+    "fabric-command-api-v2": "*"
+  },
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.test.sound.client.ClientSoundTest"
+    ]
+  }
+}

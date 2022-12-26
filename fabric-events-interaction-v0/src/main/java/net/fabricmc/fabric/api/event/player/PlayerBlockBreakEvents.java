@@ -33,8 +33,8 @@ public final class PlayerBlockBreakEvents {
 	 * Only called on the server, however updates are synced with the client.
 	 *
 	 * <p>If any listener cancels a block breaking action, that block breaking
-	 * action is cancelled and {@link CANCELED} event is fired. Otherwise, the
-	 * {@link AFTER} event is fired.</p>
+	 * action is cancelled and {@link #CANCELED} event is fired. Otherwise, the
+	 * {@link #AFTER} event is fired.</p>
 	 */
 	public static final Event<Before> BEFORE = EventFactory.createArrayBacked(Before.class,
 			(listeners) -> (world, player, pos, state, entity) -> {

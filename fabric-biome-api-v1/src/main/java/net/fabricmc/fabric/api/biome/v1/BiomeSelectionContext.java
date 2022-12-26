@@ -119,7 +119,7 @@ public interface BiomeSelectionContext {
 	 * Returns true if the given built-in configured structure from {@link net.minecraft.util.registry.BuiltinRegistries}
 	 * can start in this biome in any of the chunk generators used by the current world-save.
 	 *
-	 * <p>This method is intended for use with the Vanilla configured structures found in {@link net.minecraft.world.gen.structure.StructureTypes}.
+	 * <p>This method is intended for use with the Vanilla configured structures found in {@link net.minecraft.world.gen.structure.Structures}.
 	 */
 	default boolean validForBuiltInStructure(Structure structureFeature) {
 		RegistryKey<Structure> key = BuiltInRegistryKeys.get(structureFeature);

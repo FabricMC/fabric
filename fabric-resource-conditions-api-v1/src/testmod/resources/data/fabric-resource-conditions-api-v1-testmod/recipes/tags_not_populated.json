@@ -1,0 +1,12 @@
+{
+  "__comment": "this is going to be skipped before any check, so /shrug.",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:tags_populated",
+      "values": [
+        "fabric-resource-conditions-api-v1-testmod:test_condition"
+      ],
+      "registry": "fabric-resource-conditions-api-v1-testmod:missing"
+    }
+  ]
+}

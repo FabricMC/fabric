@@ -88,7 +88,7 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	 * @param resource The resource to insert. May not be blank.
 	 * @param maxAmount The maximum amount of resource to insert. May not be negative.
 	 * @param transaction The transaction this operation is part of.
-	 * @return A nonnegative integer not greater than maxAmount: the amount that was inserted.
+	 * @return A non-negative integer not greater than maxAmount: the amount that was inserted.
 	 */
 	long insert(T resource, long maxAmount, TransactionContext transaction);
 
@@ -119,7 +119,7 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	 * @param resource The resource to extract. May not be blank.
 	 * @param maxAmount The maximum amount of resource to extract. May not be negative.
 	 * @param transaction The transaction this operation is part of.
-	 * @return A nonnegative integer not greater than maxAmount: the amount that was extracted.
+	 * @return A non-negative integer not greater than maxAmount: the amount that was extracted.
 	 */
 	long extract(T resource, long maxAmount, TransactionContext transaction);
 
@@ -159,16 +159,21 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	 * If returning the requested view would require iteration through a potentially large number of views,
 	 * {@code null} should be returned instead.
 	 *
-	 * <p>The returned view is tied to the passed transaction,
-	 * and may never be used once the passed transaction has been closed.
-	 *
-	 * @param transaction The transaction to which the scope of the returned storage view is tied.
 	 * @param resource The resource for which a storage view is requested. May be blank, for example to estimate capacity.
 	 * @return A view over this storage for the passed resource, or {@code null} if none is quickly available.
 	 */
 	@Nullable
-	default StorageView<T> exactView(TransactionContext transaction, T resource) {
+	default StorageView<T> exactView(T resource) {
 		return null;
+	}
+
+	/**
+	 * @deprecated Use and implement the overload without the transaction parameter.
+	 */
+	@Deprecated(forRemoval = true)
+	@Nullable
+	default StorageView<T> exactView(TransactionContext transaction, T resource) {
+		return exactView(resource);
 	}
 
 	/**

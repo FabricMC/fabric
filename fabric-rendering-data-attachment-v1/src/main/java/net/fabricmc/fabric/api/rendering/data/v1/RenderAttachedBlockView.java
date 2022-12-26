@@ -21,17 +21,21 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.World;
 
 /**
- * BlockView-extending interface to be used by {@link net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel} for dynamic model
- * customization. It ensures thread safety and exploits data cached in render
- * chunks for performance and data consistency.
+ * {@link BlockRenderView}-extending interface to be used by {@code FabricBakedModel}
+ * for dynamic model customization. It ensures thread safety and exploits data cached in render
+ * chunks for performance and data consistency. This interface is guaranteed to be implemented on
+ * every {@link BlockRenderView} subclass, and as such any {@link BlockRenderView}
+ * can be safely cast to {@link RenderAttachedBlockView}.
  *
- * <p>There are differences from BlockView consumers must understand:
+ * <p>There are differences from regular {@link World} access that consumers must understand:
  *
  * <p>BlockEntity implementations that provide data for model customization should implement
  * {@link RenderAttachmentBlockEntity} which will be queried on the main thread when a render
- * chunk is enqueued for rebuild. The model should retrieve the results via {@link #getBlockEntityRenderAttachment(BlockPos)}.
+ * chunk is enqueued for rebuild. The model should retrieve the results by casting the
+ * {@link BlockRenderView} to this class and then calling {@link #getBlockEntityRenderAttachment(BlockPos)}.
  * While {@link #getBlockEntity(net.minecraft.util.math.BlockPos)} is not disabled, it
  * is not thread-safe for use on render threads.  Models that violate this guidance are
  * responsible for any necessary synchronization or collision detection.
@@ -45,12 +49,10 @@ import net.minecraft.world.BlockRenderView;
  * <p>Models should avoid using {@link BlockRenderView#getBlockEntity(BlockPos)}
  * to ensure thread safety because this view may be accessed outside the main client thread.
  * Models that require Block Entity data should implement {@link RenderAttachmentBlockEntity}
- * and then use {@link #getBlockEntityRenderAttachment(BlockPos)} to retrieve it.  When called from the
+ * on their block entity class, cast the {@link BlockRenderView} to {@link RenderAttachedBlockView}
+ * and then use {@link #getBlockEntityRenderAttachment(BlockPos)} to retrieve the data. When called from the
  * main thread, that method will simply retrieve the data directly.
- *
- * <p>This interface is only guaranteed to be present in the client environment.
  */
-// XXX can not link net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
 public interface RenderAttachedBlockView extends BlockRenderView {
 	/**
 	 * For models associated with Block Entities that implement {@link RenderAttachmentBlockEntity}
@@ -62,7 +64,7 @@ public interface RenderAttachedBlockView extends BlockRenderView {
 	 */
 	@Nullable
 	default Object getBlockEntityRenderAttachment(BlockPos pos) {
-		BlockEntity be = ((BlockRenderView) this).getBlockEntity(pos);
+		BlockEntity be = this.getBlockEntity(pos);
 		return be == null ? null : ((RenderAttachmentBlockEntity) be).getRenderAttachmentData();
 	}
 }

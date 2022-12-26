@@ -38,12 +38,16 @@ import net.fabricmc.fabric.impl.client.model.ModelLoadingRegistryImpl;
 @Mixin(ModelLoader.class)
 public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 	// this is the first one
+	@Final
 	@Shadow
 	public static ModelIdentifier MISSING_ID;
+	@Final
 	@Shadow
 	private ResourceManager resourceManager;
+	@Final
 	@Shadow
 	private Set<Identifier> modelsToLoad;
+	@Final
 	@Shadow
 	private Map<Identifier, UnbakedModel> unbakedModels;
 	@Shadow

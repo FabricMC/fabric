@@ -18,16 +18,18 @@ package net.fabricmc.fabric.test.transfer.ingame;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 
 public class FluidChuteBlockEntity extends BlockEntity {
+	final SingleFluidStorage storage = SingleFluidStorage.withFixedCapacity(FluidConstants.BUCKET * 4, this::markDirty);
+
 	private int tickCounter = 0;
 
 	public FluidChuteBlockEntity(BlockPos pos, BlockState state) {
@@ -37,12 +39,32 @@ public class FluidChuteBlockEntity extends BlockEntity {
 	@SuppressWarnings("ConstantConditions")
 	public void tick() {
 		if (!world.isClient() && tickCounter++ % 20 == 0) {
-			Storage<FluidVariant> top = FluidStorage.SIDED.find(world, pos.offset(Direction.UP), Direction.DOWN);
-			Storage<FluidVariant> bottom = FluidStorage.SIDED.find(world, pos.offset(Direction.DOWN), Direction.UP);
-
-			if (top != null && bottom != null) {
-				StorageUtil.move(top, bottom, fluid -> true, FluidConstants.BUCKET, null);
-			}
+			StorageUtil.move(
+					FluidStorage.SIDED.find(world, pos.offset(Direction.UP), Direction.DOWN),
+					storage,
+					fluid -> true,
+					FluidConstants.BUCKET,
+					null
+			);
+			StorageUtil.move(
+					storage,
+					FluidStorage.SIDED.find(world, pos.offset(Direction.DOWN), Direction.UP),
+					fluid -> true,
+					FluidConstants.BUCKET,
+					null
+			);
 		}
+	}
+
+	@Override
+	protected void writeNbt(NbtCompound nbt) {
+		super.writeNbt(nbt);
+		storage.writeNbt(nbt);
+	}
+
+	@Override
+	public void readNbt(NbtCompound nbt) {
+		super.readNbt(nbt);
+		storage.readNbt(nbt);
 	}
 }

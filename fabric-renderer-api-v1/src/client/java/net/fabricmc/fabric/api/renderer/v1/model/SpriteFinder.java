@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.renderer.SpriteFinderImpl;
 public interface SpriteFinder {
 	/**
 	 * Retrieves or creates the finder for the given atlas.
-	 * Instances should not be retained as fields or they must be
+	 * Instances should not be retained as fields, or they must be
 	 * refreshed whenever there is a resource reload or other event
 	 * that causes atlas textures to be re-stitched.
 	 */
