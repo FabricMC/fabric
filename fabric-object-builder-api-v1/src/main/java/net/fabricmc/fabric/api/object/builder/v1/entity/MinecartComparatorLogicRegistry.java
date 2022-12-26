@@ -33,7 +33,7 @@ import net.minecraft.registry.Registries;
  */
 public final class MinecartComparatorLogicRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MinecartComparatorLogicRegistry.class);
-	private static final Map<EntityType<?>, MinecartComparatorLogic<?>> logics = new IdentityHashMap<>();
+	private static final Map<EntityType<?>, MinecartComparatorLogic<?>> LOGICS = new IdentityHashMap<>();
 
 	private MinecartComparatorLogicRegistry() {
 	}
@@ -47,7 +47,7 @@ public final class MinecartComparatorLogicRegistry {
 	@Nullable
 	@SuppressWarnings("unchecked")
 	public static MinecartComparatorLogic<AbstractMinecartEntity> getCustomComparatorLogic(EntityType<?> type) {
-		return (MinecartComparatorLogic<AbstractMinecartEntity>) logics.get(type);
+		return (MinecartComparatorLogic<AbstractMinecartEntity>) LOGICS.get(type);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public final class MinecartComparatorLogicRegistry {
 		Objects.requireNonNull(type, "Entity type cannot be null");
 		Objects.requireNonNull(logic, "Logic cannot be null");
 
-		if (logics.put(type, logic) != null) {
+		if (LOGICS.put(type, logic) != null) {
 			LOGGER.warn("Overriding existing minecart comparator logic for entity type {}", Registries.ENTITY_TYPE.getId(type));
 		}
 	}
