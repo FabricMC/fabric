@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import io.netty.channel.ChannelHandler;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.PacketEncoder;
@@ -45,20 +46,37 @@ import net.fabricmc.fabric.mixin.recipe.ingredient.PacketEncoderMixin;
  */
 public class CustomIngredientSync implements ModInitializer {
 	public static final Identifier PACKET_ID = new Identifier("fabric", "custom_ingredient_sync");
-	public static final int PROTOCOL_VERSION = 1;
+	public static final int PROTOCOL_VERSION_1 = 1;
 	public static final ThreadLocal<Set<Identifier>> CURRENT_SUPPORTED_INGREDIENTS = new ThreadLocal<>();
 
-	public static PacketByteBuf createPacket() {
+	@Nullable
+	public static PacketByteBuf createResponsePacket(int serverProtocolVersion) {
+		if (serverProtocolVersion < PROTOCOL_VERSION_1) {
+			// Not supposed to happen - notify the server that we didn't understand the query.
+			return null;
+		}
+
+		// Always send protocol 1 - the server should support it even if it supports more recent protocols.
 		PacketByteBuf buf = PacketByteBufs.create();
+		buf.writeVarInt(PROTOCOL_VERSION_1);
 		buf.writeCollection(CustomIngredientImpl.REGISTERED_SERIALIZERS.keySet(), PacketByteBuf::writeIdentifier);
 		return buf;
 	}
 
-	public static Set<Identifier> decodePacket(PacketByteBuf buf) {
-		Set<Identifier> identifiers = buf.readCollection(HashSet::new, PacketByteBuf::readIdentifier);
-		// Remove unknown keys to save memory
-		identifiers.removeIf(id -> !CustomIngredientImpl.REGISTERED_SERIALIZERS.containsKey(id));
-		return identifiers;
+	public static Set<Identifier> decodeResponsePacket(PacketByteBuf buf) {
+		int protocolVersion = buf.readVarInt();
+
+		switch (protocolVersion) {
+		case PROTOCOL_VERSION_1 -> {
+			Set<Identifier> identifiers = buf.readCollection(HashSet::new, PacketByteBuf::readIdentifier);
+			// Remove unknown keys to save memory
+			identifiers.removeIf(id -> !CustomIngredientImpl.REGISTERED_SERIALIZERS.containsKey(id));
+			return identifiers;
+		}
+		default -> {
+			throw new IllegalArgumentException("Unknown ingredient sync protocol version: " + protocolVersion);
+		}
+		}
 	}
 
 	@Override
@@ -67,7 +85,7 @@ public class CustomIngredientSync implements ModInitializer {
 			// Send packet with 1 so the client can send us back the list of supported tags.
 			// 1 is sent in case we need a different protocol later for some reason.
 			PacketByteBuf buf = PacketByteBufs.create();
-			buf.writeVarInt(PROTOCOL_VERSION);
+			buf.writeVarInt(PROTOCOL_VERSION_1); // max supported server protocol version
 			sender.sendPacket(PACKET_ID, buf);
 		});
 		ServerLoginNetworking.registerGlobalReceiver(PACKET_ID, (server, handler, understood, buf, synchronizer, responseSender) -> {
@@ -76,7 +94,7 @@ public class CustomIngredientSync implements ModInitializer {
 				return;
 			}
 
-			Set<Identifier> supportedCustomIngredients = decodePacket(buf);
+			Set<Identifier> supportedCustomIngredients = decodeResponsePacket(buf);
 			ChannelHandler packetEncoder = handler.connection.channel.pipeline().get("encoder");
 
 			if (packetEncoder != null) { // Null in singleplayer

@@ -29,12 +29,9 @@ public class CustomIngredientSyncClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientLoginNetworking.registerGlobalReceiver(CustomIngredientSync.PACKET_ID, (client, handler, buf, listenerAdder) -> {
-			if (buf.readVarInt() != CustomIngredientSync.PROTOCOL_VERSION) {
-				// Unknown protocol version ?
-				return CompletableFuture.completedFuture(null);
-			}
+			int protocolVersion = buf.readVarInt();
 
-			return CompletableFuture.completedFuture(CustomIngredientSync.createPacket());
+			return CompletableFuture.completedFuture(CustomIngredientSync.createResponsePacket(protocolVersion));
 		});
 	}
 }
