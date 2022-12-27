@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.object.builder;
 
-import java.util.List;
-
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
@@ -31,8 +29,6 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.test.GameTest;
-import net.minecraft.test.TestContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -42,21 +38,20 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
 public class BlockEntityTypeBuilderTest implements ModInitializer {
 	private static final Identifier INITIAL_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.id("initial_betrayal_block");
-	private static final Block INITIAL_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.BLUE);
+	static final Block INITIAL_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.BLUE);
 
 	private static final Identifier ADDED_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.id("added_betrayal_block");
-	private static final Block ADDED_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.GREEN);
+	static final Block ADDED_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.GREEN);
 
 	private static final Identifier FIRST_MULTI_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.id("first_multi_betrayal_block");
-	private static final Block FIRST_MULTI_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.RED);
+	static final Block FIRST_MULTI_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.RED);
 
 	private static final Identifier SECOND_MULTI_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.id("second_multi_betrayal_block");
-	private static final Block SECOND_MULTI_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.YELLOW);
+	static final Block SECOND_MULTI_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.YELLOW);
 
 	private static final Identifier BLOCK_ENTITY_TYPE_ID = ObjectBuilderTestConstants.id("betrayal_block");
 	public static final BlockEntityType<?> BLOCK_ENTITY_TYPE = FabricBlockEntityTypeBuilder.create(BetrayalBlockEntity::new, INITIAL_BETRAYAL_BLOCK)
@@ -79,20 +74,6 @@ public class BlockEntityTypeBuilderTest implements ModInitializer {
 
 		Item item = new BlockItem(block, new Item.Settings());
 		Registry.register(Registries.ITEM, id, item);
-	}
-
-	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
-	public void testBlockUse(TestContext context) {
-		List<Block> blocks = List.of(INITIAL_BETRAYAL_BLOCK, ADDED_BETRAYAL_BLOCK, FIRST_MULTI_BETRAYAL_BLOCK, SECOND_MULTI_BETRAYAL_BLOCK);
-		BlockPos.Mutable pos = BlockPos.ORIGIN.mutableCopy();
-
-		for (Block block : blocks) {
-			context.setBlockState(pos, block);
-			context.useBlock(pos);
-			pos.up();
-		}
-
-		context.complete();
 	}
 
 	private static class BetrayalBlock extends Block implements BlockEntityProvider {
