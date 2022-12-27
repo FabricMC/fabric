@@ -44,7 +44,6 @@ public final class KeyBindingHelper {
 	 *
 	 * @param keyBinding the keybinding
 	 * @return the keybinding itself
-	 * @throws NullPointerException when {@code null} is passed
 	 * @throws IllegalArgumentException when a key binding with the same ID is already registered
 	 */
 	public static KeyBinding registerKeyBinding(KeyBinding keyBinding) {
