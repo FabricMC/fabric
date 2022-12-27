@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.renderer.v1.render;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
@@ -43,34 +42,63 @@ public interface RenderContext {
 	Consumer<Mesh> meshConsumer();
 
 	/**
-	 * Fabric causes vanilla baked models to send themselves
-	 * via this interface. Can also be used by compound models that contain a mix
-	 * of vanilla baked models, packaged quads and/or dynamic elements.
-	 *
-	 * <p>For block contexts, this will pass the block state being rendered to {@link BakedModel#getQuads}.
-	 * For item contexts, this will pass a {@code null} block state to {@link BakedModel#getQuads}.
-	 * {@link #blockFallbackConsumer()} can be used instead to pass the block state explicitly.
-	 */
-	Consumer<BakedModel> fallbackConsumer();
-
-	/**
 	 * Fallback consumer that can process a vanilla {@link BakedModel}.
 	 * Fabric causes vanilla baked models to send themselves
 	 * via this interface. Can also be used by compound models that contain a mix
 	 * of vanilla baked models, packaged quads and/or dynamic elements.
-	 *
-	 * <p>This overload allows passing the block state (or {@code null} to query the item quads).
-	 * This is useful when a model is being wrapped, and expects a different
-	 * block state than the one of the block being rendered.
-	 *
-	 * <p>For item render contexts, you can use this function if you want to render the model with a specific block state.
-	 * Otherwise, use {@link #fallbackConsumer()} to render the usual item quads.
 	 */
-	default BiConsumer<BakedModel, @Nullable BlockState> blockFallbackConsumer() {
+	default BakedModelConsumer bakedModelConsumer() {
 		// Default implementation is provided for compat with older renderer implementations,
 		// but they should always override this function.
 		Consumer<BakedModel> fallback = fallbackConsumer();
-		return (model, state) -> fallback.accept(model);
+		return new BakedModelConsumer() {
+			@Override
+			public void accept(BakedModel model) {
+				fallback.accept(model);
+			}
+
+			@Override
+			public void accept(BakedModel model, @Nullable BlockState state) {
+				fallback.accept(model);
+			}
+		};
+	}
+
+	interface BakedModelConsumer extends Consumer<BakedModel> {
+		/**
+		 * Render a baked model by processing its {@linkplain BakedModel#getQuads} using the rendered block state.
+		 *
+		 * <p>For block contexts, this will pass the block state being rendered to {@link BakedModel#getQuads}.
+		 * For item contexts, this will pass a {@code null} block state to {@link BakedModel#getQuads}.
+		 * {@link #accept(BakedModel, BlockState)} can be used instead to pass the block state explicitly.
+		 */
+		@Override
+		void accept(BakedModel model);
+
+		/**
+		 * Render a baked model by processing its {@linkplain BakedModel#getQuads} with an explicit block state.
+		 *
+		 * <p>This overload allows passing the block state (or {@code null} to query the item quads).
+		 * This is useful when a model is being wrapped, and expects a different
+		 * block state than the one of the block being rendered.
+		 *
+		 * <p>For item render contexts, you can use this function if you want to render the model with a specific block state.
+		 * Otherwise, use {@linkplain #accept(BakedModel)} the other overload} to render the usual item quads.
+		 */
+		void accept(BakedModel model, @Nullable BlockState state);
+	}
+
+	/**
+	 * Fabric causes vanilla baked models to send themselves
+	 * via this interface. Can also be used by compound models that contain a mix
+	 * of vanilla baked models, packaged quads and/or dynamic elements.
+	 *
+	 * @deprecated Prefer using the more flexible {@link #bakedModelConsumer}.
+	 */
+	@Deprecated
+	default Consumer<BakedModel> fallbackConsumer() {
+		// This default implementation relies on implementors overriding bakedModelConsumer().
+		return bakedModelConsumer();
 	}
 
 	/**

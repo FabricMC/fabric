@@ -82,7 +82,7 @@ public interface FabricBakedModel {
 	 * parameter is normally initialized with the same seed prior to each face layer.
 	 * Model authors should note this method is called only once per block, and call the provided
 	 * Random supplier multiple times if re-seeding is necessary. For wrapped vanilla baked models,
-	 * it will probably be easier to use {@link RenderContext#fallbackConsumer} which handles
+	 * it will probably be easier to use {@link RenderContext#bakedModelConsumer()} which handles
 	 * re-seeding per face automatically.
 	 *
 	 * @param blockView Access to world state. Cast to {@code RenderAttachedBlockView} to

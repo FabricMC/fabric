@@ -148,7 +148,7 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 			// Need to use the fallback consumer directly:
 			// - we can't use emitBlockQuads because we don't have a blockView
 			// - we can't use emitItemQuads because multipart models don't have item quads
-			context.blockFallbackConsumer().accept(MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState), innerState);
+			context.bakedModelConsumer().accept(MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState), innerState);
 		});
 	}
 
