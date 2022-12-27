@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.event.player;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,8 +26,6 @@ import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-
-import org.jetbrains.annotations.Nullable;
 
 public final class PlayerBlockBreakEvents {
 	private PlayerBlockBreakEvents() { }

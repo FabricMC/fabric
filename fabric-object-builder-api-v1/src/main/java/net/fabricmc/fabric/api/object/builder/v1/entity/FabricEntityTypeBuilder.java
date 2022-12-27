@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableSet;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -35,8 +36,6 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
-
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Extended version of {@link EntityType.Builder} with added registration for
