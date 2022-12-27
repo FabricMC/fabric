@@ -25,6 +25,8 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+import org.jetbrains.annotations.Nullable;
+
 public final class PlayerBlockBreakEvents {
 	private PlayerBlockBreakEvents() { }
 
@@ -90,7 +92,7 @@ public final class PlayerBlockBreakEvents {
 		 * @param blockEntity the block entity <strong>before</strong> the block is broken, can be {@code null}
 		 * @return {@code false} to cancel block breaking action, or {@code true} to pass to next listener
 		 */
-		boolean beforeBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity blockEntity);
+		boolean beforeBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
 	}
 
 	@FunctionalInterface
@@ -104,7 +106,7 @@ public final class PlayerBlockBreakEvents {
 		 * @param state the block state <strong>before</strong> the block was broken
 		 * @param blockEntity the block entity of the broken block, can be {@code null}
 		 */
-		void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity blockEntity);
+		void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
 	}
 
 	@FunctionalInterface
@@ -118,6 +120,6 @@ public final class PlayerBlockBreakEvents {
 		 * @param state the block state of the block that was going to be broken
 		 * @param blockEntity the block entity of the block that was going to be broken, can be {@code null}
 		 */
-		void onBlockBreakCanceled(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity blockEntity);
+		void onBlockBreakCanceled(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
 	}
 }

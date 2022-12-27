@@ -36,6 +36,8 @@ import net.minecraft.world.World;
 
 import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Extended version of {@link EntityType.Builder} with added registration for
  * server-&gt;client entity tracking values.
@@ -272,7 +274,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @param <T> Entity class.
 	 */
 	public static class Living<T extends LivingEntity> extends FabricEntityTypeBuilder<T> {
-		/* @Nullable */
+		@Nullable
 		private Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder;
 
 		protected Living(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {

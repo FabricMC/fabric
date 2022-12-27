@@ -23,6 +23,8 @@ import net.minecraft.item.Item;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 
+import org.jetbrains.annotations.Nullable;
+
 public final class FabricItemInternals {
 	private static final WeakHashMap<Item.Settings, ExtraData> extraData = new WeakHashMap<>();
 
@@ -43,8 +45,8 @@ public final class FabricItemInternals {
 	}
 
 	public static final class ExtraData {
-		private /* @Nullable */ EquipmentSlotProvider equipmentSlotProvider;
-		private /* @Nullable */ CustomDamageHandler customDamageHandler;
+		private @Nullable EquipmentSlotProvider equipmentSlotProvider;
+		private @Nullable CustomDamageHandler customDamageHandler;
 
 		public void equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
 			this.equipmentSlotProvider = equipmentSlotProvider;
