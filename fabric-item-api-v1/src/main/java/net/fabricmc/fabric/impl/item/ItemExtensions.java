@@ -22,8 +22,8 @@ import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 import org.jetbrains.annotations.Nullable;
 
 public interface ItemExtensions {
-	@Nullable EquipmentSlotProvider fabric_getEquipmentSlotProvider();
+	EquipmentSlotProvider fabric_getEquipmentSlotProvider();
 	void fabric_setEquipmentSlotProvider(EquipmentSlotProvider equipmentSlotProvider);
-	@Nullable CustomDamageHandler fabric_getCustomDamageHandler();
+	CustomDamageHandler fabric_getCustomDamageHandler();
 	void fabric_setCustomDamageHandler(CustomDamageHandler handler);
 }

@@ -45,8 +45,8 @@ public final class FabricItemInternals {
 	}
 
 	public static final class ExtraData {
-		private @Nullable EquipmentSlotProvider equipmentSlotProvider;
-		private @Nullable CustomDamageHandler customDamageHandler;
+		private EquipmentSlotProvider equipmentSlotProvider;
+		private CustomDamageHandler customDamageHandler;
 
 		public void equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
 			this.equipmentSlotProvider = equipmentSlotProvider;
