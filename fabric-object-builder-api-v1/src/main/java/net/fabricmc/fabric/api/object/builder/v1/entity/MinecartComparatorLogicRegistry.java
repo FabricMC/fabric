@@ -58,7 +58,6 @@ public final class MinecartComparatorLogicRegistry {
 	 * @param <T>   the handled minecart type
 	 * @param type  the minecart entity type
 	 * @param logic the logic to register
-	 * @throws NullPointerException if the type or the logic is {@code null}
 	 */
 	public static <T extends AbstractMinecartEntity> void register(EntityType<T> type, MinecartComparatorLogic<? super T> logic) {
 		Objects.requireNonNull(type, "Entity type cannot be null");
