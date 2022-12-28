@@ -31,7 +31,7 @@ public interface FabricEntitySelectorReader {
 	 * @param value the value of the flag
 	 */
 	default void setCustomFlag(Identifier key, boolean value) {
-		throw new UnsupportedOperationException("Not implemented");
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
@@ -40,6 +40,6 @@ public interface FabricEntitySelectorReader {
 	 * @return the value, or {@code false} if the flag is not set
 	 */
 	default boolean getCustomFlag(Identifier key) {
-		throw new UnsupportedOperationException("Not implemented");
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 }
