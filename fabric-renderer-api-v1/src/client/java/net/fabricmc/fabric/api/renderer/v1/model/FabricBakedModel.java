@@ -36,6 +36,8 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
  * Can also be used to generate or customize outputs based on world state instead of
  * or in addition to block state when render chunks are rebuilt.
  *
+ * <p>Implementors should have a look at {@link ModelHelper} as it contains many useful functions.
+ *
  * <p>Note for {@link Renderer} implementors: Fabric causes BakedModel to extend this
  * interface with {@link #isVanillaAdapter()} == true and to produce standard vertex data.
  * This means any BakedModel instance can be safely cast to this interface without an instanceof check.
