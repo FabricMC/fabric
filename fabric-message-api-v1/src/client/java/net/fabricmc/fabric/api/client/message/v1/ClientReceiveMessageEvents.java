@@ -81,6 +81,10 @@ public final class ClientReceiveMessageEvents {
 	 * which is any message sent by a player. Is not called when
 	 * {@linkplain #ALLOW_CHAT chat messages are blocked}.
 	 * Mods can use this to modify the message.
+	 *
+	 * @apiNote Secure chat messages modified with this event will be marked with modified indicator.
+	 * Messages already with the modified indicator or game messages are not affected.
+	 * The unmodified message is used in chat reporting.
 	 */
 	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, listeners -> (message, signedMessage, sender, params, receptionTimestamp) -> {
 		for (Chat listener : listeners) {
