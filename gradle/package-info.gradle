@@ -1,0 +1,78 @@
+import java.nio.file.Files
+
+for (def sourceSet in [sourceSets.main, sourceSets.client]) {
+	// We have to capture the source set name for the lazy string literals,
+	// otherwise it'll just be whatever the last source set is in the list.
+	def sourceSetName = sourceSet.name
+	def taskName = sourceSet.getTaskName('generate', 'ImplPackageInfos')
+	def task = tasks.register(taskName, GenerateImplPackageInfos) {
+		group = 'fabric'
+		description = "Generates package-info files for $sourceSetName implementation packages."
+
+		// Only apply to default source directory since we also add the generated
+		// sources to the source set.
+		sourceRoot = file("src/$sourceSetName/java")
+		header = rootProject.file('HEADER')
+		outputDir = file("src/generated/$sourceSetName")
+	}
+	sourceSet.java.srcDir task
+
+	def cleanTask = tasks.register(sourceSet.getTaskName('clean', 'ImplPackageInfos'), Delete) {
+		group = 'fabric'
+		delete file("src/generated/$sourceSetName")
+	}
+	clean.dependsOn cleanTask
+}
+
+class GenerateImplPackageInfos extends DefaultTask {
+	@InputFile
+	File header
+
+	@SkipWhenEmpty
+	@InputDirectory
+	final DirectoryProperty sourceRoot = project.objects.directoryProperty()
+
+	@OutputDirectory
+	final DirectoryProperty outputDir = project.objects.directoryProperty()
+
+	@TaskAction
+	def run() {
+		def output = outputDir.get().asFile.toPath()
+		output.deleteDir()
+		def headerText = header.readLines().join("\n") // normalize line endings
+		def root = sourceRoot.get().asFile.toPath()
+
+		for (def dir in ['impl', 'mixin']) {
+			def implDir = root.resolve("net/fabricmc/fabric/$dir")
+
+			if (Files.notExists(implDir)) {
+				continue
+			}
+
+			implDir.eachDirRecurse {
+				def containsJava = Files.list(it).any {
+					Files.isRegularFile(it) && it.fileName.toString().endsWith('.java')
+				}
+
+				if (containsJava && Files.notExists(it.resolve('package-info.java'))) {
+					def relativePath = root.relativize(it)
+					def target = output.resolve(relativePath)
+					Files.createDirectories(target)
+
+					target.resolve('package-info.java').withWriter {
+						def packageName = relativePath.toString().replace(File.separator, '.')
+						it.write("""$headerText
+						|/**
+						| * Implementation code for ${project.name}.
+						| */
+						|@ApiStatus.Internal
+						|package $packageName;
+						|
+						|import org.jetbrains.annotations.ApiStatus;
+						|""".stripMargin())
+					}
+				}
+			}
+		}
+	}
+}

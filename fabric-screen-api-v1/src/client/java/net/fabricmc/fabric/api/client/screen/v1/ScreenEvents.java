@@ -22,8 +22,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
@@ -43,7 +41,7 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
  * @see ScreenKeyboardEvents
  * @see ScreenMouseEvents
  */
-@Environment(EnvType.CLIENT)
+
 public final class ScreenEvents {
 	/**
 	 * An event that is called before {@link Screen#init(MinecraftClient, int, int) a screen is initialized} to its default state.
@@ -108,7 +106,7 @@ public final class ScreenEvents {
 	 * An event that is called after {@link Screen#removed()} is called.
 	 * This event signifies that the screen is now closed.
 	 *
-	 * <p>This event is typically used to undo any screen specific state changes such as setting the keyboard to receive {@link net.minecraft.client.Keyboard#setRepeatEvents(boolean) repeat events} or terminate threads spawned by a screen.
+	 * <p>This event is typically used to undo any screen specific state changes or to terminate threads spawned by a screen.
 	 * This event may precede initialization events {@link ScreenEvents#BEFORE_INIT} but there is no guarantee that event will be called immediately afterwards.
 	 */
 	public static Event<Remove> remove(Screen screen) {
@@ -161,43 +159,36 @@ public final class ScreenEvents {
 		return ScreenExtensions.getExtensions(screen).fabric_getAfterTickEvent();
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BeforeInit {
 		void beforeInit(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AfterInit {
 		void afterInit(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface Remove {
 		void onRemove(Screen screen);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BeforeRender {
 		void beforeRender(Screen screen, MatrixStack matrices, int mouseX, int mouseY, float tickDelta);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AfterRender {
 		void afterRender(Screen screen, MatrixStack matrices, int mouseX, int mouseY, float tickDelta);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BeforeTick {
 		void beforeTick(Screen screen);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AfterTick {
 		void afterTick(Screen screen);

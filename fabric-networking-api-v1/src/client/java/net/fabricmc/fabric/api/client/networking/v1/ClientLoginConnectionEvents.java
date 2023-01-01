@@ -20,15 +20,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * Offers access to events related to the connection to a server on the client while the server is processing the client's login request.
  */
-@Environment(EnvType.CLIENT)
 public final class ClientLoginConnectionEvents {
 	/**
 	 * Event indicating a connection entered the LOGIN state, ready for registering query request handlers.
@@ -80,7 +77,6 @@ public final class ClientLoginConnectionEvents {
 	/**
 	 * @see ClientLoginConnectionEvents#INIT
 	 */
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface Init {
 		void onLoginStart(ClientLoginNetworkHandler handler, MinecraftClient client);
@@ -89,7 +85,6 @@ public final class ClientLoginConnectionEvents {
 	/**
 	 * @see ClientLoginConnectionEvents#QUERY_START
 	 */
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface QueryStart {
 		void onLoginQueryStart(ClientLoginNetworkHandler handler, MinecraftClient client);
@@ -98,7 +93,6 @@ public final class ClientLoginConnectionEvents {
 	/**
 	 * @see ClientLoginConnectionEvents#DISCONNECT
 	 */
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface Disconnect {
 		void onLoginDisconnect(ClientLoginNetworkHandler handler, MinecraftClient client);

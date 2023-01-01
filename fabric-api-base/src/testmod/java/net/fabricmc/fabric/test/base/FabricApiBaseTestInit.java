@@ -24,24 +24,10 @@ import net.minecraft.text.Text;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 public class FabricApiBaseTestInit implements ModInitializer {
-	private int ticks = 0;
-
 	@Override
 	public void onInitialize() {
-		if (System.getProperty("fabric.autoTest") != null) {
-			ServerTickEvents.END_SERVER_TICK.register(server -> {
-				ticks++;
-
-				if (ticks == 50) {
-					MixinEnvironment.getCurrentEnvironment().audit();
-					server.stop(false);
-				}
-			});
-		}
-
 		// Command to call audit the mixin environment
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			dispatcher.register(literal("audit_mixins").executes(context -> {

@@ -6,6 +6,7 @@
     "AbstractFurnaceBlockEntityMixin",
     "BucketItemAccessor",
     "BucketItemMixin",
+    "ChiseledBookshelfBlockEntityMixin",
     "DoubleInventoryAccessor",
     "DropperBlockMixin",
     "FluidMixin",

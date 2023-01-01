@@ -15,5 +15,8 @@
     "fabric-gametest": [
       "net.fabricmc.fabric.test.content.registry.FlammableTest"
     ]
-  }
+  },
+  "mixins": [
+    "fabric-content-registries-v0-testmod.mixins.json"
+  ]
 }

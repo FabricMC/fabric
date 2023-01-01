@@ -27,8 +27,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -41,7 +39,6 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Environment(EnvType.CLIENT)
 public interface FluidVariantRenderHandler {
 	/**
 	 * Append additional tooltips to the passed list if additional information is contained in the fluid variant.

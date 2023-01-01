@@ -9,12 +9,13 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "1.0.11" apply false
+	id 'jacoco'
+	id "fabric-loom" version "1.0.12" apply false
 	id "com.diffplug.spotless" version "6.11.0"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 	id "com.modrinth.minotaur" version "2.4.3"
-	id "me.modmuss50.remotesign" version "0.3.0" apply false
+	id "me.modmuss50.remotesign" version "0.4.0" apply false
 }
 
 def ENV = System.getenv()
@@ -248,9 +249,19 @@ allprojects {
 		archiveClassifier = "testmod"
 	}
 
-	[jar, testmodJar, sourcesJar].each {
+	[jar, sourcesJar].each {
 		it.from(rootProject.file("LICENSE")) {
 			rename { "${it}-${project.archivesBaseName}"}
+		}
+	}
+
+	if (file("src/client").exists() && !file("src/main").exists()) {
+		remapJar {
+			additionalClientOnlyEntries.add("LICENSE-${project.archivesBaseName}")
+		}
+
+		remapSourcesJar {
+			additionalClientOnlyEntries.add("LICENSE-${project.archivesBaseName}")
 		}
 	}
 
@@ -266,6 +277,9 @@ allprojects {
 		source(sourceSets.client.output)
 		source(sourceSets.testmod.output)
 	}
+
+	// Apply to each valid subproject.
+	apply from: rootProject.file('gradle/package-info.gradle')
 }
 
 remapTestmodJar {
@@ -298,18 +312,6 @@ javadoc {
 		charSet = "UTF-8"
 		memberLevel = JavadocMemberLevel.PACKAGE
 		links(
-				"https://guava.dev/releases/31.1-jre/api/docs/",
-				"https://asm.ow2.io/javadoc/",
-				"https://docs.oracle.com/en/java/javase/17/docs/api/",
-				"https://jenkins.liteloader.com/job/Mixin/javadoc/",
-				"https://logging.apache.org/log4j/2.x/log4j-api/apidocs/",
-				"https://www.slf4j.org/apidocs/",
-				"https://netty.io/4.1/api/",
-				"https://javadoc.lwjgl.org/",
-				"https://www.javadoc.io/doc/com.google.code.gson/gson/2.10/",
-				"https://javadoc.io/doc/org.jetbrains/annotations/latest/",
-				"https://fastutil.di.unimi.it/docs/",
-				"https://javadoc.scijava.org/JOML/",
 				"https://maven.fabricmc.net/docs/yarn-${rootProject.minecraft_version}${project.yarn_version}/"
 		)
 		// Disable the crazy super-strict doclint tool in Java 8
@@ -319,8 +321,8 @@ javadoc {
 	allprojects.each {
 		if (it.name == "deprecated") return
 
-		source(it.sourceSets.main.allJava.srcDirs)
-		source(it.sourceSets.client.allJava.srcDirs)
+		source(it.sourceSets.main.allJava)
+		source(it.sourceSets.client.allJava)
 	}
 
 	classpath = files(sourceSets.main.compileClasspath, sourceSets.client.compileClasspath)
@@ -351,14 +353,140 @@ loom {
 		}
 		autoTestServer {
 			inherit testmodServer
-
 			name "Auto Test Server"
-
 			vmArg "-Dfabric.autoTest"
+		}
+		autoTestClient {
+			inherit testmodClient
+			name "Auto Test Client"
+			vmArg "-Dfabric.autoTest"
+		}
+
+		// Create duplicate tasks for this, as jacoco slows things down a bit
+		gametestCoverage {
+			inherit gametest
+			name "Game Test Coverage"
+			ideConfigGenerated = false
+		}
+
+		autoTestClientCoverage {
+			inherit autoTestClient
+			name "Auto Test Client Coverage"
+			ideConfigGenerated = false
 		}
 	}
 }
 test.dependsOn runGametest
+
+def coverageTasks = [runGametestCoverage, runAutoTestClientCoverage]
+
+jacoco {
+	coverageTasks.forEach {
+		applyTo it
+	}
+}
+
+task coverage(type: JacocoReport, dependsOn: coverageTasks) {
+	coverageTasks.forEach {
+		executionData it
+	}
+
+	// Add all source as input
+	allprojects { p ->
+		if (p.path.startsWith(":deprecated")) return
+		sourceSets p.sourceSets.main, p.sourceSets.client, p.sourceSets.testmod
+	}
+
+	// Exclude mixins
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: '**/mixin/**')
+		}))
+	}
+}
+
+configurations {
+	productionRuntime {
+		extendsFrom configurations.minecraftLibraries
+		extendsFrom configurations.loaderLibraries
+		extendsFrom configurations.minecraftRuntimeOnlyLibraries
+	}
+	productionRuntimeServer
+}
+
+dependencies {
+	productionRuntime "net.fabricmc:fabric-loader:${project.loader_version}"
+	productionRuntime "net.fabricmc:intermediary:${project.minecraft_version}"
+
+	productionRuntimeServer "net.fabricmc:fabric-installer:${project.installer_version}:server"
+}
+
+import net.fabricmc.loom.util.OperatingSystem
+
+// This is very far beyond loom's API if you copy this, you're on your own.
+task runProductionAutoTestClient(type: JavaExec, dependsOn: [remapJar, remapTestmodJar]) {
+	classpath.from configurations.productionRuntime
+	mainClass = "net.fabricmc.loader.impl.launch.knot.KnotClient"
+	workingDir = file("run")
+
+	afterEvaluate {
+		dependsOn downloadAssets
+	}
+
+	doFirst {
+		classpath.from loom.minecraftProvider.minecraftClientJar
+		workingDir.mkdirs()
+
+		args(
+			"--assetIndex", loom.minecraftProvider.versionInfo.assetIndex().fabricId(loom.minecraftProvider.minecraftVersion()),
+			"--assetsDir", new File(loom.files.userCache, "assets").absolutePath,
+			"--gameDir", workingDir.absolutePath
+		)
+
+		if (OperatingSystem.CURRENT_OS == OperatingSystem.MAC_OS) {
+			jvmArgs(
+				"-XstartOnFirstThread"
+			)
+		}
+
+		jvmArgs(
+			"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
+			"-Dfabric.autoTest"
+		)
+	}
+}
+
+task serverPropertiesJar(type: Jar) {
+	def propsFile = file("build/tmp/install.properties")
+
+	doFirst {
+		propsFile.text = """\
+						fabric-loader-version=${project.loader_version}
+						game-version=${project.minecraft_version}
+						""".stripMargin().stripIndent()
+	}
+
+	archiveFileName = "test-server-properties.jar"
+	destinationDirectory = file("build/tmp")
+	from(propsFile)
+}
+
+task runProductionAutoTestServer(type: JavaExec, dependsOn: [remapJar, remapTestmodJar, serverPropertiesJar]) {
+	classpath.from configurations.productionRuntimeServer, serverPropertiesJar
+	mainClass = "net.fabricmc.installer.ServerLauncher"
+	workingDir = file("run")
+
+	doFirst {
+		workingDir.mkdirs()
+
+		jvmArgs(
+			"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
+			"-Dfabric.autoTest"
+		)
+
+		args("nogui")
+	}
+}
 
 subprojects {
 	if (it.name == "deprecated") return
@@ -420,6 +548,7 @@ publishing {
 			}
 
 			artifact javadocJar
+			artifact remapTestmodJar
 
 			pom.withXml {
 				def depsNode = asNode().appendNode("dependencies")

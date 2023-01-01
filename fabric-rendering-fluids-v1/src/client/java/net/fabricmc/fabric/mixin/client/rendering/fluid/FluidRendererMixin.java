@@ -65,7 +65,7 @@ public class FluidRendererMixin {
 	@Inject(at = @At("HEAD"), method = "render", cancellable = true)
 	public void tesselate(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, CallbackInfo info) {
 		if (!fabric_customRendering.get()) {
-			// Prevent recursively looking up custom fluid renderers when default behaviour is being invoked
+			// Prevent recursively looking up custom fluid renderers when default behavior is being invoked
 			try {
 				fabric_customRendering.set(true);
 				tessellateViaHandler(view, pos, vertexConsumer, blockState, fluidState, info);

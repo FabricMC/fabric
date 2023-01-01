@@ -18,18 +18,20 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl;
 
 /**
  * Helper class for registering BlockEntityRenderers.
+ *
+ * <p>Use {@link net.minecraft.client.render.block.entity.BlockEntityRendererFactories#register(BlockEntityType, BlockEntityRendererFactory)} instead.
+ *
+ * @deprecated Replaced with transitive access wideners in Fabric Transitive Access Wideners (v1).
  */
-@Environment(EnvType.CLIENT)
+@Deprecated
 public final class BlockEntityRendererRegistry {
 	/**
 	 * Register a BlockEntityRenderer for a BlockEntityType. Can be called clientside before the world is rendered.

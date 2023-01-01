@@ -27,19 +27,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.network.packet.s2c.play.ChunkData;
 import net.minecraft.client.world.ClientChunkManager;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.network.packet.s2c.play.ChunkData;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.chunk.WorldChunk;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 
-@Environment(EnvType.CLIENT)
 @Mixin(ClientChunkManager.class)
 public abstract class ClientChunkManagerMixin {
 	@Final
@@ -58,8 +55,22 @@ public abstract class ClientChunkManagerMixin {
 		}
 	}
 
-	@Inject(method = "unload", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientChunkManager$ClientChunkMap;compareAndSet(ILnet/minecraft/world/chunk/WorldChunk;Lnet/minecraft/world/chunk/WorldChunk;)Lnet/minecraft/world/chunk/WorldChunk;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+	@Inject(method = "unload", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientChunkManager$ClientChunkMap;compareAndSet(ILnet/minecraft/world/chunk/WorldChunk;Lnet/minecraft/world/chunk/WorldChunk;)Lnet/minecraft/world/chunk/WorldChunk;"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void onChunkUnload(int chunkX, int chunkZ, CallbackInfo ci, int i, WorldChunk chunk) {
 		ClientChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.world, chunk);
+	}
+
+	@Inject(
+			method = "updateLoadDistance",
+			at = @At(
+					value = "INVOKE",
+					target = "net/minecraft/client/world/ClientChunkManager$ClientChunkMap.isInRadius(II)Z"
+			),
+			locals = LocalCapture.CAPTURE_FAILHARD
+	)
+	private void onUpdateLoadDistance(int loadDistance, CallbackInfo ci, int oldRadius, int newRadius, ClientChunkManager.ClientChunkMap clientChunkMap, int k, WorldChunk oldChunk, ChunkPos chunkPos) {
+		if (!clientChunkMap.isInRadius(chunkPos.x, chunkPos.z)) {
+			ClientChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.world, oldChunk);
+		}
 	}
 }

@@ -85,9 +85,8 @@ public interface FabricBakedModel {
 	 * it will probably be easier to use {@link RenderContext#fallbackConsumer} which handles
 	 * re-seeding per face automatically.
 	 *
-	 * @param blockView Access to world state. Using {@link net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView#getBlockEntityRenderAttachment(BlockPos)} to
-	 * retrieve block entity state unless thread safety can be guaranteed.
-	 * param safeBlockEntityAccessor Thread-safe access to block entity data
+	 * @param blockView Access to world state. Cast to {@code RenderAttachedBlockView} to
+	 * retrieve block entity data unless thread safety can be guaranteed.
 	 * @param state Block state for model being rendered.
 	 * @param pos Position of block for model being rendered.
 	 * @param randomSupplier  Random object seeded per vanilla conventions. Call multiple times to re-seed.

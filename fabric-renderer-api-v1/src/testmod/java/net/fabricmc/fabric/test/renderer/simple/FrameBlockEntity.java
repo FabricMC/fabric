@@ -22,6 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -29,8 +30,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.registry.Registries;
 
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
-import net.fabricmc.fabric.api.util.NbtType;
-import net.fabricmc.fabric.test.renderer.WorldRenderExtensions;
 
 public final class FrameBlockEntity extends BlockEntity implements RenderAttachmentBlockEntity {
 	@Nullable
@@ -44,14 +43,15 @@ public final class FrameBlockEntity extends BlockEntity implements RenderAttachm
 	public void readNbt(NbtCompound tag) {
 		super.readNbt(tag);
 
-		if (tag.contains("block", NbtType.STRING)) {
+		if (tag.contains("block", NbtElement.STRING_TYPE)) {
 			this.block = Registries.BLOCK.get(new Identifier(tag.getString("block")));
 		} else {
 			this.block = null;
 		}
 
 		if (this.getWorld() != null && this.getWorld().isClient()) {
-			WorldRenderExtensions.scheduleBlockRerender(this.getWorld(), this.getPos());
+			// This call forces a chunk remesh.
+			world.updateListeners(pos, null, null, 0);
 		}
 	}
 
@@ -59,6 +59,9 @@ public final class FrameBlockEntity extends BlockEntity implements RenderAttachm
 	public void writeNbt(NbtCompound tag) {
 		if (this.block != null) {
 			tag.putString("block", Registries.BLOCK.getId(this.block).toString());
+		} else {
+			// Always need something in the tag, otherwise S2C syncing will never apply the packet.
+			tag.putInt("block", -1);
 		}
 	}
 

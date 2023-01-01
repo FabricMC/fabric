@@ -1,5 +1,3 @@
-accessWidener	v2	named
-
 accessible field net/minecraft/data/DataGenerator output Lnet/minecraft/data/DataOutput;
 mutable field net/minecraft/data/DataGenerator output Lnet/minecraft/data/DataOutput;
 
@@ -24,6 +22,11 @@ accessible  field   net/minecraft/data/DataOutput$PathResolver rootPath    Ljava
 accessible  field   net/minecraft/data/DataOutput$PathResolver directoryName    Ljava/lang/String;
 
 extendable  method  net/minecraft/data/DataGenerator$Pack    <init>    (Lnet/minecraft/data/DataGenerator;ZLjava/lang/String;Lnet/minecraft/data/DataOutput;)V
+
+accessible  field   net/minecraft/registry/BuiltinRegistries    REGISTRY_BUILDER    Lnet/minecraft/registry/RegistryBuilder;
+accessible  method  net/minecraft/registry/BuiltinRegistries    validate    (Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)V
+accessible    field    net/minecraft/registry/RegistryBuilder    registries    Ljava/util/List;
+accessible    class    net/minecraft/registry/RegistryBuilder$RegistryInfo
 
 transitive-accessible   method  net/minecraft/data/family/BlockFamilies register    (Lnet/minecraft/block/Block;)Lnet/minecraft/data/family/BlockFamily$Builder;
 

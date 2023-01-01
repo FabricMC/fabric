@@ -16,13 +16,11 @@
 
 package net.fabricmc.fabric.impl.gamerule.rule;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.world.GameRules;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.mixin.gamerule.GameRulesIntRuleAccessor;
 
@@ -51,7 +49,6 @@ public final class BoundedIntRule extends GameRules.IntRule {
 	}
 
 	@Override
-	@Environment(EnvType.CLIENT)
 	public boolean validate(String input) {
 		try {
 			int value = Integer.parseInt(input);

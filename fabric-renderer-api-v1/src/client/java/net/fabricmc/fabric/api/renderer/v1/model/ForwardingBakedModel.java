@@ -37,7 +37,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
  * Base class for specialized model implementations that need to wrap other baked models.
  * Avoids boilerplate code for pass-through methods.
  */
-public abstract class ForwardingBakedModel implements BakedModel, FabricBakedModel {
+public abstract class ForwardingBakedModel implements BakedModel, FabricBakedModel, WrapperBakedModel {
 	/** implementations must set this somehow. */
 	protected BakedModel wrapped;
 
@@ -94,5 +94,10 @@ public abstract class ForwardingBakedModel implements BakedModel, FabricBakedMod
 	@Override
 	public ModelOverrideList getOverrides() {
 		return wrapped.getOverrides();
+	}
+
+	@Override
+	public BakedModel getWrappedModel() {
+		return wrapped;
 	}
 }

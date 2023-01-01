@@ -26,8 +26,6 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -49,7 +47,6 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * </pre></blockquote>
  */
 @FunctionalInterface
-@Environment(EnvType.CLIENT)
 public interface LivingEntityFeatureRendererRegistrationCallback {
 	Event<LivingEntityFeatureRendererRegistrationCallback> EVENT = EventFactory.createArrayBacked(LivingEntityFeatureRendererRegistrationCallback.class, callbacks -> (entityType, entityRenderer, registrationHelper, context) -> {
 		for (LivingEntityFeatureRendererRegistrationCallback callback : callbacks) {

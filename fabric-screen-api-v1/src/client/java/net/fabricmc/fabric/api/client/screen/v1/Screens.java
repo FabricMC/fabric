@@ -25,8 +25,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.item.ItemRenderer;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 import net.fabricmc.fabric.mixin.screen.ScreenAccessor;
 
@@ -35,7 +33,6 @@ import net.fabricmc.fabric.mixin.screen.ScreenAccessor;
  *
  * @see ScreenEvents
  */
-@Environment(EnvType.CLIENT)
 public final class Screens {
 	/**
 	 * Gets all of a screen's button widgets.

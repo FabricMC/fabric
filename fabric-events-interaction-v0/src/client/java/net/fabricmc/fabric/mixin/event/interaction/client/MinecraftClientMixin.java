@@ -72,7 +72,7 @@ public abstract class MinecraftClientMixin {
 				BlockEntity be = client.world.getBlockEntity(((BlockHitResult) client.crosshairTarget).getBlockPos());
 
 				if (be != null) {
-					stack = addBlockEntityNbt(stack, be);
+					addBlockEntityNbt(stack, be);
 				}
 			}
 
@@ -100,10 +100,7 @@ public abstract class MinecraftClientMixin {
 	}
 
 	@Shadow
-	public abstract void doItemPick();
-
-	@Shadow
-	public abstract ItemStack addBlockEntityNbt(ItemStack itemStack_1, BlockEntity blockEntity_1);
+	protected abstract void addBlockEntityNbt(ItemStack itemStack_1, BlockEntity blockEntity_1);
 
 	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I", shift = At.Shift.BEFORE), method = "doItemPick", ordinal = 0)
 	public ItemStack modifyItemPick(ItemStack stack) {

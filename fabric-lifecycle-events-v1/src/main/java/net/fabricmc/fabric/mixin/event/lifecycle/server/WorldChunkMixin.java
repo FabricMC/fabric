@@ -34,8 +34,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 
 /**
@@ -43,7 +41,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
  * Since all block entity tracking is now on the world chunk, we inject into WorldChunk.
  * In order to prevent client logic from being loaded due to the mixin, we have a mixin for the client and this one for the server.
  */
-@Environment(EnvType.SERVER)
 @Mixin(WorldChunk.class)
 abstract class WorldChunkMixin {
 	@Shadow

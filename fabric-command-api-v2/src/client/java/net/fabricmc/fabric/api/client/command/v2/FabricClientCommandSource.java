@@ -25,13 +25,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 /**
  * Extensions to {@link CommandSource} for client-sided commands.
  */
-@Environment(EnvType.CLIENT)
 public interface FabricClientCommandSource extends CommandSource {
 	/**
 	 * Sends a feedback message to the player.

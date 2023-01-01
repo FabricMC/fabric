@@ -27,13 +27,13 @@ import org.slf4j.Logger;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.SimpleRegistry;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -41,7 +41,6 @@ import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
@@ -114,10 +113,8 @@ public class RegistrySyncTest implements ModInitializer {
 
 		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
 			setupCalled.set(true);
-			registryManager.getOptional(RegistryKeys.BIOME_WORLDGEN).ifPresent(registry -> {
-				RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> {
-					LOGGER.info("Biome added: {}", id);
-				});
+			registryManager.registerEntryAdded(RegistryKeys.BIOME, (rawId, id, object) -> {
+				LOGGER.info("Biome added: {}", id);
 			});
 		});
 

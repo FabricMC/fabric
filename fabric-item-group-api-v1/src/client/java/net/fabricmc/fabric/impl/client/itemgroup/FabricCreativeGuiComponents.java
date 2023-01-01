@@ -41,7 +41,7 @@ public class FabricCreativeGuiComponents {
 		final Type type;
 
 		public ItemGroupButtonWidget(int x, int y, Type type, CreativeGuiExtensions extensions) {
-			super(x, y, 11, 10, type.text, (bw) -> type.clickConsumer.accept(extensions), ButtonWidget.DEFAULT_NARRATION_SUPPLIER);
+			super(x, y, 11, 12, type.text, (bw) -> type.clickConsumer.accept(extensions), ButtonWidget.DEFAULT_NARRATION_SUPPLIER);
 			this.extensions = extensions;
 			this.type = type;
 			this.gui = (CreativeInventoryScreen) extensions;
@@ -55,11 +55,11 @@ public class FabricCreativeGuiComponents {
 
 			if (this.visible) {
 				int u = active && this.isHovered() ? 22 : 0;
-				int v = active ? 0 : 10;
+				int v = active ? 0 : 12;
 
 				RenderSystem.setShaderTexture(0, BUTTON_TEX);
 				RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-				this.drawTexture(matrixStack, this.getX(), this.getY(), u + (type == Type.NEXT ? 11 : 0), v, 11, 10);
+				this.drawTexture(matrixStack, this.getX(), this.getY(), u + (type == Type.NEXT ? 11 : 0), v, 11, 12);
 
 				if (this.hovered) {
 					int pageCount = (int) Math.ceil((ItemGroups.getGroupsToDisplay().size() - COMMON_GROUPS.size()) / 9D);

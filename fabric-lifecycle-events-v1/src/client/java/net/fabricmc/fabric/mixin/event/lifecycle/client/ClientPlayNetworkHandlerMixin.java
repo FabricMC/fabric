@@ -31,14 +31,11 @@ import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
 import net.minecraft.network.packet.s2c.play.SynchronizeTagsS2CPacket;
 import net.minecraft.world.chunk.WorldChunk;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.impl.event.lifecycle.LoadedChunksCache;
 
-@Environment(EnvType.CLIENT)
 @Mixin(ClientPlayNetworkHandler.class)
 abstract class ClientPlayNetworkHandlerMixin {
 	@Shadow
@@ -83,7 +80,7 @@ abstract class ClientPlayNetworkHandlerMixin {
 	}
 
 	// Called when the client disconnects from a server.
-	@Inject(method = "method_47658", at = @At("HEAD"))
+	@Inject(method = "clearWorld", at = @At("HEAD"))
 	private void onClearWorld(CallbackInfo ci) {
 		// If a world already exists, we need to unload all (block)entities in the world.
 		if (this.world != null) {

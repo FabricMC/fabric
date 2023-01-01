@@ -21,11 +21,8 @@ import java.util.Map;
 
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 
-@Environment(EnvType.CLIENT)
 public final class EntityModelLayerImpl {
 	public static final Map<EntityModelLayer, EntityModelLayerRegistry.TexturedModelDataProvider> PROVIDERS = new HashMap<>();
 

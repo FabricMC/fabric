@@ -28,15 +28,12 @@ import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.world.GameRules;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.gamerule.v1.FabricGameRuleVisitor;
 import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 import net.fabricmc.fabric.impl.gamerule.widget.DoubleRuleWidget;
 import net.fabricmc.fabric.impl.gamerule.widget.EnumRuleWidget;
 
-@Environment(EnvType.CLIENT)
 @Mixin(targets = "net/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleListWidget$1")
 public abstract class RuleListWidgetVisitorMixin implements GameRules.Visitor, FabricGameRuleVisitor {
 	@Final

@@ -40,6 +40,8 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.stat.StatType;
+import net.minecraft.text.TextContent;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -49,7 +51,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
  * Extend this class and implement {@link FabricLanguageProvider#generateTranslations(TranslationBuilder)}.
  * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricDataOutput, String)} FabricLanguageProvider} to declare what language code is being generated if it isn't {@code en_us}.
  *
- * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}
+ * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
 public abstract class FabricLanguageProvider implements DataProvider {
 	protected final FabricDataOutput dataOutput;
@@ -102,7 +104,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	}
 
 	@Override
-	public final String getName() {
+	public String getName() {
 		return "Language (%s)".formatted(languageCode);
 	}
 
@@ -147,7 +149,14 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param value The value of the entry.
 		 */
 		default void add(ItemGroup group, String value) {
-			add(group.getDisplayName().toString(), value);
+			final TextContent content = group.getDisplayName().getContent();
+
+			if (content instanceof TranslatableTextContent translatableTextContent) {
+				add(translatableTextContent.getKey(), value);
+				return;
+			}
+
+			throw new UnsupportedOperationException("Cannot add language entry for ItemGroup (%s) as the display name is not translatable.".formatted(group.getDisplayName().getString()));
 		}
 
 		/**

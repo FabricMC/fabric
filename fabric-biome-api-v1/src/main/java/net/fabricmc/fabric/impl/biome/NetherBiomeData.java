@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
-import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 
 import net.minecraft.registry.RegistryEntryLookup;
@@ -42,7 +41,6 @@ import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 /**
  * Internal data for modding Vanilla's {@link MultiNoiseBiomeSource.Preset#NETHER}.
  */
-@ApiStatus.Internal
 public final class NetherBiomeData {
 	// Cached sets of the biomes that would generate from Vanilla's default biome source without consideration
 	// for data packs (as those would be distinct biome sources).

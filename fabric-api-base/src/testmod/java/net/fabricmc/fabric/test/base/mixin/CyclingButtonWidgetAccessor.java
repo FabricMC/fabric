@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderer;
+package net.fabricmc.fabric.test.base.mixin;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-/**
- * Extension interface for a world to notify the world that a block needs to be re-rendered.
- */
-public interface WorldRenderExtensions {
-	static void scheduleBlockRerender(World world, BlockPos pos) {
-		((WorldRenderExtensions) world).scheduleBlockRerender(pos);
-	}
+import net.minecraft.client.gui.widget.CyclingButtonWidget;
+import net.minecraft.text.Text;
 
-	void scheduleBlockRerender(BlockPos pos);
+@Mixin(CyclingButtonWidget.class)
+public interface CyclingButtonWidgetAccessor {
+	@Accessor
+	Text getOptionText();
 }

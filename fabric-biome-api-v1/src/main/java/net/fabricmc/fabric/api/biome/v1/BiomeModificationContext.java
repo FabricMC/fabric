@@ -23,11 +23,12 @@ import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.BiomeAdditionsSound;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.MusicSound;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.BiomeParticleConfig;
@@ -186,21 +187,21 @@ public interface BiomeModificationContext {
 
 		/**
 		 * @see BiomeEffects#getLoopSound()
-		 * @see BiomeEffects.Builder#loopSound(SoundEvent)
+		 * @see BiomeEffects.Builder#loopSound(RegistryEntry)
 		 */
-		void setAmbientSound(Optional<SoundEvent> sound);
+		void setAmbientSound(Optional<RegistryEntry<SoundEvent>> sound);
 
 		/**
 		 * @see BiomeEffects#getLoopSound()
-		 * @see BiomeEffects.Builder#loopSound(SoundEvent)
+		 * @see BiomeEffects.Builder#loopSound(RegistryEntry)
 		 */
-		default void setAmbientSound(@NotNull SoundEvent sound) {
+		default void setAmbientSound(@NotNull RegistryEntry<SoundEvent> sound) {
 			setAmbientSound(Optional.of(sound));
 		}
 
 		/**
 		 * @see BiomeEffects#getLoopSound()
-		 * @see BiomeEffects.Builder#loopSound(SoundEvent)
+		 * @see BiomeEffects.Builder#loopSound(RegistryEntry)
 		 */
 		default void clearAmbientSound() {
 			setAmbientSound(Optional.empty());

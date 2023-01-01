@@ -1,5 +1,8 @@
 accessWidener	v2	named
 
+# DO NOT EDIT BY HAND! This file is generated automatically.
+# Edit "template.accesswidener" instead then run "gradlew generateAccessWidener".
+
 accessible field net/minecraft/data/DataGenerator output Lnet/minecraft/data/DataOutput;
 mutable field net/minecraft/data/DataGenerator output Lnet/minecraft/data/DataOutput;
 
@@ -24,6 +27,11 @@ accessible  field   net/minecraft/data/DataOutput$PathResolver rootPath    Ljava
 accessible  field   net/minecraft/data/DataOutput$PathResolver directoryName    Ljava/lang/String;
 
 extendable  method  net/minecraft/data/DataGenerator$Pack    <init>    (Lnet/minecraft/data/DataGenerator;ZLjava/lang/String;Lnet/minecraft/data/DataOutput;)V
+
+accessible  field   net/minecraft/registry/BuiltinRegistries    REGISTRY_BUILDER    Lnet/minecraft/registry/RegistryBuilder;
+accessible  method  net/minecraft/registry/BuiltinRegistries    validate    (Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)V
+accessible    field    net/minecraft/registry/RegistryBuilder    registries    Ljava/util/List;
+accessible    class    net/minecraft/registry/RegistryBuilder$RegistryInfo
 
 transitive-accessible   method  net/minecraft/data/family/BlockFamilies register    (Lnet/minecraft/block/Block;)Lnet/minecraft/data/family/BlockFamily$Builder;
 
@@ -221,6 +229,8 @@ transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	getTurtleEggModel	(ILjava/lang/String;Lnet/minecraft/data/client/TextureMap;)Lnet/minecraft/util/Identifier;
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	getTurtleEggModel	(Ljava/lang/Integer;Ljava/lang/Integer;)Lnet/minecraft/util/Identifier;
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerWallPlant	(Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	supplyChiseledBookshelfModels	(Lnet/minecraft/data/client/MultipartBlockStateSupplier;Lnet/minecraft/data/client/When$PropertyCondition;Lnet/minecraft/data/client/VariantSettings$Rotation;)V
+transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	supplyChiseledBookshelfModel	(Lnet/minecraft/data/client/MultipartBlockStateSupplier;Lnet/minecraft/data/client/When$PropertyCondition;Lnet/minecraft/data/client/VariantSettings$Rotation;Lnet/minecraft/state/property/BooleanProperty;Lnet/minecraft/data/client/Model;Z)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerShulkerBox	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerPlantPart	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;Lnet/minecraft/data/client/BlockStateModelGenerator$TintType;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerBed	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
@@ -277,3 +287,16 @@ transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	regist
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	register	(Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;Lnet/minecraft/data/client/Model;)V
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	registerCompass	(Lnet/minecraft/item/Item;)V
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	registerClock	(Lnet/minecraft/item/Item;)V
+transitive-extendable	method	net/minecraft/data/MetadataProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/SnbtProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/client/ModelProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/dev/NbtProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/report/BlockListProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/report/CommandSyntaxProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/report/DynamicRegistriesProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/report/RegistryDumpProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/server/BiomeParametersProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/server/advancement/AdvancementProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/server/loottable/LootTableProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/server/recipe/RecipeProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/server/tag/AbstractTagProvider	getName	()Ljava/lang/String;

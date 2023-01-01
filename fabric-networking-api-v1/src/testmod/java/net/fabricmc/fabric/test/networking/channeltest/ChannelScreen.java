@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.test.networking.channeltest;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.Tooltip;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -40,19 +40,19 @@ final class ChannelScreen extends Screen {
 
 	@Override
 	protected void init() {
-		this.s2cButton = this.addDrawableChild(ButtonWidget.createBuilder(Text.literal("S2C"), this::toS2C)
-				.setPosition(this.width / 2 - 55, 5)
-				.setSize(50, 20)
-				.setTooltip(Tooltip.of(Text.literal("Packets this client can receive")))
+		this.s2cButton = this.addDrawableChild(ButtonWidget.builder(Text.literal("S2C"), this::toS2C)
+				.position(this.width / 2 - 55, 5)
+				.size(50, 20)
+				.tooltip(Tooltip.of(Text.literal("Packets this client can receive")))
 				.build());
-		this.c2sButton = this.addDrawableChild(ButtonWidget.createBuilder(Text.literal("C2S"), this::toC2S)
-				.setPosition(this.width / 2 + 5, 5)
-				.setSize(50, 20)
-				.setTooltip(Tooltip.of(Text.literal("Packets the server can receive")))
+		this.c2sButton = this.addDrawableChild(ButtonWidget.builder(Text.literal("C2S"), this::toC2S)
+				.position(this.width / 2 + 5, 5)
+				.size(50, 20)
+				.tooltip(Tooltip.of(Text.literal("Packets the server can receive")))
 				.build());
-		this.closeButton = this.addDrawableChild(ButtonWidget.createBuilder(Text.literal("Close"), button -> this.close())
-				.setPosition(this.width / 2 - 60, this.height - 25)
-				.setSize(120, 20)
+		this.closeButton = this.addDrawableChild(ButtonWidget.builder(Text.literal("Close"), button -> this.close())
+				.position(this.width / 2 - 60, this.height - 25)
+				.size(120, 20)
 				.build());
 		this.channelList = this.addDrawable(new ChannelList(this.client, this.width, this.height - 60, 30, this.height - 30, this.textRenderer.fontHeight + 2));
 	}

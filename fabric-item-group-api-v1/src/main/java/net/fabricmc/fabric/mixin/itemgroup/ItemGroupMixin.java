@@ -56,6 +56,9 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup, FabricItemGroup 
 	private int fabric_page = -1;
 
 	@Unique
+	private Identifier identifier;
+
+	@Unique
 	@Nullable
 	private UUID fabric_fallbackUUID;
 
@@ -99,15 +102,19 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup, FabricItemGroup 
 
 	@Override
 	public Identifier getId() {
-		final Identifier identifier = MinecraftItemGroups.GROUP_ID_MAP.get((ItemGroup) (Object) this);
+		if (this.identifier != null) {
+			return identifier;
+		}
 
+		final Identifier vanillaId = MinecraftItemGroups.GROUP_ID_MAP.get((ItemGroup) (Object) this);
+
+		if (vanillaId != null) {
+			return vanillaId;
+		}
+
+		// No id known, generate a random one
 		if (identifier == null) {
-			if (fabric_fallbackUUID == null) {
-				fabric_fallbackUUID = UUID.randomUUID();
-			}
-
-			// Fallback when no ID is found for this ItemGroup.
-			return new Identifier("minecraft", "unidentified_" + fabric_fallbackUUID);
+			setId(new Identifier("minecraft", "unidentified_" + UUID.randomUUID()));
 		}
 
 		return identifier;
@@ -125,5 +132,14 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup, FabricItemGroup 
 	@Override
 	public void setPage(int page) {
 		this.fabric_page = page;
+	}
+
+	@Override
+	public void setId(Identifier identifier) {
+		if (this.identifier != null) {
+			throw new IllegalStateException("Cannot set id to (%s) as item group already has id (%s)".formatted(identifier, this.identifier));
+		}
+
+		this.identifier = identifier;
 	}
 }

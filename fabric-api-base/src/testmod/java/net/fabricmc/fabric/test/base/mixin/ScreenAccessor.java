@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderer.mixin;
+package net.fabricmc.fabric.test.base.mixin;
 
-import org.spongepowered.asm.mixin.Final;
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.screen.Screen;
 
-@Mixin(ClientWorld.class)
-abstract class ClientWorldMixin extends WorldMixin {
-	@Shadow
-	@Final
-	private WorldRenderer worldRenderer;
-
-	@Override
-	public void scheduleBlockRerender(BlockPos pos) {
-		// Update the block at the position to trigger chunk re-render.
-		this.worldRenderer.updateBlock(null, pos, null, null, 0);
-	}
+@Mixin(Screen.class)
+public interface ScreenAccessor {
+	@Accessor
+	List<Drawable> getDrawables();
 }

@@ -14,19 +14,27 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderer.mixin;
+package net.fabricmc.fabric.test.base;
 
-import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.fabricmc.api.DedicatedServerModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
-import net.fabricmc.fabric.test.renderer.WorldRenderExtensions;
+public class FabricApiAutoTestServer implements DedicatedServerModInitializer {
+	private int ticks = 0;
 
-@Mixin(World.class)
-abstract class WorldMixin implements WorldRenderExtensions {
 	@Override
-	public void scheduleBlockRerender(BlockPos pos) {
-		// Do nothing, the client world will do things here
+	public void onInitializeServer() {
+		if (System.getProperty("fabric.autoTest") != null) {
+			ServerTickEvents.END_SERVER_TICK.register(server -> {
+				ticks++;
+
+				if (ticks == 50) {
+					MixinEnvironment.getCurrentEnvironment().audit();
+					server.stop(false);
+				}
+			});
+		}
 	}
 }

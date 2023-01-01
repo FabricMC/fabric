@@ -27,14 +27,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.registry.Registries;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
@@ -46,7 +44,6 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
  * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
 @ApiStatus.Experimental
-@Environment(EnvType.CLIENT)
 public final class FluidVariantRendering {
 	private static final ApiProviderMap<Fluid, FluidVariantRenderHandler> HANDLERS = ApiProviderMap.create();
 	private static final FluidVariantRenderHandler DEFAULT_HANDLER = new FluidVariantRenderHandler() { };

@@ -24,9 +24,6 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.text.Text;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 /**
  * An API for registering handled screens that represent screen handlers on the client.
  * Exposes vanilla's private {@link HandledScreens#register HandledScreens.register()} to modders as {@link #register ScreenRegistry.register()}.
@@ -50,7 +47,6 @@ import net.fabricmc.api.Environment;
  * @deprecated Replaced by access wideners for {@link HandledScreens#register(ScreenHandlerType, HandledScreens.Provider)}
  * and {@link HandledScreens.Provider} in Fabric Transitive Access Wideners (v1).
  */
-@Environment(EnvType.CLIENT)
 @Deprecated
 public final class ScreenRegistry {
 	private ScreenRegistry() {

@@ -46,6 +46,9 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 	@Shadow
 	protected abstract void setSelectedTab(ItemGroup itemGroup_1);
 
+	@Shadow
+	private static ItemGroup selectedTab;
+
 	// "static" matches selectedTab
 	private static int fabric_currentPage = 0;
 
@@ -96,10 +99,10 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 
 	@Inject(method = "init", at = @At("RETURN"))
 	private void init(CallbackInfo info) {
-		fabric_updateSelection();
+		fabric_currentPage = fabric_getPage(selectedTab);
 
 		int xpos = x + 170;
-		int ypos = y + 5;
+		int ypos = y + 4;
 
 		addDrawableChild(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos + 11, ypos, FabricCreativeGuiComponents.Type.NEXT, this));
 		addDrawableChild(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, this));
