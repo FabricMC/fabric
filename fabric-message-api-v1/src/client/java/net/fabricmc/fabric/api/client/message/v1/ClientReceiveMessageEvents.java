@@ -82,7 +82,7 @@ public final class ClientReceiveMessageEvents {
 	 * {@linkplain #ALLOW_CHAT chat messages are blocked}.
 	 * Mods can use this to modify the message.
 	 *
-	 * @apiNote Secure chat messages modified with this event will be marked with modified indicator.
+	 * <p>Secure chat messages modified with this event will be marked with modified indicator.
 	 * Messages already with the modified indicator or game messages are not affected.
 	 * The unmodified message is used in chat reporting.
 	 */

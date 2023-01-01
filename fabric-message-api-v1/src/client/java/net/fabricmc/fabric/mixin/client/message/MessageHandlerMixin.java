@@ -63,9 +63,9 @@ public abstract class MessageHandlerMixin {
 	}
 
 	/**
-	 * @implNote A {@code null} {@link MessageIndicator} means the message is secure,
+	 * A {@code null} {@link MessageIndicator} means the message is secure,
 	 * according to {@link net.minecraft.client.network.message.MessageTrustStatus#createIndicator(SignedMessage)
-	 * MessageTrustStatus#createIndicator(SignedMessage)}.
+	 * MessageTrustStatus.createIndicator(SignedMessage)}.
 	 * The {@link MessageIndicator} is only modified with {@link MessageIndicator#modified(String)}
 	 * when the message is modified by a listener registered to {@link ClientReceiveMessageEvents#CHAT}
 	 * and the message is marked as secure.
