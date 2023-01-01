@@ -324,7 +324,6 @@ public final class ClientPlayNetworking {
 		void receive(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface PlayPacketHandler {
 		/**
