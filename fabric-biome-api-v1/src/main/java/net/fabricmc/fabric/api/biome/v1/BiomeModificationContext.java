@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.biome.v1;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.function.BiPredicate;
 
 import org.jetbrains.annotations.NotNull;
@@ -133,6 +134,14 @@ public interface BiomeModificationContext {
 		 * @see BiomeEffects#getFoliageColor()
 		 * @see BiomeEffects.Builder#foliageColor(int)
 		 */
+		default void setFoliageColor(OptionalInt color) {
+			color.ifPresentOrElse(this::setFoliageColor, this::clearFoliageColor);
+		}
+
+		/**
+		 * @see BiomeEffects#getFoliageColor()
+		 * @see BiomeEffects.Builder#foliageColor(int)
+		 */
 		default void clearFoliageColor() {
 			setFoliageColor(Optional.empty());
 		}
@@ -149,6 +158,14 @@ public interface BiomeModificationContext {
 		 */
 		default void setGrassColor(int color) {
 			setGrassColor(Optional.of(color));
+		}
+
+		/**
+		 * @see BiomeEffects#getGrassColor()
+		 * @see BiomeEffects.Builder#grassColor(int)
+		 */
+		default void setGrassColor(OptionalInt color) {
+			color.ifPresentOrElse(this::setGrassColor, this::clearGrassColor);
 		}
 
 		/**
