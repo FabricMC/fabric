@@ -31,20 +31,21 @@ import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.sound.BiomeAdditionsSound;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.MusicSound;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.collection.Pool;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.BiomeParticleConfig;
@@ -301,7 +302,11 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		@Override
 		public boolean removeCarver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
 			ConfiguredCarver<?> carver = getEntry(carvers, configuredCarverKey).value();
-			List<RegistryEntry<ConfiguredCarver<?>>> genCarvers = new ArrayList<>(generationSettings.carvers.get(step).stream().toList());
+			RegistryEntryList<ConfiguredCarver<?>> carvers = generationSettings.carvers.get(step);
+
+			if (carvers == null) return false;
+
+			List<RegistryEntry<ConfiguredCarver<?>>> genCarvers = new ArrayList<>(carvers.stream().toList());
 
 			if (genCarvers.removeIf(entry -> entry.value() == carver)) {
 				generationSettings.carvers.put(step, RegistryEntryList.of(genCarvers));
@@ -311,7 +316,9 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			return false;
 		}
 
-		private <T> RegistryEntryList<T> plus(RegistryEntryList<T> values, RegistryEntry<T> entry) {
+		private <T> RegistryEntryList<T> plus(@Nullable RegistryEntryList<T> values, RegistryEntry<T> entry) {
+			if (values == null) return RegistryEntryList.of(entry);
+
 			List<RegistryEntry<T>> list = new ArrayList<>(values.stream().toList());
 			list.add(entry);
 			return RegistryEntryList.of(list);
