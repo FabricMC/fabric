@@ -20,6 +20,7 @@ import java.util.Objects;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -38,19 +39,23 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static Block SIMPLE_BLOCK;
 	public static Block BLOCK_WITHOUT_ITEM;
 	public static Block BLOCK_WITHOUT_LOOT_TABLE;
+	public static Block BLOCK_WITH_VANILLA_LOOT_TABLE;
+	public static Block BLOCK_THAT_DROPS_NOTHING;
 	public static ItemGroup SIMPLE_ITEM_GROUP;
 
 	@Override
 	public void onInitialize() {
 		SIMPLE_ITEM_GROUP = FabricItemGroupBuilder.build(new Identifier(MOD_ID, "default"), () -> new ItemStack(Items.BONE));
-		SIMPLE_BLOCK = createBlock("simple_block", true);
-		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false);
-		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false);
+		SIMPLE_BLOCK = createBlock("simple_block", true, AbstractBlock.Settings.of(Material.STONE));
+		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false, AbstractBlock.Settings.of(Material.STONE));
+		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false, AbstractBlock.Settings.of(Material.STONE));
+		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, AbstractBlock.Settings.of(Material.STONE).dropsLike(Blocks.STONE));
+		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, AbstractBlock.Settings.of(Material.STONE).dropsNothing());
 	}
 
-	private static Block createBlock(String name, boolean hasItem) {
+	private static Block createBlock(String name, boolean hasItem, AbstractBlock.Settings settings) {
 		Identifier identifier = new Identifier(MOD_ID, name);
-		Block block = Registry.register(Registry.BLOCK, identifier, new Block(AbstractBlock.Settings.of(Material.STONE)));
+		Block block = Registry.register(Registry.BLOCK, identifier, new Block(settings));
 
 		if (hasItem) {
 			Registry.register(Registry.ITEM, identifier, new BlockItem(block, new Item.Settings().group(ItemGroup.MISC)));
