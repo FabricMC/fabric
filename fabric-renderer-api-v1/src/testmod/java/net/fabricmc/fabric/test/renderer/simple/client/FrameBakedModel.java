@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
@@ -36,20 +37,29 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 import net.minecraft.util.math.random.Random;
 
+import net.fabricmc.fabric.api.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
+import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 
 final class FrameBakedModel implements BakedModel, FabricBakedModel {
 	private final Mesh frameMesh;
 	private final Sprite frameSprite;
+	private final RenderMaterial translucentMaterial;
+	private final RenderMaterial translucentEmissiveMaterial;
 
 	FrameBakedModel(Mesh frameMesh, Sprite frameSprite) {
 		this.frameMesh = frameMesh;
 		this.frameSprite = frameSprite;
+
+		Renderer renderer = RendererAccess.INSTANCE.getRenderer();
+		this.translucentMaterial = renderer.materialFinder().blendMode(0, BlendMode.TRANSLUCENT).find();
+		this.translucentEmissiveMaterial = renderer.materialFinder().blendMode(0, BlendMode.TRANSLUCENT).emissive(0, true).find();
 	}
 
 	@Override
@@ -69,7 +79,7 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 
 	@Override
 	public boolean isSideLit() {
-		return false;
+		return true; // we want the block to be lit from the side when rendered as an item
 	}
 
 	@Override
@@ -84,7 +94,7 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 
 	@Override
 	public ModelTransformation getTransformation() {
-		return ModelTransformation.NONE;
+		return ModelHelper.MODEL_TRANSFORM_BLOCK;
 	}
 
 	@Override
@@ -112,27 +122,71 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 			return; // No inner block to render
 		}
 
-		Sprite sprite = MinecraftClient.getInstance().getBlockRenderManager().getModels().getModelManager().getBlockModels().getModelParticleSprite(data.getDefaultState());
-		QuadEmitter emitter = context.getEmitter();
+		BlockState innerState = data.getDefaultState();
 
-		// We can emit our quads outside of the mesh as the block being put in the frame is very much dynamic.
-		// Emit the quads for each face of the block inside the frame
-		for (Direction direction : Direction.values()) {
-			// Add a face, with an inset to give the appearance of the block being in a frame.
-			emitter.square(direction, 0.1F, 0.1F, 0.9F, 0.9F, 0.1F)
-					// Set the sprite of the fact, use whole texture via BAKE_LOCK_UV
-					.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV)
-					// Allow textures
-					// TODO: the magic values here are not documented at all and probably should be
-					.spriteColor(0, -1, -1, -1, -1)
-					// Emit the quad
-					.emit();
-		}
+		// Now, we emit a transparent scaled-down version of the inner model
+		// Try both emissive and non-emissive versions of the translucent material
+		RenderMaterial material = pos.getX() % 2 == 0 ? translucentMaterial : translucentEmissiveMaterial;
+
+		emitInnerQuads(context, material, () -> {
+			// Use emitBlockQuads to allow for Renderer API features
+			((FabricBakedModel) MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState)).emitBlockQuads(blockView, innerState, pos, randomSupplier, context);
+		});
 	}
 
 	@Override
 	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-		// TODO: Implement an item test.
-		// For now we will just leave this as I have not added a block item yet
+		// Emit our frame mesh
+		context.meshConsumer().accept(this.frameMesh);
+
+		// Emit a scaled-down fence for testing, trying both materials again.
+		RenderMaterial material = stack.hasCustomName() ? translucentEmissiveMaterial : translucentMaterial;
+
+		BlockState innerState = Blocks.OAK_FENCE.getDefaultState();
+
+		emitInnerQuads(context, material, () -> {
+			// Need to use the fallback consumer directly:
+			// - we can't use emitBlockQuads because we don't have a blockView
+			// - we can't use emitItemQuads because multipart models don't have item quads
+			context.bakedModelConsumer().accept(MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState), innerState);
+		});
+	}
+
+	/**
+	 * Emit a scaled-down version of the inner model.
+	 */
+	private void emitInnerQuads(RenderContext context, RenderMaterial material, Runnable innerModelEmitter) {
+		// Let's push a transform to scale the model down and make it transparent
+		context.pushTransform(quad -> {
+			// Scale model down
+			for (int vertex = 0; vertex < 4; ++vertex) {
+				float x = quad.x(vertex) * 0.8f + 0.1f;
+				float y = quad.y(vertex) * 0.8f + 0.1f;
+				float z = quad.z(vertex) * 0.8f + 0.1f;
+				quad.pos(vertex, x, y, z);
+			}
+
+			// Make the quad partially transparent
+			// Change material to translucent
+			quad.material(material);
+
+			// Change vertex colors to be partially transparent
+			for (int vertex = 0; vertex < 4; ++vertex) {
+				int color = quad.spriteColor(vertex, 0);
+				int alpha = (color >> 24) & 0xFF;
+				alpha = alpha * 3 / 4;
+				color = (color & 0xFFFFFF) | (alpha << 24);
+				quad.spriteColor(vertex, 0, color);
+			}
+
+			// Return true because we want the quad to be rendered
+			return true;
+		});
+
+		// Emit the inner block model
+		innerModelEmitter.run();
+
+		// Let's not forget to pop the transform!
+		context.popTransform();
 	}
 }
