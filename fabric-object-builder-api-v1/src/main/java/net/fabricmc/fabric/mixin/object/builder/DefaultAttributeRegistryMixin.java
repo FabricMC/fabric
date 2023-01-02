@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.object.builder;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.spongepowered.asm.mixin.Final;
@@ -41,6 +41,6 @@ public abstract class DefaultAttributeRegistryMixin {
 
 	@Inject(method = "<clinit>*", at = @At("TAIL"))
 	private static void injectAttributes(CallbackInfo ci) {
-		DEFAULT_ATTRIBUTE_REGISTRY = new HashMap<>(DEFAULT_ATTRIBUTE_REGISTRY);
+		DEFAULT_ATTRIBUTE_REGISTRY = new IdentityHashMap<>(DEFAULT_ATTRIBUTE_REGISTRY);
 	}
 }
