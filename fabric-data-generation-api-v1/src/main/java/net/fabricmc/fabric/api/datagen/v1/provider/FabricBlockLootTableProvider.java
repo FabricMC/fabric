@@ -95,8 +95,12 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 
 			for (Identifier blockId : Registries.BLOCK.getIds()) {
 				if (blockId.getNamespace().equals(output.getModId())) {
-					if (!lootTables.containsKey(Registries.BLOCK.get(blockId).getLootTableId())) {
-						missing.add(blockId);
+					Identifier blockLootTableId = Registries.BLOCK.get(blockId).getLootTableId();
+
+					if (blockLootTableId.getNamespace().equals(output.getModId())) {
+						if (!lootTables.containsKey(blockLootTableId)) {
+							missing.add(blockId);
+						}
 					}
 				}
 			}
