@@ -33,6 +33,7 @@ import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3f;
 
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
+import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
@@ -60,6 +61,45 @@ public abstract class AbstractQuadRenderer {
 		this.bufferFunc = bufferFunc;
 		this.aoCalc = aoCalc;
 		this.transform = transform;
+	}
+
+	protected void renderQuad(MutableQuadViewImpl quad, boolean isVanilla) {
+		if (!transform.transform(quad)) {
+			return;
+		}
+
+		if (!blockInfo.shouldDrawFace(quad.cullFace())) {
+			return;
+		}
+
+		tessellateQuad(quad, 0, isVanilla);
+	}
+
+	/**
+	 * Determines color index and render layer, then routes to appropriate
+	 * tessellate routine based on material properties.
+	 */
+	private void tessellateQuad(MutableQuadViewImpl quad, int textureIndex, boolean isVanilla) {
+		final RenderMaterialImpl.Value mat = quad.material();
+		final int colorIndex = mat.disableColorIndex(textureIndex) ? -1 : quad.colorIndex();
+		final RenderLayer renderLayer = blockInfo.effectiveRenderLayer(mat.blendMode(textureIndex));
+
+		if (blockInfo.defaultAo && !mat.disableAo(textureIndex)) {
+			// needs to happen before offsets are applied
+			aoCalc.compute(quad, isVanilla);
+
+			if (mat.emissive(textureIndex)) {
+				tessellateSmoothEmissive(quad, renderLayer, colorIndex);
+			} else {
+				tessellateSmooth(quad, renderLayer, colorIndex);
+			}
+		} else {
+			if (mat.emissive(textureIndex)) {
+				tessellateFlatEmissive(quad, renderLayer, colorIndex);
+			} else {
+				tessellateFlat(quad, renderLayer, colorIndex);
+			}
+		}
 	}
 
 	/** handles block color and red-blue swizzle, common to all renders. */
