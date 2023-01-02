@@ -22,6 +22,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -31,6 +33,7 @@ import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl.Value;
@@ -57,7 +60,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
  *  vertex data is sent to the byte buffer.  Generally POJO array access will be faster than
  *  manipulating the data via NIO.
  */
-public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer implements Consumer<BakedModel> {
+public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer implements RenderContext.BakedModelConsumer {
 	private static final Value MATERIAL_FLAT = (Value) IndigoRenderer.INSTANCE.materialFinder().disableAo(0, true).find();
 	private static final Value MATERIAL_SHADED = (Value) IndigoRenderer.INSTANCE.materialFinder().find();
 
@@ -79,10 +82,14 @@ public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer imple
 	};
 
 	@Override
-	public void accept(BakedModel model) {
+	public void accept(BakedModel bakedModel) {
+		accept(bakedModel, blockInfo.blockState);
+	}
+
+	@Override
+	public void accept(BakedModel model, @Nullable BlockState blockState) {
 		final Supplier<Random> random = blockInfo.randomSupplier;
 		final Value defaultMaterial = blockInfo.defaultAo && model.useAmbientOcclusion() ? MATERIAL_SHADED : MATERIAL_FLAT;
-		final BlockState blockState = blockInfo.blockState;
 
 		for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
 			final Direction cullFace = ModelHelper.faceFromIndex(i);
@@ -102,29 +109,6 @@ public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer imple
 		final MutableQuadViewImpl editorQuad = this.editorQuad;
 		editorQuad.fromVanilla(quad, defaultMaterial, cullFace);
 
-		if (!transform.transform(editorQuad)) {
-			return;
-		}
-
-		cullFace = editorQuad.cullFace();
-
-		if (cullFace != null && !blockInfo.shouldDrawFace(cullFace)) {
-			return;
-		}
-
-		if (!editorQuad.material().disableAo(0)) {
-			// needs to happen before offsets are applied
-			aoCalc.compute(editorQuad, true);
-			tessellateSmooth(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
-		} else {
-			// Recomputing whether the quad has a light face is only needed if it doesn't also have a cull face,
-			// as in those cases, the cull face will always be used to offset the light sampling position
-			if (cullFace == null) {
-				// Can't rely on lazy computation in tessellateFlat() because needs to happen before offsets are applied
-				editorQuad.geometryFlags();
-			}
-
-			tessellateFlat(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
-		}
+		renderQuad(editorQuad, true);
 	}
 }
