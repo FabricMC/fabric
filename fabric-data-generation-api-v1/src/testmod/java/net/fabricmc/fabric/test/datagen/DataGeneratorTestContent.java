@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.datagen;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -39,6 +40,8 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static Block SIMPLE_BLOCK;
 	public static Block BLOCK_WITHOUT_ITEM;
 	public static Block BLOCK_WITHOUT_LOOT_TABLE;
+	public static Block BLOCK_WITH_VANILLA_LOOT_TABLE;
+	public static Block BLOCK_THAT_DROPS_NOTHING;
 
 	public static final ItemGroup SIMPLE_ITEM_GROUP = FabricItemGroup.builder(new Identifier(MOD_ID, "simple"))
 			.icon(() -> new ItemStack(Items.DIAMOND_PICKAXE))
@@ -47,16 +50,18 @@ public class DataGeneratorTestContent implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		SIMPLE_BLOCK = createBlock("simple_block", true);
-		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false);
-		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false);
+		SIMPLE_BLOCK = createBlock("simple_block", true, AbstractBlock.Settings.of(Material.STONE));
+		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false, AbstractBlock.Settings.of(Material.STONE));
+		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false, AbstractBlock.Settings.of(Material.STONE));
+		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, AbstractBlock.Settings.of(Material.STONE).dropsLike(Blocks.STONE));
+		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, AbstractBlock.Settings.of(Material.STONE).dropsNothing());
 
 		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.add(SIMPLE_BLOCK));
 	}
 
-	private static Block createBlock(String name, boolean hasItem) {
+	private static Block createBlock(String name, boolean hasItem, AbstractBlock.Settings settings) {
 		Identifier identifier = new Identifier(MOD_ID, name);
-		Block block = Registry.register(Registries.BLOCK, identifier, new Block(AbstractBlock.Settings.of(Material.STONE)));
+		Block block = Registry.register(Registries.BLOCK, identifier, new Block(settings));
 
 		if (hasItem) {
 			Registry.register(Registries.ITEM, identifier, new BlockItem(block, new Item.Settings()));
