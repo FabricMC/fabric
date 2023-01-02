@@ -69,7 +69,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		try {
 			ClientPlayConnectionEvents.JOIN.invoker().onPlayReady(this.handler, this, this.client);
 		} catch (RuntimeException e) {
-			LOGGER.error("Exception raised while invoking ClientPlayConnectionEvents.JOIN", e);
+			LOGGER.error("Exception thrown while invoking ClientPlayConnectionEvents.JOIN", e);
 		}
 
 		// The client cannot send any packets, including `minecraft:register` until after GameJoinS2CPacket is received.
