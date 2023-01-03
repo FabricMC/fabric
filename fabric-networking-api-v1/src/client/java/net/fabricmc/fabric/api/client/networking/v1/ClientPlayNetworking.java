@@ -23,12 +23,16 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
@@ -62,6 +66,26 @@ public final class ClientPlayNetworking {
 		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(channelName, channelHandler);
 	}
 
+	public static <T extends FabricPacket> boolean registerGlobalReceiver(PacketType<T> type, PlayPacketHandler<T> handler) {
+		return registerGlobalReceiver(type.getId(), new PlayChannelHandlerProxy<T>() {
+			@Override
+			public PlayPacketHandler<T> getOriginalHandler() {
+				return handler;
+			}
+
+			@Override
+			public void receive(MinecraftClient client, ClientPlayNetworkHandler networkHandler, PacketByteBuf buf, PacketSender sender) {
+				T packet = type.read(buf);
+
+				if (handler.processOnNetworkThread(client.player, packet, sender)) {
+					client.execute(() -> {
+						if (networkHandler.getConnection().isOpen()) handler.receive(client.player, packet, sender);
+					});
+				}
+			}
+		});
+	}
+
 	/**
 	 * Removes the handler of a channel.
 	 * A global receiver is registered to all connections, in the present and future.
@@ -76,6 +100,13 @@ public final class ClientPlayNetworking {
 	@Nullable
 	public static PlayChannelHandler unregisterGlobalReceiver(Identifier channelName) {
 		return ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(channelName);
+	}
+
+	@Nullable
+	@SuppressWarnings("unchecked")
+	public static <T extends FabricPacket> PlayPacketHandler<T> unregisterGlobalReceiver(PacketType<T> type) {
+		PlayChannelHandler handler = ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(type.getId());
+		return handler instanceof PlayChannelHandlerProxy<?> proxy ? (PlayPacketHandler<T>) proxy.getOriginalHandler() : null;
 	}
 
 	/**
@@ -112,6 +143,26 @@ public final class ClientPlayNetworking {
 		throw new IllegalStateException("Cannot register receiver while not in game!");
 	}
 
+	public static <T extends FabricPacket> boolean registerReceiver(PacketType<T> type, PlayPacketHandler<T> handler) {
+		return registerReceiver(type.getId(), new PlayChannelHandlerProxy<T>() {
+			@Override
+			public PlayPacketHandler<T> getOriginalHandler() {
+				return handler;
+			}
+
+			@Override
+			public void receive(MinecraftClient client, ClientPlayNetworkHandler networkHandler, PacketByteBuf buf, PacketSender sender) {
+				T packet = type.read(buf);
+
+				if (handler.processOnNetworkThread(client.player, packet, sender)) {
+					client.execute(() -> {
+						if (networkHandler.getConnection().isOpen()) handler.receive(client.player, packet, sender);
+					});
+				}
+			}
+		});
+	}
+
 	/**
 	 * Removes the handler of a channel.
 	 *
@@ -130,6 +181,13 @@ public final class ClientPlayNetworking {
 		}
 
 		throw new IllegalStateException("Cannot unregister receiver while not in game!");
+	}
+
+	@Nullable
+	@SuppressWarnings("unchecked")
+	public static <T extends FabricPacket> PlayPacketHandler<T> unregisterReceiver(PacketType<T> type) {
+		PlayChannelHandler handler = unregisterReceiver(type.getId());
+		return handler instanceof PlayChannelHandlerProxy<?> proxy ? (PlayPacketHandler<T>) proxy.getOriginalHandler() : null;
 	}
 
 	/**
@@ -180,6 +238,10 @@ public final class ClientPlayNetworking {
 		return false;
 	}
 
+	public static boolean canSend(PacketType<?> type) {
+		return canSend(type.getId());
+	}
+
 	/**
 	 * Creates a packet which may be sent to the connected server.
 	 *
@@ -226,6 +288,15 @@ public final class ClientPlayNetworking {
 		throw new IllegalStateException("Cannot send packets when not in game!");
 	}
 
+	public static <T extends FabricPacket> void send(PacketType<T> type, T packet) {
+		Objects.requireNonNull(type, "Packet type cannot be null");
+		Objects.requireNonNull(packet, "Packet cannot be null");
+
+		PacketByteBuf buf = PacketByteBufs.create();
+		packet.write(buf);
+		send(type.getId(), buf);
+	}
+
 	private ClientPlayNetworking() {
 	}
 
@@ -254,5 +325,18 @@ public final class ClientPlayNetworking {
 		 * @param responseSender the packet sender
 		 */
 		void receive(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender);
+	}
+
+	interface PlayChannelHandlerProxy<T extends FabricPacket> extends PlayChannelHandler {
+		PlayPacketHandler<T> getOriginalHandler();
+	}
+
+	@FunctionalInterface
+	public interface PlayPacketHandler<T extends FabricPacket> {
+		void receive(ClientPlayerEntity player, T packet, PacketSender responseSender);
+
+		default boolean processOnNetworkThread(ClientPlayerEntity player, T packet, PacketSender responseSender) {
+			return true;
+		}
 	}
 }

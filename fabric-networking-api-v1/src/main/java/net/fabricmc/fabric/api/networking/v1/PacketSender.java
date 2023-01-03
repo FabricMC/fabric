@@ -50,6 +50,12 @@ public interface PacketSender {
 	 */
 	void sendPacket(Packet<?> packet);
 
+	default <T extends FabricPacket> void sendPacket(PacketType<T> type, T packet) {
+		PacketByteBuf buf = PacketByteBufs.create();
+		packet.write(buf);
+		sendPacket(type.getId(), buf);
+	}
+
 	/**
 	 * Sends a packet.
 	 *
@@ -58,6 +64,12 @@ public interface PacketSender {
 	 */
 	void sendPacket(Packet<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> callback);
 
+	default <T extends FabricPacket> void sendPacket(PacketType<T> type, T packet, @Nullable GenericFutureListener<? extends Future<? super Void>> callback) {
+		PacketByteBuf buf = PacketByteBufs.create();
+		packet.write(buf);
+		sendPacket(type.getId(), buf, callback);
+	}
+
 	/**
 	 * Sends a packet.
 	 *
@@ -65,6 +77,12 @@ public interface PacketSender {
 	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
 	 */
 	void sendPacket(Packet<?> packet, @Nullable PacketCallbacks callback);
+
+	default <T extends FabricPacket> void sendPacket(PacketType<T> type, T packet, @Nullable PacketCallbacks callback) {
+		PacketByteBuf buf = PacketByteBufs.create();
+		packet.write(buf);
+		sendPacket(type.getId(), buf, callback);
+	}
 
 	/**
 	 * Sends a packet to a channel.
