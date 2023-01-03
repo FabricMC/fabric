@@ -32,17 +32,17 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
 public final class NetworkingPlayPacketTest implements ModInitializer {
 	public static final Identifier TEST_CHANNEL = NetworkingTestmods.id("test_channel");
+	public static final PacketType<OverlayPacket> PACKET_TYPE = PacketType.create(TEST_CHANNEL, OverlayPacket::new);
 
 	public static void sendToTestChannel(ServerPlayerEntity player, String stuff) {
-		PacketByteBuf buf = PacketByteBufs.create();
-		buf.writeText(Text.literal(stuff));
-		ServerPlayNetworking.send(player, TEST_CHANNEL, buf);
+		ServerPlayNetworking.send(player, PACKET_TYPE, new OverlayPacket(Text.literal(stuff)));
 		NetworkingTestmods.LOGGER.info("Sent custom payload packet in {}", TEST_CHANNEL);
 	}
 
@@ -63,5 +63,16 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			NetworkingPlayPacketTest.registerCommand(dispatcher);
 		});
+	}
+
+	public record OverlayPacket(Text message) implements FabricPacket {
+		public OverlayPacket(PacketByteBuf buf) {
+			this(buf.readText());
+		}
+
+		@Override
+		public void write(PacketByteBuf buf) {
+			buf.writeText(this.message);
+		}
 	}
 }
