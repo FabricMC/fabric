@@ -60,6 +60,9 @@ public final class ClientPlayNetworking {
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
 	 * Use {@link #unregisterGlobalReceiver(Identifier)} to unregister the existing handler.
 	 *
+	 * <p>For new code, {@link #registerGlobalReceiver(PacketType, PlayPacketHandler)}
+	 * should be used instead, as it is designed in a way that prevents thread safety issues.
+	 *
 	 * @param channelName the id of the channel
 	 * @param channelHandler the handler
 	 * @return false if a handler is already registered to the channel
@@ -156,6 +159,9 @@ public final class ClientPlayNetworking {
 	 *
 	 * <p>For example, if you only register a receiver using this method when a {@linkplain ClientLoginNetworking#registerGlobalReceiver(Identifier, ClientLoginNetworking.LoginQueryRequestHandler)}
 	 * login query has been received, you should use {@link ClientPlayConnectionEvents#INIT} to register the channel handler.
+	 *
+	 * <p>For new code, {@link #registerReceiver(PacketType, PlayPacketHandler)}
+	 * should be used instead, as it is designed in a way that prevents thread safety issues.
 	 *
 	 * @param channelName the id of the channel
 	 * @return false if a handler is already registered to the channel
