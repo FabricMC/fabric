@@ -39,6 +39,26 @@ import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
  *
  * <p>This class should be only used for the logical server.
  *
+ * <h2>Packet object-based API</h2>
+ *
+ * <p>This class provides a classic registration method, {@link #registerGlobalReceiver(Identifier, PlayChannelHandler)},
+ * and a newer method utilizing packet objects, {@link #registerGlobalReceiver(PacketType, PlayPacketHandler)}.
+ * For most mods, using the newer method will improve the readability of the code by separating packet
+ * reading/writing code to a separate class. Additionally, the newer method executes the callback in the
+ * server thread, ensuring thread safety. For this reason using the newer method is highly recommended.
+ * The two methods are network-compatible with each other, so long as the buffer contents are read and written
+ * in the same order.
+ *
+ * <p>The newer, packet object-based API involves three classes:
+ *
+ * <ul>
+ *     <li>A class implementing {@link FabricPacket} that is "sent" over the network</li>
+ *     <li>{@link PacketType} instance, which represents the packet's type (and its channel)</li>
+ *     <li>{@link PlayPacketHandler}, which handles the packet (usually implemented as a functional interface)</li>
+ * </ul>
+ *
+ * <p>See the documentation on each class for more information.
+ *
  * @see ServerLoginNetworking
  */
 public final class ServerPlayNetworking {

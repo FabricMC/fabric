@@ -46,6 +46,9 @@ import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
  *
  * <p>This class should be only used on the physical client and for the logical client.
  *
+ * <p>See {@link ServerPlayNetworking} for information on how to use the new packet-object
+ * based API.
+ *
  * @see ClientLoginNetworking
  * @see ServerPlayNetworking
  */
