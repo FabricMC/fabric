@@ -41,6 +41,7 @@ import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
  *
  * @see ServerLoginNetworking
  */
+@SuppressWarnings("deprecation")
 public final class ServerPlayNetworking {
 	/**
 	 * Registers a handler to a channel.
@@ -57,7 +58,10 @@ public final class ServerPlayNetworking {
 	 * @return false if a handler is already registered to the channel
 	 * @see ServerPlayNetworking#unregisterGlobalReceiver(Identifier)
 	 * @see ServerPlayNetworking#registerReceiver(ServerPlayNetworkHandler, Identifier, PlayChannelHandler)
+	 * @deprecated Use {@link #registerGlobalReceiver(PacketType, PlayPacketHandler)} instead,
+	 * as it guarantees thread safety by design.
 	 */
+	@Deprecated
 	public static boolean registerGlobalReceiver(Identifier channelName, PlayChannelHandler channelHandler) {
 		return ServerNetworkingImpl.PLAY.registerGlobalReceiver(channelName, channelHandler);
 	}
@@ -105,8 +109,10 @@ public final class ServerPlayNetworking {
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 * @see ServerPlayNetworking#registerGlobalReceiver(Identifier, PlayChannelHandler)
 	 * @see ServerPlayNetworking#unregisterReceiver(ServerPlayNetworkHandler, Identifier)
+	 * @deprecated Use {@link #unregisterGlobalReceiver(PacketType)} instead.
 	 */
 	@Nullable
+	@Deprecated
 	public static PlayChannelHandler unregisterGlobalReceiver(Identifier channelName) {
 		return ServerNetworkingImpl.PLAY.unregisterGlobalReceiver(channelName);
 	}
@@ -159,7 +165,10 @@ public final class ServerPlayNetworking {
 	 * @param channelHandler the handler
 	 * @return false if a handler is already registered to the channel name
 	 * @see ServerPlayConnectionEvents#INIT
+	 * @deprecated Use {@link #registerReceiver(ServerPlayNetworkHandler, PacketType, PlayPacketHandler)} instead,
+	 * as it guarantees thread safety by design.
 	 */
+	@Deprecated
 	public static boolean registerReceiver(ServerPlayNetworkHandler networkHandler, Identifier channelName, PlayChannelHandler channelHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
@@ -210,8 +219,10 @@ public final class ServerPlayNetworking {
 	 *
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel name
+	 * @deprecated Use {@link #unregisterReceiver(ServerPlayNetworkHandler, PacketType)} instead.
 	 */
 	@Nullable
+	@Deprecated
 	public static PlayChannelHandler unregisterReceiver(ServerPlayNetworkHandler networkHandler, Identifier channelName) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
@@ -288,6 +299,7 @@ public final class ServerPlayNetworking {
 	 * @param player the player
 	 * @param channelName the channel name
 	 * @return True if the connected client has declared the ability to receive a packet on the specified channel
+	 * @see #canSend(ServerPlayerEntity, PacketType)
 	 */
 	public static boolean canSend(ServerPlayerEntity player, Identifier channelName) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
@@ -314,6 +326,7 @@ public final class ServerPlayNetworking {
 	 * @param handler the network handler
 	 * @param channelName the channel name
 	 * @return True if the connected client has declared the ability to receive a packet on the specified channel
+	 * @see #canSend(ServerPlayNetworkHandler, PacketType)
 	 */
 	public static boolean canSend(ServerPlayNetworkHandler handler, Identifier channelName) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
@@ -380,6 +393,7 @@ public final class ServerPlayNetworking {
 	 * @param player the player to send the packet to
 	 * @param channelName the channel of the packet
 	 * @param buf the payload of the packet.
+	 * @see #send(ServerPlayerEntity, PacketType, FabricPacket)
 	 */
 	public static void send(ServerPlayerEntity player, Identifier channelName, PacketByteBuf buf) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
@@ -423,6 +437,7 @@ public final class ServerPlayNetworking {
 	}
 
 	@FunctionalInterface
+	@Deprecated
 	public interface PlayChannelHandler {
 		/**
 		 * Handles an incoming packet.
@@ -446,7 +461,9 @@ public final class ServerPlayNetworking {
 		 * @param handler the network handler that received this packet, representing the player/client who sent the packet
 		 * @param buf the payload of the packet
 		 * @param responseSender the packet sender
+		 * @deprecated Use {@link PlayPacketHandler} instead.
 		 */
+		@Deprecated
 		void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender);
 	}
 
