@@ -49,7 +49,6 @@ import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
  * @see ClientLoginNetworking
  * @see ServerPlayNetworking
  */
-@SuppressWarnings("deprecation")
 public final class ClientPlayNetworking {
 	/**
 	 * Registers a handler to a channel.
@@ -66,10 +65,7 @@ public final class ClientPlayNetworking {
 	 * @return false if a handler is already registered to the channel
 	 * @see ClientPlayNetworking#unregisterGlobalReceiver(Identifier)
 	 * @see ClientPlayNetworking#registerReceiver(Identifier, PlayChannelHandler)
-	 * @deprecated Use {@link #registerGlobalReceiver(PacketType, PlayPacketHandler)} instead,
-	 * as it guarantees thread safety by design.
 	 */
-	@Deprecated
 	public static boolean registerGlobalReceiver(Identifier channelName, PlayChannelHandler channelHandler) {
 		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(channelName, channelHandler);
 	}
@@ -117,10 +113,8 @@ public final class ClientPlayNetworking {
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 * @see ClientPlayNetworking#registerGlobalReceiver(Identifier, PlayChannelHandler)
 	 * @see ClientPlayNetworking#unregisterReceiver(Identifier)
-	 * @deprecated Use {@link #unregisterGlobalReceiver(PacketType)} instead.
 	 */
 	@Nullable
-	@Deprecated
 	public static PlayChannelHandler unregisterGlobalReceiver(Identifier channelName) {
 		return ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(channelName);
 	}
@@ -167,10 +161,7 @@ public final class ClientPlayNetworking {
 	 * @return false if a handler is already registered to the channel
 	 * @throws IllegalStateException if the client is not connected to a server
 	 * @see ClientPlayConnectionEvents#INIT
-	 * @deprecated Use {@link #registerReceiver(PacketType, PlayPacketHandler)} instead,
-	 * as it guarantees thread safety by design.
 	 */
-	@Deprecated
 	public static boolean registerReceiver(Identifier channelName, PlayChannelHandler channelHandler) {
 		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
 
@@ -224,10 +215,8 @@ public final class ClientPlayNetworking {
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 * @throws IllegalStateException if the client is not connected to a server
-	 * @deprecated Use {@link #unregisterReceiver(PacketType)} instead.
 	 */
 	@Nullable
-	@Deprecated
 	public static PlayChannelHandler unregisterReceiver(Identifier channelName) throws IllegalStateException {
 		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
 
@@ -293,7 +282,6 @@ public final class ClientPlayNetworking {
 	 * @param channelName the channel name
 	 * @return True if the connected server has declared the ability to receive a packet on the specified channel.
 	 * False if the client is not in game.
-	 * @see #canSend(PacketType)
 	 */
 	public static boolean canSend(Identifier channelName) throws IllegalArgumentException {
 		// You cant send without a client player, so this is fine
@@ -350,7 +338,6 @@ public final class ClientPlayNetworking {
 	 * @param channelName the channel of the packet
 	 * @param buf the payload of the packet
 	 * @throws IllegalStateException if the client is not connected to a server
-	 * @see #send(PacketType, FabricPacket)
 	 */
 	public static void send(Identifier channelName, PacketByteBuf buf) throws IllegalStateException {
 		// You cant send without a client player, so this is fine
@@ -382,7 +369,6 @@ public final class ClientPlayNetworking {
 	}
 
 	@FunctionalInterface
-	@Deprecated
 	public interface PlayChannelHandler {
 		/**
 		 * Handles an incoming packet.
@@ -405,9 +391,7 @@ public final class ClientPlayNetworking {
 		 * @param handler the network handler that received this packet
 		 * @param buf the payload of the packet
 		 * @param responseSender the packet sender
-		 * @deprecated Use {@link PlayPacketHandler} instead.
 		 */
-		@Deprecated
 		void receive(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender);
 	}
 
