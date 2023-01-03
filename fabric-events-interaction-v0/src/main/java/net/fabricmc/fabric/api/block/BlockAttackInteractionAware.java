@@ -23,9 +23,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+
 /**
  * Convenience interface for blocks which listen to "break interactions" (left-click).
+ *
+ * @deprecated Use {@link AttackBlockCallback} instead and check for the block.
+ * This gives more control over the different cancellation outcomes.
  */
+@Deprecated
 public interface BlockAttackInteractionAware {
 	/**
 	 * @return True if the block accepted the player and it should no longer be processed.

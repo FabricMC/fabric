@@ -26,6 +26,9 @@
       "net.fabricmc.fabric.test.object.builder.CriterionRegistryTest::init",
       "net.fabricmc.fabric.test.object.builder.VillagerTypeTest1",
       "net.fabricmc.fabric.test.object.builder.VillagerTypeTest2"
+    ],
+    "fabric-gametest": [
+      "net.fabricmc.fabric.test.object.builder.ObjectBuilderGameTest"
     ]
   }
 }

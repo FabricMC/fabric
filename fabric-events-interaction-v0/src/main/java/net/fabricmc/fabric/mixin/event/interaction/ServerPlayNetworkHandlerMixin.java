@@ -57,4 +57,16 @@ public abstract class ServerPlayNetworkHandlerMixin implements PlayerInteractEnt
 			info.cancel();
 		}
 	}
+
+	@Inject(method = "interact(Lnet/minecraft/util/Hand;)V", at = @At(value = "HEAD"), cancellable = true)
+	public void onPlayerInteractEntity(Hand hand, CallbackInfo info) {
+		PlayerEntity player = field_28963.player;
+		World world = player.getEntityWorld();
+
+		ActionResult result = UseEntityCallback.EVENT.invoker().interact(player, world, hand, field_28962, null);
+
+		if (result != ActionResult.PASS) {
+			info.cancel();
+		}
+	}
 }
