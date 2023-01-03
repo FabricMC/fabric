@@ -16,12 +16,20 @@
 
 package net.fabricmc.fabric.api.resource.conditions.v1;
 
+import java.util.Arrays;
+import java.util.function.Function;
+
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.resource.featuretoggle.FeatureFlag;
@@ -44,6 +52,7 @@ public final class DefaultResourceConditions {
 	private static final Identifier ITEM_TAGS_POPULATED = new Identifier("fabric:item_tags_populated");
 	private static final Identifier TAGS_POPULATED = new Identifier("fabric:tags_populated");
 	private static final Identifier FEATURES_ENABLED = new Identifier("fabric:features_enabled");
+	private static final Identifier REGISTRY_CONTAINS = new Identifier("fabric:registry_contains");
 
 	/**
 	 * Creates a NOT condition that returns true if its child condition is false, and false if its child is true.
@@ -159,6 +168,54 @@ public final class DefaultResourceConditions {
 		return ResourceConditionsImpl.featuresEnabled(FEATURES_ENABLED, features);
 	}
 
+	/**
+	 * Creates a condition that returns true if all the passed items are loaded.
+	 *
+	 * @see #registryContains(RegistryKey, Identifier...)
+	 */
+	public static ConditionJsonProvider itemsLoaded(ItemConvertible... items) {
+		return registryContains(Registries.ITEM, transform(items, ItemConvertible::asItem));
+	}
+
+	/**
+	 * Creates a condition that returns true if the registry contains all the passed entries,
+	 * i.e. if all the passed registry entries are loaded.
+	 *
+	 * @see #registryContains(RegistryKey, Identifier...)
+	 */
+	@SafeVarargs
+	public static <T> ConditionJsonProvider registryContains(Registry<T> registry, T... entries) {
+		return registryContains(transform(entries, e -> {
+			return registry.getKey(e).orElseThrow(() -> new IllegalArgumentException("Entry is not registered"));
+		}));
+	}
+
+	/**
+	 * Creates a condition that returns true if all the passed registry entries are loaded.
+	 *
+	 * @see #registryContains(RegistryKey, Identifier...)
+	 */
+	@SafeVarargs
+	public static <T> ConditionJsonProvider registryContains(RegistryKey<T>... entries) {
+		Preconditions.checkArgument(entries.length > 0, "Must register at least one entry.");
+
+		return registryContains(
+				RegistryKey.ofRegistry(entries[0].getRegistry()),
+				transform(entries, RegistryKey::getValue));
+	}
+
+	/**
+	 * Creates a condition that returns true if all the passed registry entries are loaded.
+	 * Dynamic registries are supported for server resources.
+	 *
+	 * @apiNote This condition's ID is {@code fabric:registry_contains}, and takes up to two properties:
+	 * {@code values}, which is an array of string registry entry IDs, and {@code registry}, which is the ID of
+	 * the registry of the entries. If {@code registry} is not provided, it defaults to {@code minecraft:item}.
+	 */
+	public static <T> ConditionJsonProvider registryContains(RegistryKey<Registry<T>> registry, Identifier... entries) {
+		return ResourceConditionsImpl.registryContains(REGISTRY_CONTAINS, registry.getValue(), entries);
+	}
+
 	static void init() {
 		// init static
 	}
@@ -183,6 +240,19 @@ public final class DefaultResourceConditions {
 		ResourceConditions.register(ITEM_TAGS_POPULATED, object -> ResourceConditionsImpl.tagsPopulatedMatch(object, RegistryKeys.ITEM));
 		ResourceConditions.register(TAGS_POPULATED, ResourceConditionsImpl::tagsPopulatedMatch);
 		ResourceConditions.register(FEATURES_ENABLED, ResourceConditionsImpl::featuresEnabledMatch);
+		ResourceConditions.register(REGISTRY_CONTAINS, ResourceConditionsImpl::registryContainsMatch);
+	}
+
+	// Slightly gross - the empty outputType vararg is used to capture the correct type for B[]
+	@SafeVarargs
+	private static <A, B> B[] transform(A[] input, Function<A, B> mapper, B... outputType) {
+		B[] output = Arrays.copyOf(outputType, input.length);
+
+		for (int i = 0; i < input.length; i++) {
+			output[i] = mapper.apply(input[i]);
+		}
+
+		return output;
 	}
 
 	private DefaultResourceConditions() {
