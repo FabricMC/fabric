@@ -98,9 +98,9 @@ public final class ClientPlayNetworking {
 			public void receive(MinecraftClient client, ClientPlayNetworkHandler networkHandler, PacketByteBuf buf, PacketSender sender) {
 				T packet = type.read(buf);
 
-				if (handler.processOnNetworkThread(client.player, packet, sender)) {
+				if (handler.processOnNetworkThread(client, client.player, packet, sender)) {
 					client.execute(() -> {
-						if (networkHandler.getConnection().isOpen()) handler.receive(client.player, packet, sender);
+						if (networkHandler.getConnection().isOpen()) handler.receive(client, client.player, packet, sender);
 					});
 				}
 			}
@@ -207,9 +207,9 @@ public final class ClientPlayNetworking {
 			public void receive(MinecraftClient client, ClientPlayNetworkHandler networkHandler, PacketByteBuf buf, PacketSender sender) {
 				T packet = type.read(buf);
 
-				if (handler.processOnNetworkThread(client.player, packet, sender)) {
+				if (handler.processOnNetworkThread(client, client.player, packet, sender)) {
 					client.execute(() -> {
-						if (networkHandler.getConnection().isOpen()) handler.receive(client.player, packet, sender);
+						if (networkHandler.getConnection().isOpen()) handler.receive(client, client.player, packet, sender);
 					});
 				}
 			}
@@ -444,9 +444,9 @@ public final class ClientPlayNetworking {
 		 * @param responseSender the packet sender
 		 * @see FabricPacket
 		 */
-		void receive(ClientPlayerEntity player, T packet, PacketSender responseSender);
+		void receive(MinecraftClient client, ClientPlayerEntity player, T packet, PacketSender responseSender);
 
-		default boolean processOnNetworkThread(ClientPlayerEntity player, T packet, PacketSender responseSender) {
+		default boolean processOnNetworkThread(MinecraftClient client, ClientPlayerEntity player, T packet, PacketSender responseSender) {
 			return true;
 		}
 	}
