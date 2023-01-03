@@ -28,6 +28,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.thread.ThreadExecutor;
 
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -53,6 +54,9 @@ public final class ClientPlayNetworking {
 	 * Registers a handler to a channel.
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
+	 * <p>The handler runs on the network thread. After reading the buffer there, rendering
+	 * must be performed in the render thread by calling {@link ThreadExecutor#execute(Runnable)}.
+	 *
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
 	 * Use {@link #unregisterGlobalReceiver(Identifier)} to unregister the existing handler.
 	 *
@@ -66,6 +70,19 @@ public final class ClientPlayNetworking {
 		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(channelName, channelHandler);
 	}
 
+	/**
+	 * Registers a handler for a packet type.
+	 * A global receiver is registered to all connections, in the present and future.
+	 *
+	 * <p>If a handler is already registered for the {@code type}, this method will return {@code false}, and no change will be made.
+	 * Use {@link #unregisterGlobalReceiver(PacketType)} to unregister the existing handler.
+	 *
+	 * @param type the packet type
+	 * @param handler the handler
+	 * @return false if a handler is already registered to the channel
+	 * @see ClientPlayNetworking#unregisterGlobalReceiver(PacketType)
+	 * @see ClientPlayNetworking#registerReceiver(PacketType, PlayPacketHandler)
+	 */
 	public static <T extends FabricPacket> boolean registerGlobalReceiver(PacketType<T> type, PlayPacketHandler<T> handler) {
 		return registerGlobalReceiver(type.getId(), new PlayChannelHandlerProxy<T>() {
 			@Override
@@ -102,6 +119,18 @@ public final class ClientPlayNetworking {
 		return ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(channelName);
 	}
 
+	/**
+	 * Removes the handler for a packet type.
+	 * A global receiver is registered to all connections, in the present and future.
+	 *
+	 * <p>The {@code type} is guaranteed not to have an associated handler after this call.
+	 *
+	 * @param type the packet type
+	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
+	 * or it was not registered using {@link #registerGlobalReceiver(PacketType, PlayPacketHandler)}
+	 * @see ClientPlayNetworking#registerGlobalReceiver(PacketType, PlayPacketHandler)
+	 * @see ClientPlayNetworking#unregisterReceiver(PacketType)
+	 */
 	@Nullable
 	@SuppressWarnings("unchecked")
 	public static <T extends FabricPacket> PlayPacketHandler<T> unregisterGlobalReceiver(PacketType<T> type) {
@@ -143,6 +172,21 @@ public final class ClientPlayNetworking {
 		throw new IllegalStateException("Cannot register receiver while not in game!");
 	}
 
+	/**
+	 * Registers a handler for a packet type.
+	 *
+	 * <p>If a handler is already registered for the {@code type}, this method will return {@code false}, and no change will be made.
+	 * Use {@link #unregisterReceiver(PacketType)} to unregister the existing handler.
+	 *
+	 * <p>For example, if you only register a receiver using this method when a {@linkplain ClientLoginNetworking#registerGlobalReceiver(Identifier, ClientLoginNetworking.LoginQueryRequestHandler)}
+	 * login query has been received, you should use {@link ClientPlayConnectionEvents#INIT} to register the channel handler.
+	 *
+	 * @param type the packet type
+	 * @param handler the handler
+	 * @return {@code false} if a handler is already registered for the type
+	 * @throws IllegalStateException if the client is not connected to a server
+	 * @see ClientPlayConnectionEvents#INIT
+	 */
 	public static <T extends FabricPacket> boolean registerReceiver(PacketType<T> type, PlayPacketHandler<T> handler) {
 		return registerReceiver(type.getId(), new PlayChannelHandlerProxy<T>() {
 			@Override
@@ -183,6 +227,16 @@ public final class ClientPlayNetworking {
 		throw new IllegalStateException("Cannot unregister receiver while not in game!");
 	}
 
+	/**
+	 * Removes the handler for a packet type.
+	 *
+	 * <p>The {@code type} is guaranteed not to have an associated handler after this call.
+	 *
+	 * @param type the packet type
+	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
+	 * or it was not registered using {@link #registerReceiver(PacketType, PlayPacketHandler)}
+	 * @throws IllegalStateException if the client is not connected to a server
+	 */
 	@Nullable
 	@SuppressWarnings("unchecked")
 	public static <T extends FabricPacket> PlayPacketHandler<T> unregisterReceiver(PacketType<T> type) {
@@ -238,6 +292,13 @@ public final class ClientPlayNetworking {
 		return false;
 	}
 
+	/**
+	 * Checks if the connected server declared the ability to receive a packet on a specified channel name.
+	 * This returns {@code false} if the client is not in game.
+	 *
+	 * @param type the packet type
+	 * @return {@code true} if the connected server has declared the ability to receive a packet on the specified channel
+	 */
 	public static boolean canSend(PacketType<?> type) {
 		return canSend(type.getId());
 	}
@@ -288,6 +349,13 @@ public final class ClientPlayNetworking {
 		throw new IllegalStateException("Cannot send packets when not in game!");
 	}
 
+	/**
+	 * Sends a packet to the connected server.
+	 *
+	 * @param type the packet type
+	 * @param packet the packet
+	 * @throws IllegalStateException if the client is not connected to a server
+	 */
 	public static <T extends FabricPacket> void send(PacketType<T> type, T packet) {
 		Objects.requireNonNull(type, "Packet type cannot be null");
 		Objects.requireNonNull(packet, "Packet cannot be null");
@@ -327,12 +395,39 @@ public final class ClientPlayNetworking {
 		void receive(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender);
 	}
 
+	/**
+	 * An internal packet handler that works as a proxy between old and new API.
+	 * @param <T> the type of the packet
+	 */
 	interface PlayChannelHandlerProxy<T extends FabricPacket> extends PlayChannelHandler {
 		PlayPacketHandler<T> getOriginalHandler();
 	}
 
+	/**
+	 * A thread-safe packet handler utilizing {@link FabricPacket}.
+	 * @param <T> the type of the packet
+	 */
 	@FunctionalInterface
 	public interface PlayPacketHandler<T extends FabricPacket> {
+		/**
+		 * Handles the incoming packet. This is called on the render thread, and can safely
+		 * call rendering-related methods.
+		 *
+		 * <p>An example usage of this is to display an overlay message:
+		 * <pre>{@code
+		 * // See FabricPacket for creating the packet
+		 * ClientPlayNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (player, packet, responseSender) -&rt; {
+		 * 	MinecraftClient.getInstance().inGameHud.setOverlayMessage(packet.message(), true);
+		 * });
+		 * }</pre>
+		 *
+		 * <p>The network handler can be accessed via {@link ClientPlayerEntity#networkHandler}.
+		 *
+		 * @param player the player that received the packet
+		 * @param packet the packet
+		 * @param responseSender the packet sender
+		 * @see FabricPacket
+		 */
 		void receive(ClientPlayerEntity player, T packet, PacketSender responseSender);
 
 		default boolean processOnNetworkThread(ClientPlayerEntity player, T packet, PacketSender responseSender) {

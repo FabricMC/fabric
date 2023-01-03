@@ -23,6 +23,17 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
+/**
+ * A type of packet. An instance of this should be created per a {@link FabricPacket} implementation.
+ * This holds the channel ID used for the packet.
+ *
+ * <p>Example of creating a packet type:
+ * <pre>{@code
+ * public static final PacketType<BoomPacket> TYPE = PacketType.create(new Identifier("example:boom"), BoomPacket::new);
+ * }</pre>
+ *
+ * @param <T> the type of the packet
+ */
 public final class PacketType<T extends FabricPacket> {
 	private final Identifier id;
 	private final Function<PacketByteBuf, T> constructor;
@@ -32,10 +43,21 @@ public final class PacketType<T extends FabricPacket> {
 		this.constructor = constructor;
 	}
 
+	/**
+	 * Creates a new packet type.
+	 * @param id the channel ID used for the packets
+	 * @param constructor the reader that reads the received buffer
+	 * @return the newly created type
+	 * @param <P> the type of the packet
+	 */
 	public static <P extends FabricPacket> PacketType<P> create(Identifier id, Function<PacketByteBuf, P> constructor) {
 		return new PacketType<>(id, constructor);
 	}
 
+	/**
+	 * Returns the identifier of the channel used to send the packet.
+	 * @return the identifier of the associated channel.
+	 */
 	public Identifier getId() {
 		return id;
 	}
