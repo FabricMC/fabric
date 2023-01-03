@@ -47,8 +47,8 @@ public final class PacketType<T extends FabricPacket> {
 	 * Creates a new packet type.
 	 * @param id the channel ID used for the packets
 	 * @param constructor the reader that reads the received buffer
-	 * @return the newly created type
 	 * @param <P> the type of the packet
+	 * @return the newly created type
 	 */
 	public static <P extends FabricPacket> PacketType<P> create(Identifier id, Function<PacketByteBuf, P> constructor) {
 		return new PacketType<>(id, constructor);
