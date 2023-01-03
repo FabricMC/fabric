@@ -1,0 +1,56 @@
+import java.nio.file.Files
+
+for (def sourceSet in [sourceSets.main, sourceSets.client]) {
+	// We have to capture the source set name for the lazy string literals,
+	// otherwise it'll just be whatever the last source set is in the list.
+	def sourceSetName = sourceSet.name
+	def taskName = sourceSet.getTaskName('validate', 'Annotations')
+	def task = tasks.register(taskName, ValidateAnnotations) {
+		group = 'fabric'
+		description = "Validate annotations for $sourceSetName packages."
+
+		// Only apply to default source directory since there's also generated package-info files.
+		sourceRoot = file("src/$sourceSetName/java")
+	}
+	tasks.check.dependsOn task
+}
+
+import static groovy.io.FileType.FILES
+
+class ValidateAnnotations extends SourceTask {
+	private static final def API_STATUS_INTERNAL = ~/@ApiStatus\.Internal/
+	private static final def ENVIRONMENT = ~/@Environment/
+
+	@SkipWhenEmpty
+	@InputDirectory
+	final DirectoryProperty sourceRoot = project.objects.directoryProperty()
+
+	@TaskAction
+	def run() {
+		def root = sourceRoot.get().asFile.toPath()
+
+		for (def dir in ['api', 'impl', 'mixin']) {
+			def subDir = root.resolve("net/fabricmc/fabric/$dir")
+
+			if (Files.notExists(subDir)) {
+				continue
+			}
+
+			subDir.eachFileRecurse(FILES) {
+				def contents = it.text
+
+				// @Environment is never allowed
+				if (ENVIRONMENT.matcher(contents).find()) {
+					throw new RuntimeException("Found @Environment annotation in file: $it")
+				}
+
+				// @ApiStatus.Internal is only allowed in api packages (it's auto-generated for impl packages)
+				if (dir != "api") {
+					if (API_STATUS_INTERNAL.matcher(contents).find()) {
+						throw new RuntimeException("Found @ApiStatus.Internal in implementation file: " + it)
+					}
+				}
+			}
+		}
+	}
+}
