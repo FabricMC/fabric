@@ -52,6 +52,16 @@ loom {
 
 test.dependsOn runDatagen
 
+task datapackZip(type: Zip, dependsOn: runDatagen) {
+	archiveFileName = "${archivesBaseName}-${version}-test-datapack.zip"
+	destinationDirectory = layout.buildDirectory.dir('libs')
+
+	from file("src/testmod/generated")
+	from file("pack.mcmeta")
+}
+
+build.dependsOn datapackZip
+
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
