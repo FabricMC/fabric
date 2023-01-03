@@ -53,7 +53,7 @@ loom {
 test.dependsOn runDatagen
 
 task datapackZip(type: Zip, dependsOn: runDatagen) {
-	archiveFileName = "${archivesBaseName}-${version}-test-datapack.zip"
+	archiveFileName = "${archivesBaseName}-${project.version}-test-datapack.zip"
 	destinationDirectory = layout.buildDirectory.dir('libs')
 
 	from file("src/testmod/generated")
