@@ -1,17 +1,13 @@
-for (def sourceSet in [sourceSets.main, sourceSets.client]) {
-	// We have to capture the source set name for the lazy string literals,
-	// otherwise it'll just be whatever the last source set is in the list.
-	def sourceSetName = sourceSet.name
-	def taskName = sourceSet.getTaskName('validate', 'Annotations')
-	def task = tasks.register(taskName, ValidateAnnotations) {
-		group = 'fabric'
-		description = "Validate annotations for $sourceSetName packages."
+task validateAnnotations(type: ValidateAnnotations) {
+	group = 'fabric'
+	description = "Validate annotations used in Fabric API code."
 
-		// Only apply to default source directory since there's also generated package-info files.
-		setSource file("src/$sourceSetName/java")
-	}
-	tasks.check.dependsOn task
+	// Only apply to default source directories since there's also generated package-info files.
+	source file("src/client/java")
+	source file("src/main/java")
 }
+
+tasks.check.dependsOn validateAnnotations
 
 class ValidateAnnotations extends SourceTask {
 	private static final def API_STATUS_INTERNAL = ~/@ApiStatus\.Internal/
