@@ -18,8 +18,6 @@ package net.fabricmc.fabric.api.networking.v1;
 
 import java.util.function.Function;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
@@ -62,7 +60,11 @@ public final class PacketType<T extends FabricPacket> {
 		return id;
 	}
 
-	@ApiStatus.Internal
+	/**
+	 * Constructs this packet.
+	 * @param buf the buffer
+	 * @return the packet
+	 */
 	public T read(PacketByteBuf buf) {
 		try {
 			return this.constructor.apply(buf);
