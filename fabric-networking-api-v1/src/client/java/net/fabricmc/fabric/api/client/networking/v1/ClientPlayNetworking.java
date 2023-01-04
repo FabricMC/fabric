@@ -46,8 +46,8 @@ import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
  *
  * <p>This class should be only used on the physical client and for the logical client.
  *
- * <p>See {@link ServerPlayNetworking} for information on how to use the new packet-object
- * based API.
+ * <p>See {@link ServerPlayNetworking} for information on how to use the packet
+ * object-based API.
  *
  * @see ClientLoginNetworking
  * @see ServerPlayNetworking
@@ -289,7 +289,7 @@ public final class ClientPlayNetworking {
 	 * Checks if the connected server declared the ability to receive a packet on a specified channel name.
 	 *
 	 * @param channelName the channel name
-	 * @return True if the connected server has declared the ability to receive a packet on the specified channel.
+	 * @return {@code true} if the connected server has declared the ability to receive a packet on the specified channel.
 	 * False if the client is not in game.
 	 */
 	public static boolean canSend(Identifier channelName) throws IllegalArgumentException {
@@ -387,11 +387,11 @@ public final class ClientPlayNetworking {
 		 *
 		 * <p>An example usage of this is to display an overlay message:
 		 * <pre>{@code
-		 * ClientPlayNetworking.registerReceiver(new Identifier("mymod", "overlay"), (client, handler, buf, responseSender) -&rt; {
+		 * ClientPlayNetworking.registerReceiver(new Identifier("mymod", "overlay"), (client, handler, buf, responseSender) -> {
 		 * 	String message = buf.readString(32767);
 		 *
 		 * 	// All operations on the server or world must be executed on the server thread
-		 * 	client.execute(() -&rt; {
+		 * 	client.execute(() -> {
 		 * 		client.inGameHud.setOverlayMessage(message, true);
 		 * 	});
 		 * });
@@ -408,7 +408,7 @@ public final class ClientPlayNetworking {
 	 * An internal packet handler that works as a proxy between old and new API.
 	 * @param <T> the type of the packet
 	 */
-	interface PlayChannelHandlerProxy<T extends FabricPacket> extends PlayChannelHandler {
+	private interface PlayChannelHandlerProxy<T extends FabricPacket> extends PlayChannelHandler {
 		PlayPacketHandler<T> getOriginalHandler();
 	}
 
@@ -425,13 +425,14 @@ public final class ClientPlayNetworking {
 		 * <p>An example usage of this is to display an overlay message:
 		 * <pre>{@code
 		 * // See FabricPacket for creating the packet
-		 * ClientPlayNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (player, packet, responseSender) -&rt; {
+		 * ClientPlayNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (player, packet, responseSender) -> {
 		 * 	MinecraftClient.getInstance().inGameHud.setOverlayMessage(packet.message(), true);
 		 * });
 		 * }</pre>
 		 *
 		 * <p>The network handler can be accessed via {@link ClientPlayerEntity#networkHandler}.
 		 *
+		 * @param client the client
 		 * @param player the player that received the packet
 		 * @param packet the packet
 		 * @param responseSender the packet sender
@@ -439,6 +440,18 @@ public final class ClientPlayNetworking {
 		 */
 		void receive(MinecraftClient client, ClientPlayerEntity player, T packet, PacketSender responseSender);
 
+		/**
+		 * Processes an incoming packet. This is called on the network thread.
+		 * If this method returns {@code false}, {@link #receive} is not called.
+		 * This is for advanced users only; for normal uses, {@link #receive} should be
+		 * implemented instead.
+		 *
+		 * @param client the client
+		 * @param player the player that received the packet
+		 * @param packet the packet
+		 * @param responseSender the packet sender
+		 * @return whether to proceed to {@link #receive}
+		 */
 		default boolean processOnNetworkThread(MinecraftClient client, ClientPlayerEntity player, T packet, PacketSender responseSender) {
 			return true;
 		}

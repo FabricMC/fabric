@@ -300,7 +300,7 @@ public final class ServerPlayNetworking {
 	 * Gets all channel names that a connected client declared the ability to receive a packets on.
 	 *
 	 * @param handler the network handler
-	 * @return True if the connected client has declared the ability to receive a packet on the specified channel
+	 * @return {@code true} if the connected client has declared the ability to receive a packet on the specified channel
 	 */
 	public static Set<Identifier> getSendable(ServerPlayNetworkHandler handler) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
@@ -313,7 +313,7 @@ public final class ServerPlayNetworking {
 	 *
 	 * @param player the player
 	 * @param channelName the channel name
-	 * @return True if the connected client has declared the ability to receive a packet on the specified channel
+	 * @return {@code true} if the connected client has declared the ability to receive a packet on the specified channel
 	 */
 	public static boolean canSend(ServerPlayerEntity player, Identifier channelName) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
@@ -339,7 +339,7 @@ public final class ServerPlayNetworking {
 	 *
 	 * @param handler the network handler
 	 * @param channelName the channel name
-	 * @return True if the connected client has declared the ability to receive a packet on the specified channel
+	 * @return {@code true} if the connected client has declared the ability to receive a packet on the specified channel
 	 */
 	public static boolean canSend(ServerPlayNetworkHandler handler, Identifier channelName) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
@@ -353,7 +353,7 @@ public final class ServerPlayNetworking {
 	 *
 	 * @param handler the network handler
 	 * @param type the packet type
-	 * @return True if the connected client has declared the ability to receive a specific type of packet
+	 * @return {@code true} if the connected client has declared the ability to receive a specific type of packet
 	 */
 	public static boolean canSend(ServerPlayNetworkHandler handler, PacketType<?> type) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
@@ -458,11 +458,11 @@ public final class ServerPlayNetworking {
 		 *
 		 * <p>An example usage of this is to create an explosion where the player is looking:
 		 * <pre>{@code
-		 * ServerPlayNetworking.registerReceiver(new Identifier("mymod", "boom"), (server, player, handler, buf, responseSender) -&rt; {
+		 * ServerPlayNetworking.registerReceiver(new Identifier("mymod", "boom"), (server, player, handler, buf, responseSender) -> {
 		 * 	boolean fire = buf.readBoolean();
 		 *
 		 * 	// All operations on the server or world must be executed on the server thread
-		 * 	server.execute(() -&rt; {
+		 * 	server.execute(() -> {
 		 * 		ModPacketHandler.createExplosion(player, fire);
 		 * 	});
 		 * });
@@ -480,7 +480,7 @@ public final class ServerPlayNetworking {
 	 * An internal packet handler that works as a proxy between old and new API.
 	 * @param <T> the type of the packet
 	 */
-	interface PlayChannelHandlerProxy<T extends FabricPacket> extends PlayChannelHandler {
+	private interface PlayChannelHandlerProxy<T extends FabricPacket> extends PlayChannelHandler {
 		PlayPacketHandler<T> getOriginalHandler();
 	}
 
@@ -497,7 +497,7 @@ public final class ServerPlayNetworking {
 		 * <p>An example usage of this is to create an explosion where the player is looking:
 		 * <pre>{@code
 		 * // See FabricPacket for creating the packet
-		 * ServerPlayNetworking.registerReceiver(BOOM_PACKET_TYPE, (player, packet, responseSender) -&rt; {
+		 * ServerPlayNetworking.registerReceiver(BOOM_PACKET_TYPE, (player, packet, responseSender) -> {
 		 * 	ModPacketHandler.createExplosion(player, packet.fire());
 		 * });
 		 * }</pre>
