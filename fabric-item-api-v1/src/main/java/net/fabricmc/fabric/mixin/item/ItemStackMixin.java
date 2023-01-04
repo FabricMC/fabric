@@ -100,4 +100,16 @@ public abstract class ItemStackMixin implements FabricItemStack {
 	public boolean hookIsSuitableFor(Item item, BlockState state) {
 		return item.isSuitableFor((ItemStack) (Object) this, state);
 	}
+
+	/**
+	 * Fix for <a href="https://bugs.mojang.com/projects/MC/issues/MC-258939">MC-258939</a>.
+	 */
+	@Inject(at = @At("HEAD"), method = "updateEmptyState", cancellable = true)
+	private void fabric_fixUpdateEmptyState(CallbackInfo ci) {
+		if ((Object) this == ItemStack.EMPTY) {
+			// Note that ItemStack.EMPTY is still null the first time this is called, hence it will be correctly initialised.
+			// Prevent further changes to the cached empty state.
+			ci.cancel();
+		}
+	}
 }
