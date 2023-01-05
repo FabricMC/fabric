@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.itemgroup;
 
-import org.jetbrains.annotations.ApiStatus;
-
-@ApiStatus.Internal
 public interface CreativeGuiExtensions {
 	void fabric_nextPage();
 

@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.impl.datagen;
 
-import org.jetbrains.annotations.ApiStatus;
-
-@ApiStatus.Internal
 public interface FabricTagBuilder {
 	void fabric_setReplace(boolean replace);
 

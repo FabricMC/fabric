@@ -19,13 +19,11 @@ package net.fabricmc.fabric.impl.itemgroup;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
-import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.util.Identifier;
 
-@ApiStatus.Internal
 public final class MinecraftItemGroups {
 	public static final Identifier BUILDING_BLOCKS_ID = new Identifier("minecraft:building_blocks");
 	public static final Identifier COLOURED_BLOCKS_ID = new Identifier("minecraft:colored_blocks");
