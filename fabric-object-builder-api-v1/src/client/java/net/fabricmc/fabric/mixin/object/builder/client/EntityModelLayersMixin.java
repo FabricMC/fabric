@@ -31,8 +31,8 @@ public class EntityModelLayersMixin {
 	@Inject(method = "createSign", at = @At("HEAD"), cancellable = true)
 	private static void fixSignNamespace(SignType type, CallbackInfoReturnable<EntityModelLayer> cir) {
 		if (type.getName().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
-			Identifier location = new Identifier(type.getName());
-			cir.setReturnValue(new EntityModelLayer(new Identifier(location.getNamespace(), "sign/" + location.getPath()), "main"));
+			Identifier identifier = new Identifier(type.getName());
+			cir.setReturnValue(new EntityModelLayer(new Identifier(identifier.getNamespace(), "sign/" + identifier.getPath()), "main"));
 		}
 	}
 }
