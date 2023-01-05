@@ -36,7 +36,7 @@ public class TexturedRenderLayersMixin {
 
 	@Inject(method = "createSignTextureId", at = @At("HEAD"), cancellable = true)
 	private static void modifyTextureId(SignType type, CallbackInfoReturnable<SpriteIdentifier> cir) {
-		if (type.getName().contains(Identifier.NAMESPACE_SEPARATOR)) {
+		if (type.getName().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
 			Identifier location = new Identifier(type.getName());
 			cir.setReturnValue(new SpriteIdentifier(SIGNS_ATLAS_TEXTURE, new Identifier(location.getNamespace(), "entity/signs/" + location.getPath())));
 		}
