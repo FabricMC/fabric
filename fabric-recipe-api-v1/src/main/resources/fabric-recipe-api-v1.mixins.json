@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.recipe",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ingredient.IngredientMixin",
+    "ingredient.PacketEncoderMixin",
+    "ingredient.ShapelessRecipeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
