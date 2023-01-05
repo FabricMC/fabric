@@ -32,7 +32,7 @@ public abstract class HangingSignEditScreenMixin extends AbstractSignEditScreen 
 	}
 
 	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;<init>(Ljava/lang/String;)V"))
-	private String test(String id) {
+	private String init(String id) {
 		if (signType.getName().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
 			Identifier identifier = new Identifier(signType.getName());
 			return identifier.getNamespace() + ":textures/gui/hanging_signs/" + identifier.getPath() + ".png";
