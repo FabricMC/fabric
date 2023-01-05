@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.transfer.gametests;
 
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ComparatorBlock;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
@@ -34,7 +36,9 @@ import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.test.transfer.mixin.AbstractFurnaceBlockEntityAccessor;
 
@@ -184,5 +188,46 @@ public class VanillaStorageTests {
 		}
 
 		context.complete();
+	}
+
+	/**
+	 * Regression test for <a href="https://github.com/FabricMC/fabric/issues/2810">double chest wrapper only updating modified halves</a>.
+	 */
+	@GameTest(templateName = "fabric-transfer-api-v1-testmod:double_chest_comparators")
+	public void testDoubleChestComparator(TestContext context) {
+		BlockPos chestPos = new BlockPos(2, 2, 2);
+		Storage<ItemVariant> storage = ItemStorage.SIDED.find(context.getWorld(), context.getAbsolutePos(chestPos), Direction.UP);
+		assertTrue(context, storage != null, "Storage must not be null");
+
+		// Insert one item
+		try (Transaction tx = Transaction.openOuter()) {
+			assertTrue(context, storage.insert(ItemVariant.of(Items.DIAMOND), 1, tx) == 1, "Diamond should have been inserted");
+			tx.commit();
+		}
+
+		// Check that an update is queued for every single comparator
+		MutableInt comparatorCount = new MutableInt();
+
+		context.forEachRelativePos(relativePos -> {
+			if (context.getBlockState(relativePos).getBlock() != Blocks.COMPARATOR) {
+				return;
+			}
+
+			comparatorCount.increment();
+
+			if (!context.getWorld().getBlockTickScheduler().isQueued(context.getAbsolutePos(relativePos), Blocks.COMPARATOR)) {
+				throw new GameTestException("Comparator at " + relativePos + " should have an update scheduled");
+			}
+		});
+
+		assertTrue(context, comparatorCount.intValue() == 6, "Expected exactly 6 comparators");
+
+		context.complete();
+	}
+
+	private static void assertTrue(TestContext context, boolean condition, String message) {
+		if (!condition) {
+			context.throwGameTestException(message);
+		}
 	}
 }

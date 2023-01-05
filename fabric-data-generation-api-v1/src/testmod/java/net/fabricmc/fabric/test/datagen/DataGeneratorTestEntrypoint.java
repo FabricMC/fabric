@@ -28,9 +28,6 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +40,7 @@ import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
@@ -50,6 +48,7 @@ import net.minecraft.loot.LootTables;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.TagKey;
@@ -141,7 +140,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			// - 9 undamaged pickaxes should match.
 			// - 1 undamaged pickaxe + 8 damaged pickaxes should match (regardless of the position).
 			// - 1 undamaged renamed pickaxe + 8 damaged pickaxes should match (NBT is not strictly matched here).
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND_BLOCK)
+			ShapelessRecipeJsonBuilder.create(Items.DIAMOND_BLOCK)
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
@@ -160,14 +159,14 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			ItemStack appleWithGoldenName = new ItemStack(Items.APPLE);
 			appleWithGoldenName.setCustomName(Text.literal("Golden Apple"));
 			appleWithGoldenName.setRepairCost(0);
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLDEN_APPLE)
+			ShapelessRecipeJsonBuilder.create(Items.GOLDEN_APPLE)
 					.input(DefaultCustomIngredients.nbt(appleWithGoldenName, true))
 					.criterion("has_apple", conditionsFromItem(Items.APPLE))
 					.offerTo(exporter);
 
 			// Test AND
 			// To test: charcoal should give a torch, but coal should not.
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.TORCH)
+			ShapelessRecipeJsonBuilder.create(Items.TORCH)
 					// charcoal only
 					.input(DefaultCustomIngredients.all(Ingredient.fromTag(ItemTags.COALS), Ingredient.ofItems(Items.CHARCOAL)))
 					.criterion("has_charcoal", conditionsFromItem(Items.CHARCOAL))
@@ -175,7 +174,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 			// Test OR
 			// To test: a golden pickaxe or a golden shovel should give a block of gold.
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLD_BLOCK)
+			ShapelessRecipeJsonBuilder.create(Items.GOLD_BLOCK)
 					.input(DefaultCustomIngredients.any(Ingredient.ofItems(Items.GOLDEN_PICKAXE), Ingredient.ofItems(Items.GOLDEN_SHOVEL)))
 					.criterion("has_pickaxe", conditionsFromItem(Items.GOLDEN_PICKAXE))
 					.criterion("has_shovel", conditionsFromItem(Items.GOLDEN_SHOVEL))
@@ -183,7 +182,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 			// Test difference
 			// To test: only copper, netherite and emerald should match the recipe.
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.BEACON)
+			ShapelessRecipeJsonBuilder.create(Items.BEACON)
 					.input(DefaultCustomIngredients.difference(
 							DefaultCustomIngredients.any(
 									Ingredient.fromTag(ItemTags.BEACON_PAYMENT_ITEMS),
@@ -277,7 +276,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		protected void generateTags() {
 			getOrCreateTagBuilder(BlockTags.FIRE).add(SIMPLE_BLOCK);
-			getOrCreateTagBuilder(BlockTags.ANVIL).setReplace(true).add(SIMPLE_BLOCK, BLOCK_WITHOUT_ITEM);
+			getOrCreateTagBuilder(BlockTags.DIRT).setReplace(true).add(SIMPLE_BLOCK, BLOCK_WITHOUT_ITEM);
 			getOrCreateTagBuilder(BlockTags.ACACIA_LOGS).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
 		}
 	}
@@ -289,7 +288,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void generateTags() {
-			copy(BlockTags.ANVIL, ItemTags.ANVIL);
+			copy(BlockTags.DIRT, ItemTags.DIRT);
 		}
 	}
 

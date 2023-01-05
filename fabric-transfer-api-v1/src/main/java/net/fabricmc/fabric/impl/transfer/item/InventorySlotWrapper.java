@@ -16,11 +16,15 @@
 
 package net.fabricmc.fabric.impl.transfer.item;
 
+import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
+import net.minecraft.block.enums.ChestType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -112,6 +116,15 @@ class InventorySlotWrapper extends SingleStackStorage {
 	public void updateSnapshots(TransactionContext transaction) {
 		storage.markDirtyParticipant.updateSnapshots(transaction);
 		super.updateSnapshots(transaction);
+
+		// For chests: also schedule a markDirty call for the other half
+		if (storage.inventory instanceof ChestBlockEntity chest && chest.getCachedState().get(ChestBlock.CHEST_TYPE) != ChestType.SINGLE) {
+			BlockPos otherChestPos = chest.getPos().offset(ChestBlock.getFacing(chest.getCachedState()));
+
+			if (chest.getWorld().getBlockEntity(otherChestPos) instanceof ChestBlockEntity otherChest) {
+				((InventoryStorageImpl) InventoryStorageImpl.of(otherChest, null)).markDirtyParticipant.updateSnapshots(transaction);
+			}
+		}
 	}
 
 	@Override
