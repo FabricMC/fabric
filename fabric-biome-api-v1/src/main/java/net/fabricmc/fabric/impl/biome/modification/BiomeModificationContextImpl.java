@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -57,7 +57,6 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 
-@ApiStatus.Internal
 public class BiomeModificationContextImpl implements BiomeModificationContext {
 	private final DynamicRegistryManager registries;
 	private final RegistryKey<Biome> biomeKey;
@@ -304,7 +303,11 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		@Override
 		public boolean removeCarver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
 			ConfiguredCarver<?> carver = carvers.getOrThrow(configuredCarverKey);
-			List<RegistryEntry<ConfiguredCarver<?>>> genCarvers = new ArrayList<>(generationSettings.carvers.get(step).stream().toList());
+			RegistryEntryList<ConfiguredCarver<?>> carvers = generationSettings.carvers.get(step);
+
+			if (carvers == null) return false;
+
+			List<RegistryEntry<ConfiguredCarver<?>>> genCarvers = new ArrayList<>(carvers.stream().toList());
 
 			if (genCarvers.removeIf(entry -> entry.value() == carver)) {
 				generationSettings.carvers.put(step, RegistryEntryList.of(genCarvers));
@@ -314,7 +317,9 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			return false;
 		}
 
-		private <T> RegistryEntryList<T> plus(RegistryEntryList<T> values, RegistryEntry<T> entry) {
+		private <T> RegistryEntryList<T> plus(@Nullable RegistryEntryList<T> values, RegistryEntry<T> entry) {
+			if (values == null) return RegistryEntryList.of(entry);
+
 			List<RegistryEntry<T>> list = new ArrayList<>(values.stream().toList());
 			list.add(entry);
 			return RegistryEntryList.of(list);

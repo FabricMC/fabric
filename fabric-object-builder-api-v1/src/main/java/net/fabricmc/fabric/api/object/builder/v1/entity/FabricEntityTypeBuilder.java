@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableSet;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -271,7 +272,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @param <T> Entity class.
 	 */
 	public static class Living<T extends LivingEntity> extends FabricEntityTypeBuilder<T> {
-		/* @Nullable */
+		@Nullable
 		private Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder;
 
 		protected Living(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {

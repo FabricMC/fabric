@@ -1,0 +1,10 @@
+archivesBaseName = "fabric-recipe-api-v1"
+version = getSubprojectVersion(project)
+
+loom {
+	accessWidenerPath = file('src/main/resources/fabric-recipe-api-v1.accesswidener')
+}
+
+moduleDependencies(project, [
+		"fabric-networking-api-v1",
+])

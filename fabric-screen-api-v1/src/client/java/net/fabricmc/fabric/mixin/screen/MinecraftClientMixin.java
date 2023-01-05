@@ -34,7 +34,9 @@ import net.fabricmc.loader.api.FabricLoader;
 
 @Mixin(MinecraftClient.class)
 abstract class MinecraftClientMixin {
+	@Unique
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-screen-api-v1");
+	@Unique
 	private static final boolean DEBUG_SCREEN = FabricLoader.getInstance().isDevelopmentEnvironment() || Boolean.getBoolean("fabric.debugScreen");
 
 	@Shadow

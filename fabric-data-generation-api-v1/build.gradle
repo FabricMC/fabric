@@ -6,7 +6,8 @@ moduleDependencies(project, [
 		'fabric-registry-sync-v0',
 		'fabric-networking-api-v1',
 		'fabric-resource-conditions-api-v1',
-		'fabric-item-groups-v0'
+		'fabric-item-groups-v0',
+		'fabric-recipe-api-v1',
 ])
 
 dependencies {

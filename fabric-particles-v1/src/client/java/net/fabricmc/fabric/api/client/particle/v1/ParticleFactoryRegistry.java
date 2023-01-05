@@ -44,7 +44,7 @@ public interface ParticleFactoryRegistry {
 	 *
 	 * <p>The factory method will be called with a sprite provider to use for that particle when it comes time.
 	 *
-	 * <p>Particle sprites will be loaded from domain:/particles/particle_name.json as per vanilla minecraft behaviour.
+	 * <p>Particle sprites will be loaded from domain:/particles/particle_name.json as per vanilla minecraft behavior.
 	 */
 	<T extends ParticleEffect> void register(ParticleType<T> type, PendingParticleFactory<T> constructor);
 
@@ -58,7 +58,7 @@ public interface ParticleFactoryRegistry {
 		/**
 		 * Called to create a new particle factory.
 		 *
-		 * <p>Particle sprites will be loaded from domain:/particles/particle_name.json as per vanilla minecraft behaviour.
+		 * <p>Particle sprites will be loaded from domain:/particles/particle_name.json as per vanilla minecraft behavior.
 		 *
 		 * @param provider The sprite provider used to supply sprite textures when drawing the mod's particle.
 		 *

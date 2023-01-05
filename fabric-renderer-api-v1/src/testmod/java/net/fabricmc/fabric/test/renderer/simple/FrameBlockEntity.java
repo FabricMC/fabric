@@ -22,14 +22,14 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
-import net.fabricmc.fabric.api.util.NbtType;
 import net.fabricmc.fabric.test.renderer.WorldRenderExtensions;
 
 public final class FrameBlockEntity extends BlockEntity implements RenderAttachmentBlockEntity {
@@ -44,7 +44,7 @@ public final class FrameBlockEntity extends BlockEntity implements RenderAttachm
 	public void readNbt(NbtCompound tag) {
 		super.readNbt(tag);
 
-		if (tag.contains("block", NbtType.STRING)) {
+		if (tag.contains("block", NbtElement.STRING_TYPE)) {
 			this.block = Registry.BLOCK.get(new Identifier(tag.getString("block")));
 		} else {
 			this.block = null;

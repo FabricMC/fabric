@@ -20,6 +20,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.Packet;
@@ -41,6 +44,8 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	private final ClientPlayNetworkHandler handler;
 	private final MinecraftClient client;
 	private boolean sentInitialRegisterPacket;
+
+	private static final Logger LOGGER = LogUtils.getLogger();
 
 	public ClientPlayNetworkAddon(ClientPlayNetworkHandler handler, MinecraftClient client) {
 		super(ClientNetworkingImpl.PLAY, handler.getConnection(), "ClientPlayNetworkAddon for " + handler.getProfile().getName());
@@ -64,7 +69,11 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	public void onServerReady() {
-		ClientPlayConnectionEvents.JOIN.invoker().onPlayReady(this.handler, this, this.client);
+		try {
+			ClientPlayConnectionEvents.JOIN.invoker().onPlayReady(this.handler, this, this.client);
+		} catch (RuntimeException e) {
+			LOGGER.error("Exception thrown while invoking ClientPlayConnectionEvents.JOIN", e);
+		}
 
 		// The client cannot send any packets, including `minecraft:register` until after GameJoinS2CPacket is received.
 		this.sendInitialChannelRegistrationPacket();

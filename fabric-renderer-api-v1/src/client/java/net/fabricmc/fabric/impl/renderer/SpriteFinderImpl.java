@@ -19,6 +19,9 @@ package net.fabricmc.fabric.impl.renderer;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -37,8 +40,11 @@ import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
  * a fixed cell size.
  */
 public class SpriteFinderImpl implements SpriteFinder {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SpriteFinderImpl.class);
+
 	private final Node root;
 	private final SpriteAtlasTexture spriteAtlasTexture;
+	private int badSpriteCount = 0;
 
 	public SpriteFinderImpl(Map<Identifier, Sprite> sprites, SpriteAtlasTexture spriteAtlasTexture) {
 		root = new Node(0.5f, 0.5f, 0.25f);
@@ -82,6 +88,17 @@ public class SpriteFinderImpl implements SpriteFinder {
 		static final float EPS = 0.00001f;
 
 		void add(Sprite sprite) {
+			if (sprite.getMinU() < 0 - EPS || sprite.getMaxU() > 1 + EPS || sprite.getMinV() < 0 - EPS || sprite.getMaxV() > 1 + EPS) {
+				// Sprite has broken bounds. This SHOULD NOT happen, but in the past some mods have broken this.
+				// Prefer failing with a log warning rather than risking a stack overflow.
+				if (badSpriteCount++ < 5) {
+					String errorMessage = "SpriteFinderImpl: Skipping sprite {} with broken bounds [{}, {}]x[{}, {}]. Sprite bounds should be between 0 and 1.";
+					LOGGER.error(errorMessage, sprite.getId(), sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
+				}
+
+				return;
+			}
+
 			final boolean lowU = sprite.getMinU() < midU - EPS;
 			final boolean highU = sprite.getMaxU() > midU + EPS;
 			final boolean lowV = sprite.getMinV() < midV - EPS;

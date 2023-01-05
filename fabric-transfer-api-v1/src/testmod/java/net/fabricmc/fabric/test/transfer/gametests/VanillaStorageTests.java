@@ -16,10 +16,15 @@
 
 package net.fabricmc.fabric.test.transfer.gametests;
 
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ComparatorBlock;
+import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.FurnaceBlockEntity;
+import net.minecraft.block.entity.ShulkerBoxBlockEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.test.GameTest;
@@ -31,7 +36,9 @@ import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.test.transfer.mixin.AbstractFurnaceBlockEntityAccessor;
 
@@ -118,5 +125,109 @@ public class VanillaStorageTests {
 		}
 
 		context.complete();
+	}
+
+	/**
+	 * Tests that shulker boxes cannot be inserted into other shulker boxes.
+	 */
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void testShulkerNoInsert(TestContext context) {
+		BlockPos pos = new BlockPos(0, 2, 0);
+		context.setBlockState(pos, Blocks.SHULKER_BOX);
+		ShulkerBoxBlockEntity shulker = (ShulkerBoxBlockEntity) context.getBlockEntity(pos);
+		InventoryStorage storage = InventoryStorage.of(shulker, null);
+
+		if (storage.simulateInsert(ItemVariant.of(Items.SHULKER_BOX), 1, null) > 0) {
+			context.throwPositionedException("Expected shulker box to be rejected", pos);
+		}
+
+		context.complete();
+	}
+
+	/**
+	 * {@link Inventory#isValid(int, ItemStack)} is supposed to be independent of the stack size.
+	 * However, to limit some stackable inputs to a size of 1, brewing stands and furnaces don't follow this rule in all cases.
+	 * This test ensures that the Transfer API works around this issue for furnaces.
+	 */
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void testBadFurnaceIsValid(TestContext context) {
+		BlockPos pos = new BlockPos(0, 1, 0);
+		context.setBlockState(pos, Blocks.FURNACE.getDefaultState());
+		FurnaceBlockEntity furnace = (FurnaceBlockEntity) context.getBlockEntity(pos);
+		InventoryStorage furnaceWrapper = InventoryStorage.of(furnace, null);
+
+		try (Transaction tx = Transaction.openOuter()) {
+			if (furnaceWrapper.getSlot(1).insert(ItemVariant.of(Items.BUCKET), 2, tx) != 1) {
+				throw new GameTestException("Exactly 1 bucket should have been inserted");
+			}
+		}
+
+		context.complete();
+	}
+
+	/**
+	 * Same as {@link #testBadFurnaceIsValid(TestContext)}, but for brewing stands.
+	 */
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void testBadBrewingStandIsValid(TestContext context) {
+		BlockPos pos = new BlockPos(0, 1, 0);
+		context.setBlockState(pos, Blocks.BREWING_STAND.getDefaultState());
+		BrewingStandBlockEntity brewingStand = (BrewingStandBlockEntity) context.getBlockEntity(pos);
+		InventoryStorage brewingStandWrapper = InventoryStorage.of(brewingStand, null);
+
+		try (Transaction tx = Transaction.openOuter()) {
+			for (int bottleSlot = 0; bottleSlot < 3; ++bottleSlot) {
+				if (brewingStandWrapper.getSlot(bottleSlot).insert(ItemVariant.of(Items.GLASS_BOTTLE), 2, tx) != 1) {
+					throw new GameTestException("Exactly 1 glass bottle should have been inserted");
+				}
+			}
+
+			if (brewingStandWrapper.getSlot(3).insert(ItemVariant.of(Items.REDSTONE), 2, tx) != 2) {
+				throw new GameTestException("Brewing ingredient insertion should not be limited");
+			}
+		}
+
+		context.complete();
+	}
+
+	/**
+	 * Regression test for <a href="https://github.com/FabricMC/fabric/issues/2810">double chest wrapper only updating modified halves</a>.
+	 */
+	@GameTest(templateName = "fabric-transfer-api-v1-testmod:double_chest_comparators")
+	public void testDoubleChestComparator(TestContext context) {
+		BlockPos chestPos = new BlockPos(2, 2, 2);
+		Storage<ItemVariant> storage = ItemStorage.SIDED.find(context.getWorld(), context.getAbsolutePos(chestPos), Direction.UP);
+		assertTrue(context, storage != null, "Storage must not be null");
+
+		// Insert one item
+		try (Transaction tx = Transaction.openOuter()) {
+			assertTrue(context, storage.insert(ItemVariant.of(Items.DIAMOND), 1, tx) == 1, "Diamond should have been inserted");
+			tx.commit();
+		}
+
+		// Check that an update is queued for every single comparator
+		MutableInt comparatorCount = new MutableInt();
+
+		context.forEachRelativePos(relativePos -> {
+			if (context.getBlockState(relativePos).getBlock() != Blocks.COMPARATOR) {
+				return;
+			}
+
+			comparatorCount.increment();
+
+			if (!context.getWorld().getBlockTickScheduler().isQueued(context.getAbsolutePos(relativePos), Blocks.COMPARATOR)) {
+				throw new GameTestException("Comparator at " + relativePos + " should have an update scheduled");
+			}
+		});
+
+		assertTrue(context, comparatorCount.intValue() == 6, "Expected exactly 6 comparators");
+
+		context.complete();
+	}
+
+	private static void assertTrue(TestContext context, boolean condition, String message) {
+		if (!condition) {
+			context.throwGameTestException(message);
+		}
 	}
 }

@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.entity.event",
+  "package": "net.fabricmc.fabric.mixin.client.entity.event",
   "compatibilityLevel": "JAVA_16",
   "client": [
     "elytra.ClientPlayerEntityMixin"

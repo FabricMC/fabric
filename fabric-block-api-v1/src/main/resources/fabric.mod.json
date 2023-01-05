@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-block-api-v1",
+  "name": "Fabric Block API (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-block-api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.9"
+  },
+  "entrypoints": {
+  },
+  "description": "Hooks for blocks",
+  "mixins": [
+    "fabric-block-api-v1.mixins.json"
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable",
+    "loom:injected_interfaces": {
+      "net/minecraft/class_2248": ["net/fabricmc/fabric/api/block/v1/FabricBlock"],
+      "net/minecraft/class_2680": ["net/fabricmc/fabric/api/block/v1/FabricBlockState"]
+    }
+  }
+}

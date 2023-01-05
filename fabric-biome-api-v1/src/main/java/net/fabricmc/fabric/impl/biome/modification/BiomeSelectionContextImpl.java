@@ -18,8 +18,6 @@ package net.fabricmc.fabric.impl.biome.modification;
 
 import java.util.Optional;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
@@ -34,7 +32,6 @@ import net.minecraft.world.level.LevelProperties;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 
-@ApiStatus.Internal
 public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	private final DynamicRegistryManager dynamicRegistries;
 	private final LevelProperties levelProperties;

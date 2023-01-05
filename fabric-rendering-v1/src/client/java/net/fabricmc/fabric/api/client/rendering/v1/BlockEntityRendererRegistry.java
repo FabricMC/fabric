@@ -28,7 +28,12 @@ import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl
 
 /**
  * Helper class for registering BlockEntityRenderers.
+ *
+ * <p>Use {@link net.minecraft.client.render.block.entity.BlockEntityRendererFactories#register(BlockEntityType, BlockEntityRendererFactory)} instead.
+ *
+ * @deprecated Replaced with transitive access wideners in Fabric Transitive Access Wideners (v1).
  */
+@Deprecated
 @Environment(EnvType.CLIENT)
 public final class BlockEntityRendererRegistry {
 	/**

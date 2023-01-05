@@ -50,7 +50,7 @@ class FluidItemTests {
 		testSimpleContentsQuery();
 
 		// Ensure this doesn't throw an error due to the empty stack.
-		assertEquals(null, ContainerItemContext.withInitial(ItemStack.EMPTY).find(FluidStorage.ITEM));
+		assertEquals(null, ContainerItemContext.withConstant(ItemStack.EMPTY).find(FluidStorage.ITEM));
 	}
 
 	private static void testFluidItemApi() {
@@ -154,10 +154,10 @@ class FluidItemTests {
 		if (PotionUtil.getPotion(testInventory.getStack(0)) != Potions.WATER) throw new AssertionError("Expected water potion.");
 
 		// Try to empty from water potion
-		Storage<FluidVariant> waterBottleStroage = new InventoryContainerItem(testInventory, 0).find(FluidStorage.ITEM);
+		Storage<FluidVariant> waterBottleStorage = new InventoryContainerItem(testInventory, 0).find(FluidStorage.ITEM);
 
 		try (Transaction transaction = Transaction.openOuter()) {
-			if (waterBottleStroage.extract(water, Long.MAX_VALUE, transaction) != BOTTLE) throw new AssertionError("Failed to extract.");
+			if (waterBottleStorage.extract(water, Long.MAX_VALUE, transaction) != BOTTLE) throw new AssertionError("Failed to extract.");
 			transaction.commit();
 		}
 
@@ -174,7 +174,7 @@ class FluidItemTests {
 		assertEquals(
 				new ResourceAmount<>(FluidVariant.of(Fluids.WATER), BUCKET),
 				StorageUtil.findExtractableContent(
-						ContainerItemContext.withInitial(new ItemStack(Items.WATER_BUCKET)).find(FluidStorage.ITEM),
+						ContainerItemContext.withConstant(new ItemStack(Items.WATER_BUCKET)).find(FluidStorage.ITEM),
 						null
 				)
 		);
@@ -182,7 +182,7 @@ class FluidItemTests {
 		assertEquals(
 				null,
 				StorageUtil.findExtractableContent(
-						ContainerItemContext.withInitial(new ItemStack(Items.WATER_BUCKET)).find(FluidStorage.ITEM),
+						ContainerItemContext.withConstant(new ItemStack(Items.WATER_BUCKET)).find(FluidStorage.ITEM),
 						FluidVariant::hasNbt, // Only allow NBT -> won't match anything.
 						null
 				)

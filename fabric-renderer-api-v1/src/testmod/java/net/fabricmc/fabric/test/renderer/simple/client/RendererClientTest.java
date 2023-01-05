@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.test.renderer.simple.client;
 
+import static net.fabricmc.fabric.test.renderer.simple.RendererTest.id;
+
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
@@ -28,9 +31,17 @@ public final class RendererClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ModelLoadingRegistry.INSTANCE.registerResourceProvider(manager -> new FrameModelResourceProvider());
+		ModelLoadingRegistry.INSTANCE.registerVariantProvider(manager -> new PillarModelVariantProvider());
 
 		for (FrameBlock frameBlock : RendererTest.FRAMES) {
+			// We don't specify a material for the frame mesh,
+			// so it will use the default material, i.e. the one from BlockRenderLayerMap.
 			BlockRenderLayerMap.INSTANCE.putBlock(frameBlock, RenderLayer.getCutoutMipped());
+
+			String itemPath = Registry.ITEM.getId(frameBlock.asItem()).getPath();
+			FrameModelResourceProvider.FRAME_MODELS.add(id("item/" + itemPath));
 		}
+
+		FrameModelResourceProvider.FRAME_MODELS.add(id("block/frame"));
 	}
 }

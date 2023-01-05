@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.event.interaction.client;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -42,16 +43,13 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 
 @Mixin(ClientPlayerInteractionManager.class)
@@ -67,6 +65,18 @@ public abstract class ClientPlayerInteractionManagerMixin {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "attackBlock", cancellable = true)
 	public void attackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
+		fabric_fireAttackBlockCallback(pos, direction, info);
+	}
+
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "updateBlockBreakingProgress", cancellable = true)
+	public void method_2902(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
+		if (gameMode.isCreative()) {
+			fabric_fireAttackBlockCallback(pos, direction, info);
+		}
+	}
+
+	@Unique
+	private void fabric_fireAttackBlockCallback(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
 		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(client.player, client.world, Hand.MAIN_HAND, pos, direction);
 
 		if (result != ActionResult.PASS) {
@@ -77,20 +87,6 @@ public abstract class ClientPlayerInteractionManagerMixin {
 			if (result.isAccepted()) {
 				sendSequencedPacket(client.world, id -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction, id));
 			}
-		}
-	}
-
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "updateBlockBreakingProgress", cancellable = true)
-	public void method_2902(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
-		if (!gameMode.isCreative()) {
-			return;
-		}
-
-		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(client.player, client.world, Hand.MAIN_HAND, pos, direction);
-
-		if (result != ActionResult.PASS) {
-			// Returning true will spawn particles and trigger the animation of the hand -> only for SUCCESS.
-			info.setReturnValue(result == ActionResult.SUCCESS);
 		}
 	}
 
@@ -141,20 +137,6 @@ public abstract class ClientPlayerInteractionManagerMixin {
 			}
 
 			info.cancel();
-		}
-	}
-
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 0), method = "interactEntityAtLocation", cancellable = true)
-	public void interactEntityAtLocation(PlayerEntity player, Entity entity, EntityHitResult hitResult, Hand hand, CallbackInfoReturnable<ActionResult> info) {
-		ActionResult result = UseEntityCallback.EVENT.invoker().interact(player, player.getEntityWorld(), hand, entity, hitResult);
-
-		if (result != ActionResult.PASS) {
-			if (result == ActionResult.SUCCESS) {
-				Vec3d hitVec = hitResult.getPos().subtract(entity.getX(), entity.getY(), entity.getZ());
-				this.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.interactAt(entity, player.isSneaking(), hand, hitVec));
-			}
-
-			info.setReturnValue(result);
 		}
 	}
 

@@ -16,7 +16,15 @@
 
 package net.fabricmc.fabric.impl.transfer.item;
 
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.block.entity.BrewingStandBlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.block.entity.ShulkerBoxBlockEntity;
+import net.minecraft.block.enums.ChestType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -65,15 +73,41 @@ class InventorySlotWrapper extends SingleStackStorage {
 
 	@Override
 	public long insert(ItemVariant insertedVariant, long maxAmount, TransactionContext transaction) {
-		if (!storage.inventory.isValid(slot, ((ItemVariantImpl) insertedVariant).getCachedStack())) {
+		if (!canInsert(slot, ((ItemVariantImpl) insertedVariant).getCachedStack())) {
 			return 0;
 		} else {
 			return super.insert(insertedVariant, maxAmount, transaction);
 		}
 	}
 
+	private boolean canInsert(int slot, ItemStack stack) {
+		if (storage.inventory instanceof ShulkerBoxBlockEntity shulker) {
+			// Shulkers override canInsert but not isValid.
+			return shulker.canInsert(slot, stack, null);
+		} else {
+			return storage.inventory.isValid(slot, stack);
+		}
+	}
+
+	/**
+	 * Special cases because vanilla checks the current stack in the following functions (which it shouldn't):
+	 * <ul>
+	 *     <li>{@link AbstractFurnaceBlockEntity#isValid(int, ItemStack)}.</li>
+	 *     <li>{@link BrewingStandBlockEntity#isValid(int, ItemStack)}.</li>
+	 * </ul>
+	 */
 	@Override
 	public int getCapacity(ItemVariant variant) {
+		// Special case to limit buckets to 1 in furnace fuel inputs.
+		if (storage.inventory instanceof AbstractFurnaceBlockEntity && slot == 1 && variant.isOf(Items.BUCKET)) {
+			return 1;
+		}
+
+		// Special case to limit brewing stand "bottle inputs" to 1.
+		if (storage.inventory instanceof BrewingStandBlockEntity && slot < 3) {
+			return 1;
+		}
+
 		return Math.min(storage.inventory.getMaxCountPerStack(), variant.getItem().getMaxCount());
 	}
 
@@ -82,6 +116,15 @@ class InventorySlotWrapper extends SingleStackStorage {
 	public void updateSnapshots(TransactionContext transaction) {
 		storage.markDirtyParticipant.updateSnapshots(transaction);
 		super.updateSnapshots(transaction);
+
+		// For chests: also schedule a markDirty call for the other half
+		if (storage.inventory instanceof ChestBlockEntity chest && chest.getCachedState().get(ChestBlock.CHEST_TYPE) != ChestType.SINGLE) {
+			BlockPos otherChestPos = chest.getPos().offset(ChestBlock.getFacing(chest.getCachedState()));
+
+			if (chest.getWorld().getBlockEntity(otherChestPos) instanceof ChestBlockEntity otherChest) {
+				((InventoryStorageImpl) InventoryStorageImpl.of(otherChest, null)).markDirtyParticipant.updateSnapshots(transaction);
+			}
+		}
 	}
 
 	@Override
