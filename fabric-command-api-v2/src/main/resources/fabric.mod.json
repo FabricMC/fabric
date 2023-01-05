@@ -30,6 +30,9 @@
     }
   ],
   "custom": {
-    "fabric-api:module-lifecycle": "stable"
+    "fabric-api:module-lifecycle": "stable",
+    "loom:injected_interfaces": {
+      "net/minecraft/class_2303": ["net/fabricmc/fabric/api/command/v2/FabricEntitySelectorReader"]
+    }
   }
 }
