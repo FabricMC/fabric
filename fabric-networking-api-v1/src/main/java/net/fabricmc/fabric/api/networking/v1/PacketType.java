@@ -25,12 +25,8 @@ import net.minecraft.util.Identifier;
  * A type of packet. An instance of this should be created per a {@link FabricPacket} implementation.
  * This holds the channel ID used for the packet.
  *
- * <p>Example of creating a packet type:
- * <pre>{@code
- * public static final PacketType<BoomPacket> TYPE = PacketType.create(new Identifier("example:boom"), BoomPacket::new);
- * }</pre>
- *
  * @param <T> the type of the packet
+ * @see FabricPacket
  */
 public final class PacketType<T extends FabricPacket> {
 	private final Identifier id;
@@ -61,7 +57,7 @@ public final class PacketType<T extends FabricPacket> {
 	}
 
 	/**
-	 * Constructs this packet.
+	 * Reads the packet from the buffer.
 	 * @param buf the buffer
 	 * @return the packet
 	 */

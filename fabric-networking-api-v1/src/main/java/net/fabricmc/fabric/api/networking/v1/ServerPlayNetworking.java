@@ -419,17 +419,16 @@ public final class ServerPlayNetworking {
 	 * Sends a packet to a player.
 	 *
 	 * @param player the player to send the packet to
-	 * @param type the packet type
 	 * @param packet the packet
 	 */
-	public static <T extends FabricPacket> void send(ServerPlayerEntity player, PacketType<T> type, T packet) {
+	public static <T extends FabricPacket> void send(ServerPlayerEntity player, T packet) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
-		Objects.requireNonNull(type, "Packet type cannot be null");
 		Objects.requireNonNull(packet, "Packet cannot be null");
+		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
 
 		PacketByteBuf buf = PacketByteBufs.create();
 		packet.write(buf);
-		player.networkHandler.sendPacket(createS2CPacket(type.getId(), buf));
+		player.networkHandler.sendPacket(createS2CPacket(packet.getType().getId(), buf));
 	}
 
 	// Helper methods

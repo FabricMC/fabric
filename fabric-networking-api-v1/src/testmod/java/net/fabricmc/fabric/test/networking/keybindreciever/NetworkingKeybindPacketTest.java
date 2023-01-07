@@ -34,7 +34,6 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 // In response the server will send a message containing the keybind text letting the client know it pressed that key.
 public final class NetworkingKeybindPacketTest implements ModInitializer {
 	public static final Identifier KEYBINDING_PACKET_ID = NetworkingTestmods.id("keybind_press_test");
-	public static final PacketType<KeybindPacket> PACKET_TYPE = PacketType.create(KEYBINDING_PACKET_ID, KeybindPacket::new);
 
 	private static void receive(ServerPlayerEntity player, KeybindPacket packet, PacketSender responseSender) {
 		player.sendMessage(Text.literal("So you pressed ").append(Text.keybind("fabric-networking-api-v1-testmod-keybind").styled(style -> style.withFormatting(Formatting.BLUE))), false);
@@ -43,17 +42,24 @@ public final class NetworkingKeybindPacketTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ServerPlayConnectionEvents.INIT.register((handler, server) -> {
-			ServerPlayNetworking.registerReceiver(handler, PACKET_TYPE, NetworkingKeybindPacketTest::receive);
+			ServerPlayNetworking.registerReceiver(handler, KeybindPacket.PACKET_TYPE, NetworkingKeybindPacketTest::receive);
 		});
 	}
 
 	public record KeybindPacket() implements FabricPacket {
+		public static final PacketType<KeybindPacket> PACKET_TYPE = PacketType.create(KEYBINDING_PACKET_ID, KeybindPacket::new);
+
 		public KeybindPacket(PacketByteBuf buf) {
 			this();
 		}
 
 		@Override
 		public void write(PacketByteBuf buf) {
+		}
+
+		@Override
+		public PacketType<?> getType() {
+			return PACKET_TYPE;
 		}
 	}
 }

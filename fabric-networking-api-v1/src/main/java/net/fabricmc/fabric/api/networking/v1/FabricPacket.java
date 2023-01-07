@@ -31,17 +31,26 @@ import net.minecraft.server.network.ServerPlayerEntity;
  * and reads the packet.
  *
  * <p>For each packet class, a corresponding {@link PacketType} instance should be created.
+ * The type should be stored in a {@code static final} field, and {@link #getType} should
+ * return that type.
  *
  * <p>Example of a packet:
  * <pre>{@code
  * public record BoomPacket(boolean fire) implements FabricPacket {
+ * 	public static final PacketType<BoomPacket> TYPE = PacketType.create(new Identifier("example:boom"), BoomPacket::new);
+ *
  * 	public BoomPacket(PacketByteBuf buf) {
- * 	    this(buf.readBoolean());
+ * 		this(buf.readBoolean());
  * 	}
  *
  * 	@Override
  * 	public void write(PacketByteBuf buf) {
- * 	    buf.writeBoolean(this.fire);
+ * 		buf.writeBoolean(this.fire);
+ * 	}
+ *
+ * 	@Override
+ * 	public PacketType<?> getType() {
+ * 		return TYPE;
  * 	}
  * }
  * }</pre>
@@ -56,4 +65,14 @@ public interface FabricPacket {
 	 * @param buf the output buffer
 	 */
 	void write(PacketByteBuf buf);
+
+	/**
+	 * Returns the packet type of this packet.
+	 *
+	 * <p>Implementations should store the packet type instance in a {@code static final}
+	 * field and return that here, instead of creating a new instance.
+	 *
+	 * @return the type of this packet
+	 */
+	PacketType<?> getType();
 }

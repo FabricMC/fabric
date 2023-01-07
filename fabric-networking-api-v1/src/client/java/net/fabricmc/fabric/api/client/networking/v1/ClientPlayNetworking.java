@@ -361,17 +361,16 @@ public final class ClientPlayNetworking {
 	/**
 	 * Sends a packet to the connected server.
 	 *
-	 * @param type the packet type
 	 * @param packet the packet
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
-	public static <T extends FabricPacket> void send(PacketType<T> type, T packet) {
-		Objects.requireNonNull(type, "Packet type cannot be null");
+	public static <T extends FabricPacket> void send(T packet) {
 		Objects.requireNonNull(packet, "Packet cannot be null");
+		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
 
 		PacketByteBuf buf = PacketByteBufs.create();
 		packet.write(buf);
-		send(type.getId(), buf);
+		send(packet.getType().getId(), buf);
 	}
 
 	private ClientPlayNetworking() {

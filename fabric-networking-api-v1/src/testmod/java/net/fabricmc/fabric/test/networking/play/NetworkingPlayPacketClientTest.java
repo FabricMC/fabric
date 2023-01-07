@@ -28,7 +28,7 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 	@Override
 	public void onInitializeClient() {
 		ClientPlayConnectionEvents.INIT.register((handler, client) -> {
-			ClientPlayNetworking.registerReceiver(NetworkingPlayPacketTest.PACKET_TYPE, this::receive);
+			ClientPlayNetworking.registerReceiver(NetworkingPlayPacketTest.OverlayPacket.PACKET_TYPE, this::receive);
 		});
 	}
 

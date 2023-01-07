@@ -39,10 +39,9 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
 public final class NetworkingPlayPacketTest implements ModInitializer {
 	public static final Identifier TEST_CHANNEL = NetworkingTestmods.id("test_channel");
-	public static final PacketType<OverlayPacket> PACKET_TYPE = PacketType.create(TEST_CHANNEL, OverlayPacket::new);
 
 	public static void sendToTestChannel(ServerPlayerEntity player, String stuff) {
-		ServerPlayNetworking.send(player, PACKET_TYPE, new OverlayPacket(Text.literal(stuff)));
+		ServerPlayNetworking.send(player, new OverlayPacket(Text.literal(stuff)));
 		NetworkingTestmods.LOGGER.info("Sent custom payload packet in {}", TEST_CHANNEL);
 	}
 
@@ -66,6 +65,8 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 	}
 
 	public record OverlayPacket(Text message) implements FabricPacket {
+		public static final PacketType<OverlayPacket> PACKET_TYPE = PacketType.create(TEST_CHANNEL, OverlayPacket::new);
+
 		public OverlayPacket(PacketByteBuf buf) {
 			this(buf.readText());
 		}
@@ -73,6 +74,11 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		@Override
 		public void write(PacketByteBuf buf) {
 			buf.writeText(this.message);
+		}
+
+		@Override
+		public PacketType<?> getType() {
+			return PACKET_TYPE;
 		}
 	}
 }
