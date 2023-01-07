@@ -24,11 +24,8 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.DataFixer;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -56,9 +53,6 @@ public abstract class StructureTemplateManagerMixin {
 	@Shadow
 	public abstract StructureTemplate createTemplate(NbtCompound nbt);
 
-	@Unique
-	private final Logger MIXIN_LOGGER = LoggerFactory.getLogger("StructureTemplateManagerMixin");
-
 	private Optional<StructureTemplate> fabric_loadSnbtFromResource(Identifier id) {
 		Identifier path = FabricGameTestHelper.GAMETEST_STRUCTURE_FINDER.toResourcePath(id);
 		Optional<Resource> resource = this.resourceManager.getResource(path);
@@ -69,7 +63,7 @@ public abstract class StructureTemplateManagerMixin {
 				NbtCompound nbt = NbtHelper.fromNbtProviderString(snbt);
 				return Optional.of(this.createTemplate(nbt));
 			} catch (IOException | CommandSyntaxException e) {
-				MIXIN_LOGGER.error("Failed to load GameTest structure {}", id, e);
+				throw new RuntimeException("Failed to load GameTest structure %s".formatted(id), e);
 			}
 		}
 
@@ -83,8 +77,6 @@ public abstract class StructureTemplateManagerMixin {
 
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList$Builder;add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;", ordinal = 2, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
 	private void addFabricTemplateProvider(ResourceManager resourceManager, LevelStorage.Session session, DataFixer dataFixer, RegistryEntryLookup<Block> blockLookup, CallbackInfo ci, ImmutableList.Builder<StructureTemplateManager.Provider> builder) {
-		if (FabricGameTestHelper.ENABLED) {
-			builder.add(new StructureTemplateManager.Provider(this::fabric_loadSnbtFromResource, this::fabric_streamTemplatesFromResource));
-		}
+		builder.add(new StructureTemplateManager.Provider(this::fabric_loadSnbtFromResource, this::fabric_streamTemplatesFromResource));
 	}
 }
