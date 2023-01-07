@@ -19,14 +19,11 @@ package net.fabricmc.fabric.impl.itemgroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 
 import net.fabricmc.fabric.mixin.itemgroup.ItemGroupsAccessor;
 
-@ApiStatus.Internal
 public final class ItemGroupHelper {
 	private ItemGroupHelper() {
 	}

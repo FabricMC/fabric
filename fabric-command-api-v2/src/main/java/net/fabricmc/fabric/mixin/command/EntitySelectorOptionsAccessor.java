@@ -14,10 +14,20 @@
  * limitations under the License.
  */
 
-/**
- * Contains the Registry Sync implementation.
- */
-@ApiStatus.Internal
-package net.fabricmc.fabric.impl.registry.sync;
+package net.fabricmc.fabric.mixin.command;
 
-import org.jetbrains.annotations.ApiStatus;
+import java.util.function.Predicate;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
+
+import net.minecraft.command.EntitySelectorOptions;
+import net.minecraft.command.EntitySelectorReader;
+import net.minecraft.text.Text;
+
+@Mixin(EntitySelectorOptions.class)
+public interface EntitySelectorOptionsAccessor {
+	@Invoker
+	static void callPutOption(String id, EntitySelectorOptions.SelectorHandler handler, Predicate<EntitySelectorReader> condition, Text description) {
+	}
+}

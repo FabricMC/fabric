@@ -19,7 +19,6 @@ package net.fabricmc.fabric.impl.itemgroup;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
@@ -28,7 +27,6 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
-@ApiStatus.Internal
 public class ItemGroupEventsImpl {
 	private static final Map<Identifier, Event<ItemGroupEvents.ModifyEntries>> IDENTIFIER_EVENT_MAP = new HashMap<>();
 

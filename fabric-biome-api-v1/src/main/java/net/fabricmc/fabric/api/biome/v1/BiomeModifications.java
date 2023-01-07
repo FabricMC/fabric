@@ -79,7 +79,7 @@ public final class BiomeModifications {
 
 		// We need the entity type to be registered, or we cannot deduce an ID otherwise
 		Identifier id = Registries.ENTITY_TYPE.getId(entityType);
-		Preconditions.checkState(id != Registries.ENTITY_TYPE.getDefaultId(), "Unregistered entity type: %s", entityType);
+		Preconditions.checkState(Registries.ENTITY_TYPE.getKey(entityType).isPresent(), "Unregistered entity type: %s", entityType);
 
 		create(id).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
 			context.getSpawnSettings().addSpawn(spawnGroup, new SpawnSettings.SpawnEntry(entityType, weight, minGroupSize, maxGroupSize));
