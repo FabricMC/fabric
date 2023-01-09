@@ -19,10 +19,10 @@ package net.fabricmc.fabric.test.registry.sync;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -49,7 +49,7 @@ import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistryPacketHandler;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
 public class RegistrySyncTest implements ModInitializer {
-	private static final Logger LOGGER = LogUtils.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(RegistrySyncTest.class);
 
 	/**
 	 * These are system property's as it allows for easier testing with different run configurations.

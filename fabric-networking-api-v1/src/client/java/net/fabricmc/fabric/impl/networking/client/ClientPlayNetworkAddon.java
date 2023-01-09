@@ -20,8 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -42,7 +42,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	private final MinecraftClient client;
 	private boolean sentInitialRegisterPacket;
 
-	private static final Logger LOGGER = LogUtils.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ClientPlayNetworkAddon.class);
 
 	public ClientPlayNetworkAddon(ClientPlayNetworkHandler handler, MinecraftClient client) {
 		super(ClientNetworkingImpl.PLAY, handler.getConnection(), "ClientPlayNetworkAddon for " + handler.getProfile().getName());

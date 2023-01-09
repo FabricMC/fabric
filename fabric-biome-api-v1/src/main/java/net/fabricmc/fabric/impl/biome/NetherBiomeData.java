@@ -25,12 +25,12 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.registry.RegistryEntryLookup;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
@@ -48,7 +48,7 @@ public final class NetherBiomeData {
 
 	private static final Map<RegistryKey<Biome>, MultiNoiseUtil.NoiseHypercube> NETHER_BIOME_NOISE_POINTS = new HashMap<>();
 
-	private static final Logger LOGGER = LogUtils.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(NetherBiomeData.class);
 
 	private NetherBiomeData() {
 	}
