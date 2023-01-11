@@ -25,10 +25,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -42,6 +42,13 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static Block BLOCK_WITHOUT_LOOT_TABLE;
 	public static Block BLOCK_WITH_VANILLA_LOOT_TABLE;
 	public static Block BLOCK_THAT_DROPS_NOTHING;
+	public static Block BLOCK_WITH_CUSTOM_MODEL_1;
+	public static Block BLOCK_WITH_CUSTOM_MODEL_2;
+	public static Block BLOCK_WITH_EMPTY_MODEL;
+
+	public static Item ITEM_WITH_CUSTOM_MODEL_1;
+	public static Item ITEM_WITH_CUSTOM_MODEL_2;
+	public static Item ITEM_WITH_NORMAL_MODEL;
 
 	public static final ItemGroup SIMPLE_ITEM_GROUP = FabricItemGroup.builder(new Identifier(MOD_ID, "simple"))
 			.icon(() -> new ItemStack(Items.DIAMOND_PICKAXE))
@@ -55,6 +62,13 @@ public class DataGeneratorTestContent implements ModInitializer {
 		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false, AbstractBlock.Settings.of(Material.STONE));
 		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, AbstractBlock.Settings.of(Material.STONE).dropsLike(Blocks.STONE));
 		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, AbstractBlock.Settings.of(Material.STONE).dropsNothing());
+		BLOCK_WITH_CUSTOM_MODEL_1 = createBlock("block_with_custom_model_1", false, AbstractBlock.Settings.of(Material.STONE));
+		BLOCK_WITH_CUSTOM_MODEL_2 = createBlock("block_with_custom_model_2", false, AbstractBlock.Settings.of(Material.STONE));
+		BLOCK_WITH_EMPTY_MODEL = createBlock("block_with_empty_model", false, AbstractBlock.Settings.of(Material.STONE));
+
+		ITEM_WITH_CUSTOM_MODEL_1 = createItem("item_with_custom_model_1");
+		ITEM_WITH_CUSTOM_MODEL_2 = createItem("item_with_custom_model_2");
+		ITEM_WITH_NORMAL_MODEL = createItem("item_with_normal_model");
 
 		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.add(SIMPLE_BLOCK));
 	}
@@ -68,5 +82,10 @@ public class DataGeneratorTestContent implements ModInitializer {
 		}
 
 		return block;
+	}
+
+	private static Item createItem(String name) {
+		Identifier identifier = new Identifier(MOD_ID, name);
+		return Registry.register(Registries.ITEM, identifier, new Item(new Item.Settings()));
 	}
 }
