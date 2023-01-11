@@ -143,12 +143,10 @@ public final class ElementBuilder {
 			element.addProperty("shade", false);
 		}
 
-		JsonArray faces = new JsonArray();
+		JsonObject faces = new JsonObject();
 		this.faces.forEach((f, b) -> {
 			Preconditions.checkArgument(f != null);
-			JsonObject face = new JsonObject();
-			face.add(f.name().toLowerCase(), b.build());
-			faces.add(face);
+			faces.add(f.name().toLowerCase(), b.build());
 		});
 		element.add("faces", faces);
 

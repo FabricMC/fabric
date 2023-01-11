@@ -62,9 +62,9 @@ public class DataGeneratorTestContent implements ModInitializer {
 		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false, AbstractBlock.Settings.of(Material.STONE));
 		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, AbstractBlock.Settings.of(Material.STONE).dropsLike(Blocks.STONE));
 		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, AbstractBlock.Settings.of(Material.STONE).dropsNothing());
-		BLOCK_WITH_CUSTOM_MODEL_1 = createBlock("block_with_custom_model_1", false);
-		BLOCK_WITH_CUSTOM_MODEL_2 = createBlock("block_with_custom_model_2", false);
-		BLOCK_WITH_EMPTY_MODEL = createBlock("block_with_empty_model", false);
+		BLOCK_WITH_CUSTOM_MODEL_1 = createBlock("block_with_custom_model_1", false, AbstractBlock.Settings.of(Material.STONE));
+		BLOCK_WITH_CUSTOM_MODEL_2 = createBlock("block_with_custom_model_2", false, AbstractBlock.Settings.of(Material.STONE));
+		BLOCK_WITH_EMPTY_MODEL = createBlock("block_with_empty_model", false, AbstractBlock.Settings.of(Material.STONE));
 
 		ITEM_WITH_CUSTOM_MODEL_1 = createItem("item_with_custom_model_1");
 		ITEM_WITH_CUSTOM_MODEL_2 = createItem("item_with_custom_model_2");
