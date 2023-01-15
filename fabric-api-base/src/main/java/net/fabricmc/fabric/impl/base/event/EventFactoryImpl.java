@@ -23,8 +23,9 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.function.Function;
 
 import net.minecraft.util.Identifier;
@@ -32,7 +33,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.event.Event;
 
 public final class EventFactoryImpl {
-	private static final List<ArrayBackedEvent<?>> ARRAY_BACKED_EVENTS = new ArrayList<>();
+	private static final Set<ArrayBackedEvent<?>> ARRAY_BACKED_EVENTS = Collections.newSetFromMap(new WeakHashMap<>());
 
 	private EventFactoryImpl() { }
 
