@@ -51,7 +51,7 @@ public class ExampleFabricTestSuite implements FabricGameTest {
 		);
 	}
 
-	@GameTest(templateName = "fabric-gametest-api-v1-testmod:exampletestsuite.diamond")
+	@GameTest(templateName = "fabric-gametest-api-v1-testmod:exampletestsuite.diamond.notfound")
 	public void diamond(TestContext context) {
 		// Nothing to do as the structure placed the block.
 	}
