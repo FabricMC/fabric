@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,9 +34,11 @@ import net.fabricmc.fabric.impl.item.ItemExtensions;
 @Mixin(Item.class)
 abstract class ItemMixin implements ItemExtensions, FabricItem {
 	@Unique
+	@Nullable
 	private EquipmentSlotProvider equipmentSlotProvider;
 
 	@Unique
+	@Nullable
 	private CustomDamageHandler customDamageHandler;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
@@ -44,22 +47,24 @@ abstract class ItemMixin implements ItemExtensions, FabricItem {
 	}
 
 	@Override
+	@Nullable
 	public EquipmentSlotProvider fabric_getEquipmentSlotProvider() {
 		return equipmentSlotProvider;
 	}
 
 	@Override
-	public void fabric_setEquipmentSlotProvider(EquipmentSlotProvider equipmentSlotProvider) {
+	public void fabric_setEquipmentSlotProvider(@Nullable EquipmentSlotProvider equipmentSlotProvider) {
 		this.equipmentSlotProvider = equipmentSlotProvider;
 	}
 
 	@Override
+	@Nullable
 	public CustomDamageHandler fabric_getCustomDamageHandler() {
 		return customDamageHandler;
 	}
 
 	@Override
-	public void fabric_setCustomDamageHandler(CustomDamageHandler handler) {
+	public void fabric_setCustomDamageHandler(@Nullable CustomDamageHandler handler) {
 		this.customDamageHandler = handler;
 	}
 }

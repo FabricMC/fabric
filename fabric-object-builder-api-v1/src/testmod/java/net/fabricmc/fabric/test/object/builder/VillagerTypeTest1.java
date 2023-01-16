@@ -49,12 +49,6 @@ public class VillagerTypeTest1 implements ModInitializer {
 		});
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-			dispatcher.register(literal("fabric_refreshtrades").executes(context -> {
-				TradeOfferHelper.refreshOffers();
-				context.getSource().sendFeedback(Text.literal("Refreshed trades"), false);
-				return 1;
-			}));
-
 			dispatcher.register(literal("fabric_applywandering_trades")
 					.then(argument("entity", entity()).executes(context -> {
 						final Entity entity = getEntity(context, "entity");

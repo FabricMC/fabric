@@ -27,14 +27,14 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.world.World;
 
 import net.fabricmc.api.ModInitializer;
@@ -42,16 +42,16 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 
 public class BlockEntityTypeBuilderTest implements ModInitializer {
 	private static final Identifier INITIAL_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.id("initial_betrayal_block");
-	private static final Block INITIAL_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.BLUE);
+	static final Block INITIAL_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.BLUE);
 
 	private static final Identifier ADDED_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.id("added_betrayal_block");
-	private static final Block ADDED_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.GREEN);
+	static final Block ADDED_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.GREEN);
 
 	private static final Identifier FIRST_MULTI_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.id("first_multi_betrayal_block");
-	private static final Block FIRST_MULTI_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.RED);
+	static final Block FIRST_MULTI_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.RED);
 
 	private static final Identifier SECOND_MULTI_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.id("second_multi_betrayal_block");
-	private static final Block SECOND_MULTI_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.YELLOW);
+	static final Block SECOND_MULTI_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.YELLOW);
 
 	private static final Identifier BLOCK_ENTITY_TYPE_ID = ObjectBuilderTestConstants.id("betrayal_block");
 	public static final BlockEntityType<?> BLOCK_ENTITY_TYPE = FabricBlockEntityTypeBuilder.create(BetrayalBlockEntity::new, INITIAL_BETRAYAL_BLOCK)

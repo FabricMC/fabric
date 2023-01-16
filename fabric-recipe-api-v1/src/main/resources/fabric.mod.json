@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-recipe-api-v1",
+  "name": "Fabric Recipe API (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-recipe-api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "mixins": [
+    "fabric-recipe-api-v1.mixins.json"
+  ],
+  "accessWidener": "fabric-recipe-api-v1.accesswidener",
+  "depends": {
+    "fabricloader": ">=0.14.10",
+    "fabric-networking-api-v1": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientInit",
+      "net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientSync"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.recipe.ingredient.client.CustomIngredientSyncClient"
+    ]
+  },
+  "description": "Recipe extensions such as creation of new types of recipe ingredients.",
+  "custom": {
+    "fabric-api:module-lifecycle": "stable",
+    "loom:injected_interfaces": {
+      "net/minecraft/class_1856": ["net/fabricmc/fabric/api/recipe/v1/ingredient/FabricIngredient"]
+    }
+  }
+}

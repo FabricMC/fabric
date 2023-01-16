@@ -28,17 +28,13 @@ import net.minecraft.client.option.KeyBinding;
 import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
 
 public final class KeyBindingRegistryImpl {
-	private static final List<KeyBinding> moddedKeyBindings = new ReferenceArrayList<>(); // ArrayList with identity based comparisons for contains/remove/indexOf etc., required for correctly handling duplicate keybinds
+	private static final List<KeyBinding> MODDED_KEY_BINDINGS = new ReferenceArrayList<>(); // ArrayList with identity based comparisons for contains/remove/indexOf etc., required for correctly handling duplicate keybinds
 
 	private KeyBindingRegistryImpl() {
 	}
 
 	private static Map<String, Integer> getCategoryMap() {
 		return KeyBindingAccessor.fabric_getCategoryMap();
-	}
-
-	private static boolean hasCategory(String categoryTranslationKey) {
-		return getCategoryMap().containsKey(categoryTranslationKey);
 	}
 
 	public static boolean addCategory(String categoryTranslationKey) {
@@ -55,19 +51,18 @@ public final class KeyBindingRegistryImpl {
 	}
 
 	public static KeyBinding registerKeyBinding(KeyBinding binding) {
-		for (KeyBinding existingKeyBindings : moddedKeyBindings) {
+		for (KeyBinding existingKeyBindings : MODDED_KEY_BINDINGS) {
 			if (existingKeyBindings == binding) {
-				throw null;
+				throw new IllegalArgumentException("Attempted to register a key binding twice: " + binding.getTranslationKey());
 			} else if (existingKeyBindings.getTranslationKey().equals(binding.getTranslationKey())) {
-				throw new RuntimeException("Attempted to register two key bindings with equal ID: " + binding.getTranslationKey() + "!");
+				throw new IllegalArgumentException("Attempted to register two key bindings with equal ID: " + binding.getTranslationKey() + "!");
 			}
 		}
 
-		if (!hasCategory(binding.getCategory())) {
-			addCategory(binding.getCategory());
-		}
-
-		return moddedKeyBindings.add(binding) ? binding : null;
+		// This will do nothing if the category already exists.
+		addCategory(binding.getCategory());
+		MODDED_KEY_BINDINGS.add(binding);
+		return binding;
 	}
 
 	/**
@@ -76,8 +71,8 @@ public final class KeyBindingRegistryImpl {
 	 */
 	public static KeyBinding[] process(KeyBinding[] keysAll) {
 		List<KeyBinding> newKeysAll = Lists.newArrayList(keysAll);
-		newKeysAll.removeAll(moddedKeyBindings);
-		newKeysAll.addAll(moddedKeyBindings);
+		newKeysAll.removeAll(MODDED_KEY_BINDINGS);
+		newKeysAll.addAll(MODDED_KEY_BINDINGS);
 		return newKeysAll.toArray(new KeyBinding[0]);
 	}
 }

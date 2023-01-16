@@ -26,15 +26,19 @@ import com.mojang.brigadier.tree.RootCommandNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.EntitySelectorOptionRegistry;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public final class CommandTest implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandTest.class);
+	static final Identifier SELECTOR_ID = new Identifier("fabric-command-api-v2-testmod", "min_health");
 	private static final SimpleCommandExceptionType WRONG_SIDE_SHOULD_BE_INTEGRATED = new SimpleCommandExceptionType(Text.literal("This command was registered incorrectly. Should only be present on an integrated server but was ran on a dedicated server!"));
 	private static final SimpleCommandExceptionType WRONG_SIDE_SHOULD_BE_DEDICATED = new SimpleCommandExceptionType(Text.literal("This command was registered incorrectly. Should only be present on an dedicated server but was ran on an integrated server!"));
 
@@ -50,7 +54,7 @@ public final class CommandTest implements ModInitializer {
 			}
 
 			if (environment.integrated) {
-				// The command here should only be present on a integrated server
+				// The command here should only be present on an integrated server
 				dispatcher.register(literal("fabric_integrated_test_command").executes(this::executeIntegratedCommand));
 			}
 		});
@@ -95,6 +99,18 @@ public final class CommandTest implements ModInitializer {
 			// Success!
 			CommandTest.LOGGER.info("The command tests have passed! Please make sure you execute the three commands for extra safety.");
 		});
+
+		EntitySelectorOptionRegistry.registerNonRepeatable(
+				SELECTOR_ID,
+				Text.literal("Minimum entity health"),
+				(reader) -> {
+					final float minHealth = reader.getReader().readFloat();
+
+					if (minHealth > 0) {
+						reader.setPredicate((entity) -> entity instanceof LivingEntity livingEntity && livingEntity.getHealth() >= minHealth);
+					}
+				}
+		);
 	}
 
 	private int executeCommonCommand(CommandContext<ServerCommandSource> context) {
