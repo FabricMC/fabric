@@ -42,7 +42,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
 	@ModifyVariable(method = "sendChatMessage", at = @At(value = "LOAD", ordinal = 0), ordinal = 0, argsOnly = true)
 	private String fabric_modifySendChatMessage(String content) {
-		return ClientSendMessageEvents.CHAT.invoker().onSendChatMessage(content);
+		return ClientSendMessageEvents.MODIFY_CHAT.invoker().modifySendChatMessage(content);
 	}
 
 	@Inject(method = "sendChatCommand", at = @At("HEAD"), cancellable = true)
@@ -55,6 +55,6 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
 	@ModifyVariable(method = "sendChatCommand", at = @At(value = "LOAD", ordinal = 0), ordinal = 0, argsOnly = true)
 	private String fabric_modifySendCommandMessage(String command) {
-		return ClientSendMessageEvents.COMMAND.invoker().onSendCommandMessage(command);
+		return ClientSendMessageEvents.MODIFY_COMMAND.invoker().modifySendCommandMessage(command);
 	}
 }

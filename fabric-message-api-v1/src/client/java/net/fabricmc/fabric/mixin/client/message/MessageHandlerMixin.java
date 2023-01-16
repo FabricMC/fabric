@@ -67,7 +67,7 @@ public abstract class MessageHandlerMixin {
 	 * according to {@link net.minecraft.client.network.message.MessageTrustStatus#createIndicator(SignedMessage)
 	 * MessageTrustStatus.createIndicator(SignedMessage)}.
 	 * The {@link MessageIndicator} is only modified with {@link MessageIndicator#modified(String)}
-	 * when the message is modified by a listener registered to {@link ClientReceiveMessageEvents#CHAT}
+	 * when the message is modified by a listener registered to {@link ClientReceiveMessageEvents#MODIFY_CHAT}
 	 * and the message is marked as secure.
 	 */
 	@Redirect(method = "processChatMessageInternal", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V"))
@@ -103,7 +103,7 @@ public abstract class MessageHandlerMixin {
 
 	@Unique
 	private Text fabric_modifyChatMessage(Text message, @Nullable SignedMessage signedMessage, @Nullable GameProfile sender, MessageType.Parameters params, Instant receptionTimestamp) {
-		return ClientReceiveMessageEvents.CHAT.invoker().onReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp);
+		return ClientReceiveMessageEvents.MODIFY_CHAT.invoker().modifyReceivedChatMessage(message, signedMessage, sender, params, receptionTimestamp);
 	}
 
 	@Unique
@@ -121,6 +121,6 @@ public abstract class MessageHandlerMixin {
 
 	@ModifyVariable(method = "onGameMessage", at = @At(value = "LOAD", ordinal = 0), ordinal = 0, argsOnly = true)
 	private Text fabric_modifyGameMessage(Text message, Text message1, boolean overlay) {
-		return ClientReceiveMessageEvents.GAME.invoker().onReceiveGameMessage(message, overlay);
+		return ClientReceiveMessageEvents.MODIFY_GAME.invoker().modifyReceivedGameMessage(message, overlay);
 	}
 }

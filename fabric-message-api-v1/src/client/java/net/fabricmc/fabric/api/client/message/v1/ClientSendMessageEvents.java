@@ -32,7 +32,7 @@ public final class ClientSendMessageEvents {
 	 *
 	 * <p>If a listener returned {@code false}, the message will not be sent,
 	 * the remaining listeners will not be called (if any), and
-	 * {@link #CHAT_CANCELED} will be triggered instead of {@link #CHAT}.
+	 * {@link #CHAT_CANCELED} will be triggered instead of {@link #MODIFY_CHAT}.
 	 */
 	public static final Event<AllowChat> ALLOW_CHAT = EventFactory.createArrayBacked(AllowChat.class, listeners -> (message) -> {
 		for (AllowChat listener : listeners) {
@@ -53,7 +53,7 @@ public final class ClientSendMessageEvents {
 	 *
 	 * <p>If a listener returned {@code false}, the command will not be sent,
 	 * the remaining listeners will not be called (if any), and
-	 * {@link #COMMAND_CANCELED} will be triggered instead of {@link #COMMAND}.
+	 * {@link #COMMAND_CANCELED} will be triggered instead of {@link #MODIFY_COMMAND}.
 	 */
 	public static final Event<AllowCommand> ALLOW_COMMAND = EventFactory.createArrayBacked(AllowCommand.class, listeners -> (command) -> {
 		for (AllowCommand listener : listeners) {
@@ -69,11 +69,12 @@ public final class ClientSendMessageEvents {
 	 * An event triggered when the client sends a chat message,
 	 * typically from a client GUI. Is not called when {@linkplain
 	 * #ALLOW_CHAT chat messages are blocked}.
-	 * Mods can use this to modify the message.
+	 * Mods can use this to listen or modify the message.
+	 * Listeners should return the original {@code message} if the message is not modified.
 	 */
-	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, listeners -> (message) -> {
-		for (Chat listener : listeners) {
-			message = listener.onSendChatMessage(message);
+	public static final Event<ModifyChat> MODIFY_CHAT = EventFactory.createArrayBacked(ModifyChat.class, listeners -> (message) -> {
+		for (ModifyChat listener : listeners) {
+			message = listener.modifySendChatMessage(message);
 		}
 
 		return message;
@@ -85,11 +86,12 @@ public final class ClientSendMessageEvents {
 	 * including client commands registered with {@code fabric-command-api}.
 	 * Is not called when {@linkplain #ALLOW_COMMAND command messages are blocked}.
 	 * The command string does not include a slash at the beginning.
-	 * Mods can use this to modify the command.
+	 * Mods can use this to listen or modify the command.
+	 * Listeners should return the original {@code command} if the command is not modified.
 	 */
-	public static final Event<Command> COMMAND = EventFactory.createArrayBacked(Command.class, listeners -> (command) -> {
-		for (Command listener : listeners) {
-			command = listener.onSendCommandMessage(command);
+	public static final Event<ModifyCommand> MODIFY_COMMAND = EventFactory.createArrayBacked(ModifyCommand.class, listeners -> (command) -> {
+		for (ModifyCommand listener : listeners) {
+			command = listener.modifySendCommandMessage(command);
 		}
 
 		return command;
@@ -120,7 +122,7 @@ public final class ClientSendMessageEvents {
 		 * Called when the client is about to send a chat message,
 		 * typically from a client GUI. Returning {@code false}
 		 * prevents the message from being sent, and
-		 * {@link #CHAT_CANCELED} will be triggered instead of {@link #CHAT}.
+		 * {@link #CHAT_CANCELED} will be triggered instead of {@link #MODIFY_CHAT}.
 		 *
 		 * @param message the message that will be sent to the server
 		 * @return {@code true} if the message should be sent, otherwise {@code false}
@@ -135,7 +137,7 @@ public final class ClientSendMessageEvents {
 		 * which is whenever the player executes a command
 		 * including client commands registered with {@code fabric-command-api}.
 		 * Returning {@code false} prevents the command from being sent, and
-		 * {@link #COMMAND_CANCELED} will be triggered instead of {@link #COMMAND}.
+		 * {@link #COMMAND_CANCELED} will be triggered instead of {@link #MODIFY_COMMAND}.
 		 * The command string does not include a slash at the beginning.
 		 *
 		 * @param command the command that will be sent to the server, without a slash at the beginning.
@@ -145,20 +147,20 @@ public final class ClientSendMessageEvents {
 	}
 
 	@FunctionalInterface
-	public interface Chat {
+	public interface ModifyChat {
 		/**
 		 * Called when the client sends a chat message,
 		 * typically from a client GUI. Is not called when {@linkplain
 		 * #ALLOW_CHAT chat messages are blocked}.
 		 *
 		 * @param message the message that will be sent to the server
-		 * @return the modified message that will be sent to the server
+		 * @return the modified message or the original {@code message} if the message is not modified that will be sent to the server
 		 */
-		String onSendChatMessage(String message);
+		String modifySendChatMessage(String message);
 	}
 
 	@FunctionalInterface
-	public interface Command {
+	public interface ModifyCommand {
 		/**
 		 * Called when the client sends a command,
 		 * which is whenever the player executes a command
@@ -167,9 +169,10 @@ public final class ClientSendMessageEvents {
 		 * The command string does not include a slash at the beginning.
 		 *
 		 * @param command the command that will be sent to the server, without a slash at the beginning.
-		 * @return the modified command that will be sent to the server, without a slash at the beginning.
+		 * @return the modified command or the original {@code command} if the command is not modified
+		 * that will be sent to the server, without a slash at the beginning.
 		 */
-		String onSendCommandMessage(String command);
+		String modifySendCommandMessage(String command);
 	}
 
 	@FunctionalInterface

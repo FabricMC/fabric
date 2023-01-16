@@ -45,7 +45,7 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return true;
 		});
-		ClientSendMessageEvents.CHAT.register((message) -> {
+		ClientSendMessageEvents.MODIFY_CHAT.register((message) -> {
 			if (message.contains("modify send")) {
 				message = "sending modified chat message";
 			}
@@ -63,7 +63,7 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return true;
 		});
-		ClientSendMessageEvents.COMMAND.register((command) -> {
+		ClientSendMessageEvents.MODIFY_COMMAND.register((command) -> {
 			if (command.contains("modify send")) {
 				command = "sending modified command message";
 			}
@@ -81,7 +81,7 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return true;
 		});
-		ClientReceiveMessageEvents.CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
+		ClientReceiveMessageEvents.MODIFY_CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
 			if (message.getString().contains("modify receive")) {
 				message = Text.of("modified receiving chat message");
 			}
@@ -99,7 +99,7 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return true;
 		});
-		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
+		ClientReceiveMessageEvents.MODIFY_GAME.register((message, overlay) -> {
 			if (message.getString().contains("modify receive")) {
 				message = Text.of("modified receiving game message");
 			}
