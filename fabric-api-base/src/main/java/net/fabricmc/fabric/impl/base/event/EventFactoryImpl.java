@@ -25,15 +25,17 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.function.Function;
+
+import com.google.common.collect.MapMaker;
 
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 
 public final class EventFactoryImpl {
-	private static final Set<ArrayBackedEvent<?>> ARRAY_BACKED_EVENTS = Collections.newSetFromMap(new WeakHashMap<>());
+	private static final Set<ArrayBackedEvent<?>> ARRAY_BACKED_EVENTS
+			= Collections.newSetFromMap(new MapMaker().weakKeys().makeMap());
 
 	private EventFactoryImpl() { }
 
