@@ -84,7 +84,7 @@ public final class ModResourcePackUtil {
 		switch (filename) {
 		case "pack.mcmeta":
 			String description = Objects.requireNonNullElse(info.getName(), "");
-			String metadata = serializeMetadata(type.getPackVersion(SharedConstants.getGameVersion()), description);
+			String metadata = serializeMetadata(SharedConstants.getGameVersion().method_48017(type), description);
 			return IOUtils.toInputStream(metadata, Charsets.UTF_8);
 		default:
 			return null;

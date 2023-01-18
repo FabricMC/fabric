@@ -14,18 +14,12 @@ mutable    field net/minecraft/world/biome/source/BiomeSource biomes Ljava/util/
 
 # Top-Level Biome Fields Access
 accessible field net/minecraft/world/biome/Biome weather Lnet/minecraft/world/biome/Biome$Weather;
+mutable field net/minecraft/world/biome/Biome weather Lnet/minecraft/world/biome/Biome$Weather;
 accessible field net/minecraft/world/biome/Biome generationSettings Lnet/minecraft/world/biome/GenerationSettings;
 accessible field net/minecraft/world/biome/Biome spawnSettings Lnet/minecraft/world/biome/SpawnSettings;
 
 # Biome Weather
-accessible field net/minecraft/world/biome/Biome$Weather precipitation Lnet/minecraft/world/biome/Biome$Precipitation;
-mutable field net/minecraft/world/biome/Biome$Weather precipitation Lnet/minecraft/world/biome/Biome$Precipitation;
-accessible field net/minecraft/world/biome/Biome$Weather temperature F
-mutable field net/minecraft/world/biome/Biome$Weather temperature F
-accessible field net/minecraft/world/biome/Biome$Weather temperatureModifier Lnet/minecraft/world/biome/Biome$TemperatureModifier;
-mutable field net/minecraft/world/biome/Biome$Weather temperatureModifier Lnet/minecraft/world/biome/Biome$TemperatureModifier;
-accessible field net/minecraft/world/biome/Biome$Weather downfall F
-mutable field net/minecraft/world/biome/Biome$Weather downfall F
+accessible method net/minecraft/world/biome/Biome$Weather <init> (ZFLnet/minecraft/world/biome/Biome$TemperatureModifier;F)V
 
 # Biome Effects
 accessible field net/minecraft/world/biome/BiomeEffects fogColor I

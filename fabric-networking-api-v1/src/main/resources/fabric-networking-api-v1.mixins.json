@@ -11,6 +11,7 @@
     "accessor.CustomPayloadC2SPacketAccessor",
     "accessor.EntityTrackerAccessor",
     "accessor.LoginQueryResponseC2SPacketAccessor",
+    "accessor.ServerPlayNetworkHandlerAccessor",
     "accessor.ServerLoginNetworkHandlerAccessor",
     "accessor.ThreadedAnvilChunkStorageAccessor"
   ],

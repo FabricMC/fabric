@@ -45,7 +45,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	public ClientPlayNetworkAddon(ClientPlayNetworkHandler handler, MinecraftClient client) {
-		super(ClientNetworkingImpl.PLAY, handler.getConnection(), "ClientPlayNetworkAddon for " + handler.getProfile().getName());
+		super(ClientNetworkingImpl.PLAY, handler.method_48296(), "ClientPlayNetworkAddon for " + handler.getProfile().getName());
 		this.handler = handler;
 		this.client = client;
 

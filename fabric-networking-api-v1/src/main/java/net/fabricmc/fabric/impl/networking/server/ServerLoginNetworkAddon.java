@@ -60,7 +60,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 
 	public ServerLoginNetworkAddon(ServerLoginNetworkHandler handler) {
 		super(ServerNetworkingImpl.LOGIN, "ServerLoginNetworkAddon for " + handler.getConnectionInfo());
-		this.connection = handler.connection;
+		this.connection = ((ServerLoginNetworkHandlerAccessor) handler).getConnection();
 		this.handler = handler;
 		this.server = ((ServerLoginNetworkHandlerAccessor) handler).getServer();
 		this.queryIdFactory = QueryIdFactory.create();

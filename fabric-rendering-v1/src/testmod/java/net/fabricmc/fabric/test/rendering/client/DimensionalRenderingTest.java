@@ -79,7 +79,6 @@ public class DimensionalRenderingTest implements ClientModInitializer {
 		tessellator.draw();
 
 		RenderSystem.depthMask(true);
-		RenderSystem.enableTexture();
 		RenderSystem.disableBlend();
 	}
 

@@ -40,7 +40,7 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 				RegistrySyncManager.receivePacket(client, packetHandler, buf, RegistrySyncManager.DEBUG || !client.isInSingleplayer(), (e) -> {
 					LOGGER.error("Registry remapping failed!", e);
 
-					client.execute(() -> handler.getConnection().disconnect(Text.literal("Registry remapping failed: " + e.getMessage())));
+					client.execute(() -> handler.method_48296().disconnect(Text.literal("Registry remapping failed: " + e.getMessage())));
 				}));
 	}
 }

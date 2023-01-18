@@ -16,30 +16,18 @@
 
 package net.fabricmc.fabric.mixin.entity.event;
 
-import java.util.Set;
-
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Coerce;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.command.TeleportCommand;
-import net.minecraft.server.world.ServerWorld;
-
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 
 @Mixin(TeleportCommand.class)
 abstract class TeleportCommandMixin {
 	/**
 	 * We need to fire the change world event for entities that are teleported using the `/teleport` command.
 	 */
-	@Inject(method = "teleport", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setRemoved(Lnet/minecraft/entity/Entity$RemovalReason;)V"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-	private static void afterEntityTeleportedToWorld(ServerCommandSource source, Entity originalEntity, ServerWorld destination, double x, double y, double z, Set<PlayerPositionLookS2CPacket.Flag> movementFlags, float yaw, float pitch, @Coerce Object facingLocation, CallbackInfo ci, float clampedYaw, float clampedPitch, float h, Entity newEntity) {
-		ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.invoker().afterChangeWorld(originalEntity, newEntity, ((ServerWorld) originalEntity.world), destination);
-	}
+	// TODO 1.19.4 checkme
+//	@Inject(method = "teleport", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setRemoved(Lnet/minecraft/entity/Entity$RemovalReason;)V"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+//	private static void afterEntityTeleportedToWorld(ServerCommandSource source, Entity originalEntity, ServerWorld destination, double x, double y, double z, Set<PlayerPositionLookS2CPacket.Flag> movementFlags, float yaw, float pitch, @Coerce Object facingLocation, CallbackInfo ci, float clampedYaw, float clampedPitch, float h, Entity newEntity) {
+//		ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.invoker().afterChangeWorld(originalEntity, newEntity, ((ServerWorld) originalEntity.world), destination);
+//	}
 }

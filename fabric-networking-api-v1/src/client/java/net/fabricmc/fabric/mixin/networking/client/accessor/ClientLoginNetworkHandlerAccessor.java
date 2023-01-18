@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.networking.accessor;
+package net.fabricmc.fabric.mixin.networking.client.accessor;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerLoginNetworkHandler;
 
-@Mixin(ServerLoginNetworkHandler.class)
-public interface ServerLoginNetworkHandlerAccessor {
-	@Accessor
-	MinecraftServer getServer();
-
+@Mixin(ClientLoginNetworkHandler.class)
+public interface ClientLoginNetworkHandlerAccessor {
 	@Accessor
 	ClientConnection getConnection();
 }
