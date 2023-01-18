@@ -21,6 +21,7 @@ import java.time.Instant;
 import com.mojang.authlib.GameProfile;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.text.Text;
@@ -41,7 +42,7 @@ public final class ClientReceiveMessageEvents {
 	 *
 	 * <p>If a listener returned {@code false}, the message will not be displayed,
 	 * the remaining listeners will not be called (if any), and
-	 * {@link #CHAT_CANCELED} will be triggered instead of {@link #MODIFY_CHAT}.
+	 * {@link #CHAT_CANCELED} will be triggered instead of {@link #CHAT}.
 	 */
 	public static final Event<AllowChat> ALLOW_CHAT = EventFactory.createArrayBacked(AllowChat.class, listeners -> (message, signedMessage, sender, params, receptionTimestamp) -> {
 		for (AllowChat listener : listeners) {
@@ -80,19 +81,15 @@ public final class ClientReceiveMessageEvents {
 	 * An event triggered when the client receives a chat message,
 	 * which is any message sent by a player. Is not called when
 	 * {@linkplain #ALLOW_CHAT chat messages are blocked}.
-	 * Mods can use this to listen or modify the message.
-	 * Listeners should return the original {@code message} if the message is not modified.
+	 * Mods can use this to listen to the message.
 	 *
-	 * <p>Secure chat messages modified with this event will be marked with modified indicator.
-	 * Messages already with the modified indicator or game messages are not affected.
-	 * The unmodified message is used in chat reporting.
+	 * <p>If mods want to modify the message, they should use {@link #ALLOW_CHAT}
+	 * and manually add the new message to the chat hud using {@link ChatHud#addMessage(Text)}
 	 */
-	public static final Event<ModifyChat> MODIFY_CHAT = EventFactory.createArrayBacked(ModifyChat.class, listeners -> (message, signedMessage, sender, params, receptionTimestamp) -> {
-		for (ModifyChat listener : listeners) {
-			message = listener.modifyReceivedChatMessage(message, signedMessage, sender, params, receptionTimestamp);
+	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, listeners -> (message, signedMessage, sender, params, receptionTimestamp) -> {
+		for (Chat listener : listeners) {
+			listener.onReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp);
 		}
-
-		return message;
 	});
 
 	/**
@@ -139,7 +136,7 @@ public final class ClientReceiveMessageEvents {
 		 * Called when the client receives a chat message,
 		 * which is any message sent by a player.
 		 * Returning {@code false} prevents the message from being displayed, and
-		 * {@link #CHAT_CANCELED} will be triggered instead of {@link #MODIFY_CHAT}.
+		 * {@link #CHAT_CANCELED} will be triggered instead of {@link #CHAT}.
 		 *
 		 * @param message            the message received from the server
 		 * @param signedMessage      the signed message received from the server (nullable)
@@ -171,7 +168,7 @@ public final class ClientReceiveMessageEvents {
 	}
 
 	@FunctionalInterface
-	public interface ModifyChat {
+	public interface Chat {
 		/**
 		 * Called when the client receives a chat message,
 		 * which is any message sent by a player. Is not called when
@@ -182,9 +179,8 @@ public final class ClientReceiveMessageEvents {
 		 * @param sender             the sender of the message (nullable)
 		 * @param params             the parameters of the message
 		 * @param receptionTimestamp the timestamp when the message was received
-		 * @return the modified message to display or the original {@code message} if the message is not modified
 		 */
-		Text modifyReceivedChatMessage(Text message, @Nullable SignedMessage signedMessage, @Nullable GameProfile sender, MessageType.Parameters params, Instant receptionTimestamp);
+		void onReceiveChatMessage(Text message, @Nullable SignedMessage signedMessage, @Nullable GameProfile sender, MessageType.Parameters params, Instant receptionTimestamp);
 	}
 
 	@FunctionalInterface
