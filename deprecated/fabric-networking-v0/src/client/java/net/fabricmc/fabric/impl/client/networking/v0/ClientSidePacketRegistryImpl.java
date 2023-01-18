@@ -45,7 +45,7 @@ public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, P
 	@Override
 	public void sendToServer(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			MinecraftClient.getInstance().getNetworkHandler().getConnection().send(packet, GenericFutureListenerHolder.create(completionListener));
+			MinecraftClient.getInstance().getNetworkHandler().method_48296().send(packet, GenericFutureListenerHolder.create(completionListener));
 			return;
 		}
 

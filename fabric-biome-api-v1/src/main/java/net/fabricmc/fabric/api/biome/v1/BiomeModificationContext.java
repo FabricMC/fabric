@@ -69,7 +69,7 @@ public interface BiomeModificationContext {
 		 * @see Biome#getPrecipitation()
 		 * @see Biome.Builder#precipitation(Biome.Precipitation)
 		 */
-		void setPrecipitation(Biome.Precipitation precipitation);
+		void setPrecipitation(boolean hasPrecipitation);
 
 		/**
 		 * @see Biome#getTemperature()

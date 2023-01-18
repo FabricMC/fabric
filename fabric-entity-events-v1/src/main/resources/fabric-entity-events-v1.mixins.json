@@ -9,8 +9,7 @@
     "LivingEntityMixin",
     "PlayerEntityMixin",
     "PlayerManagerMixin",
-    "ServerPlayerEntityMixin",
-    "TeleportCommandMixin"
+    "ServerPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1,

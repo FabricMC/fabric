@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderColor(FFFF)V"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;render(Lnet/minecraft/client/util/math/MatrixStack;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V")))
+	@Inject(method = "render", at = @At(value = "TAIL"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;render(Lnet/minecraft/client/util/math/MatrixStack;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V")))
 	public void render(MatrixStack matrixStack, float tickDelta, CallbackInfo callbackInfo) {
 		HudRenderCallback.EVENT.invoker().onHudRender(matrixStack, tickDelta);
 	}

@@ -104,26 +104,24 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	}
 
 	private class WeatherContextImpl implements WeatherContext {
-		private final Biome.Weather weather = biome.weather;
-
 		@Override
-		public void setPrecipitation(Biome.Precipitation precipitation) {
-			weather.precipitation = Objects.requireNonNull(precipitation);
+		public void setPrecipitation(boolean hasPrecipitation) {
+			biome.weather = new Biome.Weather(hasPrecipitation, biome.weather.temperature(), biome.weather.temperatureModifier(), biome.weather.downfall());
 		}
 
 		@Override
 		public void setTemperature(float temperature) {
-			weather.temperature = temperature;
+			biome.weather = new Biome.Weather(biome.weather.hasPrecipitation(), temperature, biome.weather.temperatureModifier(), biome.weather.downfall());
 		}
 
 		@Override
 		public void setTemperatureModifier(Biome.TemperatureModifier temperatureModifier) {
-			weather.temperatureModifier = Objects.requireNonNull(temperatureModifier);
+			biome.weather = new Biome.Weather(biome.weather.hasPrecipitation(), biome.weather.temperature(), Objects.requireNonNull(temperatureModifier), biome.weather.downfall());
 		}
 
 		@Override
 		public void setDownfall(float downfall) {
-			weather.downfall = downfall;
+			biome.weather = new Biome.Weather(biome.weather.hasPrecipitation(), biome.weather.temperature(), biome.weather.temperatureModifier(), downfall);
 		}
 	}
 

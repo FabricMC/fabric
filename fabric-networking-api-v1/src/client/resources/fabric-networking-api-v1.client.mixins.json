@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.networking.client",
   "compatibilityLevel": "JAVA_16",
   "client": [
+    "accessor.ClientLoginNetworkHandlerAccessor",
     "accessor.ConnectScreenAccessor",
     "accessor.MinecraftClientAccessor",
     "ClientLoginNetworkHandlerMixin",

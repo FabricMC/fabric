@@ -38,6 +38,7 @@ import net.fabricmc.fabric.api.networking.v1.FutureListeners;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
 import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
+import net.fabricmc.fabric.mixin.networking.client.accessor.ClientLoginNetworkHandlerAccessor;
 
 public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLoginNetworking.LoginQueryRequestHandler> {
 	private final ClientLoginNetworkHandler handler;
@@ -89,7 +90,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 					listener = FutureListeners.union(listener, each);
 				}
 
-				this.handler.getConnection().send(packet, GenericFutureListenerHolder.create(listener));
+				((ClientLoginNetworkHandlerAccessor) this.handler).getConnection().send(packet, GenericFutureListenerHolder.create(listener));
 			});
 		} catch (Throwable ex) {
 			this.logger.error("Encountered exception while handling in channel with name \"{}\"", channelName, ex);

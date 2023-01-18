@@ -42,6 +42,7 @@ import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
+import net.fabricmc.fabric.mixin.networking.client.accessor.ClientLoginNetworkHandlerAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ConnectScreenAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAccessor;
 
@@ -121,7 +122,8 @@ public final class ClientNetworkingImpl {
 				ids.add(buf.readIdentifier());
 			}
 
-			((ChannelInfoHolder) handler.getConnection()).getPendingChannelsNames().addAll(ids);
+			ClientConnection connection = ((ClientLoginNetworkHandlerAccessor) handler).getConnection();
+			((ChannelInfoHolder) connection).getPendingChannelsNames().addAll(ids);
 			NetworkingImpl.LOGGER.debug("Received accepted channels from the server");
 
 			PacketByteBuf response = PacketByteBufs.create();

@@ -25,13 +25,13 @@ import java.util.function.Predicate;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.LevelLoadingScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.PressableWidget;
@@ -105,11 +105,7 @@ public final class FabricClientTestHelper {
 				}
 
 				if (drawable instanceof GridWidget gridWidget) {
-					for (Element child : gridWidget.children()) {
-						if (child instanceof PressableWidget pressableWidget && pressMatchingButton(pressableWidget, buttonText)) {
-							return true;
-						}
-					}
+					gridWidget.method_48206(clickableWidget -> pressMatchingButton(clickableWidget, buttonText));
 				}
 			}
 
@@ -118,7 +114,7 @@ public final class FabricClientTestHelper {
 		});
 	}
 
-	private static boolean pressMatchingButton(PressableWidget widget, String text) {
+	private static boolean pressMatchingButton(ClickableWidget widget, String text) {
 		if (widget instanceof ButtonWidget buttonWidget) {
 			if (text.equals(buttonWidget.getMessage().getString())) {
 				buttonWidget.onPress();
@@ -193,7 +189,7 @@ public final class FabricClientTestHelper {
 		return MinecraftClient.getInstance().submit(() -> function.apply(MinecraftClient.getInstance()));
 	}
 
-	private static <T> T submitAndWait(Function<MinecraftClient, T> function) {
+	public static <T> T submitAndWait(Function<MinecraftClient, T> function) {
 		return submit(function).join();
 	}
 }

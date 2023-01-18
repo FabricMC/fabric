@@ -64,7 +64,7 @@
       "minecraft:crimson_forest_vegetation"
     ]
   ],
-  "precipitation": "none",
+  "has_precipitation": false,
   "spawn_costs": {},
   "spawners": {
     "ambient": [],

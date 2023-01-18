@@ -33,7 +33,7 @@ public class DisconnectScreenTest implements ClientModInitializer {
 						builder.append("\nLine ").append(i + 1);
 					}
 
-					context.getSource().getPlayer().networkHandler.getConnection().disconnect(Text.of(builder.toString()));
+					context.getSource().getPlayer().networkHandler.method_48296().disconnect(Text.of(builder.toString()));
 					return 1;
 				})));
 	}
