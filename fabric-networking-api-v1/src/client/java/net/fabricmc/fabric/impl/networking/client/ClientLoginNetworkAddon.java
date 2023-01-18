@@ -90,7 +90,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 					listener = FutureListeners.union(listener, each);
 				}
 
-				((ClientLoginNetworkHandlerAccessor) handler).getConnection().send(packet, GenericFutureListenerHolder.create(listener));
+				((ClientLoginNetworkHandlerAccessor) this.handler).getConnection().send(packet, GenericFutureListenerHolder.create(listener));
 			});
 		} catch (Throwable ex) {
 			this.logger.error("Encountered exception while handling in channel with name \"{}\"", channelName, ex);
