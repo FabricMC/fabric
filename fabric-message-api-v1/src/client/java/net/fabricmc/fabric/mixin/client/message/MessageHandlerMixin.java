@@ -76,6 +76,8 @@ public abstract class MessageHandlerMixin {
 
 	@ModifyVariable(method = "onGameMessage", at = @At(value = "LOAD", ordinal = 0), ordinal = 0, argsOnly = true)
 	private Text fabric_modifyGameMessage(Text message, Text message1, boolean overlay) {
-		return ClientReceiveMessageEvents.MODIFY_GAME.invoker().modifyReceivedGameMessage(message, overlay);
+		message = ClientReceiveMessageEvents.MODIFY_GAME.invoker().modifyReceivedGameMessage(message, overlay);
+		ClientReceiveMessageEvents.GAME.invoker().onReceiveGameMessage(message, overlay);
+		return message;
 	}
 }

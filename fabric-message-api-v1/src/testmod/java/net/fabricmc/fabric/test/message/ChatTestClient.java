@@ -47,12 +47,13 @@ public class ChatTestClient implements ClientModInitializer {
 		});
 		ClientSendMessageEvents.MODIFY_CHAT.register((message) -> {
 			if (message.contains("modify send")) {
-				message = "sending modified chat message";
+				LOGGER.info("Modifying chat message: " + message);
+				return "sending modified chat message";
 			}
 
-			LOGGER.info("Sent chat message: " + message);
 			return message;
 		});
+		ClientSendMessageEvents.CHAT.register((message -> LOGGER.info("Sent chat message: " + message)));
 		ClientSendMessageEvents.CHAT_CANCELED.register((message) -> LOGGER.info("Canceled sending chat message: " + message));
 		//Test client send command events
 		ClientSendMessageEvents.ALLOW_COMMAND.register((command) -> {
@@ -65,12 +66,13 @@ public class ChatTestClient implements ClientModInitializer {
 		});
 		ClientSendMessageEvents.MODIFY_COMMAND.register((command) -> {
 			if (command.contains("modify send")) {
-				command = "sending modified command message";
+				LOGGER.info("Modifying command message: " + command);
+				return "sending modified command message";
 			}
 
-			LOGGER.info("Sent command message: " + command);
 			return command;
 		});
+		ClientSendMessageEvents.COMMAND.register((command -> LOGGER.info("Sent command message: " + command)));
 		ClientSendMessageEvents.COMMAND_CANCELED.register((command) -> LOGGER.info("Canceled sending command message: " + command));
 		//Test client receive message events
 		ClientReceiveMessageEvents.ALLOW_CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
@@ -85,7 +87,7 @@ public class ChatTestClient implements ClientModInitializer {
 		ClientReceiveMessageEvents.CHAT_CANCELED.register((message, signedMessage, sender, params, receptionTimestamp) -> LOGGER.info("Cancelled receiving chat message sent by {} at time {}: {}", sender == null ? "null" : sender.getName(), receptionTimestamp.toEpochMilli(), message.getString()));
 		//Test client receive game message events
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
-			if (message.getString().startsWith("block receive")) {
+			if (message.getString().contains("block receive")) {
 				LOGGER.info("Blocked receiving game message: " + message.getString());
 				return false;
 			}
@@ -94,12 +96,13 @@ public class ChatTestClient implements ClientModInitializer {
 		});
 		ClientReceiveMessageEvents.MODIFY_GAME.register((message, overlay) -> {
 			if (message.getString().contains("modify receive")) {
-				message = Text.of("modified receiving game message");
+				LOGGER.info("Modifying received game message: " + message.getString());
+				return Text.of("modified receiving game message");
 			}
 
-			LOGGER.info("Received game message with overlay {}: {}", overlay, message.getString());
 			return message;
 		});
+		ClientReceiveMessageEvents.GAME.register((message, overlay) -> LOGGER.info("Received game message with overlay {}: {}", overlay, message.getString()));
 		ClientReceiveMessageEvents.GAME_CANCELED.register((message, overlay) -> LOGGER.info("Cancelled receiving game message with overlay {}: {}", overlay, message.getString()));
 	}
 }

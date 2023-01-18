@@ -78,6 +78,24 @@ public final class ClientReceiveMessageEvents {
 	});
 
 	/**
+	 * An event triggered when the client receives a game message,
+	 * which is any message sent by the server. Is not called when
+	 * {@linkplain #ALLOW_GAME game messages are blocked}.
+	 * Mods can use this to modify the message.
+	 * Use {@link #GAME} if not modifying the message.
+	 *
+	 * <p>Overlay is whether the message will be displayed in the action bar.
+	 * Use {@link #ALLOW_GAME to toggle overlay}.
+	 */
+	public static final Event<ModifyGame> MODIFY_GAME = EventFactory.createArrayBacked(ModifyGame.class, listeners -> (message, overlay) -> {
+		for (ModifyGame listener : listeners) {
+			message = listener.modifyReceivedGameMessage(message, overlay);
+		}
+
+		return message;
+	});
+
+	/**
 	 * An event triggered when the client receives a chat message,
 	 * which is any message sent by a player. Is not called when
 	 * {@linkplain #ALLOW_CHAT chat messages are blocked}.
@@ -93,21 +111,18 @@ public final class ClientReceiveMessageEvents {
 	});
 
 	/**
-	 * An event triggered when the client receives a chat message,
+	 * An event triggered when the client receives a game message,
 	 * which is any message sent by the server. Is not called when
-	 * {@linkplain #ALLOW_CHAT chat messages are blocked}.
-	 * Mods can use this to listen or modify the message.
-	 * Listeners should return the original {@code message} if the message is not modified.
+	 * {@linkplain #ALLOW_GAME game messages are blocked}.
+	 * Mods can use this to listen to the message.
 	 *
 	 * <p>Overlay is whether the message will be displayed in the action bar.
 	 * Use {@link #ALLOW_GAME to toggle overlay}.
 	 */
-	public static final Event<ModifyGame> MODIFY_GAME = EventFactory.createArrayBacked(ModifyGame.class, listeners -> (message, overlay) -> {
-		for (ModifyGame listener : listeners) {
-			message = listener.modifyReceivedGameMessage(message, overlay);
+	public static final Event<Game> GAME = EventFactory.createArrayBacked(Game.class, listeners -> (message, overlay) -> {
+		for (Game listener : listeners) {
+			listener.onReceiveGameMessage(message, overlay);
 		}
-
-		return message;
 	});
 
 	/**
@@ -168,6 +183,24 @@ public final class ClientReceiveMessageEvents {
 	}
 
 	@FunctionalInterface
+	public interface ModifyGame {
+		/**
+		 * Called when the client receives a game message,
+		 * which is any message sent by the server. Is not called when
+		 * {@linkplain #ALLOW_GAME game messages are blocked}.
+		 * Use {@link #GAME} if not modifying the message.
+		 *
+		 * <p>Overlay is whether the message will be displayed in the action bar.
+		 * Use {@link #ALLOW_GAME} to toggle overlay.
+		 *
+		 * @param message the message received from the server
+		 * @param overlay whether the message will be displayed in the action bar
+		 * @return the modified message to display or the original {@code message} if the message is not modified
+		 */
+		Text modifyReceivedGameMessage(Text message, boolean overlay);
+	}
+
+	@FunctionalInterface
 	public interface Chat {
 		/**
 		 * Called when the client receives a chat message,
@@ -184,7 +217,7 @@ public final class ClientReceiveMessageEvents {
 	}
 
 	@FunctionalInterface
-	public interface ModifyGame {
+	public interface Game {
 		/**
 		 * Called when the client receives a game message,
 		 * which is any message sent by the server. Is not called when
@@ -195,9 +228,8 @@ public final class ClientReceiveMessageEvents {
 		 *
 		 * @param message the message received from the server
 		 * @param overlay whether the message will be displayed in the action bar
-		 * @return the modified message to display or the original {@code message} if the message is not modified
 		 */
-		Text modifyReceivedGameMessage(Text message, boolean overlay);
+		void onReceiveGameMessage(Text message, boolean overlay);
 	}
 
 	@FunctionalInterface
