@@ -228,7 +228,6 @@ public final class ClientSendMessageEvents {
 		void onSendCommandMessage(String command);
 	}
 
-
 	@FunctionalInterface
 	public interface ChatCanceled {
 		/**
