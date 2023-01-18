@@ -189,7 +189,7 @@ public final class FabricClientTestHelper {
 		return MinecraftClient.getInstance().submit(() -> function.apply(MinecraftClient.getInstance()));
 	}
 
-	private static <T> T submitAndWait(Function<MinecraftClient, T> function) {
+	public static <T> T submitAndWait(Function<MinecraftClient, T> function) {
 		return submit(function).join();
 	}
 }
