@@ -319,7 +319,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generate() {
-			addDrop(SIMPLE_BLOCK);
+			// Same condition twice to test recursive condition adding
+			withConditions(ALWAYS_LOADED).withConditions(DefaultResourceConditions.not(NEVER_LOADED)).addDrop(SIMPLE_BLOCK);
 			addDrop(BLOCK_WITHOUT_ITEM, drops(SIMPLE_BLOCK));
 
 			excludeFromStrictValidation(BLOCK_WITHOUT_LOOT_TABLE);
