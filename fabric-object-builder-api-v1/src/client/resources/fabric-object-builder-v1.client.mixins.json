@@ -3,8 +3,11 @@
   "package": "net.fabricmc.fabric.mixin.object.builder.client",
   "compatibilityLevel": "JAVA_16",
   "client": [
+    "EntityModelLayersMixin",
+    "HangingSignEditScreenMixin",
     "ModelPredicateProviderRegistryAccessor",
-    "ModelPredicateProviderRegistrySpecificAccessor"
+    "ModelPredicateProviderRegistrySpecificAccessor",
+    "TexturedRenderLayersMixin"
   ],
   "injectors": {
     "defaultRequire": 1
