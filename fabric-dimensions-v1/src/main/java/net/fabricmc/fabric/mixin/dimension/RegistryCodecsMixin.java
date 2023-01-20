@@ -1,22 +1,19 @@
 package net.fabricmc.fabric.mixin.dimension;
 
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.Mixin;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
 
-import net.fabricmc.fabric.impl.dimension.FailSoftMapCodec;
-
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryCodecs;
-
 import net.minecraft.registry.RegistryKey;
-
 import net.minecraft.registry.SimpleRegistry;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import net.fabricmc.fabric.impl.dimension.FailSoftMapCodec;
 
 @Mixin(RegistryCodecs.class)
 public class RegistryCodecsMixin {
