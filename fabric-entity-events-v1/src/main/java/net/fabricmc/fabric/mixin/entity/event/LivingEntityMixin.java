@@ -159,4 +159,31 @@ abstract class LivingEntityMixin {
 		Vec3d newPos = EntitySleepEvents.MODIFY_WAKE_UP_POSITION.invoker().modifyWakeUpPosition((LivingEntity) (Object) this, pos, bedState, original.orElse(null));
 		return Optional.ofNullable(newPos);
 	}
+
+	@Inject(
+			method = "isClimbing",
+			at = @At(
+					value = "INVOKE",
+					target = "java/util/Optional.of (Ljava/lang/Object;)Ljava/util/Optional;",
+					ordinal = 0
+			),
+			locals = LocalCapture.CAPTURE_FAILHARD,
+			cancellable = true
+	)
+	private void allowClimb(CallbackInfoReturnable<Boolean> cir, BlockPos pos, BlockState state) {
+		if (!ServerLivingEntityEvents.ALLOW_CLIMB.invoker().allowClimb((LivingEntity) (Object) this, pos, state)) {
+			cir.setReturnValue(false);
+		}
+	}
+
+	@ModifyVariable(
+			method = "applyClimbingSpeed",
+			at = @At("STORE"),
+			index = 1,
+			argsOnly = true
+	)
+	private Vec3d modifyClimbingSpeed(Vec3d motion) {
+		LivingEntity self = (LivingEntity) (Object) this;
+		return ServerLivingEntityEvents.MODIFY_CLIMBING_SPEED.invoker().modifyClimbingSpeed(self, self.getBlockPos(), self.getBlockStateAtPos(), motion);
+	}
 }

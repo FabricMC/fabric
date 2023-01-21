@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.api.entity.event.v1;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -73,6 +76,33 @@ public final class ServerLivingEntityEvents {
 		}
 	});
 
+	/**
+	 * An event that is called when minecraft checks if an entity is at a climbable block position.
+	 * This is fired after minecraft checks if the block is
+	 * {@linkplain net.minecraft.registry.tag.BlockTags#CLIMBABLE climbable}.
+	 */
+	public static final Event<AllowClimb> ALLOW_CLIMB = EventFactory.createArrayBacked(AllowClimb.class, callbacks -> (entity, pos, state) -> {
+		for (AllowClimb callback : callbacks) {
+			if (!callback.allowClimb(entity, pos, state)) {
+				return false;
+			}
+		}
+
+		return true;
+	});
+
+	/**
+	 * An event that is called when minecraft is calculating an entities climbing motion.
+	 * When this is fired, the block position is guaranteed to be climbable.
+	 */
+	public static final Event<ModifyClimbingSpeed> MODIFY_CLIMBING_SPEED = EventFactory.createArrayBacked(ModifyClimbingSpeed.class, callbacks -> (entity, pos, state, motion) -> {
+		for (ModifyClimbingSpeed callback : callbacks) {
+			motion = callback.modifyClimbingSpeed(entity, pos, state, motion);
+		}
+
+		return motion;
+	});
+
 	@FunctionalInterface
 	public interface AllowDamage {
 		/**
@@ -110,6 +140,32 @@ public final class ServerLivingEntityEvents {
 		 * @param damageSource the source of the fatal damage
 		 */
 		void afterDeath(LivingEntity entity, DamageSource damageSource);
+	}
+
+	@FunctionalInterface
+	public interface AllowClimb {
+		/**
+		 * Called when minecraft checks if a living entity is in a climbable block pos.
+		 *
+		 * @param entity the entity
+		 * @param pos    the block pos being checked
+		 * @param state  the block state of the block at {@code pos}
+		 */
+		boolean allowClimb(LivingEntity entity, BlockPos pos, BlockState state);
+	}
+
+	@FunctionalInterface
+	public interface ModifyClimbingSpeed {
+		/**
+		 * Called when minecraft is updating a climbing entities motion.
+		 *
+		 * @param entity 	the entity
+		 * @param pos 		the block pos being checked
+		 * @param state  	the block state of the block at {@code pos}
+		 * @param motion	the current motion for the climbing entity
+		 * @return the new motion, or just the parameter if nothing changed
+		 */
+		Vec3d modifyClimbingSpeed(LivingEntity entity, BlockPos pos, BlockState state, Vec3d motion);
 	}
 
 	private ServerLivingEntityEvents() {

@@ -115,6 +115,20 @@ public final class EntityEventTests implements ModInitializer {
 			LOGGER.info("{} died due to {} damage source", entity.getName().getString(), source.getName());
 		});
 
+		ServerLivingEntityEvents.ALLOW_CLIMB.register((entity, pos, state) -> {
+			// Cannot climb if both hands are full.
+			return !(entity instanceof PlayerEntity player) || player.getStackInHand(Hand.MAIN_HAND).isEmpty() || player.getStackInHand(Hand.OFF_HAND).isEmpty();
+		});
+
+		ServerLivingEntityEvents.MODIFY_CLIMBING_SPEED.register((entity, pos, state, motion) -> {
+			if (motion.y != 0 && entity instanceof PlayerEntity player && player.getStackInHand(Hand.MAIN_HAND).isEmpty() && player.getStackInHand(Hand.OFF_HAND).isEmpty()) {
+				// Speed buf if both hands are empty.
+				return motion.multiply(1.0, 1.5, 1.0);
+			}
+
+			return motion;
+		});
+
 		EntitySleepEvents.ALLOW_SLEEPING.register((player, sleepingPos) -> {
 			// Can't sleep if holds blue wool
 			if (player.getStackInHand(Hand.MAIN_HAND).isOf(Items.BLUE_WOOL)) {
