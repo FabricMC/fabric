@@ -11,6 +11,9 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.dimension.FabricDimensionTest"
+    ],
+    "fabric-gametest" : [
+      "net.fabricmc.fabric.test.dimension.gametest.RaycastGameTest"
     ]
   }
 }
