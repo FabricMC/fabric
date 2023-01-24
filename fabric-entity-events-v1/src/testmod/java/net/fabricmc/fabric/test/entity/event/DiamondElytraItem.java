@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.entity.event;
 
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterials;
 
@@ -24,6 +23,6 @@ import net.fabricmc.fabric.api.entity.event.v1.FabricElytraItem;
 
 public class DiamondElytraItem extends ArmorItem implements FabricElytraItem {
 	public DiamondElytraItem() {
-		super(ArmorMaterials.DIAMOND, EquipmentSlot.CHEST, new Settings().maxCount(1));
+		super(ArmorMaterials.DIAMOND, class_8051.CHESTPLATE, new Settings().maxCount(1));
 	}
 }

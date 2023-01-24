@@ -61,7 +61,7 @@ public final class DoubleRuleWidget extends EditGameRulesScreen.NamedRuleWidget 
 		// FIXME: Param names nightmare
 		this.drawName(matrices, y, x);
 
-		this.textFieldWidget.method_48229(x + entryWidth - 44, y);
+		this.textFieldWidget.setPosition(x + entryWidth - 44, y);
 		this.textFieldWidget.render(matrices, mouseX, mouseY, tickDelta);
 	}
 }

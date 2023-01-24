@@ -8,7 +8,7 @@ transitive-accessible method net/minecraft/advancement/criterion/Criteria regist
 
 # Creating custom screen handler types
 transitive-accessible class net/minecraft/screen/ScreenHandlerType$Factory
-transitive-accessible method net/minecraft/screen/ScreenHandlerType <init> (Lnet/minecraft/screen/ScreenHandlerType$Factory;)V
+transitive-accessible method net/minecraft/screen/ScreenHandlerType <init> (Lnet/minecraft/screen/ScreenHandlerType$Factory;Lnet/minecraft/resource/featuretoggle/FeatureSet;)V
 
 # Registering custom screen handler type -> screen mappings
 transitive-accessible class net/minecraft/client/gui/screen/ingame/HandledScreens$Provider
@@ -97,7 +97,7 @@ transitive-accessible method net/minecraft/entity/projectile/ProjectileEntity <i
 transitive-accessible method net/minecraft/entity/projectile/FishingBobberEntity <init> (Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;II)V
 
 # Miscellaneous other methods
-transitive-accessible method net/minecraft/server/world/ServerWorld sendToPlayerIfNearby (Lnet/minecraft/server/network/ServerPlayerEntity;ZDDDLnet/minecraft/network/Packet;)Z
+transitive-accessible method net/minecraft/server/world/ServerWorld sendToPlayerIfNearby (Lnet/minecraft/server/network/ServerPlayerEntity;ZDDDLnet/minecraft/network/packet/Packet;)Z
 transitive-accessible method net/minecraft/text/TextColor getHexCode ()Ljava/lang/String;
 transitive-accessible method net/minecraft/text/TranslatableTextContent getArg (I)Lnet/minecraft/text/StringVisitable;
 

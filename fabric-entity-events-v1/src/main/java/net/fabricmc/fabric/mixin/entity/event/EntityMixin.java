@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.network.packet.s2c.play.Flag;
+import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 
@@ -50,8 +50,8 @@ abstract class EntityMixin {
 	/**
 	 * We need to fire the change world event for entities that are teleported using the `/teleport` command.
 	 */
-	@Inject(method = "method_48105", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setRemoved(Lnet/minecraft/entity/Entity$RemovalReason;)V"), locals = LocalCapture.CAPTURE_FAILHARD)
-	private void afterEntityTeleportedToWorld(ServerWorld destination, double x, double y, double z, Set<Flag> flags, float yaw, float pitch, CallbackInfoReturnable<Boolean> cir, float i, Entity newEntity) {
+	@Inject(method = "teleport(Lnet/minecraft/server/world/ServerWorld;DDDLjava/util/Set;FF)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setRemoved(Lnet/minecraft/entity/Entity$RemovalReason;)V"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void afterEntityTeleportedToWorld(ServerWorld destination, double x, double y, double z, Set<PositionFlag> flags, float yaw, float pitch, CallbackInfoReturnable<Boolean> cir, float i, Entity newEntity) {
 		Entity originalEntity = (Entity) (Object) this;
 		ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.invoker().afterChangeWorld(originalEntity, newEntity, ((ServerWorld) originalEntity.world), destination);
 	}

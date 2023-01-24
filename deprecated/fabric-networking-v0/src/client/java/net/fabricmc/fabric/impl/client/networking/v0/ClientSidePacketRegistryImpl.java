@@ -23,7 +23,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.Packet;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ThreadExecutor;
@@ -45,7 +45,7 @@ public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, P
 	@Override
 	public void sendToServer(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			MinecraftClient.getInstance().getNetworkHandler().method_48296().send(packet, GenericFutureListenerHolder.create(completionListener));
+			MinecraftClient.getInstance().getNetworkHandler().getConnection().send(packet, GenericFutureListenerHolder.create(completionListener));
 			return;
 		}
 

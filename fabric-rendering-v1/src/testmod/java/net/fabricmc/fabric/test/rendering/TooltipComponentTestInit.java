@@ -18,25 +18,24 @@ package net.fabricmc.fabric.test.rendering;
 
 import java.util.Optional;
 
-import net.minecraft.registry.Registries;
 import net.minecraft.client.item.TooltipData;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
-import net.minecraft.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 
 public class TooltipComponentTestInit implements ModInitializer {
 	public static Item CUSTOM_TOOLTIP_ITEM = new CustomTooltipItem();
-	public static Item CUSTOM_ARMOR_ITEM = new ArmorItem(TestArmorMaterial.INSTANCE, EquipmentSlot.CHEST, new Item.Settings());
+	public static Item CUSTOM_ARMOR_ITEM = new ArmorItem(TestArmorMaterial.INSTANCE, ArmorItem.class_8051.CHESTPLATE, new Item.Settings());
 
 	@Override
 	public void onInitialize() {
@@ -65,12 +64,12 @@ public class TooltipComponentTestInit implements ModInitializer {
 		}
 
 		@Override
-		public int getDurability(EquipmentSlot slot) {
+		public int method_48402(ArmorItem.class_8051 arg) {
 			return 0;
 		}
 
 		@Override
-		public int getProtectionAmount(EquipmentSlot slot) {
+		public int method_48403(ArmorItem.class_8051 arg) {
 			return 0;
 		}
 
@@ -102,6 +101,11 @@ public class TooltipComponentTestInit implements ModInitializer {
 		@Override
 		public float getKnockbackResistance() {
 			return 0;
+		}
+
+		@Override
+		public boolean method_48404() {
+			return false;
 		}
 	}
 }

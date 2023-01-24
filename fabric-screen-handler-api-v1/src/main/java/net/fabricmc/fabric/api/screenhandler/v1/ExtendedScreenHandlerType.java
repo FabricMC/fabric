@@ -20,6 +20,7 @@ import java.util.Objects;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
@@ -69,7 +70,7 @@ public class ExtendedScreenHandlerType<T extends ScreenHandler> extends ScreenHa
 	 * @param factory the screen handler factory used for {@link #create(int, PlayerInventory, PacketByteBuf)}
 	 */
 	public ExtendedScreenHandlerType(ExtendedFactory<T> factory) {
-		super(null);
+		super(null, FeatureFlags.VANILLA_FEATURES);
 		this.factory = Objects.requireNonNull(factory, "screen handler factory cannot be null");
 	}
 

@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.screenhandler.v1;
 
 import net.minecraft.registry.Registries;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
@@ -87,7 +88,7 @@ public final class ScreenHandlerRegistry {
 	public static <T extends ScreenHandler> ScreenHandlerType<T> registerSimple(Identifier id, SimpleClientHandlerFactory<T> factory) {
 		// Wrap our factory in vanilla's factory; it will not be public for users.
 		// noinspection Convert2MethodRef - Must be a lambda or else dedicated server will crash
-		ScreenHandlerType<T> type = new ScreenHandlerType<>((syncId, inventory) -> factory.create(syncId, inventory));
+		ScreenHandlerType<T> type = new ScreenHandlerType<>((syncId, inventory) -> factory.create(syncId, inventory), FeatureFlags.VANILLA_FEATURES);
 		return Registry.register(Registries.SCREEN_HANDLER, id, type);
 	}
 

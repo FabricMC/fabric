@@ -36,7 +36,7 @@ import java.nio.file.Path;
 
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
-import net.minecraft.class_8032;
+import net.minecraft.client.gui.screen.AccessibilityOnboardingScreen;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
@@ -68,10 +68,10 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 	private void runTest() {
 		waitForLoadingComplete();
 
-		final boolean onboardAccessibility = submitAndWait(client -> client.options.field_41785);
+		final boolean onboardAccessibility = submitAndWait(client -> client.options.onboardAccessibility);
 
 		if (!onboardAccessibility) {
-			waitForScreen(class_8032.class);
+			waitForScreen(AccessibilityOnboardingScreen.class);
 			takeScreenshot("onboarding_screen");
 			clickScreenButton("gui.continue");
 		}

@@ -105,7 +105,7 @@ public final class FabricClientTestHelper {
 				}
 
 				if (drawable instanceof GridWidget gridWidget) {
-					gridWidget.method_48206(clickableWidget -> pressMatchingButton(clickableWidget, buttonText));
+					gridWidget.forEachChild(clickableWidget -> pressMatchingButton(clickableWidget, buttonText));
 				}
 			}
 

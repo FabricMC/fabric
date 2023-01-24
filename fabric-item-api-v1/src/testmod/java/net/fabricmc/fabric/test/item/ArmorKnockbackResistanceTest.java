@@ -16,29 +16,28 @@
 
 package net.fabricmc.fabric.test.item;
 
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 
 public class ArmorKnockbackResistanceTest implements ModInitializer {
 	private static final ArmorMaterial WOOD_ARMOR = new ArmorMaterial() {
 		@Override
-		public int getDurability(EquipmentSlot slot) {
+		public int method_48402(ArmorItem.class_8051 arg) {
 			return 50;
 		}
 
 		@Override
-		public int getProtectionAmount(EquipmentSlot slot) {
+		public int method_48403(ArmorItem.class_8051 arg) {
 			return 5;
 		}
 
@@ -71,11 +70,16 @@ public class ArmorKnockbackResistanceTest implements ModInitializer {
 		public float getKnockbackResistance() {
 			return 0.5F;
 		}
+
+		@Override
+		public boolean method_48404() {
+			return false;
+		}
 	};
 
 	@Override
 	public void onInitialize() {
 		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod",
-				"wooden_boots"), new ArmorItem(WOOD_ARMOR, EquipmentSlot.FEET, new Item.Settings()));
+				"wooden_boots"), new ArmorItem(WOOD_ARMOR, ArmorItem.class_8051.BOOTS, new Item.Settings()));
 	}
 }

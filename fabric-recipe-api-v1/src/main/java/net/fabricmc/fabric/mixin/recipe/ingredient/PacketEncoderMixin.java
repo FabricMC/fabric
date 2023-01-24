@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.network.Packet;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.PacketEncoder;
 import net.minecraft.util.Identifier;
 
@@ -46,9 +46,9 @@ public class PacketEncoderMixin implements SupportedIngredientsPacketEncoder {
 	@Inject(
 			at = @At(
 					value = "INVOKE",
-					target = "net/minecraft/network/Packet.write(Lnet/minecraft/network/PacketByteBuf;)V"
+					target = "net/minecraft/network/packet/Packet.write(Lnet/minecraft/network/PacketByteBuf;)V"
 			),
-			method = "encode(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/Packet;Lio/netty/buffer/ByteBuf;)V"
+			method = "encode(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;Lio/netty/buffer/ByteBuf;)V"
 	)
 	private void capturePacketEncoder(ChannelHandlerContext channelHandlerContext, Packet<?> packet, ByteBuf byteBuf, CallbackInfo ci) {
 		CustomIngredientSync.CURRENT_SUPPORTED_INGREDIENTS.set(fabric_supportedCustomIngredients);
@@ -59,17 +59,17 @@ public class PacketEncoderMixin implements SupportedIngredientsPacketEncoder {
 					// Normal target after writing
 					@At(
 							value = "INVOKE",
-							target = "net/minecraft/network/Packet.write(Lnet/minecraft/network/PacketByteBuf;)V",
+							target = "net/minecraft/network/packet/Packet.write(Lnet/minecraft/network/PacketByteBuf;)V",
 							shift = At.Shift.AFTER,
 							by = 1
 					),
 					// In the catch handler in case some exception was thrown
 					@At(
 							value = "INVOKE",
-							target = "net/minecraft/network/Packet.isWritingErrorSkippable()Z"
+							target = "net/minecraft/network/packet/Packet.isWritingErrorSkippable()Z"
 					)
 			},
-			method = "encode(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/Packet;Lio/netty/buffer/ByteBuf;)V"
+			method = "encode(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;Lio/netty/buffer/ByteBuf;)V"
 	)
 	private void releasePacketEncoder(ChannelHandlerContext channelHandlerContext, Packet<?> packet, ByteBuf byteBuf, CallbackInfo ci) {
 		CustomIngredientSync.CURRENT_SUPPORTED_INGREDIENTS.set(null);
