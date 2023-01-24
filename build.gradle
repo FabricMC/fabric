@@ -525,16 +525,6 @@ subprojects {
 	loom.disableDeprecatedPomGeneration(publishing.publications.mavenJava)
 
 	javadoc.enabled = false
-
-	afterEvaluate {
-		// Disable the gen sources task on sub projects
-		genClientOnlySourcesWithFernFlower.enabled = false
-		genClientOnlySourcesWithCfr.enabled = false
-		genCommonSourcesWithCfr.enabled = false
-		genCommonSourcesWithFernFlower.enabled = false
-		unpickClientOnlyJar.enabled = false
-		unpickCommonJar.enabled = false
-	}
 }
 
 publishing {
