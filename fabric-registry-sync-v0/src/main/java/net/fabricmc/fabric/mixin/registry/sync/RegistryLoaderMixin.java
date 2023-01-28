@@ -24,6 +24,7 @@ import com.mojang.datafixers.util.Pair;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -35,6 +36,7 @@ import net.minecraft.registry.RegistryLoader;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.resource.ResourceManager;
 
+import net.fabricmc.fabric.api.event.registry.DynamicRegistryFinalizeCallback;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistryViewImpl;
 
@@ -57,5 +59,17 @@ public class RegistryLoaderMixin {
 		}
 
 		DynamicRegistrySetupCallback.EVENT.invoker().onRegistrySetup(new DynamicRegistryViewImpl(registries));
+	}
+
+	@Redirect(
+			method = "load(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;",
+			at = @At(
+					value = "INVOKE",
+					target = "net/minecraft/registry/DynamicRegistryManager$ImmutableImpl.toImmutable ()Lnet/minecraft/registry/DynamicRegistryManager$Immutable;"
+			)
+	)
+	private static DynamicRegistryManager.Immutable afterLoad(DynamicRegistryManager.ImmutableImpl instance) {
+		DynamicRegistryFinalizeCallback.EVENT.invoker().onRegistryFinalize(instance);
+		return instance.toImmutable();
 	}
 }

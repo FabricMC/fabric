@@ -17,12 +17,9 @@
 package net.fabricmc.fabric.test.registry.sync;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -31,13 +28,10 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
@@ -49,7 +43,7 @@ import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistryPacketHandler;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
 public class RegistrySyncTest implements ModInitializer {
-	private static final Logger LOGGER = LogUtils.getLogger();
+	private static final String MODID = "fabric-registry-sync-v0-testmod";
 
 	/**
 	 * These are system property's as it allows for easier testing with different run configurations.
@@ -57,7 +51,7 @@ public class RegistrySyncTest implements ModInitializer {
 	public static final boolean REGISTER_BLOCKS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.blocks", "true"));
 	public static final boolean REGISTER_ITEMS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.items", "true"));
 
-	public static final Identifier PACKET_CHECK_DIRECT = new Identifier("fabric-registry-sync-v0-v1-testmod:packet_check/direct");
+	public static final Identifier PACKET_CHECK_DIRECT = new Identifier(MODID, "packet_check/direct");
 	public static final RegistryPacketHandler DIRECT_PACKET_HANDLER = new DirectRegistryPacketHandler() {
 		@Override
 		public Identifier getPacketId() {
@@ -65,7 +59,7 @@ public class RegistrySyncTest implements ModInitializer {
 		}
 	};
 
-	public static final Identifier PACKET_CHECK_NBT = new Identifier("fabric-registry-sync-v0-v1-testmod:packet_check/nbt");
+	public static final Identifier PACKET_CHECK_NBT = new Identifier(MODID, "packet_check/nbt");
 	public static final RegistryPacketHandler NBT_PACKET_HANDLER = new NbtRegistryPacketHandler() {
 		@Override
 		public Identifier getPacketId() {
@@ -73,7 +67,7 @@ public class RegistrySyncTest implements ModInitializer {
 		}
 	};
 
-	public static final Identifier PACKET_CHECK_COMPARE = new Identifier("fabric-registry-sync-v0-v1-testmod:packet_check/compare");
+	public static final Identifier PACKET_CHECK_COMPARE = new Identifier(MODID, "packet_check/compare");
 
 	@Override
 	public void onInitialize() {
@@ -108,21 +102,6 @@ public class RegistrySyncTest implements ModInitializer {
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.MODDED));
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.SYNCED));
 		Validate.isTrue(!RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.PERSISTED));
-
-		final AtomicBoolean setupCalled = new AtomicBoolean(false);
-
-		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
-			setupCalled.set(true);
-			registryManager.registerEntryAdded(RegistryKeys.BIOME, (rawId, id, object) -> {
-				LOGGER.info("Biome added: {}", id);
-			});
-		});
-
-		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-			if (!setupCalled.get()) {
-				throw new IllegalStateException("DRM setup was not called before startup!");
-			}
-		});
 
 		// Vanilla status effects don't have an entry for the int id 0, test we can handle this.
 		RegistryAttributeHolder.get(Registries.STATUS_EFFECT).addAttribute(RegistryAttribute.MODDED);

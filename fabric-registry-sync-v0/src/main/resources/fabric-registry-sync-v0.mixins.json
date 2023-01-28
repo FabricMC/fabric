@@ -11,6 +11,7 @@
     "MinecraftServerMixin",
     "RegistriesAccessor",
     "RegistriesMixin",
+    "RegistryLoaderAccessor",
     "RegistryLoaderMixin",
     "SimpleRegistryMixin",
     "StructuresToConfiguredStructuresFixMixin"
