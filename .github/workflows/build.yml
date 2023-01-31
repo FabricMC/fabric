@@ -10,7 +10,7 @@ jobs:
       image: eclipse-temurin:${{ matrix.java }}
       options: --user root
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - uses: gradle/wrapper-validation-action@v1
@@ -20,15 +20,15 @@ jobs:
         with:
           reports: |
             **/build/reports/checkstyle/*.xml
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: Artifacts
           path: build/libs/
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: Artifacts
           path: ./*/build/libs/
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: Maven Local
           path: /root/.m2/repository
@@ -47,7 +47,7 @@ jobs:
         uses: modmuss50/xvfb-action@v1
         with:
           run: ./gradlew runProductionAutoTestClient --stacktrace --warning-mode=fail
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: Test Screenshots

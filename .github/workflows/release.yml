@@ -13,10 +13,10 @@ jobs:
     steps:
       - run: apt update && apt install git -y && git --version
       - run: git config --global --add safe.directory /__w/fabric/fabric
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: FabricMC/fabric-action-scripts@v1
+      - uses: FabricMC/fabric-action-scripts@v2
         id: changelog
         with:
           context: changelog
