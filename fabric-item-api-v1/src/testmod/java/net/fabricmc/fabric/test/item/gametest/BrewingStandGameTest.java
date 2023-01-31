@@ -84,7 +84,7 @@ public class BrewingStandGameTest implements FabricGameTest {
 
 		loadFuel(blockEntity, context);
 
-		prepareForBrewing(blockEntity, new ItemStack(CustomDamageTest.WEIRD_PICK),
+		prepareForBrewing(blockEntity, new ItemStack(CustomDamageTest.WEIRD_PICK, 2),
 				PotionUtil.setPotion(new ItemStack(Items.POTION), Potions.WATER));
 
 		brew(blockEntity, context);
