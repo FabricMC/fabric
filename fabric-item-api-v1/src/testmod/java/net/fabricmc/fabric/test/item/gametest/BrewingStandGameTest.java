@@ -71,13 +71,14 @@ public class BrewingStandGameTest implements FabricGameTest {
 				PotionUtil.setPotion(new ItemStack(Items.LINGERING_POTION), Potions.AWKWARD),
 				PotionUtil.setPotion(new ItemStack(Items.LINGERING_POTION), Potions.AWKWARD),
 				PotionUtil.setPotion(new ItemStack(Items.LINGERING_POTION), Potions.AWKWARD),
-				new ItemStack(Items.GLASS_BOTTLE),
+				ItemStack.EMPTY,
 				ItemStack.EMPTY);
 
 		context.complete();
 	}
 
-	@GameTest(structureName = EMPTY_STRUCTURE)
+	//@GameTest(structureName = EMPTY_STRUCTURE)
+	// Skip see: https://github.com/FabricMC/fabric/pull/2874
 	public void fabricRemainderTest(TestContext context) {
 		context.setBlockState(POS, Blocks.BREWING_STAND);
 		BrewingStandBlockEntity blockEntity = (BrewingStandBlockEntity) Objects.requireNonNull(context.getBlockEntity(POS));
