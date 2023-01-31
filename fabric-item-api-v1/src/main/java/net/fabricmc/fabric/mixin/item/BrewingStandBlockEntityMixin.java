@@ -54,6 +54,6 @@ public class BrewingStandBlockEntityMixin {
 	private static ItemStack createStackRecipeRemainder(ItemStack old) {
 		ItemStack remainder = REMAINDER_STACK.get();
 		REMAINDER_STACK.remove();
-		return remainder.isEmpty() ? old : remainder;
+		return remainder;
 	}
 }
