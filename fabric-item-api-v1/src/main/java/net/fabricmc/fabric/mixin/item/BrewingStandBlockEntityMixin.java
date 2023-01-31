@@ -39,7 +39,7 @@ public class BrewingStandBlockEntityMixin {
 
 	@Inject(method = "craft", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V"), locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void captureItemStack(World world, BlockPos pos, DefaultedList<ItemStack> slots, CallbackInfo ci, ItemStack itemStack) {
-		REMAINDER_STACK.set(itemStack.getRecipeRemainder());
+		REMAINDER_STACK.set(itemStack.isEmpty() ? itemStack : itemStack.getRecipeRemainder());
 	}
 
 	@Redirect(method = "craft", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;hasRecipeRemainder()Z"))

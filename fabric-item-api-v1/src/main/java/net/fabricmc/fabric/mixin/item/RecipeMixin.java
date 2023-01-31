@@ -35,7 +35,8 @@ import net.fabricmc.fabric.impl.item.RecipeRemainderHandler;
 public interface RecipeMixin<C extends Inventory> {
 	@Inject(method = "getRemainder", at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/Inventory;getStack(I)Lnet/minecraft/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILHARD)
 	default void captureStack(C inventory, CallbackInfoReturnable<DefaultedList<ItemStack>> cir, DefaultedList<ItemStack> defaultedList, int i) {
-		RecipeRemainderHandler.REMAINDER_STACK.set(inventory.getStack(i).getRecipeRemainder());
+		final ItemStack itemStack = inventory.getStack(i);
+		RecipeRemainderHandler.REMAINDER_STACK.set(itemStack.isEmpty() ? itemStack : itemStack.getRecipeRemainder());
 	}
 
 	@Redirect(method = "getRemainder", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;hasRecipeRemainder()Z"))
