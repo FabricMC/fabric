@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * Has the same functionality as {@link UnboundedMapCodec}.
  * But it will fail-soft when an entry cannot be deserialized.
  */
-public record FailSoftMapCodec<K, V>(Codec<K> keyCodec, Codec<V> elementCodec) implements BaseMapCodec<K, V>, Codec<Map<K, V>> {
+public final record FailSoftMapCodec<K, V>(Codec<K> keyCodec, Codec<V> elementCodec) implements BaseMapCodec<K, V>, Codec<Map<K, V>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger("FailSoftMapCodec");
 
 	@Override
