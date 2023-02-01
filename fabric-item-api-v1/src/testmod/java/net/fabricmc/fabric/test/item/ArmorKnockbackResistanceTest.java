@@ -32,12 +32,12 @@ import net.fabricmc.api.ModInitializer;
 public class ArmorKnockbackResistanceTest implements ModInitializer {
 	private static final ArmorMaterial WOOD_ARMOR = new ArmorMaterial() {
 		@Override
-		public int method_48402(ArmorItem.class_8051 arg) {
+		public int getDurability(ArmorItem.Type arg) {
 			return 50;
 		}
 
 		@Override
-		public int method_48403(ArmorItem.class_8051 arg) {
+		public int getProtection(ArmorItem.Type arg) {
 			return 5;
 		}
 
@@ -70,16 +70,11 @@ public class ArmorKnockbackResistanceTest implements ModInitializer {
 		public float getKnockbackResistance() {
 			return 0.5F;
 		}
-
-		@Override
-		public boolean method_48404() {
-			return false;
-		}
 	};
 
 	@Override
 	public void onInitialize() {
 		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod",
-				"wooden_boots"), new ArmorItem(WOOD_ARMOR, ArmorItem.class_8051.BOOTS, new Item.Settings()));
+				"wooden_boots"), new ArmorItem(WOOD_ARMOR, ArmorItem.Type.BOOTS, new Item.Settings()));
 	}
 }

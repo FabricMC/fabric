@@ -35,7 +35,7 @@ import net.fabricmc.api.ModInitializer;
 
 public class TooltipComponentTestInit implements ModInitializer {
 	public static Item CUSTOM_TOOLTIP_ITEM = new CustomTooltipItem();
-	public static Item CUSTOM_ARMOR_ITEM = new ArmorItem(TestArmorMaterial.INSTANCE, ArmorItem.class_8051.CHESTPLATE, new Item.Settings());
+	public static Item CUSTOM_ARMOR_ITEM = new ArmorItem(TestArmorMaterial.INSTANCE, ArmorItem.Type.CHESTPLATE, new Item.Settings());
 
 	@Override
 	public void onInitialize() {
@@ -64,12 +64,12 @@ public class TooltipComponentTestInit implements ModInitializer {
 		}
 
 		@Override
-		public int method_48402(ArmorItem.class_8051 arg) {
+		public int getDurability(ArmorItem.Type type) {
 			return 0;
 		}
 
 		@Override
-		public int method_48403(ArmorItem.class_8051 arg) {
+		public int getProtection(ArmorItem.Type type) {
 			return 0;
 		}
 
@@ -101,11 +101,6 @@ public class TooltipComponentTestInit implements ModInitializer {
 		@Override
 		public float getKnockbackResistance() {
 			return 0;
-		}
-
-		@Override
-		public boolean method_48404() {
-			return false;
 		}
 	}
 }

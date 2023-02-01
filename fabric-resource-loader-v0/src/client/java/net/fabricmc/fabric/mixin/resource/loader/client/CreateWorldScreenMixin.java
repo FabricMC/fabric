@@ -21,10 +21,8 @@ import java.io.File;
 import com.mojang.datafixers.util.Pair;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -40,9 +38,6 @@ import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 
 @Mixin(CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin extends Screen {
-	@Unique
-	private static DataConfiguration defaultDataConfiguration;
-
 	@Shadow
 	private ResourcePackManager packManager;
 
@@ -60,12 +55,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
 	@Redirect(method = "create(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/screen/Screen;)V", at = @At(value = "FIELD", target = "Lnet/minecraft/resource/DataConfiguration;SAFE_MODE:Lnet/minecraft/resource/DataConfiguration;", ordinal = 0))
 	private static DataConfiguration replaceDefaultSettings() {
-		return (defaultDataConfiguration = ModResourcePackUtil.createDefaultDataConfiguration());
-	}
-
-	@ModifyArg(method = "create(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/screen/Screen;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;<init>(Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/resource/DataConfiguration;Lnet/minecraft/client/gui/screen/world/MoreOptionsDialog;)V"), index = 1)
-	private static DataConfiguration useReplacedDefaultSettings(DataConfiguration dataPackSettings) {
-		return defaultDataConfiguration;
+		return ModResourcePackUtil.createDefaultDataConfiguration();
 	}
 
 	@Inject(method = "getScannedPack",
