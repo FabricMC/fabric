@@ -35,26 +35,8 @@ import org.slf4j.LoggerFactory;
  * Has the same functionality as {@link UnboundedMapCodec}.
  * But it will fail-soft when an entry cannot be deserialized.
  */
-public class FailSoftMapCodec<K, V> implements BaseMapCodec<K, V>, Codec<Map<K, V>> {
-	public static final Logger LOGGER = LoggerFactory.getLogger("FailSoftMapCodec");
-
-	private final Codec<K> keyCodec;
-	private final Codec<V> elementCodec;
-
-	public FailSoftMapCodec(final Codec<K> keyCodec, final Codec<V> elementCodec) {
-		this.keyCodec = keyCodec;
-		this.elementCodec = elementCodec;
-	}
-
-	@Override
-	public Codec<K> keyCodec() {
-		return keyCodec;
-	}
-
-	@Override
-	public Codec<V> elementCodec() {
-		return elementCodec;
-	}
+public record FailSoftMapCodec<K, V>(Codec<K> keyCodec, Codec<V> elementCodec) implements BaseMapCodec<K, V>, Codec<Map<K, V>> {
+	private static final Logger LOGGER = LoggerFactory.getLogger("FailSoftMapCodec");
 
 	@Override
 	public <T> DataResult<Pair<Map<K, V>, T>> decode(final DynamicOps<T> ops, final T input) {
@@ -115,11 +97,6 @@ public class FailSoftMapCodec<K, V> implements BaseMapCodec<K, V>, Codec<Map<K, 
 
 		final FailSoftMapCodec<?, ?> that = (FailSoftMapCodec<?, ?>) o;
 		return Objects.equals(keyCodec, that.keyCodec) && Objects.equals(elementCodec, that.elementCodec);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(keyCodec, elementCodec);
 	}
 
 	@Override
