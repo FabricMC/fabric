@@ -63,7 +63,7 @@ public abstract class StructureTemplateManagerMixin {
 				NbtCompound nbt = NbtHelper.fromNbtProviderString(snbt);
 				return Optional.of(this.createTemplate(nbt));
 			} catch (IOException | CommandSyntaxException e) {
-				throw new RuntimeException("Failed to load GameTest structure %s".formatted(id), e);
+				throw new RuntimeException("Failed to load GameTest structure " + id, e);
 			}
 		}
 
