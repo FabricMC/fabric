@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:extreme_hills",
+      "required": false
+    },
+    "minecraft:windswept_forest",
+    "minecraft:windswept_savanna"
+  ]
+}
