@@ -57,9 +57,9 @@ public abstract class StructureTemplateMixin {
 	}
 
 	@Redirect(method = "spawnEntities", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;next()Ljava/lang/Object;"))
-	private Object applyEntityProcessor(Iterator<StructureTemplate.StructureEntityInfo> instance) {
+	private Object applyEntityProcessor(Iterator<StructureTemplate.StructureEntityInfo> iterator) {
 		final StructurePlacementContext context = contextThreadLocal.get();
-		StructureTemplate.StructureEntityInfo entityInfo = instance.next();
+		StructureTemplate.StructureEntityInfo entityInfo = iterator.next();
 
 		for (final StructureProcessor processor : context.placementData().getProcessors()) {
 			entityInfo = processor.process(
