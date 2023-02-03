@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 14357617,
+    "separation": 1,
+    "spacing": 2
+  },
+  "structures": [
+    {
+      "structure": "fabric-biome-api-v1-testmod:test_structure",
+      "weight": 1
+    }
+  ]
+}

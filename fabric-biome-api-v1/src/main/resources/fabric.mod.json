@@ -25,6 +25,9 @@
   ],
   "accessWidener" : "fabric-biome-api-v1.accesswidener",
   "custom": {
-    "fabric-api:module-lifecycle": "experimental"
+    "fabric-api:module-lifecycle": "experimental",
+    "loom:injected_interfaces": {
+      "net/minecraft/class_3491": ["net/fabricmc/fabric/api/biome/v1/FabricStructureProcessor"]
+    }
   }
 }
