@@ -23,6 +23,7 @@ import java.util.Optional;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 
 import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
@@ -51,6 +52,10 @@ public final class KeyBindingRegistryImpl {
 	}
 
 	public static KeyBinding registerKeyBinding(KeyBinding binding) {
+		if (MinecraftClient.getInstance().options != null) {
+			throw new IllegalStateException("GameOptions has already been initialised");
+		}
+
 		for (KeyBinding existingKeyBindings : MODDED_KEY_BINDINGS) {
 			if (existingKeyBindings == binding) {
 				throw new IllegalArgumentException("Attempted to register a key binding twice: " + binding.getTranslationKey());
