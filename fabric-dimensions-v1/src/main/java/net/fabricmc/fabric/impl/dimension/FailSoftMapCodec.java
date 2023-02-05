@@ -53,6 +53,9 @@ public record FailSoftMapCodec<K, V>(Codec<K> keyCodec, Codec<V> elementCodec) i
 	 * the whole deserialization will fail if one element fails.
 	 * `apply2stable` will return fail when any of the two elements is failed.
 	 * In this implementation, if one deserialization fails, it will log and ignore.
+	 * The result will always be success.
+	 * It will not output partial result when some entries fail deserialization because
+	 * currently (MC 1.19.3) the dimension data deserialization rejects partial result.
 	 */
 	@Override
 	public <T> DataResult<Map<K, V>> decode(final DynamicOps<T> ops, final MapLike<T> input) {
