@@ -169,11 +169,11 @@ public final class DefaultResourceConditions {
 	}
 
 	/**
-	 * Creates a condition that returns true if all the passed items are loaded.
+	 * Creates a condition that returns true if all the passed items are registered (in {@link Registries#ITEM}).
 	 *
 	 * @see #registryContains(RegistryKey, Identifier...)
 	 */
-	public static ConditionJsonProvider itemsLoaded(ItemConvertible... items) {
+	public static ConditionJsonProvider itemsRegistered(ItemConvertible... items) {
 		return registryContains(Registries.ITEM, transform(items, ItemConvertible::asItem));
 	}
 
