@@ -70,6 +70,8 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 
 	protected final int tint;
 
+	protected FluidFogHandler fogHandler;
+
 	/**
 	 * Creates a fluid render handler with an overlay texture and a custom,
 	 * fixed tint.
@@ -164,5 +166,23 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	@Override
 	public int getFluidColor(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state) {
 		return tint;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public @Nullable FluidFogHandler getFogHandler(@Nullable BlockPos pos, FluidState state) {
+		return fogHandler;
+	}
+
+	/**
+	 * Set the fog handler for this {@link FluidRenderHandler}.
+	 *
+	 * @param fogHandler The fluid fog rendering handler. (Passing {@code null} will remove the handler)
+	 */
+	public SimpleFluidRenderHandler fogHandler(FluidFogHandler fogHandler) {
+		this.fogHandler = fogHandler;
+		return this;
 	}
 }
