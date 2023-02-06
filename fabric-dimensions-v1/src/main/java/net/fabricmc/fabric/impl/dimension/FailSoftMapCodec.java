@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.impl.dimension;
 
 import java.util.Map;
-import java.util.Objects;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
@@ -86,20 +85,6 @@ public record FailSoftMapCodec<K, V>(Codec<K> keyCodec, Codec<V> elementCodec) i
 		final Map<K, V> elements = builder.build();
 
 		return DataResult.success(elements);
-	}
-
-	@Override
-	public boolean equals(final Object o) {
-		if (this == o) {
-			return true;
-		}
-
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-
-		final FailSoftMapCodec<?, ?> that = (FailSoftMapCodec<?, ?>) o;
-		return Objects.equals(keyCodec, that.keyCodec) && Objects.equals(elementCodec, that.elementCodec);
 	}
 
 	@Override
