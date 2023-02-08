@@ -57,6 +57,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private boolean spawnableFarFromPlayer;
 	private EntityDimensions dimensions = EntityDimensions.changing(-1.0f, -1.0f);
 	private ImmutableSet<Block> specificSpawnBlocks = ImmutableSet.of();
+	private boolean tickable = true;
 
 	private FeatureSet requiredFeatures = FeatureFlags.VANILLA_FEATURES;
 
@@ -266,6 +267,11 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return this;
 	}
 
+	public FabricEntityTypeBuilder<T> disableTicking() {
+		this.tickable = false;
+		return this;
+	}
+
 	/**
 	 * Creates the entity type.
 	 *
@@ -274,7 +280,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	public EntityType<T> build() {
 		// Modded DFU is a dream, currently not possible without screwing it up.
 
-		return new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates, this.requiredFeatures);
+		return new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates, this.tickable, this.requiredFeatures);
 	}
 
 	/**

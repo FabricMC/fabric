@@ -34,32 +34,33 @@ import net.minecraft.resource.featuretoggle.FeatureSet;
  */
 @ApiStatus.Experimental
 public class FabricItemGroupEntries implements ItemGroup.Entries {
-	private final FeatureSet enabledFeatures;
+	private final ItemGroup.class_8128 context;
 	private final List<ItemStack> displayStacks;
 	private final List<ItemStack> searchTabStacks;
 
-	private final boolean showOpRestrictedItems;
-
 	@ApiStatus.Internal
-	public FabricItemGroupEntries(FeatureSet enabledFeatures, List<ItemStack> displayStacks, List<ItemStack> searchTabStacks, boolean showOpRestrictedItems) {
-		this.enabledFeatures = enabledFeatures;
+	public FabricItemGroupEntries(ItemGroup.class_8128 context, List<ItemStack> displayStacks, List<ItemStack> searchTabStacks) {
+		this.context = context;
 		this.displayStacks = displayStacks;
 		this.searchTabStacks = searchTabStacks;
-		this.showOpRestrictedItems = showOpRestrictedItems;
+	}
+
+	public ItemGroup.class_8128 getContext() {
+		return context;
 	}
 
 	/**
 	 * @return the currently enabled feature set
 	 */
 	public FeatureSet getEnabledFeatures() {
-		return enabledFeatures;
+		return context.enabledFeatures();
 	}
 
 	/**
 	 * @return whether to show items restricted to operators, such as command blocks
 	 */
 	public boolean shouldShowOpRestrictedItems() {
-		return showOpRestrictedItems;
+		return context.hasPermissions();
 	}
 
 	/**
@@ -383,7 +384,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	 * @see Item#isEnabled
 	 */
 	private boolean isEnabled(ItemStack stack) {
-		return stack.getItem().isEnabled(enabledFeatures);
+		return stack.getItem().isEnabled(getEnabledFeatures());
 	}
 
 	private Collection<ItemStack> getEnabledStacks(Collection<ItemStack> newStacks) {

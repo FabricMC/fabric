@@ -14,7 +14,7 @@ transitive-accessible field net/minecraft/item/ItemGroups INGREDIENTS Lnet/minec
 transitive-accessible field net/minecraft/item/ItemGroups SPAWN_EGGS Lnet/minecraft/item/ItemGroup;
 transitive-accessible field net/minecraft/item/ItemGroups OPERATOR Lnet/minecraft/item/ItemGroup;
 transitive-accessible field net/minecraft/item/ItemGroups INVENTORY Lnet/minecraft/item/ItemGroup;
-
+accessible field net/minecraft/item/ItemGroups field_42466 Lnet/minecraft/item/ItemGroup$class_8128;
 transitive-accessible class net/minecraft/item/ItemGroup$StackVisibility
 
 transitive-accessible class net/minecraft/item/ItemGroup$Entries

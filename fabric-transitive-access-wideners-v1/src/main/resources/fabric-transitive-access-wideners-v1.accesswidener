@@ -28,15 +28,6 @@ transitive-accessible field net/minecraft/loot/LootPool bonusRolls Lnet/minecraf
 transitive-accessible field net/minecraft/loot/LootTable pools [Lnet/minecraft/loot/LootPool;
 transitive-accessible field net/minecraft/loot/LootTable functions [Lnet/minecraft/loot/function/LootFunction;
 
-# Creating custom damage sources
-transitive-accessible method net/minecraft/entity/damage/DamageSource <init> (Ljava/lang/String;)V
-transitive-accessible method net/minecraft/entity/damage/DamageSource setBypassesArmor ()Lnet/minecraft/entity/damage/DamageSource;
-transitive-accessible method net/minecraft/entity/damage/DamageSource setFallingBlock ()Lnet/minecraft/entity/damage/DamageSource;
-transitive-accessible method net/minecraft/entity/damage/DamageSource setOutOfWorld ()Lnet/minecraft/entity/damage/DamageSource;
-transitive-accessible method net/minecraft/entity/damage/DamageSource setUnblockable ()Lnet/minecraft/entity/damage/DamageSource;
-transitive-accessible method net/minecraft/entity/damage/DamageSource setBypassesProtection ()Lnet/minecraft/entity/damage/DamageSource;
-transitive-accessible method net/minecraft/entity/damage/DamageSource setFire ()Lnet/minecraft/entity/damage/DamageSource;
-
 # Villager trade factories
 transitive-accessible class net/minecraft/village/TradeOffers$BuyForOneEmeraldFactory
 transitive-accessible class net/minecraft/village/TradeOffers$SellItemFactory
@@ -284,8 +275,10 @@ transitive-accessible field net/minecraft/client/render/RenderPhase ENTITY_GLINT
 transitive-accessible field net/minecraft/client/render/RenderPhase DIRECT_ENTITY_GLINT_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase CRUMBLING_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase TEXT_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
+transitive-accessible field net/minecraft/client/render/RenderPhase field_42517 Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase TEXT_INTENSITY_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase TRANSPARENT_TEXT_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
+transitive-accessible field net/minecraft/client/render/RenderPhase field_42518 Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase TRANSPARENT_TEXT_INTENSITY_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase LIGHTNING_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase TRIPWIRE_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;

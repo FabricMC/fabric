@@ -63,7 +63,7 @@ public class WaterPotionStorage implements ExtractionOnlyStorage<FluidVariant>, 
 
 	private ItemVariant mapToGlassBottle() {
 		ItemStack newStack = context.getItemVariant().toStack();
-		PotionUtil.setPotion(newStack, Potions.EMPTY);
+		PotionUtil.setPotion(newStack, Potions.field_8984);
 		return ItemVariant.of(Items.GLASS_BOTTLE, newStack.getNbt());
 	}
 

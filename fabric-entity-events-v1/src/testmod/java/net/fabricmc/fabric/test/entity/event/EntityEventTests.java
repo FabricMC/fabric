@@ -23,13 +23,15 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
-import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.class_8111;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -37,8 +39,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -82,7 +82,7 @@ public final class EntityEventTests implements ModInitializer {
 
 		// No fall damage if holding a feather in the main hand
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
-			if (source == DamageSource.FALL && entity.getStackInHand(Hand.MAIN_HAND).isOf(Items.FEATHER)) {
+			if (source.method_48793().matchesKey(class_8111.field_42345) && entity.getStackInHand(Hand.MAIN_HAND).isOf(Items.FEATHER)) {
 				LOGGER.info("Avoided {} of fall damage by holding a feather", amount);
 				return false;
 			}

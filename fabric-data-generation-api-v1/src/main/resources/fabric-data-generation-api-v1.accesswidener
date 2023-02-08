@@ -292,7 +292,7 @@ transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	regist
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	registerCompass	(Lnet/minecraft/item/Item;)V
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	registerClock	(Lnet/minecraft/item/Item;)V
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	uploadArmor	(Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;)V
-transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	method_48742	(Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;)V
+transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	uploadArmor	(Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;)V
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	suffixTrim	(Lnet/minecraft/util/Identifier;Ljava/lang/String;)Lnet/minecraft/util/Identifier;
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	createArmorJson	(Lnet/minecraft/util/Identifier;Ljava/util/Map;Lnet/minecraft/item/ArmorMaterial;)Lcom/google/gson/JsonObject;
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	registerArmor	(Lnet/minecraft/item/ArmorItem;)V
