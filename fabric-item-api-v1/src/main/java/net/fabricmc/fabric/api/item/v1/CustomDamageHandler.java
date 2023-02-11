@@ -16,10 +16,16 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 /**
  * Allows an item to run custom logic when {@link ItemStack#damage(int, LivingEntity, Consumer)} is called.
@@ -38,4 +44,14 @@ public interface CustomDamageHandler {
 	 * @return The amount of damage to pass to vanilla's logic
 	 */
 	int damage(ItemStack stack, int amount, LivingEntity entity, Consumer<LivingEntity> breakCallback);
+
+	/**
+	 * {@return the custom damage handler of the specified item, or {@code null} if it doesn't have one}
+	 *
+	 * @param item the item to query
+	 */
+	static @Nullable CustomDamageHandler get(Item item) {
+		Objects.requireNonNull(item, "Item cannot be null");
+		return ((ItemExtensions) item).fabric_getCustomDamageHandler();
+	}
 }
