@@ -50,7 +50,7 @@ public interface EquipmentSlotProvider {
 	EquipmentSlot getPreferredEquipmentSlot(ItemStack stack);
 
 	/**
-	 * {@return the equipment slot provider of the specified item, or {@code null} if it doesn't have one}
+	 * {@return the equipment slot provider of the specified item, or {@code null} if it doesn't have one}.
 	 *
 	 * @param item the item to query
 	 */

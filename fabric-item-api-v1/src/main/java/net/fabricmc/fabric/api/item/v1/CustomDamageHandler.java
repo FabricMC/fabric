@@ -46,7 +46,7 @@ public interface CustomDamageHandler {
 	int damage(ItemStack stack, int amount, LivingEntity entity, Consumer<LivingEntity> breakCallback);
 
 	/**
-	 * {@return the custom damage handler of the specified item, or {@code null} if it doesn't have one}
+	 * {@return the custom damage handler of the specified item, or {@code null} if it doesn't have one}.
 	 *
 	 * @param item the item to query
 	 */
