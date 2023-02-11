@@ -16,8 +16,15 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
+import java.util.Objects;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 /**
  * A provider for the preferred equipment slot of an item.
@@ -41,4 +48,14 @@ public interface EquipmentSlotProvider {
 	 * @return the preferred equipment slot
 	 */
 	EquipmentSlot getPreferredEquipmentSlot(ItemStack stack);
+
+	/**
+	 * {@return the equipment slot provider of the specified item, or {@code null} if it doesn't have one}
+	 *
+	 * @param item the item to query
+	 */
+	static @Nullable EquipmentSlotProvider get(Item item) {
+		Objects.requireNonNull(item, "Item cannot be null");
+		return ((ItemExtensions) item).fabric_getEquipmentSlotProvider();
+	}
 }
