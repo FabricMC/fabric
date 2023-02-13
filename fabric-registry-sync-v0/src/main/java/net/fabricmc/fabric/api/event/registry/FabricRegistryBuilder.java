@@ -20,12 +20,13 @@ import java.util.EnumSet;
 
 import com.mojang.serialization.Lifecycle;
 
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.DefaultedRegistry;
 import net.minecraft.registry.MutableRegistry;
+import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.SimpleDefaultedRegistry;
 import net.minecraft.registry.SimpleRegistry;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.mixin.registry.sync.RegistriesAccessor;
 
@@ -34,7 +35,8 @@ import net.fabricmc.fabric.mixin.registry.sync.RegistriesAccessor;
  *
  * <pre>
  * {@code
- *  SimpleRegistry<String> registry = FabricRegistryBuilder.createSimple(String.class, new Identifier("registry_sync", "fabric_registry"))
+ *  RegistryKey<Registry<String>> registryKey = RegistryKey.ofRegistry(new Identifier("registry_sync", "fabric_registry"));
+ *  Registry<String> registry = FabricRegistryBuilder.createSimple(registryKey)
  * 													.attribute(RegistryAttribute.SYNCED)
  * 													.buildAndRegister();
  * 	}
@@ -59,12 +61,37 @@ public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	/**
 	 * Create a new {@link FabricRegistryBuilder} using a {@link SimpleRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
-	 * @param registryId The registry {@link Identifier} used as the registry id
+	 * @param registryKey The registry {@link RegistryKey}
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
 	 */
+	public static <T> FabricRegistryBuilder<T, SimpleRegistry<T>> createSimple(RegistryKey<Registry<T>> registryKey) {
+		return from(new SimpleRegistry<>(registryKey, Lifecycle.stable(), false));
+	}
+
+	/**
+	 * Create a new {@link FabricRegistryBuilder} using a {@link DefaultedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
+	 *
+	 * @param registryKey The registry {@link RegistryKey}
+	 * @param defaultId The default registry id
+	 * @param <T> The type stored in the Registry
+	 * @return An instance of FabricRegistryBuilder
+	 */
+	public static <T> FabricRegistryBuilder<T, SimpleDefaultedRegistry<T>> createDefaulted(RegistryKey<Registry<T>> registryKey, Identifier defaultId) {
+		return from(new SimpleDefaultedRegistry<T>(defaultId.toString(), registryKey, Lifecycle.stable(), false));
+	}
+
+	/**
+	 * Create a new {@link FabricRegistryBuilder} using a {@link SimpleRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
+	 *
+	 * @param registryId The registry {@link Identifier} used as the registry id
+	 * @param <T> The type stored in the Registry
+	 * @return An instance of FabricRegistryBuilder
+	 * @deprecated Please migrate to {@link FabricRegistryBuilder#createSimple(RegistryKey)}
+	 */
+	@Deprecated
 	public static <T> FabricRegistryBuilder<T, SimpleRegistry<T>> createSimple(Class<T> type, Identifier registryId) {
-		return from(new SimpleRegistry<T>(RegistryKey.ofRegistry(registryId), Lifecycle.stable(), false));
+		return createSimple(RegistryKey.ofRegistry(registryId));
 	}
 
 	/**
@@ -74,9 +101,11 @@ public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	 * @param defaultId The default registry id
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
+	 * @deprecated Please migrate to {@link FabricRegistryBuilder#createDefaulted(RegistryKey, Identifier)}
 	 */
+	@Deprecated
 	public static <T> FabricRegistryBuilder<T, SimpleDefaultedRegistry<T>> createDefaulted(Class<T> type, Identifier registryId, Identifier defaultId) {
-		return from(new SimpleDefaultedRegistry<T>(defaultId.toString(), RegistryKey.ofRegistry(registryId), Lifecycle.stable(), false));
+		return createDefaulted(RegistryKey.ofRegistry(registryId), defaultId);
 	}
 
 	private final R registry;
