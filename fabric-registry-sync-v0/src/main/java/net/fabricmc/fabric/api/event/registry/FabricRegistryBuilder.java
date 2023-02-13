@@ -33,9 +33,11 @@ import net.fabricmc.fabric.mixin.registry.sync.RegistriesAccessor;
 /**
  * Used to create custom registries, with specified registry attributes.
  *
+ * <p>See the following example for creating a {@link Registry} of String objects.
+ *
  * <pre>
  * {@code
- *  RegistryKey<Registry<String>> registryKey = RegistryKey.ofRegistry(new Identifier("registry_sync", "fabric_registry"));
+ *  RegistryKey<Registry<String>> registryKey = RegistryKey.ofRegistry(new Identifier("modid", "registry_name"));
  *  Registry<String> registry = FabricRegistryBuilder.createSimple(registryKey)
  * 													.attribute(RegistryAttribute.SYNCED)
  * 													.buildAndRegister();
