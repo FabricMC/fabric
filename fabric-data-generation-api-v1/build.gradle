@@ -6,7 +6,8 @@ moduleDependencies(project, [
 		'fabric-registry-sync-v0',
 		'fabric-networking-api-v1',
 		'fabric-resource-conditions-api-v1',
-		'fabric-item-group-api-v1'
+		'fabric-item-group-api-v1',
+		'fabric-recipe-api-v1',
 ])
 
 dependencies {
@@ -52,6 +53,16 @@ loom {
 
 test.dependsOn runDatagen
 
+task datapackZip(type: Zip, dependsOn: runDatagen) {
+	archiveFileName = "${archivesBaseName}-${project.version}-test-datapack.zip"
+	destinationDirectory = layout.buildDirectory.dir('libs')
+
+	from file("src/testmod/generated")
+	from file("pack.mcmeta")
+}
+
+build.dependsOn datapackZip
+
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
@@ -62,7 +73,7 @@ import java.util.zip.ZipFile
 
 task generateAccessWidener() {
 	doLast {
-		File inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.commonJar.toFile()
+		File inputJar = loom.namedMinecraftProvider.parentMinecraftProvider.commonJar.path.toFile()
 		String accessWidener = "accessWidener\tv2\tnamed\n"
 		accessWidener += "\n"
 		accessWidener += "# DO NOT EDIT BY HAND! This file is generated automatically.\n"

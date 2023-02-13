@@ -28,6 +28,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.resource.ResourceFinder;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.TestCommand;
@@ -58,6 +59,10 @@ public final class FabricGameTestHelper {
 	public static final boolean COMMAND_ENABLED = Boolean.parseBoolean(System.getProperty("fabric-api.gametest.command", FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT ? "true" : "false"));
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricGameTestHelper.class);
+
+	private static final String GAMETEST_STRUCTURE_PATH = "gametest/structures";
+
+	public static final ResourceFinder GAMETEST_STRUCTURE_FINDER = new ResourceFinder(GAMETEST_STRUCTURE_PATH, ".snbt");
 
 	private FabricGameTestHelper() {
 	}

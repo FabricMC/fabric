@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-/**
- * Contains remap state trackers.
- */
-@ApiStatus.Internal
-package net.fabricmc.fabric.impl.registry.sync.trackers;
+package net.fabricmc.fabric.mixin.datagen.loot;
 
-import org.jetbrains.annotations.ApiStatus;
+import org.spongepowered.asm.mixin.Mixin;
+
+import net.minecraft.data.server.loottable.BlockLootTableGenerator;
+
+import net.fabricmc.fabric.api.datagen.v1.loot.FabricBlockLootTableGenerator;
+
+@Mixin(BlockLootTableGenerator.class)
+public class BlockLootTableGeneratorMixin implements FabricBlockLootTableGenerator {
+}

@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-/**
- * Contains the Registry Sync implementation.
- */
-@ApiStatus.Internal
-package net.fabricmc.fabric.impl.registry.sync;
+package net.fabricmc.fabric.impl.recipe.ingredient;
 
-import org.jetbrains.annotations.ApiStatus;
+import java.util.Set;
+
+import net.minecraft.network.PacketEncoder;
+import net.minecraft.util.Identifier;
+
+/**
+ * Implemented on {@link PacketEncoder} to store which custom ingredients the client supports.
+ */
+public interface SupportedIngredientsPacketEncoder {
+	void fabric_setSupportedCustomIngredients(Set<Identifier> supportedCustomIngredients);
+}

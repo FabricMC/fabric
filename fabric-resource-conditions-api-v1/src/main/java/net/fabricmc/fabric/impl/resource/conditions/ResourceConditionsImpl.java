@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -28,11 +29,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -48,7 +49,6 @@ import net.minecraft.util.JsonHelper;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.loader.api.FabricLoader;
 
-@ApiStatus.Internal
 public final class ResourceConditionsImpl {
 	public static final Logger LOGGER = LoggerFactory.getLogger("Fabric Resource Conditions");
 
@@ -128,6 +128,55 @@ public final class ResourceConditionsImpl {
 		};
 	}
 
+	public static ConditionJsonProvider featuresEnabled(Identifier id, final FeatureFlag... features) {
+		final Set<Identifier> ids = new TreeSet<>(FeatureFlags.FEATURE_MANAGER.toId(FeatureFlags.FEATURE_MANAGER.featureSetOf(features)));
+
+		return new ConditionJsonProvider() {
+			@Override
+			public Identifier getConditionId() {
+				return id;
+			}
+
+			@Override
+			public void writeParameters(JsonObject object) {
+				JsonArray array = new JsonArray();
+
+				for (Identifier id : ids) {
+					array.add(id.toString());
+				}
+
+				object.add("features", array);
+			}
+		};
+	}
+
+	public static ConditionJsonProvider registryContains(Identifier id, Identifier registry, Identifier... entries) {
+		Preconditions.checkArgument(entries.length > 0, "Must register at least one entry.");
+
+		return new ConditionJsonProvider() {
+			@Override
+			public Identifier getConditionId() {
+				return id;
+			}
+
+			@Override
+			public void writeParameters(JsonObject object) {
+				JsonArray array = new JsonArray();
+
+				for (Identifier entry : entries) {
+					array.add(entry.toString());
+				}
+
+				object.add("values", array);
+
+				if (!RegistryKeys.ITEM.getValue().equals(registry)) {
+					// Skip if this is the default (minecraft:item)
+					object.addProperty("registry", registry.toString());
+				}
+			}
+		};
+	}
+
 	// Condition implementations
 
 	public static boolean modsLoadedMatch(JsonObject object, boolean and) {
@@ -165,10 +214,6 @@ public final class ResourceConditionsImpl {
 		}
 
 		LOADED_TAGS.set(tagMap);
-	}
-
-	public static void clearTags() {
-		LOADED_TAGS.remove();
 	}
 
 	public static boolean tagsPopulatedMatch(JsonObject object) {
@@ -210,29 +255,7 @@ public final class ResourceConditionsImpl {
 		return true;
 	}
 
-	public static ConditionJsonProvider featuresEnabled(Identifier id, final FeatureFlag... features) {
-		final Set<Identifier> ids = new TreeSet<>(FeatureFlags.FEATURE_MANAGER.toId(FeatureFlags.FEATURE_MANAGER.featureSetOf(features)));
-
-		return new ConditionJsonProvider() {
-			@Override
-			public Identifier getConditionId() {
-				return id;
-			}
-
-			@Override
-			public void writeParameters(JsonObject object) {
-				JsonArray array = new JsonArray();
-
-				for (Identifier id : ids) {
-					array.add(id.toString());
-				}
-
-				object.add("features", array);
-			}
-		};
-	}
-
-	public static ThreadLocal<FeatureSet> currentFeature = ThreadLocal.withInitial(() -> FeatureFlags.DEFAULT_ENABLED_FEATURES);
+	public static final ThreadLocal<FeatureSet> CURRENT_FEATURES = ThreadLocal.withInitial(() -> FeatureFlags.DEFAULT_ENABLED_FEATURES);
 
 	public static boolean featuresEnabledMatch(JsonObject object) {
 		List<Identifier> featureIds = JsonHelper.getArray(object, "features").asList().stream().map((element) -> new Identifier(element.getAsString())).toList();
@@ -240,6 +263,45 @@ public final class ResourceConditionsImpl {
 			throw new JsonParseException("Unknown feature flag: " + id);
 		});
 
-		return set.isSubsetOf(currentFeature.get());
+		return set.isSubsetOf(CURRENT_FEATURES.get());
+	}
+
+	public static final ThreadLocal<DynamicRegistryManager.Immutable> CURRENT_REGISTRIES = new ThreadLocal<>();
+
+	public static boolean registryContainsMatch(JsonObject object) {
+		String key = JsonHelper.getString(object, "registry", "minecraft:item");
+		RegistryKey<? extends Registry<?>> registryRef = RegistryKey.ofRegistry(new Identifier(key));
+		return registryContainsMatch(object, registryRef);
+	}
+
+	private static <E> boolean registryContainsMatch(JsonObject object, RegistryKey<? extends Registry<? extends E>> registryRef) {
+		JsonArray array = JsonHelper.getArray(object, "values");
+		DynamicRegistryManager.Immutable registries = CURRENT_REGISTRIES.get();
+
+		if (registries == null) {
+			LOGGER.warn("Can't retrieve current registries. Failing registry_contains resource condition check.");
+			return false;
+		}
+
+		Optional<Registry<E>> registry = registries.getOptional(registryRef);
+
+		if (registry.isEmpty()) {
+			// No such registry
+			return array.isEmpty();
+		}
+
+		for (JsonElement element : array) {
+			if (element.isJsonPrimitive()) {
+				Identifier id = new Identifier(element.getAsString());
+
+				if (!registry.get().containsId(id)) {
+					return false;
+				}
+			} else {
+				throw new JsonParseException("Invalid registry entry id: " + element);
+			}
+		}
+
+		return true;
 	}
 }

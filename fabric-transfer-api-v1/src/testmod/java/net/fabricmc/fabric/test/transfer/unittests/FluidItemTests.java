@@ -50,7 +50,7 @@ class FluidItemTests {
 		testSimpleContentsQuery();
 
 		// Ensure this doesn't throw an error due to the empty stack.
-		assertEquals(null, ContainerItemContext.withInitial(ItemStack.EMPTY).find(FluidStorage.ITEM));
+		assertEquals(null, ContainerItemContext.withConstant(ItemStack.EMPTY).find(FluidStorage.ITEM));
 	}
 
 	private static void testFluidItemApi() {
@@ -174,7 +174,7 @@ class FluidItemTests {
 		assertEquals(
 				new ResourceAmount<>(FluidVariant.of(Fluids.WATER), BUCKET),
 				StorageUtil.findExtractableContent(
-						ContainerItemContext.withInitial(new ItemStack(Items.WATER_BUCKET)).find(FluidStorage.ITEM),
+						ContainerItemContext.withConstant(new ItemStack(Items.WATER_BUCKET)).find(FluidStorage.ITEM),
 						null
 				)
 		);
@@ -182,7 +182,7 @@ class FluidItemTests {
 		assertEquals(
 				null,
 				StorageUtil.findExtractableContent(
-						ContainerItemContext.withInitial(new ItemStack(Items.WATER_BUCKET)).find(FluidStorage.ITEM),
+						ContainerItemContext.withConstant(new ItemStack(Items.WATER_BUCKET)).find(FluidStorage.ITEM),
 						FluidVariant::hasNbt, // Only allow NBT -> won't match anything.
 						null
 				)

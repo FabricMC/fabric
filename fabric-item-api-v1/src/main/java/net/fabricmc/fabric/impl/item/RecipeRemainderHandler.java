@@ -16,11 +16,8 @@
 
 package net.fabricmc.fabric.impl.item;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.item.ItemStack;
 
-@ApiStatus.Internal
 public class RecipeRemainderHandler {
 	public static final ThreadLocal<ItemStack> REMAINDER_STACK = new ThreadLocal<>();
 }
