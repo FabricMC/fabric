@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -26,8 +28,8 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 
@@ -93,7 +95,7 @@ public class BlockRenderInfo {
 		return 0xFF000000 | blockColorMap.getColor(blockState, blockView, blockPos, colorIndex);
 	}
 
-	boolean shouldDrawFace(Direction face) {
+	boolean shouldDrawFace(@Nullable Direction face) {
 		if (face == null || !enableCulling) {
 			return true;
 		}
