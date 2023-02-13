@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
+import net.minecraft.block.Blocks;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
@@ -107,6 +108,13 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		public void generate(Consumer<RecipeJsonProvider> exporter) {
 			offerPlanksRecipe2(exporter, SIMPLE_BLOCK, ItemTags.ACACIA_LOGS, 1);
+
+			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.LEATHER, 4).input(Items.ITEM_FRAME)
+					.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
+					.offerTo(withConditions(exporter, DefaultResourceConditions.itemsRegistered(Blocks.DIAMOND_BLOCK)));
+			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.LEATHER_BOOTS, 4).input(Items.ITEM_FRAME, 2)
+					.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
+					.offerTo(withConditions(exporter, DefaultResourceConditions.registryContains(BiomeKeys.PLAINS, BiomeKeys.BADLANDS)));
 
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLD_INGOT).input(Items.DIRT).criterion("has_dirt", conditionsFromItem(Items.DIRT)).offerTo(withConditions(exporter, NEVER_LOADED));
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND).input(Items.STICK).criterion("has_stick", conditionsFromItem(Items.STICK)).offerTo(withConditions(exporter, ALWAYS_LOADED));
