@@ -1,4 +1,5 @@
 {
+  "pack.description.modResources": "Mod resources.",
   "pack.source.fabricmod": "Fabric mod",
   "pack.source.builtinMod": "built-in: %s",
   "pack.name.fabricMod": "Fabric Mod \"%s\"",
