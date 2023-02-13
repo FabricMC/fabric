@@ -109,9 +109,9 @@ public final class ServerPlayNetworking {
 			public void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler networkHandler, PacketByteBuf buf, PacketSender sender) {
 				T packet = type.read(buf);
 
-				if (handler.processOnNetworkThread(player, packet, sender)) {
+				if (handler.processOnNetworkThread(packet, player, sender)) {
 					server.execute(() -> {
-						if (networkHandler.getConnection().isOpen()) handler.receive(player, packet, sender);
+						if (networkHandler.getConnection().isOpen()) handler.receive(packet, player, sender);
 					});
 				}
 			}
@@ -220,9 +220,9 @@ public final class ServerPlayNetworking {
 			public void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler networkHandler2, PacketByteBuf buf, PacketSender sender) {
 				T packet = type.read(buf);
 
-				if (handler.processOnNetworkThread(player, packet, sender)) {
+				if (handler.processOnNetworkThread(packet, player, sender)) {
 					server.execute(() -> {
-						if (networkHandler2.getConnection().isOpen()) handler.receive(player, packet, sender);
+						if (networkHandler2.getConnection().isOpen()) handler.receive(packet, player, sender);
 					});
 				}
 			}
@@ -504,12 +504,12 @@ public final class ServerPlayNetworking {
 		 * <p>The server and the network handler can be accessed via {@link ServerPlayerEntity#server}
 		 * and {@link ServerPlayerEntity#networkHandler}, respectively.
 		 *
-		 * @param player the player that received the packet
 		 * @param packet the packet
+		 * @param player the player that received the packet
 		 * @param responseSender the packet sender
 		 * @see FabricPacket
 		 */
-		void receive(ServerPlayerEntity player, T packet, PacketSender responseSender);
+		void receive(T packet, ServerPlayerEntity player, PacketSender responseSender);
 
 		/**
 		 * Processes an incoming packet. This is called on the network thread.
@@ -517,12 +517,12 @@ public final class ServerPlayNetworking {
 		 * This is for advanced users only; for normal uses, {@link #receive} should be
 		 * implemented instead.
 		 *
-		 * @param player the player that received the packet
 		 * @param packet the packet
+		 * @param player the player that received the packet
 		 * @param responseSender the packet sender
 		 * @return whether to proceed to {@link #receive}
 		 */
-		default boolean processOnNetworkThread(ServerPlayerEntity player, T packet, PacketSender responseSender) {
+		default boolean processOnNetworkThread(T packet, ServerPlayerEntity player, PacketSender responseSender) {
 			return true;
 		}
 	}

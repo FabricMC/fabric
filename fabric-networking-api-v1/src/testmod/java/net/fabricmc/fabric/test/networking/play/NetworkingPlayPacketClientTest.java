@@ -32,7 +32,7 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 		});
 	}
 
-	private void receive(MinecraftClient client, ClientPlayerEntity player, NetworkingPlayPacketTest.OverlayPacket packet, PacketSender sender) {
-		client.inGameHud.setOverlayMessage(packet.message(), true);
+	private void receive( NetworkingPlayPacketTest.OverlayPacket packet, ClientPlayerEntity player, PacketSender sender) {
+		MinecraftClient.getInstance().inGameHud.setOverlayMessage(packet.message(), true);
 	}
 }
