@@ -65,3 +65,16 @@ jobs:
           java-version: '17'
       - run: mkdir run && echo "eula=true" >> run/eula.txt
       - run: ./gradlew runProductionAutoTestServer --stacktrace --warning-mode=fail
+
+  check_resources:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'microsoft'
+          java-version: '17'
+      - run: ./gradlew generateResources --stacktrace --warning-mode=fail
+      - run: if [ -n "$(git status --porcelain)" ]; then exit 1; fi
