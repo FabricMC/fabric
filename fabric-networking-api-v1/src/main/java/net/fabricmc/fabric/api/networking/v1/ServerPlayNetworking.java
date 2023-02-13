@@ -73,7 +73,7 @@ public final class ServerPlayNetworking {
 	 * Use {@link #unregisterReceiver(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.
 	 *
 	 * <p>For new code, {@link #registerGlobalReceiver(PacketType, PlayPacketHandler)}
-	 * should be used instead, as it is designed in a way that prevents thread safety issues.
+	 * is preferred, as it is designed in a way that prevents thread safety issues.
 	 *
 	 * @param channelName the id of the channel
 	 * @param channelHandler the handler
@@ -178,7 +178,7 @@ public final class ServerPlayNetworking {
 	 * Use {@link #unregisterReceiver(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.
 	 *
 	 * <p>For new code, {@link #registerReceiver(ServerPlayNetworkHandler, PacketType, PlayPacketHandler)}
-	 * should be used instead, as it is designed in a way that prevents thread safety issues.
+	 * is preferred, as it is designed in a way that prevents thread safety issues.
 	 *
 	 * @param networkHandler the handler
 	 * @param channelName the id of the channel

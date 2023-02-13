@@ -57,14 +57,14 @@ public final class ClientPlayNetworking {
 	 * Registers a handler to a channel.
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
-	 * <p>The handler runs on the network thread. After reading the buffer there, rendering
+	 * <p>The handler runs on the network thread. After reading the buffer there, access to game state
 	 * must be performed in the render thread by calling {@link ThreadExecutor#execute(Runnable)}.
 	 *
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
 	 * Use {@link #unregisterGlobalReceiver(Identifier)} to unregister the existing handler.
 	 *
 	 * <p>For new code, {@link #registerGlobalReceiver(PacketType, PlayPacketHandler)}
-	 * should be used instead, as it is designed in a way that prevents thread safety issues.
+	 * is preferred, as it is designed in a way that prevents thread safety issues.
 	 *
 	 * @param channelName the id of the channel
 	 * @param channelHandler the handler
@@ -164,7 +164,7 @@ public final class ClientPlayNetworking {
 	 * login query has been received, you should use {@link ClientPlayConnectionEvents#INIT} to register the channel handler.
 	 *
 	 * <p>For new code, {@link #registerReceiver(PacketType, PlayPacketHandler)}
-	 * should be used instead, as it is designed in a way that prevents thread safety issues.
+	 * is preferred, as it is designed in a way that prevents thread safety issues.
 	 *
 	 * @param channelName the id of the channel
 	 * @return false if a handler is already registered to the channel
@@ -419,7 +419,7 @@ public final class ClientPlayNetworking {
 	public interface PlayPacketHandler<T extends FabricPacket> {
 		/**
 		 * Handles the incoming packet. This is called on the render thread, and can safely
-		 * call rendering-related methods.
+		 * call client methods.
 		 *
 		 * <p>An example usage of this is to display an overlay message:
 		 * <pre>{@code
