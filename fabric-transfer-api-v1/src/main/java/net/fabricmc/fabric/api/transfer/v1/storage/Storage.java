@@ -168,15 +168,6 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	}
 
 	/**
-	 * @deprecated Use and implement the overload without the transaction parameter.
-	 */
-	@Deprecated(forRemoval = true)
-	@Nullable
-	default StorageView<T> exactView(TransactionContext transaction, T resource) {
-		return exactView(resource);
-	}
-
-	/**
 	 * Return an integer representing the current version of this storage instance to allow for fast change detection:
 	 * if the version hasn't changed since the last time, <b>and the storage instance is the same</b>, the storage has the same contents.
 	 * This can be used to avoid re-scanning the contents of the storage, which could be an expensive operation.

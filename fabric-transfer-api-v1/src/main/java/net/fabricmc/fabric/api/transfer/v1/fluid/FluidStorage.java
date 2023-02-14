@@ -55,7 +55,7 @@ public final class FluidStorage {
 	/**
 	 * Sided block access to fluid variant storages.
 	 * Fluid amounts are always expressed in {@linkplain FluidConstants droplets}.
-	 * The {@code Direction} parameter may never be null.
+	 * The {@code Direction} parameter may be null, meaning that the full inventory (ignoring side restrictions) should be queried.
 	 * Refer to {@link BlockApiLookup} for documentation on how to use this field.
 	 *
 	 * <p>A simple way to expose fluid variant storages for a block entity hierarchy is to extend {@link SidedStorageBlockEntity}.
@@ -68,7 +68,7 @@ public final class FluidStorage {
 	 * On the server thread (i.e. with a server world), all transfer functionality is always supported.
 	 * On the client thread (i.e. with a client world), contents of queried Storages are unreliable and should not be modified.
 	 */
-	public static final BlockApiLookup<Storage<FluidVariant>, Direction> SIDED =
+	public static final BlockApiLookup<Storage<FluidVariant>, @Nullable Direction> SIDED =
 			BlockApiLookup.get(new Identifier("fabric:sided_fluid_storage"), Storage.asClass(), Direction.class);
 
 	/**
