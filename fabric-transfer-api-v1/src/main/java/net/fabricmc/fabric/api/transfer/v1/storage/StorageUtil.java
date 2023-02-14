@@ -124,6 +124,32 @@ public final class StorageUtil {
 	}
 
 	/**
+	 * Try to extract any resource from a storage, up to a maximum amount.
+	 *
+	 * <p>This function will only ever pull from one storage view of the storage, even if multiple storage views contain the same resource.
+	 *
+	 * @param storage The storage, may be null.
+	 * @param maxAmount The maximum to extract.
+	 * @param transaction The transaction this operation is part of.
+	 * @return A non-blank resource and the strictly positive amount of it that was extracted from the storage,
+	 * or {@code null} if none could be found.
+	 */
+	@Nullable
+	public static <T> ResourceAmount<T> extractAny(@Nullable Storage<T> storage, long maxAmount, TransactionContext transaction) {
+		StoragePreconditions.notNegative(maxAmount);
+
+		if (storage == null) return null;
+
+		for (StorageView<T> view : storage.nonEmptyViews()) {
+			T resource = view.getResource();
+			long amount = view.extract(resource, maxAmount, transaction);
+			if (amount > 0) return new ResourceAmount<>(resource, amount);
+		}
+
+		return null;
+	}
+
+	/**
 	 * Try to insert up to some amount of a resource into a list of storage slots, trying to "stack" first,
 	 * i.e. prioritizing slots that already contain the resource.
 	 *
