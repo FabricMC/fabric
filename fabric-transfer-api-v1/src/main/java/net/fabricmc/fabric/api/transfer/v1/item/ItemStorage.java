@@ -32,10 +32,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SidedStorageBlockEntity;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedSlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SidedStorageBlockEntity;
 import net.fabricmc.fabric.impl.transfer.item.ComposterWrapper;
 import net.fabricmc.fabric.mixin.transfer.DoubleInventoryAccessor;
 
@@ -119,10 +121,10 @@ public final class ItemStorage {
 
 					// For double chests, we need to retrieve a wrapper for each part separately.
 					if (inventoryToWrap instanceof DoubleInventoryAccessor accessor) {
-						Storage<ItemVariant> first = InventoryStorage.of(accessor.fabric_getFirst(), direction);
-						Storage<ItemVariant> second = InventoryStorage.of(accessor.fabric_getSecond(), direction);
+						SlottedStorage<ItemVariant> first = InventoryStorage.of(accessor.fabric_getFirst(), direction);
+						SlottedStorage<ItemVariant> second = InventoryStorage.of(accessor.fabric_getSecond(), direction);
 
-						return new CombinedStorage<>(List.of(first, second));
+						return new CombinedSlottedStorage<>(List.of(first, second));
 					}
 				} else {
 					inventoryToWrap = inventory;
