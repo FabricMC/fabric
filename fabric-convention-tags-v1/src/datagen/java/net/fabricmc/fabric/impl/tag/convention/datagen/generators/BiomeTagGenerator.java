@@ -90,7 +90,7 @@ public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilder(ConventionalBiomeTags.EXTREME_HILLS)
 				.add(BiomeKeys.WINDSWEPT_GRAVELLY_HILLS)
 				.add(BiomeKeys.WINDSWEPT_HILLS);
-		getOrCreateTagBuilder(ConventionalBiomeTags.WINDSWEPT)
+		getOrCreateTagBuilder(ConventionalBiomeTags.WINDSWEPT_HILLS)
 				.addOptionalTag(ConventionalBiomeTags.EXTREME_HILLS)
 				.add(BiomeKeys.WINDSWEPT_FOREST)
 				.add(BiomeKeys.WINDSWEPT_SAVANNA);
