@@ -26,7 +26,6 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
-@Deprecated(forRemoval = true)
 public class InitialContentsContainerItemContext implements ContainerItemContext {
 	private final SingleVariantStorage<ItemVariant> backingSlot = new SingleVariantStorage<>() {
 		@Override
