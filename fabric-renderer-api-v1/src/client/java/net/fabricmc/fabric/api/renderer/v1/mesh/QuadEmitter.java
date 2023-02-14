@@ -39,44 +39,11 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
  */
 public interface QuadEmitter extends MutableQuadView {
 	@Override
-	QuadEmitter material(RenderMaterial material);
-
-	@Override
-	QuadEmitter cullFace(Direction face);
-
-	@Override
-	QuadEmitter nominalFace(Direction face);
-
-	@Override
-	QuadEmitter colorIndex(int colorIndex);
-
-	@Override
-	QuadEmitter fromVanilla(int[] quadData, int startIndex, boolean isItem);
-
-	@Override
-	QuadEmitter tag(int tag);
-
-	@Override
 	QuadEmitter pos(int vertexIndex, float x, float y, float z);
 
 	@Override
 	default QuadEmitter pos(int vertexIndex, Vector3f vec) {
 		MutableQuadView.super.pos(vertexIndex, vec);
-		return this;
-	}
-
-	@Override
-	default QuadEmitter normal(int vertexIndex, Vector3f vec) {
-		MutableQuadView.super.normal(vertexIndex, vec);
-		return this;
-	}
-
-	@Override
-	QuadEmitter lightmap(int vertexIndex, int lightmap);
-
-	@Override
-	default QuadEmitter lightmap(int b0, int b1, int b2, int b3) {
-		MutableQuadView.super.lightmap(b0, b1, b2, b3);
 		return this;
 	}
 
@@ -102,6 +69,9 @@ public interface QuadEmitter extends MutableQuadView {
 		return sprite(vertexIndex, spriteIndex, uv.x, uv.y);
 	}
 
+	@Override
+	QuadEmitter spriteBake(int spriteIndex, Sprite sprite, int bakeFlags);
+
 	default QuadEmitter spriteUnitSquare(int spriteIndex) {
 		sprite(0, spriteIndex, 0, 0);
 		sprite(1, spriteIndex, 0, 1);
@@ -111,7 +81,37 @@ public interface QuadEmitter extends MutableQuadView {
 	}
 
 	@Override
-	QuadEmitter spriteBake(int spriteIndex, Sprite sprite, int bakeFlags);
+	QuadEmitter lightmap(int vertexIndex, int lightmap);
+
+	@Override
+	default QuadEmitter lightmap(int b0, int b1, int b2, int b3) {
+		MutableQuadView.super.lightmap(b0, b1, b2, b3);
+		return this;
+	}
+
+	@Override
+	default QuadEmitter normal(int vertexIndex, Vector3f vec) {
+		MutableQuadView.super.normal(vertexIndex, vec);
+		return this;
+	}
+
+	@Override
+	QuadEmitter cullFace(Direction face);
+
+	@Override
+	QuadEmitter nominalFace(Direction face);
+
+	@Override
+	QuadEmitter material(RenderMaterial material);
+
+	@Override
+	QuadEmitter colorIndex(int colorIndex);
+
+	@Override
+	QuadEmitter tag(int tag);
+
+	@Override
+	QuadEmitter fromVanilla(int[] quadData, int startIndex, boolean isItem);
 
 	/**
 	 * Tolerance for determining if the depth parameter to {@link #square(Direction, float, float, float, float, float)}

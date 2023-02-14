@@ -30,28 +30,6 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
  */
 public interface MaterialFinder {
 	/**
-	 * Returns the standard material encoding all
-	 * of the current settings in this finder. The settings in
-	 * this finder are not changed.
-	 *
-	 * <p>Resulting instances can and should be re-used to prevent
-	 * needless memory allocation. {@link Renderer} implementations
-	 * may or may not cache standard material instances.
-	 */
-	RenderMaterial find();
-
-	/**
-	 * Resets this instance to default values. Values will match those
-	 * in effect when an instance is newly obtained via {@link Renderer#materialFinder()}.
-	 */
-	MaterialFinder clear();
-
-	/**
-	 * Reserved for future use.  Behavior for values &gt; 1 is currently undefined.
-	 */
-	MaterialFinder spriteDepth(int depth);
-
-	/**
 	 * Defines how sprite pixels will be blended with the scene.
 	 * Accepts {link @BlockRenderLayer} values and blending behavior
 	 * will emulate the way that Minecraft renders those instances. This does
@@ -82,16 +60,6 @@ public interface MaterialFinder {
 	MaterialFinder disableColorIndex(int spriteIndex, boolean disable);
 
 	/**
-	 * Vertex color(s) will be modified for diffuse shading unless disabled.
-	 */
-	MaterialFinder disableDiffuse(int spriteIndex, boolean disable);
-
-	/**
-	 * Vertex color(s) will be modified for ambient occlusion unless disabled.
-	 */
-	MaterialFinder disableAo(int spriteIndex, boolean disable);
-
-	/**
 	 * When true, sprite texture and color will be rendered at full brightness.
 	 * Lightmap values provided via {@link QuadEmitter#lightmap(int)} will be ignored.
 	 * False by default
@@ -104,4 +72,36 @@ public interface MaterialFinder {
 	 * unless disabled via {@link #disableAo(int, boolean)} and {@link #disableDiffuse(int, boolean)}.
 	 */
 	MaterialFinder emissive(int spriteIndex, boolean isEmissive);
+
+	/**
+	 * Vertex color(s) will be modified for diffuse shading unless disabled.
+	 */
+	MaterialFinder disableDiffuse(int spriteIndex, boolean disable);
+
+	/**
+	 * Vertex color(s) will be modified for ambient occlusion unless disabled.
+	 */
+	MaterialFinder disableAo(int spriteIndex, boolean disable);
+
+	/**
+	 * Reserved for future use.  Behavior for values &gt; 1 is currently undefined.
+	 */
+	MaterialFinder spriteDepth(int depth);
+
+	/**
+	 * Resets this instance to default values. Values will match those
+	 * in effect when an instance is newly obtained via {@link Renderer#materialFinder()}.
+	 */
+	MaterialFinder clear();
+
+	/**
+	 * Returns the standard material encoding all
+	 * of the current settings in this finder. The settings in
+	 * this finder are not changed.
+	 *
+	 * <p>Resulting instances can and should be re-used to prevent
+	 * needless memory allocation. {@link Renderer} implementations
+	 * may or may not cache standard material instances.
+	 */
+	RenderMaterial find();
 }
