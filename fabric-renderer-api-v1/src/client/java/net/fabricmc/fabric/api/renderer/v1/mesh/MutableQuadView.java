@@ -98,79 +98,6 @@ public interface MutableQuadView extends QuadView {
 	int BAKE_NORMALIZED = 32;
 
 	/**
-	 * Assigns a different material to this quad. Useful for transformation of
-	 * existing meshes because lighting and texture blending are controlled by material.
-	 */
-	MutableQuadView material(RenderMaterial material);
-
-	/**
-	 * If non-null, quad is coplanar with a block face which, if known, simplifies
-	 * or shortcuts geometric analysis that might otherwise be needed.
-	 * Set to null if quad is not coplanar or if this is not known.
-	 * Also controls face culling during block rendering.
-	 *
-	 * <p>Null by default.
-	 *
-	 * <p>When called with a non-null value, also sets {@link #nominalFace(Direction)}
-	 * to the same value.
-	 *
-	 * <p>This is different from the value reported by {@link BakedQuad#getFace()}. That value
-	 * is computed based on face geometry and must be non-null in vanilla quads.
-	 * That computed value is returned by {@link #lightFace()}.
-	 */
-	@Nullable
-	MutableQuadView cullFace(@Nullable Direction face);
-
-	/**
-	 * Provides a hint to renderer about the facing of this quad. Not required,
-	 * but if provided can shortcut some geometric analysis if the quad is parallel to a block face.
-	 * Should be the expected value of {@link #lightFace()}. Value will be confirmed
-	 * and if invalid the correct light face will be calculated.
-	 *
-	 * <p>Null by default, and set automatically by {@link #cullFace()}.
-	 *
-	 * <p>Models may also find this useful as the face for texture UV locking and rotation semantics.
-	 *
-	 * <p>Note: This value is not persisted independently when the quad is encoded.
-	 * When reading encoded quads, this value will always be the same as {@link #lightFace()}.
-	 */
-	@Nullable
-	MutableQuadView nominalFace(Direction face);
-
-	/**
-	 * Value functions identically to {@link BakedQuad#getColorIndex()} and is
-	 * used by renderer / model builder in same way. Default value is -1.
-	 */
-	MutableQuadView colorIndex(int colorIndex);
-
-	/**
-	 * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
-	 * This method should be performant whenever caller's vertex representation makes it feasible.
-	 *
-	 * <p>Calling this method does not emit the quad.
-	 *
-	 * @deprecated Use {@link #fromVanilla(BakedQuad, RenderMaterial, Direction)}
-	 * which has better encapsulation and removed outdated item flag
-	 */
-	@Deprecated
-	MutableQuadView fromVanilla(int[] quadData, int startIndex, boolean isItem);
-
-	/**
-	 * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
-	 * This method should be performant whenever caller's vertex representation makes it feasible.
-	 *
-	 * <p>Calling this method does not emit the quad.
-	 */
-	MutableQuadView fromVanilla(BakedQuad quad, RenderMaterial material, Direction cullFace);
-
-	/**
-	 * Encodes an integer tag with this quad that can later be retrieved via
-	 * {@link QuadView#tag()}.  Useful for models that want to perform conditional
-	 * transformation or filtering on static meshes.
-	 */
-	MutableQuadView tag(int tag);
-
-	/**
 	 * Sets the geometric vertex position for the given vertex,
 	 * relative to block origin. (0,0,0).  Minecraft rendering is designed
 	 * for models that fit within a single block space and is recommended
@@ -184,47 +111,6 @@ public interface MutableQuadView extends QuadView {
 	 */
 	default MutableQuadView pos(int vertexIndex, Vector3f vec) {
 		return pos(vertexIndex, vec.x(), vec.y(), vec.z());
-	}
-
-	/**
-	 * Adds a vertex normal. Models that have per-vertex
-	 * normals should include them to get correct lighting when it matters.
-	 * Computed face normal is used when no vertex normal is provided.
-	 *
-	 * <p>{@link Renderer} implementations should honor vertex normals for
-	 * diffuse lighting - modifying vertex color(s) or packing normals in the vertex
-	 * buffer as appropriate for the rendering method/vertex format in effect.
-	 */
-	MutableQuadView normal(int vertexIndex, float x, float y, float z);
-
-	/**
-	 * Same as {@link #normal(int, float, float, float)} but accepts vector type.
-	 */
-	default MutableQuadView normal(int vertexIndex, Vector3f vec) {
-		return normal(vertexIndex, vec.x(), vec.y(), vec.z());
-	}
-
-	/**
-	 * Accept vanilla lightmap values.  Input values will override lightmap values
-	 * computed from world state if input values are higher. Exposed for completeness
-	 * but some rendering implementations with non-standard lighting model may not honor it.
-	 *
-	 * <p>For emissive rendering, it is better to use {@link MaterialFinder#emissive(int, boolean)}.
-	 */
-	MutableQuadView lightmap(int vertexIndex, int lightmap);
-
-	/**
-	 * Convenience: set lightmap for all vertices at once.
-	 *
-	 * <p>For emissive rendering, it is better to use {@link MaterialFinder#emissive(int, boolean)}.
-	 * See {@link #lightmap(int, int)}.
-	 */
-	default MutableQuadView lightmap(int b0, int b1, int b2, int b3) {
-		lightmap(0, b0);
-		lightmap(1, b1);
-		lightmap(2, b2);
-		lightmap(3, b3);
-		return this;
 	}
 
 	/**
@@ -265,4 +151,118 @@ public interface MutableQuadView extends QuadView {
 	 * Behavior for {@code spriteIndex > 0} is currently undefined.
 	 */
 	MutableQuadView spriteBake(int spriteIndex, Sprite sprite, int bakeFlags);
+
+	/**
+	 * Accept vanilla lightmap values.  Input values will override lightmap values
+	 * computed from world state if input values are higher. Exposed for completeness
+	 * but some rendering implementations with non-standard lighting model may not honor it.
+	 *
+	 * <p>For emissive rendering, it is better to use {@link MaterialFinder#emissive(int, boolean)}.
+	 */
+	MutableQuadView lightmap(int vertexIndex, int lightmap);
+
+	/**
+	 * Convenience: set lightmap for all vertices at once.
+	 *
+	 * <p>For emissive rendering, it is better to use {@link MaterialFinder#emissive(int, boolean)}.
+	 * See {@link #lightmap(int, int)}.
+	 */
+	default MutableQuadView lightmap(int b0, int b1, int b2, int b3) {
+		lightmap(0, b0);
+		lightmap(1, b1);
+		lightmap(2, b2);
+		lightmap(3, b3);
+		return this;
+	}
+
+	/**
+	 * Adds a vertex normal. Models that have per-vertex
+	 * normals should include them to get correct lighting when it matters.
+	 * Computed face normal is used when no vertex normal is provided.
+	 *
+	 * <p>{@link Renderer} implementations should honor vertex normals for
+	 * diffuse lighting - modifying vertex color(s) or packing normals in the vertex
+	 * buffer as appropriate for the rendering method/vertex format in effect.
+	 */
+	MutableQuadView normal(int vertexIndex, float x, float y, float z);
+
+	/**
+	 * Same as {@link #normal(int, float, float, float)} but accepts vector type.
+	 */
+	default MutableQuadView normal(int vertexIndex, Vector3f vec) {
+		return normal(vertexIndex, vec.x(), vec.y(), vec.z());
+	}
+
+	/**
+	 * If non-null, quad is coplanar with a block face which, if known, simplifies
+	 * or shortcuts geometric analysis that might otherwise be needed.
+	 * Set to null if quad is not coplanar or if this is not known.
+	 * Also controls face culling during block rendering.
+	 *
+	 * <p>Null by default.
+	 *
+	 * <p>When called with a non-null value, also sets {@link #nominalFace(Direction)}
+	 * to the same value.
+	 *
+	 * <p>This is different from the value reported by {@link BakedQuad#getFace()}. That value
+	 * is computed based on face geometry and must be non-null in vanilla quads.
+	 * That computed value is returned by {@link #lightFace()}.
+	 */
+	@Nullable
+	MutableQuadView cullFace(@Nullable Direction face);
+
+	/**
+	 * Provides a hint to renderer about the facing of this quad. Not required,
+	 * but if provided can shortcut some geometric analysis if the quad is parallel to a block face.
+	 * Should be the expected value of {@link #lightFace()}. Value will be confirmed
+	 * and if invalid the correct light face will be calculated.
+	 *
+	 * <p>Null by default, and set automatically by {@link #cullFace()}.
+	 *
+	 * <p>Models may also find this useful as the face for texture UV locking and rotation semantics.
+	 *
+	 * <p>Note: This value is not persisted independently when the quad is encoded.
+	 * When reading encoded quads, this value will always be the same as {@link #lightFace()}.
+	 */
+	@Nullable
+	MutableQuadView nominalFace(Direction face);
+
+	/**
+	 * Assigns a different material to this quad. Useful for transformation of
+	 * existing meshes because lighting and texture blending are controlled by material.
+	 */
+	MutableQuadView material(RenderMaterial material);
+
+	/**
+	 * Value functions identically to {@link BakedQuad#getColorIndex()} and is
+	 * used by renderer / model builder in same way. Default value is -1.
+	 */
+	MutableQuadView colorIndex(int colorIndex);
+
+	/**
+	 * Encodes an integer tag with this quad that can later be retrieved via
+	 * {@link QuadView#tag()}.  Useful for models that want to perform conditional
+	 * transformation or filtering on static meshes.
+	 */
+	MutableQuadView tag(int tag);
+
+	/**
+	 * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
+	 * This method should be performant whenever caller's vertex representation makes it feasible.
+	 *
+	 * <p>Calling this method does not emit the quad.
+	 *
+	 * @deprecated Use {@link #fromVanilla(BakedQuad, RenderMaterial, Direction)}
+	 * which has better encapsulation and removed outdated item flag
+	 */
+	@Deprecated
+	MutableQuadView fromVanilla(int[] quadData, int startIndex, boolean isItem);
+
+	/**
+	 * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
+	 * This method should be performant whenever caller's vertex representation makes it feasible.
+	 *
+	 * <p>Calling this method does not emit the quad.
+	 */
+	MutableQuadView fromVanilla(BakedQuad quad, RenderMaterial material, Direction cullFace);
 }

@@ -70,10 +70,6 @@ public abstract class RenderMaterialImpl {
 		return (bits & COLOR_DISABLE_FLAG) != 0;
 	}
 
-	public int spriteDepth() {
-		return 1;
-	}
-
 	public boolean emissive(int textureIndex) {
 		return (bits & EMISSIVE_FLAG) != 0;
 	}
@@ -84,6 +80,10 @@ public abstract class RenderMaterialImpl {
 
 	public boolean disableAo(int textureIndex) {
 		return (bits & AO_FLAG) != 0;
+	}
+
+	public int spriteDepth() {
+		return 1;
 	}
 
 	public static class Value extends RenderMaterialImpl implements RenderMaterial {
@@ -98,17 +98,6 @@ public abstract class RenderMaterialImpl {
 
 	public static class Finder extends RenderMaterialImpl implements MaterialFinder {
 		@Override
-		public RenderMaterial find() {
-			return VALUES[bits];
-		}
-
-		@Override
-		public MaterialFinder clear() {
-			bits = 0;
-			return this;
-		}
-
-		@Override
 		public MaterialFinder blendMode(int textureIndex, BlendMode blendMode) {
 			if (blendMode == null) {
 				blendMode = BlendMode.DEFAULT;
@@ -121,13 +110,6 @@ public abstract class RenderMaterialImpl {
 		@Override
 		public MaterialFinder disableColorIndex(int textureIndex, boolean disable) {
 			bits = disable ? (bits | COLOR_DISABLE_FLAG) : (bits & ~COLOR_DISABLE_FLAG);
-			return this;
-		}
-
-		@Override
-		public MaterialFinder spriteDepth(int depth) {
-			Preconditions.checkArgument(depth == 1, "Unsupported sprite depth: %s", depth);
-
 			return this;
 		}
 
@@ -147,6 +129,24 @@ public abstract class RenderMaterialImpl {
 		public MaterialFinder disableAo(int textureIndex, boolean disable) {
 			bits = disable ? (bits | AO_FLAG) : (bits & ~AO_FLAG);
 			return this;
+		}
+
+		@Override
+		public MaterialFinder spriteDepth(int depth) {
+			Preconditions.checkArgument(depth == 1, "Unsupported sprite depth: %s", depth);
+
+			return this;
+		}
+
+		@Override
+		public MaterialFinder clear() {
+			bits = 0;
+			return this;
+		}
+
+		@Override
+		public RenderMaterial find() {
+			return VALUES[bits];
 		}
 	}
 }
