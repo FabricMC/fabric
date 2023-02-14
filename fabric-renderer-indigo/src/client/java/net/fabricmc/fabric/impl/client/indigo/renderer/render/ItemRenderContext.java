@@ -185,13 +185,13 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private void colorizeQuad(MutableQuadViewImpl q, int colorIndex) {
 		if (colorIndex == -1) {
 			for (int i = 0; i < 4; i++) {
-				q.spriteColor(i, 0, ColorHelper.swapRedBlueIfNeeded(q.spriteColor(i, 0)));
+				q.color(i, ColorHelper.swapRedBlueIfNeeded(q.color(i)));
 			}
 		} else {
 			final int itemColor = 0xFF000000 | colorMap.getColor(itemStack, colorIndex);
 
 			for (int i = 0; i < 4; i++) {
-				q.spriteColor(i, 0, ColorHelper.swapRedBlueIfNeeded(ColorHelper.multiplyColor(itemColor, q.spriteColor(i, 0))));
+				q.color(i, ColorHelper.swapRedBlueIfNeeded(ColorHelper.multiplyColor(itemColor, q.color(i))));
 			}
 		}
 	}
@@ -225,10 +225,10 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 		final RenderMaterialImpl.Value mat = quad.material();
 
-		final int colorIndex = mat.disableColorIndex(0) ? -1 : quad.colorIndex();
-		final BlendMode blendMode = mat.blendMode(0);
+		final int colorIndex = mat.disableColorIndex() ? -1 : quad.colorIndex();
+		final BlendMode blendMode = mat.blendMode();
 
-		if (mat.emissive(0)) {
+		if (mat.emissive()) {
 			renderQuadEmissive(quad, blendMode, colorIndex);
 		} else {
 			renderQuad(quad, blendMode, colorIndex);

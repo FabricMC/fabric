@@ -29,8 +29,6 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_U;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_X;
 
-import com.google.common.base.Preconditions;
-
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
@@ -76,17 +74,13 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl spriteColor(int vertexIndex, int spriteIndex, int color) {
-		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
-
+	public MutableQuadViewImpl color(int vertexIndex, int color) {
 		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_COLOR] = color;
 		return this;
 	}
 
 	@Override
-	public MutableQuadViewImpl sprite(int vertexIndex, int spriteIndex, float u, float v) {
-		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
-
+	public MutableQuadViewImpl uv(int vertexIndex, float u, float v) {
 		final int i = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_U;
 		data[i] = Float.floatToRawIntBits(u);
 		data[i + 1] = Float.floatToRawIntBits(v);
@@ -94,10 +88,8 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl spriteBake(int spriteIndex, Sprite sprite, int bakeFlags) {
-		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
-
-		TextureHelper.bakeSprite(this, spriteIndex, sprite, bakeFlags);
+	public MutableQuadViewImpl spriteBake(Sprite sprite, int bakeFlags) {
+		TextureHelper.bakeSprite(this, sprite, bakeFlags);
 		return this;
 	}
 
@@ -172,12 +164,8 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		return this;
 	}
 
-	/**
-	 * @deprecated will be removed in 1.17 cycle - see docs in interface
-	 */
-	@Deprecated
 	@Override
-	public final MutableQuadViewImpl fromVanilla(int[] quadData, int startIndex, boolean isItem) {
+	public final MutableQuadViewImpl fromVanilla(int[] quadData, int startIndex) {
 		System.arraycopy(quadData, startIndex, data, baseIndex + HEADER_STRIDE, QUAD_STRIDE);
 		isGeometryInvalid = true;
 		return this;
@@ -185,18 +173,17 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public final MutableQuadViewImpl fromVanilla(BakedQuad quad, RenderMaterial material, Direction cullFace) {
-		System.arraycopy(quad.getVertexData(), 0, data, baseIndex + HEADER_STRIDE, QUAD_STRIDE);
+		fromVanilla(quad.getVertexData(), 0);
 		data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(0, cullFace);
 		nominalFace(quad.getFace());
 		colorIndex(quad.getColorIndex());
 
 		if (!quad.hasShade()) {
-			material = RenderMaterialImpl.setDisableDiffuse((Value) material, 0, true);
+			material = RenderMaterialImpl.setDisableDiffuse((Value) material, true);
 		}
 
 		material(material);
 		tag(0);
-		isGeometryInvalid = true;
 		return this;
 	}
 }

@@ -76,9 +76,10 @@ public interface RenderMaterial {
 	Identifier MATERIAL_STANDARD = new Identifier("fabric", "standard");
 
 	/**
-	 * How many sprite color/uv coordinates are in the material.
-	 * Behavior for values &gt; 1 is currently undefined.
-	 * See {@link MaterialFinder#spriteDepth(int)}
+	 * Do not use. Always returns 1.
 	 */
-	int spriteDepth();
+	@Deprecated
+	default int spriteDepth() {
+		return 1;
+	}
 }

@@ -42,23 +42,12 @@ public interface RenderContext {
 	Consumer<Mesh> meshConsumer();
 
 	/**
-	 * Fabric causes vanilla baked models to send themselves
-	 * via this interface. Can also be used by compound models that contain a mix
-	 * of vanilla baked models, packaged quads and/or dynamic elements.
-	 *
-	 * @deprecated Prefer using the more flexible {@link #bakedModelConsumer}.
-	 */
-	@Deprecated
-	default Consumer<BakedModel> fallbackConsumer() {
-		// This default implementation relies on implementors overriding bakedModelConsumer().
-		return bakedModelConsumer();
-	}
-
-	/**
 	 * Fallback consumer that can process a vanilla {@link BakedModel}.
 	 * Fabric causes vanilla baked models to send themselves
 	 * via this interface. Can also be used by compound models that contain a mix
 	 * of vanilla baked models, packaged quads and/or dynamic elements.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
 	default BakedModelConsumer bakedModelConsumer() {
 		// Default implementation is provided for compat with older renderer implementations,
@@ -112,6 +101,19 @@ public interface RenderContext {
 	 * MUST be called before exiting from {@link FabricBakedModel} .emit... methods.
 	 */
 	void popTransform();
+
+	/**
+	 * Fabric causes vanilla baked models to send themselves
+	 * via this interface. Can also be used by compound models that contain a mix
+	 * of vanilla baked models, packaged quads and/or dynamic elements.
+	 *
+	 * @deprecated Prefer using the more flexible {@link #bakedModelConsumer}.
+	 */
+	@Deprecated
+	default Consumer<BakedModel> fallbackConsumer() {
+		// This default implementation relies on implementors overriding bakedModelConsumer().
+		return bakedModelConsumer();
+	}
 
 	interface BakedModelConsumer extends Consumer<BakedModel> {
 		/**

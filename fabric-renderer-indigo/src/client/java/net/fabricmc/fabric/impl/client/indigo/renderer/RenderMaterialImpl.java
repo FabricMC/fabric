@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer;
 
-import com.google.common.base.Preconditions;
-
 import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
@@ -52,8 +50,8 @@ public abstract class RenderMaterialImpl {
 		return VALUES[index];
 	}
 
-	public static Value setDisableDiffuse(Value material, int textureIndex, boolean disable) {
-		if (material.disableDiffuse(textureIndex) != disable) {
+	public static Value setDisableDiffuse(Value material, boolean disable) {
+		if (material.disableDiffuse() != disable) {
 			return byIndex(disable ? (material.bits | DIFFUSE_FLAG) : (material.bits & ~DIFFUSE_FLAG));
 		}
 
@@ -62,28 +60,24 @@ public abstract class RenderMaterialImpl {
 
 	protected int bits;
 
-	public BlendMode blendMode(int textureIndex) {
+	public BlendMode blendMode() {
 		return BLEND_MODES[bits & BLEND_MODE_MASK];
 	}
 
-	public boolean disableColorIndex(int textureIndex) {
+	public boolean disableColorIndex() {
 		return (bits & COLOR_DISABLE_FLAG) != 0;
 	}
 
-	public boolean emissive(int textureIndex) {
+	public boolean emissive() {
 		return (bits & EMISSIVE_FLAG) != 0;
 	}
 
-	public boolean disableDiffuse(int textureIndex) {
+	public boolean disableDiffuse() {
 		return (bits & DIFFUSE_FLAG) != 0;
 	}
 
-	public boolean disableAo(int textureIndex) {
+	public boolean disableAo() {
 		return (bits & AO_FLAG) != 0;
-	}
-
-	public int spriteDepth() {
-		return 1;
 	}
 
 	public static class Value extends RenderMaterialImpl implements RenderMaterial {
@@ -98,7 +92,7 @@ public abstract class RenderMaterialImpl {
 
 	public static class Finder extends RenderMaterialImpl implements MaterialFinder {
 		@Override
-		public MaterialFinder blendMode(int textureIndex, BlendMode blendMode) {
+		public MaterialFinder blendMode(BlendMode blendMode) {
 			if (blendMode == null) {
 				blendMode = BlendMode.DEFAULT;
 			}
@@ -108,33 +102,26 @@ public abstract class RenderMaterialImpl {
 		}
 
 		@Override
-		public MaterialFinder disableColorIndex(int textureIndex, boolean disable) {
+		public MaterialFinder disableColorIndex(boolean disable) {
 			bits = disable ? (bits | COLOR_DISABLE_FLAG) : (bits & ~COLOR_DISABLE_FLAG);
 			return this;
 		}
 
 		@Override
-		public MaterialFinder emissive(int textureIndex, boolean isEmissive) {
+		public MaterialFinder emissive(boolean isEmissive) {
 			bits = isEmissive ? (bits | EMISSIVE_FLAG) : (bits & ~EMISSIVE_FLAG);
 			return this;
 		}
 
 		@Override
-		public MaterialFinder disableDiffuse(int textureIndex, boolean disable) {
+		public MaterialFinder disableDiffuse(boolean disable) {
 			bits = disable ? (bits | DIFFUSE_FLAG) : (bits & ~DIFFUSE_FLAG);
 			return this;
 		}
 
 		@Override
-		public MaterialFinder disableAo(int textureIndex, boolean disable) {
+		public MaterialFinder disableAo(boolean disable) {
 			bits = disable ? (bits | AO_FLAG) : (bits & ~AO_FLAG);
-			return this;
-		}
-
-		@Override
-		public MaterialFinder spriteDepth(int depth) {
-			Preconditions.checkArgument(depth == 1, "Unsupported sprite depth: %s", depth);
-
 			return this;
 		}
 

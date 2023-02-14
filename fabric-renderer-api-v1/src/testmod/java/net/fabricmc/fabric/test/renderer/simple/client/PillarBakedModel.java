@@ -89,8 +89,8 @@ public class PillarBakedModel implements BakedModel, FabricBakedModel {
 			}
 
 			emitter.square(side, 0, 0, 1, 1, 0);
-			emitter.spriteBake(0, sprites[texture.ordinal()], MutableQuadView.BAKE_LOCK_UV);
-			emitter.spriteColor(0, -1, -1, -1, -1);
+			emitter.spriteBake(sprites[texture.ordinal()], MutableQuadView.BAKE_LOCK_UV);
+			emitter.color(-1, -1, -1, -1);
 			emitter.emit();
 		}
 	}

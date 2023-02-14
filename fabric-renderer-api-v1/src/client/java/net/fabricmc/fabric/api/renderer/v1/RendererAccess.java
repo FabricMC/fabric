@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.renderer.v1;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.impl.renderer.RendererAccessImpl;
@@ -23,6 +24,7 @@ import net.fabricmc.fabric.impl.renderer.RendererAccessImpl;
 /**
  * Registration and access for rendering extensions.
  */
+@ApiStatus.NonExtendable
 public interface RendererAccess {
 	RendererAccess INSTANCE = RendererAccessImpl.INSTANCE;
 

@@ -30,9 +30,11 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Y;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Z;
 
-import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -115,7 +117,7 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	public boolean hasShade() {
-		return !material().disableDiffuse(0);
+		return !material().disableDiffuse();
 	}
 
 	@Override
@@ -150,23 +152,17 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
-	public int spriteColor(int vertexIndex, int spriteIndex) {
-		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
-
+	public int color(int vertexIndex) {
 		return data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_COLOR];
 	}
 
 	@Override
-	public float spriteU(int vertexIndex, int spriteIndex) {
-		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
-
+	public float u(int vertexIndex) {
 		return Float.intBitsToFloat(data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_U]);
 	}
 
 	@Override
-	public float spriteV(int vertexIndex, int spriteIndex) {
-		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
-
+	public float v(int vertexIndex) {
 		return Float.intBitsToFloat(data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_V]);
 	}
 
@@ -220,6 +216,7 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
+	@NotNull
 	public final Direction lightFace() {
 		computeGeometry();
 		return EncodingFormat.lightFace(data[baseIndex + HEADER_BITS]);
@@ -260,13 +257,19 @@ public class QuadViewImpl implements QuadView {
 		RenderMaterial material = quad.material();
 		System.arraycopy(data, baseIndex, quad.data, quad.baseIndex, EncodingFormat.TOTAL_STRIDE);
 		quad.material(material);
-		quad.faceNormal.set(faceNormal.x(), faceNormal.y(), faceNormal.z());
+		quad.faceNormal.set(faceNormal);
 		quad.nominalFace = this.nominalFace;
 		quad.isGeometryInvalid = false;
 	}
 
 	@Override
-	public final void toVanilla(int textureIndex, int[] target, int targetIndex, boolean isItem) {
+	public final void toVanilla(int[] target, int targetIndex) {
 		System.arraycopy(data, baseIndex + VERTEX_X, target, targetIndex, QUAD_STRIDE);
+	}
+
+	// TODO material inspection: remove
+	@Override
+	public final BakedQuad toBakedQuad(Sprite sprite) {
+		return toBakedQuad(sprite, !material().disableDiffuse());
 	}
 }
