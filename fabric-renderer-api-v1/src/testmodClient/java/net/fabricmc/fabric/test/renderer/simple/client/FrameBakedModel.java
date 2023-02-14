@@ -58,9 +58,9 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 		this.frameSprite = frameSprite;
 
 		MaterialFinder finder = RendererAccess.INSTANCE.getRenderer().materialFinder();
-		this.translucentMaterial = finder.blendMode(0, BlendMode.TRANSLUCENT).find();
+		this.translucentMaterial = finder.blendMode(BlendMode.TRANSLUCENT).find();
 		finder.clear();
-		this.translucentEmissiveMaterial = finder.blendMode(0, BlendMode.TRANSLUCENT).emissive(0, true).find();
+		this.translucentEmissiveMaterial = finder.blendMode(BlendMode.TRANSLUCENT).emissive(true).find();
 	}
 
 	@Override
@@ -173,11 +173,11 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 
 			// Change vertex colors to be partially transparent
 			for (int vertex = 0; vertex < 4; ++vertex) {
-				int color = quad.spriteColor(vertex, 0);
+				int color = quad.color(vertex);
 				int alpha = (color >> 24) & 0xFF;
 				alpha = alpha * 3 / 4;
 				color = (color & 0xFFFFFF) | (alpha << 24);
-				quad.spriteColor(vertex, 0, color);
+				quad.color(vertex, color);
 			}
 
 			// Return true because we want the quad to be rendered

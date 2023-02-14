@@ -60,7 +60,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
  *  manipulating the data via NIO.
  */
 public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer implements RenderContext.BakedModelConsumer {
-	private static final Value MATERIAL_FLAT = (Value) IndigoRenderer.INSTANCE.materialFinder().disableAo(0, true).find();
+	private static final Value MATERIAL_FLAT = (Value) IndigoRenderer.INSTANCE.materialFinder().disableAo(true).find();
 	private static final Value MATERIAL_SHADED = (Value) IndigoRenderer.INSTANCE.materialFinder().find();
 
 	TerrainFallbackConsumer(BlockRenderInfo blockInfo, Function<RenderLayer, VertexConsumer> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {

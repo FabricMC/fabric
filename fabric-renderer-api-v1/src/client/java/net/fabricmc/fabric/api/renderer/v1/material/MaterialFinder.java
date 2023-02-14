@@ -31,33 +31,23 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 public interface MaterialFinder {
 	/**
 	 * Defines how sprite pixels will be blended with the scene.
-	 * Accepts {link @BlockRenderLayer} values and blending behavior
-	 * will emulate the way that Minecraft renders those instances. This does
-	 * NOT mean the sprite will be rendered in a specific render pass - some
-	 * implementations may not use the standard vanilla render passes.
 	 *
-	 * <p>CAN be null and is null by default. A null value means the renderer
-	 * will use the value normally associated with the block being rendered, or
-	 * {@code TRANSLUCENT} for item renders. (Normal Minecraft rendering)
+	 * <p>See {@link BlendMode} for more information.
 	 *
-	 * @deprecated Use {@code BlendMode} version instead.
+	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	@Deprecated
-	default MaterialFinder blendMode(int spriteIndex, RenderLayer renderLayer) {
-		return blendMode(spriteIndex, BlendMode.fromRenderLayer(renderLayer));
+	default MaterialFinder blendMode(BlendMode blendMode) {
+		return blendMode(0, blendMode);
 	}
 
 	/**
-	 * Defines how sprite pixels will be blended with the scene.
-	 *
-	 * <p>See {@link BlendMode} for more information.
-	 */
-	MaterialFinder blendMode(int spriteIndex, BlendMode blendMode);
-
-	/**
 	 * Vertex color(s) will be modified for quad color index unless disabled.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	MaterialFinder disableColorIndex(int spriteIndex, boolean disable);
+	default MaterialFinder disableColorIndex(boolean disable) {
+		return disableColorIndex(0, disable);
+	}
 
 	/**
 	 * When true, sprite texture and color will be rendered at full brightness.
@@ -69,24 +59,31 @@ public interface MaterialFinder {
 	 * allow per-sprite emissive lighting in future extensions that support overlay sprites.
 	 *
 	 * <p>Note that color will still be modified by diffuse shading and ambient occlusion,
-	 * unless disabled via {@link #disableAo(int, boolean)} and {@link #disableDiffuse(int, boolean)}.
+	 * unless disabled via {@link #disableAo(boolean)} and {@link #disableDiffuse(boolean)}.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	MaterialFinder emissive(int spriteIndex, boolean isEmissive);
+	default MaterialFinder emissive(boolean isEmissive) {
+		return emissive(0, isEmissive);
+	}
 
 	/**
 	 * Vertex color(s) will be modified for diffuse shading unless disabled.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	MaterialFinder disableDiffuse(int spriteIndex, boolean disable);
+	default MaterialFinder disableDiffuse(boolean disable) {
+		return disableDiffuse(0, disable);
+	}
 
 	/**
 	 * Vertex color(s) will be modified for ambient occlusion unless disabled.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	MaterialFinder disableAo(int spriteIndex, boolean disable);
-
-	/**
-	 * Reserved for future use.  Behavior for values &gt; 1 is currently undefined.
-	 */
-	MaterialFinder spriteDepth(int depth);
+	default MaterialFinder disableAo(boolean disable) {
+		return disableAo(0, disable);
+	}
 
 	/**
 	 * Resets this instance to default values. Values will match those
@@ -104,4 +101,60 @@ public interface MaterialFinder {
 	 * may or may not cache standard material instances.
 	 */
 	RenderMaterial find();
+
+	/**
+	 * @deprecated Use {@link #blendMode(BlendMode)} instead.
+	 */
+	@Deprecated
+	default MaterialFinder blendMode(int spriteIndex, RenderLayer renderLayer) {
+		return blendMode(BlendMode.fromRenderLayer(renderLayer));
+	}
+
+	/**
+	 * @deprecated Use {@link #blendMode(BlendMode)} instead.
+	 */
+	@Deprecated
+	default MaterialFinder blendMode(int spriteIndex, BlendMode blendMode) {
+		return blendMode(blendMode);
+	}
+
+	/**
+	 * @deprecated Use {@link #disableColorIndex(boolean)} instead.
+	 */
+	@Deprecated
+	default MaterialFinder disableColorIndex(int spriteIndex, boolean disable) {
+		return disableColorIndex(disable);
+	}
+
+	/**
+	 * @deprecated Use {@link #emissive(boolean)} instead.
+	 */
+	@Deprecated
+	default MaterialFinder emissive(int spriteIndex, boolean isEmissive) {
+		return emissive(isEmissive);
+	}
+
+	/**
+	 * @deprecated Use {@link #disableDiffuse(boolean)} instead.
+	 */
+	@Deprecated
+	default MaterialFinder disableDiffuse(int spriteIndex, boolean disable) {
+		return disableDiffuse(disable);
+	}
+
+	/**
+	 * @deprecated Use {@link #disableAo(boolean)} instead.
+	 */
+	@Deprecated
+	default MaterialFinder disableAo(int spriteIndex, boolean disable) {
+		return disableAo(disable);
+	}
+
+	/**
+	 * Do not use. Does nothing.
+	 */
+	@Deprecated
+	default MaterialFinder spriteDepth(int depth) {
+		return this;
+	}
 }
