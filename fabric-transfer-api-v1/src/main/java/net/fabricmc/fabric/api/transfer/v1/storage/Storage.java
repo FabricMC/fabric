@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 
 import java.util.Iterator;
 
+import com.google.common.collect.Iterators;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -150,6 +151,32 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	 */
 	@Override
 	Iterator<StorageView<T>> iterator();
+
+	/**
+	 * Same as {@link #iterator()}, but the iterator is guaranteed to skip over empty views,
+	 * i.e. views that {@linkplain StorageView#isResourceBlank() contain blank resources} or have a zero {@linkplain StorageView#getAmount() amount}.
+	 *
+	 * <p>This can provide a large performance benefit over {@link #iterator()} if the caller is only interested in non-empty views,
+	 * for example because it is trying to extract resources from the storage.
+	 *
+	 * @return An iterator over the non-empty views of this storage. Calling remove on the iterator is not allowed.
+	 */
+	default Iterator<StorageView<T>> nonEmptyIterator() {
+		return Iterators.filter(iterator(), view -> view.getAmount() > 0 && !view.isResourceBlank());
+	}
+
+	/**
+	 * Convenient helper to get an {@link Iterable} over the {@linkplain #nonEmptyIterator() non-empty views} of this storage, for use in for-each loops.
+	 *
+	 * <p><pre>{@code
+	 * for (StorageView<T> view : storage.nonEmptyViews()) {
+	 *     // Do something with the view
+	 * }
+	 * }</pre>
+	 */
+	default Iterable<StorageView<T>> nonEmptyViews() {
+		return this::nonEmptyIterator;
+	}
 
 	/**
 	 * Return a view over this storage, for a specific resource, or {@code null} if none is quickly available.

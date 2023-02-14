@@ -88,8 +88,7 @@ public final class StorageUtil {
 		long totalMoved = 0;
 
 		try (Transaction iterationTransaction = Transaction.openNested(transaction)) {
-			for (StorageView<T> view : from) {
-				if (view.isResourceBlank()) continue;
+			for (StorageView<T> view : from.nonEmptyViews()) {
 				T resource = view.getResource();
 				if (!filter.test(resource)) continue;
 				long maxExtracted;
@@ -174,8 +173,8 @@ public final class StorageUtil {
 		Objects.requireNonNull(filter, "Filter may not be null");
 		if (storage == null) return null;
 
-		for (StorageView<T> view : storage) {
-			if (!view.isResourceBlank() && filter.test(view.getResource())) {
+		for (StorageView<T> view : storage.nonEmptyViews()) {
+			if (filter.test(view.getResource())) {
 				return view.getResource();
 			}
 		}
@@ -209,11 +208,11 @@ public final class StorageUtil {
 		if (storage == null) return null;
 
 		try (Transaction nested = Transaction.openNested(transaction)) {
-			for (StorageView<T> view : storage) {
+			for (StorageView<T> view : storage.nonEmptyViews()) {
 				// Extract below could change the resource, so we have to query it before extracting.
 				T resource = view.getResource();
 
-				if (!view.isResourceBlank() && filter.test(resource) && view.extract(resource, Long.MAX_VALUE, nested) > 0) {
+				if (filter.test(resource) && view.extract(resource, Long.MAX_VALUE, nested) > 0) {
 					// Will abort the extraction.
 					return resource;
 				}
