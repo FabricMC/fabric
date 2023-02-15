@@ -27,7 +27,7 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
-	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;getBackendDescription()Ljava/lang/String;"))
+	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;getBackendDescription()Ljava/lang/String;", remap = false))
 	private void main(CallbackInfo info) {
 		if (FabricDataGenHelper.ENABLED) {
 			FabricDataGenHelper.run();
