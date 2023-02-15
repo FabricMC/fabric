@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.sign;
 
+import net.minecraft.class_8177;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.SignType;
 
@@ -34,9 +37,21 @@ public final class SignTypeRegistry {
 	 * Creates and registers a {@link SignType}.
 	 *
 	 * @param id the id of this {@link SignType}
+	 * @param type the {@link class_8177} for this sign
 	 * @return a new {@link SignType}.
 	 */
-	public static SignType registerSignType(Identifier id) {
-		return SignType.register(new SignType(id.toString()));
+	public static SignType registerSignType(Identifier id, class_8177 type) {
+		return SignType.register(new SignType(id.toString(), type));
+	}
+
+	/**
+	 * Creates and registers a {@link SignType}.
+	 *
+	 * @param id the id of this {@link SignType}
+	 * @param type the {@link class_8177} for this sign
+	 * @return a new {@link SignType}.
+	 */
+	public static SignType registerSignType(Identifier id, class_8177 type, BlockSoundGroup soundType, BlockSoundGroup hangingSignSoundType, SoundEvent fenceGateClose, SoundEvent fenceGateOpen) {
+		return SignType.register(new SignType(id.toString(), type, soundType, hangingSignSoundType, fenceGateClose, fenceGateOpen));
 	}
 }

@@ -70,7 +70,7 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 
 		final boolean onboardAccessibility = submitAndWait(client -> client.options.onboardAccessibility);
 
-		if (!onboardAccessibility) {
+		if (onboardAccessibility) {
 			waitForScreen(AccessibilityOnboardingScreen.class);
 			takeScreenshot("onboarding_screen");
 			clickScreenButton("gui.continue");

@@ -30,16 +30,16 @@ import net.minecraft.util.SignType;
 public class EntityModelLayersMixin {
 	@Inject(method = "createSign", at = @At("HEAD"), cancellable = true)
 	private static void createSign(SignType type, CallbackInfoReturnable<EntityModelLayer> cir) {
-		if (type.getName().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
-			Identifier identifier = new Identifier(type.getName());
+		if (type.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
+			Identifier identifier = new Identifier(type.name());
 			cir.setReturnValue(new EntityModelLayer(new Identifier(identifier.getNamespace(), "sign/" + identifier.getPath()), "main"));
 		}
 	}
 
 	@Inject(method = "createHangingSign", at = @At("HEAD"), cancellable = true)
 	private static void createHangingSign(SignType type, CallbackInfoReturnable<EntityModelLayer> cir) {
-		if (type.getName().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
-			Identifier identifier = new Identifier(type.getName());
+		if (type.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
+			Identifier identifier = new Identifier(type.name());
 			cir.setReturnValue(new EntityModelLayer(new Identifier(identifier.getNamespace(), "hanging_sign/" + identifier.getPath()), "main"));
 		}
 	}

@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.object.builder;
 
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
@@ -97,8 +98,8 @@ public interface AbstractBlockSettingsAccessor {
 	@Accessor
 	AbstractBlock.ContextPredicate getEmissiveLightingPredicate();
 
-	@Accessor
-	Function<BlockState, AbstractBlock.OffsetType> getOffsetType();
+	@Accessor("field_42818")
+	Optional<AbstractBlock.class_8176> getOffsetType();
 
 	@Accessor
 	Identifier getLootTableId();
@@ -142,4 +143,7 @@ public interface AbstractBlockSettingsAccessor {
 
 	@Accessor
 	void setRequiredFeatures(FeatureSet requiredFeatures);
+
+	@Accessor("field_42818")
+	void setOffsetType(Optional<AbstractBlock.class_8176> type);
 }

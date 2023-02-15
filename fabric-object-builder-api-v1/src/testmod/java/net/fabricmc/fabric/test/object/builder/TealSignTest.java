@@ -25,6 +25,7 @@ import net.minecraft.block.WallSignBlock;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.HangingSignBlockEntity;
 import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.class_8177;
 import net.minecraft.item.HangingSignItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.SignItem;
@@ -39,7 +40,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.fabricmc.fabric.api.object.builder.v1.sign.SignTypeRegistry;
 
 public class TealSignTest implements ModInitializer {
-	public static final SignType TEAL_TYPE = SignTypeRegistry.registerSignType(ObjectBuilderTestConstants.id("teal"));
+	public static final SignType TEAL_TYPE = SignTypeRegistry.registerSignType(ObjectBuilderTestConstants.id("teal"), class_8177.field_42823);
 	public static final SignBlock TEAL_SIGN = new SignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), TEAL_TYPE) {
 		@Override
 		public TealSign createBlockEntity(BlockPos pos, BlockState state) {

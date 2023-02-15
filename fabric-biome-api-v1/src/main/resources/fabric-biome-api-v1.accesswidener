@@ -4,7 +4,7 @@ accessible  class   net/minecraft/world/biome/Biome$Weather
 # Used to set nether biomes
 accessible  field   net/minecraft/world/biome/source/MultiNoiseBiomeSource instance Ljava/util/Optional;
 accessible  class   net/minecraft/world/biome/source/MultiNoiseBiomeSource$Instance
-accessible  field   net/minecraft/world/biome/source/MultiNoiseBiomeSource$Preset biomeSourceFunction Ljava/util/function/Function;
+accessible  field   net/minecraft/world/biome/source/MultiNoiseBiomeSource$Preset biomeSourceFunction Lnet/minecraft/world/biome/source/MultiNoiseBiomeSource$Preset$class_8165;
 accessible  field   net/minecraft/world/biome/source/MultiNoiseBiomeSource biomeEntries Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$Entries;
 mutable     field   net/minecraft/world/biome/source/MultiNoiseBiomeSource biomeEntries Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$Entries;
 

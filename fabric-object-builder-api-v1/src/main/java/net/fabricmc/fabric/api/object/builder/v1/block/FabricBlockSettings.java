@@ -74,7 +74,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		thisAccessor.setOpaque(otherAccessor.getOpaque());
 		thisAccessor.setIsAir(otherAccessor.getIsAir());
 		thisAccessor.setToolRequired(otherAccessor.isToolRequired());
-		this.offsetType(otherAccessor.getOffsetType());
+		thisAccessor.setOffsetType(otherAccessor.getOffsetType());
 		thisAccessor.setBlockBreakParticles(otherAccessor.getBlockBreakParticles());
 		thisAccessor.setRequiredFeatures(otherAccessor.getRequiredFeatures());
 
@@ -274,14 +274,8 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	}
 
 	@Override
-	public FabricBlockSettings offsetType(AbstractBlock.OffsetType offsetType) {
-		super.offsetType(offsetType);
-		return this;
-	}
-
-	@Override
-	public FabricBlockSettings offsetType(Function<BlockState, AbstractBlock.OffsetType> offsetType) {
-		super.offsetType(offsetType);
+	public FabricBlockSettings method_49229(AbstractBlock.OffsetType offsetType) {
+		super.method_49229(offsetType);
 		return this;
 	}
 

@@ -63,7 +63,7 @@ abstract class ItemGroupMixin implements IdentifiableItemGroup, FabricItemGroup 
 
 	@SuppressWarnings("ConstantConditions")
 	@Inject(method = "updateEntries", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemGroup;reloadSearchProvider()V"))
-	public void getStacks(ItemGroup.class_8128 context, CallbackInfo ci) {
+	public void getStacks(ItemGroup.DisplayContext context, CallbackInfo ci) {
 		ItemGroup self = (ItemGroup) (Object) this;
 
 		// Do not modify special item groups (except Operator Blocks) at all.

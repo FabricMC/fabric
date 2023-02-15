@@ -13,7 +13,7 @@
   "placement": [
     {
       "type": "minecraft:count",
-      "count": 2
+      "count": 1
     },
     {
       "type": "minecraft:in_square"
@@ -21,6 +21,10 @@
     {
       "type": "minecraft:heightmap",
       "heightmap": "WORLD_SURFACE"
+    },
+    {
+      "type": "minecraft:rarity_filter",
+      "chance": 25
     }
   ]
 }

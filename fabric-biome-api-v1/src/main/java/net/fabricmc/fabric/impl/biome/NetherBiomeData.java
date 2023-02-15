@@ -104,7 +104,7 @@ public final class NetherBiomeData {
 		if (biomeSource instanceof MultiNoiseBiomeSource multiNoiseBiomeSource) {
 			if (((BiomeSourceAccess) multiNoiseBiomeSource).fabric_shouldModifyBiomeEntries() && multiNoiseBiomeSource.matchesInstance(MultiNoiseBiomeSource.Preset.NETHER)) {
 				multiNoiseBiomeSource.biomeEntries = NetherBiomeData.withModdedBiomeEntries(
-						MultiNoiseBiomeSource.Preset.NETHER.biomeSourceFunction.apply(biomeRegistry),
+						MultiNoiseBiomeSource.Preset.NETHER.biomeSourceFunction.apply(biomeRegistry::getOrThrow),
 						biomeRegistry);
 				multiNoiseBiomeSource.biomes = multiNoiseBiomeSource.biomeEntries.getEntries().stream().map(Pair::getSecond).collect(Collectors.toSet());
 				((BiomeSourceAccess) multiNoiseBiomeSource).fabric_setModifyBiomeEntries(false);

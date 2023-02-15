@@ -260,8 +260,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup registries) {
-			getOrCreateTagBuilder(BlockTags.FIRE).add(SIMPLE_BLOCK);
-			getOrCreateTagBuilder(BlockTags.DIRT).setReplace(true).add(SIMPLE_BLOCK);
+			getOrCreateTagBuilder(BlockTags.FIRE).setReplace(true).add(SIMPLE_BLOCK);
+			getOrCreateTagBuilder(BlockTags.DIRT).add(SIMPLE_BLOCK);
 			getOrCreateTagBuilder(BlockTags.ACACIA_LOGS).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
 		}
 	}

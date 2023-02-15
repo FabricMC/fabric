@@ -35,6 +35,7 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.PressableWidget;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.text.Text;
@@ -104,8 +105,8 @@ public final class FabricClientTestHelper {
 					return true;
 				}
 
-				if (drawable instanceof GridWidget gridWidget) {
-					gridWidget.forEachChild(clickableWidget -> pressMatchingButton(clickableWidget, buttonText));
+				if (drawable instanceof Widget widget) {
+					widget.forEachChild(clickableWidget -> pressMatchingButton(clickableWidget, buttonText));
 				}
 			}
 

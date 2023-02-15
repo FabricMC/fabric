@@ -184,6 +184,7 @@ transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerTintableCross	(Lnet/minecraft/block/Block;Lnet/minecraft/data/client/BlockStateModelGenerator$TintType;Lnet/minecraft/data/client/TextureMap;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerTintableCrossBlockState	(Lnet/minecraft/block/Block;Lnet/minecraft/data/client/BlockStateModelGenerator$TintType;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerTintableCrossBlockState	(Lnet/minecraft/block/Block;Lnet/minecraft/data/client/BlockStateModelGenerator$TintType;Lnet/minecraft/data/client/TextureMap;)V
+transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	method_49374	(Lnet/minecraft/block/Block;Lnet/minecraft/data/client/BlockStateModelGenerator$TintType;Lnet/minecraft/state/property/Property;[I)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerFlowerPotPlant	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;Lnet/minecraft/data/client/BlockStateModelGenerator$TintType;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerCoralFan	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerGourd	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
@@ -197,6 +198,7 @@ transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerBuiltinWithParticle	(Lnet/minecraft/block/Block;Lnet/minecraft/item/Item;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerBuiltinWithParticle	(Lnet/minecraft/block/Block;Lnet/minecraft/util/Identifier;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerWoolAndCarpet	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	method_49378	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerRandomHorizontalRotations	(Lnet/minecraft/data/client/TexturedModel$Factory;[Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerSouthDefaultHorizontalFacing	(Lnet/minecraft/data/client/TexturedModel$Factory;[Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerGlassPane	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
@@ -275,6 +277,7 @@ transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableG
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	seagrassDrops	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	tallGrassDrops	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	candleDrops	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;
+transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	method_49358	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	candleCakeDrops	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	generate	()V
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	addVinePlantDrop	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V

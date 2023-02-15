@@ -34,18 +34,18 @@ import net.minecraft.resource.featuretoggle.FeatureSet;
  */
 @ApiStatus.Experimental
 public class FabricItemGroupEntries implements ItemGroup.Entries {
-	private final ItemGroup.class_8128 context;
+	private final ItemGroup.DisplayContext context;
 	private final List<ItemStack> displayStacks;
 	private final List<ItemStack> searchTabStacks;
 
 	@ApiStatus.Internal
-	public FabricItemGroupEntries(ItemGroup.class_8128 context, List<ItemStack> displayStacks, List<ItemStack> searchTabStacks) {
+	public FabricItemGroupEntries(ItemGroup.DisplayContext context, List<ItemStack> displayStacks, List<ItemStack> searchTabStacks) {
 		this.context = context;
 		this.displayStacks = displayStacks;
 		this.searchTabStacks = searchTabStacks;
 	}
 
-	public ItemGroup.class_8128 getContext() {
+	public ItemGroup.DisplayContext getContext() {
 		return context;
 	}
 

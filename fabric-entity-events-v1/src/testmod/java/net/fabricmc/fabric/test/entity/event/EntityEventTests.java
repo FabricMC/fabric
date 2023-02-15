@@ -23,7 +23,7 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
-import net.minecraft.class_8111;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
@@ -82,7 +82,7 @@ public final class EntityEventTests implements ModInitializer {
 
 		// No fall damage if holding a feather in the main hand
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
-			if (source.method_48793().matchesKey(class_8111.field_42345) && entity.getStackInHand(Hand.MAIN_HAND).isOf(Items.FEATHER)) {
+			if (source.getTypeRegistryEntry().matchesKey(DamageTypes.FALL) && entity.getStackInHand(Hand.MAIN_HAND).isOf(Items.FEATHER)) {
 				LOGGER.info("Avoided {} of fall damage by holding a feather", amount);
 				return false;
 			}
