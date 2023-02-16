@@ -32,7 +32,7 @@ task generateAccessWidener {
 		lines.add("")
 		lines.addAll(file("template.accesswidener").text.lines().toList())
 
-		Path commonJar = loom.namedMinecraftProvider.parentMinecraftProvider.commonJar
+		Path commonJar = loom.namedMinecraftProvider.parentMinecraftProvider.commonJar.path
 
 		try (def fs = FileSystems.newFileSystem(URI.create("jar:${commonJar.toUri()}"), [create: false])) {
 			generateBlockConstructors(lines, fs)
@@ -41,7 +41,7 @@ task generateAccessWidener {
 			lines.add("")
 		}
 
-		Path clientJar = loom.namedMinecraftProvider.parentMinecraftProvider.clientOnlyJar
+		Path clientJar = loom.namedMinecraftProvider.parentMinecraftProvider.clientOnlyJar.path
 
 		try (def fs = FileSystems.newFileSystem(URI.create("jar:${clientJar.toUri()}"), [create: false])) {
 			generateRenderPhaseFields(lines, fs)
