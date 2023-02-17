@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.object.builder.v1.sign;
+package net.fabricmc.fabric.api.object.builder.v1.block.type;
 
 import net.minecraft.block.BlockSetType;
 import net.minecraft.block.WoodType;
@@ -22,14 +22,18 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.type.WoodTypeRegistry;
-
 /**
- * @deprecated Use {@link WoodTypeRegistry}.
+ * This class allows registering {@link WoodType}s.
+ *
+ * <p>A {@link WoodType} is used to tell the game what textures signs should use, as well as sounds for both signs and fence gates.
+ *
+ * <p>Regular sign textures are stored as {@code [namespace]/textures/entity/signs/[path].png}.
+ * <br>Hanging sign textures are stored as {@code [namespace]/textures/entity/signs/hanging/[path].png}.
+ *
+ * @see BlockSetTypeRegistry
  */
-@Deprecated
-public final class SignTypeRegistry {
-	private SignTypeRegistry() {
+public final class WoodTypeRegistry {
+	private WoodTypeRegistry() {
 	}
 
 	/**
@@ -38,11 +42,9 @@ public final class SignTypeRegistry {
 	 * @param id the id of this {@link WoodType}
 	 * @param setType the {@link BlockSetType} for this wood type
 	 * @return a new {@link WoodType}.
-	 * @deprecated Use {@link WoodTypeRegistry#registerWoodType(Identifier, BlockSetType)}
 	 */
-	@Deprecated
-	public static WoodType registerSignType(Identifier id, BlockSetType type) {
-		return WoodTypeRegistry.registerWoodType(id, type);
+	public static WoodType registerWoodType(Identifier id, BlockSetType setType) {
+		return WoodType.register(new WoodType(id.toString(), setType));
 	}
 
 	/**
@@ -55,10 +57,8 @@ public final class SignTypeRegistry {
 	 * @param fenceGateClose the {@link SoundEvent} for when this wood type's fence gate closes
 	 * @param fenceGateOpen the {@link SoundEvent} for when this wood type's fence gate opens
 	 * @return a new {@link WoodType}.
-	 * @deprecated Use {@link WoodTypeRegistry#registerWoodType(Identifier, BlockSetType, BlockSoundGroup, BlockSoundGroup, SoundEvent, SoundEvent)}
 	 */
-	@Deprecated
-	public static WoodType registerSignType(Identifier id, BlockSetType type, BlockSoundGroup soundType, BlockSoundGroup hangingSignSoundType, SoundEvent fenceGateClose, SoundEvent fenceGateOpen) {
-		return WoodTypeRegistry.registerWoodType(id, type, soundType, hangingSignSoundType, fenceGateClose, fenceGateOpen);
+	public static WoodType registerWoodType(Identifier id, BlockSetType setType, BlockSoundGroup soundType, BlockSoundGroup hangingSignSoundType, SoundEvent fenceGateClose, SoundEvent fenceGateOpen) {
+		return WoodType.register(new WoodType(id.toString(), setType, soundType, hangingSignSoundType, fenceGateClose, fenceGateOpen));
 	}
 }
