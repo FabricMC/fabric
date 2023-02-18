@@ -23,16 +23,31 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
-public final class NetworkingPlayPacketClientTest implements ClientModInitializer {
+public final class NetworkingPlayPacketClientTest implements ClientModInitializer, ClientPlayNetworking.PlayPacketHandler<NetworkingPlayPacketTest.OverlayPacket> {
 	@Override
 	public void onInitializeClient() {
-		ClientPlayConnectionEvents.INIT.register((handler, client) -> {
-			ClientPlayNetworking.registerReceiver(NetworkingPlayPacketTest.OverlayPacket.PACKET_TYPE, this::receive);
-		});
+		ClientPlayConnectionEvents.INIT.register((handler, client) -> ClientPlayNetworking.registerReceiver(NetworkingPlayPacketTest.OverlayPacket.PACKET_TYPE, this));
 	}
 
-	private void receive( NetworkingPlayPacketTest.OverlayPacket packet, ClientPlayerEntity player, PacketSender sender) {
+	@Override
+	public void receive(NetworkingPlayPacketTest.OverlayPacket packet, ClientPlayerEntity player, PacketSender sender) {
 		MinecraftClient.getInstance().inGameHud.setOverlayMessage(packet.message(), true);
+	}
+
+	@Override
+	public boolean processOnNetworkThread(NetworkingPlayPacketTest.OverlayPacket packet, ClientPlayerEntity player, PacketSender responseSender) {
+		// processOnNetworkThread allows complex handling of packets, such as
+		// packet merging or splitting. However, it is pretty big for a simple test mod.
+		// Checks like these should normally be implemented in the receiver.
+		String content = packet.message().getString();
+
+		if (content.contains("spam")) {
+			NetworkingTestmods.LOGGER.info("Filtered spam packet {}", content);
+			return false; // Do not call the receiver.
+		}
+
+		return true;
 	}
 }

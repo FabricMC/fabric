@@ -513,6 +513,7 @@ public final class ServerPlayNetworking {
 
 		/**
 		 * Processes an incoming packet. This is called on the network thread.
+		 * By default, this returns {@code true}, and {@link #receive} is called normally.
 		 * If this method returns {@code false}, {@link #receive} is not called.
 		 * This is for advanced users only; for normal uses, {@link #receive} should be
 		 * implemented instead.
@@ -520,7 +521,7 @@ public final class ServerPlayNetworking {
 		 * @param packet the packet
 		 * @param player the player that received the packet
 		 * @param responseSender the packet sender
-		 * @return whether to proceed to {@link #receive}
+		 * @return {@code true} to proceed to {@link #receive}
 		 */
 		default boolean processOnNetworkThread(T packet, ServerPlayerEntity player, PacketSender responseSender) {
 			return true;
