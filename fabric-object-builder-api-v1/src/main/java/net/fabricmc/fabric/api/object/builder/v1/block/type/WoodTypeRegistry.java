@@ -27,8 +27,8 @@ import net.minecraft.util.Identifier;
  *
  * <p>A {@link WoodType} is used to tell the game what textures signs should use, as well as sounds for both signs and fence gates.
  *
- * <p>Regular sign textures are stored as {@code [namespace]/textures/entity/signs/[path].png}.
- * <br>Hanging sign textures are stored as {@code [namespace]/textures/entity/signs/hanging/[path].png}.
+ * <p>Regular sign textures are stored at {@code [namespace]/textures/entity/signs/[path].png}.
+ * <br>Hanging sign textures are stored at {@code [namespace]/textures/entity/signs/hanging/[path].png}.
  *
  * @see BlockSetTypeRegistry
  */
@@ -41,7 +41,7 @@ public final class WoodTypeRegistry {
 	 *
 	 * @param id the id of this {@link WoodType}
 	 * @param setType the {@link BlockSetType} for this wood type
-	 * @return a new {@link WoodType}.
+	 * @return a new {@link WoodType}
 	 */
 	public static WoodType registerWoodType(Identifier id, BlockSetType setType) {
 		return WoodType.register(new WoodType(id.toString(), setType));
@@ -56,7 +56,7 @@ public final class WoodTypeRegistry {
 	 * @param hangingSignSoundType the {@link BlockSoundGroup} for this wood type's hanging sign
 	 * @param fenceGateClose the {@link SoundEvent} for when this wood type's fence gate closes
 	 * @param fenceGateOpen the {@link SoundEvent} for when this wood type's fence gate opens
-	 * @return a new {@link WoodType}.
+	 * @return a new {@link WoodType}
 	 */
 	public static WoodType registerWoodType(Identifier id, BlockSetType setType, BlockSoundGroup soundType, BlockSoundGroup hangingSignSoundType, SoundEvent fenceGateClose, SoundEvent fenceGateOpen) {
 		return WoodType.register(new WoodType(id.toString(), setType, soundType, hangingSignSoundType, fenceGateClose, fenceGateOpen));

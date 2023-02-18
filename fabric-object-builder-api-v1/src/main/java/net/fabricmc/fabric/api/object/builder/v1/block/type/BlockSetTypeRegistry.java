@@ -33,12 +33,12 @@ public final class BlockSetTypeRegistry {
 	}
 
 	/**
-	 * Creates and registers a {@link BlockSetType}.
+	 * Creates and registers a {@link BlockSetType} with the regular wood sounds.
 	 *
 	 * @param id the id of this {@link BlockSetType}
-	 * @return a new {@link BlockSetType}.
+	 * @return a new {@link BlockSetType}
 	 */
-	public static BlockSetType registerBlockSetType(Identifier id) {
+	public static BlockSetType registerWoodBlockSetType(Identifier id) {
 		return BlockSetType.register(new BlockSetType(id.toString()));
 	}
 
@@ -55,7 +55,7 @@ public final class BlockSetTypeRegistry {
 	 * @param pressurePlateClickOn the {@link SoundEvent} for when this block set's pressure plate is pressed
 	 * @param buttonClickOff the {@link SoundEvent} for when this block set's button is unpressed
 	 * @param buttonClickOn the {@link SoundEvent} for when this block set's button is pressed
-	 * @return a new {@link BlockSetType}.
+	 * @return a new {@link BlockSetType}
 	 */
 	public static BlockSetType registerBlockSetType(Identifier id, BlockSoundGroup soundType, SoundEvent doorClose, SoundEvent doorOpen, SoundEvent trapdoorClose, SoundEvent trapdoorOpen, SoundEvent pressurePlateClickOff, SoundEvent pressurePlateClickOn, SoundEvent buttonClickOff, SoundEvent buttonClickOn) {
 		return BlockSetType.register(new BlockSetType(id.toString(), soundType, doorClose, doorOpen, trapdoorClose, trapdoorOpen, pressurePlateClickOff, pressurePlateClickOn, buttonClickOff, buttonClickOn));
