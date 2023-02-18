@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.type.BlockSetTypeRegistry
 import net.fabricmc.fabric.api.object.builder.v1.block.type.WoodTypeRegistry;
 
 public class TealSignTest implements ModInitializer {
-	public static final BlockSetType TEAL_BLOCK_SET_TYPE = BlockSetTypeRegistry.registerBlockSetType(ObjectBuilderTestConstants.id("teal"));
+	public static final BlockSetType TEAL_BLOCK_SET_TYPE = BlockSetTypeRegistry.registerWoodBlockSetType(ObjectBuilderTestConstants.id("teal"));
 	public static final WoodType TEAL_WOOD_TYPE = WoodTypeRegistry.registerWoodType(ObjectBuilderTestConstants.id("teal"), TEAL_BLOCK_SET_TYPE);
 	public static final SignBlock TEAL_SIGN = new SignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), TEAL_WOOD_TYPE) {
 		@Override
