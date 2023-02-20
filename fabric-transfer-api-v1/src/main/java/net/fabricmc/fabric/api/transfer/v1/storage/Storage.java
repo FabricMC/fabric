@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 
 import java.util.Iterator;
 
-import com.google.common.collect.Iterators;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -159,10 +158,17 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	 * <p>This can provide a large performance benefit over {@link #iterator()} if the caller is only interested in non-empty views,
 	 * for example because it is trying to extract resources from the storage.
 	 *
+	 * <p>This function should only be overridden if the storage is able to provide an optimized iterator over non-empty views,
+	 * for example because it is keeping an index of non-empty views.
+	 * Otherwise, the default implementation simply calls {@link #iterator()} and filters out empty views.
+	 *
+	 * <p>When implementing this function, note that the guarantees of {@link #iterator()} still apply.
+	 * In particular, {@link #insert} and {@link #extract} may be called safely during iteration.
+	 *
 	 * @return An iterator over the non-empty views of this storage. Calling remove on the iterator is not allowed.
 	 */
 	default Iterator<StorageView<T>> nonEmptyIterator() {
-		return Iterators.filter(iterator(), view -> view.getAmount() > 0 && !view.isResourceBlank());
+		return TransferApiImpl.filterEmptyViews(iterator());
 	}
 
 	/**

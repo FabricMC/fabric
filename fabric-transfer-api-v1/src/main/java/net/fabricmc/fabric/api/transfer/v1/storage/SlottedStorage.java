@@ -24,8 +24,10 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 
 /**
  * A {@link Storage} implementation made of indexed slots.
- * Please note that some storages may not implement this interface:
- * checking whether a storage is slotted can be done using {@code instanceof}.
+ *
+ * <p>Please note that some storages may not implement this interface.
+ * It is up to the storage implementation to decide whether to implement this interface or not.
+ * Checking whether a storage is slotted can be done using {@code instanceof}.
  *
  * @param <T> The type of the stored resources.
  *
