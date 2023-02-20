@@ -38,7 +38,7 @@ public final class BlockSetTypeRegistry {
 	 * @param id the id of this {@link BlockSetType}
 	 * @return a new {@link BlockSetType}
 	 */
-	public static BlockSetType registerWoodBlockSetType(Identifier id) {
+	public static BlockSetType registerWood(Identifier id) {
 		return BlockSetType.register(new BlockSetType(id.toString()));
 	}
 
@@ -57,7 +57,7 @@ public final class BlockSetTypeRegistry {
 	 * @param buttonClickOn the {@link SoundEvent} for when this block set's button is pressed
 	 * @return a new {@link BlockSetType}
 	 */
-	public static BlockSetType registerBlockSetType(Identifier id, BlockSoundGroup soundType, SoundEvent doorClose, SoundEvent doorOpen, SoundEvent trapdoorClose, SoundEvent trapdoorOpen, SoundEvent pressurePlateClickOff, SoundEvent pressurePlateClickOn, SoundEvent buttonClickOff, SoundEvent buttonClickOn) {
+	public static BlockSetType register(Identifier id, BlockSoundGroup soundType, SoundEvent doorClose, SoundEvent doorOpen, SoundEvent trapdoorClose, SoundEvent trapdoorOpen, SoundEvent pressurePlateClickOff, SoundEvent pressurePlateClickOn, SoundEvent buttonClickOff, SoundEvent buttonClickOn) {
 		return BlockSetType.register(new BlockSetType(id.toString(), soundType, doorClose, doorOpen, trapdoorClose, trapdoorOpen, pressurePlateClickOff, pressurePlateClickOn, buttonClickOff, buttonClickOn));
 	}
 }

@@ -43,7 +43,7 @@ public final class WoodTypeRegistry {
 	 * @param setType the {@link BlockSetType} for this wood type
 	 * @return a new {@link WoodType}
 	 */
-	public static WoodType registerWoodType(Identifier id, BlockSetType setType) {
+	public static WoodType register(Identifier id, BlockSetType setType) {
 		return WoodType.register(new WoodType(id.toString(), setType));
 	}
 
@@ -58,7 +58,7 @@ public final class WoodTypeRegistry {
 	 * @param fenceGateOpen the {@link SoundEvent} for when this wood type's fence gate opens
 	 * @return a new {@link WoodType}
 	 */
-	public static WoodType registerWoodType(Identifier id, BlockSetType setType, BlockSoundGroup soundType, BlockSoundGroup hangingSignSoundType, SoundEvent fenceGateClose, SoundEvent fenceGateOpen) {
+	public static WoodType register(Identifier id, BlockSetType setType, BlockSoundGroup soundType, BlockSoundGroup hangingSignSoundType, SoundEvent fenceGateClose, SoundEvent fenceGateOpen) {
 		return WoodType.register(new WoodType(id.toString(), setType, soundType, hangingSignSoundType, fenceGateClose, fenceGateOpen));
 	}
 }
