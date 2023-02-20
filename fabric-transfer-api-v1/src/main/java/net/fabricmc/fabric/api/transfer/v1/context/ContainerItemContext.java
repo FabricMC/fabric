@@ -169,22 +169,26 @@ public interface ContainerItemContext {
 
 	/**
 	 * Return a context that can accept anything, and will accept (and destroy) any overflow items, with some initial content.
-	 * The context is backed by a single slot storage that can be freely mutated.
 	 * This can typically be used to check if a stack provides an API, or simulate operations on the returned API,
 	 * for example to simulate how much fluid could be extracted from the stack.
 	 *
 	 * <p>Note that the stack can never be mutated by this function: its contents are copied directly.
+	 *
+	 * @deprecated Use {@link #withConstant(ItemStack)} instead.
 	 */
+	@Deprecated(forRemoval = true)
 	static ContainerItemContext withInitial(ItemStack initialContent) {
 		return withInitial(ItemVariant.of(initialContent), initialContent.getCount());
 	}
 
 	/**
 	 * Return a context that can accept anything, and will accept (and destroy) any overflow items, with some initial variant and amount.
-	 * The context is backed by a single slot storage that can be freely mutated.
 	 * This can typically be used to check if a variant provides an API, or simulate operations on the returned API,
 	 * for example to simulate how much fluid could be extracted from the variant and amount.
+	 *
+	 * @deprecated Use {@link #withConstant(ItemVariant, long)} instead.
 	 */
+	@Deprecated(forRemoval = true)
 	static ContainerItemContext withInitial(ItemVariant initialVariant, long initialAmount) {
 		StoragePreconditions.notNegative(initialAmount);
 		return new InitialContentsContainerItemContext(initialVariant, initialAmount);
