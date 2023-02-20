@@ -1,0 +1,17 @@
+{
+  "gamerule.cardinalDirection": "Очраклы дөнья яклары иң озын сүз",
+  "gamerule.cardinalDirection.description": "Дөнья ягы. Өс яки ас бар тиеш түгел",
+  "gamerule.cardinalDirection.north": "Төньяк",
+  "gamerule.cardinalDirection.south": "Көньяк",
+  "gamerule.cardinalDirection.east": "Көнчыгыш",
+  "gamerule.cardinalDirection.west": "Көнбатыш",
+
+  "gamerule.redSleepFailureEnum": "Ни сәбәптәҥ мин йоклыйсым килми",
+  "gamerule.redSleepFailureEnum.description": "Карават кандала шундый җирәнеч, дус.",
+  "gamerule.redSleepFailureEnum.not_possible_here": "Монда түгел",
+  "gamerule.redSleepFailureEnum.not_possible_now": "Хәзер түгел",
+  "gamerule.redSleepFailureEnum.too_far_away": "Ерак",
+  "gamerule.redSleepFailureEnum.obstructed": "Буш түгел",
+  "gamerule.redSleepFailureEnum.other_problem": "Башка мәсбәлә",
+  "gamerule.redSleepFailureEnum.not_safe": "Иминсез"
+}
