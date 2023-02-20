@@ -1,9 +1,0 @@
-{
-  "block.fabric-object-builder-api-v1-testmod.added_betrayal_block": "Хыянәт блогы өстәлде",
-  "block.fabric-object-builder-api-v1-testmod.first_multi_betrayal_block": "Беренче күп хыянәт блогы",
-  "block.fabric-object-builder-api-v1-testmod.initial_betrayal_block": "Башлангыч хыянәт блогы",
-  "block.fabric-object-builder-api-v1-testmod.second_multi_betrayal_block": "Икенче күп хыянәт блогы",
-  "block.fabric-object-builder-api-v1-testmod.teal_sign": "Зәңгәр-яшел билге",
-  "block.fabric-object-builder-api-v1-testmod.teal_hanging_sign": "Элүле зәңгәр-яшел билге",
-  "text.fabric-object-builder-api-v1-testmod.block_entity_type_success": "%s урында хыянәт блогының дөрес блок-асыл төре бар: %s"
-}
