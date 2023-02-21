@@ -94,7 +94,6 @@ public final class NetworkingChannelTest implements ModInitializer {
 		return CommandSource.suggestIdentifiers(ServerPlayNetworking.getReceived(player), builder);
 	}
 
-	@SuppressWarnings("deprecation")
 	private static int registerChannel(CommandContext<ServerCommandSource> context, ServerPlayerEntity executor) throws CommandSyntaxException {
 		final Identifier channel = getIdentifier(context, "channel");
 
@@ -111,7 +110,6 @@ public final class NetworkingChannelTest implements ModInitializer {
 		return 1;
 	}
 
-	@SuppressWarnings("deprecation")
 	private static int unregisterChannel(CommandContext<ServerCommandSource> context, ServerPlayerEntity player) throws CommandSyntaxException {
 		final Identifier channel = getIdentifier(context, "channel");
 
