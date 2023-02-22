@@ -21,15 +21,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.block.WoodType;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.SignType;
 
 @Mixin(EntityModelLayers.class)
 public class EntityModelLayersMixin {
 	@Inject(method = "createSign", at = @At("HEAD"), cancellable = true)
-	private static void createSign(SignType type, CallbackInfoReturnable<EntityModelLayer> cir) {
+	private static void createSign(WoodType type, CallbackInfoReturnable<EntityModelLayer> cir) {
 		if (type.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
 			Identifier identifier = new Identifier(type.name());
 			cir.setReturnValue(new EntityModelLayer(new Identifier(identifier.getNamespace(), "sign/" + identifier.getPath()), "main"));
@@ -37,7 +37,7 @@ public class EntityModelLayersMixin {
 	}
 
 	@Inject(method = "createHangingSign", at = @At("HEAD"), cancellable = true)
-	private static void createHangingSign(SignType type, CallbackInfoReturnable<EntityModelLayer> cir) {
+	private static void createHangingSign(WoodType type, CallbackInfoReturnable<EntityModelLayer> cir) {
 		if (type.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
 			Identifier identifier = new Identifier(type.name());
 			cir.setReturnValue(new EntityModelLayer(new Identifier(identifier.getNamespace(), "hanging_sign/" + identifier.getPath()), "main"));

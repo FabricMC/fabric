@@ -20,6 +20,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SignBlock;
 import net.minecraft.block.WallSignBlock;
+import net.minecraft.block.WoodType;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.SignBlockEntity;
@@ -28,7 +29,6 @@ import net.minecraft.item.SignItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.SignType;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.api.ModInitializer;
@@ -37,13 +37,13 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 
 public final class SignBlockEntityTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-transitive-access-wideners-v1-testmod";
-	public static final SignBlock TEST_SIGN = new SignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), SignType.OAK) {
+	public static final SignBlock TEST_SIGN = new SignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), WoodType.OAK) {
 		@Override
 		public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 			return new TestSign(pos, state);
 		}
 	};
-	public static final WallSignBlock TEST_WALL_SIGN = new WallSignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), SignType.OAK) {
+	public static final WallSignBlock TEST_WALL_SIGN = new WallSignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), WoodType.OAK) {
 		@Override
 		public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 			return new TestSign(pos, state);

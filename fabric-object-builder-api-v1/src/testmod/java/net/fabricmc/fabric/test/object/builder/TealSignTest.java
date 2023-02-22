@@ -16,50 +16,52 @@
 
 package net.fabricmc.fabric.test.object.builder;
 
+import net.minecraft.block.BlockSetType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.HangingSignBlock;
 import net.minecraft.block.SignBlock;
 import net.minecraft.block.WallHangingSignBlock;
 import net.minecraft.block.WallSignBlock;
+import net.minecraft.block.WoodType;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.HangingSignBlockEntity;
 import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.class_8177;
 import net.minecraft.item.HangingSignItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.SignItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.util.SignType;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.fabricmc.fabric.api.object.builder.v1.sign.SignTypeRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.block.type.BlockSetTypeRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.block.type.WoodTypeRegistry;
 
 public class TealSignTest implements ModInitializer {
-	public static final SignType TEAL_TYPE = SignTypeRegistry.registerSignType(ObjectBuilderTestConstants.id("teal"), class_8177.field_42823);
-	public static final SignBlock TEAL_SIGN = new SignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), TEAL_TYPE) {
+	public static final BlockSetType TEAL_BLOCK_SET_TYPE = BlockSetTypeRegistry.registerWood(ObjectBuilderTestConstants.id("teal"));
+	public static final WoodType TEAL_WOOD_TYPE = WoodTypeRegistry.register(ObjectBuilderTestConstants.id("teal"), TEAL_BLOCK_SET_TYPE);
+	public static final SignBlock TEAL_SIGN = new SignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), TEAL_WOOD_TYPE) {
 		@Override
 		public TealSign createBlockEntity(BlockPos pos, BlockState state) {
 			return new TealSign(pos, state);
 		}
 	};
-	public static final WallSignBlock TEAL_WALL_SIGN = new WallSignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), TEAL_TYPE) {
+	public static final WallSignBlock TEAL_WALL_SIGN = new WallSignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), TEAL_WOOD_TYPE) {
 		@Override
 		public TealSign createBlockEntity(BlockPos pos, BlockState state) {
 			return new TealSign(pos, state);
 		}
 	};
-	public static final HangingSignBlock TEAL_HANGING_SIGN = new HangingSignBlock(FabricBlockSettings.copy(Blocks.OAK_HANGING_SIGN), TEAL_TYPE) {
+	public static final HangingSignBlock TEAL_HANGING_SIGN = new HangingSignBlock(FabricBlockSettings.copy(Blocks.OAK_HANGING_SIGN), TEAL_WOOD_TYPE) {
 		@Override
 		public TealHangingSign createBlockEntity(BlockPos pos, BlockState state) {
 			return new TealHangingSign(pos, state);
 		}
 	};
-	public static final WallHangingSignBlock TEAL_WALL_HANGING_SIGN = new WallHangingSignBlock(FabricBlockSettings.copy(Blocks.OAK_HANGING_SIGN), TEAL_TYPE) {
+	public static final WallHangingSignBlock TEAL_WALL_HANGING_SIGN = new WallHangingSignBlock(FabricBlockSettings.copy(Blocks.OAK_HANGING_SIGN), TEAL_WOOD_TYPE) {
 		@Override
 		public TealHangingSign createBlockEntity(BlockPos pos, BlockState state) {
 			return new TealHangingSign(pos, state);

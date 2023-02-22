@@ -98,8 +98,8 @@ public interface AbstractBlockSettingsAccessor {
 	@Accessor
 	AbstractBlock.ContextPredicate getEmissiveLightingPredicate();
 
-	@Accessor("field_42818")
-	Optional<AbstractBlock.class_8176> getOffsetType();
+	@Accessor
+	Optional<AbstractBlock.Offsetter> getOffsetter();
 
 	@Accessor
 	Identifier getLootTableId();
@@ -144,6 +144,6 @@ public interface AbstractBlockSettingsAccessor {
 	@Accessor
 	void setRequiredFeatures(FeatureSet requiredFeatures);
 
-	@Accessor("field_42818")
-	void setOffsetType(Optional<AbstractBlock.class_8176> type);
+	@Accessor
+	void setOffsetter(Optional<AbstractBlock.Offsetter> offsetter);
 }
