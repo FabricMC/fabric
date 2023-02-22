@@ -47,8 +47,9 @@ public class FabricModResourcePack extends GroupResourcePack {
 		String fileName = String.join("/", pathSegments);
 
 		if ("pack.mcmeta".equals(fileName)) {
-			String description = "Mod resources.";
-			String pack = String.format("{\"pack\":{\"pack_format\":" + SharedConstants.getGameVersion().getResourceVersion(type) + ",\"description\":\"%s\"}}", description);
+			String description = "pack.description.modResources";
+			String fallback = "Mod resources.";
+			String pack = String.format("{\"pack\":{\"pack_format\":" + SharedConstants.getGameVersion().getResourceVersion(type) + ",\"description\":{\"translate\":\"%s\",\"fallback\":\"%s.\"}}}", description, fallback);
 			return () -> IOUtils.toInputStream(pack, Charsets.UTF_8);
 		} else if ("pack.png".equals(fileName)) {
 			return FabricLoader.getInstance().getModContainer("fabric-resource-loader-v0")
