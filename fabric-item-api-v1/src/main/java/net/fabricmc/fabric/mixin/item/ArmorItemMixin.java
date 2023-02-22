@@ -41,7 +41,7 @@ public class ArmorItemMixin {
 	/* Vanilla only adds a knockback resistance modifier to ArmorItems made of ArmorMaterials.NETHERITE. This mixin
 	 * adds a knockback resistance modifier to any ArmorItem if knockbackResistance is > 0.0F.
 	 */
-	@ModifyVariable(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMultimap$Builder;build()Lcom/google/common/collect/ImmutableMultimap;"))
+	@ModifyVariable(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMultimap$Builder;build()Lcom/google/common/collect/ImmutableMultimap;", remap = false))
 	private ImmutableMultimap.Builder<EntityAttribute, EntityAttributeModifier> fabric_knockbackResistance(ImmutableMultimap.Builder<EntityAttribute, EntityAttributeModifier> builder, ArmorMaterial material, ArmorItem.Type type) {
 		// Vanilla handles netherite
 		if (material != ArmorMaterials.NETHERITE && knockbackResistance > 0.0F) {

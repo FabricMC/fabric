@@ -43,7 +43,7 @@ class LanguageMixin {
 	@Final
 	private static Logger LOGGER;
 
-	@Redirect(method = "create", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;build()Lcom/google/common/collect/ImmutableMap;"))
+	@Redirect(method = "create", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;build()Lcom/google/common/collect/ImmutableMap;", remap = false))
 	private static ImmutableMap<String, String> create(ImmutableMap.Builder<String, String> cir) {
 		Map<String, String> map = new HashMap<>(cir.buildOrThrow());
 

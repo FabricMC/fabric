@@ -30,7 +30,7 @@ public class VibrationListenerMixin {
 	/**
 	 * Redirects the call to {@linkplain Object2IntMaps#unmodifiable(Object2IntMap)} in initialization of {@linkplain SculkSensorBlock#FREQUENCIES}.
 	 */
-	@Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2IntMaps;unmodifiable(Lit/unimi/dsi/fastutil/objects/Object2IntMap;)Lit/unimi/dsi/fastutil/objects/Object2IntMap;"))
+	@Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2IntMaps;unmodifiable(Lit/unimi/dsi/fastutil/objects/Object2IntMap;)Lit/unimi/dsi/fastutil/objects/Object2IntMap;", remap = false))
 	private static <K> Object2IntMap<K> makeFrequenciesMapModifiable(Object2IntMap<? extends K> m) {
 		return (Object2IntMap<K>) m;
 	}
