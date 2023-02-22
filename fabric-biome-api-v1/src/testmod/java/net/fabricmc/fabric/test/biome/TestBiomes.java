@@ -35,6 +35,7 @@ import net.minecraft.world.gen.feature.EndPlacedFeatures;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
 public final class TestBiomes {
+	public static final RegistryKey<Biome> EXAMPLE_BIOME = RegistryKey.of(RegistryKeys.BIOME, new Identifier(FabricBiomeTest.MOD_ID, "example_biome"));
 	public static final RegistryKey<Biome> TEST_CRIMSON_FOREST = RegistryKey.of(RegistryKeys.BIOME, new Identifier(FabricBiomeTest.MOD_ID, "test_crimson_forest"));
 	public static final RegistryKey<Biome> CUSTOM_PLAINS = RegistryKey.of(RegistryKeys.BIOME, new Identifier(FabricBiomeTest.MOD_ID, "custom_plains"));
 	public static final RegistryKey<Biome> TEST_END_HIGHLANDS = RegistryKey.of(RegistryKeys.BIOME, new Identifier(FabricBiomeTest.MOD_ID, "test_end_highlands"));
@@ -48,11 +49,34 @@ public final class TestBiomes {
 		RegistryEntryLookup<PlacedFeature> placedFeatures = biomeRegisterable.getRegistryLookup(RegistryKeys.PLACED_FEATURE);
 		RegistryEntryLookup<ConfiguredCarver<?>> configuredCarvers = biomeRegisterable.getRegistryLookup(RegistryKeys.CONFIGURED_CARVER);
 
+		biomeRegisterable.register(EXAMPLE_BIOME, createExample());
 		biomeRegisterable.register(TEST_CRIMSON_FOREST, TheNetherBiomeCreator.createCrimsonForest(placedFeatures, configuredCarvers));
 		biomeRegisterable.register(CUSTOM_PLAINS, OverworldBiomeCreator.createPlains(placedFeatures, configuredCarvers, false, false, false));
 		biomeRegisterable.register(TEST_END_HIGHLANDS, createEndHighlands(placedFeatures));
 		biomeRegisterable.register(TEST_END_MIDLANDS, createEndMidlands());
 		biomeRegisterable.register(TEST_END_BARRRENS, createEndBarrens());
+	}
+
+	private static Biome createExample() {
+		return new Biome.Builder()
+				.temperature(0.8f)
+				.downfall(0.4f)
+				.precipitation(false)
+				.effects(
+					new BiomeEffects.Builder()
+						.skyColor(7907327)
+						.fogColor(12638463)
+						.waterColor(4159204)
+						.waterFogColor(329011)
+						.build()
+				)
+				.spawnSettings(
+					new SpawnSettings.Builder().build()
+				)
+				.generationSettings(
+					new GenerationSettings.Builder().build()
+				)
+				.build();
 	}
 
 	private static Biome createEndHighlands(RegistryEntryLookup<PlacedFeature> placedFeatures) {

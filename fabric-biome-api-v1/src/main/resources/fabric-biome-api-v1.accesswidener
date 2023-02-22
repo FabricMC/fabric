@@ -2,15 +2,7 @@ accessWidener	v1	named
 accessible  class   net/minecraft/world/biome/Biome$Weather
 
 # Used to set nether biomes
-accessible  field   net/minecraft/world/biome/source/MultiNoiseBiomeSource instance Ljava/util/Optional;
-accessible  class   net/minecraft/world/biome/source/MultiNoiseBiomeSource$Instance
-accessible  field   net/minecraft/world/biome/source/MultiNoiseBiomeSource$Preset biomeSourceFunction Lnet/minecraft/world/biome/source/MultiNoiseBiomeSource$Preset$BiomeSourceFunction;
-accessible  field   net/minecraft/world/biome/source/MultiNoiseBiomeSource biomeEntries Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$Entries;
-mutable     field   net/minecraft/world/biome/source/MultiNoiseBiomeSource biomeEntries Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$Entries;
-
-# Rebuilding biome source feature lists
-accessible field net/minecraft/world/biome/source/BiomeSource biomes Ljava/util/Set;
-mutable    field net/minecraft/world/biome/source/BiomeSource biomes Ljava/util/Set;
+accessible class net/minecraft/class_8197$Preset$BiomeSourceFunction
 
 # Top-Level Biome Fields Access
 accessible field net/minecraft/world/biome/Biome weather Lnet/minecraft/world/biome/Biome$Weather;

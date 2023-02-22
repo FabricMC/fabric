@@ -16,28 +16,23 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 
-@Mixin(BiomeSource.class)
-public class BiomeSourceMixin {
-	@Redirect(method = "getBiomes", at = @At(value = "INVOKE", target = "Ljava/util/function/Supplier;get()Ljava/lang/Object;"))
-	private Object getBiomes(Supplier<Set<RegistryEntry<Biome>>> instance) {
-		var biomes = new HashSet<>(instance.get());
-		fabric_modifyBiomeSet(biomes);
-		return Collections.unmodifiableSet(biomes);
-	}
+import net.fabricmc.fabric.impl.biome.NetherBiomeData;
 
-	protected void fabric_modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
+@Mixin(targets = "net/minecraft/class_8197$Preset$1")
+public class NetherBiomePresetMixin {
+	@Inject(method = "apply", at = @At("RETURN"), cancellable = true)
+	public <T> void apply(Function<RegistryKey<Biome>, T> function, CallbackInfoReturnable<MultiNoiseUtil.Entries<T>> cir) {
+		cir.setReturnValue(NetherBiomeData.withModdedBiomeEntries(cir.getReturnValue(), function));
 	}
 }

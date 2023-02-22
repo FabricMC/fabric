@@ -86,7 +86,7 @@ public class HopperBlockEntityMixin {
 		if (inputInventory != null) return;
 
 		// Otherwise inject our transfer logic.
-		BlockPos sourcePos = new BlockPos(hopper.getHopperX(), hopper.getHopperY() + 1.0D, hopper.getHopperZ());
+		BlockPos sourcePos = BlockPos.method_49637(hopper.getHopperX(), hopper.getHopperY() + 1.0D, hopper.getHopperZ());
 		Storage<ItemVariant> source = ItemStorage.SIDED.find(world, sourcePos, Direction.DOWN);
 
 		if (source != null) {

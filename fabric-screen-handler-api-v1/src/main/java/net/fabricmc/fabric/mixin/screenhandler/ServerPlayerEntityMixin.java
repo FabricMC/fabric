@@ -65,7 +65,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 			this.closeHandledScreen();
 		} else {
 			// Called by closeHandledScreen in vanilla
-			this.closeScreenHandler();
+			this.onHandledScreenClosed();
 		}
 	}
 

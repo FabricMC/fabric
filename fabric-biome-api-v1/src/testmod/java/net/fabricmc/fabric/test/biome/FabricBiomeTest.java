@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.biome;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
@@ -57,8 +59,13 @@ public class FabricBiomeTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		Preconditions.checkArgument(NetherBiomes.canGenerateInNether(BiomeKeys.NETHER_WASTES));
+		Preconditions.checkArgument(!NetherBiomes.canGenerateInNether(BiomeKeys.END_HIGHLANDS));
+
 		NetherBiomes.addNetherBiome(BiomeKeys.PLAINS, MultiNoiseUtil.createNoiseHypercube(0.0F, 0.5F, 0.0F, 0.0F, 0.0f, 0, 0.1F));
 		NetherBiomes.addNetherBiome(TestBiomes.TEST_CRIMSON_FOREST, MultiNoiseUtil.createNoiseHypercube(0.0F, -0.15F, 0.0f, 0.0F, 0.0f, 0.0F, 0.2F));
+
+		Preconditions.checkArgument(NetherBiomes.canGenerateInNether(TestBiomes.TEST_CRIMSON_FOREST));
 
 		// TESTING HINT: to get to the end:
 		// /execute in minecraft:the_end run tp @s 0 90 0
@@ -92,11 +99,11 @@ public class FabricBiomeTest implements ModInitializer {
 
 		// Make sure data packs can define biomes
 		NetherBiomes.addNetherBiome(
-				RegistryKey.of(RegistryKeys.BIOME, new Identifier(MOD_ID, "example_biome")),
+				TestBiomes.EXAMPLE_BIOME,
 				MultiNoiseUtil.createNoiseHypercube(1.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.5f, 0.3f)
 		);
 		TheEndBiomes.addHighlandsBiome(
-				RegistryKey.of(RegistryKeys.BIOME, new Identifier(MOD_ID, "example_biome")),
+				TestBiomes.EXAMPLE_BIOME,
 				10.0
 		);
 	}

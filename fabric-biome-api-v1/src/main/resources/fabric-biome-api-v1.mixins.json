@@ -3,11 +3,11 @@
   "package": "net.fabricmc.fabric.mixin.biome",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "MinecraftServerMixin",
     "BiomeSourceMixin",
     "ChunkNoiseSamplerMixin",
     "MultiNoiseBiomeSourceMixin",
     "MultiNoiseUtilMultiNoiseSamplerMixin",
+    "NetherBiomePresetMixin",
     "NoiseConfigMixin",
     "TheEndBiomeSourceMixin",
     "modification.DynamicRegistryManagerImmutableImplMixin",
