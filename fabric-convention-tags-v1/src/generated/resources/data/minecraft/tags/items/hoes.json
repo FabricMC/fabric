@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:hoes",
+      "required": false
+    },
+    {
+      "id": "#fabric:hoes",
+      "required": false
+    }
+  ]
+}

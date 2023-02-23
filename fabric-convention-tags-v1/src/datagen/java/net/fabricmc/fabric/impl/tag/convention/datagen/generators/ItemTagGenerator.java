@@ -29,34 +29,22 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 
 public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
-	/**
-	 * @deprecated Use {@link ConventionalItemTags#PICKAXES}
-	 */
+	/** @deprecated Replaced with {@link ItemTags#PICKAXES}. */
 	@Deprecated
 	private static final Identifier FABRIC_PICKAXES = createFabricId("pickaxes");
-	/**
-	 * @deprecated Use {@link ConventionalItemTags#SHOVELS}
-	 */
+	/** @deprecated Replaced with {@link ItemTags#SHOVELS}. */
 	@Deprecated
 	private static final Identifier FABRIC_SHOVELS = createFabricId("shovels");
-	/**
-	 * @deprecated Use {@link ConventionalItemTags#HOES}
-	 */
+	/** @deprecated Replaced with {@link ItemTags#HOES}. */
 	@Deprecated
 	private static final Identifier FABRIC_HOES = createFabricId("hoes");
-	/**
-	 * @deprecated Use {@link ConventionalItemTags#AXES}
-	 */
+	/** @deprecated Replaced with {@link ItemTags#AXES}. */
 	@Deprecated
 	private static final Identifier FABRIC_AXES = createFabricId("axes");
-	/**
-	 * @deprecated Use {@link ConventionalItemTags#SHEARS}
-	 */
+	/** @deprecated Replaced with {@link ConventionalItemTags#SHEARS}. */
 	@Deprecated
 	private static final Identifier FABRIC_SHEARS = createFabricId("shears");
-	/**
-	 * @deprecated Use {@link ConventionalItemTags#SWORDS}
-	 */
+	/** @deprecated Replaced with {@link ItemTags#SWORDS}. */
 	@Deprecated
 	private static final Identifier FABRIC_SWORDS = createFabricId("swords");
 
@@ -305,6 +293,21 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.STONE_SHOVEL)
 				.add(Items.IRON_SHOVEL)
 				.add(Items.NETHERITE_SHOVEL);
+		getOrCreateTagBuilder(ItemTags.AXES)
+				.addOptionalTag(ConventionalItemTags.AXES)
+				.addOptionalTag(FABRIC_AXES);
+		getOrCreateTagBuilder(ItemTags.PICKAXES)
+				.addOptionalTag(ConventionalItemTags.PICKAXES)
+				.addOptionalTag(FABRIC_PICKAXES);
+		getOrCreateTagBuilder(ItemTags.HOES)
+				.addOptionalTag(ConventionalItemTags.HOES)
+				.addOptionalTag(FABRIC_HOES);
+		getOrCreateTagBuilder(ItemTags.SWORDS)
+				.addOptionalTag(ConventionalItemTags.SWORDS)
+				.addOptionalTag(FABRIC_SWORDS);
+		getOrCreateTagBuilder(ItemTags.SHOVELS)
+				.addOptionalTag(ConventionalItemTags.SHOVELS)
+				.addOptionalTag(FABRIC_SHOVELS);
 		getOrCreateTagBuilder(ConventionalItemTags.SHEARS)
 				.addOptionalTag(FABRIC_SHEARS)
 				.add(Items.SHEARS);
