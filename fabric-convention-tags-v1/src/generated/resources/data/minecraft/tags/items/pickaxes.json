@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:pickaxes",
+      "required": false
+    },
+    {
+      "id": "#fabric:pickaxes",
+      "required": false
+    }
+  ]
+}

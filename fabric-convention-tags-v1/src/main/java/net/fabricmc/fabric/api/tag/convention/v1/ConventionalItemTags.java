@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.tag.convention.v1;
 
 import net.minecraft.item.Item;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
@@ -30,16 +31,11 @@ public final class ConventionalItemTags {
 	}
 
 	// Tool tags
-	public static final TagKey<Item> PICKAXES = register("pickaxes");
-	public static final TagKey<Item> SHOVELS = register("shovels");
-	public static final TagKey<Item> HOES = register("hoes");
-	public static final TagKey<Item> AXES = register("axes");
 	public static final TagKey<Item> SHEARS = register("shears");
 	/**
 	 * For throwable weapons, like Minecraft tridents.
 	 */
 	public static final TagKey<Item> SPEARS = register("spears");
-	public static final TagKey<Item> SWORDS = register("swords");
 	public static final TagKey<Item> BOWS = register("bows");
 	public static final TagKey<Item> SHIELDS = register("shields");
 	// Ores and ingots
@@ -107,6 +103,21 @@ public final class ConventionalItemTags {
 	/** @deprecated Replaced with {@link #EMPTY_BUCKETS}. */
 	@Deprecated(forRemoval = true)
 	public static final TagKey<Item> EMPTY_BUCKET = EMPTY_BUCKETS;
+	/** @deprecated Replaced with {@link ItemTags#PICKAXES}. */
+	@Deprecated
+	public static final TagKey<Item> PICKAXES = ItemTags.PICKAXES;
+	/** @deprecated Replaced with {@link ItemTags#SHOVELS}. */
+	@Deprecated
+	public static final TagKey<Item> SHOVELS = ItemTags.SHOVELS;
+	/** @deprecated Replaced with {@link ItemTags#HOES}. */
+	@Deprecated
+	public static final TagKey<Item> HOES = ItemTags.HOES;
+	/** @deprecated Replaced with {@link ItemTags#AXES}. */
+	@Deprecated
+	public static final TagKey<Item> AXES = ItemTags.AXES;
+	/** @deprecated Replaced with {@link ItemTags#SWORDS}. */
+	@Deprecated
+	public static final TagKey<Item> SWORDS = ItemTags.SWORDS;
 
 	private static TagKey<Item> register(String tagID) {
 		return TagRegistration.ITEM_TAG_REGISTRATION.registerCommon(tagID);

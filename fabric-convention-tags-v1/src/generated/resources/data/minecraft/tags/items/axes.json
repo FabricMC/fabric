@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:axes",
+      "required": false
+    },
+    {
+      "id": "#fabric:axes",
+      "required": false
+    }
+  ]
+}
