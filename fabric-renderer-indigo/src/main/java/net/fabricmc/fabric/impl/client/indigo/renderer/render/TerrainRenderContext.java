@@ -20,8 +20,8 @@ import java.util.function.Consumer;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
+import net.minecraft.client.render.chunk.ChunkBuilder;
 import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
-import net.minecraft.client.render.chunk.ChunkBuilder.ChunkData;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
@@ -46,9 +46,19 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 public class TerrainRenderContext extends AbstractRenderContext {
 	public static final ThreadLocal<TerrainRenderContext> POOL = ThreadLocal.withInitial(TerrainRenderContext::new);
 
-	private final TerrainBlockRenderInfo blockInfo = new TerrainBlockRenderInfo();
+	private final BlockRenderInfo blockInfo = new BlockRenderInfo();
 	private final ChunkRenderInfo chunkInfo = new ChunkRenderInfo();
-	private final AoCalculator aoCalc = new AoCalculator(blockInfo, chunkInfo::cachedBrightness, chunkInfo::cachedAoLevel);
+	private final AoCalculator aoCalc = new AoCalculator(blockInfo) {
+		@Override
+		public int light(BlockPos pos, BlockState state) {
+			return chunkInfo.cachedBrightness(pos, state);
+		}
+
+		@Override
+		public float ao(BlockPos pos, BlockState state) {
+			return chunkInfo.cachedAoLevel(pos, state);
+		}
+	};
 
 	private final AbstractMeshConsumer meshConsumer = new AbstractMeshConsumer(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, this::transform) {
 		@Override
@@ -84,8 +94,8 @@ public class TerrainRenderContext extends AbstractRenderContext {
 		}
 	};
 
-	public void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, ChunkData chunkData, BlockBufferBuilderStorage builders) {
-		blockInfo.setBlockView(blockView);
+	public void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, ChunkBuilder.ChunkData chunkData, BlockBufferBuilderStorage builders) {
+		blockInfo.prepareForWorld(blockView, true);
 		chunkInfo.prepare(blockView, chunkRenderer, chunkData, builders);
 	}
 
