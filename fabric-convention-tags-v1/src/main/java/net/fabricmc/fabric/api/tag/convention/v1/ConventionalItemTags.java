@@ -103,21 +103,22 @@ public final class ConventionalItemTags {
 	/** @deprecated Replaced with {@link #EMPTY_BUCKETS}. */
 	@Deprecated(forRemoval = true)
 	public static final TagKey<Item> EMPTY_BUCKET = EMPTY_BUCKETS;
+
 	/** @deprecated Replaced with {@link ItemTags#PICKAXES}. */
-	@Deprecated
-	public static final TagKey<Item> PICKAXES = ItemTags.PICKAXES;
+	@Deprecated(forRemoval = true)
+	public static final TagKey<Item> PICKAXES = register("pickaxes");
 	/** @deprecated Replaced with {@link ItemTags#SHOVELS}. */
-	@Deprecated
-	public static final TagKey<Item> SHOVELS = ItemTags.SHOVELS;
+	@Deprecated(forRemoval = true)
+	public static final TagKey<Item> SHOVELS = register("shovels");
 	/** @deprecated Replaced with {@link ItemTags#HOES}. */
-	@Deprecated
-	public static final TagKey<Item> HOES = ItemTags.HOES;
+	@Deprecated(forRemoval = true)
+	public static final TagKey<Item> HOES = register("hoes");
 	/** @deprecated Replaced with {@link ItemTags#AXES}. */
-	@Deprecated
-	public static final TagKey<Item> AXES = ItemTags.AXES;
+	@Deprecated(forRemoval = true)
+	public static final TagKey<Item> AXES = register("axes");
 	/** @deprecated Replaced with {@link ItemTags#SWORDS}. */
-	@Deprecated
-	public static final TagKey<Item> SWORDS = ItemTags.SWORDS;
+	@Deprecated(forRemoval = true)
+	public static final TagKey<Item> SWORDS = register("swords");
 
 	private static TagKey<Item> register(String tagID) {
 		return TagRegistration.ITEM_TAG_REGISTRATION.registerCommon(tagID);
