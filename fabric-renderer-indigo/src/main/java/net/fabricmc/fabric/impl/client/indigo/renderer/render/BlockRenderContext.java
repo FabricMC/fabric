@@ -56,6 +56,7 @@ public class BlockRenderContext extends AbstractRenderContext {
 	};
 
 	private VertexConsumer bufferBuilder;
+	private boolean didOutput = false;
 	// These are kept as fields to avoid the heap allocation for a supplier.
 	// BlockModelRenderer allows the caller to supply both the random object and seed.
 	private Random random;
@@ -104,10 +105,11 @@ public class BlockRenderContext extends AbstractRenderContext {
 	};
 
 	private VertexConsumer outputBuffer(RenderLayer renderLayer) {
+		didOutput = true;
 		return bufferBuilder;
 	}
 
-	public void render(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, boolean cull, Random random, long seed, int overlay) {
+	public boolean render(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, boolean cull, Random random, long seed, int overlay) {
 		this.bufferBuilder = buffer;
 		this.matrix = matrixStack.peek().getPositionMatrix();
 		this.normalMatrix = matrixStack.peek().getNormalMatrix();
@@ -115,6 +117,7 @@ public class BlockRenderContext extends AbstractRenderContext {
 		this.seed = seed;
 
 		this.overlay = overlay;
+		this.didOutput = false;
 		aoCalc.clear();
 		blockInfo.prepareForWorld(blockView, cull);
 		blockInfo.prepareForBlock(state, pos, model.useAmbientOcclusion());
@@ -125,6 +128,8 @@ public class BlockRenderContext extends AbstractRenderContext {
 		this.bufferBuilder = null;
 		this.random = null;
 		this.seed = seed;
+
+		return didOutput;
 	}
 
 	@Override

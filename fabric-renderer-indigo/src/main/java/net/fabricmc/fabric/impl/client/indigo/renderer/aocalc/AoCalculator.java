@@ -29,6 +29,7 @@ import static net.minecraft.util.math.Direction.WEST;
 
 import java.util.BitSet;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +68,7 @@ public abstract class AoCalculator {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AoCalculator.class);
 
+	@Nullable
 	private final AccessAmbientOcclusionCalculator vanillaCalc;
 	private final BlockPos.Mutable lightPos = new BlockPos.Mutable();
 	private final BlockPos.Mutable searchPos = new BlockPos.Mutable();
@@ -109,7 +111,12 @@ public abstract class AoCalculator {
 
 		switch (config) {
 		case VANILLA:
-			calcVanilla(quad);
+			// prevent NPE in error case of failed reflection for vanilla calculator access
+			if (vanillaCalc == null) {
+				calcFastVanilla(quad);
+			} else {
+				calcVanilla(quad);
+			}
 
 			// no point in comparing vanilla with itself
 			shouldCompare = false;
@@ -137,7 +144,7 @@ public abstract class AoCalculator {
 			calcEnhanced(quad);
 		}
 
-		if (shouldCompare) {
+		if (shouldCompare && vanillaCalc != null) {
 			float[] vanillaAo = new float[4];
 			int[] vanillaLight = new int[4];
 			calcVanilla(quad, vanillaAo, vanillaLight);
