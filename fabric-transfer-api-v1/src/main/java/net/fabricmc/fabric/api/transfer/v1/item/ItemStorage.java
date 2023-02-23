@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.transfer.v1.item;
 import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
@@ -48,7 +49,7 @@ import net.fabricmc.fabric.mixin.transfer.DoubleInventoryAccessor;
 public final class ItemStorage {
 	/**
 	 * Sided block access to item variant storages.
-	 * The {@code Direction} parameter may never be null.
+	 * The {@code Direction} parameter may be null, meaning that the full inventory (ignoring side restrictions) should be queried.
 	 * Refer to {@link BlockApiLookup} for documentation on how to use this field.
 	 *
 	 * <p>When the operations supported by a storage change,
@@ -79,7 +80,7 @@ public final class ItemStorage {
 	 * On the server thread (i.e. with a server world), all transfer functionality is always supported.
 	 * On the client thread (i.e. with a client world), contents of queried Storages are unreliable and should not be modified.
 	 */
-	public static final BlockApiLookup<Storage<ItemVariant>, Direction> SIDED =
+	public static final BlockApiLookup<Storage<ItemVariant>, @Nullable Direction> SIDED =
 			BlockApiLookup.get(new Identifier("fabric:sided_item_storage"), Storage.asClass(), Direction.class);
 
 	private ItemStorage() {
