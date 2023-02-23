@@ -21,7 +21,11 @@
   },
   "description": "Adds message-related hooks.",
   "mixins": [
-    "fabric-message-api-v1.mixins.json"
+    "fabric-message-api-v1.mixins.json",
+    {
+      "config": "fabric-message-api-v1.client.mixins.json",
+      "environment": "client"
+    }
   ],
   "custom": {
     "fabric-api:module-lifecycle": "experimental"
