@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.client.message",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "ClientPlayNetworkHandlerMixin",
+    "MessageHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
