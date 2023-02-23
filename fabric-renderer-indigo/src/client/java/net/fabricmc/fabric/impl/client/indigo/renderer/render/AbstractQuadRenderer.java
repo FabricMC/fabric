@@ -37,7 +37,6 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
-import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 
 /**
@@ -235,9 +234,9 @@ public abstract class AbstractQuadRenderer {
 	 * even for un-shaded quads. These are also applied with AO shading but that is done in AO calculator.
 	 */
 	private void shadeFlatQuad(MutableQuadViewImpl quad) {
-		if ((quad.geometryFlags() & GeometryHelper.AXIS_ALIGNED_FLAG) == 0 || quad.hasVertexNormals()) {
-			// Quads that aren't direction-aligned or that have vertex normals need to be shaded
-			// using interpolation - vanilla can't handle them. Generally only applies to modded models.
+		if (quad.hasVertexNormals()) {
+			// Quads that have vertex normals need to be shaded using interpolation - vanilla can't
+			// handle them. Generally only applies to modded models.
 			final float faceShade = blockInfo.blockView.getBrightness(quad.lightFace(), quad.hasShade());
 
 			for (int i = 0; i < 4; i++) {
