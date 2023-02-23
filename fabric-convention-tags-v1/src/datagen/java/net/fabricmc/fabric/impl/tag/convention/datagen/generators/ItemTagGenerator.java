@@ -47,7 +47,6 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	/** @deprecated Replaced with {@link ItemTags#SWORDS}. */
 	@Deprecated
 	private static final Identifier FABRIC_SWORDS = createFabricId("swords");
-	/** @deprecated Replaced with {@link ItemTags#PICKAXES}. */
 
 	public ItemTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
 		super(output, completableFuture);
