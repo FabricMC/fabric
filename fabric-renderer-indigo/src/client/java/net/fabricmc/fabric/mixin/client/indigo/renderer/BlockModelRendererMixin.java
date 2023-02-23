@@ -41,11 +41,10 @@ public abstract class BlockModelRendererMixin {
 	private final ThreadLocal<BlockRenderContext> fabric_contexts = ThreadLocal.withInitial(BlockRenderContext::new);
 
 	@Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/client/render/model/BakedModel;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;ZLnet/minecraft/util/math/random/Random;JI)V", cancellable = true)
-	private void hookRender(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrix, VertexConsumer buffer, boolean checkSides, Random rand, long seed, int overlay, CallbackInfo ci) {
+	private void hookRender(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrix, VertexConsumer buffer, boolean cull, Random rand, long seed, int overlay, CallbackInfo ci) {
 		if (!((FabricBakedModel) model).isVanillaAdapter()) {
 			BlockRenderContext context = fabric_contexts.get();
-			// Note that we do not support face-culling here (so checkSides is ignored)
-			context.render(blockView, model, state, pos, matrix, buffer, rand, seed, overlay);
+			context.render(blockView, model, state, pos, matrix, buffer, cull, rand, seed, overlay);
 			ci.cancel();
 		}
 	}
