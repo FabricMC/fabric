@@ -23,6 +23,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.util.Identifier;
+
 import net.fabricmc.fabric.impl.client.rendering.FabricShaderProgram;
 
 /**
@@ -41,7 +43,7 @@ abstract class ShaderProgramImportProcessorMixin {
 
 	@ModifyVariable(method = "loadImport", at = @At("STORE"), ordinal = 0, argsOnly = true)
 	private String fabric_modifyImportId(String id, boolean inline) {
-		if (!inline && capturedImport.contains(":")) {
+		if (!inline && capturedImport.contains(String.valueOf(Identifier.NAMESPACE_SEPARATOR))) {
 			return FabricShaderProgram.rewriteAsId(id, capturedImport);
 		}
 

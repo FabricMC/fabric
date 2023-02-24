@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.gl.ShaderStage;
 import net.minecraft.resource.ResourceFactory;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.client.rendering.FabricShaderProgram;
 
@@ -48,7 +49,7 @@ abstract class ShaderProgramMixin {
 	// Allow loading shader stages from arbitrary namespaces.
 	@ModifyVariable(method = "loadShader", at = @At("STORE"), ordinal = 1)
 	private static String fabric_modifyStageId(String id, ResourceFactory factory, ShaderStage.Type type, String name) {
-		if (name.contains(":")) {
+		if (name.contains(String.valueOf(Identifier.NAMESPACE_SEPARATOR))) {
 			return FabricShaderProgram.rewriteAsId(id, name);
 		}
 
