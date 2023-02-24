@@ -37,12 +37,12 @@ abstract class ShaderProgramImportProcessorMixin {
 	private String capturedImport;
 
 	@Inject(method = "loadImport", at = @At("HEAD"))
-	private void fabric_captureImport(boolean inline, String name, CallbackInfoReturnable<String> info) {
+	private void captureImport(boolean inline, String name, CallbackInfoReturnable<String> info) {
 		capturedImport = name;
 	}
 
 	@ModifyVariable(method = "loadImport", at = @At("STORE"), ordinal = 0, argsOnly = true)
-	private String fabric_modifyImportId(String id, boolean inline) {
+	private String modifyImportId(String id, boolean inline) {
 		if (!inline && capturedImport.contains(String.valueOf(Identifier.NAMESPACE_SEPARATOR))) {
 			return FabricShaderProgram.rewriteAsId(id, capturedImport);
 		}
@@ -51,7 +51,7 @@ abstract class ShaderProgramImportProcessorMixin {
 	}
 
 	@Inject(method = "loadImport", at = @At("RETURN"))
-	private void fabric_uncaptureImport(boolean inline, String name, CallbackInfoReturnable<String> info) {
+	private void uncaptureImport(boolean inline, String name, CallbackInfoReturnable<String> info) {
 		capturedImport = null;
 	}
 }

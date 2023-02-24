@@ -38,7 +38,7 @@ abstract class ShaderProgramMixin {
 
 	// Allow loading FabricShaderPrograms from arbitrary namespaces.
 	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;<init>(Ljava/lang/String;)V"), allow = 1)
-	private String fabric_modifyProgramId(String id) {
+	private String modifyProgramId(String id) {
 		if ((Object) this instanceof FabricShaderProgram) {
 			return FabricShaderProgram.rewriteAsId(id, name);
 		}
@@ -48,7 +48,7 @@ abstract class ShaderProgramMixin {
 
 	// Allow loading shader stages from arbitrary namespaces.
 	@ModifyVariable(method = "loadShader", at = @At("STORE"), ordinal = 1)
-	private static String fabric_modifyStageId(String id, ResourceFactory factory, ShaderStage.Type type, String name) {
+	private static String modifyStageId(String id, ResourceFactory factory, ShaderStage.Type type, String name) {
 		if (name.contains(String.valueOf(Identifier.NAMESPACE_SEPARATOR))) {
 			return FabricShaderProgram.rewriteAsId(id, name);
 		}

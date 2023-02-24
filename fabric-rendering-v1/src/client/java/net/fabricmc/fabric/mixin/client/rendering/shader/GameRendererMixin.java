@@ -46,7 +46,7 @@ abstract class GameRendererMixin {
 			slice = @Slice(from = @At(value = "NEW", target = "net/minecraft/client/gl/ShaderProgram", ordinal = 0)),
 			locals = LocalCapture.CAPTURE_FAILHARD
 	)
-	private void fabric_registerShaders(ResourceFactory factory, CallbackInfo info, List<?> shaderStages, List<Pair<ShaderProgram, Consumer<ShaderProgram>>> programs) throws IOException {
+	private void registerShaders(ResourceFactory factory, CallbackInfo info, List<?> shaderStages, List<Pair<ShaderProgram, Consumer<ShaderProgram>>> programs) throws IOException {
 		CoreShaderRegistrationCallback.RegistrationContext context = (id, vertexFormat, loadCallback) -> {
 			ShaderProgram program = new FabricShaderProgram(factory, id, vertexFormat);
 			programs.add(Pair.of(program, loadCallback));
