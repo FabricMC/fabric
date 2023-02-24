@@ -1,0 +1,4 @@
+accessWidener v2 named
+
+accessible class net/minecraft/structure/StructureTemplateManager$Provider
+accessible method net/minecraft/structure/StructureTemplateManager$Provider <init> (Ljava/util/function/Function;Ljava/util/function/Supplier;)V

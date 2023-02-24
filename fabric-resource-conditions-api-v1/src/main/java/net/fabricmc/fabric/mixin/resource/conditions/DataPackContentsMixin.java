@@ -44,7 +44,8 @@ public class DataPackContentsMixin {
 			at = @At("HEAD")
 	)
 	public void hookRefresh(DynamicRegistryManager dynamicRegistryManager, CallbackInfo ci) {
-		ResourceConditionsImpl.clearTags();
+		ResourceConditionsImpl.LOADED_TAGS.remove();
+		ResourceConditionsImpl.CURRENT_REGISTRIES.remove();
 	}
 
 	@Inject(
@@ -52,6 +53,7 @@ public class DataPackContentsMixin {
 			at = @At("HEAD")
 	)
 	private static void hookReload(ResourceManager manager, DynamicRegistryManager.Immutable dynamicRegistryManager, FeatureSet enabledFeatures, CommandManager.RegistrationEnvironment environment, int functionPermissionLevel, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<DataPackContents>> cir) {
-		ResourceConditionsImpl.currentFeature.set(enabledFeatures);
+		ResourceConditionsImpl.CURRENT_FEATURES.set(enabledFeatures);
+		ResourceConditionsImpl.CURRENT_REGISTRIES.set(dynamicRegistryManager);
 	}
 }
