@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.blockrenderlayer.v1;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 
@@ -25,10 +26,9 @@ import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
 
 /**
  * Use to associate blocks or fluids with block render layer other than default.
- * Replaces the {@code renderLayer} property previously on {@code Block}.
  *
- * <p>{@code BlockRenderLayer} controls how sprite pixels for fluids and blocks are blended
- * with the scene. Consult the vanilla {@code BlockRenderLayer} implementation for examples.
+ * <p>{@link RenderLayers} control how sprite pixels for fluids and blocks are blended
+ * with the scene. Consult the vanilla {@link RenderLayers} implementation for examples.
  *
  * <p>The Fabric Renderer API can be used to control this at a per-quad level at the code
  * via {@code BlendMode}.
@@ -57,21 +57,17 @@ public interface BlockRenderLayerMap {
 	void putBlocks(RenderLayer renderLayer, Block... blocks);
 
 	/**
-	 * Map (or re-map) an item with a render layer.  Re-mapping is not recommended but if done, last one in wins.
-	 * Must be called from client thread prior to world load/rendering. Best practice will be to call from mod's client initializer.
-	 *
-	 * @param item Identifies item to be mapped.
-	 * @param renderLayer Render layer.  Should be one of the layers used for entity rendering.
+	 * @deprecated For blocks, calling {@link #putBlock(Block, RenderLayer)} is enough.
+	 * Other items always use a translucent render layer.
 	 */
+	@Deprecated(forRemoval = true)
 	void putItem(Item item, RenderLayer renderLayer);
 
 	/**
-	 * Map (or re-map) multiple items with a render layer.  Re-mapping is not recommended but if done, last one in wins.
-	 * Must be called from client thread prior to world load/rendering. Best practice will be to call from mod's client initializer.
-	 *
-	 * @param renderLayer Render layer.  Should be one of the layers used for entity rendering.
-	 * @param items Identifies items to be mapped.
+	 * @deprecated For blocks, calling {@link #putBlocks(RenderLayer, Block...)} is enough.
+	 * Other items always use a translucent render layer.
 	 */
+	@Deprecated(forRemoval = true)
 	void putItems(RenderLayer renderLayer, Item... items);
 
 	/**
