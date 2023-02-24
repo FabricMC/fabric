@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.biome;
+package net.fabricmc.fabric.impl.structure;
 
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.util.math.BlockPos;

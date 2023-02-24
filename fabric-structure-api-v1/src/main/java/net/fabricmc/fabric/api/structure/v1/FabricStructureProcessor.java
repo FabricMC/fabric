@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.biome.v1;
+package net.fabricmc.fabric.api.structure.v1;
 
 import org.jetbrains.annotations.Nullable;
 

@@ -45,6 +45,8 @@ import net.minecraft.world.gen.heightprovider.ConstantHeightProvider;
 import net.minecraft.world.gen.structure.JigsawStructure;
 import net.minecraft.world.gen.structure.Structure;
 
+import net.fabricmc.fabric.test.structure.TestStructureProcessor;
+
 public class TestStructures {
 	public static final RegistryKey<StructureProcessorList> TEST_LIST = RegistryKey.of(RegistryKeys.PROCESSOR_LIST, new Identifier(FabricBiomeTest.MOD_ID, "test_list"));
 	public static final RegistryKey<StructurePool> TEST_POOL = RegistryKey.of(RegistryKeys.TEMPLATE_POOL, new Identifier(FabricBiomeTest.MOD_ID, "test_pool"));

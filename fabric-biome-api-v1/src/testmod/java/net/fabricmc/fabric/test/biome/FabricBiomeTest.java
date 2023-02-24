@@ -16,12 +16,9 @@
 
 package net.fabricmc.fabric.test.biome;
 
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
-import net.minecraft.structure.processor.StructureProcessorType;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
@@ -56,11 +53,6 @@ public class FabricBiomeTest implements ModInitializer {
 	public static final RegistryKey<PlacedFeature> PLACED_COMMON_DESERT_WELL = RegistryKey.of(
 			RegistryKeys.PLACED_FEATURE,
 			new Identifier(FabricBiomeTest.MOD_ID, "fab_desert_well")
-	);
-	public static final StructureProcessorType<TestStructureProcessor> TEST_STRUCTURE_PROCESSOR_TYPE = Registry.register(
-			Registries.STRUCTURE_PROCESSOR,
-			new Identifier(FabricBiomeTest.MOD_ID, "test_processor"),
-			() -> TestStructureProcessor.CODEC
 	);
 
 	@Override

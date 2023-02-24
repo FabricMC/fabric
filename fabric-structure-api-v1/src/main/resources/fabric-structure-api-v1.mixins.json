@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.structure",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "StructureProcessorMixin",
+    "StructureTemplateMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

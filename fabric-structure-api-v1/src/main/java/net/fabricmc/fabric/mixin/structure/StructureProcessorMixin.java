@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.biome;
+package net.fabricmc.fabric.mixin.structure;
 
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.structure.processor.StructureProcessor;
 
-import net.fabricmc.fabric.api.biome.v1.FabricStructureProcessor;
+import net.fabricmc.fabric.api.structure.v1.FabricStructureProcessor;
 
 @Mixin(StructureProcessor.class)
 public class StructureProcessorMixin implements FabricStructureProcessor {

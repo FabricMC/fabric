@@ -6,7 +6,9 @@
   "environment": "*",
   "license": "Apache-2.0",
   "depends": {
-    "fabric-biome-api-v1": "*"
+    "fabric-biome-api-v1": "*",
+    "fabric-structure-api-v1": "*",
+    "fabric-structure-api-v1-testmod": "*"
   },
   "entrypoints": {
     "main": [

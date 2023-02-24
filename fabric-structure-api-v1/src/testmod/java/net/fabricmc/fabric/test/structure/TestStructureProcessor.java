@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.biome;
+package net.fabricmc.fabric.test.structure;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -71,6 +71,6 @@ public class TestStructureProcessor extends StructureProcessor {
 
 	@Override
 	protected StructureProcessorType<?> getType() {
-		return FabricBiomeTest.TEST_STRUCTURE_PROCESSOR_TYPE;
+		return FabricStructureTest.TEST_STRUCTURE_PROCESSOR_TYPE;
 	}
 }

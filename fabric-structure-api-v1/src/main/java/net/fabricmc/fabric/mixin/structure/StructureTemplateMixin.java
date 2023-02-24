@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.biome;
+package net.fabricmc.fabric.mixin.structure;
 
 import java.util.Iterator;
 
@@ -34,7 +34,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ServerWorldAccess;
 
-import net.fabricmc.fabric.impl.biome.StructurePlacementContext;
+import net.fabricmc.fabric.impl.structure.StructurePlacementContext;
 
 @Mixin(StructureTemplate.class)
 public abstract class StructureTemplateMixin {

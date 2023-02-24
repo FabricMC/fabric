@@ -9,8 +9,6 @@
     "MultiNoiseBiomeSourceMixin",
     "MultiNoiseUtilMultiNoiseSamplerMixin",
     "NoiseConfigMixin",
-    "StructureProcessorMixin",
-    "StructureTemplateMixin",
     "TheEndBiomeSourceMixin",
     "modification.DynamicRegistryManagerImmutableImplMixin",
     "modification.MinecraftServerMixin"

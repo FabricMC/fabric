@@ -2,7 +2,7 @@
   "processors": [
     {
       "item": "minecraft:diamond",
-      "processor_type": "fabric-biome-api-v1-testmod:test_processor"
+      "processor_type": "fabric-structure-api-v1-testmod:test_processor"
     }
   ]
 }
