@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 /**
  * Tests {@link HudRenderCallback} and {@link CoreShaderRegistrationCallback} by drawing a green rectangle
- * in the upper-right corner of the screen.
+ * in the lower-right corner of the screen.
  */
 public class HudAndShaderTest implements ClientModInitializer {
 	private static ShaderProgram testShader;
@@ -52,7 +52,7 @@ public class HudAndShaderTest implements ClientModInitializer {
 			MinecraftClient client = MinecraftClient.getInstance();
 			Window window = client.getWindow();
 			int x = window.getScaledWidth() - 15;
-			int y = 5;
+			int y = window.getScaledHeight() - 15;
 			RenderSystem.setShader(() -> testShader);
 			RenderSystem.setShaderColor(0f, 1f, 0f, 1f);
 			Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
