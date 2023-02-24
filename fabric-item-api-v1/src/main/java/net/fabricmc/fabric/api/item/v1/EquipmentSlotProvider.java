@@ -24,6 +24,9 @@ import net.minecraft.item.ItemStack;
  * This can be used to give non-armor items, such as blocks,
  * an armor slot that they can go in.
  *
+ * <p>The preferred requipment slot of an item stack can be queried using
+ * {@link net.minecraft.entity.LivingEntity#getPreferredEquipmentSlot(ItemStack) LivingEntity.getPreferredEquipmentSlot()}.
+ *
  * <p>Equipment slot providers can be set with {@link FabricItemSettings#equipmentSlot(EquipmentSlotProvider)}.
  *
  * <p>Note that items extending {@link net.minecraft.item.ArmorItem} don't need to use this
