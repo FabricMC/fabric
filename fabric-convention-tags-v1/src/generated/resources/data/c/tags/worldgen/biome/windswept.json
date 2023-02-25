@@ -1,10 +1,8 @@
 {
   "replace": false,
   "values": [
-    {
-      "id": "#c:extreme_hills",
-      "required": false
-    },
+    "minecraft:windswept_hills",
+    "minecraft:windswept_gravelly_hills",
     "minecraft:windswept_forest",
     "minecraft:windswept_savanna"
   ]
