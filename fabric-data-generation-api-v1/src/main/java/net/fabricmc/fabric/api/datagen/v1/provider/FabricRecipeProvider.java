@@ -49,7 +49,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	}
 
 	/**
-	 * Implement this method and then use the range of methods in {@link RecipeProvider} or from one of the recipe json factories such as {@link ShapedRecipeJsonBuilder} & {@link ShapelessRecipeJsonBuilder}.
+	 * Implement this method and then use the range of methods in {@link RecipeProvider} or from one of the recipe json factories such as {@link ShapedRecipeJsonBuilder} or {@link ShapelessRecipeJsonBuilder}.
 	 */
 	protected abstract void generateRecipes(Consumer<RecipeJsonProvider> exporter);
 
