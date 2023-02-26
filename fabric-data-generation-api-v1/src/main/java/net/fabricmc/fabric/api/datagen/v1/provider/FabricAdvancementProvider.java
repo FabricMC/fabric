@@ -53,7 +53,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	/**
 	 * Implement this method to register advancements to generate use the consumer callback to register advancements.
 	 *
-	 * <p>Use {@link Advancement.Task#build(Consumer, String)} to help build advancements.
+	 * <p>Use {@link Advancement.Builder#build(Consumer, String)} to help build advancements.
 	 */
 	public abstract void generateAdvancement(Consumer<Advancement> consumer);
 
