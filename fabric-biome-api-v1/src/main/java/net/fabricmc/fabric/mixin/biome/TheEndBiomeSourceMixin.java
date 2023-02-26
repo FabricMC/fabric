@@ -55,6 +55,9 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	@Unique
 	private boolean biomeSetModified = false;
 
+	@Unique
+	private boolean hasCheckedForModifiedSet = false;
+
 	/**
 	 * Modifies the codec, so it calls the static factory method that gives us access to the
 	 * full biome registry instead of just the pre-defined biomes that vanilla uses.
@@ -106,8 +109,12 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 
 	@Override
 	protected void fabric_modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
-		if (!biomeSetModified) {
-			biomeSetModified = true;
+		if (!hasCheckedForModifiedSet) {
+			hasCheckedForModifiedSet = true;
+			biomeSetModified = !overrides.get().customBiomes.isEmpty();
+		}
+
+		if (biomeSetModified) {
 			biomes.addAll(overrides.get().customBiomes);
 		}
 	}
