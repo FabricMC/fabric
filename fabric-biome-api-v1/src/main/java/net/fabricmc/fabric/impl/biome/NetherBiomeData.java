@@ -27,13 +27,13 @@ import java.util.function.Function;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.class_8197;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.MultiNoiseBiomeSourceParameterList;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 
 /**
- * Internal data for modding Vanilla's {@link class_8197.Preset#NETHER}.
+ * Internal data for modding Vanilla's {@link MultiNoiseBiomeSourceParameterList.Preset#NETHER}.
  */
 public final class NetherBiomeData {
 	// Cached sets of the biomes that would generate from Vanilla's default biome source without consideration
@@ -53,7 +53,7 @@ public final class NetherBiomeData {
 	}
 
 	public static boolean canGenerateInNether(RegistryKey<Biome> biome) {
-		return class_8197.Preset.NETHER.method_49514().anyMatch(input -> input.equals(biome));
+		return MultiNoiseBiomeSourceParameterList.Preset.NETHER.biomeStream().anyMatch(input -> input.equals(biome));
 	}
 
 	private static void clearBiomeSourceCache() {
