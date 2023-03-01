@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.networking.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -67,7 +66,7 @@ public abstract class DisconnectedScreenMixin extends Screen {
 	private int render(MultilineText instance, MatrixStack matrixStack, int x, int y) {
 		DrawableHelper.enableScissor(0, y, width, y + reasonHeight);
 		instance.drawCenterWithShadow(matrixStack, x, y - scroll);
-		RenderSystem.disableScissor();
+		DrawableHelper.disableScissor();
 
 		// Draw gradient at the top/bottom to indicate that the text is scrollable.
 		if (actualReasonHeight > reasonHeight) {
