@@ -48,9 +48,19 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 public class TerrainRenderContext extends AbstractRenderContext {
 	public static final ThreadLocal<TerrainRenderContext> POOL = ThreadLocal.withInitial(TerrainRenderContext::new);
 
-	private final TerrainBlockRenderInfo blockInfo = new TerrainBlockRenderInfo();
+	private final BlockRenderInfo blockInfo = new BlockRenderInfo();
 	private final ChunkRenderInfo chunkInfo = new ChunkRenderInfo();
-	private final AoCalculator aoCalc = new AoCalculator(blockInfo, chunkInfo::cachedBrightness, chunkInfo::cachedAoLevel);
+	private final AoCalculator aoCalc = new AoCalculator(blockInfo) {
+		@Override
+		public int light(BlockPos pos, BlockState state) {
+			return chunkInfo.cachedBrightness(pos, state);
+		}
+
+		@Override
+		public float ao(BlockPos pos, BlockState state) {
+			return chunkInfo.cachedAoLevel(pos, state);
+		}
+	};
 
 	private final AbstractMeshConsumer meshConsumer = new AbstractMeshConsumer(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, this::transform) {
 		@Override
@@ -87,7 +97,7 @@ public class TerrainRenderContext extends AbstractRenderContext {
 	};
 
 	public void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, BuiltChunk.RebuildTask.RenderData renderData, BlockBufferBuilderStorage builders, Set<RenderLayer> initializedLayers) {
-		blockInfo.setBlockView(blockView);
+		blockInfo.prepareForWorld(blockView, true);
 		chunkInfo.prepare(blockView, chunkRenderer, renderData, builders, initializedLayers);
 	}
 
@@ -97,7 +107,7 @@ public class TerrainRenderContext extends AbstractRenderContext {
 	}
 
 	/** Called from chunk renderer hook. */
-	public boolean tessellateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model, MatrixStack matrixStack) {
+	public void tessellateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model, MatrixStack matrixStack) {
 		this.matrix = matrixStack.peek().getPositionMatrix();
 		this.normalMatrix = matrixStack.peek().getNormalMatrix();
 
@@ -111,9 +121,6 @@ public class TerrainRenderContext extends AbstractRenderContext {
 			CrashReportSection.addBlockInfo(crashReportSection, chunkInfo.blockView, blockPos, blockState);
 			throw new CrashException(crashReport);
 		}
-
-		// false because we've already marked the chunk as populated - caller doesn't need to
-		return false;
 	}
 
 	@Override

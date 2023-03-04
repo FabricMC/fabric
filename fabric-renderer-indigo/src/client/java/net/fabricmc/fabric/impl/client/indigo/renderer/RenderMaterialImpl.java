@@ -52,6 +52,14 @@ public abstract class RenderMaterialImpl {
 		return VALUES[index];
 	}
 
+	public static Value setDisableDiffuse(Value material, int textureIndex, boolean disable) {
+		if (material.disableDiffuse(textureIndex) != disable) {
+			return byIndex(disable ? (material.bits | DIFFUSE_FLAG) : (material.bits & ~DIFFUSE_FLAG));
+		}
+
+		return material;
+	}
+
 	protected int bits;
 
 	public BlendMode blendMode(int textureIndex) {
