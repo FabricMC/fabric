@@ -100,7 +100,7 @@ public final class ClientPlayNetworking {
 			public void receive(MinecraftClient client, ClientPlayNetworkHandler networkHandler, PacketByteBuf buf, PacketSender sender) {
 				T packet = type.read(buf);
 
-				if (handler.processOnNetworkThread(packet, client.player, sender)) {
+				if (handler.receiveOnNetworkThread(packet, client.player, sender)) {
 					client.execute(() -> {
 						if (networkHandler.getConnection().isOpen()) handler.receive(packet, client.player, sender);
 					});
@@ -207,7 +207,7 @@ public final class ClientPlayNetworking {
 			public void receive(MinecraftClient client, ClientPlayNetworkHandler networkHandler, PacketByteBuf buf, PacketSender sender) {
 				T packet = type.read(buf);
 
-				if (handler.processOnNetworkThread(packet, client.player, sender)) {
+				if (handler.receiveOnNetworkThread(packet, client.player, sender)) {
 					client.execute(() -> {
 						if (networkHandler.getConnection().isOpen()) handler.receive(packet, client.player, sender);
 					});
@@ -439,7 +439,7 @@ public final class ClientPlayNetworking {
 		void receive(T packet, ClientPlayerEntity player, PacketSender responseSender);
 
 		/**
-		 * Processes an incoming packet. This is called on the network thread.
+		 * Receives an incoming packet. This is called on the network thread.
 		 * By default, this returns {@code true}, and {@link #receive} is called normally.
 		 * If this method returns {@code false}, {@link #receive} is not called.
 		 * This is for advanced users only; for normal uses, {@link #receive} should be
@@ -450,7 +450,7 @@ public final class ClientPlayNetworking {
 		 * @param responseSender the packet sender
 		 * @return {@code true} to proceed to {@link #receive}
 		 */
-		default boolean processOnNetworkThread(T packet, ClientPlayerEntity player, PacketSender responseSender) {
+		default boolean receiveOnNetworkThread(T packet, ClientPlayerEntity player, PacketSender responseSender) {
 			return true;
 		}
 	}

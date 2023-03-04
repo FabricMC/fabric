@@ -37,7 +37,7 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 	}
 
 	@Override
-	public boolean processOnNetworkThread(NetworkingPlayPacketTest.OverlayPacket packet, ClientPlayerEntity player, PacketSender responseSender) {
+	public boolean receiveOnNetworkThread(NetworkingPlayPacketTest.OverlayPacket packet, ClientPlayerEntity player, PacketSender responseSender) {
 		// processOnNetworkThread allows complex handling of packets, such as
 		// packet merging or splitting. However, it is pretty big for a simple test mod.
 		// Checks like these should normally be implemented in the receiver.
