@@ -25,6 +25,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ToolMaterials;
 import net.minecraft.util.Hand;
 
 /**
@@ -89,6 +90,17 @@ public interface FabricItem {
 	 */
 	default boolean isSuitableFor(ItemStack stack, BlockState state) {
 		return ((Item) this).isSuitableFor(state);
+	}
+
+	/**
+	 * Decides how "enchant-able" this item is, for example enchanting a gold tool will net you more enchants than
+	 * enchanting a diamond one. Stack-aware version of {@link Item#getEnchantability()}.
+	 *
+	 * @see ToolMaterials#getEnchantability()
+	 * @param stack the current stack
+	 */
+	default int getEnchantability(ItemStack stack) {
+		return ((Item) this).getEnchantability();
 	}
 
 	/**
