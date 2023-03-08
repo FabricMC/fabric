@@ -169,6 +169,7 @@ public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 
 	private void generateClimateAndVegetationTags() {
 		getOrCreateTagBuilder(ConventionalBiomeTags.CLIMATE_COLD)
+				.add(BiomeKeys.SNOWY_PLAINS)
 				.add(BiomeKeys.GROVE)
 				.add(BiomeKeys.JAGGED_PEAKS)
 				.add(BiomeKeys.TAIGA).add(BiomeKeys.SNOWY_TAIGA)
