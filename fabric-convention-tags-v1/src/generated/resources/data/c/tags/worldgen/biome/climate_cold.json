@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "minecraft:snowy_plains",
     "minecraft:grove",
     "minecraft:jagged_peaks",
     "minecraft:taiga",
