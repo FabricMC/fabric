@@ -30,8 +30,6 @@ import net.minecraft.resource.metadata.ResourceMetadataReader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PathUtil;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.fabric.impl.resource.loader.GroupResourcePack;
 
@@ -41,7 +39,6 @@ import net.fabricmc.fabric.impl.resource.loader.GroupResourcePack;
  * <p>Any vanilla resources are provided like in Vanilla through the original programmer art, any missing resources
  * will be searched in the provided modded resource packs.
  */
-@Environment(EnvType.CLIENT)
 public class ProgrammerArtResourcePack extends GroupResourcePack {
 	private final AbstractFileResourcePack originalResourcePack;
 
