@@ -109,9 +109,17 @@ public final class ServerPlayNetworking {
 			public void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler networkHandler, PacketByteBuf buf, PacketSender sender) {
 				T packet = type.read(buf);
 
-				server.execute(() -> {
-					if (networkHandler.getConnection().isOpen()) handler.receive(packet, player, sender);
-				});
+				if (server.isOnThread()) {
+					// Do not submit to the server thread if we're already running there.
+					// Normally, packets are handled on the network IO thread - though it is
+					// not guaranteed (for example, with 1.19.4 S2C packet bundling)
+					// Since we're handling it right now, connection check is redundant.
+					handler.receive(packet, player, sender);
+				} else {
+					server.execute(() -> {
+						if (networkHandler.getConnection().isOpen()) handler.receive(packet, player, sender);
+					});
+				}
 			}
 		});
 	}
@@ -218,9 +226,17 @@ public final class ServerPlayNetworking {
 			public void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler networkHandler2, PacketByteBuf buf, PacketSender sender) {
 				T packet = type.read(buf);
 
-				server.execute(() -> {
-					if (networkHandler2.getConnection().isOpen()) handler.receive(packet, player, sender);
-				});
+				if (server.isOnThread()) {
+					// Do not submit to the server thread if we're already running there.
+					// Normally, packets are handled on the network IO thread - though it is
+					// not guaranteed (for example, with 1.19.4 S2C packet bundling)
+					// Since we're handling it right now, connection check is redundant.
+					handler.receive(packet, player, sender);
+				} else {
+					server.execute(() -> {
+						if (networkHandler2.getConnection().isOpen()) handler.receive(packet, player, sender);
+					});
+				}
 			}
 		});
 	}
