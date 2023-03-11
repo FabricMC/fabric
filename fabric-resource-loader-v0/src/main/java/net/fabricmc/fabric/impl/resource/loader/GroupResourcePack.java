@@ -70,13 +70,17 @@ public abstract class GroupResourcePack implements ResourcePack {
 	}
 
 	@Override
-	public void findResources(ResourceType type, String namespace, String prefix, ResultConsumer arg) {
+	public void findResources(ResourceType type, String namespace, String prefix, ResultConsumer consumer) {
 		List<ModResourcePack> packs = this.namespacedPacks.get(namespace);
+
+		if (packs == null) {
+			return;
+		}
 
 		for (int i = packs.size() - 1; i >= 0; i--) {
 			ResourcePack pack = packs.get(i);
 
-			pack.findResources(type, namespace, prefix, arg);
+			pack.findResources(type, namespace, prefix, consumer);
 		}
 	}
 
