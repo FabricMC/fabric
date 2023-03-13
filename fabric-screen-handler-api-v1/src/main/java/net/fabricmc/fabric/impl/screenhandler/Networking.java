@@ -65,7 +65,11 @@ public final class Networking {
 		buf.writeIdentifier(typeId);
 		buf.writeVarInt(syncId);
 		buf.writeText(factory.getDisplayName());
-		factory.writeScreenOpeningData(player, buf);
+		if(factory instanceof ExtendedScreenHandlerFactory.WithScreenHandler withHandlerFactory) {
+			withHandlerFactory.writeScreenOpeningData(player, buf, handler);
+		} else {
+			factory.writeScreenOpeningData(player, buf);
+		}
 
 		ServerPlayNetworking.send(player, OPEN_ID, buf);
 	}

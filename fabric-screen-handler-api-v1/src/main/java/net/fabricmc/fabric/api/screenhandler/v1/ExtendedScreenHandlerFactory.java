@@ -32,6 +32,14 @@ public interface ExtendedScreenHandlerFactory extends NamedScreenHandlerFactory 
 	 *
 	 * @param player the player that is opening the screen
 	 * @param buf    the packet buffer
-	 */
+	 */,
 	void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf);
+
+	interface WithScreenHandler extends ExtendedScreenHandlerFactory {
+		default void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
+			throw new UnsupportedOperationException("Use writeScreenOpeningData with ScreenHandler context to use");
+		}
+
+		void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf, ScreenHandler handler);
+	}
 }
