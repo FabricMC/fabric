@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.screenhandler.v1;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 /**
@@ -32,10 +33,11 @@ public interface ExtendedScreenHandlerFactory extends NamedScreenHandlerFactory 
 	 *
 	 * @param player the player that is opening the screen
 	 * @param buf    the packet buffer
-	 */,
+	 */
 	void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf);
 
 	interface WithScreenHandler extends ExtendedScreenHandlerFactory {
+		@Override
 		default void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
 			throw new UnsupportedOperationException("Use writeScreenOpeningData with ScreenHandler context to use");
 		}
