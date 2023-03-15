@@ -126,6 +126,9 @@ public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.STONY_SHORE);
 		getOrCreateTagBuilder(ConventionalBiomeTags.FOREST)
 				.addOptionalTag(BiomeTags.IS_FOREST);
+		getOrCreateTagBuilder(ConventionalBiomeTags.BIRCH_FOREST)
+				.add(BiomeKeys.BIRCH_FOREST)
+				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST);
 		getOrCreateTagBuilder(ConventionalBiomeTags.OCEAN)
 				.addOptionalTag(ConventionalBiomeTags.DEEP_OCEAN)
 				.addOptionalTag(ConventionalBiomeTags.SHALLOW_OCEAN)
@@ -170,6 +173,7 @@ public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 
 	private void generateClimateAndVegetationTags() {
 		getOrCreateTagBuilder(ConventionalBiomeTags.CLIMATE_COLD)
+				.add(BiomeKeys.SNOWY_PLAINS)
 				.add(BiomeKeys.GROVE)
 				.add(BiomeKeys.JAGGED_PEAKS)
 				.add(BiomeKeys.TAIGA).add(BiomeKeys.SNOWY_TAIGA)
