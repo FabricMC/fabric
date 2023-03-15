@@ -1,0 +1,7 @@
+{
+  "pack.description.modResources": "Мод ресурслары.",
+  "pack.source.fabricmod": "Fabric моды",
+  "pack.source.builtinMod": "кертелгән: %s",
+  "pack.name.fabricMod": "«%s» Fabric моды",
+  "pack.name.fabricMods": "Fabric модлары"
+}
