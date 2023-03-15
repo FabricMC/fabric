@@ -16,7 +16,10 @@
     "MixinBlockEntityRenderers",
     "MixinEntityRenderers",
     "ScreenMixin",
-    "DimensionEffectsAccessor"
+    "DimensionEffectsAccessor",
+    "shader.GameRendererMixin",
+    "shader.ShaderProgramImportProcessorMixin",
+    "shader.ShaderProgramMixin"
   ],
   "injectors": {
     "defaultRequire": 1
