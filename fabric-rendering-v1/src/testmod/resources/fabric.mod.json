@@ -17,7 +17,8 @@
       "net.fabricmc.fabric.test.rendering.client.ArmorRenderingTests",
       "net.fabricmc.fabric.test.rendering.client.FeatureRendererTest",
       "net.fabricmc.fabric.test.rendering.client.TooltipComponentTests",
-      "net.fabricmc.fabric.test.rendering.client.DimensionalRenderingTest"
+      "net.fabricmc.fabric.test.rendering.client.DimensionalRenderingTest",
+      "net.fabricmc.fabric.test.rendering.client.HudAndShaderTest"
     ]
   }
 }
