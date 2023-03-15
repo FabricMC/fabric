@@ -87,6 +87,11 @@ public class BiomeTagGenerator extends FabricTagProvider.DynamicRegistryTagProvi
 		getOrCreateTagBuilder(ConventionalBiomeTags.EXTREME_HILLS)
 				.add(BiomeKeys.WINDSWEPT_GRAVELLY_HILLS)
 				.add(BiomeKeys.WINDSWEPT_HILLS);
+		getOrCreateTagBuilder(ConventionalBiomeTags.WINDSWEPT)
+				.add(BiomeKeys.WINDSWEPT_HILLS)
+				.add(BiomeKeys.WINDSWEPT_GRAVELLY_HILLS)
+				.add(BiomeKeys.WINDSWEPT_FOREST)
+				.add(BiomeKeys.WINDSWEPT_SAVANNA);
 		getOrCreateTagBuilder(ConventionalBiomeTags.JUNGLE)
 				.addOptionalTag(BiomeTags.IS_JUNGLE);
 		getOrCreateTagBuilder(ConventionalBiomeTags.MESA)
