@@ -43,6 +43,9 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	@Unique
 	private boolean biomeSetModified = false;
 
+	@Unique
+	private boolean hasCheckedForModifiedSet = false;
+
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void init(Registry<Biome> biomeRegistry, CallbackInfo ci) {
 		overrides = Suppliers.memoize(() -> TheEndBiomeData.createOverrides(biomeRegistry));
@@ -55,8 +58,12 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 
 	@Override
 	protected void fabric_modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
-		if (!biomeSetModified) {
-			biomeSetModified = true;
+		if (!hasCheckedForModifiedSet) {
+			hasCheckedForModifiedSet = true;
+			biomeSetModified = !overrides.get().customBiomes.isEmpty();
+		}
+
+		if (biomeSetModified) {
 			biomes.addAll(overrides.get().customBiomes);
 		}
 	}
