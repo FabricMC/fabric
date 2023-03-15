@@ -1,4 +1,6 @@
 {
   "pack.source.fabricmod": "Fabricu mod",
-  "pack.source.builtinMod": "sisseeh.: %s"
+  "pack.source.builtinMod": "sisseeh.: %s",
+  "pack.name.fabricMod": "Fabricu mod \"%s\"",
+  "pack.name.fabricMods": "Fabricu modid"
 }
