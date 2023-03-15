@@ -63,7 +63,7 @@ public final class ModResourcePackUtil {
 				continue;
 			}
 
-			ModResourcePack pack = ModNioResourcePack.create(getName(container.getMetadata()), container, null, type, ResourcePackActivationType.ALWAYS_ENABLED);
+			ModResourcePack pack = ModNioResourcePack.create(getName(container.getMetadata()), container, subPath, type, ResourcePackActivationType.ALWAYS_ENABLED);
 
 			if (pack != null) {
 				packs.add(pack);
