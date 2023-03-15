@@ -34,9 +34,9 @@
  * <p>The Resource Loader adds manually registered mod resource packs. Those resource packs are registered with
  * {@link net.fabricmc.fabric.api.resource.ResourceManagerHelper#registerBuiltinResourcePack(net.minecraft.util.Identifier, net.fabricmc.loader.api.ModContainer, net.fabricmc.fabric.api.resource.ResourcePackActivationType)}</p>
  *
- * <p><h4>Programmer Art Resource Pack</h4></p>
- * <p>The Resource Loader will inject resources into the Programmer Art resource pack for each mod that provides
- * Programmer Art resources in the {@code programmer_art} top-level directory of the mod
+ * <p><h4>Vanilla Built-in Resource Packs</h4></p>
+ * <p>The Resource Loader will inject resources into the Programmer Art and High Contrast resource packs for each mod
+ * that provides resources in the {@code programmer_art} or {@code high_contrast} top-level directory of the mod
  * whose structure is similar to a normal resource pack.</p>
  *
  * <p><h3>Resource Reload Listener</h3></p>

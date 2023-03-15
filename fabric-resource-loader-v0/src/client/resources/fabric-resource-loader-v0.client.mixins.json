@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_16",
   "client": [
     "VanillaResourcePackProviderMixin",
+    "DefaultClientResourcePackProviderMixin",
     "CreateWorldScreenMixin",
     "FontManagerMixin",
     "GameOptionsMixin",
