@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.entity.event;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +41,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -78,6 +81,15 @@ public final class EntityEventTests implements ModInitializer {
 
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
 			LOGGER.info("Respawned {}, [{}, {}]", oldPlayer.getGameProfile().getName(), oldPlayer.getWorld().getRegistryKey().getValue(), newPlayer.getWorld().getRegistryKey().getValue());
+		});
+
+		// Spawn players holding an ender pearl in the end
+		ServerPlayerEvents.BEFORE_SPAWN.register(player -> {
+			if (player.getStackInHand(Hand.MAIN_HAND).isOf(Items.ENDER_PEARL)) {
+				LOGGER.info("Spawning {} in the end because it was holding an ender pearl", player.getGameProfile().getName());
+				player.setWorld(Objects.requireNonNull(player.getServer()).getWorld(World.END));
+				player.setPos(0.5, 65, 0.5);
+			}
 		});
 
 		// No fall damage if holding a feather in the main hand

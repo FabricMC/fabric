@@ -19,10 +19,16 @@ package net.fabricmc.fabric.mixin.entity.event;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.network.ClientConnection;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
@@ -31,5 +37,20 @@ abstract class PlayerManagerMixin {
 	@Inject(method = "respawnPlayer", at = @At("TAIL"))
 	private void afterRespawn(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir) {
 		ServerPlayerEvents.AFTER_RESPAWN.invoker().afterRespawn(oldPlayer, cir.getReturnValue(), alive);
+	}
+
+	@Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "net/minecraft/server/network/ServerPlayerEntity.setWorld(Lnet/minecraft/server/world/ServerWorld;)V", shift = At.Shift.AFTER))
+	private void afterWorldSet(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
+		ServerPlayerEvents.BEFORE_SPAWN.invoker().beforeSpawn(player);
+	}
+
+	@ModifyVariable(method = "onPlayerConnect", name = "serverWorld2", at = @At(value = "INVOKE", target = "net/minecraft/server/network/ServerPlayerEntity.setWorld(Lnet/minecraft/server/world/ServerWorld;)V", shift = At.Shift.AFTER))
+	private ServerWorld fixServerWorld(ServerWorld world, ClientConnection connection, ServerPlayerEntity player) {
+		return player.getWorld();
+	}
+
+	@ModifyVariable(method = "onPlayerConnect", name = "registryKey", at = @At(value = "INVOKE", target = "net/minecraft/server/network/ServerPlayerEntity.setWorld(Lnet/minecraft/server/world/ServerWorld;)V", shift = At.Shift.AFTER))
+	private RegistryKey<World> fixRegistryKey(RegistryKey<World> world, ClientConnection connection, ServerPlayerEntity player) {
+		return player.getWorld().getRegistryKey();
 	}
 }
