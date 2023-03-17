@@ -24,6 +24,17 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 public final class ServerPlayerEvents {
 	/**
+	 * An event that is called before a player is spawned when opening a world or joining a server.
+	 *
+	 * <p>Mods may use this event to set the player's world and position before it is completely spawned.
+	 */
+	public static final Event<BeforeSpawn> BEFORE_SPAWN = EventFactory.createArrayBacked(BeforeSpawn.class, callbacks -> (player) -> {
+		for (BeforeSpawn callback : callbacks) {
+			callback.beforeSpawn(player);
+		}
+	});
+
+	/**
 	 * An event that is called when the data from an old player is copied to a new player.
 	 *
 	 * <p>This event is typically called before a player is completely respawned.
@@ -62,16 +73,15 @@ public final class ServerPlayerEvents {
 		return true;
 	});
 
-	/**
-	 * An event that is called before a player is initially spawned.
-	 *
-	 * <p>Mods may use this event to set the player's world and position before it is completely spawned.
-	 */
-	public static final Event<BeforeSpawn> BEFORE_SPAWN = EventFactory.createArrayBacked(BeforeSpawn.class, callbacks -> (player) -> {
-		for (BeforeSpawn callback : callbacks) {
-			callback.beforeSpawn(player);
-		}
-	});
+	@FunctionalInterface
+	public interface BeforeSpawn {
+		/**
+		 * Called before a player is spawned when opening a world or joining a server.
+		 *
+		 * @param player the player
+		 */
+		void beforeSpawn(ServerPlayerEntity player);
+	}
 
 	@FunctionalInterface
 	public interface CopyFrom {
@@ -112,16 +122,6 @@ public final class ServerPlayerEvents {
 		 * @return true if the death should go ahead, false otherwise.
 		 */
 		boolean allowDeath(ServerPlayerEntity player, DamageSource damageSource, float damageAmount);
-	}
-
-	@FunctionalInterface
-	public interface BeforeSpawn {
-		/**
-		 * Called before a player is first spawned when opening a world or joining a server.
-		 *
-		 * @param player the player
-		 */
-		void beforeSpawn(ServerPlayerEntity player);
 	}
 
 	private ServerPlayerEvents() {

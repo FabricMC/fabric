@@ -44,12 +44,12 @@ abstract class PlayerManagerMixin {
 		ServerPlayerEvents.BEFORE_SPAWN.invoker().beforeSpawn(player);
 	}
 
-	@ModifyVariable(method = "onPlayerConnect", name = "serverWorld2", at = @At(value = "INVOKE", target = "net/minecraft/server/network/ServerPlayerEntity.setWorld(Lnet/minecraft/server/world/ServerWorld;)V", shift = At.Shift.AFTER))
+	@ModifyVariable(method = "onPlayerConnect", ordinal = 1, at = @At(value = "INVOKE", target = "net/minecraft/server/network/ServerPlayerEntity.setWorld(Lnet/minecraft/server/world/ServerWorld;)V", shift = At.Shift.AFTER))
 	private ServerWorld fixServerWorld(ServerWorld world, ClientConnection connection, ServerPlayerEntity player) {
 		return player.getWorld();
 	}
 
-	@ModifyVariable(method = "onPlayerConnect", name = "registryKey", at = @At(value = "INVOKE", target = "net/minecraft/server/network/ServerPlayerEntity.setWorld(Lnet/minecraft/server/world/ServerWorld;)V", shift = At.Shift.AFTER))
+	@ModifyVariable(method = "onPlayerConnect", ordinal = 0, at = @At(value = "INVOKE", target = "net/minecraft/server/network/ServerPlayerEntity.setWorld(Lnet/minecraft/server/world/ServerWorld;)V", shift = At.Shift.AFTER))
 	private RegistryKey<World> fixRegistryKey(RegistryKey<World> world, ClientConnection connection, ServerPlayerEntity player) {
 		return player.getWorld().getRegistryKey();
 	}
