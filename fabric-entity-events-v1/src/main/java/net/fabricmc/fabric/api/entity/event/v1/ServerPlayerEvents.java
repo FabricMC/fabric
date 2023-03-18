@@ -27,6 +27,7 @@ public final class ServerPlayerEvents {
 	 * An event that is called before a player is spawned when opening a world or joining a server.
 	 *
 	 * <p>Mods may use this event to set the player's world and position before it is completely spawned.
+	 *
 	 * <p>Note: this event is not called when a player is respawned.
 	 * For that purpose, {@link ServerPlayerEvents#COPY_FROM} should be used.
 	 */
@@ -41,9 +42,12 @@ public final class ServerPlayerEvents {
 	 *
 	 * <p>This event is typically called before a player is completely respawned.
 	 * Mods may use this event to copy old player data to a new player.
+	 *
 	 * <p>Notes:
-	 * <ul><li>Unlike event {@link ServerPlayerEvents#BEFORE_SPAWN}, changing the player's world might cause undefined behaviour and crash the game.
-	 * <li>Changing the player's position may have undesired effects because respawn side effects (such as the respawn anchor losing a charge) will happen anyway.
+	 * <ul>
+	 * <li>Unlike event {@link ServerPlayerEvents#BEFORE_SPAWN}, changing the player's world might cause undefined behaviour and crash the game.</li>
+	 * <li>Changing the player's position may have undesired effects because respawn side effects (such as the respawn anchor losing a charge) will happen anyway.</li>
+	 * </ul>
 	 */
 	public static final Event<ServerPlayerEvents.CopyFrom> COPY_FROM = EventFactory.createArrayBacked(ServerPlayerEvents.CopyFrom.class, callbacks -> (oldPlayer, newPlayer, alive) -> {
 		for (CopyFrom callback : callbacks) {
@@ -97,8 +101,10 @@ public final class ServerPlayerEvents {
 		 * Called when player data is copied to a new player.
 		 *
 		 * <p>Notes:
-		 * <ul><li>Unlike event {@link ServerPlayerEvents#BEFORE_SPAWN}, changing the player's world might cause undefined behaviour and crash the game.
-		 * <li>Changing the player's position may have undesired effects because respawn side effects (such as the respawn anchor losing a charge) will happen anyway.
+		 * <ul>
+		 * <li>Unlike event {@link ServerPlayerEvents#BEFORE_SPAWN}, changing the player's world might cause undefined behaviour and crash the game.</li>
+		 * <li>Changing the player's position may have undesired effects because respawn side effects (such as the respawn anchor losing a charge) will happen anyway.</li>
+		 * </ul>
 		 *
 		 * @param oldPlayer the old player
 		 * @param newPlayer the new player
