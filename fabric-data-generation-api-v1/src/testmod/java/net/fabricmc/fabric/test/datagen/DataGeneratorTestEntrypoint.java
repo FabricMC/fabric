@@ -40,8 +40,10 @@ import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.texture.atlas.AtlasSource;
+import net.minecraft.client.texture.atlas.AtlasSourceManager;
 import net.minecraft.client.texture.atlas.DirectoryAtlasSource;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.data.DataOutput;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
@@ -71,8 +73,8 @@ import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricAtlasSourceProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricCodecDataProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
@@ -356,14 +358,19 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestAtlasSourceProvider extends FabricAtlasSourceProvider {
-		public TestAtlasSourceProvider(FabricDataOutput dataOutput) {
-			super(dataOutput);
+	private static class TestAtlasSourceProvider extends FabricCodecDataProvider<List<AtlasSource>> {
+		private TestAtlasSourceProvider(FabricDataOutput dataOutput) {
+			super(dataOutput, DataOutput.OutputType.RESOURCE_PACK, "atlases", AtlasSourceManager.LIST_CODEC);
 		}
 
 		@Override
 		protected void configure(BiConsumer<Identifier, List<AtlasSource>> provider) {
 			provider.accept(new Identifier(MOD_ID, "atlas_source_test"), List.of(new DirectoryAtlasSource("example", "example/")));
+		}
+
+		@Override
+		public String getName() {
+			return "Atlas Sources";
 		}
 	}
 }
