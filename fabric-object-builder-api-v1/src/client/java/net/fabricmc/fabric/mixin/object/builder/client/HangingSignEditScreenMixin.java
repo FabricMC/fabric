@@ -27,8 +27,8 @@ import net.minecraft.util.Identifier;
 
 @Mixin(HangingSignEditScreen.class)
 public abstract class HangingSignEditScreenMixin extends AbstractSignEditScreen {
-	private HangingSignEditScreenMixin(SignBlockEntity blockEntity, boolean filtered) {
-		super(blockEntity, filtered);
+	private HangingSignEditScreenMixin(SignBlockEntity blockEntity, boolean filtered, boolean bl) {
+		super(blockEntity, filtered, bl);
 	}
 
 	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;<init>(Ljava/lang/String;)V"))

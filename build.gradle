@@ -10,7 +10,7 @@ plugins {
 	id "idea"
 	id "maven-publish"
 	id 'jacoco'
-	id "fabric-loom" version "1.1.8" apply false
+	id "fabric-loom" version "1.1.10" apply false
 	id "com.diffplug.spotless" version "6.11.0"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -625,7 +625,7 @@ curseforge {
 		id = "306612"
 		changelog = ENV.CHANGELOG ?: "No changelog provided"
 		releaseType = project.prerelease == "true" ? "beta" : "release"
-		addGameVersion "1.19.4"
+		addGameVersion "1.20-Snapshot"
 		addGameVersion "Fabric"
 
 		mainArtifact(signingEnabled ? signRemapJar.output : remapJar) {

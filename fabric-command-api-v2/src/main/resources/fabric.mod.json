@@ -18,7 +18,7 @@
   "depends": {
     "fabricloader": ">=0.10.5",
     "fabric-api-base": "*",
-    "minecraft": "~1.19-alpha.22.11.a"
+    "minecraft": ">1.19-alpha.22.11.a"
   },
   "description": "Adds command-related hooks.",
   "accessWidener": "fabric-command-api-v2.accesswidener",
