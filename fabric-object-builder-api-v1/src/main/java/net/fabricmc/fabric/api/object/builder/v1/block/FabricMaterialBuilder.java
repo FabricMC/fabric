@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.object.builder.v1.block;
 
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
-import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.util.DyeColor;
 
 import net.fabricmc.fabric.mixin.object.builder.MaterialBuilderAccessor;
@@ -32,31 +31,8 @@ public class FabricMaterialBuilder extends Material.Builder {
 		this(color.getMapColor());
 	}
 
-	@Override
-	public FabricMaterialBuilder burnable() {
-		super.burnable();
-		return this;
-	}
-
-	public FabricMaterialBuilder pistonBehavior(PistonBehavior behavior) {
-		((MaterialBuilderAccessor) this).setPistonBehavior(behavior);
-		return this;
-	}
-
 	public FabricMaterialBuilder lightPassesThrough() {
 		((MaterialBuilderAccessor) this).invokeLightPassesThrough();
-		return this;
-	}
-
-	@Override
-	public FabricMaterialBuilder destroyedByPiston() {
-		super.destroyedByPiston();
-		return this;
-	}
-
-	@Override
-	public FabricMaterialBuilder blocksPistons() {
-		super.blocksPistons();
 		return this;
 	}
 
