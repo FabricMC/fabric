@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -70,6 +71,7 @@ public interface InventoryStorage extends SlottedStorage<ItemVariant> {
 	 * Each wrapper corresponds to a single slot in the inventory.
 	 */
 	@Override
+	@UnmodifiableView
 	List<SingleSlotStorage<ItemVariant>> getSlots();
 
 	/**

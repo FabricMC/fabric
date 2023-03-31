@@ -19,8 +19,11 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 /**
  * A {@link Storage} implementation made of indexed slots.
@@ -49,16 +52,16 @@ public interface SlottedStorage<T> extends Storage<T> {
 	SingleSlotStorage<T> getSlot(int slot);
 
 	/**
-	 * Retrieve all the slots of this storage. <b>The list must not be modified.</b>
+	 * Retrieve a list containing all the slots of this storage. <b>The list must not be modified.</b>
+	 *
+	 * <p>This function can be used to interface with code that requires a slot list,
+	 * for example {@link StorageUtil#insertStacking} or {@link ContainerItemContext#getAdditionalSlots()}.
+	 *
+	 * <p>It is guaranteed that calling this function is fast.
+	 * The default implementation returns a view over the storage that delegates to {@link #getSlotCount} and {@link #getSlot}.
 	 */
+	@UnmodifiableView
 	default List<SingleSlotStorage<T>> getSlots() {
-		int slotCount = getSlotCount();
-		SingleSlotStorage<T>[] slots = new SingleSlotStorage[slotCount];
-
-		for (int i = 0; i < slotCount; i++) {
-			slots[i] = getSlot(i);
-		}
-
-		return List.of(slots);
+		return TransferApiImpl.makeListView(this);
 	}
 }
