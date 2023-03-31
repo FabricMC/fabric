@@ -74,17 +74,11 @@ public interface InventoryStorage extends SlottedStorage<ItemVariant> {
 	@UnmodifiableView
 	List<SingleSlotStorage<ItemVariant>> getSlots();
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	default int getSlotCount() {
 		return getSlots().size();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	default SingleSlotStorage<ItemVariant> getSlot(int slot) {
 		return getSlots().get(slot);
