@@ -62,7 +62,7 @@ public class VillagerTypeTest1 implements ModInitializer {
 
 						for (TradeOffers.Factory[] value : TradeOffers.WANDERING_TRADER_TRADES.values()) {
 							for (TradeOffers.Factory factory : value) {
-								final TradeOffer result = factory.create(trader, Random.create());
+								final TradeOffer result = factory.create(trader, Random.create(), Items.DIAMOND);
 
 								if (result == null) {
 									continue;

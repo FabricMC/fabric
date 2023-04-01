@@ -23,12 +23,15 @@ import net.minecraft.client.sound.AudioStream;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundLoader;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
 class SineSound extends AbstractSoundInstance {
+	public static SoundEvent SINE_WAVE = SoundEvent.of(new Identifier(ClientSoundTest.MOD_ID, "sine_wave"));
+
 	SineSound(Vec3d pos) {
-		super(new Identifier(ClientSoundTest.MOD_ID, "sine_wave"), SoundCategory.BLOCKS, SoundInstance.createRandom());
+		super(SINE_WAVE, SoundCategory.BLOCKS, SoundInstance.createRandom());
 		x = pos.x;
 		y = pos.y;
 		z = pos.z;
