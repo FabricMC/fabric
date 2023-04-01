@@ -230,6 +230,9 @@ transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerPressurePlate	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerParented	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerNorthDefaultHorizontalRotation	(Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerNetherPortal	(Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	method_51092	(Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	method_51093	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerPiston	(Lnet/minecraft/block/Block;Lnet/minecraft/util/Identifier;Lnet/minecraft/data/client/TextureMap;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerTorch	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	getTurtleEggModel	(ILjava/lang/String;Lnet/minecraft/data/client/TextureMap;)Lnet/minecraft/util/Identifier;
@@ -243,6 +246,8 @@ transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerRoots	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	addJigsawOrientationToVariant	(Lnet/minecraft/block/enums/JigsawOrientation;Lnet/minecraft/data/client/BlockStateVariant;)Lnet/minecraft/data/client/BlockStateVariant;
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerCandle	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	method_51096	(Lnet/minecraft/util/Identifier;Lnet/minecraft/util/shape/VoxelShape;)Lcom/google/gson/JsonObject;
+transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	method_51094	(DDDDDDLnet/minecraft/util/math/Direction;)Z
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	applyExplosionDecay	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/loot/function/LootFunctionConsumingBuilder;)Lnet/minecraft/loot/function/LootFunctionConsumingBuilder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	addSurvivesExplosionCondition	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/loot/condition/LootConditionConsumingBuilder;)Lnet/minecraft/loot/condition/LootConditionConsumingBuilder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	drops	(Lnet/minecraft/block/Block;Lnet/minecraft/loot/condition/LootCondition$Builder;Lnet/minecraft/loot/entry/LootPoolEntry$Builder;)Lnet/minecraft/loot/LootTable$Builder;
