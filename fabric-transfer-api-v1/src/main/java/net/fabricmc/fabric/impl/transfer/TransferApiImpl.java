@@ -120,7 +120,9 @@ public class TransferApiImpl {
 					throw new NoSuchElementException();
 				}
 
-				return next;
+				StorageView<T> ret = next;
+				findNext();
+				return ret;
 			}
 		};
 	}
