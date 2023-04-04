@@ -36,16 +36,11 @@ public final class NetworkingKeybindPacketTest implements ModInitializer {
 	public static final Identifier KEYBINDING_PACKET_ID = NetworkingTestmods.id("keybind_press_test");
 
 	private static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		// TODO: Can we send chat off the server thread?
-		server.execute(() -> {
-			player.sendMessage(Text.literal("So you pressed ").append(Text.keybind("fabric-networking-api-v1-testmod-keybind").styled(style -> style.withFormatting(Formatting.BLUE))), false);
-		});
+		server.execute(() -> player.sendMessage(Text.literal("So you pressed ").append(Text.keybind("fabric-networking-api-v1-testmod-keybind").styled(style -> style.withFormatting(Formatting.BLUE))), false));
 	}
 
 	@Override
 	public void onInitialize() {
-		ServerPlayConnectionEvents.INIT.register((handler, server) -> {
-			ServerPlayNetworking.registerReceiver(handler, KEYBINDING_PACKET_ID, NetworkingKeybindPacketTest::receive);
-		});
+		ServerPlayConnectionEvents.INIT.register((handler, server) -> ServerPlayNetworking.registerReceiver(handler, KEYBINDING_PACKET_ID, NetworkingKeybindPacketTest::receive));
 	}
 }
