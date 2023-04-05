@@ -27,7 +27,6 @@ import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PathUtil;
 
