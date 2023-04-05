@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.entity.BlockEntity;
@@ -43,6 +44,7 @@ import net.minecraft.util.math.Vec3d;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockApplyCallback;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockCallback;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
+import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 
 @Mixin(MinecraftClient.class)
@@ -132,6 +134,9 @@ public abstract class MinecraftClientMixin {
 	@Shadow
 	public abstract ClientPlayNetworkHandler getNetworkHandler();
 
+	@Shadow
+	protected int attackCooldown;
+
 	@Inject(
 			at = @At(
 					value = "INVOKE",
@@ -155,6 +160,27 @@ public abstract class MinecraftClientMixin {
 			}
 
 			ci.cancel();
+		}
+	}
+
+	@Inject(
+			method = "doAttack",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/client/network/ClientPlayerEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;"
+			),
+			cancellable = true
+	)
+	private void onDoAttack(CallbackInfoReturnable<Boolean> cir) {
+		ActionResult actionResult = ClientPreAttackCallback.EVENT.invoker().onClientPlayerPreAttack(MinecraftClient.getInstance().player);
+
+		if (actionResult != ActionResult.PASS) {
+			if (actionResult.isAccepted()) {
+				attackCooldown = 10;
+			}
+
+			// doAttack returns true only when finishes block breaking
+			cir.setReturnValue(false);
 		}
 	}
 }
