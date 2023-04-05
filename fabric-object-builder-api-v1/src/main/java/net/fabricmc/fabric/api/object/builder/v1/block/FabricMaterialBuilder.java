@@ -43,12 +43,6 @@ public class FabricMaterialBuilder extends Material.Builder {
 	}
 
 	@Override
-	public FabricMaterialBuilder liquid() {
-		super.liquid();
-		return this;
-	}
-
-	@Override
 	public FabricMaterialBuilder notSolid() {
 		super.notSolid();
 		return this;

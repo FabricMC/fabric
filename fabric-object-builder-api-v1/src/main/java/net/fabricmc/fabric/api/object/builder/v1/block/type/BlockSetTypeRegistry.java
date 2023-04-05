@@ -46,6 +46,7 @@ public final class BlockSetTypeRegistry {
 	 * Creates and registers a {@link BlockSetType}.
 	 *
 	 * @param id the id of this {@link BlockSetType}
+	 * @param canOpenByHand set to true to allow this block set's door's to be opened by hand
 	 * @param soundType the {@link BlockSoundGroup} for this block set
 	 * @param doorClose the {@link SoundEvent} for when this block set's door closes
 	 * @param doorOpen the {@link SoundEvent} for when this block set's door opens
@@ -57,7 +58,7 @@ public final class BlockSetTypeRegistry {
 	 * @param buttonClickOn the {@link SoundEvent} for when this block set's button is pressed
 	 * @return a new {@link BlockSetType}
 	 */
-	public static BlockSetType register(Identifier id, BlockSoundGroup soundType, SoundEvent doorClose, SoundEvent doorOpen, SoundEvent trapdoorClose, SoundEvent trapdoorOpen, SoundEvent pressurePlateClickOff, SoundEvent pressurePlateClickOn, SoundEvent buttonClickOff, SoundEvent buttonClickOn) {
-		return BlockSetType.register(new BlockSetType(id.toString(), soundType, doorClose, doorOpen, trapdoorClose, trapdoorOpen, pressurePlateClickOff, pressurePlateClickOn, buttonClickOff, buttonClickOn));
+	public static BlockSetType register(Identifier id, boolean canOpenByHand, BlockSoundGroup soundType, SoundEvent doorClose, SoundEvent doorOpen, SoundEvent trapdoorClose, SoundEvent trapdoorOpen, SoundEvent pressurePlateClickOff, SoundEvent pressurePlateClickOn, SoundEvent buttonClickOff, SoundEvent buttonClickOn) {
+		return BlockSetType.register(new BlockSetType(id.toString(), canOpenByHand, soundType, doorClose, doorOpen, trapdoorClose, trapdoorOpen, pressurePlateClickOff, pressurePlateClickOn, buttonClickOff, buttonClickOn));
 	}
 }
