@@ -11,6 +11,10 @@
       ],
       "conditions": [
         {
+          "condition": "minecraft:reference",
+          "name": "minecraft:match_tool_shears"
+        },
+        {
           "condition": "minecraft:survives_explosion"
         }
       ]
