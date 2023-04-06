@@ -69,7 +69,7 @@ abstract class LootManagerMixin {
 				return;
 			}
 
-			LootTable table = (LootTable) entry;
+			if (!(entry instanceof LootTable table)) return;
 
 			LootTableSource source = LootUtil.determineSource(id.location(), resourceManager);
 			// Invoke the REPLACE event for the current loot table.
