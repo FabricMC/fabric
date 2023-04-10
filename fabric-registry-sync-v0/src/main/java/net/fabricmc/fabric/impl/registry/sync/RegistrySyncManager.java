@@ -20,7 +20,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -36,16 +39,21 @@ import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ThreadExecutor;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
@@ -288,6 +296,10 @@ public final class RegistrySyncManager {
 	}
 
 	public static void apply(Map<Identifier, Object2IntMap<Identifier>> map, RemappableRegistry.RemapMode mode) throws RemapException {
+		if (mode == RemappableRegistry.RemapMode.REMOTE) {
+			checkRemoteRemap(map);
+		}
+
 		Set<Identifier> containedRegistries = Sets.newHashSet(map.keySet());
 
 		for (Identifier registryId : Registries.REGISTRIES.getIds()) {
@@ -296,7 +308,7 @@ public final class RegistrySyncManager {
 			}
 
 			Object2IntMap<Identifier> registryMap = map.get(registryId);
-			Registry registry = Registries.REGISTRIES.get(registryId);
+			Registry<?> registry = Registries.REGISTRIES.get(registryId);
 
 			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry.getKey());
 
@@ -319,6 +331,80 @@ public final class RegistrySyncManager {
 		if (!containedRegistries.isEmpty()) {
 			LOGGER.warn("[fabric-registry-sync] Could not find the following registries: " + Joiner.on(", ").join(containedRegistries));
 		}
+	}
+
+	@VisibleForTesting
+	public static void checkRemoteRemap(Map<Identifier, Object2IntMap<Identifier>> map) throws RemapException {
+		Map<Identifier, List<Identifier>> missingEntries = new HashMap<>();
+
+		for (Map.Entry<? extends RegistryKey<? extends Registry<?>>, ? extends Registry<?>> entry : Registries.REGISTRIES.getEntrySet()) {
+			final Registry<?> registry = entry.getValue();
+			final Identifier registryId = entry.getKey().getValue();
+			final Object2IntMap<Identifier> remoteRegistry = map.get(registryId);
+
+			if (remoteRegistry == null) {
+				// Registry sync does not contain data for this registry, will print a warning when applying.
+				continue;
+			}
+
+			for (Identifier remoteId : remoteRegistry.keySet()) {
+				if (!registry.containsId(remoteId)) {
+					// Found a registry entry from the server that is
+					missingEntries.computeIfAbsent(registryId, i -> new ArrayList<>()).add(remoteId);
+				}
+			}
+		}
+
+		if (missingEntries.isEmpty()) {
+			// All good :)
+			return;
+		}
+
+		// Print out details to the log
+		LOGGER.error("Received unknown remote registry entries from server");
+
+		for (Map.Entry<Identifier, List<Identifier>> entry : missingEntries.entrySet()) {
+			for (Identifier identifier : entry.getValue()) {
+				LOGGER.error("Registry entry ({}) is missing from local registry ({})", identifier, entry.getKey());
+			}
+		}
+
+		// Create a nice user friendly error message.
+		MutableText text = Text.literal("");
+
+		final int count = missingEntries.values().stream().mapToInt(List::size).sum();
+
+		if (count == 1) {
+			text = text.append("Received a registry entry that is unknown to this client.\n");
+		} else {
+			text = text.append("Received %d registry entries that are unknown to this client.\n".formatted(count));
+		}
+
+		text = text.append(Text.literal("This is usually caused by a mismatched mod set between the client and server.").formatted(Formatting.GREEN));
+		text = text.append(" See the client logs for more details.\n");
+		text = text.append("The following registry entry namespaces may be related:\n");
+
+		final int toDisplay = 4;
+		// Get the distinct missing namespaces
+		final List<String> namespaces = missingEntries.values().stream()
+				.flatMap(List::stream)
+				.map(Identifier::getNamespace)
+				.distinct()
+				.sorted()
+				.toList();
+
+		text = text.append("\n");
+
+		for (int i = 0; i < Math.min(namespaces.size(), toDisplay); i++) {
+			text = text.append(Text.literal(namespaces.get(i)).formatted(Formatting.YELLOW));
+			text = text.append("\n");
+		}
+
+		if (namespaces.size() > toDisplay) {
+			text = text.append("And %d more...".formatted(namespaces.size() - toDisplay));
+		}
+
+		throw new RemapException(text);
 	}
 
 	public static void unmap() throws RemapException {
