@@ -375,14 +375,13 @@ public final class RegistrySyncManager {
 		final int count = missingEntries.values().stream().mapToInt(List::size).sum();
 
 		if (count == 1) {
-			text = text.append("Received a registry entry that is unknown to this client.\n");
+			text = text.append(Text.translatable("fabric-registry-sync-v0.unknown-remote.title.singular"));
 		} else {
-			text = text.append("Received %d registry entries that are unknown to this client.\n".formatted(count));
+			text = text.append(Text.translatable("fabric-registry-sync-v0.unknown-remote.title.plural", count));
 		}
 
-		text = text.append(Text.literal("This is usually caused by a mismatched mod set between the client and server.").formatted(Formatting.GREEN));
-		text = text.append(" See the client logs for more details.\n");
-		text = text.append("The following registry entry namespaces may be related:\n");
+		text = text.append(Text.translatable("fabric-registry-sync-v0.unknown-remote.subtitle.1").formatted(Formatting.GREEN));
+		text = text.append(Text.translatable("fabric-registry-sync-v0.unknown-remote.subtitle.2"));
 
 		final int toDisplay = 4;
 		// Get the distinct missing namespaces
@@ -393,15 +392,13 @@ public final class RegistrySyncManager {
 				.sorted()
 				.toList();
 
-		text = text.append("\n");
-
 		for (int i = 0; i < Math.min(namespaces.size(), toDisplay); i++) {
 			text = text.append(Text.literal(namespaces.get(i)).formatted(Formatting.YELLOW));
 			text = text.append("\n");
 		}
 
 		if (namespaces.size() > toDisplay) {
-			text = text.append("And %d more...".formatted(namespaces.size() - toDisplay));
+			text = text.append(Text.translatable("fabric-registry-sync-v0.unknown-remote.footer", namespaces.size() - toDisplay));
 		}
 
 		throw new RemapException(text);
