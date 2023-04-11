@@ -1,4 +1,5 @@
 {
+  "pack.description.modResources": "模組資源。",
   "pack.source.fabricmod": "Fabric 模組",
   "pack.source.builtinMod": "內建：%s",
   "pack.name.fabricMod": "Fabric 模組「%s」",
