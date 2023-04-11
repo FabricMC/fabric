@@ -27,7 +27,6 @@ import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PathUtil;
 
@@ -42,12 +41,10 @@ import net.fabricmc.fabric.impl.resource.loader.GroupResourcePack;
  */
 public class FabricWrappedVanillaResourcePack extends GroupResourcePack {
 	private final AbstractFileResourcePack originalResourcePack;
-	private final Text displayName;
 
-	public FabricWrappedVanillaResourcePack(AbstractFileResourcePack originalResourcePack, Text displayName, List<ModResourcePack> modResourcePacks) {
+	public FabricWrappedVanillaResourcePack(AbstractFileResourcePack originalResourcePack, List<ModResourcePack> modResourcePacks) {
 		super(ResourceType.CLIENT_RESOURCES, modResourcePacks);
 		this.originalResourcePack = originalResourcePack;
-		this.displayName = displayName;
 	}
 
 	@Override
@@ -90,7 +87,7 @@ public class FabricWrappedVanillaResourcePack extends GroupResourcePack {
 
 	@Override
 	public String getName() {
-		return displayName.getString();
+		return this.originalResourcePack.getName();
 	}
 
 	@Override

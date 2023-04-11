@@ -51,7 +51,7 @@ public class DefaultClientResourcePackProviderMixin {
 	)
 	private ResourcePackProfile.PackFactory onCreateVanillaBuiltinResourcePack(String name, Text displayName, boolean alwaysEnabled,
 			ResourcePackProfile.PackFactory packFactory, ResourceType type, ResourcePackProfile.InsertionPosition position, ResourcePackSource source) {
-		return factory -> new FabricWrappedVanillaResourcePack((AbstractFileResourcePack) packFactory.open(name), displayName, getModResourcePacks(name));
+		return factory -> new FabricWrappedVanillaResourcePack((AbstractFileResourcePack) packFactory.open(name), getModResourcePacks(name));
 	}
 
 	/**
