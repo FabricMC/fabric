@@ -152,6 +152,39 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	Iterator<StorageView<T>> iterator();
 
 	/**
+	 * Same as {@link #iterator()}, but the iterator is guaranteed to skip over empty views,
+	 * i.e. views that {@linkplain StorageView#isResourceBlank() contain blank resources} or have a zero {@linkplain StorageView#getAmount() amount}.
+	 *
+	 * <p>This can provide a large performance benefit over {@link #iterator()} if the caller is only interested in non-empty views,
+	 * for example because it is trying to extract resources from the storage.
+	 *
+	 * <p>This function should only be overridden if the storage is able to provide an optimized iterator over non-empty views,
+	 * for example because it is keeping an index of non-empty views.
+	 * Otherwise, the default implementation simply calls {@link #iterator()} and filters out empty views.
+	 *
+	 * <p>When implementing this function, note that the guarantees of {@link #iterator()} still apply.
+	 * In particular, {@link #insert} and {@link #extract} may be called safely during iteration.
+	 *
+	 * @return An iterator over the non-empty views of this storage. Calling remove on the iterator is not allowed.
+	 */
+	default Iterator<StorageView<T>> nonEmptyIterator() {
+		return TransferApiImpl.filterEmptyViews(iterator());
+	}
+
+	/**
+	 * Convenient helper to get an {@link Iterable} over the {@linkplain #nonEmptyIterator() non-empty views} of this storage, for use in for-each loops.
+	 *
+	 * <p><pre>{@code
+	 * for (StorageView<T> view : storage.nonEmptyViews()) {
+	 *     // Do something with the view
+	 * }
+	 * }</pre>
+	 */
+	default Iterable<StorageView<T>> nonEmptyViews() {
+		return this::nonEmptyIterator;
+	}
+
+	/**
 	 * Return a view over this storage, for a specific resource, or {@code null} if none is quickly available.
 	 *
 	 * <p>This function should only return a non-null view if this storage can provide it quickly,
