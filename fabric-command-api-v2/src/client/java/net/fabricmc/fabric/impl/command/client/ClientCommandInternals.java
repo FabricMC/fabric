@@ -130,7 +130,7 @@ public final class ClientCommandInternals {
 		Text message = Texts.toText(e.getRawMessage());
 		String context = e.getContext();
 
-		return context != null ? Text.translatable("command.context.parse_error", message, context) : message;
+		return context != null ? Text.translatable("command.context.parse_error", message, e.getCursor(), context) : message;
 	}
 
 	/**
