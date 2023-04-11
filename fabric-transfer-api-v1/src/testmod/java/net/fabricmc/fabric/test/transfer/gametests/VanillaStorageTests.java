@@ -25,6 +25,7 @@ import net.minecraft.block.ComparatorBlock;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.block.entity.ChiseledBookshelfBlockEntity;
 import net.minecraft.block.entity.FurnaceBlockEntity;
+import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
@@ -41,6 +42,7 @@ import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.test.transfer.mixin.AbstractFurnaceBlockEntityAccessor;
@@ -287,6 +289,23 @@ public class VanillaStorageTests {
 		try (Transaction tx = Transaction.openOuter()) {
 			context.assertTrue(storage.insert(ItemVariant.of(Items.DIAMOND), 1, tx) == 1, "Diamond should have been inserted");
 			tx.commit();
+		}
+
+		// Check that the inventory and slotted storages match
+		Inventory inventory = HopperBlockEntity.getInventoryAt(context.getWorld(), context.getAbsolutePos(chestPos));
+		context.assertTrue(inventory != null, "Inventory must not be null");
+
+		if (!(storage instanceof SlottedStorage<ItemVariant> slottedStorage)) {
+			throw new GameTestException("Double chest storage must be a SlottedStorage");
+		}
+
+		for (int i = 0; i < inventory.size(); ++i) {
+			ItemStack stack = inventory.getStack(i);
+			ItemVariant variant = ItemVariant.of(stack.getItem());
+			context.assertTrue(variant.matches(stack), "Item variant in slot " + i + " must match stack");
+			long expectedCount = stack.getCount();
+			long actualCount = slottedStorage.getSlot(i).getAmount();
+			context.assertTrue(expectedCount == actualCount, "Slot " + i + " should have " + expectedCount + " items, but has " + actualCount);
 		}
 
 		// Check that an update is queued for every single comparator

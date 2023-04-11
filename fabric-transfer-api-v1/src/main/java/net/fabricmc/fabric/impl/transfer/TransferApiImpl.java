@@ -16,16 +16,20 @@
 
 package net.fabricmc.fabric.impl.transfer;
 
+import java.util.AbstractList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
+import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 public class TransferApiImpl {
@@ -64,11 +68,6 @@ public class TransferApiImpl {
 		}
 	};
 
-	/**
-	 * Not null when writing to an inventory in a transaction, null otherwise.
-	 */
-	public static final ThreadLocal<Object> SUPPRESS_SPECIAL_LOGIC = new ThreadLocal<>();
-
 	public static <T> Iterator<T> singletonIterator(T it) {
 		return new Iterator<T>() {
 			boolean hasNext = true;
@@ -86,6 +85,58 @@ public class TransferApiImpl {
 
 				hasNext = false;
 				return it;
+			}
+		};
+	}
+
+	public static <T> Iterator<StorageView<T>> filterEmptyViews(Iterator<StorageView<T>> iterator) {
+		return new Iterator<>() {
+			StorageView<T> next;
+
+			{
+				findNext();
+			}
+
+			private void findNext() {
+				while (iterator.hasNext()) {
+					next = iterator.next();
+
+					if (next.getAmount() > 0 && !next.isResourceBlank()) {
+						return;
+					}
+				}
+
+				next = null;
+			}
+
+			@Override
+			public boolean hasNext() {
+				return next != null;
+			}
+
+			@Override
+			public StorageView<T> next() {
+				if (!hasNext()) {
+					throw new NoSuchElementException();
+				}
+
+				StorageView<T> ret = next;
+				findNext();
+				return ret;
+			}
+		};
+	}
+
+	public static <T> List<SingleSlotStorage<T>> makeListView(SlottedStorage<T> storage) {
+		return new AbstractList<>() {
+			@Override
+			public SingleSlotStorage<T> get(int index) {
+				return storage.getSlot(index);
+			}
+
+			@Override
+			public int size() {
+				return storage.getSlotCount();
 			}
 		};
 	}
