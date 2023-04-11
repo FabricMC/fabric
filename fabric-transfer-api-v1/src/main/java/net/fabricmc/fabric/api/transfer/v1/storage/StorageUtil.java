@@ -88,8 +88,7 @@ public final class StorageUtil {
 		long totalMoved = 0;
 
 		try (Transaction iterationTransaction = Transaction.openNested(transaction)) {
-			for (StorageView<T> view : from) {
-				if (view.isResourceBlank()) continue;
+			for (StorageView<T> view : from.nonEmptyViews()) {
 				T resource = view.getResource();
 				if (!filter.test(resource)) continue;
 				long maxExtracted;
@@ -125,13 +124,39 @@ public final class StorageUtil {
 	}
 
 	/**
+	 * Try to extract any resource from a storage, up to a maximum amount.
+	 *
+	 * <p>This function will only ever pull from one storage view of the storage, even if multiple storage views contain the same resource.
+	 *
+	 * @param storage The storage, may be null.
+	 * @param maxAmount The maximum to extract.
+	 * @param transaction The transaction this operation is part of.
+	 * @return A non-blank resource and the strictly positive amount of it that was extracted from the storage,
+	 * or {@code null} if none could be found.
+	 */
+	@Nullable
+	public static <T> ResourceAmount<T> extractAny(@Nullable Storage<T> storage, long maxAmount, TransactionContext transaction) {
+		StoragePreconditions.notNegative(maxAmount);
+
+		if (storage == null) return null;
+
+		for (StorageView<T> view : storage.nonEmptyViews()) {
+			T resource = view.getResource();
+			long amount = view.extract(resource, maxAmount, transaction);
+			if (amount > 0) return new ResourceAmount<>(resource, amount);
+		}
+
+		return null;
+	}
+
+	/**
 	 * Try to insert up to some amount of a resource into a list of storage slots, trying to "stack" first,
 	 * i.e. prioritizing slots that already contain the resource.
 	 *
 	 * @return How much was inserted.
 	 * @see Storage#insert
 	 */
-	public static <T> long insertStacking(List<SingleSlotStorage<T>> slots, T resource, long maxAmount, TransactionContext transaction) {
+	public static <T> long insertStacking(List<? extends SingleSlotStorage<T>> slots, T resource, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notNegative(maxAmount);
 		long amount = 0;
 
@@ -148,6 +173,27 @@ public final class StorageUtil {
 		}
 
 		return amount;
+	}
+
+	/**
+	 * Insert resources in a storage, attempting to stack them with existing resources first if possible.
+	 *
+	 * @param storage The storage, may be null.
+	 * @param resource The resource to insert. May not be blank.
+	 * @param maxAmount The maximum amount of resource to insert. May not be negative.
+	 * @param transaction The transaction this operation is part of.
+	 * @return A nonnegative integer not greater than maxAmount: the amount that was inserted.
+	 */
+	public static <T> long tryInsertStacking(@Nullable Storage<T> storage, T resource, long maxAmount, TransactionContext transaction) {
+		StoragePreconditions.notNegative(maxAmount);
+
+		if (storage instanceof SlottedStorage<T> slottedStorage) {
+			return insertStacking(slottedStorage.getSlots(), resource, maxAmount, transaction);
+		} else if (storage != null) {
+			return storage.insert(resource, maxAmount, transaction);
+		} else {
+			return 0;
+		}
 	}
 
 	/**
@@ -174,8 +220,8 @@ public final class StorageUtil {
 		Objects.requireNonNull(filter, "Filter may not be null");
 		if (storage == null) return null;
 
-		for (StorageView<T> view : storage) {
-			if (!view.isResourceBlank() && filter.test(view.getResource())) {
+		for (StorageView<T> view : storage.nonEmptyViews()) {
+			if (filter.test(view.getResource())) {
 				return view.getResource();
 			}
 		}
@@ -209,11 +255,11 @@ public final class StorageUtil {
 		if (storage == null) return null;
 
 		try (Transaction nested = Transaction.openNested(transaction)) {
-			for (StorageView<T> view : storage) {
+			for (StorageView<T> view : storage.nonEmptyViews()) {
 				// Extract below could change the resource, so we have to query it before extracting.
 				T resource = view.getResource();
 
-				if (!view.isResourceBlank() && filter.test(resource) && view.extract(resource, Long.MAX_VALUE, nested) > 0) {
+				if (filter.test(resource) && view.extract(resource, Long.MAX_VALUE, nested) > 0) {
 					// Will abort the extraction.
 					return resource;
 				}

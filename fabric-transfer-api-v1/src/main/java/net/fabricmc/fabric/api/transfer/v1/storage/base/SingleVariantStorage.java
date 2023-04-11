@@ -47,6 +47,9 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 
 	/**
 	 * Return the blank variant.
+	 *
+	 * <p>Note: this is called very early in the constructor.
+	 * If fields need to be accessed from this function, make sure to re-initialize {@link #variant} yourself.
 	 */
 	protected abstract T getBlankVariant();
 
