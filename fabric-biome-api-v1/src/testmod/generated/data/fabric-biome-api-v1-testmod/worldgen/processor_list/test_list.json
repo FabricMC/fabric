@@ -1,0 +1,8 @@
+{
+  "processors": [
+    {
+      "item": "minecraft:diamond",
+      "processor_type": "fabric-structure-api-v1-testmod:test_processor"
+    }
+  ]
+}

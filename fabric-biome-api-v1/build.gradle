@@ -9,8 +9,13 @@ testDependencies(project, [
 	':fabric-api-base',
 	':fabric-resource-loader-v0',
 	':fabric-registry-sync-v0',
-	':fabric-data-generation-api-v1'
+	':fabric-data-generation-api-v1',
+	':fabric-structure-api-v1'
 ])
+
+dependencies {
+	testmodImplementation project(":fabric-structure-api-v1").sourceSets.testmod.output
+}
 
 sourceSets {
 	testmod {

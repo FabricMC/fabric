@@ -22,7 +22,6 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
@@ -41,9 +40,11 @@ public class WorldgenProvider extends FabricDynamicRegistryProvider {
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup registries, Entries entries) {
-		final RegistryWrapper.Impl<Biome> biomeRegistry = registries.getWrapperOrThrow(RegistryKeys.BIOME);
-
-		entries.addAll(biomeRegistry);
+		entries.addAll(registries.getWrapperOrThrow(RegistryKeys.BIOME));
+		entries.addAll(registries.getWrapperOrThrow(RegistryKeys.PROCESSOR_LIST));
+		entries.addAll(registries.getWrapperOrThrow(RegistryKeys.TEMPLATE_POOL));
+		entries.addAll(registries.getWrapperOrThrow(RegistryKeys.STRUCTURE));
+		entries.addAll(registries.getWrapperOrThrow(RegistryKeys.STRUCTURE_SET));
 
 		ConfiguredFeature<?, ?> COMMON_DESERT_WELL = new ConfiguredFeature<>(Feature.DESERT_WELL, DefaultFeatureConfig.INSTANCE);
 

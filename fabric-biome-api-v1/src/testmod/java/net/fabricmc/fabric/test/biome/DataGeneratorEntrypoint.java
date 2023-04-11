@@ -32,5 +32,9 @@ public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.
 	@Override
 	public void buildRegistry(RegistryBuilder registryBuilder) {
 		registryBuilder.addRegistry(RegistryKeys.BIOME, TestBiomes::bootstrap);
+		registryBuilder.addRegistry(RegistryKeys.PROCESSOR_LIST, TestStructures::bootstrapStructureProcessorList);
+		registryBuilder.addRegistry(RegistryKeys.TEMPLATE_POOL, TestStructures::bootstrapStructurePool);
+		registryBuilder.addRegistry(RegistryKeys.STRUCTURE, TestStructures::bootstrapStructure);
+		registryBuilder.addRegistry(RegistryKeys.STRUCTURE_SET, TestStructures::bootstrapStructureSet);
 	}
 }
