@@ -87,7 +87,7 @@ public class ProgrammerArtResourcePack extends GroupResourcePack {
 
 	@Override
 	public String getName() {
-		return "Programmer Art";
+		return this.originalResourcePack.getName();
 	}
 
 	@Override
