@@ -18,16 +18,21 @@ package net.fabricmc.fabric.api.entity;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.OptionalInt;
 import java.util.UUID;
 
 import com.google.common.collect.MapMaker;
 import com.mojang.authlib.GameProfile;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.passive.AbstractHorseEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.network.packet.c2s.play.ClientSettingsC2SPacket;
 import net.minecraft.scoreboard.AbstractTeam;
+import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stat;
@@ -122,4 +127,15 @@ public class FakePlayer extends ServerPlayerEntity {
 	public boolean startRiding(Entity entity, boolean force) {
 		return false;
 	}
+
+	@Override
+	public void openEditSignScreen(SignBlockEntity sign) { }
+
+	@Override
+	public OptionalInt openHandledScreen(@Nullable NamedScreenHandlerFactory factory) {
+		return OptionalInt.empty();
+	}
+
+	@Override
+	public void openHorseInventory(AbstractHorseEntity horse, Inventory inventory) { }
 }
