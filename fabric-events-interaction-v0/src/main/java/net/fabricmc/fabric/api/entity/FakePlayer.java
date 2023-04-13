@@ -18,16 +18,20 @@ package net.fabricmc.fabric.api.entity;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import com.google.common.collect.MapMaker;
 import com.mojang.authlib.GameProfile;
+import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.network.packet.c2s.play.ClientSettingsC2SPacket;
+import net.minecraft.scoreboard.AbstractTeam;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stat;
-import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.impl.event.interaction.FakePlayerNetworkHandler;
 
@@ -44,6 +48,23 @@ import net.fabricmc.fabric.impl.event.interaction.FakePlayerNetworkHandler;
  * This can be done with an {@code instanceof} check: {@code player instanceof FakePlayer}.
  */
 public class FakePlayer extends ServerPlayerEntity {
+	/**
+	 * Default UUID, for fake players not associated with a specific (human) player.
+	 */
+	public static final UUID DEFAULT_UUID = UUID.fromString("41C82C87-7AfB-4024-BA57-13D2C99CAE77");
+	private static final GameProfile DEFAULT_PROFILE = new GameProfile(DEFAULT_UUID, "[Minecraft]");
+
+	/**
+	 * Retrieve a fake player for the specified world, using the {@link #DEFAULT_UUID default UUID}.
+	 * This is suitable when the fake player is not associated with a specific (human) player.
+	 * Otherwise, the UUID of the owning (human) player should be used.
+	 *
+	 * @see #get(ServerWorld, GameProfile)
+	 */
+	public static FakePlayer get(ServerWorld world) {
+		return get(world, DEFAULT_PROFILE);
+	}
+
 	/**
 	 * Retrieve a fake player for the specified world and game profile.
 	 *
@@ -72,9 +93,6 @@ public class FakePlayer extends ServerPlayerEntity {
 	public void tick() { }
 
 	@Override
-	public void sendMessageToClient(Text message, boolean overlay) { }
-
-	@Override
 	public void setClientSettings(ClientSettingsC2SPacket packet) { }
 
 	@Override
@@ -86,5 +104,22 @@ public class FakePlayer extends ServerPlayerEntity {
 	@Override
 	public boolean isInvulnerableTo(DamageSource damageSource) {
 		return true;
+	}
+
+	@Nullable
+	@Override
+	public AbstractTeam getScoreboardTeam() {
+		// Scoreboard team is checked using the gameprofile name by default, which we don't want.
+		return null;
+	}
+
+	@Override
+	public void sleep(BlockPos pos) {
+		// Don't lock bed forever.
+	}
+
+	@Override
+	public boolean startRiding(Entity entity, boolean force) {
+		return false;
 	}
 }

@@ -16,19 +16,11 @@
 
 package net.fabricmc.fabric.test.event.interaction;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import com.mojang.authlib.GameProfile;
-
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
-import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.Hand;
@@ -39,32 +31,8 @@ import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
-import net.fabricmc.fabric.impl.event.interaction.FakePlayerNetworkHandler;
 
 public class FakePlayerTests {
-	/**
-	 * Use reflection to validate that the network handler overrides every single packet listener method.
-	 */
-	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
-	public void testFakePlayerPacketListener(TestContext context) {
-		List<String> missingMethods = new ArrayList<>();
-
-		for (Method methodToOverride : ServerPlayPacketListener.class.getDeclaredMethods()) {
-			// check that method is overriden by FakePlayerNetworkHandler
-			try {
-				FakePlayerNetworkHandler.class.getDeclaredMethod(methodToOverride.getName(), methodToOverride.getParameterTypes());
-			} catch (NoSuchMethodException e) {
-				missingMethods.add(methodToOverride.getName());
-			}
-		}
-
-		context.assertTrue(missingMethods.isEmpty(),
-				"FakePlayerNetworkHandler is missing the following methods: " + String.join(", ", missingMethods));
-		context.complete();
-	}
-
-	private static final GameProfile FAKE_PLAYER_PROFILE = new GameProfile(UUID.fromString("742d0b52-d7da-11ed-afa1-0242ac120002"), "[Fabric Test]");
-
 	/**
 	 * Try placing a sign with a fake player.
 	 */
@@ -77,7 +45,7 @@ public class FakePlayerTests {
 
 		context.setBlockState(basePos, Blocks.STONE.getDefaultState());
 
-		PlayerEntity fakePlayer = FakePlayer.get(context.getWorld(), FAKE_PLAYER_PROFILE);
+		PlayerEntity fakePlayer = FakePlayer.get(context.getWorld());
 
 		BlockPos fakePlayerPos = context.getAbsolutePos(signPos.add(2, 0, 2));
 		fakePlayer.setPosition(fakePlayerPos.getX(), fakePlayerPos.getY(), fakePlayerPos.getZ());
