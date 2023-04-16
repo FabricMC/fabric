@@ -41,7 +41,7 @@ import net.minecraft.util.math.BlockPos;
 import net.fabricmc.fabric.impl.event.interaction.FakePlayerNetworkHandler;
 
 /**
- * A "fake player", i.e. a {@link ServerPlayerEntity} that is not a human player.
+ * A "fake player" is a {@link ServerPlayerEntity} that is not a human player.
  * They are typically used to automatically perform player actions such as placing blocks.
  *
  * <p>The easiest way to obtain a fake player is with {@link FakePlayer#get(ServerWorld, GameProfile)}.
@@ -60,18 +60,21 @@ public class FakePlayer extends ServerPlayerEntity {
 	private static final GameProfile DEFAULT_PROFILE = new GameProfile(DEFAULT_UUID, "[Minecraft]");
 
 	/**
-	 * Retrieve a fake player for the specified world, using the {@link #DEFAULT_UUID default UUID}.
+	 * Retrieves a fake player for the specified world, using the {@link #DEFAULT_UUID default UUID}.
 	 * This is suitable when the fake player is not associated with a specific (human) player.
 	 * Otherwise, the UUID of the owning (human) player should be used.
 	 *
-	 * @see #get(ServerWorld, GameProfile)
+	 * <p>Instances are reused for the same world parameter.
+	 *
+	 * <p>Caution should be exerted when storing the returned value,
+	 * as strong references to the fake player will keep the world loaded.
 	 */
 	public static FakePlayer get(ServerWorld world) {
 		return get(world, DEFAULT_PROFILE);
 	}
 
 	/**
-	 * Retrieve a fake player for the specified world and game profile.
+	 * Retrieves a fake player for the specified world and game profile.
 	 *
 	 * <p>Instances are reused for the same parameters.
 	 *
