@@ -44,9 +44,18 @@ import net.fabricmc.fabric.impl.event.interaction.FakePlayerNetworkHandler;
  * A "fake player" is a {@link ServerPlayerEntity} that is not a human player.
  * They are typically used to automatically perform player actions such as placing blocks.
  *
- * <p>The easiest way to obtain a fake player is with {@link FakePlayer#get(ServerWorld, GameProfile)}.
+ * <p>The easiest way to obtain a fake player is with {@link FakePlayer#get(ServerWorld)} or {@link FakePlayer#get(ServerWorld, GameProfile)}.
  * It is also possible to create a subclass for more control over the fake player's behavior.
- * For good inter-mod compatibility, fake players should have the UUID of their owning (human) player.
+ *
+ * <p>For good inter-mod compatibility, fake players should have the UUID of their owning (human) player.
+ * They should still have a different name to ensure the {@link GameProfile} is different.
+ * For example:
+ * <pre>{@code
+ * UUID humanPlayerUuid = ...;
+ * String humanPlayerName = ...;
+ * GameProfile fakeProfile = new GameProfile(humanPlayerUuid, "[Block Breaker of " + humanPlayerName + "]");
+ * }</pre>
+ * If a fake player does not belong to a specific player, the {@link #DEFAULT_UUID default UUID} should be used.
  *
  * <p>Fake players try to behave like regular {@link ServerPlayerEntity} objects to a reasonable extent.
  * In some edge cases, or for gameplay considerations, it might be necessary to check whether a {@link ServerPlayerEntity} is a fake player.
@@ -62,7 +71,7 @@ public class FakePlayer extends ServerPlayerEntity {
 	/**
 	 * Retrieves a fake player for the specified world, using the {@link #DEFAULT_UUID default UUID}.
 	 * This is suitable when the fake player is not associated with a specific (human) player.
-	 * Otherwise, the UUID of the owning (human) player should be used.
+	 * Otherwise, the UUID of the owning (human) player should be used (see class javadoc).
 	 *
 	 * <p>Instances are reused for the same world parameter.
 	 *
@@ -75,6 +84,7 @@ public class FakePlayer extends ServerPlayerEntity {
 
 	/**
 	 * Retrieves a fake player for the specified world and game profile.
+	 * See class javadoc for more information on fake player game profiles.
 	 *
 	 * <p>Instances are reused for the same parameters.
 	 *
