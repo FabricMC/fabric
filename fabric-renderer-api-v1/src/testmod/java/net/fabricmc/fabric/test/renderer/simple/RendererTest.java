@@ -45,7 +45,7 @@ public final class RendererTest implements ModInitializer {
 	public static final BlockEntityType<FrameBlockEntity> FRAME_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(FrameBlockEntity::new, FRAMES).build(null);
 
 	public static final Identifier PILLAR_ID = id("pillar");
-	public static final Block PILLAR = new Block(FabricBlockSettings.of(Material.STONE));
+	public static final Block PILLAR = new Block(FabricBlockSettings.of(Material.GENERIC));
 
 	@Override
 	public void onInitialize() {

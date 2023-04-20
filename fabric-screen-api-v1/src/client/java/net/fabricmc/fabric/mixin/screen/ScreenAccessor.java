@@ -22,13 +22,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.item.ItemRenderer;
 
 @Mixin(Screen.class)
 public interface ScreenAccessor {
-	@Accessor
-	ItemRenderer getItemRenderer();
-
 	@Accessor
 	TextRenderer getTextRenderer();
 

@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.test.networking.channeltest;
 
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -58,22 +58,20 @@ final class ChannelScreen extends Screen {
 	}
 
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(matrices);
-		this.channelList.render(matrices, mouseX, mouseY, delta);
-		super.render(matrices, mouseX, mouseY, delta);
+	public void render(DrawableHelper drawableHelper, int mouseX, int mouseY, float delta) {
+		this.renderBackgroundTexture(drawableHelper);
+		this.channelList.render(drawableHelper, mouseX, mouseY, delta);
+		super.render(drawableHelper, mouseX, mouseY, delta);
 
 		if (this.s2cButton.active && this.c2sButton.active) {
-			final Text clickMe = Text.literal("Click S2C or C2S to view supported channels");
+			final Text clickMe = Text.literal("Click S2C or C2S to view supported channels").formatted(Formatting.YELLOW);
 
 			final int textWidth = this.textRenderer.getWidth(clickMe);
-			//noinspection ConstantConditions
-			this.textRenderer.draw(
-					matrices,
+			drawableHelper.method_51438(
+					this.textRenderer,
 					clickMe,
-					this.width / 2.0F - (textWidth / 2.0F),
-					60,
-					Formatting.YELLOW.getColorValue()
+					(int) (this.width / 2.0F - (textWidth / 2.0F)),
+					60
 			);
 		}
 	}

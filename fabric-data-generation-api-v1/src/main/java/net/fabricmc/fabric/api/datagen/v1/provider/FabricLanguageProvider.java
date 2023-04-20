@@ -39,6 +39,8 @@ import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.stat.StatType;
 import net.minecraft.text.TextContent;
 import net.minecraft.text.TranslatableTextContent;
@@ -145,10 +147,11 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		/**
 		 * Adds a translation for an {@link ItemGroup}.
 		 *
-		 * @param group The {@link ItemGroup} to get the translation key from.
+		 * @param registryKey The {@link RegistryKey} to get the translation key from.
 		 * @param value The value of the entry.
 		 */
-		default void add(ItemGroup group, String value) {
+		default void add(RegistryKey<ItemGroup> registryKey, String value) {
+			final ItemGroup group = Registries.ITEM_GROUP.getOrThrow(registryKey);
 			final TextContent content = group.getDisplayName().getContent();
 
 			if (content instanceof TranslatableTextContent translatableTextContent) {

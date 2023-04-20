@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.item.group;
 
-import java.util.Objects;
-
 import com.google.common.base.Supplier;
 
 import net.minecraft.block.Blocks;
@@ -28,6 +26,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -39,21 +39,22 @@ public class ItemGroupTest implements ModInitializer {
 	private static final String MOD_ID = "fabric-item-group-api-v1-testmod";
 	private static Item TEST_ITEM;
 
-	//Adds an item group with all items in it
-	private static final ItemGroup ITEM_GROUP = FabricItemGroup.builder(new Identifier(MOD_ID, "test_group"))
-			.displayName(Text.literal("Test Item Group"))
-			.icon(() -> new ItemStack(Items.DIAMOND))
-			.entries((context, entries) -> {
-				entries.addAll(Registries.ITEM.stream()
-						.map(ItemStack::new)
-						.filter(input -> !input.isEmpty())
-						.toList());
-			})
-			.build();
+	private static final RegistryKey<ItemGroup> ITEM_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, new Identifier(MOD_ID, "test_group"));
 
 	@Override
 	public void onInitialize() {
 		TEST_ITEM = Registry.register(Registries.ITEM, new Identifier("fabric-item-groups-v0-testmod", "item_test_group"), new Item(new Item.Settings()));
+
+		Registry.register(Registries.ITEM_GROUP, ITEM_GROUP, FabricItemGroup.builder()
+				.displayName(Text.literal("Test Item Group"))
+				.icon(() -> new ItemStack(Items.DIAMOND))
+				.entries((context, entries) -> {
+					entries.addAll(Registries.ITEM.stream()
+							.map(ItemStack::new)
+							.filter(input -> !input.isEmpty())
+							.toList());
+				})
+				.build());
 
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register((content) -> {
 			content.add(TEST_ITEM);
@@ -79,7 +80,8 @@ public class ItemGroupTest implements ModInitializer {
 
 		for (int i = 0; i < 100; i++) {
 			final int index = i;
-			FabricItemGroup.builder(new Identifier(MOD_ID, "test_group_" + i))
+
+			Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "test_group_" + i), FabricItemGroup.builder()
 					.displayName(Text.literal("Test Item Group: " + i))
 					.icon((Supplier<ItemStack>) () -> new ItemStack(Registries.BLOCK.get(index)))
 					.entries((context, entries) -> {
@@ -89,10 +91,15 @@ public class ItemGroupTest implements ModInitializer {
 							entries.add(itemStack);
 						}
 					})
-					.build();
+					.build());
 		}
 
-		assert Objects.equals(ItemGroups.HOTBAR.getId().toString(), "minecraft:hotbar");
-		assert Objects.equals(ITEM_GROUP.getId().toString(), "fabric-item-group-api-v1-testmod:test_group");
+		try {
+			// Test to make sure that item groups must have a display name.
+			FabricItemGroup.builder().build();
+			throw new AssertionError();
+		} catch (IllegalStateException ignored) {
+			// Ignored
+		}
 	}
 }

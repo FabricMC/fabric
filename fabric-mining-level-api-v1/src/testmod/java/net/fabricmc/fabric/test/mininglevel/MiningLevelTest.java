@@ -47,21 +47,21 @@ public final class MiningLevelTest implements ModInitializer {
 
 	/// Tagged blocks
 	// sword + dynamic mining level tag
-	public static final Block NEEDS_NETHERITE_SWORD = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
+	public static final Block NEEDS_NETHERITE_SWORD = new Block(AbstractBlock.Settings.of(Material.GENERIC).strength(2, 3).requiresTool());
 	// sword + vanilla mining level tag
-	public static final Block NEEDS_STONE_SWORD = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
+	public static final Block NEEDS_STONE_SWORD = new Block(AbstractBlock.Settings.of(Material.GENERIC).strength(2, 3).requiresTool());
 	// any sword
-	public static final Block NEEDS_ANY_SWORD = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
+	public static final Block NEEDS_ANY_SWORD = new Block(AbstractBlock.Settings.of(Material.GENERIC).strength(2, 3).requiresTool());
 	// shears
-	public static final Block NEEDS_SHEARS = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
+	public static final Block NEEDS_SHEARS = new Block(AbstractBlock.Settings.of(Material.GENERIC).strength(2, 3).requiresTool());
 	// vanilla mineable tag + dynamic mining level tag
-	public static final Block NEEDS_NETHERITE_PICKAXE = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
+	public static final Block NEEDS_NETHERITE_PICKAXE = new Block(AbstractBlock.Settings.of(Material.GENERIC).strength(2, 3).requiresTool());
 	// vanilla mineable tag, requires tool (this type of block doesn't exist in vanilla)
-	public static final Block NEEDS_AXE = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
+	public static final Block NEEDS_AXE = new Block(AbstractBlock.Settings.of(Material.GENERIC).strength(2, 3).requiresTool());
 	// vanilla mineable tag, requires tool (this type of block doesn't exist in vanilla)
-	public static final Block NEEDS_HOE = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
+	public static final Block NEEDS_HOE = new Block(AbstractBlock.Settings.of(Material.GENERIC).strength(2, 3).requiresTool());
 	// vanilla mineable tag, requires tool (this type of block doesn't exist in vanilla)
-	public static final Block NEEDS_SHOVEL = new Block(AbstractBlock.Settings.of(Material.STONE).strength(2, 3).requiresTool());
+	public static final Block NEEDS_SHOVEL = new Block(AbstractBlock.Settings.of(Material.GENERIC).strength(2, 3).requiresTool());
 
 	@Override
 	public void onInitialize() {

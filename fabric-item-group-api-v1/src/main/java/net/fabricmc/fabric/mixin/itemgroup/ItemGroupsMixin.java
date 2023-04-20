@@ -16,85 +16,53 @@
 
 package net.fabricmc.fabric.mixin.itemgroup;
 
+import static net.minecraft.item.ItemGroups.BUILDING_BLOCKS;
+import static net.minecraft.item.ItemGroups.COLORED_BLOCKS;
+import static net.minecraft.item.ItemGroups.COMBAT;
+import static net.minecraft.item.ItemGroups.FOOD_AND_DRINK;
+import static net.minecraft.item.ItemGroups.FUNCTIONAL;
+import static net.minecraft.item.ItemGroups.HOTBAR;
+import static net.minecraft.item.ItemGroups.INGREDIENTS;
+import static net.minecraft.item.ItemGroups.INVENTORY;
+import static net.minecraft.item.ItemGroups.NATURAL;
+import static net.minecraft.item.ItemGroups.OPERATOR;
+import static net.minecraft.item.ItemGroups.REDSTONE;
+import static net.minecraft.item.ItemGroups.SEARCH;
+import static net.minecraft.item.ItemGroups.SPAWN_EGGS;
+import static net.minecraft.item.ItemGroups.TOOLS;
+
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
 
 import net.fabricmc.fabric.impl.itemgroup.FabricItemGroup;
 
 @Mixin(ItemGroups.class)
 public class ItemGroupsMixin {
-	@Shadow
-	@Final
-	private static ItemGroup BUILDING_BLOCKS;
-	@Shadow
-	@Final
-	private static ItemGroup COLORED_BLOCKS;
-	@Shadow
-	@Final
-	private static ItemGroup NATURAL;
-	@Shadow
-	@Final
-	private static ItemGroup FUNCTIONAL;
-	@Shadow
-	@Final
-	private static ItemGroup REDSTONE;
-	@Shadow
-	@Final
-	private static ItemGroup HOTBAR;
-	@Shadow
-	@Final
-	private static ItemGroup SEARCH;
-	@Shadow
-	@Final
-	private static ItemGroup TOOLS;
-	@Shadow
-	@Final
-	private static ItemGroup COMBAT;
-	@Shadow
-	@Final
-	private static ItemGroup FOOD_AND_DRINK;
-	@Shadow
-	@Final
-	private static ItemGroup INGREDIENTS;
-	@Shadow
-	@Final
-	private static ItemGroup SPAWN_EGGS;
-	@Shadow
-	@Final
-	private static ItemGroup OPERATOR;
-	@Shadow
-	@Final
-	private static ItemGroup INVENTORY;
-
 	@Unique
 	private static final int TABS_PER_PAGE = 10;
 
 	@Inject(method = "collect", at = @At("HEAD"), cancellable = true)
-	private static void collect(ItemGroup[] groups, CallbackInfoReturnable<List<ItemGroup>> cir) {
-		final List<ItemGroup> vanillaGroups = List.of(BUILDING_BLOCKS, COLORED_BLOCKS, NATURAL, FUNCTIONAL, REDSTONE, HOTBAR, SEARCH, TOOLS, COMBAT, FOOD_AND_DRINK, INGREDIENTS, SPAWN_EGGS, OPERATOR, INVENTORY);
-
-		for (ItemGroup vanillaGroup : vanillaGroups) {
-			Objects.requireNonNull(vanillaGroup);
-		}
+	private static void collect(CallbackInfo ci) {
+		final List<RegistryKey<ItemGroup>> vanillaGroups = List.of(BUILDING_BLOCKS, COLORED_BLOCKS, NATURAL, FUNCTIONAL, REDSTONE, HOTBAR, SEARCH, TOOLS, COMBAT, FOOD_AND_DRINK, INGREDIENTS, SPAWN_EGGS, OPERATOR, INVENTORY);
 
 		int count = 0;
 
-		for (ItemGroup itemGroup : groups) {
+		for (RegistryKey<ItemGroup> registryKey : Registries.ITEM_GROUP.getKeys()) {
+			final ItemGroup itemGroup = Registries.ITEM_GROUP.getOrThrow(registryKey);
 			final FabricItemGroup fabricItemGroup = (FabricItemGroup) itemGroup;
 
-			if (vanillaGroups.contains(itemGroup)) {
+			if (vanillaGroups.contains(registryKey)) {
 				// Vanilla group goes on the first page.
 				fabricItemGroup.setPage(0);
 				continue;
@@ -114,7 +82,8 @@ public class ItemGroupsMixin {
 		record ItemGroupPosition(ItemGroup.Row row, int column, int page) { }
 		var map = new HashMap<ItemGroupPosition, String>();
 
-		for (ItemGroup itemGroup : groups) {
+		for (RegistryKey<ItemGroup> registryKey : Registries.ITEM_GROUP.getKeys()) {
+			final ItemGroup itemGroup = Registries.ITEM_GROUP.getOrThrow(registryKey);
 			final FabricItemGroup fabricItemGroup = (FabricItemGroup) itemGroup;
 			final String displayName = itemGroup.getDisplayName().getString();
 			final var position = new ItemGroupPosition(itemGroup.getRow(), itemGroup.getColumn(), fabricItemGroup.getPage());
@@ -125,6 +94,6 @@ public class ItemGroupsMixin {
 			}
 		}
 
-		cir.setReturnValue(List.of(groups));
+		ci.cancel();
 	}
 }

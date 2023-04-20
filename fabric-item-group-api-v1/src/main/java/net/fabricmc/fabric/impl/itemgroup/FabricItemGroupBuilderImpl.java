@@ -16,26 +16,29 @@
 
 package net.fabricmc.fabric.impl.itemgroup;
 
-import java.util.Objects;
-
 import net.minecraft.item.ItemGroup;
-import net.minecraft.util.Identifier;
+import net.minecraft.text.Text;
 
 public final class FabricItemGroupBuilderImpl extends ItemGroup.Builder {
-	private final Identifier identifier;
+	private boolean hasDisplayName = false;
 
-	public FabricItemGroupBuilderImpl(Identifier identifier) {
+	public FabricItemGroupBuilderImpl() {
 		// Set when building.
 		super(null, -1);
-		this.identifier = Objects.requireNonNull(identifier);
+	}
+
+	@Override
+	public ItemGroup.Builder displayName(Text displayName) {
+		hasDisplayName = true;
+		return super.displayName(displayName);
 	}
 
 	@Override
 	public ItemGroup build() {
-		final ItemGroup itemGroup = super.build();
-		final FabricItemGroup fabricItemGroup = (FabricItemGroup) itemGroup;
-		fabricItemGroup.setId(identifier);
-		ItemGroupHelper.appendItemGroup(itemGroup);
-		return itemGroup;
+		if (!hasDisplayName) {
+			throw new IllegalStateException("No display name set for ItemGroup");
+		}
+
+		return super.build();
 	}
 }

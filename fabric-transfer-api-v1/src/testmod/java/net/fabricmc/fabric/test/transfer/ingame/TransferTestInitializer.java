@@ -35,8 +35,8 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 public class TransferTestInitializer implements ModInitializer {
 	public static final String MOD_ID = "fabric-transfer-api-v1-testmod";
 
-	private static final Block INFINITE_WATER_SOURCE = new Block(AbstractBlock.Settings.of(Material.field_44483));
-	private static final Block INFINITE_LAVA_SOURCE = new Block(AbstractBlock.Settings.of(Material.field_44483));
+	private static final Block INFINITE_WATER_SOURCE = new Block(AbstractBlock.Settings.of(Material.GENERIC));
+	private static final Block INFINITE_LAVA_SOURCE = new Block(AbstractBlock.Settings.of(Material.GENERIC));
 	private static final Block FLUID_CHUTE = new FluidChuteBlock();
 	private static final Item EXTRACT_STICK = new ExtractStickItem();
 	public static BlockEntityType<FluidChuteBlockEntity> FLUID_CHUTE_TYPE;

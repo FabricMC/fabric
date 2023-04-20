@@ -22,15 +22,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-	@Inject(method = "render", at = @At(value = "TAIL"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;render(Lnet/minecraft/client/util/math/MatrixStack;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V")))
-	public void render(MatrixStack matrixStack, float tickDelta, CallbackInfo callbackInfo) {
-		HudRenderCallback.EVENT.invoker().onHudRender(matrixStack, tickDelta);
+	@Inject(method = "render", at = @At(value = "TAIL"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;render(Lnet/minecraft/client/gui/DrawableHelper;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V")))
+	public void render(DrawableHelper drawableHelper, float tickDelta, CallbackInfo callbackInfo) {
+		HudRenderCallback.EVENT.invoker().onHudRender(drawableHelper, tickDelta);
 	}
 }

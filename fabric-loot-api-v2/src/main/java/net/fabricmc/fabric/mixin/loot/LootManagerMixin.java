@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_8488;
+import net.minecraft.loot.LootDataKey;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;
 import net.minecraft.resource.ResourceManager;
@@ -46,7 +46,7 @@ import net.fabricmc.fabric.impl.loot.LootUtil;
 @Mixin(LootManager.class)
 abstract class LootManagerMixin {
 	@Shadow
-	private Map<class_8488<?>, ?> field_44492;
+	private Map<LootDataKey<?>, ?> keyToValue;
 
 	@Inject(method = "reload", at = @At("RETURN"), cancellable = true)
 	private void reload(ResourceReloader.Synchronizer synchronizer, ResourceManager manager, Profiler prepareProfiler, Profiler applyProfiler, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
@@ -59,25 +59,25 @@ abstract class LootManagerMixin {
 	private void applyLootTableEvents(ResourceManager resourceManager, LootManager lootManager) {
 		// The builder for the new LootManager.tables map with modified loot tables.
 		// We're using an immutable map to match vanilla.
-		ImmutableMap.Builder<class_8488<?>, Object> newTables = ImmutableMap.builder();
+		ImmutableMap.Builder<LootDataKey<?>, Object> newTables = ImmutableMap.builder();
 
-		this.field_44492.forEach((id, entry) -> {
-			if (id == LootManager.field_44491) {
+		this.keyToValue.forEach((dataKey, entry) -> {
+			if (dataKey == LootManager.EMPTY_LOOT_TABLE) {
 				// This is a special table and cannot be modified.
 				// Vanilla also warns about that.
-				newTables.put(id, entry);
+				newTables.put(dataKey, entry);
 				return;
 			}
 
 			if (!(entry instanceof LootTable table)) {
 				// We only want to modify loot tables
-				newTables.put(id, entry);
+				newTables.put(dataKey, entry);
 				return;
 			}
 
-			LootTableSource source = LootUtil.determineSource(id.location(), resourceManager);
+			LootTableSource source = LootUtil.determineSource(dataKey.id(), resourceManager);
 			// Invoke the REPLACE event for the current loot table.
-			LootTable replacement = LootTableEvents.REPLACE.invoker().replaceLootTable(resourceManager, lootManager, id.location(), table, source);
+			LootTable replacement = LootTableEvents.REPLACE.invoker().replaceLootTable(resourceManager, lootManager, dataKey.id(), table, source);
 
 			if (replacement != null) {
 				// Set the loot table to MODIFY to be the replacement loot table.
@@ -88,12 +88,12 @@ abstract class LootManagerMixin {
 
 			// Turn the current table into a modifiable builder and invoke the MODIFY event.
 			LootTable.Builder builder = FabricLootTableBuilder.copyOf(table);
-			LootTableEvents.MODIFY.invoker().modifyLootTable(resourceManager, lootManager, id.location(), builder, source);
+			LootTableEvents.MODIFY.invoker().modifyLootTable(resourceManager, lootManager, dataKey.id(), builder, source);
 
 			// Turn the builder back into a loot table and store it in the new table.
-			newTables.put(id, builder.build());
+			newTables.put(dataKey, builder.build());
 		});
 
-		this.field_44492 = newTables.build();
+		this.keyToValue = newTables.build();
 	}
 }

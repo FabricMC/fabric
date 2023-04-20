@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Locale;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
@@ -59,11 +59,12 @@ public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen
 		return Text.literal(value.toString());
 	}
 
-	public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+	@Override
+	public void render(DrawableHelper drawableHelper, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 		// FIXME: Param names nightmare
-		this.drawName(matrices, y, x);
+		this.drawName(drawableHelper, y, x);
 
 		this.buttonWidget.setPosition(x + entryWidth - 89, y);
-		this.buttonWidget.render(matrices, mouseX, mouseY, tickDelta);
+		this.buttonWidget.render(drawableHelper, mouseX, mouseY, tickDelta);
 	}
 }

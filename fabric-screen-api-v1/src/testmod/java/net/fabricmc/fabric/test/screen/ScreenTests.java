@@ -18,16 +18,14 @@ package net.fabricmc.fabric.test.screen;
 
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -38,6 +36,7 @@ import net.fabricmc.fabric.api.client.screen.v1.Screens;
 
 @Environment(EnvType.CLIENT)
 public final class ScreenTests implements ClientModInitializer {
+	public static final Identifier GUI_ICONS_TEXTURE = new Identifier("textures/gui/icons.png");
 	private static final Logger LOGGER = LoggerFactory.getLogger("FabricScreenApiTests");
 
 	@Override
@@ -78,10 +77,9 @@ public final class ScreenTests implements ClientModInitializer {
 					.orElseThrow(() -> new AssertionError("Failed to find the \"Stop Sound\" button in the screen's elements"));
 
 			// Register render event to draw an icon on the screen
-			ScreenEvents.afterRender(screen).register((_screen, matrices, mouseX, mouseY, tickDelta) -> {
+			ScreenEvents.afterRender(screen).register((_screen, drawableHelper, mouseX, mouseY, tickDelta) -> {
 				// Render an armor icon to test
-				RenderSystem.setShaderTexture(0, InGameHud.GUI_ICONS_TEXTURE);
-				DrawableHelper.drawTexture(matrices, (screen.width / 2) - 124, (screen.height / 4) + 96, 20, 20, 34, 9, 9, 9, 256, 256);
+				drawableHelper.drawTexture(ScreenTests.GUI_ICONS_TEXTURE, (screen.width / 2) - 124, (screen.height / 4) + 96, 20, 20, 34, 9, 9, 9, 256, 256);
 			});
 
 			ScreenKeyboardEvents.allowKeyPress(screen).register((_screen, key, scancode, modifiers) -> {

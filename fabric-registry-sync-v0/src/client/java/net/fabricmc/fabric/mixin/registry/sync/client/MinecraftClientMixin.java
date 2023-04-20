@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
@@ -53,5 +54,6 @@ public class MinecraftClientMixin {
 		FABRIC_LOGGER.debug("Freezing registries");
 		Registries.bootstrap();
 		BlockInitTracker.postFreeze();
+		ItemGroups.collect();
 	}
 }
