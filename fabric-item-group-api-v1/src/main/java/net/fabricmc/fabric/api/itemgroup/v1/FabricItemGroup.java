@@ -51,6 +51,4 @@ public final class FabricItemGroup {
 	public static ItemGroup.Builder builder() {
 		return new FabricItemGroupBuilderImpl();
 	}
-
-	// TODO validate it has a display name, as its no longer possible for fabric to set a default.
 }

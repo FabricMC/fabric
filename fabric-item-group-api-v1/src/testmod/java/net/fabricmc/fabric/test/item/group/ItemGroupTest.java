@@ -93,5 +93,13 @@ public class ItemGroupTest implements ModInitializer {
 					})
 					.build());
 		}
+
+		try {
+			// Test to make sure that item groups must have a display name.
+			FabricItemGroup.builder().build();
+			throw new AssertionError();
+		} catch (IllegalStateException ignored) {
+			// Ignored
+		}
 	}
 }
