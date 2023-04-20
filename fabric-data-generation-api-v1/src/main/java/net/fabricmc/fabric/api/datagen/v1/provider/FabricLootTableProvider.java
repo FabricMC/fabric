@@ -30,7 +30,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.class_8490;
+import net.minecraft.loot.LootDataType;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
@@ -87,7 +87,7 @@ public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier,
 		final List<CompletableFuture<?>> futures = new ArrayList<>();
 
 		for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
-			JsonObject tableJson = (JsonObject) class_8490.LOOT_TABLES.method_51203().toJsonTree(entry.getValue());
+			JsonObject tableJson = (JsonObject) LootDataType.LOOT_TABLES.getGson().toJsonTree(entry.getValue());
 			ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
 
 			futures.add(DataProvider.writeToPath(writer, tableJson, getOutputPath(entry.getKey())));

@@ -58,7 +58,6 @@ import net.fabricmc.fabric.api.registry.SculkSensorFrequencyRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
 import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
-import net.fabricmc.fabric.api.registry.VillagerPlantableRegistry;
 import net.fabricmc.fabric.test.mixin.content.registry.BrewingRecipeRegistryAccessor;
 
 public final class ContentRegistryTest implements ModInitializer {
@@ -137,17 +136,6 @@ public final class ContentRegistryTest implements ModInitializer {
 		VillagerInteractionRegistries.registerCompostable(Items.APPLE);
 
 		VillagerInteractionRegistries.registerCollectable(Items.OAK_SAPLING);
-		VillagerPlantableRegistry.register(Items.OAK_SAPLING);
-
-		// assert that VillagerPlantablesRegistry throws when getting a non-BlockItem
-		try {
-			VillagerPlantableRegistry.register(Items.STICK);
-
-			throw new AssertionError("VillagerPlantablesRegistry didn't throw when item is not BlockItem!");
-		} catch (Exception e) {
-			// expected behavior
-			LOGGER.info("VillagerPlantablesRegistry test passed!");
-		}
 
 		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, new Identifier("fake_loot_table"));
 

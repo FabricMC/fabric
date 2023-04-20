@@ -18,8 +18,6 @@ package net.fabricmc.fabric.api.itemgroup.v1;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.itemgroup.FabricItemGroupBuilderImpl;
 
@@ -48,11 +46,11 @@ public final class FabricItemGroup {
 	 *    .build();
 	 * }</pre>
 	 *
-	 * @param identifier the id of the ItemGroup, to be used as the default translation key
 	 * @return a new {@link ItemGroup} instance
 	 */
-	public static ItemGroup.Builder builder(Identifier identifier) {
-		return new FabricItemGroupBuilderImpl(identifier)
-				.displayName(Text.translatable("itemGroup.%s.%s".formatted(identifier.getNamespace(), identifier.getPath())));
+	public static ItemGroup.Builder builder() {
+		return new FabricItemGroupBuilderImpl();
 	}
+
+	// TODO validate it has a display name, as its no longer possible for fabric to set a default.
 }

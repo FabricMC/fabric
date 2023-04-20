@@ -17,9 +17,9 @@
 package net.fabricmc.fabric.test.networking.channeltest;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.EntryListWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -51,8 +51,8 @@ final class ChannelList extends EntryListWidget<ChannelList.Entry> {
 		}
 
 		@Override
-		public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			ChannelList.this.client.textRenderer.draw(matrices, Text.literal(this.channel.toString()), x, y, Formatting.WHITE.getColorValue());
+		public void render(DrawableHelper drawableHelper, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+			drawableHelper.method_51438(ChannelList.this.client.textRenderer, Text.literal(this.channel.toString()).formatted(Formatting.WHITE), x, y);
 		}
 	}
 }

@@ -51,7 +51,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 public final class EntityEventTests implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EntityEventTests.class);
-	public static final Block TEST_BED = new TestBedBlock(AbstractBlock.Settings.of(Material.field_44489).strength(1, 1));
+	public static final Block TEST_BED = new TestBedBlock(AbstractBlock.Settings.of(Material.GENERIC).strength(1, 1));
 	public static final Item DIAMOND_ELYTRA = new DiamondElytraItem();
 
 	@Override

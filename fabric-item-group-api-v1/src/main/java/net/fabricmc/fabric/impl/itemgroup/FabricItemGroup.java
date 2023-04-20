@@ -16,12 +16,8 @@
 
 package net.fabricmc.fabric.impl.itemgroup;
 
-import net.minecraft.util.Identifier;
-
 public interface FabricItemGroup {
 	int getPage();
 
 	void setPage(int page);
-
-	void setId(Identifier identifier);
 }

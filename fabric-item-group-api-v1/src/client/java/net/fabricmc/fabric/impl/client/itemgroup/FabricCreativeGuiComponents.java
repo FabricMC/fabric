@@ -19,19 +19,19 @@ package net.fabricmc.fabric.impl.client.itemgroup;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class FabricCreativeGuiComponents {
 	private static final Identifier BUTTON_TEX = new Identifier("fabric", "textures/gui/creative_buttons.png");
-	public static final Set<ItemGroup> COMMON_GROUPS = Set.of(ItemGroups.SEARCH, ItemGroups.INVENTORY, ItemGroups.HOTBAR);
+	public static final Set<RegistryKey<ItemGroup>> COMMON_GROUPS = Set.of(ItemGroups.SEARCH, ItemGroups.INVENTORY, ItemGroups.HOTBAR);
 
 	public static class ItemGroupButtonWidget extends ButtonWidget {
 		final CreativeGuiExtensions extensions;
@@ -46,7 +46,7 @@ public class FabricCreativeGuiComponents {
 		}
 
 		@Override
-		public void render(MatrixStack matrixStack, int mouseX, int mouseY, float float_1) {
+		public void render(DrawableHelper drawableHelper, int mouseX, int mouseY, float float_1) {
 			this.hovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
 			this.visible = extensions.fabric_isButtonVisible(type);
 			this.active = extensions.fabric_isButtonEnabled(type);
@@ -55,13 +55,11 @@ public class FabricCreativeGuiComponents {
 				int u = active && this.isHovered() ? 22 : 0;
 				int v = active ? 0 : 12;
 
-				RenderSystem.setShaderTexture(0, BUTTON_TEX);
-				RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-				this.drawTexture(matrixStack, this.getX(), this.getY(), u + (type == Type.NEXT ? 11 : 0), v, 11, 12);
+				drawableHelper.drawTexture(BUTTON_TEX, this.getX(), this.getY(), u + (type == Type.NEXT ? 11 : 0), v, 11, 12);
 
 				if (this.hovered) {
 					int pageCount = (int) Math.ceil((ItemGroups.getGroupsToDisplay().size() - COMMON_GROUPS.size()) / 9D);
-					gui.renderTooltip(matrixStack, Text.translatable("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, pageCount), mouseX, mouseY);
+					drawableHelper.method_51438(MinecraftClient.getInstance().textRenderer, Text.translatable("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, pageCount), mouseX, mouseY);
 				}
 			}
 		}

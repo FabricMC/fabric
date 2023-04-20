@@ -23,7 +23,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.item.ItemRenderer;
 
 import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 import net.fabricmc.fabric.mixin.screen.ScreenAccessor;
@@ -45,17 +44,6 @@ public final class Screens {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getButtons();
-	}
-
-	/**
-	 * Gets a screen's item renderer.
-	 *
-	 * @return the screen's item renderer
-	 */
-	public static ItemRenderer getItemRenderer(Screen screen) {
-		Objects.requireNonNull(screen, "Screen cannot be null");
-
-		return ((ScreenAccessor) screen).getItemRenderer();
 	}
 
 	/**

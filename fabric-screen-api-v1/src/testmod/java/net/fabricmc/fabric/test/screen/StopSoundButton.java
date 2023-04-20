@@ -16,16 +16,14 @@
 
 package net.fabricmc.fabric.test.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 
 class StopSoundButton extends PressableWidget {
 	private final Screen screen;
@@ -36,13 +34,12 @@ class StopSoundButton extends PressableWidget {
 	}
 
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float tickDelta) {
+	public void render(DrawableHelper drawableHelper, int mouseX, int mouseY, float tickDelta) {
 		// Render the armor icon to test
-		RenderSystem.setShaderTexture(0, InGameHud.GUI_ICONS_TEXTURE);
-		DrawableHelper.drawTexture(matrices, this.getX(), this.getY(), this.width, this.height, 43, 27, 9, 9, 256, 256);
+		drawableHelper.drawTexture(ScreenTests.GUI_ICONS_TEXTURE, this.getX(), this.getY(), this.width, this.height, 43, 27, 9, 9, 256, 256);
 
 		if (this.isMouseOver(mouseX, mouseY)) {
-			this.screen.renderTooltip(matrices, Text.literal("Click to stop all sounds"), this.getX(), this.getY());
+			drawableHelper.method_51438(Screens.getTextRenderer(this.screen), Text.literal("Click to stop all sounds"), this.getX(), this.getY());
 		}
 	}
 
