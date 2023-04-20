@@ -251,17 +251,17 @@ allprojects {
 
 	[jar, sourcesJar].each {
 		it.from(rootProject.file("LICENSE")) {
-			rename { "${it}-${project.archivesBaseName}"}
+			rename { "${it}-${project.base.archivesName.get()}"}
 		}
 	}
 
 	if (file("src/client").exists() && !file("src/main").exists()) {
 		remapJar {
-			additionalClientOnlyEntries.add("LICENSE-${project.archivesBaseName}")
+			additionalClientOnlyEntries.add("LICENSE-${project.base.archivesName.get()}")
 		}
 
 		remapSourcesJar {
-			additionalClientOnlyEntries.add("LICENSE-${project.archivesBaseName}")
+			additionalClientOnlyEntries.add("LICENSE-${project.base.archivesName.get()}")
 		}
 	}
 
