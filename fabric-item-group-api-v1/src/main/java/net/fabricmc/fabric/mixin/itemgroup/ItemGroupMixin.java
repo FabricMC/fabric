@@ -55,7 +55,7 @@ abstract class ItemGroupMixin implements FabricItemGroup {
 	@Inject(method = "updateEntries", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemGroup;reloadSearchProvider()V"))
 	public void getStacks(ItemGroup.DisplayContext context, CallbackInfo ci) {
 		final ItemGroup self = (ItemGroup) (Object) this;
-		final RegistryKey<ItemGroup> registryKey = Registries.field_44687.getKey(self).orElseThrow(() -> new IllegalStateException("Unregistered item group : " + self));
+		final RegistryKey<ItemGroup> registryKey = Registries.ITEM_GROUP.getKey(self).orElseThrow(() -> new IllegalStateException("Unregistered item group : " + self));
 
 		// Do not modify special item groups (except Operator Blocks) at all.
 		// Special item groups include Saved Hotbars, Search, and Survival Inventory.

@@ -58,8 +58,8 @@ public class ItemGroupsMixin {
 
 		int count = 0;
 
-		for (RegistryKey<ItemGroup> registryKey : Registries.field_44687.getKeys()) {
-			final ItemGroup itemGroup = Registries.field_44687.getOrThrow(registryKey);
+		for (RegistryKey<ItemGroup> registryKey : Registries.ITEM_GROUP.getKeys()) {
+			final ItemGroup itemGroup = Registries.ITEM_GROUP.getOrThrow(registryKey);
 			final FabricItemGroup fabricItemGroup = (FabricItemGroup) itemGroup;
 
 			if (vanillaGroups.contains(registryKey)) {
@@ -82,8 +82,8 @@ public class ItemGroupsMixin {
 		record ItemGroupPosition(ItemGroup.Row row, int column, int page) { }
 		var map = new HashMap<ItemGroupPosition, String>();
 
-		for (RegistryKey<ItemGroup> registryKey : Registries.field_44687.getKeys()) {
-			final ItemGroup itemGroup = Registries.field_44687.getOrThrow(registryKey);
+		for (RegistryKey<ItemGroup> registryKey : Registries.ITEM_GROUP.getKeys()) {
+			final ItemGroup itemGroup = Registries.ITEM_GROUP.getOrThrow(registryKey);
 			final FabricItemGroup fabricItemGroup = (FabricItemGroup) itemGroup;
 			final String displayName = itemGroup.getDisplayName().getString();
 			final var position = new ItemGroupPosition(itemGroup.getRow(), itemGroup.getColumn(), fabricItemGroup.getPage());

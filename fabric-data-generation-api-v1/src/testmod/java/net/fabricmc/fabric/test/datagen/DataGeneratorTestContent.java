@@ -45,7 +45,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static Block BLOCK_WITH_VANILLA_LOOT_TABLE;
 	public static Block BLOCK_THAT_DROPS_NOTHING;
 
-	public static final RegistryKey<ItemGroup> SIMPLE_ITEM_GROUP = RegistryKey.of(RegistryKeys.CREATIVE_MODE_TAB, new Identifier(MOD_ID, "simple"));
+	public static final RegistryKey<ItemGroup> SIMPLE_ITEM_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, new Identifier(MOD_ID, "simple"));
 
 	@Override
 	public void onInitialize() {
@@ -57,7 +57,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 
 		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.add(SIMPLE_BLOCK));
 
-		Registry.register(Registries.field_44687, SIMPLE_ITEM_GROUP, FabricItemGroup.builder()
+		Registry.register(Registries.ITEM_GROUP, SIMPLE_ITEM_GROUP, FabricItemGroup.builder()
 				.icon(() -> new ItemStack(Items.DIAMOND_PICKAXE))
 				.displayName(Text.translatable("fabric-data-gen-api-v1-testmod.simple_item_group"))
 				.build());
