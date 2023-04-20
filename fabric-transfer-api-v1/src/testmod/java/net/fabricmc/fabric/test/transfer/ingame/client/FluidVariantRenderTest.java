@@ -76,8 +76,8 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 				renderY += 2;
 
 				for (Text line : tooltip) {
-					drawableHelper.method_51438(textRenderer, line, 4, renderY);
 					renderY += 10;
+					drawableHelper.method_51438(textRenderer, line, -8, renderY);
 				}
 			}
 		});

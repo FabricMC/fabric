@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.util.collection.DefaultedList;
 
@@ -41,6 +42,11 @@ public interface RecipeMixin<C extends Inventory> {
 	@Redirect(method = "getRemainder", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;hasRecipeRemainder()Z"))
 	private boolean hasStackRemainder(Item instance) {
 		return !RecipeRemainderHandler.REMAINDER_STACK.get().isEmpty();
+	}
+
+	@Redirect(method = "getRemainder", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getRecipeRemainder()Lnet/minecraft/item/Item;"))
+	private Item replaceGetRecipeRemainder(Item instance) {
+		return Items.AIR;
 	}
 
 	@Redirect(method = "getRemainder", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/collection/DefaultedList;set(ILjava/lang/Object;)Ljava/lang/Object;"))
