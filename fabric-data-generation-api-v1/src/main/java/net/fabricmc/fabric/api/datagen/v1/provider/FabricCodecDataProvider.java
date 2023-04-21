@@ -65,11 +65,18 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 		return this.write(writer, entries);
 	}
 
+	/**
+	 * Implement this method to register entries to generate.
+	 *
+	 * @param provider A consumer that accepts an {@link Identifier} and a value to register.
+	 */
 	protected abstract void configure(BiConsumer<Identifier, T> provider);
 
 	private JsonElement convert(Identifier id, T value) {
 		DataResult<JsonElement> dataResult = this.codec.encodeStart(JsonOps.INSTANCE, value);
-		return dataResult.result().orElseThrow(() -> new IllegalStateException("Invalid entry " + id));
+		return dataResult.get()
+				.mapRight(partial -> "Invalid entry %s: %s".formatted(id, partial.message()))
+				.orThrow();
 	}
 
 	private CompletableFuture<?> write(DataWriter writer, Map<Identifier, JsonElement> entries) {
