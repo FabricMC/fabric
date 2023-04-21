@@ -105,11 +105,12 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 			// Play the sound
 			location.world.playSound(null, location.pos, SoundEvents.BLOCK_COMPOSTER_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
 		} else if (increaseProbability > 0) {
-			boolean increaseSuccessful = location.world.getRandom().nextDouble() < increaseProbability;
+			BlockState state = location.getBlockState();
+			// Always increment on first insert (like vanilla).
+			boolean increaseSuccessful = state.get(ComposterBlock.LEVEL) == 0 || location.world.getRandom().nextDouble() < increaseProbability;
 
 			if (increaseSuccessful) {
 				// Mimic ComposterBlock#addToComposter logic.
-				BlockState state = location.getBlockState();
 				int newLevel = state.get(ComposterBlock.LEVEL) + 1;
 				BlockState newState = state.with(ComposterBlock.LEVEL, newLevel);
 				location.setBlockState(newState);
