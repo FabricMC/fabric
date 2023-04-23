@@ -36,11 +36,12 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.SimpleRegistry;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
@@ -134,8 +135,8 @@ public class RegistrySyncTest implements ModInitializer {
 		// Vanilla status effects don't have an entry for the int id 0, test we can handle this.
 		RegistryAttributeHolder.get(Registries.STATUS_EFFECT).addAttribute(RegistryAttribute.MODDED);
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-				dispatcher.register(ClientCommandManager.literal("remote_remap_error_test").executes(context -> {
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+				dispatcher.register(CommandManager.literal("remote_remap_error_test").executes(context -> {
 					Map<Identifier, Object2IntMap<Identifier>> registryData = Map.of(
 							RegistryKeys.BLOCK.getValue(), createFakeRegistryEntries(),
 							RegistryKeys.ITEM.getValue(), createFakeRegistryEntries()
@@ -144,7 +145,12 @@ public class RegistrySyncTest implements ModInitializer {
 					try {
 						RegistrySyncManager.checkRemoteRemap(registryData);
 					} catch (RemapException e) {
-						context.getSource().getPlayer().networkHandler.getConnection().disconnect(Objects.requireNonNull(e.getText()));
+						final ServerPlayerEntity player = context.getSource().getPlayer();
+
+						if (player != null ){
+							player.networkHandler.disconnect(Objects.requireNonNull(e.getText()));
+						}
+
 						return 1;
 					}
 
