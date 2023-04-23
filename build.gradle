@@ -10,8 +10,8 @@ plugins {
 	id "idea"
 	id "maven-publish"
 	id 'jacoco'
-	id "fabric-loom" version "1.1.8" apply false
-	id "com.diffplug.spotless" version "6.11.0"
+	id "fabric-loom" version "1.2.4" apply false
+	id "com.diffplug.spotless" version "6.18.0"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 	id "com.modrinth.minotaur" version "2.4.3"
@@ -224,7 +224,7 @@ allprojects {
 
 	checkstyle {
 		configFile = rootProject.file("checkstyle.xml")
-		toolVersion = "10.3.3"
+		toolVersion = "10.9.3"
 	}
 
 	tasks.withType(AbstractArchiveTask) {
@@ -251,17 +251,17 @@ allprojects {
 
 	[jar, sourcesJar].each {
 		it.from(rootProject.file("LICENSE")) {
-			rename { "${it}-${project.archivesBaseName}"}
+			rename { "${it}-${project.base.archivesName.get()}"}
 		}
 	}
 
 	if (file("src/client").exists() && !file("src/main").exists()) {
 		remapJar {
-			additionalClientOnlyEntries.add("LICENSE-${project.archivesBaseName}")
+			additionalClientOnlyEntries.add("LICENSE-${project.base.archivesName.get()}")
 		}
 
 		remapSourcesJar {
-			additionalClientOnlyEntries.add("LICENSE-${project.archivesBaseName}")
+			additionalClientOnlyEntries.add("LICENSE-${project.base.archivesName.get()}")
 		}
 	}
 
@@ -410,7 +410,7 @@ configurations {
 	productionRuntime {
 		extendsFrom configurations.minecraftLibraries
 		extendsFrom configurations.loaderLibraries
-		extendsFrom configurations.minecraftRuntimeOnlyLibraries
+		extendsFrom configurations.minecraftRuntimeLibraries
 	}
 	productionRuntimeServer
 }
@@ -422,7 +422,7 @@ dependencies {
 	productionRuntimeServer "net.fabricmc:fabric-installer:${project.installer_version}:server"
 }
 
-import net.fabricmc.loom.util.OperatingSystem
+import net.fabricmc.loom.util.Platform
 
 // This is very far beyond loom's API if you copy this, you're on your own.
 task runProductionAutoTestClient(type: JavaExec, dependsOn: [remapJar, remapTestmodJar]) {
@@ -444,7 +444,7 @@ task runProductionAutoTestClient(type: JavaExec, dependsOn: [remapJar, remapTest
 			"--gameDir", workingDir.absolutePath
 		)
 
-		if (OperatingSystem.CURRENT_OS == OperatingSystem.MAC_OS) {
+		if (Platform.CURRENT.operatingSystem.isMacOS()) {
 			jvmArgs(
 				"-XstartOnFirstThread"
 			)
