@@ -22,6 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ComparatorBlock;
+import net.minecraft.block.ComposterBlock;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.block.entity.ChiseledBookshelfBlockEntity;
 import net.minecraft.block.entity.FurnaceBlockEntity;
@@ -324,6 +325,33 @@ public class VanillaStorageTests {
 		});
 
 		context.assertTrue(comparatorCount.intValue() == 6, "Expected exactly 6 comparators");
+
+		context.complete();
+	}
+
+	/**
+	 * Regression test for <a href="https://github.com/FabricMC/fabric/issues/3017">composters not always incrementing their level on the first insert</a>.
+	 */
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void testComposterFirstInsert(TestContext context) {
+		BlockPos pos = new BlockPos(0, 1, 0);
+
+		ItemVariant carrot = ItemVariant.of(Items.CARROT);
+
+		for (int i = 0; i < 200; ++i) { // Run many times as this can be random.
+			context.setBlockState(pos, Blocks.COMPOSTER.getDefaultState());
+			Storage<ItemVariant> storage = ItemStorage.SIDED.find(context.getWorld(), context.getAbsolutePos(pos), Direction.UP);
+
+			try (Transaction tx = Transaction.openOuter()) {
+				if (storage.insert(carrot, 1, tx) != 1) {
+					context.throwPositionedException("Carrot should have been inserted", pos);
+				}
+
+				tx.commit();
+			}
+
+			context.checkBlockState(pos, state -> state.get(ComposterBlock.LEVEL) == 1, () -> "Composter should have level 1");
+		}
 
 		context.complete();
 	}
