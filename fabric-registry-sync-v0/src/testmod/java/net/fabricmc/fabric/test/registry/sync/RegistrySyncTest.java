@@ -147,7 +147,7 @@ public class RegistrySyncTest implements ModInitializer {
 					} catch (RemapException e) {
 						final ServerPlayerEntity player = context.getSource().getPlayer();
 
-						if (player != null ){
+						if (player != null) {
 							player.networkHandler.disconnect(Objects.requireNonNull(e.getText()));
 						}
 
