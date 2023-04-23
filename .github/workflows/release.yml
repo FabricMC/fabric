@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     container:
-      image: eclipse-temurin:18-jdk
+      image: eclipse-temurin:20-jdk
       options: --user root
     steps:
       - run: apt update && apt install git -y && git --version
