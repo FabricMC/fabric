@@ -47,12 +47,10 @@ import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
-import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistryPacketHandler;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
 public class RegistrySyncTest implements ModInitializer {
@@ -72,23 +70,11 @@ public class RegistrySyncTest implements ModInitializer {
 		}
 	};
 
-	public static final Identifier PACKET_CHECK_NBT = new Identifier("fabric-registry-sync-v0-v1-testmod:packet_check/nbt");
-	public static final RegistryPacketHandler NBT_PACKET_HANDLER = new NbtRegistryPacketHandler() {
-		@Override
-		public Identifier getPacketId() {
-			return PACKET_CHECK_NBT;
-		}
-	};
-
-	public static final Identifier PACKET_CHECK_COMPARE = new Identifier("fabric-registry-sync-v0-v1-testmod:packet_check/compare");
-
 	@Override
 	public void onInitialize() {
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap(true, null);
-			NBT_PACKET_HANDLER.sendPacket(handler.player, map);
 			DIRECT_PACKET_HANDLER.sendPacket(handler.player, map);
-			sender.sendPacket(PACKET_CHECK_COMPARE, PacketByteBufs.empty());
 		});
 
 		if (REGISTER_BLOCKS) {
