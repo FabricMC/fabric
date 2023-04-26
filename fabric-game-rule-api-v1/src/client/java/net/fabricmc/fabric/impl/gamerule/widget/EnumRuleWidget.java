@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Locale;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
@@ -60,11 +60,11 @@ public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen
 	}
 
 	@Override
-	public void render(DrawableHelper drawableHelper, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+	public void render(DrawContext drawContext, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 		// FIXME: Param names nightmare
-		this.drawName(drawableHelper, y, x);
+		this.drawName(drawContext, y, x);
 
 		this.buttonWidget.setPosition(x + entryWidth - 89, y);
-		this.buttonWidget.render(drawableHelper, mouseX, mouseY, tickDelta);
+		this.buttonWidget.render(drawContext, mouseX, mouseY, tickDelta);
 	}
 }

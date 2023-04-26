@@ -23,14 +23,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.item.TooltipData;
 
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 
-@Mixin(DrawableHelper.class)
-public class DrawableHelperMixin {
+@Mixin(DrawContext.class)
+public class DrawContextMixin {
 	// Synthetic lambda body in renderTooltip
 	@Inject(at = @At("HEAD"), method = "method_51442(Ljava/util/List;Lnet/minecraft/client/item/TooltipData;)V", cancellable = true)
 	private static void injectRenderTooltipLambda(List<TooltipComponent> components, TooltipData data, CallbackInfo ci) {

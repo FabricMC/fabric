@@ -26,14 +26,13 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -47,21 +46,21 @@ public final class MiningLevelTest implements ModInitializer {
 
 	/// Tagged blocks
 	// sword + dynamic mining level tag
-	public static final Block NEEDS_NETHERITE_SWORD = new Block(AbstractBlock.Settings.of(Material.GENERIC).strength(2, 3).requiresTool());
+	public static final Block NEEDS_NETHERITE_SWORD = new Block(AbstractBlock.Settings.of().strength(2, 3).requiresTool());
 	// sword + vanilla mining level tag
-	public static final Block NEEDS_STONE_SWORD = new Block(AbstractBlock.Settings.of(Material.GENERIC).strength(2, 3).requiresTool());
+	public static final Block NEEDS_STONE_SWORD = new Block(AbstractBlock.Settings.of().strength(2, 3).requiresTool());
 	// any sword
-	public static final Block NEEDS_ANY_SWORD = new Block(AbstractBlock.Settings.of(Material.GENERIC).strength(2, 3).requiresTool());
+	public static final Block NEEDS_ANY_SWORD = new Block(AbstractBlock.Settings.of().strength(2, 3).requiresTool());
 	// shears
-	public static final Block NEEDS_SHEARS = new Block(AbstractBlock.Settings.of(Material.GENERIC).strength(2, 3).requiresTool());
+	public static final Block NEEDS_SHEARS = new Block(AbstractBlock.Settings.of().strength(2, 3).requiresTool());
 	// vanilla mineable tag + dynamic mining level tag
-	public static final Block NEEDS_NETHERITE_PICKAXE = new Block(AbstractBlock.Settings.of(Material.GENERIC).strength(2, 3).requiresTool());
+	public static final Block NEEDS_NETHERITE_PICKAXE = new Block(AbstractBlock.Settings.of().strength(2, 3).requiresTool());
 	// vanilla mineable tag, requires tool (this type of block doesn't exist in vanilla)
-	public static final Block NEEDS_AXE = new Block(AbstractBlock.Settings.of(Material.GENERIC).strength(2, 3).requiresTool());
+	public static final Block NEEDS_AXE = new Block(AbstractBlock.Settings.of().strength(2, 3).requiresTool());
 	// vanilla mineable tag, requires tool (this type of block doesn't exist in vanilla)
-	public static final Block NEEDS_HOE = new Block(AbstractBlock.Settings.of(Material.GENERIC).strength(2, 3).requiresTool());
+	public static final Block NEEDS_HOE = new Block(AbstractBlock.Settings.of().strength(2, 3).requiresTool());
 	// vanilla mineable tag, requires tool (this type of block doesn't exist in vanilla)
-	public static final Block NEEDS_SHOVEL = new Block(AbstractBlock.Settings.of(Material.GENERIC).strength(2, 3).requiresTool());
+	public static final Block NEEDS_SHOVEL = new Block(AbstractBlock.Settings.of().strength(2, 3).requiresTool());
 
 	@Override
 	public void onInitialize() {

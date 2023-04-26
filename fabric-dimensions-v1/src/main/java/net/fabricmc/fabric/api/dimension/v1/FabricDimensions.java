@@ -55,7 +55,7 @@ public final class FabricDimensions {
 	@Nullable
 	public static <E extends Entity> E teleport(E teleported, ServerWorld destination, TeleportTarget target) {
 		Preconditions.checkNotNull(target, "A target must be provided");
-		Preconditions.checkState(!teleported.world.isClient, "Entities can only be teleported on the server side");
+		Preconditions.checkState(!teleported.getWorld().isClient, "Entities can only be teleported on the server side");
 
 		return FabricDimensionInternals.changeDimension(teleported, destination, target);
 	}

@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.networking.channeltest;
 
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -58,16 +58,16 @@ final class ChannelScreen extends Screen {
 	}
 
 	@Override
-	public void render(DrawableHelper drawableHelper, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(drawableHelper);
-		this.channelList.render(drawableHelper, mouseX, mouseY, delta);
-		super.render(drawableHelper, mouseX, mouseY, delta);
+	public void render(DrawContext drawContext, int mouseX, int mouseY, float delta) {
+		this.renderBackgroundTexture(drawContext);
+		this.channelList.render(drawContext, mouseX, mouseY, delta);
+		super.render(drawContext, mouseX, mouseY, delta);
 
 		if (this.s2cButton.active && this.c2sButton.active) {
 			final Text clickMe = Text.literal("Click S2C or C2S to view supported channels").formatted(Formatting.YELLOW);
 
 			final int textWidth = this.textRenderer.getWidth(clickMe);
-			drawableHelper.method_51438(
+			drawContext.drawTooltip(
 					this.textRenderer,
 					clickMe,
 					(int) (this.width / 2.0F - (textWidth / 2.0F)),

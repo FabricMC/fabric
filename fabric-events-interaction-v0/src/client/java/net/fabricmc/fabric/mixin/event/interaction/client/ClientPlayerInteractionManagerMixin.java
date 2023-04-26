@@ -97,7 +97,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
 
 		if (player.isSpectator()) return; // vanilla spectator check happens later, repeat it before the event to avoid false invocations
 
-		ActionResult result = UseBlockCallback.EVENT.invoker().interact(player, player.world, hand, blockHitResult);
+		ActionResult result = UseBlockCallback.EVENT.invoker().interact(player, player.getWorld(), hand, blockHitResult);
 
 		if (result != ActionResult.PASS) {
 			if (result == ActionResult.SUCCESS) {
@@ -113,14 +113,14 @@ public abstract class ClientPlayerInteractionManagerMixin {
 	public void interactItem(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
 		// hook interactBlock between the spectator check and sending the first packet to invoke the use item event first
 		// this needs to be in interactBlock to avoid sending a packet in line with the event javadoc
-		TypedActionResult<ItemStack> result = UseItemCallback.EVENT.invoker().interact(player, player.world, hand);
+		TypedActionResult<ItemStack> result = UseItemCallback.EVENT.invoker().interact(player, player.getWorld(), hand);
 
 		if (result.getResult() != ActionResult.PASS) {
 			if (result.getResult() == ActionResult.SUCCESS) {
 				// send the move packet like vanilla to ensure the position+view vectors are accurate
 				networkHandler.sendPacket(new PlayerMoveC2SPacket.Full(player.getX(), player.getY(), player.getZ(), player.getYaw(), player.getPitch(), player.isOnGround()));
 				// send interaction packet to the server with a new sequentially assigned id
-				sendSequencedPacket((ClientWorld) player.world, id -> new PlayerInteractItemC2SPacket(hand, id));
+				sendSequencedPacket((ClientWorld) player.getWorld(), id -> new PlayerInteractItemC2SPacket(hand, id));
 			}
 
 			info.setReturnValue(result.getResult());

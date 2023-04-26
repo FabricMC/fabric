@@ -61,7 +61,7 @@ abstract class LivingEntityMixin {
 	private void onEntityKilledOther(DamageSource source, CallbackInfo ci, Entity attacker) {
 		// FIXME: Cannot use shadowed fields from supermixins - needs a fix so people can use fabric api in a dev environment even though this is fine in this repo and prod.
 		//  A temporary fix is to just cast the mixin to LivingEntity and access the world field with a few ugly casts.
-		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity((ServerWorld) ((LivingEntity) (Object) this).world, attacker, (LivingEntity) (Object) this);
+		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity((ServerWorld) ((LivingEntity) (Object) this).getWorld(), attacker, (LivingEntity) (Object) this);
 	}
 
 	@Inject(method = "onDeath", at = @At(value = "INVOKE", target = "net/minecraft/world/World.sendEntityStatus(Lnet/minecraft/entity/Entity;B)V"))
@@ -99,7 +99,7 @@ abstract class LivingEntityMixin {
 	@Dynamic("method_18405: Synthetic lambda body for Optional.map in isSleepingInBed")
 	@Inject(method = "method_18405", at = @At("RETURN"), cancellable = true)
 	private void onIsSleepingInBed(BlockPos sleepingPos, CallbackInfoReturnable<Boolean> info) {
-		BlockState bedState = ((LivingEntity) (Object) this).world.getBlockState(sleepingPos);
+		BlockState bedState = ((LivingEntity) (Object) this).getWorld().getBlockState(sleepingPos);
 		ActionResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, bedState, info.getReturnValueZ());
 
 		if (result != ActionResult.PASS) {

@@ -16,14 +16,12 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.block;
 
-import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MapColor;
-import net.minecraft.block.Material;
 import net.minecraft.entity.EntityType;
 import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.sound.BlockSoundGroup;
@@ -44,23 +42,18 @@ import net.fabricmc.fabric.mixin.object.builder.AbstractBlockSettingsAccessor;
  * FabricBlockSettings.of().
  */
 public class FabricBlockSettings extends AbstractBlock.Settings {
-	protected FabricBlockSettings(Material material, MapColor color) {
-		super(material, color);
-	}
-
-	protected FabricBlockSettings(Material material, Function<BlockState, MapColor> mapColorProvider) {
-		super(material, mapColorProvider);
+	protected FabricBlockSettings() {
+		super();
 	}
 
 	protected FabricBlockSettings(AbstractBlock.Settings settings) {
-		super(((AbstractBlockSettingsAccessor) settings).getMaterial(), ((AbstractBlockSettingsAccessor) settings).getMapColorProvider());
+		this();
 		// Mostly Copied from vanilla's copy method
 		// Note: If new methods are added to Block settings, an accessor must be added here
 		AbstractBlockSettingsAccessor thisAccessor = (AbstractBlockSettingsAccessor) this;
 		AbstractBlockSettingsAccessor otherAccessor = (AbstractBlockSettingsAccessor) settings;
 
 		// Copied in vanilla: sorted by vanilla copy order
-		thisAccessor.setMaterial(otherAccessor.getMaterial());
 		this.hardness(otherAccessor.getHardness());
 		this.resistance(otherAccessor.getResistance());
 		this.collidable(otherAccessor.getCollidable());
@@ -89,20 +82,8 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		this.emissiveLighting(otherAccessor.getEmissiveLightingPredicate());
 	}
 
-	public static FabricBlockSettings of(Material material) {
-		return of(material, material.getColor());
-	}
-
-	public static FabricBlockSettings of(Material material, MapColor color) {
-		return new FabricBlockSettings(material, color);
-	}
-
-	public static FabricBlockSettings of(Material material, DyeColor color) {
-		return new FabricBlockSettings(material, color.getMapColor());
-	}
-
-	public static FabricBlockSettings of(Material material, Function<BlockState, MapColor> mapColor) {
-		return new FabricBlockSettings(material, mapColor);
+	public static FabricBlockSettings of() {
+		return new FabricBlockSettings();
 	}
 
 	public static FabricBlockSettings copyOf(AbstractBlock block) {

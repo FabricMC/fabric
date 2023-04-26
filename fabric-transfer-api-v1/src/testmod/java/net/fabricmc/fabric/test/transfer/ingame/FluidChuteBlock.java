@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -42,7 +41,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 
 public class FluidChuteBlock extends Block implements BlockEntityProvider {
 	public FluidChuteBlock() {
-		super(Settings.of(Material.GENERIC));
+		super(Settings.of());
 	}
 
 	private static final VoxelShape SHAPE = VoxelShapes.cuboid(

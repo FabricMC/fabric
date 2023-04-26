@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
@@ -160,7 +159,7 @@ public class RegistrySyncTest implements ModInitializer {
 
 	private static void registerBlocks(String namespace, int amount, int startingId) {
 		for (int i = 0; i < amount; i++) {
-			Block block = new Block(AbstractBlock.Settings.of(Material.GENERIC));
+			Block block = new Block(AbstractBlock.Settings.of());
 			Registry.register(Registries.BLOCK, new Identifier(namespace, "block_" + (i + startingId)), block);
 
 			if (REGISTER_ITEMS) {

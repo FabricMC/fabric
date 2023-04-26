@@ -19,7 +19,6 @@ package net.fabricmc.fabric.test.datagen;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -49,11 +48,11 @@ public class DataGeneratorTestContent implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		SIMPLE_BLOCK = createBlock("simple_block", true, AbstractBlock.Settings.of(Material.GENERIC));
-		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false, AbstractBlock.Settings.of(Material.GENERIC));
-		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false, AbstractBlock.Settings.of(Material.GENERIC));
-		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, AbstractBlock.Settings.of(Material.GENERIC).dropsLike(Blocks.STONE));
-		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, AbstractBlock.Settings.of(Material.GENERIC).dropsNothing());
+		SIMPLE_BLOCK = createBlock("simple_block", true, AbstractBlock.Settings.of());
+		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false, AbstractBlock.Settings.of());
+		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false, AbstractBlock.Settings.of());
+		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, AbstractBlock.Settings.of().dropsLike(Blocks.STONE));
+		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, AbstractBlock.Settings.of().dropsNothing());
 
 		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.add(SIMPLE_BLOCK));
 

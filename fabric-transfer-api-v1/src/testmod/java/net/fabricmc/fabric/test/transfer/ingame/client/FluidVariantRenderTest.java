@@ -23,7 +23,7 @@ import org.joml.Matrix4f;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
@@ -50,7 +50,7 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 	public void onInitializeClient() {
 		FluidVariantAttributes.enableColoredVanillaFluidNames();
 
-		HudRenderCallback.EVENT.register((drawableHelper, tickDelta) -> {
+		HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
 			PlayerEntity player = MinecraftClient.getInstance().player;
 			if (player == null) return;
 
@@ -61,12 +61,12 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 
 			for (FluidVariant variant : variants) {
 				Sprite[] sprites = FluidVariantRendering.getSprites(variant);
-				int color = FluidVariantRendering.getColor(variant, player.world, player.getBlockPos());
+				int color = FluidVariantRendering.getColor(variant, player.getWorld(), player.getBlockPos());
 
 				if (sprites != null) {
-					drawFluidInGui(drawableHelper, sprites[0], color, 0, renderY);
+					drawFluidInGui(drawContext, sprites[0], color, 0, renderY);
 					renderY += 16;
-					drawFluidInGui(drawableHelper, sprites[1], color, 0, renderY);
+					drawFluidInGui(drawContext, sprites[1], color, 0, renderY);
 					renderY += 16;
 				}
 
@@ -77,13 +77,13 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 
 				for (Text line : tooltip) {
 					renderY += 10;
-					drawableHelper.method_51438(textRenderer, line, -8, renderY);
+					drawContext.drawTooltip(textRenderer, line, -8, renderY);
 				}
 			}
 		});
 	}
 
-	private static void drawFluidInGui(DrawableHelper drawableHelper, Sprite sprite, int color, int i, int j) {
+	private static void drawFluidInGui(DrawContext drawContext, Sprite sprite, int color, int i, int j) {
 		if (sprite == null) return;
 
 		RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
@@ -105,7 +105,7 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 		float v0 = sprite.getMinV();
 		float u1 = sprite.getMaxU();
 		float v1 = sprite.getMaxV();
-		Matrix4f model = drawableHelper.method_51448().peek().getPositionMatrix();
+		Matrix4f model = drawContext.getMatrices().peek().getPositionMatrix();
 		bufferBuilder.vertex(model, x0, y1, z).color(r, g, b, 1).texture(u0, v1).next();
 		bufferBuilder.vertex(model, x1, y1, z).color(r, g, b, 1).texture(u1, v1).next();
 		bufferBuilder.vertex(model, x1, y0, z).color(r, g, b, 1).texture(u1, v0).next();

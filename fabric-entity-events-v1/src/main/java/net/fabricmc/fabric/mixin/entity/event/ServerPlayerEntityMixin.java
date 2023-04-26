@@ -35,6 +35,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Property;
@@ -42,7 +43,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
@@ -54,7 +54,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 @Mixin(ServerPlayerEntity.class)
 abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	@Shadow
-	public abstract ServerWorld getWorld();
+	public abstract ServerWorld method_51469();
 
 	/**
 	 * Minecraft by default does not call Entity#onKilledOther for a ServerPlayerEntity being killed.
@@ -67,8 +67,8 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 
 		// If the damage source that killed the player was an entity, then fire the event.
 		if (attacker != null) {
-			attacker.onKilledOther(this.getWorld(), (ServerPlayerEntity) (Object) this);
-			ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(this.getWorld(), attacker, (ServerPlayerEntity) (Object) this);
+			attacker.onKilledOther(this.method_51469(), (ServerPlayerEntity) (Object) this);
+			ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(this.method_51469(), attacker, (ServerPlayerEntity) (Object) this);
 		}
 	}
 
@@ -83,7 +83,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	 */
 	@Inject(method = "worldChanged(Lnet/minecraft/server/world/ServerWorld;)V", at = @At("TAIL"))
 	private void afterWorldChanged(ServerWorld origin, CallbackInfo ci) {
-		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.invoker().afterChangeWorld((ServerPlayerEntity) (Object) this, origin, this.getWorld());
+		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.invoker().afterChangeWorld((ServerPlayerEntity) (Object) this, origin, this.method_51469());
 	}
 
 	@Inject(method = "copyFrom", at = @At("TAIL"))
