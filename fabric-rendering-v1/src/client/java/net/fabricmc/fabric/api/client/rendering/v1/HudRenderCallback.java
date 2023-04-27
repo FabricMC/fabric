@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -31,8 +31,8 @@ public interface HudRenderCallback {
 	/**
 	 * Called after rendering the whole hud, which is displayed in game, in a world.
 	 *
-	 * @param drawableHelper the {@link DrawableHelper} instance
+	 * @param drawContext the {@link DrawContext} instance
 	 * @param tickDelta Progress for linearly interpolating between the previous and current game state
 	 */
-	void onHudRender(DrawableHelper drawableHelper, float tickDelta);
+	void onHudRender(DrawContext drawContext, float tickDelta);
 }

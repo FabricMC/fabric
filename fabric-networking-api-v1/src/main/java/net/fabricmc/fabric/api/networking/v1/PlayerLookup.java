@@ -25,6 +25,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.EntityTrackingListener;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.world.ThreadedAnvilChunkStorage;
@@ -33,7 +34,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.chunk.ChunkManager;
-import net.minecraft.server.world.EntityTrackingListener;
 
 import net.fabricmc.fabric.mixin.networking.accessor.EntityTrackerAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ThreadedAnvilChunkStorageAccessor;
@@ -109,7 +109,7 @@ public final class PlayerLookup {
 	 */
 	public static Collection<ServerPlayerEntity> tracking(Entity entity) {
 		Objects.requireNonNull(entity, "Entity cannot be null");
-		ChunkManager manager = entity.world.getChunkManager();
+		ChunkManager manager = entity.getWorld().getChunkManager();
 
 		if (manager instanceof ServerChunkManager) {
 			ThreadedAnvilChunkStorage storage = ((ServerChunkManager) manager).threadedAnvilChunkStorage;

@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.test.screen;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
@@ -34,12 +34,12 @@ class StopSoundButton extends PressableWidget {
 	}
 
 	@Override
-	public void render(DrawableHelper drawableHelper, int mouseX, int mouseY, float tickDelta) {
+	public void render(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
 		// Render the armor icon to test
-		drawableHelper.drawTexture(ScreenTests.GUI_ICONS_TEXTURE, this.getX(), this.getY(), this.width, this.height, 43, 27, 9, 9, 256, 256);
+		drawContext.drawTexture(ScreenTests.GUI_ICONS_TEXTURE, this.getX(), this.getY(), this.width, this.height, 43, 27, 9, 9, 256, 256);
 
 		if (this.isMouseOver(mouseX, mouseY)) {
-			drawableHelper.method_51438(Screens.getTextRenderer(this.screen), Text.literal("Click to stop all sounds"), this.getX(), this.getY());
+			drawContext.drawTooltip(Screens.getTextRenderer(this.screen), Text.literal("Click to stop all sounds"), this.getX(), this.getY());
 		}
 	}
 

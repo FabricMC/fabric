@@ -48,14 +48,14 @@ public class HudAndShaderTest implements ClientModInitializer {
 			context.register(id, VertexFormats.POSITION, program -> testShader = program);
 		});
 
-		HudRenderCallback.EVENT.register((drawableHelper, tickDelta) -> {
+		HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
 			MinecraftClient client = MinecraftClient.getInstance();
 			Window window = client.getWindow();
 			int x = window.getScaledWidth() - 15;
 			int y = window.getScaledHeight() - 15;
 			RenderSystem.setShader(() -> testShader);
 			RenderSystem.setShaderColor(0f, 1f, 0f, 1f);
-			Matrix4f positionMatrix = drawableHelper.method_51448().peek().getPositionMatrix();
+			Matrix4f positionMatrix = drawContext.getMatrices().peek().getPositionMatrix();
 			BufferBuilder buffer = Tessellator.getInstance().getBuffer();
 			buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
 			buffer.vertex(positionMatrix, x, y, 50).next();

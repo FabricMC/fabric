@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -42,18 +42,18 @@ abstract class GameRendererMixin {
 	@Unique
 	private Screen renderingScreen;
 
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawableHelper;IIF)V"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-	private void onBeforeRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, MatrixStack matrixStack, DrawableHelper drawableHelper) {
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+	private void onBeforeRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, MatrixStack matrixStack, DrawContext drawContext) {
 		// Store the screen in a variable in case someone tries to change the screen during this before render event.
 		// If someone changes the screen, the after render event will likely have class cast exceptions or an NPE.
 		this.renderingScreen = this.client.currentScreen;
-		ScreenEvents.beforeRender(this.renderingScreen).invoker().beforeRender(this.renderingScreen, drawableHelper, mouseX, mouseY, tickDelta);
+		ScreenEvents.beforeRender(this.renderingScreen).invoker().beforeRender(this.renderingScreen, drawContext, mouseX, mouseY, tickDelta);
 	}
 
 	// This injection should end up in the try block so exceptions are caught
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawableHelper;IIF)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-	private void onAfterRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, MatrixStack matrixStack, DrawableHelper drawableHelper) {
-		ScreenEvents.afterRender(this.renderingScreen).invoker().afterRender(this.renderingScreen, drawableHelper, mouseX, mouseY, tickDelta);
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+	private void onAfterRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, MatrixStack matrixStack, DrawContext drawContext) {
+		ScreenEvents.afterRender(this.renderingScreen).invoker().afterRender(this.renderingScreen, drawContext, mouseX, mouseY, tickDelta);
 		// Finally set the currently rendering screen to null
 		this.renderingScreen = null;
 	}

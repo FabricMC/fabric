@@ -24,10 +24,13 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.entity.Entity;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -36,9 +39,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionOptions;
@@ -75,7 +75,7 @@ public class FabricDimensionTest implements ModInitializer {
 			Entity entity = COW.create(overworld);
 
 			if (entity == null) throw new AssertionError("Could not create entity!");
-			if (!entity.world.getRegistryKey().equals(World.OVERWORLD)) throw new AssertionError("Entity starting world isn't the overworld");
+			if (!entity.getWorld().getRegistryKey().equals(World.OVERWORLD)) throw new AssertionError("Entity starting world isn't the overworld");
 
 			TeleportTarget target = new TeleportTarget(Vec3d.ZERO, new Vec3d(1, 1, 1), 45f, 60f);
 
@@ -83,7 +83,7 @@ public class FabricDimensionTest implements ModInitializer {
 
 			if (teleported == null) throw new AssertionError("Entity didn't teleport");
 
-			if (!teleported.world.getRegistryKey().equals(WORLD_KEY)) throw new AssertionError("Target world not reached.");
+			if (!teleported.getWorld().getRegistryKey().equals(WORLD_KEY)) throw new AssertionError("Target world not reached.");
 
 			if (!teleported.getPos().equals(target.position)) throw new AssertionError("Target Position not reached.");
 		});
@@ -119,14 +119,14 @@ public class FabricDimensionTest implements ModInitializer {
 			return 1;
 		}
 
-		ServerWorld serverWorld = player.getWorld();
+		ServerWorld serverWorld = player.method_51469();
 		ServerWorld modWorld = getModWorld(context);
 
 		if (serverWorld != modWorld) {
 			TeleportTarget target = new TeleportTarget(new Vec3d(0.5, 101, 0.5), Vec3d.ZERO, 0, 0);
 			FabricDimensions.teleport(player, modWorld, target);
 
-			if (player.world != modWorld) {
+			if (player.getWorld() != modWorld) {
 				throw new CommandException(Text.literal("Teleportation failed!"));
 			}
 
@@ -150,7 +150,7 @@ public class FabricDimensionTest implements ModInitializer {
 		}
 
 		TeleportTarget target = new TeleportTarget(player.getPos().add(5, 0, 0), player.getVelocity(), player.getYaw(), player.getPitch());
-		FabricDimensions.teleport(player, (ServerWorld) player.world, target);
+		FabricDimensions.teleport(player, (ServerWorld) player.getWorld(), target);
 
 		return 1;
 	}
@@ -163,7 +163,7 @@ public class FabricDimensionTest implements ModInitializer {
 			return 1;
 		}
 
-		Entity entity = player.world
+		Entity entity = player.getWorld()
 				.getOtherEntities(player, player.getBoundingBox().expand(100, 100, 100))
 				.stream()
 				.findFirst()
@@ -175,7 +175,7 @@ public class FabricDimensionTest implements ModInitializer {
 		}
 
 		TeleportTarget target = new TeleportTarget(player.getPos(), player.getVelocity(), player.getYaw(), player.getPitch());
-		FabricDimensions.teleport(entity, (ServerWorld) entity.world, target);
+		FabricDimensions.teleport(entity, (ServerWorld) entity.getWorld(), target);
 
 		return 1;
 	}

@@ -30,8 +30,8 @@ public final class FabricDimensionInternals {
 
 	@SuppressWarnings("unchecked")
 	public static <E extends Entity> E changeDimension(E teleported, ServerWorld dimension, TeleportTarget target) {
-		Preconditions.checkArgument(!teleported.world.isClient, "Entities can only be teleported on the server side");
-		Preconditions.checkArgument(Thread.currentThread() == ((ServerWorld) teleported.world).getServer().getThread(), "Entities must be teleported from the main server thread");
+		Preconditions.checkArgument(!teleported.getWorld().isClient, "Entities can only be teleported on the server side");
+		Preconditions.checkArgument(Thread.currentThread() == ((ServerWorld) teleported.getWorld()).getServer().getThread(), "Entities must be teleported from the main server thread");
 
 		try {
 			((Teleportable) teleported).fabric_setCustomTeleportTarget(target);

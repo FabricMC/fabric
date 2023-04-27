@@ -20,9 +20,9 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.class_8514;
 import net.minecraft.registry.tag.GameEventTags;
 import net.minecraft.world.event.GameEvent;
+import net.minecraft.world.event.Vibrations;
 
 /**
  * Provides a method for registering sculk sensor frequencies.
@@ -52,7 +52,7 @@ public final class SculkSensorFrequencyRegistry {
 			throw new IllegalArgumentException("Attempted to register Sculk Sensor frequency for event "+event.getId()+" with frequency "+frequency+". Sculk Sensor frequencies must be between 1 and 15 inclusive.");
 		}
 
-		final Object2IntOpenHashMap<GameEvent> map = (Object2IntOpenHashMap<GameEvent>) class_8514.field_44639;
+		final Object2IntOpenHashMap<GameEvent> map = (Object2IntOpenHashMap<GameEvent>) Vibrations.FREQUENCIES;
 		int replaced = map.put(event, frequency);
 
 		if (replaced != 0) {

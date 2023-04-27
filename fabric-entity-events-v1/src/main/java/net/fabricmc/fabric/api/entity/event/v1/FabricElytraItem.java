@@ -54,7 +54,7 @@ public interface FabricElytraItem {
 	default void doVanillaElytraTick(LivingEntity entity, ItemStack chestStack) {
 		int nextRoll = entity.getRoll() + 1;
 
-		if (!entity.world.isClient && nextRoll % 10 == 0) {
+		if (!entity.getWorld().isClient && nextRoll % 10 == 0) {
 			if ((nextRoll / 10) % 2 == 0) {
 				chestStack.damage(1, entity, p -> p.sendEquipmentBreakStatus(EquipmentSlot.CHEST));
 			}
