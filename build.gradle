@@ -280,6 +280,7 @@ allprojects {
 		input = testmodJar.archiveFile
 		archiveClassifier = "testmod"
 		addNestedDependencies = false
+		includesClientOnlyClasses = true
 		clientOnlySourceSetName = sourceSets.testmodClient.name
 	}
 	build.dependsOn remapTestmodJar

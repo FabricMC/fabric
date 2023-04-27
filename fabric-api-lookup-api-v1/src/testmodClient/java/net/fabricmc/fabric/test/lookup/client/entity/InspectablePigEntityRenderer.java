@@ -21,10 +21,6 @@ import net.minecraft.client.render.entity.PigEntityRenderer;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
-@Environment(EnvType.CLIENT)
 public class InspectablePigEntityRenderer extends PigEntityRenderer {
 	private static final Identifier TEXTURE = new Identifier("missingno");
 

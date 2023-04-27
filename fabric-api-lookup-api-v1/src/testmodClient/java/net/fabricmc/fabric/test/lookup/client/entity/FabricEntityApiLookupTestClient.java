@@ -16,12 +16,9 @@
 
 package net.fabricmc.fabric.test.lookup.client.entity;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.test.lookup.entity.FabricEntityApiLookupTest;
 
-@Environment(EnvType.CLIENT)
 public class FabricEntityApiLookupTestClient {
 	public static void onInitializeClient() {
 		EntityRendererRegistry.register(FabricEntityApiLookupTest.INSPECTABLE_PIG, InspectablePigEntityRenderer::new);
