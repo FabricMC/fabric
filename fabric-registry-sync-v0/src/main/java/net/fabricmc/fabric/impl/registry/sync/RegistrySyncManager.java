@@ -347,6 +347,13 @@ public final class RegistrySyncManager {
 				continue;
 			}
 
+			final RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry.getKey());
+
+			if (!attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
+				// Registry is not modded on the client, dont check. A print to debug is logged in apply.
+				continue;
+			}
+
 			for (Identifier remoteId : remoteRegistry.keySet()) {
 				if (!registry.containsId(remoteId)) {
 					// Found a registry entry from the server that is
