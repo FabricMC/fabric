@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.event.interaction.client;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -137,6 +138,10 @@ public abstract class MinecraftClientMixin {
 	@Shadow
 	protected int attackCooldown;
 
+	@Shadow
+	@Final
+	private static int field_32145;
+
 	@Inject(
 			at = @At(
 					value = "INVOKE",
@@ -176,7 +181,9 @@ public abstract class MinecraftClientMixin {
 
 		if (actionResult != ActionResult.PASS) {
 			if (actionResult.isAccepted()) {
-				attackCooldown = 10;
+				// In 1.19.4, field_32145 is 10
+				// it's the default attack cooldown
+				attackCooldown = field_32145;
 			}
 
 			// doAttack returns true only when finishes block breaking

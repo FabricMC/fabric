@@ -22,6 +22,24 @@ import net.minecraft.util.ActionResult;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * <p>
+ * Callback for when the client player left-clicks.
+ * This event is client-only. Handling this event probably involves sending custom packets.
+ * </p>
+ * The meaning of return value:
+ * <ul>
+ *    <li>PASS : still do vanilla handling (break block, attack entity, swing hand).</li>
+ *    <li>FAIL : it will not do vanilla handling. </li>
+ *    <li>SUCCESS : it will not do vanilla handling and the attack cooldown will be reset.</li>
+ * </ul>
+ * <p>
+ * This event will not fire when in attack cooldown or when the player hand is busy riding.
+ * </p>
+ * <p>
+ * If the player click multiple times in one tick, this event may be fired multiple times in one tick.
+ * </p>
+ */
 public interface ClientPreAttackCallback {
 	Event<ClientPreAttackCallback> EVENT = EventFactory.createArrayBacked(
 			ClientPreAttackCallback.class,
@@ -33,6 +51,7 @@ public interface ClientPreAttackCallback {
 						return result;
 					}
 				}
+
 				return ActionResult.PASS;
 			}
 	);
