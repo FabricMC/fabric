@@ -37,7 +37,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * This event will not fire when in attack cooldown or when the player hand is busy riding.
  * </p>
  * <p>
- * If the player click multiple times in one tick, this event may be fired multiple times in one tick.
+ * If the player clicks multiple times in one tick, this event may be fired multiple times in one tick.
  * </p>
  */
 public interface ClientPreAttackCallback {
