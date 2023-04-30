@@ -135,13 +135,6 @@ public abstract class MinecraftClientMixin {
 	@Shadow
 	public abstract ClientPlayNetworkHandler getNetworkHandler();
 
-	@Shadow
-	protected int attackCooldown;
-
-	@Shadow
-	@Final
-	private static int field_32145;
-
 	@Inject(
 			at = @At(
 					value = "INVOKE",
