@@ -24,15 +24,12 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * <p>
- * Callback for when the client player left-clicks.
- * This event is client-only. Handling this event probably involves sending custom packets.
+ * Callback for when the client player left-clicks. If the callback returns true, vanilla handling
+ * (including breaking block or attacking entity) will be cancelled.
  * </p>
- * The meaning of return value:
- * <ul>
- *    <li>PASS : still do vanilla handling (break block, attack entity, swing hand).</li>
- *    <li>FAIL : it will not do vanilla handling. </li>
- *    <li>SUCCESS : it will not do vanilla handling and the attack cooldown will be reset.</li>
- * </ul>
+ * <p>
+ * This event is client-only, so handling this event probably involves sending custom packets.
+ * </p>
  * <p>
  * This event will not fire when in attack cooldown or when the player hand is busy riding.
  * </p>
@@ -45,16 +42,20 @@ public interface ClientPreAttackCallback {
 			ClientPreAttackCallback.class,
 			(listeners) -> (player) -> {
 				for (ClientPreAttackCallback event : listeners) {
-					ActionResult result = event.onClientPlayerPreAttack(player);
+					boolean intercepts = event.onClientPlayerPreAttack(player);
 
-					if (result != ActionResult.PASS) {
-						return result;
+					if (intercepts) {
+						return true;
 					}
 				}
 
-				return ActionResult.PASS;
+				return false;
 			}
 	);
 
-	ActionResult onClientPlayerPreAttack(ClientPlayerEntity player);
+	/**
+	 * @param player the client player
+	 * @return true to intercept the attack, false to continue
+	 */
+	boolean onClientPlayerPreAttack(ClientPlayerEntity player);
 }

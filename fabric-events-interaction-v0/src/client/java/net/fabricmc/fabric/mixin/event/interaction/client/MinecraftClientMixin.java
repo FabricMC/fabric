@@ -177,15 +177,9 @@ public abstract class MinecraftClientMixin {
 			cancellable = true
 	)
 	private void onDoAttack(CallbackInfoReturnable<Boolean> cir) {
-		ActionResult actionResult = ClientPreAttackCallback.EVENT.invoker().onClientPlayerPreAttack(MinecraftClient.getInstance().player);
+		boolean intercepts = ClientPreAttackCallback.EVENT.invoker().onClientPlayerPreAttack(MinecraftClient.getInstance().player);
 
-		if (actionResult != ActionResult.PASS) {
-			if (actionResult.isAccepted()) {
-				// In 1.19.4, field_32145 is 10
-				// it's the default attack cooldown
-				attackCooldown = field_32145;
-			}
-
+		if (intercepts) {
 			// doAttack returns true only when finishes block breaking
 			cir.setReturnValue(false);
 		}
