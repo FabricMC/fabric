@@ -14,6 +14,9 @@
       "net.fabricmc.fabric.test.event.interaction.PlayerBreakBlockTests",
       "net.fabricmc.fabric.test.event.interaction.PlayerPickBlockTests",
       "net.fabricmc.fabric.test.event.interaction.UseEntityTests"
+    ],
+    "fabric-gametest": [
+      "net.fabricmc.fabric.test.event.interaction.FakePlayerTests"
     ]
   }
 }
