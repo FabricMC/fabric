@@ -5,6 +5,8 @@ task validateAnnotations(type: ValidateAnnotations) {
 	// Only apply to default source directories since there's also generated package-info files.
 	source file("src/client/java")
 	source file("src/main/java")
+	source file("src/testmod/java")
+	source file("src/testmodClient/java")
 }
 
 tasks.check.dependsOn validateAnnotations
@@ -15,7 +17,7 @@ class ValidateAnnotations extends SourceTask {
 
 	@TaskAction
 	def run() {
-		for (def dir in ['api', 'impl', 'mixin']) {
+		for (def dir in ['api', 'impl', 'mixin', 'test']) {
 			getSource().matching { include "net/fabricmc/fabric/$dir/" }.forEach {
 				if (it.isDirectory()) {
 					return

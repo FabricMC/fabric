@@ -14,7 +14,7 @@
       "net.fabricmc.fabric.test.access.SignBlockEntityTest"
     ],
     "client": [
-      "net.fabricmc.fabric.test.access.BlockEntityRendererTest"
+      "net.fabricmc.fabric.test.access.client.BlockEntityRendererTest"
     ]
   }
 }
