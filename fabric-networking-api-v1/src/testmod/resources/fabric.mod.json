@@ -16,11 +16,11 @@
       "net.fabricmc.fabric.test.networking.play.NetworkingPlayPacketTest"
     ],
     "client": [
-      "net.fabricmc.fabric.test.networking.channeltest.NetworkingChannelClientTest",
-      "net.fabricmc.fabric.test.networking.disconnectscreen.DisconnectScreenTest",
-      "net.fabricmc.fabric.test.networking.keybindreciever.NetworkingKeybindClientPacketTest",
-      "net.fabricmc.fabric.test.networking.login.NetworkingLoginQueryClientTest",
-      "net.fabricmc.fabric.test.networking.play.NetworkingPlayPacketClientTest"
+      "net.fabricmc.fabric.test.networking.client.channeltest.NetworkingChannelClientTest",
+      "net.fabricmc.fabric.test.networking.client.DisconnectScreenTest",
+      "net.fabricmc.fabric.test.networking.client.keybindreciever.NetworkingKeybindClientPacketTest",
+      "net.fabricmc.fabric.test.networking.client.login.NetworkingLoginQueryClientTest",
+      "net.fabricmc.fabric.test.networking.client.play.NetworkingPlayPacketClientTest"
     ]
   }
 }

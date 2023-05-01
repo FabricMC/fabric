@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.test.base.client.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "CyclingButtonWidgetAccessor",
+    "ScreenAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
