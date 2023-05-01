@@ -14,7 +14,7 @@
       "net.fabricmc.fabric.test.message.ChatTest"
     ],
     "client": [
-      "net.fabricmc.fabric.test.message.ChatTestClient"
+      "net.fabricmc.fabric.test.message.client.ChatTestClient"
     ]
   }
 }

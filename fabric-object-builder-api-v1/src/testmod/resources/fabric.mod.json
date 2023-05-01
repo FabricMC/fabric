@@ -21,7 +21,10 @@
   },
   "description": "Test mod for fabric object builder API v1.",
   "mixins": [
-    "fabric-object-builder-api-v1-testmod.mixins.json"
+    {
+      "config": "fabric-object-builder-api-v1-testmod.client.mixins.json",
+      "environment": "client"
+    }
   ],
   "entrypoints": {
     "main": [
