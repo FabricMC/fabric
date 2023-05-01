@@ -11,9 +11,6 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.registry.sync.RegistrySyncTest"
-    ],
-    "client": [
-      "net.fabricmc.fabric.test.registry.sync.RegistrySyncTestClient"
     ]
   }
 }

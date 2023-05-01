@@ -33,7 +33,6 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		registerSyncPacketReceiver(RegistrySyncManager.DIRECT_PACKET_HANDLER);
-		registerSyncPacketReceiver(RegistrySyncManager.NBT_PACKET_HANDLER);
 	}
 
 	private void registerSyncPacketReceiver(RegistryPacketHandler packetHandler) {

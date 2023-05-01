@@ -58,21 +58,16 @@ import net.minecraft.util.thread.ThreadExecutor;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
-import net.fabricmc.fabric.impl.registry.sync.packet.NbtRegistryPacketHandler;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
 public final class RegistrySyncManager {
 	public static final boolean DEBUG = Boolean.getBoolean("fabric.registry.debug");
 
-	@Deprecated
-	public static final RegistryPacketHandler NBT_PACKET_HANDLER = new NbtRegistryPacketHandler();
 	public static final RegistryPacketHandler DIRECT_PACKET_HANDLER = new DirectRegistryPacketHandler();
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("FabricRegistrySync");
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = Boolean.getBoolean("fabric.registry.debug.writeContentsAsCsv");
-	private static final boolean FORCE_NBT_SYNC = Boolean.getBoolean("fabric.registry.forceNbtSync");
 
 	//Set to true after vanilla's bootstrap has completed
 	public static boolean postBootstrap = false;
@@ -84,18 +79,7 @@ public final class RegistrySyncManager {
 			return;
 		}
 
-		if (FORCE_NBT_SYNC) {
-			LOGGER.warn("Force NBT sync is enabled");
-			sendPacket(player, NBT_PACKET_HANDLER);
-			return;
-		}
-
-		if (ServerPlayNetworking.canSend(player, DIRECT_PACKET_HANDLER.getPacketId())) {
-			sendPacket(player, DIRECT_PACKET_HANDLER);
-		} else {
-			LOGGER.debug("Player {} can't receive direct packet, using nbt packet instead", player.getEntityName());
-			sendPacket(player, NBT_PACKET_HANDLER);
-		}
+		sendPacket(player, DIRECT_PACKET_HANDLER);
 	}
 
 	private static void sendPacket(ServerPlayerEntity player, RegistryPacketHandler handler) {
