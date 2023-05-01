@@ -18,7 +18,6 @@ package net.fabricmc.fabric.test.screen;
 
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
