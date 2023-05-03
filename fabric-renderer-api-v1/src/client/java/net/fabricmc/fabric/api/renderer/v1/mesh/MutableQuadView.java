@@ -219,7 +219,6 @@ public interface MutableQuadView extends QuadView {
 	 * is computed based on face geometry and must be non-null in vanilla quads.
 	 * That computed value is returned by {@link #lightFace()}.
 	 */
-	@Nullable
 	MutableQuadView cullFace(@Nullable Direction face);
 
 	/**
@@ -235,8 +234,7 @@ public interface MutableQuadView extends QuadView {
 	 * <p>Note: This value is not persisted independently when the quad is encoded.
 	 * When reading encoded quads, this value will always be the same as {@link #lightFace()}.
 	 */
-	@Nullable
-	MutableQuadView nominalFace(Direction face);
+	MutableQuadView nominalFace(@Nullable Direction face);
 
 	/**
 	 * Assigns a different material to this quad. Useful for transformation of
@@ -277,8 +275,13 @@ public interface MutableQuadView extends QuadView {
 	 * This method should be performant whenever caller's vertex representation makes it feasible.
 	 *
 	 * <p>Calling this method does not emit the quad.
+	 *
+	 * <p>The material applied to this quad view might be slightly different from the {@code material} parameter regarding diffuse shading.
+	 * If either the baked quad {@link BakedQuad#hasShade() does not have shade} or the material {@link MaterialFinder#disableDiffuse(boolean) does not have shade},
+	 * diffuse shading will be disabled for this quad view.
+	 * This is reflected in the quad view's {@link #material()}, but the {@code material} parameter is unchanged (it is immutable anyway).
 	 */
-	MutableQuadView fromVanilla(BakedQuad quad, RenderMaterial material, Direction cullFace);
+	MutableQuadView fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace);
 
 	/**
 	 * @deprecated Use {@link #color(int, int)} instead.

@@ -212,6 +212,7 @@ public interface QuadView {
 		int[] vertexData = new int[VANILLA_QUAD_STRIDE];
 		toVanilla(vertexData, 0);
 		// TODO material inspection: set shade as !disableDiffuse
+		// TODO material inspection: set color index to -1 if the material disables it
 		return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite, true);
 	}
 

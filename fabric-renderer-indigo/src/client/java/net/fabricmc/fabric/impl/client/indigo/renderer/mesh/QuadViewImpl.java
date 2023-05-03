@@ -31,6 +31,7 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Z;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import net.minecraft.client.render.model.BakedQuad;
@@ -211,6 +212,7 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
+	@Nullable
 	public final Direction cullFace() {
 		return EncodingFormat.cullFace(data[baseIndex + HEADER_BITS]);
 	}
@@ -272,6 +274,10 @@ public class QuadViewImpl implements QuadView {
 	public final BakedQuad toBakedQuad(Sprite sprite) {
 		int[] vertexData = new int[VANILLA_QUAD_STRIDE];
 		toVanilla(vertexData, 0);
-		return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite, !material().disableDiffuse());
+
+		// Mimic material properties to the largest possible extent
+		int outputColorIndex = material().disableColorIndex() ? -1 : colorIndex();
+		boolean outputShade = !material().disableDiffuse();
+		return new BakedQuad(vertexData, outputColorIndex, lightFace(), sprite, outputShade);
 	}
 }
