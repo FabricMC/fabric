@@ -136,11 +136,11 @@ public abstract class MinecraftClientMixin {
 
 	@Shadow
 	public abstract ClientPlayNetworkHandler getNetworkHandler();
-	
+
 	@Shadow
 	@Final
 	public GameOptions options;
-	
+
 	@Inject(
 			at = @At(
 					value = "INVOKE",
@@ -178,8 +178,7 @@ public abstract class MinecraftClientMixin {
 	private void injectHandleInputEventsForPreAttackCallback(CallbackInfo ci) {
 		if (options.attackKey.isPressed()) {
 			fabric_attackCancelled = ClientPreAttackCallback.EVENT.invoker().onClientPlayerPreAttack(player);
-		}
-		else {
+		} else {
 			fabric_attackCancelled = false;
 		}
 	}
