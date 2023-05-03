@@ -119,7 +119,7 @@ public class FabricDimensionTest implements ModInitializer {
 			return 1;
 		}
 
-		ServerWorld serverWorld = player.method_51469();
+		ServerWorld serverWorld = player.getServerWorld();
 		ServerWorld modWorld = getModWorld(context);
 
 		if (serverWorld != modWorld) {
