@@ -23,17 +23,18 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * <p>
- * Callback for when the client player left-clicks. If the callback returns true, vanilla handling
- * (including breaking block or attacking entity) will be cancelled.
+ * This event fires when the client player presses the attack key (left mouse button by default),
+ * excluding cases when in attack cooldown or the player's hand is occupied with riding.
+ * The event fires before vanilla handling (block breaking, entity attacking).
+ * If the callback returns true, the vanilla handling will be cancelled.
  * </p>
  * <p>
- * This event is client-only, so handling this event probably involves sending custom packets.
+ * This event is client-only, which means handling it may require sending custom packets.
  * </p>
  * <p>
- * This event will not fire when in attack cooldown or when the player hand is busy riding.
- * </p>
- * <p>
- * If the player clicks multiple times in one tick, this event may be fired multiple times in one tick.
+ * In case the player presses the attack key multiple times within a single tick,
+ * this event might be triggered multiple times during that tick.
+ * {@link net.minecraft.entity.player.ItemCooldownManager} may be useful.
  * </p>
  */
 public interface ClientPreAttackCallback {
@@ -54,7 +55,7 @@ public interface ClientPreAttackCallback {
 
 	/**
 	 * @param player the client player
-	 * @return true to intercept the attack, false to continue
+	 * @return true to intercept vanilla attack handling, false to continue
 	 */
 	boolean onClientPlayerPreAttack(ClientPlayerEntity player);
 }
