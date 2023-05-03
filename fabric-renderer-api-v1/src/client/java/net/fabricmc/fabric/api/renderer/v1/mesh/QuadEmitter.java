@@ -86,7 +86,7 @@ public interface QuadEmitter extends MutableQuadView {
 		return this;
 	}
 
-	default QuadEmitter spriteUnitSquare() {
+	default QuadEmitter uvUnitSquare() {
 		uv(0, 0, 0);
 		uv(1, 0, 1);
 		uv(2, 1, 1);
@@ -250,11 +250,11 @@ public interface QuadEmitter extends MutableQuadView {
 	}
 
 	/**
-	 * @deprecated Use {@link #spriteUnitSquare()} instead.
+	 * @deprecated Use {@link #uvUnitSquare()} instead.
 	 */
 	@Deprecated
 	default QuadEmitter spriteUnitSquare(int spriteIndex) {
-		spriteUnitSquare();
+		uvUnitSquare();
 		return this;
 	}
 
