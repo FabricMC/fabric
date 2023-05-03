@@ -122,6 +122,11 @@ public interface MaterialFinder {
 	 */
 	@Deprecated
 	default MaterialFinder blendMode(int spriteIndex, BlendMode blendMode) {
+		// Null check is kept for legacy reasons, but the new blendMode method will NPE if passed null!
+		if (blendMode == null) {
+			blendMode = BlendMode.DEFAULT;
+		}
+
 		return blendMode(blendMode);
 	}
 

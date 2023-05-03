@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer;
 
+import java.util.Objects;
+
 import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
@@ -143,9 +145,7 @@ public abstract class RenderMaterialImpl {
 
 		@Override
 		public MaterialFinder blendMode(BlendMode blendMode) {
-			if (blendMode == null) {
-				blendMode = BlendMode.DEFAULT;
-			}
+			Objects.requireNonNull(blendMode, "BlendMode may not be null");
 
 			bits = (bits & ~BLEND_MODE_MASK) | (blendMode.ordinal() << BLEND_MODE_BIT_OFFSET);
 			return this;
@@ -171,9 +171,7 @@ public abstract class RenderMaterialImpl {
 
 		@Override
 		public MaterialFinder ambientOcclusion(TriState mode) {
-			if (mode == null) {
-				mode = TriState.DEFAULT;
-			}
+			Objects.requireNonNull(mode, "ambient occlusion TriState may not be null");
 
 			bits = (bits & ~AO_MASK) | (mode.ordinal() << AO_BIT_OFFSET);
 			return this;

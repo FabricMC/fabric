@@ -261,6 +261,9 @@ public interface MutableQuadView extends QuadView {
 	 * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
 	 * This method should be performant whenever caller's vertex representation makes it feasible.
 	 *
+	 * <p>Use {@link #fromVanilla(BakedQuad, RenderMaterial, Direction) the other overload} which has better encapsulation
+	 * unless you have a specific reason to use this one.
+	 *
 	 * <p>Calling this method does not emit the quad.
 	 *
 	 * @apiNote The default implementation will be removed in the next breaking release.
