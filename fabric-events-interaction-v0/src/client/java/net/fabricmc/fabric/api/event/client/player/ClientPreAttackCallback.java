@@ -23,18 +23,24 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * <p>
- * This event fires when the client player presses the attack key (left mouse button by default),
- * excluding cases when in attack cooldown or the player's hand is occupied with riding.
- * The event fires before vanilla handling (block breaking, entity attacking).
- * If the callback returns true, the vanilla handling will be cancelled.
+ * This event fires every tick when the the attack key (left mouse button by default) is in pressed state.
+ * If the callback returns true,
+ * the vanilla handling (block breaking, entity attacking, hand swing) will be cancelled,
+ * and the later callbacks of this event are also cancelled.
  * </p>
  * <p>
  * This event is client-only, which means handling it may require sending custom packets.
  * </p>
  * <p>
- * In case the player presses the attack key multiple times within a single tick,
- * this event might be triggered multiple times during that tick.
- * {@link net.minecraft.entity.player.ItemCooldownManager} may be useful.
+ * To check whether the attack key is just pressed, use
+ * <code>
+ * MinecraftClient.getInstance().options.attackKey.wasPressed()
+ * </code>
+ * inside the callback.
+ * </p>
+ * <p>
+ * The vanilla attack cooldown does not affect this event.
+ * {@link net.minecraft.entity.player.ItemCooldownManager} can be used for custom item cooldown handling.
  * </p>
  */
 public interface ClientPreAttackCallback {
@@ -55,7 +61,7 @@ public interface ClientPreAttackCallback {
 
 	/**
 	 * @param player the client player
-	 * @return true to intercept vanilla attack handling, false to continue
+	 * @return whether to intercept attack handling
 	 */
 	boolean onClientPlayerPreAttack(ClientPlayerEntity player);
 }

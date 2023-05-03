@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.event.interaction.client;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,6 +31,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -50,6 +52,7 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
 	private boolean fabric_itemPickCancelled;
+	private boolean fabric_attackCancelled;
 
 	@SuppressWarnings("deprecation")
 	private ItemStack fabric_emulateOldPick() {
@@ -133,7 +136,11 @@ public abstract class MinecraftClientMixin {
 
 	@Shadow
 	public abstract ClientPlayNetworkHandler getNetworkHandler();
-
+	
+	@Shadow
+	@Final
+	public GameOptions options;
+	
 	@Inject(
 			at = @At(
 					value = "INVOKE",
@@ -161,19 +168,33 @@ public abstract class MinecraftClientMixin {
 	}
 
 	@Inject(
-			method = "doAttack",
+			method = "handleInputEvents",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/client/network/ClientPlayerEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;"
-			),
-			cancellable = true
+					target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z",
+					ordinal = 0
+			)
 	)
-	private void onDoAttack(CallbackInfoReturnable<Boolean> cir) {
-		boolean intercepts = ClientPreAttackCallback.EVENT.invoker().onClientPlayerPreAttack(MinecraftClient.getInstance().player);
+	private void injectHandleInputEventsForPreAttackCallback(CallbackInfo ci) {
+		if (options.attackKey.isPressed()) {
+			fabric_attackCancelled = ClientPreAttackCallback.EVENT.invoker().onClientPlayerPreAttack(player);
+		}
+		else {
+			fabric_attackCancelled = false;
+		}
+	}
 
-		if (intercepts) {
-			// doAttack returns true only when finishes block breaking
+	@Inject(method = "doAttack", at = @At("HEAD"), cancellable = true)
+	private void injectDoAttackForCancelling(CallbackInfoReturnable<Boolean> cir) {
+		if (fabric_attackCancelled) {
 			cir.setReturnValue(false);
+		}
+	}
+
+	@Inject(method = "handleBlockBreaking", at = @At("HEAD"), cancellable = true)
+	private void injectHandleBlockBreakingForCancelling(boolean breaking, CallbackInfo ci) {
+		if (fabric_attackCancelled) {
+			ci.cancel();
 		}
 	}
 }
