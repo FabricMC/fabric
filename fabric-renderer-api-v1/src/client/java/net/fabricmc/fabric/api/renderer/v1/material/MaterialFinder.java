@@ -16,11 +16,14 @@
 
 package net.fabricmc.fabric.api.renderer.v1.material;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.model.BakedModel;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.util.TriState;
 
 /**
  * Finds standard {@link RenderMaterial} instances used to communicate
@@ -59,7 +62,7 @@ public interface MaterialFinder {
 	 * allow per-sprite emissive lighting in future extensions that support overlay sprites.
 	 *
 	 * <p>Note that color will still be modified by diffuse shading and ambient occlusion,
-	 * unless disabled via {@link #disableAo(boolean)} and {@link #disableDiffuse(boolean)}.
+	 * unless disabled via {@link #disableDiffuse(boolean)} and {@link #ambientOcclusion(TriState)}.
 	 *
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
@@ -77,12 +80,16 @@ public interface MaterialFinder {
 	}
 
 	/**
-	 * Vertex color(s) will be modified for ambient occlusion unless disabled.
+	 * Controls whether vertex color(s) will be modified for ambient occlusion.
+	 *
+	 * <p>By default, ambient occlusion will be used if {@link BakedModel#useAmbientOcclusion() the model uses ambient occlusion}
+	 * and the block state has {@link BlockState#getLuminance() a luminance} of 0.
+	 * Set to {@link TriState#TRUE} or {@link TriState#FALSE} to override this behavior.
 	 *
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default MaterialFinder disableAo(boolean disable) {
-		return disableAo(0, disable);
+	default MaterialFinder ambientOcclusion(TriState mode) {
+		return disableAo(0, mode == TriState.FALSE);
 	}
 
 	/**
@@ -143,11 +150,11 @@ public interface MaterialFinder {
 	}
 
 	/**
-	 * @deprecated Use {@link #disableAo(boolean)} instead.
+	 * @deprecated Use {@link #ambientOcclusion(TriState)} instead.
 	 */
 	@Deprecated
 	default MaterialFinder disableAo(int spriteIndex, boolean disable) {
-		return disableAo(disable);
+		return ambientOcclusion(disable ? TriState.FALSE : TriState.DEFAULT);
 	}
 
 	/**

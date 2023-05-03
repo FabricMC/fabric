@@ -21,6 +21,7 @@ import net.minecraft.util.math.MathHelper;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+import net.fabricmc.fabric.api.util.TriState;
 
 /**
  * Default implementation of the standard render materials.
@@ -30,13 +31,34 @@ import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
  */
 public abstract class RenderMaterialImpl {
 	private static final BlendMode[] BLEND_MODES = BlendMode.values();
+	private static final int BLEND_MODE_COUNT = BLEND_MODES.length;
+	private static final TriState[] TRI_STATES = TriState.values();
+	private static final int TRI_STATE_COUNT = TRI_STATES.length;
 
-	private static final int BLEND_MODE_MASK = MathHelper.smallestEncompassingPowerOfTwo(BlendMode.values().length) - 1;
-	private static final int COLOR_DISABLE_FLAG = BLEND_MODE_MASK + 1;
-	private static final int EMISSIVE_FLAG = COLOR_DISABLE_FLAG << 1;
-	private static final int DIFFUSE_FLAG = EMISSIVE_FLAG << 1;
-	private static final int AO_FLAG = DIFFUSE_FLAG << 1;
-	public static final int VALUE_COUNT = (AO_FLAG << 1);
+	protected static final int BLEND_MODE_BIT_LENGTH = MathHelper.ceilLog2(BLEND_MODE_COUNT);
+	protected static final int COLOR_DISABLE_BIT_LENGTH = 1;
+	protected static final int EMISSIVE_BIT_LENGTH = 1;
+	protected static final int DIFFUSE_BIT_LENGTH = 1;
+	protected static final int AO_BIT_LENGTH = MathHelper.ceilLog2(TRI_STATE_COUNT);
+
+	protected static final int BLEND_MODE_BIT_OFFSET = 0;
+	protected static final int COLOR_DISABLE_BIT_OFFSET = BLEND_MODE_BIT_OFFSET + BLEND_MODE_BIT_LENGTH;
+	protected static final int EMISSIVE_BIT_OFFSET = COLOR_DISABLE_BIT_OFFSET + COLOR_DISABLE_BIT_LENGTH;
+	protected static final int DIFFUSE_BIT_OFFSET = EMISSIVE_BIT_OFFSET + EMISSIVE_BIT_LENGTH;
+	protected static final int AO_BIT_OFFSET = DIFFUSE_BIT_OFFSET + DIFFUSE_BIT_LENGTH;
+	protected static final int TOTAL_BIT_LENGTH = AO_BIT_OFFSET + AO_BIT_LENGTH;
+
+	protected static final int BLEND_MODE_MASK = bitMask(BLEND_MODE_BIT_LENGTH, BLEND_MODE_BIT_OFFSET);
+	protected static final int COLOR_DISABLE_FLAG = bitMask(COLOR_DISABLE_BIT_LENGTH, COLOR_DISABLE_BIT_OFFSET);
+	protected static final int EMISSIVE_FLAG = bitMask(EMISSIVE_BIT_LENGTH, EMISSIVE_BIT_OFFSET);
+	protected static final int DIFFUSE_FLAG = bitMask(DIFFUSE_BIT_LENGTH, DIFFUSE_BIT_OFFSET);
+	protected static final int AO_MASK = bitMask(AO_BIT_LENGTH, AO_BIT_OFFSET);
+
+	public static final int VALUE_COUNT = 1 << TOTAL_BIT_LENGTH;
+
+	protected static int bitMask(int bitLength, int bitOffset) {
+		return ((1 << bitLength) - 1) << bitOffset;
+	}
 
 	private static final Value[] VALUES = new Value[VALUE_COUNT];
 
@@ -60,8 +82,18 @@ public abstract class RenderMaterialImpl {
 
 	protected int bits;
 
+	protected RenderMaterialImpl(int bits) {
+		this.bits = bits;
+	}
+
 	public BlendMode blendMode() {
-		return BLEND_MODES[bits & BLEND_MODE_MASK];
+		int ordinal = (bits & BLEND_MODE_MASK) >> BLEND_MODE_BIT_OFFSET;
+
+		if (ordinal >= BLEND_MODE_COUNT) {
+			return BlendMode.DEFAULT;
+		}
+
+		return BLEND_MODES[ordinal];
 	}
 
 	public boolean disableColorIndex() {
@@ -76,13 +108,19 @@ public abstract class RenderMaterialImpl {
 		return (bits & DIFFUSE_FLAG) != 0;
 	}
 
-	public boolean disableAo() {
-		return (bits & AO_FLAG) != 0;
+	public TriState ambientOcclusion() {
+		int ordinal = (bits & AO_MASK) >> AO_BIT_OFFSET;
+
+		if (ordinal >= TRI_STATE_COUNT) {
+			return TriState.DEFAULT;
+		}
+
+		return TRI_STATES[ordinal];
 	}
 
 	public static class Value extends RenderMaterialImpl implements RenderMaterial {
 		private Value(int bits) {
-			this.bits = bits;
+			super(bits);
 		}
 
 		public int index() {
@@ -91,13 +129,25 @@ public abstract class RenderMaterialImpl {
 	}
 
 	public static class Finder extends RenderMaterialImpl implements MaterialFinder {
+		private static int defaultBits = 0;
+
+		static {
+			Finder finder = new Finder();
+			finder.ambientOcclusion(TriState.DEFAULT);
+			defaultBits = finder.bits;
+		}
+
+		public Finder() {
+			super(defaultBits);
+		}
+
 		@Override
 		public MaterialFinder blendMode(BlendMode blendMode) {
 			if (blendMode == null) {
 				blendMode = BlendMode.DEFAULT;
 			}
 
-			bits = (bits & ~BLEND_MODE_MASK) | blendMode.ordinal();
+			bits = (bits & ~BLEND_MODE_MASK) | (blendMode.ordinal() << BLEND_MODE_BIT_OFFSET);
 			return this;
 		}
 
@@ -120,14 +170,18 @@ public abstract class RenderMaterialImpl {
 		}
 
 		@Override
-		public MaterialFinder disableAo(boolean disable) {
-			bits = disable ? (bits | AO_FLAG) : (bits & ~AO_FLAG);
+		public MaterialFinder ambientOcclusion(TriState mode) {
+			if (mode == null) {
+				mode = TriState.DEFAULT;
+			}
+
+			bits = (bits & ~AO_MASK) | (mode.ordinal() << AO_BIT_OFFSET);
 			return this;
 		}
 
 		@Override
 		public MaterialFinder clear() {
-			bits = 0;
+			bits = defaultBits;
 			return this;
 		}
 

@@ -34,6 +34,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
+import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
@@ -83,8 +84,9 @@ public abstract class AbstractQuadRenderer {
 		final RenderMaterialImpl.Value mat = quad.material();
 		final int colorIndex = mat.disableColorIndex() ? -1 : quad.colorIndex();
 		final RenderLayer renderLayer = blockInfo.effectiveRenderLayer(mat.blendMode());
+		final TriState ao = mat.ambientOcclusion();
 
-		if (blockInfo.defaultAo && !mat.disableAo()) {
+		if (blockInfo.useAo && (ao == TriState.TRUE || (ao == TriState.DEFAULT && blockInfo.defaultAo))) {
 			// needs to happen before offsets are applied
 			aoCalc.compute(quad, isVanilla);
 
