@@ -270,6 +270,8 @@ public class QuadViewImpl implements QuadView {
 	// TODO material inspection: remove
 	@Override
 	public final BakedQuad toBakedQuad(Sprite sprite) {
-		return toBakedQuad(sprite, !material().disableDiffuse());
+		int[] vertexData = new int[VANILLA_QUAD_STRIDE];
+		toVanilla(vertexData, 0);
+		return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite, !material().disableDiffuse());
 	}
 }

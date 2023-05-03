@@ -204,35 +204,15 @@ public interface QuadView {
 	 * @param sprite {@link MutableQuadView} does not serialize sprites
 	 * so the sprite must be provided by the caller.
 	 *
-	 * @param shade Shade value that the resulting BakedQuad should use.
-	 *
-	 * @return A new baked quad instance with the closest-available appearance
-	 * supported by vanilla features. Will retain emissive light maps, for example,
-	 * but the standard Minecraft renderer will not use them.
-	 */
-	default BakedQuad toBakedQuad(Sprite sprite, boolean shade) {
-		int[] vertexData = new int[VANILLA_QUAD_STRIDE];
-		toVanilla(vertexData, 0);
-		return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite, shade);
-	}
-
-	/**
-	 * Generates a new BakedQuad instance with texture
-	 * coordinates and colors from the given sprite.
-	 *
-	 * <p>Similar to {@link #toBakedQuad(Sprite, boolean)}, but
-	 * automatically retrieves the shade value from this quad's material.
-	 *
-	 * @param sprite {@link MutableQuadView} does not serialize sprites
-	 * so the sprite must be provided by the caller.
-	 *
 	 * @return A new baked quad instance with the closest-available appearance
 	 * supported by vanilla features. Will retain emissive light maps, for example,
 	 * but the standard Minecraft renderer will not use them.
 	 */
 	default BakedQuad toBakedQuad(Sprite sprite) {
+		int[] vertexData = new int[VANILLA_QUAD_STRIDE];
+		toVanilla(vertexData, 0);
 		// TODO material inspection: set shade as !disableDiffuse
-		return toBakedQuad(sprite, true);
+		return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite, true);
 	}
 
 	/**
@@ -272,6 +252,6 @@ public interface QuadView {
 	 */
 	@Deprecated
 	default BakedQuad toBakedQuad(int spriteIndex, Sprite sprite, boolean isItem) {
-		return toBakedQuad(sprite, true);
+		return toBakedQuad(sprite);
 	}
 }
