@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.entity.BlockEntity;
@@ -45,6 +46,7 @@ import net.minecraft.util.math.Vec3d;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockApplyCallback;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockCallback;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
+import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 
 @Mixin(MinecraftClient.class)
