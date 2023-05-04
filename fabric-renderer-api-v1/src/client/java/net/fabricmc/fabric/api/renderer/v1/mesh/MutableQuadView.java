@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import net.minecraft.client.render.model.BakedQuad;
@@ -109,8 +110,8 @@ public interface MutableQuadView extends QuadView {
 	/**
 	 * Same as {@link #pos(int, float, float, float)} but accepts vector type.
 	 */
-	default MutableQuadView pos(int vertexIndex, Vector3f vec) {
-		return pos(vertexIndex, vec.x(), vec.y(), vec.z());
+	default MutableQuadView pos(int vertexIndex, Vector3f pos) {
+		return pos(vertexIndex, pos.x(), pos.y(), pos.z());
 	}
 
 	/**
@@ -145,10 +146,10 @@ public interface MutableQuadView extends QuadView {
 	/**
 	 * Set texture coordinates.
 	 *
-	 * <p>Only use this function if you already have a {@link Vec2f}.
+	 * <p>Only use this function if you already have a {@link Vector2f}.
 	 * Otherwise, see {@link MutableQuadView#uv(int, float, float)}.
 	 */
-	default MutableQuadView uv(int vertexIndex, Vec2f uv) {
+	default MutableQuadView uv(int vertexIndex, Vector2f uv) {
 		return uv(vertexIndex, uv.x, uv.y);
 	}
 
@@ -200,8 +201,8 @@ public interface MutableQuadView extends QuadView {
 	/**
 	 * Same as {@link #normal(int, float, float, float)} but accepts vector type.
 	 */
-	default MutableQuadView normal(int vertexIndex, Vector3f vec) {
-		return normal(vertexIndex, vec.x(), vec.y(), vec.z());
+	default MutableQuadView normal(int vertexIndex, Vector3f normal) {
+		return normal(vertexIndex, normal.x(), normal.y(), normal.z());
 	}
 
 	/**
@@ -257,6 +258,7 @@ public interface MutableQuadView extends QuadView {
 
 	/**
 	 * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
+	 * Only the {@link BakedQuad#getVertexData() quad vertex data} is copied.
 	 * This method should be performant whenever caller's vertex representation makes it feasible.
 	 *
 	 * <p>Use {@link #fromVanilla(BakedQuad, RenderMaterial, Direction) the other overload} which has better encapsulation
@@ -271,8 +273,7 @@ public interface MutableQuadView extends QuadView {
 	}
 
 	/**
-	 * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
-	 * This method should be performant whenever caller's vertex representation makes it feasible.
+	 * Enables bulk vertex data transfer using the standard Minecraft quad format.
 	 *
 	 * <p>Calling this method does not emit the quad.
 	 *
@@ -309,11 +310,11 @@ public interface MutableQuadView extends QuadView {
 	}
 
 	/**
-	 * @deprecated Use {@link #uv(int, Vec2f)} instead.
+	 * @deprecated Use {@link #uv(int, Vector2f)} instead.
 	 */
 	@Deprecated
 	default MutableQuadView sprite(int vertexIndex, int spriteIndex, Vec2f uv) {
-		return uv(vertexIndex, uv);
+		return uv(vertexIndex, uv.x, uv.y);
 	}
 
 	/**

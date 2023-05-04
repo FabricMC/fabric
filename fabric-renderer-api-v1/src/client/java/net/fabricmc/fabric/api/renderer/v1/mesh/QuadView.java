@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.renderer.v1.mesh;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import net.minecraft.client.render.VertexFormats;
@@ -92,6 +93,21 @@ public interface QuadView {
 	 */
 	default float v(int vertexIndex) {
 		return spriteV(vertexIndex, 0);
+	}
+
+	/**
+	 * Pass a non-null target to avoid allocation - will be returned with values.
+	 * Otherwise returns a new instance.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
+	 */
+	default Vector2f copyUv(int vertexIndex, @Nullable Vector2f target) {
+		if (target == null) {
+			target = new Vector2f();
+		}
+
+		target.set(u(vertexIndex), v(vertexIndex));
+		return target;
 	}
 
 	/**
@@ -183,8 +199,8 @@ public interface QuadView {
 	void copyTo(MutableQuadView target);
 
 	/**
-	 * Reads baked vertex data and outputs standard baked quad
-	 * vertex data in the given array and location.
+	 * Reads baked vertex data and outputs standard {@link BakedQuad#getVertexData() baked quad vertex data}
+	 * in the given array and location.
 	 *
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 *

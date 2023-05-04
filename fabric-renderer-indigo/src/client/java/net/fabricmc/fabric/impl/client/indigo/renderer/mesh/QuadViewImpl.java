@@ -32,6 +32,7 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import net.minecraft.client.render.model.BakedQuad;
@@ -165,6 +166,17 @@ public class QuadViewImpl implements QuadView {
 	@Override
 	public float v(int vertexIndex) {
 		return Float.intBitsToFloat(data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_V]);
+	}
+
+	@Override
+	public Vector2f copyUv(int vertexIndex, @Nullable Vector2f target) {
+		if (target == null) {
+			target = new Vector2f();
+		}
+
+		final int index = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_U;
+		target.set(Float.intBitsToFloat(data[index]), Float.intBitsToFloat(data[index + 1]));
+		return target;
 	}
 
 	@Override

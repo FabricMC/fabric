@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import net.minecraft.client.texture.Sprite;
@@ -42,8 +43,8 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter pos(int vertexIndex, float x, float y, float z);
 
 	@Override
-	default QuadEmitter pos(int vertexIndex, Vector3f vec) {
-		MutableQuadView.super.pos(vertexIndex, vec);
+	default QuadEmitter pos(int vertexIndex, Vector3f pos) {
+		MutableQuadView.super.pos(vertexIndex, pos);
 		return this;
 	}
 
@@ -72,7 +73,7 @@ public interface QuadEmitter extends MutableQuadView {
 	}
 
 	@Override
-	default QuadEmitter uv(int vertexIndex, Vec2f uv) {
+	default QuadEmitter uv(int vertexIndex, Vector2f uv) {
 		MutableQuadView.super.uv(vertexIndex, uv);
 		return this;
 	}
@@ -108,8 +109,8 @@ public interface QuadEmitter extends MutableQuadView {
 	// QuadEmitter normal(int vertexIndex, float x, float y, float z);
 
 	@Override
-	default QuadEmitter normal(int vertexIndex, Vector3f vec) {
-		MutableQuadView.super.normal(vertexIndex, vec);
+	default QuadEmitter normal(int vertexIndex, Vector3f normal) {
+		MutableQuadView.super.normal(vertexIndex, normal);
 		return this;
 	}
 
@@ -139,7 +140,7 @@ public interface QuadEmitter extends MutableQuadView {
 
 	// TODO: uncomment right before next breaking release
 	// @Override
-	// QuadEmitter fromVanilla(BakedQuad quad, RenderMaterial material, Direction cullFace);
+	// QuadEmitter fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace);
 
 	/**
 	 * Tolerance for determining if the depth parameter to {@link #square(Direction, float, float, float, float, float)}
