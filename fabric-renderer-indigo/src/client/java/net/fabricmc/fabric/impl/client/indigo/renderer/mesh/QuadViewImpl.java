@@ -143,7 +143,7 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
-	public Vector3f copyPos(int vertexIndex, Vector3f target) {
+	public Vector3f copyPos(int vertexIndex, @Nullable Vector3f target) {
 		if (target == null) {
 			target = new Vector3f();
 		}
@@ -209,7 +209,8 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
-	public Vector3f copyNormal(int vertexIndex, Vector3f target) {
+	@Nullable
+	public Vector3f copyNormal(int vertexIndex, @Nullable Vector3f target) {
 		if (hasNormal(vertexIndex)) {
 			if (target == null) {
 				target = new Vector3f();
