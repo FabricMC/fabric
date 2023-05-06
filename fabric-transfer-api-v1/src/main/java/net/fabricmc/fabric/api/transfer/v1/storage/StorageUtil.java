@@ -123,9 +123,9 @@ public final class StorageUtil {
 		} catch (Exception e) {
 			CrashReport report = CrashReport.create(e, "Moving resources between storages");
 			report.addElement("Move details")
-					.add("Input storage", from)
-					.add("Output storage", to)
-					.add("Filter", filter)
+					.add("Input storage", from::toString)
+					.add("Output storage", to::toString)
+					.add("Filter", filter::toString)
 					.add("Max amount", maxAmount)
 					.add("Transaction", transaction);
 			throw new CrashException(report);
@@ -160,7 +160,7 @@ public final class StorageUtil {
 		} catch (Exception e) {
 			CrashReport report = CrashReport.create(e, "Extracting resources from storage");
 			report.addElement("Extraction details")
-					.add("Storage", storage)
+					.add("Storage", storage::toString)
 					.add("Max amount", maxAmount)
 					.add("Transaction", transaction);
 			throw new CrashException(report);
@@ -195,8 +195,8 @@ public final class StorageUtil {
 		} catch (Exception e) {
 			CrashReport report = CrashReport.create(e, "Inserting resources into slots");
 			report.addElement("Slotted insertion details")
-					.add("Slots", slots)
-					.add("Resource", resource)
+					.add("Slots", () -> Objects.toString(slots, null))
+					.add("Resource", () -> Objects.toString(resource, null))
 					.add("Max amount", maxAmount)
 					.add("Transaction", transaction);
 			throw new CrashException(report);
@@ -228,8 +228,8 @@ public final class StorageUtil {
 		} catch (Exception e) {
 			CrashReport report = CrashReport.create(e, "Inserting resources into a storage");
 			report.addElement("Insertion details")
-					.add("Storage", storage)
-					.add("Resource", resource)
+					.add("Storage", () -> Objects.toString(storage, null))
+					.add("Resource", () -> Objects.toString(resource, null))
 					.add("Max amount", maxAmount)
 					.add("Transaction", transaction);
 			throw new CrashException(report);
