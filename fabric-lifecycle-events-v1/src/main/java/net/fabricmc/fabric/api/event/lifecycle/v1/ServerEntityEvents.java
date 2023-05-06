@@ -21,7 +21,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -36,21 +35,8 @@ public final class ServerEntityEvents {
 	 * <p>When this event is called, the entity is already in the world.
 	 */
 	public static final Event<ServerEntityEvents.Load> ENTITY_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.Load.class, callbacks -> (entity, world) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = world.getProfiler();
-			profiler.push("fabricServerEntityLoad");
-
-			for (ServerEntityEvents.Load callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onLoad(entity, world);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (ServerEntityEvents.Load callback : callbacks) {
-				callback.onLoad(entity, world);
-			}
+		for (Load callback : callbacks) {
+			callback.onLoad(entity, world);
 		}
 	});
 
@@ -60,21 +46,8 @@ public final class ServerEntityEvents {
 	 * <p>This event is called before the entity is removed from the world.
 	 */
 	public static final Event<ServerEntityEvents.Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(ServerEntityEvents.Unload.class, callbacks -> (entity, world) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = world.getProfiler();
-			profiler.push("fabricServerEntityUnload");
-
-			for (ServerEntityEvents.Unload callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onUnload(entity, world);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (ServerEntityEvents.Unload callback : callbacks) {
-				callback.onUnload(entity, world);
-			}
+		for (Unload callback : callbacks) {
+			callback.onUnload(entity, world);
 		}
 	});
 
