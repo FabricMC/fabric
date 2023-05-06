@@ -238,7 +238,7 @@ public class TransactionManagerImpl {
 
 		@Override
 		public String toString() {
-			return "Transaction[depth=%d, lifecycle=%s]".formatted(nestingDepth, lifecycle.name());
+			return "Transaction[depth=%d, lifecycle=%s, thread=%s]".formatted(nestingDepth, lifecycle.name(), thread);
 		}
 	}
 }
