@@ -56,4 +56,10 @@ public class CreativeInteractionContainerItemContext extends ConstantContainerIt
 		// Insertion always succeeds from the POV of the context user.
 		return maxAmount;
 	}
+
+	@Override
+	public String toString() {
+		return "CreativeInteractionContainerItemContext[%d %s]"
+				.formatted(getMainSlot().getAmount(), getMainSlot().getResource());
+	}
 }

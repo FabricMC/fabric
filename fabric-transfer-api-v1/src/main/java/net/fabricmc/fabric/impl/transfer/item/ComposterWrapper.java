@@ -55,6 +55,11 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 		private void setBlockState(BlockState state) {
 			world.setBlockState(pos, state);
 		}
+
+		@Override
+		public String toString() {
+			return world.getDimensionKey().getValue() + "@" + pos.toShortString();
+		}
 	}
 
 	// Weak values to make sure wrappers are cleaned up after use, thread-safe.
@@ -147,6 +152,11 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 			increaseProbability = insertedIncreaseProbability;
 			return 1;
 		}
+
+		@Override
+		public String toString() {
+			return "ComposterWrapper[" + location + "/top]";
+		}
 	}
 
 	private class BottomStorage implements ExtractionOnlyStorage<ItemVariant>, SingleSlotStorage<ItemVariant> {
@@ -191,6 +201,11 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 		@Override
 		public long getCapacity() {
 			return 1;
+		}
+
+		@Override
+		public String toString() {
+			return "ComposterWrapper[" + location + "/bottom]";
 		}
 	}
 }

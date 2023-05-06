@@ -112,6 +112,11 @@ public class InventoryStorageImpl extends CombinedStorage<ItemVariant, SingleSlo
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "InventoryStorage[" + inventory + "]";
+	}
+
 	// Boolean is used to prevent allocation. Null values are not allowed by SnapshotParticipant.
 	class MarkDirtyParticipant extends SnapshotParticipant<Boolean> {
 		@Override

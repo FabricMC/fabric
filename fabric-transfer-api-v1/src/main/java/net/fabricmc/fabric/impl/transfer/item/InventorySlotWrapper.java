@@ -161,4 +161,9 @@ class InventorySlotWrapper extends SingleStackStorage {
 			original.setCount(0);
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "InventorySlotWrapper[%s#%d]".formatted(storage.inventory, slot);
+	}
 }

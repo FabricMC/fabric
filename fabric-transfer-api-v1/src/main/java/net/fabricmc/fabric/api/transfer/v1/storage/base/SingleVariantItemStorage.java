@@ -222,4 +222,9 @@ public abstract class SingleVariantItemStorage<T extends TransferVariant<?>> imp
 			return 0;
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "SingleVariantItemStorage[" + context + "/" + item + "]";
+	}
 }

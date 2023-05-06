@@ -47,6 +47,10 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 public class CauldronStorage extends SnapshotParticipant<BlockState> implements SingleSlotStorage<FluidVariant> {
 	// Record is used for convenient constructor, hashcode and equals implementations.
 	private record WorldLocation(World world, BlockPos pos) {
+		@Override
+		public String toString() {
+			return world.getDimensionKey().getValue() + "@" + pos.toShortString();
+		}
 	}
 
 	// Weak values to make sure wrappers are cleaned up after use, thread-safe.
@@ -203,5 +207,10 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 			// Then do the actual change with normal block updates
 			location.world.setBlockState(location.pos, state);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "CauldronStorage[" + location + "]";
 	}
 }

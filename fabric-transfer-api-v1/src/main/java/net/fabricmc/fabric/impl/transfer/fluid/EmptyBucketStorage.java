@@ -70,4 +70,9 @@ public class EmptyBucketStorage implements InsertionOnlyStorage<FluidVariant> {
 	public Iterator<StorageView<FluidVariant>> iterator() {
 		return blankView.iterator();
 	}
+
+	@Override
+	public String toString() {
+		return "EmptyBucketStorage[" + context + "]";
+	}
 }

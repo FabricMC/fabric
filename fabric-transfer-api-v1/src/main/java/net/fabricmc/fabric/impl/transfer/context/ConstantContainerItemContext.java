@@ -76,4 +76,10 @@ public class ConstantContainerItemContext implements ContainerItemContext {
 	public List<SingleSlotStorage<ItemVariant>> getAdditionalSlots() {
 		return Collections.emptyList();
 	}
+
+	@Override
+	public String toString() {
+		return "ConstantContainerItemContext[%d %s]"
+				.formatted(getMainSlot().getAmount(), getMainSlot().getResource());
+	}
 }

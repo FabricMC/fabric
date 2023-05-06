@@ -56,4 +56,9 @@ public class PlayerContainerItemContext implements ContainerItemContext {
 	public List<SingleSlotStorage<ItemVariant>> getAdditionalSlots() {
 		return playerWrapper.getSlots();
 	}
+
+	@Override
+	public String toString() {
+		return "PlayerContainerItemContext[" + playerWrapper + "]";
+	}
 }

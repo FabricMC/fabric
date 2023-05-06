@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.Hand;
 
@@ -94,6 +95,12 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 		} else {
 			throw new UnsupportedOperationException("Unknown hand: " + hand);
 		}
+	}
+
+	@Override
+	public String toString() {
+		PlayerEntity player = playerInventory.player;
+		return "PlayerInventoryStorage[" + player.getEntityName() + "/" + player.getUuidAsString() + "]";
 	}
 
 	private class DroppedStacks extends SnapshotParticipant<Integer> {
