@@ -122,7 +122,7 @@ public class ItemVariantImpl implements ItemVariant {
 
 	@Override
 	public String toString() {
-		return "ItemVariantImpl{item=" + item + ", tag=" + nbt + '}';
+		return "ItemVariant{item=" + item + ", tag=" + nbt + '}';
 	}
 
 	@Override

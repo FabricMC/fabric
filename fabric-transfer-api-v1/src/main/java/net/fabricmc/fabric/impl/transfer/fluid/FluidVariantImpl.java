@@ -131,7 +131,7 @@ public class FluidVariantImpl implements FluidVariant {
 
 	@Override
 	public String toString() {
-		return "FluidVariantImpl{fluid=" + fluid + ", tag=" + nbt + '}';
+		return "FluidVariant{fluid=" + fluid + ", tag=" + nbt + '}';
 	}
 
 	@Override
