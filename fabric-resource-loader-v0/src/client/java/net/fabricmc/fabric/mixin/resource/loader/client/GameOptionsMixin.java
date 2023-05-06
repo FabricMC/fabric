@@ -40,7 +40,6 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
@@ -71,7 +70,7 @@ public class GameOptionsMixin {
 		}
 
 		File trackerFile = new File(dataDir, "fabricDefaultResourcePacks.dat");
-		Set<Identifier> trackedPacks = new HashSet<>();
+		Set<String> trackedPacks = new HashSet<>();
 
 		if (trackerFile.exists()) {
 			try {
@@ -79,14 +78,14 @@ public class GameOptionsMixin {
 				NbtList values = data.getList("values", NbtElement.STRING_TYPE);
 
 				for (int i = 0; i < values.size(); i++) {
-					trackedPacks.add(new Identifier(values.getString(i)));
+					trackedPacks.add(values.getString(i));
 				}
 			} catch (IOException e) {
 				LOGGER.warn("[Fabric Resource Loader] Could not read " + trackerFile.getAbsolutePath(), e);
 			}
 		}
 
-		Set<Identifier> removedPacks = new HashSet<>(trackedPacks);
+		Set<String> removedPacks = new HashSet<>(trackedPacks);
 		Set<String> resourcePacks = new LinkedHashSet<>(this.resourcePacks);
 
 		List<ResourcePackProfile> profiles = new ArrayList<>();
@@ -101,10 +100,10 @@ public class GameOptionsMixin {
 
 			try (ResourcePack pack = profile.createResourcePack()) {
 				if (pack instanceof ModNioResourcePack builtinPack && builtinPack.getActivationType().isEnabledByDefault()) {
-					if (trackedPacks.add(builtinPack.getId())) {
+					if (trackedPacks.add(builtinPack.getName())) {
 						resourcePacks.add(profile.getName());
 					} else {
-						removedPacks.remove(builtinPack.getId());
+						removedPacks.remove(builtinPack.getName());
 					}
 				}
 			}
@@ -113,9 +112,9 @@ public class GameOptionsMixin {
 		try {
 			NbtList values = new NbtList();
 
-			for (Identifier id : trackedPacks) {
+			for (String id : trackedPacks) {
 				if (!removedPacks.contains(id)) {
-					values.add(NbtString.of(id.toString()));
+					values.add(NbtString.of(id));
 				}
 			}
 
