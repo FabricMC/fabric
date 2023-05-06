@@ -32,12 +32,15 @@ public final class DebugMessages {
 		return dimension + "@" + pos.toShortString();
 	}
 
+	public static String forPlayer(PlayerEntity player) {
+		return player.getEntityName() + "/" + player.getUuidAsString();
+	}
+
 	public static String forInventory(@Nullable Inventory inventory) {
 		if (inventory == null) {
 			return "~~NULL~~"; // like in crash reports
 		} else if (inventory instanceof PlayerInventory playerInventory) {
-			PlayerEntity player = playerInventory.player;
-			return player.getEntityName() + "/" + player.getUuidAsString();
+			return forPlayer(playerInventory.player);
 		} else {
 			String result = inventory.toString();
 
