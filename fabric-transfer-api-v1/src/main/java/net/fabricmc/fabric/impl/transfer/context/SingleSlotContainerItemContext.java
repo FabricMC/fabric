@@ -49,6 +49,7 @@ public class SingleSlotContainerItemContext implements ContainerItemContext {
 
 	@Override
 	public String toString() {
-		return "SingleSlotContainerItemContext[" + slot + "]";
+		return "SingleSlotContainerItemContext[%d %s %s]"
+				.formatted(slot.getAmount(), slot.getResource(), slot);
 	}
 }

@@ -59,6 +59,7 @@ public class PlayerContainerItemContext implements ContainerItemContext {
 
 	@Override
 	public String toString() {
-		return "PlayerContainerItemContext[" + playerWrapper + "]";
+		return "PlayerContainerItemContext[%d %s %s/%s]"
+				.formatted(slot.getAmount(), slot.getResource(), playerWrapper, slot);
 	}
 }
