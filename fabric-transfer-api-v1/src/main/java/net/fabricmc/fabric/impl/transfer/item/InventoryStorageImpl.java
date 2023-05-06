@@ -22,9 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.MapMaker;
-
-import net.fabricmc.fabric.impl.transfer.DebugMessages;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -37,6 +34,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
+import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
 /**
  * Implementation of {@link InventoryStorage}.

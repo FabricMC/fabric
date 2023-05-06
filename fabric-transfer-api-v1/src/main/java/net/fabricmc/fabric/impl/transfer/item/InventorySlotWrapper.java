@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.impl.transfer.item;
 
-import net.fabricmc.fabric.impl.transfer.DebugMessages;
-
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
@@ -28,9 +26,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 
-import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
 /**
  * A wrapper around a single slot of an inventory.
