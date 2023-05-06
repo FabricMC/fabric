@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.Hand;
 
@@ -31,6 +30,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
+import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
 class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerInventoryStorage {
 	private final DroppedStacks droppedStacks;
@@ -99,8 +99,7 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 
 	@Override
 	public String toString() {
-		PlayerEntity player = playerInventory.player;
-		return "PlayerInventoryStorage[" + player.getEntityName() + "/" + player.getUuidAsString() + "]";
+		return "PlayerInventoryStorage[" + DebugMessages.forInventory(playerInventory) + "]";
 	}
 
 	private class DroppedStacks extends SnapshotParticipant<Integer> {

@@ -32,6 +32,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
+import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
 /**
  * Standard implementation of {@code Storage<FluidVariant>}, using cauldron/fluid mappings registered in {@link CauldronFluidContent}.
@@ -49,7 +50,7 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 	private record WorldLocation(World world, BlockPos pos) {
 		@Override
 		public String toString() {
-			return world.getDimensionKey().getValue() + "@" + pos.toShortString();
+			return DebugMessages.forGlobalPos(world, pos);
 		}
 	}
 

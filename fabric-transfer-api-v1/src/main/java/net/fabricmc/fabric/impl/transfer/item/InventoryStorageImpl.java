@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.MapMaker;
+
+import net.fabricmc.fabric.impl.transfer.DebugMessages;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -114,7 +117,7 @@ public class InventoryStorageImpl extends CombinedStorage<ItemVariant, SingleSlo
 
 	@Override
 	public String toString() {
-		return "InventoryStorage[" + inventory + "]";
+		return "InventoryStorage[" + DebugMessages.forInventory(inventory) + "]";
 	}
 
 	// Boolean is used to prevent allocation. Null values are not allowed by SnapshotParticipant.

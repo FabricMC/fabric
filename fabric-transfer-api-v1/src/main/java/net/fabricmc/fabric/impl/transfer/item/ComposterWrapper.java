@@ -41,6 +41,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
+import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
 /**
  * Implementation of {@code Storage<ItemVariant>} for composters.
@@ -58,7 +59,7 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 
 		@Override
 		public String toString() {
-			return world.getDimensionKey().getValue() + "@" + pos.toShortString();
+			return DebugMessages.forGlobalPos(world, pos);
 		}
 	}
 

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.transfer.item;
 
+import net.fabricmc.fabric.impl.transfer.DebugMessages;
+
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
@@ -164,6 +166,6 @@ class InventorySlotWrapper extends SingleStackStorage {
 
 	@Override
 	public String toString() {
-		return "InventorySlotWrapper[%s#%d]".formatted(storage.inventory, slot);
+		return "InventorySlotWrapper[%s#%d]".formatted(DebugMessages.forInventory(storage.inventory), slot);
 	}
 }

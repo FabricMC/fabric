@@ -23,6 +23,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
 /**
  * Wrapper around an {@link InventorySlotWrapper}, with additional canInsert and canExtract checks.
@@ -83,6 +84,6 @@ class SidedInventorySlotWrapper implements SingleSlotStorage<ItemVariant> {
 
 	@Override
 	public String toString() {
-		return "SidedInventorySlotWrapper[%s#%d/%s]".formatted(sidedInventory, slotWrapper.slot, direction.getName());
+		return "SidedInventorySlotWrapper[%s#%d/%s]".formatted(DebugMessages.forInventory(sidedInventory), slotWrapper.slot, direction.getName());
 	}
 }
