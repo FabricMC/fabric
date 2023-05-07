@@ -30,13 +30,23 @@ public final class ConventionalBlockTags {
 	private ConventionalBlockTags() {
 	}
 
-	public static final TagKey<Block> QUARTZ_ORES = register("quartz_ores");
+	// Ores and ingots - broad categories
 	public static final TagKey<Block> ORES = register("ores");
-	public static final TagKey<Block> CHESTS = register("chests");
+	// Ores and ingots - vanilla instances
+	public static final TagKey<Block> QUARTZ_ORES = register("quartz_ores");
+
 	public static final TagKey<Block> BOOKSHELVES = register("bookshelves");
+	public static final TagKey<Block> CHESTS = register("chests");
 	public static final TagKey<Block> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Block> GLASS_PANES = register("glass_panes");
 	public static final TagKey<Block> SHULKER_BOXES = register("shulker_boxes");
+	public static final TagKey<Block> WOODEN_BARRELS = register("wooden_barrels");
+
+	// Related to budding mechanics
+	public static final TagKey<Block> BUDDING_BLOCKS = register("budding_blocks");
+	public static final TagKey<Block> BUDS = register("buds");
+	public static final TagKey<Block> CLUSTERS = register("clusters");
+
 	/**
 	 * Blocks should be included in this tag if their movement can cause serious issues such as world corruption
 	 * upon being moved, such as chunk loaders or pipes,

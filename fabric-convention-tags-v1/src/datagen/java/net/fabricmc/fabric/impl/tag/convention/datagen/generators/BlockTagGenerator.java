@@ -18,11 +18,9 @@ package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -47,6 +45,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 				.addOptionalTag(BlockTags.LAPIS_ORES)
 				.addOptionalTag(BlockTags.DIAMOND_ORES)
 				.addOptionalTag(ConventionalBlockTags.QUARTZ_ORES);
+
 		getOrCreateTagBuilder(ConventionalBlockTags.CHESTS)
 				.add(Blocks.CHEST)
 				.add(Blocks.ENDER_CHEST)
@@ -55,11 +54,21 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 				.add(Blocks.BOOKSHELF);
 		generateGlassTags();
 		generateShulkerTag();
+		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_BARRELS)
+				.add(Blocks.BARREL);
+
+		generateBuddingTags();
 	}
 
-	@Override
-	protected RegistryKey<Block> reverseLookup(Block block) {
-		return block.getRegistryEntry().registryKey();
+	private void generateBuddingTags() {
+		getOrCreateTagBuilder(ConventionalBlockTags.BUDDING_BLOCKS)
+				.add(Blocks.BUDDING_AMETHYST);
+		getOrCreateTagBuilder(ConventionalBlockTags.BUDS)
+				.add(Blocks.SMALL_AMETHYST_BUD)
+				.add(Blocks.MEDIUM_AMETHYST_BUD)
+				.add(Blocks.LARGE_AMETHYST_BUD);
+		getOrCreateTagBuilder(ConventionalBlockTags.CLUSTERS)
+				.add(Blocks.AMETHYST_CLUSTER);
 	}
 
 	private void generateShulkerTag() {

@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:raw_iron_ores",
+      "required": false
+    },
+    {
+      "id": "#c:raw_copper_ores",
+      "required": false
+    },
+    {
+      "id": "#c:raw_gold_ores",
+      "required": false
+    }
+  ]
+}
