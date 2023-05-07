@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:uncolored_sandstone_slabs",
+      "required": false
+    },
+    {
+      "id": "#c:red_sandstone_slabs",
+      "required": false
+    }
+  ]
+}

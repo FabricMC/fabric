@@ -47,6 +47,19 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> BUDS = register("buds");
 	public static final TagKey<Block> CLUSTERS = register("clusters");
 
+	public static final TagKey<Block> VILLAGER_JOB_SITES = register("villager_job_sites");
+
+	// Sandstone
+	public static final TagKey<Block> SANDSTONE_BLOCKS = register("sandstone_blocks");
+	public static final TagKey<Block> SANDSTONE_SLABS = register("sandstone_slabs");
+	public static final TagKey<Block> SANDSTONE_STAIRS = register("sandstone_stairs");
+	public static final TagKey<Block> RED_SANDSTONE_BLOCKS = register("red_sandstone_blocks");
+	public static final TagKey<Block> RED_SANDSTONE_SLABS = register("red_sandstone_slabs");
+	public static final TagKey<Block> RED_SANDSTONE_STAIRS = register("red_sandstone_stairs");
+	public static final TagKey<Block> UNCOLORED_SANDSTONE_BLOCKS = register("uncolored_sandstone_blocks");
+	public static final TagKey<Block> UNCOLORED_SANDSTONE_SLABS = register("uncolored_sandstone_slabs");
+	public static final TagKey<Block> UNCOLORED_SANDSTONE_STAIRS = register("uncolored_sandstone_stairs");
+
 	/**
 	 * Blocks should be included in this tag if their movement can cause serious issues such as world corruption
 	 * upon being moved, such as chunk loaders or pipes,

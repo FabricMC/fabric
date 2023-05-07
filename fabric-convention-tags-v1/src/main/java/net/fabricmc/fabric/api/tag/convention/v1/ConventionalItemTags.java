@@ -88,6 +88,19 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> BUDS = register("buds");
 	public static final TagKey<Item> CLUSTERS = register("clusters");
 
+	public static final TagKey<Item> VILLAGER_JOB_SITES = register("villager_job_sites");
+
+	// Sandstone
+	public static final TagKey<Item> SANDSTONE_BLOCKS = register("sandstone_blocks");
+	public static final TagKey<Item> SANDSTONE_SLABS = register("sandstone_slabs");
+	public static final TagKey<Item> SANDSTONE_STAIRS = register("sandstone_stairs");
+	public static final TagKey<Item> RED_SANDSTONE_BLOCKS = register("red_sandstone_blocks");
+	public static final TagKey<Item> RED_SANDSTONE_SLABS = register("red_sandstone_slabs");
+	public static final TagKey<Item> RED_SANDSTONE_STAIRS = register("red_sandstone_stairs");
+	public static final TagKey<Item> UNCOLORED_SANDSTONE_BLOCKS = register("uncolored_sandstone_blocks");
+	public static final TagKey<Item> UNCOLORED_SANDSTONE_SLABS = register("uncolored_sandstone_slabs");
+	public static final TagKey<Item> UNCOLORED_SANDSTONE_STAIRS = register("uncolored_sandstone_stairs");
+
 	// Dyes
 	public static final TagKey<Item> DYES = register("dyes");
 	public static final TagKey<Item> BLACK_DYES = register("black_dyes");

@@ -58,6 +58,61 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 				.add(Blocks.BARREL);
 
 		generateBuddingTags();
+
+		getOrCreateTagBuilder(ConventionalBlockTags.VILLAGER_JOB_SITES)
+				.add(Blocks.BARREL)
+				.add(Blocks.BLAST_FURNACE)
+				.add(Blocks.BREWING_STAND)
+				.add(Blocks.CARTOGRAPHY_TABLE)
+				.add(Blocks.CAULDRON)
+				.add(Blocks.COMPOSTER)
+				.add(Blocks.FLETCHING_TABLE)
+				.add(Blocks.GRINDSTONE)
+				.add(Blocks.LECTERN)
+				.add(Blocks.LOOM)
+				.add(Blocks.SMITHING_TABLE)
+				.add(Blocks.SMOKER)
+				.add(Blocks.STONECUTTER);
+
+		generateSandstoneTags();
+	}
+
+	private void generateSandstoneTags() {
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_BLOCKS)
+				.addOptionalTag(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS)
+				.addOptionalTag(ConventionalBlockTags.RED_SANDSTONE_BLOCKS);
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_SLABS)
+				.addOptionalTag(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS)
+				.addOptionalTag(ConventionalBlockTags.RED_SANDSTONE_SLABS);
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_STAIRS)
+				.addOptionalTag(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS)
+				.addOptionalTag(ConventionalBlockTags.RED_SANDSTONE_STAIRS);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_BLOCKS)
+				.add(Blocks.RED_SANDSTONE)
+				.add(Blocks.CHISELED_RED_SANDSTONE)
+				.add(Blocks.CUT_RED_SANDSTONE)
+				.add(Blocks.SMOOTH_RED_SANDSTONE);
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_SLABS)
+				.add(Blocks.RED_SANDSTONE_SLAB)
+				.add(Blocks.CUT_RED_SANDSTONE_SLAB)
+				.add(Blocks.SMOOTH_RED_SANDSTONE_SLAB);
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_STAIRS)
+				.add(Blocks.RED_SANDSTONE_STAIRS)
+				.add(Blocks.SMOOTH_RED_SANDSTONE_STAIRS);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS)
+				.add(Blocks.SANDSTONE)
+				.add(Blocks.CHISELED_SANDSTONE)
+				.add(Blocks.CUT_SANDSTONE)
+				.add(Blocks.SMOOTH_SANDSTONE);
+		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS)
+				.add(Blocks.SANDSTONE_SLAB)
+				.add(Blocks.CUT_SANDSTONE_SLAB)
+				.add(Blocks.SMOOTH_SANDSTONE_SLAB);
+		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS)
+				.add(Blocks.SANDSTONE_STAIRS)
+				.add(Blocks.SMOOTH_SANDSTONE_STAIRS);
 	}
 
 	private void generateBuddingTags() {
