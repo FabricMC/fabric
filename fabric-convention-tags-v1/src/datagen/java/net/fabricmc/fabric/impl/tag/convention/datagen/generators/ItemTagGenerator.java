@@ -145,13 +145,14 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.BUCKET);
 		getOrCreateTagBuilder(ConventionalItemTags.LAVA_BUCKETS)
 				.add(Items.LAVA_BUCKET);
-		getOrCreateTagBuilder(ConventionalItemTags.WATER_BUCKETS)
+		getOrCreateTagBuilder(ConventionalItemTags.ENTITY_WATER_BUCKETS)
 				.add(Items.AXOLOTL_BUCKET)
 				.add(Items.COD_BUCKET)
 				.add(Items.PUFFERFISH_BUCKET)
 				.add(Items.TROPICAL_FISH_BUCKET)
 				.add(Items.SALMON_BUCKET)
-				.add(Items.TADPOLE_BUCKET)
+				.add(Items.TADPOLE_BUCKET);
+		getOrCreateTagBuilder(ConventionalItemTags.WATER_BUCKETS)
 				.add(Items.WATER_BUCKET);
 		getOrCreateTagBuilder(ConventionalItemTags.MILK_BUCKETS)
 				.add(Items.MILK_BUCKET);
