@@ -121,9 +121,9 @@ public final class EventFactory {
 	}
 
 	/**
-	 * @deprecated Always returns {@code false}, do not use.
+	 * @deprecated Always returns {@code false}, do not use. This is not to be used in events anymore, standard Java profilers will do fine.
 	 */
-	@Deprecated(forRemoval = true)
+	@Deprecated
 	public static boolean isProfilingEnabled() {
 		return false;
 	}
