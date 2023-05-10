@@ -16,11 +16,17 @@
 
 package net.fabricmc.fabric.test.item;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -31,5 +37,40 @@ public class FabricItemSettingsTests implements ModInitializer {
 		// Registers an item with a custom equipment slot.
 		Item testItem = new Item(new FabricItemSettings().equipmentSlot(stack -> EquipmentSlot.CHEST));
 		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "test_item"), testItem);
+
+		final List<String> vanillaMethods = getMethods(Item.Settings.class);
+		final List<String> fabricMethods = getMethods(FabricItemSettings.class);
+
+		final List<String> missingMethods = new ArrayList<>();
+
+		for (String method : vanillaMethods) {
+			if (!fabricMethods.contains(method)) {
+				missingMethods.add(method);
+			}
+		}
+
+		if (missingMethods.isEmpty()) {
+			return;
+		}
+
+		throw new IllegalStateException("Missing method overrides in FabricItemSettings: " + String.join(", ", missingMethods));
+	}
+
+	private List<String> getMethods(Class<?> clazz) {
+		List<String> methods = new ArrayList<>();
+
+		for (final Method method : clazz.getDeclaredMethods()) {
+			if (method.getReturnType() != clazz) {
+				continue;
+			}
+
+			if (Modifier.isStatic(method.getModifiers())) {
+				continue;
+			}
+
+			methods.add(method.getName());
+		}
+
+		return Collections.unmodifiableList(methods);
 	}
 }
