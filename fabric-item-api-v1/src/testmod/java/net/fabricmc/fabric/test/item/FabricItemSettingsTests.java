@@ -30,6 +30,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class FabricItemSettingsTests implements ModInitializer {
 	@Override
@@ -37,6 +38,11 @@ public class FabricItemSettingsTests implements ModInitializer {
 		// Registers an item with a custom equipment slot.
 		Item testItem = new Item(new FabricItemSettings().equipmentSlot(stack -> EquipmentSlot.CHEST));
 		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "test_item"), testItem);
+
+		if (!FabricLoader.getInstance().getMappingResolver().getCurrentRuntimeNamespace().equals("named")) {
+			// Cannot check the names outside a dev env.
+			return;
+		}
 
 		final List<String> vanillaMethods = getMethods(Item.Settings.class);
 		final List<String> fabricMethods = getMethods(FabricItemSettings.class);

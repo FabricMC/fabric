@@ -26,10 +26,16 @@ import net.minecraft.block.AbstractBlock;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class FabricBlockSettingsTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
+		if (!FabricLoader.getInstance().getMappingResolver().getCurrentRuntimeNamespace().equals("named")) {
+			// Cannot check the names outside a dev env.
+			return;
+		}
+
 		final List<String> vanillaMethods = getMethods(AbstractBlock.Settings.class);
 		final List<String> fabricMethods = getMethods(FabricBlockSettings.class);
 
