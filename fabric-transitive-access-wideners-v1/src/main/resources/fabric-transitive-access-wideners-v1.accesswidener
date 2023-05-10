@@ -280,10 +280,10 @@ transitive-accessible field net/minecraft/client/render/RenderPhase TRIPWIRE_PRO
 transitive-accessible field net/minecraft/client/render/RenderPhase END_PORTAL_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase END_GATEWAY_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase LINES_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
-transitive-accessible field net/minecraft/client/render/RenderPhase field_44817 Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
-transitive-accessible field net/minecraft/client/render/RenderPhase field_44818 Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
-transitive-accessible field net/minecraft/client/render/RenderPhase field_44819 Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
-transitive-accessible field net/minecraft/client/render/RenderPhase field_44820 Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
+transitive-accessible field net/minecraft/client/render/RenderPhase GUI_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
+transitive-accessible field net/minecraft/client/render/RenderPhase GUI_OVERLAY_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
+transitive-accessible field net/minecraft/client/render/RenderPhase GUI_TEXT_HIGHLIGHT_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
+transitive-accessible field net/minecraft/client/render/RenderPhase GUI_GHOST_RECIPE_OVERLAY_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase MIPMAP_BLOCK_ATLAS_TEXTURE Lnet/minecraft/client/render/RenderPhase$Texture;
 transitive-accessible field net/minecraft/client/render/RenderPhase BLOCK_ATLAS_TEXTURE Lnet/minecraft/client/render/RenderPhase$Texture;
 transitive-accessible field net/minecraft/client/render/RenderPhase NO_TEXTURE Lnet/minecraft/client/render/RenderPhase$TextureBase;
@@ -299,7 +299,7 @@ transitive-accessible field net/minecraft/client/render/RenderPhase DISABLE_CULL
 transitive-accessible field net/minecraft/client/render/RenderPhase ALWAYS_DEPTH_TEST Lnet/minecraft/client/render/RenderPhase$DepthTest;
 transitive-accessible field net/minecraft/client/render/RenderPhase EQUAL_DEPTH_TEST Lnet/minecraft/client/render/RenderPhase$DepthTest;
 transitive-accessible field net/minecraft/client/render/RenderPhase LEQUAL_DEPTH_TEST Lnet/minecraft/client/render/RenderPhase$DepthTest;
-transitive-accessible field net/minecraft/client/render/RenderPhase field_44814 Lnet/minecraft/client/render/RenderPhase$DepthTest;
+transitive-accessible field net/minecraft/client/render/RenderPhase BIGGER_DEPTH_TEST Lnet/minecraft/client/render/RenderPhase$DepthTest;
 transitive-accessible field net/minecraft/client/render/RenderPhase ALL_MASK Lnet/minecraft/client/render/RenderPhase$WriteMaskState;
 transitive-accessible field net/minecraft/client/render/RenderPhase COLOR_MASK Lnet/minecraft/client/render/RenderPhase$WriteMaskState;
 transitive-accessible field net/minecraft/client/render/RenderPhase DEPTH_MASK Lnet/minecraft/client/render/RenderPhase$WriteMaskState;
@@ -312,7 +312,7 @@ transitive-accessible field net/minecraft/client/render/RenderPhase TRANSLUCENT_
 transitive-accessible field net/minecraft/client/render/RenderPhase PARTICLES_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase WEATHER_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase CLOUDS_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
-transitive-accessible field net/minecraft/client/render/RenderPhase ITEM_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
+transitive-accessible field net/minecraft/client/render/RenderPhase ITEM_ENTITY_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase FULL_LINE_WIDTH Lnet/minecraft/client/render/RenderPhase$LineWidth;
-transitive-accessible field net/minecraft/client/render/RenderPhase field_44815 Lnet/minecraft/client/render/RenderPhase$class_8559;
-transitive-accessible field net/minecraft/client/render/RenderPhase field_44816 Lnet/minecraft/client/render/RenderPhase$class_8559;
+transitive-accessible field net/minecraft/client/render/RenderPhase NO_COLOR_LOGIC Lnet/minecraft/client/render/RenderPhase$ColorLogic;
+transitive-accessible field net/minecraft/client/render/RenderPhase OR_REVERSE Lnet/minecraft/client/render/RenderPhase$ColorLogic;

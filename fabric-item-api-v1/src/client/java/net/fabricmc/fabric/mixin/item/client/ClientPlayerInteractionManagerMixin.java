@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -42,15 +42,16 @@ public class ClientPlayerInteractionManagerMixin {
 	 * For this, we inject after vanilla decided that the stack was "not unchanged", and we set if back to "unchanged"
 	 * if the item wishes to continue mining.
 	 */
-	@ModifyVariable(
+	@Redirect(
 			at = @At(
 					value = "INVOKE",
-					target = "net/minecraft/util/math/BlockPos.equals(Ljava/lang/Object;)Z"
+					target = "Lnet/minecraft/item/ItemStack;canCombine(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z"
 			),
-			method = "isCurrentlyBreaking",
-			index = 3
+			method = "isCurrentlyBreaking"
 	)
-	private boolean fabricItemContinueBlockBreakingInject(boolean stackUnchanged) {
+	private boolean fabricItemContinueBlockBreakingInject(ItemStack stack, ItemStack otherStack) {
+		boolean stackUnchanged = ItemStack.canCombine(stack, this.selectedStack);
+
 		if (!stackUnchanged) {
 			// The stack changed and vanilla is about to cancel block breaking progress. Check if the item wants to continue block breaking instead.
 			ItemStack oldStack = this.selectedStack;

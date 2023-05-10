@@ -73,7 +73,7 @@ public abstract class AbstractFurnaceBlockEntityMixin extends LockableContainerB
 			ItemStack stack = newStack;
 
 			// Update cook time if needed. Code taken from AbstractFurnaceBlockEntity#setStack.
-			boolean bl = !stack.isEmpty() && stack.isItemEqual(itemStack) && ItemStack.areNbtEqual(stack, itemStack);
+			boolean bl = !stack.isEmpty() && ItemStack.canCombine(stack, itemStack);
 
 			if (!bl) {
 				this.cookTimeTotal = getCookTime(this.world, (AbstractFurnaceBlockEntity) (Object) this);
