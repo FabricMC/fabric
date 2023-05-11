@@ -17,10 +17,10 @@
 package net.fabricmc.fabric.test.item;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+import org.objectweb.asm.Opcodes;
 
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
@@ -30,7 +30,6 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.loader.api.FabricLoader;
 
 public class FabricItemSettingsTests implements ModInitializer {
 	@Override
@@ -39,19 +38,21 @@ public class FabricItemSettingsTests implements ModInitializer {
 		Item testItem = new Item(new FabricItemSettings().equipmentSlot(stack -> EquipmentSlot.CHEST));
 		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "test_item"), testItem);
 
-		if (!FabricLoader.getInstance().getMappingResolver().getCurrentRuntimeNamespace().equals("named")) {
-			// Cannot check the names outside a dev env.
-			return;
-		}
-
-		final List<String> vanillaMethods = getMethods(Item.Settings.class);
-		final List<String> fabricMethods = getMethods(FabricItemSettings.class);
-
 		final List<String> missingMethods = new ArrayList<>();
 
-		for (String method : vanillaMethods) {
-			if (!fabricMethods.contains(method)) {
-				missingMethods.add(method);
+		for (Method method : FabricItemSettings.class.getMethods()) {
+			if ((method.getModifiers() & Opcodes.ACC_SYNTHETIC) != 0) {
+				// Ignore synthetic bridge methods
+				continue;
+			}
+
+			if ((method.getModifiers() & Opcodes.ACC_STATIC) != 0) {
+				// Ignore static methods
+				continue;
+			}
+
+			if (method.getReturnType() == Item.Settings.class) {
+				missingMethods.add(method.getName());
 			}
 		}
 
@@ -60,23 +61,5 @@ public class FabricItemSettingsTests implements ModInitializer {
 		}
 
 		throw new IllegalStateException("Missing method overrides in FabricItemSettings: " + String.join(", ", missingMethods));
-	}
-
-	private List<String> getMethods(Class<?> clazz) {
-		List<String> methods = new ArrayList<>();
-
-		for (final Method method : clazz.getDeclaredMethods()) {
-			if (method.getReturnType() != clazz) {
-				continue;
-			}
-
-			if (Modifier.isStatic(method.getModifiers())) {
-				continue;
-			}
-
-			methods.add(method.getName());
-		}
-
-		return Collections.unmodifiableList(methods);
 	}
 }
