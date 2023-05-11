@@ -85,8 +85,16 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		this.emissiveLighting(otherAccessor.getEmissiveLightingPredicate());
 	}
 
-	public static FabricBlockSettings of() {
+	public static FabricBlockSettings create() {
 		return new FabricBlockSettings();
+	}
+
+	/**
+	 * @deprecated Use {@link FabricBlockSettings#create()} instead.
+	 */
+	@Deprecated
+	public static FabricBlockSettings of() {
+		return create();
 	}
 
 	public static FabricBlockSettings copyOf(AbstractBlock block) {
