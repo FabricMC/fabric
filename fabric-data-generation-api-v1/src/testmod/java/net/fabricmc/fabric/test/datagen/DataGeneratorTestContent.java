@@ -48,11 +48,11 @@ public class DataGeneratorTestContent implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		SIMPLE_BLOCK = createBlock("simple_block", true, AbstractBlock.Settings.of());
-		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false, AbstractBlock.Settings.of());
-		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false, AbstractBlock.Settings.of());
-		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, AbstractBlock.Settings.of().dropsLike(Blocks.STONE));
-		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, AbstractBlock.Settings.of().dropsNothing());
+		SIMPLE_BLOCK = createBlock("simple_block", true, AbstractBlock.Settings.create());
+		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false, AbstractBlock.Settings.create());
+		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false, AbstractBlock.Settings.create());
+		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, AbstractBlock.Settings.create().dropsLike(Blocks.STONE));
+		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, AbstractBlock.Settings.create().dropsNothing());
 
 		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.add(SIMPLE_BLOCK));
 

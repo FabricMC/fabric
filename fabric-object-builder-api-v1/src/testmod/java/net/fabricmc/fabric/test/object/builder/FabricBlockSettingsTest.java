@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.item;
+package net.fabricmc.fabric.test.object.builder;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -22,25 +22,17 @@ import java.util.List;
 
 import org.objectweb.asm.Opcodes;
 
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.block.AbstractBlock;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 
-public class FabricItemSettingsTests implements ModInitializer {
+public class FabricBlockSettingsTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		// Registers an item with a custom equipment slot.
-		Item testItem = new Item(new FabricItemSettings().equipmentSlot(stack -> EquipmentSlot.CHEST));
-		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "test_item"), testItem);
-
 		final List<String> missingMethods = new ArrayList<>();
 
-		for (Method method : FabricItemSettings.class.getMethods()) {
+		for (Method method : FabricBlockSettings.class.getMethods()) {
 			if ((method.getModifiers() & Opcodes.ACC_SYNTHETIC) != 0) {
 				// Ignore synthetic bridge methods
 				continue;
@@ -51,7 +43,7 @@ public class FabricItemSettingsTests implements ModInitializer {
 				continue;
 			}
 
-			if (method.getReturnType() == Item.Settings.class) {
+			if (method.getReturnType() == AbstractBlock.Settings.class) {
 				missingMethods.add(method.getName());
 			}
 		}
@@ -60,6 +52,6 @@ public class FabricItemSettingsTests implements ModInitializer {
 			return;
 		}
 
-		throw new IllegalStateException("Missing method overrides in FabricItemSettings: " + String.join(", ", missingMethods));
+		throw new IllegalStateException("Missing method overrides in FabricBlockSettings: " + String.join(", ", missingMethods));
 	}
 }

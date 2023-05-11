@@ -16,12 +16,15 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.block;
 
+import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MapColor;
+import net.minecraft.block.enums.Instrument;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.EntityType;
 import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.sound.BlockSoundGroup;
@@ -82,8 +85,16 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		this.emissiveLighting(otherAccessor.getEmissiveLightingPredicate());
 	}
 
-	public static FabricBlockSettings of() {
+	public static FabricBlockSettings create() {
 		return new FabricBlockSettings();
+	}
+
+	/**
+	 * @deprecated Use {@link FabricBlockSettings#create()} instead.
+	 */
+	@Deprecated
+	public static FabricBlockSettings of() {
+		return create();
 	}
 
 	public static FabricBlockSettings copyOf(AbstractBlock block) {
@@ -269,6 +280,54 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	@Override
 	public FabricBlockSettings requires(FeatureFlag... features) {
 		super.requires(features);
+		return this;
+	}
+
+	@Override
+	public FabricBlockSettings mapColor(Function<BlockState, MapColor> mapColorProvider) {
+		super.mapColor(mapColorProvider);
+		return this;
+	}
+
+	@Override
+	public FabricBlockSettings burnable() {
+		super.burnable();
+		return this;
+	}
+
+	@Override
+	public FabricBlockSettings liquid() {
+		super.liquid();
+		return this;
+	}
+
+	@Override
+	public FabricBlockSettings solid() {
+		super.solid();
+		return this;
+	}
+
+	@Override
+	public FabricBlockSettings notSolid() {
+		super.notSolid();
+		return this;
+	}
+
+	@Override
+	public FabricBlockSettings pistonBehavior(PistonBehavior pistonBehavior) {
+		super.pistonBehavior(pistonBehavior);
+		return this;
+	}
+
+	@Override
+	public FabricBlockSettings instrument(Instrument instrument) {
+		super.instrument(instrument);
+		return this;
+	}
+
+	@Override
+	public FabricBlockSettings replaceable() {
+		super.replaceable();
 		return this;
 	}
 
