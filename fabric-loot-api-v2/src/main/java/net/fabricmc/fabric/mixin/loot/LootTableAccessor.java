@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.function.LootFunction;
+import net.minecraft.util.Identifier;
 
 /**
  * Accesses loot table fields for {@link net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder#copyOf(LootTable)}.
@@ -34,4 +35,7 @@ public interface LootTableAccessor {
 
 	@Accessor("functions")
 	LootFunction[] fabric_getFunctions();
+
+	@Accessor("field_44892")
+	Identifier fabric_getRandomSequenceId();
 }
