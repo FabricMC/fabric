@@ -106,6 +106,7 @@ public interface FabricLootTableBuilder {
 		builder.type(table.getType());
 		builder.pools(List.of(accessor.fabric_getPools()));
 		builder.apply(List.of(accessor.fabric_getFunctions()));
+		builder.method_51883(accessor.fabric_getRandomSequenceId());
 
 		return builder;
 	}
