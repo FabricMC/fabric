@@ -110,12 +110,9 @@ public final class EventFactory {
 	}
 
 	/**
-	 * Get the listener object name. This can be used in debugging/profiling
-	 * scenarios.
-	 *
-	 * @param handler The listener object.
-	 * @return The listener name.
+	 * @deprecated This is not to be used in events anymore.
 	 */
+	@Deprecated
 	public static String getHandlerName(Object handler) {
 		return handler.getClass().getName();
 	}
