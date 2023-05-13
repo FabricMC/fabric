@@ -29,6 +29,7 @@
     ]
   },
   "description": "Events for player interaction with blocks and entities.",
+  "accessWidener": "fabric-events-interaction-v0.accesswidener",
   "mixins": [
     "fabric-events-interaction-v0.mixins.json",
     {
