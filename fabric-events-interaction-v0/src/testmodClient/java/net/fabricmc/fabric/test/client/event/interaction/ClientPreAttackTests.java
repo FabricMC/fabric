@@ -19,8 +19,6 @@ package net.fabricmc.fabric.test.client.event.interaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.item.Items;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -31,10 +29,14 @@ public class ClientPreAttackTests implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientPreAttackCallback.EVENT.register(player -> {
-			if (player.getMainHandStack().getItem() == Items.TORCH) {
-				KeyBinding attackKey = MinecraftClient.getInstance().options.attackKey;
-				LOGGER.info("Attacking using torch intercepted. Attack key clicks: {}", attackKey.wasPressed());
+		ClientPreAttackCallback.EVENT.register((client, player, clickCount) -> {
+			if (client.attackCooldown != 0) {
+				LOGGER.info("Does not handle because of attack cooldown: {}", client.attackCooldown);
+				return false;
+			}
+
+			if (!player.isSpectator() && player.getMainHandStack().getItem() == Items.TORCH) {
+				LOGGER.info("Attacking using torch intercepted. Attack key clicks: {}", clickCount != 0);
 				return true;
 			}
 

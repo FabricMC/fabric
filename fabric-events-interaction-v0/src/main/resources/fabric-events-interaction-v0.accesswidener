@@ -1,0 +1,7 @@
+accessWidener v2 named
+
+# fields for mods to use
+transitive-accessible field net/minecraft/client/MinecraftClient attackCooldown I
+
+transitive-accessible field net/minecraft/client/option/KeyBinding timesPressed I
+

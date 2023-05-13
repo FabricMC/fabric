@@ -4,3 +4,7 @@ version = getSubprojectVersion(project)
 moduleDependencies(project, [
 		'fabric-api-base'
 ])
+
+loom {
+	accessWidenerPath = file('src/main/resources/fabric-events-interaction-v0.accesswidener')
+}
