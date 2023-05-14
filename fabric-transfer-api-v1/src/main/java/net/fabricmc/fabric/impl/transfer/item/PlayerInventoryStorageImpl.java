@@ -30,6 +30,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
+import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
 class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerInventoryStorage {
 	private final DroppedStacks droppedStacks;
@@ -94,6 +95,11 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 		} else {
 			throw new UnsupportedOperationException("Unknown hand: " + hand);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "PlayerInventoryStorage[" + DebugMessages.forInventory(playerInventory) + "]";
 	}
 
 	private class DroppedStacks extends SnapshotParticipant<Integer> {

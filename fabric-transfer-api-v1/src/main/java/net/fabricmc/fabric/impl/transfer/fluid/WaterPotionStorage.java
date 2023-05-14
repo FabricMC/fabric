@@ -114,4 +114,9 @@ public class WaterPotionStorage implements ExtractionOnlyStorage<FluidVariant>, 
 		// Capacity is the same as the amount.
 		return getAmount();
 	}
+
+	@Override
+	public String toString() {
+		return "WaterPotionStorage[" + context + "]";
+	}
 }

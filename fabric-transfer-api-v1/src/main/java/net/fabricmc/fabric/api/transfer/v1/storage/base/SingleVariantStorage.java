@@ -158,4 +158,9 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 		variant = snapshot.resource();
 		amount = snapshot.amount();
 	}
+
+	@Override
+	public String toString() {
+		return "SingleVariantStorage[%d %s]".formatted(amount, variant);
+	}
 }

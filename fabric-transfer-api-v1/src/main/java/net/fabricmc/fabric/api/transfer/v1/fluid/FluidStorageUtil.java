@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
+import java.util.Objects;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,11 +28,14 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
+import net.minecraft.util.crash.CrashException;
+import net.minecraft.util.crash.CrashReport;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
 /**
  * Helper functions to work with fluid storages.
@@ -63,7 +68,18 @@ public final class FluidStorageUtil {
 
 		// Try to fill hand first, otherwise try to empty it.
 		Item handItem = player.getStackInHand(hand).getItem();
-		return moveWithSound(storage, handStorage, player, true, handItem) || moveWithSound(handStorage, storage, player, false, handItem);
+
+		try {
+			return moveWithSound(storage, handStorage, player, true, handItem) || moveWithSound(handStorage, storage, player, false, handItem);
+		} catch (Exception e) {
+			CrashReport report = CrashReport.create(e, "Interacting with fluid storage");
+			report.addElement("Interaction details")
+					.add("Player", () -> DebugMessages.forPlayer(player))
+					.add("Hand", hand)
+					.add("Hand item", handItem::toString)
+					.add("Fluid storage", () -> Objects.toString(storage, null));
+			throw new CrashException(report);
+		}
 	}
 
 	private static boolean moveWithSound(Storage<FluidVariant> from, Storage<FluidVariant> to, PlayerEntity player, boolean fill, Item handItem) {

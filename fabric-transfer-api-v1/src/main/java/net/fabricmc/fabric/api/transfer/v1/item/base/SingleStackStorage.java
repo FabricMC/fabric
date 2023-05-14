@@ -164,4 +164,9 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 	protected void readSnapshot(ItemStack snapshot) {
 		setStack(snapshot);
 	}
+
+	@Override
+	public String toString() {
+		return "SingleStackStorage[" + getStack() + "]";
+	}
 }
