@@ -26,26 +26,7 @@ import net.fabricmc.fabric.impl.base.event.EventFactoryImpl;
  * Helper for creating {@link Event} classes.
  */
 public final class EventFactory {
-	private static boolean profilingEnabled = true;
-
 	private EventFactory() { }
-
-	/**
-	 * @return True if events are supposed to be profiled.
-	 */
-	public static boolean isProfilingEnabled() {
-		return profilingEnabled;
-	}
-
-	/**
-	 * Invalidate and re-create all existing "invoker" instances across
-	 * events created by this EventFactory. Use this if, for instance,
-	 * the profilingEnabled field changes.
-	 */
-	// TODO: Turn this into an event?
-	public static void invalidate() {
-		EventFactoryImpl.invalidate();
-	}
 
 	/**
 	 * Create an "array-backed" Event instance.
@@ -129,13 +110,30 @@ public final class EventFactory {
 	}
 
 	/**
-	 * Get the listener object name. This can be used in debugging/profiling
-	 * scenarios.
-	 *
-	 * @param handler The listener object.
-	 * @return The listener name.
+	 * @deprecated This is not to be used in events anymore.
 	 */
+	@Deprecated
 	public static String getHandlerName(Object handler) {
 		return handler.getClass().getName();
+	}
+
+	/**
+	 * @deprecated Always returns {@code false}, do not use. This is not to be used in events anymore, standard Java profilers will do fine.
+	 */
+	@Deprecated
+	public static boolean isProfilingEnabled() {
+		return false;
+	}
+
+	/**
+	 * Invalidate and re-create all existing "invoker" instances across
+	 * events created by this EventFactory. Use this if, for instance,
+	 * the profilingEnabled field changes.
+	 *
+	 * @deprecated Do not use, will be removed in a future release.
+	 */
+	@Deprecated(forRemoval = true)
+	public static void invalidate() {
+		EventFactoryImpl.invalidate();
 	}
 }

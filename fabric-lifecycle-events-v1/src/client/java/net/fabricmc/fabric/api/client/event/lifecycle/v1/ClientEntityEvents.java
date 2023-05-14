@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.client.event.lifecycle.v1;
 
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -33,21 +32,8 @@ public final class ClientEntityEvents {
 	 * <p>When this event is called, the chunk is already in the world.
 	 */
 	public static final Event<ClientEntityEvents.Load> ENTITY_LOAD = EventFactory.createArrayBacked(ClientEntityEvents.Load.class, callbacks -> (entity, world) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = world.getProfiler();
-			profiler.push("fabricClientEntityLoad");
-
-			for (ClientEntityEvents.Load callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onLoad(entity, world);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (ClientEntityEvents.Load callback : callbacks) {
-				callback.onLoad(entity, world);
-			}
+		for (Load callback : callbacks) {
+			callback.onLoad(entity, world);
 		}
 	});
 
@@ -57,21 +43,8 @@ public final class ClientEntityEvents {
 	 * <p>This event is called before the entity is unloaded from the world.
 	 */
 	public static final Event<ClientEntityEvents.Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(ClientEntityEvents.Unload.class, callbacks -> (entity, world) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = world.getProfiler();
-			profiler.push("fabricClientEntityUnload");
-
-			for (ClientEntityEvents.Unload callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onUnload(entity, world);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (ClientEntityEvents.Unload callback : callbacks) {
-				callback.onUnload(entity, world);
-			}
+		for (Unload callback : callbacks) {
+			callback.onUnload(entity, world);
 		}
 	});
 
