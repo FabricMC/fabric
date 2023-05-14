@@ -53,13 +53,13 @@ public class SpriteFinderImpl implements SpriteFinder {
 	}
 
 	@Override
-	public Sprite find(QuadView quad, int textureIndex) {
+	public Sprite find(QuadView quad) {
 		float u = 0;
 		float v = 0;
 
 		for (int i = 0; i < 4; i++) {
-			u += quad.spriteU(i, textureIndex);
-			v += quad.spriteV(i, textureIndex);
+			u += quad.u(i);
+			v += quad.v(i);
 		}
 
 		return find(u * 0.25f, v * 0.25f);

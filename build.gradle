@@ -331,6 +331,12 @@ javadoc {
 		)
 		// Disable the crazy super-strict doclint tool in Java 8
 		addStringOption("Xdoclint:none", "-quiet")
+
+		tags(
+				'apiNote:a:API Note:',
+				'implSpec:a:Implementation Requirements:',
+				'implNote:a:Implementation Note:'
+		)
 	}
 
 	allprojects.each {

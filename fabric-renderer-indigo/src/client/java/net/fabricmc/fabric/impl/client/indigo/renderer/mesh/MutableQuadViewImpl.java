@@ -29,7 +29,7 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_U;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_X;
 
-import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
@@ -66,75 +66,38 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public final MutableQuadViewImpl material(RenderMaterial material) {
-		if (material == null) {
-			material = IndigoRenderer.MATERIAL_STANDARD;
-		}
-
-		data[baseIndex + HEADER_BITS] = EncodingFormat.material(data[baseIndex + HEADER_BITS], (Value) material);
-		return this;
-	}
-
-	@Override
-	public final MutableQuadViewImpl cullFace(Direction face) {
-		data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(data[baseIndex + HEADER_BITS], face);
-		nominalFace(face);
-		return this;
-	}
-
-	@Override
-	public final MutableQuadViewImpl nominalFace(Direction face) {
-		nominalFace = face;
-		return this;
-	}
-
-	@Override
-	public final MutableQuadViewImpl colorIndex(int colorIndex) {
-		data[baseIndex + HEADER_COLOR_INDEX] = colorIndex;
-		return this;
-	}
-
-	@Override
-	public final MutableQuadViewImpl tag(int tag) {
-		data[baseIndex + HEADER_TAG] = tag;
-		return this;
-	}
-
-	/**
-	 * @deprecated will be removed in 1.17 cycle - see docs in interface
-	 */
-	@Deprecated
-	@Override
-	public final MutableQuadViewImpl fromVanilla(int[] quadData, int startIndex, boolean isItem) {
-		System.arraycopy(quadData, startIndex, data, baseIndex + HEADER_STRIDE, QUAD_STRIDE);
-		isGeometryInvalid = true;
-		return this;
-	}
-
-	@Override
-	public final MutableQuadViewImpl fromVanilla(BakedQuad quad, RenderMaterial material, Direction cullFace) {
-		System.arraycopy(quad.getVertexData(), 0, data, baseIndex + HEADER_STRIDE, QUAD_STRIDE);
-		data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(0, cullFace);
-		nominalFace(quad.getFace());
-		colorIndex(quad.getColorIndex());
-
-		if (!quad.hasShade()) {
-			material = RenderMaterialImpl.setDisableDiffuse((Value) material, 0, true);
-		}
-
-		material(material);
-		tag(0);
-		isGeometryInvalid = true;
-		return this;
-	}
-
-	@Override
 	public MutableQuadViewImpl pos(int vertexIndex, float x, float y, float z) {
 		final int index = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_X;
 		data[index] = Float.floatToRawIntBits(x);
 		data[index + 1] = Float.floatToRawIntBits(y);
 		data[index + 2] = Float.floatToRawIntBits(z);
 		isGeometryInvalid = true;
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl color(int vertexIndex, int color) {
+		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_COLOR] = color;
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl uv(int vertexIndex, float u, float v) {
+		final int i = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_U;
+		data[i] = Float.floatToRawIntBits(u);
+		data[i + 1] = Float.floatToRawIntBits(v);
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl spriteBake(Sprite sprite, int bakeFlags) {
+		TextureHelper.bakeSprite(this, sprite, bakeFlags);
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl lightmap(int vertexIndex, int lightmap) {
+		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_LIGHTMAP] = lightmap;
 		return this;
 	}
 
@@ -169,34 +132,60 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl lightmap(int vertexIndex, int lightmap) {
-		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_LIGHTMAP] = lightmap;
+	public final MutableQuadViewImpl cullFace(@Nullable Direction face) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(data[baseIndex + HEADER_BITS], face);
+		nominalFace(face);
 		return this;
 	}
 
 	@Override
-	public MutableQuadViewImpl spriteColor(int vertexIndex, int spriteIndex, int color) {
-		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
-
-		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_COLOR] = color;
+	public final MutableQuadViewImpl nominalFace(@Nullable Direction face) {
+		nominalFace = face;
 		return this;
 	}
 
 	@Override
-	public MutableQuadViewImpl sprite(int vertexIndex, int spriteIndex, float u, float v) {
-		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
+	public final MutableQuadViewImpl material(RenderMaterial material) {
+		if (material == null) {
+			material = IndigoRenderer.MATERIAL_STANDARD;
+		}
 
-		final int i = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_U;
-		data[i] = Float.floatToRawIntBits(u);
-		data[i + 1] = Float.floatToRawIntBits(v);
+		data[baseIndex + HEADER_BITS] = EncodingFormat.material(data[baseIndex + HEADER_BITS], (Value) material);
 		return this;
 	}
 
 	@Override
-	public MutableQuadViewImpl spriteBake(int spriteIndex, Sprite sprite, int bakeFlags) {
-		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
+	public final MutableQuadViewImpl colorIndex(int colorIndex) {
+		data[baseIndex + HEADER_COLOR_INDEX] = colorIndex;
+		return this;
+	}
 
-		TextureHelper.bakeSprite(this, spriteIndex, sprite, bakeFlags);
+	@Override
+	public final MutableQuadViewImpl tag(int tag) {
+		data[baseIndex + HEADER_TAG] = tag;
+		return this;
+	}
+
+	@Override
+	public final MutableQuadViewImpl fromVanilla(int[] quadData, int startIndex) {
+		System.arraycopy(quadData, startIndex, data, baseIndex + HEADER_STRIDE, QUAD_STRIDE);
+		isGeometryInvalid = true;
+		return this;
+	}
+
+	@Override
+	public final MutableQuadViewImpl fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace) {
+		fromVanilla(quad.getVertexData(), 0);
+		data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(0, cullFace);
+		nominalFace(quad.getFace());
+		colorIndex(quad.getColorIndex());
+
+		if (!quad.hasShade()) {
+			material = RenderMaterialImpl.setDisableDiffuse((Value) material, true);
+		}
+
+		material(material);
+		tag(0);
 		return this;
 	}
 }
