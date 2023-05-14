@@ -170,7 +170,7 @@ public abstract class AoCalculator {
 	private void calcVanilla(MutableQuadViewImpl quad, float[] aoDest, int[] lightDest) {
 		vanillaAoControlBits.clear();
 		final Direction lightFace = quad.lightFace();
-		quad.toVanilla(0, vertexData, 0, false);
+		quad.toVanilla(vertexData, 0);
 
 		VanillaAoHelper.updateShape(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vertexData, lightFace, vanillaAoData, vanillaAoControlBits);
 		vanillaCalc.apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, lightFace, vanillaAoData, vanillaAoControlBits, quad.hasShade());

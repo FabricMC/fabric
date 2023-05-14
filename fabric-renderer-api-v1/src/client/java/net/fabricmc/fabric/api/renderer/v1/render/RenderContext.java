@@ -46,6 +46,8 @@ public interface RenderContext {
 	 * Fabric causes vanilla baked models to send themselves
 	 * via this interface. Can also be used by compound models that contain a mix
 	 * of vanilla baked models, packaged quads and/or dynamic elements.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
 	default BakedModelConsumer bakedModelConsumer() {
 		// Default implementation is provided for compat with older renderer implementations,
@@ -62,43 +64,6 @@ public interface RenderContext {
 				fallback.accept(model);
 			}
 		};
-	}
-
-	interface BakedModelConsumer extends Consumer<BakedModel> {
-		/**
-		 * Render a baked model by processing its {@linkplain BakedModel#getQuads} using the rendered block state.
-		 *
-		 * <p>For block contexts, this will pass the block state being rendered to {@link BakedModel#getQuads}.
-		 * For item contexts, this will pass a {@code null} block state to {@link BakedModel#getQuads}.
-		 * {@link #accept(BakedModel, BlockState)} can be used instead to pass the block state explicitly.
-		 */
-		@Override
-		void accept(BakedModel model);
-
-		/**
-		 * Render a baked model by processing its {@linkplain BakedModel#getQuads} with an explicit block state.
-		 *
-		 * <p>This overload allows passing the block state (or {@code null} to query the item quads).
-		 * This is useful when a model is being wrapped, and expects a different
-		 * block state than the one of the block being rendered.
-		 *
-		 * <p>For item render contexts, you can use this function if you want to render the model with a specific block state.
-		 * Otherwise, use {@linkplain #accept(BakedModel)} the other overload} to render the usual item quads.
-		 */
-		void accept(BakedModel model, @Nullable BlockState state);
-	}
-
-	/**
-	 * Fabric causes vanilla baked models to send themselves
-	 * via this interface. Can also be used by compound models that contain a mix
-	 * of vanilla baked models, packaged quads and/or dynamic elements.
-	 *
-	 * @deprecated Prefer using the more flexible {@link #bakedModelConsumer}.
-	 */
-	@Deprecated
-	default Consumer<BakedModel> fallbackConsumer() {
-		// This default implementation relies on implementors overriding bakedModelConsumer().
-		return bakedModelConsumer();
 	}
 
 	/**
@@ -136,6 +101,43 @@ public interface RenderContext {
 	 * MUST be called before exiting from {@link FabricBakedModel} .emit... methods.
 	 */
 	void popTransform();
+
+	/**
+	 * Fabric causes vanilla baked models to send themselves
+	 * via this interface. Can also be used by compound models that contain a mix
+	 * of vanilla baked models, packaged quads and/or dynamic elements.
+	 *
+	 * @deprecated Prefer using the more flexible {@link #bakedModelConsumer}.
+	 */
+	@Deprecated
+	default Consumer<BakedModel> fallbackConsumer() {
+		// This default implementation relies on implementors overriding bakedModelConsumer().
+		return bakedModelConsumer();
+	}
+
+	interface BakedModelConsumer extends Consumer<BakedModel> {
+		/**
+		 * Render a baked model by processing its {@linkplain BakedModel#getQuads} using the rendered block state.
+		 *
+		 * <p>For block contexts, this will pass the block state being rendered to {@link BakedModel#getQuads}.
+		 * For item contexts, this will pass a {@code null} block state to {@link BakedModel#getQuads}.
+		 * {@link #accept(BakedModel, BlockState)} can be used instead to pass the block state explicitly.
+		 */
+		@Override
+		void accept(BakedModel model);
+
+		/**
+		 * Render a baked model by processing its {@linkplain BakedModel#getQuads} with an explicit block state.
+		 *
+		 * <p>This overload allows passing the block state (or {@code null} to query the item quads).
+		 * This is useful when a model is being wrapped, and expects a different
+		 * block state than the one of the block being rendered.
+		 *
+		 * <p>For item render contexts, you can use this function if you want to render the model with a specific block state.
+		 * Otherwise, use {@linkplain #accept(BakedModel)} the other overload} to render the usual item quads.
+		 */
+		void accept(BakedModel model, @Nullable BlockState state);
+	}
 
 	@FunctionalInterface
 	interface QuadTransform {

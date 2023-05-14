@@ -34,6 +34,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
+import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
@@ -72,29 +73,30 @@ public abstract class AbstractQuadRenderer {
 			return;
 		}
 
-		tessellateQuad(quad, 0, isVanilla);
+		tessellateQuad(quad, isVanilla);
 	}
 
 	/**
 	 * Determines color index and render layer, then routes to appropriate
 	 * tessellate routine based on material properties.
 	 */
-	private void tessellateQuad(MutableQuadViewImpl quad, int textureIndex, boolean isVanilla) {
+	private void tessellateQuad(MutableQuadViewImpl quad, boolean isVanilla) {
 		final RenderMaterialImpl.Value mat = quad.material();
-		final int colorIndex = mat.disableColorIndex(textureIndex) ? -1 : quad.colorIndex();
-		final RenderLayer renderLayer = blockInfo.effectiveRenderLayer(mat.blendMode(textureIndex));
+		final int colorIndex = mat.disableColorIndex() ? -1 : quad.colorIndex();
+		final RenderLayer renderLayer = blockInfo.effectiveRenderLayer(mat.blendMode());
+		final TriState ao = mat.ambientOcclusion();
 
-		if (blockInfo.defaultAo && !mat.disableAo(textureIndex)) {
+		if (blockInfo.useAo && (ao == TriState.TRUE || (ao == TriState.DEFAULT && blockInfo.defaultAo))) {
 			// needs to happen before offsets are applied
 			aoCalc.compute(quad, isVanilla);
 
-			if (mat.emissive(textureIndex)) {
+			if (mat.emissive()) {
 				tessellateSmoothEmissive(quad, renderLayer, colorIndex);
 			} else {
 				tessellateSmooth(quad, renderLayer, colorIndex);
 			}
 		} else {
-			if (mat.emissive(textureIndex)) {
+			if (mat.emissive()) {
 				tessellateFlatEmissive(quad, renderLayer, colorIndex);
 			} else {
 				tessellateFlat(quad, renderLayer, colorIndex);
@@ -106,13 +108,13 @@ public abstract class AbstractQuadRenderer {
 	private void colorizeQuad(MutableQuadViewImpl q, int blockColorIndex) {
 		if (blockColorIndex == -1) {
 			for (int i = 0; i < 4; i++) {
-				q.spriteColor(i, 0, ColorHelper.swapRedBlueIfNeeded(q.spriteColor(i, 0)));
+				q.color(i, ColorHelper.swapRedBlueIfNeeded(q.color(i)));
 			}
 		} else {
 			final int blockColor = blockInfo.blockColor(blockColorIndex);
 
 			for (int i = 0; i < 4; i++) {
-				q.spriteColor(i, 0, ColorHelper.swapRedBlueIfNeeded(ColorHelper.multiplyColor(blockColor, q.spriteColor(i, 0))));
+				q.color(i, ColorHelper.swapRedBlueIfNeeded(ColorHelper.multiplyColor(blockColor, q.color(i))));
 			}
 		}
 	}
@@ -128,21 +130,20 @@ public abstract class AbstractQuadRenderer {
 		if (useNormals) {
 			quad.populateMissingNormals();
 		} else {
-			final Vector3f faceNormal = quad.faceNormal();
-			normalVec.set(faceNormal.x(), faceNormal.y(), faceNormal.z());
+			normalVec.set(quad.faceNormal());
 			normalVec.mul(normalMatrix);
 		}
 
 		for (int i = 0; i < 4; i++) {
 			buff.vertex(matrix, quad.x(i), quad.y(i), quad.z(i));
-			final int color = quad.spriteColor(i, 0);
+			final int color = quad.color(i);
 			buff.color(color & 0xFF, (color >> 8) & 0xFF, (color >> 16) & 0xFF, (color >> 24) & 0xFF);
-			buff.texture(quad.spriteU(i, 0), quad.spriteV(i, 0));
+			buff.texture(quad.u(i), quad.v(i));
 			buff.overlay(overlay);
 			buff.light(quad.lightmap(i));
 
 			if (useNormals) {
-				normalVec.set(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
+				quad.copyNormal(i, normalVec);
 				normalVec.mul(normalMatrix);
 			}
 
@@ -158,7 +159,7 @@ public abstract class AbstractQuadRenderer {
 		colorizeQuad(q, blockColorIndex);
 
 		for (int i = 0; i < 4; i++) {
-			q.spriteColor(i, 0, ColorHelper.multiplyRGB(q.spriteColor(i, 0), aoCalc.ao[i]));
+			q.color(i, ColorHelper.multiplyRGB(q.color(i), aoCalc.ao[i]));
 			q.lightmap(i, ColorHelper.maxBrightness(q.lightmap(i), aoCalc.light[i]));
 		}
 
@@ -170,7 +171,7 @@ public abstract class AbstractQuadRenderer {
 		colorizeQuad(q, blockColorIndex);
 
 		for (int i = 0; i < 4; i++) {
-			q.spriteColor(i, 0, ColorHelper.multiplyRGB(q.spriteColor(i, 0), aoCalc.ao[i]));
+			q.color(i, ColorHelper.multiplyRGB(q.color(i), aoCalc.ao[i]));
 			q.lightmap(i, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 		}
 
@@ -240,14 +241,14 @@ public abstract class AbstractQuadRenderer {
 			final float faceShade = blockInfo.blockView.getBrightness(quad.lightFace(), quad.hasShade());
 
 			for (int i = 0; i < 4; i++) {
-				quad.spriteColor(i, 0, ColorHelper.multiplyRGB(quad.spriteColor(i, 0), vertexShade(quad, i, faceShade)));
+				quad.color(i, ColorHelper.multiplyRGB(quad.color(i), vertexShade(quad, i, faceShade)));
 			}
 		} else {
 			final float diffuseShade = blockInfo.blockView.getBrightness(quad.lightFace(), quad.hasShade());
 
 			if (diffuseShade != 1.0f) {
 				for (int i = 0; i < 4; i++) {
-					quad.spriteColor(i, 0, ColorHelper.multiplyRGB(quad.spriteColor(i, 0), diffuseShade));
+					quad.color(i, ColorHelper.multiplyRGB(quad.color(i), diffuseShade));
 				}
 			}
 		}
