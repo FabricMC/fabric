@@ -1,1 +1,4 @@
+# un-ignore generated resources
+!/src/generated/resources/
+# re-ignore the caches
 /src/generated/resources/.cache/
