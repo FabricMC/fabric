@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.BlockTags;
@@ -27,6 +29,25 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 
 public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
+	static List<Block> VILLAGER_JOB_SITE_BLOCKS = List.of(
+			Blocks.BARREL,
+			Blocks.BLAST_FURNACE,
+			Blocks.BREWING_STAND,
+			Blocks.CARTOGRAPHY_TABLE,
+			Blocks.CAULDRON,
+			Blocks.LAVA_CAULDRON,
+			Blocks.WATER_CAULDRON,
+			Blocks.POWDER_SNOW_CAULDRON,
+			Blocks.COMPOSTER,
+			Blocks.FLETCHING_TABLE,
+			Blocks.GRINDSTONE,
+			Blocks.LECTERN,
+			Blocks.LOOM,
+			Blocks.SMITHING_TABLE,
+			Blocks.SMOKER,
+			Blocks.STONECUTTER
+	);
+
 	public BlockTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 		super(output, registriesFuture);
 	}
@@ -59,20 +80,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 
 		generateBuddingTags();
 
-		getOrCreateTagBuilder(ConventionalBlockTags.VILLAGER_JOB_SITES)
-				.add(Blocks.BARREL)
-				.add(Blocks.BLAST_FURNACE)
-				.add(Blocks.BREWING_STAND)
-				.add(Blocks.CARTOGRAPHY_TABLE)
-				.add(Blocks.CAULDRON)
-				.add(Blocks.COMPOSTER)
-				.add(Blocks.FLETCHING_TABLE)
-				.add(Blocks.GRINDSTONE)
-				.add(Blocks.LECTERN)
-				.add(Blocks.LOOM)
-				.add(Blocks.SMITHING_TABLE)
-				.add(Blocks.SMOKER)
-				.add(Blocks.STONECUTTER);
+		VILLAGER_JOB_SITE_BLOCKS.forEach(getOrCreateTagBuilder(ConventionalBlockTags.VILLAGER_JOB_SITES)::add);
 
 		generateSandstoneTags();
 	}

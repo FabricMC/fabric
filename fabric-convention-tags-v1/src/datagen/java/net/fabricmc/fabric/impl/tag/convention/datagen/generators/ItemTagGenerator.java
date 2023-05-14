@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryWrapper;
@@ -60,6 +61,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		generateOreAndRelatedTags();
 		generateConsumableTags();
 		generateDyeTags();
+		generateVillagerJobSites();
 		copyItemTags();
 	}
 
@@ -74,8 +76,6 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.BUDDING_BLOCKS, ConventionalItemTags.BUDDING_BLOCKS);
 		copy(ConventionalBlockTags.BUDS, ConventionalItemTags.BUDS);
 		copy(ConventionalBlockTags.CLUSTERS, ConventionalItemTags.CLUSTERS);
-
-		copy(ConventionalBlockTags.VILLAGER_JOB_SITES, ConventionalItemTags.VILLAGER_JOB_SITES);
 
 		copy(ConventionalBlockTags.SANDSTONE_BLOCKS, ConventionalItemTags.SANDSTONE_BLOCKS);
 		copy(ConventionalBlockTags.SANDSTONE_SLABS, ConventionalItemTags.SANDSTONE_SLABS);
@@ -290,6 +290,13 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.BOW);
 		getOrCreateTagBuilder(ConventionalItemTags.SHIELDS)
 				.add(Items.SHIELD);
+	}
+
+	private void generateVillagerJobSites() {
+		BlockTagGenerator.VILLAGER_JOB_SITE_BLOCKS.stream()
+				.map(ItemConvertible::asItem)
+				.distinct() // cauldron blocks have the same item
+				.forEach(getOrCreateTagBuilder(ConventionalItemTags.VILLAGER_JOB_SITES)::add);
 	}
 
 	private static Identifier createFabricId(String id) {
