@@ -32,8 +32,11 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
  * Sidedness-aware wrapper around a {@link InventoryStorageImpl} for sided inventories.
  */
 class SidedInventoryStorageImpl extends CombinedStorage<ItemVariant, SingleSlotStorage<ItemVariant>> implements InventoryStorage {
+	private final InventoryStorageImpl backingStorage;
+
 	SidedInventoryStorageImpl(InventoryStorageImpl storage, Direction direction) {
 		super(Collections.unmodifiableList(createWrapperList(storage, direction)));
+		this.backingStorage = storage;
 	}
 
 	@Override
@@ -51,5 +54,11 @@ class SidedInventoryStorageImpl extends CombinedStorage<ItemVariant, SingleSlotS
 		}
 
 		return Arrays.asList(slots);
+	}
+
+	@Override
+	public String toString() {
+		// These two are the same from the user's perspective.
+		return backingStorage.toString();
 	}
 }

@@ -25,6 +25,8 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.inventory.Inventory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.util.crash.CrashException;
+import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
@@ -118,6 +120,15 @@ public final class StorageUtil {
 			}
 
 			iterationTransaction.commit();
+		} catch (Exception e) {
+			CrashReport report = CrashReport.create(e, "Moving resources between storages");
+			report.addElement("Move details")
+					.add("Input storage", from::toString)
+					.add("Output storage", to::toString)
+					.add("Filter", filter::toString)
+					.add("Max amount", maxAmount)
+					.add("Transaction", transaction);
+			throw new CrashException(report);
 		}
 
 		return totalMoved;
@@ -140,10 +151,19 @@ public final class StorageUtil {
 
 		if (storage == null) return null;
 
-		for (StorageView<T> view : storage.nonEmptyViews()) {
-			T resource = view.getResource();
-			long amount = view.extract(resource, maxAmount, transaction);
-			if (amount > 0) return new ResourceAmount<>(resource, amount);
+		try {
+			for (StorageView<T> view : storage.nonEmptyViews()) {
+				T resource = view.getResource();
+				long amount = view.extract(resource, maxAmount, transaction);
+				if (amount > 0) return new ResourceAmount<>(resource, amount);
+			}
+		} catch (Exception e) {
+			CrashReport report = CrashReport.create(e, "Extracting resources from storage");
+			report.addElement("Extraction details")
+					.add("Storage", storage::toString)
+					.add("Max amount", maxAmount)
+					.add("Transaction", transaction);
+			throw new CrashException(report);
 		}
 
 		return null;
@@ -160,16 +180,26 @@ public final class StorageUtil {
 		StoragePreconditions.notNegative(maxAmount);
 		long amount = 0;
 
-		for (SingleSlotStorage<T> slot : slots) {
-			if (!slot.isResourceBlank()) {
+		try {
+			for (SingleSlotStorage<T> slot : slots) {
+				if (!slot.isResourceBlank()) {
+					amount += slot.insert(resource, maxAmount - amount, transaction);
+					if (amount == maxAmount) return amount;
+				}
+			}
+
+			for (SingleSlotStorage<T> slot : slots) {
 				amount += slot.insert(resource, maxAmount - amount, transaction);
 				if (amount == maxAmount) return amount;
 			}
-		}
-
-		for (SingleSlotStorage<T> slot : slots) {
-			amount += slot.insert(resource, maxAmount - amount, transaction);
-			if (amount == maxAmount) return amount;
+		} catch (Exception e) {
+			CrashReport report = CrashReport.create(e, "Inserting resources into slots");
+			report.addElement("Slotted insertion details")
+					.add("Slots", () -> Objects.toString(slots, null))
+					.add("Resource", () -> Objects.toString(resource, null))
+					.add("Max amount", maxAmount)
+					.add("Transaction", transaction);
+			throw new CrashException(report);
 		}
 
 		return amount;
@@ -187,12 +217,22 @@ public final class StorageUtil {
 	public static <T> long tryInsertStacking(@Nullable Storage<T> storage, T resource, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notNegative(maxAmount);
 
-		if (storage instanceof SlottedStorage<T> slottedStorage) {
-			return insertStacking(slottedStorage.getSlots(), resource, maxAmount, transaction);
-		} else if (storage != null) {
-			return storage.insert(resource, maxAmount, transaction);
-		} else {
-			return 0;
+		try {
+			if (storage instanceof SlottedStorage<T> slottedStorage) {
+				return insertStacking(slottedStorage.getSlots(), resource, maxAmount, transaction);
+			} else if (storage != null) {
+				return storage.insert(resource, maxAmount, transaction);
+			} else {
+				return 0;
+			}
+		} catch (Exception e) {
+			CrashReport report = CrashReport.create(e, "Inserting resources into a storage");
+			report.addElement("Insertion details")
+					.add("Storage", () -> Objects.toString(storage, null))
+					.add("Resource", () -> Objects.toString(resource, null))
+					.add("Max amount", maxAmount)
+					.add("Transaction", transaction);
+			throw new CrashException(report);
 		}
 	}
 

@@ -21,6 +21,7 @@ import java.util.Map;
 import com.google.common.collect.MapMaker;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.screen.ScreenHandler;
 
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
@@ -49,5 +50,10 @@ public class CursorSlotWrapper extends SingleStackStorage {
 	@Override
 	protected void setStack(ItemStack stack) {
 		screenHandler.setCursorStack(stack);
+	}
+
+	@Override
+	public String toString() {
+		return "CursorSlotWrapper[" + screenHandler + "/" + Registries.SCREEN_HANDLER.getId(screenHandler.getType()) + "]";
 	}
 }

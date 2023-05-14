@@ -34,6 +34,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
+import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
 /**
  * Implementation of {@link InventoryStorage}.
@@ -110,6 +111,11 @@ public class InventoryStorageImpl extends CombinedStorage<ItemVariant, SingleSlo
 		} else {
 			return this;
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "InventoryStorage[" + DebugMessages.forInventory(inventory) + "]";
 	}
 
 	// Boolean is used to prevent allocation. Null values are not allowed by SnapshotParticipant.

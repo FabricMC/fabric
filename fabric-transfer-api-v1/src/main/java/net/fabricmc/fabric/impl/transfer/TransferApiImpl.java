@@ -66,6 +66,11 @@ public class TransferApiImpl {
 		public long getVersion() {
 			return 0;
 		}
+
+		@Override
+		public String toString() {
+			return "EmptyStorage";
+		}
 	};
 
 	public static <T> Iterator<T> singletonIterator(T it) {

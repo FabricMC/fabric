@@ -127,4 +127,10 @@ public final class EmptyItemFluidStorage implements InsertionOnlyStorage<FluidVa
 	public Iterator<StorageView<FluidVariant>> iterator() {
 		return blankView.iterator();
 	}
+
+	@Override
+	public String toString() {
+		return "EmptyItemFluidStorage[context=%s, insertableFluid=%s, insertableAmount=%d]"
+				.formatted(context, insertableFluid, insertableAmount);
+	}
 }
