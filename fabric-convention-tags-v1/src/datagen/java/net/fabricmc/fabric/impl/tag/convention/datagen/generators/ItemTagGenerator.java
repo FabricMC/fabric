@@ -18,14 +18,16 @@ package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 
 public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
@@ -48,8 +50,8 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	@Deprecated
 	private static final Identifier FABRIC_SWORDS = createFabricId("swords");
 
-	public ItemTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-		super(output, completableFuture);
+	public ItemTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture, FabricTagProvider.BlockTagProvider blockTags) {
+		super(output, completableFuture, blockTags);
 	}
 
 	@Override
@@ -58,9 +60,32 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		generateBucketTags();
 		generateOreAndRelatedTags();
 		generateConsumableTags();
-		generateGlassTags();
-		generateShulkerTag();
 		generateDyeTags();
+		generateVillagerJobSites();
+		copyItemTags();
+	}
+
+	private void copyItemTags() {
+		copy(ConventionalBlockTags.BOOKSHELVES, ConventionalItemTags.BOOKSHELVES);
+		copy(ConventionalBlockTags.CHESTS, ConventionalItemTags.CHESTS);
+		copy(ConventionalBlockTags.GLASS_BLOCKS, ConventionalItemTags.GLASS_BLOCKS);
+		copy(ConventionalBlockTags.GLASS_PANES, ConventionalItemTags.GLASS_PANES);
+		copy(ConventionalBlockTags.SHULKER_BOXES, ConventionalItemTags.SHULKER_BOXES);
+		copy(ConventionalBlockTags.WOODEN_BARRELS, ConventionalItemTags.WOODEN_BARRELS);
+
+		copy(ConventionalBlockTags.BUDDING_BLOCKS, ConventionalItemTags.BUDDING_BLOCKS);
+		copy(ConventionalBlockTags.BUDS, ConventionalItemTags.BUDS);
+		copy(ConventionalBlockTags.CLUSTERS, ConventionalItemTags.CLUSTERS);
+
+		copy(ConventionalBlockTags.SANDSTONE_BLOCKS, ConventionalItemTags.SANDSTONE_BLOCKS);
+		copy(ConventionalBlockTags.SANDSTONE_SLABS, ConventionalItemTags.SANDSTONE_SLABS);
+		copy(ConventionalBlockTags.SANDSTONE_STAIRS, ConventionalItemTags.SANDSTONE_STAIRS);
+		copy(ConventionalBlockTags.RED_SANDSTONE_BLOCKS, ConventionalItemTags.RED_SANDSTONE_BLOCKS);
+		copy(ConventionalBlockTags.RED_SANDSTONE_SLABS, ConventionalItemTags.RED_SANDSTONE_SLABS);
+		copy(ConventionalBlockTags.RED_SANDSTONE_STAIRS, ConventionalItemTags.RED_SANDSTONE_STAIRS);
+		copy(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS, ConventionalItemTags.UNCOLORED_SANDSTONE_BLOCKS);
+		copy(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS, ConventionalItemTags.UNCOLORED_SANDSTONE_SLABS);
+		copy(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS, ConventionalItemTags.UNCOLORED_SANDSTONE_STAIRS);
 	}
 
 	private void generateDyeTags() {
@@ -115,67 +140,6 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.PURPLE_DYE);
 	}
 
-	private void generateShulkerTag() {
-		getOrCreateTagBuilder(ConventionalItemTags.SHULKER_BOXES)
-				.add(Items.SHULKER_BOX)
-				.add(Items.BLUE_SHULKER_BOX)
-				.add(Items.BROWN_SHULKER_BOX)
-				.add(Items.CYAN_SHULKER_BOX)
-				.add(Items.GRAY_SHULKER_BOX)
-				.add(Items.GREEN_SHULKER_BOX)
-				.add(Items.LIGHT_BLUE_SHULKER_BOX)
-				.add(Items.LIGHT_GRAY_SHULKER_BOX)
-				.add(Items.LIME_SHULKER_BOX)
-				.add(Items.MAGENTA_SHULKER_BOX)
-				.add(Items.ORANGE_SHULKER_BOX)
-				.add(Items.PINK_SHULKER_BOX)
-				.add(Items.PURPLE_SHULKER_BOX)
-				.add(Items.RED_SHULKER_BOX)
-				.add(Items.WHITE_SHULKER_BOX)
-				.add(Items.YELLOW_SHULKER_BOX)
-				.add(Items.BLACK_SHULKER_BOX);
-	}
-
-	private void generateGlassTags() {
-		getOrCreateTagBuilder(ConventionalItemTags.GLASS_BLOCKS)
-				.add(Items.GLASS)
-				.add(Items.GRAY_STAINED_GLASS)
-				.add(Items.BLACK_STAINED_GLASS)
-				.add(Items.ORANGE_STAINED_GLASS)
-				.add(Items.BLUE_STAINED_GLASS)
-				.add(Items.BROWN_STAINED_GLASS)
-				.add(Items.CYAN_STAINED_GLASS)
-				.add(Items.GREEN_STAINED_GLASS)
-				.add(Items.LIGHT_BLUE_STAINED_GLASS)
-				.add(Items.LIGHT_GRAY_STAINED_GLASS)
-				.add(Items.LIME_STAINED_GLASS)
-				.add(Items.MAGENTA_STAINED_GLASS)
-				.add(Items.PINK_STAINED_GLASS)
-				.add(Items.PURPLE_STAINED_GLASS)
-				.add(Items.RED_STAINED_GLASS)
-				.add(Items.TINTED_GLASS)
-				.add(Items.WHITE_STAINED_GLASS)
-				.add(Items.YELLOW_STAINED_GLASS);
-		getOrCreateTagBuilder(ConventionalItemTags.GLASS_PANES)
-				.add(Items.GLASS_PANE)
-				.add(Items.GRAY_STAINED_GLASS_PANE)
-				.add(Items.BLACK_STAINED_GLASS_PANE)
-				.add(Items.ORANGE_STAINED_GLASS_PANE)
-				.add(Items.BLUE_STAINED_GLASS_PANE)
-				.add(Items.BROWN_STAINED_GLASS_PANE)
-				.add(Items.CYAN_STAINED_GLASS_PANE)
-				.add(Items.GREEN_STAINED_GLASS_PANE)
-				.add(Items.LIGHT_BLUE_STAINED_GLASS_PANE)
-				.add(Items.LIGHT_GRAY_STAINED_GLASS_PANE)
-				.add(Items.LIME_STAINED_GLASS_PANE)
-				.add(Items.MAGENTA_STAINED_GLASS_PANE)
-				.add(Items.PINK_STAINED_GLASS_PANE)
-				.add(Items.PURPLE_STAINED_GLASS_PANE)
-				.add(Items.RED_STAINED_GLASS_PANE)
-				.add(Items.WHITE_STAINED_GLASS_PANE)
-				.add(Items.YELLOW_STAINED_GLASS_PANE);
-	}
-
 	private void generateConsumableTags() {
 		Registries.ITEM.forEach(item -> {
 			if (item.getFoodComponent() != null) {
@@ -193,29 +157,37 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.BUCKET);
 		getOrCreateTagBuilder(ConventionalItemTags.LAVA_BUCKETS)
 				.add(Items.LAVA_BUCKET);
-		getOrCreateTagBuilder(ConventionalItemTags.WATER_BUCKETS)
+		getOrCreateTagBuilder(ConventionalItemTags.ENTITY_WATER_BUCKETS)
 				.add(Items.AXOLOTL_BUCKET)
 				.add(Items.COD_BUCKET)
 				.add(Items.PUFFERFISH_BUCKET)
 				.add(Items.TROPICAL_FISH_BUCKET)
 				.add(Items.SALMON_BUCKET)
-				.add(Items.TADPOLE_BUCKET)
+				.add(Items.TADPOLE_BUCKET);
+		getOrCreateTagBuilder(ConventionalItemTags.WATER_BUCKETS)
 				.add(Items.WATER_BUCKET);
 		getOrCreateTagBuilder(ConventionalItemTags.MILK_BUCKETS)
 				.add(Items.MILK_BUCKET);
 	}
 
 	private void generateOreAndRelatedTags() {
-		getOrCreateTagBuilder(ConventionalItemTags.ORES)
-				.addOptionalTag(ItemTags.IRON_ORES)
-				.addOptionalTag(ItemTags.COPPER_ORES)
-				.addOptionalTag(ItemTags.REDSTONE_ORES)
-				.addOptionalTag(ItemTags.GOLD_ORES)
-				.addOptionalTag(ItemTags.COAL_ORES)
-				.addOptionalTag(ItemTags.DIAMOND_ORES)
-				.addOptionalTag(ItemTags.LAPIS_ORES)
-				.addOptionalTag(ConventionalItemTags.QUARTZ_ORES)
-				.addOptionalTag(ItemTags.EMERALD_ORES);
+		// Categories
+		getOrCreateTagBuilder(ConventionalItemTags.DUSTS)
+				.add(Items.GLOWSTONE_DUST)
+				.add(Items.REDSTONE);
+		getOrCreateTagBuilder(ConventionalItemTags.GEMS)
+				.add(Items.DIAMOND, Items.EMERALD, Items.AMETHYST_SHARD, Items.LAPIS_LAZULI);
+		getOrCreateTagBuilder(ConventionalItemTags.INGOTS)
+				.add(Items.COPPER_INGOT, Items.GOLD_INGOT, Items.IRON_INGOT, Items.NETHERITE_INGOT);
+		getOrCreateTagBuilder(ConventionalItemTags.NUGGETS)
+				.add(Items.GOLD_NUGGET, Items.IRON_NUGGET);
+		copy(ConventionalBlockTags.ORES, ConventionalItemTags.ORES);
+		getOrCreateTagBuilder(ConventionalItemTags.RAW_ORES)
+				.addOptionalTag(ConventionalItemTags.RAW_IRON_ORES)
+				.addOptionalTag(ConventionalItemTags.RAW_COPPER_ORES)
+				.addOptionalTag(ConventionalItemTags.RAW_GOLD_ORES);
+
+		// Vanilla instances
 		getOrCreateTagBuilder(ConventionalItemTags.IRON_INGOTS)
 				.add(Items.IRON_INGOT);
 		getOrCreateTagBuilder(ConventionalItemTags.COPPER_INGOTS)
@@ -318,6 +290,13 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.BOW);
 		getOrCreateTagBuilder(ConventionalItemTags.SHIELDS)
 				.add(Items.SHIELD);
+	}
+
+	private void generateVillagerJobSites() {
+		BlockTagGenerator.VILLAGER_JOB_SITE_BLOCKS.stream()
+				.map(ItemConvertible::asItem)
+				.distinct() // cauldron blocks have the same item
+				.forEach(getOrCreateTagBuilder(ConventionalItemTags.VILLAGER_JOB_SITES)::add);
 	}
 
 	private static Identifier createFabricId(String id) {

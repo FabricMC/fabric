@@ -2,7 +2,7 @@
   "replace": false,
   "values": [
     {
-      "id": "#minecraft:iron_ores",
+      "id": "#minecraft:redstone_ores",
       "required": false
     },
     {
@@ -10,11 +10,11 @@
       "required": false
     },
     {
-      "id": "#minecraft:redstone_ores",
+      "id": "#minecraft:gold_ores",
       "required": false
     },
     {
-      "id": "#minecraft:gold_ores",
+      "id": "#minecraft:iron_ores",
       "required": false
     },
     {
@@ -22,7 +22,7 @@
       "required": false
     },
     {
-      "id": "#minecraft:diamond_ores",
+      "id": "#minecraft:emerald_ores",
       "required": false
     },
     {
@@ -30,11 +30,11 @@
       "required": false
     },
     {
-      "id": "#c:quartz_ores",
+      "id": "#minecraft:diamond_ores",
       "required": false
     },
     {
-      "id": "#minecraft:emerald_ores",
+      "id": "#c:quartz_ores",
       "required": false
     }
   ]

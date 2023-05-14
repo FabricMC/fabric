@@ -28,7 +28,8 @@ out/
 classes/
 
 # Generated sources
-**/src/generated/
+# The trailing * is important, otherwise Git wouldn't evaluate the directories at all and we wouldn't be able to un-ignore some of them.
+**/src/generated/*
 
 # Debug artifacts
 run

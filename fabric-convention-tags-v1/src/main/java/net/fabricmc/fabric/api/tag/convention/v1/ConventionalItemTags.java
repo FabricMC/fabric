@@ -38,7 +38,14 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> SPEARS = register("spears");
 	public static final TagKey<Item> BOWS = register("bows");
 	public static final TagKey<Item> SHIELDS = register("shields");
-	// Ores and ingots
+	// Ores and ingots - categories
+	public static final TagKey<Item> DUSTS = register("dusts");
+	public static final TagKey<Item> GEMS = register("gems");
+	public static final TagKey<Item> INGOTS = register("ingots");
+	public static final TagKey<Item> NUGGETS = register("nuggets");
+	public static final TagKey<Item> ORES = register("ores");
+	public static final TagKey<Item> RAW_ORES = register("raw_ores");
+	// Ores and ingots - vanilla instances
 	public static final TagKey<Item> IRON_INGOTS = register("iron_ingots");
 	public static final TagKey<Item> RAW_IRON_ORES = register("raw_iron_ores");
 	public static final TagKey<Item> RAW_IRON_BLOCKS = register("raw_iron_blocks");
@@ -49,7 +56,6 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> COPPER_INGOTS = register("copper_ingots");
 	public static final TagKey<Item> RAW_COPPER_ORES = register("raw_copper_ores");
 	public static final TagKey<Item> RAW_COPPER_BLOCKS = register("raw_copper_blocks");
-	public static final TagKey<Item> ORES = register("ores");
 	public static final TagKey<Item> NETHERITE_INGOTS = register("netherite_ingots");
 	public static final TagKey<Item> QUARTZ_ORES = register("quartz_ores");
 	public static final TagKey<Item> QUARTZ = register("quartz");
@@ -61,15 +67,39 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> FOODS = register("foods");
 	public static final TagKey<Item> POTIONS = register("potions");
 	// Buckets
+	/**
+	 * Does not include entity water buckets.
+	 */
 	public static final TagKey<Item> WATER_BUCKETS = register("water_buckets");
+	public static final TagKey<Item> ENTITY_WATER_BUCKETS = register("entity_water_buckets");
 	public static final TagKey<Item> LAVA_BUCKETS = register("lava_buckets");
 	public static final TagKey<Item> MILK_BUCKETS = register("milk_buckets");
 	public static final TagKey<Item> EMPTY_BUCKETS = register("empty_buckets");
 
+	public static final TagKey<Item> BOOKSHELVES = register("bookshelves");
+	public static final TagKey<Item> CHESTS = register("chests");
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Item> GLASS_PANES = register("glass_panes");
-
 	public static final TagKey<Item> SHULKER_BOXES = register("shulker_boxes");
+	public static final TagKey<Item> WOODEN_BARRELS = register("wooden_barrels");
+
+	// Related to budding mechanics
+	public static final TagKey<Item> BUDDING_BLOCKS = register("budding_blocks");
+	public static final TagKey<Item> BUDS = register("buds");
+	public static final TagKey<Item> CLUSTERS = register("clusters");
+
+	public static final TagKey<Item> VILLAGER_JOB_SITES = register("villager_job_sites");
+
+	// Sandstone
+	public static final TagKey<Item> SANDSTONE_BLOCKS = register("sandstone_blocks");
+	public static final TagKey<Item> SANDSTONE_SLABS = register("sandstone_slabs");
+	public static final TagKey<Item> SANDSTONE_STAIRS = register("sandstone_stairs");
+	public static final TagKey<Item> RED_SANDSTONE_BLOCKS = register("red_sandstone_blocks");
+	public static final TagKey<Item> RED_SANDSTONE_SLABS = register("red_sandstone_slabs");
+	public static final TagKey<Item> RED_SANDSTONE_STAIRS = register("red_sandstone_stairs");
+	public static final TagKey<Item> UNCOLORED_SANDSTONE_BLOCKS = register("uncolored_sandstone_blocks");
+	public static final TagKey<Item> UNCOLORED_SANDSTONE_SLABS = register("uncolored_sandstone_slabs");
+	public static final TagKey<Item> UNCOLORED_SANDSTONE_STAIRS = register("uncolored_sandstone_stairs");
 
 	// Dyes
 	public static final TagKey<Item> DYES = register("dyes");

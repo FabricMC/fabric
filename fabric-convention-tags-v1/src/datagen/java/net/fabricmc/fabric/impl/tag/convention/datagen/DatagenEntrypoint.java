@@ -30,10 +30,10 @@ public class DatagenEntrypoint implements DataGeneratorEntrypoint {
 	public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
 		final FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
 
-		pack.addProvider(ItemTagGenerator::new);
+		BlockTagGenerator blockTags = pack.addProvider(BlockTagGenerator::new);
+		pack.addProvider((output, wrapperLookup) -> new ItemTagGenerator(output, wrapperLookup, blockTags));
 		pack.addProvider(FluidTagGenerator::new);
 		pack.addProvider(EnchantmentTagGenerator::new);
-		pack.addProvider(BlockTagGenerator::new);
 		pack.addProvider(BiomeTagGenerator::new);
 		pack.addProvider(EntityTypeTagGenerator::new);
 	}
