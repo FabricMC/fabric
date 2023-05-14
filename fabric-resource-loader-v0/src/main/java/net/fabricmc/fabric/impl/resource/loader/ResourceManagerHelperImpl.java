@@ -73,8 +73,8 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		List<Path> paths = container.getRootPaths();
 		String separator = paths.get(0).getFileSystem().getSeparator();
 		subPath = subPath.replace("/", separator);
-		ModNioResourcePack resourcePack = ModNioResourcePack.create(id, displayName, container, subPath, ResourceType.CLIENT_RESOURCES, activationType);
-		ModNioResourcePack dataPack = ModNioResourcePack.create(id, displayName, container, subPath, ResourceType.SERVER_DATA, activationType);
+		ModNioResourcePack resourcePack = ModNioResourcePack.create(id.toString(), container, subPath, ResourceType.CLIENT_RESOURCES, activationType);
+		ModNioResourcePack dataPack = ModNioResourcePack.create(id.toString(), container, subPath, ResourceType.SERVER_DATA, activationType);
 		if (resourcePack == null && dataPack == null) return false;
 
 		if (resourcePack != null) {
@@ -112,7 +112,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 			if (!pack.getNamespaces(resourceType).isEmpty()) {
 				// Make the resource pack profile for built-in pack, should never be always enabled.
 				ResourcePackProfile profile = ResourcePackProfile.create(
-						entry.getRight().getId().toString(),
+						entry.getRight().getName(),
 						entry.getLeft(),
 						pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED,
 						ignored -> entry.getRight(),
