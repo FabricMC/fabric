@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.client.event.lifecycle.v1;
 
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -33,21 +32,8 @@ public final class ClientChunkEvents {
 	 * <p>When this event is called, the chunk is already in the world.
 	 */
 	public static final Event<ClientChunkEvents.Load> CHUNK_LOAD = EventFactory.createArrayBacked(ClientChunkEvents.Load.class, callbacks -> (clientWorld, chunk) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			Profiler profiler = clientWorld.getProfiler();
-			profiler.push("fabricClientChunkLoad");
-
-			for (ClientChunkEvents.Load callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onChunkLoad(clientWorld, chunk);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (ClientChunkEvents.Load callback : callbacks) {
-				callback.onChunkLoad(clientWorld, chunk);
-			}
+		for (Load callback : callbacks) {
+			callback.onChunkLoad(clientWorld, chunk);
 		}
 	});
 
@@ -57,21 +43,8 @@ public final class ClientChunkEvents {
 	 * <p>When this event is called, the chunk is still present in the world.
 	 */
 	public static final Event<ClientChunkEvents.Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ClientChunkEvents.Unload.class, callbacks -> (clientWorld, chunk) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = clientWorld.getProfiler();
-			profiler.push("fabricClientChunkUnload");
-
-			for (ClientChunkEvents.Unload callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onChunkUnload(clientWorld, chunk);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (ClientChunkEvents.Unload callback : callbacks) {
-				callback.onChunkUnload(clientWorld, chunk);
-			}
+		for (Unload callback : callbacks) {
+			callback.onChunkUnload(clientWorld, chunk);
 		}
 	});
 

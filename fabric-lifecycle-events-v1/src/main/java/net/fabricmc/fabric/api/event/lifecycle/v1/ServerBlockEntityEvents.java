@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.event.lifecycle.v1;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -34,21 +33,8 @@ public final class ServerBlockEntityEvents {
 	 * However, its data might not be loaded yet, so don't rely on it.
 	 */
 	public static final Event<ServerBlockEntityEvents.Load> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(ServerBlockEntityEvents.Load.class, callbacks -> (blockEntity, world) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = world.getProfiler();
-			profiler.push("fabricServerBlockEntityLoad");
-
-			for (ServerBlockEntityEvents.Load callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onLoad(blockEntity, world);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (ServerBlockEntityEvents.Load callback : callbacks) {
-				callback.onLoad(blockEntity, world);
-			}
+		for (Load callback : callbacks) {
+			callback.onLoad(blockEntity, world);
 		}
 	});
 
@@ -58,21 +44,8 @@ public final class ServerBlockEntityEvents {
 	 * <p>When this event is called, the block entity is still present on the world.
 	 */
 	public static final Event<Unload> BLOCK_ENTITY_UNLOAD = EventFactory.createArrayBacked(ServerBlockEntityEvents.Unload.class, callbacks -> (blockEntity, world) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = world.getProfiler();
-			profiler.push("fabricServerBlockEntityUnload");
-
-			for (ServerBlockEntityEvents.Unload callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onUnload(blockEntity, world);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (ServerBlockEntityEvents.Unload callback : callbacks) {
-				callback.onUnload(blockEntity, world);
-			}
+		for (Unload callback : callbacks) {
+			callback.onUnload(blockEntity, world);
 		}
 	});
 
