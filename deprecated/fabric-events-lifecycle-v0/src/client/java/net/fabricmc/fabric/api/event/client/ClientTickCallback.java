@@ -30,25 +30,11 @@ public interface ClientTickCallback {
 	@Deprecated
 	Event<ClientTickCallback> EVENT = EventFactory.createArrayBacked(ClientTickCallback.class,
 			(listeners) -> {
-				if (EventFactory.isProfilingEnabled()) {
-					return (client) -> {
-						client.getProfiler().push("fabricClientTick");
-
-						for (ClientTickCallback event : listeners) {
-							client.getProfiler().push(EventFactory.getHandlerName(event));
-							event.tick(client);
-							client.getProfiler().pop();
-						}
-
-						client.getProfiler().pop();
-					};
-				} else {
-					return (client) -> {
-						for (ClientTickCallback event : listeners) {
-							event.tick(client);
-						}
-					};
-				}
+				return (client) -> {
+					for (ClientTickCallback event : listeners) {
+						event.tick(client);
+					}
+				};
 			}
 	);
 

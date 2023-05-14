@@ -38,7 +38,6 @@ import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
@@ -68,7 +67,7 @@ public final class ModResourcePackUtil {
 				continue;
 			}
 
-			ModResourcePack pack = ModNioResourcePack.create(new Identifier("fabric", container.getMetadata().getId()), getName(container.getMetadata()), container, subPath, type, ResourcePackActivationType.ALWAYS_ENABLED);
+			ModResourcePack pack = ModNioResourcePack.create(container.getMetadata().getId(), container, subPath, type, ResourcePackActivationType.ALWAYS_ENABLED);
 
 			if (pack != null) {
 				packs.add(pack);

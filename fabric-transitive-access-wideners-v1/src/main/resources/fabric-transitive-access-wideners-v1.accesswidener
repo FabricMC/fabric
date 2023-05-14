@@ -117,6 +117,15 @@ transitive-accessible method net/minecraft/world/gen/stateprovider/BlockStatePro
 # Creating custom biomes
 transitive-accessible method net/minecraft/world/biome/OverworldBiomeCreator getSkyColor (F)I
 
+# Creating custom template pools
+accessible field net/minecraft/structure/processor/StructureProcessorLists EMPTY Lnet/minecraft/registry/RegistryKey;
+
+# Creating custom trees
+accessible method net/minecraft/world/gen/foliage/FoliagePlacerType <init> (Lcom/mojang/serialization/Codec;)V
+accessible method net/minecraft/world/gen/treedecorator/TreeDecoratorType <init> (Lcom/mojang/serialization/Codec;)V
+accessible method net/minecraft/world/gen/trunk/TrunkPlacerType <init> (Lcom/mojang/serialization/Codec;)V
+accessible method net/minecraft/world/gen/root/RootPlacerType <init> (Lcom/mojang/serialization/Codec;)V
+
 # Working with custom damage sources
 transitive-accessible field net/minecraft/entity/damage/DamageSources registry Lnet/minecraft/registry/Registry;
 transitive-accessible method net/minecraft/entity/damage/DamageSources create (Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/entity/damage/DamageSource;

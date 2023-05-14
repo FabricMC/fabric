@@ -30,25 +30,11 @@ public interface ServerTickCallback {
 	@Deprecated
 	Event<ServerTickCallback> EVENT = EventFactory.createArrayBacked(ServerTickCallback.class,
 			(listeners) -> {
-				if (EventFactory.isProfilingEnabled()) {
-					return (server) -> {
-						server.getProfiler().push("fabricServerTick");
-
-						for (ServerTickCallback event : listeners) {
-							server.getProfiler().push(EventFactory.getHandlerName(event));
-							event.tick(server);
-							server.getProfiler().pop();
-						}
-
-						server.getProfiler().pop();
-					};
-				} else {
-					return (server) -> {
-						for (ServerTickCallback event : listeners) {
-							event.tick(server);
-						}
-					};
-				}
+				return (server) -> {
+					for (ServerTickCallback event : listeners) {
+						event.tick(server);
+					}
+				};
 			}
 	);
 

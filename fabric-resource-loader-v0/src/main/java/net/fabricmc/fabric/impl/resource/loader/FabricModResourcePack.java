@@ -76,7 +76,7 @@ public class FabricModResourcePack extends GroupResourcePack {
 
 	@Override
 	public String getName() {
-		return "Fabric Mods";
+		return "fabric";
 	}
 
 	@Override

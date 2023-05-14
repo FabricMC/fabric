@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.transfer.v1.storage.base;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.StringJoiner;
 
 import org.jetbrains.annotations.ApiStatus;
 
@@ -97,6 +98,17 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 	@Override
 	public Iterator<StorageView<T>> iterator() {
 		return new CombinedIterator();
+	}
+
+	@Override
+	public String toString() {
+		StringJoiner partNames = new StringJoiner(", ");
+
+		for (S part : parts) {
+			partNames.add(part.toString());
+		}
+
+		return "CombinedStorage[" + partNames + "]";
 	}
 
 	/**
