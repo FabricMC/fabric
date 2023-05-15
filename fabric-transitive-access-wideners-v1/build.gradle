@@ -45,6 +45,8 @@ task generateAccessWidener {
 		}
 
 		file('src/main/resources/fabric-transitive-access-wideners-v1.accesswidener').text = String.join('\n', lines) + '\n'
+
+		validateAccessWidener(lines)
 	}
 }
 
@@ -123,22 +125,18 @@ ClassNode loadClass(Path path) {
 	return node
 }
 
-task validateTemplateAccessWidener {
-	doLast {
-		List<String> lines = file("template.accesswidener").text.lines().toList()
-		List<String> exceptions = new ArrayList<>()
+def validateAccessWidener(List<String> lines) {
+	List<String> exceptions = new ArrayList<>()
 
-		for (int i = 0; i < lines.size(); i++) {
-			String line = lines.get(i)
-			if (line.isBlank() || line.startsWith("#") || line.startsWith("transitive-")) continue
-			exceptions.add(String.valueOf(i + 1))
-		}
+	for (int i = 0; i < lines.size(); i++) {
+		String line = lines.get(i)
+		if (line.isBlank() || line.startsWith("#") || line.startsWith("transitive-") || line.startsWith("accessWidener")) continue
+		exceptions.add(String.valueOf(i + 1))
+	}
 
-		if (exceptions.size() > 0) {
-			throw new InvalidUserDataException("\"template.accesswidener\" contains non-transitive access modifiers at lines: [" + String.join(", ", exceptions) + "]")
-		}
+	if (exceptions.size() > 0) {
+		throw new InvalidUserDataException("\"fabric-transitive-access-wideners-v1.accesswidener\" contains non-transitive access modifiers at lines: [" + String.join(", ", exceptions) + "]")
 	}
 }
 
 generateResources.dependsOn generateAccessWidener
-generateAccessWidener.dependsOn validateTemplateAccessWidener
