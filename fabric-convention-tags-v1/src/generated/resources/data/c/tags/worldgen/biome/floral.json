@@ -2,6 +2,9 @@
   "replace": false,
   "values": [
     "minecraft:sunflower_plains",
-    "minecraft:flower_forest"
+    {
+      "id": "#c:flower_forests",
+      "required": false
+    }
   ]
 }
