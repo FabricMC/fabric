@@ -115,7 +115,7 @@ public class FabricDimensionTest implements ModInitializer {
 		ServerPlayerEntity player = context.getSource().getPlayer();
 
 		if (player == null) {
-			context.getSource().sendFeedback(Text.literal("You must be a player to execute this command."), false);
+			context.getSource().sendFeedback(() -> Text.literal("You must be a player to execute this command."), false);
 			return 1;
 		}
 
@@ -145,7 +145,7 @@ public class FabricDimensionTest implements ModInitializer {
 		ServerPlayerEntity player = context.getSource().getPlayer();
 
 		if (player == null) {
-			context.getSource().sendFeedback(Text.literal("You must be a player to execute this command."), false);
+			context.getSource().sendFeedback(() -> Text.literal("You must be a player to execute this command."), false);
 			return 1;
 		}
 
@@ -159,7 +159,7 @@ public class FabricDimensionTest implements ModInitializer {
 		ServerPlayerEntity player = context.getSource().getPlayer();
 
 		if (player == null) {
-			context.getSource().sendFeedback(Text.literal("You must be a player to execute this command."), false);
+			context.getSource().sendFeedback(() -> Text.literal("You must be a player to execute this command."), false);
 			return 1;
 		}
 
@@ -170,7 +170,7 @@ public class FabricDimensionTest implements ModInitializer {
 				.orElse(null);
 
 		if (entity == null) {
-			context.getSource().sendFeedback(Text.literal("No entities found."), false);
+			context.getSource().sendFeedback(() -> Text.literal("No entities found."), false);
 			return 1;
 		}
 

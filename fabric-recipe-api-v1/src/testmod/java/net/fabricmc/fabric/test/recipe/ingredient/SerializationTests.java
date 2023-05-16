@@ -49,7 +49,7 @@ public class SerializationTests {
 		JsonElement json = JsonParser.parseString(ingredientJson);
 
 		try {
-			Ingredient.fromJson(json);
+			Ingredient.method_52177(json);
 			throw new GameTestException("Using a custom ingredient inside an array ingredient should have failed.");
 		} catch (IllegalArgumentException e) {
 			context.complete();

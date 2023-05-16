@@ -41,13 +41,13 @@ public class IngredientMixin implements FabricIngredient {
 	@Inject(
 			at = @At(
 					value = "INVOKE",
-					target = "net/minecraft/recipe/Ingredient.entryFromJson (Lcom/google/gson/JsonObject;)Lnet/minecraft/recipe/Ingredient$Entry;",
+					target = "net/minecraft/recipe/Ingredient.entryFromJson (Lcom/google/gson/JsonObject;Z)Lnet/minecraft/recipe/Ingredient$Entry;",
 					ordinal = 0
 			),
 			method = "fromJson",
 			cancellable = true
 	)
-	private static void injectFromJson(JsonElement json, CallbackInfoReturnable<Ingredient> cir) {
+	private static void injectFromJson(JsonElement json, boolean requireNotEmpty, CallbackInfoReturnable<Ingredient> cir) {
 		JsonObject obj = json.getAsJsonObject();
 
 		if (obj.has(CustomIngredientImpl.TYPE_KEY)) {
@@ -67,7 +67,7 @@ public class IngredientMixin implements FabricIngredient {
 	 * The {@link AnyIngredient} should be used instead.
 	 */
 	@Inject(at = @At("HEAD"), method = "entryFromJson")
-	private static void injectEntryFromJson(JsonObject obj, CallbackInfoReturnable<?> cir) {
+	private static void injectEntryFromJson(JsonObject obj, boolean returnNullOnEmpty, CallbackInfoReturnable<?> cir) {
 		if (obj.has(CustomIngredientImpl.TYPE_KEY)) {
 			throw new IllegalArgumentException("Custom ingredient cannot be used inside an array ingredient. You can replace the array by a fabric:any ingredient.");
 		}

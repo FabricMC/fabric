@@ -74,7 +74,7 @@ abstract class CombinedIngredient implements CustomIngredient {
 			Ingredient[] ingredients = new Ingredient[values.size()];
 
 			for (int i = 0; i < values.size(); i++) {
-				ingredients[i] = Ingredient.fromJson(values.get(i));
+				ingredients[i] = Ingredient.method_52177(values.get(i));
 			}
 
 			return factory.apply(ingredients);

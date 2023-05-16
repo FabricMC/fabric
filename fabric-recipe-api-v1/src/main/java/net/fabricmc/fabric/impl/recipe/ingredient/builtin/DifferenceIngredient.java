@@ -72,8 +72,8 @@ public class DifferenceIngredient implements CustomIngredient {
 
 		@Override
 		public DifferenceIngredient read(JsonObject json) {
-			Ingredient base = Ingredient.fromJson(json.get("base"));
-			Ingredient subtracted = Ingredient.fromJson(json.get("subtracted"));
+			Ingredient base = Ingredient.method_52177(json.get("base"));
+			Ingredient subtracted = Ingredient.method_52177(json.get("subtracted"));
 			return new DifferenceIngredient(base, subtracted);
 		}
 

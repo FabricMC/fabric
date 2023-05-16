@@ -52,7 +52,7 @@ public final class EnumRuleCommand {
 			throw new SimpleCommandExceptionType(Text.literal(e.getMessage())).create();
 		}
 
-		serverCommandSource.sendFeedback(Text.translatable("commands.gamerule.set", key.getName(), rule.toString()), true);
+		serverCommandSource.sendFeedback(() -> Text.translatable("commands.gamerule.set", key.getName(), rule.toString()), true);
 		return rule.getCommandResult();
 	}
 }

@@ -36,6 +36,6 @@ public interface LootTableAccessor {
 	@Accessor("functions")
 	LootFunction[] fabric_getFunctions();
 
-	@Accessor("field_44892")
+	@Accessor("randomSequenceId")
 	Identifier fabric_getRandomSequenceId();
 }

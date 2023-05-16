@@ -53,7 +53,7 @@ public class CustomArgumentTest implements ModInitializer {
 		case SAD -> "Oh no, here is a heart: <3";
 		case HAPPY -> "Nice to see that you are having a good day :)";
 		};
-		context.getSource().sendFeedback(Text.literal(feedback), false);
+		context.getSource().sendFeedback(() -> Text.literal(feedback), false);
 
 		return 1;
 	}
