@@ -30,13 +30,13 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 
+import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
-import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl.Value;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
@@ -61,8 +61,8 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
  *  manipulating the data via NIO.
  */
 public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer implements RenderContext.BakedModelConsumer {
-	private static final Value MATERIAL_FLAT = (Value) IndigoRenderer.INSTANCE.materialFinder().ambientOcclusion(TriState.FALSE).find();
-	private static final Value MATERIAL_SHADED = (Value) IndigoRenderer.INSTANCE.materialFinder().find();
+	private static final RenderMaterial MATERIAL_FLAT = IndigoRenderer.INSTANCE.materialFinder().ambientOcclusion(TriState.FALSE).find();
+	private static final RenderMaterial MATERIAL_SHADED = IndigoRenderer.INSTANCE.materialFinder().find();
 
 	TerrainFallbackConsumer(BlockRenderInfo blockInfo, Function<RenderLayer, VertexConsumer> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
 		super(blockInfo, bufferFunc, aoCalc, transform);
@@ -89,7 +89,7 @@ public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer imple
 	@Override
 	public void accept(BakedModel model, @Nullable BlockState blockState) {
 		final Supplier<Random> random = blockInfo.randomSupplier;
-		final Value defaultMaterial = model.useAmbientOcclusion() ? MATERIAL_SHADED : MATERIAL_FLAT;
+		final RenderMaterial defaultMaterial = model.useAmbientOcclusion() ? MATERIAL_SHADED : MATERIAL_FLAT;
 
 		for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
 			final Direction cullFace = ModelHelper.faceFromIndex(i);
@@ -105,7 +105,7 @@ public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer imple
 		}
 	}
 
-	private void renderQuad(BakedQuad quad, Direction cullFace, Value defaultMaterial) {
+	private void renderQuad(BakedQuad quad, Direction cullFace, RenderMaterial defaultMaterial) {
 		final MutableQuadViewImpl editorQuad = this.editorQuad;
 		editorQuad.fromVanilla(quad, defaultMaterial, cullFace);
 

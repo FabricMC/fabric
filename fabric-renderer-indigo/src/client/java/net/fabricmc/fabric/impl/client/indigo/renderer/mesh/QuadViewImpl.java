@@ -35,16 +35,14 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
-import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
+import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
 
 /**
  * Base class for all quads / quad makers. Handles the ugly bits
@@ -249,7 +247,7 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
-	public final RenderMaterialImpl.Value material() {
+	public final RenderMaterialImpl material() {
 		return EncodingFormat.material(data[baseIndex + HEADER_BITS]);
 	}
 
@@ -280,17 +278,5 @@ public class QuadViewImpl implements QuadView {
 	@Override
 	public final void toVanilla(int[] target, int targetIndex) {
 		System.arraycopy(data, baseIndex + VERTEX_X, target, targetIndex, QUAD_STRIDE);
-	}
-
-	// TODO material inspection: remove
-	@Override
-	public final BakedQuad toBakedQuad(Sprite sprite) {
-		int[] vertexData = new int[VANILLA_QUAD_STRIDE];
-		toVanilla(vertexData, 0);
-
-		// Mimic material properties to the largest possible extent
-		int outputColorIndex = material().disableColorIndex() ? -1 : colorIndex();
-		boolean outputShade = !material().disableDiffuse();
-		return new BakedQuad(vertexData, outputColorIndex, lightFace(), sprite, outputShade);
 	}
 }

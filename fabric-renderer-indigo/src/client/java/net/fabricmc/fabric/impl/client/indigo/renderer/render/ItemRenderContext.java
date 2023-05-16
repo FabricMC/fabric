@@ -44,12 +44,12 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
+import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
-import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MeshImpl;
@@ -223,7 +223,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 			return;
 		}
 
-		final RenderMaterialImpl.Value mat = quad.material();
+		final RenderMaterial mat = quad.material();
 
 		final int colorIndex = mat.disableColorIndex() ? -1 : quad.colorIndex();
 		final BlendMode blendMode = mat.blendMode();

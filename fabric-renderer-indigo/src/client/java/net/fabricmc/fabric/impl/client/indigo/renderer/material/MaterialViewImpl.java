@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.indigo.renderer;
-
-import java.util.Objects;
+package net.fabricmc.fabric.impl.client.indigo.renderer.material;
 
 import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+import net.fabricmc.fabric.api.renderer.v1.material.MaterialView;
 import net.fabricmc.fabric.api.util.TriState;
 
 /**
@@ -31,7 +28,7 @@ import net.fabricmc.fabric.api.util.TriState;
  * packing of the various material properties. This offers
  * easy/fast interning via int/object hashmap.
  */
-public abstract class RenderMaterialImpl {
+public class MaterialViewImpl implements MaterialView {
 	private static final BlendMode[] BLEND_MODES = BlendMode.values();
 	private static final int BLEND_MODE_COUNT = BLEND_MODES.length;
 	private static final TriState[] TRI_STATES = TriState.values();
@@ -56,38 +53,17 @@ public abstract class RenderMaterialImpl {
 	protected static final int DIFFUSE_FLAG = bitMask(DIFFUSE_BIT_LENGTH, DIFFUSE_BIT_OFFSET);
 	protected static final int AO_MASK = bitMask(AO_BIT_LENGTH, AO_BIT_OFFSET);
 
-	public static final int VALUE_COUNT = 1 << TOTAL_BIT_LENGTH;
-
 	protected static int bitMask(int bitLength, int bitOffset) {
 		return ((1 << bitLength) - 1) << bitOffset;
 	}
 
-	private static final Value[] VALUES = new Value[VALUE_COUNT];
-
-	static {
-		for (int i = 0; i < VALUE_COUNT; i++) {
-			VALUES[i] = new Value(i);
-		}
-	}
-
-	public static RenderMaterialImpl.Value byIndex(int index) {
-		return VALUES[index];
-	}
-
-	public static Value setDisableDiffuse(Value material, boolean disable) {
-		if (material.disableDiffuse() != disable) {
-			return byIndex(disable ? (material.bits | DIFFUSE_FLAG) : (material.bits & ~DIFFUSE_FLAG));
-		}
-
-		return material;
-	}
-
 	protected int bits;
 
-	protected RenderMaterialImpl(int bits) {
+	protected MaterialViewImpl(int bits) {
 		this.bits = bits;
 	}
 
+	@Override
 	public BlendMode blendMode() {
 		int ordinal = (bits & BLEND_MODE_MASK) >> BLEND_MODE_BIT_OFFSET;
 
@@ -98,18 +74,22 @@ public abstract class RenderMaterialImpl {
 		return BLEND_MODES[ordinal];
 	}
 
+	@Override
 	public boolean disableColorIndex() {
 		return (bits & COLOR_DISABLE_FLAG) != 0;
 	}
 
+	@Override
 	public boolean emissive() {
 		return (bits & EMISSIVE_FLAG) != 0;
 	}
 
+	@Override
 	public boolean disableDiffuse() {
 		return (bits & DIFFUSE_FLAG) != 0;
 	}
 
+	@Override
 	public TriState ambientOcclusion() {
 		int ordinal = (bits & AO_MASK) >> AO_BIT_OFFSET;
 
@@ -118,74 +98,5 @@ public abstract class RenderMaterialImpl {
 		}
 
 		return TRI_STATES[ordinal];
-	}
-
-	public static class Value extends RenderMaterialImpl implements RenderMaterial {
-		private Value(int bits) {
-			super(bits);
-		}
-
-		public int index() {
-			return bits;
-		}
-	}
-
-	public static class Finder extends RenderMaterialImpl implements MaterialFinder {
-		private static int defaultBits = 0;
-
-		static {
-			Finder finder = new Finder();
-			finder.ambientOcclusion(TriState.DEFAULT);
-			defaultBits = finder.bits;
-		}
-
-		public Finder() {
-			super(defaultBits);
-		}
-
-		@Override
-		public MaterialFinder blendMode(BlendMode blendMode) {
-			Objects.requireNonNull(blendMode, "BlendMode may not be null");
-
-			bits = (bits & ~BLEND_MODE_MASK) | (blendMode.ordinal() << BLEND_MODE_BIT_OFFSET);
-			return this;
-		}
-
-		@Override
-		public MaterialFinder disableColorIndex(boolean disable) {
-			bits = disable ? (bits | COLOR_DISABLE_FLAG) : (bits & ~COLOR_DISABLE_FLAG);
-			return this;
-		}
-
-		@Override
-		public MaterialFinder emissive(boolean isEmissive) {
-			bits = isEmissive ? (bits | EMISSIVE_FLAG) : (bits & ~EMISSIVE_FLAG);
-			return this;
-		}
-
-		@Override
-		public MaterialFinder disableDiffuse(boolean disable) {
-			bits = disable ? (bits | DIFFUSE_FLAG) : (bits & ~DIFFUSE_FLAG);
-			return this;
-		}
-
-		@Override
-		public MaterialFinder ambientOcclusion(TriState mode) {
-			Objects.requireNonNull(mode, "ambient occlusion TriState may not be null");
-
-			bits = (bits & ~AO_MASK) | (mode.ordinal() << AO_BIT_OFFSET);
-			return this;
-		}
-
-		@Override
-		public MaterialFinder clear() {
-			bits = defaultBits;
-			return this;
-		}
-
-		@Override
-		public RenderMaterial find() {
-			return VALUES[bits];
-		}
 	}
 }

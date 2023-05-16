@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.util.TriState;
  *
  * <p>Must be obtained via {@link Renderer#materialFinder()}.
  */
-public interface MaterialFinder {
+public interface MaterialFinder extends MaterialView {
 	/**
 	 * Defines how sprite pixels will be blended with the scene.
 	 *
@@ -90,6 +90,18 @@ public interface MaterialFinder {
 	 */
 	default MaterialFinder ambientOcclusion(TriState mode) {
 		return disableAo(0, mode == TriState.FALSE);
+	}
+
+	/**
+	 * @apiNote The default implementation will be removed in the next breaking release.
+	 */
+	default MaterialFinder copyFrom(MaterialView material) {
+		blendMode(material.blendMode());
+		disableColorIndex(material.disableColorIndex());
+		emissive(material.emissive());
+		disableDiffuse(material.disableDiffuse());
+		ambientOcclusion(material.ambientOcclusion());
+		return this;
 	}
 
 	/**
