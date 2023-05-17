@@ -95,12 +95,20 @@ public interface MaterialFinder extends MaterialView {
 	/**
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
+	default MaterialFinder glint(TriState mode) {
+		return this;
+	}
+
+	/**
+	 * @apiNote The default implementation will be removed in the next breaking release.
+	 */
 	default MaterialFinder copyFrom(MaterialView material) {
 		blendMode(material.blendMode());
 		disableColorIndex(material.disableColorIndex());
 		emissive(material.emissive());
 		disableDiffuse(material.disableDiffuse());
 		ambientOcclusion(material.ambientOcclusion());
+		glint(material.glint());
 		return this;
 	}
 

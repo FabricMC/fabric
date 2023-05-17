@@ -35,6 +35,7 @@ public class RenderMaterialImpl extends MaterialViewImpl implements RenderMateri
 	private final boolean emissive;
 	private final boolean disableDiffuse;
 	private final TriState ambientOcclusion;
+	private final TriState glint;
 
 	private RenderMaterialImpl(int bits) {
 		super(bits);
@@ -44,6 +45,7 @@ public class RenderMaterialImpl extends MaterialViewImpl implements RenderMateri
 		emissive = super.emissive();
 		disableDiffuse = super.disableDiffuse();
 		ambientOcclusion = super.ambientOcclusion();
+		glint = super.glint();
 	}
 
 	public int index() {
@@ -85,5 +87,10 @@ public class RenderMaterialImpl extends MaterialViewImpl implements RenderMateri
 	@Override
 	public TriState ambientOcclusion() {
 		return ambientOcclusion;
+	}
+
+	@Override
+	public TriState glint() {
+		return glint;
 	}
 }

@@ -56,4 +56,11 @@ public interface MaterialView {
 	default TriState ambientOcclusion() {
 		return TriState.DEFAULT;
 	}
+
+	/**
+	 * @apiNote The default implementation will be removed in the next breaking release.
+	 */
+	default TriState glint() {
+		return TriState.DEFAULT;
+	}
 }

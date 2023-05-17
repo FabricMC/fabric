@@ -72,6 +72,14 @@ public class MaterialFinderImpl extends MaterialViewImpl implements MaterialFind
 	}
 
 	@Override
+	public MaterialFinder glint(TriState mode) {
+		Objects.requireNonNull(mode, "glint TriState may not be null");
+
+		bits = (bits & ~GLINT_MASK) | (mode.ordinal() << GLINT_BIT_OFFSET);
+		return this;
+	}
+
+	@Override
 	public MaterialFinder copyFrom(MaterialView material) {
 		bits = ((MaterialViewImpl) material).bits;
 		return this;
