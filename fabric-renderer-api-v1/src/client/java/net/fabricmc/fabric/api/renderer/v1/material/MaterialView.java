@@ -20,9 +20,14 @@ import net.fabricmc.fabric.api.util.TriState;
 
 /**
  * Getter methods for {@link RenderMaterial} (immutable) and {@link MaterialFinder} (mutable).
+ *
+ * <p>Values returned by the getters may not necessarily be identical to those requested in the {@link MaterialFinder}.
+ * The renderer may choose different values that are sufficiently representative for its own processing.
  */
 public interface MaterialView {
 	/**
+	 * @see MaterialFinder#blendMode(BlendMode)
+	 *
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
 	default BlendMode blendMode() {
@@ -30,6 +35,8 @@ public interface MaterialView {
 	}
 
 	/**
+	 * @see MaterialFinder#disableColorIndex(boolean)
+	 *
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
 	default boolean disableColorIndex() {
@@ -37,6 +44,8 @@ public interface MaterialView {
 	}
 
 	/**
+	 * @see MaterialFinder#emissive(boolean)
+	 *
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
 	default boolean emissive() {
@@ -44,6 +53,8 @@ public interface MaterialView {
 	}
 
 	/**
+	 * @see MaterialFinder#disableDiffuse(boolean)
+	 *
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
 	default boolean disableDiffuse() {
@@ -51,6 +62,8 @@ public interface MaterialView {
 	}
 
 	/**
+	 * @see MaterialFinder#ambientOcclusion(TriState)
+	 *
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
 	default TriState ambientOcclusion() {
@@ -58,6 +71,8 @@ public interface MaterialView {
 	}
 
 	/**
+	 * @see MaterialFinder#glint(TriState)
+	 *
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
 	default TriState glint() {
