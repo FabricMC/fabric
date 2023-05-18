@@ -30,7 +30,12 @@ public class MaterialFinderImpl extends MaterialViewImpl implements MaterialFind
 	static {
 		MaterialFinderImpl finder = new MaterialFinderImpl();
 		finder.ambientOcclusion(TriState.DEFAULT);
+		finder.glint(TriState.DEFAULT);
 		defaultBits = finder.bits;
+
+		if (!areBitsValid(defaultBits)) {
+			throw new AssertionError("Default MaterialFinder bits are not valid!");
+		}
 	}
 
 	public MaterialFinderImpl() {

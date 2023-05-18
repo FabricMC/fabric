@@ -60,6 +60,16 @@ public class MaterialViewImpl implements MaterialView {
 		return ((1 << bitLength) - 1) << bitOffset;
 	}
 
+	protected static boolean areBitsValid(int bits) {
+		int blendMode = (bits & BLEND_MODE_MASK) >> BLEND_MODE_BIT_OFFSET;
+		int ao = (bits & AO_MASK) >> AO_BIT_OFFSET;
+		int glint = (bits & GLINT_MASK) >> GLINT_BIT_OFFSET;
+
+		return blendMode < BLEND_MODE_COUNT
+				&& ao < TRI_STATE_COUNT
+				&& glint < TRI_STATE_COUNT;
+	}
+
 	protected int bits;
 
 	protected MaterialViewImpl(int bits) {
@@ -68,13 +78,7 @@ public class MaterialViewImpl implements MaterialView {
 
 	@Override
 	public BlendMode blendMode() {
-		int ordinal = (bits & BLEND_MODE_MASK) >> BLEND_MODE_BIT_OFFSET;
-
-		if (ordinal >= BLEND_MODE_COUNT) {
-			return BlendMode.DEFAULT;
-		}
-
-		return BLEND_MODES[ordinal];
+		return BLEND_MODES[(bits & BLEND_MODE_MASK) >> BLEND_MODE_BIT_OFFSET];
 	}
 
 	@Override
@@ -94,23 +98,11 @@ public class MaterialViewImpl implements MaterialView {
 
 	@Override
 	public TriState ambientOcclusion() {
-		int ordinal = (bits & AO_MASK) >> AO_BIT_OFFSET;
-
-		if (ordinal >= TRI_STATE_COUNT) {
-			return TriState.DEFAULT;
-		}
-
-		return TRI_STATES[ordinal];
+		return TRI_STATES[(bits & AO_MASK) >> AO_BIT_OFFSET];
 	}
 
 	@Override
 	public TriState glint() {
-		int ordinal = (bits & GLINT_MASK) >> GLINT_BIT_OFFSET;
-
-		if (ordinal >= TRI_STATE_COUNT) {
-			return TriState.DEFAULT;
-		}
-
-		return TRI_STATES[ordinal];
+		return TRI_STATES[(bits & GLINT_MASK) >> GLINT_BIT_OFFSET];
 	}
 }

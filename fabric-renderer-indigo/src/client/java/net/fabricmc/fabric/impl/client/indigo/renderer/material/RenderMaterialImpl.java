@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.material;
 
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.util.TriState;
 
 public class RenderMaterialImpl extends MaterialViewImpl implements RenderMaterial {
 	public static final int VALUE_COUNT = 1 << TOTAL_BIT_LENGTH;
@@ -26,26 +24,14 @@ public class RenderMaterialImpl extends MaterialViewImpl implements RenderMateri
 
 	static {
 		for (int i = 0; i < VALUE_COUNT; i++) {
-			BY_INDEX[i] = new RenderMaterialImpl(i);
+			if (areBitsValid(i)) {
+				BY_INDEX[i] = new RenderMaterialImpl(i);
+			}
 		}
 	}
 
-	private final BlendMode blendMode;
-	private final boolean disableColorIndex;
-	private final boolean emissive;
-	private final boolean disableDiffuse;
-	private final TriState ambientOcclusion;
-	private final TriState glint;
-
 	private RenderMaterialImpl(int bits) {
 		super(bits);
-
-		blendMode = super.blendMode();
-		disableColorIndex = super.disableColorIndex();
-		emissive = super.emissive();
-		disableDiffuse = super.disableDiffuse();
-		ambientOcclusion = super.ambientOcclusion();
-		glint = super.glint();
 	}
 
 	public int index() {
@@ -62,35 +48,5 @@ public class RenderMaterialImpl extends MaterialViewImpl implements RenderMateri
 		}
 
 		return material;
-	}
-
-	@Override
-	public BlendMode blendMode() {
-		return blendMode;
-	}
-
-	@Override
-	public boolean disableColorIndex() {
-		return disableColorIndex;
-	}
-
-	@Override
-	public boolean emissive() {
-		return emissive;
-	}
-
-	@Override
-	public boolean disableDiffuse() {
-		return disableDiffuse;
-	}
-
-	@Override
-	public TriState ambientOcclusion() {
-		return ambientOcclusion;
-	}
-
-	@Override
-	public TriState glint() {
-		return glint;
 	}
 }
