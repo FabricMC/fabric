@@ -163,6 +163,7 @@ public interface QuadView {
 	/**
 	 * See {@link MutableQuadView#nominalFace(Direction)}.
 	 */
+	@Nullable
 	Direction nominalFace();
 
 	/**

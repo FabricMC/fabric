@@ -47,6 +47,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialIm
  * of maintaining and encoding the quad state.
  */
 public class QuadViewImpl implements QuadView {
+	@Nullable
 	protected Direction nominalFace;
 	/** True when geometry flags or light face may not match geometry. */
 	protected boolean isGeometryInvalid = true;
@@ -234,6 +235,7 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
+	@Nullable
 	public final Direction nominalFace() {
 		return nominalFace;
 	}

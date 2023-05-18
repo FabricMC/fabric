@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -115,10 +116,10 @@ public interface QuadEmitter extends MutableQuadView {
 	}
 
 	@Override
-	QuadEmitter cullFace(Direction face);
+	QuadEmitter cullFace(@Nullable Direction face);
 
 	@Override
-	QuadEmitter nominalFace(Direction face);
+	QuadEmitter nominalFace(@Nullable Direction face);
 
 	@Override
 	QuadEmitter material(RenderMaterial material);
