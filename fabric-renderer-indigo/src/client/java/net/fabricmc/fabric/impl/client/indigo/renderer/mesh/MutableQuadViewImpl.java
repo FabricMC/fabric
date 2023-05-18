@@ -37,6 +37,7 @@ import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.TextureHelper;
@@ -162,6 +163,18 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	@Override
 	public final MutableQuadViewImpl tag(int tag) {
 		data[baseIndex + HEADER_TAG] = tag;
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl copyFrom(QuadView quad) {
+		final QuadViewImpl q = (QuadViewImpl) quad;
+		q.computeGeometry();
+
+		System.arraycopy(q.data, q.baseIndex, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
+		faceNormal.set(q.faceNormal);
+		nominalFace = q.nominalFace;
+		isGeometryInvalid = false;
 		return this;
 	}
 

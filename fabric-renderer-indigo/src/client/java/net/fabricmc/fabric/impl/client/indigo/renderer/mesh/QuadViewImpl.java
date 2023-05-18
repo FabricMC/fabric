@@ -37,8 +37,6 @@ import org.joml.Vector3f;
 
 import net.minecraft.util.math.Direction;
 
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
@@ -259,20 +257,6 @@ public class QuadViewImpl implements QuadView {
 	@Override
 	public final int tag() {
 		return data[baseIndex + HEADER_TAG];
-	}
-
-	@Override
-	public void copyTo(MutableQuadView target) {
-		computeGeometry();
-
-		final MutableQuadViewImpl quad = (MutableQuadViewImpl) target;
-		// copy everything except the material
-		RenderMaterial material = quad.material();
-		System.arraycopy(data, baseIndex, quad.data, quad.baseIndex, EncodingFormat.TOTAL_STRIDE);
-		quad.material(material);
-		quad.faceNormal.set(faceNormal);
-		quad.nominalFace = this.nominalFace;
-		quad.isGeometryInvalid = false;
 	}
 
 	@Override

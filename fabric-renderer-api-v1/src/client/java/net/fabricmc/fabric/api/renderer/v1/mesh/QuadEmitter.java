@@ -132,6 +132,14 @@ public interface QuadEmitter extends MutableQuadView {
 	/**
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
+	default QuadEmitter copyFrom(QuadView quad) {
+		MutableQuadView.super.copyFrom(quad);
+		return this;
+	}
+
+	/**
+	 * @apiNote The default implementation will be removed in the next breaking release.
+	 */
 	@Override
 	default QuadEmitter fromVanilla(int[] quadData, int startIndex) {
 		MutableQuadView.super.fromVanilla(quadData, startIndex);
