@@ -109,7 +109,7 @@ public class NbtIngredient implements CustomIngredient {
 
 		@Override
 		public NbtIngredient read(JsonObject json) {
-			Ingredient base = Ingredient.method_52177(json.get("base"));
+			Ingredient base = Ingredient.fromJson(json.get("base"));
 			NbtCompound nbt = readNbt(json.get("nbt"));
 			boolean strict = JsonHelper.getBoolean(json, "strict", false);
 			return new NbtIngredient(base, nbt, strict);

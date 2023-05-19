@@ -44,7 +44,7 @@ public class IngredientMixin implements FabricIngredient {
 					target = "net/minecraft/recipe/Ingredient.entryFromJson (Lcom/google/gson/JsonObject;Z)Lnet/minecraft/recipe/Ingredient$Entry;",
 					ordinal = 0
 			),
-			method = "fromJson",
+			method = "fromJson(Lcom/google/gson/JsonElement;Z)Lnet/minecraft/recipe/Ingredient;",
 			cancellable = true
 	)
 	private static void injectFromJson(JsonElement json, boolean requireNotEmpty, CallbackInfoReturnable<Ingredient> cir) {
