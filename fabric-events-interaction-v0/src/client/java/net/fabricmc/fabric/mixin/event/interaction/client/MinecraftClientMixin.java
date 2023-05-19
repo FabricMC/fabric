@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.event.interaction.client;
 
-import net.minecraft.client.network.ClientPlayerInteractionManager;
-
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,6 +32,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerInventory;
