@@ -142,11 +142,11 @@ public abstract class MinecraftClientMixin {
 	@Shadow
 	@Final
 	public GameOptions options;
-	
+
 	@Shadow
 	@Nullable
 	public ClientPlayerInteractionManager interactionManager;
-	
+
 	@Inject(
 			at = @At(
 					value = "INVOKE",
@@ -205,6 +205,7 @@ public abstract class MinecraftClientMixin {
 			if (interactionManager != null) {
 				interactionManager.cancelBlockBreaking();
 			}
+
 			ci.cancel();
 		}
 	}
