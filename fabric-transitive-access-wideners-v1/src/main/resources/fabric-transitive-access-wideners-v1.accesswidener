@@ -316,3 +316,6 @@ transitive-accessible field net/minecraft/client/render/RenderPhase WEATHER_TARG
 transitive-accessible field net/minecraft/client/render/RenderPhase CLOUDS_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase ITEM_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase FULL_LINE_WIDTH Lnet/minecraft/client/render/RenderPhase$LineWidth;
+
+# The attack cooldown
+transitive-accessible field net/minecraft/client/MinecraftClient attackCooldown I

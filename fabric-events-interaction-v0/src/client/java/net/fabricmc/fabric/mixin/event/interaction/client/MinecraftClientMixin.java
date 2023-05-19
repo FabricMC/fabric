@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.mixin.event.interaction.client;
 
+import net.minecraft.client.network.ClientPlayerInteractionManager;
+
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -140,7 +143,11 @@ public abstract class MinecraftClientMixin {
 	@Shadow
 	@Final
 	public GameOptions options;
-
+	
+	@Shadow
+	@Nullable
+	public ClientPlayerInteractionManager interactionManager;
+	
 	@Inject(
 			at = @At(
 					value = "INVOKE",
@@ -178,7 +185,8 @@ public abstract class MinecraftClientMixin {
 	private void injectHandleInputEventsForPreAttackCallback(CallbackInfo ci) {
 		if (options.attackKey.isPressed()) {
 			fabric_attackCancelled = ClientPreAttackCallback.EVENT.invoker().onClientPlayerPreAttack(
-					(MinecraftClient) (Object) this, player, options.attackKey.timesPressed
+					(MinecraftClient) (Object) this, player,
+					((InteractionEventsKeyBindingAccessor) options.attackKey).fabric_getTimesPressed()
 			);
 		} else {
 			fabric_attackCancelled = false;
@@ -195,6 +203,9 @@ public abstract class MinecraftClientMixin {
 	@Inject(method = "handleBlockBreaking", at = @At("HEAD"), cancellable = true)
 	private void injectHandleBlockBreakingForCancelling(boolean breaking, CallbackInfo ci) {
 		if (fabric_attackCancelled) {
+			if (interactionManager != null) {
+				interactionManager.cancelBlockBreaking();
+			}
 			ci.cancel();
 		}
 	}

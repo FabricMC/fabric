@@ -30,11 +30,6 @@ public class ClientPreAttackTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientPreAttackCallback.EVENT.register((client, player, clickCount) -> {
-			if (client.attackCooldown != 0) {
-				LOGGER.info("Does not handle because of attack cooldown: {}", client.attackCooldown);
-				return false;
-			}
-
 			if (!player.isSpectator() && player.getMainHandStack().getItem() == Items.TORCH) {
 				LOGGER.info("Attacking using torch intercepted. Attack key clicks: {}", clickCount != 0);
 				return true;
