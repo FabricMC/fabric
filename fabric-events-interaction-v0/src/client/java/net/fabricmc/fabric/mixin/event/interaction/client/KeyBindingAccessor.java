@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import net.minecraft.client.option.KeyBinding;
 
 @Mixin(KeyBinding.class)
-public interface InteractionEventsKeyBindingAccessor {
+public interface KeyBindingAccessor {
 	@Accessor("timesPressed")
 	int fabric_getTimesPressed();
 }

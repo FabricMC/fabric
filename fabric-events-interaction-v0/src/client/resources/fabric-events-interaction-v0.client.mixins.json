@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_16",
   "client": [
     "ClientPlayerInteractionManagerMixin",
-    "InteractionEventsKeyBindingAccessor",
+    "KeyBindingAccessor",
     "MinecraftClientMixin"
   ],
   "injectors": {
