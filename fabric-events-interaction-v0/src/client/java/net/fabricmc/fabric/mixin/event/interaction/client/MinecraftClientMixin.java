@@ -182,12 +182,14 @@ public abstract class MinecraftClientMixin {
 			)
 	)
 	private void injectHandleInputEventsForPreAttackCallback(CallbackInfo ci) {
-		if (options.attackKey.isPressed()) {
+		int attackKeyPressCount = ((KeyBindingAccessor) options.attackKey).fabric_getTimesPressed();
+
+		if (options.attackKey.isPressed() || attackKeyPressCount != 0) {
 			fabric_attackCancelled = ClientPreAttackCallback.EVENT.invoker().onClientPlayerPreAttack(
-					(MinecraftClient) (Object) this, player,
-					((KeyBindingAccessor) options.attackKey).fabric_getTimesPressed()
+					(MinecraftClient) (Object) this, player, attackKeyPressCount
 			);
-		} else {
+		}
+		else {
 			fabric_attackCancelled = false;
 		}
 	}

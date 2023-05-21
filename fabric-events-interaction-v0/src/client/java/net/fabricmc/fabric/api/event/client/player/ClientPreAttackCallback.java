@@ -23,7 +23,8 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * This event fires every tick when the attack key (left mouse button by default) is in pressed state.
+ * This event fires every tick when the attack key (left mouse button by default) is pressed
+ * (including clicking and holding the attack key).
  * If the callback returns true,
  * the vanilla handling (block breaking, entity attacking, hand swing) will be cancelled,
  * and the later callbacks of this event are also cancelled.
