@@ -135,6 +135,9 @@ transitive-accessible method net/minecraft/entity/damage/DamageSources create (L
 # The attack cooldown
 transitive-accessible field net/minecraft/client/MinecraftClient attackCooldown I
 
+# The attack cooldown
+transitive-accessible field net/minecraft/client/MinecraftClient attackCooldown I
+
 ### Generated access wideners below
 # Constructors of non-abstract block classes
 transitive-accessible method net/minecraft/block/AirBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
