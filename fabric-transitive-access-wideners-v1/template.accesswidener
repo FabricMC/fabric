@@ -112,4 +112,7 @@ transitive-accessible method net/minecraft/world/gen/stateprovider/BlockStatePro
 # Creating custom biomes
 transitive-accessible method net/minecraft/world/biome/OverworldBiomeCreator getSkyColor (F)I
 
+# The attack cooldown
+transitive-accessible field net/minecraft/client/MinecraftClient attackCooldown I
+
 ### Generated access wideners below

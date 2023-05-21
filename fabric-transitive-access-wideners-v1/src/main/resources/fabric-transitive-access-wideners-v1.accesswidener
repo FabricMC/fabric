@@ -117,6 +117,9 @@ transitive-accessible method net/minecraft/world/gen/stateprovider/BlockStatePro
 # Creating custom biomes
 transitive-accessible method net/minecraft/world/biome/OverworldBiomeCreator getSkyColor (F)I
 
+# The attack cooldown
+transitive-accessible field net/minecraft/client/MinecraftClient attackCooldown I
+
 ### Generated access wideners below
 # Constructors of non-abstract block classes
 transitive-accessible method net/minecraft/block/AirBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
@@ -316,6 +319,3 @@ transitive-accessible field net/minecraft/client/render/RenderPhase WEATHER_TARG
 transitive-accessible field net/minecraft/client/render/RenderPhase CLOUDS_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase ITEM_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase FULL_LINE_WIDTH Lnet/minecraft/client/render/RenderPhase$LineWidth;
-
-# The attack cooldown
-transitive-accessible field net/minecraft/client/MinecraftClient attackCooldown I
