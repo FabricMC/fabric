@@ -188,8 +188,7 @@ public abstract class MinecraftClientMixin {
 			fabric_attackCancelled = ClientPreAttackCallback.EVENT.invoker().onClientPlayerPreAttack(
 					(MinecraftClient) (Object) this, player, attackKeyPressCount
 			);
-		}
-		else {
+		} else {
 			fabric_attackCancelled = false;
 		}
 	}
