@@ -203,12 +203,14 @@ allprojects {
 	}
 
 	allprojects.each { p ->
-		if (project.name == "deprecated") return
+		if (project.name == "deprecated") {
+			return
+		}
 
-			loom.mods.register(p.name) {
-				sourceSet p.sourceSets.main
-				sourceSet p.sourceSets.client
-			}
+		loom.mods.register(p.name) {
+			sourceSet p.sourceSets.main
+			sourceSet p.sourceSets.client
+		}
 
 		loom.mods.register(p.name + "-testmod") {
 			sourceSet p.sourceSets.testmod
@@ -330,9 +332,11 @@ remapTestmodJar {
 	def testModJarTasks = []
 
 	subprojects {
-		if (it.name == "deprecated" || !(it.file("src/testmod").exists() || it.file("src/testmodClient").exists())) return
+		if (it.name == "deprecated" || !(it.file("src/testmod").exists() || it.file("src/testmodClient").exists())) {
+			return
+		}
 
-			testModJarTasks += it.tasks.remapTestmodJar
+		testModJarTasks += it.tasks.remapTestmodJar
 	}
 
 	nestedJars.setFrom(testModJarTasks)
@@ -370,9 +374,11 @@ javadoc {
 	}
 
 	allprojects.each {
-		if (it.name == "deprecated") return
+		if (it.name == "deprecated") {
+			return
+		}
 
-			source(it.sourceSets.main.allJava)
+		source(it.sourceSets.main.allJava)
 		source(it.sourceSets.client.allJava)
 	}
 
@@ -448,8 +454,10 @@ tasks.register('coverage', JacocoReport) {
 
 	// Add all source as input
 	allprojects { p ->
-		if (p.path.startsWith(":deprecated")) return
-			sourceSets p.sourceSets.main, p.sourceSets.client, p.sourceSets.testmod, p.sourceSets.testmodClient
+		if (p.path.startsWith(":deprecated")) {
+			return
+		}
+		sourceSets p.sourceSets.main, p.sourceSets.client, p.sourceSets.testmod, p.sourceSets.testmodClient
 	}
 
 	// Exclude mixins
@@ -608,9 +616,11 @@ publishing {
 				def depsNode = asNode().appendNode("dependencies")
 				subprojects.each {
 					// Dont depend on the deprecated modules in the main artifact.
-					if (it.path.startsWith(":deprecated")) return
+					if (it.path.startsWith(":deprecated")) {
+						return
+					}
 
-						def depNode = depsNode.appendNode("dependency")
+					def depNode = depsNode.appendNode("dependency")
 					depNode.appendNode("groupId", it.group)
 					depNode.appendNode("artifactId", it.name)
 					depNode.appendNode("version", it.version)
@@ -670,10 +680,12 @@ dependencies {
 remapJar {
 	afterEvaluate {
 		subprojects.each {
-			if (it.name in devOnlyModules || it.name == "deprecated") return
+			if (it.name in devOnlyModules || it.name == "deprecated") {
+				return
+			}
 
-				// Include the signed or none signed jar from the sub project.
-				nestedJars.from project("${it.path}").tasks.getByName(signingEnabled ? "signRemapJar" : "remapJar")
+			// Include the signed or none signed jar from the sub project.
+			nestedJars.from project("${it.path}").tasks.getByName(signingEnabled ? "signRemapJar" : "remapJar")
 		}
 	}
 }
