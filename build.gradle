@@ -478,14 +478,10 @@ import net.fabricmc.loom.util.Platform
 
 // This is very far beyond loom's API if you copy this, you're on your own.
 tasks.register('runProductionAutoTestClient', JavaExec) {
-	dependsOn remapJar, remapTestmodJar
+	dependsOn remapJar, remapTestmodJar, downloadAssets
 	classpath.from configurations.productionRuntime
 	mainClass = "net.fabricmc.loader.impl.launch.knot.KnotClient"
 	workingDir = file("run")
-
-	afterEvaluate {
-		dependsOn downloadAssets
-	}
 
 	doFirst {
 		classpath.from loom.minecraftProvider.minecraftClientJar
