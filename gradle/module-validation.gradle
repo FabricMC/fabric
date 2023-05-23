@@ -8,7 +8,9 @@ import groovy.json.JsonSlurper
  */
 
 subprojects {
-	if (it.name == "deprecated") return
+	if (it.name == "deprecated") {
+		return
+	}
 
 	// Create the task
 	task validateModules(type: ValidateModuleTask)
@@ -42,7 +44,7 @@ class ValidateModuleTask extends DefaultTask {
 			clientOnlyMod = true
 		}
 
-		def json = new JsonSlurper().parse(file) as Map<String, Map<String, String>>
+		def json = new JsonSlurper().parse(file)
 
 		if (json.custom == null) {
 			throw new GradleException("Module ${project} does not have a custom value containing module lifecycle!")

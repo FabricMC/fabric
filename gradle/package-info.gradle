@@ -1,6 +1,9 @@
 import java.nio.file.Files
 
-for (def sourceSet in [sourceSets.main, sourceSets.client]) {
+for (def sourceSet in [
+			sourceSets.main,
+			sourceSets.client
+		]) {
 	// We have to capture the source set name for the lazy string literals,
 	// otherwise it'll just be whatever the last source set is in the list.
 	def sourceSetName = sourceSet.name

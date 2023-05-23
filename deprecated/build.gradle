@@ -13,10 +13,10 @@ publishing {
 				allprojects.each {
 					if (it.name == "deprecated") return // Dont depend on yourself :)
 
-					// Depend on all of the deprecated projects
-					if (!it.path.startsWith(":deprecated")) return
+						// Depend on all of the deprecated projects
+						if (!it.path.startsWith(":deprecated")) return
 
-					def depNode = depsNode.appendNode("dependency")
+						def depNode = depsNode.appendNode("dependency")
 					depNode.appendNode("groupId", it.group)
 					depNode.appendNode("artifactId", it.name)
 					depNode.appendNode("version", it.version)

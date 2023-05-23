@@ -1,9 +1,7 @@
 archivesBaseName = "fabric-entity-events-v1"
 version = getSubprojectVersion(project)
 
-moduleDependencies(project, [
-		'fabric-api-base'
-])
+moduleDependencies(project, ['fabric-api-base'])
 
 testDependencies(project, [
 	':fabric-command-api-v2',

@@ -10,7 +10,7 @@ plugins {
 	id "idea"
 	id "maven-publish"
 	id 'jacoco'
-	id "fabric-loom" version "1.2.5" apply false
+	id "fabric-loom" version "1.2.7" apply false
 	id "com.diffplug.spotless" version "6.18.0"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -24,6 +24,8 @@ def signingEnabled = ENV.SIGNING_SERVER
 version = project.version + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
 logger.lifecycle("Building Fabric: " + version)
 
+
+import net.fabricmc.loom.util.gradle.SourceSetHelper
 import org.apache.commons.codec.digest.DigestUtils
 
 def getSubprojectVersion(project) {
@@ -139,7 +141,7 @@ allprojects {
 
 	if (it.name == "deprecated") return
 
-	apply plugin: "java-library"
+		apply plugin: "java-library"
 	apply plugin: "checkstyle"
 	apply plugin: "fabric-loom"
 	apply plugin: "com.diffplug.spotless"
@@ -172,6 +174,11 @@ allprojects {
 			compileClasspath += testmod.compileClasspath
 			runtimeClasspath += testmod.runtimeClasspath
 		}
+
+		test {
+			compileClasspath += testmodClient.compileClasspath
+			runtimeClasspath += testmodClient.runtimeClasspath
+		}
 	}
 
 	loom {
@@ -196,10 +203,10 @@ allprojects {
 	allprojects.each { p ->
 		if (project.name == "deprecated") return
 
-		loom.mods.register(p.name) {
-			sourceSet p.sourceSets.main
-			sourceSet p.sourceSets.client
-		}
+			loom.mods.register(p.name) {
+				sourceSet p.sourceSets.main
+				sourceSet p.sourceSets.client
+			}
 
 		loom.mods.register(p.name + "-testmod") {
 			sourceSet p.sourceSets.testmod
@@ -216,6 +223,26 @@ allprojects {
 		testmodClientImplementation sourceSets.main.output
 		testmodClientImplementation sourceSets.client.output
 		testmodClientImplementation sourceSets.testmod.output
+
+		testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+		testImplementation sourceSets.testmodClient.output
+	}
+
+	test {
+		useJUnitPlatform()
+
+		afterEvaluate {
+			// See: https://github.com/FabricMC/fabric-loader/pull/585
+			def classPathGroups = loom.mods.stream()
+					.map { modSettings ->
+						SourceSetHelper.getClasspath(modSettings, getProject()).stream()
+								.map(File.&getAbsolutePath)
+								.collect(Collectors.joining(File.pathSeparator))
+					}
+					.collect(Collectors.joining(File.pathSeparator+File.pathSeparator))
+
+			systemProperty("fabric.classPathGroups", classPathGroups)
+		}
 	}
 
 	tasks.withType(ProcessResources).configureEach {
@@ -234,10 +261,10 @@ allprojects {
 
 	checkstyle {
 		configFile = rootProject.file("checkstyle.xml")
-		toolVersion = "10.9.3"
+		toolVersion = "10.11.0"
 	}
 
-	tasks.withType(AbstractArchiveTask) {
+	tasks.withType(AbstractArchiveTask).configureEach {
 		preserveFileTimestamps = false
 		reproducibleFileOrder = true
 	}
@@ -249,11 +276,11 @@ allprojects {
 	}
 
 	// Run this task after updating minecraft to regenerate any required resources
-	task generateResources {
+	tasks.register('generateResources') {
 		group = "fabric"
 	}
 
-	task testmodJar(type: Jar) {
+	tasks.register('testmodJar', Jar) {
 		from sourceSets.testmod.output
 		from sourceSets.testmodClient.output
 		destinationDirectory = new File(project.buildDir, "devlibs")
@@ -276,7 +303,8 @@ allprojects {
 		}
 	}
 
-	task remapTestmodJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: testmodJar) {
+	tasks.register('remapTestmodJar', net.fabricmc.loom.task.RemapJarTask) {
+		dependsOn testmodJar
 		input = testmodJar.archiveFile
 		archiveClassifier = "testmod"
 		addNestedDependencies = false
@@ -285,7 +313,7 @@ allprojects {
 	}
 	build.dependsOn remapTestmodJar
 
-	task validateMixinNames(type: net.fabricmc.loom.task.ValidateMixinNameTask) {
+	tasks.register('validateMixinNames', net.fabricmc.loom.task.ValidateMixinNameTask) {
 		source(sourceSets.main.output)
 		source(sourceSets.client.output)
 		source(sourceSets.testmod.output)
@@ -302,7 +330,7 @@ remapTestmodJar {
 	subprojects {
 		if (it.name == "deprecated" || !(it.file("src/testmod").exists() || it.file("src/testmodClient").exists())) return
 
-		testModJarTasks += it.tasks.remapTestmodJar
+			testModJarTasks += it.tasks.remapTestmodJar
 	}
 
 	nestedJars.setFrom(testModJarTasks)
@@ -328,7 +356,7 @@ javadoc {
 		memberLevel = JavadocMemberLevel.PACKAGE
 		links(
 				"https://maven.fabricmc.net/docs/yarn-${rootProject.minecraft_version}${project.yarn_version}/"
-		)
+				)
 		// Disable the crazy super-strict doclint tool in Java 8
 		addStringOption("Xdoclint:none", "-quiet")
 
@@ -336,13 +364,13 @@ javadoc {
 				'apiNote:a:API Note:',
 				'implSpec:a:Implementation Requirements:',
 				'implNote:a:Implementation Note:'
-		)
+				)
 	}
 
 	allprojects.each {
 		if (it.name == "deprecated") return
 
-		source(it.sourceSets.main.allJava)
+			source(it.sourceSets.main.allJava)
 		source(it.sourceSets.client.allJava)
 	}
 
@@ -351,7 +379,7 @@ javadoc {
 	failOnError true
 }
 
-task javadocJar(type: Jar) {
+tasks.register('javadocJar', Jar) {
 	dependsOn javadoc
 	from javadoc.destinationDir
 	//Set as `fatjavadoc` to prevent an ide form trying to use this javadoc, over using the modules javadoc
@@ -399,7 +427,10 @@ loom {
 }
 test.dependsOn runGametest
 
-def coverageTasks = [runGametestCoverage, runAutoTestClientCoverage]
+def coverageTasks = [
+	runGametestCoverage,
+	runAutoTestClientCoverage
+]
 
 jacoco {
 	coverageTasks.forEach {
@@ -407,7 +438,8 @@ jacoco {
 	}
 }
 
-task coverage(type: JacocoReport, dependsOn: coverageTasks) {
+tasks.register('coverage', JacocoReport) {
+	dependsOn coverageTasks
 	coverageTasks.forEach {
 		executionData it
 	}
@@ -415,15 +447,13 @@ task coverage(type: JacocoReport, dependsOn: coverageTasks) {
 	// Add all source as input
 	allprojects { p ->
 		if (p.path.startsWith(":deprecated")) return
-		sourceSets p.sourceSets.main, p.sourceSets.client, p.sourceSets.testmod, p.sourceSets.testmodClient
+			sourceSets p.sourceSets.main, p.sourceSets.client, p.sourceSets.testmod, p.sourceSets.testmodClient
 	}
 
 	// Exclude mixins
-	afterEvaluate {
-		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: '**/mixin/**')
-		}))
-	}
+	classDirectories.setFrom(files(classDirectories.files.collect {
+		fileTree(dir: it, exclude: '**/mixin/**')
+	}))
 }
 
 configurations {
@@ -445,7 +475,8 @@ dependencies {
 import net.fabricmc.loom.util.Platform
 
 // This is very far beyond loom's API if you copy this, you're on your own.
-task runProductionAutoTestClient(type: JavaExec, dependsOn: [remapJar, remapTestmodJar]) {
+tasks.register('runProductionAutoTestClient', JavaExec) {
+	dependsOn remapJar, remapTestmodJar
 	classpath.from configurations.productionRuntime
 	mainClass = "net.fabricmc.loader.impl.launch.knot.KnotClient"
 	workingDir = file("run")
@@ -459,25 +490,25 @@ task runProductionAutoTestClient(type: JavaExec, dependsOn: [remapJar, remapTest
 		workingDir.mkdirs()
 
 		args(
-			"--assetIndex", loom.minecraftProvider.versionInfo.assetIndex().fabricId(loom.minecraftProvider.minecraftVersion()),
-			"--assetsDir", new File(loom.files.userCache, "assets").absolutePath,
-			"--gameDir", workingDir.absolutePath
-		)
+				"--assetIndex", loom.minecraftProvider.versionInfo.assetIndex().fabricId(loom.minecraftProvider.minecraftVersion()),
+				"--assetsDir", new File(loom.files.userCache, "assets").absolutePath,
+				"--gameDir", workingDir.absolutePath
+				)
 
 		if (Platform.CURRENT.operatingSystem.isMacOS()) {
 			jvmArgs(
-				"-XstartOnFirstThread"
-			)
+					"-XstartOnFirstThread"
+					)
 		}
 
 		jvmArgs(
-			"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
-			"-Dfabric.autoTest"
-		)
+				"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
+				"-Dfabric.autoTest"
+				)
 	}
 }
 
-task serverPropertiesJar(type: Jar) {
+tasks.register('serverPropertiesJar', Jar) {
 	def propsFile = file("build/tmp/install.properties")
 
 	doFirst {
@@ -492,7 +523,8 @@ task serverPropertiesJar(type: Jar) {
 	from(propsFile)
 }
 
-task runProductionAutoTestServer(type: JavaExec, dependsOn: [remapJar, remapTestmodJar, serverPropertiesJar]) {
+tasks.register('runProductionAutoTestServer', JavaExec) {
+	dependsOn remapJar, remapTestmodJar, serverPropertiesJar
 	classpath.from configurations.productionRuntimeServer, serverPropertiesJar
 	mainClass = "net.fabricmc.installer.ServerLauncher"
 	workingDir = file("run")
@@ -501,34 +533,42 @@ task runProductionAutoTestServer(type: JavaExec, dependsOn: [remapJar, remapTest
 		workingDir.mkdirs()
 
 		jvmArgs(
-			"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
-			"-Dfabric.autoTest"
-		)
+				"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
+				"-Dfabric.autoTest"
+				)
 
 		args("nogui")
+	}
+}
+
+// Format all the gradle files
+spotless {
+	groovyGradle {
+		target 'src/**/*.gradle', '*.gradle', 'gradle/*.gradle'
+		greclipse()
 	}
 }
 
 subprojects {
 	if (it.name == "deprecated") return
 
-	dependencies {
-		testmodImplementation sourceSets.main.output
+		dependencies {
+			testmodImplementation sourceSets.main.output
 
-		// Make all modules depend on the gametest api (and thus res loader) to try and promote its usage.
-		if (project.name != "fabric-gametest-api-v1") {
-			testmodImplementation project(path: ':fabric-gametest-api-v1', configuration: 'namedElements')
-			testmodClientImplementation project(":fabric-gametest-api-v1").sourceSets.client.output
-			testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
-			testmodClientImplementation project(":fabric-resource-loader-v0").sourceSets.client.output
-		}
+			// Make all modules depend on the gametest api (and thus res loader) to try and promote its usage.
+			if (project.name != "fabric-gametest-api-v1") {
+				testmodImplementation project(path: ':fabric-gametest-api-v1', configuration: 'namedElements')
+				testmodClientImplementation project(":fabric-gametest-api-v1").sourceSets.client.output
+				testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
+				testmodClientImplementation project(":fabric-resource-loader-v0").sourceSets.client.output
+			}
 
-		// Make all testmods run with registry-sync-v0 as it is required to register new objects.
-		if (project.name != "fabric-registry-sync-v0") {
-			testmodRuntimeOnly project(path: ':fabric-registry-sync-v0', configuration: 'namedElements')
-			testmodClientImplementation project(":fabric-registry-sync-v0").sourceSets.client.output
+			// Make all testmods run with registry-sync-v0 as it is required to register new objects.
+			if (project.name != "fabric-registry-sync-v0") {
+				testmodRuntimeOnly project(path: ':fabric-registry-sync-v0', configuration: 'namedElements')
+				testmodClientImplementation project(":fabric-registry-sync-v0").sourceSets.client.output
+			}
 		}
-	}
 
 	publishing {
 		publications {
@@ -570,7 +610,7 @@ publishing {
 					// Dont depend on the deprecated modules in the main artifact.
 					if (it.path.startsWith(":deprecated")) return
 
-					def depNode = depsNode.appendNode("dependency")
+						def depNode = depsNode.appendNode("dependency")
 					depNode.appendNode("groupId", it.group)
 					depNode.appendNode("artifactId", it.name)
 					depNode.appendNode("version", it.version)
@@ -603,20 +643,18 @@ void setupRepositories(RepositoryHandler repositories) {
 subprojects.each {
 	if (it.name == "deprecated") return
 
-	remapJar.dependsOn("${it.path}:remapJar")
+		remapJar.dependsOn("${it.path}:remapJar")
 }
 
 // These modules are not included in the fat jar, maven will resolve them via the pom.
-def devOnlyModules = [
-		"fabric-gametest-api-v1",
-]
+def devOnlyModules = ["fabric-gametest-api-v1",]
 
 dependencies {
 	afterEvaluate {
 		subprojects.each {
 			if (it.name == "deprecated") return
 
-			api project(path: "${it.path}", configuration: "namedElements")
+				api project(path: "${it.path}", configuration: "namedElements")
 			clientImplementation project("${it.path}:").sourceSets.client.output
 
 			testmodImplementation project("${it.path}:").sourceSets.testmod.output
@@ -630,8 +668,8 @@ remapJar {
 		subprojects.each {
 			if (it.name in devOnlyModules || it.name == "deprecated") return
 
-			// Include the signed or none signed jar from the sub project.
-			nestedJars.from project("${it.path}").tasks.getByName(signingEnabled ? "signRemapJar" : "remapJar")
+				// Include the signed or none signed jar from the sub project.
+				nestedJars.from project("${it.path}").tasks.getByName(signingEnabled ? "signRemapJar" : "remapJar")
 		}
 	}
 }
@@ -671,7 +709,10 @@ if (signingEnabled) {
 import org.kohsuke.github.GHReleaseBuilder
 import org.kohsuke.github.GitHub
 
-task github(dependsOn: (signingEnabled ? signRemapJar : remapJar)) {
+import java.util.stream.Collectors
+
+tasks.register('github') {
+	dependsOn(signingEnabled ? signRemapJar : remapJar)
 	onlyIf {
 		ENV.GITHUB_TOKEN
 	}
@@ -701,7 +742,7 @@ modrinth {
 }
 
 // A task to ensure that the version being released has not already been released.
-task checkVersion {
+tasks.register('checkVersion') {
 	doFirst {
 		def xml = new URL("https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml").text
 		def metadata = new XmlSlurper().parseText(xml)

@@ -2,8 +2,8 @@ archivesBaseName = "fabric-loot-tables-v1"
 version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
-		'fabric-api-base',
-		'fabric-loot-api-v2'
+	'fabric-api-base',
+	'fabric-loot-api-v2'
 ])
 
 dependencies {

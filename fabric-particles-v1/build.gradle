@@ -5,9 +5,7 @@ loom {
 	accessWidenerPath = file("src/main/resources/fabric-particles-v1.accesswidener")
 }
 
-moduleDependencies(project, [
-		'fabric-api-base'
-])
+moduleDependencies(project, ['fabric-api-base'])
 
 validateMixinNames {
 	// Loom needs to handle inner mixins better

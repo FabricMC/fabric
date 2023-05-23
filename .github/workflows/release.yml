@@ -6,7 +6,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     container:
       image: eclipse-temurin:20-jdk
       options: --user root

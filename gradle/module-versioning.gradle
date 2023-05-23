@@ -30,7 +30,9 @@ class BumpVersionTask extends DefaultTask {
 			// Bump all versions. To be used when buildscript changes are made.
 			if (input == "allPatch") {
 				project.getChildProjects().values().forEach {
-					if (it.name == "deprecated") return
+					if (it.name == "deprecated") {
+						return
+					}
 
 					toUpdate.put(it, 2)
 				}
@@ -70,7 +72,7 @@ class BumpVersionTask extends DefaultTask {
 				project.allprojects.each { cp ->
 					if (cp.name == "deprecated" || cp.name == "fabric-api") return
 
-					def config = cp.configurations.api
+						def config = cp.configurations.api
 					config.allDependencies.forEach { dep ->
 						if (dep.name == p.name) {
 							if (!toUpdate.containsKey(cp)) {
@@ -111,9 +113,9 @@ class BumpVersionTask extends DefaultTask {
 			println "${p.name}: $version -> $newVersion"
 
 			text = text.replace(
-				"${p.name}-version=$version",
-				"${p.name}-version=$newVersion"
-			)
+					"${p.name}-version=$version",
+					"${p.name}-version=$newVersion"
+					)
 		}
 
 		gpFile.text = text
