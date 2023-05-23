@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -34,6 +33,7 @@ import net.minecraft.loot.LootDataType;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
+import net.minecraft.data.server.loottable.LootTableGenerator;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.util.Identifier;
@@ -51,7 +51,7 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
  * <p>Use {@link SimpleFabricLootTableProvider} for a simple abstract class that you can implement to handle standard loot table functions.
  */
 @ApiStatus.NonExtendable
-public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier, LootTable.Builder>>, DataProvider {
+public interface FabricLootTableProvider extends LootTableGenerator, DataProvider {
 	LootContextType getLootContextType();
 
 	FabricDataOutput getFabricDataOutput();
