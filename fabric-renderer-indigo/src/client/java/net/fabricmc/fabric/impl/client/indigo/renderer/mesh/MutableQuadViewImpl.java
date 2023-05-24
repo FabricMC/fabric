@@ -37,11 +37,11 @@ import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
-import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl;
-import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl.Value;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.TextureHelper;
+import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
 
 /**
  * Almost-concrete implementation of a mutable quad. The only missing part is {@link #emit()},
@@ -150,7 +150,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 			material = IndigoRenderer.MATERIAL_STANDARD;
 		}
 
-		data[baseIndex + HEADER_BITS] = EncodingFormat.material(data[baseIndex + HEADER_BITS], (Value) material);
+		data[baseIndex + HEADER_BITS] = EncodingFormat.material(data[baseIndex + HEADER_BITS], (RenderMaterialImpl) material);
 		return this;
 	}
 
@@ -163,6 +163,18 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	@Override
 	public final MutableQuadViewImpl tag(int tag) {
 		data[baseIndex + HEADER_TAG] = tag;
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl copyFrom(QuadView quad) {
+		final QuadViewImpl q = (QuadViewImpl) quad;
+		q.computeGeometry();
+
+		System.arraycopy(q.data, q.baseIndex, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
+		faceNormal.set(q.faceNormal);
+		nominalFace = q.nominalFace;
+		isGeometryInvalid = false;
 		return this;
 	}
 
@@ -181,7 +193,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		colorIndex(quad.getColorIndex());
 
 		if (!quad.hasShade()) {
-			material = RenderMaterialImpl.setDisableDiffuse((Value) material, true);
+			material = RenderMaterialImpl.setDisableDiffuse((RenderMaterialImpl) material, true);
 		}
 
 		material(material);

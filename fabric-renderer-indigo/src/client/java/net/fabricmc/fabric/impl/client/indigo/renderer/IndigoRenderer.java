@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
-import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl.Value;
+import net.fabricmc.fabric.impl.client.indigo.renderer.material.MaterialFinderImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MeshBuilderImpl;
 
 /**
@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MeshBuilderImpl;
 public class IndigoRenderer implements Renderer {
 	public static final IndigoRenderer INSTANCE = new IndigoRenderer();
 
-	public static final RenderMaterialImpl.Value MATERIAL_STANDARD = (Value) INSTANCE.materialFinder().find();
+	public static final RenderMaterial MATERIAL_STANDARD = INSTANCE.materialFinder().find();
 
 	static {
 		INSTANCE.registerMaterial(RenderMaterial.MATERIAL_STANDARD, MATERIAL_STANDARD);
@@ -51,7 +51,7 @@ public class IndigoRenderer implements Renderer {
 
 	@Override
 	public MaterialFinder materialFinder() {
-		return new RenderMaterialImpl.Finder();
+		return new MaterialFinderImpl();
 	}
 
 	@Override
