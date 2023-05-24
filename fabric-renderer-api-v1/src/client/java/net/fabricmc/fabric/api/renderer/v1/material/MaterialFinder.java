@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.renderer.v1.material;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -31,7 +32,7 @@ import net.fabricmc.fabric.api.util.TriState;
  *
  * <p>Must be obtained via {@link Renderer#materialFinder()}.
  */
-public interface MaterialFinder {
+public interface MaterialFinder extends MaterialView {
 	/**
 	 * Defines how sprite pixels will be blended with the scene.
 	 *
@@ -73,6 +74,9 @@ public interface MaterialFinder {
 	/**
 	 * Vertex color(s) will be modified for diffuse shading unless disabled.
 	 *
+	 * <p>This property is guaranteed to be respected in block contexts. Some renderers may also respect it in item
+	 * contexts, but this is not guaranteed.
+	 *
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
 	default MaterialFinder disableDiffuse(boolean disable) {
@@ -86,10 +90,42 @@ public interface MaterialFinder {
 	 * and the block state has {@link BlockState#getLuminance() a luminance} of 0.
 	 * Set to {@link TriState#TRUE} or {@link TriState#FALSE} to override this behavior.
 	 *
+	 * <p>This property is respected only in block contexts. It will not have an effect in other contexts.
+	 *
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
 	default MaterialFinder ambientOcclusion(TriState mode) {
 		return disableAo(0, mode == TriState.FALSE);
+	}
+
+	/**
+	 * Controls whether glint should be applied.
+	 *
+	 * <p>By default, glint will be applied in item contexts if {@link ItemStack#hasGlint() the item stack has glint}.
+	 * Set to {@link TriState#TRUE} or {@link TriState#FALSE} to override this behavior.
+	 *
+	 * <p>This property is guaranteed to be respected in item contexts. Some renderers may also respect it in block
+	 * contexts, but this is not guaranteed.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
+	 */
+	default MaterialFinder glint(TriState mode) {
+		return this;
+	}
+
+	/**
+	 * Copies all properties from the given {@link MaterialView} to this material finder.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
+	 */
+	default MaterialFinder copyFrom(MaterialView material) {
+		blendMode(material.blendMode());
+		disableColorIndex(material.disableColorIndex());
+		emissive(material.emissive());
+		disableDiffuse(material.disableDiffuse());
+		ambientOcclusion(material.ambientOcclusion());
+		glint(material.glint());
+		return this;
 	}
 
 	/**

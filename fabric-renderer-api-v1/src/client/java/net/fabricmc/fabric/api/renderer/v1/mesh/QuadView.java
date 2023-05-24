@@ -163,6 +163,7 @@ public interface QuadView {
 	/**
 	 * See {@link MutableQuadView#nominalFace(Direction)}.
 	 */
+	@Nullable
 	Direction nominalFace();
 
 	/**
@@ -190,13 +191,6 @@ public interface QuadView {
 	 * Will return zero if no tag was set. For use by models.
 	 */
 	int tag();
-
-	/**
-	 * Extracts all quad properties except material to the given {@link MutableQuadView} instance.
-	 * Must be used before calling {link QuadEmitter#emit()} on the target instance.
-	 * Meant for re-texturing, analysis and static transformation use cases.
-	 */
-	void copyTo(MutableQuadView target);
 
 	/**
 	 * Reads baked vertex data and outputs standard {@link BakedQuad#getVertexData() baked quad vertex data}
@@ -227,9 +221,11 @@ public interface QuadView {
 	default BakedQuad toBakedQuad(Sprite sprite) {
 		int[] vertexData = new int[VANILLA_QUAD_STRIDE];
 		toVanilla(vertexData, 0);
-		// TODO material inspection: set shade as !disableDiffuse
-		// TODO material inspection: set color index to -1 if the material disables it
-		return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite, true);
+
+		// Mimic material properties to the largest possible extent
+		int outputColorIndex = material().disableColorIndex() ? -1 : colorIndex();
+		boolean outputShade = !material().disableDiffuse();
+		return new BakedQuad(vertexData, outputColorIndex, lightFace(), sprite, outputShade);
 	}
 
 	/**
@@ -254,6 +250,17 @@ public interface QuadView {
 	@Deprecated
 	default float spriteV(int vertexIndex, int spriteIndex) {
 		return v(vertexIndex);
+	}
+
+	/**
+	 * @deprecated Use {@link MutableQuadView#copyFrom(QuadView)} instead.
+	 * <b>Unlike {@link MutableQuadView#copyFrom(QuadView) copyFrom}, this method will not copy the material.</b>
+	 */
+	@Deprecated
+	default void copyTo(MutableQuadView target) {
+		RenderMaterial material = target.material();
+		target.copyFrom(this);
+		target.material(material);
 	}
 
 	/**

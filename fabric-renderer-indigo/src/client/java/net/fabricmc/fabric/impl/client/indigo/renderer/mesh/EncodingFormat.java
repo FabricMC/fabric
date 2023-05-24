@@ -25,8 +25,8 @@ import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
-import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
+import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
 
 /**
  * Holds all the array offsets and bit-wise encoders/decoders for
@@ -132,11 +132,11 @@ public abstract class EncodingFormat {
 		return (bits & GEOMETRY_INVERSE_MASK) | ((geometryFlags & GEOMETRY_MASK) << GEOMETRY_SHIFT);
 	}
 
-	static RenderMaterialImpl.Value material(int bits) {
+	static RenderMaterialImpl material(int bits) {
 		return RenderMaterialImpl.byIndex((bits >> MATERIAL_SHIFT) & MATERIAL_MASK);
 	}
 
-	static int material(int bits, RenderMaterialImpl.Value material) {
+	static int material(int bits, RenderMaterialImpl material) {
 		return (bits & MATERIAL_INVERSE_MASK) | (material.index() << MATERIAL_SHIFT);
 	}
 }

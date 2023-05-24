@@ -257,6 +257,19 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView tag(int tag);
 
 	/**
+	 * Copies all quad properties from the given {@link QuadView} to this quad.
+	 *
+	 * <p>Calling this method does not emit the quad.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
+	 */
+	default MutableQuadView copyFrom(QuadView quad) {
+		quad.copyTo(this);
+		material(quad.material());
+		return this;
+	}
+
+	/**
 	 * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
 	 * Only the {@link BakedQuad#getVertexData() quad vertex data} is copied.
 	 * This method should be performant whenever caller's vertex representation makes it feasible.

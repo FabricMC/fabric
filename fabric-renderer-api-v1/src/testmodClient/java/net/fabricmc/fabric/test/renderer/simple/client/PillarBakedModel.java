@@ -34,11 +34,15 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.block.v1.FabricBlockState;
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
+import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.test.renderer.simple.RendererTest;
 
 /**
@@ -51,9 +55,16 @@ public class PillarBakedModel implements BakedModel, FabricBakedModel {
 
 	// alone, bottom, middle, top
 	private final Sprite[] sprites;
+	private final RenderMaterial defaultMaterial;
+	private final RenderMaterial glintMaterial;
 
 	public PillarBakedModel(Sprite[] sprites) {
 		this.sprites = sprites;
+
+		MaterialFinder finder = RendererAccess.INSTANCE.getRenderer().materialFinder();
+		defaultMaterial = finder.find();
+		finder.clear();
+		glintMaterial = finder.glint(TriState.TRUE).find();
 	}
 
 	@Override
@@ -74,23 +85,29 @@ public class PillarBakedModel implements BakedModel, FabricBakedModel {
 	private void emitQuads(QuadEmitter emitter, @Nullable BlockRenderView blockView, @Nullable BlockState state, @Nullable BlockPos pos) {
 		for (Direction side : Direction.values()) {
 			ConnectedTexture texture = ConnectedTexture.ALONE;
+			RenderMaterial material = defaultMaterial;
 
-			if (side.getAxis().isHorizontal() && blockView != null && state != null && pos != null) {
-				boolean connectAbove = canConnect(blockView, pos.offset(Direction.UP), side, state, pos);
-				boolean connectBelow = canConnect(blockView, pos.offset(Direction.DOWN), side, state, pos);
+			if (side.getAxis().isHorizontal()) {
+				if (blockView != null && state != null && pos != null) {
+					boolean connectAbove = canConnect(blockView, pos.offset(Direction.UP), side, state, pos);
+					boolean connectBelow = canConnect(blockView, pos.offset(Direction.DOWN), side, state, pos);
 
-				if (connectAbove && connectBelow) {
-					texture = ConnectedTexture.MIDDLE;
-				} else if (connectAbove) {
-					texture = ConnectedTexture.BOTTOM;
-				} else if (connectBelow) {
-					texture = ConnectedTexture.TOP;
+					if (connectAbove && connectBelow) {
+						texture = ConnectedTexture.MIDDLE;
+					} else if (connectAbove) {
+						texture = ConnectedTexture.BOTTOM;
+					} else if (connectBelow) {
+						texture = ConnectedTexture.TOP;
+					}
 				}
+
+				material = glintMaterial;
 			}
 
 			emitter.square(side, 0, 0, 1, 1, 0);
 			emitter.spriteBake(sprites[texture.ordinal()], MutableQuadView.BAKE_LOCK_UV);
 			emitter.color(-1, -1, -1, -1);
+			emitter.material(material);
 			emitter.emit();
 		}
 	}

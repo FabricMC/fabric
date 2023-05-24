@@ -62,7 +62,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
  * special materials could be implemented by multiple renderers, however there is
  * no requirement that special materials be cross-compatible.
  */
-public interface RenderMaterial {
+public interface RenderMaterial extends MaterialView {
 	/**
 	 * This will be identical to the material that would be obtained by calling {@link MaterialFinder#find()}
 	 * on a new, unaltered, {@link MaterialFinder} instance.  It is defined here for clarity and convenience.
