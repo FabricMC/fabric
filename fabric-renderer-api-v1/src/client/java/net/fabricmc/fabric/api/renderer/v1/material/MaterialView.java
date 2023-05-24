@@ -27,55 +27,31 @@ import net.fabricmc.fabric.api.util.TriState;
 public interface MaterialView {
 	/**
 	 * @see MaterialFinder#blendMode(BlendMode)
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default BlendMode blendMode() {
-		return BlendMode.DEFAULT;
-	}
+	BlendMode blendMode();
 
 	/**
 	 * @see MaterialFinder#disableColorIndex(boolean)
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default boolean disableColorIndex() {
-		return false;
-	}
+	boolean disableColorIndex();
 
 	/**
 	 * @see MaterialFinder#emissive(boolean)
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default boolean emissive() {
-		return false;
-	}
+	boolean emissive();
 
 	/**
 	 * @see MaterialFinder#disableDiffuse(boolean)
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default boolean disableDiffuse() {
-		return false;
-	}
+	boolean disableDiffuse();
 
 	/**
 	 * @see MaterialFinder#ambientOcclusion(TriState)
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default TriState ambientOcclusion() {
-		return TriState.DEFAULT;
-	}
+	TriState ambientOcclusion();
 
 	/**
 	 * @see MaterialFinder#glint(TriState)
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default TriState glint() {
-		return TriState.DEFAULT;
-	}
+	TriState glint();
 }

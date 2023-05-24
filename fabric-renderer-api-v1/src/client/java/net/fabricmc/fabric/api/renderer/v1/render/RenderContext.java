@@ -46,25 +46,8 @@ public interface RenderContext {
 	 * Fabric causes vanilla baked models to send themselves
 	 * via this interface. Can also be used by compound models that contain a mix
 	 * of vanilla baked models, packaged quads and/or dynamic elements.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default BakedModelConsumer bakedModelConsumer() {
-		// Default implementation is provided for compat with older renderer implementations,
-		// but they should always override this function.
-		Consumer<BakedModel> fallback = fallbackConsumer();
-		return new BakedModelConsumer() {
-			@Override
-			public void accept(BakedModel model) {
-				fallback.accept(model);
-			}
-
-			@Override
-			public void accept(BakedModel model, @Nullable BlockState state) {
-				fallback.accept(model);
-			}
-		};
-	}
+	BakedModelConsumer bakedModelConsumer();
 
 	/**
 	 * Returns a {@link QuadEmitter} instance that emits directly to the render buffer.
@@ -111,7 +94,6 @@ public interface RenderContext {
 	 */
 	@Deprecated
 	default Consumer<BakedModel> fallbackConsumer() {
-		// This default implementation relies on implementors overriding bakedModelConsumer().
 		return bakedModelConsumer();
 	}
 

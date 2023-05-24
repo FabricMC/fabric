@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec2f;
@@ -49,14 +50,8 @@ public interface QuadEmitter extends MutableQuadView {
 		return this;
 	}
 
-	/**
-	 * @apiNote The default implementation will be removed in the next breaking release.
-	 */
 	@Override
-	default QuadEmitter color(int vertexIndex, int color) {
-		MutableQuadView.super.color(vertexIndex, color);
-		return this;
-	}
+	QuadEmitter color(int vertexIndex, int color);
 
 	@Override
 	default QuadEmitter color(int c0, int c1, int c2, int c3) {
@@ -64,14 +59,8 @@ public interface QuadEmitter extends MutableQuadView {
 		return this;
 	}
 
-	/**
-	 * @apiNote The default implementation will be removed in the next breaking release.
-	 */
 	@Override
-	default QuadEmitter uv(int vertexIndex, float u, float v) {
-		MutableQuadView.super.uv(vertexIndex, u, v);
-		return this;
-	}
+	QuadEmitter uv(int vertexIndex, float u, float v);
 
 	@Override
 	default QuadEmitter uv(int vertexIndex, Vector2f uv) {
@@ -79,14 +68,8 @@ public interface QuadEmitter extends MutableQuadView {
 		return this;
 	}
 
-	/**
-	 * @apiNote The default implementation will be removed in the next breaking release.
-	 */
 	@Override
-	default QuadEmitter spriteBake(Sprite sprite, int bakeFlags) {
-		MutableQuadView.super.spriteBake(sprite, bakeFlags);
-		return this;
-	}
+	QuadEmitter spriteBake(Sprite sprite, int bakeFlags);
 
 	default QuadEmitter uvUnitSquare() {
 		uv(0, 0, 0);
@@ -105,9 +88,8 @@ public interface QuadEmitter extends MutableQuadView {
 		return this;
 	}
 
-	// TODO: uncomment right before next breaking release
-	// @Override
-	// QuadEmitter normal(int vertexIndex, float x, float y, float z);
+	@Override
+	QuadEmitter normal(int vertexIndex, float x, float y, float z);
 
 	@Override
 	default QuadEmitter normal(int vertexIndex, Vector3f normal) {
@@ -130,26 +112,13 @@ public interface QuadEmitter extends MutableQuadView {
 	@Override
 	QuadEmitter tag(int tag);
 
-	/**
-	 * @apiNote The default implementation will be removed in the next breaking release.
-	 */
-	default QuadEmitter copyFrom(QuadView quad) {
-		MutableQuadView.super.copyFrom(quad);
-		return this;
-	}
+	QuadEmitter copyFrom(QuadView quad);
 
-	/**
-	 * @apiNote The default implementation will be removed in the next breaking release.
-	 */
 	@Override
-	default QuadEmitter fromVanilla(int[] quadData, int startIndex) {
-		MutableQuadView.super.fromVanilla(quadData, startIndex);
-		return this;
-	}
+	QuadEmitter fromVanilla(int[] quadData, int startIndex);
 
-	// TODO: uncomment right before next breaking release
-	// @Override
-	// QuadEmitter fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace);
+	@Override
+	QuadEmitter fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace);
 
 	/**
 	 * Tolerance for determining if the depth parameter to {@link #square(Direction, float, float, float, float, float)}

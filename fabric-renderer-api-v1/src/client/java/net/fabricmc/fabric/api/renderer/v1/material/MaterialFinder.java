@@ -37,21 +37,13 @@ public interface MaterialFinder extends MaterialView {
 	 * Defines how sprite pixels will be blended with the scene.
 	 *
 	 * <p>See {@link BlendMode} for more information.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default MaterialFinder blendMode(BlendMode blendMode) {
-		return blendMode(0, blendMode);
-	}
+	MaterialFinder blendMode(BlendMode blendMode);
 
 	/**
 	 * Vertex color(s) will be modified for quad color index unless disabled.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default MaterialFinder disableColorIndex(boolean disable) {
-		return disableColorIndex(0, disable);
-	}
+	MaterialFinder disableColorIndex(boolean disable);
 
 	/**
 	 * When true, sprite texture and color will be rendered at full brightness.
@@ -64,24 +56,16 @@ public interface MaterialFinder extends MaterialView {
 	 *
 	 * <p>Note that color will still be modified by diffuse shading and ambient occlusion,
 	 * unless disabled via {@link #disableDiffuse(boolean)} and {@link #ambientOcclusion(TriState)}.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default MaterialFinder emissive(boolean isEmissive) {
-		return emissive(0, isEmissive);
-	}
+	MaterialFinder emissive(boolean isEmissive);
 
 	/**
 	 * Vertex color(s) will be modified for diffuse shading unless disabled.
 	 *
 	 * <p>This property is guaranteed to be respected in block contexts. Some renderers may also respect it in item
 	 * contexts, but this is not guaranteed.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default MaterialFinder disableDiffuse(boolean disable) {
-		return disableDiffuse(0, disable);
-	}
+	MaterialFinder disableDiffuse(boolean disable);
 
 	/**
 	 * Controls whether vertex color(s) will be modified for ambient occlusion.
@@ -91,12 +75,8 @@ public interface MaterialFinder extends MaterialView {
 	 * Set to {@link TriState#TRUE} or {@link TriState#FALSE} to override this behavior.
 	 *
 	 * <p>This property is respected only in block contexts. It will not have an effect in other contexts.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default MaterialFinder ambientOcclusion(TriState mode) {
-		return disableAo(0, mode == TriState.FALSE);
-	}
+	MaterialFinder ambientOcclusion(TriState mode);
 
 	/**
 	 * Controls whether glint should be applied.
@@ -106,27 +86,13 @@ public interface MaterialFinder extends MaterialView {
 	 *
 	 * <p>This property is guaranteed to be respected in item contexts. Some renderers may also respect it in block
 	 * contexts, but this is not guaranteed.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default MaterialFinder glint(TriState mode) {
-		return this;
-	}
+	MaterialFinder glint(TriState mode);
 
 	/**
 	 * Copies all properties from the given {@link MaterialView} to this material finder.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default MaterialFinder copyFrom(MaterialView material) {
-		blendMode(material.blendMode());
-		disableColorIndex(material.disableColorIndex());
-		emissive(material.emissive());
-		disableDiffuse(material.disableDiffuse());
-		ambientOcclusion(material.ambientOcclusion());
-		glint(material.glint());
-		return this;
-	}
+	MaterialFinder copyFrom(MaterialView material);
 
 	/**
 	 * Resets this instance to default values. Values will match those
