@@ -61,6 +61,8 @@ public final class Networking {
 			return;
 		}
 
+		player.currentScreenHandler = handler;
+
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeIdentifier(typeId);
 		buf.writeVarInt(syncId);
