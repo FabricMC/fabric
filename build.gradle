@@ -509,6 +509,23 @@ task runProductionAutoTestServer(type: JavaExec, dependsOn: [remapJar, remapTest
 	}
 }
 
+def addPomMetadataInformation(MavenPom pom) {
+	pom.licenses {
+		license {
+			name = "Apache 2.0"
+			url = "https://github.com/FabricMC/fabric/blob/HEAD/LICENSE"
+		}
+	}
+	pom.developers {
+		developer {
+			name = "FabricMC"
+		}
+	}
+	pom.scm {
+		url = "https://github.com/FabricMC/fabric"
+	}
+}
+
 subprojects {
 	if (it.name == "deprecated") return
 
@@ -533,6 +550,7 @@ subprojects {
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
+				addPomMetadataInformation(pom)
 				artifact(signingEnabled ? signRemapJar.output : remapJar) {
 					builtBy(signingEnabled ? signRemapJar : remapJar)
 				}
@@ -563,6 +581,8 @@ publishing {
 
 			artifact javadocJar
 			artifact remapTestmodJar
+
+			addPomMetadataInformation(pom)
 
 			pom.withXml {
 				def depsNode = asNode().appendNode("dependencies")
