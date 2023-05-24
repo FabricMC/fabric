@@ -70,45 +70,24 @@ public interface QuadView {
 
 	/**
 	 * Retrieve vertex color.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default int color(int vertexIndex) {
-		return spriteColor(vertexIndex, 0);
-	}
+	int color(int vertexIndex);
 
 	/**
 	 * Retrieve horizontal texture coordinates.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default float u(int vertexIndex) {
-		return spriteU(vertexIndex, 0);
-	}
+	float u(int vertexIndex);
 
 	/**
 	 * Retrieve vertical texture coordinates.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default float v(int vertexIndex) {
-		return spriteV(vertexIndex, 0);
-	}
+	float v(int vertexIndex);
 
 	/**
 	 * Pass a non-null target to avoid allocation - will be returned with values.
 	 * Otherwise returns a new instance.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default Vector2f copyUv(int vertexIndex, @Nullable Vector2f target) {
-		if (target == null) {
-			target = new Vector2f();
-		}
-
-		target.set(u(vertexIndex), v(vertexIndex));
-		return target;
-	}
+	Vector2f copyUv(int vertexIndex, @Nullable Vector2f target);
 
 	/**
 	 * Minimum block brightness. Zero if not set.
@@ -196,16 +175,12 @@ public interface QuadView {
 	 * Reads baked vertex data and outputs standard {@link BakedQuad#getVertexData() baked quad vertex data}
 	 * in the given array and location.
 	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
-	 *
 	 * @param target Target array for the baked quad data.
 	 *
 	 * @param targetIndex Starting position in target array - array must have
 	 * at least 28 elements available at this index.
 	 */
-	default void toVanilla(int[] target, int targetIndex) {
-		toVanilla(0, target, targetIndex, false);
-	}
+	void toVanilla(int[] target, int targetIndex);
 
 	/**
 	 * Generates a new BakedQuad instance with texture
