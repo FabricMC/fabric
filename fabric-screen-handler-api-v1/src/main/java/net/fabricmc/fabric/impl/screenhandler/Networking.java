@@ -61,9 +61,6 @@ public final class Networking {
 			return;
 		}
 
-		// Set the screen handler, so the factory method can access it through the player. Vanilla sets it too but a bit too late.
-		player.currentScreenHandler = handler;
-
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeIdentifier(typeId);
 		buf.writeVarInt(syncId);
