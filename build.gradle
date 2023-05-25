@@ -24,6 +24,9 @@ def signingEnabled = ENV.SIGNING_SERVER
 version = project.version + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
 logger.lifecycle("Building Fabric: " + version)
 
+
+import groovy.json.JsonSlurper
+import net.fabricmc.loom.util.Platform
 import org.apache.commons.codec.digest.DigestUtils
 
 def getSubprojectVersion(project) {
@@ -442,7 +445,8 @@ dependencies {
 	productionRuntimeServer "net.fabricmc:fabric-installer:${project.installer_version}:server"
 }
 
-import net.fabricmc.loom.util.Platform
+
+import org.kohsuke.github.GHReleaseBuilder
 
 // This is very far beyond loom's API if you copy this, you're on your own.
 task runProductionAutoTestClient(type: JavaExec, dependsOn: [remapJar, remapTestmodJar]) {
@@ -509,20 +513,34 @@ task runProductionAutoTestServer(type: JavaExec, dependsOn: [remapJar, remapTest
 	}
 }
 
-def addPomMetadataInformation(MavenPom pom) {
+def addPomMetadataInformation(Project project, MavenPom pom) {
+	def modJsonFile = project.file("src/main/resources/fabric.mod.json")
+	if (!modJsonFile.exists())
+		modJsonFile = project.file("src/client/resources/fabric.mod.json")
+	def modJson = new JsonSlurper().parse(modJsonFile)
+	pom.name = modJson.name
+	pom.url = "https://github.com/FabricMC/fabric/tree/${grgit.head().abbreviatedId}/${project.rootDir.relativePath(project.projectDir)}"
+	pom.description = modJson.description
 	pom.licenses {
 		license {
-			name = "Apache 2.0"
-			url = "https://github.com/FabricMC/fabric/blob/HEAD/LICENSE"
+			name = "Apache-2.0"
+			url = "https://github.com/FabricMC/fabric/blob/${grgit.head().abbreviatedId}/LICENSE"
 		}
 	}
 	pom.developers {
 		developer {
 			name = "FabricMC"
+			url = "https://fabricmc.net/"
 		}
 	}
 	pom.scm {
+		connection = "scm:git:https://github.com/FabricMC/fabric.git"
 		url = "https://github.com/FabricMC/fabric"
+		developerConnection = "scm:git:git@github.com:FabricMC/fabric.git"
+	}
+	pom.issueManagement {
+		system = "GitHub"
+		url = "https://github.com/FabricMC/fabric/issues"
 	}
 }
 
@@ -550,7 +568,9 @@ subprojects {
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
-				addPomMetadataInformation(pom)
+				pom {
+					addPomMetadataInformation(project, pom)
+				}
 				artifact(signingEnabled ? signRemapJar.output : remapJar) {
 					builtBy(signingEnabled ? signRemapJar : remapJar)
 				}
@@ -582,7 +602,9 @@ publishing {
 			artifact javadocJar
 			artifact remapTestmodJar
 
-			addPomMetadataInformation(pom)
+			pom {
+				addPomMetadataInformation(rootProject, pom)
+			}
 
 			pom.withXml {
 				def depsNode = asNode().appendNode("dependencies")
@@ -688,7 +710,7 @@ if (signingEnabled) {
 	build.dependsOn signRemapJar
 }
 
-import org.kohsuke.github.GHReleaseBuilder
+
 import org.kohsuke.github.GitHub
 
 task github(dependsOn: (signingEnabled ? signRemapJar : remapJar)) {
