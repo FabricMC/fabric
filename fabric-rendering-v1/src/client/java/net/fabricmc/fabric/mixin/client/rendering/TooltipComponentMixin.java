@@ -16,29 +16,28 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
-import java.util.List;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.item.TooltipData;
 
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 
-@Mixin(Screen.class)
-public class ScreenMixin {
-	// Synthetic lambda body in renderTooltip
-	@Inject(at = @At("HEAD"), method = "method_32635(Ljava/util/List;Lnet/minecraft/client/item/TooltipData;)V", cancellable = true)
-	private static void injectRenderTooltipLambda(List<TooltipComponent> components, TooltipData data, CallbackInfo ci) {
+@Mixin(TooltipComponent.class)
+public interface TooltipComponentMixin {
+	@Inject(
+			method = "of(Lnet/minecraft/client/item/TooltipData;)Lnet/minecraft/client/gui/tooltip/TooltipComponent;",
+			at = @At("HEAD"),
+			cancellable = true
+	)
+	private static void convertCustomTooltipData(TooltipData data, CallbackInfoReturnable<TooltipComponent> cir) {
 		TooltipComponent component = TooltipComponentCallback.EVENT.invoker().getComponent(data);
 
 		if (component != null) {
-			components.add(1, component);
-			ci.cancel();
+			cir.setReturnValue(component);
 		}
 	}
 }
