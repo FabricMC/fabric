@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.data.DataProvider;
 
+import net.fabricmc.fabric.api.datagen.v1.JsonKeySortOrderCallback;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 
@@ -36,5 +37,6 @@ public interface DataProviderMixin {
 	private static void addFabricKeySortOrders(Object2IntOpenHashMap<String> map, CallbackInfo ci) {
 		map.put(ResourceConditions.CONDITIONS_KEY, -100); // always at the beginning
 		map.put(CustomIngredientImpl.TYPE_KEY, 0); // mimic vanilla "type"
+		JsonKeySortOrderCallback.EVENT.invoker().register(map::put);
 	}
 }

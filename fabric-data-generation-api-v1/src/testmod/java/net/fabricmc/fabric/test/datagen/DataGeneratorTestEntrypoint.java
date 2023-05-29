@@ -69,6 +69,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.JsonKeySortOrderCallback;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
@@ -88,6 +89,10 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
+		JsonKeySortOrderCallback.EVENT.register(adder -> {
+			adder.add("trigger", 0);
+		});
+
 		final FabricDataGenerator.Pack pack = dataGenerator.createPack();
 
 		pack.addProvider(TestRecipeProvider::new);
