@@ -26,7 +26,6 @@ logger.lifecycle("Building Fabric: " + version)
 
 
 import groovy.json.JsonSlurper
-import net.fabricmc.loom.util.Platform
 import org.apache.commons.codec.digest.DigestUtils
 
 def getSubprojectVersion(project) {
@@ -445,8 +444,7 @@ dependencies {
 	productionRuntimeServer "net.fabricmc:fabric-installer:${project.installer_version}:server"
 }
 
-
-import org.kohsuke.github.GHReleaseBuilder
+import net.fabricmc.loom.util.Platform
 
 // This is very far beyond loom's API if you copy this, you're on your own.
 task runProductionAutoTestClient(type: JavaExec, dependsOn: [remapJar, remapTestmodJar]) {
@@ -519,12 +517,13 @@ def addPomMetadataInformation(Project project, MavenPom pom) {
 		modJsonFile = project.file("src/client/resources/fabric.mod.json")
 	def modJson = new JsonSlurper().parse(modJsonFile)
 	pom.name = modJson.name
-	pom.url = "https://github.com/FabricMC/fabric/tree/${grgit.head().abbreviatedId}/${project.rootDir.relativePath(project.projectDir)}"
+	def commitish = grgit == null ? "HEAD" : grgit.head().abbreviatedId
+	pom.url = "https://github.com/FabricMC/fabric/tree/${commitish}/${project.rootDir.relativePath(project.projectDir)}"
 	pom.description = modJson.description
 	pom.licenses {
 		license {
 			name = "Apache-2.0"
-			url = "https://github.com/FabricMC/fabric/blob/${grgit.head().abbreviatedId}/LICENSE"
+			url = "https://github.com/FabricMC/fabric/blob/${commitish}/LICENSE"
 		}
 	}
 	pom.developers {
@@ -710,7 +709,7 @@ if (signingEnabled) {
 	build.dependsOn signRemapJar
 }
 
-
+import org.kohsuke.github.GHReleaseBuilder
 import org.kohsuke.github.GitHub
 
 task github(dependsOn: (signingEnabled ? signRemapJar : remapJar)) {
