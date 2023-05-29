@@ -517,13 +517,12 @@ def addPomMetadataInformation(Project project, MavenPom pom) {
 		modJsonFile = project.file("src/client/resources/fabric.mod.json")
 	def modJson = new JsonSlurper().parse(modJsonFile)
 	pom.name = modJson.name
-	def commitish = grgit == null ? "HEAD" : grgit.head().abbreviatedId
-	pom.url = "https://github.com/FabricMC/fabric/tree/${commitish}/${project.rootDir.relativePath(project.projectDir)}"
+	pom.url = "https://github.com/FabricMC/fabric/tree/HEAD/${project.rootDir.relativePath(project.projectDir)}"
 	pom.description = modJson.description
 	pom.licenses {
 		license {
 			name = "Apache-2.0"
-			url = "https://github.com/FabricMC/fabric/blob/${commitish}/LICENSE"
+			url = "https://github.com/FabricMC/fabric/blob/HEAD/LICENSE"
 		}
 	}
 	pom.developers {
