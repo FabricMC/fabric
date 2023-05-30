@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
+import java.util.Objects;
+
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -35,5 +37,8 @@ public class TooltipComponentTests implements ClientModInitializer {
 
 			return null;
 		});
+
+		// Test that TooltipComponent.of works with custom TooltipData
+		Objects.requireNonNull(TooltipComponent.of(new TooltipComponentTestInit.Data("Hello world!")));
 	}
 }
