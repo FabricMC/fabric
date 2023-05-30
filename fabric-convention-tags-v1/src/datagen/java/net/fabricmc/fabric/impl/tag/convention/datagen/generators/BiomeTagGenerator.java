@@ -234,6 +234,7 @@ public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.addOptionalTag(ConventionalBiomeTags.SAVANNA);
 		getOrCreateTagBuilder(ConventionalBiomeTags.FLORAL)
 				.add(BiomeKeys.SUNFLOWER_PLAINS)
+				.add(BiomeKeys.MEADOW)
 				.addOptionalTag(ConventionalBiomeTags.FLOWER_FORESTS);
 	}
 
