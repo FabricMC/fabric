@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.renderer.v1.material;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -31,26 +32,18 @@ import net.fabricmc.fabric.api.util.TriState;
  *
  * <p>Must be obtained via {@link Renderer#materialFinder()}.
  */
-public interface MaterialFinder {
+public interface MaterialFinder extends MaterialView {
 	/**
 	 * Defines how sprite pixels will be blended with the scene.
 	 *
 	 * <p>See {@link BlendMode} for more information.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default MaterialFinder blendMode(BlendMode blendMode) {
-		return blendMode(0, blendMode);
-	}
+	MaterialFinder blendMode(BlendMode blendMode);
 
 	/**
 	 * Vertex color(s) will be modified for quad color index unless disabled.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default MaterialFinder disableColorIndex(boolean disable) {
-		return disableColorIndex(0, disable);
-	}
+	MaterialFinder disableColorIndex(boolean disable);
 
 	/**
 	 * When true, sprite texture and color will be rendered at full brightness.
@@ -63,21 +56,16 @@ public interface MaterialFinder {
 	 *
 	 * <p>Note that color will still be modified by diffuse shading and ambient occlusion,
 	 * unless disabled via {@link #disableDiffuse(boolean)} and {@link #ambientOcclusion(TriState)}.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default MaterialFinder emissive(boolean isEmissive) {
-		return emissive(0, isEmissive);
-	}
+	MaterialFinder emissive(boolean isEmissive);
 
 	/**
 	 * Vertex color(s) will be modified for diffuse shading unless disabled.
 	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
+	 * <p>This property is guaranteed to be respected in block contexts. Some renderers may also respect it in item
+	 * contexts, but this is not guaranteed.
 	 */
-	default MaterialFinder disableDiffuse(boolean disable) {
-		return disableDiffuse(0, disable);
-	}
+	MaterialFinder disableDiffuse(boolean disable);
 
 	/**
 	 * Controls whether vertex color(s) will be modified for ambient occlusion.
@@ -86,11 +74,25 @@ public interface MaterialFinder {
 	 * and the block state has {@link BlockState#getLuminance() a luminance} of 0.
 	 * Set to {@link TriState#TRUE} or {@link TriState#FALSE} to override this behavior.
 	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
+	 * <p>This property is respected only in block contexts. It will not have an effect in other contexts.
 	 */
-	default MaterialFinder ambientOcclusion(TriState mode) {
-		return disableAo(0, mode == TriState.FALSE);
-	}
+	MaterialFinder ambientOcclusion(TriState mode);
+
+	/**
+	 * Controls whether glint should be applied.
+	 *
+	 * <p>By default, glint will be applied in item contexts if {@link ItemStack#hasGlint() the item stack has glint}.
+	 * Set to {@link TriState#TRUE} or {@link TriState#FALSE} to override this behavior.
+	 *
+	 * <p>This property is guaranteed to be respected in item contexts. Some renderers may also respect it in block
+	 * contexts, but this is not guaranteed.
+	 */
+	MaterialFinder glint(TriState mode);
+
+	/**
+	 * Copies all properties from the given {@link MaterialView} to this material finder.
+	 */
+	MaterialFinder copyFrom(MaterialView material);
 
 	/**
 	 * Resets this instance to default values. Values will match those

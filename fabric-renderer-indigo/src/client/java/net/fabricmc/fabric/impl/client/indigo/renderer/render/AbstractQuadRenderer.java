@@ -33,9 +33,9 @@ import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
+import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
@@ -81,7 +81,7 @@ public abstract class AbstractQuadRenderer {
 	 * tessellate routine based on material properties.
 	 */
 	private void tessellateQuad(MutableQuadViewImpl quad, boolean isVanilla) {
-		final RenderMaterialImpl.Value mat = quad.material();
+		final RenderMaterial mat = quad.material();
 		final int colorIndex = mat.disableColorIndex() ? -1 : quad.colorIndex();
 		final RenderLayer renderLayer = blockInfo.effectiveRenderLayer(mat.blendMode());
 		final TriState ao = mat.ambientOcclusion();

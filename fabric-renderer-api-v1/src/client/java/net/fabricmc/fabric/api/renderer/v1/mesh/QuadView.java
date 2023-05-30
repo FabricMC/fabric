@@ -70,45 +70,24 @@ public interface QuadView {
 
 	/**
 	 * Retrieve vertex color.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default int color(int vertexIndex) {
-		return spriteColor(vertexIndex, 0);
-	}
+	int color(int vertexIndex);
 
 	/**
 	 * Retrieve horizontal texture coordinates.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default float u(int vertexIndex) {
-		return spriteU(vertexIndex, 0);
-	}
+	float u(int vertexIndex);
 
 	/**
 	 * Retrieve vertical texture coordinates.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default float v(int vertexIndex) {
-		return spriteV(vertexIndex, 0);
-	}
+	float v(int vertexIndex);
 
 	/**
 	 * Pass a non-null target to avoid allocation - will be returned with values.
 	 * Otherwise returns a new instance.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default Vector2f copyUv(int vertexIndex, @Nullable Vector2f target) {
-		if (target == null) {
-			target = new Vector2f();
-		}
-
-		target.set(u(vertexIndex), v(vertexIndex));
-		return target;
-	}
+	Vector2f copyUv(int vertexIndex, @Nullable Vector2f target);
 
 	/**
 	 * Minimum block brightness. Zero if not set.
@@ -163,6 +142,7 @@ public interface QuadView {
 	/**
 	 * See {@link MutableQuadView#nominalFace(Direction)}.
 	 */
+	@Nullable
 	Direction nominalFace();
 
 	/**
@@ -192,26 +172,15 @@ public interface QuadView {
 	int tag();
 
 	/**
-	 * Extracts all quad properties except material to the given {@link MutableQuadView} instance.
-	 * Must be used before calling {link QuadEmitter#emit()} on the target instance.
-	 * Meant for re-texturing, analysis and static transformation use cases.
-	 */
-	void copyTo(MutableQuadView target);
-
-	/**
 	 * Reads baked vertex data and outputs standard {@link BakedQuad#getVertexData() baked quad vertex data}
 	 * in the given array and location.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 *
 	 * @param target Target array for the baked quad data.
 	 *
 	 * @param targetIndex Starting position in target array - array must have
 	 * at least 28 elements available at this index.
 	 */
-	default void toVanilla(int[] target, int targetIndex) {
-		toVanilla(0, target, targetIndex, false);
-	}
+	void toVanilla(int[] target, int targetIndex);
 
 	/**
 	 * Generates a new BakedQuad instance with texture
@@ -227,9 +196,11 @@ public interface QuadView {
 	default BakedQuad toBakedQuad(Sprite sprite) {
 		int[] vertexData = new int[VANILLA_QUAD_STRIDE];
 		toVanilla(vertexData, 0);
-		// TODO material inspection: set shade as !disableDiffuse
-		// TODO material inspection: set color index to -1 if the material disables it
-		return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite, true);
+
+		// Mimic material properties to the largest possible extent
+		int outputColorIndex = material().disableColorIndex() ? -1 : colorIndex();
+		boolean outputShade = !material().disableDiffuse();
+		return new BakedQuad(vertexData, outputColorIndex, lightFace(), sprite, outputShade);
 	}
 
 	/**
@@ -254,6 +225,17 @@ public interface QuadView {
 	@Deprecated
 	default float spriteV(int vertexIndex, int spriteIndex) {
 		return v(vertexIndex);
+	}
+
+	/**
+	 * @deprecated Use {@link MutableQuadView#copyFrom(QuadView)} instead.
+	 * <b>Unlike {@link MutableQuadView#copyFrom(QuadView) copyFrom}, this method will not copy the material.</b>
+	 */
+	@Deprecated
+	default void copyTo(MutableQuadView target) {
+		RenderMaterial material = target.material();
+		target.copyFrom(this);
+		target.material(material);
 	}
 
 	/**

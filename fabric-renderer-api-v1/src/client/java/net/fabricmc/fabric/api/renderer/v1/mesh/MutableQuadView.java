@@ -116,12 +116,8 @@ public interface MutableQuadView extends QuadView {
 
 	/**
 	 * Set vertex color.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default MutableQuadView color(int vertexIndex, int color) {
-		return spriteColor(vertexIndex, 0, color);
-	}
+	MutableQuadView color(int vertexIndex, int color);
 
 	/**
 	 * Convenience: set vertex color for all vertices at once.
@@ -136,12 +132,8 @@ public interface MutableQuadView extends QuadView {
 
 	/**
 	 * Set texture coordinates.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default MutableQuadView uv(int vertexIndex, float u, float v) {
-		return sprite(vertexIndex, 0, u, v);
-	}
+	MutableQuadView uv(int vertexIndex, float u, float v);
 
 	/**
 	 * Set texture coordinates.
@@ -157,12 +149,8 @@ public interface MutableQuadView extends QuadView {
 	 * Assigns sprite atlas u,v coordinates to this quad for the given sprite.
 	 * Can handle UV locking, rotation, interpolation, etc. Control this behavior
 	 * by passing additive combinations of the BAKE_ flags defined in this interface.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default MutableQuadView spriteBake(Sprite sprite, int bakeFlags) {
-		return spriteBake(0, sprite, bakeFlags);
-	}
+	MutableQuadView spriteBake(Sprite sprite, int bakeFlags);
 
 	/**
 	 * Accept vanilla lightmap values.  Input values will override lightmap values
@@ -257,6 +245,13 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView tag(int tag);
 
 	/**
+	 * Copies all quad properties from the given {@link QuadView} to this quad.
+	 *
+	 * <p>Calling this method does not emit the quad.
+	 */
+	MutableQuadView copyFrom(QuadView quad);
+
+	/**
 	 * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
 	 * Only the {@link BakedQuad#getVertexData() quad vertex data} is copied.
 	 * This method should be performant whenever caller's vertex representation makes it feasible.
@@ -265,12 +260,8 @@ public interface MutableQuadView extends QuadView {
 	 * unless you have a specific reason to use this one.
 	 *
 	 * <p>Calling this method does not emit the quad.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default MutableQuadView fromVanilla(int[] quadData, int startIndex) {
-		return fromVanilla(quadData, startIndex, false);
-	}
+	MutableQuadView fromVanilla(int[] quadData, int startIndex);
 
 	/**
 	 * Enables bulk vertex data transfer using the standard Minecraft quad format.

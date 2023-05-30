@@ -26,6 +26,7 @@ logger.lifecycle("Building Fabric: " + version)
 
 
 import net.fabricmc.loom.util.gradle.SourceSetHelper
+import groovy.json.JsonSlurper
 import org.apache.commons.codec.digest.DigestUtils
 
 def getSubprojectVersion(project) {
@@ -555,6 +556,40 @@ spotless {
 	}
 }
 
+def addPomMetadataInformation(Project project, MavenPom pom) {
+	def modJsonFile = project.file("src/main/resources/fabric.mod.json")
+
+	if (!modJsonFile.exists()) {
+		modJsonFile = project.file("src/client/resources/fabric.mod.json")
+	}
+
+	def modJson = new JsonSlurper().parse(modJsonFile)
+	pom.name = modJson.name
+	pom.url = "https://github.com/FabricMC/fabric/tree/HEAD/${project.rootDir.relativePath(project.projectDir)}"
+	pom.description = modJson.description
+	pom.licenses {
+		license {
+			name = "Apache-2.0"
+			url = "https://github.com/FabricMC/fabric/blob/HEAD/LICENSE"
+		}
+	}
+	pom.developers {
+		developer {
+			name = "FabricMC"
+			url = "https://fabricmc.net/"
+		}
+	}
+	pom.scm {
+		connection = "scm:git:https://github.com/FabricMC/fabric.git"
+		url = "https://github.com/FabricMC/fabric"
+		developerConnection = "scm:git:git@github.com:FabricMC/fabric.git"
+	}
+	pom.issueManagement {
+		system = "GitHub"
+		url = "https://github.com/FabricMC/fabric/issues"
+	}
+}
+
 subprojects {
 	if (it.name == "deprecated") {
 		return
@@ -581,6 +616,9 @@ subprojects {
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
+				pom {
+					addPomMetadataInformation(project, pom)
+				}
 				artifact(signingEnabled ? signRemapJar.output : remapJar) {
 					builtBy(signingEnabled ? signRemapJar : remapJar)
 				}
@@ -611,6 +649,10 @@ publishing {
 
 			artifact javadocJar
 			artifact remapTestmodJar
+
+			pom {
+				addPomMetadataInformation(rootProject, pom)
+			}
 
 			pom.withXml {
 				def depsNode = asNode().appendNode("dependencies")
