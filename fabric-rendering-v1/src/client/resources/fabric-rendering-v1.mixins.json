@@ -15,7 +15,7 @@
     "LivingEntityRendererAccessor",
     "BlockEntityRendererFactoriesMixin",
     "EntityRenderersMixin",
-    "ScreenMixin",
+    "TooltipComponentMixin",
     "DimensionEffectsAccessor",
     "shader.GameRendererMixin",
     "shader.ShaderProgramImportProcessorMixin",
