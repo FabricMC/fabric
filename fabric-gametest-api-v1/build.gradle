@@ -6,6 +6,6 @@ loom {
 }
 
 moduleDependencies(project, [
-		'fabric-api-base',
-		'fabric-resource-loader-v0'
+	'fabric-api-base',
+	'fabric-resource-loader-v0'
 ])

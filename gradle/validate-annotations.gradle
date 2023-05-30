@@ -17,7 +17,12 @@ class ValidateAnnotations extends SourceTask {
 
 	@TaskAction
 	def run() {
-		for (def dir in ['api', 'impl', 'mixin', 'test']) {
+		for (def dir in [
+					'api',
+					'impl',
+					'mixin',
+					'test'
+				]) {
 			getSource().matching { include "net/fabricmc/fabric/$dir/" }.forEach {
 				if (it.isDirectory()) {
 					return
