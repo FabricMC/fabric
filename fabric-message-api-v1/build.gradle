@@ -1,10 +1,6 @@
 archivesBaseName = "fabric-message-api-v1"
 version = getSubprojectVersion(project)
 
-moduleDependencies(project, [
-		'fabric-api-base'
-])
+moduleDependencies(project, ['fabric-api-base'])
 
-testDependencies(project, [
-		'fabric-command-api-v2'
-])
+testDependencies(project, ['fabric-command-api-v2'])

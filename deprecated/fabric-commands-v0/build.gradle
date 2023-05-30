@@ -2,8 +2,8 @@ archivesBaseName = "fabric-commands-v0"
 version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
-		'fabric-api-base',
-		'fabric-command-api-v2'
+	'fabric-api-base',
+	'fabric-command-api-v2'
 ])
 
 loom {

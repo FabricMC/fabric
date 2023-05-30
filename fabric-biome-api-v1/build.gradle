@@ -2,7 +2,7 @@ archivesBaseName = "fabric-biome-api-v1"
 version = getSubprojectVersion(project)
 
 loom {
-    accessWidenerPath = file("src/main/resources/fabric-biome-api-v1.accesswidener")
+	accessWidenerPath = file("src/main/resources/fabric-biome-api-v1.accesswidener")
 }
 
 testDependencies(project, [
@@ -16,7 +16,7 @@ sourceSets {
 	testmod {
 		resources {
 			srcDirs += [
-					'src/testmod/generated'
+				'src/testmod/generated'
 			]
 		}
 	}

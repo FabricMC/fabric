@@ -6,7 +6,7 @@ on:
 
 jobs:
   labels:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: FabricMC/fabric-action-scripts@v2
         with:
