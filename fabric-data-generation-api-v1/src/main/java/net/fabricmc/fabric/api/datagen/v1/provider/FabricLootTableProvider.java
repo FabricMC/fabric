@@ -16,29 +16,16 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
-import com.google.gson.JsonObject;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.DataWriter;
-import net.minecraft.loot.LootManager;
+import net.minecraft.data.server.loottable.LootTableGenerator;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContextType;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.loot.FabricBlockLootTableGenerator;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
@@ -51,11 +38,7 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
  * <p>Use {@link SimpleFabricLootTableProvider} for a simple abstract class that you can implement to handle standard loot table functions.
  */
 @ApiStatus.NonExtendable
-public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier, LootTable.Builder>>, DataProvider {
-	LootContextType getLootContextType();
-
-	FabricDataOutput getFabricDataOutput();
-
+public interface FabricLootTableProvider extends LootTableGenerator, DataProvider {
 	/**
 	 * Return a new exporter that applies the specified conditions to any loot table it receives.
 	 *
@@ -67,36 +50,5 @@ public interface FabricLootTableProvider extends Consumer<BiConsumer<Identifier,
 			FabricDataGenHelper.addConditions(table, conditions);
 			exporter.accept(id, table);
 		};
-	}
-
-	@ApiStatus.Internal
-	@Override
-	default CompletableFuture<?> run(DataWriter writer) {
-		HashMap<Identifier, LootTable> builders = Maps.newHashMap();
-		HashMap<Identifier, ConditionJsonProvider[]> conditionMap = new HashMap<>();
-
-		accept((identifier, builder) -> {
-			ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(builder);
-			conditionMap.put(identifier, conditions);
-
-			if (builders.put(identifier, builder.type(getLootContextType()).build()) != null) {
-				throw new IllegalStateException("Duplicate loot table " + identifier);
-			}
-		});
-
-		final List<CompletableFuture<?>> futures = new ArrayList<>();
-
-		for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
-			JsonObject tableJson = (JsonObject) LootManager.toJson(entry.getValue());
-			ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
-
-			futures.add(DataProvider.writeToPath(writer, tableJson, getOutputPath(entry.getKey())));
-		}
-
-		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
-	}
-
-	private Path getOutputPath(Identifier lootTableId) {
-		return getFabricDataOutput().getResolver(DataOutput.OutputType.DATA_PACK, "loot_tables").resolveJson(lootTableId);
 	}
 }

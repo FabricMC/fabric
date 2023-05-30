@@ -20,22 +20,24 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
 import com.google.common.collect.Sets;
 
 import net.minecraft.block.Block;
+import net.minecraft.data.DataWriter;
 import net.minecraft.data.server.loottable.BlockLootTableGenerator;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
-import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
+import net.minecraft.registry.Registries;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.util.Identifier;
-import net.minecraft.registry.Registries;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
 
 /**
  * Extend this class and implement {@link FabricBlockLootTableProvider#generate}.
@@ -64,16 +66,6 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 	 */
 	public void excludeFromStrictValidation(Block block) {
 		excludedFromStrictValidation.add(Registries.BLOCK.getId(block));
-	}
-
-	@Override
-	public LootContextType getLootContextType() {
-		return LootContextTypes.BLOCK;
-	}
-
-	@Override
-	public FabricDataOutput getFabricDataOutput() {
-		return output;
 	}
 
 	@Override
@@ -111,6 +103,11 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 				throw new IllegalStateException("Missing loot table(s) for %s".formatted(missing));
 			}
 		}
+	}
+
+	@Override
+	public CompletableFuture<?> run(DataWriter writer) {
+		return FabricLootTableProviderImpl.run(writer, this, LootContextTypes.BLOCK, output);
 	}
 
 	@Override
