@@ -34,7 +34,6 @@ import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
@@ -120,7 +119,7 @@ public class BlockRenderContext extends AbstractRenderContext {
 		blockInfo.prepareForWorld(blockView, cull);
 		blockInfo.prepareForBlock(state, pos, model.useAmbientOcclusion());
 
-		((FabricBakedModel) model).emitBlockQuads(blockView, state, pos, randomSupplier, this);
+		model.emitBlockQuads(blockView, state, pos, randomSupplier, this);
 
 		blockInfo.release();
 		this.bufferBuilder = null;

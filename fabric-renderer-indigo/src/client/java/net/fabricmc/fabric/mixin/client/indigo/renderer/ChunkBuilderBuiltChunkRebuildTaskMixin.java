@@ -44,7 +44,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessChunkRendererRegion;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderContext;
@@ -108,7 +107,7 @@ public abstract class ChunkBuilderBuiltChunkRebuildTaskMixin {
 		if (blockState.getRenderType() == BlockRenderType.MODEL) {
 			final BakedModel model = renderManager.getModel(blockState);
 
-			if (Indigo.ALWAYS_TESSELATE_INDIGO || !((FabricBakedModel) model).isVanillaAdapter()) {
+			if (Indigo.ALWAYS_TESSELATE_INDIGO || !model.isVanillaAdapter()) {
 				Vec3d vec3d = blockState.getModelOffset(blockView, blockPos);
 				matrix.translate(vec3d.x, vec3d.y, vec3d.z);
 				((AccessChunkRendererRegion) blockView).fabric_getRenderer().tessellateBlock(blockState, blockPos, model, matrix);

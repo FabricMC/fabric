@@ -47,7 +47,6 @@ import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
@@ -116,7 +115,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 		matrix = matrixStack.peek().getPositionMatrix();
 		normalMatrix = matrixStack.peek().getNormalMatrix();
 
-		((FabricBakedModel) model).emitItemQuads(itemStack, randomSupplier, this);
+		model.emitItemQuads(itemStack, randomSupplier, this);
 
 		this.itemStack = null;
 		this.matrixStack = null;
