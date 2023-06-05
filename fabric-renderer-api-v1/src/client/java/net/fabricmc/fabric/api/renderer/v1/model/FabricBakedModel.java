@@ -38,9 +38,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
  *
  * <p>Implementors should have a look at {@link ModelHelper} as it contains many useful functions.
  *
- * <p>Note for {@link Renderer} implementors: Fabric causes BakedModel to extend this
- * interface with {@link #isVanillaAdapter()} == true and to produce standard vertex data.
- * This means any BakedModel instance can be safely cast to this interface without an instanceof check.
+ * <p>Note: This interface is automatically implemented on all baked models via Mixin and interface injection.
  */
 public interface FabricBakedModel {
 	/**
@@ -48,11 +46,13 @@ public interface FabricBakedModel {
 	 * Also means the model does not rely on any non-vanilla features.
 	 * Allows the renderer to optimize or route vanilla models through the unmodified vanilla pipeline if desired.
 	 *
-	 * <p>Fabric overrides to true for vanilla baked models.
+	 * <p>Vanilla baked models will return true.
 	 * Enhanced models that use this API should return false,
 	 * otherwise the API will not recognize the model.
 	 */
-	boolean isVanillaAdapter();
+	default boolean isVanillaAdapter() {
+		return true;
+	}
 
 	/**
 	 * This method will be called during chunk rebuilds to generate both the static and
@@ -95,7 +95,9 @@ public interface FabricBakedModel {
 	 * Will not be thread-safe. Do not cache or retain a reference.
 	 * @param context Accepts model output.
 	 */
-	void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context);
+	default void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+		context.bakedModelConsumer().accept((BakedModel) this, state);
+	}
 
 	/**
 	 * This method will be called during item rendering to generate both the static and
@@ -124,5 +126,8 @@ public interface FabricBakedModel {
 	 * logic here, instead of returning every possible shape from {@link BakedModel#getOverrides}
 	 * as vanilla baked models.
 	 */
-	void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context);
+	default void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+		// Pass null state to enforce item quads in block render contexts
+		context.bakedModelConsumer().accept((BakedModel) this, null);
+	}
 }
