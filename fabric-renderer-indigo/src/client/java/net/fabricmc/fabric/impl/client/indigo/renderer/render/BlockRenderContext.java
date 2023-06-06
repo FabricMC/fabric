@@ -16,12 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -32,113 +26,53 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
 /**
  * Context for non-terrain block rendering.
  */
-public class BlockRenderContext extends AbstractRenderContext {
-	private final BlockRenderInfo blockInfo = new BlockRenderInfo();
+public class BlockRenderContext extends AbstractBlockRenderContext {
+	private VertexConsumer vertexConsumer;
 
-	private final AoCalculator aoCalc = new AoCalculator(blockInfo) {
-		@Override
-		public int light(BlockPos pos, BlockState state) {
-			return WorldRenderer.getLightmapCoordinates(blockInfo.blockView, state, pos);
-		}
+	@Override
+	protected AoCalculator createAoCalc(BlockRenderInfo blockInfo) {
+		return new AoCalculator(blockInfo) {
+			@Override
+			public int light(BlockPos pos, BlockState state) {
+				return WorldRenderer.getLightmapCoordinates(blockInfo.blockView, state, pos);
+			}
 
-		@Override
-		public float ao(BlockPos pos, BlockState state) {
-			return AoLuminanceFix.INSTANCE.apply(blockInfo.blockView, pos, state);
-		}
-	};
+			@Override
+			public float ao(BlockPos pos, BlockState state) {
+				return AoLuminanceFix.INSTANCE.apply(blockInfo.blockView, pos, state);
+			}
+		};
+	}
 
-	private VertexConsumer bufferBuilder;
-	// These are kept as fields to avoid the heap allocation for a supplier.
-	// BlockModelRenderer allows the caller to supply both the random object and seed.
-	private Random random;
-	private long seed;
-	private final Supplier<Random> randomSupplier = () -> {
-		random.setSeed(seed);
-		return random;
-	};
-
-	private final AbstractMeshConsumer meshConsumer = new AbstractMeshConsumer(blockInfo, this::outputBuffer, aoCalc, this::transform) {
-		@Override
-		protected Matrix4f matrix() {
-			return matrix;
-		}
-
-		@Override
-		protected Matrix3f normalMatrix() {
-			return normalMatrix;
-		}
-
-		@Override
-		protected int overlay() {
-			return overlay;
-		}
-	};
-
-	/**
-	 * Reuse the fallback consumer from the render context used during chunk rebuild to make it properly
-	 * apply the current transforms to vanilla models.
-	 */
-	private final TerrainFallbackConsumer fallbackConsumer = new TerrainFallbackConsumer(blockInfo, this::outputBuffer, aoCalc, this::transform) {
-		@Override
-		protected Matrix4f matrix() {
-			return matrix;
-		}
-
-		@Override
-		protected Matrix3f normalMatrix() {
-			return normalMatrix;
-		}
-
-		@Override
-		protected int overlay() {
-			return overlay;
-		}
-	};
-
-	private VertexConsumer outputBuffer(RenderLayer renderLayer) {
-		return bufferBuilder;
+	@Override
+	protected VertexConsumer getVertexConsumer(RenderLayer layer) {
+		return vertexConsumer;
 	}
 
 	public void render(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, boolean cull, Random random, long seed, int overlay) {
-		this.bufferBuilder = buffer;
+		this.vertexConsumer = buffer;
 		this.matrix = matrixStack.peek().getPositionMatrix();
 		this.normalMatrix = matrixStack.peek().getNormalMatrix();
-		this.random = random;
-		this.seed = seed;
-
 		this.overlay = overlay;
+
+		blockInfo.random = random;
+		blockInfo.seed = seed;
+		blockInfo.recomputeSeed = false;
+
 		aoCalc.clear();
 		blockInfo.prepareForWorld(blockView, cull);
 		blockInfo.prepareForBlock(state, pos, model.useAmbientOcclusion());
 
-		model.emitBlockQuads(blockView, state, pos, randomSupplier, this);
+		model.emitBlockQuads(blockView, state, pos, blockInfo.randomSupplier, this);
 
 		blockInfo.release();
-		this.bufferBuilder = null;
-		this.random = null;
-		this.seed = seed;
-	}
-
-	@Override
-	public Consumer<Mesh> meshConsumer() {
-		return meshConsumer;
-	}
-
-	@Override
-	public BakedModelConsumer bakedModelConsumer() {
-		return fallbackConsumer;
-	}
-
-	@Override
-	public QuadEmitter getEmitter() {
-		return meshConsumer.getEmitter();
+		blockInfo.random = null;
+		this.vertexConsumer = null;
 	}
 }

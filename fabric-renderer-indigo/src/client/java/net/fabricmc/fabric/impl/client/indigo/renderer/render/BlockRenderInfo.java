@@ -34,8 +34,8 @@ import net.minecraft.world.BlockRenderView;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 
 /**
- * Holds, manages and provides access to the block/world related state
- * needed by fallback and mesh consumers.
+ * Holds, manages, and provides access to the block/world related state
+ * needed to render quads.
  *
  * <p>Exception: per-block position offsets are tracked in {@link ChunkRenderInfo}
  * so they can be applied together with chunk offsets.
@@ -43,44 +43,47 @@ import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 public class BlockRenderInfo {
 	private final BlockColors blockColorMap = MinecraftClient.getInstance().getBlockColors();
 	private final BlockPos.Mutable searchPos = new BlockPos.Mutable();
-	private final Random random = Random.create();
+
 	public BlockRenderView blockView;
 	public BlockPos blockPos;
 	public BlockState blockState;
-	public long seed;
+
 	boolean useAo;
 	boolean defaultAo;
 	RenderLayer defaultLayer;
 
+	Random random;
+	long seed;
+	boolean recomputeSeed;
+	public final Supplier<Random> randomSupplier = () -> {
+		long seed = this.seed;
+
+		if (recomputeSeed) {
+			seed = blockState.getRenderingSeed(blockPos);
+			this.seed = seed;
+			recomputeSeed = false;
+		}
+
+		final Random random = this.random;
+		random.setSeed(seed);
+		return random;
+	};
+
 	private boolean enableCulling;
 	private int cullCompletionFlags;
 	private int cullResultFlags;
-
-	public final Supplier<Random> randomSupplier = () -> {
-		final Random result = random;
-		long seed = this.seed;
-
-		if (seed == -1L) {
-			seed = blockState.getRenderingSeed(blockPos);
-			this.seed = seed;
-		}
-
-		result.setSeed(seed);
-		return result;
-	};
 
 	public void prepareForWorld(BlockRenderView blockView, boolean enableCulling) {
 		this.blockView = blockView;
 		this.enableCulling = enableCulling;
 	}
 
-	public void prepareForBlock(BlockState blockState, BlockPos blockPos, boolean modelAO) {
+	public void prepareForBlock(BlockState blockState, BlockPos blockPos, boolean modelAo) {
 		this.blockPos = blockPos;
 		this.blockState = blockState;
-		// in the unlikely case seed actually matches this, we'll simply retrieve it more than once
-		seed = -1L;
+
 		useAo = MinecraftClient.isAmbientOcclusionEnabled();
-		defaultAo = useAo && modelAO && blockState.getLuminance() == 0;
+		defaultAo = useAo && modelAo && blockState.getLuminance() == 0;
 
 		defaultLayer = RenderLayers.getBlockLayer(blockState);
 
@@ -89,6 +92,7 @@ public class BlockRenderInfo {
 	}
 
 	public void release() {
+		blockView = null;
 		blockPos = null;
 		blockState = null;
 	}

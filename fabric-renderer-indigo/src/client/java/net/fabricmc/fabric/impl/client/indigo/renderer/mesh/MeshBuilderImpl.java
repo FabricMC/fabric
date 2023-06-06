@@ -25,13 +25,20 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
  * Not much to it - mainly it just needs to grow the int[] array as quads are appended
  * and maintain/provide a properly-configured {@link net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView} instance.
  * All the encoding and other work is handled in the quad base classes.
- * The one interesting bit is in {@link Maker#emit()}.
+ * The one interesting bit is in {@link Maker#emitDirectly()}.
  */
 public class MeshBuilderImpl implements MeshBuilder {
-	int[] data = new int[256];
+	private int[] data = new int[256];
+	private int index = 0;
+	private int limit = data.length;
 	private final Maker maker = new Maker();
-	int index = 0;
-	int limit = data.length;
+
+	public MeshBuilderImpl() {
+		ensureCapacity(EncodingFormat.TOTAL_STRIDE);
+		maker.data = data;
+		maker.baseIndex = index;
+		maker.clear();
+	}
 
 	protected void ensureCapacity(int stride) {
 		if (stride > limit - index) {
@@ -39,8 +46,14 @@ public class MeshBuilderImpl implements MeshBuilder {
 			final int[] bigger = new int[limit];
 			System.arraycopy(data, 0, bigger, 0, index);
 			data = bigger;
-			maker.data = bigger;
+			maker.data = data;
 		}
+	}
+
+	@Override
+	public QuadEmitter getEmitter() {
+		maker.clear();
+		return maker;
 	}
 
 	@Override
@@ -48,15 +61,9 @@ public class MeshBuilderImpl implements MeshBuilder {
 		final int[] packed = new int[index];
 		System.arraycopy(data, 0, packed, 0, index);
 		index = 0;
-		maker.begin(data, index);
+		maker.baseIndex = index;
+		maker.clear();
 		return new MeshImpl(packed);
-	}
-
-	@Override
-	public QuadEmitter getEmitter() {
-		ensureCapacity(EncodingFormat.TOTAL_STRIDE);
-		maker.begin(data, index);
-		return maker;
 	}
 
 	/**
@@ -65,15 +72,13 @@ public class MeshBuilderImpl implements MeshBuilder {
 	 * at render time so we want to capture all geometry now and
 	 * apply non-location-dependent lighting.
 	 */
-	private class Maker extends MutableQuadViewImpl implements QuadEmitter {
+	private class Maker extends MutableQuadViewImpl {
 		@Override
-		public Maker emit() {
+		public void emitDirectly() {
 			computeGeometry();
 			index += EncodingFormat.TOTAL_STRIDE;
 			ensureCapacity(EncodingFormat.TOTAL_STRIDE);
 			baseIndex = index;
-			clear();
-			return this;
 		}
 	}
 }

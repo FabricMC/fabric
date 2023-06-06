@@ -44,16 +44,10 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.helper.TextureHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
 
 /**
- * Almost-concrete implementation of a mutable quad. The only missing part is {@link #emit()},
+ * Almost-concrete implementation of a mutable quad. The only missing part is {@link #emitDirectly()},
  * because that depends on where/how it is used. (Mesh encoding vs. render-time transformation).
  */
 public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEmitter {
-	public final void begin(int[] data, int baseIndex) {
-		this.data = data;
-		this.baseIndex = baseIndex;
-		clear();
-	}
-
 	public void clear() {
 		System.arraycopy(EMPTY, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
 		isGeometryInvalid = true;
@@ -198,6 +192,19 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 		material(material);
 		tag(0);
+		return this;
+	}
+
+	/**
+	 * Emit the quad without clearing the underlying data.
+	 * Geometry is not guaranteed to be valid when called, but can be computed by calling {@link #computeGeometry()}.
+	 */
+	public abstract void emitDirectly();
+
+	@Override
+	public MutableQuadViewImpl emit() {
+		emitDirectly();
+		clear();
 		return this;
 	}
 }

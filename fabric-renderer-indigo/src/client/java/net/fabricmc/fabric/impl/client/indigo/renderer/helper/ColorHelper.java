@@ -18,8 +18,6 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.helper;
 
 import java.nio.ByteOrder;
 
-import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-
 /**
  * Static routines of general utility for renderer implementations.
  * Renderers are not required to use these helpers, but they were
@@ -28,13 +26,13 @@ import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 public abstract class ColorHelper {
 	private ColorHelper() { }
 
-	private static final Int2IntFunction colorSwapper = ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN ? color -> ((color & 0xFF00FF00) | ((color & 0x00FF0000) >> 16) | ((color & 0xFF) << 16)) : color -> color;
+	public static final boolean SWAP_RED_BLUE = ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN;
 
 	/**
-	 * Swaps red blue order if needed to match GPU expectations for color component order.
+	 * Swaps red blue order to match GPU expectations for color component order.
 	 */
-	public static int swapRedBlueIfNeeded(int color) {
-		return colorSwapper.applyAsInt(color);
+	public static int swapRedBlue(int color) {
+		return color == -1 ? -1 : (color & 0xFF00FF00) | ((color & 0x00FF0000) >> 16) | ((color & 0xFF) << 16);
 	}
 
 	/** Component-wise multiply. Components need to be in same order in both inputs! */

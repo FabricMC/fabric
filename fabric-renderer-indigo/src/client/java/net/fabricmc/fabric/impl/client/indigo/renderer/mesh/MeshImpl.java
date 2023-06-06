@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 import java.util.function.Consumer;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 
 /**
@@ -27,7 +28,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
  */
 public class MeshImpl implements Mesh {
 	/** Used to satisfy external calls to {@link #forEach(Consumer)}. */
-	ThreadLocal<QuadViewImpl> POOL = ThreadLocal.withInitial(QuadViewImpl::new);
+	private final ThreadLocal<QuadViewImpl> cursorPool = ThreadLocal.withInitial(QuadViewImpl::new);
 
 	final int[] data;
 
@@ -35,28 +36,43 @@ public class MeshImpl implements Mesh {
 		this.data = data;
 	}
 
-	public int[] data() {
-		return data;
-	}
-
 	@Override
 	public void forEach(Consumer<QuadView> consumer) {
-		forEach(consumer, POOL.get());
+		forEach(consumer, cursorPool.get());
 	}
 
 	/**
-	 * The renderer will call this with it's own cursor
+	 * The renderer can call this with its own cursor
 	 * to avoid the performance hit of a thread-local lookup.
 	 * Also means renderer can hold final references to quad buffers.
 	 */
 	void forEach(Consumer<QuadView> consumer, QuadViewImpl cursor) {
 		final int limit = data.length;
 		int index = 0;
+		cursor.data = this.data;
 
 		while (index < limit) {
-			cursor.load(data, index);
+			cursor.baseIndex = index;
+			cursor.load();
 			consumer.accept(cursor);
 			index += EncodingFormat.TOTAL_STRIDE;
 		}
+	}
+
+	@Override
+	public void outputTo(QuadEmitter emitter) {
+		MutableQuadViewImpl e = (MutableQuadViewImpl) emitter;
+		final int[] data = this.data;
+		final int limit = data.length;
+		int index = 0;
+
+		while (index < limit) {
+			System.arraycopy(data, index, e.data, e.baseIndex, EncodingFormat.TOTAL_STRIDE);
+			e.load();
+			e.emitDirectly();
+			index += EncodingFormat.TOTAL_STRIDE;
+		}
+
+		e.clear();
 	}
 }

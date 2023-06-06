@@ -60,30 +60,15 @@ public class QuadViewImpl implements QuadView {
 	protected int baseIndex = 0;
 
 	/**
-	 * Use when subtype is "attached" to a pre-existing array.
-	 * Sets data reference and index and decodes state from array.
+	 * Decodes necessary state from the backing data array.
+	 * The encoded data must contain valid computed geometry.
 	 */
-	final void load(int[] data, int baseIndex) {
-		this.data = data;
-		this.baseIndex = baseIndex;
-		load();
-	}
-
-	/**
-	 * Like {@link #load(int[], int)} but assumes array and index already set.
-	 * Only does the decoding part.
-	 */
-	public final void load() {
+	public void load() {
 		isGeometryInvalid = false;
 		nominalFace = lightFace();
 
 		// face normal isn't encoded
 		NormalHelper.computeFaceNormal(faceNormal, this);
-	}
-
-	/** Reference to underlying array. Use with caution. Meant for fast renderer access */
-	public int[] data() {
-		return data;
 	}
 
 	public int normalFlags() {
