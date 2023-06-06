@@ -130,7 +130,7 @@ final class FrameBakedModel implements BakedModel {
 
 		emitInnerQuads(context, material, () -> {
 			// Use emitBlockQuads to allow for Renderer API features
-			((FabricBakedModel) MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState)).emitBlockQuads(blockView, innerState, pos, randomSupplier, context);
+			MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState).emitBlockQuads(blockView, innerState, pos, randomSupplier, context);
 		});
 	}
 
