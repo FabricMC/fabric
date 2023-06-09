@@ -25,25 +25,29 @@ import java.util.Map;
 import java.util.PriorityQueue;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Contains phase-sorting logic for {@link ArrayBackedEvent}.
  */
-public class PhaseSorting {
+public class NodeSorting {
+	static final Logger LOGGER = LoggerFactory.getLogger("fabric-api-base");
+
 	@VisibleForTesting
 	public static boolean ENABLE_CYCLE_WARNING = true;
 
 	/**
-	 * Deterministically sort a list of phases.
-	 * 1) Compute phase SCCs (i.e. cycles).
-	 * 2) Sort phases by id within SCCs.
+	 * Deterministically sort a list of nodes.
+	 * 1) Compute node SCCs (i.e. cycles).
+	 * 2) Sort nodes by id within SCCs.
 	 * 3) Sort SCCs with respect to each other by respecting constraints, and by id in case of a tie.
 	 */
-	static <T> void sortPhases(List<EventPhaseData<T>> sortedPhases) {
+	public static <N extends SortableNode<N>> void sort(List<N> sortedPhases, String elementDescription) {
 		// FIRST KOSARAJU SCC VISIT
-		List<EventPhaseData<T>> toposort = new ArrayList<>(sortedPhases.size());
+		List<N> toposort = new ArrayList<>(sortedPhases.size());
 
-		for (EventPhaseData<T> phase : sortedPhases) {
+		for (N phase : sortedPhases) {
 			forwardVisit(phase, null, toposort);
 		}
 
@@ -51,19 +55,19 @@ public class PhaseSorting {
 		Collections.reverse(toposort);
 
 		// SECOND KOSARAJU SCC VISIT
-		Map<EventPhaseData<T>, PhaseScc<T>> phaseToScc = new IdentityHashMap<>();
+		Map<N, PhaseScc<N>> phaseToScc = new IdentityHashMap<>();
 
-		for (EventPhaseData<T> phase : toposort) {
-			if (phase.visitStatus == 0) {
-				List<EventPhaseData<T>> sccPhases = new ArrayList<>();
+		for (N phase : toposort) {
+			if (!phase.visited) {
+				List<N> sccPhases = new ArrayList<>();
 				// Collect phases in SCC.
 				backwardVisit(phase, sccPhases);
 				// Sort phases by id.
-				sccPhases.sort(Comparator.comparing(p -> p.id));
+				sccPhases.sort(Comparator.naturalOrder());
 				// Mark phases as belonging to this SCC.
-				PhaseScc<T> scc = new PhaseScc<>(sccPhases);
+				PhaseScc<N> scc = new PhaseScc<>(sccPhases);
 
-				for (EventPhaseData<T> phaseInScc : sccPhases) {
+				for (N phaseInScc : sccPhases) {
 					phaseToScc.put(phaseInScc, scc);
 				}
 			}
@@ -72,10 +76,10 @@ public class PhaseSorting {
 		clearStatus(toposort);
 
 		// Build SCC graph
-		for (PhaseScc<T> scc : phaseToScc.values()) {
-			for (EventPhaseData<T> phase : scc.phases) {
-				for (EventPhaseData<T> subsequentPhase : phase.subsequentPhases) {
-					PhaseScc<T> subsequentScc = phaseToScc.get(subsequentPhase);
+		for (PhaseScc<N> scc : phaseToScc.values()) {
+			for (N phase : scc.phases) {
+				for (N subsequentPhase : phase.subsequentNodes) {
+					PhaseScc<N> subsequentScc = phaseToScc.get(subsequentPhase);
 
 					if (subsequentScc != scc) {
 						scc.subsequentSccs.add(subsequentScc);
@@ -87,10 +91,10 @@ public class PhaseSorting {
 
 		// Order SCCs according to priorities. When there is a choice, use the SCC with the lowest id.
 		// The priority queue contains all SCCs that currently have 0 in-degree.
-		PriorityQueue<PhaseScc<T>> pq = new PriorityQueue<>(Comparator.comparing(scc -> scc.phases.get(0).id));
+		PriorityQueue<PhaseScc<N>> pq = new PriorityQueue<>(Comparator.comparing(scc -> scc.phases.get(0)));
 		sortedPhases.clear();
 
-		for (PhaseScc<T> scc : phaseToScc.values()) {
+		for (PhaseScc<N> scc : phaseToScc.values()) {
 			if (scc.inDegree == 0) {
 				pq.add(scc);
 				// Prevent adding the same SCC multiple times, as phaseToScc may contain the same value multiple times.
@@ -99,10 +103,22 @@ public class PhaseSorting {
 		}
 
 		while (!pq.isEmpty()) {
-			PhaseScc<T> scc = pq.poll();
+			PhaseScc<N> scc = pq.poll();
 			sortedPhases.addAll(scc.phases);
 
-			for (PhaseScc<T> subsequentScc : scc.subsequentSccs) {
+			// Print cycle warning
+			if (ENABLE_CYCLE_WARNING && scc.phases.size() > 1) {
+				StringBuilder builder = new StringBuilder();
+				builder.append("Found cycle while sorting ").append(elementDescription).append(":\n");
+
+				for (N phase : scc.phases) {
+					builder.append("\t").append(phase.getDescription()).append("\n");
+				}
+
+				LOGGER.warn(builder.toString());
+			}
+
+			for (PhaseScc<N> subsequentScc : scc.subsequentSccs) {
 				subsequentScc.inDegree--;
 
 				if (subsequentScc.inDegree == 0) {
@@ -112,50 +128,42 @@ public class PhaseSorting {
 		}
 	}
 
-	private static <T> void forwardVisit(EventPhaseData<T> phase, EventPhaseData<T> parent, List<EventPhaseData<T>> toposort) {
-		if (phase.visitStatus == 0) {
+	private static <N extends SortableNode<N>> void forwardVisit(N phase, N parent, List<N> toposort) {
+		if (!phase.visited) {
 			// Not yet visited.
-			phase.visitStatus = 1;
+			phase.visited = true;
 
-			for (EventPhaseData<T> data : phase.subsequentPhases) {
+			for (N data : phase.subsequentNodes) {
 				forwardVisit(data, phase, toposort);
 			}
 
 			toposort.add(phase);
-			phase.visitStatus = 2;
-		} else if (phase.visitStatus == 1 && ENABLE_CYCLE_WARNING) {
-			// Already visiting, so we have found a cycle.
-			ArrayBackedEvent.LOGGER.warn(String.format(
-					"Event phase ordering conflict detected.%nEvent phase %s is ordered both before and after event phase %s.",
-					phase.id,
-					parent.id
-			));
 		}
 	}
 
-	private static <T> void clearStatus(List<EventPhaseData<T>> phases) {
-		for (EventPhaseData<T> phase : phases) {
-			phase.visitStatus = 0;
+	private static <N extends SortableNode<N>> void clearStatus(List<N> phases) {
+		for (N phase : phases) {
+			phase.visited = false;
 		}
 	}
 
-	private static <T> void backwardVisit(EventPhaseData<T> phase, List<EventPhaseData<T>> sccPhases) {
-		if (phase.visitStatus == 0) {
-			phase.visitStatus = 1;
+	private static <N extends SortableNode<N>> void backwardVisit(N phase, List<N> sccPhases) {
+		if (!phase.visited) {
+			phase.visited = true;
 			sccPhases.add(phase);
 
-			for (EventPhaseData<T> data : phase.previousPhases) {
+			for (N data : phase.previousNodes) {
 				backwardVisit(data, sccPhases);
 			}
 		}
 	}
 
-	private static class PhaseScc<T> {
-		final List<EventPhaseData<T>> phases;
-		final List<PhaseScc<T>> subsequentSccs = new ArrayList<>();
+	private static class PhaseScc<N extends SortableNode<N>> {
+		final List<N> phases;
+		final List<PhaseScc<N>> subsequentSccs = new ArrayList<>();
 		int inDegree = 0;
 
-		private PhaseScc(List<EventPhaseData<T>> phases) {
+		private PhaseScc(List<N> phases) {
 			this.phases = phases;
 		}
 	}
