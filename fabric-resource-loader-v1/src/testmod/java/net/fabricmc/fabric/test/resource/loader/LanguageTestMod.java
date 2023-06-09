@@ -28,8 +28,8 @@ public class LanguageTestMod implements DedicatedServerModInitializer {
 
 	private static void testTranslationLoaded() {
 		testTranslationLoaded("pack.source.fabricmod", "Fabric mod");
-		testTranslationLoaded("text.fabric-resource-loader-v0-testmod.server.lang.test0", "Test from fabric-resource-loader-v0-testmod");
-		testTranslationLoaded("text.fabric-resource-loader-v0-testmod.server.lang.test1", "Test from fabric-resource-loader-v0-testmod-test1");
+		testTranslationLoaded("text.fabric-resource-loader-v1-testmod.server.lang.test0", "Test from fabric-resource-loader-v1-testmod");
+		testTranslationLoaded("text.fabric-resource-loader-v1-testmod.server.lang.test1", "Test from fabric-resource-loader-v1-testmod-test1");
 	}
 
 	private static void testTranslationLoaded(String key, String expected) {

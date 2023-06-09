@@ -28,7 +28,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.api.ModInitializer;
 
 public class VanillaBuiltinResourcePackInjectionTestMod implements ModInitializer {
-	public static final String MODID = "fabric-resource-loader-v0-testmod";
+	public static final String MODID = "fabric-resource-loader-v1-testmod";
 
 	public static final Block TEST_BLOCK = new Block(AbstractBlock.Settings.copy(Blocks.STONE));
 

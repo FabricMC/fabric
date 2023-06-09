@@ -26,13 +26,13 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.fabric.api.resource.loader.v1.ResourcePackActivationType;
+import net.fabricmc.fabric.api.resource.loader.v1.ResourcePackHelper;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class BuiltinResourcePackTestMod implements ModInitializer {
-	public static final String MODID = "fabric-resource-loader-v0-testmod";
+	public static final String MODID = "fabric-resource-loader-v1-testmod";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BuiltinResourcePackTestMod.class);
 
@@ -42,12 +42,12 @@ public class BuiltinResourcePackTestMod implements ModInitializer {
 	public void onInitialize() {
 		// Should always be present as it's **this** mod.
 		FabricLoader.getInstance().getModContainer(MODID)
-				.map(container -> ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "test"),
+				.map(container -> ResourcePackHelper.registerBuiltinResourcePack(new Identifier(MODID, "test"),
 						container, Text.literal("Fabric Resource Loader Test Pack"), ResourcePackActivationType.DEFAULT_ENABLED))
 				.filter(success -> !success).ifPresent(success -> LOGGER.warn("Could not register built-in resource pack with custom name."));
 		FabricLoader.getInstance().getModContainer(MODID)
-				.map(container -> ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "test2"),
-						container, ResourcePackActivationType.NORMAL))
+				.map(container -> ResourcePackHelper.registerBuiltinResourcePack(new Identifier(MODID, "test2"),
+						container, Text.literal("Test pack 2"), ResourcePackActivationType.NORMAL))
 				.filter(success -> !success).ifPresent(success -> LOGGER.warn("Could not register built-in resource pack."));
 
 		// Test various metadata serialization issues (#2407)
