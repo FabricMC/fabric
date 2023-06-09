@@ -50,6 +50,12 @@ public final class ResourcePackHelper {
 		return BuiltinResourcePackHolder.registerBuiltinResourcePack(id, "resourcepacks/" + id.getPath(), container, displayName, activationType);
 	}
 
+	@Nullable
+	public static ResourcePack createModResourcePack(ModContainer container, ResourceType type) {
+		// TODO: why is there even an activation type in the pack??
+		return ModNioResourcePack.create(container.getMetadata().getId(), container, null, type, ResourcePackActivationType.ALWAYS_ENABLED);
+	}
+
 	private ResourcePackHelper() {
 	}
 }
