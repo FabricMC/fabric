@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.resource.loader.client",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "reloader.MinecraftClientMixin",
+    "reloader.ReloadableResourceManagerImplMixin",
+    "CreateWorldScreenMixin",
+    "DefaultClientResourcePackProviderMixin",
+    "GameOptionsMixin",
+    "VanillaResourcePackProviderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

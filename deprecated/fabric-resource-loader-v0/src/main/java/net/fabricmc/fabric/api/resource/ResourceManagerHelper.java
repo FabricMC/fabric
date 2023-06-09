@@ -1,0 +1,167 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.fabricmc.fabric.api.resource;
+
+import org.jetbrains.annotations.ApiStatus;
+
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceType;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.resource.loader.v1.ResourcePackHelper;
+import net.fabricmc.fabric.api.resource.loader.v1.ServerResourceReloadEvents;
+import net.fabricmc.fabric.impl.resource.loader.BuiltinResourcePackHolder;
+import net.fabricmc.loader.api.ModContainer;
+
+/**
+ * Helper for working with {@link ResourceManager} instances, and other resource loader generalities.
+ *
+ * @deprecated Replaced by {@link ResourcePackHelper} for builtin resource pack registration,
+ * and by the {@code ResourceReloader*RegistrationCallback} events for resource reloader registration.
+ */
+@Deprecated
+@ApiStatus.NonExtendable
+public interface ResourceManagerHelper {
+	/**
+	 * Add a resource reload listener for a given registry.
+	 *
+	 * @param listener The resource reload listener.
+	 * @deprecated Use the more flexible {@link ServerResourceReloadEvents.RegisterReloaders} (for server resources) or
+	 * {@code ResourceReloaderClientRegistrationCallback} (for client resources).
+	 */
+	@Deprecated
+	default void addReloadListener(IdentifiableResourceReloadListener listener) {
+		registerReloadListener(listener);
+	}
+
+	/**
+	 * Register a resource reload listener for a given resource manager type.
+	 *
+	 * @param listener The resource reload listener.
+	 * @deprecated Use the more flexible {@link ServerResourceReloadEvents.RegisterReloaders} (for server resources) or
+	 * {@code ResourceReloaderClientRegistrationCallback} (for client resources).
+	 */
+	@Deprecated
+	void registerReloadListener(IdentifiableResourceReloadListener listener);
+
+	/**
+	 * Get the ResourceManagerHelper instance for a given resource type.
+	 *
+	 * @param type The given resource type.
+	 * @return The ResourceManagerHelper instance.
+	 * @deprecated This is not needed when using the new resource loader v1 API.
+	 */
+	static ResourceManagerHelper get(ResourceType type) {
+		return net.fabricmc.fabric.impl.resource.loader.v0.ResourceManagerHelperImpl.get(type);
+	}
+
+	/**
+	 * Registers a built-in resource pack.
+	 *
+	 * <p>A built-in resource pack is an extra resource pack provided by your mod which is not always active, it's similar to the "Programmer Art" resource pack.
+	 *
+	 * <p>Why and when to use it? A built-in resource pack should be used to provide extra assets/data that should be optional with your mod but still directly provided by it.
+	 * For example, it could provide textures of your mod in another resolution, or could allow to provide different styles of your assets.
+	 *
+	 * <p>The path in which the resource pack is located is in the mod JAR file under the {@code "resourcepacks/<id path>"} directory. {@code id path} being the path specified
+	 * in the identifier of this built-in resource pack.
+	 *
+	 * @param id             the identifier of the resource pack
+	 * @param container      the mod container
+	 * @param activationType the activation type of the resource pack
+	 * @return {@code true} if successfully registered the resource pack, else {@code false}
+	 * @deprecated Use {@link ResourcePackHelper#registerBuiltinResourcePack} instead.
+	 */
+	@Deprecated
+	static boolean registerBuiltinResourcePack(Identifier id, ModContainer container, ResourcePackActivationType activationType) {
+		return registerBuiltinResourcePack(id, container, Text.literal(id.getNamespace() + "/" + id.getPath()), activationType);
+	}
+
+	/**
+	 * Registers a built-in resource pack.
+	 *
+	 * <p>A built-in resource pack is an extra resource pack provided by your mod which is not always active, it's similar to the "Programmer Art" resource pack.
+	 *
+	 * <p>Why and when to use it? A built-in resource pack should be used to provide extra assets/data that should be optional with your mod but still directly provided by it.
+	 * For example, it could provide textures of your mod in another resolution, or could allow to provide different styles of your assets.
+	 *
+	 * <p>The path in which the resource pack is located is in the mod JAR file under the {@code "resourcepacks/<id path>"} directory. {@code id path} being the path specified
+	 * in the identifier of this built-in resource pack.
+	 *
+	 * @param id             the identifier of the resource pack
+	 * @param container      the mod container
+	 * @param displayName    the display name of the resource pack, should include mod name for clarity
+	 * @param activationType the activation type of the resource pack
+	 * @return {@code true} if successfully registered the resource pack, else {@code false}
+	 * @deprecated Use {@link ResourcePackHelper#registerBuiltinResourcePack} instead.
+	 */
+	@Deprecated
+	static boolean registerBuiltinResourcePack(Identifier id, ModContainer container, Text displayName, ResourcePackActivationType activationType) {
+		return ResourcePackHelper.registerBuiltinResourcePack(id, container, displayName, activationType.toV1());
+	}
+
+	/**
+	 * Registers a built-in resource pack.
+	 *
+	 * <p>A built-in resource pack is an extra resource pack provided by your mod which is not always active, it's similar to the "Programmer Art" resource pack.
+	 *
+	 * <p>Why and when to use it? A built-in resource pack should be used to provide extra assets/data that should be optional with your mod but still directly provided by it.
+	 * For example, it could provide textures of your mod in another resolution, or could allow to provide different styles of your assets.
+	 *
+	 * <p>The path in which the resource pack is located is in the mod JAR file under the {@code "resourcepacks/<id path>"} directory. {@code id path} being the path specified
+	 * in the identifier of this built-in resource pack.
+	 *
+	 * @param id             the identifier of the resource pack
+	 * @param container      the mod container
+	 * @param displayName    the display name of the resource pack, should include mod name for clarity
+	 * @param activationType the activation type of the resource pack
+	 * @return {@code true} if successfully registered the resource pack, else {@code false}
+	 * @deprecated Use {@link #registerBuiltinResourcePack(Identifier, ModContainer, Text, ResourcePackActivationType)} instead.
+	 */
+	@Deprecated
+	static boolean registerBuiltinResourcePack(Identifier id, ModContainer container, String displayName, ResourcePackActivationType activationType) {
+		return registerBuiltinResourcePack(id, container, Text.literal(displayName), activationType);
+	}
+
+	/**
+	 * Registers a built-in resource pack.
+	 *
+	 * <p>A built-in resource pack is an extra resource pack provided by your mod which is not always active, it's similar to the "Programmer Art" resource pack.
+	 *
+	 * <p>Why and when to use it? A built-in resource pack should be used to provide extra assets/data that should be optional with your mod but still directly provided by it.
+	 * For example, it could provide textures of your mod in another resolution, or could allow to provide different styles of your assets.
+	 *
+	 * <p>The {@code subPath} corresponds to a path in the JAR file which points to the resource pack folder. For example the subPath can be {@code "resourcepacks/extra"}.
+	 *
+	 * <p>Note about the enabled by default parameter: a resource pack cannot be enabled by default, only data packs can.
+	 * Making this work for resource packs is near impossible without touching how Vanilla handles disabled resource packs.
+	 *
+	 * @param id               the identifier of the resource pack
+	 * @param subPath          the sub path in the mod resources
+	 * @param container        the mod container
+	 * @param enabledByDefault {@code true} if enabled by default, else {@code false}
+	 * @return {@code true} if successfully registered the resource pack, else {@code false}
+	 * @deprecated Please use {@link #registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)} instead, the {@code sub path} should be removed in a future
+	 * release in favor of the identifier path.
+	 */
+	@Deprecated
+	static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, boolean enabledByDefault) {
+		return BuiltinResourcePackHolder.registerBuiltinResourcePack(id, subPath, container, Text.literal(id.getNamespace() + "/" + id.getPath()),
+				(enabledByDefault ? ResourcePackActivationType.DEFAULT_ENABLED : ResourcePackActivationType.NORMAL).toV1());
+	}
+}
