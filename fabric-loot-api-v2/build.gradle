@@ -2,6 +2,6 @@ archivesBaseName = "fabric-loot-api-v2"
 version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
-	'fabric-api-base',
-	'fabric-resource-loader-v0'
+		'fabric-api-base',
+		'fabric-resource-loader-v1'
 ])

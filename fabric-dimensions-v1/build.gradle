@@ -5,6 +5,5 @@ moduleDependencies(project, ['fabric-api-base'])
 
 testDependencies(project, [
 	':fabric-command-api-v2',
-	':fabric-resource-loader-v0',
 	':fabric-lifecycle-events-v1'
 ])

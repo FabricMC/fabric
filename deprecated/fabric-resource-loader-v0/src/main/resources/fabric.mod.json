@@ -16,7 +16,8 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.13.0"
+    "fabricloader": ">=0.13.0",
+    "fabric-resource-loader-v1": "*"
   },
   "description": "Asset and data resource loading.",
   "mixins": [
@@ -26,8 +27,7 @@
       "environment": "client"
     }
   ],
-  "accessWidener": "fabric-resource-loader-v0.accesswidener",
   "custom": {
-    "fabric-api:module-lifecycle": "stable"
+    "fabric-api:module-lifecycle": "deprecated"
   }
 }
