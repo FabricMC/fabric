@@ -24,16 +24,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 
 class ArrayBackedEvent<T> extends Event<T> {
-	static final Logger LOGGER = LoggerFactory.getLogger("fabric-api-base");
-
 	private final Function<T[], T> invokerFactory;
 	private final Object lock = new Object();
 	private T[] handlers;
@@ -82,7 +77,7 @@ class ArrayBackedEvent<T> extends Event<T> {
 			sortedPhases.add(phase);
 
 			if (sortIfCreate) {
-				PhaseSorting.sortPhases(sortedPhases);
+				NodeSorting.sort(sortedPhases, "event phases");
 			}
 		}
 
@@ -121,9 +116,9 @@ class ArrayBackedEvent<T> extends Event<T> {
 		synchronized (lock) {
 			EventPhaseData<T> first = getOrCreatePhase(firstPhase, false);
 			EventPhaseData<T> second = getOrCreatePhase(secondPhase, false);
-			first.subsequentPhases.add(second);
-			second.previousPhases.add(first);
-			PhaseSorting.sortPhases(this.sortedPhases);
+			first.subsequentNodes.add(second);
+			second.previousNodes.add(first);
+			NodeSorting.sort(this.sortedPhases, "event phases");
 			rebuildInvoker(handlers.length);
 		}
 	}

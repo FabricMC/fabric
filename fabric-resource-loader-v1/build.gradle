@@ -1,0 +1,14 @@
+archivesBaseName = "fabric-resource-loader-v1"
+version = getSubprojectVersion(project)
+
+loom {
+	accessWidenerPath = file("src/main/resources/fabric-resource-loader-v1.accesswidener")
+}
+
+moduleDependencies(project, [
+		'fabric-api-base',
+])
+
+testDependencies(project, [
+		':fabric-lifecycle-events-v1',
+])

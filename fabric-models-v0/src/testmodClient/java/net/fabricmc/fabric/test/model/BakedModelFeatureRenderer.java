@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.model;
 
-import java.util.function.Supplier;
-
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 
@@ -32,16 +30,15 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
 public class BakedModelFeatureRenderer<T extends LivingEntity, M extends EntityModel<T>> extends FeatureRenderer<T, M> {
-	private Supplier<BakedModel> modelSupplier;
+	private final BakedModel model;
 
-	public BakedModelFeatureRenderer(FeatureRendererContext<T, M> context, Supplier<BakedModel> modelSupplier) {
+	public BakedModelFeatureRenderer(FeatureRendererContext<T, M> context, BakedModel model) {
 		super(context);
-		this.modelSupplier = modelSupplier;
+		this.model = model;
 	}
 
 	@Override
 	public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-		BakedModel model = modelSupplier.get();
 		VertexConsumer vertices = vertexConsumers.getBuffer(TexturedRenderLayers.getEntityCutout());
 		matrices.push();
 		//matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(headYaw));

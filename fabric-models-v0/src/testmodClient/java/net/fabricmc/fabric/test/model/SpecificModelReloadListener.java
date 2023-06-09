@@ -16,48 +16,29 @@
 
 package net.fabricmc.fabric.test.model;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SinglePreparationResourceReloader;
+import net.minecraft.resource.SynchronousResourceReloader;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Unit;
-import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.fabric.api.client.model.BakedModelManagerHelper;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 
-public class SpecificModelReloadListener extends SinglePreparationResourceReloader<Unit> implements IdentifiableResourceReloadListener {
-	public static final SpecificModelReloadListener INSTANCE = new SpecificModelReloadListener();
+public class SpecificModelReloadListener implements SynchronousResourceReloader {
 	public static final Identifier ID = new Identifier(ModelTestModClient.ID, "specific_model");
 
 	private BakedModel specificModel;
 
 	public BakedModel getSpecificModel() {
+		if (specificModel == null) {
+			throw new AssertionError("Specific model not set");
+		}
+
 		return specificModel;
 	}
 
 	@Override
-	protected Unit prepare(ResourceManager manager, Profiler profiler) {
-		return Unit.INSTANCE;
-	}
-
-	@Override
-	protected void apply(Unit loader, ResourceManager manager, Profiler profiler) {
+	public void reload(ResourceManager manager) {
 		specificModel = BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), ModelTestModClient.MODEL_ID);
-	}
-
-	@Override
-	public Identifier getFabricId() {
-		return ID;
-	}
-
-	@Override
-	public Collection<Identifier> getFabricDependencies() {
-		return Arrays.asList(ResourceReloadListenerKeys.MODELS);
 	}
 }

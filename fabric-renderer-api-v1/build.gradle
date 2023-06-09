@@ -9,6 +9,5 @@ testDependencies(project, [
 	':fabric-models-v0',
 	':fabric-object-builder-api-v1',
 	':fabric-renderer-indigo',
-	':fabric-rendering-data-attachment-v1',
-	':fabric-resource-loader-v0'
+	':fabric-rendering-data-attachment-v1'
 ])

@@ -16,14 +16,16 @@
 
 package net.fabricmc.fabric.test.model;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.loader.v1.ResourceReloaderHolder;
+import net.fabricmc.fabric.api.resource.loader.v1.ResourceReloaderKeys;
+import net.fabricmc.fabric.api.resource.loader.v1.client.ClientResourceReloadEvents;
 
 public class ModelTestModClient implements ClientModInitializer {
 	public static final String ID = "fabric-models-v0-testmod";
@@ -36,11 +38,19 @@ public class ModelTestModClient implements ClientModInitializer {
 			out.accept(MODEL_ID);
 		});
 
-		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(SpecificModelReloadListener.INSTANCE);
+		ClientResourceReloadEvents.REGISTER_RELOADERS.register(context -> {
+			context.addReloader(SpecificModelReloadListener.ID, new SpecificModelReloadListener());
+			context.addReloaderOrdering(ResourceReloaderKeys.BAKED_MODELS, SpecificModelReloadListener.ID);
+			context.addReloaderOrdering(SpecificModelReloadListener.ID, ResourceReloaderKeys.ENTITY_RENDER_DISPATCHER);
+		});
 
 		LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
 			if (entityRenderer instanceof PlayerEntityRenderer) {
-				registrationHelper.register(new BakedModelFeatureRenderer<>((PlayerEntityRenderer) entityRenderer, SpecificModelReloadListener.INSTANCE::getSpecificModel));
+				// Interface injection from other modules does not work, work around that
+				ResourceReloaderHolder mcClient = (ResourceReloaderHolder) MinecraftClient.getInstance();
+				// TODO: is this cleaner than storing a global instance? not sure...
+				SpecificModelReloadListener specificModelListener = (SpecificModelReloadListener) mcClient.getResourceReloader(SpecificModelReloadListener.ID);
+				registrationHelper.register(new BakedModelFeatureRenderer<>((PlayerEntityRenderer) entityRenderer, specificModelListener.getSpecificModel()));
 			}
 		});
 	}
