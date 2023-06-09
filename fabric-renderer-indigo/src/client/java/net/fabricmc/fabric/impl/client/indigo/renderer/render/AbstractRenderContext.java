@@ -22,6 +22,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import net.minecraft.client.render.VertexConsumer;
 
@@ -53,6 +54,7 @@ abstract class AbstractRenderContext implements RenderContext {
 	protected Matrix4f matrix;
 	protected Matrix3f normalMatrix;
 	protected int overlay;
+	private final Vector4f posVec = new Vector4f();
 	private final Vector3f normalVec = new Vector3f();
 
 	protected final boolean transform(MutableQuadView q) {
@@ -98,6 +100,8 @@ abstract class AbstractRenderContext implements RenderContext {
 
 	/** final output step, common to all renders. */
 	protected void bufferQuad(MutableQuadViewImpl quad, VertexConsumer vertexConsumer) {
+		final Vector4f posVec = this.posVec;
+		final Vector3f normalVec = this.normalVec;
 		final boolean useNormals = quad.hasVertexNormals();
 
 		if (useNormals) {
@@ -108,9 +112,12 @@ abstract class AbstractRenderContext implements RenderContext {
 		}
 
 		for (int i = 0; i < 4; i++) {
-			vertexConsumer.vertex(matrix, quad.x(i), quad.y(i), quad.z(i));
+			posVec.set(quad.x(i), quad.y(i), quad.z(i), 1.0f);
+			posVec.mul(matrix);
+			vertexConsumer.vertex(posVec.x(), posVec.y(), posVec.z());
+
 			final int color = quad.color(i);
-			vertexConsumer.color(color & 0xFF, (color >> 8) & 0xFF, (color >> 16) & 0xFF, (color >> 24) & 0xFF);
+			vertexConsumer.color((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, (color >> 24) & 0xFF);
 			vertexConsumer.texture(quad.u(i), quad.v(i));
 			vertexConsumer.overlay(overlay);
 			vertexConsumer.light(quad.lightmap(i));

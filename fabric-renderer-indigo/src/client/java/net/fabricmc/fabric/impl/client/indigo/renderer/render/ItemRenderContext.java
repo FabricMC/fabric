@@ -178,23 +178,11 @@ public class ItemRenderContext extends AbstractRenderContext {
 	}
 
 	private void colorizeQuad(MutableQuadViewImpl quad, int colorIndex) {
-		if (colorIndex == -1) {
-			if (ColorHelper.SWAP_RED_BLUE) {
-				for (int i = 0; i < 4; i++) {
-					quad.color(i, ColorHelper.swapRedBlue(quad.color(i)));
-				}
-			}
-		} else {
+		if (colorIndex != -1) {
 			final int itemColor = 0xFF000000 | colorMap.getColor(itemStack, colorIndex);
 
-			if (ColorHelper.SWAP_RED_BLUE) {
-				for (int i = 0; i < 4; i++) {
-					quad.color(i, ColorHelper.swapRedBlue(ColorHelper.multiplyColor(itemColor, quad.color(i))));
-				}
-			} else {
-				for (int i = 0; i < 4; i++) {
-					quad.color(i, ColorHelper.multiplyColor(itemColor, quad.color(i)));
-				}
+			for (int i = 0; i < 4; i++) {
+				quad.color(i, ColorHelper.multiplyColor(itemColor, quad.color(i)));
 			}
 		}
 	}

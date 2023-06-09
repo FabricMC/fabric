@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_BITS;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_COLOR_INDEX;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_STRIDE;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_TAG;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.QUAD_STRIDE;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_COLOR;
@@ -38,6 +39,7 @@ import org.joml.Vector3f;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
+import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
@@ -248,6 +250,16 @@ public class QuadViewImpl implements QuadView {
 
 	@Override
 	public final void toVanilla(int[] target, int targetIndex) {
-		System.arraycopy(data, baseIndex + VERTEX_X, target, targetIndex, QUAD_STRIDE);
+		System.arraycopy(data, baseIndex + HEADER_STRIDE, target, targetIndex, QUAD_STRIDE);
+
+		// The color is the fourth integer in each vertex.
+		// EncodingFormat.VERTEX_COLOR is not used because it also
+		// contains the header size; vanilla quads do not have a header.
+		int colorIndex = targetIndex + 3;
+
+		for (int i = 0; i < 4; i++) {
+			target[colorIndex] = ColorHelper.toVanillaColor(target[colorIndex]);
+			colorIndex += VANILLA_VERTEX_STRIDE;
+		}
 	}
 }

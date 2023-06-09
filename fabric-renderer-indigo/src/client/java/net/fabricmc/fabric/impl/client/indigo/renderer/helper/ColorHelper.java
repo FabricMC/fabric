@@ -26,14 +26,7 @@ import java.nio.ByteOrder;
 public abstract class ColorHelper {
 	private ColorHelper() { }
 
-	public static final boolean SWAP_RED_BLUE = ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN;
-
-	/**
-	 * Swaps red blue order to match GPU expectations for color component order.
-	 */
-	public static int swapRedBlue(int color) {
-		return color == -1 ? -1 : (color & 0xFF00FF00) | ((color & 0x00FF0000) >> 16) | ((color & 0xFF) << 16);
-	}
+	private static final boolean BIG_ENDIAN = ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN;
 
 	/** Component-wise multiply. Components need to be in same order in both inputs! */
 	public static int multiplyColor(int color1, int color2) {
@@ -69,5 +62,54 @@ public abstract class ColorHelper {
 		if (b1 == 0) return b0;
 
 		return Math.max(b0 & 0xFFFF, b1 & 0xFFFF) | Math.max(b0 & 0xFFFF0000, b1 & 0xFFFF0000);
+	}
+
+	/*
+	Renderer color format: ARGB
+	Vanilla color format (little endian): ABGR
+	Vanilla color format (big endian): RGBA
+
+	Why does the vanilla color format change based on endianness?
+	See VertexConsumer#quad. Quad data is loaded as integers into
+	a native byte order buffer. Color is read directly from bytes
+	12, 13, 14 of each vertex. A different byte order will yield
+	different results.
+
+	The renderer always uses ARGB for internal consistency and
+	consistency with block/item colors, which also use ARGB.
+	 */
+
+	/**
+	 * Converts from ARGB color to ABGR color if little endian or RGBA color if big endian.
+	 */
+	public static int toVanillaColor(int color) {
+		if (color == -1) {
+			return -1;
+		}
+
+		if (BIG_ENDIAN) {
+			// ARGB to RGBA
+			return ((color & 0x00FFFFFF) << 8) | ((color & 0xFF000000) >> 24);
+		} else {
+			// ARGB to ABGR
+			return (color & 0xFF00FF00) | ((color & 0x00FF0000) >> 16) | ((color & 0xFF) << 16);
+		}
+	}
+
+	/**
+	 * Converts to ARGB color from ABGR color if little endian or RGBA color if big endian.
+	 */
+	public static int fromVanillaColor(int color) {
+		if (color == -1) {
+			return -1;
+		}
+
+		if (BIG_ENDIAN) {
+			// RGBA to ARGB
+			return ((color & 0xFFFFFF00) >> 8) | ((color & 0x000000FF) << 24);
+		} else {
+			// ABGR to ARGB
+			return (color & 0xFF00FF00) | ((color & 0x00FF0000) >> 16) | ((color & 0xFF) << 16);
+		}
 	}
 }

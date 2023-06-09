@@ -201,7 +201,7 @@ public interface QuadView {
 	 * @param target Target array for the baked quad data.
 	 *
 	 * @param targetIndex Starting position in target array - array must have
-	 * at least 28 elements available at this index.
+	 * at least {@link #VANILLA_QUAD_STRIDE} elements available at this index.
 	 */
 	default void toVanilla(int[] target, int targetIndex) {
 		toVanilla(0, target, targetIndex, false);
