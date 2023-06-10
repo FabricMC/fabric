@@ -235,6 +235,15 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 		return WorldRenderer.getLightmapCoordinates(blockInfo.blockView, blockState, lightPos);
 	}
 
+	/**
+	 * Consumer for vanilla baked models. Generally intended to give visual results matching a vanilla render,
+	 * however there could be subtle (and desirable) lighting variations so is good to be able to render
+	 * everything consistently.
+	 *
+	 * <p>Also, the API allows multi-part models that hold multiple vanilla models to render them without
+	 * combining quad lists, but the vanilla logic only handles one model per block. To route all of
+	 * them through vanilla logic would require additional hooks.
+	 */
 	private class BakedModelConsumerImpl implements BakedModelConsumer {
 		private static final RenderMaterial MATERIAL_SHADED = IndigoRenderer.INSTANCE.materialFinder().find();
 		private static final RenderMaterial MATERIAL_FLAT = IndigoRenderer.INSTANCE.materialFinder().ambientOcclusion(TriState.FALSE).find();

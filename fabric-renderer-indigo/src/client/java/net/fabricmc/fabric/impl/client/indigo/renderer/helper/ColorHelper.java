@@ -36,9 +36,9 @@ public abstract class ColorHelper {
 			return color1;
 		}
 
-		final int alpha = ((color1 >> 24) & 0xFF) * ((color2 >> 24) & 0xFF) / 0xFF;
-		final int red = ((color1 >> 16) & 0xFF) * ((color2 >> 16) & 0xFF) / 0xFF;
-		final int green = ((color1 >> 8) & 0xFF) * ((color2 >> 8) & 0xFF) / 0xFF;
+		final int alpha = ((color1 >>> 24) & 0xFF) * ((color2 >>> 24) & 0xFF) / 0xFF;
+		final int red = ((color1 >>> 16) & 0xFF) * ((color2 >>> 16) & 0xFF) / 0xFF;
+		final int green = ((color1 >>> 8) & 0xFF) * ((color2 >>> 8) & 0xFF) / 0xFF;
 		final int blue = (color1 & 0xFF) * (color2 & 0xFF) / 0xFF;
 
 		return (alpha << 24) | (red << 16) | (green << 8) | blue;
@@ -46,9 +46,9 @@ public abstract class ColorHelper {
 
 	/** Multiplies three lowest components by shade. High byte (usually alpha) unchanged. */
 	public static int multiplyRGB(int color, float shade) {
-		final int alpha = ((color >> 24) & 0xFF);
-		final int red = (int) (((color >> 16) & 0xFF) * shade);
-		final int green = (int) (((color >> 8) & 0xFF) * shade);
+		final int alpha = ((color >>> 24) & 0xFF);
+		final int red = (int) (((color >>> 16) & 0xFF) * shade);
+		final int green = (int) (((color >>> 8) & 0xFF) * shade);
 		final int blue = (int) ((color & 0xFF) * shade);
 
 		return (alpha << 24) | (red << 16) | (green << 8) | blue;
@@ -75,8 +75,9 @@ public abstract class ColorHelper {
 	12, 13, 14 of each vertex. A different byte order will yield
 	different results.
 
-	The renderer always uses ARGB for internal consistency and
-	consistency with block/item colors, which also use ARGB.
+	The renderer always uses ARGB because the API color methods
+	always consume and return ARGB. Vanilla block and item colors
+	also use ARGB.
 	 */
 
 	/**
@@ -89,10 +90,10 @@ public abstract class ColorHelper {
 
 		if (BIG_ENDIAN) {
 			// ARGB to RGBA
-			return ((color & 0x00FFFFFF) << 8) | ((color & 0xFF000000) >> 24);
+			return ((color & 0x00FFFFFF) << 8) | ((color & 0xFF000000) >>> 24);
 		} else {
 			// ARGB to ABGR
-			return (color & 0xFF00FF00) | ((color & 0x00FF0000) >> 16) | ((color & 0xFF) << 16);
+			return (color & 0xFF00FF00) | ((color & 0x00FF0000) >>> 16) | ((color & 0x000000FF) << 16);
 		}
 	}
 
@@ -106,10 +107,10 @@ public abstract class ColorHelper {
 
 		if (BIG_ENDIAN) {
 			// RGBA to ARGB
-			return ((color & 0xFFFFFF00) >> 8) | ((color & 0x000000FF) << 24);
+			return ((color & 0xFFFFFF00) >>> 8) | ((color & 0x000000FF) << 24);
 		} else {
 			// ABGR to ARGB
-			return (color & 0xFF00FF00) | ((color & 0x00FF0000) >> 16) | ((color & 0xFF) << 16);
+			return (color & 0xFF00FF00) | ((color & 0x00FF0000) >>> 16) | ((color & 0x000000FF) << 16);
 		}
 	}
 }

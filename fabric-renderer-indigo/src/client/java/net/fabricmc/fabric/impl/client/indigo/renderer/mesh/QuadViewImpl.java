@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_BITS;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_COLOR_INDEX;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_FACE_NORMAL;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_STRIDE;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_TAG;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.QUAD_STRIDE;
@@ -51,7 +52,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialIm
 public class QuadViewImpl implements QuadView {
 	@Nullable
 	protected Direction nominalFace;
-	/** True when geometry flags or light face may not match geometry. */
+	/** True when face normal, light face, or geometry flags may not match geometry. */
 	protected boolean isGeometryInvalid = true;
 	protected final Vector3f faceNormal = new Vector3f();
 
@@ -68,24 +69,7 @@ public class QuadViewImpl implements QuadView {
 	public void load() {
 		isGeometryInvalid = false;
 		nominalFace = lightFace();
-
-		// face normal isn't encoded
-		NormalHelper.computeFaceNormal(faceNormal, this);
-	}
-
-	public int normalFlags() {
-		return EncodingFormat.normalFlags(data[baseIndex + HEADER_BITS]);
-	}
-
-	/** True if any vertex normal has been set. */
-	public boolean hasVertexNormals() {
-		return normalFlags() != 0;
-	}
-
-	/** gets flags used for lighting - lazily computed via {@link GeometryHelper#computeShapeFlags(QuadView)}. */
-	public int geometryFlags() {
-		computeGeometry();
-		return EncodingFormat.geometryFlags(data[baseIndex + HEADER_BITS]);
+		NormalHelper.unpackNormal(packedFaceNormal(), faceNormal);
 	}
 
 	protected void computeGeometry() {
@@ -93,6 +77,7 @@ public class QuadViewImpl implements QuadView {
 			isGeometryInvalid = false;
 
 			NormalHelper.computeFaceNormal(faceNormal, this);
+			data[baseIndex + HEADER_FACE_NORMAL] = NormalHelper.packNormal(faceNormal);
 
 			// depends on face normal
 			data[baseIndex + HEADER_BITS] = EncodingFormat.lightFace(data[baseIndex + HEADER_BITS], GeometryHelper.lightFace(this));
@@ -100,6 +85,12 @@ public class QuadViewImpl implements QuadView {
 			// depends on light face
 			data[baseIndex + HEADER_BITS] = EncodingFormat.geometryFlags(data[baseIndex + HEADER_BITS], GeometryHelper.computeShapeFlags(this));
 		}
+	}
+
+	/** gets flags used for lighting - lazily computed via {@link GeometryHelper#computeShapeFlags(QuadView)}. */
+	public int geometryFlags() {
+		computeGeometry();
+		return EncodingFormat.geometryFlags(data[baseIndex + HEADER_BITS]);
 	}
 
 	public boolean hasShade() {
@@ -168,9 +159,18 @@ public class QuadViewImpl implements QuadView {
 		return data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_LIGHTMAP];
 	}
 
+	public int normalFlags() {
+		return EncodingFormat.normalFlags(data[baseIndex + HEADER_BITS]);
+	}
+
 	@Override
 	public boolean hasNormal(int vertexIndex) {
 		return (normalFlags() & (1 << vertexIndex)) != 0;
+	}
+
+	/** True if any vertex normal has been set. */
+	public boolean hasVertexNormals() {
+		return normalFlags() != 0;
 	}
 
 	protected final int normalIndex(int vertexIndex) {
@@ -179,17 +179,17 @@ public class QuadViewImpl implements QuadView {
 
 	@Override
 	public float normalX(int vertexIndex) {
-		return hasNormal(vertexIndex) ? NormalHelper.getPackedNormalComponent(data[normalIndex(vertexIndex)], 0) : Float.NaN;
+		return hasNormal(vertexIndex) ? NormalHelper.unpackNormalX(data[normalIndex(vertexIndex)]) : Float.NaN;
 	}
 
 	@Override
 	public float normalY(int vertexIndex) {
-		return hasNormal(vertexIndex) ? NormalHelper.getPackedNormalComponent(data[normalIndex(vertexIndex)], 1) : Float.NaN;
+		return hasNormal(vertexIndex) ? NormalHelper.unpackNormalY(data[normalIndex(vertexIndex)]) : Float.NaN;
 	}
 
 	@Override
 	public float normalZ(int vertexIndex) {
-		return hasNormal(vertexIndex) ? NormalHelper.getPackedNormalComponent(data[normalIndex(vertexIndex)], 2) : Float.NaN;
+		return hasNormal(vertexIndex) ? NormalHelper.unpackNormalZ(data[normalIndex(vertexIndex)]) : Float.NaN;
 	}
 
 	@Override
@@ -201,7 +201,7 @@ public class QuadViewImpl implements QuadView {
 			}
 
 			final int normal = data[normalIndex(vertexIndex)];
-			target.set(NormalHelper.getPackedNormalComponent(normal, 0), NormalHelper.getPackedNormalComponent(normal, 1), NormalHelper.getPackedNormalComponent(normal, 2));
+			NormalHelper.unpackNormal(normal, target);
 			return target;
 		} else {
 			return null;
@@ -225,6 +225,11 @@ public class QuadViewImpl implements QuadView {
 	@Nullable
 	public final Direction nominalFace() {
 		return nominalFace;
+	}
+
+	public final int packedFaceNormal() {
+		computeGeometry();
+		return data[baseIndex + HEADER_FACE_NORMAL];
 	}
 
 	@Override

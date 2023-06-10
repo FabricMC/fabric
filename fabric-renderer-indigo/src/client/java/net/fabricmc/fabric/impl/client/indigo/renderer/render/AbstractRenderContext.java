@@ -117,7 +117,7 @@ abstract class AbstractRenderContext implements RenderContext {
 			vertexConsumer.vertex(posVec.x(), posVec.y(), posVec.z());
 
 			final int color = quad.color(i);
-			vertexConsumer.color((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, (color >> 24) & 0xFF);
+			vertexConsumer.color((color >>> 16) & 0xFF, (color >>> 8) & 0xFF, color & 0xFF, (color >>> 24) & 0xFF);
 			vertexConsumer.texture(quad.u(i), quad.v(i));
 			vertexConsumer.overlay(overlay);
 			vertexConsumer.light(quad.lightmap(i));

@@ -169,7 +169,7 @@ public interface QuadView {
 	/**
 	 * Normal of the quad as implied by geometry. Will be invalid
 	 * if quad vertices are not co-planar. Typically computed lazily
-	 * on demand and not encoded.
+	 * on demand.
 	 *
 	 * <p>Not typically needed by models. Exposed to enable standard lighting
 	 * utility functions for use by renderers.

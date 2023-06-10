@@ -46,6 +46,12 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialIm
 /**
  * Almost-concrete implementation of a mutable quad. The only missing part is {@link #emitDirectly()},
  * because that depends on where/how it is used. (Mesh encoding vs. render-time transformation).
+ *
+ * <p>In many cases an instance of this class is used as an "editor quad". The editor quad's
+ * {@link #emitDirectly()} method calls some other internal method that transforms the quad
+ * data and then buffers it. Transformations should be the same as they would be in a vanilla
+ * render - the editor is serving mainly as a way to access vertex data without magical
+ * numbers. It also allows for a consistent interface for those transformations.
  */
 public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEmitter {
 	public void clear() {
@@ -102,7 +108,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	@Override
 	public MutableQuadViewImpl normal(int vertexIndex, float x, float y, float z) {
 		normalFlags(normalFlags() | (1 << vertexIndex));
-		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_NORMAL] = NormalHelper.packNormal(x, y, z, 0);
+		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_NORMAL] = NormalHelper.packNormal(x, y, z);
 		return this;
 	}
 
@@ -114,7 +120,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 		if (normalFlags == 0b1111) return;
 
-		final int packedFaceNormal = NormalHelper.packNormal(faceNormal(), 0);
+		final int packedFaceNormal = packedFaceNormal();
 
 		for (int v = 0; v < 4; v++) {
 			if ((normalFlags & (1 << v)) == 0) {
@@ -210,7 +216,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	public abstract void emitDirectly();
 
 	@Override
-	public MutableQuadViewImpl emit() {
+	public final MutableQuadViewImpl emit() {
 		emitDirectly();
 		clear();
 		return this;

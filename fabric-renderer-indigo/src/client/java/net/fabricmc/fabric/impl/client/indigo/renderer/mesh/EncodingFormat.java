@@ -37,9 +37,10 @@ public abstract class EncodingFormat {
 	private EncodingFormat() { }
 
 	static final int HEADER_BITS = 0;
-	static final int HEADER_COLOR_INDEX = 1;
-	static final int HEADER_TAG = 2;
-	public static final int HEADER_STRIDE = 3;
+	static final int HEADER_FACE_NORMAL = 1;
+	static final int HEADER_COLOR_INDEX = 2;
+	static final int HEADER_TAG = 3;
+	public static final int HEADER_STRIDE = 4;
 
 	static final int VERTEX_X;
 	static final int VERTEX_Y;
@@ -100,7 +101,7 @@ public abstract class EncodingFormat {
 	}
 
 	static Direction cullFace(int bits) {
-		return ModelHelper.faceFromIndex((bits >> CULL_SHIFT) & DIRECTION_MASK);
+		return ModelHelper.faceFromIndex((bits >>> CULL_SHIFT) & DIRECTION_MASK);
 	}
 
 	static int cullFace(int bits, Direction face) {
@@ -108,7 +109,7 @@ public abstract class EncodingFormat {
 	}
 
 	static Direction lightFace(int bits) {
-		return ModelHelper.faceFromIndex((bits >> LIGHT_SHIFT) & DIRECTION_MASK);
+		return ModelHelper.faceFromIndex((bits >>> LIGHT_SHIFT) & DIRECTION_MASK);
 	}
 
 	static int lightFace(int bits, Direction face) {
@@ -117,7 +118,7 @@ public abstract class EncodingFormat {
 
 	/** indicate if vertex normal has been set - bits correspond to vertex ordinals. */
 	static int normalFlags(int bits) {
-		return (bits >> NORMALS_SHIFT) & NORMALS_MASK;
+		return (bits >>> NORMALS_SHIFT) & NORMALS_MASK;
 	}
 
 	static int normalFlags(int bits, int normalFlags) {
@@ -125,7 +126,7 @@ public abstract class EncodingFormat {
 	}
 
 	static int geometryFlags(int bits) {
-		return (bits >> GEOMETRY_SHIFT) & GEOMETRY_MASK;
+		return (bits >>> GEOMETRY_SHIFT) & GEOMETRY_MASK;
 	}
 
 	static int geometryFlags(int bits, int geometryFlags) {
@@ -133,7 +134,7 @@ public abstract class EncodingFormat {
 	}
 
 	static RenderMaterialImpl material(int bits) {
-		return RenderMaterialImpl.byIndex((bits >> MATERIAL_SHIFT) & MATERIAL_MASK);
+		return RenderMaterialImpl.byIndex((bits >>> MATERIAL_SHIFT) & MATERIAL_MASK);
 	}
 
 	static int material(int bits, RenderMaterialImpl material) {
