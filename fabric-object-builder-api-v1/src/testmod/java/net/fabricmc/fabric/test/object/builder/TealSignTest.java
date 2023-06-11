@@ -32,17 +32,21 @@ import net.minecraft.item.Item;
 import net.minecraft.item.SignItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.object.builder.v1.block.type.BlockSetTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.type.BlockSetTypeRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.block.type.WoodTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.type.WoodTypeRegistry;
 
 public class TealSignTest implements ModInitializer {
-	public static final BlockSetType TEAL_BLOCK_SET_TYPE = BlockSetTypeRegistry.registerWood(ObjectBuilderTestConstants.id("teal"));
-	public static final WoodType TEAL_WOOD_TYPE = WoodTypeRegistry.register(ObjectBuilderTestConstants.id("teal"), TEAL_BLOCK_SET_TYPE);
+	public static final Identifier TEAL_TYPE_ID = ObjectBuilderTestConstants.id("teal");
+	public static final BlockSetType TEAL_BLOCK_SET_TYPE = BlockSetTypeBuilder.copyOf(BlockSetType.OAK).build(TEAL_TYPE_ID);
+	public static final WoodType TEAL_WOOD_TYPE = WoodTypeBuilder.copyOf(WoodType.OAK).build(TEAL_TYPE_ID, TEAL_BLOCK_SET_TYPE);
 	public static final SignBlock TEAL_SIGN = new SignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), TEAL_WOOD_TYPE) {
 		@Override
 		public TealSign createBlockEntity(BlockPos pos, BlockState state) {
