@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.object.builder.v1.block.type;
 
 import net.minecraft.block.BlockSetType;
-import net.minecraft.block.WoodType;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
