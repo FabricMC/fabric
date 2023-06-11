@@ -39,9 +39,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.type.BlockSetTypeBuilder;
-import net.fabricmc.fabric.api.object.builder.v1.block.type.BlockSetTypeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.type.WoodTypeBuilder;
-import net.fabricmc.fabric.api.object.builder.v1.block.type.WoodTypeRegistry;
 
 public class TealSignTest implements ModInitializer {
 	public static final Identifier TEAL_TYPE_ID = ObjectBuilderTestConstants.id("teal");
