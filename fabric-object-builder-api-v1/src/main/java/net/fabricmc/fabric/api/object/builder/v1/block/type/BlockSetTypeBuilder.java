@@ -228,11 +228,28 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Builds and registers a {@link BlockSetType} from this builder's values.
 	 *
+	 * <p>Alternatively, you can use {@link #build(Identifier)} to build without registering.
+	 * <br>Then {@link BlockSetType#register(BlockSetType)} can be used to register it later.
+	 *
 	 * @param id the id for the built {@link BlockSetType}
 	 *
 	 * @return the built and registered {@link BlockSetType}
 	 */
+	public BlockSetType register(Identifier id) {
+		return BlockSetType.register(this.build(id));
+	}
+
+	/**
+	 * Builds a {@link BlockSetType} from this builder's values without registering it.
+	 *
+	 * <p>Use {@link BlockSetType#register(BlockSetType)} to register it later.
+	 * <br>Alternatively, you can use {@link #register(Identifier)} to build and register it now.
+	 *
+	 * @param id the id for the built {@link BlockSetType}
+	 *
+	 * @return the built {@link BlockSetType}
+	 */
 	public BlockSetType build(Identifier id) {
-		return BlockSetType.register(new BlockSetType(id.toString(), openableByHand, soundGroup, doorCloseSound, doorOpenSound, trapdoorCloseSound, trapdoorOpenSound, pressurePlateClickOffSound, pressurePlateClickOnSound, buttonClickOffSound, buttonClickOnSound));
+		return new BlockSetType(id.toString(), openableByHand, soundGroup, doorCloseSound, doorOpenSound, trapdoorCloseSound, trapdoorOpenSound, pressurePlateClickOffSound, pressurePlateClickOnSound, buttonClickOffSound, buttonClickOnSound);
 	}
 }
