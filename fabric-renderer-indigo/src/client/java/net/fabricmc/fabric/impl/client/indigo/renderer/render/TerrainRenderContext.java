@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import java.util.Set;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
@@ -47,6 +48,7 @@ public class TerrainRenderContext extends AbstractBlockRenderContext {
 	private final ChunkRenderInfo chunkInfo = new ChunkRenderInfo();
 
 	public TerrainRenderContext() {
+		overlay = OverlayTexture.DEFAULT_UV;
 		blockInfo.random = Random.create();
 	}
 
