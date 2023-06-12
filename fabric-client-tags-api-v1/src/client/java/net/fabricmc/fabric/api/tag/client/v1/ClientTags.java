@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.tag.client.v1;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -23,12 +24,12 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.tag.client.ClientTagsLoader;
 
@@ -46,6 +47,7 @@ import net.fabricmc.fabric.impl.tag.client.ClientTagsLoader;
  */
 public final class ClientTags {
 	private static final Map<TagKey<?>, Set<Identifier>> LOCAL_TAG_CACHE = new ConcurrentHashMap<>();
+	private static final Map<TagKey<?>, ClientTagsLoader.ChildHolder> LOCAL_TAG_HIERARCHY = new ConcurrentHashMap<>(); //todo use LoadedTag, merge caches?
 
 	private ClientTags() {
 	}
@@ -60,11 +62,82 @@ public final class ClientTags {
 		Set<Identifier> ids = LOCAL_TAG_CACHE.get(tagKey);
 
 		if (ids == null) {
-			ids = ClientTagsLoader.loadTag(tagKey);
+			ClientTagsLoader.LoadedTag loadedTag = ClientTagsLoader.loadTag(tagKey);
+			ids = loadedTag.completeIds();
 			LOCAL_TAG_CACHE.put(tagKey, ids);
+			LOCAL_TAG_HIERARCHY.put(tagKey, loadedTag.childHolder());
 		}
 
 		return ids;
+	}
+
+	//todo should this be exposed and getOrCreateLocalTag deprecated?
+	private static ClientTagsLoader.ChildHolder getOrCreatePartiallySyncedTag(TagKey<?> tagKey) {
+		ClientTagsLoader.ChildHolder childHolder = LOCAL_TAG_HIERARCHY.get(tagKey);
+
+		if (childHolder == null) {
+			ClientTagsLoader.LoadedTag loadedTag = ClientTagsLoader.loadTag(tagKey);
+			childHolder = loadedTag.childHolder();
+			LOCAL_TAG_CACHE.put(tagKey, loadedTag.completeIds());
+			LOCAL_TAG_HIERARCHY.put(tagKey, childHolder);
+		}
+
+		return childHolder;
+	}
+
+	//todo this should probably be the default behavior of *withLocalFallback, with new way to do the old behavior
+	// then again, arguably the javadoc describes the old behavior
+	public static <T> boolean isInPartiallySyncedTag(TagKey<T> tagKey, RegistryEntry<T> registryEntry) {
+		Objects.requireNonNull(tagKey);
+		Objects.requireNonNull(registryEntry);
+
+		// Check if the tag exists in the dynamic registry first
+		Optional<? extends Registry<T>> maybeRegistry = getRegistry(tagKey);
+
+		if (maybeRegistry.isPresent()) {
+			if (maybeRegistry.get().getEntryList(tagKey).isPresent()) {
+				return registryEntry.isIn(tagKey);
+			}
+		}
+
+		if (registryEntry.getKey().isPresent()) {
+			ClientTagsLoader.ChildHolder wt = getOrCreatePartiallySyncedTag(tagKey);
+			boolean isIn = wt.immediateChildIds().contains(registryEntry.getKey().get().getValue());
+			Iterator<TagKey<?>> it = wt.immediateChildTags().iterator();
+
+			while (!isIn && it.hasNext()) {
+				isIn = isInPartiallySyncedTag((TagKey<T>) it.next(), registryEntry);
+			}
+
+			return isIn;
+		}
+
+		return false;
+	}
+
+	public static <T> boolean isInPartiallySyncedTag(TagKey<T> tagKey, T entry) {
+		Objects.requireNonNull(tagKey);
+		Objects.requireNonNull(entry);
+
+		Optional<? extends Registry<?>> maybeRegistry = getRegistry(tagKey);
+
+		if (maybeRegistry.isEmpty()) {
+			return false;
+		}
+
+		if (!tagKey.isOf(maybeRegistry.get().getKey())) {
+			return false;
+		}
+
+		Registry<T> registry = (Registry<T>) maybeRegistry.get();
+
+		Optional<RegistryKey<T>> maybeKey = registry.getKey(entry);
+
+		if (maybeKey.isPresent()) {
+			return isInPartiallySyncedTag(tagKey, registry.entryOf(maybeKey.get()));
+		}
+
+		return false;
 	}
 
 	/**

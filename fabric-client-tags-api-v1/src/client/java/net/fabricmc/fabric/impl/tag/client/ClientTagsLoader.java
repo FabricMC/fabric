@@ -51,7 +51,7 @@ public class ClientTagsLoader {
 	 * Load a given tag from the available mods into a set of {@code Identifier}s.
 	 * Parsing based on {@link net.minecraft.registry.tag.TagGroupLoader#loadTags(net.minecraft.resource.ResourceManager)}
 	 */
-	public static Set<Identifier> loadTag(TagKey<?> tagKey) {
+	public static LoadedTag loadTag(TagKey<?> tagKey) {
 		var tags = new HashSet<TagEntry>();
 		HashSet<Path> tagFiles = getTagFiles(tagKey.registry(), tagKey.id());
 
@@ -74,12 +74,15 @@ public class ClientTagsLoader {
 		}
 
 		HashSet<Identifier> ids = new HashSet<>();
+		HashSet<Identifier> immediateChildIds = new HashSet<>();
+		HashSet<TagKey<?>> immediateChildTags = new HashSet<>();
 
 		for (TagEntry tagEntry : tags) {
 			tagEntry.resolve(new TagEntry.ValueGetter<>() {
 				@Nullable
 				@Override
 				public Identifier direct(Identifier id) {
+					immediateChildIds.add(id);
 					return id;
 				}
 
@@ -87,12 +90,21 @@ public class ClientTagsLoader {
 				@Override
 				public Collection<Identifier> tag(Identifier id) {
 					TagKey<?> tag = TagKey.of(tagKey.registry(), id);
+					immediateChildTags.add(tag);
 					return ClientTags.getOrCreateLocalTag(tag);
 				}
 			}, ids::add);
 		}
 
-		return Collections.unmodifiableSet(ids);
+		return new LoadedTag(Collections.unmodifiableSet(ids), new ChildHolder(Collections.unmodifiableSet(immediateChildTags),
+				Collections.unmodifiableSet(immediateChildIds)));
+	}
+
+	//todo merge these?
+	public record ChildHolder(Set<TagKey<?>> immediateChildTags, Set<Identifier> immediateChildIds) {
+	}
+
+	public record LoadedTag(Set<Identifier> completeIds, ChildHolder childHolder) {
 	}
 
 	/**
