@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.helper;
 
 import static net.minecraft.util.math.MathHelper.approximatelyEquals;
 
-import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 import net.minecraft.client.render.model.BakedQuad;
@@ -81,7 +80,7 @@ public abstract class GeometryHelper {
 	 * Does not validate quad winding order.
 	 * Expects convex quads with all points co-planar.
 	 */
-	public static boolean isQuadParallelToFace(@NotNull Direction face, QuadView quad) {
+	public static boolean isQuadParallelToFace(Direction face, QuadView quad) {
 		int i = face.getAxis().ordinal();
 		final float val = quad.posByIndex(0, i);
 		return approximatelyEquals(val, quad.posByIndex(1, i)) && approximatelyEquals(val, quad.posByIndex(2, i)) && approximatelyEquals(val, quad.posByIndex(3, i));
@@ -94,7 +93,7 @@ public abstract class GeometryHelper {
 	 * <p>Test will be unreliable if not already parallel, use {@link #isQuadParallelToFace(Direction, QuadView)}
 	 * for that purpose. Expects convex quads with all points co-planar.
 	 */
-	public static boolean isParallelQuadOnFace(@NotNull Direction lightFace, QuadView quad) {
+	public static boolean isParallelQuadOnFace(Direction lightFace, QuadView quad) {
 		final float x = quad.posByIndex(0, lightFace.getAxis().ordinal());
 		return lightFace.getDirection() == AxisDirection.POSITIVE ? x >= EPS_MAX : x <= EPS_MIN;
 	}
@@ -107,10 +106,8 @@ public abstract class GeometryHelper {
 	 * quad vertices are coplanar with each other.
 	 *
 	 * <p>Expects convex quads with all points co-planar.
-	 *
-	 * @param lightFace MUST be non-null.
 	 */
-	public static boolean isQuadCubic(@NotNull Direction lightFace, QuadView quad) {
+	public static boolean isQuadCubic(Direction lightFace, QuadView quad) {
 		int a, b;
 
 		switch (lightFace) {
