@@ -65,9 +65,9 @@ public abstract class ColorHelper {
 	}
 
 	/*
-	Renderer color format: ARGB
-	Vanilla color format (little endian): ABGR
-	Vanilla color format (big endian): RGBA
+	Renderer color format: ARGB (0xAARRGGBB)
+	Vanilla color format (little endian): ABGR (0xAABBGGRR)
+	Vanilla color format (big endian): RGBA (0xRRGGBBAA)
 
 	Why does the vanilla color format change based on endianness?
 	See VertexConsumer#quad. Quad data is loaded as integers into

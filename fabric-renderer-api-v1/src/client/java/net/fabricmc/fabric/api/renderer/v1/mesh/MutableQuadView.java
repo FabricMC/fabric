@@ -115,7 +115,7 @@ public interface MutableQuadView extends QuadView {
 	}
 
 	/**
-	 * Set vertex color.
+	 * Set vertex color in ARGB format (0xAARRGGBB).
 	 *
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */

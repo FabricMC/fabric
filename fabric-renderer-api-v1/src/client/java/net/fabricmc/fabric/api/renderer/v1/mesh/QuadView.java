@@ -69,7 +69,7 @@ public interface QuadView {
 	Vector3f copyPos(int vertexIndex, @Nullable Vector3f target);
 
 	/**
-	 * Retrieve vertex color.
+	 * Retrieve vertex color in ARGB format (0xAARRGGBB).
 	 *
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
