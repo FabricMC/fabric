@@ -46,8 +46,7 @@ import net.fabricmc.fabric.impl.tag.client.ClientTagsLoader;
  * even when connected to a vanilla server.
  */
 public final class ClientTags {
-	private static final Map<TagKey<?>, Set<Identifier>> LOCAL_TAG_CACHE = new ConcurrentHashMap<>();
-	private static final Map<TagKey<?>, ClientTagsLoader.ChildHolder> LOCAL_TAG_HIERARCHY = new ConcurrentHashMap<>(); //todo use LoadedTag, merge caches?
+	private static final Map<TagKey<?>, ClientTagsLoader.LoadedTag> LOCAL_TAG_HIERARCHY = new ConcurrentHashMap<>();
 
 	private ClientTags() {
 	}
@@ -59,30 +58,19 @@ public final class ClientTags {
 	 * @return a set of {@code Identifier}s this tag contains
 	 */
 	public static Set<Identifier> getOrCreateLocalTag(TagKey<?> tagKey) {
-		Set<Identifier> ids = LOCAL_TAG_CACHE.get(tagKey);
-
-		if (ids == null) {
-			ClientTagsLoader.LoadedTag loadedTag = ClientTagsLoader.loadTag(tagKey);
-			ids = loadedTag.completeIds();
-			LOCAL_TAG_CACHE.put(tagKey, ids);
-			LOCAL_TAG_HIERARCHY.put(tagKey, loadedTag.childHolder());
-		}
-
-		return ids;
+		return getOrCreatePartiallySyncedTag(tagKey).completeIds();
 	}
 
 	//todo should this be exposed and getOrCreateLocalTag deprecated?
-	private static ClientTagsLoader.ChildHolder getOrCreatePartiallySyncedTag(TagKey<?> tagKey) {
-		ClientTagsLoader.ChildHolder childHolder = LOCAL_TAG_HIERARCHY.get(tagKey);
+	private static ClientTagsLoader.LoadedTag getOrCreatePartiallySyncedTag(TagKey<?> tagKey) {
+		ClientTagsLoader.LoadedTag loadedTag = LOCAL_TAG_HIERARCHY.get(tagKey);
 
-		if (childHolder == null) {
-			ClientTagsLoader.LoadedTag loadedTag = ClientTagsLoader.loadTag(tagKey);
-			childHolder = loadedTag.childHolder();
-			LOCAL_TAG_CACHE.put(tagKey, loadedTag.completeIds());
-			LOCAL_TAG_HIERARCHY.put(tagKey, childHolder);
+		if (loadedTag == null) {
+			loadedTag = ClientTagsLoader.loadTag(tagKey);
+			LOCAL_TAG_HIERARCHY.put(tagKey, loadedTag);
 		}
 
-		return childHolder;
+		return loadedTag;
 	}
 
 	//todo this should probably be the default behavior of *withLocalFallback, with new way to do the old behavior
@@ -100,44 +88,27 @@ public final class ClientTags {
 			}
 		}
 
-		if (registryEntry.getKey().isPresent()) {
-			ClientTagsLoader.ChildHolder wt = getOrCreatePartiallySyncedTag(tagKey);
-			boolean isIn = wt.immediateChildIds().contains(registryEntry.getKey().get().getValue());
-			Iterator<TagKey<?>> it = wt.immediateChildTags().iterator();
-
-			while (!isIn && it.hasNext()) {
-				isIn = isInPartiallySyncedTag((TagKey<T>) it.next(), registryEntry);
-			}
-
-			return isIn;
+		if (registryEntry.getKey().isEmpty()) {
+			// No key?
+			return false;
 		}
 
-		return false;
+		ClientTagsLoader.LoadedTag wt = getOrCreatePartiallySyncedTag(tagKey);
+		boolean isIn = wt.immediateChildIds().contains(registryEntry.getKey().get().getValue());
+		Iterator<TagKey<?>> it = wt.immediateChildTags().iterator();
+
+		while (!isIn && it.hasNext()) {
+			isIn = isInPartiallySyncedTag((TagKey<T>) it.next(), registryEntry);
+		}
+
+		return isIn;
 	}
 
 	public static <T> boolean isInPartiallySyncedTag(TagKey<T> tagKey, T entry) {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(entry);
 
-		Optional<? extends Registry<?>> maybeRegistry = getRegistry(tagKey);
-
-		if (maybeRegistry.isEmpty()) {
-			return false;
-		}
-
-		if (!tagKey.isOf(maybeRegistry.get().getKey())) {
-			return false;
-		}
-
-		Registry<T> registry = (Registry<T>) maybeRegistry.get();
-
-		Optional<RegistryKey<T>> maybeKey = registry.getKey(entry);
-
-		if (maybeKey.isPresent()) {
-			return isInPartiallySyncedTag(tagKey, registry.entryOf(maybeKey.get()));
-		}
-
-		return false;
+		return getRegistryEntry(tagKey, entry).map(re -> isInPartiallySyncedTag(tagKey, re)).orElse(false);
 	}
 
 	/**
@@ -150,34 +121,11 @@ public final class ClientTags {
 	 * @param entry  the entry to check
 	 * @return if the entry is in the given tag
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, T entry) {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(entry);
 
-		Optional<? extends Registry<?>> maybeRegistry = getRegistry(tagKey);
-
-		if (maybeRegistry.isEmpty()) {
-			return false;
-		}
-
-		if (!tagKey.isOf(maybeRegistry.get().getKey())) {
-			return false;
-		}
-
-		Registry<T> registry = (Registry<T>) maybeRegistry.get();
-
-		Optional<RegistryKey<T>> maybeKey = registry.getKey(entry);
-
-		// Check synced tag
-		if (registry.getEntryList(tagKey).isPresent()) {
-			return maybeKey.filter(registryKey -> registry.entryOf(registryKey).isIn(tagKey))
-					.isPresent();
-		}
-
-		// Check local tags
-		Set<Identifier> ids = getOrCreateLocalTag(tagKey);
-		return maybeKey.filter(registryKey -> ids.contains(registryKey.getValue())).isPresent();
+		return getRegistryEntry(tagKey, entry).map(re -> isInWithLocalFallback(tagKey, re)).orElse(false);
 	}
 
 	/**
@@ -247,5 +195,20 @@ public final class ClientTags {
 		}
 
 		return (Optional<? extends Registry<T>>) Registries.REGISTRIES.getOrEmpty(tagKey.registry().getValue());
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T> Optional<RegistryEntry<T>> getRegistryEntry(TagKey<T> tagKey, T entry) {
+		Optional<? extends Registry<?>> maybeRegistry = getRegistry(tagKey);
+
+		if (maybeRegistry.isEmpty() || !tagKey.isOf(maybeRegistry.get().getKey())) {
+			return Optional.empty();
+		}
+
+		Registry<T> registry = (Registry<T>) maybeRegistry.get();
+
+		Optional<RegistryKey<T>> maybeKey = registry.getKey(entry);
+
+		return maybeKey.map(registry::entryOf);
 	}
 }

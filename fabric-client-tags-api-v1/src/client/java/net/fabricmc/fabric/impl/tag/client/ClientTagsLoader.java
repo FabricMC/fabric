@@ -96,15 +96,11 @@ public class ClientTagsLoader {
 			}, ids::add);
 		}
 
-		return new LoadedTag(Collections.unmodifiableSet(ids), new ChildHolder(Collections.unmodifiableSet(immediateChildTags),
-				Collections.unmodifiableSet(immediateChildIds)));
+		return new LoadedTag(Collections.unmodifiableSet(ids), Collections.unmodifiableSet(immediateChildTags),
+				Collections.unmodifiableSet(immediateChildIds));
 	}
 
-	//todo merge these?
-	public record ChildHolder(Set<TagKey<?>> immediateChildTags, Set<Identifier> immediateChildIds) {
-	}
-
-	public record LoadedTag(Set<Identifier> completeIds, ChildHolder childHolder) {
+	public record LoadedTag(Set<Identifier> completeIds, Set<TagKey<?>> immediateChildTags, Set<Identifier> immediateChildIds) {
 	}
 
 	/**
