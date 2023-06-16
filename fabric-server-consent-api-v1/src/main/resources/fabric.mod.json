@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-server-consent-api-v1",
+  "name": "Fabric Server Consent API (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-server-consent-api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "description": "Consent API for servers.",
+  "depends": {
+    "fabricloader": ">=0.14.21",
+    "minecraft": ">=1.20.1",
+    "fabric-networking-api-v1": "*"
+  },
+  "entrypoints": {
+    "server": [
+      "net.fabricmc.fabric.impl.server.consent.FabricServerConsentImpl"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.server.consent.client.ClientFabricServerConsentImpl"
+    ]
+  }
+}
