@@ -28,5 +28,8 @@
     "client": [
       "net.fabricmc.fabric.impl.server.consent.client.ClientFabricServerConsentImpl"
     ]
+  },
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
   }
 }
