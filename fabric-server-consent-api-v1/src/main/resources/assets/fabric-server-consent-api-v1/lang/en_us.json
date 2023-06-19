@@ -1,4 +1,0 @@
-{
-  "fabric-server-consent-api-v1.illegalModsWarning.single": "The mod '%s' is not allowed on this server!",
-  "fabric-server-consent-api-v1.illegalModsWarning.many": "The mods '%s' and more are not allowed on this server!"
-}

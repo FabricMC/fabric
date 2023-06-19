@@ -16,29 +16,34 @@
 
 package net.fabricmc.fabric.impl.server.consent.client;
 
-import static net.fabricmc.fabric.impl.server.consent.FabricServerConsentImpl.CONSENTS_CHANNEL;
+import static net.fabricmc.fabric.impl.server.consent.FabricServerConsentImpl.FEATURES_CHANNEL;
+import static net.fabricmc.fabric.impl.server.consent.FabricServerConsentImpl.MODS_CHANNEL;
 
-import java.util.Collection;
-
-import net.minecraft.network.PacketByteBuf;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.fabric.api.server.consent.v1.client.ClientFabricServerConsentEvents;
+import net.fabricmc.fabric.impl.server.consent.FabricServerConsentImpl;
 
 public final class ClientFabricServerConsentImpl implements ClientModInitializer {
+	public static final Logger LOGGER = LoggerFactory.getLogger(FabricServerConsentImpl.class);
 	@Override
 	public void onInitializeClient() {
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-			Collection<ModContainer> mods = FabricLoader.getInstance().getAllMods();
-			PacketByteBuf buf = PacketByteBufs.create();
-			buf.writeCollection(mods, (buff, container) -> buff.writeString(container.getMetadata().getId()));
-			sender.sendPacket(CONSENTS_CHANNEL, buf);
+		ClientPlayNetworking.registerGlobalReceiver(MODS_CHANNEL, (client, handler, buf, responseSender) -> {
+			try {
+				ClientFabricServerConsentEvents.MODS_SENT.invoker().onModsSent(client, handler, buf, responseSender);
+			} catch (RuntimeException e) {
+				LOGGER.error("Exception thrown while invoking ClientFabricServerConsent.MODS_SENT", e);
+			}
 		});
-
-		ClientPlayNetworking.registerGlobalReceiver(CONSENTS_CHANNEL, new ClientModListHandler());
+		ClientPlayNetworking.registerGlobalReceiver(FEATURES_CHANNEL, (client, handler, buf, responseSender) -> {
+			try {
+				ClientFabricServerConsentEvents.FEATURES_SENT.invoker().onFeaturesSent(client, handler, buf, responseSender);
+			} catch (RuntimeException e) {
+				LOGGER.error("Exception thrown while invoking ClientFabricServerConsent.FEATURES_SENT", e);
+			}
+		});
 	}
 }

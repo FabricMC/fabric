@@ -32,11 +32,14 @@ import com.google.gson.reflect.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.s2c.play.BundleS2CPacket;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.DedicatedServerModInitializer;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.server.consent.v1.IllegalModResponsePolicy;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class FabricServerConsentImpl implements DedicatedServerModInitializer {
@@ -46,10 +49,10 @@ public final class FabricServerConsentImpl implements DedicatedServerModInitiali
 
 	public static final String MOD_ID = "fabric-server-consent-api-v1";
 
-	public static final Identifier CONSENTS_CHANNEL = new Identifier(MOD_ID, "consents");
+	public static final Identifier MODS_CHANNEL = new Identifier(MOD_ID, "mods");
+	public static final Identifier FEATURES_CHANNEL = new Identifier(MOD_ID, "features");
 
 	public static boolean enabled;
-	public static IllegalModResponsePolicy illegalModResponsePolicy;
 	public static List<String> illegalMods;
 	public static List<String> illegalFeatures;
 
@@ -78,10 +81,6 @@ public final class FabricServerConsentImpl implements DedicatedServerModInitiali
 			rootObject.addProperty("enabled", false);
 		}
 
-		if (!rootObject.has("illegalModResponsePolicy")) {
-			rootObject.addProperty("illegalModResponsePolicy", "warn");
-		}
-
 		if (!rootObject.has("illegalMods")) {
 			rootObject.add("illegalMods", new JsonArray());
 		}
@@ -91,7 +90,6 @@ public final class FabricServerConsentImpl implements DedicatedServerModInitiali
 		}
 
 		enabled = rootObject.get("enabled").getAsBoolean();
-		illegalModResponsePolicy = GSON.fromJson(rootObject.get("illegalModResponsePolicy"), new TypeToken<IllegalModResponsePolicy>() { }.getType());
 		illegalMods = GSON.fromJson(rootObject.getAsJsonArray("illegalMods"), new TypeToken<List<String>>() { }.getType());
 		illegalFeatures = GSON.fromJson(rootObject.getAsJsonArray("illegalFeatures"), new TypeToken<List<String>>() { }.getType());
 
@@ -104,6 +102,18 @@ public final class FabricServerConsentImpl implements DedicatedServerModInitiali
 
 	@Override
 	public void onInitializeServer() {
-		ServerPlayNetworking.registerGlobalReceiver(CONSENTS_CHANNEL, new ModListHandler());
+		ServerPlayConnectionEvents.JOIN.register(((handler, sender, server) -> {
+			PacketByteBuf modsBuf = PacketByteBufs.create();
+			modsBuf.writeCollection(illegalMods, PacketByteBuf::writeString);
+			PacketByteBuf featuresBuf = PacketByteBufs.create();
+			featuresBuf.writeCollection(illegalFeatures, PacketByteBuf::writeString);
+
+			BundleS2CPacket packet = new BundleS2CPacket(List.of(
+					ServerPlayNetworking.createS2CPacket(MODS_CHANNEL, modsBuf),
+					ServerPlayNetworking.createS2CPacket(FEATURES_CHANNEL, featuresBuf)
+			));
+
+			sender.sendPacket(packet);
+		}));
 	}
 }

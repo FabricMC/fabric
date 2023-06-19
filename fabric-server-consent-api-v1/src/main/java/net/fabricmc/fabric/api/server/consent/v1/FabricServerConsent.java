@@ -18,10 +18,8 @@ package net.fabricmc.fabric.api.server.consent.v1;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import net.fabricmc.fabric.impl.server.consent.FabricServerConsentImpl;
-import net.fabricmc.fabric.impl.server.consent.ModListHandler;
 
 public final class FabricServerConsent {
 	/**
@@ -31,15 +29,6 @@ public final class FabricServerConsent {
 	 */
 	public static boolean isEnabled() {
 		return FabricServerConsentImpl.enabled;
-	}
-
-	/**
-	 * The current response policy to illegal mods.
-	 *
-	 * @return the current response policy
-	 */
-	public static IllegalModResponsePolicy getResponsePolicy() {
-		return FabricServerConsentImpl.illegalModResponsePolicy;
 	}
 
 	/**
@@ -58,21 +47,5 @@ public final class FabricServerConsent {
 	 */
 	public static List<String> getIllegalFeatures() {
 		return Collections.unmodifiableList(FabricServerConsentImpl.illegalFeatures);
-	}
-
-	/**
-	 * A list of mods the specified player is currently using.
-	 *
-	 * @param player the player
-	 * @return a list of mods or an empty list
-	 */
-	public static List<String> getModsForPlayer(UUID player) {
-		List<String> modIds = ModListHandler.modsForPlayer.get(player);
-
-		if (modIds == null) {
-			return Collections.emptyList();
-		}
-
-		return Collections.unmodifiableList(modIds);
 	}
 }
