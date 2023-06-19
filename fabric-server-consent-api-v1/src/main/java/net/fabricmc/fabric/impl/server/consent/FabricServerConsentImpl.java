@@ -102,7 +102,7 @@ public final class FabricServerConsentImpl implements DedicatedServerModInitiali
 
 	@Override
 	public void onInitializeServer() {
-		ServerPlayConnectionEvents.JOIN.register(((handler, sender, server) -> {
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			PacketByteBuf modsBuf = PacketByteBufs.create();
 			modsBuf.writeCollection(illegalMods, PacketByteBuf::writeString);
 			PacketByteBuf featuresBuf = PacketByteBufs.create();
@@ -114,6 +114,6 @@ public final class FabricServerConsentImpl implements DedicatedServerModInitiali
 			));
 
 			sender.sendPacket(packet);
-		}));
+		});
 	}
 }

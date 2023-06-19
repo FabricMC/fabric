@@ -29,6 +29,7 @@ import net.fabricmc.fabric.impl.server.consent.FabricServerConsentImpl;
 
 public final class ClientFabricServerConsentImpl implements ClientModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(FabricServerConsentImpl.class);
+
 	@Override
 	public void onInitializeClient() {
 		ClientPlayNetworking.registerGlobalReceiver(MODS_CHANNEL, (client, handler, buf, responseSender) -> {
