@@ -47,10 +47,10 @@ public final class FabricServerConsentImpl implements DedicatedServerModInitiali
 
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-	public static final String MOD_ID = "fabric-server-consent-api-v1";
+	public static final String SOME_UNIVERSAL_NAMESPACE = "noconsent";
 
-	public static final Identifier MODS_CHANNEL = new Identifier(MOD_ID, "mods");
-	public static final Identifier FEATURES_CHANNEL = new Identifier(MOD_ID, "features");
+	public static final Identifier MODS_CHANNEL = new Identifier(SOME_UNIVERSAL_NAMESPACE, "mods");
+	public static final Identifier FEATURES_CHANNEL = new Identifier(SOME_UNIVERSAL_NAMESPACE, "features");
 
 	public static boolean enabled;
 	public static List<String> illegalMods;
@@ -102,18 +102,20 @@ public final class FabricServerConsentImpl implements DedicatedServerModInitiali
 
 	@Override
 	public void onInitializeServer() {
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			PacketByteBuf modsBuf = PacketByteBufs.create();
-			modsBuf.writeCollection(illegalMods, PacketByteBuf::writeString);
-			PacketByteBuf featuresBuf = PacketByteBufs.create();
-			featuresBuf.writeCollection(illegalFeatures, PacketByteBuf::writeString);
+		if (enabled) {
+			ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+				PacketByteBuf modsBuf = PacketByteBufs.create();
+				modsBuf.writeCollection(illegalMods, PacketByteBuf::writeString);
+				PacketByteBuf featuresBuf = PacketByteBufs.create();
+				featuresBuf.writeCollection(illegalFeatures, PacketByteBuf::writeString);
 
-			BundleS2CPacket packet = new BundleS2CPacket(List.of(
-					ServerPlayNetworking.createS2CPacket(MODS_CHANNEL, modsBuf),
-					ServerPlayNetworking.createS2CPacket(FEATURES_CHANNEL, featuresBuf)
-			));
+				BundleS2CPacket packet = new BundleS2CPacket(List.of(
+						ServerPlayNetworking.createS2CPacket(MODS_CHANNEL, modsBuf),
+						ServerPlayNetworking.createS2CPacket(FEATURES_CHANNEL, featuresBuf)
+				));
 
-			sender.sendPacket(packet);
-		});
+				sender.sendPacket(packet);
+			});
+		}
 	}
 }
