@@ -61,20 +61,18 @@ public final class ClientTags {
 		return getOrCreatePartiallySyncedTag(tagKey).completeIds();
 	}
 
-	//todo should this be exposed and getOrCreateLocalTag deprecated?
-	private static ClientTagsLoader.LoadedTag getOrCreatePartiallySyncedTag(TagKey<?> tagKey) {
-		ClientTagsLoader.LoadedTag loadedTag = LOCAL_TAG_HIERARCHY.get(tagKey);
-
-		if (loadedTag == null) {
-			loadedTag = ClientTagsLoader.loadTag(tagKey);
-			LOCAL_TAG_HIERARCHY.put(tagKey, loadedTag);
-		}
-
-		return loadedTag;
-	}
-
-	//todo this should probably be the default behavior of *withLocalFallback, with new way to do the old behavior
-	// then again, arguably the javadoc describes the old behavior
+	/**
+	 * Checks if an entry is in a tag, for use with entries from a dynamic registry,
+	 * such as {@link net.minecraft.world.biome.Biome}s.
+	 *
+	 * <p>If the synced tag does exist, it is queried. If it does not exist,
+	 * the tag populated from the available mods is checked, recursively checking the
+	 * synced tags and entries contained within.
+	 *
+	 * @param tagKey        the {@code TagKey} to be checked
+	 * @param registryEntry the entry to check
+	 * @return if the entry is in the given tag
+	 */
 	public static <T> boolean isInPartiallySyncedTag(TagKey<T> tagKey, RegistryEntry<T> registryEntry) {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(registryEntry);
@@ -83,6 +81,7 @@ public final class ClientTags {
 		Optional<? extends Registry<T>> maybeRegistry = getRegistry(tagKey);
 
 		if (maybeRegistry.isPresent()) {
+			// Check the synced tag exists and use that
 			if (maybeRegistry.get().getEntryList(tagKey).isPresent()) {
 				return registryEntry.isIn(tagKey);
 			}
@@ -93,6 +92,7 @@ public final class ClientTags {
 			return false;
 		}
 
+		// Recursively search the entries contained with the tag
 		ClientTagsLoader.LoadedTag wt = getOrCreatePartiallySyncedTag(tagKey);
 		boolean isIn = wt.immediateChildIds().contains(registryEntry.getKey().get().getValue());
 		Iterator<TagKey<?>> it = wt.immediateChildTags().iterator();
@@ -104,6 +104,17 @@ public final class ClientTags {
 		return isIn;
 	}
 
+	/**
+	 * Checks if an entry is in a tag.
+	 *
+	 * <p>If the synced tag does exist, it is queried. If it does not exist,
+	 * the tag populated from the available mods is checked, recursively checking the
+	 * synced tags and entries contained within.
+	 *
+	 * @param tagKey the {@code TagKey} to being checked
+	 * @param entry  the entry to check
+	 * @return if the entry is in the given tag
+	 */
 	public static <T> boolean isInPartiallySyncedTag(TagKey<T> tagKey, T entry) {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(entry);
@@ -210,5 +221,16 @@ public final class ClientTags {
 		Optional<RegistryKey<T>> maybeKey = registry.getKey(entry);
 
 		return maybeKey.map(registry::entryOf);
+	}
+
+	private static ClientTagsLoader.LoadedTag getOrCreatePartiallySyncedTag(TagKey<?> tagKey) {
+		ClientTagsLoader.LoadedTag loadedTag = LOCAL_TAG_HIERARCHY.get(tagKey);
+
+		if (loadedTag == null) {
+			loadedTag = ClientTagsLoader.loadTag(tagKey);
+			LOCAL_TAG_HIERARCHY.put(tagKey, loadedTag);
+		}
+
+		return loadedTag;
 	}
 }
