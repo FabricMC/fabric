@@ -73,7 +73,7 @@ public final class ClientTags {
 	 * @param registryEntry the entry to check
 	 * @return if the entry is in the given tag
 	 */
-	public static <T> boolean isInPartiallySyncedTag(TagKey<T> tagKey, RegistryEntry<T> registryEntry) {
+	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, RegistryEntry<T> registryEntry) {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(registryEntry);
 
@@ -98,7 +98,7 @@ public final class ClientTags {
 		Iterator<TagKey<?>> it = wt.immediateChildTags().iterator();
 
 		while (!isIn && it.hasNext()) {
-			isIn = isInPartiallySyncedTag((TagKey<T>) it.next(), registryEntry);
+			isIn = isInWithLocalFallback((TagKey<T>) it.next(), registryEntry);
 		}
 
 		return isIn;
@@ -115,59 +115,11 @@ public final class ClientTags {
 	 * @param entry  the entry to check
 	 * @return if the entry is in the given tag
 	 */
-	public static <T> boolean isInPartiallySyncedTag(TagKey<T> tagKey, T entry) {
-		Objects.requireNonNull(tagKey);
-		Objects.requireNonNull(entry);
-
-		return getRegistryEntry(tagKey, entry).map(re -> isInPartiallySyncedTag(tagKey, re)).orElse(false);
-	}
-
-	/**
-	 * Checks if an entry is in a tag.
-	 *
-	 * <p>If the synced tag does exist, it is queried. If it does not exist,
-	 * the tag populated from the available mods is checked.
-	 *
-	 * @param tagKey the {@code TagKey} to being checked
-	 * @param entry  the entry to check
-	 * @return if the entry is in the given tag
-	 */
 	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, T entry) {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(entry);
 
 		return getRegistryEntry(tagKey, entry).map(re -> isInWithLocalFallback(tagKey, re)).orElse(false);
-	}
-
-	/**
-	 * Checks if an entry is in a tag, for use with entries from a dynamic registry,
-	 * such as {@link net.minecraft.world.biome.Biome}s.
-	 *
-	 * <p>If the synced tag does exist, it is queried. If it does not exist,
-	 * the tag populated from the available mods is checked.
-	 *
-	 * @param tagKey        the {@code TagKey} to be checked
-	 * @param registryEntry the entry to check
-	 * @return if the entry is in the given tag
-	 */
-	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, RegistryEntry<T> registryEntry) {
-		Objects.requireNonNull(tagKey);
-		Objects.requireNonNull(registryEntry);
-
-		// Check if the tag exists in the dynamic registry first
-		Optional<? extends Registry<T>> maybeRegistry = getRegistry(tagKey);
-
-		if (maybeRegistry.isPresent()) {
-			if (maybeRegistry.get().getEntryList(tagKey).isPresent()) {
-				return registryEntry.isIn(tagKey);
-			}
-		}
-
-		if (registryEntry.getKey().isPresent()) {
-			return isInLocal(tagKey, registryEntry.getKey().get());
-		}
-
-		return false;
 	}
 
 	/**
