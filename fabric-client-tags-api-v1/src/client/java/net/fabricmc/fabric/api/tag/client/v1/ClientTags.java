@@ -62,6 +62,24 @@ public final class ClientTags {
 	}
 
 	/**
+	 * Checks if an entry is in a tag.
+	 *
+	 * <p>If the synced tag does exist, it is queried. If it does not exist,
+	 * the tag populated from the available mods is checked, recursively checking the
+	 * synced tags and entries contained within.
+	 *
+	 * @param tagKey the {@code TagKey} to being checked
+	 * @param entry  the entry to check
+	 * @return if the entry is in the given tag
+	 */
+	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, T entry) {
+		Objects.requireNonNull(tagKey);
+		Objects.requireNonNull(entry);
+
+		return getRegistryEntry(tagKey, entry).map(re -> isInWithLocalFallback(tagKey, re)).orElse(false);
+	}
+
+	/**
 	 * Checks if an entry is in a tag, for use with entries from a dynamic registry,
 	 * such as {@link net.minecraft.world.biome.Biome}s.
 	 *
@@ -73,6 +91,7 @@ public final class ClientTags {
 	 * @param registryEntry the entry to check
 	 * @return if the entry is in the given tag
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, RegistryEntry<T> registryEntry) {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(registryEntry);
@@ -102,24 +121,6 @@ public final class ClientTags {
 		}
 
 		return isIn;
-	}
-
-	/**
-	 * Checks if an entry is in a tag.
-	 *
-	 * <p>If the synced tag does exist, it is queried. If it does not exist,
-	 * the tag populated from the available mods is checked, recursively checking the
-	 * synced tags and entries contained within.
-	 *
-	 * @param tagKey the {@code TagKey} to being checked
-	 * @param entry  the entry to check
-	 * @return if the entry is in the given tag
-	 */
-	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, T entry) {
-		Objects.requireNonNull(tagKey);
-		Objects.requireNonNull(entry);
-
-		return getRegistryEntry(tagKey, entry).map(re -> isInWithLocalFallback(tagKey, re)).orElse(false);
 	}
 
 	/**
