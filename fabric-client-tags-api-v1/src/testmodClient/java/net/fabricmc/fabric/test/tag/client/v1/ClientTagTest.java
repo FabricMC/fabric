@@ -20,20 +20,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.BiomeKeys;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalEnchantmentTags;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class ClientTagTest implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientTagTest.class);
+	private static final String MODID = "fabric-clients-tags-api-v1-testmod";
 
 	@Override
 	public void onInitializeClient() {
+		FabricLoader.getInstance().getModContainer(MODID)
+				.map(container -> ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "test2"),
+						container, ResourcePackActivationType.ALWAYS_ENABLED))
+				.filter(success -> !success).ifPresent(success -> LOGGER.warn("Could not register built-in resource pack."));
+
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
 			if (ClientTags.getOrCreateLocalTag(ConventionalEnchantmentTags.INCREASES_BLOCK_DROPS) == null) {
 				throw new AssertionError("Expected to load c:fortune, but it was not found!");
@@ -51,8 +64,20 @@ public class ClientTagTest implements ClientModInitializer {
 				throw new AssertionError("Expected to find forest in c:forest, but it was not found!");
 			}
 
+			if (ClientTags.isInWithLocalFallback(TagKey.of(Registries.BLOCK.getKey(),
+					new Identifier("fabric", "sword_efficient")), Blocks.DIRT)) {
+				throw new AssertionError("Expected not to find dirt in fabric:sword_efficient, but it was found!");
+			}
+
 			// Success!
 			LOGGER.info("The tests for client tags passed!");
+		});
+
+		ClientTickEvents.END_WORLD_TICK.register(client -> {
+			if (!ClientTags.isInWithLocalFallback(TagKey.of(Registries.BLOCK.getKey(),
+					new Identifier("fabric", "sword_efficient")), Blocks.DIRT)) {
+				throw new AssertionError("Expected to find dirt in fabric:sword_efficient, but it was not found!");
+			}
 		});
 	}
 }
