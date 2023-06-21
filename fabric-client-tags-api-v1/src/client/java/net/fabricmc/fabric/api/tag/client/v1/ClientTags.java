@@ -113,14 +113,18 @@ public final class ClientTags {
 
 		// Recursively search the entries contained with the tag
 		ClientTagsLoader.LoadedTag wt = getOrCreatePartiallySyncedTag(tagKey);
-		boolean isIn = wt.immediateChildIds().contains(registryEntry.getKey().get().getValue());
-		Iterator<TagKey<?>> it = wt.immediateChildTags().iterator();
 
-		while (!isIn && it.hasNext()) {
-			isIn = isInWithLocalFallback((TagKey<T>) it.next(), registryEntry);
+		if (wt.immediateChildIds().contains(registryEntry.getKey().get().getValue())) {
+			return true;
 		}
 
-		return isIn;
+		for (TagKey<?> key : wt.immediateChildTags()) {
+			if (isInWithLocalFallback((TagKey<T>) key, registryEntry)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
