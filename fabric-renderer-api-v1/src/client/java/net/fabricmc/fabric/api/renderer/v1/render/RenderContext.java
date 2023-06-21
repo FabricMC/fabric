@@ -17,14 +17,17 @@
 package net.fabricmc.fabric.api.renderer.v1.render;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
@@ -36,47 +39,18 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
  */
 public interface RenderContext {
 	/**
-	 * Used by models to send vertex data previously baked via {@link MeshBuilder}.
-	 * The fastest option and preferred whenever feasible.
-	 */
-	Consumer<Mesh> meshConsumer();
-
-	/**
-	 * Fallback consumer that can process a vanilla {@link BakedModel}.
-	 * Fabric causes vanilla baked models to send themselves
-	 * via this interface. Can also be used by compound models that contain a mix
-	 * of vanilla baked models, packaged quads and/or dynamic elements.
+	 * Returns a {@link QuadEmitter} instance that is used to output quads.
+	 * It is necessary to call {@link QuadEmitter#emit()} to output a quad.
 	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
-	 */
-	default BakedModelConsumer bakedModelConsumer() {
-		// Default implementation is provided for compat with older renderer implementations,
-		// but they should always override this function.
-		Consumer<BakedModel> fallback = fallbackConsumer();
-		return new BakedModelConsumer() {
-			@Override
-			public void accept(BakedModel model) {
-				fallback.accept(model);
-			}
-
-			@Override
-			public void accept(BakedModel model, @Nullable BlockState state) {
-				fallback.accept(model);
-			}
-		};
-	}
-
-	/**
-	 * Returns a {@link QuadEmitter} instance that emits directly to the render buffer.
-	 * It remains necessary to call {@link QuadEmitter#emit()} to output the quad.
-	 *
-	 * <p>This method will always be less performant than passing pre-baked meshes
-	 * via {@link #meshConsumer()}. It should be used sparingly for model components that
-	 * demand it - text, icons, dynamic indicators, or other elements that vary too
-	 * much for static baking to be feasible.
+	 * <p>The renderer may optimize certain operations such as
+	 * {@link Mesh#outputTo(QuadEmitter)} when used with this emitter. Thus, using
+	 * those operations is preferred to using the emitter directly. It should be
+	 * used sparingly for model components that demand it - text, icons, dynamic
+	 * indicators, or other elements that vary too much for static baking to be
+	 * feasible.
 	 *
 	 * <p>Calling this method invalidates any {@link QuadEmitter} returned earlier.
-	 * Will be threadlocal/re-used - do not retain references.
+	 * Will be thread-local/re-used - do not retain references.
 	 */
 	QuadEmitter getEmitter();
 
@@ -102,12 +76,51 @@ public interface RenderContext {
 	 */
 	void popTransform();
 
+	@FunctionalInterface
+	interface QuadTransform {
+		/**
+		 * Return false to filter out quads from rendering. When more than one transform
+		 * is in effect, returning false means unapplied transforms will not receive the quad.
+		 */
+		boolean transform(MutableQuadView quad);
+	}
+
 	/**
-	 * Fabric causes vanilla baked models to send themselves
-	 * via this interface. Can also be used by compound models that contain a mix
-	 * of vanilla baked models, packaged quads and/or dynamic elements.
-	 *
-	 * @deprecated Prefer using the more flexible {@link #bakedModelConsumer}.
+	 * @deprecated Use {@link Mesh#outputTo(QuadEmitter)} instead.
+	 */
+	@Deprecated
+	default Consumer<Mesh> meshConsumer() {
+		QuadEmitter emitter = getEmitter();
+		return mesh -> mesh.outputTo(emitter);
+	}
+
+	/**
+	 * @deprecated Use {@link FabricBakedModel#emitBlockQuads(BlockRenderView, BlockState, BlockPos, Supplier, RenderContext) emitBlockQuads}
+	 * or {@link FabricBakedModel#emitItemQuads(ItemStack, Supplier, RenderContext) emitItemQuads} on the baked model
+	 * that you want to consume instead.
+	 */
+	@Deprecated
+	default BakedModelConsumer bakedModelConsumer() {
+		// Default implementation is provided for compat with older renderer implementations,
+		// but they should always override this function.
+		Consumer<BakedModel> fallback = fallbackConsumer();
+		return new BakedModelConsumer() {
+			@Override
+			public void accept(BakedModel model) {
+				fallback.accept(model);
+			}
+
+			@Override
+			public void accept(BakedModel model, @Nullable BlockState state) {
+				fallback.accept(model);
+			}
+		};
+	}
+
+	/**
+	 * @deprecated Use {@link FabricBakedModel#emitBlockQuads(BlockRenderView, BlockState, BlockPos, Supplier, RenderContext) emitBlockQuads}
+	 * or {@link FabricBakedModel#emitItemQuads(ItemStack, Supplier, RenderContext) emitItemQuads} on the baked model
+	 * that you want to consume instead.
 	 */
 	@Deprecated
 	default Consumer<BakedModel> fallbackConsumer() {
@@ -115,6 +128,7 @@ public interface RenderContext {
 		return bakedModelConsumer();
 	}
 
+	@Deprecated
 	interface BakedModelConsumer extends Consumer<BakedModel> {
 		/**
 		 * Render a baked model by processing its {@linkplain BakedModel#getQuads} using the rendered block state.
@@ -137,14 +151,5 @@ public interface RenderContext {
 		 * Otherwise, use {@linkplain #accept(BakedModel)} the other overload} to render the usual item quads.
 		 */
 		void accept(BakedModel model, @Nullable BlockState state);
-	}
-
-	@FunctionalInterface
-	interface QuadTransform {
-		/**
-		 * Return false to filter out quads from rendering. When more than one transform
-		 * is in effect, returning false means unapplied transforms will not receive the quad.
-		 */
-		boolean transform(MutableQuadView quad);
 	}
 }

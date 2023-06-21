@@ -39,7 +39,6 @@ import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.util.TriState;
@@ -48,7 +47,7 @@ import net.fabricmc.fabric.test.renderer.simple.RendererTest;
 /**
  * Very crude implementation of a pillar block model that connects with pillars above and below.
  */
-public class PillarBakedModel implements BakedModel, FabricBakedModel {
+public class PillarBakedModel implements BakedModel {
 	private enum ConnectedTexture {
 		ALONE, BOTTOM, MIDDLE, TOP
 	}

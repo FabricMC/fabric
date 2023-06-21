@@ -36,8 +36,8 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.MultipartBakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -63,7 +63,7 @@ public class MultipartBakedModelMixin implements FabricBakedModel {
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void onInit(List<Pair<Predicate<BlockState>, BakedModel>> components, CallbackInfo cb) {
 		for (Pair<Predicate<BlockState>, BakedModel> component : components) {
-			if (!((FabricBakedModel) component.getRight()).isVanillaAdapter()) {
+			if (!component.getRight().isVanillaAdapter()) {
 				isVanilla = false;
 				break;
 			}
@@ -81,7 +81,7 @@ public class MultipartBakedModelMixin implements FabricBakedModel {
 				Pair<Predicate<BlockState>, BakedModel> pair = components.get(i);
 
 				if (pair.getLeft().test(state)) {
-					((FabricBakedModel) pair.getRight()).emitBlockQuads(blockView, state, pos, randomSupplier, context);
+					pair.getRight().emitBlockQuads(blockView, state, pos, randomSupplier, context);
 					bitSet.set(i);
 				}
 			}
@@ -89,7 +89,7 @@ public class MultipartBakedModelMixin implements FabricBakedModel {
 			stateCache.put(state, bitSet);
 		} else {
 			for (int i = 0; i < this.components.size(); i++) {
-				if (bitSet.get(i)) ((FabricBakedModel) components.get(i).getRight()).emitBlockQuads(blockView, state, pos, randomSupplier, context);
+				if (bitSet.get(i)) components.get(i).getRight().emitBlockQuads(blockView, state, pos, randomSupplier, context);
 			}
 		}
 	}

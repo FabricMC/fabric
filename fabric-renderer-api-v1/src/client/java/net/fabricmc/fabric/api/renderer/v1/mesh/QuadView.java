@@ -69,7 +69,7 @@ public interface QuadView {
 	Vector3f copyPos(int vertexIndex, @Nullable Vector3f target);
 
 	/**
-	 * Retrieve vertex color.
+	 * Retrieve vertex color in ARGB format (0xAARRGGBB).
 	 *
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
@@ -169,7 +169,7 @@ public interface QuadView {
 	/**
 	 * Normal of the quad as implied by geometry. Will be invalid
 	 * if quad vertices are not co-planar. Typically computed lazily
-	 * on demand and not encoded.
+	 * on demand.
 	 *
 	 * <p>Not typically needed by models. Exposed to enable standard lighting
 	 * utility functions for use by renderers.
@@ -201,7 +201,7 @@ public interface QuadView {
 	 * @param target Target array for the baked quad data.
 	 *
 	 * @param targetIndex Starting position in target array - array must have
-	 * at least 28 elements available at this index.
+	 * at least {@link #VANILLA_QUAD_STRIDE} elements available at this index.
 	 */
 	default void toVanilla(int[] target, int targetIndex) {
 		toVanilla(0, target, targetIndex, false);

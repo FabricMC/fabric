@@ -26,6 +26,9 @@
     "fabric-renderer-api-v1.debughud.mixins.json"
   ],
   "custom": {
-    "fabric-api:module-lifecycle": "stable"
+    "fabric-api:module-lifecycle": "stable",
+    "loom:injected_interfaces": {
+      "net/minecraft/class_1087": ["net/fabricmc/fabric/api/renderer/v1/model/FabricBakedModel"]
+    }
   }
 }
