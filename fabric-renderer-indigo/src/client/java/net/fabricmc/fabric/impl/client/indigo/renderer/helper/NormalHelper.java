@@ -33,9 +33,12 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 public abstract class NormalHelper {
 	private NormalHelper() { }
 
+	private static final float PACK = 127.0f;
+	private static final float UNPACK = 1.0f / PACK;
+
 	/**
 	 * Stores a normal plus an extra value as a quartet of signed bytes.
-	 * This is the same normal format that vanilla item rendering expects.
+	 * This is the same normal format that vanilla rendering expects.
 	 * The extra value is for use by shaders.
 	 */
 	public static int packNormal(float x, float y, float z, float w) {
@@ -44,7 +47,7 @@ public abstract class NormalHelper {
 		z = MathHelper.clamp(z, -1, 1);
 		w = MathHelper.clamp(w, -1, 1);
 
-		return ((int) (x * 127) & 255) | (((int) (y * 127) & 255) << 8) | (((int) (z * 127) & 255) << 16) | (((int) (w * 127) & 255) << 24);
+		return ((int) (x * PACK) & 0xFF) | (((int) (y * PACK) & 0xFF) << 8) | (((int) (z * PACK) & 0xFF) << 16) | (((int) (w * PACK) & 0xFF) << 24);
 	}
 
 	/**
@@ -55,12 +58,41 @@ public abstract class NormalHelper {
 	}
 
 	/**
-	 * Retrieves values packed by {@link #packNormal(float, float, float, float)}.
-	 *
-	 * <p>Components are x, y, z, w - zero based.
+	 * Like {@link #packNormal(float, float, float, float)}, but without a {@code w} value.
 	 */
-	public static float getPackedNormalComponent(int packedNormal, int component) {
-		return ((byte) (packedNormal >> (8 * component))) / 127f;
+	public static int packNormal(float x, float y, float z) {
+		x = MathHelper.clamp(x, -1, 1);
+		y = MathHelper.clamp(y, -1, 1);
+		z = MathHelper.clamp(z, -1, 1);
+
+		return ((int) (x * PACK) & 0xFF) | (((int) (y * PACK) & 0xFF) << 8) | (((int) (z * PACK) & 0xFF) << 16);
+	}
+
+	/**
+	 * Like {@link #packNormal(Vector3f, float)}, but without a {@code w} value.
+	 */
+	public static int packNormal(Vector3f normal) {
+		return packNormal(normal.x(), normal.y(), normal.z());
+	}
+
+	public static float unpackNormalX(int packedNormal) {
+		return ((byte) (packedNormal & 0xFF)) * UNPACK;
+	}
+
+	public static float unpackNormalY(int packedNormal) {
+		return ((byte) ((packedNormal >>> 8) & 0xFF)) * UNPACK;
+	}
+
+	public static float unpackNormalZ(int packedNormal) {
+		return ((byte) ((packedNormal >>> 16) & 0xFF)) * UNPACK;
+	}
+
+	public static float unpackNormalW(int packedNormal) {
+		return ((byte) ((packedNormal >>> 24) & 0xFF)) * UNPACK;
+	}
+
+	public static void unpackNormal(int packedNormal, Vector3f target) {
+		target.set(unpackNormalX(packedNormal), unpackNormalY(packedNormal), unpackNormalZ(packedNormal));
 	}
 
 	/**
@@ -74,7 +106,7 @@ public abstract class NormalHelper {
 	public static void computeFaceNormal(@NotNull Vector3f saveTo, QuadView q) {
 		final Direction nominalFace = q.nominalFace();
 
-		if (GeometryHelper.isQuadParallelToFace(nominalFace, q)) {
+		if (nominalFace != null && GeometryHelper.isQuadParallelToFace(nominalFace, q)) {
 			Vec3i vec = nominalFace.getVector();
 			saveTo.set(vec.getX(), vec.getY(), vec.getZ());
 			return;

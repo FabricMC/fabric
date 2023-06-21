@@ -28,8 +28,8 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 
@@ -37,23 +37,23 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
  * Base class for specialized model implementations that need to wrap other baked models.
  * Avoids boilerplate code for pass-through methods.
  */
-public abstract class ForwardingBakedModel implements BakedModel, FabricBakedModel, WrapperBakedModel {
+public abstract class ForwardingBakedModel implements BakedModel, WrapperBakedModel {
 	/** implementations must set this somehow. */
 	protected BakedModel wrapped;
 
 	@Override
-	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		((FabricBakedModel) wrapped).emitBlockQuads(blockView, state, pos, randomSupplier, context);
+	public boolean isVanillaAdapter() {
+		return wrapped.isVanillaAdapter();
 	}
 
 	@Override
-	public boolean isVanillaAdapter() {
-		return ((FabricBakedModel) wrapped).isVanillaAdapter();
+	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+		wrapped.emitBlockQuads(blockView, state, pos, randomSupplier, context);
 	}
 
 	@Override
 	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-		((FabricBakedModel) wrapped).emitItemQuads(stack, randomSupplier, context);
+		wrapped.emitItemQuads(stack, randomSupplier, context);
 	}
 
 	@Override

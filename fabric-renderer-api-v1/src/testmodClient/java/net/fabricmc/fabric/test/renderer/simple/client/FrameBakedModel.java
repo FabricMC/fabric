@@ -24,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
@@ -32,6 +31,7 @@ import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -42,12 +42,11 @@ import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 
-final class FrameBakedModel implements BakedModel, FabricBakedModel {
+final class FrameBakedModel implements BakedModel {
 	private final Mesh frameMesh;
 	private final Sprite frameSprite;
 	private final RenderMaterial translucentMaterial;
@@ -111,7 +110,7 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 	@Override
 	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
 		// Emit our frame mesh
-		context.meshConsumer().accept(this.frameMesh);
+		this.frameMesh.outputTo(context.getEmitter());
 
 		RenderAttachedBlockView renderAttachedBlockView = (RenderAttachedBlockView) blockView;
 
@@ -131,25 +130,23 @@ final class FrameBakedModel implements BakedModel, FabricBakedModel {
 
 		emitInnerQuads(context, material, () -> {
 			// Use emitBlockQuads to allow for Renderer API features
-			((FabricBakedModel) MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState)).emitBlockQuads(blockView, innerState, pos, randomSupplier, context);
+			MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState).emitBlockQuads(blockView, innerState, pos, randomSupplier, context);
 		});
 	}
 
 	@Override
 	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
 		// Emit our frame mesh
-		context.meshConsumer().accept(this.frameMesh);
+		this.frameMesh.outputTo(context.getEmitter());
 
 		// Emit a scaled-down fence for testing, trying both materials again.
 		RenderMaterial material = stack.hasCustomName() ? translucentEmissiveMaterial : translucentMaterial;
 
-		BlockState innerState = Blocks.OAK_FENCE.getDefaultState();
+		ItemStack innerItem = Items.OAK_FENCE.getDefaultStack();
+		BakedModel innerModel = MinecraftClient.getInstance().getItemRenderer().getModel(innerItem, null, null, 0);
 
 		emitInnerQuads(context, material, () -> {
-			// Need to use the fallback consumer directly:
-			// - we can't use emitBlockQuads because we don't have a blockView
-			// - we can't use emitItemQuads because multipart models don't have item quads
-			context.bakedModelConsumer().accept(MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState), innerState);
+			innerModel.emitItemQuads(innerItem, randomSupplier, context);
 		});
 	}
 
