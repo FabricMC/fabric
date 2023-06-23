@@ -33,15 +33,14 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.tag.TagEntry;
 import net.minecraft.registry.tag.TagFile;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.registry.tag.TagManagerLoader;
 import net.minecraft.util.Identifier;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
 
-import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
@@ -73,7 +72,8 @@ public class ClientTagsLoader {
 			}
 		}
 
-		HashSet<Identifier> ids = new HashSet<>();
+		HashSet<Identifier> completeIds = new HashSet<>();
+		HashSet<TagKey<?>> completeTags = new HashSet<>();
 		HashSet<Identifier> immediateChildIds = new HashSet<>();
 		HashSet<TagKey<?>> immediateChildTags = new HashSet<>();
 
@@ -91,16 +91,23 @@ public class ClientTagsLoader {
 				public Collection<Identifier> tag(Identifier id) {
 					TagKey<?> tag = TagKey.of(tagKey.registry(), id);
 					immediateChildTags.add(tag);
-					return ClientTags.getOrCreateLocalTag(tag);
+					LoadedTag localTag = ClientTagsImpl.getOrCreatePartiallySyncedTag(tag);
+					completeTags.addAll(localTag.completeChildTags);
+					completeTags.add(tag);
+					return localTag.completeIds;
 				}
-			}, ids::add);
+			}, completeIds::add);
 		}
 
-		return new LoadedTag(Collections.unmodifiableSet(ids), Collections.unmodifiableSet(immediateChildTags),
-				Collections.unmodifiableSet(immediateChildIds));
+		// Ensure that the tag does not refer to itself
+		completeTags.remove(tagKey);
+		immediateChildTags.remove(tagKey);
+
+		return new LoadedTag(Collections.unmodifiableSet(completeIds), Collections.unmodifiableSet(completeTags),
+				Collections.unmodifiableSet(immediateChildTags), Collections.unmodifiableSet(immediateChildIds));
 	}
 
-	public record LoadedTag(Set<Identifier> completeIds, Set<TagKey<?>> immediateChildTags, Set<Identifier> immediateChildIds) {
+	public record LoadedTag(Set<Identifier> completeIds, Set<TagKey<?>> completeChildTags, Set<TagKey<?>> immediateChildTags, Set<Identifier> immediateChildIds) {
 	}
 
 	/**
