@@ -33,8 +33,20 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 public interface Mesh {
 	/**
 	 * Use to access all of the quads encoded in this mesh. The quad instances
-	 * sent to the consumer will likely be threadlocal/reused and should never
+	 * sent to the consumer will likely be thread-local/reused and should never
 	 * be retained by the consumer.
 	 */
 	void forEach(Consumer<QuadView> consumer);
+
+	/**
+	 * Outputs all quads in this mesh to the given quad emitter.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
+	 */
+	default void outputTo(QuadEmitter emitter) {
+		forEach(quad -> {
+			emitter.copyFrom(quad);
+			emitter.emit();
+		});
+	};
 }

@@ -61,9 +61,9 @@ public class MaterialViewImpl implements MaterialView {
 	}
 
 	protected static boolean areBitsValid(int bits) {
-		int blendMode = (bits & BLEND_MODE_MASK) >> BLEND_MODE_BIT_OFFSET;
-		int ao = (bits & AO_MASK) >> AO_BIT_OFFSET;
-		int glint = (bits & GLINT_MASK) >> GLINT_BIT_OFFSET;
+		int blendMode = (bits & BLEND_MODE_MASK) >>> BLEND_MODE_BIT_OFFSET;
+		int ao = (bits & AO_MASK) >>> AO_BIT_OFFSET;
+		int glint = (bits & GLINT_MASK) >>> GLINT_BIT_OFFSET;
 
 		return blendMode < BLEND_MODE_COUNT
 				&& ao < TRI_STATE_COUNT
@@ -78,7 +78,7 @@ public class MaterialViewImpl implements MaterialView {
 
 	@Override
 	public BlendMode blendMode() {
-		return BLEND_MODES[(bits & BLEND_MODE_MASK) >> BLEND_MODE_BIT_OFFSET];
+		return BLEND_MODES[(bits & BLEND_MODE_MASK) >>> BLEND_MODE_BIT_OFFSET];
 	}
 
 	@Override
@@ -98,11 +98,11 @@ public class MaterialViewImpl implements MaterialView {
 
 	@Override
 	public TriState ambientOcclusion() {
-		return TRI_STATES[(bits & AO_MASK) >> AO_BIT_OFFSET];
+		return TRI_STATES[(bits & AO_MASK) >>> AO_BIT_OFFSET];
 	}
 
 	@Override
 	public TriState glint() {
-		return TRI_STATES[(bits & GLINT_MASK) >> GLINT_BIT_OFFSET];
+		return TRI_STATES[(bits & GLINT_MASK) >>> GLINT_BIT_OFFSET];
 	}
 }

@@ -17,13 +17,11 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import java.util.Set;
-import java.util.function.Consumer;
-
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
 import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
@@ -33,10 +31,9 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 
@@ -45,56 +42,35 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
  * Dispatches calls from models during chunk rebuild to the appropriate consumer,
  * and holds/manages all of the state needed by them.
  */
-public class TerrainRenderContext extends AbstractRenderContext {
+public class TerrainRenderContext extends AbstractBlockRenderContext {
 	public static final ThreadLocal<TerrainRenderContext> POOL = ThreadLocal.withInitial(TerrainRenderContext::new);
 
-	private final BlockRenderInfo blockInfo = new BlockRenderInfo();
 	private final ChunkRenderInfo chunkInfo = new ChunkRenderInfo();
-	private final AoCalculator aoCalc = new AoCalculator(blockInfo) {
-		@Override
-		public int light(BlockPos pos, BlockState state) {
-			return chunkInfo.cachedBrightness(pos, state);
-		}
 
-		@Override
-		public float ao(BlockPos pos, BlockState state) {
-			return chunkInfo.cachedAoLevel(pos, state);
-		}
-	};
+	public TerrainRenderContext() {
+		overlay = OverlayTexture.DEFAULT_UV;
+		blockInfo.random = Random.create();
+	}
 
-	private final AbstractMeshConsumer meshConsumer = new AbstractMeshConsumer(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, this::transform) {
-		@Override
-		protected int overlay() {
-			return overlay;
-		}
+	@Override
+	protected AoCalculator createAoCalc(BlockRenderInfo blockInfo) {
+		return new AoCalculator(blockInfo) {
+			@Override
+			public int light(BlockPos pos, BlockState state) {
+				return chunkInfo.cachedBrightness(pos, state);
+			}
 
-		@Override
-		protected Matrix4f matrix() {
-			return matrix;
-		}
+			@Override
+			public float ao(BlockPos pos, BlockState state) {
+				return chunkInfo.cachedAoLevel(pos, state);
+			}
+		};
+	}
 
-		@Override
-		protected Matrix3f normalMatrix() {
-			return normalMatrix;
-		}
-	};
-
-	private final TerrainFallbackConsumer fallbackConsumer = new TerrainFallbackConsumer(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, this::transform) {
-		@Override
-		protected int overlay() {
-			return overlay;
-		}
-
-		@Override
-		protected Matrix4f matrix() {
-			return matrix;
-		}
-
-		@Override
-		protected Matrix3f normalMatrix() {
-			return normalMatrix;
-		}
-	};
+	@Override
+	protected VertexConsumer getVertexConsumer(RenderLayer layer) {
+		return chunkInfo.getInitializedBuffer(layer);
+	}
 
 	public void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, BuiltChunk.RebuildTask.RenderData renderData, BlockBufferBuilderStorage builders, Set<RenderLayer> initializedLayers) {
 		blockInfo.prepareForWorld(blockView, true);
@@ -108,33 +84,23 @@ public class TerrainRenderContext extends AbstractRenderContext {
 
 	/** Called from chunk renderer hook. */
 	public void tessellateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model, MatrixStack matrixStack) {
-		this.matrix = matrixStack.peek().getPositionMatrix();
-		this.normalMatrix = matrixStack.peek().getNormalMatrix();
-
 		try {
+			Vec3d vec3d = blockState.getModelOffset(chunkInfo.blockView, blockPos);
+			matrixStack.translate(vec3d.x, vec3d.y, vec3d.z);
+
+			this.matrix = matrixStack.peek().getPositionMatrix();
+			this.normalMatrix = matrixStack.peek().getNormalMatrix();
+
+			blockInfo.recomputeSeed = true;
+
 			aoCalc.clear();
 			blockInfo.prepareForBlock(blockState, blockPos, model.useAmbientOcclusion());
-			((FabricBakedModel) model).emitBlockQuads(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, blockInfo.randomSupplier, this);
+			model.emitBlockQuads(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, blockInfo.randomSupplier, this);
 		} catch (Throwable throwable) {
 			CrashReport crashReport = CrashReport.create(throwable, "Tessellating block in world - Indigo Renderer");
 			CrashReportSection crashReportSection = crashReport.addElement("Block being tessellated");
 			CrashReportSection.addBlockInfo(crashReportSection, chunkInfo.blockView, blockPos, blockState);
 			throw new CrashException(crashReport);
 		}
-	}
-
-	@Override
-	public Consumer<Mesh> meshConsumer() {
-		return meshConsumer;
-	}
-
-	@Override
-	public BakedModelConsumer bakedModelConsumer() {
-		return fallbackConsumer;
-	}
-
-	@Override
-	public QuadEmitter getEmitter() {
-		return meshConsumer.getEmitter();
 	}
 }

@@ -32,7 +32,6 @@ import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.IndigoQuadHandler;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.ItemRenderContext;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.ItemRenderContext.VanillaQuadHandler;
@@ -51,7 +50,7 @@ public abstract class ItemRendererMixin {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/BakedModel;isBuiltin()Z"), method = "renderItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformationMode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/client/render/model/BakedModel;)V", cancellable = true)
 	public void hook_renderItem(ItemStack stack, ModelTransformationMode transformMode, boolean invert, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay, BakedModel model, CallbackInfo ci) {
-		if (!((FabricBakedModel) model).isVanillaAdapter()) {
+		if (!model.isVanillaAdapter()) {
 			fabric_contexts.get().renderModel(stack, transformMode, invert, matrixStack, vertexConsumerProvider, light, overlay, model, fabric_vanillaHandler);
 			matrixStack.pop();
 			ci.cancel();
