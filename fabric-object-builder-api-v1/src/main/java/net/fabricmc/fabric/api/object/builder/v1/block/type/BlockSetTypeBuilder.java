@@ -54,26 +54,6 @@ public final class BlockSetTypeBuilder {
 	}
 
 	/**
-	 * Sets this block set type's door and trapdoor to be openable by hand.
-	 *
-	 * @return this builder for chaining
-	 */
-	public BlockSetTypeBuilder openableByHand() {
-		this.openableByHand = true;
-		return this;
-	}
-
-	/**
-	 * Sets this block set type's door and trapdoor to be unopenable by hand.
-	 *
-	 * @return this builder for chaining
-	 */
-	public BlockSetTypeBuilder unopenableByHand() {
-		this.openableByHand = false;
-		return this;
-	}
-
-	/**
 	 * Sets this block set type's sound group.
 	 *
 	 * <p>Defaults to {@link BlockSoundGroup#WOOD}.
