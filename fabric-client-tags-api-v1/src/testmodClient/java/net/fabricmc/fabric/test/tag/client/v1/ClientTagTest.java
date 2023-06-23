@@ -42,10 +42,12 @@ public class ClientTagTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		FabricLoader.getInstance().getModContainer(MODID)
-				.map(container -> ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "test2"),
-						container, ResourcePackActivationType.ALWAYS_ENABLED))
-				.filter(success -> !success).ifPresent(success -> LOGGER.warn("Could not register built-in resource pack."));
+		final ModContainer container = FabricLoader.getInstance().getModContainer(MODID).get();
+
+		if (!ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "test2"),
+				container, ResourcePackActivationType.ALWAYS_ENABLED)) {
+			throw new IllegalStateException("Could not register built-in resource pack.");
+		}
 
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
 			if (ClientTags.getOrCreateLocalTag(ConventionalEnchantmentTags.INCREASES_BLOCK_DROPS) == null) {
