@@ -16,9 +16,11 @@
 
 package net.fabricmc.fabric.impl.tag.client;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.client.MinecraftClient;
@@ -30,6 +32,51 @@ import net.minecraft.registry.tag.TagKey;
 
 public class ClientTagsImpl {
 	private static final Map<TagKey<?>, ClientTagsLoader.LoadedTag> LOCAL_TAG_HIERARCHY = new ConcurrentHashMap<>();
+
+	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, RegistryEntry<T> registryEntry) {
+		return isInWithLocalFallback(tagKey, registryEntry, new HashSet<>());
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, RegistryEntry<T> registryEntry, Set<TagKey<T>> checked) {
+		if (checked.contains(tagKey)) {
+			return false;
+		}
+
+		// Check if the tag exists in the dynamic registry first
+		Optional<? extends Registry<T>> maybeRegistry = ClientTagsImpl.getRegistry(tagKey);
+
+		if (maybeRegistry.isPresent()) {
+			// Check the synced tag exists and use that
+			if (maybeRegistry.get().getEntryList(tagKey).isPresent()) {
+				return registryEntry.isIn(tagKey);
+			}
+		}
+
+		if (registryEntry.getKey().isEmpty()) {
+			// No key?
+			return false;
+		}
+
+		// Recursively search the entries contained with the tag
+		ClientTagsLoader.LoadedTag wt = ClientTagsImpl.getOrCreatePartiallySyncedTag(tagKey);
+
+		if (wt.immediateChildIds().contains(registryEntry.getKey().get().getValue())) {
+			return true;
+		}
+
+		checked.add(tagKey);
+
+		for (TagKey<?> key : wt.immediateChildTags()) {
+			if (isInWithLocalFallback((TagKey<T>) key, registryEntry, checked)) {
+				return true;
+			}
+
+			checked.add((TagKey<T>) key);
+		}
+
+		return false;
+	}
 
 	@SuppressWarnings("unchecked")
 	public static <T> Optional<? extends Registry<T>> getRegistry(TagKey<T> tagKey) {

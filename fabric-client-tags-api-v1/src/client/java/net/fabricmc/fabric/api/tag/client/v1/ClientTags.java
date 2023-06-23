@@ -17,17 +17,14 @@
 package net.fabricmc.fabric.api.tag.client.v1;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
-import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.tag.client.ClientTagsImpl;
-import net.fabricmc.fabric.impl.tag.client.ClientTagsLoader;
 
 /**
  * Allows the use of tags by directly loading them from the installed mods.
@@ -85,48 +82,10 @@ public final class ClientTags {
 	 * @param registryEntry the entry to check
 	 * @return if the entry is in the given tag
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, RegistryEntry<T> registryEntry) {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(registryEntry);
-
-		// Check if the tag exists in the dynamic registry first
-		Optional<? extends Registry<T>> maybeRegistry = ClientTagsImpl.getRegistry(tagKey);
-
-		if (maybeRegistry.isPresent()) {
-			// Check the synced tag exists and use that
-			if (maybeRegistry.get().getEntryList(tagKey).isPresent()) {
-				return registryEntry.isIn(tagKey);
-			}
-		}
-
-		if (registryEntry.getKey().isEmpty()) {
-			// No key?
-			return false;
-		}
-
-		ClientTagsLoader.LoadedTag wt = ClientTagsImpl.getOrCreatePartiallySyncedTag(tagKey);
-
-		if (wt.immediateChildIds().contains(registryEntry.getKey().get().getValue())) {
-			return true;
-		}
-
-		// Check if child tags exist
-		for (TagKey<?> childTag : wt.completeChildTags()) {
-			if (maybeRegistry.isPresent()) {
-				// Check the synced tag exists and use that
-				if (maybeRegistry.get().getEntryList((TagKey<T>) childTag).isPresent()) {
-					if (registryEntry.isIn((TagKey<T>) childTag)) {
-						return true;
-					}
-				// Check local tag
-				} else if (getOrCreateLocalTag(childTag).contains(registryEntry.getKey().get().getValue())) {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return ClientTagsImpl.isInWithLocalFallback(tagKey, registryEntry);
 	}
 
 	/**
