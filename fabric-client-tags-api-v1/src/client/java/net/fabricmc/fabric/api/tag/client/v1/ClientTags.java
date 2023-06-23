@@ -107,6 +107,10 @@ public final class ClientTags {
 
 		ClientTagsLoader.LoadedTag wt = ClientTagsImpl.getOrCreatePartiallySyncedTag(tagKey);
 
+		if (wt.immediateChildIds().contains(registryEntry.getKey().get().getValue())) {
+			return true;
+		}
+
 		// Check if child tags exist
 		for (TagKey<?> childTag : wt.completeChildTags()) {
 			if (maybeRegistry.isPresent()) {
@@ -115,11 +119,14 @@ public final class ClientTags {
 					if (registryEntry.isIn((TagKey<T>) childTag)) {
 						return true;
 					}
+				// Check local tag
+				} else if (getOrCreateLocalTag(childTag).contains(registryEntry.getKey().get().getValue())) {
+					return true;
 				}
 			}
 		}
 
-		return wt.completeIds().contains(registryEntry.getKey().get().getValue());
+		return false;
 	}
 
 	/**
