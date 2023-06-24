@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
@@ -91,10 +92,9 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 		}
 	}
 
-	@Inject(at = @At("RETURN"), method = "<init>")
-	private void initFinishedHook(CallbackInfo info) {
-		//noinspection ConstantConditions
-		fabric_mlrLoaderInstance.finish();
+	@ModifyVariable(method = "putModel", at = @At("HEAD"), argsOnly = true)
+	private UnbakedModel fireUnbakedLoadEvent(UnbakedModel model, Identifier identifier) {
+		return fabric_mlrLoaderInstance.onUnbakedModelLoad(identifier, model);
 	}
 
 	@Override
@@ -106,6 +106,7 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 			// but it's useful to tell the game to just load and bake a direct model path as well.
 			// Replicate the vanilla logic of addModel here.
 			UnbakedModel unbakedModel = getOrLoadModel(id);
+			unbakedModel = fabric_mlrLoaderInstance.onUnbakedModelLoad(id, unbakedModel);
 			this.unbakedModels.put(id, unbakedModel);
 			this.modelsToBake.put(id, unbakedModel);
 		}
@@ -120,5 +121,10 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 		loadModel(id);
 		modelsToLoad.remove(id);
 		return unbakedModels.get(id);
+	}
+
+	@Override
+	public ModelLoadingRegistryImpl.LoaderInstance fabric_getLoader() {
+		return fabric_mlrLoaderInstance;
 	}
 }

@@ -52,4 +52,11 @@ public interface ModelLoadingRegistry {
 	 * @param providerSupplier The ModelVariantProvider supplier, instantiated with every ModelLoader.
 	 */
 	void registerVariantProvider(Function<ResourceManager, ModelVariantProvider> providerSupplier);
+
+	/**
+	 * Register a ModelLoadObserver supplier.
+	 *
+	 * @param providerSupplier The ModelLoadObserver supplier, instantiated with every ModelLoader.
+	 */
+	void registerLoadObserver(Function<ResourceManager, ModelLoadObserver> providerSupplier);
 }

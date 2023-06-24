@@ -25,6 +25,17 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
+
+import net.fabricmc.fabric.api.client.model.ModelLoadObserver;
+
+import net.minecraft.client.render.model.BakedModel;
+
+import net.minecraft.client.render.model.Baker;
+import net.minecraft.client.render.model.ModelBakeSettings;
+
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.SpriteIdentifier;
+
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -58,8 +69,9 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 		private final ResourceManager manager;
 		private final List<ModelVariantProvider> modelVariantProviders;
 		private final List<ModelResourceProvider> modelResourceProviders;
+		private final List<ModelLoadObserver> modelLoadObservers;
 		private final List<ExtraModelProvider> modelAppenders;
-		private ModelLoader loader;
+		private final ModelLoader loader;
 
 		private LoaderInstance(ModelLoadingRegistryImpl i, ModelLoader loader, ResourceManager manager) {
 			this.logger = ModelLoadingRegistryImpl.LOGGER;
@@ -67,6 +79,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			this.manager = manager;
 			this.modelVariantProviders = i.variantProviderSuppliers.stream().map((s) -> s.apply(manager)).collect(Collectors.toList());
 			this.modelResourceProviders = i.resourceProviderSuppliers.stream().map((s) -> s.apply(manager)).collect(Collectors.toList());
+			this.modelLoadObservers = i.loadObserverSuppliers.stream().map((s) -> s.apply(manager)).collect(Collectors.toList());
 			this.modelAppenders = i.appenders;
 		}
 
@@ -83,6 +96,27 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			for (ExtraModelProvider appender : modelAppenders) {
 				appender.provideExtraModels(manager, addModel);
 			}
+		}
+
+		public UnbakedModel onUnbakedModelLoad(Identifier location, UnbakedModel model) {
+			for (ModelLoadObserver observer : modelLoadObservers) {
+				model = observer.onUnbakedModelLoad(location, model, loader);
+			}
+			return model;
+		}
+
+		public UnbakedModel onUnbakedModelPreBake(Identifier location, UnbakedModel model) {
+			for (ModelLoadObserver observer : modelLoadObservers) {
+				model = observer.onUnbakedModelPreBake(location, model, loader);
+			}
+			return model;
+		}
+
+		public BakedModel onBakedModelLoad(Identifier location, UnbakedModel model, BakedModel bakedModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+			for (ModelLoadObserver observer : modelLoadObservers) {
+				bakedModel = observer.onBakedModelLoad(location, model, bakedModel, textureGetter, settings, baker, loader);
+			}
+			return bakedModel;
 		}
 
 		private <T> UnbakedModel loadCustomModel(CustomModelItf<T> function, Collection<T> loaders, String debugName) {
@@ -171,16 +205,13 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 				return null;
 			}
 		}
-
-		public void finish() {
-			loader = null;
-		}
 	}
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelLoadingRegistryImpl.class);
 
 	private final List<Function<ResourceManager, ModelVariantProvider>> variantProviderSuppliers = new ArrayList<>();
 	private final List<Function<ResourceManager, ModelResourceProvider>> resourceProviderSuppliers = new ArrayList<>();
+	private final List<Function<ResourceManager, ModelLoadObserver>> loadObserverSuppliers = new ArrayList<>();
 	private final List<ExtraModelProvider> appenders = new ArrayList<>();
 
 	@Override
@@ -201,6 +232,11 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 	@Override
 	public void registerVariantProvider(Function<ResourceManager, ModelVariantProvider> providerSupplier) {
 		variantProviderSuppliers.add(providerSupplier);
+	}
+
+	@Override
+	public void registerLoadObserver(Function<ResourceManager, ModelLoadObserver> providerSupplier) {
+		loadObserverSuppliers.add(providerSupplier);
 	}
 
 	public static LoaderInstance begin(ModelLoader loader, ResourceManager manager) {
