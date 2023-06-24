@@ -29,18 +29,18 @@ import net.fabricmc.fabric.impl.renderdata.client.RenderDataMapConsumer;
 @Mixin(ChunkRendererRegion.class)
 public abstract class ChunkRendererRegionMixin implements BlockRenderView, RenderDataMapConsumer {
 	@Unique
-	private Long2ObjectMap<Object> fabric$renderDataMap;
+	private Long2ObjectMap<Object> fabric_renderDataMap;
 
 	@Override
 	public Object getBlockEntityRenderData(BlockPos pos) {
-		return fabric$renderDataMap == null ? null : fabric$renderDataMap.get(pos.asLong());
+		return fabric_renderDataMap == null ? null : fabric_renderDataMap.get(pos.asLong());
 	}
 
 	/**
 	 * Called in {@link ChunkRendererRegionBuilderMixin}.
 	 */
 	@Override
-	public void fabric$acceptRenderDataMap(Long2ObjectMap<Object> renderDataMap) {
-		this.fabric$renderDataMap = renderDataMap;
+	public void fabric_acceptRenderDataMap(Long2ObjectMap<Object> renderDataMap) {
+		this.fabric_renderDataMap = renderDataMap;
 	}
 }

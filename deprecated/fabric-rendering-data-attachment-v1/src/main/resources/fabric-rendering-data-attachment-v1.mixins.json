@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.rendering.data.attachment",
+  "package": "net.fabricmc.fabric.mixin.rendering.data",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "BlockEntityMixin",

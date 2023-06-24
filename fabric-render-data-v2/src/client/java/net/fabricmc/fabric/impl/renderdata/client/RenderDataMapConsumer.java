@@ -19,5 +19,5 @@ package net.fabricmc.fabric.impl.renderdata.client;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 
 public interface RenderDataMapConsumer {
-	void fabric$acceptRenderDataMap(Long2ObjectMap<Object> renderDataMap);
+	void fabric_acceptRenderDataMap(Long2ObjectMap<Object> renderDataMap);
 }

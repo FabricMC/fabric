@@ -20,17 +20,24 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
 
 /**
  * Extensions that allow {@link BlockEntity} subclasses to provide render data.
  *
  * <p>Block entity render data is arbitrary data that is safe to access and use in a client-side
- * multithreaded environment, such as chunk building. This includes, but is not limited to,
- * access and use from inside models ({@code FabricBakedModel#emitBlockQuads}), block color
- * providers ({@code BlockColorProvider#getColor}), and block appearance computation
+ * multithreaded environment. In these environments, accessing and using a {@link BlockEntity}
+ * directly via {@link BlockView#getBlockEntity(BlockPos)} may not be thread-safe since the
+ * {@link BlockEntity} might be modified on a different thread or because accessing the internal
+ * state of the {@link BlockEntity} could modify it in a non-atomic way (such as through lazy
+ * computation).
+ *
+ * <p>The most common such environment is chunk building. Places to use render data include, but are
+ * not limited to, block models ({@code FabricBakedModel#emitBlockQuads}), block color providers
+ * ({@code BlockColorProvider#getColor}), and block appearance computation
  * ({@code FabricBlock#getAppearance}).
  *
- * <h3>Implementation Tips
+ * <h3>Implementation Tips</h3>
  *
  * <p>The simplest form of render data is a value or object that is immutable. If only one such value
  * must serve as render data, then it can be returned directly. An example of this would be returning
@@ -48,9 +55,10 @@ public interface RenderDataBlockEntity {
 	 * Gets the render data provided by this block entity. The returned object must be safe to
 	 * use in a multithreaded environment.
 	 *
-	 * <p>Note: This method should not be called directly, unless the result is used to implement
-	 * {@link RenderDataBlockView#getBlockEntityRenderData(BlockPos)}. Otherwise, use
-	 * {@link RenderDataBlockView#getBlockEntityRenderData(BlockPos)} to access render data instead.
+	 * <p>Note: <b>This method should not be called directly</b>; use
+	 * {@link RenderDataBlockView#getBlockEntityRenderData(BlockPos)} instead. Only call this
+	 * method when the result is used to implement
+	 * {@link RenderDataBlockView#getBlockEntityRenderData(BlockPos)}.
 	 *
 	 * @return the render data
 	 */

@@ -1,8 +1,6 @@
 archivesBaseName = "fabric-render-data-v2"
 version = getSubprojectVersion(project)
 
-moduleDependencies(project, ['fabric-api-base'])
-
 loom {
 	accessWidenerPath = file("src/main/resources/fabric-render-data-v2.accesswidener")
 }

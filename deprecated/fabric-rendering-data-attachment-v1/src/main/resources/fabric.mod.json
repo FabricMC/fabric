@@ -17,7 +17,6 @@
   ],
   "depends": {
     "fabricloader": ">=0.4.0",
-    "fabric-api-base": "*",
     "fabric-render-data-v2": "*"
   },
   "description": "Thread-safe hooks for block entity data use during terrain rendering.",

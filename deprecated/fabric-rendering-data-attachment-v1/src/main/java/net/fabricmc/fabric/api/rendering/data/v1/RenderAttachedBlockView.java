@@ -26,8 +26,8 @@ import net.fabricmc.fabric.api.renderdata.v2.RenderDataBlockView;
 
 /**
  * This interface is guaranteed to be implemented on all {@link WorldView} instances.
- * It is likely to be implemented on a {@link BlockRenderView} instance, but this is
- * not guaranteed.
+ * It is likely to be implemented on any given {@link BlockRenderView} instance, but
+ * this is not guaranteed.
  *
  * @deprecated Use {@link RenderDataBlockView} instead.
  */

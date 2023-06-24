@@ -43,10 +43,11 @@ import net.minecraft.world.BlockRenderView;
 public interface RenderDataBlockView {
 	/**
 	 * Retrieves block entity render data for a given block position. Always use this method
-	 * instead of {@link RenderDataBlockEntity#getRenderData()} to ensure thread safety and
-	 * data consistency.
+	 * instead of {@link BlockRenderView#getBlockEntity(BlockPos)} or
+	 * {@link RenderDataBlockEntity#getRenderData()} to ensure thread safety and data
+	 * consistency.
 	 *
-	 * <p>Callers of this method should always check the returned object's class (for example,
+	 * <p>Callers of this method should always check the returned object's class (usually
 	 * using {@code instanceof}) before casting. This prevents unexpected class cast exceptions.
 	 *
 	 * @param pos position of the block entity

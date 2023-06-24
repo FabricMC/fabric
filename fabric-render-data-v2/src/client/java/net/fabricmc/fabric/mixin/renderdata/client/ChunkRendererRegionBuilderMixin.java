@@ -44,8 +44,8 @@ public abstract class ChunkRendererRegionBuilderMixin {
 	private static final AtomicInteger ERROR_COUNTER = new AtomicInteger();
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChunkRendererRegionBuilderMixin.class);
 
-	@Inject(method = "build(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;I)Lnet/minecraft/client/render/chunk/ChunkRendererRegion;", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-	private void fabric$createDataMap(World world, BlockPos startPos, BlockPos endPos, int offset, CallbackInfoReturnable<ChunkRendererRegion> cir, int startX, int startZ, int endX, int endZ, ChunkRendererRegionBuilder.ClientChunk[][] chunksXZ) {
+	@Inject(method = "build", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void createDataMap(World world, BlockPos startPos, BlockPos endPos, int offset, CallbackInfoReturnable<ChunkRendererRegion> cir, int startX, int startZ, int endX, int endZ, ChunkRendererRegionBuilder.ClientChunk[][] chunksXZ) {
 		ChunkRendererRegion rendererRegion = cir.getReturnValue();
 
 		if (rendererRegion == null) {
@@ -65,7 +65,7 @@ public abstract class ChunkRendererRegionBuilderMixin {
 				// We handle this simply by retrying until it works. Ugly but effective.
 				while (true) {
 					try {
-						map = fabric$mapChunk(chunk.getChunk(), startPos, endPos, map);
+						map = mapChunk(chunk.getChunk(), startPos, endPos, map);
 						break;
 					} catch (ConcurrentModificationException e) {
 						final int count = ERROR_COUNTER.incrementAndGet();
@@ -83,12 +83,12 @@ public abstract class ChunkRendererRegionBuilderMixin {
 		}
 
 		if (map != null) {
-			((RenderDataMapConsumer) rendererRegion).fabric$acceptRenderDataMap(map);
+			((RenderDataMapConsumer) rendererRegion).fabric_acceptRenderDataMap(map);
 		}
 	}
 
 	@Unique
-	private static Long2ObjectOpenHashMap<Object> fabric$mapChunk(WorldChunk chunk, BlockPos posFrom, BlockPos posTo, Long2ObjectOpenHashMap<Object> map) {
+	private static Long2ObjectOpenHashMap<Object> mapChunk(WorldChunk chunk, BlockPos posFrom, BlockPos posTo, Long2ObjectOpenHashMap<Object> map) {
 		final int xMin = posFrom.getX();
 		final int xMax = posTo.getX();
 		final int yMin = posFrom.getY();
