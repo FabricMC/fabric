@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.renderdata",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "BlockEntityMixin",
+    "BlockRenderViewMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

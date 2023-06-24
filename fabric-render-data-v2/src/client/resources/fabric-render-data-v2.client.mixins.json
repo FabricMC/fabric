@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.renderdata.client",
+  "compatibilityLevel": "JAVA_16",
+  "client": [
+    "ChunkRendererRegionMixin",
+    "ChunkRendererRegionBuilderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
