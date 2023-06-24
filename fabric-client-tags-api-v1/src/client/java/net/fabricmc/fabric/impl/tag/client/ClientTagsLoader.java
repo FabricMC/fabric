@@ -73,7 +73,6 @@ public class ClientTagsLoader {
 		}
 
 		HashSet<Identifier> completeIds = new HashSet<>();
-		HashSet<TagKey<?>> completeTags = new HashSet<>();
 		HashSet<Identifier> immediateChildIds = new HashSet<>();
 		HashSet<TagKey<?>> immediateChildTags = new HashSet<>();
 
@@ -91,23 +90,19 @@ public class ClientTagsLoader {
 				public Collection<Identifier> tag(Identifier id) {
 					TagKey<?> tag = TagKey.of(tagKey.registry(), id);
 					immediateChildTags.add(tag);
-					LoadedTag localTag = ClientTagsImpl.getOrCreatePartiallySyncedTag(tag);
-					completeTags.addAll(localTag.completeChildTags);
-					completeTags.add(tag);
-					return localTag.completeIds;
+					return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag).completeIds;
 				}
 			}, completeIds::add);
 		}
 
 		// Ensure that the tag does not refer to itself
-		completeTags.remove(tagKey);
 		immediateChildTags.remove(tagKey);
 
-		return new LoadedTag(Collections.unmodifiableSet(completeIds), Collections.unmodifiableSet(completeTags),
-				Collections.unmodifiableSet(immediateChildTags), Collections.unmodifiableSet(immediateChildIds));
+		return new LoadedTag(Collections.unmodifiableSet(completeIds), Collections.unmodifiableSet(immediateChildTags),
+				Collections.unmodifiableSet(immediateChildIds));
 	}
 
-	public record LoadedTag(Set<Identifier> completeIds, Set<TagKey<?>> completeChildTags, Set<TagKey<?>> immediateChildTags, Set<Identifier> immediateChildIds) {
+	public record LoadedTag(Set<Identifier> completeIds, Set<TagKey<?>> immediateChildTags, Set<Identifier> immediateChildIds) {
 	}
 
 	/**

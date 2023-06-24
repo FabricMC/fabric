@@ -43,6 +43,8 @@ public class ClientTagsImpl {
 			return false;
 		}
 
+		checked.add(tagKey);
+
 		// Check if the tag exists in the dynamic registry first
 		Optional<? extends Registry<T>> maybeRegistry = ClientTagsImpl.getRegistry(tagKey);
 
@@ -64,8 +66,6 @@ public class ClientTagsImpl {
 		if (wt.immediateChildIds().contains(registryEntry.getKey().get().getValue())) {
 			return true;
 		}
-
-		checked.add(tagKey);
 
 		for (TagKey<?> key : wt.immediateChildTags()) {
 			if (isInWithLocalFallback((TagKey<T>) key, registryEntry, checked)) {
