@@ -21,11 +21,15 @@ import java.util.Optional;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
+import net.minecraft.registry.Registries;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
 import net.minecraft.world.World;
 
 /**
@@ -41,7 +45,14 @@ public interface FluidVariantAttributeHandler {
 	 * Return the name that should be used for the passed fluid variant.
 	 */
 	default Text getName(FluidVariant fluidVariant) {
-		return fluidVariant.getFluid().getDefaultState().getBlockState().getBlock().getName();
+		Block fluidBlock = fluidVariant.getFluid().getDefaultState().getBlockState().getBlock();
+
+		if (fluidBlock == Blocks.AIR) {
+			// Some non-placeable fluids use air as their fluid block, in that case infer translation key from the fluid id.
+			return Text.translatable(Util.createTranslationKey("block", Registries.FLUID.getId(fluidVariant.getFluid())));
+		} else {
+			return fluidBlock.getName();
+		}
 	}
 
 	/**
