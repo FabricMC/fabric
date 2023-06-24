@@ -1,0 +1,6 @@
+archivesBaseName = "fabric-render-data-api-v2"
+version = getSubprojectVersion(project)
+
+loom {
+	accessWidenerPath = file("src/main/resources/fabric-render-data-api-v2.accesswidener")
+}

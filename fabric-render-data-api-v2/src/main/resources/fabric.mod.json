@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-render-data-v2",
-  "name": "Fabric Render Data (v2)",
+  "id": "fabric-render-data-api-v2",
+  "name": "Fabric Render Data API (v2)",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-render-data-v2/icon.png",
+  "icon": "assets/fabric-render-data-api-v2/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -20,9 +20,9 @@
   },
   "description": "Hooks for accessing and using block entity data in client-side multithreaded environments.",
   "mixins": [
-    "fabric-render-data-v2.mixins.json",
+    "fabric-render-data-api-v2.mixins.json",
     {
-      "config": "fabric-render-data-v2.client.mixins.json",
+      "config": "fabric-render-data-api-v2.client.mixins.json",
       "environment": "client"
     }
   ],
@@ -33,5 +33,5 @@
       "net/minecraft/class_1920": ["net/fabricmc/fabric/api/renderdata/v2/RenderDataBlockView"]
     }
   },
-  "accessWidener": "fabric-render-data-v2.accesswidener"
+  "accessWidener": "fabric-render-data-api-v2.accesswidener"
 }

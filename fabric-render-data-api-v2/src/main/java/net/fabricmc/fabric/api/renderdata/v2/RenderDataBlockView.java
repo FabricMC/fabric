@@ -47,8 +47,12 @@ public interface RenderDataBlockView {
 	 * {@link RenderDataBlockEntity#getRenderData()} to ensure thread safety and data
 	 * consistency.
 	 *
-	 * <p>Callers of this method should always check the returned object's class (usually
-	 * using {@code instanceof}) before casting. This prevents unexpected class cast exceptions.
+	 * <p>Users of this method are required to always check the returned object before using
+	 * it. Users must check if it is null and if it is of the correct type to avoid null pointer
+	 * and class cast exceptions, as the returned data is not guaranteed to be what the user expects.
+	 * A simple way to implement these checks is to use {@code instanceof}, since it always returns
+	 * false if the object is null. If the {@code instanceof} returns false, a fallback path should
+	 * be used.
 	 *
 	 * @param pos position of the block entity
 	 * @return the render data provided by the block entity, or null if there is no block entity at this position
