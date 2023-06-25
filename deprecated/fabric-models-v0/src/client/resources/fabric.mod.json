@@ -22,6 +22,6 @@
   },
   "description": "Hooks for models and model loading.",
   "custom": {
-    "fabric-api:module-lifecycle": "stable"
+    "fabric-api:module-lifecycle": "deprecated"
   }
 }
