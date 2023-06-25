@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.client.model.loading",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "BakedModelManagerMixin",
+    "ModelLoaderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
