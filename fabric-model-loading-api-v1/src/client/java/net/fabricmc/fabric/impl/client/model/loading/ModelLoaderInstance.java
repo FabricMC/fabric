@@ -22,26 +22,23 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
-
-import net.minecraft.client.render.model.BakedModel;
-
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
-
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.Baker;
+import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelProviderContext;
 
 public class ModelLoaderInstance implements ModelProviderContext {

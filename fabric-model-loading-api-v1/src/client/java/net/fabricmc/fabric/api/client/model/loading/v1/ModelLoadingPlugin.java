@@ -16,10 +16,9 @@
 
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
-import net.minecraft.client.render.model.json.JsonUnbakedModel;
-
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;

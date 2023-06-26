@@ -37,8 +37,11 @@ import net.minecraft.client.util.ModelIdentifier;
  *
  * <p>Keep in mind that only *one* ModelVariantProvider may respond to a given model
  * at any time.
+ *
+ * <p>Note that vanilla will resolve all the model variants for a block at once, so replacing select {@link ModelIdentifier}s
+ * for a block is not possible with this hook.
+ * One can use {@link ModelModifier.Unbaked} instead for that.
  */
-// TODO: add warning that vanilla will load all block variants at once (can't intercept only a single one)
 @FunctionalInterface
 public interface ModelVariantProvider {
 	/**

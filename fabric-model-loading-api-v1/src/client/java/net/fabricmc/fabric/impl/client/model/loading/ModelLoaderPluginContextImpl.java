@@ -19,8 +19,6 @@ package net.fabricmc.fabric.impl.client.model.loading;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +27,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelResourceProvider;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelVariantProvider;
@@ -71,7 +70,7 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 		return null;
 	});
 
-	private static final Identifier[] MODEL_MODIFIER_PHASES = new Identifier[] { ModelModifier.OVERRIDE_PHASE, ModelModifier.DEFAULT_PHASE, ModelModifier.WRAP_SELF_PHASE, ModelModifier.WRAP_FINAL_PHASE };
+	private static final Identifier[] MODEL_MODIFIER_PHASES = new Identifier[]{ ModelModifier.OVERRIDE_PHASE, ModelModifier.DEFAULT_PHASE, ModelModifier.WRAP_PHASE, ModelModifier.WRAP_LAST_PHASE };
 
 	private static Event<ModelModifier.Unbaked> createUnbakedModelEvent() {
 		return EventFactory.createWithPhases(ModelModifier.Unbaked.class, modifiers -> (model, context) -> {
@@ -86,7 +85,6 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 			return model;
 		}, MODEL_MODIFIER_PHASES);
 	}
-
 
 	private final Event<ModelModifier.Unbaked> unbakedModelLoadModifiers = createUnbakedModelEvent();
 	private final Event<ModelModifier.Unbaked> unbakedModelPreBakeModifiers = createUnbakedModelEvent();
