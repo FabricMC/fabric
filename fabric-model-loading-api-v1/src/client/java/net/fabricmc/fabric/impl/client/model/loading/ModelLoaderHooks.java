@@ -23,4 +23,6 @@ public interface ModelLoaderHooks {
 	void fabric_addModel(Identifier id);
 
 	UnbakedModel fabric_loadModel(Identifier id);
+
+	ModelLoaderInstance fabric_getLoader();
 }

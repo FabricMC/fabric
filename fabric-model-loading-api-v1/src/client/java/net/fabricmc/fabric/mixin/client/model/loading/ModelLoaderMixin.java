@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
@@ -90,9 +91,9 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 		}
 	}
 
-	@Inject(at = @At("RETURN"), method = "<init>")
-	private void initFinishedHook(CallbackInfo info) {
-		fabric_modelLoaderInstance.finish();
+	@ModifyVariable(method = "putModel", at = @At("HEAD"), argsOnly = true)
+	private UnbakedModel fireUnbakedLoadEvent(UnbakedModel model, Identifier identifier) {
+		return fabric_modelLoaderInstance.onUnbakedModelLoad(identifier, model);
 	}
 
 	@Override
@@ -118,5 +119,10 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 		loadModel(id);
 		modelsToLoad.remove(id);
 		return unbakedModels.get(id);
+	}
+
+	@Override
+	public ModelLoaderInstance fabric_getLoader() {
+		return fabric_modelLoaderInstance;
 	}
 }
