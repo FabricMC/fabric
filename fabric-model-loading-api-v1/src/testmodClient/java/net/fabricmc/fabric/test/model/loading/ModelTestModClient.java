@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.test.model.loading;
 
-import java.util.List;
-
-import com.google.common.collect.ImmutableList;
+import java.util.function.Supplier;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -26,18 +24,21 @@ import net.minecraft.block.HorizontalConnectingBlock;
 import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 
 public class ModelTestModClient implements ClientModInitializer {
@@ -51,8 +52,10 @@ public class ModelTestModClient implements ClientModInitializer {
 		}
 
 		@Override
-		public List<BakedQuad> getQuads(BlockState blockState, Direction face, Random rand) {
-			return face == Direction.DOWN ? ImmutableList.of() : super.getQuads(blockState, face, rand);
+		public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+			context.pushTransform(q -> q.cullFace() != Direction.DOWN);
+			super.emitBlockQuads(blockView, state, pos, randomSupplier, context);
+			context.popTransform();
 		}
 	}
 
@@ -61,8 +64,8 @@ public class ModelTestModClient implements ClientModInitializer {
 		ModelLoadingPlugin.register(pluginContext -> {
 			pluginContext.addModel(MODEL_ID);
 			// remove bottom face of gold blocks
-			pluginContext.onBakedModelLoad().register((model, context) -> {
-				if (context.identifier().getPath().equals("block/gold")) {
+			pluginContext.onBakedModelLoad().register(ModelModifier.WRAP_PHASE, (model, context) -> {
+				if (context.identifier().getPath().equals("block/gold_block")) {
 					return new DownQuadRemovingModel(model);
 				} else {
 					return model;
@@ -70,7 +73,7 @@ public class ModelTestModClient implements ClientModInitializer {
 			});
 			// make fences with west: true and everything else false appear to be a missing model visually
 			ModelIdentifier fenceId = BlockModels.getModelId(Blocks.OAK_FENCE.getDefaultState().with(HorizontalConnectingBlock.WEST, true));
-			pluginContext.onUnbakedModelLoad().register((model, context) -> {
+			pluginContext.onUnbakedModelLoad().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
 				if (fenceId.equals(context.identifier())) {
 					return context.loader().getOrLoadModel(ModelLoader.MISSING_ID);
 				}
@@ -79,7 +82,7 @@ public class ModelTestModClient implements ClientModInitializer {
 			});
 			// make brown glazed terracotta appear to be a missing model visually, but without affecting the item, by using pre-bake
 			// using load here would make the item also appear missing
-			pluginContext.onUnbakedModelPreBake().register((model, context) -> {
+			pluginContext.onUnbakedModelPreBake().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
 				if (context.identifier().getPath().equals("block/brown_glazed_terracotta")) {
 					return context.loader().getOrLoadModel(ModelLoader.MISSING_ID);
 				}
