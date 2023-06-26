@@ -47,7 +47,7 @@ public interface FluidVariantAttributeHandler {
 	default Text getName(FluidVariant fluidVariant) {
 		Block fluidBlock = fluidVariant.getFluid().getDefaultState().getBlockState().getBlock();
 
-		if (fluidBlock == Blocks.AIR) {
+		if (!fluidVariant.isBlank() && fluidBlock == Blocks.AIR) {
 			// Some non-placeable fluids use air as their fluid block, in that case infer translation key from the fluid id.
 			return Text.translatable(Util.createTranslationKey("block", Registries.FLUID.getId(fluidVariant.getFluid())));
 		} else {
