@@ -16,25 +16,23 @@
 
 package net.fabricmc.fabric.test.server.consent.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.server.consent.v1.client.ClientFabricServerConsentEvents;
+import net.fabricmc.fabric.api.server.consent.v1.client.ClientFabricServerConsent;
+import net.fabricmc.fabric.api.server.consent.v1.client.ClientFabricServerConsentFlagsCallback;
 
 public class ClientServerConsentTest implements ClientModInitializer {
+	public static final String MOD_ID = "fabric-server-consent-api-v1-testmod";
+
 	@Override
 	public void onInitializeClient() {
-		ClientFabricServerConsentEvents.MODS_SENT.register((client, handler, buf, responseSender) -> {
-			List<String> illegalMods = buf.readCollection(ArrayList::new, PacketByteBuf::readString);
-			client.player.sendMessage(Text.of("Illegal mods: " + illegalMods.toString()));
-		});
-		ClientFabricServerConsentEvents.FEATURES_SENT.register((client, handler, buf, responseSender) -> {
-			List<String> illegalFeatures = buf.readCollection(ArrayList::new, PacketByteBuf::readString);
-			client.player.sendMessage(Text.of("Illegal features: " + illegalFeatures.toString()));
+		ClientFabricServerConsentFlagsCallback.FLAGS_SENT.register((client, handler, flags) -> {
+			flags.forEach(flag -> {
+				if (ClientFabricServerConsent.isIllegal(flag, MOD_ID)) {
+					client.player.sendMessage(Text.of("Illegal flag: " + flag));
+				}
+			});
 		});
 	}
 }

@@ -33,7 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.s2c.play.BundleS2CPacket;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.DedicatedServerModInitializer;
@@ -45,16 +46,14 @@ import net.fabricmc.loader.api.FabricLoader;
 public final class FabricServerConsentImpl implements DedicatedServerModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(FabricServerConsentImpl.class);
 
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+	private static final Gson GSON = new GsonBuilder().registerTypeAdapter(Identifier.class, new IdentifierTypeAdapter()).setPrettyPrinting().create();
 
 	public static final String SOME_UNIVERSAL_NAMESPACE = "noconsent";
 
-	public static final Identifier MODS_CHANNEL = new Identifier(SOME_UNIVERSAL_NAMESPACE, "mods");
-	public static final Identifier FEATURES_CHANNEL = new Identifier(SOME_UNIVERSAL_NAMESPACE, "features");
+	public static final Identifier FLAGS_CHANNEL = new Identifier(SOME_UNIVERSAL_NAMESPACE, "flags");
 
 	public static boolean enabled;
-	public static List<String> illegalMods;
-	public static List<String> illegalFeatures;
+	public static List<Identifier> illegalFlags;
 
 	static {
 		File configDir = FabricLoader.getInstance().getConfigDir().resolve("fabric").toFile();
@@ -81,17 +80,12 @@ public final class FabricServerConsentImpl implements DedicatedServerModInitiali
 			rootObject.addProperty("enabled", false);
 		}
 
-		if (!rootObject.has("illegalMods")) {
-			rootObject.add("illegalMods", new JsonArray());
-		}
-
-		if (!rootObject.has("illegalFeatures")) {
-			rootObject.add("illegalFeatures", new JsonArray());
+		if (!rootObject.has("illegalFlags")) {
+			rootObject.add("illegalFlags", new JsonArray());
 		}
 
 		enabled = rootObject.get("enabled").getAsBoolean();
-		illegalMods = GSON.fromJson(rootObject.getAsJsonArray("illegalMods"), new TypeToken<List<String>>() { }.getType());
-		illegalFeatures = GSON.fromJson(rootObject.getAsJsonArray("illegalFeatures"), new TypeToken<List<String>>() { }.getType());
+		illegalFlags = GSON.fromJson(rootObject.getAsJsonArray("illegalFlags"), new TypeToken<List<Identifier>>() { }.getType());
 
 		try (Writer writer = Files.newBufferedWriter(configFile.toPath())) {
 			writer.write(GSON.toJson(rootObject));
@@ -104,16 +98,9 @@ public final class FabricServerConsentImpl implements DedicatedServerModInitiali
 	public void onInitializeServer() {
 		if (enabled) {
 			ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-				PacketByteBuf modsBuf = PacketByteBufs.create();
-				modsBuf.writeCollection(illegalMods, PacketByteBuf::writeString);
-				PacketByteBuf featuresBuf = PacketByteBufs.create();
-				featuresBuf.writeCollection(illegalFeatures, PacketByteBuf::writeString);
-
-				BundleS2CPacket packet = new BundleS2CPacket(List.of(
-						ServerPlayNetworking.createS2CPacket(MODS_CHANNEL, modsBuf),
-						ServerPlayNetworking.createS2CPacket(FEATURES_CHANNEL, featuresBuf)
-				));
-
+				PacketByteBuf buf = PacketByteBufs.create();
+				buf.writeCollection(illegalFlags, PacketByteBuf::writeIdentifier);
+				Packet<ClientPlayPacketListener> packet = ServerPlayNetworking.createS2CPacket(FLAGS_CHANNEL, buf);
 				sender.sendPacket(packet);
 			});
 		}

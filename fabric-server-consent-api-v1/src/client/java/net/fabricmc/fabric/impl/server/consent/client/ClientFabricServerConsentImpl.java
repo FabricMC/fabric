@@ -16,34 +16,37 @@
 
 package net.fabricmc.fabric.impl.server.consent.client;
 
-import static net.fabricmc.fabric.impl.server.consent.FabricServerConsentImpl.FEATURES_CHANNEL;
-import static net.fabricmc.fabric.impl.server.consent.FabricServerConsentImpl.MODS_CHANNEL;
+import static net.fabricmc.fabric.impl.server.consent.FabricServerConsentImpl.FLAGS_CHANNEL;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.server.consent.v1.client.ClientFabricServerConsentEvents;
+import net.fabricmc.fabric.api.server.consent.v1.client.ClientFabricServerConsentFlagsCallback;
 import net.fabricmc.fabric.impl.server.consent.FabricServerConsentImpl;
 
 public final class ClientFabricServerConsentImpl implements ClientModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(FabricServerConsentImpl.class);
 
+	public static List<Identifier> illegalFlags = new ArrayList<>();
+
 	@Override
 	public void onInitializeClient() {
-		ClientPlayNetworking.registerGlobalReceiver(MODS_CHANNEL, (client, handler, buf, responseSender) -> {
+		ClientPlayNetworking.registerGlobalReceiver(FLAGS_CHANNEL, (client, handler, buf, responseSender) -> {
 			try {
-				ClientFabricServerConsentEvents.MODS_SENT.invoker().onModsSent(client, handler, buf, responseSender);
+				List<Identifier> flags = buf.readCollection(ArrayList::new, PacketByteBuf::readIdentifier);
+				illegalFlags = flags;
+				ClientFabricServerConsentFlagsCallback.FLAGS_SENT.invoker().onFlagsSent(client, handler, Collections.unmodifiableList(flags));
 			} catch (RuntimeException e) {
-				LOGGER.error("Exception thrown while invoking ClientFabricServerConsent.MODS_SENT", e);
-			}
-		});
-		ClientPlayNetworking.registerGlobalReceiver(FEATURES_CHANNEL, (client, handler, buf, responseSender) -> {
-			try {
-				ClientFabricServerConsentEvents.FEATURES_SENT.invoker().onFeaturesSent(client, handler, buf, responseSender);
-			} catch (RuntimeException e) {
-				LOGGER.error("Exception thrown while invoking ClientFabricServerConsent.FEATURES_SENT", e);
+				LOGGER.error("Exception thrown while invoking ClientFabricServerConsentFlagsCallback.FLAGS_SENT", e);
 			}
 		});
 	}

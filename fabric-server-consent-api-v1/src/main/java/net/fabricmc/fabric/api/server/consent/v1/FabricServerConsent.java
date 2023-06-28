@@ -19,6 +19,8 @@ package net.fabricmc.fabric.api.server.consent.v1;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.util.Identifier;
+
 import net.fabricmc.fabric.impl.server.consent.FabricServerConsentImpl;
 
 public final class FabricServerConsent {
@@ -32,20 +34,11 @@ public final class FabricServerConsent {
 	}
 
 	/**
-	 * The list of illegal mods as specified by the consents file.
+	 * The list of illegal flags as specified by the consents file.
 	 *
-	 * @return the list of illegal mods
+	 * @return the list of illegal flags
 	 */
-	public static List<String> getIllegalMods() {
-		return Collections.unmodifiableList(FabricServerConsentImpl.illegalMods);
-	}
-
-	/**
-	 * The list of illegal features as specified by the consents file.
-	 *
-	 * @return the list of illegal features
-	 */
-	public static List<String> getIllegalFeatures() {
-		return Collections.unmodifiableList(FabricServerConsentImpl.illegalFeatures);
+	public static List<Identifier> getIllegalFlags() {
+		return Collections.unmodifiableList(FabricServerConsentImpl.illegalFlags);
 	}
 }
