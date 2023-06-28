@@ -31,7 +31,7 @@ import net.minecraft.util.Identifier;
 public interface FabricBakedModelManager {
 	/**
 	 * An alternative to {@link BakedModelManager#getModel(ModelIdentifier)} that accepts an
-	 * {@link Identifier} instead. Models loaded using {@link ModelLoadingPlugin.Context#addModel} do not have a
+	 * {@link Identifier} instead. Models loaded using {@link ModelLoadingPlugin.Context#addModels} do not have a
 	 * corresponding {@link ModelIdentifier}, so the vanilla method cannot be used to retrieve them.
 	 * The Identifier that was used to load them can be used in this method to retrieve them.
 	 *

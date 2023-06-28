@@ -48,7 +48,7 @@ public final class RendererClientTest implements ClientModInitializer {
 		FRAME_MODELS.add(id("block/frame"));
 
 		ModelLoadingPlugin.register(pluginContext -> {
-			pluginContext.resourceProviders().register((resourceId, context) -> {
+			pluginContext.resolveModelResource().register((resourceId, context) -> {
 				if (FRAME_MODELS.contains(resourceId)) {
 					return new FrameUnbakedModel();
 				}
@@ -56,7 +56,7 @@ public final class RendererClientTest implements ClientModInitializer {
 				return null;
 			});
 
-			pluginContext.variantProviders().register((modelId, context) -> {
+			pluginContext.resolveModelVariant().register((modelId, context) -> {
 				if (RendererTest.PILLAR_ID.equals(modelId)) {
 					return new PillarUnbakedModel();
 				}

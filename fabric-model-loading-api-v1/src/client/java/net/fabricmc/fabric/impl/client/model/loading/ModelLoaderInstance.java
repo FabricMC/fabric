@@ -39,9 +39,9 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelProviderContext;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelResolver;
 
-public class ModelLoaderInstance implements ModelProviderContext {
+public class ModelLoaderInstance implements ModelResolver.Context {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelLoaderInstance.class);
 
 	private static final List<ModelLoadingPlugin> PLUGINS = new ArrayList<>();
@@ -78,16 +78,16 @@ public class ModelLoaderInstance implements ModelProviderContext {
 	}
 
 	@Nullable
-	public UnbakedModel loadModelFromResource(Identifier resourceId) {
-		return context.resourceProviders().invoker().loadModelResource(resourceId, this);
+	public UnbakedModel resolveModelResource(Identifier resourceId) {
+		return context.resolveModelResource().invoker().resolveModelResource(resourceId, this);
 	}
 
 	@Nullable
-	public UnbakedModel loadModelFromVariant(Identifier variantId) {
+	public UnbakedModel resolveModelVariant(Identifier variantId) {
 		if (!(variantId instanceof ModelIdentifier modelId)) {
-			return loadModelFromResource(variantId);
+			return resolveModelResource(variantId);
 		} else {
-			UnbakedModel model = context.variantProviders().invoker().loadModelVariant(modelId, this);
+			UnbakedModel model = context.resolveModelVariant().invoker().resolveModelVariant(modelId, this);
 
 			if (model != null) {
 				return model;
@@ -96,7 +96,7 @@ public class ModelLoaderInstance implements ModelProviderContext {
 			// Replicating the special-case from ModelLoader as loadModelFromJson is insufficiently patchable
 			if (Objects.equals(modelId.getVariant(), "inventory")) {
 				Identifier resourceId = new Identifier(modelId.getNamespace(), "item/" + modelId.getPath());
-				model = loadModelFromResource(resourceId);
+				model = resolveModelResource(resourceId);
 
 				if (model != null) {
 					return model;
@@ -107,18 +107,22 @@ public class ModelLoaderInstance implements ModelProviderContext {
 		}
 	}
 
-	public UnbakedModel onUnbakedModelLoad(Identifier location, UnbakedModel model) {
-		ModelModifier.Unbaked.Context observerContext = new ModelModifier.Unbaked.Context(location, loader);
-		return context.onUnbakedModelLoad().invoker().modifyUnbakedModel(model, observerContext);
+	private record UnbakedModifierContext(Identifier identifier, ModelLoader loader) implements ModelModifier.Unbaked.Context { }
+
+	public UnbakedModel modifyModelOnLoad(Identifier identifier, UnbakedModel model) {
+		ModelModifier.Unbaked.Context observerContext = new UnbakedModifierContext(identifier, loader);
+		return context.modifyModelOnLoad().invoker().modifyUnbakedModel(model, observerContext);
 	}
 
-	public UnbakedModel onUnbakedModelPreBake(Identifier location, UnbakedModel model) {
-		ModelModifier.Unbaked.Context observerContext = new ModelModifier.Unbaked.Context(location, loader);
-		return context.onUnbakedModelPreBake().invoker().modifyUnbakedModel(model, observerContext);
+	public UnbakedModel modifyModelBeforeBake(Identifier identifier, UnbakedModel model) {
+		ModelModifier.Unbaked.Context observerContext = new UnbakedModifierContext(identifier, loader);
+		return context.modifyModelBeforeBake().invoker().modifyUnbakedModel(model, observerContext);
 	}
 
-	public BakedModel onBakedModelLoad(Identifier location, UnbakedModel model, BakedModel bakedModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
-		ModelModifier.Baked.Context observerContext = new ModelModifier.Baked.Context(location, model, textureGetter, settings, baker, loader);
-		return context.onBakedModelLoad().invoker().modifyBakedModel(bakedModel, observerContext);
+	private record BakedModifierContext(Identifier identifier, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker, ModelLoader loader) implements ModelModifier.Baked.Context { }
+
+	public BakedModel modifyModelAfterBake(Identifier identifier, UnbakedModel model, BakedModel bakedModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+		ModelModifier.Baked.Context observerContext = new BakedModifierContext(identifier, model, textureGetter, settings, baker, loader);
+		return context.modifyModelAfterBake().invoker().modifyBakedModel(bakedModel, observerContext);
 	}
 }

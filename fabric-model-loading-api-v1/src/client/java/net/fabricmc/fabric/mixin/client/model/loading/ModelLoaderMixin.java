@@ -72,7 +72,7 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 
 	@Inject(at = @At("HEAD"), method = "loadModel", cancellable = true)
 	private void loadModelHook(Identifier id, CallbackInfo ci) {
-		UnbakedModel customModel = fabric_modelLoaderInstance.loadModelFromVariant(id);
+		UnbakedModel customModel = fabric_modelLoaderInstance.resolveModelVariant(id);
 
 		if (customModel != null) {
 			putModel(id, customModel);
@@ -93,7 +93,7 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 
 	@ModifyVariable(method = "putModel", at = @At("HEAD"), argsOnly = true)
 	private UnbakedModel fireUnbakedLoadEvent(UnbakedModel model, Identifier identifier) {
-		return fabric_modelLoaderInstance.onUnbakedModelLoad(identifier, model);
+		return fabric_modelLoaderInstance.modifyModelOnLoad(identifier, model);
 	}
 
 	@Override

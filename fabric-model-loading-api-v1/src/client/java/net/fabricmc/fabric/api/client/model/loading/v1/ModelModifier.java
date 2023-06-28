@@ -74,7 +74,7 @@ public final class ModelModifier {
 		 * event-dependent scenario.
 		 *
 		 * <p>For further information, see the docs of the particular event you are registering for:
-		 * {@link ModelLoadingPlugin.Context#onUnbakedModelLoad()} and {@link ModelLoadingPlugin.Context#onUnbakedModelPreBake()}.
+		 * {@link ModelLoadingPlugin.Context#modifyModelOnLoad()} and {@link ModelLoadingPlugin.Context#modifyModelBeforeBake()}.
 		 *
 		 * @param model the current unbaked model instance
 		 * @param context context with additional information about the model/loader
@@ -84,11 +84,18 @@ public final class ModelModifier {
 
 		/**
 		 * Context for an unbaked model load/pre-bake event.
-		 *
-		 * @param identifier the identifier of this model (may be a {@link ModelIdentifier})
-		 * @param loader the current model loader instance (changes when resource packs reload)
 		 */
-		record Context(Identifier identifier, ModelLoader loader) { }
+		interface Context {
+			/**
+			 * The identifier of this model (may be a {@link ModelIdentifier}).
+			 */
+			Identifier identifier();
+
+			/**
+			 * The current model loader instance (changes when resource packs reload).
+			 */
+			ModelLoader loader();
+		}
 	}
 
 	@FunctionalInterface
@@ -96,7 +103,7 @@ public final class ModelModifier {
 		/**
 		 * This handler is invoked to allow modifying the baked model instance that is used and stored.
 		 *
-		 * <p>For further information, see the docs of {@link ModelLoadingPlugin.Context#onBakedModelLoad()}.
+		 * <p>For further information, see the docs of {@link ModelLoadingPlugin.Context#modifyModelAfterBake()}.
 		 *
 		 * @param model the current baked model instance
 		 * @param context context with additional information about the model/loader
@@ -106,21 +113,39 @@ public final class ModelModifier {
 
 		/**
 		 * Context for a baked model load event.
-		 *
-		 * @param identifier the identifier of this model (may be a {@link ModelIdentifier})
-		 * @param sourceModel the unbaked model that is being baked
-		 * @param textureGetter function that can be used to retrieve sprites
-		 * @param settings the settings this model is being baked with
-		 * @param baker the baker being used to bake this model
-		 * @param loader the current model loader instance (changes when resource packs reload)
 		 */
-		record Context(
-				Identifier identifier,
-				UnbakedModel sourceModel,
-				Function<SpriteIdentifier, Sprite> textureGetter,
-				ModelBakeSettings settings,
-				Baker baker,
-				ModelLoader loader) { }
+		interface Context {
+			/**
+			 * The identifier of this model (may be a {@link ModelIdentifier}).
+			 */
+			// TODO: should this be id() instead?
+			Identifier identifier();
+
+			/**
+			 * The unbaked model that is being baked.
+			 */
+			UnbakedModel sourceModel();
+
+			/**
+			 * Function that can be used to retrieve sprites.
+			 */
+			Function<SpriteIdentifier, Sprite> textureGetter();
+
+			/**
+			 * The settings this model is being baked with.
+			 */
+			ModelBakeSettings settings();
+
+			/**
+			 * The baker being used to bake this model.
+			 */
+			Baker baker();
+
+			/**
+			 * The current model loader instance (changes when resource packs reload).
+			 */
+			ModelLoader loader();
+		}
 	}
 
 	private ModelModifier() { }

@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.model.loading;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -28,9 +29,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelProviderContext;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelResourceProvider;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelVariantProvider;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelResolver;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -39,10 +38,10 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 
 	private final ResourceManager resourceManager;
 	final Set<Identifier> extraModels = new LinkedHashSet<>();
-	private final Event<ModelVariantProvider> variantProviders = EventFactory.createArrayBacked(ModelVariantProvider.class, providers -> (modelId, context) -> {
-		for (ModelVariantProvider provider : providers) {
+	private final Event<ModelResolver.Variant> variantProviders = EventFactory.createArrayBacked(ModelResolver.Variant.class, providers -> (modelId, context) -> {
+		for (ModelResolver.Variant provider : providers) {
 			try {
-				UnbakedModel model = provider.loadModelVariant(modelId, context);
+				UnbakedModel model = provider.resolveModelVariant(modelId, context);
 
 				if (model != null) {
 					return model;
@@ -54,10 +53,10 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 
 		return null;
 	});
-	private final Event<ModelResourceProvider> resourceProviders = EventFactory.createArrayBacked(ModelResourceProvider.class, providers -> (resourceId, context) -> {
-		for (ModelResourceProvider provider : providers) {
+	private final Event<ModelResolver.Resource> resourceProviders = EventFactory.createArrayBacked(ModelResolver.Resource.class, providers -> (resourceId, context) -> {
+		for (ModelResolver.Resource provider : providers) {
 			try {
-				UnbakedModel model = provider.loadModelResource(resourceId, context);
+				UnbakedModel model = provider.resolveModelResource(resourceId, context);
 
 				if (model != null) {
 					return model;
@@ -103,9 +102,9 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 	/**
 	 * This field is used by the v0 wrapper to avoid constantly wrapping the context in hot code.
 	 */
-	public final ModelProviderContext providerContext;
+	public final ModelResolver.Context providerContext;
 
-	public ModelLoaderPluginContextImpl(ResourceManager resourceManager, ModelProviderContext providerContext) {
+	public ModelLoaderPluginContextImpl(ResourceManager resourceManager, ModelResolver.Context providerContext) {
 		this.resourceManager = resourceManager;
 		this.providerContext = providerContext;
 	}
@@ -116,32 +115,39 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 	}
 
 	@Override
-	public void addModel(Identifier identifier) {
-		extraModels.add(identifier);
+	public void addModels(Identifier... identifiers) {
+		for (Identifier id : identifiers) {
+			extraModels.add(id);
+		}
 	}
 
 	@Override
-	public Event<ModelVariantProvider> variantProviders() {
+	public void addModels(Collection<? extends Identifier> identifiers) {
+		extraModels.addAll(identifiers);
+	}
+
+	@Override
+	public Event<ModelResolver.Variant> resolveModelVariant() {
 		return variantProviders;
 	}
 
 	@Override
-	public Event<ModelResourceProvider> resourceProviders() {
+	public Event<ModelResolver.Resource> resolveModelResource() {
 		return resourceProviders;
 	}
 
 	@Override
-	public Event<ModelModifier.Unbaked> onUnbakedModelLoad() {
+	public Event<ModelModifier.Unbaked> modifyModelOnLoad() {
 		return unbakedModelLoadModifiers;
 	}
 
 	@Override
-	public Event<ModelModifier.Unbaked> onUnbakedModelPreBake() {
+	public Event<ModelModifier.Unbaked> modifyModelBeforeBake() {
 		return unbakedModelPreBakeModifiers;
 	}
 
 	@Override
-	public Event<ModelModifier.Baked> onBakedModelLoad() {
+	public Event<ModelModifier.Baked> modifyModelAfterBake() {
 		return bakedModelLoadModifiers;
 	}
 }

@@ -34,7 +34,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 	@Override
 	public void registerModelProvider(ExtraModelProvider appender) {
 		ModelLoadingPlugin.register(pluginContext -> {
-			appender.provideExtraModels(pluginContext.resourceManager(), pluginContext::addModel);
+			appender.provideExtraModels(pluginContext.resourceManager(), pluginContext::addModels);
 		});
 	}
 
@@ -49,7 +49,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			ModelResourceProvider provider = providerSupplier.apply(pluginContext.resourceManager());
 			ModelProviderContext providerContext = makeOldContext(pluginContext);
 
-			pluginContext.resourceProviders().register((resourceId, modelProviderContext) -> {
+			pluginContext.resolveModelResource().register((resourceId, modelProviderContext) -> {
 				try {
 					return provider.loadModelResource(resourceId, providerContext);
 				} catch (ModelProviderException e) {
@@ -65,7 +65,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			ModelVariantProvider provider = providerSupplier.apply(pluginContext.resourceManager());
 			ModelProviderContext providerContext = makeOldContext(pluginContext);
 
-			pluginContext.variantProviders().register((modelId, modelProviderContext) -> {
+			pluginContext.resolveModelVariant().register((modelId, modelProviderContext) -> {
 				try {
 					return provider.loadModelVariant(modelId, providerContext);
 				} catch (ModelProviderException e) {
