@@ -130,6 +130,12 @@ transitive-accessible method net/minecraft/entity/damage/DamageSources create (L
 # The attack cooldown
 transitive-accessible field net/minecraft/client/MinecraftClient attackCooldown I
 
+# Camera transformations
+transitive-accessible method net/minecraft/client/render/Camera moveBy (DDD)V
+transitive-accessible method net/minecraft/client/render/Camera setRotation (FF)V
+transitive-accessible method net/minecraft/client/render/Camera setPos (DDD)V
+transitive-accessible method net/minecraft/client/render/Camera setPos (Lnet/minecraft/util/math/Vec3d;)V
+
 ### Generated access wideners below
 # Constructors of non-abstract block classes
 transitive-accessible method net/minecraft/block/AirBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V

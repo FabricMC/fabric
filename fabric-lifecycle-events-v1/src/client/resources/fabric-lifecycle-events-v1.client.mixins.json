@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.event.lifecycle.client",
   "compatibilityLevel": "JAVA_16",
   "client": [
+    "CameraMixin",
     "ClientChunkManagerMixin",
     "ClientPlayNetworkHandlerMixin",
     "ClientWorldClientEntityHandlerMixin",
