@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.event.lifecycle.v1;
+package net.fabricmc.fabric.api.client.rendering.v1;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.world.BlockView;
@@ -26,11 +26,11 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Callback for after the game camera is updated.
  */
-public interface CameraUpdateCallback {
-	Event<CameraUpdateCallback> EVENT = EventFactory.createArrayBacked(CameraUpdateCallback.class,
+public interface ModifyCameraCallback {
+	Event<ModifyCameraCallback> EVENT = EventFactory.createArrayBacked(ModifyCameraCallback.class,
 			(listeners) -> (camera, area, focusedEntity, thirdPerson, inverseView, tickDelta) -> {
-				for (CameraUpdateCallback listener : listeners) {
-					listener.onUpdated(camera, area, focusedEntity, thirdPerson, inverseView, tickDelta);
+				for (ModifyCameraCallback listener : listeners) {
+					listener.modifyCamera(camera, area, focusedEntity, thirdPerson, inverseView, tickDelta);
 				}
 			});
 
@@ -43,5 +43,5 @@ public interface CameraUpdateCallback {
 	 * @param inverseView If thirdPerson is true, this determines whether the camera is front-facing
 	 * @param tickDelta Progress from last tick to next tick
 	 */
-	void onUpdated(Camera camera, BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta);
+	void modifyCamera(Camera camera, BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta);
 }

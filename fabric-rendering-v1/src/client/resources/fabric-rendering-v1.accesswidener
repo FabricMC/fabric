@@ -1,0 +1,6 @@
+accessWidener	v2	named
+
+accessible method net/minecraft/client/render/Camera moveBy (DDD)V
+accessible method net/minecraft/client/render/Camera setRotation (FF)V
+accessible method net/minecraft/client/render/Camera setPos (DDD)V
+accessible method net/minecraft/client/render/Camera setPos (Lnet/minecraft/util/math/Vec3d;)V

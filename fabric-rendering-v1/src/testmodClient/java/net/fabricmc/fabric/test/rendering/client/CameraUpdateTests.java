@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.event.lifecycle.client;
+package net.fabricmc.fabric.test.rendering.client;
+
+import net.fabricmc.fabric.api.client.rendering.v1.ModifyCameraCallback;
 
 import net.minecraft.entity.player.PlayerEntity;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.CameraUpdateCallback;
 
 public class CameraUpdateTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		CameraUpdateCallback.EVENT.register((camera, area, focusedEntity, thirdPerson, inverseView, tickDelta) -> {
+		ModifyCameraCallback.EVENT.register((camera, area, focusedEntity, thirdPerson, inverseView, tickDelta) -> {
 			if (focusedEntity instanceof PlayerEntity player && player.isSleeping()) {
 				camera.setRotation(camera.getYaw(), camera.getPitch() - 45 * (player.getSleepTimer() / 200f));
 			}

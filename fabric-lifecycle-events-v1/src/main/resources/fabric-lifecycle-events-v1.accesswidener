@@ -3,9 +3,3 @@ accessWidener	v2	named
 accessible    class    net/minecraft/server/MinecraftServer$ResourceManagerHolder
 accessible    class    net/minecraft/client/world/ClientChunkManager$ClientChunkMap
 accessible    method    net/minecraft/client/world/ClientChunkManager$ClientChunkMap    isInRadius    (II)Z
-
-# Camera transformations
-accessible method net/minecraft/client/render/Camera moveBy (DDD)V
-accessible method net/minecraft/client/render/Camera setRotation (FF)V
-accessible method net/minecraft/client/render/Camera setPos (DDD)V
-accessible method net/minecraft/client/render/Camera setPos (Lnet/minecraft/util/math/Vec3d;)V

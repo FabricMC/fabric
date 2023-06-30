@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.event.lifecycle.client;
+package net.fabricmc.fabric.mixin.client.rendering;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,12 +25,12 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.BlockView;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.CameraUpdateCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.ModifyCameraCallback;
 
 @Mixin(Camera.class)
 public class CameraMixin {
 	@Inject(method = "update", at = @At("TAIL"))
 	private void afterCameraUpdated(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
-		CameraUpdateCallback.EVENT.invoker().onUpdated((Camera) (Object) this, area, focusedEntity, thirdPerson, inverseView, tickDelta);
+		ModifyCameraCallback.EVENT.invoker().modifyCamera((Camera) (Object) this, area, focusedEntity, thirdPerson, inverseView, tickDelta);
 	}
 }
