@@ -41,13 +41,14 @@ public final class ClientFabricServerConsentImpl implements ClientModInitializer
 	@Override
 	public void onInitializeClient() {
 		ClientPlayNetworking.registerGlobalReceiver(FLAGS_CHANNEL, (client, handler, buf, responseSender) -> {
-			try {
-				List<Identifier> flags = buf.readCollection(ArrayList::new, PacketByteBuf::readIdentifier);
-				illegalFlags = flags;
-				ClientFabricServerConsentFlagsCallback.FLAGS_SENT.invoker().onFlagsSent(client, handler, Collections.unmodifiableList(flags));
-			} catch (RuntimeException e) {
-				LOGGER.error("Exception thrown while invoking ClientFabricServerConsentFlagsCallback.FLAGS_SENT", e);
-			}
+			illegalFlags = buf.readCollection(ArrayList::new, PacketByteBuf::readIdentifier);
+			client.execute(() -> {
+				try {
+					ClientFabricServerConsentFlagsCallback.FLAGS_SENT.invoker().onFlagsSent(client, handler, Collections.unmodifiableList(illegalFlags));
+				} catch (RuntimeException e) {
+					LOGGER.error("Exception thrown while invoking ClientFabricServerConsentFlagsCallback.FLAGS_SENT", e);
+				}
+			});
 		});
 	}
 }
