@@ -10,7 +10,7 @@ plugins {
 	id "idea"
 	id "maven-publish"
 	id 'jacoco'
-	id "fabric-loom" version "1.2.7" apply false
+	id "fabric-loom" version "1.3.2" apply false
 	id "com.diffplug.spotless" version "6.18.0"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -191,13 +191,13 @@ allprojects {
 			testmodClient {
 				client()
 				ideConfigGenerated project.rootProject == project
-				name = "Testmod Client"
+				configName = "Testmod Client"
 				source sourceSets.testmodClient
 			}
 			testmodServer {
 				server()
 				ideConfigGenerated project.rootProject == project
-				name = "Testmod Server"
+				configName = "Testmod Server"
 				source sourceSets.testmod
 			}
 		}
@@ -402,7 +402,7 @@ loom {
 		gametest {
 			inherit testmodServer
 
-			name "Game Test"
+			configName = "Game Test"
 
 			// Enable the gametest runner
 			vmArg "-Dfabric-api.gametest"
@@ -411,25 +411,25 @@ loom {
 		}
 		autoTestServer {
 			inherit testmodServer
-			name "Auto Test Server"
+			configName =  "Auto Test Server"
 			vmArg "-Dfabric.autoTest"
 		}
 		autoTestClient {
 			inherit testmodClient
-			name "Auto Test Client"
+			configName = "Auto Test Client"
 			vmArg "-Dfabric.autoTest"
 		}
 
 		// Create duplicate tasks for this, as jacoco slows things down a bit
 		gametestCoverage {
 			inherit gametest
-			name "Game Test Coverage"
+			configName = "Game Test Coverage"
 			ideConfigGenerated = false
 		}
 
 		autoTestClientCoverage {
 			inherit autoTestClient
-			name "Auto Test Client Coverage"
+			configName = "Auto Test Client Coverage"
 			ideConfigGenerated = false
 		}
 	}
