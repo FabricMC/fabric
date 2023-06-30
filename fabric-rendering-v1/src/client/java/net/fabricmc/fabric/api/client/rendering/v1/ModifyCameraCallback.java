@@ -24,7 +24,10 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Callback for after the game camera is updated.
+ * This event is fired every time the world is rendered right after vanilla finishes updating the camera for its own
+ * cases, such as rotations and translations for sleeping or for a third person view. This callback can be used for
+ * adjusting the camera further to a modder's needs. The camera is updated often and therefore resets previous
+ * transformations from the last render call.
  */
 public interface ModifyCameraCallback {
 	Event<ModifyCameraCallback> EVENT = EventFactory.createArrayBacked(ModifyCameraCallback.class,
@@ -35,7 +38,6 @@ public interface ModifyCameraCallback {
 			});
 
 	/**
-	 *
 	 * @param camera This camera
 	 * @param area World view from the world renderer
 	 * @param focusedEntity The entity the camera view is from
