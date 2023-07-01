@@ -22,6 +22,7 @@ import java.util.Set;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -35,7 +36,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoaderHooks;
-import net.fabricmc.fabric.impl.client.model.loading.ModelLoaderInstance;
+import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
 
 @Mixin(ModelLoader.class)
 public abstract class ModelLoaderMixin implements ModelLoaderHooks {
@@ -53,51 +54,34 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 	@Final
 	private Map<Identifier, UnbakedModel> modelsToBake;
 
-	private ModelLoaderInstance fabric_modelLoaderInstance;
+	private ModelLoadingEventDispatcher fabric_eventDispatcher;
 
 	@Shadow
 	private void addModel(ModelIdentifier id) {
 	}
 
 	@Shadow
-	private void putModel(Identifier id, UnbakedModel unbakedModel) {
-	}
+	public abstract UnbakedModel getOrLoadModel(Identifier id);
 
 	@Shadow
 	private void loadModel(Identifier id) {
 	}
 
 	@Shadow
-	public abstract UnbakedModel getOrLoadModel(Identifier id);
-
-	@Inject(at = @At("HEAD"), method = "loadModel", cancellable = true)
-	private void loadModelHook(Identifier id, CallbackInfo ci) {
-		UnbakedModel customModel = fabric_modelLoaderInstance.resolveModelVariant(id);
-
-		if (customModel != null) {
-			putModel(id, customModel);
-			ci.cancel();
-		}
+	private void putModel(Identifier id, UnbakedModel unbakedModel) {
 	}
 
-	@Inject(at = @At("HEAD"), method = "addModel")
-	private void addModelHook(ModelIdentifier id, CallbackInfo info) {
+	@Inject(method = "addModel", at = @At("HEAD"))
+	private void onAddModel(ModelIdentifier id, CallbackInfo info) {
 		if (id == MISSING_ID) {
-			ModelLoaderHooks hooks = this;
-
 			ResourceManager resourceManager = MinecraftClient.getInstance().getResourceManager();
-			fabric_modelLoaderInstance = new ModelLoaderInstance((ModelLoader) (Object) this, resourceManager);
-			fabric_modelLoaderInstance.onModelPopulation(hooks::fabric_addModel);
+			fabric_eventDispatcher = new ModelLoadingEventDispatcher((ModelLoader) (Object) this, resourceManager);
+			fabric_eventDispatcher.addExtraModels(this::addModel);
 		}
 	}
 
-	@ModifyVariable(method = "putModel", at = @At("HEAD"), argsOnly = true)
-	private UnbakedModel fireUnbakedLoadEvent(UnbakedModel model, Identifier identifier) {
-		return fabric_modelLoaderInstance.modifyModelOnLoad(identifier, model);
-	}
-
-	@Override
-	public void fabric_addModel(Identifier id) {
+	@Unique
+	private void addModel(Identifier id) {
 		if (id instanceof ModelIdentifier) {
 			addModel((ModelIdentifier) id);
 		} else {
@@ -110,8 +94,28 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 		}
 	}
 
+	@Inject(method = "loadModel", at = @At("HEAD"), cancellable = true)
+	private void onLoadModel(Identifier id, CallbackInfo ci) {
+		UnbakedModel customModel = fabric_eventDispatcher.resolveModel(id);
+
+		if (customModel != null) {
+			putModel(id, customModel);
+			ci.cancel();
+		}
+	}
+
+	@ModifyVariable(method = "putModel", at = @At("HEAD"), argsOnly = true)
+	private UnbakedModel onPutModel(UnbakedModel model, Identifier identifier) {
+		return fabric_eventDispatcher.modifyModelOnLoad(identifier, model);
+	}
+
 	@Override
-	public UnbakedModel fabric_loadModel(Identifier id) {
+	public ModelLoadingEventDispatcher fabric_getDispatcher() {
+		return fabric_eventDispatcher;
+	}
+
+	@Override
+	public UnbakedModel fabric_tryLoadModel(Identifier id) {
 		if (!modelsToLoad.add(id)) {
 			throw new IllegalStateException("Circular reference while loading " + id);
 		}
@@ -119,10 +123,5 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 		loadModel(id);
 		modelsToLoad.remove(id);
 		return unbakedModels.get(id);
-	}
-
-	@Override
-	public ModelLoaderInstance fabric_getLoader() {
-		return fabric_modelLoaderInstance;
 	}
 }

@@ -41,8 +41,8 @@ import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelResolver;
 
-public class ModelLoaderInstance implements ModelResolver.Context {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ModelLoaderInstance.class);
+public class ModelLoadingEventDispatcher {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModelLoadingEventDispatcher.class);
 
 	private static final List<ModelLoadingPlugin> PLUGINS = new ArrayList<>();
 
@@ -51,63 +51,63 @@ public class ModelLoaderInstance implements ModelResolver.Context {
 	}
 
 	private final ModelLoader loader;
+	private final ResolverContext resolverContext;
 	private final ModelLoaderPluginContextImpl context;
 
-	public ModelLoaderInstance(ModelLoader loader, ResourceManager manager) {
+	public ModelLoadingEventDispatcher(ModelLoader loader, ResourceManager manager) {
 		this.loader = loader;
-		this.context = new ModelLoaderPluginContextImpl(manager, this);
+		this.resolverContext = new ResolverContext(this.loader);
+		this.context = new ModelLoaderPluginContextImpl(manager, resolverContext);
 
 		for (ModelLoadingPlugin plugin : PLUGINS) {
 			try {
 				plugin.onInitializeModelLoader(context);
 			} catch (Exception exception) {
-				LOGGER.error("Failed to run model loading plugin {}", plugin.getClass().getName(), exception);
+				LOGGER.error("Failed to initialize model loading plugin {}", plugin.getClass().getName(), exception);
 			}
 		}
 	}
 
-	@Override
-	public UnbakedModel loadModel(Identifier id) {
-		return ((ModelLoaderHooks) loader).fabric_loadModel(id);
-	}
-
-	public void onModelPopulation(Consumer<Identifier> addModel) {
+	public void addExtraModels(Consumer<Identifier> extraModelConsumer) {
 		for (Identifier id : context.extraModels) {
-			addModel.accept(id);
+			extraModelConsumer.accept(id);
 		}
 	}
 
 	@Nullable
-	public UnbakedModel resolveModelResource(Identifier resourceId) {
-		return context.resolveModelResource().invoker().resolveModelResource(resourceId, this);
+	public UnbakedModel resolveModel(Identifier id) {
+		if (id instanceof ModelIdentifier modelId) {
+			return resolveModelVariant(modelId);
+		} else {
+			return resolveModelResource(id);
+		}
 	}
 
 	@Nullable
-	public UnbakedModel resolveModelVariant(Identifier variantId) {
-		if (!(variantId instanceof ModelIdentifier modelId)) {
-			return resolveModelResource(variantId);
-		} else {
-			UnbakedModel model = context.resolveModelVariant().invoker().resolveModelVariant(modelId, this);
+	private UnbakedModel resolveModelVariant(ModelIdentifier variantId) {
+		UnbakedModel model = context.resolveModelVariant().invoker().resolveModelVariant(variantId, resolverContext);
+
+		if (model != null) {
+			return model;
+		}
+
+		// Replicating the special-case from ModelLoader as loadModelFromJson is insufficiently patchable
+		if (Objects.equals(variantId.getVariant(), "inventory")) {
+			Identifier resourceId = variantId.withPrefixedPath("item/");
+			model = resolveModelResource(resourceId);
 
 			if (model != null) {
 				return model;
 			}
-
-			// Replicating the special-case from ModelLoader as loadModelFromJson is insufficiently patchable
-			if (Objects.equals(modelId.getVariant(), "inventory")) {
-				Identifier resourceId = new Identifier(modelId.getNamespace(), "item/" + modelId.getPath());
-				model = resolveModelResource(resourceId);
-
-				if (model != null) {
-					return model;
-				}
-			}
-
-			return null;
 		}
+
+		return null;
 	}
 
-	private record UnbakedModifierContext(Identifier identifier, ModelLoader loader) implements ModelModifier.Unbaked.Context { }
+	@Nullable
+	private UnbakedModel resolveModelResource(Identifier resourceId) {
+		return context.resolveModelResource().invoker().resolveModelResource(resourceId, resolverContext);
+	}
 
 	public UnbakedModel modifyModelOnLoad(Identifier identifier, UnbakedModel model) {
 		ModelModifier.Unbaked.Context observerContext = new UnbakedModifierContext(identifier, loader);
@@ -119,10 +119,19 @@ public class ModelLoaderInstance implements ModelResolver.Context {
 		return context.modifyModelBeforeBake().invoker().modifyUnbakedModel(model, observerContext);
 	}
 
-	private record BakedModifierContext(Identifier identifier, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker, ModelLoader loader) implements ModelModifier.Baked.Context { }
-
 	public BakedModel modifyModelAfterBake(Identifier identifier, UnbakedModel model, BakedModel bakedModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
 		ModelModifier.Baked.Context observerContext = new BakedModifierContext(identifier, model, textureGetter, settings, baker, loader);
 		return context.modifyModelAfterBake().invoker().modifyBakedModel(bakedModel, observerContext);
 	}
+
+	private record ResolverContext(ModelLoader loader) implements ModelResolver.Context {
+		@Override
+		public UnbakedModel loadModel(Identifier id) {
+			return ((ModelLoaderHooks) loader).fabric_tryLoadModel(id);
+		}
+	}
+
+	private record UnbakedModifierContext(Identifier identifier, ModelLoader loader) implements ModelModifier.Unbaked.Context { }
+
+	private record BakedModifierContext(Identifier identifier, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker, ModelLoader loader) implements ModelModifier.Baked.Context { }
 }

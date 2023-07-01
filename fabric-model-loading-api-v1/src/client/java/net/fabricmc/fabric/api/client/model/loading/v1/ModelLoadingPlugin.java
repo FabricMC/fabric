@@ -26,7 +26,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.impl.client.model.loading.ModelLoaderInstance;
+import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
 
 /**
  * A model loading plugin is used to extend the model loading process through the passed {@link Context} object.
@@ -37,7 +37,7 @@ public interface ModelLoadingPlugin {
 	 * Register a model loading plugin.
 	 */
 	static void register(ModelLoadingPlugin plugin) {
-		ModelLoaderInstance.registerPlugin(plugin);
+		ModelLoadingEventDispatcher.registerPlugin(plugin);
 	}
 
 	/**

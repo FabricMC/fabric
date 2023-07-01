@@ -36,7 +36,7 @@ import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoaderHooks;
-import net.fabricmc.fabric.impl.client.model.loading.ModelLoaderInstance;
+import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
 
 @Mixin(targets = "net/minecraft/client/render/model/ModelLoader$BakerImpl")
 public class ModelLoaderBakerImplMixin {
@@ -45,23 +45,23 @@ public class ModelLoaderBakerImplMixin {
 	private ModelLoader field_40571;
 
 	@Redirect(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/ModelLoader$BakerImpl;getOrLoadModel(Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/model/UnbakedModel;"))
-	private UnbakedModel firePreBakeEvent(@Coerce Baker baker, Identifier id) {
-		UnbakedModel m = baker.getOrLoadModel(id);
-		ModelLoaderInstance loader = ((ModelLoaderHooks) this.field_40571).fabric_getLoader();
-		return loader.modifyModelBeforeBake(id, m);
+	private UnbakedModel invokeModifyBeforeBake(@Coerce Baker baker, Identifier id) {
+		UnbakedModel model = baker.getOrLoadModel(id);
+		ModelLoadingEventDispatcher dispatcher = ((ModelLoaderHooks) this.field_40571).fabric_getDispatcher();
+		return dispatcher.modifyModelBeforeBake(id, model);
 	}
 
 	@Redirect(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/UnbakedModel;bake(Lnet/minecraft/client/render/model/Baker;Ljava/util/function/Function;Lnet/minecraft/client/render/model/ModelBakeSettings;Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/model/BakedModel;"))
-	private BakedModel fireRegularBakeEvent(UnbakedModel instance, Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Identifier identifier) {
-		BakedModel theModel = instance.bake(baker, textureGetter, settings, identifier);
-		ModelLoaderInstance loader = ((ModelLoaderHooks) this.field_40571).fabric_getLoader();
-		return loader.modifyModelAfterBake(identifier, instance, theModel, textureGetter, settings, baker);
+	private BakedModel invokeModifyAfterBake(UnbakedModel unbakedModel, Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Identifier identifier) {
+		BakedModel model = unbakedModel.bake(baker, textureGetter, settings, identifier);
+		ModelLoadingEventDispatcher dispatcher = ((ModelLoaderHooks) this.field_40571).fabric_getDispatcher();
+		return dispatcher.modifyModelAfterBake(identifier, unbakedModel, model, textureGetter, settings, baker);
 	}
 
 	@Redirect(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/json/JsonUnbakedModel;bake(Lnet/minecraft/client/render/model/Baker;Lnet/minecraft/client/render/model/json/JsonUnbakedModel;Ljava/util/function/Function;Lnet/minecraft/client/render/model/ModelBakeSettings;Lnet/minecraft/util/Identifier;Z)Lnet/minecraft/client/render/model/BakedModel;"))
-	private BakedModel fireRegularBakeEvent(JsonUnbakedModel instance, Baker baker, JsonUnbakedModel parent, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Identifier identifier, boolean hasDepth) {
-		BakedModel theModel = instance.bake(baker, parent, textureGetter, settings, identifier, hasDepth);
-		ModelLoaderInstance loader = ((ModelLoaderHooks) this.field_40571).fabric_getLoader();
-		return loader.modifyModelAfterBake(identifier, instance, theModel, textureGetter, settings, baker);
+	private BakedModel invokeModifyAfterBake(JsonUnbakedModel unbakedModel, Baker baker, JsonUnbakedModel parent, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Identifier identifier, boolean hasDepth) {
+		BakedModel model = unbakedModel.bake(baker, parent, textureGetter, settings, identifier, hasDepth);
+		ModelLoadingEventDispatcher dispatcher = ((ModelLoaderHooks) this.field_40571).fabric_getDispatcher();
+		return dispatcher.modifyModelAfterBake(identifier, unbakedModel, model, textureGetter, settings, baker);
 	}
 }

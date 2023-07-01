@@ -38,7 +38,8 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 
 	private final ResourceManager resourceManager;
 	final Set<Identifier> extraModels = new LinkedHashSet<>();
-	private final Event<ModelResolver.Variant> variantProviders = EventFactory.createArrayBacked(ModelResolver.Variant.class, providers -> (modelId, context) -> {
+
+	private final Event<ModelResolver.Variant> variantResolvers = EventFactory.createArrayBacked(ModelResolver.Variant.class, providers -> (modelId, context) -> {
 		for (ModelResolver.Variant provider : providers) {
 			try {
 				UnbakedModel model = provider.resolveModelVariant(modelId, context);
@@ -47,13 +48,14 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 					return model;
 				}
 			} catch (Exception exception) {
-				LOGGER.error("Failed to load custom model variant", exception);
+				LOGGER.error("Failed to resolve custom model variant", exception);
 			}
 		}
 
 		return null;
 	});
-	private final Event<ModelResolver.Resource> resourceProviders = EventFactory.createArrayBacked(ModelResolver.Resource.class, providers -> (resourceId, context) -> {
+
+	private final Event<ModelResolver.Resource> resourceResolvers = EventFactory.createArrayBacked(ModelResolver.Resource.class, providers -> (resourceId, context) -> {
 		for (ModelResolver.Resource provider : providers) {
 			try {
 				UnbakedModel model = provider.resolveModelResource(resourceId, context);
@@ -62,14 +64,14 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 					return model;
 				}
 			} catch (Exception exception) {
-				LOGGER.error("Failed to load custom model resource", exception);
+				LOGGER.error("Failed to resolve custom model resource", exception);
 			}
 		}
 
 		return null;
 	});
 
-	private static final Identifier[] MODEL_MODIFIER_PHASES = new Identifier[]{ ModelModifier.OVERRIDE_PHASE, ModelModifier.DEFAULT_PHASE, ModelModifier.WRAP_PHASE, ModelModifier.WRAP_LAST_PHASE };
+	private static final Identifier[] MODEL_MODIFIER_PHASES = new Identifier[] { ModelModifier.OVERRIDE_PHASE, ModelModifier.DEFAULT_PHASE, ModelModifier.WRAP_PHASE, ModelModifier.WRAP_LAST_PHASE };
 
 	private static Event<ModelModifier.Unbaked> createUnbakedModelEvent() {
 		return EventFactory.createWithPhases(ModelModifier.Unbaked.class, modifiers -> (model, context) -> {
@@ -77,7 +79,7 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 				try {
 					model = modifier.modifyUnbakedModel(model, context);
 				} catch (Exception exception) {
-					LOGGER.error("Unbaked model modifier threw error", exception);
+					LOGGER.error("Failed to modify unbaked model", exception);
 				}
 			}
 
@@ -85,14 +87,14 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 		}, MODEL_MODIFIER_PHASES);
 	}
 
-	private final Event<ModelModifier.Unbaked> unbakedModelLoadModifiers = createUnbakedModelEvent();
-	private final Event<ModelModifier.Unbaked> unbakedModelPreBakeModifiers = createUnbakedModelEvent();
-	private final Event<ModelModifier.Baked> bakedModelLoadModifiers = EventFactory.createWithPhases(ModelModifier.Baked.class, modifiers -> (model, context) -> {
+	private final Event<ModelModifier.Unbaked> onLoadModifiers = createUnbakedModelEvent();
+	private final Event<ModelModifier.Unbaked> beforeBakeModifiers = createUnbakedModelEvent();
+	private final Event<ModelModifier.Baked> afterBakeModifiers = EventFactory.createWithPhases(ModelModifier.Baked.class, modifiers -> (model, context) -> {
 		for (ModelModifier.Baked modifier : modifiers) {
 			try {
 				model = modifier.modifyBakedModel(model, context);
 			} catch (Exception exception) {
-				LOGGER.error("Baked model modifier threw error", exception);
+				LOGGER.error("Failed to modify baked model", exception);
 			}
 		}
 
@@ -102,11 +104,11 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 	/**
 	 * This field is used by the v0 wrapper to avoid constantly wrapping the context in hot code.
 	 */
-	public final ModelResolver.Context providerContext;
+	public final ModelResolver.Context resolverContext;
 
-	public ModelLoaderPluginContextImpl(ResourceManager resourceManager, ModelResolver.Context providerContext) {
+	public ModelLoaderPluginContextImpl(ResourceManager resourceManager, ModelResolver.Context resolverContext) {
 		this.resourceManager = resourceManager;
-		this.providerContext = providerContext;
+		this.resolverContext = resolverContext;
 	}
 
 	@Override
@@ -128,26 +130,26 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 
 	@Override
 	public Event<ModelResolver.Variant> resolveModelVariant() {
-		return variantProviders;
+		return variantResolvers;
 	}
 
 	@Override
 	public Event<ModelResolver.Resource> resolveModelResource() {
-		return resourceProviders;
+		return resourceResolvers;
 	}
 
 	@Override
 	public Event<ModelModifier.Unbaked> modifyModelOnLoad() {
-		return unbakedModelLoadModifiers;
+		return onLoadModifiers;
 	}
 
 	@Override
 	public Event<ModelModifier.Unbaked> modifyModelBeforeBake() {
-		return unbakedModelPreBakeModifiers;
+		return beforeBakeModifiers;
 	}
 
 	@Override
 	public Event<ModelModifier.Baked> modifyModelAfterBake() {
-		return bakedModelLoadModifiers;
+		return afterBakeModifiers;
 	}
 }

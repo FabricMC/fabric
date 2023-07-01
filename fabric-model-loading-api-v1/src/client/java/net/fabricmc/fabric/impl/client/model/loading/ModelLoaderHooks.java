@@ -20,9 +20,7 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
 
 public interface ModelLoaderHooks {
-	void fabric_addModel(Identifier id);
+	ModelLoadingEventDispatcher fabric_getDispatcher();
 
-	UnbakedModel fabric_loadModel(Identifier id);
-
-	ModelLoaderInstance fabric_getLoader();
+	UnbakedModel fabric_tryLoadModel(Identifier id);
 }
