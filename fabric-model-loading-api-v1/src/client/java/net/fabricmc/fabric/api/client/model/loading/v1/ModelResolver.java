@@ -30,9 +30,9 @@ import net.minecraft.util.Identifier;
  */
 public final class ModelResolver {
 	/**
-	 * Interface for model variant providers.
+	 * Interface for model variant resolvers.
 	 *
-	 * <p>Model variant providers hook the resolution of ModelIdentifiers. In vanilla, this is
+	 * <p>Model variant resolvers hook the resolution of ModelIdentifiers. In vanilla, this is
 	 * the part where a "minecraft:stone#normal" identifier triggers the loading of a
 	 * "minecraft:models/stone" model ({@link Resource} handles the later step).
 	 *
@@ -40,7 +40,7 @@ public final class ModelResolver {
 	 * also allow you to add your own block- or item-state formats. To trigger the loading
 	 * of another model, use the passed {@link Context}.
 	 *
-	 * <p>As every model loading is instantiated with a new provider, it is safe
+	 * <p>As every model loading is instantiated with a new resolver, it is safe
 	 * (and recommended!) to cache information.
 	 *
 	 * <p>Keep in mind that only *one* Variant may respond to a given model
@@ -48,7 +48,7 @@ public final class ModelResolver {
 	 *
 	 * <p>Note that vanilla will resolve all the model variants for a block at once, so replacing select {@link ModelIdentifier}s
 	 * for a block is not possible with this hook.
-	 * One can use {@link ModelModifier.Unbaked} instead for that.
+	 * One can use {@link ModelModifier.OnLoad} instead for that.
 	 */
 	@FunctionalInterface
 	public interface Variant {
@@ -62,9 +62,9 @@ public final class ModelResolver {
 	}
 
 	/**
-	 * Interface for model resource providers.
+	 * Interface for model resource resolvers.
 	 *
-	 * <p>Model resource providers hook the loading of model *files* from the resource tree;
+	 * <p>Model resource resolvers hook the loading of model *files* from the resource tree;
 	 * that is, in vanilla, it handles going from "minecraft:block/stone" to a
 	 * "assets/minecraft/models/block/stone.json" file.
 	 *
@@ -73,7 +73,7 @@ public final class ModelResolver {
 	 *
 	 * <p>This is also where you want to add your own custom model formats.
 	 *
-	 * <p>As each model reload uses a new provider, it is safe
+	 * <p>As each model reload uses a new resolver, it is safe
 	 * (and recommended!) to cache information inside a loader.
 	 *
 	 * <p>Keep in mind that only *one* Resource may respond to a given model
@@ -107,7 +107,7 @@ public final class ModelResolver {
 		 * @param id The model identifier.
 		 * @return The UnbakedModel. Can return a missing model if it's not present!
 		 */
-		UnbakedModel loadModel(Identifier id);
+		UnbakedModel getOrLoadModel(Identifier id);
 	}
 
 	private ModelResolver() { }

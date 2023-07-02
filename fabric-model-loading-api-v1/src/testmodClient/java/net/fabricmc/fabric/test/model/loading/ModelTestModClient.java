@@ -65,7 +65,7 @@ public class ModelTestModClient implements ClientModInitializer {
 			pluginContext.addModels(MODEL_ID);
 			// remove bottom face of gold blocks
 			pluginContext.modifyModelAfterBake().register(ModelModifier.WRAP_PHASE, (model, context) -> {
-				if (context.identifier().getPath().equals("block/gold_block")) {
+				if (context.id().getPath().equals("block/gold_block")) {
 					return new DownQuadRemovingModel(model);
 				} else {
 					return model;
@@ -74,7 +74,7 @@ public class ModelTestModClient implements ClientModInitializer {
 			// make fences with west: true and everything else false appear to be a missing model visually
 			ModelIdentifier fenceId = BlockModels.getModelId(Blocks.OAK_FENCE.getDefaultState().with(HorizontalConnectingBlock.WEST, true));
 			pluginContext.modifyModelOnLoad().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
-				if (fenceId.equals(context.identifier())) {
+				if (fenceId.equals(context.id())) {
 					return context.loader().getOrLoadModel(ModelLoader.MISSING_ID);
 				}
 
@@ -83,7 +83,7 @@ public class ModelTestModClient implements ClientModInitializer {
 			// make brown glazed terracotta appear to be a missing model visually, but without affecting the item, by using pre-bake
 			// using load here would make the item also appear missing
 			pluginContext.modifyModelBeforeBake().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
-				if (context.identifier().getPath().equals("block/brown_glazed_terracotta")) {
+				if (context.id().getPath().equals("block/brown_glazed_terracotta")) {
 					return context.loader().getOrLoadModel(ModelLoader.MISSING_ID);
 				}
 

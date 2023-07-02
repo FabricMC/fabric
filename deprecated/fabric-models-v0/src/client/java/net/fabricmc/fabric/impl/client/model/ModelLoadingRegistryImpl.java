@@ -79,6 +79,6 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 	 * A bit hacky, but avoids the allocation of a new context wrapper every time.
 	 */
 	private static ModelProviderContext makeOldContext(ModelLoadingPlugin.Context pluginContext) {
-		return ((ModelLoaderPluginContextImpl) pluginContext).resolverContext::loadModel;
+		return ((ModelLoaderPluginContextImpl) pluginContext).resolverContext::getOrLoadModel;
 	}
 }

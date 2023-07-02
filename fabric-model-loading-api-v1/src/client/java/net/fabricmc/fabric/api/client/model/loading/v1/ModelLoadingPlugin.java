@@ -76,18 +76,18 @@ public interface ModelLoadingPlugin {
 		/**
 		 * Event access to monitor unbaked model loads and replace the loaded model.
 		 */
-		Event<ModelModifier.Unbaked> modifyModelOnLoad();
+		Event<ModelModifier.OnLoad> modifyModelOnLoad();
 
 		/**
 		 * Event access to swap the unbaked model used for baking without replacing the loaded model. This is important
 		 * for mods which wish to wrap a model but not actually affect other models that use it as a parent (e.g.
 		 * wrap a block's model into a non-{@link JsonUnbakedModel} class but still allow the item model to work fine).
 		 */
-		Event<ModelModifier.Unbaked> modifyModelBeforeBake();
+		Event<ModelModifier.BeforeBake> modifyModelBeforeBake();
 
 		/**
 		 * Event access to monitor baked model loads and replace the loaded model.
 		 */
-		Event<ModelModifier.Baked> modifyModelAfterBake();
+		Event<ModelModifier.AfterBake> modifyModelAfterBake();
 	}
 }

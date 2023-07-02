@@ -68,58 +68,101 @@ public final class ModelModifier {
 	public static final Identifier WRAP_LAST_PHASE = new Identifier("fabric", "wrap_last");
 
 	@FunctionalInterface
-	public interface Unbaked {
+	public interface OnLoad {
 		/**
-		 * This handler is invoked to allow modifying the unbaked model instance that is used/stored in a given,
-		 * event-dependent scenario.
-		 *
-		 * <p>For further information, see the docs of the particular event you are registering for:
-		 * {@link ModelLoadingPlugin.Context#modifyModelOnLoad()} and {@link ModelLoadingPlugin.Context#modifyModelBeforeBake()}.
+		 * This handler is invoked to allow modifying the unbaked model instance that is stored when it is first loaded.
 		 *
 		 * @param model the current unbaked model instance
 		 * @param context context with additional information about the model/loader
 		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
+		 * @see ModelLoadingPlugin.Context#modifyModelOnLoad
 		 */
-		UnbakedModel modifyUnbakedModel(UnbakedModel model, Context context);
+		UnbakedModel modifyModelOnLoad(UnbakedModel model, Context context);
 
 		/**
-		 * Context for an unbaked model load/pre-bake event.
+		 * Context for an on load model modification event.
 		 */
 		interface Context {
 			/**
 			 * The identifier of this model (may be a {@link ModelIdentifier}).
 			 */
-			Identifier identifier();
+			Identifier id();
 
 			/**
 			 * The current model loader instance (changes when resource packs reload).
+			 * It can be used to {@linkplain ModelLoader#getOrLoadModel load unbaked models}.
 			 */
 			ModelLoader loader();
 		}
 	}
 
 	@FunctionalInterface
-	public interface Baked {
+	public interface BeforeBake {
 		/**
-		 * This handler is invoked to allow modifying the baked model instance that is used and stored.
+		 * This handler is invoked to allow modifying the unbaked model instance that is baked.
+		 *
+		 * @param model the current unbaked model instance
+		 * @param context context with additional information about the model/loader
+		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
+		 * @see ModelLoadingPlugin.Context#modifyModelBeforeBake
+		 */
+		UnbakedModel modifyModelBeforeBake(UnbakedModel model, Context context);
+
+		/**
+		 * Context for a before bake model modification event.
+		 */
+		interface Context {
+			/**
+			 * The identifier of this model (may be a {@link ModelIdentifier}).
+			 */
+			Identifier id();
+
+			/**
+			 * Function that can be used to retrieve sprites.
+			 */
+			Function<SpriteIdentifier, Sprite> textureGetter();
+
+			/**
+			 * The settings this model is being baked with.
+			 */
+			ModelBakeSettings settings();
+
+			/**
+			 * The baker being used to bake this model.
+			 * It can be used to {@linkplain Baker#bake load baked models}.
+			 */
+			Baker baker();
+
+			/**
+			 * The current model loader instance (changes when resource packs reload).
+			 * It can be used to {@linkplain ModelLoader#getOrLoadModel load unbaked models}.
+			 */
+			ModelLoader loader();
+		}
+	}
+
+	@FunctionalInterface
+	public interface AfterBake {
+		/**
+		 * This handler is invoked to allow modifying the baked model instance that is used and stored, after baking.
 		 *
 		 * <p>For further information, see the docs of {@link ModelLoadingPlugin.Context#modifyModelAfterBake()}.
 		 *
 		 * @param model the current baked model instance
 		 * @param context context with additional information about the model/loader
 		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
+		 * @see ModelLoadingPlugin.Context#modifyModelAfterBake
 		 */
-		BakedModel modifyBakedModel(BakedModel model, Context context);
+		BakedModel modifyModelAfterBake(BakedModel model, Context context);
 
 		/**
-		 * Context for a baked model load event.
+		 * Context for an after bake model modification event.
 		 */
 		interface Context {
 			/**
 			 * The identifier of this model (may be a {@link ModelIdentifier}).
 			 */
-			// TODO: should this be id() instead?
-			Identifier identifier();
+			Identifier id();
 
 			/**
 			 * The unbaked model that is being baked.
@@ -138,11 +181,13 @@ public final class ModelModifier {
 
 			/**
 			 * The baker being used to bake this model.
+			 * It can be used to {@linkplain Baker#bake load baked models}.
 			 */
 			Baker baker();
 
 			/**
 			 * The current model loader instance (changes when resource packs reload).
+			 * It can be used to {@linkplain ModelLoader#getOrLoadModel load unbaked models}.
 			 */
 			ModelLoader loader();
 		}

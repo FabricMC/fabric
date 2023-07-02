@@ -110,28 +110,30 @@ public class ModelLoadingEventDispatcher {
 	}
 
 	public UnbakedModel modifyModelOnLoad(Identifier identifier, UnbakedModel model) {
-		ModelModifier.Unbaked.Context observerContext = new UnbakedModifierContext(identifier, loader);
-		return context.modifyModelOnLoad().invoker().modifyUnbakedModel(model, observerContext);
+		ModelModifier.OnLoad.Context observerContext = new OnLoadModifierContext(identifier, loader);
+		return context.modifyModelOnLoad().invoker().modifyModelOnLoad(model, observerContext);
 	}
 
-	public UnbakedModel modifyModelBeforeBake(Identifier identifier, UnbakedModel model) {
-		ModelModifier.Unbaked.Context observerContext = new UnbakedModifierContext(identifier, loader);
-		return context.modifyModelBeforeBake().invoker().modifyUnbakedModel(model, observerContext);
+	public UnbakedModel modifyModelBeforeBake(Identifier identifier, UnbakedModel model, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+		ModelModifier.BeforeBake.Context observerContext = new BeforeBakeModifierContext(identifier, textureGetter, settings, baker, loader);
+		return context.modifyModelBeforeBake().invoker().modifyModelBeforeBake(model, observerContext);
 	}
 
 	public BakedModel modifyModelAfterBake(Identifier identifier, UnbakedModel model, BakedModel bakedModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
-		ModelModifier.Baked.Context observerContext = new BakedModifierContext(identifier, model, textureGetter, settings, baker, loader);
-		return context.modifyModelAfterBake().invoker().modifyBakedModel(bakedModel, observerContext);
+		ModelModifier.AfterBake.Context observerContext = new AfterBakeModifierContext(identifier, model, textureGetter, settings, baker, loader);
+		return context.modifyModelAfterBake().invoker().modifyModelAfterBake(bakedModel, observerContext);
 	}
 
 	private record ResolverContext(ModelLoader loader) implements ModelResolver.Context {
 		@Override
-		public UnbakedModel loadModel(Identifier id) {
-			return ((ModelLoaderHooks) loader).fabric_tryLoadModel(id);
+		public UnbakedModel getOrLoadModel(Identifier id) {
+			return loader.getOrLoadModel(id);
 		}
 	}
 
-	private record UnbakedModifierContext(Identifier identifier, ModelLoader loader) implements ModelModifier.Unbaked.Context { }
+	private record OnLoadModifierContext(Identifier id, ModelLoader loader) implements ModelModifier.OnLoad.Context { }
 
-	private record BakedModifierContext(Identifier identifier, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker, ModelLoader loader) implements ModelModifier.Baked.Context { }
+	private record BeforeBakeModifierContext(Identifier id, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker, ModelLoader loader) implements ModelModifier.BeforeBake.Context { }
+
+	private record AfterBakeModifierContext(Identifier id, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker, ModelLoader loader) implements ModelModifier.AfterBake.Context { }
 }

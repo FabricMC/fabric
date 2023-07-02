@@ -113,15 +113,4 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 	public ModelLoadingEventDispatcher fabric_getDispatcher() {
 		return fabric_eventDispatcher;
 	}
-
-	@Override
-	public UnbakedModel fabric_tryLoadModel(Identifier id) {
-		if (!modelsToLoad.add(id)) {
-			throw new IllegalStateException("Circular reference while loading " + id);
-		}
-
-		loadModel(id);
-		modelsToLoad.remove(id);
-		return unbakedModels.get(id);
-	}
 }

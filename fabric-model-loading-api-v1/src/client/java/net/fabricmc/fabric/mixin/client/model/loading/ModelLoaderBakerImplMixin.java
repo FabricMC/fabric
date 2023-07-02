@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Coerce;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.client.render.model.BakedModel;
@@ -43,25 +43,27 @@ public class ModelLoaderBakerImplMixin {
 	@Shadow
 	@Final
 	private ModelLoader field_40571;
+	@Shadow
+	@Final
+	private Function<SpriteIdentifier, Sprite> textureGetter;
 
-	@Redirect(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/ModelLoader$BakerImpl;getOrLoadModel(Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/model/UnbakedModel;"))
-	private UnbakedModel invokeModifyBeforeBake(@Coerce Baker baker, Identifier id) {
-		UnbakedModel model = baker.getOrLoadModel(id);
+	@ModifyVariable(method = "bake", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/model/ModelLoader$BakerImpl;getOrLoadModel(Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/model/UnbakedModel;"))
+	private UnbakedModel invokeModifyBeforeBake(UnbakedModel model, Identifier id, ModelBakeSettings settings) {
 		ModelLoadingEventDispatcher dispatcher = ((ModelLoaderHooks) this.field_40571).fabric_getDispatcher();
-		return dispatcher.modifyModelBeforeBake(id, model);
+		return dispatcher.modifyModelBeforeBake(id, model, textureGetter, settings, (Baker) this);
 	}
 
 	@Redirect(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/UnbakedModel;bake(Lnet/minecraft/client/render/model/Baker;Ljava/util/function/Function;Lnet/minecraft/client/render/model/ModelBakeSettings;Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/model/BakedModel;"))
-	private BakedModel invokeModifyAfterBake(UnbakedModel unbakedModel, Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Identifier identifier) {
-		BakedModel model = unbakedModel.bake(baker, textureGetter, settings, identifier);
+	private BakedModel invokeModifyAfterBake(UnbakedModel unbakedModel, Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Identifier id) {
+		BakedModel model = unbakedModel.bake(baker, textureGetter, settings, id);
 		ModelLoadingEventDispatcher dispatcher = ((ModelLoaderHooks) this.field_40571).fabric_getDispatcher();
-		return dispatcher.modifyModelAfterBake(identifier, unbakedModel, model, textureGetter, settings, baker);
+		return dispatcher.modifyModelAfterBake(id, unbakedModel, model, textureGetter, settings, baker);
 	}
 
 	@Redirect(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/json/JsonUnbakedModel;bake(Lnet/minecraft/client/render/model/Baker;Lnet/minecraft/client/render/model/json/JsonUnbakedModel;Ljava/util/function/Function;Lnet/minecraft/client/render/model/ModelBakeSettings;Lnet/minecraft/util/Identifier;Z)Lnet/minecraft/client/render/model/BakedModel;"))
-	private BakedModel invokeModifyAfterBake(JsonUnbakedModel unbakedModel, Baker baker, JsonUnbakedModel parent, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Identifier identifier, boolean hasDepth) {
-		BakedModel model = unbakedModel.bake(baker, parent, textureGetter, settings, identifier, hasDepth);
+	private BakedModel invokeModifyAfterBake(JsonUnbakedModel unbakedModel, Baker baker, JsonUnbakedModel parent, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Identifier id, boolean hasDepth) {
+		BakedModel model = unbakedModel.bake(baker, parent, textureGetter, settings, id, hasDepth);
 		ModelLoadingEventDispatcher dispatcher = ((ModelLoaderHooks) this.field_40571).fabric_getDispatcher();
-		return dispatcher.modifyModelAfterBake(identifier, unbakedModel, model, textureGetter, settings, baker);
+		return dispatcher.modifyModelAfterBake(id, unbakedModel, model, textureGetter, settings, baker);
 	}
 }
