@@ -12,6 +12,7 @@
     "RegistriesAccessor",
     "RegistriesMixin",
     "RegistryLoaderMixin",
+    "SaveLoadingMixin",
     "SimpleRegistryMixin",
     "StructuresToConfiguredStructuresFixMixin"
   ],
