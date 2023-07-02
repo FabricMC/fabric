@@ -37,17 +37,7 @@ def getSubprojectVersion(project) {
 		throw new NullPointerException("Could not find version for " + project.name)
 	}
 
-	if (grgit == null) {
-		return version + "+nogit"
-	}
-
-	def latestCommits = grgit.log(paths: [project.name], maxCommits: 1)
-
-	if (latestCommits.isEmpty()) {
-		return version + "+uncommited"
-	}
-
-	return version + "+" + latestCommits.get(0).id.substring(0, 8) + DigestUtils.sha256Hex(project.rootProject.minecraft_version).substring(0, 2)
+	return version
 }
 
 def getBranch() {

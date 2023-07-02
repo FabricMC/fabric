@@ -69,7 +69,7 @@
  * 	runs {
  * 		gametest {
  * 			inherit testmodServer
- * 			name "Game Test"
+ * 			configName = "Game Test"
  * 			vmArg "-Dfabric-api.gametest"
  * 			vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
  * 			runDir "build/gametest"
