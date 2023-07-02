@@ -67,8 +67,8 @@ public class FabricWrappedVanillaResourcePack extends GroupResourcePack {
 
 	@Override
 	public void findResources(ResourceType type, String namespace, String prefix, ResultConsumer consumer) {
-		super.findResources(type, namespace, prefix, consumer);
 		this.originalResourcePack.findResources(type, namespace, prefix, consumer);
+		super.findResources(type, namespace, prefix, consumer);
 	}
 
 	@Override
