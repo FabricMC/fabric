@@ -52,16 +52,20 @@ public class ModelLoadingEventDispatcher {
 
 	private final ModelLoader loader;
 	private final ResolverContext resolverContext;
-	private final ModelLoaderPluginContextImpl context;
+	private final ModelLoaderPluginContextImpl pluginContext;
+
+	private final OnLoadModifierContext onLoadModifierContext = new OnLoadModifierContext();
+	private final BeforeBakeModifierContext beforeBakeModifierContext = new BeforeBakeModifierContext();
+	private final AfterBakeModifierContext afterBakeModifierContext = new AfterBakeModifierContext();
 
 	public ModelLoadingEventDispatcher(ModelLoader loader, ResourceManager manager) {
 		this.loader = loader;
 		this.resolverContext = new ResolverContext(this.loader);
-		this.context = new ModelLoaderPluginContextImpl(manager, resolverContext);
+		this.pluginContext = new ModelLoaderPluginContextImpl(manager, resolverContext);
 
 		for (ModelLoadingPlugin plugin : PLUGINS) {
 			try {
-				plugin.onInitializeModelLoader(context);
+				plugin.onInitializeModelLoader(pluginContext);
 			} catch (Exception exception) {
 				LOGGER.error("Failed to initialize model loading plugin {}", plugin.getClass().getName(), exception);
 			}
@@ -69,7 +73,7 @@ public class ModelLoadingEventDispatcher {
 	}
 
 	public void addExtraModels(Consumer<Identifier> extraModelConsumer) {
-		for (Identifier id : context.extraModels) {
+		for (Identifier id : pluginContext.extraModels) {
 			extraModelConsumer.accept(id);
 		}
 	}
@@ -85,7 +89,7 @@ public class ModelLoadingEventDispatcher {
 
 	@Nullable
 	private UnbakedModel resolveModelVariant(ModelIdentifier variantId) {
-		UnbakedModel model = context.resolveModelVariant().invoker().resolveModelVariant(variantId, resolverContext);
+		UnbakedModel model = pluginContext.resolveModelVariant().invoker().resolveModelVariant(variantId, resolverContext);
 
 		if (model != null) {
 			return model;
@@ -106,34 +110,126 @@ public class ModelLoadingEventDispatcher {
 
 	@Nullable
 	private UnbakedModel resolveModelResource(Identifier resourceId) {
-		return context.resolveModelResource().invoker().resolveModelResource(resourceId, resolverContext);
+		return pluginContext.resolveModelResource().invoker().resolveModelResource(resourceId, resolverContext);
 	}
 
-	public UnbakedModel modifyModelOnLoad(Identifier identifier, UnbakedModel model) {
-		ModelModifier.OnLoad.Context observerContext = new OnLoadModifierContext(identifier, loader);
-		return context.modifyModelOnLoad().invoker().modifyModelOnLoad(model, observerContext);
+	public UnbakedModel modifyModelOnLoad(Identifier id, UnbakedModel model) {
+		onLoadModifierContext.prepare(id);
+		return pluginContext.modifyModelOnLoad().invoker().modifyModelOnLoad(model, onLoadModifierContext);
 	}
 
-	public UnbakedModel modifyModelBeforeBake(Identifier identifier, UnbakedModel model, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
-		ModelModifier.BeforeBake.Context observerContext = new BeforeBakeModifierContext(identifier, textureGetter, settings, baker, loader);
-		return context.modifyModelBeforeBake().invoker().modifyModelBeforeBake(model, observerContext);
+	public UnbakedModel modifyModelBeforeBake(Identifier id, UnbakedModel model, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+		beforeBakeModifierContext.prepare(id, textureGetter, settings, baker);
+		return pluginContext.modifyModelBeforeBake().invoker().modifyModelBeforeBake(model, beforeBakeModifierContext);
 	}
 
-	public BakedModel modifyModelAfterBake(Identifier identifier, UnbakedModel model, BakedModel bakedModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
-		ModelModifier.AfterBake.Context observerContext = new AfterBakeModifierContext(identifier, model, textureGetter, settings, baker, loader);
-		return context.modifyModelAfterBake().invoker().modifyModelAfterBake(bakedModel, observerContext);
+	public BakedModel modifyModelAfterBake(Identifier id, UnbakedModel sourceModel, BakedModel bakedModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+		afterBakeModifierContext.prepare(id, sourceModel, textureGetter, settings, baker);
+		return pluginContext.modifyModelAfterBake().invoker().modifyModelAfterBake(bakedModel, afterBakeModifierContext);
 	}
 
-	private record ResolverContext(ModelLoader loader) implements ModelResolver.Context {
+	private record ResolverContext(ModelLoader loader) implements ModelResolver.Context { }
+
+	private class OnLoadModifierContext implements ModelModifier.OnLoad.Context {
+		private Identifier id;
+
+		private void prepare(Identifier id) {
+			this.id = id;
+		}
+
 		@Override
-		public UnbakedModel getOrLoadModel(Identifier id) {
-			return loader.getOrLoadModel(id);
+		public Identifier id() {
+			return id;
+		}
+
+		@Override
+		public ModelLoader loader() {
+			return loader;
 		}
 	}
 
-	private record OnLoadModifierContext(Identifier id, ModelLoader loader) implements ModelModifier.OnLoad.Context { }
+	private class BeforeBakeModifierContext implements ModelModifier.BeforeBake.Context {
+		private Identifier id;
+		private Function<SpriteIdentifier, Sprite> textureGetter;
+		private ModelBakeSettings settings;
+		private Baker baker;
 
-	private record BeforeBakeModifierContext(Identifier id, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker, ModelLoader loader) implements ModelModifier.BeforeBake.Context { }
+		private void prepare(Identifier id, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+			this.id = id;
+			this.textureGetter = textureGetter;
+			this.settings = settings;
+			this.baker = baker;
+		}
 
-	private record AfterBakeModifierContext(Identifier id, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker, ModelLoader loader) implements ModelModifier.AfterBake.Context { }
+		@Override
+		public Identifier id() {
+			return id;
+		}
+
+		@Override
+		public Function<SpriteIdentifier, Sprite> textureGetter() {
+			return textureGetter;
+		}
+
+		@Override
+		public ModelBakeSettings settings() {
+			return settings;
+		}
+
+		@Override
+		public Baker baker() {
+			return baker;
+		}
+
+		@Override
+		public ModelLoader loader() {
+			return loader;
+		}
+	}
+
+	private class AfterBakeModifierContext implements ModelModifier.AfterBake.Context {
+		private Identifier id;
+		private UnbakedModel sourceModel;
+		private Function<SpriteIdentifier, Sprite> textureGetter;
+		private ModelBakeSettings settings;
+		private Baker baker;
+
+		private void prepare(Identifier id, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+			this.id = id;
+			this.sourceModel = sourceModel;
+			this.textureGetter = textureGetter;
+			this.settings = settings;
+			this.baker = baker;
+		}
+
+		@Override
+		public Identifier id() {
+			return id;
+		}
+
+		@Override
+		public UnbakedModel sourceModel() {
+			return sourceModel;
+		}
+
+		@Override
+		public Function<SpriteIdentifier, Sprite> textureGetter() {
+			return textureGetter;
+		}
+
+		@Override
+		public ModelBakeSettings settings() {
+			return settings;
+		}
+
+		@Override
+		public Baker baker() {
+			return baker;
+		}
+
+		@Override
+		public ModelLoader loader() {
+			return loader;
+		}
+	}
 }

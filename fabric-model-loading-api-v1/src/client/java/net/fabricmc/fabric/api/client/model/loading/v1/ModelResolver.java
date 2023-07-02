@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
@@ -100,6 +101,11 @@ public final class ModelResolver {
 	 */
 	public interface Context {
 		/**
+		 * The current model loader instance (changes when resource packs reload).
+		 */
+		ModelLoader loader();
+
+		/**
 		 * Load a model using a {@link Identifier}, {@link ModelIdentifier}, ...
 		 *
 		 * <p>Please note that the game engine keeps track of circular model loading calls on its own.
@@ -107,7 +113,9 @@ public final class ModelResolver {
 		 * @param id The model identifier.
 		 * @return The UnbakedModel. Can return a missing model if it's not present!
 		 */
-		UnbakedModel getOrLoadModel(Identifier id);
+		default UnbakedModel getOrLoadModel(Identifier id) {
+			return loader().getOrLoadModel(id);
+		}
 	}
 
 	private ModelResolver() { }
