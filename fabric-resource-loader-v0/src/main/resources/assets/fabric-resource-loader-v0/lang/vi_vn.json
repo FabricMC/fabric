@@ -1,0 +1,7 @@
+{
+  "pack.description.modResources": "Tài nguyên mod.",
+  "pack.source.fabricmod": "Mod Fabric",
+  "pack.source.builtinMod": "tích hợp: %s",
+  "pack.name.fabricMod": "Mod Fabric \"%s\"",
+  "pack.name.fabricMods": "Các Mod Fabric"
+}
