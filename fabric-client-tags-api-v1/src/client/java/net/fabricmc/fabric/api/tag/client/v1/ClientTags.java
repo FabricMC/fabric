@@ -16,21 +16,15 @@
 
 package net.fabricmc.fabric.api.tag.client.v1;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.RegistryKey;
 
-import net.fabricmc.fabric.impl.tag.client.ClientTagsLoader;
+import net.fabricmc.fabric.impl.tag.client.ClientTagsImpl;
 
 /**
  * Allows the use of tags by directly loading them from the installed mods.
@@ -45,8 +39,6 @@ import net.fabricmc.fabric.impl.tag.client.ClientTagsLoader;
  * even when connected to a vanilla server.
  */
 public final class ClientTags {
-	private static final Map<TagKey<?>, Set<Identifier>> LOCAL_TAG_CACHE = new ConcurrentHashMap<>();
-
 	private ClientTags() {
 	}
 
@@ -57,54 +49,25 @@ public final class ClientTags {
 	 * @return a set of {@code Identifier}s this tag contains
 	 */
 	public static Set<Identifier> getOrCreateLocalTag(TagKey<?> tagKey) {
-		Set<Identifier> ids = LOCAL_TAG_CACHE.get(tagKey);
-
-		if (ids == null) {
-			ids = ClientTagsLoader.loadTag(tagKey);
-			LOCAL_TAG_CACHE.put(tagKey, ids);
-		}
-
-		return ids;
+		return ClientTagsImpl.getOrCreatePartiallySyncedTag(tagKey).completeIds();
 	}
 
 	/**
 	 * Checks if an entry is in a tag.
 	 *
 	 * <p>If the synced tag does exist, it is queried. If it does not exist,
-	 * the tag populated from the available mods is checked.
+	 * the tag populated from the available mods is checked, recursively checking the
+	 * synced tags and entries contained within.
 	 *
 	 * @param tagKey the {@code TagKey} to being checked
 	 * @param entry  the entry to check
 	 * @return if the entry is in the given tag
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, T entry) {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(entry);
 
-		Optional<? extends Registry<?>> maybeRegistry = getRegistry(tagKey);
-
-		if (maybeRegistry.isEmpty()) {
-			return false;
-		}
-
-		if (!tagKey.isOf(maybeRegistry.get().getKey())) {
-			return false;
-		}
-
-		Registry<T> registry = (Registry<T>) maybeRegistry.get();
-
-		Optional<RegistryKey<T>> maybeKey = registry.getKey(entry);
-
-		// Check synced tag
-		if (registry.getEntryList(tagKey).isPresent()) {
-			return maybeKey.filter(registryKey -> registry.entryOf(registryKey).isIn(tagKey))
-					.isPresent();
-		}
-
-		// Check local tags
-		Set<Identifier> ids = getOrCreateLocalTag(tagKey);
-		return maybeKey.filter(registryKey -> ids.contains(registryKey.getValue())).isPresent();
+		return ClientTagsImpl.getRegistryEntry(tagKey, entry).map(re -> isInWithLocalFallback(tagKey, re)).orElse(false);
 	}
 
 	/**
@@ -112,7 +75,8 @@ public final class ClientTags {
 	 * such as {@link net.minecraft.world.biome.Biome}s.
 	 *
 	 * <p>If the synced tag does exist, it is queried. If it does not exist,
-	 * the tag populated from the available mods is checked.
+	 * the tag populated from the available mods is checked, recursively checking the
+	 * synced tags and entries contained within.
 	 *
 	 * @param tagKey        the {@code TagKey} to be checked
 	 * @param registryEntry the entry to check
@@ -121,21 +85,7 @@ public final class ClientTags {
 	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, RegistryEntry<T> registryEntry) {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(registryEntry);
-
-		// Check if the tag exists in the dynamic registry first
-		Optional<? extends Registry<T>> maybeRegistry = getRegistry(tagKey);
-
-		if (maybeRegistry.isPresent()) {
-			if (maybeRegistry.get().getEntryList(tagKey).isPresent()) {
-				return registryEntry.isIn(tagKey);
-			}
-		}
-
-		if (registryEntry.getKey().isPresent()) {
-			return isInLocal(tagKey, registryEntry.getKey().get());
-		}
-
-		return false;
+		return ClientTagsImpl.isInWithLocalFallback(tagKey, registryEntry);
 	}
 
 	/**
@@ -156,23 +106,5 @@ public final class ClientTags {
 		}
 
 		return false;
-	}
-
-	@SuppressWarnings("unchecked")
-	private static <T> Optional<? extends Registry<T>> getRegistry(TagKey<T> tagKey) {
-		Objects.requireNonNull(tagKey);
-
-		// Check if the tag represents a dynamic registry
-		if (MinecraftClient.getInstance() != null) {
-			if (MinecraftClient.getInstance().world != null) {
-				if (MinecraftClient.getInstance().world.getRegistryManager() != null) {
-					Optional<? extends Registry<T>> maybeRegistry = MinecraftClient.getInstance().world
-							.getRegistryManager().getOptional(tagKey.registry());
-					if (maybeRegistry.isPresent()) return maybeRegistry;
-				}
-			}
-		}
-
-		return (Optional<? extends Registry<T>>) Registries.REGISTRIES.getOrEmpty(tagKey.registry().getValue());
 	}
 }
