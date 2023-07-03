@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "fabric-particles-v1-testmod:block/tint_test"
+  }
+}
