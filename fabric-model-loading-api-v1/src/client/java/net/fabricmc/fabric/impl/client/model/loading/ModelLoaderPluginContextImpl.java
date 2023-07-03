@@ -123,15 +123,15 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 	}
 
 	@Override
-	public void addModels(Identifier... identifiers) {
-		for (Identifier id : identifiers) {
+	public void addModels(Identifier... ids) {
+		for (Identifier id : ids) {
 			extraModels.add(id);
 		}
 	}
 
 	@Override
-	public void addModels(Collection<? extends Identifier> identifiers) {
-		extraModels.addAll(identifiers);
+	public void addModels(Collection<? extends Identifier> ids) {
+		extraModels.addAll(ids);
 	}
 
 	@Override

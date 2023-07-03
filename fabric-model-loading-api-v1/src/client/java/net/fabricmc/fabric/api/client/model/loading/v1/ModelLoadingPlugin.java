@@ -56,12 +56,12 @@ public interface ModelLoadingPlugin {
 		/**
 		 * Add one or multiple models (can be {@link ModelIdentifier}s) to the list of models that will be loaded.
 		 */
-		void addModels(Identifier... identifier);
+		void addModels(Identifier... ids);
 
 		/**
 		 * Add multiple models (can be {@link ModelIdentifier}s) to the list of models that will be loaded.
 		 */
-		void addModels(Collection<? extends Identifier> identifiers);
+		void addModels(Collection<? extends Identifier> ids);
 
 		/**
 		 * Event access to register model variant resolvers.
