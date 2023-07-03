@@ -56,6 +56,7 @@ public abstract class GroupResourcePack implements ResourcePack {
 		List<ModResourcePack> packs = this.namespacedPacks.get(id.getNamespace());
 
 		if (packs != null) {
+			// Last to first, since higher priority packs are at the end
 			for (int i = packs.size() - 1; i >= 0; i--) {
 				ResourcePack pack = packs.get(i);
 				InputSupplier<InputStream> supplier = pack.open(type, id);
@@ -77,9 +78,8 @@ public abstract class GroupResourcePack implements ResourcePack {
 			return;
 		}
 
-		for (int i = packs.size() - 1; i >= 0; i--) {
-			ResourcePack pack = packs.get(i);
-
+		// First to last, since later calls override previously returned data
+		for (ModResourcePack pack : packs) {
 			pack.findResources(type, namespace, prefix, consumer);
 		}
 	}
@@ -98,7 +98,9 @@ public abstract class GroupResourcePack implements ResourcePack {
 
 		Identifier metadataId = NamespaceResourceManager.getMetadataPath(id);
 
-		for (ModResourcePack pack : packs) {
+		// Last to first, since higher priority packs are at the end
+		for (int i = packs.size() - 1; i >= 0; i--) {
+			ModResourcePack pack = packs.get(i);
 			InputSupplier<InputStream> supplier = pack.open(type, id);
 
 			if (supplier != null) {
