@@ -27,7 +27,9 @@ import net.minecraft.util.Identifier;
  * <p>A {@link BlockSetType} is used to tell the game what sounds various related blocks should use.
  *
  * @see WoodTypeRegistry
+ * @deprecated use {@link BlockSetTypeBuilder}
  */
+@Deprecated
 public final class BlockSetTypeRegistry {
 	private BlockSetTypeRegistry() {
 	}
