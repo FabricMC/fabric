@@ -1,0 +1,5 @@
+{
+  "block.fabric-particles-v1-testmod.always_tinted": "Dust Particles Always Tinted",
+  "block.fabric-particles-v1-testmod.never_tinted": "Dust Particles Never Tinted",
+  "block.fabric-particles-v1-testmod.tinted_over_water": "Dust Particles Only Tinted Over Water"
+}
