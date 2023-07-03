@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.client.resource.loader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Stream;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +27,6 @@ import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.PathUtil;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
@@ -43,41 +42,14 @@ public class FabricWrappedVanillaResourcePack extends GroupResourcePack {
 	private final AbstractFileResourcePack originalResourcePack;
 
 	public FabricWrappedVanillaResourcePack(AbstractFileResourcePack originalResourcePack, List<ModResourcePack> modResourcePacks) {
-		super(ResourceType.CLIENT_RESOURCES, modResourcePacks);
+		// Mod resource packs have higher priority, add them last (so vanilla assets can be overridden)
+		super(ResourceType.CLIENT_RESOURCES, Stream.concat(Stream.of(originalResourcePack), modResourcePacks.stream()).toList());
 		this.originalResourcePack = originalResourcePack;
 	}
 
 	@Override
 	public InputSupplier<InputStream> openRoot(String... pathSegments) {
-		PathUtil.validatePath(pathSegments);
-
-		return this.originalResourcePack.openRoot(String.join("/", pathSegments));
-	}
-
-	@Override
-	public InputSupplier<InputStream> open(ResourceType type, Identifier id) {
-		InputSupplier<InputStream> originalPackData = this.originalResourcePack.open(type, id);
-
-		if (originalPackData != null) {
-			return originalPackData;
-		}
-
-		return super.open(type, id);
-	}
-
-	@Override
-	public void findResources(ResourceType type, String namespace, String prefix, ResultConsumer consumer) {
-		this.originalResourcePack.findResources(type, namespace, prefix, consumer);
-		super.findResources(type, namespace, prefix, consumer);
-	}
-
-	@Override
-	public Set<String> getNamespaces(ResourceType type) {
-		Set<String> namespaces = this.originalResourcePack.getNamespaces(type);
-
-		namespaces.addAll(super.getNamespaces(type));
-
-		return namespaces;
+		return this.originalResourcePack.openRoot(pathSegments);
 	}
 
 	@Override
@@ -88,11 +60,5 @@ public class FabricWrappedVanillaResourcePack extends GroupResourcePack {
 	@Override
 	public String getName() {
 		return this.originalResourcePack.getName();
-	}
-
-	@Override
-	public void close() {
-		this.originalResourcePack.close();
-		super.close();
 	}
 }
