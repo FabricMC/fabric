@@ -611,6 +611,12 @@ subprojects {
 			testmodRuntimeOnly project(path: ':fabric-registry-sync-v0', configuration: 'namedElements')
 			testmodClientImplementation project(":fabric-registry-sync-v0").sourceSets.client.output
 		}
+
+		// Make all testmods build against the fabric-api-base testmod's
+		if (project.name != "fabric-api-base") {
+			testmodImplementation project(":fabric-api-base").sourceSets.testmod.output
+			testmodClientImplementation project(":fabric-api-base").sourceSets.testmodClient.output
+		}
 	}
 
 	publishing {

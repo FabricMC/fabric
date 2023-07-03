@@ -20,8 +20,14 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
@@ -35,9 +41,15 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.client.util.ScreenshotRecorder;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.test.base.client.mixin.CyclingButtonWidgetAccessor;
 import net.fabricmc.fabric.test.base.client.mixin.ScreenAccessor;
@@ -77,8 +89,8 @@ public final class FabricClientTestHelper {
 	}
 
 	public static void takeScreenshot(String name) {
-		// Allow time for any screens to open
-		waitFor(Duration.ofSeconds(1));
+		// Allow time for the screen to settle
+		waitForClientTick();
 
 		submitAndWait(client -> {
 			ScreenshotRecorder.saveScreenshot(FabricLoader.getInstance().getGameDir().toFile(), name + ".png", client.getFramebuffer(), (message) -> {
@@ -134,6 +146,30 @@ public final class FabricClientTestHelper {
 		return false;
 	}
 
+	public static void tapKey(int key) {
+		submitAndWait(client -> {
+			client.keyboard.onKey(
+					client.getWindow().getHandle(),
+					key,
+					-1,
+					GLFW.GLFW_PRESS,
+					0
+			);
+			return null;
+		});
+
+		submitAndWait(client -> {
+			client.keyboard.onKey(
+					client.getWindow().getHandle(),
+					key,
+					-1,
+					GLFW.GLFW_RELEASE,
+					0
+			);
+			return null;
+		});
+	}
+
 	public static void waitForWorldTicks(long ticks) {
 		// Wait for the world to be loaded and get the start ticks
 		waitFor("World load", client -> client.world != null && !(client.currentScreen instanceof LevelLoadingScreen), Duration.ofMinutes(30));
@@ -141,9 +177,26 @@ public final class FabricClientTestHelper {
 		waitFor("World load", client -> Objects.requireNonNull(client.world).getTime() > startTicks + ticks, Duration.ofMinutes(10));
 	}
 
+	public static void waitForClientTick() {
+		waitFor("Client tick", minecraftClient -> true);
+	}
+
+	public static void waitForClientTicks(int ticks) {
+		for (int i = 0; i < ticks; i++) {
+			waitForClientTick();
+		}
+	}
+
 	public static void enableDebugHud() {
 		submitAndWait(client -> {
 			client.options.debugEnabled = true;
+			return null;
+		});
+	}
+
+	public static void disableDebugHud() {
+		submitAndWait(client -> {
+			client.options.debugEnabled = false;
 			return null;
 		});
 	}
@@ -191,5 +244,22 @@ public final class FabricClientTestHelper {
 
 	public static <T> T submitAndWait(Function<MinecraftClient, T> function) {
 		return submit(function).join();
+	}
+
+	public static void submitServer(BiConsumer<ServerWorld, ServerPlayerEntity> serverWorldConsumer) {
+		try {
+			submitAndWait(minecraftClient -> {
+				final ClientPlayerEntity player = minecraftClient.player;
+				final RegistryKey<World> registryKey = player.getWorld().getRegistryKey();
+				final IntegratedServer server = minecraftClient.getServer();
+				return server.submit(() -> {
+					ServerWorld serverWorld = server.getWorld(registryKey);
+					ServerPlayerEntity serverPlayerEntity = serverWorld.getPlayers(entity -> entity.getUuid().equals(player.getUuid())).get(0);
+					serverWorldConsumer.accept(serverWorld, serverPlayerEntity);
+				});
+			}).get(10, TimeUnit.SECONDS);
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
