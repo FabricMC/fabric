@@ -19,10 +19,16 @@ package net.fabricmc.fabric.api.server.consent.v1;
 import java.util.Collections;
 import java.util.List;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.server.consent.FabricServerConsentImpl;
 
+/**
+ * <b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
+ */
+@ApiStatus.Experimental
 public final class FabricServerConsent {
 	/**
 	 * Returns whether the Fabric Server Consent API is enabled on this server.

@@ -19,10 +19,16 @@ package net.fabricmc.fabric.api.server.consent.v1.client;
 import java.util.Collections;
 import java.util.List;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.server.consent.client.ClientFabricServerConsentImpl;
 
+/**
+ * <b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
+ */
+@ApiStatus.Experimental
 public final class ClientFabricServerConsent {
 	/**
 	 * Returns the most recent list of illegal flags that was sent by the server.

@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.server.consent.v1.client;
 
 import java.util.List;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.util.Identifier;
@@ -25,6 +27,10 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * <b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
+ */
+@ApiStatus.Experimental
 public interface ClientFabricServerConsentFlagsCallback {
 	/**
 	 * An event to notify the client that the server has sent their list of illegal flags.

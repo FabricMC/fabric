@@ -16,8 +16,14 @@
 
 package net.fabricmc.fabric.api.server.consent.v1.client;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.util.Identifier;
 
+/**
+ * <b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
+ */
+@ApiStatus.Experimental
 public final class Flags {
 	public static final String COMMON_NAMESPACE = "c";
 	public static final String WILDCARD_FEATURE = "all";
