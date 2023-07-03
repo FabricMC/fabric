@@ -146,6 +146,9 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	 * but inventories with a dynamic or very large amount of slots should not do that to ensure timely termination of
 	 * the iteration.
 	 *
+	 * <p>If a modification is made to the storage during iteration, the iterator might become invalid at the end of the outermost transaction.
+	 * In particular, if multiple storage views are extracted from, the entire iteration should be wrapped in a transaction.
+	 *
 	 * @return An iterator over the contents of this storage. Calling remove on the iterator is not allowed.
 	 */
 	@Override
