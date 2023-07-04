@@ -49,7 +49,6 @@ jobs:
         uses: modmuss50/xvfb-action@v1
         with:
           run: ./.github/workflows/client_test.sh
-          options: --listen-tcp --server-num 99
       - uses: actions/upload-artifact@v3
         if: always()
         with:
