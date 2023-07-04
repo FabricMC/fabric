@@ -44,6 +44,7 @@ jobs:
           distribution: 'microsoft'
           java-version: '17'
       - run: mkdir run && echo "renderDistance:4" >> run/options.txt
+      - run: apt update && apt install ffmpeg -y
       - run: ./gradlew remapJar remapTestmodJar configureClientLaunch --stacktrace --warning-mode=fail
       - name: Run Auto test Client
         uses: modmuss50/xvfb-action@v1
