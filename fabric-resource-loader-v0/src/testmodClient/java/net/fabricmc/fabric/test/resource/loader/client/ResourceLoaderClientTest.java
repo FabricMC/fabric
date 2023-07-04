@@ -21,8 +21,8 @@ import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.openGa
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.submitServer;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.takeScreenshot;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.tapKey;
-import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForClientTicks;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForLoadingComplete;
+import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForPendingChunks;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForScreen;
 
 import org.lwjgl.glfw.GLFW;
@@ -44,8 +44,7 @@ public class ResourceLoaderClientTest implements FabricClientTest {
 						Blocks.DIAMOND_BLOCK.getDefaultState()
 				)
 		);
-		// Takes a little bit for our block to appear :D
-		waitForClientTicks(5);
+		waitForPendingChunks();
 
 		// Default
 		takeScreenshot("injected_resources_default");
@@ -99,5 +98,7 @@ public class ResourceLoaderClientTest implements FabricClientTest {
 		clickScreenButton("gui.done");
 		waitForScreen(GameMenuScreen.class);
 		clickScreenButton("menu.returnToGame");
+
+		waitForPendingChunks();
 	}
 }

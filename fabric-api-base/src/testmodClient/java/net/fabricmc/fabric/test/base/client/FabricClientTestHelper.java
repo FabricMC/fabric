@@ -43,6 +43,7 @@ import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.Perspective;
+import net.minecraft.client.render.chunk.ChunkBuilder;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.integrated.IntegratedServer;
@@ -59,6 +60,14 @@ import net.fabricmc.loader.api.FabricLoader;
 public final class FabricClientTestHelper {
 	public static void waitForLoadingComplete() {
 		waitFor("Loading to complete", client -> client.getOverlay() == null, Duration.ofMinutes(5));
+	}
+
+	public static void waitForPendingChunks() {
+		waitForWorldTicks(1);
+		waitFor("Pending chunks", minecraftClient -> {
+			final ChunkBuilder chunkBuilder = minecraftClient.worldRenderer.getChunkBuilder();
+			return chunkBuilder != null && chunkBuilder.getToBatchCount() == 0;
+		}, Duration.ofMinutes(5));
 	}
 
 	public static void waitForScreen(Class<? extends Screen> screenClass) {

@@ -17,14 +17,14 @@
 package net.fabricmc.fabric.test.base.client;
 
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.clickScreenButton;
+import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.disableDebugHud;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.enableDebugHud;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.openGameMenu;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.submitAndWait;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.takeScreenshot;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForLoadingComplete;
+import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForPendingChunks;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForScreen;
-import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForWorldTicks;
-import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.disableDebugHud;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -118,7 +118,7 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 
 		{
 			enableDebugHud();
-			waitForWorldTicks(200);
+			waitForPendingChunks();
 			takeScreenshot("in_game_overworld");
 			disableDebugHud();
 		}
