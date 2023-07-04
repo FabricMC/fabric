@@ -27,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.ModelLoader;
@@ -54,7 +55,10 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 	@Final
 	private Map<Identifier, UnbakedModel> modelsToBake;
 
+	@Unique
 	private ModelLoadingEventDispatcher fabric_eventDispatcher;
+	@Unique
+	private int fabric_guardGetOrLoadModel = 0;
 
 	@Shadow
 	private void addModel(ModelIdentifier id) {
@@ -96,21 +100,67 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 
 	@Inject(method = "loadModel", at = @At("HEAD"), cancellable = true)
 	private void onLoadModel(Identifier id, CallbackInfo ci) {
-		UnbakedModel customModel = fabric_eventDispatcher.resolveModel(id);
+		// Prevent calls to getOrLoadModel from loadModel as it will cause problems.
+		// Mods should call getOrLoadModel on the ModelResolver.Context instead.
+		fabric_guardGetOrLoadModel++;
 
-		if (customModel != null) {
-			putModel(id, customModel);
-			ci.cancel();
+		try {
+			UnbakedModel customModel = fabric_eventDispatcher.resolveModel(id);
+
+			if (customModel != null) {
+				putModel(id, customModel);
+				ci.cancel();
+			}
+		} finally {
+			fabric_guardGetOrLoadModel--;
+		}
+	}
+
+	@Inject(method = "getOrLoadModel", at = @At("HEAD"))
+	private void fabric_preventNestedGetOrLoadModel(Identifier id, CallbackInfoReturnable<UnbakedModel> cir) {
+		if (fabric_guardGetOrLoadModel > 0) {
+			throw new IllegalStateException("ModelLoader#getOrLoadModel called from a ModelResolver or ModelModifier.OnBake instance. This is not allowed to prevent subtle model loading errors. Use getOrLoadModel from the context instead.");
 		}
 	}
 
 	@ModifyVariable(method = "putModel", at = @At("HEAD"), argsOnly = true)
 	private UnbakedModel onPutModel(UnbakedModel model, Identifier identifier) {
-		return fabric_eventDispatcher.modifyModelOnLoad(identifier, model);
+		fabric_guardGetOrLoadModel++;
+
+		try {
+			return fabric_eventDispatcher.modifyModelOnLoad(identifier, model);
+		} finally {
+			fabric_guardGetOrLoadModel--;
+		}
 	}
 
 	@Override
 	public ModelLoadingEventDispatcher fabric_getDispatcher() {
 		return fabric_eventDispatcher;
+	}
+
+	/**
+	 * Unlike getOrLoadModel, this method supports nested model loading.
+	 *
+	 * <p>Vanilla does not due to the iteration over modelsToLoad which causes models to be resolved multiple times,
+	 * probably leading to crashes.
+	 */
+	@Override
+	public UnbakedModel fabric_getOrLoadModel(Identifier id) {
+		if (this.unbakedModels.containsKey(id)) {
+			return this.unbakedModels.get(id);
+		}
+
+		if (!modelsToLoad.add(id)) {
+			throw new IllegalStateException("Circular reference while loading " + id);
+		}
+
+		try {
+			loadModel(id);
+		} finally {
+			modelsToLoad.remove(id);
+		}
+
+		return unbakedModels.get(id);
 	}
 }

@@ -101,21 +101,22 @@ public final class ModelResolver {
 	 */
 	public interface Context {
 		/**
-		 * The current model loader instance (changes when resource packs reload).
-		 */
-		ModelLoader loader();
-
-		/**
-		 * Load a model using a {@link Identifier}, {@link ModelIdentifier}, ...
+		 * Load a model using an {@link Identifier}, {@link ModelIdentifier}, ... or get it if it was already loaded.
 		 *
 		 * <p>Please note that the game engine keeps track of circular model loading calls on its own.
 		 *
 		 * @param id The model identifier.
 		 * @return The UnbakedModel. Can return a missing model if it's not present!
 		 */
-		default UnbakedModel getOrLoadModel(Identifier id) {
-			return loader().getOrLoadModel(id);
-		}
+		UnbakedModel getOrLoadModel(Identifier id);
+
+		/**
+		 * The current model loader instance (changes when resource packs reload).
+		 *
+		 * <p>Do <b>not</b> call {@link ModelLoader#getOrLoadModel} as it doesn't supported nested model resolution,
+		 * use {@link #getOrLoadModel} from the context instead.
+		 */
+		ModelLoader loader();
 	}
 
 	private ModelResolver() { }

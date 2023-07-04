@@ -75,7 +75,7 @@ public class ModelTestModClient implements ClientModInitializer {
 			ModelIdentifier fenceId = BlockModels.getModelId(Blocks.OAK_FENCE.getDefaultState().with(HorizontalConnectingBlock.WEST, true));
 			pluginContext.modifyModelOnLoad().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
 				if (fenceId.equals(context.id())) {
-					return context.loader().getOrLoadModel(ModelLoader.MISSING_ID);
+					return context.getOrLoadModel(ModelLoader.MISSING_ID);
 				}
 
 				return model;

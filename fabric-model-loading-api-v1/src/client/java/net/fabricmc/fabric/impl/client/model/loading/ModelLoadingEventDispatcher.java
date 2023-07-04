@@ -60,7 +60,7 @@ public class ModelLoadingEventDispatcher {
 
 	public ModelLoadingEventDispatcher(ModelLoader loader, ResourceManager manager) {
 		this.loader = loader;
-		this.resolverContext = new ResolverContext(this.loader);
+		this.resolverContext = new ResolverContext();
 		this.pluginContext = new ModelLoaderPluginContextImpl(manager, resolverContext);
 
 		for (ModelLoadingPlugin plugin : PLUGINS) {
@@ -128,7 +128,17 @@ public class ModelLoadingEventDispatcher {
 		return pluginContext.modifyModelAfterBake().invoker().modifyModelAfterBake(bakedModel, afterBakeModifierContext);
 	}
 
-	private record ResolverContext(ModelLoader loader) implements ModelResolver.Context { }
+	private class ResolverContext implements ModelResolver.Context {
+		@Override
+		public ModelLoader loader() {
+			return loader;
+		}
+
+		@Override
+		public UnbakedModel getOrLoadModel(Identifier id) {
+			return ((ModelLoaderHooks) loader).fabric_getOrLoadModel(id);
+		}
+	}
 
 	private class OnLoadModifierContext implements ModelModifier.OnLoad.Context {
 		private Identifier id;
@@ -140,6 +150,11 @@ public class ModelLoadingEventDispatcher {
 		@Override
 		public Identifier id() {
 			return id;
+		}
+
+		@Override
+		public UnbakedModel getOrLoadModel(Identifier id) {
+			return ((ModelLoaderHooks) loader).fabric_getOrLoadModel(id);
 		}
 
 		@Override

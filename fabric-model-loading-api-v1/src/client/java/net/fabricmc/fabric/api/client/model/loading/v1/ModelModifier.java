@@ -89,8 +89,23 @@ public final class ModelModifier {
 			Identifier id();
 
 			/**
+			 * Load a model using an {@link Identifier}, {@link ModelIdentifier}, ... or get it if it was already loaded.
+			 *
+			 * <p>Please note that the game engine keeps track of circular model loading calls on its own.
+			 *
+			 * @param id The model identifier.
+			 * @return The UnbakedModel. Can return a missing model if it's not present!
+			 */
+			UnbakedModel getOrLoadModel(Identifier id);
+
+			/**
 			 * The current model loader instance (changes when resource packs reload).
-			 * It can be used to {@linkplain ModelLoader#getOrLoadModel load unbaked models}.
+			 *
+			 * <p>Do <b>not</b> call {@link ModelLoader#getOrLoadModel} as it doesn't supported nested model resolution,
+			 * use {@link #getOrLoadModel} from the context instead.
+			 *
+			 * @apiNote Calling {@link ModelLoader#getOrLoadModel} is fine for {@link BeforeBake} and {@link AfterBake},
+			 * it should only be avoided in {@link OnLoad} listeners.
 			 */
 			ModelLoader loader();
 		}

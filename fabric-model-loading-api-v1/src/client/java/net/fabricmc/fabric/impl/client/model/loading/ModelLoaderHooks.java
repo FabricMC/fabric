@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.impl.client.model.loading;
 
+import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.util.Identifier;
+
 public interface ModelLoaderHooks {
 	ModelLoadingEventDispatcher fabric_getDispatcher();
+
+	UnbakedModel fabric_getOrLoadModel(Identifier id);
 }
