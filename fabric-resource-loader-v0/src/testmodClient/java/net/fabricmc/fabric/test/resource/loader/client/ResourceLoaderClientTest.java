@@ -31,6 +31,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.screen.pack.PackScreen;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.test.base.client.ClientTest;
 import net.fabricmc.fabric.test.base.client.FabricClientTest;
@@ -38,12 +40,19 @@ import net.fabricmc.fabric.test.base.client.FabricClientTest;
 public class ResourceLoaderClientTest implements FabricClientTest {
 	@ClientTest
 	public void injectedResources() {
-		submitServer((world, player) ->
-				world.setBlockState(
-						player.getBlockPos().up().offset(player.getHorizontalFacing(), 1),
-						Blocks.DIAMOND_BLOCK.getDefaultState()
-				)
-		);
+		submitServer((world, player) -> {
+			final Direction facing = player.getHorizontalFacing();
+			final BlockPos pos = player.getBlockPos().up();
+
+			world.setBlockState(
+					pos.offset(facing),
+					Blocks.AIR.getDefaultState()
+			);
+			world.setBlockState(
+					pos.offset(facing, 2),
+					Blocks.DIAMOND_BLOCK.getDefaultState()
+			);
+		});
 		waitForPendingChunks();
 
 		// Default

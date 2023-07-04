@@ -40,8 +40,11 @@ import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
+import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class FabricApiAutoTestClient implements ClientModInitializer {
@@ -49,6 +52,26 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) -> {
+			dispatcher.register(ClientCommandManager.literal("client_test").executes(context -> {
+				var thread = new Thread(() -> {
+					try {
+						final List<FabricClientTest> tests = FabricLoader.getInstance()
+								.getEntrypoints(ENTRYPOINT_KEY, FabricClientTest.class);
+						executeTests(tests, FabricClientTest.Context.WORLD);
+
+						context.getSource().sendFeedback(Text.literal("Complete"));
+					} catch (Throwable t) {
+						t.printStackTrace();
+						context.getSource().sendError(Text.literal(t.getMessage()));
+					}
+				});
+				thread.setName("Fabric Auto Test");
+				thread.start();
+				return 0;
+			}));
+		});
+
 		if (System.getProperty("fabric.autoTest") == null) {
 			return;
 		}

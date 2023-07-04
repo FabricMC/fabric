@@ -28,6 +28,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
@@ -58,11 +60,14 @@ import net.fabricmc.loader.api.FabricLoader;
 
 // Provides thread safe utils for interacting with a running game.
 public final class FabricClientTestHelper {
+	private static final Logger LOGGER = LoggerFactory.getLogger(FabricClientTestHelper.class);
+
 	public static void waitForLoadingComplete() {
 		waitFor("Loading to complete", client -> client.getOverlay() == null, Duration.ofMinutes(5));
 	}
 
 	public static void waitForPendingChunks() {
+		waitFor("In game", client -> client.currentScreen == null, Duration.ofMinutes(5));
 		waitForWorldTicks(1);
 		waitFor("Pending chunks", minecraftClient -> {
 			final ChunkBuilder chunkBuilder = minecraftClient.worldRenderer.getChunkBuilder();
@@ -235,6 +240,7 @@ public final class FabricClientTestHelper {
 				throw new RuntimeException("Timed out waiting for " + what);
 			}
 
+			LOGGER.info("Waiting for: {}", what);
 			waitFor(Duration.ofSeconds(1));
 		}
 	}

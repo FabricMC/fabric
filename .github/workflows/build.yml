@@ -43,6 +43,7 @@ jobs:
         with:
           distribution: 'microsoft'
           java-version: '17'
+      - run: mkdir run && echo "renderDistance:4" >> run/options.txt
       - name: Run Auto test Client
         uses: modmuss50/xvfb-action@v1
         with:
