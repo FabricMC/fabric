@@ -45,13 +45,10 @@ jobs:
           java-version: '17'
       - run: mkdir run && echo "renderDistance:4" >> run/options.txt
       - run: ./gradlew classes configureClientLaunch --stacktrace --warning-mode=fail
-      - run: tmux new-session -d -s TestRecorder 'ffmpeg -f x11grab -s 1280x800 -i :99 -codec:v libx264 -r 5 run/screenshots/test_recording.mp4'
       - name: Run Auto test Client
         uses: modmuss50/xvfb-action@v1
         with:
-          run: ./gradlew runProductionAutoTestClient --stacktrace --warning-mode=fail
-      - run: tmux send-keys -t TestRecorder q
-        if: always()
+          run: tmux new-session -d -s TestRecorder 'ffmpeg -f x11grab -s 1280x800 -i :99 -codec:v libx264 -r 5 run/screenshots/test_recording.mp4' && ./gradlew runProductionAutoTestClient --stacktrace --warning-mode=fail && tmux send-keys -t TestRecorder q
       - uses: actions/upload-artifact@v3
         if: always()
         with:
