@@ -49,7 +49,7 @@ import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlu
 public class ModelLoadingEventDispatcher {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelLoadingEventDispatcher.class);
 
-	private record RegisteredPlugin<T>(PreparableModelLoadingPlugin.DataPreparator<T> preparator, PreparableModelLoadingPlugin<T> plugin) { }
+	private record RegisteredPlugin<T>(PreparableModelLoadingPlugin.DataLoader<T> loader, PreparableModelLoadingPlugin<T> plugin) { }
 
 	private static final List<RegisteredPlugin<?>> PLUGINS = new ArrayList<>();
 
@@ -59,16 +59,20 @@ public class ModelLoadingEventDispatcher {
 				(data, pluginContext) -> plugin.onInitializeModelLoader(pluginContext));
 	}
 
-	public static <T> void registerPlugin(PreparableModelLoadingPlugin.DataPreparator<T> dataPreparator, PreparableModelLoadingPlugin<T> plugin) {
-		PLUGINS.add(new RegisteredPlugin<>(dataPreparator, plugin));
+	public static <T> void registerPlugin(PreparableModelLoadingPlugin.DataLoader<T> loader, PreparableModelLoadingPlugin<T> plugin) {
+		PLUGINS.add(new RegisteredPlugin<>(loader, plugin));
 	}
 
-	// TODO: what about exception handling in this whole thing?
 	private static <T> CompletableFuture<ModelLoadingPlugin> preparePlugin(RegisteredPlugin<T> plugin, ResourceManager resourceManager, Executor executor) {
-		CompletableFuture<T> dataFuture = plugin.preparator.load(resourceManager, executor);
-		return dataFuture.thenApplyAsync(data -> pluginContext -> plugin.plugin.onInitializeModelLoader(data, pluginContext), executor);
+		CompletableFuture<T> dataFuture = plugin.loader.load(resourceManager, executor);
+		return dataFuture.thenApply(data -> pluginContext -> plugin.plugin.onInitializeModelLoader(data, pluginContext));
 	}
 
+	/**
+	 * The current exception behavior as of 1.20 is as follows.
+	 * If getting a {@link CompletableFuture}s throws then the whole client will crash.
+	 * If a {@link CompletableFuture} completes exceptionally then the resource reload will fail.
+	 */
 	public static CompletableFuture<List<ModelLoadingPlugin>> preparePlugins(ResourceManager resourceManager, Executor executor) {
 		List<CompletableFuture<ModelLoadingPlugin>> futures = new ArrayList<>();
 
@@ -89,10 +93,10 @@ public class ModelLoadingEventDispatcher {
 	private final ObjectArrayList<BeforeBakeModifierContext> beforeBakeModifierContext = new ObjectArrayList<>();
 	private final ObjectArrayList<AfterBakeModifierContext> afterBakeModifierContext = new ObjectArrayList<>();
 
-	public ModelLoadingEventDispatcher(ModelLoader loader, ResourceManager manager) {
+	public ModelLoadingEventDispatcher(ModelLoader loader) {
 		this.loader = loader;
 		this.resolverContext = new ResolverContext();
-		this.pluginContext = new ModelLoaderPluginContextImpl(manager, resolverContext);
+		this.pluginContext = new ModelLoaderPluginContextImpl(resolverContext);
 
 		for (ModelLoadingPlugin plugin : CURRENT_PLUGINS.get()) {
 			try {

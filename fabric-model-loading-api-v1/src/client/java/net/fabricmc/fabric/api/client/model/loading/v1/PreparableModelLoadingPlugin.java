@@ -27,28 +27,36 @@ import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher
 /**
  * A model loading plugin is used to extend the model loading process through the passed {@link ModelLoadingPlugin.Context} object.
  *
- * <p>This version of {@link ModelLoadingPlugin} allows loading some data off-thread before the model loading process starts.
+ * <p>This version of {@link ModelLoadingPlugin} allows loading ("preparing") some data off-thread in parallel before the model loading process starts.
+ * Usually, this means loading some resources from the provided {@link ResourceManager}.
  */
 @FunctionalInterface
 public interface PreparableModelLoadingPlugin<T> {
 	/**
 	 * Register a model loading plugin.
 	 */
-	static <T> void register(DataPreparator<T> preparator, PreparableModelLoadingPlugin<T> plugin) {
-		ModelLoadingEventDispatcher.registerPlugin(preparator, plugin);
+	static <T> void register(DataLoader<T> loader, PreparableModelLoadingPlugin<T> plugin) {
+		ModelLoadingEventDispatcher.registerPlugin(loader, plugin);
 	}
 
 	/**
 	 * Called towards the beginning of the model loading process, every time resource are (re)loaded.
 	 * Use the context object to extend model loading as desired.
+	 *
+	 * @param data The data loaded by the {@link DataLoader}.
+	 * @param pluginContext The context that can be used to extend model loading.
 	 */
-	void onInitializeModelLoader(T preparedData, ModelLoadingPlugin.Context pluginContext);
+	void onInitializeModelLoader(T data, ModelLoadingPlugin.Context pluginContext);
 
 	@FunctionalInterface
-	interface DataPreparator<T> {
+	interface DataLoader<T> {
 		/**
-		 * Load data from the passed resource manager, using the passed executor.
-		 * Do not block the thread, rather use {@link CompletableFuture#supplyAsync(Supplier, Executor)} to compute the data.
+		 * Return a {@link CompletableFuture} that will load the data.
+		 * Do not block the thread when this function is called, rather use {@link CompletableFuture#supplyAsync(Supplier, Executor)} to compute the data.
+		 * The completable future should be scheduled to run using the passed executor.
+		 *
+		 * @param resourceManager The resource manager that can be used to load resources.
+		 * @param executor The executor that <b>must</b> be used to schedule any completable future.
 		 */
 		CompletableFuture<T> load(ResourceManager resourceManager, Executor executor);
 	}

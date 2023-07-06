@@ -29,11 +29,9 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoaderHooks;
@@ -78,8 +76,7 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 	@Inject(method = "addModel", at = @At("HEAD"))
 	private void onAddModel(ModelIdentifier id, CallbackInfo info) {
 		if (id == MISSING_ID) {
-			ResourceManager resourceManager = MinecraftClient.getInstance().getResourceManager();
-			fabric_eventDispatcher = new ModelLoadingEventDispatcher((ModelLoader) (Object) this, resourceManager);
+			fabric_eventDispatcher = new ModelLoadingEventDispatcher((ModelLoader) (Object) this);
 			fabric_eventDispatcher.addExtraModels(this::addModel);
 		}
 	}

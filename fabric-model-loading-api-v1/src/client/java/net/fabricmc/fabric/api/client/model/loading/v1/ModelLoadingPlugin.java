@@ -30,6 +30,8 @@ import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher
 
 /**
  * A model loading plugin is used to extend the model loading process through the passed {@link Context} object.
+ *
+ * <p>{@link PreparableModelLoadingPlugin} can be used if some resources need to be loaded from the {@link ResourceManager}.
  */
 @FunctionalInterface
 public interface ModelLoadingPlugin {
@@ -48,13 +50,6 @@ public interface ModelLoadingPlugin {
 
 	@ApiStatus.NonExtendable
 	interface Context {
-		/**
-		 * Retrieve the current resource manager.
-		 *
-		 * <p>Consider using {@link PreparableModelLoadingPlugin} if the resources you need can be loaded asynchronously.
-		 */
-		ResourceManager resourceManager();
-
 		/**
 		 * Add one or multiple models (can be {@link ModelIdentifier}s) to the list of models that will be loaded.
 		 */

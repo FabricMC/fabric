@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.model;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import net.minecraft.resource.ResourceManager;
@@ -28,13 +29,14 @@ import net.fabricmc.fabric.api.client.model.ModelProviderException;
 import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoaderPluginContextImpl;
 
 public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 	@Override
 	public void registerModelProvider(ExtraModelProvider appender) {
-		ModelLoadingPlugin.register(pluginContext -> {
-			appender.provideExtraModels(pluginContext.resourceManager(), pluginContext::addModels);
+		registerResourceManagerPlugin((resourceManager, pluginContext) -> {
+			appender.provideExtraModels(resourceManager, pluginContext::addModels);
 		});
 	}
 
@@ -45,8 +47,8 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 
 	@Override
 	public void registerResourceProvider(Function<ResourceManager, ModelResourceProvider> providerSupplier) {
-		ModelLoadingPlugin.register(pluginContext -> {
-			ModelResourceProvider provider = providerSupplier.apply(pluginContext.resourceManager());
+		registerResourceManagerPlugin((resourceManager, pluginContext) -> {
+			ModelResourceProvider provider = providerSupplier.apply(resourceManager);
 			ModelProviderContext providerContext = makeOldContext(pluginContext);
 
 			pluginContext.resolveModelResource().register((resourceId, modelProviderContext) -> {
@@ -61,8 +63,8 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 
 	@Override
 	public void registerVariantProvider(Function<ResourceManager, ModelVariantProvider> providerSupplier) {
-		ModelLoadingPlugin.register(pluginContext -> {
-			ModelVariantProvider provider = providerSupplier.apply(pluginContext.resourceManager());
+		registerResourceManagerPlugin((resourceManager, pluginContext) -> {
+			ModelVariantProvider provider = providerSupplier.apply(resourceManager);
 			ModelProviderContext providerContext = makeOldContext(pluginContext);
 
 			pluginContext.resolveModelVariant().register((modelId, modelProviderContext) -> {
@@ -73,6 +75,16 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 				}
 			});
 		});
+	}
+
+	/**
+	 * Grabs the resource manager to use it in the main model loading code.
+	 * When using the v1 API, data should be loaded in parallel before model loading starts.
+	 */
+	private static void registerResourceManagerPlugin(PreparableModelLoadingPlugin<ResourceManager> plugin) {
+		PreparableModelLoadingPlugin.register(
+				(resourceManager, executor) -> CompletableFuture.completedFuture(resourceManager),
+				plugin);
 	}
 
 	/**

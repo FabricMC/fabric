@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
@@ -36,7 +35,6 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelLoaderPluginContextImpl.class);
 
-	private final ResourceManager resourceManager;
 	final Set<Identifier> extraModels = new LinkedHashSet<>();
 
 	private final Event<ModelResolver.Variant> variantResolvers = EventFactory.createArrayBacked(ModelResolver.Variant.class, resolvers -> (modelId, context) -> {
@@ -112,14 +110,8 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 	 */
 	public final ModelResolver.Context resolverContext;
 
-	public ModelLoaderPluginContextImpl(ResourceManager resourceManager, ModelResolver.Context resolverContext) {
-		this.resourceManager = resourceManager;
+	public ModelLoaderPluginContextImpl(ModelResolver.Context resolverContext) {
 		this.resolverContext = resolverContext;
-	}
-
-	@Override
-	public ResourceManager resourceManager() {
-		return resourceManager;
 	}
 
 	@Override
