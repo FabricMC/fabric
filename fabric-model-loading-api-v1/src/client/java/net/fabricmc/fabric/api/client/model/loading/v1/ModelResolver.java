@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.model.ModelLoader;
@@ -99,6 +100,7 @@ public final class ModelResolver {
 	/**
 	 * The context used during model resolution.
 	 */
+	@ApiStatus.NonExtendable
 	public interface Context {
 		/**
 		 * Load a model using an {@link Identifier}, {@link ModelIdentifier}, ... or get it if it was already loaded.

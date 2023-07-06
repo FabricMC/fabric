@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import java.util.function.Function;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
@@ -82,6 +84,7 @@ public final class ModelModifier {
 		/**
 		 * Context for an on load model modification event.
 		 */
+		@ApiStatus.NonExtendable
 		interface Context {
 			/**
 			 * The identifier of this model (may be a {@link ModelIdentifier}).
@@ -126,6 +129,7 @@ public final class ModelModifier {
 		/**
 		 * Context for a before bake model modification event.
 		 */
+		@ApiStatus.NonExtendable
 		interface Context {
 			/**
 			 * The identifier of this model (may be a {@link ModelIdentifier}).
@@ -173,6 +177,7 @@ public final class ModelModifier {
 		/**
 		 * Context for an after bake model modification event.
 		 */
+		@ApiStatus.NonExtendable
 		interface Context {
 			/**
 			 * The identifier of this model (may be a {@link ModelIdentifier}).

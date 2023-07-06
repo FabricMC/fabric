@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,9 +55,9 @@ public class ModelLoadingEventDispatcher {
 	private final ResolverContext resolverContext;
 	private final ModelLoaderPluginContextImpl pluginContext;
 
-	private final OnLoadModifierContext onLoadModifierContext = new OnLoadModifierContext();
-	private final BeforeBakeModifierContext beforeBakeModifierContext = new BeforeBakeModifierContext();
-	private final AfterBakeModifierContext afterBakeModifierContext = new AfterBakeModifierContext();
+	private final ObjectArrayList<OnLoadModifierContext> onLoadModifierContext = new ObjectArrayList<>();
+	private final ObjectArrayList<BeforeBakeModifierContext> beforeBakeModifierContext = new ObjectArrayList<>();
+	private final ObjectArrayList<AfterBakeModifierContext> afterBakeModifierContext = new ObjectArrayList<>();
 
 	public ModelLoadingEventDispatcher(ModelLoader loader, ResourceManager manager) {
 		this.loader = loader;
@@ -114,18 +115,45 @@ public class ModelLoadingEventDispatcher {
 	}
 
 	public UnbakedModel modifyModelOnLoad(Identifier id, UnbakedModel model) {
-		onLoadModifierContext.prepare(id);
-		return pluginContext.modifyModelOnLoad().invoker().modifyModelOnLoad(model, onLoadModifierContext);
+		if (onLoadModifierContext.isEmpty()) {
+			onLoadModifierContext.add(new OnLoadModifierContext());
+		}
+
+		OnLoadModifierContext context = onLoadModifierContext.pop();
+		context.prepare(id);
+
+		model = pluginContext.modifyModelOnLoad().invoker().modifyModelOnLoad(model, context);
+
+		onLoadModifierContext.push(context);
+		return model;
 	}
 
 	public UnbakedModel modifyModelBeforeBake(Identifier id, UnbakedModel model, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
-		beforeBakeModifierContext.prepare(id, textureGetter, settings, baker);
-		return pluginContext.modifyModelBeforeBake().invoker().modifyModelBeforeBake(model, beforeBakeModifierContext);
+		if (beforeBakeModifierContext.isEmpty()) {
+			beforeBakeModifierContext.add(new BeforeBakeModifierContext());
+		}
+
+		BeforeBakeModifierContext context = beforeBakeModifierContext.pop();
+		context.prepare(id, textureGetter, settings, baker);
+
+		model = pluginContext.modifyModelBeforeBake().invoker().modifyModelBeforeBake(model, context);
+
+		beforeBakeModifierContext.push(context);
+		return model;
 	}
 
 	public BakedModel modifyModelAfterBake(Identifier id, UnbakedModel sourceModel, BakedModel bakedModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
-		afterBakeModifierContext.prepare(id, sourceModel, textureGetter, settings, baker);
-		return pluginContext.modifyModelAfterBake().invoker().modifyModelAfterBake(bakedModel, afterBakeModifierContext);
+		if (afterBakeModifierContext.isEmpty()) {
+			afterBakeModifierContext.add(new AfterBakeModifierContext());
+		}
+
+		AfterBakeModifierContext context = afterBakeModifierContext.pop();
+		context.prepare(id, sourceModel, textureGetter, settings, baker);
+
+		bakedModel = pluginContext.modifyModelAfterBake().invoker().modifyModelAfterBake(bakedModel, context);
+
+		afterBakeModifierContext.push(context);
+		return bakedModel;
 	}
 
 	private class ResolverContext implements ModelResolver.Context {
