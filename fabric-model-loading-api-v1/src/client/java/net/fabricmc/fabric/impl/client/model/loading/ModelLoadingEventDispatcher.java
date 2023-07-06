@@ -19,6 +19,8 @@ package net.fabricmc.fabric.impl.client.model.loading;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -37,19 +39,47 @@ import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelResolver;
+import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
 
 public class ModelLoadingEventDispatcher {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelLoadingEventDispatcher.class);
 
-	private static final List<ModelLoadingPlugin> PLUGINS = new ArrayList<>();
+	private record RegisteredPlugin<T>(PreparableModelLoadingPlugin.DataPreparator<T> preparator, PreparableModelLoadingPlugin<T> plugin) { }
+
+	private static final List<RegisteredPlugin<?>> PLUGINS = new ArrayList<>();
 
 	public static void registerPlugin(ModelLoadingPlugin plugin) {
-		PLUGINS.add(plugin);
+		registerPlugin(
+				(resourceManager, executor) -> CompletableFuture.completedFuture(null),
+				(data, pluginContext) -> plugin.onInitializeModelLoader(pluginContext));
 	}
+
+	public static <T> void registerPlugin(PreparableModelLoadingPlugin.DataPreparator<T> dataPreparator, PreparableModelLoadingPlugin<T> plugin) {
+		PLUGINS.add(new RegisteredPlugin<>(dataPreparator, plugin));
+	}
+
+	// TODO: what about exception handling in this whole thing?
+	private static <T> CompletableFuture<ModelLoadingPlugin> preparePlugin(RegisteredPlugin<T> plugin, ResourceManager resourceManager, Executor executor) {
+		CompletableFuture<T> dataFuture = plugin.preparator.load(resourceManager, executor);
+		return dataFuture.thenApplyAsync(data -> pluginContext -> plugin.plugin.onInitializeModelLoader(data, pluginContext), executor);
+	}
+
+	public static CompletableFuture<List<ModelLoadingPlugin>> preparePlugins(ResourceManager resourceManager, Executor executor) {
+		List<CompletableFuture<ModelLoadingPlugin>> futures = new ArrayList<>();
+
+		for (RegisteredPlugin<?> plugin : PLUGINS) {
+			futures.add(preparePlugin(plugin, resourceManager, executor));
+		}
+
+		return Util.combine(futures);
+	}
+
+	public static final ThreadLocal<List<ModelLoadingPlugin>> CURRENT_PLUGINS = new ThreadLocal<>();
 
 	private final ModelLoader loader;
 	private final ResolverContext resolverContext;
@@ -64,13 +94,15 @@ public class ModelLoadingEventDispatcher {
 		this.resolverContext = new ResolverContext();
 		this.pluginContext = new ModelLoaderPluginContextImpl(manager, resolverContext);
 
-		for (ModelLoadingPlugin plugin : PLUGINS) {
+		for (ModelLoadingPlugin plugin : CURRENT_PLUGINS.get()) {
 			try {
 				plugin.onInitializeModelLoader(pluginContext);
 			} catch (Exception exception) {
 				LOGGER.error("Failed to initialize model loading plugin {}", plugin.getClass().getName(), exception);
 			}
 		}
+
+		CURRENT_PLUGINS.remove();
 	}
 
 	public void addExtraModels(Consumer<Identifier> extraModelConsumer) {

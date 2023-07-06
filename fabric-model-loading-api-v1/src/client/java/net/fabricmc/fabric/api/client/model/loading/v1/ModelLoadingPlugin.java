@@ -50,6 +50,8 @@ public interface ModelLoadingPlugin {
 	interface Context {
 		/**
 		 * Retrieve the current resource manager.
+		 *
+		 * <p>Consider using {@link PreparableModelLoadingPlugin} if the resources you need can be loaded asynchronously.
 		 */
 		ResourceManager resourceManager();
 
