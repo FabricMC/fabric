@@ -25,7 +25,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.test.registry.sync.RegistrySyncTest;
 import net.fabricmc.fabric.test.registry.sync.TestDynamicObject;
-import net.fabricmc.fabric.test.registry.sync.TestNestedDynamicObject;
 
 public final class RegistrySyncClientTest implements ClientModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -41,9 +40,6 @@ public final class RegistrySyncClientTest implements ClientModInitializer {
 					.get(SYNCED_ID);
 			TestDynamicObject synced2 = handler.getRegistryManager()
 					.get(RegistrySyncTest.TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY)
-					.get(SYNCED_ID);
-			TestNestedDynamicObject synced3 = handler.getRegistryManager()
-					.get(RegistrySyncTest.TEST_NESTED_DYNAMIC_REGISTRY_KEY)
 					.get(SYNCED_ID);
 
 			if (synced1 == null) {
@@ -62,14 +58,6 @@ public final class RegistrySyncClientTest implements ClientModInitializer {
 			// The network codec flag would always be false in those cases.
 			if (client.getServer() == null && !synced2.usesNetworkCodec()) {
 				throw new AssertionError("Entries in " + RegistrySyncTest.TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY + " should use network codec");
-			}
-
-			if (synced3 == null) {
-				throw new AssertionError("Did not receive " + RegistrySyncTest.TEST_NESTED_DYNAMIC_REGISTRY_KEY + "/" + SYNCED_ID);
-			}
-
-			if (synced3.nested().value() != synced1) {
-				throw new AssertionError("Did not match up synced nested entry to the other synced value");
 			}
 
 			LOGGER.info("Dynamic registry sync tests passed!");
