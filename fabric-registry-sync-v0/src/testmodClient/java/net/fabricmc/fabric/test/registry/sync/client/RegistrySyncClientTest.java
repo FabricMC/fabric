@@ -19,6 +19,8 @@ package net.fabricmc.fabric.test.registry.sync.client;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -38,20 +40,32 @@ public final class RegistrySyncClientTest implements ClientModInitializer {
 			TestDynamicObject synced1 = handler.getRegistryManager()
 					.get(RegistrySyncTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY)
 					.get(SYNCED_ID);
+			TestDynamicObject synced1Missing = handler.getRegistryManager()
+					.get(RegistrySyncTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY)
+					.get(new Identifier("fabric-registry-sync-v0-testmod", "missing"));
+			TestDynamicObject synced1Default = handler.getRegistryManager()
+					.get(RegistrySyncTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY)
+					.get(RegistrySyncTest.DEFAULT_SYNCED_1_ENTRY_KEY);
 			TestDynamicObject synced2 = handler.getRegistryManager()
 					.get(RegistrySyncTest.TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY)
 					.get(SYNCED_ID);
 
 			if (synced1 == null) {
-				throw new AssertionError("Did not receive " + RegistrySyncTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY + "/" + SYNCED_ID);
+				didNotReceive(RegistrySyncTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, SYNCED_ID);
 			}
 
 			if (synced1.usesNetworkCodec()) {
 				throw new AssertionError("Entries in " + RegistrySyncTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY + " should not use network codec");
 			}
 
+			if (synced1Default == null) {
+				didNotReceive(RegistrySyncTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, RegistrySyncTest.DEFAULT_SYNCED_1_ENTRY_KEY.getValue());
+			} else if (synced1Default != synced1Missing) {
+				throw new AssertionError("Default value " + synced1Default + " not used for missing value, found " + synced1Missing);
+			}
+
 			if (synced2 == null) {
-				throw new AssertionError("Did not receive " + RegistrySyncTest.TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY + "/" + SYNCED_ID);
+				didNotReceive(RegistrySyncTest.TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY, SYNCED_ID);
 			}
 
 			// The client server check is needed since the registries are passed through in singleplayer.
@@ -62,5 +76,9 @@ public final class RegistrySyncClientTest implements ClientModInitializer {
 
 			LOGGER.info("Dynamic registry sync tests passed!");
 		});
+	}
+
+	private static void didNotReceive(RegistryKey<? extends Registry<?>> registryKey, Identifier entryId) {
+		throw new AssertionError("Did not receive " + registryKey + "/" + entryId);
 	}
 }

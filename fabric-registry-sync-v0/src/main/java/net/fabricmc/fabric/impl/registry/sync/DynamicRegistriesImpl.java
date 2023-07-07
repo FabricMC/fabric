@@ -20,22 +20,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.Lifecycle;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryLoader;
 import net.minecraft.registry.SerializableRegistries;
+import net.minecraft.registry.SimpleDefaultedRegistry;
+import net.minecraft.registry.SimpleRegistry;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
 public final class DynamicRegistriesImpl {
 	private static final List<RegistryLoader.Entry<?>> DYNAMIC_REGISTRIES = new ArrayList<>(RegistryLoader.DYNAMIC_REGISTRIES);
 	private static final Set<RegistryKey<? extends Registry<?>>> DYNAMIC_REGISTRY_KEYS = new HashSet<>();
+	private static final Map<RegistryKey<? extends Registry<?>>, SettingsImpl<?>> ALL_SETTINGS = new HashMap<>();
 
 	static {
 		for (RegistryLoader.Entry<?> vanillaEntry : RegistryLoader.DYNAMIC_REGISTRIES) {
@@ -60,7 +67,19 @@ public final class DynamicRegistriesImpl {
 
 		var entry = new RegistryLoader.Entry<>(key, codec);
 		DYNAMIC_REGISTRIES.add(entry);
-		return new SettingsImpl<>(entry);
+		var settings = new SettingsImpl<>(entry);
+		ALL_SETTINGS.put(key, settings);
+		return settings;
+	}
+
+	public static <T> SimpleRegistry<T> createDynamicRegistry(RegistryKey<? extends Registry<T>> key, Lifecycle lifecycle) {
+		SettingsImpl<?> settings = ALL_SETTINGS.get(key);
+
+		if (settings != null && settings.defaultId != null) {
+			return new SimpleDefaultedRegistry<>(settings.defaultId.toString(), key, lifecycle, false);
+		}
+
+		return new SimpleRegistry<>(key, lifecycle);
 	}
 
 	private static <T> void addSyncedRegistry(RegistryKey<? extends Registry<T>> registryKey, Codec<T> networkCodec) {
@@ -73,6 +92,7 @@ public final class DynamicRegistriesImpl {
 
 	private static final class SettingsImpl<T> implements DynamicRegistries.Settings<T> {
 		private final RegistryLoader.Entry<T> owner;
+		private @Nullable Identifier defaultId = null;
 		private boolean synced = false;
 
 		private SettingsImpl(RegistryLoader.Entry<T> owner) {
@@ -94,6 +114,25 @@ public final class DynamicRegistriesImpl {
 
 			this.synced = true;
 			addSyncedRegistry(owner.key(), networkCodec);
+			return this;
+		}
+
+		@Override
+		public DynamicRegistries.Settings<T> defaultKey(RegistryKey<T> key) {
+			Objects.requireNonNull(key, "Default key cannot be null");
+
+			if (!key.isOf(owner.key())) {
+				throw new IllegalArgumentException("Cannot set %s as the default value of %s - it's for a different registry"
+						.formatted(key, owner.key()));
+			}
+
+			return defaultId(key.getValue());
+		}
+
+		@Override
+		public DynamicRegistries.Settings<T> defaultId(Identifier id) {
+			Objects.requireNonNull(id, "Default ID cannot be null");
+			defaultId = id;
 			return this;
 		}
 	}

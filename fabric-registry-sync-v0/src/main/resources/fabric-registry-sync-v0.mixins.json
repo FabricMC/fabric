@@ -11,6 +11,8 @@
     "MinecraftServerMixin",
     "RegistriesAccessor",
     "RegistriesMixin",
+    "RegistryCodecsMixin",
+    "RegistryLoaderEntryMixin",
     "RegistryLoaderMixin",
     "SaveLoadingMixin",
     "SimpleRegistryMixin",

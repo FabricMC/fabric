@@ -60,6 +60,8 @@ public class RegistrySyncTest implements ModInitializer {
 			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_synced_1"));
 	public static final RegistryKey<Registry<TestDynamicObject>> TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY =
 			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_synced_2"));
+	public static final RegistryKey<TestDynamicObject> DEFAULT_SYNCED_1_ENTRY_KEY =
+			RegistryKey.of(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, new Identifier("fabric-registry-sync-v0-testmod", "default"));
 
 	/**
 	 * These are system property's as it allows for easier testing with different run configurations.
@@ -99,7 +101,8 @@ public class RegistrySyncTest implements ModInitializer {
 
 		DynamicRegistries.register(TEST_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC);
 		DynamicRegistries.register(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC)
-				.synced();
+				.synced()
+				.defaultKey(DEFAULT_SYNCED_1_ENTRY_KEY);
 		DynamicRegistries.register(TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC)
 				.synced(TestDynamicObject.NETWORK_CODEC);
 

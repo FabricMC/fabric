@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.event.registry;
 
 import java.util.List;
-import java.util.Objects;
 
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
@@ -26,6 +25,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryLoader;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 
@@ -94,5 +94,21 @@ public final class DynamicRegistries {
 		 * @return this settings object
 		 */
 		Settings<T> synced(Codec<T> networkCodec);
+
+		/**
+		 * Sets the default value of the registry.
+		 *
+		 * @param key the registry key of the default value, must be a key for the configured registry; cannot be null
+		 * @return this settings object
+		 */
+		Settings<T> defaultKey(RegistryKey<T> key);
+
+		/**
+		 * Sets the default value of the registry.
+		 *
+		 * @param id the registry ID of the default value, cannot be null
+		 * @return this settings object
+		 */
+		Settings<T> defaultId(Identifier id);
 	}
 }
