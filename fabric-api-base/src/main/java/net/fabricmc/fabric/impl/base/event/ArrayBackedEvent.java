@@ -29,7 +29,6 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
-import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 
 class ArrayBackedEvent<T> extends Event<T> {
 	private final Function<T[], T> invokerFactory;
@@ -119,7 +118,8 @@ class ArrayBackedEvent<T> extends Event<T> {
 		synchronized (lock) {
 			EventPhaseData<T> first = getOrCreatePhase(firstPhase, false);
 			EventPhaseData<T> second = getOrCreatePhase(secondPhase, false);
-			SortableNode.link(first, second);
+			first.subsequentNodes.add(second);
+			second.previousNodes.add(first);
 			NodeSorting.sort(this.sortedPhases, "event phases", Comparator.comparing(data -> data.id));
 			rebuildInvoker(handlers.length);
 		}
