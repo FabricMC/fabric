@@ -19,8 +19,13 @@ package net.fabricmc.fabric.test.registry.sync;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-public record TestDynamicObject(String name) {
-	public static final Codec<TestDynamicObject> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.STRING.fieldOf("name").forGetter(TestDynamicObject::name)
-	).apply(instance, TestDynamicObject::new));
+public record TestDynamicObject(String name, boolean usesNetworkCodec) {
+	public static final Codec<TestDynamicObject> CODEC = codec(false);
+	public static final Codec<TestDynamicObject> NETWORK_CODEC = codec(true);
+
+	private static Codec<TestDynamicObject> codec(boolean networkCodec) {
+		return RecordCodecBuilder.create(instance -> instance.group(
+				Codec.STRING.fieldOf("name").forGetter(TestDynamicObject::name)
+		).apply(instance, name -> new TestDynamicObject(name, networkCodec)));
+	}
 }

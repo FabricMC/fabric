@@ -42,8 +42,9 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.registry.DynamicRegistryEvents;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistryView;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
@@ -54,7 +55,11 @@ public class RegistrySyncTest implements ModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	public static final RegistryKey<Registry<TestDynamicObject>> TEST_DYNAMIC_REGISTRY_KEY =
-			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_object"));
+			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic"));
+	public static final RegistryKey<Registry<TestDynamicObject>> TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY =
+			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_synced_1"));
+	public static final RegistryKey<Registry<TestDynamicObject>> TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY =
+			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_synced_2"));
 
 	/**
 	 * These are system property's as it allows for easier testing with different run configurations.
@@ -92,19 +97,22 @@ public class RegistrySyncTest implements ModInitializer {
 
 		final AtomicBoolean setupCalled = new AtomicBoolean(false);
 
-		DynamicRegistryEvents.REGISTER_REGISTRIES.register(context -> {
-			// Add our fabric:test_dynamic_object registry
-			context.add(TEST_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC);
-		});
+		DynamicRegistries.register(TEST_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC)
+				.sortBefore(TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY)
+				.sortAfter(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY);
+		DynamicRegistries.register(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC)
+				.synced();
+		DynamicRegistries.register(TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC)
+				.synced(TestDynamicObject.NETWORK_CODEC);
 
 		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
 			setupCalled.set(true);
 			registryManager.registerEntryAdded(RegistryKeys.BIOME, (rawId, id, object) -> {
 				LOGGER.info("Biome added: {}", id);
 			});
-			registryManager.registerEntryAdded(TEST_DYNAMIC_REGISTRY_KEY, (rawId, id, object) -> {
-				LOGGER.info("Test dynamic object added: {} = {}", id, object);
-			});
+			addListenerForDynamic(registryManager, TEST_DYNAMIC_REGISTRY_KEY);
+			addListenerForDynamic(registryManager, TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY);
+			addListenerForDynamic(registryManager, TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY);
 		});
 
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
@@ -159,5 +167,11 @@ public class RegistrySyncTest implements ModInitializer {
 		}
 
 		return map;
+	}
+
+	private static void addListenerForDynamic(DynamicRegistryView registryView, RegistryKey<? extends Registry<?>> key) {
+		registryView.registerEntryAdded(key, (rawId, id, object) -> {
+			LOGGER.info("Loaded entry of {}: {} = {}", key, id, object);
+		});
 	}
 }
