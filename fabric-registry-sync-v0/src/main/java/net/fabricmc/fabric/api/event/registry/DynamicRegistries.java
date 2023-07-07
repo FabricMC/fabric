@@ -71,7 +71,7 @@ public final class DynamicRegistries {
 	 * @param <T> the entry type of the dynamic registry
 	 */
 	@ApiStatus.NonExtendable
-	public abstract static class Settings<T> {
+	public interface Settings<T> {
 		/**
 		 * Marks the registry as synced.
 		 *
@@ -83,7 +83,7 @@ public final class DynamicRegistries {
 		 *
 		 * @return this settings object
 		 */
-		public abstract Settings<T> synced();
+		Settings<T> synced();
 
 		/**
 		 * Marks the registry as synced.
@@ -93,64 +93,6 @@ public final class DynamicRegistries {
 		 * @param networkCodec the network codec
 		 * @return this settings object
 		 */
-		public abstract Settings<T> synced(Codec<T> networkCodec);
-
-		/**
-		 * Marks the registry as being sorted before a given dynamic registry.
-		 *
-		 * @param before the registry to sort before, cannot be null
-		 * @return this settings object
-		 */
-		public abstract Settings<T> sortBefore(RegistryKey<? extends Registry<?>> before);
-
-		/**
-		 * Marks the registry as being sorted after the given dynamic registries.
-		 *
-		 * @param after the registry to sort after, cannot be null
-		 * @return this settings object
-		 */
-		public abstract Settings<T> sortAfter(RegistryKey<? extends Registry<?>> after);
-
-		/**
-		 * Marks the registry as being sorted before the given dynamic registries.
-		 *
-		 * @param before the registries to sort before, cannot be null or empty and cannot have null elements
-		 * @return this settings object
-		 */
-		@SafeVarargs
-		public final Settings<T> sortBefore(RegistryKey<? extends Registry<?>>... before) {
-			Objects.requireNonNull(before, "Registry keys to sort before");
-
-			if (before.length == 0) {
-				throw new IllegalArgumentException("No registry keys to sort before were provided");
-			}
-
-			for (RegistryKey<? extends Registry<?>> registryKey : before) {
-				sortBefore(registryKey);
-			}
-
-			return this;
-		}
-
-		/**
-		 * Marks the registry as being sorted after the given dynamic registries.
-		 *
-		 * @param after the registries to sort after, cannot be null or empty and cannot have null elements
-		 * @return this settings object
-		 */
-		@SafeVarargs
-		public final Settings<T> sortAfter(RegistryKey<? extends Registry<?>>... after) {
-			Objects.requireNonNull(after, "Registry keys to sort after");
-
-			if (after.length == 0) {
-				throw new IllegalArgumentException("No registry keys to sort after were provided");
-			}
-
-			for (RegistryKey<? extends Registry<?>> registryKey : after) {
-				sortAfter(registryKey);
-			}
-
-			return this;
-		}
+		Settings<T> synced(Codec<T> networkCodec);
 	}
 }

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -37,8 +36,6 @@ import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 public final class DynamicRegistriesImpl {
 	private static final List<RegistryLoader.Entry<?>> DYNAMIC_REGISTRIES = new ArrayList<>(RegistryLoader.DYNAMIC_REGISTRIES);
 	private static final Set<RegistryKey<? extends Registry<?>>> DYNAMIC_REGISTRY_KEYS = new HashSet<>();
-	private static final Map<RegistryKey<? extends Registry<?>>, SettingsImpl<?>> SETTINGS = new HashMap<>();
-	private static boolean sorted = true;
 
 	static {
 		for (RegistryLoader.Entry<?> vanillaEntry : RegistryLoader.DYNAMIC_REGISTRIES) {
@@ -50,16 +47,7 @@ public final class DynamicRegistriesImpl {
 	}
 
 	public static @Unmodifiable List<RegistryLoader.Entry<?>> getDynamicRegistries() {
-		if (!sorted) {
-			sort();
-			sorted = true;
-		}
-
 		return List.copyOf(DYNAMIC_REGISTRIES);
-	}
-
-	private static void sort() {
-		// TODO
 	}
 
 	public static <T> DynamicRegistries.Settings<T> register(RegistryKey<? extends Registry<T>> key, Codec<T> codec) {
@@ -72,10 +60,7 @@ public final class DynamicRegistriesImpl {
 
 		var entry = new RegistryLoader.Entry<>(key, codec);
 		DYNAMIC_REGISTRIES.add(entry);
-		sorted = false;
-		var settings = new SettingsImpl<>(entry);
-		SETTINGS.put(key, settings);
-		return settings;
+		return new SettingsImpl<>(entry);
 	}
 
 	private static <T> void addSyncedRegistry(RegistryKey<? extends Registry<T>> registryKey, Codec<T> networkCodec) {
@@ -86,10 +71,8 @@ public final class DynamicRegistriesImpl {
 		SerializableRegistries.REGISTRIES.put(registryKey, new SerializableRegistries.Info<>(registryKey, networkCodec));
 	}
 
-	private static final class SettingsImpl<T> extends DynamicRegistries.Settings<T> {
+	private static final class SettingsImpl<T> implements DynamicRegistries.Settings<T> {
 		private final RegistryLoader.Entry<T> owner;
-		private final Set<RegistryKey<? extends Registry<?>>> before = new HashSet<>();
-		private final Set<RegistryKey<? extends Registry<?>>> after = new HashSet<>();
 		private boolean synced = false;
 
 		private SettingsImpl(RegistryLoader.Entry<T> owner) {
@@ -111,22 +94,6 @@ public final class DynamicRegistriesImpl {
 
 			this.synced = true;
 			addSyncedRegistry(owner.key(), networkCodec);
-			return this;
-		}
-
-		@Override
-		public DynamicRegistries.Settings<T> sortBefore(RegistryKey<? extends Registry<?>> before) {
-			Objects.requireNonNull(before, "Registry key to sort before");
-			this.before.add(before);
-			sorted = false;
-			return this;
-		}
-
-		@Override
-		public DynamicRegistries.Settings<T> sortAfter(RegistryKey<? extends Registry<?>> after) {
-			Objects.requireNonNull(after, "Registry key to sort after");
-			this.after.add(after);
-			sorted = false;
 			return this;
 		}
 	}

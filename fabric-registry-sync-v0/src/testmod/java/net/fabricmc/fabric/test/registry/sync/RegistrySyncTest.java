@@ -97,9 +97,7 @@ public class RegistrySyncTest implements ModInitializer {
 
 		final AtomicBoolean setupCalled = new AtomicBoolean(false);
 
-		DynamicRegistries.register(TEST_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC)
-				.sortBefore(TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY)
-				.sortAfter(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY);
+		DynamicRegistries.register(TEST_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC);
 		DynamicRegistries.register(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC)
 				.synced();
 		DynamicRegistries.register(TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC)
