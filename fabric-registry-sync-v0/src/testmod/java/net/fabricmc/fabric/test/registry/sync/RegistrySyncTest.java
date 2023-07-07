@@ -56,6 +56,8 @@ public class RegistrySyncTest implements ModInitializer {
 
 	public static final RegistryKey<Registry<TestDynamicObject>> TEST_DYNAMIC_REGISTRY_KEY =
 			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic"));
+	public static final RegistryKey<Registry<TestNestedDynamicObject>> TEST_NESTED_DYNAMIC_REGISTRY_KEY =
+			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_nested"));
 	public static final RegistryKey<Registry<TestDynamicObject>> TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY =
 			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_synced_1"));
 	public static final RegistryKey<Registry<TestDynamicObject>> TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY =
@@ -104,6 +106,10 @@ public class RegistrySyncTest implements ModInitializer {
 				.synced();
 		DynamicRegistries.register(TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC)
 				.synced(TestDynamicObject.NETWORK_CODEC);
+		// A registry that is loaded before its dependency that is used in a RegistryEntry.
+		DynamicRegistries.register(TEST_NESTED_DYNAMIC_REGISTRY_KEY, TestNestedDynamicObject.CODEC)
+				.synced()
+				.sortBefore(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY);
 
 		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
 			setupCalled.set(true);
@@ -113,6 +119,7 @@ public class RegistrySyncTest implements ModInitializer {
 			addListenerForDynamic(registryManager, TEST_DYNAMIC_REGISTRY_KEY);
 			addListenerForDynamic(registryManager, TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY);
 			addListenerForDynamic(registryManager, TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY);
+			addListenerForDynamic(registryManager, TEST_NESTED_DYNAMIC_REGISTRY_KEY);
 		});
 
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
