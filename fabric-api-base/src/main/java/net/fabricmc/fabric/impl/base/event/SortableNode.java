@@ -16,32 +16,25 @@
 
 package net.fabricmc.fabric.impl.base.event;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
-import net.minecraft.util.Identifier;
+public abstract class SortableNode<N extends SortableNode<N>> {
+	final List<N> subsequentNodes = new ArrayList<>();
+	final List<N> previousNodes = new ArrayList<>();
+	boolean visited = false;
 
-/**
- * Data of an {@link ArrayBackedEvent} phase.
- */
-class EventPhaseData<T> extends SortableNode<EventPhaseData<T>> {
-	final Identifier id;
-	T[] listeners;
+	/**
+	 * @return Description of this node, used to print the cycle warning.
+	 */
+	protected abstract String getDescription();
 
-	@SuppressWarnings("unchecked")
-	EventPhaseData(Identifier id, Class<?> listenerClass) {
-		this.id = id;
-		this.listeners = (T[]) Array.newInstance(listenerClass, 0);
-	}
+	public static <N extends SortableNode<N>> void link(N first, N second) {
+		if (first == second) {
+			throw new IllegalArgumentException("Cannot link a node to itself!");
+		}
 
-	void addListener(T listener) {
-		int oldLength = listeners.length;
-		listeners = Arrays.copyOf(listeners, oldLength + 1);
-		listeners[oldLength] = listener;
-	}
-
-	@Override
-	protected String getDescription() {
-		return id.toString();
+		first.subsequentNodes.add(second);
+		second.previousNodes.add(first);
 	}
 }
