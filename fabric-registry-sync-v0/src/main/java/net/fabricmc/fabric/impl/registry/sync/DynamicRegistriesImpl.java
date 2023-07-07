@@ -72,6 +72,11 @@ public final class DynamicRegistriesImpl {
 		return settings;
 	}
 
+	public static boolean isDefaultedDynamicRegistry(RegistryKey<? extends Registry<?>> key) {
+		SettingsImpl<?> settings = ALL_SETTINGS.get(key);
+		return settings != null && settings.defaultId != null;
+	}
+
 	public static <T> SimpleRegistry<T> createDynamicRegistry(RegistryKey<? extends Registry<T>> key, Lifecycle lifecycle) {
 		SettingsImpl<?> settings = ALL_SETTINGS.get(key);
 

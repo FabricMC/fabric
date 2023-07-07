@@ -27,10 +27,13 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.test.registry.sync.RegistrySyncTest;
 import net.fabricmc.fabric.test.registry.sync.TestDynamicObject;
+import net.fabricmc.fabric.test.registry.sync.TestNestedDynamicObject;
 
 public final class RegistrySyncClientTest implements ClientModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Identifier SYNCED_ID = new Identifier("fabric-registry-sync-v0-testmod", "synced");
+	private static final Identifier MISSING_ID = new Identifier("fabric-registry-sync-v0-testmod", "missing");
+	private static final Identifier CONTAINS_UNKNOWN_ID = new Identifier("fabric-registry-sync-v0-testmod", "contains_unknown");
 
 	@Override
 	public void onInitializeClient() {
@@ -42,13 +45,26 @@ public final class RegistrySyncClientTest implements ClientModInitializer {
 					.get(SYNCED_ID);
 			TestDynamicObject synced1Missing = handler.getRegistryManager()
 					.get(RegistrySyncTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY)
-					.get(new Identifier("fabric-registry-sync-v0-testmod", "missing"));
+					.get(MISSING_ID);
 			TestDynamicObject synced1Default = handler.getRegistryManager()
 					.get(RegistrySyncTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY)
 					.get(RegistrySyncTest.DEFAULT_SYNCED_1_ENTRY_KEY);
 			TestDynamicObject synced2 = handler.getRegistryManager()
 					.get(RegistrySyncTest.TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY)
 					.get(SYNCED_ID);
+			TestNestedDynamicObject simpleNested = handler.getRegistryManager()
+					.get(RegistrySyncTest.TEST_NESTED_DYNAMIC_REGISTRY_KEY)
+					.get(SYNCED_ID);
+			TestNestedDynamicObject unknownNested = handler.getRegistryManager()
+					.get(RegistrySyncTest.TEST_NESTED_DYNAMIC_REGISTRY_KEY)
+					.get(CONTAINS_UNKNOWN_ID);
+
+			LOGGER.info("Synced - simple: {}", synced1);
+			LOGGER.info("Synced - missing entry: {}", synced1Missing);
+			LOGGER.info("Synced - default entry: {}", synced1Default);
+			LOGGER.info("Synced - custom network codec: {}", synced2);
+			LOGGER.info("Synced - simple nested: {}", simpleNested);
+			LOGGER.info("Synced - nested with reference to missing entry: {}", unknownNested);
 
 			if (synced1 == null) {
 				didNotReceive(RegistrySyncTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, SYNCED_ID);
@@ -72,6 +88,22 @@ public final class RegistrySyncClientTest implements ClientModInitializer {
 			// The network codec flag would always be false in those cases.
 			if (client.getServer() == null && !synced2.usesNetworkCodec()) {
 				throw new AssertionError("Entries in " + RegistrySyncTest.TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY + " should use network codec");
+			}
+
+			if (simpleNested == null) {
+				didNotReceive(RegistrySyncTest.TEST_NESTED_DYNAMIC_REGISTRY_KEY, SYNCED_ID);
+			}
+
+			if (simpleNested.nested().value() != synced1) {
+				throw new AssertionError("Did not match up synced nested entry to the other synced value");
+			}
+
+			if (unknownNested == null) {
+				didNotReceive(RegistrySyncTest.TEST_NESTED_DYNAMIC_REGISTRY_KEY, CONTAINS_UNKNOWN_ID);
+			}
+
+			if (unknownNested.nested().value() != synced1Default) {
+				throw new AssertionError("Did not match up missing synced nested entry to the synced default value");
 			}
 
 			LOGGER.info("Dynamic registry sync tests passed!");
