@@ -44,7 +44,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.registry.DefaultedRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.registry.MutableRegistry;
 import net.minecraft.registry.Registry;
@@ -59,7 +58,6 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
-import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 import net.fabricmc.fabric.impl.registry.sync.ListenableRegistry;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
@@ -87,9 +85,6 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	private Map<RegistryKey<T>, RegistryEntry.Reference<T>> keyToEntry;
 	@Shadow
 	private int nextId;
-	@Shadow
-	@Final
-	RegistryKey<? extends Registry<T>> key;
 
 	@Shadow
 	public abstract Optional<RegistryKey<T>> getKey(T entry);
@@ -99,9 +94,6 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 
 	@Shadow
 	public abstract RegistryKey<? extends Registry<T>> getKey();
-
-	@Shadow
-	public abstract RegistryEntry<T> getEntry(T value);
 
 	@Unique
 	private static final Logger FABRIC_LOGGER = LoggerFactory.getLogger(SimpleRegistryMixin.class);
@@ -440,27 +432,6 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 
 			fabric_prevIndexedEntries = null;
 			fabric_prevEntries = null;
-		}
-	}
-
-	// Sets the values of unbound entries to the value of the default entry if this registry is
-	// a defaulted dynamic registry registered with the dynamic registry API.
-	// Otherwise, the game will crash because of unbound entries.
-	@Inject(method = "freeze", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V", remap = false, shift = At.Shift.AFTER))
-	private void freezeDynamicDefaultedEntries(CallbackInfoReturnable<Registry<T>> info) {
-		if (this instanceof DefaultedRegistry<?> defaulted && DynamicRegistriesImpl.isDefaultedDynamicRegistry(key)) {
-			RegistryEntry<T> defaultEntry = getEntry(RegistryKey.of(key, defaulted.getDefaultId())).orElse(null);
-
-			if (defaultEntry != null && defaultEntry.hasKeyAndValue()) {
-				FABRIC_LOGGER.debug("Binding unbound entries of defaulted dynamic registry {} to {}", key, defaultEntry);
-				T defaultValue = defaultEntry.value();
-
-				for (RegistryEntry.Reference<T> entry : keyToEntry.values()) {
-					if (!entry.hasKeyAndValue()) {
-						entry.setValue(defaultValue);
-					}
-				}
-			}
 		}
 	}
 }

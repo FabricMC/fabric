@@ -19,13 +19,11 @@ package net.fabricmc.fabric.api.event.registry;
 import java.util.List;
 
 import com.mojang.serialization.Codec;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Unmodifiable;
 
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryLoader;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 
@@ -51,7 +49,7 @@ public final class DynamicRegistries {
 	}
 
 	/**
-	 * Registers a dynamic registry.
+	 * Registers a non-synced dynamic registry.
 	 *
 	 * <p>The entries of the registry will be loaded from data packs at the file path
 	 * {@code data/<entry namespace>/<registry namespace>/<registry path>/<entry path>.json}.
@@ -59,56 +57,47 @@ public final class DynamicRegistries {
 	 * @param key   the unique key of the registry
 	 * @param codec the codec used to load registry entries from data packs
 	 * @param <T>   the entry type of the registry
-	 * @return a settings object to configure the registry
 	 */
-	public static <T> Settings<T> register(RegistryKey<? extends Registry<T>> key, Codec<T> codec) {
-		return DynamicRegistriesImpl.register(key, codec);
+	public static <T> void register(RegistryKey<? extends Registry<T>> key, Codec<T> codec) {
+		DynamicRegistriesImpl.register(key, codec);
 	}
 
 	/**
-	 * Settings to configure a registered dynamic registry.
+	 * Registers a synced dynamic registry.
 	 *
-	 * @param <T> the entry type of the dynamic registry
+	 * <p>The entries of the registry will be loaded from data packs at the file path
+	 * {@code data/<entry namespace>/<registry namespace>/<registry path>/<entry path>.json}.
+	 *
+	 * <p>The registry will be synced from the server to players' clients using the same codec
+	 * that is used to load the registry.
+	 *
+	 * <p>If the object contained in the registry is complex and contains a lot of data
+	 * that is not relevant on the client, another codec for networking can be specified with
+	 * {@link #registerSynced(RegistryKey, Codec, Codec)}.
+	 *
+	 * @param key   the unique key of the registry
+	 * @param codec the codec used to load registry entries from data packs and the network
+	 * @param <T>   the entry type of the registry
 	 */
-	@ApiStatus.NonExtendable
-	public interface Settings<T> {
-		/**
-		 * Marks the registry as synced.
-		 *
-		 * <p>It will be synced from the server to players' clients using the same codec
-		 * that is used to load the registry.
-		 *
-		 * <p>If the object contained in the registry is complex and contains a lot of data
-		 * that is not relevant on the client, another codec can be specified with {@link #synced(Codec)}.
-		 *
-		 * @return this settings object
-		 */
-		Settings<T> synced();
+	public static <T> void registerSynced(RegistryKey<? extends Registry<T>> key, Codec<T> codec) {
+		registerSynced(key, codec, codec);
+	}
 
-		/**
-		 * Marks the registry as synced.
-		 *
-		 * <p>It will be synced from the server to players' clients using the given network codec.
-		 *
-		 * @param networkCodec the network codec
-		 * @return this settings object
-		 */
-		Settings<T> synced(Codec<T> networkCodec);
-
-		/**
-		 * Sets the default value of the registry.
-		 *
-		 * @param key the registry key of the default value, must be a key for the configured registry; cannot be null
-		 * @return this settings object
-		 */
-		Settings<T> defaultKey(RegistryKey<T> key);
-
-		/**
-		 * Sets the default value of the registry.
-		 *
-		 * @param id the registry ID of the default value, cannot be null
-		 * @return this settings object
-		 */
-		Settings<T> defaultId(Identifier id);
+	/**
+	 * Registers a synced dynamic registry.
+	 *
+	 * <p>The entries of the registry will be loaded from data packs at the file path
+	 * {@code data/<entry namespace>/<registry namespace>/<registry path>/<entry path>.json}
+	 *
+	 * <p>The registry will be synced from the server to players' clients using the given network codec.
+	 *
+	 * @param key          the unique key of the registry
+	 * @param dataCodec    the codec used to load registry entries from data packs
+	 * @param networkCodec the codec used to load registry entries from the network
+	 * @param <T>          the entry type of the registry
+	 */
+	public static <T> void registerSynced(RegistryKey<? extends Registry<T>> key, Codec<T> dataCodec, Codec<T> networkCodec) {
+		DynamicRegistriesImpl.register(key, dataCodec);
+		DynamicRegistriesImpl.addSyncedRegistry(key, networkCodec);
 	}
 }
