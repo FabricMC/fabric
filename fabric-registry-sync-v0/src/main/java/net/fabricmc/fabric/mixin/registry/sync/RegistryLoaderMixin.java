@@ -60,8 +60,10 @@ public class RegistryLoaderMixin {
 		DynamicRegistrySetupCallback.EVENT.invoker().onRegistrySetup(new DynamicRegistryViewImpl(registries));
 	}
 
+	// Vanilla doesn't mark namespaces in the directories of dynamic registries at all,
+	// so we prepend the directories with the namespace if it's a modded registry id.
 	@Inject(method = "getPath", at = @At("RETURN"), cancellable = true)
-	private static void appendNamespaceToDirectory(Identifier id, CallbackInfoReturnable<String> info) {
+	private static void prependDirectoryWithNamespace(Identifier id, CallbackInfoReturnable<String> info) {
 		if (!id.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
 			String newPath = id.getNamespace() + "/" + info.getReturnValue();
 			info.setReturnValue(newPath);
