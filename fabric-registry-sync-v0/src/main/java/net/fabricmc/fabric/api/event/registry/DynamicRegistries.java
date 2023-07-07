@@ -39,7 +39,7 @@ public final class DynamicRegistries {
 	}
 
 	/**
-	 * Returns an unmodifiable list of all dynamic registries, included modded ones.
+	 * Returns an unmodifiable list of all dynamic registries, including modded ones.
 	 * The list is sorted according to the ordering rules of the registries.
 	 *
 	 * <p>The list will not reflect any changes caused by later registrations.
