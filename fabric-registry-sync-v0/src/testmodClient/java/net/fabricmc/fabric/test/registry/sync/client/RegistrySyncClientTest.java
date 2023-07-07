@@ -60,7 +60,7 @@ public final class RegistrySyncClientTest implements ClientModInitializer {
 				throw new AssertionError("Entries in " + RegistrySyncTest.TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY + " should use network codec");
 			}
 
-			LOGGER.info("Starting dynamic registry sync tests passed!");
+			LOGGER.info("Dynamic registry sync tests passed!");
 		});
 	}
 }
