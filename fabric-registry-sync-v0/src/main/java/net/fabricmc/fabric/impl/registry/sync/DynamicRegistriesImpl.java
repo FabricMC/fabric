@@ -74,7 +74,7 @@ public final class DynamicRegistriesImpl {
 			nodes.put(vanillaEntry.key(), node);
 
 			if (previousVanillaNode != null) {
-				link(previousVanillaNode, node);
+				SortableNode.link(previousVanillaNode, node);
 			}
 
 			previousVanillaNode = node;
@@ -97,7 +97,7 @@ public final class DynamicRegistriesImpl {
 					throw new IllegalStateException("Registry " + settings.owner.key() + " has a dependency on " + before + ", which does not exist!");
 				}
 
-				link(node, other);
+				SortableNode.link(node, other);
 			}
 
 			for (RegistryKey<? extends Registry<?>> after : settings.after) {
@@ -107,7 +107,7 @@ public final class DynamicRegistriesImpl {
 					throw new IllegalStateException("Registry " + settings.owner.key() + " has a dependency on " + after + ", which does not exist!");
 				}
 
-				link(other, node);
+				SortableNode.link(other, node);
 			}
 		}
 
@@ -115,16 +115,7 @@ public final class DynamicRegistriesImpl {
 		List<RegistryNode> nodesToSort = new ArrayList<>(nodes.values());
 		NodeSorting.sort(nodesToSort, "dynamic registries", RegistryNode.COMPARATOR);
 
-		for (RegistryNode node : nodesToSort) {
-			System.out.println("Sorted node: " + node.entry.key());
-		}
-
 		return nodesToSort.stream().map(node -> node.entry).collect(Collectors.toUnmodifiableList());
-	}
-
-	private static void link(RegistryNode node1, RegistryNode node2) {
-		node1.subsequentNodes.add(node2);
-		node2.previousNodes.add(node1);
 	}
 
 	public static <T> DynamicRegistries.Settings<T> register(RegistryKey<? extends Registry<T>> key, Codec<T> codec) {
@@ -199,7 +190,9 @@ public final class DynamicRegistriesImpl {
 	private static final class RegistryNode extends SortableNode<RegistryNode> {
 		private static final Comparator<RegistryNode> COMPARATOR = Comparator.<RegistryNode>comparingInt(node -> node.vanillaIndex)
 				.thenComparing(node -> node.entry.key().getValue());
-		private static final int MODDED_INDEX = 1000; // modded registries go after vanilla by default
+
+		// Modded registries go after vanilla by default.
+		private static final int MODDED_INDEX = RegistryLoader.DYNAMIC_REGISTRIES.size();
 
 		private final RegistryLoader.Entry<?> entry;
 		private final int vanillaIndex;

@@ -28,4 +28,9 @@ public abstract class SortableNode<N extends SortableNode<N>> {
 	 * @return Description of this node, used to print the cycle warning.
 	 */
 	protected abstract String getDescription();
+
+	public static <N extends SortableNode<N>> void link(N first, N second) {
+		first.subsequentNodes.add(second);
+		second.previousNodes.add(first);
+	}
 }
