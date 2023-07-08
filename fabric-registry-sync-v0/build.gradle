@@ -13,5 +13,4 @@ moduleDependencies(project, [
 testDependencies(project, [
 	':fabric-lifecycle-events-v1',
 	':fabric-command-api-v2',
-	':fabric-resource-loader-v0',
 ])

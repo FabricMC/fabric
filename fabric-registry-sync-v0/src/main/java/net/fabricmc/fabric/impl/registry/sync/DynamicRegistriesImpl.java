@@ -31,7 +31,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryLoader;
 import net.minecraft.registry.SerializableRegistries;
 
-import net.fabricmc.fabric.api.event.registry.DynamicRegistrySyncOption;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
 public final class DynamicRegistriesImpl {
 	private static final List<RegistryLoader.Entry<?>> DYNAMIC_REGISTRIES = new ArrayList<>(RegistryLoader.DYNAMIC_REGISTRIES);
@@ -63,7 +63,7 @@ public final class DynamicRegistriesImpl {
 		DYNAMIC_REGISTRIES.add(entry);
 	}
 
-	public static <T> void addSyncedRegistry(RegistryKey<? extends Registry<T>> registryKey, Codec<T> networkCodec, DynamicRegistrySyncOption... options) {
+	public static <T> void addSyncedRegistry(RegistryKey<? extends Registry<T>> registryKey, Codec<T> networkCodec, DynamicRegistries.SyncOption... options) {
 		Objects.requireNonNull(registryKey, "Registry key cannot be null");
 		Objects.requireNonNull(networkCodec, "Network codec cannot be null");
 		Objects.requireNonNull(options, "Options cannot be null");
@@ -74,8 +74,8 @@ public final class DynamicRegistriesImpl {
 
 		SerializableRegistries.REGISTRIES.put(registryKey, new SerializableRegistries.Info<>(registryKey, networkCodec));
 
-		for (DynamicRegistrySyncOption option : options) {
-			if (option == DynamicRegistrySyncOption.SKIP_WHEN_EMPTY) {
+		for (DynamicRegistries.SyncOption option : options) {
+			if (option == DynamicRegistries.SyncOption.SKIP_WHEN_EMPTY) {
 				SKIP_EMPTY_SYNC_REGISTRIES.add(registryKey);
 			}
 		}

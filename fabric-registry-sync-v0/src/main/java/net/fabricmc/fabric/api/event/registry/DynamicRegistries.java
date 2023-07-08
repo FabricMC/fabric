@@ -72,14 +72,14 @@ public final class DynamicRegistries {
 	 *
 	 * <p>If the object contained in the registry is complex and contains a lot of data
 	 * that is not relevant on the client, another codec for networking can be specified with
-	 * {@link #registerSynced(RegistryKey, Codec, Codec, DynamicRegistrySyncOption...)}.
+	 * {@link #registerSynced(RegistryKey, Codec, Codec, SyncOption...)}.
 	 *
 	 * @param key     the unique key of the registry
 	 * @param codec   the codec used to load registry entries from data packs and the network
 	 * @param options options to configure syncing
 	 * @param <T>   the entry type of the registry
 	 */
-	public static <T> void registerSynced(RegistryKey<? extends Registry<T>> key, Codec<T> codec, DynamicRegistrySyncOption... options) {
+	public static <T> void registerSynced(RegistryKey<? extends Registry<T>> key, Codec<T> codec, SyncOption... options) {
 		registerSynced(key, codec, codec, options);
 	}
 
@@ -97,8 +97,20 @@ public final class DynamicRegistries {
 	 * @param options      options to configure syncing
 	 * @param <T>          the entry type of the registry
 	 */
-	public static <T> void registerSynced(RegistryKey<? extends Registry<T>> key, Codec<T> dataCodec, Codec<T> networkCodec, DynamicRegistrySyncOption... options) {
+	public static <T> void registerSynced(RegistryKey<? extends Registry<T>> key, Codec<T> dataCodec, Codec<T> networkCodec, SyncOption... options) {
 		DynamicRegistriesImpl.register(key, dataCodec);
 		DynamicRegistriesImpl.addSyncedRegistry(key, networkCodec, options);
+	}
+
+	/**
+	 * Flags for configuring dynamic registry syncing.
+	 */
+	public enum SyncOption {
+		/**
+		 * Only synchronizes the dynamic registry if it's not empty.
+		 * This is useful for compatibility with vanilla clients,
+		 * or other clients that might not have the registry.
+		 */
+		SKIP_WHEN_EMPTY
 	}
 }

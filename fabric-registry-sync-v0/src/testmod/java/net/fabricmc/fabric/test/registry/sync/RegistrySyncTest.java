@@ -44,7 +44,6 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
-import net.fabricmc.fabric.api.event.registry.DynamicRegistrySyncOption;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistryView;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
@@ -106,7 +105,7 @@ public class RegistrySyncTest implements ModInitializer {
 		DynamicRegistries.registerSynced(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC);
 		DynamicRegistries.registerSynced(TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC, TestDynamicObject.NETWORK_CODEC);
 		DynamicRegistries.registerSynced(TEST_NESTED_DYNAMIC_REGISTRY_KEY, TestNestedDynamicObject.CODEC);
-		DynamicRegistries.registerSynced(TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC, DynamicRegistrySyncOption.SKIP_WHEN_EMPTY);
+		DynamicRegistries.registerSynced(TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC, DynamicRegistries.SyncOption.SKIP_WHEN_EMPTY);
 
 		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
 			setupCalled.set(true);
