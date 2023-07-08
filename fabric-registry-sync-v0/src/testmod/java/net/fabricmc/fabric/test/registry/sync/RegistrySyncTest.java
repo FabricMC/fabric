@@ -35,19 +35,14 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
-import net.fabricmc.fabric.api.event.registry.DynamicRegistryView;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
@@ -56,22 +51,6 @@ import net.fabricmc.fabric.impl.registry.sync.RemapException;
 
 public class RegistrySyncTest implements ModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
-
-	public static final RegistryKey<Registry<TestDynamicObject>> TEST_DYNAMIC_REGISTRY_KEY =
-			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic"));
-	public static final RegistryKey<Registry<TestNestedDynamicObject>> TEST_NESTED_DYNAMIC_REGISTRY_KEY =
-			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_nested"));
-	public static final RegistryKey<Registry<TestDynamicObject>> TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY =
-			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_synced_1"));
-	public static final RegistryKey<Registry<TestDynamicObject>> TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY =
-			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_synced_2"));
-	public static final RegistryKey<Registry<TestDynamicObject>> TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY =
-			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_synced_empty"));
-
-	private static final RegistryKey<TestDynamicObject> SYNCED_ENTRY_KEY =
-			RegistryKey.of(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, new Identifier("fabric-registry-sync-v0-testmod", "synced"));
-	private static final TagKey<TestDynamicObject> TEST_DYNAMIC_OBJECT_TAG =
-			TagKey.of(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, new Identifier("fabric-registry-sync-v0-testmod", "test"));
 
 	/**
 	 * These are system property's as it allows for easier testing with different run configurations.
@@ -109,40 +88,17 @@ public class RegistrySyncTest implements ModInitializer {
 
 		final AtomicBoolean setupCalled = new AtomicBoolean(false);
 
-		DynamicRegistries.register(TEST_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC);
-		DynamicRegistries.registerSynced(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC);
-		DynamicRegistries.registerSynced(TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC, TestDynamicObject.NETWORK_CODEC);
-		DynamicRegistries.registerSynced(TEST_NESTED_DYNAMIC_REGISTRY_KEY, TestNestedDynamicObject.CODEC);
-		DynamicRegistries.registerSynced(TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC, DynamicRegistries.SyncOption.SKIP_WHEN_EMPTY);
-
 		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
 			setupCalled.set(true);
 			registryManager.registerEntryAdded(RegistryKeys.BIOME, (rawId, id, object) -> {
 				LOGGER.info("Biome added: {}", id);
 			});
-			addListenerForDynamic(registryManager, TEST_DYNAMIC_REGISTRY_KEY);
-			addListenerForDynamic(registryManager, TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY);
-			addListenerForDynamic(registryManager, TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY);
-			addListenerForDynamic(registryManager, TEST_NESTED_DYNAMIC_REGISTRY_KEY);
 		});
 
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
 			if (!setupCalled.get()) {
 				throw new IllegalStateException("DRM setup was not called before startup!");
 			}
-		});
-
-		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
-			// Check that the tag has applied
-			RegistryEntry.Reference<TestDynamicObject> entry = registries.get(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY)
-					.getEntry(SYNCED_ENTRY_KEY)
-					.orElseThrow();
-
-			if (!entry.isIn(TEST_DYNAMIC_OBJECT_TAG)) {
-				throw new AssertionError("Required dynamic registry entry is not in the expected tag! client: " + client);
-			}
-
-			LOGGER.info("Found {} in tag {} (client: {})", entry, TEST_DYNAMIC_OBJECT_TAG, client);
 		});
 
 		// Vanilla status effects don't have an entry for the int id 0, test we can handle this.
@@ -191,11 +147,5 @@ public class RegistrySyncTest implements ModInitializer {
 		}
 
 		return map;
-	}
-
-	private static void addListenerForDynamic(DynamicRegistryView registryView, RegistryKey<? extends Registry<?>> key) {
-		registryView.registerEntryAdded(key, (rawId, id, object) -> {
-			LOGGER.info("Loaded entry of {}: {} = {}", key, id, object);
-		});
 	}
 }

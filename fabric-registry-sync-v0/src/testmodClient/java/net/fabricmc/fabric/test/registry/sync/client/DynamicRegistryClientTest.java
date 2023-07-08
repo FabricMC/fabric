@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.test.registry.sync.client;
 
+import static net.fabricmc.fabric.test.registry.sync.CustomDynamicRegistryTest.TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY;
+import static net.fabricmc.fabric.test.registry.sync.CustomDynamicRegistryTest.TEST_NESTED_DYNAMIC_REGISTRY_KEY;
+import static net.fabricmc.fabric.test.registry.sync.CustomDynamicRegistryTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY;
+import static net.fabricmc.fabric.test.registry.sync.CustomDynamicRegistryTest.TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY;
+
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
@@ -25,11 +30,10 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.test.registry.sync.RegistrySyncTest;
 import net.fabricmc.fabric.test.registry.sync.TestDynamicObject;
 import net.fabricmc.fabric.test.registry.sync.TestNestedDynamicObject;
 
-public final class RegistrySyncClientTest implements ClientModInitializer {
+public final class DynamicRegistryClientTest implements ClientModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Identifier SYNCED_ID = new Identifier("fabric-registry-sync-v0-testmod", "synced");
 
@@ -39,13 +43,13 @@ public final class RegistrySyncClientTest implements ClientModInitializer {
 			LOGGER.info("Starting dynamic registry sync tests...");
 
 			TestDynamicObject synced1 = handler.getRegistryManager()
-					.get(RegistrySyncTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY)
+					.get(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY)
 					.get(SYNCED_ID);
 			TestDynamicObject synced2 = handler.getRegistryManager()
-					.get(RegistrySyncTest.TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY)
+					.get(TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY)
 					.get(SYNCED_ID);
 			TestNestedDynamicObject simpleNested = handler.getRegistryManager()
-					.get(RegistrySyncTest.TEST_NESTED_DYNAMIC_REGISTRY_KEY)
+					.get(TEST_NESTED_DYNAMIC_REGISTRY_KEY)
 					.get(SYNCED_ID);
 
 			LOGGER.info("Synced - simple: {}", synced1);
@@ -53,25 +57,25 @@ public final class RegistrySyncClientTest implements ClientModInitializer {
 			LOGGER.info("Synced - simple nested: {}", simpleNested);
 
 			if (synced1 == null) {
-				didNotReceive(RegistrySyncTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, SYNCED_ID);
+				didNotReceive(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, SYNCED_ID);
 			}
 
 			if (synced1.usesNetworkCodec()) {
-				throw new AssertionError("Entries in " + RegistrySyncTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY + " should not use network codec");
+				throw new AssertionError("Entries in " + TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY + " should not use network codec");
 			}
 
 			if (synced2 == null) {
-				didNotReceive(RegistrySyncTest.TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY, SYNCED_ID);
+				didNotReceive(TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY, SYNCED_ID);
 			}
 
 			// The client server check is needed since the registries are passed through in singleplayer.
 			// The network codec flag would always be false in those cases.
 			if (client.getServer() == null && !synced2.usesNetworkCodec()) {
-				throw new AssertionError("Entries in " + RegistrySyncTest.TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY + " should use network codec");
+				throw new AssertionError("Entries in " + TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY + " should use network codec");
 			}
 
 			if (simpleNested == null) {
-				didNotReceive(RegistrySyncTest.TEST_NESTED_DYNAMIC_REGISTRY_KEY, SYNCED_ID);
+				didNotReceive(TEST_NESTED_DYNAMIC_REGISTRY_KEY, SYNCED_ID);
 			}
 
 			if (simpleNested.nested().value() != synced1) {
@@ -79,7 +83,7 @@ public final class RegistrySyncClientTest implements ClientModInitializer {
 			}
 
 			// If the registries weren't passed through in SP, check that the empty registry was skipped.
-			if (client.getServer() == null && handler.getRegistryManager().getOptional(RegistrySyncTest.TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY).isPresent()) {
+			if (client.getServer() == null && handler.getRegistryManager().getOptional(TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY).isPresent()) {
 				throw new AssertionError("Received empty registry that should have been skipped");
 			}
 

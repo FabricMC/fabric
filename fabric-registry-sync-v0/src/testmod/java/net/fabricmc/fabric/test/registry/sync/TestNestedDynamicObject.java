@@ -24,7 +24,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 
 public record TestNestedDynamicObject(RegistryEntry<TestDynamicObject> nested) {
 	public static final Codec<TestNestedDynamicObject> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			RegistryElementCodec.of(RegistrySyncTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC)
+			RegistryElementCodec.of(CustomDynamicRegistryTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC)
 					.fieldOf("nested")
 					.forGetter(TestNestedDynamicObject::nested)
 	).apply(instance, TestNestedDynamicObject::new));
