@@ -16,7 +16,13 @@
 
 package net.fabricmc.fabric.test.datagen;
 
-import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.*;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_THAT_DROPS_NOTHING;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_ITEM;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_VANILLA_LOOT_TABLE;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
