@@ -35,12 +35,15 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.SimpleRegistry;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
@@ -64,6 +67,11 @@ public class RegistrySyncTest implements ModInitializer {
 			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_synced_2"));
 	public static final RegistryKey<Registry<TestDynamicObject>> TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY =
 			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_synced_empty"));
+
+	private static final RegistryKey<TestDynamicObject> SYNCED_ENTRY_KEY =
+			RegistryKey.of(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, new Identifier("fabric-registry-sync-v0-testmod", "synced"));
+	private static final TagKey<TestDynamicObject> TEST_DYNAMIC_OBJECT_TAG =
+			TagKey.of(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, new Identifier("fabric-registry-sync-v0-testmod", "test"));
 
 	/**
 	 * These are system property's as it allows for easier testing with different run configurations.
@@ -122,6 +130,19 @@ public class RegistrySyncTest implements ModInitializer {
 			if (!setupCalled.get()) {
 				throw new IllegalStateException("DRM setup was not called before startup!");
 			}
+		});
+
+		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
+			// Check that the tag has applied
+			RegistryEntry.Reference<TestDynamicObject> entry = registries.get(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY)
+					.getEntry(SYNCED_ENTRY_KEY)
+					.orElseThrow();
+
+			if (!entry.isIn(TEST_DYNAMIC_OBJECT_TAG)) {
+				throw new AssertionError("Required dynamic registry entry is not in the expected tag! client: " + client);
+			}
+
+			LOGGER.info("Found {} in tag {} (client: {})", entry, TEST_DYNAMIC_OBJECT_TAG, client);
 		});
 
 		// Vanilla status effects don't have an entry for the int id 0, test we can handle this.

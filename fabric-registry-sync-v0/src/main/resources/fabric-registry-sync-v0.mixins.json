@@ -15,7 +15,8 @@
     "SaveLoadingMixin",
     "SerializableRegistriesMixin",
     "SimpleRegistryMixin",
-    "StructuresToConfiguredStructuresFixMixin"
+    "StructuresToConfiguredStructuresFixMixin",
+    "TagManagerLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1
