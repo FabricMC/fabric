@@ -60,4 +60,7 @@ public interface DataGeneratorEntrypoint {
 	 */
 	default void buildRegistry(RegistryBuilder registryBuilder) {
 	}
+
+	default void addJsonKeySortOrders(JsonKeySortOrderAdder adder) {
+	}
 }

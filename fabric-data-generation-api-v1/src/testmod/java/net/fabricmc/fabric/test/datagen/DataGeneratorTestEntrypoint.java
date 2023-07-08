@@ -16,13 +16,7 @@
 
 package net.fabricmc.fabric.test.datagen;
 
-import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_THAT_DROPS_NOTHING;
-import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_ITEM;
-import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE;
-import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_VANILLA_LOOT_TABLE;
-import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
-import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
-import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.*;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -69,7 +63,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.JsonKeySortOrderCallback;
+import net.fabricmc.fabric.api.datagen.v1.JsonKeySortOrderAdder;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
@@ -88,11 +82,12 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	private static final ConditionJsonProvider ALWAYS_LOADED = DefaultResourceConditions.not(NEVER_LOADED);
 
 	@Override
-	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
-		JsonKeySortOrderCallback.EVENT.register(adder -> {
-			adder.add("trigger", 0);
-		});
+	public void addJsonKeySortOrders(JsonKeySortOrderAdder adder) {
+		adder.add("trigger", 0);
+	}
 
+	@Override
+	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		final FabricDataGenerator.Pack pack = dataGenerator.createPack();
 
 		pack.addProvider(TestRecipeProvider::new);

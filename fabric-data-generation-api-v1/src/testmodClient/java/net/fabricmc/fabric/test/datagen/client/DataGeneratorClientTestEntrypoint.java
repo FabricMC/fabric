@@ -30,10 +30,16 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.JsonKeySortOrderAdder;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricCodecDataProvider;
 
 @SuppressWarnings("unused")
 public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoint {
+	@Override
+	public void addJsonKeySortOrders(JsonKeySortOrderAdder adder) {
+		adder.add("type", 100); // Force 'type' at the end
+	}
+
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		final FabricDataGenerator.Pack pack = dataGenerator.createBuiltinResourcePack(new Identifier(MOD_ID, "example_builtin"));
