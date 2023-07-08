@@ -72,14 +72,15 @@ public final class DynamicRegistries {
 	 *
 	 * <p>If the object contained in the registry is complex and contains a lot of data
 	 * that is not relevant on the client, another codec for networking can be specified with
-	 * {@link #registerSynced(RegistryKey, Codec, Codec)}.
+	 * {@link #registerSynced(RegistryKey, Codec, Codec, DynamicRegistrySyncOption...)}.
 	 *
-	 * @param key   the unique key of the registry
-	 * @param codec the codec used to load registry entries from data packs and the network
+	 * @param key     the unique key of the registry
+	 * @param codec   the codec used to load registry entries from data packs and the network
+	 * @param options options to configure syncing
 	 * @param <T>   the entry type of the registry
 	 */
-	public static <T> void registerSynced(RegistryKey<? extends Registry<T>> key, Codec<T> codec) {
-		registerSynced(key, codec, codec);
+	public static <T> void registerSynced(RegistryKey<? extends Registry<T>> key, Codec<T> codec, DynamicRegistrySyncOption... options) {
+		registerSynced(key, codec, codec, options);
 	}
 
 	/**
@@ -93,10 +94,11 @@ public final class DynamicRegistries {
 	 * @param key          the unique key of the registry
 	 * @param dataCodec    the codec used to load registry entries from data packs
 	 * @param networkCodec the codec used to load registry entries from the network
+	 * @param options      options to configure syncing
 	 * @param <T>          the entry type of the registry
 	 */
-	public static <T> void registerSynced(RegistryKey<? extends Registry<T>> key, Codec<T> dataCodec, Codec<T> networkCodec) {
+	public static <T> void registerSynced(RegistryKey<? extends Registry<T>> key, Codec<T> dataCodec, Codec<T> networkCodec, DynamicRegistrySyncOption... options) {
 		DynamicRegistriesImpl.register(key, dataCodec);
-		DynamicRegistriesImpl.addSyncedRegistry(key, networkCodec);
+		DynamicRegistriesImpl.addSyncedRegistry(key, networkCodec, options);
 	}
 }

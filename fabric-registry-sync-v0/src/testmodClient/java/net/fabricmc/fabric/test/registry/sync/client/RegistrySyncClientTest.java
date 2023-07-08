@@ -78,6 +78,11 @@ public final class RegistrySyncClientTest implements ClientModInitializer {
 				throw new AssertionError("Did not match up synced nested entry to the other synced value");
 			}
 
+			// If the registries weren't passed through in SP, check that the empty registry was skipped.
+			if (client.getServer() == null && handler.getRegistryManager().getOptional(RegistrySyncTest.TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY).isPresent()) {
+				throw new AssertionError("Received empty registry that should have been skipped");
+			}
+
 			LOGGER.info("Dynamic registry sync tests passed!");
 		});
 	}
