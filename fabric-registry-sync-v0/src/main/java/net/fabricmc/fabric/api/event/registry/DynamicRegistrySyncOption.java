@@ -23,7 +23,7 @@ public enum DynamicRegistrySyncOption {
 	/**
 	 * Only synchronizes the dynamic registry if it's not empty.
 	 * This is useful for compatibility with vanilla clients,
-	 * or other clients that do not have the registry.
+	 * or other clients that might not have the registry.
 	 */
 	SKIP_WHEN_EMPTY
 }
