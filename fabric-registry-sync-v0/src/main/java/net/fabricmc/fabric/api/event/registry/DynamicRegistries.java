@@ -28,9 +28,47 @@ import net.minecraft.registry.RegistryLoader;
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 
 /**
- * Contains methods for registering and accessing dynamic registries.
+ * Contains methods for registering and accessing dynamic {@linkplain Registry registries}.
  *
- * <p>TODO: Add usage example
+ * <h2>Basic usage</h2>
+ * <p>Custom dynamic registries can be registered with {@link #register(RegistryKey, Codec)}. These registries will not be
+ * <a href="#sync">synced to the client</a>.
+ *
+ * <p>The list of all dynamic registries, whether from vanilla or mods, can be accessed using
+ * {@link #getDynamicRegistries()}.
+ *
+ * <h2 id="sync">Synchronization</h2>
+ * <p>Dynamic registries are not synchronized to the client by default.
+ * To register a <em>synced dynamic registry</em>, you can replace the {@link #register} call
+ * with a call to {@link #registerSynced(RegistryKey, Codec, SyncOption...)}.
+ *
+ * <p>If you want to use a different codec for syncing, e.g. to skip unnecessary data,
+ * you can use the overload with two codecs: {@link #registerSynced(RegistryKey, Codec, Codec, SyncOption...)}.
+ *
+ * <p>Synced dynamic registries can also be prevented from syncing if they have no entries.
+ * This is useful for compatibility with clients that might not have your dynamic registry.
+ * This behavior can be enabled by passing the {@link SyncOption#SKIP_WHEN_EMPTY} flag to {@code registerSynced}.
+ *
+ * <h2>Examples</h2>
+ * {@snippet :
+ * // @link region substring=RegistryKey target=RegistryKey
+ * // @link region substring=ofRegistry target="RegistryKey#ofRegistry"
+ * // @link region substring=Identifier target="net.minecraft.util.Identifier#Identifier(String, String)"
+ * public static final RegistryKey<Registry<MyData>> MY_DATA_KEY = RegistryKey.ofRegistry(new Identifier("my_mod", "my_data"));
+ * // @end @end @end
+ *
+ * // Option 1: Register a non-synced registry
+ * // @link substring=register target="#register":
+ * DynamicRegistries.register(MY_DATA_KEY, MyData.CODEC);
+ *
+ * // Option 2a: Register a synced registry
+ * // @link substring=registerSynced target="#registerSynced(RegistryKey, Codec, SyncOption...)":
+ * DynamicRegistries.registerSynced(MY_DATA_KEY, MyData.CODEC);
+ *
+ * // Option 2b: Register a synced registry with a different network codec
+ * // @link substring=registerSynced target="#registerSynced(RegistryKey, Codec, Codec, SyncOption...)":
+ * DynamicRegistries.registerSynced(MY_DATA_KEY, MyData.CODEC, MyData.NETWORK_CODEC);
+ * }
  */
 public final class DynamicRegistries {
 	private DynamicRegistries() {
