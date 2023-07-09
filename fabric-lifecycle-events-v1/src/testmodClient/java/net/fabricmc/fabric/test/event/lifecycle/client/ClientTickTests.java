@@ -29,6 +29,7 @@ import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 public final class ClientTickTests implements ClientModInitializer {
 	private final Map<RegistryKey<World>, Integer> tickTracker = new HashMap<>();
 	private int ticks;
+	private int scheduledTicks;
 
 	@Override
 	public void onInitializeClient() {
@@ -48,6 +49,14 @@ public final class ClientTickTests implements ClientModInitializer {
 			}
 
 			this.tickTracker.put(world.getRegistryKey(), worldTicks + 1);
+		});
+
+		ClientTickEvents.END_TASK_EXECUTION.register(client -> {
+			this.scheduledTicks++;
+
+			if (this.ticks % 200 == 0) {
+				ServerLifecycleTests.LOGGER.info("Ticked Client task scheduler at " + this.scheduledTicks + " ticks.");
+			}
 		});
 	}
 }
