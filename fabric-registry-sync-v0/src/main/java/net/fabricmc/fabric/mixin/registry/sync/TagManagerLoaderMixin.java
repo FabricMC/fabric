@@ -26,11 +26,18 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.tag.TagManagerLoader;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
+
 // Adds namespaces to tag directories for registries added by mods.
 @Mixin(TagManagerLoader.class)
 abstract class TagManagerLoaderMixin {
 	@Inject(method = "getPath", at = @At("HEAD"), cancellable = true)
 	private static void onGetPath(RegistryKey<? extends Registry<?>> registry, CallbackInfoReturnable<String> info) {
+		// TODO: Expand this change to static registries in the future.
+		if (!DynamicRegistriesImpl.DYNAMIC_REGISTRY_KEYS.contains(registry)) {
+			return;
+		}
+
 		Identifier id = registry.getValue();
 
 		// Vanilla doesn't mark namespaces in the directories of tags at all,
