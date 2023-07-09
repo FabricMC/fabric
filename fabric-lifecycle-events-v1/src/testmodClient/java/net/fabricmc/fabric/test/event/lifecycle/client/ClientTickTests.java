@@ -54,7 +54,7 @@ public final class ClientTickTests implements ClientModInitializer {
 		ClientTickEvents.END_TASK_EXECUTION.register(client -> {
 			this.scheduledTicks++;
 
-			if (this.ticks % 200 == 0) {
+			if (this.scheduledTicks % 200 == 0) {
 				ServerLifecycleTests.LOGGER.info("Ticked Client task scheduler at " + this.scheduledTicks + " ticks.");
 			}
 		});
