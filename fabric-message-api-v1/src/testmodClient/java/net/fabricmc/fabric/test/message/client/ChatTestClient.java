@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.message.client;
 
+import com.mojang.brigadier.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +37,11 @@ public class ChatTestClient implements ClientModInitializer {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(ClientCommandManager.literal("block").then(ClientCommandManager.literal("send").executes(context -> {
 			throw new AssertionError("This client command should be blocked!");
 		}))));
+		//Register the modified result command from ClientSendMessageEvents#MODIFY_COMMAND to ensure that MODIFY_COMMAND executes before the client command api
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(ClientCommandManager.literal("sending").then(ClientCommandManager.literal("modified").then(ClientCommandManager.literal("command").then(ClientCommandManager.literal("message").executes(context -> {
+			LOGGER.info("Command modified by ClientSendMessageEvents#MODIFY_COMMAND successfully processed by fabric client command api");
+			return Command.SINGLE_SUCCESS;
+		}))))));
 		//Test client send message events
 		ClientSendMessageEvents.ALLOW_CHAT.register((message) -> {
 			if (message.contains("block send")) {
