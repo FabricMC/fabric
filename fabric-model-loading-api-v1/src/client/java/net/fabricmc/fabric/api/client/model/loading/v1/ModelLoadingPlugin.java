@@ -61,11 +61,6 @@ public interface ModelLoadingPlugin {
 		void addModels(Collection<? extends Identifier> ids);
 
 		/**
-		 * Event access to register model variant resolvers.
-		 */
-		Event<ModelResolver.Variant> resolveModelVariant();
-
-		/**
 		 * Event access to register model resource resolvers.
 		 */
 		Event<ModelResolver.Resource> resolveModelResource();

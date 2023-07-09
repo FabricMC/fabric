@@ -37,22 +37,6 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 
 	final Set<Identifier> extraModels = new LinkedHashSet<>();
 
-	private final Event<ModelResolver.Variant> variantResolvers = EventFactory.createArrayBacked(ModelResolver.Variant.class, resolvers -> (modelId, context) -> {
-		for (ModelResolver.Variant resolver : resolvers) {
-			try {
-				UnbakedModel model = resolver.resolveModelVariant(modelId, context);
-
-				if (model != null) {
-					return model;
-				}
-			} catch (Exception exception) {
-				LOGGER.error("Failed to resolve custom model variant", exception);
-			}
-		}
-
-		return null;
-	});
-
 	private final Event<ModelResolver.Resource> resourceResolvers = EventFactory.createArrayBacked(ModelResolver.Resource.class, resolvers -> (resourceId, context) -> {
 		for (ModelResolver.Resource resolver : resolvers) {
 			try {
@@ -124,11 +108,6 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 	@Override
 	public void addModels(Collection<? extends Identifier> ids) {
 		extraModels.addAll(ids);
-	}
-
-	@Override
-	public Event<ModelResolver.Variant> resolveModelVariant() {
-		return variantResolvers;
 	}
 
 	@Override

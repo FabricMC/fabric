@@ -32,38 +32,6 @@ import net.minecraft.util.Identifier;
  */
 public final class ModelResolver {
 	/**
-	 * Interface for model variant resolvers.
-	 *
-	 * <p>Model variant resolvers hook the resolution of ModelIdentifiers. In vanilla, this is
-	 * the part where a "minecraft:stone#normal" identifier triggers the loading of a
-	 * "minecraft:models/stone" model ({@link Resource} handles the later step).
-	 *
-	 * <p>The most common use of this is to cooperate with {@link ModelLoadingPlugin.Context#addModels}, but it can
-	 * also allow you to add your own block- or item-state formats. To trigger the loading
-	 * of another model, use the passed {@link Context}.
-	 *
-	 * <p>As every model loading is instantiated with a new resolver, it is safe
-	 * (and recommended!) to cache information.
-	 *
-	 * <p>Keep in mind that only *one* Variant may respond to a given model
-	 * at any time.
-	 *
-	 * <p>Note that vanilla will resolve all the model variants for a block at once, so replacing select {@link ModelIdentifier}s
-	 * for a block is not possible with this hook.
-	 * One can use {@link ModelModifier.OnLoad} instead for that.
-	 */
-	@FunctionalInterface
-	public interface Variant {
-		/**
-		 * @param modelId The model identifier, complete with variant.
-		 * @return The loaded UnbakedModel, or null if this Variant doesn't handle a specific Identifier
-		 * (or if there was no error!).
-		 */
-		@Nullable
-		UnbakedModel resolveModelVariant(ModelIdentifier modelId, Context context);
-	}
-
-	/**
 	 * Interface for model resource resolvers.
 	 *
 	 * <p>Model resource resolvers hook the loading of model *files* from the resource tree;

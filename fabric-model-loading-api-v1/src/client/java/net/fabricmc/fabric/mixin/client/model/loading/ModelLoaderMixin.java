@@ -95,24 +95,6 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 		}
 	}
 
-	@Inject(method = "loadModel", at = @At("HEAD"), cancellable = true)
-	private void onLoadModel(Identifier id, CallbackInfo ci) {
-		// Prevent calls to getOrLoadModel from loadModel as it will cause problems.
-		// Mods should call getOrLoadModel on the ModelResolver.Context instead.
-		fabric_guardGetOrLoadModel++;
-
-		try {
-			UnbakedModel customModel = fabric_eventDispatcher.resolveModel(id);
-
-			if (customModel != null) {
-				putModel(id, customModel);
-				ci.cancel();
-			}
-		} finally {
-			fabric_guardGetOrLoadModel--;
-		}
-	}
-
 	@Inject(method = "getOrLoadModel", at = @At("HEAD"))
 	private void fabric_preventNestedGetOrLoadModel(Identifier id, CallbackInfoReturnable<UnbakedModel> cir) {
 		if (fabric_guardGetOrLoadModel > 0) {
@@ -120,12 +102,27 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 		}
 	}
 
-	@ModifyVariable(method = "putModel", at = @At("HEAD"), argsOnly = true)
-	private UnbakedModel onPutModel(UnbakedModel model, Identifier identifier) {
+	@Inject(method = "loadModel", at = @At("HEAD"), cancellable = true)
+	private void onLoadModel(Identifier id, CallbackInfo ci) {
+		// Prevent calls to getOrLoadModel from loadModel as it will cause problems.
+		// Mods should call getOrLoadModel on the ModelResolver.Context instead.
 		fabric_guardGetOrLoadModel++;
 
 		try {
-			return fabric_eventDispatcher.modifyModelOnLoad(identifier, model);
+			if (fabric_eventDispatcher.resolveModel(id)) {
+				ci.cancel();
+			}
+		} finally {
+			fabric_guardGetOrLoadModel--;
+		}
+	}
+
+	@ModifyVariable(method = "putModel", at = @At("HEAD"), argsOnly = true)
+	private UnbakedModel onPutModel(UnbakedModel model, Identifier id) {
+		fabric_guardGetOrLoadModel++;
+
+		try {
+			return fabric_eventDispatcher.modifyModelOnLoad(id, model);
 		} finally {
 			fabric_guardGetOrLoadModel--;
 		}
@@ -159,5 +156,10 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 		}
 
 		return unbakedModels.get(id);
+	}
+
+	@Override
+	public void fabric_putModel(Identifier id, UnbakedModel model) {
+		putModel(id, model);
 	}
 }

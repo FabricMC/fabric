@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
@@ -37,10 +38,12 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
+import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelResolver;
@@ -87,15 +90,17 @@ public class ModelLoadingEventDispatcher {
 
 	private final ModelLoader loader;
 	private final ResolverContext resolverContext;
+	private final BlockStateResolverContext blockStateResolverContext;
 	private final ModelLoaderPluginContextImpl pluginContext;
 
-	private final ObjectArrayList<OnLoadModifierContext> onLoadModifierContext = new ObjectArrayList<>();
-	private final ObjectArrayList<BeforeBakeModifierContext> beforeBakeModifierContext = new ObjectArrayList<>();
-	private final ObjectArrayList<AfterBakeModifierContext> afterBakeModifierContext = new ObjectArrayList<>();
+	private final ObjectArrayList<OnLoadModifierContext> onLoadModifierContextStack = new ObjectArrayList<>();
+	private final ObjectArrayList<BeforeBakeModifierContext> beforeBakeModifierContextStack = new ObjectArrayList<>();
+	private final ObjectArrayList<AfterBakeModifierContext> afterBakeModifierContextStack = new ObjectArrayList<>();
 
 	public ModelLoadingEventDispatcher(ModelLoader loader) {
 		this.loader = loader;
 		this.resolverContext = new ResolverContext();
+		this.blockStateResolverContext = new BlockStateResolverContext();
 		this.pluginContext = new ModelLoaderPluginContextImpl(resolverContext);
 
 		for (ModelLoadingPlugin plugin : CURRENT_PLUGINS.get()) {
@@ -115,34 +120,45 @@ public class ModelLoadingEventDispatcher {
 		}
 	}
 
-	@Nullable
-	public UnbakedModel resolveModel(Identifier id) {
+	public boolean resolveModel(Identifier id) {
 		if (id instanceof ModelIdentifier modelId) {
 			return resolveModelVariant(modelId);
 		} else {
-			return resolveModelResource(id);
+			UnbakedModel model = resolveModelResource(id);
+			if (model != null) {
+				((ModelLoaderHooks) loader).fabric_putModel(id, model);
+				return true;
+			}
+			return false;
 		}
 	}
 
-	@Nullable
-	private UnbakedModel resolveModelVariant(ModelIdentifier variantId) {
-		UnbakedModel model = pluginContext.resolveModelVariant().invoker().resolveModelVariant(variantId, resolverContext);
-
-		if (model != null) {
-			return model;
+	private boolean resolveModelVariant(ModelIdentifier id) {
+		// Replicating the special-case from ModelLoader as loadModelFromJson is insufficiently patchable
+		if (Objects.equals(id.getVariant(), "inventory")) {
+			Identifier resourceId = id.withPrefixedPath("item/");
+			UnbakedModel model = resolveModelResource(resourceId);
+			if (model != null) {
+				((ModelLoaderHooks) loader).fabric_putModel(id, model);
+				// loader.unbakedModels.put(resourceId, model);
+				return true;
+			}
+			return false;
 		}
 
-		// Replicating the special-case from ModelLoader as loadModelFromJson is insufficiently patchable
-		if (Objects.equals(variantId.getVariant(), "inventory")) {
-			Identifier resourceId = variantId.withPrefixedPath("item/");
-			model = resolveModelResource(resourceId);
-
-			if (model != null) {
-				return model;
+		Identifier blockId = new Identifier(id.getNamespace(), id.getPath());
+		if (Registries.BLOCK.containsId(blockId)) {
+			Block block = Registries.BLOCK.get(blockId);
+			BlockStateResolver resolver = BlockStateResolverRegistry.get(block);
+			if (resolver != null) {
+				resolver.resolve(blockStateResolverContext);
+				// TODO: Check to ensure the model maps actually have models for all ModelIdentifiers of this block.
+				// If not, populate missing IDs with the missing model or throw an exception.
+				return true;
 			}
 		}
 
-		return null;
+		return false;
 	}
 
 	@Nullable
@@ -151,48 +167,65 @@ public class ModelLoadingEventDispatcher {
 	}
 
 	public UnbakedModel modifyModelOnLoad(Identifier id, UnbakedModel model) {
-		if (onLoadModifierContext.isEmpty()) {
-			onLoadModifierContext.add(new OnLoadModifierContext());
+		if (onLoadModifierContextStack.isEmpty()) {
+			onLoadModifierContextStack.add(new OnLoadModifierContext());
 		}
 
-		OnLoadModifierContext context = onLoadModifierContext.pop();
+		OnLoadModifierContext context = onLoadModifierContextStack.pop();
 		context.prepare(id);
 
 		model = pluginContext.modifyModelOnLoad().invoker().modifyModelOnLoad(model, context);
 
-		onLoadModifierContext.push(context);
+		onLoadModifierContextStack.push(context);
 		return model;
 	}
 
 	public UnbakedModel modifyModelBeforeBake(Identifier id, UnbakedModel model, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
-		if (beforeBakeModifierContext.isEmpty()) {
-			beforeBakeModifierContext.add(new BeforeBakeModifierContext());
+		if (beforeBakeModifierContextStack.isEmpty()) {
+			beforeBakeModifierContextStack.add(new BeforeBakeModifierContext());
 		}
 
-		BeforeBakeModifierContext context = beforeBakeModifierContext.pop();
+		BeforeBakeModifierContext context = beforeBakeModifierContextStack.pop();
 		context.prepare(id, textureGetter, settings, baker);
 
 		model = pluginContext.modifyModelBeforeBake().invoker().modifyModelBeforeBake(model, context);
 
-		beforeBakeModifierContext.push(context);
+		beforeBakeModifierContextStack.push(context);
 		return model;
 	}
 
 	public BakedModel modifyModelAfterBake(Identifier id, UnbakedModel sourceModel, BakedModel bakedModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
-		if (afterBakeModifierContext.isEmpty()) {
-			afterBakeModifierContext.add(new AfterBakeModifierContext());
+		if (afterBakeModifierContextStack.isEmpty()) {
+			afterBakeModifierContextStack.add(new AfterBakeModifierContext());
 		}
 
-		AfterBakeModifierContext context = afterBakeModifierContext.pop();
+		AfterBakeModifierContext context = afterBakeModifierContextStack.pop();
 		context.prepare(id, sourceModel, textureGetter, settings, baker);
 
 		bakedModel = pluginContext.modifyModelAfterBake().invoker().modifyModelAfterBake(bakedModel, context);
 
-		afterBakeModifierContext.push(context);
+		afterBakeModifierContextStack.push(context);
 		return bakedModel;
 	}
 
 	private class ResolverContext implements ModelResolver.Context {
+		@Override
+		public ModelLoader loader() {
+			return loader;
+		}
+
+		@Override
+		public UnbakedModel getOrLoadModel(Identifier id) {
+			return ((ModelLoaderHooks) loader).fabric_getOrLoadModel(id);
+		}
+	}
+
+	private class BlockStateResolverContext implements BlockStateResolver.Context {
+		@Override
+		public void putModel(ModelIdentifier id, UnbakedModel model) {
+			((ModelLoaderHooks) loader).fabric_putModel(id, model);
+		}
+
 		@Override
 		public ModelLoader loader() {
 			return loader;
