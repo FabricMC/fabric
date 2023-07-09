@@ -25,51 +25,43 @@ import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
 
 /**
- * Contains interfaces for the events mods can use to load their own model formats.
+ * Interface for model resolvers.
  *
- * <p>These hooks fire for <b>every single model that's loaded</b>, so the code written here should be as simple/performant
- * as possible.
+ * <p>Model resolvers hook the loading of model *files* from the resource tree;
+ * that is, in vanilla, it handles going from "minecraft:block/stone" to a
+ * "assets/minecraft/models/block/stone.json" file.
+ *
+ * <p>A common use of this is to cooperate with {@link ModelLoadingPlugin.Context#addModels} to directly
+ * add custom {@link UnbakedModel} instances.
+ *
+ * <p>This is also where you want to add your own custom model formats.
+ *
+ * <p>As each model reload uses a new resolver, it is safe
+ * (and recommended!) to cache information inside a resolver.
+ *
+ * <p>Keep in mind that only *one* Resource may respond to a given model
+ * at any time. If you're writing, say, an OBJ loader, this means you could
+ * easily conflict with another OBJ loader unless you take some precautions,
+ * for example:
+ *
+ * <ul><li>Only load files with a mod-suffixed name, such as .architect.obj,
+ * <li>Only load files from an explicit list of namespaces, registered elsewhere.</ul>
  */
-public final class ModelResolver {
+@FunctionalInterface
+public interface ModelResolver {
 	/**
-	 * Interface for model resource resolvers.
-	 *
-	 * <p>Model resource resolvers hook the loading of model *files* from the resource tree;
-	 * that is, in vanilla, it handles going from "minecraft:block/stone" to a
-	 * "assets/minecraft/models/block/stone.json" file.
-	 *
-	 * <p>A common use of this is to cooperate with {@link ModelLoadingPlugin.Context#addModels} to directly
-	 * add custom {@link UnbakedModel} instances.
-	 *
-	 * <p>This is also where you want to add your own custom model formats.
-	 *
-	 * <p>As each model reload uses a new resolver, it is safe
-	 * (and recommended!) to cache information inside a loader.
-	 *
-	 * <p>Keep in mind that only *one* Resource may respond to a given model
-	 * at any time. If you're writing, say, an OBJ loader, this means you could
-	 * easily conflict with another OBJ loader unless you take some precautions,
-	 * for example:
-	 *
-	 * <ul><li>Only load files with a mod-suffixed name, such as .architect.obj,
-	 * <li>Only load files from an explicit list of namespaces, registered elsewhere.</ul>
+	 * @param resourceId The resource identifier to be loaded.
+	 * @return The loaded UnbakedModel, or null if this Resource doesn't handle a specific Identifier
+	 * (or if there was no error!).
 	 */
-	@FunctionalInterface
-	public interface Resource {
-		/**
-		 * @param resourceId The resource identifier to be loaded.
-		 * @return The loaded UnbakedModel, or null if this Resource doesn't handle a specific Identifier
-		 * (or if there was no error!).
-		 */
-		@Nullable
-		UnbakedModel resolveModelResource(Identifier resourceId, Context context);
-	}
+	@Nullable
+	UnbakedModel resolveModel(Identifier resourceId, Context context);
 
 	/**
 	 * The context used during model resolution.
 	 */
 	@ApiStatus.NonExtendable
-	public interface Context {
+	interface Context {
 		/**
 		 * Load a model using an {@link Identifier}, {@link ModelIdentifier}, ... or get it if it was already loaded.
 		 *
@@ -88,6 +80,4 @@ public final class ModelResolver {
 		 */
 		ModelLoader loader();
 	}
-
-	private ModelResolver() { }
 }

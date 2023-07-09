@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
@@ -60,10 +61,12 @@ public interface ModelLoadingPlugin {
 		 */
 		void addModels(Collection<? extends Identifier> ids);
 
+		void registerBlockStateResolver(Block block, BlockStateResolver resolver);
+
 		/**
-		 * Event access to register model resource resolvers.
+		 * Event access to register model resolvers.
 		 */
-		Event<ModelResolver.Resource> resolveModelResource();
+		Event<ModelResolver> resolveModel();
 
 		/**
 		 * Event access to monitor unbaked model loads and replace the loaded model.

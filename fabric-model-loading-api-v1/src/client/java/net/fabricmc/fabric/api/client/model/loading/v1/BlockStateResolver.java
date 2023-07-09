@@ -2,23 +2,43 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.fabricmc.fabric.impl.client.model.loading.BlockStateResolverRegistry;
-
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
 
+/**
+ * Interface for block state resolvers.
+ *
+ * <p>Block state resolvers replace the {@code blockstates/} JSON files.
+ * They allow defining custom block-state formats for example.
+ *
+ * <p>If only custom models are needed, {@link ModelResolver} should be used to resolve specific model files.
+ */
+// TODO: add test
+@FunctionalInterface
 public interface BlockStateResolver {
-	static void register(Block block, BlockStateResolver resolver) {
-		BlockStateResolverRegistry.register(block, resolver);
-	}
+	/**
+	 * TODO: javadoc
+	 */
+	void resolveBlockStates(Context context);
 
-	void resolve(Context context);
-
+	/**
+	 * The context for block state resolution.
+	 */
 	@ApiStatus.NonExtendable
 	interface Context {
+		/**
+		 * Add a model for a specific block state.
+		 *
+		 * <p>The {@link ModelIdentifier} for a specific block state can be obtained using {@link BlockModels#getModelId(BlockState)}.
+		 *
+		 * @param id the model identifier, corresponding to a block state
+		 * @param model the unbaked model for this identifie
+		 */
+		// TODO: Change to blockstate first param
 		void putModel(ModelIdentifier id, UnbakedModel model);
 
 		/**

@@ -51,7 +51,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			ModelResourceProvider provider = providerSupplier.apply(resourceManager);
 			ModelProviderContext providerContext = makeOldContext(pluginContext);
 
-			pluginContext.resolveModelResource().register((resourceId, modelProviderContext) -> {
+			pluginContext.resolveModel().register((resourceId, modelProviderContext) -> {
 				try {
 					return provider.loadModelResource(resourceId, providerContext);
 				} catch (ModelProviderException e) {

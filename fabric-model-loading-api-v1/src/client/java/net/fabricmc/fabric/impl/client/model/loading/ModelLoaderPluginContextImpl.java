@@ -17,15 +17,23 @@
 package net.fabricmc.fabric.impl.client.model.loading;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelResolver;
@@ -37,10 +45,39 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 
 	final Set<Identifier> extraModels = new LinkedHashSet<>();
 
-	private final Event<ModelResolver.Resource> resourceResolvers = EventFactory.createArrayBacked(ModelResolver.Resource.class, resolvers -> (resourceId, context) -> {
-		for (ModelResolver.Resource resolver : resolvers) {
+	private static class BlockKey {
+		private String namespace;
+		private String path;
+
+		private BlockKey() {
+		}
+
+		private BlockKey(String namespace, String path) {
+			this.namespace = namespace;
+			this.path = path;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			BlockKey blockKey = (BlockKey) o;
+			return namespace.equals(blockKey.namespace) && path.equals(blockKey.path);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(namespace, path);
+		}
+	}
+
+	private final BlockKey lookupKey = new BlockKey();
+	private final Map<BlockKey, BlockStateResolver> blockStateResolvers = new HashMap<>();
+
+	private final Event<ModelResolver> resolvers = EventFactory.createArrayBacked(ModelResolver.class, resolvers -> (resourceId, context) -> {
+		for (ModelResolver resolver : resolvers) {
 			try {
-				UnbakedModel model = resolver.resolveModelResource(resourceId, context);
+				UnbakedModel model = resolver.resolveModel(resourceId, context);
 
 				if (model != null) {
 					return model;
@@ -111,8 +148,29 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 	}
 
 	@Override
-	public Event<ModelResolver.Resource> resolveModelResource() {
-		return resourceResolvers;
+	public void registerBlockStateResolver(Block block, BlockStateResolver resolver) {
+		Objects.requireNonNull(block, "block cannot be null");
+		Objects.requireNonNull(resolver, "resolver cannot be null");
+
+		Identifier blockId = Registries.BLOCK.getId(block);
+
+		if (blockStateResolvers.put(new BlockKey(blockId.getNamespace(), blockId.getPath()), resolver) != null) {
+			throw new IllegalStateException("Duplicate block state resolver for block " + blockId);
+		}
+	}
+
+	@Nullable
+	BlockStateResolver getResolver(ModelIdentifier modelId) {
+		BlockKey key = lookupKey;
+		key.namespace = modelId.getNamespace();
+		key.path = modelId.getPath();
+
+		return blockStateResolvers.get(key);
+	}
+
+	@Override
+	public Event<ModelResolver> resolveModel() {
+		return resolvers;
 	}
 
 	@Override

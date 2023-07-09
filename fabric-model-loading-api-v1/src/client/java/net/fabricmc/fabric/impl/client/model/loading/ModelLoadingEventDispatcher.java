@@ -29,7 +29,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
@@ -38,7 +37,6 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
@@ -146,16 +144,13 @@ public class ModelLoadingEventDispatcher {
 			return false;
 		}
 
-		Identifier blockId = new Identifier(id.getNamespace(), id.getPath());
-		if (Registries.BLOCK.containsId(blockId)) {
-			Block block = Registries.BLOCK.get(blockId);
-			BlockStateResolver resolver = BlockStateResolverRegistry.get(block);
-			if (resolver != null) {
-				resolver.resolve(blockStateResolverContext);
-				// TODO: Check to ensure the model maps actually have models for all ModelIdentifiers of this block.
-				// If not, populate missing IDs with the missing model or throw an exception.
-				return true;
-			}
+		BlockStateResolver resolver = pluginContext.getResolver(id);
+
+		if (resolver != null) {
+			resolver.resolveBlockStates(blockStateResolverContext);
+			// TODO: Check to ensure the model maps actually have models for all ModelIdentifiers of this block.
+			// If not, populate missing IDs with the missing model and log a warning.
+			return true;
 		}
 
 		return false;
@@ -163,7 +158,7 @@ public class ModelLoadingEventDispatcher {
 
 	@Nullable
 	private UnbakedModel resolveModelResource(Identifier resourceId) {
-		return pluginContext.resolveModelResource().invoker().resolveModelResource(resourceId, resolverContext);
+		return pluginContext.resolveModel().invoker().resolveModel(resourceId, resolverContext);
 	}
 
 	public UnbakedModel modifyModelOnLoad(Identifier id, UnbakedModel model) {

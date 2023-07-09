@@ -48,7 +48,7 @@ public final class RendererClientTest implements ClientModInitializer {
 		FRAME_MODELS.add(id("block/frame"));
 
 		ModelLoadingPlugin.register(pluginContext -> {
-			pluginContext.resolveModelResource().register((resourceId, context) -> {
+			pluginContext.resolveModel().register((resourceId, context) -> {
 				if (FRAME_MODELS.contains(resourceId)) {
 					return new FrameUnbakedModel();
 				}

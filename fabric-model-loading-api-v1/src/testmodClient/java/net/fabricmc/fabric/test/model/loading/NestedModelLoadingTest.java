@@ -49,7 +49,7 @@ public class NestedModelLoadingTest implements ClientModInitializer {
 		ModelLoadingPlugin.register(pluginContext -> {
 			pluginContext.addModels(BASE_MODEL);
 
-			pluginContext.resolveModelResource().register((resourceId, context) -> {
+			pluginContext.resolveModel().register((resourceId, context) -> {
 				UnbakedModel ret = null;
 
 				if (resourceId.equals(BASE_MODEL)) {
