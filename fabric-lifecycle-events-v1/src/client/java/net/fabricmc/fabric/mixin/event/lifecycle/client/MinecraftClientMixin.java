@@ -48,4 +48,14 @@ public abstract class MinecraftClientMixin {
 	private void onStart(CallbackInfo ci) {
 		ClientLifecycleEvents.CLIENT_STARTED.invoker().onClientStarted((MinecraftClient) (Object) this);
 	}
+
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V", shift = At.Shift.BEFORE), method = "render")
+	private void onStartExecuteTasks(CallbackInfo ci) {
+		ClientLifecycleEvents.CLIENT_STARTED.invoker().onClientStarted((MinecraftClient) (Object) this);
+	}
+
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V", shift = At.Shift.AFTER), method = "render")
+	private void onEndExecuteTasks(CallbackInfo ci) {
+		ClientLifecycleEvents.CLIENT_STARTED.invoker().onClientStarted((MinecraftClient) (Object) this);
+	}
 }

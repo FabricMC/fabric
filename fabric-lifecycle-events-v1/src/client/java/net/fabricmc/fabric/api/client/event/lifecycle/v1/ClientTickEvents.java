@@ -64,6 +64,30 @@ public final class ClientTickEvents {
 		}
 	});
 
+	/**
+	 * Called every tick before running scheduled tasks through {@link MinecraftClient#execute(Runnable)}.
+	 * This differs from the regular client tick, which can run multiple times per frame depending on frame rate.
+	 * This is called before {@link ClientTickEvents#START_CLIENT_TICK}.
+	 */
+	public static final Event<StartTaskExecution> START_TASK_EXECUTION = EventFactory.createArrayBacked(StartTaskExecution.class, callbacks -> client -> {
+		for (StartTaskExecution callback : callbacks) {
+			callback.onStartTaskExecution(client);
+		}
+	});
+
+	/**
+	 * Called every tick after running scheduled tasks through {@link MinecraftClient#execute(Runnable)}.
+	 * This differs from the regular client tick, which can run multiple times per frame depending on frame rate.
+	 * Keyboard and mouse input is processed through the afformentioned method, so you can do things like emulate keypresses
+	 * here, guaranteed to be processed before the tick.
+	 * This is called before {@link ClientTickEvents#START_CLIENT_TICK}.
+	 */
+	public static final Event<EndTaskExecution> END_TASK_EXECUTION = EventFactory.createArrayBacked(EndTaskExecution.class, callbacks -> client -> {
+		for (EndTaskExecution callback : callbacks) {
+			callback.onEndTaskExecution(client);
+		}
+	});
+
 	@FunctionalInterface
 	public interface StartTick {
 		void onStartTick(MinecraftClient client);
@@ -82,5 +106,15 @@ public final class ClientTickEvents {
 	@FunctionalInterface
 	public interface EndWorldTick {
 		void onEndTick(ClientWorld world);
+	}
+
+	@FunctionalInterface
+	public interface StartTaskExecution {
+		void onStartTaskExecution(MinecraftClient client);
+	}
+
+	@FunctionalInterface
+	public interface EndTaskExecution {
+		void onEndTaskExecution(MinecraftClient client);
 	}
 }
