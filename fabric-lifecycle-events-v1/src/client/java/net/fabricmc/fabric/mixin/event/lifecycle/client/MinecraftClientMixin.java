@@ -51,11 +51,11 @@ public abstract class MinecraftClientMixin {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V", shift = At.Shift.BEFORE), method = "render")
 	private void onStartExecuteTasks(CallbackInfo ci) {
-		ClientLifecycleEvents.CLIENT_STARTED.invoker().onClientStarted((MinecraftClient) (Object) this);
+		ClientTickEvents.START_TASK_EXECUTION.invoker().onStartTaskExecution((MinecraftClient) (Object) this);
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V", shift = At.Shift.AFTER), method = "render")
 	private void onEndExecuteTasks(CallbackInfo ci) {
-		ClientLifecycleEvents.CLIENT_STARTED.invoker().onClientStarted((MinecraftClient) (Object) this);
+		ClientTickEvents.END_TASK_EXECUTION.invoker().onEndTaskExecution((MinecraftClient) (Object) this);
 	}
 }
