@@ -75,6 +75,7 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 
 	@Inject(method = "addModel", at = @At("HEAD"))
 	private void onAddModel(ModelIdentifier id, CallbackInfo info) {
+		// TODO: move hook to ctor
 		if (id == MISSING_ID) {
 			fabric_eventDispatcher = new ModelLoadingEventDispatcher((ModelLoader) (Object) this);
 			fabric_eventDispatcher.addExtraModels(this::addModel);
@@ -131,6 +132,11 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 	@Override
 	public ModelLoadingEventDispatcher fabric_getDispatcher() {
 		return fabric_eventDispatcher;
+	}
+
+	@Override
+	public UnbakedModel fabric_getMissingModel() {
+		return unbakedModels.get(MISSING_ID);
 	}
 
 	/**

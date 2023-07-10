@@ -23,6 +23,8 @@ import net.minecraft.util.Identifier;
 public interface ModelLoaderHooks {
 	ModelLoadingEventDispatcher fabric_getDispatcher();
 
+	UnbakedModel fabric_getMissingModel();
+
 	UnbakedModel fabric_getOrLoadModel(Identifier id);
 
 	void fabric_putModel(Identifier id, UnbakedModel model);

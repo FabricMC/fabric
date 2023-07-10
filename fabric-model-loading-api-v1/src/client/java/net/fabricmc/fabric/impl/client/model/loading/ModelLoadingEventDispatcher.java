@@ -17,8 +17,12 @@
 package net.fabricmc.fabric.impl.client.model.loading;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
@@ -29,6 +33,9 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
@@ -37,6 +44,7 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
@@ -88,8 +96,10 @@ public class ModelLoadingEventDispatcher {
 
 	private final ModelLoader loader;
 	private final ResolverContext resolverContext;
-	private final BlockStateResolverContext blockStateResolverContext;
 	private final ModelLoaderPluginContextImpl pluginContext;
+
+	private final ObjectArrayList<BlockStateResolverContext> blockStateResolverContextStack = new ObjectArrayList<>();
+	private final Set<Block> resolvingBlocks = Collections.newSetFromMap(new IdentityHashMap<>());
 
 	private final ObjectArrayList<OnLoadModifierContext> onLoadModifierContextStack = new ObjectArrayList<>();
 	private final ObjectArrayList<BeforeBakeModifierContext> beforeBakeModifierContextStack = new ObjectArrayList<>();
@@ -98,7 +108,6 @@ public class ModelLoadingEventDispatcher {
 	public ModelLoadingEventDispatcher(ModelLoader loader) {
 		this.loader = loader;
 		this.resolverContext = new ResolverContext();
-		this.blockStateResolverContext = new BlockStateResolverContext();
 		this.pluginContext = new ModelLoaderPluginContextImpl(resolverContext);
 
 		for (ModelLoadingPlugin plugin : CURRENT_PLUGINS.get()) {
@@ -147,9 +156,19 @@ public class ModelLoadingEventDispatcher {
 		BlockStateResolver resolver = pluginContext.getResolver(id);
 
 		if (resolver != null) {
-			resolver.resolveBlockStates(blockStateResolverContext);
-			// TODO: Check to ensure the model maps actually have models for all ModelIdentifiers of this block.
-			// If not, populate missing IDs with the missing model and log a warning.
+			Identifier blockId = new Identifier(id.getNamespace(), id.getPath());
+			Block block = Registries.BLOCK.get(blockId);
+
+			if (!resolvingBlocks.add(block)) {
+				throw new IllegalStateException("Circular reference while models for block " + block);
+			}
+
+			try {
+				resolveBlockStates(block, blockId, resolver);
+			} finally {
+				resolvingBlocks.remove(block);
+			}
+
 			return true;
 		}
 
@@ -159,6 +178,43 @@ public class ModelLoadingEventDispatcher {
 	@Nullable
 	private UnbakedModel resolveModelResource(Identifier resourceId) {
 		return pluginContext.resolveModel().invoker().resolveModel(resourceId, resolverContext);
+	}
+
+	private void resolveBlockStates(Block block, Identifier blockId, BlockStateResolver resolver) {
+		// Get and prepare context
+		if (blockStateResolverContextStack.isEmpty()) {
+			blockStateResolverContextStack.add(new BlockStateResolverContext());
+		}
+
+		BlockStateResolverContext context = blockStateResolverContextStack.pop();
+		context.prepare(block);
+		Map<BlockState, UnbakedModel> resolvedModels = context.models;
+
+		// Call resolver
+		try {
+			resolver.resolveBlockStates(context);
+		} catch (Exception e) {
+			LOGGER.error("Failed to resolve blockstates for block {}", context.block, e);
+			// Clear map to fill with missing models.
+			resolvedModels.clear();
+		}
+
+		// Copy models over to the loader
+		for (BlockState state : context.block.getStateManager().getStates()) {
+			@Nullable
+			UnbakedModel resolvedModel = resolvedModels.get(state);
+			ModelIdentifier modelId = BlockModels.getModelId(blockId, state);
+
+			if (resolvedModel == null) {
+				LOGGER.error("Resolver failed to supply a model for blockstate {} in block {}. Using missing model instead.", state, context.block);
+				resolvedModel = ((ModelLoaderHooks) loader).fabric_getMissingModel();
+			}
+
+			((ModelLoaderHooks) loader).fabric_putModel(modelId, resolvedModel);
+		}
+
+		// Store context for reuse
+		blockStateResolverContextStack.add(context);
 	}
 
 	public UnbakedModel modifyModelOnLoad(Identifier id, UnbakedModel model) {
@@ -216,19 +272,38 @@ public class ModelLoadingEventDispatcher {
 	}
 
 	private class BlockStateResolverContext implements BlockStateResolver.Context {
-		@Override
-		public void putModel(ModelIdentifier id, UnbakedModel model) {
-			((ModelLoaderHooks) loader).fabric_putModel(id, model);
+		private Block block;
+		private final Map<BlockState, UnbakedModel> models = new IdentityHashMap<>();
+
+		private void prepare(Block block) {
+			this.block = block;
+			models.clear();
 		}
 
 		@Override
-		public ModelLoader loader() {
-			return loader;
+		public void setModel(BlockState state, UnbakedModel model) {
+			if (!state.isOf(block)) {
+				throw new IllegalArgumentException("Attempted to set model for " + state + " on block " + block);
+			}
+
+			if (models.put(state, model) != null) {
+				throw new IllegalStateException("Duplicate model for " + state + " on block " + block);
+			}
 		}
 
 		@Override
 		public UnbakedModel getOrLoadModel(Identifier id) {
 			return ((ModelLoaderHooks) loader).fabric_getOrLoadModel(id);
+		}
+
+		@Override
+		public Block block() {
+			return block;
+		}
+
+		@Override
+		public ModelLoader loader() {
+			return loader;
 		}
 	}
 

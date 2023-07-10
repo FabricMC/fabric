@@ -2,8 +2,8 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
@@ -12,15 +12,25 @@ import net.minecraft.util.Identifier;
 /**
  * Interface for block state resolvers.
  *
- * <p>Block state resolvers replace the {@code blockstates/} JSON files.
- * They allow defining custom block-state formats for example.
+ * <p>Block state resolvers are responsible for mapping each {@link BlockState} of a block to an {@link UnbakedModel}.
+ * Block state resolvers replace the {@code blockstates/} JSON files.
+ * They allow defining custom block state formats for example.
  *
  * <p>If only custom models are needed, {@link ModelResolver} should be used to resolve specific model files.
  */
 // TODO: add test
+// TODO: better javadoc
 @FunctionalInterface
 public interface BlockStateResolver {
 	/**
+	 * Resolve the models for all block states of the block.
+	 *
+	 * <p>For each block state, call {@link Context#setModel} to set its unbaked model.
+	 * It must be called exactly once for each block state.
+	 *
+	 * <p>Note that the unbaked model for each block state will be baked.
+	 * If many block states share the same model, this can be quite wasteful (as each model will get baked multiple times).
+	 * In that case, it's better to use the delegating unbaked model TODO add delegating unbaked model and expand docs
 	 * TODO: javadoc
 	 */
 	void resolveBlockStates(Context context);
@@ -31,15 +41,12 @@ public interface BlockStateResolver {
 	@ApiStatus.NonExtendable
 	interface Context {
 		/**
-		 * Add a model for a specific block state.
+		 * Set the model for a block state.
 		 *
-		 * <p>The {@link ModelIdentifier} for a specific block state can be obtained using {@link BlockModels#getModelId(BlockState)}.
-		 *
-		 * @param id the model identifier, corresponding to a block state
-		 * @param model the unbaked model for this identifie
+		 * @param state the block state for which this model should be used
+		 * @param model the unbaked model for this block state
 		 */
-		// TODO: Change to blockstate first param
-		void putModel(ModelIdentifier id, UnbakedModel model);
+		void setModel(BlockState state, UnbakedModel model);
 
 		/**
 		 * Load a model using an {@link Identifier}, {@link ModelIdentifier}, ... or get it if it was already loaded.
@@ -50,6 +57,11 @@ public interface BlockStateResolver {
 		 * @return The UnbakedModel. Can return a missing model if it's not present!
 		 */
 		UnbakedModel getOrLoadModel(Identifier id);
+
+		/**
+		 * The block for which the block state models are being resolved.
+		 */
+		Block block();
 
 		/**
 		 * The current model loader instance (changes when resource packs reload).
