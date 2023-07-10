@@ -28,7 +28,7 @@ import net.minecraft.registry.RegistryLoader;
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 
 /**
- * Contai§ns methods for registering and accessing dynamic {@linkplain Registry registries}.
+ * Contains methods for registering and accessing dynamic {@linkplain Registry registries}.
  *
  * <h2>Basic usage</h2>
  * Custom dynamic registries can be registered with {@link #register(RegistryKey, Codec)}. These registries will not be
