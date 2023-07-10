@@ -67,13 +67,14 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			ModelVariantProvider provider = providerSupplier.apply(resourceManager);
 			ModelProviderContext providerContext = makeOldContext(pluginContext);
 
-			pluginContext.resolveModelVariant().register((modelId, modelProviderContext) -> {
-				try {
-					return provider.loadModelVariant(modelId, providerContext);
-				} catch (ModelProviderException e) {
-					throw new RuntimeException(e);
-				}
-			});
+			// TODO: v1 API does not directly support model variant providers, find a way to support this
+//			pluginContext.resolveModelVariant().register((modelId, modelProviderContext) -> {
+//				try {
+//					return provider.loadModelVariant(modelId, providerContext);
+//				} catch (ModelProviderException e) {
+//					throw new RuntimeException(e);
+//				}
+//			});
 		});
 	}
 

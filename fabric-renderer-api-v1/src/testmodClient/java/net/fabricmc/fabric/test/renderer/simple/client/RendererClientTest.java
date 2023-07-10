@@ -56,12 +56,8 @@ public final class RendererClientTest implements ClientModInitializer {
 				return null;
 			});
 
-			pluginContext.resolveModelVariant().register((modelId, context) -> {
-				if (RendererTest.PILLAR_ID.equals(modelId)) {
-					return new PillarUnbakedModel();
-				}
-
-				return null;
+			pluginContext.registerBlockStateResolver(RendererTest.PILLAR, context -> {
+				context.setModel(context.block().getDefaultState(), new PillarUnbakedModel());
 			});
 		});
 	}
