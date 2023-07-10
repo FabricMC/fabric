@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.base.event;
+package net.fabricmc.fabric.impl.base.toposort;
 
 import java.util.ArrayList;
 import java.util.List;

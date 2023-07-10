@@ -21,6 +21,8 @@ import java.util.Arrays;
 
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.impl.base.toposort.SortableNode;
+
 /**
  * Data of an {@link ArrayBackedEvent} phase.
  */

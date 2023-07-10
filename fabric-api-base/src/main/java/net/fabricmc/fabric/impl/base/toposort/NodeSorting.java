@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.base.event;
+package net.fabricmc.fabric.impl.base.toposort;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  *     <li>Sort SCCs with respect to each other by respecting constraints, and using the comparator in case of a tie.</li>
  * </ol>
  */
-public class PhaseSorting {
+public class NodeSorting {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-api-base");
 
 	@VisibleForTesting
