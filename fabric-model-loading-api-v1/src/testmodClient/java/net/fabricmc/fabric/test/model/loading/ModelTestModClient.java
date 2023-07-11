@@ -94,15 +94,15 @@ public class ModelTestModClient implements ClientModInitializer {
 
 			// Make wheat stages 1->6 use the same model as stage 0. This can be done with resource packs, this is just a test.
 			pluginContext.registerBlockStateResolver(Blocks.WHEAT, context -> {
-				BlockState st = Blocks.WHEAT.getDefaultState();
+				BlockState state = context.block().getDefaultState();
 
 				UnbakedModel stage0Model = context.getOrLoadModel(new Identifier("block/wheat_stage0"));
 
 				for (int age = 0; age <= 6; age++) {
-					context.setModel(st.with(CropBlock.AGE, age), stage0Model);
+					context.setModel(state.with(CropBlock.AGE, age), stage0Model);
 				}
 
-				context.setModel(st.with(CropBlock.AGE, 7), context.getOrLoadModel(new Identifier("block/wheat_stage7")));
+				context.setModel(state.with(CropBlock.AGE, 7), context.getOrLoadModel(new Identifier("block/wheat_stage7")));
 			});
 		});
 

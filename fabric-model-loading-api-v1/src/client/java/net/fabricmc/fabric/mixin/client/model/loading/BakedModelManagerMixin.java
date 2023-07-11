@@ -40,7 +40,7 @@ import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.FabricBakedModelManager;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
+import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
 
 @Mixin(BakedModelManager.class)
 public class BakedModelManagerMixin implements FabricBakedModelManager {
@@ -71,10 +71,10 @@ public class BakedModelManagerMixin implements FabricBakedModelManager {
 			Profiler applyProfiler,
 			Executor prepareExecutor,
 			Executor applyExecutor) {
-		CompletableFuture<List<ModelLoadingPlugin>> pluginsFuture = ModelLoadingEventDispatcher.preparePlugins(manager, prepareExecutor);
+		CompletableFuture<List<ModelLoadingPlugin>> pluginsFuture = ModelLoadingPluginManager.preparePlugins(manager, prepareExecutor);
 		CompletableFuture<Pair<Map<Identifier, JsonUnbakedModel>, Map<Identifier, List<ModelLoader.SourceTrackedData>>>> pairFuture = self.thenCombine(otherFuture, Pair::new);
 		return pairFuture.thenCombineAsync(pluginsFuture, (pair, plugins) -> {
-			ModelLoadingEventDispatcher.CURRENT_PLUGINS.set(plugins);
+			ModelLoadingPluginManager.CURRENT_PLUGINS.set(plugins);
 			return modelLoaderConstructor.apply(pair.getLeft(), pair.getRight());
 		}, executor);
 	}

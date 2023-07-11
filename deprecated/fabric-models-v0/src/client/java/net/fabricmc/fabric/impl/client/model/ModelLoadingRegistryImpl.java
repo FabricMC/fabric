@@ -16,10 +16,17 @@
 
 package net.fabricmc.fabric.impl.client.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+
+import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.model.ExtraModelProvider;
 import net.fabricmc.fabric.api.client.model.ModelAppender;
@@ -28,70 +35,72 @@ import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelProviderException;
 import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoaderPluginContextImpl;
 
 public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
-	@Override
-	public void registerModelProvider(ExtraModelProvider appender) {
-		registerResourceManagerPlugin((resourceManager, pluginContext) -> {
-			appender.provideExtraModels(resourceManager, pluginContext::addModels);
-		});
+	private final List<ExtraModelProvider> modelProviders = new ArrayList<>();
+	private final List<ModelAppender> modelAppenders = new ArrayList<>();
+	private final List<Function<ResourceManager, ModelResourceProvider>> resourceProviderSuppliers = new ArrayList<>();
+	private final List<Function<ResourceManager, ModelVariantProvider>> variantProviderSuppliers = new ArrayList<>();
+
+	{
+		// Grabs the resource manager to use it in the main model loading code.
+		// When using the v1 API, data should be loaded in parallel before model loading starts.
+		PreparableModelLoadingPlugin.register(
+				(resourceManager, executor) -> CompletableFuture.completedFuture(resourceManager),
+				this::onInitializeModelLoader);
 	}
 
-	@Override
-	public void registerAppender(ModelAppender appender) {
-		registerModelProvider((manager, consumer) -> appender.appendAll(manager, consumer::accept));
-	}
+	private void onInitializeModelLoader(ResourceManager resourceManager, ModelLoadingPlugin.Context pluginContext) {
+		Consumer<Identifier> extraModelConsumer = pluginContext::addModels;
+		Consumer<ModelIdentifier> extraModelConsumer2 = pluginContext::addModels;
+		// A bit hacky, but avoids the allocation of a new context wrapper every time.
+		ModelProviderContext resourceProviderContext = ((ModelLoaderPluginContextImpl) pluginContext).modelGetter::apply;
 
-	@Override
-	public void registerResourceProvider(Function<ResourceManager, ModelResourceProvider> providerSupplier) {
-		registerResourceManagerPlugin((resourceManager, pluginContext) -> {
-			ModelResourceProvider provider = providerSupplier.apply(resourceManager);
-			ModelProviderContext providerContext = makeOldContext(pluginContext);
+		for (ExtraModelProvider provider : modelProviders) {
+			provider.provideExtraModels(resourceManager, extraModelConsumer);
+		}
 
-			pluginContext.resolveModel().register((resourceId, modelProviderContext) -> {
+		for (ModelAppender appender : modelAppenders) {
+			appender.appendAll(resourceManager, extraModelConsumer2);
+		}
+
+		for (Function<ResourceManager, ModelResourceProvider> supplier : resourceProviderSuppliers) {
+			ModelResourceProvider provider = supplier.apply(resourceManager);
+
+			pluginContext.resolveModel().register(resolverContext -> {
 				try {
-					return provider.loadModelResource(resourceId, providerContext);
+					return provider.loadModelResource(resolverContext.id(), resourceProviderContext);
 				} catch (ModelProviderException e) {
 					throw new RuntimeException(e);
 				}
 			});
-		});
+		}
+
+		// TODO: v1 API does not directly support model variant providers, find a way to support this
+//		for (Function<ResourceManager, ModelVariantProvider> supplier : variantProviderSuppliers) {
+//			ModelVariantProvider provider = supplier.apply(resourceManager);
+//		}
+	}
+
+	@Override
+	public void registerModelProvider(ExtraModelProvider provider) {
+		modelProviders.add(provider);
+	}
+
+	@Override
+	public void registerAppender(ModelAppender appender) {
+		modelAppenders.add(appender);
+	}
+
+	@Override
+	public void registerResourceProvider(Function<ResourceManager, ModelResourceProvider> providerSupplier) {
+		resourceProviderSuppliers.add(providerSupplier);
 	}
 
 	@Override
 	public void registerVariantProvider(Function<ResourceManager, ModelVariantProvider> providerSupplier) {
-		registerResourceManagerPlugin((resourceManager, pluginContext) -> {
-			ModelVariantProvider provider = providerSupplier.apply(resourceManager);
-			ModelProviderContext providerContext = makeOldContext(pluginContext);
-
-			// TODO: v1 API does not directly support model variant providers, find a way to support this
-//			pluginContext.resolveModelVariant().register((modelId, modelProviderContext) -> {
-//				try {
-//					return provider.loadModelVariant(modelId, providerContext);
-//				} catch (ModelProviderException e) {
-//					throw new RuntimeException(e);
-//				}
-//			});
-		});
-	}
-
-	/**
-	 * Grabs the resource manager to use it in the main model loading code.
-	 * When using the v1 API, data should be loaded in parallel before model loading starts.
-	 */
-	private static void registerResourceManagerPlugin(PreparableModelLoadingPlugin<ResourceManager> plugin) {
-		PreparableModelLoadingPlugin.register(
-				(resourceManager, executor) -> CompletableFuture.completedFuture(resourceManager),
-				plugin);
-	}
-
-	/**
-	 * A bit hacky, but avoids the allocation of a new context wrapper every time.
-	 */
-	private static ModelProviderContext makeOldContext(ModelLoadingPlugin.Context pluginContext) {
-		return ((ModelLoaderPluginContextImpl) pluginContext).resolverContext::getOrLoadModel;
+		variantProviderSuppliers.add(providerSupplier);
 	}
 }

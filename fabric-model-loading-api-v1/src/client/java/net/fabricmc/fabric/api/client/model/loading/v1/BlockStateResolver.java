@@ -41,6 +41,11 @@ public interface BlockStateResolver {
 	@ApiStatus.NonExtendable
 	interface Context {
 		/**
+		 * The block for which the block state models are being resolved.
+		 */
+		Block block();
+
+		/**
 		 * Set the model for a block state.
 		 *
 		 * @param state the block state for which this model should be used
@@ -57,11 +62,6 @@ public interface BlockStateResolver {
 		 * @return The UnbakedModel. Can return a missing model if it's not present!
 		 */
 		UnbakedModel getOrLoadModel(Identifier id);
-
-		/**
-		 * The block for which the block state models are being resolved.
-		 */
-		Block block();
 
 		/**
 		 * The current model loader instance (changes when resource packs reload).

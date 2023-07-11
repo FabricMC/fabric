@@ -21,6 +21,8 @@ import java.util.function.Supplier;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -32,7 +34,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
 public class BakedModelFeatureRenderer<T extends LivingEntity, M extends EntityModel<T>> extends FeatureRenderer<T, M> {
-	private Supplier<BakedModel> modelSupplier;
+	private final Supplier<BakedModel> modelSupplier;
 
 	public BakedModelFeatureRenderer(FeatureRendererContext<T, M> context, Supplier<BakedModel> modelSupplier) {
 		super(context);
@@ -50,7 +52,7 @@ public class BakedModelFeatureRenderer<T extends LivingEntity, M extends EntityM
 		matrices.scale(-0.75F, -0.75F, 0.75F);
 		float aboveHead = (float) (Math.sin(animationProgress * 0.08F)) * 0.5F + 0.5F;
 		matrices.translate(-0.5F, 0.75F + aboveHead, -0.5F);
-		BakedModelRenderer.renderBakedModel(model, vertices, matrices.peek(), light);
+		MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(matrices.peek(), vertices, null, model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV);
 		matrices.pop();
 	}
 }

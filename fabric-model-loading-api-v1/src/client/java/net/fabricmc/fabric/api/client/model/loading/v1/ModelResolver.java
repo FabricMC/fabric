@@ -50,18 +50,22 @@ import net.minecraft.util.Identifier;
 @FunctionalInterface
 public interface ModelResolver {
 	/**
-	 * @param resourceId The resource identifier to be loaded.
 	 * @return The loaded UnbakedModel, or null if this Resource doesn't handle a specific Identifier
 	 * (or if there was no error!).
 	 */
 	@Nullable
-	UnbakedModel resolveModel(Identifier resourceId, Context context);
+	UnbakedModel resolveModel(Context context);
 
 	/**
 	 * The context used during model resolution.
 	 */
 	@ApiStatus.NonExtendable
 	interface Context {
+		/**
+		 * The resource identifier to be loaded.
+		 */
+		Identifier id();
+
 		/**
 		 * Load a model using an {@link Identifier}, {@link ModelIdentifier}, ... or get it if it was already loaded.
 		 *

@@ -21,16 +21,20 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
@@ -45,45 +49,19 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 
 	final Set<Identifier> extraModels = new LinkedHashSet<>();
 
-	private static class BlockKey {
-		private String namespace;
-		private String path;
-
-		private BlockKey() {
-		}
-
-		private BlockKey(String namespace, String path) {
-			this.namespace = namespace;
-			this.path = path;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-			BlockKey blockKey = (BlockKey) o;
-			return namespace.equals(blockKey.namespace) && path.equals(blockKey.path);
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(namespace, path);
-		}
-	}
-
+	private final Map<BlockKey, BlockStateResolverHolder> blockStateResolvers = new HashMap<>();
 	private final BlockKey lookupKey = new BlockKey();
-	private final Map<BlockKey, BlockStateResolver> blockStateResolvers = new HashMap<>();
 
-	private final Event<ModelResolver> resolvers = EventFactory.createArrayBacked(ModelResolver.class, resolvers -> (resourceId, context) -> {
+	private final Event<ModelResolver> modelResolvers = EventFactory.createArrayBacked(ModelResolver.class, resolvers -> context -> {
 		for (ModelResolver resolver : resolvers) {
 			try {
-				UnbakedModel model = resolver.resolveModel(resourceId, context);
+				UnbakedModel model = resolver.resolveModel(context);
 
 				if (model != null) {
 					return model;
 				}
 			} catch (Exception exception) {
-				LOGGER.error("Failed to resolve custom model resource", exception);
+				LOGGER.error("Failed to resolve model", exception);
 			}
 		}
 
@@ -129,10 +107,10 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 	/**
 	 * This field is used by the v0 wrapper to avoid constantly wrapping the context in hot code.
 	 */
-	public final ModelResolver.Context resolverContext;
+	public final Function<Identifier, UnbakedModel> modelGetter;
 
-	public ModelLoaderPluginContextImpl(ModelResolver.Context resolverContext) {
-		this.resolverContext = resolverContext;
+	public ModelLoaderPluginContextImpl(Function<Identifier, UnbakedModel> modelGetter) {
+		this.modelGetter = modelGetter;
 	}
 
 	@Override
@@ -152,15 +130,23 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 		Objects.requireNonNull(block, "block cannot be null");
 		Objects.requireNonNull(resolver, "resolver cannot be null");
 
-		Identifier blockId = Registries.BLOCK.getId(block);
+		Optional<RegistryKey<Block>> optionalKey = Registries.BLOCK.getKey(block);
 
-		if (blockStateResolvers.put(new BlockKey(blockId.getNamespace(), blockId.getPath()), resolver) != null) {
-			throw new IllegalStateException("Duplicate block state resolver for block " + blockId);
+		if (optionalKey.isEmpty()) {
+			throw new IllegalArgumentException("Received unregistered block");
+		}
+
+		Identifier blockId = optionalKey.get().getValue();
+		BlockKey key = new BlockKey(blockId.getNamespace(), blockId.getPath());
+		BlockStateResolverHolder holder = new BlockStateResolverHolder(resolver, block, blockId);
+
+		if (blockStateResolvers.put(key, holder) != null) {
+			throw new IllegalArgumentException("Duplicate block state resolver for block " + blockId);
 		}
 	}
 
 	@Nullable
-	BlockStateResolver getResolver(ModelIdentifier modelId) {
+	BlockStateResolverHolder getBlockStateResolver(ModelIdentifier modelId) {
 		BlockKey key = lookupKey;
 		key.namespace = modelId.getNamespace();
 		key.path = modelId.getPath();
@@ -170,7 +156,7 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 
 	@Override
 	public Event<ModelResolver> resolveModel() {
-		return resolvers;
+		return modelResolvers;
 	}
 
 	@Override
@@ -186,5 +172,32 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 	@Override
 	public Event<ModelModifier.AfterBake> modifyModelAfterBake() {
 		return afterBakeModifiers;
+	}
+
+	private static class BlockKey {
+		private String namespace;
+		private String path;
+
+		private BlockKey() {
+		}
+
+		private BlockKey(String namespace, String path) {
+			this.namespace = namespace;
+			this.path = path;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			BlockKey blockKey = (BlockKey) o;
+			return namespace.equals(blockKey.namespace) && path.equals(blockKey.path);
+		}
+
+		@Override
+		public int hashCode() {
+			// Inlined Objects.hash(namespace, path) to avoid allocation
+			return 31 * (31 + namespace.hashCode()) + path.hashCode();
+		}
 	}
 }

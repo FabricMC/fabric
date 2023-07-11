@@ -36,6 +36,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoaderHooks;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
+import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
 
 @Mixin(ModelLoader.class)
 public abstract class ModelLoaderMixin implements ModelLoaderHooks {
@@ -77,7 +78,8 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 	private void onAddModel(ModelIdentifier id, CallbackInfo info) {
 		// TODO: move hook to ctor
 		if (id == MISSING_ID) {
-			fabric_eventDispatcher = new ModelLoadingEventDispatcher((ModelLoader) (Object) this);
+			fabric_eventDispatcher = new ModelLoadingEventDispatcher((ModelLoader) (Object) this, ModelLoadingPluginManager.CURRENT_PLUGINS.get());
+			ModelLoadingPluginManager.CURRENT_PLUGINS.remove();
 			fabric_eventDispatcher.addExtraModels(this::addModel);
 		}
 	}
@@ -110,7 +112,7 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 		fabric_guardGetOrLoadModel++;
 
 		try {
-			if (fabric_eventDispatcher.resolveModel(id)) {
+			if (fabric_eventDispatcher.loadModel(id)) {
 				ci.cancel();
 			}
 		} finally {
@@ -167,5 +169,10 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 	@Override
 	public void fabric_putModel(Identifier id, UnbakedModel model) {
 		putModel(id, model);
+	}
+
+	@Override
+	public void fabric_putModelDirectly(Identifier id, UnbakedModel model) {
+		unbakedModels.put(id, model);
 	}
 }

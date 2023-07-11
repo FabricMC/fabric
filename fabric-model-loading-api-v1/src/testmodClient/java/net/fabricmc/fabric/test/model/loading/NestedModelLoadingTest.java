@@ -49,30 +49,31 @@ public class NestedModelLoadingTest implements ClientModInitializer {
 		ModelLoadingPlugin.register(pluginContext -> {
 			pluginContext.addModels(BASE_MODEL);
 
-			pluginContext.resolveModel().register((resourceId, context) -> {
+			pluginContext.resolveModel().register(context -> {
+				Identifier id = context.id();
 				UnbakedModel ret = null;
 
-				if (resourceId.equals(BASE_MODEL)) {
+				if (id.equals(BASE_MODEL)) {
 					LOGGER.info("Nested model 1 started loading");
 					ret = context.getOrLoadModel(NESTED_MODEL_1);
 					LOGGER.info("Nested model 1 finished loading");
-				} else if (resourceId.equals(NESTED_MODEL_1)) {
+				} else if (id.equals(NESTED_MODEL_1)) {
 					LOGGER.info(" Nested model 2 started loading");
 					ret = context.getOrLoadModel(NESTED_MODEL_2);
 					LOGGER.info(" Nested model 2 finished loading");
-				} else if (resourceId.equals(NESTED_MODEL_2)) {
+				} else if (id.equals(NESTED_MODEL_2)) {
 					LOGGER.info("  Nested model 3 started loading");
 					ret = context.getOrLoadModel(NESTED_MODEL_3);
 					LOGGER.info("  Nested model 3 finished loading");
-				} else if (resourceId.equals(NESTED_MODEL_3)) {
+				} else if (id.equals(NESTED_MODEL_3)) {
 					// Will be overridden by the model modifier below anyway.
 					LOGGER.info("   Returning dummy model for nested model 3");
 					ret = context.getOrLoadModel(ModelLoader.MISSING_ID);
-				} else if (resourceId.equals(NESTED_MODEL_4)) {
+				} else if (id.equals(NESTED_MODEL_4)) {
 					// Will be overridden by the model modifier below anyway.
 					LOGGER.info("    Returning dummy model for nested model 4");
 					ret = context.getOrLoadModel(ModelLoader.MISSING_ID);
-				} else if (resourceId.equals(NESTED_MODEL_5)) {
+				} else if (id.equals(NESTED_MODEL_5)) {
 					LOGGER.info("     Target model started loading");
 					ret = context.getOrLoadModel(TARGET_MODEL);
 					LOGGER.info("     Target model finished loading");
