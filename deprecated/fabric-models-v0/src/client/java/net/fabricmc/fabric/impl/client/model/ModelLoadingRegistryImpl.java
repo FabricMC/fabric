@@ -22,8 +22,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -35,6 +33,7 @@ import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelProviderException;
 import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoaderPluginContextImpl;
 
@@ -78,10 +77,16 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			});
 		}
 
-		// TODO: v1 API does not directly support model variant providers, find a way to support this
-//		for (Function<ResourceManager, ModelVariantProvider> supplier : variantProviderSuppliers) {
-//			ModelVariantProvider provider = supplier.apply(resourceManager);
-//		}
+		for (Function<ResourceManager, ModelVariantProvider> supplier : variantProviderSuppliers) {
+			ModelVariantProvider provider = supplier.apply(resourceManager);
+			((ModelLoaderPluginContextImpl) pluginContext).legacyVariantProviders().register(modelId -> {
+				try {
+					return provider.loadModelVariant(modelId, resourceProviderContext);
+				} catch (ModelProviderException e) {
+					throw new RuntimeException(e);
+				}
+			});
+		}
 	}
 
 	@Override

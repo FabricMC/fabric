@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.client.model.loading;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,10 +30,13 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoaderHooks;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
@@ -74,14 +78,21 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 	private void putModel(Identifier id, UnbakedModel unbakedModel) {
 	}
 
-	@Inject(method = "addModel", at = @At("HEAD"))
-	private void onAddModel(ModelIdentifier id, CallbackInfo info) {
-		// TODO: move hook to ctor
-		if (id == MISSING_ID) {
-			fabric_eventDispatcher = new ModelLoadingEventDispatcher((ModelLoader) (Object) this, ModelLoadingPluginManager.CURRENT_PLUGINS.get());
-			ModelLoadingPluginManager.CURRENT_PLUGINS.remove();
-			fabric_eventDispatcher.addExtraModels(this::addModel);
+	@Shadow
+	public abstract JsonUnbakedModel loadModelFromJson(Identifier id);
+
+	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "net/minecraft/util/profiler/Profiler.swap(Ljava/lang/String;)V", ordinal = 0))
+	private void afterMissingModelInit(BlockColors blockColors, Profiler profiler, Map<Identifier, JsonUnbakedModel> jsonUnbakedModels, Map<Identifier, List<ModelLoader.SourceTrackedData>> blockStates, CallbackInfo info) {
+		// Sanity check
+		if (!unbakedModels.containsKey(MISSING_ID)) {
+			throw new AssertionError("Missing model not initialized. This is likely a Fabric API porting bug.");
 		}
+
+		profiler.swap("fabric_plugins_init");
+
+		fabric_eventDispatcher = new ModelLoadingEventDispatcher((ModelLoader) (Object) this, ModelLoadingPluginManager.CURRENT_PLUGINS.get());
+		ModelLoadingPluginManager.CURRENT_PLUGINS.remove();
+		fabric_eventDispatcher.addExtraModels(this::addModel);
 	}
 
 	@Unique
@@ -174,5 +185,15 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 	@Override
 	public void fabric_putModelDirectly(Identifier id, UnbakedModel model) {
 		unbakedModels.put(id, model);
+	}
+
+	@Override
+	public void fabric_queueModelDependencies(UnbakedModel model) {
+		modelsToLoad.addAll(model.getModelDependencies());
+	}
+
+	@Override
+	public JsonUnbakedModel fabric_loadModelFromJson(Identifier id) {
+		return loadModelFromJson(id);
 	}
 }

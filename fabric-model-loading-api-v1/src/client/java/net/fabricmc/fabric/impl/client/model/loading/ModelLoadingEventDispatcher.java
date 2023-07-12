@@ -83,11 +83,25 @@ public class ModelLoadingEventDispatcher {
 		}
 	}
 
+	/**
+	 * @return {@code true} to cancel the vanilla method
+	 */
 	public boolean loadModel(Identifier id) {
 		if (id instanceof ModelIdentifier modelId) {
+			// Call the legacy model variant providers
+			UnbakedModel legacyModel = pluginContext.legacyVariantProviders().invoker().loadModelVariant(modelId);
+
+			if (legacyModel != null) {
+				((ModelLoaderHooks) loader).fabric_putModel(id, legacyModel);
+				return true;
+			}
+
 			// Replicating the special-case from ModelLoader as loadModel is insufficiently patchable
 			if (Objects.equals(modelId.getVariant(), "inventory")) {
-				return loadItemModel(modelId);
+				// We ALWAYS override the vanilla inventory model code path entirely, even for vanilla item models.
+				// See loadItemModel for an explanation.
+				loadItemModel(modelId);
+				return true;
 			} else {
 				BlockStateResolverHolder resolver = pluginContext.getBlockStateResolver(modelId);
 
@@ -110,25 +124,35 @@ public class ModelLoadingEventDispatcher {
 		}
 	}
 
-	// FIXME
-	// If an on load modifier replaces the model for the ModelIdentifier, the model for
-	// the Identifier will not be replaced and its dependencies will not be added.
-	// This issue affects both this code path and the vanilla code path (ModelLoader#loadModel).
-	// Possible solutions:
-	// - Fix the issue here and patch the vanilla code path
-	// - Fix the issue here and make it so the vanilla code path is not used
-	// - Remove this code path and patch the vanilla code path to fix the issue and support ModelResolvers
-	private boolean loadItemModel(ModelIdentifier modelId) {
+	/**
+	 * This function handles both modded item models and vanilla item models.
+	 * The vanilla code path for item models is never used.
+	 * See the long comment in the function for an explanation.
+	 */
+	private void loadItemModel(ModelIdentifier modelId) {
+		ModelLoaderHooks loaderHooks = (ModelLoaderHooks) loader;
+
 		Identifier id = modelId.withPrefixedPath("item/");
+		// Query model resolvers first.
 		UnbakedModel model = resolveModel(id);
 
-		if (model != null) {
-			((ModelLoaderHooks) loader).fabric_putModel(modelId, model);
-			((ModelLoaderHooks) loader).fabric_putModelDirectly(id, model);
-			return true;
+		// Load from the vanilla code path otherwise.
+		if (model == null) {
+			model = loaderHooks.fabric_loadModelFromJson(id);
 		}
 
-		return false;
+		// This is a bit tricky:
+		// We have a single UnbakedModel now, but there are two identifiers:
+		// the ModelIdentifier (...#inventory) and the Identifier (...:item/...).
+		// So we call the on load modifier now and then directly add the model to the ModelLoader,
+		// reimplementing the behavior of ModelLoader#put.
+		// Calling ModelLoader#put is not an option as the model for the Identifier would not be replaced by an on load modifier.
+		// This is why we override the vanilla code path entirely.
+		model = modifyModelOnLoad(modelId, model);
+
+		loaderHooks.fabric_putModelDirectly(modelId, model);
+		loaderHooks.fabric_putModelDirectly(id, model);
+		loaderHooks.fabric_queueModelDependencies(model);
 	}
 
 	private void loadBlockStateModels(BlockStateResolver resolver, Block block, Identifier blockId) {

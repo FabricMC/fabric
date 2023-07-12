@@ -88,16 +88,19 @@ public final class ModelModifier {
 		interface Context {
 			/**
 			 * The identifier of this model (may be a {@link ModelIdentifier}).
+			 *
+			 * <p>For item models, only the {@link ModelIdentifier} with the {@code inventory} variant is passed,
+			 * and not the corresponding plain identifier.
 			 */
 			Identifier id();
 
 			/**
-			 * Load a model using an {@link Identifier}, {@link ModelIdentifier}, ... or get it if it was already loaded.
+			 * Loads a model using an {@link Identifier} or {@link ModelIdentifier}, or gets it if it was already loaded.
 			 *
 			 * <p>Please note that the game engine keeps track of circular model loading calls on its own.
 			 *
-			 * @param id The model identifier.
-			 * @return The UnbakedModel. Can return a missing model if it's not present!
+			 * @param id the model identifier
+			 * @return the unbaked model, or a missing model if it is not present
 			 */
 			UnbakedModel getOrLoadModel(Identifier id);
 

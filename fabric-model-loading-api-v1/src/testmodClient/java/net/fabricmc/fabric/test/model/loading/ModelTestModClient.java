@@ -38,6 +38,7 @@ import net.minecraft.world.BlockRenderView;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
+import net.fabricmc.fabric.api.client.model.loading.v1.WrapperUnbakedModel;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -96,7 +97,11 @@ public class ModelTestModClient implements ClientModInitializer {
 			pluginContext.registerBlockStateResolver(Blocks.WHEAT, context -> {
 				BlockState state = context.block().getDefaultState();
 
-				UnbakedModel stage0Model = context.getOrLoadModel(new Identifier("block/wheat_stage0"));
+				// All the block state models are top-level...
+				// Use a wrapper unbaked model to make sure the identical models only get baked a single time.
+				Identifier wheatStage0Id = new Identifier("block/wheat_stage0");
+
+				UnbakedModel stage0Model = new WrapperUnbakedModel(wheatStage0Id);
 
 				for (int age = 0; age <= 6; age++) {
 					context.setModel(state.with(CropBlock.AGE, age), stage0Model);

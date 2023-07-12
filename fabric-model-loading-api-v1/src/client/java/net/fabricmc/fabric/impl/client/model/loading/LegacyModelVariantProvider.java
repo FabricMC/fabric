@@ -16,10 +16,15 @@
 
 package net.fabricmc.fabric.impl.client.model.loading;
 
-import net.minecraft.block.Block;
-import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
+import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.util.ModelIdentifier;
 
-record BlockStateResolverHolder(BlockStateResolver resolver, Block block, Identifier blockId) {
+/**
+ * Legacy v0 bridge - remove if the legacy v0 module is removed.
+ */
+public interface LegacyModelVariantProvider {
+	@Nullable
+	UnbakedModel loadModelVariant(ModelIdentifier modelId);
 }

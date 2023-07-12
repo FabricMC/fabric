@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.registry.Registries;
@@ -196,8 +195,29 @@ public class ModelLoaderPluginContextImpl implements ModelLoadingPlugin.Context 
 
 		@Override
 		public int hashCode() {
-			// Inlined Objects.hash(namespace, path) to avoid allocation
-			return 31 * (31 + namespace.hashCode()) + path.hashCode();
+			return 31 * namespace.hashCode() + path.hashCode();
 		}
+	}
+
+	// Legacy v0 bridge - remove if the legacy v0 module is removed.
+
+	private final Event<LegacyModelVariantProvider> legacyVariantProviders = EventFactory.createArrayBacked(LegacyModelVariantProvider.class, providers -> modelId -> {
+		for (LegacyModelVariantProvider provider : providers) {
+			try {
+				UnbakedModel model = provider.loadModelVariant(modelId);
+
+				if (model != null) {
+					return model;
+				}
+			} catch (Exception exception) {
+				LOGGER.error("Failed to run legacy model variant provider", exception);
+			}
+		}
+
+		return null;
+	});
+
+	public Event<LegacyModelVariantProvider> legacyVariantProviders() {
+		return legacyVariantProviders;
 	}
 }

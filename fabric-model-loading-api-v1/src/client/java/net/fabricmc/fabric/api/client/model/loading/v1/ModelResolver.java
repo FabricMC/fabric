@@ -39,7 +39,7 @@ import net.minecraft.util.Identifier;
  * <p>As each model reload uses a new resolver, it is safe
  * (and recommended!) to cache information inside a resolver.
  *
- * <p>Keep in mind that only *one* Resource may respond to a given model
+ * <p>Keep in mind that only *one* resolver may respond to a given model
  * at any time. If you're writing, say, an OBJ loader, this means you could
  * easily conflict with another OBJ loader unless you take some precautions,
  * for example:
@@ -50,8 +50,7 @@ import net.minecraft.util.Identifier;
 @FunctionalInterface
 public interface ModelResolver {
 	/**
-	 * @return The loaded UnbakedModel, or null if this Resource doesn't handle a specific Identifier
-	 * (or if there was no error!).
+	 * @return the resolved {@link UnbakedModel}, or {@code null} if this resolver doesn't handle a specific {@link Identifier}
 	 */
 	@Nullable
 	UnbakedModel resolveModel(Context context);
@@ -67,12 +66,12 @@ public interface ModelResolver {
 		Identifier id();
 
 		/**
-		 * Load a model using an {@link Identifier}, {@link ModelIdentifier}, ... or get it if it was already loaded.
+		 * Loads a model using an {@link Identifier} or {@link ModelIdentifier}, or gets it if it was already loaded.
 		 *
 		 * <p>Please note that the game engine keeps track of circular model loading calls on its own.
 		 *
-		 * @param id The model identifier.
-		 * @return The UnbakedModel. Can return a missing model if it's not present!
+		 * @param id the model identifier
+		 * @return the unbaked model, or a missing model if it is not present
 		 */
 		UnbakedModel getOrLoadModel(Identifier id);
 

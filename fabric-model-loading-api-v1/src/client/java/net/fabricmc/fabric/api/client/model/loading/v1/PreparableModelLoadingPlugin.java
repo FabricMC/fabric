@@ -33,7 +33,7 @@ import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
 @FunctionalInterface
 public interface PreparableModelLoadingPlugin<T> {
 	/**
-	 * Register a model loading plugin.
+	 * Registers a preparable model loading plugin.
 	 */
 	static <T> void register(DataLoader<T> loader, PreparableModelLoadingPlugin<T> plugin) {
 		ModelLoadingPluginManager.registerPlugin(loader, plugin);
@@ -51,7 +51,7 @@ public interface PreparableModelLoadingPlugin<T> {
 	@FunctionalInterface
 	interface DataLoader<T> {
 		/**
-		 * Return a {@link CompletableFuture} that will load the data.
+		 * Returns a {@link CompletableFuture} that will load the data.
 		 * Do not block the thread when this function is called, rather use {@link CompletableFuture#supplyAsync(Supplier, Executor)} to compute the data.
 		 * The completable future should be scheduled to run using the passed executor.
 		 *

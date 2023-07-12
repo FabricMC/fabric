@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.impl.client.model.loading;
 
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.util.Identifier;
 
 public interface ModelLoaderHooks {
@@ -30,4 +30,8 @@ public interface ModelLoaderHooks {
 	void fabric_putModel(Identifier id, UnbakedModel model);
 
 	void fabric_putModelDirectly(Identifier id, UnbakedModel model);
+
+	void fabric_queueModelDependencies(UnbakedModel model);
+
+	JsonUnbakedModel fabric_loadModelFromJson(Identifier id);
 }

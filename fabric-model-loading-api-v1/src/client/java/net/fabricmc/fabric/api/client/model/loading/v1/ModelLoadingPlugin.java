@@ -37,7 +37,7 @@ import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
 @FunctionalInterface
 public interface ModelLoadingPlugin {
 	/**
-	 * Register a model loading plugin.
+	 * Registers a model loading plugin.
 	 */
 	static void register(ModelLoadingPlugin plugin) {
 		ModelLoadingPluginManager.registerPlugin(plugin);
@@ -52,15 +52,18 @@ public interface ModelLoadingPlugin {
 	@ApiStatus.NonExtendable
 	interface Context {
 		/**
-		 * Add one or multiple models (can be {@link ModelIdentifier}s) to the list of models that will be loaded.
+		 * Adds one or multiple models (can be {@link ModelIdentifier}s) to the list of models that will be loaded.
 		 */
 		void addModels(Identifier... ids);
 
 		/**
-		 * Add multiple models (can be {@link ModelIdentifier}s) to the list of models that will be loaded.
+		 * Adds multiple models (can be {@link ModelIdentifier}s) to the list of models that will be loaded.
 		 */
 		void addModels(Collection<? extends Identifier> ids);
 
+		/**
+		 * Registers a block state resolver for a block.
+		 */
 		void registerBlockStateResolver(Block block, BlockStateResolver resolver);
 
 		/**
