@@ -88,29 +88,28 @@ public class ModelLoadingEventDispatcher {
 	 */
 	public boolean loadModel(Identifier id) {
 		if (id instanceof ModelIdentifier modelId) {
-			// Call the legacy model variant providers
-			UnbakedModel legacyModel = pluginContext.legacyVariantProviders().invoker().loadModelVariant(modelId);
-
-			if (legacyModel != null) {
-				((ModelLoaderHooks) loader).fabric_putModel(id, legacyModel);
-				return true;
-			}
-
-			// Replicating the special-case from ModelLoader as loadModel is insufficiently patchable
 			if (Objects.equals(modelId.getVariant(), "inventory")) {
 				// We ALWAYS override the vanilla inventory model code path entirely, even for vanilla item models.
 				// See loadItemModel for an explanation.
 				loadItemModel(modelId);
 				return true;
 			} else {
+				// Prioritize block state resolver over legacy variant provider
 				BlockStateResolverHolder resolver = pluginContext.getBlockStateResolver(modelId);
 
 				if (resolver != null) {
 					loadBlockStateModels(resolver.resolver(), resolver.block(), resolver.blockId());
 					return true;
-				} else {
-					return false;
 				}
+
+				UnbakedModel legacyModel = legacyLoadModelVariant(modelId);
+
+				if (legacyModel != null) {
+					((ModelLoaderHooks) loader).fabric_putModel(id, legacyModel);
+					return true;
+				}
+
+				return false;
 			}
 		} else {
 			UnbakedModel model = resolveModel(id);
@@ -124,6 +123,11 @@ public class ModelLoadingEventDispatcher {
 		}
 	}
 
+	@Nullable
+	private UnbakedModel legacyLoadModelVariant(ModelIdentifier modelId) {
+		return pluginContext.legacyVariantProviders().invoker().loadModelVariant(modelId);
+	}
+
 	/**
 	 * This function handles both modded item models and vanilla item models.
 	 * The vanilla code path for item models is never used.
@@ -133,8 +137,14 @@ public class ModelLoadingEventDispatcher {
 		ModelLoaderHooks loaderHooks = (ModelLoaderHooks) loader;
 
 		Identifier id = modelId.withPrefixedPath("item/");
-		// Query model resolvers first.
-		UnbakedModel model = resolveModel(id);
+
+		// Legacy variant provider
+		UnbakedModel model = legacyLoadModelVariant(modelId);
+
+		// Model resolver
+		if (model == null) {
+			model = resolveModel(id);
+		}
 
 		// Load from the vanilla code path otherwise.
 		if (model == null) {
