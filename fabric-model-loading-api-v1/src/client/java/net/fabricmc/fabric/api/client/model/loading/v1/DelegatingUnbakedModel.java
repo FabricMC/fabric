@@ -35,18 +35,18 @@ import net.minecraft.util.Identifier;
  * An unbaked model that returns another {@link BakedModel} at {@linkplain #bake bake time}.
  * This allows multiple {@link UnbakedModel}s to share the same {@link BakedModel} instance.
  */
-public final class WrapperUnbakedModel implements UnbakedModel {
-	private final Identifier innerModel;
+public final class DelegatingUnbakedModel implements UnbakedModel {
+	private final Identifier delegate;
 	private final List<Identifier> dependencies;
 
 	/**
-	 * Constructs a new wrapper model.
+	 * Constructs a new delegating model.
 	 *
-	 * @param innerModel The identifier (can be a {@link ModelIdentifier}) of the underlying baked model.
+	 * @param delegate The identifier (can be a {@link ModelIdentifier}) of the underlying baked model.
 	 */
-	public WrapperUnbakedModel(Identifier innerModel) {
-		this.innerModel = innerModel;
-		this.dependencies = List.of(innerModel);
+	public DelegatingUnbakedModel(Identifier delegate) {
+		this.delegate = delegate;
+		this.dependencies = List.of(delegate);
 	}
 
 	@Override
@@ -61,6 +61,6 @@ public final class WrapperUnbakedModel implements UnbakedModel {
 	@Nullable
 	@Override
 	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
-		return baker.bake(innerModel, rotationContainer);
+		return baker.bake(delegate, rotationContainer);
 	}
 }

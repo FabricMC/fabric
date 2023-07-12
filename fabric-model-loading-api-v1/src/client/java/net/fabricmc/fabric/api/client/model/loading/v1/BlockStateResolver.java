@@ -44,7 +44,7 @@ public interface BlockStateResolver {
 	 *
 	 * <p>Note that the unbaked model for each block state will be baked.
 	 * If the model is expensive to bake, and many block states share the same model, this can be quite wasteful (as the model will get baked multiple times).
-	 * In that case, one can use {@link WrapperUnbakedModel} to share an underlying model between multiple block states.
+	 * In that case, one can use {@link DelegatingUnbakedModel} to share an underlying model between multiple block states.
 	 */
 	void resolveBlockStates(Context context);
 
