@@ -60,8 +60,10 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 
 	@Unique
 	private ModelLoadingEventDispatcher fabric_eventDispatcher;
-	@Unique
+	// Explicitly not @Unique to allow mods that heavily rework model loading to reimplement the guard.
+	// Note that this is an implementation detail; it can change at any time.
 	private int fabric_guardGetOrLoadModel = 0;
+	private boolean fabric_enableGetOrLoadModelGuard = true;
 
 	@Shadow
 	private void addModel(ModelIdentifier id) {
@@ -111,15 +113,15 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 
 	@Inject(method = "getOrLoadModel", at = @At("HEAD"))
 	private void fabric_preventNestedGetOrLoadModel(Identifier id, CallbackInfoReturnable<UnbakedModel> cir) {
-		if (fabric_guardGetOrLoadModel > 0) {
-			throw new IllegalStateException("ModelLoader#getOrLoadModel called from a ModelResolverTmp or ModelModifier.OnBake instance. This is not allowed to prevent subtle model loading errors. Use getOrLoadModel from the context instead.");
+		if (fabric_enableGetOrLoadModelGuard && fabric_guardGetOrLoadModel > 0) {
+			throw new IllegalStateException("ModelLoader#getOrLoadModel called from a ModelResolver or ModelModifier.OnBake instance. This is not allowed to prevent subtle model loading errors. Use getOrLoadModel from the context instead.");
 		}
 	}
 
 	@Inject(method = "loadModel", at = @At("HEAD"), cancellable = true)
 	private void onLoadModel(Identifier id, CallbackInfo ci) {
 		// Prevent calls to getOrLoadModel from loadModel as it will cause problems.
-		// Mods should call getOrLoadModel on the ModelResolverTmp.Context instead.
+		// Mods should call getOrLoadModel on the ModelResolver.Context instead.
 		fabric_guardGetOrLoadModel++;
 
 		try {
