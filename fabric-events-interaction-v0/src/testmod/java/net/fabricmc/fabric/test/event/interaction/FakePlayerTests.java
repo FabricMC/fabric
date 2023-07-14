@@ -64,7 +64,7 @@ public class FakePlayerTests {
 	}
 
 	/**
-	 * Try breaking a beehive with a fake player (see See {@code BeehiveBlockMixin}).
+	 * Try breaking a beehive with a fake player (see {@code BeehiveBlockMixin}).
 	 */
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testFakePlayerBreakBeehive(TestContext context) {
