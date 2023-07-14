@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.api.datagen.v1;
 
+/**
+ * Provides a way to add keys and priorities for sorting them in generated files.
+ */
 @FunctionalInterface
 public interface JsonKeySortOrderAdder {
 	/**

@@ -61,6 +61,10 @@ public interface DataGeneratorEntrypoint {
 	default void buildRegistry(RegistryBuilder registryBuilder) {
 	}
 
+	/**
+	 * Adds json keys and priorities to sort them in the generated files.
+	 * @param adder A json key sort order adder callback.
+	 */
 	default void addJsonKeySortOrders(JsonKeySortOrderAdder adder) {
 	}
 }
