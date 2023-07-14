@@ -16,23 +16,57 @@
 
 package net.fabricmc.fabric.test.server.consent.client;
 
+import com.mojang.brigadier.Command;
+
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.server.consent.v1.client.ClientFabricServerConsent;
 import net.fabricmc.fabric.api.server.consent.v1.client.ClientFabricServerConsentFlagsCallback;
 
 public class ClientServerConsentTest implements ClientModInitializer {
 	public static final String MOD_ID = "fabric-server-consent-api-v1-testmod";
 
+	private static final Identifier EXAMPLE_FLAG = new Identifier(MOD_ID, "example_flag");
+	private static final Identifier EXAMPLE_FLAG_2 = new Identifier(MOD_ID, "example_flag_2");
+
 	@Override
 	public void onInitializeClient() {
 		ClientFabricServerConsentFlagsCallback.FLAGS_SENT.register((client, handler, flags) -> {
-			flags.forEach(flag -> {
-				if (ClientFabricServerConsent.isIllegal(flag, MOD_ID)) {
-					client.player.sendMessage(Text.of("Illegal flag: " + flag));
-				}
-			});
+			flags.forEach(flag -> client.player.sendMessage(Text.of("Illegal flag: " + flag)));
+		});
+
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+			dispatcher.register(ClientCommandManager.literal(EXAMPLE_FLAG.toString())
+					.requires(source -> {
+						if (ClientFabricServerConsent.isIllegal(EXAMPLE_FLAG)) {
+							source.sendError(Text.literal("Flag disabled: " + EXAMPLE_FLAG));
+							return false;
+						}
+
+						return true;
+					})
+					.executes(context -> {
+						context.getSource().sendFeedback(Text.of("Legal flag: " + EXAMPLE_FLAG));
+						return Command.SINGLE_SUCCESS;
+					}));
+
+			dispatcher.register(ClientCommandManager.literal(EXAMPLE_FLAG_2.toString())
+					.requires(source -> {
+						if (ClientFabricServerConsent.isIllegal(EXAMPLE_FLAG_2)) {
+							source.sendError(Text.of("Flag disabled: " + EXAMPLE_FLAG_2));
+							return false;
+						}
+
+						return true;
+					})
+					.executes(context -> {
+						context.getSource().sendFeedback(Text.of("Legal flag: " + EXAMPLE_FLAG_2));
+						return Command.SINGLE_SUCCESS;
+					}));
 		});
 	}
 }

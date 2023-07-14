@@ -43,16 +43,27 @@ public final class ClientFabricServerConsent {
 	 * Checks for a given flag and mod id whether the flag is illegal.
 	 *
 	 * @param flag the flag to check against
-	 * @param modId the mod id of your mod
 	 * @return {@code true} if the flag is illegal, {@code false} otherwise
 	 */
-	public static boolean isIllegal(Identifier flag, String modId) {
-		if (flag.getNamespace().equals(modId) && flag.getPath().equals(Flags.WILDCARD_FEATURE)) {
-			return true;
+	public static boolean isIllegal(Identifier flag) {
+		for (Identifier illegalFlag : ClientFabricServerConsentImpl.illegalFlags) {
+			if (illegalFlag.getNamespace().equals(Flags.COMMON_NAMESPACE)) {
+				if (illegalFlag.getPath().equals(flag.getPath())) {
+					return true;
+				}
+			}
+
+			if (illegalFlag.getNamespace().equals(flag.getNamespace())) {
+				if (illegalFlag.getPath().equals(Flags.WILDCARD_FEATURE)) {
+					return true;
+				}
+
+				if (illegalFlag.getPath().equals(flag.getPath())) {
+					return true;
+				}
+			}
 		}
 
-		return ClientFabricServerConsentImpl.illegalFlags.stream()
-				.filter(f -> f.getNamespace().equals(Flags.COMMON_NAMESPACE) || f.getNamespace().equals(modId))
-				.anyMatch(f -> f.getPath().equals(flag.getPath()));
+		return false;
 	}
 }
