@@ -17,14 +17,15 @@
 package net.fabricmc.fabric.api.datagen.v1;
 
 /**
- * Provides a way to add keys and priorities for sorting them in generated files.
+ * Provides a callback for setting the sort priority of object keys in generated JSON files.
  */
 @FunctionalInterface
 public interface JsonKeySortOrderAdder {
 	/**
-	 * Adds a key with a priority for sorting.
-	 * @param key The key to compare.
-	 * @param priority The priority for this key. Lower numbers appear before ones with higher numbers. The default priority is 2.
+	 * Sets the sort priority for a given object key within generated JSON files.
+	 * @param key the key to set priority for
+	 * @param priority the priority for the key, where keys with lower priority are sorted before keys with higher priority
+	 * @implNote The default priority is 2.
 	 */
 	void add(String key, int priority);
 }

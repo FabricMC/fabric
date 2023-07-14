@@ -131,6 +131,7 @@ public final class FabricDataGenHelper {
 
 				HashSet<String> keys = new HashSet<>();
 				entrypoint.addJsonKeySortOrders((key, value) -> {
+					Objects.requireNonNull(key, "Tried to register a priority for a null key");
 					jsonKeySortOrders.put(key, value);
 					keys.add(key);
 				});
