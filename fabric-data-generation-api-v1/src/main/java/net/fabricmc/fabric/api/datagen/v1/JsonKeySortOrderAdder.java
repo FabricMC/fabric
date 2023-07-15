@@ -26,6 +26,7 @@ public interface JsonKeySortOrderAdder {
 	 * @param key the key to set priority for
 	 * @param priority the priority for the key, where keys with lower priority are sorted before keys with higher priority
 	 * @implNote The default priority is 2.
+	 * @see net.minecraft.data.DataProvider#JSON_KEY_SORT_ORDER
 	 */
 	void add(String key, int priority);
 }
