@@ -38,8 +38,8 @@ import net.fabricmc.fabric.api.event.Event;
  *
  * <p>Example use cases:
  * <ul>
- *     <li>Overriding a model for a particular blockstate - check if the given identifier is a {@link ModelIdentifier},
- *     and then check if it has the appropriate variant for that blockstate. If so, return your desired model,
+ *     <li>Overriding a model for a particular block state - check if the given identifier is a {@link ModelIdentifier},
+ *     and then check if it has the appropriate variant for that block state. If so, return your desired model,
  *     otherwise return the given model.</li>
  *     <li>Wrapping a model to override certain behaviors - simply return a new model instance and delegate calls
  *     to the original model as needed.</li>

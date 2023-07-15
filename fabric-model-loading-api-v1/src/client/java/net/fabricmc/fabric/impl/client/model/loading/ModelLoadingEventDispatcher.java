@@ -339,7 +339,7 @@ public class ModelLoadingEventDispatcher {
 				throw new IllegalArgumentException("Attempted to set model for state " + state + " on block " + block);
 			}
 
-			if (models.put(state, model) != null) {
+			if (models.putIfAbsent(state, model) != null) {
 				throw new IllegalStateException("Duplicate model for state " + state + " on block " + block);
 			}
 		}
