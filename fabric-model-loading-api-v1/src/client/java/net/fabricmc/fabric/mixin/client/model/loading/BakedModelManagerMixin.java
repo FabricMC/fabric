@@ -56,7 +56,8 @@ public class BakedModelManagerMixin implements FabricBakedModelManager {
 			method = "reload",
 			at = @At(
 					value = "INVOKE",
-					target = "java/util/concurrent/CompletableFuture.thenCombineAsync(Ljava/util/concurrent/CompletionStage;Ljava/util/function/BiFunction;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"
+					target = "java/util/concurrent/CompletableFuture.thenCombineAsync(Ljava/util/concurrent/CompletionStage;Ljava/util/function/BiFunction;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;",
+					remap = false
 			),
 			allow = 1)
 	private CompletableFuture<ModelLoader> loadModelPluginData(

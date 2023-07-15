@@ -88,7 +88,7 @@ public class ModelLoadingEventDispatcher {
 	 */
 	public boolean loadModel(Identifier id) {
 		if (id instanceof ModelIdentifier modelId) {
-			if (Objects.equals(modelId.getVariant(), "inventory")) {
+			if ("inventory".equals(modelId.getVariant())) {
 				// We ALWAYS override the vanilla inventory model code path entirely, even for vanilla item models.
 				// See loadItemModel for an explanation.
 				loadItemModel(modelId);

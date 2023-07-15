@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.client.model.loading;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -34,10 +35,15 @@ public final class ModelLoadingPluginManager {
 	public static final ThreadLocal<List<ModelLoadingPlugin>> CURRENT_PLUGINS = new ThreadLocal<>();
 
 	public static void registerPlugin(ModelLoadingPlugin plugin) {
+		Objects.requireNonNull(plugin, "plugin must not be null");
+
 		PLUGINS.add(plugin);
 	}
 
 	public static <T> void registerPlugin(PreparableModelLoadingPlugin.DataLoader<T> loader, PreparableModelLoadingPlugin<T> plugin) {
+		Objects.requireNonNull(loader, "data loader must not be null");
+		Objects.requireNonNull(plugin, "plugin must not be null");
+
 		PREPARABLE_PLUGINS.add(new PreparablePluginHolder<>(loader, plugin));
 	}
 
