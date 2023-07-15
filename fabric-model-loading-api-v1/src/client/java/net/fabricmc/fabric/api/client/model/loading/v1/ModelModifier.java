@@ -33,7 +33,8 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.event.Event;
 
 /**
- * Contains interfaces for the events mods can use to modify models.
+ * Contains interfaces for the events that can be used to modify models at different points in the loading and baking
+ * process.
  *
  * <p>Example use cases:
  * <ul>
@@ -45,10 +46,11 @@ import net.fabricmc.fabric.api.event.Event;
  * </ul>
  *
  * <p>Phases are used to ensure that modifications occur in a reasonable order, e.g. wrapping occurs after overrides,
- * and separate phases are provided for mods that wrap their own models and mods that need to wrap all models.
+ * and separate phases are provided for mods that wrap their own models and mods that need to wrap models of other mods
+ * or wrap models arbitrarily.
  *
- * <p>These hooks fire for <b>every single model that's loaded</b>, so the code written here should be as simple/performant
- * as possible.
+ * <p>These callbacks are invoked for <b>every single model that is loaded or baked</b>, so implementations should be
+ * as efficient as possible.
  */
 public final class ModelModifier {
 	/**
@@ -72,7 +74,8 @@ public final class ModelModifier {
 	@FunctionalInterface
 	public interface OnLoad {
 		/**
-		 * This handler is invoked to allow modifying the unbaked model instance that is stored when it is first loaded.
+		 * This handler is invoked to allow modification of an unbaked model right after it is first loaded and before
+		 * it is cached.
 		 *
 		 * @param model the current unbaked model instance
 		 * @param context context with additional information about the model/loader
@@ -82,22 +85,21 @@ public final class ModelModifier {
 		UnbakedModel modifyModelOnLoad(UnbakedModel model, Context context);
 
 		/**
-		 * Context for an on load model modification event.
+		 * The context for an on load model modification event.
 		 */
 		@ApiStatus.NonExtendable
 		interface Context {
 			/**
 			 * The identifier of this model (may be a {@link ModelIdentifier}).
 			 *
-			 * <p>For item models, only the {@link ModelIdentifier} with the {@code inventory} variant is passed,
-			 * and not the corresponding plain identifier.
+			 * <p>For item models, only the {@link ModelIdentifier} with the {@code inventory} variant is passed, and
+			 * not the corresponding plain identifier.
 			 */
 			Identifier id();
 
 			/**
-			 * Loads a model using an {@link Identifier} or {@link ModelIdentifier}, or gets it if it was already loaded.
-			 *
-			 * <p>Please note that the game engine keeps track of circular model loading calls on its own.
+			 * Loads a model using an {@link Identifier} or {@link ModelIdentifier}, or gets it if it was already
+			 * loaded.
 			 *
 			 * @param id the model identifier
 			 * @return the unbaked model, or a missing model if it is not present
@@ -105,13 +107,10 @@ public final class ModelModifier {
 			UnbakedModel getOrLoadModel(Identifier id);
 
 			/**
-			 * The current model loader instance (changes when resource packs reload).
+			 * The current model loader instance, which changes between resource reloads.
 			 *
-			 * <p>Do <b>not</b> call {@link ModelLoader#getOrLoadModel} as it doesn't supported nested model resolution,
-			 * use {@link #getOrLoadModel} from the context instead.
-			 *
-			 * @apiNote Calling {@link ModelLoader#getOrLoadModel} is fine for {@link BeforeBake} and {@link AfterBake},
-			 * it should only be avoided in {@link OnLoad} listeners.
+			 * <p>Do <b>not</b> call {@link ModelLoader#getOrLoadModel} as it does not supported nested model
+			 * resolution; use {@link #getOrLoadModel} from the context instead.
 			 */
 			ModelLoader loader();
 		}
@@ -120,7 +119,7 @@ public final class ModelModifier {
 	@FunctionalInterface
 	public interface BeforeBake {
 		/**
-		 * This handler is invoked to allow modifying the unbaked model instance that is baked.
+		 * This handler is invoked to allow modification of the unbaked model instance right before it is baked.
 		 *
 		 * @param model the current unbaked model instance
 		 * @param context context with additional information about the model/loader
@@ -130,7 +129,7 @@ public final class ModelModifier {
 		UnbakedModel modifyModelBeforeBake(UnbakedModel model, Context context);
 
 		/**
-		 * Context for a before bake model modification event.
+		 * The context for a before bake model modification event.
 		 */
 		@ApiStatus.NonExtendable
 		interface Context {
@@ -140,7 +139,7 @@ public final class ModelModifier {
 			Identifier id();
 
 			/**
-			 * Function that can be used to retrieve sprites.
+			 * The function that can be used to retrieve sprites.
 			 */
 			Function<SpriteIdentifier, Sprite> textureGetter();
 
@@ -151,13 +150,13 @@ public final class ModelModifier {
 
 			/**
 			 * The baker being used to bake this model.
-			 * It can be used to {@linkplain Baker#bake load baked models}.
+			 * It can be used to {@linkplain Baker#getOrLoadModel load unbaked models} and
+			 * {@linkplain Baker#bake load baked models}.
 			 */
 			Baker baker();
 
 			/**
-			 * The current model loader instance (changes when resource packs reload).
-			 * It can be used to {@linkplain ModelLoader#getOrLoadModel load unbaked models}.
+			 * The current model loader instance, which changes between resource reloads.
 			 */
 			ModelLoader loader();
 		}
@@ -166,7 +165,8 @@ public final class ModelModifier {
 	@FunctionalInterface
 	public interface AfterBake {
 		/**
-		 * This handler is invoked to allow modifying the baked model instance that is used and stored, after baking.
+		 * This handler is invoked to allow modification of the baked model instance right after it is baked and before
+		 * it is cached.
 		 *
 		 * <p>For further information, see the docs of {@link ModelLoadingPlugin.Context#modifyModelAfterBake()}.
 		 *
@@ -178,7 +178,7 @@ public final class ModelModifier {
 		BakedModel modifyModelAfterBake(BakedModel model, Context context);
 
 		/**
-		 * Context for an after bake model modification event.
+		 * The context for an after bake model modification event.
 		 */
 		@ApiStatus.NonExtendable
 		interface Context {
@@ -193,7 +193,7 @@ public final class ModelModifier {
 			UnbakedModel sourceModel();
 
 			/**
-			 * Function that can be used to retrieve sprites.
+			 * The function that can be used to retrieve sprites.
 			 */
 			Function<SpriteIdentifier, Sprite> textureGetter();
 
@@ -204,13 +204,13 @@ public final class ModelModifier {
 
 			/**
 			 * The baker being used to bake this model.
-			 * It can be used to {@linkplain Baker#bake load baked models}.
+			 * It can be used to {@linkplain Baker#getOrLoadModel load unbaked models} and
+			 * {@linkplain Baker#bake load baked models}.
 			 */
 			Baker baker();
 
 			/**
-			 * The current model loader instance (changes when resource packs reload).
-			 * It can be used to {@linkplain ModelLoader#getOrLoadModel load unbaked models}.
+			 * The current model loader instance, which changes between resource reloads.
 			 */
 			ModelLoader loader();
 		}

@@ -33,7 +33,8 @@ import net.minecraft.util.Identifier;
 
 /**
  * An unbaked model that returns another {@link BakedModel} at {@linkplain #bake bake time}.
- * This allows multiple {@link UnbakedModel}s to share the same {@link BakedModel} instance.
+ * This allows multiple {@link UnbakedModel}s to share the same {@link BakedModel} instance
+ * and prevents baking the same model multiple times.
  */
 public final class DelegatingUnbakedModel implements UnbakedModel {
 	private final Identifier delegate;

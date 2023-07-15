@@ -44,7 +44,7 @@ import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
 
 @Mixin(ModelLoader.class)
 public abstract class ModelLoaderMixin implements ModelLoaderHooks {
-	// this is the first one
+	// The missing model is always loaded and added first.
 	@Final
 	@Shadow
 	public static ModelIdentifier MISSING_ID;
@@ -114,7 +114,7 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 	@Inject(method = "getOrLoadModel", at = @At("HEAD"))
 	private void fabric_preventNestedGetOrLoadModel(Identifier id, CallbackInfoReturnable<UnbakedModel> cir) {
 		if (fabric_enableGetOrLoadModelGuard && fabric_guardGetOrLoadModel > 0) {
-			throw new IllegalStateException("ModelLoader#getOrLoadModel called from a ModelResolver or ModelModifier.OnBake instance. This is not allowed to prevent subtle model loading errors. Use getOrLoadModel from the context instead.");
+			throw new IllegalStateException("ModelLoader#getOrLoadModel called from a ModelResolver or ModelModifier.OnBake instance. This is not allowed to prevent errors during model loading. Use getOrLoadModel from the context instead.");
 		}
 	}
 
@@ -158,7 +158,7 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 	 * Unlike getOrLoadModel, this method supports nested model loading.
 	 *
 	 * <p>Vanilla does not due to the iteration over modelsToLoad which causes models to be resolved multiple times,
-	 * probably leading to crashes.
+	 * possibly leading to crashes.
 	 */
 	@Override
 	public UnbakedModel fabric_getOrLoadModel(Identifier id) {

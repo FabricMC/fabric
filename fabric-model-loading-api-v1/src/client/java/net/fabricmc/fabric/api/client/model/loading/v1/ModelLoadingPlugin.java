@@ -32,7 +32,8 @@ import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
 /**
  * A model loading plugin is used to extend the model loading process through the passed {@link Context} object.
  *
- * <p>{@link PreparableModelLoadingPlugin} can be used if some resources need to be loaded from the {@link ResourceManager}.
+ * <p>{@link PreparableModelLoadingPlugin} can be used if some resources need to be loaded from the
+ * {@link ResourceManager}.
  */
 @FunctionalInterface
 public interface ModelLoadingPlugin {
@@ -52,17 +53,21 @@ public interface ModelLoadingPlugin {
 	@ApiStatus.NonExtendable
 	interface Context {
 		/**
-		 * Adds one or multiple models (can be {@link ModelIdentifier}s) to the list of models that will be loaded.
+		 * Adds one or more models (can be {@link ModelIdentifier}s) to the list of models that will be loaded and
+		 * baked.
 		 */
 		void addModels(Identifier... ids);
 
 		/**
-		 * Adds multiple models (can be {@link ModelIdentifier}s) to the list of models that will be loaded.
+		 * Adds multiple models (can be {@link ModelIdentifier}s) to the list of models that will be loaded and baked.
 		 */
 		void addModels(Collection<? extends Identifier> ids);
 
 		/**
 		 * Registers a block state resolver for a block.
+		 *
+		 * <p>The block must be registered and a block state resolver must not have been previously registered for the
+		 * block.
 		 */
 		void registerBlockStateResolver(Block block, BlockStateResolver resolver);
 
@@ -77,9 +82,11 @@ public interface ModelLoadingPlugin {
 		Event<ModelModifier.OnLoad> modifyModelOnLoad();
 
 		/**
-		 * Event access to swap the unbaked model used for baking without replacing the loaded model. This is important
-		 * for mods which wish to wrap a model but not actually affect other models that use it as a parent (e.g.
-		 * wrap a block's model into a non-{@link JsonUnbakedModel} class but still allow the item model to work fine).
+		 * Event access to replace the unbaked model used for baking without replacing the cached model.
+		 *
+		 * <p>This is useful for mods which wish to wrap a model without affecting other models that use it as a parent
+		 * (e.g. wrap a block's model into a non-{@link JsonUnbakedModel} class but still allow the item model to be
+		 * loaded and baked without exceptions).
 		 */
 		Event<ModelModifier.BeforeBake> modifyModelBeforeBake();
 

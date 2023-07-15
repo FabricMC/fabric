@@ -26,13 +26,17 @@ import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
 
 /**
- * Interface for block state resolvers.
+ * Block state resolvers are responsible for mapping each {@link BlockState} of a block to an {@link UnbakedModel}.
+ * They replace the {@code blockstates/} JSON files. One block can be mapped to only one block state resolver; multiple
+ * resolvers will not receive the same block.
  *
- * <p>Block state resolvers are responsible for mapping each {@link BlockState} of a block to an {@link UnbakedModel}.
- * Block state resolvers replace the {@code blockstates/} JSON files.
- * They allow defining custom block state formats for example.
+ * <p>Block state resolvers can be used to create custom block state formats or dynamically resolve block state models.
  *
- * <p>If only custom models are needed, {@link ModelResolver} should be used to resolve specific model files.
+ * <p>Use {@link ModelResolver} instead of this interface if interacting with the block and block states directly is not
+ * necessary. This includes custom model deserializers and loaders.
+ *
+ * @see ModelResolver
+ * @see ModelModifier.OnLoad
  */
 @FunctionalInterface
 public interface BlockStateResolver {
@@ -40,11 +44,12 @@ public interface BlockStateResolver {
 	 * Resolves the models for all block states of the block.
 	 *
 	 * <p>For each block state, call {@link Context#setModel} to set its unbaked model.
-	 * It must be called exactly once for each block state.
+	 * This method must be called exactly once for each block state.
 	 *
-	 * <p>Note that the unbaked model for each block state will be baked.
-	 * If the model is expensive to bake, and many block states share the same model, this can be quite wasteful (as the model will get baked multiple times).
-	 * In that case, one can use {@link DelegatingUnbakedModel} to share an underlying model between multiple block states.
+	 * <p>Note that if multiple block states share the same unbaked model instance, it will be baked multiple times
+	 * (once per block state that has the model set), which is not efficient. To improve efficiency in this case, the
+	 * model should be delegated to using {@link DelegatingUnbakedModel} to ensure that it is only baked once. The inner
+	 * model can be loaded using {@link ModelResolver} if custom loading logic is necessary.
 	 */
 	void resolveBlockStates(Context context);
 
@@ -54,7 +59,7 @@ public interface BlockStateResolver {
 	@ApiStatus.NonExtendable
 	interface Context {
 		/**
-		 * The block for which the block state models are being resolved.
+		 * The block for which block state models are being resolved.
 		 */
 		Block block();
 
@@ -69,17 +74,15 @@ public interface BlockStateResolver {
 		/**
 		 * Loads a model using an {@link Identifier} or {@link ModelIdentifier}, or gets it if it was already loaded.
 		 *
-		 * <p>Please note that the game engine keeps track of circular model loading calls on its own.
-		 *
 		 * @param id the model identifier
 		 * @return the unbaked model, or a missing model if it is not present
 		 */
 		UnbakedModel getOrLoadModel(Identifier id);
 
 		/**
-		 * The current model loader instance (changes when resource packs reload).
+		 * The current model loader instance, which changes between resource reloads.
 		 *
-		 * <p>Do <b>not</b> call {@link ModelLoader#getOrLoadModel} as it doesn't supported nested model resolution,
+		 * <p>Do <b>not</b> call {@link ModelLoader#getOrLoadModel} as it does not supported nested model resolution;
 		 * use {@link #getOrLoadModel} from the context instead.
 		 */
 		ModelLoader loader();
