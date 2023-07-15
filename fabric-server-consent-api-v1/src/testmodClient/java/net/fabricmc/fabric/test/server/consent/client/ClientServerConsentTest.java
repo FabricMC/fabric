@@ -30,8 +30,8 @@ import net.fabricmc.fabric.api.server.consent.v1.client.ClientFabricServerConsen
 public class ClientServerConsentTest implements ClientModInitializer {
 	public static final String MOD_ID = "fabric-server-consent-api-v1-testmod";
 
-	private static final Identifier EXAMPLE_FLAG = new Identifier(MOD_ID, "example_flag");
-	private static final Identifier EXAMPLE_FLAG_2 = new Identifier(MOD_ID, "example_flag_2");
+	private static final Identifier EXAMPLE_FLAG = new Identifier(MOD_ID, "example_feature");
+	private static final Identifier EXAMPLE_FLAG_2 = new Identifier(MOD_ID, "example_feature_2");
 
 	@Override
 	public void onInitializeClient() {
@@ -43,7 +43,7 @@ public class ClientServerConsentTest implements ClientModInitializer {
 			dispatcher.register(ClientCommandManager.literal(EXAMPLE_FLAG.toString())
 					.requires(source -> {
 						if (ClientFabricServerConsent.isIllegal(EXAMPLE_FLAG)) {
-							source.sendError(Text.literal("Flag disabled: " + EXAMPLE_FLAG));
+							source.sendError(Text.of("Flag disabled: " + EXAMPLE_FLAG));
 							return false;
 						}
 
