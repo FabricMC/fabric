@@ -529,6 +529,7 @@ public abstract class AoCalculator {
 			int i = world.getLightLevel(LightType.SKY, pos);
 			int j = world.getLightLevel(LightType.BLOCK, pos);
 			int k = state.getLuminance();
+
 			if (j < k) {
 				j = k;
 			}
@@ -554,7 +555,7 @@ public abstract class AoCalculator {
 	 * value from all four samples.
 	 */
 	private static int meanBrightness(int lightA, int lightB, int lightC, int lightD, boolean emA, boolean emB, boolean emC, boolean emD) {
-		if (Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
+		if (Indigo.FIX_MEAN_LIGHT_CALCULATION) {
 			if (lightA == 0 || lightB == 0 || lightC == 0 || lightD == 0) {
 				// Normalize values to non-zero minimum
 				final int min = nonZeroMin(nonZeroMin(lightA, lightB), nonZeroMin(lightC, lightD));
