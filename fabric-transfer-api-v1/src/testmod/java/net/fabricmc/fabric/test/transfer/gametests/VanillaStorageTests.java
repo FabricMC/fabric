@@ -45,6 +45,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.test.transfer.mixin.AbstractFurnaceBlockEntityAccessor;
 
@@ -224,7 +225,7 @@ public class VanillaStorageTests {
 		ShulkerBoxBlockEntity shulker = (ShulkerBoxBlockEntity) context.getBlockEntity(pos);
 		InventoryStorage storage = InventoryStorage.of(shulker, null);
 
-		if (storage.simulateInsert(ItemVariant.of(Items.SHULKER_BOX), 1, null) > 0) {
+		if (StorageUtil.simulateInsert(storage, ItemVariant.of(Items.SHULKER_BOX), 1, null) > 0) {
 			context.throwPositionedException("Expected shulker box to be rejected", pos);
 		}
 
