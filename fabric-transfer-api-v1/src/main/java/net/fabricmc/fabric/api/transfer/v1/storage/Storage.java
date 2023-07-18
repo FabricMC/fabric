@@ -221,9 +221,7 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	 */
 	@Deprecated(forRemoval = true)
 	default long simulateInsert(T resource, long maxAmount, @Nullable TransactionContext transaction) {
-		try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
-			return insert(resource, maxAmount, simulateTransaction);
-		}
+		return StorageUtil.simulateInsert(this, resource, maxAmount, transaction);
 	}
 
 	/**
@@ -234,9 +232,7 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	 */
 	@Deprecated(forRemoval = true)
 	default long simulateExtract(T resource, long maxAmount, @Nullable TransactionContext transaction) {
-		try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
-			return extract(resource, maxAmount, simulateTransaction);
-		}
+		return StorageUtil.simulateExtract(this, resource, maxAmount, transaction);
 	}
 
 	/**
