@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-model-loading-api-v1-testmod",
+  "name": "Fabric Model Loading API (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "client",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-model-loading-api-v1": "*",
+    "fabric-resource-loader-v0": "*"
+  },
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.test.model.loading.ModelTestModClient",
+      "net.fabricmc.fabric.test.model.loading.NestedModelLoadingTest",
+      "net.fabricmc.fabric.test.model.loading.PreparablePluginTest"
+    ]
+  }
+}

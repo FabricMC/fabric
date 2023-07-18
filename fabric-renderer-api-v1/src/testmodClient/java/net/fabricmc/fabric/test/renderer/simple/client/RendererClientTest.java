@@ -18,30 +18,47 @@ package net.fabricmc.fabric.test.renderer.simple.client;
 
 import static net.fabricmc.fabric.test.renderer.simple.RendererTest.id;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.test.renderer.simple.FrameBlock;
 import net.fabricmc.fabric.test.renderer.simple.RendererTest;
 
 public final class RendererClientTest implements ClientModInitializer {
+	private static final Set<Identifier> FRAME_MODELS = new HashSet<>();
+
 	@Override
 	public void onInitializeClient() {
-		ModelLoadingRegistry.INSTANCE.registerResourceProvider(manager -> new FrameModelResourceProvider());
-		ModelLoadingRegistry.INSTANCE.registerVariantProvider(manager -> new PillarModelVariantProvider());
-
 		for (FrameBlock frameBlock : RendererTest.FRAMES) {
 			// We don't specify a material for the frame mesh,
 			// so it will use the default material, i.e. the one from BlockRenderLayerMap.
 			BlockRenderLayerMap.INSTANCE.putBlock(frameBlock, RenderLayer.getCutoutMipped());
 
 			String itemPath = Registries.ITEM.getId(frameBlock.asItem()).getPath();
-			FrameModelResourceProvider.FRAME_MODELS.add(id("item/" + itemPath));
+			FRAME_MODELS.add(id("item/" + itemPath));
 		}
 
-		FrameModelResourceProvider.FRAME_MODELS.add(id("block/frame"));
+		FRAME_MODELS.add(id("block/frame"));
+
+		ModelLoadingPlugin.register(pluginContext -> {
+			pluginContext.resolveModel().register(context -> {
+				if (FRAME_MODELS.contains(context.id())) {
+					return new FrameUnbakedModel();
+				}
+
+				return null;
+			});
+
+			pluginContext.registerBlockStateResolver(RendererTest.PILLAR, context -> {
+				context.setModel(context.block().getDefaultState(), new PillarUnbakedModel());
+			});
+		});
 	}
 }

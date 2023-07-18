@@ -6,7 +6,7 @@ moduleDependencies(project, ['fabric-api-base'])
 testDependencies(project, [
 	':fabric-block-api-v1',
 	':fabric-blockrenderlayer-v1',
-	':fabric-models-v0',
+	':fabric-model-loading-api-v1',
 	':fabric-object-builder-api-v1',
 	':fabric-renderer-indigo',
 	':fabric-rendering-data-attachment-v1',
