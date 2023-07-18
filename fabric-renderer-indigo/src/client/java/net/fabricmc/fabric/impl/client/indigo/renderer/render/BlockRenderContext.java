@@ -19,7 +19,6 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
@@ -40,7 +39,7 @@ public class BlockRenderContext extends AbstractBlockRenderContext {
 		return new AoCalculator(blockInfo) {
 			@Override
 			public int light(BlockPos pos, BlockState state) {
-				return WorldRenderer.getLightmapCoordinates(blockInfo.blockView, state, pos);
+				return AoCalculator.getLightmapCoordinates(blockInfo.blockView, state, pos);
 			}
 
 			@Override
