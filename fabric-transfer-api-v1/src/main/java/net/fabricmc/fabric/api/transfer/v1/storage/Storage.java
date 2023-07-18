@@ -32,11 +32,14 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 /**
  * An object that can store resources.
  *
+ * <p>Most of the documentation that follows is quite technical.
+ * For an easier introduction to the API, see the <a href="https://fabricmc.net/wiki/tutorial:transfer-api">wiki page</a>.
+ *
  * <p><ul>
  *     <li>{@link #supportsInsertion} and {@link #supportsExtraction} can be used to tell if insertion and extraction
  *     functionality are possibly supported by this storage.</li>
  *     <li>{@link #insert} and {@link #extract} can be used to insert or extract resources from this storage.</li>
- *     <li>{@link #iterator} and {@link #exactView} can be used to inspect the contents of this storage.</li>
+ *     <li>{@link #iterator} can be used to inspect the contents of this storage.</li>
  *     <li>{@link #getVersion()} can be used to quickly check if a storage has changed, without having to rescan its contents.</li>
  * </ul>
  *
@@ -93,17 +96,6 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	long insert(T resource, long maxAmount, TransactionContext transaction);
 
 	/**
-	 * Convenient helper to simulate an insertion, i.e. get the result of insert without modifying any state.
-	 * The passed transaction may be null if a new transaction should be opened for the simulation.
-	 * @see #insert
-	 */
-	default long simulateInsert(T resource, long maxAmount, @Nullable TransactionContext transaction) {
-		try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
-			return insert(resource, maxAmount, simulateTransaction);
-		}
-	}
-
-	/**
 	 * Return false if calling {@link #extract} will absolutely always return 0, or true otherwise or in doubt.
 	 *
 	 * <p>Note: This function is meant to be used by pipes or other devices that can transfer resources to know if
@@ -122,17 +114,6 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	 * @return A non-negative integer not greater than maxAmount: the amount that was extracted.
 	 */
 	long extract(T resource, long maxAmount, TransactionContext transaction);
-
-	/**
-	 * Convenient helper to simulate an extraction, i.e. get the result of extract without modifying any state.
-	 * The passed transaction may be null if a new transaction should be opened for the simulation.
-	 * @see #extract
-	 */
-	default long simulateExtract(T resource, long maxAmount, @Nullable TransactionContext transaction) {
-		try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
-			return extract(resource, maxAmount, simulateTransaction);
-		}
-	}
 
 	/**
 	 * Iterate through the contents of this storage.
@@ -188,22 +169,6 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	}
 
 	/**
-	 * Return a view over this storage, for a specific resource, or {@code null} if none is quickly available.
-	 *
-	 * <p>This function should only return a non-null view if this storage can provide it quickly,
-	 * for example with a hashmap lookup.
-	 * If returning the requested view would require iteration through a potentially large number of views,
-	 * {@code null} should be returned instead.
-	 *
-	 * @param resource The resource for which a storage view is requested. May be blank, for example to estimate capacity.
-	 * @return A view over this storage for the passed resource, or {@code null} if none is quickly available.
-	 */
-	@Nullable
-	default StorageView<T> exactView(T resource) {
-		return null;
-	}
-
-	/**
 	 * Return an integer representing the current version of this storage instance to allow for fast change detection:
 	 * if the version hasn't changed since the last time, <b>and the storage instance is the same</b>, the storage has the same contents.
 	 * This can be used to avoid re-scanning the contents of the storage, which could be an expensive operation.
@@ -246,5 +211,45 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	@SuppressWarnings("unchecked")
 	static <T> Class<Storage<T>> asClass() {
 		return (Class<Storage<T>>) (Object) Storage.class;
+	}
+
+	/**
+	 * Convenient helper to simulate an insertion, i.e. get the result of insert without modifying any state.
+	 * The passed transaction may be null if a new transaction should be opened for the simulation.
+	 * @see #insert
+	 * @deprecated Either use transactions directly, or use {@link StorageUtil#simulateInsert}.
+	 */
+	@Deprecated(forRemoval = true)
+	default long simulateInsert(T resource, long maxAmount, @Nullable TransactionContext transaction) {
+		return StorageUtil.simulateInsert(this, resource, maxAmount, transaction);
+	}
+
+	/**
+	 * Convenient helper to simulate an extraction, i.e. get the result of extract without modifying any state.
+	 * The passed transaction may be null if a new transaction should be opened for the simulation.
+	 * @see #extract
+	 * @deprecated Either use transactions directly, or use {@link StorageUtil#simulateExtract}.
+	 */
+	@Deprecated(forRemoval = true)
+	default long simulateExtract(T resource, long maxAmount, @Nullable TransactionContext transaction) {
+		return StorageUtil.simulateExtract(this, resource, maxAmount, transaction);
+	}
+
+	/**
+	 * Return a view over this storage, for a specific resource, or {@code null} if none is quickly available.
+	 *
+	 * <p>This function should only return a non-null view if this storage can provide it quickly,
+	 * for example with a hashmap lookup.
+	 * If returning the requested view would require iteration through a potentially large number of views,
+	 * {@code null} should be returned instead.
+	 *
+	 * @param resource The resource for which a storage view is requested. May be blank, for example to estimate capacity.
+	 * @return A view over this storage for the passed resource, or {@code null} if none is quickly available.
+	 * @deprecated Deprecated for removal without direct replacement. Use {@link #insert}, {@link #extract} or {@link #iterator} instead.
+	 */
+	@Deprecated(forRemoval = true)
+	@Nullable
+	default StorageView<T> exactView(T resource) {
+		return null;
 	}
 }
