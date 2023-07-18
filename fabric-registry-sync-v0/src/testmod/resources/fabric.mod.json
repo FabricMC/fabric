@@ -10,10 +10,12 @@
   },
   "entrypoints": {
     "main": [
+      "net.fabricmc.fabric.test.registry.sync.CustomDynamicRegistryTest",
       "net.fabricmc.fabric.test.registry.sync.RegistrySyncTest"
     ],
     "client": [
-      "net.fabricmc.fabric.test.registry.sync.client.RegistrySyncTestClient"
+      "net.fabricmc.fabric.test.registry.sync.client.RegistrySyncTestClient",
+      "net.fabricmc.fabric.test.registry.sync.client.DynamicRegistryClientTest"
     ]
   }
 }

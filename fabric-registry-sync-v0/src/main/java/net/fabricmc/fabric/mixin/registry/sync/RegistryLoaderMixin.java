@@ -34,6 +34,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryLoader;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistryViewImpl;
@@ -57,5 +58,15 @@ public class RegistryLoaderMixin {
 		}
 
 		DynamicRegistrySetupCallback.EVENT.invoker().onRegistrySetup(new DynamicRegistryViewImpl(registries));
+	}
+
+	// Vanilla doesn't mark namespaces in the directories of dynamic registries at all,
+	// so we prepend the directories with the namespace if it's a modded registry id.
+	@Inject(method = "getPath", at = @At("RETURN"), cancellable = true)
+	private static void prependDirectoryWithNamespace(Identifier id, CallbackInfoReturnable<String> info) {
+		if (!id.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
+			String newPath = id.getNamespace() + "/" + info.getReturnValue();
+			info.setReturnValue(newPath);
+		}
 	}
 }
