@@ -4,6 +4,10 @@
     "minecraft:sunflower_plains",
     "minecraft:meadow",
     {
+      "id": "minecraft:cherry_grove",
+      "required": false
+    },
+    {
       "id": "#c:flower_forests",
       "required": false
     }
