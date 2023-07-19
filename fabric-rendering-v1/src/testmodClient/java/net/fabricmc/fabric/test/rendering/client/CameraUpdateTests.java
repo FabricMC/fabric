@@ -18,6 +18,8 @@ package net.fabricmc.fabric.test.rendering.client;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ModifyCameraCallback;
 
+import net.fabricmc.fabric.test.rendering.client.mixin.CameraAccessor;
+
 import net.minecraft.entity.player.PlayerEntity;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -27,7 +29,7 @@ public class CameraUpdateTests implements ClientModInitializer {
 	public void onInitializeClient() {
 		ModifyCameraCallback.EVENT.register((camera, area, focusedEntity, thirdPerson, inverseView, tickDelta) -> {
 			if (focusedEntity instanceof PlayerEntity player && player.isSleeping()) {
-				camera.setRotation(camera.getYaw(), camera.getPitch() - 45 * (player.getSleepTimer() / 200f));
+				((CameraAccessor)camera).invokeSetRotation(camera.getYaw(), camera.getPitch() - 45 * (player.getSleepTimer() / 200f));
 			}
 		});
 	}
