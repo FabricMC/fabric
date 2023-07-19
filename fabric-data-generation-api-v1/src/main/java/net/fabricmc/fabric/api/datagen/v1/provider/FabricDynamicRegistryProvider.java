@@ -51,6 +51,7 @@ import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
 /**
  * A provider to help with data-generation of dynamic registry objects,
@@ -79,7 +80,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		@ApiStatus.Internal
 		Entries(RegistryWrapper.WrapperLookup registries, String modId) {
 			this.registries = registries;
-			this.queuedEntries = RegistryLoader.DYNAMIC_REGISTRIES.stream()
+			this.queuedEntries = DynamicRegistries.getDynamicRegistries().stream()
 					.collect(Collectors.toMap(
 							e -> e.key().getValue(),
 							e -> RegistryEntries.create(registries, e)

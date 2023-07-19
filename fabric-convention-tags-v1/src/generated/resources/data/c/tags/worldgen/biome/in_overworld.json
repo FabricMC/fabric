@@ -57,9 +57,6 @@
     "minecraft:stony_shore",
     "minecraft:deep_dark",
     "minecraft:mangrove_swamp",
-    {
-      "id": "minecraft:cherry_grove",
-      "required": false
-    }
+    "minecraft:cherry_grove"
   ]
 }

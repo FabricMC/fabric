@@ -7,6 +7,12 @@ loom {
 
 moduleDependencies(project, ['fabric-api-base'])
 
+testDependencies(project, [
+		':fabric-command-api-v2',
+		':fabric-rendering-v1',
+		':fabric-resource-loader-v0'
+])
+
 validateMixinNames {
 	// Loom needs to handle inner mixins better
 	exclude "**/ParticleManagerAccessor\$SimpleSpriteProviderAccessor.class"

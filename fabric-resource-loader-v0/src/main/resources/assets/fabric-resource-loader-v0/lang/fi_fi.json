@@ -1,4 +1,7 @@
 {
+  "pack.description.modResources": "Modien resurssit.",
   "pack.source.fabricmod": "Fabric-modi",
-  "pack.source.builtinMod": "sisäänrakennettu: %s"
+  "pack.source.builtinMod": "sisäänrakennettu: %s",
+  "pack.name.fabricMod": "Fabric-modi \"%s\"",
+  "pack.name.fabricMods": "Fabric-modit"
 }

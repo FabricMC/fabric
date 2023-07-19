@@ -22,6 +22,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.NbtCompound;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -78,7 +79,7 @@ class FluidTests {
 			// Should not allow lava (canInsert returns false)
 			if (waterStorage.insert(LAVA, BUCKET, tx) != 0) throw new AssertionError("Lava inserted");
 			// Should allow insert, but without mutating the storage.
-			if (waterStorage.simulateInsert(WATER, BUCKET, tx) != BUCKET) throw new AssertionError("Simulated insert failed");
+			if (StorageUtil.simulateInsert(waterStorage, WATER, BUCKET, tx) != BUCKET) throw new AssertionError("Simulated insert failed");
 			// Should allow insert
 			if (waterStorage.insert(TAGGED_WATER, BUCKET, tx) != BUCKET) throw new AssertionError("Tagged water insert 1 failed");
 			// Variants are different, should not allow insert
@@ -90,7 +91,7 @@ class FluidTests {
 			// Should allow extraction
 			if (waterStorage.extract(TAGGED_WATER_2, BUCKET, tx) != BUCKET) throw new AssertionError("Extraction failed");
 			// Simulated extraction should succeed but do nothing
-			if (waterStorage.simulateExtract(TAGGED_WATER, Long.MAX_VALUE, tx) != BUCKET) throw new AssertionError("Simulated extraction failed");
+			if (StorageUtil.simulateExtract(waterStorage, TAGGED_WATER, Long.MAX_VALUE, tx) != BUCKET) throw new AssertionError("Simulated extraction failed");
 			// Re-insert
 			if (waterStorage.insert(TAGGED_WATER_2, BUCKET, tx) != BUCKET) throw new AssertionError("Tagged water insert 3 failed");
 			// Test contents

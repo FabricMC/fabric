@@ -21,7 +21,7 @@ import org.jetbrains.annotations.ApiStatus;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 /**
- * A view of a single stored resource in a {@link Storage}, for use with {@link Storage#iterator} or {@link Storage#exactView}.
+ * A view of a single stored resource in a {@link Storage}, for use with {@link Storage#iterator}.
  *
  * @param <T> The type of the stored resource.
  *
@@ -57,7 +57,7 @@ public interface StorageView<T> {
 
 	/**
 	 * @return The total amount of {@link #getResource} that could be stored in this view,
-	 * or an estimate of the number of resources that could be stored if this view has a blank resource.
+	 * or an estimated upper bound on the number of resources that could be stored if this view has a blank resource.
 	 */
 	long getCapacity();
 

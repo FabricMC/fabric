@@ -6,4 +6,5 @@ moduleDependencies(project, ['fabric-api-base'])
 testDependencies(project, [
 	':fabric-convention-tags-v1',
 	':fabric-lifecycle-events-v1',
+	':fabric-resource-loader-v0',
 ])
