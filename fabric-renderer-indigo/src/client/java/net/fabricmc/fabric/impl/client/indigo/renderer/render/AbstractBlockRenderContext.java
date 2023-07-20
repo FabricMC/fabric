@@ -22,6 +22,7 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHel
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -37,8 +38,10 @@ import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.util.TriState;
+import net.fabricmc.fabric.impl.client.indigo.Indigo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
+import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoConfig;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
@@ -131,7 +134,7 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 				}
 			}
 		} else {
-			shadeFlatQuad(quad);
+			shadeFlatQuad(quad, isVanilla);
 
 			if (emissive) {
 				for (int i = 0; i < 4; i++) {
@@ -151,28 +154,55 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 	 * Starting in 1.16 flat shading uses dimension-specific diffuse factors that can be < 1.0
 	 * even for un-shaded quads. These are also applied with AO shading but that is done in AO calculator.
 	 */
-	private void shadeFlatQuad(MutableQuadViewImpl quad) {
-		if (quad.hasVertexNormals()) {
-			// Quads that have vertex normals need to be shaded using interpolation - vanilla can't
-			// handle them. Generally only applies to modded models.
-			final float faceShade = blockInfo.blockView.getBrightness(quad.lightFace(), quad.hasShade());
+	private void shadeFlatQuad(MutableQuadViewImpl quad, boolean isVanilla) {
+		final boolean hasShade = quad.hasShade();
 
-			for (int i = 0; i < 4; i++) {
-				quad.color(i, ColorHelper.multiplyRGB(quad.color(i), vertexShade(quad, i, faceShade)));
+		// Check the AO mode to match how shade is applied during smooth lighting
+		if ((Indigo.AMBIENT_OCCLUSION_MODE == AoConfig.HYBRID && !isVanilla) || Indigo.AMBIENT_OCCLUSION_MODE == AoConfig.ENHANCED) {
+			if (quad.hasAllVertexNormals()) {
+				for (int i = 0; i < 4; i++) {
+					float shade = normalShade(quad.normalX(i), quad.normalY(i), quad.normalZ(i), hasShade);
+					quad.color(i, ColorHelper.multiplyRGB(quad.color(i), shade));
+				}
+			} else {
+				final float faceShade;
+
+				if ((quad.geometryFlags() & AXIS_ALIGNED_FLAG) != 0) {
+					faceShade = blockInfo.blockView.getBrightness(quad.lightFace(), hasShade);
+				} else {
+					Vector3f faceNormal = quad.faceNormal();
+					faceShade = normalShade(faceNormal.x, faceNormal.y, faceNormal.z, hasShade);
+				}
+
+				if (quad.hasVertexNormals()) {
+					for (int i = 0; i < 4; i++) {
+						float shade;
+
+						if (quad.hasNormal(i)) {
+							shade = normalShade(quad.normalX(i), quad.normalY(i), quad.normalZ(i), hasShade);
+						} else {
+							shade = faceShade;
+						}
+
+						quad.color(i, ColorHelper.multiplyRGB(quad.color(i), shade));
+					}
+				} else {
+					if (faceShade != 1.0f) {
+						for (int i = 0; i < 4; i++) {
+							quad.color(i, ColorHelper.multiplyRGB(quad.color(i), faceShade));
+						}
+					}
+				}
 			}
 		} else {
-			final float diffuseShade = blockInfo.blockView.getBrightness(quad.lightFace(), quad.hasShade());
+			final float faceShade = blockInfo.blockView.getBrightness(quad.lightFace(), hasShade);
 
-			if (diffuseShade != 1.0f) {
+			if (faceShade != 1.0f) {
 				for (int i = 0; i < 4; i++) {
-					quad.color(i, ColorHelper.multiplyRGB(quad.color(i), diffuseShade));
+					quad.color(i, ColorHelper.multiplyRGB(quad.color(i), faceShade));
 				}
 			}
 		}
-	}
-
-	private float vertexShade(MutableQuadViewImpl quad, int vertexIndex, float faceShade) {
-		return quad.hasNormal(vertexIndex) ? normalShade(quad.normalX(vertexIndex), quad.normalY(vertexIndex), quad.normalZ(vertexIndex), quad.hasShade()) : faceShade;
 	}
 
 	/**
