@@ -20,13 +20,12 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 
-
 /**
  * The testmod for the Fabric Renderer API. These tests are used to validate that
  * Indigo's implementation is correct, but they may also be useful for other
  * implementations of the Fabric Renderer API.
  *
- * <h3>Tests
+ * <h3>Tests</h3>
  *
  * <ul>
  *     <li>Frame blocks displays another block inside, scaled down and made translucent.

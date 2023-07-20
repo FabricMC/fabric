@@ -16,7 +16,7 @@ public final class Registration {
 	public static final FrameBlock FRAME_MULTIPART_BLOCK = register("frame_multipart", new FrameBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).nonOpaque()));
 	public static final FrameBlock FRAME_VARIANT_BLOCK = register("frame_variant", new FrameBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).nonOpaque()));
 	public static final Block PILLAR_BLOCK = register("pillar", new Block(FabricBlockSettings.create()));
-	public static final Block OCTAGONAL_COLUMN_BLOCK = register("octagonal_column", new Block(FabricBlockSettings.create().nonOpaque()));
+	public static final Block OCTAGONAL_COLUMN_BLOCK = register("octagonal_column", new Block(FabricBlockSettings.create().nonOpaque().strength(1.8F)));
 
 	public static final FrameBlock[] FRAME_BLOCKS = new FrameBlock[] {
 			FRAME_BLOCK,
