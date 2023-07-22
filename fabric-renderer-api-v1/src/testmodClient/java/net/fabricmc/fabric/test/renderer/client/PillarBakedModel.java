@@ -63,21 +63,17 @@ public class PillarBakedModel implements BakedModel {
 
 	@Override
 	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		emitQuads(context.getEmitter(), blockView, state, pos);
-	}
+		QuadEmitter emitter = context.getEmitter();
+		// Do not use the passed state to ensure that this model connects
+		// to and from blocks with a custom appearance correctly.
+		BlockState worldState = blockView.getBlockState(pos);
 
-	@Override
-	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-		emitQuads(context.getEmitter(), null, null, null);
-	}
-
-	private void emitQuads(QuadEmitter emitter, @Nullable BlockRenderView blockView, @Nullable BlockState state, @Nullable BlockPos pos) {
 		for (Direction side : Direction.values()) {
 			ConnectedTexture texture = ConnectedTexture.ALONE;
 
-			if (side.getAxis().isHorizontal() && blockView != null && state != null && pos != null) {
-				boolean connectAbove = canConnect(blockView, pos.offset(Direction.UP), side, state, pos);
-				boolean connectBelow = canConnect(blockView, pos.offset(Direction.DOWN), side, state, pos);
+			if (side.getAxis().isHorizontal()) {
+				boolean connectAbove = canConnect(blockView, worldState, pos, pos.offset(Direction.UP), side);
+				boolean connectBelow = canConnect(blockView, worldState, pos, pos.offset(Direction.DOWN), side);
 
 				if (connectAbove && connectBelow) {
 					texture = ConnectedTexture.MIDDLE;
@@ -95,9 +91,34 @@ public class PillarBakedModel implements BakedModel {
 		}
 	}
 
-	private static boolean canConnect(BlockRenderView blockView, BlockPos pos, Direction side, BlockState sourceState, BlockPos sourcePos) {
+	@Override
+	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+		QuadEmitter emitter = context.getEmitter();
+
+		for (Direction side : Direction.values()) {
+			emitter.square(side, 0, 0, 1, 1, 0);
+			emitter.spriteBake(sprites[ConnectedTexture.ALONE.ordinal()], MutableQuadView.BAKE_LOCK_UV);
+			emitter.color(-1, -1, -1, -1);
+			emitter.emit();
+		}
+	}
+
+	private static boolean canConnect(BlockRenderView blockView, BlockState originState, BlockPos originPos, BlockPos otherPos, Direction side) {
+		BlockState otherState = blockView.getBlockState(otherPos);
 		// In this testmod we can't rely on injected interfaces - in normal mods the (FabricBlockState) cast will be unnecessary
-		return ((FabricBlockState) blockView.getBlockState(pos)).getAppearance(blockView, pos, side, sourceState, sourcePos).isOf(Registration.PILLAR_BLOCK);
+		BlockState originAppearance = ((FabricBlockState) originState).getAppearance(blockView, originPos, side, otherState, otherPos);
+
+		if (!originAppearance.isOf(Registration.PILLAR_BLOCK)) {
+			return false;
+		}
+
+		BlockState otherAppearance = ((FabricBlockState) otherState).getAppearance(blockView, otherPos, side, originState, originPos);
+
+		if (!otherAppearance.isOf(Registration.PILLAR_BLOCK)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override
