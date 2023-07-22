@@ -170,8 +170,8 @@ public final class ModelModifier {
 		 * it is cached.
 		 *
 		 * <p>Note that the passed baked model may be null and that this handler may return a null baked model, since
-		 * {@link UnbakedModel#bake} may also return a null baked model. Null baked models are not cached; if a baked
-		 * model for a particular ID is queried but does not exist in the cache, the missing model is returned.
+		 * {@link UnbakedModel#bake} and {@link Baker#bake} may also return null baked models. Null baked models are
+		 * automatically mapped to the missing model during model retrieval.
 		 *
 		 * <p>For further information, see the docs of {@link ModelLoadingPlugin.Context#modifyModelAfterBake()}.
 		 *
