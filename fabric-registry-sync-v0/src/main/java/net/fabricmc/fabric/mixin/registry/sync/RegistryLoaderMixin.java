@@ -21,9 +21,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Decoder;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -37,10 +40,14 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
+import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistryViewImpl;
 
 @Mixin(RegistryLoader.class)
 public class RegistryLoaderMixin {
+	@Unique
+	private static final ThreadLocal<RegistryKey<?>> REGISTRY_KEY_THREAD_LOCAL = new ThreadLocal<>();
+
 	@Inject(
 			method = "load(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;",
 			at = @At(
@@ -60,13 +67,24 @@ public class RegistryLoaderMixin {
 		DynamicRegistrySetupCallback.EVENT.invoker().onRegistrySetup(new DynamicRegistryViewImpl(registries));
 	}
 
+	@Inject(at = @At("HEAD"), method = "load(Lnet/minecraft/registry/RegistryOps$RegistryInfoGetter;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/registry/MutableRegistry;Lcom/mojang/serialization/Decoder;Ljava/util/Map;)V")
+	private static <E> void captureRegistryKey(RegistryOps.RegistryInfoGetter registryInfoGetter, ResourceManager resourceManager, RegistryKey<? extends Registry<E>> registryKey, MutableRegistry<E> newRegistry, Decoder<E> decoder, Map<RegistryKey<?>, Exception> exceptions, CallbackInfo ci) {
+		REGISTRY_KEY_THREAD_LOCAL.set(registryKey);
+	}
+
 	// Vanilla doesn't mark namespaces in the directories of dynamic registries at all,
-	// so we prepend the directories with the namespace if it's a modded registry id.
+	// so we prepend the directories with the namespace if it's a modded registry registered using the Fabric API.
 	@Inject(method = "getPath", at = @At("RETURN"), cancellable = true)
 	private static void prependDirectoryWithNamespace(Identifier id, CallbackInfoReturnable<String> info) {
-		if (!id.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
-			String newPath = id.getNamespace() + "/" + info.getReturnValue();
+		if (!id.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)
+				&& DynamicRegistriesImpl.FABRIC_DYNAMIC_REGISTRY_KEYS.contains(REGISTRY_KEY_THREAD_LOCAL.get())) {
+			final String newPath = id.getNamespace() + "/" + info.getReturnValue();
 			info.setReturnValue(newPath);
 		}
+	}
+
+	@Inject(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/registry/RegistryLoader;getPath(Lnet/minecraft/util/Identifier;)Ljava/lang/String;"), method = "load(Lnet/minecraft/registry/RegistryOps$RegistryInfoGetter;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/registry/MutableRegistry;Lcom/mojang/serialization/Decoder;Ljava/util/Map;)V")
+	private static <E> void clearRegistryKey(RegistryOps.RegistryInfoGetter registryInfoGetter, ResourceManager resourceManager, RegistryKey<? extends Registry<E>> registryKey, MutableRegistry<E> newRegistry, Decoder<E> decoder, Map<RegistryKey<?>, Exception> exceptions, CallbackInfo ci) {
+		REGISTRY_KEY_THREAD_LOCAL.set(null);
 	}
 }
