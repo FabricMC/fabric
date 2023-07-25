@@ -52,6 +52,7 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
+import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 
 /**
  * A provider to help with data-generation of dynamic registry objects,
@@ -220,7 +221,9 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 
 	private <T> CompletableFuture<?> writeRegistryEntries(DataWriter writer, RegistryOps<JsonElement> ops, RegistryEntries<T> entries) {
 		final RegistryKey<? extends Registry<T>> registry = entries.registry;
-		final DataOutput.PathResolver pathResolver = output.getResolver(DataOutput.OutputType.DATA_PACK, registry.getValue().getPath());
+		final boolean shouldOmitNamespace = registry.getValue().getNamespace().equals(Identifier.DEFAULT_NAMESPACE) || !DynamicRegistriesImpl.FABRIC_DYNAMIC_REGISTRY_KEYS.contains(registry);
+		final String directoryName = shouldOmitNamespace ? registry.getValue().getPath() : registry.getValue().getNamespace() + "/" + registry.getValue().getPath();
+		final DataOutput.PathResolver pathResolver = output.getResolver(DataOutput.OutputType.DATA_PACK, directoryName);
 		final List<CompletableFuture<?>> futures = new ArrayList<>();
 
 		for (Map.Entry<RegistryKey<T>, T> entry : entries.entries.entrySet()) {
