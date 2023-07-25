@@ -279,7 +279,8 @@ public class ModelLoadingEventDispatcher {
 		return model;
 	}
 
-	public BakedModel modifyModelAfterBake(BakedModel model, Identifier id, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+	@Nullable
+	public BakedModel modifyModelAfterBake(@Nullable BakedModel model, Identifier id, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
 		if (afterBakeModifierContextStack.isEmpty()) {
 			afterBakeModifierContextStack.add(new AfterBakeModifierContext());
 		}

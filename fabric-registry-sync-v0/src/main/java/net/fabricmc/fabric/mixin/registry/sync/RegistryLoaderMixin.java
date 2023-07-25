@@ -37,6 +37,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
+import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistryViewImpl;
 
 @Mixin(RegistryLoader.class)
@@ -61,11 +62,12 @@ public class RegistryLoaderMixin {
 	}
 
 	// Vanilla doesn't mark namespaces in the directories of dynamic registries at all,
-	// so we prepend the directories with the namespace if it's a modded registry id.
+	// so we prepend the directories with the namespace if it's a modded registry registered using the Fabric API.
 	@Inject(method = "getPath", at = @At("RETURN"), cancellable = true)
 	private static void prependDirectoryWithNamespace(Identifier id, CallbackInfoReturnable<String> info) {
-		if (!id.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
-			String newPath = id.getNamespace() + "/" + info.getReturnValue();
+		if (!id.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)
+				&& DynamicRegistriesImpl.FABRIC_DYNAMIC_REGISTRY_KEYS.contains(RegistryKey.ofRegistry(id))) {
+			final String newPath = id.getNamespace() + "/" + info.getReturnValue();
 			info.setReturnValue(newPath);
 		}
 	}

@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 import java.util.function.Function;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
@@ -168,6 +169,10 @@ public final class ModelModifier {
 		 * This handler is invoked to allow modification of the baked model instance right after it is baked and before
 		 * it is cached.
 		 *
+		 * <p>Note that the passed baked model may be null and that this handler may return a null baked model, since
+		 * {@link UnbakedModel#bake} and {@link Baker#bake} may also return null baked models. Null baked models are
+		 * automatically mapped to the missing model during model retrieval.
+		 *
 		 * <p>For further information, see the docs of {@link ModelLoadingPlugin.Context#modifyModelAfterBake()}.
 		 *
 		 * @param model the current baked model instance
@@ -175,7 +180,8 @@ public final class ModelModifier {
 		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
 		 * @see ModelLoadingPlugin.Context#modifyModelAfterBake
 		 */
-		BakedModel modifyModelAfterBake(BakedModel model, Context context);
+		@Nullable
+		BakedModel modifyModelAfterBake(@Nullable BakedModel model, Context context);
 
 		/**
 		 * The context for an after bake model modification event.
