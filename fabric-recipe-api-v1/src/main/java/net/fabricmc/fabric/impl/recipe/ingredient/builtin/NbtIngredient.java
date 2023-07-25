@@ -143,7 +143,7 @@ public class NbtIngredient implements CustomIngredient {
 			json.addProperty("strict", ingredient.strict);
 
 			if (ingredient.nbt != null) {
-				json.add("nbt", ingredient.nbt.toString());
+				json.addProperty("nbt", ingredient.nbt.toString());
 			}
 		}
 
