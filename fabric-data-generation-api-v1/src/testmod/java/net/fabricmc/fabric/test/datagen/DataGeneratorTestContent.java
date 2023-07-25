@@ -56,7 +56,6 @@ public class DataGeneratorTestContent implements ModInitializer {
 			TEST_DATAGEN_DYNAMIC_REGISTRY_KEY,
 			new Identifier(MOD_ID, "tiny_potato")
 	);
-	public static final TestDatagenObject TEST_DYNAMIC_REGISTRY_ITEM = new TestDatagenObject(":tiny_potato:");
 
 	@Override
 	public void onInitialize() {
