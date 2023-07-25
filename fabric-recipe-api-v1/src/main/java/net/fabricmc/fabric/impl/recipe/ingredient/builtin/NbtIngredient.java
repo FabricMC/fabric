@@ -97,7 +97,6 @@ public class NbtIngredient implements CustomIngredient {
 	}
 
 	private static class Serializer implements CustomIngredientSerializer<NbtIngredient> {
-		private final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 		private final Identifier id = new Identifier("fabric", "nbt");
 
 		@Override
