@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.test.datagen;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -29,8 +32,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
@@ -48,6 +53,13 @@ public class DataGeneratorTestContent implements ModInitializer {
 			.displayName(Text.translatable("fabric-data-gen-api-v1-testmod.simple_item_group"))
 			.build();
 
+	public static final RegistryKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_REGISTRY_KEY =
+			RegistryKey.ofRegistry(new Identifier("fabric", "test_datagen_dynamic"));
+	public static final RegistryKey<TestDatagenObject> TEST_DYNAMIC_REGISTRY_ITEM_KEY = RegistryKey.of(
+			TEST_DATAGEN_DYNAMIC_REGISTRY_KEY,
+			new Identifier(MOD_ID, "tiny_potato")
+	);
+
 	@Override
 	public void onInitialize() {
 		SIMPLE_BLOCK = createBlock("simple_block", true, AbstractBlock.Settings.of(Material.STONE));
@@ -57,6 +69,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, AbstractBlock.Settings.of(Material.STONE).dropsNothing());
 
 		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.add(SIMPLE_BLOCK));
+		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY, TestDatagenObject.CODEC);
 	}
 
 	private static Block createBlock(String name, boolean hasItem, AbstractBlock.Settings settings) {
@@ -68,5 +81,11 @@ public class DataGeneratorTestContent implements ModInitializer {
 		}
 
 		return block;
+	}
+
+	public record TestDatagenObject(String value) {
+		public static final Codec<TestDatagenObject> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.STRING.fieldOf("value").forGetter(TestDatagenObject::value)
+		).apply(instance, TestDatagenObject::new));
 	}
 }
