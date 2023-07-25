@@ -35,6 +35,7 @@ import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
 public final class DynamicRegistriesImpl {
 	private static final List<RegistryLoader.Entry<?>> DYNAMIC_REGISTRIES = new ArrayList<>(RegistryLoader.DYNAMIC_REGISTRIES);
+	public static final Set<RegistryKey<?>> FABRIC_DYNAMIC_REGISTRY_KEYS = new HashSet<>();
 	public static final Set<RegistryKey<? extends Registry<?>>> DYNAMIC_REGISTRY_KEYS = new HashSet<>();
 	public static final Set<RegistryKey<? extends Registry<?>>> SKIP_EMPTY_SYNC_REGISTRIES = new HashSet<>();
 
@@ -61,6 +62,7 @@ public final class DynamicRegistriesImpl {
 
 		var entry = new RegistryLoader.Entry<>(key, codec);
 		DYNAMIC_REGISTRIES.add(entry);
+		FABRIC_DYNAMIC_REGISTRY_KEYS.add(key);
 	}
 
 	public static <T> void addSyncedRegistry(RegistryKey<? extends Registry<T>> registryKey, Codec<T> networkCodec, DynamicRegistries.SyncOption... options) {
