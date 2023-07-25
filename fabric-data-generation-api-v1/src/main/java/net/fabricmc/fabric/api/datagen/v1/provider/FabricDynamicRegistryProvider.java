@@ -221,7 +221,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 
 	private <T> CompletableFuture<?> writeRegistryEntries(DataWriter writer, RegistryOps<JsonElement> ops, RegistryEntries<T> entries) {
 		final RegistryKey<? extends Registry<T>> registry = entries.registry;
-		final boolean shouldOmitNamespace = registry.getValue().getNamespace().equals(Identifier.DEFAULT_NAMESPACE) || !DynamicRegistriesImpl.DYNAMIC_REGISTRY_KEYS.contains(registry);
+		final boolean shouldOmitNamespace = registry.getValue().getNamespace().equals(Identifier.DEFAULT_NAMESPACE) || !DynamicRegistriesImpl.FABRIC_DYNAMIC_REGISTRY_KEYS.contains(registry);
 		final String directoryName = shouldOmitNamespace ? registry.getValue().getPath() : registry.getValue().getNamespace() + "/" + registry.getValue().getPath();
 		final DataOutput.PathResolver pathResolver = output.getResolver(DataOutput.OutputType.DATA_PACK, directoryName);
 		final List<CompletableFuture<?>> futures = new ArrayList<>();
