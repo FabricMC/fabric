@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Objects;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.serialization.JsonOps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -32,7 +31,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.predicate.NbtPredicate;
@@ -99,7 +97,6 @@ public class NbtIngredient implements CustomIngredient {
 	}
 
 	private static class Serializer implements CustomIngredientSerializer<NbtIngredient> {
-		private final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 		private final Identifier id = new Identifier("fabric", "nbt");
 
 		@Override
@@ -145,7 +142,7 @@ public class NbtIngredient implements CustomIngredient {
 			json.addProperty("strict", ingredient.strict);
 
 			if (ingredient.nbt != null) {
-				json.add("nbt", NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, ingredient.nbt));
+				json.addProperty("nbt", ingredient.nbt.toString());
 			}
 		}
 
