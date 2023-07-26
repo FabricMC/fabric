@@ -581,12 +581,12 @@ def addPomMetadataInformation(Project project, MavenPom pom) {
 }
 
 subprojects {
-	base {
-		archivesName = project.name
-	}
-
 	if (it.name == "deprecated") {
 		return
+	}
+
+	base {
+		archivesName = project.name
 	}
 
 	dependencies {
