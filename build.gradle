@@ -183,13 +183,13 @@ allprojects {
 			testmodClient {
 				client()
 				ideConfigGenerated project.rootProject == project
-				configName = "Testmod Client"
+				name = "Testmod Client"
 				source sourceSets.testmodClient
 			}
 			testmodServer {
 				server()
 				ideConfigGenerated project.rootProject == project
-				configName = "Testmod Server"
+				name = "Testmod Server"
 				source sourceSets.testmod
 			}
 		}
@@ -392,7 +392,7 @@ loom {
 		gametest {
 			inherit testmodServer
 
-			configName = "Game Test"
+			name "Game Test"
 
 			// Enable the gametest runner
 			vmArg "-Dfabric-api.gametest"
@@ -401,25 +401,25 @@ loom {
 		}
 		autoTestServer {
 			inherit testmodServer
-			configName =  "Auto Test Server"
+			name  "Auto Test Server"
 			vmArg "-Dfabric.autoTest"
 		}
 		autoTestClient {
 			inherit testmodClient
-			configName = "Auto Test Client"
+			name "Auto Test Client"
 			vmArg "-Dfabric.autoTest"
 		}
 
 		// Create duplicate tasks for this, as jacoco slows things down a bit
 		gametestCoverage {
 			inherit gametest
-			configName = "Game Test Coverage"
+			name "Game Test Coverage"
 			ideConfigGenerated = false
 		}
 
 		autoTestClientCoverage {
 			inherit autoTestClient
-			configName = "Auto Test Client Coverage"
+			name "Auto Test Client Coverage"
 			ideConfigGenerated = false
 		}
 	}

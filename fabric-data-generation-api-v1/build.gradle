@@ -29,7 +29,7 @@ loom {
 	runs {
 		datagen {
 			inherit testmodServer
-			configName = "Data Generation"
+			name "Data Generation"
 			vmArg "-Dfabric-api.datagen"
 			vmArg "-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}"
 			vmArg "-Dfabric-api.datagen.strict-validation"
@@ -39,7 +39,7 @@ loom {
 		}
 		datagenClient {
 			client()
-			configName = "Data Generation Client"
+			name "Data Generation Client"
 			vmArg "-Dfabric-api.datagen"
 			vmArg "-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}"
 			vmArg "-Dfabric-api.datagen.strict-validation"
