@@ -17,21 +17,18 @@
 package net.fabricmc.fabric.impl.base.event;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 
 /**
  * Data of an {@link ArrayBackedEvent} phase.
  */
-class EventPhaseData<T> {
+class EventPhaseData<T> extends SortableNode<EventPhaseData<T>> {
 	final Identifier id;
 	T[] listeners;
-	final List<EventPhaseData<T>> subsequentPhases = new ArrayList<>();
-	final List<EventPhaseData<T>> previousPhases = new ArrayList<>();
-	int visitStatus = 0; // 0: not visited, 1: visiting, 2: visited
 
 	@SuppressWarnings("unchecked")
 	EventPhaseData(Identifier id, Class<?> listenerClass) {
@@ -43,5 +40,10 @@ class EventPhaseData<T> {
 		int oldLength = listeners.length;
 		listeners = Arrays.copyOf(listeners, oldLength + 1);
 		listeners[oldLength] = listener;
+	}
+
+	@Override
+	protected String getDescription() {
+		return id.toString();
 	}
 }
