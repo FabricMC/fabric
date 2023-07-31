@@ -728,11 +728,11 @@ remapJar {
 
 publishMods {
 	file = signRemapJar.output
-	changelog = ENV.CHANGELOG ?: "No changelog provided"
+	changelog = providers.environmentVariable("CHANGELOG").getOrElse("No changelog provided")
 	type = project.prerelease == "true" ? BETA : STABLE
 	displayName = "[${project.minecraft_version}] Fabric API $project.version"
 	modLoaders.add("fabric")
-	dryRun = ENV.GITHUB_TOKEN == null
+	dryRun = providers.environmentVariable("GITHUB_TOKEN").getOrNull() == null
 
 	curseforge {
 		accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
@@ -746,8 +746,8 @@ publishMods {
 	}
 	github {
 		accessToken = providers.environmentVariable("GITHUB_TOKEN")
-		repository = ENV.CI != null ? providers.environmentVariable("GITHUB_REPOSITORY") : "FabricMC/dryrun"
-		commitish = ENV.CI != null ? getBranch() : "dryrun"
+		repository = providers.environmentVariable("GITHUB_REPOSITORY").getOrElse("FabricMC/dryrun")
+		commitish = providers.environmentVariable("GITHUB_REF_NAME").getOrElse("dryrun")
 	}
 }
 
