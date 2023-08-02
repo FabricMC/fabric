@@ -30,6 +30,17 @@ public class OverlayVertexConsumerMixin {
 	@Unique
 	private static final Direction[] DIRECTIONS = Direction.values();
 
+	/*
+	The original method call is used to get the closest axis-aligned direction of the world-space
+	normal vector for a certain face. The world-space normal vector is computed using matrices
+	that change when the camera values change. Due to precision errors during matrix
+	multiplication, the computed world-space normal of a face will not remain constant, so the
+	closest axis-aligned direction may flicker. This issue only affects faces that are directly
+	between two axis-aligned directions (45 degree faces) or three axis-aligned directions.
+
+	The fix involves requiring the dot product of each axis-aligned direction to be a small
+	amount greater than the previous maximum dot product to be set as the new maximum.
+	 */
 	@Redirect(method = "next()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Direction;getFacing(FFF)Lnet/minecraft/util/math/Direction;"))
 	private Direction redirectGetFacing(float x, float y, float z) {
 		Direction closestDir = Direction.NORTH;

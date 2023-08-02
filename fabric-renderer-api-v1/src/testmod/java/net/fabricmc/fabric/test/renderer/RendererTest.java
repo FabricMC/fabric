@@ -28,16 +28,15 @@ import net.fabricmc.api.ModInitializer;
  * <h3>Tests</h3>
  *
  * <ul>
- *     <li>Frame blocks displays another block inside, scaled down and made translucent.
- *     Blocks that provide a block entity cannot be placed inside frames. This also tests
- *     that mesh builders and meshes work properly.
+ *     <li>Frame blocks display another block inside, scaled down and made translucent.
+ *     Blocks that provide a block entity cannot be placed inside frames.
  *
  *     <li>Pillars connect vertically with each other by changing textures. They also
  *     connect vertically to frame blocks containing a pillar, and vice versa.
  *
  *     <li>Octagonal columns have irregular faces to test enhanced AO and normal shade. The
  *     octagonal item column has glint force enabled on all faces except the top and bottom
- *     faces. This also tests that mesh builders and meshes work properly.
+ *     faces.
  * </ul>
  */
 public final class RendererTest implements ModInitializer {
