@@ -1,4 +1,3 @@
-archivesBaseName = "fabric-sound-api-v1"
 version = getSubprojectVersion(project)
 
 testDependencies(project, [

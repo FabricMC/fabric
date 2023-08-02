@@ -1,4 +1,3 @@
-archivesBaseName = "fabric-api-base"
 version = getSubprojectVersion(project)
 
 testDependencies(project, [
