@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
@@ -79,9 +80,18 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			// Mod resource packs must always be enabled to avoid issues, and they are inserted
 			// on top to ensure that they are applied after vanilla built-in resource packs.
 			MutableText title = Text.translatable("pack.name.fabricMods");
-			ResourcePackProfile resourcePackProfile = ResourcePackProfile.create("fabric", title,
-					true, factory -> new FabricModResourcePack(this.type, packs), type, ResourcePackProfile.InsertionPosition.TOP,
-					RESOURCE_PACK_SOURCE);
+			ResourcePackProfile resourcePackProfile = ResourcePackProfile.create("fabric", title, true, new ResourcePackProfile.PackFactory() {
+				@Override
+				public ResourcePack open(String name) {
+					return new FabricModResourcePack(type, packs);
+				}
+
+				@Override
+				public ResourcePack method_52425(String string, ResourcePackProfile.Metadata metadata) {
+					// TODO 1.20.2 is this correct?
+					return new FabricModResourcePack(type, packs);
+				}
+			}, type, ResourcePackProfile.InsertionPosition.TOP, RESOURCE_PACK_SOURCE);
 
 			if (resourcePackProfile != null) {
 				consumer.accept(resourcePackProfile);

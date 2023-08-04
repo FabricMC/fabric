@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.resource.loader.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.resource.ResourcePack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -51,7 +52,18 @@ public class DefaultClientResourcePackProviderMixin {
 	)
 	private ResourcePackProfile.PackFactory onCreateVanillaBuiltinResourcePack(String name, Text displayName, boolean alwaysEnabled,
 			ResourcePackProfile.PackFactory packFactory, ResourceType type, ResourcePackProfile.InsertionPosition position, ResourcePackSource source) {
-		return factory -> new FabricWrappedVanillaResourcePack((AbstractFileResourcePack) packFactory.open(name), getModResourcePacks(name));
+		return new ResourcePackProfile.PackFactory() {
+			@Override
+			public ResourcePack open(String name) {
+				return new FabricWrappedVanillaResourcePack((AbstractFileResourcePack) packFactory.open(name), getModResourcePacks(name));
+			}
+
+			@Override
+			public ResourcePack method_52425(String string, ResourcePackProfile.Metadata metadata) {
+				// TODO 1.20.2 is this correct?
+				return open(name);
+			}
+		};
 	}
 
 	/**

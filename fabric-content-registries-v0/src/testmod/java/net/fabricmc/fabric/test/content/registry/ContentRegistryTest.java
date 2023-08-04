@@ -64,7 +64,7 @@ public final class ContentRegistryTest implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);
 
 	public static final Identifier TEST_EVENT_ID = new Identifier("fabric-content-registries-v0-testmod", "test_event");
-	public static final GameEvent TEST_EVENT = new GameEvent(TEST_EVENT_ID.toString(), GameEvent.DEFAULT_RANGE);
+	public static final GameEvent TEST_EVENT = new GameEvent(GameEvent.DEFAULT_RANGE);
 
 	@Override
 	public void onInitialize() {
@@ -87,6 +87,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - instant health potions can be brewed from awkward potions with any item in the 'minecraft:small_flowers' tag
 		//  - dirty potions can be brewed by adding any item in the 'minecraft:dirt' tag to any standard potion
 
+		Registry.register(Registries.GAME_EVENT, TEST_EVENT_ID, TEST_EVENT);
 		CompostingChanceRegistry.INSTANCE.add(Items.OBSIDIAN, 0.5F);
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.DIAMOND_BLOCK, 4, 4);
 		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);

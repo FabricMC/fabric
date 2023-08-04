@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.google.common.collect.Lists;
+import net.minecraft.resource.ResourcePack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,15 +112,18 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 			// Add the built-in pack only if namespaces for the specified resource type are present.
 			if (!pack.getNamespaces(resourceType).isEmpty()) {
 				// Make the resource pack profile for built-in pack, should never be always enabled.
-				ResourcePackProfile profile = ResourcePackProfile.create(
-						entry.getRight().getName(),
-						entry.getLeft(),
-						pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED,
-						ignored -> entry.getRight(),
-						resourceType,
-						ResourcePackProfile.InsertionPosition.TOP,
-						new BuiltinModResourcePackSource(pack.getFabricModMetadata().getName())
-				);
+				ResourcePackProfile profile = ResourcePackProfile.create(entry.getRight().getName(), entry.getLeft(), pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED, new ResourcePackProfile.PackFactory() {
+					@Override
+					public ResourcePack open(String name) {
+						return entry.getRight();
+					}
+
+					@Override
+					public ResourcePack method_52425(String string, ResourcePackProfile.Metadata metadata) {
+						// TODO 1.20.2 is this correct?
+						return entry.getRight();
+					}
+				}, resourceType, ResourcePackProfile.InsertionPosition.TOP, new BuiltinModResourcePackSource(pack.getFabricModMetadata().getName()));
 				consumer.accept(profile);
 			}
 		}

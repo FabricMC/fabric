@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.registry;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.minecraft.registry.Registries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,14 +50,14 @@ public final class SculkSensorFrequencyRegistry {
 	 */
 	public static void register(GameEvent event, int frequency) {
 		if (frequency <= 0 || frequency >= 16) {
-			throw new IllegalArgumentException("Attempted to register Sculk Sensor frequency for event "+event.getId()+" with frequency "+frequency+". Sculk Sensor frequencies must be between 1 and 15 inclusive.");
+			throw new IllegalArgumentException("Attempted to register Sculk Sensor frequency for event "+ Registries.GAME_EVENT.getId(event) +" with frequency "+frequency+". Sculk Sensor frequencies must be between 1 and 15 inclusive.");
 		}
 
 		final Object2IntOpenHashMap<GameEvent> map = (Object2IntOpenHashMap<GameEvent>) Vibrations.FREQUENCIES;
 		int replaced = map.put(event, frequency);
 
 		if (replaced != 0) {
-			LOGGER.debug("Replaced old frequency mapping for {} - was {}, now {}", event.getId(), replaced, frequency);
+			LOGGER.debug("Replaced old frequency mapping for {} - was {}, now {}", Registries.GAME_EVENT.getId(event), replaced, frequency);
 		}
 	}
 }

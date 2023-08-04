@@ -21,10 +21,10 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -87,7 +87,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		buf.writeByte(syncId);
 
 		writer.accept(buf);
-		player.networkHandler.sendPacket(new CustomPayloadS2CPacket(OPEN_CONTAINER, buf));
+		player.networkHandler.sendPacket(ServerPlayNetworking.createS2CPacket(OPEN_CONTAINER, buf));
 
 		PacketByteBuf clonedBuf = new PacketByteBuf(buf.duplicate());
 		clonedBuf.readIdentifier();
