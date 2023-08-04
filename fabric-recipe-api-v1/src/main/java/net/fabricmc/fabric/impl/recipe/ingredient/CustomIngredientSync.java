@@ -23,7 +23,7 @@ import io.netty.channel.ChannelHandler;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.PacketEncoder;
+import net.minecraft.network.handler.PacketEncoder;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;

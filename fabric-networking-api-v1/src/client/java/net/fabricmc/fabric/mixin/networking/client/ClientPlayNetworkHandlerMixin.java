@@ -16,33 +16,34 @@
 
 package net.fabricmc.fabric.mixin.networking.client;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientCommonNetworkHandler;
+import net.minecraft.client.network.ClientConnectionState;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
+import net.minecraft.network.ClientConnection;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
-import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.PacketByteBufPayload;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
 @Mixin(value = ClientPlayNetworkHandler.class, priority = 999)
-abstract class ClientPlayNetworkHandlerMixin implements NetworkHandlerExtensions {
-	@Final
-	@Shadow
-	private MinecraftClient client;
-
+abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkHandler implements NetworkHandlerExtensions {
 	@Unique
 	private ClientPlayNetworkAddon addon;
+
+	protected ClientPlayNetworkHandlerMixin(MinecraftClient client, ClientConnection connection, ClientConnectionState connectionState) {
+		super(client, connection, connectionState);
+	}
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddon(CallbackInfo ci) {
@@ -58,15 +59,10 @@ abstract class ClientPlayNetworkHandlerMixin implements NetworkHandlerExtensions
 	}
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-	private void handleCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
-		if (this.addon.handle(packet)) {
+	private void handleCustomPayload(CustomPayload payload, CallbackInfo ci) {
+		if (payload instanceof PacketByteBufPayload byteBufPayload && this.addon.handle(byteBufPayload)) {
 			ci.cancel();
 		}
-	}
-
-	@Inject(method = "onDisconnected", at = @At("HEAD"))
-	private void handleDisconnection(Text reason, CallbackInfo ci) {
-		this.addon.handleDisconnect();
 	}
 
 	@Override

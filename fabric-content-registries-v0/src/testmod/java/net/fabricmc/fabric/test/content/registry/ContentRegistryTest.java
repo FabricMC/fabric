@@ -87,7 +87,6 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - instant health potions can be brewed from awkward potions with any item in the 'minecraft:small_flowers' tag
 		//  - dirty potions can be brewed by adding any item in the 'minecraft:dirt' tag to any standard potion
 
-		Registry.register(Registries.GAME_EVENT, TEST_EVENT_ID, TEST_EVENT);
 		CompostingChanceRegistry.INSTANCE.add(Items.OBSIDIAN, 0.5F);
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.DIAMOND_BLOCK, 4, 4);
 		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);

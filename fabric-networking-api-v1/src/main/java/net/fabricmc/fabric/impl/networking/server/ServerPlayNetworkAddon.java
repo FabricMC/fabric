@@ -20,9 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.network.packet.Packet;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
@@ -33,8 +32,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.mixin.networking.accessor.CustomPayloadC2SPacketAccessor;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerPlayNetworkHandlerAccessor;
+import net.fabricmc.fabric.impl.networking.PacketByteBufPayload;
+import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
 public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerPlayNetworking.PlayChannelHandler> {
 	private final ServerPlayNetworkHandler handler;
@@ -42,7 +41,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	private boolean sentInitialRegisterPacket;
 
 	public ServerPlayNetworkAddon(ServerPlayNetworkHandler handler, MinecraftServer server) {
-		super(ServerNetworkingImpl.PLAY, ((ServerPlayNetworkHandlerAccessor) handler).getConnection(), "ServerPlayNetworkAddon for " + handler.player.getEntityName());
+		super(ServerNetworkingImpl.PLAY, ((ServerCommonNetworkHandlerAccessor) handler).getConnection(), "ServerPlayNetworkAddon for " + handler.player.getEntityName());
 		this.handler = handler;
 		this.server = server;
 
@@ -72,12 +71,11 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	/**
 	 * Handles an incoming packet.
 	 *
-	 * @param packet the packet to handle
+	 * @param payload the payload to handle
 	 * @return true if the packet has been handled
 	 */
-	public boolean handle(CustomPayloadC2SPacket packet) {
-		CustomPayloadC2SPacketAccessor access = (CustomPayloadC2SPacketAccessor) packet;
-		return this.handle(access.getChannel(), access.getData());
+	public boolean handle(PacketByteBufPayload payload) {
+		return this.handle(payload.id(), payload.data());
 	}
 
 	@Override

@@ -101,7 +101,7 @@ abstract class ClientPlayNetworkHandlerMixin {
 			method = "onSynchronizeTags",
 			at = @At(
 					value = "INVOKE",
-					target = "java/util/Map.forEach(Ljava/util/function/BiConsumer;)V",
+					target = "Lnet/minecraft/client/network/ClientCommonNetworkHandler;onSynchronizeTags(Lnet/minecraft/network/packet/s2c/common/SynchronizeTagsS2CPacket;)V",
 					shift = At.Shift.AFTER, by = 1
 			)
 	)

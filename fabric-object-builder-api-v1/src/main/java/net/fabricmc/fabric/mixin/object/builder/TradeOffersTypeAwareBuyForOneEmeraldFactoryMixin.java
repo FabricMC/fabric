@@ -27,10 +27,11 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.registry.DefaultedRegistry;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOffers;
+import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerType;
 
 @Mixin(TradeOffers.TypeAwareBuyForOneEmeraldFactory.class)
@@ -50,7 +51,7 @@ public abstract class TradeOffersTypeAwareBuyForOneEmeraldFactoryMixin {
 	 * To prevent "item" -> "air" trades, if the result of a type aware trade is air, make sure no offer is created.
 	 */
 	@Inject(method = "create", at = @At(value = "NEW", target = "net/minecraft/village/TradeOffer"), locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
-	private void failOnNullItem(Entity entity, Random random, CallbackInfoReturnable<TradeOffer> cir, ItemStack buyingItem) {
+	private void failOnNullItem(Entity entity, Random random, CallbackInfoReturnable<TradeOffer> cir, VillagerDataContainer villagerDataContainer, ItemStack buyingItem) {
 		if (buyingItem.isEmpty()) { // Will return true for an "empty" item stack that had null passed in the ctor
 			cir.setReturnValue(null); // Return null to prevent creation of empty trades
 		}

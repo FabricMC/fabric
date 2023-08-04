@@ -8,10 +8,8 @@
     "PlayerManagerMixin",
     "ServerLoginNetworkHandlerMixin",
     "ServerPlayNetworkHandlerMixin",
-    "accessor.CustomPayloadC2SPacketAccessor",
     "accessor.EntityTrackerAccessor",
-    "accessor.LoginQueryResponseC2SPacketAccessor",
-    "accessor.ServerPlayNetworkHandlerAccessor",
+    "accessor.ServerCommonNetworkHandlerAccessor",
     "accessor.ServerLoginNetworkHandlerAccessor",
     "accessor.ThreadedAnvilChunkStorageAccessor"
   ],

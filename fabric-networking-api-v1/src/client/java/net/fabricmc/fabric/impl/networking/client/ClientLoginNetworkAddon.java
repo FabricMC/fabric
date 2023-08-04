@@ -38,6 +38,8 @@ import net.fabricmc.fabric.api.networking.v1.FutureListeners;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
 import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
+import net.fabricmc.fabric.impl.networking.PacketByteBufLoginQueryRequestPayload;
+import net.fabricmc.fabric.impl.networking.PacketByteBufLoginQueryResponse;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientLoginNetworkHandlerAccessor;
 
 public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLoginNetworking.LoginQueryRequestHandler> {
@@ -55,7 +57,8 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 	}
 
 	public boolean handlePacket(LoginQueryRequestS2CPacket packet) {
-		return handlePacket(packet.getQueryId(), packet.getChannel(), packet.getPayload());
+		PacketByteBufLoginQueryRequestPayload payload = (PacketByteBufLoginQueryRequestPayload) packet.payload();
+		return handlePacket(packet.queryId(), packet.payload().id(), payload.data());
 	}
 
 	private boolean handlePacket(int queryId, Identifier channelName, PacketByteBuf originalBuf) {
@@ -83,7 +86,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 		try {
 			CompletableFuture<@Nullable PacketByteBuf> future = handler.receive(this.client, this.handler, buf, futureListeners::add);
 			future.thenAccept(result -> {
-				LoginQueryResponseC2SPacket packet = new LoginQueryResponseC2SPacket(queryId, result);
+				LoginQueryResponseC2SPacket packet = new LoginQueryResponseC2SPacket(queryId, new PacketByteBufLoginQueryResponse(result));
 				GenericFutureListener<? extends Future<? super Void>> listener = null;
 
 				for (GenericFutureListener<? extends Future<? super Void>> each : futureListeners) {

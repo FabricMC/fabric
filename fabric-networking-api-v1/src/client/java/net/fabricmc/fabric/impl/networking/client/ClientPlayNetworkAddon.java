@@ -25,9 +25,8 @@ import org.slf4j.Logger;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
@@ -36,6 +35,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
+import net.fabricmc.fabric.impl.networking.PacketByteBufPayload;
 
 public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientPlayNetworking.PlayChannelHandler> {
 	private final ClientPlayNetworkHandler handler;
@@ -80,16 +80,14 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	/**
 	 * Handles an incoming packet.
 	 *
-	 * @param packet the packet to handle
+	 * @param payload the payload to handle
 	 * @return true if the packet has been handled
 	 */
-	public boolean handle(CustomPayloadS2CPacket packet) {
-		PacketByteBuf buf = packet.getData();
-
+	public boolean handle(PacketByteBufPayload payload) {
 		try {
-			return this.handle(packet.getChannel(), buf);
+			return this.handle(payload.id(), payload.data());
 		} finally {
-			buf.release();
+			payload.data().release();
 		}
 	}
 

@@ -19,15 +19,11 @@ package net.fabricmc.fabric.mixin.networking.accessor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.ClientConnection;
+import net.minecraft.server.network.ServerCommonNetworkHandler;
 
-@Mixin(CustomPayloadC2SPacket.class)
-public interface CustomPayloadC2SPacketAccessor {
+@Mixin(ServerCommonNetworkHandler.class)
+public interface ServerCommonNetworkHandlerAccessor {
 	@Accessor
-	Identifier getChannel();
-
-	@Accessor
-	PacketByteBuf getData();
+	ClientConnection getConnection();
 }
