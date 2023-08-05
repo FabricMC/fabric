@@ -25,15 +25,13 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.login.LoginQueryResponse;
 import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
+import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
 
 @Mixin(LoginQueryResponseC2SPacket.class)
 public class LoginQueryResponseC2SPacketMixin {
 	@Inject(method = "readResponse", at = @At("HEAD"), cancellable = true)
 	private static void readResponse(int queryId, PacketByteBuf buf, CallbackInfoReturnable<LoginQueryResponse> cir) {
-		PacketByteBuf copy = PacketByteBufs.copy(buf);
-		buf.skipBytes(buf.readableBytes());
-		cir.setReturnValue(new PacketByteBufLoginQueryResponse(copy));
+		cir.setReturnValue(new PacketByteBufLoginQueryResponse(PayloadHelper.read(buf)));
 	}
 }

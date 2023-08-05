@@ -22,6 +22,6 @@ import net.minecraft.network.packet.c2s.login.LoginQueryResponse;
 public record PacketByteBufLoginQueryResponse(PacketByteBuf data) implements LoginQueryResponse {
 	@Override
 	public void write(PacketByteBuf buf) {
-		buf.writeBytes(this.data());
+		PayloadHelper.write(buf, data());
 	}
 }

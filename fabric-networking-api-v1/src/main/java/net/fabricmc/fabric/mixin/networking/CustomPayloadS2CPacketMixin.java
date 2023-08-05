@@ -26,8 +26,8 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
+import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
 
 @Mixin(CustomPayloadS2CPacket.class)
 public class CustomPayloadS2CPacketMixin {
@@ -37,8 +37,6 @@ public class CustomPayloadS2CPacketMixin {
 			cancellable = true
 	)
 	private static void readPayload(Identifier id, PacketByteBuf buf, CallbackInfoReturnable<CustomPayload> cir) {
-		PacketByteBuf copy = PacketByteBufs.copy(buf);
-		buf.skipBytes(buf.readableBytes());
-		cir.setReturnValue(new PacketByteBufPayload(id, copy));
+		cir.setReturnValue(new PacketByteBufPayload(id, PayloadHelper.read(buf)));
 	}
 }

@@ -33,6 +33,7 @@ import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
+import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
 public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerPlayNetworking.PlayChannelHandler> {
@@ -75,7 +76,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	 * @return true if the packet has been handled
 	 */
 	public boolean handle(PacketByteBufPayload payload) {
-		return this.handle(payload.id(), payload.data());
+		return this.handle(payload.id(), PayloadHelper.reset(payload.data()));
 	}
 
 	@Override

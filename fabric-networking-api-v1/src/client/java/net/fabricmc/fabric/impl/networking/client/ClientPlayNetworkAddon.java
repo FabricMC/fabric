@@ -36,6 +36,7 @@ import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
+import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
 
 public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientPlayNetworking.PlayChannelHandler> {
 	private final ClientPlayNetworkHandler handler;
@@ -85,7 +86,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	 */
 	public boolean handle(PacketByteBufPayload payload) {
 		try {
-			return this.handle(payload.id(), payload.data());
+			return this.handle(payload.id(), PayloadHelper.reset(payload.data()));
 		} finally {
 			payload.data().release();
 		}

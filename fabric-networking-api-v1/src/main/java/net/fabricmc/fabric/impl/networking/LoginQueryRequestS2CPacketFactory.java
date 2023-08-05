@@ -21,8 +21,8 @@ import net.minecraft.network.packet.s2c.login.LoginQueryRequestPayload;
 import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
+import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
 
 public class LoginQueryRequestS2CPacketFactory {
 	public static LoginQueryRequestS2CPacket create(PacketByteBuf buf) {
@@ -30,8 +30,6 @@ public class LoginQueryRequestS2CPacketFactory {
 	}
 
 	private static LoginQueryRequestPayload readPayload(Identifier id, PacketByteBuf buf) {
-		PacketByteBuf copy = PacketByteBufs.copy(buf);
-		buf.skipBytes(buf.readableBytes());
-		return new PacketByteBufLoginQueryRequestPayload(id, copy);
+		return new PacketByteBufLoginQueryRequestPayload(id, PayloadHelper.read(buf));
 	}
 }

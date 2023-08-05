@@ -39,6 +39,7 @@ import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
 import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
+import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientLoginNetworkHandlerAccessor;
 
 public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLoginNetworking.LoginQueryRequestHandler> {
@@ -57,7 +58,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 
 	public boolean handlePacket(LoginQueryRequestS2CPacket packet) {
 		PacketByteBufLoginQueryRequestPayload payload = (PacketByteBufLoginQueryRequestPayload) packet.payload();
-		return handlePacket(packet.queryId(), packet.payload().id(), payload.data());
+		return handlePacket(packet.queryId(), packet.payload().id(), PayloadHelper.reset(payload.data()));
 	}
 
 	private boolean handlePacket(int queryId, Identifier channelName, PacketByteBuf buf) {

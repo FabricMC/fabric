@@ -23,6 +23,6 @@ import net.minecraft.util.Identifier;
 public record PacketByteBufLoginQueryRequestPayload(Identifier id, PacketByteBuf data) implements LoginQueryRequestPayload {
 	@Override
 	public void write(PacketByteBuf buf) {
-		buf.writeBytes(this.data());
+		PayloadHelper.write(buf, data());
 	}
 }
