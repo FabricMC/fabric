@@ -31,6 +31,7 @@ import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkAddon;
+import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
 
 @Mixin(ClientLoginNetworkHandler.class)
 abstract class ClientLoginNetworkHandlerMixin implements NetworkHandlerExtensions {
@@ -48,8 +49,12 @@ abstract class ClientLoginNetworkHandlerMixin implements NetworkHandlerExtension
 
 	@Inject(method = "onQueryRequest", at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", remap = false, shift = At.Shift.AFTER), cancellable = true)
 	private void handleQueryRequest(LoginQueryRequestS2CPacket packet, CallbackInfo ci) {
-		if (this.addon.handlePacket(packet)) {
-			ci.cancel();
+		if (packet.payload() instanceof PacketByteBufLoginQueryRequestPayload payload) {
+			if (this.addon.handlePacket(packet)) {
+				ci.cancel();
+			} else {
+				payload.data().skipBytes(payload.data().readableBytes());
+			}
 		}
 	}
 

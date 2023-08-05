@@ -51,14 +51,6 @@ abstract class ServerPlayNetworkHandlerMixin extends ServerCommonNetworkHandler 
 		this.addon.lateInit();
 	}
 
-	// TODO call from ServerCommonNetworkHandler but with the addon here?
-//	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-//	private void handleCustomPayloadReceivedAsync(CustomPayloadC2SPacket packet, CallbackInfo ci) {
-//		if (this.addon.handle(packet)) {
-//			ci.cancel();
-//		}
-//	}
-
 	@Inject(method = "onDisconnected", at = @At("HEAD"))
 	private void handleDisconnection(Text reason, CallbackInfo ci) {
 		this.addon.handleDisconnect();

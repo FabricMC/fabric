@@ -37,6 +37,7 @@ import net.minecraft.text.Text;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
+import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
 
 @Mixin(ServerLoginNetworkHandler.class)
@@ -66,9 +67,13 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 
 	@Inject(method = "onQueryResponse", at = @At("HEAD"), cancellable = true)
 	private void handleCustomPayloadReceivedAsync(LoginQueryResponseC2SPacket packet, CallbackInfo ci) {
-		// Handle queries
-		if (this.addon.handle(packet)) {
-			ci.cancel();
+		if (packet.response() instanceof PacketByteBufLoginQueryResponse byteBufPayload) {
+			// Handle queries
+			if (this.addon.handle(packet)) {
+				ci.cancel();
+			} else {
+				byteBufPayload.data().skipBytes(byteBufPayload.data().readableBytes());
+			}
 		}
 	}
 

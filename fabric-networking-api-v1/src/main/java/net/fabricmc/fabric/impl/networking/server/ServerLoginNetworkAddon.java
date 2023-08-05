@@ -46,8 +46,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
 import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
-import net.fabricmc.fabric.impl.networking.PacketByteBufLoginQueryRequestPayload;
-import net.fabricmc.fabric.impl.networking.PacketByteBufLoginQueryResponse;
+import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
+import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
 public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLoginNetworking.LoginQueryResponseHandler> implements PacketSender {
@@ -129,7 +129,6 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	 * @return true if the packet was handled
 	 */
 	public boolean handle(LoginQueryResponseC2SPacket packet) {
-		// TODO 1.20.2 likely an unsafe cast.
 		PacketByteBufLoginQueryResponse response = (PacketByteBufLoginQueryResponse) packet.response();
 		return handle(packet.queryId(), response.data());
 	}

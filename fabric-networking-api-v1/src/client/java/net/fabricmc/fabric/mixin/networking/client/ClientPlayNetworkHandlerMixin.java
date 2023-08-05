@@ -31,7 +31,7 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
-import net.fabricmc.fabric.impl.networking.PacketByteBufPayload;
+import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 
@@ -60,8 +60,12 @@ abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkHandler 
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
 	private void handleCustomPayload(CustomPayload payload, CallbackInfo ci) {
-		if (payload instanceof PacketByteBufPayload byteBufPayload && this.addon.handle(byteBufPayload)) {
-			ci.cancel();
+		if (payload instanceof PacketByteBufPayload byteBufPayload) {
+			if (this.addon.handle(byteBufPayload)) {
+				ci.cancel();
+			} else {
+				byteBufPayload.data().skipBytes(byteBufPayload.data().readableBytes());
+			}
 		}
 	}
 

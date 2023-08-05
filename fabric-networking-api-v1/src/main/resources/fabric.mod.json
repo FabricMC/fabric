@@ -23,6 +23,7 @@
       "net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl::clientInit"
     ]
   },
+  "accessWidener": "fabric-networking-api-v1.accesswidener",
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*"

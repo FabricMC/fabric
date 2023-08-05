@@ -19,18 +19,17 @@ package net.fabricmc.fabric.mixin.networking;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.network.ClientConnection;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
+import net.minecraft.network.packet.s2c.login.UnknownLoginQueryRequestPayload;
+import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
-
-@Mixin(PlayerManager.class)
-abstract class PlayerManagerMixin {
-	@Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/PlayerAbilitiesS2CPacket;<init>(Lnet/minecraft/entity/player/PlayerAbilities;)V"))
-	private void handlePlayerConnection(ClientConnection connection, ServerPlayerEntity player, int latency, CallbackInfo ci) {
-		ServerNetworkingImpl.getAddon(player.networkHandler).onClientReady();
+@Mixin(LoginQueryRequestS2CPacket.class)
+public class LoginQueryRequestS2CPacketMixin {
+	@Inject(method = "readPayload", at = @At("HEAD"))
+	private static void readPayload(Identifier id, PacketByteBuf buf, CallbackInfoReturnable<UnknownLoginQueryRequestPayload> cir) {
+		throw new IllegalStateException("Must use LoginQueryRequestS2CPacketFactory");
 	}
 }

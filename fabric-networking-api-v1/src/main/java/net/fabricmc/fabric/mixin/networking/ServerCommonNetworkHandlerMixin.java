@@ -14,22 +14,30 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.networking.client;
+package net.fabricmc.fabric.mixin.networking;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.network.ClientCommonNetworkHandler;
-import net.minecraft.text.Text;
+import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
+import net.minecraft.server.network.ServerCommonNetworkHandler;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
+import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkAddon;
 
-@Mixin(ClientCommonNetworkHandler.class)
-public abstract class ClientCommonNetworkHandlerMixin implements NetworkHandlerExtensions {
-	@Inject(method = "onDisconnected", at = @At("HEAD"))
-	private void handleDisconnection(Text reason, CallbackInfo ci) {
-		this.getAddon().handleDisconnect();
+@Mixin(ServerCommonNetworkHandler.class)
+public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerExtensions {
+	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
+	private void handleCustomPayloadReceivedAsync(CustomPayloadC2SPacket packet, CallbackInfo ci) {
+		if (packet.payload() instanceof PacketByteBufPayload byteBufPayload) {
+			if (((ServerPlayNetworkAddon) getAddon()).handle(byteBufPayload)) {
+				ci.cancel();
+			} else {
+				byteBufPayload.data().skipBytes(byteBufPayload.data().readableBytes());
+			}
+		}
 	}
 }
