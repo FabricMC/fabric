@@ -87,7 +87,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 				}
 
 				@Override
-				public ResourcePack method_52425(String string, ResourcePackProfile.Metadata metadata) {
+				public ResourcePack openWithOverlays(String string, ResourcePackProfile.Metadata metadata) {
 					// TODO 1.20.2 is this correct?
 					return new FabricModResourcePack(type, packs);
 				}

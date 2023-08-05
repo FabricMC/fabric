@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.networking.payload;
+package net.fabricmc.fabric.mixin.networking.client.accessor;
 
-import net.minecraft.network.PacketByteBuf;
+import com.mojang.authlib.GameProfile;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 
-public class PayloadHelper {
-	public static void write(PacketByteBuf byteBuf, PacketByteBuf data) {
-		byteBuf.writeBytes(data.copy());
-	}
-
-	public static PacketByteBuf read(PacketByteBuf byteBuf) {
-		PacketByteBuf newBuf = PacketByteBufs.create();
-		newBuf.writeBytes(byteBuf.copy());
-		byteBuf.skipBytes(byteBuf.readableBytes());
-		return newBuf;
-	}
+@Mixin(ClientConfigurationNetworkHandler.class)
+public interface ClientConfigurationNetworkHandlerAccessor {
+	@Accessor
+	GameProfile getProfile();
 }

@@ -19,13 +19,13 @@ package net.fabricmc.fabric.mixin.resource.loader.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.resource.ResourcePack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import net.minecraft.client.resource.DefaultClientResourcePackProvider;
 import net.minecraft.resource.AbstractFileResourcePack;
+import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
@@ -59,7 +59,7 @@ public class DefaultClientResourcePackProviderMixin {
 			}
 
 			@Override
-			public ResourcePack method_52425(String string, ResourcePackProfile.Metadata metadata) {
+			public ResourcePack openWithOverlays(String string, ResourcePackProfile.Metadata metadata) {
 				// TODO 1.20.2 is this correct?
 				return open(name);
 			}

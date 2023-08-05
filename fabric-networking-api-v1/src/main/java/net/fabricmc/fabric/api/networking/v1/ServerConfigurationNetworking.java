@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.networking.payload;
+package net.fabricmc.fabric.api.networking.v1;
 
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-
-public class PayloadHelper {
-	public static void write(PacketByteBuf byteBuf, PacketByteBuf data) {
-		byteBuf.writeBytes(data.copy());
-	}
-
-	public static PacketByteBuf read(PacketByteBuf byteBuf) {
-		PacketByteBuf newBuf = PacketByteBufs.create();
-		newBuf.writeBytes(byteBuf.copy());
-		byteBuf.skipBytes(byteBuf.readableBytes());
-		return newBuf;
+public final class ServerConfigurationNetworking {
+	@FunctionalInterface
+	public interface ConfigurationChannelHandler {
+		void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender);
 	}
 }

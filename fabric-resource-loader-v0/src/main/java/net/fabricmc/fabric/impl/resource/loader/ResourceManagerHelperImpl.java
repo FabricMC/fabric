@@ -29,10 +29,10 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.google.common.collect.Lists;
-import net.minecraft.resource.ResourcePack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
@@ -119,7 +119,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 					}
 
 					@Override
-					public ResourcePack method_52425(String string, ResourcePackProfile.Metadata metadata) {
+					public ResourcePack openWithOverlays(String string, ResourcePackProfile.Metadata metadata) {
 						// TODO 1.20.2 is this correct?
 						return entry.getRight();
 					}

@@ -12,6 +12,7 @@
     "NetworkStateInternalPacketHandlerMixin",
     "PlayerManagerMixin",
     "ServerCommonNetworkHandlerMixin",
+    "ServerConfigurationNetworkHandlerMixin",
     "ServerLoginNetworkHandlerMixin",
     "ServerPlayNetworkHandlerMixin",
     "accessor.EntityTrackerAccessor",
