@@ -26,7 +26,9 @@ import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
 
 public class LoginQueryRequestS2CPacketFactory {
 	public static LoginQueryRequestS2CPacket create(PacketByteBuf buf) {
-		return new LoginQueryRequestS2CPacket(buf.readVarInt(), readPayload(buf.readIdentifier(), buf));
+		int queryId = buf.readVarInt();
+		Identifier identifier = buf.readIdentifier();
+		return new LoginQueryRequestS2CPacket(queryId, readPayload(identifier, buf));
 	}
 
 	private static LoginQueryRequestPayload readPayload(Identifier id, PacketByteBuf buf) {

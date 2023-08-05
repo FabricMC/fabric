@@ -35,11 +35,11 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.FutureListeners;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
 import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
-import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientLoginNetworkHandlerAccessor;
 
 public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLoginNetworking.LoginQueryRequestHandler> {
@@ -58,10 +58,10 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 
 	public boolean handlePacket(LoginQueryRequestS2CPacket packet) {
 		PacketByteBufLoginQueryRequestPayload payload = (PacketByteBufLoginQueryRequestPayload) packet.payload();
-		return handlePacket(packet.queryId(), packet.payload().id(), PayloadHelper.reset(payload.data()));
+		return handlePacket(packet.queryId(), packet.payload().id(), payload.data());
 	}
 
-	private boolean handlePacket(int queryId, Identifier channelName, PacketByteBuf buf) {
+	private boolean handlePacket(int queryId, Identifier channelName, PacketByteBuf originalBuf) {
 		this.logger.debug("Handling inbound login response with id {} and channel with name {}", queryId, channelName);
 
 		if (this.firstResponse) {
@@ -80,7 +80,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 			return false;
 		}
 
-//		PacketByteBuf buf = PacketByteBufs.slice(originalBuf);
+		PacketByteBuf buf = PacketByteBufs.slice(originalBuf);
 		List<GenericFutureListener<? extends Future<? super Void>>> futureListeners = new ArrayList<>();
 
 		try {

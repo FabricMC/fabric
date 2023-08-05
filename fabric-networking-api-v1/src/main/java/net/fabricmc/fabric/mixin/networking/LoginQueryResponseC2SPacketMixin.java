@@ -32,6 +32,13 @@ import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
 public class LoginQueryResponseC2SPacketMixin {
 	@Inject(method = "readResponse", at = @At("HEAD"), cancellable = true)
 	private static void readResponse(int queryId, PacketByteBuf buf, CallbackInfoReturnable<LoginQueryResponse> cir) {
+		boolean hasPayload = buf.readBoolean();
+
+		if (!hasPayload) {
+			cir.setReturnValue(null);
+			return;
+		}
+
 		cir.setReturnValue(new PacketByteBufLoginQueryResponse(PayloadHelper.read(buf)));
 	}
 }

@@ -12,12 +12,7 @@ public class PayloadHelper {
 	public static PacketByteBuf read(PacketByteBuf byteBuf) {
 		PacketByteBuf newBuf = PacketByteBufs.create();
 		newBuf.writeBytes(byteBuf.copy());
+		byteBuf.skipBytes(byteBuf.readableBytes());
 		return newBuf;
-	}
-
-	public static PacketByteBuf reset(PacketByteBuf byteBuf) {
-//		byteBuf.resetReaderIndex();
-////		byteBuf.release();
-		return byteBuf;
 	}
 }
