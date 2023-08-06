@@ -32,7 +32,7 @@ public class ServerConfigurationConnectionEvents {
 	/**
 	 * Event indicating a connection began sending configuration packets.
 	 */
-	public static final Event<Send> SEND_CONFIGURATION = EventFactory.createArrayBacked(Send.class, callbacks -> (handler, server) -> {
+	public static final Event<Send> SEND = EventFactory.createArrayBacked(Send.class, callbacks -> (handler, server) -> {
 		for (Send callback : callbacks) {
 			callback.onSendConfiguration(handler, server);
 		}

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.event.interaction;
 
+import net.minecraft.network.listener.PacketListener;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
@@ -26,7 +28,7 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public class FakePlayerNetworkHandler extends ServerPlayNetworkHandler {
-	private static final ClientConnection FAKE_CONNECTION = new ClientConnection(NetworkSide.CLIENTBOUND);
+	private static final ClientConnection FAKE_CONNECTION = new FakeClientConnection();
 
 	public FakePlayerNetworkHandler(ServerPlayerEntity player) {
 		super(player.getServer(), FAKE_CONNECTION, player, 0);
@@ -34,4 +36,14 @@ public class FakePlayerNetworkHandler extends ServerPlayNetworkHandler {
 
 	@Override
 	public void send(Packet<?> packet, @Nullable PacketCallbacks callbacks, boolean flush) { }
+
+	private static final class FakeClientConnection extends ClientConnection {
+		private FakeClientConnection() {
+			super(NetworkSide.CLIENTBOUND);
+		}
+
+		@Override
+		public void setPacketListener(PacketListener packetListener) {
+		}
+	}
 }

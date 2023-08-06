@@ -26,17 +26,28 @@ import net.minecraft.server.network.ServerCommonNetworkHandler;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
+import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkAddon;
 
 @Mixin(ServerCommonNetworkHandler.class)
 public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerExtensions {
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
 	private void handleCustomPayloadReceivedAsync(CustomPayloadC2SPacket packet, CallbackInfo ci) {
-		if (packet.payload() instanceof PacketByteBufPayload byteBufPayload) {
-			if (((ServerPlayNetworkAddon) getAddon()).handle(byteBufPayload)) {
+		if (packet.payload() instanceof PacketByteBufPayload payload) {
+			boolean handled;
+
+			if (getAddon() instanceof ServerPlayNetworkAddon addon) {
+				handled = addon.handle(payload);
+			} else if (getAddon() instanceof ServerConfigurationNetworkAddon addon) {
+				handled = addon.handle(payload);
+			} else {
+				throw new IllegalStateException("Unknown addon");
+			}
+
+			if (handled) {
 				ci.cancel();
 			} else {
-				byteBufPayload.data().skipBytes(byteBufPayload.data().readableBytes());
+				payload.data().skipBytes(payload.data().readableBytes());
 			}
 		}
 	}

@@ -20,7 +20,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.network.NetworkState;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
@@ -46,7 +48,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 		this.server = server;
 
 		// Must register pending channels via lateinit
-		this.registerPendingChannels((ChannelInfoHolder) this.connection);
+		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkState.CONFIGURATION);
 
 		// Register global receivers and attach to session
 		this.receiver.startSession(this);
@@ -60,7 +62,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	public void sendConfiguration() {
-		ServerConfigurationConnectionEvents.SEND_CONFIGURATION.invoker().onSendConfiguration(handler, server);
+		ServerConfigurationConnectionEvents.SEND.invoker().onSendConfiguration(handler, server);
 	}
 
 	public void onClientReady() {
@@ -135,5 +137,11 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	@Override
 	protected boolean isReservedChannel(Identifier channelName) {
 		return NetworkingImpl.isReservedPlayChannel(channelName);
+	}
+
+	@Override
+	public void sendPacket(Packet<?> packet, PacketCallbacks callback) {
+		// Ensure we flush the packet.
+		handler.send(packet, callback, true);
 	}
 }

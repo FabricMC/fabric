@@ -31,9 +31,10 @@ import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.NetworkState;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.PacketCallbacks;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 
@@ -65,8 +66,8 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 
 	public abstract void lateInit();
 
-	protected void registerPendingChannels(ChannelInfoHolder holder) {
-		final Collection<Identifier> pending = holder.getPendingChannelsNames();
+	protected void registerPendingChannels(ChannelInfoHolder holder, NetworkState state) {
+		final Collection<Identifier> pending = holder.getPendingChannelsNames(state);
 
 		if (!pending.isEmpty()) {
 			register(new ArrayList<>(pending));
@@ -167,13 +168,6 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	void unregister(List<Identifier> ids) {
 		this.sendableChannels.removeAll(ids);
 		this.invokeUnregisterEvent(ids);
-	}
-
-	@Override
-	public void sendPacket(Packet<?> packet) {
-		Objects.requireNonNull(packet, "Packet cannot be null");
-
-		this.connection.send(packet);
 	}
 
 	@Override

@@ -170,13 +170,6 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	}
 
 	@Override
-	public void sendPacket(Packet<?> packet) {
-		Objects.requireNonNull(packet, "Packet cannot be null");
-
-		this.connection.send(packet);
-	}
-
-	@Override
 	public void sendPacket(Packet<?> packet, @Nullable GenericFutureListener<? extends io.netty.util.concurrent.Future<? super Void>> callback) {
 		sendPacket(packet, GenericFutureListenerHolder.create(callback));
 	}

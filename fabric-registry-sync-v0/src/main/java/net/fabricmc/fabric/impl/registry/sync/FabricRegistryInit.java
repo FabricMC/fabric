@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents
 public class FabricRegistryInit implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		ServerConfigurationConnectionEvents.SEND_CONFIGURATION.register(RegistrySyncManager::configureClient);
+		ServerConfigurationConnectionEvents.SEND.register(RegistrySyncManager::configureClient);
 
 		// Synced in PlaySoundS2CPacket.
 		RegistryAttributeHolder.get(Registries.SOUND_EVENT)

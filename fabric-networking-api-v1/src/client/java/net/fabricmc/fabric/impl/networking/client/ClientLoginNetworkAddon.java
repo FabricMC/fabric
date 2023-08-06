@@ -117,7 +117,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 		this.receiver.endSession(this);
 	}
 
-	public void handlePlayTransition() {
+	public void handleConfigurationTransition() {
 		this.receiver.endSession(this);
 	}
 

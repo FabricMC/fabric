@@ -67,12 +67,12 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 
 	@Inject(method = "onQueryResponse", at = @At("HEAD"), cancellable = true)
 	private void handleCustomPayloadReceivedAsync(LoginQueryResponseC2SPacket packet, CallbackInfo ci) {
-		if (packet.response() instanceof PacketByteBufLoginQueryResponse byteBufPayload) {
-			// Handle queries
-			if (this.addon.handle(packet)) {
-				ci.cancel();
-			} else {
-				byteBufPayload.data().skipBytes(byteBufPayload.data().readableBytes());
+		// Handle queries
+		if (this.addon.handle(packet)) {
+			ci.cancel();
+		} else {
+			if (packet.response() instanceof PacketByteBufLoginQueryResponse response) {
+				response.data().skipBytes(response.data().readableBytes());
 			}
 		}
 	}

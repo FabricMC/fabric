@@ -22,6 +22,7 @@ import java.util.Map;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
+import net.minecraft.network.NetworkState;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
@@ -48,7 +49,7 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 		this.client = client;
 
 		// Must register pending channels via lateinit
-		this.registerPendingChannels((ChannelInfoHolder) this.connection);
+		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkState.CONFIGURATION);
 
 		// Register global receivers and attach to session
 		this.receiver.startSession(this);
@@ -64,7 +65,6 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	public void onServerReady() {
-		// The client cannot send any packets, including `minecraft:register` until after GameJoinS2CPacket is received.
 		this.sendInitialChannelRegistrationPacket();
 		this.sentInitialRegisterPacket = true;
 	}

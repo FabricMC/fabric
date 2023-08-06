@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.networking;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.netty.channel.ChannelFuture;
@@ -35,6 +36,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
+import net.minecraft.network.NetworkState;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.listener.PacketListener;
 import net.minecraft.network.packet.Packet;
@@ -59,11 +61,11 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 	public abstract void send(Packet<?> packet, @Nullable PacketCallbacks arg);
 
 	@Unique
-	private Collection<Identifier> playChannels;
+	private Map<NetworkState, Collection<Identifier>> playChannels;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddedFields(NetworkSide side, CallbackInfo ci) {
-		this.playChannels = Collections.newSetFromMap(new ConcurrentHashMap<>());
+		this.playChannels = new ConcurrentHashMap<>();
 	}
 
 	// Must be fully qualified due to mixin not working in production without it
@@ -103,7 +105,7 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 	}
 
 	@Override
-	public Collection<Identifier> getPendingChannelsNames() {
-		return this.playChannels;
+	public Collection<Identifier> getPendingChannelsNames(NetworkState state) {
+		return this.playChannels.computeIfAbsent(state, (key) -> Collections.newSetFromMap(new ConcurrentHashMap<>()));
 	}
 }

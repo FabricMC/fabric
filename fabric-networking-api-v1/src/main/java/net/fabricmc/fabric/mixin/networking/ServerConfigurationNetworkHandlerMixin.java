@@ -16,11 +16,7 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
-import java.util.Queue;
-
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -32,7 +28,6 @@ import net.minecraft.network.packet.s2c.common.DisconnectS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerCommonNetworkHandler;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
-import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
@@ -42,13 +37,6 @@ import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddo
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
 @Mixin(value = ServerConfigurationNetworkHandler.class, priority = 999)
 public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommonNetworkHandler implements NetworkHandlerExtensions, DisconnectPacketSource {
-	@Shadow
-	@Final
-	private Queue<ServerPlayerConfigurationTask> tasks;
-
-	@Shadow
-	protected abstract void pollTask();
-
 	@Unique
 	ServerConfigurationNetworkAddon addon;
 

@@ -26,10 +26,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkAddon;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
 
@@ -38,6 +40,10 @@ abstract class ClientLoginNetworkHandlerMixin implements NetworkHandlerExtension
 	@Shadow
 	@Final
 	private MinecraftClient client;
+
+	@Shadow
+	@Final
+	private ClientConnection connection;
 
 	@Unique
 	private ClientLoginNetworkAddon addon;
@@ -64,8 +70,14 @@ abstract class ClientLoginNetworkHandlerMixin implements NetworkHandlerExtension
 	}
 
 	@Inject(method = "onSuccess", at = @At("HEAD"))
-	private void handlePlayTransition(CallbackInfo ci) {
-		addon.handlePlayTransition();
+	private void handleConfigurationTransition(CallbackInfo ci) {
+		addon.handleConfigurationTransition();
+	}
+
+	@Inject(method = "onSuccess", at = @At("TAIL"))
+	private void handleConfigurationReady(CallbackInfo ci) {
+		NetworkHandlerExtensions networkHandlerExtensions = (NetworkHandlerExtensions) connection.getPacketListener();
+		((ClientConfigurationNetworkAddon) networkHandlerExtensions.getAddon()).onServerReady();
 	}
 
 	@Override
