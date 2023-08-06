@@ -16,7 +16,11 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
+import java.util.Queue;
+
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -28,6 +32,7 @@ import net.minecraft.network.packet.s2c.common.DisconnectS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerCommonNetworkHandler;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
+import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
@@ -37,6 +42,10 @@ import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddo
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
 @Mixin(value = ServerConfigurationNetworkHandler.class, priority = 999)
 public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommonNetworkHandler implements NetworkHandlerExtensions, DisconnectPacketSource {
+	@Shadow @Final private Queue<ServerPlayerConfigurationTask> tasks;
+
+	@Shadow protected abstract void pollTask();
+
 	@Unique
 	ServerConfigurationNetworkAddon addon;
 
@@ -49,6 +58,19 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 		this.addon = new ServerConfigurationNetworkAddon((ServerConfigurationNetworkHandler) (Object) this, this.server);
 		// A bit of a hack but it allows the field above to be set in case someone registers handlers during INIT event which refers to said field
 		this.addon.lateInit();
+	}
+
+	@Inject(method = "sendConfigurations", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getCombinedDynamicRegistries()Lnet/minecraft/registry/CombinedDynamicRegistries;"))
+	private void onClientReady(CallbackInfo ci) {
+		this.addon.onClientReady();
+	}
+
+	@Inject(method = "sendConfigurations", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerConfigurationNetworkHandler;queueSendResourcePackTask()V"))
+	private void sendConfigurations(CallbackInfo ci) {
+		this.addon.sendConfiguration(task -> {
+            tasks.add(task);
+            pollTask();
+        });
 	}
 
 	@Inject(method = "onDisconnected", at = @At("HEAD"))

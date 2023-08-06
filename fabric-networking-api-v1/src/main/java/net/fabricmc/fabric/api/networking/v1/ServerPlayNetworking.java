@@ -60,6 +60,7 @@ import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
  * <p>See the documentation on each class for more information.
  *
  * @see ServerLoginNetworking
+ * @see ServerConfigurationNetworking
  */
 public final class ServerPlayNetworking {
 	/**
@@ -385,7 +386,7 @@ public final class ServerPlayNetworking {
 		Objects.requireNonNull(channelName, "Channel cannot be null");
 		Objects.requireNonNull(buf, "Buf cannot be null");
 
-		return ServerNetworkingImpl.createPlayC2SPacket(channelName, buf);
+		return ServerNetworkingImpl.createC2SPacket(channelName, buf);
 	}
 
 	/**

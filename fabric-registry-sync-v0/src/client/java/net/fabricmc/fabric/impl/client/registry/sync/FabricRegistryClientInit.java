@@ -22,10 +22,11 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
+import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonNetworkHandlerAccessor;
 
 public class FabricRegistryClientInit implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricRegistryClientInit.class);
@@ -36,10 +37,10 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 	}
 
 	private void registerSyncPacketReceiver(RegistryPacketHandler packetHandler) {
-		ClientPlayNetworking.registerGlobalReceiver(packetHandler.getPacketId(), (client, handler, buf, responseSender) ->
+		ClientConfigurationNetworking.registerGlobalReceiver(packetHandler.getPacketId(), (client, handler, buf, responseSender) ->
 				RegistrySyncManager.receivePacket(client, packetHandler, buf, RegistrySyncManager.DEBUG || !client.isInSingleplayer(), (e) -> {
 					LOGGER.error("Registry remapping failed!", e);
-					client.execute(() -> handler.getConnection().disconnect(getText(e)));
+					client.execute(() -> ((ClientCommonNetworkHandlerAccessor) handler).getConnection().disconnect(getText(e)));
 				}));
 	}
 

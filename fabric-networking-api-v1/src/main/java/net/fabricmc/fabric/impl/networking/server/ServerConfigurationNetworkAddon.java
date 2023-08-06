@@ -19,13 +19,16 @@ package net.fabricmc.fabric.impl.networking.server;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
+import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
@@ -58,6 +61,10 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 		}
 	}
 
+	public void sendConfiguration(Consumer<ServerPlayerConfigurationTask> taskConsumer) {
+		ServerConfigurationConnectionEvents.SEND_CONFIGURATION.invoker().onSendConfiguration(handler, server, taskConsumer);
+	}
+
 	public void onClientReady() {
 		this.sendInitialChannelRegistrationPacket();
 		this.sentInitialRegisterPacket = true;
@@ -75,6 +82,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	protected void receive(ServerConfigurationNetworking.ConfigurationChannelHandler handler, PacketByteBuf buf) {
+		handler.receive(this.server, this.handler, buf, this);
 	}
 
 	// impl details
@@ -122,6 +130,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	protected void invokeDisconnectEvent() {
+		ServerConfigurationConnectionEvents.DISCONNECT.invoker().onConfigureDisconnect(handler, server);
 		this.receiver.endSession(this);
 	}
 

@@ -20,6 +20,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientCommonPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
+import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
@@ -44,7 +45,11 @@ public final class ServerNetworkingImpl {
 		return (ServerLoginNetworkAddon) ((NetworkHandlerExtensions) handler).getAddon();
 	}
 
-	public static Packet<ClientCommonPacketListener> createPlayC2SPacket(Identifier channel, PacketByteBuf buf) {
+	public static ServerConfigurationNetworkAddon getAddon(ServerConfigurationNetworkHandler handler) {
+		return (ServerConfigurationNetworkAddon) ((NetworkHandlerExtensions) handler).getAddon();
+	}
+
+	public static Packet<ClientCommonPacketListener> createC2SPacket(Identifier channel, PacketByteBuf buf) {
 		return new CustomPayloadS2CPacket(new PacketByteBufPayload(channel, buf));
 	}
 }

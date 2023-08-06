@@ -36,6 +36,7 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAc
  * <p>Server-side networking functionalities include receiving serverbound query responses and sending clientbound query requests.
  *
  * @see ServerPlayNetworking
+ * @see ServerConfigurationNetworking
  */
 public final class ServerLoginNetworking {
 	/**

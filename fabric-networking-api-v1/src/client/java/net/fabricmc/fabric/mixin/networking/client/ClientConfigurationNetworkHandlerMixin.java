@@ -27,9 +27,11 @@ import net.minecraft.client.network.ClientCommonNetworkHandler;
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.client.network.ClientConnectionState;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.packet.CustomPayload;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
+import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
 
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
 @Mixin(value = ClientConfigurationNetworkHandler.class, priority = 999)
@@ -46,6 +48,17 @@ public abstract class ClientConfigurationNetworkHandlerMixin extends ClientCommo
 		this.addon = new ClientConfigurationNetworkAddon((ClientConfigurationNetworkHandler) (Object) this, this.client);
 		// A bit of a hack but it allows the field above to be set in case someone registers handlers during INIT event which refers to said field
 		this.addon.lateInit();
+	}
+
+	@Inject(method = "handleCustomPayload", at = @At("HEAD"), cancellable = true)
+	private void handleCustomPayload(CustomPayload payload, CallbackInfo ci) {
+		if (payload instanceof PacketByteBufPayload byteBufPayload) {
+			if (this.addon.handle(byteBufPayload)) {
+				ci.cancel();
+			} else {
+				byteBufPayload.data().skipBytes(byteBufPayload.data().readableBytes());
+			}
+		}
 	}
 
 	@Override

@@ -89,6 +89,11 @@ public final class ClientNetworkingImpl {
 	}
 
 	@Nullable
+	public static ClientConfigurationNetworkAddon getClientConfigurationAddon() {
+		throw new UnsupportedOperationException("TODO");
+	}
+
+	@Nullable
 	public static ClientPlayNetworkAddon getClientPlayAddon() {
 		// Since Minecraft can be a bit weird, we need to check for the play addon in a few ways:
 		// If the client's player is set this will work
