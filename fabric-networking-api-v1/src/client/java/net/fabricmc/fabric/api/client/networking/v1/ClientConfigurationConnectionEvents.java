@@ -16,5 +16,65 @@
 
 package net.fabricmc.fabric.api.client.networking.v1;
 
+import org.jetbrains.annotations.ApiStatus;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientConfigurationNetworkHandler;
+import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+
+/**
+ * Offers access to events related to the configuration connection to a server on a logical client.
+ */
+@ApiStatus.Experimental
 public class ClientConfigurationConnectionEvents {
+	/**
+	 * Event indicating a connection entered the CONFIGURATION state, ready for registering channel handlers.
+	 *
+	 * @see ClientConfigurationNetworking#registerReceiver(Identifier, ClientConfigurationNetworking.ConfigurationChannelHandler)
+	 */
+	public static final Event<ClientConfigurationConnectionEvents.Init> INIT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Init.class, callbacks -> (handler, client) -> {
+		for (ClientConfigurationConnectionEvents.Init callback : callbacks) {
+			callback.onConfigurationInit(handler, client);
+		}
+	});
+
+	/**
+	 * An event called after the ReadyS2CPacket has been received, just before switching to the PLAY state.
+	 *
+	 * <p>No packets should be sent when this event is invoked.
+	 */
+	public static final Event<ClientConfigurationConnectionEvents.Ready> READY = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Ready.class, callbacks -> (handler, client) -> {
+		for (ClientConfigurationConnectionEvents.Ready callback : callbacks) {
+			callback.onConfigurationReady(handler, client);
+		}
+	});
+
+	/**
+	 * An event for the disconnection of the client configuration network handler.
+	 *
+	 * <p>No packets should be sent when this event is invoked.
+	 */
+	public static final Event<ClientConfigurationConnectionEvents.Disconnect> DISCONNECT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Disconnect.class, callbacks -> (handler, client) -> {
+		for (ClientConfigurationConnectionEvents.Disconnect callback : callbacks) {
+			callback.onConfigurationDisconnect(handler, client);
+		}
+	});
+
+	@FunctionalInterface
+	public interface Init {
+		void onConfigurationInit(ClientConfigurationNetworkHandler handler, MinecraftClient client);
+	}
+
+	@FunctionalInterface
+	public interface Ready {
+		void onConfigurationReady(ClientConfigurationNetworkHandler handler, MinecraftClient client);
+	}
+
+	@FunctionalInterface
+	public interface Disconnect {
+		void onConfigurationDisconnect(ClientConfigurationNetworkHandler handler, MinecraftClient client);
+	}
 }

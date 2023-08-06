@@ -50,6 +50,7 @@ import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
  * object-based API.
  *
  * @see ClientLoginNetworking
+ * @see ClientConfigurationNetworking
  * @see ServerPlayNetworking
  */
 public final class ClientPlayNetworking {
@@ -335,7 +336,7 @@ public final class ClientPlayNetworking {
 		Objects.requireNonNull(channelName, "Channel name cannot be null");
 		Objects.requireNonNull(buf, "Buf cannot be null");
 
-		return ClientNetworkingImpl.createPlayC2SPacket(channelName, buf);
+		return ClientNetworkingImpl.createC2SPacket(channelName, buf);
 	}
 
 	/**

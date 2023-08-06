@@ -50,7 +50,6 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
-import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -75,7 +74,7 @@ public final class RegistrySyncManager {
 
 	private RegistrySyncManager() { }
 
-	public static void configureClient(ServerConfigurationNetworkHandler handler, MinecraftServer server, Consumer<ServerPlayerConfigurationTask> taskConsumer) {
+	public static void configureClient(ServerConfigurationNetworkHandler handler, MinecraftServer server) {
 		sendPacket(server, new ConfiguringServerPlayer(handler.getDebugProfile(), handler::sendPacket));
 	}
 

@@ -27,11 +27,11 @@ import net.minecraft.client.network.ClientCommonNetworkHandler;
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.client.network.ClientConnectionState;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.packet.s2c.config.ReadyS2CPacket;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
+import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
 @Mixin(value = ClientConfigurationNetworkHandler.class, priority = 999)
@@ -47,7 +47,13 @@ public abstract class ClientConfigurationNetworkHandlerMixin extends ClientCommo
 	private void initAddon(CallbackInfo ci) {
 		this.addon = new ClientConfigurationNetworkAddon((ClientConfigurationNetworkHandler) (Object) this, this.client);
 		// A bit of a hack but it allows the field above to be set in case someone registers handlers during INIT event which refers to said field
+		ClientNetworkingImpl.setClientConfigurationAddon(this.addon);
 		this.addon.lateInit();
+	}
+
+	@Inject(method = "onReady", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;setPacketListener(Lnet/minecraft/network/listener/PacketListener;)V"))
+	public void onReady(ReadyS2CPacket packet, CallbackInfo ci) {
+		this.addon.handleReady();
 	}
 
 	@Override

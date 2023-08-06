@@ -16,35 +16,46 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
-import net.minecraft.server.network.ServerPlayerConfigurationTask;
 
-import java.util.function.Consumer;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * Offers access to events related to the connection to a client on a logical server while a client is configuring.
+ */
+@ApiStatus.Experimental
 public class ServerConfigurationConnectionEvents {
-    public static final Event<Send> SEND_CONFIGURATION = EventFactory.createArrayBacked(Send.class, callbacks -> (handler, server, taskConsumer) -> {
-        for (Send callback : callbacks) {
-            callback.onSendConfiguration(handler, server, taskConsumer);
-        }
-    });
+	/**
+	 * Event indicating a connection began sending configuration packets.
+	 */
+	public static final Event<Send> SEND_CONFIGURATION = EventFactory.createArrayBacked(Send.class, callbacks -> (handler, server) -> {
+		for (Send callback : callbacks) {
+			callback.onSendConfiguration(handler, server);
+		}
+	});
 
-    public static final Event<ServerConfigurationConnectionEvents.Disconnect> DISCONNECT = EventFactory.createArrayBacked(ServerConfigurationConnectionEvents.Disconnect.class, callbacks -> (handler, server) -> {
-        for (ServerConfigurationConnectionEvents.Disconnect callback : callbacks) {
-            callback.onConfigureDisconnect(handler, server);
-        }
-    });
+	/**
+	 * An event for the disconnection of the server configuration network handler.
+	 *
+	 * <p>No packets should be sent when this event is invoked.
+	 */
+	public static final Event<ServerConfigurationConnectionEvents.Disconnect> DISCONNECT = EventFactory.createArrayBacked(ServerConfigurationConnectionEvents.Disconnect.class, callbacks -> (handler, server) -> {
+		for (ServerConfigurationConnectionEvents.Disconnect callback : callbacks) {
+			callback.onConfigureDisconnect(handler, server);
+		}
+	});
 
-    @FunctionalInterface
-    public interface Send {
-        // TODO is having the task consumer like this a good idea?
-        void onSendConfiguration(ServerConfigurationNetworkHandler handler, MinecraftServer server, Consumer<ServerPlayerConfigurationTask> taskConsumer);
-    }
+	@FunctionalInterface
+	public interface Send {
+		void onSendConfiguration(ServerConfigurationNetworkHandler handler, MinecraftServer server);
+	}
 
-    @FunctionalInterface
-    public interface Disconnect {
-        void onConfigureDisconnect(ServerConfigurationNetworkHandler handler, MinecraftServer server);
-    }
+	@FunctionalInterface
+	public interface Disconnect {
+		void onConfigureDisconnect(ServerConfigurationNetworkHandler handler, MinecraftServer server);
+	}
 }

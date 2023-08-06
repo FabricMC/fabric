@@ -34,6 +34,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -53,6 +54,7 @@ public final class ClientNetworkingImpl {
 	public static final GlobalReceiverRegistry<ClientConfigurationNetworking.ConfigurationChannelHandler> CONFIGURATION = new GlobalReceiverRegistry<>();
 	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayChannelHandler> PLAY = new GlobalReceiverRegistry<>();
 	private static ClientPlayNetworkAddon currentPlayAddon;
+	private static ClientConfigurationNetworkAddon currentConfigurationAddon;
 
 	public static ClientPlayNetworkAddon getAddon(ClientPlayNetworkHandler handler) {
 		return (ClientPlayNetworkAddon) ((NetworkHandlerExtensions) handler).getAddon();
@@ -62,7 +64,7 @@ public final class ClientNetworkingImpl {
 		return (ClientLoginNetworkAddon) ((NetworkHandlerExtensions) handler).getAddon();
 	}
 
-	public static Packet<ServerCommonPacketListener> createPlayC2SPacket(Identifier channelName, PacketByteBuf buf) {
+	public static Packet<ServerCommonPacketListener> createC2SPacket(Identifier channelName, PacketByteBuf buf) {
 		return new CustomPayloadC2SPacket(new PacketByteBufPayload(channelName, buf));
 	}
 
@@ -90,7 +92,7 @@ public final class ClientNetworkingImpl {
 
 	@Nullable
 	public static ClientConfigurationNetworkAddon getClientConfigurationAddon() {
-		throw new UnsupportedOperationException("TODO");
+		return currentConfigurationAddon;
 	}
 
 	@Nullable
@@ -112,13 +114,23 @@ public final class ClientNetworkingImpl {
 	}
 
 	public static void setClientPlayAddon(ClientPlayNetworkAddon addon) {
+		assert addon == null || currentConfigurationAddon == null;
 		currentPlayAddon = addon;
+	}
+
+	public static void setClientConfigurationAddon(ClientConfigurationNetworkAddon addon) {
+		assert addon == null || currentPlayAddon == null;
+		currentConfigurationAddon = addon;
 	}
 
 	public static void clientInit() {
 		// Reference cleanup for the locally stored addon if we are disconnected
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
 			currentPlayAddon = null;
+		});
+
+		ClientConfigurationConnectionEvents.DISCONNECT.register((handler, client) -> {
+			currentConfigurationAddon = null;
 		});
 
 		// Register a login query handler for early channel registration.

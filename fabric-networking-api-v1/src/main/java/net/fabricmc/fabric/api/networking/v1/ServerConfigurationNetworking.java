@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.networking.v1;
 import java.util.Objects;
 import java.util.Set;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -39,35 +40,21 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerA
  *
  * <p>This class should be only used for the logical server.
  *
- * <h2>Packet object-based API</h2>
- *
- * <p>This class provides a classic registration method, {@link #registerGlobalReceiver(Identifier, ServerConfigurationNetworking.ConfigurationChannelHandler)},
- * and a newer method utilizing packet objects, {@link #registerGlobalReceiver(PacketType, ConfigurationPacketHandler)}.
- * For most mods, using the newer method will improve the readability of the code by separating packet
- * reading/writing code to a separate class. Additionally, the newer method executes the callback in the
- * server thread, ensuring thread safety. For this reason using the newer method is highly recommended.
- * The two methods are network-compatible with each other, so long as the buffer contents are read and written
- * in the same order.
- *
- * <p>The newer, packet object-based API involves three classes:
- *
- * <ul>
- *     <li>A class implementing {@link FabricPacket} that is "sent" over the network</li>
- *     <li>{@link PacketType} instance, which represents the packet's type (and its channel)</li>
- *     <li>{@link ServerPlayNetworking.PlayPacketHandler}, which handles the packet (usually implemented as a functional interface)</li>
- * </ul>
+ * <p>See {@link ServerPlayNetworking} for information on how to use the packet
+ * object-based API.
  *
  * <p>See the documentation on each class for more information.
  *
  * @see ServerLoginNetworking
  * @see ServerConfigurationNetworking
  */
+@ApiStatus.Experimental
 public final class ServerConfigurationNetworking {
 	/**
 	 * Registers a handler to a channel.
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
-	 * <p>The handler runs on the network thread. After reading the buffer there, the world
+	 * <p>The handler runs on the network thread. After reading the buffer there, the server
 	 * must be modified in the server thread by calling {@link ThreadExecutor#execute(Runnable)}.
 	 *
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
@@ -352,7 +339,7 @@ public final class ServerConfigurationNetworking {
 	}
 
 	/**
-	 * Sends a packet to a player.
+	 * Sends a packet to a configuring player.
 	 *
 	 * @param handler the handler to send the packet to
 	 * @param channelName the channel of the packet
@@ -367,7 +354,7 @@ public final class ServerConfigurationNetworking {
 	}
 
 	/**
-	 * Sends a packet to a player.
+	 * Sends a packet to a configuring player.
 	 *
 	 * @param handler the network handler to send the packet to
 	 * @param packet the packet
@@ -406,14 +393,14 @@ public final class ServerConfigurationNetworking {
 		 * <p>This method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
 		 * Modification to the game should be {@linkplain ThreadExecutor#submit(Runnable) scheduled} using the provided Minecraft server instance.
 		 *
-		 * <p>An example usage of this is to create an explosion where the player is looking:
+		 * <p>An example usage of this is:
 		 * <pre>{@code
-		 * ServerConfigurationNetworking.registerReceiver(new Identifier("mymod", "boom"), (server, player, handler, buf, responseSender) -> {
+		 * ServerConfigurationNetworking.registerReceiver(new Identifier("mymod", "boom"), (server, handler, buf, responseSender) -> {
 		 * 	boolean fire = buf.readBoolean();
 		 *
-		 * 	// All operations on the server or world must be executed on the server thread
+		 * 	// All operations on the server must be executed on the server thread
 		 * 	server.execute(() -> {
-		 * 		ModPacketHandler.createExplosion(player, fire);
+		 *
 		 * 	});
 		 * });
 		 * }</pre>
@@ -440,14 +427,13 @@ public final class ServerConfigurationNetworking {
 	@FunctionalInterface
 	public interface ConfigurationPacketHandler<T extends FabricPacket> {
 		/**
-		 * Handles the incoming packet. This is called on the server thread, and can safely
-		 * manipulate the world.
+		 * Handles the incoming packet. This is called on the server thread.
 		 *
-		 * <p>An example usage of this is to create an explosion where the player is looking:
+		 * <p>An example usage of this:
 		 * <pre>{@code
 		 * // See FabricPacket for creating the packet
-		 * ServerConfigurationNetworking.registerReceiver(BOOM_PACKET_TYPE, (player, packet, responseSender) -> {
-		 * 	ModPacketHandler.createExplosion(player, packet.fire());
+		 * ServerConfigurationNetworking.registerReceiver(BOOM_PACKET_TYPE, (packet, responseSender) -> {
+		 *
 		 * });
 		 * }</pre>
 		 *

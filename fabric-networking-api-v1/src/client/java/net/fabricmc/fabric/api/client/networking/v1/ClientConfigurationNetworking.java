@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.client.networking.v1;
 import java.util.Objects;
 import java.util.Set;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
@@ -33,10 +34,25 @@ import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonNetworkHandlerAccessor;
 
+/**
+ * Offers access to configurtion stage client-side networking functionalities.
+ *
+ * <p>Client-side networking functionalities include receiving clientbound packets,
+ * sending serverbound packets, and events related to client-side network handlers.
+ *
+ * <p>This class should be only used on the physical client and for the logical client.
+ *
+ * <p>See {@link net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking} for information on how to use the packet
+ * object-based API.
+ *
+ * @see ServerConfigurationNetworking
+ */
+@ApiStatus.Experimental
 public final class ClientConfigurationNetworking {
 	/**
 	 * Registers a handler to a channel.
@@ -169,7 +185,7 @@ public final class ClientConfigurationNetworking {
 			return addon.registerChannel(channelName, channelHandler);
 		}
 
-		throw new IllegalStateException("Cannot register receiver while not in game!");
+		throw new IllegalStateException("Cannot register receiver while not configuring!");
 	}
 
 	/**
@@ -230,7 +246,7 @@ public final class ClientConfigurationNetworking {
 			return addon.unregisterChannel(channelName);
 		}
 
-		throw new IllegalStateException("Cannot unregister receiver while not in game!");
+		throw new IllegalStateException("Cannot unregister receiver while not configuring!");
 	}
 
 	/**
@@ -263,7 +279,7 @@ public final class ClientConfigurationNetworking {
 			return addon.getReceivableChannels();
 		}
 
-		throw new IllegalStateException("Cannot get a list of channels the client can receive packets on while not in game!");
+		throw new IllegalStateException("Cannot get a list of channels the client can receive packets on while not configuring!");
 	}
 
 	/**
@@ -279,7 +295,7 @@ public final class ClientConfigurationNetworking {
 			return addon.getSendableChannels();
 		}
 
-		throw new IllegalStateException("Cannot get a list of channels the server can receive packets on while not in game!");
+		throw new IllegalStateException("Cannot get a list of channels the server can receive packets on while not configuring!");
 	}
 
 	/**
@@ -290,12 +306,13 @@ public final class ClientConfigurationNetworking {
 	 * False if the client is not in game.
 	 */
 	public static boolean canSend(Identifier channelName) throws IllegalArgumentException {
-		// You cant send without a client player, so this is fine
-		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler()).getSendableChannels().contains(channelName);
+		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
+
+		if (addon != null) {
+			return addon.getSendableChannels().contains(channelName);
 		}
 
-		return false;
+		throw new IllegalStateException("Cannot get a list of channels the server can receive packets on while not configuring!");
 	}
 
 	/**
@@ -320,7 +337,7 @@ public final class ClientConfigurationNetworking {
 		Objects.requireNonNull(channelName, "Channel name cannot be null");
 		Objects.requireNonNull(buf, "Buf cannot be null");
 
-		return ClientNetworkingImpl.createPlayC2SPacket(channelName, buf);
+		return ClientNetworkingImpl.createC2SPacket(channelName, buf);
 	}
 
 	/**
@@ -330,12 +347,13 @@ public final class ClientConfigurationNetworking {
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
 	public static PacketSender getSender() throws IllegalStateException {
-		// You cant send without a client player, so this is fine
-		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler());
+		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
+
+		if (addon != null) {
+			return addon;
 		}
 
-		throw new IllegalStateException("Cannot get packet sender when not in game!");
+		throw new IllegalStateException("Cannot get PacketSender while not configuring!");
 	}
 
 	/**
@@ -346,13 +364,14 @@ public final class ClientConfigurationNetworking {
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
 	public static void send(Identifier channelName, PacketByteBuf buf) throws IllegalStateException {
-		// You cant send without a client player, so this is fine
-		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			MinecraftClient.getInstance().getNetworkHandler().sendPacket(createC2SPacket(channelName, buf));
+		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
+
+		if (addon != null) {
+			addon.sendPacket(createC2SPacket(channelName, buf));
 			return;
 		}
 
-		throw new IllegalStateException("Cannot send packets when not in game!");
+		throw new IllegalStateException("Cannot send packet while not configuring!");
 	}
 
 	/**

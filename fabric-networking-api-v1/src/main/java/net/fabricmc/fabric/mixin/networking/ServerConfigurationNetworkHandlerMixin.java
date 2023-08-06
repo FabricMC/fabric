@@ -42,9 +42,12 @@ import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddo
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
 @Mixin(value = ServerConfigurationNetworkHandler.class, priority = 999)
 public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommonNetworkHandler implements NetworkHandlerExtensions, DisconnectPacketSource {
-	@Shadow @Final private Queue<ServerPlayerConfigurationTask> tasks;
+	@Shadow
+	@Final
+	private Queue<ServerPlayerConfigurationTask> tasks;
 
-	@Shadow protected abstract void pollTask();
+	@Shadow
+	protected abstract void pollTask();
 
 	@Unique
 	ServerConfigurationNetworkAddon addon;
@@ -67,10 +70,7 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 
 	@Inject(method = "sendConfigurations", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerConfigurationNetworkHandler;queueSendResourcePackTask()V"))
 	private void sendConfigurations(CallbackInfo ci) {
-		this.addon.sendConfiguration(task -> {
-            tasks.add(task);
-            pollTask();
-        });
+		this.addon.sendConfiguration();
 	}
 
 	@Inject(method = "onDisconnected", at = @At("HEAD"))

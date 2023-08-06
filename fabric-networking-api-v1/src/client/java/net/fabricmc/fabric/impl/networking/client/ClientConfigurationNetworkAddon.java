@@ -20,15 +20,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.mojang.logging.LogUtils;
-import org.slf4j.Logger;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
@@ -42,8 +41,6 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 	private final ClientConfigurationNetworkHandler handler;
 	private final MinecraftClient client;
 	private boolean sentInitialRegisterPacket;
-
-	private static final Logger LOGGER = LogUtils.getLogger();
 
 	public ClientConfigurationNetworkAddon(ClientConfigurationNetworkHandler handler, MinecraftClient client) {
 		super(ClientNetworkingImpl.CONFIGURATION, ((ClientCommonNetworkHandlerAccessor) handler).getConnection(), "ClientPlayNetworkAddon for " + ((ClientConfigurationNetworkHandlerAccessor) handler).getProfile().getName());
@@ -62,6 +59,8 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 		for (Map.Entry<Identifier, ClientConfigurationNetworking.ConfigurationChannelHandler> entry : this.receiver.getHandlers().entrySet()) {
 			this.registerChannel(entry.getKey(), entry.getValue());
 		}
+
+		ClientConfigurationConnectionEvents.INIT.invoker().onConfigurationInit(this.handler, this.client);
 	}
 
 	public void onServerReady() {
@@ -103,12 +102,12 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	protected void invokeRegisterEvent(List<Identifier> ids) {
-//		C2SPlayChannelEvents.REGISTER.invoker().onChannelRegister(this.handler, this, this.client, ids);
+		C2SPlayChannelEvents.REGISTER_CONFIGURATION.invoker().onChannelRegister(this.handler, this, this.client, ids);
 	}
 
 	@Override
 	protected void invokeUnregisterEvent(List<Identifier> ids) {
-//		C2SPlayChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.handler, this, this.client, ids);
+		C2SPlayChannelEvents.UNREGISTER_CONFIGURATION.invoker().onChannelUnregister(this.handler, this, this.client, ids);
 	}
 
 	@Override
@@ -135,9 +134,14 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 		}
 	}
 
+	public void handleReady() {
+		ClientConfigurationConnectionEvents.READY.invoker().onConfigurationReady(this.handler, this.client);
+		ClientNetworkingImpl.setClientConfigurationAddon(null);
+	}
+
 	@Override
 	protected void invokeDisconnectEvent() {
-//		ClientPlayConnectionEvents.DISCONNECT.invoker().onPlayDisconnect(this.handler, this.client);
+		ClientConfigurationConnectionEvents.DISCONNECT.invoker().onConfigurationDisconnect(this.handler, this.client);
 		this.receiver.endSession(this);
 	}
 

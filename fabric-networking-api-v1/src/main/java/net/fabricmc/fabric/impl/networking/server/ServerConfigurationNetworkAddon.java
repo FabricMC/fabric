@@ -19,13 +19,11 @@ package net.fabricmc.fabric.impl.networking.server;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
-import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
@@ -61,8 +59,8 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 		}
 	}
 
-	public void sendConfiguration(Consumer<ServerPlayerConfigurationTask> taskConsumer) {
-		ServerConfigurationConnectionEvents.SEND_CONFIGURATION.invoker().onSendConfiguration(handler, server, taskConsumer);
+	public void sendConfiguration() {
+		ServerConfigurationConnectionEvents.SEND_CONFIGURATION.invoker().onSendConfiguration(handler, server);
 	}
 
 	public void onClientReady() {

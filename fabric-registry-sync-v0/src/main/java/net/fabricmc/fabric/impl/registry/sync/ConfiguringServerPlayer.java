@@ -27,7 +27,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 
 public record ConfiguringServerPlayer(GameProfile gameProfile, Consumer<Packet<?>> sender) {
-    public void sendPacket(Identifier identifier, PacketByteBuf buf) {
-        sender.accept(ServerConfigurationNetworking.createS2CPacket(identifier, buf));
-    }
+	public void sendPacket(Identifier identifier, PacketByteBuf buf) {
+		sender.accept(ServerConfigurationNetworking.createS2CPacket(identifier, buf));
+	}
 }
