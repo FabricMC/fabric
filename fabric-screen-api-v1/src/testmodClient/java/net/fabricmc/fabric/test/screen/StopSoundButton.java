@@ -36,7 +36,7 @@ class StopSoundButton extends PressableWidget {
 	@Override
 	public void render(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
 		// Render the armor icon to test
-		drawContext.drawTexture(ScreenTests.GUI_ICONS_TEXTURE, this.getX(), this.getY(), this.width, this.height, 43, 27, 9, 9, 256, 256);
+		drawContext.drawGuiTexture(ScreenTests.ARMOR_FULL_TEXTURE, this.getX(), this.getY(), this.width, this.height);
 
 		if (this.isMouseOver(mouseX, mouseY)) {
 			drawContext.drawTooltip(Screens.getTextRenderer(this.screen), Text.literal("Click to stop all sounds"), this.getX(), this.getY());
