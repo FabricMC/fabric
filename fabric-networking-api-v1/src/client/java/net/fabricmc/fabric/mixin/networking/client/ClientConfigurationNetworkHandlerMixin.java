@@ -50,17 +50,6 @@ public abstract class ClientConfigurationNetworkHandlerMixin extends ClientCommo
 		this.addon.lateInit();
 	}
 
-	@Inject(method = "handleCustomPayload", at = @At("HEAD"), cancellable = true)
-	private void handleCustomPayload(CustomPayload payload, CallbackInfo ci) {
-		if (payload instanceof PacketByteBufPayload byteBufPayload) {
-			if (this.addon.handle(byteBufPayload)) {
-				ci.cancel();
-			} else {
-				byteBufPayload.data().skipBytes(byteBufPayload.data().readableBytes());
-			}
-		}
-	}
-
 	@Override
 	public ClientConfigurationNetworkAddon getAddon() {
 		return addon;

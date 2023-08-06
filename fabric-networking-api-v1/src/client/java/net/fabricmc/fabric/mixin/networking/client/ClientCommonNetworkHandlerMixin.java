@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.mixin.networking.client;
 
+import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
+import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
+import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
+import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -31,5 +35,26 @@ public abstract class ClientCommonNetworkHandlerMixin implements NetworkHandlerE
 	@Inject(method = "onDisconnected", at = @At("HEAD"))
 	private void handleDisconnection(Text reason, CallbackInfo ci) {
 		this.getAddon().handleDisconnect();
+	}
+
+	@Inject(method = "onCustomPayload(Lnet/minecraft/network/packet/s2c/common/CustomPayloadS2CPacket;)V", at = @At("HEAD"), cancellable = true)
+	public void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
+		if (packet.payload() instanceof PacketByteBufPayload payload) {
+			boolean handled;
+
+			if (this.getAddon() instanceof ClientPlayNetworkAddon addon) {
+				handled = addon.handle(payload);
+			} else if (this.getAddon() instanceof ClientConfigurationNetworkAddon addon) {
+				handled = addon.handle(payload);
+			} else {
+				throw new IllegalStateException("Unknown network addon");
+			}
+
+			if (handled) {
+				ci.cancel();
+			} else {
+				payload.data().skipBytes(payload.data().readableBytes());
+			}
+		}
 	}
 }

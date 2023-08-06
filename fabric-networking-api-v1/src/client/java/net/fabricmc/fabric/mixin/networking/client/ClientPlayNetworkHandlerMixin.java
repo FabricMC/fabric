@@ -58,17 +58,6 @@ abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkHandler 
 		this.addon.onServerReady();
 	}
 
-	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-	private void handleCustomPayload(CustomPayload payload, CallbackInfo ci) {
-		if (payload instanceof PacketByteBufPayload byteBufPayload) {
-			if (this.addon.handle(byteBufPayload)) {
-				ci.cancel();
-			} else {
-				byteBufPayload.data().skipBytes(byteBufPayload.data().readableBytes());
-			}
-		}
-	}
-
 	@Override
 	public ClientPlayNetworkAddon getAddon() {
 		return this.addon;
