@@ -120,7 +120,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 
 					@Override
 					public ResourcePack openWithOverlays(String string, ResourcePackProfile.Metadata metadata) {
-						// TODO 1.20.2 is this correct?
+						// Don't support overlays in builtin res packs.
 						return entry.getRight();
 					}
 				}, resourceType, ResourcePackProfile.InsertionPosition.TOP, new BuiltinModResourcePackSource(pack.getFabricModMetadata().getName()));

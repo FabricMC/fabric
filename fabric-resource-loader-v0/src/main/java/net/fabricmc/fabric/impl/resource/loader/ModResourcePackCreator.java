@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import net.minecraft.resource.OverlayResourcePack;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
@@ -87,9 +88,24 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 				}
 
 				@Override
-				public ResourcePack openWithOverlays(String string, ResourcePackProfile.Metadata metadata) {
-					// TODO 1.20.2 is this correct?
-					return new FabricModResourcePack(type, packs);
+				public ResourcePack openWithOverlays(String name, ResourcePackProfile.Metadata metadata) {
+					final ResourcePack basePack = open(name);
+					final List<String> overlays = metadata.overlays();
+
+					if (overlays.isEmpty()) {
+						return basePack;
+					}
+
+					final List<ResourcePack> overlayedPacks = new ArrayList<>(overlays.size());
+
+					for (String overlay : overlays) {
+						List<ModResourcePack> innerPacks = new ArrayList<>();
+						ModResourcePackUtil.appendModResourcePacks(innerPacks, type, overlay);
+
+						overlayedPacks.add(new FabricModResourcePack(type, innerPacks));
+					}
+
+					return new OverlayResourcePack(basePack, overlayedPacks);
 				}
 			}, type, ResourcePackProfile.InsertionPosition.TOP, RESOURCE_PACK_SOURCE);
 

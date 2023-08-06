@@ -60,7 +60,7 @@ public class DefaultClientResourcePackProviderMixin {
 
 			@Override
 			public ResourcePack openWithOverlays(String string, ResourcePackProfile.Metadata metadata) {
-				// TODO 1.20.2 is this correct?
+				// VanillaResourcePackProvider does not handle overlays
 				return open(name);
 			}
 		};
