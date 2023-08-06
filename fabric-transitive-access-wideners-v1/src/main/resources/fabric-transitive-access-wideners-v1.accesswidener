@@ -29,14 +29,15 @@ transitive-accessible field net/minecraft/loot/LootTable pools [Lnet/minecraft/l
 transitive-accessible field net/minecraft/loot/LootTable functions [Lnet/minecraft/loot/function/LootFunction;
 
 # Villager trade factories
-transitive-accessible class net/minecraft/village/TradeOffers$BuyForOneEmeraldFactory
+transitive-accessible class net/minecraft/village/TradeOffers$TypedWrapperFactory
+transitive-accessible class net/minecraft/village/TradeOffers$EnchantBookFactory
+transitive-accessible class net/minecraft/village/TradeOffers$BuyItemFactory
 transitive-accessible class net/minecraft/village/TradeOffers$SellItemFactory
 transitive-accessible class net/minecraft/village/TradeOffers$SellSuspiciousStewFactory
 transitive-accessible class net/minecraft/village/TradeOffers$ProcessItemFactory
 transitive-accessible class net/minecraft/village/TradeOffers$SellEnchantedToolFactory
 transitive-accessible class net/minecraft/village/TradeOffers$TypeAwareBuyForOneEmeraldFactory
 transitive-accessible class net/minecraft/village/TradeOffers$SellPotionHoldingItemFactory
-transitive-accessible class net/minecraft/village/TradeOffers$EnchantBookFactory
 transitive-accessible class net/minecraft/village/TradeOffers$SellMapFactory
 transitive-accessible class net/minecraft/village/TradeOffers$SellDyedArmorFactory
 
