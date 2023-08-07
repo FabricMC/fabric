@@ -23,9 +23,10 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.packet.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.PacketCallbacks;
+import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
@@ -64,6 +65,16 @@ public interface PacketSender {
 
 	/**
 	 * Sends a packet.
+	 * @param payload the payload
+	 */
+	default void sendPacket(CustomPayload payload) {
+		PacketByteBuf buf = PacketByteBufs.create();
+		payload.write(buf);
+		sendPacket(payload.id(), buf);
+	}
+
+	/**
+	 * Sends a packet.
 	 *
 	 * @param packet the packet
 	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
@@ -85,6 +96,18 @@ public interface PacketSender {
 	/**
 	 * Sends a packet.
 	 *
+	 * @param payload the payload
+	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
+	 */
+	default void sendPacket(CustomPayload payload, @Nullable GenericFutureListener<? extends Future<? super Void>> callback) {
+		PacketByteBuf buf = PacketByteBufs.create();
+		payload.write(buf);
+		sendPacket(payload.id(), buf, callback);
+	}
+
+	/**
+	 * Sends a packet.
+	 *
 	 * @param packet the packet
 	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
 	 */
@@ -100,6 +123,18 @@ public interface PacketSender {
 		PacketByteBuf buf = PacketByteBufs.create();
 		packet.write(buf);
 		sendPacket(packet.getType().getId(), buf, callback);
+	}
+
+	/**
+	 * Sends a packet.
+	 *
+	 * @param payload the payload
+	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
+	 */
+	default void sendPacket(CustomPayload payload, @Nullable PacketCallbacks callback) {
+		PacketByteBuf buf = PacketByteBufs.create();
+		payload.write(buf);
+		sendPacket(payload.id(), buf, callback);
 	}
 
 	/**

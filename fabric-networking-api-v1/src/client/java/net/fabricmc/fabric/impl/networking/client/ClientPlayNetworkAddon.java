@@ -151,6 +151,6 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected boolean isReservedChannel(Identifier channelName) {
-		return NetworkingImpl.isReservedPlayChannel(channelName);
+		return NetworkingImpl.isReservedCommonChannel(channelName);
 	}
 }

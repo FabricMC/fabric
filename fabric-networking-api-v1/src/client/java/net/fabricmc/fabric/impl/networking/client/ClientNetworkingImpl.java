@@ -16,15 +16,11 @@
 
 package net.fabricmc.fabric.impl.networking.client;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConnectScreen;
+import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.ClientConnection;
@@ -40,25 +36,32 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworkin
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
+import net.fabricmc.fabric.impl.networking.CommonPacketsImpl;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
+import net.fabricmc.fabric.impl.networking.CommonRegisterPayload;
+import net.fabricmc.fabric.impl.networking.CommonVersionPayload;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientLoginNetworkHandlerAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ConnectScreenAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAccessor;
 
 public final class ClientNetworkingImpl {
-	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>();
-	public static final GlobalReceiverRegistry<ClientConfigurationNetworking.ConfigurationChannelHandler> CONFIGURATION = new GlobalReceiverRegistry<>();
-	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayChannelHandler> PLAY = new GlobalReceiverRegistry<>();
+	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>(NetworkState.LOGIN);
+	public static final GlobalReceiverRegistry<ClientConfigurationNetworking.ConfigurationChannelHandler> CONFIGURATION = new GlobalReceiverRegistry<>(NetworkState.CONFIGURATION);
+	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayChannelHandler> PLAY = new GlobalReceiverRegistry<>(NetworkState.PLAY);
 	private static ClientPlayNetworkAddon currentPlayAddon;
 	private static ClientConfigurationNetworkAddon currentConfigurationAddon;
 
 	public static ClientPlayNetworkAddon getAddon(ClientPlayNetworkHandler handler) {
 		return (ClientPlayNetworkAddon) ((NetworkHandlerExtensions) handler).getAddon();
+	}
+
+	public static ClientConfigurationNetworkAddon getAddon(ClientConfigurationNetworkHandler handler) {
+		return (ClientConfigurationNetworkAddon) ((NetworkHandlerExtensions) handler).getAddon();
 	}
 
 	public static ClientLoginNetworkAddon getAddon(ClientLoginNetworkHandler handler) {
@@ -134,29 +137,45 @@ public final class ClientNetworkingImpl {
 			currentConfigurationAddon = null;
 		});
 
-		// Register a login query handler for early channel registration.
-		ClientLoginNetworking.registerGlobalReceiver(NetworkingImpl.EARLY_REGISTRATION_CHANNEL, (client, handler, buf, listenerAdder) -> {
-			int n = buf.readVarInt();
-			List<Identifier> ids = new ArrayList<>(n);
-
-			for (int i = 0; i < n; i++) {
-				ids.add(buf.readIdentifier());
-			}
-
-			ClientConnection connection = ((ClientLoginNetworkHandlerAccessor) handler).getConnection();
-			((ChannelInfoHolder) connection).getPendingChannelsNames(NetworkState.PLAY).addAll(ids);
-			NetworkingImpl.LOGGER.debug("Received accepted channels from the server");
-
-			PacketByteBuf response = PacketByteBufs.create();
-			Collection<Identifier> channels = ClientPlayNetworking.getGlobalReceivers();
-			response.writeVarInt(channels.size());
-
-			for (Identifier id : channels) {
-				response.writeIdentifier(id);
-			}
-
-			NetworkingImpl.LOGGER.debug("Sent accepted channels to the server");
-			return CompletableFuture.completedFuture(response);
+		// Version packet
+		ClientConfigurationNetworking.registerGlobalReceiver(CommonVersionPayload.PACKET_ID, (client, handler, buf, responseSender) -> {
+			var payload = new CommonVersionPayload(buf);
+			int negotiatedVersion = handleVersionPacket(payload, responseSender);
+			ClientNetworkingImpl.getAddon(handler).onCommonVersionPacket(negotiatedVersion);
 		});
+
+		// Register packet
+		ClientConfigurationNetworking.registerGlobalReceiver(CommonRegisterPayload.PACKET_ID, (client, handler, buf, responseSender) -> {
+			var payload = new CommonRegisterPayload(buf);
+			ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getAddon(handler);
+
+			if (CommonRegisterPayload.PLAY_PHASE.equals(payload.phase())) {
+				if (payload.version() != addon.getNegotiatedVersion()) {
+					throw new IllegalStateException("Negotiated common packet version: %d but received packet with version: %d".formatted(addon.getNegotiatedVersion(), payload.version()));
+				}
+
+				ClientConnection connection = ((ClientLoginNetworkHandlerAccessor) handler).getConnection();
+				((ChannelInfoHolder) connection).getPendingChannelsNames(NetworkState.PLAY).addAll(payload.channels());
+				NetworkingImpl.LOGGER.debug("Received accepted channels from the server");
+				responseSender.sendPacket(new CommonRegisterPayload(addon.getNegotiatedVersion(), CommonRegisterPayload.PLAY_PHASE, ClientPlayNetworking.getGlobalReceivers()));
+			} else {
+				addon.onCommonRegisterPacket(payload);
+				responseSender.sendPacket(addon.createRegisterPayload());
+			}
+		});
+	}
+
+	// Disconnect if there are no commonly supported versions.
+	// Client responds with the intersection of supported versions.
+	// Return the highest supported version
+	private static int handleVersionPacket(CommonVersionPayload payload, PacketSender packetSender) {
+		int[] commonlySupportedVersion = CommonPacketsImpl.intersection(payload.versions(), CommonPacketsImpl.SUPPORTED_COMMON_PACKET_VERSIONS);
+
+		if (commonlySupportedVersion.length == 0) {
+			throw new UnsupportedOperationException("");
+		}
+
+		packetSender.sendPacket(new CommonVersionPayload(commonlySupportedVersion));
+		return CommonPacketsImpl.largest(commonlySupportedVersion);
 	}
 }

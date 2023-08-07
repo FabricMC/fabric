@@ -45,11 +45,13 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
+import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -58,6 +60,7 @@ import net.minecraft.util.thread.ThreadExecutor;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
@@ -75,7 +78,26 @@ public final class RegistrySyncManager {
 	private RegistrySyncManager() { }
 
 	public static void configureClient(ServerConfigurationNetworkHandler handler, MinecraftServer server) {
-		sendPacket(server, new ConfiguringServerPlayer(handler.getDebugProfile(), handler::sendPacket));
+		if (ServerConfigurationNetworking.canSend(handler, DIRECT_PACKET_HANDLER.getPacketId())) {
+			handler.addEarlyTask(new SyncConfigurationTask(handler, server));
+		}
+	}
+
+	public record SyncConfigurationTask(
+			ServerConfigurationNetworkHandler handler,
+			MinecraftServer server
+	) implements ServerPlayerConfigurationTask {
+		public static final Key KEY = new Key("fabric:registry/sync");
+
+		@Override
+		public void sendPacket(Consumer<Packet<?>> sender) {
+			RegistrySyncManager.sendPacket(server, new ConfiguringServerPlayer(handler.getDebugProfile(), handler::sendPacket));
+		}
+
+		@Override
+		public Key getKey() {
+			return KEY;
+		}
 	}
 
 	static void sendPacket(MinecraftServer server, ConfiguringServerPlayer player) {
@@ -94,7 +116,7 @@ public final class RegistrySyncManager {
 		}
 	}
 
-	public static void receivePacket(ThreadExecutor<?> executor, RegistryPacketHandler handler, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
+	public static void receivePacket(ThreadExecutor<?> executor, RegistryPacketHandler handler, PacketByteBuf buf, boolean accept, Runnable completionHandler, Consumer<Exception> errorHandler) {
 		handler.receivePacket(buf);
 
 		if (!handler.isPacketFinished()) {
@@ -120,6 +142,7 @@ public final class RegistrySyncManager {
 
 					try {
 						apply(map, RemappableRegistry.RemapMode.REMOTE);
+						completionHandler.run();
 					} catch (RemapException e) {
 						errorHandler.accept(e);
 					}

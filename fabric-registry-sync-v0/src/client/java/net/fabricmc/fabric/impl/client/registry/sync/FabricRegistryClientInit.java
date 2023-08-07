@@ -23,6 +23,8 @@ import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.impl.registry.sync.FabricRegistryInit;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
@@ -38,7 +40,11 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 
 	private void registerSyncPacketReceiver(RegistryPacketHandler packetHandler) {
 		ClientConfigurationNetworking.registerGlobalReceiver(packetHandler.getPacketId(), (client, handler, buf, responseSender) ->
-				RegistrySyncManager.receivePacket(client, packetHandler, buf, RegistrySyncManager.DEBUG || !client.isInSingleplayer(), (e) -> {
+				RegistrySyncManager.receivePacket(client, packetHandler, buf, RegistrySyncManager.DEBUG || !client.isInSingleplayer(), () -> {
+					// On success
+					handler.sendPacket(ClientConfigurationNetworking.createC2SPacket(FabricRegistryInit.SYNC_COMPLETE_ID, PacketByteBufs.create()));
+				}, (e) -> {
+					// On error
 					LOGGER.error("Registry remapping failed!", e);
 					client.execute(() -> ((ClientCommonNetworkHandlerAccessor) handler).getConnection().disconnect(getText(e)));
 				}));

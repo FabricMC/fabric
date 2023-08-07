@@ -46,11 +46,13 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
  *
  * @param <H> the channel handler type
  */
-public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon<H> implements PacketSender {
+public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon<H> implements PacketSender, CommonPacketHandler {
 	protected final ClientConnection connection;
 	protected final GlobalReceiverRegistry<H> receiver;
 	protected final Set<Identifier> sendableChannels;
 	protected final Set<Identifier> sendableChannelsView;
+
+	protected int commonVersion = -1;
 
 	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, String description) {
 		this(receiver, connection, new HashSet<>(), description);
@@ -203,5 +205,61 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 
 	public Set<Identifier> getSendableChannels() {
 		return this.sendableChannelsView;
+	}
+
+	// Common packet handlers
+
+	@Override
+	public void onCommonVersionPacket(int negotiatedVersion) {
+		assert negotiatedVersion == 1; // We only support version 1 for now
+
+		commonVersion = negotiatedVersion;
+		this.logger.info("Negotiated common packet version {}", commonVersion);
+	}
+
+	@Override
+	public void onCommonRegisterPacket(CommonRegisterPayload payload) {
+		if (payload.version() != getNegotiatedVersion()) {
+			throw new IllegalStateException("Negotiated common packet version: %d but received packet with version: %d".formatted(commonVersion, payload.version()));
+		}
+
+		final String currentPhase = getPhase();
+
+		if (currentPhase == null) {
+			// We don't support receiving the register packet during this phase. See getPhase() for supported phases.
+			// The normal case where the play channels are sent during configuration is handled in the client/common configuration packet handlers.
+			logger.warn("Received common register packet for phase {} in network state: {}", payload.phase(), receiver.getState());
+			return;
+		}
+
+		if (!payload.phase().equals(currentPhase)) {
+			// We need to handle receiving the play phase during configuration!
+			throw new IllegalStateException("Register packet received for phase (%s) on handler for phase(%s)".formatted(payload.phase(), currentPhase));
+		}
+
+		schedule(() -> register(new ArrayList<>(payload.channels())));
+	}
+
+	@Override
+	public CommonRegisterPayload createRegisterPayload() {
+		return new CommonRegisterPayload(getNegotiatedVersion(), getPhase(), this.getReceivableChannels());
+	}
+
+	@Override
+	public int getNegotiatedVersion() {
+		if (commonVersion == -1) {
+			throw new IllegalStateException("Not yet negotiated common packet version");
+		}
+
+		return commonVersion;
+	}
+
+	@Nullable
+	private String getPhase() {
+		return switch (receiver.getState()) {
+		case PLAY -> CommonRegisterPayload.PLAY_PHASE;
+		case CONFIGURATION -> CommonRegisterPayload.CONFIGURATION_PHASE;
+		default -> null; // We don't support receiving this packet on any other phase
+		};
 	}
 }

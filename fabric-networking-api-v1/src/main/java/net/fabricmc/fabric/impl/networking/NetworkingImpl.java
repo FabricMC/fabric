@@ -16,23 +16,10 @@
 
 package net.fabricmc.fabric.impl.networking;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.NetworkState;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
-
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
 public final class NetworkingImpl {
 	public static final String MOD_ID = "fabric-networking-api-v1";
@@ -45,48 +32,8 @@ public final class NetworkingImpl {
 	 * Id of packet used to unregister supported channels.
 	 */
 	public static final Identifier UNREGISTER_CHANNEL = new Identifier("minecraft", "unregister");
-	/**
-	 * Id of the packet used to declare all currently supported channels.
-	 * Dynamic registration of supported channels is still allowed using {@link NetworkingImpl#REGISTER_CHANNEL} and {@link NetworkingImpl#UNREGISTER_CHANNEL}.
-	 */
-	public static final Identifier EARLY_REGISTRATION_CHANNEL = new Identifier(MOD_ID, "early_registration");
 
-	public static void init() {
-		// Login setup
-		ServerLoginConnectionEvents.QUERY_START.register((handler, server, sender, synchronizer) -> {
-			// Send early registration packet
-			PacketByteBuf buf = PacketByteBufs.create();
-			Collection<Identifier> channelsNames = ServerPlayNetworking.getGlobalReceivers();
-			buf.writeVarInt(channelsNames.size());
-
-			for (Identifier id : channelsNames) {
-				buf.writeIdentifier(id);
-			}
-
-			sender.sendPacket(EARLY_REGISTRATION_CHANNEL, buf);
-			NetworkingImpl.LOGGER.debug("Sent accepted channels to the client for \"{}\"", handler.getConnectionInfo());
-		});
-
-		ServerLoginNetworking.registerGlobalReceiver(EARLY_REGISTRATION_CHANNEL, (server, handler, understood, buf, synchronizer, sender) -> {
-			if (!understood) {
-				// The client is likely a vanilla client.
-				return;
-			}
-
-			int n = buf.readVarInt();
-			List<Identifier> ids = new ArrayList<>(n);
-
-			for (int i = 0; i < n; i++) {
-				ids.add(buf.readIdentifier());
-			}
-
-			ClientConnection connection = ((ServerLoginNetworkHandlerAccessor) handler).getConnection();
-			((ChannelInfoHolder) connection).getPendingChannelsNames(NetworkState.PLAY).addAll(ids);
-			NetworkingImpl.LOGGER.debug("Received accepted channels from the client for \"{}\"", handler.getConnectionInfo());
-		});
-	}
-
-	public static boolean isReservedPlayChannel(Identifier channelName) {
+	public static boolean isReservedCommonChannel(Identifier channelName) {
 		return channelName.equals(REGISTER_CHANNEL) || channelName.equals(UNREGISTER_CHANNEL);
 	}
 }

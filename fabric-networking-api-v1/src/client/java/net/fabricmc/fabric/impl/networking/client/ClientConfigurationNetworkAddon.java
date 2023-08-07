@@ -65,8 +65,17 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	public void onServerReady() {
-		this.sendInitialChannelRegistrationPacket();
-		this.sentInitialRegisterPacket = true;
+		// Do nothing for now
+	}
+
+	@Override
+	protected void receiveRegistration(boolean register, PacketByteBuf buf) {
+		super.receiveRegistration(register, buf);
+
+		if (register && !this.sentInitialRegisterPacket) {
+			this.sendInitialChannelRegistrationPacket();
+			this.sentInitialRegisterPacket = true;
+		}
 	}
 
 	/**
@@ -147,6 +156,6 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	protected boolean isReservedChannel(Identifier channelName) {
-		return NetworkingImpl.isReservedPlayChannel(channelName);
+		return NetworkingImpl.isReservedCommonChannel(channelName);
 	}
 }

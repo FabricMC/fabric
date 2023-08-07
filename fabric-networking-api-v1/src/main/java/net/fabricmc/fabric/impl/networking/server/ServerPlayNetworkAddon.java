@@ -138,6 +138,6 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected boolean isReservedChannel(Identifier channelName) {
-		return NetworkingImpl.isReservedPlayChannel(channelName);
+		return NetworkingImpl.isReservedCommonChannel(channelName);
 	}
 }

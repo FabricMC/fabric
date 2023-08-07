@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
+import net.minecraft.network.packet.c2s.common.PlayPongC2SPacket;
 import net.minecraft.server.network.ServerCommonNetworkHandler;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
@@ -49,6 +50,13 @@ public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerE
 			} else {
 				payload.data().skipBytes(payload.data().readableBytes());
 			}
+		}
+	}
+
+	@Inject(method = "onPlayPong", at = @At("HEAD"))
+	private void onPlayPong(PlayPongC2SPacket packet, CallbackInfo ci) {
+		if (getAddon() instanceof ServerConfigurationNetworkAddon addon) {
+			addon.onPong(packet.getParameter());
 		}
 	}
 }
