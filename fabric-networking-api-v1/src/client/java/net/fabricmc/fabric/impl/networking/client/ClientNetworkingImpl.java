@@ -28,12 +28,15 @@ import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.NetworkState;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.listener.ServerPlayPacketListener;
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
+import net.minecraft.network.listener.ServerCommonPacketListener;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -42,14 +45,17 @@ import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
+import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientLoginNetworkHandlerAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ConnectScreenAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAccessor;
 
 public final class ClientNetworkingImpl {
 	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>();
+	public static final GlobalReceiverRegistry<ClientConfigurationNetworking.ConfigurationChannelHandler> CONFIGURATION = new GlobalReceiverRegistry<>();
 	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayChannelHandler> PLAY = new GlobalReceiverRegistry<>();
 	private static ClientPlayNetworkAddon currentPlayAddon;
+	private static ClientConfigurationNetworkAddon currentConfigurationAddon;
 
 	public static ClientPlayNetworkAddon getAddon(ClientPlayNetworkHandler handler) {
 		return (ClientPlayNetworkAddon) ((NetworkHandlerExtensions) handler).getAddon();
@@ -59,8 +65,8 @@ public final class ClientNetworkingImpl {
 		return (ClientLoginNetworkAddon) ((NetworkHandlerExtensions) handler).getAddon();
 	}
 
-	public static Packet<ServerPlayPacketListener> createPlayC2SPacket(Identifier channelName, PacketByteBuf buf) {
-		return new CustomPayloadC2SPacket(channelName, buf);
+	public static Packet<ServerCommonPacketListener> createC2SPacket(Identifier channelName, PacketByteBuf buf) {
+		return new CustomPayloadC2SPacket(new PacketByteBufPayload(channelName, buf));
 	}
 
 	/**
@@ -86,6 +92,11 @@ public final class ClientNetworkingImpl {
 	}
 
 	@Nullable
+	public static ClientConfigurationNetworkAddon getClientConfigurationAddon() {
+		return currentConfigurationAddon;
+	}
+
+	@Nullable
 	public static ClientPlayNetworkAddon getClientPlayAddon() {
 		// Since Minecraft can be a bit weird, we need to check for the play addon in a few ways:
 		// If the client's player is set this will work
@@ -104,13 +115,23 @@ public final class ClientNetworkingImpl {
 	}
 
 	public static void setClientPlayAddon(ClientPlayNetworkAddon addon) {
+		assert addon == null || currentConfigurationAddon == null;
 		currentPlayAddon = addon;
+	}
+
+	public static void setClientConfigurationAddon(ClientConfigurationNetworkAddon addon) {
+		assert addon == null || currentPlayAddon == null;
+		currentConfigurationAddon = addon;
 	}
 
 	public static void clientInit() {
 		// Reference cleanup for the locally stored addon if we are disconnected
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
 			currentPlayAddon = null;
+		});
+
+		ClientConfigurationConnectionEvents.DISCONNECT.register((handler, client) -> {
+			currentConfigurationAddon = null;
 		});
 
 		// Register a login query handler for early channel registration.
@@ -123,7 +144,7 @@ public final class ClientNetworkingImpl {
 			}
 
 			ClientConnection connection = ((ClientLoginNetworkHandlerAccessor) handler).getConnection();
-			((ChannelInfoHolder) connection).getPendingChannelsNames().addAll(ids);
+			((ChannelInfoHolder) connection).getPendingChannelsNames(NetworkState.PLAY).addAll(ids);
 			NetworkingImpl.LOGGER.debug("Received accepted channels from the server");
 
 			PacketByteBuf response = PacketByteBufs.create();

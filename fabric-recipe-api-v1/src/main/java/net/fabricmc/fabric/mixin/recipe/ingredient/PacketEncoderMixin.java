@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.PacketEncoder;
+import net.minecraft.network.handler.PacketEncoder;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientSync;

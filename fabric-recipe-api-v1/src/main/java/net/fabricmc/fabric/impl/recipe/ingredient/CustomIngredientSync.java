@@ -23,13 +23,14 @@ import io.netty.channel.ChannelHandler;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.PacketEncoder;
+import net.minecraft.network.handler.PacketEncoder;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 import net.fabricmc.fabric.mixin.recipe.ingredient.PacketEncoderMixin;
 
 /**
@@ -81,21 +82,21 @@ public class CustomIngredientSync implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerLoginConnectionEvents.QUERY_START.register((handler, server, sender, synchronizer) -> {
+		ServerConfigurationConnectionEvents.SEND.register((handler, server) -> {
+			// TODO 1.20.2 canSend isnt working reliably during configuration
+			//if (!ServerConfigurationNetworking.canSend(handler, PACKET_ID)) {
+			//	return;
+			//}
+
 			// Send packet with 1 so the client can send us back the list of supported tags.
 			// 1 is sent in case we need a different protocol later for some reason.
 			PacketByteBuf buf = PacketByteBufs.create();
 			buf.writeVarInt(PROTOCOL_VERSION_1); // max supported server protocol version
-			sender.sendPacket(PACKET_ID, buf);
+			handler.sendPacket(ServerConfigurationNetworking.createS2CPacket(PACKET_ID, buf));
 		});
-		ServerLoginNetworking.registerGlobalReceiver(PACKET_ID, (server, handler, understood, buf, synchronizer, responseSender) -> {
-			if (!understood) {
-				// Skip if the client didn't understand the query.
-				return;
-			}
-
+		ServerConfigurationNetworking.registerGlobalReceiver(PACKET_ID, (server, handler, buf, responseSender) -> {
 			Set<Identifier> supportedCustomIngredients = decodeResponsePacket(buf);
-			ChannelHandler packetEncoder = handler.connection.channel.pipeline().get("encoder");
+			ChannelHandler packetEncoder = ((ServerCommonNetworkHandlerAccessor) handler).getConnection().channel.pipeline().get("encoder");
 
 			if (packetEncoder != null) { // Null in singleplayer
 				((SupportedIngredientsPacketEncoder) packetEncoder).fabric_setSupportedCustomIngredients(supportedCustomIngredients);

@@ -30,10 +30,10 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.impl.registry.sync.ConfiguringServerPlayer;
 
 /**
  * A more optimized method to sync registry ids to client.
@@ -73,7 +73,7 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 	}
 
 	@Override
-	public void sendPacket(ServerPlayerEntity player, Map<Identifier, Object2IntMap<Identifier>> registryMap) {
+	public void sendPacket(ConfiguringServerPlayer player, Map<Identifier, Object2IntMap<Identifier>> registryMap) {
 		PacketByteBuf buf = PacketByteBufs.create();
 
 		// Group registry ids with same namespace.

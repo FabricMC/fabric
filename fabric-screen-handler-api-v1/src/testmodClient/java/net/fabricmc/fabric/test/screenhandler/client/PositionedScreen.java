@@ -48,7 +48,7 @@ public class PositionedScreen extends HandledScreen<ScreenHandler> {
 
 	@Override
 	public void render(DrawContext drawContext, int mouseX, int mouseY, float delta) {
-		renderBackground(drawContext);
+		renderBackground(drawContext, mouseX, mouseY, delta);
 		super.render(drawContext, mouseX, mouseY, delta);
 		drawMouseoverTooltip(drawContext, mouseX, mouseY);
 	}

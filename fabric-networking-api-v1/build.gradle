@@ -7,3 +7,7 @@ testDependencies(project, [
 	':fabric-lifecycle-events-v1',
 	':fabric-key-binding-api-v1'
 ])
+
+loom {
+	accessWidenerPath = file('src/main/resources/fabric-networking-api-v1.accesswidener')
+}

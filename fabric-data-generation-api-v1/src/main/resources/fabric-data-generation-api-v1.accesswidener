@@ -232,7 +232,7 @@ transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	buildBlockStateVariants	(Ljava/util/List;Ljava/util/function/UnaryOperator;)Ljava/util/List;
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerLantern	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerTopSoil	(Lnet/minecraft/block/Block;Lnet/minecraft/util/Identifier;Lnet/minecraft/data/client/BlockStateVariant;)V
-transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerPressurePlate	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerWeightedPressurePlate	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerParented	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerNorthDefaultHorizontalRotation	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerPiston	(Lnet/minecraft/block/Block;Lnet/minecraft/util/Identifier;Lnet/minecraft/data/client/TextureMap;)V

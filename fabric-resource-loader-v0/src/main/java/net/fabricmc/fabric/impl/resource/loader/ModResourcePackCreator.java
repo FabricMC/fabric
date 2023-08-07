@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import net.minecraft.resource.OverlayResourcePack;
+import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
@@ -79,9 +81,33 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			// Mod resource packs must always be enabled to avoid issues, and they are inserted
 			// on top to ensure that they are applied after vanilla built-in resource packs.
 			MutableText title = Text.translatable("pack.name.fabricMods");
-			ResourcePackProfile resourcePackProfile = ResourcePackProfile.create("fabric", title,
-					true, factory -> new FabricModResourcePack(this.type, packs), type, ResourcePackProfile.InsertionPosition.TOP,
-					RESOURCE_PACK_SOURCE);
+			ResourcePackProfile resourcePackProfile = ResourcePackProfile.create("fabric", title, true, new ResourcePackProfile.PackFactory() {
+				@Override
+				public ResourcePack open(String name) {
+					return new FabricModResourcePack(type, packs);
+				}
+
+				@Override
+				public ResourcePack openWithOverlays(String name, ResourcePackProfile.Metadata metadata) {
+					final ResourcePack basePack = open(name);
+					final List<String> overlays = metadata.overlays();
+
+					if (overlays.isEmpty()) {
+						return basePack;
+					}
+
+					final List<ResourcePack> overlayedPacks = new ArrayList<>(overlays.size());
+
+					for (String overlay : overlays) {
+						List<ModResourcePack> innerPacks = new ArrayList<>();
+						ModResourcePackUtil.appendModResourcePacks(innerPacks, type, overlay);
+
+						overlayedPacks.add(new FabricModResourcePack(type, innerPacks));
+					}
+
+					return new OverlayResourcePack(basePack, overlayedPacks);
+				}
+			}, type, ResourcePackProfile.InsertionPosition.TOP, RESOURCE_PACK_SOURCE);
 
 			if (resourcePackProfile != null) {
 				consumer.accept(resourcePackProfile);

@@ -49,7 +49,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -74,15 +74,19 @@ public final class RegistrySyncManager {
 
 	private RegistrySyncManager() { }
 
-	public static void sendPacket(MinecraftServer server, ServerPlayerEntity player) {
-		if (!DEBUG && server.isHost(player.getGameProfile())) {
+	public static void configureClient(ServerConfigurationNetworkHandler handler, MinecraftServer server) {
+		sendPacket(server, new ConfiguringServerPlayer(handler.getDebugProfile(), handler::sendPacket));
+	}
+
+	static void sendPacket(MinecraftServer server, ConfiguringServerPlayer player) {
+		if (!DEBUG && server.isHost(player.gameProfile())) {
 			return;
 		}
 
 		sendPacket(player, DIRECT_PACKET_HANDLER);
 	}
 
-	private static void sendPacket(ServerPlayerEntity player, RegistryPacketHandler handler) {
+	private static void sendPacket(ConfiguringServerPlayer player, RegistryPacketHandler handler) {
 		Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap(true, null);
 
 		if (map != null) {
