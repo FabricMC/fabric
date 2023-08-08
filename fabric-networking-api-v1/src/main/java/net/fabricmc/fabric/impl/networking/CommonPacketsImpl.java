@@ -19,7 +19,6 @@ package net.fabricmc.fabric.impl.networking;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkState;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
@@ -28,7 +27,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
 public class CommonPacketsImpl {
 	public static final int PACKET_VERSION_1 = 1;
@@ -52,8 +50,7 @@ public class CommonPacketsImpl {
 				}
 
 				// Play phase hasnt started yet, add them to the pending names.
-				ClientConnection connection = ((ServerLoginNetworkHandlerAccessor) handler).getConnection();
-				((ChannelInfoHolder) connection).getPendingChannelsNames(NetworkState.PLAY).addAll(payload.channels());
+				addon.getChannelInfoHolder().getPendingChannelsNames(NetworkState.PLAY).addAll(payload.channels());
 				NetworkingImpl.LOGGER.debug("Received accepted channels from the client for play phase");
 			} else {
 				addon.onCommonRegisterPacket(payload);
@@ -111,7 +108,7 @@ public class CommonPacketsImpl {
 		int[] commonlySupportedVersion = intersection(payload.versions(), SUPPORTED_COMMON_PACKET_VERSIONS);
 
 		if (commonlySupportedVersion.length == 0) {
-			throw new UnsupportedOperationException("");
+			throw new UnsupportedOperationException("server does not support any requested versions from client");
 		}
 
 		return largest(commonlySupportedVersion);

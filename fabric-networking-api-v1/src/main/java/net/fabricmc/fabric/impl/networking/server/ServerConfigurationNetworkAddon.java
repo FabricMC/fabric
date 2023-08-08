@@ -37,6 +37,7 @@ import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
+import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
 public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetworkAddon<ServerConfigurationNetworking.ConfigurationChannelHandler> {
 	/**
@@ -187,5 +188,9 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 		SENT,
 		RECEIVED,
 		NOT_RECEIVED
+	}
+
+	public ChannelInfoHolder getChannelInfoHolder() {
+		return (ChannelInfoHolder) ((ServerLoginNetworkHandlerAccessor) handler).getConnection();
 	}
 }

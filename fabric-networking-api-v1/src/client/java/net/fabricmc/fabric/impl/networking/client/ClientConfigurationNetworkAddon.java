@@ -37,6 +37,7 @@ import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonNetworkHandlerAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientConfigurationNetworkHandlerAccessor;
+import net.fabricmc.fabric.mixin.networking.client.accessor.ClientLoginNetworkHandlerAccessor;
 
 public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetworkAddon<ClientConfigurationNetworking.ConfigurationChannelHandler> {
 	private final ClientConfigurationNetworkHandler handler;
@@ -157,5 +158,9 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 	@Override
 	protected boolean isReservedChannel(Identifier channelName) {
 		return NetworkingImpl.isReservedCommonChannel(channelName);
+	}
+
+	public ChannelInfoHolder getChannelInfoHolder() {
+		return (ChannelInfoHolder) ((ClientLoginNetworkHandlerAccessor) handler).getConnection();
 	}
 }

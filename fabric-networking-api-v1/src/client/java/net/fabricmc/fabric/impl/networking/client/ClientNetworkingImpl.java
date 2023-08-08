@@ -37,15 +37,13 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.CommonPacketsImpl;
+import net.fabricmc.fabric.impl.networking.CommonRegisterPayload;
+import net.fabricmc.fabric.impl.networking.CommonVersionPayload;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.impl.networking.CommonRegisterPayload;
-import net.fabricmc.fabric.impl.networking.CommonVersionPayload;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
-import net.fabricmc.fabric.mixin.networking.client.accessor.ClientLoginNetworkHandlerAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ConnectScreenAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAccessor;
 
@@ -154,8 +152,7 @@ public final class ClientNetworkingImpl {
 					throw new IllegalStateException("Negotiated common packet version: %d but received packet with version: %d".formatted(addon.getNegotiatedVersion(), payload.version()));
 				}
 
-				ClientConnection connection = ((ClientLoginNetworkHandlerAccessor) handler).getConnection();
-				((ChannelInfoHolder) connection).getPendingChannelsNames(NetworkState.PLAY).addAll(payload.channels());
+				addon.getChannelInfoHolder().getPendingChannelsNames(NetworkState.PLAY).addAll(payload.channels());
 				NetworkingImpl.LOGGER.debug("Received accepted channels from the server");
 				responseSender.sendPacket(new CommonRegisterPayload(addon.getNegotiatedVersion(), CommonRegisterPayload.PLAY_PHASE, ClientPlayNetworking.getGlobalReceivers()));
 			} else {
@@ -172,7 +169,7 @@ public final class ClientNetworkingImpl {
 		int[] commonlySupportedVersion = CommonPacketsImpl.intersection(payload.versions(), CommonPacketsImpl.SUPPORTED_COMMON_PACKET_VERSIONS);
 
 		if (commonlySupportedVersion.length == 0) {
-			throw new UnsupportedOperationException("");
+			throw new UnsupportedOperationException("Client does not support any requested versions from server");
 		}
 
 		packetSender.sendPacket(new CommonVersionPayload(commonlySupportedVersion));
