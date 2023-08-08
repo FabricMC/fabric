@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.client.networking.v1;
 import java.util.List;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -29,9 +29,9 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 /**
  * Offers access to events related to the indication of a connected server's ability to receive packets in certain channels.
  */
-public final class C2SPlayChannelEvents {
+public final class C2SConfigurationChannelEvents {
 	/**
-	 * An event for the client play network handler receiving an update indicating the connected server's ability to receive packets in certain channels.
+	 * An event for the client configuration network handler receiving an update indicating the connected server's ability to receive packets in certain channels.
 	 * This event may be invoked at any time after login and up to disconnection.
 	 */
 	public static final Event<Register> REGISTER = EventFactory.createArrayBacked(Register.class, callbacks -> (handler, sender, client, channels) -> {
@@ -41,7 +41,7 @@ public final class C2SPlayChannelEvents {
 	});
 
 	/**
-	 * An event for the client play network handler receiving an update indicating the connected server's lack of ability to receive packets in certain channels.
+	 * An event for the client configuration network handler receiving an update indicating the connected server's lack of ability to receive packets in certain channels.
 	 * This event may be invoked at any time after login and up to disconnection.
 	 */
 	public static final Event<Unregister> UNREGISTER = EventFactory.createArrayBacked(Unregister.class, callbacks -> (handler, sender, client, channels) -> {
@@ -50,22 +50,22 @@ public final class C2SPlayChannelEvents {
 		}
 	});
 
-	private C2SPlayChannelEvents() {
+	private C2SConfigurationChannelEvents() {
 	}
 
 	/**
-	 * @see C2SPlayChannelEvents#REGISTER
+	 * @see C2SConfigurationChannelEvents#REGISTER
 	 */
 	@FunctionalInterface
 	public interface Register {
-		void onChannelRegister(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client, List<Identifier> channels);
+		void onChannelRegister(ClientConfigurationNetworkHandler handler, PacketSender sender, MinecraftClient client, List<Identifier> channels);
 	}
 
 	/**
-	 * @see C2SPlayChannelEvents#UNREGISTER
+	 * @see C2SConfigurationChannelEvents#UNREGISTER
 	 */
 	@FunctionalInterface
 	public interface Unregister {
-		void onChannelUnregister(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client, List<Identifier> channels);
+		void onChannelUnregister(ClientConfigurationNetworkHandler handler, PacketSender sender, MinecraftClient client, List<Identifier> channels);
 	}
 }
