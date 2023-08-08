@@ -57,7 +57,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
  *
  * @see ServerPlayNetworking#registerGlobalReceiver(PacketType, ServerPlayNetworking.PlayPacketHandler)
  * @see ServerPlayNetworking#send(ServerPlayerEntity, PacketType, FabricPacket)
- * @see PacketSender#sendPacket(PacketType, FabricPacket)
+ * @see PacketSender#sendPacket(FabricPacket)
  */
 public interface FabricPacket {
 	/**

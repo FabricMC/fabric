@@ -60,7 +60,7 @@ public class CommonPacketsImpl {
 		});
 
 		// Create a configuration task to send and receive the common packets
-		ServerConfigurationConnectionEvents.SEND.register((handler, server) -> {
+		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
 			final ServerConfigurationNetworkAddon addon = ServerNetworkingImpl.getAddon(handler);
 
 			if (ServerConfigurationNetworking.canSend(handler, CommonVersionPayload.PACKET_ID)) {

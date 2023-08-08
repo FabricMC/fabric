@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.mixin.networking;
 
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -71,9 +70,6 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 	@Unique
 	private boolean earlyTaskExecution;
 
-	@Unique
-	private final Queue<ServerPlayerConfigurationTask> earlyTasks = new ConcurrentLinkedQueue<>();
-
 	public ServerConfigurationNetworkHandlerMixin(MinecraftServer server, ClientConnection connection, int keepAliveId) {
 		super(server, connection, keepAliveId);
 	}
@@ -96,8 +92,7 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 
 		// Ready to start sending packets
 		if (!sentConfiguration) {
-			// TODO are we happy for mods to send packets here? Maybe have 2 events
-			this.addon.sendConfiguration();
+			this.addon.preConfiguration();
 			sentConfiguration = true;
 			earlyTaskExecution = true;
 		}
@@ -112,7 +107,12 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 			}
 		}
 
+		// All early tasks should have been completed
+		assert currentTask == null;
+		assert tasks.isEmpty();
+
 		// Run the vanilla tasks.
+		this.addon.configuration();
 	}
 
 	@Unique
@@ -129,7 +129,7 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 			return false;
 		}
 
-		final ServerPlayerConfigurationTask task = this.earlyTasks.poll();
+		final ServerPlayerConfigurationTask task = this.tasks.poll();
 
 		if (task != null) {
 			this.currentTask = task;
@@ -153,12 +153,6 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 	@Override
 	public Packet<?> createDisconnectPacket(Text message) {
 		return new DisconnectS2CPacket(message);
-	}
-
-	@Override
-	public void addEarlyTask(ServerPlayerConfigurationTask task) {
-		assert earlyTaskExecution;
-		earlyTasks.add(task);
 	}
 
 	@Override

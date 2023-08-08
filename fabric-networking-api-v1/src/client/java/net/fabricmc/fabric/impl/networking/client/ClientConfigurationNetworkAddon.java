@@ -31,6 +31,7 @@ import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
@@ -108,6 +109,11 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 	@Override
 	public Packet<?> createPacket(Identifier channelName, PacketByteBuf buf) {
 		return ClientPlayNetworking.createC2SPacket(channelName, buf);
+	}
+
+	@Override
+	public Packet<?> createPacket(FabricPacket packet) {
+		return ClientPlayNetworking.createC2SPacket(packet);
 	}
 
 	@Override

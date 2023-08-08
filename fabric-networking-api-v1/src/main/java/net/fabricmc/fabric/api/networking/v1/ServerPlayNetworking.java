@@ -390,6 +390,16 @@ public final class ServerPlayNetworking {
 	}
 
 	/**
+	 * Creates a packet which may be sent to a connected client.
+	 *
+	 * @param packet the fabric packet
+	 * @return a new packet
+	 */
+	public static <T extends FabricPacket> Packet<ClientCommonPacketListener> createS2CPacket(T packet) {
+		return ServerNetworkingImpl.createC2SPacket(packet);
+	}
+
+	/**
 	 * Gets the packet sender which sends packets to the connected client.
 	 *
 	 * @param player the player
@@ -439,9 +449,7 @@ public final class ServerPlayNetworking {
 		Objects.requireNonNull(packet, "Packet cannot be null");
 		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
 
-		PacketByteBuf buf = PacketByteBufs.create();
-		packet.write(buf);
-		player.networkHandler.sendPacket(createS2CPacket(packet.getType().getId(), buf));
+		player.networkHandler.sendPacket(createS2CPacket(packet));
 	}
 
 	// Helper methods

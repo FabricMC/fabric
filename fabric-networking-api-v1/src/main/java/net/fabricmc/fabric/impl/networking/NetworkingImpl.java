@@ -21,9 +21,16 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.loader.api.FabricLoader;
+
 public final class NetworkingImpl {
 	public static final String MOD_ID = "fabric-networking-api-v1";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	/**
+	 * When enabled the fabric packet is written to the {@link net.minecraft.network.PacketByteBuf} on the calling thread.
+	 * This is enabled by default in a development environment to test the writing when in single player.
+	 */
+	public static final boolean WRITE_FABRIC_PACKET_CALLING_THREAD = Boolean.parseBoolean(System.getProperty("fabric-api.networking.write-fabric-packet-calling-thread", FabricLoader.getInstance().isDevelopmentEnvironment() ? "false" : "false"));
 	/**
 	 * Id of packet used to register supported channels.
 	 */

@@ -30,10 +30,21 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @ApiStatus.Experimental
 public class ServerConfigurationConnectionEvents {
 	/**
-	 * Event indicating a connection began sending configuration packets.
+	 * Event fired before any vanilla configuration has taken place.
+	 *
+	 * <p>Task queued during this event will complete before vanilla configuration starts.
 	 */
-	public static final Event<Send> SEND = EventFactory.createArrayBacked(Send.class, callbacks -> (handler, server) -> {
-		for (Send callback : callbacks) {
+	public static final Event<Configure> PRE_CONFIGURE = EventFactory.createArrayBacked(Configure.class, callbacks -> (handler, server) -> {
+		for (Configure callback : callbacks) {
+			callback.onSendConfiguration(handler, server);
+		}
+	});
+
+	/**
+	 * Event fired during vanilla configuration.
+	 */
+	public static final Event<Configure> CONFIGURE = EventFactory.createArrayBacked(Configure.class, callbacks -> (handler, server) -> {
+		for (Configure callback : callbacks) {
 			callback.onSendConfiguration(handler, server);
 		}
 	});
@@ -50,7 +61,7 @@ public class ServerConfigurationConnectionEvents {
 	});
 
 	@FunctionalInterface
-	public interface Send {
+	public interface Configure {
 		void onSendConfiguration(ServerConfigurationNetworkHandler handler, MinecraftServer server);
 	}
 

@@ -26,11 +26,11 @@ import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 
 public class FabricRegistryInit implements ModInitializer {
-	public static final Identifier SYNC_COMPLETE_ID = new Identifier("");
+	public static final Identifier SYNC_COMPLETE_ID = new Identifier("fabric", "registry/sync/complete");
 
 	@Override
 	public void onInitialize() {
-		ServerConfigurationConnectionEvents.SEND.register(RegistrySyncManager::configureClient);
+		ServerConfigurationConnectionEvents.PRE_CONFIGURE.register(RegistrySyncManager::configureClient);
 		ServerConfigurationNetworking.registerGlobalReceiver(SYNC_COMPLETE_ID, (server, handler, buf, responseSender) -> {
 			handler.completeTask(RegistrySyncManager.SyncConfigurationTask.KEY);
 		});

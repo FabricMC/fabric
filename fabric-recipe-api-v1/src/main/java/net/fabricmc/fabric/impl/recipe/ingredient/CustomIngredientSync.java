@@ -85,7 +85,7 @@ public class CustomIngredientSync implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerConfigurationConnectionEvents.SEND.register((handler, server) -> {
+		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
 			if (ServerConfigurationNetworking.canSend(handler, PACKET_ID)) {
 				handler.addTask(new IngredientSyncTask());
 			}

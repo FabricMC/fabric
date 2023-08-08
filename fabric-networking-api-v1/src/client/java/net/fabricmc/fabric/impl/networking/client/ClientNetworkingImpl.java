@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.networking.client;
 
+import java.util.Objects;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
@@ -36,6 +38,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworkin
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.impl.networking.CommonPacketsImpl;
 import net.fabricmc.fabric.impl.networking.CommonRegisterPayload;
@@ -43,6 +47,7 @@ import net.fabricmc.fabric.impl.networking.CommonVersionPayload;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
+import net.fabricmc.fabric.impl.networking.payload.FabricPacketPayload;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ConnectScreenAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAccessor;
@@ -68,6 +73,19 @@ public final class ClientNetworkingImpl {
 
 	public static Packet<ServerCommonPacketListener> createC2SPacket(Identifier channelName, PacketByteBuf buf) {
 		return new CustomPayloadC2SPacket(new PacketByteBufPayload(channelName, buf));
+	}
+
+	public static Packet<ServerCommonPacketListener> createC2SPacket(FabricPacket packet) {
+		Objects.requireNonNull(packet, "Packet cannot be null");
+		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
+
+		if (NetworkingImpl.WRITE_FABRIC_PACKET_CALLING_THREAD) {
+			PacketByteBuf buf = PacketByteBufs.create();
+			packet.write(buf);
+			return createC2SPacket(packet.getType().getId(), buf);
+		}
+
+		return new CustomPayloadC2SPacket(new FabricPacketPayload(packet));
 	}
 
 	/**

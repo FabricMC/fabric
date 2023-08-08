@@ -27,6 +27,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.S2CPlayChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -94,6 +95,11 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	public Packet<?> createPacket(Identifier channelName, PacketByteBuf buf) {
 		return ServerPlayNetworking.createS2CPacket(channelName, buf);
+	}
+
+	@Override
+	public Packet<?> createPacket(FabricPacket packet) {
+		return ServerPlayNetworking.createS2CPacket(packet);
 	}
 
 	@Override

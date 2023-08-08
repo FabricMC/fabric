@@ -29,6 +29,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -40,10 +41,6 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerA
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
 public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetworkAddon<ServerConfigurationNetworking.ConfigurationChannelHandler> {
-	/**
-	 * Magic int used to listen for the pong.
-	 */
-	private final int PING_ID = 0xFAB71C;
 	private final ServerConfigurationNetworkHandler handler;
 	private final MinecraftServer server;
 	private RegisterState registerState = RegisterState.NOT_SENT;
@@ -67,15 +64,19 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 		}
 	}
 
-	public void sendConfiguration() {
-		ServerConfigurationConnectionEvents.SEND.invoker().onSendConfiguration(handler, server);
+	public void preConfiguration() {
+		ServerConfigurationConnectionEvents.CONFIGURE.invoker().onSendConfiguration(handler, server);
+	}
+
+	public void configuration() {
+		ServerConfigurationConnectionEvents.CONFIGURE.invoker().onSendConfiguration(handler, server);
 	}
 
 	public boolean startConfiguration() {
 		if (this.registerState == RegisterState.NOT_SENT) {
 			// Send the registration packet, followed by a ping
 			this.sendInitialChannelRegistrationPacket();
-			this.sendPacket(new PlayPingS2CPacket(PING_ID));
+			this.sendPacket(new PlayPingS2CPacket(0xFAB71C));
 
 			this.registerState = RegisterState.SENT;
 
@@ -100,7 +101,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	public void onPong(int parameter) {
-		if (parameter == PING_ID && registerState == RegisterState.SENT) {
+		if (registerState == RegisterState.SENT) {
 			// We did not receive the registration packet, thus we think this is a vanilla client, continue with configuration.
 			registerState = RegisterState.NOT_RECEIVED;
 			handler.sendConfigurations();
@@ -132,6 +133,11 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	@Override
 	public Packet<?> createPacket(Identifier channelName, PacketByteBuf buf) {
 		return ServerPlayNetworking.createS2CPacket(channelName, buf);
+	}
+
+	@Override
+	public Packet<?> createPacket(FabricPacket packet) {
+		return ServerPlayNetworking.createS2CPacket(packet);
 	}
 
 	@Override

@@ -25,14 +25,7 @@ import net.minecraft.server.network.ServerPlayerConfigurationTask;
  */
 public interface FabricServerConfigurationNetworkHandler {
 	/**
-	 *
-	 * @param task
-	 */
-	default void addEarlyTask(ServerPlayerConfigurationTask task) {
-		throw new UnsupportedOperationException("Implemented via mixin");
-	}
-
-	/**
+	 * Enqueue a {@link ServerPlayerConfigurationTask} task to be processed.
 	 *
 	 * @param task
 	 */
