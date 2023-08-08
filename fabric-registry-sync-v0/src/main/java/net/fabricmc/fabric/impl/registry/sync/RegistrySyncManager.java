@@ -26,6 +26,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.function.Consumer;
 
 import com.google.common.base.Joiner;
@@ -75,20 +77,35 @@ public final class RegistrySyncManager {
 	private RegistrySyncManager() { }
 
 	public static void configureClient(ServerConfigurationNetworkHandler handler, MinecraftServer server) {
-		if (ServerConfigurationNetworking.canSend(handler, DIRECT_PACKET_HANDLER.getPacketId())) {
-			handler.addTask(new SyncConfigurationTask(handler, server));
+		if (!DEBUG && server.isHost(handler.getDebugProfile())) {
+			// Dont send in singleplayer
+			return;
 		}
+
+		if (!ServerConfigurationNetworking.canSend(handler, DIRECT_PACKET_HANDLER.getPacketId())) {
+			// Don't send if the client cannot receive
+			return;
+		}
+
+		final Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap(true, null);
+
+		if (map == null) {
+			// Don't send when there is nothing to map
+			return;
+		}
+
+		handler.addTask(new SyncConfigurationTask(handler, map));
 	}
 
 	public record SyncConfigurationTask(
 			ServerConfigurationNetworkHandler handler,
-			MinecraftServer server
+			Map<Identifier, Object2IntMap<Identifier>> map
 	) implements ServerPlayerConfigurationTask {
 		public static final Key KEY = new Key("fabric:registry/sync");
 
 		@Override
 		public void sendPacket(Consumer<Packet<?>> sender) {
-			RegistrySyncManager.sendPacket(server, new ConfiguringServerPlayer(handler.getDebugProfile(), handler::sendPacket));
+			DIRECT_PACKET_HANDLER.sendPacket(handler::sendPacket, map);
 		}
 
 		@Override
@@ -97,27 +114,11 @@ public final class RegistrySyncManager {
 		}
 	}
 
-	static void sendPacket(MinecraftServer server, ConfiguringServerPlayer player) {
-		if (!DEBUG && server.isHost(player.gameProfile())) {
-			return;
-		}
-
-		sendPacket(player, DIRECT_PACKET_HANDLER);
-	}
-
-	private static void sendPacket(ConfiguringServerPlayer player, RegistryPacketHandler handler) {
-		Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap(true, null);
-
-		if (map != null) {
-			handler.sendPacket(player, map);
-		}
-	}
-
-	public static void receivePacket(ThreadExecutor<?> executor, RegistryPacketHandler handler, PacketByteBuf buf, boolean accept, Runnable completionHandler, Consumer<Exception> errorHandler) {
+	public static CompletableFuture<Boolean> receivePacket(ThreadExecutor<?> executor, RegistryPacketHandler handler, PacketByteBuf buf, boolean accept) {
 		handler.receivePacket(buf);
 
 		if (!handler.isPacketFinished()) {
-			return;
+			return CompletableFuture.completedFuture(false);
 		}
 
 		if (DEBUG) {
@@ -129,23 +130,22 @@ public final class RegistrySyncManager {
 
 		Map<Identifier, Object2IntMap<Identifier>> map = handler.getSyncedRegistryMap();
 
-		if (accept) {
-			executor.submit(() -> {
-				if (map == null) {
-					errorHandler.accept(new RemapException("Received null map in sync packet!"));
-					return null;
-				}
-
-				try {
-					apply(map, RemappableRegistry.RemapMode.REMOTE);
-					completionHandler.run();
-				} catch (RemapException e) {
-					errorHandler.accept(e);
-				}
-
-				return null;
-			});
+		if (!accept) {
+			return CompletableFuture.completedFuture(true);
 		}
+
+		return executor.submit(() -> {
+			if (map == null) {
+				throw new CompletionException(new RemapException("Received null map in sync packet!"));
+			}
+
+			try {
+				apply(map, RemappableRegistry.RemapMode.REMOTE);
+				return true;
+			} catch (RemapException e) {
+				throw new CompletionException(e);
+			}
+		});
 	}
 
 	/**

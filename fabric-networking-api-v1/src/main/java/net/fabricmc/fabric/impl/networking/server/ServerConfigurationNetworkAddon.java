@@ -142,10 +142,12 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	protected void invokeRegisterEvent(List<Identifier> ids) {
+		// TODO
 	}
 
 	@Override
 	protected void invokeUnregisterEvent(List<Identifier> ids) {
+		// TODO
 	}
 
 	@Override

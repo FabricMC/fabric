@@ -50,20 +50,14 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	protected final ClientConnection connection;
 	protected final GlobalReceiverRegistry<H> receiver;
 	protected final Set<Identifier> sendableChannels;
-	protected final Set<Identifier> sendableChannelsView;
 
 	protected int commonVersion = -1;
 
 	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, String description) {
-		this(receiver, connection, new HashSet<>(), description);
-	}
-
-	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, Set<Identifier> sendableChannels, String description) {
 		super(receiver, description);
 		this.connection = connection;
 		this.receiver = receiver;
-		this.sendableChannels = sendableChannels;
-		this.sendableChannelsView = Collections.unmodifiableSet(sendableChannels);
+		this.sendableChannels = Collections.synchronizedSet(new HashSet<>());
 	}
 
 	public abstract void lateInit();
@@ -159,17 +153,22 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		}
 
 		this.addId(ids, active);
-		this.schedule(register ? () -> register(ids) : () -> unregister(ids));
+
+		if (register) {
+			register(ids);
+		} else {
+			unregister(ids);
+		}
 	}
 
 	void register(List<Identifier> ids) {
 		this.sendableChannels.addAll(ids);
-		this.invokeRegisterEvent(ids);
+		schedule(() -> this.invokeRegisterEvent(ids));
 	}
 
 	void unregister(List<Identifier> ids) {
 		this.sendableChannels.removeAll(ids);
-		this.invokeUnregisterEvent(ids);
+		schedule(() -> this.invokeUnregisterEvent(ids));
 	}
 
 	@Override
@@ -204,7 +203,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	public Set<Identifier> getSendableChannels() {
-		return this.sendableChannelsView;
+		return Collections.unmodifiableSet(this.sendableChannels);
 	}
 
 	// Common packet handlers
@@ -237,7 +236,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 			throw new IllegalStateException("Register packet received for phase (%s) on handler for phase(%s)".formatted(payload.phase(), currentPhase));
 		}
 
-		schedule(() -> register(new ArrayList<>(payload.channels())));
+		register(new ArrayList<>(payload.channels()));
 	}
 
 	@Override
