@@ -26,9 +26,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 import com.google.common.base.Joiner;
@@ -133,25 +130,21 @@ public final class RegistrySyncManager {
 		Map<Identifier, Object2IntMap<Identifier>> map = handler.getSyncedRegistryMap();
 
 		if (accept) {
-			try {
-				executor.submit(() -> {
-					if (map == null) {
-						errorHandler.accept(new RemapException("Received null map in sync packet!"));
-						return null;
-					}
-
-					try {
-						apply(map, RemappableRegistry.RemapMode.REMOTE);
-						completionHandler.run();
-					} catch (RemapException e) {
-						errorHandler.accept(e);
-					}
-
+			executor.submit(() -> {
+				if (map == null) {
+					errorHandler.accept(new RemapException("Received null map in sync packet!"));
 					return null;
-				}).get(30, TimeUnit.SECONDS);
-			} catch (ExecutionException | InterruptedException | TimeoutException e) {
-				errorHandler.accept(e);
-			}
+				}
+
+				try {
+					apply(map, RemappableRegistry.RemapMode.REMOTE);
+					completionHandler.run();
+				} catch (RemapException e) {
+					errorHandler.accept(e);
+				}
+
+				return null;
+			});
 		}
 	}
 
