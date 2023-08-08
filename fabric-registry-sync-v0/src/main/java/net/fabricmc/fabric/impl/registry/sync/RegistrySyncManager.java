@@ -79,7 +79,7 @@ public final class RegistrySyncManager {
 
 	public static void configureClient(ServerConfigurationNetworkHandler handler, MinecraftServer server) {
 		if (ServerConfigurationNetworking.canSend(handler, DIRECT_PACKET_HANDLER.getPacketId())) {
-			handler.addEarlyTask(new SyncConfigurationTask(handler, server));
+			handler.addTask(new SyncConfigurationTask(handler, server));
 		}
 	}
 
