@@ -34,7 +34,7 @@ public class ServerConfigurationConnectionEvents {
 	 *
 	 * <p>Task queued during this event will complete before vanilla configuration starts.
 	 */
-	public static final Event<Configure> PRE_CONFIGURE = EventFactory.createArrayBacked(Configure.class, callbacks -> (handler, server) -> {
+	public static final Event<Configure> BEFORE_CONFIGURE = EventFactory.createArrayBacked(Configure.class, callbacks -> (handler, server) -> {
 		for (Configure callback : callbacks) {
 			callback.onSendConfiguration(handler, server);
 		}

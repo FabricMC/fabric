@@ -65,7 +65,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	public void preConfiguration() {
-		ServerConfigurationConnectionEvents.PRE_CONFIGURE.invoker().onSendConfiguration(handler, server);
+		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.invoker().onSendConfiguration(handler, server);
 	}
 
 	public void configuration() {

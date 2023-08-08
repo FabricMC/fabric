@@ -30,7 +30,7 @@ public class FabricRegistryInit implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerConfigurationConnectionEvents.PRE_CONFIGURE.register(RegistrySyncManager::configureClient);
+		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register(RegistrySyncManager::configureClient);
 		ServerConfigurationNetworking.registerGlobalReceiver(SYNC_COMPLETE_ID, (server, handler, buf, responseSender) -> {
 			handler.completeTask(RegistrySyncManager.SyncConfigurationTask.KEY);
 		});
