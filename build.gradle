@@ -657,7 +657,6 @@ publishing {
 			pom.withXml {
 				def depsNode = asNode().appendNode("dependencies")
 				subprojects.each {
-					// Dont depend on the deprecated modules in the main artifact.
 					if (it.path.startsWith(":deprecated")) {
 						return
 					}
@@ -668,6 +667,13 @@ publishing {
 					depNode.appendNode("version", it.version)
 					depNode.appendNode("scope", "compile")
 				}
+
+				// Depend on the deprecated BOM to allow opting out of deprecated modules.
+				def depNode = depsNode.appendNode("dependency")
+				depNode.appendNode("groupId", group)
+				depNode.appendNode("artifactId", "fabric-api-deprecated")
+				depNode.appendNode("version", version)
+				depNode.appendNode("scope", "compile")
 			}
 		}
 	}
