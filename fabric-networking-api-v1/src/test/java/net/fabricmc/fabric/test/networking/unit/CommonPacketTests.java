@@ -273,6 +273,41 @@ public class CommonPacketTests {
 		verify(serverAddon, times(1)).onCommonRegisterPacket(any());
 	}
 
+	@Test
+	public void testHighestCommonVersionWithCommonElement() {
+		int[] a = {1, 2, 3};
+		int[] b = {1, 2};
+		assertEquals(2, CommonPacketsImpl.getHighestCommonVersion(a, b));
+	}
+
+	@Test
+	public void testHighestCommonVersionWithoutCommonElement() {
+		int[] a = {1, 3, 5};
+		int[] b = {2, 4, 6};
+		assertEquals(-1, CommonPacketsImpl.getHighestCommonVersion(a, b));
+	}
+
+	@Test
+	public void testHighestCommonVersionWithOneEmptyArray() {
+		int[] a = {1, 3, 5};
+		int[] b = {};
+		assertEquals(-1, CommonPacketsImpl.getHighestCommonVersion(a, b));
+	}
+
+	@Test
+	public void testHighestCommonVersionWithBothEmptyArrays() {
+		int[] a = {};
+		int[] b = {};
+		assertEquals(-1, CommonPacketsImpl.getHighestCommonVersion(a, b));
+	}
+
+	@Test
+	public void testHighestCommonVersionWithIdenticalArrays() {
+		int[] a = {1, 2, 3};
+		int[] b = {1, 2, 3};
+		assertEquals(3, CommonPacketsImpl.getHighestCommonVersion(a, b));
+	}
+
 	private static PacketByteBuf readResponse(PacketSender packetSender) {
 		ArgumentCaptor<CustomPayload> responseCaptor = ArgumentCaptor.forClass(CustomPayload.class);
 		verify(packetSender, times(1)).sendPacket(responseCaptor.capture());

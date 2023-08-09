@@ -105,25 +105,37 @@ public class CommonPacketsImpl {
 	}
 
 	private static int getNegotiatedVersion(CommonVersionPayload payload) {
-		int[] commonlySupportedVersion = intersection(payload.versions(), SUPPORTED_COMMON_PACKET_VERSIONS);
+		int version = getHighestCommonVersion(payload.versions(), SUPPORTED_COMMON_PACKET_VERSIONS);
 
-		if (commonlySupportedVersion.length == 0) {
+		if (version <= 0) {
 			throw new UnsupportedOperationException("server does not support any requested versions from client");
 		}
 
-		return largest(commonlySupportedVersion);
+		return version;
 	}
 
-	public static int[] intersection(int[] a, int[] b) {
-		return Arrays.stream(a)
-				.distinct()
-				.filter(x -> Arrays.stream(b).anyMatch(y -> y == x))
-				.toArray();
-	}
+	public static int getHighestCommonVersion(int[] a, int[] b) {
+		int[] as = a.clone();
+		int[] bs = b.clone();
 
-	public static int largest(int[] a) {
-		return Arrays.stream(a)
-				.max()
-				.orElseThrow();
+		Arrays.sort(as);
+		Arrays.sort(bs);
+
+		int ap = as.length - 1;
+		int bp = bs.length - 1;
+
+		while (ap >= 0 && bp >= 0) {
+			if (as[ap] == bs[bp]) {
+				return as[ap];
+			}
+
+			if (as[ap] > bs[bp]) {
+				ap--;
+			} else {
+				bp--;
+			}
+		}
+
+		return -1;
 	}
 }

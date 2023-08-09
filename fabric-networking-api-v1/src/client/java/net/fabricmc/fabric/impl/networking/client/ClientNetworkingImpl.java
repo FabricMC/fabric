@@ -184,13 +184,13 @@ public final class ClientNetworkingImpl {
 	// Client responds with the intersection of supported versions.
 	// Return the highest supported version
 	private static int handleVersionPacket(CommonVersionPayload payload, PacketSender packetSender) {
-		int[] commonlySupportedVersion = CommonPacketsImpl.intersection(payload.versions(), CommonPacketsImpl.SUPPORTED_COMMON_PACKET_VERSIONS);
+		int version = CommonPacketsImpl.getHighestCommonVersion(payload.versions(), CommonPacketsImpl.SUPPORTED_COMMON_PACKET_VERSIONS);
 
-		if (commonlySupportedVersion.length == 0) {
+		if (version <= 0) {
 			throw new UnsupportedOperationException("Client does not support any requested versions from server");
 		}
 
-		packetSender.sendPacket(new CommonVersionPayload(commonlySupportedVersion));
-		return CommonPacketsImpl.largest(commonlySupportedVersion);
+		packetSender.sendPacket(new CommonVersionPayload(new int[]{ version }));
+		return version;
 	}
 }
