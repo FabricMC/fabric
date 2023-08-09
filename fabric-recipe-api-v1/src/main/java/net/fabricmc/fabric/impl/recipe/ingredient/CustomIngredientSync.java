@@ -18,12 +18,15 @@ package net.fabricmc.fabric.impl.recipe.ingredient;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import io.netty.channel.ChannelHandler;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.handler.PacketEncoder;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
@@ -82,18 +85,12 @@ public class CustomIngredientSync implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerConfigurationConnectionEvents.SEND.register((handler, server) -> {
-			// TODO 1.20.2 canSend isnt working reliably during configuration
-			//if (!ServerConfigurationNetworking.canSend(handler, PACKET_ID)) {
-			//	return;
-			//}
-
-			// Send packet with 1 so the client can send us back the list of supported tags.
-			// 1 is sent in case we need a different protocol later for some reason.
-			PacketByteBuf buf = PacketByteBufs.create();
-			buf.writeVarInt(PROTOCOL_VERSION_1); // max supported server protocol version
-			handler.sendPacket(ServerConfigurationNetworking.createS2CPacket(PACKET_ID, buf));
+		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
+			if (ServerConfigurationNetworking.canSend(handler, PACKET_ID)) {
+				handler.addTask(new IngredientSyncTask());
+			}
 		});
+
 		ServerConfigurationNetworking.registerGlobalReceiver(PACKET_ID, (server, handler, buf, responseSender) -> {
 			Set<Identifier> supportedCustomIngredients = decodeResponsePacket(buf);
 			ChannelHandler packetEncoder = ((ServerCommonNetworkHandlerAccessor) handler).getConnection().channel.pipeline().get("encoder");
@@ -101,6 +98,26 @@ public class CustomIngredientSync implements ModInitializer {
 			if (packetEncoder != null) { // Null in singleplayer
 				((SupportedIngredientsPacketEncoder) packetEncoder).fabric_setSupportedCustomIngredients(supportedCustomIngredients);
 			}
+
+			handler.completeTask(IngredientSyncTask.KEY);
 		});
+	}
+
+	private record IngredientSyncTask() implements ServerPlayerConfigurationTask {
+		public static final Key KEY = new Key(PACKET_ID.toString());
+
+		@Override
+		public void sendPacket(Consumer<Packet<?>> sender) {
+			// Send packet with 1 so the client can send us back the list of supported tags.
+			// 1 is sent in case we need a different protocol later for some reason.
+			PacketByteBuf buf = PacketByteBufs.create();
+			buf.writeVarInt(PROTOCOL_VERSION_1); // max supported server protocol version
+			sender.accept(ServerConfigurationNetworking.createS2CPacket(PACKET_ID, buf));
+		}
+
+		@Override
+		public Key getKey() {
+			return KEY;
+		}
 	}
 }

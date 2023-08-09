@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.registry.sync;
-
-import java.util.function.Consumer;
-
-import com.mojang.authlib.GameProfile;
+package net.fabricmc.fabric.impl.networking.payload;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.login.LoginQueryRequestPayload;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 
-public record ConfiguringServerPlayer(GameProfile gameProfile, Consumer<Packet<?>> sender) {
-	public void sendPacket(Identifier identifier, PacketByteBuf buf) {
-		sender.accept(ServerConfigurationNetworking.createS2CPacket(identifier, buf));
+public record FabricPacketLoginQueryRequestPayload(FabricPacket fabricPacket) implements LoginQueryRequestPayload {
+	@Override
+	public void write(PacketByteBuf buf) {
+		fabricPacket.write(buf);
+	}
+
+	@Override
+	public Identifier id() {
+		return fabricPacket.getType().getId();
 	}
 }

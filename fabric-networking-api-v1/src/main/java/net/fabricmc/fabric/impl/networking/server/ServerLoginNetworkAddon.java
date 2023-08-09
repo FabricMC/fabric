@@ -40,12 +40,14 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
 import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
+import net.fabricmc.fabric.impl.networking.payload.FabricPacketLoginQueryRequestPayload;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
@@ -164,9 +166,13 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	@Override
 	public Packet<?> createPacket(Identifier channelName, PacketByteBuf buf) {
 		int queryId = this.queryIdFactory.nextId();
+		return new LoginQueryRequestS2CPacket(queryId, new PacketByteBufLoginQueryRequestPayload(channelName, buf));
+	}
 
-		LoginQueryRequestS2CPacket ret = new LoginQueryRequestS2CPacket(queryId, new PacketByteBufLoginQueryRequestPayload(channelName, buf));
-		return ret;
+	@Override
+	public Packet<?> createPacket(FabricPacket packet) {
+		int queryId = this.queryIdFactory.nextId();
+		return new LoginQueryRequestS2CPacket(queryId, new FabricPacketLoginQueryRequestPayload(packet));
 	}
 
 	@Override

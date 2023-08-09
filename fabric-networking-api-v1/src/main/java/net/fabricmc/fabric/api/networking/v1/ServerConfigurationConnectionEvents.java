@@ -30,10 +30,37 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @ApiStatus.Experimental
 public class ServerConfigurationConnectionEvents {
 	/**
-	 * Event indicating a connection began sending configuration packets.
+	 * Event fired before any vanilla configuration has taken place.
+	 *
+	 * <p>This event is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}
+	 *
+	 * <p>Task queued during this event will complete before vanilla configuration starts.
 	 */
-	public static final Event<Send> SEND = EventFactory.createArrayBacked(Send.class, callbacks -> (handler, server) -> {
-		for (Send callback : callbacks) {
+	public static final Event<Configure> BEFORE_CONFIGURE = EventFactory.createArrayBacked(Configure.class, callbacks -> (handler, server) -> {
+		for (Configure callback : callbacks) {
+			callback.onSendConfiguration(handler, server);
+		}
+	});
+
+	/**
+	 * Event fired during vanilla configuration.
+	 *
+	 * <p>This event is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}
+	 *
+	 * <p>An example usage of this:
+	 * <pre>{@code
+	 * ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
+	 * 	if (ServerConfigurationNetworking.canSend(handler, ConfigurationPacket.PACKET_TYPE)) {
+	 *  handler.addTask(new TestConfigurationTask("Example data"));
+	 * 	} else {
+	 * 	  // You can opt to disconnect the client if it cannot handle the configuration task
+	 * 	  handler.disconnect(Text.literal("Network test configuration not supported by client"));
+	 * 	  }
+	 * });
+	 * }</pre>
+	 */
+	public static final Event<Configure> CONFIGURE = EventFactory.createArrayBacked(Configure.class, callbacks -> (handler, server) -> {
+		for (Configure callback : callbacks) {
 			callback.onSendConfiguration(handler, server);
 		}
 	});
@@ -50,7 +77,7 @@ public class ServerConfigurationConnectionEvents {
 	});
 
 	@FunctionalInterface
-	public interface Send {
+	public interface Configure {
 		void onSendConfiguration(ServerConfigurationNetworkHandler handler, MinecraftServer server);
 	}
 

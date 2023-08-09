@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.registry.sync;
 
+import java.util.concurrent.CompletionException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +25,8 @@ import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.impl.registry.sync.FabricRegistryInit;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
@@ -37,20 +41,31 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 	}
 
 	private void registerSyncPacketReceiver(RegistryPacketHandler packetHandler) {
-		ClientConfigurationNetworking.registerGlobalReceiver(packetHandler.getPacketId(), (client, handler, buf, responseSender) ->
-				RegistrySyncManager.receivePacket(client, packetHandler, buf, RegistrySyncManager.DEBUG || !client.isInSingleplayer(), (e) -> {
-					LOGGER.error("Registry remapping failed!", e);
-					client.execute(() -> ((ClientCommonNetworkHandlerAccessor) handler).getConnection().disconnect(getText(e)));
-				}));
+		ClientConfigurationNetworking.registerGlobalReceiver(packetHandler.getPacketId(), (client, handler, buf, responseSender) -> {
+			RegistrySyncManager.receivePacket(client, packetHandler, buf, RegistrySyncManager.DEBUG || !client.isInSingleplayer())
+					.whenComplete((complete, throwable) -> {
+						if (throwable != null) {
+							LOGGER.error("Registry remapping failed!", throwable);
+							client.execute(() -> ((ClientCommonNetworkHandlerAccessor) handler).getConnection().disconnect(getText(throwable)));
+							return;
+						}
+
+						if (complete) {
+							handler.sendPacket(ClientConfigurationNetworking.createC2SPacket(FabricRegistryInit.SYNC_COMPLETE_ID, PacketByteBufs.create()));
+						}
+					});
+		});
 	}
 
-	private Text getText(Exception e) {
+	private Text getText(Throwable e) {
 		if (e instanceof RemapException remapException) {
 			final Text text = remapException.getText();
 
 			if (text != null) {
 				return text;
 			}
+		} else if (e instanceof CompletionException completionException) {
+			return getText(completionException.getCause());
 		}
 
 		return Text.literal("Registry remapping failed: " + e.getMessage());

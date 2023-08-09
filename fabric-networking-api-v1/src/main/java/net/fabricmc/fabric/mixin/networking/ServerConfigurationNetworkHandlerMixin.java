@@ -16,7 +16,12 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
+import java.util.Queue;
+
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -28,17 +33,42 @@ import net.minecraft.network.packet.s2c.common.DisconnectS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerCommonNetworkHandler;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
+import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.text.Text;
 
+import net.fabricmc.fabric.api.networking.v1.FabricServerConfigurationNetworkHandler;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
-@Mixin(value = ServerConfigurationNetworkHandler.class, priority = 999)
-public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommonNetworkHandler implements NetworkHandlerExtensions, DisconnectPacketSource {
+@Mixin(value = ServerConfigurationNetworkHandler.class, priority = 900)
+public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommonNetworkHandler implements NetworkHandlerExtensions, DisconnectPacketSource, FabricServerConfigurationNetworkHandler {
+	@Shadow
+	@Nullable
+	private ServerPlayerConfigurationTask currentTask;
+
+	@Shadow
+	protected abstract void onTaskFinished(ServerPlayerConfigurationTask.Key key);
+
+	@Shadow
+	@Final
+	private Queue<ServerPlayerConfigurationTask> tasks;
+
+	@Shadow
+	public abstract boolean isConnectionOpen();
+
+	@Shadow
+	public abstract void sendConfigurations();
+
 	@Unique
-	ServerConfigurationNetworkAddon addon;
+	private ServerConfigurationNetworkAddon addon;
+
+	@Unique
+	private boolean sentConfiguration;
+
+	@Unique
+	private boolean earlyTaskExecution;
 
 	public ServerConfigurationNetworkHandlerMixin(MinecraftServer server, ClientConnection connection, int keepAliveId) {
 		super(server, connection, keepAliveId);
@@ -51,14 +81,63 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 		this.addon.lateInit();
 	}
 
-	@Inject(method = "sendConfigurations", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getCombinedDynamicRegistries()Lnet/minecraft/registry/CombinedDynamicRegistries;"))
+	@Inject(method = "sendConfigurations", at = @At("HEAD"), cancellable = true)
 	private void onClientReady(CallbackInfo ci) {
-		this.addon.onClientReady();
+		// Send the initial channel registration packet
+		if (this.addon.startConfiguration()) {
+			assert currentTask == null;
+			ci.cancel();
+			return;
+		}
+
+		// Ready to start sending packets
+		if (!sentConfiguration) {
+			this.addon.preConfiguration();
+			sentConfiguration = true;
+			earlyTaskExecution = true;
+		}
+
+		// Run the early tasks
+		if (earlyTaskExecution) {
+			if (pollEarlyTasks()) {
+				ci.cancel();
+				return;
+			} else {
+				earlyTaskExecution = false;
+			}
+		}
+
+		// All early tasks should have been completed
+		assert currentTask == null;
+		assert tasks.isEmpty();
+
+		// Run the vanilla tasks.
+		this.addon.configuration();
 	}
 
-	@Inject(method = "sendConfigurations", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerConfigurationNetworkHandler;queueSendResourcePackTask()V"))
-	private void sendConfigurations(CallbackInfo ci) {
-		this.addon.sendConfiguration();
+	@Unique
+	private boolean pollEarlyTasks() {
+		if (!earlyTaskExecution) {
+			throw new IllegalStateException("Early task execution has finished");
+		}
+
+		if (this.currentTask != null) {
+			throw new IllegalStateException("Task " + this.currentTask.getKey().id() + " has not finished yet");
+		}
+
+		if (!this.isConnectionOpen()) {
+			return false;
+		}
+
+		final ServerPlayerConfigurationTask task = this.tasks.poll();
+
+		if (task != null) {
+			this.currentTask = task;
+			task.sendPacket(this::sendPacket);
+			return true;
+		}
+
+		return false;
 	}
 
 	@Inject(method = "onDisconnected", at = @At("HEAD"))
@@ -74,5 +153,27 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 	@Override
 	public Packet<?> createDisconnectPacket(Text message) {
 		return new DisconnectS2CPacket(message);
+	}
+
+	@Override
+	public void addTask(ServerPlayerConfigurationTask task) {
+		tasks.add(task);
+	}
+
+	@Override
+	public void completeTask(ServerPlayerConfigurationTask.Key key) {
+		if (!earlyTaskExecution) {
+			onTaskFinished(key);
+			return;
+		}
+
+		final ServerPlayerConfigurationTask.Key currentKey = this.currentTask != null ? this.currentTask.getKey() : null;
+
+		if (!key.equals(currentKey)) {
+			throw new IllegalStateException("Unexpected request for task finish, current task: " + currentKey + ", requested: " + key);
+		}
+
+		this.currentTask = null;
+		sendConfigurations();
 	}
 }

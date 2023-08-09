@@ -31,7 +31,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ThreadExecutor;
 
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
@@ -384,9 +383,14 @@ public final class ClientConfigurationNetworking {
 		Objects.requireNonNull(packet, "Packet cannot be null");
 		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
 
-		PacketByteBuf buf = PacketByteBufs.create();
-		packet.write(buf);
-		send(packet.getType().getId(), buf);
+		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
+
+		if (addon != null) {
+			addon.sendPacket(packet);
+			return;
+		}
+
+		throw new IllegalStateException("Cannot send packet while not configuring!");
 	}
 
 	private ClientConfigurationNetworking() {

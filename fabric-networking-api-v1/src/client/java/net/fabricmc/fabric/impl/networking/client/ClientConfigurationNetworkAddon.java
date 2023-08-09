@@ -27,16 +27,18 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
+import net.fabricmc.fabric.api.client.networking.v1.C2SConfigurationChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonNetworkHandlerAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientConfigurationNetworkHandlerAccessor;
+import net.fabricmc.fabric.mixin.networking.client.accessor.ClientLoginNetworkHandlerAccessor;
 
 public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetworkAddon<ClientConfigurationNetworking.ConfigurationChannelHandler> {
 	private final ClientConfigurationNetworkHandler handler;
@@ -65,8 +67,17 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	public void onServerReady() {
-		this.sendInitialChannelRegistrationPacket();
-		this.sentInitialRegisterPacket = true;
+		// Do nothing for now
+	}
+
+	@Override
+	protected void receiveRegistration(boolean register, PacketByteBuf buf) {
+		super.receiveRegistration(register, buf);
+
+		if (register && !this.sentInitialRegisterPacket) {
+			this.sendInitialChannelRegistrationPacket();
+			this.sentInitialRegisterPacket = true;
+		}
 	}
 
 	/**
@@ -101,13 +112,18 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	@Override
+	public Packet<?> createPacket(FabricPacket packet) {
+		return ClientPlayNetworking.createC2SPacket(packet);
+	}
+
+	@Override
 	protected void invokeRegisterEvent(List<Identifier> ids) {
-		C2SPlayChannelEvents.REGISTER_CONFIGURATION.invoker().onChannelRegister(this.handler, this, this.client, ids);
+		C2SConfigurationChannelEvents.REGISTER.invoker().onChannelRegister(this.handler, this, this.client, ids);
 	}
 
 	@Override
 	protected void invokeUnregisterEvent(List<Identifier> ids) {
-		C2SPlayChannelEvents.UNREGISTER_CONFIGURATION.invoker().onChannelUnregister(this.handler, this, this.client, ids);
+		C2SConfigurationChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.handler, this, this.client, ids);
 	}
 
 	@Override
@@ -147,6 +163,10 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	protected boolean isReservedChannel(Identifier channelName) {
-		return NetworkingImpl.isReservedPlayChannel(channelName);
+		return NetworkingImpl.isReservedCommonChannel(channelName);
+	}
+
+	public ChannelInfoHolder getChannelInfoHolder() {
+		return (ChannelInfoHolder) ((ClientLoginNetworkHandlerAccessor) handler).getConnection();
 	}
 }

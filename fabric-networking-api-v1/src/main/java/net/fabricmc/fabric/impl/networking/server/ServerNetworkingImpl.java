@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.impl.networking.server;
 
+import java.util.Objects;
+
+import net.minecraft.network.NetworkState;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientCommonPacketListener;
 import net.minecraft.network.packet.Packet;
@@ -25,17 +28,21 @@ import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
+import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.NetworkingImpl;
+import net.fabricmc.fabric.impl.networking.payload.FabricPacketPayload;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
 
 public final class ServerNetworkingImpl {
-	public static final GlobalReceiverRegistry<ServerLoginNetworking.LoginQueryResponseHandler> LOGIN = new GlobalReceiverRegistry<>();
-	public static final GlobalReceiverRegistry<ServerConfigurationNetworking.ConfigurationChannelHandler> CONFIGURATION = new GlobalReceiverRegistry<>();
-	public static final GlobalReceiverRegistry<ServerPlayNetworking.PlayChannelHandler> PLAY = new GlobalReceiverRegistry<>();
+	public static final GlobalReceiverRegistry<ServerLoginNetworking.LoginQueryResponseHandler> LOGIN = new GlobalReceiverRegistry<>(NetworkState.LOGIN);
+	public static final GlobalReceiverRegistry<ServerConfigurationNetworking.ConfigurationChannelHandler> CONFIGURATION = new GlobalReceiverRegistry<>(NetworkState.CONFIGURATION);
+	public static final GlobalReceiverRegistry<ServerPlayNetworking.PlayChannelHandler> PLAY = new GlobalReceiverRegistry<>(NetworkState.PLAY);
 
 	public static ServerPlayNetworkAddon getAddon(ServerPlayNetworkHandler handler) {
 		return (ServerPlayNetworkAddon) ((NetworkHandlerExtensions) handler).getAddon();
@@ -51,5 +58,18 @@ public final class ServerNetworkingImpl {
 
 	public static Packet<ClientCommonPacketListener> createC2SPacket(Identifier channel, PacketByteBuf buf) {
 		return new CustomPayloadS2CPacket(new PacketByteBufPayload(channel, buf));
+	}
+
+	public static Packet<ClientCommonPacketListener> createC2SPacket(FabricPacket packet) {
+		Objects.requireNonNull(packet, "Packet cannot be null");
+		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
+
+		if (NetworkingImpl.WRITE_FABRIC_PACKET_CALLING_THREAD) {
+			PacketByteBuf buf = PacketByteBufs.create();
+			packet.write(buf);
+			return createC2SPacket(packet.getType().getId(), buf);
+		}
+
+		return new CustomPayloadS2CPacket(new FabricPacketPayload(packet));
 	}
 }

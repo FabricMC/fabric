@@ -96,18 +96,7 @@ public final class ServerConfigurationNetworking {
 			@Override
 			public void receive(MinecraftServer server, ServerConfigurationNetworkHandler networkHandler, PacketByteBuf buf, PacketSender sender) {
 				T packet = type.read(buf);
-
-				if (server.isOnThread()) {
-					// Do not submit to the server thread if we're already running there.
-					// Normally, packets are handled on the network IO thread - though it is
-					// not guaranteed (for example, with 1.19.4 S2C packet bundling)
-					// Since we're handling it right now, connection check is redundant.
-					handler.receive(packet, sender);
-				} else {
-					server.execute(() -> {
-						if (networkHandler.isConnectionOpen()) handler.receive(packet, sender);
-					});
-				}
+				handler.receive(packet, networkHandler, sender);
 			}
 		});
 	}
@@ -160,7 +149,7 @@ public final class ServerConfigurationNetworking {
 	/**
 	 * Registers a handler to a channel.
 	 * This method differs from {@link ServerConfigurationNetworking#registerGlobalReceiver(Identifier, ConfigurationChannelHandler)} since
-	 * the channel handler will only be applied to the player represented by the {@link ServerConfigurationNetworkHandler}.
+	 * the channel handler will only be applied to the client represented by the {@link ServerConfigurationNetworkHandler}.
 	 *
 	 * <p>The handler runs on the network thread. After reading the buffer there, the world
 	 * must be modified in the server thread by calling {@link ThreadExecutor#execute(Runnable)}.
@@ -189,7 +178,7 @@ public final class ServerConfigurationNetworking {
 	/**
 	 * Registers a handler for a packet type.
 	 * This method differs from {@link ServerConfigurationNetworking#registerGlobalReceiver(PacketType, ConfigurationPacketHandler)} since
-	 * the channel handler will only be applied to the player represented by the {@link ServerConfigurationNetworkHandler}.
+	 * the channel handler will only be applied to the client represented by the {@link ServerConfigurationNetworkHandler}.
 	 *
 	 * <p>For example, if you only register a receiver using this method when a {@linkplain ServerLoginNetworking#registerGlobalReceiver(Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
 	 * login response has been received, you should use {@link ServerPlayConnectionEvents#INIT} to register the channel handler.
@@ -213,18 +202,7 @@ public final class ServerConfigurationNetworking {
 			@Override
 			public void receive(MinecraftServer server, ServerConfigurationNetworkHandler networkHandler2, PacketByteBuf buf, PacketSender sender) {
 				T packet = type.read(buf);
-
-				if (server.isOnThread()) {
-					// Do not submit to the server thread if we're already running there.
-					// Normally, packets are handled on the network IO thread - though it is
-					// not guaranteed (for example, with 1.19.4 S2C packet bundling)
-					// Since we're handling it right now, connection check is redundant.
-					handler.receive(packet, sender);
-				} else {
-					server.execute(() -> {
-						if (networkHandler2.isConnectionOpen()) handler.receive(packet, sender);
-					});
-				}
+				handler.receive(packet, networkHandler2, sender);
 			}
 		});
 	}
@@ -327,6 +305,19 @@ public final class ServerConfigurationNetworking {
 	}
 
 	/**
+	 * Creates a packet which may be sent to a connected client.
+	 *
+	 * @param packet the fabric packet
+	 * @return a new packet
+	 */
+	public static <T extends FabricPacket> Packet<ClientCommonPacketListener> createS2CPacket(T packet) {
+		Objects.requireNonNull(packet, "Packet cannot be null");
+		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
+
+		return ServerNetworkingImpl.createC2SPacket(packet);
+	}
+
+	/**
 	 * Gets the packet sender which sends packets to the connected client.
 	 *
 	 * @param handler the network handler, representing the connection to the player/client
@@ -364,9 +355,7 @@ public final class ServerConfigurationNetworking {
 		Objects.requireNonNull(packet, "Packet cannot be null");
 		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
 
-		PacketByteBuf buf = PacketByteBufs.create();
-		packet.write(buf);
-		handler.sendPacket(createS2CPacket(packet.getType().getId(), buf));
+		handler.sendPacket(createS2CPacket(packet));
 	}
 
 	// Helper methods
@@ -391,7 +380,7 @@ public final class ServerConfigurationNetworking {
 		 * Handles an incoming packet.
 		 *
 		 * <p>This method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
-		 * Modification to the game should be {@linkplain ThreadExecutor#submit(Runnable) scheduled} using the provided Minecraft server instance.
+		 * Modification to the game should be {@linkplain ThreadExecutor#submit(Runnable) scheduled} using the server instance from {@link ServerConfigurationNetworking#getServer(ServerConfigurationNetworkHandler)}.
 		 *
 		 * <p>An example usage of this is:
 		 * <pre>{@code
@@ -405,7 +394,7 @@ public final class ServerConfigurationNetworking {
 		 * });
 		 * }</pre>
 		 * @param server the server
-		 * @param handler the network handler that received this packet, representing the player/client who sent the packet
+		 * @param handler the network handler that received this packet, representing the client who sent the packet
 		 * @param buf the payload of the packet
 		 * @param responseSender the packet sender
 		 */
@@ -427,7 +416,10 @@ public final class ServerConfigurationNetworking {
 	@FunctionalInterface
 	public interface ConfigurationPacketHandler<T extends FabricPacket> {
 		/**
-		 * Handles the incoming packet. This is called on the server thread.
+		 * Handles an incoming packet.
+		 *
+		 * <p>Unlike {@link ServerPlayNetworking.PlayPacketHandler} this method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
+		 * Modification to the game should be {@linkplain ThreadExecutor#submit(Runnable) scheduled} using the Minecraft server instance from {@link ServerConfigurationNetworking#getServer(ServerConfigurationNetworkHandler)}.
 		 *
 		 * <p>An example usage of this:
 		 * <pre>{@code
@@ -439,9 +431,10 @@ public final class ServerConfigurationNetworking {
 		 *
 		 *
 		 * @param packet the packet
+		 * @param networkHandler the network handler
 		 * @param responseSender the packet sender
 		 * @see FabricPacket
 		 */
-		void receive(T packet, PacketSender responseSender);
+		void receive(T packet, ServerConfigurationNetworkHandler networkHandler, PacketSender responseSender);
 	}
 }
