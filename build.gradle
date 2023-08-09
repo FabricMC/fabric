@@ -733,7 +733,7 @@ publishMods {
 	type = project.prerelease == "true" ? BETA : STABLE
 	displayName = "[${project.minecraft_version}] Fabric API $project.version"
 	modLoaders.add("fabric")
-	dryRun = providers.environmentVariable("GITHUB_TOKEN").getOrNull() == null
+	dryRun = providers.environmentVariable("CURSEFORGE_API_KEY").getOrNull() == null
 
 	curseforge {
 		accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
