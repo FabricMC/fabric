@@ -31,7 +31,7 @@ import net.minecraft.datafixer.schema.Schema2832;
 
 import net.fabricmc.fabric.impl.dimension.TaggedChoiceExtension;
 
-@Mixin(value = Schema2832.class, remap = false)
+@Mixin(Schema2832.class)
 public class Schema2832Mixin {
 	/**
 	 * Make the DSL.taggedChoiceLazy to ignore mod custom generator types and not cause deserialization failure.
@@ -44,8 +44,7 @@ public class Schema2832Mixin {
 					value = "INVOKE",
 					target = "Lcom/mojang/datafixers/DSL;taggedChoiceLazy(Ljava/lang/String;Lcom/mojang/datafixers/types/Type;Ljava/util/Map;)Lcom/mojang/datafixers/types/templates/TaggedChoice;",
 					remap = false
-			),
-			remap = false
+			)
 	)
 	private static <K> TaggedChoice<K> redirectTaggedChoiceLazy(
 			String name, Type<K> keyType, Map<K, Supplier<TypeTemplate>> templates
