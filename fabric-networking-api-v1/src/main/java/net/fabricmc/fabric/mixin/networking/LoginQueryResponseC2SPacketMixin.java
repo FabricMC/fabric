@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.login.LoginQueryResponse;
+import net.minecraft.network.packet.c2s.login.LoginQueryResponsePayload;
 import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
 
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
@@ -30,8 +30,8 @@ import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
 
 @Mixin(LoginQueryResponseC2SPacket.class)
 public class LoginQueryResponseC2SPacketMixin {
-	@Inject(method = "readResponse", at = @At("HEAD"), cancellable = true)
-	private static void readResponse(int queryId, PacketByteBuf buf, CallbackInfoReturnable<LoginQueryResponse> cir) {
+	@Inject(method = "readPayload", at = @At("HEAD"), cancellable = true)
+	private static void readResponse(int queryId, PacketByteBuf buf, CallbackInfoReturnable<LoginQueryResponsePayload> cir) {
 		boolean hasPayload = buf.readBoolean();
 
 		if (!hasPayload) {

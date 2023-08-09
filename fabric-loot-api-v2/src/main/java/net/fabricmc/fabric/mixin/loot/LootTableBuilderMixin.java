@@ -16,13 +16,15 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.ListIterator;
 import java.util.function.Consumer;
 
+import com.google.common.collect.ImmutableList;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -41,11 +43,12 @@ import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
 abstract class LootTableBuilderMixin implements FabricLootTableBuilder {
 	@Shadow
 	@Final
-	private List<LootPool> pools;
+	@Mutable
+	private ImmutableList.Builder<LootPool> pools;
 
 	@Shadow
 	@Final
-	private List<LootFunction> functions;
+	private ImmutableList.Builder<LootFunction> functions;
 
 	@Unique
 	private LootTable.Builder self() {
@@ -79,13 +82,17 @@ abstract class LootTableBuilderMixin implements FabricLootTableBuilder {
 
 	@Override
 	public LootTable.Builder modifyPools(Consumer<? super LootPool.Builder> modifier) {
-		ListIterator<LootPool> iterator = pools.listIterator();
+		var list = new ArrayList<>(pools.build());
+		ListIterator<LootPool> iterator = list.listIterator();
 
 		while (iterator.hasNext()) {
 			LootPool.Builder poolBuilder = FabricLootPoolBuilder.copyOf(iterator.next());
 			modifier.accept(poolBuilder);
 			iterator.set(poolBuilder.build());
 		}
+
+		this.pools = ImmutableList.builder();
+		this.pools.addAll(list);
 
 		return self();
 	}

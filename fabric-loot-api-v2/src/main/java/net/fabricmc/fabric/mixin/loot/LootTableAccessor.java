@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -31,11 +34,11 @@ import net.minecraft.util.Identifier;
 @Mixin(LootTable.class)
 public interface LootTableAccessor {
 	@Accessor("pools")
-	LootPool[] fabric_getPools();
+	List<LootPool> fabric_getPools();
 
 	@Accessor("functions")
-	LootFunction[] fabric_getFunctions();
+	List<LootFunction> fabric_getFunctions();
 
 	@Accessor("randomSequenceId")
-	Identifier fabric_getRandomSequenceId();
+	Optional<Identifier> fabric_getRandomSequenceId();
 }

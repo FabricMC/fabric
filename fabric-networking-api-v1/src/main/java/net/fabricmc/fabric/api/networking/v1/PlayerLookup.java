@@ -25,7 +25,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.EntityTrackingListener;
+import net.minecraft.server.network.PlayerAssociatedNetworkHandler;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.world.ThreadedAnvilChunkStorage;
@@ -118,7 +118,7 @@ public final class PlayerLookup {
 			// return an immutable collection to guard against accidental removals.
 			if (tracker != null) {
 				return Collections.unmodifiableCollection(tracker.getPlayersTracking()
-						.stream().map(EntityTrackingListener::getPlayer).collect(Collectors.toSet()));
+						.stream().map(PlayerAssociatedNetworkHandler::getPlayer).collect(Collectors.toSet()));
 			}
 
 			return Collections.emptySet();

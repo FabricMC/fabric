@@ -34,7 +34,7 @@ public class FakePlayerNetworkHandler extends ServerPlayNetworkHandler {
 	}
 
 	@Override
-	public void send(Packet<?> packet, @Nullable PacketCallbacks callbacks, boolean flush) { }
+	public void send(Packet<?> packet, @Nullable PacketCallbacks callbacks) { }
 
 	private static final class FakeClientConnection extends ClientConnection {
 		private FakeClientConnection() {

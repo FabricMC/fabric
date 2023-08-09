@@ -25,14 +25,15 @@ import java.util.concurrent.CompletableFuture;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
-import net.minecraft.loot.LootDataType;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
@@ -65,7 +66,7 @@ public final class FabricLootTableProviderImpl {
 		final List<CompletableFuture<?>> futures = new ArrayList<>();
 
 		for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
-			JsonObject tableJson = (JsonObject) LootDataType.LOOT_TABLES.getGson().toJsonTree(entry.getValue());
+			JsonObject tableJson = (JsonObject) Util.getResult(LootTable.field_45796.encodeStart(JsonOps.INSTANCE, entry.getValue()), IllegalStateException::new);
 			ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
 
 			futures.add(DataProvider.writeToPath(writer, tableJson, getOutputPath(fabricDataOutput, entry.getKey())));

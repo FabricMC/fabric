@@ -87,7 +87,7 @@ public final class RegistrySyncManager {
 			return;
 		}
 
-		final Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap(true, null);
+		final Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap(null);
 
 		if (map == null) {
 			// Don't send when there is nothing to map
@@ -151,12 +151,11 @@ public final class RegistrySyncManager {
 	/**
 	 * Creates a {@link NbtCompound} used to save or sync the registry ids.
 	 *
-	 * @param isClientSync true when syncing to the client, false when saving
 	 * @param activeMap    contains the registry ids that were previously read and applied, can be null.
 	 * @return a {@link NbtCompound} to save or sync, null when empty
 	 */
 	@Nullable
-	public static Map<Identifier, Object2IntMap<Identifier>> createAndPopulateRegistryMap(boolean isClientSync, @Nullable Map<Identifier, Object2IntMap<Identifier>> activeMap) {
+	public static Map<Identifier, Object2IntMap<Identifier>> createAndPopulateRegistryMap(@Nullable Map<Identifier, Object2IntMap<Identifier>> activeMap) {
 		Map<Identifier, Object2IntMap<Identifier>> map = new LinkedHashMap<>();
 
 		for (Identifier registryId : Registries.REGISTRIES.getIds()) {
@@ -210,31 +209,23 @@ public final class RegistrySyncManager {
 
 			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry.getKey());
 
-			if (!attributeHolder.hasAttribute(isClientSync ? RegistryAttribute.SYNCED : RegistryAttribute.PERSISTED)) {
-				LOGGER.debug("Not {} registry: {}", isClientSync ? "syncing" : "saving", registryId);
+			if (!attributeHolder.hasAttribute(RegistryAttribute.SYNCED)) {
+				LOGGER.debug("Not syncing registry: {}", registryId);
 				continue;
 			}
 
 			/*
 			 * Dont do anything with vanilla registries on client sync.
-			 * When saving skip none modded registries that doesnt have previous registry data
 			 *
 			 * This will not sync IDs if a world has been previously modded, either from removed mods
-			 * or a previous version of fabric registry sync, but will save these ids to disk in case the mod or mods
-			 * are added back.
+			 * or a previous version of fabric registry sync.
 			 */
-			if ((previousIdMap == null || isClientSync) && !attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
+			if (previousIdMap == null || !attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
 				LOGGER.debug("Skipping un-modded registry: " + registryId);
 				continue;
-			} else if (previousIdMap != null) {
-				LOGGER.debug("Preserving previously modded registry: " + registryId);
 			}
 
-			if (isClientSync) {
-				LOGGER.debug("Syncing registry: " + registryId);
-			} else {
-				LOGGER.debug("Saving registry: " + registryId);
-			}
+			LOGGER.debug("Syncing registry: " + registryId);
 
 			if (registry instanceof RemappableRegistry) {
 				Object2IntMap<Identifier> idMap = new Object2IntLinkedOpenHashMap<>();
@@ -265,30 +256,7 @@ public final class RegistrySyncManager {
 					idMap.put(id, rawId);
 				}
 
-				/*
-				 * Look for existing registry key/values that are not in the current registries.
-				 * This can happen when registry entries are removed, preventing that ID from being re-used by something else.
-				 */
-				if (!isClientSync && previousIdMap != null) {
-					for (Identifier key : previousIdMap.keySet()) {
-						if (!idMap.containsKey(key)) {
-							LOGGER.debug("Saving orphaned registry entry: " + key);
-							idMap.put(key, previousIdMap.getInt(key));
-						}
-					}
-				}
-
 				map.put(registryId, idMap);
-			}
-		}
-
-		// Ensure any orphaned registry's are kept on disk
-		if (!isClientSync && activeMap != null) {
-			for (Identifier registryKey : activeMap.keySet()) {
-				if (!map.containsKey(registryKey)) {
-					LOGGER.debug("Saving orphaned registry: " + registryKey);
-					map.put(registryKey, activeMap.get(registryKey));
-				}
 			}
 		}
 

@@ -42,8 +42,8 @@ abstract class GameRendererMixin {
 	@Unique
 	private Screen renderingScreen;
 
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-	private void onBeforeRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, MatrixStack matrixStack, DrawContext drawContext) {
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void onBeforeRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, boolean b1, int mouseX, int mouseY, MatrixStack matrixStack, DrawContext drawContext) {
 		// Store the screen in a variable in case someone tries to change the screen during this before render event.
 		// If someone changes the screen, the after render event will likely have class cast exceptions or an NPE.
 		this.renderingScreen = this.client.currentScreen;
@@ -51,8 +51,8 @@ abstract class GameRendererMixin {
 	}
 
 	// This injection should end up in the try block so exceptions are caught
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-	private void onAfterRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, MatrixStack matrixStack, DrawContext drawContext) {
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void onAfterRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, boolean b1, int mouseX, int mouseY, MatrixStack matrixStack, DrawContext drawContext) {
 		ScreenEvents.afterRender(this.renderingScreen).invoker().afterRender(this.renderingScreen, drawContext, mouseX, mouseY, tickDelta);
 		// Finally set the currently rendering screen to null
 		this.renderingScreen = null;

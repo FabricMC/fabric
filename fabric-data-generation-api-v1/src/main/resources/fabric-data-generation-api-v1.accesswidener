@@ -33,6 +33,8 @@ accessible method net/minecraft/registry/BuiltinRegistries validate (Lnet/minecr
 accessible field net/minecraft/registry/RegistryBuilder registries Ljava/util/List;
 accessible class net/minecraft/registry/RegistryBuilder$RegistryInfo
 
+accessible field net/minecraft/loot/context/LootContextTypes MAP Lcom/google/common/collect/BiMap;
+
 transitive-accessible method net/minecraft/data/family/BlockFamilies register (Lnet/minecraft/block/Block;)Lnet/minecraft/data/family/BlockFamily$Builder;
 
 transitive-accessible field net/minecraft/data/client/BlockStateModelGenerator blockStateCollector Ljava/util/function/Consumer;
@@ -129,6 +131,7 @@ transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	req
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	conditionsFromItem	(Lnet/minecraft/predicate/NumberRange$IntRange;Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	conditionsFromItem	(Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	conditionsFromTag	(Lnet/minecraft/registry/tag/TagKey;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
+transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	method_53499	([Lnet/minecraft/predicate/item/ItemPredicate$Builder;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	conditionsFromItemPredicates	([Lnet/minecraft/predicate/item/ItemPredicate;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	hasItem	(Lnet/minecraft/item/ItemConvertible;)Ljava/lang/String;
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	getItemPath	(Lnet/minecraft/item/ItemConvertible;)Ljava/lang/String;

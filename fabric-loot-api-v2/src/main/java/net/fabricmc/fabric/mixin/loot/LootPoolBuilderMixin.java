@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.mixin.loot;
 
 import java.util.Collection;
-import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -39,15 +39,15 @@ import net.fabricmc.fabric.api.loot.v2.FabricLootPoolBuilder;
 abstract class LootPoolBuilderMixin implements FabricLootPoolBuilder {
 	@Shadow
 	@Final
-	private List<LootPoolEntry> entries;
+	private ImmutableList.Builder<LootPoolEntry> entries;
 
 	@Shadow
 	@Final
-	private List<LootCondition> conditions;
+	private ImmutableList.Builder<LootCondition> conditions;
 
 	@Shadow
 	@Final
-	private List<LootFunction> functions;
+	private ImmutableList.Builder<LootFunction> functions;
 
 	@Unique
 	private LootPool.Builder self() {

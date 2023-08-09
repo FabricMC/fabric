@@ -45,8 +45,7 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// StatusEffectInstance serialises with raw id.
 		RegistryAttributeHolder.get(Registries.STATUS_EFFECT)
-				.addAttribute(RegistryAttribute.SYNCED)
-				.addAttribute(RegistryAttribute.PERSISTED);
+				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in ChunkDeltaUpdateS2CPacket among other places, a pallet is used when saving.
 		RegistryAttributeHolder.get(Registries.BLOCK)

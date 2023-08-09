@@ -188,8 +188,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	public void sendPacket(Packet<?> packet, PacketCallbacks callback) {
-		// Ensure we flush the packet.
-		handler.send(packet, callback, true);
+		handler.send(packet, callback);
 	}
 
 	private enum RegisterState {
