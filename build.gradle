@@ -657,7 +657,7 @@ publishing {
 			pom.withXml {
 				def depsNode = asNode().appendNode("dependencies")
 				subprojects.each {
-					// The maven BOM containing all of the deprecated modules is added manually bellow.
+					// The maven BOM containing all of the deprecated modules is added manually below.
 					if (it.path.startsWith(":deprecated")) {
 						return
 					}
