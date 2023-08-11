@@ -87,7 +87,7 @@ public final class RegistrySyncManager {
 			return;
 		}
 
-		final Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap(null);
+		final Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap();
 
 		if (map == null) {
 			// Don't send when there is nothing to map
@@ -149,13 +149,12 @@ public final class RegistrySyncManager {
 	}
 
 	/**
-	 * Creates a {@link NbtCompound} used to save or sync the registry ids.
+	 * Creates a {@link NbtCompound} used to sync the registry ids.
 	 *
-	 * @param activeMap    contains the registry ids that were previously read and applied, can be null.
-	 * @return a {@link NbtCompound} to save or sync, null when empty
+	 * @return a {@link NbtCompound} to sync, null when empty
 	 */
 	@Nullable
-	public static Map<Identifier, Object2IntMap<Identifier>> createAndPopulateRegistryMap(@Nullable Map<Identifier, Object2IntMap<Identifier>> activeMap) {
+	public static Map<Identifier, Object2IntMap<Identifier>> createAndPopulateRegistryMap() {
 		Map<Identifier, Object2IntMap<Identifier>> map = new LinkedHashMap<>();
 
 		for (Identifier registryId : Registries.REGISTRIES.getIds()) {
@@ -197,16 +196,6 @@ public final class RegistrySyncManager {
 				}
 			}
 
-			/*
-			 * This contains the previous state's registry data, this is used for a few things:
-			 * Such as ensuring that previously modded registries or registry entries are not lost or overwritten.
-			 */
-			Object2IntMap<Identifier> previousIdMap = null;
-
-			if (activeMap != null && activeMap.containsKey(registryId)) {
-				previousIdMap = activeMap.get(registryId);
-			}
-
 			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry.getKey());
 
 			if (!attributeHolder.hasAttribute(RegistryAttribute.SYNCED)) {
@@ -220,7 +209,7 @@ public final class RegistrySyncManager {
 			 * This will not sync IDs if a world has been previously modded, either from removed mods
 			 * or a previous version of fabric registry sync.
 			 */
-			if (previousIdMap == null || !attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
+			if (!attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
 				LOGGER.debug("Skipping un-modded registry: " + registryId);
 				continue;
 			}
