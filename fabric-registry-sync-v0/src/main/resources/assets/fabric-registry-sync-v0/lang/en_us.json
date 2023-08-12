@@ -3,5 +3,11 @@
   "fabric-registry-sync-v0.unknown-remote.title.plural" : "Received %d registry entries that are unknown to this client.\n",
   "fabric-registry-sync-v0.unknown-remote.subtitle.1" : "This is usually caused by a mismatched mod set between the client and server.",
   "fabric-registry-sync-v0.unknown-remote.subtitle.2" : " See the client logs for more details.\nThe following registry entry namespaces may be related:\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer" : "And %d more..."
+  "fabric-registry-sync-v0.unknown-remote.footer" : "And %d more...",
+  "fabric-registry-sync-v0.screen.removed-registry.title": "Loading this world can cause world corruption",
+  "fabric-registry-sync-v0.screen.removed-registry.subtitle.1": "Some registry entries are missing from the game.\n",
+  "fabric-registry-sync-v0.screen.removed-registry.subtitle.2": "This often occurs when a previously used mod is updated or removed.",
+  "fabric-registry-sync-v0.screen.removed-registry.subtitle.3": " Opening this world could cause crashes or world corruption. We recommend making a backup.\n",
+  "fabric-registry-sync-v0.screen.removed-registry.subtitle.4": "See the client logs for more details. The following registry entry namespaces may be related:\n\n",
+  "fabric-registry-sync-v0.screen.removed-registry.footer" : " and %d more..."
 }

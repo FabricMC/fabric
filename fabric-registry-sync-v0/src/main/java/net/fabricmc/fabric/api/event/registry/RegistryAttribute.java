@@ -25,5 +25,10 @@ public enum RegistryAttribute {
 	/**
 	 * Registry has been modded.
 	 */
-	MODDED
+	MODDED,
+	/**
+	 * Fabric clients will prompt the user to back up the world if previously found
+	 * entries in this registry were removed.
+	 */
+	REMOVAL_CHECKED
 }
