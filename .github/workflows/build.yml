@@ -14,7 +14,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: gradle/wrapper-validation-action@v1
-      - run: ./gradlew check build publishToMavenLocal publishMods --stacktrace --warning-mode=fail -Porg.gradle.parallel.threads=4
+      - run: ./gradlew check build publishToMavenLocal --stacktrace --warning-mode=fail -Porg.gradle.parallel.threads=4
       - uses: Juuxel/publish-checkstyle-report@v1
         if: ${{ failure() }}
         with:

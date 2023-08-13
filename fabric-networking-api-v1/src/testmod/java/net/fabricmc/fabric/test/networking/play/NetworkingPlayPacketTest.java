@@ -47,8 +47,9 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 	public static final Identifier TEST_CHANNEL = NetworkingTestmods.id("test_channel");
 
 	public static void sendToTestChannel(ServerPlayerEntity player, String stuff) {
-		ServerPlayNetworking.send(player, new OverlayPacket(Text.literal(stuff)));
-		NetworkingTestmods.LOGGER.info("Sent custom payload packet in {}", TEST_CHANNEL);
+		ServerPlayNetworking.getSender(player).sendPacket(new OverlayPacket(Text.literal(stuff)), future -> {
+			NetworkingTestmods.LOGGER.info("Sent custom payload packet in {}", TEST_CHANNEL);
+		});
 	}
 
 	public static void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
