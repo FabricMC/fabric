@@ -4,7 +4,10 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "EntityMixin",
-    "RegistryCodecsMixin"
+    "RegistryCodecsMixin",
+    "Schema2832Mixin",
+    "TaggedChoiceMixin",
+    "TaggedChoiceTypeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
