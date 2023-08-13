@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderer.simple;
+package net.fabricmc.fabric.test.renderer;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +27,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -35,16 +34,12 @@ import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.block.v1.FabricBlock;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 
 // Need to implement FabricBlock manually because this is a testmod for another Fabric module, otherwise it would be injected.
-public final class FrameBlock extends Block implements BlockEntityProvider, FabricBlock {
-	public final Identifier id;
-
-	public FrameBlock(Identifier id) {
-		super(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).nonOpaque());
-		this.id = id;
+public class FrameBlock extends Block implements BlockEntityProvider, FabricBlock {
+	public FrameBlock(Settings settings) {
+		super(settings);
 	}
 
 	@Override

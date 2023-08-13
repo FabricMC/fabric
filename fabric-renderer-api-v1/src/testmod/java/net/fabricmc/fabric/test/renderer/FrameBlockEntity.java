@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderer.simple;
+package net.fabricmc.fabric.test.renderer;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -31,12 +31,12 @@ import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 
-public final class FrameBlockEntity extends BlockEntity implements RenderAttachmentBlockEntity {
+public class FrameBlockEntity extends BlockEntity implements RenderAttachmentBlockEntity {
 	@Nullable
 	private Block block = null;
 
 	public FrameBlockEntity(BlockPos blockPos, BlockState blockState) {
-		super(RendererTest.FRAME_BLOCK_ENTITY, blockPos, blockState);
+		super(Registration.FRAME_BLOCK_ENTITY_TYPE, blockPos, blockState);
 	}
 
 	@Override
