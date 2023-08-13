@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderer.simple.client;
+package net.fabricmc.fabric.test.renderer.client;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,13 +46,13 @@ import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 
-final class FrameBakedModel implements BakedModel {
+public class FrameBakedModel implements BakedModel {
 	private final Mesh frameMesh;
 	private final Sprite frameSprite;
 	private final RenderMaterial translucentMaterial;
 	private final RenderMaterial translucentEmissiveMaterial;
 
-	FrameBakedModel(Mesh frameMesh, Sprite frameSprite) {
+	public FrameBakedModel(Mesh frameMesh, Sprite frameSprite) {
 		this.frameMesh = frameMesh;
 		this.frameSprite = frameSprite;
 
@@ -60,46 +60,6 @@ final class FrameBakedModel implements BakedModel {
 		this.translucentMaterial = finder.blendMode(BlendMode.TRANSLUCENT).find();
 		finder.clear();
 		this.translucentEmissiveMaterial = finder.blendMode(BlendMode.TRANSLUCENT).emissive(true).find();
-	}
-
-	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, Random random) {
-		return Collections.emptyList(); // Renderer API makes this obsolete, so return no quads
-	}
-
-	@Override
-	public boolean useAmbientOcclusion() {
-		return true; // we want the block to have a shadow depending on the adjacent blocks
-	}
-
-	@Override
-	public boolean hasDepth() {
-		return false;
-	}
-
-	@Override
-	public boolean isSideLit() {
-		return true; // we want the block to be lit from the side when rendered as an item
-	}
-
-	@Override
-	public boolean isBuiltin() {
-		return false;
-	}
-
-	@Override
-	public Sprite getParticleSprite() {
-		return this.frameSprite;
-	}
-
-	@Override
-	public ModelTransformation getTransformation() {
-		return ModelHelper.MODEL_TRANSFORM_BLOCK;
-	}
-
-	@Override
-	public ModelOverrideList getOverrides() {
-		return ModelOverrideList.EMPTY;
 	}
 
 	@Override
@@ -142,7 +102,7 @@ final class FrameBakedModel implements BakedModel {
 		// Emit a scaled-down fence for testing, trying both materials again.
 		RenderMaterial material = stack.hasCustomName() ? translucentEmissiveMaterial : translucentMaterial;
 
-		ItemStack innerItem = Items.OAK_FENCE.getDefaultStack();
+		ItemStack innerItem = Items.CRAFTING_TABLE.getDefaultStack();
 		BakedModel innerModel = MinecraftClient.getInstance().getItemRenderer().getModel(innerItem, null, null, 0);
 
 		emitInnerQuads(context, material, () -> {
@@ -186,5 +146,45 @@ final class FrameBakedModel implements BakedModel {
 
 		// Let's not forget to pop the transform!
 		context.popTransform();
+	}
+
+	@Override
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, Random random) {
+		return Collections.emptyList(); // Renderer API makes this obsolete, so return no quads
+	}
+
+	@Override
+	public boolean useAmbientOcclusion() {
+		return true; // we want the block to have a shadow depending on the adjacent blocks
+	}
+
+	@Override
+	public boolean hasDepth() {
+		return false;
+	}
+
+	@Override
+	public boolean isSideLit() {
+		return true; // we want the block to be lit from the side when rendered as an item
+	}
+
+	@Override
+	public boolean isBuiltin() {
+		return false;
+	}
+
+	@Override
+	public Sprite getParticleSprite() {
+		return this.frameSprite;
+	}
+
+	@Override
+	public ModelTransformation getTransformation() {
+		return ModelHelper.MODEL_TRANSFORM_BLOCK;
+	}
+
+	@Override
+	public ModelOverrideList getOverrides() {
+		return ModelOverrideList.EMPTY;
 	}
 }

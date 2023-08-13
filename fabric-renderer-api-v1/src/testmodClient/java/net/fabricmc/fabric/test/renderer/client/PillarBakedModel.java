@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderer.simple.client;
+package net.fabricmc.fabric.test.renderer.client;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -34,15 +35,11 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.block.v1.FabricBlockState;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.test.renderer.simple.RendererTest;
+import net.fabricmc.fabric.test.renderer.Registration;
 
 /**
  * Very crude implementation of a pillar block model that connects with pillars above and below.
@@ -54,16 +51,9 @@ public class PillarBakedModel implements BakedModel {
 
 	// alone, bottom, middle, top
 	private final Sprite[] sprites;
-	private final RenderMaterial defaultMaterial;
-	private final RenderMaterial glintMaterial;
 
 	public PillarBakedModel(Sprite[] sprites) {
 		this.sprites = sprites;
-
-		MaterialFinder finder = RendererAccess.INSTANCE.getRenderer().materialFinder();
-		defaultMaterial = finder.find();
-		finder.clear();
-		glintMaterial = finder.glint(TriState.TRUE).find();
 	}
 
 	@Override
@@ -73,52 +63,67 @@ public class PillarBakedModel implements BakedModel {
 
 	@Override
 	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		emitQuads(context.getEmitter(), blockView, state, pos);
-	}
+		QuadEmitter emitter = context.getEmitter();
+		// Do not use the passed state to ensure that this model connects
+		// to and from blocks with a custom appearance correctly.
+		BlockState worldState = blockView.getBlockState(pos);
 
-	@Override
-	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-		emitQuads(context.getEmitter(), null, null, null);
-	}
-
-	private void emitQuads(QuadEmitter emitter, @Nullable BlockRenderView blockView, @Nullable BlockState state, @Nullable BlockPos pos) {
 		for (Direction side : Direction.values()) {
 			ConnectedTexture texture = ConnectedTexture.ALONE;
-			RenderMaterial material = defaultMaterial;
 
 			if (side.getAxis().isHorizontal()) {
-				if (blockView != null && state != null && pos != null) {
-					boolean connectAbove = canConnect(blockView, pos.offset(Direction.UP), side, state, pos);
-					boolean connectBelow = canConnect(blockView, pos.offset(Direction.DOWN), side, state, pos);
+				boolean connectAbove = canConnect(blockView, worldState, pos, pos.offset(Direction.UP), side);
+				boolean connectBelow = canConnect(blockView, worldState, pos, pos.offset(Direction.DOWN), side);
 
-					if (connectAbove && connectBelow) {
-						texture = ConnectedTexture.MIDDLE;
-					} else if (connectAbove) {
-						texture = ConnectedTexture.BOTTOM;
-					} else if (connectBelow) {
-						texture = ConnectedTexture.TOP;
-					}
+				if (connectAbove && connectBelow) {
+					texture = ConnectedTexture.MIDDLE;
+				} else if (connectAbove) {
+					texture = ConnectedTexture.BOTTOM;
+				} else if (connectBelow) {
+					texture = ConnectedTexture.TOP;
 				}
-
-				material = glintMaterial;
 			}
 
 			emitter.square(side, 0, 0, 1, 1, 0);
 			emitter.spriteBake(sprites[texture.ordinal()], MutableQuadView.BAKE_LOCK_UV);
 			emitter.color(-1, -1, -1, -1);
-			emitter.material(material);
 			emitter.emit();
 		}
 	}
 
-	private static boolean canConnect(BlockRenderView blockView, BlockPos pos, Direction side, BlockState sourceState, BlockPos sourcePos) {
+	@Override
+	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+		QuadEmitter emitter = context.getEmitter();
+
+		for (Direction side : Direction.values()) {
+			emitter.square(side, 0, 0, 1, 1, 0);
+			emitter.spriteBake(sprites[ConnectedTexture.ALONE.ordinal()], MutableQuadView.BAKE_LOCK_UV);
+			emitter.color(-1, -1, -1, -1);
+			emitter.emit();
+		}
+	}
+
+	private static boolean canConnect(BlockRenderView blockView, BlockState originState, BlockPos originPos, BlockPos otherPos, Direction side) {
+		BlockState otherState = blockView.getBlockState(otherPos);
 		// In this testmod we can't rely on injected interfaces - in normal mods the (FabricBlockState) cast will be unnecessary
-		return ((FabricBlockState) blockView.getBlockState(pos)).getAppearance(blockView, pos, side, sourceState, sourcePos).isOf(RendererTest.PILLAR);
+		BlockState originAppearance = ((FabricBlockState) originState).getAppearance(blockView, originPos, side, otherState, otherPos);
+
+		if (!originAppearance.isOf(Registration.PILLAR_BLOCK)) {
+			return false;
+		}
+
+		BlockState otherAppearance = ((FabricBlockState) otherState).getAppearance(blockView, otherPos, side, originState, originPos);
+
+		if (!otherAppearance.isOf(Registration.PILLAR_BLOCK)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override
 	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, Random random) {
-		return List.of();
+		return Collections.emptyList();
 	}
 
 	@Override

@@ -7,14 +7,15 @@
   "license": "Apache-2.0",
   "depends": {
     "fabric-renderer-api-v1":"*",
+    "fabric-model-loading-api-v1":"*",
     "fabric-resource-loader-v0": "*"
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.renderer.simple.RendererTest"
+      "net.fabricmc.fabric.test.renderer.RendererTest"
     ],
     "client": [
-      "net.fabricmc.fabric.test.renderer.simple.client.RendererClientTest"
+      "net.fabricmc.fabric.test.renderer.client.RendererClientTest"
     ]
   }
 }

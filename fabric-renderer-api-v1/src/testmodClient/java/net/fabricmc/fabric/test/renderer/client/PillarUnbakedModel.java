@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderer.simple.client;
+package net.fabricmc.fabric.test.renderer.client;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -32,7 +33,7 @@ import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.test.renderer.simple.RendererTest;
+import net.fabricmc.fabric.test.renderer.RendererTest;
 
 public class PillarUnbakedModel implements UnbakedModel {
 	private static final List<SpriteIdentifier> SPRITES = Stream.of("alone", "bottom", "middle", "top")
@@ -41,7 +42,7 @@ public class PillarUnbakedModel implements UnbakedModel {
 
 	@Override
 	public Collection<Identifier> getModelDependencies() {
-		return List.of();
+		return Collections.emptySet();
 	}
 
 	@Override
