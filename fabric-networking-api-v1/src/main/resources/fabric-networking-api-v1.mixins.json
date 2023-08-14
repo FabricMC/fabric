@@ -10,7 +10,6 @@
     "EntityTrackerEntryMixin",
     "LoginQueryRequestS2CPacketMixin",
     "LoginQueryResponseC2SPacketMixin",
-    "NetworkStateInternalPacketHandlerMixin",
     "PlayerManagerMixin",
     "ServerCommonNetworkHandlerMixin",
     "ServerConfigurationNetworkHandlerMixin",
