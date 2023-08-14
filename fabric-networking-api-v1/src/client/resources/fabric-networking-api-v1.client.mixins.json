@@ -5,12 +5,10 @@
   "client": [
     "accessor.ClientCommonNetworkHandlerAccessor",
     "accessor.ClientConfigurationNetworkHandlerAccessor",
-    "accessor.ClientLoginNetworkHandlerAccessor",
     "accessor.ConnectScreenAccessor",
     "accessor.MinecraftClientAccessor",
     "ClientCommonNetworkHandlerMixin",
     "ClientConfigurationNetworkHandlerMixin",
-    "ClientLoginNetworkHandlerMixin",
     "ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {

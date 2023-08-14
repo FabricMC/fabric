@@ -29,8 +29,8 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 
 public final class NetworkingChannelClientTest implements ClientModInitializer {
@@ -64,7 +64,7 @@ public final class NetworkingChannelClientTest implements ClientModInitializer {
 		});
 
 		// State destruction on disconnection:
-		ClientLoginConnectionEvents.DISCONNECT.register((handler, client) -> {
+		ClientConfigurationConnectionEvents.DISCONNECT.register((handler, client) -> {
 			SUPPORTED_C2S_CHANNELS.clear();
 		});
 
