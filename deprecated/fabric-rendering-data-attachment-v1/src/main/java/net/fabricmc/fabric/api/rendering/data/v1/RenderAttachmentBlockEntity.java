@@ -39,4 +39,3 @@ public interface RenderAttachmentBlockEntity {
 	@Nullable
 	Object getRenderAttachmentData();
 }
-
