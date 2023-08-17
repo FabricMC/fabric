@@ -44,6 +44,11 @@ public class ModelResolverImpl implements ModelResolver {
 			RendererTest.id("item/octagonal_column")
 	);
 
+	private static final Set<Identifier> RIVERSTONE_MODEL_LOCATIONS = Set.of(
+			RendererTest.id("block/riverstone"),
+			RendererTest.id("item/riverstone")
+	);
+
 	@Override
 	@Nullable
 	public UnbakedModel resolveModel(Context context) {
@@ -59,6 +64,10 @@ public class ModelResolverImpl implements ModelResolver {
 
 		if (OCTAGONAL_COLUMN_MODEL_LOCATIONS.contains(id)) {
 			return new OctagonalColumnUnbakedModel();
+		}
+
+		if (RIVERSTONE_MODEL_LOCATIONS.contains(id)) {
+			return new RiverstoneUnbakedModel();
 		}
 
 		return null;

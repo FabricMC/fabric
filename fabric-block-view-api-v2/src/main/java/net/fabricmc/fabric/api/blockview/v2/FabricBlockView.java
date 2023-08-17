@@ -92,7 +92,6 @@ public interface FabricBlockView {
 	 * @return the biome, or null if biome retrieval is not supported
 	 * @see #hasBiomes()
 	 */
-	@Nullable
 	default RegistryEntry<Biome> getBiomeFabric(BlockPos pos) {
 		return null;
 	}

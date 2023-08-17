@@ -18,7 +18,7 @@
   "depends": {
     "fabricloader": ">=0.14.21"
   },
-  "description": "Hooks for accessing and using block entity data in client-side multithreaded environments.",
+  "description": "Hooks for block views",
   "mixins": [
     "fabric-block-view-api-v2.mixins.json",
     {
