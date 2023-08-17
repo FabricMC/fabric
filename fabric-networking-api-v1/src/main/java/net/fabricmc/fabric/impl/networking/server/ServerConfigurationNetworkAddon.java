@@ -24,7 +24,7 @@ import net.minecraft.network.NetworkState;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.common.PlayPingS2CPacket;
+import net.minecraft.network.packet.s2c.common.CommonPingS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.util.Identifier;
@@ -76,7 +76,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 		if (this.registerState == RegisterState.NOT_SENT) {
 			// Send the registration packet, followed by a ping
 			this.sendInitialChannelRegistrationPacket();
-			this.sendPacket(new PlayPingS2CPacket(0xFAB71C));
+			this.sendPacket(new CommonPingS2CPacket(0xFAB71C));
 
 			this.registerState = RegisterState.SENT;
 

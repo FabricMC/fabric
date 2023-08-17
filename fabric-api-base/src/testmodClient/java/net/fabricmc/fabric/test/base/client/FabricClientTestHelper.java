@@ -143,7 +143,7 @@ public final class FabricClientTestHelper {
 
 	public static void enableDebugHud() {
 		submitAndWait(client -> {
-			client.options.debugEnabled = true;
+			client.inGameHud.method_53531().method_53539();
 			return null;
 		});
 	}

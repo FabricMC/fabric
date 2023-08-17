@@ -131,7 +131,7 @@ transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	req
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	conditionsFromItem	(Lnet/minecraft/predicate/NumberRange$IntRange;Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	conditionsFromItem	(Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	conditionsFromTag	(Lnet/minecraft/registry/tag/TagKey;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
-transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	method_53499	([Lnet/minecraft/predicate/item/ItemPredicate$Builder;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
+transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	conditionsFromPredicates	([Lnet/minecraft/predicate/item/ItemPredicate$Builder;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	conditionsFromItemPredicates	([Lnet/minecraft/predicate/item/ItemPredicate;)Lnet/minecraft/advancement/criterion/InventoryChangedCriterion$Conditions;
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	hasItem	(Lnet/minecraft/item/ItemConvertible;)Ljava/lang/String;
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	getItemPath	(Lnet/minecraft/item/ItemConvertible;)Ljava/lang/String;

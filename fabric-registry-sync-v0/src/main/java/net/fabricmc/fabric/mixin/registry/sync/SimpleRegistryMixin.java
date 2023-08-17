@@ -154,7 +154,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 		onChange(registryKey);
 	}
 
-	@Inject(method = "method_46744", at = @At("RETURN"))
+	@Inject(method = "set", at = @At("RETURN"))
 	private <V extends T> void set(int rawId, RegistryKey<Registry<T>> registryKey, V entry, Lifecycle lifecycle, CallbackInfoReturnable<RegistryEntry<T>> info) {
 		// We need to restore the 1.19 behavior of binding the value to references immediately.
 		// Unfrozen registries cannot be interacted with otherwise, because the references would throw when
@@ -179,7 +179,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 		}
 	}
 
-	@Inject(method = "method_46744", at = @At("HEAD"))
+	@Inject(method = "set", at = @At("HEAD"))
 	public void setPre(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, CallbackInfoReturnable<RegistryEntry<T>> info) {
 		int indexedEntriesId = entryToRawId.getInt(object);
 
@@ -207,7 +207,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 		}
 	}
 
-	@Inject(method = "method_46744", at = @At("RETURN"))
+	@Inject(method = "set", at = @At("RETURN"))
 	public void setPost(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, CallbackInfoReturnable<RegistryEntry<T>> info) {
 		if (fabric_isObjectNew) {
 			fabric_addObjectEvent.invoker().onEntryAdded(id, registryId.getValue(), object);
