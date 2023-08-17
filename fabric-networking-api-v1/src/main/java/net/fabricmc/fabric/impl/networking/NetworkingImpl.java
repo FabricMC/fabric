@@ -26,12 +26,6 @@ public final class NetworkingImpl {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	/**
-	 * When enabled the fabric packet is written to the {@link net.minecraft.network.PacketByteBuf} on the calling thread.
-	 * This is not enabled by default as it currently causes issues in single player.
-	 */
-	public static final boolean WRITE_FABRIC_PACKET_CALLING_THREAD = Boolean.parseBoolean(System.getProperty("fabric-api.networking.write-fabric-packet-calling-thread", "true"));
-
-	/**
 	 * Id of packet used to register supported channels.
 	 */
 	public static final Identifier REGISTER_CHANNEL = new Identifier("minecraft", "register");

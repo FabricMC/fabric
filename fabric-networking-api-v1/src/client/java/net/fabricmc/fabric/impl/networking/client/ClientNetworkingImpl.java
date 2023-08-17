@@ -47,7 +47,6 @@ import net.fabricmc.fabric.impl.networking.CommonVersionPayload;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.impl.networking.payload.FabricPacketPayload;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ConnectScreenAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAccessor;
@@ -79,13 +78,9 @@ public final class ClientNetworkingImpl {
 		Objects.requireNonNull(packet, "Packet cannot be null");
 		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
 
-		if (NetworkingImpl.WRITE_FABRIC_PACKET_CALLING_THREAD) {
-			PacketByteBuf buf = PacketByteBufs.create();
-			packet.write(buf);
-			return createC2SPacket(packet.getType().getId(), buf);
-		}
-
-		return new CustomPayloadC2SPacket(new FabricPacketPayload(packet));
+		PacketByteBuf buf = PacketByteBufs.create();
+		packet.write(buf);
+		return createC2SPacket(packet.getType().getId(), buf);
 	}
 
 	/**

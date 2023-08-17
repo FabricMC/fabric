@@ -35,8 +35,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
-import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.impl.networking.payload.FabricPacketPayload;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
 
 public final class ServerNetworkingImpl {
@@ -64,12 +62,8 @@ public final class ServerNetworkingImpl {
 		Objects.requireNonNull(packet, "Packet cannot be null");
 		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
 
-		if (NetworkingImpl.WRITE_FABRIC_PACKET_CALLING_THREAD) {
-			PacketByteBuf buf = PacketByteBufs.create();
-			packet.write(buf);
-			return createC2SPacket(packet.getType().getId(), buf);
-		}
-
-		return new CustomPayloadS2CPacket(new FabricPacketPayload(packet));
+		PacketByteBuf buf = PacketByteBufs.create();
+		packet.write(buf);
+		return createC2SPacket(packet.getType().getId(), buf);
 	}
 }
