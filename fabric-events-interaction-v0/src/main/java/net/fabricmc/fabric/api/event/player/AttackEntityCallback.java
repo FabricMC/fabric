@@ -39,9 +39,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public interface AttackEntityCallback {
 	Event<AttackEntityCallback> EVENT = EventFactory.createArrayBacked(AttackEntityCallback.class,
-			(listeners) -> (player, world, hand, entity, hitResult) -> {
+			(listeners) -> (player, world, hand, target, hitResult) -> {
 				for (AttackEntityCallback event : listeners) {
-					ActionResult result = event.interact(player, world, hand, entity, hitResult);
+					ActionResult result = event.interact(player, world, hand, target, hitResult);
 
 					if (result != ActionResult.PASS) {
 						return result;
@@ -52,5 +52,5 @@ public interface AttackEntityCallback {
 			}
 	);
 
-	ActionResult interact(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult);
+	ActionResult interact(PlayerEntity player, World world, Hand hand, Entity target, @Nullable EntityHitResult hitResult);
 }
