@@ -17,11 +17,13 @@
 package net.fabricmc.fabric.api.blockview.v2;
 
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.WorldView;
 import net.minecraft.world.biome.Biome;
 
 /**
@@ -85,6 +87,11 @@ public interface FabricBlockView {
 	 * {@link RegistryEntry} whose {@link RegistryEntry#value() value} is non-null. If
 	 * {@link #hasBiomes()} returns {@code false}, this method will always return {@code null}.
 	 *
+	 * <p>Do not use this method if the available type of this instance is {@link WorldView};
+	 * use {@link WorldView#getBiome(BlockPos)} instead. Additionally, {@link WorldView} implements
+	 * {@link #hasBiomes()} and this method as expected, so this instance should not be cast to
+	 * {@link WorldView} for the purposes of biome retrieval.
+	 *
 	 * @implNote Implementations which do not return null are encouraged to use the plains biome as
 	 * the default value, for example when the biome at the given position is unknown.
 	 *
@@ -92,6 +99,7 @@ public interface FabricBlockView {
 	 * @return the biome, or null if biome retrieval is not supported
 	 * @see #hasBiomes()
 	 */
+	@UnknownNullability
 	default RegistryEntry<Biome> getBiomeFabric(BlockPos pos) {
 		return null;
 	}
