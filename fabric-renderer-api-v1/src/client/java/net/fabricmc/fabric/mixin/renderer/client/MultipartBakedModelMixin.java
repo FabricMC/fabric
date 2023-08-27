@@ -81,15 +81,23 @@ public class MultipartBakedModelMixin implements FabricBakedModel {
 				Pair<Predicate<BlockState>, BakedModel> pair = components.get(i);
 
 				if (pair.getLeft().test(state)) {
-					pair.getRight().emitBlockQuads(blockView, state, pos, randomSupplier, context);
 					bitSet.set(i);
 				}
 			}
 
 			stateCache.put(state, bitSet);
-		} else {
-			for (int i = 0; i < this.components.size(); i++) {
-				if (bitSet.get(i)) components.get(i).getRight().emitBlockQuads(blockView, state, pos, randomSupplier, context);
+		}
+
+		Random random = randomSupplier.get();
+		long randomSeed = random.nextLong();
+		Supplier<Random> subModelSupplier = () -> {
+			random.setSeed(randomSeed);
+			return random;
+		};
+
+		for (int i = 0; i < this.components.size(); i++) {
+			if (bitSet.get(i)) {
+				components.get(i).getRight().emitBlockQuads(blockView, state, pos, subModelSupplier, context);
 			}
 		}
 	}
