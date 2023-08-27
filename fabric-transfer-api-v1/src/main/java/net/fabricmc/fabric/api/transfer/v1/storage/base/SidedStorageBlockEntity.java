@@ -47,19 +47,23 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 public interface SidedStorageBlockEntity {
 	/**
 	 * Return a fluid storage if available on the queried side, or null otherwise.
+	 *
+	 * @param side The side of the storage to query, {@code null} means that the full storage without the restriction should be returned instead.
 	 */
 	@ApiStatus.OverrideOnly
 	@Nullable
-	default Storage<FluidVariant> getFluidStorage(Direction side) {
+	default Storage<FluidVariant> getFluidStorage(@Nullable Direction side) {
 		return null;
 	}
 
 	/**
 	 * Return an item storage if available on the queried side, or null otherwise.
+	 *
+	 * @param side The side of the storage to query, {@code null} means that the full storage without the restriction should be returned instead.
 	 */
 	@ApiStatus.OverrideOnly
 	@Nullable
-	default Storage<ItemVariant> getItemStorage(Direction side) {
+	default Storage<ItemVariant> getItemStorage(@Nullable Direction side) {
 		return null;
 	}
 }
