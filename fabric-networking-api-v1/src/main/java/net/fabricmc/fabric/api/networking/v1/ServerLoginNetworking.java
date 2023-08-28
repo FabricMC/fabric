@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Future;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -151,10 +152,9 @@ public final class ServerLoginNetworking {
 
 	/**
 	 * Allows blocking client log-in until all futures passed into {@link LoginSynchronizer#waitFor(Future)} are completed.
-	 *
-	 * @apiNote this interface is not intended to be implemented by users of api.
 	 */
 	@FunctionalInterface
+	@ApiStatus.NonExtendable
 	public interface LoginSynchronizer {
 		/**
 		 * Allows blocking client log-in until the {@code future} is {@link Future#isDone() done}.
