@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @ApiStatus.Experimental
 public final class ClientConfigurationConnectionEvents {
 	/**
-	 * Event indicating a connection entered the CONFIGURATION state, ready for registering channel handlers.
+	 * Event indicating a connection entering the CONFIGURATION state, ready for registering channel handlers.
 	 *
 	 * @see ClientConfigurationNetworking#registerReceiver(Identifier, ClientConfigurationNetworking.ConfigurationChannelHandler)
 	 */
