@@ -52,7 +52,7 @@ public interface FabricBlockView {
 	 * {@code BlockColorProvider#getColor} (block color providers), and
 	 * {@code FabricBlock#getAppearance} (block appearance computation).
 	 *
-	 * <p>Users of this method are required to  check the returned object before using it.Users must
+	 * <p>Users of this method are required to check the returned object before using it. Users must
 	 * check if it is null and if it is of the correct type to avoid null pointer and class cast
 	 * exceptions, as the returned data is not guaranteed to be what the user expects. A simple way
 	 * to implement these checks is to use {@code instanceof}, since it always returns {@code false}
@@ -87,10 +87,8 @@ public interface FabricBlockView {
 	 * {@link RegistryEntry} whose {@link RegistryEntry#value() value} is non-null. If
 	 * {@link #hasBiomes()} returns {@code false}, this method will always return {@code null}.
 	 *
-	 * <p>Do not use this method if the available type of this instance is {@link WorldView};
-	 * use {@link WorldView#getBiome(BlockPos)} instead. Additionally, {@link WorldView} implements
-	 * {@link #hasBiomes()} and this method as expected, so this instance should not be cast to
-	 * {@link WorldView} for the purposes of biome retrieval.
+	 * <p>Prefer using {@link WorldView#getBiome(BlockPos)} instead of this method if this instance
+	 * is known to implement {@link WorldView}.
 	 *
 	 * @implNote Implementations which do not return null are encouraged to use the plains biome as
 	 * the default value, for example when the biome at the given position is unknown.
