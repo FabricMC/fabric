@@ -23,13 +23,16 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 
 /**
@@ -55,6 +58,15 @@ public interface RenderContext {
 	QuadEmitter getEmitter();
 
 	/**
+	 * Returns whether this context currently has at least one transform.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
+	 */
+	default boolean hasTransform() {
+		return true;
+	}
+
+	/**
 	 * Causes all models/quads/meshes sent to this consumer to be transformed by the provided
 	 * {@link QuadTransform} that edits each quad before buffering. Quads in the mesh will
 	 * be passed to the {@link QuadTransform} for modification before offsets, face culling or lighting are applied.
@@ -76,6 +88,34 @@ public interface RenderContext {
 	 */
 	void popTransform();
 
+	/**
+	 * Returns {@code true} if the given face will be culled away.
+	 *
+	 * <p>This function can be used to avoid complex transformations of quads that will be culled anyway.
+	 * The cull face of a quad is determined by {@link QuadView#cullFace()}.
+	 *
+	 * <p>This function can only be used on a block render context (i.e. in {@link FabricBakedModel#emitBlockQuads}).
+	 * Calling it on another context (e.g. in {@link FabricBakedModel#emitItemQuads}) will throw an exception.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
+	 */
+	// TODO: allow null params?
+	default boolean isFaceCulled(Direction face) {
+		return false;
+	}
+
+	/**
+	 * Returns the current transformation mode.
+	 *
+	 * <p>This function can only be used on an item render context (i.e. in {@link FabricBakedModel#emitItemQuads}).
+	 * Calling it on another context (e.g. in {@link FabricBakedModel#emitBlockQuads}) will throw an exception.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
+	 */
+	default ModelTransformationMode itemTransformationMode() {
+		return ModelTransformationMode.NONE;
+	}
+
 	@FunctionalInterface
 	interface QuadTransform {
 		/**
@@ -89,7 +129,9 @@ public interface RenderContext {
 	 * @deprecated Use {@link Mesh#outputTo(QuadEmitter)} instead.
 	 */
 	@Deprecated
-	Consumer<Mesh> meshConsumer();
+	default Consumer<Mesh> meshConsumer() {
+		return mesh -> mesh.outputTo(getEmitter());
+	}
 
 	/**
 	 * @deprecated Use {@link FabricBakedModel#emitBlockQuads(BlockRenderView, BlockState, BlockPos, Supplier, RenderContext) emitBlockQuads}

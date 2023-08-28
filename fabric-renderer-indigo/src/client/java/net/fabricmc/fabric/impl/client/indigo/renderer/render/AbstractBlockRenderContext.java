@@ -31,6 +31,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -81,6 +82,16 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 	}
 
 	@Override
+	public boolean isFaceCulled(Direction face) {
+		return !blockInfo.shouldDrawFace(face);
+	}
+
+	@Override
+	public ModelTransformationMode itemTransformationMode() {
+		throw new IllegalStateException("itemTransformationMode() can only be called on an item render context.");
+	}
+
+	@Override
 	public BakedModelConsumer bakedModelConsumer() {
 		return vanillaModelConsumer;
 	}
@@ -90,7 +101,7 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 			return;
 		}
 
-		if (!blockInfo.shouldDrawFace(quad.cullFace())) {
+		if (isFaceCulled(quad.cullFace())) {
 			return;
 		}
 

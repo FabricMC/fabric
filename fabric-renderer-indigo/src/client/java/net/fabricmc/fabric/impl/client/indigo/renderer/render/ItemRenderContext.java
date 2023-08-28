@@ -107,6 +107,16 @@ public class ItemRenderContext extends AbstractRenderContext {
 	}
 
 	@Override
+	public boolean isFaceCulled(Direction face) {
+		throw new IllegalStateException("isFaceCulled can only be called on a block render context.");
+	}
+
+	@Override
+	public ModelTransformationMode itemTransformationMode() {
+		return transformMode;
+	}
+
+	@Override
 	public BakedModelConsumer bakedModelConsumer() {
 		return vanillaModelConsumer;
 	}
