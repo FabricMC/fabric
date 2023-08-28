@@ -25,6 +25,7 @@ import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingContext;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
 public class KeyBindingsTest implements ClientModInitializer {
@@ -34,6 +35,10 @@ public class KeyBindingsTest implements ClientModInitializer {
 		KeyBinding binding2 = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-key-binding-api-v1-testmod.test_keybinding_2", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_U, "key.category.second.test"));
 		KeyBinding stickyBinding = KeyBindingHelper.registerKeyBinding(new StickyKeyBinding("key.fabric-key-binding-api-v1-testmod.test_keybinding_sticky", GLFW.GLFW_KEY_R, "key.category.first.test", () -> true));
 		KeyBinding duplicateBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-key-binding-api-v1-testmod.test_keybinding_duplicate", GLFW.GLFW_KEY_RIGHT_SHIFT, "key.category.first.test"));
+
+		KeyBinding inGameBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-key-binding-api-v1-testmod.in_game_keybinding", GLFW.GLFW_KEY_EQUAL, "key.category.context"), KeyBindingContext.IN_GAME);
+		KeyBinding screenBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-key-binding-api-v1-testmod.screen_keybinding", GLFW.GLFW_KEY_EQUAL, "key.category.context"), KeyBindingContext.IN_SCREEN);
+		KeyBinding allBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-key-binding-api-v1-testmod.all_keybinding", GLFW.GLFW_KEY_BACKSLASH, "key.category.context"), KeyBindingContext.ALL);
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (binding1.wasPressed()) {
@@ -50,6 +55,10 @@ public class KeyBindingsTest implements ClientModInitializer {
 
 			while (duplicateBinding.wasPressed()) {
 				client.player.sendMessage(Text.literal("Duplicate Key was pressed!"), false);
+			}
+
+			while (inGameBinding.wasPressed()) {
+				client.player.sendMessage(Text.literal("In-game key was pressed"));
 			}
 		});
 	}
