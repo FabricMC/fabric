@@ -75,8 +75,9 @@ public abstract class IntegratedServerLoaderMixin {
 		this.client.setScreen(new RemovedRegistryEntryWarningScreen(parent, (backup, eraseCache) -> {
 			if (backup) {
 				EditWorldScreen.onBackupConfirm(this.storage, levelName);
-				this.start(parent, levelName, safeMode, false);
 			}
+
+			this.start(parent, levelName, safeMode, false);
 		}, checker.getMissingNamespaces()));
 		saveLoader.close();
 		close(session, levelName);
