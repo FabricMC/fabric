@@ -118,7 +118,7 @@ public final class PlayerLookup {
 			// return an immutable collection to guard against accidental removals.
 			if (tracker != null) {
 				return tracker.getPlayersTracking()
-                        .stream().map(PlayerAssociatedNetworkHandler::getPlayer).collect(Collectors.toUnmodifiableSet());
+						.stream().map(PlayerAssociatedNetworkHandler::getPlayer).collect(Collectors.toUnmodifiableSet());
 			}
 
 			return Collections.emptySet();
