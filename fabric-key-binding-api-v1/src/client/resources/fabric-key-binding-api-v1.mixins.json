@@ -5,6 +5,7 @@
   "client": [
     "GameOptionsMixin",
     "KeyBindingAccessor",
+    "KeyBindingEntryMixin",
     "KeyBindingMixin"
   ],
   "injectors": {
