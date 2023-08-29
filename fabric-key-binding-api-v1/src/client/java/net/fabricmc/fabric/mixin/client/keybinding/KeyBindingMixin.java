@@ -18,8 +18,12 @@ package net.fabricmc.fabric.mixin.client.keybinding;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -52,16 +56,19 @@ public abstract class KeyBindingMixin implements KeyBindingExtensions {
 	private InputUtil.Key boundKey;
 
 	@Unique
-	private KeyBindingContext context = KeyBindingContext.IN_GAME;
+	private KeyBindingContext fabric_context;
+
+	@Unique
+	private Set<KeyBinding> fabric_conflictingKeyBinds;
 
 	@Override
 	public KeyBindingContext fabric_getContext() {
-		return context;
+		return fabric_context;
 	}
 
 	@Override
 	public void fabric_setContext(KeyBindingContext context) {
-		this.context = context;
+		this.fabric_context = context;
 	}
 
 	@Inject(method = "onKeyPressed", at = @At("HEAD"))
@@ -69,10 +76,13 @@ public abstract class KeyBindingMixin implements KeyBindingExtensions {
 		List<KeyBinding> list = KeyBindingRegistryImpl.KEY_TO_BINDINGS.get(key);
 		if (list == null) return;
 
+		Set<KeyBinding> uniqueKeyBinds = Collections.newSetFromMap(new IdentityHashMap<>());
+
 		for (KeyBinding binding : list) {
-			if (KeyBindingContext.of(binding).isActive()) {
+			KeyBindingMixin mixed = (KeyBindingMixin) (Object) binding;
+
+			if (mixed.fabric_context.isActive() && uniqueKeyBinds.addAll(mixed.fabric_conflictingKeyBinds)) {
 				((KeyBindingMixin) (Object) binding).timesPressed++;
-				break;
 			}
 		}
 	}
@@ -82,10 +92,13 @@ public abstract class KeyBindingMixin implements KeyBindingExtensions {
 		List<KeyBinding> list = KeyBindingRegistryImpl.KEY_TO_BINDINGS.get(key);
 		if (list == null) return;
 
+		Set<KeyBinding> uniqueKeyBinds = Collections.newSetFromMap(new IdentityHashMap<>());
+
 		for (KeyBinding binding : list) {
-			if (KeyBindingContext.of(binding).isActive()) {
+			KeyBindingMixin mixed = (KeyBindingMixin) (Object) binding;
+
+			if (mixed.fabric_context.isActive() && uniqueKeyBinds.addAll(mixed.fabric_conflictingKeyBinds)) {
 				binding.setPressed(pressed);
-				break;
 			}
 		}
 	}
@@ -97,18 +110,48 @@ public abstract class KeyBindingMixin implements KeyBindingExtensions {
 		for (KeyBinding binding : KEYS_BY_ID.values()) {
 			KeyBindingRegistryImpl.putToMap(KeyBindingHelper.getBoundKeyOf(binding), binding);
 		}
+
+		for (List<KeyBinding> bindings : KeyBindingRegistryImpl.KEY_TO_BINDINGS.values()) {
+			for (KeyBinding binding : bindings) {
+				((KeyBindingMixin) (Object) binding).fabric_conflictingKeyBinds.clear();
+			}
+
+			for (KeyBinding binding : bindings) {
+				KeyBindingMixin mixed = (KeyBindingMixin) (Object) binding;
+
+				for (KeyBinding otherBinding : bindings) {
+					if (binding == otherBinding) continue;
+					KeyBindingMixin otherMixed = (KeyBindingMixin) (Object) otherBinding;
+
+					if (KeyBindingContext.conflicts(mixed.fabric_context, otherMixed.fabric_context)) {
+						otherMixed.fabric_conflictingKeyBinds.add(binding);
+						otherMixed.fabric_conflictingKeyBinds.addAll(mixed.fabric_conflictingKeyBinds);
+						mixed.fabric_conflictingKeyBinds.add(otherBinding);
+						mixed.fabric_conflictingKeyBinds.addAll(otherMixed.fabric_conflictingKeyBinds);
+					}
+				}
+			}
+		}
 	}
 
 	@Inject(method = "<init>(Ljava/lang/String;Lnet/minecraft/client/util/InputUtil$Type;ILjava/lang/String;)V", at = @At("TAIL"))
 	private void init(String translationKey, InputUtil.Type type, int code, String category, CallbackInfo ci) {
+		fabric_context = KeyBindingContext.IN_GAME;
+		fabric_conflictingKeyBinds = Collections.newSetFromMap(new IdentityHashMap<>());
 		KeyBindingRegistryImpl.putToMap(boundKey, (KeyBinding) (Object) this);
 	}
 
 	@Inject(method = "equals", at = @At("RETURN"), cancellable = true)
 	private void equals(KeyBinding other, CallbackInfoReturnable<Boolean> cir) {
-		if (!KeyBindingContext.conflicts(context, KeyBindingContext.of(other))) {
+		if (!KeyBindingContext.conflicts(fabric_context, KeyBindingContext.of(other))) {
 			cir.setReturnValue(false);
 		}
+	}
+
+	// Make KEYS_BY_ID deterministic
+	@Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Maps;newHashMap()Ljava/util/HashMap;", ordinal = 0))
+	private static HashMap<?, ?> makeMapOrdered() {
+		return new LinkedHashMap<>();
 	}
 
 	// Return empty set, skipping the loop
@@ -117,7 +160,7 @@ public abstract class KeyBindingMixin implements KeyBindingExtensions {
 		return Collections.emptySet();
 	}
 
-	// Skip putting this to KEY_TO_BINDINGS
+	// Skip putting this to KEY_TO_BINDINGS, this also skips vanilla onKeyPressed and setKeyPressed loops
 	@Redirect(method = "<init>(Ljava/lang/String;Lnet/minecraft/client/util/InputUtil$Type;ILjava/lang/String;)V", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", ordinal = 1))
 	private Object skipVanillaMapping(Map<?, ?> instance, Object k, Object v) {
 		return null;

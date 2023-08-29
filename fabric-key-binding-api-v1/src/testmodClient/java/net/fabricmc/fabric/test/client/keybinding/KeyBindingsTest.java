@@ -40,6 +40,16 @@ public class KeyBindingsTest implements ClientModInitializer {
 		KeyBinding screenBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-key-binding-api-v1-testmod.screen_keybinding", GLFW.GLFW_KEY_EQUAL, "key.category.context"), KeyBindingContext.IN_SCREEN);
 		KeyBinding allBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-key-binding-api-v1-testmod.all_keybinding", GLFW.GLFW_KEY_BACKSLASH, "key.category.context"), KeyBindingContext.ALL);
 
+		// context1 won't conflict with context2
+		// therefore, one key from context1 and context2 will both be registered as pressed
+		CustomKeyBindingContext context1 = new CustomKeyBindingContext();
+		KeyBinding customCtxBinding1 = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-key-binding-api-v1-testmod.custom_context_1", GLFW.GLFW_KEY_SEMICOLON, "key.category.context"), context1);
+		KeyBinding customCtxBinding2 = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-key-binding-api-v1-testmod.custom_context_2", GLFW.GLFW_KEY_SEMICOLON, "key.category.context"), context1);
+
+		CustomKeyBindingContext context2 = new CustomKeyBindingContext();
+		KeyBinding customCtxBinding3 = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-key-binding-api-v1-testmod.custom_context_3", GLFW.GLFW_KEY_SEMICOLON, "key.category.context"), context2);
+		KeyBinding customCtxBinding4 = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-key-binding-api-v1-testmod.custom_context_4", GLFW.GLFW_KEY_SEMICOLON, "key.category.context"), context2);
+
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (binding1.wasPressed()) {
 				client.player.sendMessage(Text.literal("Key 1 was pressed!"), false);
@@ -59,6 +69,26 @@ public class KeyBindingsTest implements ClientModInitializer {
 
 			while (inGameBinding.wasPressed()) {
 				client.player.sendMessage(Text.literal("In-game key was pressed"));
+			}
+
+			while (allBinding.wasPressed()) {
+				client.player.sendMessage(Text.literal("ALL context key was pressed!"));
+			}
+
+			while (customCtxBinding1.wasPressed()) {
+				client.player.sendMessage(Text.literal("Custom Context Key 1 was pressed!"));
+			}
+
+			while (customCtxBinding2.wasPressed()) {
+				client.player.sendMessage(Text.literal("Custom Context Key 2 was pressed!"));
+			}
+
+			while (customCtxBinding3.wasPressed()) {
+				client.player.sendMessage(Text.literal("Custom Context Key 3 was pressed!"));
+			}
+
+			while (customCtxBinding4.wasPressed()) {
+				client.player.sendMessage(Text.literal("Custom Context Key 4 was pressed!"));
 			}
 		});
 	}
