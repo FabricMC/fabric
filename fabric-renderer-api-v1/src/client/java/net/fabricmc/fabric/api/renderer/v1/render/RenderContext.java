@@ -79,6 +79,8 @@ public interface RenderContext {
 	 *
 	 * <p>Meshes are never mutated by the transformer - only buffered quads. This ensures thread-safe
 	 * use of meshes/models across multiple chunk builders.
+	 *
+	 * <p>Using the {@linkplain #getEmitter() quad emitter of this context} from the inside of a quad transform is not supported.
 	 */
 	void pushTransform(QuadTransform transform);
 
@@ -91,16 +93,17 @@ public interface RenderContext {
 	/**
 	 * Returns {@code true} if the given face will be culled away.
 	 *
-	 * <p>This function can be used to avoid complex transformations of quads that will be culled anyway.
+	 * <p>This function can be used to skip complex transformations of quads that will be culled anyway.
 	 * The cull face of a quad is determined by {@link QuadView#cullFace()}.
+	 * Note that if {@linkplain #hasTransform() there is a transform}, no computation should be skipped,
+	 * because the cull face might be changed by the transform.
 	 *
 	 * <p>This function can only be used on a block render context (i.e. in {@link FabricBakedModel#emitBlockQuads}).
 	 * Calling it on another context (e.g. in {@link FabricBakedModel#emitItemQuads}) will throw an exception.
 	 *
 	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	// TODO: allow null params?
-	default boolean isFaceCulled(Direction face) {
+	default boolean isFaceCulled(@Nullable Direction face) {
 		return false;
 	}
 
@@ -138,7 +141,7 @@ public interface RenderContext {
 	 * or {@link FabricBakedModel#emitItemQuads(ItemStack, Supplier, RenderContext) emitItemQuads} on the baked model
 	 * that you want to consume instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	BakedModelConsumer bakedModelConsumer();
 
 	/**
@@ -146,12 +149,12 @@ public interface RenderContext {
 	 * or {@link FabricBakedModel#emitItemQuads(ItemStack, Supplier, RenderContext) emitItemQuads} on the baked model
 	 * that you want to consume instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	default Consumer<BakedModel> fallbackConsumer() {
 		return bakedModelConsumer();
 	}
 
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	interface BakedModelConsumer extends Consumer<BakedModel> {
 		/**
 		 * Render a baked model by processing its {@linkplain BakedModel#getQuads} using the rendered block state.
