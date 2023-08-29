@@ -25,8 +25,8 @@ import net.fabricmc.fabric.impl.client.keybinding.KeyBindingExtensions;
 
 /**
  * {@link KeyBindingContext} decides how {@link KeyBinding} with same bounded key behaves in regard to each other.
- * <p>
- * Bindings with different context will not conflict with each other even if they have the same bounded key.
+ *
+ * <p>Bindings with different context will not conflict with each other even if they have the same bounded key.
  */
 public interface KeyBindingContext {
 	/**
