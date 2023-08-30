@@ -77,12 +77,12 @@ public abstract class KeyBindingMixin implements KeyBindingExtensions {
 		List<KeyBinding> list = KeyBindingRegistryImpl.KEY_TO_BINDINGS.get(key);
 		if (list == null) return;
 
-		Set<KeyBinding> uniqueKeyBinds = Collections.newSetFromMap(new IdentityHashMap<>());
+		Set<KeyBinding> uniqueKeyBinds = list.size() <= 1 ? null : Collections.newSetFromMap(new IdentityHashMap<>());
 
 		for (KeyBinding binding : list) {
 			KeyBindingMixin mixed = (KeyBindingMixin) (Object) binding;
 
-			if (mixed.fabric_context.isActive(MinecraftClient.getInstance()) && uniqueKeyBinds.addAll(mixed.fabric_conflictingKeyBinds)) {
+			if (mixed.fabric_context.isActive(MinecraftClient.getInstance()) && (uniqueKeyBinds == null || uniqueKeyBinds.addAll(mixed.fabric_conflictingKeyBinds))) {
 				((KeyBindingMixin) (Object) binding).timesPressed++;
 			}
 		}
@@ -93,12 +93,12 @@ public abstract class KeyBindingMixin implements KeyBindingExtensions {
 		List<KeyBinding> list = KeyBindingRegistryImpl.KEY_TO_BINDINGS.get(key);
 		if (list == null) return;
 
-		Set<KeyBinding> uniqueKeyBinds = Collections.newSetFromMap(new IdentityHashMap<>());
+		Set<KeyBinding> uniqueKeyBinds = list.size() <= 1 ? null : Collections.newSetFromMap(new IdentityHashMap<>());
 
 		for (KeyBinding binding : list) {
 			KeyBindingMixin mixed = (KeyBindingMixin) (Object) binding;
 
-			if (mixed.fabric_context.isActive(MinecraftClient.getInstance()) && uniqueKeyBinds.addAll(mixed.fabric_conflictingKeyBinds)) {
+			if (mixed.fabric_context.isActive(MinecraftClient.getInstance()) && (uniqueKeyBinds == null || uniqueKeyBinds.addAll(mixed.fabric_conflictingKeyBinds))) {
 				binding.setPressed(pressed);
 			}
 		}
@@ -114,7 +114,9 @@ public abstract class KeyBindingMixin implements KeyBindingExtensions {
 
 		for (List<KeyBinding> bindings : KeyBindingRegistryImpl.KEY_TO_BINDINGS.values()) {
 			for (KeyBinding binding : bindings) {
-				((KeyBindingMixin) (Object) binding).fabric_conflictingKeyBinds.clear();
+				KeyBindingMixin mixed = (KeyBindingMixin) (Object) binding;
+				mixed.fabric_conflictingKeyBinds.clear();
+				mixed.fabric_conflictingKeyBinds.add(binding);
 			}
 
 			for (KeyBinding binding : bindings) {
