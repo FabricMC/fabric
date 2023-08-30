@@ -21,6 +21,7 @@ import java.util.Objects;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -35,6 +36,7 @@ import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
  * Represents something that supports sending packets to channels.
  * @see PacketByteBufs
  */
+@ApiStatus.NonExtendable
 public interface PacketSender {
 	/**
 	 * Makes a packet for a channel.

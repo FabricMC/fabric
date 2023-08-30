@@ -39,7 +39,7 @@ import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonNetworkHandlerAccessor;
 
 /**
- * Offers access to configurtion stage client-side networking functionalities.
+ * Offers access to configuration stage client-side networking functionalities.
  *
  * <p>Client-side networking functionalities include receiving clientbound packets,
  * sending serverbound packets, and events related to client-side network handlers.

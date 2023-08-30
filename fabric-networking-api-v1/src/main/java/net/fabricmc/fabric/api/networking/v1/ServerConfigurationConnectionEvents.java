@@ -28,11 +28,11 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * Offers access to events related to the connection to a client on a logical server while a client is configuring.
  */
 @ApiStatus.Experimental
-public class ServerConfigurationConnectionEvents {
+public final class ServerConfigurationConnectionEvents {
 	/**
 	 * Event fired before any vanilla configuration has taken place.
 	 *
-	 * <p>This event is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}
+	 * <p>This event is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
 	 *
 	 * <p>Task queued during this event will complete before vanilla configuration starts.
 	 */
@@ -45,7 +45,7 @@ public class ServerConfigurationConnectionEvents {
 	/**
 	 * Event fired during vanilla configuration.
 	 *
-	 * <p>This event is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}
+	 * <p>This event is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
 	 *
 	 * <p>An example usage of this:
 	 * <pre>{@code
@@ -75,6 +75,9 @@ public class ServerConfigurationConnectionEvents {
 			callback.onConfigureDisconnect(handler, server);
 		}
 	});
+
+	private ServerConfigurationConnectionEvents() {
+	}
 
 	@FunctionalInterface
 	public interface Configure {
