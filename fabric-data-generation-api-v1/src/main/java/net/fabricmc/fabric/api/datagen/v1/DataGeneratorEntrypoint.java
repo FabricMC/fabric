@@ -63,8 +63,8 @@ public interface DataGeneratorEntrypoint {
 
 	/**
 	 * Provides a callback for setting the sort priority of object keys in generated JSON files.
-	 * @param adder a callback for setting the sort priority for a given key
+	 * @param callback a callback for setting the sort priority for a given key
 	 */
-	default void addJsonKeySortOrders(JsonKeySortOrderAdder adder) {
+	default void addJsonKeySortOrders(JsonKeySortOrderCallback callback) {
 	}
 }

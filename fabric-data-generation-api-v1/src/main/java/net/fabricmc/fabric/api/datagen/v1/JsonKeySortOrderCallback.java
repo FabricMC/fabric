@@ -20,7 +20,7 @@ package net.fabricmc.fabric.api.datagen.v1;
  * Provides a callback for setting the sort priority of object keys in generated JSON files.
  */
 @FunctionalInterface
-public interface JsonKeySortOrderAdder {
+public interface JsonKeySortOrderCallback {
 	/**
 	 * Sets the sort priority for a given object key within generated JSON files.
 	 * @param key the key to set priority for

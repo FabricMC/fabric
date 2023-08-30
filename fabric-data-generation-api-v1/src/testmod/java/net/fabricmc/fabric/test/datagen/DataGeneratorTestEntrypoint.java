@@ -69,7 +69,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.JsonKeySortOrderAdder;
+import net.fabricmc.fabric.api.datagen.v1.JsonKeySortOrderCallback;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
@@ -88,8 +88,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	private static final ConditionJsonProvider ALWAYS_LOADED = DefaultResourceConditions.not(NEVER_LOADED);
 
 	@Override
-	public void addJsonKeySortOrders(JsonKeySortOrderAdder adder) {
-		adder.add("trigger", 0);
+	public void addJsonKeySortOrders(JsonKeySortOrderCallback callback) {
+		callback.add("trigger", 0);
 	}
 
 	@Override
