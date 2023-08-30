@@ -39,7 +39,6 @@ public class KeyBindingsTest implements ClientModInitializer {
 		KeyBinding duplicateBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-key-binding-api-v1-testmod.test_keybinding_duplicate", GLFW.GLFW_KEY_RIGHT_SHIFT, "key.category.first.test"));
 
 		KeyBinding inGameBinding = register("in_game_keybinding", GLFW.GLFW_KEY_EQUAL, "context", KeyBindingContext.IN_GAME);
-		KeyBinding screenBinding = register("screen_keybinding", GLFW.GLFW_KEY_EQUAL, "context", KeyBindingContext.IN_SCREEN);
 		KeyBinding allBinding = register("all_keybinding", GLFW.GLFW_KEY_BACKSLASH, "context", KeyBindingContext.ALL);
 
 		// context1 won't conflict with context2
