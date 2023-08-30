@@ -22,7 +22,12 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingContext;
 
 public class CustomKeyBindingContext implements KeyBindingContext {
 	@Override
-	public boolean isActive() {
-		return MinecraftClient.getInstance().currentScreen == null;
+	public boolean isActive(MinecraftClient client) {
+		return client.currentScreen == null;
+	}
+
+	@Override
+	public boolean conflictsWith(KeyBindingContext other) {
+		return this == other;
 	}
 }

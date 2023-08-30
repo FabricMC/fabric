@@ -35,6 +35,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
@@ -81,7 +82,7 @@ public abstract class KeyBindingMixin implements KeyBindingExtensions {
 		for (KeyBinding binding : list) {
 			KeyBindingMixin mixed = (KeyBindingMixin) (Object) binding;
 
-			if (mixed.fabric_context.isActive() && uniqueKeyBinds.addAll(mixed.fabric_conflictingKeyBinds)) {
+			if (mixed.fabric_context.isActive(MinecraftClient.getInstance()) && uniqueKeyBinds.addAll(mixed.fabric_conflictingKeyBinds)) {
 				((KeyBindingMixin) (Object) binding).timesPressed++;
 			}
 		}
@@ -97,7 +98,7 @@ public abstract class KeyBindingMixin implements KeyBindingExtensions {
 		for (KeyBinding binding : list) {
 			KeyBindingMixin mixed = (KeyBindingMixin) (Object) binding;
 
-			if (mixed.fabric_context.isActive() && uniqueKeyBinds.addAll(mixed.fabric_conflictingKeyBinds)) {
+			if (mixed.fabric_context.isActive(MinecraftClient.getInstance()) && uniqueKeyBinds.addAll(mixed.fabric_conflictingKeyBinds)) {
 				binding.setPressed(pressed);
 			}
 		}
