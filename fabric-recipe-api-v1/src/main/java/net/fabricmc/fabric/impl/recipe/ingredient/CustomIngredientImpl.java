@@ -16,14 +16,21 @@
 
 package net.fabricmc.fabric.impl.recipe.ingredient;
 
-import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
+
+import net.minecraft.util.Util;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.ItemStack;
@@ -44,7 +51,19 @@ public class CustomIngredientImpl extends Ingredient {
 	public static final String TYPE_KEY = "fabric:type";
 	public static final int PACKET_MARKER = -1;
 
-	static final Map<Identifier, CustomIngredientSerializer<?>> REGISTERED_SERIALIZERS = new ConcurrentHashMap<>();
+	static final BiMap<Identifier, CustomIngredientSerializer<?>> REGISTERED_SERIALIZERS = Maps.synchronizedBiMap(HashBiMap.create());
+
+	public static final Codec<CustomIngredientSerializer<?>> CODEC = Identifier.CODEC.flatXmap(identifier ->
+					Optional.ofNullable(REGISTERED_SERIALIZERS.get(identifier))
+					.map(DataResult::success)
+					.orElseGet(() -> DataResult.error(() -> "Unknown custom ingredient serializer: " + identifier)),
+			serializer ->
+					Optional.ofNullable(REGISTERED_SERIALIZERS.inverse().get(serializer))
+					.map(DataResult::success)
+					.orElseGet(() -> DataResult.error(() -> "Unknown custom ingredient serializer: " + serializer.getIdentifier()))
+	);
+
+	public static final Codec<CustomIngredient> INGREDIENT_CODECS = CODEC.dispatch(CustomIngredient::getSerializer, CustomIngredientSerializer::getCodec);
 
 	public static void registerSerializer(CustomIngredientSerializer<?> serializer) {
 		Objects.requireNonNull(serializer.getIdentifier(), "CustomIngredientSerializer identifier may not be null.");
@@ -114,11 +133,10 @@ public class CustomIngredientImpl extends Ingredient {
 	}
 
 	@Override
-	public JsonElement toJson() {
-		JsonObject json = new JsonObject();
-		json.addProperty(TYPE_KEY, customIngredient.getSerializer().getIdentifier().toString());
-		customIngredient.getSerializer().write(json, coerceIngredient());
-		return json;
+	public JsonElement toJson(boolean bl) {
+		// TODO do we need to care about bl? I think we do.
+		Codec<CustomIngredient> codec = (Codec<CustomIngredient>) customIngredient.getSerializer().getCodec();
+		return Util.getResult(codec.encodeStart(JsonOps.INSTANCE, customIngredient), IllegalStateException::new);
 	}
 
 	@Override

@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
@@ -27,10 +30,16 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
 public class AnyIngredient extends CombinedIngredient {
-	public static final CustomIngredientSerializer<AnyIngredient> SERIALIZER =
-			new CombinedIngredient.Serializer<>(new Identifier("fabric", "any"), AnyIngredient::new);
+	private static final Codec<AnyIngredient> CODEC = RecordCodecBuilder.create(instance ->
+			instance.group(
+					Ingredient.field_46095.listOf().fieldOf("ingredients").forGetter(AnyIngredient::getIngredients)
+			).apply(instance, AnyIngredient::new)
+	);
 
-	public AnyIngredient(Ingredient[] ingredients) {
+	public static final CustomIngredientSerializer<AnyIngredient> SERIALIZER =
+			new CombinedIngredient.Serializer<>(new Identifier("fabric", "any"), AnyIngredient::new, CODEC);
+
+	public AnyIngredient(List<Ingredient> ingredients) {
 		super(ingredients);
 	}
 

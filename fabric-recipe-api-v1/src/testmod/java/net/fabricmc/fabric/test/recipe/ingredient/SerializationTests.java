@@ -17,12 +17,15 @@
 package net.fabricmc.fabric.test.recipe.ingredient;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.mojang.serialization.JsonOps;
 
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.GameTestException;
 import net.minecraft.test.TestContext;
+import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 
@@ -49,7 +52,7 @@ public class SerializationTests {
 		JsonElement json = JsonParser.parseString(ingredientJson);
 
 		try {
-			Ingredient.fromJson(json);
+			Util.getResult(Ingredient.field_46096.parse(JsonOps.INSTANCE, json), JsonParseException::new);
 			throw new GameTestException("Using a custom ingredient inside an array ingredient should have failed.");
 		} catch (IllegalArgumentException e) {
 			context.complete();

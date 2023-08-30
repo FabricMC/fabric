@@ -19,7 +19,8 @@ package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -62,25 +63,31 @@ public class DifferenceIngredient implements CustomIngredient {
 		return SERIALIZER;
 	}
 
+	private Ingredient getBase() {
+		return base;
+	}
+
+	private Ingredient getSubtracted() {
+		return subtracted;
+	}
+
 	private static class Serializer implements CustomIngredientSerializer<DifferenceIngredient> {
-		private final Identifier id = new Identifier("fabric", "difference");
+		private static final Identifier ID = new Identifier("fabric", "difference");
+		private static final Codec<DifferenceIngredient> CODEC = RecordCodecBuilder.create(instance ->
+				instance.group(
+						Ingredient.field_46095.fieldOf("base").forGetter(DifferenceIngredient::getBase),
+						Ingredient.field_46095.fieldOf("subtracted").forGetter(DifferenceIngredient::getSubtracted)
+				).apply(instance, DifferenceIngredient::new)
+		);
 
 		@Override
 		public Identifier getIdentifier() {
-			return id;
+			return ID;
 		}
 
 		@Override
-		public DifferenceIngredient read(JsonObject json) {
-			Ingredient base = Ingredient.fromJson(json.get("base"));
-			Ingredient subtracted = Ingredient.fromJson(json.get("subtracted"));
-			return new DifferenceIngredient(base, subtracted);
-		}
-
-		@Override
-		public void write(JsonObject json, DifferenceIngredient ingredient) {
-			json.add("base", ingredient.base.toJson());
-			json.add("subtracted", ingredient.subtracted.toJson());
+		public Codec<DifferenceIngredient> getCodec() {
+			return CODEC;
 		}
 
 		@Override

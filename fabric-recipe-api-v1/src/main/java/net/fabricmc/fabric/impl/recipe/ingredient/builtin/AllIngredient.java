@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
@@ -27,10 +30,16 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
 public class AllIngredient extends CombinedIngredient {
-	public static final CustomIngredientSerializer<AllIngredient> SERIALIZER =
-			new Serializer<>(new Identifier("fabric", "all"), AllIngredient::new);
+	private static final Codec<AllIngredient> CODEC = RecordCodecBuilder.create(instance ->
+			instance.group(
+					Ingredient.field_46095.listOf().fieldOf("ingredients").forGetter(AllIngredient::getIngredients)
+			).apply(instance, AllIngredient::new)
+	);
 
-	public AllIngredient(Ingredient[] ingredients) {
+	public static final CustomIngredientSerializer<AllIngredient> SERIALIZER =
+			new Serializer<>(new Identifier("fabric", "all"), AllIngredient::new, CODEC);
+
+	public AllIngredient(List<Ingredient> ingredients) {
 		super(ingredients);
 	}
 
@@ -48,10 +57,10 @@ public class AllIngredient extends CombinedIngredient {
 	@Override
 	public List<ItemStack> getMatchingStacks() {
 		// There's always at least one sub ingredient, so accessing ingredients[0] is safe.
-		List<ItemStack> previewStacks = new ArrayList<>(Arrays.asList(ingredients[0].getMatchingStacks()));
+		List<ItemStack> previewStacks = new ArrayList<>(Arrays.asList(ingredients.get(0).getMatchingStacks()));
 
-		for (int i = 1; i < ingredients.length; ++i) {
-			Ingredient ing = ingredients[i];
+		for (int i = 1; i < ingredients.size(); ++i) {
+			Ingredient ing = ingredients.get(i);
 			previewStacks.removeIf(stack -> !ing.test(stack));
 		}
 

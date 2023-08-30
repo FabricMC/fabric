@@ -41,9 +41,10 @@ import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.block.Blocks;
+import net.minecraft.class_8779;
+import net.minecraft.class_8790;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -138,7 +139,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		public void generate(Consumer<RecipeJsonProvider> exporter) {
+		public void generate(class_8790 exporter) {
 			offerPlanksRecipe2(exporter, SIMPLE_BLOCK, ItemTags.ACACIA_LOGS, 1);
 
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.LEATHER, 4).input(Items.ITEM_FRAME)
@@ -328,8 +329,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		public void generateAdvancement(Consumer<Advancement> consumer) {
-			Advancement root = Advancement.Builder.create()
+		public void generateAdvancement(Consumer<class_8779> consumer) {
+			class_8779 root = Advancement.Builder.create()
 					.display(
 							SIMPLE_BLOCK,
 							Text.translatable("advancements.test.root.title"),
@@ -339,7 +340,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							false, false, false)
 					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
 					.build(consumer, MOD_ID + ":test/root");
-			Advancement rootNotLoaded = Advancement.Builder.create()
+			class_8779 rootNotLoaded = Advancement.Builder.create()
 					.display(
 							SIMPLE_BLOCK,
 							Text.translatable("advancements.test.root_not_loaded.title"),

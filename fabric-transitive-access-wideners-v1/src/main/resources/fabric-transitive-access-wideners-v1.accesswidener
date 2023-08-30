@@ -9,7 +9,7 @@ transitive-accessible method net/minecraft/client/item/ModelPredicateProviderReg
 transitive-accessible method net/minecraft/client/item/ModelPredicateProviderRegistry registerCustomModelData (Lnet/minecraft/client/item/ModelPredicateProvider;)V
 
 # Registering custom advancement criteria
-transitive-accessible method net/minecraft/advancement/criterion/Criteria register (Lnet/minecraft/advancement/criterion/Criterion;)Lnet/minecraft/advancement/criterion/Criterion;
+transitive-accessible method net/minecraft/advancement/criterion/Criteria register (Ljava/lang/String;Lnet/minecraft/advancement/criterion/Criterion;)Lnet/minecraft/advancement/criterion/Criterion;
 
 # Creating custom screen handler types
 transitive-accessible class net/minecraft/screen/ScreenHandlerType$Factory
