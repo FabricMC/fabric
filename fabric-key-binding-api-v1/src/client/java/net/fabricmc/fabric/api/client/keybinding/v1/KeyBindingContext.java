@@ -58,7 +58,7 @@ public interface KeyBindingContext {
 	 * Returns whether one context conflicts with the other.
 	 */
 	static boolean conflicts(KeyBindingContext left, KeyBindingContext right) {
-		return left.conflictsWith(right) || right.conflictsWith(left);
+		return left.conflicts(right) || right.conflicts(left);
 	}
 
 	/**
@@ -77,5 +77,5 @@ public interface KeyBindingContext {
 	 * <pre>return this == other || other == IN_GAME;</pre>
 	 */
 	@ApiStatus.OverrideOnly
-	boolean conflictsWith(KeyBindingContext other);
+	boolean conflicts(KeyBindingContext other);
 }

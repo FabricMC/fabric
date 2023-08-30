@@ -27,7 +27,7 @@ public class CustomKeyBindingContext implements KeyBindingContext {
 	}
 
 	@Override
-	public boolean conflictsWith(KeyBindingContext other) {
+	public boolean conflicts(KeyBindingContext other) {
 		return this == other;
 	}
 }

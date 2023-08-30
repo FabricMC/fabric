@@ -28,7 +28,7 @@ public class KeyBindingContextImpl {
 		}
 
 		@Override
-		public boolean conflictsWith(KeyBindingContext other) {
+		public boolean conflicts(KeyBindingContext other) {
 			return this == other;
 		}
 	};
@@ -40,7 +40,7 @@ public class KeyBindingContextImpl {
 		}
 
 		@Override
-		public boolean conflictsWith(KeyBindingContext other) {
+		public boolean conflicts(KeyBindingContext other) {
 			return this == other;
 		}
 	};
@@ -52,7 +52,7 @@ public class KeyBindingContextImpl {
 		}
 
 		@Override
-		public boolean conflictsWith(KeyBindingContext other) {
+		public boolean conflicts(KeyBindingContext other) {
 			return true;
 		}
 	};

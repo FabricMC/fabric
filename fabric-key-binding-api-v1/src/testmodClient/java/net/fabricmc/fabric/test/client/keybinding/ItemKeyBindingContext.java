@@ -37,7 +37,7 @@ public class ItemKeyBindingContext implements KeyBindingContext {
 	}
 
 	@Override
-	public boolean conflictsWith(KeyBindingContext other) {
+	public boolean conflicts(KeyBindingContext other) {
 		return this == other || IN_GAME == other;
 	}
 }
