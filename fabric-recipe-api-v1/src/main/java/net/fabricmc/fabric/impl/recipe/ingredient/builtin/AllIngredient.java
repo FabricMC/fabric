@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
@@ -34,11 +33,11 @@ public class AllIngredient extends CombinedIngredient {
 	private static final Codec<AllIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.field_46096);
 
 	private static Codec<AllIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
-		return RecordCodecBuilder.create(instance ->
-				instance.group(
-						ingredientCodec.listOf().fieldOf("ingredients").forGetter(AllIngredient::getIngredients)
-				).apply(instance, AllIngredient::new)
-		);
+		return ingredientCodec
+				.listOf()
+				.fieldOf("ingredients")
+				.xmap(AllIngredient::new, AllIngredient::getIngredients)
+				.codec();
 	}
 
 	public static final CustomIngredientSerializer<AllIngredient> SERIALIZER =
