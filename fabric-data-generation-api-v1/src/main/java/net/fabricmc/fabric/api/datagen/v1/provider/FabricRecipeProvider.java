@@ -20,14 +20,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 
+import net.minecraft.advancement.Advancement;
+import net.minecraft.class_8779;
+import net.minecraft.class_8790;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
+import net.minecraft.data.server.recipe.CraftingRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
@@ -56,16 +59,24 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	 * Implement this method and then use the range of methods in {@link RecipeProvider} or from one of the recipe json factories such as {@link ShapedRecipeJsonBuilder} or {@link ShapelessRecipeJsonBuilder}.
 	 */
 	@Override
-	public abstract void generate(Consumer<RecipeJsonProvider> exporter);
+	public abstract void generate(class_8790 exporter);
 
 	/**
 	 * Return a new exporter that applies the specified conditions to any recipe json provider it receives.
 	 */
-	protected Consumer<RecipeJsonProvider> withConditions(Consumer<RecipeJsonProvider> exporter, ConditionJsonProvider... conditions) {
+	protected class_8790 withConditions(class_8790 exporter, ConditionJsonProvider... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
-		return json -> {
-			FabricDataGenHelper.addConditions(json, conditions);
-			exporter.accept(json);
+		return new class_8790() {
+			@Override
+			public void method_53819(RecipeJsonProvider provider) {
+				FabricDataGenHelper.addConditions(provider, conditions);
+				exporter.method_53819(provider);
+			}
+
+			@Override
+			public Advancement.Builder method_53818() {
+				return exporter.method_53818();
+			}
 		};
 	}
 
@@ -73,23 +84,33 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	public CompletableFuture<?> run(DataWriter writer) {
 		Set<Identifier> generatedRecipes = Sets.newHashSet();
 		List<CompletableFuture<?>> list = new ArrayList<>();
-		generate(provider -> {
-			Identifier identifier = getRecipeIdentifier(provider.getRecipeId());
+		generate(new class_8790() {
+			@Override
+			public void method_53819(RecipeJsonProvider provider) {
+				Identifier identifier = getRecipeIdentifier(provider.recipeId());
 
-			if (!generatedRecipes.add(identifier)) {
-				throw new IllegalStateException("Duplicate recipe " + identifier);
+				if (!generatedRecipes.add(identifier)) {
+					throw new IllegalStateException("Duplicate recipe " + identifier);
+				}
+
+				JsonObject recipeJson = provider.toJson();
+				ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(provider);
+				ConditionJsonProvider.write(recipeJson, conditions);
+
+				list.add(DataProvider.writeToPath(writer, recipeJson, recipesPathResolver.resolveJson(identifier)));
+
+				class_8779 advancementBuilder = provider.advancementBuilder();
+
+				if (advancementBuilder != null) {
+					JsonObject advancementJson = advancementBuilder.comp_1920().method_53621();
+					ConditionJsonProvider.write(advancementJson, conditions);
+					list.add(DataProvider.writeToPath(writer, advancementJson, advancementsPathResolver.resolveJson(getRecipeIdentifier(advancementBuilder.comp_1919()))));
+				}
 			}
 
-			JsonObject recipeJson = provider.toJson();
-			ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(provider);
-			ConditionJsonProvider.write(recipeJson, conditions);
-
-			list.add(DataProvider.writeToPath(writer, recipeJson, this.recipesPathResolver.resolveJson(identifier)));
-			JsonObject advancementJson = provider.toAdvancementJson();
-
-			if (advancementJson != null) {
-				ConditionJsonProvider.write(advancementJson, conditions);
-				list.add(DataProvider.writeToPath(writer, advancementJson, this.advancementsPathResolver.resolveJson(getRecipeIdentifier(provider.getAdvancementId()))));
+			@Override
+			public Advancement.Builder method_53818() {
+				return Advancement.Builder.createUntelemetered().parent(CraftingRecipeJsonBuilder.ROOT);
 			}
 		});
 		return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));

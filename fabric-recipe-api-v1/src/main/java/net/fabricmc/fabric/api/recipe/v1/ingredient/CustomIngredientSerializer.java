@@ -16,8 +16,7 @@
 
 package net.fabricmc.fabric.api.recipe.v1.ingredient;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -55,18 +54,7 @@ public interface CustomIngredientSerializer<T extends CustomIngredient> {
 	 */
 	Identifier getIdentifier();
 
-	/**
-	 * Deserializes the custom ingredient from a JSON object.
-	 *
-	 * @throws JsonSyntaxException if the JSON object does not match the format expected by the serializer
-	 * @throws IllegalArgumentException if the JSON object is invalid for some other reason
-	 */
-	T read(JsonObject json);
-
-	/**
-	 * Serializes the custom ingredient to a JSON object.
-	 */
-	void write(JsonObject json, T ingredient);
+	Codec<T> getCodec(boolean allowEmpty);
 
 	/**
 	 * Deserializes the custom ingredient from a packet buffer.

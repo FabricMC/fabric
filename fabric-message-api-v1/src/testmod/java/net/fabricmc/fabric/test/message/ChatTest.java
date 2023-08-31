@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.message;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import org.slf4j.Logger;
@@ -41,45 +40,28 @@ public class ChatTest implements ModInitializer {
 		// Basic content phase testing
 		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
 			if (message.getString().contains("tater")) {
-				return CompletableFuture.completedFuture(message.copy().append(" :tiny_potato:"));
+				return message.copy().append(" :tiny_potato:");
 			}
 
-			return CompletableFuture.completedFuture(message);
+			return message;
 		});
 
 		// Content phase testing, with variable info
 		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
 			if (message.getString().contains("random")) {
-				return CompletableFuture.completedFuture(Text.of(String.valueOf(Random.create().nextBetween(0, 100))));
+				return Text.of(String.valueOf(Random.create().nextBetween(0, 100)));
 			}
 
-			return CompletableFuture.completedFuture(message);
+			return message;
 		});
 
 		// Basic styling phase testing
 		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.STYLING_PHASE, (sender, message) -> {
 			if (sender != null && sender.getAbilities().creativeMode) {
-				return CompletableFuture.completedFuture(message.copy().styled(style -> style.withColor(0xFFA500)));
+				return message.copy().styled(style -> style.withColor(0xFFA500));
 			}
 
-			return CompletableFuture.completedFuture(message);
-		});
-
-		// Async testing
-		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
-			if (message.getString().contains("wait")) {
-				return CompletableFuture.supplyAsync(() -> {
-					try {
-						Thread.sleep(Random.create().nextBetween(500, 2000));
-					} catch (InterruptedException ignored) {
-						// Ignore interruption
-					}
-
-					return message;
-				}, ioWorkerExecutor);
-			}
-
-			return CompletableFuture.completedFuture(message);
+			return message;
 		});
 
 		// ServerMessageEvents

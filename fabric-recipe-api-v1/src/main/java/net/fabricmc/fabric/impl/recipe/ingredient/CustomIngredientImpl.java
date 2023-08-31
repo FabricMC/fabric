@@ -18,12 +18,15 @@ package net.fabricmc.fabric.impl.recipe.ingredient;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.ItemStack;
@@ -45,6 +48,16 @@ public class CustomIngredientImpl extends Ingredient {
 	public static final int PACKET_MARKER = -1;
 
 	static final Map<Identifier, CustomIngredientSerializer<?>> REGISTERED_SERIALIZERS = new ConcurrentHashMap<>();
+
+	public static final Codec<CustomIngredientSerializer<?>> CODEC = Identifier.CODEC.flatXmap(identifier ->
+					Optional.ofNullable(REGISTERED_SERIALIZERS.get(identifier))
+					.map(DataResult::success)
+					.orElseGet(() -> DataResult.error(() -> "Unknown custom ingredient serializer: " + identifier)),
+			serializer -> DataResult.success(serializer.getIdentifier())
+	);
+
+	public static final Codec<CustomIngredient> ALLOW_EMPTY_INGREDIENT_CODECS = CODEC.dispatch(TYPE_KEY, CustomIngredient::getSerializer, serializer -> serializer.getCodec(true));
+	public static final Codec<CustomIngredient> DISALLOW_EMPTY_INGREDIENT_CODECS = CODEC.dispatch(TYPE_KEY, CustomIngredient::getSerializer, serializer -> serializer.getCodec(false));
 
 	public static void registerSerializer(CustomIngredientSerializer<?> serializer) {
 		Objects.requireNonNull(serializer.getIdentifier(), "CustomIngredientSerializer identifier may not be null.");
@@ -114,14 +127,6 @@ public class CustomIngredientImpl extends Ingredient {
 	}
 
 	@Override
-	public JsonElement toJson() {
-		JsonObject json = new JsonObject();
-		json.addProperty(TYPE_KEY, customIngredient.getSerializer().getIdentifier().toString());
-		customIngredient.getSerializer().write(json, coerceIngredient());
-		return json;
-	}
-
-	@Override
 	public boolean isEmpty() {
 		// We don't want to resolve the matching stacks,
 		// as this might cause the ingredient to use outdated tags when it's done too early.
@@ -131,5 +136,34 @@ public class CustomIngredientImpl extends Ingredient {
 
 	private <T> T coerceIngredient() {
 		return (T) customIngredient;
+	}
+
+	public static <T> Codec<T> first(Codec<T> first, Codec<T> second) {
+		return new First<>(first, second);
+	}
+
+	// Decode/encode the first codec, if that fails return the result of the second.
+	record First<T>(Codec<T> first, Codec<T> second) implements Codec<T> {
+		@Override
+		public <T1> DataResult<Pair<T, T1>> decode(DynamicOps<T1> ops, T1 input) {
+			DataResult<Pair<T, T1>> firstResult = first.decode(ops, input);
+
+			if (firstResult.result().isPresent()) {
+				return firstResult;
+			}
+
+			return second.decode(ops, input);
+		}
+
+		@Override
+		public <T1> DataResult<T1> encode(T input, DynamicOps<T1> ops, T1 prefix) {
+			DataResult<T1> firstResult = first.encode(input, ops, prefix);
+
+			if (firstResult.result().isPresent()) {
+				return firstResult;
+			}
+
+			return second.encode(input, ops, prefix);
+		}
 	}
 }
