@@ -54,7 +54,7 @@ public interface CustomIngredientSerializer<T extends CustomIngredient> {
 	 */
 	Identifier getIdentifier();
 
-	Codec<T> getCodec();
+	Codec<T> getCodec(boolean allowEmpty);
 
 	/**
 	 * Deserializes the custom ingredient from a packet buffer.

@@ -20,16 +20,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.dynamic.Codecs;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
@@ -103,13 +108,30 @@ public class NbtIngredient implements CustomIngredient {
 
 	private static class Serializer implements CustomIngredientSerializer<NbtIngredient> {
 		private static final Identifier ID = new Identifier("fabric", "nbt");
-		private static Codec<NbtIngredient> CODEC = RecordCodecBuilder.create(instance ->
-				instance.group(
-						Ingredient.field_46095.fieldOf("base").forGetter(NbtIngredient::getBase),
-						NbtCompound.CODEC.optionalFieldOf("nbt", null).forGetter(NbtIngredient::getNbt),
-						Codec.BOOL.optionalFieldOf("struct", false).forGetter(NbtIngredient::isStrict)
-				).apply(instance, NbtIngredient::new)
-		);
+
+		// Supports decoding the NBT as a string as well as the object.
+		private static final Codec<NbtCompound> NBT_CODEC = Codecs.xor(
+				Codec.STRING, NbtCompound.CODEC
+		).flatXmap(either -> either.map(s -> {
+			try {
+				return DataResult.success(StringNbtReader.parse(s));
+			} catch (CommandSyntaxException e) {
+				return DataResult.error(e::getMessage);
+			}
+		}, DataResult::success), nbtCompound -> DataResult.success(Either.left(nbtCompound.asString())));
+
+		private static final Codec<NbtIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.field_46095);
+		private static final Codec<NbtIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.field_46096);
+
+		private static Codec<NbtIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
+			return RecordCodecBuilder.create(instance ->
+					instance.group(
+							ingredientCodec.fieldOf("base").forGetter(NbtIngredient::getBase),
+							NBT_CODEC.optionalFieldOf("nbt", null).forGetter(NbtIngredient::getNbt),
+							Codec.BOOL.optionalFieldOf("strict", false).forGetter(NbtIngredient::isStrict)
+					).apply(instance, NbtIngredient::new)
+			);
+		}
 
 		@Override
 		public Identifier getIdentifier() {
@@ -117,8 +139,8 @@ public class NbtIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public Codec<NbtIngredient> getCodec() {
-			return CODEC;
+		public Codec<NbtIngredient> getCodec(boolean allowEmpty) {
+			return allowEmpty ? ALLOW_EMPTY_CODEC : DISALLOW_EMPTY_CODEC;
 		}
 
 		@Override

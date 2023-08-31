@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.mixin.recipe.ingredient;
 
-import java.util.function.Function;
-
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +25,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.dynamic.Codecs;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
@@ -38,9 +34,10 @@ import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 @Mixin(Ingredient.class)
 public class IngredientMixin implements FabricIngredient {
 	@Inject(method = "method_53725", at = @At("RETURN"), cancellable = true)
-	private static void injectCodec(boolean bl, CallbackInfoReturnable<Codec<Ingredient>> cir) {
-		cir.setReturnValue(Codecs.xor(CustomIngredientImpl.INGREDIENT_CODECS, cir.getReturnValue())
-				.xmap(either -> either.map(CustomIngredient::toVanilla, Function.identity()), Either::right));
+	private static void injectCodec(boolean allowEmpty, CallbackInfoReturnable<Codec<Ingredient>> cir) {
+		final Codec<CustomIngredient> customIngredientCodec = allowEmpty ? CustomIngredientImpl.ALLOW_EMPTY_INGREDIENT_CODECS : CustomIngredientImpl.DISALLOW_EMPTY_INGREDIENT_CODECS;
+		Codec<Ingredient> ingredientCodec = customIngredientCodec.xmap(CustomIngredient::toVanilla, FabricIngredient::getCustomIngredient);
+		cir.setReturnValue(CustomIngredientImpl.first(cir.getReturnValue(), ingredientCodec));
 	}
 
 	@Inject(

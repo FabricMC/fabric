@@ -62,12 +62,14 @@ abstract class CombinedIngredient implements CustomIngredient {
 	static class Serializer<I extends CombinedIngredient> implements CustomIngredientSerializer<I> {
 		private final Identifier identifier;
 		private final Function<List<Ingredient>, I> factory;
-		private final Codec<I> codec;
+		private final Codec<I> allowEmptyCodec;
+		private final Codec<I> disallowEmptyCodec;
 
-		Serializer(Identifier identifier, Function<List<Ingredient>, I> factory, Codec<I> codec) {
+		Serializer(Identifier identifier, Function<List<Ingredient>, I> factory, Codec<I> allowEmptyCodec, Codec<I> disallowEmptyCodec) {
 			this.identifier = identifier;
 			this.factory = factory;
-			this.codec = codec;
+			this.allowEmptyCodec = allowEmptyCodec;
+			this.disallowEmptyCodec = disallowEmptyCodec;
 		}
 
 		@Override
@@ -76,8 +78,8 @@ abstract class CombinedIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public Codec<I> getCodec() {
-			return codec;
+		public Codec<I> getCodec(boolean allowEmpty) {
+			return allowEmpty ? allowEmptyCodec : disallowEmptyCodec;
 		}
 
 		@Override

@@ -73,12 +73,17 @@ public class DifferenceIngredient implements CustomIngredient {
 
 	private static class Serializer implements CustomIngredientSerializer<DifferenceIngredient> {
 		private static final Identifier ID = new Identifier("fabric", "difference");
-		private static final Codec<DifferenceIngredient> CODEC = RecordCodecBuilder.create(instance ->
-				instance.group(
-						Ingredient.field_46095.fieldOf("base").forGetter(DifferenceIngredient::getBase),
-						Ingredient.field_46095.fieldOf("subtracted").forGetter(DifferenceIngredient::getSubtracted)
-				).apply(instance, DifferenceIngredient::new)
-		);
+		private static final Codec<DifferenceIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.field_46095);
+		private static final Codec<DifferenceIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.field_46096);
+
+		private static Codec<DifferenceIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
+			return RecordCodecBuilder.create(instance ->
+					instance.group(
+							ingredientCodec.fieldOf("base").forGetter(DifferenceIngredient::getBase),
+							ingredientCodec.fieldOf("subtracted").forGetter(DifferenceIngredient::getSubtracted)
+					).apply(instance, DifferenceIngredient::new)
+			);
+		}
 
 		@Override
 		public Identifier getIdentifier() {
@@ -86,8 +91,8 @@ public class DifferenceIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public Codec<DifferenceIngredient> getCodec() {
-			return CODEC;
+		public Codec<DifferenceIngredient> getCodec(boolean allowEmpty) {
+			return allowEmpty ? ALLOW_EMPTY_CODEC : DISALLOW_EMPTY_CODEC;
 		}
 
 		@Override

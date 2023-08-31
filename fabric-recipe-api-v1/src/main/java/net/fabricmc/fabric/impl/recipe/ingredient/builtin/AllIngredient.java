@@ -30,14 +30,19 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
 public class AllIngredient extends CombinedIngredient {
-	private static final Codec<AllIngredient> CODEC = RecordCodecBuilder.create(instance ->
-			instance.group(
-					Ingredient.field_46095.listOf().fieldOf("ingredients").forGetter(AllIngredient::getIngredients)
-			).apply(instance, AllIngredient::new)
-	);
+	private static final Codec<AllIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.field_46095);
+	private static final Codec<AllIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.field_46096);
+
+	private static Codec<AllIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
+		return RecordCodecBuilder.create(instance ->
+				instance.group(
+						ingredientCodec.listOf().fieldOf("ingredients").forGetter(AllIngredient::getIngredients)
+				).apply(instance, AllIngredient::new)
+		);
+	}
 
 	public static final CustomIngredientSerializer<AllIngredient> SERIALIZER =
-			new Serializer<>(new Identifier("fabric", "all"), AllIngredient::new, CODEC);
+			new Serializer<>(new Identifier("fabric", "all"), AllIngredient::new, ALLOW_EMPTY_CODEC, DISALLOW_EMPTY_CODEC);
 
 	public AllIngredient(List<Ingredient> ingredients) {
 		super(ingredients);
