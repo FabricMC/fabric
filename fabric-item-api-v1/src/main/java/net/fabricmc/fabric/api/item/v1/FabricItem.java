@@ -120,6 +120,12 @@ public interface FabricItem {
         return ((Item) this).hasRecipeRemainder() ? ((Item) this).getRecipeRemainder().getDefaultStack() : ItemStack.EMPTY;
     }
 
+    /**
+     * This is a stack-aware version of {@link Item#getFoodComponent()}.
+     * Note that simple item remainders can also be set via {@link Item.Settings#food(FoodComponent)}.
+     * If you want to get a remainder for a stack, is <b>recommended</b> to use the stack version of this method: {@link FabricItemStack#getFoodComponent()}.
+     * @return this item's {@link FoodComponent}, or {@code null} if none was set.
+     */
     default @Nullable FoodComponent getFoodComponent(ItemStack stack) {
         return ((Item) this).getFoodComponent();
     }

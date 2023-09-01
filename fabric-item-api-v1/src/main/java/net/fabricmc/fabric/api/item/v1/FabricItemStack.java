@@ -39,6 +39,11 @@ public interface FabricItemStack {
 		return ((ItemStack) this).getItem().getRecipeRemainder((ItemStack) this);
 	}
 
+	/**
+	 * Stack-aware version of {@link Item#getFoodComponent()}.
+	 * See {@link FabricItem#getFoodComponent(ItemStack)} for a more in depth description.
+	 * @return this itemStack's {@link FoodComponent}, or {@code null} if none was set.
+	 */
 	default @Nullable FoodComponent getFoodComponent() {
 		return ((ItemStack) this).getItem().getFoodComponent(((ItemStack) this));
 	}
