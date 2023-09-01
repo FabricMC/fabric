@@ -16,10 +16,11 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 /*
  * Fabric-provided extensions for {@link ItemStack}.
@@ -42,6 +43,7 @@ public interface FabricItemStack {
 	/**
 	 * Stack-aware version of {@link Item#getFoodComponent()}.
 	 * See {@link FabricItem#getFoodComponent(ItemStack)} for a more in depth description.
+	 *
 	 * @return this itemStack's {@link FoodComponent}, or {@code null} if none was set.
 	 */
 	default @Nullable FoodComponent getFoodComponent() {

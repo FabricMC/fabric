@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.mixin.item;
 
-import net.minecraft.item.FoodComponent;
-import net.minecraft.item.Item;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,15 +26,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.FoodComponent;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin {
-
-	@Shadow protected ItemStack activeItemStack;
+	@Shadow
+	protected ItemStack activeItemStack;
 
 	@Inject(method = "getPreferredEquipmentSlot", at = @At(value = "HEAD"), cancellable = true)
 	private static void onGetPreferredEquipmentSlot(ItemStack stack, CallbackInfoReturnable<EquipmentSlot> info) {
@@ -48,12 +48,12 @@ abstract class LivingEntityMixin {
 		}
 	}
 
-	@Redirect(method = "shouldSpawnConsumptionEffects",at = @At(value = "INVOKE",target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
+	@Redirect(method = "shouldSpawnConsumptionEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
 	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance) {
 		return this.activeItemStack.getFoodComponent();
 	}
 
-	@Redirect(method = "applyFoodEffects",at = @At(value = "INVOKE",target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
+	@Redirect(method = "applyFoodEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
 	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, ItemStack stack, World world, LivingEntity targetEntity) {
 		return stack.getFoodComponent();
 	}
