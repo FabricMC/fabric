@@ -6,10 +6,13 @@
     "AbstractFurnaceBlockEntityMixin",
     "ArmorItemMixin",
     "BrewingStandBlockEntityMixin",
+    "CatEntityMixin",
+    "HungerManagerMixin",
     "ItemMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "RecipeMixin"
+    "RecipeMixin",
+    "WolfEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

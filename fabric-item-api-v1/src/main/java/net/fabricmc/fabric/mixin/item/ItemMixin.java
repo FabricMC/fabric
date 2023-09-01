@@ -16,11 +16,17 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.FoodComponent;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.item.Item;
@@ -66,5 +72,15 @@ abstract class ItemMixin implements ItemExtensions, FabricItem {
 	@Override
 	public void fabric_setCustomDamageHandler(@Nullable CustomDamageHandler handler) {
 		this.customDamageHandler = handler;
+	}
+
+	@Redirect(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
+	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, World world, PlayerEntity user, Hand hand) {
+		return user.getStackInHand(hand).getFoodComponent();
+	}
+
+	@Redirect(method = "getMaxUseTime", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
+	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, ItemStack stack) {
+		return stack.getFoodComponent();
 	}
 }
