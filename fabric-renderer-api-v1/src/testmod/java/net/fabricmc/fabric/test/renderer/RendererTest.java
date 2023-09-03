@@ -37,6 +37,9 @@ import net.fabricmc.api.ModInitializer;
  *     <li>Octagonal columns have irregular faces to test enhanced AO and normal shade. The
  *     octagonal item column has glint force enabled on all faces except the top and bottom
  *     faces.
+ *
+ *     <li>Riverstone blocks look like stone normally, but turn to gold in river biomes
+ *     (biomes tagged with #minecraft:is_river).
  * </ul>
  */
 public final class RendererTest implements ModInitializer {
