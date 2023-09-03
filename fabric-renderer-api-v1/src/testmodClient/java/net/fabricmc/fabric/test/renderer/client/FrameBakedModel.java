@@ -37,6 +37,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
+import net.fabricmc.fabric.api.blockview.v2.FabricBlockView;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
@@ -44,7 +45,6 @@ import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 
 public class FrameBakedModel implements BakedModel {
 	private final Mesh frameMesh;
@@ -72,17 +72,12 @@ public class FrameBakedModel implements BakedModel {
 		// Emit our frame mesh
 		this.frameMesh.outputTo(context.getEmitter());
 
-		RenderAttachedBlockView renderAttachedBlockView = (RenderAttachedBlockView) blockView;
-
-		// We cannot access the block entity from here. We should instead use the immutable render attachments provided by the block entity.
-		@Nullable
-		Block data = (Block) renderAttachedBlockView.getBlockEntityRenderAttachment(pos);
-
-		if (data == null) {
-			return; // No inner block to render
+		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
+		if (!(((FabricBlockView) blockView).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
+			return; // No inner block to render, or data of wrong type
 		}
 
-		BlockState innerState = data.getDefaultState();
+		BlockState innerState = mimickedBlock.getDefaultState();
 
 		// Now, we emit a transparent scaled-down version of the inner model
 		// Try both emissive and non-emissive versions of the translucent material

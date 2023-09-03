@@ -56,11 +56,12 @@ public interface FabricBlock {
 	 * <p>This can be called on the server, where block entity data can be safely accessed,
 	 * and on the client, possibly in a meshing thread, where block entity data is not safe to access!
 	 * Here is an example of how data from a block entity can be handled safely.
-	 * The block entity needs to implement {@code RenderAttachmentBlockEntity} for this to work.
+	 * The block entity should override {@code RenderDataBlockEntity#getBlockEntityRenderData} to return
+	 * the necessary data. Refer to the documentation of {@code RenderDataBlockEntity} for more information.
 	 * <pre>{@code @Override
 	 * public BlockState getAppearance(BlockState state, BlockRenderView renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 	 *     if (renderView instanceof ServerWorld serverWorld) {
-	 *         // Server side, ok to use block entity directly!
+	 *         // Server side; ok to use block entity directly!
 	 *         BlockEntity blockEntity = serverWorld.getBlockEntity(pos);
 	 *
 	 *         if (blockEntity instanceof ...) {
@@ -68,9 +69,8 @@ public interface FabricBlock {
 	 *             return ...;
 	 *         }
 	 *     } else {
-	 *         // Client side, need to use the render attachment!
-	 *         RenderAttachedBlockView attachmentView = (RenderAttachedBlockView) renderView;
-	 *         Object data = attachmentView.getBlockEntityRenderAttachment(pos);
+	 *         // Client side; need to use the block entity render data!
+	 *         Object data = renderView.getBlockEntityRenderData(pos);
 	 *
 	 *         // Check if data is not null and of the correct type, and use that to determine the appearance
 	 *         if (data instanceof ...) {
