@@ -89,15 +89,16 @@ public class MultipartBakedModelMixin implements FabricBakedModel {
 		}
 
 		Random random = randomSupplier.get();
+		// Imitate vanilla passing a new random to the submodels
 		long randomSeed = random.nextLong();
-		Supplier<Random> subModelSupplier = () -> {
+		Supplier<Random> subModelRandomSupplier = () -> {
 			random.setSeed(randomSeed);
 			return random;
 		};
 
 		for (int i = 0; i < this.components.size(); i++) {
 			if (bitSet.get(i)) {
-				components.get(i).getRight().emitBlockQuads(blockView, state, pos, subModelSupplier, context);
+				components.get(i).getRight().emitBlockQuads(blockView, state, pos, subModelRandomSupplier, context);
 			}
 		}
 	}

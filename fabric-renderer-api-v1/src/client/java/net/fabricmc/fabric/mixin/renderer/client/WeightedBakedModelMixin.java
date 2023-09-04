@@ -73,7 +73,7 @@ public class WeightedBakedModelMixin implements FabricBakedModel {
 		if (selected != null) {
 			selected.getData().emitBlockQuads(blockView, state, pos, () -> {
 				Random random = randomSupplier.get();
-				random.nextLong(); // Imitate vanilla going through the weighted list every time
+				random.nextLong(); // Imitate vanilla modifying the random before passing it to the submodel
 				return random;
 			}, context);
 		}
@@ -86,7 +86,7 @@ public class WeightedBakedModelMixin implements FabricBakedModel {
 		if (selected != null) {
 			selected.getData().emitItemQuads(stack, () -> {
 				Random random = randomSupplier.get();
-				random.nextLong(); // Imitate vanilla going through the weighted list every time
+				random.nextLong(); // Imitate vanilla modifying the random before passing it to the submodel
 				return random;
 			}, context);
 		}
