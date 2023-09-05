@@ -56,7 +56,7 @@ public class SerializationTests {
 		JsonElement json = JsonParser.parseString(ingredientJson);
 
 		try {
-			Util.getResult(Ingredient.field_46096.parse(JsonOps.INSTANCE, json), JsonParseException::new);
+			Util.getResult(Ingredient.DISALLOW_EMPTY_CODEC.parse(JsonOps.INSTANCE, json), JsonParseException::new);
 			throw new GameTestException("Using a custom ingredient inside an array ingredient should have failed.");
 		} catch (JsonParseException e) {
 			context.complete();

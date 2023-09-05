@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.class_8792;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -33,7 +34,7 @@ public class PlayerManagerMixin {
 			method = "onPlayerConnect",
 			at = @At(value = "INVOKE", target = "net/minecraft/network/packet/s2c/play/SynchronizeRecipesS2CPacket.<init>(Ljava/util/Collection;)V")
 	)
-	private void hookOnPlayerConnect(ClientConnection connection, ServerPlayerEntity player, int latency, CallbackInfo ci) {
+	private void hookOnPlayerConnect(ClientConnection connection, ServerPlayerEntity player, class_8792 arg, CallbackInfo ci) {
 		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.invoker().onSyncDataPackContents(player, true);
 	}
 

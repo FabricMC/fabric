@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.event.interaction;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.class_8792;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.PacketCallbacks;
@@ -30,7 +31,7 @@ public class FakePlayerNetworkHandler extends ServerPlayNetworkHandler {
 	private static final ClientConnection FAKE_CONNECTION = new FakeClientConnection();
 
 	public FakePlayerNetworkHandler(ServerPlayerEntity player) {
-		super(player.getServer(), FAKE_CONNECTION, player, 0);
+		super(player.getServer(), FAKE_CONNECTION, player, new class_8792(null, 0, null));
 	}
 
 	@Override

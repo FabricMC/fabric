@@ -29,8 +29,8 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
 public class AllIngredient extends CombinedIngredient {
-	private static final Codec<AllIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.field_46095);
-	private static final Codec<AllIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.field_46096);
+	private static final Codec<AllIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
+	private static final Codec<AllIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
 
 	private static Codec<AllIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
 		return ingredientCodec

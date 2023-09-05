@@ -26,11 +26,11 @@ import com.mojang.authlib.GameProfile;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.class_8791;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.network.packet.c2s.play.ClientSettingsC2SPacket;
 import net.minecraft.scoreboard.AbstractTeam;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -102,7 +102,7 @@ public class FakePlayer extends ServerPlayerEntity {
 	private static final Map<FakePlayerKey, FakePlayer> FAKE_PLAYER_MAP = new MapMaker().weakValues().makeMap();
 
 	protected FakePlayer(ServerWorld world, GameProfile profile) {
-		super(world.getServer(), world, profile);
+		super(world.getServer(), world, profile, class_8791.method_53821());
 
 		this.networkHandler = new FakePlayerNetworkHandler(this);
 	}
@@ -111,7 +111,7 @@ public class FakePlayer extends ServerPlayerEntity {
 	public void tick() { }
 
 	@Override
-	public void setClientSettings(ClientSettingsC2SPacket packet) { }
+	public void setClientSettings(class_8791 settings) { }
 
 	@Override
 	public void increaseStat(Stat<?> stat, int amount) { }

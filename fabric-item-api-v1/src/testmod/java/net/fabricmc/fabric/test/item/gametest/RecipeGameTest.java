@@ -91,7 +91,7 @@ public class RecipeGameTest implements FabricGameTest {
 			}
 
 			@Override
-			public ItemStack getOutput(DynamicRegistryManager dynamicRegistryManager) {
+			public ItemStack getResult(DynamicRegistryManager registryManager) {
 				return null;
 			}
 

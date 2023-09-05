@@ -120,8 +120,8 @@ public class NbtIngredient implements CustomIngredient {
 			}
 		}, DataResult::success), nbtCompound -> DataResult.success(Either.left(nbtCompound.asString())));
 
-		private static final Codec<NbtIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.field_46095);
-		private static final Codec<NbtIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.field_46096);
+		private static final Codec<NbtIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
+		private static final Codec<NbtIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
 
 		private static Codec<NbtIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
 			return RecordCodecBuilder.create(instance ->

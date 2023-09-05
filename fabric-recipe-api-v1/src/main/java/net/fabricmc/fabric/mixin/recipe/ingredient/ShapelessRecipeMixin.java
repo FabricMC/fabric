@@ -42,7 +42,7 @@ import net.fabricmc.fabric.impl.recipe.ingredient.ShapelessMatch;
 public class ShapelessRecipeMixin {
 	@Final
 	@Shadow
-	DefaultedList<Ingredient> input;
+	DefaultedList<Ingredient> ingredients;
 	@Unique
 	private boolean fabric_requiresTesting = false;
 
@@ -69,7 +69,7 @@ public class ShapelessRecipeMixin {
 				}
 			}
 
-			cir.setReturnValue(ShapelessMatch.isMatch(nonEmptyStacks, input));
+			cir.setReturnValue(ShapelessMatch.isMatch(nonEmptyStacks, ingredients));
 		}
 	}
 }

@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.class_8792;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -30,7 +31,7 @@ import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 @Mixin(PlayerManager.class)
 abstract class PlayerManagerMixin {
 	@Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/PlayerAbilitiesS2CPacket;<init>(Lnet/minecraft/entity/player/PlayerAbilities;)V"))
-	private void handlePlayerConnection(ClientConnection connection, ServerPlayerEntity player, int latency, CallbackInfo ci) {
+	private void handlePlayerConnection(ClientConnection connection, ServerPlayerEntity player, class_8792 arg, CallbackInfo ci) {
 		ServerNetworkingImpl.getAddon(player.networkHandler).onClientReady();
 	}
 }

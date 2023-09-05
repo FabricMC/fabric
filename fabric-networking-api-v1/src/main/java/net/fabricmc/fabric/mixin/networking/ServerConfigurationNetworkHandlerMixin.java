@@ -27,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.class_8792;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.common.DisconnectS2CPacket;
@@ -70,8 +71,8 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 	@Unique
 	private boolean earlyTaskExecution;
 
-	public ServerConfigurationNetworkHandlerMixin(MinecraftServer server, ClientConnection connection, int keepAliveId) {
-		super(server, connection, keepAliveId);
+	public ServerConfigurationNetworkHandlerMixin(MinecraftServer server, ClientConnection connection, class_8792 arg) {
+		super(server, connection, arg);
 	}
 
 	@Inject(method = "<init>", at = @At("RETURN"))

@@ -73,8 +73,8 @@ public class DifferenceIngredient implements CustomIngredient {
 
 	private static class Serializer implements CustomIngredientSerializer<DifferenceIngredient> {
 		private static final Identifier ID = new Identifier("fabric", "difference");
-		private static final Codec<DifferenceIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.field_46095);
-		private static final Codec<DifferenceIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.field_46096);
+		private static final Codec<DifferenceIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
+		private static final Codec<DifferenceIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
 
 		private static Codec<DifferenceIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
 			return RecordCodecBuilder.create(instance ->

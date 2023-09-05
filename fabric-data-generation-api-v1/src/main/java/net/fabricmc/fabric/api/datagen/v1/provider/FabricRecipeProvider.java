@@ -26,11 +26,11 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 
 import net.minecraft.advancement.Advancement;
-import net.minecraft.class_8779;
-import net.minecraft.class_8790;
+import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.data.server.recipe.CraftingRecipeJsonBuilder;
+import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
@@ -59,23 +59,23 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	 * Implement this method and then use the range of methods in {@link RecipeProvider} or from one of the recipe json factories such as {@link ShapedRecipeJsonBuilder} or {@link ShapelessRecipeJsonBuilder}.
 	 */
 	@Override
-	public abstract void generate(class_8790 exporter);
+	public abstract void generate(RecipeExporter exporter);
 
 	/**
 	 * Return a new exporter that applies the specified conditions to any recipe json provider it receives.
 	 */
-	protected class_8790 withConditions(class_8790 exporter, ConditionJsonProvider... conditions) {
+	protected RecipeExporter withConditions(RecipeExporter exporter, ConditionJsonProvider... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
-		return new class_8790() {
+		return new RecipeExporter() {
 			@Override
-			public void method_53819(RecipeJsonProvider provider) {
+			public void accept(RecipeJsonProvider provider) {
 				FabricDataGenHelper.addConditions(provider, conditions);
-				exporter.method_53819(provider);
+				exporter.accept(provider);
 			}
 
 			@Override
-			public Advancement.Builder method_53818() {
-				return exporter.method_53818();
+			public Advancement.Builder getAdvancementBuilder() {
+				return exporter.getAdvancementBuilder();
 			}
 		};
 	}
@@ -84,10 +84,10 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	public CompletableFuture<?> run(DataWriter writer) {
 		Set<Identifier> generatedRecipes = Sets.newHashSet();
 		List<CompletableFuture<?>> list = new ArrayList<>();
-		generate(new class_8790() {
+		generate(new RecipeExporter() {
 			@Override
-			public void method_53819(RecipeJsonProvider provider) {
-				Identifier identifier = getRecipeIdentifier(provider.recipeId());
+			public void accept(RecipeJsonProvider provider) {
+				Identifier identifier = getRecipeIdentifier(provider.id());
 
 				if (!generatedRecipes.add(identifier)) {
 					throw new IllegalStateException("Duplicate recipe " + identifier);
@@ -99,17 +99,17 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 
 				list.add(DataProvider.writeToPath(writer, recipeJson, recipesPathResolver.resolveJson(identifier)));
 
-				class_8779 advancementBuilder = provider.advancementBuilder();
+				AdvancementEntry advancement = provider.advancement();
 
-				if (advancementBuilder != null) {
-					JsonObject advancementJson = advancementBuilder.comp_1920().method_53621();
+				if (advancement != null) {
+					JsonObject advancementJson = advancement.value().toJson();
 					ConditionJsonProvider.write(advancementJson, conditions);
-					list.add(DataProvider.writeToPath(writer, advancementJson, advancementsPathResolver.resolveJson(getRecipeIdentifier(advancementBuilder.comp_1919()))));
+					list.add(DataProvider.writeToPath(writer, advancementJson, advancementsPathResolver.resolveJson(getRecipeIdentifier(advancement.id()))));
 				}
 			}
 
 			@Override
-			public Advancement.Builder method_53818() {
+			public Advancement.Builder getAdvancementBuilder() {
 				return Advancement.Builder.createUntelemetered().parent(CraftingRecipeJsonBuilder.ROOT);
 			}
 		});

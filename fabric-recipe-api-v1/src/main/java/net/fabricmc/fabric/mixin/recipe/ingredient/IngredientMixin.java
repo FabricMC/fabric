@@ -33,7 +33,7 @@ import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 
 @Mixin(Ingredient.class)
 public class IngredientMixin implements FabricIngredient {
-	@Inject(method = "method_53725", at = @At("RETURN"), cancellable = true)
+	@Inject(method = "createCodec", at = @At("RETURN"), cancellable = true)
 	private static void injectCodec(boolean allowEmpty, CallbackInfoReturnable<Codec<Ingredient>> cir) {
 		final Codec<CustomIngredient> customIngredientCodec = allowEmpty ? CustomIngredientImpl.ALLOW_EMPTY_INGREDIENT_CODECS : CustomIngredientImpl.DISALLOW_EMPTY_INGREDIENT_CODECS;
 		Codec<Ingredient> ingredientCodec = customIngredientCodec.xmap(CustomIngredient::toVanilla, FabricIngredient::getCustomIngredient);
