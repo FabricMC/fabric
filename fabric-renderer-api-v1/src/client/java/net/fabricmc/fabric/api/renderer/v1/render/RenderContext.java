@@ -96,7 +96,8 @@ public interface RenderContext {
 	 * <p>This function can be used to skip complex transformations of quads that will be culled anyway.
 	 * The cull face of a quad is determined by {@link QuadView#cullFace()}.
 	 * Note that if {@linkplain #hasTransform() there is a transform}, no computation should be skipped,
-	 * because the cull face might be changed by the transform.
+	 * because the cull face might be changed by the transform,
+	 * or the transform might wish to receive culled faces too.
 	 *
 	 * <p>This function can only be used on a block render context (i.e. in {@link FabricBakedModel#emitBlockQuads}).
 	 * Calling it on another context (e.g. in {@link FabricBakedModel#emitItemQuads}) will throw an exception.

@@ -29,7 +29,7 @@ import net.minecraft.world.BlockRenderView;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.AbstractBlockRenderContext;
-import net.fabricmc.fabric.impl.renderer.BakedQuadFallback;
+import net.fabricmc.fabric.impl.renderer.VanillaModelEncoder;
 
 @Mixin(BakedModel.class)
 public interface BakedModelMixin extends FabricBakedModel {
@@ -38,6 +38,6 @@ public interface BakedModelMixin extends FabricBakedModel {
 	 */
 	@Override
 	default void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		BakedQuadFallback.emitBlockQuads((BakedModel) this, state, randomSupplier, context, ((AbstractBlockRenderContext) context).getVanillaModelEmitter());
+		VanillaModelEncoder.emitBlockQuads((BakedModel) this, state, randomSupplier, context, ((AbstractBlockRenderContext) context).getVanillaModelEmitter());
 	}
 }

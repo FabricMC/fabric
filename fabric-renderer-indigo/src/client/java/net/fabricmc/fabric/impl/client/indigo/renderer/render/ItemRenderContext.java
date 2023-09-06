@@ -46,7 +46,7 @@ import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
-import net.fabricmc.fabric.impl.renderer.BakedQuadFallback;
+import net.fabricmc.fabric.impl.renderer.VanillaModelEncoder;
 
 /**
  * The render context used for item rendering.
@@ -275,7 +275,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 		@Override
 		public void accept(BakedModel model, @Nullable BlockState state) {
-			BakedQuadFallback.emitItemQuads(model, state, randomSupplier, ItemRenderContext.this);
+			VanillaModelEncoder.emitItemQuads(model, state, randomSupplier, ItemRenderContext.this);
 		}
 	}
 }

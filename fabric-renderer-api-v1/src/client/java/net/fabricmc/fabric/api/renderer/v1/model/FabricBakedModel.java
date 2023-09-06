@@ -29,7 +29,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.impl.renderer.BakedQuadFallback;
+import net.fabricmc.fabric.impl.renderer.VanillaModelEncoder;
 
 /**
  * Interface for baked models that output meshes with enhanced rendering features.
@@ -94,7 +94,7 @@ public interface FabricBakedModel {
 	 * @param context Accepts model output.
 	 */
 	default void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		BakedQuadFallback.emitBlockQuads((BakedModel) this, state, randomSupplier, context, context.getEmitter());
+		VanillaModelEncoder.emitBlockQuads((BakedModel) this, state, randomSupplier, context, context.getEmitter());
 	}
 
 	/**
@@ -125,6 +125,6 @@ public interface FabricBakedModel {
 	 * as vanilla baked models.
 	 */
 	default void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-		BakedQuadFallback.emitItemQuads((BakedModel) this, null, randomSupplier, context);
+		VanillaModelEncoder.emitItemQuads((BakedModel) this, null, randomSupplier, context);
 	}
 }

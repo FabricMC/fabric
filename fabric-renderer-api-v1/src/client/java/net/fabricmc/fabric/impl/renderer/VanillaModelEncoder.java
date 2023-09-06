@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.util.TriState;
  * Routines for adaptation of vanilla {@link BakedModel}s to FRAPI pipelines.
  * Even though Indigo calls them directly, they are not for use by third party renderers, and might change at any time.
  */
-public class BakedQuadFallback {
+public class VanillaModelEncoder {
 	private static final Renderer RENDERER = RendererAccess.INSTANCE.getRenderer();
 	private static final RenderMaterial MATERIAL_STANDARD = RENDERER.materialFinder().find();
 	private static final RenderMaterial MATERIAL_NO_AO = RENDERER.materialFinder().ambientOcclusion(TriState.FALSE).find();

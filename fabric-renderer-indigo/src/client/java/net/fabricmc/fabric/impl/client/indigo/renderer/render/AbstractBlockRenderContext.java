@@ -41,7 +41,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoConfig;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
-import net.fabricmc.fabric.impl.renderer.BakedQuadFallback;
+import net.fabricmc.fabric.impl.renderer.VanillaModelEncoder;
 
 public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 	protected final BlockRenderInfo blockInfo = new BlockRenderInfo();
@@ -305,7 +305,7 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 
 		@Override
 		public void accept(BakedModel model, @Nullable BlockState state) {
-			BakedQuadFallback.emitBlockQuads(model, state, blockInfo.randomSupplier, AbstractBlockRenderContext.this, vanillaModelEditorQuad);
+			VanillaModelEncoder.emitBlockQuads(model, state, blockInfo.randomSupplier, AbstractBlockRenderContext.this, vanillaModelEditorQuad);
 		}
 	}
 }
