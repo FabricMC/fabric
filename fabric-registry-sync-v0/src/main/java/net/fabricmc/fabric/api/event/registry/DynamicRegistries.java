@@ -37,6 +37,10 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
  * <p>The list of all dynamic registries, whether from vanilla or mods, can be accessed using
  * {@link #getDynamicRegistries()}.
  *
+ * <p>Tags for the entries of a custom registry must be placed in
+ * {@code /tags/<registry namespace>/<registry path>/}. For example, the tags for the example
+ * registry below would be placed in {@code /tags/my_mod/my_data/}.
+ *
  * <h2 id="sync">Synchronization</h2>
  * Dynamic registries are not synchronized to the client by default.
  * To register a <em>synced dynamic registry</em>, you can replace the {@link #register} call

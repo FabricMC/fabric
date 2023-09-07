@@ -44,6 +44,10 @@ import net.fabricmc.fabric.mixin.registry.sync.RegistriesAccessor;
  * 	}
  * </pre>
  *
+ * <p>Tags for the entries of a custom registry must be placed in
+ * {@code /tags/<registry namespace>/<registry path>/}. For example, the tags for the example
+ * registry above would be placed in {@code /tags/modid/registry_name/}.
+ *
  * @param <T> The type stored in the Registry
  * @param <R> The registry type
  */
