@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -72,17 +73,34 @@ public abstract class KeyBindingMixin implements KeyBindingExtensions {
 		this.fabric_context = context;
 	}
 
+	@Unique
+	private static boolean fabric_isActiveAndHasNoConflict(@Nullable Set<KeyBinding> conflictingKeyBinds, KeyBinding binding) {
+		KeyBindingMixin mixed = (KeyBindingMixin) (Object) binding;
+		if (!mixed.fabric_context.isActive(MinecraftClient.getInstance())) return false;
+
+		if (conflictingKeyBinds == null) {
+			return true;
+		} else {
+			boolean hasNoConflict = true;
+
+			for (KeyBinding conflictingKeyBind : mixed.fabric_conflictingKeyBinds) {
+				// single ampersand so it always added to the set
+				hasNoConflict = hasNoConflict & conflictingKeyBinds.add(conflictingKeyBind);
+			}
+
+			return hasNoConflict;
+		}
+	}
+
 	@Inject(method = "onKeyPressed", at = @At("HEAD"))
 	private static void onKeyPressed(InputUtil.Key key, CallbackInfo ci) {
 		List<KeyBinding> list = KeyBindingRegistryImpl.KEY_TO_BINDINGS.get(key);
 		if (list == null) return;
 
-		Set<KeyBinding> uniqueKeyBinds = list.size() <= 1 ? null : Collections.newSetFromMap(new IdentityHashMap<>());
+		Set<KeyBinding> conflictingKeyBinds = list.size() <= 1 ? null : Collections.newSetFromMap(new IdentityHashMap<>());
 
 		for (KeyBinding binding : list) {
-			KeyBindingMixin mixed = (KeyBindingMixin) (Object) binding;
-
-			if (mixed.fabric_context.isActive(MinecraftClient.getInstance()) && (uniqueKeyBinds == null || uniqueKeyBinds.addAll(mixed.fabric_conflictingKeyBinds))) {
+			if (fabric_isActiveAndHasNoConflict(conflictingKeyBinds, binding)) {
 				((KeyBindingMixin) (Object) binding).timesPressed++;
 			}
 		}
@@ -93,12 +111,10 @@ public abstract class KeyBindingMixin implements KeyBindingExtensions {
 		List<KeyBinding> list = KeyBindingRegistryImpl.KEY_TO_BINDINGS.get(key);
 		if (list == null) return;
 
-		Set<KeyBinding> uniqueKeyBinds = list.size() <= 1 ? null : Collections.newSetFromMap(new IdentityHashMap<>());
+		Set<KeyBinding> conflictingKeyBinds = list.size() <= 1 ? null : Collections.newSetFromMap(new IdentityHashMap<>());
 
 		for (KeyBinding binding : list) {
-			KeyBindingMixin mixed = (KeyBindingMixin) (Object) binding;
-
-			if (mixed.fabric_context.isActive(MinecraftClient.getInstance()) && (uniqueKeyBinds == null || uniqueKeyBinds.addAll(mixed.fabric_conflictingKeyBinds))) {
+			if (fabric_isActiveAndHasNoConflict(conflictingKeyBinds, binding)) {
 				binding.setPressed(pressed);
 			}
 		}
