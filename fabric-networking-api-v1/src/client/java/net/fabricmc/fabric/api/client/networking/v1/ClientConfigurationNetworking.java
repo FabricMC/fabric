@@ -105,10 +105,10 @@ public final class ClientConfigurationNetworking {
 					// Normally, packets are handled on the network IO thread - though it is
 					// not guaranteed (for example, with 1.19.4 S2C packet bundling)
 					// Since we're handling it right now, connection check is redundant.
-					handler.receive(packet, sender);
+					handler.receive(packet, networkHandler, sender);
 				} else {
 					client.execute(() -> {
-						if (((ClientCommonNetworkHandlerAccessor) networkHandler).getConnection().isOpen()) handler.receive(packet, sender);
+						if (((ClientCommonNetworkHandlerAccessor) networkHandler).getConnection().isOpen()) handler.receive(packet, networkHandler, sender);
 					});
 				}
 			}
@@ -218,10 +218,10 @@ public final class ClientConfigurationNetworking {
 					// Normally, packets are handled on the network IO thread - though it is
 					// not guaranteed (for example, with 1.19.4 S2C packet bundling)
 					// Since we're handling it right now, connection check is redundant.
-					handler.receive(packet, sender);
+					handler.receive(packet, networkHandler, sender);
 				} else {
 					client.execute(() -> {
-						if (((ClientCommonNetworkHandlerAccessor) networkHandler).getConnection().isOpen()) handler.receive(packet, sender);
+						if (((ClientCommonNetworkHandlerAccessor) networkHandler).getConnection().isOpen()) handler.receive(packet, networkHandler, sender);
 					});
 				}
 			}
@@ -451,9 +451,10 @@ public final class ClientConfigurationNetworking {
 		 *
 		 *
 		 * @param packet the packet
+		 * @param networkHandler the network handler
 		 * @param responseSender the packet sender
 		 * @see FabricPacket
 		 */
-		void receive(T packet, PacketSender responseSender);
+		void receive(T packet, ClientConfigurationNetworkHandler networkHandler, PacketSender responseSender);
 	}
 }
