@@ -27,6 +27,7 @@ import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ServerCommonPacketListener;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ThreadExecutor;
 
@@ -391,6 +392,14 @@ public final class ClientConfigurationNetworking {
 		}
 
 		throw new IllegalStateException("Cannot send packet while not configuring!");
+	}
+
+	/**
+	 * Disconnects from the server.
+	 * @param handler the network handler
+	 */
+	public static void disconnect(ClientConfigurationNetworkHandler handler, Text reason) {
+		((ClientCommonNetworkHandlerAccessor) handler).getConnection().disconnect(reason);
 	}
 
 	private ClientConfigurationNetworking() {
