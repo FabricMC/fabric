@@ -22,6 +22,7 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.WanderingTraderEntity;
@@ -40,12 +41,30 @@ import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 public class VillagerTypeTest1 implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, factories -> {
-			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(Items.NETHERITE_SCRAP, 4), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.15F)));
+		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, (factories, rebalanced) -> {
+			if (rebalanced) {
+				factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLD_INGOT, 48), new ItemStack(Items.NETHERITE_SCRAP, 64), new ItemStack(Items.NETHERITE_INGOT, 16), 1, 6, 0.15F)));
+			} else {
+				factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(Items.NETHERITE_SCRAP, 4), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.15F)));
+			}
 		});
 
-		TradeOfferHelper.registerWanderingTraderOffers(1, factories -> {
-			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(Items.NETHERITE_SCRAP, 4), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.35F)));
+		TradeOfferHelper.registerWanderingTraderOffers(1, (factories, rebalanced) -> {
+			if (rebalanced) {
+				factories.add(Pair.of(
+						new TradeOffers.Factory[]{
+								new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLD_INGOT, 48), new ItemStack(Items.NETHERITE_SCRAP, 64), new ItemStack(Items.NETHERITE_INGOT, 16), 1, 6, 0.35F))
+						},
+						1
+				));
+			} else {
+				factories.add(Pair.of(
+						new TradeOffers.Factory[]{
+								new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(Items.NETHERITE_SCRAP, 4), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.35F))
+						},
+						1
+				));
+			}
 		});
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {

@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.test.object.builder;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.VillagerProfession;
 
@@ -26,9 +28,11 @@ import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 
 /*
  * Second entrypoint to validate class loading does not break this.
+ * This is used to test deprecated methods, some of which have their own code path.
  */
 public class VillagerTypeTest2 implements ModInitializer {
 	@Override
+	@SuppressWarnings("deprecation")
 	public void onInitialize() {
 		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, factories -> {
 			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.DIAMOND, 5), new ItemStack(Items.NETHERITE_INGOT), 3, 4, 0.15F)));
@@ -47,6 +51,13 @@ public class VillagerTypeTest2 implements ModInitializer {
 		});
 		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, factories -> {
 			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.DIAMOND, 10), new ItemStack(Items.CHAINMAIL_LEGGINGS), 3, 4, 0.15F)));
+		});
+		TradeOfferHelper.registerWanderingTraderOffers(1, factory -> {
+			for (Item item : Registries.ITEM) {
+				if (item.getFoodComponent() != null) {
+					factory.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.NETHERITE_INGOT, 1), new ItemStack(item, 1), 3, 4, 0.15F)));
+				}
+			}
 		});
 	}
 }
