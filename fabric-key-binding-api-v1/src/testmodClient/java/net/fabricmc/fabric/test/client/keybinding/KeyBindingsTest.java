@@ -94,5 +94,4 @@ public class KeyBindingsTest implements ClientModInitializer {
 			client.player.sendMessage(Text.literal(message));
 		}
 	}
-
 }
