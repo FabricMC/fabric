@@ -71,15 +71,23 @@ public class KeyBindingsTest implements ClientModInitializer {
 				client.player.sendMessage(Text.literal("Duplicate Key was pressed!"), false);
 			}
 
+			// When ALL binding is set to the same key, it then will conflict with all other bindings
+			// only one binding will be marked as pressed, based on what binding registered first.
+			// Vanilla bindings are registered last as it is made on GameOptions ctor instead of statically.
+			// - allBinding & inGameBinding conflicts -> inGameBinding will be called
+			// - allBinding & customCtxBinding conflicts -> allBinding will be called
+			// - allBinding & vanilla conflicts -> allBinding will be called
 			sendMessageWhenPressed(client, inGameBinding, "In-game key was pressed");
 			sendMessageWhenPressed(client, allBinding, "ALL context key was pressed!");
 
-			// 1 and 3 should be called at the same time
+			// 1 and 2 will conflict, 3 and 4 will conflict.
+			// 1 and 3 should be called at the same time.
 			sendMessageWhenPressed(client, customCtxBinding1, "Custom Context Key 1 was pressed!");
 			sendMessageWhenPressed(client, customCtxBinding2, "Custom Context Key 2 was pressed!");
 			sendMessageWhenPressed(client, customCtxBinding3, "Custom Context Key 3 was pressed!");
 			sendMessageWhenPressed(client, customCtxBinding4, "Custom Context Key 4 was pressed!");
 
+			// Won't conflict with each other, hold the respective item and press.
 			sendMessageWhenPressed(client, diamondSwordBinding, "Diamond Sword Key was pressed!");
 			sendMessageWhenPressed(client, netheriteSwordBinding, "Netherite Sword Key was pressed!");
 		});
