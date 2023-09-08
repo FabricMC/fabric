@@ -60,6 +60,7 @@ public final class KeyBindingHelper {
 	 */
 	public static KeyBinding registerKeyBinding(KeyBinding keyBinding, KeyBindingContext context) {
 		Objects.requireNonNull(keyBinding, "key binding cannot be null");
+		Objects.requireNonNull(context, "context cannot be null");
 		return KeyBindingRegistryImpl.registerKeyBinding(keyBinding, context);
 	}
 

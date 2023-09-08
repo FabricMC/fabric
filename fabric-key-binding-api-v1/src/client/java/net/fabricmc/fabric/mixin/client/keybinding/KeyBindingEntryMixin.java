@@ -16,14 +16,25 @@
 
 package net.fabricmc.fabric.mixin.client.keybinding;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.option.ControlsListWidget;
+import net.minecraft.client.option.KeyBinding;
+
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingContext;
 
 @Mixin(ControlsListWidget.KeyBindingEntry.class)
-public class KeyBindingEntryMixin {
+public abstract class KeyBindingEntryMixin {
+
+	@Shadow
+	@Final
+	private KeyBinding binding;
+
 	@ModifyConstant(method = "update", constant = @Constant(stringValue = ", "))
 	private String makeConflictTextMultiline(String constant) {
 		return "\n";
@@ -31,6 +42,14 @@ public class KeyBindingEntryMixin {
 
 	@ModifyConstant(method = "update", constant = @Constant(stringValue = "controls.keybinds.duplicateKeybinds"))
 	private String replaceConflictText(String constant) {
-		return "fabric.keybinding.conflicts";
+		for (KeyBinding otherBinding : MinecraftClient.getInstance().options.allKeys) {
+			if (otherBinding == binding || !binding.equals(otherBinding)) continue;
+
+			if (KeyBindingContext.of(binding) != KeyBindingContext.of(otherBinding)) {
+				return "fabric.keybinding.conflicts";
+			}
+		}
+
+		return constant;
 	}
 }
