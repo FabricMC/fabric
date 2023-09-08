@@ -30,7 +30,6 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingContext;
 
 @Mixin(ControlsListWidget.KeyBindingEntry.class)
 public abstract class KeyBindingEntryMixin {
-
 	@Shadow
 	@Final
 	private KeyBinding binding;
