@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:nether_quartz_ore",
+    {
+      "id": "#c:ores/quartz",
+      "required": false
+    },
+    {
+      "id": "#c:quartz_ores",
+      "required": false
+    }
+  ]
+}

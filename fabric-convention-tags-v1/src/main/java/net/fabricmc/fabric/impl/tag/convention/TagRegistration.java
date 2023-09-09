@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.tag.convention;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
@@ -31,6 +32,7 @@ import net.minecraft.world.biome.Biome;
 public class TagRegistration<T> {
 	public static final TagRegistration<Item> ITEM_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.ITEM);
 	public static final TagRegistration<Block> BLOCK_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.BLOCK);
+	public static final TagRegistration<BlockEntityType<?>> BLOCK_ENTITY_TYPE_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.BLOCK_ENTITY_TYPE);
 	public static final TagRegistration<Biome> BIOME_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.BIOME);
 	public static final TagRegistration<Fluid> FLUID_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.FLUID);
 	public static final TagRegistration<EntityType<?>> ENTITY_TYPE_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.ENTITY_TYPE);
@@ -46,6 +48,6 @@ public class TagRegistration<T> {
 	}
 
 	public TagKey<T> registerCommon(String tagId) {
-		return TagKey.of(registryKey, new Identifier("c", tagId));
+		return TagKey.of(registryKey, new Identifier("common", tagId));
 	}
 }

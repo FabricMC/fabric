@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:stony_shore",
+    {
+      "id": "#c:is_stony_shores",
+      "required": false
+    }
+  ]
+}

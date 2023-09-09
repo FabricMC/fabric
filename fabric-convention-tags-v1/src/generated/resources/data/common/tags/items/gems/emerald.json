@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:emerald",
+    {
+      "id": "#c:gems/emerald",
+      "required": false
+    },
+    {
+      "id": "#c:emeralds",
+      "required": false
+    }
+  ]
+}

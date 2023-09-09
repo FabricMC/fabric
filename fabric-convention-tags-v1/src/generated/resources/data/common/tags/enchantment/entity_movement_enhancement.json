@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:swift_sneak",
+    "minecraft:depth_strider",
+    "minecraft:soul_speed",
+    {
+      "id": "#c:entity_movement_enhancement",
+      "required": false
+    }
+  ]
+}

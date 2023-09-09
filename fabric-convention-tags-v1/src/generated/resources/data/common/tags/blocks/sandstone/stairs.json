@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#common:sandstone/uncolored_stairs",
+      "required": false
+    },
+    {
+      "id": "#common:sandstone/red_stairs",
+      "required": false
+    },
+    {
+      "id": "#c:sandstone_stairs",
+      "required": false
+    }
+  ]
+}

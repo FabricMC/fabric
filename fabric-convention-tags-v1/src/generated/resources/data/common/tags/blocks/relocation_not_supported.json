@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:movement_restricted",
+      "required": false
+    }
+  ]
+}

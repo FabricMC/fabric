@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:fortune",
+    {
+      "id": "#c:fortune",
+      "required": false
+    }
+  ]
+}

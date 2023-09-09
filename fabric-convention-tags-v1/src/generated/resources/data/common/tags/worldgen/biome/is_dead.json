@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:is_dead",
+      "required": false
+    }
+  ]
+}

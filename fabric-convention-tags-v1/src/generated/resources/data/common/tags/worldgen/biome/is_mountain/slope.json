@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:snowy_slopes",
+    {
+      "id": "#c:mountain_slope",
+      "required": false
+    }
+  ]
+}

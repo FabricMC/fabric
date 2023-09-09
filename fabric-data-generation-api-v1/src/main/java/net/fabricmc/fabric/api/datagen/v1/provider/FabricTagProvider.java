@@ -22,6 +22,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import net.minecraft.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -127,6 +128,20 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 
 		@Override
 		protected RegistryKey<Block> reverseLookup(Block element) {
+			return element.getRegistryEntry().registryKey();
+		}
+	}
+
+	/**
+	 * Extend this class to create {@link BlockEntityType} tags in the "/block_entity_type" tag directory.
+	 */
+	public abstract static class BlockEntityTypeTagProvider extends FabricTagProvider<BlockEntityType<?>> {
+		public BlockEntityTypeTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
+			super(output, RegistryKeys.BLOCK_ENTITY_TYPE, completableFuture);
+		}
+
+		@Override
+		protected RegistryKey<BlockEntityType<?>> reverseLookup(BlockEntityType<?> element) {
 			return element.getRegistryEntry().registryKey();
 		}
 	}

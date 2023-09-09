@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#minecraft:coals",
+      "required": false
+    },
+    {
+      "id": "#c:coal",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:bucket",
+    {
+      "id": "#c:buckets/empty",
+      "required": false
+    },
+    {
+      "id": "#c:empty_buckets",
+      "required": false
+    }
+  ]
+}

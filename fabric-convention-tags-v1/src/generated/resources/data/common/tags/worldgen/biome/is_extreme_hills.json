@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:windswept_gravelly_hills",
+    "minecraft:windswept_hills",
+    {
+      "id": "#c:is_extreme_hills",
+      "required": false
+    }
+  ]
+}

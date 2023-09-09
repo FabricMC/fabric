@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#common:barrels/wooden",
+    {
+      "id": "#c:barrels",
+      "required": false
+    }
+  ]
+}

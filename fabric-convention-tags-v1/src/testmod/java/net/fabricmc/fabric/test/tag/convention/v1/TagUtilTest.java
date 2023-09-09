@@ -41,12 +41,12 @@ public class TagUtilTest implements ModInitializer {
 				throw new AssertionError("Failed to find fortune in c:fortune!");
 			}
 
-			if (TagUtil.isIn(ConventionalBiomeTags.IN_OVERWORLD, server.getRegistryManager().get(RegistryKeys.BIOME).get(BiomeKeys.BADLANDS))) {
+			if (TagUtil.isIn(ConventionalBiomeTags.IS_OVERWORLD, server.getRegistryManager().get(RegistryKeys.BIOME).get(BiomeKeys.BADLANDS))) {
 				throw new AssertionError("Found a dynamic entry in a static registry?!");
 			}
 
 			// If this fails, the tag is missing a biome or the util is broken
-			if (!TagUtil.isIn(server.getRegistryManager(), ConventionalBiomeTags.IN_OVERWORLD, server.getRegistryManager().get(RegistryKeys.BIOME).get(BiomeKeys.BADLANDS))) {
+			if (!TagUtil.isIn(server.getRegistryManager(), ConventionalBiomeTags.IS_OVERWORLD, server.getRegistryManager().get(RegistryKeys.BIOME).get(BiomeKeys.BADLANDS))) {
 				throw new AssertionError("Failed to find an overworld biome (%s) in c:in_overworld!".formatted(BiomeKeys.BADLANDS));
 			}
 

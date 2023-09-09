@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:amethyst_cluster",
+    {
+      "id": "#c:clusters",
+      "required": false
+    }
+  ]
+}

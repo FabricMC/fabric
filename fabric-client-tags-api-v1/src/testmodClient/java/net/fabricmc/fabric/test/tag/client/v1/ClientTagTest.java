@@ -63,7 +63,7 @@ public class ClientTagTest implements ClientModInitializer {
 				throw new AssertionError("Did not expect to find diamond block in c:ores, but it was found!");
 			}
 
-			if (!ClientTags.isInLocal(ConventionalBiomeTags.FOREST, BiomeKeys.FOREST)) {
+			if (!ClientTags.isInLocal(ConventionalBiomeTags.IS_FOREST, BiomeKeys.FOREST)) {
 				throw new AssertionError("Expected to find forest in c:forest, but it was not found!");
 			}
 

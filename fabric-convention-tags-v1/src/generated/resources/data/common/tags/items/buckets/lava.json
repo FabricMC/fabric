@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:lava_bucket",
+    {
+      "id": "#c:buckets/lava",
+      "required": false
+    },
+    {
+      "id": "#c:lava_buckets",
+      "required": false
+    }
+  ]
+}

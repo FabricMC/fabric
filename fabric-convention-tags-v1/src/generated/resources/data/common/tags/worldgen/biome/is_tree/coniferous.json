@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:grove",
+    {
+      "id": "#common:is_taiga",
+      "required": false
+    },
+    {
+      "id": "#c:tree_coniferous",
+      "required": false
+    }
+  ]
+}

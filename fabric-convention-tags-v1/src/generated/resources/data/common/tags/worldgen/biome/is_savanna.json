@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#minecraft:is_savanna",
+      "required": false
+    },
+    "minecraft:savanna_plateau",
+    "minecraft:windswept_savanna",
+    "minecraft:savanna",
+    {
+      "id": "#c:is_savanna",
+      "required": false
+    }
+  ]
+}

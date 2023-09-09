@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:snowy_plains",
+    {
+      "id": "#c:is_snowy_plains",
+      "required": false
+    }
+  ]
+}

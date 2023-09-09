@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:snowy_plains",
+    "minecraft:snowy_slopes",
+    "minecraft:grove",
+    "minecraft:jagged_peaks",
+    "minecraft:taiga",
+    "minecraft:snowy_taiga",
+    "minecraft:old_growth_spruce_taiga",
+    "minecraft:old_growth_pine_taiga",
+    {
+      "id": "#common:is_icy",
+      "required": false
+    },
+    {
+      "id": "#c:climate_cold",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:water_bucket",
+    {
+      "id": "#c:buckets/water",
+      "required": false
+    },
+    {
+      "id": "#c:water_buckets",
+      "required": false
+    }
+  ]
+}

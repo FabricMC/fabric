@@ -1,9 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    {
-      "id": "#c:caves",
-      "required": false
-    }
-  ]
-}

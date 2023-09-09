@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#common:is_cave",
+      "required": false
+    },
+    {
+      "id": "#c:is_underground",
+      "required": false
+    }
+  ]
+}
