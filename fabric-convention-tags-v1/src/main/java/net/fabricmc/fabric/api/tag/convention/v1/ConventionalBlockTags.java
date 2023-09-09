@@ -32,8 +32,10 @@ public final class ConventionalBlockTags {
 
 	// Ores and ingots - broad categories
 	public static final TagKey<Block> ORES = register("ores");
+
 	// Ores and ingots - vanilla instances
 	public static final TagKey<Block> ORES_QUARTZ = register("ores/quartz");
+	public static final TagKey<Block> ORES_NETHERITE_SCRAP = register("ores/netherite_scrap");
 
 	public static final TagKey<Block> BARRELS = register("barrels");
 	public static final TagKey<Block> BARRELS_WOODEN = register("barrels/wooden");
@@ -54,12 +56,12 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> SANDSTONE_BLOCKS = register("sandstone/blocks");
 	public static final TagKey<Block> SANDSTONE_SLABS = register("sandstone/slabs");
 	public static final TagKey<Block> SANDSTONE_STAIRS = register("sandstone/stairs");
-	public static final TagKey<Block> RED_SANDSTONE_BLOCKS = register("sandstone/red_blocks");
-	public static final TagKey<Block> RED_SANDSTONE_SLABS = register("sandstone/red_slabs");
-	public static final TagKey<Block> RED_SANDSTONE_STAIRS = register("sandstone/red_stairs");
-	public static final TagKey<Block> UNCOLORED_SANDSTONE_BLOCKS = register("sandstone/uncolored_blocks");
-	public static final TagKey<Block> UNCOLORED_SANDSTONE_SLABS = register("sandstone/uncolored_slabs");
-	public static final TagKey<Block> UNCOLORED_SANDSTONE_STAIRS = register("sandstone/uncolored_stairs");
+	public static final TagKey<Block> SANDSTONE_RED_BLOCKS = register("sandstone/red_blocks");
+	public static final TagKey<Block> SANDSTONE_RED_SLABS = register("sandstone/red_slabs");
+	public static final TagKey<Block> SANDSTONE_RED_STAIRS = register("sandstone/red_stairs");
+	public static final TagKey<Block> SANDSTONE_UNCOLORED_BLOCKS = register("sandstone/uncolored_blocks");
+	public static final TagKey<Block> SANDSTONE_UNCOLORED_SLABS = register("sandstone/uncolored_slabs");
+	public static final TagKey<Block> SANDSTONE_UNCOLORED_STAIRS = register("sandstone/uncolored_stairs");
 
 	// Blocks created with dyes
 	public static final TagKey<Block> DYED_BLOCKS = register("dyed_blocks");

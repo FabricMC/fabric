@@ -232,9 +232,9 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		default void add(TagKey<?> tagKey, String value) {
 			String tagTranslationkey =
 					"tag." +
-					tagKey.registry().getValue().getPath().replace("\\", ".") +
+					tagKey.registry().getValue().getPath().replace("/", ".") +
 					"." +
-					tagKey.id().getPath().replace("\\", ".");
+					tagKey.id().getPath().replace("/", ".");
 			add(tagTranslationkey, value);
 		}
 
