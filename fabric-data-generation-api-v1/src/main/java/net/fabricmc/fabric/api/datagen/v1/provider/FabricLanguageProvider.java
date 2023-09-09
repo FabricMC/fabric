@@ -234,7 +234,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 					"tag." +
 					tagKey.registry().getValue().getPath().replace("/", ".") +
 					"." +
-					tagKey.id().getPath().replace("/", ".");
+					tagKey.id().toString().replace("/", ".").replace(":", ".");
 			add(tagTranslationkey, value);
 		}
 
