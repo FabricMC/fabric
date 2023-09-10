@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.registry.DynamicRegistryManager;
@@ -87,9 +88,23 @@ public final class TagUtil {
 	 * @return the translation key for a TagKey.
 	 */
 	public static String getTagTranslationKey(TagKey<?> tagKey) {
-		return "tag."
-			+ tagKey.registry().getValue().getPath().replace("/", ".")
-			+ "."
-			+ tagKey.id().toString().replace("/", ".").replace(":", ".");
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("tag.");
+
+		Identifier registryIdentifier = tagKey.registry().getValue();
+		Identifier tagIdentifier = tagKey.id();
+
+		if (registryIdentifier.getNamespace().equals("minecraft")) {
+			stringBuilder.append(registryIdentifier.getNamespace())
+					.append(".");
+		}
+
+		stringBuilder.append(registryIdentifier.getPath().replace("/", "."))
+				.append(".")
+				.append(tagIdentifier.getNamespace())
+				.append(".")
+				.append(tagIdentifier.getPath().replace("/", ".").replace(":", "."));
+
+		return stringBuilder.toString();
 	}
 }
