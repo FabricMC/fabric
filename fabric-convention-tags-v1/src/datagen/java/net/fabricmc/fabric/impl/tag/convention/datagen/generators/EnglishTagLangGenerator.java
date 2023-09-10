@@ -188,6 +188,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalEntityTypeTags.BOSSES, "Bosses");
 		translationBuilder.add(ConventionalEntityTypeTags.MINECARTS, "Minecarts");
 		translationBuilder.add(ConventionalEntityTypeTags.BOATS, "Boats");
+		translationBuilder.add(ConventionalEntityTypeTags.CAPTURING_NOT_SUPPORTED, "Capturing Not Supported");
 
 		// Fluids
 		translationBuilder.add(ConventionalFluidTags.LAVA, "Lava");

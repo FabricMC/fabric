@@ -48,6 +48,7 @@
   "tag.enchantment.common.weapon_damage_enhancement": "Weapon Damage Enhancements",
   "tag.entity_type.common.boats": "Boats",
   "tag.entity_type.common.bosses": "Bosses",
+  "tag.entity_type.common.capturing_not_supported": "Capturing Not Supported",
   "tag.entity_type.common.minecarts": "Minecarts",
   "tag.fluid.common.honey": "Honey",
   "tag.fluid.common.lava": "Lava",
