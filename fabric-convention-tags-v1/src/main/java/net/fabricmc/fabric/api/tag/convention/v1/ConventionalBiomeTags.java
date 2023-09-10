@@ -81,27 +81,35 @@ public final class ConventionalBiomeTags {
 	public static final TagKey<Biome> IS_UNDERGROUND = register("is_underground");
 	public static final TagKey<Biome> IS_MOUNTAIN = register("is_mountain");
 
-	public static final TagKey<Biome> IS_HOT_OVERWORLD = register("is_hot/overworld");
 	public static final TagKey<Biome> IS_HOT = register("is_hot");
-	public static final TagKey<Biome> IS_TEMPERATE_OVERWORLD = register("is_temperate/overworld");
+	public static final TagKey<Biome> OVERWORLD_IS_HOT = register("is_hot/overworld");
+
 	public static final TagKey<Biome> IS_TEMPERATE = register("is_temperate");
-	public static final TagKey<Biome> IS_COLD_OVERWORLD = register("is_cold/overworld");
+	public static final TagKey<Biome> OVERWORLD_IS_TEMPERATE = register("is_temperate/overworld");
+
 	public static final TagKey<Biome> IS_COLD = register("is_cold");
-	public static final TagKey<Biome> IS_WET_OVERWORLD = register("is_wet/overworld");
+	public static final TagKey<Biome> OVERWORLD_IS_COLD = register("is_cold/overworld");
+
 	public static final TagKey<Biome> IS_WET = register("is_wet");
-	public static final TagKey<Biome> IS_DRY_OVERWORLD = register("is_dry/overworld");
+	public static final TagKey<Biome> OVERWORLD_IS_WET = register("is_wet/overworld");
+
 	public static final TagKey<Biome> IS_DRY = register("is_dry");
+	public static final TagKey<Biome> OVERWORLD_IS_DRY = register("is_dry/overworld");
+
 	public static final TagKey<Biome> IS_VEGETATION_SPARSE = register("is_sparse_vegetation");
-	public static final TagKey<Biome> IS_VEGETATION_SPARSE_OVERWORLD = register("is_sparse_vegetation/overworld");
+	public static final TagKey<Biome> OVERWORLD_IS_VEGETATION_SPARSE = register("is_sparse_vegetation/overworld");
+
 	public static final TagKey<Biome> IS_VEGETATION_DENSE = register("is_dense_vegetation");
-	public static final TagKey<Biome> IS_VEGETATION_DENSE_OVERWORLD = register("is_dense_vegetation/overworld");
-	public static final TagKey<Biome> IS_TREE_CONIFEROUS = register("is_tree/coniferous");
-	public static final TagKey<Biome> IS_TREE_SAVANNA = register("is_tree/savanna");
-	public static final TagKey<Biome> IS_TREE_JUNGLE = register("is_tree/jungle");
-	public static final TagKey<Biome> IS_TREE_DECIDUOUS = register("is_tree/deciduous");
+	public static final TagKey<Biome> OVERWORLD_IS_VEGETATION_DENSE = register("is_dense_vegetation/overworld");
+
+	public static final TagKey<Biome> CONIFEROUS_IS_TREE = register("is_tree/coniferous");
+	public static final TagKey<Biome> SAVANNA_IS_TREE = register("is_tree/savanna");
+	public static final TagKey<Biome> JUNGLE_IS_TREE = register("is_tree/jungle");
+	public static final TagKey<Biome> DECIDUOUS_IS_TREE = register("is_tree/deciduous");
+
 	public static final TagKey<Biome> IS_VOID = register("is_void");
-	public static final TagKey<Biome> IS_MOUNTAIN_PEAK = register("is_mountain/peak");
-	public static final TagKey<Biome> IS_MOUNTAIN_SLOPE = register("is_mountain/slope");
+	public static final TagKey<Biome> PEAK_IS_MOUNTAIN = register("is_mountain/peak");
+	public static final TagKey<Biome> SLOPE_IS_MOUNTAIN = register("is_mountain/slope");
 	/**
 	 * Biomes consisting primarily of water.
 	 */

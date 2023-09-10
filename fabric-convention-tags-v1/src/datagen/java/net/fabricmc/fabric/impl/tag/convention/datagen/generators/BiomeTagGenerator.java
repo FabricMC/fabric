@@ -171,7 +171,7 @@ public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 	}
 
 	private void generateClimateAndVegetationTags() {
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_COLD_OVERWORLD)
+		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_COLD)
 				.add(BiomeKeys.SNOWY_PLAINS)
 				.add(BiomeKeys.SNOWY_SLOPES)
 				.add(BiomeKeys.GROVE)
@@ -180,9 +180,9 @@ public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA).add(BiomeKeys.OLD_GROWTH_PINE_TAIGA)
 				.addOptionalTag(ConventionalBiomeTags.IS_ICY);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_COLD)
-				.addTag(ConventionalBiomeTags.IS_COLD_OVERWORLD);
+				.addTag(ConventionalBiomeTags.OVERWORLD_IS_COLD);
 
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TEMPERATE_OVERWORLD)
+		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_TEMPERATE)
 				.add(BiomeKeys.FOREST)
 				.add(BiomeKeys.SUNFLOWER_PLAINS)
 				.add(BiomeKeys.SWAMP)
@@ -194,9 +194,9 @@ public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.MEADOW)
 				.add(BiomeKeys.PLAINS);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TEMPERATE)
-				.addTag(ConventionalBiomeTags.IS_TEMPERATE_OVERWORLD);
+				.addTag(ConventionalBiomeTags.OVERWORLD_IS_TEMPERATE);
 
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_HOT_OVERWORLD)
+		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_HOT)
 				.addOptionalTag(ConventionalBiomeTags.IS_JUNGLE)
 				.addOptionalTag(ConventionalBiomeTags.IS_SAVANNA)
 				.addOptionalTag(ConventionalBiomeTags.IS_DESERT)
@@ -205,49 +205,49 @@ public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.addOptionalTag(ConventionalBiomeTags.IS_MUSHROOM)
 				.addOptionalTag(ConventionalBiomeTags.IS_NETHER);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_HOT)
-				.addTag(ConventionalBiomeTags.IS_HOT_OVERWORLD);
+				.addTag(ConventionalBiomeTags.OVERWORLD_IS_HOT);
 
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_WET_OVERWORLD)
+		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_WET)
 				.addOptionalTag(ConventionalBiomeTags.IS_AQUATIC)
 				.addOptionalTag(ConventionalBiomeTags.IS_SWAMP)
 				.add(BiomeKeys.LUSH_CAVES)
 				.addOptionalTag(ConventionalBiomeTags.IS_JUNGLE);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_WET)
-				.addTag(ConventionalBiomeTags.IS_WET_OVERWORLD);
+				.addTag(ConventionalBiomeTags.OVERWORLD_IS_WET);
 
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_DRY_OVERWORLD)
+		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_DRY)
 				.addOptionalTag(ConventionalBiomeTags.IS_NETHER)
 				.addOptionalTag(ConventionalBiomeTags.IS_BADLANDS)
 				.addOptionalTag(ConventionalBiomeTags.IS_DESERT)
 				.addOptionalTag(ConventionalBiomeTags.IS_SAVANNA);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_DRY)
-				.addTag(ConventionalBiomeTags.IS_DRY_OVERWORLD);
+				.addTag(ConventionalBiomeTags.OVERWORLD_IS_DRY);
 
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_DENSE_OVERWORLD)
+		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_VEGETATION_DENSE)
 				.addOptionalTag(ConventionalBiomeTags.IS_JUNGLE)
 				.add(BiomeKeys.DARK_FOREST);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_DENSE)
-				.addOptionalTag(ConventionalBiomeTags.IS_VEGETATION_DENSE_OVERWORLD);
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_SPARSE_OVERWORLD)
+				.addOptionalTag(ConventionalBiomeTags.OVERWORLD_IS_VEGETATION_DENSE);
+		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_VEGETATION_SPARSE)
 				.addOptionalTag(ConventionalBiomeTags.IS_SAVANNA)
 				.addOptionalTag(ConventionalBiomeTags.IS_DESERT)
 				.addOptionalTag(ConventionalBiomeTags.IS_DEAD)
 				.addOptionalTag(ConventionalBiomeTags.IS_WASTELAND);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_SPARSE)
-				.addOptionalTag(ConventionalBiomeTags.IS_VEGETATION_SPARSE_OVERWORLD);
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TREE_CONIFEROUS)
+				.addOptionalTag(ConventionalBiomeTags.OVERWORLD_IS_VEGETATION_SPARSE);
+		getOrCreateTagBuilder(ConventionalBiomeTags.CONIFEROUS_IS_TREE)
 				.add(BiomeKeys.GROVE)
 				.addOptionalTag(ConventionalBiomeTags.IS_TAIGA);
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TREE_DECIDUOUS)
+		getOrCreateTagBuilder(ConventionalBiomeTags.DECIDUOUS_IS_TREE)
 				.add(BiomeKeys.FOREST)
 				.add(BiomeKeys.WINDSWEPT_FOREST)
 				.add(BiomeKeys.FLOWER_FOREST)
 				.add(BiomeKeys.BIRCH_FOREST)
 				.add(BiomeKeys.DARK_FOREST)
 				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST);
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TREE_JUNGLE)
+		getOrCreateTagBuilder(ConventionalBiomeTags.JUNGLE_IS_TREE)
 				.addOptionalTag(ConventionalBiomeTags.IS_JUNGLE);
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TREE_SAVANNA)
+		getOrCreateTagBuilder(ConventionalBiomeTags.SAVANNA_IS_TREE)
 				.addOptionalTag(ConventionalBiomeTags.IS_SAVANNA);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_FLORAL)
 				.add(BiomeKeys.SUNFLOWER_PLAINS)
@@ -257,11 +257,11 @@ public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 	}
 
 	private void generateTerrainDescriptorTags() {
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_MOUNTAIN_PEAK)
+		getOrCreateTagBuilder(ConventionalBiomeTags.PEAK_IS_MOUNTAIN)
 				.add(BiomeKeys.FROZEN_PEAKS)
 				.add(BiomeKeys.JAGGED_PEAKS)
 				.add(BiomeKeys.STONY_PEAKS);
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_MOUNTAIN_SLOPE)
+		getOrCreateTagBuilder(ConventionalBiomeTags.SLOPE_IS_MOUNTAIN)
 				.add(BiomeKeys.SNOWY_SLOPES);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_AQUATIC)
 				.addOptionalTag(ConventionalBiomeTags.IS_OCEAN)
@@ -312,20 +312,20 @@ public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_VOID);
 		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_DEEP_OCEAN);
 		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_SHALLOW_OCEAN);
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_COLD_OVERWORLD).addOptionalTag(new Identifier("c", "climate_cold"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TEMPERATE_OVERWORLD).addOptionalTag(new Identifier("c", "climate_temperate"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_HOT_OVERWORLD).addOptionalTag(new Identifier("c", "climate_hot"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_WET_OVERWORLD).addOptionalTag(new Identifier("c", "climate_wet"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_DRY_OVERWORLD).addOptionalTag(new Identifier("c", "climate_dry"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_DENSE_OVERWORLD).addOptionalTag(new Identifier("c", "vegetation_dense"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_SPARSE_OVERWORLD).addOptionalTag(new Identifier("c", "vegetation_sparse"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TREE_CONIFEROUS).addOptionalTag(new Identifier("c", "tree_coniferous"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TREE_DECIDUOUS).addOptionalTag(new Identifier("c", "tree_deciduous"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TREE_JUNGLE).addOptionalTag(new Identifier("c", "tree_jungle"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TREE_SAVANNA).addOptionalTag(new Identifier("c", "tree_savanna"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_COLD).addOptionalTag(new Identifier("c", "climate_cold"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_TEMPERATE).addOptionalTag(new Identifier("c", "climate_temperate"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_HOT).addOptionalTag(new Identifier("c", "climate_hot"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_WET).addOptionalTag(new Identifier("c", "climate_wet"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_DRY).addOptionalTag(new Identifier("c", "climate_dry"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_VEGETATION_DENSE).addOptionalTag(new Identifier("c", "vegetation_dense"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_VEGETATION_SPARSE).addOptionalTag(new Identifier("c", "vegetation_sparse"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.CONIFEROUS_IS_TREE).addOptionalTag(new Identifier("c", "tree_coniferous"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.DECIDUOUS_IS_TREE).addOptionalTag(new Identifier("c", "tree_deciduous"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.JUNGLE_IS_TREE).addOptionalTag(new Identifier("c", "tree_jungle"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.SAVANNA_IS_TREE).addOptionalTag(new Identifier("c", "tree_savanna"));
 		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_FLORAL);
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_MOUNTAIN_PEAK).addOptionalTag(new Identifier("c", "mountain_peak"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_MOUNTAIN_SLOPE).addOptionalTag(new Identifier("c", "mountain_slope"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.PEAK_IS_MOUNTAIN).addOptionalTag(new Identifier("c", "mountain_peak"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.SLOPE_IS_MOUNTAIN).addOptionalTag(new Identifier("c", "mountain_slope"));
 		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_AQUATIC);
 		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_DEAD);
 		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_WASTELAND);
