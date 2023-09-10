@@ -189,7 +189,7 @@ public class ConventionLogWarnings implements ClientModInitializer {
 						stringBuilder.append("\nLegacy tags:");
 
 						for (TagKey<?> tagKey : legacyTags) {
-							stringBuilder.append("\n     ").append(tagKey.id());
+							stringBuilder.append("\n     ").append(tagKey);
 						}
 					}
 
