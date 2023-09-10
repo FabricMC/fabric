@@ -16,8 +16,11 @@
     "FabricMC"
   ],
   "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.tag.convention.ConventionLogWarnings"
+    ],
     "client": [
-      "net.fabricmc.fabric.impl.tag.convention.client.ConventionLogWarnings"
+      "net.fabricmc.fabric.impl.tag.convention.client.ConventionLogWarningsClient"
     ]
   },
   "depends": {
