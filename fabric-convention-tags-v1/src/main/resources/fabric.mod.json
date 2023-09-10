@@ -15,9 +15,15 @@
   "authors": [
     "FabricMC"
   ],
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.impl.tag.convention.client.ConventionLogWarnings"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.4.0",
-    "minecraft": ">=1.18.2"
+    "minecraft": ">=1.18.2",
+    "fabric-lifecycle-events-v1": "*"
   },
   "description": "Contains common tags used by mods for vanilla things.",
   "custom": {

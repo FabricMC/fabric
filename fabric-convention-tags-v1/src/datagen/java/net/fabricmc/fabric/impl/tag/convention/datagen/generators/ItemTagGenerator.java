@@ -16,10 +16,8 @@
 
 package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
+import java.util.concurrent.CompletableFuture;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
@@ -29,10 +27,12 @@ import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
-import java.util.concurrent.CompletableFuture;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 
 public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
-
 	public ItemTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture, FabricTagProvider.BlockTagProvider blockTags) {
 		super(output, completableFuture, blockTags);
 	}
@@ -357,8 +357,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.VILLAGER_JOB_SITES);
 	}
 
-	private FabricTagBuilder getOrCreateTagBuilderWithOptionalLegacy(TagKey<Item> tag)
-	{
+	private FabricTagBuilder getOrCreateTagBuilderWithOptionalLegacy(TagKey<Item> tag) {
 		return getOrCreateTagBuilder(tag).addOptionalTag(new Identifier("c", tag.id().getPath()));
 	}
 }

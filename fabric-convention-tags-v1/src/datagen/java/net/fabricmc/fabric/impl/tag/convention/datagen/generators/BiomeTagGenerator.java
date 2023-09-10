@@ -16,9 +16,8 @@
 
 package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
+import java.util.concurrent.CompletableFuture;
+
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.BiomeTags;
@@ -27,7 +26,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
-import java.util.concurrent.CompletableFuture;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 
 public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 	public BiomeTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
@@ -335,8 +336,7 @@ public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_FLOWER_FOREST).addOptionalTag(new Identifier("c", "flower_forests"));
 	}
 
-	private FabricTagBuilder getOrCreateTagBuilderWithOptionalLegacy(TagKey<Biome> tag)
-	{
+	private FabricTagBuilder getOrCreateTagBuilderWithOptionalLegacy(TagKey<Biome> tag) {
 		return getOrCreateTagBuilder(tag).addOptionalTag(new Identifier("c", tag.id().getPath()));
 	}
 }

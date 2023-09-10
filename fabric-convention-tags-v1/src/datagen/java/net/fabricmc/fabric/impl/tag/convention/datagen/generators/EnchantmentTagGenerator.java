@@ -16,16 +16,17 @@
 
 package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalEnchantmentTags;
+import java.util.concurrent.CompletableFuture;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
-import java.util.concurrent.CompletableFuture;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalEnchantmentTags;
 
 public class EnchantmentTagGenerator extends FabricTagProvider.EnchantmentTagProvider {
 	public EnchantmentTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
@@ -65,8 +66,7 @@ public class EnchantmentTagGenerator extends FabricTagProvider.EnchantmentTagPro
 		getOrCreateTagBuilderWithOptionalLegacy(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENT);
 	}
 
-	private FabricTagBuilder getOrCreateTagBuilderWithOptionalLegacy(TagKey<Enchantment> tag)
-	{
+	private FabricTagBuilder getOrCreateTagBuilderWithOptionalLegacy(TagKey<Enchantment> tag) {
 		return getOrCreateTagBuilder(tag).addOptionalTag(new Identifier("c", tag.id().getPath()));
 	}
 }

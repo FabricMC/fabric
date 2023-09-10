@@ -81,4 +81,15 @@ public final class TagUtil {
 
 		return false;
 	}
+
+	/**
+	 * Use this to get a TagKey's translation key safely on any side.
+	 * @return the translation key for a TagKey.
+	 */
+	public static String getTagTranslationKey(TagKey<?> tagKey) {
+		return "tag."
+			+ tagKey.registry().getValue().getPath().replace("/", ".")
+			+ "."
+			+ tagKey.id().toString().replace("/", ".").replace(":", ".");
+	}
 }

@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.registry.RegistryWrapper;
@@ -26,8 +26,9 @@ import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 
 public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 	static List<Block> VILLAGER_JOB_SITE_BLOCKS = List.of(
@@ -205,31 +206,32 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 				.add(Blocks.WHITE_STAINED_GLASS_PANE)
 				.add(Blocks.YELLOW_STAINED_GLASS_PANE);
 	}
+
 	private void generateDyedTags() {
 		getOrCreateTagBuilder(ConventionalBlockTags.DYED_BLOCKS_BLACK)
 				.add(Blocks.BLACK_BANNER).add(Blocks.BLACK_BED).add(Blocks.BLACK_CANDLE).add(Blocks.BLACK_CARPET)
 				.add(Blocks.BLACK_CONCRETE).add(Blocks.BLACK_CONCRETE_POWDER).add(Blocks.BLACK_GLAZED_TERRACOTTA)
 				.add(Blocks.BLACK_SHULKER_BOX).add(Blocks.BLACK_STAINED_GLASS).add(Blocks.BLACK_STAINED_GLASS_PANE)
 				.add(Blocks.BLACK_TERRACOTTA).add(Blocks.BLACK_WOOL);
-		
+
 		getOrCreateTagBuilder(ConventionalBlockTags.DYED_BLOCKS_BLUE)
 				.add(Blocks.BLUE_BANNER).add(Blocks.BLUE_BED).add(Blocks.BLUE_CANDLE).add(Blocks.BLUE_CARPET)
 				.add(Blocks.BLUE_CONCRETE).add(Blocks.BLUE_CONCRETE_POWDER).add(Blocks.BLUE_GLAZED_TERRACOTTA)
 				.add(Blocks.BLUE_SHULKER_BOX).add(Blocks.BLUE_STAINED_GLASS).add(Blocks.BLUE_STAINED_GLASS_PANE)
 				.add(Blocks.BLUE_TERRACOTTA).add(Blocks.BLUE_WOOL);
-		
+
 		getOrCreateTagBuilder(ConventionalBlockTags.DYED_BLOCKS_BROWN)
 				.add(Blocks.BROWN_BANNER).add(Blocks.BROWN_BED).add(Blocks.BROWN_CANDLE).add(Blocks.BROWN_CARPET)
 				.add(Blocks.BROWN_CONCRETE).add(Blocks.BROWN_CONCRETE_POWDER).add(Blocks.BROWN_GLAZED_TERRACOTTA)
 				.add(Blocks.BROWN_SHULKER_BOX).add(Blocks.BROWN_STAINED_GLASS).add(Blocks.BROWN_STAINED_GLASS_PANE)
 				.add(Blocks.BROWN_TERRACOTTA).add(Blocks.BROWN_WOOL);
-		
+
 		getOrCreateTagBuilder(ConventionalBlockTags.DYED_BLOCKS_CYAN)
 				.add(Blocks.CYAN_BANNER).add(Blocks.CYAN_BED).add(Blocks.CYAN_CANDLE).add(Blocks.CYAN_CARPET)
 				.add(Blocks.CYAN_CONCRETE).add(Blocks.CYAN_CONCRETE_POWDER).add(Blocks.CYAN_GLAZED_TERRACOTTA)
 				.add(Blocks.CYAN_SHULKER_BOX).add(Blocks.CYAN_STAINED_GLASS).add(Blocks.CYAN_STAINED_GLASS_PANE)
 				.add(Blocks.CYAN_TERRACOTTA).add(Blocks.CYAN_WOOL);
-		
+
 		getOrCreateTagBuilder(ConventionalBlockTags.DYED_BLOCKS_GRAY)
 				.add(Blocks.GRAY_BANNER).add(Blocks.GRAY_BED).add(Blocks.GRAY_CANDLE).add(Blocks.GRAY_CARPET)
 				.add(Blocks.GRAY_CONCRETE).add(Blocks.GRAY_CONCRETE_POWDER).add(Blocks.GRAY_GLAZED_TERRACOTTA)
@@ -350,8 +352,7 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_UNCOLORED_STAIRS).addOptionalTag(new Identifier("c", "uncolored_sandstone_stairs"));
 	}
 
-	private FabricTagBuilder getOrCreateTagBuilderWithOptionalLegacy(TagKey<Block> tag)
-	{
+	private FabricTagBuilder getOrCreateTagBuilderWithOptionalLegacy(TagKey<Block> tag) {
 		return getOrCreateTagBuilder(tag).addOptionalTag(new Identifier("c", tag.id().getPath()));
 	}
 }

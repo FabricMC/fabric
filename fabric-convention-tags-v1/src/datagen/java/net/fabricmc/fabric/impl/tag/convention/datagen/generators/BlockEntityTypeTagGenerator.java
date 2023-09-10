@@ -16,12 +16,13 @@
 
 package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
+import java.util.concurrent.CompletableFuture;
+
+import net.minecraft.registry.RegistryWrapper;
+
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockEntityTypeTags;
-import net.minecraft.registry.RegistryWrapper;
-
-import java.util.concurrent.CompletableFuture;
 
 public class BlockEntityTypeTagGenerator extends FabricTagProvider.BlockEntityTypeTagProvider {
 	public BlockEntityTypeTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {

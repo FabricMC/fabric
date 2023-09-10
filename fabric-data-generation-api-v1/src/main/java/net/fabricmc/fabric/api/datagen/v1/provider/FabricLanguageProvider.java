@@ -27,7 +27,6 @@ import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.minecraft.registry.tag.TagKey;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.block.Block;
@@ -42,6 +41,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.stat.StatType;
 import net.minecraft.text.TextContent;
 import net.minecraft.text.TranslatableTextContent;
@@ -49,6 +49,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.tag.convention.v1.TagUtil;
 
 /**
  * Extend this class and implement {@link FabricLanguageProvider#generateTranslations(TranslationBuilder)}.
@@ -230,14 +231,8 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param value      The value of the entry.
 		 */
 		default void add(TagKey<?> tagKey, String value) {
-			String tagTranslationkey =
-					"tag." +
-					tagKey.registry().getValue().getPath().replace("/", ".") +
-					"." +
-					tagKey.id().toString().replace("/", ".").replace(":", ".");
-			add(tagTranslationkey, value);
+			add(TagUtil.getTagTranslationKey(tagKey), value);
 		}
-
 
 		/**
 		 * Merges an existing language file into the generated language file.

@@ -22,10 +22,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import net.minecraft.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.data.server.tag.TagProvider;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
