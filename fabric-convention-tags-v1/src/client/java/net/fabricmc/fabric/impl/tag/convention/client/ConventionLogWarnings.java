@@ -163,7 +163,7 @@ public class ConventionLogWarnings implements ClientModInitializer {
 				dynamicRegistries.streamAllRegistries().forEach(registryEntry -> {
 					if (registryEntry.key().getValue().getNamespace().equals("minecraft")) {
 						registryEntry.value().streamTags().forEach(tagKey -> {
-							// Grab tags under 'forge' namespace
+							// Grab tags under 'c' namespace
 							if (tagKey.id().getNamespace().equals("c")) {
 								legacyTags.add(tagKey);
 							}
