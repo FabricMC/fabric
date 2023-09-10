@@ -83,8 +83,8 @@ public class ConventionLogWarnings implements ClientModInitializer {
 			}
 		}
 
-		LOG_UNTRANSLATED_WARNING_MODE = asEnum((String) properties.computeIfAbsent("log-untranslated-item-tag-warnings", (a) -> "dev_short"), LOG_WARNING_MODES.DEV_SHORT);
-		LOG_LEGACY_WARNING_MODE = asEnum((String) properties.computeIfAbsent("log-legacy-tag-warnings", (a) -> "dev_short"), LOG_WARNING_MODES.DEV_SHORT);
+		LOG_UNTRANSLATED_WARNING_MODE = asEnum((String) properties.computeIfAbsent("log-untranslated-item-tag-warnings", (a) -> "DEV_SHORT"), LOG_WARNING_MODES.DEV_SHORT);
+		LOG_LEGACY_WARNING_MODE = asEnum((String) properties.computeIfAbsent("log-legacy-tag-warnings", (a) -> "DEV_SHORT"), LOG_WARNING_MODES.DEV_SHORT);
 
 		try (FileOutputStream stream = new FileOutputStream(configFile)) {
 			properties.store(stream, "Fabric Tag Conventions v1 properties file");
@@ -106,7 +106,7 @@ public class ConventionLogWarnings implements ClientModInitializer {
 					LOG_UNTRANSLATED_WARNING_MODE == LOG_WARNING_MODES.DEV_SHORT
 					|| LOG_UNTRANSLATED_WARNING_MODE == LOG_WARNING_MODES.DEV_VERBOSE;
 
-			if (SharedConstants.isDevelopment == isConfigSetToDev) {
+			if (FabricLoader.getInstance().isDevelopmentEnvironment() == isConfigSetToDev) {
 				Registry<Item> itemRegistry = server.getRegistryManager().get(RegistryKeys.ITEM);
 				List<TagKey<Item>> untranslatedItemTags = new ObjectArrayList<>();
 				itemRegistry.streamTags().forEach(itemTagKey -> {
@@ -156,7 +156,7 @@ public class ConventionLogWarnings implements ClientModInitializer {
 					LOG_LEGACY_WARNING_MODE == LOG_WARNING_MODES.DEV_SHORT
 					|| LOG_LEGACY_WARNING_MODE == LOG_WARNING_MODES.DEV_VERBOSE;
 
-			if (SharedConstants.isDevelopment == isConfigSetToDev) {
+			if (FabricLoader.getInstance().isDevelopmentEnvironment() == isConfigSetToDev) {
 				List<TagKey<?>> legacyTags = new ObjectArrayList<>();
 				DynamicRegistryManager.Immutable dynamicRegistries = server.getRegistryManager();
 
@@ -175,7 +175,7 @@ public class ConventionLogWarnings implements ClientModInitializer {
 				if (!legacyTags.isEmpty()) {
 					StringBuilder stringBuilder = new StringBuilder();
 					stringBuilder.append("""
-							\n	Dev warning - Legacy Tags detected. Please migrate your 'c' namespace tags to 'common' namespace! See net.minecraftforge.common.Tags.java for all tags.
+							\n	Dev warning - Legacy Tags detected. Please migrate your 'c' namespace tags to 'common' namespace! See classes under net.fabricmc.fabric.api.tag.convention.v1 package for all tags.
 								NOTE: Many tags have been moved around or renamed. Some new ones were added so please review the new tags. And make sure you follow tag conventions for new tags!
 								You can disable this message in Fabric API's properties config file by setting log-legacy-tag-warnings to "SILENCED" or see individual tags with "DEV_VERBOSE".
 							""");
