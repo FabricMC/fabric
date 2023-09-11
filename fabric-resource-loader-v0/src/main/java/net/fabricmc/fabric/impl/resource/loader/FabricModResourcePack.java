@@ -141,7 +141,8 @@ public class FabricModResourcePack extends GroupResourcePack {
 						LOGGER.error("Failed to get {} section from pack {}", serializer.getKey(), pack.getName());
 						return null; // Not a fatal error, matches LifecycledResourceManagerImpl.parseResourceFilter
 					}
-				}).filter(Objects::nonNull);
+				})
+				.filter(Objects::nonNull);
 	}
 
 	// Collects to an optional list. The optional is not empty when the list contains at least 1 element
