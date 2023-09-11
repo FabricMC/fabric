@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.trade;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
+
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
@@ -30,6 +33,9 @@ import net.fabricmc.fabric.impl.object.builder.TradeOfferInternals;
 public final class TradeOfferHelper {
 	/**
 	 * Registers trade offer factories for use by villagers.
+	 * This adds the same trade offers to current and rebalanced trades.
+	 * To add separate offers for the rebalanced trade experiment, use
+	 * {@link #registerVillagerOffers(VillagerProfession, int, VillagerOffersAdder)}.
 	 *
 	 * <p>Below is an example, of registering a trade offer factory to be added a blacksmith with a profession level of 3:
 	 * <blockquote><pre>
@@ -43,17 +49,58 @@ public final class TradeOfferHelper {
 	 * @param factories a consumer to provide the factories
 	 */
 	public static void registerVillagerOffers(VillagerProfession profession, int level, Consumer<List<TradeOffers.Factory>> factories) {
+		TradeOfferInternals.registerVillagerOffers(profession, level, (trades, rebalanced) -> factories.accept(trades));
+	}
+
+	/**
+	 * Registers trade offer factories for use by villagers.
+	 * This method allows separate offers to be added depending on whether the rebalanced
+	 * trade experiment is enabled.
+	 * If a particular profession's rebalanced trade offers are not added at all, it falls back
+	 * to the regular trade offers.
+	 *
+	 * <p>Below is an example, of registering a trade offer factory to be added a blacksmith with a profession level of 3:
+	 * <blockquote><pre>
+	 * TradeOfferHelper.registerVillagerOffers(VillagerProfession.BLACKSMITH, 3, (factories, rebalanced) -> {
+	 * 	factories.add(new CustomTradeFactory(...);
+	 * });
+	 * </pre></blockquote>
+	 *
+	 * <p><strong>Experimental feature</strong>. This API may receive changes as necessary to adapt to further experiment changes.
+	 *
+	 * @param profession the villager profession to assign the trades to
+	 * @param level the profession level the villager must be to offer the trades
+	 * @param factories a consumer to provide the factories
+	 */
+	@ApiStatus.Experimental
+	public static void registerVillagerOffers(VillagerProfession profession, int level, VillagerOffersAdder factories) {
 		TradeOfferInternals.registerVillagerOffers(profession, level, factories);
 	}
 
 	/**
 	 * Registers trade offer factories for use by wandering trades.
+	 * This does not add offers for the rebalanced trade experiment.
+	 * To add rebalanced trades, use {@link #registerRebalancedWanderingTraderOffers}.
 	 *
 	 * @param level the level the trades
 	 * @param factory a consumer to provide the factories
 	 */
 	public static void registerWanderingTraderOffers(int level, Consumer<List<TradeOffers.Factory>> factory) {
 		TradeOfferInternals.registerWanderingTraderOffers(level, factory);
+	}
+
+	/**
+	 * Registers trade offer factories for use by wandering trades.
+	 * This only adds offers for the rebalanced trade experiment.
+	 * To add regular trades, use {@link #registerWanderingTraderOffers(int, Consumer)}.
+	 *
+	 * <p><strong>Experimental feature</strong>. This API may receive changes as necessary to adapt to further experiment changes.
+	 *
+	 * @param factory a consumer to add trade offers
+	 */
+	@ApiStatus.Experimental
+	public static synchronized void registerRebalancedWanderingTraderOffers(Consumer<WanderingTraderOffersBuilder> factory) {
+		factory.accept(new TradeOfferInternals.WanderingTraderOffersBuilderImpl());
 	}
 
 	/**
@@ -65,5 +112,112 @@ public final class TradeOfferHelper {
 	}
 
 	private TradeOfferHelper() {
+	}
+
+	@FunctionalInterface
+	public interface VillagerOffersAdder {
+		void onRegister(List<TradeOffers.Factory> factories, boolean rebalanced);
+	}
+
+	/**
+	 * A builder for rebalanced wandering trader offers.
+	 *
+	 * <p><strong>Experimental feature</strong>. This API may receive changes as necessary to adapt to further experiment changes.
+	 *
+	 * @see #registerRebalancedWanderingTraderOffers(Consumer)
+	 */
+	@ApiStatus.NonExtendable
+	@ApiStatus.Experimental
+	public interface WanderingTraderOffersBuilder {
+		/**
+		 * The pool index for the "buy items" pool.
+		 * Two trade offers are picked from this pool.
+		 *
+		 * <p>In vanilla, this pool contains offers to buy water buckets, baked potatoes, etc.
+		 * for emeralds.
+		 */
+		int BUY_ITEMS_POOL = 0;
+		/**
+		 * The pool index for the "sell special items" pool.
+		 * Two trade offers are picked from this pool.
+		 *
+		 * <p>In vanilla, this pool contains offers to sell logs, enchanted iron pickaxes, etc.
+		 */
+		int SELL_SPECIAL_ITEMS_POOL = 1;
+		/**
+		 * The pool index for the "sell common items" pool.
+		 * Five trade offers are picked from this pool.
+		 *
+		 * <p>In vanilla, this pool contains offers to sell flowers, saplings, etc.
+		 */
+		int SELL_COMMON_ITEMS_POOL = 2;
+
+		/**
+		 * Adds a new pool to the offer list. Exactly {@code count} offers are picked from
+		 * {@code factories} and offered to customers.
+		 * @param count the number of offers to be picked from {@code factories}
+		 * @param factories the trade offer factories
+		 * @return this builder, for chaining
+		 * @throws IllegalArgumentException if {@code count} is not positive or if {@code factories} is empty
+		 */
+		WanderingTraderOffersBuilder pool(int count, TradeOffers.Factory... factories);
+
+		/**
+		 * Adds a new pool to the offer list. Exactly {@code count} offers are picked from
+		 * {@code factories} and offered to customers.
+		 * @param count the number of offers to be picked from {@code factories}
+		 * @param factories the trade offer factories
+		 * @return this builder, for chaining
+		 * @throws IllegalArgumentException if {@code count} is not positive or if {@code factories} is empty
+		 */
+		default WanderingTraderOffersBuilder pool(int count, Collection<? extends TradeOffers.Factory> factories) {
+			return pool(count, factories.toArray(TradeOffers.Factory[]::new));
+		}
+
+		/**
+		 * Adds trade offers to the offer list. All offers from {@code factories} are
+		 * offered to each customer.
+		 * @param factories the trade offer factories
+		 * @return this builder, for chaining
+		 * @throws IllegalArgumentException if {@code factories} is empty
+		 */
+		default WanderingTraderOffersBuilder addAll(Collection<? extends TradeOffers.Factory> factories) {
+			return pool(factories.size(), factories);
+		}
+
+		/**
+		 * Adds trade offers to the offer list. All offers from {@code factories} are
+		 * offered to each customer.
+		 * @param factories the trade offer factories
+		 * @return this builder, for chaining
+		 * @throws IllegalArgumentException if {@code factories} is empty
+		 */
+		default WanderingTraderOffersBuilder addAll(TradeOffers.Factory... factories) {
+			return pool(factories.length, factories);
+		}
+
+		/**
+		 * Adds trade offers to an existing pool.
+		 *
+		 * <p>See the constants for vanilla trade offer pool indices that are always available.
+		 * @param poolIndex the pool index
+		 * @param factories the trade offer factories
+		 * @return this builder, for chaining
+		 * @throws IndexOutOfBoundsException if {@code poolIndex} is out of bounds
+		 */
+		WanderingTraderOffersBuilder addOffersToPool(int poolIndex, TradeOffers.Factory... factories);
+
+		/**
+		 * Adds trade offers to an existing pool.
+		 *
+		 * <p>See the constants for vanilla trade offer pool indices that are always available.
+		 * @param poolIndex the pool index
+		 * @param factories the trade offer factories
+		 * @return this builder, for chaining
+		 * @throws IndexOutOfBoundsException if {@code poolIndex} is out of bounds
+		 */
+		default WanderingTraderOffersBuilder addOffersToPool(int poolIndex, Collection<TradeOffers.Factory> factories) {
+			return addOffersToPool(poolIndex, factories.toArray(TradeOffers.Factory[]::new));
+		}
 	}
 }
