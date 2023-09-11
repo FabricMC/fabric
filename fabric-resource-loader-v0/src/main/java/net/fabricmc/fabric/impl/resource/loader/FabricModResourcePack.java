@@ -19,9 +19,13 @@ package net.fabricmc.fabric.impl.resource.loader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.common.base.Charsets;
 import com.mojang.serialization.Codec;
@@ -37,14 +41,20 @@ import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.resource.metadata.BlockEntry;
+import net.minecraft.resource.metadata.PackFeatureSetMetadata;
+import net.minecraft.resource.metadata.PackOverlaysMetadata;
 import net.minecraft.resource.metadata.PackResourceMetadata;
 import net.minecraft.resource.metadata.ResourceFilter;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
+import net.minecraft.resource.metadata.ResourceMetadataSerializer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
+import net.fabricmc.fabric.mixin.resource.loader.PackFeatureSetMetadataAccessor;
+import net.fabricmc.fabric.mixin.resource.loader.PackOverlaysMetadataAccessor;
 import net.fabricmc.fabric.mixin.resource.loader.ResourceFilterAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -75,45 +85,70 @@ public class FabricModResourcePack extends GroupResourcePack {
 	}
 
 	private String generateMetadataJson() {
-		record PackMetadata(PackResourceMetadata pack, Optional<ResourceFilter> filter) {
+		record PackMetadata(
+				PackResourceMetadata pack,
+				Optional<ResourceFilter> filter,
+				Optional<PackOverlaysMetadata> overlay,
+				Optional<PackFeatureSetMetadata> features
+		) {
 			static final Codec<PackMetadata> CODEC = RecordCodecBuilder.create(instance ->
 					instance.group(
-							PackResourceMetadata.CODEC.fieldOf("pack").forGetter(PackMetadata::pack),
-							ResourceFilterAccessor.getCodec().optionalFieldOf("filter").forGetter(PackMetadata::filter)
+							PackResourceMetadata.CODEC.fieldOf(PackResourceMetadata.SERIALIZER.getKey()).forGetter(PackMetadata::pack),
+							ResourceFilterAccessor.getCodec().optionalFieldOf(ResourceFilter.SERIALIZER.getKey()).forGetter(PackMetadata::filter),
+							PackOverlaysMetadataAccessor.getCodec().optionalFieldOf(PackOverlaysMetadata.SERIALIZER.getKey()).forGetter(PackMetadata::overlay),
+							PackFeatureSetMetadataAccessor.getCodec().optionalFieldOf(PackFeatureSetMetadata.SERIALIZER.getKey()).forGetter(PackMetadata::features)
 					).apply(instance, PackMetadata::new));
 		}
 
-		final var resourceMetadata = new PackResourceMetadata(
-					Text.translatableWithFallback("pack.description.modResources", "Mod resources."),
-					SharedConstants.getGameVersion().getResourceVersion(type),
-					Optional.empty()
+		final var metadata = new PackMetadata(
+				new PackResourceMetadata(
+						Text.translatableWithFallback("pack.description.modResources", "Mod resources."),
+						SharedConstants.getGameVersion().getResourceVersion(type),
+						Optional.empty()
+				),
+				collectFilterBlockEntries().map(ResourceFilter::new),
+				collectOverlays().map(PackOverlaysMetadata::new),
+				collectFeatures().map(PackFeatureSetMetadata::new)
 		);
-
-		final List<BlockEntry> blockEntries = collectBlockEntries();
-		final Optional<ResourceFilter> filter = blockEntries.isEmpty() ? Optional.empty() : Optional.of(new ResourceFilter(blockEntries));
-		final var metadata = new PackMetadata(resourceMetadata, filter);
 		return Util.getResult(PackMetadata.CODEC.encodeStart(JsonOps.INSTANCE, metadata), IllegalArgumentException::new).toString();
 	}
 
-	// Reads all the resource filters from the sub packs
-	private List<BlockEntry> collectBlockEntries() {
-		var filterBlocks = new ArrayList<BlockEntry>();
+	private Optional<List<BlockEntry>> collectFilterBlockEntries() {
+		return collectMetadata(ResourceFilter.SERIALIZER)
+				.flatMap(filter -> ((ResourceFilterAccessor) filter).getBlocks().stream())
+				.collect(optionalList());
+	}
 
-		for (ResourcePack pack : packs) {
-			try {
-				ResourceFilter resourceFilter = pack.parseMetadata(ResourceFilter.SERIALIZER);
+	private Optional<List<PackOverlaysMetadata.Entry>> collectOverlays() {
+		return collectMetadata(PackOverlaysMetadata.SERIALIZER)
+				.flatMap(metadata -> metadata.overlays().stream())
+				.collect(optionalList());
+	}
 
-				if (resourceFilter == null) {
-					continue;
-				}
+	private Optional<FeatureSet> collectFeatures() {
+		return collectMetadata(PackFeatureSetMetadata.SERIALIZER)
+				.map(PackFeatureSetMetadata::flags)
+				.reduce(FeatureSet::combine);
+	}
 
-				filterBlocks.addAll(((ResourceFilterAccessor) resourceFilter).getBlocks());
-			} catch (IOException e) {
-				LOGGER.error("Failed to get filter section from pack {}", pack.getName());
-			}
-		}
+	private <T> Stream<T> collectMetadata(ResourceMetadataSerializer<T> serializer) {
+		return packs.stream()
+				.sorted(Comparator.comparing(ResourcePack::getName)) // Sort to ensure that the overlays are applied in a deterministic order
+				.map(pack -> {
+					try {
+						return pack.parseMetadata(serializer);
+					} catch (IOException e) {
+						LOGGER.error("Failed to get {} section from pack {}", serializer.getKey(), pack.getName());
+						return null; // Not a fatal error, matches LifecycledResourceManagerImpl.parseResourceFilter
+					}
+				}).filter(Objects::nonNull);
+	}
 
-		return filterBlocks;
+	// Collects to an optional list. The optional is not empty when the list contains at least 1 element
+	private <T> Collector<T, ?, Optional<List<T>>> optionalList() {
+		return Collectors.collectingAndThen(Collectors.toList(),
+				list -> list.isEmpty() ? Optional.empty() : Optional.of(list)
+		);
 	}
 
 	@Override
