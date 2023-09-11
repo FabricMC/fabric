@@ -8,6 +8,7 @@
     "MinecraftServerMixin",
     "NamespaceResourceManagerMixin",
     "ReloadableResourceManagerImplMixin",
+    "ResourceFilterAccessor",
     "ResourceMixin",
     "ResourcePackManagerMixin",
     "ResourcePackProfileMixin",

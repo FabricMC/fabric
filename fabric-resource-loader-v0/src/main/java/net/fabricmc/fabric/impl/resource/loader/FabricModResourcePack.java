@@ -19,25 +19,41 @@ package net.fabricmc.fabric.impl.resource.loader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.common.base.Charsets;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.InputSupplier;
+import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.metadata.BlockEntry;
+import net.minecraft.resource.metadata.PackResourceMetadata;
+import net.minecraft.resource.metadata.ResourceFilter;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
+import net.minecraft.text.Text;
+import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
+import net.fabricmc.fabric.mixin.resource.loader.ResourceFilterAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 
 /**
  * The Fabric mods resource pack, holds all the mod resource packs as one pack.
  */
 public class FabricModResourcePack extends GroupResourcePack {
+	private static final Logger LOGGER = LoggerFactory.getLogger(FabricModResourcePack.class);
+
 	public FabricModResourcePack(ResourceType type, List<ModResourcePack> packs) {
 		super(type, packs);
 	}
@@ -47,10 +63,7 @@ public class FabricModResourcePack extends GroupResourcePack {
 		String fileName = String.join("/", pathSegments);
 
 		if ("pack.mcmeta".equals(fileName)) {
-			String description = "pack.description.modResources";
-			String fallback = "Mod resources.";
-			String pack = String.format("{\"pack\":{\"pack_format\":" + SharedConstants.getGameVersion().getResourceVersion(type) + ",\"description\":{\"translate\":\"%s\",\"fallback\":\"%s.\"}}}", description, fallback);
-			return () -> IOUtils.toInputStream(pack, Charsets.UTF_8);
+			return () -> IOUtils.toInputStream(generateMetadataJson(), Charsets.UTF_8);
 		} else if ("pack.png".equals(fileName)) {
 			return FabricLoader.getInstance().getModContainer("fabric-resource-loader-v0")
 					.flatMap(container -> container.getMetadata().getIconPath(512).flatMap(container::findPath))
@@ -59,6 +72,48 @@ public class FabricModResourcePack extends GroupResourcePack {
 		}
 
 		return null;
+	}
+
+	private String generateMetadataJson() {
+		record PackMetadata(PackResourceMetadata pack, Optional<ResourceFilter> filter) {
+			static final Codec<PackMetadata> CODEC = RecordCodecBuilder.create(instance ->
+					instance.group(
+							PackResourceMetadata.CODEC.fieldOf("pack").forGetter(PackMetadata::pack),
+							ResourceFilterAccessor.getCodec().optionalFieldOf("filter").forGetter(PackMetadata::filter)
+					).apply(instance, PackMetadata::new));
+		}
+
+		final var resourceMetadata = new PackResourceMetadata(
+						Text.translatableWithFallback("pack.description.modResources", "Mod resources."),
+						SharedConstants.getGameVersion().getResourceVersion(type),
+				Optional.empty()
+		);
+
+		final List<BlockEntry> blockEntries = collectBlockEntries();
+		final Optional<ResourceFilter> filter = blockEntries.isEmpty() ? Optional.empty() : Optional.of(new ResourceFilter(blockEntries));
+		final var metadata = new PackMetadata(resourceMetadata, filter);
+		return Util.getResult(PackMetadata.CODEC.encodeStart(JsonOps.INSTANCE, metadata), IllegalArgumentException::new).toString();
+	}
+
+	// Reads all the resource filters from the sub packs
+	private List<BlockEntry> collectBlockEntries() {
+		var filterBlocks = new ArrayList<BlockEntry>();
+
+		for (ResourcePack pack : packs) {
+			try {
+				ResourceFilter resourceFilter = pack.parseMetadata(ResourceFilter.SERIALIZER);
+
+				if (resourceFilter == null) {
+					continue;
+				}
+
+				filterBlocks.addAll(((ResourceFilterAccessor) resourceFilter).getBlocks());
+			} catch (IOException e) {
+				LOGGER.error("Failed to get filter section from pack {}", pack.getName());
+			}
+		}
+
+		return filterBlocks;
 	}
 
 	@Override
