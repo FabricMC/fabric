@@ -84,9 +84,9 @@ public class FabricModResourcePack extends GroupResourcePack {
 		}
 
 		final var resourceMetadata = new PackResourceMetadata(
-						Text.translatableWithFallback("pack.description.modResources", "Mod resources."),
-						SharedConstants.getGameVersion().getResourceVersion(type),
-				Optional.empty()
+					Text.translatableWithFallback("pack.description.modResources", "Mod resources."),
+					SharedConstants.getGameVersion().getResourceVersion(type),
+					Optional.empty()
 		);
 
 		final List<BlockEntry> blockEntries = collectBlockEntries();
