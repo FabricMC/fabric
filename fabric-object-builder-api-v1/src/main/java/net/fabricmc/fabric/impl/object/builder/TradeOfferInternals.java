@@ -17,19 +17,25 @@
 package net.fabricmc.fabric.impl.object.builder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
 
@@ -88,6 +94,12 @@ public final class TradeOfferInternals {
 	}
 
 	public static class WanderingTraderOffersBuilderImpl implements TradeOfferHelper.WanderingTraderOffersBuilder {
+		static final Object2IntMap<Identifier> ID_TO_INDEX = Util.make(new Object2IntOpenHashMap<>(), idToIndex -> {
+			idToIndex.put(BUY_ITEMS_POOL, 0);
+			idToIndex.put(SELL_SPECIAL_ITEMS_POOL, 1);
+			idToIndex.put(SELL_COMMON_ITEMS_POOL, 2);
+		});
+
 		/**
 		 * Make the trade list modifiable.
 		 */
@@ -98,24 +110,35 @@ public final class TradeOfferInternals {
 		}
 
 		@Override
-		public TradeOfferHelper.WanderingTraderOffersBuilder pool(int count, TradeOffers.Factory... factories) {
+		public TradeOfferHelper.WanderingTraderOffersBuilder pool(Identifier id, int count, TradeOffers.Factory... factories) {
 			if (factories.length == 0) throw new IllegalArgumentException("cannot add empty pool");
 			if (count <= 0) throw new IllegalArgumentException("count must be positive");
 
+			Objects.requireNonNull(id, "id cannot be null");
 			Pair<TradeOffers.Factory[], Integer> pool = Pair.of(factories, count);
 			initWanderingTraderTrades();
+			ID_TO_INDEX.put(id, TradeOffers.REBALANCED_WANDERING_TRADER_TRADES.size());
 			TradeOffers.REBALANCED_WANDERING_TRADER_TRADES.add(pool);
 			return this;
 		}
 
 		@Override
-		public TradeOfferHelper.WanderingTraderOffersBuilder addOffersToPool(int poolIndex, TradeOffers.Factory... factories) {
-			Objects.checkIndex(poolIndex, TradeOffers.REBALANCED_WANDERING_TRADER_TRADES.size());
+		public TradeOfferHelper.WanderingTraderOffersBuilder addOffersToPool(Identifier pool, TradeOffers.Factory... factories) {
+			if (!ID_TO_INDEX.containsKey(pool)) {
+				throw new IllegalArgumentException("pool %s is not registered".formatted(pool));
+			}
+
+			int poolIndex = ID_TO_INDEX.getInt(pool);
 			initWanderingTraderTrades();
-			Pair<TradeOffers.Factory[], Integer> pool = TradeOffers.REBALANCED_WANDERING_TRADER_TRADES.get(poolIndex);
-			TradeOffers.Factory[] modified = ArrayUtils.addAll(pool.getLeft(), factories);
-			TradeOffers.REBALANCED_WANDERING_TRADER_TRADES.set(poolIndex, Pair.of(modified, pool.getRight()));
+			Pair<TradeOffers.Factory[], Integer> poolPair = TradeOffers.REBALANCED_WANDERING_TRADER_TRADES.get(poolIndex);
+			TradeOffers.Factory[] modified = ArrayUtils.addAll(poolPair.getLeft(), factories);
+			TradeOffers.REBALANCED_WANDERING_TRADER_TRADES.set(poolIndex, Pair.of(modified, poolPair.getRight()));
 			return this;
+		}
+
+		@Override
+		public Set<Identifier> getPoolIds() {
+			return Collections.unmodifiableSet(ID_TO_INDEX.keySet());
 		}
 	}
 }

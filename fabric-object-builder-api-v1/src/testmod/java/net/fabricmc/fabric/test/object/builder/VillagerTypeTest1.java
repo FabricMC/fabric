@@ -30,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOffers;
@@ -40,6 +41,9 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 
 public class VillagerTypeTest1 implements ModInitializer {
+	private static final Identifier FOOD_POOL_ID = ObjectBuilderTestConstants.id("food");
+	private static final Identifier THING_POOL_ID = ObjectBuilderTestConstants.id("thing");
+
 	@Override
 	public void onInitialize() {
 		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, (factories, rebalanced) -> {
@@ -58,12 +62,14 @@ public class VillagerTypeTest1 implements ModInitializer {
 
 		TradeOfferHelper.registerRebalancedWanderingTraderOffers(builder -> {
 			builder.pool(
-					1,
+					FOOD_POOL_ID,
+					5,
 					Registries.ITEM.stream().filter(item -> item.getFoodComponent() != null).map(
 							item -> new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.NETHERITE_INGOT), new ItemStack(item), 3, 4, 0.15F))
 					).toList()
 			);
 			builder.addAll(
+					THING_POOL_ID,
 					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.NETHERITE_INGOT), new ItemStack(Items.MOJANG_BANNER_PATTERN), 1, 4, 0.15F))
 			);
 			builder.addOffersToPool(
@@ -77,6 +83,10 @@ public class VillagerTypeTest1 implements ModInitializer {
 					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.EMERALD, 6), new ItemStack(Items.BRUSH, 1), 1, 4, 0.15F)),
 					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.DIAMOND, 16), new ItemStack(Items.ELYTRA, 1), 1, 4, 0.15F)),
 					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.EMERALD, 3), new ItemStack(Items.LEAD, 2), 3, 4, 0.15F))
+			);
+			builder.addOffersToPool(
+					FOOD_POOL_ID,
+					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.NETHERITE_INGOT), new ItemStack(Items.EGG), 3, 4, 0.15F))
 			);
 		});
 

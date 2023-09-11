@@ -18,10 +18,12 @@ package net.fabricmc.fabric.api.object.builder.v1.trade;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
 
@@ -130,94 +132,104 @@ public final class TradeOfferHelper {
 	@ApiStatus.Experimental
 	public interface WanderingTraderOffersBuilder {
 		/**
-		 * The pool index for the "buy items" pool.
+		 * The pool ID for the "buy items" pool.
 		 * Two trade offers are picked from this pool.
 		 *
 		 * <p>In vanilla, this pool contains offers to buy water buckets, baked potatoes, etc.
 		 * for emeralds.
 		 */
-		int BUY_ITEMS_POOL = 0;
+		Identifier BUY_ITEMS_POOL = new Identifier("minecraft", "buy_items");
 		/**
-		 * The pool index for the "sell special items" pool.
+		 * The pool ID for the "sell special items" pool.
 		 * Two trade offers are picked from this pool.
 		 *
 		 * <p>In vanilla, this pool contains offers to sell logs, enchanted iron pickaxes, etc.
 		 */
-		int SELL_SPECIAL_ITEMS_POOL = 1;
+		Identifier SELL_SPECIAL_ITEMS_POOL = new Identifier("minecraft", "sell_special_items");
 		/**
-		 * The pool index for the "sell common items" pool.
+		 * The pool ID for the "sell common items" pool.
 		 * Five trade offers are picked from this pool.
 		 *
 		 * <p>In vanilla, this pool contains offers to sell flowers, saplings, etc.
 		 */
-		int SELL_COMMON_ITEMS_POOL = 2;
+		Identifier SELL_COMMON_ITEMS_POOL = new Identifier("minecraft", "sell_common_items");
 
 		/**
 		 * Adds a new pool to the offer list. Exactly {@code count} offers are picked from
 		 * {@code factories} and offered to customers.
+		 * @param id the ID to be assigned to this pool, to allow further modification
 		 * @param count the number of offers to be picked from {@code factories}
 		 * @param factories the trade offer factories
 		 * @return this builder, for chaining
 		 * @throws IllegalArgumentException if {@code count} is not positive or if {@code factories} is empty
 		 */
-		WanderingTraderOffersBuilder pool(int count, TradeOffers.Factory... factories);
+		WanderingTraderOffersBuilder pool(Identifier id, int count, TradeOffers.Factory... factories);
 
 		/**
 		 * Adds a new pool to the offer list. Exactly {@code count} offers are picked from
 		 * {@code factories} and offered to customers.
+		 * @param id the ID to be assigned to this pool, to allow further modification
 		 * @param count the number of offers to be picked from {@code factories}
 		 * @param factories the trade offer factories
 		 * @return this builder, for chaining
 		 * @throws IllegalArgumentException if {@code count} is not positive or if {@code factories} is empty
 		 */
-		default WanderingTraderOffersBuilder pool(int count, Collection<? extends TradeOffers.Factory> factories) {
-			return pool(count, factories.toArray(TradeOffers.Factory[]::new));
+		default WanderingTraderOffersBuilder pool(Identifier id, int count, Collection<? extends TradeOffers.Factory> factories) {
+			return pool(id, count, factories.toArray(TradeOffers.Factory[]::new));
 		}
 
 		/**
 		 * Adds trade offers to the offer list. All offers from {@code factories} are
 		 * offered to each customer.
+		 * @param id the ID to be assigned to this pool, to allow further modification
 		 * @param factories the trade offer factories
 		 * @return this builder, for chaining
 		 * @throws IllegalArgumentException if {@code factories} is empty
 		 */
-		default WanderingTraderOffersBuilder addAll(Collection<? extends TradeOffers.Factory> factories) {
-			return pool(factories.size(), factories);
+		default WanderingTraderOffersBuilder addAll(Identifier id, Collection<? extends TradeOffers.Factory> factories) {
+			return pool(id, factories.size(), factories);
 		}
 
 		/**
 		 * Adds trade offers to the offer list. All offers from {@code factories} are
 		 * offered to each customer.
+		 * @param id the ID to be assigned to this pool, to allow further modification
 		 * @param factories the trade offer factories
 		 * @return this builder, for chaining
 		 * @throws IllegalArgumentException if {@code factories} is empty
 		 */
-		default WanderingTraderOffersBuilder addAll(TradeOffers.Factory... factories) {
-			return pool(factories.length, factories);
+		default WanderingTraderOffersBuilder addAll(Identifier id, TradeOffers.Factory... factories) {
+			return pool(id, factories.length, factories);
 		}
 
 		/**
-		 * Adds trade offers to an existing pool.
+		 * Adds trade offers to an existing pool identified by an ID.
 		 *
-		 * <p>See the constants for vanilla trade offer pool indices that are always available.
-		 * @param poolIndex the pool index
+		 * <p>See the constants for vanilla trade offer pool IDs that are always available.
+		 * @param pool the pool ID
 		 * @param factories the trade offer factories
 		 * @return this builder, for chaining
-		 * @throws IndexOutOfBoundsException if {@code poolIndex} is out of bounds
+		 * @throws IndexOutOfBoundsException if {@code pool} is out of bounds
 		 */
-		WanderingTraderOffersBuilder addOffersToPool(int poolIndex, TradeOffers.Factory... factories);
+		WanderingTraderOffersBuilder addOffersToPool(Identifier pool, TradeOffers.Factory... factories);
 
 		/**
-		 * Adds trade offers to an existing pool.
+		 * Adds trade offers to an existing pool identified by an ID.
 		 *
-		 * <p>See the constants for vanilla trade offer pool indices that are always available.
-		 * @param poolIndex the pool index
+		 * <p>See the constants for vanilla trade offer pool IDs that are always available.
+		 * @param pool the pool ID
 		 * @param factories the trade offer factories
 		 * @return this builder, for chaining
-		 * @throws IndexOutOfBoundsException if {@code poolIndex} is out of bounds
+		 * @throws IndexOutOfBoundsException if {@code pool} is out of bounds
 		 */
-		default WanderingTraderOffersBuilder addOffersToPool(int poolIndex, Collection<TradeOffers.Factory> factories) {
-			return addOffersToPool(poolIndex, factories.toArray(TradeOffers.Factory[]::new));
+		default WanderingTraderOffersBuilder addOffersToPool(Identifier pool, Collection<TradeOffers.Factory> factories) {
+			return addOffersToPool(pool, factories.toArray(TradeOffers.Factory[]::new));
 		}
+
+		/**
+		 * Returns all registered pool IDs, including vanilla ones.
+		 * @return an unmodifiable set containing all registered pool IDs
+		 */
+		Set<Identifier> getPoolIds();
 	}
 }
