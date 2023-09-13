@@ -49,7 +49,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.tag.convention.v1.TagUtil;
+import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
 
 /**
  * Extend this class and implement {@link FabricLanguageProvider#generateTranslations(TranslationBuilder)}.
