@@ -36,7 +36,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		// Blocks
 		translationBuilder.add(ConventionalBlockTags.ORES, "Ores");
 		translationBuilder.add(ConventionalBlockTags.QUARTZ_ORES, "Quartz Ores");
-		translationBuilder.add(ConventionalBlockTags.NETHERITE_SCRAP_ORES, "Netherite Scrapes Ores");
+		translationBuilder.add(ConventionalBlockTags.NETHERITE_SCRAP_ORES, "Netherite Scrap Ores");
 		translationBuilder.add(ConventionalBlockTags.BARRELS, "Barrels");
 		translationBuilder.add(ConventionalBlockTags.WOODEN_BARRELS, "Barrels Wooden");
 		translationBuilder.add(ConventionalBlockTags.BOOKSHELVES, "Bookshelves");
@@ -94,12 +94,12 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.ORES, "Ores");
 		translationBuilder.add(ConventionalItemTags.RAW_MATERIALS, "Raw Materials");
 		translationBuilder.add(ConventionalItemTags.RAW_BLOCKS, "Raw Blocks");
-		translationBuilder.add(ConventionalItemTags.IRON_RAW_MATERIALS, "Raw Materials Iron");
-		translationBuilder.add(ConventionalItemTags.GOLD_RAW_MATERIALS, "Raw Materials Gold");
-		translationBuilder.add(ConventionalItemTags.COPPER_RAW_MATERIALS, "Raw Materials Copper");
-		translationBuilder.add(ConventionalItemTags.IRON_RAW_BLOCKS, "Raw Blocks Iron");
-		translationBuilder.add(ConventionalItemTags.GOLD_RAW_BLOCKS, "Raw Blocks Gold");
-		translationBuilder.add(ConventionalItemTags.COPPER_RAW_BLOCKS, "Raw Blocks Copper");
+		translationBuilder.add(ConventionalItemTags.IRON_RAW_MATERIALS, "Raw Iron Materials");
+		translationBuilder.add(ConventionalItemTags.GOLD_RAW_MATERIALS, "Raw Gold Materials");
+		translationBuilder.add(ConventionalItemTags.COPPER_RAW_MATERIALS, "Raw Copper Materials");
+		translationBuilder.add(ConventionalItemTags.IRON_RAW_BLOCKS, "Raw Iron Blocks");
+		translationBuilder.add(ConventionalItemTags.GOLD_RAW_BLOCKS, "Raw Gold Blocks");
+		translationBuilder.add(ConventionalItemTags.COPPER_RAW_BLOCKS, "Raw Copper Blocks");
 		translationBuilder.add(ConventionalItemTags.IRON_INGOTS, "Ingots Iron");
 		translationBuilder.add(ConventionalItemTags.GOLD_INGOTS, "Ingots Gold");
 		translationBuilder.add(ConventionalItemTags.COPPER_INGOTS, "Ingots Copper");
