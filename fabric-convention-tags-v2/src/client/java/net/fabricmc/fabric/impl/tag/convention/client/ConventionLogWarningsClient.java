@@ -61,7 +61,7 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 						return;
 					}
 
-					String translationKey = TagUtil.getTagTranslationKey(itemTagKey);
+					String translationKey = itemTagKey.getTagTranslationKey();
 
 					if (!I18n.hasTranslation(translationKey)) {
 						untranslatedItemTags.add(itemTagKey);

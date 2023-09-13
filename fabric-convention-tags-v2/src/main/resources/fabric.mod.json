@@ -28,8 +28,14 @@
     "minecraft": ">=1.18.2",
     "fabric-lifecycle-events-v1": "*"
   },
+  "mixins": [
+    "fabric-convention-tags-api-v2.mixins.json"
+  ],
   "description": "Contains common tags used by mods for vanilla things.",
   "custom": {
-    "fabric-api:module-lifecycle": "stable"
+    "fabric-api:module-lifecycle": "stable",
+    "loom:injected_interfaces": {
+      "net/minecraft/class_6862": ["net/fabricmc/fabric/api/tag/convention/v2/FabricTagKeyExtension"]
+    }
   }
 }

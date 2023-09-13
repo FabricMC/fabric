@@ -21,7 +21,6 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.registry.DynamicRegistryManager;
@@ -81,30 +80,5 @@ public final class TagUtil {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Use this to get a TagKey's translation key safely on any side.
-	 * @return the translation key for a TagKey.
-	 */
-	public static String getTagTranslationKey(TagKey<?> tagKey) {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("tag.");
-
-		Identifier registryIdentifier = tagKey.registry().getValue();
-		Identifier tagIdentifier = tagKey.id();
-
-		if (!registryIdentifier.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
-			stringBuilder.append(registryIdentifier.getNamespace())
-					.append(".");
-		}
-
-		stringBuilder.append(registryIdentifier.getPath().replace("/", "."))
-				.append(".")
-				.append(tagIdentifier.getNamespace())
-				.append(".")
-				.append(tagIdentifier.getPath().replace("/", ".").replace(":", "."));
-
-		return stringBuilder.toString();
 	}
 }
