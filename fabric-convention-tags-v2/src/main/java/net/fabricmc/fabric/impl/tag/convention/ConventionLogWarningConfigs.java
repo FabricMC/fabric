@@ -71,7 +71,7 @@ public class ConventionLogWarningConfigs {
 			}
 		}
 
-		LOG_UNTRANSLATED_WARNING_MODE = asEnum((String) properties.computeIfAbsent("log-untranslated-item-tag-warnings", (a) -> "DEV_SHORT"), LOG_WARNING_MODES.DEV_SHORT);
+		LOG_UNTRANSLATED_WARNING_MODE = asEnum((String) properties.computeIfAbsent("log-untranslated-item-tag-warnings", (a) -> "SILENCED"), LOG_WARNING_MODES.SILENCED);
 		LOG_LEGACY_WARNING_MODE = asEnum((String) properties.computeIfAbsent("log-legacy-tag-warnings", (a) -> "DEV_SHORT"), LOG_WARNING_MODES.DEV_SHORT);
 
 		try (FileOutputStream stream = new FileOutputStream(configFile)) {

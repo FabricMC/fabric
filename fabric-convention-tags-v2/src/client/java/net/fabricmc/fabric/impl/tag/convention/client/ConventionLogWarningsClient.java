@@ -72,6 +72,7 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 					StringBuilder stringBuilder = new StringBuilder();
 					stringBuilder.append("""
 							\n	Dev warning - Untranslated Item Tags detected. Please translate your item tags so other mods such as recipe viewers can properly display your tag's name.
+								The format desired is tag.item.<namespace>.<path> for the translation key with slashes in path turned into periods.
 								You can disable this dev message in Fabric API's properties config file by setting log-untranslated-item-tag-warning to "SILENCED" or see individual tags with "DEV_VERBOSE".
 							""");
 
