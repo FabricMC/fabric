@@ -22,6 +22,7 @@ import static net.fabricmc.fabric.impl.tag.convention.ConventionLogWarningConfig
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,7 @@ public class ConventionLogWarnings implements ModInitializer {
 
 				// We only care about vanilla registries
 				dynamicRegistries.streamAllRegistries().forEach(registryEntry -> {
-					if (registryEntry.key().getValue().getNamespace().equals("minecraft")) {
+					if (registryEntry.key().getValue().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
 						registryEntry.value().streamTags().forEach(tagKey -> {
 							// Grab tags under 'c' namespace
 							if (tagKey.id().getNamespace().equals("c")) {

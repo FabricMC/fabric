@@ -22,6 +22,7 @@ import static net.fabricmc.fabric.impl.tag.convention.ConventionLogWarningConfig
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +57,7 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 				List<TagKey<Item>> untranslatedItemTags = new ObjectArrayList<>();
 				itemRegistry.streamTags().forEach(itemTagKey -> {
 					// We do not translate vanilla's tags at this moment.
-					if (itemTagKey.id().getNamespace().equals("minecraft")) {
+					if (itemTagKey.id().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
 						return;
 					}
 

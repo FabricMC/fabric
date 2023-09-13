@@ -94,7 +94,7 @@ public final class TagUtil {
 		Identifier registryIdentifier = tagKey.registry().getValue();
 		Identifier tagIdentifier = tagKey.id();
 
-		if (registryIdentifier.getNamespace().equals("minecraft")) {
+		if (!registryIdentifier.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
 			stringBuilder.append(registryIdentifier.getNamespace())
 					.append(".");
 		}
