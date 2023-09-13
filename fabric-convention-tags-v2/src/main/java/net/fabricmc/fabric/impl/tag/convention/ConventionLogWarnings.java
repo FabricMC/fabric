@@ -22,12 +22,12 @@ import static net.fabricmc.fabric.impl.tag.convention.ConventionLogWarningConfig
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
