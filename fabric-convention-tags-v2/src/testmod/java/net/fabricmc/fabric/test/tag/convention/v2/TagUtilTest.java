@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.tag.convention.v1;
+package net.fabricmc.fabric.test.tag.convention.v2;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,11 +47,11 @@ public class TagUtilTest implements ModInitializer {
 
 			// If this fails, the tag is missing a biome or the util is broken
 			if (!TagUtil.isIn(server.getRegistryManager(), ConventionalBiomeTags.IS_OVERWORLD, server.getRegistryManager().get(RegistryKeys.BIOME).get(BiomeKeys.BADLANDS))) {
-				throw new AssertionError("Failed to find an overworld biome (%s) in c:in_overworld!".formatted(BiomeKeys.BADLANDS));
+				throw new AssertionError("Failed to find an overworld biome (%s) in common:in_overworld!".formatted(BiomeKeys.BADLANDS));
 			}
 
 			if (!TagUtil.isIn(server.getRegistryManager(), ConventionalBlockTags.ORES, Blocks.DIAMOND_ORE)) {
-				throw new AssertionError("Failed to find diamond ore in c:ores!");
+				throw new AssertionError("Failed to find diamond ore in common:ores!");
 			}
 
 			//Success!
