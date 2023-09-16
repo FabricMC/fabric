@@ -17,12 +17,10 @@
 package net.fabricmc.fabric.impl.object.builder;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -94,11 +92,13 @@ public final class TradeOfferInternals {
 	}
 
 	public static class WanderingTraderOffersBuilderImpl implements TradeOfferHelper.WanderingTraderOffersBuilder {
-		static final Object2IntMap<Identifier> ID_TO_INDEX = Util.make(new Object2IntOpenHashMap<>(), idToIndex -> {
+		private static final Object2IntMap<Identifier> ID_TO_INDEX = Util.make(new Object2IntOpenHashMap<>(), idToIndex -> {
 			idToIndex.put(BUY_ITEMS_POOL, 0);
 			idToIndex.put(SELL_SPECIAL_ITEMS_POOL, 1);
 			idToIndex.put(SELL_COMMON_ITEMS_POOL, 2);
 		});
+
+		private static final Map<Identifier, TradeOffers.Factory[]> DELAYED_MODIFICATIONS = new HashMap<>();
 
 		/**
 		 * Make the trade list modifiable.
@@ -115,17 +115,29 @@ public final class TradeOfferInternals {
 			if (count <= 0) throw new IllegalArgumentException("count must be positive");
 
 			Objects.requireNonNull(id, "id cannot be null");
+
+			if (ID_TO_INDEX.containsKey(id)) throw new IllegalArgumentException("pool id %s is already registered".formatted(id));
+
 			Pair<TradeOffers.Factory[], Integer> pool = Pair.of(factories, count);
 			initWanderingTraderTrades();
 			ID_TO_INDEX.put(id, TradeOffers.REBALANCED_WANDERING_TRADER_TRADES.size());
 			TradeOffers.REBALANCED_WANDERING_TRADER_TRADES.add(pool);
+			TradeOffers.Factory[] delayedModifications = DELAYED_MODIFICATIONS.remove(id);
+
+			if (delayedModifications != null) addOffersToPool(id, delayedModifications);
+
 			return this;
 		}
 
 		@Override
 		public TradeOfferHelper.WanderingTraderOffersBuilder addOffersToPool(Identifier pool, TradeOffers.Factory... factories) {
 			if (!ID_TO_INDEX.containsKey(pool)) {
-				throw new IllegalArgumentException("pool %s is not registered".formatted(pool));
+				DELAYED_MODIFICATIONS.compute(pool, (id, current) -> {
+					if (current == null) return factories;
+
+					return ArrayUtils.addAll(current, factories);
+				});
+				return this;
 			}
 
 			int poolIndex = ID_TO_INDEX.getInt(pool);
@@ -134,11 +146,6 @@ public final class TradeOfferInternals {
 			TradeOffers.Factory[] modified = ArrayUtils.addAll(poolPair.getLeft(), factories);
 			TradeOffers.REBALANCED_WANDERING_TRADER_TRADES.set(poolIndex, Pair.of(modified, poolPair.getRight()));
 			return this;
-		}
-
-		@Override
-		public Set<Identifier> getPoolIds() {
-			return Collections.unmodifiableSet(ID_TO_INDEX.keySet());
 		}
 	}
 }

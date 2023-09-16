@@ -225,11 +225,5 @@ public final class TradeOfferHelper {
 		default WanderingTraderOffersBuilder addOffersToPool(Identifier pool, Collection<TradeOffers.Factory> factories) {
 			return addOffersToPool(pool, factories.toArray(TradeOffers.Factory[]::new));
 		}
-
-		/**
-		 * Returns all registered pool IDs, including vanilla ones.
-		 * @return an unmodifiable set containing all registered pool IDs
-		 */
-		Set<Identifier> getPoolIds();
 	}
 }
