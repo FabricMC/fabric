@@ -15,6 +15,7 @@
       "net.fabricmc.fabric.test.renderer.RendererTest"
     ],
     "client": [
+      "net.fabricmc.fabric.test.renderer.client.RandomSupplierTest",
       "net.fabricmc.fabric.test.renderer.client.RendererClientTest"
     ]
   }
