@@ -30,6 +30,7 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
@@ -79,6 +80,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.pos(1, 0.5f, 1, 0.5f);
 		emitter.pos(2, 1, 1, A);
 		emitter.pos(3, B, 1, 0);
+		emitter.cullFace(Direction.UP);
 		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.color(-1, -1, -1, -1);
 		emitter.emit();
@@ -87,6 +89,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.pos(1, 0, 1, B);
 		emitter.pos(2, 0.5f, 1, 0.5f);
 		emitter.pos(3, A, 1, 0);
+		emitter.cullFace(Direction.UP);
 		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.color(-1, -1, -1, -1);
 		emitter.emit();
@@ -95,6 +98,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.pos(1, A, 1, 1);
 		emitter.pos(2, B, 1, 1);
 		emitter.pos(3, 0.5f, 1, 0.5f);
+		emitter.cullFace(Direction.UP);
 		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.color(-1, -1, -1, -1);
 		emitter.emit();
@@ -103,6 +107,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.pos(1, B, 1, 1);
 		emitter.pos(2, 1, 1, B);
 		emitter.pos(3, 1, 1, A);
+		emitter.cullFace(Direction.UP);
 		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.color(-1, -1, -1, -1);
 		emitter.emit();
@@ -113,6 +118,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.pos(1, 0.5f, 0, 0.5f);
 		emitter.pos(2, 1, 0, B);
 		emitter.pos(3, B, 0, 1);
+		emitter.cullFace(Direction.DOWN);
 		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.color(-1, -1, -1, -1);
 		emitter.emit();
@@ -121,6 +127,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.pos(1, 0, 0, A);
 		emitter.pos(2, 0.5f, 0, 0.5f);
 		emitter.pos(3, A, 0, 1);
+		emitter.cullFace(Direction.DOWN);
 		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.color(-1, -1, -1, -1);
 		emitter.emit();
@@ -129,6 +136,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.pos(1, A, 0, 0);
 		emitter.pos(2, B, 0, 0);
 		emitter.pos(3, 0.5f, 0, 0.5f);
+		emitter.cullFace(Direction.DOWN);
 		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.color(-1, -1, -1, -1);
 		emitter.emit();
@@ -137,6 +145,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.pos(1, B, 0, 0);
 		emitter.pos(2, 1, 0, A);
 		emitter.pos(3, 1, 0, B);
+		emitter.cullFace(Direction.DOWN);
 		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.color(-1, -1, -1, -1);
 		emitter.emit();
@@ -146,6 +155,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.pos(1, B, 0, 0);
 		emitter.pos(2, A, 0, 0);
 		emitter.pos(3, A, 1, 0);
+		emitter.cullFace(Direction.NORTH);
 		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.material(glintMaterial);
 		emitter.color(-1, -1, -1, -1);
@@ -156,7 +166,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.pos(1, A, 0, 0);
 		emitter.pos(2, 0, 0, A);
 		emitter.pos(3, 0, 1, A);
-		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
+		cornerSprite(emitter, whiteConcreteSprite);
 		emitter.material(glintMaterial);
 		emitter.color(-1, -1, -1, -1);
 		emitter.emit();
@@ -166,6 +176,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.pos(1, 0, 0, A);
 		emitter.pos(2, 0, 0, B);
 		emitter.pos(3, 0, 1, B);
+		emitter.cullFace(Direction.WEST);
 		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.material(glintMaterial);
 		emitter.color(-1, -1, -1, -1);
@@ -176,7 +187,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.pos(1, 0, 0, B);
 		emitter.pos(2, A, 0, 1);
 		emitter.pos(3, A, 1, 1);
-		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
+		cornerSprite(emitter, whiteConcreteSprite);
 		emitter.material(glintMaterial);
 		emitter.color(-1, -1, -1, -1);
 		emitter.emit();
@@ -186,6 +197,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.pos(1, A, 0, 1);
 		emitter.pos(2, B, 0, 1);
 		emitter.pos(3, B, 1, 1);
+		emitter.cullFace(Direction.SOUTH);
 		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.material(glintMaterial);
 		emitter.color(-1, -1, -1, -1);
@@ -196,7 +208,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.pos(1, B, 0, 1);
 		emitter.pos(2, 1, 0, B);
 		emitter.pos(3, 1, 1, B);
-		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
+		cornerSprite(emitter, whiteConcreteSprite);
 		emitter.material(glintMaterial);
 		emitter.color(-1, -1, -1, -1);
 		emitter.emit();
@@ -206,6 +218,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.pos(1, 1, 0, B);
 		emitter.pos(2, 1, 0, A);
 		emitter.pos(3, 1, 1, A);
+		emitter.cullFace(Direction.EAST);
 		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.material(glintMaterial);
 		emitter.color(-1, -1, -1, -1);
@@ -216,11 +229,21 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.pos(1, 1, 0, A);
 		emitter.pos(2, B, 0, 0);
 		emitter.pos(3, B, 1, 0);
-		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
+		cornerSprite(emitter, whiteConcreteSprite);
 		emitter.material(glintMaterial);
 		emitter.color(-1, -1, -1, -1);
 		emitter.emit();
 
 		return new SingleMeshBakedModel(builder.build(), whiteConcreteSprite);
+	}
+
+	private static void cornerSprite(QuadEmitter emitter, Sprite sprite) {
+		// Assign uvs for a corner face in such a way that the texture is not stretched, using coordinates in [0, 1].
+		emitter.uv(0, A, 0);
+		emitter.uv(1, A, 1);
+		emitter.uv(2, B, 1);
+		emitter.uv(3, B, 0);
+		// Map [0, 1] coordinates to sprite atlas coordinates. spriteBake assumes [0, 16] unless we pass the BAKE_NORMALIZED flag.
+		emitter.spriteBake(sprite, MutableQuadView.BAKE_NORMALIZED);
 	}
 }

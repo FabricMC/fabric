@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +31,6 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.BlockItem;
@@ -44,12 +42,11 @@ import net.minecraft.util.math.random.Random;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
+import net.fabricmc.fabric.impl.renderer.VanillaModelEncoder;
 
 /**
  * The render context used for item rendering.
@@ -84,7 +81,6 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private MatrixStack matrixStack;
 	private VertexConsumerProvider vertexConsumerProvider;
 	private int lightmap;
-	private VanillaQuadHandler vanillaHandler;
 
 	private boolean isDefaultTranslucent;
 	private boolean isTranslucentDirect;
@@ -94,7 +90,6 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private VertexConsumer cutoutVertexConsumer;
 	private VertexConsumer translucentGlintVertexConsumer;
 	private VertexConsumer cutoutGlintVertexConsumer;
-	private VertexConsumer defaultVertexConsumer;
 
 	public ItemRenderContext(ItemColors colorMap) {
 		this.colorMap = colorMap;
@@ -107,18 +102,27 @@ public class ItemRenderContext extends AbstractRenderContext {
 	}
 
 	@Override
+	public boolean isFaceCulled(@Nullable Direction face) {
+		throw new IllegalStateException("isFaceCulled can only be called on a block render context.");
+	}
+
+	@Override
+	public ModelTransformationMode itemTransformationMode() {
+		return transformMode;
+	}
+
+	@Override
 	public BakedModelConsumer bakedModelConsumer() {
 		return vanillaModelConsumer;
 	}
 
-	public void renderModel(ItemStack itemStack, ModelTransformationMode transformMode, boolean invert, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int lightmap, int overlay, BakedModel model, VanillaQuadHandler vanillaHandler) {
+	public void renderModel(ItemStack itemStack, ModelTransformationMode transformMode, boolean invert, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int lightmap, int overlay, BakedModel model) {
 		this.itemStack = itemStack;
 		this.transformMode = transformMode;
 		this.matrixStack = matrixStack;
 		this.vertexConsumerProvider = vertexConsumerProvider;
 		this.lightmap = lightmap;
 		this.overlay = overlay;
-		this.vanillaHandler = vanillaHandler;
 		computeOutputInfo();
 
 		matrix = matrixStack.peek().getPositionMatrix();
@@ -129,13 +133,11 @@ public class ItemRenderContext extends AbstractRenderContext {
 		this.itemStack = null;
 		this.matrixStack = null;
 		this.vertexConsumerProvider = null;
-		this.vanillaHandler = null;
 
 		translucentVertexConsumer = null;
 		cutoutVertexConsumer = null;
 		translucentGlintVertexConsumer = null;
 		cutoutGlintVertexConsumer = null;
-		defaultVertexConsumer = null;
 	}
 
 	private void computeOutputInfo() {
@@ -158,8 +160,6 @@ public class ItemRenderContext extends AbstractRenderContext {
 		}
 
 		isDefaultGlint = itemStack.hasGlint();
-
-		defaultVertexConsumer = getVertexConsumer(BlendMode.DEFAULT, TriState.DEFAULT);
 	}
 
 	private void renderQuad(MutableQuadViewImpl quad) {
@@ -275,34 +275,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 		@Override
 		public void accept(BakedModel model, @Nullable BlockState state) {
-			if (hasTransform()) {
-				MutableQuadViewImpl editorQuad = ItemRenderContext.this.editorQuad;
-
-				// if there's a transform in effect, convert to mesh-based quads so that we can apply it
-				for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
-					final Direction cullFace = ModelHelper.faceFromIndex(i);
-					random.setSeed(ITEM_RANDOM_SEED);
-					final List<BakedQuad> quads = model.getQuads(state, cullFace, random);
-					final int count = quads.size();
-
-					for (int j = 0; j < count; j++) {
-						final BakedQuad q = quads.get(j);
-						editorQuad.fromVanilla(q, IndigoRenderer.MATERIAL_STANDARD, cullFace);
-						// Call renderQuad directly instead of emit for efficiency
-						renderQuad(editorQuad);
-					}
-				}
-
-				editorQuad.clear();
-			} else {
-				vanillaHandler.accept(model, itemStack, lightmap, overlay, matrixStack, defaultVertexConsumer);
-			}
+			VanillaModelEncoder.emitItemQuads(model, state, randomSupplier, ItemRenderContext.this);
 		}
-	}
-
-	/** used to accept a method reference from the ItemRenderer. */
-	@FunctionalInterface
-	public interface VanillaQuadHandler {
-		void accept(BakedModel model, ItemStack stack, int color, int overlay, MatrixStack matrixStack, VertexConsumer buffer);
 	}
 }
