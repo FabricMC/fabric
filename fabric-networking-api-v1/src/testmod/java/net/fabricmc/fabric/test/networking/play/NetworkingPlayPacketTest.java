@@ -45,11 +45,16 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
 public final class NetworkingPlayPacketTest implements ModInitializer {
 	public static final Identifier TEST_CHANNEL = NetworkingTestmods.id("test_channel");
+	private static final Identifier UNKNOWN_TEST_CHANNEL = NetworkingTestmods.id("unknown_test_channel");
 
 	public static void sendToTestChannel(ServerPlayerEntity player, String stuff) {
 		ServerPlayNetworking.getSender(player).sendPacket(new OverlayPacket(Text.literal(stuff)), future -> {
 			NetworkingTestmods.LOGGER.info("Sent custom payload packet in {}", TEST_CHANNEL);
 		});
+	}
+
+	private static void sendToUnknownChannel(ServerPlayerEntity player) {
+		ServerPlayNetworking.getSender(player).sendPacket(UNKNOWN_TEST_CHANNEL, PacketByteBufs.create());
 	}
 
 	public static void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -59,6 +64,10 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 				.then(argument("stuff", string()).executes(ctx -> {
 					String stuff = StringArgumentType.getString(ctx, "stuff");
 					sendToTestChannel(ctx.getSource().getPlayer(), stuff);
+					return Command.SINGLE_SUCCESS;
+				}))
+				.then(literal("unknown").executes(ctx -> {
+					sendToUnknownChannel(ctx.getSource().getPlayer());
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("bundled").executes(ctx -> {

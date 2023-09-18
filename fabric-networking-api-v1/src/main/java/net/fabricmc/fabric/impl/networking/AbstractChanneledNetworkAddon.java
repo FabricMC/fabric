@@ -72,17 +72,17 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	// always supposed to handle async!
-	protected boolean handle(Identifier channelName, PacketByteBuf originalBuf) {
+	protected boolean handle(Identifier channelName, PacketByteBuf buf) {
 		this.logger.debug("Handling inbound packet from channel with name \"{}\"", channelName);
 
 		// Handle reserved packets
 		if (NetworkingImpl.REGISTER_CHANNEL.equals(channelName)) {
-			this.receiveRegistration(true, PacketByteBufs.slice(originalBuf));
+			this.receiveRegistration(true, buf);
 			return true;
 		}
 
 		if (NetworkingImpl.UNREGISTER_CHANNEL.equals(channelName)) {
-			this.receiveRegistration(false, PacketByteBufs.slice(originalBuf));
+			this.receiveRegistration(false, buf);
 			return true;
 		}
 
@@ -91,8 +91,6 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		if (handler == null) {
 			return false;
 		}
-
-		PacketByteBuf buf = PacketByteBufs.slice(originalBuf);
 
 		try {
 			this.receive(handler, buf);
