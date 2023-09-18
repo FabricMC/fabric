@@ -19,7 +19,8 @@ package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -62,25 +63,36 @@ public class DifferenceIngredient implements CustomIngredient {
 		return SERIALIZER;
 	}
 
+	private Ingredient getBase() {
+		return base;
+	}
+
+	private Ingredient getSubtracted() {
+		return subtracted;
+	}
+
 	private static class Serializer implements CustomIngredientSerializer<DifferenceIngredient> {
-		private final Identifier id = new Identifier("fabric", "difference");
+		private static final Identifier ID = new Identifier("fabric", "difference");
+		private static final Codec<DifferenceIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
+		private static final Codec<DifferenceIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
+
+		private static Codec<DifferenceIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
+			return RecordCodecBuilder.create(instance ->
+					instance.group(
+							ingredientCodec.fieldOf("base").forGetter(DifferenceIngredient::getBase),
+							ingredientCodec.fieldOf("subtracted").forGetter(DifferenceIngredient::getSubtracted)
+					).apply(instance, DifferenceIngredient::new)
+			);
+		}
 
 		@Override
 		public Identifier getIdentifier() {
-			return id;
+			return ID;
 		}
 
 		@Override
-		public DifferenceIngredient read(JsonObject json) {
-			Ingredient base = Ingredient.fromJson(json.get("base"));
-			Ingredient subtracted = Ingredient.fromJson(json.get("subtracted"));
-			return new DifferenceIngredient(base, subtracted);
-		}
-
-		@Override
-		public void write(JsonObject json, DifferenceIngredient ingredient) {
-			json.add("base", ingredient.base.toJson());
-			json.add("subtracted", ingredient.subtracted.toJson());
+		public Codec<DifferenceIngredient> getCodec(boolean allowEmpty) {
+			return allowEmpty ? ALLOW_EMPTY_CODEC : DISALLOW_EMPTY_CODEC;
 		}
 
 		@Override

@@ -46,6 +46,6 @@ public abstract class SimpleFabricLootTableProvider implements FabricLootTablePr
 
 	@Override
 	public String getName() {
-		return Objects.requireNonNull(LootContextTypes.getId(lootContextType), "Could not get id for loot context type") + " Loot Table";
+		return Objects.requireNonNull(LootContextTypes.MAP.inverse().get(lootContextType), "Could not get id for loot context type") + " Loot Table";
 	}
 }

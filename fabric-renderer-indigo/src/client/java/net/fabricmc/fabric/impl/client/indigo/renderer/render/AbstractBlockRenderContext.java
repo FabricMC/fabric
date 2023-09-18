@@ -19,9 +19,8 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.AXIS_ALIGNED_FLAG;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.LIGHT_FACE_FLAG;
 
-import java.util.List;
-
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -29,19 +28,20 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
+import net.fabricmc.fabric.impl.client.indigo.Indigo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
+import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoConfig;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
+import net.fabricmc.fabric.impl.renderer.VanillaModelEncoder;
 
 public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 	protected final BlockRenderInfo blockInfo = new BlockRenderInfo();
@@ -56,6 +56,17 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 		@Override
 		public void emitDirectly() {
 			renderQuad(this, false);
+		}
+	};
+	private final MutableQuadViewImpl vanillaModelEditorQuad = new MutableQuadViewImpl() {
+		{
+			data = new int[EncodingFormat.TOTAL_STRIDE];
+			clear();
+		}
+
+		@Override
+		public void emitDirectly() {
+			renderQuad(this, true);
 		}
 	};
 
@@ -77,6 +88,21 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 		return editorQuad;
 	}
 
+	public QuadEmitter getVanillaModelEmitter() {
+		// Do not clear the editorQuad since it is not accessible to API users.
+		return vanillaModelEditorQuad;
+	}
+
+	@Override
+	public boolean isFaceCulled(@Nullable Direction face) {
+		return !blockInfo.shouldDrawFace(face);
+	}
+
+	@Override
+	public ModelTransformationMode itemTransformationMode() {
+		throw new IllegalStateException("itemTransformationMode() can only be called on an item render context.");
+	}
+
 	@Override
 	public BakedModelConsumer bakedModelConsumer() {
 		return vanillaModelConsumer;
@@ -87,7 +113,7 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 			return;
 		}
 
-		if (!blockInfo.shouldDrawFace(quad.cullFace())) {
+		if (isFaceCulled(quad.cullFace())) {
 			return;
 		}
 
@@ -131,7 +157,7 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 				}
 			}
 		} else {
-			shadeFlatQuad(quad);
+			shadeFlatQuad(quad, isVanilla);
 
 			if (emissive) {
 				for (int i = 0; i < 4; i++) {
@@ -151,28 +177,55 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 	 * Starting in 1.16 flat shading uses dimension-specific diffuse factors that can be < 1.0
 	 * even for un-shaded quads. These are also applied with AO shading but that is done in AO calculator.
 	 */
-	private void shadeFlatQuad(MutableQuadViewImpl quad) {
-		if (quad.hasVertexNormals()) {
-			// Quads that have vertex normals need to be shaded using interpolation - vanilla can't
-			// handle them. Generally only applies to modded models.
-			final float faceShade = blockInfo.blockView.getBrightness(quad.lightFace(), quad.hasShade());
+	private void shadeFlatQuad(MutableQuadViewImpl quad, boolean isVanilla) {
+		final boolean hasShade = quad.hasShade();
 
-			for (int i = 0; i < 4; i++) {
-				quad.color(i, ColorHelper.multiplyRGB(quad.color(i), vertexShade(quad, i, faceShade)));
+		// Check the AO mode to match how shade is applied during smooth lighting
+		if ((Indigo.AMBIENT_OCCLUSION_MODE == AoConfig.HYBRID && !isVanilla) || Indigo.AMBIENT_OCCLUSION_MODE == AoConfig.ENHANCED) {
+			if (quad.hasAllVertexNormals()) {
+				for (int i = 0; i < 4; i++) {
+					float shade = normalShade(quad.normalX(i), quad.normalY(i), quad.normalZ(i), hasShade);
+					quad.color(i, ColorHelper.multiplyRGB(quad.color(i), shade));
+				}
+			} else {
+				final float faceShade;
+
+				if ((quad.geometryFlags() & AXIS_ALIGNED_FLAG) != 0) {
+					faceShade = blockInfo.blockView.getBrightness(quad.lightFace(), hasShade);
+				} else {
+					Vector3f faceNormal = quad.faceNormal();
+					faceShade = normalShade(faceNormal.x, faceNormal.y, faceNormal.z, hasShade);
+				}
+
+				if (quad.hasVertexNormals()) {
+					for (int i = 0; i < 4; i++) {
+						float shade;
+
+						if (quad.hasNormal(i)) {
+							shade = normalShade(quad.normalX(i), quad.normalY(i), quad.normalZ(i), hasShade);
+						} else {
+							shade = faceShade;
+						}
+
+						quad.color(i, ColorHelper.multiplyRGB(quad.color(i), shade));
+					}
+				} else {
+					if (faceShade != 1.0f) {
+						for (int i = 0; i < 4; i++) {
+							quad.color(i, ColorHelper.multiplyRGB(quad.color(i), faceShade));
+						}
+					}
+				}
 			}
 		} else {
-			final float diffuseShade = blockInfo.blockView.getBrightness(quad.lightFace(), quad.hasShade());
+			final float faceShade = blockInfo.blockView.getBrightness(quad.lightFace(), hasShade);
 
-			if (diffuseShade != 1.0f) {
+			if (faceShade != 1.0f) {
 				for (int i = 0; i < 4; i++) {
-					quad.color(i, ColorHelper.multiplyRGB(quad.color(i), diffuseShade));
+					quad.color(i, ColorHelper.multiplyRGB(quad.color(i), faceShade));
 				}
 			}
 		}
-	}
-
-	private float vertexShade(MutableQuadViewImpl quad, int vertexIndex, float faceShade) {
-		return quad.hasNormal(vertexIndex) ? normalShade(quad.normalX(vertexIndex), quad.normalY(vertexIndex), quad.normalZ(vertexIndex), quad.hasShade()) : faceShade;
 	}
 
 	/**
@@ -245,21 +298,6 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 	 * them through vanilla logic would require additional hooks.
 	 */
 	private class BakedModelConsumerImpl implements BakedModelConsumer {
-		private static final RenderMaterial MATERIAL_SHADED = IndigoRenderer.INSTANCE.materialFinder().find();
-		private static final RenderMaterial MATERIAL_FLAT = IndigoRenderer.INSTANCE.materialFinder().ambientOcclusion(TriState.FALSE).find();
-
-		private final MutableQuadViewImpl editorQuad = new MutableQuadViewImpl() {
-			{
-				data = new int[EncodingFormat.TOTAL_STRIDE];
-				clear();
-			}
-
-			@Override
-			public void emitDirectly() {
-				renderQuad(this, true);
-			}
-		};
-
 		@Override
 		public void accept(BakedModel model) {
 			accept(model, blockInfo.blockState);
@@ -267,23 +305,7 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 
 		@Override
 		public void accept(BakedModel model, @Nullable BlockState state) {
-			MutableQuadViewImpl editorQuad = this.editorQuad;
-			final RenderMaterial defaultMaterial = model.useAmbientOcclusion() ? MATERIAL_SHADED : MATERIAL_FLAT;
-
-			for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
-				final Direction cullFace = ModelHelper.faceFromIndex(i);
-				final List<BakedQuad> quads = model.getQuads(state, cullFace, blockInfo.randomSupplier.get());
-				final int count = quads.size();
-
-				for (int j = 0; j < count; j++) {
-					final BakedQuad q = quads.get(j);
-					editorQuad.fromVanilla(q, defaultMaterial, cullFace);
-					// Call renderQuad directly instead of emit for efficiency
-					renderQuad(editorQuad, true);
-				}
-			}
-
-			// Do not clear the editorQuad since it is not accessible to API users.
+			VanillaModelEncoder.emitBlockQuads(model, state, blockInfo.randomSupplier, AbstractBlockRenderContext.this, vanillaModelEditorQuad);
 		}
 	}
 }

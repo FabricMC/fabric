@@ -23,8 +23,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.PlayerAdvancementTracker;
+import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import net.fabricmc.fabric.api.entity.FakePlayer;
@@ -43,7 +43,7 @@ public class PlayerAdvancementTrackerMixin {
 	}
 
 	@Inject(method = "grantCriterion", at = @At("HEAD"), cancellable = true)
-	void preventGrantCriterion(Advancement advancement, String criterionName, CallbackInfoReturnable<Boolean> ci) {
+	void preventGrantCriterion(AdvancementEntry advancement, String criterionName, CallbackInfoReturnable<Boolean> ci) {
 		if (owner instanceof FakePlayer) {
 			// Prevent granting advancements to fake players.
 			ci.setReturnValue(false);

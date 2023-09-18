@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.DropperBlock;
 import net.minecraft.block.entity.DispenserBlockEntity;
@@ -49,7 +50,7 @@ public class DropperBlockMixin {
 			cancellable = true,
 			allow = 1
 	)
-	public void hookDispense(ServerWorld world, BlockPos pos, CallbackInfo ci) {
+	public void hookDispense(ServerWorld world, BlockState blockState, BlockPos pos, CallbackInfo ci) {
 		DispenserBlockEntity dispenser = (DispenserBlockEntity) world.getBlockEntity(pos);
 		Direction direction = dispenser.getCachedState().get(DispenserBlock.FACING);
 

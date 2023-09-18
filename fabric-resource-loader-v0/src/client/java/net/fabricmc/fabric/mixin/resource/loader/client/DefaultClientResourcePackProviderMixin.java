@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import net.minecraft.client.resource.DefaultClientResourcePackProvider;
 import net.minecraft.resource.AbstractFileResourcePack;
+import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
@@ -51,7 +52,18 @@ public class DefaultClientResourcePackProviderMixin {
 	)
 	private ResourcePackProfile.PackFactory onCreateVanillaBuiltinResourcePack(String name, Text displayName, boolean alwaysEnabled,
 			ResourcePackProfile.PackFactory packFactory, ResourceType type, ResourcePackProfile.InsertionPosition position, ResourcePackSource source) {
-		return factory -> new FabricWrappedVanillaResourcePack((AbstractFileResourcePack) packFactory.open(name), getModResourcePacks(name));
+		return new ResourcePackProfile.PackFactory() {
+			@Override
+			public ResourcePack open(String name) {
+				return new FabricWrappedVanillaResourcePack((AbstractFileResourcePack) packFactory.open(name), getModResourcePacks(name));
+			}
+
+			@Override
+			public ResourcePack openWithOverlays(String string, ResourcePackProfile.Metadata metadata) {
+				// VanillaResourcePackProvider does not handle overlays
+				return open(name);
+			}
+		};
 	}
 
 	/**

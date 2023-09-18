@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.loot.v2;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -104,9 +103,9 @@ public interface FabricLootTableBuilder {
 		LootTableAccessor accessor = (LootTableAccessor) table;
 
 		builder.type(table.getType());
-		builder.pools(List.of(accessor.fabric_getPools()));
-		builder.apply(List.of(accessor.fabric_getFunctions()));
-		builder.randomSequenceId(accessor.fabric_getRandomSequenceId());
+		builder.pools(accessor.fabric_getPools());
+		builder.apply(accessor.fabric_getFunctions());
+		accessor.fabric_getRandomSequenceId().ifPresent(builder::randomSequenceId);
 
 		return builder;
 	}

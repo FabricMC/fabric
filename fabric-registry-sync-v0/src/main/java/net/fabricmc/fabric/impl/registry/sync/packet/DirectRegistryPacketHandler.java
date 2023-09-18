@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
@@ -30,7 +31,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -73,7 +74,7 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 	}
 
 	@Override
-	public void sendPacket(ServerPlayerEntity player, Map<Identifier, Object2IntMap<Identifier>> registryMap) {
+	public void sendPacket(Consumer<Packet<?>> sender, Map<Identifier, Object2IntMap<Identifier>> registryMap) {
 		PacketByteBuf buf = PacketByteBufs.create();
 
 		// Group registry ids with same namespace.
@@ -152,12 +153,12 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 		while (sliceIndex < readableBytes) {
 			int sliceSize = Math.min(readableBytes - sliceIndex, MAX_PAYLOAD_SIZE);
 			PacketByteBuf slicedBuf = PacketByteBufs.slice(buf, sliceIndex, sliceSize);
-			sendPacket(player, slicedBuf);
+			sendPacket(sender, slicedBuf);
 			sliceIndex += sliceSize;
 		}
 
 		// Send an empty buffer to mark the end of the split.
-		sendPacket(player, PacketByteBufs.empty());
+		sendPacket(sender, PacketByteBufs.empty());
 	}
 
 	@Override

@@ -17,17 +17,23 @@
 package net.fabricmc.fabric.impl.registry.sync;
 
 import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 
 public class FabricRegistryInit implements ModInitializer {
+	public static final Identifier SYNC_COMPLETE_ID = new Identifier("fabric", "registry/sync/complete");
+
 	@Override
 	public void onInitialize() {
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
-				RegistrySyncManager.sendPacket(server, handler.player));
+		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register(RegistrySyncManager::configureClient);
+		ServerConfigurationNetworking.registerGlobalReceiver(SYNC_COMPLETE_ID, (server, handler, buf, responseSender) -> {
+			handler.completeTask(RegistrySyncManager.SyncConfigurationTask.KEY);
+		});
 
 		// Synced in PlaySoundS2CPacket.
 		RegistryAttributeHolder.get(Registries.SOUND_EVENT)
@@ -39,8 +45,7 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// StatusEffectInstance serialises with raw id.
 		RegistryAttributeHolder.get(Registries.STATUS_EFFECT)
-				.addAttribute(RegistryAttribute.SYNCED)
-				.addAttribute(RegistryAttribute.PERSISTED);
+				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in ChunkDeltaUpdateS2CPacket among other places, a pallet is used when saving.
 		RegistryAttributeHolder.get(Registries.BLOCK)

@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.recipe.ingredient;
 
 import java.util.Set;
 
-import net.minecraft.network.PacketEncoder;
+import net.minecraft.network.handler.PacketEncoder;
 import net.minecraft.util.Identifier;
 
 /**

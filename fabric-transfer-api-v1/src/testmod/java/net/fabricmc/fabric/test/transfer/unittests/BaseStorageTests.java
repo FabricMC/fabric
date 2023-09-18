@@ -66,9 +66,9 @@ public class BaseStorageTests {
 		}
 
 		// Insertion through the filter should fail.
-		assertEquals(0L, noWater.simulateInsert(water, BUCKET, null));
+		assertEquals(0L, StorageUtil.simulateInsert(noWater, water, BUCKET, null));
 		// Extraction should also fail.
-		assertEquals(0L, noWater.simulateExtract(water, BUCKET, null));
+		assertEquals(0L, StorageUtil.simulateExtract(noWater, water, BUCKET, null));
 		// The fluid should be visible.
 		assertEquals(water, StorageUtil.findStoredResource(noWater));
 		// Test the filter.
@@ -83,13 +83,13 @@ public class BaseStorageTests {
 		// Lava insertion and extract should proceed just fine.
 		try (Transaction tx = Transaction.openOuter()) {
 			assertEquals(BUCKET, noWater.insert(lava, BUCKET, tx));
-			assertEquals(BUCKET, noWater.simulateExtract(lava, BUCKET, tx));
+			assertEquals(BUCKET, StorageUtil.simulateExtract(noWater, lava, BUCKET, tx));
 			// Test that simulating doesn't change the state...
-			assertEquals(BUCKET, noWater.simulateExtract(lava, BUCKET, tx));
-			assertEquals(BUCKET, noWater.simulateExtract(lava, BUCKET, tx));
+			assertEquals(BUCKET, StorageUtil.simulateExtract(noWater, lava, BUCKET, tx));
+			assertEquals(BUCKET, StorageUtil.simulateExtract(noWater, lava, BUCKET, tx));
 			tx.commit();
 		}
 
-		assertEquals(BUCKET, storage.simulateExtract(lava, BUCKET, null));
+		assertEquals(BUCKET, StorageUtil.simulateExtract(storage, lava, BUCKET, null));
 	}
 }

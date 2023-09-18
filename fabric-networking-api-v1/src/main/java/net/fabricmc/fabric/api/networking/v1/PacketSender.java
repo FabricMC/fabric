@@ -21,11 +21,13 @@ import java.util.Objects;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.packet.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.PacketCallbacks;
+import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
@@ -34,6 +36,7 @@ import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
  * Represents something that supports sending packets to channels.
  * @see PacketByteBufs
  */
+@ApiStatus.NonExtendable
 public interface PacketSender {
 	/**
 	 * Makes a packet for a channel.
@@ -44,20 +47,37 @@ public interface PacketSender {
 	Packet<?> createPacket(Identifier channelName, PacketByteBuf buf);
 
 	/**
+	 * Makes a packet for a fabric packet.
+	 *
+	 * @param packet the fabric packet
+	 */
+	Packet<?> createPacket(FabricPacket packet);
+
+	/**
 	 * Sends a packet.
 	 *
 	 * @param packet the packet
 	 */
-	void sendPacket(Packet<?> packet);
+	default void sendPacket(Packet<?> packet) {
+		sendPacket(packet, (PacketCallbacks) null);
+	}
 
 	/**
 	 * Sends a packet.
 	 * @param packet the packet
 	 */
 	default <T extends FabricPacket> void sendPacket(T packet) {
+		sendPacket(createPacket(packet));
+	}
+
+	/**
+	 * Sends a packet.
+	 * @param payload the payload
+	 */
+	default void sendPacket(CustomPayload payload) {
 		PacketByteBuf buf = PacketByteBufs.create();
-		packet.write(buf);
-		sendPacket(packet.getType().getId(), buf);
+		payload.write(buf);
+		sendPacket(payload.id(), buf);
 	}
 
 	/**
@@ -75,9 +95,19 @@ public interface PacketSender {
 	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
 	 */
 	default <T extends FabricPacket> void sendPacket(T packet, @Nullable GenericFutureListener<? extends Future<? super Void>> callback) {
+		sendPacket(createPacket(packet), callback);
+	}
+
+	/**
+	 * Sends a packet.
+	 *
+	 * @param payload the payload
+	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
+	 */
+	default void sendPacket(CustomPayload payload, @Nullable GenericFutureListener<? extends Future<? super Void>> callback) {
 		PacketByteBuf buf = PacketByteBufs.create();
-		packet.write(buf);
-		sendPacket(packet.getType().getId(), buf, callback);
+		payload.write(buf);
+		sendPacket(payload.id(), buf, callback);
 	}
 
 	/**
@@ -95,9 +125,19 @@ public interface PacketSender {
 	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
 	 */
 	default <T extends FabricPacket> void sendPacket(T packet, @Nullable PacketCallbacks callback) {
+		sendPacket(createPacket(packet), callback);
+	}
+
+	/**
+	 * Sends a packet.
+	 *
+	 * @param payload the payload
+	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
+	 */
+	default void sendPacket(CustomPayload payload, @Nullable PacketCallbacks callback) {
 		PacketByteBuf buf = PacketByteBufs.create();
-		packet.write(buf);
-		sendPacket(packet.getType().getId(), buf, callback);
+		payload.write(buf);
+		sendPacket(payload.id(), buf, callback);
 	}
 
 	/**

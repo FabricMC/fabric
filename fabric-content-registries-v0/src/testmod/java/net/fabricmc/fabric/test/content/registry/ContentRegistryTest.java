@@ -64,7 +64,7 @@ public final class ContentRegistryTest implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);
 
 	public static final Identifier TEST_EVENT_ID = new Identifier("fabric-content-registries-v0-testmod", "test_event");
-	public static final GameEvent TEST_EVENT = new GameEvent(TEST_EVENT_ID.toString(), GameEvent.DEFAULT_RANGE);
+	public static final GameEvent TEST_EVENT = new GameEvent(GameEvent.DEFAULT_RANGE);
 
 	@Override
 	public void onInitialize() {

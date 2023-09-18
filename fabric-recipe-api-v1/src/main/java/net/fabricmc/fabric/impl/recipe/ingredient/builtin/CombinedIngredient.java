@@ -16,15 +16,16 @@
 
 package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
@@ -33,10 +34,10 @@ import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
  * Base class for ALL and ANY ingredients.
  */
 abstract class CombinedIngredient implements CustomIngredient {
-	protected final Ingredient[] ingredients;
+	protected final List<Ingredient> ingredients;
 
-	protected CombinedIngredient(Ingredient[] ingredients) {
-		if (ingredients.length == 0) {
+	protected CombinedIngredient(List<Ingredient> ingredients) {
+		if (ingredients.isEmpty()) {
 			throw new IllegalArgumentException("ALL or ANY ingredient must have at least one sub-ingredient");
 		}
 
@@ -54,13 +55,21 @@ abstract class CombinedIngredient implements CustomIngredient {
 		return false;
 	}
 
+	List<Ingredient> getIngredients() {
+		return ingredients;
+	}
+
 	static class Serializer<I extends CombinedIngredient> implements CustomIngredientSerializer<I> {
 		private final Identifier identifier;
-		private final Function<Ingredient[], I> factory;
+		private final Function<List<Ingredient>, I> factory;
+		private final Codec<I> allowEmptyCodec;
+		private final Codec<I> disallowEmptyCodec;
 
-		Serializer(Identifier identifier, Function<Ingredient[], I> factory) {
+		Serializer(Identifier identifier, Function<List<Ingredient>, I> factory, Codec<I> allowEmptyCodec, Codec<I> disallowEmptyCodec) {
 			this.identifier = identifier;
 			this.factory = factory;
+			this.allowEmptyCodec = allowEmptyCodec;
+			this.disallowEmptyCodec = disallowEmptyCodec;
 		}
 
 		@Override
@@ -69,43 +78,25 @@ abstract class CombinedIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public I read(JsonObject json) {
-			JsonArray values = JsonHelper.getArray(json, "ingredients");
-			Ingredient[] ingredients = new Ingredient[values.size()];
-
-			for (int i = 0; i < values.size(); i++) {
-				ingredients[i] = Ingredient.fromJson(values.get(i));
-			}
-
-			return factory.apply(ingredients);
-		}
-
-		@Override
-		public void write(JsonObject json, I ingredient) {
-			JsonArray values = new JsonArray();
-
-			for (Ingredient value : ingredient.ingredients) {
-				values.add(value.toJson());
-			}
-
-			json.add("ingredients", values);
+		public Codec<I> getCodec(boolean allowEmpty) {
+			return allowEmpty ? allowEmptyCodec : disallowEmptyCodec;
 		}
 
 		@Override
 		public I read(PacketByteBuf buf) {
 			int size = buf.readVarInt();
-			Ingredient[] ingredients = new Ingredient[size];
+			List<Ingredient> ingredients = new ArrayList<>(size);
 
 			for (int i = 0; i < size; i++) {
-				ingredients[i] = Ingredient.fromPacket(buf);
+				ingredients.add(Ingredient.fromPacket(buf));
 			}
 
-			return factory.apply(ingredients);
+			return factory.apply(Collections.unmodifiableList(ingredients));
 		}
 
 		@Override
 		public void write(PacketByteBuf buf, I ingredient) {
-			buf.writeVarInt(ingredient.ingredients.length);
+			buf.writeVarInt(ingredient.ingredients.size());
 
 			for (Ingredient value : ingredient.ingredients) {
 				value.write(buf);

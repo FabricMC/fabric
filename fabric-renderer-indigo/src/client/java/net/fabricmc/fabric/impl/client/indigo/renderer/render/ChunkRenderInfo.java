@@ -32,6 +32,7 @@ import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
+import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
 /**
@@ -127,7 +128,7 @@ public class ChunkRenderInfo {
 		int result = brightnessCache.get(key);
 
 		if (result == Integer.MAX_VALUE) {
-			result = WorldRenderer.getLightmapCoordinates(blockView, state, pos);
+			result = AoCalculator.getLightmapCoordinates(blockView, state, pos);
 			brightnessCache.put(key, result);
 		}
 

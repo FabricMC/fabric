@@ -54,7 +54,7 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 			PlayerEntity player = MinecraftClient.getInstance().player;
 			if (player == null) return;
 
-			if (MinecraftClient.getInstance().options.debugEnabled) return;
+			if (MinecraftClient.getInstance().inGameHud.getDebugHud().shouldShowDebugHud()) return;
 
 			int renderY = 0;
 			List<FluidVariant> variants = List.of(FluidVariant.of(Fluids.WATER), FluidVariant.of(Fluids.LAVA));

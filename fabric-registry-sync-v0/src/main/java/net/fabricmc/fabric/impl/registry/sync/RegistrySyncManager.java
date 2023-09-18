@@ -26,9 +26,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.function.Consumer;
 
 import com.google.common.base.Joiner;
@@ -45,11 +44,13 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.network.ServerConfigurationNetworkHandler;
+import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -58,6 +59,7 @@ import net.minecraft.util.thread.ThreadExecutor;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
@@ -74,27 +76,49 @@ public final class RegistrySyncManager {
 
 	private RegistrySyncManager() { }
 
-	public static void sendPacket(MinecraftServer server, ServerPlayerEntity player) {
-		if (!DEBUG && server.isHost(player.getGameProfile())) {
+	public static void configureClient(ServerConfigurationNetworkHandler handler, MinecraftServer server) {
+		if (!DEBUG && server.isHost(handler.getDebugProfile())) {
+			// Dont send in singleplayer
 			return;
 		}
 
-		sendPacket(player, DIRECT_PACKET_HANDLER);
+		if (!ServerConfigurationNetworking.canSend(handler, DIRECT_PACKET_HANDLER.getPacketId())) {
+			// Don't send if the client cannot receive
+			return;
+		}
+
+		final Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap();
+
+		if (map == null) {
+			// Don't send when there is nothing to map
+			return;
+		}
+
+		handler.addTask(new SyncConfigurationTask(handler, map));
 	}
 
-	private static void sendPacket(ServerPlayerEntity player, RegistryPacketHandler handler) {
-		Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap(true, null);
+	public record SyncConfigurationTask(
+			ServerConfigurationNetworkHandler handler,
+			Map<Identifier, Object2IntMap<Identifier>> map
+	) implements ServerPlayerConfigurationTask {
+		public static final Key KEY = new Key("fabric:registry/sync");
 
-		if (map != null) {
-			handler.sendPacket(player, map);
+		@Override
+		public void sendPacket(Consumer<Packet<?>> sender) {
+			DIRECT_PACKET_HANDLER.sendPacket(handler::sendPacket, map);
+		}
+
+		@Override
+		public Key getKey() {
+			return KEY;
 		}
 	}
 
-	public static void receivePacket(ThreadExecutor<?> executor, RegistryPacketHandler handler, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
+	public static CompletableFuture<Boolean> receivePacket(ThreadExecutor<?> executor, RegistryPacketHandler handler, PacketByteBuf buf, boolean accept) {
 		handler.receivePacket(buf);
 
 		if (!handler.isPacketFinished()) {
-			return;
+			return CompletableFuture.completedFuture(false);
 		}
 
 		if (DEBUG) {
@@ -106,37 +130,31 @@ public final class RegistrySyncManager {
 
 		Map<Identifier, Object2IntMap<Identifier>> map = handler.getSyncedRegistryMap();
 
-		if (accept) {
-			try {
-				executor.submit(() -> {
-					if (map == null) {
-						errorHandler.accept(new RemapException("Received null map in sync packet!"));
-						return null;
-					}
-
-					try {
-						apply(map, RemappableRegistry.RemapMode.REMOTE);
-					} catch (RemapException e) {
-						errorHandler.accept(e);
-					}
-
-					return null;
-				}).get(30, TimeUnit.SECONDS);
-			} catch (ExecutionException | InterruptedException | TimeoutException e) {
-				errorHandler.accept(e);
-			}
+		if (!accept) {
+			return CompletableFuture.completedFuture(true);
 		}
+
+		return executor.submit(() -> {
+			if (map == null) {
+				throw new CompletionException(new RemapException("Received null map in sync packet!"));
+			}
+
+			try {
+				apply(map, RemappableRegistry.RemapMode.REMOTE);
+				return true;
+			} catch (RemapException e) {
+				throw new CompletionException(e);
+			}
+		});
 	}
 
 	/**
-	 * Creates a {@link NbtCompound} used to save or sync the registry ids.
+	 * Creates a {@link NbtCompound} used to sync the registry ids.
 	 *
-	 * @param isClientSync true when syncing to the client, false when saving
-	 * @param activeMap    contains the registry ids that were previously read and applied, can be null.
-	 * @return a {@link NbtCompound} to save or sync, null when empty
+	 * @return a {@link NbtCompound} to sync, null when empty
 	 */
 	@Nullable
-	public static Map<Identifier, Object2IntMap<Identifier>> createAndPopulateRegistryMap(boolean isClientSync, @Nullable Map<Identifier, Object2IntMap<Identifier>> activeMap) {
+	public static Map<Identifier, Object2IntMap<Identifier>> createAndPopulateRegistryMap() {
 		Map<Identifier, Object2IntMap<Identifier>> map = new LinkedHashMap<>();
 
 		for (Identifier registryId : Registries.REGISTRIES.getIds()) {
@@ -178,43 +196,25 @@ public final class RegistrySyncManager {
 				}
 			}
 
-			/*
-			 * This contains the previous state's registry data, this is used for a few things:
-			 * Such as ensuring that previously modded registries or registry entries are not lost or overwritten.
-			 */
-			Object2IntMap<Identifier> previousIdMap = null;
-
-			if (activeMap != null && activeMap.containsKey(registryId)) {
-				previousIdMap = activeMap.get(registryId);
-			}
-
 			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry.getKey());
 
-			if (!attributeHolder.hasAttribute(isClientSync ? RegistryAttribute.SYNCED : RegistryAttribute.PERSISTED)) {
-				LOGGER.debug("Not {} registry: {}", isClientSync ? "syncing" : "saving", registryId);
+			if (!attributeHolder.hasAttribute(RegistryAttribute.SYNCED)) {
+				LOGGER.debug("Not syncing registry: {}", registryId);
 				continue;
 			}
 
 			/*
 			 * Dont do anything with vanilla registries on client sync.
-			 * When saving skip none modded registries that doesnt have previous registry data
 			 *
 			 * This will not sync IDs if a world has been previously modded, either from removed mods
-			 * or a previous version of fabric registry sync, but will save these ids to disk in case the mod or mods
-			 * are added back.
+			 * or a previous version of fabric registry sync.
 			 */
-			if ((previousIdMap == null || isClientSync) && !attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
+			if (!attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
 				LOGGER.debug("Skipping un-modded registry: " + registryId);
 				continue;
-			} else if (previousIdMap != null) {
-				LOGGER.debug("Preserving previously modded registry: " + registryId);
 			}
 
-			if (isClientSync) {
-				LOGGER.debug("Syncing registry: " + registryId);
-			} else {
-				LOGGER.debug("Saving registry: " + registryId);
-			}
+			LOGGER.debug("Syncing registry: " + registryId);
 
 			if (registry instanceof RemappableRegistry) {
 				Object2IntMap<Identifier> idMap = new Object2IntLinkedOpenHashMap<>();
@@ -245,30 +245,7 @@ public final class RegistrySyncManager {
 					idMap.put(id, rawId);
 				}
 
-				/*
-				 * Look for existing registry key/values that are not in the current registries.
-				 * This can happen when registry entries are removed, preventing that ID from being re-used by something else.
-				 */
-				if (!isClientSync && previousIdMap != null) {
-					for (Identifier key : previousIdMap.keySet()) {
-						if (!idMap.containsKey(key)) {
-							LOGGER.debug("Saving orphaned registry entry: " + key);
-							idMap.put(key, previousIdMap.getInt(key));
-						}
-					}
-				}
-
 				map.put(registryId, idMap);
-			}
-		}
-
-		// Ensure any orphaned registry's are kept on disk
-		if (!isClientSync && activeMap != null) {
-			for (Identifier registryKey : activeMap.keySet()) {
-				if (!map.containsKey(registryKey)) {
-					LOGGER.debug("Saving orphaned registry: " + registryKey);
-					map.put(registryKey, activeMap.get(registryKey));
-				}
 			}
 		}
 

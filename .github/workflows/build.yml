@@ -30,8 +30,12 @@ jobs:
           path: ./*/build/libs/
       - uses: actions/upload-artifact@v3
         with:
+          name: Artifacts
+          path: build/publishMods/
+      - uses: actions/upload-artifact@v3
+        with:
           name: Maven Local
-          path: /root/.m2/repository
+          path: /root/.m2/repository/net/fabricmc/
 
   client_test:
     runs-on: ubuntu-22.04

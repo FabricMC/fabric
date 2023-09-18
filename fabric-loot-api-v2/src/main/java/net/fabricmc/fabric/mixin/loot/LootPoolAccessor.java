@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -38,11 +40,11 @@ public interface LootPoolAccessor {
 	LootNumberProvider fabric_getBonusRolls();
 
 	@Accessor("entries")
-	LootPoolEntry[] fabric_getEntries();
+	List<LootPoolEntry> fabric_getEntries();
 
 	@Accessor("conditions")
-	LootCondition[] fabric_getConditions();
+	List<LootCondition> fabric_getConditions();
 
 	@Accessor("functions")
-	LootFunction[] fabric_getFunctions();
+	List<LootFunction> fabric_getFunctions();
 }

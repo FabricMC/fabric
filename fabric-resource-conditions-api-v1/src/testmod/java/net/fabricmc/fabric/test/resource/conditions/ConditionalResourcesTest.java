@@ -64,7 +64,7 @@ public class ConditionalResourcesTest {
 			throw new AssertionError("features_enabled recipe should have been loaded.");
 		}
 
-		long loadedRecipes = manager.values().stream().filter(r -> r.getId().getNamespace().equals(MOD_ID)).count();
+		long loadedRecipes = manager.values().stream().filter(r -> r.id().getNamespace().equals(MOD_ID)).count();
 		if (loadedRecipes != 5) throw new AssertionError("Unexpected loaded recipe count: " + loadedRecipes);
 
 		context.complete();

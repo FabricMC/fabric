@@ -25,13 +25,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.listener.ServerPlayPacketListener;
+import net.minecraft.network.listener.ServerCommonPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ThreadExecutor;
 
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -50,6 +49,7 @@ import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
  * object-based API.
  *
  * @see ClientLoginNetworking
+ * @see ClientConfigurationNetworking
  * @see ServerPlayNetworking
  */
 public final class ClientPlayNetworking {
@@ -331,11 +331,21 @@ public final class ClientPlayNetworking {
 	 * @param buf the packet byte buf which represents the payload of the packet
 	 * @return a new packet
 	 */
-	public static Packet<ServerPlayPacketListener> createC2SPacket(Identifier channelName, PacketByteBuf buf) {
+	public static Packet<ServerCommonPacketListener> createC2SPacket(Identifier channelName, PacketByteBuf buf) {
 		Objects.requireNonNull(channelName, "Channel name cannot be null");
 		Objects.requireNonNull(buf, "Buf cannot be null");
 
-		return ClientNetworkingImpl.createPlayC2SPacket(channelName, buf);
+		return ClientNetworkingImpl.createC2SPacket(channelName, buf);
+	}
+
+	/**
+	 * Creates a packet which may be sent to the connected server.
+	 *
+	 * @param packet the fabric packet
+	 * @return a new packet
+	 */
+	public static <T extends FabricPacket> Packet<ServerCommonPacketListener> createC2SPacket(T packet) {
+		return ClientNetworkingImpl.createC2SPacket(packet);
 	}
 
 	/**
@@ -380,9 +390,13 @@ public final class ClientPlayNetworking {
 		Objects.requireNonNull(packet, "Packet cannot be null");
 		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
 
-		PacketByteBuf buf = PacketByteBufs.create();
-		packet.write(buf);
-		send(packet.getType().getId(), buf);
+		// You cant send without a client player, so this is fine
+		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
+			MinecraftClient.getInstance().getNetworkHandler().sendPacket(createC2SPacket(packet));
+			return;
+		}
+
+		throw new IllegalStateException("Cannot send packets when not in game!");
 	}
 
 	private ClientPlayNetworking() {

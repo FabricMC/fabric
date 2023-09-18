@@ -16,15 +16,22 @@
 
 package net.fabricmc.fabric.test.recipe.ingredient;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import java.util.List;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+import com.mojang.serialization.JsonOps;
+
+import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.GameTestException;
 import net.minecraft.test.TestContext;
+import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AllIngredient;
 
 public class SerializationTests {
 	/**
@@ -49,10 +56,27 @@ public class SerializationTests {
 		JsonElement json = JsonParser.parseString(ingredientJson);
 
 		try {
-			Ingredient.fromJson(json);
+			Util.getResult(Ingredient.DISALLOW_EMPTY_CODEC.parse(JsonOps.INSTANCE, json), JsonParseException::new);
 			throw new GameTestException("Using a custom ingredient inside an array ingredient should have failed.");
-		} catch (IllegalArgumentException e) {
+		} catch (JsonParseException e) {
 			context.complete();
 		}
+	}
+
+	/**
+	 * Check that we can serialise a custom ingredient.
+	 */
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void testCustomIngredientSerialization(TestContext context) {
+		String ingredientJson = """
+				{"ingredients":[{"item":"minecraft:stone"}],"fabric:type":"fabric:all"}
+				""".trim();
+
+		var ingredient = new AllIngredient(List.of(
+				Ingredient.ofItems(Items.STONE)
+		));
+		String json = ingredient.toVanilla().toJson(false).toString();
+		context.assertTrue(json.equals(ingredientJson), "Unexpected json: " + json);
+		context.complete();
 	}
 }

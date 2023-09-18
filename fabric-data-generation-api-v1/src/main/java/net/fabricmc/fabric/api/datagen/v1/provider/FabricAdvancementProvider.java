@@ -28,6 +28,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 
 import net.minecraft.advancement.Advancement;
+import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
@@ -57,12 +58,12 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	 *
 	 * <p>Use {@link Advancement.Builder#build(Consumer, String)} to help build advancements.
 	 */
-	public abstract void generateAdvancement(Consumer<Advancement> consumer);
+	public abstract void generateAdvancement(Consumer<AdvancementEntry> consumer);
 
 	/**
 	 * Return a new exporter that applies the specified conditions to any advancement it receives.
 	 */
-	protected Consumer<Advancement> withConditions(Consumer<Advancement> exporter, ConditionJsonProvider... conditions) {
+	protected Consumer<AdvancementEntry> withConditions(Consumer<AdvancementEntry> exporter, ConditionJsonProvider... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
 		return advancement -> {
 			FabricDataGenHelper.addConditions(advancement, conditions);
@@ -73,18 +74,18 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	@Override
 	public CompletableFuture<?> run(DataWriter writer) {
 		final Set<Identifier> identifiers = Sets.newHashSet();
-		final Set<Advancement> advancements = Sets.newHashSet();
+		final Set<AdvancementEntry> advancements = Sets.newHashSet();
 
 		generateAdvancement(advancements::add);
 
 		final List<CompletableFuture<?>> futures = new ArrayList<>();
 
-		for (Advancement advancement : advancements) {
-			if (!identifiers.add(advancement.getId())) {
-				throw new IllegalStateException("Duplicate advancement " + advancement.getId());
+		for (AdvancementEntry advancement : advancements) {
+			if (!identifiers.add(advancement.id())) {
+				throw new IllegalStateException("Duplicate advancement " + advancement.id());
 			}
 
-			JsonObject advancementJson = advancement.createTask().toJson();
+			JsonObject advancementJson = advancement.value().toJson();
 			ConditionJsonProvider.write(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
 
 			futures.add(DataProvider.writeToPath(writer, advancementJson, getOutputPath(advancement)));
@@ -93,8 +94,8 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
 	}
 
-	private Path getOutputPath(Advancement advancement) {
-		return pathResolver.resolveJson(advancement.getId());
+	private Path getOutputPath(AdvancementEntry advancement) {
+		return pathResolver.resolveJson(advancement.id());
 	}
 
 	@Override

@@ -17,10 +17,12 @@
 package net.fabricmc.fabric.test.event.interaction;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.Hand;
@@ -58,6 +60,25 @@ public class FakePlayerTests {
 
 		context.checkBlockState(signPos, x -> x.isOf(Blocks.OAK_SIGN), () -> "Sign was not placed");
 		context.assertTrue(signStack.isEmpty(), "Sign stack was not emptied");
+		context.complete();
+	}
+
+	/**
+	 * Try breaking a beehive with a fake player (see {@code BeehiveBlockMixin}).
+	 */
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void testFakePlayerBreakBeehive(TestContext context) {
+		BlockPos basePos = new BlockPos(0, 1, 0);
+		context.setBlockState(basePos, Blocks.BEEHIVE);
+		context.spawnEntity(EntityType.BEE, basePos.up());
+
+		ServerPlayerEntity fakePlayer = FakePlayer.get(context.getWorld());
+
+		BlockPos fakePlayerPos = context.getAbsolutePos(basePos.add(2, 0, 2));
+		fakePlayer.setPosition(fakePlayerPos.getX(), fakePlayerPos.getY(), fakePlayerPos.getZ());
+
+		context.assertTrue(fakePlayer.interactionManager.tryBreakBlock(context.getAbsolutePos(basePos)), "Block was not broken");
+		context.expectBlock(Blocks.AIR, basePos);
 		context.complete();
 	}
 }

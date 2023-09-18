@@ -31,6 +31,7 @@ import static net.minecraft.item.ItemGroups.SEARCH;
 import static net.minecraft.item.ItemGroups.SPAWN_EGGS;
 import static net.minecraft.item.ItemGroups.TOOLS;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,7 +59,12 @@ public class ItemGroupsMixin {
 
 		int count = 0;
 
-		for (RegistryKey<ItemGroup> registryKey : Registries.ITEM_GROUP.getKeys()) {
+		// Sort the item groups to ensure they are in a deterministic order.
+		final List<RegistryKey<ItemGroup>> sortedItemGroups = Registries.ITEM_GROUP.getKeys().stream()
+				.sorted(Comparator.comparing(RegistryKey::getValue))
+				.toList();
+
+		for (RegistryKey<ItemGroup> registryKey : sortedItemGroups) {
 			final ItemGroup itemGroup = Registries.ITEM_GROUP.getOrThrow(registryKey);
 			final FabricItemGroup fabricItemGroup = (FabricItemGroup) itemGroup;
 
