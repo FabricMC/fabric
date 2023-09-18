@@ -71,7 +71,11 @@ public class WeightedBakedModelMixin implements FabricBakedModel {
 		Weighted.Present<BakedModel> selected = Weighting.getAt(this.models, Math.abs((int) randomSupplier.get().nextLong()) % this.totalWeight).orElse(null);
 
 		if (selected != null) {
-			selected.getData().emitBlockQuads(blockView, state, pos, randomSupplier, context);
+			selected.getData().emitBlockQuads(blockView, state, pos, () -> {
+				Random random = randomSupplier.get();
+				random.nextLong(); // Imitate vanilla modifying the random before passing it to the submodel
+				return random;
+			}, context);
 		}
 	}
 
@@ -80,7 +84,11 @@ public class WeightedBakedModelMixin implements FabricBakedModel {
 		Weighted.Present<BakedModel> selected = Weighting.getAt(this.models, Math.abs((int) randomSupplier.get().nextLong()) % this.totalWeight).orElse(null);
 
 		if (selected != null) {
-			selected.getData().emitItemQuads(stack, randomSupplier, context);
+			selected.getData().emitItemQuads(stack, () -> {
+				Random random = randomSupplier.get();
+				random.nextLong(); // Imitate vanilla modifying the random before passing it to the submodel
+				return random;
+			}, context);
 		}
 	}
 }
