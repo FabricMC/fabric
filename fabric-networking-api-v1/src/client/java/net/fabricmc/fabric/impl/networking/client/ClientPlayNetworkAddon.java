@@ -86,11 +86,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	 * @return true if the packet has been handled
 	 */
 	public boolean handle(PacketByteBufPayload payload) {
-		try {
-			return this.handle(payload.id(), payload.data());
-		} finally {
-			payload.data().release();
-		}
+		return this.handle(payload.id(), payload.data());
 	}
 
 	@Override
