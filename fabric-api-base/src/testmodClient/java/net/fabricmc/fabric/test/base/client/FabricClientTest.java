@@ -27,8 +27,12 @@ public interface FabricClientTest {
 		 */
 		GAME,
 		/**
-		 * Tests are ran from within a world.
+		 * Tests are ran from within a single player world.
 		 */
-		WORLD
+		WORLD,
+		/**
+		 * Tests are ran when connected to a multiplayer server.
+		 */
+		SERVER
 	}
 }

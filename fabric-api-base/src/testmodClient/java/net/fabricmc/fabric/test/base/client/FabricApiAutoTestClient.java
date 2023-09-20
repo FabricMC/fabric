@@ -33,7 +33,9 @@ import java.lang.reflect.Method;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.client.gui.screen.AccessibilityOnboardingScreen;
 import net.minecraft.client.gui.screen.ConfirmScreen;
@@ -111,10 +113,19 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 		executeTests(tests, FabricClientTest.Context.GAME);
 
 		loadWorld();
-
 		executeTests(tests, FabricClientTest.Context.WORLD);
-
 		quitWorld();
+
+		final String serverJar = System.getProperty("fabric.test.serverJar");
+
+		if (serverJar != null) {
+			var serverRunner = new ServerRunner(Paths.get(serverJar));
+            CompletableFuture<Void> server = serverRunner.run();
+			joinServer();
+			executeTests(tests, FabricClientTest.Context.SERVER);
+			var result = server.join();
+		}
+
 		quitGame();
 	}
 
@@ -151,6 +162,10 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 		openGameMenu();
 		takeScreenshot("game_menu");
 		clickScreenButton("menu.returnToMenu");
+	}
+
+	private void joinServer() {
+
 	}
 
 	private void quitGame() {

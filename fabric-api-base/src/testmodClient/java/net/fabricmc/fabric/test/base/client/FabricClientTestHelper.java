@@ -210,7 +210,9 @@ public final class FabricClientTestHelper {
 
 	public static void disableDebugHud() {
 		submitAndWait(client -> {
-			client.options.debugEnabled = false;
+			if (client.inGameHud.getDebugHud().shouldShowDebugHud()) {
+				client.inGameHud.getDebugHud().toggleDebugHud();
+			}
 			return null;
 		});
 	}
