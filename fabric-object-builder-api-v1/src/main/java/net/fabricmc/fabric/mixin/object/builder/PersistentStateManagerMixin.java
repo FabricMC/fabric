@@ -33,7 +33,7 @@ import net.minecraft.world.PersistentStateManager;
 @Mixin(PersistentStateManager.class)
 public class PersistentStateManagerMixin {
 	/**
-	 * Handle mods passing a null DataFixTypes to a PersistentState.Type
+	 * Handle mods passing a null DataFixTypes to a PersistentState.Type.
 	 */
 	@Inject(method = "readNbt", at = @At(value = "INVOKE", target = "Lnet/minecraft/nbt/NbtHelper;getDataVersion(Lnet/minecraft/nbt/NbtCompound;I)I"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
 	private void handleNullDataFixType(String id, DataFixTypes dataFixTypes, int currentSaveVersion, CallbackInfoReturnable<NbtCompound> cir, File file, FileInputStream fileInputStream, PushbackInputStream pushbackInputStream, NbtCompound nbtCompound) {
