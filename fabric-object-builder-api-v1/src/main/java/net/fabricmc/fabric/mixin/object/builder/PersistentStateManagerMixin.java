@@ -31,7 +31,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.PersistentStateManager;
 
 @Mixin(PersistentStateManager.class)
-public class PersistentStateManagerMixin {
+class PersistentStateManagerMixin {
 	/**
 	 * Handle mods passing a null DataFixTypes to a PersistentState.Type.
 	 */
