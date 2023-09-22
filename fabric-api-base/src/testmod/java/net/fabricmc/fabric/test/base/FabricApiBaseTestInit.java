@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.base;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
+import io.netty.util.ResourceLeakDetector;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import net.minecraft.text.Text;
@@ -28,6 +29,9 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 public class FabricApiBaseTestInit implements ModInitializer {
 	@Override
 	public void onInitialize() {
+		// Enable buffer leak detection for all buffers.
+		ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);
+
 		// Command to call audit the mixin environment
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			dispatcher.register(literal("audit_mixins").executes(context -> {

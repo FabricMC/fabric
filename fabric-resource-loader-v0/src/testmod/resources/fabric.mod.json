@@ -16,6 +16,9 @@
     ],
     "server": [
       "net.fabricmc.fabric.test.resource.loader.LanguageTestMod"
+    ],
+    "fabric-clienttest": [
+      "net.fabricmc.fabric.test.resource.loader.client.ResourceLoaderClientTest"
     ]
   }
 }

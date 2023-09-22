@@ -17,38 +17,63 @@
 package net.fabricmc.fabric.test.base.client;
 
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.clickScreenButton;
-import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.closeScreen;
+import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.disableDebugHud;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.enableDebugHud;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.openGameMenu;
-import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.openInventory;
-import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.setPerspective;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.submitAndWait;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.takeScreenshot;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForLoadingComplete;
+import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForPendingChunks;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForScreen;
-import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForWorldTicks;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import org.spongepowered.asm.mixin.MixinEnvironment;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.client.gui.screen.AccessibilityOnboardingScreen;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
-import net.minecraft.client.option.Perspective;
+import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class FabricApiAutoTestClient implements ClientModInitializer {
+	private static final String ENTRYPOINT_KEY = "fabric-clienttest";
+
 	@Override
 	public void onInitializeClient() {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) -> {
+			dispatcher.register(ClientCommandManager.literal("client_test").executes(context -> {
+				var thread = new Thread(() -> {
+					try {
+						final List<FabricClientTest> tests = FabricLoader.getInstance()
+								.getEntrypoints(ENTRYPOINT_KEY, FabricClientTest.class);
+						executeTests(tests, FabricClientTest.Context.WORLD);
+
+						context.getSource().sendFeedback(Text.literal("Complete"));
+					} catch (Throwable t) {
+						t.printStackTrace();
+						context.getSource().sendError(Text.literal(t.getMessage()));
+					}
+				});
+				thread.setName("Fabric Auto Test");
+				thread.start();
+				return 0;
+			}));
+		});
+
 		if (System.getProperty("fabric.autoTest") == null) {
 			return;
 		}
@@ -82,6 +107,29 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 			clickScreenButton("menu.singleplayer");
 		}
 
+		final List<FabricClientTest> tests = FabricLoader.getInstance()
+				.getEntrypoints(ENTRYPOINT_KEY, FabricClientTest.class);
+
+		executeTests(tests, FabricClientTest.Context.GAME);
+
+		loadWorld();
+		executeTests(tests, FabricClientTest.Context.WORLD);
+		quitWorld();
+
+		final String serverJar = System.getProperty("fabric.test.serverJar");
+
+		if (serverJar != null) {
+			var serverRunner = new ServerRunner(Paths.get(serverJar));
+            CompletableFuture<Void> server = serverRunner.run();
+			joinServer();
+			executeTests(tests, FabricClientTest.Context.SERVER);
+			var result = server.join();
+		}
+
+		quitGame();
+	}
+
+	private void loadWorld() {
 		if (!isDirEmpty(FabricLoader.getInstance().getGameDir().resolve("saves"))) {
 			waitForScreen(SelectWorldScreen.class);
 			takeScreenshot("select_world_screen");
@@ -104,33 +152,46 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 
 		{
 			enableDebugHud();
-			waitForWorldTicks(200);
+			waitForPendingChunks();
 			takeScreenshot("in_game_overworld");
+			disableDebugHud();
 		}
+	}
 
-		MixinEnvironment.getCurrentEnvironment().audit();
+	private void quitWorld() {
+		openGameMenu();
+		takeScreenshot("game_menu");
+		clickScreenButton("menu.returnToMenu");
+	}
 
-		{
-			// See if the player render events are working.
-			setPerspective(Perspective.THIRD_PERSON_BACK);
-			takeScreenshot("in_game_overworld_third_person");
-		}
+	private void joinServer() {
 
-		{
-			openInventory();
-			takeScreenshot("in_game_inventory");
-			closeScreen();
-		}
+	}
 
-		{
-			openGameMenu();
-			takeScreenshot("game_menu");
-			clickScreenButton("menu.returnToMenu");
-		}
-
+	private void quitGame() {
 		{
 			waitForScreen(TitleScreen.class);
 			clickScreenButton("menu.quit");
+		}
+	}
+
+	private void executeTests(List<FabricClientTest> tests, FabricClientTest.Context context) {
+		for (FabricClientTest test : tests) {
+			if (!test.getContext().equals(context)) {
+				continue;
+			}
+
+			for (Method method : test.getClass().getMethods()) {
+				if (!method.isAnnotationPresent(ClientTest.class)) {
+					continue;
+				}
+
+				try {
+					method.invoke(test);
+				} catch (IllegalAccessException | InvocationTargetException e) {
+					throw new RuntimeException("Failed to invoke test method", e);
+				}
+			}
 		}
 	}
 

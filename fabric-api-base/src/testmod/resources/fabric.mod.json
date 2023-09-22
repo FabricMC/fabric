@@ -17,6 +17,9 @@
     ],
     "fabric-gametest" : [
       "net.fabricmc.fabric.test.base.FabricApiBaseGameTest"
+    ],
+    "fabric-clienttest" : [
+      "net.fabricmc.fabric.test.base.client.FabricBaseInWorldTests"
     ]
   },
   "mixins": [
