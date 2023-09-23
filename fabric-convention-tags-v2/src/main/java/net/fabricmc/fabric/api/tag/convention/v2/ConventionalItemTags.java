@@ -29,6 +29,10 @@ public final class ConventionalItemTags {
 	private ConventionalItemTags() {
 	}
 
+	// Natural stone-like blocks that can spawn in-world such as Stone, Granite, Diorite, and others.
+	// Not variations like Stone Bricks or Diorite Slabs.
+	public static final TagKey<Item> STONES = register("stones");
+
 	// Tool tags
 	public static final TagKey<Item> TOOLS = register("tools");
 	public static final TagKey<Item> SHEARS_TOOLS = register("tools/shears");
@@ -99,6 +103,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> WOODEN_BARRELS = register("barrels/wooden");
 	public static final TagKey<Item> BOOKSHELVES = register("bookshelves");
 	public static final TagKey<Item> CHESTS = register("chests");
+	public static final TagKey<Item> WOODEN_CHESTS = register("chests/wooden");
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Item> GLASS_PANES = register("glass_panes");
 	public static final TagKey<Item> SHULKER_BOXES = register("shulker_boxes");
@@ -158,6 +163,11 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> RED_DYED = register("dyed/red");
 	public static final TagKey<Item> WHITE_DYED = register("dyed/white");
 	public static final TagKey<Item> YELLOW_DYED = register("dyed/yellow");
+
+	// Other
+	public static final TagKey<Item> STRINGS = register("strings");
+	public static final TagKey<Item> RODS = register("rods");
+	public static final TagKey<Item> WOODEN_RODS = register("rods/wooden");
 
 	private static TagKey<Item> register(String tagID) {
 		return TagRegistration.ITEM_TAG_REGISTRATION.registerC(tagID);

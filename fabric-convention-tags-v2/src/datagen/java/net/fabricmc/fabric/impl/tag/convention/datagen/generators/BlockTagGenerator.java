@@ -56,6 +56,16 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup registries) {
+		getOrCreateTagBuilder(ConventionalBlockTags.STONES)
+				.add(Blocks.ANDESITE)
+				.add(Blocks.DIORITE)
+				.add(Blocks.GRANITE)
+				.add(Blocks.INFESTED_STONE)
+				.add(Blocks.STONE)
+				.add(Blocks.DEEPSLATE)
+				.add(Blocks.INFESTED_DEEPSLATE)
+				.add(Blocks.TUFF);
+
 		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES)
 				.add(Blocks.NETHER_QUARTZ_ORE);
 		getOrCreateTagBuilder(ConventionalBlockTags.NETHERITE_SCRAP_ORES)
@@ -72,10 +82,12 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.addOptionalTag(ConventionalBlockTags.QUARTZ_ORES)
 				.addOptionalTag(ConventionalBlockTags.NETHERITE_SCRAP_ORES);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.CHESTS)
+		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_CHESTS)
 				.add(Blocks.CHEST)
-				.add(Blocks.ENDER_CHEST)
 				.add(Blocks.TRAPPED_CHEST);
+		getOrCreateTagBuilder(ConventionalBlockTags.CHESTS)
+				.addTag(ConventionalBlockTags.WOODEN_CHESTS)
+				.add(Blocks.ENDER_CHEST);
 		getOrCreateTagBuilder(ConventionalBlockTags.BOOKSHELVES)
 				.add(Blocks.BOOKSHELF);
 		generateGlassTags();
@@ -330,6 +342,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		getOrCreateTagBuilder(ConventionalBlockTags.RELOCATION_NOT_SUPPORTED).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "movement_restricted"));
 		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "quartz_ores"));
 		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_BARRELS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "wooden_barrels"));
+		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_CHESTS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "wooden_chests"));
 		getOrCreateTagBuilder(ConventionalBlockTags.BLOCKS_SANDSTONE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "sandstone_blocks"));
 		getOrCreateTagBuilder(ConventionalBlockTags.SLABS_SANDSTONE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "sandstone_slabs"));
 		getOrCreateTagBuilder(ConventionalBlockTags.STAIRS_SANDSTONE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "sandstone_stairs"));

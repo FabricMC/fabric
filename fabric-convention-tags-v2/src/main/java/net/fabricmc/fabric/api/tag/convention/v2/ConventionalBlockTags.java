@@ -30,6 +30,10 @@ public final class ConventionalBlockTags {
 	private ConventionalBlockTags() {
 	}
 
+	// Natural stone-like blocks that can spawn in-world such as Stone, Granite, Diorite, and others.
+	// Not variations like Stone Bricks or Diorite Slabs.
+	public static final TagKey<Block> STONES = register("stones");
+
 	// Ores and ingots - broad categories
 	public static final TagKey<Block> ORES = register("ores");
 
@@ -41,6 +45,7 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> WOODEN_BARRELS = register("barrels/wooden");
 	public static final TagKey<Block> BOOKSHELVES = register("bookshelves");
 	public static final TagKey<Block> CHESTS = register("chests");
+	public static final TagKey<Block> WOODEN_CHESTS = register("chests/wooden");
 	public static final TagKey<Block> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Block> GLASS_PANES = register("glass_panes");
 	public static final TagKey<Block> SHULKER_BOXES = register("shulker_boxes");

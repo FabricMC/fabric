@@ -45,18 +45,21 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		generateDyeTags();
 		generateDyedTags();
 		generateVillagerJobSites();
+		generateOtherTags();
 		copyItemTags();
 		generateBackwardsCompatTags();
 	}
 
 	private void copyItemTags() {
+		copy(ConventionalBlockTags.STONES, ConventionalItemTags.STONES);
 		copy(ConventionalBlockTags.BARRELS, ConventionalItemTags.BARRELS);
+		copy(ConventionalBlockTags.WOODEN_BARRELS, ConventionalItemTags.WOODEN_BARRELS);
 		copy(ConventionalBlockTags.BOOKSHELVES, ConventionalItemTags.BOOKSHELVES);
 		copy(ConventionalBlockTags.CHESTS, ConventionalItemTags.CHESTS);
+		copy(ConventionalBlockTags.WOODEN_CHESTS, ConventionalItemTags.WOODEN_CHESTS);
 		copy(ConventionalBlockTags.GLASS_BLOCKS, ConventionalItemTags.GLASS_BLOCKS);
 		copy(ConventionalBlockTags.GLASS_PANES, ConventionalItemTags.GLASS_PANES);
 		copy(ConventionalBlockTags.SHULKER_BOXES, ConventionalItemTags.SHULKER_BOXES);
-		copy(ConventionalBlockTags.WOODEN_BARRELS, ConventionalItemTags.WOODEN_BARRELS);
 
 		copy(ConventionalBlockTags.BUDDING_BLOCKS, ConventionalItemTags.BUDDING_BLOCKS);
 		copy(ConventionalBlockTags.BUDS, ConventionalItemTags.BUDS);
@@ -259,6 +262,16 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.forEach(getOrCreateTagBuilder(ConventionalItemTags.VILLAGER_JOB_SITES)::add);
 	}
 
+	private void generateOtherTags() {
+		getOrCreateTagBuilder(ConventionalItemTags.STRINGS)
+				.add(Items.STRING);
+		getOrCreateTagBuilder(ConventionalItemTags.WOODEN_RODS)
+				.add(Items.STICK);
+		getOrCreateTagBuilder(ConventionalItemTags.RODS)
+				.addOptionalTag(ConventionalItemTags.WOODEN_RODS)
+				.add(Items.BLAZE_ROD);
+	}
+
 	private void generateDyedTags() {
 		// Cannot pull entries from block tag because Wall Banners do not have an item form
 		getOrCreateTagBuilder(ConventionalItemTags.BLACK_DYED)
@@ -380,6 +393,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
 		// TODO: Remove backwards compat tag entries in 1.22
 
+		getOrCreateTagBuilder(ConventionalItemTags.WOODEN_BARRELS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "wooden_barrels"));
+		getOrCreateTagBuilder(ConventionalItemTags.WOODEN_CHESTS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "wooden_chests"));
 		getOrCreateTagBuilder(ConventionalItemTags.BLACK_DYES).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "black_dyes"));
 		getOrCreateTagBuilder(ConventionalItemTags.BLUE_DYES).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "blue_dyes"));
 		getOrCreateTagBuilder(ConventionalItemTags.BROWN_DYES).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "brown_dyes"));
@@ -399,6 +414,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.IRON_RAW_MATERIALS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "raw_iron_ores"));
 		getOrCreateTagBuilder(ConventionalItemTags.COPPER_RAW_MATERIALS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "raw_copper_ores"));
 		getOrCreateTagBuilder(ConventionalItemTags.GOLD_RAW_MATERIALS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "raw_gold_ores"));
+		getOrCreateTagBuilder(ConventionalItemTags.GLOWSTONE_DUSTS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "glowstone_dusts"));
+		getOrCreateTagBuilder(ConventionalItemTags.REDSTONE_DUSTS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "redstone_dusts"));
 		getOrCreateTagBuilder(ConventionalItemTags.DIAMOND_GEMS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "diamonds"));
 		getOrCreateTagBuilder(ConventionalItemTags.LAPIS_GEMS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "lapis"));
 		getOrCreateTagBuilder(ConventionalItemTags.EMERALD_GEMS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "emeralds"));
@@ -407,5 +424,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.SPEARS_TOOLS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "spears"));
 		getOrCreateTagBuilder(ConventionalItemTags.BOWS_TOOLS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "bows"));
 		getOrCreateTagBuilder(ConventionalItemTags.SHIELDS_TOOLS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "shields"));
+		getOrCreateTagBuilder(ConventionalItemTags.STRINGS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "strings"));
 	}
 }
