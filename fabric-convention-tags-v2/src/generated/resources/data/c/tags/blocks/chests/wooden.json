@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:chest",
+    "minecraft:trapped_chest",
+    {
+      "id": "#c:wooden_chests",
+      "required": false
+    }
+  ]
+}

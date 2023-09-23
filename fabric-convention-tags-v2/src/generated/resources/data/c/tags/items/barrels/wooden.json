@@ -5,6 +5,10 @@
     {
       "id": "#c:wooden_barrels",
       "required": false
+    },
+    {
+      "id": "#c:wooden_barrels",
+      "required": false
     }
   ]
 }

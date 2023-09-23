@@ -1,8 +1,7 @@
 {
   "replace": false,
   "values": [
-    "minecraft:chest",
-    "minecraft:ender_chest",
-    "minecraft:trapped_chest"
+    "#c:chests/wooden",
+    "minecraft:ender_chest"
   ]
 }

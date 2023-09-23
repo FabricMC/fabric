@@ -1,10 +1,10 @@
 {
   "replace": false,
   "values": [
-    "minecraft:redstone",
     {
-      "id": "#c:redstone_dusts",
+      "id": "#c:rods/wooden",
       "required": false
-    }
+    },
+    "minecraft:blaze_rod"
   ]
 }

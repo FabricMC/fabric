@@ -1,9 +1,9 @@
 {
   "replace": false,
   "values": [
-    "minecraft:redstone",
+    "minecraft:string",
     {
-      "id": "#c:redstone_dusts",
+      "id": "#c:strings",
       "required": false
     }
   ]
