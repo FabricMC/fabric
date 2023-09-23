@@ -192,7 +192,7 @@ public class ConventionLogWarnings implements ModInitializer {
 			if (!legacyTags.isEmpty()) {
 				StringBuilder stringBuilder = new StringBuilder();
 				stringBuilder.append("""
-						\n	Dev warning - Legacy Tags detected. Please migrate your old `c` tags to our new `c` tags that follows better conventions!
+						\n	Dev warning - Legacy Tags detected. Please migrate your old tags to our new format that follows better conventions!
 							See classes under net.fabricmc.fabric.api.tag.convention.v2 package for all tags.
 
 							NOTE: Many tags have been moved around or renamed. Some new ones were added so please review the new tags.
