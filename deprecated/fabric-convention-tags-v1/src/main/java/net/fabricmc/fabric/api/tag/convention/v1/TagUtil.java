@@ -27,6 +27,9 @@ import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 
+/**
+ * @deprecated Please use {@link net.fabricmc.fabric.api.tag.convention.v2.TagUtil}
+ */
 @Deprecated
 public final class TagUtil {
 	private TagUtil() {
