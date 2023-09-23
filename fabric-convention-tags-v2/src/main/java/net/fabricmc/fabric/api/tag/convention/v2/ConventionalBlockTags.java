@@ -36,10 +36,10 @@ public final class ConventionalBlockTags {
 	 */
 	public static final TagKey<Block> STONES = register("stones");
 
-	// Ores and ingots - broad categories
+	// Ores - broad categories
 	public static final TagKey<Block> ORES = register("ores");
 
-	// Ores and ingots - vanilla instances
+	// Ores - vanilla instances
 	public static final TagKey<Block> QUARTZ_ORES = register("ores/quartz");
 	public static final TagKey<Block> NETHERITE_SCRAP_ORES = register("ores/netherite_scrap");
 
