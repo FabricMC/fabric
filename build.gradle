@@ -195,6 +195,10 @@ allprojects {
 		}
 	}
 
+	loom.runs.configureEach {
+		vmArg("-enableassertions")
+	}
+
 	allprojects.each { p ->
 		if (project.name == "deprecated") {
 			return
@@ -501,7 +505,8 @@ tasks.register('runProductionAutoTestClient', JavaExec) {
 
 		jvmArgs(
 				"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
-				"-Dfabric.autoTest"
+				"-Dfabric.autoTest",
+				"-enableassertions"
 				)
 	}
 }
@@ -532,7 +537,8 @@ tasks.register('runProductionAutoTestServer', JavaExec) {
 
 		jvmArgs(
 				"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
-				"-Dfabric.autoTest"
+				"-Dfabric.autoTest",
+				"-enableassertions"
 				)
 
 		args("nogui")
