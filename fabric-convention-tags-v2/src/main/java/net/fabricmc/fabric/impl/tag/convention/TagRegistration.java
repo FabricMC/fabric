@@ -31,7 +31,7 @@ import net.minecraft.world.biome.Biome;
 
 import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
 
-public class TagRegistration<T> {
+public record TagRegistration<T>(RegistryKey<Registry<T>> registryKey) {
 	public static final TagRegistration<Item> ITEM_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.ITEM);
 	public static final TagRegistration<Block> BLOCK_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.BLOCK);
 	public static final TagRegistration<BlockEntityType<?>> BLOCK_ENTITY_TYPE_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.BLOCK_ENTITY_TYPE);
@@ -39,11 +39,6 @@ public class TagRegistration<T> {
 	public static final TagRegistration<Fluid> FLUID_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.FLUID);
 	public static final TagRegistration<EntityType<?>> ENTITY_TYPE_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.ENTITY_TYPE);
 	public static final TagRegistration<Enchantment> ENCHANTMENT_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.ENCHANTMENT);
-	private final RegistryKey<Registry<T>> registryKey;
-
-	private TagRegistration(RegistryKey<Registry<T>> registry) {
-		registryKey = registry;
-	}
 
 	public TagKey<T> registerFabric(String tagId) {
 		return TagKey.of(registryKey, new Identifier(TagUtil.FABRIC_TAG_NAMESPACE, tagId));
