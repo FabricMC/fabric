@@ -46,8 +46,17 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> SHULKER_BOXES = register("shulker_boxes");
 
 	// Related to budding mechanics
+	/**
+	 * For blocks that are similar to amethyst where their budding block produces buds and cluster blocks
+	 */
 	public static final TagKey<Block> BUDDING_BLOCKS = register("budding_blocks");
+	/**
+	 * For blocks that are similar to amethyst where they have buddings forming from budding blocks
+	 */
 	public static final TagKey<Block> BUDS = register("buds");
+	/**
+	 * For blocks that are similar to amethyst where they have clusters forming from budding blocks
+	 */
 	public static final TagKey<Block> CLUSTERS = register("clusters");
 
 	public static final TagKey<Block> VILLAGER_JOB_SITES = register("villager_job_sites");
