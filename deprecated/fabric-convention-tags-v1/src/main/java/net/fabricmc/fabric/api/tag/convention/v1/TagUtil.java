@@ -16,16 +16,10 @@
 
 package net.fabricmc.fabric.api.tag.convention.v1;
 
-import java.util.Objects;
-import java.util.Optional;
-
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
 
 /**
  * @deprecated Please use {@link net.fabricmc.fabric.api.tag.convention.v2.TagUtil}
@@ -38,38 +32,17 @@ public final class TagUtil {
 	/**
 	 * @deprecated Please use {@link net.fabricmc.fabric.api.tag.convention.v2.TagUtil#isIn}
 	 */
+	@Deprecated
 	public static <T> boolean isIn(TagKey<T> tagKey, T entry) {
-		return isIn(null, tagKey, entry);
+		return net.fabricmc.fabric.api.tag.convention.v2.TagUtil.isIn(null, tagKey, entry);
 	}
 
 	/**
 	 * @deprecated Please use {@link net.fabricmc.fabric.api.tag.convention.v2.TagUtil#isIn}
 	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public static <T> boolean isIn(@Nullable DynamicRegistryManager registryManager, TagKey<T> tagKey, T entry) {
-		Optional<? extends Registry<?>> maybeRegistry;
-		Objects.requireNonNull(tagKey);
-		Objects.requireNonNull(entry);
-
-		if (registryManager != null) {
-			maybeRegistry = registryManager.getOptional(tagKey.registry());
-		} else {
-			maybeRegistry = Registries.REGISTRIES.getOrEmpty(tagKey.registry().getValue());
-		}
-
-		if (maybeRegistry.isPresent()) {
-			if (tagKey.isOf(maybeRegistry.get().getKey())) {
-				Registry<T> registry = (Registry<T>) maybeRegistry.get();
-
-				Optional<RegistryKey<T>> maybeKey = registry.getKey(entry);
-
-				// Check synced tag
-				if (maybeKey.isPresent()) {
-					return registry.entryOf(maybeKey.get()).isIn(tagKey);
-				}
-			}
-		}
-
-		return false;
+		return net.fabricmc.fabric.api.tag.convention.v2.TagUtil.isIn(registryManager, tagKey, entry);
 	}
 }
