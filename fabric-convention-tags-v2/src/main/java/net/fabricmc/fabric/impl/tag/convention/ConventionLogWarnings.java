@@ -70,7 +70,7 @@ public class ConventionLogWarnings implements ModInitializer {
 					stringBuilder.append("""
 							\n	Dev warning - Legacy Tags detected. Please migrate your old `c` tags to our new `c` tags that follows better conventions! See classes under net.fabricmc.fabric.api.tag.convention.v1 package for all tags.
 								NOTE: Many tags have been moved around or renamed. Some new ones were added so please review the new tags.
-								And make sure you follow tag conventions for new tags! The convention is `c` with generally plural named folders and tag files. (Adjective folder names tend to be singular)
+								And make sure you follow tag conventions for new tags! The convention is `c` with nouns generally being plural and adjectives being singular.
 								You can disable this message in Fabric API's properties config file by setting log-legacy-tag-warnings to "SILENCED" or see individual tags with "DEV_VERBOSE".
 							""");
 
