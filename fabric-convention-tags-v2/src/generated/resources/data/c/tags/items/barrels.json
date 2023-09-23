@@ -1,10 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#c:barrels/wooden",
-    {
-      "id": "#c:barrels",
-      "required": false
-    }
+    "#c:barrels/wooden"
   ]
 }

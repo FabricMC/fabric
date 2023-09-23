@@ -1,10 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:looting",
-    {
-      "id": "#c:looting",
-      "required": false
-    }
+    "minecraft:looting"
   ]
 }

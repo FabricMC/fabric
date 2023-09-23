@@ -2,10 +2,6 @@
   "replace": false,
   "values": [
     "minecraft:frozen_peaks",
-    "minecraft:ice_spikes",
-    {
-      "id": "#c:is_icy",
-      "required": false
-    }
+    "minecraft:ice_spikes"
   ]
 }

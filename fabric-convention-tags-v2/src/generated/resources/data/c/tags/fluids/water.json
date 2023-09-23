@@ -4,10 +4,6 @@
     {
       "id": "#minecraft:water",
       "required": false
-    },
-    {
-      "id": "#c:water",
-      "required": false
     }
   ]
 }

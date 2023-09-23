@@ -1,14 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:raw_copper_block",
-    {
-      "id": "#c:raw_blocks/copper",
-      "required": false
-    },
-    {
-      "id": "#c:raw_copper_blocks",
-      "required": false
-    }
+    "minecraft:raw_copper_block"
   ]
 }

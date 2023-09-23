@@ -5,10 +5,6 @@
       "id": "#minecraft:is_beach",
       "required": false
     },
-    "minecraft:stony_shore",
-    {
-      "id": "#c:is_beach",
-      "required": false
-    }
+    "minecraft:stony_shore"
   ]
 }

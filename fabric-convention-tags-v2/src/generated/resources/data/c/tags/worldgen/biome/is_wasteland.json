@@ -1,9 +1,4 @@
 {
   "replace": false,
-  "values": [
-    {
-      "id": "#c:is_wasteland",
-      "required": false
-    }
-  ]
+  "values": []
 }

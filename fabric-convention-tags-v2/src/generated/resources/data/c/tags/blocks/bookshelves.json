@@ -1,10 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:bookshelf",
-    {
-      "id": "#c:bookshelves",
-      "required": false
-    }
+    "minecraft:bookshelf"
   ]
 }

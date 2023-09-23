@@ -20,6 +20,7 @@ import static net.fabricmc.fabric.impl.tag.convention.ConventionLogWarningConfig
 import static net.fabricmc.fabric.impl.tag.convention.ConventionLogWarningConfigs.LOG_WARNING_MODES;
 
 import java.util.List;
+import java.util.Set;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.slf4j.Logger;
@@ -33,8 +34,72 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 
+// To be removed in 1.22 Minecraft
 public class ConventionLogWarnings implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ConventionLogWarnings.class);
+	private static final Set<String> LEGACY_C_TAGS = Set.of(
+			"movement_restricted",
+			"quartz_ores",
+			"wooden_barrels",
+			"sandstone_blocks",
+			"sandstone_slabs",
+			"sandstone_stairs",
+			"red_sandstone_blocks",
+			"red_sandstone_slabs",
+			"red_sandstone_stairs",
+			"uncolored_sandstone_blocks",
+			"uncolored_sandstone_slabs",
+			"uncolored_sandstone_stairs",
+
+			"black_dyes",
+			"blue_dyes",
+			"brown_dyes",
+			"green_dyes",
+			"red_dyes",
+			"white_dyes",
+			"yellow_dyes",
+			"light_blue_dyes",
+			"light_gray_dyes",
+			"lime_dyes",
+			"magenta_dyes",
+			"orange_dyes",
+			"pink_dyes",
+			"cyan_dyes",
+			"gray_dyes",
+			"purple_dyes",
+			"raw_iron_ores",
+			"raw_copper_ores",
+			"raw_gold_ores",
+			"diamonds",
+			"lapis",
+			"emeralds",
+			"quartz",
+			"shears",
+			"spears",
+			"bows",
+			"shields",
+
+			"in_nether",
+			"in_the_end",
+			"in_the_overworld",
+			"caves",
+			"climate_cold",
+			"climate_temperate",
+			"climate_hot",
+			"climate_wet",
+			"climate_dry",
+			"vegetation_dense",
+			"vegetation_sparse",
+			"tree_coniferous",
+			"tree_deciduous",
+			"tree_jungle",
+			"tree_savanna",
+			"mountain_peak",
+			"mountain_slope",
+			"end_islands",
+			"nether_forests",
+			"flower_forests"
+	);
 
 	@Override
 	public void onInitialize() {
@@ -43,7 +108,7 @@ public class ConventionLogWarnings implements ModInitializer {
 
 	// Remove in 1.22
 	private static void setupLegacyTagWarning() {
-		// Log tags that are still using legacy 'c' namespace
+		// Log tags that are still using legacy conventions under 'c' namespace
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			boolean isConfigSetToDev =
 					LOG_LEGACY_WARNING_MODE == LOG_WARNING_MODES.DEV_SHORT
@@ -57,8 +122,8 @@ public class ConventionLogWarnings implements ModInitializer {
 				dynamicRegistries.streamAllRegistries().forEach(registryEntry -> {
 					if (registryEntry.key().getValue().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
 						registryEntry.value().streamTags().forEach(tagKey -> {
-							// Grab tags under 'c' namespace
-							if (tagKey.id().getNamespace().equals("c")) {
+							// Grab legacy tags under 'c' namespace
+							if (tagKey.id().getNamespace().equals("c") && LEGACY_C_TAGS.contains(tagKey.id().getPath())) {
 								legacyTags.add(tagKey);
 							}
 						});

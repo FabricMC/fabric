@@ -3,10 +3,6 @@
   "values": [
     "minecraft:lingering_potion",
     "minecraft:splash_potion",
-    "minecraft:potion",
-    {
-      "id": "#c:potions",
-      "required": false
-    }
+    "minecraft:potion"
   ]
 }

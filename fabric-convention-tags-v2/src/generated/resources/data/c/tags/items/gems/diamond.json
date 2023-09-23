@@ -3,10 +3,6 @@
   "values": [
     "minecraft:diamond",
     {
-      "id": "#c:gems/diamond",
-      "required": false
-    },
-    {
       "id": "#c:diamonds",
       "required": false
     }

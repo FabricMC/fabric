@@ -288,30 +288,7 @@ public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_NETHER).addOptionalTag(new Identifier("c", "in_nether"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_THE_END).addOptionalTag(new Identifier("c", "in_the_end"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_OVERWORLD).addOptionalTag(new Identifier("c", "in_the_overworld"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_TAIGA);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_EXTREME_HILLS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_WINDSWEPT);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_JUNGLE);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_PLAINS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_SAVANNA);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_ICY);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_AQUATIC_ICY);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_SNOWY);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_BEACH);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_FOREST);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_BIRCH_FOREST);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_OCEAN);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_DESERT);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_RIVER);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_SWAMP);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_MUSHROOM);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_UNDERGROUND);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_MOUNTAIN);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_BADLANDS).addOptionalTag(new Identifier("c", "is_mesa"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_CAVE).addOptionalTag(new Identifier("c", "caves"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_VOID);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_DEEP_OCEAN);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_SHALLOW_OCEAN);
 		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_COLD).addOptionalTag(new Identifier("c", "climate_cold"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_TEMPERATE).addOptionalTag(new Identifier("c", "climate_temperate"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.OVERWORLD_IS_HOT).addOptionalTag(new Identifier("c", "climate_hot"));
@@ -323,20 +300,10 @@ public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilder(ConventionalBiomeTags.DECIDUOUS_IS_TREE).addOptionalTag(new Identifier("c", "tree_deciduous"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.JUNGLE_IS_TREE).addOptionalTag(new Identifier("c", "tree_jungle"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.SAVANNA_IS_TREE).addOptionalTag(new Identifier("c", "tree_savanna"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_FLORAL);
 		getOrCreateTagBuilder(ConventionalBiomeTags.PEAK_IS_MOUNTAIN).addOptionalTag(new Identifier("c", "mountain_peak"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.SLOPE_IS_MOUNTAIN).addOptionalTag(new Identifier("c", "mountain_slope"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_AQUATIC);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_DEAD);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_WASTELAND);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_END_ISLAND).addOptionalTag(new Identifier("c", "end_islands"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_NETHER_FOREST).addOptionalTag(new Identifier("c", "nether_forests"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_SNOWY_PLAINS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBiomeTags.IS_STONY_SHORES);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_FLOWER_FOREST).addOptionalTag(new Identifier("c", "flower_forests"));
-	}
-
-	private FabricTagBuilder getOrCreateTagBuilderWithOptionalLegacy(TagKey<Biome> tag) {
-		return getOrCreateTagBuilder(tag).addOptionalTag(new Identifier("c", tag.id().getPath()));
 	}
 }

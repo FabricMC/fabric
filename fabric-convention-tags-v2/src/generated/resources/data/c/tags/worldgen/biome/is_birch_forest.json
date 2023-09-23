@@ -2,10 +2,6 @@
   "replace": false,
   "values": [
     "minecraft:birch_forest",
-    "minecraft:old_growth_birch_forest",
-    {
-      "id": "#c:is_birch_forest",
-      "required": false
-    }
+    "minecraft:old_growth_birch_forest"
   ]
 }

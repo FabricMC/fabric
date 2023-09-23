@@ -56,17 +56,5 @@ public class EnchantmentTagGenerator extends FabricTagProvider.EnchantmentTagPro
 				.add(Enchantments.PROJECTILE_PROTECTION)
 				.add(Enchantments.FIRE_PROTECTION)
 				.add(Enchantments.RESPIRATION);
-
-		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
-		// TODO: Remove backwards compat tag entries in 1.22
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalEnchantmentTags.INCREASES_BLOCK_DROPS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalEnchantmentTags.INCREASES_ENTITY_DROPS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalEnchantmentTags.WEAPON_DAMAGE_ENHANCEMENT);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalEnchantmentTags.ENTITY_MOVEMENT_ENHANCEMENT);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENT);
-	}
-
-	private FabricTagBuilder getOrCreateTagBuilderWithOptionalLegacy(TagKey<Enchantment> tag) {
-		return getOrCreateTagBuilder(tag).addOptionalTag(new Identifier("c", tag.id().getPath()));
 	}
 }

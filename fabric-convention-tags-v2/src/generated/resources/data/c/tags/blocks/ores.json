@@ -40,10 +40,6 @@
     {
       "id": "#c:ores/netherite_scrap",
       "required": false
-    },
-    {
-      "id": "#c:ores",
-      "required": false
     }
   ]
 }

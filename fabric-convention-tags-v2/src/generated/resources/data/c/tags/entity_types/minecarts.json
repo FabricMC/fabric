@@ -7,10 +7,6 @@
     "minecraft:furnace_minecart",
     "minecraft:command_block_minecart",
     "minecraft:hopper_minecart",
-    "minecraft:spawner_minecart",
-    {
-      "id": "#c:minecarts",
-      "required": false
-    }
+    "minecraft:spawner_minecart"
   ]
 }

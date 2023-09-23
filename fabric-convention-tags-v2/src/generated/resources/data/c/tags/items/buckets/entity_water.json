@@ -6,14 +6,6 @@
     "minecraft:pufferfish_bucket",
     "minecraft:tropical_fish_bucket",
     "minecraft:salmon_bucket",
-    "minecraft:tadpole_bucket",
-    {
-      "id": "#c:buckets/entity_water",
-      "required": false
-    },
-    {
-      "id": "#c:entity_water_buckets",
-      "required": false
-    }
+    "minecraft:tadpole_bucket"
   ]
 }

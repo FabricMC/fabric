@@ -41,16 +41,5 @@ public class FluidTagGenerator extends FabricTagProvider.FluidTagProvider {
 				.addOptionalTag(FluidTags.LAVA);
 		getOrCreateTagBuilder(ConventionalFluidTags.MILK);
 		getOrCreateTagBuilder(ConventionalFluidTags.HONEY);
-
-		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
-		// TODO: Remove backwards compat tag entries in 1.22
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalFluidTags.WATER);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalFluidTags.LAVA);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalFluidTags.MILK);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalFluidTags.HONEY);
-	}
-
-	private FabricTagBuilder getOrCreateTagBuilderWithOptionalLegacy(TagKey<Fluid> tag) {
-		return getOrCreateTagBuilder(tag).addOptionalTag(new Identifier("c", tag.id().getPath()));
 	}
 }

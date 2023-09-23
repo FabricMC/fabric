@@ -4,10 +4,6 @@
     "minecraft:diamond",
     "minecraft:emerald",
     "minecraft:amethyst_shard",
-    "minecraft:lapis_lazuli",
-    {
-      "id": "#c:gems",
-      "required": false
-    }
+    "minecraft:lapis_lazuli"
   ]
 }

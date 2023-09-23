@@ -1,10 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:the_void",
-    {
-      "id": "#c:is_void",
-      "required": false
-    }
+    "minecraft:the_void"
   ]
 }

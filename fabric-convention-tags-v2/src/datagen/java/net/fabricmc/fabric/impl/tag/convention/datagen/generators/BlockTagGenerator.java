@@ -329,17 +329,6 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 
 		getOrCreateTagBuilder(ConventionalBlockTags.RELOCATION_NOT_SUPPORTED).addOptionalTag(new Identifier("c", "movement_restricted"));
 		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES).addOptionalTag(new Identifier("c", "quartz_ores"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBlockTags.ORES);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBlockTags.BARRELS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBlockTags.CHESTS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBlockTags.BOOKSHELVES);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBlockTags.VILLAGER_JOB_SITES);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBlockTags.BUDDING_BLOCKS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBlockTags.BUDS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBlockTags.CLUSTERS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBlockTags.SHULKER_BOXES);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBlockTags.GLASS_BLOCKS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalBlockTags.GLASS_PANES);
 		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_BARRELS).addOptionalTag(new Identifier("c", "wooden_barrels"));
 		getOrCreateTagBuilder(ConventionalBlockTags.BLOCKS_SANDSTONE).addOptionalTag(new Identifier("c", "sandstone_blocks"));
 		getOrCreateTagBuilder(ConventionalBlockTags.SLABS_SANDSTONE).addOptionalTag(new Identifier("c", "sandstone_slabs"));
@@ -350,9 +339,5 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
 		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_BLOCKS_SANDSTONE).addOptionalTag(new Identifier("c", "uncolored_sandstone_blocks"));
 		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SLABS_SANDSTONE).addOptionalTag(new Identifier("c", "uncolored_sandstone_slabs"));
 		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_STAIRS_SANDSTONE).addOptionalTag(new Identifier("c", "uncolored_sandstone_stairs"));
-	}
-
-	private FabricTagBuilder getOrCreateTagBuilderWithOptionalLegacy(TagKey<Block> tag) {
-		return getOrCreateTagBuilder(tag).addOptionalTag(new Identifier("c", tag.id().getPath()));
 	}
 }

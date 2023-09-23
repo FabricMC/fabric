@@ -40,10 +40,6 @@
     "minecraft:suspicious_stew",
     "minecraft:sweet_berries",
     "minecraft:glow_berries",
-    "minecraft:honey_bottle",
-    {
-      "id": "#c:foods",
-      "required": false
-    }
+    "minecraft:honey_bottle"
   ]
 }

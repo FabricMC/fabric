@@ -4,10 +4,6 @@
     "minecraft:copper_ingot",
     "minecraft:gold_ingot",
     "minecraft:iron_ingot",
-    "minecraft:netherite_ingot",
-    {
-      "id": "#c:ingots",
-      "required": false
-    }
+    "minecraft:netherite_ingot"
   ]
 }

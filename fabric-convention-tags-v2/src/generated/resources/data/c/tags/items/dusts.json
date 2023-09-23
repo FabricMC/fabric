@@ -2,10 +2,6 @@
   "replace": false,
   "values": [
     "minecraft:glowstone_dust",
-    "minecraft:redstone",
-    {
-      "id": "#c:dusts",
-      "required": false
-    }
+    "minecraft:redstone"
   ]
 }

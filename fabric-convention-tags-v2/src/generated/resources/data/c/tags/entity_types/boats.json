@@ -2,10 +2,6 @@
   "replace": false,
   "values": [
     "minecraft:boat",
-    "minecraft:chest_boat",
-    {
-      "id": "#c:boats",
-      "required": false
-    }
+    "minecraft:chest_boat"
   ]
 }

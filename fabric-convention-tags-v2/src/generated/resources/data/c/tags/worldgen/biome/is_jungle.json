@@ -4,10 +4,6 @@
     {
       "id": "#minecraft:is_jungle",
       "required": false
-    },
-    {
-      "id": "#c:is_jungle",
-      "required": false
     }
   ]
 }

@@ -8,10 +8,6 @@
     {
       "id": "#c:is_river",
       "required": false
-    },
-    {
-      "id": "#c:is_aquatic",
-      "required": false
     }
   ]
 }

@@ -64,10 +64,6 @@
     {
       "id": "#c:dyes/purple",
       "required": false
-    },
-    {
-      "id": "#c:dyes",
-      "required": false
     }
   ]
 }

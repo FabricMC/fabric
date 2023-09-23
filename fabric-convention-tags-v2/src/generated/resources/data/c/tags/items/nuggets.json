@@ -2,10 +2,6 @@
   "replace": false,
   "values": [
     "minecraft:gold_nugget",
-    "minecraft:iron_nugget",
-    {
-      "id": "#c:nuggets",
-      "required": false
-    }
+    "minecraft:iron_nugget"
   ]
 }

@@ -18,10 +18,6 @@
     "minecraft:red_stained_glass",
     "minecraft:tinted_glass",
     "minecraft:white_stained_glass",
-    "minecraft:yellow_stained_glass",
-    {
-      "id": "#c:glass_blocks",
-      "required": false
-    }
+    "minecraft:yellow_stained_glass"
   ]
 }

@@ -1,10 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:budding_amethyst",
-    {
-      "id": "#c:budding_blocks",
-      "required": false
-    }
+    "minecraft:budding_amethyst"
   ]
 }

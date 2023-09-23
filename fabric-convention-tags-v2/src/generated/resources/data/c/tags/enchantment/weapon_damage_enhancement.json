@@ -5,10 +5,6 @@
     "minecraft:impaling",
     "minecraft:smite",
     "minecraft:power",
-    "minecraft:sharpness",
-    {
-      "id": "#c:weapon_damage_enhancement",
-      "required": false
-    }
+    "minecraft:sharpness"
   ]
 }

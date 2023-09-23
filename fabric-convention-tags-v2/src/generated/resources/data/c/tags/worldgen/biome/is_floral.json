@@ -7,10 +7,6 @@
     {
       "id": "#c:is_flower_forest",
       "required": false
-    },
-    {
-      "id": "#c:is_floral",
-      "required": false
     }
   ]
 }

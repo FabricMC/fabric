@@ -1,9 +1,4 @@
 {
   "replace": false,
-  "values": [
-    {
-      "id": "#c:honey",
-      "required": false
-    }
-  ]
+  "values": []
 }

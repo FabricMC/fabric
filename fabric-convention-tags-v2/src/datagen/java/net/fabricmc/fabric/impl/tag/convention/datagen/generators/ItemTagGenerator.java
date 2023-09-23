@@ -397,47 +397,16 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.CYAN_DYES).addOptionalTag(new Identifier("c", "cyan_dyes"));
 		getOrCreateTagBuilder(ConventionalItemTags.GRAY_DYES).addOptionalTag(new Identifier("c", "gray_dyes"));
 		getOrCreateTagBuilder(ConventionalItemTags.PURPLE_DYES).addOptionalTag(new Identifier("c", "purple_dyes"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.DYES);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.FOODS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.POTIONS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.EMPTY_BUCKETS).addOptionalTag(new Identifier("c", "empty_buckets"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.LAVA_BUCKETS).addOptionalTag(new Identifier("c", "lava_buckets"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.ENTITY_WATER_BUCKETS).addOptionalTag(new Identifier("c", "entity_water_buckets"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.WATER_BUCKETS).addOptionalTag(new Identifier("c", "water_buckets"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.MILK_BUCKETS).addOptionalTag(new Identifier("c", "milk_buckets"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.DUSTS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.GEMS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.INGOTS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.NUGGETS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.RAW_MATERIALS).addOptionalTag(new Identifier("c", "raw_ores"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.IRON_INGOTS).addOptionalTag(new Identifier("c", "iron_ingots"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.COPPER_INGOTS).addOptionalTag(new Identifier("c", "copper_ingots"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.GOLD_INGOTS).addOptionalTag(new Identifier("c", "gold_ingots"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.NETHERITE_INGOTS).addOptionalTag(new Identifier("c", "netherite_ingots"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.REDSTONE_DUSTS).addOptionalTag(new Identifier("c", "dusts"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.QUARTZ_ORES).addOptionalTag(new Identifier("c", "quartz_ores"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.IRON_RAW_BLOCKS).addOptionalTag(new Identifier("c", "raw_iron_blocks"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.COPPER_RAW_BLOCKS).addOptionalTag(new Identifier("c", "raw_copper_blocks"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.GOLD_RAW_BLOCKS).addOptionalTag(new Identifier("c", "raw_gold_blocks"));
 		getOrCreateTagBuilder(ConventionalItemTags.IRON_RAW_MATERIALS).addOptionalTag(new Identifier("c", "raw_iron_ores"));
 		getOrCreateTagBuilder(ConventionalItemTags.COPPER_RAW_MATERIALS).addOptionalTag(new Identifier("c", "raw_copper_ores"));
 		getOrCreateTagBuilder(ConventionalItemTags.GOLD_RAW_MATERIALS).addOptionalTag(new Identifier("c", "raw_gold_ores"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.COAL);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.EMERALD_GEMS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.LAPIS_GEMS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.DIAMOND_GEMS);
 		getOrCreateTagBuilder(ConventionalItemTags.DIAMOND_GEMS).addOptionalTag(new Identifier("c", "diamonds"));
 		getOrCreateTagBuilder(ConventionalItemTags.LAPIS_GEMS).addOptionalTag(new Identifier("c", "lapis"));
 		getOrCreateTagBuilder(ConventionalItemTags.EMERALD_GEMS).addOptionalTag(new Identifier("c", "emeralds"));
 		getOrCreateTagBuilder(ConventionalItemTags.QUARTZ_GEMS).addOptionalTag(new Identifier("c", "quartz"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.SHEARS_TOOLS).addOptionalTag(new Identifier("c", "shears"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.SPEARS_TOOLS).addOptionalTag(new Identifier("c", "spears"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.BOWS_TOOLS).addOptionalTag(new Identifier("c", "bows"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.SHIELDS_TOOLS).addOptionalTag(new Identifier("c", "shields"));
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalItemTags.VILLAGER_JOB_SITES);
-	}
-
-	private FabricTagBuilder getOrCreateTagBuilderWithOptionalLegacy(TagKey<Item> tag) {
-		return getOrCreateTagBuilder(tag).addOptionalTag(new Identifier("c", tag.id().getPath()));
+		getOrCreateTagBuilder(ConventionalItemTags.SHEARS_TOOLS).addOptionalTag(new Identifier("c", "shears"));
+		getOrCreateTagBuilder(ConventionalItemTags.SPEARS_TOOLS).addOptionalTag(new Identifier("c", "spears"));
+		getOrCreateTagBuilder(ConventionalItemTags.BOWS_TOOLS).addOptionalTag(new Identifier("c", "bows"));
+		getOrCreateTagBuilder(ConventionalItemTags.SHIELDS_TOOLS).addOptionalTag(new Identifier("c", "shields"));
 	}
 }

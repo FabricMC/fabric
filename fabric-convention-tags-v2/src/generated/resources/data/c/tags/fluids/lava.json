@@ -4,10 +4,6 @@
     {
       "id": "#minecraft:lava",
       "required": false
-    },
-    {
-      "id": "#c:lava",
-      "required": false
     }
   ]
 }

@@ -17,10 +17,6 @@
     "minecraft:red_shulker_box",
     "minecraft:white_shulker_box",
     "minecraft:yellow_shulker_box",
-    "minecraft:black_shulker_box",
-    {
-      "id": "#c:shulker_boxes",
-      "required": false
-    }
+    "minecraft:black_shulker_box"
   ]
 }

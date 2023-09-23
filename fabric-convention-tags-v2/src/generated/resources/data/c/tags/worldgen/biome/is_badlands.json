@@ -4,14 +4,6 @@
     {
       "id": "#minecraft:is_badlands",
       "required": false
-    },
-    {
-      "id": "#c:is_badlands",
-      "required": false
-    },
-    {
-      "id": "#c:is_mesa",
-      "required": false
     }
   ]
 }

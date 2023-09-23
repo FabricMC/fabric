@@ -1,14 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:raw_gold_block",
-    {
-      "id": "#c:raw_blocks/gold",
-      "required": false
-    },
-    {
-      "id": "#c:raw_gold_blocks",
-      "required": false
-    }
+    "minecraft:raw_gold_block"
   ]
 }

@@ -3,10 +3,6 @@
   "values": [
     "minecraft:trident",
     {
-      "id": "#c:tools/spears",
-      "required": false
-    },
-    {
       "id": "#c:spears",
       "required": false
     }

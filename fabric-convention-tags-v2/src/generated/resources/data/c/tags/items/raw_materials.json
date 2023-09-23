@@ -15,14 +15,6 @@
     },
     "minecraft:raw_iron",
     "minecraft:raw_copper",
-    "minecraft:raw_gold",
-    {
-      "id": "#c:raw_materials",
-      "required": false
-    },
-    {
-      "id": "#c:raw_ores",
-      "required": false
-    }
+    "minecraft:raw_gold"
   ]
 }

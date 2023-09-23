@@ -1,14 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:raw_iron_block",
-    {
-      "id": "#c:raw_blocks/iron",
-      "required": false
-    },
-    {
-      "id": "#c:raw_iron_blocks",
-      "required": false
-    }
+    "minecraft:raw_iron_block"
   ]
 }

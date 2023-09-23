@@ -3,10 +3,6 @@
   "values": [
     "minecraft:chest",
     "minecraft:ender_chest",
-    "minecraft:trapped_chest",
-    {
-      "id": "#c:chests",
-      "required": false
-    }
+    "minecraft:trapped_chest"
   ]
 }

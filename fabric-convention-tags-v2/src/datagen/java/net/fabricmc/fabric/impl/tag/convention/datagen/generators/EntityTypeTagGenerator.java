@@ -49,15 +49,5 @@ public class EntityTypeTagGenerator extends FabricTagProvider.EntityTypeTagProvi
 				.add(EntityType.BOAT)
 				.add(EntityType.CHEST_BOAT);
 		getOrCreateTagBuilder(ConventionalEntityTypeTags.CAPTURING_NOT_SUPPORTED);
-
-		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
-		// TODO: Remove backwards compat tag entries in 1.22
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalEntityTypeTags.BOSSES);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalEntityTypeTags.MINECARTS);
-		getOrCreateTagBuilderWithOptionalLegacy(ConventionalEntityTypeTags.BOATS);
-	}
-
-	private FabricTagBuilder getOrCreateTagBuilderWithOptionalLegacy(TagKey<EntityType<?>> tag) {
-		return getOrCreateTagBuilder(tag).addOptionalTag(new Identifier("c", tag.id().getPath()));
 	}
 }

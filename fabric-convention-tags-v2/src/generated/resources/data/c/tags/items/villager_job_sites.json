@@ -13,10 +13,6 @@
     "minecraft:loom",
     "minecraft:smithing_table",
     "minecraft:smoker",
-    "minecraft:stonecutter",
-    {
-      "id": "#c:villager_job_sites",
-      "required": false
-    }
+    "minecraft:stonecutter"
   ]
 }

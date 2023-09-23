@@ -4,10 +4,6 @@
     {
       "id": "#minecraft:is_forest",
       "required": false
-    },
-    {
-      "id": "#c:is_forest",
-      "required": false
     }
   ]
 }

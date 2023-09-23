@@ -42,10 +42,6 @@
       "required": false
     },
     {
-      "id": "#c:ores",
-      "required": false
-    },
-    {
       "id": "#c:ores/quartz",
       "required": false
     },

@@ -4,10 +4,6 @@
     "minecraft:snowy_beach",
     "minecraft:snowy_plains",
     "minecraft:snowy_slopes",
-    "minecraft:snowy_taiga",
-    {
-      "id": "#c:is_snowy",
-      "required": false
-    }
+    "minecraft:snowy_taiga"
   ]
 }
