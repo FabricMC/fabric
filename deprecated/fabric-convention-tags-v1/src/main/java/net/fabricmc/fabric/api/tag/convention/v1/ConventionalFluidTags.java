@@ -24,6 +24,7 @@ import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 /**
  * @deprecated Please use {@link net.fabricmc.fabric.api.tag.convention.v2.ConventionalFluidTags}
  */
+@Deprecated
 public final class ConventionalFluidTags {
 	private ConventionalFluidTags() {
 	}
