@@ -90,6 +90,6 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> RELOCATION_NOT_SUPPORTED = register("relocation_not_supported");
 
 	private static TagKey<Block> register(String tagID) {
-		return TagRegistration.BLOCK_TAG_REGISTRATION.registerCommon(tagID);
+		return TagRegistration.BLOCK_TAG_REGISTRATION.registerC(tagID);
 	}
 }

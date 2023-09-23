@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "#c:dyed_items/black",
+    "#c:dyed_items/blue",
+    "#c:dyed_items/brown",
+    "#c:dyed_items/cyan",
+    "#c:dyed_items/gray",
+    "#c:dyed_items/green",
+    "#c:dyed_items/light_blue",
+    "#c:dyed_items/light_gray",
+    "#c:dyed_items/lime",
+    "#c:dyed_items/magenta",
+    "#c:dyed_items/orange",
+    "#c:dyed_items/pink",
+    "#c:dyed_items/purple",
+    "#c:dyed_items/red",
+    "#c:dyed_items/white",
+    "#c:dyed_items/yellow"
+  ]
+}

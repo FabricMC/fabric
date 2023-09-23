@@ -1,0 +1,29 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:tools/bows",
+      "required": false
+    },
+    {
+      "id": "#c:tools/crossbows",
+      "required": false
+    },
+    {
+      "id": "#c:tools/shears",
+      "required": false
+    },
+    {
+      "id": "#c:tools/shields",
+      "required": false
+    },
+    {
+      "id": "#c:tools/spears",
+      "required": false
+    },
+    {
+      "id": "#c:tools/fishing_rods",
+      "required": false
+    }
+  ]
+}

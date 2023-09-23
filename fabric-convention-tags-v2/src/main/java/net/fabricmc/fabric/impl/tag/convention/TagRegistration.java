@@ -47,7 +47,7 @@ public class TagRegistration<T> {
 		return TagKey.of(registryKey, new Identifier("fabric", tagId));
 	}
 
-	public TagKey<T> registerCommon(String tagId) {
-		return TagKey.of(registryKey, new Identifier("common", tagId));
+	public TagKey<T> registerC(String tagId) {
+		return TagKey.of(registryKey, new Identifier("c", tagId));
 	}
 }

@@ -1,0 +1,34 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:is_jungle",
+      "required": false
+    },
+    {
+      "id": "#c:is_savanna",
+      "required": false
+    },
+    {
+      "id": "#c:is_desert",
+      "required": false
+    },
+    {
+      "id": "#c:is_badlands",
+      "required": false
+    },
+    "minecraft:stony_peaks",
+    {
+      "id": "#c:is_mushroom",
+      "required": false
+    },
+    {
+      "id": "#c:is_nether",
+      "required": false
+    },
+    {
+      "id": "#c:climate_hot",
+      "required": false
+    }
+  ]
+}

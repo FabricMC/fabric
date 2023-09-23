@@ -150,6 +150,6 @@ public final class ConventionalBiomeTags {
 	public static final TagKey<Biome> IS_SHALLOW_OCEAN = register("is_shallow_ocean");
 
 	private static TagKey<Biome> register(String tagID) {
-		return TagRegistration.BIOME_TAG_REGISTRATION.registerCommon(tagID);
+		return TagRegistration.BIOME_TAG_REGISTRATION.registerC(tagID);
 	}
 }

@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:is_jungle",
+      "required": false
+    },
+    "minecraft:dark_forest",
+    {
+      "id": "#c:vegetation_dense",
+      "required": false
+    }
+  ]
+}
