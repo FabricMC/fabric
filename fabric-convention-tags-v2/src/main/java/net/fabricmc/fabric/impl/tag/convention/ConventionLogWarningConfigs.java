@@ -32,12 +32,6 @@ public class ConventionLogWarningConfigs {
 
 	/**
 	 * A config option mainly for developers.
-	 * Logs out modded item tags that do not have translations when running on integrated server.
-	 * Defaults to DEV_SHORT.
-	 */
-	public static final LOG_WARNING_MODES LOG_UNTRANSLATED_WARNING_MODE;
-	/**
-	 * A config option mainly for developers.
 	 * Logs out modded tags that are using the 'c' namespace when running on integrated server or dedicated server.
 	 * Defaults to DEV_SHORT.
 	 */
@@ -56,28 +50,27 @@ public class ConventionLogWarningConfigs {
 
 		if (!configDir.exists()) {
 			if (!configDir.mkdir()) {
-				LOGGER.warn("[Fabric Tag Conventions v1] Could not create configuration directory: " + configDir.getAbsolutePath());
+				LOGGER.warn("[Fabric Tag Conventions v2] Could not create configuration directory: " + configDir.getAbsolutePath());
 			}
 		}
 
-		File configFile = new File(configDir, "fabric-tag-conventions-v1.properties");
+		File configFile = new File(configDir, "fabric-tag-conventions-v2.properties");
 		Properties properties = new Properties();
 
 		if (configFile.exists()) {
 			try (FileInputStream stream = new FileInputStream(configFile)) {
 				properties.load(stream);
 			} catch (IOException e) {
-				LOGGER.warn("[Fabric Tag Conventions v1] Could not read property file '" + configFile.getAbsolutePath() + "'", e);
+				LOGGER.warn("[Fabric Tag Conventions v2] Could not read property file '" + configFile.getAbsolutePath() + "'", e);
 			}
 		}
 
-		LOG_UNTRANSLATED_WARNING_MODE = asEnum((String) properties.computeIfAbsent("log-untranslated-item-tag-warnings", (a) -> "SILENCED"), LOG_WARNING_MODES.SILENCED);
 		LOG_LEGACY_WARNING_MODE = asEnum((String) properties.computeIfAbsent("log-legacy-tag-warnings", (a) -> "DEV_SHORT"), LOG_WARNING_MODES.DEV_SHORT);
 
 		try (FileOutputStream stream = new FileOutputStream(configFile)) {
-			properties.store(stream, "Fabric Tag Conventions v1 properties file");
+			properties.store(stream, "Fabric Tag Conventions v2 properties file");
 		} catch (IOException e) {
-			LOGGER.warn("[Fabric Tag Conventions v1] Could not store property file '" + configFile.getAbsolutePath() + "'", e);
+			LOGGER.warn("[Fabric Tag Conventions v2] Could not store property file '" + configFile.getAbsolutePath() + "'", e);
 		}
 	}
 

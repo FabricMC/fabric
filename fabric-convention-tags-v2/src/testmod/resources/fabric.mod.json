@@ -10,7 +10,7 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.tag.convention.v1.TagUtilTest"
+      "net.fabricmc.fabric.test.tag.convention.v2.TagUtilTest"
     ]
   }
 }

@@ -18,9 +18,6 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.impl.tag.convention.ConventionLogWarnings"
-    ],
-    "client": [
-      "net.fabricmc.fabric.impl.tag.convention.client.ConventionLogWarningsClient"
     ]
   },
   "depends": {
@@ -28,14 +25,7 @@
     "minecraft": ">=1.18.2",
     "fabric-lifecycle-events-v1": "*"
   },
-  "mixins": [
-    "fabric-convention-tags-api-v2.mixins.json"
-  ],
-  "description": "Contains common tags used by mods for vanilla things.",
-  "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/class_6862": ["net/fabricmc/fabric/api/tag/convention/v2/FabricTagKeyExtension"]
-    }
-  }
+  "mixins": [],
+  "description": "Contains common tags used by mods for better inter-mod compatibility.",
+  "custom": {}
 }

@@ -41,7 +41,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.tag.TagKey;
 import net.minecraft.stat.StatType;
 import net.minecraft.text.TextContent;
 import net.minecraft.text.TranslatableTextContent;
@@ -221,16 +220,6 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 */
 		default void add(Identifier identifier, String value) {
 			add(identifier.toTranslationKey(), value);
-		}
-
-		/**
-		 * Adds a translation for an {@link TagKey}.
-		 *
-		 * @param tagKey The {@link TagKey} to get the translation key from.
-		 * @param value      The value of the entry.
-		 */
-		default void add(TagKey<?> tagKey, String value) {
-			add(tagKey.getTagTranslationKey(), value);
 		}
 
 		/**
