@@ -52,15 +52,15 @@ public final class ConventionalBlockTags {
 
 	// Related to budding mechanics
 	/**
-	 * For blocks that are similar to amethyst where their budding block produces buds and cluster blocks
+	 * For blocks that are similar to amethyst where their budding block produces buds and cluster blocks.
 	 */
 	public static final TagKey<Block> BUDDING_BLOCKS = register("budding_blocks");
 	/**
-	 * For blocks that are similar to amethyst where they have buddings forming from budding blocks
+	 * For blocks that are similar to amethyst where they have buddings forming from budding blocks.
 	 */
 	public static final TagKey<Block> BUDS = register("buds");
 	/**
-	 * For blocks that are similar to amethyst where they have clusters forming from budding blocks
+	 * For blocks that are similar to amethyst where they have clusters forming from budding blocks.
 	 */
 	public static final TagKey<Block> CLUSTERS = register("clusters");
 
@@ -100,8 +100,8 @@ public final class ConventionalBlockTags {
 	 * Blocks should be included in this tag if their movement can cause serious issues such as world corruption
 	 * upon being moved, such as chunk loaders or pipes, for mods that move blocks but do not respect
 	 * {@link AbstractBlock.AbstractBlockState#getPistonBehavior}.
-	 * <p>
-	 * See also the equivalent block entity type tag: {@link ConventionalBlockEntityTypeTags#RELOCATION_NOT_SUPPORTED}
+	 *
+	 * <p>See also the equivalent block entity type tag: {@link ConventionalBlockEntityTypeTags#RELOCATION_NOT_SUPPORTED}
 	 */
 	public static final TagKey<Block> RELOCATION_NOT_SUPPORTED = register("relocation_not_supported");
 

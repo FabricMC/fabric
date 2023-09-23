@@ -41,7 +41,6 @@ import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class ConventionLogWarnings implements ModInitializer {
-
 	public static final String LOG_LEGACY_WARNING_MODE = System.getProperty("fabric-tag-conventions-v1.legacyTagWarning", LOG_WARNING_MODES.DEV_SHORT.name());
 	public enum LOG_WARNING_MODES {
 		SILENCED,
@@ -160,8 +159,9 @@ public class ConventionLogWarnings implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		if (FabricLoader.getInstance().isDevelopmentEnvironment() && !LOG_LEGACY_WARNING_MODE.equalsIgnoreCase(LOG_WARNING_MODES.SILENCED.name()))
+		if (FabricLoader.getInstance().isDevelopmentEnvironment() && !LOG_LEGACY_WARNING_MODE.equalsIgnoreCase(LOG_WARNING_MODES.SILENCED.name())) {
 			setupLegacyTagWarning();
+		}
 	}
 
 	private static void setupLegacyTagWarning() {
@@ -187,7 +187,7 @@ public class ConventionLogWarnings implements ModInitializer {
 				stringBuilder.append("""
 						\n	Dev warning - Legacy Tags detected. Please migrate your old `c` tags to our new `c` tags that follows better conventions!
 							See classes under net.fabricmc.fabric.api.tag.convention.v2 package for all tags.
-							
+
 							NOTE: Many tags have been moved around or renamed. Some new ones were added so please review the new tags.
 							And make sure you follow tag conventions for new tags! The convention is `c` with nouns generally being plural and adjectives being singular.
 							You can disable this message by this system property to your runs: `-Dfabric-tag-conventions-v1.legacyTagWarning=SILENCED`.
@@ -225,6 +225,7 @@ public class ConventionLogWarnings implements ModInitializer {
 	private static <T> TagKey<T> createTagKeyUnderC(RegistryKey<Registry<T>> registryKey, String tagId) {
 		return TagKey.of(registryKey, new Identifier(TagUtil.C_TAG_NAMESPACE, tagId));
 	}
+
 	private static <T> TagKey<T> createTagKeyUnderFabric(RegistryKey<Registry<T>> registryKey, String tagId) {
 		return TagKey.of(registryKey, new Identifier(TagUtil.FABRIC_TAG_NAMESPACE, tagId));
 	}
