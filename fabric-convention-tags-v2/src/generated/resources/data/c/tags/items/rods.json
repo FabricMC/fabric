@@ -1,9 +1,12 @@
 {
   "replace": false,
   "values": [
-    "minecraft:blaze_rod",
     {
       "id": "#c:rods/wooden",
+      "required": false
+    },
+    {
+      "id": "#c:rods/blaze",
       "required": false
     }
   ]

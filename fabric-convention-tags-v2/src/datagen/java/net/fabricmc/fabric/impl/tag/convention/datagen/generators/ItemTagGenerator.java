@@ -267,9 +267,11 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.STRING);
 		getOrCreateTagBuilder(ConventionalItemTags.WOODEN_RODS)
 				.add(Items.STICK);
+		getOrCreateTagBuilder(ConventionalItemTags.BLAZE_RODS)
+				.add(Items.BLAZE_ROD);
 		getOrCreateTagBuilder(ConventionalItemTags.RODS)
-				.add(Items.BLAZE_ROD)
-				.addOptionalTag(ConventionalItemTags.WOODEN_RODS);
+				.addOptionalTag(ConventionalItemTags.WOODEN_RODS)
+				.addOptionalTag(ConventionalItemTags.BLAZE_RODS);
 	}
 
 	private void generateDyedTags() {

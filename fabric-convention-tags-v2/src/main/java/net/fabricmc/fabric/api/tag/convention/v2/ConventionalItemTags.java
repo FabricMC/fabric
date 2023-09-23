@@ -169,6 +169,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> STRINGS = register("strings");
 	public static final TagKey<Item> RODS = register("rods");
 	public static final TagKey<Item> WOODEN_RODS = register("rods/wooden");
+	public static final TagKey<Item> BLAZE_RODS = register("rods/blaze");
 
 	private static TagKey<Item> register(String tagID) {
 		return TagRegistration.ITEM_TAG_REGISTRATION.registerC(tagID);
