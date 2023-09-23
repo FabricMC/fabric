@@ -36,6 +36,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalEnchantmentTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
 import net.fabricmc.loader.api.FabricLoader;
@@ -103,6 +104,9 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(ConventionalItemTags.SPEARS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SPEARS_TOOLS),
 			createMapEntry(ConventionalItemTags.BOWS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BOWS_TOOLS),
 			createMapEntry(ConventionalItemTags.SHIELDS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SHIELDS_TOOLS),
+
+			createMapEntry(ConventionalEnchantmentTags.INCREASES_BLOCK_DROPS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags.INCREASES_BLOCK_DROPS),
+			createMapEntry(ConventionalEnchantmentTags.INCREASES_ENTITY_DROPS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags.INCREASES_ENTITY_DROPS),
 
 			createMapEntry(ConventionalBiomeTags.IN_NETHER, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_NETHER),
 			createMapEntry(ConventionalBiomeTags.IN_THE_END, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_THE_END),

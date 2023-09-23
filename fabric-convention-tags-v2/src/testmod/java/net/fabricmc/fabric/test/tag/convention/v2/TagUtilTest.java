@@ -38,7 +38,7 @@ public class TagUtilTest implements ModInitializer {
 	public void onInitialize() {
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			if (!TagUtil.isIn(ConventionalEnchantmentTags.INCREASES_BLOCK_DROPS, Enchantments.FORTUNE)) {
-				throw new AssertionError("Failed to find fortune in common:fortune!");
+				throw new AssertionError("Failed to find fortune in c:increase_block_drops!");
 			}
 
 			if (TagUtil.isIn(ConventionalBiomeTags.IS_OVERWORLD, server.getRegistryManager().get(RegistryKeys.BIOME).get(BiomeKeys.BADLANDS))) {
@@ -47,11 +47,11 @@ public class TagUtilTest implements ModInitializer {
 
 			// If this fails, the tag is missing a biome or the util is broken
 			if (!TagUtil.isIn(server.getRegistryManager(), ConventionalBiomeTags.IS_OVERWORLD, server.getRegistryManager().get(RegistryKeys.BIOME).get(BiomeKeys.BADLANDS))) {
-				throw new AssertionError("Failed to find an overworld biome (%s) in common:in_overworld!".formatted(BiomeKeys.BADLANDS));
+				throw new AssertionError("Failed to find an overworld biome (%s) in c:in_overworld!".formatted(BiomeKeys.BADLANDS));
 			}
 
 			if (!TagUtil.isIn(server.getRegistryManager(), ConventionalBlockTags.ORES, Blocks.DIAMOND_ORE)) {
-				throw new AssertionError("Failed to find diamond ore in common:ores!");
+				throw new AssertionError("Failed to find diamond ore in c:ores!");
 			}
 
 			//Success!
