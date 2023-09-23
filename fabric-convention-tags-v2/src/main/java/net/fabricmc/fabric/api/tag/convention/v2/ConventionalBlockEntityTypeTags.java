@@ -28,6 +28,8 @@ public final class ConventionalBlockEntityTypeTags {
 	/**
 	 * Blocks should be included in this tag if their movement can cause serious issues such as world corruption
 	 * upon being moved, such as chunk loaders or pipes, for mods that move block entities.
+	 * <p>
+	 * See also the equivalent block tag: {@link ConventionalBlockTags#RELOCATION_NOT_SUPPORTED}
 	 */
 	public static final TagKey<BlockEntityType<?>> RELOCATION_NOT_SUPPORTED = register("relocation_not_supported");
 

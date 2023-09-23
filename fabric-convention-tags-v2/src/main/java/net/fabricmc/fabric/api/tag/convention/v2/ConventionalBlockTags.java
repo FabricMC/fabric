@@ -84,8 +84,10 @@ public final class ConventionalBlockTags {
 
 	/**
 	 * Blocks should be included in this tag if their movement can cause serious issues such as world corruption
-	 * upon being moved, such as chunk loaders or pipes,
-	 * for mods that move blocks but do not respect {@link AbstractBlock.AbstractBlockState#getPistonBehavior}.
+	 * upon being moved, such as chunk loaders or pipes, for mods that move blocks but do not respect
+	 * {@link AbstractBlock.AbstractBlockState#getPistonBehavior}.
+	 * <p>
+	 * See also the equivalent block entity type tag: {@link ConventionalBlockEntityTypeTags#RELOCATION_NOT_SUPPORTED}
 	 */
 	public static final TagKey<Block> RELOCATION_NOT_SUPPORTED = register("relocation_not_supported");
 
