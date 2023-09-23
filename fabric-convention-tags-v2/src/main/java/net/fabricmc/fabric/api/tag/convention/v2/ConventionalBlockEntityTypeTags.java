@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.tag.convention.v2;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.tag.TagKey;
 
-import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
+import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 
 public final class ConventionalBlockEntityTypeTags {
 	private ConventionalBlockEntityTypeTags() {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.tag.convention;
+package net.fabricmc.fabric.impl.tag.convention.v2;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;

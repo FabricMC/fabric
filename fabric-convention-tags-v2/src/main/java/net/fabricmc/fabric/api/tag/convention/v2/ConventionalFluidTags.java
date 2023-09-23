@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.tag.convention.v2;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.tag.TagKey;
 
-import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
+import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 
 /**
  * See {@link net.minecraft.registry.tag.FluidTags} for vanilla tags.

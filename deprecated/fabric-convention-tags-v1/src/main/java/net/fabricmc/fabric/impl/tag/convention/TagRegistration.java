@@ -42,17 +42,13 @@ public class TagRegistration<T> {
 		registryKey = registry;
 	}
 
-	/**
-	 * @deprecated Please use {@link net.fabricmc.fabric.impl.tag.convention.TagRegistration#registerFabric}
-	 */
+	@Deprecated
 	public TagKey<T> registerFabric(String tagId) {
 		return TagKey.of(registryKey, new Identifier("fabric", tagId));
 	}
 
-	/**
-	 * @deprecated Please use {@link net.fabricmc.fabric.impl.tag.convention.TagRegistration#registerCommon}
-	 */
-	public TagKey<T> registerCommon(String tagId) {
+	@Deprecated
+	public TagKey<T> registerC(String tagId) {
 		return TagKey.of(registryKey, new Identifier("c", tagId));
 	}
 }

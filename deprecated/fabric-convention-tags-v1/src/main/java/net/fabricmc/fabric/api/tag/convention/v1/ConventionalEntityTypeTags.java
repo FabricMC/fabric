@@ -37,6 +37,6 @@ public final class ConventionalEntityTypeTags {
 	public static final TagKey<EntityType<?>> BOATS = register("boats");
 
 	private static TagKey<EntityType<?>> register(String tagID) {
-		return TagRegistration.ENTITY_TYPE_TAG_REGISTRATION.registerCommon(tagID);
+		return TagRegistration.ENTITY_TYPE_TAG_REGISTRATION.registerC(tagID);
 	}
 }

@@ -53,6 +53,6 @@ public final class ConventionalEnchantmentTags {
 	public static final TagKey<Enchantment> ENTITY_DEFENSE_ENHANCEMENT = register("entity_defense_enhancement");
 
 	private static TagKey<Enchantment> register(String tagID) {
-		return TagRegistration.ENCHANTMENT_TAG_REGISTRATION.registerCommon(tagID);
+		return TagRegistration.ENCHANTMENT_TAG_REGISTRATION.registerC(tagID);
 	}
 }

@@ -68,6 +68,6 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> MOVEMENT_RESTRICTED = register("movement_restricted");
 
 	private static TagKey<Block> register(String tagID) {
-		return TagRegistration.BLOCK_TAG_REGISTRATION.registerCommon(tagID);
+		return TagRegistration.BLOCK_TAG_REGISTRATION.registerC(tagID);
 	}
 }

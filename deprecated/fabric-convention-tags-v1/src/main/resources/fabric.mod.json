@@ -15,6 +15,11 @@
   "authors": [
     "FabricMC"
   ],
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.tag.convention.ConventionLogWarnings"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.4.0",
     "minecraft": ">=1.18.2"

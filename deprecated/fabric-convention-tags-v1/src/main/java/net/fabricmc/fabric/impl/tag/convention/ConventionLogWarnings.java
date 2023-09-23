@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.impl.tag.convention;
 
-import static net.fabricmc.fabric.impl.tag.convention.ConventionLogWarningConfigs.LOG_LEGACY_WARNING_MODE;
-import static net.fabricmc.fabric.impl.tag.convention.ConventionLogWarningConfigs.LOG_WARNING_MODES;
-
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +41,14 @@ import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class ConventionLogWarnings implements ModInitializer {
+
+	public static final String LOG_LEGACY_WARNING_MODE = System.getProperty("fabric-tag-conventions-v1.legacyTagWarning", LOG_WARNING_MODES.DEV_SHORT.name());
+	public enum LOG_WARNING_MODES {
+		SILENCED,
+		DEV_SHORT,
+		DEV_VERBOSE
+	}
+
 	public static final Logger LOGGER = LoggerFactory.getLogger(ConventionLogWarnings.class);
 
 	// Old `c` tags that we migrated to a new tag under a new convention.
@@ -136,6 +141,11 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(RegistryKeys.ITEM, "hoes", ItemTags.HOES),
 			createMapEntry(RegistryKeys.ITEM, "shovels", ItemTags.SHOVELS),
 			createMapEntry(RegistryKeys.ITEM, "swords", ItemTags.SWORDS),
+			createMapEntry(createTagKeyUnderFabric(RegistryKeys.ITEM, "axes"), ItemTags.AXES),
+			createMapEntry(createTagKeyUnderFabric(RegistryKeys.ITEM, "pickaxes"), ItemTags.PICKAXES),
+			createMapEntry(createTagKeyUnderFabric(RegistryKeys.ITEM, "hoes"), ItemTags.HOES),
+			createMapEntry(createTagKeyUnderFabric(RegistryKeys.ITEM, "shovels"), ItemTags.SHOVELS),
+			createMapEntry(createTagKeyUnderFabric(RegistryKeys.ITEM, "swords"), ItemTags.SWORDS),
 			createMapEntry(RegistryKeys.ITEM, "barrel", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BARRELS),
 			createMapEntry(RegistryKeys.ITEM, "chest", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CHESTS),
 			createMapEntry(RegistryKeys.ITEM, "glass", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.GLASS_BLOCKS),
@@ -150,57 +160,52 @@ public class ConventionLogWarnings implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		if (LOG_LEGACY_WARNING_MODE != LOG_WARNING_MODES.SILENCED) setupLegacyTagWarning();
+		if (FabricLoader.getInstance().isDevelopmentEnvironment() && !LOG_LEGACY_WARNING_MODE.equalsIgnoreCase(LOG_WARNING_MODES.SILENCED.name()))
+			setupLegacyTagWarning();
 	}
 
-	// Remove in 1.22
 	private static void setupLegacyTagWarning() {
 		// Log tags that are still using legacy conventions under 'c' namespace
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			boolean isConfigSetToDev =
-					LOG_LEGACY_WARNING_MODE == LOG_WARNING_MODES.DEV_SHORT
-					|| LOG_LEGACY_WARNING_MODE == LOG_WARNING_MODES.DEV_VERBOSE;
+			List<TagKey<?>> legacyTags = new ObjectArrayList<>();
+			DynamicRegistryManager.Immutable dynamicRegistries = server.getRegistryManager();
 
-			if (FabricLoader.getInstance().isDevelopmentEnvironment() == isConfigSetToDev) {
-				List<TagKey<?>> legacyTags = new ObjectArrayList<>();
-				DynamicRegistryManager.Immutable dynamicRegistries = server.getRegistryManager();
-
-				// We only care about vanilla registries
-				dynamicRegistries.streamAllRegistries().forEach(registryEntry -> {
-					if (registryEntry.key().getValue().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
-						registryEntry.value().streamTags().forEach(tagKey -> {
-							// Grab legacy tags we migrated or discourage
-							if (LEGACY_C_TAGS.containsKey(tagKey)) {
-								legacyTags.add(tagKey);
-							}
-						});
-					}
-				});
-
-				if (!legacyTags.isEmpty()) {
-					StringBuilder stringBuilder = new StringBuilder();
-					stringBuilder.append("""
-							\n	Dev warning - Legacy Tags detected. Please migrate your old `c` tags to our new `c` tags that follows better conventions! See classes under net.fabricmc.fabric.api.tag.convention.v1 package for all tags.
-								NOTE: Many tags have been moved around or renamed. Some new ones were added so please review the new tags.
-								And make sure you follow tag conventions for new tags! The convention is `c` with nouns generally being plural and adjectives being singular.
-								You can disable this message in Fabric API's properties config file by setting log-legacy-tag-warnings to "SILENCED" or see individual tags with "DEV_VERBOSE".
-							""");
-
-					// Print out all legacy tags when desired.
-					boolean isConfigSetToVerbose =
-							LOG_LEGACY_WARNING_MODE == LOG_WARNING_MODES.DEV_VERBOSE
-							|| LOG_LEGACY_WARNING_MODE == LOG_WARNING_MODES.PROD_VERBOSE;
-
-					if (isConfigSetToVerbose) {
-						stringBuilder.append("\nLegacy tags:");
-
-						for (TagKey<?> tagKey : legacyTags) {
-							stringBuilder.append("\n     ").append(tagKey).append("  ->  ").append(LEGACY_C_TAGS.get(tagKey));
+			// We only care about vanilla registries
+			dynamicRegistries.streamAllRegistries().forEach(registryEntry -> {
+				if (registryEntry.key().getValue().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
+					registryEntry.value().streamTags().forEach(tagKey -> {
+						// Grab legacy tags we migrated or discourage
+						if (LEGACY_C_TAGS.containsKey(tagKey)) {
+							legacyTags.add(tagKey);
 						}
-					}
-
-					LOGGER.warn(stringBuilder.toString());
+					});
 				}
+			});
+
+			if (!legacyTags.isEmpty()) {
+				StringBuilder stringBuilder = new StringBuilder();
+				stringBuilder.append("""
+						\n	Dev warning - Legacy Tags detected. Please migrate your old `c` tags to our new `c` tags that follows better conventions!
+							See classes under net.fabricmc.fabric.api.tag.convention.v2 package for all tags.
+							
+							NOTE: Many tags have been moved around or renamed. Some new ones were added so please review the new tags.
+							And make sure you follow tag conventions for new tags! The convention is `c` with nouns generally being plural and adjectives being singular.
+							You can disable this message by this system property to your runs: `-Dfabric-tag-conventions-v1.legacyTagWarning=SILENCED`.
+							To see individual legacy tags found, set the system property to `-Dfabric-tag-conventions-v1.legacyTagWarning=DEV_VERBOSE` instead. Default is `DEV_SHORT`.
+						""");
+
+				// Print out all legacy tags when desired.
+				boolean isConfigSetToVerbose = LOG_LEGACY_WARNING_MODE.equalsIgnoreCase(LOG_WARNING_MODES.DEV_VERBOSE.name());
+
+				if (isConfigSetToVerbose) {
+					stringBuilder.append("\nLegacy tags and their replacement:");
+
+					for (TagKey<?> tagKey : legacyTags) {
+						stringBuilder.append("\n     ").append(tagKey).append("  ->  ").append(LEGACY_C_TAGS.get(tagKey));
+					}
+				}
+
+				LOGGER.warn(stringBuilder.toString());
 			}
 		});
 	}
@@ -219,5 +224,8 @@ public class ConventionLogWarnings implements ModInitializer {
 
 	private static <T> TagKey<T> createTagKeyUnderC(RegistryKey<Registry<T>> registryKey, String tagId) {
 		return TagKey.of(registryKey, new Identifier(TagUtil.C_TAG_NAMESPACE, tagId));
+	}
+	private static <T> TagKey<T> createTagKeyUnderFabric(RegistryKey<Registry<T>> registryKey, String tagId) {
+		return TagKey.of(registryKey, new Identifier(TagUtil.FABRIC_TAG_NAMESPACE, tagId));
 	}
 }

@@ -151,6 +151,6 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> SWORDS = register("swords");
 
 	private static TagKey<Item> register(String tagID) {
-		return TagRegistration.ITEM_TAG_REGISTRATION.registerCommon(tagID);
+		return TagRegistration.ITEM_TAG_REGISTRATION.registerC(tagID);
 	}
 }

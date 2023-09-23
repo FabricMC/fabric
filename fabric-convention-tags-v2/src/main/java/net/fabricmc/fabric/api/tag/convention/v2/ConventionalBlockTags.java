@@ -20,7 +20,7 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.registry.tag.TagKey;
 
-import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
+import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 
 /**
  * See {@link net.minecraft.registry.tag.BlockTags} for vanilla tags.
