@@ -29,6 +29,8 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
+import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
+
 public class TagRegistration<T> {
 	public static final TagRegistration<Item> ITEM_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.ITEM);
 	public static final TagRegistration<Block> BLOCK_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.BLOCK);
@@ -44,10 +46,10 @@ public class TagRegistration<T> {
 	}
 
 	public TagKey<T> registerFabric(String tagId) {
-		return TagKey.of(registryKey, new Identifier("fabric", tagId));
+		return TagKey.of(registryKey, new Identifier(TagUtil.FABRIC_TAG_NAMESPACE, tagId));
 	}
 
 	public TagKey<T> registerC(String tagId) {
-		return TagKey.of(registryKey, new Identifier("c", tagId));
+		return TagKey.of(registryKey, new Identifier(TagUtil.C_TAG_NAMESPACE, tagId));
 	}
 }

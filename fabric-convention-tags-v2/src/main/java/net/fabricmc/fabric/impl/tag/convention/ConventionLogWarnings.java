@@ -32,6 +32,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
 import net.fabricmc.loader.api.FabricLoader;
 
 // To be removed in 1.22 Minecraft
@@ -123,7 +124,7 @@ public class ConventionLogWarnings implements ModInitializer {
 					if (registryEntry.key().getValue().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
 						registryEntry.value().streamTags().forEach(tagKey -> {
 							// Grab legacy tags under 'c' namespace
-							if (tagKey.id().getNamespace().equals("c") && LEGACY_C_TAGS.contains(tagKey.id().getPath())) {
+							if (tagKey.id().getNamespace().equals(TagUtil.C_TAG_NAMESPACE) && LEGACY_C_TAGS.contains(tagKey.id().getPath())) {
 								legacyTags.add(tagKey);
 							}
 						});
