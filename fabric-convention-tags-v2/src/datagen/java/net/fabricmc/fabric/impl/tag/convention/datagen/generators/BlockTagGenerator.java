@@ -57,30 +57,28 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup registries) {
 		getOrCreateTagBuilder(ConventionalBlockTags.STONES)
+				.add(Blocks.STONE)
 				.add(Blocks.ANDESITE)
 				.add(Blocks.DIORITE)
 				.add(Blocks.GRANITE)
-				.add(Blocks.INFESTED_STONE)
-				.add(Blocks.STONE)
-				.add(Blocks.DEEPSLATE)
-				.add(Blocks.INFESTED_DEEPSLATE)
-				.add(Blocks.TUFF);
+				.add(Blocks.TUFF)
+				.add(Blocks.DEEPSLATE);
 
 		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES)
 				.add(Blocks.NETHER_QUARTZ_ORE);
 		getOrCreateTagBuilder(ConventionalBlockTags.NETHERITE_SCRAP_ORES)
 				.add(Blocks.ANCIENT_DEBRIS);
 		getOrCreateTagBuilder(ConventionalBlockTags.ORES)
-				.addOptionalTag(BlockTags.REDSTONE_ORES)
+				.addOptionalTag(BlockTags.COAL_ORES)
 				.addOptionalTag(BlockTags.COPPER_ORES)
+				.addOptionalTag(BlockTags.DIAMOND_ORES)
+				.addOptionalTag(BlockTags.EMERALD_ORES)
 				.addOptionalTag(BlockTags.GOLD_ORES)
 				.addOptionalTag(BlockTags.IRON_ORES)
-				.addOptionalTag(BlockTags.COAL_ORES)
-				.addOptionalTag(BlockTags.EMERALD_ORES)
 				.addOptionalTag(BlockTags.LAPIS_ORES)
-				.addOptionalTag(BlockTags.DIAMOND_ORES)
-				.addOptionalTag(ConventionalBlockTags.QUARTZ_ORES)
-				.addOptionalTag(ConventionalBlockTags.NETHERITE_SCRAP_ORES);
+				.addOptionalTag(ConventionalBlockTags.NETHERITE_SCRAP_ORES)
+				.addOptionalTag(BlockTags.REDSTONE_ORES)
+				.addOptionalTag(ConventionalBlockTags.QUARTZ_ORES);
 
 		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_CHESTS)
 				.add(Blocks.CHEST)
@@ -122,9 +120,9 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 		getOrCreateTagBuilder(ConventionalBlockTags.RED_BLOCKS_SANDSTONE)
 				.add(Blocks.RED_SANDSTONE)
-				.add(Blocks.CHISELED_RED_SANDSTONE)
 				.add(Blocks.CUT_RED_SANDSTONE)
-				.add(Blocks.SMOOTH_RED_SANDSTONE);
+				.add(Blocks.SMOOTH_RED_SANDSTONE)
+				.add(Blocks.CHISELED_RED_SANDSTONE);
 		getOrCreateTagBuilder(ConventionalBlockTags.RED_SLABS_SANDSTONE)
 				.add(Blocks.RED_SANDSTONE_SLAB)
 				.add(Blocks.CUT_RED_SANDSTONE_SLAB)
@@ -135,9 +133,9 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_BLOCKS_SANDSTONE)
 				.add(Blocks.SANDSTONE)
-				.add(Blocks.CHISELED_SANDSTONE)
 				.add(Blocks.CUT_SANDSTONE)
-				.add(Blocks.SMOOTH_SANDSTONE);
+				.add(Blocks.SMOOTH_SANDSTONE)
+				.add(Blocks.CHISELED_SANDSTONE);
 		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SLABS_SANDSTONE)
 				.add(Blocks.SANDSTONE_SLAB)
 				.add(Blocks.CUT_SANDSTONE_SLAB)
@@ -161,62 +159,62 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	private void generateShulkerTag() {
 		getOrCreateTagBuilder(ConventionalBlockTags.SHULKER_BOXES)
 				.add(Blocks.SHULKER_BOX)
+				.add(Blocks.WHITE_SHULKER_BOX)
+				.add(Blocks.ORANGE_SHULKER_BOX)
+				.add(Blocks.MAGENTA_SHULKER_BOX)
+				.add(Blocks.LIGHT_BLUE_SHULKER_BOX)
+				.add(Blocks.YELLOW_SHULKER_BOX)
+				.add(Blocks.LIME_SHULKER_BOX)
+				.add(Blocks.PINK_SHULKER_BOX)
+				.add(Blocks.GRAY_SHULKER_BOX)
+				.add(Blocks.LIGHT_GRAY_SHULKER_BOX)
+				.add(Blocks.CYAN_SHULKER_BOX)
+				.add(Blocks.PURPLE_SHULKER_BOX)
 				.add(Blocks.BLUE_SHULKER_BOX)
 				.add(Blocks.BROWN_SHULKER_BOX)
-				.add(Blocks.CYAN_SHULKER_BOX)
-				.add(Blocks.GRAY_SHULKER_BOX)
 				.add(Blocks.GREEN_SHULKER_BOX)
-				.add(Blocks.LIGHT_BLUE_SHULKER_BOX)
-				.add(Blocks.LIGHT_GRAY_SHULKER_BOX)
-				.add(Blocks.LIME_SHULKER_BOX)
-				.add(Blocks.MAGENTA_SHULKER_BOX)
-				.add(Blocks.ORANGE_SHULKER_BOX)
-				.add(Blocks.PINK_SHULKER_BOX)
-				.add(Blocks.PURPLE_SHULKER_BOX)
 				.add(Blocks.RED_SHULKER_BOX)
-				.add(Blocks.WHITE_SHULKER_BOX)
-				.add(Blocks.YELLOW_SHULKER_BOX)
 				.add(Blocks.BLACK_SHULKER_BOX);
 	}
 
 	private void generateGlassTags() {
 		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_BLOCKS)
 				.add(Blocks.GLASS)
-				.add(Blocks.GRAY_STAINED_GLASS)
-				.add(Blocks.BLACK_STAINED_GLASS)
-				.add(Blocks.ORANGE_STAINED_GLASS)
-				.add(Blocks.BLUE_STAINED_GLASS)
-				.add(Blocks.BROWN_STAINED_GLASS)
-				.add(Blocks.CYAN_STAINED_GLASS)
-				.add(Blocks.GREEN_STAINED_GLASS)
-				.add(Blocks.LIGHT_BLUE_STAINED_GLASS)
-				.add(Blocks.LIGHT_GRAY_STAINED_GLASS)
-				.add(Blocks.LIME_STAINED_GLASS)
-				.add(Blocks.MAGENTA_STAINED_GLASS)
-				.add(Blocks.PINK_STAINED_GLASS)
-				.add(Blocks.PURPLE_STAINED_GLASS)
-				.add(Blocks.RED_STAINED_GLASS)
 				.add(Blocks.TINTED_GLASS)
 				.add(Blocks.WHITE_STAINED_GLASS)
-				.add(Blocks.YELLOW_STAINED_GLASS);
+				.add(Blocks.ORANGE_STAINED_GLASS)
+				.add(Blocks.MAGENTA_STAINED_GLASS)
+				.add(Blocks.LIGHT_BLUE_STAINED_GLASS)
+				.add(Blocks.YELLOW_STAINED_GLASS)
+				.add(Blocks.LIME_STAINED_GLASS)
+				.add(Blocks.PINK_STAINED_GLASS)
+				.add(Blocks.GRAY_STAINED_GLASS)
+				.add(Blocks.LIGHT_GRAY_STAINED_GLASS)
+				.add(Blocks.CYAN_STAINED_GLASS)
+				.add(Blocks.PURPLE_STAINED_GLASS)
+				.add(Blocks.BLUE_STAINED_GLASS)
+				.add(Blocks.BROWN_STAINED_GLASS)
+				.add(Blocks.GREEN_STAINED_GLASS)
+				.add(Blocks.BLACK_STAINED_GLASS)
+				.add(Blocks.RED_STAINED_GLASS);
 		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_PANES)
 				.add(Blocks.GLASS_PANE)
-				.add(Blocks.GRAY_STAINED_GLASS_PANE)
-				.add(Blocks.BLACK_STAINED_GLASS_PANE)
+				.add(Blocks.WHITE_STAINED_GLASS_PANE)
 				.add(Blocks.ORANGE_STAINED_GLASS_PANE)
+				.add(Blocks.MAGENTA_STAINED_GLASS_PANE)
+				.add(Blocks.LIGHT_BLUE_STAINED_GLASS_PANE)
+				.add(Blocks.YELLOW_STAINED_GLASS_PANE)
+				.add(Blocks.LIME_STAINED_GLASS_PANE)
+				.add(Blocks.PINK_STAINED_GLASS_PANE)
+				.add(Blocks.GRAY_STAINED_GLASS_PANE)
+				.add(Blocks.LIGHT_GRAY_STAINED_GLASS_PANE)
+				.add(Blocks.CYAN_STAINED_GLASS_PANE)
+				.add(Blocks.PURPLE_STAINED_GLASS_PANE)
 				.add(Blocks.BLUE_STAINED_GLASS_PANE)
 				.add(Blocks.BROWN_STAINED_GLASS_PANE)
-				.add(Blocks.CYAN_STAINED_GLASS_PANE)
 				.add(Blocks.GREEN_STAINED_GLASS_PANE)
-				.add(Blocks.LIGHT_BLUE_STAINED_GLASS_PANE)
-				.add(Blocks.LIGHT_GRAY_STAINED_GLASS_PANE)
-				.add(Blocks.LIME_STAINED_GLASS_PANE)
-				.add(Blocks.MAGENTA_STAINED_GLASS_PANE)
-				.add(Blocks.PINK_STAINED_GLASS_PANE)
-				.add(Blocks.PURPLE_STAINED_GLASS_PANE)
-				.add(Blocks.RED_STAINED_GLASS_PANE)
-				.add(Blocks.WHITE_STAINED_GLASS_PANE)
-				.add(Blocks.YELLOW_STAINED_GLASS_PANE);
+				.add(Blocks.BLACK_STAINED_GLASS_PANE)
+				.add(Blocks.RED_STAINED_GLASS_PANE);
 	}
 
 	private void generateDyedTags() {
@@ -317,22 +315,22 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.YELLOW_TERRACOTTA).add(Blocks.YELLOW_WALL_BANNER).add(Blocks.YELLOW_WOOL);
 
 		getOrCreateTagBuilder(ConventionalBlockTags.DYED)
-				.addTag(ConventionalBlockTags.BLACK_DYED)
+				.addTag(ConventionalBlockTags.WHITE_DYED)
+				.addTag(ConventionalBlockTags.ORANGE_DYED)
+				.addTag(ConventionalBlockTags.MAGENTA_DYED)
+				.addTag(ConventionalBlockTags.LIGHT_BLUE_DYED)
+				.addTag(ConventionalBlockTags.YELLOW_DYED)
+				.addTag(ConventionalBlockTags.LIME_DYED)
+				.addTag(ConventionalBlockTags.PINK_DYED)
+				.addTag(ConventionalBlockTags.GRAY_DYED)
+				.addTag(ConventionalBlockTags.LIGHT_GRAY_DYED)
+				.addTag(ConventionalBlockTags.CYAN_DYED)
+				.addTag(ConventionalBlockTags.PURPLE_DYED)
 				.addTag(ConventionalBlockTags.BLUE_DYED)
 				.addTag(ConventionalBlockTags.BROWN_DYED)
-				.addTag(ConventionalBlockTags.CYAN_DYED)
-				.addTag(ConventionalBlockTags.GRAY_DYED)
 				.addTag(ConventionalBlockTags.GREEN_DYED)
-				.addTag(ConventionalBlockTags.LIGHT_BLUE_DYED)
-				.addTag(ConventionalBlockTags.LIGHT_GRAY_DYED)
-				.addTag(ConventionalBlockTags.LIME_DYED)
-				.addTag(ConventionalBlockTags.MAGENTA_DYED)
-				.addTag(ConventionalBlockTags.ORANGE_DYED)
-				.addTag(ConventionalBlockTags.PINK_DYED)
-				.addTag(ConventionalBlockTags.PURPLE_DYED)
 				.addTag(ConventionalBlockTags.RED_DYED)
-				.addTag(ConventionalBlockTags.WHITE_DYED)
-				.addTag(ConventionalBlockTags.YELLOW_DYED);
+				.addTag(ConventionalBlockTags.BLACK_DYED);
 	}
 
 	private void generateBackwardsCompatTags() {

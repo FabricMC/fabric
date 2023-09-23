@@ -30,8 +30,7 @@ public final class ConventionalItemTags {
 	}
 
 	/**
-	 * Natural stone-like blocks that can spawn in-world such as Stone, Granite, Diorite, and others.
-	 * Not variations like Stone Bricks or Diorite Slabs.
+	 * Natural stone-like blocks that can be used as a base ingredient in recipes that takes stone.
 	 */
 	public static final TagKey<Item> STONES = register("stones");
 

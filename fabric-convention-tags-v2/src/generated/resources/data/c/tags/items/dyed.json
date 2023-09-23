@@ -1,21 +1,21 @@
 {
   "replace": false,
   "values": [
-    "#c:dyed/black",
+    "#c:dyed/white",
+    "#c:dyed/orange",
+    "#c:dyed/magenta",
+    "#c:dyed/light_blue",
+    "#c:dyed/yellow",
+    "#c:dyed/lime",
+    "#c:dyed/pink",
+    "#c:dyed/gray",
+    "#c:dyed/light_gray",
+    "#c:dyed/cyan",
+    "#c:dyed/purple",
     "#c:dyed/blue",
     "#c:dyed/brown",
-    "#c:dyed/cyan",
-    "#c:dyed/gray",
     "#c:dyed/green",
-    "#c:dyed/light_blue",
-    "#c:dyed/light_gray",
-    "#c:dyed/lime",
-    "#c:dyed/magenta",
-    "#c:dyed/orange",
-    "#c:dyed/pink",
-    "#c:dyed/purple",
     "#c:dyed/red",
-    "#c:dyed/white",
-    "#c:dyed/yellow"
+    "#c:dyed/black"
   ]
 }

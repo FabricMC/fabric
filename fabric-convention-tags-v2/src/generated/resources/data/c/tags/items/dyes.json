@@ -2,7 +2,47 @@
   "replace": false,
   "values": [
     {
-      "id": "#c:dyes/black",
+      "id": "#c:dyes/white",
+      "required": false
+    },
+    {
+      "id": "#c:dyes/orange",
+      "required": false
+    },
+    {
+      "id": "#c:dyes/magenta",
+      "required": false
+    },
+    {
+      "id": "#c:dyes/light_blue",
+      "required": false
+    },
+    {
+      "id": "#c:dyes/yellow",
+      "required": false
+    },
+    {
+      "id": "#c:dyes/lime",
+      "required": false
+    },
+    {
+      "id": "#c:dyes/pink",
+      "required": false
+    },
+    {
+      "id": "#c:dyes/gray",
+      "required": false
+    },
+    {
+      "id": "#c:dyes/light_gray",
+      "required": false
+    },
+    {
+      "id": "#c:dyes/cyan",
+      "required": false
+    },
+    {
+      "id": "#c:dyes/purple",
       "required": false
     },
     {
@@ -22,47 +62,7 @@
       "required": false
     },
     {
-      "id": "#c:dyes/white",
-      "required": false
-    },
-    {
-      "id": "#c:dyes/yellow",
-      "required": false
-    },
-    {
-      "id": "#c:dyes/light_gray",
-      "required": false
-    },
-    {
-      "id": "#c:dyes/light_blue",
-      "required": false
-    },
-    {
-      "id": "#c:dyes/lime",
-      "required": false
-    },
-    {
-      "id": "#c:dyes/magenta",
-      "required": false
-    },
-    {
-      "id": "#c:dyes/orange",
-      "required": false
-    },
-    {
-      "id": "#c:dyes/pink",
-      "required": false
-    },
-    {
-      "id": "#c:dyes/cyan",
-      "required": false
-    },
-    {
-      "id": "#c:dyes/gray",
-      "required": false
-    },
-    {
-      "id": "#c:dyes/purple",
+      "id": "#c:dyes/black",
       "required": false
     }
   ]

@@ -1,13 +1,11 @@
 {
   "replace": false,
   "values": [
+    "minecraft:stone",
     "minecraft:andesite",
     "minecraft:diorite",
     "minecraft:granite",
-    "minecraft:infested_stone",
-    "minecraft:stone",
-    "minecraft:deepslate",
-    "minecraft:infested_deepslate",
-    "minecraft:tuff"
+    "minecraft:tuff",
+    "minecraft:deepslate"
   ]
 }
