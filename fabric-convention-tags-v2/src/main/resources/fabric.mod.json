@@ -22,5 +22,7 @@
   },
   "mixins": [],
   "description": "Contains common tags used by mods for better inter-mod compatibility.",
-  "custom": {}
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }
