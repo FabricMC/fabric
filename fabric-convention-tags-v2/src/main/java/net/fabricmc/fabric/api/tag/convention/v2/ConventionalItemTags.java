@@ -33,7 +33,8 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> TOOLS = register("tools");
 	public static final TagKey<Item> SHEARS_TOOLS = register("tools/shears");
 	/**
-	 * For throwable weapons, like Minecraft tridents.
+	 * For throwable spear weapons, like Minecraft's tridents.
+	 * Note, other throwable weapons like boomerangs and throwing knives are best put into their own tools tag.
 	 */
 	public static final TagKey<Item> SPEARS_TOOLS = register("tools/spears");
 	public static final TagKey<Item> BOWS_TOOLS = register("tools/bows");
@@ -140,23 +141,23 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> YELLOW_DYES = register("dyes/yellow");
 
 	// Items created with dyes
-	public static final TagKey<Item> DYED_ITEMS = register("dyed_items");
-	public static final TagKey<Item> BLACK_DYED_ITEMS = register("dyed_items/black");
-	public static final TagKey<Item> BLUE_DYED_ITEMS = register("dyed_items/blue");
-	public static final TagKey<Item> BROWN_DYED_ITEMS = register("dyed_items/brown");
-	public static final TagKey<Item> CYAN_DYED_ITEMS = register("dyed_items/cyan");
-	public static final TagKey<Item> GRAY_DYED_ITEMS = register("dyed_items/gray");
-	public static final TagKey<Item> GREEN_DYED_ITEMS = register("dyed_items/green");
-	public static final TagKey<Item> LIGHT_BLUE_DYED_ITEMS = register("dyed_items/light_blue");
-	public static final TagKey<Item> LIGHT_GRAY_DYED_ITEMS = register("dyed_items/light_gray");
-	public static final TagKey<Item> LIME_DYED_ITEMS = register("dyed_items/lime");
-	public static final TagKey<Item> MAGENTA_DYED_ITEMS = register("dyed_items/magenta");
-	public static final TagKey<Item> ORANGE_DYED_ITEMS = register("dyed_items/orange");
-	public static final TagKey<Item> PINK_DYED_ITEMS = register("dyed_items/pink");
-	public static final TagKey<Item> PURPLE_DYED_ITEMS = register("dyed_items/purple");
-	public static final TagKey<Item> RED_DYED_ITEMS = register("dyed_items/red");
-	public static final TagKey<Item> WHITE_DYED_ITEMS = register("dyed_items/white");
-	public static final TagKey<Item> YELLOW_DYED_ITEMS = register("dyed_items/yellow");
+	public static final TagKey<Item> DYED = register("dyed");
+	public static final TagKey<Item> BLACK_DYED = register("dyed/black");
+	public static final TagKey<Item> BLUE_DYED = register("dyed/blue");
+	public static final TagKey<Item> BROWN_DYED = register("dyed/brown");
+	public static final TagKey<Item> CYAN_DYED = register("dyed/cyan");
+	public static final TagKey<Item> GRAY_DYED = register("dyed/gray");
+	public static final TagKey<Item> GREEN_DYED = register("dyed/green");
+	public static final TagKey<Item> LIGHT_BLUE_DYED = register("dyed/light_blue");
+	public static final TagKey<Item> LIGHT_GRAY_DYED = register("dyed/light_gray");
+	public static final TagKey<Item> LIME_DYED = register("dyed/lime");
+	public static final TagKey<Item> MAGENTA_DYED = register("dyed/magenta");
+	public static final TagKey<Item> ORANGE_DYED = register("dyed/orange");
+	public static final TagKey<Item> PINK_DYED = register("dyed/pink");
+	public static final TagKey<Item> PURPLE_DYED = register("dyed/purple");
+	public static final TagKey<Item> RED_DYED = register("dyed/red");
+	public static final TagKey<Item> WHITE_DYED = register("dyed/white");
+	public static final TagKey<Item> YELLOW_DYED = register("dyed/yellow");
 
 	private static TagKey<Item> register(String tagID) {
 		return TagRegistration.ITEM_TAG_REGISTRATION.registerC(tagID);

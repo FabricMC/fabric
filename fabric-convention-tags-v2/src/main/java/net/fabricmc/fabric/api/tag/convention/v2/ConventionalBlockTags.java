@@ -73,23 +73,23 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> UNCOLORED_STAIRS_SANDSTONE = register("sandstone/uncolored_stairs");
 
 	// Blocks created with dyes
-	public static final TagKey<Block> DYED_BLOCKS = register("dyed_blocks");
-	public static final TagKey<Block> BLACK_DYED_BLOCKS = register("dyed_blocks/black");
-	public static final TagKey<Block> BLUE_DYED_BLOCKS = register("dyed_blocks/blue");
-	public static final TagKey<Block> BROWN_DYED_BLOCKS = register("dyed_blocks/brown");
-	public static final TagKey<Block> CYAN_DYED_BLOCKS = register("dyed_blocks/cyan");
-	public static final TagKey<Block> GRAY_DYED_BLOCKS = register("dyed_blocks/gray");
-	public static final TagKey<Block> GREEN_DYED_BLOCKS = register("dyed_blocks/green");
-	public static final TagKey<Block> LIGHT_BLUE_DYED_BLOCKS = register("dyed_blocks/light_blue");
-	public static final TagKey<Block> LIGHT_GRAY_DYED_BLOCKS = register("dyed_blocks/light_gray");
-	public static final TagKey<Block> LIME_DYED_BLOCKS = register("dyed_blocks/lime");
-	public static final TagKey<Block> MAGENTA_DYED_BLOCKS = register("dyed_blocks/magenta");
-	public static final TagKey<Block> ORANGE_DYED_BLOCKS = register("dyed_blocks/orange");
-	public static final TagKey<Block> PINK_DYED_BLOCKS = register("dyed_blocks/pink");
-	public static final TagKey<Block> PURPLE_DYED_BLOCKS = register("dyed_blocks/purple");
-	public static final TagKey<Block> RED_DYED_BLOCKS = register("dyed_blocks/red");
-	public static final TagKey<Block> WHITE_DYED_BLOCKS = register("dyed_blocks/white");
-	public static final TagKey<Block> YELLOW_DYED_BLOCKS = register("dyed_blocks/yellow");
+	public static final TagKey<Block> DYED = register("dyed");
+	public static final TagKey<Block> BLACK_DYED = register("dyed/black");
+	public static final TagKey<Block> BLUE_DYED = register("dyed/blue");
+	public static final TagKey<Block> BROWN_DYED = register("dyed/brown");
+	public static final TagKey<Block> CYAN_DYED = register("dyed/cyan");
+	public static final TagKey<Block> GRAY_DYED = register("dyed/gray");
+	public static final TagKey<Block> GREEN_DYED = register("dyed/green");
+	public static final TagKey<Block> LIGHT_BLUE_DYED = register("dyed/light_blue");
+	public static final TagKey<Block> LIGHT_GRAY_DYED = register("dyed/light_gray");
+	public static final TagKey<Block> LIME_DYED = register("dyed/lime");
+	public static final TagKey<Block> MAGENTA_DYED = register("dyed/magenta");
+	public static final TagKey<Block> ORANGE_DYED = register("dyed/orange");
+	public static final TagKey<Block> PINK_DYED = register("dyed/pink");
+	public static final TagKey<Block> PURPLE_DYED = register("dyed/purple");
+	public static final TagKey<Block> RED_DYED = register("dyed/red");
+	public static final TagKey<Block> WHITE_DYED = register("dyed/white");
+	public static final TagKey<Block> YELLOW_DYED = register("dyed/yellow");
 
 	/**
 	 * Blocks should be included in this tag if their movement can cause serious issues such as world corruption
