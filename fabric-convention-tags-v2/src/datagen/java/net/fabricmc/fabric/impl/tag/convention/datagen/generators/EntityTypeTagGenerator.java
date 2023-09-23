@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEntityTypeTags;
 
-public class EntityTypeTagGenerator extends FabricTagProvider.EntityTypeTagProvider {
+public final class EntityTypeTagGenerator extends FabricTagProvider.EntityTypeTagProvider {
 	public EntityTypeTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
 		super(output, completableFuture);
 	}

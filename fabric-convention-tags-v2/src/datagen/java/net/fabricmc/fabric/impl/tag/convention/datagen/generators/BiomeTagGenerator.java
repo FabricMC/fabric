@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags;
 import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
 
-public class BiomeTagGenerator extends FabricTagProvider<Biome> {
+public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 	public BiomeTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
 		super(output, RegistryKeys.BIOME, completableFuture);
 	}

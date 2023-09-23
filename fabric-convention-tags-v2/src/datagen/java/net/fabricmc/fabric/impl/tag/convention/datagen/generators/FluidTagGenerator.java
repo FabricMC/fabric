@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalFluidTags;
 
-public class FluidTagGenerator extends FabricTagProvider.FluidTagProvider {
+public final class FluidTagGenerator extends FabricTagProvider.FluidTagProvider {
 	public FluidTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
 		super(output, completableFuture);
 	}
