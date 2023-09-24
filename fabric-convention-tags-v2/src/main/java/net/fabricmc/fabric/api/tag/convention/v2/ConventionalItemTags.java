@@ -117,15 +117,15 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> VILLAGER_JOB_SITES = register("villager_job_sites");
 
 	// Sandstone
-	public static final TagKey<Item> BLOCKS_SANDSTONE = register("sandstone/blocks");
-	public static final TagKey<Item> SLABS_SANDSTONE = register("sandstone/slabs");
-	public static final TagKey<Item> STAIRS_SANDSTONE = register("sandstone/stairs");
-	public static final TagKey<Item> RED_BLOCKS_SANDSTONE = register("sandstone/red_blocks");
-	public static final TagKey<Item> RED_SLABS_SANDSTONE = register("sandstone/red_slabs");
-	public static final TagKey<Item> RED_STAIRS_SANDSTONE = register("sandstone/red_stairs");
-	public static final TagKey<Item> UNCOLORED_BLOCKS_SANDSTONE = register("sandstone/uncolored_blocks");
-	public static final TagKey<Item> UNCOLORED_SLABS_SANDSTONE = register("sandstone/uncolored_slabs");
-	public static final TagKey<Item> UNCOLORED_STAIRS_SANDSTONE = register("sandstone/uncolored_stairs");
+	public static final TagKey<Item> SANDSTONE_BLOCKS = register("sandstone/blocks");
+	public static final TagKey<Item> SANDSTONE_SLABS = register("sandstone/slabs");
+	public static final TagKey<Item> SANDSTONE_STAIRS = register("sandstone/stairs");
+	public static final TagKey<Item> RED_SANDSTONE_BLOCKS = register("sandstone/red_blocks");
+	public static final TagKey<Item> RED_SANDSTONE_SLABS = register("sandstone/red_slabs");
+	public static final TagKey<Item> RED_SANDSTONE_STAIRS = register("sandstone/red_stairs");
+	public static final TagKey<Item> UNCOLORED_SANDSTONE_BLOCKS = register("sandstone/uncolored_blocks");
+	public static final TagKey<Item> UNCOLORED_SANDSTONE_SLABS = register("sandstone/uncolored_slabs");
+	public static final TagKey<Item> UNCOLORED_SANDSTONE_STAIRS = register("sandstone/uncolored_stairs");
 
 	// Dyes
 	public static final TagKey<Item> DYES = register("dyes");

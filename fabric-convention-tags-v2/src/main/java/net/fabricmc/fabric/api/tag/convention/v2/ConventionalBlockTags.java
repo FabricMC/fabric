@@ -68,15 +68,15 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> VILLAGER_JOB_SITES = register("villager_job_sites");
 
 	// Sandstone
-	public static final TagKey<Block> BLOCKS_SANDSTONE = register("sandstone/blocks");
-	public static final TagKey<Block> SLABS_SANDSTONE = register("sandstone/slabs");
-	public static final TagKey<Block> STAIRS_SANDSTONE = register("sandstone/stairs");
-	public static final TagKey<Block> RED_BLOCKS_SANDSTONE = register("sandstone/red_blocks");
-	public static final TagKey<Block> RED_SLABS_SANDSTONE = register("sandstone/red_slabs");
-	public static final TagKey<Block> RED_STAIRS_SANDSTONE = register("sandstone/red_stairs");
-	public static final TagKey<Block> UNCOLORED_BLOCKS_SANDSTONE = register("sandstone/uncolored_blocks");
-	public static final TagKey<Block> UNCOLORED_SLABS_SANDSTONE = register("sandstone/uncolored_slabs");
-	public static final TagKey<Block> UNCOLORED_STAIRS_SANDSTONE = register("sandstone/uncolored_stairs");
+	public static final TagKey<Block> SANDSTONE_BLOCKS = register("sandstone/blocks");
+	public static final TagKey<Block> SANDSTONE_SLABS = register("sandstone/slabs");
+	public static final TagKey<Block> SANDSTONE_STAIRS = register("sandstone/stairs");
+	public static final TagKey<Block> RED_SANDSTONE_BLOCKS = register("sandstone/red_blocks");
+	public static final TagKey<Block> RED_SANDSTONE_SLABS = register("sandstone/red_slabs");
+	public static final TagKey<Block> RED_SANDSTONE_STAIRS = register("sandstone/red_stairs");
+	public static final TagKey<Block> UNCOLORED_SANDSTONE_BLOCKS = register("sandstone/uncolored_blocks");
+	public static final TagKey<Block> UNCOLORED_SANDSTONE_SLABS = register("sandstone/uncolored_slabs");
+	public static final TagKey<Block> UNCOLORED_SANDSTONE_STAIRS = register("sandstone/uncolored_stairs");
 
 	// Blocks created with dyes
 	public static final TagKey<Block> DYED = register("dyed");

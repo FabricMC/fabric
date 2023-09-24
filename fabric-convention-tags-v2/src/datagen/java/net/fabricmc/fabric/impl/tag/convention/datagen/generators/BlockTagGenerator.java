@@ -108,39 +108,39 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	private void generateSandstoneTags() {
-		getOrCreateTagBuilder(ConventionalBlockTags.BLOCKS_SANDSTONE)
-				.addOptionalTag(ConventionalBlockTags.UNCOLORED_BLOCKS_SANDSTONE)
-				.addOptionalTag(ConventionalBlockTags.RED_BLOCKS_SANDSTONE);
-		getOrCreateTagBuilder(ConventionalBlockTags.SLABS_SANDSTONE)
-				.addOptionalTag(ConventionalBlockTags.UNCOLORED_SLABS_SANDSTONE)
-				.addOptionalTag(ConventionalBlockTags.RED_SLABS_SANDSTONE);
-		getOrCreateTagBuilder(ConventionalBlockTags.STAIRS_SANDSTONE)
-				.addOptionalTag(ConventionalBlockTags.UNCOLORED_STAIRS_SANDSTONE)
-				.addOptionalTag(ConventionalBlockTags.RED_STAIRS_SANDSTONE);
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_BLOCKS)
+				.addOptionalTag(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS)
+				.addOptionalTag(ConventionalBlockTags.RED_SANDSTONE_BLOCKS);
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_SLABS)
+				.addOptionalTag(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS)
+				.addOptionalTag(ConventionalBlockTags.RED_SANDSTONE_SLABS);
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_STAIRS)
+				.addOptionalTag(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS)
+				.addOptionalTag(ConventionalBlockTags.RED_SANDSTONE_STAIRS);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_BLOCKS_SANDSTONE)
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_BLOCKS)
 				.add(Blocks.RED_SANDSTONE)
 				.add(Blocks.CUT_RED_SANDSTONE)
 				.add(Blocks.SMOOTH_RED_SANDSTONE)
 				.add(Blocks.CHISELED_RED_SANDSTONE);
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_SLABS_SANDSTONE)
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_SLABS)
 				.add(Blocks.RED_SANDSTONE_SLAB)
 				.add(Blocks.CUT_RED_SANDSTONE_SLAB)
 				.add(Blocks.SMOOTH_RED_SANDSTONE_SLAB);
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_STAIRS_SANDSTONE)
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_STAIRS)
 				.add(Blocks.RED_SANDSTONE_STAIRS)
 				.add(Blocks.SMOOTH_RED_SANDSTONE_STAIRS);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_BLOCKS_SANDSTONE)
+		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS)
 				.add(Blocks.SANDSTONE)
 				.add(Blocks.CUT_SANDSTONE)
 				.add(Blocks.SMOOTH_SANDSTONE)
 				.add(Blocks.CHISELED_SANDSTONE);
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SLABS_SANDSTONE)
+		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS)
 				.add(Blocks.SANDSTONE_SLAB)
 				.add(Blocks.CUT_SANDSTONE_SLAB)
 				.add(Blocks.SMOOTH_SANDSTONE_SLAB);
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_STAIRS_SANDSTONE)
+		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS)
 				.add(Blocks.SANDSTONE_STAIRS)
 				.add(Blocks.SMOOTH_SANDSTONE_STAIRS);
 	}
@@ -341,14 +341,14 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "quartz_ores"));
 		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_BARRELS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "wooden_barrels"));
 		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_CHESTS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "wooden_chests"));
-		getOrCreateTagBuilder(ConventionalBlockTags.BLOCKS_SANDSTONE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "sandstone_blocks"));
-		getOrCreateTagBuilder(ConventionalBlockTags.SLABS_SANDSTONE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "sandstone_slabs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.STAIRS_SANDSTONE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "sandstone_stairs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_BLOCKS_SANDSTONE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "red_sandstone_blocks"));
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_SLABS_SANDSTONE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "red_sandstone_slabs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_STAIRS_SANDSTONE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "red_sandstone_stairs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_BLOCKS_SANDSTONE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_blocks"));
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SLABS_SANDSTONE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_slabs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_STAIRS_SANDSTONE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_stairs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_BLOCKS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "sandstone_blocks"));
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_SLABS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "sandstone_slabs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_STAIRS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "sandstone_stairs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_BLOCKS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "red_sandstone_blocks"));
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_SLABS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "red_sandstone_slabs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_STAIRS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "red_sandstone_stairs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_blocks"));
+		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_slabs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_stairs"));
 	}
 }

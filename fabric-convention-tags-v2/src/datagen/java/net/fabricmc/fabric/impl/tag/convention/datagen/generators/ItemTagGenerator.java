@@ -65,15 +65,15 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.BUDS, ConventionalItemTags.BUDS);
 		copy(ConventionalBlockTags.CLUSTERS, ConventionalItemTags.CLUSTERS);
 
-		copy(ConventionalBlockTags.BLOCKS_SANDSTONE, ConventionalItemTags.BLOCKS_SANDSTONE);
-		copy(ConventionalBlockTags.SLABS_SANDSTONE, ConventionalItemTags.SLABS_SANDSTONE);
-		copy(ConventionalBlockTags.STAIRS_SANDSTONE, ConventionalItemTags.STAIRS_SANDSTONE);
-		copy(ConventionalBlockTags.RED_BLOCKS_SANDSTONE, ConventionalItemTags.RED_BLOCKS_SANDSTONE);
-		copy(ConventionalBlockTags.RED_SLABS_SANDSTONE, ConventionalItemTags.RED_SLABS_SANDSTONE);
-		copy(ConventionalBlockTags.RED_STAIRS_SANDSTONE, ConventionalItemTags.RED_STAIRS_SANDSTONE);
-		copy(ConventionalBlockTags.UNCOLORED_BLOCKS_SANDSTONE, ConventionalItemTags.UNCOLORED_BLOCKS_SANDSTONE);
-		copy(ConventionalBlockTags.UNCOLORED_SLABS_SANDSTONE, ConventionalItemTags.UNCOLORED_SLABS_SANDSTONE);
-		copy(ConventionalBlockTags.UNCOLORED_STAIRS_SANDSTONE, ConventionalItemTags.UNCOLORED_STAIRS_SANDSTONE);
+		copy(ConventionalBlockTags.SANDSTONE_BLOCKS, ConventionalItemTags.SANDSTONE_BLOCKS);
+		copy(ConventionalBlockTags.SANDSTONE_SLABS, ConventionalItemTags.SANDSTONE_SLABS);
+		copy(ConventionalBlockTags.SANDSTONE_STAIRS, ConventionalItemTags.SANDSTONE_STAIRS);
+		copy(ConventionalBlockTags.RED_SANDSTONE_BLOCKS, ConventionalItemTags.RED_SANDSTONE_BLOCKS);
+		copy(ConventionalBlockTags.RED_SANDSTONE_SLABS, ConventionalItemTags.RED_SANDSTONE_SLABS);
+		copy(ConventionalBlockTags.RED_SANDSTONE_STAIRS, ConventionalItemTags.RED_SANDSTONE_STAIRS);
+		copy(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS, ConventionalItemTags.UNCOLORED_SANDSTONE_BLOCKS);
+		copy(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS, ConventionalItemTags.UNCOLORED_SANDSTONE_SLABS);
+		copy(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS, ConventionalItemTags.UNCOLORED_SANDSTONE_STAIRS);
 	}
 
 	private void generateDyeTags() {
