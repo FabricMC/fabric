@@ -51,7 +51,7 @@ public class ClientTagTest implements ClientModInitializer {
 		}
 
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-			if (ClientTags.getOrCreateLocalTag(ConventionalEnchantmentTags.INCREASES_BLOCK_DROPS) == null) {
+			if (ClientTags.getOrCreateLocalTag(ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS) == null) {
 				throw new AssertionError("Expected to load c:fortune, but it was not found!");
 			}
 

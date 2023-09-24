@@ -29,12 +29,12 @@ public final class ConventionalEnchantmentTags {
 	 * A tag containing enchantments that increase the amount or
 	 * quality of drops from blocks, such as {@link net.minecraft.enchantment.Enchantments#FORTUNE}.
 	 */
-	public static final TagKey<Enchantment> INCREASES_BLOCK_DROPS = register("increase_block_drops");
+	public static final TagKey<Enchantment> INCREASE_BLOCK_DROPS = register("increase_block_drops");
 	/**
 	 * A tag containing enchantments that increase the amount or
 	 * quality of drops from entities, such as {@link net.minecraft.enchantment.Enchantments#LOOTING}.
 	 */
-	public static final TagKey<Enchantment> INCREASES_ENTITY_DROPS = register("increase_entity_drops");
+	public static final TagKey<Enchantment> INCREASE_ENTITY_DROPS = register("increase_entity_drops");
 	/**
 	 * For enchantments that increase the damage dealt by an item.
 	 */
@@ -48,7 +48,7 @@ public final class ConventionalEnchantmentTags {
 	 */
 	public static final TagKey<Enchantment> ENTITY_DEFENSE_ENHANCEMENT = register("entity_defense_enhancement");
 
-	private static TagKey<Enchantment> register(String tagID) {
-		return TagRegistration.ENCHANTMENT_TAG_REGISTRATION.registerC(tagID);
+	private static TagKey<Enchantment> register(String tagId) {
+		return TagRegistration.ENCHANTMENT_TAG.registerC(tagId);
 	}
 }

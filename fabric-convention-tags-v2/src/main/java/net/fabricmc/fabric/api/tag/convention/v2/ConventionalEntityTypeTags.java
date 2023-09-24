@@ -43,7 +43,7 @@ public final class ConventionalEntityTypeTags {
 	 */
 	public static final TagKey<EntityType<?>> CAPTURING_NOT_SUPPORTED = register("capturing_not_supported");
 
-	private static TagKey<EntityType<?>> register(String tagID) {
-		return TagRegistration.ENTITY_TYPE_TAG_REGISTRATION.registerC(tagID);
+	private static TagKey<EntityType<?>> register(String tagId) {
+		return TagRegistration.ENTITY_TYPE_TAG.registerC(tagId);
 	}
 }

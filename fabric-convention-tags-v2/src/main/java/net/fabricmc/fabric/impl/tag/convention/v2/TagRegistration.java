@@ -32,13 +32,13 @@ import net.minecraft.world.biome.Biome;
 import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
 
 public record TagRegistration<T>(RegistryKey<Registry<T>> registryKey) {
-	public static final TagRegistration<Item> ITEM_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.ITEM);
-	public static final TagRegistration<Block> BLOCK_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.BLOCK);
-	public static final TagRegistration<BlockEntityType<?>> BLOCK_ENTITY_TYPE_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.BLOCK_ENTITY_TYPE);
-	public static final TagRegistration<Biome> BIOME_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.BIOME);
-	public static final TagRegistration<Fluid> FLUID_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.FLUID);
-	public static final TagRegistration<EntityType<?>> ENTITY_TYPE_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.ENTITY_TYPE);
-	public static final TagRegistration<Enchantment> ENCHANTMENT_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.ENCHANTMENT);
+	public static final TagRegistration<Item> ITEM_TAG = new TagRegistration<>(RegistryKeys.ITEM);
+	public static final TagRegistration<Block> BLOCK_TAG = new TagRegistration<>(RegistryKeys.BLOCK);
+	public static final TagRegistration<BlockEntityType<?>> BLOCK_ENTITY_TYPE_TAG = new TagRegistration<>(RegistryKeys.BLOCK_ENTITY_TYPE);
+	public static final TagRegistration<Biome> BIOME_TAG = new TagRegistration<>(RegistryKeys.BIOME);
+	public static final TagRegistration<Fluid> FLUID_TAG = new TagRegistration<>(RegistryKeys.FLUID);
+	public static final TagRegistration<EntityType<?>> ENTITY_TYPE_TAG = new TagRegistration<>(RegistryKeys.ENTITY_TYPE);
+	public static final TagRegistration<Enchantment> ENCHANTMENT_TAG = new TagRegistration<>(RegistryKeys.ENCHANTMENT);
 
 	public TagKey<T> registerFabric(String tagId) {
 		return TagKey.of(registryKey, new Identifier(TagUtil.FABRIC_TAG_NAMESPACE, tagId));

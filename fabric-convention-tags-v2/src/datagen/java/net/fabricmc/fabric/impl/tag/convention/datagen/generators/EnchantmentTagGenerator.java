@@ -32,9 +32,9 @@ public final class EnchantmentTagGenerator extends FabricTagProvider.Enchantment
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup registries) {
-		getOrCreateTagBuilder(ConventionalEnchantmentTags.INCREASES_BLOCK_DROPS)
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS)
 				.add(Enchantments.FORTUNE);
-		getOrCreateTagBuilder(ConventionalEnchantmentTags.INCREASES_ENTITY_DROPS)
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.INCREASE_ENTITY_DROPS)
 				.add(Enchantments.LOOTING);
 		getOrCreateTagBuilder(ConventionalEnchantmentTags.WEAPON_DAMAGE_ENHANCEMENT)
 				.add(Enchantments.BANE_OF_ARTHROPODS)

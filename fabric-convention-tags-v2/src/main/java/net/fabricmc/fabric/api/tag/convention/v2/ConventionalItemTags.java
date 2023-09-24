@@ -30,7 +30,7 @@ public final class ConventionalItemTags {
 	}
 
 	/**
-	 * Natural stone-like blocks that can be used as a base ingredient in recipes that takes stone.
+	 * Natural stone-like blocks that can be used as a base ingredient in recipes that take stone.
 	 */
 	public static final TagKey<Item> STONES = register("stones");
 
@@ -171,7 +171,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> WOODEN_RODS = register("rods/wooden");
 	public static final TagKey<Item> BLAZE_RODS = register("rods/blaze");
 
-	private static TagKey<Item> register(String tagID) {
-		return TagRegistration.ITEM_TAG_REGISTRATION.registerC(tagID);
+	private static TagKey<Item> register(String tagId) {
+		return TagRegistration.ITEM_TAG.registerC(tagId);
 	}
 }

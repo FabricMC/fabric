@@ -33,7 +33,7 @@ public final class ConventionalBlockEntityTypeTags {
 	 */
 	public static final TagKey<BlockEntityType<?>> RELOCATION_NOT_SUPPORTED = register("relocation_not_supported");
 
-	private static TagKey<BlockEntityType<?>> register(String tagID) {
-		return TagRegistration.BLOCK_ENTITY_TYPE_TAG_REGISTRATION.registerC(tagID);
+	private static TagKey<BlockEntityType<?>> register(String tagId) {
+		return TagRegistration.BLOCK_ENTITY_TYPE_TAG.registerC(tagId);
 	}
 }

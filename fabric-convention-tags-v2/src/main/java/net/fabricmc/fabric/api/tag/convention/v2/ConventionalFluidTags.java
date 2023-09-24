@@ -34,7 +34,7 @@ public final class ConventionalFluidTags {
 	public static final TagKey<Fluid> MILK = register("milk");
 	public static final TagKey<Fluid> HONEY = register("honey");
 
-	private static TagKey<Fluid> register(String tagID) {
-		return TagRegistration.FLUID_TAG_REGISTRATION.registerC(tagID);
+	private static TagKey<Fluid> register(String tagId) {
+		return TagRegistration.FLUID_TAG.registerC(tagId);
 	}
 }
