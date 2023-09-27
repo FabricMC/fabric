@@ -20,6 +20,7 @@ import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
@@ -54,6 +55,15 @@ public interface CustomIngredientSerializer<T extends CustomIngredient> {
 	 */
 	Identifier getIdentifier();
 
+	/**
+	 * {@return the codec}.
+	 *
+	 * <p>Codecs are used to read the ingredient from the recipe JSON files.
+	 * If the custom ingredient
+	 *
+	 * @see Ingredient#ALLOW_EMPTY_CODEC
+	 * @see Ingredient#DISALLOW_EMPTY_CODEC
+	 */
 	Codec<T> getCodec(boolean allowEmpty);
 
 	/**
