@@ -4,10 +4,10 @@ jobs:
   build:
     strategy:
       matrix:
-        java: [17-jdk, 20-jdk]
+        java: [17-ubuntu, 21-ubuntu]
     runs-on: ubuntu-22.04
     container:
-      image: eclipse-temurin:${{ matrix.java }}
+      image: mcr.microsoft.com/openjdk/jdk:${{ matrix.java }}
       options: --user root
     steps:
       - uses: actions/checkout@v4
