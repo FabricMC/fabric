@@ -33,8 +33,7 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 /**
  * Provides an API to modify Biomes after they have been loaded and before they are used in the World.
  *
- * <p>Any modifications made to biomes will not be available for use in server.properties (as of 1.16.1),
- * or the demo level.
+ * <p>Any modifications made to biomes will not be available for use in the demo level.
  *
  * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
@@ -87,7 +86,7 @@ public final class BiomeModifications {
 	}
 
 	/**
-	 * Create a new biome modification which will be applied whenever biomes are loaded from data packs.
+	 * Creates a new biome modification which will be applied whenever biomes are loaded from data packs.
 	 *
 	 * @param id An identifier for the new set of biome modifications that is returned. Is used for
 	 *           guaranteeing consistent ordering between the biome modifications added by different mods
