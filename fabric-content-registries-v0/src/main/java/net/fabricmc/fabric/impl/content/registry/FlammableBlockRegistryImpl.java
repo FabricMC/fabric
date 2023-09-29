@@ -40,7 +40,7 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry {
 	private FlammableBlockRegistryImpl(Block key) {
 		this.key = key;
 
-		// Reset computed values after tags change since they depends on tags.
+		// Reset computed values after tags change since they depend on tags.
 		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
 			computedEntries = null;
 		});
