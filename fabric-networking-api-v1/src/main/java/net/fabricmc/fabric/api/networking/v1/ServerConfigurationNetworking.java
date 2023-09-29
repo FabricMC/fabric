@@ -301,7 +301,7 @@ public final class ServerConfigurationNetworking {
 		Objects.requireNonNull(channelName, "Channel cannot be null");
 		Objects.requireNonNull(buf, "Buf cannot be null");
 
-		return ServerNetworkingImpl.createC2SPacket(channelName, buf);
+		return ServerNetworkingImpl.createS2CPacket(channelName, buf);
 	}
 
 	/**
@@ -314,7 +314,7 @@ public final class ServerConfigurationNetworking {
 		Objects.requireNonNull(packet, "Packet cannot be null");
 		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
 
-		return ServerNetworkingImpl.createC2SPacket(packet);
+		return ServerNetworkingImpl.createS2CPacket(packet);
 	}
 
 	/**
