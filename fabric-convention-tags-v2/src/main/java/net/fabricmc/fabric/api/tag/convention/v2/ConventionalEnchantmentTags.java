@@ -45,7 +45,7 @@ public final class ConventionalEnchantmentTags {
 	public static final TagKey<Enchantment> ENTITY_SPEED_ENHANCEMENT = register("entity_speed_enhancement");
 	/**
 	 * For enchantments that applies movement-based benefits unrelated to speed for the entity wearing armor enchanted with it.
-	 * Example: Reducing falling speeds (Feather Falling) or allowing walking on water (Frost Walker)
+	 * Example: Reducing falling speeds ({@link net.minecraft.enchantment.Enchantments#FEATHER_FALLING}) or allowing walking on water ({@link net.minecraft.enchantment.Enchantments#FROST_WALKER})
 	 */
 	public static final TagKey<Enchantment> ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENT = register("entity_auxiliary_movement_enhancement");
 	/**
