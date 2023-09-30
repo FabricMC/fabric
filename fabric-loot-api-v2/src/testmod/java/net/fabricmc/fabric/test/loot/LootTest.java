@@ -95,7 +95,8 @@ public class LootTest implements ModInitializer {
 
 		LootTableEvents.LOADED.register((resourceManager, lootManager) -> {
 			LootTable blackWoolTable = lootManager.getLootTable(Blocks.BLACK_WOOL.getLootTableId());
-			if(blackWoolTable == LootTable.EMPTY) {
+
+			if (blackWoolTable == LootTable.EMPTY) {
 				throw new AssertionError("black wool loot table should not be empty");
 			}
 		});
