@@ -38,25 +38,25 @@ public final class EnchantmentTagGenerator extends FabricTagProvider.Enchantment
 		getOrCreateTagBuilder(ConventionalEnchantmentTags.INCREASE_ENTITY_DROPS)
 				.add(Enchantments.LOOTING);
 		getOrCreateTagBuilder(ConventionalEnchantmentTags.WEAPON_DAMAGE_ENHANCEMENT)
-				.add(Enchantments.BANE_OF_ARTHROPODS)
-				.add(Enchantments.IMPALING)
+				.add(Enchantments.SHARPNESS)
 				.add(Enchantments.SMITE)
+				.add(Enchantments.BANE_OF_ARTHROPODS)
 				.add(Enchantments.POWER)
-				.add(Enchantments.SHARPNESS);
+				.add(Enchantments.IMPALING);
 		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_SPEED_ENHANCEMENT)
+				.add(Enchantments.SOUL_SPEED)
 				.add(Enchantments.SWIFT_SNEAK)
-				.add(Enchantments.DEPTH_STRIDER)
-				.add(Enchantments.SOUL_SPEED);
+				.add(Enchantments.DEPTH_STRIDER);
 		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENT)
 				.add(Enchantments.FEATHER_FALLING)
 				.add(Enchantments.FROST_WALKER);
 		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENT)
-				.add(Enchantments.FEATHER_FALLING)
 				.add(Enchantments.PROTECTION)
 				.add(Enchantments.BLAST_PROTECTION)
 				.add(Enchantments.PROJECTILE_PROTECTION)
 				.add(Enchantments.FIRE_PROTECTION)
-				.add(Enchantments.RESPIRATION);
+				.add(Enchantments.RESPIRATION)
+				.add(Enchantments.FEATHER_FALLING);
 
 		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
 		// TODO: Remove backwards compat tag entries in 1.22
