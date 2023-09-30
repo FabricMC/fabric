@@ -40,9 +40,14 @@ public final class ConventionalEnchantmentTags {
 	 */
 	public static final TagKey<Enchantment> WEAPON_DAMAGE_ENHANCEMENT = register("weapon_damage_enhancement");
 	/**
-	 * For enchantments that increase movement speed or otherwise benefit the entity wearing armor enchanted with it.
+	 * For enchantments that increase movement speed for entity wearing armor enchanted with it.
 	 */
-	public static final TagKey<Enchantment> ENTITY_MOVEMENT_ENHANCEMENT = register("entity_movement_enhancement");
+	public static final TagKey<Enchantment> ENTITY_SPEED_ENHANCEMENT = register("entity_speed_enhancement");
+	/**
+	 * For enchantments that applies movement-based benefits unrelated to speed for the entity wearing armor enchanted with it.
+	 * Example: Reducing falling speeds (Feather Falling) or allowing walking on water (Frost Walker)
+	 */
+	public static final TagKey<Enchantment> ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENT = register("entity_auxiliary_movement_enhancement");
 	/**
 	 * For enchantments that decrease damage taken or otherwise benefit, in regard to damage, the entity wearing armor enchanted with it.
 	 */

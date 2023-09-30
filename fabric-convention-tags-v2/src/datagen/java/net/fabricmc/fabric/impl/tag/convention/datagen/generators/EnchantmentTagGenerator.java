@@ -24,6 +24,7 @@ import net.minecraft.registry.RegistryWrapper;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags;
+import net.minecraft.util.Identifier;
 
 public final class EnchantmentTagGenerator extends FabricTagProvider.EnchantmentTagProvider {
 	public EnchantmentTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
@@ -42,10 +43,13 @@ public final class EnchantmentTagGenerator extends FabricTagProvider.Enchantment
 				.add(Enchantments.SMITE)
 				.add(Enchantments.POWER)
 				.add(Enchantments.SHARPNESS);
-		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_MOVEMENT_ENHANCEMENT)
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_SPEED_ENHANCEMENT)
 				.add(Enchantments.SWIFT_SNEAK)
 				.add(Enchantments.DEPTH_STRIDER)
 				.add(Enchantments.SOUL_SPEED);
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENT)
+				.add(Enchantments.FEATHER_FALLING)
+				.add(Enchantments.FROST_WALKER);
 		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENT)
 				.add(Enchantments.FEATHER_FALLING)
 				.add(Enchantments.PROTECTION)
@@ -53,5 +57,10 @@ public final class EnchantmentTagGenerator extends FabricTagProvider.Enchantment
 				.add(Enchantments.PROJECTILE_PROTECTION)
 				.add(Enchantments.FIRE_PROTECTION)
 				.add(Enchantments.RESPIRATION);
+
+		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
+		// TODO: Remove backwards compat tag entries in 1.22
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_SPEED_ENHANCEMENT)
+				.addOptionalTag(new Identifier("c", "entity_movement_enhancement"));
 	}
 }
