@@ -20,11 +20,11 @@ import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags;
-import net.minecraft.util.Identifier;
 
 public final class EnchantmentTagGenerator extends FabricTagProvider.EnchantmentTagProvider {
 	public EnchantmentTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
