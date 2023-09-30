@@ -167,7 +167,14 @@ public final class ConventionalItemTags {
 
 	// Other
 	public static final TagKey<Item> STRINGS = register("strings");
+	/**
+	 * For rod-like materials to be used in recipes.
+	 */
 	public static final TagKey<Item> RODS = register("rods");
+	/**
+	 * For stick-like materials to be used in recipes.
+	 * One example is a mod adds stick variants such as Spruce Sticks but would like stick recipes to be able to use it.
+	 */
 	public static final TagKey<Item> WOODEN_RODS = register("rods/wooden");
 	public static final TagKey<Item> BLAZE_RODS = register("rods/blaze");
 
