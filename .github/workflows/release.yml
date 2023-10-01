@@ -8,12 +8,12 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     container:
-      image: eclipse-temurin:20-jdk
+      image: mcr.microsoft.com/openjdk/jdk:21-ubuntu
       options: --user root
     steps:
       - run: apt update && apt install git -y && git --version
       - run: git config --global --add safe.directory /__w/fabric/fabric
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: FabricMC/fabric-action-scripts@v2
