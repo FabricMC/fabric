@@ -38,8 +38,8 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> TOOLS = register("tools");
 	public static final TagKey<Item> SHEARS_TOOLS = register("tools/shears");
 	/**
-	 * For throwable spear weapons, like Minecraft's tridents.
-	 * Note, other throwable weapons like boomerangs and throwing knives are best put into their own tools tag.
+	 * For spear tools, like Minecraft's tridents.
+	 * Note, other weapons like boomerangs and throwing knives are best put into their own tools tag.
 	 */
 	public static final TagKey<Item> SPEARS_TOOLS = register("tools/spears");
 	public static final TagKey<Item> BOWS_TOOLS = register("tools/bows");

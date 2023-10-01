@@ -98,11 +98,10 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> YELLOW_DYED = register("dyed/yellow");
 
 	/**
-	 * Blocks should be included in this tag if their movement can cause serious issues such as world corruption
-	 * upon being moved, such as chunk loaders or pipes, for mods that move blocks but do not respect
+	 * Blocks should be included in this tag if their movement/relocation can cause serious issues such
+	 * as world corruption upon being moved or for balance reason where the block should not be able to be relocated.
+	 * Example: Chunk loaders or pipes where other mods that move blocks do not respect
 	 * {@link AbstractBlock.AbstractBlockState#getPistonBehavior}.
-	 *
-	 * <p>See also the equivalent block entity type tag: {@link ConventionalBlockEntityTypeTags#RELOCATION_NOT_SUPPORTED}
 	 */
 	public static final TagKey<Block> RELOCATION_NOT_SUPPORTED = register("relocation_not_supported");
 
