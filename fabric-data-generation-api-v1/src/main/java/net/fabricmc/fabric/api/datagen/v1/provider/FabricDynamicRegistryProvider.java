@@ -58,7 +58,6 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
  * A provider to help with data-generation of dynamic registry objects,
  * such as biomes, features, or message types.
  */
-@ApiStatus.Experimental
 public abstract class FabricDynamicRegistryProvider implements DataProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDynamicRegistryProvider.class);
 

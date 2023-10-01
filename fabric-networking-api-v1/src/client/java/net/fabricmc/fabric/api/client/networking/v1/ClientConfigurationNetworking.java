@@ -51,7 +51,6 @@ import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonNetworkH
  *
  * @see ServerConfigurationNetworking
  */
-@ApiStatus.Experimental
 public final class ClientConfigurationNetworking {
 	/**
 	 * Registers a handler to a channel.

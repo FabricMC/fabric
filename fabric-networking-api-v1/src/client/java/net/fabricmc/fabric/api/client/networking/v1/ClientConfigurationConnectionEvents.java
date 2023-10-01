@@ -28,7 +28,6 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Offers access to events related to the configuration connection to a server on a logical client.
  */
-@ApiStatus.Experimental
 public final class ClientConfigurationConnectionEvents {
 	/**
 	 * Event indicating a connection entering the CONFIGURATION state, ready for registering channel handlers.

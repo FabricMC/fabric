@@ -48,7 +48,6 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerA
  * @see ServerLoginNetworking
  * @see ServerConfigurationNetworking
  */
-@ApiStatus.Experimental
 public final class ServerConfigurationNetworking {
 	/**
 	 * Registers a handler to a channel.

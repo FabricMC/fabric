@@ -34,8 +34,6 @@ import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 
 /**
  * Provides several convenient biome selectors that can be used with {@link BiomeModifications}.
- *
- * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
 public final class BiomeSelectors {
 	private BiomeSelectors() {
