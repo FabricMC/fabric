@@ -132,6 +132,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 				TEST_DATAGEN_DYNAMIC_REGISTRY_KEY,
 				this::bootstrapTestDatagenRegistry
 		);
+		// do NOT add TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY, should still work without it
 	}
 
 	private void bootstrapTestDatagenRegistry(Registerable<DataGeneratorTestContent.TestDatagenObject> registerable) {
