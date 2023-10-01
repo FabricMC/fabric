@@ -27,7 +27,10 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
 
 /**
- * <b>Experimental feature</b>, may be removed or changed without further notice.
+ * Provides methods for modifying biomes. To create an instance, call
+ * {@link BiomeModifications#create(Identifier)}.
+ *
+ * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  *
  * @see BiomeModifications
  */
