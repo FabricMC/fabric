@@ -79,6 +79,10 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> UNCOLORED_SANDSTONE_STAIRS = register("sandstone/uncolored_stairs");
 
 	// Blocks created with dyes
+	/**
+	 * Tag that holds all blocks that can be dyed a specific color.
+	 * (Does not include color blending blocks that would behave similar to leather armor item)
+	 */
 	public static final TagKey<Block> DYED = register("dyed");
 	public static final TagKey<Block> BLACK_DYED = register("dyed/black");
 	public static final TagKey<Block> BLUE_DYED = register("dyed/blue");

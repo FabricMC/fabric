@@ -147,6 +147,15 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> YELLOW_DYES = register("dyes/yellow");
 
 	// Items created with dyes
+	/**
+	 * Tag that holds all blocks and items that can be dyed a specific color.
+	 * (Does not include color blending items like leather armor)
+	 * <p></p>
+	 * Note: Use custom ingredients in recipes to do tag intersections and/or tag exclusions
+	 * to make more powerful recipes utilizing multiple tags such as dyed tags for an ingredient.
+	 * See {@link net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients}
+	 * children classes for various custom ingredients available that can also be used in data generation.
+	 */
 	public static final TagKey<Item> DYED = register("dyed");
 	public static final TagKey<Item> BLACK_DYED = register("dyed/black");
 	public static final TagKey<Item> BLUE_DYED = register("dyed/blue");
