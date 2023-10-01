@@ -386,7 +386,7 @@ public final class ServerPlayNetworking {
 		Objects.requireNonNull(channelName, "Channel cannot be null");
 		Objects.requireNonNull(buf, "Buf cannot be null");
 
-		return ServerNetworkingImpl.createC2SPacket(channelName, buf);
+		return ServerNetworkingImpl.createS2CPacket(channelName, buf);
 	}
 
 	/**
@@ -396,7 +396,7 @@ public final class ServerPlayNetworking {
 	 * @return a new packet
 	 */
 	public static <T extends FabricPacket> Packet<ClientCommonPacketListener> createS2CPacket(T packet) {
-		return ServerNetworkingImpl.createC2SPacket(packet);
+		return ServerNetworkingImpl.createS2CPacket(packet);
 	}
 
 	/**

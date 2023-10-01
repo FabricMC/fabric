@@ -54,16 +54,16 @@ public final class ServerNetworkingImpl {
 		return (ServerConfigurationNetworkAddon) ((NetworkHandlerExtensions) handler).getAddon();
 	}
 
-	public static Packet<ClientCommonPacketListener> createC2SPacket(Identifier channel, PacketByteBuf buf) {
+	public static Packet<ClientCommonPacketListener> createS2CPacket(Identifier channel, PacketByteBuf buf) {
 		return new CustomPayloadS2CPacket(new PacketByteBufPayload(channel, buf));
 	}
 
-	public static Packet<ClientCommonPacketListener> createC2SPacket(FabricPacket packet) {
+	public static Packet<ClientCommonPacketListener> createS2CPacket(FabricPacket packet) {
 		Objects.requireNonNull(packet, "Packet cannot be null");
 		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
 
 		PacketByteBuf buf = PacketByteBufs.create();
 		packet.write(buf);
-		return createC2SPacket(packet.getType().getId(), buf);
+		return createS2CPacket(packet.getType().getId(), buf);
 	}
 }
