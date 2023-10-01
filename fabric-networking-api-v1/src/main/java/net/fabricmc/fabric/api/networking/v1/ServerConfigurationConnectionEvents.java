@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 
