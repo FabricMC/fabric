@@ -1,0 +1,11 @@
+//dependencies {
+//	implementation project(path: ':fabric-lifecycle-events-v1')
+//	implementation project(path: ':fabric-key-binding-api-v1')
+//	implementation project(path: ':fabric-screen-api-v1')
+//}
+version = getSubprojectVersion(project)
+
+moduleDependencies(project, ['fabric-api-base'])
+moduleDependencies(project, ['fabric-lifecycle-events-v1'])
+moduleDependencies(project, ['fabric-key-binding-api-v1'])
+moduleDependencies(project, ['fabric-screen-api-v1'])

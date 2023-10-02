@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-screen-layers-v1-testmod",
+  "version": "1.0.0",
+  "name": "Fabric Screen Layers (v1) Test Mod",
+  "description": "Example for Fabric Screen Layers",
+  "license": "Apache-2.0",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.test.screenlayer.ScreenLayerTest"
+    ]
+  },
+  "depends": {
+    "fabric-screen-layers-v1" : ">=1.0.0"
+  }
+}
