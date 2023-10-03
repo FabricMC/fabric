@@ -115,7 +115,7 @@ public class ExampleScreen extends Screen {
 			drawRectangle(drawContext, (float) (rectX - 2 - .5), (float) rectY, (float) ((float) (width + (2 * 2))), height);
 			// Font renderer really doesn't like mid-pixel text rendering
 			drawContext.getMatrices().translate(textX - Math.floor(textX), textY - Math.floor(textY), 0);
-			textRenderer.draw(text, textX, textY, 0xFFFFFF, true, drawContext.getMatrices().peek().getPositionMatrix(), drawContext.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+			drawContext.drawText(textRenderer, text, (int) textX, (int) textY, 15728880, true);
 		} finally {
 			drawContext.getMatrices().pop();
 		}
@@ -128,10 +128,10 @@ public class ExampleScreen extends Screen {
 		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 		Matrix4f matrix4f = drawContext.getMatrices().peek().getPositionMatrix();
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-		bufferBuilder.vertex(matrix4f, x, (float) height + y, (float) 0).color(0xFF000000).next();
-		bufferBuilder.vertex(matrix4f, x + width, (float) (height + y), (float) 0).color(0xFF000000).next();
-		bufferBuilder.vertex(matrix4f, x + width, y, 0).color(0xFF000000).next();
-		bufferBuilder.vertex(matrix4f, x, y, 0).color(0xFF000000).next();
+		bufferBuilder.vertex(matrix4f, x, (float) height + y, (float) 0).color(0x89000000).next();
+		bufferBuilder.vertex(matrix4f, x + width, (float) (height + y), (float) 0).color(0x89000000).next();
+		bufferBuilder.vertex(matrix4f, x + width, y, 0).color(0x89000000).next();
+		bufferBuilder.vertex(matrix4f, x, y, 0).color(0x89000000).next();
 
 		BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
@@ -147,6 +147,11 @@ public class ExampleScreen extends Screen {
 			stack.loadIdentity();
 			stack.translate(0.0D, 0.0D, 1000.0F - ScreenLayer.getFarPlane());
 		}
+	}
+
+	@Override
+	public void renderInGameBackground(DrawContext context) {
+		context.fillGradient(0, 0, this.width, this.height, 0x3D353838, 0x3D353838);
 	}
 
 	@Override
