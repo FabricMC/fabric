@@ -95,6 +95,6 @@ abstract class LootManagerMixin {
 		});
 
 		this.keyToValue = newTables.build();
-		LootTableEvents.LOADED.invoker().onLootTableLoaded(resourceManager, lootManager);
+		LootTableEvents.ALL_LOADED.invoker().onLootTablesLoaded(resourceManager, lootManager);
 	}
 }

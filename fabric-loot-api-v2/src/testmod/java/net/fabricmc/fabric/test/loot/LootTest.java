@@ -93,7 +93,7 @@ public class LootTest implements ModInitializer {
 			}
 		});
 
-		LootTableEvents.LOADED.register((resourceManager, lootManager) -> {
+		LootTableEvents.ALL_LOADED.register((resourceManager, lootManager) -> {
 			LootTable blackWoolTable = lootManager.getLootTable(Blocks.BLACK_WOOL.getLootTableId());
 
 			if (blackWoolTable == LootTable.EMPTY) {
