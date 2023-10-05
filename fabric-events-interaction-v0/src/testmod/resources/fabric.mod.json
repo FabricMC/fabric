@@ -12,7 +12,7 @@
     "main": [
       "net.fabricmc.fabric.test.event.interaction.AttackBlockTests",
       "net.fabricmc.fabric.test.event.interaction.PlayerBreakBlockTests",
-      "net.fabricmc.fabric.test.event.interaction.PlayerPickBlockTests",
+      "net.fabricmc.fabric.test.client.event.interaction.PlayerPickBlockTests",
       "net.fabricmc.fabric.test.event.interaction.UseEntityTests"
     ],
     "fabric-gametest": [

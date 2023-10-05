@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.event.interaction;
+package net.fabricmc.fabric.test.client.event.interaction;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;

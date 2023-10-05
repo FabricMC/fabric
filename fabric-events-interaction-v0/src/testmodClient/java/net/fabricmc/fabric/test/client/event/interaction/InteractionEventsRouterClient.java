@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.event.interaction;
+package net.fabricmc.fabric.test.client.event.interaction;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
