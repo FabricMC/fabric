@@ -125,13 +125,13 @@ transitive-accessible method net/minecraft/entity/damage/DamageSources create (L
 transitive-accessible field net/minecraft/client/MinecraftClient attackCooldown I
 
 # Creating certain types of blocks
-transitive-accessible method net/minecraft/block/Blocks createBambooBlock (Lnet/minecraft/block/MapColor;Lnet/minecraft/block/MapColor;Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/PillarBlock;
-transitive-accessible method net/minecraft/block/Blocks createFlowerPotBlock (Lnet/minecraft/block/Block;[Lnet/minecraft/resource/featuretoggle/FeatureFlag;)Lnet/minecraft/block/FlowerPotBlock;
-transitive-accessible method net/minecraft/block/Blocks createLeavesBlock (Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/LeavesBlock;
-transitive-accessible method net/minecraft/block/Blocks createLogBlock (Lnet/minecraft/block/MapColor;Lnet/minecraft/block/MapColor;)Lnet/minecraft/block/PillarBlock;
+transitive-accessible method net/minecraft/block/Blocks createBambooBlock (Lnet/minecraft/block/MapColor;Lnet/minecraft/block/MapColor;Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/Block;
+transitive-accessible method net/minecraft/block/Blocks createFlowerPotBlock (Lnet/minecraft/block/Block;)Lnet/minecraft/block/Block;
+transitive-accessible method net/minecraft/block/Blocks createLeavesBlock (Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/Block;
+transitive-accessible method net/minecraft/block/Blocks createLogBlock (Lnet/minecraft/block/MapColor;Lnet/minecraft/block/MapColor;)Lnet/minecraft/block/Block;
 transitive-accessible method net/minecraft/block/Blocks createNetherStemBlock (Lnet/minecraft/block/MapColor;)Lnet/minecraft/block/Block;
-transitive-accessible method net/minecraft/block/Blocks createStoneButtonBlock ()Lnet/minecraft/block/ButtonBlock;
-transitive-accessible method net/minecraft/block/Blocks createWoodenButtonBlock (Lnet/minecraft/block/BlockSetType;[Lnet/minecraft/resource/featuretoggle/FeatureFlag;)Lnet/minecraft/block/ButtonBlock;
+transitive-accessible method net/minecraft/block/Blocks createStoneButtonBlock ()Lnet/minecraft/block/Block;
+transitive-accessible method net/minecraft/block/Blocks createWoodenButtonBlock (Lnet/minecraft/block/BlockSetType;)Lnet/minecraft/block/Block;
 
 # Methods used in block creation
 transitive-accessible method net/minecraft/block/Blocks always (Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Z

@@ -45,25 +45,25 @@ public class TealSignTest implements ModInitializer {
 	public static final Identifier TEAL_TYPE_ID = ObjectBuilderTestConstants.id("teal");
 	public static final BlockSetType TEAL_BLOCK_SET_TYPE = BlockSetTypeBuilder.copyOf(BlockSetType.OAK).build(TEAL_TYPE_ID);
 	public static final WoodType TEAL_WOOD_TYPE = WoodTypeBuilder.copyOf(WoodType.OAK).build(TEAL_TYPE_ID, TEAL_BLOCK_SET_TYPE);
-	public static final SignBlock TEAL_SIGN = new SignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), TEAL_WOOD_TYPE) {
+	public static final SignBlock TEAL_SIGN = new SignBlock(TEAL_WOOD_TYPE, FabricBlockSettings.copy(Blocks.OAK_SIGN)) {
 		@Override
 		public TealSign createBlockEntity(BlockPos pos, BlockState state) {
 			return new TealSign(pos, state);
 		}
 	};
-	public static final WallSignBlock TEAL_WALL_SIGN = new WallSignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), TEAL_WOOD_TYPE) {
+	public static final WallSignBlock TEAL_WALL_SIGN = new WallSignBlock(TEAL_WOOD_TYPE, FabricBlockSettings.copy(Blocks.OAK_SIGN)) {
 		@Override
 		public TealSign createBlockEntity(BlockPos pos, BlockState state) {
 			return new TealSign(pos, state);
 		}
 	};
-	public static final HangingSignBlock TEAL_HANGING_SIGN = new HangingSignBlock(FabricBlockSettings.copy(Blocks.OAK_HANGING_SIGN), TEAL_WOOD_TYPE) {
+	public static final HangingSignBlock TEAL_HANGING_SIGN = new HangingSignBlock(TEAL_WOOD_TYPE, FabricBlockSettings.copy(Blocks.OAK_HANGING_SIGN)) {
 		@Override
 		public TealHangingSign createBlockEntity(BlockPos pos, BlockState state) {
 			return new TealHangingSign(pos, state);
 		}
 	};
-	public static final WallHangingSignBlock TEAL_WALL_HANGING_SIGN = new WallHangingSignBlock(FabricBlockSettings.copy(Blocks.OAK_HANGING_SIGN), TEAL_WOOD_TYPE) {
+	public static final WallHangingSignBlock TEAL_WALL_HANGING_SIGN = new WallHangingSignBlock(TEAL_WOOD_TYPE, FabricBlockSettings.copy(Blocks.OAK_HANGING_SIGN)) {
 		@Override
 		public TealHangingSign createBlockEntity(BlockPos pos, BlockState state) {
 			return new TealHangingSign(pos, state);
