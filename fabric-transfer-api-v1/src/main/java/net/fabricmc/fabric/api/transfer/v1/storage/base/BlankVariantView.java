@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.transfer.v1.storage.base;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
@@ -25,11 +23,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 /**
  * A transfer variant storage view that contains a blank variant all the time (it's always empty), but may have a nonzero capacity.
  * This can be used to give capacity hints even if the storage is empty.
- *
- * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 public class BlankVariantView<T extends TransferVariant<?>> implements StorageView<T> {
 	private final T blankVariant;
 	private final long capacity;

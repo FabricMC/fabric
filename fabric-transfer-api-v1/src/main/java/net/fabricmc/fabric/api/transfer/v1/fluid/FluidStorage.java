@@ -16,15 +16,14 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.Identifier;
@@ -33,24 +32,20 @@ import net.minecraft.util.math.Direction;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SidedStorageBlockEntity;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.EmptyItemFluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.FullItemFluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.impl.transfer.fluid.EmptyBucketStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SidedStorageBlockEntity;
 import net.fabricmc.fabric.impl.transfer.fluid.CombinedProvidersImpl;
+import net.fabricmc.fabric.impl.transfer.fluid.EmptyBucketStorage;
 import net.fabricmc.fabric.impl.transfer.fluid.WaterPotionStorage;
 import net.fabricmc.fabric.mixin.transfer.BucketItemAccessor;
 
 /**
  * Access to {@link Storage Storage&lt;FluidVariant&gt;} instances.
- *
- * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 public final class FluidStorage {
 	/**
 	 * Sided block access to fluid variant storages.

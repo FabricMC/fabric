@@ -38,11 +38,7 @@ import net.fabricmc.fabric.impl.transfer.item.CursorSlotWrapper;
  * However, {@link #insert} is overridden to behave like {@link #offer}.
  * For simple insertions, {@link #offer} or {@link #offerOrDrop} is recommended.
  * {@link #getSlots} can also be used and combined with {@link CombinedStorage} to retrieve a wrapper around a specific range of slots.
- *
- * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 @ApiStatus.NonExtendable
 // TODO: Consider explicitly syncing stacks by sending a ScreenHandlerSlotUpdateS2CPacket if that proves to be necessary.
 // TODO: Vanilla doesn't seem to be doing it reliably, so we ignore it for now.

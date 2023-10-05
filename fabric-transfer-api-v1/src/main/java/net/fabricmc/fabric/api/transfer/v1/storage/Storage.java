@@ -18,8 +18,6 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 
 import java.util.Iterator;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
@@ -60,11 +58,7 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
  *
  * @param <T> The type of the stored resources.
  * @see Transaction
- *
- * <b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 public interface Storage<T> extends Iterable<StorageView<T>> {
 	/**
 	 * Return an empty storage.

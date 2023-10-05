@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.transfer.v1.context;
 
 import java.util.List;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -84,11 +83,7 @@ import net.fabricmc.fabric.impl.transfer.context.SingleSlotContainerItemContext;
  *     <li>Exchange some of the current variant with another variant through {@link #exchange}.
  *     In the water bucket example, this function can be used to combine steps 1, 2 and 3.</li>
  * </ul>
- *
- * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 public interface ContainerItemContext {
 	/**
 	 * Returns a context for interaction with a player's hand. This is recommended for item use interactions.
