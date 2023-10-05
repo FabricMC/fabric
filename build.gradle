@@ -258,6 +258,10 @@ allprojects {
 	spotless {
 		java {
 			licenseHeaderFile(rootProject.file("HEADER"))
+			removeUnusedImports()
+			importOrder('java', 'javax', '', 'net.minecraft', 'net.fabricmc')
+			indentWithTabs()
+			trimTrailingWhitespace()
 		}
 	}
 
