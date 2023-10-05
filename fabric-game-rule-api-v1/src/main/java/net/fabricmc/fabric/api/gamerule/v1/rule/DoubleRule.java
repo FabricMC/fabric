@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.api.gamerule.v1.rule;
 
 import com.mojang.brigadier.context.CommandContext;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;

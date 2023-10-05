@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.event.interaction;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
