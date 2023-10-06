@@ -24,7 +24,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -46,9 +48,11 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.GameMode;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 
@@ -88,6 +92,11 @@ public abstract class ClientPlayerInteractionManagerMixin {
 				sendSequencedPacket(client.world, id -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction, id));
 			}
 		}
+	}
+
+	@Inject(method = "breakBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBroken(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void fabric$onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, World world, BlockState blockState) {
+		PlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(world, this.client.player, pos, blockState, world.getBlockEntity(pos));
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;sendSequencedPacket(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/network/SequencedPacketCreator;)V"), method = "interactBlock", cancellable = true)
@@ -141,5 +150,5 @@ public abstract class ClientPlayerInteractionManagerMixin {
 	}
 
 	@Shadow
-	public abstract void sendSequencedPacket(ClientWorld clientWorld, SequencedPacketCreator supplier);
+	protected abstract void sendSequencedPacket(ClientWorld clientWorld, SequencedPacketCreator supplier);
 }
