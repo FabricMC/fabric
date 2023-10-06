@@ -90,7 +90,7 @@ public final class LootTableEvents {
 	});
 
 	/**
-	 * This event can be used for post-processing after all loot tables have been loaded and modified by fabric.
+	 * This event can be used for post-processing after all loot tables have been loaded and modified by Fabric.
 	 */
 	public static final Event<Loaded> ALL_LOADED = EventFactory.createArrayBacked(Loaded.class, listeners -> (resourceManager, lootManager) -> {
 		for (Loaded listener : listeners) {
