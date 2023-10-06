@@ -29,8 +29,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * Contains events triggered by block breaking.
- * <p>
- * {@link #BEFORE} and {@link #CANCELED} are only called on the server while
+ *
+ * <p>{@link #BEFORE} and {@link #CANCELED} are only called on the server while
  * {@link #AFTER} is called on both the server and the client.
  */
 public final class PlayerBlockBreakEvents {
