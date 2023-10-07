@@ -32,6 +32,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <p>{@link #BEFORE} and {@link #CANCELED} are only called on the server while
  * {@link #AFTER} is called on both the server and the client.
+ * For preventing block breaking client side and other purposes, see {@link AttackBlockCallback}.
  */
 public final class PlayerBlockBreakEvents {
 	private PlayerBlockBreakEvents() { }
