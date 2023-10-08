@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -108,14 +110,18 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	}
 
 	@Override
-	protected void fabric_modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
+	protected Set<RegistryEntry<Biome>> fabric_modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
 		if (!hasCheckedForModifiedSet) {
 			hasCheckedForModifiedSet = true;
 			biomeSetModified = !overrides.get().customBiomes.isEmpty();
 		}
 
 		if (biomeSetModified) {
-			biomes.addAll(overrides.get().customBiomes);
+			var modifiedBiomes = new LinkedHashSet<>(biomes);
+			modifiedBiomes.addAll(overrides.get().customBiomes);
+			return Collections.unmodifiableSet(modifiedBiomes);
 		}
+
+		return biomes;
 	}
 }
