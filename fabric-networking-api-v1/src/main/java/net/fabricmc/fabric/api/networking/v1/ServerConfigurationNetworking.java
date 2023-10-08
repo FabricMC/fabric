@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.networking.v1;
 import java.util.Objects;
 import java.util.Set;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -48,7 +47,6 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerA
  * @see ServerLoginNetworking
  * @see ServerConfigurationNetworking
  */
-@ApiStatus.Experimental
 public final class ServerConfigurationNetworking {
 	/**
 	 * Registers a handler to a channel.

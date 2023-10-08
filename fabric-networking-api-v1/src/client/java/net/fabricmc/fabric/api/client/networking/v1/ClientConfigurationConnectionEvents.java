@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.client.networking.v1;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.util.Identifier;
@@ -28,7 +26,6 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Offers access to events related to the configuration connection to a server on a logical client.
  */
-@ApiStatus.Experimental
 public final class ClientConfigurationConnectionEvents {
 	/**
 	 * Event indicating a connection entering the CONFIGURATION state, ready for registering channel handlers.

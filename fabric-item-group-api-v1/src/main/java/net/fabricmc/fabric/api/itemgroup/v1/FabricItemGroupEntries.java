@@ -32,7 +32,6 @@ import net.minecraft.resource.featuretoggle.FeatureSet;
 /**
  * This class allows the entries of {@linkplain ItemGroup item groups} to be modified by the events in {@link ItemGroupEvents}.
  */
-@ApiStatus.Experimental
 public class FabricItemGroupEntries implements ItemGroup.Entries {
 	private final ItemGroup.DisplayContext context;
 	private final List<ItemStack> displayStacks;
