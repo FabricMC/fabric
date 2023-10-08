@@ -47,6 +47,11 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> SHIELDS_TOOLS = register("tools/shields");
 	public static final TagKey<Item> FISHING_RODS_TOOLS = register("tools/fishing_rods");
 
+	// Action-based tool tags
+	public static final TagKey<Item> MELEE_WEAPONS_TOOLS = register("tools/melee_weapons");
+	public static final TagKey<Item> RANGED_WEAPONS_TOOLS = register("tools/ranged_weapons");
+	public static final TagKey<Item> MINING_TOOLS = register("tools/mining_tools");
+
 	// Ores and ingots - categories
 	public static final TagKey<Item> DUSTS = register("dusts");
 	public static final TagKey<Item> GEMS = register("gems");

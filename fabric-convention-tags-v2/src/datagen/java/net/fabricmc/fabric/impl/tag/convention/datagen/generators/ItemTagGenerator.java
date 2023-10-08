@@ -239,7 +239,10 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.FISHING_RODS_TOOLS)
 				.addOptionalTag(ConventionalItemTags.SHEARS_TOOLS)
 				.addOptionalTag(ConventionalItemTags.SHIELDS_TOOLS)
-				.addOptionalTag(ConventionalItemTags.SPEARS_TOOLS);
+				.addOptionalTag(ConventionalItemTags.SPEARS_TOOLS)
+				.addOptionalTag(ConventionalItemTags.MINING_TOOLS)
+				.addOptionalTag(ConventionalItemTags.MELEE_WEAPONS_TOOLS)
+				.addOptionalTag(ConventionalItemTags.RANGED_WEAPONS_TOOLS);
 
 		getOrCreateTagBuilder(ConventionalItemTags.BOWS_TOOLS)
 				.add(Items.BOW);
@@ -253,6 +256,33 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.TRIDENT);
 		getOrCreateTagBuilder(ConventionalItemTags.FISHING_RODS_TOOLS)
 				.add(Items.FISHING_ROD);
+
+		getOrCreateTagBuilder(ConventionalItemTags.MINING_TOOLS)
+				.add(Items.WOODEN_PICKAXE)
+				.add(Items.STONE_PICKAXE)
+				.add(Items.GOLDEN_PICKAXE)
+				.add(Items.IRON_PICKAXE)
+				.add(Items.DIAMOND_PICKAXE)
+				.add(Items.NETHERITE_PICKAXE);
+
+		getOrCreateTagBuilder(ConventionalItemTags.MELEE_WEAPONS_TOOLS)
+				.add(Items.WOODEN_SWORD)
+				.add(Items.STONE_SWORD)
+				.add(Items.GOLDEN_SWORD)
+				.add(Items.IRON_SWORD)
+				.add(Items.DIAMOND_SWORD)
+				.add(Items.NETHERITE_SWORD)
+				.add(Items.WOODEN_AXE)
+				.add(Items.STONE_AXE)
+				.add(Items.GOLDEN_AXE)
+				.add(Items.IRON_AXE)
+				.add(Items.DIAMOND_AXE)
+				.add(Items.NETHERITE_AXE);
+
+		getOrCreateTagBuilder(ConventionalItemTags.RANGED_WEAPONS_TOOLS)
+				.add(Items.BOW)
+				.add(Items.CROSSBOW)
+				.add(Items.TRIDENT);
 	}
 
 	private void generateVillagerJobSites() {
