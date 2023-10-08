@@ -102,6 +102,31 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> YELLOW_DYED = register("dyed/yellow");
 
 	/**
+	 * A storage block is generally a block that has a recipe to craft a bulk of 1 kind of resource to a block
+	 * and has a mirror recipe to reverse the crafting with no loss in resources.
+	 * <p><p/>
+	 * Honey Block is special in that the reversing recipe is not a perfect mirror of the crafting recipe
+	 * and so, it is considered a special case and not given a storage block tag.
+	 */
+	public static final TagKey<Block> STORAGE_BLOCKS = register("storage_blocks");
+	public static final TagKey<Block> STORAGE_BLOCKS_BONEMEAL = register("storage_blocks/bonemeal");
+	public static final TagKey<Block> STORAGE_BLOCKS_COAL = register("storage_blocks/coal");
+	public static final TagKey<Block> STORAGE_BLOCKS_COPPER = register("storage_blocks/copper");
+	public static final TagKey<Block> STORAGE_BLOCKS_DIAMOND = register("storage_blocks/diamond");
+	public static final TagKey<Block> STORAGE_BLOCKS_DRIED_KELP = register("storage_blocks/dried_kelp");
+	public static final TagKey<Block> STORAGE_BLOCKS_EMERALD = register("storage_blocks/emerald");
+	public static final TagKey<Block> STORAGE_BLOCKS_GOLD = register("storage_blocks/gold");
+	public static final TagKey<Block> STORAGE_BLOCKS_IRON = register("storage_blocks/iron");
+	public static final TagKey<Block> STORAGE_BLOCKS_LAPIS = register("storage_blocks/lapis");
+	public static final TagKey<Block> STORAGE_BLOCKS_NETHERITE = register("storage_blocks/netherite");
+	public static final TagKey<Block> STORAGE_BLOCKS_RAW_COPPER = register("storage_blocks/raw_copper");
+	public static final TagKey<Block> STORAGE_BLOCKS_RAW_GOLD = register("storage_blocks/raw_gold");
+	public static final TagKey<Block> STORAGE_BLOCKS_RAW_IRON = register("storage_blocks/raw_iron");
+	public static final TagKey<Block> STORAGE_BLOCKS_REDSTONE = register("storage_blocks/redstone");
+	public static final TagKey<Block> STORAGE_BLOCKS_SLIME = register("storage_blocks/slime");
+	public static final TagKey<Block> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
+
+	/**
 	 * Blocks should be included in this tag if their movement/relocation can cause serious issues such
 	 * as world corruption upon being moved or for balance reason where the block should not be able to be relocated.
 	 * Example: Chunk loaders or pipes where other mods that move blocks do not respect

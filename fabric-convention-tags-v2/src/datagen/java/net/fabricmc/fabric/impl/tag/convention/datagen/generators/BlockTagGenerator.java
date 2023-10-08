@@ -104,6 +104,9 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		getOrCreateTagBuilder(ConventionalBlockTags.RELOCATION_NOT_SUPPORTED); // Generate tag so others can see it exists through JSON.
 
 		generateDyedTags();
+
+		generateStorageTags();
+
 		generateBackwardsCompatTags();
 	}
 
@@ -331,6 +334,74 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.addTag(ConventionalBlockTags.GREEN_DYED)
 				.addTag(ConventionalBlockTags.RED_DYED)
 				.addTag(ConventionalBlockTags.BLACK_DYED);
+	}
+
+	private void generateStorageTags() {
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_BONEMEAL)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_COAL)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_COPPER)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_DIAMOND)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_DRIED_KELP)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_EMERALD)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_GOLD)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_IRON)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_LAPIS)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_NETHERITE)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_RAW_COPPER)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_RAW_GOLD)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_RAW_IRON)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_SLIME)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_BONEMEAL)
+				.add(Blocks.BONE_BLOCK);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_COAL)
+				.add(Blocks.COAL_BLOCK);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_COPPER)
+				.add(Blocks.COPPER_BLOCK);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_DIAMOND)
+				.add(Blocks.DIAMOND_BLOCK);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_DRIED_KELP)
+				.add(Blocks.DRIED_KELP_BLOCK);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_EMERALD)
+				.add(Blocks.EMERALD_BLOCK);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_GOLD)
+				.add(Blocks.GOLD_BLOCK);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_IRON)
+				.add(Blocks.IRON_BLOCK);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_LAPIS)
+				.add(Blocks.LAPIS_BLOCK);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_NETHERITE)
+				.add(Blocks.NETHERITE_BLOCK);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_RAW_COPPER)
+				.add(Blocks.RAW_COPPER_BLOCK);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_RAW_GOLD)
+				.add(Blocks.RAW_GOLD_BLOCK);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_RAW_IRON)
+				.add(Blocks.RAW_IRON_BLOCK);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE)
+				.add(Blocks.REDSTONE_BLOCK);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_SLIME)
+				.add(Blocks.SLIME_BLOCK);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT)
+				.add(Blocks.HAY_BLOCK);
 	}
 
 	private void generateBackwardsCompatTags() {
