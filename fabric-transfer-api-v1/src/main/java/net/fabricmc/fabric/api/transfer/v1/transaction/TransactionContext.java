@@ -21,11 +21,7 @@ import org.jetbrains.annotations.ApiStatus;
 /**
  * A subset of a {@link Transaction} that lets participants properly take part in transactions, manage their state,
  * or open nested transactions, but does not allow them to close the transaction they are passed.
- *
- * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 @ApiStatus.NonExtendable
 public interface TransactionContext {
 	/**

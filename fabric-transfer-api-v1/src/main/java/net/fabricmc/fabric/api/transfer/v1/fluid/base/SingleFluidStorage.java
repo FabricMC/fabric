@@ -18,8 +18,6 @@ package net.fabricmc.fabric.api.transfer.v1.fluid.base;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.nbt.NbtCompound;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -34,11 +32,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
  *
  * <p>This is a convenient specialization of {@link SingleVariantStorage} for fluids that additionally offers methods
  * to read the contents of the storage from NBT.
- *
- * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 public abstract class SingleFluidStorage extends SingleVariantStorage<FluidVariant> {
 	/**
 	 * Create a fluid storage with a fixed capacity and a change handler.

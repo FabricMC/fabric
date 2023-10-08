@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.inventory.Inventory;
@@ -39,11 +38,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  *
  * <p>Note that the functions that take a predicate iterate over the entire inventory in the worst case.
  * If the resource is known, there will generally be a more performance efficient way.
- *
- * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 public final class StorageUtil {
 	private StorageUtil() {
 	}

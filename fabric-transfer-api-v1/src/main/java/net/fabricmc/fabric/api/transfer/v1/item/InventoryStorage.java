@@ -45,11 +45,7 @@ import net.fabricmc.fabric.impl.transfer.item.InventoryStorageImpl;
  *
  * <p><b>Important note:</b> This wrapper assumes that the inventory owns its slots.
  * If the inventory does not own its slots, for example because it delegates to another inventory, this wrapper should not be used!
- *
- * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 @ApiStatus.NonExtendable
 public interface InventoryStorage extends SlottedStorage<ItemVariant> {
 	/**
