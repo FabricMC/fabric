@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -33,11 +31,10 @@ import net.minecraft.world.biome.source.BiomeSource;
 public class BiomeSourceMixin {
 	@Redirect(method = "getBiomes", at = @At(value = "INVOKE", target = "Ljava/util/function/Supplier;get()Ljava/lang/Object;"))
 	private Object getBiomes(Supplier<Set<RegistryEntry<Biome>>> instance) {
-		var biomes = new HashSet<>(instance.get());
-		fabric_modifyBiomeSet(biomes);
-		return Collections.unmodifiableSet(biomes);
+		return fabric_modifyBiomeSet(instance.get());
 	}
 
-	protected void fabric_modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
+	protected Set<RegistryEntry<Biome>> fabric_modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
+		return biomes;
 	}
 }
