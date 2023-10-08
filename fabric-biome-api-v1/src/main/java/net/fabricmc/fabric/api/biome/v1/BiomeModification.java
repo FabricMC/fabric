@@ -30,8 +30,6 @@ import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
  * Provides methods for modifying biomes. To create an instance, call
  * {@link BiomeModifications#create(Identifier)}.
  *
- * <p><b>Experimental feature</b>, may be removed or changed without further notice.
- *
  * @see BiomeModifications
  */
 public class BiomeModification {

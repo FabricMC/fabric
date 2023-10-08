@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.client.networking.v1;
 import java.util.Objects;
 import java.util.Set;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
@@ -51,7 +50,6 @@ import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonNetworkH
  *
  * @see ServerConfigurationNetworking
  */
-@ApiStatus.Experimental
 public final class ClientConfigurationNetworking {
 	/**
 	 * Registers a handler to a channel.
