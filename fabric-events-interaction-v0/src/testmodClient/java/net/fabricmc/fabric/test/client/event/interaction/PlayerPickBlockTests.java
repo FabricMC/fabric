@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.event.interaction;
+package net.fabricmc.fabric.test.client.event.interaction;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 
-import net.fabricmc.api.ModInitializer;
+import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockApplyCallback;
 
-public class PlayerPickBlockTests implements ModInitializer {
+public class PlayerPickBlockTests implements ClientModInitializer {
 	@Override
-	public void onInitialize() {
+	public void onInitializeClient() {
 		ClientPickBlockApplyCallback.EVENT.register((player, result, stack) -> {
 			if (player.getStackInHand(Hand.MAIN_HAND).getItem() == Items.DIAMOND) {
 				return new ItemStack(Items.OBSIDIAN);
