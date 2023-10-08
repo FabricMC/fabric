@@ -34,8 +34,6 @@ import net.minecraft.world.gen.feature.PlacedFeature;
  * Provides an API to modify Biomes after they have been loaded and before they are used in the World.
  *
  * <p>Any modifications made to biomes will not be available for use in the demo level.
- *
- * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
 public final class BiomeModifications {
 	private BiomeModifications() {

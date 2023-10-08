@@ -40,8 +40,6 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 
 /**
  * Allows {@link Biome} properties to be modified.
- *
- * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
 public interface BiomeModificationContext {
 	/**
