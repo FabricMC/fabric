@@ -338,7 +338,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 	private void generateStorageTags() {
 		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS)
-				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_BONEMEAL)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_BONE_MEAL)
 				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_COAL)
 				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_COPPER)
 				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_DIAMOND)
@@ -355,7 +355,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_SLIME)
 				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_BONEMEAL)
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_BONE_MEAL)
 				.add(Blocks.BONE_BLOCK);
 
 		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_COAL)

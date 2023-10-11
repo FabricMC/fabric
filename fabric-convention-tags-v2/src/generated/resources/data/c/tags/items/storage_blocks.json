@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "#c:storage_blocks/bonemeal",
+    "#c:storage_blocks/bone_meal",
     "#c:storage_blocks/coal",
     "#c:storage_blocks/copper",
     "#c:storage_blocks/diamond",

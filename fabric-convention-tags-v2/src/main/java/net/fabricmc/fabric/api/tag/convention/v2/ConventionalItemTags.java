@@ -188,7 +188,7 @@ public final class ConventionalItemTags {
 	 * and so, it is considered a special case and not given a storage block tag.
 	 */
 	public static final TagKey<Item> STORAGE_BLOCKS = register("storage_blocks");
-	public static final TagKey<Item> STORAGE_BLOCKS_BONEMEAL = register("storage_blocks/bonemeal");
+	public static final TagKey<Item> STORAGE_BLOCKS_BONE_MEAL = register("storage_blocks/bone_meal");
 	public static final TagKey<Item> STORAGE_BLOCKS_COAL = register("storage_blocks/coal");
 	public static final TagKey<Item> STORAGE_BLOCKS_COPPER = register("storage_blocks/copper");
 	public static final TagKey<Item> STORAGE_BLOCKS_DIAMOND = register("storage_blocks/diamond");
