@@ -29,7 +29,7 @@ public class ObjectBuilderGameTest {
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testBlockUse(TestContext context) {
 		List<Block> blocks = List.of(BlockEntityTypeBuilderTest.INITIAL_BETRAYAL_BLOCK, BlockEntityTypeBuilderTest.ADDED_BETRAYAL_BLOCK, BlockEntityTypeBuilderTest.FIRST_MULTI_BETRAYAL_BLOCK, BlockEntityTypeBuilderTest.SECOND_MULTI_BETRAYAL_BLOCK);
-		BlockPos.Mutable pos = BlockPos.ORIGIN.mutableCopy();
+		BlockPos.Mutable pos = BlockPos.ORIGIN.up().mutableCopy();
 
 		for (Block block : blocks) {
 			context.setBlockState(pos, block);

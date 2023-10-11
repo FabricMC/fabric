@@ -30,7 +30,7 @@ public class CobbleGenBlock extends BlockWithEntity {
 	}
 
 	@Override
-	protected MapCodec<? extends BlockWithEntity> method_53969() {
+	protected MapCodec<? extends BlockWithEntity> getCodec() {
 		throw new UnsupportedOperationException("not implemented yet");
 	}
 

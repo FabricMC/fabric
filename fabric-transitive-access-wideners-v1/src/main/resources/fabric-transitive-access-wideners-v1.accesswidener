@@ -212,7 +212,7 @@ transitive-accessible method net/minecraft/block/RailBlock <init> (Lnet/minecraf
 transitive-accessible method net/minecraft/block/RedstoneTorchBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/RepeaterBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/RootsBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
-transitive-accessible method net/minecraft/block/SaplingBlock <init> (Lnet/minecraft/class_8813;Lnet/minecraft/block/AbstractBlock$Settings;)V
+transitive-accessible method net/minecraft/block/SaplingBlock <init> (Lnet/minecraft/block/SaplingGenerator;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/ScaffoldingBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/SeaPickleBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/SeagrassBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
