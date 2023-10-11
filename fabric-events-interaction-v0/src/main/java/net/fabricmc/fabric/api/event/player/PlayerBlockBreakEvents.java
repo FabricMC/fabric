@@ -28,11 +28,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Contains events triggered by block breaking.
- *
- * <p>{@link #BEFORE} and {@link #CANCELED} are only called on the server while
- * {@link #AFTER} is called on both the server and the client.
- * For preventing block breaking client side and other purposes, see {@link AttackBlockCallback}.
+ * Contains server side events triggered by block breaking.
  */
 public final class PlayerBlockBreakEvents {
 	private PlayerBlockBreakEvents() { }
@@ -62,7 +58,7 @@ public final class PlayerBlockBreakEvents {
 	/**
 	 * Callback after a block is broken.
 	 *
-	 * <p>Called on both server and client side.
+	 * <p>Only called on a logical server.
 	 */
 	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class,
 			(listeners) -> (world, player, pos, state, entity) -> {
