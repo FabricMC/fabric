@@ -26,11 +26,15 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.network.NetworkState;
 import net.minecraft.util.Identifier;
 
 public final class GlobalReceiverRegistry<H> {
+	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalReceiverRegistry.class);
+
 	private final NetworkState state;
 
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -135,6 +139,7 @@ public final class GlobalReceiverRegistry<H> {
 
 		try {
 			this.trackedAddons.add(addon);
+			this.logTrackedAddonSize();
 		} finally {
 			lock.unlock();
 		}
@@ -145,9 +150,19 @@ public final class GlobalReceiverRegistry<H> {
 		lock.lock();
 
 		try {
+			this.logTrackedAddonSize();
 			this.trackedAddons.remove(addon);
 		} finally {
 			lock.unlock();
+		}
+	}
+
+	/**
+	 * In practice, trackedAddons should never contain more than one instance.
+	 */
+	private void logTrackedAddonSize() {
+		if (LOGGER.isDebugEnabled() && this.trackedAddons.size() > 1) {
+			LOGGER.error("{} receiver registry tracks {} addon instances where it should only tracks one!", state.getId(), trackedAddons.size());
 		}
 	}
 
@@ -156,6 +171,8 @@ public final class GlobalReceiverRegistry<H> {
 		lock.lock();
 
 		try {
+			this.logTrackedAddonSize();
+
 			for (AbstractNetworkAddon<H> addon : this.trackedAddons) {
 				addon.registerChannel(channelName, handler);
 			}
@@ -169,6 +186,8 @@ public final class GlobalReceiverRegistry<H> {
 		lock.lock();
 
 		try {
+			this.logTrackedAddonSize();
+
 			for (AbstractNetworkAddon<H> addon : this.trackedAddons) {
 				addon.unregisterChannel(channelName);
 			}

@@ -54,7 +54,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkState.CONFIGURATION);
 
 		// Register global receivers and attach to session
-		this.receiver.startSession(this);
+		this.startSession();
 	}
 
 	@Override
@@ -177,7 +177,6 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	@Override
 	protected void invokeDisconnectEvent() {
 		ServerConfigurationConnectionEvents.DISCONNECT.invoker().onConfigureDisconnect(handler, server);
-		this.receiver.endSession(this);
 	}
 
 	@Override

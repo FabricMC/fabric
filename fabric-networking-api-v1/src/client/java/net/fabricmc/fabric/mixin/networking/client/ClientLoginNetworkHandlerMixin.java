@@ -71,7 +71,7 @@ abstract class ClientLoginNetworkHandlerMixin implements NetworkHandlerExtension
 
 	@Inject(method = "onSuccess", at = @At("HEAD"))
 	private void handleConfigurationTransition(CallbackInfo ci) {
-		addon.handleConfigurationTransition();
+		this.addon.endSession();
 	}
 
 	@Inject(method = "onSuccess", at = @At("TAIL"))

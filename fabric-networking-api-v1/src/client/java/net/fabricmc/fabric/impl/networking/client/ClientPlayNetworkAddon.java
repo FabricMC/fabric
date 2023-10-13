@@ -55,7 +55,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkState.PLAY);
 
 		// Register global receivers and attach to session
-		this.receiver.startSession(this);
+		this.startSession();
 	}
 
 	@Override
@@ -148,7 +148,6 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected void invokeDisconnectEvent() {
 		ClientPlayConnectionEvents.DISCONNECT.invoker().onPlayDisconnect(this.handler, this.client);
-		this.receiver.endSession(this);
 	}
 
 	@Override

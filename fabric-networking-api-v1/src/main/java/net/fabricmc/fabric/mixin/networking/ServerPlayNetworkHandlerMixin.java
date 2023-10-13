@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.c2s.play.AcknowledgeReconfigurationC2SPacket;
 import net.minecraft.network.packet.s2c.common.DisconnectS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ConnectedClientData;
@@ -55,6 +56,11 @@ abstract class ServerPlayNetworkHandlerMixin extends ServerCommonNetworkHandler 
 	@Inject(method = "onDisconnected", at = @At("HEAD"))
 	private void handleDisconnection(Text reason, CallbackInfo ci) {
 		this.addon.handleDisconnect();
+	}
+
+	@Inject(method = "onAcknowledgeReconfiguration", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;setPacketListener(Lnet/minecraft/network/listener/PacketListener;)V"))
+	private void handleConfigurationTransition(AcknowledgeReconfigurationC2SPacket packet, CallbackInfo ci) {
+		this.addon.endSession();
 	}
 
 	@Override

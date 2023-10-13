@@ -69,7 +69,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 		this.queryIdFactory = QueryIdFactory.create();
 
 		ServerLoginConnectionEvents.INIT.invoker().onLoginInit(handler, this.server);
-		this.receiver.startSession(this);
+		this.startSession();
 	}
 
 	// return true if no longer ticks query
@@ -202,11 +202,6 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	@Override
 	protected void invokeDisconnectEvent() {
 		ServerLoginConnectionEvents.DISCONNECT.invoker().onLoginDisconnect(this.handler, this.server);
-		this.receiver.endSession(this);
-	}
-
-	public void handleConfigurationTransition() {
-		this.receiver.endSession(this);
 	}
 
 	@Override

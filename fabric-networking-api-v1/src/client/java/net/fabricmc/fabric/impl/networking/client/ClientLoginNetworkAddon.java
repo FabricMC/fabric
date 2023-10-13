@@ -53,7 +53,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 		this.client = client;
 
 		ClientLoginConnectionEvents.INIT.invoker().onLoginStart(this.handler, this.client);
-		this.receiver.startSession(this);
+		this.startSession();
 	}
 
 	public boolean handlePacket(LoginQueryRequestS2CPacket packet) {
@@ -114,11 +114,6 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 	@Override
 	protected void invokeDisconnectEvent() {
 		ClientLoginConnectionEvents.DISCONNECT.invoker().onLoginDisconnect(this.handler, this.client);
-		this.receiver.endSession(this);
-	}
-
-	public void handleConfigurationTransition() {
-		this.receiver.endSession(this);
 	}
 
 	@Override

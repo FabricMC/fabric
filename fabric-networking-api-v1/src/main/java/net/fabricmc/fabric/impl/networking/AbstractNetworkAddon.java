@@ -126,9 +126,18 @@ public abstract class AbstractNetworkAddon<H> {
 
 	protected abstract void handleUnregistration(Identifier channelName);
 
+	protected final void startSession() {
+		this.receiver.startSession(this);
+	}
+
+	public final void endSession() {
+		this.receiver.endSession(this);
+	}
+
 	public final void handleDisconnect() {
 		if (disconnected.compareAndSet(false, true)) {
 			invokeDisconnectEvent();
+			endSession();
 		}
 	}
 
