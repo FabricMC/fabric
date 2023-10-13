@@ -162,7 +162,7 @@ public final class GlobalReceiverRegistry<H> {
 	 */
 	private void logTrackedAddonSize() {
 		if (LOGGER.isDebugEnabled() && this.trackedAddons.size() > 1) {
-			LOGGER.error("{} receiver registry tracks {} addon instances where it should only tracks one!", state.getId(), trackedAddons.size());
+			LOGGER.error("{} receiver registry tracks {} addon instances where it should only track one!", state.getId(), trackedAddons.size());
 		}
 	}
 
