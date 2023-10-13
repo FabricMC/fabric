@@ -60,8 +60,6 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		this.sendableChannels = Collections.synchronizedSet(new HashSet<>());
 	}
 
-	public abstract void lateInit();
-
 	protected void registerPendingChannels(ChannelInfoHolder holder, NetworkState state) {
 		final Collection<Identifier> pending = holder.getPendingChannelsNames(state);
 

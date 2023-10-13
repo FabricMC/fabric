@@ -30,6 +30,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -88,11 +89,27 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 		}
 	}
 
-	@Inject(method = "channelInactive", at = @At("HEAD"))
-	private void handleDisconnect(ChannelHandlerContext channelHandlerContext, CallbackInfo ci) {
-		if (packetListener instanceof NetworkHandlerExtensions) { // not the case for client/server query
-			((NetworkHandlerExtensions) packetListener).getAddon().handleDisconnect();
+	@Inject(method = "setPacketListener", at = @At("HEAD"))
+	private void unwatchAddon(PacketListener packetListener, CallbackInfo ci) {
+		if (this.packetListener instanceof NetworkHandlerExtensions oldListener) {
+			oldListener.getAddon().endSession();
 		}
+	}
+
+	@Inject(method = "channelInactive", at = @At("HEAD"))
+	private void disconnectAddon(ChannelHandlerContext channelHandlerContext, CallbackInfo ci) {
+		if (packetListener instanceof NetworkHandlerExtensions extension) {
+			extension.getAddon().handleDisconnect();
+		}
+	}
+
+	@ModifyVariable(method = "handleDisconnection", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/listener/PacketListener;onDisconnected(Lnet/minecraft/text/Text;)V"))
+	private PacketListener disconnectAddon(PacketListener packetListener) {
+		if (packetListener instanceof NetworkHandlerExtensions extension) {
+			extension.getAddon().handleDisconnect();
+		}
+
+		return packetListener;
 	}
 
 	@Inject(method = "sendInternal", at = @At(value = "INVOKE", target = "Lio/netty/channel/ChannelFuture;addListener(Lio/netty/util/concurrent/GenericFutureListener;)Lio/netty/channel/ChannelFuture;", remap = false), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
