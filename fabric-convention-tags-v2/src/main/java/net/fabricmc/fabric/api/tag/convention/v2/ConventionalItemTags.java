@@ -33,6 +33,7 @@ public final class ConventionalItemTags {
 	 * Natural stone-like blocks that can be used as a base ingredient in recipes that take stone.
 	 */
 	public static final TagKey<Item> STONES = register("stones");
+	public static final TagKey<Item> COBBLESTONES = register("cobblestones");
 
 	// Tool tags
 	public static final TagKey<Item> TOOLS = register("tools");

@@ -34,6 +34,7 @@ public final class ConventionalBlockTags {
 	 * Natural stone-like blocks that can be used as a base ingredient in recipes that take stone.
 	 */
 	public static final TagKey<Block> STONES = register("stones");
+	public static final TagKey<Block> COBBLESTONES = register("cobblestones");
 
 	// Ores - broad categories
 	public static final TagKey<Block> ORES = register("ores");

@@ -51,8 +51,10 @@ public class ConventionLogWarnings implements ModInitializer {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(ConventionLogWarnings.class);
 
-	// Old `c` tags that we migrated to a new tag under a new convention.
-	// May also contain commonly used `c` tags that are not following convention.
+	/**
+	 * Old `c` tags that we migrated to a new tag under a new convention.
+	 * May also contain commonly used `c` tags that are not following convention.
+	 */
 	private static final Map<TagKey<?>, TagKey<?>> LEGACY_C_TAGS = Map.<TagKey<?>, TagKey<?>>ofEntries(
 			// Old v1 tags that are discouraged
 			createMapEntry(ConventionalBlockTags.MOVEMENT_RESTRICTED, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.RELOCATION_NOT_SUPPORTED),
@@ -138,6 +140,7 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(RegistryKeys.BLOCK, "glass_pane", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.GLASS_PANES),
 			createMapEntry(RegistryKeys.BLOCK, "immobile", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.RELOCATION_NOT_SUPPORTED),
 			createMapEntry(RegistryKeys.BLOCK, "stone", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.STONES),
+			createMapEntry(RegistryKeys.BLOCK, "cobblestone", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.COBBLESTONES),
 			createMapEntry(RegistryKeys.BLOCK, "workbench", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.VILLAGER_JOB_SITES),
 			createMapEntry(RegistryKeys.BLOCK, "workbenches", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.VILLAGER_JOB_SITES),
 			createMapEntry(RegistryKeys.BLOCK, "workstation", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.VILLAGER_JOB_SITES),
@@ -148,6 +151,7 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(RegistryKeys.ITEM, "hoes", ItemTags.HOES),
 			createMapEntry(RegistryKeys.ITEM, "shovels", ItemTags.SHOVELS),
 			createMapEntry(RegistryKeys.ITEM, "swords", ItemTags.SWORDS),
+			createMapEntry(RegistryKeys.ITEM, "wrenches", "tools/wrenches"),
 			createMapEntry(createTagKeyUnderFabric(RegistryKeys.ITEM, "axes"), ItemTags.AXES),
 			createMapEntry(createTagKeyUnderFabric(RegistryKeys.ITEM, "pickaxes"), ItemTags.PICKAXES),
 			createMapEntry(createTagKeyUnderFabric(RegistryKeys.ITEM, "hoes"), ItemTags.HOES),
