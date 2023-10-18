@@ -3,16 +3,17 @@
   "package": "net.fabricmc.fabric.mixin.content.registry",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "AbstractFurnaceBlockEntityMixin",
     "AxeItemAccessor",
     "FarmerWorkTaskAccessor",
+    "FireBlockMixin",
     "GiveGiftsToHeroTaskAccessor",
     "HoeItemAccessor",
     "HoneycombItemMixin",
     "LandPathNodeMakerMixin",
-    "AbstractFurnaceBlockEntityMixin",
-    "FireBlockMixin",
     "OxidizableMixin",
     "ShovelItemAccessor",
+    "SpreadableBlockMixin",
     "VillagerEntityAccessor"
   ],
   "injectors": {
