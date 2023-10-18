@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.gametest.server;
 import java.io.File;
 import java.nio.file.Path;
 
+import com.mojang.serialization.Dynamic;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
@@ -29,13 +30,12 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.util.ApiServices;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.Main;
 import net.minecraft.server.dedicated.EulaReader;
 import net.minecraft.server.dedicated.ServerPropertiesLoader;
+import net.minecraft.util.ApiServices;
 import net.minecraft.world.level.storage.LevelStorage;
-import net.minecraft.world.level.storage.LevelSummary;
 
 import net.fabricmc.fabric.impl.gametest.FabricGameTestHelper;
 
@@ -48,7 +48,7 @@ public class MainMixin {
 
 	// Inject after resourcePackManager is stored
 	@Inject(method = "main", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", shift = At.Shift.BY, by = 2, target = "Lnet/minecraft/resource/VanillaDataPackProvider;createManager(Lnet/minecraft/world/level/storage/LevelStorage$Session;)Lnet/minecraft/resource/ResourcePackManager;"))
-	private static void main(String[] args, CallbackInfo info, OptionParser optionParser, OptionSpec optionSpec, OptionSpec optionSpec2, OptionSpec optionSpec3, OptionSpec optionSpec4, OptionSpec optionSpec5, OptionSpec optionSpec6, OptionSpec optionSpec7, OptionSpec optionSpec8, OptionSpec optionSpec9, OptionSpec optionSpec10, OptionSpec optionSpec11, OptionSpec optionSpec12, OptionSpec optionSpec13, OptionSpec optionSpec14, OptionSpec optionSpec15, OptionSet optionSet, Path path2, ServerPropertiesLoader serverPropertiesLoader, Path path3, EulaReader eulaReader, File file, ApiServices apiServices, String string, LevelStorage levelStorage, LevelStorage.Session session, LevelSummary levelSummary, boolean bl, ResourcePackManager resourcePackManager) {
+	private static void main(String[] args, CallbackInfo info, OptionParser optionParser, OptionSpec optionSpec, OptionSpec optionSpec2, OptionSpec optionSpec3, OptionSpec optionSpec4, OptionSpec optionSpec5, OptionSpec optionSpec6, OptionSpec optionSpec7, OptionSpec optionSpec8, OptionSpec optionSpec9, OptionSpec optionSpec10, OptionSpec optionSpec11, OptionSpec optionSpec12, OptionSpec optionSpec13, OptionSpec optionSpec14, OptionSpec optionSpec15, OptionSet optionSet, Path path2, ServerPropertiesLoader serverPropertiesLoader, Path path3, EulaReader eulaReader, File file, ApiServices apiServices, String string, LevelStorage levelStorage, LevelStorage.Session session, Dynamic dynamic, Dynamic dynamic2, boolean bl, ResourcePackManager resourcePackManager) {
 		if (FabricGameTestHelper.ENABLED) {
 			FabricGameTestHelper.runHeadlessServer(session, resourcePackManager);
 			info.cancel();  // Do not progress in starting the normal dedicated server
