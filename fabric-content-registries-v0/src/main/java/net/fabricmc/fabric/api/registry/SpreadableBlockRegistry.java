@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.api.registry;
 
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Identifier;
@@ -26,7 +29,16 @@ import net.fabricmc.fabric.impl.content.registry.SpreadableBlockRegistryImpl;
 /**
  * Registries of blocks to block states, defining the block state to replace a
  * block with when a particular type of other block spreads to it.
+ *
+ * <p>For example, to get the registry for Mycelium block spread
+ * and then register a modded block pair:
+ *
+ * <pre>{@code
+ * SpreadableBlockRegistry.getOrCreateInstance(SpreadableBlockRegistry.MYCELIUM)
+ *        .add(MyModBlocks.MY_DIRT, MyModBlocks.MY_MYCELIUM.getDefaultState());
+ * }</pre>
  */
+@ApiStatus.NonExtendable
 public interface SpreadableBlockRegistry extends Block2ObjectMap<BlockState> {
 	/**
 	 * Registry ID for Minecraft Grass Block type spreadable blocks.
@@ -39,13 +51,7 @@ public interface SpreadableBlockRegistry extends Block2ObjectMap<BlockState> {
 
 	/**
 	 * Get the registry for a given registry ID, or create a new registry for the ID
-	 * if none currently exists.  For example, to get the registry for Mycelium block
-	 * spread and then register a modded block pair:
-	 *
-	 * <pre>{@code
-	 * SpreadableBlockRegistry.getOrCreateInstance(SpreadableBlockRegistry.MYCELIUM)
-	 * 		.add(MyModBlocks.MY_DIRT, MyModBlocks.MY_MYCELIUM.getDefaultState());
-	 * }</pre>
+	 * if none currently exists.
 	 *
 	 * @param type The registry type Identifier for the desired spreadable block registry
 	 * @return The SpreadableBlockRegistry for the given ID
@@ -55,23 +61,23 @@ public interface SpreadableBlockRegistry extends Block2ObjectMap<BlockState> {
 	}
 
 	/**
-	 * Fetch the spreadable block state (if any) for a given bare block state.
+	 * Gets the spreadable block state (if any) for a given bare block state.
 	 *
 	 * @param bareBlockState The bare block state to search the registry for
 	 * @return The replacement spreadable block state for this registry, if any
 	 */
-	BlockState get(BlockState bareBlockState);
+	@Nullable BlockState get(BlockState bareBlockState);
 
 	/**
-	 * Fetch the spreadable block state (if any) for a given bare block.
+	 * Gets the spreadable block state (if any) for a given bare block.
 	 *
 	 * @param bareBlock The bare block to search the registry for
 	 * @return The replacement spreadable block state for this registry, if any
 	 */
-	BlockState get(Block bareBlock);
+	@Nullable BlockState get(Block bareBlock);
 
 	/**
-	 * Add a registry entry to this registry for the given bare block to spreadable block conversion.
+	 * Adds a registry entry to this registry for the given bare block to spreadable block conversion.
 	 *
 	 * @param bareBlock The bare block which can be converted to this type of spreadable block
 	 * @param spreadBlock The spreadable block state which will replace the bare block

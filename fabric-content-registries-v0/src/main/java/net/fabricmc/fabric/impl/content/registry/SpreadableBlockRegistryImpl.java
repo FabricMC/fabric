@@ -16,9 +16,14 @@
 
 package net.fabricmc.fabric.impl.content.registry;
 
+import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
+
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -29,12 +34,14 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.registry.SpreadableBlockRegistry;
 
 public final class SpreadableBlockRegistryImpl implements SpreadableBlockRegistry {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SpreadableBlockRegistryImpl.class);
+
 	private static final Map<Block, Identifier> SPREADABLE_TYPE;
 	private static final Map<Identifier, SpreadableBlockRegistry> REGISTRIES;
 
 	static {
-		SPREADABLE_TYPE = new ConcurrentHashMap<>();
-		REGISTRIES = new ConcurrentHashMap<>();
+		SPREADABLE_TYPE = new IdentityHashMap<>();
+		REGISTRIES = new HashMap<>();
 
 		SPREADABLE_TYPE.put(Blocks.GRASS_BLOCK, SpreadableBlockRegistry.GRASS);
 		SPREADABLE_TYPE.put(Blocks.MYCELIUM, SpreadableBlockRegistry.MYCELIUM);
@@ -47,7 +54,7 @@ public final class SpreadableBlockRegistryImpl implements SpreadableBlockRegistr
 		return REGISTRIES.computeIfAbsent(type, SpreadableBlockRegistryImpl::new);
 	}
 
-	public static SpreadableBlockRegistry getInstanceBySpreadable(BlockState blockState) {
+	public static @Nullable SpreadableBlockRegistry getInstanceBySpreadable(@Nullable BlockState blockState) {
 		if (blockState == null) {
 			return null;
 		}
@@ -55,37 +62,34 @@ public final class SpreadableBlockRegistryImpl implements SpreadableBlockRegistr
 		return getInstanceBySpreadable(blockState.getBlock());
 	}
 
-	public static SpreadableBlockRegistry getInstanceBySpreadable(Block block) {
-		if (block != null && SPREADABLE_TYPE.containsKey(block)) {
-			return REGISTRIES.get(SPREADABLE_TYPE.get(block));
+	public static @Nullable SpreadableBlockRegistry getInstanceBySpreadable(@Nullable Block block) {
+		if (block == null || !SPREADABLE_TYPE.containsKey(block)) {
+			return null;
 		}
 
-		return null;
+		return REGISTRIES.get(SPREADABLE_TYPE.get(block));
 	}
 
 	private final Identifier registryId;
-	private final Map<Block, BlockState> replaceMap = new ConcurrentHashMap<>();
+	private final Map<Block, BlockState> replacements = new IdentityHashMap<>();
 
-	public SpreadableBlockRegistryImpl(Identifier id) {
+	private SpreadableBlockRegistryImpl(Identifier id) {
 		Objects.requireNonNull(id, "registry id cannot be null");
+
 		this.registryId = id;
 	}
 
-	public BlockState get(BlockState bareBlockState) {
-		if (bareBlockState == null) {
-			return null;
-		}
+	public @Nullable BlockState get(BlockState bareBlockState) {
+		Objects.requireNonNull(bareBlockState, "bare block cannot be null");
 
-		return replaceMap.get(bareBlockState.getBlock());
+		return get(bareBlockState.getBlock());
 	}
 
 	@Override
-	public BlockState get(Block bareBlock) {
-		if (bareBlock == null) {
-			return null;
-		}
+	public @Nullable BlockState get(Block bareBlock) {
+		Objects.requireNonNull(bareBlock, "bare block cannot be null");
 
-		return replaceMap.get(bareBlock);
+		return replacements.get(bareBlock);
 	}
 
 	@Override
@@ -93,8 +97,20 @@ public final class SpreadableBlockRegistryImpl implements SpreadableBlockRegistr
 		Objects.requireNonNull(bareBlock, "bare block cannot be null");
 		Objects.requireNonNull(spreadBlock, "spread block cannot be null");
 
-		SPREADABLE_TYPE.putIfAbsent(spreadBlock.getBlock(), this.registryId);
-		replaceMap.put(bareBlock, spreadBlock);
+		Identifier oldRegistryId = SPREADABLE_TYPE.put(spreadBlock.getBlock(), this.registryId);
+
+		if (oldRegistryId != null && oldRegistryId != this.registryId) {
+			throw new UnsupportedOperationException(String.format(
+					"Spreadable block %s added to two registries; was %s now %s",
+					spreadBlock, oldRegistryId, this.registryId
+			));
+		}
+
+		BlockState oldSpreadBlock = replacements.put(bareBlock, spreadBlock);
+
+		if (oldSpreadBlock != null && oldSpreadBlock != spreadBlock) {
+			LOGGER.debug("Replaced spreadable block for bare block {}; was {} now {}", bareBlock, oldSpreadBlock, spreadBlock);
+		}
 	}
 
 	@Override
@@ -105,7 +121,8 @@ public final class SpreadableBlockRegistryImpl implements SpreadableBlockRegistr
 	@Override
 	public void remove(Block bareBlock) {
 		Objects.requireNonNull(bareBlock, "bare block cannot be null");
-		replaceMap.remove(bareBlock);
+
+		replacements.remove(bareBlock);
 	}
 
 	@Override

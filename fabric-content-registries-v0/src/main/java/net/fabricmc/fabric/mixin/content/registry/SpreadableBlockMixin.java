@@ -55,7 +55,7 @@ public class SpreadableBlockMixin extends SnowyBlock {
 			),
 			locals = LocalCapture.CAPTURE_FAILHARD
 	)
-	private void doFabricBlockSpread(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci, BlockState thisState, int i, BlockPos targetPos) {
+	private void doFabricBlockSpread(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci, BlockState defaultState, int i, BlockPos targetPos) {
 		SpreadableBlockRegistry spreadableRegistry = SpreadableBlockRegistryImpl.getInstanceBySpreadable(state);
 
 		if (spreadableRegistry != null) {
