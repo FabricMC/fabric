@@ -5,8 +5,11 @@
   "mixins": [
     "AbstractFurnaceBlockEntityMixin",
     "ArmorItemMixin",
+    "BlockItemMixin",
     "BrewingStandBlockEntityMixin",
     "CatEntityMixin",
+    "CookingRecipeJsonBuilderMixin",
+    "FoxEntityMixin",
     "HungerManagerMixin",
     "ItemMixin",
     "ItemStackMixin",

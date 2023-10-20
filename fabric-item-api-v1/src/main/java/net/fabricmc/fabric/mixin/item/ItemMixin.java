@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
@@ -82,5 +83,20 @@ abstract class ItemMixin implements ItemExtensions, FabricItem {
 	@Redirect(method = "getMaxUseTime", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
 	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, ItemStack stack) {
 		return stack.getFoodComponent();
+	}
+
+	@Redirect(method = {"getMaxUseTime", "getUseAction"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z"))
+	private boolean isStackAwareFood(Item instance, ItemStack stack) {
+		return stack.isFood();
+	}
+
+	@Redirect(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z"))
+	private boolean isStackAwareFood(Item instance, World world, PlayerEntity user, Hand hand) {
+		return user.getStackInHand(hand).isFood();
+	}
+
+	@Redirect(method = "finishUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z"))
+	private boolean isStackAwareFood(Item instance, ItemStack stack, World world, LivingEntity user) {
+		return stack.isFood();
 	}
 }

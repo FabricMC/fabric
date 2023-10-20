@@ -57,4 +57,9 @@ abstract class LivingEntityMixin {
 	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, ItemStack stack, World world, LivingEntity targetEntity) {
 		return stack.getFoodComponent();
 	}
+
+	@Redirect(method = "applyFoodEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z"))
+	private boolean isStackAwareFood(Item instance, ItemStack stack, World world, LivingEntity targetEntity) {
+		return stack.isFood();
+	}
 }

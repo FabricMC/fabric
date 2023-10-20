@@ -32,4 +32,9 @@ class HungerManagerMixin {
 	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, Item item, ItemStack stack) {
 		return stack.getFoodComponent();
 	}
+
+	@Redirect(method = "eat", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z",ordinal = 0))
+	private boolean isStackAwareFood(Item instance, Item item, ItemStack stack) {
+		return stack.isFood();
+	}
 }

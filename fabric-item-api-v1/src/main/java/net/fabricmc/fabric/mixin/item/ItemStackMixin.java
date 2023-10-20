@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -100,4 +101,14 @@ public abstract class ItemStackMixin implements FabricItemStack {
 	public boolean hookIsSuitableFor(Item item, BlockState state) {
 		return item.isSuitableFor((ItemStack) (Object) this, state);
 	}
+
+	/**
+	 * @author Phoupraw
+	 * @reason use stack-aware {@link #getFoodComponent()} instead
+	 */
+	@Overwrite
+	public boolean isFood() {
+		return this.getFoodComponent() != null;
+	}
+
 }

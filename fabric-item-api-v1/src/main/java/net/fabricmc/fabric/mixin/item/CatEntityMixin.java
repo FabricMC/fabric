@@ -33,4 +33,9 @@ class CatEntityMixin {
 	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, PlayerEntity player, Hand hand) {
 		return player.getStackInHand(hand).getFoodComponent();
 	}
+
+	@Redirect(method = "interactMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z"))
+	private boolean isStackAwareFood(Item instance, PlayerEntity player, Hand hand) {
+		return player.getStackInHand(hand).isFood();
+	}
 }
