@@ -33,13 +33,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.listener.ClientCommonPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -97,11 +97,11 @@ public final class FabricServerConsentImpl implements DedicatedServerModInitiali
 	@Override
 	public void onInitializeServer() {
 		if (enabled) {
-			ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
 				PacketByteBuf buf = PacketByteBufs.create();
 				buf.writeCollection(illegalFlags, PacketByteBuf::writeIdentifier);
-				Packet<ClientPlayPacketListener> packet = ServerPlayNetworking.createS2CPacket(FLAGS_CHANNEL, buf);
-				sender.sendPacket(packet);
+				Packet<ClientCommonPacketListener> packet = ServerPlayNetworking.createS2CPacket(FLAGS_CHANNEL, buf);
+				handler.sendPacket(packet);
 			});
 		}
 	}
