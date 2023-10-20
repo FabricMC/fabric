@@ -21,9 +21,9 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.packet.Packet;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.listener.ClientCommonPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -60,6 +60,7 @@ import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
  * <p>See the documentation on each class for more information.
  *
  * @see ServerLoginNetworking
+ * @see ServerConfigurationNetworking
  */
 public final class ServerPlayNetworking {
 	/**
@@ -381,11 +382,21 @@ public final class ServerPlayNetworking {
 	 * @param buf the packet byte buf which represents the payload of the packet
 	 * @return a new packet
 	 */
-	public static Packet<ClientPlayPacketListener> createS2CPacket(Identifier channelName, PacketByteBuf buf) {
+	public static Packet<ClientCommonPacketListener> createS2CPacket(Identifier channelName, PacketByteBuf buf) {
 		Objects.requireNonNull(channelName, "Channel cannot be null");
 		Objects.requireNonNull(buf, "Buf cannot be null");
 
-		return ServerNetworkingImpl.createPlayC2SPacket(channelName, buf);
+		return ServerNetworkingImpl.createS2CPacket(channelName, buf);
+	}
+
+	/**
+	 * Creates a packet which may be sent to a connected client.
+	 *
+	 * @param packet the fabric packet
+	 * @return a new packet
+	 */
+	public static <T extends FabricPacket> Packet<ClientCommonPacketListener> createS2CPacket(T packet) {
+		return ServerNetworkingImpl.createS2CPacket(packet);
 	}
 
 	/**
@@ -438,9 +449,7 @@ public final class ServerPlayNetworking {
 		Objects.requireNonNull(packet, "Packet cannot be null");
 		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
 
-		PacketByteBuf buf = PacketByteBufs.create();
-		packet.write(buf);
-		player.networkHandler.sendPacket(createS2CPacket(packet.getType().getId(), buf));
+		player.networkHandler.sendPacket(createS2CPacket(packet));
 	}
 
 	// Helper methods

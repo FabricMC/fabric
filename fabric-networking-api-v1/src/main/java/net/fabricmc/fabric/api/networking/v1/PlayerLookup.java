@@ -25,7 +25,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.EntityTrackingListener;
+import net.minecraft.server.network.PlayerAssociatedNetworkHandler;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.world.ThreadedAnvilChunkStorage;
@@ -39,7 +39,7 @@ import net.fabricmc.fabric.mixin.networking.accessor.EntityTrackerAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ThreadedAnvilChunkStorageAccessor;
 
 /**
- * For example, a block entity may use the methods in this class to send a packet to all clients which can see the block entity in order notify clients about a change.
+ * Helper methods to lookup players in a server.
  *
  * <p>The word "tracking" means that an entity/chunk on the server is known to a player's client (within in view distance) and the (block) entity should notify tracking clients of changes.
  *
@@ -117,8 +117,8 @@ public final class PlayerLookup {
 
 			// return an immutable collection to guard against accidental removals.
 			if (tracker != null) {
-				return Collections.unmodifiableCollection(tracker.getPlayersTracking()
-						.stream().map(EntityTrackingListener::getPlayer).collect(Collectors.toSet()));
+				return tracker.getPlayersTracking()
+						.stream().map(PlayerAssociatedNetworkHandler::getPlayer).collect(Collectors.toUnmodifiableSet());
 			}
 
 			return Collections.emptySet();

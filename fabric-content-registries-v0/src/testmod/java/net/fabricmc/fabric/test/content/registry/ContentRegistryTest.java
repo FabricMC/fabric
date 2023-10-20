@@ -64,7 +64,7 @@ public final class ContentRegistryTest implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);
 
 	public static final Identifier TEST_EVENT_ID = new Identifier("fabric-content-registries-v0-testmod", "test_event");
-	public static final GameEvent TEST_EVENT = new GameEvent(TEST_EVENT_ID.toString(), GameEvent.DEFAULT_RANGE);
+	public static final GameEvent TEST_EVENT = new GameEvent(GameEvent.DEFAULT_RANGE);
 
 	@Override
 	public void onInitialize() {
@@ -81,7 +81,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - copper ore, iron ore, gold ore, and diamond ore can be waxed into their deepslate variants and scraped back again
 		//  - aforementioned ores can be scraped from diamond -> gold -> iron -> copper
 		//  - villagers can now collect, consume (at the same level of bread) and compost apples
-		//  - villagers can now collect and plant oak saplings
+		//  - villagers can now collect oak saplings
 		//  - assign a loot table to the nitwit villager type
 		//  - right-clicking a 'test_event' block will emit a 'test_event' game event, which will have a sculk sensor frequency of 2
 		//  - instant health potions can be brewed from awkward potions with any item in the 'minecraft:small_flowers' tag

@@ -1,4 +1,3 @@
-archivesBaseName = "fabric-particles-v1"
 version = getSubprojectVersion(project)
 
 loom {
@@ -6,6 +5,12 @@ loom {
 }
 
 moduleDependencies(project, ['fabric-api-base'])
+
+testDependencies(project, [
+		':fabric-command-api-v2',
+		':fabric-rendering-v1',
+		':fabric-resource-loader-v0'
+])
 
 validateMixinNames {
 	// Loom needs to handle inner mixins better

@@ -25,11 +25,11 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.impl.renderer.VanillaModelEncoder;
 
 /**
  * Interface for baked models that output meshes with enhanced rendering features.
@@ -38,9 +38,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
  *
  * <p>Implementors should have a look at {@link ModelHelper} as it contains many useful functions.
  *
- * <p>Note for {@link Renderer} implementors: Fabric causes BakedModel to extend this
- * interface with {@link #isVanillaAdapter()} == true and to produce standard vertex data.
- * This means any BakedModel instance can be safely cast to this interface without an instanceof check.
+ * <p>Note: This interface is automatically implemented on all baked models via Mixin and interface injection.
  */
 public interface FabricBakedModel {
 	/**
@@ -48,11 +46,13 @@ public interface FabricBakedModel {
 	 * Also means the model does not rely on any non-vanilla features.
 	 * Allows the renderer to optimize or route vanilla models through the unmodified vanilla pipeline if desired.
 	 *
-	 * <p>Fabric overrides to true for vanilla baked models.
+	 * <p>Vanilla baked models will return true.
 	 * Enhanced models that use this API should return false,
 	 * otherwise the API will not recognize the model.
 	 */
-	boolean isVanillaAdapter();
+	default boolean isVanillaAdapter() {
+		return true;
+	}
 
 	/**
 	 * This method will be called during chunk rebuilds to generate both the static and
@@ -83,9 +83,7 @@ public interface FabricBakedModel {
 	 * <p>Note: with {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)}, the random
 	 * parameter is normally initialized with the same seed prior to each face layer.
 	 * Model authors should note this method is called only once per block, and call the provided
-	 * Random supplier multiple times if re-seeding is necessary. For wrapped vanilla baked models,
-	 * it will probably be easier to use {@link RenderContext#bakedModelConsumer()} which handles
-	 * re-seeding per face automatically.
+	 * Random supplier multiple times if re-seeding is necessary.
 	 *
 	 * @param blockView Access to world state. Cast to {@code RenderAttachedBlockView} to
 	 * retrieve block entity data unless thread safety can be guaranteed.
@@ -95,7 +93,9 @@ public interface FabricBakedModel {
 	 * Will not be thread-safe. Do not cache or retain a reference.
 	 * @param context Accepts model output.
 	 */
-	void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context);
+	default void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+		VanillaModelEncoder.emitBlockQuads((BakedModel) this, state, randomSupplier, context, context.getEmitter());
+	}
 
 	/**
 	 * This method will be called during item rendering to generate both the static and
@@ -124,5 +124,7 @@ public interface FabricBakedModel {
 	 * logic here, instead of returning every possible shape from {@link BakedModel#getOverrides}
 	 * as vanilla baked models.
 	 */
-	void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context);
+	default void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+		VanillaModelEncoder.emitItemQuads((BakedModel) this, null, randomSupplier, context);
+	}
 }

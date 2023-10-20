@@ -115,7 +115,7 @@ public interface MutableQuadView extends QuadView {
 	}
 
 	/**
-	 * Set vertex color.
+	 * Set vertex color in ARGB format (0xAARRGGBB).
 	 */
 	MutableQuadView color(int vertexIndex, int color);
 

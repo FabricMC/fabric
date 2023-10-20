@@ -1,4 +1,3 @@
-archivesBaseName = "fabric-commands-v0"
 version = getSubprojectVersion(project)
 
 moduleDependencies(project, [

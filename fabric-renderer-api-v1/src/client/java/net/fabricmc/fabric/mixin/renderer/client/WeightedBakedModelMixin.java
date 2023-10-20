@@ -34,8 +34,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.Weighted;
 import net.minecraft.util.collection.Weighting;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -54,7 +54,7 @@ public class WeightedBakedModelMixin implements FabricBakedModel {
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void onInit(List<Weighted.Present<BakedModel>> models, CallbackInfo cb) {
 		for (int i = 0; i < models.size(); i++) {
-			if (!((FabricBakedModel) models.get(i).getData()).isVanillaAdapter()) {
+			if (!models.get(i).getData().isVanillaAdapter()) {
 				isVanilla = false;
 				break;
 			}
@@ -71,7 +71,11 @@ public class WeightedBakedModelMixin implements FabricBakedModel {
 		Weighted.Present<BakedModel> selected = Weighting.getAt(this.models, Math.abs((int) randomSupplier.get().nextLong()) % this.totalWeight).orElse(null);
 
 		if (selected != null) {
-			((FabricBakedModel) selected.getData()).emitBlockQuads(blockView, state, pos, randomSupplier, context);
+			selected.getData().emitBlockQuads(blockView, state, pos, () -> {
+				Random random = randomSupplier.get();
+				random.nextLong(); // Imitate vanilla modifying the random before passing it to the submodel
+				return random;
+			}, context);
 		}
 	}
 
@@ -80,7 +84,11 @@ public class WeightedBakedModelMixin implements FabricBakedModel {
 		Weighted.Present<BakedModel> selected = Weighting.getAt(this.models, Math.abs((int) randomSupplier.get().nextLong()) % this.totalWeight).orElse(null);
 
 		if (selected != null) {
-			((FabricBakedModel) selected.getData()).emitItemQuads(stack, randomSupplier, context);
+			selected.getData().emitItemQuads(stack, () -> {
+				Random random = randomSupplier.get();
+				random.nextLong(); // Imitate vanilla modifying the random before passing it to the submodel
+				return random;
+			}, context);
 		}
 	}
 }

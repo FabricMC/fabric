@@ -29,7 +29,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.impl.base.event.PhaseSorting;
+import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
 
 public class EventTests {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-api-base");
@@ -41,10 +41,10 @@ public class EventTests {
 		testMultipleDefaultPhases();
 		testAddedPhases();
 		testCycle();
-		PhaseSorting.ENABLE_CYCLE_WARNING = false;
+		NodeSorting.ENABLE_CYCLE_WARNING = false;
 		testDeterministicOrdering();
 		testTwoCycles();
-		PhaseSorting.ENABLE_CYCLE_WARNING = true;
+		NodeSorting.ENABLE_CYCLE_WARNING = true;
 
 		long time2 = System.currentTimeMillis();
 		LOGGER.info("Event unit tests succeeded in {} milliseconds.", time2 - time1);

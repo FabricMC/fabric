@@ -16,10 +16,8 @@
 
 package net.fabricmc.fabric.impl.recipe.ingredient.client;
 
-import java.util.concurrent.CompletableFuture;
-
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientSync;
 
 /**
@@ -28,10 +26,9 @@ import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientSync;
 public class CustomIngredientSyncClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ClientLoginNetworking.registerGlobalReceiver(CustomIngredientSync.PACKET_ID, (client, handler, buf, listenerAdder) -> {
+		ClientConfigurationNetworking.registerGlobalReceiver(CustomIngredientSync.PACKET_ID, (client, handler, buf, responseSender) -> {
 			int protocolVersion = buf.readVarInt();
-
-			return CompletableFuture.completedFuture(CustomIngredientSync.createResponsePacket(protocolVersion));
+			handler.sendPacket(ClientConfigurationNetworking.createC2SPacket(CustomIngredientSync.PACKET_ID, CustomIngredientSync.createResponsePacket(protocolVersion)));
 		});
 	}
 }

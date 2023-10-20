@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.loot.v2;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus;
 
@@ -107,8 +106,8 @@ public interface FabricLootPoolBuilder {
 		return LootPool.builder()
 				.rolls(accessor.fabric_getRolls())
 				.bonusRolls(accessor.fabric_getBonusRolls())
-				.with(List.of(accessor.fabric_getEntries()))
-				.conditionally(List.of(accessor.fabric_getConditions()))
-				.apply(List.of(accessor.fabric_getFunctions()));
+				.with(accessor.fabric_getEntries())
+				.conditionally(accessor.fabric_getConditions())
+				.apply(accessor.fabric_getFunctions());
 	}
 }

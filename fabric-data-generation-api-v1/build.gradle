@@ -1,4 +1,3 @@
-archivesBaseName = "fabric-data-generation-api-v1"
 version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
@@ -54,7 +53,7 @@ loom {
 test.dependsOn runDatagen
 
 task datapackZip(type: Zip, dependsOn: runDatagen) {
-	archiveFileName = "${archivesBaseName}-${project.version}-test-datapack.zip"
+	archiveFileName = "${base.archivesName.get()}-${project.version}-test-datapack.zip"
 	destinationDirectory = layout.buildDirectory.dir('libs')
 
 	from file("src/testmod/generated")

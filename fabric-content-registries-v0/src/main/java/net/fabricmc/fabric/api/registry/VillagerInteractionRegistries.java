@@ -38,7 +38,6 @@ import net.fabricmc.fabric.mixin.content.registry.GiveGiftsToHeroTaskAccessor;
 /**
  * Registries for modifying villager interactions that
  * villagers have with the world.
- * @see VillagerPlantableRegistry for registering plants that farmers can plant
  */
 public final class VillagerInteractionRegistries {
 	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerInteractionRegistries.class);
@@ -58,7 +57,7 @@ public final class VillagerInteractionRegistries {
 	}
 
 	/**
-	 * Registers an item to be use in a composter by farmer villagers.
+	 * Registers an item to be used in a composter by farmer villagers.
 	 * @param item the item to register
 	 */
 	public static void registerCompostable(ItemConvertible item) {
@@ -73,7 +72,6 @@ public final class VillagerInteractionRegistries {
 	 */
 	public static void registerFood(ItemConvertible item, int foodValue) {
 		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
-		Objects.requireNonNull(foodValue, "Food value cannot be null!");
 		Integer oldValue = getFoodRegistry().put(item.asItem(), foodValue);
 
 		if (oldValue != null) {

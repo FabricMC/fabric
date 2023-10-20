@@ -1,0 +1,10 @@
+{
+    "replace": false,
+    "values": [
+        "minecraft:dirt",
+        {
+            "id": "",
+            "required": false
+        }
+    ]
+}

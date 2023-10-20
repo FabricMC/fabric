@@ -33,17 +33,15 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.ResourceMetadata;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.resource.ModResourcePack;
-
 /**
  * Represents a group resource pack, holds multiple resource packs as one.
  */
 public abstract class GroupResourcePack implements ResourcePack {
 	protected final ResourceType type;
-	protected final List<ModResourcePack> packs;
-	protected final Map<String, List<ModResourcePack>> namespacedPacks = new Object2ObjectOpenHashMap<>();
+	protected final List<? extends ResourcePack> packs;
+	protected final Map<String, List<ResourcePack>> namespacedPacks = new Object2ObjectOpenHashMap<>();
 
-	public GroupResourcePack(ResourceType type, List<ModResourcePack> packs) {
+	public GroupResourcePack(ResourceType type, List<? extends ResourcePack> packs) {
 		this.type = type;
 		this.packs = packs;
 		this.packs.forEach(pack -> pack.getNamespaces(this.type)
@@ -53,9 +51,10 @@ public abstract class GroupResourcePack implements ResourcePack {
 
 	@Override
 	public InputSupplier<InputStream> open(ResourceType type, Identifier id) {
-		List<ModResourcePack> packs = this.namespacedPacks.get(id.getNamespace());
+		List<? extends ResourcePack> packs = this.namespacedPacks.get(id.getNamespace());
 
 		if (packs != null) {
+			// Last to first, since higher priority packs are at the end
 			for (int i = packs.size() - 1; i >= 0; i--) {
 				ResourcePack pack = packs.get(i);
 				InputSupplier<InputStream> supplier = pack.open(type, id);
@@ -71,15 +70,14 @@ public abstract class GroupResourcePack implements ResourcePack {
 
 	@Override
 	public void findResources(ResourceType type, String namespace, String prefix, ResultConsumer consumer) {
-		List<ModResourcePack> packs = this.namespacedPacks.get(namespace);
+		List<? extends ResourcePack> packs = this.namespacedPacks.get(namespace);
 
 		if (packs == null) {
 			return;
 		}
 
-		for (int i = packs.size() - 1; i >= 0; i--) {
-			ResourcePack pack = packs.get(i);
-
+		// First to last, since later calls override previously returned data
+		for (ResourcePack pack : packs) {
 			pack.findResources(type, namespace, prefix, consumer);
 		}
 	}
@@ -90,7 +88,7 @@ public abstract class GroupResourcePack implements ResourcePack {
 	}
 
 	public void appendResources(ResourceType type, Identifier id, List<Resource> resources) {
-		List<ModResourcePack> packs = this.namespacedPacks.get(id.getNamespace());
+		List<? extends ResourcePack> packs = this.namespacedPacks.get(id.getNamespace());
 
 		if (packs == null) {
 			return;
@@ -98,7 +96,9 @@ public abstract class GroupResourcePack implements ResourcePack {
 
 		Identifier metadataId = NamespaceResourceManager.getMetadataPath(id);
 
-		for (ModResourcePack pack : packs) {
+		// Last to first, since higher priority packs are at the end
+		for (int i = packs.size() - 1; i >= 0; i--) {
+			ResourcePack pack = packs.get(i);
 			InputSupplier<InputStream> supplier = pack.open(type, id);
 
 			if (supplier != null) {

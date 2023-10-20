@@ -4,7 +4,7 @@ transitive-accessible method net/minecraft/client/item/ModelPredicateProviderReg
 transitive-accessible method net/minecraft/client/item/ModelPredicateProviderRegistry registerCustomModelData (Lnet/minecraft/client/item/ModelPredicateProvider;)V
 
 # Registering custom advancement criteria
-transitive-accessible method net/minecraft/advancement/criterion/Criteria register (Lnet/minecraft/advancement/criterion/Criterion;)Lnet/minecraft/advancement/criterion/Criterion;
+transitive-accessible method net/minecraft/advancement/criterion/Criteria register (Ljava/lang/String;Lnet/minecraft/advancement/criterion/Criterion;)Lnet/minecraft/advancement/criterion/Criterion;
 
 # Creating custom screen handler types
 transitive-accessible class net/minecraft/screen/ScreenHandlerType$Factory
@@ -15,23 +15,22 @@ transitive-accessible class net/minecraft/client/gui/screen/ingame/HandledScreen
 transitive-accessible method net/minecraft/client/gui/screen/ingame/HandledScreens register (Lnet/minecraft/screen/ScreenHandlerType;Lnet/minecraft/client/gui/screen/ingame/HandledScreens$Provider;)V
 
 # Data contained in loot tables and pools
-transitive-accessible field net/minecraft/loot/LootPool entries [Lnet/minecraft/loot/entry/LootPoolEntry;
-transitive-accessible field net/minecraft/loot/LootPool conditions [Lnet/minecraft/loot/condition/LootCondition;
-transitive-accessible field net/minecraft/loot/LootPool functions [Lnet/minecraft/loot/function/LootFunction;
+transitive-accessible field net/minecraft/loot/LootPool entries Ljava/util/List;
+transitive-accessible field net/minecraft/loot/LootPool conditions Ljava/util/List;
+transitive-accessible field net/minecraft/loot/LootPool functions Ljava/util/List;
 transitive-accessible field net/minecraft/loot/LootPool rolls Lnet/minecraft/loot/provider/number/LootNumberProvider;
 transitive-accessible field net/minecraft/loot/LootPool bonusRolls Lnet/minecraft/loot/provider/number/LootNumberProvider;
-transitive-accessible field net/minecraft/loot/LootTable pools [Lnet/minecraft/loot/LootPool;
-transitive-accessible field net/minecraft/loot/LootTable functions [Lnet/minecraft/loot/function/LootFunction;
 
 # Villager trade factories
-transitive-accessible class net/minecraft/village/TradeOffers$BuyForOneEmeraldFactory
+transitive-accessible class net/minecraft/village/TradeOffers$TypedWrapperFactory
+transitive-accessible class net/minecraft/village/TradeOffers$EnchantBookFactory
+transitive-accessible class net/minecraft/village/TradeOffers$BuyItemFactory
 transitive-accessible class net/minecraft/village/TradeOffers$SellItemFactory
 transitive-accessible class net/minecraft/village/TradeOffers$SellSuspiciousStewFactory
 transitive-accessible class net/minecraft/village/TradeOffers$ProcessItemFactory
 transitive-accessible class net/minecraft/village/TradeOffers$SellEnchantedToolFactory
 transitive-accessible class net/minecraft/village/TradeOffers$TypeAwareBuyForOneEmeraldFactory
 transitive-accessible class net/minecraft/village/TradeOffers$SellPotionHoldingItemFactory
-transitive-accessible class net/minecraft/village/TradeOffers$EnchantBookFactory
 transitive-accessible class net/minecraft/village/TradeOffers$SellMapFactory
 transitive-accessible class net/minecraft/village/TradeOffers$SellDyedArmorFactory
 
@@ -124,5 +123,22 @@ transitive-accessible method net/minecraft/entity/damage/DamageSources create (L
 
 # The attack cooldown
 transitive-accessible field net/minecraft/client/MinecraftClient attackCooldown I
+
+# Creating certain types of blocks
+transitive-accessible method net/minecraft/block/Blocks createBambooBlock (Lnet/minecraft/block/MapColor;Lnet/minecraft/block/MapColor;Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/PillarBlock;
+transitive-accessible method net/minecraft/block/Blocks createFlowerPotBlock (Lnet/minecraft/block/Block;[Lnet/minecraft/resource/featuretoggle/FeatureFlag;)Lnet/minecraft/block/FlowerPotBlock;
+transitive-accessible method net/minecraft/block/Blocks createLeavesBlock (Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/LeavesBlock;
+transitive-accessible method net/minecraft/block/Blocks createLogBlock (Lnet/minecraft/block/MapColor;Lnet/minecraft/block/MapColor;)Lnet/minecraft/block/PillarBlock;
+transitive-accessible method net/minecraft/block/Blocks createNetherStemBlock (Lnet/minecraft/block/MapColor;)Lnet/minecraft/block/Block;
+transitive-accessible method net/minecraft/block/Blocks createStoneButtonBlock ()Lnet/minecraft/block/ButtonBlock;
+transitive-accessible method net/minecraft/block/Blocks createWoodenButtonBlock (Lnet/minecraft/block/BlockSetType;[Lnet/minecraft/resource/featuretoggle/FeatureFlag;)Lnet/minecraft/block/ButtonBlock;
+
+# Methods used in block creation
+transitive-accessible method net/minecraft/block/Blocks always (Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Z
+transitive-accessible method net/minecraft/block/Blocks always (Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/EntityType;)Ljava/lang/Boolean;
+transitive-accessible method net/minecraft/block/Blocks canSpawnOnLeaves (Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/EntityType;)Ljava/lang/Boolean;
+transitive-accessible method net/minecraft/block/Blocks createLightLevelFromLitBlockState (I)Ljava/util/function/ToIntFunction;
+transitive-accessible method net/minecraft/block/Blocks never (Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Z
+transitive-accessible method net/minecraft/block/Blocks never (Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/EntityType;)Ljava/lang/Boolean;
 
 ### Generated access wideners below

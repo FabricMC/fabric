@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 public class VillagerTypeTest2 implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, factories -> {
+		TradeOfferHelper.registerVillagerOffers(VillagerProfession.WEAPONSMITH, 1, factories -> {
 			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.DIAMOND, 5), new ItemStack(Items.NETHERITE_INGOT), 3, 4, 0.15F)));
 		});
 		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, factories -> {

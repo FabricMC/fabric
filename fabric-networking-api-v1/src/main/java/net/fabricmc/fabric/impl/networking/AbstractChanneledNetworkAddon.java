@@ -31,9 +31,10 @@ import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.NetworkState;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.PacketCallbacks;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 
@@ -45,28 +46,24 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
  *
  * @param <H> the channel handler type
  */
-public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon<H> implements PacketSender {
+public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon<H> implements PacketSender, CommonPacketHandler {
 	protected final ClientConnection connection;
 	protected final GlobalReceiverRegistry<H> receiver;
 	protected final Set<Identifier> sendableChannels;
-	protected final Set<Identifier> sendableChannelsView;
+
+	protected int commonVersion = -1;
 
 	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, String description) {
-		this(receiver, connection, new HashSet<>(), description);
-	}
-
-	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, Set<Identifier> sendableChannels, String description) {
 		super(receiver, description);
 		this.connection = connection;
 		this.receiver = receiver;
-		this.sendableChannels = sendableChannels;
-		this.sendableChannelsView = Collections.unmodifiableSet(sendableChannels);
+		this.sendableChannels = Collections.synchronizedSet(new HashSet<>());
 	}
 
 	public abstract void lateInit();
 
-	protected void registerPendingChannels(ChannelInfoHolder holder) {
-		final Collection<Identifier> pending = holder.getPendingChannelsNames();
+	protected void registerPendingChannels(ChannelInfoHolder holder, NetworkState state) {
+		final Collection<Identifier> pending = holder.getPendingChannelsNames(state);
 
 		if (!pending.isEmpty()) {
 			register(new ArrayList<>(pending));
@@ -75,17 +72,17 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	// always supposed to handle async!
-	protected boolean handle(Identifier channelName, PacketByteBuf originalBuf) {
+	protected boolean handle(Identifier channelName, PacketByteBuf buf) {
 		this.logger.debug("Handling inbound packet from channel with name \"{}\"", channelName);
 
 		// Handle reserved packets
 		if (NetworkingImpl.REGISTER_CHANNEL.equals(channelName)) {
-			this.receiveRegistration(true, PacketByteBufs.slice(originalBuf));
+			this.receiveRegistration(true, buf);
 			return true;
 		}
 
 		if (NetworkingImpl.UNREGISTER_CHANNEL.equals(channelName)) {
-			this.receiveRegistration(false, PacketByteBufs.slice(originalBuf));
+			this.receiveRegistration(false, buf);
 			return true;
 		}
 
@@ -94,8 +91,6 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		if (handler == null) {
 			return false;
 		}
-
-		PacketByteBuf buf = PacketByteBufs.slice(originalBuf);
 
 		try {
 			this.receive(handler, buf);
@@ -156,24 +151,22 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		}
 
 		this.addId(ids, active);
-		this.schedule(register ? () -> register(ids) : () -> unregister(ids));
+
+		if (register) {
+			register(ids);
+		} else {
+			unregister(ids);
+		}
 	}
 
 	void register(List<Identifier> ids) {
 		this.sendableChannels.addAll(ids);
-		this.invokeRegisterEvent(ids);
+		schedule(() -> this.invokeRegisterEvent(ids));
 	}
 
 	void unregister(List<Identifier> ids) {
 		this.sendableChannels.removeAll(ids);
-		this.invokeUnregisterEvent(ids);
-	}
-
-	@Override
-	public void sendPacket(Packet<?> packet) {
-		Objects.requireNonNull(packet, "Packet cannot be null");
-
-		this.connection.send(packet);
+		schedule(() -> this.invokeUnregisterEvent(ids));
 	}
 
 	@Override
@@ -208,6 +201,62 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	public Set<Identifier> getSendableChannels() {
-		return this.sendableChannelsView;
+		return Collections.unmodifiableSet(this.sendableChannels);
+	}
+
+	// Common packet handlers
+
+	@Override
+	public void onCommonVersionPacket(int negotiatedVersion) {
+		assert negotiatedVersion == 1; // We only support version 1 for now
+
+		commonVersion = negotiatedVersion;
+		this.logger.info("Negotiated common packet version {}", commonVersion);
+	}
+
+	@Override
+	public void onCommonRegisterPacket(CommonRegisterPayload payload) {
+		if (payload.version() != getNegotiatedVersion()) {
+			throw new IllegalStateException("Negotiated common packet version: %d but received packet with version: %d".formatted(commonVersion, payload.version()));
+		}
+
+		final String currentPhase = getPhase();
+
+		if (currentPhase == null) {
+			// We don't support receiving the register packet during this phase. See getPhase() for supported phases.
+			// The normal case where the play channels are sent during configuration is handled in the client/common configuration packet handlers.
+			logger.warn("Received common register packet for phase {} in network state: {}", payload.phase(), receiver.getState());
+			return;
+		}
+
+		if (!payload.phase().equals(currentPhase)) {
+			// We need to handle receiving the play phase during configuration!
+			throw new IllegalStateException("Register packet received for phase (%s) on handler for phase(%s)".formatted(payload.phase(), currentPhase));
+		}
+
+		register(new ArrayList<>(payload.channels()));
+	}
+
+	@Override
+	public CommonRegisterPayload createRegisterPayload() {
+		return new CommonRegisterPayload(getNegotiatedVersion(), getPhase(), this.getReceivableChannels());
+	}
+
+	@Override
+	public int getNegotiatedVersion() {
+		if (commonVersion == -1) {
+			throw new IllegalStateException("Not yet negotiated common packet version");
+		}
+
+		return commonVersion;
+	}
+
+	@Nullable
+	private String getPhase() {
+		return switch (receiver.getState()) {
+		case PLAY -> CommonRegisterPayload.PLAY_PHASE;
+		case CONFIGURATION -> CommonRegisterPayload.CONFIGURATION_PHASE;
+		default -> null; // We don't support receiving this packet on any other phase
+		};
 	}
 }

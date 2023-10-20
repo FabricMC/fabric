@@ -1,0 +1,7 @@
+{
+  "pack.description.modResources": "Ресурси модів.",
+  "pack.source.fabricmod": "Мод Fabric",
+  "pack.source.builtinMod": "вбудований: %s",
+  "pack.name.fabricMod": "Мод Fabric \"%s\"",
+  "pack.name.fabricMods": "Моди Fabric"
+}

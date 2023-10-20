@@ -16,38 +16,15 @@
 
 package net.fabricmc.fabric.mixin.renderer.client;
 
-import java.util.function.Supplier;
-
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
-import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 
 /**
  * Avoids instanceof checks and enables consistent code path for all baked models.
  */
 @Mixin(BakedModel.class)
 public interface BakedModelMixin extends FabricBakedModel {
-	@Override
-	default boolean isVanillaAdapter() {
-		return true;
-	}
-
-	@Override
-	default void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		context.bakedModelConsumer().accept((BakedModel) this, state);
-	}
-
-	@Override
-	default void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-		// Pass null state to enforce item quads in block render contexts
-		context.bakedModelConsumer().accept((BakedModel) this, null);
-	}
 }

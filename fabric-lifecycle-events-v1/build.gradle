@@ -1,4 +1,3 @@
-archivesBaseName = "fabric-lifecycle-events-v1"
 version = getSubprojectVersion(project)
 
 loom {

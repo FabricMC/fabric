@@ -28,7 +28,6 @@ import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.GameTestException;
 import net.minecraft.test.TestContext;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
@@ -92,12 +91,7 @@ public class RecipeGameTest implements FabricGameTest {
 			}
 
 			@Override
-			public ItemStack getOutput(DynamicRegistryManager dynamicRegistryManager) {
-				return null;
-			}
-
-			@Override
-			public Identifier getId() {
+			public ItemStack getResult(DynamicRegistryManager registryManager) {
 				return null;
 			}
 

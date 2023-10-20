@@ -93,13 +93,9 @@ public final class StorageUtil {
 			for (StorageView<T> view : from.nonEmptyViews()) {
 				T resource = view.getResource();
 				if (!filter.test(resource)) continue;
-				long maxExtracted;
 
 				// check how much can be extracted
-				try (Transaction extractionTestTransaction = iterationTransaction.openNested()) {
-					maxExtracted = view.extract(resource, maxAmount - totalMoved, extractionTestTransaction);
-					extractionTestTransaction.abort();
-				}
+				long maxExtracted = simulateExtract(view, resource, maxAmount - totalMoved, iterationTransaction);
 
 				try (Transaction transferTransaction = iterationTransaction.openNested()) {
 					// check how much can be inserted
@@ -132,6 +128,52 @@ public final class StorageUtil {
 		}
 
 		return totalMoved;
+	}
+
+	/**
+	 * Convenient helper to simulate an insertion, i.e. get the result of insert without modifying any state.
+	 * The passed transaction may be null if a new transaction should be opened for the simulation.
+	 * @see Storage#insert
+	 */
+	public static <T> long simulateInsert(Storage<T> storage, T resource, long maxAmount, @Nullable TransactionContext transaction) {
+		try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
+			return storage.insert(resource, maxAmount, simulateTransaction);
+		}
+	}
+
+	/**
+	 * Convenient helper to simulate an extraction, i.e. get the result of extract without modifying any state.
+	 * The passed transaction may be null if a new transaction should be opened for the simulation.
+	 * @see Storage#insert
+	 */
+	public static <T> long simulateExtract(Storage<T> storage, T resource, long maxAmount, @Nullable TransactionContext transaction) {
+		try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
+			return storage.extract(resource, maxAmount, simulateTransaction);
+		}
+	}
+
+	/**
+	 * Convenient helper to simulate an extraction, i.e. get the result of extract without modifying any state.
+	 * The passed transaction may be null if a new transaction should be opened for the simulation.
+	 * @see Storage#insert
+	 */
+	public static <T> long simulateExtract(StorageView<T> storageView, T resource, long maxAmount, @Nullable TransactionContext transaction) {
+		try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
+			return storageView.extract(resource, maxAmount, simulateTransaction);
+		}
+	}
+
+	/**
+	 * Convenient helper to simulate an extraction, i.e. get the result of extract without modifying any state.
+	 * The passed transaction may be null if a new transaction should be opened for the simulation.
+	 * @see Storage#insert
+	 * @apiNote This function handles the method overload conflict for objects that implement both {@link Storage} and {@link StorageView}.
+	 */
+	// Object & is used to have a different erasure than the other overloads.
+	public static <T, S extends Object & Storage<T> & StorageView<T>> long simulateExtract(S storage, T resource, long maxAmount, @Nullable TransactionContext transaction) {
+		try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
+			return storage.extract(resource, maxAmount, simulateTransaction);
+		}
 	}
 
 	/**
@@ -336,7 +378,7 @@ public final class StorageUtil {
 		T extractableResource = findExtractableResource(storage, filter, transaction);
 
 		if (extractableResource != null) {
-			long extractableAmount = storage.simulateExtract(extractableResource, Long.MAX_VALUE, transaction);
+			long extractableAmount = simulateExtract(storage, extractableResource, Long.MAX_VALUE, transaction);
 
 			if (extractableAmount > 0) {
 				return new ResourceAmount<>(extractableResource, extractableAmount);

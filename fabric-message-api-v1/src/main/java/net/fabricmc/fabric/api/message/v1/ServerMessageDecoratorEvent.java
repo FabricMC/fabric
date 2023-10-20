@@ -17,10 +17,6 @@
 package net.fabricmc.fabric.api.message.v1;
 
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.message.MessageDecorator;
 import net.minecraft.text.Text;
@@ -56,10 +52,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.STYLING_PHASE, (sender, message) -> {
  *     // Apply orange color to messages sent by server operators
  *     if (sender != null && sender.server.getPlayerManager().isOperator(sender.getGameProfile())) {
- *         return CompletableFuture.completedFuture(
- *             message.copy().styled(style -> style.withColor(0xFFA500)));
+ *         return message.copy().styled(style -> style.withColor(0xFFA500));
  *     }
- *     return CompletableFuture.completedFuture(message);
+ *     return message;
  * });
  * }</pre>
  */
@@ -79,27 +74,17 @@ public final class ServerMessageDecoratorEvent {
 	public static final Identifier STYLING_PHASE = new Identifier("fabric", "styling");
 
 	public static final Event<MessageDecorator> EVENT = EventFactory.createWithPhases(MessageDecorator.class, decorators -> (sender, message) -> {
-		CompletableFuture<Text> future = null;
+		Text decorated = message;
 
 		for (MessageDecorator decorator : decorators) {
-			if (future == null) {
-				future = decorator.decorate(sender, message).handle((decorated, throwable) -> handle(decorated, throwable, decorator));
-			} else {
-				future = future.thenCompose((decorated) -> decorator.decorate(sender, decorated).handle((newlyDecorated, throwable) -> handle(newlyDecorated, throwable, decorator)));
-			}
+			decorated = handle(decorator.decorate(sender, decorated), decorator);
 		}
 
-		return future == null ? CompletableFuture.completedFuture(message) : future;
+		return decorated;
 	}, CONTENT_PHASE, Event.DEFAULT_PHASE, STYLING_PHASE);
 
-	private static <T extends Text> T handle(T decorated, @Nullable Throwable throwable, MessageDecorator decorator) {
+	private static <T extends Text> T handle(T decorated, MessageDecorator decorator) {
 		String decoratorName = decorator.getClass().getName();
-
-		if (throwable != null) {
-			if (throwable instanceof CompletionException) throwable = throwable.getCause();
-			throw new CompletionException("message decorator %s failed".formatted(decoratorName), throwable);
-		}
-
 		return Objects.requireNonNull(decorated, "message decorator %s returned null".formatted(decoratorName));
 	}
 }

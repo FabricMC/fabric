@@ -21,24 +21,20 @@ import java.util.List;
 import java.util.Objects;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.serialization.JsonOps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.predicate.NbtPredicate;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
+import net.minecraft.util.dynamic.Codecs;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
@@ -98,55 +94,53 @@ public class NbtIngredient implements CustomIngredient {
 		return SERIALIZER;
 	}
 
+	private Ingredient getBase() {
+		return base;
+	}
+
+	private NbtCompound getNbt() {
+		return nbt;
+	}
+
+	private boolean isStrict() {
+		return strict;
+	}
+
 	private static class Serializer implements CustomIngredientSerializer<NbtIngredient> {
-		private final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-		private final Identifier id = new Identifier("fabric", "nbt");
+		private static final Identifier ID = new Identifier("fabric", "nbt");
+
+		// Supports decoding the NBT as a string as well as the object.
+		private static final Codec<NbtCompound> NBT_CODEC = Codecs.xor(
+				Codec.STRING, NbtCompound.CODEC
+		).flatXmap(either -> either.map(s -> {
+			try {
+				return DataResult.success(StringNbtReader.parse(s));
+			} catch (CommandSyntaxException e) {
+				return DataResult.error(e::getMessage);
+			}
+		}, DataResult::success), nbtCompound -> DataResult.success(Either.left(nbtCompound.asString())));
+
+		private static final Codec<NbtIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
+		private static final Codec<NbtIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
+
+		private static Codec<NbtIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
+			return RecordCodecBuilder.create(instance ->
+					instance.group(
+							ingredientCodec.fieldOf("base").forGetter(NbtIngredient::getBase),
+							NBT_CODEC.optionalFieldOf("nbt", null).forGetter(NbtIngredient::getNbt),
+							Codec.BOOL.optionalFieldOf("strict", false).forGetter(NbtIngredient::isStrict)
+					).apply(instance, NbtIngredient::new)
+			);
+		}
 
 		@Override
 		public Identifier getIdentifier() {
-			return id;
+			return ID;
 		}
 
 		@Override
-		public NbtIngredient read(JsonObject json) {
-			Ingredient base = Ingredient.fromJson(json.get("base"));
-			NbtCompound nbt = readNbt(json.get("nbt"));
-			boolean strict = JsonHelper.getBoolean(json, "strict", false);
-			return new NbtIngredient(base, nbt, strict);
-		}
-
-		/**
-		 * Inspiration taken from {@link NbtPredicate#fromJson}.
-		 */
-		@Nullable
-		private static NbtCompound readNbt(@Nullable JsonElement json) {
-			// Process null
-			if (json == null || json.isJsonNull()) {
-				return null;
-			}
-
-			try {
-				if (json.isJsonObject()) {
-					// We use a normal .toString() to convert the json to string, and read it as SNBT.
-					// Using DynamicOps would mess with the type of integers and cause things like damage comparisons to fail...
-					return StringNbtReader.parse(json.toString());
-				} else {
-					// Assume it's a string representation of the NBT
-					return StringNbtReader.parse(JsonHelper.asString(json, "nbt"));
-				}
-			} catch (CommandSyntaxException commandSyntaxException) {
-				throw new JsonSyntaxException("Invalid nbt tag: " + commandSyntaxException.getMessage());
-			}
-		}
-
-		@Override
-		public void write(JsonObject json, NbtIngredient ingredient) {
-			json.add("base", ingredient.base.toJson());
-			json.addProperty("strict", ingredient.strict);
-
-			if (ingredient.nbt != null) {
-				json.add("nbt", NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, ingredient.nbt));
-			}
+		public Codec<NbtIngredient> getCodec(boolean allowEmpty) {
+			return allowEmpty ? ALLOW_EMPTY_CODEC : DISALLOW_EMPTY_CODEC;
 		}
 
 		@Override

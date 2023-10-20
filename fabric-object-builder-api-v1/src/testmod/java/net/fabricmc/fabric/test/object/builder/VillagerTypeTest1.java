@@ -25,9 +25,12 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.WanderingTraderEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOffers;
@@ -38,14 +41,53 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 
 public class VillagerTypeTest1 implements ModInitializer {
+	private static final Identifier FOOD_POOL_ID = ObjectBuilderTestConstants.id("food");
+	private static final Identifier THING_POOL_ID = ObjectBuilderTestConstants.id("thing");
+
 	@Override
 	public void onInitialize() {
-		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, factories -> {
-			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(Items.NETHERITE_SCRAP, 4), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.15F)));
+		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, (factories, rebalanced) -> {
+			Item scrap = rebalanced ? Items.NETHER_BRICK : Items.NETHERITE_SCRAP;
+			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(scrap, 4), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.15F)));
+		});
+		// Toolsmith is not rebalanced yet
+		TradeOfferHelper.registerVillagerOffers(VillagerProfession.TOOLSMITH, 1, (factories, rebalanced) -> {
+			Item scrap = rebalanced ? Items.NETHER_BRICK : Items.NETHERITE_SCRAP;
+			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(scrap, 4), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.15F)));
 		});
 
 		TradeOfferHelper.registerWanderingTraderOffers(1, factories -> {
 			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(Items.NETHERITE_SCRAP, 4), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.35F)));
+		});
+
+		TradeOfferHelper.registerRebalancedWanderingTraderOffers(builder -> {
+			builder.pool(
+					FOOD_POOL_ID,
+					5,
+					Registries.ITEM.stream().filter(item -> item.getFoodComponent() != null).map(
+							item -> new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.NETHERITE_INGOT), new ItemStack(item), 3, 4, 0.15F))
+					).toList()
+			);
+			builder.addAll(
+					THING_POOL_ID,
+					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.NETHERITE_INGOT), new ItemStack(Items.MOJANG_BANNER_PATTERN), 1, 4, 0.15F))
+			);
+			builder.addOffersToPool(
+					TradeOfferHelper.WanderingTraderOffersBuilder.BUY_ITEMS_POOL,
+					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.BLAZE_POWDER, 1), new ItemStack(Items.EMERALD, 4), 3, 4, 0.15F)),
+					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.NETHER_WART, 5), new ItemStack(Items.EMERALD, 1), 3, 4, 0.15F)),
+					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLDEN_CARROT, 4), new ItemStack(Items.EMERALD, 1), 3, 4, 0.15F))
+			);
+			builder.addOffersToPool(
+					TradeOfferHelper.WanderingTraderOffersBuilder.SELL_SPECIAL_ITEMS_POOL,
+					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.EMERALD, 6), new ItemStack(Items.BRUSH, 1), 1, 4, 0.15F)),
+					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.DIAMOND, 16), new ItemStack(Items.ELYTRA, 1), 1, 4, 0.15F)),
+					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.EMERALD, 3), new ItemStack(Items.LEAD, 2), 3, 4, 0.15F))
+			);
+			builder.addOffersToPool(
+					FOOD_POOL_ID,
+					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.NETHERITE_INGOT), new ItemStack(Items.EGG), 3, 4, 0.15F))
+			);
 		});
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {

@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.registry.sync.packet;
 
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.zip.Deflater;
 
 import io.netty.buffer.ByteBuf;
@@ -24,11 +25,11 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 
 public abstract class RegistryPacketHandler {
@@ -37,7 +38,7 @@ public abstract class RegistryPacketHandler {
 
 	public abstract Identifier getPacketId();
 
-	public abstract void sendPacket(ServerPlayerEntity player, Map<Identifier, Object2IntMap<Identifier>> registryMap);
+	public abstract void sendPacket(Consumer<Packet<?>> sender, Map<Identifier, Object2IntMap<Identifier>> registryMap);
 
 	public abstract void receivePacket(PacketByteBuf buf);
 
@@ -48,8 +49,8 @@ public abstract class RegistryPacketHandler {
 	@Nullable
 	public abstract Map<Identifier, Object2IntMap<Identifier>> getSyncedRegistryMap();
 
-	protected final void sendPacket(ServerPlayerEntity player, PacketByteBuf buf) {
-		ServerPlayNetworking.send(player, getPacketId(), buf);
+	protected final void sendPacket(Consumer<Packet<?>> sender, PacketByteBuf buf) {
+		sender.accept(ServerConfigurationNetworking.createS2CPacket(getPacketId(), buf));
 	}
 
 	protected final void computeBufSize(PacketByteBuf buf) {

@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.test.datagen;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -32,6 +35,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
@@ -45,6 +49,16 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static Block BLOCK_THAT_DROPS_NOTHING;
 
 	public static final RegistryKey<ItemGroup> SIMPLE_ITEM_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, new Identifier(MOD_ID, "simple"));
+
+	public static final RegistryKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_REGISTRY_KEY =
+			RegistryKey.ofRegistry(new Identifier("fabric", "test_datagen_dynamic"));
+	public static final RegistryKey<TestDatagenObject> TEST_DYNAMIC_REGISTRY_ITEM_KEY = RegistryKey.of(
+			TEST_DATAGEN_DYNAMIC_REGISTRY_KEY,
+			new Identifier(MOD_ID, "tiny_potato")
+	);
+	// Empty registry
+	public static final RegistryKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY =
+			RegistryKey.ofRegistry(new Identifier("fabric", "test_datagen_dynamic_empty"));
 
 	@Override
 	public void onInitialize() {
@@ -60,6 +74,9 @@ public class DataGeneratorTestContent implements ModInitializer {
 				.icon(() -> new ItemStack(Items.DIAMOND_PICKAXE))
 				.displayName(Text.translatable("fabric-data-gen-api-v1-testmod.simple_item_group"))
 				.build());
+
+		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY, TestDatagenObject.CODEC);
+		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY, TestDatagenObject.CODEC);
 	}
 
 	private static Block createBlock(String name, boolean hasItem, AbstractBlock.Settings settings) {
@@ -71,5 +88,11 @@ public class DataGeneratorTestContent implements ModInitializer {
 		}
 
 		return block;
+	}
+
+	public record TestDatagenObject(String value) {
+		public static final Codec<TestDatagenObject> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.STRING.fieldOf("value").forGetter(TestDatagenObject::value)
+		).apply(instance, TestDatagenObject::new));
 	}
 }

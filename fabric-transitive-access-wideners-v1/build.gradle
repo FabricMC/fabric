@@ -1,4 +1,3 @@
-archivesBaseName = "fabric-transitive-access-wideners-v1"
 version = getSubprojectVersion(project)
 
 loom {

@@ -82,7 +82,7 @@ public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.STONY_PEAKS).add(BiomeKeys.MUSHROOM_FIELDS).add(BiomeKeys.DRIPSTONE_CAVES)
 				.add(BiomeKeys.LUSH_CAVES).add(BiomeKeys.SNOWY_BEACH).add(BiomeKeys.SWAMP).add(BiomeKeys.STONY_SHORE)
 				.add(BiomeKeys.DEEP_DARK).add(BiomeKeys.MANGROVE_SWAMP)
-				.addOptional(BiomeKeys.CHERRY_GROVE);
+				.add(BiomeKeys.CHERRY_GROVE);
 	}
 
 	private void generateCategoryTags() {
@@ -235,6 +235,7 @@ public class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilder(ConventionalBiomeTags.FLORAL)
 				.add(BiomeKeys.SUNFLOWER_PLAINS)
 				.add(BiomeKeys.MEADOW)
+				.add(BiomeKeys.CHERRY_GROVE)
 				.addOptionalTag(ConventionalBiomeTags.FLOWER_FORESTS);
 	}
 

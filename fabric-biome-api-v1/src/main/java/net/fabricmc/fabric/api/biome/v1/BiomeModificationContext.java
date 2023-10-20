@@ -40,8 +40,6 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 
 /**
  * Allows {@link Biome} properties to be modified.
- *
- * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
 public interface BiomeModificationContext {
 	/**
@@ -66,8 +64,8 @@ public interface BiomeModificationContext {
 
 	interface WeatherContext {
 		/**
-		 * @see Biome#getPrecipitation()
-		 * @see Biome.Builder#precipitation(Biome.Precipitation)
+		 * @see Biome#hasPrecipitation()
+		 * @see Biome.Builder#precipitation(boolean)
 		 */
 		void setPrecipitation(boolean hasPrecipitation);
 
@@ -83,7 +81,7 @@ public interface BiomeModificationContext {
 		void setTemperatureModifier(Biome.TemperatureModifier temperatureModifier);
 
 		/**
-		 * @see Biome#getDownfall()
+		 * @see Biome.Weather#downfall()
 		 * @see Biome.Builder#downfall(float)
 		 */
 		void setDownfall(float downfall);

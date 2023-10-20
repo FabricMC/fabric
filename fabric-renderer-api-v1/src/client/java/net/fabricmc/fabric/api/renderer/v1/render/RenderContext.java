@@ -17,16 +17,22 @@
 package net.fabricmc.fabric.api.renderer.v1.render;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 
 /**
@@ -36,32 +42,29 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
  */
 public interface RenderContext {
 	/**
-	 * Used by models to send vertex data previously baked via {@link MeshBuilder}.
-	 * The fastest option and preferred whenever feasible.
-	 */
-	Consumer<Mesh> meshConsumer();
-
-	/**
-	 * Fallback consumer that can process a vanilla {@link BakedModel}.
-	 * Fabric causes vanilla baked models to send themselves
-	 * via this interface. Can also be used by compound models that contain a mix
-	 * of vanilla baked models, packaged quads and/or dynamic elements.
-	 */
-	BakedModelConsumer bakedModelConsumer();
-
-	/**
-	 * Returns a {@link QuadEmitter} instance that emits directly to the render buffer.
-	 * It remains necessary to call {@link QuadEmitter#emit()} to output the quad.
+	 * Returns a {@link QuadEmitter} instance that is used to output quads.
+	 * It is necessary to call {@link QuadEmitter#emit()} to output a quad.
 	 *
-	 * <p>This method will always be less performant than passing pre-baked meshes
-	 * via {@link #meshConsumer()}. It should be used sparingly for model components that
-	 * demand it - text, icons, dynamic indicators, or other elements that vary too
-	 * much for static baking to be feasible.
+	 * <p>The renderer may optimize certain operations such as
+	 * {@link Mesh#outputTo(QuadEmitter)} when used with this emitter. Thus, using
+	 * those operations is preferred to using the emitter directly. It should be
+	 * used sparingly for model components that demand it - text, icons, dynamic
+	 * indicators, or other elements that vary too much for static baking to be
+	 * feasible.
 	 *
 	 * <p>Calling this method invalidates any {@link QuadEmitter} returned earlier.
-	 * Will be threadlocal/re-used - do not retain references.
+	 * Will be thread-local/re-used - do not retain references.
 	 */
 	QuadEmitter getEmitter();
+
+	/**
+	 * Returns whether this context currently has at least one transform.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
+	 */
+	default boolean hasTransform() {
+		return true;
+	}
 
 	/**
 	 * Causes all models/quads/meshes sent to this consumer to be transformed by the provided
@@ -76,6 +79,8 @@ public interface RenderContext {
 	 *
 	 * <p>Meshes are never mutated by the transformer - only buffered quads. This ensures thread-safe
 	 * use of meshes/models across multiple chunk builders.
+	 *
+	 * <p>Using the {@linkplain #getEmitter() quad emitter of this context} from the inside of a quad transform is not supported.
 	 */
 	void pushTransform(QuadTransform transform);
 
@@ -86,17 +91,71 @@ public interface RenderContext {
 	void popTransform();
 
 	/**
-	 * Fabric causes vanilla baked models to send themselves
-	 * via this interface. Can also be used by compound models that contain a mix
-	 * of vanilla baked models, packaged quads and/or dynamic elements.
+	 * Returns {@code true} if the given face will be culled away.
 	 *
-	 * @deprecated Prefer using the more flexible {@link #bakedModelConsumer}.
+	 * <p>This function can be used to skip complex transformations of quads that will be culled anyway.
+	 * The cull face of a quad is determined by {@link QuadView#cullFace()}.
+	 * Note that if {@linkplain #hasTransform() there is a transform}, no computation should be skipped,
+	 * because the cull face might be changed by the transform,
+	 * or the transform might wish to receive culled faces too.
+	 *
+	 * <p>This function can only be used on a block render context (i.e. in {@link FabricBakedModel#emitBlockQuads}).
+	 * Calling it on another context (e.g. in {@link FabricBakedModel#emitItemQuads}) will throw an exception.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
+	 */
+	default boolean isFaceCulled(@Nullable Direction face) {
+		return false;
+	}
+
+	/**
+	 * Returns the current transformation mode.
+	 *
+	 * <p>This function can only be used on an item render context (i.e. in {@link FabricBakedModel#emitItemQuads}).
+	 * Calling it on another context (e.g. in {@link FabricBakedModel#emitBlockQuads}) will throw an exception.
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
+	 */
+	default ModelTransformationMode itemTransformationMode() {
+		return ModelTransformationMode.NONE;
+	}
+
+	@FunctionalInterface
+	interface QuadTransform {
+		/**
+		 * Return false to filter out quads from rendering. When more than one transform
+		 * is in effect, returning false means unapplied transforms will not receive the quad.
+		 */
+		boolean transform(MutableQuadView quad);
+	}
+
+	/**
+	 * @deprecated Use {@link Mesh#outputTo(QuadEmitter)} instead.
 	 */
 	@Deprecated
+	default Consumer<Mesh> meshConsumer() {
+		return mesh -> mesh.outputTo(getEmitter());
+	}
+
+	/**
+	 * @deprecated Use {@link FabricBakedModel#emitBlockQuads(BlockRenderView, BlockState, BlockPos, Supplier, RenderContext) emitBlockQuads}
+	 * or {@link FabricBakedModel#emitItemQuads(ItemStack, Supplier, RenderContext) emitItemQuads} on the baked model
+	 * that you want to consume instead.
+	 */
+	@Deprecated(forRemoval = true)
+	BakedModelConsumer bakedModelConsumer();
+
+	/**
+	 * @deprecated Use {@link FabricBakedModel#emitBlockQuads(BlockRenderView, BlockState, BlockPos, Supplier, RenderContext) emitBlockQuads}
+	 * or {@link FabricBakedModel#emitItemQuads(ItemStack, Supplier, RenderContext) emitItemQuads} on the baked model
+	 * that you want to consume instead.
+	 */
+	@Deprecated(forRemoval = true)
 	default Consumer<BakedModel> fallbackConsumer() {
 		return bakedModelConsumer();
 	}
 
+	@Deprecated(forRemoval = true)
 	interface BakedModelConsumer extends Consumer<BakedModel> {
 		/**
 		 * Render a baked model by processing its {@linkplain BakedModel#getQuads} using the rendered block state.
@@ -119,14 +178,5 @@ public interface RenderContext {
 		 * Otherwise, use {@linkplain #accept(BakedModel)} the other overload} to render the usual item quads.
 		 */
 		void accept(BakedModel model, @Nullable BlockState state);
-	}
-
-	@FunctionalInterface
-	interface QuadTransform {
-		/**
-		 * Return false to filter out quads from rendering. When more than one transform
-		 * is in effect, returning false means unapplied transforms will not receive the quad.
-		 */
-		boolean transform(MutableQuadView quad);
 	}
 }
