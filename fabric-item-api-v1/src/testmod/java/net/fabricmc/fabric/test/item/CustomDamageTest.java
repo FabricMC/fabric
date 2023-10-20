@@ -16,16 +16,19 @@
 
 package net.fabricmc.fabric.test.item;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ToolMaterials;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.potion.Potions;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
@@ -75,6 +78,14 @@ public class CustomDamageTest implements ModInitializer {
 			}
 
 			return ItemStack.EMPTY;
+		}
+
+		@Override
+		public @Nullable FoodComponent getFoodComponent(ItemStack stack) {
+			return new FoodComponent.Builder()
+					.hunger(20 - 20 * stack.getDamage() / stack.getMaxDamage())
+					.saturationModifier(0.5f)
+					.build();
 		}
 	}
 }
