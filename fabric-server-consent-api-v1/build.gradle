@@ -1,4 +1,5 @@
-archivesBaseName = "fabric-server-consent-api-v1"
 version = getSubprojectVersion(project)
 
-moduleDependencies(project, ['fabric-networking-api-v1', 'fabric-command-api-v2'])
+moduleDependencies(project, ['fabric-networking-api-v1'])
+
+testDependencies(project, ['fabric-command-api-v2'])
