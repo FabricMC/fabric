@@ -58,7 +58,6 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
  * A provider to help with data-generation of dynamic registry objects,
  * such as biomes, features, or message types.
  */
-@ApiStatus.Experimental
 public abstract class FabricDynamicRegistryProvider implements DataProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDynamicRegistryProvider.class);
 
@@ -82,6 +81,8 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		Entries(RegistryWrapper.WrapperLookup registries, String modId) {
 			this.registries = registries;
 			this.queuedEntries = DynamicRegistries.getDynamicRegistries().stream()
+					// Some modded dynamic registries might not be in the wrapper lookup, filter them out
+					.filter(e -> registries.getOptionalWrapper(e.key()).isPresent())
 					.collect(Collectors.toMap(
 							e -> e.key().getValue(),
 							e -> RegistryEntries.create(registries, e)

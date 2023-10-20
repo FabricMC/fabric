@@ -89,6 +89,15 @@ public final class LootTableEvents {
 		}
 	});
 
+	/**
+	 * This event can be used for post-processing after all loot tables have been loaded and modified by Fabric.
+	 */
+	public static final Event<Loaded> ALL_LOADED = EventFactory.createArrayBacked(Loaded.class, listeners -> (resourceManager, lootManager) -> {
+		for (Loaded listener : listeners) {
+			listener.onLootTablesLoaded(resourceManager, lootManager);
+		}
+	});
+
 	public interface Replace {
 		/**
 		 * Replaces loot tables.
@@ -115,5 +124,15 @@ public final class LootTableEvents {
 		 * @param source          the source of the loot table
 		 */
 		void modifyLootTable(ResourceManager resourceManager, LootManager lootManager, Identifier id, LootTable.Builder tableBuilder, LootTableSource source);
+	}
+
+	public interface Loaded {
+		/**
+		 * Called when all loot tables have been loaded and {@link LootTableEvents#REPLACE} and {@link LootTableEvents#MODIFY} have been invoked.
+		 *
+		 * @param resourceManager the server resource manager
+		 * @param lootManager     the loot manager
+		 */
+		void onLootTablesLoaded(ResourceManager resourceManager, LootManager lootManager);
 	}
 }

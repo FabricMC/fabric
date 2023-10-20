@@ -33,6 +33,7 @@ public final class Registration {
 	public static final FrameBlock FRAME_VARIANT_BLOCK = register("frame_variant", new FrameBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).nonOpaque()));
 	public static final Block PILLAR_BLOCK = register("pillar", new Block(FabricBlockSettings.create()));
 	public static final Block OCTAGONAL_COLUMN_BLOCK = register("octagonal_column", new Block(FabricBlockSettings.create().nonOpaque().strength(1.8F)));
+	public static final Block RIVERSTONE_BLOCK = register("riverstone", new Block(FabricBlockSettings.copyOf(Blocks.STONE)));
 
 	public static final FrameBlock[] FRAME_BLOCKS = new FrameBlock[] {
 			FRAME_BLOCK,
@@ -45,6 +46,7 @@ public final class Registration {
 	public static final Item FRAME_VARIANT_ITEM = register("frame_variant", new BlockItem(FRAME_VARIANT_BLOCK, new Item.Settings()));
 	public static final Item PILLAR_ITEM = register("pillar", new BlockItem(PILLAR_BLOCK, new Item.Settings()));
 	public static final Item OCTAGONAL_COLUMN_ITEM = register("octagonal_column", new BlockItem(OCTAGONAL_COLUMN_BLOCK, new Item.Settings()));
+	public static final Item RIVERSTONE_ITEM = register("riverstone", new BlockItem(RIVERSTONE_BLOCK, new Item.Settings()));
 
 	public static final BlockEntityType<FrameBlockEntity> FRAME_BLOCK_ENTITY_TYPE = register("frame", FabricBlockEntityTypeBuilder.create(FrameBlockEntity::new, FRAME_BLOCKS).build(null));
 

@@ -56,6 +56,9 @@ public class DataGeneratorTestContent implements ModInitializer {
 			TEST_DATAGEN_DYNAMIC_REGISTRY_KEY,
 			new Identifier(MOD_ID, "tiny_potato")
 	);
+	// Empty registry
+	public static final RegistryKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY =
+			RegistryKey.ofRegistry(new Identifier("fabric", "test_datagen_dynamic_empty"));
 
 	@Override
 	public void onInitialize() {
@@ -73,6 +76,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 				.build());
 
 		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY, TestDatagenObject.CODEC);
+		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY, TestDatagenObject.CODEC);
 	}
 
 	private static Block createBlock(String name, boolean hasItem, AbstractBlock.Settings settings) {

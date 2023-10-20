@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.rendering.data",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "BlockEntityMixin",
+    "WorldViewMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

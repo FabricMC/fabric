@@ -29,9 +29,9 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
+import net.fabricmc.fabric.api.blockview.v2.RenderDataBlockEntity;
 
-public class FrameBlockEntity extends BlockEntity implements RenderAttachmentBlockEntity {
+public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEntity {
 	@Nullable
 	private Block block = null;
 
@@ -86,7 +86,7 @@ public class FrameBlockEntity extends BlockEntity implements RenderAttachmentBlo
 
 	@Nullable
 	@Override
-	public Block getRenderAttachmentData() {
+	public Block getRenderData() {
 		return this.block;
 	}
 
