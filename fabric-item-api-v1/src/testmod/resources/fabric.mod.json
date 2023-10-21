@@ -22,7 +22,8 @@
     "fabric-gametest" : [
       "net.fabricmc.fabric.test.item.gametest.BrewingStandGameTest",
       "net.fabricmc.fabric.test.item.gametest.FurnaceGameTest",
-      "net.fabricmc.fabric.test.item.gametest.RecipeGameTest"
+      "net.fabricmc.fabric.test.item.gametest.RecipeGameTest",
+      "net.fabricmc.fabric.test.item.gametest.FoodGameTest"
     ]
   },
   "mixins": [
