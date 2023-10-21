@@ -21,7 +21,6 @@ import java.util.function.Consumer;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,6 +28,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
@@ -45,7 +45,8 @@ import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin implements FabricItemStack {
-	@Shadow public abstract Item getItem();
+	@Shadow
+	public abstract Item getItem();
 
 	@Unique
 	private LivingEntity fabric_damagingEntity;
@@ -102,13 +103,9 @@ public abstract class ItemStackMixin implements FabricItemStack {
 		return item.isSuitableFor((ItemStack) (Object) this, state);
 	}
 
-	/**
-	 * @author Phoupraw
-	 * @reason use stack-aware {@link #getFoodComponent()} instead
-	 */
-	@Overwrite
-	public boolean isFood() {
-		return this.getFoodComponent() != null;
+	@Inject(method = "isFood", at = @At("HEAD"), cancellable = true)
+	public void isStackAwareFood(CallbackInfoReturnable<Boolean> cir) {
+		cir.setReturnValue(this.getFoodComponent() != null);
 	}
 
 }

@@ -22,7 +22,7 @@ import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-/**
+/*
  * Fabric-provided extensions for {@link ItemStack}.
  * This interface is automatically implemented on all item stacks via Mixin and interface injection.
  */
