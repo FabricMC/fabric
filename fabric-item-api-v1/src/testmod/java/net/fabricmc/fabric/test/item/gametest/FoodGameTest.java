@@ -41,7 +41,8 @@ public final class FoodGameTest implements FabricGameTest {
 		HungerManager hungerManager = player.getHungerManager();
 
 		for (int damage : new int[]{0, 1, 10, 19}) {
-			hungerManager.add(-hungerManager.getFoodLevel(), 0.5f);
+			hungerManager.setFoodLevel(0);
+			hungerManager.setSaturationLevel(0);
 			ItemStack foodStack = FoodGameInitializer.DAMAGE.getDefaultStack();
 			foodStack.setDamage(damage);
 			player.eatFood(player.getWorld(), foodStack.copy());
@@ -61,7 +62,8 @@ public final class FoodGameTest implements FabricGameTest {
 	public void nameFoodTest(TestContext context) {
 		PlayerEntity player = context.createMockSurvivalPlayer();
 		HungerManager hungerManager = player.getHungerManager();
-		hungerManager.add(-hungerManager.getFoodLevel(), 0.5f);
+		hungerManager.setFoodLevel(0);
+		hungerManager.setSaturationLevel(0);
 		ItemStack foodStack = FoodGameInitializer.NAME.getDefaultStack();
 		foodStack.setCustomName(Text.literal("enchanted_golden_apple"));
 		player.eatFood(player.getWorld(), foodStack.copy());
