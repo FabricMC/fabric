@@ -30,7 +30,7 @@ public final class FoodGameTest implements FabricGameTest, ModInitializer {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void damageFoodTest(TestContext context) {
-		var player = context.getWorld().getPlayers().get(0);
+		var player = context.createMockSurvivalPlayer();
 		HungerManager hungerManager = player.getHungerManager();
 		for (int damage : new int[]{0, 1, 10, 19}) {
 			hungerManager.add(-hungerManager.getFoodLevel(), 0.5f);
@@ -50,7 +50,7 @@ public final class FoodGameTest implements FabricGameTest, ModInitializer {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void nameFoodTest(TestContext context) {
-		var player = context.getWorld().getPlayers().get(0);
+		var player = context.createMockSurvivalPlayer();
 		HungerManager hungerManager = player.getHungerManager();
 		hungerManager.add(-hungerManager.getFoodLevel(), 0.5f);
 		ItemStack foodStack = NAME.getDefaultStack();
@@ -68,7 +68,7 @@ public final class FoodGameTest implements FabricGameTest, ModInitializer {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void nameMeatTest(TestContext context) {
-		var player = context.getWorld().getPlayers().get(0);
+		var player = context.createMockSurvivalPlayer();
 		WolfEntity wolf = context.spawnEntity(EntityType.WOLF, context.getRelative(Vec3d.ZERO));
 		wolf.setTamed(true);
 		wolf.setOwner(player);
@@ -82,7 +82,7 @@ public final class FoodGameTest implements FabricGameTest, ModInitializer {
 		context.complete();
 	}
 
-	@GameTest(templateName = EMPTY_STRUCTURE)
+	//@GameTest(templateName = EMPTY_STRUCTURE)
 	public void giveItems(TestContext context) {
 		var player = context.getWorld().getPlayers().get(0);
 		for (int damage : new int[]{0, 1, 10, 19}) {
