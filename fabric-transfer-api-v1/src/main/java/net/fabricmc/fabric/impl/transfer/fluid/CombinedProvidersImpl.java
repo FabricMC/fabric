@@ -83,12 +83,8 @@ public class CombinedProvidersImpl {
 
 	public static Event<FluidStorage.CombinedItemApiProvider> getOrCreateItemEvent(Item item) {
 		// register here is thread-safe, so the query below will return a valid provider (possibly one registered before or from another thread).
+		FluidStorage.ITEM.registerForItems(new Provider(), item);
 		ItemApiLookup.ItemApiProvider<Storage<FluidVariant>, ContainerItemContext> existingProvider = FluidStorage.ITEM.getProvider(item);
-		if (existingProvider == null) {
-			// if you always register, lookup will spam warning, so only register when not registered
-			existingProvider = new Provider();
-			FluidStorage.ITEM.registerForItems(existingProvider, item);
-		}
 
 		if (existingProvider instanceof Provider registeredProvider) {
 			return registeredProvider.event;
