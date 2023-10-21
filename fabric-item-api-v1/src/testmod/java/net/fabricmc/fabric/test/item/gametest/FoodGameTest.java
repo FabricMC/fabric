@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.test.item.gametest;
 
 import java.util.Objects;
@@ -7,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.HungerManager;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.FoodComponents;
 import net.minecraft.item.Item;
@@ -30,8 +47,9 @@ public final class FoodGameTest implements FabricGameTest, ModInitializer {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void damageFoodTest(TestContext context) {
-		var player = context.createMockSurvivalPlayer();
+		PlayerEntity player = context.createMockSurvivalPlayer();
 		HungerManager hungerManager = player.getHungerManager();
+
 		for (int damage : new int[]{0, 1, 10, 19}) {
 			hungerManager.add(-hungerManager.getFoodLevel(), 0.5f);
 			ItemStack foodStack = DAMAGE.getDefaultStack();
@@ -45,12 +63,13 @@ public final class FoodGameTest implements FabricGameTest, ModInitializer {
 			float satExpect = Math.min(foodExpect, fc.getHunger() * fc.getSaturationModifier() * 2);
 			context.assertTrue(satActual == satExpect, "damage=%d, sat actual %f, expect %f".formatted(damage, satActual, satExpect));
 		}
+
 		context.complete();
 	}
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void nameFoodTest(TestContext context) {
-		var player = context.createMockSurvivalPlayer();
+		PlayerEntity player = context.createMockSurvivalPlayer();
 		HungerManager hungerManager = player.getHungerManager();
 		hungerManager.add(-hungerManager.getFoodLevel(), 0.5f);
 		ItemStack foodStack = NAME.getDefaultStack();
@@ -68,7 +87,7 @@ public final class FoodGameTest implements FabricGameTest, ModInitializer {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void nameMeatTest(TestContext context) {
-		var player = context.createMockSurvivalPlayer();
+		PlayerEntity player = context.createMockSurvivalPlayer();
 		WolfEntity wolf = context.spawnEntity(EntityType.WOLF, context.getRelative(Vec3d.ZERO));
 		wolf.setTamed(true);
 		wolf.setOwner(player);
@@ -84,12 +103,14 @@ public final class FoodGameTest implements FabricGameTest, ModInitializer {
 
 	//@GameTest(templateName = EMPTY_STRUCTURE)
 	public void giveItems(TestContext context) {
-		var player = context.getWorld().getPlayers().get(0);
+		PlayerEntity player = context.getWorld().getPlayers().get(0);
+
 		for (int damage : new int[]{0, 1, 10, 19}) {
 			ItemStack foodStack = DAMAGE.getDefaultStack();
 			foodStack.setDamage(damage);
 			player.getInventory().offerOrDrop(foodStack);
 		}
+
 		ItemStack apple = NAME.getDefaultStack();
 		apple.setCustomName(Text.literal("enchanted_golden_apple"));
 		player.getInventory().offerOrDrop(apple);
@@ -101,11 +122,9 @@ public final class FoodGameTest implements FabricGameTest, ModInitializer {
 
 	@Override
 	public void onInitialize() {
-
 	}
 
 	public static class DamageFood extends Item {
-
 		public DamageFood(Settings settings) {
 			super(settings);
 		}
@@ -120,7 +139,6 @@ public final class FoodGameTest implements FabricGameTest, ModInitializer {
 	}
 
 	public static class NameFood extends Item {
-
 		public NameFood(Settings settings) {
 			super(settings);
 		}

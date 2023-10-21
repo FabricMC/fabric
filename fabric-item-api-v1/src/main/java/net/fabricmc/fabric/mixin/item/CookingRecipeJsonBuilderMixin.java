@@ -21,9 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.data.server.recipe.CookingRecipeJsonBuilder;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemUsageContext;
 
 @Mixin(CookingRecipeJsonBuilder.class)
 class CookingRecipeJsonBuilderMixin {

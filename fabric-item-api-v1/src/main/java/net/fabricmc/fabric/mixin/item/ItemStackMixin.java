@@ -107,5 +107,4 @@ public abstract class ItemStackMixin implements FabricItemStack {
 	public void isStackAwareFood(CallbackInfoReturnable<Boolean> cir) {
 		cir.setReturnValue(this.getFoodComponent() != null);
 	}
-
 }
