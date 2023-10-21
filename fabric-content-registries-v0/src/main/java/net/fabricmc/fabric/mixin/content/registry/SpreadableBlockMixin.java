@@ -43,9 +43,13 @@ public class SpreadableBlockMixin extends SnowyBlock {
 
 	@Shadow
 	private static boolean canSpread(BlockState state, WorldView world, BlockPos pos) {
-		return false;
+		throw new AssertionError("mixin");
 	}
 
+	/*
+	 * Inject in the for loop just after picking a random adjacent block to attempt to spread to.
+	 * Shift by 2 so the target block is available as a local variable.
+	 */
 	@Inject(
 			method = "randomTick",
 			at = @At(
@@ -61,6 +65,8 @@ public class SpreadableBlockMixin extends SnowyBlock {
 		if (spreadableRegistry != null) {
 			BlockState newState = spreadableRegistry.get(world.getBlockState(targetPos));
 
+			// The throw above confuses IDEA about the result of this if statement.
+			//noinspection ConstantConditions
 			if (newState != null && canSpread(newState, world, targetPos)) {
 				if (newState.contains(SNOWY)) {
 					newState = newState.with(SNOWY, world.getBlockState(targetPos.up()).isOf(Blocks.SNOW));

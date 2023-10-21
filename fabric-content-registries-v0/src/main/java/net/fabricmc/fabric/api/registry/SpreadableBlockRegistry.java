@@ -27,11 +27,11 @@ import net.fabricmc.fabric.api.util.Block2ObjectMap;
 import net.fabricmc.fabric.impl.content.registry.SpreadableBlockRegistryImpl;
 
 /**
- * Registries of blocks to block states, defining the block state to replace a
- * block with when a particular type of other block spreads to it.
+ * Registries of Blocks to BlockStates, defining the spreadable BlockState to replace
+ * a bare Block with when a particular type of spreadable Block spreads to the bare black.
  *
- * <p>For example, to get the registry for Mycelium block spread
- * and then register a modded block pair:
+ * <p>For example, to get the registry for Mycelium block spread and then register
+ * a modded block pair where Mycelium spreading to MY_DIRT generates MY_MYCELIUM:
  *
  * <pre>{@code
  * SpreadableBlockRegistry.getOrCreateInstance(SpreadableBlockRegistry.MYCELIUM)
@@ -63,6 +63,9 @@ public interface SpreadableBlockRegistry extends Block2ObjectMap<BlockState> {
 	/**
 	 * Gets the spreadable block state (if any) for a given bare block state.
 	 *
+	 * <p>For example, the GRASS registry should return the modded grass block state
+	 * when queried with the corresponding registered modded dirt block state.
+	 *
 	 * @param bareBlockState The bare block state to search the registry for
 	 * @return The replacement spreadable block state for this registry, if any
 	 */
@@ -71,6 +74,9 @@ public interface SpreadableBlockRegistry extends Block2ObjectMap<BlockState> {
 	/**
 	 * Gets the spreadable block state (if any) for a given bare block.
 	 *
+	 * <p>For example, the GRASS registry should return the modded grass block
+	 * state when queried with the corresponding registered modded dirt block.
+	 *
 	 * @param bareBlock The bare block to search the registry for
 	 * @return The replacement spreadable block state for this registry, if any
 	 */
@@ -78,6 +84,9 @@ public interface SpreadableBlockRegistry extends Block2ObjectMap<BlockState> {
 
 	/**
 	 * Adds a registry entry to this registry for the given bare block to spreadable block conversion.
+	 *
+	 * <p>For example, a mod adding a custom dirt type would register its modded dirt block and
+	 * the corresponding modded grass block state to the GRASS registry.
 	 *
 	 * @param bareBlock The bare block which can be converted to this type of spreadable block
 	 * @param spreadBlock The spreadable block state which will replace the bare block

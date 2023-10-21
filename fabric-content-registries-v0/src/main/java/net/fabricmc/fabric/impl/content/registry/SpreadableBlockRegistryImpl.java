@@ -54,16 +54,12 @@ public final class SpreadableBlockRegistryImpl implements SpreadableBlockRegistr
 		return REGISTRIES.computeIfAbsent(type, SpreadableBlockRegistryImpl::new);
 	}
 
-	public static @Nullable SpreadableBlockRegistry getInstanceBySpreadable(@Nullable BlockState blockState) {
-		if (blockState == null) {
-			return null;
-		}
-
+	public static @Nullable SpreadableBlockRegistry getInstanceBySpreadable(BlockState blockState) {
 		return getInstanceBySpreadable(blockState.getBlock());
 	}
 
-	public static @Nullable SpreadableBlockRegistry getInstanceBySpreadable(@Nullable Block block) {
-		if (block == null || !SPREADABLE_TYPE.containsKey(block)) {
+	public static @Nullable SpreadableBlockRegistry getInstanceBySpreadable(Block block) {
+		if (!SPREADABLE_TYPE.containsKey(block)) {
 			return null;
 		}
 
