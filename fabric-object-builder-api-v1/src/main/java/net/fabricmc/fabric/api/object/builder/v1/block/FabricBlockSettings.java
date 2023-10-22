@@ -69,10 +69,18 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		thisAccessor.setDynamicBounds(otherAccessor.getDynamicBounds());
 		thisAccessor.setOpaque(otherAccessor.getOpaque());
 		thisAccessor.setIsAir(otherAccessor.getIsAir());
+		thisAccessor.setBurnable(otherAccessor.getBurnable());
+		thisAccessor.setLiquid(otherAccessor.getLiquid());
+		thisAccessor.setForceNotSolid(otherAccessor.getForceNotSolid());
+		thisAccessor.setForceSolid(otherAccessor.getForceSolid());
+		this.pistonBehavior(otherAccessor.getPistonBehavior());
 		thisAccessor.setToolRequired(otherAccessor.isToolRequired());
 		thisAccessor.setOffsetter(otherAccessor.getOffsetter());
 		thisAccessor.setBlockBreakParticles(otherAccessor.getBlockBreakParticles());
 		thisAccessor.setRequiredFeatures(otherAccessor.getRequiredFeatures());
+		this.emissiveLighting(otherAccessor.getEmissiveLightingPredicate());
+		this.instrument(otherAccessor.getInstrument());
+		thisAccessor.setReplaceable(otherAccessor.getReplaceable());
 
 		// Not copied in vanilla: field definition order
 		this.jumpVelocityMultiplier(otherAccessor.getJumpVelocityMultiplier());
@@ -82,7 +90,6 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		this.suffocates(otherAccessor.getSuffocationPredicate());
 		this.blockVision(otherAccessor.getBlockVisionPredicate());
 		this.postProcess(otherAccessor.getPostProcessPredicate());
-		this.emissiveLighting(otherAccessor.getEmissiveLightingPredicate());
 	}
 
 	public static FabricBlockSettings create() {
