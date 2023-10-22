@@ -26,6 +26,8 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MapColor;
+import net.minecraft.block.enums.Instrument;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.EntityType;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.sound.BlockSoundGroup;
@@ -106,6 +108,27 @@ public interface AbstractBlockSettingsAccessor {
 	@Accessor
 	FeatureSet getRequiredFeatures();
 
+	@Accessor
+	boolean getBurnable();
+
+	@Accessor
+	boolean getLiquid();
+
+	@Accessor
+	boolean getForceNotSolid();
+
+	@Accessor
+	boolean getForceSolid();
+
+	@Accessor
+	PistonBehavior getPistonBehavior();
+
+	@Accessor
+	Instrument getInstrument();
+
+	@Accessor
+	boolean getReplaceable();
+
 	/* SETTERS */
 	@Accessor
 	void setCollidable(boolean collidable);
@@ -139,4 +162,19 @@ public interface AbstractBlockSettingsAccessor {
 
 	@Accessor
 	void setOffsetter(Optional<AbstractBlock.Offsetter> offsetter);
+
+	@Accessor
+	void setBurnable(boolean burnable);
+
+	@Accessor
+	void setLiquid(boolean liquid);
+
+	@Accessor
+	void setForceNotSolid(boolean forceNotSolid);
+
+	@Accessor
+	void setForceSolid(boolean forceSolid);
+
+	@Accessor
+	void setReplaceable(boolean replaceable);
 }
