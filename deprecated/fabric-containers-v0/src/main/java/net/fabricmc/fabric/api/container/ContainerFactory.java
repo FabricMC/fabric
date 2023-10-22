@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.api.container;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Identifier;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 
 /**
  * @deprecated Use {@link net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry.ExtendedClientHandlerFactory} instead.

@@ -22,8 +22,8 @@ import java.util.List;
 import org.slf4j.Logger;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.api.ModInitializer;

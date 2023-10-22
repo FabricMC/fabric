@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.event.registry;
 
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.registry.sync.ListenableRegistry;

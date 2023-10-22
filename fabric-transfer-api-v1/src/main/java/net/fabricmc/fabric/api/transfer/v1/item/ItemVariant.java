@@ -26,8 +26,8 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
-import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
+import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 
 /**
  * An immutable count-less ItemStack, i.e. an immutable association of an item and an optional NBT compound tag.

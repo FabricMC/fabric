@@ -28,9 +28,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.registry.Registries;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
