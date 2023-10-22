@@ -29,11 +29,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.util.ApiServices;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.Main;
 import net.minecraft.server.dedicated.EulaReader;
 import net.minecraft.server.dedicated.ServerPropertiesLoader;
+import net.minecraft.util.ApiServices;
 import net.minecraft.world.level.storage.LevelStorage;
 import net.minecraft.world.level.storage.LevelSummary;
 

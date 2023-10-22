@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.client.model;
 
+import net.minecraft.client.item.ClampedModelPredicateProvider;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
-import net.minecraft.client.item.ClampedModelPredicateProvider;
 
 import net.fabricmc.fabric.mixin.object.builder.client.ModelPredicateProviderRegistryAccessor;
 import net.fabricmc.fabric.mixin.object.builder.client.ModelPredicateProviderRegistrySpecificAccessor;

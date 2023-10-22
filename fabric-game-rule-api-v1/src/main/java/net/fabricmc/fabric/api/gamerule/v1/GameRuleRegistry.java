@@ -74,4 +74,3 @@ public final class GameRuleRegistry {
 		return GameRulesAccessor.getRuleTypes().keySet().stream().anyMatch(key -> key.getName().equals(ruleName));
 	}
 }
-

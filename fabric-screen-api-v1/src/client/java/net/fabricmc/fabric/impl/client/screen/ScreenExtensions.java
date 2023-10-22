@@ -77,4 +77,3 @@ public interface ScreenExtensions {
 
 	Event<ScreenMouseEvents.AfterMouseScroll> fabric_getAfterMouseScrollEvent();
 }
-

@@ -23,8 +23,8 @@ import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.network.PacketCallbacks;
+import net.minecraft.network.packet.Packet;
 
 /**
  * We still need to support {@link GenericFutureListener} so we use this disguise impl {@link PacketCallbacks}
