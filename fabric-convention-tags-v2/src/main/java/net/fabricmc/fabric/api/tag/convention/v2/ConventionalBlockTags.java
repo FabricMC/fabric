@@ -102,6 +102,7 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> WHITE_DYED = register("dyed/white");
 	public static final TagKey<Block> YELLOW_DYED = register("dyed/yellow");
 
+	// Blocks that are for storing resources
 	/**
 	 * A storage block is generally a block that has a recipe to craft a bulk of 1 kind of resource to a block
 	 * and has a mirror recipe to reverse the crafting with no loss in resources.
@@ -127,6 +128,7 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> STORAGE_BLOCKS_SLIME = register("storage_blocks/slime");
 	public static final TagKey<Block> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
 
+	// Misc
 	/**
 	 * Blocks should be included in this tag if their movement/relocation can cause serious issues such
 	 * as world corruption upon being moved or for balance reason where the block should not be able to be relocated.
@@ -134,6 +136,10 @@ public final class ConventionalBlockTags {
 	 * {@link AbstractBlock.AbstractBlockState#getPistonBehavior}.
 	 */
 	public static final TagKey<Block> RELOCATION_NOT_SUPPORTED = register("relocation_not_supported");
+	/**
+	 * Tag that holds all head based blocks such as Skeleton Skull or Player Head.
+	 */
+	public static final TagKey<Block> HEADS = register("heads");
 
 	private static TagKey<Block> register(String tagId) {
 		return TagRegistration.BLOCK_TAG.registerC(tagId);

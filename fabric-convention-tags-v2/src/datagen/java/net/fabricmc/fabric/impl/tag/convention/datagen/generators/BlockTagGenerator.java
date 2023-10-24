@@ -112,6 +112,8 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 		generateStorageTags();
 
+		generateHeadTags();
+
 		generateBackwardsCompatTags();
 	}
 
@@ -407,6 +409,24 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT)
 				.add(Blocks.HAY_BLOCK);
+	}
+
+	private void generateHeadTags() {
+		getOrCreateTagBuilder(ConventionalBlockTags.HEADS)
+				.add(Blocks.SKELETON_SKULL)
+				.add(Blocks.SKELETON_WALL_SKULL)
+				.add(Blocks.WITHER_SKELETON_SKULL)
+				.add(Blocks.WITHER_SKELETON_WALL_SKULL)
+				.add(Blocks.PLAYER_HEAD)
+				.add(Blocks.PLAYER_WALL_HEAD)
+				.add(Blocks.ZOMBIE_HEAD)
+				.add(Blocks.ZOMBIE_WALL_HEAD)
+				.add(Blocks.CREEPER_HEAD)
+				.add(Blocks.CREEPER_WALL_HEAD)
+				.add(Blocks.PIGLIN_HEAD)
+				.add(Blocks.PIGLIN_WALL_HEAD)
+				.add(Blocks.DRAGON_HEAD)
+				.add(Blocks.DRAGON_WALL_HEAD);
 	}
 
 	private void generateBackwardsCompatTags() {

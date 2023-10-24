@@ -219,6 +219,14 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> WOODEN_RODS = register("rods/wooden");
 	public static final TagKey<Item> BLAZE_RODS = register("rods/blaze");
+	/**
+	 * Tag that holds all head based blocks such as Skeleton Skull or Player Head.
+	 * <p></p>
+	 * Note: If you don't want Player Head in recipe, use custom ingredients to do tag exclusions to exclude Player Head.
+	 * See {@link net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients}
+	 * children classes for various custom ingredients available that can also be used in data generation.
+	 */
+	public static final TagKey<Item> HEADS = register("heads");
 
 	private static TagKey<Item> register(String tagId) {
 		return TagRegistration.ITEM_TAG.registerC(tagId);

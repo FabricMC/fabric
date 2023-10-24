@@ -324,6 +324,14 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.RODS)
 				.addOptionalTag(ConventionalItemTags.WOODEN_RODS)
 				.addOptionalTag(ConventionalItemTags.BLAZE_RODS);
+		getOrCreateTagBuilder(ConventionalItemTags.HEADS)
+				.add(Items.SKELETON_SKULL)
+				.add(Items.WITHER_SKELETON_SKULL)
+				.add(Items.PLAYER_HEAD)
+				.add(Items.ZOMBIE_HEAD)
+				.add(Items.CREEPER_HEAD)
+				.add(Items.PIGLIN_HEAD)
+				.add(Items.DRAGON_HEAD);
 	}
 
 	private void generateDyedTags() {
