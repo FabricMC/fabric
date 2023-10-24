@@ -56,9 +56,6 @@ public class CustomIngredientImpl extends Ingredient {
 			serializer -> DataResult.success(serializer.getIdentifier())
 	);
 
-	public static final Codec<CustomIngredient> ALLOW_EMPTY_INGREDIENT_CODECS = CODEC.dispatch(TYPE_KEY, CustomIngredient::getSerializer, serializer -> serializer.getCodec(true));
-	public static final Codec<CustomIngredient> DISALLOW_EMPTY_INGREDIENT_CODECS = CODEC.dispatch(TYPE_KEY, CustomIngredient::getSerializer, serializer -> serializer.getCodec(false));
-
 	public static void registerSerializer(CustomIngredientSerializer<?> serializer) {
 		Objects.requireNonNull(serializer.getIdentifier(), "CustomIngredientSerializer identifier may not be null.");
 
