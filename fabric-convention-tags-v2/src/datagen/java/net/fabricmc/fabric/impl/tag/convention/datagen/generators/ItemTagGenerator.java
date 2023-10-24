@@ -255,6 +255,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.TOOLS)
 				.addOptionalTag(ConventionalItemTags.BOWS_TOOLS)
 				.addOptionalTag(ConventionalItemTags.CROSSBOWS_TOOLS)
+				.addOptionalTag(ConventionalItemTags.BRUSHES_TOOLS)
 				.addOptionalTag(ConventionalItemTags.FISHING_RODS_TOOLS)
 				.addOptionalTag(ConventionalItemTags.SHEARS_TOOLS)
 				.addOptionalTag(ConventionalItemTags.SHIELDS_TOOLS)
@@ -275,6 +276,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.TRIDENT);
 		getOrCreateTagBuilder(ConventionalItemTags.FISHING_RODS_TOOLS)
 				.add(Items.FISHING_ROD);
+		getOrCreateTagBuilder(ConventionalItemTags.BRUSHES_TOOLS)
+				.add(Items.BRUSH);
 
 		getOrCreateTagBuilder(ConventionalItemTags.MINING_TOOLS)
 				.add(Items.WOODEN_PICKAXE)
