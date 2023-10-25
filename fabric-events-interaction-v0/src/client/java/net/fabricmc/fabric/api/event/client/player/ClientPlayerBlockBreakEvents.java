@@ -16,10 +16,7 @@
 
 package net.fabricmc.fabric.api.event.client.player;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -39,9 +36,9 @@ public class ClientPlayerBlockBreakEvents {
 	 * <p>Only called client side.
 	 */
 	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class,
-			(listeners) -> (world, player, pos, state, entity) -> {
+			(listeners) -> (world, player, pos, state) -> {
 				for (After event : listeners) {
-					event.afterBlockBreak(world, player, pos, state, entity);
+					event.afterBlockBreak(world, player, pos, state);
 				}
 			}
 	);
@@ -51,12 +48,11 @@ public class ClientPlayerBlockBreakEvents {
 		/**
 		 * Called after a block is successfully broken.
 		 *
-		 * @param world the world where the block was broken
+		 * @param world  the world where the block was broken
 		 * @param player the player who broke the block
-		 * @param pos the position where the block was broken
-		 * @param state the block state <strong>before</strong> the block was broken
-		 * @param blockEntity the block entity of the broken block, can be {@code null}
+		 * @param pos    the position where the block was broken
+		 * @param state  the block state <strong>before</strong> the block was broken
 		 */
-		void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
+		void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state);
 	}
 }
