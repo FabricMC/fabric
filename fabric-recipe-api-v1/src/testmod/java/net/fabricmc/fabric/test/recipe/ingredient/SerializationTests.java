@@ -74,7 +74,7 @@ public class SerializationTests {
 					{"ingredients":[{"item":"minecraft:stone"}],"fabric:type":"fabric:all"}
 					""".trim();
 
-			var ingredient = DefaultCustomIngredients.all(
+			Ingredient ingredient = DefaultCustomIngredients.all(
 					Ingredient.ofItems(Items.STONE)
 			);
 			JsonElement json = ingredient.toJson(allowEmpty);
@@ -87,6 +87,7 @@ public class SerializationTests {
 			context.assertTrue(deserialized.getCustomIngredient() != null, "Custom ingredient was not deserialized");
 			context.assertTrue(deserialized.getCustomIngredient().getSerializer() == ingredient.getCustomIngredient().getSerializer(), "Serializer did not match");
 		}
+
 		context.complete();
 	}
 }
