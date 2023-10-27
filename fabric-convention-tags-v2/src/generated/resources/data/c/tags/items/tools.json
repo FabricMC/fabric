@@ -2,15 +2,35 @@
   "replace": false,
   "values": [
     {
+      "id": "#minecraft:axes",
+      "required": false
+    },
+    {
+      "id": "#minecraft:hoes",
+      "required": false
+    },
+    {
+      "id": "#minecraft:pickaxes",
+      "required": false
+    },
+    {
+      "id": "#minecraft:shovels",
+      "required": false
+    },
+    {
+      "id": "#minecraft:swords",
+      "required": false
+    },
+    {
       "id": "#c:tools/bows",
       "required": false
     },
     {
-      "id": "#c:tools/crossbows",
+      "id": "#c:tools/brushes",
       "required": false
     },
     {
-      "id": "#c:tools/brushes",
+      "id": "#c:tools/crossbows",
       "required": false
     },
     {

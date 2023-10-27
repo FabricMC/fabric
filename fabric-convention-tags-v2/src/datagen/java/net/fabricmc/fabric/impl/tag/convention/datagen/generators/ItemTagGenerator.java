@@ -253,9 +253,14 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 	private void generateToolTags() {
 		getOrCreateTagBuilder(ConventionalItemTags.TOOLS)
+				.addOptionalTag(ItemTags.AXES)
+				.addOptionalTag(ItemTags.HOES)
+				.addOptionalTag(ItemTags.PICKAXES)
+				.addOptionalTag(ItemTags.SHOVELS)
+				.addOptionalTag(ItemTags.SWORDS)
 				.addOptionalTag(ConventionalItemTags.BOWS_TOOLS)
-				.addOptionalTag(ConventionalItemTags.CROSSBOWS_TOOLS)
 				.addOptionalTag(ConventionalItemTags.BRUSHES_TOOLS)
+				.addOptionalTag(ConventionalItemTags.CROSSBOWS_TOOLS)
 				.addOptionalTag(ConventionalItemTags.FISHING_RODS_TOOLS)
 				.addOptionalTag(ConventionalItemTags.SHEARS_TOOLS)
 				.addOptionalTag(ConventionalItemTags.SHIELDS_TOOLS)
