@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.test.item;
 
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 

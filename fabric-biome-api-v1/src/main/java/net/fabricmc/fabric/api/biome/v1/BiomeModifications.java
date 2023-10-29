@@ -22,9 +22,9 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
@@ -94,4 +94,3 @@ public final class BiomeModifications {
 		return new BiomeModification(id);
 	}
 }
-

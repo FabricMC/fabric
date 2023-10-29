@@ -27,8 +27,8 @@ import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.item.ItemConvertible;
-import net.minecraft.util.collection.IdList;
 import net.minecraft.registry.Registries;
+import net.minecraft.util.collection.IdList;
 
 import net.fabricmc.fabric.impl.client.rendering.ColorProviderRegistryImpl;
 

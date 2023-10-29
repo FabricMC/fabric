@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.registry;
 
 import java.util.Objects;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

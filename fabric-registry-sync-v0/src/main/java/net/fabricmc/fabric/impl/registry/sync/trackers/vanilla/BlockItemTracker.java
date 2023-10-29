@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.registry.sync.trackers.vanilla;
 
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 

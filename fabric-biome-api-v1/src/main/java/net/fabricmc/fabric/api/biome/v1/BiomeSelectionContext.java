@@ -19,10 +19,10 @@ package net.fabricmc.fabric.api.biome.v1;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
