@@ -88,7 +88,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 		try {
 			CompletableFuture<@Nullable PacketByteBuf> future = handler.receive(this.client, this.handler, buf, futureListeners::add);
 			future.thenAccept(result -> {
-				LoginQueryResponseC2SPacket packet = new LoginQueryResponseC2SPacket(queryId, new PacketByteBufLoginQueryResponse(result));
+				LoginQueryResponseC2SPacket packet = new LoginQueryResponseC2SPacket(queryId, result == null ? null : new PacketByteBufLoginQueryResponse(result));
 				GenericFutureListener<? extends Future<? super Void>> listener = null;
 
 				for (GenericFutureListener<? extends Future<? super Void>> each : futureListeners) {
