@@ -113,7 +113,12 @@ public final class DoubleRule extends GameRules.Rule<DoubleRule> implements Vali
 		try {
 			final double d = Double.parseDouble(value);
 
-			return this.inBounds(d);
+			if (!this.inBounds(d)) {
+				return false;
+			}
+
+			this.value = d;
+			return true;
 		} catch (NumberFormatException ignored) {
 			return false;
 		}
