@@ -77,7 +77,7 @@ public abstract class AbstractNetworkAddon<H> {
 
 	private void assertNotReserved(Identifier channel) {
 		if (this.isReservedChannel(channel)) {
-			throw new IllegalArgumentException(String.format("Cannot register handler for reserved channel with name \"%s\"", channel));
+			throw new IllegalArgumentException(String.format("Cannot (un)register handler for reserved channel with name \"%s\"", channel));
 		}
 	}
 

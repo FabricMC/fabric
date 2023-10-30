@@ -209,7 +209,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		assert negotiatedVersion == 1; // We only support version 1 for now
 
 		commonVersion = negotiatedVersion;
-		this.logger.info("Negotiated common packet version {}", commonVersion);
+		this.logger.debug("Negotiated common packet version {}", commonVersion);
 	}
 
 	@Override
