@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.networking.server;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.network.NetworkState;
 import net.minecraft.network.PacketByteBuf;
@@ -52,16 +51,10 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkState.CONFIGURATION);
-
-		// Register global receivers and attach to session
-		this.receiver.startSession(this);
 	}
 
 	@Override
-	public void lateInit() {
-		for (Map.Entry<Identifier, ServerConfigurationNetworking.ConfigurationChannelHandler> entry : this.receiver.getHandlers().entrySet()) {
-			this.registerChannel(entry.getKey(), entry.getValue());
-		}
+	protected void invokeInitEvent() {
 	}
 
 	public void preConfiguration() {
@@ -177,7 +170,6 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	@Override
 	protected void invokeDisconnectEvent() {
 		ServerConfigurationConnectionEvents.DISCONNECT.invoker().onConfigureDisconnect(handler, server);
-		this.receiver.endSession(this);
 	}
 
 	@Override

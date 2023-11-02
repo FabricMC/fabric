@@ -25,7 +25,13 @@ public class PayloadHelper {
 		byteBuf.writeBytes(data.copy());
 	}
 
-	public static PacketByteBuf read(PacketByteBuf byteBuf) {
+	public static PacketByteBuf read(PacketByteBuf byteBuf, int maxSize) {
+		int size = byteBuf.readableBytes();
+
+		if (size < 0 || size > maxSize) {
+			throw new IllegalArgumentException("Payload may not be larger than %d bytes".formatted(maxSize));
+		}
+
 		PacketByteBuf newBuf = PacketByteBufs.create();
 		newBuf.writeBytes(byteBuf.copy());
 		byteBuf.skipBytes(byteBuf.readableBytes());

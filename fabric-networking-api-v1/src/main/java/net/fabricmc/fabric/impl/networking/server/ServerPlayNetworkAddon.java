@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.networking.server;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkState;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.Packet;
@@ -35,31 +35,23 @@ import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
 public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerPlayNetworking.PlayChannelHandler> {
 	private final ServerPlayNetworkHandler handler;
 	private final MinecraftServer server;
 	private boolean sentInitialRegisterPacket;
 
-	public ServerPlayNetworkAddon(ServerPlayNetworkHandler handler, MinecraftServer server) {
-		super(ServerNetworkingImpl.PLAY, ((ServerCommonNetworkHandlerAccessor) handler).getConnection(), "ServerPlayNetworkAddon for " + handler.player.getEntityName());
+	public ServerPlayNetworkAddon(ServerPlayNetworkHandler handler, ClientConnection connection, MinecraftServer server) {
+		super(ServerNetworkingImpl.PLAY, connection, "ServerPlayNetworkAddon for " + handler.player.getEntityName());
 		this.handler = handler;
 		this.server = server;
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkState.PLAY);
-
-		// Register global receivers and attach to session
-		this.receiver.startSession(this);
 	}
 
 	@Override
-	public void lateInit() {
-		for (Map.Entry<Identifier, ServerPlayNetworking.PlayChannelHandler> entry : this.receiver.getHandlers().entrySet()) {
-			this.registerChannel(entry.getKey(), entry.getValue());
-		}
-
+	protected void invokeInitEvent() {
 		ServerPlayConnectionEvents.INIT.invoker().onPlayInit(this.handler, this.server);
 	}
 
@@ -139,7 +131,6 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected void invokeDisconnectEvent() {
 		ServerPlayConnectionEvents.DISCONNECT.invoker().onPlayDisconnect(this.handler, this.server);
-		this.receiver.endSession(this);
 	}
 
 	@Override

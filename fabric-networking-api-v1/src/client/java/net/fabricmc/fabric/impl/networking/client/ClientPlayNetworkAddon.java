@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.networking.client;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
@@ -53,17 +52,10 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkState.PLAY);
-
-		// Register global receivers and attach to session
-		this.receiver.startSession(this);
 	}
 
 	@Override
-	public void lateInit() {
-		for (Map.Entry<Identifier, ClientPlayNetworking.PlayChannelHandler> entry : this.receiver.getHandlers().entrySet()) {
-			this.registerChannel(entry.getKey(), entry.getValue());
-		}
-
+	protected void invokeInitEvent() {
 		ClientPlayConnectionEvents.INIT.invoker().onPlayInit(this.handler, this.client);
 	}
 
@@ -148,7 +140,6 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected void invokeDisconnectEvent() {
 		ClientPlayConnectionEvents.DISCONNECT.invoker().onPlayDisconnect(this.handler, this.client);
-		this.receiver.endSession(this);
 	}
 
 	@Override
