@@ -28,7 +28,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
-import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
@@ -62,16 +61,6 @@ abstract class ClientLoginNetworkHandlerMixin implements NetworkHandlerExtension
 				payload.data().skipBytes(payload.data().readableBytes());
 			}
 		}
-	}
-
-	@Inject(method = "onDisconnected", at = @At("HEAD"))
-	private void invokeLoginDisconnectEvent(Text reason, CallbackInfo ci) {
-		this.addon.handleDisconnect();
-	}
-
-	@Inject(method = "onSuccess", at = @At("HEAD"))
-	private void handleConfigurationTransition(CallbackInfo ci) {
-		addon.handleConfigurationTransition();
 	}
 
 	@Inject(method = "onSuccess", at = @At("TAIL"))

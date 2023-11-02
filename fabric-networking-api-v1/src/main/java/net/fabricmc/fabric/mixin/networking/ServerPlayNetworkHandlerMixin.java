@@ -47,14 +47,9 @@ abstract class ServerPlayNetworkHandlerMixin extends ServerCommonNetworkHandler 
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddon(CallbackInfo ci) {
-		this.addon = new ServerPlayNetworkAddon((ServerPlayNetworkHandler) (Object) this, this.server);
+		this.addon = new ServerPlayNetworkAddon((ServerPlayNetworkHandler) (Object) this, connection, server);
 		// A bit of a hack but it allows the field above to be set in case someone registers handlers during INIT event which refers to said field
 		this.addon.lateInit();
-	}
-
-	@Inject(method = "onDisconnected", at = @At("HEAD"))
-	private void handleDisconnection(Text reason, CallbackInfo ci) {
-		this.addon.handleDisconnect();
 	}
 
 	@Override

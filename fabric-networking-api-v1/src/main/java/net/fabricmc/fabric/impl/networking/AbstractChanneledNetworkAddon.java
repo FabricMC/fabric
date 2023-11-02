@@ -60,8 +60,6 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		this.sendableChannels = Collections.synchronizedSet(new HashSet<>());
 	}
 
-	public abstract void lateInit();
-
 	protected void registerPendingChannels(ChannelInfoHolder holder, NetworkState state) {
 		final Collection<Identifier> pending = holder.getPendingChannelsNames(state);
 
@@ -211,7 +209,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		assert negotiatedVersion == 1; // We only support version 1 for now
 
 		commonVersion = negotiatedVersion;
-		this.logger.info("Negotiated common packet version {}", commonVersion);
+		this.logger.debug("Negotiated common packet version {}", commonVersion);
 	}
 
 	@Override

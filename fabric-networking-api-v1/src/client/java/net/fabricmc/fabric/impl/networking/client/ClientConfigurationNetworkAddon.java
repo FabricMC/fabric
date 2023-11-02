@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.networking.client;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
@@ -51,17 +50,10 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkState.CONFIGURATION);
-
-		// Register global receivers and attach to session
-		this.receiver.startSession(this);
 	}
 
 	@Override
-	public void lateInit() {
-		for (Map.Entry<Identifier, ClientConfigurationNetworking.ConfigurationChannelHandler> entry : this.receiver.getHandlers().entrySet()) {
-			this.registerChannel(entry.getKey(), entry.getValue());
-		}
-
+	protected void invokeInitEvent() {
 		ClientConfigurationConnectionEvents.INIT.invoker().onConfigurationInit(this.handler, this.client);
 	}
 
@@ -153,7 +145,6 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 	@Override
 	protected void invokeDisconnectEvent() {
 		ClientConfigurationConnectionEvents.DISCONNECT.invoker().onConfigurationDisconnect(this.handler, this.client);
-		this.receiver.endSession(this);
 	}
 
 	@Override

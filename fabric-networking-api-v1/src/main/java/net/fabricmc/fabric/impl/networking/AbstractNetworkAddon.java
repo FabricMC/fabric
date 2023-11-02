@@ -52,6 +52,17 @@ public abstract class AbstractNetworkAddon<H> {
 		this.logger = LoggerFactory.getLogger(description);
 	}
 
+	public final void lateInit() {
+		this.receiver.startSession(this);
+		invokeInitEvent();
+	}
+
+	protected abstract void invokeInitEvent();
+
+	public final void endSession() {
+		this.receiver.endSession(this);
+	}
+
 	@Nullable
 	public H getHandler(Identifier channel) {
 		Lock lock = this.lock.readLock();
@@ -64,13 +75,32 @@ public abstract class AbstractNetworkAddon<H> {
 		}
 	}
 
+	private void assertNotReserved(Identifier channel) {
+		if (this.isReservedChannel(channel)) {
+			throw new IllegalArgumentException(String.format("Cannot (un)register handler for reserved channel with name \"%s\"", channel));
+		}
+	}
+
+	public void registerChannels(Map<Identifier, H> map) {
+		Lock lock = this.lock.writeLock();
+		lock.lock();
+
+		try {
+			for (Map.Entry<Identifier, H> entry : map.entrySet()) {
+				assertNotReserved(entry.getKey());
+
+				boolean unique = this.handlers.putIfAbsent(entry.getKey(), entry.getValue()) == null;
+				if (unique) handleRegistration(entry.getKey());
+			}
+		} finally {
+			lock.unlock();
+		}
+	}
+
 	public boolean registerChannel(Identifier channelName, H handler) {
 		Objects.requireNonNull(channelName, "Channel name cannot be null");
 		Objects.requireNonNull(handler, "Packet handler cannot be null");
-
-		if (this.isReservedChannel(channelName)) {
-			throw new IllegalArgumentException(String.format("Cannot register handler for reserved channel with name \"%s\"", channelName));
-		}
+		assertNotReserved(channelName);
 
 		Lock lock = this.lock.writeLock();
 		lock.lock();
@@ -90,10 +120,7 @@ public abstract class AbstractNetworkAddon<H> {
 
 	public H unregisterChannel(Identifier channelName) {
 		Objects.requireNonNull(channelName, "Channel name cannot be null");
-
-		if (this.isReservedChannel(channelName)) {
-			throw new IllegalArgumentException(String.format("Cannot register handler for reserved channel with name \"%s\"", channelName));
-		}
+		assertNotReserved(channelName);
 
 		Lock lock = this.lock.writeLock();
 		lock.lock();
@@ -129,6 +156,7 @@ public abstract class AbstractNetworkAddon<H> {
 	public final void handleDisconnect() {
 		if (disconnected.compareAndSet(false, true)) {
 			invokeDisconnectEvent();
+			endSession();
 		}
 	}
 
