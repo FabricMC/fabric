@@ -23,10 +23,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.ItemStack;
@@ -55,9 +53,6 @@ public class CustomIngredientImpl extends Ingredient {
 					.orElseGet(() -> DataResult.error(() -> "Unknown custom ingredient serializer: " + identifier)),
 			serializer -> DataResult.success(serializer.getIdentifier())
 	);
-
-	public static final Codec<CustomIngredient> ALLOW_EMPTY_INGREDIENT_CODECS = CODEC.dispatch(TYPE_KEY, CustomIngredient::getSerializer, serializer -> serializer.getCodec(true));
-	public static final Codec<CustomIngredient> DISALLOW_EMPTY_INGREDIENT_CODECS = CODEC.dispatch(TYPE_KEY, CustomIngredient::getSerializer, serializer -> serializer.getCodec(false));
 
 	public static void registerSerializer(CustomIngredientSerializer<?> serializer) {
 		Objects.requireNonNull(serializer.getIdentifier(), "CustomIngredientSerializer identifier may not be null.");
@@ -136,34 +131,5 @@ public class CustomIngredientImpl extends Ingredient {
 
 	private <T> T coerceIngredient() {
 		return (T) customIngredient;
-	}
-
-	public static <T> Codec<T> first(Codec<T> first, Codec<T> second) {
-		return new First<>(first, second);
-	}
-
-	// Decode/encode the first codec, if that fails return the result of the second.
-	record First<T>(Codec<T> first, Codec<T> second) implements Codec<T> {
-		@Override
-		public <T1> DataResult<Pair<T, T1>> decode(DynamicOps<T1> ops, T1 input) {
-			DataResult<Pair<T, T1>> firstResult = first.decode(ops, input);
-
-			if (firstResult.result().isPresent()) {
-				return firstResult;
-			}
-
-			return second.decode(ops, input);
-		}
-
-		@Override
-		public <T1> DataResult<T1> encode(T input, DynamicOps<T1> ops, T1 prefix) {
-			DataResult<T1> firstResult = first.encode(input, ops, prefix);
-
-			if (firstResult.result().isPresent()) {
-				return firstResult;
-			}
-
-			return second.encode(input, ops, prefix);
-		}
 	}
 }
