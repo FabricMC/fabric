@@ -12,6 +12,7 @@
     "EntityModelLayersAccessor",
     "EntityModelsMixin",
     "EntityRenderersMixin",
+    "HandledScreenMixin",
     "InGameHudMixin",
     "ItemColorsMixin",
     "LivingEntityRendererAccessor",
