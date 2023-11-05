@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
-
 import java.util.Optional;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,15 +31,17 @@ import net.fabricmc.fabric.impl.client.rendering.tooltip.MultiTooltipData;
 
 @Mixin(HandledScreen.class)
 class HandledScreenMixin {
-	@Redirect(method = "drawMouseoverTooltip",at = @At(value = "INVOKE",target = "Lnet/minecraft/item/ItemStack;getTooltipData()Ljava/util/Optional;"))
-	Optional<TooltipData> addMultiData(ItemStack stack){
-		var original = stack.getTooltipData();
+	@Redirect(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getTooltipData()Ljava/util/Optional;"))
+	Optional<TooltipData> addMultiData(ItemStack stack) {
+		Optional<TooltipData> original = stack.getTooltipData();
 		var mutlidata = new MultiTooltipData(1);
 		original.ifPresent(mutlidata::add);
-		TooltipDataCallback.EVENT.invoker().getTooltipData(stack,mutlidata);
-		if(mutlidata.size() == 0){
+		TooltipDataCallback.EVENT.invoker().getTooltipData(stack, mutlidata);
+
+		if (mutlidata.size() == 0) {
 			return Optional.empty();
 		}
+
 		return Optional.of(mutlidata);
 	}
 }

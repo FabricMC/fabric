@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import net.minecraft.client.item.TooltipData;
 
 /**
- * This class stores multiple TooltipData object to their further mapping to MultiTooltipComponent
+ * This class stores multiple TooltipData object to their further mapping to MultiTooltipComponent.
  */
 public class MultiTooltipData extends ArrayList<TooltipData> implements TooltipData {
 	public MultiTooltipData(int length) {

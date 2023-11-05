@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.rendering.client.tooltip;
 
-
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -26,7 +25,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipDataCallback;
 
-
 public class DurabilityTooltipTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
@@ -35,9 +33,12 @@ public class DurabilityTooltipTest implements ClientModInitializer {
 				tooltipDataList.add(new DamagedItemData(itemStack.getDamage(), itemStack.getMaxDamage()));
 			}
 		});
+
 		TooltipComponentCallback.EVENT.register(data -> {
-			if(data instanceof DamagedItemData damagedItemData)
+			if (data instanceof DamagedItemData damagedItemData) {
 				return new DurabilityModTooltipComponent(damagedItemData);
+			}
+
 			return null;
 		});
 	}
@@ -51,7 +52,7 @@ public class DurabilityTooltipTest implements ClientModInitializer {
 		private static final int GAP = 2;
 		private final DamagedItemData damage;
 
-		public DurabilityModTooltipComponent(DamagedItemData data) {
+		DurabilityModTooltipComponent(DamagedItemData data) {
 			this.damage = data;
 		}
 
@@ -64,13 +65,14 @@ public class DurabilityTooltipTest implements ClientModInitializer {
 		public int getWidth(TextRenderer textRenderer) {
 			return BAR_WIDTH;
 		}
+
 		@Override
 		public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context) {
 			context.getMatrices().push();
-			context.getMatrices().translate(x,y,0);
+			context.getMatrices().translate(x, y, 0);
 			float width = 1-(float) this.damage.durability / this.damage.maxDurability;
-			context.fill(0,0,BAR_WIDTH,BAR_HEIGHT,0xFFFF0000);
-			context.fill(0,0, (int) (BAR_WIDTH*width),BAR_HEIGHT,0xFF00FF00);
+			context.fill(0, 0, BAR_WIDTH, BAR_HEIGHT, 0xFFFF0000);
+			context.fill(0, 0, (int) (BAR_WIDTH * width), BAR_HEIGHT, 0xFF00FF00);
 			context.getMatrices().pop();
 		}
 	}
