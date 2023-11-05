@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.registry;
 
+import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,6 +59,19 @@ public interface SpreadableBlockRegistry extends Block2ObjectMap<BlockState> {
 	 */
 	static SpreadableBlockRegistry getOrCreateInstance(Identifier type) {
 		return SpreadableBlockRegistryImpl.getOrCreateInstance(type);
+	}
+
+	/**
+	 * Gets an immutable copy of the spreadable block types map, which maps the
+	 * canonical or "primary" block of the type to the registry for the type.
+	 *
+	 * <p>For example, this could be used when implementing a custom block which
+	 * becomes whichever spreadable block there is the most of nearby.
+	 *
+	 * @return An immutable copy of the spreadable block types map
+	 */
+	static ImmutableMap<Block, Identifier> getSpreadableTypes() {
+		return SpreadableBlockRegistryImpl.getSpreadableTypes();
 	}
 
 	/**

@@ -21,6 +21,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +67,10 @@ public final class SpreadableBlockRegistryImpl implements SpreadableBlockRegistr
 		return REGISTRIES.get(SPREADABLE_TYPE.get(block));
 	}
 
+	public static ImmutableMap<Block, Identifier> getSpreadableTypes() {
+		return ImmutableMap.copyOf(SPREADABLE_TYPE);
+	}
+
 	private final Identifier registryId;
 	private final Map<Block, BlockState> replacements = new IdentityHashMap<>();
 
@@ -75,6 +80,7 @@ public final class SpreadableBlockRegistryImpl implements SpreadableBlockRegistr
 		this.registryId = id;
 	}
 
+	@Override
 	public @Nullable BlockState get(BlockState bareBlockState) {
 		Objects.requireNonNull(bareBlockState, "bare block cannot be null");
 
