@@ -11,11 +11,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @FunctionalInterface
 public interface TooltipDataCallback {
     /**
-     * Allows registering custom TooltipData object for item.
-     * This allows you to add your own tooltips to existing items
-     * Tooltip data rendering should be registered using TooltipComponentCallback,
-     * otherwise game will crash when trying to map TooltipData to TooltipComponent
-     * If you don't need to add tooltip data to this specific itemStack you can return Optional.empty()
+     * Allows registering custom {@link TooltipData} object for item.
+     * This allows you to add your own tooltips to existing items.
+     * Custom {@code TooltipData} should be registered using {@link TooltipComponentCallback},
+     * otherwise game will crash when trying to map {@code TooltipData} to {@code TooltipComponent}
      */
     public static final Event<TooltipDataCallback> EVENT = EventFactory.createArrayBacked(TooltipDataCallback.class, callbacks -> (itemStack, tooltipDataList) -> {
         //MultiTooltipData tooltipData = new MultiTooltipData(callbacks.length);
