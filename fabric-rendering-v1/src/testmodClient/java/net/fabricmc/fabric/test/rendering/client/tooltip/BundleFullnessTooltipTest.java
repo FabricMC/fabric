@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.rendering.client.tooltip;
 
-
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -32,20 +31,21 @@ public class BundleFullnessTooltipTest implements ClientModInitializer {
 	public void onInitializeClient() {
 		TooltipDataCallback.EVENT.register((itemStack, tooltipDataList) -> {
 			if (itemStack.getItem() instanceof BundleItem bundle) {
-				tooltipDataList.add(0,new BundleCustomTooltipData(BundleItem.getAmountFilled(itemStack)));
+				tooltipDataList.add(0, new BundleCustomTooltipData(BundleItem.getAmountFilled(itemStack)));
 			}
 		});
 		TooltipComponentCallback.EVENT.register(data -> {
-			if(data instanceof BundleCustomTooltipData bundleCustomTooltipData)
+			if (data instanceof BundleCustomTooltipData bundleCustomTooltipData) {
 				return new BundleFullnessTooltipComponent(bundleCustomTooltipData.fullness);
+			}
+
 			return null;
 		});
 	}
 
 	private static class BundleCustomTooltipData implements TooltipData {
 		private final float fullness;
-
-		public BundleCustomTooltipData(float fullness) {
+		BundleCustomTooltipData(float fullness) {
 			this.fullness = fullness;
 		}
 	}
@@ -56,7 +56,7 @@ public class BundleFullnessTooltipTest implements ClientModInitializer {
 		private static final int GAP = 2;
 		private final float fullness;
 
-		public BundleFullnessTooltipComponent(float fullness) {
+		BundleFullnessTooltipComponent(float fullness) {
 			this.fullness = fullness;
 		}
 
@@ -69,12 +69,13 @@ public class BundleFullnessTooltipTest implements ClientModInitializer {
 		public int getWidth(TextRenderer textRenderer) {
 			return BAR_WIDTH;
 		}
+
 		@Override
 		public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context) {
 			context.getMatrices().push();
-			context.getMatrices().translate(x,y,0);
-			context.fill(0,0,BAR_WIDTH,BAR_HEIGHT,0xFF3F007F);
-			context.fill(0,0, (int) (BAR_WIDTH*fullness),BAR_HEIGHT,0xFF7F00FF);
+			context.getMatrices().translate(x, y, 0);
+			context.fill(0, 0, BAR_WIDTH, BAR_HEIGHT, 0xFF3F007F);
+			context.fill(0, 0, (int) (BAR_WIDTH * fullness), BAR_HEIGHT, 0xFF7F00FF);
 			context.getMatrices().pop();
 		}
 	}

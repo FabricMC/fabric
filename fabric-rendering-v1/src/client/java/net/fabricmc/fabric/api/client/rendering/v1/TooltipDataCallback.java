@@ -32,10 +32,9 @@ public interface TooltipDataCallback {
 	 * Custom {@code TooltipData} should be registered using {@link TooltipComponentCallback},
 	 * otherwise game will crash when trying to map {@code TooltipData} to {@code TooltipComponent}
 	 */
-	public static final Event<TooltipDataCallback> EVENT = EventFactory.createArrayBacked(TooltipDataCallback.class, callbacks -> (itemStack, tooltipDataList) -> {
-		//MultiTooltipData tooltipData = new MultiTooltipData(callbacks.length);
-		for(TooltipDataCallback callback : callbacks){
-			callback.getTooltipData(itemStack,tooltipDataList);
+	Event<TooltipDataCallback> EVENT = EventFactory.createArrayBacked(TooltipDataCallback.class, callbacks -> (itemStack, tooltipDataList) -> {
+		for (TooltipDataCallback callback : callbacks) {
+			callback.getTooltipData(itemStack, tooltipDataList);
 		}
 	});
 	void getTooltipData(ItemStack itemStack, List<TooltipData> tooltipDataList);
