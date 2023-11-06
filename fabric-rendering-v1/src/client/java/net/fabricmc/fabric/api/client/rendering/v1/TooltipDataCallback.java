@@ -41,7 +41,7 @@ public interface TooltipDataCallback {
 	});
 
 	/**
-	 * Add your own {@link TooltipData} to passed list if itemStack matches your requirements
+	 * Add your own {@link TooltipData} to passed list if itemStack matches your requirements.
 	 */
 	void appendTooltipData(ItemStack itemStack, List<TooltipData> tooltipDataList);
 }

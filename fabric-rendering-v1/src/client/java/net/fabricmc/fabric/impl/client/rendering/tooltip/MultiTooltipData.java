@@ -16,12 +16,9 @@
 
 package net.fabricmc.fabric.impl.client.rendering.tooltip;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.item.TooltipData;
-
-import javax.tools.Tool;
 
 /**
  * This class stores multiple TooltipData object to their further mapping to MultiTooltipComponent.

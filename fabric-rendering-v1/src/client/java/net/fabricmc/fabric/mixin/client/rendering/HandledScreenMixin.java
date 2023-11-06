@@ -21,7 +21,6 @@ import java.util.Optional;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -36,14 +35,14 @@ class HandledScreenMixin {
 	@Redirect(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getTooltipData()Ljava/util/Optional;"))
 	Optional<TooltipData> addMultiData(ItemStack stack) {
 		Optional<TooltipData> original = stack.getTooltipData();
-		var multidata = new MultiTooltipData(new ArrayList<>());
-		original.ifPresent(multidata.tooltipData()::add);
-		TooltipDataCallback.EVENT.invoker().appendTooltipData(stack, multidata.tooltipData());
+		var multiData = new MultiTooltipData(new ArrayList<>());
+		original.ifPresent(multiData.tooltipData()::add);
+		TooltipDataCallback.EVENT.invoker().appendTooltipData(stack, multiData.tooltipData());
 
-		if (multidata.tooltipData().size() <= 1) {
+		if (multiData.tooltipData().size() <= 1) {
 			return original;
 		}
 
-		return Optional.of(multidata);
+		return Optional.of(multiData);
 	}
 }
