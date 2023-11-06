@@ -39,8 +39,12 @@ class HandledScreenMixin {
 		original.ifPresent(multiData.tooltipData()::add);
 		TooltipDataCallback.EVENT.invoker().appendTooltipData(stack, multiData.tooltipData());
 
-		if (multiData.tooltipData().size() <= 1) {
+		if (multiData.tooltipData().size() == 0) {
 			return original;
+		}
+
+		if (multiData.tooltipData().size() == 1){
+			return Optional.of(multiData.tooltipData().get(0));
 		}
 
 		return Optional.of(multiData);
