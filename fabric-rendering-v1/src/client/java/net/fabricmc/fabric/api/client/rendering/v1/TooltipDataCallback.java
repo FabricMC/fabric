@@ -29,8 +29,9 @@ public interface TooltipDataCallback {
 	/**
 	 * Allows registering custom {@link TooltipData} object for item.
 	 * This allows you to add your own tooltips to existing items.
-	 * Custom {@code TooltipData} should be registered using {@link TooltipComponentCallback},
-	 * otherwise game will crash when trying to map {@code TooltipData} to {@code TooltipComponent}
+	 *
+	 * <p>Custom {@link TooltipData} should be registered using {@link TooltipComponentCallback},
+	 * otherwise game will crash when trying to map {@link TooltipData} to {@link TooltipComponent}.
 	 */
 	Event<TooltipDataCallback> EVENT = EventFactory.createArrayBacked(TooltipDataCallback.class, callbacks -> (itemStack, tooltipDataList) -> {
 		for (TooltipDataCallback callback : callbacks) {
