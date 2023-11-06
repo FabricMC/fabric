@@ -24,7 +24,7 @@ public class MultiTooltipComponentRegister implements ClientModInitializer {
 	public void onInitializeClient() {
 		TooltipComponentCallback.EVENT.register((tooltipData) -> {
 			if (tooltipData instanceof MultiTooltipData multiTooltipData) {
-				return MultiTooltipComponent.of(multiTooltipData);
+				return MultiTooltipComponent.of(multiTooltipData.tooltipData());
 			}
 
 			return null;

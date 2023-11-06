@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * You may obtain a matrixCopy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -36,7 +36,7 @@ public class MultiTooltipComponent implements TooltipComponent {
 	private final int width;
 	private final List<TooltipComponent> components;
 
-	public static MultiTooltipComponent of(MultiTooltipData data) {
+	public static MultiTooltipComponent of(List<TooltipData> data) {
 		var l = new ArrayList<TooltipComponent>(data.size());
 
 		for (TooltipData d : data) {
@@ -72,26 +72,23 @@ public class MultiTooltipComponent implements TooltipComponent {
 
 	@Override
 	public void drawText(TextRenderer textRenderer, int x, int y, Matrix4f matrix, VertexConsumerProvider.Immediate vertexConsumers) {
-		int position = 0;
+		Matrix4f matrixCopy = new Matrix4f(matrix);
 
 		for (TooltipComponent c : components) {
-			matrix.translate(0, position, 0);
-			c.drawText(textRenderer, x, y, matrix, vertexConsumers);
-			matrix.translate(0, -position, 0);
-			position += c.getHeight();
+			c.drawText(textRenderer, x, y, matrixCopy, vertexConsumers);
+			matrixCopy.translate(0, c.getHeight(), 0);
 		}
 	}
 
 	@Override
 	public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context) {
-		int position = 0;
+		context.getMatrices().push();
 
 		for (TooltipComponent c : components) {
-			context.getMatrices().push();
-			context.getMatrices().translate(0, position, 0);
 			c.drawItems(textRenderer, x, y, context);
-			context.getMatrices().pop();
-			position += c.getHeight();
+			context.getMatrices().translate(0, c.getHeight(), 0);
 		}
+
+		context.getMatrices().pop();
 	}
 }
