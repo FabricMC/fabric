@@ -18,25 +18,30 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import java.util.List;
 
+import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.item.TooltipData;
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * Allows registering custom {@link TooltipData} object for item.
+ * This allows you to add your own tooltips to existing items.
+ *
+ * <p>Custom {@link TooltipData} should be registered using {@link TooltipComponentCallback},
+ * otherwise game will crash when trying to map {@link TooltipData} to {@link TooltipComponent}.
+ */
 @FunctionalInterface
 public interface TooltipDataCallback {
-	/**
-	 * Allows registering custom {@link TooltipData} object for item.
-	 * This allows you to add your own tooltips to existing items.
-	 *
-	 * <p>Custom {@link TooltipData} should be registered using {@link TooltipComponentCallback},
-	 * otherwise game will crash when trying to map {@link TooltipData} to {@link TooltipComponent}.
-	 */
 	Event<TooltipDataCallback> EVENT = EventFactory.createArrayBacked(TooltipDataCallback.class, callbacks -> (itemStack, tooltipDataList) -> {
 		for (TooltipDataCallback callback : callbacks) {
-			callback.getTooltipData(itemStack, tooltipDataList);
+			callback.appendTooltipData(itemStack, tooltipDataList);
 		}
 	});
-	void getTooltipData(ItemStack itemStack, List<TooltipData> tooltipDataList);
+
+	/**
+	 * Add your own {@link TooltipData} to passed list if itemStack matches your requirements
+	 */
+	void appendTooltipData(ItemStack itemStack, List<TooltipData> tooltipDataList);
 }
