@@ -29,18 +29,17 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
+import net.fabricmc.fabric.impl.networking.payload.RetainedPayload;
+import net.fabricmc.fabric.impl.networking.payload.TypedPayload;
+import net.fabricmc.fabric.impl.networking.payload.UntypedPayload;
 
 public final class ServerNetworkingImpl {
 	public static final GlobalReceiverRegistry<ServerLoginNetworking.LoginQueryResponseHandler> LOGIN = new GlobalReceiverRegistry<>(NetworkState.LOGIN);
-	public static final GlobalReceiverRegistry<ServerConfigurationNetworking.ConfigurationChannelHandler> CONFIGURATION = new GlobalReceiverRegistry<>(NetworkState.CONFIGURATION);
-	public static final GlobalReceiverRegistry<ServerPlayNetworking.PlayChannelHandler> PLAY = new GlobalReceiverRegistry<>(NetworkState.PLAY);
+	public static final GlobalReceiverRegistry<RetainedPayload.Handler<ServerConfigurationNetworkAddon.Handler>> CONFIGURATION = new GlobalReceiverRegistry<>(NetworkState.CONFIGURATION);
+	public static final GlobalReceiverRegistry<RetainedPayload.Handler<ServerPlayNetworkAddon.Handler>> PLAY = new GlobalReceiverRegistry<>(NetworkState.PLAY);
 
 	public static ServerPlayNetworkAddon getAddon(ServerPlayNetworkHandler handler) {
 		return (ServerPlayNetworkAddon) ((NetworkHandlerExtensions) handler).getAddon();
@@ -55,15 +54,13 @@ public final class ServerNetworkingImpl {
 	}
 
 	public static Packet<ClientCommonPacketListener> createS2CPacket(Identifier channel, PacketByteBuf buf) {
-		return new CustomPayloadS2CPacket(new PacketByteBufPayload(channel, buf));
+		return new CustomPayloadS2CPacket(new UntypedPayload(channel, buf));
 	}
 
 	public static Packet<ClientCommonPacketListener> createS2CPacket(FabricPacket packet) {
 		Objects.requireNonNull(packet, "Packet cannot be null");
 		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
 
-		PacketByteBuf buf = PacketByteBufs.create();
-		packet.write(buf);
-		return createS2CPacket(packet.getType().getId(), buf);
+		return new CustomPayloadS2CPacket(new TypedPayload(packet));
 	}
 }

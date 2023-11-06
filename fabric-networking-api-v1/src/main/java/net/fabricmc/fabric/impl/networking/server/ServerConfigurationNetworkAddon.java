@@ -29,17 +29,18 @@ import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.S2CConfigurationChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
+import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
+import net.fabricmc.fabric.impl.networking.payload.ResolvedPayload;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
-public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetworkAddon<ServerConfigurationNetworking.ConfigurationChannelHandler> {
+public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetworkAddon<ServerConfigurationNetworkAddon.Handler> {
 	private final ServerConfigurationNetworkHandler handler;
 	private final MinecraftServer server;
 	private RegisterState registerState = RegisterState.NOT_SENT;
@@ -83,8 +84,8 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	@Override
-	protected void receiveRegistration(boolean register, PacketByteBuf buf) {
-		super.receiveRegistration(register, buf);
+	protected void receiveRegistration(boolean register, ResolvablePayload resolvable) {
+		super.receiveRegistration(register, resolvable);
 
 		if (register && registerState == RegisterState.SENT) {
 			// We received the registration packet, thus we know this is a modded client, continue with configuration.
@@ -101,19 +102,9 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 		}
 	}
 
-	/**
-	 * Handles an incoming packet.
-	 *
-	 * @param payload the payload to handle
-	 * @return true if the packet has been handled
-	 */
-	public boolean handle(PacketByteBufPayload payload) {
-		return this.handle(payload.id(), payload.data());
-	}
-
 	@Override
-	protected void receive(ServerConfigurationNetworking.ConfigurationChannelHandler handler, PacketByteBuf buf) {
-		handler.receive(this.server, this.handler, buf, this);
+	protected void receive(Handler handler, ResolvedPayload payload) {
+		handler.receive(this.server, this.handler, payload, this);
 	}
 
 	// impl details
@@ -191,5 +182,9 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	public ChannelInfoHolder getChannelInfoHolder() {
 		return (ChannelInfoHolder) ((ServerCommonNetworkHandlerAccessor) handler).getConnection();
+	}
+
+	public interface Handler {
+		void receive(MinecraftServer server, ServerConfigurationNetworkHandler handler, ResolvedPayload payload, PacketSender responseSender);
 	}
 }

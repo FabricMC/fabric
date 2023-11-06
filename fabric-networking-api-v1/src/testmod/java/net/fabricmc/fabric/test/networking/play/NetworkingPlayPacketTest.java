@@ -71,14 +71,9 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("bundled").executes(ctx -> {
-					PacketByteBuf buf1 = PacketByteBufs.create();
-					buf1.writeText(Text.literal("bundled #1"));
-					PacketByteBuf buf2 = PacketByteBufs.create();
-					buf2.writeText(Text.literal("bundled #2"));
-
 					BundleS2CPacket packet = new BundleS2CPacket((List<Packet<ClientPlayPacketListener>>) (Object) List.of(
-							ServerPlayNetworking.createS2CPacket(TEST_CHANNEL, buf1),
-							ServerPlayNetworking.createS2CPacket(TEST_CHANNEL, buf2)));
+							ServerPlayNetworking.createS2CPacket(new OverlayPacket(Text.literal("bundled #1"))),
+							ServerPlayNetworking.createS2CPacket(new OverlayPacket(Text.literal("bundled #2")))));
 					ctx.getSource().getPlayer().networkHandler.sendPacket(packet);
 					return Command.SINGLE_SUCCESS;
 				})));

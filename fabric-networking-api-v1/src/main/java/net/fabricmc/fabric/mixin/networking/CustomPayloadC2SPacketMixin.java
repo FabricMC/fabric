@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -28,21 +26,18 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
-import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.impl.networking.payload.RetainedPayload;
 
 @Mixin(CustomPayloadC2SPacket.class)
 public class CustomPayloadC2SPacketMixin {
-	@Shadow
-	@Final
-	private static int MAX_PAYLOAD_SIZE;
-
 	@Inject(
 			method = "readPayload",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/c2s/common/CustomPayloadC2SPacket;readUnknownPayload(Lnet/minecraft/util/Identifier;Lnet/minecraft/network/PacketByteBuf;)Lnet/minecraft/network/packet/UnknownCustomPayload;"),
 			cancellable = true
 	)
 	private static void readPayload(Identifier id, PacketByteBuf buf, CallbackInfoReturnable<CustomPayload> cir) {
-		cir.setReturnValue(new PacketByteBufPayload(id, PayloadHelper.read(buf, MAX_PAYLOAD_SIZE)));
+		cir.setReturnValue(new RetainedPayload(id, PacketByteBufs.retainedSlice(buf)));
+		buf.skipBytes(buf.readableBytes());
 	}
 }

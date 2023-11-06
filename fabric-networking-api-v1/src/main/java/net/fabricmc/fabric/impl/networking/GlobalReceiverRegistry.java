@@ -86,6 +86,7 @@ public final class GlobalReceiverRegistry<H> {
 		}
 	}
 
+	@Nullable
 	public H unregisterGlobalReceiver(Identifier channelName) {
 		Objects.requireNonNull(channelName, "Channel name cannot be null");
 
