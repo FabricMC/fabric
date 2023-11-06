@@ -44,7 +44,7 @@ public interface FabricItemStack {
 	 * Stack-aware version of {@link Item#getFoodComponent()}.
 	 * See {@link FabricItem#getFoodComponent(ItemStack)} for a more in depth description.
 	 *
-	 * @return this itemStack's {@link FoodComponent}, or {@code null} if none was set.
+	 * @return this item stack's {@link FoodComponent}, or {@code null} if none was set
 	 */
 	default @Nullable FoodComponent getFoodComponent() {
 		return ((ItemStack) this).getItem().getFoodComponent(((ItemStack) this));
