@@ -17,9 +17,9 @@
 package net.fabricmc.fabric.api.event.client.player;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -28,6 +28,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * Contains client side events triggered by block breaking.
  *
  * <p>For preventing block breaking client side and other purposes, see {@link net.fabricmc.fabric.api.event.player.AttackBlockCallback}.
+ * For server side block break events, see {@link net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents}.
  */
 public class ClientPlayerBlockBreakEvents {
 	/**
@@ -53,6 +54,6 @@ public class ClientPlayerBlockBreakEvents {
 		 * @param pos    the position where the block was broken
 		 * @param state  the block state <strong>before</strong> the block was broken
 		 */
-		void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state);
+		void afterBlockBreak(ClientWorld world, ClientPlayerEntity player, BlockPos pos, BlockState state);
 	}
 }

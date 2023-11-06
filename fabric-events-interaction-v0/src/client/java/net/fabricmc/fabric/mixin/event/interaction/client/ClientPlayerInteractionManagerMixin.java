@@ -96,7 +96,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
 
 	@Inject(method = "breakBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBroken(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V"), locals = LocalCapture.CAPTURE_FAILHARD)
 	private void fabric$onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, World world, BlockState blockState) {
-		ClientPlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(world, this.client.player, pos, blockState);
+		ClientPlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(client.world, client.player, pos, blockState);
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;sendSequencedPacket(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/network/SequencedPacketCreator;)V"), method = "interactBlock", cancellable = true)
