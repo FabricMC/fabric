@@ -130,7 +130,7 @@ public interface FabricItem {
 	 * Note that simple food component can also be set via {@link Item.Settings#food(FoodComponent)}.
 	 * If you want to get a food component for a stack, is <b>recommended</b> to use the stack version of this method: {@link FabricItemStack#getFoodComponent()}.
 	 *
-	 * @return this item's {@link FoodComponent}, or {@code null} if none was set.
+	 * @return this item's {@link FoodComponent}, or {@code null} if none was set
 	 */
 	default @Nullable FoodComponent getFoodComponent(ItemStack stack) {
 		return ((Item) this).getFoodComponent();
