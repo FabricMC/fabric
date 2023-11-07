@@ -16,7 +16,25 @@
 
 package net.fabricmc.fabric.impl.networking.payload;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.network.packet.CustomPayload;
 
+import net.fabricmc.fabric.api.networking.v1.PacketType;
+
 public sealed interface ResolvablePayload extends CustomPayload permits ResolvedPayload, RetainedPayload {
+	/**
+	 * Resolve the payload to one of the resolved types.
+	 *
+	 * @return {@link UntypedPayload} if type is {@code null}, {@link TypedPayload} if otherwise.
+	 */
+	ResolvedPayload resolve(@Nullable PacketType<?> type);
+
+	/**
+	 * @param type     the packet type, if it has any
+	 * @param actual   the public handler that exposed to API consumer
+	 * @param internal the internal handler
+	 */
+	record Handler<H>(@Nullable PacketType<?> type, Object actual, H internal) {
+	}
 }

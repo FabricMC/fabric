@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
-import net.fabricmc.fabric.impl.networking.payload.RetainedPayload;
+import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
 import net.fabricmc.fabric.impl.networking.payload.TypedPayload;
 import net.fabricmc.fabric.impl.networking.payload.UntypedPayload;
 
@@ -369,15 +369,15 @@ public final class ClientPlayNetworking {
 	private ClientPlayNetworking() {
 	}
 
-	private static RetainedPayload.Handler<ClientPlayNetworkAddon.Handler> wrapUntyped(PlayChannelHandler actualHandler) {
-		return new RetainedPayload.Handler<>(UntypedPayload.RESOLVER, (client, handler, payload, responseSender) -> {
+	private static ResolvablePayload.Handler<ClientPlayNetworkAddon.Handler> wrapUntyped(PlayChannelHandler actualHandler) {
+		return new ResolvablePayload.Handler<>(null, actualHandler, (client, handler, payload, responseSender) -> {
 			actualHandler.receive(client, handler, ((UntypedPayload) payload).buffer(), responseSender);
-		}, actualHandler);
+		});
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T extends FabricPacket> RetainedPayload.Handler<ClientPlayNetworkAddon.Handler> wrapTyped(PacketType<T> type, PlayPacketHandler<T> actualHandler) {
-		return new RetainedPayload.Handler<>(TypedPayload.resolver(type), (client, handler, payload, responseSender) -> {
+	private static <T extends FabricPacket> ResolvablePayload.Handler<ClientPlayNetworkAddon.Handler> wrapTyped(PacketType<T> type, PlayPacketHandler<T> actualHandler) {
+		return new ResolvablePayload.Handler<>(type, actualHandler, (client, handler, payload, responseSender) -> {
 			T packet = (T) ((TypedPayload) payload).packet();
 
 			if (client.isOnThread()) {
@@ -391,21 +391,21 @@ public final class ClientPlayNetworking {
 					if (handler.getConnection().isOpen()) actualHandler.receive(packet, client.player, responseSender);
 				});
 			}
-		}, actualHandler);
+		});
 	}
 
 	@Nullable
-	private static PlayChannelHandler unwrapUntyped(@Nullable RetainedPayload.Handler<ClientPlayNetworkAddon.Handler> handler) {
+	private static PlayChannelHandler unwrapUntyped(@Nullable ResolvablePayload.Handler<ClientPlayNetworkAddon.Handler> handler) {
 		if (handler == null) return null;
-		if (handler.actualHandler() instanceof PlayChannelHandler actual) return actual;
+		if (handler.actual() instanceof PlayChannelHandler actual) return actual;
 		return null;
 	}
 
 	@Nullable
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	private static <T extends FabricPacket> PlayPacketHandler<T> unwrapTyped(@Nullable RetainedPayload.Handler<ClientPlayNetworkAddon.Handler> handler) {
+	private static <T extends FabricPacket> PlayPacketHandler<T> unwrapTyped(@Nullable ResolvablePayload.Handler<ClientPlayNetworkAddon.Handler> handler) {
 		if (handler == null) return null;
-		if (handler.actualHandler() instanceof PlayPacketHandler actual) return actual;
+		if (handler.actual() instanceof PlayPacketHandler actual) return actual;
 		return null;
 	}
 

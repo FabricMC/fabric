@@ -16,37 +16,39 @@
 
 package net.fabricmc.fabric.impl.networking.payload;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PacketType;
+
 public record RetainedPayload(Identifier id, PacketByteBuf buf) implements ResolvablePayload {
+	@Override
+	public ResolvedPayload resolve(@Nullable PacketType<?> type) {
+		try {
+			if (type == null) {
+				PacketByteBuf copy = PacketByteBufs.create();
+				copy.writeBytes(buf);
+				return new UntypedPayload(this.id, copy);
+			} else {
+				TypedPayload typed = new TypedPayload(type.read(buf));
+				int dangling = buf.readableBytes();
+
+				if (dangling > 0) {
+					throw new IllegalStateException("Found " + dangling + " extra bytes when reading packet " + id);
+				}
+
+				return typed;
+			}
+		} finally {
+			buf.release();
+		}
+	}
+
 	@Override
 	public void write(PacketByteBuf buf) {
 		throw new UnsupportedOperationException("RetainedPayload shouldn't be used to send");
-	}
-
-	public record Handler<H>(Resolver resolver, H handler, Object actualHandler) {
-	}
-
-	@FunctionalInterface
-	public interface Resolver {
-		@Deprecated
-		@SuppressWarnings("DeprecatedIsStillUsed")
-		ResolvedPayload resolve0(RetainedPayload retained);
-
-		default ResolvedPayload resolve(RetainedPayload retained) {
-			try {
-				ResolvedPayload resolved = resolve0(retained);
-				int dangling = retained.buf.readableBytes();
-
-				if (dangling > 0) {
-					throw new IllegalStateException("Found " + dangling + " extra bytes when reading packet " + retained.id);
-				}
-
-				return resolved;
-			} finally {
-				retained.buf.release();
-			}
-		}
 	}
 }

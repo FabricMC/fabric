@@ -34,7 +34,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
-import net.fabricmc.fabric.impl.networking.payload.RetainedPayload;
+import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
 import net.fabricmc.fabric.impl.networking.payload.TypedPayload;
 import net.fabricmc.fabric.impl.networking.payload.UntypedPayload;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonNetworkHandlerAccessor;
@@ -360,15 +360,15 @@ public final class ClientConfigurationNetworking {
 	private ClientConfigurationNetworking() {
 	}
 
-	private static RetainedPayload.Handler<ClientConfigurationNetworkAddon.Handler> wrapUntyped(ConfigurationChannelHandler actualHandler) {
-		return new RetainedPayload.Handler<>(UntypedPayload.RESOLVER, (client, handler, payload, responseSender) -> {
+	private static ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler> wrapUntyped(ConfigurationChannelHandler actualHandler) {
+		return new ResolvablePayload.Handler<>(null, actualHandler, (client, handler, payload, responseSender) -> {
 			actualHandler.receive(client, handler, ((UntypedPayload) payload).buffer(), responseSender);
-		}, actualHandler);
+		});
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T extends FabricPacket> RetainedPayload.Handler<ClientConfigurationNetworkAddon.Handler> wrapTyped(PacketType<T> type, ConfigurationPacketHandler<T> actualHandler) {
-		return new RetainedPayload.Handler<>(TypedPayload.resolver(type), (client, handler, payload, responseSender) -> {
+	private static <T extends FabricPacket> ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler> wrapTyped(PacketType<T> type, ConfigurationPacketHandler<T> actualHandler) {
+		return new ResolvablePayload.Handler<>(type, actualHandler, (client, handler, payload, responseSender) -> {
 			T packet = (T) ((TypedPayload) payload).packet();
 
 			if (client.isOnThread()) {
@@ -384,21 +384,21 @@ public final class ClientConfigurationNetworking {
 					}
 				});
 			}
-		}, actualHandler);
+		});
 	}
 
 	@Nullable
-	private static ConfigurationChannelHandler unwrapUntyped(@Nullable RetainedPayload.Handler<ClientConfigurationNetworkAddon.Handler> handler) {
+	private static ConfigurationChannelHandler unwrapUntyped(@Nullable ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler> handler) {
 		if (handler == null) return null;
-		if (handler.actualHandler() instanceof ConfigurationChannelHandler actual) return actual;
+		if (handler.actual() instanceof ConfigurationChannelHandler actual) return actual;
 		return null;
 	}
 
 	@Nullable
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	private static <T extends FabricPacket> ConfigurationPacketHandler<T> unwrapTyped(@Nullable RetainedPayload.Handler<ClientConfigurationNetworkAddon.Handler> handler) {
+	private static <T extends FabricPacket> ConfigurationPacketHandler<T> unwrapTyped(@Nullable ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler> handler) {
 		if (handler == null) return null;
-		if (handler.actualHandler() instanceof ConfigurationPacketHandler actual) return actual;
+		if (handler.actual() instanceof ConfigurationPacketHandler actual) return actual;
 		return null;
 	}
 

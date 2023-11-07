@@ -16,15 +16,25 @@
 
 package net.fabricmc.fabric.impl.networking.payload;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
 
 public record TypedPayload(FabricPacket packet) implements ResolvedPayload {
-	public static RetainedPayload.Resolver resolver(PacketType<?> type) {
-		return retained -> new TypedPayload(type.read(retained.buf()));
+	@Override
+	public ResolvedPayload resolve(@Nullable PacketType<?> type) {
+		if (type == null) {
+			PacketByteBuf buf = PacketByteBufs.create();
+			write(buf);
+			return new UntypedPayload(packet.getType().getId(), buf);
+		} else {
+			return this;
+		}
 	}
 
 	@Override
