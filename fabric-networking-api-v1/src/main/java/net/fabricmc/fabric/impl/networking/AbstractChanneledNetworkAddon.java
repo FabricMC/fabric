@@ -95,7 +95,6 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 			return false;
 		}
 
-
 		try {
 			ResolvedPayload resolved = resolvable instanceof RetainedPayload retained
 					? handler.resolver().resolve(retained)
