@@ -24,6 +24,8 @@ import java.util.concurrent.CompletableFuture;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementEntry;
@@ -31,11 +33,12 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.data.server.recipe.CraftingRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.RecipeExporter;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -68,9 +71,9 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
 		return new RecipeExporter() {
 			@Override
-			public void accept(RecipeJsonProvider provider) {
-				FabricDataGenHelper.addConditions(provider, conditions);
-				exporter.accept(provider);
+			public void accept(Identifier identifier, Recipe<?> recipe, @Nullable AdvancementEntry advancementEntry) {
+				FabricDataGenHelper.addConditions(recipe, conditions);
+				exporter.accept(identifier, recipe, advancementEntry);
 			}
 
 			@Override
@@ -86,23 +89,21 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 		List<CompletableFuture<?>> list = new ArrayList<>();
 		generate(new RecipeExporter() {
 			@Override
-			public void accept(RecipeJsonProvider provider) {
-				Identifier identifier = getRecipeIdentifier(provider.id());
+			public void accept(Identifier recipeId, Recipe<?> recipe, @Nullable AdvancementEntry advancement) {
+				Identifier identifier = getRecipeIdentifier(recipeId);
 
 				if (!generatedRecipes.add(identifier)) {
 					throw new IllegalStateException("Duplicate recipe " + identifier);
 				}
 
-				JsonObject recipeJson = provider.toJson();
-				ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(provider);
+				JsonObject recipeJson = Util.getResult(Recipe.field_47319.encodeStart(JsonOps.INSTANCE, recipe), IllegalStateException::new).getAsJsonObject();
+				ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(recipe);
 				ConditionJsonProvider.write(recipeJson, conditions);
 
 				list.add(DataProvider.writeToPath(writer, recipeJson, recipesPathResolver.resolveJson(identifier)));
 
-				AdvancementEntry advancement = provider.advancement();
-
 				if (advancement != null) {
-					JsonObject advancementJson = advancement.value().toJson();
+					JsonObject advancementJson = Util.getResult(Advancement.field_47179.encodeStart(JsonOps.INSTANCE, advancement.value()), IllegalStateException::new).getAsJsonObject();
 					ConditionJsonProvider.write(advancementJson, conditions);
 					list.add(DataProvider.writeToPath(writer, advancementJson, advancementsPathResolver.resolveJson(getRecipeIdentifier(advancement.id()))));
 				}

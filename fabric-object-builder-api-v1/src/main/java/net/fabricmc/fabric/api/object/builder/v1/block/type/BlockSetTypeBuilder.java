@@ -31,6 +31,7 @@ import net.minecraft.util.Identifier;
  */
 public final class BlockSetTypeBuilder {
 	private boolean openableByHand = true;
+	private boolean openableByWindCharge = true;
 	private boolean buttonActivatedByArrows = true;
 	private BlockSetType.ActivationRule pressurePlateActivationRule = BlockSetType.ActivationRule.EVERYTHING;
 	private BlockSoundGroup soundGroup = BlockSoundGroup.WOOD;
@@ -52,6 +53,18 @@ public final class BlockSetTypeBuilder {
 	 */
 	public BlockSetTypeBuilder openableByHand(boolean openableByHand) {
 		this.openableByHand = openableByHand;
+		return this;
+	}
+
+	/**
+	 * Sets whether this block set type's door and trapdoor can be opened by wind charge.
+	 *
+	 * <p>Defaults to {@code true}.
+	 *
+	 * @return this builder for chaining
+	 */
+	public BlockSetTypeBuilder openableByWindCharge(boolean openableByWindCharge) {
+		this.openableByWindCharge = openableByWindCharge;
 		return this;
 	}
 
@@ -260,6 +273,6 @@ public final class BlockSetTypeBuilder {
 	 * @return the built {@link BlockSetType}
 	 */
 	public BlockSetType build(Identifier id) {
-		return new BlockSetType(id.toString(), openableByHand, buttonActivatedByArrows, pressurePlateActivationRule, soundGroup, doorCloseSound, doorOpenSound, trapdoorCloseSound, trapdoorOpenSound, pressurePlateClickOffSound, pressurePlateClickOnSound, buttonClickOffSound, buttonClickOnSound);
+		return new BlockSetType(id.toString(), openableByHand, openableByWindCharge, buttonActivatedByArrows, pressurePlateActivationRule, soundGroup, doorCloseSound, doorOpenSound, trapdoorCloseSound, trapdoorOpenSound, pressurePlateClickOffSound, pressurePlateClickOnSound, buttonClickOffSound, buttonClickOnSound);
 	}
 }

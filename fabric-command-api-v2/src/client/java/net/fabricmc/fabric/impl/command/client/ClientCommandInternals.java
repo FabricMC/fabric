@@ -41,7 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.CommandException;
 import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
 
@@ -96,11 +95,7 @@ public final class ClientCommandInternals {
 			LOGGER.warn("Syntax exception for client-sided command '{}'", command, e);
 			commandSource.sendError(getErrorMessage(e));
 			return true;
-		} catch (CommandException e) {
-			LOGGER.warn("Error while executing client-sided command '{}'", command, e);
-			commandSource.sendError(e.getTextMessage());
-			return true;
-		} catch (RuntimeException e) {
+		} catch (Exception e) {
 			LOGGER.warn("Error while executing client-sided command '{}'", command, e);
 			commandSource.sendError(Text.of(e.getMessage()));
 			return true;

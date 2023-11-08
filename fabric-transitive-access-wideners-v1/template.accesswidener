@@ -41,10 +41,6 @@ transitive-accessible method net/minecraft/entity/SpawnRestriction register (Lne
 transitive-accessible method net/minecraft/item/ItemUsageContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
 transitive-accessible method net/minecraft/item/ItemPlacementContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
 
-# Recipe factories
-transitive-accessible class net/minecraft/recipe/CookingRecipeSerializer$RecipeFactory
-transitive-accessible class net/minecraft/recipe/CuttingRecipe$Serializer$RecipeFactory
-
 # Registering custom brewing recipes
 transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerItemRecipe (Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;)V
 transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerPotionType (Lnet/minecraft/item/Item;)V
@@ -125,7 +121,6 @@ transitive-accessible method net/minecraft/entity/damage/DamageSources create (L
 transitive-accessible field net/minecraft/client/MinecraftClient attackCooldown I
 
 # Creating certain types of blocks
-transitive-accessible method net/minecraft/block/Blocks createBambooBlock (Lnet/minecraft/block/MapColor;Lnet/minecraft/block/MapColor;Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/Block;
 transitive-accessible method net/minecraft/block/Blocks createFlowerPotBlock (Lnet/minecraft/block/Block;)Lnet/minecraft/block/Block;
 transitive-accessible method net/minecraft/block/Blocks createLeavesBlock (Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/Block;
 transitive-accessible method net/minecraft/block/Blocks createLogBlock (Lnet/minecraft/block/MapColor;Lnet/minecraft/block/MapColor;)Lnet/minecraft/block/Block;

@@ -24,7 +24,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.registry.Registries;
@@ -127,7 +126,7 @@ public class FabricDimensionTest implements ModInitializer {
 			FabricDimensions.teleport(player, modWorld, target);
 
 			if (player.getWorld() != modWorld) {
-				throw new CommandException(Text.literal("Teleportation failed!"));
+				throw new RuntimeException("Teleportation failed!");
 			}
 
 			modWorld.setBlockState(new BlockPos(0, 100, 0), Blocks.DIAMOND_BLOCK.getDefaultState());

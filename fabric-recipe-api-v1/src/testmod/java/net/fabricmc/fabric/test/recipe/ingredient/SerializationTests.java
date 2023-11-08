@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.recipe.ingredient;
 import java.util.List;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
@@ -77,10 +78,10 @@ public class SerializationTests {
 			Ingredient ingredient = DefaultCustomIngredients.all(
 					Ingredient.ofItems(Items.STONE)
 			);
-			JsonElement json = ingredient.toJson(allowEmpty);
+			Codec<Ingredient> ingredientCodec = allowEmpty ? Ingredient.ALLOW_EMPTY_CODEC : Ingredient.DISALLOW_EMPTY_CODEC;
+			JsonObject json = Util.getResult(ingredientCodec.encodeStart(JsonOps.INSTANCE, ingredient), IllegalStateException::new).getAsJsonObject();
 			context.assertTrue(json.toString().equals(ingredientJson), "Unexpected json: " + json);
 			// Make sure that we can deserialize it
-			Codec<Ingredient> ingredientCodec = allowEmpty ? Ingredient.ALLOW_EMPTY_CODEC : Ingredient.DISALLOW_EMPTY_CODEC;
 			Ingredient deserialized = Util.getResult(
 					ingredientCodec.parse(JsonOps.INSTANCE, json), JsonParseException::new
 			);

@@ -46,10 +46,6 @@ transitive-accessible method net/minecraft/entity/SpawnRestriction register (Lne
 transitive-accessible method net/minecraft/item/ItemUsageContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
 transitive-accessible method net/minecraft/item/ItemPlacementContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
 
-# Recipe factories
-transitive-accessible class net/minecraft/recipe/CookingRecipeSerializer$RecipeFactory
-transitive-accessible class net/minecraft/recipe/CuttingRecipe$Serializer$RecipeFactory
-
 # Registering custom brewing recipes
 transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerItemRecipe (Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;)V
 transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerPotionType (Lnet/minecraft/item/Item;)V
@@ -130,7 +126,6 @@ transitive-accessible method net/minecraft/entity/damage/DamageSources create (L
 transitive-accessible field net/minecraft/client/MinecraftClient attackCooldown I
 
 # Creating certain types of blocks
-transitive-accessible method net/minecraft/block/Blocks createBambooBlock (Lnet/minecraft/block/MapColor;Lnet/minecraft/block/MapColor;Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/Block;
 transitive-accessible method net/minecraft/block/Blocks createFlowerPotBlock (Lnet/minecraft/block/Block;)Lnet/minecraft/block/Block;
 transitive-accessible method net/minecraft/block/Blocks createLeavesBlock (Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/Block;
 transitive-accessible method net/minecraft/block/Blocks createLogBlock (Lnet/minecraft/block/MapColor;Lnet/minecraft/block/MapColor;)Lnet/minecraft/block/Block;
@@ -314,6 +309,7 @@ transitive-accessible field net/minecraft/client/render/RenderPhase GUI_PROGRAM 
 transitive-accessible field net/minecraft/client/render/RenderPhase GUI_OVERLAY_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase GUI_TEXT_HIGHLIGHT_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase GUI_GHOST_RECIPE_OVERLAY_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
+transitive-accessible field net/minecraft/client/render/RenderPhase field_47463 Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase MIPMAP_BLOCK_ATLAS_TEXTURE Lnet/minecraft/client/render/RenderPhase$Texture;
 transitive-accessible field net/minecraft/client/render/RenderPhase BLOCK_ATLAS_TEXTURE Lnet/minecraft/client/render/RenderPhase$Texture;
 transitive-accessible field net/minecraft/client/render/RenderPhase NO_TEXTURE Lnet/minecraft/client/render/RenderPhase$TextureBase;
