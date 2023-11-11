@@ -95,8 +95,15 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> COAL = register("coal");
 
 	// Consumables
-	public static final TagKey<Item> FOODS = register("foods");
 	public static final TagKey<Item> POTIONS = register("potions");
+
+	// Foods
+	public static final TagKey<Item> FOOD = register("food");
+	public static final TagKey<Item> RAW_MEAT_FOOD = register("food/raw_meat");
+	public static final TagKey<Item> COOKED_MEAT_FOOD = register("food/cooked_meat");
+	public static final TagKey<Item> RAW_FISH_FOOD = register("food/raw_fish");
+	public static final TagKey<Item> COOKED_FISH_FOOD = register("food/cooked_fish");
+
 	// Buckets
 	/**
 	 * Does not include entity water buckets.

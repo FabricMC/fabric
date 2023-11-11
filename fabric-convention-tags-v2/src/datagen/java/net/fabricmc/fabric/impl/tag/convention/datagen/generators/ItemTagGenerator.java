@@ -42,6 +42,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		generateBucketTags();
 		generateOreAndRelatedTags();
 		generateConsumableTags();
+		generateFoodTags();
 		generateDyeTags();
 		generateDyedTags();
 		generateVillagerJobSites();
@@ -148,15 +149,46 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateConsumableTags() {
-		Registries.ITEM.forEach(item -> {
-			if (item.getFoodComponent() != null) {
-				getOrCreateTagBuilder(ConventionalItemTags.FOODS).add(item);
-			}
-		});
 		getOrCreateTagBuilder(ConventionalItemTags.POTIONS)
 				.add(Items.POTION)
 				.add(Items.SPLASH_POTION)
 				.add(Items.LINGERING_POTION);
+	}
+
+	private void generateFoodTags() {
+		getOrCreateTagBuilder(ConventionalItemTags.RAW_MEAT_FOOD)
+				.add(Items.BEEF)
+				.add(Items.CHICKEN)
+				.add(Items.RABBIT)
+				.add(Items.MUTTON);
+
+		getOrCreateTagBuilder(ConventionalItemTags.RAW_FISH_FOOD)
+				.add(Items.COD)
+				.add(Items.SALMON)
+				.add(Items.TROPICAL_FISH)
+				.add(Items.PUFFERFISH);
+
+		getOrCreateTagBuilder(ConventionalItemTags.COOKED_MEAT_FOOD)
+				.add(Items.COOKED_BEEF)
+				.add(Items.COOKED_CHICKEN)
+				.add(Items.COOKED_RABBIT)
+				.add(Items.COOKED_MUTTON);
+
+		getOrCreateTagBuilder(ConventionalItemTags.COOKED_FISH_FOOD)
+				.add(Items.COOKED_COD)
+				.add(Items.COOKED_SALMON);
+
+		Registries.ITEM.forEach(item -> {
+			if (item.getFoodComponent() != null) {
+				getOrCreateTagBuilder(ConventionalItemTags.FOOD).add(item);
+			}
+		});
+
+		getOrCreateTagBuilder(ConventionalItemTags.FOOD)
+				.addOptionalTag(ConventionalItemTags.RAW_MEAT_FOOD)
+				.addOptionalTag(ConventionalItemTags.RAW_FISH_FOOD)
+				.addOptionalTag(ConventionalItemTags.COOKED_MEAT_FOOD)
+				.addOptionalTag(ConventionalItemTags.COOKED_FISH_FOOD);
 	}
 
 	private void generateBucketTags() {

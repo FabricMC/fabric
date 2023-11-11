@@ -70,6 +70,7 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS),
 			createMapEntry(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS),
 
+			createMapEntry(ConventionalItemTags.FOODS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.FOOD),
 			createMapEntry(ConventionalItemTags.QUARTZ_ORES, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.QUARTZ_ORES),
 			createMapEntry(ConventionalItemTags.WOODEN_BARRELS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.WOODEN_BARRELS),
 			createMapEntry(ConventionalItemTags.SANDSTONE_BLOCKS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SANDSTONE_BLOCKS),
