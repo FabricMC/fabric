@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
+import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
@@ -178,10 +180,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.COOKED_COD)
 				.add(Items.COOKED_SALMON);
 
-		Registries.ITEM.forEach(item -> {
-			if (item.getFoodComponent() != null) {
-				getOrCreateTagBuilder(ConventionalItemTags.FOOD).add(item);
-			}
+		Registries.ITEM.stream().filter(Item::isFood).sorted(Comparator.comparing(i -> i.getName().getString())).forEach(item -> {
+			getOrCreateTagBuilder(ConventionalItemTags.FOOD).add(item);
 		});
 
 		getOrCreateTagBuilder(ConventionalItemTags.FOOD)
