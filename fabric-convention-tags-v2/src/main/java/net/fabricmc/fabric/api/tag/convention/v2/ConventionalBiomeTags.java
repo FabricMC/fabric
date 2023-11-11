@@ -149,6 +149,13 @@ public final class ConventionalBiomeTags {
 	public static final TagKey<Biome> IS_DEEP_OCEAN = register("is_deep_ocean");
 	public static final TagKey<Biome> IS_SHALLOW_OCEAN = register("is_shallow_ocean");
 
+	/**
+	 * For biomes that should not spawn monsters over time the normal way.
+	 * In other words, their Spawners and Spawn Cost entries have the monster category empty.
+	 * Example: Mushroom Biomes not having Zombies, Creepers, Skeleton, nor any other normal monsters.
+	 */
+	public static final TagKey<Biome> NO_DEFAULT_MONSTERS = register("no_default_monsters");
+
 	private static TagKey<Biome> register(String tagId) {
 		return TagRegistration.BIOME_TAG.registerC(tagId);
 	}

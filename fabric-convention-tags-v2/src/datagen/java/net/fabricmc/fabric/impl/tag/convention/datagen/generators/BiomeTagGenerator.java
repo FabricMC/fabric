@@ -168,6 +168,9 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.FROZEN_OCEAN)
 				.add(BiomeKeys.COLD_OCEAN)
 				.add(BiomeKeys.WARM_OCEAN);
+		getOrCreateTagBuilder(ConventionalBiomeTags.NO_DEFAULT_MONSTERS)
+				.add(BiomeKeys.MUSHROOM_FIELDS)
+				.add(BiomeKeys.DEEP_DARK);
 	}
 
 	private void generateClimateAndVegetationTags() {
