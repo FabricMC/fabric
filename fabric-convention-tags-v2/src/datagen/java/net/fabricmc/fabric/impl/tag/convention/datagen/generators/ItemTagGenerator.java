@@ -180,11 +180,31 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.COOKED_COD)
 				.add(Items.COOKED_SALMON);
 
-		Registries.ITEM.stream().filter(Item::isFood).sorted(Comparator.comparing(i -> i.getName().getString())).forEach(item -> {
-			getOrCreateTagBuilder(ConventionalItemTags.FOOD).add(item);
-		});
-
 		getOrCreateTagBuilder(ConventionalItemTags.FOOD)
+				.add(Items.APPLE)
+				.add(Items.GOLDEN_APPLE)
+				.add(Items.ENCHANTED_GOLDEN_APPLE)
+				.add(Items.CARROT)
+				.add(Items.GOLDEN_CARROT)
+				.add(Items.POTATO)
+				.add(Items.POISONOUS_POTATO)
+				.add(Items.BAKED_POTATO)
+				.add(Items.MELON_SLICE)
+				.add(Items.GLISTERING_MELON_SLICE)
+				.add(Items.PUMPKIN_PIE)
+				.add(Items.SWEET_BERRIES)
+				.add(Items.GLOW_BERRIES)
+				.add(Items.DRIED_KELP)
+				.add(Items.BREAD)
+				.add(Items.COOKIE)
+				.add(Items.BEETROOT)
+				.add(Items.BEETROOT_SOUP)
+				.add(Items.RABBIT_STEW)
+				.add(Items.MUSHROOM_STEW)
+				.add(Items.SUSPICIOUS_STEW)
+				.add(Items.HONEY_BOTTLE)
+				.add(Items.SPIDER_EYE)
+				.add(Items.ROTTEN_FLESH)
 				.addOptionalTag(ConventionalItemTags.RAW_MEAT_FOOD)
 				.addOptionalTag(ConventionalItemTags.RAW_FISH_FOOD)
 				.addOptionalTag(ConventionalItemTags.COOKED_MEAT_FOOD)
