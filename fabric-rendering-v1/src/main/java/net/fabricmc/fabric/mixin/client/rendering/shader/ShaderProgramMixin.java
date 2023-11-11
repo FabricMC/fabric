@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.mixin.client.rendering.shader;
 
-import net.minecraft.client.gl.Program;
-import net.minecraft.client.render.Shader;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,6 +23,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
+import net.minecraft.client.gl.Program;
+import net.minecraft.client.render.Shader;
 import net.minecraft.resource.ResourceFactory;
 import net.minecraft.util.Identifier;
 
