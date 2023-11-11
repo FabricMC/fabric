@@ -40,6 +40,22 @@
     "minecraft:suspicious_stew",
     "minecraft:sweet_berries",
     "minecraft:glow_berries",
-    "minecraft:honey_bottle"
+    "minecraft:honey_bottle",
+    {
+      "id": "#c:food/raw_meat",
+      "required": false
+    },
+    {
+      "id": "#c:food/raw_fish",
+      "required": false
+    },
+    {
+      "id": "#c:food/cooked_meat",
+      "required": false
+    },
+    {
+      "id": "#c:food/cooked_fish",
+      "required": false
+    }
   ]
 }
