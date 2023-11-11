@@ -21,9 +21,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.mojang.datafixers.util.Pair;
-
-import net.minecraft.resource.ResourceManager;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -33,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Shader;
-import net.minecraft.resource.ResourceFactory;
+import net.minecraft.resource.ResourceManager;
 
 import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback;
 import net.fabricmc.fabric.impl.client.rendering.FabricShaderProgram;
