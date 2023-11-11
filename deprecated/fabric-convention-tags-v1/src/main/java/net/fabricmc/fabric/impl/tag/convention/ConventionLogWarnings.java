@@ -167,7 +167,15 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(RegistryKeys.ITEM, "stone", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STONES),
 			createMapEntry(RegistryKeys.ITEM, "string", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STRINGS),
 			createMapEntry(RegistryKeys.ITEM, "sticks", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.WOODEN_RODS),
-			createMapEntry(RegistryKeys.ITEM, "wooden_rods", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.WOODEN_RODS)
+			createMapEntry(RegistryKeys.ITEM, "wooden_rods", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.WOODEN_RODS),
+			createMapEntry(RegistryKeys.ITEM, "raw_meat", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_MEAT_FOOD),
+			createMapEntry(RegistryKeys.ITEM, "raw_meats", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_MEAT_FOOD),
+			createMapEntry(RegistryKeys.ITEM, "raw_fish", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_FISH_FOOD),
+			createMapEntry(RegistryKeys.ITEM, "raw_fishes", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_FISH_FOOD),
+			createMapEntry(RegistryKeys.ITEM, "cooked_meat", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_MEAT_FOOD),
+			createMapEntry(RegistryKeys.ITEM, "cooked_meats", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_MEAT_FOOD),
+			createMapEntry(RegistryKeys.ITEM, "cooked_fish", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_FISH_FOOD),
+			createMapEntry(RegistryKeys.ITEM, "cooked_fishes", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_FISH_FOOD)
 
 	);
 
