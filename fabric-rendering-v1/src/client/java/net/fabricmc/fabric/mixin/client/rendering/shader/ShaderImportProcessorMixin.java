@@ -25,14 +25,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.client.rendering.FabricShaderProgram;
+import net.fabricmc.fabric.impl.client.rendering.FabricShader;
 
 /**
  * Lets modded shaders {@code #moj_import} shaders from any namespace with the
  * {@code <>} syntax.
  */
 @Mixin(targets = "net.minecraft.client.render.Shader$1")
-abstract class ShaderProgramImportProcessorMixin {
+abstract class ShaderImportProcessorMixin {
 	@Unique
 	private String capturedImport;
 
@@ -44,7 +44,7 @@ abstract class ShaderProgramImportProcessorMixin {
 	@ModifyVariable(method = "loadImport", at = @At("STORE"), ordinal = 0, argsOnly = true)
 	private String modifyImportId(String id, boolean inline) {
 		if (!inline && capturedImport.contains(String.valueOf(Identifier.NAMESPACE_SEPARATOR))) {
-			return FabricShaderProgram.rewriteAsId(id, capturedImport);
+			return FabricShader.rewriteAsId(id, capturedImport);
 		}
 
 		return id;

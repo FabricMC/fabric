@@ -23,8 +23,8 @@ import net.minecraft.client.render.VertexFormat;
 import net.minecraft.resource.ResourceFactory;
 import net.minecraft.util.Identifier;
 
-public final class FabricShaderProgram extends Shader {
-	public FabricShaderProgram(ResourceFactory factory, Identifier name, VertexFormat format) throws IOException {
+public final class FabricShader extends Shader {
+	public FabricShader(ResourceFactory factory, Identifier name, VertexFormat format) throws IOException {
 		super(factory, name.toString(), format);
 	}
 
