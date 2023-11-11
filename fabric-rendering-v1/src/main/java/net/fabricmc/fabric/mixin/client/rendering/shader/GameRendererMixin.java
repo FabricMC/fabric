@@ -33,7 +33,7 @@ import net.minecraft.client.render.Shader;
 import net.minecraft.resource.ResourceManager;
 
 import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback;
-import net.fabricmc.fabric.impl.client.rendering.FabricShaderProgram;
+import net.fabricmc.fabric.impl.client.rendering.FabricShader;
 
 /**
  * Implements custom core shader registration (CoreShaderRegistrationCallback).
@@ -48,7 +48,7 @@ abstract class GameRendererMixin {
 	)
 	private void registerShaders(ResourceManager factory, CallbackInfo info, List<?> shaderStages, List<Pair<Shader, Consumer<Shader>>> programs) throws IOException {
 		CoreShaderRegistrationCallback.RegistrationContext context = (id, vertexFormat, loadCallback) -> {
-			Shader program = new FabricShaderProgram(factory, id, vertexFormat);
+			Shader program = new FabricShader(factory, id, vertexFormat);
 			programs.add(Pair.of(program, loadCallback));
 		};
 		CoreShaderRegistrationCallback.EVENT.invoker().registerShaders(context);

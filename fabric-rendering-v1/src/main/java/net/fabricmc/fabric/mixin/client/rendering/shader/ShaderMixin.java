@@ -28,10 +28,10 @@ import net.minecraft.client.render.Shader;
 import net.minecraft.resource.ResourceFactory;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.client.rendering.FabricShaderProgram;
+import net.fabricmc.fabric.impl.client.rendering.FabricShader;
 
 @Mixin(Shader.class)
-abstract class ShaderProgramMixin {
+abstract class ShaderMixin {
 	@Shadow
 	@Final
 	private String name;
@@ -39,8 +39,8 @@ abstract class ShaderProgramMixin {
 	// Allow loading FabricShaderPrograms from arbitrary namespaces.
 	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;<init>(Ljava/lang/String;)V"), allow = 1)
 	private String modifyProgramId(String id) {
-		if ((Object) this instanceof FabricShaderProgram) {
-			return FabricShaderProgram.rewriteAsId(id, name);
+		if ((Object) this instanceof FabricShader) {
+			return FabricShader.rewriteAsId(id, name);
 		}
 
 		return id;
@@ -50,7 +50,7 @@ abstract class ShaderProgramMixin {
 	@ModifyVariable(method = "loadProgram", at = @At("STORE"), ordinal = 1)
 	private static String modifyStageId(String id, ResourceFactory factory, Program.Type type, String name) {
 		if (name.contains(String.valueOf(Identifier.NAMESPACE_SEPARATOR))) {
-			return FabricShaderProgram.rewriteAsId(id, name);
+			return FabricShader.rewriteAsId(id, name);
 		}
 
 		return id;

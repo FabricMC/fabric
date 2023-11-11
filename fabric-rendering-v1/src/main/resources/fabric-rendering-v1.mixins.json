@@ -18,8 +18,8 @@
     "ScreenMixin",
     "DimensionEffectsAccessor",
     "shader.GameRendererMixin",
-    "shader.ShaderProgramImportProcessorMixin",
-    "shader.ShaderProgramMixin"
+    "shader.ShaderImportProcessorMixin",
+    "shader.ShaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1
