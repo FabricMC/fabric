@@ -62,7 +62,8 @@ public class HudAndShaderTest implements ClientModInitializer {
 			buffer.vertex(positionMatrix, x, y + 10, 50).next();
 			buffer.vertex(positionMatrix, x + 10, y + 10, 50).next();
 			buffer.vertex(positionMatrix, x + 10, y, 50).next();
-			BufferRenderer.drawWithShader(buffer.end());
+			buffer.end();
+			BufferRenderer.draw(buffer);
 			// Reset shader color
 			RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		});
