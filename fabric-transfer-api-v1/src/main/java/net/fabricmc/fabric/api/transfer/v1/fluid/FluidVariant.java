@@ -16,6 +16,13 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
+import java.util.Optional;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.registry.Registries;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 

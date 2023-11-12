@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.api.transfer.v1.storage.base;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.ApiStatus;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
 /**
  * An immutable object storing both a resource and an amount, provided for convenience.
@@ -29,7 +32,7 @@ import org.jetbrains.annotations.ApiStatus;
 public record ResourceAmount<T> (T resource, long amount) {
 	public static final Codec<ResourceAmount<FluidVariant>> FLUID_VARIANT_CODEC = RecordCodecBuilder.create(instance ->
 			instance.group(
-				FLUID_VARIANT_CODEC.fieldOf("variant").forGetter(ResourceAmount::resource),
+				FluidVariant.CODEC.fieldOf("variant").forGetter(ResourceAmount::resource),
 				Codec.LONG.fieldOf("amount").forGetter(ResourceAmount::amount)
 		).apply(instance, ResourceAmount::new));
 }
