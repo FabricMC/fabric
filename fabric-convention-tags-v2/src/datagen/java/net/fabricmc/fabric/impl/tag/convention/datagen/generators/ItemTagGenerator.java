@@ -206,6 +206,9 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.RABBIT_STEW)
 				.add(Items.SUSPICIOUS_STEW);
 
+		getOrCreateTagBuilder(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
+				.add(Items.CAKE);
+
 		getOrCreateTagBuilder(ConventionalItemTags.FOODS)
 				.add(Items.BAKED_POTATO)
 				.add(Items.PUMPKIN_PIE)
@@ -222,7 +225,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.RAW_FISHES_FOODS)
 				.addOptionalTag(ConventionalItemTags.COOKED_MEATS_FOODS)
 				.addOptionalTag(ConventionalItemTags.COOKED_FISHES_FOODS)
-				.addOptionalTag(ConventionalItemTags.SOUPS_FOODS);
+				.addOptionalTag(ConventionalItemTags.SOUPS_FOODS)
+				.addOptionalTag(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS);
 	}
 
 	private void generateBucketTags() {
