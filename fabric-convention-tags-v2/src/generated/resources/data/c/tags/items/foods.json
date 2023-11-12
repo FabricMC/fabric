@@ -1,30 +1,32 @@
 {
   "replace": false,
   "values": [
-    "minecraft:apple",
-    "minecraft:golden_apple",
-    "minecraft:enchanted_golden_apple",
-    "minecraft:carrot",
-    "minecraft:golden_carrot",
-    "minecraft:potato",
-    "minecraft:poisonous_potato",
     "minecraft:baked_potato",
-    "minecraft:melon_slice",
-    "minecraft:glistering_melon_slice",
     "minecraft:pumpkin_pie",
-    "minecraft:sweet_berries",
-    "minecraft:glow_berries",
-    "minecraft:dried_kelp",
-    "minecraft:bread",
-    "minecraft:cookie",
-    "minecraft:beetroot",
-    "minecraft:beetroot_soup",
-    "minecraft:rabbit_stew",
-    "minecraft:mushroom_stew",
-    "minecraft:suspicious_stew",
     "minecraft:honey_bottle",
+    "minecraft:dried_kelp",
     "minecraft:spider_eye",
     "minecraft:rotten_flesh",
+    {
+      "id": "#c:foods/fruits",
+      "required": false
+    },
+    {
+      "id": "#c:foods/vegetables",
+      "required": false
+    },
+    {
+      "id": "#c:foods/berries",
+      "required": false
+    },
+    {
+      "id": "#c:foods/breads",
+      "required": false
+    },
+    {
+      "id": "#c:foods/cookies",
+      "required": false
+    },
     {
       "id": "#c:foods/raw_meats",
       "required": false
@@ -39,6 +41,18 @@
     },
     {
       "id": "#c:foods/cooked_fishes",
+      "required": false
+    },
+    {
+      "id": "#c:foods/soups",
+      "required": false
+    },
+    {
+      "id": "#c:foods/candies",
+      "required": false
+    },
+    {
+      "id": "#c:foods/edible_when_placed",
       "required": false
     }
   ]
