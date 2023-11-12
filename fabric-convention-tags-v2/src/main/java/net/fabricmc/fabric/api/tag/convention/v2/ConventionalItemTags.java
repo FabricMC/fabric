@@ -122,6 +122,10 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> SOUPS_FOODS = register("foods/soups");
 	/**
+	 * Sweets and candies like lollipops or chocolate belong in this tag.
+	 */
+	public static final TagKey<Item> CANDIES_FOODS = register("foods/candies");
+	/**
 	 * Foods like cake that can be eaten when placed in the world belong in this tag.
 	 */
 	public static final TagKey<Item> EDIBLE_WHEN_PLACED_FOODS = register("foods/edible_when_placed");

@@ -206,6 +206,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.RABBIT_STEW)
 				.add(Items.SUSPICIOUS_STEW);
 
+		getOrCreateTagBuilder(ConventionalItemTags.CANDIES_FOODS);
+
 		getOrCreateTagBuilder(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
 				.add(Items.CAKE);
 
@@ -226,6 +228,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.COOKED_MEATS_FOODS)
 				.addOptionalTag(ConventionalItemTags.COOKED_FISHES_FOODS)
 				.addOptionalTag(ConventionalItemTags.SOUPS_FOODS)
+				.addOptionalTag(ConventionalItemTags.CANDIES_FOODS)
 				.addOptionalTag(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS);
 	}
 
