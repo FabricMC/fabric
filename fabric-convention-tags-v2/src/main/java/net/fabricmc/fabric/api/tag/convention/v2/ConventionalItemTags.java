@@ -98,11 +98,11 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> POTIONS = register("potions");
 
 	// Foods
-	public static final TagKey<Item> FOOD = register("food");
-	public static final TagKey<Item> RAW_MEAT_FOOD = register("food/raw_meat");
-	public static final TagKey<Item> COOKED_MEAT_FOOD = register("food/cooked_meat");
-	public static final TagKey<Item> RAW_FISH_FOOD = register("food/raw_fish");
-	public static final TagKey<Item> COOKED_FISH_FOOD = register("food/cooked_fish");
+	public static final TagKey<Item> FOODS = register("foods");
+	public static final TagKey<Item> RAW_MEATS_FOODS = register("foods/raw_meats");
+	public static final TagKey<Item> COOKED_MEATS_FOODS = register("foods/cooked_meats");
+	public static final TagKey<Item> RAW_FISHES_FOODS = register("foods/raw_fishes");
+	public static final TagKey<Item> COOKED_FISHES_FOODS = register("foods/cooked_fishes");
 
 	// Buckets
 	/**

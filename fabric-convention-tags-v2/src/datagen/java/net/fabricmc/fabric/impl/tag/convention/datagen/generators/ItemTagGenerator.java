@@ -16,13 +16,10 @@
 
 package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
-import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.Identifier;
@@ -158,29 +155,29 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateFoodTags() {
-		getOrCreateTagBuilder(ConventionalItemTags.RAW_MEAT_FOOD)
+		getOrCreateTagBuilder(ConventionalItemTags.RAW_MEATS_FOODS)
 				.add(Items.BEEF)
 				.add(Items.CHICKEN)
 				.add(Items.RABBIT)
 				.add(Items.MUTTON);
 
-		getOrCreateTagBuilder(ConventionalItemTags.RAW_FISH_FOOD)
+		getOrCreateTagBuilder(ConventionalItemTags.RAW_FISHES_FOODS)
 				.add(Items.COD)
 				.add(Items.SALMON)
 				.add(Items.TROPICAL_FISH)
 				.add(Items.PUFFERFISH);
 
-		getOrCreateTagBuilder(ConventionalItemTags.COOKED_MEAT_FOOD)
+		getOrCreateTagBuilder(ConventionalItemTags.COOKED_MEATS_FOODS)
 				.add(Items.COOKED_BEEF)
 				.add(Items.COOKED_CHICKEN)
 				.add(Items.COOKED_RABBIT)
 				.add(Items.COOKED_MUTTON);
 
-		getOrCreateTagBuilder(ConventionalItemTags.COOKED_FISH_FOOD)
+		getOrCreateTagBuilder(ConventionalItemTags.COOKED_FISHES_FOODS)
 				.add(Items.COOKED_COD)
 				.add(Items.COOKED_SALMON);
 
-		getOrCreateTagBuilder(ConventionalItemTags.FOOD)
+		getOrCreateTagBuilder(ConventionalItemTags.FOODS)
 				.add(Items.APPLE)
 				.add(Items.GOLDEN_APPLE)
 				.add(Items.ENCHANTED_GOLDEN_APPLE)
@@ -205,10 +202,10 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.HONEY_BOTTLE)
 				.add(Items.SPIDER_EYE)
 				.add(Items.ROTTEN_FLESH)
-				.addOptionalTag(ConventionalItemTags.RAW_MEAT_FOOD)
-				.addOptionalTag(ConventionalItemTags.RAW_FISH_FOOD)
-				.addOptionalTag(ConventionalItemTags.COOKED_MEAT_FOOD)
-				.addOptionalTag(ConventionalItemTags.COOKED_FISH_FOOD);
+				.addOptionalTag(ConventionalItemTags.RAW_MEATS_FOODS)
+				.addOptionalTag(ConventionalItemTags.RAW_FISHES_FOODS)
+				.addOptionalTag(ConventionalItemTags.COOKED_MEATS_FOODS)
+				.addOptionalTag(ConventionalItemTags.COOKED_FISHES_FOODS);
 	}
 
 	private void generateBucketTags() {

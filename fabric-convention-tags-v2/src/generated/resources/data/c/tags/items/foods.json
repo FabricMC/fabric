@@ -26,19 +26,19 @@
     "minecraft:spider_eye",
     "minecraft:rotten_flesh",
     {
-      "id": "#c:food/raw_meat",
+      "id": "#c:foods/raw_meats",
       "required": false
     },
     {
-      "id": "#c:food/raw_fish",
+      "id": "#c:foods/raw_fishes",
       "required": false
     },
     {
-      "id": "#c:food/cooked_meat",
+      "id": "#c:foods/cooked_meats",
       "required": false
     },
     {
-      "id": "#c:food/cooked_fish",
+      "id": "#c:foods/cooked_fishes",
       "required": false
     }
   ]
