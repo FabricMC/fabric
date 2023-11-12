@@ -27,4 +27,9 @@ import org.jetbrains.annotations.ApiStatus;
  */
 @ApiStatus.Experimental
 public record ResourceAmount<T> (T resource, long amount) {
+	public static final Codec<ResourceAmount<FluidVariant>> FLUID_VARIANT_CODEC = RecordCodecBuilder.create(instance ->
+			instance.group(
+				FLUID_VARIANT_CODEC.fieldOf("variant").forGetter(ResourceAmount::resource),
+				Codec.LONG.fieldOf("amount").forGetter(ResourceAmount::amount)
+		).apply(instance, ResourceAmount::new));
 }

@@ -43,6 +43,12 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 @ApiStatus.Experimental
 @ApiStatus.NonExtendable
 public interface FluidVariant extends TransferVariant<Fluid> {
+	public static final Codec<FluidVariant> CODEC = RecordCodecBuilder.create(instance ->
+			instance.group(
+				Registries.FLUID.getCodec().fieldOf("fluid").forGetter(FluidVariant::getFluid),
+				NbtCompound.CODEC.optionalFieldOf("nbt").forGetter(variant -> Optional.ofNullable(variant.getNbt()))
+		).apply(instance, (fluid, optionalNbt) -> FluidVariant.of(fluid, optionalNbt.orElse(null))));
+
 	/**
 	 * Retrieve a blank FluidVariant.
 	 */
