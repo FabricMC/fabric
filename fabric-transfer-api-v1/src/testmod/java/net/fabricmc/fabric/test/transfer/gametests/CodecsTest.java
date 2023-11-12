@@ -36,10 +36,10 @@ public class CodecsTest {
 		context.assertTrue(result.result().isPresent(), "Couldn't decode JSON");
 
 		ResourceAmount<FluidVariant> decoded = result.result().get().getFirst();
-		context.assertTrue(decoded.resource().getFluid() == Fluids.WATER, "Incorrectly decoded fluid");
-		context.assertTrue(decoded.resource().getNbt() != null, "Incorrectly decoded variant NBT");
-		context.assertTrue(!decoded.resource().getNbt().isEmpty(), "Incorrectly decoded variant NBT");
-		context.assertTrue(decoded.amount() == 81000, "Incorrectly decoded resource amount");
+		context.assertTrue(decoded.resource().getFluid() == Fluids.WATER, "Fluid was not water");
+		context.assertTrue(decoded.resource().getNbt() != null, "NBT was null");
+		context.assertTrue(!decoded.resource().getNbt().isEmpty(), "NBT was empty");
+		context.assertTrue(decoded.amount() == 81000, "Amount was not 81000");
 
 		context.complete();
 	}
