@@ -99,10 +99,28 @@ public final class ConventionalItemTags {
 
 	// Foods
 	public static final TagKey<Item> FOODS = register("foods");
+	/**
+	 * Apples and other foods that are considered fruits in the culinary field belong in this tag.
+	 */
+	public static final TagKey<Item> FRUITS_FOODS = register("foods/fruits");
+	/**
+	 * Tomatoes and other foods that are considered vegetables in the culinary field belong in this tag.
+	 */
+	public static final TagKey<Item> VEGETABLES_FOODS = register("foods/vegetables");
+	/**
+	 * Strawberries, raspberries, and other berry foods belong in this tag.
+	 */
+	public static final TagKey<Item> BERRIES_FOODS = register("foods/berries");
+	public static final TagKey<Item> BREADS_FOODS = register("foods/breads");
+	public static final TagKey<Item> COOKIES_FOODS = register("foods/cookies");
 	public static final TagKey<Item> RAW_MEATS_FOODS = register("foods/raw_meats");
 	public static final TagKey<Item> COOKED_MEATS_FOODS = register("foods/cooked_meats");
 	public static final TagKey<Item> RAW_FISHES_FOODS = register("foods/raw_fishes");
 	public static final TagKey<Item> COOKED_FISHES_FOODS = register("foods/cooked_fishes");
+	/**
+	 * Soups, stews, and other liquid food in bowls belongs in this tag.
+	 */
+	public static final TagKey<Item> SOUPS_FOODS = register("foods/soups");
 
 	// Buckets
 	/**

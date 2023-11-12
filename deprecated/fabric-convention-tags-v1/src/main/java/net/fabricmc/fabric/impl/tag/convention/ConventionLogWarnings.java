@@ -168,13 +168,29 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(RegistryKeys.ITEM, "sticks", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.WOODEN_RODS),
 			createMapEntry(RegistryKeys.ITEM, "wooden_rods", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.WOODEN_RODS),
 			createMapEntry(RegistryKeys.ITEM, "raw_meat", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_MEATS_FOODS),
+			createMapEntry(RegistryKeys.ITEM, "food", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.FOODS),
+			createMapEntry(RegistryKeys.ITEM, "fruit", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.FRUITS_FOODS),
+			createMapEntry(RegistryKeys.ITEM, "fruits", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.FRUITS_FOODS),
+			createMapEntry(RegistryKeys.ITEM, "vegetable", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.VEGETABLES_FOODS),
+			createMapEntry(RegistryKeys.ITEM, "vegetables", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.VEGETABLES_FOODS),
+			createMapEntry(RegistryKeys.ITEM, "berry", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BERRIES_FOODS),
+			createMapEntry(RegistryKeys.ITEM, "berries", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BERRIES_FOODS),
+			createMapEntry(RegistryKeys.ITEM, "bread", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BREADS_FOODS),
+			createMapEntry(RegistryKeys.ITEM, "breads", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BREADS_FOODS),
+			createMapEntry(RegistryKeys.ITEM, "cookie", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKIES_FOODS),
+			createMapEntry(RegistryKeys.ITEM, "cookies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKIES_FOODS),
+			createMapEntry(RegistryKeys.ITEM, "raw_meat", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_MEATS_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "raw_meats", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_MEATS_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "raw_fish", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_FISHES_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "raw_fishes", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_FISHES_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "cooked_meat", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_MEATS_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "cooked_meats", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_MEATS_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "cooked_fish", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_FISHES_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "cooked_fishes", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_FISHES_FOODS)
+			createMapEntry(RegistryKeys.ITEM, "cooked_fishes", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_FISHES_FOODS),
+			createMapEntry(RegistryKeys.ITEM, "soup", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUPS_FOODS),
+			createMapEntry(RegistryKeys.ITEM, "soups", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUPS_FOODS),
+			createMapEntry(RegistryKeys.ITEM, "stew", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUPS_FOODS),
+			createMapEntry(RegistryKeys.ITEM, "stews", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUPS_FOODS)
 
 	);
 

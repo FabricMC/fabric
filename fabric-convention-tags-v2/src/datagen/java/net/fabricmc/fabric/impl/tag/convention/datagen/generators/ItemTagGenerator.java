@@ -155,6 +155,29 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateFoodTags() {
+		getOrCreateTagBuilder(ConventionalItemTags.FRUITS_FOODS)
+				.add(Items.APPLE)
+				.add(Items.GOLDEN_APPLE)
+				.add(Items.ENCHANTED_GOLDEN_APPLE);
+
+		getOrCreateTagBuilder(ConventionalItemTags.VEGETABLES_FOODS)
+				.add(Items.CARROT)
+				.add(Items.GOLDEN_CARROT)
+				.add(Items.POTATO)
+				.add(Items.POISONOUS_POTATO)
+				.add(Items.MELON_SLICE)
+				.add(Items.BEETROOT);
+
+		getOrCreateTagBuilder(ConventionalItemTags.BERRIES_FOODS)
+				.add(Items.SWEET_BERRIES)
+				.add(Items.GLOW_BERRIES);
+
+		getOrCreateTagBuilder(ConventionalItemTags.BREADS_FOODS)
+				.add(Items.BREAD);
+
+		getOrCreateTagBuilder(ConventionalItemTags.COOKIES_FOODS)
+				.add(Items.COOKIE);
+
 		getOrCreateTagBuilder(ConventionalItemTags.RAW_MEATS_FOODS)
 				.add(Items.BEEF)
 				.add(Items.CHICKEN)
@@ -177,35 +200,29 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.COOKED_COD)
 				.add(Items.COOKED_SALMON);
 
-		getOrCreateTagBuilder(ConventionalItemTags.FOODS)
-				.add(Items.APPLE)
-				.add(Items.GOLDEN_APPLE)
-				.add(Items.ENCHANTED_GOLDEN_APPLE)
-				.add(Items.CARROT)
-				.add(Items.GOLDEN_CARROT)
-				.add(Items.POTATO)
-				.add(Items.POISONOUS_POTATO)
-				.add(Items.BAKED_POTATO)
-				.add(Items.MELON_SLICE)
-				.add(Items.GLISTERING_MELON_SLICE)
-				.add(Items.PUMPKIN_PIE)
-				.add(Items.SWEET_BERRIES)
-				.add(Items.GLOW_BERRIES)
-				.add(Items.DRIED_KELP)
-				.add(Items.BREAD)
-				.add(Items.COOKIE)
-				.add(Items.BEETROOT)
+		getOrCreateTagBuilder(ConventionalItemTags.SOUPS_FOODS)
 				.add(Items.BEETROOT_SOUP)
-				.add(Items.RABBIT_STEW)
 				.add(Items.MUSHROOM_STEW)
-				.add(Items.SUSPICIOUS_STEW)
+				.add(Items.RABBIT_STEW)
+				.add(Items.SUSPICIOUS_STEW);
+
+		getOrCreateTagBuilder(ConventionalItemTags.FOODS)
+				.add(Items.BAKED_POTATO)
+				.add(Items.PUMPKIN_PIE)
 				.add(Items.HONEY_BOTTLE)
+				.add(Items.DRIED_KELP)
 				.add(Items.SPIDER_EYE)
 				.add(Items.ROTTEN_FLESH)
+				.addOptionalTag(ConventionalItemTags.FRUITS_FOODS)
+				.addOptionalTag(ConventionalItemTags.VEGETABLES_FOODS)
+				.addOptionalTag(ConventionalItemTags.BERRIES_FOODS)
+				.addOptionalTag(ConventionalItemTags.BREADS_FOODS)
+				.addOptionalTag(ConventionalItemTags.COOKIES_FOODS)
 				.addOptionalTag(ConventionalItemTags.RAW_MEATS_FOODS)
 				.addOptionalTag(ConventionalItemTags.RAW_FISHES_FOODS)
 				.addOptionalTag(ConventionalItemTags.COOKED_MEATS_FOODS)
-				.addOptionalTag(ConventionalItemTags.COOKED_FISHES_FOODS);
+				.addOptionalTag(ConventionalItemTags.COOKED_FISHES_FOODS)
+				.addOptionalTag(ConventionalItemTags.SOUPS_FOODS);
 	}
 
 	private void generateBucketTags() {
