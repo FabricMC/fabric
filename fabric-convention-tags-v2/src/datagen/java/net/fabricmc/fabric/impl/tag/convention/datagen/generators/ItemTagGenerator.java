@@ -395,13 +395,17 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	private void generateOtherTags() {
 		getOrCreateTagBuilder(ConventionalItemTags.STRINGS)
 				.add(Items.STRING);
+
 		getOrCreateTagBuilder(ConventionalItemTags.WOODEN_RODS)
 				.add(Items.STICK);
+
 		getOrCreateTagBuilder(ConventionalItemTags.BLAZE_RODS)
 				.add(Items.BLAZE_ROD);
+
 		getOrCreateTagBuilder(ConventionalItemTags.RODS)
 				.addOptionalTag(ConventionalItemTags.WOODEN_RODS)
 				.addOptionalTag(ConventionalItemTags.BLAZE_RODS);
+
 		getOrCreateTagBuilder(ConventionalItemTags.HEADS)
 				.add(Items.SKELETON_SKULL)
 				.add(Items.WITHER_SKELETON_SKULL)
@@ -410,6 +414,11 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.CREEPER_HEAD)
 				.add(Items.PIGLIN_HEAD)
 				.add(Items.DRAGON_HEAD);
+
+		getOrCreateTagBuilder(ConventionalItemTags.ROPES); // Generate tag so others can see it exists through JSON.
+
+		getOrCreateTagBuilder(ConventionalItemTags.CHAINS)
+				.add(Items.CHAIN);
 	}
 
 	private void generateDyedTags() {

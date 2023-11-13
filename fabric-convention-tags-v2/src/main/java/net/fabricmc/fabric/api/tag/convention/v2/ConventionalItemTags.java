@@ -260,6 +260,8 @@ public final class ConventionalItemTags {
 	 * children classes for various custom ingredients available that can also be used in data generation.
 	 */
 	public static final TagKey<Item> HEADS = register("heads");
+	public static final TagKey<Item> ROPES = register("ropes");
+	public static final TagKey<Item> CHAINS = register("chains");
 
 	private static TagKey<Item> register(String tagId) {
 		return TagRegistration.ITEM_TAG.registerC(tagId);

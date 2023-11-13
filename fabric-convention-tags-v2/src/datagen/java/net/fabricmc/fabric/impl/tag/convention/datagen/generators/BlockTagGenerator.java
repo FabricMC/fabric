@@ -102,11 +102,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 		generateBuddingTags();
 
-		VILLAGER_JOB_SITE_BLOCKS.forEach(getOrCreateTagBuilder(ConventionalBlockTags.VILLAGER_JOB_SITES)::add);
-
 		generateSandstoneTags();
-
-		getOrCreateTagBuilder(ConventionalBlockTags.RELOCATION_NOT_SUPPORTED); // Generate tag so others can see it exists through JSON.
 
 		generateDyedTags();
 
@@ -114,7 +110,20 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 		generateHeadTags();
 
+		generateMiscTags();
+
 		generateBackwardsCompatTags();
+	}
+
+	private void generateMiscTags() {
+		VILLAGER_JOB_SITE_BLOCKS.forEach(getOrCreateTagBuilder(ConventionalBlockTags.VILLAGER_JOB_SITES)::add);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.RELOCATION_NOT_SUPPORTED); // Generate tag so others can see it exists through JSON.
+
+		getOrCreateTagBuilder(ConventionalBlockTags.ROPES); // Generate tag so others can see it exists through JSON.
+
+		getOrCreateTagBuilder(ConventionalBlockTags.CHAINS)
+				.add(Blocks.CHAIN);
 	}
 
 	private void generateSandstoneTags() {
