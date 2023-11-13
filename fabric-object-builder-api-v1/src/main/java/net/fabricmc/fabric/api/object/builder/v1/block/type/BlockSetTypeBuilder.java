@@ -210,6 +210,7 @@ public final class BlockSetTypeBuilder {
 	public static BlockSetTypeBuilder copyOf(BlockSetTypeBuilder builder) {
 		BlockSetTypeBuilder copy = new BlockSetTypeBuilder();
 		copy.openableByHand(builder.openableByHand);
+		copy.openableByWindCharge(builder.openableByWindCharge);
 		copy.buttonActivatedByArrows(builder.buttonActivatedByArrows);
 		copy.pressurePlateActivationRule(builder.pressurePlateActivationRule);
 		copy.soundGroup(builder.soundGroup);
@@ -234,6 +235,7 @@ public final class BlockSetTypeBuilder {
 	public static BlockSetTypeBuilder copyOf(BlockSetType setType) {
 		BlockSetTypeBuilder copy = new BlockSetTypeBuilder();
 		copy.openableByHand(setType.canOpenByHand());
+		copy.openableByWindCharge(setType.canOpenByWindCharge());
 		copy.buttonActivatedByArrows(setType.canButtonBeActivatedByArrows());
 		copy.pressurePlateActivationRule(setType.pressurePlateSensitivity());
 		copy.soundGroup(setType.soundType());

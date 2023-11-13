@@ -82,7 +82,12 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		this.instrument(otherAccessor.getInstrument());
 		thisAccessor.setReplaceable(otherAccessor.getReplaceable());
 
-		// Not copied in vanilla: field definition order
+		// Vanilla did not copy those fields until 23w45a, which introduced
+		// copyShallow method (maintaining the behavior previously used by the copy method)
+		// and the copy method that copies those fields as well. copyShallow is now
+		// deprecated. To maintain compatibility and since this behavior seems to be the
+		// more proper way, this copies all the fields, not just the shallow ones.
+		// Fields are added by field definition order.
 		this.jumpVelocityMultiplier(otherAccessor.getJumpVelocityMultiplier());
 		this.drops(otherAccessor.getLootTableId());
 		this.allowsSpawning(otherAccessor.getAllowsSpawningPredicate());
