@@ -2,12 +2,9 @@
   "replace": false,
   "values": [
     "minecraft:baked_potato",
-    "minecraft:poisonous_potato",
     "minecraft:pumpkin_pie",
     "minecraft:honey_bottle",
     "minecraft:dried_kelp",
-    "minecraft:spider_eye",
-    "minecraft:rotten_flesh",
     {
       "id": "#c:foods/fruits",
       "required": false
@@ -54,6 +51,10 @@
     },
     {
       "id": "#c:foods/edible_when_placed",
+      "required": false
+    },
+    {
+      "id": "#c:foods/food_poisoning",
       "required": false
     }
   ]

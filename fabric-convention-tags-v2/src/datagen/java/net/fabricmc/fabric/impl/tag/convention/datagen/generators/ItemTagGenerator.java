@@ -212,9 +212,10 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 		getOrCreateTagBuilder(ConventionalItemTags.FOOD_POISONING_FOODS)
 				.add(Items.POISONOUS_POTATO)
-				.add(Items.ROTTEN_FLESH)
+				.add(Items.PUFFERFISH)
 				.add(Items.SPIDER_EYE)
-				.add(Items.PUFFERFISH);
+				.add(Items.CHICKEN)
+				.add(Items.ROTTEN_FLESH);
 
 		getOrCreateTagBuilder(ConventionalItemTags.FOODS)
 				.add(Items.BAKED_POTATO)
