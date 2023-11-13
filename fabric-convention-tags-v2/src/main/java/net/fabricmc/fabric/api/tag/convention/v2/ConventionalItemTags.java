@@ -101,6 +101,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> FOODS = register("foods");
 	/**
 	 * Apples and other foods that are considered fruits in the culinary field belong in this tag.
+	 * Cherries would go here as they are considered a "stone fruit" within culinary fields.
 	 */
 	public static final TagKey<Item> FRUITS_FOODS = register("foods/fruits");
 	/**
@@ -109,6 +110,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> VEGETABLES_FOODS = register("foods/vegetables");
 	/**
 	 * Strawberries, raspberries, and other berry foods belong in this tag.
+	 * Cherries would NOT go here as they are considered a "stone fruit" within culinary fields.
 	 */
 	public static final TagKey<Item> BERRIES_FOODS = register("foods/berries");
 	public static final TagKey<Item> BREADS_FOODS = register("foods/breads");

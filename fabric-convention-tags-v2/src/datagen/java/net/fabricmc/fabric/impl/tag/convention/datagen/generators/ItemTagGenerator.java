@@ -164,7 +164,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.CARROT)
 				.add(Items.GOLDEN_CARROT)
 				.add(Items.POTATO)
-				.add(Items.POISONOUS_POTATO)
 				.add(Items.MELON_SLICE)
 				.add(Items.BEETROOT);
 
@@ -213,6 +212,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 		getOrCreateTagBuilder(ConventionalItemTags.FOODS)
 				.add(Items.BAKED_POTATO)
+				.add(Items.POISONOUS_POTATO)
 				.add(Items.PUMPKIN_PIE)
 				.add(Items.HONEY_BOTTLE)
 				.add(Items.DRIED_KELP)
