@@ -131,6 +131,11 @@ public final class ConventionalItemTags {
 	 * Foods like cake that can be eaten when placed in the world belong in this tag.
 	 */
 	public static final TagKey<Item> EDIBLE_WHEN_PLACED_FOODS = register("foods/edible_when_placed");
+	/**
+	 * For foods that inflict food poisoning-like effects.
+	 * Examples are Rotten Flesh's Hunger or Pufferfish's Nausea, or Poisonous Potato's Poison.
+	 */
+	public static final TagKey<Item> FOOD_POISONING_FOODS = register("foods/food_poisoning");
 
 	// Buckets
 	/**

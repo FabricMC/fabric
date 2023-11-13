@@ -210,14 +210,17 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
 				.add(Items.CAKE);
 
+		getOrCreateTagBuilder(ConventionalItemTags.FOOD_POISONING_FOODS)
+				.add(Items.POISONOUS_POTATO)
+				.add(Items.ROTTEN_FLESH)
+				.add(Items.SPIDER_EYE)
+				.add(Items.PUFFERFISH);
+
 		getOrCreateTagBuilder(ConventionalItemTags.FOODS)
 				.add(Items.BAKED_POTATO)
-				.add(Items.POISONOUS_POTATO)
 				.add(Items.PUMPKIN_PIE)
 				.add(Items.HONEY_BOTTLE)
 				.add(Items.DRIED_KELP)
-				.add(Items.SPIDER_EYE)
-				.add(Items.ROTTEN_FLESH)
 				.addOptionalTag(ConventionalItemTags.FRUITS_FOODS)
 				.addOptionalTag(ConventionalItemTags.VEGETABLES_FOODS)
 				.addOptionalTag(ConventionalItemTags.BERRIES_FOODS)
@@ -229,7 +232,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.COOKED_FISHES_FOODS)
 				.addOptionalTag(ConventionalItemTags.SOUPS_FOODS)
 				.addOptionalTag(ConventionalItemTags.CANDIES_FOODS)
-				.addOptionalTag(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS);
+				.addOptionalTag(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
+				.addOptionalTag(ConventionalItemTags.FOOD_POISONING_FOODS);
 	}
 
 	private void generateBucketTags() {
