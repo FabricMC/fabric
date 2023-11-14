@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 
 import java.util.Iterator;
 
+import com.google.common.collect.Iterators;
+
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
@@ -145,7 +147,7 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	 * @return An iterator over the non-empty views of this storage. Calling remove on the iterator is not allowed.
 	 */
 	default Iterator<StorageView<T>> nonEmptyIterator() {
-		return TransferApiImpl.filterEmptyViews(iterator());
+		return Iterators.filter(iterator(), view -> view.getAmount() > 0 && !view.isResourceBlank());
 	}
 
 	/**
