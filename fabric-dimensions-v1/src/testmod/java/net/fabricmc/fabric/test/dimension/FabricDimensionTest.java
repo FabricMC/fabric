@@ -22,6 +22,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.command.argument.DimensionArgumentType;
@@ -51,6 +52,7 @@ public class FabricDimensionTest implements ModInitializer {
 	// The dimension options refer to the JSON-file in the dimension subfolder of the data pack,
 	// which will always share its ID with the world that is created from it
 	private static final RegistryKey<DimensionOptions> DIMENSION_KEY = RegistryKey.of(RegistryKeys.DIMENSION, new Identifier("fabric_dimension", "void"));
+	private static final SimpleCommandExceptionType FAILED_EXCEPTION = new SimpleCommandExceptionType(Text.literal("Teleportation failed!"));
 
 	private static RegistryKey<World> WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, DIMENSION_KEY.getValue());
 
@@ -110,7 +112,7 @@ public class FabricDimensionTest implements ModInitializer {
 		});
 	}
 
-	private int swapTargeted(CommandContext<ServerCommandSource> context) {
+	private int swapTargeted(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 		ServerPlayerEntity player = context.getSource().getPlayer();
 
 		if (player == null) {
@@ -126,7 +128,7 @@ public class FabricDimensionTest implements ModInitializer {
 			FabricDimensions.teleport(player, modWorld, target);
 
 			if (player.getWorld() != modWorld) {
-				throw new RuntimeException("Teleportation failed!");
+				throw FAILED_EXCEPTION.create();
 			}
 
 			modWorld.setBlockState(new BlockPos(0, 100, 0), Blocks.DIAMOND_BLOCK.getDefaultState());
