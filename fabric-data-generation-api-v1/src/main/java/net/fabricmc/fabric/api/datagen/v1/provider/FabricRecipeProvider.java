@@ -96,14 +96,14 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 					throw new IllegalStateException("Duplicate recipe " + identifier);
 				}
 
-				JsonObject recipeJson = Util.getResult(Recipe.field_47319.encodeStart(JsonOps.INSTANCE, recipe), IllegalStateException::new).getAsJsonObject();
+				JsonObject recipeJson = Util.getResult(Recipe.CODEC.encodeStart(JsonOps.INSTANCE, recipe), IllegalStateException::new).getAsJsonObject();
 				ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(recipe);
 				ConditionJsonProvider.write(recipeJson, conditions);
 
 				list.add(DataProvider.writeToPath(writer, recipeJson, recipesPathResolver.resolveJson(identifier)));
 
 				if (advancement != null) {
-					JsonObject advancementJson = Util.getResult(Advancement.field_47179.encodeStart(JsonOps.INSTANCE, advancement.value()), IllegalStateException::new).getAsJsonObject();
+					JsonObject advancementJson = Util.getResult(Advancement.CODEC.encodeStart(JsonOps.INSTANCE, advancement.value()), IllegalStateException::new).getAsJsonObject();
 					ConditionJsonProvider.write(advancementJson, conditions);
 					list.add(DataProvider.writeToPath(writer, advancementJson, advancementsPathResolver.resolveJson(getRecipeIdentifier(advancement.id()))));
 				}

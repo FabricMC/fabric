@@ -51,7 +51,7 @@ import net.fabricmc.fabric.impl.itemgroup.FabricItemGroup;
 @Mixin(ItemGroups.class)
 public class ItemGroupsMixin {
 	@Unique
-	private static final int TABS_PER_PAGE = 10;
+	private static final int TABS_PER_PAGE = FabricItemGroup.TABS_PER_PAGE;
 
 	@Inject(method = "collect", at = @At("HEAD"), cancellable = true)
 	private static void collect(CallbackInfo ci) {

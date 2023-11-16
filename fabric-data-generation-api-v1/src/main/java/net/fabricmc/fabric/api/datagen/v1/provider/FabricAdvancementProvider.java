@@ -87,7 +87,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 				throw new IllegalStateException("Duplicate advancement " + advancement.id());
 			}
 
-			JsonObject advancementJson = Util.getResult(Advancement.field_47179.encodeStart(JsonOps.INSTANCE, advancement.value()), IllegalStateException::new).getAsJsonObject();
+			JsonObject advancementJson = Util.getResult(Advancement.CODEC.encodeStart(JsonOps.INSTANCE, advancement.value()), IllegalStateException::new).getAsJsonObject();
 			ConditionJsonProvider.write(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
 
 			futures.add(DataProvider.writeToPath(writer, advancementJson, getOutputPath(advancement)));

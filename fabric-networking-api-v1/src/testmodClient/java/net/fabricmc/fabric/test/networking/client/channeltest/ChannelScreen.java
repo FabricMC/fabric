@@ -54,7 +54,7 @@ final class ChannelScreen extends Screen {
 				.position(this.width / 2 - 60, this.height - 25)
 				.size(120, 20)
 				.build());
-		this.channelList = this.addDrawable(new ChannelList(this.client, this.width, this.height - 60, 30, this.height - 30, this.textRenderer.fontHeight + 2));
+		this.channelList = this.addDrawable(new ChannelList(this.client, this.width, this.height - 60, 30, this.textRenderer.fontHeight + 2));
 	}
 
 	@Override

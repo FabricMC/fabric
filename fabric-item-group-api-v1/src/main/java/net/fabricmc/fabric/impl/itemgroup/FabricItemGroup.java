@@ -17,6 +17,8 @@
 package net.fabricmc.fabric.impl.itemgroup;
 
 public interface FabricItemGroup {
+	int TABS_PER_PAGE = 10;
+
 	int getPage();
 
 	void setPage(int page);
