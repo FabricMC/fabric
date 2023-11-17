@@ -37,17 +37,17 @@ public final class EnchantmentTagGenerator extends FabricTagProvider.Enchantment
 				.add(Enchantments.FORTUNE);
 		getOrCreateTagBuilder(ConventionalEnchantmentTags.INCREASE_ENTITY_DROPS)
 				.add(Enchantments.LOOTING);
-		getOrCreateTagBuilder(ConventionalEnchantmentTags.WEAPON_DAMAGE_ENHANCEMENT)
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.WEAPON_DAMAGE_ENHANCEMENTS)
 				.add(Enchantments.SHARPNESS)
 				.add(Enchantments.SMITE)
 				.add(Enchantments.BANE_OF_ARTHROPODS)
 				.add(Enchantments.POWER)
 				.add(Enchantments.IMPALING);
-		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_SPEED_ENHANCEMENT)
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_SPEED_ENHANCEMENTS)
 				.add(Enchantments.SOUL_SPEED)
 				.add(Enchantments.SWIFT_SNEAK)
 				.add(Enchantments.DEPTH_STRIDER);
-		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENT)
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENTS)
 				.add(Enchantments.FEATHER_FALLING)
 				.add(Enchantments.FROST_WALKER);
 		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENT)
@@ -60,7 +60,7 @@ public final class EnchantmentTagGenerator extends FabricTagProvider.Enchantment
 
 		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
 		// TODO: Remove backwards compat tag entries in 1.22
-		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_SPEED_ENHANCEMENT)
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_SPEED_ENHANCEMENTS)
 				.addOptionalTag(new Identifier("c", "entity_movement_enhancement"));
 	}
 }

@@ -38,16 +38,16 @@ public final class ConventionalEnchantmentTags {
 	/**
 	 * For enchantments that increase the damage dealt by an item.
 	 */
-	public static final TagKey<Enchantment> WEAPON_DAMAGE_ENHANCEMENT = register("weapon_damage_enhancement");
+	public static final TagKey<Enchantment> WEAPON_DAMAGE_ENHANCEMENTS = register("weapon_damage_enhancements");
 	/**
 	 * For enchantments that increase movement speed for entity wearing armor enchanted with it.
 	 */
-	public static final TagKey<Enchantment> ENTITY_SPEED_ENHANCEMENT = register("entity_speed_enhancement");
+	public static final TagKey<Enchantment> ENTITY_SPEED_ENHANCEMENTS = register("entity_speed_enhancements");
 	/**
 	 * For enchantments that applies movement-based benefits unrelated to speed for the entity wearing armor enchanted with it.
 	 * Example: Reducing falling speeds ({@link net.minecraft.enchantment.Enchantments#FEATHER_FALLING}) or allowing walking on water ({@link net.minecraft.enchantment.Enchantments#FROST_WALKER})
 	 */
-	public static final TagKey<Enchantment> ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENT = register("entity_auxiliary_movement_enhancement");
+	public static final TagKey<Enchantment> ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENTS = register("entity_auxiliary_movement_enhancements");
 	/**
 	 * For enchantments that decrease damage taken or otherwise benefit, in regard to damage, the entity wearing armor enchanted with it.
 	 */
