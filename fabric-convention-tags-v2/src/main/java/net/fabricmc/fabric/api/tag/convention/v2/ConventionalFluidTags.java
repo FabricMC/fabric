@@ -24,15 +24,18 @@ import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 /**
  * See {@link net.minecraft.registry.tag.FluidTags} for vanilla tags.
  * Note that addition to some vanilla tags implies having certain functionality.
+ * <p></p>
+ * Note, fluid tags should not be plural to match the vanilla standard.
+ * This is the only tag category exempted from many-different-types plural rule.
  */
 public final class ConventionalFluidTags {
 	private ConventionalFluidTags() {
 	}
 
-	public static final TagKey<Fluid> LAVAS = register("lavas");
-	public static final TagKey<Fluid> WATERS = register("waters");
-	public static final TagKey<Fluid> MILKS = register("milks");
-	public static final TagKey<Fluid> HONEYS = register("honeys");
+	public static final TagKey<Fluid> LAVA = register("lava");
+	public static final TagKey<Fluid> WATER = register("water");
+	public static final TagKey<Fluid> MILK = register("milk");
+	public static final TagKey<Fluid> HONEY = register("honey");
 
 	private static TagKey<Fluid> register(String tagId) {
 		return TagRegistration.FLUID_TAG.registerC(tagId);
