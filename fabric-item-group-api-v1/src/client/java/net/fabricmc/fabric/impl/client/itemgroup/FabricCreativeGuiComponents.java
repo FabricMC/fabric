@@ -53,14 +53,19 @@ public class FabricCreativeGuiComponents {
 
 		@Override
 		protected void renderButton(DrawContext drawContext, int mouseX, int mouseY, float delta) {
-			int pageCount = (int) Math.ceil((ItemGroups.getGroupsToDisplay().size() - COMMON_GROUPS.size()) / TABS_PER_PAGE);
-			this.active = type.isActive(extensions.fabric_currentPage(), pageCount);
+			this.active = extensions.fabric_isButtonEnabled(type);
+			this.visible = extensions.fabric_isButtonVisible(type);
+
+			if (!this.visible) {
+				return;
+			}
 
 			int u = active && this.isHovered() ? 22 : 0;
 			int v = active ? 0 : 12;
 			drawContext.drawTexture(BUTTON_TEX, this.getX(), this.getY(), u + (type == Type.NEXT ? 11 : 0), v, 11, 12);
 
 			if (this.isHovered()) {
+				int pageCount = (int) Math.ceil((ItemGroups.getGroupsToDisplay().size() - COMMON_GROUPS.size()) / TABS_PER_PAGE);
 				drawContext.drawTooltip(MinecraftClient.getInstance().textRenderer, Text.translatable("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, pageCount), mouseX, mouseY);
 			}
 		}
@@ -76,14 +81,6 @@ public class FabricCreativeGuiComponents {
 		Type(Text text, Consumer<CreativeGuiExtensions> clickConsumer) {
 			this.text = text;
 			this.clickConsumer = clickConsumer;
-		}
-
-		private boolean isActive(int currentPage, int pageCount) {
-			if (this == NEXT) {
-				return currentPage < pageCount -1;
-			}
-
-			return currentPage > 0;
 		}
 	}
 }
