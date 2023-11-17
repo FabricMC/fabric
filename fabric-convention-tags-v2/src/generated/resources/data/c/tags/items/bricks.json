@@ -2,11 +2,11 @@
   "replace": false,
   "values": [
     {
-      "id": "#c:dusts/glowstone",
+      "id": "#c:bricks/normal",
       "required": false
     },
     {
-      "id": "#c:dusts/redstone",
+      "id": "#c:bricks/nether",
       "required": false
     }
   ]

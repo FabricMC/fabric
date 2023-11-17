@@ -29,10 +29,10 @@ public final class ConventionalFluidTags {
 	private ConventionalFluidTags() {
 	}
 
-	public static final TagKey<Fluid> LAVA = register("lava");
-	public static final TagKey<Fluid> WATER = register("water");
-	public static final TagKey<Fluid> MILK = register("milk");
-	public static final TagKey<Fluid> HONEY = register("honey");
+	public static final TagKey<Fluid> LAVAS = register("lavas");
+	public static final TagKey<Fluid> WATERS = register("waters");
+	public static final TagKey<Fluid> MILKS = register("milks");
+	public static final TagKey<Fluid> HONEYS = register("honeys");
 
 	private static TagKey<Fluid> register(String tagId) {
 		return TagRegistration.FLUID_TAG.registerC(tagId);

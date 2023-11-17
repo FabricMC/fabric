@@ -55,6 +55,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> MINING_TOOLS = register("tools/mining_tools");
 
 	// Ores and ingots - categories
+	public static final TagKey<Item> BRICKS = register("bricks");
 	public static final TagKey<Item> DUSTS = register("dusts");
 	public static final TagKey<Item> GEMS = register("gems");
 	public static final TagKey<Item> INGOTS = register("ingots");
@@ -70,6 +71,10 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> IRON_RAW_BLOCKS = register("raw_blocks/iron");
 	public static final TagKey<Item> GOLD_RAW_BLOCKS = register("raw_blocks/gold");
 	public static final TagKey<Item> COPPER_RAW_BLOCKS = register("raw_blocks/copper");
+
+	// Bricks - vanilla instances
+	public static final TagKey<Item> NORMAL_BRICKS = register("bricks/normal");
+	public static final TagKey<Item> NETHER_BRICKS = register("bricks/nether");
 
 	// Ingots - vanilla instances
 	public static final TagKey<Item> IRON_INGOTS = register("ingots/iron");

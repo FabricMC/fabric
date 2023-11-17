@@ -37,6 +37,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalEnchantmentTags;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalFluidTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
 import net.fabricmc.loader.api.FabricLoader;
@@ -106,6 +107,11 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(ConventionalItemTags.SPEARS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SPEARS_TOOLS),
 			createMapEntry(ConventionalItemTags.BOWS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BOWS_TOOLS),
 			createMapEntry(ConventionalItemTags.SHIELDS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SHIELDS_TOOLS),
+
+			createMapEntry(ConventionalFluidTags.WATER, net.fabricmc.fabric.api.tag.convention.v2.ConventionalFluidTags.WATERS),
+			createMapEntry(ConventionalFluidTags.LAVA, net.fabricmc.fabric.api.tag.convention.v2.ConventionalFluidTags.LAVAS),
+			createMapEntry(ConventionalFluidTags.MILK, net.fabricmc.fabric.api.tag.convention.v2.ConventionalFluidTags.MILKS),
+			createMapEntry(ConventionalFluidTags.HONEY, net.fabricmc.fabric.api.tag.convention.v2.ConventionalFluidTags.HONEYS),
 
 			createMapEntry(ConventionalEnchantmentTags.INCREASES_BLOCK_DROPS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS),
 			createMapEntry(ConventionalEnchantmentTags.INCREASES_ENTITY_DROPS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags.INCREASE_ENTITY_DROPS),

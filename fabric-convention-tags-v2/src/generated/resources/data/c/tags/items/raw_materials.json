@@ -13,8 +13,17 @@
       "id": "#c:raw_materials/iron",
       "required": false
     },
-    "minecraft:raw_copper",
-    "minecraft:raw_gold",
-    "minecraft:raw_iron"
+    {
+      "id": "#c:raw_materials/copper",
+      "required": false
+    },
+    {
+      "id": "#c:raw_materials/iron",
+      "required": false
+    },
+    {
+      "id": "#c:raw_materials/gold",
+      "required": false
+    }
   ]
 }

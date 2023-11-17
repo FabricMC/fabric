@@ -32,11 +32,11 @@ public final class FluidTagGenerator extends FabricTagProvider.FluidTagProvider 
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup registries) {
-		getOrCreateTagBuilder(ConventionalFluidTags.WATER)
+		getOrCreateTagBuilder(ConventionalFluidTags.WATERS)
 				.addOptionalTag(FluidTags.WATER);
-		getOrCreateTagBuilder(ConventionalFluidTags.LAVA)
+		getOrCreateTagBuilder(ConventionalFluidTags.LAVAS)
 				.addOptionalTag(FluidTags.LAVA);
-		getOrCreateTagBuilder(ConventionalFluidTags.MILK);
-		getOrCreateTagBuilder(ConventionalFluidTags.HONEY);
+		getOrCreateTagBuilder(ConventionalFluidTags.MILKS);
+		getOrCreateTagBuilder(ConventionalFluidTags.HONEYS);
 	}
 }

@@ -257,13 +257,24 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 	private void generateOreAndRelatedTags() {
 		// Categories
+		getOrCreateTagBuilder(ConventionalItemTags.BRICKS)
+				.addOptionalTag(ConventionalItemTags.NORMAL_BRICKS)
+				.addOptionalTag(ConventionalItemTags.NETHER_BRICKS);
 		getOrCreateTagBuilder(ConventionalItemTags.DUSTS)
-				.add(Items.GLOWSTONE_DUST)
-				.add(Items.REDSTONE);
+				.addOptionalTag(ConventionalItemTags.GLOWSTONE_DUSTS)
+				.addOptionalTag(ConventionalItemTags.REDSTONE_DUSTS);
 		getOrCreateTagBuilder(ConventionalItemTags.GEMS)
-				.add(Items.AMETHYST_SHARD, Items.DIAMOND, Items.EMERALD, Items.LAPIS_LAZULI);
+				.addOptionalTag(ConventionalItemTags.AMETHYST_GEMS)
+				.addOptionalTag(ConventionalItemTags.DIAMOND_GEMS)
+				.addOptionalTag(ConventionalItemTags.EMERALD_GEMS)
+				.addOptionalTag(ConventionalItemTags.LAPIS_GEMS)
+				.addOptionalTag(ConventionalItemTags.PRISMARINE_GEMS)
+				.addOptionalTag(ConventionalItemTags.QUARTZ_GEMS);
 		getOrCreateTagBuilder(ConventionalItemTags.INGOTS)
-				.add(Items.COPPER_INGOT, Items.GOLD_INGOT, Items.IRON_INGOT, Items.NETHERITE_INGOT);
+				.addOptionalTag(ConventionalItemTags.COPPER_INGOTS)
+				.addOptionalTag(ConventionalItemTags.IRON_INGOTS)
+				.addOptionalTag(ConventionalItemTags.GOLD_INGOTS)
+				.addOptionalTag(ConventionalItemTags.NETHERITE_INGOTS);
 		getOrCreateTagBuilder(ConventionalItemTags.NUGGETS)
 				.add(Items.GOLD_NUGGET, Items.IRON_NUGGET);
 		copy(ConventionalBlockTags.ORES, ConventionalItemTags.ORES);
@@ -275,11 +286,20 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.GOLD_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.IRON_RAW_MATERIALS);
 		getOrCreateTagBuilder(ConventionalItemTags.RAW_MATERIALS)
-				.add(Items.RAW_COPPER, Items.RAW_GOLD, Items.RAW_IRON);
+				.addOptionalTag(ConventionalItemTags.COPPER_RAW_MATERIALS)
+				.addOptionalTag(ConventionalItemTags.IRON_RAW_MATERIALS)
+				.addOptionalTag(ConventionalItemTags.GOLD_RAW_MATERIALS);
 		getOrCreateTagBuilder(ConventionalItemTags.RAW_BLOCKS)
-				.add(Items.RAW_COPPER_BLOCK, Items.RAW_GOLD_BLOCK, Items.RAW_IRON_BLOCK);
+				.addOptionalTag(ConventionalItemTags.COPPER_RAW_BLOCKS)
+				.addOptionalTag(ConventionalItemTags.GOLD_RAW_BLOCKS)
+				.addOptionalTag(ConventionalItemTags.IRON_RAW_BLOCKS);
 
 		// Vanilla instances
+		getOrCreateTagBuilder(ConventionalItemTags.NORMAL_BRICKS)
+				.add(Items.BRICKS);
+		getOrCreateTagBuilder(ConventionalItemTags.NETHER_BRICKS)
+				.add(Items.NETHER_BRICK);
+
 		getOrCreateTagBuilder(ConventionalItemTags.IRON_INGOTS)
 				.add(Items.IRON_INGOT);
 		getOrCreateTagBuilder(ConventionalItemTags.COPPER_INGOTS)

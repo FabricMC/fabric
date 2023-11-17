@@ -1,8 +1,17 @@
 {
   "replace": false,
   "values": [
-    "minecraft:raw_copper_block",
-    "minecraft:raw_gold_block",
-    "minecraft:raw_iron_block"
+    {
+      "id": "#c:raw_blocks/copper",
+      "required": false
+    },
+    {
+      "id": "#c:raw_blocks/gold",
+      "required": false
+    },
+    {
+      "id": "#c:raw_blocks/iron",
+      "required": false
+    }
   ]
 }
