@@ -53,15 +53,15 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 public interface FluidVariant extends TransferVariant<Fluid> {
 	Codec<FluidVariant> CODEC = RecordCodecBuilder.create(instance ->
 			instance.group(
-				Registries.FLUID.getCodec().fieldOf("fluid").forGetter(FluidVariant::getFluid),
-				NbtCompound.CODEC.optionalFieldOf("nbt").forGetter(variant -> Optional.ofNullable(variant.getNbt()))
-		).apply(instance, (fluid, optionalNbt) -> FluidVariant.of(fluid, optionalNbt.orElse(null))));
+					Registries.FLUID.getCodec().fieldOf("fluid").forGetter(FluidVariant::getFluid),
+					NbtCompound.CODEC.optionalFieldOf("nbt").forGetter(variant -> Optional.ofNullable(variant.getNbt()))
+			).apply(instance, (fluid, optionalNbt) -> FluidVariant.of(fluid, optionalNbt.orElse(null))));
 
 	Codec<ResourceAmount<FluidVariant>> AMOUNT_CODEC = RecordCodecBuilder.create(instance ->
-                instance.group(
-                    CODEC.fieldOf("variant").forGetter(ResourceAmount::resource),
-                    Codec.LONG.fieldOf("amount").forGetter(ResourceAmount::amount)
-            ).apply(instance, ResourceAmount::new));
+			instance.group(
+					CODEC.fieldOf("variant").forGetter(ResourceAmount::resource),
+					Codec.LONG.fieldOf("amount").forGetter(ResourceAmount::amount)
+			).apply(instance, ResourceAmount::new));
 
     /**
 	 * Retrieve a blank FluidVariant.
