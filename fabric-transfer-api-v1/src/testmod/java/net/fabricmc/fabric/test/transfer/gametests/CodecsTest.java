@@ -32,7 +32,7 @@ public class CodecsTest {
 
 		JsonElement json = JsonParser.parseString(input);
 
-		DataResult<Pair<ResourceAmount<FluidVariant>, JsonElement>> result = ResourceAmount.FLUID_VARIANT_CODEC.decode(JsonOps.INSTANCE, json);
+		DataResult<Pair<ResourceAmount<FluidVariant>, JsonElement>> result = FluidVariant.AMOUNT_CODEC.decode(JsonOps.INSTANCE, json);
 		context.assertTrue(result.result().isPresent(), "Couldn't decode JSON");
 
 		ResourceAmount<FluidVariant> decoded = result.result().get().getFirst();
