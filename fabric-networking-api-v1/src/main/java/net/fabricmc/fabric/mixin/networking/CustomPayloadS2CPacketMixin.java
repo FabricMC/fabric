@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -31,13 +33,23 @@ import net.fabricmc.fabric.impl.networking.payload.RetainedPayload;
 
 @Mixin(CustomPayloadS2CPacket.class)
 public class CustomPayloadS2CPacketMixin {
+	@Shadow
+	@Final
+	private static int MAX_PAYLOAD_SIZE;
+
 	@Inject(
 			method = "readPayload",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/common/CustomPayloadS2CPacket;readUnknownPayload(Lnet/minecraft/util/Identifier;Lnet/minecraft/network/PacketByteBuf;)Lnet/minecraft/network/packet/UnknownCustomPayload;"),
 			cancellable = true
 	)
 	private static void readPayload(Identifier id, PacketByteBuf buf, CallbackInfoReturnable<CustomPayload> cir) {
+		int size = buf.readableBytes();
+
+		if (size < 0 || size > MAX_PAYLOAD_SIZE) {
+			throw new IllegalArgumentException("Payload may not be larger than " + MAX_PAYLOAD_SIZE + " bytes");
+		}
+
 		cir.setReturnValue(new RetainedPayload(id, PacketByteBufs.retainedSlice(buf)));
-		buf.skipBytes(buf.readableBytes());
+		buf.skipBytes(size);
 	}
 }
