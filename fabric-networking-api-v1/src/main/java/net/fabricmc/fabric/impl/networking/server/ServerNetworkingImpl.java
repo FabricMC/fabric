@@ -32,7 +32,9 @@ import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
+import net.fabricmc.fabric.impl.networking.payload.ResolvedPayload;
 import net.fabricmc.fabric.impl.networking.payload.TypedPayload;
 import net.fabricmc.fabric.impl.networking.payload.UntypedPayload;
 
@@ -61,6 +63,9 @@ public final class ServerNetworkingImpl {
 		Objects.requireNonNull(packet, "Packet cannot be null");
 		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
 
-		return new CustomPayloadS2CPacket(new TypedPayload(packet));
+		ResolvedPayload payload = new TypedPayload(packet);
+		if (NetworkingImpl.FORCE_PACKET_SERIALIZATION) payload = payload.resolve(null);
+
+		return new CustomPayloadS2CPacket(payload);
 	}
 }
