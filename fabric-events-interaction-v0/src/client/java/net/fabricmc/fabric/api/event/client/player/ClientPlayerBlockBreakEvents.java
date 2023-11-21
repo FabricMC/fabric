@@ -32,9 +32,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public class ClientPlayerBlockBreakEvents {
 	/**
-	 * Callback after a block is broken.
+	 * Callback after a block is broken client side.
 	 *
-	 * <p>Only called client side.
+	 * <p>Only called client side. For server side see {@link net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents#AFTER}
 	 */
 	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class,
 			(listeners) -> (world, player, pos, state) -> {
