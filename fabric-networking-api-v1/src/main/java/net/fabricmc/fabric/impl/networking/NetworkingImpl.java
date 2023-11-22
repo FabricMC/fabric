@@ -54,9 +54,7 @@ public final class NetworkingImpl {
 
 	static {
 		if (FORCE_PACKET_SERIALIZATION) {
-			LOGGER.warn("Force Packet Serialization is enabled");
-			if (FabricLoader.getInstance().isDevelopmentEnvironment()) LOGGER.warn("This is the default on dev env");
-			LOGGER.warn("Disable it with -Dfabric-api.networking.force-packet-serialization=false");
+			LOGGER.info("Force Packet Serialization is enabled to mimic remote connection on single player, this is the default behaviour on dev env. Add -Dfabric-api.networking.force-packet-serialization=false JVM arg to disable it.");
 		}
 	}
 }
