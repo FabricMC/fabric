@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.resource.conditions;
 
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -48,7 +49,7 @@ import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 public class LootManagerMixin {
 	// Keep track of the DynamicRegistryManager instance by assgining it to the map that is passed to the async runnable.
 	@Unique
-	private static final Map<Object, DynamicRegistryManager.Immutable> dynamicRegistryManagerMap = new IdentityHashMap<>();
+	private static final Map<Object, DynamicRegistryManager.Immutable> dynamicRegistryManagerMap = Collections.synchronizedMap(new IdentityHashMap<>());
 
 	@Inject(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;runAsync(Ljava/lang/Runnable;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"), locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void load(LootDataType type, ResourceManager resourceManager, Executor executor, Map<LootDataType<?>, Map<Identifier, ?>> results, CallbackInfoReturnable<CompletableFuture<?>> cir, Map map) {
