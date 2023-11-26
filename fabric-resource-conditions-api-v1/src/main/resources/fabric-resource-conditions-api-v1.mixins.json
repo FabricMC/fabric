@@ -9,5 +9,8 @@
     "LootManagerMixin",
     "SinglePreparationResourceReloaderMixin",
     "TagManagerLoaderMixin"
-  ]
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }
