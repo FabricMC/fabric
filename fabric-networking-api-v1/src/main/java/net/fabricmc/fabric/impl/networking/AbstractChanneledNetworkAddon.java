@@ -40,20 +40,23 @@ import net.minecraft.util.InvalidIdentifierException;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
+import net.fabricmc.fabric.impl.networking.payload.ResolvedPayload;
+import net.fabricmc.fabric.impl.networking.payload.UntypedPayload;
 
 /**
  * A network addon which is aware of the channels the other side may receive.
  *
  * @param <H> the channel handler type
  */
-public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon<H> implements PacketSender, CommonPacketHandler {
+public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon<ResolvablePayload.Handler<H>> implements PacketSender, CommonPacketHandler {
 	protected final ClientConnection connection;
-	protected final GlobalReceiverRegistry<H> receiver;
+	protected final GlobalReceiverRegistry<ResolvablePayload.Handler<H>> receiver;
 	protected final Set<Identifier> sendableChannels;
 
 	protected int commonVersion = -1;
 
-	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, String description) {
+	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<ResolvablePayload.Handler<H>> receiver, ClientConnection connection, String description) {
 		super(receiver, description);
 		this.connection = connection;
 		this.receiver = receiver;
@@ -70,28 +73,30 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	// always supposed to handle async!
-	protected boolean handle(Identifier channelName, PacketByteBuf buf) {
+	public boolean handle(ResolvablePayload resolvable) {
+		Identifier channelName = resolvable.id();
 		this.logger.debug("Handling inbound packet from channel with name \"{}\"", channelName);
 
 		// Handle reserved packets
 		if (NetworkingImpl.REGISTER_CHANNEL.equals(channelName)) {
-			this.receiveRegistration(true, buf);
+			this.receiveRegistration(true, resolvable);
 			return true;
 		}
 
 		if (NetworkingImpl.UNREGISTER_CHANNEL.equals(channelName)) {
-			this.receiveRegistration(false, buf);
+			this.receiveRegistration(false, resolvable);
 			return true;
 		}
 
-		@Nullable H handler = this.getHandler(channelName);
+		@Nullable ResolvablePayload.Handler<H> handler = this.getHandler(channelName);
 
 		if (handler == null) {
 			return false;
 		}
 
 		try {
-			this.receive(handler, buf);
+			ResolvedPayload resolved = resolvable.resolve(handler.type());
+			this.receive(handler.internal(), resolved);
 		} catch (Throwable ex) {
 			this.logger.error("Encountered exception while handling in channel with name \"{}\"", channelName, ex);
 			throw ex;
@@ -100,7 +105,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		return true;
 	}
 
-	protected abstract void receive(H handler, PacketByteBuf buf);
+	protected abstract void receive(H handler, ResolvedPayload payload);
 
 	protected void sendInitialChannelRegistrationPacket() {
 		final PacketByteBuf buf = this.createRegistrationPacket(this.getReceivableChannels());
@@ -133,7 +138,10 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	// wrap in try with res (buf)
-	protected void receiveRegistration(boolean register, PacketByteBuf buf) {
+	protected void receiveRegistration(boolean register, ResolvablePayload resolvable) {
+		UntypedPayload payload = (UntypedPayload) resolvable.resolve(null);
+		PacketByteBuf buf = payload.buffer();
+
 		List<Identifier> ids = new ArrayList<>();
 		StringBuilder active = new StringBuilder();
 

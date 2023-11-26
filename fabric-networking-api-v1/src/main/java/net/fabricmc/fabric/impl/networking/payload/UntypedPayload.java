@@ -16,13 +16,32 @@
 
 package net.fabricmc.fabric.impl.networking.payload;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-public record PacketByteBufPayload(Identifier id, PacketByteBuf data) implements CustomPayload {
+import net.fabricmc.fabric.api.networking.v1.PacketType;
+
+public record UntypedPayload(Identifier id, PacketByteBuf buffer) implements ResolvedPayload {
+	@Override
+	public ResolvedPayload resolve(@Nullable PacketType<?> type) {
+		if (type == null) {
+			return this;
+		} else {
+			TypedPayload typed = new TypedPayload(type.read(buffer));
+			int dangling = buffer.readableBytes();
+
+			if (dangling > 0) {
+				throw new IllegalStateException("Found " + dangling + " extra bytes when reading packet " + id);
+			}
+
+			return typed;
+		}
+	}
+
 	@Override
 	public void write(PacketByteBuf buf) {
-		PayloadHelper.write(buf, data());
+		buf.writeBytes(buffer);
 	}
 }

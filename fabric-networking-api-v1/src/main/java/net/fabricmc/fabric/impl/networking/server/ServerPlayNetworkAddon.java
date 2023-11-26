@@ -25,18 +25,20 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.S2CPlayChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
+import net.fabricmc.fabric.impl.networking.payload.ResolvedPayload;
 
-public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerPlayNetworking.PlayChannelHandler> {
+public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerPlayNetworkAddon.Handler> {
 	private final ServerPlayNetworkHandler handler;
 	private final MinecraftServer server;
 	private boolean sentInitialRegisterPacket;
@@ -62,19 +64,9 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		this.sentInitialRegisterPacket = true;
 	}
 
-	/**
-	 * Handles an incoming packet.
-	 *
-	 * @param payload the payload to handle
-	 * @return true if the packet has been handled
-	 */
-	public boolean handle(PacketByteBufPayload payload) {
-		return this.handle(payload.id(), payload.data());
-	}
-
 	@Override
-	protected void receive(ServerPlayNetworking.PlayChannelHandler handler, PacketByteBuf buf) {
-		handler.receive(this.server, this.handler.player, this.handler, buf, this);
+	protected void receive(Handler handler, ResolvedPayload payload) {
+		handler.receive(this.server, this.handler.player, this.handler, payload, this);
 	}
 
 	// impl details
@@ -136,5 +128,9 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected boolean isReservedChannel(Identifier channelName) {
 		return NetworkingImpl.isReservedCommonChannel(channelName);
+	}
+
+	public interface Handler {
+		void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, ResolvedPayload payload, PacketSender responseSender);
 	}
 }
