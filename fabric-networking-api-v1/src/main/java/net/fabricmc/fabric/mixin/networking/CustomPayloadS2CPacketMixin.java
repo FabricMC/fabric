@@ -28,8 +28,8 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
-import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.impl.networking.payload.RetainedPayload;
 
 @Mixin(CustomPayloadS2CPacket.class)
 public class CustomPayloadS2CPacketMixin {
@@ -43,6 +43,13 @@ public class CustomPayloadS2CPacketMixin {
 			cancellable = true
 	)
 	private static void readPayload(Identifier id, PacketByteBuf buf, CallbackInfoReturnable<CustomPayload> cir) {
-		cir.setReturnValue(new PacketByteBufPayload(id, PayloadHelper.read(buf, MAX_PAYLOAD_SIZE)));
+		int size = buf.readableBytes();
+
+		if (size < 0 || size > MAX_PAYLOAD_SIZE) {
+			throw new IllegalArgumentException("Payload may not be larger than " + MAX_PAYLOAD_SIZE + " bytes");
+		}
+
+		cir.setReturnValue(new RetainedPayload(id, PacketByteBufs.retainedSlice(buf)));
+		buf.skipBytes(size);
 	}
 }

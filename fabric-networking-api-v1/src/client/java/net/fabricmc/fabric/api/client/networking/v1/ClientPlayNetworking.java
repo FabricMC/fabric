@@ -36,6 +36,9 @@ import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
+import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
+import net.fabricmc.fabric.impl.networking.payload.TypedPayload;
+import net.fabricmc.fabric.impl.networking.payload.UntypedPayload;
 
 /**
  * Offers access to play stage client-side networking functionalities.
@@ -73,7 +76,7 @@ public final class ClientPlayNetworking {
 	 * @see ClientPlayNetworking#registerReceiver(Identifier, PlayChannelHandler)
 	 */
 	public static boolean registerGlobalReceiver(Identifier channelName, PlayChannelHandler channelHandler) {
-		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(channelName, channelHandler);
+		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(channelName, wrapUntyped(channelHandler));
 	}
 
 	/**
@@ -90,29 +93,7 @@ public final class ClientPlayNetworking {
 	 * @see ClientPlayNetworking#registerReceiver(PacketType, PlayPacketHandler)
 	 */
 	public static <T extends FabricPacket> boolean registerGlobalReceiver(PacketType<T> type, PlayPacketHandler<T> handler) {
-		return registerGlobalReceiver(type.getId(), new PlayChannelHandlerProxy<T>() {
-			@Override
-			public PlayPacketHandler<T> getOriginalHandler() {
-				return handler;
-			}
-
-			@Override
-			public void receive(MinecraftClient client, ClientPlayNetworkHandler networkHandler, PacketByteBuf buf, PacketSender sender) {
-				T packet = type.read(buf);
-
-				if (client.isOnThread()) {
-					// Do not submit to the render thread if we're already running there.
-					// Normally, packets are handled on the network IO thread - though it is
-					// not guaranteed (for example, with 1.19.4 S2C packet bundling)
-					// Since we're handling it right now, connection check is redundant.
-					handler.receive(packet, client.player, sender);
-				} else {
-					client.execute(() -> {
-						if (networkHandler.getConnection().isOpen()) handler.receive(packet, client.player, sender);
-					});
-				}
-			}
-		});
+		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(type.getId(), wrapTyped(type, handler));
 	}
 
 	/**
@@ -128,7 +109,7 @@ public final class ClientPlayNetworking {
 	 */
 	@Nullable
 	public static PlayChannelHandler unregisterGlobalReceiver(Identifier channelName) {
-		return ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(channelName);
+		return unwrapUntyped(ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(channelName));
 	}
 
 	/**
@@ -144,10 +125,8 @@ public final class ClientPlayNetworking {
 	 * @see ClientPlayNetworking#unregisterReceiver(PacketType)
 	 */
 	@Nullable
-	@SuppressWarnings("unchecked")
 	public static <T extends FabricPacket> PlayPacketHandler<T> unregisterGlobalReceiver(PacketType<T> type) {
-		PlayChannelHandler handler = ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(type.getId());
-		return handler instanceof PlayChannelHandlerProxy<?> proxy ? (PlayPacketHandler<T>) proxy.getOriginalHandler() : null;
+		return unwrapTyped(ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(type.getId()));
 	}
 
 	/**
@@ -181,7 +160,7 @@ public final class ClientPlayNetworking {
 		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
 
 		if (addon != null) {
-			return addon.registerChannel(channelName, channelHandler);
+			return addon.registerChannel(channelName, wrapUntyped(channelHandler));
 		}
 
 		throw new IllegalStateException("Cannot register receiver while not in game!");
@@ -203,29 +182,13 @@ public final class ClientPlayNetworking {
 	 * @see ClientPlayConnectionEvents#INIT
 	 */
 	public static <T extends FabricPacket> boolean registerReceiver(PacketType<T> type, PlayPacketHandler<T> handler) {
-		return registerReceiver(type.getId(), new PlayChannelHandlerProxy<T>() {
-			@Override
-			public PlayPacketHandler<T> getOriginalHandler() {
-				return handler;
-			}
+		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
 
-			@Override
-			public void receive(MinecraftClient client, ClientPlayNetworkHandler networkHandler, PacketByteBuf buf, PacketSender sender) {
-				T packet = type.read(buf);
+		if (addon != null) {
+			return addon.registerChannel(type.getId(), wrapTyped(type, handler));
+		}
 
-				if (client.isOnThread()) {
-					// Do not submit to the render thread if we're already running there.
-					// Normally, packets are handled on the network IO thread - though it is
-					// not guaranteed (for example, with 1.19.4 S2C packet bundling)
-					// Since we're handling it right now, connection check is redundant.
-					handler.receive(packet, client.player, sender);
-				} else {
-					client.execute(() -> {
-						if (networkHandler.getConnection().isOpen()) handler.receive(packet, client.player, sender);
-					});
-				}
-			}
-		});
+		throw new IllegalStateException("Cannot register receiver while not in game!");
 	}
 
 	/**
@@ -242,7 +205,7 @@ public final class ClientPlayNetworking {
 		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
 
 		if (addon != null) {
-			return addon.unregisterChannel(channelName);
+			return unwrapUntyped(addon.unregisterChannel(channelName));
 		}
 
 		throw new IllegalStateException("Cannot unregister receiver while not in game!");
@@ -259,10 +222,14 @@ public final class ClientPlayNetworking {
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
 	@Nullable
-	@SuppressWarnings("unchecked")
 	public static <T extends FabricPacket> PlayPacketHandler<T> unregisterReceiver(PacketType<T> type) {
-		PlayChannelHandler handler = unregisterReceiver(type.getId());
-		return handler instanceof PlayChannelHandlerProxy<?> proxy ? (PlayPacketHandler<T>) proxy.getOriginalHandler() : null;
+		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
+
+		if (addon != null) {
+			return unwrapTyped(addon.unregisterChannel(type.getId()));
+		}
+
+		throw new IllegalStateException("Cannot unregister receiver while not in game!");
 	}
 
 	/**
@@ -402,6 +369,46 @@ public final class ClientPlayNetworking {
 	private ClientPlayNetworking() {
 	}
 
+	private static ResolvablePayload.Handler<ClientPlayNetworkAddon.Handler> wrapUntyped(PlayChannelHandler actualHandler) {
+		return new ResolvablePayload.Handler<>(null, actualHandler, (client, handler, payload, responseSender) -> {
+			actualHandler.receive(client, handler, ((UntypedPayload) payload).buffer(), responseSender);
+		});
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T extends FabricPacket> ResolvablePayload.Handler<ClientPlayNetworkAddon.Handler> wrapTyped(PacketType<T> type, PlayPacketHandler<T> actualHandler) {
+		return new ResolvablePayload.Handler<>(type, actualHandler, (client, handler, payload, responseSender) -> {
+			T packet = (T) ((TypedPayload) payload).packet();
+
+			if (client.isOnThread()) {
+				// Do not submit to the render thread if we're already running there.
+				// Normally, packets are handled on the network IO thread - though it is
+				// not guaranteed (for example, with 1.19.4 S2C packet bundling)
+				// Since we're handling it right now, connection check is redundant.
+				actualHandler.receive(packet, client.player, responseSender);
+			} else {
+				client.execute(() -> {
+					if (handler.getConnection().isOpen()) actualHandler.receive(packet, client.player, responseSender);
+				});
+			}
+		});
+	}
+
+	@Nullable
+	private static PlayChannelHandler unwrapUntyped(@Nullable ResolvablePayload.Handler<ClientPlayNetworkAddon.Handler> handler) {
+		if (handler == null) return null;
+		if (handler.actual() instanceof PlayChannelHandler actual) return actual;
+		return null;
+	}
+
+	@Nullable
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	private static <T extends FabricPacket> PlayPacketHandler<T> unwrapTyped(@Nullable ResolvablePayload.Handler<ClientPlayNetworkAddon.Handler> handler) {
+		if (handler == null) return null;
+		if (handler.actual() instanceof PlayPacketHandler actual) return actual;
+		return null;
+	}
+
 	@FunctionalInterface
 	public interface PlayChannelHandler {
 		/**
@@ -427,14 +434,6 @@ public final class ClientPlayNetworking {
 		 * @param responseSender the packet sender
 		 */
 		void receive(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender);
-	}
-
-	/**
-	 * An internal packet handler that works as a proxy between old and new API.
-	 * @param <T> the type of the packet
-	 */
-	private interface PlayChannelHandlerProxy<T extends FabricPacket> extends PlayChannelHandler {
-		PlayPacketHandler<T> getOriginalHandler();
 	}
 
 	/**
