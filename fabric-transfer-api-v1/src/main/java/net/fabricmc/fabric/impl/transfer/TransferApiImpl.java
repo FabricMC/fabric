@@ -94,44 +94,6 @@ public class TransferApiImpl {
 		};
 	}
 
-	public static <T> Iterator<StorageView<T>> filterEmptyViews(Iterator<StorageView<T>> iterator) {
-		return new Iterator<>() {
-			StorageView<T> next;
-
-			{
-				findNext();
-			}
-
-			private void findNext() {
-				while (iterator.hasNext()) {
-					next = iterator.next();
-
-					if (next.getAmount() > 0 && !next.isResourceBlank()) {
-						return;
-					}
-				}
-
-				next = null;
-			}
-
-			@Override
-			public boolean hasNext() {
-				return next != null;
-			}
-
-			@Override
-			public StorageView<T> next() {
-				if (!hasNext()) {
-					throw new NoSuchElementException();
-				}
-
-				StorageView<T> ret = next;
-				findNext();
-				return ret;
-			}
-		};
-	}
-
 	public static <T> List<SingleSlotStorage<T>> makeListView(SlottedStorage<T> storage) {
 		return new AbstractList<>() {
 			@Override
