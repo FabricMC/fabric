@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.4.0"
+    "fabricloader": ">=0.14.9"
   },
   "description": "Hooks for registering custom particles.",
   "mixins": [
