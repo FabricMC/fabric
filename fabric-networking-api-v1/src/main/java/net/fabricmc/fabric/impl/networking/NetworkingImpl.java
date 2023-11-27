@@ -48,6 +48,8 @@ public final class NetworkingImpl {
 	 */
 	public static final Identifier UNREGISTER_CHANNEL = new Identifier("minecraft", "unregister");
 
+	public static final ThreadLocal<Boolean> FACTORY_RETAIN = ThreadLocal.withInitial(() -> Boolean.FALSE);
+
 	public static boolean isReservedCommonChannel(Identifier channelName) {
 		return channelName.equals(REGISTER_CHANNEL) || channelName.equals(UNREGISTER_CHANNEL);
 	}

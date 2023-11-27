@@ -29,6 +29,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.network.packet.s2c.play.BundleS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -68,6 +69,13 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 				}))
 				.then(literal("unknown").executes(ctx -> {
 					sendToUnknownChannel(ctx.getSource().getPlayer());
+					return Command.SINGLE_SUCCESS;
+				}))
+				.then(literal("bufctor").executes(ctx -> {
+					PacketByteBuf buf = PacketByteBufs.create();
+					buf.writeIdentifier(TEST_CHANNEL);
+					buf.writeText(Text.literal("bufctor"));
+					ctx.getSource().getPlayer().networkHandler.sendPacket(new CustomPayloadS2CPacket(buf));
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("bundled").executes(ctx -> {
