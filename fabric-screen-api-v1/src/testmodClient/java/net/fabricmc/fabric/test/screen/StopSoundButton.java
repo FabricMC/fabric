@@ -28,7 +28,7 @@ class StopSoundButton extends PressableWidget {
 	}
 
 	@Override
-	protected void renderButton(DrawContext drawContext, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(DrawContext drawContext, int mouseX, int mouseY, float delta) {
 		drawContext.drawGuiTexture(ScreenTests.ARMOR_FULL_TEXTURE, this.getX(), this.getY(), this.width, this.height);
 
 		if (this.isHovered()) {

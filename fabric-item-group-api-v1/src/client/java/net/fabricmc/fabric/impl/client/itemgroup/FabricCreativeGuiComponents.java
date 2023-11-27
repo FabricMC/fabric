@@ -52,7 +52,7 @@ public class FabricCreativeGuiComponents {
 		}
 
 		@Override
-		protected void renderButton(DrawContext drawContext, int mouseX, int mouseY, float delta) {
+		protected void renderWidget(DrawContext drawContext, int mouseX, int mouseY, float delta) {
 			this.active = extensions.fabric_isButtonEnabled(type);
 			this.visible = extensions.fabric_isButtonVisible(type);
 
