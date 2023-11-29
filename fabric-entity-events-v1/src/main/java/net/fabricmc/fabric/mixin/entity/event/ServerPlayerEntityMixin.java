@@ -19,6 +19,11 @@ package net.fabricmc.fabric.mixin.entity.event;
 import java.util.List;
 
 import com.mojang.datafixers.util.Either;
+
+import net.fabricmc.fabric.PlayerBetweenEndAndOverworldTracker;
+
+import net.minecraft.entity.EntityType;
+
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -53,6 +58,10 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 @Mixin(ServerPlayerEntity.class)
 abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
+	public ServerPlayerEntityMixin(EntityType<?> type, World world) {
+		super(type, world);
+	}
+
 	@Shadow
 	public abstract ServerWorld getWorld();
 
@@ -84,6 +93,16 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	@Inject(method = "worldChanged(Lnet/minecraft/server/world/ServerWorld;)V", at = @At("TAIL"))
 	private void afterWorldChanged(ServerWorld origin, CallbackInfo ci) {
 		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.invoker().afterChangeWorld((ServerPlayerEntity) (Object) this, origin, this.getWorld());
+	}
+
+	/**
+	 * worldChanged is not called when a player moves from the end to the overworld.
+	 */
+	@Inject(method = "moveToWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;detach()V"))
+	private void moveWorld(ServerWorld destination, CallbackInfoReturnable<Entity> cir) {
+		if (destination.getRegistryKey() == World.OVERWORLD) {
+			PlayerBetweenEndAndOverworldTracker.setPlayerIsBetweenEndAndOverworld(super.getUuid(), getWorld(), destination);
+		}
 	}
 
 	@Inject(method = "copyFrom", at = @At("TAIL"))
