@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.entity.event",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_17",
   "mixins": [
     "elytra.LivingEntityMixin",
     "elytra.PlayerEntityMixin",

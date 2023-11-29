@@ -30,7 +30,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -103,13 +102,11 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 		}
 	}
 
-	@ModifyVariable(method = "handleDisconnection", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/listener/PacketListener;onDisconnected(Lnet/minecraft/text/Text;)V"))
-	private PacketListener disconnectAddon(PacketListener packetListener) {
+	@Inject(method = "handleDisconnection", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/listener/PacketListener;onDisconnected(Lnet/minecraft/text/Text;)V"))
+	private void disconnectAddon(CallbackInfo ci) {
 		if (packetListener instanceof NetworkHandlerExtensions extension) {
 			extension.getAddon().handleDisconnect();
 		}
-
-		return packetListener;
 	}
 
 	@Inject(method = "sendInternal", at = @At(value = "INVOKE", target = "Lio/netty/channel/ChannelFuture;addListener(Lio/netty/util/concurrent/GenericFutureListener;)Lio/netty/channel/ChannelFuture;", remap = false), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
