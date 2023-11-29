@@ -42,7 +42,7 @@ abstract class GameRendererMixin {
 	private Screen renderingScreen;
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
-	private void onBeforeRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, @Local(ordinal = 0) int mouseX, @Local(ordinal = 0) int mouseY, @Local DrawContext drawContext) {
+	private void onBeforeRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, @Local(ordinal = 0) int mouseX, @Local(ordinal = 1) int mouseY, @Local DrawContext drawContext) {
 		// Store the screen in a variable in case someone tries to change the screen during this before render event.
 		// If someone changes the screen, the after render event will likely have class cast exceptions or an NPE.
 		this.renderingScreen = this.client.currentScreen;
@@ -51,7 +51,7 @@ abstract class GameRendererMixin {
 
 	// This injection should end up in the try block so exceptions are caught
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V", shift = At.Shift.AFTER))
-	private void onAfterRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, @Local(ordinal = 0) int mouseX, @Local(ordinal = 0) int mouseY, @Local DrawContext drawContext) {
+	private void onAfterRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, @Local(ordinal = 0) int mouseX, @Local(ordinal = 1) int mouseY, @Local DrawContext drawContext) {
 		ScreenEvents.afterRender(this.renderingScreen).invoker().afterRender(this.renderingScreen, drawContext, mouseX, mouseY, tickDelta);
 		// Finally set the currently rendering screen to null
 		this.renderingScreen = null;
