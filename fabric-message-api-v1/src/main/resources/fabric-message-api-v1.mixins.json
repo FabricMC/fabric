@@ -4,7 +4,9 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "MinecraftServerMixin",
-    "PlayerManagerMixin"
+    "PlayerManagerMixin",
+    "SentMessageChatAccessor",
+    "ServerPlayerEntityMixin"
   ],
   "client": [
   ],
