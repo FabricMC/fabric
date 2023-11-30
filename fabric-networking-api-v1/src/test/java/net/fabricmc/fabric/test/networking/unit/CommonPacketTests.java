@@ -47,9 +47,11 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.CommonPacketHandler;
 import net.fabricmc.fabric.impl.networking.CommonPacketsImpl;
@@ -58,7 +60,6 @@ import net.fabricmc.fabric.impl.networking.CommonVersionPayload;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
-import net.fabricmc.fabric.impl.networking.payload.UntypedPayload;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 
@@ -108,7 +109,9 @@ public class CommonPacketTests {
 		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeIntArray(new int[]{1, 2, 3});
 
-		packetHandler.internal().receive(null, clientNetworkHandler, new UntypedPayload(null, buf), packetSender);
+		// The actual handler doesn't copy the buffer
+		ClientConfigurationNetworking.ConfigurationChannelHandler actualHandler = (ClientConfigurationNetworking.ConfigurationChannelHandler) packetHandler.actual();
+		actualHandler.receive(null, clientNetworkHandler, buf, packetSender);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
@@ -132,7 +135,8 @@ public class CommonPacketTests {
 		buf.writeIntArray(new int[]{2, 3}); // We only support version 1
 
 		assertThrows(UnsupportedOperationException.class, () -> {
-			packetHandler.internal().receive(null, clientNetworkHandler, new UntypedPayload(null, buf), packetSender);
+			ClientConfigurationNetworking.ConfigurationChannelHandler actualHandler = (ClientConfigurationNetworking.ConfigurationChannelHandler) packetHandler.actual();
+			actualHandler.receive(null, clientNetworkHandler, buf, packetSender);
 		});
 
 		// Assert the entire packet was read
@@ -149,7 +153,8 @@ public class CommonPacketTests {
 		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeIntArray(new int[]{1, 2, 3});
 
-		packetHandler.internal().receive(null, serverNetworkHandler, new UntypedPayload(null, buf), null);
+		ServerConfigurationNetworking.ConfigurationChannelHandler actualHandler = (ServerConfigurationNetworking.ConfigurationChannelHandler) packetHandler.actual();
+		actualHandler.receive(null, serverNetworkHandler, buf, null);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
@@ -167,7 +172,8 @@ public class CommonPacketTests {
 		buf.writeIntArray(new int[]{3}); // Server only supports version 1
 
 		assertThrows(UnsupportedOperationException.class, () -> {
-			packetHandler.internal().receive(null, serverNetworkHandler, new UntypedPayload(null, buf), packetSender);
+			ServerConfigurationNetworking.ConfigurationChannelHandler actualHandler = (ServerConfigurationNetworking.ConfigurationChannelHandler) packetHandler.actual();
+			actualHandler.receive(null, serverNetworkHandler, buf, null);
 		});
 
 		// Assert the entire packet was read
@@ -188,7 +194,8 @@ public class CommonPacketTests {
 		buf.writeString("play"); // Target phase
 		buf.writeCollection(List.of(new Identifier("fabric", "test")), PacketByteBuf::writeIdentifier);
 
-		packetHandler.internal().receive(null, clientNetworkHandler, new UntypedPayload(null, buf), packetSender);
+		ClientConfigurationNetworking.ConfigurationChannelHandler actualHandler = (ClientConfigurationNetworking.ConfigurationChannelHandler) packetHandler.actual();
+		actualHandler.receive(null, clientNetworkHandler, buf, packetSender);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
@@ -217,7 +224,8 @@ public class CommonPacketTests {
 		buf.writeString("configuration"); // Target phase
 		buf.writeCollection(List.of(new Identifier("fabric", "test")), PacketByteBuf::writeIdentifier);
 
-		packetHandler.internal().receive(null, clientNetworkHandler, new UntypedPayload(null, buf), packetSender);
+		ClientConfigurationNetworking.ConfigurationChannelHandler actualHandler = (ClientConfigurationNetworking.ConfigurationChannelHandler) packetHandler.actual();
+		actualHandler.receive(null, clientNetworkHandler, buf, packetSender);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
@@ -245,7 +253,8 @@ public class CommonPacketTests {
 		buf.writeString("play"); // Target phase
 		buf.writeCollection(List.of(new Identifier("fabric", "test")), PacketByteBuf::writeIdentifier);
 
-		packetHandler.internal().receive(null, serverNetworkHandler, new UntypedPayload(null, buf), packetSender);
+		ServerConfigurationNetworking.ConfigurationChannelHandler actualHandler = (ServerConfigurationNetworking.ConfigurationChannelHandler) packetHandler.actual();
+		actualHandler.receive(null, serverNetworkHandler, buf, null);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
@@ -266,7 +275,8 @@ public class CommonPacketTests {
 		buf.writeString("configuration"); // Target phase
 		buf.writeCollection(List.of(new Identifier("fabric", "test")), PacketByteBuf::writeIdentifier);
 
-		packetHandler.internal().receive(null, serverNetworkHandler, new UntypedPayload(null, buf), packetSender);
+		ServerConfigurationNetworking.ConfigurationChannelHandler actualHandler = (ServerConfigurationNetworking.ConfigurationChannelHandler) packetHandler.actual();
+		actualHandler.receive(null, serverNetworkHandler, buf, null);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
