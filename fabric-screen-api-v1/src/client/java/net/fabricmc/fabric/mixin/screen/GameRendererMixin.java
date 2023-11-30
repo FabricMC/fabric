@@ -16,16 +16,11 @@
 
 package net.fabricmc.fabric.mixin.screen;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import org.spongepowered.asm.mixin.Final;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
@@ -34,26 +29,10 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 
 @Mixin(GameRenderer.class)
 abstract class GameRendererMixin {
-	@Shadow
-	@Final
-	private MinecraftClient client;
-
-	@Unique
-	private Screen renderingScreen;
-
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
-	private void onBeforeRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, @Local(ordinal = 0) int mouseX, @Local(ordinal = 1) int mouseY, @Local DrawContext drawContext) {
-		// Store the screen in a variable in case someone tries to change the screen during this before render event.
-		// If someone changes the screen, the after render event will likely have class cast exceptions or an NPE.
-		this.renderingScreen = this.client.currentScreen;
-		ScreenEvents.beforeRender(this.renderingScreen).invoker().beforeRender(this.renderingScreen, drawContext, mouseX, mouseY, tickDelta);
-	}
-
-	// This injection should end up in the try block so exceptions are caught
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V", shift = At.Shift.AFTER))
-	private void onAfterRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, @Local(ordinal = 0) int mouseX, @Local(ordinal = 1) int mouseY, @Local DrawContext drawContext) {
-		ScreenEvents.afterRender(this.renderingScreen).invoker().afterRender(this.renderingScreen, drawContext, mouseX, mouseY, tickDelta);
-		// Finally set the currently rendering screen to null
-		this.renderingScreen = null;
+	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
+	private void onRenderScreen(Screen currentScreen, DrawContext drawContext, int mouseX, int mouseY, float tickDelta, Operation<Void> operation) {
+		ScreenEvents.beforeRender(currentScreen).invoker().beforeRender(currentScreen, drawContext, mouseX, mouseY, tickDelta);
+		operation.call(currentScreen, drawContext, mouseX, mouseY, tickDelta);
+		ScreenEvents.afterRender(currentScreen).invoker().afterRender(currentScreen, drawContext, mouseX, mouseY, tickDelta);
 	}
 }

@@ -60,7 +60,7 @@ public final class EntityEventTests implements ModInitializer {
 		Registry.register(Registries.ITEM, new Identifier("fabric-entity-events-v1-testmod", "diamond_elytra"), DIAMOND_ELYTRA);
 
 		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed) -> {
-			LOGGER.info("Entity Killed: {}", killed);
+			LOGGER.info("Entity {} Killed: {}", entity, killed);
 		});
 
 		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
