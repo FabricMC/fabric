@@ -37,7 +37,7 @@ public class MainMixin {
 	}
 
 	// Inject after resourcePackManager is stored
-	@Inject(method = "main", cancellable = true, at = @At(value = "INVOKE", shift = At.Shift.BY, by = 2, target = "Lnet/minecraft/resource/VanillaDataPackProvider;createManager(Lnet/minecraft/world/level/storage/LevelStorage$Session;)Lnet/minecraft/resource/ResourcePackManager;"))
+	@Inject(method = "main", cancellable = true, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/resource/VanillaDataPackProvider;createManager(Lnet/minecraft/world/level/storage/LevelStorage$Session;)Lnet/minecraft/resource/ResourcePackManager;"))
 	private static void main(String[] args, CallbackInfo info, @Local LevelStorage.Session session, @Local ResourcePackManager resourcePackManager) {
 		if (FabricGameTestHelper.ENABLED) {
 			FabricGameTestHelper.runHeadlessServer(session, resourcePackManager);
