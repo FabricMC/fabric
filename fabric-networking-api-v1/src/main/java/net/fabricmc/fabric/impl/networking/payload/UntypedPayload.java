@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
 
 public record UntypedPayload(Identifier id, PacketByteBuf buffer) implements ResolvedPayload {
@@ -29,8 +30,9 @@ public record UntypedPayload(Identifier id, PacketByteBuf buffer) implements Res
 		if (type == null) {
 			return this;
 		} else {
-			TypedPayload typed = new TypedPayload(type.read(buffer));
-			int dangling = buffer.readableBytes();
+			PacketByteBuf copy = PacketByteBufs.copy(buffer);
+			TypedPayload typed = new TypedPayload(type.read(copy));
+			int dangling = copy.readableBytes();
 
 			if (dangling > 0) {
 				throw new IllegalStateException("Found " + dangling + " extra bytes when reading packet " + id);
@@ -42,6 +44,11 @@ public record UntypedPayload(Identifier id, PacketByteBuf buffer) implements Res
 
 	@Override
 	public void write(PacketByteBuf buf) {
-		buf.writeBytes(buffer);
+		buf.writeBytes(buffer.copy());
+	}
+
+	@Override
+	public PacketByteBuf buffer() {
+		return PacketByteBufs.copy(buffer);
 	}
 }
