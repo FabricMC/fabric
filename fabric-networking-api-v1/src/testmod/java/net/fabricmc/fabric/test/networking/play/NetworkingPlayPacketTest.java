@@ -78,6 +78,13 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 					ctx.getSource().getPlayer().networkHandler.sendPacket(new CustomPayloadS2CPacket(buf));
 					return Command.SINGLE_SUCCESS;
 				}))
+				.then(literal("repeat").executes(ctx -> {
+					PacketByteBuf buf = PacketByteBufs.create();
+					buf.writeText(Text.literal("repeat"));
+					ServerPlayNetworking.send(ctx.getSource().getPlayer(), TEST_CHANNEL, buf);
+					ServerPlayNetworking.send(ctx.getSource().getPlayer(), TEST_CHANNEL, buf);
+					return Command.SINGLE_SUCCESS;
+				}))
 				.then(literal("bundled").executes(ctx -> {
 					PacketByteBuf buf1 = PacketByteBufs.create();
 					buf1.writeText(Text.literal("bundled #1"));
