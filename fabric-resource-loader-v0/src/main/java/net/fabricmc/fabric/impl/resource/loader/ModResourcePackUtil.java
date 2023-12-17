@@ -16,12 +16,16 @@
 
 package net.fabricmc.fabric.impl.resource.loader;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import com.google.common.base.Charsets;
@@ -67,7 +71,7 @@ public final class ModResourcePackUtil {
 				continue;
 			}
 
-			ModResourcePack pack = ModNioResourcePack.create(container.getMetadata().getId(), container, subPath, type, ResourcePackActivationType.ALWAYS_ENABLED);
+			ModResourcePack pack = ModNioResourcePack.create(container.getMetadata().getId(), container, subPath, type, ResourcePackActivationType.ALWAYS_ENABLED, true);
 
 			if (pack != null) {
 				packs.add(pack);
@@ -75,16 +79,32 @@ public final class ModResourcePackUtil {
 		}
 	}
 
-	public static boolean containsDefault(ModMetadata info, String filename) {
-		return "pack.mcmeta".equals(filename);
+	public static boolean containsDefault(String filename, boolean modBundled) {
+		return "pack.mcmeta".equals(filename) || (modBundled && "pack.png".equals(filename));
 	}
 
-	public static InputStream openDefault(ModMetadata info, ResourceType type, String filename) {
+	public static InputStream openDefault(ModContainer container, ResourceType type, String filename) throws IOException {
 		switch (filename) {
 		case "pack.mcmeta":
-			String description = Objects.requireNonNullElse(info.getName(), "");
+			String description = Objects.requireNonNullElse(container.getMetadata().getName(), "");
 			String metadata = serializeMetadata(SharedConstants.getGameVersion().getResourceVersion(type), description);
 			return IOUtils.toInputStream(metadata, Charsets.UTF_8);
+		case "pack.png":
+			Optional<Path> path = container.getMetadata().getIconPath(512).flatMap(container::findPath);
+
+			if (path.isPresent()) {
+				return Files.newInputStream(path.get());
+			} else {
+				Optional<Path> loaderIconPath = FabricLoader.getInstance().getModContainer("fabric-resource-loader-v0")
+						.flatMap(resourceLoaderContainer -> resourceLoaderContainer.getMetadata().getIconPath(512).flatMap(resourceLoaderContainer::findPath));
+
+				if (loaderIconPath.isPresent()) {
+					return Files.newInputStream(loaderIconPath.get());
+				}
+
+				// Should never happen in practice
+				return null;
+			}
 		default:
 			return null;
 		}
@@ -124,7 +144,7 @@ public final class ModResourcePackUtil {
 		// as the data pack screen automatically put any data pack as disabled except the Default data pack.
 		for (ResourcePackProfile profile : moddedResourcePacks) {
 			try (ResourcePack pack = profile.createResourcePack()) {
-				if (pack instanceof FabricModResourcePack || (pack instanceof ModNioResourcePack && ((ModNioResourcePack) pack).getActivationType().isEnabledByDefault())) {
+				if (pack instanceof ModNioResourcePack && ((ModNioResourcePack) pack).getActivationType().isEnabledByDefault()) {
 					enabled.add(profile.getName());
 				} else {
 					disabled.add(profile.getName());

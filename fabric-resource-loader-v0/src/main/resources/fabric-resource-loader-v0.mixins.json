@@ -6,8 +6,6 @@
     "KeyedResourceReloadListenerMixin",
     "LifecycledResourceManagerImplMixin",
     "MinecraftServerMixin",
-    "NamespaceResourceManagerMixin",
-    "ReloadableResourceManagerImplMixin",
     "ResourceMixin",
     "ResourcePackManagerMixin",
     "ResourcePackProfileMixin",
