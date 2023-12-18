@@ -25,6 +25,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Hand;
 
 /**
@@ -75,7 +76,7 @@ public interface FabricItem {
 	 * @param slot  the equipment slot this stack is in
 	 * @return the attribute modifiers
 	 */
-	default Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
+	default Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
 		return ((Item) this).getAttributeModifiers(slot);
 	}
 

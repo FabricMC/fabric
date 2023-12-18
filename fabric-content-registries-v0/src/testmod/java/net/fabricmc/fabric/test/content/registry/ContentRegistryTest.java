@@ -34,11 +34,11 @@ import net.minecraft.potion.Potions;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -64,7 +64,7 @@ public final class ContentRegistryTest implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);
 
 	public static final Identifier TEST_EVENT_ID = new Identifier("fabric-content-registries-v0-testmod", "test_event");
-	public static final GameEvent TEST_EVENT = new GameEvent(GameEvent.DEFAULT_RANGE);
+	public static final RegistryEntry.Reference<GameEvent> TEST_EVENT = Registry.registerReference(Registries.GAME_EVENT, TEST_EVENT_ID, new GameEvent(GameEvent.DEFAULT_RANGE));
 
 	@Override
 	public void onInitialize() {
@@ -139,13 +139,12 @@ public final class ContentRegistryTest implements ModInitializer {
 
 		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, new Identifier("fake_loot_table"));
 
-		Registry.register(Registries.GAME_EVENT, TEST_EVENT_ID, TEST_EVENT);
 		Registry.register(Registries.BLOCK, TEST_EVENT_ID, new TestEventBlock(AbstractBlock.Settings.copy(Blocks.STONE)));
-		SculkSensorFrequencyRegistry.register(TEST_EVENT, 2);
+		SculkSensorFrequencyRegistry.register(TEST_EVENT.registryKey(), 2);
 
 		// assert that SculkSensorFrequencyRegistry throws when registering a frequency outside the allowed range
 		try {
-			SculkSensorFrequencyRegistry.register(GameEvent.SHRIEK, 18);
+			SculkSensorFrequencyRegistry.register(GameEvent.SHRIEK.registryKey(), 18);
 
 			throw new AssertionError("SculkSensorFrequencyRegistry didn't throw when frequency was outside allowed range!");
 		} catch (IllegalArgumentException e) {
@@ -169,7 +168,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		}
 
 		@Override
-		public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+		public ActionResult method_55766(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
 			// Emit the test event
 			world.emitGameEvent(player, TEST_EVENT, pos);
 			return ActionResult.SUCCESS;

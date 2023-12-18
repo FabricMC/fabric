@@ -36,6 +36,7 @@ import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.FabricItemStack;
@@ -82,10 +83,10 @@ public abstract class ItemStackMixin implements FabricItemStack {
 					target = "Lnet/minecraft/item/Item;getAttributeModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;"
 			)
 	)
-	public Multimap<EntityAttribute, EntityAttributeModifier> hookGetAttributeModifiers(Item item, EquipmentSlot slot) {
+	public Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> hookGetAttributeModifiers(Item item, EquipmentSlot slot) {
 		ItemStack stack = (ItemStack) (Object) this;
 		//we need to ensure it is modifiable for the callback, use linked map to preserve ordering
-		Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers = LinkedHashMultimap.create(item.getAttributeModifiers(stack, slot));
+		Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> attributeModifiers = LinkedHashMultimap.create(item.getAttributeModifiers(stack, slot));
 		ModifyItemAttributeModifiersCallback.EVENT.invoker().modifyAttributeModifiers(stack, slot, attributeModifiers);
 		return attributeModifiers;
 	}

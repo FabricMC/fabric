@@ -18,11 +18,11 @@ package net.fabricmc.fabric.test.lookup;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.class_9062;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -38,8 +38,7 @@ public class InspectorBlock extends Block {
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		ItemStack stack = player.getStackInHand(hand);
+	public class_9062 method_55765(ItemStack stack, BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult blockHitResult) {
 		Inspectable inspectable = FabricItemApiLookupTest.INSPECTABLE.find(stack, null);
 
 		if (inspectable != null) {
@@ -47,10 +46,10 @@ public class InspectorBlock extends Block {
 				player.sendMessage(inspectable.inspect(), true);
 			}
 
-			return ActionResult.success(world.isClient());
+			return class_9062.method_55644(world.isClient());
 		}
 
-		return ActionResult.PASS;
+		return class_9062.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Override

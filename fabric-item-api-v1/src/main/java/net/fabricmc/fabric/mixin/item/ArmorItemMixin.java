@@ -32,6 +32,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ArmorMaterials;
+import net.minecraft.registry.entry.RegistryEntry;
 
 @Mixin(ArmorItem.class)
 public class ArmorItemMixin {
@@ -42,7 +43,7 @@ public class ArmorItemMixin {
 	 * adds a knockback resistance modifier to any ArmorItem if knockbackResistance is > 0.0F.
 	 */
 	@ModifyVariable(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMultimap$Builder;build()Lcom/google/common/collect/ImmutableMultimap;", remap = false))
-	private ImmutableMultimap.Builder<EntityAttribute, EntityAttributeModifier> fabric_knockbackResistance(ImmutableMultimap.Builder<EntityAttribute, EntityAttributeModifier> builder, ArmorMaterial material, ArmorItem.Type type) {
+	private ImmutableMultimap.Builder<RegistryEntry<EntityAttribute>, EntityAttributeModifier> fabric_knockbackResistance(ImmutableMultimap.Builder<RegistryEntry<EntityAttribute>, EntityAttributeModifier> builder, ArmorMaterial material, ArmorItem.Type type) {
 		// Vanilla handles netherite
 		if (material != ArmorMaterials.NETHERITE && knockbackResistance > 0.0F) {
 			builder.put(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, new EntityAttributeModifier(

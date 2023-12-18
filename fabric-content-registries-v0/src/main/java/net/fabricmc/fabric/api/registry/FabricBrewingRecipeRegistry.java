@@ -23,6 +23,7 @@ import net.minecraft.item.PotionItem;
 import net.minecraft.potion.Potion;
 import net.minecraft.recipe.BrewingRecipeRegistry;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.entry.RegistryEntry;
 
 /**
  * Counterpart of {@link BrewingRecipeRegistry} with methods that allow adding recipes which use Ingredients instead of Items.
@@ -45,7 +46,7 @@ public final class FabricBrewingRecipeRegistry {
 		Objects.requireNonNull(ingredient, "Ingredient cannot be null!");
 		Objects.requireNonNull(output, "Output cannot be null!");
 
-		BrewingRecipeRegistry.ITEM_RECIPES.add(new BrewingRecipeRegistry.Recipe<>(input, ingredient, output));
+		BrewingRecipeRegistry.ITEM_RECIPES.add(new BrewingRecipeRegistry.Recipe<>(input.getRegistryEntry(), ingredient, output.getRegistryEntry()));
 	}
 
 	/**
@@ -55,9 +56,9 @@ public final class FabricBrewingRecipeRegistry {
 	 * @param input input potion (e.g. awkward)
 	 * @param ingredient the required ingredient (e.g. glistering melon)
 	 * @param output output potion (e.g. instant health)
-	 * @see BrewingRecipeRegistry#registerPotionRecipe(Potion, Item, Potion)
+	 * @see BrewingRecipeRegistry#registerPotionRecipe(RegistryEntry, Item, RegistryEntry)
 	 */
-	public static void registerPotionRecipe(Potion input, Ingredient ingredient, Potion output) {
+	public static void registerPotionRecipe(RegistryEntry<Potion> input, Ingredient ingredient, RegistryEntry<Potion> output) {
 		Objects.requireNonNull(input, "Input cannot be null!");
 		Objects.requireNonNull(ingredient, "Ingredient cannot be null!");
 		Objects.requireNonNull(output, "Output cannot be null");

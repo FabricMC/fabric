@@ -29,6 +29,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
@@ -67,7 +68,7 @@ public class UpdatingItem extends Item {
 	}
 
 	@Override
-	public Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
+	public Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
 		// Give + 5 attack damage for 15 seconds every 30 seconds.
 		if (slot == EquipmentSlot.MAINHAND && isEnabled(stack)) {
 			return ImmutableMultimap.of(EntityAttributes.GENERIC_ATTACK_DAMAGE, PLUS_FIVE);
