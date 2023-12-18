@@ -30,7 +30,9 @@ import java.util.Set;
 
 import com.google.common.base.Charsets;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,7 +55,7 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
  * Internal utilities for managing resource packs.
  */
 public final class ModResourcePackUtil {
-	private static final Gson GSON = new Gson();
+	public static final Gson GSON = new Gson();
 
 	private ModResourcePackUtil() {
 	}
@@ -83,6 +85,18 @@ public final class ModResourcePackUtil {
 		return "pack.mcmeta".equals(filename) || (modBundled && "pack.png".equals(filename));
 	}
 
+	public static InputStream getDefaultIcon() throws IOException {
+		Optional<Path> loaderIconPath = FabricLoader.getInstance().getModContainer("fabric-resource-loader-v0")
+				.flatMap(resourceLoaderContainer -> resourceLoaderContainer.getMetadata().getIconPath(512).flatMap(resourceLoaderContainer::findPath));
+
+		if (loaderIconPath.isPresent()) {
+			return Files.newInputStream(loaderIconPath.get());
+		}
+
+		// Should never happen in practice
+		return null;
+	}
+
 	public static InputStream openDefault(ModContainer container, ResourceType type, String filename) throws IOException {
 		switch (filename) {
 		case "pack.mcmeta":
@@ -95,28 +109,24 @@ public final class ModResourcePackUtil {
 			if (path.isPresent()) {
 				return Files.newInputStream(path.get());
 			} else {
-				Optional<Path> loaderIconPath = FabricLoader.getInstance().getModContainer("fabric-resource-loader-v0")
-						.flatMap(resourceLoaderContainer -> resourceLoaderContainer.getMetadata().getIconPath(512).flatMap(resourceLoaderContainer::findPath));
-
-				if (loaderIconPath.isPresent()) {
-					return Files.newInputStream(loaderIconPath.get());
-				}
-
-				// Should never happen in practice
-				return null;
+				return getDefaultIcon();
 			}
 		default:
 			return null;
 		}
 	}
 
-	public static String serializeMetadata(int packVersion, String description) {
+	public static JsonObject getMetadataJson(int packVersion, JsonElement description) {
 		JsonObject pack = new JsonObject();
 		pack.addProperty("pack_format", packVersion);
-		pack.addProperty("description", description);
+		pack.add("description", description);
 		JsonObject metadata = new JsonObject();
 		metadata.add("pack", pack);
-		return GSON.toJson(metadata);
+		return metadata;
+	}
+
+	public static String serializeMetadata(int packVersion, String description) {
+		return GSON.toJson(getMetadataJson(packVersion, new JsonPrimitive(description)));
 	}
 
 	public static Text getName(ModMetadata info) {
