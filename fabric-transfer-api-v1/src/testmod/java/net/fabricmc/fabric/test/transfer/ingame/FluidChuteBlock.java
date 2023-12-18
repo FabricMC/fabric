@@ -25,9 +25,10 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.class_9062;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -64,7 +65,7 @@ public class FluidChuteBlock extends Block implements BlockEntityProvider {
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+	public class_9062 method_55765(ItemStack stack, BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult blockHitResult) {
 		if (world.getBlockEntity(pos) instanceof FluidChuteBlockEntity chute) {
 			if (!FluidStorageUtil.interactWithFluidStorage(chute.storage, player, hand)) {
 				if (!world.isClient()) {
@@ -76,10 +77,10 @@ public class FluidChuteBlock extends Block implements BlockEntityProvider {
 					);
 				}
 
-				return ActionResult.CONSUME;
+				return class_9062.CONSUME;
 			}
 		}
 
-		return ActionResult.success(world.isClient());
+		return class_9062.method_55644(world.isClient());
 	}
 }

@@ -22,6 +22,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -46,7 +47,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 @FunctionalInterface
 public interface ModifyItemAttributeModifiersCallback {
-	void modifyAttributeModifiers(ItemStack stack, EquipmentSlot slot, Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers);
+	void modifyAttributeModifiers(ItemStack stack, EquipmentSlot slot, Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> attributeModifiers);
 
 	Event<ModifyItemAttributeModifiersCallback> EVENT = EventFactory.createArrayBacked(
 			ModifyItemAttributeModifiersCallback.class,

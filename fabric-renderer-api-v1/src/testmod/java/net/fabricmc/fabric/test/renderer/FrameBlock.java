@@ -23,9 +23,9 @@ import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.class_9062;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -43,9 +43,8 @@ public class FrameBlock extends Block implements BlockEntityProvider, FabricBloc
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+	public class_9062 method_55765(ItemStack stack, BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult blockHitResult) {
 		if (world.getBlockEntity(pos) instanceof FrameBlockEntity frame) {
-			ItemStack stack = player.getStackInHand(hand);
 			Block handBlock = Block.getBlockFromItem(stack.getItem());
 
 			@Nullable
@@ -59,20 +58,20 @@ public class FrameBlock extends Block implements BlockEntityProvider, FabricBloc
 						frame.setBlock(null);
 					}
 
-					return ActionResult.success(world.isClient());
+					return class_9062.method_55644(world.isClient());
 				}
 
-				return ActionResult.PASS;
+				return class_9062.SKIP_DEFAULT_BLOCK_INTERACTION;
 			}
 
 			// getBlockFromItem will return air if we do not have a block item in hand
 			if (handBlock == Blocks.AIR) {
-				return ActionResult.FAIL;
+				return class_9062.FAIL;
 			}
 
 			// Do not allow blocks that may have a block entity
 			if (handBlock instanceof BlockEntityProvider) {
-				return ActionResult.FAIL;
+				return class_9062.FAIL;
 			}
 
 			stack.decrement(1);
@@ -85,10 +84,10 @@ public class FrameBlock extends Block implements BlockEntityProvider, FabricBloc
 				frame.setBlock(handBlock);
 			}
 
-			return ActionResult.success(world.isClient());
+			return class_9062.method_55644(world.isClient());
 		}
 
-		return ActionResult.FAIL;
+		return class_9062.FAIL;
 	}
 
 	@Nullable
