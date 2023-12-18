@@ -49,7 +49,7 @@ transitive-accessible method net/minecraft/item/ItemPlacementContext <init> (Lne
 # Registering custom brewing recipes
 transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerItemRecipe (Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;)V
 transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerPotionType (Lnet/minecraft/item/Item;)V
-transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerPotionRecipe (Lnet/minecraft/potion/Potion;Lnet/minecraft/item/Item;Lnet/minecraft/potion/Potion;)V
+transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerPotionRecipe (Lnet/minecraft/registry/entry/RegistryEntry;Lnet/minecraft/item/Item;Lnet/minecraft/registry/entry/RegistryEntry;)V
 
 # Registering custom scoreboard criteria
 transitive-accessible method net/minecraft/scoreboard/ScoreboardCriterion create (Ljava/lang/String;ZLnet/minecraft/scoreboard/ScoreboardCriterion$RenderType;)Lnet/minecraft/scoreboard/ScoreboardCriterion;

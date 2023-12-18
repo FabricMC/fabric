@@ -236,7 +236,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			translationBuilder.add(SIMPLE_BLOCK, "Simple Block");
 			translationBuilder.add(new Identifier(MOD_ID, "identifier_test"), "Identifier Test");
 			translationBuilder.add(EntityType.ALLAY, "Allay");
-			translationBuilder.add(EntityAttributes.GENERIC_ARMOR.value(), "Generic Armor");
+			translationBuilder.add(EntityAttributes.GENERIC_ARMOR, "Generic Armor");
 
 			try {
 				Optional<Path> path = dataOutput.getModContainer().findPath("assets/testmod/lang/en_us.base.json");

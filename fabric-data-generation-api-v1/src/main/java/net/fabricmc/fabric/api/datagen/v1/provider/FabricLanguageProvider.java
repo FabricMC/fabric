@@ -41,6 +41,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.stat.StatType;
 import net.minecraft.text.TextContent;
 import net.minecraft.text.TranslatableTextContent;
@@ -188,8 +189,8 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param entityAttribute The {@link EntityAttribute} to get the translation key from.
 		 * @param value           The value of the entry.
 		 */
-		default void add(EntityAttribute entityAttribute, String value) {
-			add(entityAttribute.getTranslationKey(), value);
+		default void add(RegistryEntry<EntityAttribute> entityAttribute, String value) {
+			add(entityAttribute.value().getTranslationKey(), value);
 		}
 
 		/**
