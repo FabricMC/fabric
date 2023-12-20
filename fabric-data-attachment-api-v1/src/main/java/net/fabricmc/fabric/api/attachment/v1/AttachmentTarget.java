@@ -32,6 +32,8 @@ import net.minecraft.world.chunk.WorldChunk;
  * <p>Fabric implements this on {@link Entity}, {@link BlockEntity}, {@link ServerWorld} and {@link WorldChunk} via mixin.</p>
  */
 public interface AttachmentTarget {
+	String NBT_ATTACHMENT_KEY = "fabric:attachments";
+
 	/**
 	 * Gets the data associated with the given {@link Attachment}. If it doesn't exist yet,
 	 * it is generated using {@link Attachment#initializer()}.
@@ -115,7 +117,7 @@ public interface AttachmentTarget {
 	/**
 	 * @return whether the {@link AttachmentTarget} has any attachment data to serialize
 	 */
-	default boolean hasSerializableAttachments() {
+	default boolean hasPersistentAttachments() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 }

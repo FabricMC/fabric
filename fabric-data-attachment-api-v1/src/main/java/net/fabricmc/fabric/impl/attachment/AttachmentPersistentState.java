@@ -33,7 +33,7 @@ public class AttachmentPersistentState extends PersistentState {
 
 	public AttachmentPersistentState(ServerWorld world) {
 		this.world = world;
-		this.wasSerialized = world.hasSerializableAttachments();
+		this.wasSerialized = world.hasPersistentAttachments();
 	}
 
 	public static AttachmentPersistentState read(ServerWorld world, @Nullable NbtCompound nbt) {
@@ -44,7 +44,7 @@ public class AttachmentPersistentState extends PersistentState {
 	@Override
 	public boolean isDirty() {
 		// Only write data if there are attachments, or if we previously wrote data.
-		return wasSerialized || world.hasSerializableAttachments();
+		return wasSerialized || world.hasPersistentAttachments();
 	}
 
 	@Override

@@ -93,7 +93,7 @@ public class AttachmentTargetsMixin implements AttachmentTarget {
 	}
 
 	@Override
-	public boolean hasSerializableAttachments() {
+	public boolean hasPersistentAttachments() {
 		return AttachmentSerializingImpl.hasSerializableAttachments(fabric_dataAttachments);
 	}
 }

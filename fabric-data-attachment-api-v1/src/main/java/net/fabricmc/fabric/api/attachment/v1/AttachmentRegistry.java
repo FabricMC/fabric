@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.attachment.v1;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.Nullable;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.util.Identifier;
 
@@ -27,8 +27,9 @@ import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 
 /**
  * Class used to create and register {@link Attachment}s. To quickly create {@link Attachment}s with default values, use
- * {@link AttachmentRegistry#createDefaulted(Identifier, Object)}, or {@link AttachmentRegistry#createDefaulted(Identifier, Object, AttachmentSerializer)}
- * to provide an {@link AttachmentSerializer}.
+ * {@link #create(Identifier, Supplier)}. Alternatively, {@link #createPersistent(Identifier, Supplier, Codec)} and
+ * {@link #createSynced(Identifier, Supplier, Codec)} can be used for attachments that persist across server restarts
+ * or that are synced between server and client, respectively.
  *
  * <p>For more control over the attachment and its properties, use {@link AttachmentRegistry#builder()} to
  * get a {@link Builder} instance.</p>
@@ -38,46 +39,61 @@ public final class AttachmentRegistry {
 	}
 
 	/**
-	 * Creates <i>and registers</i> an attachment, initialized using a default value.
+	 * Creates <i>and registers</i> an attachment, initialized using a default value. The data will be neither persisted
+	 * nor synced
 	 *
 	 * @param id the identifier of this attachment
 	 * @param defaultValue the default value, used for objects which don't have attached data yet. Must not be {@code null}
 	 * @param <A> the type of attached data
 	 * @return the registered {@link Attachment} instance
 	 */
-	public static <A> Attachment<A> createDefaulted(Identifier id, A defaultValue) {
+	public static <A> Attachment<A> create(Identifier id, Supplier<A> defaultValue) {
 		Objects.requireNonNull(id, "identifier cannot be null");
 		Objects.requireNonNull(defaultValue, "default value cannot be null");
 
-		return AttachmentRegistry.<A>builder().defaultValue(defaultValue).buildAndRegister(id);
+		return AttachmentRegistry.<A>builder().initializer(defaultValue).buildAndRegister(id);
 	}
 
 	/**
-	 * Creates <i>and registers</i> an attachment, initialized using a default value, and optionally a {@link AttachmentSerializer serializer}.
+	 * Creates <i>and registers</i> an attachment, initialized using a default value, that will persist across server restarts.
 	 *
 	 * @param id the identifier of this attachment
 	 * @param defaultValue the default value, used for objects which don't have attached data yet. Must not be {@code null}
-	 * @param serializer the serializer for this attachment. {@code null} for no serializer
+	 * @param codec the codec used for serialization
 	 * @param <A> the type of attached data
 	 * @return the registered {@link Attachment} instance
 	 */
-	public static <A> Attachment<A> createDefaulted(Identifier id, A defaultValue, AttachmentSerializer<A> serializer) {
+	public static <A> Attachment<A> createPersistent(Identifier id, Supplier<A> defaultValue, Codec<A> codec) {
 		Objects.requireNonNull(id, "identifier cannot be null");
 		Objects.requireNonNull(defaultValue, "default value cannot be null");
-		Objects.requireNonNull(serializer, "serializer cannot be null");
+		Objects.requireNonNull(codec, "codec cannot be null");
 
-		return AttachmentRegistry.<A>builder().defaultValue(defaultValue).buildAndRegister(id);
+		return AttachmentRegistry.<A>builder()
+				.initializer(defaultValue)
+				.persistent(true)
+				.codec(codec)
+				.buildAndRegister(id);
 	}
 
 	/**
-	 * Gets the {@link Attachment} associated with the given {@link Identifier}, or {@code null} if none was registered.
+	 * Creates <i>and registers</i> an attachment, initialized using a default value, that will be synced between server and client.
 	 *
-	 * @param id the identifier of the attachment
-	 * @return the corresponding attachment, or {@code null} if it doesn't exist
+	 * @param id the identifier of this attachment
+	 * @param defaultValue the default value, used for objects which don't have attached data yet. Must not be {@code null}
+	 * @param codec the codec used for serialization
+	 * @param <A> the type of attached data
+	 * @return the registered {@link Attachment} instance
 	 */
-	@Nullable
-	public static Attachment<?> get(Identifier id) {
-		return AttachmentRegistryImpl.get(id);
+	public static <A> Attachment<A> createSynced(Identifier id, Supplier<A> defaultValue, Codec<A> codec) {
+		Objects.requireNonNull(id, "identifier cannot be null");
+		Objects.requireNonNull(defaultValue, "default value cannot be null");
+		Objects.requireNonNull(codec, "codec cannot be null");
+
+		return AttachmentRegistry.<A>builder()
+				.initializer(defaultValue)
+				.synced(true)
+				.codec(codec)
+				.buildAndRegister(id);
 	}
 
 	/**
@@ -97,20 +113,20 @@ public final class AttachmentRegistry {
 	 */
 	public interface Builder<A> {
 		/**
+		 * Sets whether the attached data should persist across server restarts.
+		 *
+		 * @param persistent whether the attached data should persist across server restarts
+		 * @return the builder
+		 */
+		Builder<A> persistent(boolean persistent);
+
+		/**
 		 * Sets whether the attachment should be synced between server and client or not.
 		 *
 		 * @param synced whether the attachment data should be synced
 		 * @return the builder
 		 */
 		Builder<A> synced(boolean synced);
-
-		/**
-		 * Makes the attachment use the argument as a starting value for objects which don't have attached data yet.
-		 *
-		 * @param defaultVal the default value
-		 * @return the builder
-		 */
-		Builder<A> defaultValue(A defaultVal);
 
 		/**
 		 * Uses the given {@link Supplier} to get a starting value for objects which don't have attached data yet.
@@ -121,12 +137,12 @@ public final class AttachmentRegistry {
 		Builder<A> initializer(Supplier<A> supplier);
 
 		/**
-		 * Sets the {@link AttachmentSerializer} for this attachment.
+		 * Sets the {@link Codec} for this attachment.
 		 *
-		 * @param serializer the serializer
+		 * @param codec the codec
 		 * @return the builder
 		 */
-		Builder<A> serializer(AttachmentSerializer<A> serializer);
+		Builder<A> codec(Codec<A> codec);
 
 		/**
 		 * Builds and registers the {@link Attachment}.

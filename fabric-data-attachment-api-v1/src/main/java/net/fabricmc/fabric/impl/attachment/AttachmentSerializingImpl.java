@@ -19,15 +19,17 @@ package net.fabricmc.fabric.impl.attachment;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.attachment.v1.Attachment;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSerializer;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 
 public class AttachmentSerializingImpl {
 	@SuppressWarnings("unchecked")
@@ -40,30 +42,38 @@ public class AttachmentSerializingImpl {
 
 		for (Map.Entry<Attachment<?>, ?> entry : attachments.entrySet()) {
 			Attachment<?> attachment = entry.getKey();
-			AttachmentSerializer<Object> serializer = (AttachmentSerializer<Object>) attachment.serializer();
 
-			if (serializer != null) {
-				compound.put(attachment.identifier().toString(), serializer.toNbt(entry.getValue()));
+			if (attachment.persistent()) {
+				Codec<Object> codec = (Codec<Object>) attachment.codec();
+				// non-nullity enforced by builder API
+				codec.encodeStart(NbtOps.INSTANCE, entry.getValue())
+						.result()
+						.ifPresent(serialized ->
+								compound.put(attachment.identifier().toString(), serialized)
+						);
 			}
 		}
 
-		nbt.put(AttachmentSerializer.NBT_ATTACHMENT_KEY, compound);
+		nbt.put(AttachmentTarget.NBT_ATTACHMENT_KEY, compound);
 	}
 
 	public static IdentityHashMap<Attachment<?>, Object> deserializeAttachmentData(NbtCompound nbt) {
 		var attachments = new IdentityHashMap<Attachment<?>, Object>();
 
-		if (nbt.contains(AttachmentSerializer.NBT_ATTACHMENT_KEY, NbtElement.COMPOUND_TYPE)) {
-			NbtCompound compound = nbt.getCompound(AttachmentSerializer.NBT_ATTACHMENT_KEY);
+		if (nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY, NbtElement.COMPOUND_TYPE)) {
+			NbtCompound compound = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY);
 
 			for (String key : compound.getKeys()) {
-				Attachment<?> attachment = AttachmentRegistry.get(new Identifier(key));
-				if (attachment == null) continue;
-				AttachmentSerializer<?> serializer = attachment.serializer();
-				if (serializer == null) continue;
-				Object deserialized = serializer.fromNbt(compound.get(key));
-				if (deserialized == null) continue;
-				attachments.put(attachment, deserialized);
+				Attachment<?> attachment = AttachmentRegistryImpl.get(new Identifier(key));
+
+				if (attachment != null && attachment.persistent()) {
+					// non-nullity enforced by builder API
+					attachment.codec()
+							.decode(NbtOps.INSTANCE, compound.get(key))
+							.result()
+							.map(Pair::getFirst)
+							.ifPresent(deserialized -> attachments.put(attachment, deserialized));
+				}
 			}
 		}
 
@@ -76,7 +86,7 @@ public class AttachmentSerializingImpl {
 		}
 
 		for (Attachment<?> attachment : map.keySet()) {
-			if (attachment.serializer() != null) {
+			if (attachment.persistent()) {
 				return true;
 			}
 		}

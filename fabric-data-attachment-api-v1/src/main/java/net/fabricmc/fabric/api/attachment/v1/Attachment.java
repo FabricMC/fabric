@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.attachment.v1;
 
 import java.util.function.Supplier;
 
+import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
@@ -26,10 +27,10 @@ import net.minecraft.util.Identifier;
  * An attachment allows "attaching" arbitrary data to various game objects (entities, block entities, worlds and chunks at the moment).
  * Use the methods provided in {@link AttachmentRegistry} to create and register attachments.
  *
- * <p>Attachments can optionally be made to persist between restarts using {@link AttachmentSerializer}s, and
+ * <p>Attachments can optionally be made to persist between restarts using a provided {@link Codec}s, and
  * can optionally be automatically synced between server and client.</p>
  *
- * @param <A> type of the attached data
+ * @param <A> type of the attached data. It is strongly encouraged for this to be an immutable type.
  */
 public interface Attachment<A> {
 	/**
@@ -41,18 +42,26 @@ public interface Attachment<A> {
 	 * If an object has no value associated to an attachment,
 	 * this initializer is used to create a (non-{@code null}) starting value.
 	 *
+	 * <p>The result of the initializer <i>must</i> not have shared state across {@link Attachment} instances.
+	 * It is strongly encouraged to have {@link A} be an immutable type.</p>
+	 *
 	 * @return the initializer for this attachment
 	 */
 	Supplier<A> initializer();
 
 	/**
-	 * If present, the serializer determines how the attached data, if present, is written to and read from NBT.
+	 * If present, the codec determines how the attached data, if present, is written to and read from NBT.
 	 * If absent, the attached data will not persist after server restarts.
 	 *
-	 * @return the serializer, may be null
+	 * @return the codec, may be null
 	 */
 	@Nullable
-	AttachmentSerializer<A> serializer();
+	Codec<A> codec();
+
+	/**
+	 * @return whether the attached data persists across server restarts
+	 */
+	boolean persistent();
 
 	/**
 	 * @return whether the attached data is synced between server and client
