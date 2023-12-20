@@ -38,5 +38,6 @@ public final class FluidTagGenerator extends FabricTagProvider.FluidTagProvider 
 				.addOptionalTag(FluidTags.LAVA);
 		getOrCreateTagBuilder(ConventionalFluidTags.MILK);
 		getOrCreateTagBuilder(ConventionalFluidTags.HONEY);
+		getOrCreateTagBuilder(ConventionalFluidTags.HIDDEN_FROM_RECIPE_VIEWERS);
 	}
 }

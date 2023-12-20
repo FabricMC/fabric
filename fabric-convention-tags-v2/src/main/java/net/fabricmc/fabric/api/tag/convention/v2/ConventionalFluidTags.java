@@ -36,6 +36,10 @@ public final class ConventionalFluidTags {
 	public static final TagKey<Fluid> WATER = register("water");
 	public static final TagKey<Fluid> MILK = register("milk");
 	public static final TagKey<Fluid> HONEY = register("honey");
+	/**
+	 * Tag that holds all fluids that recipe viewers should not show to users.
+	 */
+	public static final TagKey<Fluid> HIDDEN_FROM_RECIPE_VIEWERS = register("hidden_from_recipe_viewers");
 
 	private static TagKey<Fluid> register(String tagId) {
 		return TagRegistration.FLUID_TAG.registerC(tagId);

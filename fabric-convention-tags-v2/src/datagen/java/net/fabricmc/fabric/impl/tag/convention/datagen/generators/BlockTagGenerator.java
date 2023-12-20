@@ -124,6 +124,8 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 		getOrCreateTagBuilder(ConventionalBlockTags.CHAINS)
 				.add(Blocks.CHAIN);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
 	}
 
 	private void generateSandstoneTags() {

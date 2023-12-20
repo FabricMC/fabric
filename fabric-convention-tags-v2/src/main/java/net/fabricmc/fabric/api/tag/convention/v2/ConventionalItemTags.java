@@ -275,6 +275,11 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> ROPES = register("ropes");
 	public static final TagKey<Item> CHAINS = register("chains");
 
+	/**
+	 * Tag that holds all items that recipe viewers should not show to users.
+	 */
+	public static final TagKey<Item> HIDDEN_FROM_RECIPE_VIEWERS = register("hidden_from_recipe_viewers");
+
 	private static TagKey<Item> register(String tagId) {
 		return TagRegistration.ITEM_TAG.registerC(tagId);
 	}

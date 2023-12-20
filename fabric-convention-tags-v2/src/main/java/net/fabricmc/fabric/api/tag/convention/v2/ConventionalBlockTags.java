@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.tag.convention.v2;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
@@ -143,6 +142,11 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> HEADS = register("heads");
 	public static final TagKey<Block> ROPES = register("ropes");
 	public static final TagKey<Block> CHAINS = register("chains");
+
+	/**
+	 * Tag that holds all blocks that recipe viewers should not show to users.
+	 */
+	public static final TagKey<Block> HIDDEN_FROM_RECIPE_VIEWERS = register("hidden_from_recipe_viewers");
 
 	private static TagKey<Block> register(String tagId) {
 		return TagRegistration.BLOCK_TAG.registerC(tagId);
