@@ -22,13 +22,40 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
 
+/**
+ * An attachment allows "attaching" arbitrary data to various game objects (entities, block entities, worlds and chunks at the moment).
+ * Use the methods provided in {@link AttachmentRegistry} to create and register attachments.
+ *
+ * <p>Attachments can optionally be made to persist between restarts using {@link AttachmentSerializer}s, and
+ * can optionally be automatically synced between server and client.</p>
+ *
+ * @param <A> type of the attached data
+ */
 public interface Attachment<A> {
+	/**
+	 * @return the identifier that uniquely identifies this attachment
+	 */
 	Identifier identifier();
 
+	/**
+	 * If an object has no value associated to an attachment,
+	 * this initializer is used to create a (non-{@code null}) starting value.
+	 *
+	 * @return the initializer for this attachment
+	 */
 	Supplier<A> initializer();
 
+	/**
+	 * If present, the serializer determines how the attached data, if present, is written to and read from NBT.
+	 * If absent, the attached data will not persist after server restarts.
+	 *
+	 * @return the serializer, may be null
+	 */
 	@Nullable
 	AttachmentSerializer<A> serializer();
 
+	/**
+	 * @return whether the attached data is synced between server and client
+	 */
 	boolean synced();
 }

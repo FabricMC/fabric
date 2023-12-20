@@ -23,9 +23,23 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
 
+/**
+ * A serializer for an {@link Attachment}, that handles writing to and reading from NBT to make attached data
+ * persist after server restarts. For types which already have a {@link Codec}, {@link #fromCodec(Codec)} can be used
+ * instead of implementing a custom serializer.
+ *
+ * @param <A> the type of the attached data
+ */
 public interface AttachmentSerializer<A> {
 	String NBT_ATTACHMENT_KEY = "fabric:attachments";
 
+	/**
+	 * Creates an {@link AttachmentSerializer} using a {@link Codec}.
+	 *
+	 * @param codec the codec.
+	 * @param <A> the type of the attached data.
+	 * @return a serializer based on the provided {@link Codec}.
+	 */
 	static <A> AttachmentSerializer<A> fromCodec(Codec<A> codec) {
 		return new AttachmentSerializer<>() {
 			@Override
@@ -45,9 +59,21 @@ public interface AttachmentSerializer<A> {
 		};
 	}
 
+	/**
+	 * Serializes attached data to NBT.
+	 *
+	 * @param value attached data
+	 * @return an {@link NbtElement} encoding the data.
+	 */
 	@Nullable
 	NbtElement toNbt(A value);
 
+	/**
+	 * Reads attached data from serialized NBT.
+	 *
+	 * @param nbt the serialized NBT data, obtained from {@link #toNbt(Object)}
+	 * @return the deserialized value.
+	 */
 	@Nullable
 	A fromNbt(NbtElement nbt);
 }
