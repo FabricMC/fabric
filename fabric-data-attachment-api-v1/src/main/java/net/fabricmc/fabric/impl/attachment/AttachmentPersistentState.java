@@ -28,28 +28,28 @@ import net.minecraft.world.PersistentState;
  */
 public class AttachmentPersistentState extends PersistentState {
 	public static final String ID = "fabric_data_attachments";
-	private final ServerWorld world;
+	private final AttachmentTargetImpl worldTarget;
 	private final boolean wasSerialized;
 
 	public AttachmentPersistentState(ServerWorld world) {
-		this.world = world;
-		this.wasSerialized = world.hasPersistentAttachments();
+		this.worldTarget = (AttachmentTargetImpl) world;
+		this.wasSerialized = worldTarget.hasPersistentAttachments();
 	}
 
 	public static AttachmentPersistentState read(ServerWorld world, @Nullable NbtCompound nbt) {
-		world.readAttachmentsFromNbt(nbt);
+		((AttachmentTargetImpl) world).readAttachmentsFromNbt(nbt);
 		return new AttachmentPersistentState(world);
 	}
 
 	@Override
 	public boolean isDirty() {
 		// Only write data if there are attachments, or if we previously wrote data.
-		return wasSerialized || world.hasPersistentAttachments();
+		return wasSerialized || worldTarget.hasPersistentAttachments();
 	}
 
 	@Override
 	public NbtCompound writeNbt(NbtCompound nbt) {
-		world.writeAttachmentsToNbt(nbt);
+		worldTarget.writeAttachmentsToNbt(nbt);
 		return nbt;
 	}
 }

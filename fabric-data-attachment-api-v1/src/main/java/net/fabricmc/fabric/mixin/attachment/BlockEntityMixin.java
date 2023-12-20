@@ -25,17 +25,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 
-import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
+import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 @Mixin(BlockEntity.class)
-public class BlockEntityMixin implements AttachmentTarget {
+public class BlockEntityMixin implements AttachmentTargetImpl {
 	@Dynamic
 	@Inject(
 			at = @At(value = "INVOKE", target = "net/minecraft/block/entity/BlockEntity.readNbt(Lnet/minecraft/nbt/NbtCompound;)V"),
 			method = "method_17897" // lambda body in BlockEntity#createFromNbt
 	)
 	private static void injectReadNbt(NbtCompound nbt, String id, BlockEntity blockEntity, CallbackInfoReturnable<BlockEntity> cir) {
-		blockEntity.readAttachmentsFromNbt(nbt);
+		((AttachmentTargetImpl) blockEntity).readAttachmentsFromNbt(nbt);
 	}
 
 	@Inject(

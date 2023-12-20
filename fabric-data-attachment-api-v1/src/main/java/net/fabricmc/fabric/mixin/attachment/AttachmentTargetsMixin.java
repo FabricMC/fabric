@@ -29,11 +29,11 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.fabric.api.attachment.v1.Attachment;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
+import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 @Mixin(value = {BlockEntity.class, Entity.class, World.class, WorldChunk.class})
-public class AttachmentTargetsMixin implements AttachmentTarget {
+public class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Unique
 	@Nullable
 	protected IdentityHashMap<Attachment<?>, Object> fabric_dataAttachments = null;

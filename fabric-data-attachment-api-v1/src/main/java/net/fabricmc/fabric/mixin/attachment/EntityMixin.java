@@ -25,10 +25,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 
-import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
+import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 @Mixin(Entity.class)
-public class EntityMixin implements AttachmentTarget {
+public class EntityMixin implements AttachmentTargetImpl {
 	@Inject(
 			at = @At(value = "INVOKE", target = "net/minecraft/entity/Entity.readCustomDataFromNbt(Lnet/minecraft/nbt/NbtCompound;)V"),
 			method = "readNbt"

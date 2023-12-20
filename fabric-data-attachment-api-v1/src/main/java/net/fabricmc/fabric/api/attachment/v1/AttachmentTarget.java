@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.chunk.WorldChunk;
 
@@ -94,30 +93,5 @@ public interface AttachmentTarget {
 	@Nullable
 	default <A> A modifyAttached(Attachment<A> attachment, UnaryOperator<A> modifier) {
 		return setAttached(attachment, modifier.apply(getAttached(attachment)));
-	}
-
-	/**
-	 * Writes all the attached data to NBT.
-	 *
-	 * @param nbt the NBT to write to
-	 */
-	default void writeAttachmentsToNbt(NbtCompound nbt) {
-		throw new UnsupportedOperationException("Implemented via mixin");
-	}
-
-	/**
-	 * Reads all the attached data from NBT.
-	 *
-	 * @param nbt the NBT to read from
-	 */
-	default void readAttachmentsFromNbt(NbtCompound nbt) {
-		throw new UnsupportedOperationException("Implemented via mixin");
-	}
-
-	/**
-	 * @return whether the {@link AttachmentTarget} has any attachment data to serialize
-	 */
-	default boolean hasPersistentAttachments() {
-		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 }
