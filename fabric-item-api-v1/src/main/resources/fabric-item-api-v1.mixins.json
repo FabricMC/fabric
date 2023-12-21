@@ -9,7 +9,14 @@
     "ItemMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "RecipeMixin"
+    "RecipeMixin",
+    "shears.BlockInteractShearsMixin",
+    "shears.DispenserBlockMixin",
+    "shears.EfficiencyEnchantmentMixin",
+    "shears.EntityInteractShearsMixin",
+    "shears.MatchToolLootConditionMixin",
+    "shears.TripwireBlockMixin",
+    "shears.accessors.DirectRegistryEntryListAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

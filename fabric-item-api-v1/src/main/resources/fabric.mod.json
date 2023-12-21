@@ -33,5 +33,6 @@
       "net/minecraft/class_1792": ["net/fabricmc/fabric/api/item/v1/FabricItem"],
       "net/minecraft/class_1799": ["net/fabricmc/fabric/api/item/v1/FabricItemStack"]
     }
-  }
+  },
+  "accessWidener": "fabric-item-api-v1.accesswidener"
 }
