@@ -34,19 +34,19 @@ import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
-import net.minecraft.util.Identifier;
-import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.RegistryEntryLookup;
-import net.minecraft.registry.entry.RegistryEntryOwner;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryLoader;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryOwner;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
@@ -58,7 +58,6 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
  * A provider to help with data-generation of dynamic registry objects,
  * such as biomes, features, or message types.
  */
-@ApiStatus.Experimental
 public abstract class FabricDynamicRegistryProvider implements DataProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDynamicRegistryProvider.class);
 
@@ -82,6 +81,8 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		Entries(RegistryWrapper.WrapperLookup registries, String modId) {
 			this.registries = registries;
 			this.queuedEntries = DynamicRegistries.getDynamicRegistries().stream()
+					// Some modded dynamic registries might not be in the wrapper lookup, filter them out
+					.filter(e -> registries.getOptionalWrapper(e.key()).isPresent())
 					.collect(Collectors.toMap(
 							e -> e.key().getValue(),
 							e -> RegistryEntries.create(registries, e)

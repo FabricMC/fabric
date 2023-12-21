@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -32,10 +34,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
@@ -108,14 +110,18 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	}
 
 	@Override
-	protected void fabric_modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
+	protected Set<RegistryEntry<Biome>> fabric_modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
 		if (!hasCheckedForModifiedSet) {
 			hasCheckedForModifiedSet = true;
 			biomeSetModified = !overrides.get().customBiomes.isEmpty();
 		}
 
 		if (biomeSetModified) {
-			biomes.addAll(overrides.get().customBiomes);
+			var modifiedBiomes = new LinkedHashSet<>(biomes);
+			modifiedBiomes.addAll(overrides.get().customBiomes);
+			return Collections.unmodifiableSet(modifiedBiomes);
 		}
+
+		return biomes;
 	}
 }

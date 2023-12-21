@@ -39,8 +39,8 @@ public abstract class EditGameRulesScreenRuleListWidgetMixin extends net.minecra
 	@Unique
 	private final Map<CustomGameRuleCategory, List<EditGameRulesScreen.AbstractRuleWidget>> fabricCategories = new HashMap<>();
 
-	public EditGameRulesScreenRuleListWidgetMixin(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight) {
-		super(client, width, height, top, bottom, itemHeight);
+	public EditGameRulesScreenRuleListWidgetMixin(MinecraftClient client, int width, int height, int top, int itemHeight) {
+		super(client, width, height, top, itemHeight);
 	}
 
 	// EditGameRulesScreen is effectively a synthetic parameter

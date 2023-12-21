@@ -49,7 +49,7 @@ public final class BoundedIntRule extends GameRules.IntRule {
 	}
 
 	@Override
-	public boolean validate(String input) {
+	public boolean validateAndSet(String input) {
 		try {
 			int value = Integer.parseInt(input);
 

@@ -26,18 +26,14 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
-import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
+import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 
 /**
  * An immutable count-less ItemStack, i.e. an immutable association of an item and an optional NBT compound tag.
  *
  * <p>Do not implement, use the static {@code of(...)} functions instead.
- *
- * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 @ApiStatus.NonExtendable
 public interface ItemVariant extends TransferVariant<Item> {
 	/**

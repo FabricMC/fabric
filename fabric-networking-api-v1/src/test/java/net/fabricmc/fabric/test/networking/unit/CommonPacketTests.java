@@ -59,6 +59,7 @@ import net.fabricmc.fabric.impl.networking.CommonRegisterPayload;
 import net.fabricmc.fabric.impl.networking.CommonVersionPayload;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
+import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 
@@ -101,14 +102,16 @@ public class CommonPacketTests {
 	// Test handling the version packet on the client
 	@Test
 	void handleVersionPacketClient() {
-		ClientConfigurationNetworking.ConfigurationChannelHandler packetHandler = ClientNetworkingImpl.CONFIGURATION.getHandler(CommonVersionPayload.PACKET_ID);
+		ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler> packetHandler = ClientNetworkingImpl.CONFIGURATION.getHandler(CommonVersionPayload.PACKET_ID);
 		assertNotNull(packetHandler);
 
 		// Receive a packet from the server
 		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeIntArray(new int[]{1, 2, 3});
 
-		packetHandler.receive(null, clientNetworkHandler, buf, packetSender);
+		// The actual handler doesn't copy the buffer
+		ClientConfigurationNetworking.ConfigurationChannelHandler actualHandler = (ClientConfigurationNetworking.ConfigurationChannelHandler) packetHandler.actual();
+		actualHandler.receive(null, clientNetworkHandler, buf, packetSender);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
@@ -124,7 +127,7 @@ public class CommonPacketTests {
 	// Test handling the version packet on the client, when the server sends unsupported versions
 	@Test
 	void handleVersionPacketClientUnsupported() {
-		ClientConfigurationNetworking.ConfigurationChannelHandler packetHandler = ClientNetworkingImpl.CONFIGURATION.getHandler(CommonVersionPayload.PACKET_ID);
+		ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler> packetHandler = ClientNetworkingImpl.CONFIGURATION.getHandler(CommonVersionPayload.PACKET_ID);
 		assertNotNull(packetHandler);
 
 		// Receive a packet from the server
@@ -132,7 +135,8 @@ public class CommonPacketTests {
 		buf.writeIntArray(new int[]{2, 3}); // We only support version 1
 
 		assertThrows(UnsupportedOperationException.class, () -> {
-			packetHandler.receive(null, clientNetworkHandler, buf, packetSender);
+			ClientConfigurationNetworking.ConfigurationChannelHandler actualHandler = (ClientConfigurationNetworking.ConfigurationChannelHandler) packetHandler.actual();
+			actualHandler.receive(null, clientNetworkHandler, buf, packetSender);
 		});
 
 		// Assert the entire packet was read
@@ -142,14 +146,15 @@ public class CommonPacketTests {
 	// Test handling the version packet on the server
 	@Test
 	void handleVersionPacketServer() {
-		ServerConfigurationNetworking.ConfigurationChannelHandler packetHandler = ServerNetworkingImpl.CONFIGURATION.getHandler(CommonVersionPayload.PACKET_ID);
+		ResolvablePayload.Handler<ServerConfigurationNetworkAddon.Handler> packetHandler = ServerNetworkingImpl.CONFIGURATION.getHandler(CommonVersionPayload.PACKET_ID);
 		assertNotNull(packetHandler);
 
 		// Receive a packet from the client
 		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeIntArray(new int[]{1, 2, 3});
 
-		packetHandler.receive(null, serverNetworkHandler, buf, null);
+		ServerConfigurationNetworking.ConfigurationChannelHandler actualHandler = (ServerConfigurationNetworking.ConfigurationChannelHandler) packetHandler.actual();
+		actualHandler.receive(null, serverNetworkHandler, buf, null);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
@@ -159,7 +164,7 @@ public class CommonPacketTests {
 	// Test handling the version packet on the server unsupported version
 	@Test
 	void handleVersionPacketServerUnsupported() {
-		ServerConfigurationNetworking.ConfigurationChannelHandler packetHandler = ServerNetworkingImpl.CONFIGURATION.getHandler(CommonVersionPayload.PACKET_ID);
+		ResolvablePayload.Handler<ServerConfigurationNetworkAddon.Handler> packetHandler = ServerNetworkingImpl.CONFIGURATION.getHandler(CommonVersionPayload.PACKET_ID);
 		assertNotNull(packetHandler);
 
 		// Receive a packet from the client
@@ -167,7 +172,8 @@ public class CommonPacketTests {
 		buf.writeIntArray(new int[]{3}); // Server only supports version 1
 
 		assertThrows(UnsupportedOperationException.class, () -> {
-			packetHandler.receive(null, serverNetworkHandler, buf, packetSender);
+			ServerConfigurationNetworking.ConfigurationChannelHandler actualHandler = (ServerConfigurationNetworking.ConfigurationChannelHandler) packetHandler.actual();
+			actualHandler.receive(null, serverNetworkHandler, buf, null);
 		});
 
 		// Assert the entire packet was read
@@ -177,7 +183,7 @@ public class CommonPacketTests {
 	// Test handing the play registry packet on the client configuration handler
 	@Test
 	void handlePlayRegistryClient() {
-		ClientConfigurationNetworking.ConfigurationChannelHandler packetHandler = ClientNetworkingImpl.CONFIGURATION.getHandler(CommonRegisterPayload.PACKET_ID);
+		ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler> packetHandler = ClientNetworkingImpl.CONFIGURATION.getHandler(CommonRegisterPayload.PACKET_ID);
 		assertNotNull(packetHandler);
 
 		when(clientAddon.getNegotiatedVersion()).thenReturn(1);
@@ -188,7 +194,8 @@ public class CommonPacketTests {
 		buf.writeString("play"); // Target phase
 		buf.writeCollection(List.of(new Identifier("fabric", "test")), PacketByteBuf::writeIdentifier);
 
-		packetHandler.receive(null, clientNetworkHandler, buf, packetSender);
+		ClientConfigurationNetworking.ConfigurationChannelHandler actualHandler = (ClientConfigurationNetworking.ConfigurationChannelHandler) packetHandler.actual();
+		actualHandler.receive(null, clientNetworkHandler, buf, packetSender);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
@@ -205,7 +212,7 @@ public class CommonPacketTests {
 	// Test handling the configuration registry packet on the client configuration handler
 	@Test
 	void handleConfigurationRegistryClient() {
-		ClientConfigurationNetworking.ConfigurationChannelHandler packetHandler = ClientNetworkingImpl.CONFIGURATION.getHandler(CommonRegisterPayload.PACKET_ID);
+		ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler> packetHandler = ClientNetworkingImpl.CONFIGURATION.getHandler(CommonRegisterPayload.PACKET_ID);
 		assertNotNull(packetHandler);
 
 		when(clientAddon.getNegotiatedVersion()).thenReturn(1);
@@ -217,7 +224,8 @@ public class CommonPacketTests {
 		buf.writeString("configuration"); // Target phase
 		buf.writeCollection(List.of(new Identifier("fabric", "test")), PacketByteBuf::writeIdentifier);
 
-		packetHandler.receive(null, clientNetworkHandler, buf, packetSender);
+		ClientConfigurationNetworking.ConfigurationChannelHandler actualHandler = (ClientConfigurationNetworking.ConfigurationChannelHandler) packetHandler.actual();
+		actualHandler.receive(null, clientNetworkHandler, buf, packetSender);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
@@ -234,7 +242,7 @@ public class CommonPacketTests {
 	// Test handing the play registry packet on the server configuration handler
 	@Test
 	void handlePlayRegistryServer() {
-		ServerConfigurationNetworking.ConfigurationChannelHandler packetHandler = ServerNetworkingImpl.CONFIGURATION.getHandler(CommonRegisterPayload.PACKET_ID);
+		ResolvablePayload.Handler<ServerConfigurationNetworkAddon.Handler> packetHandler = ServerNetworkingImpl.CONFIGURATION.getHandler(CommonRegisterPayload.PACKET_ID);
 		assertNotNull(packetHandler);
 
 		when(serverAddon.getNegotiatedVersion()).thenReturn(1);
@@ -245,7 +253,8 @@ public class CommonPacketTests {
 		buf.writeString("play"); // Target phase
 		buf.writeCollection(List.of(new Identifier("fabric", "test")), PacketByteBuf::writeIdentifier);
 
-		packetHandler.receive(null, serverNetworkHandler, buf, packetSender);
+		ServerConfigurationNetworking.ConfigurationChannelHandler actualHandler = (ServerConfigurationNetworking.ConfigurationChannelHandler) packetHandler.actual();
+		actualHandler.receive(null, serverNetworkHandler, buf, null);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
@@ -255,7 +264,7 @@ public class CommonPacketTests {
 	// Test handing the configuration registry packet on the server configuration handler
 	@Test
 	void handleConfigurationRegistryServer() {
-		ServerConfigurationNetworking.ConfigurationChannelHandler packetHandler = ServerNetworkingImpl.CONFIGURATION.getHandler(CommonRegisterPayload.PACKET_ID);
+		ResolvablePayload.Handler<ServerConfigurationNetworkAddon.Handler> packetHandler = ServerNetworkingImpl.CONFIGURATION.getHandler(CommonRegisterPayload.PACKET_ID);
 		assertNotNull(packetHandler);
 
 		when(serverAddon.getNegotiatedVersion()).thenReturn(1);
@@ -266,7 +275,8 @@ public class CommonPacketTests {
 		buf.writeString("configuration"); // Target phase
 		buf.writeCollection(List.of(new Identifier("fabric", "test")), PacketByteBuf::writeIdentifier);
 
-		packetHandler.receive(null, serverNetworkHandler, buf, packetSender);
+		ServerConfigurationNetworking.ConfigurationChannelHandler actualHandler = (ServerConfigurationNetworking.ConfigurationChannelHandler) packetHandler.actual();
+		actualHandler.receive(null, serverNetworkHandler, buf, null);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());

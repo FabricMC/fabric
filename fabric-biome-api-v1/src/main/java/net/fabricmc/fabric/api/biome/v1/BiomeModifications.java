@@ -22,9 +22,9 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
@@ -33,10 +33,7 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 /**
  * Provides an API to modify Biomes after they have been loaded and before they are used in the World.
  *
- * <p>Any modifications made to biomes will not be available for use in server.properties (as of 1.16.1),
- * or the demo level.
- *
- * <p><b>Experimental feature</b>, may be removed or changed without further notice.
+ * <p>Any modifications made to biomes will not be available for use in the demo level.
  */
 public final class BiomeModifications {
 	private BiomeModifications() {
@@ -87,7 +84,7 @@ public final class BiomeModifications {
 	}
 
 	/**
-	 * Create a new biome modification which will be applied whenever biomes are loaded from data packs.
+	 * Creates a new biome modification which will be applied whenever biomes are loaded from data packs.
 	 *
 	 * @param id An identifier for the new set of biome modifications that is returned. Is used for
 	 *           guaranteeing consistent ordering between the biome modifications added by different mods
@@ -97,4 +94,3 @@ public final class BiomeModifications {
 		return new BiomeModification(id);
 	}
 }
-

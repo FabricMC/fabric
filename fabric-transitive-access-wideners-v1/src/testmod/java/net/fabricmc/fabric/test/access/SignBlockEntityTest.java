@@ -37,13 +37,13 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 
 public final class SignBlockEntityTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-transitive-access-wideners-v1-testmod";
-	public static final SignBlock TEST_SIGN = new SignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), WoodType.OAK) {
+	public static final SignBlock TEST_SIGN = new SignBlock(WoodType.OAK, FabricBlockSettings.copy(Blocks.OAK_SIGN)) {
 		@Override
 		public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 			return new TestSign(pos, state);
 		}
 	};
-	public static final WallSignBlock TEST_WALL_SIGN = new WallSignBlock(FabricBlockSettings.copy(Blocks.OAK_SIGN), WoodType.OAK) {
+	public static final WallSignBlock TEST_WALL_SIGN = new WallSignBlock(WoodType.OAK, FabricBlockSettings.copy(Blocks.OAK_SIGN)) {
 		@Override
 		public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 			return new TestSign(pos, state);

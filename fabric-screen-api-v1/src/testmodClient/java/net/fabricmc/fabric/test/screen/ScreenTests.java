@@ -59,7 +59,7 @@ public final class ScreenTests implements ClientModInitializer {
 			// Add a new button
 			buttons.add(new SoundButton((screen.width / 2) + 2, ((screen.height / 4) + 96), 72, 20));
 			// And another button
-			buttons.add(new StopSoundButton(screen, (screen.width / 2) + 80, ((screen.height / 4) + 95), 20, 20));
+			buttons.add(new StopSoundButton((screen.width / 2) + 80, ((screen.height / 4) + 95), 20, 20));
 
 			// Testing:
 			// Some automatic validation that the screen list works, make sure the buttons we added are on the list of child elements

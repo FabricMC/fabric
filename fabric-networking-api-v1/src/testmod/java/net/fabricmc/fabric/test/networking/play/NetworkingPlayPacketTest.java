@@ -29,6 +29,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.network.packet.s2c.play.BundleS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -45,11 +46,16 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
 public final class NetworkingPlayPacketTest implements ModInitializer {
 	public static final Identifier TEST_CHANNEL = NetworkingTestmods.id("test_channel");
+	private static final Identifier UNKNOWN_TEST_CHANNEL = NetworkingTestmods.id("unknown_test_channel");
 
 	public static void sendToTestChannel(ServerPlayerEntity player, String stuff) {
 		ServerPlayNetworking.getSender(player).sendPacket(new OverlayPacket(Text.literal(stuff)), future -> {
 			NetworkingTestmods.LOGGER.info("Sent custom payload packet in {}", TEST_CHANNEL);
 		});
+	}
+
+	private static void sendToUnknownChannel(ServerPlayerEntity player) {
+		ServerPlayNetworking.getSender(player).sendPacket(UNKNOWN_TEST_CHANNEL, PacketByteBufs.create());
 	}
 
 	public static void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -59,6 +65,24 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 				.then(argument("stuff", string()).executes(ctx -> {
 					String stuff = StringArgumentType.getString(ctx, "stuff");
 					sendToTestChannel(ctx.getSource().getPlayer(), stuff);
+					return Command.SINGLE_SUCCESS;
+				}))
+				.then(literal("unknown").executes(ctx -> {
+					sendToUnknownChannel(ctx.getSource().getPlayer());
+					return Command.SINGLE_SUCCESS;
+				}))
+				.then(literal("bufctor").executes(ctx -> {
+					PacketByteBuf buf = PacketByteBufs.create();
+					buf.writeIdentifier(TEST_CHANNEL);
+					buf.writeText(Text.literal("bufctor"));
+					ctx.getSource().getPlayer().networkHandler.sendPacket(new CustomPayloadS2CPacket(buf));
+					return Command.SINGLE_SUCCESS;
+				}))
+				.then(literal("repeat").executes(ctx -> {
+					PacketByteBuf buf = PacketByteBufs.create();
+					buf.writeText(Text.literal("repeat"));
+					ServerPlayNetworking.send(ctx.getSource().getPlayer(), TEST_CHANNEL, buf);
+					ServerPlayNetworking.send(ctx.getSource().getPlayer(), TEST_CHANNEL, buf);
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("bundled").executes(ctx -> {

@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.networking.payload;
 
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 
@@ -25,10 +26,32 @@ public class PayloadHelper {
 		byteBuf.writeBytes(data.copy());
 	}
 
-	public static PacketByteBuf read(PacketByteBuf byteBuf) {
+	public static PacketByteBuf read(PacketByteBuf byteBuf, int maxSize) {
+		assertSize(byteBuf, maxSize);
+
 		PacketByteBuf newBuf = PacketByteBufs.create();
 		newBuf.writeBytes(byteBuf.copy());
 		byteBuf.skipBytes(byteBuf.readableBytes());
 		return newBuf;
+	}
+
+	public static ResolvablePayload readCustom(Identifier id, PacketByteBuf buf, int maxSize, boolean retain) {
+		assertSize(buf, maxSize);
+
+		if (retain) {
+			RetainedPayload payload = new RetainedPayload(id, PacketByteBufs.retainedSlice(buf));
+			buf.skipBytes(buf.readableBytes());
+			return payload;
+		} else {
+			return new UntypedPayload(id, read(buf, maxSize));
+		}
+	}
+
+	private static void assertSize(PacketByteBuf buf, int maxSize) {
+		int size = buf.readableBytes();
+
+		if (size < 0 || size > maxSize) {
+			throw new IllegalArgumentException("Payload may not be larger than " + maxSize + " bytes");
+		}
 	}
 }

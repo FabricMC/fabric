@@ -23,23 +23,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.network.ClientCommonNetworkHandler;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
-import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
+import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
+import net.fabricmc.fabric.impl.networking.payload.RetainedPayload;
 
 @Mixin(ClientCommonNetworkHandler.class)
 public abstract class ClientCommonNetworkHandlerMixin implements NetworkHandlerExtensions {
-	@Inject(method = "onDisconnected", at = @At("HEAD"))
-	private void handleDisconnection(Text reason, CallbackInfo ci) {
-		this.getAddon().handleDisconnect();
-	}
-
 	@Inject(method = "onCustomPayload(Lnet/minecraft/network/packet/s2c/common/CustomPayloadS2CPacket;)V", at = @At("HEAD"), cancellable = true)
 	public void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
-		if (packet.payload() instanceof PacketByteBufPayload payload) {
+		if (packet.payload() instanceof ResolvablePayload payload) {
 			boolean handled;
 
 			if (this.getAddon() instanceof ClientPlayNetworkAddon addon) {
@@ -52,8 +47,11 @@ public abstract class ClientCommonNetworkHandlerMixin implements NetworkHandlerE
 
 			if (handled) {
 				ci.cancel();
-			} else {
-				payload.data().skipBytes(payload.data().readableBytes());
+			} else if (payload instanceof RetainedPayload retained && retained.buf().refCnt() > 0) {
+				// Vanilla forces to use the render thread for its payloads,
+				// that means this method can get called multiple times.
+				retained.buf().skipBytes(retained.buf().readableBytes());
+				retained.buf().release();
 			}
 		}
 	}

@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.networking.v1;
 import java.util.Objects;
 import java.util.Set;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -30,6 +29,10 @@ import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ThreadExecutor;
 
+import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
+import net.fabricmc.fabric.impl.networking.payload.TypedPayload;
+import net.fabricmc.fabric.impl.networking.payload.UntypedPayload;
+import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
@@ -48,7 +51,6 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerA
  * @see ServerLoginNetworking
  * @see ServerConfigurationNetworking
  */
-@ApiStatus.Experimental
 public final class ServerConfigurationNetworking {
 	/**
 	 * Registers a handler to a channel.
@@ -70,7 +72,7 @@ public final class ServerConfigurationNetworking {
 	 * @see ServerConfigurationNetworking#registerReceiver(ServerConfigurationNetworkHandler, Identifier, ConfigurationChannelHandler)
 	 */
 	public static boolean registerGlobalReceiver(Identifier channelName, ConfigurationChannelHandler channelHandler) {
-		return ServerNetworkingImpl.CONFIGURATION.registerGlobalReceiver(channelName, channelHandler);
+		return ServerNetworkingImpl.CONFIGURATION.registerGlobalReceiver(channelName, wrapUntyped(channelHandler));
 	}
 
 	/**
@@ -87,18 +89,7 @@ public final class ServerConfigurationNetworking {
 	 * @see ServerConfigurationNetworking#registerReceiver(ServerConfigurationNetworkHandler, PacketType, ConfigurationPacketHandler)
 	 */
 	public static <T extends FabricPacket> boolean registerGlobalReceiver(PacketType<T> type, ConfigurationPacketHandler<T> handler) {
-		return registerGlobalReceiver(type.getId(), new ConfigurationChannelHandlerProxy<T>() {
-			@Override
-			public ConfigurationPacketHandler<T> getOriginalHandler() {
-				return handler;
-			}
-
-			@Override
-			public void receive(MinecraftServer server, ServerConfigurationNetworkHandler networkHandler, PacketByteBuf buf, PacketSender sender) {
-				T packet = type.read(buf);
-				handler.receive(packet, networkHandler, sender);
-			}
-		});
+		return ServerNetworkingImpl.CONFIGURATION.registerGlobalReceiver(type.getId(), wrapTyped(type, handler));
 	}
 
 	/**
@@ -114,7 +105,7 @@ public final class ServerConfigurationNetworking {
 	 */
 	@Nullable
 	public static ServerConfigurationNetworking.ConfigurationChannelHandler unregisterGlobalReceiver(Identifier channelName) {
-		return ServerNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(channelName);
+		return unwrapUntyped(ServerNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(channelName));
 	}
 
 	/**
@@ -130,10 +121,8 @@ public final class ServerConfigurationNetworking {
 	 * @see ServerConfigurationNetworking#unregisterReceiver(ServerConfigurationNetworkHandler, PacketType)
 	 */
 	@Nullable
-	@SuppressWarnings("unchecked")
 	public static <T extends FabricPacket> ServerConfigurationNetworking.ConfigurationPacketHandler<T> unregisterGlobalReceiver(PacketType<T> type) {
-		ConfigurationChannelHandler handler = ServerNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(type.getId());
-		return handler instanceof ConfigurationChannelHandlerProxy<?> proxy ? (ConfigurationPacketHandler<T>) proxy.getOriginalHandler() : null;
+		return unwrapTyped(ServerNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(type.getId()));
 	}
 
 	/**
@@ -172,7 +161,7 @@ public final class ServerConfigurationNetworking {
 	public static boolean registerReceiver(ServerConfigurationNetworkHandler networkHandler, Identifier channelName, ConfigurationChannelHandler channelHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
-		return ServerNetworkingImpl.getAddon(networkHandler).registerChannel(channelName, channelHandler);
+		return ServerNetworkingImpl.getAddon(networkHandler).registerChannel(channelName, wrapUntyped(channelHandler));
 	}
 
 	/**
@@ -193,18 +182,7 @@ public final class ServerConfigurationNetworking {
 	 * @see ServerPlayConnectionEvents#INIT
 	 */
 	public static <T extends FabricPacket> boolean registerReceiver(ServerConfigurationNetworkHandler networkHandler, PacketType<T> type, ConfigurationPacketHandler<T> handler) {
-		return registerReceiver(networkHandler, type.getId(), new ConfigurationChannelHandlerProxy<T>() {
-			@Override
-			public ConfigurationPacketHandler<T> getOriginalHandler() {
-				return handler;
-			}
-
-			@Override
-			public void receive(MinecraftServer server, ServerConfigurationNetworkHandler networkHandler2, PacketByteBuf buf, PacketSender sender) {
-				T packet = type.read(buf);
-				handler.receive(packet, networkHandler2, sender);
-			}
-		});
+		return ServerNetworkingImpl.getAddon(networkHandler).registerChannel(type.getId(), wrapTyped(type, handler));
 	}
 
 	/**
@@ -219,7 +197,7 @@ public final class ServerConfigurationNetworking {
 	public static ServerConfigurationNetworking.ConfigurationChannelHandler unregisterReceiver(ServerConfigurationNetworkHandler networkHandler, Identifier channelName) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
-		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(channelName);
+		return unwrapUntyped(ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(channelName));
 	}
 
 	/**
@@ -232,10 +210,8 @@ public final class ServerConfigurationNetworking {
 	 * or it was not registered using {@link #registerReceiver(ServerConfigurationNetworkHandler, PacketType, ConfigurationPacketHandler)}
 	 */
 	@Nullable
-	@SuppressWarnings("unchecked")
 	public static <T extends FabricPacket> ServerConfigurationNetworking.ConfigurationPacketHandler<T> unregisterReceiver(ServerConfigurationNetworkHandler networkHandler, PacketType<T> type) {
-		ConfigurationChannelHandler handler = unregisterReceiver(networkHandler, type.getId());
-		return handler instanceof ConfigurationChannelHandlerProxy<?> proxy ? (ConfigurationPacketHandler<T>) proxy.getOriginalHandler() : null;
+		return unwrapTyped(ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(type.getId()));
 	}
 
 	/**
@@ -301,7 +277,7 @@ public final class ServerConfigurationNetworking {
 		Objects.requireNonNull(channelName, "Channel cannot be null");
 		Objects.requireNonNull(buf, "Buf cannot be null");
 
-		return ServerNetworkingImpl.createC2SPacket(channelName, buf);
+		return ServerNetworkingImpl.createS2CPacket(channelName, buf);
 	}
 
 	/**
@@ -314,7 +290,7 @@ public final class ServerConfigurationNetworking {
 		Objects.requireNonNull(packet, "Packet cannot be null");
 		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
 
-		return ServerNetworkingImpl.createC2SPacket(packet);
+		return ServerNetworkingImpl.createS2CPacket(packet);
 	}
 
 	/**
@@ -374,6 +350,35 @@ public final class ServerConfigurationNetworking {
 	private ServerConfigurationNetworking() {
 	}
 
+	private static ResolvablePayload.Handler<ServerConfigurationNetworkAddon.Handler> wrapUntyped(ConfigurationChannelHandler actualHandler) {
+		return new ResolvablePayload.Handler<>(null, actualHandler, (server, handler, payload, responseSender) -> {
+			actualHandler.receive(server, handler, ((UntypedPayload) payload).buffer(), responseSender);
+		});
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T extends FabricPacket> ResolvablePayload.Handler<ServerConfigurationNetworkAddon.Handler> wrapTyped(PacketType<T> type, ConfigurationPacketHandler<T> actualHandler) {
+		return new ResolvablePayload.Handler<>(type, actualHandler, (server, handler, payload, responseSender) -> {
+			T packet = (T) ((TypedPayload) payload).packet();
+			actualHandler.receive(packet, handler, responseSender);
+		});
+	}
+
+	@Nullable
+	private static ConfigurationChannelHandler unwrapUntyped(@Nullable ResolvablePayload.Handler<ServerConfigurationNetworkAddon.Handler> handler) {
+		if (handler == null) return null;
+		if (handler.actual() instanceof ConfigurationChannelHandler actual) return actual;
+		return null;
+	}
+
+	@Nullable
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	private static <T extends FabricPacket> ConfigurationPacketHandler<T> unwrapTyped(@Nullable ResolvablePayload.Handler<ServerConfigurationNetworkAddon.Handler> handler) {
+		if (handler == null) return null;
+		if (handler.actual() instanceof ConfigurationPacketHandler actual) return actual;
+		return null;
+	}
+
 	@FunctionalInterface
 	public interface ConfigurationChannelHandler {
 		/**
@@ -399,14 +404,6 @@ public final class ServerConfigurationNetworking {
 		 * @param responseSender the packet sender
 		 */
 		void receive(MinecraftServer server, ServerConfigurationNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender);
-	}
-
-	/**
-	 * An internal packet handler that works as a proxy between old and new API.
-	 * @param <T> the type of the packet
-	 */
-	private interface ConfigurationChannelHandlerProxy<T extends FabricPacket> extends ConfigurationChannelHandler {
-		ConfigurationPacketHandler<T> getOriginalHandler();
 	}
 
 	/**

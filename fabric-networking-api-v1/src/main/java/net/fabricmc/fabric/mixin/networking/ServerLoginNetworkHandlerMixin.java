@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.mixin.networking;
 
 import com.mojang.authlib.GameProfile;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -42,10 +41,6 @@ import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
 
 @Mixin(ServerLoginNetworkHandler.class)
 abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtensions, DisconnectPacketSource, PacketCallbackListener {
-	@Shadow
-	@Final
-	private MinecraftServer server;
-
 	@Shadow
 	protected abstract void tickVerify(GameProfile profile);
 
@@ -80,16 +75,6 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 	@Redirect(method = "tickVerify", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getNetworkCompressionThreshold()I", ordinal = 0))
 	private int removeLateCompressionPacketSending(MinecraftServer server) {
 		return -1;
-	}
-
-	@Inject(method = "onDisconnected", at = @At("HEAD"))
-	private void handleDisconnection(Text reason, CallbackInfo ci) {
-		this.addon.handleDisconnect();
-	}
-
-	@Inject(method = "sendSuccessPacket", at = @At("HEAD"))
-	private void handlePlayTransitionNormal(GameProfile profile, CallbackInfo ci) {
-		this.addon.handleConfigurationTransition();
 	}
 
 	@Override

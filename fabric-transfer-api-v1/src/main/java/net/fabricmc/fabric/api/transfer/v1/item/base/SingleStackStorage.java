@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.transfer.v1.item.base;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -35,11 +33,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
  * If one of these two functions is overridden to always return false, implementors may also wish to override
  * {@link #supportsInsertion} and/or {@link #supportsExtraction}.
  * {@link #getCapacity(ItemVariant)} can be overridden to change the maximum capacity depending on the item variant.
- *
- * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> implements SingleSlotStorage<ItemVariant> {
 	/**
 	 * Return the stack of this storage. It will be modified directly sometimes to avoid needless copies.

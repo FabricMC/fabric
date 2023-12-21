@@ -41,10 +41,6 @@ transitive-accessible method net/minecraft/entity/SpawnRestriction register (Lne
 transitive-accessible method net/minecraft/item/ItemUsageContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
 transitive-accessible method net/minecraft/item/ItemPlacementContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
 
-# Recipe factories
-transitive-accessible class net/minecraft/recipe/CookingRecipeSerializer$RecipeFactory
-transitive-accessible class net/minecraft/recipe/CuttingRecipe$Serializer$RecipeFactory
-
 # Registering custom brewing recipes
 transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerItemRecipe (Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;)V
 transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerPotionType (Lnet/minecraft/item/Item;)V
@@ -94,7 +90,7 @@ transitive-accessible field net/minecraft/village/VillagerType BIOME_TO_TYPE Lja
 transitive-accessible method net/minecraft/village/VillagerType <init> (Ljava/lang/String;)V
 
 # Access stack list in SimpleInventory
-transitive-accessible field net/minecraft/inventory/SimpleInventory stacks Lnet/minecraft/util/collection/DefaultedList;
+transitive-accessible field net/minecraft/inventory/SimpleInventory heldStacks Lnet/minecraft/util/collection/DefaultedList;
 
 # Creating custom sound events
 transitive-accessible method net/minecraft/sound/SoundEvent of (Lnet/minecraft/util/Identifier;F)Lnet/minecraft/sound/SoundEvent;
@@ -125,13 +121,13 @@ transitive-accessible method net/minecraft/entity/damage/DamageSources create (L
 transitive-accessible field net/minecraft/client/MinecraftClient attackCooldown I
 
 # Creating certain types of blocks
-transitive-accessible method net/minecraft/block/Blocks createBambooBlock (Lnet/minecraft/block/MapColor;Lnet/minecraft/block/MapColor;Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/PillarBlock;
-transitive-accessible method net/minecraft/block/Blocks createFlowerPotBlock (Lnet/minecraft/block/Block;[Lnet/minecraft/resource/featuretoggle/FeatureFlag;)Lnet/minecraft/block/FlowerPotBlock;
-transitive-accessible method net/minecraft/block/Blocks createLeavesBlock (Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/LeavesBlock;
-transitive-accessible method net/minecraft/block/Blocks createLogBlock (Lnet/minecraft/block/MapColor;Lnet/minecraft/block/MapColor;)Lnet/minecraft/block/PillarBlock;
+transitive-accessible method net/minecraft/block/Blocks createFlowerPotBlock (Lnet/minecraft/block/Block;)Lnet/minecraft/block/Block;
+transitive-accessible method net/minecraft/block/Blocks createLeavesBlock (Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/Block;
+transitive-accessible method net/minecraft/block/Blocks createLogBlock (Lnet/minecraft/block/MapColor;Lnet/minecraft/block/MapColor;)Lnet/minecraft/block/Block;
+transitive-accessible method net/minecraft/block/Blocks createLogBlock (Lnet/minecraft/block/MapColor;Lnet/minecraft/block/MapColor;Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/Block;
 transitive-accessible method net/minecraft/block/Blocks createNetherStemBlock (Lnet/minecraft/block/MapColor;)Lnet/minecraft/block/Block;
-transitive-accessible method net/minecraft/block/Blocks createStoneButtonBlock ()Lnet/minecraft/block/ButtonBlock;
-transitive-accessible method net/minecraft/block/Blocks createWoodenButtonBlock (Lnet/minecraft/block/BlockSetType;[Lnet/minecraft/resource/featuretoggle/FeatureFlag;)Lnet/minecraft/block/ButtonBlock;
+transitive-accessible method net/minecraft/block/Blocks createStoneButtonBlock ()Lnet/minecraft/block/Block;
+transitive-accessible method net/minecraft/block/Blocks createWoodenButtonBlock (Lnet/minecraft/block/BlockSetType;)Lnet/minecraft/block/Block;
 
 # Methods used in block creation
 transitive-accessible method net/minecraft/block/Blocks always (Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Z

@@ -88,10 +88,24 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 		}
 	}
 
+	@Inject(method = "setPacketListener", at = @At("HEAD"))
+	private void unwatchAddon(PacketListener packetListener, CallbackInfo ci) {
+		if (this.packetListener instanceof NetworkHandlerExtensions oldListener) {
+			oldListener.getAddon().endSession();
+		}
+	}
+
 	@Inject(method = "channelInactive", at = @At("HEAD"))
-	private void handleDisconnect(ChannelHandlerContext channelHandlerContext, CallbackInfo ci) {
-		if (packetListener instanceof NetworkHandlerExtensions) { // not the case for client/server query
-			((NetworkHandlerExtensions) packetListener).getAddon().handleDisconnect();
+	private void disconnectAddon(ChannelHandlerContext channelHandlerContext, CallbackInfo ci) {
+		if (packetListener instanceof NetworkHandlerExtensions extension) {
+			extension.getAddon().handleDisconnect();
+		}
+	}
+
+	@Inject(method = "handleDisconnection", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/listener/PacketListener;onDisconnected(Lnet/minecraft/text/Text;)V"))
+	private void disconnectAddon(CallbackInfo ci) {
+		if (packetListener instanceof NetworkHandlerExtensions extension) {
+			extension.getAddon().handleDisconnect();
 		}
 	}
 

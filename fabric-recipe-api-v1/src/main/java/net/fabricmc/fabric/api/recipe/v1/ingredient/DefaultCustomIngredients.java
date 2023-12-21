@@ -27,9 +27,9 @@ import net.minecraft.nbt.NbtHelper;
 import net.minecraft.recipe.Ingredient;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AllIngredient;
+import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AnyIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.DifferenceIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.NbtIngredient;
-import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AnyIngredient;
 
 /**
  * Factory methods for the custom ingredients directly provided by Fabric API.

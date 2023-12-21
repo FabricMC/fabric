@@ -1,9 +1,8 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.event.interaction",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "BeehiveBlockMixin",
     "PlayerAdvancementTrackerMixin",
     "ServerPlayerEntityMixin",
     "ServerPlayerInteractionManagerMixin",

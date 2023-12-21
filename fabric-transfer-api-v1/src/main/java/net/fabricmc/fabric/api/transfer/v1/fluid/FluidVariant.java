@@ -36,11 +36,7 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
  *
  * <p><b>Fluid variants must always be compared with {@code equals}, never by reference!</b>
  * {@code hashCode} is guaranteed to be correct and constant time independently of the size of the NBT.
- *
- * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 @ApiStatus.NonExtendable
 public interface FluidVariant extends TransferVariant<Fluid> {
 	/**

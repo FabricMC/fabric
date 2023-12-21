@@ -21,9 +21,9 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import net.minecraft.block.Block;
-import net.minecraft.registry.tag.TagKey;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
@@ -40,7 +40,7 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry {
 	private FlammableBlockRegistryImpl(Block key) {
 		this.key = key;
 
-		// Reset computed values after tags change since they depends on tags.
+		// Reset computed values after tags change since they depend on tags.
 		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
 			computedEntries = null;
 		});

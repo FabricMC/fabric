@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementEntry;
@@ -33,6 +34,7 @@ import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -85,7 +87,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 				throw new IllegalStateException("Duplicate advancement " + advancement.id());
 			}
 
-			JsonObject advancementJson = advancement.value().toJson();
+			JsonObject advancementJson = Util.getResult(Advancement.CODEC.encodeStart(JsonOps.INSTANCE, advancement.value()), IllegalStateException::new).getAsJsonObject();
 			ConditionJsonProvider.write(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
 
 			futures.add(DataProvider.writeToPath(writer, advancementJson, getOutputPath(advancement)));

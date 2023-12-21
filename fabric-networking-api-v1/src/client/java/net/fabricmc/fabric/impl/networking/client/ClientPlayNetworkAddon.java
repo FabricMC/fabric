@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.networking.client;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
@@ -34,12 +33,13 @@ import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
+import net.fabricmc.fabric.impl.networking.payload.ResolvedPayload;
 
-public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientPlayNetworking.PlayChannelHandler> {
+public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientPlayNetworkAddon.Handler> {
 	private final ClientPlayNetworkHandler handler;
 	private final MinecraftClient client;
 	private boolean sentInitialRegisterPacket;
@@ -53,17 +53,10 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkState.PLAY);
-
-		// Register global receivers and attach to session
-		this.receiver.startSession(this);
 	}
 
 	@Override
-	public void lateInit() {
-		for (Map.Entry<Identifier, ClientPlayNetworking.PlayChannelHandler> entry : this.receiver.getHandlers().entrySet()) {
-			this.registerChannel(entry.getKey(), entry.getValue());
-		}
-
+	protected void invokeInitEvent() {
 		ClientPlayConnectionEvents.INIT.invoker().onPlayInit(this.handler, this.client);
 	}
 
@@ -79,23 +72,9 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		this.sentInitialRegisterPacket = true;
 	}
 
-	/**
-	 * Handles an incoming packet.
-	 *
-	 * @param payload the payload to handle
-	 * @return true if the packet has been handled
-	 */
-	public boolean handle(PacketByteBufPayload payload) {
-		try {
-			return this.handle(payload.id(), payload.data());
-		} finally {
-			payload.data().release();
-		}
-	}
-
 	@Override
-	protected void receive(ClientPlayNetworking.PlayChannelHandler handler, PacketByteBuf buf) {
-		handler.receive(this.client, this.handler, buf, this);
+	protected void receive(Handler handler, ResolvedPayload payload) {
+		handler.receive(this.client, this.handler, payload, this);
 	}
 
 	// impl details
@@ -152,11 +131,14 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected void invokeDisconnectEvent() {
 		ClientPlayConnectionEvents.DISCONNECT.invoker().onPlayDisconnect(this.handler, this.client);
-		this.receiver.endSession(this);
 	}
 
 	@Override
 	protected boolean isReservedChannel(Identifier channelName) {
 		return NetworkingImpl.isReservedCommonChannel(channelName);
+	}
+
+	public interface Handler {
+		void receive(MinecraftClient client, ClientPlayNetworkHandler handler, ResolvedPayload payload, PacketSender responseSender);
 	}
 }

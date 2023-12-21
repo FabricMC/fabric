@@ -24,8 +24,8 @@ import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.registry.tag.TagKey;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.dimension.DimensionOptions;
@@ -34,8 +34,6 @@ import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 
 /**
  * Provides several convenient biome selectors that can be used with {@link BiomeModifications}.
- *
- * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
 public final class BiomeSelectors {
 	private BiomeSelectors() {

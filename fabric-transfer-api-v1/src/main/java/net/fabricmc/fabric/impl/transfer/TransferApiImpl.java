@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -90,44 +90,6 @@ public class TransferApiImpl {
 
 				hasNext = false;
 				return it;
-			}
-		};
-	}
-
-	public static <T> Iterator<StorageView<T>> filterEmptyViews(Iterator<StorageView<T>> iterator) {
-		return new Iterator<>() {
-			StorageView<T> next;
-
-			{
-				findNext();
-			}
-
-			private void findNext() {
-				while (iterator.hasNext()) {
-					next = iterator.next();
-
-					if (next.getAmount() > 0 && !next.isResourceBlank()) {
-						return;
-					}
-				}
-
-				next = null;
-			}
-
-			@Override
-			public boolean hasNext() {
-				return next != null;
-			}
-
-			@Override
-			public StorageView<T> next() {
-				if (!hasNext()) {
-					throw new NoSuchElementException();
-				}
-
-				StorageView<T> ret = next;
-				findNext();
-				return ret;
 			}
 		};
 	}

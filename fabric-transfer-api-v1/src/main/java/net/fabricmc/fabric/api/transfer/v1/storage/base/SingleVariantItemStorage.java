@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.transfer.v1.storage.base;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -46,11 +44,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  * </ul>
  *
  * @param <T> The type of the stored transfer variant.
- *
- * <b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 public abstract class SingleVariantItemStorage<T extends TransferVariant<?>> implements SingleSlotStorage<T> {
 	/**
 	 * Reference to the context.

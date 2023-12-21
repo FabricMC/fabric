@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.util;
 
-import net.minecraft.registry.tag.TagKey;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
+import net.minecraft.registry.tag.TagKey;
 
 public interface Item2ObjectMap<V> {
 	V get(ItemConvertible item);

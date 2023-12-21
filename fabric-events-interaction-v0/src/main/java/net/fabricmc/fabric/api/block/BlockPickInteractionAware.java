@@ -24,10 +24,11 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.WorldView;
 
 /**
  * Convenience interface for blocks that want more stack picking context than what
- * {@link Block#getPickStack(BlockView, BlockPos, BlockState)} provides.
+ * {@link Block#getPickStack(WorldView, BlockPos, BlockState)} provides.
  *
  * <p>The hit result is guaranteed to be a {@link BlockHitResult} that did not miss.
  */

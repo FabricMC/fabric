@@ -16,8 +16,9 @@
 
 package net.fabricmc.fabric.mixin.resource.loader.client;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -38,6 +39,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
+import net.minecraft.nbt.NbtTagSizeTracker;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 
@@ -63,25 +65,29 @@ public class GameOptionsMixin {
 		// - If there is a value without matching pack id (e.g. because the mod is removed),
 		//   remove it from the tracker file so that it would be enabled again if added back later.
 
-		File dataDir = FabricLoader.getInstance().getGameDir().resolve("data").toFile();
+		Path dataDir = FabricLoader.getInstance().getGameDir().resolve("data");
 
-		if (!dataDir.exists() && !dataDir.mkdirs()) {
-			LOGGER.warn("[Fabric Resource Loader] Could not create data directory: " + dataDir.getAbsolutePath());
+		if (Files.notExists(dataDir)) {
+			try {
+				Files.createDirectories(dataDir);
+			} catch (IOException e) {
+				LOGGER.warn("[Fabric Resource Loader] Could not create data directory: " + dataDir.toAbsolutePath());
+			}
 		}
 
-		File trackerFile = new File(dataDir, "fabricDefaultResourcePacks.dat");
+		Path trackerFile = dataDir.resolve("fabricDefaultResourcePacks.dat");
 		Set<String> trackedPacks = new HashSet<>();
 
-		if (trackerFile.exists()) {
+		if (Files.exists(trackerFile)) {
 			try {
-				NbtCompound data = NbtIo.readCompressed(trackerFile);
+				NbtCompound data = NbtIo.readCompressed(trackerFile, NbtTagSizeTracker.ofUnlimitedBytes());
 				NbtList values = data.getList("values", NbtElement.STRING_TYPE);
 
 				for (int i = 0; i < values.size(); i++) {
 					trackedPacks.add(values.getString(i));
 				}
 			} catch (IOException e) {
-				LOGGER.warn("[Fabric Resource Loader] Could not read " + trackerFile.getAbsolutePath(), e);
+				LOGGER.warn("[Fabric Resource Loader] Could not read " + trackerFile.toAbsolutePath(), e);
 			}
 		}
 
@@ -122,7 +128,7 @@ public class GameOptionsMixin {
 			nbt.put("values", values);
 			NbtIo.writeCompressed(nbt, trackerFile);
 		} catch (IOException e) {
-			LOGGER.warn("[Fabric Resource Loader] Could not write to " + trackerFile.getAbsolutePath(), e);
+			LOGGER.warn("[Fabric Resource Loader] Could not write to " + trackerFile.toAbsolutePath(), e);
 		}
 
 		this.resourcePacks = new ArrayList<>(resourcePacks);

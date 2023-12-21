@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.test.transfer.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AbstractFurnaceBlockEntityAccessor"
   ]
