@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.resource.loader;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -43,7 +42,7 @@ public record PlaceholderResourcePack(ResourceType type) implements ResourcePack
 	public static final JsonElement DESCRIPTION_JSON = TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, DESCRIPTION_TEXT).result().get();
 
 	public JsonObject getMetadata() {
-		return ModResourcePackUtil.getMetadataJson(
+		return ModResourcePackUtil.getMetadataPackJson(
 				SharedConstants.getGameVersion().getResourceVersion(type),
 				DESCRIPTION_JSON
 		);
@@ -54,13 +53,13 @@ public record PlaceholderResourcePack(ResourceType type) implements ResourcePack
 	public InputSupplier<InputStream> openRoot(String... segments) {
 		if (segments.length > 0) {
 			switch (segments[0]) {
-				case "pack.mcmeta":
-					return () -> {
-						String metadata = ModResourcePackUtil.GSON.toJson(getMetadata());
-						return IOUtils.toInputStream(metadata, StandardCharsets.UTF_8);
-					};
-				case "pack.png":
-					return ModResourcePackUtil::getDefaultIcon;
+			case "pack.mcmeta":
+				return () -> {
+					String metadata = ModResourcePackUtil.GSON.toJson(getMetadata());
+					return IOUtils.toInputStream(metadata, StandardCharsets.UTF_8);
+				};
+			case "pack.png":
+				return ModResourcePackUtil::getDefaultIcon;
 			}
 		}
 
@@ -87,8 +86,13 @@ public record PlaceholderResourcePack(ResourceType type) implements ResourcePack
 
 	@Nullable
 	@Override
-	public <T> T parseMetadata(ResourceMetadataReader<T> metaReader) throws IOException {
-		return metaReader.fromJson(getMetadata());
+	public <T> T parseMetadata(ResourceMetadataReader<T> metaReader) {
+		if ("pack".equals(metaReader.getKey())) {
+			return metaReader.fromJson(getMetadata());
+		}
+
+		// This pack does not have any overlays.
+		return null;
 	}
 
 	@Override
@@ -101,7 +105,6 @@ public record PlaceholderResourcePack(ResourceType type) implements ResourcePack
 	}
 
 	public record Factory(ResourceType type) implements ResourcePackProfile.PackFactory {
-
 		@Override
 		public ResourcePack open(String name) {
 			return new PlaceholderResourcePack(this.type);

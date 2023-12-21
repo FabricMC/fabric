@@ -16,10 +16,8 @@
 
 package net.fabricmc.fabric.impl.resource.loader;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.function.Predicate;
-
 
 /**
  * Interface injected to ResourcePackProfile.
@@ -30,11 +28,11 @@ public interface FabricResourcePackProfile {
 	}
 
 	/**
-	 * @return whether every parent is enabled.
+	 * Returns whether every parent is enabled. If this is not empty, the pack's status
+	 * is synced to that of the parent pack(s), where the pack gets enabled if and only
+	 * if each of the parent is enabled.
 	 *
-	 * <p>If this is not empty, the pack's status is synced
-	 * to that of the parent pack(s), where the pack gets enabled if and only if each
-	 * of the parent is enabled.
+	 * @return whether every parent is enabled.
 	 */
 	default boolean parentsEnabled(Set<String> enabled) {
 		return true;

@@ -48,7 +48,7 @@ public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
 	@Shadow
 	@Final
 	@Mutable
-	private Set<ResourcePackProvider> providers;
+	public Set<ResourcePackProvider> providers;
 
 	@Shadow
 	private Map<String, ResourcePackProfile> profiles;
@@ -100,8 +100,6 @@ public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
 			}
 		}
 	}
-
-
 
 	@Inject(method = "disable", at = @At(value = "INVOKE", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z"))
 	private void handleAutoDisable(String profile, CallbackInfoReturnable<Boolean> cir, @Local List<ResourcePackProfile> enabled) {

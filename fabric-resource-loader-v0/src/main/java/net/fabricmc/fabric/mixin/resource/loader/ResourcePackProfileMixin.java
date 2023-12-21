@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -56,6 +55,7 @@ abstract class ResourcePackProfileMixin implements FabricResourcePackProfile {
 	private void onCreateResourcePack(CallbackInfoReturnable<ResourcePack> info) {
 		ResourcePackSourceTracker.setSource(info.getReturnValue(), source);
 	}
+
 	@Override
 	public boolean isHidden() {
 		return parentsPredicate != DEFAULT_PARENT_PREDICATE;

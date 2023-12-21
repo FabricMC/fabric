@@ -116,17 +116,18 @@ public final class ModResourcePackUtil {
 		}
 	}
 
-	public static JsonObject getMetadataJson(int packVersion, JsonElement description) {
+	public static JsonObject getMetadataPackJson(int packVersion, JsonElement description) {
 		JsonObject pack = new JsonObject();
 		pack.addProperty("pack_format", packVersion);
 		pack.add("description", description);
-		JsonObject metadata = new JsonObject();
-		metadata.add("pack", pack);
-		return metadata;
+		return pack;
 	}
 
 	public static String serializeMetadata(int packVersion, String description) {
-		return GSON.toJson(getMetadataJson(packVersion, new JsonPrimitive(description)));
+		JsonObject pack = getMetadataPackJson(packVersion, new JsonPrimitive(description));
+		JsonObject metadata = new JsonObject();
+		metadata.add("pack", pack);
+		return GSON.toJson(pack);
 	}
 
 	public static Text getName(ModMetadata info) {
