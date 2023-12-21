@@ -28,7 +28,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 
-import net.fabricmc.fabric.api.attachment.v1.Attachment;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
@@ -36,10 +36,10 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 public class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Unique
 	@Nullable
-	protected IdentityHashMap<Attachment<?>, Object> fabric_dataAttachments = null;
+	protected IdentityHashMap<AttachmentType<?>, Object> fabric_dataAttachments = null;
 
 	@Override
-	public <T> T getAttached(Attachment<T> att) {
+	public <T> T getAttached(AttachmentType<T> att) {
 		if (fabric_dataAttachments == null) {
 			fabric_dataAttachments = new IdentityHashMap<>();
 		}
@@ -55,7 +55,7 @@ public class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 	@Override
 	@Nullable
-	public <T> T setAttached(Attachment<T> att, @Nullable T value) {
+	public <T> T setAttached(AttachmentType<T> att, @Nullable T value) {
 		if (value == null) {
 			if (fabric_dataAttachments == null) {
 				return null;
@@ -78,7 +78,7 @@ public class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public boolean hasAttached(Attachment<?> att) {
+	public boolean hasAttached(AttachmentType<?> att) {
 		return fabric_dataAttachments != null && fabric_dataAttachments.containsKey(att);
 	}
 

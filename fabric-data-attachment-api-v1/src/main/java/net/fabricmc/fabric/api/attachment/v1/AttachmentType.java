@@ -32,7 +32,7 @@ import net.minecraft.util.Identifier;
  *
  * @param <A> type of the attached data. It is strongly encouraged for this to be an immutable type.
  */
-public interface Attachment<A> {
+public interface AttachmentType<A> {
 	/**
 	 * @return the identifier that uniquely identifies this attachment
 	 */
@@ -42,7 +42,7 @@ public interface Attachment<A> {
 	 * If an object has no value associated to an attachment,
 	 * this initializer is used to create a (non-{@code null}) starting value.
 	 *
-	 * <p>The result of the initializer <i>must</i> not have shared state across {@link Attachment} instances.
+	 * <p>The result of the initializer <i>must</i> not have shared state across {@link AttachmentType} instances.
 	 * It is strongly encouraged to have {@link A} be an immutable type.</p>
 	 *
 	 * @return the initializer for this attachment

@@ -28,23 +28,23 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.attachment.v1.Attachment;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
 public final class AttachmentRegistryImpl {
-	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-data-attachment-api-v1");
-	private static final Map<Identifier, Attachment<?>> attachmentRegistry = new HashMap<>();
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-data-type-api-v1");
+	private static final Map<Identifier, AttachmentType<?>> attachmentRegistry = new HashMap<>();
 
-	public static <A> void register(Identifier id, Attachment<A> attachment) {
-		Attachment<?> existing = attachmentRegistry.put(id, attachment);
+	public static <A> void register(Identifier id, AttachmentType<A> attachmentType) {
+		AttachmentType<?> existing = attachmentRegistry.put(id, attachmentType);
 
 		if (existing != null) {
-			LOGGER.warn("Encountered duplicate attachment registration for id " + id);
+			LOGGER.warn("Encountered duplicate type registration for id " + id);
 		}
 	}
 
 	@Nullable
-	public static Attachment<?> get(Identifier id) {
+	public static AttachmentType<?> get(Identifier id) {
 		return attachmentRegistry.get(id);
 	}
 
@@ -89,16 +89,16 @@ public final class AttachmentRegistryImpl {
 		}
 
 		@Override
-		public Attachment<A> buildAndRegister(Identifier id) {
+		public AttachmentType<A> buildAndRegister(Identifier id) {
 			if (initializer == null) {
-				throw new IllegalArgumentException("Cannot construct an attachment without an initializer or a default value");
+				throw new IllegalArgumentException("Cannot construct an type without an initializer or a default value");
 			}
 
 			if (codec == null && (persistent || synced)) {
-				throw new IllegalArgumentException("A persistent/synced attachment must have an associated codec");
+				throw new IllegalArgumentException("A persistent/synced type must have an associated codec");
 			}
 
-			var attachment = new AttachmentImpl<>(id, initializer, codec, persistent, synced);
+			var attachment = new AttachmentTypeImpl<>(id, initializer, codec, persistent, synced);
 			register(id, attachment);
 			return attachment;
 		}

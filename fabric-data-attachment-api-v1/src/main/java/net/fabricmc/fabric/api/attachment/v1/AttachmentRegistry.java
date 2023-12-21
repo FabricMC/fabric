@@ -26,7 +26,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 
 /**
- * Class used to create and register {@link Attachment}s. To quickly create {@link Attachment}s with default values, use
+ * Class used to create and register {@link AttachmentType}s. To quickly create {@link AttachmentType}s with default values, use
  * {@link #create(Identifier, Supplier)}. Alternatively, {@link #createPersistent(Identifier, Supplier, Codec)} and
  * {@link #createSynced(Identifier, Supplier, Codec)} can be used for attachments that persist across server restarts
  * or that are synced between server and client, respectively.
@@ -45,9 +45,9 @@ public final class AttachmentRegistry {
 	 * @param id the identifier of this attachment
 	 * @param defaultValue the default value, used for objects which don't have attached data yet. Must not be {@code null}
 	 * @param <A> the type of attached data
-	 * @return the registered {@link Attachment} instance
+	 * @return the registered {@link AttachmentType} instance
 	 */
-	public static <A> Attachment<A> create(Identifier id, Supplier<A> defaultValue) {
+	public static <A> AttachmentType<A> create(Identifier id, Supplier<A> defaultValue) {
 		Objects.requireNonNull(id, "identifier cannot be null");
 		Objects.requireNonNull(defaultValue, "default value cannot be null");
 
@@ -61,9 +61,9 @@ public final class AttachmentRegistry {
 	 * @param defaultValue the default value, used for objects which don't have attached data yet. Must not be {@code null}
 	 * @param codec the codec used for serialization
 	 * @param <A> the type of attached data
-	 * @return the registered {@link Attachment} instance
+	 * @return the registered {@link AttachmentType} instance
 	 */
-	public static <A> Attachment<A> createPersistent(Identifier id, Supplier<A> defaultValue, Codec<A> codec) {
+	public static <A> AttachmentType<A> createPersistent(Identifier id, Supplier<A> defaultValue, Codec<A> codec) {
 		Objects.requireNonNull(id, "identifier cannot be null");
 		Objects.requireNonNull(defaultValue, "default value cannot be null");
 		Objects.requireNonNull(codec, "codec cannot be null");
@@ -82,9 +82,9 @@ public final class AttachmentRegistry {
 	 * @param defaultValue the default value, used for objects which don't have attached data yet. Must not be {@code null}
 	 * @param codec the codec used for serialization
 	 * @param <A> the type of attached data
-	 * @return the registered {@link Attachment} instance
+	 * @return the registered {@link AttachmentType} instance
 	 */
-	public static <A> Attachment<A> createSynced(Identifier id, Supplier<A> defaultValue, Codec<A> codec) {
+	public static <A> AttachmentType<A> createSynced(Identifier id, Supplier<A> defaultValue, Codec<A> codec) {
 		Objects.requireNonNull(id, "identifier cannot be null");
 		Objects.requireNonNull(defaultValue, "default value cannot be null");
 		Objects.requireNonNull(codec, "codec cannot be null");
@@ -107,7 +107,7 @@ public final class AttachmentRegistry {
 	}
 
 	/**
-	 * A builder for creating {@link Attachment}s with finer control over their properties.
+	 * A builder for creating {@link AttachmentType}s with finer control over their properties.
 	 *
 	 * @param <A> the type of the attached data
 	 */
@@ -145,11 +145,11 @@ public final class AttachmentRegistry {
 		Builder<A> codec(Codec<A> codec);
 
 		/**
-		 * Builds and registers the {@link Attachment}.
+		 * Builds and registers the {@link AttachmentType}.
 		 *
 		 * @param id the attachment's identifier
-		 * @return the built and registered {@link Attachment}
+		 * @return the built and registered {@link AttachmentType}
 		 */
-		Attachment<A> buildAndRegister(Identifier id);
+		AttachmentType<A> buildAndRegister(Identifier id);
 	}
 }

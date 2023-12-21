@@ -28,28 +28,28 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.attachment.v1.Attachment;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
 public class AttachmentSerializingImpl {
 	@SuppressWarnings("unchecked")
-	public static void serializeAttachmentData(NbtCompound nbt, @Nullable IdentityHashMap<Attachment<?>, ?> attachments) {
+	public static void serializeAttachmentData(NbtCompound nbt, @Nullable IdentityHashMap<AttachmentType<?>, ?> attachments) {
 		if (attachments == null) {
 			return;
 		}
 
 		var compound = new NbtCompound();
 
-		for (Map.Entry<Attachment<?>, ?> entry : attachments.entrySet()) {
-			Attachment<?> attachment = entry.getKey();
+		for (Map.Entry<AttachmentType<?>, ?> entry : attachments.entrySet()) {
+			AttachmentType<?> type = entry.getKey();
 
-			if (attachment.persistent()) {
-				Codec<Object> codec = (Codec<Object>) attachment.codec();
+			if (type.persistent()) {
+				Codec<Object> codec = (Codec<Object>) type.codec();
 				// non-nullity enforced by builder API
 				codec.encodeStart(NbtOps.INSTANCE, entry.getValue())
 						.result()
 						.ifPresent(serialized ->
-								compound.put(attachment.identifier().toString(), serialized)
+								compound.put(type.identifier().toString(), serialized)
 						);
 			}
 		}
@@ -57,22 +57,22 @@ public class AttachmentSerializingImpl {
 		nbt.put(AttachmentTarget.NBT_ATTACHMENT_KEY, compound);
 	}
 
-	public static IdentityHashMap<Attachment<?>, Object> deserializeAttachmentData(NbtCompound nbt) {
-		var attachments = new IdentityHashMap<Attachment<?>, Object>();
+	public static IdentityHashMap<AttachmentType<?>, Object> deserializeAttachmentData(NbtCompound nbt) {
+		var attachments = new IdentityHashMap<AttachmentType<?>, Object>();
 
 		if (nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY, NbtElement.COMPOUND_TYPE)) {
 			NbtCompound compound = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY);
 
 			for (String key : compound.getKeys()) {
-				Attachment<?> attachment = AttachmentRegistryImpl.get(new Identifier(key));
+				AttachmentType<?> type = AttachmentRegistryImpl.get(new Identifier(key));
 
-				if (attachment != null && attachment.persistent()) {
+				if (type != null && type.persistent()) {
 					// non-nullity enforced by builder API
-					attachment.codec()
+					type.codec()
 							.decode(NbtOps.INSTANCE, compound.get(key))
 							.result()
 							.map(Pair::getFirst)
-							.ifPresent(deserialized -> attachments.put(attachment, deserialized));
+							.ifPresent(deserialized -> attachments.put(type, deserialized));
 				}
 			}
 		}
@@ -80,13 +80,13 @@ public class AttachmentSerializingImpl {
 		return attachments;
 	}
 
-	public static boolean hasSerializableAttachments(@Nullable IdentityHashMap<Attachment<?>, ?> map) {
+	public static boolean hasSerializableAttachments(@Nullable IdentityHashMap<AttachmentType<?>, ?> map) {
 		if (map == null) {
 			return false;
 		}
 
-		for (Attachment<?> attachment : map.keySet()) {
-			if (attachment.persistent()) {
+		for (AttachmentType<?> type : map.keySet()) {
+			if (type.persistent()) {
 				return true;
 			}
 		}

@@ -26,7 +26,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.chunk.WorldChunk;
 
 /**
- * Marks all objects on which data can be attached using {@link Attachment}s.
+ * Marks all objects on which data can be attached using {@link AttachmentType}s.
  *
  * <p>Fabric implements this on {@link Entity}, {@link BlockEntity}, {@link ServerWorld} and {@link WorldChunk} via mixin.</p>
  */
@@ -34,64 +34,64 @@ public interface AttachmentTarget {
 	String NBT_ATTACHMENT_KEY = "fabric:attachments";
 
 	/**
-	 * Gets the data associated with the given {@link Attachment}. If it doesn't exist yet,
-	 * it is generated using {@link Attachment#initializer()}.
+	 * Gets the data associated with the given {@link AttachmentType}. If it doesn't exist yet,
+	 * it is generated using {@link AttachmentType#initializer()}.
 	 *
-	 * @param attachment the attachment
+	 * @param type the attachment
 	 * @param <A> the type of the data
 	 * @return the attached data
 	 */
-	default <A> A getAttached(Attachment<A> attachment) {
+	default <A> A getAttached(AttachmentType<A> type) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
-	 * Sets the data associated with the given {@link Attachment}. Passing {@code null} removes the data.
+	 * Sets the data associated with the given {@link AttachmentType}. Passing {@code null} removes the data.
 	 *
-	 * @param attachment the attachment
+	 * @param type the attachment
 	 * @param value the new value
 	 * @param <A> the type of the data
 	 * @return the previous data
 	 */
 	@Nullable
-	default <A> A setAttached(Attachment<A> attachment, @Nullable A value) {
+	default <A> A setAttached(AttachmentType<A> type, @Nullable A value) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
-	 * Tests whether the given {@link Attachment} has any associated data.
+	 * Tests whether the given {@link AttachmentType} has any associated data.
 	 *
-	 * @param attachment the attachment
+	 * @param type the attachment
 	 * @return whether there is associated data
 	 */
-	default boolean hasAttached(Attachment<?> attachment) {
+	default boolean hasAttached(AttachmentType<?> type) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
-	 * Removes any data associated with the given {@link Attachment}. Equivalent to calling {@link #setAttached(Attachment, Object)}
+	 * Removes any data associated with the given {@link AttachmentType}. Equivalent to calling {@link #setAttached(AttachmentType, Object)}
 	 * with {@code null}.
 	 *
-	 * @param attachment the attachment
+	 * @param type the attachment
 	 * @param <A> the type of the data
 	 * @return the previous data
 	 */
 	@Nullable
-	default <A> A removeAttached(Attachment<A> attachment) {
-		return setAttached(attachment, null);
+	default <A> A removeAttached(AttachmentType<A> type) {
+		return setAttached(type, null);
 	}
 
 	/**
-	 * Modifies the data associated with the given {@link Attachment}. Functionally the same as calling {@link #getAttached(Attachment)},
-	 * applying the modifier, then calling {@link #setAttached(Attachment, Object)} with the result.
+	 * Modifies the data associated with the given {@link AttachmentType}. Functionally the same as calling {@link #getAttached(AttachmentType)},
+	 * applying the modifier, then calling {@link #setAttached(AttachmentType, Object)} with the result.
 	 *
-	 * @param attachment the attachment
+	 * @param type the attachment
 	 * @param modifier the operation to apply to the current data
 	 * @param <A> the type of the data
 	 * @return the previous data
 	 */
 	@Nullable
-	default <A> A modifyAttached(Attachment<A> attachment, UnaryOperator<A> modifier) {
-		return setAttached(attachment, modifier.apply(getAttached(attachment)));
+	default <A> A modifyAttached(AttachmentType<A> type, UnaryOperator<A> modifier) {
+		return setAttached(type, modifier.apply(getAttached(type)));
 	}
 }
