@@ -9,7 +9,3 @@ moduleDependencies(project, [
 testDependencies(project, [
 	':fabric-content-registries-v0',
 ])
-
-loom {
-	accessWidenerPath = file("src/main/resources/fabric-item-api-v1.accesswidener")
-}
