@@ -152,6 +152,9 @@ public final class AttachmentRegistry {
 		 * As an example, for a (mutable) list/array attachment type,
 		 * the initializer should create a new independent instance each time it is called.</p>
 		 *
+		 * <p>Make sure to store the result of {@link #buildAndRegister(Identifier)} in a field of type {@link DefaultedAttachmentType}
+		 * to avoid mistakenly calling {@link AttachmentTarget#getAttached(AttachmentType)} instead.</p>
+		 *
 		 * @param initializer the initializer
 		 * @return the builder
 		 */

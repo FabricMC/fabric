@@ -7,6 +7,9 @@ import org.jetbrains.annotations.ApiStatus;
 /**
  * An {@link AttachmentType} that will automatically initialize attachments with a default value when queried for the first time.
  *
+ * <p>Make sure to store such attachment types in fields of type {@link DefaultedAttachmentType} to avoid mistakenly
+ * calling {@link AttachmentTarget#getAttached(AttachmentType)} instead.</p>
+ *
  * @param <A>
  * @see AttachmentTarget#getAttached(DefaultedAttachmentType)
  */
