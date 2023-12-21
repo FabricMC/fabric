@@ -80,7 +80,7 @@ public class AttachmentSerializingImpl {
 		return attachments;
 	}
 
-	public static boolean hasSerializableAttachments(@Nullable IdentityHashMap<AttachmentType<?>, ?> map) {
+	public static boolean hasPersistentAttachments(@Nullable IdentityHashMap<AttachmentType<?>, ?> map) {
 		if (map == null) {
 			return false;
 		}

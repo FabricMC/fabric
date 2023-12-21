@@ -44,6 +44,7 @@ public class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Nullable
 	protected IdentityHashMap<AttachmentType<?>, Object> fabric_dataAttachments = null;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Nullable
 	public <T> T getAttached(AttachmentType<T> type) {
@@ -70,6 +71,7 @@ public class AttachmentTargetsMixin implements AttachmentTargetImpl {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Nullable
 	public <T> T setAttached(AttachmentType<T> att, @Nullable T value) {
@@ -111,6 +113,6 @@ public class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 	@Override
 	public boolean hasPersistentAttachments() {
-		return AttachmentSerializingImpl.hasSerializableAttachments(fabric_dataAttachments);
+		return AttachmentSerializingImpl.hasPersistentAttachments(fabric_dataAttachments);
 	}
 }

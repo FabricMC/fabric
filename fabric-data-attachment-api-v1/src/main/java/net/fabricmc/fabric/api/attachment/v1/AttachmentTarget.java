@@ -114,4 +114,18 @@ public interface AttachmentTarget {
 	default <A> A modifyAttached(AttachmentType<A> type, UnaryOperator<A> modifier) {
 		return setAttached(type, modifier.apply(getAttached(type)));
 	}
+
+	/**
+	 * Modifies the data associated with the given {@link DefaultedAttachmentType}. Functionally the same as calling {@link #getAttached(DefaultedAttachmentType)},
+	 * applying the modifier, then calling {@link #setAttached(AttachmentType, Object)} with the result.
+	 *
+	 * @param type the attachment type
+	 * @param modifier the operation to apply to the current data
+	 * @param <A> the type of the data
+	 * @return the previous data
+	 */
+	@Nullable
+	default <A> A modifyAttached(DefaultedAttachmentType<A> type, UnaryOperator<A> modifier) {
+		return setAttached(type, modifier.apply(getAttached(type)));
+	}
 }
