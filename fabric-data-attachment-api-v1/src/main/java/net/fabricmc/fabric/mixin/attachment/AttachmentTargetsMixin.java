@@ -40,17 +40,7 @@ public class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 	@Override
 	public <T> T getAttached(AttachmentType<T> att) {
-		if (fabric_dataAttachments == null) {
-			fabric_dataAttachments = new IdentityHashMap<>();
-		}
-
-		if (fabric_dataAttachments.containsKey(att)) {
-			return (T) fabric_dataAttachments.get(att);
-		}
-
-		T initialized = att.initializer().get();
-		fabric_dataAttachments.put(att, initialized);
-		return initialized;
+		return fabric_dataAttachments == null ? null : (T) fabric_dataAttachments.get(att);
 	}
 
 	@Override

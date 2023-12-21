@@ -34,21 +34,41 @@ public interface AttachmentTarget {
 	String NBT_ATTACHMENT_KEY = "fabric:attachments";
 
 	/**
-	 * Gets the data associated with the given {@link AttachmentType}. If it doesn't exist yet,
-	 * it is generated using {@link AttachmentType#initializer()}.
+	 * Gets the data associated with the given {@link AttachmentType}, or {@code null} if it doesn't yet exist.
 	 *
-	 * @param type the attachment
+	 * @param type the attachment type
 	 * @param <A> the type of the data
 	 * @return the attached data
 	 */
+	@Nullable
 	default <A> A getAttached(AttachmentType<A> type) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
+	 * Gets the data associated with the given {@link DefaultedAttachmentType}, or <i>initializes it</i> automatically
+	 * using {@link DefaultedAttachmentType#initializer()} if it doesn't yet exist.
+	 *
+	 * @param type the defaulted attachment type
+	 * @param <A> the type of the data
+	 * @return the attached data
+	 */
+	default <A> A getAttached(DefaultedAttachmentType<A> type) {
+		A current = getAttached((AttachmentType<? extends A>) type);
+
+		if (current == null) {
+			A initialized = type.initializer().get();
+			setAttached(type, initialized);
+			return initialized;
+		} else {
+			return current;
+		}
+	}
+
+	/**
 	 * Sets the data associated with the given {@link AttachmentType}. Passing {@code null} removes the data.
 	 *
-	 * @param type the attachment
+	 * @param type the attachment type
 	 * @param value the new value
 	 * @param <A> the type of the data
 	 * @return the previous data
@@ -61,7 +81,7 @@ public interface AttachmentTarget {
 	/**
 	 * Tests whether the given {@link AttachmentType} has any associated data.
 	 *
-	 * @param type the attachment
+	 * @param type the attachment type
 	 * @return whether there is associated data
 	 */
 	default boolean hasAttached(AttachmentType<?> type) {
@@ -72,7 +92,7 @@ public interface AttachmentTarget {
 	 * Removes any data associated with the given {@link AttachmentType}. Equivalent to calling {@link #setAttached(AttachmentType, Object)}
 	 * with {@code null}.
 	 *
-	 * @param type the attachment
+	 * @param type the attachment type
 	 * @param <A> the type of the data
 	 * @return the previous data
 	 */
@@ -85,7 +105,7 @@ public interface AttachmentTarget {
 	 * Modifies the data associated with the given {@link AttachmentType}. Functionally the same as calling {@link #getAttached(AttachmentType)},
 	 * applying the modifier, then calling {@link #setAttached(AttachmentType, Object)} with the result.
 	 *
-	 * @param type the attachment
+	 * @param type the attachment type
 	 * @param modifier the operation to apply to the current data
 	 * @param <A> the type of the data
 	 * @return the previous data

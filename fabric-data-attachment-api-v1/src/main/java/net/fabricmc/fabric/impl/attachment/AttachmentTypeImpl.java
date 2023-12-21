@@ -23,12 +23,12 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.attachment.v1.DefaultedAttachmentType;
 
 public record AttachmentTypeImpl<A>(
 		Identifier identifier,
-		Supplier<A> initializer,
+		@Nullable Supplier<A> initializer,
 		@Nullable Codec<A> codec,
 		boolean persistent,
 		boolean synced
-) implements AttachmentType<A> { }
+) implements DefaultedAttachmentType<A> { }

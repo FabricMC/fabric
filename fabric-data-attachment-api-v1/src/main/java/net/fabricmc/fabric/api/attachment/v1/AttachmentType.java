@@ -16,9 +16,8 @@
 
 package net.fabricmc.fabric.api.attachment.v1;
 
-import java.util.function.Supplier;
-
 import com.mojang.serialization.Codec;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
@@ -30,24 +29,15 @@ import net.minecraft.util.Identifier;
  * <p>Attachments can optionally be made to persist between restarts using a provided {@link Codec}s, and
  * can optionally be automatically synced between server and client.</p>
  *
- * @param <A> type of the attached data. It is strongly encouraged for this to be an immutable type.
+ * @param <A> type of the attached data. It is encouraged for this to be an immutable type.
  */
+@ApiStatus.NonExtendable
+@ApiStatus.Experimental
 public interface AttachmentType<A> {
 	/**
 	 * @return the identifier that uniquely identifies this attachment
 	 */
 	Identifier identifier();
-
-	/**
-	 * If an object has no value associated to an attachment,
-	 * this initializer is used to create a (non-{@code null}) starting value.
-	 *
-	 * <p>The result of the initializer <i>must</i> not have shared state across {@link AttachmentType} instances.
-	 * It is strongly encouraged to have {@link A} be an immutable type.</p>
-	 *
-	 * @return the initializer for this attachment
-	 */
-	Supplier<A> initializer();
 
 	/**
 	 * If present, the codec determines how the attached data, if present, is written to and read from NBT.
