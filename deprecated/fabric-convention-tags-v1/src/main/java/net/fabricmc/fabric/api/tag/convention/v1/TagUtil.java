@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.tag.convention.v1;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.registry.tag.TagKey;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.tag.TagKey;
 
 /**
  * @deprecated Please use {@link net.fabricmc.fabric.api.tag.convention.v2.TagUtil}
