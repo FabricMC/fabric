@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.attachment.v1.DefaultedAttachmentType;
 
 public final class AttachmentRegistryImpl {
-	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-data-type-api-v1");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-data-attachment-api-v1");
 	private static final Map<Identifier, AttachmentType<?>> attachmentRegistry = new HashMap<>();
 
 	public static <A> void register(Identifier id, AttachmentType<A> attachmentType) {
