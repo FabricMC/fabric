@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.mixin.item.shears;
 
 import java.util.ArrayList;
@@ -29,7 +45,7 @@ public abstract class MatchToolLootConditionMixin implements LootCondition {
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void shearsLoot(CallbackInfo ci) {
 		// allows anything in fabric:shears to mine grass (and other stuff) and it will drop
-		((MatchToolLootCondition)(Object)this).predicate().ifPresent(MATCH_TOOL_PREDICATES::add);
+		((MatchToolLootCondition) (Object) this).predicate().ifPresent(MATCH_TOOL_PREDICATES::add);
 	}
 
 	static {
@@ -40,7 +56,7 @@ public abstract class MatchToolLootConditionMixin implements LootCondition {
 					//noinspection deprecation
 					if (p.items().isPresent() && p.items().get().contains(Items.SHEARS.getRegistryEntry())) {
 						@SuppressWarnings("unchecked")
-						DirectRegistryEntryListAccessor<Item> accessor = ((DirectRegistryEntryListAccessor<Item>)p.items().get());
+						DirectRegistryEntryListAccessor<Item> accessor = ((DirectRegistryEntryListAccessor<Item>) p.items().get());
 						ImmutableList.Builder<RegistryEntry<Item>> builder = new ImmutableList.Builder<>();
 						builder.addAll(accessor.getEntries());
 						builder.addAll(ShearsHelper.SHEARS);
@@ -49,6 +65,7 @@ public abstract class MatchToolLootConditionMixin implements LootCondition {
 					}
 				}
 			}
+
 			MATCH_TOOL_PREDICATES.clear();
 		});
 	}
