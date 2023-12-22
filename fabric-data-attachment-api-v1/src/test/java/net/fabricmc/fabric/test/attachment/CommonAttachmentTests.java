@@ -19,31 +19,49 @@ package net.fabricmc.fabric.test.attachment;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.function.UnaryOperator;
 
+import com.mojang.serialization.Codec;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
+import net.minecraft.block.entity.BellBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MarkerEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.impl.attachment.AttachmentPersistentState;
+import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 
 public class CommonAttachmentTests {
 	private static final String MOD_ID = "example";
+	private final AttachmentType<Integer> PERSISTENT = AttachmentRegistry.createPersistent(
+			new Identifier(MOD_ID, "persistent"),
+			Codec.INT
+	);
 
 	@BeforeAll
 	static void beforeAll() {
@@ -101,5 +119,78 @@ public class CommonAttachmentTests {
 		assertEquals(0, target.getAttachedOrCreate(defaulted));
 		target.removeAttached(defaulted);
 		assertFalse(target.hasAttached(defaulted));
+	}
+
+	@Test
+	void testStaticReadWrite() {
+		AttachmentType<Double> dummy = AttachmentRegistry.createPersistent(
+				new Identifier(MOD_ID, "dummy"),
+				Codec.DOUBLE
+		);
+		var map = new IdentityHashMap<AttachmentType<?>, Object>();
+		map.put(dummy, 0.5d);
+		var fakeSave = new NbtCompound();
+
+		AttachmentSerializingImpl.serializeAttachmentData(fakeSave, map);
+		assertTrue(fakeSave.contains(AttachmentTarget.NBT_ATTACHMENT_KEY, NbtElement.COMPOUND_TYPE));
+		assertTrue(fakeSave.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).contains(dummy.identifier().toString()));
+
+		map = AttachmentSerializingImpl.deserializeAttachmentData(fakeSave);
+		assertEquals(1, map.size());
+		Map.Entry<AttachmentType<?>, Object> entry = map.entrySet().stream().findFirst().orElseThrow();
+		// in this case the key should be the exact same object
+		// but in practice this is meaningless because on a dedicated server the JVM restarted
+		assertEquals(dummy.identifier(), entry.getKey().identifier());
+		assertEquals(0.5d, entry.getValue());
+	}
+
+	@Test
+	void testEntityPersistence() {
+		Entity entity = new MarkerEntity(EntityType.MARKER, mock());
+		assertFalse(entity.hasAttached(PERSISTENT));
+
+		int expected = 1;
+		entity.setAttached(PERSISTENT, expected);
+		NbtCompound fakeSave = new NbtCompound();
+		entity.writeNbt(fakeSave);
+
+		entity = spy(new MarkerEntity(EntityType.MARKER, mock())); // fresh object, like on restart
+		entity.setChangeListener(mock());
+		doNothing().when(entity).calculateDimensions();
+		entity.readNbt(fakeSave);
+		assertTrue(entity.hasAttached(PERSISTENT));
+		assertEquals(expected, entity.getAttached(PERSISTENT));
+	}
+
+	@Test
+	void testBlockEntityPersistence() {
+		BlockEntity blockEntity = new BellBlockEntity(BlockPos.ORIGIN, mock());
+		assertFalse(blockEntity.hasAttached(PERSISTENT));
+
+		int expected = 1;
+		blockEntity.setAttached(PERSISTENT, expected);
+		NbtCompound fakeSave = blockEntity.createNbtWithId();
+
+		blockEntity = BlockEntity.createFromNbt(BlockPos.ORIGIN, mock(), fakeSave);
+		assertNotNull(blockEntity);
+		assertTrue(blockEntity.hasAttached(PERSISTENT));
+		assertEquals(expected, blockEntity.getAttached(PERSISTENT));
+	}
+
+	@Test
+	void testWorldPersistentState() {
+		// Trying to simulate actual saving and loading for the world is too hard
+		ServerWorld world = mock(ServerWorld.class, CALLS_REAL_METHODS);
+		AttachmentPersistentState state = new AttachmentPersistentState(world);
+		assertFalse(world.hasAttached(PERSISTENT));
+
+		int expected = 1;
+		world.setAttached(PERSISTENT, expected);
+		NbtCompound fakeSave = state.writeNbt(new NbtCompound());
+
+		world = mock(ServerWorld.class, CALLS_REAL_METHODS);
+		AttachmentPersistentState.read(world, fakeSave);
+		assertTrue(world.hasAttached(PERSISTENT));
+		assertEquals(expected, world.getAttached(PERSISTENT));
 	}
 }
