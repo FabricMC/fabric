@@ -25,14 +25,11 @@ import net.minecraft.client.gui.screen.pack.PackListWidget;
 import net.minecraft.client.gui.screen.pack.PackScreen;
 import net.minecraft.client.gui.screen.pack.ResourcePackOrganizer;
 
-import net.fabricmc.fabric.impl.client.resource.loader.FabricAbstractPack;
-
 @Mixin(PackScreen.class)
 public class PackScreenMixin {
 	@Inject(method = "method_29672", at = @At("HEAD"), cancellable = true)
 	private void hideHiddenPacks(PackListWidget packListWidget, String string, ResourcePackOrganizer.Pack pack, CallbackInfo ci) {
-		// (Fabric)AbstractPack is the only vanilla implementation of Pack, but we cast anyway.
-		if (pack instanceof FabricAbstractPack fabricAbstractPack && fabricAbstractPack.isHidden()) {
+		if (pack.isHidden()) {
 			ci.cancel();
 		}
 	}
