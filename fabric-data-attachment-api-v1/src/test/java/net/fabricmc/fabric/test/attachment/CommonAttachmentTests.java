@@ -16,9 +16,11 @@
 
 package net.fabricmc.fabric.test.attachment;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
@@ -39,7 +41,6 @@ import net.minecraft.world.chunk.WorldChunk;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.api.attachment.v1.DefaultedAttachmentType;
 
 public class CommonAttachmentTests {
 	private static final String MOD_ID = "example";
@@ -70,12 +71,14 @@ public class CommonAttachmentTests {
 
 	private void testForTarget(AttachmentTarget target, AttachmentType<String> basic) {
 		assertFalse(target.hasAttached(basic));
+		assertEquals("", target.getAttachedOrElse(basic, ""));
 		assertNull(target.getAttached(basic));
 
 		String value = "attached";
-		assertNull(target.setAttached(basic, value));
+		assertEquals(value, target.getAttachedOrSet(basic, value));
 		assertTrue(target.hasAttached(basic));
 		assertEquals(value, target.getAttached(basic));
+		assertDoesNotThrow(() -> target.getAttachedOrThrow(basic));
 
 		UnaryOperator<String> modifier = s -> s + '_';
 		String modified = modifier.apply(value);
@@ -83,20 +86,20 @@ public class CommonAttachmentTests {
 		assertEquals(modified, target.getAttached(basic));
 		assertEquals(modified, target.removeAttached(basic));
 		assertFalse(target.hasAttached(basic));
+		assertThrows(NullPointerException.class, () -> target.getAttachedOrThrow(basic));
 	}
 
 	@Test
 	void testDefaulted() {
-		DefaultedAttachmentType<Integer> defaulted = AttachmentRegistry.createDefaulted(
+		AttachmentType<Integer> defaulted = AttachmentRegistry.createDefaulted(
 				new Identifier(MOD_ID, "defaulted_attachment"),
 				() -> 0
 		);
 		Entity target = mock(Entity.class, CALLS_REAL_METHODS);
 
 		assertFalse(target.hasAttached(defaulted));
-		assertEquals(0, target.getAttached(defaulted));
+		assertEquals(0, target.getAttachedOrCreate(defaulted));
 		target.removeAttached(defaulted);
 		assertFalse(target.hasAttached(defaulted));
-		assertEquals(0, target.modifyAttached(defaulted, i -> i + 1));
 	}
 }

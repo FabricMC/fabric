@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.attachment.v1.DefaultedAttachmentType;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
 public record AttachmentTypeImpl<A>(
 		Identifier identifier,
@@ -31,4 +31,4 @@ public record AttachmentTypeImpl<A>(
 		@Nullable Codec<A> codec,
 		boolean persistent,
 		boolean synced
-) implements DefaultedAttachmentType<A> { }
+) implements AttachmentType<A> { }

@@ -30,7 +30,6 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.api.attachment.v1.DefaultedAttachmentType;
 
 public final class AttachmentRegistryImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-data-attachment-api-v1");
@@ -49,11 +48,11 @@ public final class AttachmentRegistryImpl {
 		return attachmentRegistry.get(id);
 	}
 
-	public static <A> AttachmentRegistry.Builder<A, AttachmentType<A>> builder() {
+	public static <A> AttachmentRegistry.Builder<A> builder() {
 		return new BuilderImpl<>();
 	}
 
-	public static class BuilderImpl<A, O extends AttachmentType<A>> implements AttachmentRegistry.Builder<A, O> {
+	public static class BuilderImpl<A> implements AttachmentRegistry.Builder<A> {
 		@Nullable
 		private Supplier<A> defaultInitializer = null;
 		@Nullable
@@ -62,27 +61,27 @@ public final class AttachmentRegistryImpl {
 		private boolean synced = false;
 
 		@Override
-		public AttachmentRegistry.Builder<A, O> persistent(boolean persistent) {
+		public AttachmentRegistry.Builder<A> persistent(boolean persistent) {
 			this.persistent = persistent;
 			return this;
 		}
 
 		@Override
-		public AttachmentRegistry.Builder<A, O> synced(boolean synced) {
+		public AttachmentRegistry.Builder<A> synced(boolean synced) {
 			this.synced = synced;
 			return this;
 		}
 
 		@Override
-		public AttachmentRegistry.Builder<A, DefaultedAttachmentType<A>> initializer(Supplier<A> initializer) {
+		public AttachmentRegistry.Builder<A> initializer(Supplier<A> initializer) {
 			Objects.requireNonNull(initializer, "initializer cannot be null");
 
 			this.defaultInitializer = initializer;
-			return (AttachmentRegistry.Builder<A, DefaultedAttachmentType<A>>) this;
+			return this;
 		}
 
 		@Override
-		public AttachmentRegistry.Builder<A, O> codec(Codec<A> serializer) {
+		public AttachmentRegistry.Builder<A> codec(Codec<A> serializer) {
 			Objects.requireNonNull(serializer, "codec cannot be null");
 
 			this.codec = serializer;
@@ -90,14 +89,14 @@ public final class AttachmentRegistryImpl {
 		}
 
 		@Override
-		public O buildAndRegister(Identifier id) {
+		public AttachmentType<A> buildAndRegister(Identifier id) {
 			if (codec == null && (persistent || synced)) {
 				throw new IllegalArgumentException("A persistent/synced type must have an associated codec");
 			}
 
 			var attachment = new AttachmentTypeImpl<>(id, defaultInitializer, codec, persistent, synced);
 			register(id, attachment);
-			return (O) attachment;
+			return attachment;
 		}
 	}
 }

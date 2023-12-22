@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.util.Identifier;
 
@@ -38,6 +39,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
  * <p>For finer control over the attachment type and its properties, use {@link AttachmentRegistry#builder()} to
  * get a {@link Builder} instance.</p>
  */
+@ApiStatus.Experimental
 public final class AttachmentRegistry {
 	private AttachmentRegistry() {
 	}
@@ -45,7 +47,7 @@ public final class AttachmentRegistry {
 	/**
 	 * Creates <i>and registers</i> an attachment. The data will be neither persisted nor synced, and the
 	 *
-	 * @param id the identifier of this attachment
+	 * @param id  the identifier of this attachment
 	 * @param <A> the type of attached data
 	 * @return the registered {@link AttachmentType} instance
 	 */
@@ -57,14 +59,14 @@ public final class AttachmentRegistry {
 
 	/**
 	 * Creates <i>and registers</i> an attachment, that will be automatically initialized with a default value
-	 * when an attachment does not exist on a given target, using {@link AttachmentTarget#getAttached(DefaultedAttachmentType)}.
+	 * when an attachment does not exist on a given target, using {@link AttachmentTarget#getAttachedOrCreate(AttachmentType)}.
 	 *
-	 * @param id the identifier of this attachment
+	 * @param id          the identifier of this attachment
 	 * @param initializer the initializer used to provide a default value
-	 * @param <A> the type of attached data
+	 * @param <A>         the type of attached data
 	 * @return the registered {@link AttachmentType} instance
 	 */
-	public static <A> DefaultedAttachmentType<A> createDefaulted(Identifier id, Supplier<A> initializer) {
+	public static <A> AttachmentType<A> createDefaulted(Identifier id, Supplier<A> initializer) {
 		Objects.requireNonNull(id, "identifier cannot be null");
 		Objects.requireNonNull(initializer, "initializer cannot be null");
 
@@ -76,9 +78,9 @@ public final class AttachmentRegistry {
 	/**
 	 * Creates <i>and registers</i> an attachment, that will persist across server restarts.
 	 *
-	 * @param id the identifier of this attachment
+	 * @param id    the identifier of this attachment
 	 * @param codec the codec used for serialization
-	 * @param <A> the type of attached data
+	 * @param <A>   the type of attached data
 	 * @return the registered {@link AttachmentType} instance
 	 */
 	public static <A> AttachmentType<A> createPersistent(Identifier id, Codec<A> codec) {
@@ -91,9 +93,9 @@ public final class AttachmentRegistry {
 	/**
 	 * Creates <i>and registers</i> an attachment, that will be synced between server and client.
 	 *
-	 * @param id the identifier of this attachment
+	 * @param id    the identifier of this attachment
 	 * @param codec the codec used for serialization
-	 * @param <A> the type of attached data
+	 * @param <A>   the type of attached data
 	 * @return the registered {@link AttachmentType} instance
 	 */
 	public static <A> AttachmentType<A> createSynced(Identifier id, Codec<A> codec) {
@@ -112,7 +114,7 @@ public final class AttachmentRegistry {
 	 * @param <A> the type of the attached data
 	 * @return a {@link Builder} instance
 	 */
-	public static <A> Builder<A, AttachmentType<A>> builder() {
+	public static <A> Builder<A> builder() {
 		return AttachmentRegistryImpl.builder();
 	}
 
@@ -120,16 +122,15 @@ public final class AttachmentRegistry {
 	 * A builder for creating {@link AttachmentType}s with finer control over their properties.
 	 *
 	 * @param <A> the type of the attached data
-	 * @param <O> the output type, extending {@link AttachmentType}
 	 */
-	public interface Builder<A, O extends AttachmentType<A>> {
+	public interface Builder<A> {
 		/**
 		 * Sets whether the attached data should persist across server restarts.
 		 *
 		 * @param persistent whether the attached data should persist across server restarts
 		 * @return the builder
 		 */
-		Builder<A, O> persistent(boolean persistent);
+		Builder<A> persistent(boolean persistent);
 
 		/**
 		 * Sets whether the attachment should be synced between server and client or not.
@@ -137,12 +138,12 @@ public final class AttachmentRegistry {
 		 * @param synced whether the attachment data should be synced
 		 * @return the builder
 		 */
-		Builder<A, O> synced(boolean synced);
+		Builder<A> synced(boolean synced);
 
 		/**
-		 * Sets the default initializer for this attachment type, making it an {@link DefaultedAttachmentType}
-		 * once {@link #buildAndRegister(Identifier)} is called. The initializer will be called by {@link AttachmentTarget#getAttached(DefaultedAttachmentType)}
-		 * to automatically initialize attachments that don't yet. It must not return {@code null}.
+		 * Sets the default initializer for this attachment type. The initializer will be called by
+		 * {@link AttachmentTarget#getAttachedOrCreate(AttachmentType)} to automatically initialize attachments that
+		 * don't yet exist. It must not return {@code null}.
 		 *
 		 * <p>It is <i>encouraged</i> for {@link A} to be an immutable data type, such as a primitive type
 		 * or an immutable record.</p>
@@ -151,13 +152,10 @@ public final class AttachmentRegistry {
 		 * As an example, for a (mutable) list/array attachment type,
 		 * the initializer should create a new independent instance each time it is called.</p>
 		 *
-		 * <p>Make sure to store the result of {@link #buildAndRegister(Identifier)} in a field of type {@link DefaultedAttachmentType}
-		 * to avoid mistakenly calling {@link AttachmentTarget#getAttached(AttachmentType)} instead.</p>
-		 *
 		 * @param initializer the initializer
 		 * @return the builder
 		 */
-		Builder<A, DefaultedAttachmentType<A>> initializer(Supplier<A> initializer);
+		Builder<A> initializer(Supplier<A> initializer);
 
 		/**
 		 * Sets the {@link Codec} for this attachment.
@@ -165,7 +163,7 @@ public final class AttachmentRegistry {
 		 * @param codec the codec
 		 * @return the builder
 		 */
-		Builder<A, O> codec(Codec<A> codec);
+		Builder<A> codec(Codec<A> codec);
 
 		/**
 		 * Builds and registers the {@link AttachmentType}.
@@ -173,6 +171,6 @@ public final class AttachmentRegistry {
 		 * @param id the attachment's identifier
 		 * @return the built and registered {@link AttachmentType}
 		 */
-		O buildAndRegister(Identifier id);
+		AttachmentType<A> buildAndRegister(Identifier id);
 	}
 }

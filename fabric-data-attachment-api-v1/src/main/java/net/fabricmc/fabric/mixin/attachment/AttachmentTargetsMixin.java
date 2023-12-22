@@ -17,11 +17,8 @@
 package net.fabricmc.fabric.mixin.attachment;
 
 import java.util.IdentityHashMap;
-import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -34,12 +31,9 @@ import net.minecraft.world.chunk.WorldChunk;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
-import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 
 @Mixin(value = {BlockEntity.class, Entity.class, World.class, WorldChunk.class})
 public class AttachmentTargetsMixin implements AttachmentTargetImpl {
-	@Unique
-	private static final Logger logger = LoggerFactory.getLogger("fabric-data-attachment-api-v1");
 	@Unique
 	@Nullable
 	protected IdentityHashMap<AttachmentType<?>, Object> fabric_dataAttachments = null;
@@ -48,27 +42,7 @@ public class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Override
 	@Nullable
 	public <T> T getAttached(AttachmentType<T> type) {
-		T current = fabric_dataAttachments == null ? null : (T) fabric_dataAttachments.get(type);
-
-		if (current != null) {
-			return current;
-		}
-
-		Supplier<T> initializer;
-
-		if ((initializer = ((AttachmentTypeImpl<T>) type).initializer()) != null) {
-			logger.warn("Attachment type '" + type.identifier() + "' has defaults, and should be used with the other getAttached method.");
-
-			if (fabric_dataAttachments == null) {
-				fabric_dataAttachments = new IdentityHashMap<>();
-			}
-
-			T initialized = initializer.get();
-			fabric_dataAttachments.put(type, initialized);
-			return initialized;
-		}
-
-		return null;
+		return fabric_dataAttachments == null ? null : (T) fabric_dataAttachments.get(type);
 	}
 
 	@SuppressWarnings("unchecked")
