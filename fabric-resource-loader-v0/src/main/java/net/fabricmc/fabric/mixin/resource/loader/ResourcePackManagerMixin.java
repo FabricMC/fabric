@@ -25,10 +25,13 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Functions;
 import com.llamalad7.mixinextras.sugar.Local;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -45,6 +48,9 @@ import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 
 @Mixin(ResourcePackManager.class)
 public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
+	@Unique
+	private static final Logger LOGGER = LoggerFactory.getLogger("ResourcePackManagerMixin");
+
 	@Shadow
 	@Final
 	@Mutable
@@ -79,11 +85,14 @@ public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
 	@Inject(method = "buildEnabledProfiles", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList;copyOf(Ljava/util/Collection;)Lcom/google/common/collect/ImmutableList;", shift = At.Shift.BEFORE))
 	private void handleAutoEnableDisable(Collection<String> enabledNames, CallbackInfoReturnable<List<ResourcePackProfile>> cir, @Local List<ResourcePackProfile> enabledAfterFirstRun) {
 		Set<String> currentlyEnabled = enabledAfterFirstRun.stream().map(ResourcePackProfile::getName).collect(Collectors.toSet());
+		LOGGER.info("Currently enabled: {}", currentlyEnabled);
 		enabledAfterFirstRun.removeIf(resourcePackProfile -> !resourcePackProfile.parentsEnabled(currentlyEnabled));
+		LOGGER.info("After removal: {}", enabledAfterFirstRun.stream().map(ResourcePackProfile::getName).toList());
 
 		for (ResourcePackProfile profile : this.profiles.values()) {
-			if (profile.parentsEnabled(currentlyEnabled) && !enabledAfterFirstRun.contains(profile)) {
+			if (profile.isHidden() && profile.parentsEnabled(currentlyEnabled) && !enabledAfterFirstRun.contains(profile)) {
 				profile.getInitialPosition().insert(enabledAfterFirstRun, profile, Functions.identity(), false);
+				LOGGER.info("Auto-enabled: {}, list: {}", profile.getName(), enabledAfterFirstRun.stream().map(ResourcePackProfile::getName).toList());
 			}
 		}
 	}
@@ -94,8 +103,9 @@ public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
 			Set<String> currentlyEnabled = newlyEnabled.stream().map(ResourcePackProfile::getName).collect(Collectors.toSet());
 
 			for (ResourcePackProfile p : this.profiles.values()) {
-				if (p.parentsEnabled(currentlyEnabled) && !newlyEnabled.contains(p)) {
+				if (p.isHidden() && p.parentsEnabled(currentlyEnabled) && !newlyEnabled.contains(p)) {
 					newlyEnabled.add(p);
+					LOGGER.info("Auto-enabled after enable {}: {}, prev enabled: {}", profile, p.getName(), currentlyEnabled);
 				}
 			}
 		}
@@ -105,7 +115,9 @@ public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
 	private void handleAutoDisable(String profile, CallbackInfoReturnable<Boolean> cir, @Local List<ResourcePackProfile> enabled) {
 		if (ModResourcePackCreator.POST_CHANGE_HANDLE_REQUIRED.contains(profile)) {
 			Set<String> currentlyEnabled = enabled.stream().map(ResourcePackProfile::getName).collect(Collectors.toSet());
+			LOGGER.info("Currently enabled: {}", currentlyEnabled);
 			enabled.removeIf(p -> !p.parentsEnabled(currentlyEnabled));
+			LOGGER.info("Auto-removal on disable {}: {}", profile, enabled.stream().map(ResourcePackProfile::getName).toList());
 		}
 	}
 }

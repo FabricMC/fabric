@@ -61,6 +61,6 @@ public class DatapackCommandMixin {
 
 	@Inject(method = "getPackContainer", at = @At(value = "INVOKE", target = "Ljava/util/Collection;contains(Ljava/lang/Object;)Z", shift = At.Shift.BEFORE))
 	private static void errorOnInternalPack(CommandContext<ServerCommandSource> context, String name, boolean enable, CallbackInfoReturnable<ResourcePackProfile> cir, @Local ResourcePackProfile profile) throws CommandSyntaxException {
-		if (profile.isHidden()) throw INTERNAL_PACK_EXCEPTION.create(name);
+		if (profile.isHidden()) throw INTERNAL_PACK_EXCEPTION.create(profile.getName());
 	}
 }
