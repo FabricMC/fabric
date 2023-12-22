@@ -127,7 +127,7 @@ public final class ModResourcePackUtil {
 		JsonObject pack = getMetadataPackJson(packVersion, new JsonPrimitive(description));
 		JsonObject metadata = new JsonObject();
 		metadata.add("pack", pack);
-		return GSON.toJson(pack);
+		return GSON.toJson(metadata);
 	}
 
 	public static Text getName(ModMetadata info) {
