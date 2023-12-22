@@ -69,7 +69,6 @@ public final class AttachmentRegistry {
 		Objects.requireNonNull(initializer, "initializer cannot be null");
 
 		return AttachmentRegistry.<A>builder()
-				.persistent(true)
 				.initializer(initializer)
 				.buildAndRegister(id);
 	}
