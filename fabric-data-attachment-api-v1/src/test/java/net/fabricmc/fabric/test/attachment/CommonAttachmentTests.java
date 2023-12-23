@@ -193,4 +193,9 @@ public class CommonAttachmentTests {
 		assertTrue(world.hasAttached(PERSISTENT));
 		assertEquals(expected, world.getAttached(PERSISTENT));
 	}
+
+	/*
+	 * Chunk serializing is coupled with world saving in ChunkSerializer which is too much of a pain to mock,
+	 * and testing is handled by the testmod instead.
+	 */
 }

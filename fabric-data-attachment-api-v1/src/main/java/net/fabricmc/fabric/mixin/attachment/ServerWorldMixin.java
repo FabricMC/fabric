@@ -39,6 +39,9 @@ import net.minecraft.world.level.storage.LevelStorage;
 
 import net.fabricmc.fabric.impl.attachment.AttachmentPersistentState;
 
+/**
+ * @author Technici4an
+ */
 @Mixin(ServerWorld.class)
 public class ServerWorldMixin {
 	@Inject(at = @At("TAIL"), method = "<init>")

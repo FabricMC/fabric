@@ -18,7 +18,7 @@
   "depends": {
     "fabricloader": ">=0.15.1"
   },
-  "description": "TODO",
+  "description": "Allows conveniently attaching data to existing game objects",
   "mixins": [
     "fabric-data-attachment-api-v1.mixins.json"
   ],

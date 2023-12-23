@@ -20,7 +20,6 @@ import java.util.IdentityHashMap;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -34,9 +33,8 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 @Mixin(value = {BlockEntity.class, Entity.class, World.class, WorldChunk.class})
 public class AttachmentTargetsMixin implements AttachmentTargetImpl {
-	@Unique
 	@Nullable
-	protected IdentityHashMap<AttachmentType<?>, Object> fabric_dataAttachments = null;
+	private IdentityHashMap<AttachmentType<?>, Object> fabric_dataAttachments = null;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -48,13 +46,13 @@ public class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Nullable
-	public <T> T setAttached(AttachmentType<T> att, @Nullable T value) {
+	public <T> T setAttached(AttachmentType<T> type, @Nullable T value) {
 		if (value == null) {
 			if (fabric_dataAttachments == null) {
 				return null;
 			}
 
-			T removed = (T) fabric_dataAttachments.remove(att);
+			T removed = (T) fabric_dataAttachments.remove(type);
 
 			if (fabric_dataAttachments.isEmpty()) {
 				fabric_dataAttachments = null;
@@ -66,27 +64,27 @@ public class AttachmentTargetsMixin implements AttachmentTargetImpl {
 				fabric_dataAttachments = new IdentityHashMap<>();
 			}
 
-			return (T) fabric_dataAttachments.put(att, value);
+			return (T) fabric_dataAttachments.put(type, value);
 		}
 	}
 
 	@Override
-	public boolean hasAttached(AttachmentType<?> att) {
-		return fabric_dataAttachments != null && fabric_dataAttachments.containsKey(att);
+	public boolean hasAttached(AttachmentType<?> type) {
+		return fabric_dataAttachments != null && fabric_dataAttachments.containsKey(type);
 	}
 
 	@Override
-	public void writeAttachmentsToNbt(NbtCompound nbt) {
+	public void fabric_writeAttachmentsToNbt(NbtCompound nbt) {
 		AttachmentSerializingImpl.serializeAttachmentData(nbt, fabric_dataAttachments);
 	}
 
 	@Override
-	public void readAttachmentsFromNbt(NbtCompound nbt) {
+	public void fabric_readAttachmentsFromNbt(NbtCompound nbt) {
 		fabric_dataAttachments = AttachmentSerializingImpl.deserializeAttachmentData(nbt);
 	}
 
 	@Override
-	public boolean hasPersistentAttachments() {
+	public boolean fabric_hasPersistentAttachments() {
 		return AttachmentSerializingImpl.hasPersistentAttachments(fabric_dataAttachments);
 	}
 }

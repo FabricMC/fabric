@@ -25,6 +25,7 @@ import net.minecraft.world.PersistentState;
 /**
  * Backing storage for server-side world attachments.
  * Thanks to custom [.isDirty] logic, the file is only written if something needs to be persisted.
+ * @author Technici4n
  */
 public class AttachmentPersistentState extends PersistentState {
 	public static final String ID = "fabric_data_attachments";
@@ -33,23 +34,23 @@ public class AttachmentPersistentState extends PersistentState {
 
 	public AttachmentPersistentState(ServerWorld world) {
 		this.worldTarget = (AttachmentTargetImpl) world;
-		this.wasSerialized = worldTarget.hasPersistentAttachments();
+		this.wasSerialized = worldTarget.fabric_hasPersistentAttachments();
 	}
 
 	public static AttachmentPersistentState read(ServerWorld world, @Nullable NbtCompound nbt) {
-		((AttachmentTargetImpl) world).readAttachmentsFromNbt(nbt);
+		((AttachmentTargetImpl) world).fabric_readAttachmentsFromNbt(nbt);
 		return new AttachmentPersistentState(world);
 	}
 
 	@Override
 	public boolean isDirty() {
 		// Only write data if there are attachments, or if we previously wrote data.
-		return wasSerialized || worldTarget.hasPersistentAttachments();
+		return wasSerialized || worldTarget.fabric_hasPersistentAttachments();
 	}
 
 	@Override
 	public NbtCompound writeNbt(NbtCompound nbt) {
-		worldTarget.writeAttachmentsToNbt(nbt);
+		worldTarget.fabric_writeAttachmentsToNbt(nbt);
 		return nbt;
 	}
 }
