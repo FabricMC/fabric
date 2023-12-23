@@ -29,6 +29,5 @@ public record AttachmentTypeImpl<A>(
 		Identifier identifier,
 		@Nullable Supplier<A> initializer,
 		@Nullable Codec<A> codec,
-		boolean persistent,
-		boolean synced
+		boolean persistent
 ) implements AttachmentType<A> { }

@@ -58,17 +58,10 @@ public final class AttachmentRegistryImpl {
 		@Nullable
 		private Codec<A> codec = null;
 		private boolean persistent = false;
-		private boolean synced = false;
 
 		@Override
 		public AttachmentRegistry.Builder<A> persistent(boolean persistent) {
 			this.persistent = persistent;
-			return this;
-		}
-
-		@Override
-		public AttachmentRegistry.Builder<A> synced(boolean synced) {
-			this.synced = synced;
 			return this;
 		}
 
@@ -90,11 +83,11 @@ public final class AttachmentRegistryImpl {
 
 		@Override
 		public AttachmentType<A> buildAndRegister(Identifier id) {
-			if (codec == null && (persistent || synced)) {
-				throw new IllegalArgumentException("A persistent/synced type must have an associated codec");
+			if (codec == null && persistent) {
+				throw new IllegalArgumentException("A persistent must have an associated codec");
 			}
 
-			var attachment = new AttachmentTypeImpl<>(id, defaultInitializer, codec, persistent, synced);
+			var attachment = new AttachmentTypeImpl<>(id, defaultInitializer, codec, persistent);
 			register(id, attachment);
 			return attachment;
 		}

@@ -28,8 +28,7 @@ import net.minecraft.util.Identifier;
  * An attachment allows "attaching" arbitrary data to various game objects (entities, block entities, worlds and chunks at the moment).
  * Use the methods provided in {@link AttachmentRegistry} to create and register attachments.
  *
- * <p>Attachments can optionally be made to persist between restarts using a provided {@link Codec}s, and
- * can optionally be automatically synced between server and client.</p>
+ * <p>Attachments can optionally be made to persist between restarts using a provided {@link Codec}.</p>
  *
  * @param <A> type of the attached data. It is encouraged for this to be an immutable type.
  */
@@ -54,11 +53,6 @@ public interface AttachmentType<A> {
 	 * @return whether the attached data persists across server restarts
 	 */
 	boolean persistent();
-
-	/**
-	 * @return whether the attached data is synced between server and client
-	 */
-	boolean synced();
 
 	/**
 	 * If an object has no value associated to an attachment,

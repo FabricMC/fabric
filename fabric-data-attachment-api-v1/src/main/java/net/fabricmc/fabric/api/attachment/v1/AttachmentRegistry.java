@@ -30,10 +30,9 @@ import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
  * Class used to create and register {@link AttachmentType}s. To quickly create {@link AttachmentType}s, use one of the various
  * {@code createXXX} methods:
  * <ul>
- *     <li>{@link #create(Identifier)}: attachments will be neither persistent, synced or auto-initialized.</li>
- *     <li>{@link #createDefaulted(Identifier, Supplier)}: attachments will be auto-initialized, but neither persistent nor synced.</li>
- *     <li>{@link #createPersistent(Identifier, Codec)}: attachments will be persistent, but neither auto-initialized nor synced.</li>
- *     <li>{@link #createSynced(Identifier, Codec)}: attachments will be synced, but neither auto-initialized nor persistent.</li>
+ *     <li>{@link #create(Identifier)}: attachments will be neither persistent nor auto-initialized.</li>
+ *     <li>{@link #createDefaulted(Identifier, Supplier)}: attachments will be auto-initialized, but not persistent.</li>
+ *     <li>{@link #createPersistent(Identifier, Codec)}: attachments will be persistent, but not auto-initialized.</li>
  * </ul>
  *
  * <p>For finer control over the attachment type and its properties, use {@link AttachmentRegistry#builder()} to
@@ -45,7 +44,7 @@ public final class AttachmentRegistry {
 	}
 
 	/**
-	 * Creates <i>and registers</i> an attachment. The data will be neither persisted nor synced, and the
+	 * Creates <i>and registers</i> an attachment. The data will not be persisted.
 	 *
 	 * @param id  the identifier of this attachment
 	 * @param <A> the type of attached data
@@ -91,24 +90,6 @@ public final class AttachmentRegistry {
 	}
 
 	/**
-	 * Creates <i>and registers</i> an attachment, that will be synced between server and client.
-	 *
-	 * @param id    the identifier of this attachment
-	 * @param codec the codec used for serialization
-	 * @param <A>   the type of attached data
-	 * @return the registered {@link AttachmentType} instance
-	 */
-	public static <A> AttachmentType<A> createSynced(Identifier id, Codec<A> codec) {
-		Objects.requireNonNull(id, "identifier cannot be null");
-		Objects.requireNonNull(codec, "codec cannot be null");
-
-		return AttachmentRegistry.<A>builder()
-				.synced(true)
-				.codec(codec)
-				.buildAndRegister(id);
-	}
-
-	/**
 	 * Creates a {@link Builder}, that gives finer control over the attachment's properties.
 	 *
 	 * @param <A> the type of the attached data
@@ -131,14 +112,6 @@ public final class AttachmentRegistry {
 		 * @return the builder
 		 */
 		Builder<A> persistent(boolean persistent);
-
-		/**
-		 * Sets whether the attachment should be synced between server and client or not.
-		 *
-		 * @param synced whether the attachment data should be synced
-		 * @return the builder
-		 */
-		Builder<A> synced(boolean synced);
 
 		/**
 		 * Sets the default initializer for this attachment type. The initializer will be called by
