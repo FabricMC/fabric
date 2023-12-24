@@ -84,7 +84,7 @@ public final class AttachmentRegistryImpl {
 		@Override
 		public AttachmentType<A> buildAndRegister(Identifier id) {
 			if (codec == null && persistent) {
-				throw new IllegalArgumentException("A persistent must have an associated codec");
+				throw new IllegalArgumentException("A persistent attachment type must have an associated codec");
 			}
 
 			var attachment = new AttachmentTypeImpl<>(id, defaultInitializer, codec, persistent);
