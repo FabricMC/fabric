@@ -25,7 +25,6 @@ import net.minecraft.world.PersistentState;
 /**
  * Backing storage for server-side world attachments.
  * Thanks to custom [.isDirty] logic, the file is only written if something needs to be persisted.
- * @author Technici4n
  */
 public class AttachmentPersistentState extends PersistentState {
 	public static final String ID = "fabric_data_attachments";

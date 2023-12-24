@@ -19,9 +19,10 @@ package net.fabricmc.fabric.impl.attachment;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -32,6 +33,8 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
 public class AttachmentSerializingImpl {
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-data-attachment-api-v1");
+
 	@SuppressWarnings("unchecked")
 	public static void serializeAttachmentData(NbtCompound nbt, @Nullable IdentityHashMap<AttachmentType<?>, ?> attachments) {
 		if (attachments == null) {
@@ -47,10 +50,12 @@ public class AttachmentSerializingImpl {
 				Codec<Object> codec = (Codec<Object>) type.codec();
 				// non-nullity enforced by builder API
 				codec.encodeStart(NbtOps.INSTANCE, entry.getValue())
-						.result()
-						.ifPresent(serialized ->
-								compound.put(type.identifier().toString(), serialized)
-						);
+						.get()
+						.ifRight(partial -> {
+							LOGGER.warn("Couldn't serialize attachment " + type.identifier() + ", skipping. Error:");
+							LOGGER.warn(partial.message());
+						})
+						.ifLeft(serialized -> compound.put(type.identifier().toString(), serialized));
 			}
 		}
 
@@ -69,10 +74,15 @@ public class AttachmentSerializingImpl {
 				if (type != null && type.persistent()) {
 					// non-nullity enforced by builder API
 					type.codec()
-							.decode(NbtOps.INSTANCE, compound.get(key))
-							.result()
-							.map(Pair::getFirst)
-							.ifPresent(deserialized -> attachments.put(type, deserialized));
+							.parse(NbtOps.INSTANCE, compound.get(key))
+							.get()
+							.ifRight(partial -> {
+								LOGGER.warn("Couldn't deserialize attachment " + type.identifier() + ", skipping. Error:");
+								LOGGER.warn(partial.message());
+							})
+							.ifLeft(
+									deserialized -> attachments.put(type, deserialized)
+							);
 				}
 			}
 		}

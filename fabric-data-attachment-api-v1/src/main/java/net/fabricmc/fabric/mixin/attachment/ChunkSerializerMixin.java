@@ -33,9 +33,6 @@ import net.minecraft.world.poi.PointOfInterestStorage;
 
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
-/**
- * @author Technici4an
- */
 @Mixin(ChunkSerializer.class)
 public class ChunkSerializerMixin {
 	@ModifyExpressionValue(
@@ -45,7 +42,7 @@ public class ChunkSerializerMixin {
 			),
 			method = "deserialize"
 	)
-	private static WorldChunk injectReadNbt(WorldChunk chunk, ServerWorld world, PointOfInterestStorage poiStorage, ChunkPos chunkPos, NbtCompound nbt) {
+	private static WorldChunk readChunkAttachments(WorldChunk chunk, ServerWorld world, PointOfInterestStorage poiStorage, ChunkPos chunkPos, NbtCompound nbt) {
 		((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(nbt);
 		return chunk;
 	}
@@ -54,7 +51,7 @@ public class ChunkSerializerMixin {
 			at = @At("RETURN"),
 			method = "serialize"
 	)
-	private static void injectWriteNbt(ServerWorld world, Chunk chunk, CallbackInfoReturnable<NbtCompound> cir) {
+	private static void writeChunkAttachments(ServerWorld world, Chunk chunk, CallbackInfoReturnable<NbtCompound> cir) {
 		if (chunk.getStatus().getChunkType() == ChunkStatus.ChunkType.LEVELCHUNK) {
 			((AttachmentTargetImpl) chunk).fabric_writeAttachmentsToNbt(cir.getReturnValue());
 		}

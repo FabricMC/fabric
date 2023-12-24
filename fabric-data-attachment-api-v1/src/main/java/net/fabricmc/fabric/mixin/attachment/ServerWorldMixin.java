@@ -16,36 +16,21 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
-import java.util.List;
-import java.util.concurrent.Executor;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.entity.Spawner;
 import net.minecraft.datafixer.DataFixTypes;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.random.RandomSequencesState;
 import net.minecraft.world.PersistentState;
-import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionOptions;
-import net.minecraft.world.level.ServerWorldProperties;
-import net.minecraft.world.level.storage.LevelStorage;
 
 import net.fabricmc.fabric.impl.attachment.AttachmentPersistentState;
 
-/**
- * @author Technici4an
- */
 @Mixin(ServerWorld.class)
 public class ServerWorldMixin {
 	@Inject(at = @At("TAIL"), method = "<init>")
-	private void createAttachmentsPersistentState(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey<World> worldKey, DimensionOptions dimensionOptions, WorldGenerationProgressListener worldGenerationProgressListener, boolean debugWorld, long seed, List<Spawner> spawners, boolean shouldTickTime, RandomSequencesState randomSequencesState, CallbackInfo ci) {
+	private void createAttachmentsPersistentState(CallbackInfo ci) {
 		// Force persistent state creation
 		ServerWorld world = (ServerWorld) (Object) this;
 		var type = new PersistentState.Type<>(

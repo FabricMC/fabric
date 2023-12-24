@@ -27,16 +27,13 @@ import net.minecraft.nbt.NbtCompound;
 
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
-/**
- * @author Technici4an
- */
 @Mixin(Entity.class)
 public class EntityMixin implements AttachmentTargetImpl {
 	@Inject(
 			at = @At(value = "INVOKE", target = "net/minecraft/entity/Entity.readCustomDataFromNbt(Lnet/minecraft/nbt/NbtCompound;)V"),
 			method = "readNbt"
 	)
-	private void injectReadNbt(NbtCompound nbt, CallbackInfo cir) {
+	private void readEntityAttachments(NbtCompound nbt, CallbackInfo cir) {
 		this.fabric_readAttachmentsFromNbt(nbt);
 	}
 
@@ -44,7 +41,7 @@ public class EntityMixin implements AttachmentTargetImpl {
 			at = @At(value = "INVOKE", target = "net/minecraft/entity/Entity.writeCustomDataToNbt(Lnet/minecraft/nbt/NbtCompound;)V"),
 			method = "writeNbt"
 	)
-	private void injectWriteNbt(NbtCompound nbt, CallbackInfoReturnable<NbtCompound> cir) {
+	private void writeEntityAttachments(NbtCompound nbt, CallbackInfoReturnable<NbtCompound> cir) {
 		this.fabric_writeAttachmentsToNbt(nbt);
 	}
 }

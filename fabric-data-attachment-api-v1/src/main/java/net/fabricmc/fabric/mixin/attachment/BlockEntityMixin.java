@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
-import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -27,17 +26,13 @@ import net.minecraft.nbt.NbtCompound;
 
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
-/**
- * @author Technici4an
- */
 @Mixin(BlockEntity.class)
 public class BlockEntityMixin implements AttachmentTargetImpl {
-	@Dynamic
 	@Inject(
 			at = @At(value = "INVOKE", target = "net/minecraft/block/entity/BlockEntity.readNbt(Lnet/minecraft/nbt/NbtCompound;)V"),
 			method = "method_17897" // lambda body in BlockEntity#createFromNbt
 	)
-	private static void injectReadNbt(NbtCompound nbt, String id, BlockEntity blockEntity, CallbackInfoReturnable<BlockEntity> cir) {
+	private static void readBlockEntityAttachments(NbtCompound nbt, String id, BlockEntity blockEntity, CallbackInfoReturnable<BlockEntity> cir) {
 		((AttachmentTargetImpl) blockEntity).fabric_readAttachmentsFromNbt(nbt);
 	}
 
@@ -45,7 +40,7 @@ public class BlockEntityMixin implements AttachmentTargetImpl {
 			at = @At("RETURN"),
 			method = "createNbt"
 	)
-	private void injectWriteNbt(CallbackInfoReturnable<NbtCompound> cir) {
+	private void writeBlockEntitAttachments(CallbackInfoReturnable<NbtCompound> cir) {
 		this.fabric_writeAttachmentsToNbt(cir.getReturnValue());
 	}
 }
