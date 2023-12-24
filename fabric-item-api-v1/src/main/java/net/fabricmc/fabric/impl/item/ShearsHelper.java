@@ -16,42 +16,71 @@
 
 package net.fabricmc.fabric.impl.item;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterators;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.ShearsItem;
+import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
+import net.fabricmc.fabric.mixin.item.shears.accessors.DirectRegistryEntryListAccessor;
 
-public final class ShearsHelper {
+public final class ShearsHelper implements ModInitializer {
 	public static final TagKey<Item> FABRIC_SHEARS = TagRegistration.ITEM_TAG_REGISTRATION.registerFabric("shears");
-	public static final List<RegistryEntry<Item>> SHEARS;
+	public static final List<ItemPredicate> MATCH_TOOL_PREDICATES = new ArrayList<>();
+	private static final Set<RegistryEntry<Item>> SHEARS_ITEMS = new HashSet<>();
+
+	public static boolean isShears(ItemStack stack, Item item) {
+		return item == Items.SHEARS && isShears(stack);
+	}
 
 	public static boolean isShears(ItemStack stack) {
 		return stack.isIn(FABRIC_SHEARS) || stack.getItem() instanceof ShearsItem;
 	}
 
-	private ShearsHelper() {
-	}
+	@Override
+	@SuppressWarnings("deprecation")
+	public void onInitialize() {
+		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
+			if (!client) {
+				if (SHEARS_ITEMS.isEmpty()) {
+					for (Item item : Registries.ITEM) {
+						if (item instanceof ShearsItem) {
+							SHEARS_ITEMS.add(item.getRegistryEntry());
+						}
+					}
+				}
 
-	static {
-		ImmutableList.Builder<RegistryEntry<Item>> builder = new ImmutableList.Builder<>();
+				Set<RegistryEntry<Item>> shears = new HashSet<>(SHEARS_ITEMS);
+				Iterators.addAll(shears, Registries.ITEM.getOrCreateEntryList(FABRIC_SHEARS).iterator()); // add fabric:shears
 
-		for (Item item : Registries.ITEM) {
-			@SuppressWarnings("deprecation")
-			RegistryEntry<Item> entry = item.getRegistryEntry();
-
-			if (entry.isIn(FABRIC_SHEARS) || item instanceof ShearsItem) {
-				builder.add(entry);
+				for (ItemPredicate p : MATCH_TOOL_PREDICATES) {
+					if (p.items().isPresent() && p.items().get().contains(Items.SHEARS.getRegistryEntry())) {
+						@SuppressWarnings("unchecked")
+						DirectRegistryEntryListAccessor<Item> accessor = ((DirectRegistryEntryListAccessor<Item>) p.items().get());
+						ImmutableList.Builder<RegistryEntry<Item>> builder = new ImmutableList.Builder<>();
+						builder.addAll(accessor.getEntries());
+						builder.addAll(shears);
+						accessor.setEntries(builder.build());
+						accessor.setEntrySet(null);
+					}
+				}
 			}
-		}
 
-		SHEARS = builder.build();
+			MATCH_TOOL_PREDICATES.clear();
+		});
 	}
 }

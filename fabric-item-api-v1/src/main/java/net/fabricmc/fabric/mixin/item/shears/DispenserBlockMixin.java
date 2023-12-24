@@ -19,7 +19,6 @@ package net.fabricmc.fabric.mixin.item.shears;
 import java.util.Map;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -40,12 +39,15 @@ public abstract class DispenserBlockMixin {
 	private static Map<Item, DispenserBehavior> BEHAVIORS;
 
 	@ModifyReturnValue(at = @At("TAIL"), method = "getBehaviorForItem")
-	private DispenserBehavior registerShearsBehavior(DispenserBehavior original, @Local ItemStack stack) {
+	private DispenserBehavior registerShearsBehavior(DispenserBehavior original, ItemStack stack) {
 		// allows anything in fabric:shears to have the dispenser behavior of shears,
 		// but only if there isn't a dispenser behavior already registered
-		if (!BEHAVIORS.containsKey(stack.getItem())
-				&& ShearsHelper.isShears(stack)) {
-			return new ShearsDispenserBehavior();
+		Item item = stack.getItem();
+
+		if (ShearsHelper.isShears(stack) && !BEHAVIORS.containsKey(item)) {
+			DispenserBehavior behavior = new ShearsDispenserBehavior();
+			BEHAVIORS.put(item, behavior);
+			return behavior;
 		}
 
 		return original;
