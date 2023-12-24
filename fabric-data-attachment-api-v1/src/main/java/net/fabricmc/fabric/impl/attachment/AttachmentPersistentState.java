@@ -27,7 +27,7 @@ import net.minecraft.world.PersistentState;
  * Thanks to custom [.isDirty] logic, the file is only written if something needs to be persisted.
  */
 public class AttachmentPersistentState extends PersistentState {
-	public static final String ID = "fabric_data_attachments";
+	public static final String ID = "fabric:data_attachments";
 	private final AttachmentTargetImpl worldTarget;
 	private final boolean wasSerialized;
 
