@@ -78,13 +78,13 @@ public final class AttachmentRegistry {
 	 * Creates <i>and registers</i> an attachment, that will persist across server restarts.
 	 *
 	 * @param id    the identifier of this attachment
-	 * @param codec the codec used for serialization
+	 * @param codec the codec used for (de)serialization
 	 * @param <A>   the type of attached data
 	 * @return the registered {@link AttachmentType} instance
 	 */
 	public static <A> AttachmentType<A> createPersistent(Identifier id, Codec<A> codec) {
 		Objects.requireNonNull(id, "identifier cannot be null");
-		Objects.requireNonNull(codec, "codec cannot be null");
+		Objects.requireNonNull(codec, "persistenceCodec cannot be null");
 
 		return AttachmentRegistry.<A>builder().persistent(codec).buildAndRegister(id);
 	}
@@ -130,14 +130,6 @@ public final class AttachmentRegistry {
 		 * @return the builder
 		 */
 		Builder<A> initializer(Supplier<A> initializer);
-
-		/**
-		 * Sets the {@link Codec} for this attachment.
-		 *
-		 * @param codec the codec
-		 * @return the builder
-		 */
-		Builder<A> codec(Codec<A> codec);
 
 		/**
 		 * Builds and registers the {@link AttachmentType}.

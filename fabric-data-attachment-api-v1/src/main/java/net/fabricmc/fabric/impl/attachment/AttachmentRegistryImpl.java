@@ -56,13 +56,11 @@ public final class AttachmentRegistryImpl {
 		@Nullable
 		private Supplier<A> defaultInitializer = null;
 		@Nullable
-		private Codec<A> codec = null;
-		private boolean persistent = false;
+		private Codec<A> persistenceCodec = null;
 
 		@Override
 		public AttachmentRegistry.Builder<A> persistent(Codec<A> codec) {
-			this.codec = codec;
-			this.persistent = true;
+			this.persistenceCodec = codec;
 			return this;
 		}
 
@@ -75,20 +73,8 @@ public final class AttachmentRegistryImpl {
 		}
 
 		@Override
-		public AttachmentRegistry.Builder<A> codec(Codec<A> serializer) {
-			Objects.requireNonNull(serializer, "codec cannot be null");
-
-			this.codec = serializer;
-			return this;
-		}
-
-		@Override
 		public AttachmentType<A> buildAndRegister(Identifier id) {
-			if (codec == null && persistent) {
-				throw new IllegalArgumentException("A persistent attachment type must have an associated codec");
-			}
-
-			var attachment = new AttachmentTypeImpl<>(id, defaultInitializer, codec, persistent);
+			var attachment = new AttachmentTypeImpl<>(id, defaultInitializer, persistenceCodec);
 			register(id, attachment);
 			return attachment;
 		}

@@ -41,17 +41,19 @@ public interface AttachmentType<A> {
 	Identifier identifier();
 
 	/**
-	 * An optional {@link Codec} used for reading and writing attachments. Currently, only used for persistence.
+	 * An optional {@link Codec} used for reading and writing attachments to NBT for persistence.
 	 *
-	 * @return the codec, may be null
+	 * @return the persistence codec, may be null
 	 */
 	@Nullable
-	Codec<A> codec();
+	Codec<A> persistenceCodec();
 
 	/**
-	 * @return whether the attached data persists across server restarts
+	 * @return whether the attachment time persists across server restarts
 	 */
-	boolean persistent();
+	default boolean isPersistent() {
+		return persistenceCodec() != null;
+	}
 
 	/**
 	 * If an object has no value associated to an attachment,
