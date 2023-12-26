@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterators;
+import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -64,8 +64,10 @@ public final class ShearsHelper implements ModInitializer {
 					}
 				}
 
-				Set<RegistryEntry<Item>> shears = new HashSet<>(SHEARS_ITEMS);
-				Iterators.addAll(shears, Registries.ITEM.getOrCreateEntryList(FABRIC_SHEARS).iterator()); // add fabric:shears
+				Set<RegistryEntry<Item>> shears = ImmutableSet.<RegistryEntry<Item>>builderWithExpectedSize(SHEARS_ITEMS.size())
+						.addAll(Registries.ITEM.getOrCreateEntryList(FABRIC_SHEARS))
+						.addAll(SHEARS_ITEMS)
+						.build(); // use ImmutableSet for performance when using addAll on an ImmutableList builder
 
 				for (ItemPredicate p : MATCH_TOOL_PREDICATES) {
 					if (p.items().isPresent() && p.items().get().contains(Items.SHEARS.getRegistryEntry())) {
