@@ -60,6 +60,8 @@ public final class AttachmentRegistryImpl {
 
 		@Override
 		public AttachmentRegistry.Builder<A> persistent(Codec<A> codec) {
+			Objects.requireNonNull(codec, "codec cannot be null");
+
 			this.persistenceCodec = codec;
 			return this;
 		}

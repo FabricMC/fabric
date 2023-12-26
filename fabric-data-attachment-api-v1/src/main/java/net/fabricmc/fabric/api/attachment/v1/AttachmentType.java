@@ -49,7 +49,7 @@ public interface AttachmentType<A> {
 	Codec<A> persistenceCodec();
 
 	/**
-	 * @return whether the attachment time persists across server restarts
+	 * @return whether the attachments persist across server restarts
 	 */
 	default boolean isPersistent() {
 		return persistenceCodec() != null;

@@ -84,7 +84,7 @@ public final class AttachmentRegistry {
 	 */
 	public static <A> AttachmentType<A> createPersistent(Identifier id, Codec<A> codec) {
 		Objects.requireNonNull(id, "identifier cannot be null");
-		Objects.requireNonNull(codec, "persistenceCodec cannot be null");
+		Objects.requireNonNull(codec, "codec cannot be null");
 
 		return AttachmentRegistry.<A>builder().persistent(codec).buildAndRegister(id);
 	}
