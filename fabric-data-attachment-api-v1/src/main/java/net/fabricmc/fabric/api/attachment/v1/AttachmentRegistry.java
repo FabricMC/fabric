@@ -86,7 +86,7 @@ public final class AttachmentRegistry {
 		Objects.requireNonNull(id, "identifier cannot be null");
 		Objects.requireNonNull(codec, "codec cannot be null");
 
-		return AttachmentRegistry.<A>builder().persistent(true).codec(codec).buildAndRegister(id);
+		return AttachmentRegistry.<A>builder().persistent(codec).buildAndRegister(id);
 	}
 
 	/**
@@ -106,12 +106,13 @@ public final class AttachmentRegistry {
 	 */
 	public interface Builder<A> {
 		/**
-		 * Sets whether the attached data should persist across server restarts.
+		 * Declares that attachments should persist between server restarts, using the provided {@link Codec} for
+		 * (de)serialization.
 		 *
-		 * @param persistent whether the attached data should persist across server restarts
+		 * @param codec the codec used for (de)serialization
 		 * @return the builder
 		 */
-		Builder<A> persistent(boolean persistent);
+		Builder<A> persistent(Codec<A> codec);
 
 		/**
 		 * Sets the default initializer for this attachment type. The initializer will be called by

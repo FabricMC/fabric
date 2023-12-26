@@ -41,8 +41,7 @@ public interface AttachmentType<A> {
 	Identifier identifier();
 
 	/**
-	 * If present, the codec determines how the attached data, if present, is written to and read from NBT.
-	 * If absent, the attached data will not persist after server restarts.
+	 * An optional {@link Codec} used for reading and writing attachments. Currently, only used for persistence.
 	 *
 	 * @return the codec, may be null
 	 */

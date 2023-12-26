@@ -60,8 +60,9 @@ public final class AttachmentRegistryImpl {
 		private boolean persistent = false;
 
 		@Override
-		public AttachmentRegistry.Builder<A> persistent(boolean persistent) {
-			this.persistent = persistent;
+		public AttachmentRegistry.Builder<A> persistent(Codec<A> codec) {
+			this.codec = codec;
+			this.persistent = true;
 			return this;
 		}
 
