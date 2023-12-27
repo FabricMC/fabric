@@ -115,7 +115,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 					? Text.translatable("pack.name.fabricMod", pack.getFabricModMetadata().getName())
 					: Text.translatable("pack.name.fabricMod.subPack", pack.getFabricModMetadata().getName(), Text.translatable("resourcePack." + subPath + ".name"));
 			ResourcePackProfile profile = ResourcePackProfile.create(
-					pack.getName(),
+					subPath == null ? pack.getName() : pack.getName() + "_" + subPath,
 					displayName,
 					subPath == null,
 					new ModResourcePackFactory(pack),
