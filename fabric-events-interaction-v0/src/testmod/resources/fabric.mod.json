@@ -19,6 +19,7 @@
     ],
     "client": [
       "net.fabricmc.fabric.test.client.event.interaction.ClientPreAttackTests",
+      "net.fabricmc.fabric.test.client.event.interaction.ClientPlayerBlockBreakTests",
       "net.fabricmc.fabric.test.client.event.interaction.PlayerPickBlockTests"
     ]
   }
