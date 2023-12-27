@@ -154,6 +154,11 @@ public final class ModResourcePackUtil {
 		// This ensures that any built-in registered data packs by mods which needs to be enabled by default are
 		// as the data pack screen automatically put any data pack as disabled except the Default data pack.
 		for (ResourcePackProfile profile : moddedResourcePacks) {
+			if (profile.getSource() == ModResourcePackCreator.RESOURCE_PACK_SOURCE) {
+				enabled.add(profile.getName());
+				continue;
+			}
+
 			try (ResourcePack pack = profile.createResourcePack()) {
 				if (pack instanceof ModNioResourcePack && ((ModNioResourcePack) pack).getActivationType().isEnabledByDefault()) {
 					enabled.add(profile.getName());

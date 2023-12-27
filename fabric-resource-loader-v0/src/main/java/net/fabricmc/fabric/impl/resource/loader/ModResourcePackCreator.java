@@ -43,6 +43,9 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 	private static final Predicate<Set<String>> BASE_PARENT = enabled -> enabled.contains(FABRIC);
 	private static final Predicate<Set<String>> PROGRAMMER_ART_PARENT = enabled -> enabled.contains(FABRIC) && enabled.contains(PROGRAMMER_ART);
 	private static final Predicate<Set<String>> HIGH_CONTRAST_PARENT = enabled -> enabled.contains(FABRIC) && enabled.contains(HIGH_CONTRAST);
+	/**
+	 * This can be used to check if a pack profile is for mod-provided packs.
+	 */
 	public static final ResourcePackSource RESOURCE_PACK_SOURCE = new ResourcePackSource() {
 		@Override
 		public Text decorate(Text packName) {
