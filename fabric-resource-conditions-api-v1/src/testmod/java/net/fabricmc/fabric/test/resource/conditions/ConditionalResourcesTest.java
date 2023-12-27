@@ -87,4 +87,19 @@ public class ConditionalResourcesTest {
 
 		context.complete();
 	}
+
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void conditionalLootTables(TestContext context) {
+		LootManager manager = context.getWorld().getServer().getLootManager();
+
+		if (manager.getElementOptional(LootDataType.LOOT_TABLES, id("blocks/loaded")).isEmpty()) {
+			throw new AssertionError("loaded loot table should have been loaded.");
+		}
+
+		if (manager.getElementOptional(LootDataType.LOOT_TABLES, id("blocks/not_loaded")).isPresent()) {
+			throw new AssertionError("not_loaded loot table should not have been loaded.");
+		}
+
+		context.complete();
+	}
 }
