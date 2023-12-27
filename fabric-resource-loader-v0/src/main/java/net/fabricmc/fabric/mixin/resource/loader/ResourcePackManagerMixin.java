@@ -111,7 +111,7 @@ public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
 			for (ResourcePackProfile p : this.profiles.values()) {
 				if (p.isHidden() && p.parentsEnabled(seen) && seen.add(p.getName())) {
 					it.add(p);
-					LOGGER.info("Auto-enabled {}, currently enabled: {}", p, seen);
+					LOGGER.info("cur @ {}, auto-enabled {}, currently enabled: {}", profile.getName(), p.getName(), seen);
 				}
 			}
 		}
