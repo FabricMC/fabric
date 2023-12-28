@@ -18,6 +18,8 @@ package net.fabricmc.fabric.mixin.item.shears;
 
 import java.util.Optional;
 
+import net.fabricmc.fabric.impl.item.ShearsHelper;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,8 +30,6 @@ import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.condition.MatchToolLootCondition;
 import net.minecraft.predicate.item.ItemPredicate;
 
-import net.fabricmc.fabric.impl.item.ShearsHelper;
-
 @Mixin(MatchToolLootCondition.class)
 public abstract class MatchToolLootConditionMixin implements LootCondition {
 	@Shadow
@@ -38,6 +38,7 @@ public abstract class MatchToolLootConditionMixin implements LootCondition {
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void shearsLoot(CallbackInfo ci) {
 		// allows anything in fabric:shears to mine grass (and other stuff) and it will drop
-		predicate().ifPresent(ShearsHelper.MATCH_TOOL_PREDICATES::add);
+		// the list will later be filtered to only contain the ones that have shears
+		predicate().flatMap(ItemPredicate::items).ifPresent(ShearsHelper.MATCH_TOOL_REGISTRY_ENTRIES::add);
 	}
 }

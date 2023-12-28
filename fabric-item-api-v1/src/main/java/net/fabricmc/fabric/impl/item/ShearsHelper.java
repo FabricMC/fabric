@@ -28,9 +28,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.ShearsItem;
-import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.api.ModInitializer;
@@ -40,10 +40,10 @@ import net.fabricmc.fabric.mixin.item.shears.accessors.DirectRegistryEntryListAc
 
 public final class ShearsHelper implements ModInitializer {
 	public static final TagKey<Item> FABRIC_SHEARS = TagRegistration.ITEM_TAG_REGISTRATION.registerFabric("shears");
-	public static final List<ItemPredicate> MATCH_TOOL_PREDICATES = new ArrayList<>();
-	private static final Set<RegistryEntry<Item>> SHEARS_ITEMS = new HashSet<>();
+	public static final List<RegistryEntryList<Item>> MATCH_TOOL_REGISTRY_ENTRIES = new ArrayList<>();
 
 	public static boolean isShears(ItemStack stack, Item item) {
+		// item arg is checked if it is Items.SHEARS
 		return item == Items.SHEARS && isShears(stack);
 	}
 
@@ -54,35 +54,41 @@ public final class ShearsHelper implements ModInitializer {
 	@Override
 	@SuppressWarnings("deprecation")
 	public void onInitialize() {
+		Set<RegistryEntry<Item>> shearsItems = new HashSet<>(); // holds all the `ShearsItem`s
+		RegistryEntry<Item> shearsRegistryEntry = Items.SHEARS.getRegistryEntry();
+
 		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
-			if (!client) {
-				if (SHEARS_ITEMS.isEmpty()) {
-					for (Item item : Registries.ITEM) {
-						if (item instanceof ShearsItem) {
-							SHEARS_ITEMS.add(item.getRegistryEntry());
-						}
-					}
-				}
+			if (client) {
+				return;
+			}
 
-				Set<RegistryEntry<Item>> shears = ImmutableSet.<RegistryEntry<Item>>builderWithExpectedSize(SHEARS_ITEMS.size())
-						.addAll(Registries.ITEM.getOrCreateEntryList(FABRIC_SHEARS))
-						.addAll(SHEARS_ITEMS)
-						.build(); // use ImmutableSet for performance when using addAll on an ImmutableList builder
-
-				for (ItemPredicate p : MATCH_TOOL_PREDICATES) {
-					if (p.items().isPresent() && p.items().get().contains(Items.SHEARS.getRegistryEntry())) {
-						@SuppressWarnings("unchecked")
-						DirectRegistryEntryListAccessor<Item> accessor = ((DirectRegistryEntryListAccessor<Item>) p.items().get());
-						ImmutableList.Builder<RegistryEntry<Item>> builder = new ImmutableList.Builder<>();
-						builder.addAll(accessor.getEntries());
-						builder.addAll(shears);
-						accessor.setEntries(builder.build());
-						accessor.setEntrySet(null);
+			if (shearsItems.isEmpty()) { // fill it if it's empty
+				for (Item item : Registries.ITEM) {
+					if (item instanceof ShearsItem) {
+						shearsItems.add(item.getRegistryEntry());
 					}
 				}
 			}
 
-			MATCH_TOOL_PREDICATES.clear();
+			Set<RegistryEntry<Item>> shears = ImmutableSet.<RegistryEntry<Item>>builderWithExpectedSize(shearsItems.size())
+					.addAll(Registries.ITEM.getOrCreateEntryList(FABRIC_SHEARS))
+					.addAll(shearsItems)
+					.build(); // use ImmutableSet for performance when using addAll on an ImmutableList builder
+
+			for (RegistryEntryList<Item> entryList : MATCH_TOOL_REGISTRY_ENTRIES) {
+				// skip the predicates that don't contain shears
+				if (entryList.contains(shearsRegistryEntry)) {
+					@SuppressWarnings("unchecked") // `ItemPredicate`s' RegistryEntryList should ALWAYS be Direct
+					DirectRegistryEntryListAccessor<Item> accessor = (DirectRegistryEntryListAccessor<Item>) entryList;
+					ImmutableList.Builder<RegistryEntry<Item>> builder = new ImmutableList.Builder<>();
+					builder.addAll(accessor.getEntries()); // add the original items
+					builder.addAll(shears); // then add the shears
+					accessor.setEntries(builder.build()); // set the RegistryEntryList's entries
+					accessor.setEntrySet(null); // the entryList contains an immutable Set copy of entries, so we have to clear that
+				}
+			}
+
+			MATCH_TOOL_REGISTRY_ENTRIES.clear();
 		});
 	}
 }
