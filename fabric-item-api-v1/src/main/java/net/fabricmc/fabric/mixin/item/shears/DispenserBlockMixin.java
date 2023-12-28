@@ -22,6 +22,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.block.DispenserBlock;
@@ -34,6 +35,9 @@ import net.fabricmc.fabric.impl.item.ShearsHelper;
 
 @Mixin(DispenserBlock.class)
 public abstract class DispenserBlockMixin {
+	@Unique
+	private static final DispenserBehavior BEHAVIOR = new ShearsDispenserBehavior();
+
 	@Shadow
 	@Final
 	private static Map<Item, DispenserBehavior> BEHAVIORS;
@@ -45,9 +49,7 @@ public abstract class DispenserBlockMixin {
 		Item item = stack.getItem();
 
 		if (ShearsHelper.isShears(stack) && !BEHAVIORS.containsKey(item)) {
-			DispenserBehavior behavior = new ShearsDispenserBehavior();
-			BEHAVIORS.put(item, behavior);
-			return behavior;
+			return BEHAVIOR; // it no longer puts it into BEHAVIORS so if any other mod checks for it, it will fail
 		}
 
 		return original;
