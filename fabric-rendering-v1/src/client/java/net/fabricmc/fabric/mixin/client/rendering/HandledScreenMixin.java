@@ -21,12 +21,8 @@ import java.util.Optional;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-
-import net.minecraft.client.gui.DrawContext;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.item.TooltipData;
@@ -37,10 +33,10 @@ import net.fabricmc.fabric.impl.client.rendering.tooltip.MultiTooltipData;
 
 @Mixin(HandledScreen.class)
 class HandledScreenMixin {
-	@WrapOperation(method = "drawMouseoverTooltip", at = @At(value = "INVOKE",target = "Lnet/minecraft/item/ItemStack;getTooltipData()Ljava/util/Optional;"))
-	private Optional<TooltipData> addMultiData(ItemStack stack, Operation<Optional<TooltipData>> original){
+	@WrapOperation(method = "drawMouseoverTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getTooltipData()Ljava/util/Optional;"))
+	private Optional<TooltipData> addMultiData(ItemStack stack, Operation<Optional<TooltipData>> original) {
 		var multiData = new MultiTooltipData(new ArrayList<>());
-		TooltipDataCallback.EVENT.invoker().appendTooltipData(stack,multiData.tooltipData());
+		TooltipDataCallback.EVENT.invoker().appendTooltipData(stack, multiData.tooltipData());
 
 		if (multiData.tooltipData().isEmpty()) {
 			return original.call(stack);
