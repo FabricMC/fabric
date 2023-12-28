@@ -30,8 +30,7 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_3288": ["net/fabricmc/fabric/impl/resource/loader/FabricResourcePackProfile"],
-      "net/minecraft/class_5369\u0024class_5371": ["net/fabricmc/fabric/impl/client/resource/loader/FabricAbstractPack"]
+      "net/minecraft/class_3288": ["net/fabricmc/fabric/impl/resource/loader/FabricResourcePackProfile"]
     }
   }
 }
