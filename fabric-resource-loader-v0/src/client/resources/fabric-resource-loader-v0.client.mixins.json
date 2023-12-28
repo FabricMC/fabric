@@ -7,9 +7,9 @@
     "FontManagerMixin",
     "GameOptionsMixin",
     "KeyedResourceReloadListenerClientMixin",
-    "PackScreenMixin",
-    "ResourcePackOrganizerAbstractPackMixin",
-    "VanillaResourcePackProviderMixin"
+    "ResourcePackOrganizerMixin",
+    "VanillaResourcePackProviderMixin",
+    "GameOptionsWriteVisitorMixin"
   ],
   "injectors": {
     "defaultRequire": 1
