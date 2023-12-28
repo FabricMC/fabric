@@ -170,13 +170,13 @@ public final class ContentRegistryTest implements ModInitializer {
 		FabricBrewingRecipeRegistry.registerItemRecipe((PotionItem) Items.POTION, Ingredient.fromTag(ItemTags.DIRT), dirtyPotion);
 
 		Block spreadablePodzol = Registry.register(Registries.BLOCK, SPREADABLE_PODZOL, new SpreadablePodzolBlock(AbstractBlock.Settings.copy(Blocks.PODZOL).ticksRandomly()));
-		SpreadableBlockRegistry.getOrCreateInstance(SPREADABLE_PODZOL).add(Blocks.COARSE_DIRT, spreadablePodzol.getDefaultState());
-		SpreadableBlockRegistry.getOrCreateInstance(SpreadableBlockRegistry.MYCELIUM).add(Blocks.COARSE_DIRT, Blocks.MYCELIUM.getDefaultState());
+		SpreadableBlockRegistry.getInstance(SPREADABLE_PODZOL).add(Blocks.COARSE_DIRT, spreadablePodzol.getDefaultState());
+		SpreadableBlockRegistry.getInstance(SpreadableBlockRegistry.MYCELIUM).add(Blocks.COARSE_DIRT, Blocks.MYCELIUM.getDefaultState());
 
 		// assert that SpreadableBlockRegistry throws when registering null blocks or block states
 		try {
-			SpreadableBlockRegistry.getOrCreateInstance(SpreadableBlockRegistry.GRASS).add((Block) null, Blocks.STONE.getDefaultState());
-			SpreadableBlockRegistry.getOrCreateInstance(SpreadableBlockRegistry.GRASS).add(Blocks.STONE, null);
+			SpreadableBlockRegistry.getInstance(SpreadableBlockRegistry.GRASS).add((Block) null, Blocks.STONE.getDefaultState());
+			SpreadableBlockRegistry.getInstance(SpreadableBlockRegistry.GRASS).add(Blocks.STONE, null);
 
 			throw new AssertionError("SpreadableBlockRegistry didn't throw when blocks were null!");
 		} catch (NullPointerException e) {
@@ -186,9 +186,9 @@ public final class ContentRegistryTest implements ModInitializer {
 
 		// assert that SpreadableBlockRegistry throws when registering the same spreadable block to multiple registries
 		try {
-			SpreadableBlockRegistry.getOrCreateInstance(new Identifier("fabric-content-registries-v0-testmod", "unused_a"))
+			SpreadableBlockRegistry.getInstance(new Identifier("fabric-content-registries-v0-testmod", "unused_a"))
 					.add(Blocks.CRIMSON_NYLIUM, Blocks.NETHERRACK.getDefaultState());
-			SpreadableBlockRegistry.getOrCreateInstance(new Identifier("fabric-content-registries-v0-testmod", "unused_b"))
+			SpreadableBlockRegistry.getInstance(new Identifier("fabric-content-registries-v0-testmod", "unused_b"))
 					.add(Blocks.WARPED_NYLIUM, Blocks.NETHERRACK.getDefaultState());
 
 			throw new AssertionError("SpreadableBlockRegistry didn't throw when spreadable added to second registry!");

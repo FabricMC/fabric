@@ -28,25 +28,25 @@ import net.fabricmc.fabric.api.util.Block2ObjectMap;
 import net.fabricmc.fabric.impl.content.registry.SpreadableBlockRegistryImpl;
 
 /**
- * Registries of Blocks to BlockStates, defining the spreadable BlockState to replace
- * a bare Block with when a particular type of spreadable Block spreads to the bare black.
+ * Registries of blocks to block states, defining the spreadable block state to replace
+ * a bare block with when a particular type of spreadable block spreads to the bare block.
  *
- * <p>For example, to get the registry for Mycelium block spread and then register
- * a modded block pair where Mycelium spreading to MY_DIRT generates MY_MYCELIUM:
+ * <p>For example, to get the registry for mycelium block spread and then register
+ * a modded block pair where mycelium spreading to {@code MY_DIRT} generates {@code MY_MYCELIUM}:
  *
  * <pre>{@code
- * SpreadableBlockRegistry.getOrCreateInstance(SpreadableBlockRegistry.MYCELIUM)
+ * SpreadableBlockRegistry.getInstance(SpreadableBlockRegistry.MYCELIUM)
  *        .add(MyModBlocks.MY_DIRT, MyModBlocks.MY_MYCELIUM.getDefaultState());
  * }</pre>
  */
 @ApiStatus.NonExtendable
 public interface SpreadableBlockRegistry extends Block2ObjectMap<BlockState> {
 	/**
-	 * Registry ID for Minecraft Grass Block type spreadable blocks.
+	 * Registry ID for grass-type spreadable blocks.
 	 */
 	Identifier GRASS = new Identifier("grass");
 	/**
-	 * Registry ID for Minecraft Mycelium Block type spreadable blocks.
+	 * Registry ID for mycelium-type spreadable blocks.
 	 */
 	Identifier MYCELIUM = new Identifier("mycelium");
 
@@ -55,9 +55,9 @@ public interface SpreadableBlockRegistry extends Block2ObjectMap<BlockState> {
 	 * if none currently exists.
 	 *
 	 * @param type The registry type Identifier for the desired spreadable block registry
-	 * @return The SpreadableBlockRegistry for the given ID
+	 * @return The {@code SpreadableBlockRegistry} for the given ID
 	 */
-	static SpreadableBlockRegistry getOrCreateInstance(Identifier type) {
+	static SpreadableBlockRegistry getInstance(Identifier type) {
 		return SpreadableBlockRegistryImpl.getOrCreateInstance(type);
 	}
 
@@ -77,7 +77,7 @@ public interface SpreadableBlockRegistry extends Block2ObjectMap<BlockState> {
 	/**
 	 * Gets the spreadable block state (if any) for a given bare block state.
 	 *
-	 * <p>For example, the GRASS registry should return the modded grass block state
+	 * <p>For example, the {@link #GRASS} registry should return the modded grass block state
 	 * when queried with the corresponding registered modded dirt block state.
 	 *
 	 * @param bareBlockState The bare block state to search the registry for
@@ -88,7 +88,7 @@ public interface SpreadableBlockRegistry extends Block2ObjectMap<BlockState> {
 	/**
 	 * Gets the spreadable block state (if any) for a given bare block.
 	 *
-	 * <p>For example, the GRASS registry should return the modded grass block
+	 * <p>For example, the {@link #GRASS} registry should return the modded grass block
 	 * state when queried with the corresponding registered modded dirt block.
 	 *
 	 * @param bareBlock The bare block to search the registry for
@@ -100,7 +100,7 @@ public interface SpreadableBlockRegistry extends Block2ObjectMap<BlockState> {
 	 * Adds a registry entry to this registry for the given bare block to spreadable block conversion.
 	 *
 	 * <p>For example, a mod adding a custom dirt type would register its modded dirt block and
-	 * the corresponding modded grass block state to the GRASS registry.
+	 * the corresponding modded grass block state to the {@link #GRASS} registry.
 	 *
 	 * @param bareBlock The bare block which can be converted to this type of spreadable block
 	 * @param spreadBlock The spreadable block state which will replace the bare block

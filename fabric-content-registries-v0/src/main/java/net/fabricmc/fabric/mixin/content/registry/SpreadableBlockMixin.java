@@ -48,7 +48,7 @@ public class SpreadableBlockMixin extends SnowyBlock {
 
 	/*
 	 * Inject in the for loop just after picking a random adjacent block to attempt to spread to.
-	 * Shift by 2 so the target block is available as a local variable.
+	 * Shift by 2 so the target block position is available as a local variable.
 	 */
 	@Inject(
 			method = "randomTick",

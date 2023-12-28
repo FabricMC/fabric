@@ -37,13 +37,10 @@ import net.fabricmc.fabric.api.registry.SpreadableBlockRegistry;
 public final class SpreadableBlockRegistryImpl implements SpreadableBlockRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpreadableBlockRegistryImpl.class);
 
-	private static final Map<Block, Identifier> SPREADABLE_TYPE;
-	private static final Map<Identifier, SpreadableBlockRegistry> REGISTRIES;
+	private static final Map<Block, Identifier> SPREADABLE_TYPE = new IdentityHashMap<>();
+	private static final Map<Identifier, SpreadableBlockRegistry> REGISTRIES = new HashMap<>();
 
 	static {
-		SPREADABLE_TYPE = new IdentityHashMap<>();
-		REGISTRIES = new HashMap<>();
-
 		SPREADABLE_TYPE.put(Blocks.GRASS_BLOCK, SpreadableBlockRegistry.GRASS);
 		SPREADABLE_TYPE.put(Blocks.MYCELIUM, SpreadableBlockRegistry.MYCELIUM);
 
