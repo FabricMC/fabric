@@ -115,6 +115,13 @@ public final class AttachmentRegistry {
 		Builder<A> persistent(Codec<A> codec);
 
 		/**
+		 * Declares that when a player dies and respawns, the attachments corresponding of this type should remain.
+		 *
+		 * @return the builder
+		 */
+		Builder<A> copyOnPlayerRespawn();
+
+		/**
 		 * Sets the default initializer for this attachment type. The initializer will be called by
 		 * {@link AttachmentTarget#getAttachedOrCreate(AttachmentType)} to automatically initialize attachments that
 		 * don't yet exist. It must not return {@code null}.

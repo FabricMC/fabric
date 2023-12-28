@@ -70,4 +70,9 @@ public interface AttachmentType<A> {
 	 */
 	@Nullable
 	Supplier<A> initializer();
+
+	/**
+	 * @return whether the attachments should persist after a player's death and respawn
+	 */
+	boolean copyOnPlayerRespawn();
 }

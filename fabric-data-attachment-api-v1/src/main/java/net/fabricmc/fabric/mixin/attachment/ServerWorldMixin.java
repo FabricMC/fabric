@@ -28,7 +28,7 @@ import net.minecraft.world.PersistentState;
 import net.fabricmc.fabric.impl.attachment.AttachmentPersistentState;
 
 @Mixin(ServerWorld.class)
-public class ServerWorldMixin {
+abstract class ServerWorldMixin {
 	@Inject(at = @At("TAIL"), method = "<init>")
 	private void createAttachmentsPersistentState(CallbackInfo ci) {
 		// Force persistent state creation

@@ -28,7 +28,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 @Mixin(Entity.class)
-public class EntityMixin implements AttachmentTargetImpl {
+abstract class EntityMixin implements AttachmentTargetImpl {
 	@Inject(
 			at = @At(value = "INVOKE", target = "net/minecraft/entity/Entity.readCustomDataFromNbt(Lnet/minecraft/nbt/NbtCompound;)V"),
 			method = "readNbt"

@@ -28,5 +28,6 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 public record AttachmentTypeImpl<A>(
 		Identifier identifier,
 		@Nullable Supplier<A> initializer,
-		@Nullable Codec<A> persistenceCodec
+		@Nullable Codec<A> persistenceCodec,
+		boolean copyOnPlayerRespawn
 ) implements AttachmentType<A> { }

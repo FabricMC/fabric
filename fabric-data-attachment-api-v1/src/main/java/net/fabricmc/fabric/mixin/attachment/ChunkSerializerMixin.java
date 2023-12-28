@@ -34,7 +34,7 @@ import net.minecraft.world.poi.PointOfInterestStorage;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 @Mixin(ChunkSerializer.class)
-public class ChunkSerializerMixin {
+abstract class ChunkSerializerMixin {
 	@ModifyExpressionValue(
 			at = @At(
 					value = "NEW",

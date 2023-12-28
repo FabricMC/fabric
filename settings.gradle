@@ -65,4 +65,3 @@ include 'deprecated:fabric-models-v0'
 include 'deprecated:fabric-renderer-registries-v1'
 include 'deprecated:fabric-rendering-data-attachment-v1'
 include 'deprecated:fabric-rendering-v0'
-

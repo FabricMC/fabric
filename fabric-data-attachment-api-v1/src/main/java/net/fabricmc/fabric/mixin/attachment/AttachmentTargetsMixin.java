@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.attachment;
 
 import java.util.IdentityHashMap;
+import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,14 +26,15 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
-@Mixin(value = {BlockEntity.class, Entity.class, World.class, WorldChunk.class})
-public class AttachmentTargetsMixin implements AttachmentTargetImpl {
+@Mixin({BlockEntity.class, Entity.class, World.class, WorldChunk.class})
+abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Nullable
 	private IdentityHashMap<AttachmentType<?>, Object> fabric_dataAttachments = null;
 
@@ -47,6 +49,15 @@ public class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Override
 	@Nullable
 	public <T> T setAttached(AttachmentType<T> type, @Nullable T value) {
+		// Extremely inelegant, but the only alternative is separating out these two mixins and duplicating code
+		Object thisObject = this;
+
+		if (thisObject instanceof BlockEntity) {
+			((BlockEntity) thisObject).markDirty();
+		} else if (thisObject instanceof WorldChunk) {
+			((Chunk) thisObject).setNeedsSaving(true);
+		}
+
 		if (value == null) {
 			if (fabric_dataAttachments == null) {
 				return null;
@@ -86,5 +97,10 @@ public class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Override
 	public boolean fabric_hasPersistentAttachments() {
 		return AttachmentSerializingImpl.hasPersistentAttachments(fabric_dataAttachments);
+	}
+
+	@Override
+	public Map<AttachmentType<?>, ?> fabric_getAttachments() {
+		return fabric_dataAttachments;
 	}
 }

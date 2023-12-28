@@ -27,7 +27,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 @Mixin(BlockEntity.class)
-public class BlockEntityMixin implements AttachmentTargetImpl {
+abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	@Inject(
 			at = @At(value = "INVOKE", target = "net/minecraft/block/entity/BlockEntity.readNbt(Lnet/minecraft/nbt/NbtCompound;)V"),
 			method = "method_17897" // lambda body in BlockEntity#createFromNbt
@@ -40,7 +40,7 @@ public class BlockEntityMixin implements AttachmentTargetImpl {
 			at = @At("RETURN"),
 			method = "createNbt"
 	)
-	private void writeBlockEntitAttachments(CallbackInfoReturnable<NbtCompound> cir) {
+	private void writeBlockEntityAttachments(CallbackInfoReturnable<NbtCompound> cir) {
 		this.fabric_writeAttachmentsToNbt(cir.getReturnValue());
 	}
 }
