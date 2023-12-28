@@ -22,6 +22,11 @@
   "mixins": [
     "fabric-data-attachment-api-v1.mixins.json"
   ],
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint"
+    ]
+  },
   "custom": {
     "fabric-api:module-lifecycle": "experimental",
     "loom:injected_interfaces": {

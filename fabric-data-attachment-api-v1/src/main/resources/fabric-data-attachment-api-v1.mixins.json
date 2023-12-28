@@ -8,7 +8,6 @@
     "ChunkSerializerMixin",
     "EntityMixin",
     "MobEntityMixin",
-    "ServerPlayerEntityMixin",
     "ServerWorldMixin"
   ],
   "injectors": {
