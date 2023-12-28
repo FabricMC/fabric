@@ -55,6 +55,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentPersistentState;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
+import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 public class CommonAttachmentTests {
 	private static final String MOD_ID = "example";
@@ -145,6 +146,30 @@ public class CommonAttachmentTests {
 	}
 
 	@Test
+	void testEntityCopy() {
+		AttachmentType<Boolean> notCopiedOnRespawn = AttachmentRegistry.create(
+				new Identifier(MOD_ID, "not_copied_on_respawn")
+		);
+		AttachmentType<Boolean> copiedOnRespawn = AttachmentRegistry.<Boolean>builder()
+				.copyOnPlayerRespawn()
+				.buildAndRegister(new Identifier(MOD_ID, "copied_on_respawn"));
+
+		Entity original = mock(Entity.class, CALLS_REAL_METHODS);
+		original.setAttached(notCopiedOnRespawn, true);
+		original.setAttached(copiedOnRespawn, true);
+
+		Entity respawnTarget = mock(Entity.class, CALLS_REAL_METHODS);
+		Entity nonRespawnTarget = mock(Entity.class, CALLS_REAL_METHODS);
+
+		AttachmentTargetImpl.copyOnRespawn((AttachmentTargetImpl) original, (AttachmentTargetImpl) respawnTarget, false);
+		AttachmentTargetImpl.copyOnRespawn((AttachmentTargetImpl) original, (AttachmentTargetImpl) nonRespawnTarget, true);
+		assertTrue(respawnTarget.hasAttached(copiedOnRespawn));
+		assertFalse(respawnTarget.hasAttached(notCopiedOnRespawn));
+		assertTrue(nonRespawnTarget.hasAttached(copiedOnRespawn));
+		assertTrue(nonRespawnTarget.hasAttached(notCopiedOnRespawn));
+	}
+
+	@Test
 	void testEntityPersistence() {
 		Entity entity = new MarkerEntity(EntityType.MARKER, mock());
 		assertFalse(entity.hasAttached(PERSISTENT));
@@ -196,6 +221,6 @@ public class CommonAttachmentTests {
 
 	/*
 	 * Chunk serializing is coupled with world saving in ChunkSerializer which is too much of a pain to mock,
-	 * and testing is handled by the testmod instead.
+	 * so testing is handled by the testmod instead.
 	 */
 }
