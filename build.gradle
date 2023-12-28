@@ -16,7 +16,11 @@ def ENV = System.getenv()
 version = project.version + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
 logger.lifecycle("Building Fabric: " + version)
 
-def metaProjects = ['deprecated', 'fabric-api-bom', 'fabric-api-catalog']
+def metaProjects = [
+	'deprecated',
+	'fabric-api-bom',
+	'fabric-api-catalog'
+]
 
 import net.fabricmc.loom.util.gradle.SourceSetHelper
 import groovy.json.JsonSlurper
