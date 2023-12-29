@@ -31,8 +31,6 @@ import net.minecraft.block.dispenser.ShearsDispenserBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.impl.item.ShearsHelper;
-
 @Mixin(DispenserBlock.class)
 public abstract class DispenserBlockMixin {
 	@Unique
@@ -48,7 +46,7 @@ public abstract class DispenserBlockMixin {
 		// but only if there isn't a dispenser behavior already registered
 		Item item = stack.getItem();
 
-		if (ShearsHelper.isShears(stack) && !BEHAVIORS.containsKey(item)) {
+		if (!BEHAVIORS.containsKey(item) && item.isShears(stack)) {
 			return BEHAVIOR; // it no longer puts it into BEHAVIORS so if any other mod checks for it, it will fail
 		}
 

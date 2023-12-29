@@ -24,14 +24,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.minecraft.enchantment.EfficiencyEnchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import net.fabricmc.fabric.impl.item.ShearsHelper;
+import net.minecraft.item.Items;
 
 @Mixin(EfficiencyEnchantment.class)
 public abstract class EfficiencyEnchantmentMixin {
 	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isOf(Lnet/minecraft/item/Item;)Z"), method = "isAcceptableItem")
 	private boolean isShears(ItemStack stack, Item item, Operation<Boolean> original) {
 		// allows anything in fabric:shears to be enchanted with efficiency
-		return original.call(stack, item) || ShearsHelper.isShears(stack, item);
+		return original.call(stack, item) || (stack.isShears() && item == Items.SHEARS);
 	}
 }

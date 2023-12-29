@@ -18,13 +18,21 @@ package net.fabricmc.fabric.api.item.v1;
 
 import com.google.common.collect.Multimap;
 
+import net.fabricmc.fabric.impl.item.ShearsHelper;
+
 import net.minecraft.block.BlockState;
+import net.minecraft.block.dispenser.ShearsDispenserBehavior;
+import net.minecraft.enchantment.EfficiencyEnchantment;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.Shearable;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ShearsItem;
+import net.minecraft.loot.condition.MatchToolLootCondition;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Hand;
 
 /**
@@ -89,6 +97,19 @@ public interface FabricItem {
 	 */
 	default boolean isSuitableFor(ItemStack stack, BlockState state) {
 		return ((Item) this).isSuitableFor(state);
+	}
+
+	/**
+	 * Determines if this item should behave like shears.
+	 * To act like shears means to be able to {@linkplain Shearable#sheared(SoundCategory) shear mobs}, pumpkins, and beehives, {@linkplain MatchToolLootCondition harvest grass, cobwebs, and etc.}, be {@linkplain EfficiencyEnchantment#isAcceptableItem(ItemStack) enchanted with efficiency}, disarm tripwire, and have {@link ShearsDispenserBehavior} if there isn't one already registered.
+	 *
+	 * <p>The default implementation checks if {@code this} is a {@link ShearsItem}, or in the {@code #fabric:shears} tag.
+	 *
+	 * @param stack the current stack
+	 * @return {@code true} if this item should behave like shears.
+	 */
+	default boolean isShears(ItemStack stack) {
+		return this instanceof ShearsItem || stack.isIn(ShearsHelper.FABRIC_SHEARS);
 	}
 
 	/**

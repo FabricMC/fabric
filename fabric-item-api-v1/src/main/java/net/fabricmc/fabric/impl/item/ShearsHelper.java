@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.registry.Registries;
@@ -42,21 +41,13 @@ public final class ShearsHelper implements ModInitializer {
 	public static final TagKey<Item> FABRIC_SHEARS = TagRegistration.ITEM_TAG_REGISTRATION.registerFabric("shears");
 	public static final List<RegistryEntryList<Item>> MATCH_TOOL_REGISTRY_ENTRIES = new ArrayList<>();
 
-	public static boolean isShears(ItemStack stack, Item item) {
-		// item arg is checked if it is Items.SHEARS
-		return item == Items.SHEARS && isShears(stack);
-	}
-
-	public static boolean isShears(ItemStack stack) {
-		return stack.isIn(FABRIC_SHEARS) || stack.getItem() instanceof ShearsItem;
-	}
-
 	@Override
 	@SuppressWarnings("deprecation")
 	public void onInitialize() {
 		Set<RegistryEntry<Item>> shearsItems = new HashSet<>(); // holds all the `ShearsItem`s
 		RegistryEntry<Item> shearsRegistryEntry = Items.SHEARS.getRegistryEntry();
 
+		// this adds all `ShearsItem`s and items in #fabric:shears into all the `MatchToolLootCondition`s that contain shears
 		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
 			if (client) {
 				return;
@@ -76,15 +67,14 @@ public final class ShearsHelper implements ModInitializer {
 					.build(); // use ImmutableSet for performance when using addAll on an ImmutableList builder
 
 			for (RegistryEntryList<Item> entryList : MATCH_TOOL_REGISTRY_ENTRIES) {
-				// skip the predicates that don't contain shears
 				if (entryList.contains(shearsRegistryEntry)) {
 					@SuppressWarnings("unchecked") // `ItemPredicate`s' RegistryEntryList should ALWAYS be Direct
 					DirectRegistryEntryListAccessor<Item> accessor = (DirectRegistryEntryListAccessor<Item>) entryList;
 					ImmutableList.Builder<RegistryEntry<Item>> builder = new ImmutableList.Builder<>();
-					builder.addAll(accessor.getEntries()); // add the original items
-					builder.addAll(shears); // then add the shears
-					accessor.setEntries(builder.build()); // set the RegistryEntryList's entries
-					accessor.setEntrySet(null); // the entryList contains an immutable Set copy of entries, so we have to clear that
+					builder.addAll(accessor.getEntries());
+					builder.addAll(shears);
+					accessor.setEntries(builder.build());
+					accessor.setEntrySet(null);
 				}
 			}
 
