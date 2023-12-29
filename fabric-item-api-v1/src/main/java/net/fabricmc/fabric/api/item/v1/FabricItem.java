@@ -128,7 +128,7 @@ public interface FabricItem {
 	/**
 	 * This is a stack-aware version of {@link Item#getFoodComponent()}.
 	 * Note that simple food component can also be set via {@link Item.Settings#food(FoodComponent)}.
-	 * If you want to get a food component for a stack, is <b>recommended</b> to use the stack version of this method: {@link FabricItemStack#getFoodComponent()}.
+	 * If you want to get a food component for a stack, is <strong>recommended</strong> to use the stack version of this method: {@link FabricItemStack#getFoodComponent()}.
 	 *
 	 * @return this item's {@link FoodComponent}, or {@code null} if none was set
 	 */
