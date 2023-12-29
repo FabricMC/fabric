@@ -89,7 +89,7 @@ public final class FoodGameTest implements FabricGameTest {
 		player.setStackInHand(Hand.MAIN_HAND, meat);
 		player.interact(wolf, Hand.MAIN_HAND);
 		float wolfHealth = wolf.getHealth();
-		context.assertTrue(wolfHealth > 1, "actual %f, expect > 0".formatted(wolfHealth));
+		context.assertTrue(wolfHealth > 0, "actual %f, expect > 0".formatted(wolfHealth));
 		context.complete();
 	}
 }
