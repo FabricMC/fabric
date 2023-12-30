@@ -1,7 +1,26 @@
 version = getSubprojectVersion(project)
 
-moduleDependencies(project, ['fabric-api-base'])
+moduleDependencies(project, [
+	'fabric-api-base',
+	'fabric-registry-sync-v0'
+])
 
 testDependencies(project, [
 	':fabric-content-registries-v0',
+	':fabric-data-generation-api-v1'
 ])
+
+loom {
+	runs {
+		datagen {
+			inherit testmodServer
+			name "Data Generation"
+			vmArg "-Dfabric-api.datagen"
+			vmArg "-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}"
+			vmArg "-Dfabric-api.datagen.strict-validation"
+
+			ideConfigGenerated = true
+			runDir "build/datagen"
+		}
+	}
+}
