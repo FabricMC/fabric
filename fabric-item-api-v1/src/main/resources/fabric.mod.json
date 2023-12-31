@@ -33,7 +33,7 @@
       "net/minecraft/class_1792": ["net/fabricmc/fabric/api/item/v1/FabricItem"],
       "net/minecraft/class_1799": ["net/fabricmc/fabric/api/item/v1/FabricItemStack"],
       "net/minecraft/class_2073": ["net/fabricmc/fabric/api/item/v1/FabricItemPredicate"],
-      "net/minecraft/class_2073$class_2074": ["net/fabricmc/fabric/api/item/v1/FabricItemPredicate$FabricBuilder"]
+      "net/minecraft/class_2073\u0024class_2074": ["net/fabricmc/fabric/api/item/v1/FabricItemPredicate\u0024FabricBuilder"]
     }
   }
 }
