@@ -28,7 +28,6 @@ import net.minecraft.predicate.item.ItemPredicate;
 import net.fabricmc.fabric.api.item.v1.CustomItemPredicate;
 import net.fabricmc.fabric.api.item.v1.FabricItemPredicate;
 import net.fabricmc.fabric.impl.item.ItemPredicateExtensions;
-import net.fabricmc.fabric.impl.item.VanillaItemPredicate;
 
 @Mixin(ItemPredicate.Builder.class)
 abstract class ItemPredicateBuilderMixin implements FabricItemPredicate.FabricBuilder {
@@ -50,7 +49,6 @@ abstract class ItemPredicateBuilderMixin implements FabricItemPredicate.FabricBu
 	@ModifyReturnValue(method = "build", at = @At("RETURN"))
 	private ItemPredicate addCustom(ItemPredicate original) {
 		if (hasCustom) {
-			custom.add(new VanillaItemPredicate(original));
 			((ItemPredicateExtensions) (Object) original).fabric_setCustom(custom.build());
 		}
 

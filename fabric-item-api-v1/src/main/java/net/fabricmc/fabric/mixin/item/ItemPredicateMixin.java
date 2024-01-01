@@ -17,9 +17,7 @@
 package net.fabricmc.fabric.mixin.item;
 
 import java.util.List;
-import java.util.Optional;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,14 +30,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.item.ItemPredicate;
-import net.minecraft.util.dynamic.Codecs;
 
 import net.fabricmc.fabric.api.item.v1.CustomItemPredicate;
 import net.fabricmc.fabric.api.item.v1.FabricItemPredicate;
+import net.fabricmc.fabric.impl.item.FabricItemPredicateCodec;
 import net.fabricmc.fabric.impl.item.ItemPredicateExtensions;
-import net.fabricmc.fabric.impl.item.VanillaItemPredicate;
 
 @Mixin(ItemPredicate.class)
 abstract class ItemPredicateMixin implements ItemPredicateExtensions, FabricItemPredicate {
@@ -64,22 +60,7 @@ abstract class ItemPredicateMixin implements ItemPredicateExtensions, FabricItem
 	@Inject(method = "<clinit>", at = @At("TAIL"))
 	private static void modifyCodec(CallbackInfo ci) {
 		Codec<ItemPredicate> vanillaCodec = CODEC;
-		VanillaItemPredicate.register(vanillaCodec);
-
-		Codec<CustomItemPredicate> customCodec = CustomItemPredicate.REGISTRY.getCodec().dispatch("fabric:type", CustomItemPredicate::getCodec, c -> c);
-
-		CODEC = Codecs.either(Codecs.nonEmptyList(customCodec.listOf()), vanillaCodec).xmap(e -> e.map(l -> {
-			ItemPredicate predicate = new ItemPredicate(Optional.empty(), Optional.empty(), NumberRange.IntRange.ANY, NumberRange.IntRange.ANY, List.of(), List.of(), Optional.empty(), Optional.empty());
-			((ItemPredicateMixin) (Object) predicate).fabric_setCustom(l);
-			return predicate;
-		}, r -> r), predicate -> {
-			// Encode using the replacement codec if custom exists, otherwise use vanilla codec.
-			if (!predicate.custom().isEmpty()) {
-				return Either.left(predicate.custom());
-			} else {
-				return Either.right(predicate);
-			}
-		});
+		CODEC = FabricItemPredicateCodec.init(vanillaCodec);
 	}
 
 	@Inject(method = "test", at = @At("HEAD"), cancellable = true)
@@ -92,9 +73,5 @@ abstract class ItemPredicateMixin implements ItemPredicateExtensions, FabricItem
 				return;
 			}
 		}
-
-		// The vanilla instance will get wrapped as VanillaItemPredicate and added to the custom list,
-		// therefore the test should already be called in the loop above.
-		cir.setReturnValue(true);
 	}
 }

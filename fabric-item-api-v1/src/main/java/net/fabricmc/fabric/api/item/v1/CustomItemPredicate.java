@@ -22,44 +22,34 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.predicate.item.ItemPredicate;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
-
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 
 /**
  * Allows for adding custom {@linkplain ItemPredicate item predicate}s, used in advancements and loot tables.
  *
- * <p><b>JSON format</b>: along with the vanilla object ({@code {}}) syntax,
- * Fabric also adds an alternate syntax using a list ({@code []}) that will allow for custom predicates.
- * The list contains objects whose format follows the codec of the custom predicate,
- * along with {@code fabric:type} value denoting the predicate id, as specified when registering it.
- *
- * <p>Vanilla predicate can be used with the type {@code minecraft:default}.
- *
- * <p><b>Example</b>, in an advancement criterion: <pre>{@code
+ * <p>Custom predicates can be added with its registered id as the key.
+ * <b>Example</b>, in an advancement criterion: <pre>{@code
  * "trigger": "minecraft:using_item",
  * "conditions": {
- *   "item": [{
- *     "fabric:type": "mymod:tier",
- *     "tier": 1
- *   }, {
- *     "fabric:type": "minecraft:default",
+ *   "item": {
+ *     // vanilla values
  *     "durability": { "max": 20 },
- *     "count": { "min": 3 }
- *   }]
+ *     "count": { "min": 3 },
+ *
+ *     // custom values
+ *     "mymod:int": 3,
+ *     "mymod:object": {
+ *       "something": true
+ *     }
+ *   }
  * }
  * }</pre>
  */
 public interface CustomItemPredicate extends Predicate<ItemStack> {
-	RegistryKey<Registry<Codec<? extends CustomItemPredicate>>> REGISTRY_KEY = RegistryKey.ofRegistry(new Identifier("fabric", "custom_item_predicates"));
-	Registry<Codec<? extends CustomItemPredicate>> REGISTRY = FabricRegistryBuilder.createSimple(REGISTRY_KEY).buildAndRegister();
-
 	/**
 	 * Returns the codec for this predicate.
 	 *
-	 * <p>The codec needs to also be registered into {@link #REGISTRY}.
+	 * <p>The codec needs to also be {@linkplain CustomItemPredicateRegistry#register(Identifier, Codec) registered}.
 	 */
 	Codec<? extends CustomItemPredicate> getCodec();
 }
